@@ -673,14 +673,7 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 
     warlock_pet_spell_t::schedule_execute( execute_state );
 
-    if ( p()->o()->buffs.demonic_power->check() && p()->resources.current[ RESOURCE_ENERGY ] < 100 )
-    {
-      demonic_power_on_cast_start = true;
-    }
-    else
-    {
-      demonic_power_on_cast_start = false;
-    }
+    demonic_power_on_cast_start = p()->o()->buffs.demonic_power->check() && p()->resources.current[ RESOURCE_ENERGY ] < 100;
   }
 
   void consume_resource() override

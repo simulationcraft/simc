@@ -28,10 +28,7 @@ struct buff_is_dynamic
 {
   bool operator()( const buff_t* b ) const
   {
-    if ( !b->quiet && b->avg_start.sum() && !b->constant )
-      return false;
-
-    return true;
+    return !(!b->quiet && b->avg_start.sum() && !b->constant);
   }
 };
 
@@ -39,10 +36,7 @@ struct buff_is_constant
 {
   bool operator()( const buff_t* b ) const
   {
-    if ( !b->quiet && b->avg_start.sum() && b->constant )
-      return false;
-
-    return true;
+    return !(!b->quiet && b->avg_start.sum() && b->constant);
   }
 };
 

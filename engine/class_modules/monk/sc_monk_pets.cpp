@@ -2026,14 +2026,14 @@ bool monk_t::storm_earth_and_fire_fixate_ready( player_t* target )
 {
   if ( buff.storm_earth_and_fire->check() )
   {
-    if ( pets.sef[ SEF_EARTH ]->sticky_target == true || pets.sef[ SEF_FIRE ]->sticky_target == true )
+    if ( pets.sef[ SEF_EARTH ]->sticky_target || pets.sef[ SEF_FIRE ]->sticky_target )
     {
       if ( pets.sef[ SEF_EARTH ]->target != target )
         return true;
       else if ( pets.sef[ SEF_FIRE ]->target != target )
         return true;
     }
-    else if ( pets.sef[ SEF_EARTH ]->sticky_target == false || pets.sef[ SEF_FIRE ]->sticky_target == false )
+    else if ( !pets.sef[ SEF_EARTH ]->sticky_target || !pets.sef[ SEF_FIRE ]->sticky_target )
       return true;
   }
   return false;
@@ -2063,7 +2063,7 @@ void monk_t::summon_storm_earth_and_fire( timespan_t duration )
 
 void monk_t::retarget_storm_earth_and_fire_pets() const
 {
-  if ( pets.sef[ SEF_EARTH ]->sticky_target == true )
+  if ( pets.sef[ SEF_EARTH ]->sticky_target )
   {
     return;
   }

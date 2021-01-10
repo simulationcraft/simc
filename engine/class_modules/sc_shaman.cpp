@@ -7177,7 +7177,7 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     }
 
     const pet_t* p = nullptr;
-    auto pe        = require_primal || talent.primal_elementalist->ok() == true;
+    auto pe        = require_primal || talent.primal_elementalist->ok();
     switch ( et )
     {
       case elemental::FIRE:

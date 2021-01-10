@@ -375,7 +375,7 @@ protected:
     if ( name() != n )
       return opts::parse_status::CONTINUE;
 
-     return _fun( sim, n, value ) == true ? opts::parse_status::OK : opts::parse_status::FAILURE;
+     return _fun( sim, n, value ) ? opts::parse_status::OK : opts::parse_status::FAILURE;
   }
 
   void do_format_to( fmt::format_context::iterator out ) const override
@@ -711,11 +711,6 @@ void option_db_t::parse_text( util::string_view text )
     }
 
     auto last = text.find( '\n', first );
-    if ( false )
-    {
-      fmt::print( std::cerr, "first = {}, last = {} [{}]", first, last, text.substr( first, last - first ) );
-      std::cerr << std::endl;
-    }
     if ( text[ first ] != '#' )
     {
       parse_line( text.substr( first, last - first ) );

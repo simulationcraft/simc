@@ -1054,7 +1054,7 @@ void SC_MainWindow::simulateFinished( std::shared_ptr<sim_t> sim )
   if ( simulationQueue->isEmpty() && !importRunning() )
     timer->stop();
 
-  deleteSim( sim, simulateThread->success == true ? nullptr : logText );
+  deleteSim( sim, simulateThread->success ? nullptr : logText );
   SC_MainWindow::sim = nullptr;
 
   if ( !simulationQueue->isEmpty() )

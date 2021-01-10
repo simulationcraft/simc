@@ -240,7 +240,7 @@ bool strict_sequence_t::ready()
   else
   {
     auto it = range::find_if( sub_actions, []( action_t* a ) {
-        return ! a -> background && a -> ready() == true;
+        return ! a -> background && a -> ready();
     } );
     return it != sub_actions.end(); // Ready if at least one action is usable
   }

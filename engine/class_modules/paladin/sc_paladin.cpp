@@ -759,23 +759,14 @@ struct crusader_strike_t : public paladin_melee_attack_t
 {
   bool has_crusader_2;
   crusader_strike_t( paladin_t* p, const std::string& options_str ) :
-    paladin_melee_attack_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ) )
+    paladin_melee_attack_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ) ),
+    has_crusader_2( p -> find_specialization_spell( 342348 )->ok() )
   {
     parse_options( options_str );
 
     if ( p -> talents.fires_of_justice -> ok() )
     {
       cooldown -> duration *= 1.0 + p -> talents.fires_of_justice -> effectN( 3 ).percent();
-    }
-
-    const spell_data_t* crusader_strike_2 = p -> find_specialization_spell( 342348 );
-    if ( crusader_strike_2 )
-    {
-      has_crusader_2 = true;
-    }
-    else
-    {
-      has_crusader_2 = false;
     }
 
     const spell_data_t* crusader_strike_3 = p -> find_specialization_spell( 231667 );

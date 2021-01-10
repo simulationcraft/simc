@@ -1563,7 +1563,7 @@ void action_t::execute()
 
   if ( harmful )
   {
-    if ( player->in_combat == false && sim->debug )
+    if ( !player->in_combat && sim->debug )
       sim->print_debug( "{} enters combat.", *player );
 
     player->in_combat = true;
@@ -2217,12 +2217,7 @@ bool action_t::select_target()
 
   // Normal casting (no cycle_targets, cycle_players, target_number, or target_if specified). Check
   // that we can cast on the target
-  if ( !target_ready( target ) )
-  {
-    return false;
-  }
-
-  return true;
+  return target_ready( target );
 }
 
 bool action_t::action_ready()
@@ -2279,7 +2274,7 @@ bool action_t::action_ready()
 bool action_t::ready()
 {
   // Check conditions that do NOT pertain to the target before cycle_targets
-  if ( cooldown->is_ready() == false )
+  if ( !cooldown->is_ready() )
     return false;
 
   if ( internal_cooldown->down() )

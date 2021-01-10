@@ -45,7 +45,7 @@ void SC_enumeratedTabBase::keyPressEvent( QKeyEvent* e )
 
       for ( ; j != ( *i ).second.end(); ++j )
       {
-        if ( m.testFlag( ( *j ) ) == false )
+        if ( !m.testFlag( ( *j ) ) )
         {
           passModifiers = false;
           break;

@@ -186,7 +186,7 @@ void SC_SimulateTab::keyReleaseEvent( QKeyEvent* e )
   {
     case Qt::Key_W:
     {
-      if ( m.testFlag( Qt::ControlModifier ) == true )
+      if ( m.testFlag( Qt::ControlModifier ) )
       {
         TabCloseRequest( currentIndex() );
         return;
@@ -195,7 +195,7 @@ void SC_SimulateTab::keyReleaseEvent( QKeyEvent* e )
     break;
     case Qt::Key_T:
     {
-      if ( m.testFlag( Qt::ControlModifier ) == true )
+      if ( m.testFlag( Qt::ControlModifier ) )
       {
         insertNewTabAt( currentIndex() + 1 );
         return;

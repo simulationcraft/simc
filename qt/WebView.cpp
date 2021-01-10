@@ -122,7 +122,7 @@ void SC_WebView::keyReleaseEvent( QKeyEvent* e )
     {
       case Qt::Key_R:
       {
-        if ( m.testFlag( Qt::ControlModifier ) == true )
+        if ( m.testFlag( Qt::ControlModifier ) )
           reload();
       }
       break;
@@ -133,13 +133,13 @@ void SC_WebView::keyReleaseEvent( QKeyEvent* e )
       break;
       case Qt::Key_Left:
       {
-        if ( m.testFlag( Qt::AltModifier ) == true )
+        if ( m.testFlag( Qt::AltModifier ) )
           back();
       }
       break;
       case Qt::Key_Right:
       {
-        if ( m.testFlag( Qt::AltModifier ) == true )
+        if ( m.testFlag( Qt::AltModifier ) )
           forward();
       }
       break;

@@ -869,10 +869,7 @@ struct spell_class_expr_t : public spell_list_expr_t
 
       // legendary spells are safe to match by spell family
       const auto legendary = runeforge_legendary_entry_t::find_by_spellid( spell_id, ptr );
-      if ( !legendary.empty() )
-        return true;
-
-      return false;
+      return !legendary.empty();
     };
 
     if ( check_spell( spell.id(), dbc.ptr ) )

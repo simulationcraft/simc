@@ -3028,10 +3028,7 @@ struct pistol_shot_t : public rogue_attack_t
   bool procs_combat_potency() const override
   {
     // TOCHECK: On beta as of 8/28, Blunderbuss procs don't trigger. Possibly only "on cast".
-    if ( secondary_trigger == TRIGGER_CONCEALED_BLUNDERBUSS )
-      return false;
-
-    return true;
+    return secondary_trigger != TRIGGER_CONCEALED_BLUNDERBUSS;
   }
 
   double cost() const override
@@ -4339,10 +4336,7 @@ struct flagellation_cleanse_t : public rogue_spell_t
   bool ready() override
   {
     const buff_t* current_debuff = p()->active.flagellation->debuff;
-    if ( current_debuff && current_debuff->check() )
-      return true;
-
-    return false;
+    return current_debuff && current_debuff->check();
   }
 };
 

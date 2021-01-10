@@ -384,7 +384,7 @@ namespace report_decorators {
 
   std::string decorated_spell_name(const sim_t& sim, const spell_data_t& spell, util::string_view params_str)
   {
-    if (sim.decorated_tooltips == false)
+    if (sim.decorated_tooltips == 0)
     {
       return fmt::format("<a href=\"#\">{}</a>", util::encode_html(spell.name_cstr()));
     }
@@ -397,7 +397,7 @@ namespace report_decorators {
 
   std::string decorated_item_name(const item_t* item)
   {
-    if (item->sim->decorated_tooltips == false || item->parsed.data.id == 0)
+    if (item->sim->decorated_tooltips == 0 || item->parsed.data.id == 0)
     {
       return fmt::format("<a style=\"color:{};\" href=\"#\">{}</a>",
                          item_quality_color(*item), util::encode_html(item->full_name()));

@@ -131,7 +131,7 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
     }
   }
 
-  if ( ret == false || profile_sim -> is_canceled() )
+  if ( !ret || profile_sim -> is_canceled() )
   {
     return;
   }
@@ -252,7 +252,7 @@ void populate_chart_data( highchart::bar_chart_t& profileset,
                    baseline_value, mean );
     }
 
-    if ( inserted == false )
+    if ( !inserted )
     {
       insert_data( profileset, util::encode_html( baseline->name() ), c, baseline_data, true, baseline_value, mean );
     }

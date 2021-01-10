@@ -553,8 +553,7 @@ int item_t::stat_value( size_t idx ) const
 bool item_t::active() const
 {
   if ( slot == SLOT_INVALID ) return false;
-  if ( ! ( name_str.empty() || name_str == "empty" || name_str == "none" || name_str == "nothing" ) ) return true;
-  return false;
+  return ! ( name_str.empty() || name_str == "empty" || name_str == "none" || name_str == "nothing" );
 }
 
 // item_t::name =============================================================

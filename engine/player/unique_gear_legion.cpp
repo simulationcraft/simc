@@ -948,7 +948,7 @@ struct thunder_ritual_impact_t : public proc_spell_t
     // Reset pair checking
     pair_buffed = false;
 
-    if( pair_multiplied == true && pair_icd -> up() )
+    if( pair_multiplied && pair_icd -> up() )
     {
       pair_buffed = true;
       pair_icd -> start();

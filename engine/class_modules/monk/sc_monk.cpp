@@ -3500,10 +3500,7 @@ struct empowered_tiger_lightning_t : public monk_spell_t
 
   bool ready() override
   {
-    if ( p()->spec.invoke_xuen_2->ok() )
-      return true;
-
-    return false;
+    return p()->spec.invoke_xuen_2->ok();
   }
 };
 
