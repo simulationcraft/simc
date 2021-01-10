@@ -641,7 +641,7 @@ void item_t::parse_options()
     return;
 
   option_name_str = options_str;
-  std::string remainder = "";
+  std::string remainder;
   std::string DUMMY_REFORGE; // TODO-WOD: Remove once profiles update
   std::string DUMMY_CONTEXT; // not used by simc but used by 3rd parties (raidbots)
 

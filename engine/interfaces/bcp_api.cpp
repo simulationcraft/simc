@@ -84,8 +84,8 @@ static constexpr struct {
   };
 } LOCALES;
 
-static std::string token_path = "";
-static std::string token = "";
+static std::string token_path;
+static std::string token;
 static bool authorization_failed = false;
 mutex_t token_mutex;
 

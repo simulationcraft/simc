@@ -179,7 +179,7 @@ void brewmaster( player_t* p )
 
   for ( size_t i = 0; i < p->items.size(); i++ )
   {
-    std::string name_str = "";
+    std::string name_str;
     if ( p->items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
       def->add_action( "use_item,name=" + p->items[ i ].name_str );
@@ -454,7 +454,7 @@ void windwalker( player_t* p )
   // Serenity On-use items
   for ( size_t i = 0; i < p->items.size(); i++ )
   {
-    std::string name_str = "";
+    std::string name_str;
     if ( p->items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
       cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str );

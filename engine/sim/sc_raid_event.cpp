@@ -241,7 +241,7 @@ struct adds_event_t final : public raid_event_t
     {
       for ( unsigned add = 0; add < util::ceil( count + count_range ); add++ )
       {
-        std::string add_name_str = "";
+        std::string add_name_str;
 
         if ( sim->add_waves > 1 &&
              name_str == "Add" )  // Only add wave to secondary wave that aren't given manual names.

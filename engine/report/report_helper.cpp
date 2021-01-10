@@ -348,7 +348,7 @@ std::string report_helper::pretty_spell_text( const spell_data_t& default_spell,
 bool report_helper::check_gear( player_t& p, sim_t& sim )
 {
   // TODO: Add renown check?
-  std::string tier_name    = "";
+  std::string tier_name;
   unsigned int max_ilevel_allowed = 0;
   unsigned int legendary_ilevel   = 0;
   int max_gems                    = 0;

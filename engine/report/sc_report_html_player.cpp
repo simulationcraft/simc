@@ -542,8 +542,8 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
   // Skip for abilities that do no damage
   if ( s.compound_amount > 0 || ( s.parent && s.parent->compound_amount > 0 ) )
   {
-    std::string compound_aps     = "";
-    std::string compound_aps_pct = "";
+    std::string compound_aps;
+    std::string compound_aps_pct;
     double cAPS                  = 0.0;
     double cAPSpct               = 0.0;
 
@@ -608,13 +608,13 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
   if ( p.sim->report_details )
   {
     // TODO: Transitional; Highcharts
-    std::string timeline_stat_aps_str = "";
+    std::string timeline_stat_aps_str;
     if ( !s.timeline_aps_chart.empty() )
     {
       timeline_stat_aps_str = "<img src=\"" + s.timeline_aps_chart + "\" alt=\"" +
         ( s.type == STATS_DMG ? "DPS" : "HPS" ) + " Timeline Chart\" />\n";
     }
-    std::string aps_distribution_str = "";
+    std::string aps_distribution_str;
     if ( !s.aps_distribution_chart.empty() )
     {
       aps_distribution_str = "<img src=\"" + s.aps_distribution_chart + "\" alt=\"" +

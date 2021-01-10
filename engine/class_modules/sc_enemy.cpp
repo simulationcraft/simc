@@ -164,7 +164,7 @@ struct enemy_action_t : public ACTION_TYPE
   std::string filter_options_list( util::string_view options_str )
   {
     auto splits = util::string_split<util::string_view>( options_str, "," );
-    std::string filtered_options    = "";
+    std::string filtered_options;
     for ( auto split : splits )
     {
       if ( !util::str_in_str_ci( split, "if=" ) )
@@ -1316,7 +1316,7 @@ void enemy_t::generate_heal_raid_event()
 
 std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
 {
-  std::string als                 = "";
+  std::string als;
   constexpr size_t numTankDummies = static_cast<size_t>( tank_dummy_e::MAX );
   //                               NONE, WEAK,           DUNGEON,  RAID,   HEROIC, MYTHIC
   //                               NONE, Normal Dungeon, Mythic 0, Normal, Heroic, Mythic
@@ -1428,7 +1428,7 @@ void enemy_t::init_action_list()
     // Only do this if the user hasn't specified additional action lists beyond precombat & default
     if ( tanks.size() > 1 && action_priority_list.size() < 3 )
     {
-      std::string new_action_list_str = "";
+      std::string new_action_list_str;
 
       // split the action_list_str into individual actions so we can modify each later
       auto splits = util::string_split<util::string_view>( action_list_str, "/" );
