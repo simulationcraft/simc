@@ -1470,7 +1470,7 @@ void decanter_of_animacharged_winds( special_effect_t& effect )
     splash_of_animacharged_wind_t( const special_effect_t& e ) :
       shadowlands_aoe_proc_t( e, "splash_of_animacharged_wind", e.trigger(), true )
     {
-      max_scaling_targets = e.driver()->effectN( 2 ).base_value() + 1;
+      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() + 1 );
     }
   };
 
@@ -1489,7 +1489,7 @@ void bloodspattered_scale( special_effect_t& effect )
     blood_barrier_t( const special_effect_t& e, buff_t* absorb_ ) :
       shadowlands_aoe_proc_t( e, "blood_barrier", e.trigger(), true ), absorb( absorb_ )
     {
-      max_scaling_targets = e.driver()->effectN( 2 ).base_value() + 1;
+      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() + 1 );
     }
 
     void execute() override
