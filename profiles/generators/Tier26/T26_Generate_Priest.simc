@@ -34,7 +34,7 @@ race=mechagnome
 spec=shadow
 role=spell
 position=ranged_back
-talents=1010332
+talents=1010132
 covenant=kyrian
 soulbind=pelagos,combat_meditation/dissonant_echoes:7/haunting_apparitions:7
 
@@ -44,15 +44,15 @@ shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_insight
 wrists=grim_pursuants_maille,id=182996,bonus_id=7187/1498/6935,gem_id=173128,enchant=eternal_intellect
-hands=grimveiled_mittens,id=173244,bonus_id=6647/6649/6758/6983/1532
+hands=impossibly_oversized_mitts,id=183022,bonus_id=7187/1498
 waist=shadewarped_sash,id=183004,bonus_id=7187/1498/6935,gem_id=173128
-legs=courtiers_costume_trousers,id=183011,bonus_id=7187/1498
+legs=grimveiled_pants,id=173246,bonus_id=6648/6649/6758/7162/1532
 feet=slippers_of_the_forgotten_heretic,id=182979,bonus_id=7187/1498
-finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_mastery
+finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_mastery
 trinket1=empyreal_ordnance,id=180117,bonus_id=6536/1540/6646
 trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498
-main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinful_revelation
+main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=celestial_guidance
 
 save=T26_Priest_Shadow.simc
 
@@ -62,7 +62,7 @@ race=mechagnome
 spec=shadow
 role=spell
 position=ranged_back
-talents=1010332
+talents=1010132
 covenant=necrolord
 soulbind=emeni,lead_by_example/dissonant_echoes:7/haunting_apparitions:7
 
@@ -72,14 +72,14 @@ shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_insight
 wrists=grim_pursuants_maille,id=182996,bonus_id=7187/1498/6935,gem_id=173128,enchant=eternal_intellect
-hands=grimveiled_mittens,id=173244,bonus_id=6647/6649/6758/6983/1532
+hands=impossibly_oversized_mitts,id=183022,bonus_id=7187/1498
 waist=shadewarped_sash,id=183004,bonus_id=7187/1498/6935,gem_id=173128
-legs=courtiers_costume_trousers,id=183011,bonus_id=7187/1498
+legs=grimveiled_pants,id=173246,bonus_id=6648/6649/6758/7162/1532
 feet=slippers_of_the_forgotten_heretic,id=182979,bonus_id=7187/1498
-finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_mastery
+finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_mastery
 trinket1=empyreal_ordnance,id=180117,bonus_id=6536/1540/6646
 trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498
-main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinful_revelation
+main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=celestial_guidance
 
 save=T26_Priest_Shadow_Necrolord.simc
