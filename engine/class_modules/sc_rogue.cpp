@@ -1652,19 +1652,13 @@ public:
     trigger_relentless_strikes( ab::execute_state );
     trigger_elaborate_planning( ab::execute_state );
     trigger_alacrity( ab::execute_state );
+    trigger_deepening_shadows( ab::execute_state );
 
+    // Trigger the 1ms delayed breaking of all stealth buffs
     if ( ab::harmful && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD ) )
     {
-      ab::player->buffs.shadowmeld->expire();
-
-      // Check stealthed again after shadowmeld is popped. If we're still stealthed, trigger subterfuge
-      if ( p()->talent.subterfuge->ok() && !p()->buffs.subterfuge->check() && p()->stealthed( STEALTH_BASIC ) )
-        p()->buffs.subterfuge->trigger();
-      else
-        p()->break_stealth();
+      p()->break_stealth();
     }
-
-    trigger_deepening_shadows( ab::execute_state );
 
     // 11/28/2020 - Flagellation does not remove the buff in-game, despite being in the whitelist
     if ( affected_by.symbols_of_death_autocrit && p()->buffs.symbols_of_death_autocrit->check() && ab::data().id() != 323654 )
@@ -1674,11 +1668,15 @@ public:
     }
 
     if ( affected_by.blindside )
+    {
       p()->buffs.blindside->expire();
+    }
 
     // 12/04/2020 - Hotfix notes this is no longer consumed "while under the effects Stealth, Vanish, Subterfuge, Shadow Dance, and Shadowmeld"
     if ( affected_by.sepsis && !p()->stealthed( STEALTH_ALL & ~STEALTH_SEPSIS ) )
+    {
       p()->buffs.sepsis->decrement();
+    }
   }
 
   void schedule_travel( action_state_t* state ) override
@@ -4943,12 +4941,6 @@ struct subterfuge_t : public buff_t
     buff_t( r, "subterfuge", r -> find_spell( 115192 ) ),
     rogue( r )
   { }
-
-  void execute( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::execute( stacks, value, duration );
-    rogue->break_stealth();
-  }
 };
 
 struct soothing_darkness_t : public actions::rogue_heal_t
@@ -8178,7 +8170,18 @@ void rogue_t::activate()
 
 void rogue_t::break_stealth()
 {
+  // Trigger Subterfuge
+  if ( talent.subterfuge->ok() && !buffs.subterfuge->check() && stealthed( STEALTH_BASIC ) )
+  {
+    buffs.subterfuge->trigger();
+  }
+
   // Expiry delayed by 1ms in order to have it processed on the next tick. This seems to be what the server does.
+  if ( player_t::buffs.shadowmeld->check() )
+  {
+    player_t::buffs.shadowmeld->expire( timespan_t::from_millis( 1 ) );
+  }
+
   if ( buffs.stealth->check() )
   {
     buffs.stealth->expire( timespan_t::from_millis( 1 ) );
