@@ -7702,7 +7702,7 @@ struct monk_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Monk", "2020-11-21",
+/*    hotfix::register_effect( "Monk", "2020-11-21",
                              "Manually set Direct Damage Windwalker Monk Two-Hand Adjustment by 2%", 872417 )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_ADD )
@@ -7714,6 +7714,7 @@ struct monk_module_t : public module_t
         .operation( hotfix::HOTFIX_ADD )
         .modifier( 2 )
         .verification_value( 0 );
+*/
   }
 
   void init( player_t* p ) const override
