@@ -335,7 +335,7 @@ void unholy( player_t* p )
   aoe_burst->add_action( "death_coil,if=buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3|active_enemies=2", "AoE Burst" );
   aoe_burst->add_action( "epidemic,if=runic_power.deficit<(10+death_knight.fwounded_targets*3)&death_knight.fwounded_targets<6&!variable.pooling_runic_power|buff.swarming_mist.up" );
   aoe_burst->add_action( "epidemic,if=runic_power.deficit<25&death_knight.fwounded_targets>5&!variable.pooling_runic_power" );
-  aoe_burst->add_action( "epidemic,if=!death_knight.fwounded_targets&!variable.pooling_runic_powerfight_remains<5|raid_event.adds.exists&raid_event.adds.remains<5" );
+  aoe_burst->add_action( "epidemic,if=!death_knight.fwounded_targets&!variable.pooling_runic_power|fight_remains<5|raid_event.adds.exists&raid_event.adds.remains<5" );
   aoe_burst->add_action( "wound_spender" );
   aoe_burst->add_action( "epidemic,if=!variable.pooling_runic_power" );
 
