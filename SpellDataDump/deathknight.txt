@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37142 Live (hotfix 2021-01-08/37142, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.37142 Live (hotfix 2021-01-12/37142, git build shadowlands d307de71, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -598,7 +598,7 @@ Spell Type       : Magic
 Range            : 40 yards
 Velocity         : 35 yards/sec
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Sudden Doom (81340 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death March (235556 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death March (235556 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1)
 Family Flags     : 13, 43, 64, 78
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ..x..... ........ 
@@ -970,7 +970,7 @@ Spell Level      : 10
 Range            : 30 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Razorice (51714 effect#1), Rime (59052 effects: #1, #2, #3), Mastery: Frozen Heart (77514 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Northrend Winds (204088 effect#1)
+Affecting spells : Razorice (51714 effect#1), Rime (59052 effects: #1, #2, #3), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Northrend Winds (204088 effect#1)
 Family Flags     : 33, 43, 120
 Attributes       : ........ ........ x.x..... ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ......x. 
@@ -1089,7 +1089,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 823: Will to Survive (312922 effect#2)
 Stance Mask      : 0x01000000
-Affecting spells : Dark Succor (101568 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #3), Ossuary (219788 effect#1), Death March (235556 effect#2), Haemostasis (235559 effect#1), Hemostasis (273947 effect#1), Voracious (273953 effects: #2, #3), Death Strike (278223 effects: #1, #2, #3), Death's Certainty (334898 effect#2), Insatiable Appetite (338330 effect#1)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Dark Succor (101568 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #3), Ossuary (219788 effect#1), Death March (235556 effect#2), Haemostasis (235559 effect#1), Hemostasis (273947 effect#1), Voracious (273953 effects: #2, #3), Death Strike (278223 effects: #1, #2, #3), Death's Certainty (334898 effect#2), Insatiable Appetite (338330 effect#1)
 Family Flags     : 4, 43, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -1117,7 +1117,7 @@ School           : Frost
 Spell Type       : Melee
 Range            : 10 yards
 Labels           : 961: Exacting Preparation (331580 effect#4)
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 104, 120
 Attributes       : ....x... .....x.. ..x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... x.x..... ......x. 
@@ -1164,7 +1164,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (7.5 seconds cooldown)
 Category         : 1611: Death Knight (137005 effect#3), Blood Boil (316634 effect#1)
 Stance Mask      : 0x01000000
-Affecting spells : Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 18, 43, 48
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1449,7 +1449,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #15), Death's Due (324164 effect#3)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #15), Death's Due (324164 effect#3)
 Family Flags     : 43, 67, 78
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ .x....x. 
@@ -1555,7 +1555,7 @@ Spell Type       : Melee
 Spell Level      : 23
 Range            : 50000 yards
 Duration         : 24 seconds
-Affecting spells : Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Rapid Decomposition (194662 effects: #1, #3), Soulflayer's Corruption (248066 effect#1), Withering Plague (337884 effect#1), Debilitating Malady (338523 effect#1)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Rapid Decomposition (194662 effects: #1, #3), Soulflayer's Corruption (248066 effect#1), Withering Plague (337884 effect#1), Debilitating Malady (338523 effect#1)
 Triggered by     : Death's Caress (195292)
 Family Flags     : 43, 57, 65
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -1591,7 +1591,7 @@ Max Targets      : 5
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Stance Mask      : 0x01000000
-Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Scourge Strike (317234 effect#1)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Scourge Strike (317234 effect#1)
 Family Flags     : 43, 59, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -1620,7 +1620,7 @@ Spell Type       : Melee
 Range            : 50000 yards
 Duration         : 24 seconds
 Proc Chance      : 101%
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 58, 65, 120
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -2104,7 +2104,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Dark Succor (101568 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #3), Ossuary (219788 effect#1), Death March (235556 effect#2), Haemostasis (235559 effect#1), Hemostasis (273947 effect#1), Voracious (273953 effects: #2, #3), Death Strike (278223 effects: #1, #2, #3), Death's Certainty (334898 effect#2), Insatiable Appetite (338330 effect#1)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Dark Succor (101568 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #3), Ossuary (219788 effect#1), Death March (235556 effect#2), Haemostasis (235559 effect#1), Hemostasis (273947 effect#1), Voracious (273953 effects: #2, #3), Death Strike (278223 effects: #1, #2, #3), Death's Certainty (334898 effect#2), Insatiable Appetite (338330 effect#1)
 Family Flags     : 4, 43
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x.....x. 
@@ -2126,7 +2126,7 @@ School           : Frost
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Frost Strike (316803 effect#1), Eradicating Blow (337936 effect#1)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Frost Strike (316803 effect#1), Eradicating Blow (337936 effect#1)
 Triggered by     : Frost Strike (49143)
 Family Flags     : 34, 43, 110, 120
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
@@ -2149,7 +2149,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Killing Machine (51124 effects: #1, #2), Might of the Frozen Wastes (81333 effect#1), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Koltira's Newfound Will (208782 effect#2), Obliterate (317198 effect#1), Koltira's Favor (334583 effect#2)
+Affecting spells : Killing Machine (51124 effects: #1, #2), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Koltira's Newfound Will (208782 effect#2), Obliterate (317198 effect#1), Koltira's Favor (334583 effect#2)
 Triggered by     : Obliterate (49020)
 Family Flags     : 43, 49, 111
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
@@ -2237,7 +2237,7 @@ School           : Shadow
 Spell Type       : Melee
 Range            : 100 yards
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Scourge Strike (317234 effect#1)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Scourge Strike (317234 effect#1)
 Triggered by     : Scourge Strike (55090)
 Family Flags     : 43, 71, 78
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2363,7 +2363,7 @@ Spell Level      : 17
 Range            : 30 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 76, 78
 Attributes       : ........ ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2512,6 +2512,11 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Obliterate (49020), Obliterate Off-Hand (66198), Obliterate (222024), Obliterate (325461)
                    Family Flags: 49
+#2 (id=877659)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955)
+                   Family Flags: 43
+Hotfixed         : NEW EFFECT
 Description      : While Dual-wielding your Obliterate and Frost Strike also strike with your off-hand and each weapon can be engraved with a Runeforge enchant.$?a343252[
 
 Wielding a two-handed weapon increases Obliterate damage by $s1%, and increases the chance for your auto attack critical strikes to grant Killing Machine.][]
@@ -2580,7 +2585,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Stance Mask      : 0x01000000
-Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Cankerous Wounds (278482 effect#1)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Cankerous Wounds (278482 effect#1)
 Family Flags     : 43, 73, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -3275,7 +3280,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 45 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 78, 93
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -3302,7 +3307,7 @@ Spell Level      : 1
 Duration         : 14 seconds
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Triggered by     : Unholy Blight (115989)
 Family Flags     : 43, 78, 93
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -4046,15 +4051,18 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179703)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -19 | Scaled Value: -19 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232)
                    Family Flags: 3
+Hotfixed         : Base Value (-19 -> -12)
 #2 (id=191121)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -19 | Scaled Value: -19 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232)
                    Family Flags: 3
+Hotfixed         : Base Value (-19 -> -12)
 #3 (id=191122)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: -19 | Scaled Value: -19 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (-19 -> -12)
 #4 (id=191123)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Waterbolt (31707), Freeze (33395)
@@ -4131,15 +4139,18 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179707)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
+Hotfixed         : Base Value (9 -> 11)
 #2 (id=191108)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
+Hotfixed         : Base Value (9 -> 11)
 #3 (id=191109)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (9 -> 11)
 #4 (id=191110)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1490 | Target: Self (1)
                    Affected Spells (Category): Keg Smash (121253), Keg Smash (330911)
@@ -4290,15 +4301,18 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179709)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -13 | Scaled Value: -13 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -11 | Scaled Value: -11 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
+Hotfixed         : Base Value (-13 -> -11)
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -13 | Scaled Value: -13 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -11 | Scaled Value: -11 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
+Hotfixed         : Base Value (-13 -> -11)
 #3 (id=191101)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -21 | Scaled Value: -21 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -11 | Scaled Value: -11 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (-21 -> -11)
 #4 (id=191102)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
@@ -4807,13 +4821,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179721)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 33.3 | Scaled Value: 33.3 | PvP Coefficient: 0.77778 | Target: Self (1)
+                   Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 0.77778 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Flagellation (345390)
                    Family Flags: 54
+Hotfixed         : Base Value (33.299999 -> 44)
 #2 (id=191052)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 0.77778 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 0.77778 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Flagellation (345390)
                    Family Flags: 54
+Hotfixed         : Base Value (33 -> 44)
 #3 (id=191053)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Family Flags: 68
@@ -5266,13 +5282,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179734)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 16 | Scaled Value: 16 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 9
+Hotfixed         : Base Value (16 -> 25)
 #2 (id=191010)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 16 | Scaled Value: 16 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 9
+Hotfixed         : Base Value (16 -> 25)
 #3 (id=191011)   : Apply Aura (6) | Unknown(213)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191012)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
@@ -5281,9 +5299,15 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1672 | Target: Self (1)
                    Affected Spells (Category): Raging Blow (85288), Crushing Blow (335097)
 #6 (id=831458)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 21 | Scaled Value: 21 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847)
                    Family Flags: 46
+Hotfixed         : Base Value (30 -> 21)
+#7 (id=877674)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -7 | Scaled Value: -7 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Dragon Roar (118000)
+                   Family Flags: 49
+Hotfixed         : NEW EFFECT
 
 Name             : Anti-Magic Zone (desc=PvP Talent) (id=145629) [Spell Family (15)] 
 Class            : Death Knight
@@ -5557,7 +5581,7 @@ Spell Type       : Magic
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Magic Hostile Spell, Periodic
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Triggered by     : Breath of Sindragosa (152279)
 Family Flags     : 43, 113, 120
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
@@ -5582,7 +5606,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 1080: Withering Ground (341344 effect#1)
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #15), Death's Due (324164 effect#3)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #15), Death's Due (324164 effect#3)
 Family Flags     : 43, 67, 78, 114
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ .x....xx 
@@ -5882,7 +5906,7 @@ Spell Type       : Melee
 Range            : 100 yards
 Duration         : 27 seconds
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Lingering Plague (338566 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Lingering Plague (338566 effects: #1, #2)
 Triggered by     : Outbreak (77575)
 Family Flags     : 40, 43, 65, 78
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -5908,7 +5932,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Lingering Plague (338566 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Lingering Plague (338566 effects: #1, #2)
 Family Flags     : 40, 43, 78
 Attributes       : ........ ........ ........ ...x....   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ......x. ......x. 
@@ -5951,6 +5975,23 @@ Description      : Calls forth a Greater Storm Elemental to hurl gusts of wind t
 
 While the Storm Elemental is active, each time you cast Lightning Bolt or Chain Lightning, the cast time of Lightning Bolt and Chain Lightning is reduced by $263806s1%, stacking up to $263806u times.
 
+Name             : Runic Empowerment (id=193486) 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=283849)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+Description      : Gain a Rune.
+
 Name             : Festering Wound (id=194310) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
@@ -5984,7 +6025,7 @@ School           : Shadow
 Spell Type       : Melee
 Range            : 50000 yards
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Bursting Sores (207264 effect#1), Festering Strike (316867 effect#1)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Bursting Sores (207264 effect#1), Festering Strike (316867 effect#1)
 Family Flags     : 43, 78, 119
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -6261,7 +6302,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=286506)   : Apply Aura (6) | Modify Armor by Primary Stat% (268)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 70)
 #2 (id=293376)   : Apply Aura (6) | Unknown(408)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 195182 | Target: Self (1)
 #3 (id=306110)   : Apply Aura (6) | Modify Max Health% (133)
@@ -6285,7 +6327,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Stance Mask      : 0x01000000
-Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Unholy Coil (184897 effect#2)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Unholy Coil (184897 effect#2)
 Triggered by     : Bone Shield (195181)
 Family Flags     : 43, 117, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -6320,7 +6362,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
 Stance Mask      : 0x01000000
-Affecting spells : Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 87
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -6421,7 +6463,7 @@ Name             : Frozen Pulse (id=195750) [Spell Family (15)]
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Triggered by     : Frozen Pulse (194909)
 Family Flags     : 43, 120
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6463,7 +6505,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Death Knight (137005 effect#1), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#1), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 50, 120
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ....x.x.   ........ .x...... ........ ......x. 
@@ -6502,7 +6544,7 @@ Name             : Bonestorm (id=196528) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
-Affecting spells : Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Triggered by     : Bonestorm (194844)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6574,7 +6616,7 @@ Name             : Remorseless Winter (id=196771) [Spell Family (15)]
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Gathering Storm (211805 effect#1), Frozen Tempest (278487 effects: #2, #3), Remorseless Winter (316794 effect#1), Biting Cold (334678 effects: #2, #3), Everfrost (337989 effect#1)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Gathering Storm (211805 effect#1), Frozen Tempest (278487 effects: #2, #3), Remorseless Winter (316794 effect#1), Biting Cold (334678 effects: #2, #3), Everfrost (337989 effect#1)
 Triggered by     : Remorseless Winter (196770)
 Family Flags     : 43, 120, 121, 126
 Attributes       : ........ ........ ........ ..xx....   ........ ........ ........ ........ 
@@ -6957,7 +6999,7 @@ Duration         : 8 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Category         : 1207
 Stance Mask      : 0x01000000
-Affecting spells : Blood Plague (55078 effect#3), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#3), Blood for Blood (202846 effect#1), Heart Strike (316575 effect#1), Heart Strike (317090 effect#1)
+Affecting spells : Blood Plague (55078 effect#3), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#3), Blood for Blood (202846 effect#1), Heart Strike (316575 effect#1), Heart Strike (317090 effect#1)
 Family Flags     : 24, 43, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -6995,7 +7037,7 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 30 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 86
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -7221,7 +7263,7 @@ School           : Frost
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 120
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ......x. 
@@ -7324,7 +7366,7 @@ Range            : 8 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Fist Weapon
 Stance Mask      : 0x01000000
-Affecting spells : Killing Machine (51124 effect#1), Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Death Knight (137005 effects: #1, #2, #5), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Killing Machine (51124 effect#1), Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effects: #1, #2, #5), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 15, 43, 120, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -7404,7 +7446,7 @@ Spell Type       : Melee
 Range            : 50000 yards
 Travel Time      : 0.15 seconds
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 78
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -7515,7 +7557,7 @@ Max Targets      : 5
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Stance Mask      : 0x01000000
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Scourge Strike (317234 effect#1)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Scourge Strike (317234 effect#1)
 Family Flags     : 43, 59, 78, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -7944,7 +7986,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 40 yards
 Max Targets      : 7
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 78, 121
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7967,7 +8009,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Max Targets      : 7
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 78, 121
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8279,7 +8321,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Affecting spells : Killing Machine (51124 effects: #1, #2), Might of the Frozen Wastes (81333 effect#1), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Koltira's Newfound Will (208782 effect#2), Obliterate (317198 effect#1), Koltira's Favor (334583 effect#2)
+Affecting spells : Killing Machine (51124 effects: #1, #2), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Koltira's Newfound Will (208782 effect#2), Obliterate (317198 effect#1), Koltira's Favor (334583 effect#2)
 Triggered by     : Obliterate (49020)
 Family Flags     : 7, 43, 49
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
@@ -8303,7 +8345,7 @@ School           : Frost
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger, Spear
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Frost Strike (316803 effect#1), Eradicating Blow (337936 effect#1)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Frost Strike (316803 effect#1), Eradicating Blow (337936 effect#1)
 Triggered by     : Frost Strike (49143)
 Family Flags     : 34, 43, 120
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
@@ -8430,7 +8472,7 @@ School           : Frost
 Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
-Affecting spells : Razorice (51714 effect#1), Rime (59052 effects: #1, #2, #3), Mastery: Frozen Heart (77514 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Northrend Winds (204088 effect#1)
+Affecting spells : Razorice (51714 effect#1), Rime (59052 effects: #1, #2, #3), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Northrend Winds (204088 effect#1)
 Family Flags     : 33, 43, 120
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8565,7 +8607,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Range            : 20 yards
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 120
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -9531,7 +9573,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 78
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9842,7 +9884,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 30 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 125, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -9917,7 +9959,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Cooldown         : 90 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Stance Mask      : 0x01000000
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Apocalypse (316961 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Apocalypse (316961 effects: #1, #2)
 Family Flags     : 43, 56, 78, 127
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -9964,7 +10006,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 120
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -10315,7 +10357,7 @@ Range            : 100 yards
 Duration         : 10 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 45, 120
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ x....... ......x. 
@@ -11112,7 +11154,7 @@ Stacks           : 20 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ x...x... x....... ........ 
                  : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Triggered by     : Cold Heart (281208)
 Family Flags     : 43, 120
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11134,7 +11176,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 120
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... x....... ........ ........   ........ ........ ........ ......x. 
@@ -11342,7 +11384,7 @@ Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......xx 
@@ -11366,7 +11408,7 @@ Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......xx 
@@ -11390,7 +11432,7 @@ Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Triggered by     : Helchains (286979)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11414,7 +11456,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 15 seconds
-Affecting spells : Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Triggered by     : Helchains (286835)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -11490,7 +11532,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 120
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ x....... ......x. 
@@ -11848,7 +11890,7 @@ Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......xx 
@@ -12242,7 +12284,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Labels           : 1061: Impenetrable Gloom (338628 effect#1)
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Triggered by     : Swarming Mist (311648)
 Family Flags     : 43, 78
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -12273,7 +12315,7 @@ Proc Chance      : 100%
 Stance Mask      : 0x01000000
 Proc Flags       : .....x.. .x...x.. .x...... ........ 
                  : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
-Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 127
 Attributes       : ....x... ........ ..x..... .......x   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ..x..... 
@@ -12389,7 +12431,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Stance Mask      : 0x01000000
-Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 61, 127
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -13050,7 +13092,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 78
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......xx 
@@ -13071,7 +13113,7 @@ Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Triggered by     : Unholy Pact (319245)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13094,7 +13136,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 15 seconds
-Affecting spells : Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Triggered by     : Unholy Pact (319233)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -13216,7 +13258,7 @@ Max Targets      : 1
 Duration         : 4 seconds
 Labels           : 1062: Brutal Grasp (338651 effect#1)
 Mechanic         : Grip
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Triggered by     : Abomination Limb (315443)
 Family Flags     : 43, 78
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -13245,7 +13287,7 @@ Spell Type       : Magic
 Range            : 20 yards
 Max Targets      : 5
 Labels           : 1062: Brutal Grasp (338651 effect#1)
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Triggered by     : Abomination Limb (315443)
 Family Flags     : 43, 78
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -13371,7 +13413,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff, Spear
-Affecting spells : Killing Machine (51124 effects: #1, #2), Might of the Frozen Wastes (81333 effect#1), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Koltira's Newfound Will (208782 effect#2), Obliterate (317198 effect#1), Koltira's Favor (334583 effect#2)
+Affecting spells : Killing Machine (51124 effects: #1, #2), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Koltira's Newfound Will (208782 effect#2), Obliterate (317198 effect#1), Koltira's Favor (334583 effect#2)
 Triggered by     : Obliterate (49020)
 Family Flags     : 7, 43, 49
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
@@ -13395,7 +13437,7 @@ School           : Frost
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Frost Strike (316803 effect#1), Eradicating Blow (337936 effect#1)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Frost Strike (316803 effect#1), Eradicating Blow (337936 effect#1)
 Triggered by     : Frost Strike (49143)
 Family Flags     : 34, 43, 120
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
@@ -13840,7 +13882,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 78, 124
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -14856,7 +14898,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 1080: Withering Ground (341344 effect#1)
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #15), Death's Due (324164 effect#3)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #15), Death's Due (324164 effect#3)
 Family Flags     : 43, 67, 78
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ .x....x. 
@@ -14991,7 +15033,7 @@ Duration         : 5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword
 Cooldown         : 6 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 78, 90, 127
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -15078,7 +15120,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Max Targets      : 6
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 78
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 

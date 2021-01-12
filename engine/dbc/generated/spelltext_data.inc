@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.37142
-static const std::array<spelltext_data_t, 15093> __spelltext_data { {
+static const std::array<spelltext_data_t, 15094> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -6130,6 +6130,7 @@ static const std::array<spelltext_data_t, 15093> __spelltext_data { {
   { 193468, "Range of all your ranged abilities is increased by ${$s1}.1% and damage of all abilities increased by ${$s2}.1%.", "Range increased by $w1%.\r\nFocus spending abilites deal $s2% increased damage.", "Mastery" },
   { 193470, "$@spelldesc193371", 0, 0 },
   { 193473, "Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d and slowing their movement speed by $s2%.", "$?$w2=0[Taking][Movement speed slowed and taking] Shadow damage every $t1 sec.", 0 },
+  { 193486, "Gain a Rune.", 0, 0 },
   { 193530, "Grants you and your pet $s2 Focus per sec and $s1% increased critical strike chance for $d.", "Gaining $s2 Focus per sec.\r\nCritical Strike chance increased by $s1%.", 0 },
   { 193531, "You may have a maximum of $s3 combo points, your finishing moves consume up to $s3 combo points, and your finishing moves deal $s4% increased damage.", 0, 0 },
   { 193532, "Activating Bestial Wrath grants $s1 charges of Barbed Shot.", 0, 0 },
