@@ -114,8 +114,9 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
   void init() override
   {
     holy_power_consumer_t::init();
-    snapshot_flags |= STATE_TARGET;
+    snapshot_flags |= STATE_TARGET | STATE_MUL_TA | STATE_MUL_DA;
     update_flags &= ~STATE_TARGET;
+    update_flags |= STATE_MUL_TA | STATE_MUL_DA;
   }
 
   void impact( action_state_t* s) override
