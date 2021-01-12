@@ -495,6 +495,7 @@ public:
     timespan_t focus_magic_interval = 1.5_s;
     double focus_magic_relstddev = 0.1;
     double focus_magic_crit_chance = 0.85;
+    bool focus_magic_trade = false;
     timespan_t mirrors_of_torment_interval = 1.5_s;
     timespan_t arcane_missiles_chain_delay = 200_ms;
     double arcane_missiles_chain_relstddev = 0.1;
@@ -795,6 +796,7 @@ public:
   void arise() override;
   void combat_begin() override;
   void combat_end() override;
+  std::string create_profile( save_e ) override;
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
   void analyze( sim_t& ) override;
@@ -5715,14 +5717,28 @@ void mage_t::create_options()
   add_option( opt_float( "mage.searing_touch_duration_multiplier", options.searing_touch_duration_multiplier ) );
   add_option( opt_timespan( "frozen_duration", options.frozen_duration ) );
   add_option( opt_timespan( "scorch_delay", options.scorch_delay ) );
-  add_option( opt_timespan( "focus_magic_interval", options.focus_magic_interval, 0_ms, timespan_t::max() ) );
-  add_option( opt_float( "focus_magic_relstddev", options.focus_magic_relstddev, 0.0, std::numeric_limits<double>::max() ) );
-  add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance, 0.0, 1.0 ) );
+  add_option( opt_timespan( "mage.focus_magic_interval", options.focus_magic_interval, 0_ms, timespan_t::max() ) );
+  add_option( opt_float( "mage.focus_magic_relstddev", options.focus_magic_relstddev, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_float( "mage.focus_magic_crit_chance", options.focus_magic_crit_chance, 0.0, 1.0 ) );
+  add_option( opt_bool( "mage.focus_magic_trade", options.focus_magic_trade ) );
   add_option( opt_timespan( "mirrors_of_torment_interval", options.mirrors_of_torment_interval, 1_ms, timespan_t::max() ) );
   add_option( opt_timespan( "arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
 
   player_t::create_options();
+}
+
+std::string mage_t::create_profile( save_e save_type )
+{
+  std::string profile = player_t::create_profile( save_type );
+
+  if ( save_type & SAVE_PLAYER )
+  {
+    if ( options.focus_magic_trade )
+      profile += "mage.focus_magic_trade=1\n";
+  }
+
+  return profile;
 }
 
 void mage_t::copy_from( player_t* source )
@@ -6567,11 +6583,17 @@ void mage_t::arise()
     events.enlightened = make_event<events::enlightened_event_t>( *sim, *this, first_tick );
   }
 
-  if ( talents.focus_magic->ok() && options.focus_magic_interval > 0_ms )
+  if ( talents.focus_magic->ok() )
   {
-    timespan_t period = options.focus_magic_interval;
-    period = std::max( 1_ms, rng().gauss( period, period * options.focus_magic_relstddev ) );
-    events.focus_magic = make_event<events::focus_magic_event_t>( *sim, *this, period );
+    if ( options.focus_magic_interval > 0_ms )
+    {
+      timespan_t period = options.focus_magic_interval;
+      period = std::max( 1_ms, rng().gauss( period, period * options.focus_magic_relstddev ) );
+      events.focus_magic = make_event<events::focus_magic_event_t>( *sim, *this, period );
+    }
+
+    if ( options.focus_magic_trade && !external_buffs.focus_magic )
+      player_t::buffs.focus_magic->override_buff();
   }
 
   if ( talents.from_the_ashes->ok() )
