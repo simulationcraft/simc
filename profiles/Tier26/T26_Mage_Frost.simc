@@ -58,7 +58,7 @@ actions.cds=potion,if=prev_off_gcd.icy_veins|fight_remains<30
 actions.cds+=/deathborne
 actions.cds+=/mirrors_of_torment,if=active_enemies<3&(conduit.siphoned_malice|soulbind.wasteland_propriety)
 actions.cds+=/rune_of_power,if=cooldown.icy_veins.remains>12&buff.rune_of_power.down
-actions.cds+=/icy_veins,if=buff.rune_of_power.down
+actions.cds+=/icy_veins,if=buff.rune_of_power.down&(buff.slick_ice.down|active_enemies>=2)
 actions.cds+=/time_warp,if=runeforge.temporal_warp&buff.exhaustion.up&(prev_off_gcd.icy_veins|fight_remains<30)
 actions.cds+=/use_items
 actions.cds+=/blood_fury

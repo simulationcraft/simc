@@ -589,6 +589,8 @@ public:
   }
 
   void parse_spell_data( const spell_data_t& );
+  
+  void parse_effect_data( const spelleffect_data_t& );
 
   void parse_target_str();
 
@@ -879,8 +881,6 @@ public:
   // ==========================
   // mutating virtual functions
   // ==========================
-
-  virtual void parse_effect_data( const spelleffect_data_t& );
 
   virtual void parse_options( util::string_view options_str );
 

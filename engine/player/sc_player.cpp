@@ -72,7 +72,7 @@ namespace
 
   struct wait_action_base_t : public action_t
   {
-    wait_action_base_t(player_t* player, const std::string& name) :
+    wait_action_base_t(player_t* player, util::string_view name) :
       action_t(ACTION_OTHER, name, player, spell_data_t::nil())
     {
       trigger_gcd = timespan_t::zero();
@@ -91,7 +91,7 @@ namespace
   {
     cooldown_t* wait_cd;
     action_t* a;
-    wait_for_cooldown_t(player_t* player, const std::string& cd_name);
+    wait_for_cooldown_t(player_t* player, util::string_view cd_name);
     virtual bool usable_moving() const override { return a->usable_moving(); }
     virtual timespan_t execute_time() const override;
   };
@@ -2186,39 +2186,7 @@ void player_t::init_target()
   default_target = target;
 }
 
-std::string player_t::init_use_item_actions( const std::string& append )
-{
-  std::string buffer;
-
-  for ( auto& item : items )
-  {
-    if ( item.slot == SLOT_HANDS )
-      continue;
-
-    if ( item.has_use_special_effect() )
-    {
-      buffer += "/use_item,slot=";
-      buffer += item.slot_name();
-      if ( !append.empty() )
-      {
-        buffer += append;
-      }
-    }
-  }
-  if ( items[ SLOT_HANDS ].has_use_special_effect() )
-  {
-    buffer += "/use_item,slot=";
-    buffer += items[ SLOT_HANDS ].slot_name();
-    if ( !append.empty() )
-    {
-      buffer += append;
-    }
-  }
-
-  return buffer;
-}
-
-std::vector<std::string> player_t::get_item_actions( const std::string& options )
+std::vector<std::string> player_t::get_item_actions()
 {
   std::vector<std::string> actions;
 
@@ -2229,29 +2197,11 @@ std::vector<std::string> player_t::get_item_actions( const std::string& options 
     // always preferred over an Addon.
     if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
-      std::string action_string = "use_item,slot=";
-      action_string += item.slot_name();
-      if ( !options.empty() )
-      {
-        if ( options[ 0 ] != ',' )
-        {
-          action_string += ',';
-        }
-        action_string += options;
-      }
-
-      actions.push_back( action_string );
+      actions.push_back( fmt::format( "use_item,slot={}", item.slot_name() ) );
     }
   }
 
   return actions;
-}
-
-std::string player_t::init_use_profession_actions( const std::string& /* append */ )
-{
-  std::string buffer;
-
-  return buffer;
 }
 
 std::vector<std::string> player_t::get_profession_actions()
@@ -2259,44 +2209,6 @@ std::vector<std::string> player_t::get_profession_actions()
   std::vector<std::string> actions;
 
   return actions;
-}
-
-std::string player_t::init_use_racial_actions( const std::string& append )
-{
-  std::string buffer;
-  bool race_action_found = false;
-
-  switch ( race )
-  {
-    case RACE_ORC:
-      buffer += "/blood_fury";
-      race_action_found = true;
-      break;
-    case RACE_TROLL:
-      buffer += "/berserking";
-      race_action_found = true;
-      break;
-    case RACE_BLOOD_ELF:
-      buffer += "/arcane_torrent";
-      race_action_found = true;
-      break;
-    case RACE_LIGHTFORGED_DRAENEI:
-      buffer += "/lights_judgment";
-      race_action_found = true;
-      break;
-    case RACE_VULPERA:
-      buffer += "/bag_of_tricks";
-      race_action_found = true;
-    default:
-      break;
-  }
-
-  if ( race_action_found && !append.empty() )
-  {
-    buffer += append;
-  }
-
-  return buffer;
 }
 
 std::vector<std::string> player_t::get_racial_actions()
@@ -7062,8 +6974,6 @@ T* find_vector_member( const std::vector<T*>& list, util::string_view name )
   return nullptr;
 }
 
-// player_t::find_action_priority_list( const std::string& name ) ===========
-
 action_priority_list_t* player_t::find_action_priority_list( util::string_view name ) const
 {
   return find_vector_member( action_priority_list, name );
@@ -7329,8 +7239,8 @@ int player_t::get_action_id( util::string_view name )
   return static_cast<int>(action_map.size() - 1);
 }
 
-wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const std::string& cd_name ) :
-  wait_action_base_t( player, "wait_for_" + cd_name ),
+wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, util::string_view cd_name ) :
+  wait_action_base_t( player, fmt::format("wait_for_{}", cd_name ) ),
   wait_cd( player->get_cooldown( cd_name ) ),
   a( player->find_action( cd_name ) )
 {

@@ -99,6 +99,24 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
     hasted_gcd = true;
 
     tick_may_crit = may_crit = false;
+
+    // ... this appears to be true for the base damage only,
+    // and is not automatically obtained from spell data.
+    // TODO: check if judgment double-dips when it's there on hit
+    // as well as on cast
+    affected_by.hand_of_light = true;
+    affected_by.divine_purpose = true;
+    affected_by.judgment = true;
+    affected_by.final_reckoning = true;
+    affected_by.reckoning = true;
+  }
+
+  void init() override
+  {
+    holy_power_consumer_t::init();
+    snapshot_flags |= STATE_TARGET | STATE_MUL_TA | STATE_MUL_DA;
+    update_flags &= ~STATE_TARGET;
+    update_flags |= STATE_MUL_TA | STATE_MUL_DA;
   }
 
   void impact( action_state_t* s) override

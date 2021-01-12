@@ -56,6 +56,17 @@ sequence_t::sequence_t( player_t* p, util::string_view sub_action_str ) :
   option.wait_on_ready = -1;
 }
 
+// sequence_t::init_finished ================================================
+
+void sequence_t::init_finished()
+{
+  action_t::init_finished();
+
+  // Clean-up invalid actions
+  sub_actions.erase( std::remove_if( sub_actions.begin(), sub_actions.end(), [] ( action_t* a ) { return a -> background; } ),
+                     sub_actions.end() );
+}
+
 // sequence_t::schedule_execute =============================================
 
 void sequence_t::schedule_execute( action_state_t* execute_state )
@@ -169,6 +180,15 @@ strict_sequence_t::strict_sequence_t( player_t* p, util::string_view sub_action_
     a -> sequence = true;
     sub_actions.push_back( a );
   }
+}
+
+void strict_sequence_t::init_finished()
+{
+  action_t::init_finished();
+
+  // Clean-up invalid actions
+  sub_actions.erase( std::remove_if( sub_actions.begin(), sub_actions.end(), [] ( action_t* a ) { return a -> background; } ),
+                     sub_actions.end() );
 }
 
 void strict_sequence_t::cancel()

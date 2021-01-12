@@ -44,7 +44,7 @@ heal_t::heal_t(util::string_view token,
 
   for (size_t i = 1; i <= data().effect_count(); i++)
   {
-    parse_effect_data(data().effectN(i));
+    parse_heal_effect_data(data().effectN(i));
   }
 }
 
@@ -55,10 +55,8 @@ void heal_t::activate()
     });
 }
 
-void heal_t::parse_effect_data(const spelleffect_data_t& e)
+void heal_t::parse_heal_effect_data(const spelleffect_data_t& e)
 {
-  base_t::parse_effect_data(e);
-
   if ( e.ok() )
   {
     if ( e.type() == E_HEAL_PCT )

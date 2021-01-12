@@ -2115,8 +2115,8 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
-    fire_mage_spell_t::snapshot_state( s, rt );
     debug_cast<hot_streak_state_t*>( s )->hot_streak = last_hot_streak;
+    fire_mage_spell_t::snapshot_state( s, rt );
   }
 
   double composite_crit_chance() const override
@@ -2772,8 +2772,8 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
   // channel.
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
-    arcane_mage_spell_t::snapshot_state( s, rt );
     debug_cast<am_state_t*>( s )->tick_time_multiplier = p()->buffs.clearcasting_channel->check() ? 1.0 + cc_tick_time_reduction : 1.0;
+    arcane_mage_spell_t::snapshot_state( s, rt );
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override

@@ -388,21 +388,17 @@ sim_control_t* profilesets_t::create_sim_options( const sim_control_t*          
 
 profilesets_t::profilesets_t() : m_state( STARTED ), m_mode( SEQUENTIAL ),
     m_original( nullptr ), m_insert_index( -1 ),
-    m_work_index( 0 )
-#ifndef SC_NO_THREADING
-    ,
+    m_work_index( 0 ),
     m_control_lock( m_mutex, std::defer_lock ),
     m_max_workers( 0 ), 
     m_work_lock( m_work_mutex, std::defer_lock ),
     m_total_elapsed()
-#endif
 { 
 
 }
 
 profilesets_t::~profilesets_t()
 {
-#ifndef SC_NO_THREADING
   range::for_each( m_thread, []( std::thread& thread ) {
     if ( thread.joinable() )
     {
@@ -411,7 +407,6 @@ profilesets_t::~profilesets_t()
   } );
 
   range::for_each( m_current_work, []( std::unique_ptr<worker_t>& worker ) { worker -> thread().join(); } );
-#endif
 }
 
 profile_set_t::profile_set_t( const std::string& name, sim_control_t* opts, bool has_output ) :
@@ -1141,6 +1136,41 @@ bool profilesets_t::generate_chart( const sim_t& sim, std::ostream& out ) const
   return true;
 }
 
+size_t profilesets_t::n_profilesets() const
+{
+  return m_profilesets.size();
+}
+
+const profilesets_t::profileset_vector_t& profilesets_t::profilesets() const
+{
+  return m_profilesets;
+}
+
+bool profilesets_t::is_initializing() const
+{
+  return m_state == INITIALIZING;
+}
+
+bool profilesets_t::is_running() const
+{
+  return m_state == RUNNING;
+}
+
+bool profilesets_t::is_done() const
+{
+  return m_state == DONE;
+}
+
+bool profilesets_t::is_sequential() const
+{
+  return m_mode == SEQUENTIAL;
+}
+
+bool profilesets_t::is_parallel() const
+{
+  return m_mode == PARALLEL;
+}
+
 void create_options( sim_t* sim )
 {
   sim -> add_option( opt_map_list( "profileset.", sim -> profileset_map ) );
@@ -1422,16 +1452,18 @@ sim_control_t* filter_control( const sim_control_t* control )
 
 namespace profileset
 {
-profile_set_t::~profile_set_t() {}
+profilesets_t::profilesets_t() {}
+profilesets_t::~profilesets_t() {}
 void create_options( sim_t* ) {}
 sim_control_t* filter_control( const sim_control_t* ) { return nullptr; }
 void profilesets_t::initialize( sim_t* ) {}
 std::string profilesets_t::current_profileset_name() { return "DUMMY"; }
 void profilesets_t::cancel() {}
 bool profilesets_t::iterate( sim_t*  ) { return true ;}
-void profilesets_t::output_json( const sim_t&, js::JsonOutput& ) const {}
 void profilesets_t::output_html( const sim_t&, std::ostream& ) const {}
 void profilesets_t::output_text( const sim_t&, std::ostream& ) const {}
+size_t profilesets_t::n_profilesets() const { return 0; }
+bool profilesets_t::is_running() const { return false; }
 }
 
 #endif

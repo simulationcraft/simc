@@ -1485,6 +1485,7 @@ class SpellDataGenerator(DataGenerator):
           ( 324165, 0 ), # Night Fae's Death's Due Strength Buff
           ( 220890, 5 ), # Dancing Rune Weapon's RP generation spell from Heart Strike
           ( 334895, 5 ), # Frenzied Monstrosity Buff that appears on the main ghoul pet (different from the player buff)
+          ( 193486, 0 ), # Runic Empowerment energize spell
         ),
 
         # Shaman:

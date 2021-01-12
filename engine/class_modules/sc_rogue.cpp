@@ -1652,19 +1652,13 @@ public:
     trigger_relentless_strikes( ab::execute_state );
     trigger_elaborate_planning( ab::execute_state );
     trigger_alacrity( ab::execute_state );
+    trigger_deepening_shadows( ab::execute_state );
 
+    // Trigger the 1ms delayed breaking of all stealth buffs
     if ( ab::harmful && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD ) )
     {
-      ab::player->buffs.shadowmeld->expire();
-
-      // Check stealthed again after shadowmeld is popped. If we're still stealthed, trigger subterfuge
-      if ( p()->talent.subterfuge->ok() && !p()->buffs.subterfuge->check() && p()->stealthed( STEALTH_BASIC ) )
-        p()->buffs.subterfuge->trigger();
-      else
-        p()->break_stealth();
+      p()->break_stealth();
     }
-
-    trigger_deepening_shadows( ab::execute_state );
 
     // 11/28/2020 - Flagellation does not remove the buff in-game, despite being in the whitelist
     if ( affected_by.symbols_of_death_autocrit && p()->buffs.symbols_of_death_autocrit->check() && ab::data().id() != 323654 )
@@ -1674,11 +1668,15 @@ public:
     }
 
     if ( affected_by.blindside )
+    {
       p()->buffs.blindside->expire();
+    }
 
     // 12/04/2020 - Hotfix notes this is no longer consumed "while under the effects Stealth, Vanish, Subterfuge, Shadow Dance, and Shadowmeld"
     if ( affected_by.sepsis && !p()->stealthed( STEALTH_ALL & ~STEALTH_SEPSIS ) )
+    {
       p()->buffs.sepsis->decrement();
+    }
   }
 
   void schedule_travel( action_state_t* state ) override
@@ -4943,12 +4941,6 @@ struct subterfuge_t : public buff_t
     buff_t( r, "subterfuge", r -> find_spell( 115192 ) ),
     rogue( r )
   { }
-
-  void execute( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::execute( stacks, value, duration );
-    rogue->break_stealth();
-  }
 };
 
 struct soothing_darkness_t : public actions::rogue_heal_t
@@ -6629,7 +6621,7 @@ void rogue_t::init_action_list()
     build->add_action( this, "Shiv", "if=runeforge.tiny_toxic_blade" );
     build->add_action( "echoing_reprimand" );
     build->add_action( "serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75" );
-    build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(energy<45|talent.quick_draw.enabled)", "Use Pistol Shot with Opportunity if below 45 energy, or when using Quick Draw" );
+    build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(energy<45|combo_points.deficit<=1+buff.broadside.up|talent.quick_draw.enabled)", "Use Pistol Shot with Opportunity if below 45 energy, when it will exactly cap CP, or when using Quick Draw" );
     build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(buff.greenskins_wickers.up|buff.concealed_blunderbuss.up)" );
     build->add_action( this, "Sinister Strike" );
     build->add_action( this, "Gouge", "if=talent.dirty_tricks.enabled&combo_points.deficit>=1+buff.broadside.up" );
@@ -8178,7 +8170,18 @@ void rogue_t::activate()
 
 void rogue_t::break_stealth()
 {
+  // Trigger Subterfuge
+  if ( talent.subterfuge->ok() && !buffs.subterfuge->check() && stealthed( STEALTH_BASIC ) )
+  {
+    buffs.subterfuge->trigger();
+  }
+
   // Expiry delayed by 1ms in order to have it processed on the next tick. This seems to be what the server does.
+  if ( player_t::buffs.shadowmeld->check() )
+  {
+    player_t::buffs.shadowmeld->expire( timespan_t::from_millis( 1 ) );
+  }
+
   if ( buffs.stealth->check() )
   {
     buffs.stealth->expire( timespan_t::from_millis( 1 ) );
@@ -8506,6 +8509,18 @@ public:
 
   void register_hotfixes() const override
   {
+    
+    hotfix::register_effect( "Rogue", "2021-01-10", "Assassination Tuning Hotfix (Direct)", 179721 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 44 )
+      .verification_value( 33.3 );
+
+    hotfix::register_effect( "Rogue", "2021-01-10", "Assassination Tuning Hotfix (Periodic)", 191052 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 44 )
+      .verification_value( 33 );
   }
 
   void init( player_t* ) const override {}

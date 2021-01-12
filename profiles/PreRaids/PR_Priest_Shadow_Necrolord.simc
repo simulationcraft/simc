@@ -5,7 +5,7 @@ level=60
 race=mechagnome
 role=spell
 position=ranged_back
-talents=1010332
+talents=1010132
 covenant=necrolord
 soulbind=emeni,lead_by_example/dissonant_echoes:4
 
@@ -71,8 +71,8 @@ actions.dmg_trinkets+=/use_item,name=sunblood_amethyst
 actions.dmg_trinkets+=/use_item,name=glyph_of_assimilation
 actions.dmg_trinkets+=/use_item,name=dreadfire_vessel
 
-# Use Void Eruption on cooldown pooling at least 40 insanity but not if you will overcap insanity in VF. Make sure shadowfiend/mindbender is on cooldown before VE.
-actions.main=void_eruption,if=variable.pool_for_cds&insanity>=40&(insanity<=85|talent.searing_nightmare.enabled&variable.searing_nightmare_cutoff)&!cooldown.fiend.up
+# Use Void Eruption on cooldown pooling at least 40 insanity but not if you will overcap insanity in VF. Make sure shadowfiend/mindbender and Mind Blast is on cooldown before VE.
+actions.main=void_eruption,if=variable.pool_for_cds&insanity>=40&(insanity<=85|talent.searing_nightmare.enabled&variable.searing_nightmare_cutoff)&!cooldown.fiend.up&(!cooldown.mind_blast.up|spell_targets.mind_sear>2)
 # Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active.
 actions.main+=/shadow_word_pain,if=buff.fae_guardians.up&!debuff.wrathful_faerie.up
 actions.main+=/call_action_list,name=cds
@@ -83,7 +83,7 @@ actions.main+=/damnation,target_if=!variable.all_dots_up
 # Use Void Bolt at higher priority with Hungering Void up to 4 targets, or other talents on ST.
 actions.main+=/void_bolt,if=insanity<=85&talent.hungering_void.enabled&talent.searing_nightmare.enabled&spell_targets.mind_sear<=6|((talent.hungering_void.enabled&!talent.searing_nightmare.enabled)|spell_targets.mind_sear=1)
 # Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is talented and will hit enough targets.
-actions.main+=/devouring_plague,target_if=(refreshable|insanity>75)&(!variable.pool_for_cds|insanity>=85)&(!talent.searing_nightmare.enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))
+actions.main+=/devouring_plague,if=(refreshable|insanity>75)&(!variable.pool_for_cds|insanity>=85)&(!talent.searing_nightmare.enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))
 # Use VB on CD if you don't need to cast Devouring Plague, and there are less than 4 targets out (5 with conduit).
 actions.main+=/void_bolt,if=spell_targets.mind_sear<(4+conduit.dissonant_echoes.enabled)&insanity<=85&talent.searing_nightmare.enabled|!talent.searing_nightmare.enabled
 # Use Shadow Word: Death if the target is about to die or you have Shadowflame Prism equipped with Mindbender or Shadowfiend active.
@@ -130,28 +130,29 @@ actions.trinkets+=/call_action_list,name=dmg_trinkets,if=(!talent.hungering_void
 # Default fallback for usable items: Use on cooldown in order by trinket slot.
 actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10
 
-head=depraved_physicians_mask,id=178759,bonus_id=6807/1498/6646
+head=cowl_of_the_devoted_general,id=178860,bonus_id=6807/1498/6646
 neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
 shoulders=reanimators_mantle,id=178740,bonus_id=6807/1498/6646
-back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
+back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498/6646,enchant=fortified_speed
 chest=sinister_requiem_vestments,id=180098,bonus_id=6807/1498/6646,enchant=eternal_insight
-wrists=grimveiled_bracers,id=173249,bonus_id=6647/6649/6716/6983/1487,enchant=eternal_intellect
+wrists=deathshackle_wristwraps,id=178704,bonus_id=6807/1498/6646,enchant=eternal_intellect
 hands=tricksprite_gloves,id=178705,bonus_id=6807/1498/6646
 waist=kintaras_baleful_cord,id=180109,bonus_id=6807/1498/6646
-legs=muehzalas_hexthread_sarong,id=179351,bonus_id=6807/1498/6646
+legs=grimveiled_pants,id=173246,bonus_id=6648/6649/6716/7162/1487
 feet=slippers_of_leavened_station,id=178831,bonus_id=6807/1498/6646
-finger1=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+finger1=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
 finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 trinket1=empyreal_ordnance,id=180117,bonus_id=6807/1498/6646
 trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
-main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=sinful_revelation
+main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=celestial_guidance
 
 # Gear Summary
 # gear_ilvl=184.40
-# gear_stamina=857
-# gear_intellect=725
+# gear_stamina=881
+# gear_intellect=726
 # gear_crit_rating=263
-# gear_haste_rating=813
-# gear_mastery_rating=340
-# gear_versatility_rating=32
+# gear_haste_rating=719
+# gear_mastery_rating=411
+# gear_versatility_rating=57
+# gear_speed_rating=30
 # gear_armor=292

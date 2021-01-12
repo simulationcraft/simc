@@ -1200,19 +1200,23 @@ void infinitely_divisible_ooze( special_effect_t& effect )
  * When this trinket is used, it triggers one of the effects listed above, following the priority list below.
  * - remove CC from self: Always triggers if you are under a hard CC mechanic, does not trigger if the CC mechanic
  *                        does not prevent the player from acting (e.g., it won't trigger while rooted).
- * - heal spell: Triggers on self or a nearby target with less than 30% health remaining.
+ * - heal spell: Triggers on self or a nearby target with less than 30% health remaining. This always crits.
  * - illusion: ??? (not tested yet, priority unknown)
- * - execute damage: Deal damage to the target if it is an enemy with less than 20% health remaining (the 20% is not in spell data).
- * - healer mana: triggers on a nearby healer with less than 20% mana??? (not tested yet, priority unknown)
+ * - execute damage: Deal damage to the target if it is an enemy with less than 20% health remaining.
+ *                   The 20% is not in spell data and this also always crits.
+ * - healer mana: triggers on a nearby healer with less than 20% mana. Higher priority than secondary
+ *                stat buffs, but priority relative to other effects not tested.
  * - secondary stat buffs:
- *   - If a Bloodlust buff is up, the stat buff will last 25 seconds instead of the default 20 seconds.
- *     TODO: Look for other buffs that also cause this bonus duration to occur. The spell data still lists
- *     a 30 second buff duration, so it is possible that there are other conditions that give 30 seconds.
  *   - The secondary stat granted appears to be randomly selected from stat from the player's two highest
  *     secondary stats in terms of rating. When selecting the largest stats, the priority of equal secondary
  *     stats seems to be Vers > Mastery > Haste > Crit. There is a bug where the second stat selected must
  *     have a lower rating than the first stat that was selected. If this is not possible, then the second
  *     stat will be empty and the trinket will have a chance to do nothing when used.
+ *   - If a Bloodlust buff is up, the stat buff will last 25 seconds instead of the default 20 seconds.
+ *     Additionally, instead of randomly selecting from the player's two highest stats it will always
+ *     grant the highest stat.
+ *     TODO: Look for other buffs that also cause a bonus duration to occur. The spell data still lists
+ *     a 30 second buff duration, so it is possible that there are other conditions that give 30 seconds.
  */
 void inscrutable_quantum_device ( special_effect_t& effect )
 {
@@ -1226,6 +1230,7 @@ void inscrutable_quantum_device ( special_effect_t& effect )
     {
       cooldown->duration = 0_ms;
     }
+
     double composite_crit_chance() const override
     {
       double cc = proc_spell_t::composite_crit_chance() + 1;
@@ -1293,18 +1298,31 @@ void inscrutable_quantum_device ( special_effect_t& effect )
       {
         stat_e s1 = STAT_NONE;
         stat_e s2 = STAT_NONE;
+        buff_t* buff;
+        timespan_t duration_adjustment;
+
         s1 = util::highest_stat( player, ratings );
-        for ( auto s : ratings )
+
+        if ( is_buff_extended() )
         {
-          auto v = player->get_stat_value( s );
-          if ( ( s2 == STAT_NONE || v > player->get_stat_value( s2 ) ) &&
-               ( ( player->bugs && v < player->get_stat_value( s1 ) ) || ( !player->bugs && s != s1 ) ) )
-            s2 = s;
+          buff = buffs[s1];
+          duration_adjustment = 5_s;
+        }
+        else
+        {
+          for ( auto s : ratings )
+          {
+            auto v = player->get_stat_value( s );
+            if ( ( s2 == STAT_NONE || v > player->get_stat_value( s2 ) ) &&
+                 ( ( player->bugs && v < player->get_stat_value( s1 ) ) || ( !player->bugs && s != s1 ) ) )
+              s2 = s;
+          }
+          buff = rng().roll( 0.5 ) ? buffs[ s1 ] : buffs[ s2 ];
+          duration_adjustment = 10_s;
         }
 
-        buff_t* buff = rng().roll( 0.5 ) ? buffs[ s1 ] : buffs[ s2 ];
         if ( buff )
-          buff->trigger( buff->buff_duration() - ( is_buff_extended() ? 5_s : 10_s ) );
+          buff->trigger( buff->buff_duration() - duration_adjustment );
       }
     }
   };
@@ -1452,7 +1470,7 @@ void decanter_of_animacharged_winds( special_effect_t& effect )
     splash_of_animacharged_wind_t( const special_effect_t& e ) :
       shadowlands_aoe_proc_t( e, "splash_of_animacharged_wind", e.trigger(), true )
     {
-      max_scaling_targets = e.driver()->effectN( 2 ).base_value() + 1;
+      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() + 1 );
     }
   };
 
@@ -1471,7 +1489,7 @@ void bloodspattered_scale( special_effect_t& effect )
     blood_barrier_t( const special_effect_t& e, buff_t* absorb_ ) :
       shadowlands_aoe_proc_t( e, "blood_barrier", e.trigger(), true ), absorb( absorb_ )
     {
-      max_scaling_targets = e.driver()->effectN( 2 ).base_value() + 1;
+      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() + 1 );
     }
 
     void execute() override
@@ -1621,6 +1639,12 @@ void hymnal_of_the_path( special_effect_t& effect )
   new hymnal_of_the_path_cb_t( effect.player, effect );
 }
 
+void overwhelming_power_crystal( special_effect_t& effect)
+{
+  // automagic handles almost everything, just need to disable the damage action
+  // so the automagic doesn't incorrectly apply it to the target
+  effect.disable_action();
+}
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -1883,6 +1907,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 332300, items::mistcaller_ocarina );
     unique_gear::register_special_effect( 332301, items::mistcaller_ocarina );
     unique_gear::register_special_effect( 336841, items::flame_of_battle );
+    unique_gear::register_special_effect( 329831, items::overwhelming_power_crystal );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
