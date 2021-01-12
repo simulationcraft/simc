@@ -311,7 +311,7 @@ void unholy( player_t* p )
   default_->add_action( "variable,name=pooling_runes,value=talent.soul_reaper&rune<2&target.time_to_pct_35<5" );
   default_->add_action( "variable,name=st_planning,value=active_enemies=1&(!raid_event.adds.exists|raid_event.adds.in>15)" );
   default_->add_action( "variable,name=soul_reaper_priority,value=cooldown.soul_reaper.remains<gcd&target.time_to_pct_35<5&talent.soul_reaper" );
-  default_->add_action( "variable,name=sync_with_cooldowns,value=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&pet.apoc_ghoul.active|buff.dark_trasnformation.active" );
+  default_->add_action( "variable,name=sync_with_cooldowns,value=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&pet.apoc_ghoul.active|buff.dark_trasnformation.up" );
   default_->add_action( "arcane_torrent,if=runic_power.deficit>65&(pet.gargoyle.active|!talent.summon_gargoyle.enabled)&rune.deficit>=5", "Racials" );
   default_->add_action( "blood_fury,if=variable.sync_with_cooldowns|target.time_to_die<=buff.blood_fury.duration" );
   default_->add_action( "berserking,if=variable.sync_with_cooldowns|target.time_to_die<=buff.berserking.duration" );
