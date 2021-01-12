@@ -742,6 +742,32 @@ struct unfurling_darkness_t final : public priest_spell_t
 // ==========================================================================
 // Vampiric Touch
 // ==========================================================================
+struct vampiric_touch_heal_t final : public priest_heal_t
+{
+  vampiric_touch_heal_t( priest_t& p ) : priest_heal_t( "vampiric_touch_heal", p, p.dot_spells.vampiric_touch )
+  {
+    background         = true;
+    may_crit           = false;
+    may_miss           = false;
+    base_dd_multiplier = 1.0;
+
+    // Turn off Insanity gen from hit action
+    energize_type     = action_energize::NONE;  // no insanity gain
+    energize_amount   = 0;
+    energize_resource = RESOURCE_NONE;
+
+    // Turn off all damage parts of the spell
+    spell_power_mod.direct = spell_power_mod.tick = base_td_multiplier = 0;
+    dot_duration                                                       = timespan_t::from_seconds( 0 );
+  }
+
+  void trigger( double original_amount )
+  {
+    base_dd_min = base_dd_max = original_amount * data().effectN( 2 ).m_value();
+    execute();
+  }
+};
+
 struct vampiric_touch_t final : public priest_spell_t
 {
   propagate_const<shadow_word_pain_t*> child_swp;
@@ -776,16 +802,8 @@ struct vampiric_touch_t final : public priest_spell_t
     parse_options( options_str );
   }
 
-  void trigger_heal( action_state_t* s )
-  {
-    double amount_to_heal = s->result_amount * data().effectN( 2 ).m_value();
-    priest().resource_gain( RESOURCE_HEALTH, amount_to_heal, priest().gains.vampiric_touch_health, this );
-  }
-
   void impact( action_state_t* s ) override
   {
-    trigger_heal( s );
-
     if ( priest().buffs.unfurling_darkness->check() )
     {
       child_ud->target = s->target;
@@ -826,13 +844,40 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    trigger_heal( d->state );
+    if ( result_is_hit( d->state->result ) )
+    {
+      priest().background_actions.vampiric_touch_heal->trigger( d->state->result_amount );
+    }
   }
 };
 
 // ==========================================================================
 // Devouring Plague
 // ==========================================================================
+struct devouring_plague_heal_t final : public priest_heal_t
+{
+  devouring_plague_heal_t( priest_t& p ) : priest_heal_t( "devouring_plague_heal", p, p.dot_spells.devouring_plague )
+  {
+    background         = true;
+    may_crit           = false;
+    may_miss           = false;
+    base_dd_multiplier = 1.0;
+
+    // Turn off resource consumption
+    base_costs[ RESOURCE_INSANITY ] = 0;
+
+    // Turn off all damage parts of the spell
+    spell_power_mod.direct = spell_power_mod.tick = base_td_multiplier = 0;
+    dot_duration                                                       = timespan_t::from_seconds( 0 );
+  }
+
+  void trigger( double original_amount )
+  {
+    base_dd_min = base_dd_max = original_amount * data().effectN( 2 ).m_value();
+    execute();
+  }
+};
+
 struct devouring_plague_dot_state_t : public action_state_t
 {
   double rolling_multiplier;
@@ -916,16 +961,8 @@ struct devouring_plague_t final : public priest_spell_t
     return priest_spell_t::cost();
   }
 
-  void trigger_heal( action_state_t* s )
-  {
-    double amount_to_heal = s->result_amount * data().effectN( 2 ).m_value();
-    priest().resource_gain( RESOURCE_HEALTH, amount_to_heal, priest().gains.devouring_plague_health, this );
-  }
-
   void impact( action_state_t* s ) override
   {
-    trigger_heal( s );
-
     priest_spell_t::impact( s );
 
     // Damnation does not trigger a SA - 2020-08-08
@@ -933,13 +970,21 @@ struct devouring_plague_t final : public priest_spell_t
     {
       priest().trigger_shadowy_apparitions( s );
     }
+
+    if ( result_is_hit( s->result ) )
+    {
+      priest().background_actions.devouring_plague_heal->trigger( s->result_amount );
+    }
   }
 
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
 
-    trigger_heal( d->state );
+    if ( result_is_hit( d->state->result ) )
+    {
+      priest().background_actions.devouring_plague_heal->trigger( d->state->result_amount );
+    }
   }
 
   timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
@@ -1957,6 +2002,16 @@ void priest_t::init_background_actions_shadow()
   if ( legendary.eternal_call_to_the_void->ok() )
   {
     background_actions.eternal_call_to_the_void = new actions::spells::eternal_call_to_the_void_t( *this );
+  }
+
+  if ( dot_spells.vampiric_touch->ok() )
+  {
+    background_actions.vampiric_touch_heal = new actions::spells::vampiric_touch_heal_t( *this );
+  }
+
+  if ( dot_spells.devouring_plague->ok() )
+  {
+    background_actions.devouring_plague_heal = new actions::spells::devouring_plague_heal_t( *this );
   }
 }
 
