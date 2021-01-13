@@ -70,35 +70,6 @@
 namespace
 {
 
-  // Handy Actions ============================================================
-
-  struct wait_action_base_t : public action_t
-  {
-    wait_action_base_t(player_t* player, util::string_view name) :
-      action_t(ACTION_OTHER, name, player, spell_data_t::nil())
-    {
-      trigger_gcd = timespan_t::zero();
-      interrupt_auto_attack = false;
-    }
-
-    void execute() override
-    {
-      player->iteration_waiting_time += time_to_execute;
-    }
-  };
-
-  // Wait For Cooldown Action =================================================
-
-  struct wait_for_cooldown_t : public wait_action_base_t
-  {
-    cooldown_t* wait_cd;
-    action_t* a;
-    wait_for_cooldown_t(player_t* player, util::string_view cd_name);
-    bool usable_moving() const override { return a->usable_moving(); }
-    timespan_t execute_time() const override;
-  };
-
-
 bool prune_specialized_execute_actions_internal( std::vector<action_t*>& apl, execute_type e,
   std::vector<std::vector<action_t*>*>& visited )
 {
@@ -7243,22 +7214,6 @@ int player_t::get_action_id( util::string_view name )
   return static_cast<int>(action_map.size() - 1);
 }
 
-wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, util::string_view cd_name ) :
-  wait_action_base_t( player, fmt::format("wait_for_{}", cd_name ) ),
-  wait_cd( player->get_cooldown( cd_name ) ),
-  a( player->find_action( cd_name ) )
-{
-  assert( a );
-  interrupt_auto_attack = false;
-  quiet                 = true;
-}
-
-timespan_t wait_for_cooldown_t::execute_time() const
-{
-  assert( wait_cd->duration > timespan_t::zero() );
-  return wait_cd->remains();
-}
-
 namespace
 {  // ANONYMOUS
 
@@ -7861,20 +7816,77 @@ struct restore_mana_t : public action_t
   }
 };
 
+// Base Wait Action =========================================================
+
+struct wait_action_base_t : public action_t
+{
+  wait_action_base_t(player_t* player, util::string_view name) :
+    action_t(ACTION_OTHER, name, player, spell_data_t::nil())
+  {
+    trigger_gcd = timespan_t::zero();
+    interrupt_auto_attack = false;
+    quiet = true;
+  }
+
+  virtual void execute() override
+  {
+    player->iteration_waiting_time += time_to_execute;
+  }
+};
+
+// Wait For Cooldown Action =================================================
+
+struct wait_for_cooldown_t : public wait_action_base_t
+{
+  cooldown_t* wait_cd;
+  action_t* a;
+
+  wait_for_cooldown_t( player_t* player, util::string_view options_str ) :
+    wait_action_base_t( player, "wait_for_cooldown" )
+  {
+    std::string cd_name;
+    add_option( opt_string( "name", cd_name ) );
+    parse_options( options_str );
+
+    wait_cd = player->get_cooldown( cd_name );
+    a = player->find_action( cd_name );
+  }
+
+  bool usable_moving() const override
+  {
+    return !a || a->usable_moving();
+  }
+
+  timespan_t execute_time() const override
+  {
+    // Ensures that the cooldown exists and has been given a default duration
+    assert( wait_cd->duration > timespan_t::zero() );
+    return wait_cd->remains();
+  }
+
+  bool ready() override
+  {
+    // Don't attempt to wait for a cooldown that is already up
+    if ( wait_cd -> is_ready() )
+      return false;
+    return wait_action_base_t::ready();
+  }
+};
+
+
 // Wait Fixed Action ========================================================
 
 struct wait_fixed_t : public wait_action_base_t
 {
   std::unique_ptr<expr_t> time_expr;
 
-  wait_fixed_t( player_t* player, util::string_view options_str ) : wait_action_base_t( player, "wait" ), time_expr()
+  wait_fixed_t( player_t* player, util::string_view options_str ) :
+    wait_action_base_t( player, "wait" ), time_expr()
   {
     std::string sec_str = "1.0";
 
     add_option( opt_string( "sec", sec_str ) );
     parse_options( options_str );
-    interrupt_auto_attack = false;  // Probably shouldn't interrupt autoattacks while waiting.
-    quiet                 = true;
 
     time_expr = expr_t::parse( this, sec_str );
     if ( !time_expr )
@@ -7898,10 +7910,9 @@ struct wait_fixed_t : public wait_action_base_t
 // wait until actions *before* this wait are ready.
 struct wait_until_ready_t : public wait_fixed_t
 {
-  wait_until_ready_t( player_t* player, util::string_view options_str ) : wait_fixed_t( player, options_str )
+  wait_until_ready_t( player_t* player, util::string_view options_str ) :
+    wait_fixed_t( player, options_str )
   {
-    interrupt_auto_attack = false;
-    quiet                 = true;
   }
 
   timespan_t execute_time() const override
