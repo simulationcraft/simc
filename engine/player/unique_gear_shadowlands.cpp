@@ -841,8 +841,8 @@ void gluttonous_spike( special_effect_t& effect )
     }
   };
 
-  effect.execute_action = create_proc_action<gluttonous_spike_t>( "gluttonous_spike", effect );
   create_proc_action<gluttonous_spike_pulse_t>( "gluttonous_spike_pulse", effect );
+  effect.execute_action = create_proc_action<gluttonous_spike_t>( "gluttonous_spike", effect );
   new dbc_proc_callback_t( effect.player, effect );
 }
 
