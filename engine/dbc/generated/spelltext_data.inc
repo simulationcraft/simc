@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.37176
-static const std::array<spelltext_data_t, 15094> __spelltext_data { {
+static const std::array<spelltext_data_t, 15095> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14032,6 +14032,7 @@ static const std::array<spelltext_data_t, 15094> __spelltext_data { {
   { 336165, "Shadow Word: Death consumes $s1 sec of Shadow Word: Pain and Vampiric Touch, instantly dealing that damage to the target and generating up to ${2*$336167s2/10} Insanity.", 0, 0 },
   { 336167, "$@spelldesc336165", 0, 0 },
   { 336182, "Cause the target to take up to ${$s1*31.17188} Shadow damage over $d. The damage of Growing Despair increases over the duration. ", "Taking up to ${$s1*31.17188} Shadow damage.", 0 },
+  { 336183, "$@spelldesc336182", 0, 0 },
   { 336184, "You have a chance to obtain an assortment of flavorful herbs and beverages when you kill an enemy that yields experience or honor.", 0, 0 },
   { 336191, "$?s202168[Impending Victory][Victory Rush] heals you for |cFFFFFFFF$<val>%|r of the damage it dealt over $336642d.", 0, 0 },
   { 336214, "Mind Flay and Mind Sear have a chance to spawn a Void Tendril or Void Lasher that channels at your target for $336216d, generating $s1 insanity every $344754t1 sec.", 0, 0 },

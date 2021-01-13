@@ -1270,6 +1270,8 @@ class SpellDataGenerator(DataGenerator):
          330132, 332077, 332078, 332079,
          # Skulking Predator leap/damage
          345020,
+         # Tablet of Despair
+         336183,
         ),
 
         # Warrior:

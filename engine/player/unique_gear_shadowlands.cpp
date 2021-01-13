@@ -1643,6 +1643,128 @@ void overwhelming_power_crystal( special_effect_t& effect)
   // so the automagic doesn't incorrectly apply it to the target
   effect.disable_action();
 }
+
+void overflowing_anima_cage( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "anima_infusion" );
+  if ( !buff )
+  {
+    auto val = effect.player->find_spell( 343387 )->effectN( 1 ).average( effect.item );
+    // The actual buff is Anima Infusion (id=343386), but the spell data there is not needed.
+    buff = make_buff<stat_buff_t>( effect.player, "anima_infusion", effect.player->find_spell( 343385 ) )
+             ->add_stat( STAT_CRIT_RATING, val )
+             ->set_cooldown( 0_ms );
+  }
+
+  effect.custom_buff = buff;
+}
+
+void sunblood_amethyst( special_effect_t& effect )
+{
+  struct anima_font_proc_t : public proc_spell_t
+  {
+    buff_t* buff;
+
+    anima_font_proc_t( const special_effect_t& e )
+      : proc_spell_t( "anima_font", e.player, e.driver()->effectN( 2 ).trigger() )
+    {
+      // id:344414 Projectile with travel speed data (effect->driver->eff#2->trigger)
+      // id:343394 'Font of power' spell with duration data (projectile->eff#1->trigger)
+      // id:343396 Actual buff is id:343396
+      // id:343397 Coefficient data
+      buff = make_buff<stat_buff_t>( e.player, "anima_font", e.player->find_spell( 343396 ) )
+        ->add_stat( STAT_INTELLECT, e.player->find_spell( 343397 )->effectN( 1 ).average( e.item ) )
+        ->set_duration( data().effectN( 1 ).trigger()->duration() );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      proc_spell_t::impact( s );
+
+      // TODO: add way to handle staying within range of the anima font to gain the int buff
+      buff->trigger();
+    }
+  };
+
+  struct tear_anima_proc_t : public proc_spell_t
+  {
+    action_t* font;
+
+    tear_anima_proc_t( const special_effect_t& e )
+      : proc_spell_t( e ), font( create_proc_action<anima_font_proc_t>( "anima_font", e ) )
+    {}
+
+    void impact( action_state_t* s ) override
+    {
+      proc_spell_t::impact( s );
+
+      // Assumption is that the 'tear' travels back TO player FROM target, which for sim purposes is treated as a normal
+      // projectile FROM player TO target
+      font->set_target( s->target );
+      font->schedule_execute();
+    }
+  };
+
+  effect.trigger_spell_id = effect.spell_id;
+  effect.execute_action   = create_proc_action<tear_anima_proc_t>( "tear_anima", effect );
+}
+
+void flame_of_battle( special_effect_t& effect )
+{
+  debug_cast<stat_buff_t*>( effect.create_buff() )->stats[ 0 ].amount =
+      effect.player->find_spell( 346746 )->effectN( 1 ).average( effect.item );
+}
+
+// id=336182 driver, effect#2 has multiplier
+// id=336183 damage spell, effect#1 value seems to be overridden by driver effect#1 value
+
+void tablet_of_despair( special_effect_t& effect )
+{
+  struct burst_of_despair_t : public proc_spell_t
+  {
+    // each tick has a multiplier of 1.5^(tick #) with tick on application being tick #1
+    double tick_factor;
+    int tick_number;
+
+    burst_of_despair_t( const special_effect_t& e )
+      : proc_spell_t( "burst_of_despair", e.player, e.player->find_spell( 336183 ) ),
+        tick_factor( e.driver()->effectN( 2 ).base_value() ),
+        tick_number( 0 )
+    {
+      base_dd_min = base_dd_max = e.trigger()->effectN( 1 ).average( e.item );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double am = proc_spell_t::composite_da_multiplier( s );
+
+      am *= std::pow( tick_factor, tick_number + 1 );
+
+      return am;
+    }
+  };
+
+  struct growing_despair_t : public proc_spell_t
+  {
+    burst_of_despair_t* burst;
+
+    growing_despair_t( const special_effect_t& e ) : proc_spell_t( e ), burst( nullptr )
+    {
+      tick_action = create_proc_action<burst_of_despair_t>( "burst_of_despair", e );
+      burst = debug_cast<burst_of_despair_t*>( tick_action );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      burst->tick_number = d->current_tick;
+
+      proc_spell_t::tick( d );
+    }
+  };
+
+  effect.execute_action = create_proc_action<growing_despair_t>( "growing_despair", effect );
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -1771,77 +1893,6 @@ void vitality_sacrifice( special_effect_t& /* effect */ )
 {
 
 }
-
-void overflowing_anima_cage( special_effect_t& effect )
-{
-  auto buff = buff_t::find( effect.player, "anima_infusion" );
-  if ( !buff )
-  {
-    auto val = effect.player->find_spell( 343387 )->effectN( 1 ).average( effect.item );
-    // The actual buff is Anima Infusion (id=343386), but the spell data there is not needed.
-    buff = make_buff<stat_buff_t>( effect.player, "anima_infusion", effect.player->find_spell( 343385 ) )
-             ->add_stat( STAT_CRIT_RATING, val )
-             ->set_cooldown( 0_ms );
-  }
-
-  effect.custom_buff = buff;
-}
-
-void sunblood_amethyst( special_effect_t& effect )
-{
-  struct anima_font_proc_t : public proc_spell_t
-  {
-    buff_t* buff;
-
-    anima_font_proc_t( const special_effect_t& e )
-      : proc_spell_t( "anima_font", e.player, e.driver()->effectN( 2 ).trigger() )
-    {
-      // id:344414 Projectile with travel speed data (effect->driver->eff#2->trigger)
-      // id:343394 'Font of power' spell with duration data (projectile->eff#1->trigger)
-      // id:343396 Actual buff is id:343396
-      // id:343397 Coefficient data
-      buff = make_buff<stat_buff_t>( e.player, "anima_font", e.player->find_spell( 343396 ) )
-        ->add_stat( STAT_INTELLECT, e.player->find_spell( 343397 )->effectN( 1 ).average( e.item ) )
-        ->set_duration( data().effectN( 1 ).trigger()->duration() );
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      proc_spell_t::impact( s );
-
-      // TODO: add way to handle staying within range of the anima font to gain the int buff
-      buff->trigger();
-    }
-  };
-
-  struct tear_anima_proc_t : public proc_spell_t
-  {
-    action_t* font;
-
-    tear_anima_proc_t( const special_effect_t& e )
-      : proc_spell_t( e ), font( create_proc_action<anima_font_proc_t>( "anima_font", e ) )
-    {}
-
-    void impact( action_state_t* s ) override
-    {
-      proc_spell_t::impact( s );
-
-      // Assumption is that the 'tear' travels back TO player FROM target, which for sim purposes is treated as a normal
-      // projectile FROM player TO target
-      font->set_target( s->target );
-      font->schedule_execute();
-    }
-  };
-
-  effect.trigger_spell_id = effect.spell_id;
-  effect.execute_action   = create_proc_action<tear_anima_proc_t>( "tear_anima", effect );
-}
-
-void flame_of_battle( special_effect_t& effect )
-{
-  debug_cast<stat_buff_t*>( effect.create_buff() )->stats[ 0 ].amount = effect.player->find_spell( 346746 )->effectN( 1 ).average( effect.item );
-}
-
 }  // namespace items
 
 void register_hotfixes()
@@ -1906,6 +1957,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 332301, items::mistcaller_ocarina );
     unique_gear::register_special_effect( 336841, items::flame_of_battle );
     unique_gear::register_special_effect( 329831, items::overwhelming_power_crystal );
+    unique_gear::register_special_effect( 336182, items::tablet_of_despair );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
