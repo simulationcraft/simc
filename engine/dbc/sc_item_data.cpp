@@ -69,7 +69,8 @@ std::pair<const curve_point_t*, const curve_point_t*> dbc_t::curve_point( unsign
 {
   auto data = curve_point_t::find( curve_id, ptr );
 
-  const curve_point_t* lower_bound = nullptr, * upper_bound = nullptr;
+  const curve_point_t * lower_bound = nullptr;
+  const curve_point_t * upper_bound = nullptr;
   for ( const auto& point : data )
   {
     assert( point.curve_id == curve_id );
@@ -146,7 +147,7 @@ void item_database::apply_item_scaling( item_t& item, unsigned curve_id, unsigne
   }
 
   auto curve_data = curve_point_t::find( curve_id, item.player->dbc->ptr );
-  if ( curve_data.size() == 0 )
+  if ( curve_data.empty() )
   {
     return;
   }
@@ -527,7 +528,7 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
     double v_socket_penalty = socket_mul( item.parsed.data, idx ) *
                               dbc.item_socket_cost( item.base_item_level() );
 
-    int v_raw = static_cast<int>(item.parsed.data.stat_alloc[ idx ] * item_budget * 0.0001 - v_socket_penalty + 0.5);
+    int v_raw = as<int>( std::lround( item.parsed.data.stat_alloc[ idx ] * item_budget * 0.0001 - v_socket_penalty ) );
     auto stat_type = static_cast<item_mod_type>( item.parsed.data.stat_type_e[ idx ] );
 
     if ( util::is_combat_rating( stat_type ) )
@@ -711,7 +712,9 @@ uint32_t item_database::armor_value( const dbc_item_data_t& item, const dbc_t& d
   if ( item.item_subclass == ITEM_SUBCLASS_ARMOR_MISC || item.item_subclass > ITEM_SUBCLASS_ARMOR_PLATE )
     return 0;
 
-  double m_invtype = 0, m_quality = 0, total_armor = 0;
+  double m_invtype = 0;
+  double m_quality = 0;
+  double total_armor = 0;
 
   switch ( item.inventory_type )
   {
@@ -823,7 +826,7 @@ bool item_database::parse_item_spell_enchant( item_t& item,
       }
 
       // Kludge the rest
-      if ( dbc_name.find( "$" ) != dbc_name.npos || ( es && es -> id() > 0 ) )
+      if ( dbc_name.find( '$' ) != dbc_name.npos || ( es && es -> id() > 0 ) )
       {
         if ( es && es -> id() > 0 )
         {
@@ -996,7 +999,7 @@ std::vector<item_database::token_t> item_database::parse_tokens( util::string_vi
     {
       t.name = t.full.substr( index );
       t.value_str = t.full.substr( 0, index );
-      t.value = std::stod( t.value_str.c_str() );
+      t.value = std::stod( t.value_str );
     }
     tokens.push_back( std::move(t) );
   }
@@ -1071,7 +1074,7 @@ static std::pair<std::pair<int, double>, std::pair<int, double> > get_bonus_id_s
     if ( entries[ i ].type == ITEM_BONUS_SCALING || entries[ i ].type == ITEM_BONUS_SCALING_2 )
     {
       auto curve_data = curve_point_t::find( entries[ i ].value_4, dbc.ptr );
-      if ( curve_data.size() == 0 )
+      if ( curve_data.empty() )
       {
         return std::pair<std::pair<int, double>, std::pair<int, double> >(
             std::pair<int, double>( -1, 0 ),
@@ -1365,7 +1368,7 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
       fields.push_back( "add_rank={ power_index=" + util::to_string( power_index ) + " }" );
     }
 
-    if ( stats.size() > 0 )
+    if ( !stats.empty() )
     {
       std::string stats_str = "stats={ ";
       for ( size_t j = 0; j < stats.size(); ++j )

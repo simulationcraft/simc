@@ -46,7 +46,7 @@ public:
         if ( p()->rain_of_chaos_rng->trigger() )
         {
           //Currently storing infernal duration (spell 335286) in buff default value
-          p()->warlock_pet_list.roc_infernals.spawn( timespan_t::from_millis( p()->buffs.rain_of_chaos->default_value ), 1u);
+          p()->warlock_pet_list.roc_infernals.spawn( timespan_t::from_millis( p()->buffs.rain_of_chaos->default_value ), 1U);
           p()->procs.rain_of_chaos->occur();
         }
       }
@@ -1157,7 +1157,7 @@ void warlock_t::vision_of_perfection_proc_destro()
 
   timespan_t summon_duration = find_spell( 111685 )->duration() * vision_of_perfection_multiplier;
 
-  warlock_pet_list.vop_infernals.spawn( summon_duration, 1u );
+  warlock_pet_list.vop_infernals.spawn( summon_duration, 1U );
 
   // BFA - Azerite
   if ( azerite.crashing_chaos.ok() )

@@ -1244,7 +1244,8 @@ struct compare_dps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    double lv = l->collected_data.dps.mean(), rv = r->collected_data.dps.mean();
+    double lv = l->collected_data.dps.mean();
+    double rv = r->collected_data.dps.mean();
     if ( lv == rv )
     {
       return l->actor_index < r->actor_index;
@@ -1260,7 +1261,8 @@ struct compare_priority_dps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    double lv = l->collected_data.prioritydps.mean(), rv = r->collected_data.prioritydps.mean();
+    double lv = l->collected_data.prioritydps.mean();
+    double rv = r->collected_data.prioritydps.mean();
     if ( lv == rv )
     {
       return l->actor_index < r->actor_index;
@@ -1299,7 +1301,8 @@ struct compare_hps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    double lv = l->collected_data.hps.mean(), rv = r->collected_data.hps.mean();
+    double lv = l->collected_data.hps.mean();
+    double rv = r->collected_data.hps.mean();
     if ( lv == rv )
     {
       return l->actor_index < r->actor_index;
@@ -1315,8 +1318,8 @@ struct compare_hps_plus_aps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    double lv = l->collected_data.hps.mean() + l->collected_data.aps.mean(),
-           rv = r->collected_data.hps.mean() + r->collected_data.aps.mean();
+    double lv = l->collected_data.hps.mean() + l->collected_data.aps.mean();
+    double rv = r->collected_data.hps.mean() + r->collected_data.aps.mean();
     if ( lv == rv )
     {
       return l->actor_index < r->actor_index;
@@ -1332,7 +1335,8 @@ struct compare_dtps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    double lv = l->collected_data.dtps.mean(), rv = r->collected_data.dtps.mean();
+    double lv = l->collected_data.dtps.mean();
+    double rv = r->collected_data.dtps.mean();
     if ( lv == rv )
     {
       return l->actor_index < r->actor_index;
@@ -1348,8 +1352,8 @@ struct compare_tmi
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    double lv = l->collected_data.theck_meloree_index.mean(),
-           rv = r->collected_data.theck_meloree_index.mean();
+    double lv = l->collected_data.theck_meloree_index.mean();
+    double rv = r->collected_data.theck_meloree_index.mean();
     if ( lv == rv )
     {
       return l->actor_index < r->actor_index;
@@ -1831,7 +1835,7 @@ void sim_t::combat_begin()
 
   // Debug seed needs to be done _after_ sim reset, because deterministic=1 will reseed in
   // sim_t::reset()
-  if ( debug_seed.size() > 0 )
+  if ( !debug_seed.empty() )
   {
     enable_debug_seed();
   }
@@ -1945,7 +1949,7 @@ void sim_t::combat_end()
 
   analyze_error();
 
-  if ( debug_seed.size() > 0 )
+  if ( !debug_seed.empty() )
   {
     disable_debug_seed();
   }
@@ -2267,8 +2271,8 @@ void sim_t::init_fight_style()
   else if ( util::str_compare_ci( fight_style, "HecticAddCleave" ) )
   {
     // Phase 1 - Adds and move into position to fight adds
-    auto first_and_duration = std::max( static_cast<unsigned>( max_time.total_seconds() * 0.05 ), 1u );
-    auto cooldown = std::max( static_cast<unsigned>( max_time.total_seconds() * 0.075 ), 1u );
+    auto first_and_duration = std::max( static_cast<unsigned>( max_time.total_seconds() * 0.05 ), 1U );
+    auto cooldown = std::max( static_cast<unsigned>( max_time.total_seconds() * 0.075 ), 1U );
     auto last = static_cast<unsigned>( max_time.total_seconds() * 0.75 );
 
     raid_events_str += fmt::format( "/adds,count=5,first={},cooldown={},duration={},last={}",
@@ -2279,7 +2283,7 @@ void sim_t::init_fight_style()
 
     // Phase2 - Move out of stuff
     auto first2 = static_cast<unsigned>( max_time.total_seconds() * 0.03 );
-    auto cooldown2 = std::max( static_cast<unsigned>( max_time.total_seconds() * 0.04 ), 1u );
+    auto cooldown2 = std::max( static_cast<unsigned>( max_time.total_seconds() * 0.04 ), 1U );
 
     raid_events_str += fmt::format( "/movement,players_only=1,distance=8,first={},cooldown={}",
                                     first2, cooldown2 );
@@ -2673,7 +2677,8 @@ void sim_t::init()
 
   {
     // Determine whether we have healers or tanks.
-    unsigned int healers = 0, tanks = 0;
+    unsigned int healers = 0;
+    unsigned int tanks = 0;
     for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
     {
       player_t& p = *player_no_pet_list[ i ];
@@ -2787,7 +2792,7 @@ void sim_t::analyze()
        scaling -> calculate_scale_factors == 0 &&
        plot -> dps_plot_stat_str.empty() &&
        reforge_plot -> reforge_plot_stat_str.empty() &&
-       profileset_map.size() == 0 && ! profileset_enabled )
+       profileset_map.empty() && ! profileset_enabled )
   {
     std::cout << "Analyzing actor data ..." << std::endl;
   }
@@ -2964,7 +2969,7 @@ void sim_t::merge( sim_t& other_sim )
        scaling -> calculate_scale_factors == 0 &&
        plot -> dps_plot_stat_str.empty() &&
        reforge_plot -> reforge_plot_stat_str.empty() &&
-       profileset_map.size() == 0 && ! profileset_enabled )
+       profileset_map.empty() && ! profileset_enabled )
   {
     std::cout << "Merging data from thread-" << other_sim.thread_index << " ..." << std::endl;
   }
@@ -3091,7 +3096,7 @@ void sim_t::partition()
   // Filter out profileset-related options from the child sim control, since they are not going to
   // use them anyhow. This significantly speeds up child creation in situations where the input
   // profile is a very large set of profileset sims.
-  if ( profileset_map.size() > 0 )
+  if ( !profileset_map.empty() )
   {
     child_control = profileset::filter_control( control );
   }
@@ -3132,7 +3137,7 @@ void sim_t::partition()
 
   // Safe to do for now, since control is only referenced by sim_t::setup, which is called in the
   // sim_t constructor.
-  if ( profileset_map.size() > 0 )
+  if ( !profileset_map.empty() )
   {
     delete child_control;
   }
@@ -3257,7 +3262,7 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
 
   if ( util::str_compare_ci( name_str, "active_enemies" ) )
   {
-    if ( target_list.size() == 1u && !has_raid_event( "adds" ) )
+    if ( target_list.size() == 1U && !has_raid_event( "adds" ) )
     {
       return expr_t::create_constant( name_str, 1.0 );
     }
@@ -4105,7 +4110,7 @@ void sim_t::print_spell_query()
 {
   if ( ! spell_query_xml_output_file_str.empty() )
   {
-    io::cfile file( spell_query_xml_output_file_str.c_str(), "w" );
+    io::cfile file( spell_query_xml_output_file_str, "w" );
     if ( ! file )
     {
       std::cerr << "Unable to open spell query xml output file '" << spell_query_xml_output_file_str << "', using stdout instead\n";

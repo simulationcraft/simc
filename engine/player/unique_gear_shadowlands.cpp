@@ -377,21 +377,19 @@ struct SL_darkmoon_deck_t : public darkmoon_deck_t
 
 struct SL_darkmoon_deck_proc_t : public proc_spell_t
 {
-  SL_darkmoon_deck_t* deck;
+  std::unique_ptr<SL_darkmoon_deck_t> deck;
 
   SL_darkmoon_deck_proc_t( const special_effect_t& e, util::string_view n, unsigned shuffle_id,
                            std::initializer_list<unsigned> card_list )
-    : proc_spell_t( n, e.player, e.trigger(), e.item )
+    : proc_spell_t( n, e.player, e.trigger(), e.item ), deck()
   {
     auto shuffle = unique_gear::find_special_effect( player, shuffle_id );
     if ( !shuffle )
       return;
 
-    deck = new SL_darkmoon_deck_t( *shuffle, card_list );
+    deck = std::make_unique<SL_darkmoon_deck_t>( *shuffle, card_list );
     deck->initialize();
   }
-
-  ~SL_darkmoon_deck_proc_t() { delete deck; }
 };
 
 void darkmoon_deck_putrescence( special_effect_t& effect )
@@ -577,7 +575,7 @@ void soul_igniter( special_effect_t& effect )
       is_precombat()
     {}
 
-    void expire_override( int stacks, timespan_t remaining_duration )
+    void expire_override( int stacks, timespan_t remaining_duration ) override
     {
       // If the trinket was used in precombat, assume that it was timed so
       // that it will expire to deal full damage when it first expires.

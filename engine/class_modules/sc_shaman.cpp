@@ -84,7 +84,9 @@ static std::vector<player_t*>& __check_distance_targeting( const action_t* actio
   size_t num_targets  = sim->target_non_sleeping_list.size();
   size_t max_attempts = static_cast<size_t>(
       std::min( ( num_targets - 1.0 ) * 2.0, 30.0 ) );  // With a lot of targets this can get pretty high. Cap it at 30.
-  size_t local_attempts = 0, attempts = 0, chain_number = 1;
+  size_t local_attempts = 0;
+  size_t attempts = 0;
+  size_t chain_number = 1;
   std::vector<player_t*> targets_left_to_try(
       sim->target_non_sleeping_list.data() );  // This list contains members of a vector that haven't been tried yet.
   auto position = std::find( targets_left_to_try.begin(), targets_left_to_try.end(), target );
@@ -102,7 +104,7 @@ static std::vector<player_t*>& __check_distance_targeting( const action_t* actio
     attempts++;
     if ( attempts >= max_attempts )
       stop_trying = true;
-    while ( targets_left_to_try.size() > 0 && local_attempts < num_targets * 2 )
+    while ( !targets_left_to_try.empty() && local_attempts < num_targets * 2 )
     {
       player_t* possibletarget;
       size_t rng_target = static_cast<size_t>(
@@ -716,7 +718,7 @@ public:
   shaman_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN )
     : player_t( sim, SHAMAN, name, r ),
       lava_surge_during_lvb( false ),
-      lotfw_counter( 0u ),
+      lotfw_counter( 0U ),
       raptor_glyph( false ),
       action(),
       pet( this ),
@@ -778,7 +780,7 @@ public:
   void summon_storm_elemental( timespan_t duration );
 
   // triggers
-  void trigger_maelstrom_gain( double base, gain_t* gain = nullptr );
+  void trigger_maelstrom_gain( double maelstrom_gain, gain_t* gain = nullptr );
   void trigger_windfury_weapon( const action_state_t* );
   void trigger_maelstrom_weapon( const action_state_t* );
   void trigger_flametongue_weapon( const action_state_t* );
@@ -1322,7 +1324,7 @@ public:
 
       double evaluate() override
       {
-        if ( cd_.size() == 0 )
+        if ( cd_.empty() )
           return 0;
 
         timespan_t min_cd = cd_[ 0 ]->remains();
@@ -3001,7 +3003,7 @@ struct elemental_overload_spell_t : public shaman_spell_t
 
   void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
   {
-    base_t::snapshot_internal( s, flags, rt );
+    shaman_spell_t::snapshot_internal( s, flags, rt );
 
     cast_state( s )->exec_type = parent->exec_type;
   }
@@ -4196,7 +4198,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   unsigned impact_flags;
   lava_burst_type type;
 
-  static const std::string action_name( const std::string& suffix )
+  static std::string action_name( const std::string& suffix )
   {
     return !suffix.empty() ? "lava_burst_overload_" + suffix : "lava_burst_overload";
   }
@@ -4682,7 +4684,7 @@ struct lava_burst_t : public shaman_spell_t
     {
       p()->buff.primordial_wave->expire();
       p()->action.lava_burst_pw->set_target( execute_state->target );
-      if ( p()->action.lava_burst_pw->target_list().size() )
+      if ( !p()->action.lava_burst_pw->target_list().empty() )
       {
         p()->action.lava_burst_pw->schedule_execute();
       }
@@ -4822,15 +4824,15 @@ struct lightning_bolt_t : public shaman_spell_t
       double roll = rng().real();
       if ( roll >= 0.98 )
       {
-        n += 3u;
+        n += 3U;
       }
       else if ( roll >= 0.8 )
       {
-        n += 2u;
+        n += 2U;
       }
       else
       {
-        n += 1u;
+        n += 1U;
       }
     }
 
@@ -4895,7 +4897,7 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       p()->buff.primordial_wave->expire();
       p()->action.lightning_bolt_pw->set_target( target );
-      if ( p()->action.lightning_bolt_pw->target_list().size() )
+      if ( !p()->action.lightning_bolt_pw->target_list().empty() )
       {
         p()->action.lightning_bolt_pw->execute();
       }
@@ -5198,7 +5200,7 @@ struct earthquake_t : public shaman_spell_t
           .action( rumble ) );
 
     if ( rng().roll( p()->conduit.shake_the_foundations.percent() ) &&
-         rumble->target_list().size() )
+         !rumble->target_list().empty() )
     {
       auto t = rumble->target_list()[ static_cast<unsigned>( rng().range( 0,
             as<double>( rumble->target_list().size() ) ) ) ];
@@ -5743,7 +5745,7 @@ struct ascendance_t : public shaman_spell_t
     if ( lvb )
     {
       lvb->set_target( player->target );
-      if ( lvb->target_list().size() )
+      if ( !lvb->target_list().empty() )
       {
         lvb->execute();
       }
@@ -5887,7 +5889,7 @@ struct static_discharge_tick_t : public shaman_spell_t
 
   void execute() override
   {
-    if ( target_list().size() == 0 )
+    if ( target_list().empty() )
     {
       sim->print_debug( "Static Discharge Tick without an active FS" );
       return;
@@ -7177,7 +7179,7 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     }
 
     const pet_t* p = nullptr;
-    auto pe        = require_primal || talent.primal_elementalist->ok() == true;
+    auto pe        = require_primal || talent.primal_elementalist->ok();
     switch ( et )
     {
       case elemental::FIRE:
@@ -7620,7 +7622,7 @@ void shaman_t::summon_feral_spirits( timespan_t duration )
   // No elemental spirits selected, just summon normal pets and exit
   if ( !talent.elemental_spirits->ok() )
   {
-    pet.spirit_wolves.spawn( duration, 2u );
+    pet.spirit_wolves.spawn( duration, 2U );
     return;
   }
 
@@ -9361,7 +9363,7 @@ void shaman_t::reset()
     elem->reset();
 
   vesper_totem = nullptr;
-  lotfw_counter = 0u;
+  lotfw_counter = 0U;
 }
 
 // shaman_t::merge ==========================================================
@@ -9766,7 +9768,7 @@ public:
         name_str = util::encode_html( name_str );
       }
 
-      std::string row_class_str = "";
+      std::string row_class_str;
       if ( ++n & 1 )
         row_class_str = " class=\"odd\"";
 
@@ -9805,7 +9807,7 @@ public:
                       os << "<div class=\"clear\"></div>\n";
                     }
     */
-    if ( p.cd_waste_exec.size() > 0 )
+    if ( !p.cd_waste_exec.empty() )
     {
       os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown waste details</h3>\n"
          << "\t\t\t\t\t<div class=\"toggle-content\">\n";

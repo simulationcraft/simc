@@ -94,7 +94,7 @@ public:
   /// spell as context
   std::vector<double> budget( const spell_data_t* spell ) const;
   /// List of item levels associated with this azerite power
-  const std::vector<unsigned> ilevels() const;
+  std::vector<unsigned> ilevels() const;
   /// Number of items worn with this azerite power
   unsigned n_items() const;
   /// Azerite power client data information

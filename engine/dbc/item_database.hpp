@@ -60,7 +60,7 @@ inline bool mythic( unsigned f ) { return ( f & RAID_TYPE_MYTHIC ) == RAID_TYPE_
 bool apply_item_bonus( item_t& item, const item_bonus_entry_t& entry );
 
 double curve_point_value( dbc_t& dbc, unsigned curve_id, double point_value );
-void apply_item_scaling( item_t& item, unsigned scaling_id, unsigned player_level );
+void apply_item_scaling( item_t& item, unsigned curve_id, unsigned player_level );
 double apply_combat_rating_multiplier( const item_t& item, double amount );
 double apply_combat_rating_multiplier( const player_t* player, combat_rating_multiplier_type type, unsigned ilevel, double amount );
 double apply_stamina_multiplier( const item_t& item, double amount );

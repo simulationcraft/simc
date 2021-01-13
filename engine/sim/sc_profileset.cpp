@@ -56,7 +56,9 @@ std::string format_time( double seconds, bool milliseconds = true )
   // Otherwise, do the whole thing
   else
   {
-    int days = 0, hours = 0, minutes = 0;
+    int days = 0;
+    int hours = 0;
+    int minutes = 0;
 
     double remainder = seconds;
 
@@ -131,7 +133,7 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
     }
   }
 
-  if ( ret == false || profile_sim -> is_canceled() )
+  if ( !ret || profile_sim -> is_canceled() )
   {
     return;
   }
@@ -252,7 +254,7 @@ void populate_chart_data( highchart::bar_chart_t& profileset,
                    baseline_value, mean );
     }
 
-    if ( inserted == false )
+    if ( !inserted )
     {
       insert_data( profileset, util::encode_html( baseline->name() ), c, baseline_data, true, baseline_value, mean );
     }
@@ -434,7 +436,7 @@ const profile_result_t& profile_set_t::result( scale_metric_e metric ) const
 {
   static const profile_result_t __default {};
 
-  if ( m_results.size() == 0 )
+  if ( m_results.empty() )
   {
     return __default;
   }
@@ -567,7 +569,7 @@ void profilesets_t::finalize_work()
     return;
   }
 
-  while ( m_current_work.size() > 0 )
+  while ( !m_current_work.empty() )
   {
     assert( ! m_work_lock.owns_lock() );
 
@@ -599,7 +601,7 @@ void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>
 
     parent -> control = original_opts;
 
-    simulate_profileset( parent, *ptr_set.get(), profile_sim );
+    simulate_profileset( parent, *ptr_set, profile_sim );
 
     delete profile_sim;
   }
@@ -727,7 +729,7 @@ void profilesets_t::initialize( sim_t* sim )
     return;
   }
 
-  if ( sim -> profileset_map.size() == 0 )
+  if ( sim -> profileset_map.empty() )
   {
     set_state( DONE );
     return;
@@ -833,7 +835,7 @@ std::string profilesets_t::current_profileset_name()
 
 bool profilesets_t::iterate( sim_t* parent )
 {
-  if ( parent -> profileset_map.size() == 0 )
+  if ( parent -> profileset_map.empty() )
   {
     return true;
   }
@@ -925,7 +927,7 @@ void profilesets_t::output_progressbar( const sim_t* parent ) const
   status.insert( 1, parent -> progress_bar.steps, '.' );
   status += "]";
 
-  int length = static_cast<int>( parent -> progress_bar.steps * pct + 0.5 );
+  int length = as<int>( std::lround( parent -> progress_bar.steps * pct ) );
   for ( int i = 1; i < length + 1; ++i )
   {
     status[ i ] = '=';
@@ -941,7 +943,7 @@ void profilesets_t::output_progressbar( const sim_t* parent ) const
   auto average_per_sim = chrono::to_fp_seconds(m_total_elapsed) / as<double>( done );
   auto elapsed = chrono::elapsed_fp_seconds( m_start_time );
   auto work_left = m_profilesets.size() - done;
-  auto time_left = ( work_left / m_max_workers ) * average_per_sim;
+  auto time_left = work_left * ( average_per_sim / m_max_workers );
 
   // Average time per done simulation
   s << " avg=" << format_time( average_per_sim / as<double>( m_max_workers ) );
@@ -964,7 +966,7 @@ void profilesets_t::output_progressbar( const sim_t* parent ) const
 
 void profilesets_t::output_text( const sim_t& sim, std::ostream& out ) const
 {
-  if ( m_profilesets.size() == 0 )
+  if ( m_profilesets.empty() )
   {
     return;
   }
@@ -983,7 +985,7 @@ void profilesets_t::output_text( const sim_t& sim, std::ostream& out ) const
 
 void profilesets_t::output_html( const sim_t& sim, std::ostream& out ) const
 {
-  if ( m_profilesets.size() == 0 )
+  if ( m_profilesets.empty() )
   {
     return;
   }
@@ -1255,7 +1257,7 @@ statistical_data_t metric_data( const player_t* player, scale_metric_e metric )
   }
 }
 
-void save_output_data( profile_set_t& profileset, const player_t* parent_player, const player_t* player, std::string option )
+void save_output_data( profile_set_t& profileset, const player_t* parent_player, const player_t* player, const std::string& option )
 {
   // TODO: Make an enum to proper use a switch instead of if/else
   if ( option == "race") {
@@ -1287,7 +1289,7 @@ void save_output_data( profile_set_t& profileset, const player_t* parent_player,
           saved_talents.push_back( talent_data );
         }
       }
-      if ( saved_talents.size() > 0 )
+      if ( !saved_talents.empty() )
       {
         profileset.output_data().talents( saved_talents );
       }
@@ -1314,7 +1316,7 @@ void save_output_data( profile_set_t& profileset, const player_t* parent_player,
         saved_gear.push_back( saved_item );
       }
     }
-    if ( saved_gear.size() > 0 )
+    if ( !saved_gear.empty() )
     {
       profileset.output_data().gear( saved_gear );
     }
@@ -1365,7 +1367,7 @@ void save_output_data( profile_set_t& profileset, const player_t* parent_player,
   }
 }
 
-void fetch_output_data( const profile_output_data_t output_data, js::JsonOutput& ovr )
+void fetch_output_data( const profile_output_data_t& output_data, js::JsonOutput& ovr )
 {
   if ( output_data.race() != RACE_NONE )
   {
@@ -1385,7 +1387,7 @@ void fetch_output_data( const profile_output_data_t output_data, js::JsonOutput&
       ovr_talent[ "name"     ] = talent -> name_cstr();
     }
   }
-  if ( output_data.gear().size() > 0 ) {
+  if ( !output_data.gear().empty() ) {
     const auto& gear = output_data.gear();
     auto ovr_gear = ovr[ "gear" ];
     for ( size_t i = 0; i < gear.size(); i++ )

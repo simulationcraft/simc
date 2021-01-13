@@ -163,7 +163,7 @@ std::vector<double> azerite_power_t::budget( const spell_data_t* scaling_spell )
   return b;
 }
 
-const std::vector<unsigned> azerite_power_t::ilevels() const
+std::vector<unsigned> azerite_power_t::ilevels() const
 { return m_ilevels; }
 
 unsigned azerite_power_t::n_items() const
@@ -211,7 +211,7 @@ azerite_essence_t::azerite_essence_t( const player_t* player, essence_type type,
 }
 
 azerite_essence_t::azerite_essence_t( const player_t* player, const spell_data_t* passive ) :
-  m_player( player ), m_essence( nullptr ), m_rank( 1u ), m_type( essence_type::PASSIVE )
+  m_player( player ), m_essence( nullptr ), m_rank( 1U ), m_type( essence_type::PASSIVE )
 {
   // Store the passive into first slot of major spells
   m_base_major.push_back( passive );
@@ -244,7 +244,7 @@ const spell_data_t* azerite_essence_t::spell( unsigned rank, essence_spell spell
   if ( ( type == essence_type::INVALID && m_type == essence_type::PASSIVE ) ||
        type == essence_type::PASSIVE )
   {
-    return m_base_major.size() ? m_base_major.front(): spell_data_t::not_found();
+    return !m_base_major.empty() ? m_base_major.front(): spell_data_t::not_found();
   }
   // Major or Minor essence
   else
@@ -457,7 +457,7 @@ azerite_power_t azerite_state_t::get_power( unsigned id )
   else
   {
     // Item-related azerite effects are only enabled when "all" is defined
-    if ( m_spell_items[ power.spell_id ].size() > 0 &&
+    if ( !m_spell_items[ power.spell_id ].empty() &&
          m_player -> sim -> azerite_status == azerite_control::ENABLED )
     {
       if ( m_player -> sim -> debug )
@@ -536,7 +536,7 @@ std::string azerite_state_t::overrides_str() const
       } );
   } );
 
-  if ( override_strings.size() == 0 )
+  if ( override_strings.empty() )
   {
     return {};
   }
@@ -630,7 +630,7 @@ size_t azerite_state_t::rank( unsigned id ) const
   // All azerite-related effects disabled
   if ( m_player -> sim -> azerite_status == azerite_control::DISABLED_ALL )
   {
-    return 0u;
+    return 0U;
   }
 
   auto it = m_overrides.find( id );
@@ -639,7 +639,7 @@ size_t azerite_state_t::rank( unsigned id ) const
   {
     if ( it -> second.size() == 1 && it -> second[ 0 ] == 0 )
     {
-      return 0u;
+      return 0U;
     }
 
     return it -> second.size();
@@ -656,7 +656,7 @@ size_t azerite_state_t::rank( unsigned id ) const
   }
 
   // Out of options, it can't be enabled
-  return 0u;
+  return 0U;
 }
 
 size_t azerite_state_t::rank( util::string_view name, bool tokenized ) const
@@ -664,7 +664,7 @@ size_t azerite_state_t::rank( util::string_view name, bool tokenized ) const
   const auto& power = m_player -> dbc->azerite_power( name, tokenized );
   if ( power.id == 0 )
   {
-    return 0u;
+    return 0U;
   }
 
   return rank( power.id );
@@ -781,7 +781,7 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
 
   size_t n_traits = m_overrides.size();
 
-  for ( auto item : m_items )
+  for ( const auto& item : m_items )
     n_traits += rank( item.first );
 
   if ( n_traits == 0 )
@@ -798,7 +798,7 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
            << "<td><ul class=\"float\">\n"
            << "<li>" << report_decorators::decorated_item(item) << "&#160;(" << item.item_level() << ")</li>\n";
 
-      if ( item.parsed.azerite_ids.size() )
+      if ( !item.parsed.azerite_ids.empty() )
       {
         for ( auto id : item.parsed.azerite_ids )
         {
@@ -826,14 +826,14 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
     }
   }
 
-  if ( m_overrides.size() )
+  if ( !m_overrides.empty() )
   {
     root << "<tr class=\"left\">\n"
          << "<th></th>\n"
          << "<td><ul class=\"float\">\n"
          << "<li>Azerite Overrides:</li>\n";
 
-    for ( auto override : m_overrides )
+    for ( const auto& override : m_overrides )
     {
       for ( auto ilevel : override.second )
       {
@@ -912,32 +912,32 @@ void azerite_essence_state_t::update_traversal_nodes()
 
   if ( neck.parsed.azerite_level >= 52 )
   {
-    passives.push_back( 300573u );
+    passives.push_back( 300573U );
   }
 
   if ( neck.parsed.azerite_level >= 57 )
   {
-    passives.push_back( 300575u );
+    passives.push_back( 300575U );
   }
 
   if ( neck.parsed.azerite_level >= 62 )
   {
-    passives.push_back( 300576u );
+    passives.push_back( 300576U );
   }
 
   if ( neck.parsed.azerite_level >= 67 )
   {
-    passives.push_back( 300577u );
+    passives.push_back( 300577U );
   }
 
   if ( neck.parsed.azerite_level >= 71 )
   {
-    passives.push_back( 312927u );
+    passives.push_back( 312927U );
   }
 
   if ( neck.parsed.azerite_level >= 80 )
   {
-    passives.push_back( 312928u );
+    passives.push_back( 312928U );
   }
 
   range::for_each( passives, [ this ]( unsigned id ) {
@@ -1102,7 +1102,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
 
   m_state.clear();
 
-  for ( size_t i = 0u; i < splits.size(); ++i )
+  for ( size_t i = 0U; i < splits.size(); ++i )
   {
     // Split by :
     auto token_split = util::string_split<util::string_view>( splits[ i ], ":" );
@@ -1174,7 +1174,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
     switch ( token_split.size() )
     {
       // Passive essence power, spell id
-      case 1u:
+      case 1U:
       {
         if ( id == 0 )
         {
@@ -1191,11 +1191,11 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
           return false;
         }
 
-        m_state.emplace_back( essence_type::PASSIVE, id, 1u );
+        m_state.emplace_back( essence_type::PASSIVE, id, 1U );
         break;
       }
       // Essence id, rank
-      case 2u:
+      case 2U:
       {
         if ( explicit_type && n_parsed_powers > 0 )
         {
@@ -1214,7 +1214,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
         break;
       }
       // Essence id, rank, type
-      case 3u:
+      case 3U:
       {
         if ( major_parsed )
         {
@@ -1479,7 +1479,9 @@ void register_azerite_target_data_initializers( sim_t* sim )
 
 std::tuple<int, int, int> compute_value( const azerite_power_t& power, const spelleffect_data_t& effect )
 {
-  int min_ = 0, max_ = 0, avg_ = 0;
+  int min_ = 0;
+  int max_ = 0;
+  int avg_ = 0;
   if ( !power.enabled() || effect.m_coefficient() == 0 )
   {
     return std::make_tuple( 0, 0, 0 );
@@ -1487,11 +1489,11 @@ std::tuple<int, int, int> compute_value( const azerite_power_t& power, const spe
 
   auto budgets = power.budget( effect.spell() );
   range::for_each( budgets, [&]( double budget ) {
-    avg_ += static_cast<int>( budget * effect.m_coefficient() + 0.5 );
-    min_ += static_cast<int>( budget * effect.m_coefficient() *
-        ( 1.0 - effect.m_delta() / 2 ) + 0.5 );
-    max_ += static_cast<int>( budget * effect.m_coefficient() *
-        ( 1.0 + effect.m_delta() / 2 ) + 0.5 );
+    avg_ += as<int>( std::lround( budget * effect.m_coefficient() ) );
+    min_ += as<int>( std::lround( budget * effect.m_coefficient() *
+        ( 1.0 - effect.m_delta() / 2 ) ) );
+    max_ += as<int>( std::lround( budget * effect.m_coefficient() *
+        ( 1.0 + effect.m_delta() / 2 ) ) );
   } );
 
   return std::make_tuple( min_, avg_, max_ );
@@ -1506,7 +1508,7 @@ void parse_blizzard_azerite_information( item_t& item, const rapidjson::Value& d
 
   if ( data[ "azerite_details" ].HasMember( "selected_powers" ) )
   {
-    for ( auto idx = 0u, end = data[ "azerite_details" ][ "selected_powers" ].Size(); idx < end; ++idx )
+    for ( auto idx = 0U, end = data[ "azerite_details" ][ "selected_powers" ].Size(); idx < end; ++idx )
     {
       const auto& power_data = data[ "azerite_details" ][ "selected_powers" ][ idx ];
 
@@ -1521,7 +1523,7 @@ void parse_blizzard_azerite_information( item_t& item, const rapidjson::Value& d
 
   if ( data[ "azerite_details" ].HasMember( "selected_essences" ) )
   {
-    for ( auto idx = 0u, end = data[ "azerite_details" ][ "selected_essences" ].Size(); idx < end; ++idx )
+    for ( auto idx = 0U, end = data[ "azerite_details" ][ "selected_essences" ].Size(); idx < end; ++idx )
     {
       const auto& essence_data = data[ "azerite_details" ][ "selected_essences" ][ idx ];
 
@@ -2868,7 +2870,9 @@ void relational_normalization_gizmo( special_effect_t& effect )
   const spell_data_t* increase_spell = effect.player->find_spell( 280653 );
   const spell_data_t* decrease_spell = effect.player->find_spell( 280654 );
 
-  double haste_amount = 0, stat_amount = 0, health_amount = 0;
+  double haste_amount = 0;
+  double stat_amount = 0;
+  double health_amount = 0;
   for ( size_t i = 0, end = ilevels.size(); i < end; ++i )
   {
     double value = floor( increase_spell->effectN( 1 ).m_coefficient() * budgets[ i ] + 0.5 );
@@ -3996,9 +4000,9 @@ void the_crucible_of_flame( special_effect_t& effect )
       base_td = item_database::apply_combat_rating_multiplier( effect.player,
         combat_rating_multiplier_type::CR_MULTIPLIER_JEWLERY,
         essence.item()->item_level(),
-        essence.spell_ref( 1u, essence_type::MINOR ).effectN( 3 ).average( essence.item() ) );
+        essence.spell_ref( 1U, essence_type::MINOR ).effectN( 3 ).average( essence.item() ) );
 
-      base_td_multiplier *= 1 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
+      base_td_multiplier *= 1 + essence.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
     }
 
     // Refresh to 10 seconds
@@ -4010,7 +4014,7 @@ void the_crucible_of_flame( special_effect_t& effect )
       "ancient_flame", essence );
   // Add rank 3 upgrade that increases stack count of the dot by some value
   action->dot_max_stack +=
-    as<int>(essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value());
+    as<int>(essence.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value());
 
   effect.proc_flags_ = PF_MELEE_ABILITY | PF_RANGED_ABILITY | PF_NONE_SPELL | PF_MAGIC_SPELL | PF_PERIODIC;
   effect.type = SPECIAL_EFFECT_EQUIP;
@@ -4028,11 +4032,11 @@ struct concentrated_flame_t : public azerite_essence_major_t
 
     missile_t( player_t* p, const azerite_essence_t& essence ) :
       proc_spell_t( "concentrated_flame_missile", p, p->find_spell( 295374 ), essence.item() ),
-      cast_number( 1u ), multiplier( essence.spell_ref( 1u ).effectN( 3 ).percent() )
+      cast_number( 1U ), multiplier( essence.spell_ref( 1U ).effectN( 3 ).percent() )
     {
       // Base damage is defined in the minor spell for some reason
       base_dd_min = base_dd_max =
-        essence.spell_ref( 1u, essence_spell::BASE, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
+        essence.spell_ref( 1U, essence_spell::BASE, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
     }
 
     double action_multiplier() const override
@@ -4045,7 +4049,7 @@ struct concentrated_flame_t : public azerite_essence_major_t
 
     burn_t( player_t* p, const azerite_essence_t& essence ) :
       proc_spell_t( "concentrated_flame_burn", p, p->find_spell( 295368 ), essence.item() ),
-      multiplier( essence.spell_ref( 2u, essence_spell::UPGRADE ).effectN( 1 ).percent() )
+      multiplier( essence.spell_ref( 2U, essence_spell::UPGRADE ).effectN( 1 ).percent() )
     {
       callbacks = false;
     }
@@ -4071,14 +4075,14 @@ struct concentrated_flame_t : public azerite_essence_major_t
 
   concentrated_flame_t( player_t* p, util::string_view options_str ) :
     azerite_essence_major_t( p, "concentrated_flame", p->find_spell( 295373 ) ),
-    stack( 1u ), burn( nullptr )
+    stack( 1U ), burn( nullptr )
   {
     parse_options( options_str );
 
     missile = new missile_t( p, essence );
     add_child( missile );
 
-    cooldown->charges += as<int>(essence.spell_ref( 3u, essence_spell::UPGRADE ).effectN( 1 ).base_value());
+    cooldown->charges += as<int>(essence.spell_ref( 3U, essence_spell::UPGRADE ).effectN( 1 ).base_value());
 
     if ( essence.rank() >= 2 )
     {
@@ -4102,9 +4106,9 @@ struct concentrated_flame_t : public azerite_essence_major_t
       burn->execute();
     }
 
-    if ( ++stack == 4u )
+    if ( ++stack == 4U )
     {
-      stack = 1u;
+      stack = 1U;
     }
   }
 
@@ -4112,7 +4116,7 @@ struct concentrated_flame_t : public azerite_essence_major_t
   {
     azerite_essence_major_t::reset();
 
-    stack = 1u;
+    stack = 1U;
   }
 }; //End of The Crucible of Flame
 
@@ -4136,13 +4140,13 @@ struct memory_of_lucid_dreams_t : public azerite_essence_major_t
     // Adjust the buff based on essence data
     player->buffs.memory_of_lucid_dreams->set_cooldown( timespan_t::zero() );
     player->buffs.memory_of_lucid_dreams->set_duration(
-      essence.spell_ref( 1u ).duration() + essence.spell_ref( 2u, essence_spell::UPGRADE ).effectN( 1 ).time_value()
+      essence.spell_ref( 1U ).duration() + essence.spell_ref( 2U, essence_spell::UPGRADE ).effectN( 1 ).time_value()
     );
 
     if ( essence.rank() >= 3 )
     {
       player->buffs.memory_of_lucid_dreams->add_stat( STAT_LEECH_RATING,
-        essence.spell_ref( 1u ).effectN( 6 ).average( essence.item() ) );
+        essence.spell_ref( 1U ).effectN( 6 ).average( essence.item() ) );
     }
   }
 
@@ -4236,7 +4240,7 @@ void blood_of_the_enemy( special_effect_t& effect )
   // Crit per stack from R2 upgrade stored in R1 MINOR BASE effect#3
   if ( essence.rank() >= 2 )
     counter->add_stat(
-      STAT_CRIT_RATING, essence.spell_ref( 1u, essence_type::MINOR ).effectN( 3 ).average( essence.item() ) );
+      STAT_CRIT_RATING, essence.spell_ref( 1U, essence_type::MINOR ).effectN( 3 ).average( essence.item() ) );
 
   effect.custom_buff = counter;
 
@@ -4247,7 +4251,7 @@ void blood_of_the_enemy( special_effect_t& effect )
   {
     haste_buff = make_buff<stat_buff_t>( effect.player, "bloodsoaked", effect.player->find_spell( 297168 ) );
     haste_buff->add_stat(
-      STAT_HASTE_RATING, essence.spell_ref( 1u, essence_type::MINOR ).effectN( 2 ).average( essence.item() ) );
+      STAT_HASTE_RATING, essence.spell_ref( 1U, essence_type::MINOR ).effectN( 2 ).average( essence.item() ) );
   }
 
   double chance = 0;
@@ -4255,9 +4259,9 @@ void blood_of_the_enemy( special_effect_t& effect )
   if ( essence.rank() >= 3 )
   {
     // 25% chance to...
-    chance = essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
+    chance = essence.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
     // only lose 30 stacks
-	decrement_stacks = as<int>(essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MINOR).effectN(2).base_value());
+	decrement_stacks = as<int>(essence.spell_ref(3U, essence_spell::UPGRADE, essence_type::MINOR).effectN(2).base_value());
   }
 
   new bloodsoaked_callback_t( effect.player, effect, haste_buff, chance, decrement_stacks );
@@ -4272,11 +4276,11 @@ struct blood_of_the_enemy_t : public azerite_essence_major_t
     parse_options( options_str );
     aoe         = -1;
     may_crit    = true;
-    base_dd_min = base_dd_max = essence.spell_ref( 1u ).effectN( 1 ).average( essence.item() );
+    base_dd_min = base_dd_max = essence.spell_ref( 1U ).effectN( 1 ).average( essence.item() );
 
     if ( essence.rank() >= 2 )
       cooldown->duration *=
-        1.0 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent();
+        1.0 + essence.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent();
   }
 
   result_e calculate_result( action_state_t* s ) const override
@@ -4364,11 +4368,11 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
 
   int init_stacks = 1;
   if ( essence.rank() >= 3 )
-    init_stacks = as<int>(essence.spell_ref( 3u, essence_type::MINOR ).effectN( 1 ).base_value());
+    init_stacks = as<int>(essence.spell_ref( 3U, essence_type::MINOR ).effectN( 1 ).base_value());
 
-  double haste = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
+  double haste = essence.spell_ref( 1U, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
   if ( essence.rank() >= 2 )
-    haste *= 1.0 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
+    haste *= 1.0 + essence.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
 
   effect.custom_buff = unique_gear::create_buff<stat_buff_t>( effect.player, "focused_energy",
       effect.player->find_spell( 295248 ) )
@@ -4407,8 +4411,8 @@ struct focused_azerite_beam_t : public azerite_essence_major_t
     tick_zero = true;
     interrupt_auto_attack = true;
 
-    double tick = essence.spell_ref( 1u, essence_type::MAJOR ).effectN( 1 ).average( essence.item() );
-    double mult = 1 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent();
+    double tick = essence.spell_ref( 1U, essence_type::MAJOR ).effectN( 1 ).average( essence.item() );
+    double mult = 1 + essence.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent();
 
     base_execute_time *= mult;
 
@@ -4444,8 +4448,8 @@ void condensed_life_force(special_effect_t& effect)
     condensed_lifeforce_t(const special_effect_t& e, const std::string& n, const azerite_essence_t& ess) :
       proc_spell_t(n, e.player, e.player->find_spell( 295835 )), essence(ess)
     {
-      double dam = ess.spell_ref(1u, essence_type::MINOR).effectN(1).average(ess.item()); // R1
-      dam *= 1.0 + ess.spell_ref(2u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).percent(); // R2
+      double dam = ess.spell_ref(1U, essence_type::MINOR).effectN(1).average(ess.item()); // R1
+      dam *= 1.0 + ess.spell_ref(2U, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).percent(); // R2
       base_dd_min = base_dd_max = dam;
     }
 
@@ -4498,8 +4502,8 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
       {
         parse_options(options);
         may_crit = true;
-        double dam = ess.spell_ref(1u, essence_type::MINOR).effectN(1).average(ess.item()); // R1
-        dam *= 1.0 + ess.spell_ref(2u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).percent(); // R2
+        double dam = ess.spell_ref(1U, essence_type::MINOR).effectN(1).average(ess.item()); // R1
+        dam *= 1.0 + ess.spell_ref(2U, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).percent(); // R2
         // Hotfix per https://us.forums.blizzard.com/en/wow/t/essences-feedback-damage-essences/181165/41
         dam *= 0.65;
         base_dd_min = base_dd_max = dam;
@@ -4535,7 +4539,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
         proc_spell_t("azerite_volley", p, p->find_spell(303351), ess.item())
       {
         aoe = -1;
-        base_dd_min = base_dd_max = ess.spell_ref(2u, essence_spell::UPGRADE, essence_type::MAJOR).effectN(1).average(ess.item());
+        base_dd_min = base_dd_max = ess.spell_ref(2U, essence_spell::UPGRADE, essence_type::MAJOR).effectN(1).average(ess.item());
       }
     };
 
@@ -4685,16 +4689,16 @@ void conflict_and_strife( special_effect_t& effect )
     buff = make_buff<stat_buff_t>( effect.player, "strife", strife )
       ->add_stat( STAT_VERSATILITY_RATING, strife->effectN( 1 ).average( essence.item() ) )
       ->set_max_stack( strife->max_stacks()
-        + as<int>(essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value()) )
+        + as<int>(essence.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value()) )
       ->set_duration( strife->duration()
-        + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).time_value() );
+        + essence.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).time_value() );
   }
 
   effect.custom_buff = buff;
 
   new dbc_proc_callback_t( effect.player, effect );
 
-  auto r3_spell = essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 3 ).trigger();
+  auto r3_spell = essence.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 3 ).trigger();
   double r3_mul = 1.0 + r3_spell->effectN( 1 ).percent();
 
   // As this happens here during essence registeration, earlier initialization processes in class modules will not be
@@ -4750,8 +4754,8 @@ void purification_protocol(special_effect_t& effect)
     purification_protocol_t(const special_effect_t& effect, const std::string& name, const azerite_essence_t& essence) :
       proc_spell_t(name, effect.player, effect.player->find_spell(295293), essence.item())
     {
-      base_dd_min = base_dd_max = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).average( essence.item() )
-        * ( 1 + essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent() );
+      base_dd_min = base_dd_max = essence.spell_ref( 1U, essence_type::MINOR ).effectN( 1 ).average( essence.item() )
+        * ( 1 + essence.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent() );
       aoe=-1;
       school = SCHOOL_FIRE;
     }
@@ -4807,7 +4811,7 @@ struct purifying_blast_t : public azerite_essence_major_t
 
     harmful = true;
 
-    double tick_damage = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 3 ).average( essence.item() );
+    double tick_damage = essence.spell_ref( 1U, essence_type::MINOR ).effectN( 3 ).average( essence.item() );
 
     blast_tick = new purifying_blast_tick_t( "purifying_tick", p, tick_damage );
     add_child( blast_tick );
@@ -4817,8 +4821,8 @@ struct purifying_blast_t : public azerite_essence_major_t
   {
     azerite_essence_major_t::execute();
 
-    int pulse_count = as<int>(essence.spell_ref( 1u, essence_type::MAJOR ).effectN( 2 ).base_value());
-    timespan_t pulse_interval = essence.spell_ref( 1u, essence_type::MAJOR ).duration() / (pulse_count - 1);
+    int pulse_count = as<int>(essence.spell_ref( 1U, essence_type::MAJOR ).effectN( 2 ).base_value());
+    timespan_t pulse_interval = essence.spell_ref( 1U, essence_type::MAJOR ).duration() / (pulse_count - 1);
 
     make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
       .target( target )
@@ -4858,11 +4862,11 @@ struct ripple_in_space_t : public azerite_essence_major_t
     may_crit = true;
     aoe = -1;
 
-    base_dd_min = base_dd_max = essence.spell_ref( 1u, essence_type::MAJOR ).effectN( 2 ).average( essence.item() );
+    base_dd_min = base_dd_max = essence.spell_ref( 1U, essence_type::MAJOR ).effectN( 2 ).average( essence.item() );
     school = SCHOOL_FIRE;
 
-    delay = essence.spell_ref( 1u, essence_type::MAJOR ).duration()
-      + timespan_t::from_seconds( essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).base_value() / 1000 );
+    delay = essence.spell_ref( 1U, essence_type::MAJOR ).duration()
+      + timespan_t::from_seconds( essence.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).base_value() / 1000 );
   }
 
   timespan_t travel_time() const override
@@ -4916,10 +4920,10 @@ void the_unbound_force(special_effect_t& effect)
   buff_t* crit_buff = effect.player->buffs.reckless_force; // id=302932
 
   if (essence.rank() >= 3)
-    crit_buff->base_buff_duration += timespan_t::from_millis(essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).base_value());
+    crit_buff->base_buff_duration += timespan_t::from_millis(essence.spell_ref(3U, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).base_value());
 
   if (essence.rank() >= 2)
-    crit_buff->default_value += essence.spell_ref(2u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).percent();
+    crit_buff->default_value += essence.spell_ref(2U, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).percent();
 
   new reckless_force_callback_t(effect.player, effect, crit_buff);
 }
@@ -4939,8 +4943,8 @@ struct the_unbound_force_t : public azerite_essence_major_t
     {
       background = dual = true;
       // damage stored in effect#3 of MINOR BASE spell
-      base_dd_min = base_dd_max = essence.spell_ref(1u, essence_type::MINOR).effectN(3).average(essence.item());
-      crit_bonus_multiplier *= 1.0 + essence.spell_ref(1u, essence_type::MAJOR).effectN(2).percent();
+      base_dd_min = base_dd_max = essence.spell_ref(1U, essence_type::MINOR).effectN(3).average(essence.item());
+      crit_bonus_multiplier *= 1.0 + essence.spell_ref(1U, essence_type::MAJOR).effectN(2).percent();
     }
 
     void impact(action_state_t* s) override
@@ -4958,7 +4962,7 @@ struct the_unbound_force_t : public azerite_essence_major_t
   unsigned max_shard;
 
   the_unbound_force_t(player_t* p, util::string_view options_str) :
-    azerite_essence_major_t(p, "the_unbound_force", p->find_spell(298452)), max_shard(0u)
+    azerite_essence_major_t(p, "the_unbound_force", p->find_spell(298452)), max_shard(0U)
   {
     parse_options(options_str);
 
@@ -4967,7 +4971,7 @@ struct the_unbound_force_t : public azerite_essence_major_t
     tick_action = new the_unbound_force_tick_t(p, essence, &max_shard);
 
     if (essence.rank() >= 2)
-      cooldown->duration *= 1.0 + essence.spell_ref(2u, essence_spell::UPGRADE, essence_type::MAJOR).effectN(1).percent();
+      cooldown->duration *= 1.0 + essence.spell_ref(2U, essence_spell::UPGRADE, essence_type::MAJOR).effectN(1).percent();
   }
 
   void execute() override
@@ -4996,7 +5000,7 @@ void strive_for_perfection( special_effect_t& effect )
   if ( essence.rank() >= 3 )
   {
     double avg =
-      essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average( essence.item() );
+      essence.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average( essence.item() );
     effect.player->passive.versatility_rating += avg;
     effect.player->sim->print_debug( "{} increasing versatility by {} rating", effect.name(), avg );
   }
@@ -5061,7 +5065,7 @@ void vision_of_perfection( special_effect_t& effect )
       effect.custom_buff =
         make_buff<stat_buff_t>( effect.player, "vision_of_perfection", effect.player->find_spell( 303344 ) )
           ->add_stat( STAT_HASTE_RATING,
-            essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MAJOR )
+            essence.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MAJOR )
               .effectN( 2 ).average( essence.item() ) );
     }
   }
@@ -5330,7 +5334,7 @@ void anima_of_life_and_death( special_effect_t& effect )
     return;
   }
 
-  const spell_data_t* base_spell = essence.spell( 1u, essence_type::MINOR );
+  const spell_data_t* base_spell = essence.spell( 1U, essence_type::MINOR );
   const spell_data_t* buff_spell = effect.player -> find_spell( 294966 );
 
   buff_t* buff = buff_t::find( effect.player, "anima_of_life" ) ;
@@ -5361,7 +5365,7 @@ struct anima_of_death_t : public azerite_essence_major_t
     snapshot_flags = update_flags = STATE_TGT_MUL_DA; // The damage is based on the player's maximum health and doesn't seem to scale with anything
     if ( essence.rank() >= 2 )
     {
-      cooldown -> duration *= 1.0 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent();
+      cooldown -> duration *= 1.0 + essence.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent();
     }
   }
 
@@ -5393,7 +5397,7 @@ void nullification_dynamo( special_effect_t& effect )
       may_crit = false;
       split_aoe_damage = true;
       aoe = -1;
-      base_dd_min = base_dd_max = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).average( essence.item() );
+      base_dd_min = base_dd_max = essence.spell_ref( 1U, essence_type::MINOR ).effectN( 1 ).average( essence.item() );
     }
   };
 
@@ -5405,7 +5409,7 @@ void nullification_dynamo( special_effect_t& effect )
       absorb_buff_t( p, "null_barrier", p -> find_spell( 295842 ) ),
       null_barrier_damage( damage )
     {
-      default_value = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).average( essence.item() );
+      default_value = essence.spell_ref( 1U, essence_type::MINOR ).effectN( 1 ).average( essence.item() );
       set_absorb_source(p->get_stats("null_barrier"));
     }
 
@@ -5438,10 +5442,10 @@ void nullification_dynamo( special_effect_t& effect )
     buff = make_buff<null_barrier_absorb_buff_t>( effect.player, essence, nbd );
   }
 
-  timespan_t interval = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).period();
+  timespan_t interval = essence.spell_ref( 1U, essence_type::MINOR ).effectN( 1 ).period();
   if ( essence.rank() >= 2 )
   {
-    interval *= 1.0 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
+    interval *= 1.0 + essence.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
   }
 
   effect.player -> register_combat_begin( [ buff, interval ]( player_t* )
@@ -5465,7 +5469,7 @@ void aegis_of_the_deep( special_effect_t& effect )
   buff_t* aegis_buff = buff_t::find( effect.player, "stand_your_ground" );
   if ( !aegis_buff )
   {
-    double amount = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
+    double amount = essence.spell_ref( 1U, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
 
     aegis_buff = make_buff<stat_buff_t>( effect.player, "stand_your_ground", effect.player -> find_spell( 298197 ) )
       -> add_stat( STAT_VERSATILITY_RATING, amount );
@@ -5530,7 +5534,7 @@ void sphere_of_suppression( special_effect_t& effect )
   buff_t* sphere_buff = buff_t::find( effect.player, "sphere_of_suppresion" );
   if ( !sphere_buff )
   {
-    double amount = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
+    double amount = essence.spell_ref( 1U, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
 
     sphere_buff = make_buff<stat_buff_t>( effect.player, "sphere_of_suppresion", effect.player -> find_spell( 294912 ) )
       -> add_stat( STAT_HASTE_RATING, amount );
@@ -5584,7 +5588,7 @@ void breath_of_the_dying( special_effect_t& effect )
     lethal_strikes_t( const special_effect_t& e, const std::string& n, const azerite_essence_t& ess ) :
       proc_spell_t( n, e.player, e.player->find_spell( 311192 ), ess.item() )
     {
-      base_dd_min = base_dd_max = ess.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).average( ess.item() );
+      base_dd_min = base_dd_max = ess.spell_ref( 1U, essence_type::MINOR ).effectN( 1 ).average( ess.item() );
     }
   };
 
@@ -5596,8 +5600,8 @@ void breath_of_the_dying( special_effect_t& effect )
     lethal_strikes_cb_t( const special_effect_t& e, const azerite_essence_t& ess ) :
       dbc_proc_callback_t( e.player, e )
     {
-      r3_lo_hp = ess.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 2 ).base_value();
-      r3_mul   = ess.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
+      r3_lo_hp = ess.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 2 ).base_value();
+      r3_mul   = ess.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
     }
 
     void trigger( action_t* a, action_state_t* s ) override
@@ -5647,14 +5651,14 @@ struct reaping_flames_t : public azerite_essence_major_t
   {
     parse_options( options_str );
     // Damage stored in R1 MINOR
-    base_dd_min = base_dd_max = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 3 ).average( essence.item() );
+    base_dd_min = base_dd_max = essence.spell_ref( 1U, essence_type::MINOR ).effectN( 3 ).average( essence.item() );
 
     may_crit = true;
 
-    lo_hp    = essence.spell_ref( 1u ).effectN( 2 ).base_value();
-    hi_hp    = essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).base_value();
-    cd_mod   = -essence.spell_ref( 1u ).effectN( 3 ).base_value();
-    cd_reset = essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 2 ).base_value();
+    lo_hp    = essence.spell_ref( 1U ).effectN( 2 ).base_value();
+    hi_hp    = essence.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).base_value();
+    cd_mod   = -essence.spell_ref( 1U ).effectN( 3 ).base_value();
+    cd_reset = essence.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 2 ).base_value();
   }
 
   void init() override
@@ -5668,7 +5672,7 @@ struct reaping_flames_t : public azerite_essence_major_t
     if ( !damage_buff )
     {
       damage_buff = make_buff( player, "reaping_flames", player->find_spell( 311202 ) )
-        ->set_default_value( essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent() );
+        ->set_default_value( essence.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent() );
 
       range::for_each( sim->actor_list, [ this ] ( player_t* target )
       {
@@ -5739,7 +5743,7 @@ void spark_of_inspiration( special_effect_t& effect )
       dbc_proc_callback_t( effect.player, effect ),
       buff(b)
     {
-      cdr = timespan_t::from_seconds( essence.spell_ref( 1u, essence_type::MINOR ).effectN( 3 ).base_value() / 10.0 );
+      cdr = timespan_t::from_seconds( essence.spell_ref( 1U, essence_type::MINOR ).effectN( 3 ).base_value() / 10.0 );
     }
 
     void execute( action_t*, action_state_t* ) override
@@ -5781,7 +5785,7 @@ void spark_of_inspiration( special_effect_t& effect )
   buff_t* buff = buff_t::find( effect.player, "unified_strength" );
   if ( !buff )
   {
-    double haste = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).average( essence.item() );
+    double haste = essence.spell_ref( 1U, essence_type::MINOR ).effectN( 1 ).average( essence.item() );
 
     buff = make_buff<stat_buff_t>( effect.player, "unified_strength", effect.player->find_spell( 313643 ) )
       -> add_stat( STAT_HASTE_RATING, haste );
@@ -5789,8 +5793,8 @@ void spark_of_inspiration( special_effect_t& effect )
 
   if ( essence.rank() >= 2 )
   {
-    effect.ppm_ = -essence.spell_ref( 2u, essence_type::MINOR ).real_ppm();
-    effect.rppm_scale_ = effect.player->dbc->real_ppm_scale( essence.spell_ref( 2u, essence_type::MINOR ).id() );
+    effect.ppm_ = -essence.spell_ref( 2U, essence_type::MINOR ).real_ppm();
+    effect.rppm_scale_ = effect.player->dbc->real_ppm_scale( essence.spell_ref( 2U, essence_type::MINOR ).id() );
   }
 
   register_essence_corruption_resistance( effect );
@@ -5813,15 +5817,15 @@ void formless_void( special_effect_t& effect )
   buff_t* buff = buff_t::find( effect.player, "symbiotic_presence" );
   if ( !buff )
   {
-    auto primary = essence.spell_ref( 1u, essence_spell::BASE, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
-    primary *= 1 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
+    auto primary = essence.spell_ref( 1U, essence_spell::BASE, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
+    primary *= 1 + essence.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
 
     stat_buff_t* stat_buff = make_buff<stat_buff_t>( effect.player, "symbiotic_presence", effect.player->find_spell( 312915 ) )
       ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), primary );
 
     if ( essence.rank() >= 3 )
     {
-      stat_buff -> add_stat( STAT_HASTE_RATING, essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average( essence.item() ) );
+      stat_buff -> add_stat( STAT_HASTE_RATING, essence.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average( essence.item() ) );
     }
 
     buff = stat_buff;
@@ -5854,7 +5858,7 @@ void strength_of_the_warden( special_effect_t& effect )
 
   // R3 Minor, +3% max health to you (implemented) and other tank specializations characters in your raid (NYI)
   // There doesn't seem to be any buff associated with the health gain, similarly to Warriors' Indomitable talent
-  double health_gain = essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
+  double health_gain = essence.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
   effect.player -> resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + health_gain;
   effect.player -> recalculate_resource_max( RESOURCE_HEALTH );
 
@@ -6022,7 +6026,7 @@ double vision_of_perfection_cdr( const azerite_essence_t& essence )
   if ( essence.enabled() )
   {
     // Formula from tooltip
-    double cdr = ( essence.spell( 1u, essence_type::MINOR )->effectN( 1 ).average( essence.item() ) + 3320 ) / -100.0;
+    double cdr = ( essence.spell( 1U, essence_type::MINOR )->effectN( 1 ).average( essence.item() ) + 3320 ) / -100.0;
     // Clamped to 10 .. 25
     cdr = fmax( 10.0, fmin( 25.0, cdr ) );
     // return the negative percent

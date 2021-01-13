@@ -202,10 +202,10 @@ void event_manager_t::reschedule_event( event_t* e )
 
 bool event_manager_t::execute()
 {
-  unsigned n_events = 0u;
+  unsigned n_events = 0U;
 
-  static const unsigned MAX_EVENTS = 500u * (
-    sim->single_actor_batch ? 1u : sim->player_no_pet_list.size()
+  static const unsigned MAX_EVENTS = 500U * (
+    sim->single_actor_batch ? 1U : sim->player_no_pet_list.size()
   );
 
   while ( event_t* e = next_event() )
@@ -219,7 +219,7 @@ bool event_manager_t::execute()
     }
     else
     {
-      n_events = 0u;
+      n_events = 0U;
     }
 
     current_time = e->time;

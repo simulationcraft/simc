@@ -280,7 +280,8 @@ double mean_damage( const T& result )
 template <typename T, typename V>
 double mean_value( const T& results, const std::initializer_list<V>& selectors )
 {
-  double sum = 0, count = 0;
+  double sum = 0;
+  double count = 0;
 
   range::for_each( selectors, [ & ]( const V& selector ) {
     auto idx = static_cast<int>( selector );
@@ -391,7 +392,7 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   std::string critpct_str;
 
   // Create Merged Stat
-  if ( s.children.size() )
+  if ( !s.children.empty() )
   {
     auto compound_stats = std::make_unique<stats_t>( s.name_str + "_compound", s.player );
 
@@ -542,8 +543,8 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
   // Skip for abilities that do no damage
   if ( s.compound_amount > 0 || ( s.parent && s.parent->compound_amount > 0 ) )
   {
-    std::string compound_aps     = "";
-    std::string compound_aps_pct = "";
+    std::string compound_aps;
+    std::string compound_aps_pct;
     double cAPS                  = 0.0;
     double cAPSpct               = 0.0;
 
@@ -608,13 +609,13 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
   if ( p.sim->report_details )
   {
     // TODO: Transitional; Highcharts
-    std::string timeline_stat_aps_str = "";
+    std::string timeline_stat_aps_str;
     if ( !s.timeline_aps_chart.empty() )
     {
       timeline_stat_aps_str = "<img src=\"" + s.timeline_aps_chart + "\" alt=\"" +
         ( s.type == STATS_DMG ? "DPS" : "HPS" ) + " Timeline Chart\" />\n";
     }
-    std::string aps_distribution_str = "";
+    std::string aps_distribution_str;
     if ( !s.aps_distribution_chart.empty() )
     {
       aps_distribution_str = "<img src=\"" + s.aps_distribution_chart + "\" alt=\"" +
@@ -1121,7 +1122,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
       os << "</div>\n";  // Close details, damage/weapon, spell_data
     }
 
-    if ( expressions.size() )
+    if ( !expressions.empty() )
     {
       os << "<div>\n"
          << "<h4>Action Priority List</h4>\n";
@@ -1232,11 +1233,11 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       item_sim_desc += " }";
     }
 
-    if ( item.parsed.gem_stats.size() > 0 )
+    if ( !item.parsed.gem_stats.empty() )
     {
       item_sim_desc += ", gems: { ";
       item_sim_desc += item.gem_stats_str();
-      if ( item.socket_color_match() && item.parsed.socket_bonus_stats.size() > 0 )
+      if ( item.socket_color_match() && !item.parsed.socket_bonus_stats.empty() )
       {
         item_sim_desc += ", ";
         item_sim_desc += item.socket_bonus_stats_str();
@@ -1244,7 +1245,7 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       item_sim_desc += " }";
     }
 
-    if ( item.parsed.enchant_stats.size() > 0 )
+    if ( !item.parsed.enchant_stats.empty() )
     {
       item_sim_desc += ", enchant: { ";
       item_sim_desc += item.enchant_stats_str();
@@ -1286,7 +1287,7 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       item_sim_desc += " }";
     }
 
-    if ( item.parsed.azerite_ids.size() )
+    if ( !item.parsed.azerite_ids.empty() )
     {
       std::stringstream s;
       for ( size_t i = 0; i < item.parsed.azerite_ids.size(); ++i )
@@ -3084,7 +3085,7 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
 }
 
 void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t& b, const spell_data_t& data,
-                                       std::string data_name )
+                                       const std::string& data_name )
 {
   // Spelldata
   if ( data.ok() )
@@ -3396,7 +3397,7 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
   os << "</table>\n";
 
   // constant buffs
-  if ( !p.is_pet() && ri.constant_buffs.size() )
+  if ( !p.is_pet() && !ri.constant_buffs.empty() )
   {
     os << "<table class=\"sc stripebody\">\n"
        << "<thead>\n"

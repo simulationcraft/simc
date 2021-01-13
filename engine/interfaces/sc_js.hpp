@@ -73,9 +73,9 @@ struct sc_js_t
   sc_js_t& add( util::string_view path, const std::vector<T>& data );
 
   // Specializations for adding elements to a JSON array for various types
-  sc_js_t& add( util::string_view path, const rapidjson::Value& obj );
-  sc_js_t& add( util::string_view path, const sc_js_t& obj );
-  sc_js_t& add( util::string_view path, util::string_view value );
+  sc_js_t& add( util::string_view path, const rapidjson::Value& value_ );
+  sc_js_t& add( util::string_view path, const sc_js_t& value_ );
+  sc_js_t& add( util::string_view path, util::string_view value_ );
   sc_js_t& add( util::string_view path, double x, double low, double high );
   sc_js_t& add( util::string_view path, double x, double y );
 

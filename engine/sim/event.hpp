@@ -56,7 +56,7 @@ struct event_t : private noncopyable
   actor_t*    actor;
 #endif
   event_t( sim_t& s, actor_t* a = nullptr );
-  event_t( actor_t& p );
+  event_t( actor_t& a );
 
   // If possible, use one of the two following constructors, which directly
   // schedule the created event
@@ -74,7 +74,7 @@ struct event_t : private noncopyable
 
   void schedule( timespan_t delta_time );
 
-  void reschedule( timespan_t new_time );
+  void reschedule( timespan_t delta_time );
   sim_t& sim()
   { return _sim; }
   const sim_t& sim() const

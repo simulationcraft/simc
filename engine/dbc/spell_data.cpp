@@ -348,7 +348,7 @@ unsigned spelleffect_data_t::affected_schools() const
       break;
   }
 
-  return 0u;
+  return 0U;
 }
 
 const spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )

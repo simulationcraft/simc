@@ -81,7 +81,8 @@ namespace {
 
     const std::string url_name = data.url_name();
 
-    std::string prefix, suffix;
+    std::string prefix;
+    std::string suffix;
     {
       std::string tokenized_name = util::tokenize_fn(url_name);
       std::string obj_token = data.token();
@@ -382,22 +383,22 @@ namespace report_decorators {
 #endif
   }
 
-  std::string decorated_spell_name(const sim_t& sim, const spell_data_t& spell, util::string_view params_str)
+  std::string decorated_spell_name( const sim_t& sim, const spell_data_t& spell,
+                                    util::string_view additional_parameters )
   {
-    if (sim.decorated_tooltips == false)
+    if (sim.decorated_tooltips == 0)
     {
       return fmt::format("<a href=\"#\">{}</a>", util::encode_html(spell.name_cstr()));
     }
 
-    return fmt::format("<a href=\"https://{}.wowhead.com/spell={}{}{}\">{}</a>",
-                       decoration_domain(sim), spell.id(),
-                       params_str.empty() ? "" : "?", params_str,
-                       util::encode_html(spell.name_cstr()));
+    return fmt::format( "<a href=\"https://{}.wowhead.com/spell={}{}{}\">{}</a>", decoration_domain( sim ), spell.id(),
+                        additional_parameters.empty() ? "" : "?", additional_parameters,
+                        util::encode_html( spell.name_cstr() ) );
   }
 
   std::string decorated_item_name(const item_t* item)
   {
-    if (item->sim->decorated_tooltips == false || item->parsed.data.id == 0)
+    if (item->sim->decorated_tooltips == 0 || item->parsed.data.id == 0)
     {
       return fmt::format("<a style=\"color:{};\" href=\"#\">{}</a>",
                          item_quality_color(*item), util::encode_html(item->full_name()));
@@ -425,7 +426,7 @@ namespace report_decorators {
     fmt::memory_buffer buf;
     fmt::format_to(buf, "<a style=\"color:{};\" href=\"https://{}.wowhead.com/item={}",
                    item_quality_color(*item), decoration_domain(*item->sim), item->parsed.data.id);
-    if (params.size() > 0)
+    if (!params.empty())
     {
       fmt::format_to(buf, "?{}", fmt::join(params, "&"));
     }

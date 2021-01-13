@@ -91,7 +91,8 @@ struct compare_scale_factors
 
   bool operator()( const stat_e& l, const stat_e& r ) const
   {
-    double rv, lv;
+    double rv;
+    double lv;
 
     if ( normalized )
     {

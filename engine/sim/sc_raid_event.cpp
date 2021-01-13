@@ -241,7 +241,7 @@ struct adds_event_t final : public raid_event_t
     {
       for ( unsigned add = 0; add < util::ceil( count + count_range ); add++ )
       {
-        std::string add_name_str = "";
+        std::string add_name_str;
 
         if ( sim->add_waves > 1 &&
              name_str == "Add" )  // Only add wave to secondary wave that aren't given manual names.
@@ -742,7 +742,7 @@ struct movement_event_t final : public raid_event_t
       p->moving();
     }
 
-    if ( affected_players.size() > 0 )
+    if ( !affected_players.empty() )
     {
       make_event<movement_ticker_t>( *sim, *sim, affected_players );
     }
@@ -1133,7 +1133,8 @@ std::vector<raid_event_t*> get_longest_active_raid_events( const std::vector<rai
   }
 
   range::sort( result, []( const raid_event_t* l, const raid_event_t* r ) {
-    timespan_t lv = l->remains(), rv = r->remains();
+    timespan_t lv = l->remains();
+    timespan_t rv = r->remains();
     if ( lv == rv )
     {
       // Integer comparison to break ties

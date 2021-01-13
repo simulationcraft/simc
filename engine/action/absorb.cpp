@@ -10,11 +10,8 @@
 #include "player/sc_player.hpp"
 #include "sim/sc_sim.hpp"
 
-absorb_t::absorb_t(util::string_view token,
-  player_t* p,
-  const spell_data_t* s) :
-  spell_base_t(ACTION_ABSORB, token, p, s),
-  target_specific(false)
+absorb_t::absorb_t( util::string_view name, player_t* p, const spell_data_t* s )
+  : spell_base_t( ACTION_ABSORB, name, p, s ), target_specific( false )
 {
   if (sim->heal_target && target == sim->target)
   {

@@ -29,10 +29,8 @@ enum wowhead_e
   BETA
 };
 
-bool download_item( item_t&, wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
-bool download_item_data( item_t&            item,
-                         cache::behavior_e  caching,
-                         wowhead_e          source );
+bool download_item( item_t&, wowhead_e source = LIVE, cache::behavior_e cache_behavior = cache::items() );
+bool download_item_data( item_t& item, cache::behavior_e cache_behavior, wowhead_e source );
 
 std::string domain_str( wowhead_e domain );
 }

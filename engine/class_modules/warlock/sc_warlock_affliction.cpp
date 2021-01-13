@@ -951,7 +951,7 @@ void warlock_t::vision_of_perfection_proc_aff()
 {
   timespan_t summon_duration = spec.summon_darkglare->duration() * vision_of_perfection_multiplier;
 
-  warlock_pet_list.vop_darkglares.spawn( summon_duration, 1u );
+  warlock_pet_list.vop_darkglares.spawn( summon_duration, 1U );
 
   auto vop = find_azerite_essence( "Vision of Perfection" );
 

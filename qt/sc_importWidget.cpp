@@ -162,12 +162,7 @@ void BattleNetImportWidget::selectRegion( const QString& region )
 
 bool BattleNetImportWidget::validateInput() const
 {
-  if ( character().size() < 2 )
-  {
-    return false;
-  }
-
-  return true;
+  return character().size() >= 2;
 }
 
 void BattleNetImportWidget::realmIndexChanged( int index )

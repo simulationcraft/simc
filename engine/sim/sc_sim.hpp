@@ -451,7 +451,7 @@ struct sim_t : private sc_thread_t
 
   int allow_potions;
   int allow_food;
-  int allow_flasks;
+  bool allow_flasks;
   int allow_augmentations;
   int solo_raid;
   bool maximize_reporting;
@@ -602,7 +602,7 @@ struct sim_t : private sc_thread_t
   void      interrupt();
   void      add_relative( sim_t* cousin );
   void      remove_relative( sim_t* cousin );
-  sim_progress_t progress(std::string* phase = nullptr, int index = -1 );
+  sim_progress_t progress( std::string* detailed = nullptr, int index = -1 );
   double    progress( std::string& phase, std::string* detailed = nullptr, int index = -1 );
   void      detailed_progress( std::string*, int current_iterations, int total_iterations );
   void      datacollection_begin();

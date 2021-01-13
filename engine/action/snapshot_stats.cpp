@@ -111,7 +111,9 @@ void snapshot_stats_t::execute()
   buffed_stats.block = p->cache.block();
   buffed_stats.crit = p->cache.crit_avoidance();
 
-  double spell_hit_extra = 0, attack_hit_extra = 0, expertise_extra = 0;
+  double spell_hit_extra  = 0;
+  double attack_hit_extra = 0;
+  double expertise_extra  = 0;
 
   // The code below is not properly handling the case where the player has
   // so much Hit Rating or Expertise Rating that the extra amount of stat

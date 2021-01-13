@@ -3,10 +3,13 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
 #include "darkmoon_deck.hpp"
 #include "util/static_map.hpp"
 #include "util/string_view.hpp"
+
+#include <utility>
+
+#include "simulationcraft.hpp"
 
 using namespace unique_gear;
 
@@ -205,43 +208,8 @@ namespace set_bonus
   void march_of_the_legion( special_effect_t& );
   void journey_through_time( special_effect_t& ); // NYI
 
-  // Generic passive stat aura adder for set bonuses
-  void passive_stat_aura( special_effect_t& );
   // Simple callback creator for set bonuses
   void simple_callback( special_effect_t& );
-}
-
-// TODO: Ratings
-void set_bonus::passive_stat_aura( special_effect_t& effect )
-{
-  const spell_data_t* spell = effect.player -> find_spell( effect.spell_id );
-  stat_e stat = STAT_NONE;
-  // Sanity check for stat-giving aura, either stats or aura type 465 ("bonus armor")
-  if ( spell -> effectN( 1 ).subtype() != A_MOD_STAT || spell -> effectN( 1 ).subtype() == A_465 )
-  {
-    effect.type = SPECIAL_EFFECT_NONE;
-    return;
-  }
-
-  if ( spell -> effectN( 1 ).subtype() == A_MOD_STAT )
-  {
-    if ( spell -> effectN( 1 ).misc_value1() >= 0 )
-    {
-      stat = static_cast< stat_e >( spell -> effectN( 1 ).misc_value1() + 1 );
-    }
-    else if ( spell -> effectN( 1 ).misc_value1() == -1 )
-    {
-      stat = STAT_ALL;
-    }
-  }
-  else
-  {
-    stat = STAT_BONUS_ARMOR;
-  }
-
-  double amount = ::util::round( spell -> effectN( 1 ).average( effect.player, std::min( MAX_LEVEL, effect.player -> level() ) ) );
-
-  effect.player -> passive.add_stat( stat, amount );
 }
 
 void set_bonus::simple_callback( special_effect_t& effect )
@@ -980,7 +948,7 @@ struct thunder_ritual_impact_t : public proc_spell_t
     // Reset pair checking
     pair_buffed = false;
 
-    if( pair_multiplied == true && pair_icd -> up() )
+    if( pair_multiplied && pair_icd -> up() )
     {
       pair_buffed = true;
       pair_icd -> start();
@@ -1505,7 +1473,7 @@ void item::cradle_of_anguish( special_effect_t& effect )
 
   effect.player -> register_on_arise_callback( effect.player, [ buff, effect ]() {
     buff -> trigger( buff -> data().max_stacks() );
-    if ( buff -> sim -> legion_opts.cradle_of_anguish_resets.size() )
+    if ( !buff -> sim -> legion_opts.cradle_of_anguish_resets.empty() )
     {
       make_event<cradle_of_anguish_reset_t>( *buff -> sim, effect, buff );
       make_event<cradle_of_anguish_ticker_t>( *buff -> sim, buff,
@@ -2320,7 +2288,7 @@ struct riftworld_codex_callback_t : public dbc_proc_callback_t
   std::vector<buff_t*> buffs;
 
   riftworld_codex_callback_t( const special_effect_t& effect, std::vector<buff_t*> b ) :
-    dbc_proc_callback_t( effect.item, effect ), buffs( b )
+    dbc_proc_callback_t( effect.item, effect ), buffs( std::move(b) )
   {}
 
   void execute( action_t* /* a */, action_state_t* /* call_data */ ) override
@@ -2429,7 +2397,7 @@ struct majordomos_dinner_bell_t : proc_spell_t
   {
     struct common_buff_t : public stat_buff_t
     {
-      common_buff_t( player_t* p, std::string n, const spell_data_t* spell, const item_t* item, stat_e stat ) :
+      common_buff_t( player_t* p, const std::string& n, const spell_data_t* spell, const item_t* item, stat_e stat ) :
         stat_buff_t ( p, "deathbringers_will_" + n, spell )
       {
         const double buff_amount = item_database::apply_combat_rating_multiplier(*item,
@@ -2460,12 +2428,12 @@ struct majordomos_dinner_bell_t : proc_spell_t
     if ( player -> consumables.food && player -> role == ROLE_TANK )
     {
       const stat_buff_t* food_buff = dynamic_cast<stat_buff_t*>( player -> consumables.food );
-      if ( food_buff && food_buff -> stats.size() > 0 )
+      if ( food_buff && !food_buff -> stats.empty() )
       {
         const stat_e food_stat = food_buff -> stats.front().stat;
         // Check if the food buff matches one of the trinket's stat buffs
         const auto index_buffs = range::find_if(buffs, [food_stat](const stat_buff_t* buff) {
-          if ( buff -> stats.size() > 0 )
+          if ( !buff -> stats.empty() )
             return buff -> stats.front().stat == food_stat;
           else
             return false;
@@ -2499,7 +2467,7 @@ struct memento_callback_t : public dbc_proc_callback_t
   std::vector<buff_t*> buffs;
 
   memento_callback_t( const special_effect_t& effect, std::vector<buff_t*> b ) :
-    dbc_proc_callback_t( effect.item, effect ), buffs( b )
+    dbc_proc_callback_t( effect.item, effect ), buffs( std::move(b) )
   {}
 
   void execute( action_t* /* a */, action_state_t* /* call_data */ ) override
@@ -3900,7 +3868,7 @@ void item::draught_of_souls( special_effect_t& effect )
         } );
 
         auto random_idx = rng().range(size_t(), targets.size() );
-        return targets.size() ? targets[ random_idx ] : nullptr;
+        return !targets.empty() ? targets[ random_idx ] : nullptr;
       }
       else
       {
@@ -4451,7 +4419,7 @@ struct natures_call_callback_t : public dbc_proc_callback_t
   std::vector<natures_call_proc_t*> procs;
 
   natures_call_callback_t( const special_effect_t& effect, std::vector<natures_call_proc_t*> p ) :
-    dbc_proc_callback_t( effect.item, effect ), procs( p )
+    dbc_proc_callback_t( effect.item, effect ), procs( std::move(p) )
   {}
 
   void execute( action_t* /* a */, action_state_t* call_data ) override
@@ -5123,7 +5091,7 @@ struct convergence_of_fates_callback_t : public dbc_proc_callback_t
 
   void execute( action_t*, action_state_t* ) override
   {
-    assert( cooldowns.size() > 0 );
+    assert( !cooldowns.empty() );
 
     for ( size_t i = 0; i < cooldowns.size(); i++ )
     {

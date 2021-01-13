@@ -25,7 +25,8 @@ specialization_spell_entry_t::find( util::string_view name,
 {
   auto __data = data( ptr );
 
-  std::string cmp_str, desc_cmp_str;
+  std::string cmp_str;
+  std::string desc_cmp_str;
   if ( tokenized )
   {
     cmp_str = util::tokenize_fn( name );

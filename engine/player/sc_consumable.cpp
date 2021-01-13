@@ -487,7 +487,7 @@ struct flask_base_t : public dbc_consumable_base_t
   }
 
   bool disabled_consumable() const override
-  { return dbc_consumable_base_t::disabled_consumable() || sim -> allow_flasks == false; }
+  { return dbc_consumable_base_t::disabled_consumable() || !sim -> allow_flasks; }
 
   // Figure out the default consumable for flasks
   std::string consumable_default() const override
@@ -633,7 +633,7 @@ struct potion_t : public dbc_consumable_base_t
   }
 
   bool disabled_consumable() const override
-  { return dbc_consumable_base_t::disabled_consumable() || sim -> allow_potions == false; }
+  { return dbc_consumable_base_t::disabled_consumable() || !static_cast<bool>(sim -> allow_potions); }
 
   std::string consumable_default() const override
   {
@@ -711,7 +711,7 @@ struct potion_t : public dbc_consumable_base_t
     if ( !player->in_combat )
       cd_duration = cooldown->duration - pre_pot_time;
 
-    action_t::update_ready( cd_duration );
+    dbc_consumable_base_t::update_ready( cd_duration );
   }
 
   // Overwrite with fanciful execution due to prepotting
@@ -761,7 +761,7 @@ struct augmentation_t : public dbc_consumable_base_t
 
   bool disabled_consumable() const override
   {
-    return dbc_consumable_base_t::disabled_consumable() || sim -> allow_augmentations == false;
+    return dbc_consumable_base_t::disabled_consumable() || !static_cast<bool>(sim -> allow_augmentations);
   }
 
   std::string consumable_default() const override
@@ -837,7 +837,7 @@ struct food_t : public dbc_consumable_base_t
   }
 
   bool disabled_consumable() const override
-  { return dbc_consumable_base_t::disabled_consumable() || sim -> allow_food == false; }
+  { return dbc_consumable_base_t::disabled_consumable() || !static_cast<bool>(sim -> allow_food); }
 
   std::string consumable_default() const override
   {

@@ -11,14 +11,14 @@ SC_enumeratedTabBase::SC_enumeratedTabBase( QWidget* parent ) : QTabWidget( pare
 {
 }
 
-void SC_enumeratedTabBase::addIgnoreKeyPressEvent( Qt::Key k, QList<Qt::KeyboardModifier> s )
+void SC_enumeratedTabBase::addIgnoreKeyPressEvent( Qt::Key k, const QList<Qt::KeyboardModifier>& s )
 {
   QPair<Qt::Key, QList<Qt::KeyboardModifier> > p( k, s );
   if ( !ignoreKeys.contains( p ) )
     ignoreKeys.push_back( p );
 }
 
-bool SC_enumeratedTabBase::removeIgnoreKeyPressEvent( Qt::Key k, QList<Qt::KeyboardModifier> s )
+bool SC_enumeratedTabBase::removeIgnoreKeyPressEvent( Qt::Key k, const QList<Qt::KeyboardModifier>& s )
 {
   QPair<Qt::Key, QList<Qt::KeyboardModifier> > p( k, s );
   return ignoreKeys.removeAll( p );
@@ -45,7 +45,7 @@ void SC_enumeratedTabBase::keyPressEvent( QKeyEvent* e )
 
       for ( ; j != ( *i ).second.end(); ++j )
       {
-        if ( m.testFlag( ( *j ) ) == false )
+        if ( !m.testFlag( ( *j ) ) )
         {
           passModifiers = false;
           break;

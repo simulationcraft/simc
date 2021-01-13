@@ -24,7 +24,7 @@ void        to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t* par
 std::string talent_to_str( const dbc_t& dbc, const talent_data_t* talent, int level );
 std::string set_bonus_to_str( const dbc_t& dbc, const item_set_bonus_t* set_bonus, int level );
 void        talent_to_xml( const dbc_t& dbc, const talent_data_t* talent, xml_node_t* parent, int level );
-void        set_bonus_to_xml( const dbc_t& dbc, const item_set_bonus_t* talent, xml_node_t* parent, int level );
+void set_bonus_to_xml( const dbc_t& dbc, const item_set_bonus_t* set_bonus, xml_node_t* parent, int level );
 std::ostringstream& effect_to_str( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s, int level );
 void                effect_to_xml( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* effect, xml_node_t*    parent, int level );
 }

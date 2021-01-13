@@ -14,22 +14,18 @@
 #include "sim/sc_sim.hpp"
 #include "util/rng.hpp"
 
-heal_t::heal_t(util::string_view token,
-  player_t* p) :
-  heal_t(token, p, spell_data_t::nil())
+heal_t::heal_t( util::string_view name, player_t* p ) : heal_t( name, p, spell_data_t::nil() )
 {
 
 }
 
-heal_t::heal_t(util::string_view token,
-  player_t* p,
-  const spell_data_t* s) :
-  spell_base_t(ACTION_HEAL, token, p, s),
-  group_only(),
-  record_healing(),
-  base_pct_heal(),
-  tick_pct_heal(),
-  heal_gain(p -> get_gain(name()))
+heal_t::heal_t( util::string_view name, player_t* p, const spell_data_t* s )
+  : spell_base_t( ACTION_HEAL, name, p, s ),
+    group_only(),
+    record_healing(),
+    base_pct_heal(),
+    tick_pct_heal(),
+    heal_gain( p->get_gain( name ) )
 {
   if (sim->heal_target && target == sim->target)
     target = sim->heal_target;

@@ -759,23 +759,14 @@ struct crusader_strike_t : public paladin_melee_attack_t
 {
   bool has_crusader_2;
   crusader_strike_t( paladin_t* p, const std::string& options_str ) :
-    paladin_melee_attack_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ) )
+    paladin_melee_attack_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ) ),
+    has_crusader_2( p -> find_specialization_spell( 342348 )->ok() )
   {
     parse_options( options_str );
 
     if ( p -> talents.fires_of_justice -> ok() )
     {
       cooldown -> duration *= 1.0 + p -> talents.fires_of_justice -> effectN( 3 ).percent();
-    }
-
-    const spell_data_t* crusader_strike_2 = p -> find_specialization_spell( 342348 );
-    if ( crusader_strike_2 )
-    {
-      has_crusader_2 = true;
-    }
-    else
-    {
-      has_crusader_2 = false;
     }
 
     const spell_data_t* crusader_strike_3 = p -> find_specialization_spell( 231667 );
@@ -1307,7 +1298,7 @@ struct blessing_of_summer_proc_t : public paladin_spell_t
     background = true;
   }
 
-  virtual void init() override
+  void init() override
   {
     paladin_spell_t::init();
     snapshot_flags &= STATE_NO_MULTIPLIER;
@@ -1377,7 +1368,7 @@ struct blessing_of_winter_proc_t : public paladin_spell_t
     background = true;
   }
 
-  virtual void init() override
+  void init() override
   {
     paladin_spell_t::init();
 
@@ -1386,13 +1377,13 @@ struct blessing_of_winter_proc_t : public paladin_spell_t
   }
 
   // Uses max(AP, SP)
-  virtual double attack_direct_power_coefficient( const action_state_t* s ) const
+  double attack_direct_power_coefficient( const action_state_t* s ) const override
   {
     if ( s -> attack_power < s -> spell_power ) return 0;
     return data().effectN( 2 ).percent();
   }
 
-  virtual double spell_direct_power_coefficient( const action_state_t* s ) const
+  double spell_direct_power_coefficient( const action_state_t* s ) const override
   {
     if ( s -> spell_power <= s -> attack_power ) return 0;
     return data().effectN( 2 ).percent();
@@ -1786,8 +1777,8 @@ void paladin_t::trigger_memory_of_lucid_dreams( double cost )
 void paladin_t::vision_of_perfection_proc()
 {
   auto vision = azerite_essence.vision_of_perfection;
-  double vision_multiplier = vision.spell( 1u, essence_type::MAJOR ) -> effectN( 1 ).percent() +
-                             vision.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR ) -> effectN( 1 ).percent();
+  double vision_multiplier = vision.spell( 1U, essence_type::MAJOR ) -> effectN( 1 ).percent() +
+                             vision.spell( 2U, essence_spell::UPGRADE, essence_type::MAJOR ) -> effectN( 1 ).percent();
   if ( vision_multiplier <= 0 )
     return;
 
@@ -2298,7 +2289,7 @@ void paladin_t::init_spells()
 
   // Essences
   azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-  lucid_dreams_minor_refund_coeff = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR ) -> effectN( 1 ).percent();
+  lucid_dreams_minor_refund_coeff = azerite_essence.memory_of_lucid_dreams.spell( 1U, essence_type::MINOR ) -> effectN( 1 ).percent();
   azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
 
   // Shadowlands legendaries
@@ -3055,17 +3046,17 @@ std::unique_ptr<expr_t> paladin_t::create_consecration_expression( util::string_
     return nullptr;
   }
 
-  if ( ! util::str_compare_ci( expr[ 0u ], "consecration" ) )
+  if ( ! util::str_compare_ci( expr[ 0U ], "consecration" ) )
   {
     return nullptr;
   }
 
-  if ( util::str_compare_ci( expr[ 1u ], "ticking" ) ||
-       util::str_compare_ci( expr[ 1u ], "up" ) )
+  if ( util::str_compare_ci( expr[ 1U ], "ticking" ) ||
+       util::str_compare_ci( expr[ 1U ], "up" ) )
   {
     return make_fn_expr( "consecration_ticking", [ this ]() { return active_consecration == nullptr ? 0 : 1; } );
   }
-  else if ( util::str_compare_ci( expr[ 1u ], "remains" ) )
+  else if ( util::str_compare_ci( expr[ 1U ], "remains" ) )
   {
     return make_fn_expr( "consecration_remains", [ this ]() {
       return active_consecration == nullptr ? 0 : active_consecration -> remaining_time().total_seconds();
@@ -3274,7 +3265,7 @@ public:
   void html_customsection( report::sc_html_stream& os ) override
   {
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
-    if ( p.cooldown_waste_data_list.size() > 0 )
+    if ( !p.cooldown_waste_data_list.empty() )
     {
       os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown waste details</h3>\n"
          << "\t\t\t\t\t<div class=\"toggle-content\">\n";

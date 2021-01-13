@@ -28,10 +28,7 @@ struct buff_is_dynamic
 {
   bool operator()( const buff_t* b ) const
   {
-    if ( !b->quiet && b->avg_start.sum() && !b->constant )
-      return false;
-
-    return true;
+    return !(!b->quiet && b->avg_start.sum() && !b->constant);
   }
 };
 
@@ -39,10 +36,7 @@ struct buff_is_constant
 {
   bool operator()( const buff_t* b ) const
   {
-    if ( !b->quiet && b->avg_start.sum() && b->constant )
-      return false;
-
-    return true;
+    return !(!b->quiet && b->avg_start.sum() && b->constant);
   }
 };
 
@@ -354,7 +348,7 @@ std::string report_helper::pretty_spell_text( const spell_data_t& default_spell,
 bool report_helper::check_gear( player_t& p, sim_t& sim )
 {
   // TODO: Add renown check?
-  std::string tier_name    = "";
+  std::string tier_name;
   unsigned int max_ilevel_allowed = 0;
   unsigned int legendary_ilevel   = 0;
   int max_gems                    = 0;
@@ -610,8 +604,7 @@ std::vector<std::string> report_helper::beta_warnings()
                                  "Some class action lists need tweaking.",
                                  "Some class BiS gear setups need tweaking.",
                                  "Some trinkets not yet implemented.",
-                                 "Constructive feedback regarding our output will shorten the Beta phase "
-                                 "dramatically.",
+                                 "Constructive feedback regarding our output will shorten the Beta phase dramatically.",
                                  "Beta! Beta! Beta! Beta! Beta! Beta!" };
   return s;
 }

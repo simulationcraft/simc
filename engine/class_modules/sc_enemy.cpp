@@ -86,7 +86,7 @@ struct enemy_t : public player_t
   void combat_end() override;
   virtual void recalculate_health();
   void demise() override;
-  std::unique_ptr<expr_t> create_expression( util::string_view type ) override;
+  std::unique_ptr<expr_t> create_expression( util::string_view expression_str ) override;
   timespan_t available() const override
   {
     return waiting_time;
@@ -94,7 +94,7 @@ struct enemy_t : public player_t
 
   void actor_changed() override
   {
-    if ( sim->overrides.target_health.size() > 0 )
+    if ( !sim->overrides.target_health.empty() )
     {
       initial_health =
           static_cast<double>( sim->overrides.target_health[ enemy_id % sim->overrides.target_health.size() ] );
@@ -164,7 +164,7 @@ struct enemy_action_t : public ACTION_TYPE
   std::string filter_options_list( util::string_view options_str )
   {
     auto splits = util::string_split<util::string_view>( options_str, "," );
-    std::string filtered_options    = "";
+    std::string filtered_options;
     for ( auto split : splits )
     {
       if ( !util::str_in_str_ci( split, "if=" ) )
@@ -344,7 +344,7 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
 
     this->interrupt_auto_attack = false;
     // if there are no valid targets, disable
-    if ( ch_list.size() < 1 )
+    if ( ch_list.empty() )
       this->background = true;
   }
 
@@ -381,7 +381,7 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
           rt_list.erase( rt_list.begin() + element );
 
           // infinte loop check
-          if ( rt_list.size() == 0 )
+          if ( rt_list.empty() )
             break;
         }
       }
@@ -488,7 +488,7 @@ struct auto_attack_t : public enemy_action_t<attack_t>
       mh_list.push_back( mh );
     }
 
-    if ( mh_list.size() > 0 )
+    if ( !mh_list.empty() )
       p->main_hand_attack = mh_list[ 0 ];
   }
 
@@ -1195,7 +1195,7 @@ void enemy_t::init_base_stats()
 
   base.attack_crit_chance = 0.05;
 
-  if ( sim->overrides.target_health.size() > 0 )
+  if ( !sim->overrides.target_health.empty() )
   {
     initial_health =
         static_cast<double>( sim->overrides.target_health[ enemy_id % sim->overrides.target_health.size() ] );
@@ -1207,7 +1207,7 @@ void enemy_t::init_base_stats()
 
   if ( this == sim->target )
   {
-    if ( sim->overrides.target_health.size() > 0 || fixed_health > 0 )
+    if ( !sim->overrides.target_health.empty() || fixed_health > 0 )
     {
       sim->print_debug( "Setting vary_combat_length forcefully to 0.0 because fixed health simulation was detected." );
 
@@ -1316,7 +1316,7 @@ void enemy_t::generate_heal_raid_event()
 
 std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
 {
-  std::string als                 = "";
+  std::string als;
   constexpr size_t numTankDummies = static_cast<size_t>( tank_dummy_e::MAX );
   //                               NONE, WEAK,           DUNGEON,  RAID,   HEROIC, MYTHIC
   //                               NONE, Normal Dungeon, Mythic 0, Normal, Heroic, Mythic
@@ -1351,7 +1351,7 @@ void enemy_t::add_tank_heal_raid_event( tank_dummy_e tank_dummy )
   std::string heal_raid_event = fmt::format( "heal,name=tank_heal,amount={},period=0.5,duration=0,player_if=role.tank",
                                              heal_value[ tank_dummy_index ] );
   sim->raid_events_str += "/" + heal_raid_event;
-  std::string::size_type cut_pt = heal_raid_event.find_first_of( "," );
+  std::string::size_type cut_pt = heal_raid_event.find_first_of( ',' );
   auto heal_options             = heal_raid_event.substr( cut_pt + 1 );
   auto heal_name                = heal_raid_event.substr( 0, cut_pt );
   auto raid_event               = raid_event_t::create( sim, heal_name, heal_options );
@@ -1428,7 +1428,7 @@ void enemy_t::init_action_list()
     // Only do this if the user hasn't specified additional action lists beyond precombat & default
     if ( tanks.size() > 1 && action_priority_list.size() < 3 )
     {
-      std::string new_action_list_str = "";
+      std::string new_action_list_str;
 
       // split the action_list_str into individual actions so we can modify each later
       auto splits = util::string_split<util::string_view>( action_list_str, "/" );
@@ -1615,20 +1615,20 @@ bool enemy_t::taunt( player_t* source )
 
 // enemy_t::create_expression ===============================================
 
-std::unique_ptr<expr_t> enemy_t::create_expression( util::string_view name_str )
+std::unique_ptr<expr_t> enemy_t::create_expression( util::string_view expression_str )
 {
-  if ( name_str == "adds" )
-    return make_mem_fn_expr( name_str, active_pets, &std::vector<pet_t*>::size );
+  if ( expression_str == "adds" )
+    return make_mem_fn_expr( expression_str, active_pets, &std::vector<pet_t*>::size );
 
   // override enemy health.pct expression
-  if ( name_str == "health.pct" )
-    return make_mem_fn_expr( name_str, *this, &enemy_t::health_percentage );
+  if ( expression_str == "health.pct" )
+    return make_mem_fn_expr( expression_str, *this, &enemy_t::health_percentage );
 
   // current target (for tank/taunting purposes)
-  if ( name_str == "current_target" )
-    return make_ref_expr( name_str, current_target );
+  if ( expression_str == "current_target" )
+    return make_ref_expr( expression_str, current_target );
 
-  auto splits = util::string_split<util::string_view>( name_str, "." );
+  auto splits = util::string_split<util::string_view>( expression_str, "." );
 
   if ( splits[ 0 ] == "current_target" )
   {
@@ -1680,7 +1680,7 @@ std::unique_ptr<expr_t> enemy_t::create_expression( util::string_view name_str )
     }
   }
 
-  return player_t::create_expression( name_str );
+  return player_t::create_expression( expression_str );
 }
 
 // enemy_t::combat_begin ====================================================
@@ -1698,7 +1698,7 @@ void enemy_t::combat_end()
 {
   player_t::combat_end();
 
-  if ( !sim->overrides.target_health.size() )
+  if ( sim->overrides.target_health.empty() )
     recalculate_health();
 }
 
@@ -1706,7 +1706,7 @@ void enemy_t::demise()
 {
   if ( this == sim->target )
   {
-    if ( sim->current_iteration != 0 || sim->overrides.target_health.size() > 0 || fixed_health > 0 )
+    if ( sim->current_iteration != 0 || !sim->overrides.target_health.empty() || fixed_health > 0 )
       // For the main target, end simulation on death.
       sim->cancel_iteration();
   }

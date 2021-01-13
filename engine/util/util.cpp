@@ -2306,7 +2306,8 @@ bool util::socket_gem_match( item_socket_color socket, item_socket_color gem )
 std::vector<std::string> util::string_split_allow_quotes( util::string_view str_, util::string_view delim )
 {
   std::vector<std::string> results;
-  util::string_view::size_type cut_pt, start = 0;
+  util::string_view::size_type cut_pt;
+  util::string_view::size_type start = 0;
 
   std::string buffer;
 
@@ -2923,16 +2924,22 @@ std::string util::encode_html( util::string_view s )
 
 // floor ====================================================================
 
-double util::floor( double X, unsigned int decplaces )
+double util::floor( double arg, unsigned int decplaces )
 {
   switch ( decplaces )
   {
-    case 0: return ::floor( X );
-    case 1: return ::floor( X * 10.0 ) * 0.1;
-    case 2: return ::floor( X * 100.0 ) * 0.01;
-    case 3: return ::floor( X * 1000.0 ) * 0.001;
-    case 4: return ::floor( X * 10000.0 ) * 0.0001;
-    case 5: return ::floor( X * 100000.0 ) * 0.00001;
+    case 0:
+      return ::floor( arg );
+    case 1:
+      return ::floor( arg * 10.0 ) * 0.1;
+    case 2:
+      return ::floor( arg * 100.0 ) * 0.01;
+    case 3:
+      return ::floor( arg * 1000.0 ) * 0.001;
+    case 4:
+      return ::floor( arg * 10000.0 ) * 0.0001;
+    case 5:
+      return ::floor( arg * 100000.0 ) * 0.00001;
     default:
       double mult = 1000000.0;
       double div = 0.000001;
@@ -2941,22 +2948,28 @@ double util::floor( double X, unsigned int decplaces )
         mult *= 10.0;
         div *= 0.1;
       }
-      return ::floor( X * mult ) * div;
+      return ::floor( arg * mult ) * div;
   }
 }
 
 // ceil =====================================================================
 
-double util::ceil( double X, unsigned int decplaces )
+double util::ceil( double arg, unsigned int decplaces )
 {
   switch ( decplaces )
   {
-    case 0: return ::ceil( X );
-    case 1: return ::ceil( X * 10.0 ) * 0.1;
-    case 2: return ::ceil( X * 100.0 ) * 0.01;
-    case 3: return ::ceil( X * 1000.0 ) * 0.001;
-    case 4: return ::ceil( X * 10000.0 ) * 0.0001;
-    case 5: return ::ceil( X * 100000.0 ) * 0.00001;
+    case 0:
+      return ::ceil( arg );
+    case 1:
+      return ::ceil( arg * 10.0 ) * 0.1;
+    case 2:
+      return ::ceil( arg * 100.0 ) * 0.01;
+    case 3:
+      return ::ceil( arg * 1000.0 ) * 0.001;
+    case 4:
+      return ::ceil( arg * 10000.0 ) * 0.0001;
+    case 5:
+      return ::ceil( arg * 100000.0 ) * 0.00001;
     default:
       double mult = 1000000.0;
       double div = 0.000001;
@@ -2965,22 +2978,28 @@ double util::ceil( double X, unsigned int decplaces )
         mult *= 10.0;
         div *= 0.1;
       }
-      return ::ceil( X * mult ) * div;
+      return ::ceil( arg * mult ) * div;
   }
 }
 
 // round ====================================================================
 
-double util::round( double X, unsigned int decplaces )
+double util::round( double arg, unsigned int decplaces )
 {
   switch ( decplaces )
   {
-    case 0: return ::floor( X + 0.5 );
-    case 1: return ::floor( X * 10.0 + 0.5 ) * 0.1;
-    case 2: return ::floor( X * 100.0 + 0.5 ) * 0.01;
-    case 3: return ::floor( X * 1000.0 + 0.5 ) * 0.001;
-    case 4: return ::floor( X * 10000.0 + 0.5 ) * 0.0001;
-    case 5: return ::floor( X * 100000.0 + 0.5 ) * 0.00001;
+    case 0:
+      return ::floor( arg + 0.5 );
+    case 1:
+      return ::floor( arg * 10.0 + 0.5 ) * 0.1;
+    case 2:
+      return ::floor( arg * 100.0 + 0.5 ) * 0.01;
+    case 3:
+      return ::floor( arg * 1000.0 + 0.5 ) * 0.001;
+    case 4:
+      return ::floor( arg * 10000.0 + 0.5 ) * 0.0001;
+    case 5:
+      return ::floor( arg * 100000.0 + 0.5 ) * 0.00001;
     default:
       double mult = 1000000.0;
       double div = 0.000001;
@@ -2989,7 +3008,7 @@ double util::round( double X, unsigned int decplaces )
         mult *= 10.0;
         div *= 0.1;
       }
-      return ::floor( X * mult + 0.5 ) * div;
+      return ::floor( arg * mult + 0.5 ) * div;
   }
 }
 
@@ -3189,7 +3208,7 @@ void util::print_chained_exception( const std::exception& e, std::ostream& out, 
   } catch(...) {}
 }
 
-void util::print_chained_exception( std::exception_ptr eptr, std::ostream& out, int level)
+void util::print_chained_exception( const std::exception_ptr& eptr, std::ostream& out, int level)
 {
   try
   {
@@ -3316,20 +3335,20 @@ bool is_horde( race_e race )
 // Approximation of square root 
 // Used in calculation of distances instead of std::sqrt as it is significantly
 // faster and also returns similar values
-double approx_sqrt(double number)
+double approx_sqrt( double arg )
 {
-  if (number > 0.0)
+  if ( arg > 0.0 )
   {
-    float xhalf = 0.5f * static_cast<float>(number);
+    float xhalf = 0.5F * static_cast<float>( arg );
     union
     {
       float x;
       int i;
     } u;
-    u.x = static_cast<float>(number);
+    u.x = static_cast<float>( arg );
     u.i = 0x5f3759df - (u.i >> 1);
-    u.x = u.x * (1.5f - xhalf * u.x * u.x);
-    return static_cast<double>(u.x * number);
+    u.x = u.x * (1.5F - xhalf * u.x * u.x);
+    return static_cast<double>( u.x * arg );
   }
   return 0.0;
 }

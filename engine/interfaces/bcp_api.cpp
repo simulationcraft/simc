@@ -84,8 +84,8 @@ static constexpr struct {
   };
 } LOCALES;
 
-static std::string token_path = "";
-static std::string token = "";
+static std::string token_path;
+static std::string token;
 static bool authorization_failed = false;
 mutex_t token_mutex;
 
@@ -161,7 +161,7 @@ void authorize( sim_t* sim, const std::string& region )
     auto pool = http::pool();
     auto handle = pool->handle( oauth_endpoint );
 
-    handle->set_basic_auth( sim->apikey.c_str() );
+    handle->set_basic_auth( sim->apikey );
     auto res = handle->post( oauth_endpoint,
       "grant_type=client_credentials", "application/x-www-form-urlencoded" );
 
@@ -445,7 +445,7 @@ void parse_talents( player_t* p, const player_spec_t& spec_info, const std::stri
 
     const auto& talents = spec_data[ "talents" ];
 
-    for ( auto talent_idx = 0u, talent_end = talents.Size(); talent_idx < talent_end; ++talent_idx )
+    for ( auto talent_idx = 0U, talent_end = talents.Size(); talent_idx < talent_end; ++talent_idx )
     {
       const auto& talent_data = talents[ talent_idx ];
 
@@ -506,7 +506,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
     return;
   }
 
-  for ( auto idx = 0u, end = equipment_data[ "equipped_items" ].Size(); idx < end; ++idx )
+  for ( auto idx = 0U, end = equipment_data[ "equipped_items" ].Size(); idx < end; ++idx )
   {
     const auto& slot_data = equipment_data[ "equipped_items" ][ idx ];
 
@@ -538,7 +538,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
 
     if ( slot_data.HasMember( "bonus_list" ) )
     {
-      for ( auto bonus_idx = 0u, end = slot_data[ "bonus_list" ].Size(); bonus_idx < end; ++bonus_idx )
+      for ( auto bonus_idx = 0U, end = slot_data[ "bonus_list" ].Size(); bonus_idx < end; ++bonus_idx )
       {
         item.parsed.bonus_id.push_back( slot_data[ "bonus_list" ][ bonus_idx ].GetInt() );
       }
@@ -546,7 +546,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
 
     if ( slot_data.HasMember( "enchantments" ) )
     {
-      for ( auto ench_idx = 0u, end = slot_data[ "enchantments" ].Size(); ench_idx < end; ++ench_idx )
+      for ( auto ench_idx = 0U, end = slot_data[ "enchantments" ].Size(); ench_idx < end; ++ench_idx )
       {
         const auto& ench_data = slot_data[ "enchantments" ][ ench_idx ];
 
@@ -577,7 +577,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
 
     if ( slot_data.HasMember( "sockets" ) )
     {
-      for ( auto gem_idx = 0u, end = slot_data[ "sockets" ].Size(); gem_idx < end; ++gem_idx )
+      for ( auto gem_idx = 0U, end = slot_data[ "sockets" ].Size(); gem_idx < end; ++gem_idx )
       {
         const auto& socket_data = slot_data[ "sockets" ][ gem_idx ];
         if ( !socket_data.HasMember( "item" ) )
@@ -594,7 +594,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
 
         if ( socket_data.HasMember( "bonus_list" ) )
         {
-          for ( auto gbonus_idx = 0u, end = socket_data[ "bonus_list" ].Size(); gbonus_idx < end; ++gbonus_idx )
+          for ( auto gbonus_idx = 0U, end = socket_data[ "bonus_list" ].Size(); gbonus_idx < end; ++gbonus_idx )
           {
             item.parsed.gem_bonus_id[ gem_idx ].push_back( socket_data[ "bonus_list" ][ gbonus_idx ].GetInt() );
           }
@@ -604,7 +604,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
 
     if ( slot_data.HasMember( "modified_crafting_stat" ) )
     {
-      for ( auto idx = 0u, end = slot_data[ "modified_crafting_stat" ].Size(); idx < end; ++idx )
+      for ( auto idx = 0U, end = slot_data[ "modified_crafting_stat" ].Size(); idx < end; ++idx )
       {
         const auto& stat_data = slot_data[ "modified_crafting_stat" ][ idx ];
         item.parsed.crafted_stat_mod.push_back( stat_data[ "id" ].GetInt() );
@@ -927,7 +927,7 @@ void download_item_data( item_t& item, cache::behavior_e caching )
       const rapidjson::Value& damage = weaponInfo[ "damage" ];
       if ( ! damage.HasMember( "exactMin" ) ) throw( "weapon minimum damage" );
 
-      item.parsed.data.delay = weaponInfo[ "weaponSpeed" ].GetFloat() * 1000.0f;
+      item.parsed.data.delay = weaponInfo[ "weaponSpeed" ].GetFloat() * 1000.0F;
       item.parsed.data.dmg_range = 2 - 2 * damage[ "exactMin" ].GetFloat() / ( weaponInfo[ "dps" ].GetFloat() * weaponInfo[ "weaponSpeed" ].GetFloat() );
     }
 
@@ -1140,13 +1140,9 @@ slot_e bcp_api::translate_api_slot( const std::string& slot_str )
 
 // bcp_api::download_player =================================================
 
-player_t* bcp_api::download_player(sim_t* sim,
-  const std::string& region,
-  const std::string& server,
-  const std::string& name,
-  const std::string& talents,
-  cache::behavior_e  caching,
-  bool               allow_failures)
+player_t* bcp_api::download_player( sim_t* sim, const std::string& region, const std::string& server,
+                                    const std::string& name, const std::string& talents,
+                                    cache::behavior_e cache_behavior, bool allow_failures )
 {
   sim->current_name = name;
 
@@ -1190,7 +1186,7 @@ player_t* bcp_api::download_player(sim_t* sim,
   player.name = name;
   player.talent_spec = talents;
 
-  return parse_player( sim, player, caching, allow_failures );
+  return parse_player( sim, player, cache_behavior, allow_failures );
 }
 
 // bcp_api::from_local_json =================================================
@@ -1260,11 +1256,11 @@ player_t* bcp_api::from_local_json( sim_t*             sim,
 
 // bcp_api::download_item() =================================================
 
-bool bcp_api::download_item( item_t& item, cache::behavior_e caching )
+bool bcp_api::download_item( item_t& item, cache::behavior_e cache_behavior )
 {
   try
   {
-    download_item_data( item, caching );
+    download_item_data( item, cache_behavior );
     item.source_str = "Blizzard";
 
     for ( const auto& id : item.parsed.bonus_id)
@@ -1288,14 +1284,9 @@ bool bcp_api::download_item( item_t& item, cache::behavior_e caching )
 
 // bcp_api::download_guild ==================================================
 
-bool bcp_api::download_guild( sim_t* sim,
-                              const std::string& region,
-                              const std::string& server,
-                              const std::string& name,
-                              const std::vector<int>& ranks,
-                              int player_filter,
-                              int max_rank,
-                              cache::behavior_e caching )
+bool bcp_api::download_guild( sim_t* sim, const std::string& region, const std::string& server, const std::string& name,
+                              const std::vector<int>& ranks, int player_type_filter, int max_rank,
+                              cache::behavior_e cache_behavior )
 {
   rapidjson::Document js;
 
@@ -1310,7 +1301,7 @@ bool bcp_api::download_guild( sim_t* sim,
   auto normalized_server = server;
   util::tolower( normalized_server );
 
-  download_roster( js, sim, region, normalized_server, normalized_name, caching );
+  download_roster( js, sim, region, normalized_server, normalized_name, cache_behavior );
 
   if ( !check_for_error( js ) )
   {
@@ -1349,8 +1340,8 @@ bool bcp_api::download_guild( sim_t* sim,
     if ( ! character.HasMember( "name" ) )
       continue;
 
-    if ( player_filter != PLAYER_NONE &&
-         player_filter != util::translate_class_id( character[ "class" ].GetInt() ) )
+    if ( player_type_filter != PLAYER_NONE &&
+         player_type_filter != util::translate_class_id( character[ "class" ].GetInt() ) )
       continue;
 
     names.emplace_back(character[ "name" ].GetString() );
@@ -1363,7 +1354,7 @@ bool bcp_api::download_guild( sim_t* sim,
   for (auto & cname : names)
   {
     fmt::print("Downloading character: {}\n", cname);
-    download_player( sim, region, server, cname, "active", caching, true );
+    download_player( sim, region, server, cname, "active", cache_behavior, true );
   }
 
   return true;

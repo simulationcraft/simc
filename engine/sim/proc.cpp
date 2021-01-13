@@ -69,7 +69,7 @@ proc_t* proc_t::collect_count( bool collect )
   if ( sim.report_details )
   {
     count.change_mode( !collect );
-    count.reserve( std::min( as<unsigned>( sim.iterations ), 2048u ) );
+    count.reserve( std::min( as<unsigned>( sim.iterations ), 2048U ) );
   }
 
   return this;
@@ -80,7 +80,7 @@ proc_t* proc_t::collect_interval( bool collect )
   if ( sim.report_details )
   {
     interval_sum.change_mode( !collect );
-    interval_sum.reserve( std::min( as<unsigned>( sim.iterations ), 2048u ) );
+    interval_sum.reserve( std::min( as<unsigned>( sim.iterations ), 2048U ) );
   }
 
   return this;

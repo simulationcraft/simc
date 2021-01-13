@@ -14,7 +14,7 @@
 
 using namespace unique_gear;
 
-#define maintenance_check( ilvl ) static_assert( ilvl >= 90, "unique item below min level, should be deprecated." )
+#define maintenance_check( ilvl ) static_assert( (ilvl) >= 90, "unique item below min level, should be deprecated." )
 
 namespace { // UNNAMED NAMESPACE
 
@@ -157,7 +157,8 @@ struct select_attr
     // the one selected. The order of stats checked is determined by the
     // stat_buff_creator add_stats() calls.
     double compare_to = 0;
-    stat_e compare_stat = STAT_NONE, my_stat = STAT_NONE;
+    stat_e compare_stat = STAT_NONE;
+    stat_e my_stat = STAT_NONE;
 
     for ( size_t i = 0, end = buff.stats.size(); i < end; i++ )
     {
@@ -1251,7 +1252,7 @@ void item::darkmoon_card_greatness( special_effect_t& effect )
     {
       struct common_buff_t : public stat_buff_t
       {
-        common_buff_t( player_t* p, const item_t* i, std::string n, stat_e stat, int id ) :
+        common_buff_t( player_t* p, const item_t* i, const std::string& n, stat_e stat, int id ) :
           stat_buff_t ( p, "deathbringers_will_" + n, p -> find_spell( id ) )
         {
           add_stat( stat, p -> find_spell( id ) -> effectN( 1 ).average( *i ) );
@@ -1402,7 +1403,7 @@ void item::deathbringers_will( special_effect_t& effect )
     {
       struct common_buff_t : public stat_buff_t
       {
-        common_buff_t( player_t* p, const item_t* i, std::string n, stat_e stat, int id ) :
+        common_buff_t( player_t* p, const item_t* i, const std::string& n, stat_e stat, int id ) :
           stat_buff_t ( p, "deathbringers_will_" + n, p -> find_spell( id ) )
         {
           add_stat( stat, p -> find_spell( id ) -> effectN( 2 ).average( *i ) );
@@ -1641,7 +1642,7 @@ void item::legendary_ring( special_effect_t& effect )
       action_t* boom;
       player_t* p;
 
-      legendary_ring_buff_t( special_effect_t& originaleffect, std::string name, const spell_data_t* buff, const spell_data_t* damagespell ):
+      legendary_ring_buff_t( special_effect_t& originaleffect, const std::string& name, const spell_data_t* buff, const spell_data_t* damagespell ):
         buff_t( originaleffect.player, name, buff, originaleffect.item ),
         boom( nullptr ), p( originaleffect.player )
       {
@@ -3672,7 +3673,7 @@ void unique_gear::initialize_special_effect( special_effect_t& effect,
 
   // Custom init found a valid initializer callback, this special effect will be initialized with it
   // later on
-  if ( effect.custom_init_object.size() > 0 )
+  if ( !effect.custom_init_object.empty() )
   {
     return;
   }
@@ -3684,7 +3685,7 @@ void unique_gear::initialize_special_effect( special_effect_t& effect,
   //
   // This is mostly relevant for "simple looking" legendary effects such as Recurrent Ritual that
   // gets automatically inferred to affect all (warlock) spells globally.
-  if ( effect.custom_init_object.size() == 0 && effect.item &&
+  if ( effect.custom_init_object.empty() && effect.item &&
        effect.source == SPECIAL_EFFECT_SOURCE_ITEM &&
        effect.item->parsed.data.quality == ITEM_QUALITY_LEGENDARY )
   {
@@ -3731,7 +3732,7 @@ void unique_gear::initialize_special_effect( special_effect_t& effect,
 // effects, or calls the custom initialization function given in the first phase initialization.
 void unique_gear::initialize_special_effect_2( special_effect_t* effect )
 {
-  if ( effect -> custom_init || effect -> custom_init_object.size() > 0 )
+  if ( effect -> custom_init || !effect -> custom_init_object.empty() )
   {
     if ( effect -> custom_init )
     {
@@ -3851,7 +3852,7 @@ struct item_effect_base_expr_t : public expr_t
 {
   std::vector<const special_effect_t*> effects;
 
-  item_effect_base_expr_t( player_t& player, const std::vector<slot_e> slots ) :
+  item_effect_base_expr_t( player_t& player, const std::vector<slot_e>& slots ) :
     expr_t( "item_effect_base_expr" )
   {
     const special_effect_t* e = nullptr;
@@ -3875,7 +3876,7 @@ struct item_effect_expr_t : public item_effect_base_expr_t
 {
   std::vector<std::unique_ptr<expr_t>> exprs;
 
-  item_effect_expr_t( player_t& player, const std::vector<slot_e> slots ) :
+  item_effect_expr_t( player_t& player, const std::vector<slot_e>& slots ) :
     item_effect_base_expr_t( player, slots )
   { }
 
@@ -3900,7 +3901,7 @@ struct item_effect_expr_t : public item_effect_base_expr_t
 // user input
 struct item_buff_expr_t : public item_effect_expr_t
 {
-  item_buff_expr_t( player_t& player, const std::vector<slot_e> slots, stat_e s, bool stacking, util::string_view expr_str ) :
+  item_buff_expr_t( player_t& player, const std::vector<slot_e>& slots, stat_e s, bool stacking, util::string_view expr_str ) :
     item_effect_expr_t( player, slots )
   {
     for (auto e : effects)
@@ -4057,7 +4058,9 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
     PROC_COOLDOWN,
   };
 
-  unsigned int ptype_idx = 1, stat_idx = 2, expr_idx = 3;
+  unsigned int ptype_idx = 1;
+  unsigned int stat_idx = 2;
+  unsigned int expr_idx = 3;
   enum proc_expr_e pexprtype = PROC_ENABLED;
   enum proc_type_e ptype = PROC_STAT;
   stat_e stat = STAT_NONE;
@@ -4216,12 +4219,12 @@ bool class_scoped_callback_t::valid(const special_effect_t& effect) const
 {
   assert(effect.player);
 
-  if (class_.size() > 0 && range::find(class_, effect.player->type) == class_.end())
+  if (!class_.empty() && range::find(class_, effect.player->type) == class_.end())
   {
     return false;
   }
 
-  if (spec_.size() > 0 && range::find(spec_, effect.player->specialization()) == spec_.end())
+  if (!spec_.empty() && range::find(spec_, effect.player->specialization()) == spec_.end())
   {
     return false;
   }
@@ -4269,7 +4272,7 @@ static unique_gear::special_effect_set_t do_find_special_effect_db_item(
     assert( it -> cb_obj );
 
     // Push all callback-based initializers of the same priority into the vector
-    if ( entries.size() == 0 || it -> cb_obj -> priority == entries.front() -> cb_obj -> priority )
+    if ( entries.empty() || it -> cb_obj -> priority == entries.front() -> cb_obj -> priority )
     {
       entries.push_back( &( *it ) );
     }
@@ -4668,7 +4671,7 @@ void unique_gear::initialize_special_effect_fallbacks( player_t* actor )
     // Get all registered fallback effects for the spell (fallback) id
     auto dbitems = find_fallback_effect_db_item( fallback_id );
     // .. nothing found, continue
-    if ( dbitems.size() == 0 )
+    if ( dbitems.empty() )
     {
       continue;
     }
@@ -4685,7 +4688,7 @@ void unique_gear::initialize_special_effect_fallbacks( player_t* actor )
       fallback_effect.custom_init_object.push_back( dbitem -> cb_obj );
     }
 
-    if ( fallback_effect.custom_init_object.size() > 0 )
+    if ( !fallback_effect.custom_init_object.empty() )
     {
       actor -> special_effects.push_back( new special_effect_t( fallback_effect ) );
     }

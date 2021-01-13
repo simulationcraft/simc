@@ -31,8 +31,8 @@ struct stat_buff_t;
 
 namespace special_effect
 {
-  void parse_special_effect_encoding( special_effect_t& effect, const std::string& str );
-  bool usable_proc( const special_effect_t& effect );
+void parse_special_effect_encoding( special_effect_t& effect, const std::string& encoding );
+bool usable_proc( const special_effect_t& effect );
 }
 
 struct special_effect_t

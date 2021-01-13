@@ -21,8 +21,8 @@ public:
   dot_tick_event_t( dot_t* d, timespan_t tick_time );
 
 private:
-  virtual void execute() override;
-  virtual const char* name() const override
+  void execute() override;
+  const char* name() const override
   {
     return "Dot Tick";
   }
@@ -37,8 +37,8 @@ public:
   dot_end_event_t(dot_t* d, timespan_t time_to_end);
 
 private:
-  virtual void execute() override;
-  virtual const char* name() const override
+  void execute() override;
+  const char* name() const override
   {
     return "DoT End";
   }
@@ -236,12 +236,12 @@ void dot_t::increment(int stacks = 1)
 }
 
 // For copying a DoT to a different target.
-void dot_t::copy( player_t* other_target, dot_copy_e copy_type ) const
+void dot_t::copy( player_t* destination, dot_copy_e copy_type ) const
 {
-  if ( target == other_target )
+  if ( target == destination )
     return;
 
-  dot_t* other_dot = current_action->get_dot( other_target );
+  dot_t* other_dot = current_action->get_dot( destination );
   // Copied dot, with the DOT_COPY_START method cancels the ongoing dot on the
   // target, and then starts a fresh dot on it with the source dot's (copied)
   // state
@@ -311,9 +311,8 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type ) const
       sim.out_debug.printf(
           "%s cloning %s from %s to %s: source_remains=%.3f "
           "target_remains=%.3f target_duration=%.3f",
-          current_action->player->name(), current_action->name(),
-          target->name(), other_target->name(), remains().total_seconds(),
-          old_remains.total_seconds(), new_duration.total_seconds() );
+          current_action->player->name(), current_action->name(), target->name(), destination->name(),
+          remains().total_seconds(), old_remains.total_seconds(), new_duration.total_seconds() );
 
     other_dot->current_duration = new_duration;
     other_dot->current_tick     = current_tick;

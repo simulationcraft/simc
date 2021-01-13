@@ -678,8 +678,8 @@ public:
   demon_hunter_td_t* get_target_data( player_t* target ) const override;
   void interrupt() override;
   void regen( timespan_t periodicity ) override;
-  double resource_gain( resource_e, double, gain_t* g = nullptr, action_t* a = nullptr ) override;
-  void recalculate_resource_max( resource_e, gain_t* g = nullptr ) override;
+  double resource_gain( resource_e, double, gain_t* source = nullptr, action_t* action = nullptr ) override;
+  void recalculate_resource_max( resource_e, gain_t* source = nullptr ) override;
   void reset() override;
   void merge( player_t& other ) override;
   void datacollection_begin() override;
@@ -975,7 +975,8 @@ struct soul_fragment_t
     y = dh->y_position + 10.6066;
 
     // Calculate random offset, 2-5 yards from the base position.
-    double r_min = 2.0, r_max = 5.0;
+    double r_min = 2.0;
+    double r_max = 5.0;
     // Nornmalizing factor
     double a = 2.0 / ( r_max * r_max - r_min * r_min );
     // Calculate distance from origin using power-law distribution for
@@ -2282,7 +2283,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
       } );
       targets.erase( it, targets.end() );
 
-      if ( targets.size() == 0 )
+      if ( targets.empty() )
         return;
 
       // Execute a dot on a random target
@@ -2448,7 +2449,7 @@ struct collective_anguish_t : public demon_hunter_spell_t
   }
 
   // Behaves as a channeled spell, although we can't set channeled = true since it is background
-  timespan_t composite_dot_duration( const action_state_t* s ) const
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return dot_duration * ( tick_time( s ) / base_tick_time );
   }
@@ -2735,7 +2736,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
       : event_t( *f->dh, time ),
       dh( f->dh ),
       frag( f ),
-      expr( std::move(e) )
+      expr( e )
     {
     }
 
@@ -2771,12 +2772,14 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
       select_mode( SOUL_FRAGMENT_SELECT_OLDEST ),
       type( soul_fragment::ANY )
   {
-    std::string type_str, mode_str;
+    std::string type_str;
+    std::string mode_str;
     add_option( opt_string( "type", type_str ) );
     add_option( opt_string( "mode", mode_str ) );
+    parse_options( options_str );
+    
     parse_mode( mode_str );
     parse_type( mode_str );
-    parse_options( options_str );
 
     trigger_gcd = timespan_t::zero();
     // use_off_gcd = true;
@@ -2799,7 +2802,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     {
       select_mode = SOUL_FRAGMENT_SELECT_OLDEST;
     }
-    else if ( value != "" )
+    else if ( !value.empty() )
     {
       sim->errorf(
         "%s uses bad parameter for pick_up_soul_fragment option "
@@ -2826,7 +2829,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     {
       type = soul_fragment::ANY_DEMON;
     }
-    else if ( value != "" )
+    else if ( !value.empty() )
     {
       sim->errorf(
         "%s uses bad parameter for pick_up_soul_fragment option "
@@ -3155,7 +3158,7 @@ struct the_hunt_t : public demon_hunter_spell_t
     p()->set_out_of_range( timespan_t::zero() ); // Cancel all other movement
   }
 
-  timespan_t travel_time() const
+  timespan_t travel_time() const override
   { return 100_ms; }
 };
 
@@ -4269,7 +4272,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
     {
       std::vector<cooldown_t*> sigils_on_cooldown;
       range::copy_if( sigil_cooldowns, std::back_inserter( sigils_on_cooldown ), []( cooldown_t* c ) { return c->down(); } );
-      if ( sigils_on_cooldown.size() > 0 )
+      if ( !sigils_on_cooldown.empty() )
       {
         cooldown_t* sigil_cooldown = sigils_on_cooldown[ rng().range( sigils_on_cooldown.size() ) ];
         if ( sigil_cooldown == p()->cooldown.elysian_decree )
@@ -5468,10 +5471,10 @@ void demon_hunter_t::init_spells()
   // General
   azerite.conflict_and_strife           = find_azerite_essence( "Conflict and Strife" );
   azerite.memory_of_lucid_dreams        = find_azerite_essence( "Memory of Lucid Dreams" );
-  azerite_spells.memory_of_lucid_dreams = azerite.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+  azerite_spells.memory_of_lucid_dreams = azerite.memory_of_lucid_dreams.spell( 1U, essence_type::MINOR );
   azerite.vision_of_perfection          = find_azerite_essence( "Vision of Perfection" );
-  azerite_spells.vision_of_perfection_1 = azerite.vision_of_perfection.spell( 1u, essence_type::MAJOR );
-  azerite_spells.vision_of_perfection_2 = azerite.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR );
+  azerite_spells.vision_of_perfection_1 = azerite.vision_of_perfection.spell( 1U, essence_type::MAJOR );
+  azerite_spells.vision_of_perfection_2 = azerite.vision_of_perfection.spell( 2U, essence_spell::UPGRADE, essence_type::MAJOR );
 
   // Havoc
   azerite.chaotic_transformation  = find_azerite_spell( "Chaotic Transformation" );
@@ -6478,7 +6481,7 @@ void demon_hunter_t::adjust_movement()
   {
     // Recalculate movement duration.
     assert( buff.out_of_range->value() > 0 );
-    assert( buff.out_of_range->expiration.size() );
+    assert( !buff.out_of_range->expiration.empty() );
 
     timespan_t remains = buff.out_of_range->remains();
     remains *= buff.out_of_range->check_value() / cache.run_speed();
@@ -6754,7 +6757,7 @@ public:
         name_str = util::encode_html( name_str );
       }
 
-      std::string row_class_str = "";
+      std::string row_class_str;
       if ( ++n & 1 )
         row_class_str = " class=\"odd\"";
 
@@ -6774,7 +6777,7 @@ public:
   {
     (void)p;
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
-    if ( p.cd_waste_exec.size() > 0 )
+    if ( !p.cd_waste_exec.empty() )
     {
       os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown Waste Details</h3>\n"
         << "\t\t\t\t\t<div class=\"toggle-content\">\n";

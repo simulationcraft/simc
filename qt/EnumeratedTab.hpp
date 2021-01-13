@@ -16,8 +16,8 @@ private:
 public:
   SC_enumeratedTabBase( QWidget* parent );
 
-  void addIgnoreKeyPressEvent( Qt::Key k, QList<Qt::KeyboardModifier> s );
-  bool removeIgnoreKeyPressEvent( Qt::Key k, QList<Qt::KeyboardModifier> s );
+  void addIgnoreKeyPressEvent( Qt::Key k, const QList<Qt::KeyboardModifier>& s );
+  bool removeIgnoreKeyPressEvent( Qt::Key k, const QList<Qt::KeyboardModifier>& s );
   void removeAllIgnoreKeyPressEvent();
 protected:
   void keyPressEvent( QKeyEvent* e ) override;

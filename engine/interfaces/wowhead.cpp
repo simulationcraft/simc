@@ -63,16 +63,14 @@ std::shared_ptr<xml_node_t> download_id( sim_t*             sim,
 
 // download_item_data =======================================================
 
-bool wowhead::download_item_data( item_t&            item,
-                                  cache::behavior_e  caching,
-                                  wowhead_e          source )
+bool wowhead::download_item_data( item_t& item, cache::behavior_e cache_behavior, wowhead_e source )
 {
   try
   {
-    std::shared_ptr<xml_node_t> xml = item.xml = download_id(item.sim, item.parsed.data.id, caching, source);
+    std::shared_ptr<xml_node_t> xml = item.xml = download_id( item.sim, item.parsed.data.id, cache_behavior, source );
     if ( ! xml )
     {
-      if ( caching != cache::ONLY )
+      if ( cache_behavior != cache::ONLY )
         item.sim -> errorf( "Player %s unable to download item id '%u' from wowhead at slot %s.\n", item.player -> name(), item.parsed.data.id, item.slot_name() );
       return false;
     }
@@ -92,13 +90,15 @@ bool wowhead::download_item_data( item_t&            item,
 
       if (!xml->get_value(item.parsed.data.quality, "quality/id")) throw("quality");
 
-      std::string jsonequipdata, jsondata;
+      std::string jsonequipdata;
+      std::string jsondata;
       xml->get_value(jsonequipdata, "jsonEquip/cdata");
       jsonequipdata = "{" + jsonequipdata + "}";
       xml->get_value(jsondata, "json/cdata");
       jsondata = "{" + jsondata + "}";
 
-      rapidjson::Document json, jsonequip;
+      rapidjson::Document json;
+      rapidjson::Document jsonequip;
       json.Parse(jsondata.c_str());
       jsonequip.Parse(jsonequipdata.c_str());
 
@@ -177,7 +177,7 @@ bool wowhead::download_item_data( item_t&            item,
       // Todo binding type, needs htmlTooltip parsing
       if (item.parsed.data.item_class == ITEM_CLASS_WEAPON)
       {
-        item.parsed.data.delay = jsonequip["speed"].GetFloat() * 1000.0f;
+        item.parsed.data.delay = jsonequip["speed"].GetFloat() * 1000.0F;
         item.parsed.data.dmg_range = jsonequip["dmgrange"].GetFloat();
       }
 
@@ -278,7 +278,7 @@ bool wowhead::download_item_data( item_t&            item,
         if (!spell_links[i]->get_value(url, "a/href"))
           continue;
 
-        size_t begin = url.rfind("=");
+        size_t begin = url.rfind('=');
         if (begin == std::string::npos)
           continue;
         else
@@ -301,7 +301,7 @@ bool wowhead::download_item_data( item_t&            item,
 
       xml->get_value(error_str, "error/.");
 
-      if (caching != cache::ONLY)
+      if ( cache_behavior != cache::ONLY )
         item.sim->errorf("Wowhead (%s): Player %s unable to parse item '%u' %s in slot '%s': %s\n",
           source_desc_str(source).c_str(), item.player->name(), item.parsed.data.id,
           fieldname, item.slot_name(), error_str.c_str());
@@ -310,7 +310,7 @@ bool wowhead::download_item_data( item_t&            item,
   }
   catch( const std::exception& e )
   {
-    if ( caching != cache::ONLY )
+    if ( cache_behavior != cache::ONLY )
       item.sim -> errorf( "Wowhead (%s): Player %s unable to download/parse item '%u' in slot '%s': %s\n",
                           source_desc_str( source ).c_str(), item.player -> name(), item.parsed.data.id,
                           item.slot_name(), e.what() );
@@ -324,9 +324,9 @@ bool wowhead::download_item_data( item_t&            item,
 
 bool wowhead::download_item( item_t&            item,
                              wowhead_e          source,
-                             cache::behavior_e  caching )
+                             cache::behavior_e  cache_behavior )
 {
-  bool ret = download_item_data( item, caching, source );
+  bool ret = download_item_data( item, cache_behavior, source );
 
   if ( ret )
     item.source_str = "Wowhead";

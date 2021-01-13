@@ -1289,7 +1289,7 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
       } );
 
       auto random_idx = rng().range( targets.size() );
-      return targets.size() ? targets[ random_idx ] : nullptr;
+      return !targets.empty() ? targets[ random_idx ] : nullptr;
     }
     else
     {
@@ -2382,7 +2382,7 @@ struct charge_t : public warrior_attack_t
 
   void reset() override
   {
-    action_t::reset();
+    warrior_attack_t::reset();
     first_charge = true;
   }
 
@@ -2682,7 +2682,7 @@ struct execute_arms_t : public warrior_attack_t
 
     if ( p()->buff.ayalas_stone_heart->check() )
     {
-      return c *= 1.0 + p()->buff.ayalas_stone_heart->data().effectN( 2 ).percent();
+      c *= 1.0 + p()->buff.ayalas_stone_heart->data().effectN( 2 ).percent();
     }
     if ( p()->buff.sudden_death->check() )
     {
@@ -5004,7 +5004,7 @@ struct condemn_arms_t : public warrior_attack_t
 
     if ( p()->buff.ayalas_stone_heart->check() )
     {
-      return c *= 1.0 + p()->buff.ayalas_stone_heart->data().effectN( 2 ).percent();
+      c *= 1.0 + p()->buff.ayalas_stone_heart->data().effectN( 2 ).percent();
     }
     if ( p()->buff.sudden_death->check() )
     {
@@ -5767,7 +5767,7 @@ struct ignore_pain_t : public warrior_spell_t
       }
       else
       {
-        percent_health = ( rng().gauss( p() -> never_surrender_percentage / 100, 0.2 ) );
+        percent_health = ( rng().gauss( p() -> never_surrender_percentage / 100.0, 0.2 ) );
       }
 
       new_ip *= 1.0 + percent_health * p() -> talents.never_surrender -> effectN( 1 ).percent();
@@ -6250,12 +6250,12 @@ void warrior_t::init_spells()
   azerite.unbridled_ferocity     = find_azerite_spell( "Unbridled Ferocity" );
   // Essences
   azerite.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-  azerite_spells.memory_of_lucid_dreams = azerite.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+  azerite_spells.memory_of_lucid_dreams = azerite.memory_of_lucid_dreams.spell( 1U, essence_type::MINOR );
   azerite.vision_of_perfection          = find_azerite_essence( "Vision of Perfection" );
   azerite.vision_of_perfection_percentage =
-      azerite.vision_of_perfection.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent();
+      azerite.vision_of_perfection.spell( 1U, essence_type::MAJOR )->effectN( 1 ).percent();
   azerite.vision_of_perfection_percentage +=
-      azerite.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
+      azerite.vision_of_perfection.spell( 2U, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
 
   // Convenant Abilities
   covenant.ancient_aftershock    = find_covenant_spell( "Ancient Aftershock" );
@@ -8402,7 +8402,7 @@ public:
         name_str = util::encode_html( name_str );
       }
 
-      std::string row_class_str = "";
+      std::string row_class_str;
       if ( ++n & 1 )
         row_class_str = " class=\"odd\"";
 
@@ -8430,7 +8430,7 @@ public:
     os << p.name();
 
     os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
-    if ( p.cd_waste_exec.size() > 0 )
+    if ( !p.cd_waste_exec.empty() )
     {
       os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown waste details</h3>\n"
          << "\t\t\t\t\t<div class=\"toggle-content\">\n";

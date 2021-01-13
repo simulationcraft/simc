@@ -836,13 +836,9 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       return t;
     }
 
-    double cost_per_tick( resource_e resource ) const override
+    double cost_per_tick( resource_e ) const override
     {
-      double c = sef_spell_t::cost_per_tick( resource );
-
-      c = 0;
-
-      return c;
+      return 0;
     }
   };
 
@@ -1490,7 +1486,7 @@ public:
       double cam = pet_melee_attack_t::composite_aoe_multiplier( state );
 
       if ( state->target != target )
-        return cam *= o()->passives.fallen_monk_fists_of_fury->effectN( 6 ).percent();
+        cam *= o()->passives.fallen_monk_fists_of_fury->effectN( 6 ).percent();
 
       return cam;
     }
@@ -1537,8 +1533,6 @@ public:
 
     double action_multiplier() const override
     {
-      double am = pet_melee_attack_t::action_multiplier();
-
       return 0;
     }
   };
@@ -2032,14 +2026,14 @@ bool monk_t::storm_earth_and_fire_fixate_ready( player_t* target )
 {
   if ( buff.storm_earth_and_fire->check() )
   {
-    if ( pets.sef[ SEF_EARTH ]->sticky_target == true || pets.sef[ SEF_FIRE ]->sticky_target == true )
+    if ( pets.sef[ SEF_EARTH ]->sticky_target || pets.sef[ SEF_FIRE ]->sticky_target )
     {
       if ( pets.sef[ SEF_EARTH ]->target != target )
         return true;
       else if ( pets.sef[ SEF_FIRE ]->target != target )
         return true;
     }
-    else if ( pets.sef[ SEF_EARTH ]->sticky_target == false || pets.sef[ SEF_FIRE ]->sticky_target == false )
+    else if ( !pets.sef[ SEF_EARTH ]->sticky_target || !pets.sef[ SEF_FIRE ]->sticky_target )
       return true;
   }
   return false;
@@ -2069,7 +2063,7 @@ void monk_t::summon_storm_earth_and_fire( timespan_t duration )
 
 void monk_t::retarget_storm_earth_and_fire_pets() const
 {
-  if ( pets.sef[ SEF_EARTH ]->sticky_target == true )
+  if ( pets.sef[ SEF_EARTH ]->sticky_target )
   {
     return;
   }

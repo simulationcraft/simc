@@ -33,8 +33,8 @@ public:
   int insertAt() override;
   bool wrapToEnd();
   bool wrapToBeginning();
-  void insertNewTabAt( int index = -1, const QString text = defaultSimulateText,
-                       const QString title = defaultSimulateTabTitle );
+  void insertNewTabAt( int index = -1, const QString& text = defaultSimulateText,
+                       const QString& title = defaultSimulateTabTitle );
 
 protected:
   void keyPressEvent( QKeyEvent* e ) override;

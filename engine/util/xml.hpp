@@ -66,8 +66,8 @@ struct sc_xml_t
 
   void print( FILE* f = stdout, int spacing = 0 );
   void print_xml( FILE* f = stdout, int spacing = 0 );
-  static sc_xml_t get( const std::string& url, cache::behavior_e b,
-                          const std::string& confirmation = std::string() );
+  static sc_xml_t get( const std::string& url, cache::behavior_e cache_behavior,
+                       const std::string& confirmation = std::string() );
   static sc_xml_t create( const std::string& input, const std::string& cache_key );
 
   virtual ~sc_xml_t();
@@ -118,8 +118,8 @@ struct xml_node_t
 
   void print( FILE* f = stdout, int spacing = 0 );
   void print_xml( FILE* f = stdout, int spacing = 0 );
-  static std::shared_ptr<xml_node_t> get( const std::string& url, cache::behavior_e b,
-                          const std::string& confirmation = std::string() );
+  static std::shared_ptr<xml_node_t> get( const std::string& url, cache::behavior_e cache_behavior,
+                                          const std::string& confirmation = std::string() );
   static std::shared_ptr<xml_node_t> create( const std::string& input );
 
   xml_node_t* add_child( const std::string& name );

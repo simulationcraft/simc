@@ -22,7 +22,8 @@ namespace color {
 
 namespace report_decorators {
   std::string decoration_domain(const sim_t& sim);
-  std::string decorated_spell_name(const sim_t& sim, const spell_data_t& spell, util::string_view parms_str = {});
+  std::string decorated_spell_name( const sim_t& sim, const spell_data_t& spell,
+                                    util::string_view additional_parameters = {} );
   std::string decorated_item_name(const item_t* item);
   std::string decorate_html_string(util::string_view value, const color::rgb& color);
   std::string decorated_buff(const buff_t& buff);

@@ -1,1 +1,1 @@
-HeaderFilterRegex: '*/util/(utf8-h|utf8-cpp|rapidxml|rapidjson|fmt)/*'
+HeaderFilterRegex: '*/lib/*'

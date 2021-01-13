@@ -145,13 +145,12 @@ bool sequence_t::ready()
 // Strict Sequence Action
 // ==========================================================================
 
-strict_sequence_t::strict_sequence_t( player_t* p, util::string_view sub_action_str ) :
-  action_t( ACTION_SEQUENCE, "strict_sequence", p ),
-  current_action( 0 ), allow_skip( false )
+strict_sequence_t::strict_sequence_t( player_t* p, util::string_view options )
+  : action_t( ACTION_SEQUENCE, "strict_sequence", p ), current_action( 0 ), allow_skip( false )
 {
   trigger_gcd = timespan_t::zero();
 
-  auto splits = util::string_split<util::string_view>( sub_action_str, ":" );
+  auto splits = util::string_split<util::string_view>( options, ":" );
   if ( ! splits.empty() )
   {
     add_option( opt_bool( "allow_skip", allow_skip ) );
@@ -240,7 +239,7 @@ bool strict_sequence_t::ready()
   else
   {
     auto it = range::find_if( sub_actions, []( action_t* a ) {
-        return ! a -> background && a -> ready() == true;
+        return ! a -> background && a -> ready();
     } );
     return it != sub_actions.end(); // Ready if at least one action is usable
   }

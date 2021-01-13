@@ -4,23 +4,25 @@
 // ==========================================================================
 
 #include "charts.hpp"
-#include "sc_highchart.hpp"
 
 #include "action/sc_action.hpp"
 #include "dbc/dbc.hpp"
-#include "player/player_scaling.hpp"
 #include "player/gear_stats.hpp"
+#include "player/pet.hpp"
+#include "player/player_scaling.hpp"
 #include "player/sc_player.hpp"
 #include "player/stats.hpp"
-#include "player/pet.hpp"
 #include "report/color.hpp"
 #include "report/decorators.hpp"
+#include "sc_highchart.hpp"
 #include "sim/reforge_plot.hpp"
-#include "util/util.hpp"
 #include "util/sample_data.hpp"
+#include "util/util.hpp"
 
 #include <clocale>
 #include <cmath>
+#include <utility>
+
 
 using namespace js;
 
@@ -30,7 +32,7 @@ namespace
 struct filter_non_performing_players
 {
   std::string type;
-  filter_non_performing_players( std::string type_ ) : type( type_ )
+  filter_non_performing_players( std::string type_ ) : type( std::move(type_) )
   {
   }
   bool operator()( player_t* p ) const
@@ -374,7 +376,8 @@ struct player_list_comparator_t
 
   bool operator()( const player_t* p1, const player_t* p2 )
   {
-    const extended_sample_data_t *d_p1 = nullptr, *d_p2 = nullptr;
+    const extended_sample_data_t *d_p1 = nullptr;
+    const extended_sample_data_t *d_p2 = nullptr;
     switch ( metric_ )
     {
       case METRIC_DPS:
@@ -406,7 +409,8 @@ struct player_list_comparator_t
         return true;
     }
 
-    double rv, lv;
+    double rv;
+    double lv;
     switch ( value_ )
     {
       case VALUE_MEAN:
@@ -581,7 +585,7 @@ bool chart::generate_raid_gear( highchart::bar_chart_t& bc, const sim_t& sim )
   return true;
 }
 
-bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t& p )
+bool chart::generate_reforge_plot( highchart::chart_t& chart, const player_t& p )
 {
   if ( p.reforge_plot_data.empty() )
   {
@@ -612,20 +616,15 @@ bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t& p )
 
   if ( p.sim->player_no_pet_list.size() > 1 )
   {
-    ac.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
+    chart.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
   }
 
-  ac.set_title( util::encode_html( p.name_str ) + " Reforge Plot" );
-  ac.set_yaxis_title( "Damage Per Second" );
-  std::string from_stat, to_stat, from_color, to_color;
-  from_stat = util::stat_type_abbrev(
-      p.sim->reforge_plot->reforge_plot_stat_indices[ 0 ] );
-  to_stat = util::stat_type_abbrev(
-      p.sim->reforge_plot->reforge_plot_stat_indices[ 1 ] );
-  from_color =
-      color::stat_color( p.sim->reforge_plot->reforge_plot_stat_indices[ 0 ] );
-  to_color =
-      color::stat_color( p.sim->reforge_plot->reforge_plot_stat_indices[ 1 ] );
+  chart.set_title( util::encode_html( p.name_str ) + " Reforge Plot" );
+  chart.set_yaxis_title( "Damage Per Second" );
+  std::string from_stat  = util::stat_type_abbrev( p.sim->reforge_plot->reforge_plot_stat_indices[ 0 ] );
+  std::string to_stat    = util::stat_type_abbrev( p.sim->reforge_plot->reforge_plot_stat_indices[ 1 ] );
+  std::string from_color = color::stat_color( p.sim->reforge_plot->reforge_plot_stat_indices[ 0 ] );
+  std::string to_color   = color::stat_color( p.sim->reforge_plot->reforge_plot_stat_indices[ 1 ] );
 
   std::string span_from_stat = "<span style=\"color:" + from_color +
                                ";font-weight:bold;\">" + from_stat + "</span>";
@@ -638,13 +637,12 @@ bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t& p )
                                     ";font-weight:bold;\">" +
                                     to_stat.substr( 0, 2 ) + "</span>";
 
-  ac.set( "yAxis.min", baseline - yrange );
-  ac.set( "yAxis.max", baseline + yrange );
-  ac.set( "yaxis.minPadding", 0.01 );
-  ac.set( "yaxis.maxPadding", 0.01 );
-  ac.set( "xAxis.labels.overflow", "false" );
-  ac.set_xaxis_title( "Reforging between " + span_from_stat + " and " +
-                      span_to_stat );
+  chart.set( "yAxis.min", baseline - yrange );
+  chart.set( "yAxis.max", baseline + yrange );
+  chart.set( "yaxis.minPadding", 0.01 );
+  chart.set( "yaxis.maxPadding", 0.01 );
+  chart.set( "xAxis.labels.overflow", "false" );
+  chart.set_xaxis_title( "Reforging between " + span_from_stat + " and " + span_to_stat );
 
   std::string formatter_function = "function() {";
   formatter_function += "if (this.value == 0) { return 'Baseline'; } ";
@@ -656,10 +654,10 @@ bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t& p )
                         "'; } ";
   formatter_function += "}";
 
-  ac.set( "xAxis.labels.formatter", formatter_function );
-  ac.value( "xAxis.labels.formatter" ).SetRawOutput( true );
+  chart.set( "xAxis.labels.formatter", formatter_function );
+  chart.value( "xAxis.labels.formatter" ).SetRawOutput( true );
 
-  ac.add_yplotline( baseline, "baseline", 1.25, "#FF8866" );
+  chart.add_yplotline( baseline, "baseline", 1.25, "#FF8866" );
 
   std::vector<std::pair<double, double> > mean;
   std::vector<highchart::data_triple_t> range;
@@ -674,16 +672,16 @@ bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t& p )
     range.emplace_back(x, v + e, v - e );
   }
 
-  ac.add_simple_series( "line", from_color, "Mean", mean );
-  ac.add_simple_series( "arearange", to_color, "Range", range );
+  chart.add_simple_series( "line", from_color, "Mean", mean );
+  chart.add_simple_series( "arearange", to_color, "Range", range );
 
-  ac.set( "series.0.zIndex", 1 );
-  ac.set( "series.0.marker.radius", 0 );
-  ac.set( "series.0.lineWidth", 1.5 );
-  ac.set( "series.1.fillOpacity", 0.5 );
-  ac.set( "series.1.lineWidth", 0 );
-  ac.set( "series.1.linkedTo", ":previous" );
-  ac.height_ = 500;
+  chart.set( "series.0.zIndex", 1 );
+  chart.set( "series.0.marker.radius", 0 );
+  chart.set( "series.0.lineWidth", 1.5 );
+  chart.set( "series.1.fillOpacity", 0.5 );
+  chart.set( "series.1.lineWidth", 0 );
+  chart.set( "series.1.linkedTo", ":previous" );
+  chart.height_ = 500;
 
   return true;
 }
@@ -887,7 +885,7 @@ bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
   return true;
 }
 
-bool chart::generate_stats_sources( highchart::pie_chart_t& pc, const player_t& p, const std::string title,
+bool chart::generate_stats_sources( highchart::pie_chart_t& pc, const player_t& p, const std::string& title,
                                     const std::vector<stats_t*>& stats_list )
 {
   if ( stats_list.empty() )
@@ -1293,7 +1291,7 @@ bool chart::generate_raid_dpet( highchart::bar_chart_t& bc, const sim_t& s )
     stats_list.erase( stats_list.begin() + 30, stats_list.end() );
   }
 
-  auto log = stats_list.size() > 0 &&
+  auto log = !stats_list.empty() &&
              stats_list.back() -> apet > 0
              ? stats_list.front()->apet / stats_list.back()->apet >= 100
              : false;
@@ -1412,9 +1410,10 @@ bool chart::generate_action_dpet( highchart::bar_chart_t& bc, const player_t& p 
   return true;
 }
 
-bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t& p, scale_metric_e metric )
+bool chart::generate_scaling_plot( highchart::chart_t& chart, const player_t& p, scale_metric_e metric )
 {
-  double max_dps = 0, min_dps = std::numeric_limits<double>::max();
+  double max_dps = 0;
+  double min_dps = std::numeric_limits<double>::max();
 
   for ( const auto& plot_data_list : p.dps_plot_data )
   {
@@ -1434,18 +1433,18 @@ bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t& p, sc
 
   scaling_metric_data_t scaling_data = p.scaling_for_metric( metric );
 
-  ac.set_title( util::encode_html( scaling_data.name ) + " Scaling Plot" );
-  ac.set_yaxis_title( util::scale_metric_type_string( metric ) );
-  ac.set_xaxis_title( "Stat delta" );
-  ac.set( "chart.type", "line" );
-  ac.set( "legend.enabled", true );
-  ac.set( "legend.margin", 5 );
-  ac.set( "legend.padding", 0 );
-  ac.set( "legend.itemMarginBottom", 5 );
-  ac.height_ = 500;
+  chart.set_title( util::encode_html( scaling_data.name ) + " Scaling Plot" );
+  chart.set_yaxis_title( util::scale_metric_type_string( metric ) );
+  chart.set_xaxis_title( "Stat delta" );
+  chart.set( "chart.type", "line" );
+  chart.set( "legend.enabled", true );
+  chart.set( "legend.margin", 5 );
+  chart.set( "legend.padding", 0 );
+  chart.set( "legend.itemMarginBottom", 5 );
+  chart.height_ = 500;
   if ( p.sim->player_no_pet_list.size() > 1 )
   {
-    ac.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
+    chart.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
   }
 
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
@@ -1462,7 +1461,9 @@ bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t& p, sc
 
     std::vector<std::pair<double, double> > data;
 
-    ac.add( "colors", color );
+    chart.add( "colors", color );
+
+    data.reserve(pd.size());
 
     for ( const auto& pdata : pd )
     {
@@ -1471,7 +1472,7 @@ bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t& p, sc
           util::round( pdata.value, p.sim->report_precision ) );
     }
 
-    ac.add_simple_series( "", "", util::stat_type_abbrev( i ), data );
+    chart.add_simple_series( "", "", util::stat_type_abbrev( i ), data );
   }
 
   return true;
@@ -1479,8 +1480,7 @@ bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t& p, sc
 
 // chart::generate_scale_factors ===========================================
 
-bool chart::generate_scale_factors( highchart::bar_chart_t& bc,
-                                    const player_t& p, scale_metric_e metric )
+bool chart::generate_scale_factors( highchart::bar_chart_t& chart, const player_t& p, scale_metric_e metric )
 {
   if ( p.scaling == nullptr )
   {
@@ -1501,20 +1501,19 @@ bool chart::generate_scale_factors( highchart::bar_chart_t& bc,
 
   if ( p.sim->player_no_pet_list.size() > 1 )
   {
-    bc.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
+    chart.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
   }
 
-  bc.set_title( util::encode_html( scaling_data.name ) + " Scale Factors" );
-  bc.height_ = 108 + scaling_stats.size() * 24;
+  chart.set_title( util::encode_html( scaling_data.name ) + " Scale Factors" );
+  chart.height_ = 108 + scaling_stats.size() * 24;
 
-  bc.set_yaxis_title( util::scale_metric_type_string( metric ) +
-                      std::string( " per point" ) );
+  chart.set_yaxis_title( util::scale_metric_type_string( metric ) + std::string( " per point" ) );
 
   // bc.set( "plotOptions.bar.dataLabels.align", "center" );
-  bc.set( "plotOptions.errorbar.stemColor", "#FF0000" );
-  bc.set( "plotOptions.errorbar.whiskerColor", "#FF0000" );
-  bc.set( "plotOptions.errorbar.whiskerLength", "75%" );
-  bc.set( "plotOptions.errorbar.whiskerWidth", 1.5 );
+  chart.set( "plotOptions.errorbar.stemColor", "#FF0000" );
+  chart.set( "plotOptions.errorbar.whiskerColor", "#FF0000" );
+  chart.set( "plotOptions.errorbar.whiskerLength", "75%" );
+  chart.set( "plotOptions.errorbar.whiskerWidth", 1.5 );
 
   std::vector<double> data;
   std::vector<std::pair<double, double> > error;
@@ -1534,14 +1533,12 @@ bool chart::generate_scale_factors( highchart::bar_chart_t& bc,
                                 p.sim->report_precision ) +
         ")";
 
-    bc.add( "xAxis.categories", category_str );
+    chart.add( "xAxis.categories", category_str );
   }
 
-  bc.add_simple_series(
-      "bar", color::class_color( p.type ),
-      util::scale_metric_type_abbrev( metric ) + std::string( " per point" ),
-      data );
-  bc.add_simple_series( "errorbar", "", "Error", error );
+  chart.add_simple_series( "bar", color::class_color( p.type ),
+                           util::scale_metric_type_abbrev( metric ) + std::string( " per point" ), data );
+  chart.add_simple_series( "errorbar", "", "Error", error );
 
   return true;
 }
@@ -1568,7 +1565,7 @@ highchart::time_series_t& chart::generate_stats_timeline(
   std::string chart_title_base = fmt::format( "{} per second", s.type );
   ts.set_yaxis_title( chart_title_base );
   std::string stat_name;
-  if ( s.action_list.size() > 0 && s.action_list[ 0 ]->data().ok() )
+  if ( !s.action_list.empty() && s.action_list[ 0 ]->data().ok() )
   {
     stat_name = util::encode_html( s.action_list[ 0 ]->data().name_cstr() );
   }
@@ -1580,7 +1577,7 @@ highchart::time_series_t& chart::generate_stats_timeline(
   ts.set_title( fmt::format( "{} {}", stat_name, chart_title_base ) );
 
   std::string area_color = color::YELLOW;
-  if ( s.action_list.size() > 0 )
+  if ( !s.action_list.empty() )
     area_color = color::school_color( s.action_list[ 0 ]->school );
 
   ts.add_simple_series( "area", area_color, s.type == STATS_DMG ? "DPS" : "HPS",
@@ -1591,8 +1588,7 @@ highchart::time_series_t& chart::generate_stats_timeline(
   return ts;
 }
 
-bool chart::generate_actor_dps_series( highchart::time_series_t& ts,
-                                       const player_t& p )
+bool chart::generate_actor_dps_series( highchart::time_series_t& series, const player_t& p )
 {
   if ( p.collected_data.dps.mean() <= 0 )
   {
@@ -1603,16 +1599,14 @@ bool chart::generate_actor_dps_series( highchart::time_series_t& ts,
   p.collected_data.timeline_dmg.build_derivative_timeline( timeline_dps );
   if ( p.sim->player_no_pet_list.size() > 1 )
   {
-    ts.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
+    series.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
   }
 
-  ts.set( "yAxis.min", 0 );
-  ts.set_yaxis_title( "Damage per second" );
-  ts.set_title( util::encode_html( p.name_str ) + " Damage per second" );
-  ts.add_simple_series( "area", color::class_color( p.type ), "DPS",
-                        timeline_dps.data() );
-  ts.set_mean(
-      util::round( p.collected_data.dps.mean(), p.sim->report_precision ) );
+  series.set( "yAxis.min", 0 );
+  series.set_yaxis_title( "Damage per second" );
+  series.set_title( util::encode_html( p.name_str ) + " Damage per second" );
+  series.add_simple_series( "area", color::class_color( p.type ), "DPS", timeline_dps.data() );
+  series.set_mean( util::round( p.collected_data.dps.mean(), p.sim->report_precision ) );
 
   return true;
 }

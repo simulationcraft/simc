@@ -128,7 +128,7 @@ private:
   spell_data_t* create_clone( const spell_data_t* s );
 
   void add_spell( spell_data_t* spell );
-  void add_effect( spelleffect_data_t* spell );
+  void add_effect( spelleffect_data_t* effect );
   void add_power( spellpower_data_t* power );
 
   std::vector<spell_data_t*> spells_;

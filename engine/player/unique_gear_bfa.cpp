@@ -3,11 +3,13 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
-
-#include "pet_spawner.hpp"
 #include "darkmoon_deck.hpp"
+#include "pet_spawner.hpp"
 #include "util/static_map.hpp"
+
+#include <utility>
+
+#include "simulationcraft.hpp"
 
 using namespace unique_gear;
 
@@ -783,20 +785,20 @@ void items::incessantly_ticking_clock( special_effect_t& effect )
     size_t state;
 
     clock_cb_t( const special_effect_t& effect, const std::vector<buff_t*>& b )
-      : dbc_proc_callback_t( effect.player, effect ), buffs( b ), state( 0u )
+      : dbc_proc_callback_t( effect.player, effect ), buffs( b ), state( 0U )
     {
     }
 
     void execute( action_t*, action_state_t* ) override
     {
       buffs[ state ]->trigger();
-      state ^= 1u;
+      state ^= 1U;
     }
 
     void reset() override
     {
       dbc_proc_callback_t::reset();
-      state = 0u;
+      state = 0U;
     }
   };
 
@@ -872,7 +874,7 @@ void items::landois_scrutiny( special_effect_t& effect )
 
 enum resource_category : unsigned
 {
-  RC_BUFF = 0u,
+  RC_BUFF = 0U,
   RC_COOLDOWN
 };
 
@@ -898,7 +900,7 @@ struct bba_cb_t : public dbc_proc_callback_t
     double cost  = state->action->last_resource_cost;
 
     // Breath of Sindragosa needs to be special cased, as the tick action doesn't cost any resource
-    if ( state->action->data().id() == 155166u )
+    if ( state->action->data().id() == 155166U )
     {
       cost     = 15.0;
       resource = RESOURCE_RUNIC_POWER;
@@ -916,7 +918,7 @@ struct bba_cb_t : public dbc_proc_callback_t
     // - Consuming SotR charges with Seraphim doesn't trigger the callback
     // - Even though SotR can be used without a target, the effect only happens if the spell hits at
     //   least one target and has a 3.0s value for both buff extension and the on-use's cdr
-    if ( state->action->data().id() == 53600u && state->action->result_is_hit( state->result ) )
+    if ( state->action->data().id() == 53600U && state->action->result_is_hit( state->result ) )
     {
       return timespan_t::from_seconds( c == RC_BUFF ? 3.0 : 3.0 );
     }
@@ -941,7 +943,7 @@ struct bba_cb_t : public dbc_proc_callback_t
     {
       // Custom call here for BoS ticks and SotR because they don't consume resources
       // The callback should probably rather check for ticks of breath_of_sindragosa, but this will do for now
-      if ( state->action->data().id() == 155166u || state->action->data().id() == 53600u )
+      if ( state->action->data().id() == 155166U || state->action->data().id() == 53600U )
       {
         dbc_proc_callback_t::trigger( a, state );
       }
@@ -1497,7 +1499,7 @@ void items::vanquished_tendril_of_ghuun( special_effect_t& effect )
     void arise() override
     {
       pet_t::arise();
-      bloody_bile->n_casts = 0u;
+      bloody_bile->n_casts = 0U;
     }
 
     action_t* create_action( ::util::string_view name, const std::string& opts ) override
@@ -1976,12 +1978,12 @@ void items::endless_tincture_of_fractional_power( special_effect_t& effect )
       if ( player->consumables.flask )
       {
         const stat_buff_t* flask_buff = dynamic_cast<stat_buff_t*>( player->consumables.flask );
-        if ( flask_buff && flask_buff->stats.size() > 0 )
+        if ( flask_buff && !flask_buff->stats.empty() )
         {
           // Check if the flask buff matches one of the trinket's stat buffs
           const stat_e flask_stat = flask_buff->stats.front().stat;
           const auto it           = range::find_if( buffs, [flask_stat]( const stat_buff_t* buff ) {
-            return buff->stats.size() > 0 && buff->stats.front().stat == flask_stat;
+            return !buff->stats.empty() && buff->stats.front().stat == flask_stat;
           } );
 
           if ( it != buffs.end() )
@@ -2274,7 +2276,7 @@ struct vigor_engaged_t : public special_effect_t
   // Phases of the buff
   enum oscillation : unsigned
   {
-    ASCENDING = 0u,  // Ascending towards max stack
+    ASCENDING = 0U,  // Ascending towards max stack
     MAX_STACK,       // Coasting at max stack
     DESCENDING,      // Descending towards zero stack
     INACTIVE,        // Hibernating at zero stack
@@ -2282,7 +2284,7 @@ struct vigor_engaged_t : public special_effect_t
   };
 
   oscillation current_oscillation = oscillation::ASCENDING;
-  unsigned ticks_at_oscillation   = 0u;
+  unsigned ticks_at_oscillation   = 0U;
   std::array<unsigned, oscillation::MAX_STATES> max_ticks;
   std::array<oscillation, oscillation::MAX_STATES> transition_map = {{MAX_STACK, DESCENDING, INACTIVE, ASCENDING}};
 
@@ -2402,7 +2404,7 @@ struct vigor_engaged_t : public special_effect_t
     }
 
     current_oscillation  = new_oscillation;
-    ticks_at_oscillation = 0u;
+    ticks_at_oscillation = 0U;
   }
 
   void do_oscillation_transition()
@@ -3178,7 +3180,7 @@ void items::exploding_pufferfish( special_effect_t& effect )
                                           .target( state->target )
                                           .pulse_time( summon_spell->duration() )
                                           .action( proc_action )
-                                          .n_pulses( 1u ) );
+                                          .n_pulses( 1U ) );
     }
   };
 
@@ -3802,8 +3804,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
           return;
         }
 
-        if ( cdgrp )
-          cdgrp->start( 1_ms );  // tap the shared group cd so we can get accurate action_ready() checks
+        cdgrp->start( 1_ms );  // tap the shared group cd so we can get accurate action_ready() checks
 
         // add cast time or gcd for any following precombat action
         std::for_each( it + 1, apl.end(), [&time, this]( action_t* a ) {
@@ -4768,7 +4769,7 @@ void items::yellow_punchcard( special_effect_t& effect )
   auto budget = item_database::item_budget( effect.player, punchcard.item_level() );
 
   // Collect stats
-  for ( size_t i = 1u; i <= effect.driver()->effect_count(); ++i )
+  for ( size_t i = 1U; i <= effect.driver()->effect_count(); ++i )
   {
     if ( effect.driver()->effectN( i ).subtype() != A_MOD_RATING )
     {
@@ -4937,7 +4938,7 @@ void items::subroutine_optimization( special_effect_t& effect )
       // Find the two stats provided by the punchcard.
       auto stat_spell = yellow_punchcard( effect );
       std::vector<std::pair<stat_e, double>> punchcard_stats;
-      for ( size_t i = 1u; i <= stat_spell->effect_count(); ++i )
+      for ( size_t i = 1U; i <= stat_spell->effect_count(); ++i )
       {
         if ( stat_spell->effectN( i ).subtype() != A_MOD_RATING )
         {
@@ -4967,7 +4968,7 @@ void items::subroutine_optimization( special_effect_t& effect )
     {
       const gem_property_data_t* data = nullptr;
 
-      auto it = range::find_if( effect.item->parsed.gem_id, [this, &data]( unsigned gem_id ) {
+      range::find_if( effect.item->parsed.gem_id, [this, &data]( unsigned gem_id ) {
         const auto& item_data = source->dbc->item( gem_id );
         if ( item_data.id == 0 )
         {
@@ -4988,7 +4989,7 @@ void items::subroutine_optimization( special_effect_t& effect )
         return false;
       } );
 
-      if ( it == effect.item->parsed.gem_id.end() )
+      if ( !data )
       {
         return spell_data_t::not_found();
       }
@@ -4996,7 +4997,7 @@ void items::subroutine_optimization( special_effect_t& effect )
       // Find the item enchantment associated with the gem
       const auto& enchantment_data = source->dbc->item_enchantment( data->enchant_id );
 
-      for ( size_t i = 0u; i < range::size( enchantment_data.ench_type ); ++i )
+      for ( size_t i = 0U; i < range::size( enchantment_data.ench_type ); ++i )
       {
         if ( enchantment_data.ench_type[ i ] == ITEM_ENCHANTMENT_EQUIP_SPELL )
         {
@@ -5551,7 +5552,7 @@ struct titanic_empowerment_cb_t : public dbc_proc_callback_t
   std::vector<buff_t*> proc_buffs;
 
   titanic_empowerment_cb_t( const special_effect_t& effect, std::vector<buff_t*> proc_buffs )
-    : dbc_proc_callback_t( effect.player, effect ), proc_buffs( proc_buffs )
+    : dbc_proc_callback_t( effect.player, effect ), proc_buffs( std::move(proc_buffs) )
   {
   }
 

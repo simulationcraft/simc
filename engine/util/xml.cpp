@@ -4,15 +4,18 @@
 // ==========================================================================
 
 #include "xml.hpp"
+
+#include "interfaces/sc_http.hpp"
 #include "rapidxml/rapidxml.hpp"
 #include "rapidxml/rapidxml_print.hpp"
 #include "util/concurrency.hpp"
 #include "util/util.hpp"
-#include "interfaces/sc_http.hpp"
 
 #include <memory>
 #include <sstream>
 #include <unordered_map>
+#include <utility>
+
 
 using namespace rapidxml;
 
@@ -311,18 +314,17 @@ xml_node_t* xml_node_t::split_path( std::string&       key,
 
 // xml_node_t::get ==========================================================
 
-std::shared_ptr<xml_node_t> xml_node_t::get( const std::string& url,
-                                             cache::behavior_e  caching,
+std::shared_ptr<xml_node_t> xml_node_t::get( const std::string& url, cache::behavior_e cache_behavior,
                                              const std::string& confirmation )
 {
   auto_lock_t lock( xml_mutex );
 
   auto p = xml_cache.find( url );
-  if ( p != xml_cache.end() && ( caching != cache::CURRENT || p -> second.era >= cache::era() ) )
+  if ( p != xml_cache.end() && ( cache_behavior != cache::CURRENT || p->second.era >= cache::era() ) )
     return p -> second.root;
 
   std::string result;
-  if ( http::get( result, url, caching, confirmation ) != 200 )
+  if ( http::get( result, url, cache_behavior, confirmation ) != 200 )
     return std::shared_ptr<xml_node_t>();
 
   if ( std::shared_ptr<xml_node_t> node = xml_node_t::create( result ) )
@@ -344,11 +346,10 @@ std::shared_ptr<xml_node_t> xml_node_t::create( const std::string& input )
 {
   std::shared_ptr<xml_node_t> root = std::make_shared<xml_node_t>( "root" );
 
-  std::string buffer = input;
   std::string::size_type index = 0;
 
   if ( root )
-    root -> create_children( buffer, index );
+    root -> create_children( input, index );
 
   return root;
 }
@@ -523,7 +524,7 @@ bool xml_node_t::get_value( double&            value,
   xml_parm_t* parm = node -> get_parm( key );
   if ( ! parm ) return false;
 
-  value = std::stod( parm -> value_str.c_str() );
+  value = std::stod( parm -> value_str );
 
   return true;
 }
@@ -751,7 +752,7 @@ sc_xml_t::sc_xml_t() : root(nullptr)
 sc_xml_t::sc_xml_t(rapidxml::xml_node<char> * n) : buf(), root(n)
 { }
 
-sc_xml_t::sc_xml_t(std::unique_ptr<rapidxml::xml_node<char>> n, std::vector<char> b) : buf(b), root_owner(std::move(n)), root(root_owner.get())
+sc_xml_t::sc_xml_t(std::unique_ptr<rapidxml::xml_node<char>> n, std::vector<char> b) : buf(std::move(b)), root_owner(std::move(n)), root(root_owner.get())
 {
 }
 
@@ -1225,22 +1226,20 @@ sc_xml_t sc_xml_t::create( const std::string& input,
   return *c.root;
 }
 
-sc_xml_t sc_xml_t::get( const std::string& url,
-                        cache::behavior_e caching,
-                        const std::string& confirmation )
+sc_xml_t sc_xml_t::get( const std::string& url, cache::behavior_e cache_behavior, const std::string& confirmation )
 {
   {
     auto_lock_t lock( xml_mutex );
 
     auto p = new_xml_cache.find( url );
-    if ( p != new_xml_cache.end() && ( caching != cache::CURRENT || p -> second.era >= cache::era() ) )
+    if ( p != new_xml_cache.end() && ( cache_behavior != cache::CURRENT || p->second.era >= cache::era() ) )
     {
       return sc_xml_t( *p -> second.root );
     }
   }
 
   std::string result;
-  auto status = http::get(result, url, caching, confirmation);
+  auto status = http::get( result, url, cache_behavior, confirmation );
   if (status != 200)
   {
     throw std::runtime_error(fmt::format("Error obtaining http data. Status={}", status));

@@ -65,7 +65,6 @@ typedef std::vector<std::string> list_t;
 
 parse_status parse( sim_t*, util::span<const std::unique_ptr<option_t>>, util::string_view name, util::string_view value, const parse_status_fn_t& fn = nullptr );
 void parse( sim_t*, util::string_view context, util::span<const std::unique_ptr<option_t>>, util::string_view options_str, const parse_status_fn_t& fn = nullptr );
-void parse( sim_t*, util::string_view context, util::span<const std::unique_ptr<option_t>>, util::span<const util::string_view> strings, const parse_status_fn_t& fn = nullptr );
 }
 
 inline void format_to( const std::unique_ptr<option_t>& option, fmt::format_context::iterator out )
@@ -109,7 +108,7 @@ struct option_db_t : public std::vector<option_tuple_t>
   {
     emplace_back( scope, name, value );
   }
-  bool parse_file( std::istream& file );
+  bool parse_file( std::istream& input );
   void parse_token( util::string_view token );
   void parse_line( util::string_view line );
   void parse_text( util::string_view text );

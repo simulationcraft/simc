@@ -4,22 +4,25 @@
 // ==========================================================================
 
 #include "sc_buff.hpp"
-#include "player/target_specific.hpp"
-#include "player/sc_player.hpp"
-#include "dbc/dbc.hpp"
-#include "sim/sc_expressions.hpp"
+
 #include "action/sc_action.hpp"
+#include "dbc/dbc.hpp"
+#include "dbc/item_database.hpp"
+#include "dbc/spell_data.hpp"
+#include "player/expansion_effects.hpp"
+#include "player/sc_player.hpp"
+#include "player/stats.hpp"
+#include "player/target_specific.hpp"
 #include "sim/event.hpp"
-#include "sim/sc_sim.hpp"
 #include "sim/real_ppm.hpp"
-#include "util/rng.hpp"
 #include "sim/sc_cooldown.hpp"
 #include "sim/sc_expressions.hpp"
-#include "dbc/item_database.hpp"
-#include "player/expansion_effects.hpp"
-#include "player/stats.hpp"
+#include "sim/sc_sim.hpp"
+#include "util/rng.hpp"
 
 #include <sstream>
+#include <utility>
+
 
 namespace
 {  // UNNAMED NAMESPACE
@@ -212,7 +215,7 @@ struct expiration_t : public buff_event_t
 
   void execute() override
   {
-    assert( buff->expiration.size() );
+    assert( !buff->expiration.empty() );
 
     // For non-async buffs, this is always unconditionally the "last tick" since we expire the buff
     auto last_tick = buff->stack_behavior != buff_stack_behavior::ASYNCHRONOUS ||
@@ -497,7 +500,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     default_value( DEFAULT_VALUE() ),
     default_value_effect_idx( 0 ),
     default_value_effect_multiplier( 1.0 ),
-    schools( 0u ),
+    schools( 0U ),
     activated( true ),
     reactable( false ),
     reverse(),
@@ -1869,10 +1872,8 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
       // When Strength of Soul removes the Weakened Soul debuff completely,
       // there's a delay before the server notifies the client. Modeling
       // this effect as a world lag.
-      timespan_t lag, dev;
-
-      lag             = p->world_lag_override ? p->world_lag : sim->world_lag;
-      dev             = p->world_lag_stddev_override ? p->world_lag_stddev : sim->world_lag_stddev;
+      timespan_t lag  = p->world_lag_override ? p->world_lag : sim->world_lag;
+      timespan_t dev  = p->world_lag_stddev_override ? p->world_lag_stddev : sim->world_lag_stddev;
       reschedule_time = rng().gauss( lag, dev );
     }
 
@@ -2772,7 +2773,7 @@ stat_buff_t::stat_buff_t( actor_pair_t q, util::string_view name, const spell_da
   }
 }
 
-stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, std::function<bool( const stat_buff_t& )> c )
+stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, const std::function<bool( const stat_buff_t& )>& c )
 {
   if ( !manual_stats_added )
   {
@@ -3083,7 +3084,7 @@ absorb_buff_t* absorb_buff_t::set_absorb_high_priority( bool hp )
 
 absorb_buff_t* absorb_buff_t::set_absorb_eligibility( absorb_eligibility e )
 {
-  eligibility = e;
+  eligibility = std::move(e);
   // TODO: check if player absorb_priority and instant_absorb_list could be automatically
   // populated from here somehow.
   return this;
@@ -3225,7 +3226,7 @@ buff_t* damage_buff_t::apply_affecting_effect( const spelleffect_data_t& effect 
 
 damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, double multiplier )
 {
-  return set_buff_mod( mod, nullptr, 0, multiplier );
+  return set_buff_mod( mod, spell_data_t::nil(), 0, multiplier );
 }
 
 damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, const spell_data_t* s, size_t effect_idx, double multiplier )
@@ -3247,19 +3248,19 @@ damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, const s
 }
 
 damage_buff_t* damage_buff_t::set_direct_mod( double multiplier )
-{ return set_direct_mod( nullptr, 0, multiplier ); }
+{ return set_direct_mod( spell_data_t::nil(), 0, multiplier ); }
 
 damage_buff_t* damage_buff_t::set_direct_mod( const spell_data_t* s, size_t effect_idx, double multiplier )
 { return set_buff_mod( direct_mod, s, effect_idx, multiplier ); }
 
 damage_buff_t* damage_buff_t::set_periodic_mod( double multiplier )
-{ return set_periodic_mod( nullptr, 0, multiplier ); }
+{ return set_periodic_mod( spell_data_t::nil(), 0, multiplier ); }
 
 damage_buff_t* damage_buff_t::set_periodic_mod( const spell_data_t* s, size_t effect_idx, double multiplier )
 { return set_buff_mod( periodic_mod, s, effect_idx, multiplier ); }
 
 damage_buff_t* damage_buff_t::set_auto_attack_mod( double multiplier )
-{ return set_auto_attack_mod( nullptr, 0, multiplier ); }
+{ return set_auto_attack_mod( spell_data_t::nil(), 0, multiplier ); }
 
 damage_buff_t* damage_buff_t::set_auto_attack_mod( const spell_data_t* s, size_t effect_idx, double multiplier )
 { return set_buff_mod( auto_attack_mod, s, effect_idx, multiplier ); }

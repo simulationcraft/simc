@@ -25,6 +25,6 @@ void register_leyshocks_trigger( unsigned spell_id, stat_e stat_buff );
 // Trigger based on a spell id on a predetermined mappings on an actor
 void trigger_leyshocks_grand_compilation( unsigned spell_id, player_t* actor );
 // Bypass spell mapping to trigger any of the buffs required on an actor
-void trigger_leyshocks_grand_compilation( stat_e buff, player_t* actor );
+void trigger_leyshocks_grand_compilation( stat_e stat, player_t* actor );
 }
 } // namespace expansion

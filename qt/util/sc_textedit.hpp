@@ -32,9 +32,9 @@ public:
 
   SC_TextEdit( QWidget* parent = nullptr, bool accept_drops = true, bool enable_search = true );
 
-  void addIgnoreKeyPressEvent( Qt::Key k, QList<Qt::KeyboardModifier> s );
+  void addIgnoreKeyPressEvent( Qt::Key k, const QList<Qt::KeyboardModifier>& s );
 
-  bool removeIgnoreKeyPressEvent( Qt::Key k, QList<Qt::KeyboardModifier> s );
+  bool removeIgnoreKeyPressEvent( Qt::Key k, const QList<Qt::KeyboardModifier>& s );
 
   void removeAllIgnoreKeyPressEvent();
 

@@ -6,6 +6,8 @@
 #include "report_configuration.hpp"
 
 #include <stdexcept>  // included because cpp-semver seems to lack this internal dependency
+#include <utility>
+
 
 // GNU C library defines macros major & minor in <sys/types.h>
 // While it does not seem to mess with the use of these names in cpp-semver both gcc and
@@ -106,7 +108,7 @@ report_configuration_t create_report_entry( sim_t& sim, std::string version, std
                selected_entry.version, version, available_non_deprecated_version_string );
   }
 
-  return report_configuration_t( selected_entry.version, destination );
+  return report_configuration_t( selected_entry.version, std::move(destination) );
 }
 
 }  // namespace json

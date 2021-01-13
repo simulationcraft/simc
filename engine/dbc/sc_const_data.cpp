@@ -836,9 +836,9 @@ uint32_t dbc::get_school_mask( school_e s )
   }
 }
 
-school_e dbc::get_school_type( uint32_t school_mask )
+school_e dbc::get_school_type( uint32_t school_id )
 {
-  switch ( school_mask )
+  switch ( school_id )
   {
     case 0x01: return SCHOOL_PHYSICAL;
     case 0x02: return SCHOOL_HOLY;
@@ -1533,13 +1533,13 @@ double dbc_t::effect_min( const spelleffect_data_t* e, unsigned level ) const
   if ( ! e )
     return 0.0;
 
-  double avg, result;
+  double result;
 
   assert( e && ( level > 0 ) );
   assert( ( level <= MAX_SCALING_LEVEL ) );
 
   unsigned c_id = util::class_id( e -> _spell -> scaling_class() );
-  avg = effect_average( e, level );
+  double avg = effect_average( e, level );
 
   if ( c_id != 0 && ( e -> m_coefficient() != 0 || e -> m_delta() != 0 ) )
   {
@@ -1570,12 +1570,12 @@ double dbc_t::effect_max( unsigned effect_id, unsigned level ) const
 
 double dbc_t::effect_max( const spelleffect_data_t* e, unsigned level ) const
 {
-  double avg, result;
+  double result;
 
   assert( e && ( level > 0 ) && ( level <= MAX_SCALING_LEVEL ) );
 
   unsigned c_id = util::class_id( e -> _spell -> scaling_class() );
-  avg = effect_average( e, level );
+  double avg = effect_average( e, level );
 
   if ( c_id != 0 && ( e -> m_coefficient() != 0 || e -> m_delta() != 0 ) )
   {
@@ -1640,14 +1640,14 @@ unsigned dbc_t::class_ability_id( player_e          c,
     active_spell = &active_class_spell_t::find( spell_name, spec_id, ptr, name_tokenized );
 
     // Try to find in class-specific general spells
-    if ( active_spell->spell_id == 0u )
+    if ( active_spell->spell_id == 0U )
     {
       unsigned class_idx = 0;
       unsigned spec_index = 0;
 
       if ( !spec_idx( spec_id, class_idx, spec_index ) )
       {
-        return 0u;
+        return 0U;
       }
 
       active_spell = &active_class_spell_t::find( spell_name,
@@ -1663,9 +1663,9 @@ unsigned dbc_t::class_ability_id( player_e          c,
     active_spell = &active_class_spell_t::find( spell_name, ptr, name_tokenized );
   }
 
-  if ( active_spell->spell_id == 0u )
+  if ( active_spell->spell_id == 0U )
   {
-    return 0u;
+    return 0U;
   }
 
   if ( !replaced_id( active_spell->spell_id ) )
@@ -1674,7 +1674,7 @@ unsigned dbc_t::class_ability_id( player_e          c,
   }
   else
   {
-    return 0u;
+    return 0U;
   }
 }
 
@@ -1690,9 +1690,9 @@ unsigned dbc_t::pet_ability_id( player_e c, util::string_view name, bool tokeniz
     active_spell = &active_pet_spell_t::find( name, ptr, tokenized );
   }
 
-  if ( active_spell->spell_id == 0u )
+  if ( active_spell->spell_id == 0U )
   {
-    return 0u;
+    return 0U;
   }
 
   if ( !replaced_id( active_spell->spell_id ) )
@@ -1701,7 +1701,7 @@ unsigned dbc_t::pet_ability_id( player_e c, util::string_view name, bool tokeniz
   }
   else
   {
-    return 0u;
+    return 0U;
   }
 }
 

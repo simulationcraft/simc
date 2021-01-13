@@ -612,7 +612,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   else
   {
     // Find the first power entry without a aura id
-    auto it = range::find( spell_powers, 0u, &spellpower_data_t::aura_id );
+    auto it = range::find( spell_powers, 0U, &spellpower_data_t::aura_id );
     if ( it != spell_powers.end() )
     {
       resource_current = it->resource();
@@ -897,12 +897,12 @@ bool action_t::verify_actor_weapon() const
 
   const unsigned mask = data().equipped_subclass_mask();
   if ( data().flags( spell_attribute::SX_REQ_MAIN_HAND ) &&
-       !( mask & ( 1u << util::translate_weapon( player->main_hand_weapon.type ) ) ) )
+       !( mask & ( 1U << util::translate_weapon( player->main_hand_weapon.type ) ) ) )
   {
     std::vector<std::string> types;
     for ( auto wt = ITEM_SUBCLASS_WEAPON_AXE; wt < ITEM_SUBCLASS_WEAPON_FISHING_POLE; ++wt )
     {
-      if ( mask & ( 1u << static_cast<unsigned>( wt ) ) )
+      if ( mask & ( 1U << static_cast<unsigned>( wt ) ) )
       {
         types.emplace_back(util::weapon_subclass_string( wt ) );
       }
@@ -915,12 +915,12 @@ bool action_t::verify_actor_weapon() const
   }
 
   if ( data().flags( spell_attribute::SX_REQ_OFF_HAND ) &&
-       !( mask & ( 1u << util::translate_weapon( player->off_hand_weapon.type ) ) ) )
+       !( mask & ( 1U << util::translate_weapon( player->off_hand_weapon.type ) ) ) )
   {
     std::vector<std::string> types;
     for ( auto wt = ITEM_SUBCLASS_WEAPON_AXE; wt < ITEM_SUBCLASS_WEAPON_FISHING_POLE; ++wt )
     {
-      if ( mask & ( 1u << static_cast<unsigned>( wt ) ) )
+      if ( mask & ( 1U << static_cast<unsigned>( wt ) ) )
       {
         types.emplace_back(util::weapon_subclass_string( wt ) );
       }
@@ -1563,7 +1563,7 @@ void action_t::execute()
 
   if ( harmful )
   {
-    if ( player->in_combat == false && sim->debug )
+    if ( !player->in_combat && sim->debug )
       sim->print_debug( "{} enters combat.", *player );
 
     player->in_combat = true;
@@ -1820,19 +1820,19 @@ void action_t::last_tick( dot_t* d )
   }
 }
 
-void action_t::assess_damage( result_amount_type type, action_state_t* s )
+void action_t::assess_damage( result_amount_type type, action_state_t* state )
 {
   // Execute outbound damage assessor pipeline on the state object
-  player->assessor_out_damage.execute( type, s );
+  player->assessor_out_damage.execute( type, state );
 
   // TODO: Should part of this move to assessing, priority_iteration_damage for example?
-  if ( s->result_raw > 0 || result_is_miss( s->result ) )
+  if ( state->result_raw > 0 || result_is_miss( state->result ) )
   {
-    if ( s->target == sim->target )
+    if ( state->target == sim->target )
     {
-      player->priority_iteration_dmg += s->result_amount;
+      player->priority_iteration_dmg += state->result_amount;
     }
-    record_data( s );
+    record_data( state );
   }
 }
 
@@ -1917,16 +1917,16 @@ void action_t::start_gcd()
   }
 }
 
-void action_t::schedule_execute( action_state_t* execute_state )
+void action_t::schedule_execute( action_state_t* state )
 {
   if ( target->is_sleeping() )
   {
     sim->print_debug( "{} action={} attempted to schedule on a dead target {}",
       *player, *this, *target );
 
-    if ( execute_state )
+    if ( state )
     {
-      action_state_t::release( execute_state );
+      action_state_t::release( state );
     }
     return;
   }
@@ -1935,7 +1935,7 @@ void action_t::schedule_execute( action_state_t* execute_state )
 
   time_to_execute = execute_time();
 
-  execute_event = start_action_execute_event( time_to_execute, execute_state );
+  execute_event = start_action_execute_event( time_to_execute, state );
 
   if ( trigger_gcd > timespan_t::zero() )
     player->off_gcdactions.clear();
@@ -2024,10 +2024,8 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
       The only situation that this could happen is when world lag is over 400, as blizzard does not allow
       custom lag tolerance to go over 400.
       */
-      timespan_t lag, dev;
-
-      lag   = player->world_lag_override ? player->world_lag : sim->world_lag;
-      dev   = player->world_lag_stddev_override ? player->world_lag_stddev : sim->world_lag_stddev;
+      timespan_t lag   = player->world_lag_override ? player->world_lag : sim->world_lag;
+      timespan_t dev   = player->world_lag_stddev_override ? player->world_lag_stddev : sim->world_lag_stddev;
       delay = rng().gauss( lag, dev );
       if ( delay > timespan_t::from_millis( 400 ) )
       {
@@ -2104,7 +2102,7 @@ bool action_t::select_target()
       {
         target_cache.is_valid = false;
       }
-      if ( child_action.size() > 0 )
+      if ( !child_action.empty() )
       {  // If spell_targets is used on the child instead of the parent action, we need to reset the cache for that
          // action as well.
         for ( size_t i = 0; i < child_action.size(); i++ )
@@ -2217,12 +2215,7 @@ bool action_t::select_target()
 
   // Normal casting (no cycle_targets, cycle_players, target_number, or target_if specified). Check
   // that we can cast on the target
-  if ( !target_ready( target ) )
-  {
-    return false;
-  }
-
-  return true;
+  return target_ready( target );
 }
 
 bool action_t::action_ready()
@@ -2279,7 +2272,7 @@ bool action_t::action_ready()
 bool action_t::ready()
 {
   // Check conditions that do NOT pertain to the target before cycle_targets
-  if ( cooldown->is_ready() == false )
+  if ( !cooldown->is_ready() )
     return false;
 
   if ( internal_cooldown->down() )
@@ -2465,7 +2458,7 @@ void action_t::init()
     }
     // Special case for disabled actions that are preceded by pool_resource,for_next=1 lines
     // If we are skipping adding the action to the foreground_action_list above, we also need to disable the pool_resource entry
-    else if ( apl->foreground_action_list.size() > 0 &&
+    else if ( !apl->foreground_action_list.empty() &&
               apl->foreground_action_list.back()->name_str == "pool_resource"  &&
               util::str_in_str_ci( apl->foreground_action_list.back()->signature_str, "for_next=1" ) )
     {
@@ -3248,7 +3241,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         }
         double evaluate() override
         {
-          if ( previously_off_gcd != nullptr && action.player->off_gcdactions.size() > 0 )
+          if ( previously_off_gcd != nullptr && !action.player->off_gcdactions.empty() )
           {
             for ( size_t i = 0; i < action.player->off_gcdactions.size(); i++ )
             {
@@ -3385,7 +3378,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     }
     else
     {
-      if ( sim->target_list.size() == 1u && !sim->has_raid_event( "adds" ) )
+      if ( sim->target_list.size() == 1U && !sim->has_raid_event( "adds" ) )
       {
         return expr_t::create_constant( "spell_targets", 1.0 );
       }
@@ -3788,9 +3781,9 @@ timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
   return dot_duration;
 }
 
-event_t* action_t::start_action_execute_event( timespan_t t, action_state_t* execute_event )
+event_t* action_t::start_action_execute_event( timespan_t t, action_state_t* state )
 {
-  return make_event<action_execute_event_t>( *sim, this, t, execute_event );
+  return make_event<action_execute_event_t>( *sim, this, t, state );
 }
 
 void action_t::do_schedule_travel( action_state_t* state, timespan_t time_ )
@@ -4367,7 +4360,7 @@ void action_t::acquire_target( retarget_source /* event */, player_t* /* context
   }
 
   // Don't swap targets if the action's current target is still alive
-  if ( !target->is_sleeping() && !target->debuffs.invulnerable->check() )
+  if ( target && !target->is_sleeping() && !target->debuffs.invulnerable->check() )
   {
     return;
   }
@@ -4377,7 +4370,7 @@ void action_t::acquire_target( retarget_source /* event */, player_t* /* context
     if ( sim->debug )
     {
       sim->out_debug.print( "{} {} target change, current={} candidate={}", *player, *this,
-                             target ? target->name() : "(none)", candidate_target->name() );
+                             target ? target->name() : "(none)", candidate_target ? candidate_target->name() : "(none)" );
     }
     target                = candidate_target;
   }

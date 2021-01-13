@@ -13,7 +13,7 @@ benefit_t* benefit_t::collect_ratio(bool collect)
   if (sim.report_details)
   {
     ratio.change_mode(!collect);
-    ratio.reserve(std::min(as<unsigned>(sim.iterations), 2048u));
+    ratio.reserve(std::min(as<unsigned>(sim.iterations), 2048U));
   }
 
   return this;
@@ -54,7 +54,7 @@ uptime_t* uptime_t::collect_uptime(bool collect)
   if (sim.report_details)
   {
     uptime_sum.change_mode(!collect);
-    uptime_sum.reserve(std::min(as<unsigned>(sim.iterations), 2048u));
+    uptime_sum.reserve(std::min(as<unsigned>(sim.iterations), 2048U));
   }
 
   return this;
@@ -65,7 +65,7 @@ uptime_t* uptime_t::collect_duration(bool collect)
   if (sim.report_details)
   {
     uptime_instance.change_mode(!collect);
-    uptime_instance.reserve(std::min(as<unsigned>(sim.iterations), 2048u));
+    uptime_instance.reserve(std::min(as<unsigned>(sim.iterations), 2048U));
   }
 
   return this;

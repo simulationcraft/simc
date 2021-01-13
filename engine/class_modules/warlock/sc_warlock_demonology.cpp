@@ -482,7 +482,7 @@ struct implosion_t : public demonology_spell_t
 
   void execute() override
   {
-    warlock_spell_t::execute();
+    demonology_spell_t::execute();
 
     p()->buffs.implosive_potential->expire();
     p()->buffs.implosive_potential_small->expire();
@@ -726,11 +726,13 @@ struct power_siphon_t : public demonology_spell_t
 
     range::sort(
         imps, []( const pets::demonology::wild_imp_pet_t* imp1, const pets::demonology::wild_imp_pet_t* imp2 ) {
-          double lv = imp1->resources.current[ RESOURCE_ENERGY ], rv = imp2->resources.current[ RESOURCE_ENERGY ];
+          double lv = imp1->resources.current[ RESOURCE_ENERGY ];
+          double rv = imp2->resources.current[ RESOURCE_ENERGY ];
 
           if ( lv == rv )
           {
-            timespan_t lr = imp1->expiration->remains(), rr = imp2->expiration->remains();
+            timespan_t lr = imp1->expiration->remains();
+            timespan_t rr = imp2->expiration->remains();
             if ( lr == rr )
             {
               return imp1->actor_spawn_index < imp2->actor_spawn_index;
@@ -1166,7 +1168,7 @@ void warlock_t::vision_of_perfection_proc_demo()
 {
   timespan_t summon_duration = find_spell( 265187 )->duration() * vision_of_perfection_multiplier;
 
-  warlock_pet_list.demonic_tyrants.spawn( summon_duration, 1u );
+  warlock_pet_list.demonic_tyrants.spawn( summon_duration, 1U );
 
   auto essence         = find_azerite_essence( "Vision of Perfection" );
   timespan_t extension = timespan_t::from_seconds(

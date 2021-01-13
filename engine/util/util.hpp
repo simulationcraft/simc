@@ -205,10 +205,10 @@ bool str_compare_ci( util::string_view l, util::string_view r );
 bool str_in_str_ci ( util::string_view l, util::string_view r );
 bool str_prefix_ci ( util::string_view str, util::string_view prefix );
 
-double floor( double X, unsigned int decplaces = 0 );
-double ceil( double X, unsigned int decplaces = 0 );
-double round( double X, unsigned int decplaces = 0 );
-double approx_sqrt( double X );
+double floor( double arg, unsigned int decplaces = 0 );
+double ceil( double arg, unsigned int decplaces = 0 );
+double round( double arg, unsigned int decplaces = 0 );
+double approx_sqrt( double arg );
 
 void tolower( std::string& str );
 
@@ -226,7 +226,7 @@ int numDigits( T number );
 bool contains_non_ascii( util::string_view );
 
 void print_chained_exception( const std::exception& e, std::ostream& out, int level =  0);
-void print_chained_exception( std::exception_ptr eptr, std::ostream& out, int level =  0);
+void print_chained_exception( const std::exception_ptr& eptr, std::ostream& out, int level =  0);
 
 } // namespace util
 

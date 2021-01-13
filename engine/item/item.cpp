@@ -60,7 +60,7 @@ size_t parsed_item_data_t::add_effect( unsigned spell_id, int type )
 
 size_t parsed_item_data_t::add_effect( const item_effect_t& effect )
 {
-  const auto it = range::find( effects, 0u, &item_effect_t::spell_id );
+  const auto it = range::find( effects, 0U, &item_effect_t::spell_id );
   const size_t index = static_cast<size_t>( std::distance( effects.begin(), it ) );
 
   assert( index < effects.size() );
@@ -307,7 +307,7 @@ std::string item_t::weapon_stats_str() const
 
 std::string item_t::gem_stats_str() const
 {
-  if ( parsed.gem_stats.size() == 0 )
+  if ( parsed.gem_stats.empty() )
   {
     return std::string();
   }
@@ -328,7 +328,7 @@ std::string item_t::gem_stats_str() const
 
 std::string item_t::enchant_stats_str() const
 {
-  if ( parsed.enchant_stats.size() == 0 )
+  if ( parsed.enchant_stats.empty() )
   {
     return std::string();
   }
@@ -349,7 +349,7 @@ std::string item_t::enchant_stats_str() const
 
 std::string item_t::socket_bonus_stats_str() const
 {
-  if ( parsed.socket_bonus_stats.size() == 0 )
+  if ( parsed.socket_bonus_stats.empty() )
   {
     return std::string();
   }
@@ -416,10 +416,10 @@ void format_to( const item_t& item, fmt::format_context::iterator out )
   if ( item.has_stats() )
     fmt::format_to( out, " stats={{ {} }}", item.item_stats_str() );
 
-  if ( item.parsed.gem_stats.size() > 0 )
+  if ( !item.parsed.gem_stats.empty() )
     fmt::format_to( out, " gems={{ {} }}", item.gem_stats_str() );
 
-  if ( item.socket_color_match() && item.parsed.socket_bonus_stats.size() > 0 )
+  if ( item.socket_color_match() && !item.parsed.socket_bonus_stats.empty() )
     fmt::format_to( out, " socket_bonus={{ {} }}", item.socket_bonus_stats_str() );
 
   if ( is_weapon )
@@ -429,14 +429,14 @@ void format_to( const item_t& item, fmt::format_context::iterator out )
       w -> min_dmg, w -> max_dmg, w -> swing_time );
   }
 
-  if ( item.parsed.enchant_stats.size() > 0 && item.parsed.encoded_enchant.empty() )
+  if ( !item.parsed.enchant_stats.empty() && item.parsed.encoded_enchant.empty() )
     fmt::format_to( out, " enchant={{ {} }}", item.enchant_stats_str() );
   else if ( ! item.parsed.encoded_enchant.empty() )
     fmt::format_to( out, " enchant={{ {} }}", item.parsed.encoded_enchant );
 
   if ( item.parsed.temporary_enchant_id > 0 )
   {
-    if ( item.parsed.temp_enchant_stats.size() )
+    if ( !item.parsed.temp_enchant_stats.empty() )
     {
       fmt::format_to( out, " temporary_enchant={{ {} }}",
           item.stat_pairs_to_str( item.parsed.temp_enchant_stats ) );
@@ -553,8 +553,7 @@ int item_t::stat_value( size_t idx ) const
 bool item_t::active() const
 {
   if ( slot == SLOT_INVALID ) return false;
-  if ( ! ( name_str.empty() || name_str == "empty" || name_str == "none" || name_str == "nothing" ) ) return true;
-  return false;
+  return ! ( name_str.empty() || name_str == "empty" || name_str == "none" || name_str == "nothing" );
 }
 
 // item_t::name =============================================================
@@ -642,11 +641,11 @@ void item_t::parse_options()
     return;
 
   option_name_str = options_str;
-  std::string remainder = "";
+  std::string remainder;
   std::string DUMMY_REFORGE; // TODO-WOD: Remove once profiles update
   std::string DUMMY_CONTEXT; // not used by simc but used by 3rd parties (raidbots)
 
-  std::string::size_type cut_pt = options_str.find_first_of( "," );
+  std::string::size_type cut_pt = options_str.find_first_of( ',' );
 
   if ( cut_pt != options_str.npos )
   {
@@ -920,7 +919,7 @@ std::string item_t::encoded_item() const
   if ( parsed.data.id )
     s << ",id=" << parsed.data.id;
 
-  if ( parsed.bonus_id.size() > 0 )
+  if ( !parsed.bonus_id.empty() )
   {
     s << ",bonus_id=";
     for ( size_t i = 0, end = parsed.bonus_id.size(); i < end; i++ )
@@ -970,12 +969,12 @@ std::string item_t::encoded_item() const
   // there are gems to spit out.  Note that gem_id= option is also always
   // printed below, and if present, the gems= string will be found in "gear
   // comments" (enabled by save_gear_comments=1 option).
-  else if ( option_gem_id_str.empty() && ( parsed.gem_stats.size() > 0 ||
+  else if ( option_gem_id_str.empty() && ( !parsed.gem_stats.empty() ||
       ( slot == SLOT_HEAD && player -> meta_gem != META_GEM_NONE ) ) )
     s << ",gems=" << encoded_gems();
 
-  auto gem_bonus_it = range::find_if( parsed.gem_bonus_id, []( const std::vector<unsigned> v ) {
-    return v.size() > 0;
+  auto gem_bonus_it = range::find_if( parsed.gem_bonus_id, []( const std::vector<unsigned>& v ) {
+    return !v.empty();
   } );
 
   auto gem_it = range::find_if( parsed.gem_id, []( int id ) {
@@ -984,7 +983,7 @@ std::string item_t::encoded_item() const
 
   if ( ! option_gem_id_str.empty() )
     s << ",gem_id=" << option_gem_id_str;
-  else if ( gem_it != parsed.gem_id.end() && parsed.gem_stats.size() == 0 )
+  else if ( gem_it != parsed.gem_id.end() && parsed.gem_stats.empty() )
   {
     s << ",gem_id=";
     for ( size_t i = 0; i < parsed.gem_id.size(); ++i )
@@ -1007,7 +1006,7 @@ std::string item_t::encoded_item() const
     for ( size_t gem_idx = 0; gem_idx < parsed.gem_bonus_id.size(); ++gem_idx )
     {
       const auto& gem_data = parsed.gem_bonus_id[ gem_idx ];
-      if ( gem_data.size() == 0 )
+      if ( gem_data.empty() )
       {
         s << "0";
       }
@@ -1040,7 +1039,7 @@ std::string item_t::encoded_item() const
   {
     s << ",azerite_powers=" << option_azerite_powers_str;
   }
-  else if ( parsed.azerite_ids.size() > 0 )
+  else if ( !parsed.azerite_ids.empty() )
   {
     s << ",azerite_powers=" << util::string_join( parsed.azerite_ids, "/" );
   }
@@ -1048,7 +1047,7 @@ std::string item_t::encoded_item() const
   if ( ! option_enchant_str.empty() )
     s << ",enchant=" << encoded_enchant();
   else if ( option_enchant_id_str.empty() &&
-            ( parsed.enchant_stats.size() > 0 || ! parsed.encoded_enchant.empty() ) )
+            ( !parsed.enchant_stats.empty() || ! parsed.encoded_enchant.empty() ) )
     s << ",enchant=" << encoded_enchant();
 
   if ( ! option_enchant_id_str.empty() )
@@ -1057,7 +1056,7 @@ std::string item_t::encoded_item() const
   if ( ! option_addon_str.empty() )
     s << ",addon=" << encoded_addon();
   else if (  option_addon_id_str.empty() &&
-        ( parsed.addon_stats.size() > 0 || ! parsed.encoded_addon.empty() ) )
+        ( !parsed.addon_stats.empty() || ! parsed.encoded_addon.empty() ) )
     s << ",addon=" << encoded_addon();
 
   if ( ! option_addon_id_str.empty() )
@@ -1086,7 +1085,7 @@ std::string item_t::encoded_item() const
   {
     s << ",crafted_stats=" << option_crafted_stat_str;
   }
-  else if ( parsed.crafted_stat_mod.size() )
+  else if ( !parsed.crafted_stat_mod.empty() )
   {
     std::vector<std::string> strs;
     range::for_each( parsed.crafted_stat_mod, [ &strs ]( int mod ) {
@@ -1148,16 +1147,16 @@ std::string item_t::encoded_comment()
 
   // Print out encoded comment string if there's no gems= option given, and we
   // have something relevant to spit out
-  if ( option_gems_str.empty() && ( parsed.gem_stats.size() > 0 ||
+  if ( option_gems_str.empty() && ( !parsed.gem_stats.empty() ||
       ( slot == SLOT_HEAD && player -> meta_gem != META_GEM_NONE ) ) )
     s << "gems=" << encoded_gems() << ",";
 
   if ( option_enchant_str.empty() &&
-       ( parsed.enchant_stats.size() > 0 || ! parsed.encoded_enchant.empty() ) )
+       ( !parsed.enchant_stats.empty() || ! parsed.encoded_enchant.empty() ) )
     s << "enchant=" << encoded_enchant() << ",";
 
   if ( option_addon_str.empty() &&
-       ( parsed.addon_stats.size() > 0 || ! parsed.encoded_addon.empty() ) )
+       ( !parsed.addon_stats.empty() || ! parsed.encoded_addon.empty() ) )
     s << "addon=" << encoded_addon() << ",";
 
   if ( option_equip_str.empty() )
@@ -1195,7 +1194,7 @@ std::string item_t::encoded_gems() const
     return option_gems_str;
 
   std::string stats_str = stat_pairs_to_str( parsed.gem_stats );
-  if ( socket_color_match() && parsed.socket_bonus_stats.size() > 0 )
+  if ( socket_color_match() && !parsed.socket_bonus_stats.empty() )
   {
     if ( ! stats_str.empty() )
       stats_str += "_";
@@ -1615,7 +1614,7 @@ void item_t::decode_gems()
         parsed.gem_color[ i ] = enchant::initialize_gem( *this, i );
 
       // Socket bonus
-      if ( socket_color_match() && parsed.socket_bonus_stats.size() == 0 )
+      if ( socket_color_match() && parsed.socket_bonus_stats.empty() )
       {
         const item_enchantment_data_t& socket_bonus = player -> dbc->item_enchantment( parsed.data.id_socket_bonus );
         enchant::initialize_item_enchant( *this, parsed.socket_bonus_stats, SPECIAL_EFFECT_SOURCE_SOCKET_BONUS, socket_bonus );
@@ -1730,7 +1729,7 @@ void item_t::decode_enchant()
   }
 
   parsed.enchant_stats = str_to_stat_pair( option_enchant_str );
-  if ( parsed.enchant_stats.size() > 0 )
+  if ( !parsed.enchant_stats.empty() )
   {
     return;
   }
@@ -1758,7 +1757,7 @@ void item_t::decode_addon()
   }
 
   parsed.addon_stats = str_to_stat_pair( option_addon_str );
-  if ( parsed.addon_stats.size() > 0 )
+  if ( !parsed.addon_stats.empty() )
   {
     return;
   }
@@ -1803,7 +1802,10 @@ void item_t::decode_weapon()
   {
     auto tokens = item_database::parse_tokens( option_weapon_str );
 
-    bool dps_set = false, dmg_set = false, min_set = false, max_set = false;
+    bool dps_set = false;
+    bool dmg_set = false;
+    bool min_set = false;
+    bool max_set = false;
 
     for ( auto& t : tokens )
     {
@@ -1998,7 +2000,7 @@ bool item_t::download_item( item_t& item )
   // bcp_api::download_item has already filled parsed.socket_bonus_stats. Both
   // local and wowhead provide a id, that needs to be parsed into
   // parsed.socket_bonus_stats.
-  if ( success && item.parsed.socket_bonus_stats.size() == 0 &&
+  if ( success && item.parsed.socket_bonus_stats.empty() &&
        item.parsed.data.id_socket_bonus > 0 )
   {
     const item_enchantment_data_t& bonus = item.player -> dbc->item_enchantment( item.parsed.data.id_socket_bonus );

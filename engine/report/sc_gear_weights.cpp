@@ -112,8 +112,8 @@ std::array<std::string, SCALE_METRIC_MAX> gear_weights::wowhead(
     // Filter to the appropriately flagged loot for the specialization.
     s << "ro=" << wowhead_role( p.type, p.primary_role() ) << ";";
 
-    std::string id_string    = "";
-    std::string value_string = "";
+    std::string id_string;
+    std::string value_string;
 
     bool positive_normalizing_value =
         p.scaling->scaling[ sm ].get_stat( p.normalize_by() ) >= 0;
@@ -370,7 +370,9 @@ std::array<std::string, SCALE_METRIC_MAX> gear_weights::askmrrobot(
       // otherwise try to reconstruct it from the origin string
       else
       {
-        std::string region_str, server_str, name_str;
+        std::string region_str;
+        std::string server_str;
+        std::string name_str;
         if ( util::parse_origin( region_str, server_str, name_str,
                                  p.origin_str ) )
           ss << "/optimize/" << region_str << '/' << server_str << '/'

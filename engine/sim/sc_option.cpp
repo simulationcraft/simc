@@ -41,7 +41,6 @@ void open_file( io::ifstream& f, util::span<const std::string> splits, const std
 
   actual_name = name;
   f.open( name );
-  return;
 }
 
 std::string base_name( const std::string& file_path )
@@ -94,7 +93,7 @@ void do_replace( const option_db_t& opts, std::string& str, std::string::size_ty
     do_replace( opts, str, next, ++depth );
   }
 
-  auto end = str.find( ")", begin + 2 );
+  auto end = str.find( ')', begin + 2 );
   if ( end == std::string::npos )
   {
     throw std::invalid_argument( fmt::format( "Unbalanced parenthesis in template variable for: '{}'", str ) );
@@ -375,7 +374,7 @@ protected:
     if ( name() != n )
       return opts::parse_status::CONTINUE;
 
-     return _fun( sim, n, value ) == true ? opts::parse_status::OK : opts::parse_status::FAILURE;
+     return _fun( sim, n, value ) ? opts::parse_status::OK : opts::parse_status::FAILURE;
   }
 
   void do_format_to( fmt::format_context::iterator out ) const override
@@ -481,7 +480,7 @@ protected:
   {
     for ( auto& entry : _ref )
     {
-      for ( auto i = 0u; i < entry.second.size(); ++i )
+      for ( auto i = 0U; i < entry.second.size(); ++i )
       {
         fmt::format_to( out, "{}{}{}{}\n", name(), entry.first, i == 0 ? "=" : "+=", entry.second[ i ] );
       }
@@ -612,13 +611,10 @@ opts::parse_status opts::parse( sim_t*                                      sim,
 
 // option_t::parse ==========================================================
 
-void opts::parse( sim_t*                                      sim,
-                  util::string_view                          /* context */,
-                  util::span<const std::unique_ptr<option_t>> options,
-                  util::span<const util::string_view>         splits,
-                  const parse_status_fn_t&                    status_fn )
+void opts::parse( sim_t* sim, util::string_view /* context */, util::span<const std::unique_ptr<option_t>> options,
+                  util::string_view options_str, const parse_status_fn_t& status_fn )
 {
-  for ( auto& split : splits )
+  for ( auto& split : util::string_split<util::string_view>( options_str, "," ) )
   {
     auto index = split.find_first_of( '=' );
 
@@ -638,18 +634,6 @@ void opts::parse( sim_t*                                      sim,
     }
   }
 }
-
-// option_t::parse ==========================================================
-
-void opts::parse( sim_t*                                      sim,
-                  util::string_view                          context,
-                  util::span<const std::unique_ptr<option_t>> options,
-                  util::string_view                           options_str,
-                  const parse_status_fn_t&                    status_fn )
-{
-  opts::parse( sim, context, options, util::string_split<util::string_view>( options_str, "," ), status_fn );
-}
-
 
 // option_db_t::parse_file ==================================================
 
@@ -711,11 +695,6 @@ void option_db_t::parse_text( util::string_view text )
     }
 
     auto last = text.find( '\n', first );
-    if ( false )
-    {
-      fmt::print( std::cerr, "first = {}, last = {} [{}]", first, last, text.substr( first, last - first ) );
-      std::cerr << std::endl;
-    }
     if ( text[ first ] != '#' )
     {
       parse_line( text.substr( first, last - first ) );
@@ -762,7 +741,7 @@ void option_db_t::parse_token( util::string_view token )
   {
     do_replace( *this, parsed_token, parsed_token.find( "$(" ), 1 );
 
-    cut_pt = parsed_token.find( "=" );
+    cut_pt = parsed_token.find( '=' );
   }
 
   if ( cut_pt == token.npos )
@@ -778,11 +757,12 @@ void option_db_t::parse_token( util::string_view token )
     return;
   }
 
-  std::string name( parsed_token, 0, cut_pt ), value( parsed_token, cut_pt + 1, std::string::npos );
+  std::string name( parsed_token, 0, cut_pt );
+  std::string value( parsed_token, cut_pt + 1, std::string::npos );
 
   do_replace( *this, value, value.find( "$(" ), 1 );
 
-  if ( name.size() >= 1 && name[ 0 ] == '$' )
+  if ( !name.empty() && name[ 0 ] == '$' )
   {
     if ( name.size() < 3 || name[ 1 ] != '(' || name[ name.size() - 1 ] != ')' )
     {

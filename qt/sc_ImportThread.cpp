@@ -11,6 +11,8 @@
 #include "sc_OptionsTab.hpp"
 #include "simulationcraftqt.hpp"
 
+#include <utility>
+
 #ifdef Q_OS_MAC
 #include <CoreFoundation/CoreFoundation.h>
 #endif
@@ -53,7 +55,7 @@ void SC_ImportThread::start( std::shared_ptr<sim_t> s, const QString& reg, const
   m_role          = mainWindow->optionsTab->get_player_role();
   error           = "";
 
-  sim       = s;
+  sim       = std::move(s);
   region    = reg;
   realm     = rea;
   character = cha;

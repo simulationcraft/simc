@@ -542,14 +542,14 @@ static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
 }
 
 // BFA - Essence
-void warlock_t::trigger_memory_of_lucid_dreams( double cost )
+void warlock_t::trigger_memory_of_lucid_dreams( double gain )
 {
   if ( !azerite_essence.memory_of_lucid_dreams.enabled() )
   {
     return;
   }
 
-  if ( cost <= 0 )
+  if ( gain <= 0 )
   {
     return;
   }
@@ -565,7 +565,7 @@ void warlock_t::trigger_memory_of_lucid_dreams( double cost )
     return;
   }
 
-  memory_of_lucid_dreams_accumulator += cost * spells.memory_of_lucid_dreams_base->effectN( 1 ).percent();
+  memory_of_lucid_dreams_accumulator += gain * spells.memory_of_lucid_dreams_base->effectN( 1 ).percent();
 
   double shards_to_give = floor( memory_of_lucid_dreams_accumulator );
 
@@ -972,13 +972,13 @@ void warlock_t::init_spells()
 
   // BFA - Essence
   azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-  spells.memory_of_lucid_dreams_base     = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+  spells.memory_of_lucid_dreams_base     = azerite_essence.memory_of_lucid_dreams.spell( 1U, essence_type::MINOR );
 
   azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
   strive_for_perfection_multiplier = 1.0 + azerite::vision_of_perfection_cdr( azerite_essence.vision_of_perfection );
   vision_of_perfection_multiplier =
-      azerite_essence.vision_of_perfection.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent() +
-      azerite_essence.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )
+      azerite_essence.vision_of_perfection.spell( 1U, essence_type::MAJOR )->effectN( 1 ).percent() +
+      azerite_essence.vision_of_perfection.spell( 2U, essence_spell::UPGRADE, essence_type::MAJOR )
           ->effectN( 1 )
           .percent();
 }
@@ -1308,7 +1308,7 @@ timespan_t warlock_t::time_to_imps( int count )
       }
     }
 
-    if ( shortest.size() > 0 )
+    if ( !shortest.empty() )
     {
       return shortest.top();
     }
@@ -1573,7 +1573,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
     return make_fn_expr( name_str, [this, soc_list] {
       std::vector<player_t*> no_dots;
 
-      if ( soc_list.size() == 0 ) 
+      if ( soc_list.empty() ) 
         return false;
 
       //All the actions should have the same target list, so do this once only
@@ -1586,7 +1586,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
       }
 
       //If there are no targets without a seed already, this expression should be false
-      if ( no_dots.size() == 0 )
+      if ( no_dots.empty() )
         return false;
 
       //If all of the remaining unseeded targets have a seed in flight, we should also return false

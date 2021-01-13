@@ -1208,7 +1208,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     ap_type = attack_power_type::NONE;
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = monk_melee_attack_t::cost();
 
@@ -1839,7 +1839,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     double cam = melee_attack_t::composite_aoe_multiplier( state );
 
     if ( state->target != target )
-      return cam *= p()->spec.fists_of_fury->effectN( 6 ).percent();
+      cam *= p()->spec.fists_of_fury->effectN( 6 ).percent();
 
     return cam;
   }
@@ -2315,7 +2315,7 @@ struct touch_of_death_t : public monk_melee_attack_t
       p()->buff.touch_of_death->trigger();
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     // Damage is associated with the players non-buffed max HP
     // Meaning using Fortifying Brew does not affect ToD's damage
@@ -2361,7 +2361,7 @@ struct touch_of_karma_dot_t : public residual_action::residual_periodic_action_t
   // Need to disable multipliers in init() so that it doesn't double-dip on anything
   void init() override
   {
-    monk_melee_attack_t::init();
+    residual_action::residual_periodic_action_t<monk_melee_attack_t>::init();
     // disable the snapshot_flags for all multipliers
     snapshot_flags = update_flags = 0;
     snapshot_flags |= STATE_VERSATILITY;
@@ -2561,7 +2561,7 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
 
   void reset() override
   {
-    action_t::reset();
+    monk_melee_attack_t::reset();
     first_charge = true;
   }
 
@@ -3500,10 +3500,7 @@ struct empowered_tiger_lightning_t : public monk_spell_t
 
   bool ready() override
   {
-    if ( p()->spec.invoke_xuen_2->ok() )
-      return true;
-
-    return false;
+    return p()->spec.invoke_xuen_2->ok();
   }
 };
 
@@ -3818,11 +3815,11 @@ struct fallen_order_t : public monk_spell_t
     monk_t* p;
 
     fallen_order_event_t( monk_t* monk, std::vector<std::pair<specialization_e, timespan_t>> fm, timespan_t interval )
-      : event_t( *monk, interval ), fallen_monks( fm ), summon_interval( interval ), p( monk )
+      : event_t( *monk, interval ), fallen_monks( std::move(fm) ), summon_interval( interval ), p( monk )
     {
     }
 
-    virtual const char* name() const override
+    const char* name() const override
     {
       return "fallen_order_summon";
     }
@@ -3853,7 +3850,7 @@ struct fallen_order_t : public monk_spell_t
       fallen_monks.erase( fallen_monks.begin() );
 
       if ( !fallen_monks.empty() )
-        make_event<fallen_order_event_t>( sim(), p, fallen_monks, summon_interval );
+        make_event<fallen_order_event_t>( sim(), p, std::move(fallen_monks), summon_interval );
     }
   };
 
@@ -3931,7 +3928,7 @@ struct fallen_order_t : public monk_spell_t
       }
     }
 
-    make_event<fallen_order_event_t>( *sim, p(), fallen_monks, p()->covenant.venthyr->effectN( 1 ).period() * 3 );
+    make_event<fallen_order_event_t>( *sim, p(), std::move(fallen_monks), p()->covenant.venthyr->effectN( 1 ).period() * 3 );
   }
 };
 }  // namespace spells
@@ -5167,7 +5164,7 @@ struct windwalking_driver_t : public monk_buff_t<buff_t>
     : monk_buff_t( p, n, s ), movement_increase( 0 )
   {
     set_tick_callback( [ &p, this ]( buff_t*, int /* total_ticks */, timespan_t /* tick_time */ ) {
-      range::for_each( p.windwalking_aura->target_list(), [ &p, this ]( player_t* target ) {
+      range::for_each( p.windwalking_aura->target_list(), [ this ]( player_t* target ) {
         target->buffs.windwalking_movement_aura->trigger( 1, ( movement_increase ), 1, timespan_t::from_seconds( 10 ) );
       } );
     } );
@@ -6412,7 +6409,8 @@ std::vector<player_t*> monk_t::create_storm_earth_and_fire_target_list() const
     }
 
     // Both have cyclone strike, order by remaining duration, use actor index as a tiebreaker
-    timespan_t lv = lcs->remains(), rv = rcs->remains();
+    timespan_t lv = lcs->remains();
+    timespan_t rv = rcs->remains();
     if ( lv == rv )
     {
       return l->actor_index < r->actor_index;
@@ -7279,7 +7277,6 @@ void monk_t::stagger_damage_changed( bool last_tick )
 
   buff_t* new_buff = nullptr;
   dot_t* dot       = nullptr;
-  int niuzao       = 0;
   if ( active_actions.stagger_self_damage )
     dot = active_actions.stagger_self_damage->get_dot();
   if ( !last_tick && dot && dot->is_ticking() )  // fake dot not active on last tick
@@ -7290,17 +7287,14 @@ void monk_t::stagger_damage_changed( bool last_tick )
     if ( current_tick_dmg_per_max_health > 0.045 )
     {
       new_buff = buff.heavy_stagger;
-      niuzao   = 3;
     }
     else if ( current_tick_dmg_per_max_health > 0.03 )
     {
       new_buff = buff.moderate_stagger;
-      niuzao   = 2;
     }
     else if ( current_tick_dmg_per_max_health > 0.0 )
     {
       new_buff = buff.light_stagger;
-      niuzao   = 1;
     }
   }
   sim->print_debug( "Stagger new buff is {}.", new_buff ? new_buff->name() : "none" );

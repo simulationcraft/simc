@@ -195,8 +195,7 @@ void print_spell_query(std::ostream& out, const sim_t& sim, const spell_data_exp
   }
 }
 
-void print_spell_query(xml_node_t* root, FILE* file, const sim_t& sim, const spell_data_expr_t& sq,
-  unsigned level)
+void print_spell_query( xml_node_t* out, FILE* file, const sim_t& sim, const spell_data_expr_t& sq, unsigned level )
 {
   expr_data_e data_type = sq.data_type;
   for (auto i = sq.result_spell_list.begin(); i != sq.result_spell_list.end(); ++i)
@@ -204,7 +203,7 @@ void print_spell_query(xml_node_t* root, FILE* file, const sim_t& sim, const spe
     switch (data_type)
     {
     case DATA_TALENT:
-      spell_info::talent_to_xml(*sim.dbc, sim.dbc->talent(*i), root, level);
+      spell_info::talent_to_xml( *sim.dbc, sim.dbc->talent( *i ), out, level );
       break;
     case DATA_EFFECT:
     {
@@ -215,20 +214,20 @@ void print_spell_query(xml_node_t* root, FILE* file, const sim_t& sim, const spe
         const auto spell_effects = spell->effects();
         auto effect = range::find( spell_effects, dbc_effect->id(), &spelleffect_data_t::id );
         if ( effect != spell_effects.end() )
-          spell_info::effect_to_xml(*sim.dbc, spell, &( *effect ), root, level);
+          spell_info::effect_to_xml( *sim.dbc, spell, &( *effect ), out, level );
       }
     }
     break;
     default:
     {
       const spell_data_t* spell = dbc::find_spell(&(sim), sim.dbc->spell(*i));
-      spell_info::to_xml(*sim.dbc, spell, root, level);
+      spell_info::to_xml( *sim.dbc, spell, out, level );
     }
     }
   }
 
   fmt::print(file, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-  root->print_xml(file);
+  out->print_xml( file );
 }
 // report::print_suite ======================================================
 

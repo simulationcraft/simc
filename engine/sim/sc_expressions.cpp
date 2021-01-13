@@ -783,7 +783,8 @@ public:
     }
     expr_t::optimize_expression(left, spacing + 2);
     expr_t::optimize_expression(right, spacing + 2);
-    double left_value, right_value;
+    double left_value;
+    double right_value;
     bool left_constant  = left->is_constant( &left_value );
     bool right_constant = right->is_constant( &right_value );
     if ( left_constant && right_constant )
@@ -1071,7 +1072,8 @@ void print_tokens( util::span<const expr_token_t> tokens, sim_t* sim )
 
 bool convert_to_rpn( std::vector<expr_token_t>& tokens )
 {
-  std::vector<expr_token_t> rpn, stack;
+  std::vector<expr_token_t> rpn;
+  std::vector<expr_token_t> stack;
 
   size_t num_tokens = tokens.size();
   for ( size_t i = 0; i < num_tokens; i++ )
@@ -1164,7 +1166,7 @@ std::unique_ptr<expr_t> build_player_expression_tree(
     }
     else if ( expression::is_unary( t.type ) )
     {
-      if ( stack.size() < 1 )
+      if ( stack.empty() )
         return nullptr;
       auto input = std::move(stack.back());
       stack.pop_back();
@@ -1236,7 +1238,7 @@ static std::unique_ptr<expr_t> build_expression_tree(
     }
     else if ( expression::is_unary( t.type ) )
     {
-      if ( stack.size() < 1 )
+      if ( stack.empty() )
         return {};
       auto input = std::move(stack.back());
       stack.pop_back();

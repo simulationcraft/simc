@@ -898,7 +898,7 @@ public:
   void assess_damage( school_e, result_amount_type, action_state_t* ) override;
   void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t* ) override;
   void assess_heal( school_e, result_amount_type, action_state_t* ) override;
-  void recalculate_resource_max( resource_e, gain_t* g = nullptr ) override;
+  void recalculate_resource_max( resource_e, gain_t* source = nullptr ) override;
   void create_options() override;
   std::string create_profile( save_e type ) override;
   const druid_td_t* find_target_data( const player_t* target ) const override;
@@ -1577,7 +1577,7 @@ struct dot_debuff_t
   double value;
   bool use_stacks;
 
-  dot_debuff_t( std::function<dot_t*( druid_td_t* )> f, double v, bool b ) : func( f ), value( v ), use_stacks( b ) {}
+  dot_debuff_t( std::function<dot_t*( druid_td_t* )> f, double v, bool b ) : func( std::move(f) ), value( v ), use_stacks( b ) {}
 };
 
 struct free_cast_stats_t
@@ -1893,13 +1893,13 @@ public:
   template <typename... Ts>
   void parse_buff_effects( buff_t* buff, bool stack, Ts... mods )
   {
-    parse_buff_effects<Ts...>( buff, 0u, 0u, stack, mods... );
+    parse_buff_effects<Ts...>( buff, 0U, 0U, stack, mods... );
   }
 
   template <typename... Ts>
   void parse_buff_effects( buff_t* buff, Ts... mods )
   {
-    parse_buff_effects<Ts...>( buff, 0u, 0u, true, mods... );
+    parse_buff_effects<Ts...>( buff, 0U, 0U, true, mods... );
   }
 
   double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false,
@@ -1943,7 +1943,7 @@ public:
   //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore parameters
   //  S/C = optional list of template parameter to indicate spell or conduit with redirect effects
   //  spell/conduit = optional list of spell or conduit with redirect effects that modify the effects on the buff
-  virtual void apply_buff_effects()
+  void apply_buff_effects()
   {
     using S = const spell_data_t*;
     using C = const conduit_data_t&;
@@ -1963,8 +1963,8 @@ public:
     parse_buff_effects( p()->buff.oneths_free_starsurge );
     parse_buff_effects( p()->buff.timeworn_dreambinder );
     // effect#2 holds the eclipse bonus effect, handled separately in eclipse_buff_t
-    parse_buff_effects<S, S>( p()->buff.eclipse_solar, 2u, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
-    parse_buff_effects<S, S>( p()->buff.eclipse_lunar, 2u, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
+    parse_buff_effects<S, S>( p()->buff.eclipse_solar, 2U, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
+    parse_buff_effects<S, S>( p()->buff.eclipse_lunar, 2U, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
 
     // Guardian
     parse_buff_effects( p()->buff.bear_form );
@@ -1976,8 +1976,8 @@ public:
     }
     else
     {
-      parse_buff_effects<S>( p()->buff.berserk_bear, 5u, 0u, p()->spec.berserk_bear_2 );
-      parse_buff_effects<S>( p()->buff.incarnation_bear, 7u, 0u, p()->spec.berserk_bear_2 );
+      parse_buff_effects<S>( p()->buff.berserk_bear, 5U, 0U, p()->spec.berserk_bear_2 );
+      parse_buff_effects<S>( p()->buff.incarnation_bear, 7U, 0U, p()->spec.berserk_bear_2 );
     }
     parse_buff_effects( p()->buff.tooth_and_claw, false );
     parse_buff_effects<C>( p()->buff.savage_combatant, p()->conduit.savage_combatant );
@@ -1991,7 +1991,7 @@ public:
   }
 
   template <typename... Ts>
-  void parse_dot_debuffs( std::function<dot_t*( druid_td_t* )> func, bool use_stacks, const spell_data_t* s_data,
+  void parse_dot_debuffs( const std::function<dot_t*( druid_td_t* )>& func, bool use_stacks, const spell_data_t* s_data,
                           Ts... mods )
   {
     if ( !s_data->ok() )
@@ -2032,7 +2032,7 @@ public:
   {
     double return_value = 1.0;
 
-    for ( auto i : target_multiplier_dotdebuffs )
+    for ( const auto& i : target_multiplier_dotdebuffs )
     {
       auto dot = i.func( t );
 
@@ -2615,7 +2615,7 @@ struct moonfire_t : public druid_spell_t
         }
 
         // Fill list with random unafflicted targets.
-        while ( tl.size() < as<size_t>( aoe ) && unafflicted.size() > 0 )
+        while ( tl.size() < as<size_t>( aoe ) && !unafflicted.empty() )
         {
           // Random target
           auto i = rng().range( unafflicted.size() );
@@ -2625,7 +2625,7 @@ struct moonfire_t : public druid_spell_t
         }
 
         // Fill list with random afflicted targets.
-        while ( tl.size() < as<size_t>( aoe ) && afflicted.size() > 0 )
+        while ( tl.size() < as<size_t>( aoe ) && !afflicted.empty() )
         {
           // Random target
           auto i = rng().range( afflicted.size() );
@@ -3837,7 +3837,7 @@ struct primal_wrath_t : public cat_attack_t
   {
     double adpc = cat_attack_t::attack_direct_power_coefficient( s );
 
-    adpc *= ( 1ll + combo_points );
+    adpc *= ( 1LL + combo_points );
 
     return adpc;
   }
@@ -4474,7 +4474,7 @@ struct cenarion_ward_hot_t : public druid_heal_t
 
   void execute() override
   {
-    heal_t::execute();
+    druid_heal_t::execute();
 
     p()->buff.cenarion_ward->expire();
   }
@@ -6653,7 +6653,7 @@ struct convoke_the_spirits_t : public druid_spell_t
   {
     convoke_cast_e type_ = base_type;
 
-    if ( base_type == CAST_OFFSPEC && offspec_list.size() )
+    if ( base_type == CAST_OFFSPEC && !offspec_list.empty() )
       type_ = offspec_list.at( rng().range( offspec_list.size() ) );
     else if ( base_type == CAST_SPEC )
     {
@@ -6664,7 +6664,7 @@ struct convoke_the_spirits_t : public druid_spell_t
         if ( !td( t )->dots.moonfire->is_ticking() )
           mf_tl.push_back( t );
 
-      if ( mf_tl.size() )
+      if ( !mf_tl.empty() )
         dist.emplace_back( std::make_pair( CAST_MOONFIRE, main_count ? 0.25 : 1.0 ) );
 
       type_ = get_cast_from_dist( dist );
@@ -6716,7 +6716,7 @@ struct convoke_the_spirits_t : public druid_spell_t
   {
     convoke_cast_e type_ = base_type;
 
-    if ( base_type == CAST_OFFSPEC && offspec_list.size() )
+    if ( base_type == CAST_OFFSPEC && !offspec_list.empty() )
       type_ = offspec_list.at( rng().range( offspec_list.size() ) );
     else if ( base_type == CAST_MAIN )
       type_ = CAST_FEROCIOUS_BITE;
@@ -6773,7 +6773,7 @@ struct convoke_the_spirits_t : public druid_spell_t
         if ( !td( t )->dots.moonfire->is_ticking() )
           mf_tl.push_back( t );
 
-      if ( mf_tl.size() )
+      if ( !mf_tl.empty() )
       {
         dist.emplace_back( std::make_pair( CAST_MOONFIRE, 2.0 ) );
         add_more = false;
@@ -6869,7 +6869,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     cast_list.erase( it );
 
     std::vector<player_t*> tl = target_list();
-    if ( !tl.size() )
+    if ( tl.empty() )
       return;
 
     // Do form-specific spell selection
@@ -6989,7 +6989,7 @@ struct adaptive_swarm_t : public druid_spell_t
     player_t* new_swarm_target()
     {
       const auto &tl = other->target_list();
-      if ( !tl.size() )
+      if ( tl.empty() )
         return nullptr;
 
       player_t* tar = nullptr;
@@ -7032,10 +7032,10 @@ struct adaptive_swarm_t : public druid_spell_t
         }
       }
 
-      if      ( tl_1.size() ) tar = tl_1.at( rng().range( tl_1.size() ) );
-      else if ( tl_2.size() ) tar = tl_2.at( rng().range( tl_2.size() ) );
-      else if ( tl_3.size() ) tar = tl_3.at( rng().range( tl_3.size() ) );
-      else if ( tl_4.size() ) tar = tl_4.at( rng().range( tl_4.size() ) );
+      if      ( !tl_1.empty() ) tar = tl_1.at( rng().range( tl_1.size() ) );
+      else if ( !tl_2.empty() ) tar = tl_2.at( rng().range( tl_2.size() ) );
+      else if ( !tl_3.empty() ) tar = tl_3.at( rng().range( tl_3.size() ) );
+      else if ( !tl_4.empty() ) tar = tl_4.at( rng().range( tl_4.size() ) );
 
       return tar;
     }
@@ -7245,7 +7245,7 @@ struct persistent_delay_event_t : public event_t
     : persistent_delay_event_t( p, [ b ]() { b->execute(); }, b->buff_period )
   {}
 
-  persistent_delay_event_t( druid_t* p, std::function<void()> fn, timespan_t d ) : event_t( *p ), exec_fn( fn )
+  persistent_delay_event_t( druid_t* p, std::function<void()> fn, timespan_t d ) : event_t( *p ), exec_fn( std::move(fn) )
   {
     schedule( rng().real() * d );
   }
@@ -8343,21 +8343,18 @@ void druid_t::apl_default()
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   // Assemble Racials / On-Use Items / Professions
-  std::string extra_actions = "";
-
-  std::vector<std::string> racial_actions = get_racial_actions();
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
-    extra_actions += add_action( racial_actions[ i ] );
-
-  std::vector<std::string> item_actions = get_item_actions();
-  for ( size_t i = 0; i < item_actions.size(); i++ )
-    extra_actions += add_action( item_actions[ i ] );
-
-  std::vector<std::string> profession_actions = get_profession_actions();
-  for ( size_t i = 0; i < profession_actions.size(); i++ )
-    extra_actions += add_action( profession_actions[ i ] );
-
-  def->add_action( extra_actions );
+  for ( const auto& action_str : get_racial_actions() )
+  {
+    def->add_action( action_str );
+  }
+  for ( const auto& action_str : get_item_actions() )
+  {
+    def->add_action( action_str );
+  }
+  for ( const auto& action_str : get_profession_actions() )
+  {
+    def->add_action( action_str );
+  }
 }
 
 // Feral Combat Action Priority List ========================================
@@ -9046,7 +9043,8 @@ void druid_t::combat_begin()
 
 void druid_t::recalculate_resource_max( resource_e rt, gain_t* source )
 {
-  double pct_health = 0, current_health = 0;
+  double pct_health = 0;
+  double current_health = 0;
   bool adjust_natures_guardian_health = mastery.natures_guardian->ok() && rt == RESOURCE_HEALTH;
   if ( adjust_natures_guardian_health )
   {
@@ -9412,10 +9410,10 @@ std::unique_ptr<expr_t> druid_t::create_action_expression(action_t& a, util::str
 {
   auto splits = util::string_split(name_str, ".");
 
-  if (splits[0] == "ticks_gained_on_refresh" || splits.size() > 2 && (splits[0] == "druid" || splits[0] == "dot" ) && splits[2] == "ticks_gained_on_refresh")
+  if (splits[0] == "ticks_gained_on_refresh" || (splits.size() > 2 && (splits[0] == "druid" || splits[0] == "dot" ) && splits[2] == "ticks_gained_on_refresh"))
   {
     bool pmul = false;
-    if (splits.size() > 1 && splits[1] == "pmult" || splits.size() > 4 && splits[3] == "pmult")
+    if ((splits.size() > 1 && splits[1] == "pmult") || (splits.size() > 4 && splits[3] == "pmult"))
       pmul = true;
 
     action_t* dot_action = nullptr;
@@ -10408,10 +10406,17 @@ void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
   for ( size_t i = 0, end = stats_list.size(); i < end; i++ )
   {
     stats_t* stats   = stats_list[ i ];
-    double tf_exe_up = 0, tf_exe_total = 0;
-    double tf_benefit_up = 0, tf_benefit_total = 0;
-    double bt_exe_up = 0, bt_exe_total = 0;
-    double bt_benefit_up = 0, bt_benefit_total = 0;
+    double tf_exe_up = 0;
+    double tf_exe_total = 0;
+
+    double tf_benefit_up = 0;
+    double tf_benefit_total = 0;
+
+    double bt_exe_up = 0;
+    double bt_exe_total = 0;
+
+    double bt_benefit_up = 0;
+    double bt_benefit_total = 0;
     // int n = 0;
 
     for ( size_t j = 0, end2 = stats->action_list.size(); j < end2; j++ )
@@ -10560,10 +10565,17 @@ public:
     for ( size_t i = 0, end = p.stats_list.size(); i < end; i++ )
     {
       stats_t* stats   = p.stats_list[ i ];
-      double tf_exe_up = 0, tf_exe_total = 0;
-      double tf_benefit_up = 0, tf_benefit_total = 0;
-      double bt_exe_up = 0, bt_exe_total = 0;
-      double bt_benefit_up = 0, bt_benefit_total = 0;
+      double tf_exe_up = 0;
+      double tf_exe_total = 0;
+
+      double tf_benefit_up = 0;
+      double tf_benefit_total = 0;
+
+      double bt_exe_up = 0;
+      double bt_exe_total = 0;
+
+      double bt_benefit_up = 0;
+      double bt_benefit_total = 0;
 
       for ( size_t j = 0, end2 = stats->action_list.size(); j < end2; j++ )
       {

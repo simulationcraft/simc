@@ -36,7 +36,7 @@ struct HtmlOutputFunctor
   {
   }
 
-  void operator()( QString htmlOutput )
+  void operator()( const QString& htmlOutput )
   {
     QFile file( fname );
     if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )

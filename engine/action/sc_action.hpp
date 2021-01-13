@@ -892,11 +892,11 @@ public:
 
   virtual void last_tick(dot_t* d);
 
-  virtual void assess_damage(result_amount_type, action_state_t* assess_state);
+  virtual void assess_damage( result_amount_type, action_state_t* state );
 
   virtual void record_data(action_state_t* data);
 
-  virtual void schedule_execute(action_state_t* execute_state = nullptr);
+  virtual void schedule_execute( action_state_t* state = nullptr );
 
   virtual void queue_execute( execute_type type );
 
@@ -955,7 +955,7 @@ public:
   virtual void update_state( action_state_t* s, result_amount_type rt )
   { snapshot_internal( s, update_flags, rt ); }
 
-  event_t* start_action_execute_event( timespan_t time, action_state_t* execute_state = nullptr );
+  event_t* start_action_execute_event( timespan_t time, action_state_t* state = nullptr );
 
   virtual bool consume_cost_per_tick( const dot_t& dot );
 

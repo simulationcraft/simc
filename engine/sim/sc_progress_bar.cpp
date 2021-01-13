@@ -21,7 +21,9 @@ std::string progress_bar_t::format_time( double t )
 {
   std::stringstream s;
 
-  int days = 0, hours = 0, minutes = 0;
+  int days = 0;
+  int hours = 0;
+  int minutes = 0;
 
   double remainder = t;
 
@@ -230,7 +232,7 @@ bool progress_bar_t::update_normal( const sim_progress_t& progress, bool finishe
   size_t prev_size = status.size();
   fmt::memory_buffer new_status;
 
-  int progress_length = static_cast<int>( steps * pct + 0.5 );
+  int progress_length = as<int>( std::lround( steps * pct ) );
   if ( progress_length >= 1 )
   {
     fmt::format_to(new_status, "[{:=>{}s}", ">", progress_length);
@@ -514,7 +516,7 @@ size_t progress_bar_t::n_scale_factor_phases() const
 
   for ( stat_e stat = STAT_NONE; stat < STAT_MAX; ++stat )
   {
-    if ( scale_only.size() > 0 && range::find( scale_only, stat ) == scale_only.end() )
+    if ( !scale_only.empty() && range::find( scale_only, stat ) == scale_only.end() )
     {
       continue;
     }

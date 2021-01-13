@@ -12,10 +12,12 @@
 #include "util/util.hpp"
 
 #include <algorithm>
+#include <utility>
+
 
 instant_absorb_t::instant_absorb_t( player_t* p, const spell_data_t* s, util::string_view n,
                                     std::function<double( const action_state_t* )> handler )
-  : /* spell( s ), */ absorb_handler( handler ), player( p ), name( util::tokenize_fn( n ) )
+  : /* spell( s ), */ absorb_handler( std::move(handler) ), player( p ), name( util::tokenize_fn( n ) )
 {
   absorb_stats         = p->get_stats( name );
   absorb_gain          = p->get_gain( name );

@@ -353,7 +353,7 @@ public:
   buff_t* set_rppm( rppm_scale_e scale = RPPM_NONE, double freq = -1, double mod = -1);
   buff_t* set_trigger_spell( const spell_data_t* s );
   buff_t* set_stack_change_callback( const buff_stack_change_callback_t& cb );
-  buff_t* set_reverse_stack_count( int value );
+  buff_t* set_reverse_stack_count( int count );
   buff_t* set_stack_behavior( buff_stack_behavior b );
 
   virtual buff_t* apply_affecting_aura( const spell_data_t* spell );
@@ -392,7 +392,7 @@ struct stat_buff_t : public buff_t
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
   virtual double value() override { stack(); return stats[ 0 ].current_value; }
 
-  stat_buff_t* add_stat( stat_e s, double a, std::function<bool(const stat_buff_t&)> c = std::function<bool(const stat_buff_t&)>() );
+  stat_buff_t* add_stat( stat_e s, double a, const std::function<bool(const stat_buff_t&)>& c = std::function<bool(const stat_buff_t&)>() );
 
   stat_buff_t(actor_pair_t q, util::string_view name);
   stat_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const item_t* item = nullptr );

@@ -673,14 +673,7 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 
     warlock_pet_spell_t::schedule_execute( execute_state );
 
-    if ( p()->o()->buffs.demonic_power->check() && p()->resources.current[ RESOURCE_ENERGY ] < 100 )
-    {
-      demonic_power_on_cast_start = true;
-    }
-    else
-    {
-      demonic_power_on_cast_start = false;
-    }
+    demonic_power_on_cast_start = p()->o()->buffs.demonic_power->check() && p()->resources.current[ RESOURCE_ENERGY ] < 100;
   }
 
   void consume_resource() override
@@ -1245,8 +1238,8 @@ struct double_breath_t : public warlock_pet_spell_t
 
   double_breath_t( warlock_pet_t* p ) : warlock_pet_spell_t( "double_breath", p, p->find_spell( 272156 ) )
   {
-    breath_1 = new double_breath_damage_t( p, 1u );
-    breath_2 = new double_breath_damage_t( p, 2u );
+    breath_1 = new double_breath_damage_t( p, 1U );
+    breath_2 = new double_breath_damage_t( p, 2U );
     add_child( breath_1 );
     add_child( breath_2 );
   }

@@ -60,13 +60,13 @@ namespace actions
 
 enum current_weapon_e
 {
-  WEAPON_PRIMARY = 0u,
+  WEAPON_PRIMARY = 0U,
   WEAPON_SECONDARY
 };
 
 enum weapon_slot_e
 {
-  WEAPON_MAIN_HAND = 0u,
+  WEAPON_MAIN_HAND = 0U,
   WEAPON_OFF_HAND
 };
 
@@ -1117,15 +1117,16 @@ public:
     {
       symbols_of_death_autocrit_proc = p->get_proc( "Symbols of Death Autocrit " + ab::name_str );
     }
-    if ( consumes_echoing_reprimand() )
-    {
-      animacharged_cp_proc = p->get_proc( "Echoing Reprimand " + ab::name_str );
-    }
   }
 
   void init() override
   {
     ab::init();
+    
+    if ( consumes_echoing_reprimand() )
+    {
+      animacharged_cp_proc = p()->get_proc( "Echoing Reprimand " + ab::name_str );
+    }
 
     auto register_damage_buff = [ this ]( damage_buff_t* buff ) {
       if ( buff->is_affecting_direct( ab::s_data ) )
@@ -3025,10 +3026,7 @@ struct pistol_shot_t : public rogue_attack_t
   bool procs_combat_potency() const override
   {
     // TOCHECK: On beta as of 8/28, Blunderbuss procs don't trigger. Possibly only "on cast".
-    if ( secondary_trigger == TRIGGER_CONCEALED_BLUNDERBUSS )
-      return false;
-
-    return true;
+    return secondary_trigger != TRIGGER_CONCEALED_BLUNDERBUSS;
   }
 
   double cost() const override
@@ -3692,7 +3690,7 @@ struct black_powder_t: public rogue_attack_t
       // Invalidate target cache to force re-checking Find Weakness debuffs.
       // Don't attempt to execute this attack if it has no valid targets
       target_cache.is_valid = false;
-      if ( target_list().size() > 0 )
+      if ( !target_list().empty() )
       {
         rogue_attack_t::execute();
       }
@@ -4336,10 +4334,7 @@ struct flagellation_cleanse_t : public rogue_spell_t
   bool ready() override
   {
     const buff_t* current_debuff = p()->active.flagellation->debuff;
-    if ( current_debuff && current_debuff->check() )
-      return true;
-
-    return false;
+    return current_debuff && current_debuff->check();
   }
 };
 
@@ -5429,7 +5424,7 @@ struct roll_the_bones_t : public buff_t
   unsigned roll_the_bones( timespan_t duration )
   {
     std::vector<buff_t*> rolled;
-    if ( rogue->options.fixed_rtb.size() == 0 )
+    if ( rogue->options.fixed_rtb.empty() )
     {
       rolled = random_roll( rogue->buffs.loaded_dice->up() );
     }
@@ -7015,7 +7010,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     } );
 
     // If we have buffs and an operating mode, make an expression
-    if ( type != RTB_NONE && list_values.size() > 0 )
+    if ( type != RTB_NONE && !list_values.empty() )
     {
       return make_fn_expr( split[ 0 ], [ type, rtb_buffs, list_values ]() {
         for ( size_t i = 0, end = list_values.size(); i < end; ++i )
@@ -7911,7 +7906,7 @@ static bool parse_fixed_rtb( sim_t* sim, util::string_view /* name */, util::str
     buffs.push_back( buff_index );
   }
 
-  if ( buffs.size() == 0 || buffs.size() > 6 )
+  if ( buffs.empty() || buffs.size() > 6 )
   {
     sim -> error( "{}: No valid 'fixed_rtb' buffs given by string '{}'", sim -> active_player -> name(),
         value );

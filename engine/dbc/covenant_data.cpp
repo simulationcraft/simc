@@ -77,7 +77,7 @@ const conduit_rank_entry_t& conduit_rank_entry_t::find( unsigned id,
                                                         bool     ptr )
 {
   auto __data = find( id, ptr );
-  if ( __data.size() == 0 )
+  if ( __data.empty() )
   {
     return nil();
   }
