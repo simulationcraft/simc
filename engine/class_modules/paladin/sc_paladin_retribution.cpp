@@ -883,7 +883,7 @@ void paladin_t::generate_action_prio_list_ret()
 
   precombat -> add_action( "arcane_torrent" );
   
-  precombat -> add_action( "blessing_of_seasons" );
+  precombat -> add_action( "blessing_of_the_seasons" );
 
   ///////////////////////
   // Action Priority List
