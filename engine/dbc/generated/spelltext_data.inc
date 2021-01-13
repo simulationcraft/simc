@@ -1,4 +1,4 @@
-// Spell text, wow build 9.0.2.37142
+// Spell text, wow build 9.0.2.37176
 static const std::array<spelltext_data_t, 15094> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -13888,7 +13888,7 @@ static const std::array<spelltext_data_t, 15094> __spelltext_data { {
   { 334448, "When Obtained: Reduces the effect of the Endmire's Weakened Soul by $s1% on each application. ", "The effect of the Endmire's Weakened Soul effect is reduced by $s1%.", 0 },
   { 334452, "Interupt the casting of enemies within $a2 yds. Only usable outdoors in the Shadowlands.", 0, 0 },
   { 334453, "Repair target item to full durability. ", 0, 0 },
-  { 334456, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs. Warning: Components are hot!\r\n\r\nCannot be applied to items higher than level $ecix. ", 0, 0 },
+  { 334456, "Increase the stamina of an item worn on the chest by $ec for 2 hrs. Warning: Components are hot!\r\n\r\nCannot be applied to items higher than level $ecix. ", 0, 0 },
   { 334458, "Throw onto an enemy dealing ${$s1*$s2} damage over $d. Only usable outdoors in the Shadowlands.", "Burning for $w1 every $t sec.", 0 },
   { 334501, "Death Strike refunds $s1% of Runic Power spent if it heals you for more than $s2% of your maximum health.", 0, 0 },
   { 334511, "$@spelldesc334512", "The heart beats, providing life to the Slimy Morsels.", 0 },
@@ -15096,11 +15096,12 @@ static const std::array<spelltext_data_t, 15094> __spelltext_data { {
   { 348439, "Restores ${$m1/5*$d} health over $d.  Must remain seated while eating.", "Restores ${$m1/5} health per second.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.0.2.37142
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 9.0.2.37176
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  334456,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs. Warning: Components are hot!\r\n\r\nCannot be applied to items higher than level $ecix. ", "Increase the stamina of an item worn on the chest by $ec for 2 hrs. Warning: Components are hot!\r\n\r\nCannot be applied to items higher than level $ecix. " },
 } };
 
-// Spell description variables, wow build 9.0.2.37142
+// Spell description variables, wow build 9.0.2.37176
 static const std::array<spelldesc_vars_data_t, 295> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15399,7 +15400,7 @@ static const std::array<spelldesc_vars_data_t, 295> __spelldesc_vars_data { {
   {  345549, "$phylacteryhealth=$s2*15" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.0.2.37142
+// spelldesc_vars hotfix entries, wow build 9.0.2.37176
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
