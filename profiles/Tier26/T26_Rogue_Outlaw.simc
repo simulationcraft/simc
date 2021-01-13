@@ -5,9 +5,9 @@ level=60
 race=mechagnome
 role=attack
 position=back
-talents=2020022
+talents=3030022
 covenant=kyrian
-soulbind=pelagos,combat_meditation/count_the_odds:7/triple_threat:7
+soulbind=pelagos,combat_meditation/count_the_odds:7/sleight_of_hand:7
 
 # Default consumables
 potion=phantom_fire

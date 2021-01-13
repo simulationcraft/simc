@@ -34,9 +34,9 @@ race=mechagnome
 spec=outlaw
 role=attack
 position=back
-talents=2020022
+talents=3030022
 covenant=kyrian
-soulbind=pelagos,combat_meditation/count_the_odds:7/triple_threat:7
+soulbind=pelagos,combat_meditation/count_the_odds:7/sleight_of_hand:7
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173129
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173129
