@@ -84,7 +84,7 @@ actions.direct+=/fan_of_knives,if=variable.use_filler&(buff.hidden_blades.stack>
 # Fan of Knives to apply Deadly Poison if inactive on any target at 3 targets.
 actions.direct+=/fan_of_knives,target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives>=3
 actions.direct+=/echoing_reprimand,if=variable.use_filler&cooldown.vendetta.remains>10
-actions.direct+=/ambush,if=variable.use_filler
+actions.direct+=/ambush,if=variable.use_filler&(master_assassin_remains=0|buff.blindside.up)
 # Tab-Mutilate to apply Deadly Poison at 2 targets
 actions.direct+=/mutilate,target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives=2
 actions.direct+=/mutilate,if=variable.use_filler
