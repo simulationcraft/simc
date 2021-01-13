@@ -8497,7 +8497,7 @@ void druid_t::apl_balance()
   boat->add_action( "cancel_buff,name=starlord,if=(buff.balance_of_all_things_nature.remains>4.5|buff.balance_of_all_things_arcane.remains>4.5)&(cooldown.ca_inc.remains>7|(cooldown.empower_bond.remains>7&!buff.kindred_empowerment_energize.up&covenant.kyrian))" );
   boat->add_action( "starsurge,if=!variable.critnotup&(covenant.night_fae|cooldown.ca_inc.remains>7|!variable.cd_condition&!covenant.kyrian|(cooldown.empower_bond.remains>7&!buff.kindred_empowerment_energize.up&covenant.kyrian))" );
   boat->add_action( "starsurge,if=(cooldown.convoke_the_spirits.remains<5&!druid.no_cds&(variable.convoke_desync|cooldown.ca_inc.remains<5))&astral_power>40&covenant.night_fae&!druid.no_cds" );
-  boat->add_action( "variable,name=dot_requirements,value=(buff.ca_inc.remains>5&(buff.ravenous_frenzy.remains>5|!buff.ravenous_frenzy.up)|!buff.ca_inc.up|astral_power<30)&(!buff.kindred_empowerment_energize.up|astral_power<30)&(buff.eclipse_solar.remains>gcd.max|buff.eclipse_lunar.remains>gcd.max)" );
+  boat->add_action( "variable,name=dot_requirements,value=(buff.ca_inc.remains>5&(buff.ravenous_frenzy.remains>5|!buff.ravenous_frenzy.up)|!buff.ca_inc.up)&(!buff.kindred_empowerment_energize.up)&(buff.eclipse_solar.remains>gcd.max|buff.eclipse_lunar.remains>gcd.max)" );
   boat->add_action( "sunfire,target_if=refreshable&target.time_to_die>16,if=ap_check&variable.dot_requirements" );
   boat->add_action( "moonfire,target_if=refreshable&target.time_to_die>13.5,if=ap_check&variable.dot_requirements" );
   boat->add_action( "stellar_flare,target_if=refreshable&target.time_to_die>16+remains,if=ap_check&variable.dot_requirements" );
