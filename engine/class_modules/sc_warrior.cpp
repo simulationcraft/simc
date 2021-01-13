@@ -181,6 +181,7 @@ public:
     cooldown_t* mortal_strike;
     cooldown_t* overpower;
     cooldown_t* onslaught;
+    cooldown_t* pummel;
     cooldown_t* rage_from_auto_attack;
     cooldown_t* rage_from_crit_block;
     cooldown_t* rage_of_the_valarjar_icd;
@@ -252,6 +253,7 @@ public:
     const spell_data_t* warrior_aura;
     const spell_data_t* heroic_leap;
     const spell_data_t* intervene;
+    const spell_data_t* pummel;
     const spell_data_t* shattering_throw;
     const spell_data_t* shield_block;
     const spell_data_t* shield_slam;
@@ -3268,16 +3270,15 @@ struct pummel_t : public warrior_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     may_miss = may_block = may_dodge = may_parry = false;
+    is_interrupt = true;
   }
 
-  void execute() override
+  bool target_ready( player_t* candidate_target ) override
   {
-    warrior_attack_t::execute();
+    if ( !candidate_target->debuffs.casting || !candidate_target->debuffs.casting->check() )
+      return false;
 
-    if ( p()->legendary.sephuzs_secret != spell_data_t::not_found() )
-    {
-      p()->buff.sephuzs_secret->trigger();
-    }
+    return warrior_attack_t::target_ready( candidate_target );
   }
 };
 
@@ -6295,6 +6296,7 @@ void warrior_t::init_spells()
   spell.hamstring             = find_class_spell( "Hamstring" );
   spell.warrior_aura          = find_spell( 137047 );  // Warrior class aura
   spell.heroic_leap           = find_class_spell( "Heroic Leap" );
+  spell.pummel                = find_class_spell( "Pummel" );
   spell.shattering_throw      = find_class_spell( "Shattering Throw" );
   spell.shield_block          = find_class_spell( "Shield Block" );
   spell.shield_slam           = find_class_spell( "Shield Slam" );
@@ -6421,6 +6423,7 @@ void warrior_t::init_spells()
   cooldown.mortal_strike                    = get_cooldown( "mortal_strike" );
   cooldown.onslaught                        = get_cooldown( "onslaught" );
   cooldown.overpower                        = get_cooldown( "overpower" );
+  cooldown.pummel                           = get_cooldown( "pummel" );
   cooldown.rage_from_auto_attack            = get_cooldown( "rage_from_auto_attack" );
   cooldown.rage_from_auto_attack->duration  = timespan_t::from_seconds ( 1.0 );
   cooldown.rage_from_crit_block             = get_cooldown( "rage_from_crit_block" );
@@ -6560,6 +6563,8 @@ void warrior_t::apl_fury()
     default_list->add_action( "potion" );
   }
 
+  default_list->add_action( this, "Pummel", "if=target.debuff.casting.react" );
+
   default_list->add_action( this, "Rampage", "if=cooldown.recklessness.remains<3&talent.reckless_abandon.enabled" );
 
   default_list->add_action( this, covenant.conquerors_banner, "conquerors_banner", "if=cooldown.recklessness.remains<3|target.time_to_die<50" );
@@ -6650,6 +6655,8 @@ void warrior_t::apl_arms()
   {
     default_list->add_action( "potion" );
   }
+
+  default_list->add_action( this, "Pummel", "if=target.debuff.casting.react" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
