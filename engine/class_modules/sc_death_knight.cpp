@@ -543,7 +543,6 @@ public:
     cooldown_t* dancing_rune_weapon;
     cooldown_t* vampiric_blood;
     // Frost
-    cooldown_t* empower_rune_weapon;
     cooldown_t* icecap_icd; // internal cooldown that prevents several procs on the same dual-wield attack
     cooldown_t* koltiras_favor_icd; // internal cooldown that prevents several procs on the same dual-wield sttack
     cooldown_t* pillar_of_frost;
@@ -1021,7 +1020,6 @@ public:
     cooldown.dancing_rune_weapon      = get_cooldown( "dancing_rune_weapon" );
     cooldown.dark_transformation      = get_cooldown( "dark_transformation" );
     cooldown.death_and_decay_dynamic  = get_cooldown( "death_and_decay" ); // Default value, changed during action construction
-    cooldown.empower_rune_weapon      = get_cooldown( "empower_rune_weapon" );
     cooldown.icecap_icd               = get_cooldown( "icecap" );
     cooldown.koltiras_favor_icd       = get_cooldown( "koltiras_favor_icd" );
     cooldown.pillar_of_frost          = get_cooldown( "pillar_of_frost" );
@@ -2965,7 +2963,7 @@ struct death_knight_action_t : public Base
                 *action_t::player, *this, *action_t::target, *destination, source_dot->remains() );
 
         source_dot->copy(destination, DOT_COPY_CLONE);
-        p() -> cooldown.shackle_the_unworthy_icd -> start( p() -> covenant.shackle_the_unworthy -> internal_cooldown() );
+        p() -> cooldown.shackle_the_unworthy_icd -> start();
         // after we successfully spread to one target, return.
         return;
       }
@@ -3230,7 +3228,7 @@ void death_knight_melee_attack_t::execute()
     p() -> cooldown.pillar_of_frost -> adjust( timespan_t::from_seconds(
       - p() -> talent.icecap -> effectN( 1 ).base_value() / 10.0 ) );
 
-    p() -> cooldown.icecap_icd -> start( p() -> talent.icecap -> internal_cooldown() );
+    p() -> cooldown.icecap_icd -> start();
   }
 }
 
@@ -3496,7 +3494,7 @@ struct abomination_limb_damage_t : public death_knight_spell_t
         default:
           break;
       }
-      p() -> cooldown.abomination_limb -> start( timespan_t::from_seconds(p() -> covenant.abomination_limb -> effectN ( 4 ).base_value() ) );
+      p() -> cooldown.abomination_limb -> start();
     }
   }
 };
@@ -5832,7 +5830,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
       {
         // # of runes to restore was stored in a secondary affect
         p() -> replenish_rune( as<unsigned int>( p() -> legendary.koltiras_favor->effectN( 1 ).trigger()->effectN( 1 ).base_value() ), p() -> gains.koltiras_favor );
-        p() -> cooldown.koltiras_favor_icd -> start( p() -> legendary.koltiras_favor -> internal_cooldown() );
+        p() -> cooldown.koltiras_favor_icd -> start();
       }
     }
 
@@ -8368,6 +8366,20 @@ void death_knight_t::init_spells()
   // TOCHECK: There's no way to interact with wounds but you gain 3RP if a debuffed enemy dies
   if ( legendary.reanimated_shambler -> ok() && ! spec.festering_wound -> ok() )
     spec.festering_wound = find_spell( 197147 );
+
+  // Custom/Internal cooldowns default durations
+  cooldown.bone_shield_icd -> duration = spell.bone_shield -> internal_cooldown();
+
+  if ( talent.icecap )
+    cooldown.icecap_icd -> duration = talent.icecap -> internal_cooldown();
+  if ( covenant.abomination_limb )
+    cooldown.abomination_limb -> duration = timespan_t::from_seconds( covenant.abomination_limb -> effectN ( 4 ).base_value() );
+  if ( covenant.shackle_the_unworthy )
+    cooldown.shackle_the_unworthy_icd -> duration = covenant.shackle_the_unworthy -> internal_cooldown();
+  if ( legendary.koltiras_favor )
+    cooldown.koltiras_favor_icd -> duration = legendary.koltiras_favor -> internal_cooldown();
+
+
 }
 
 // death_knight_t::init_action_list =========================================
@@ -8793,7 +8805,7 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
   sim -> print_log( "{} took a successful auto attack and lost a bone shield charge", name() );
 
   buffs.bone_shield -> decrement();
-  cooldown.bone_shield_icd -> start( spell.bone_shield -> internal_cooldown() );
+  cooldown.bone_shield_icd -> start();
   // Blood tap spelldata is a bit weird, it's not in milliseconds like other time values, and is positive even though it reduces a cooldown
   if ( talent.blood_tap -> ok() )
   {
