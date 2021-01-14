@@ -2848,6 +2848,15 @@ struct death_knight_action_t : public Base
     this -> affected_by.dreadblade = this -> data().affected_by( p -> mastery.dreadblade -> effectN( 1 ) );
 
     this -> affected_by.razorice = this ->  data().affected_by( p -> spell.razorice_debuff -> effectN( 1 ) );
+
+    // When using a 2H, might of the frozen wastes rank 1 effect#2 buffs the direct damage, but not td
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      if ( this -> data().affected_by( p -> spec.might_of_the_frozen_wastes -> effectN( 2 ) ) )
+      {
+        this -> base_dd_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 2 ).percent();
+      }
+    }
   }
 
   death_knight_t* p() const
