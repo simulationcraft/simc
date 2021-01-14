@@ -347,12 +347,11 @@ void unholy( player_t* p )
   aoe_setup->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=rune.time_to_4<(cooldown.death_and_decay.remains&!talent.defile|cooldown.defile.remains&talent.defile)" );
 
   cooldowns->add_action( "potion,if=variable.sync_with_cooldowns|fight_remains<26", "Potion" );
-  cooldowns->add_action( "army_of_the_dead,if=cooldown.unholy_blight.remains<3&cooldown.dark_transformation.remains<3&talent.unholy_blight&!soulbind.lead_by_example|!talent.unholy_blight|fight_remains<35", "Cooldowns" );
-  cooldowns->add_action( "army_of_the_dead,if=cooldown.unholy_blight.remains<3&cooldown.abomination_limb.ready&soulbind.lead_by_example" );
+  cooldowns->add_action( "army_of_the_dead,if=cooldown.unholy_blight.remains<3&cooldown.dark_transformation.remains<3&talent.unholy_blight|!talent.unholy_blight|fight_remains<35", "Cooldowns" );
   cooldowns->add_action( "soul_reaper,target_if=target.time_to_pct_35<5&target.time_to_die>5" );
   cooldowns->add_action( "wait_for_cooldown,name=soul_reaper,if=talent.soul_reaper&target.time_to_pct_35<5&fight_remains>5&cooldown.soul_reaper.remains<(gcd*0.75)" );
   cooldowns->add_action( "unholy_blight,if=variable.st_planning&(cooldown.dark_transformation.remains<gcd|buff.dark_transformation.up)&(!runeforge.deadliest_coil|!talent.army_of_the_damned|conduit.convocation_of_the_dead.rank<5)", "Sync Blight with Dark Transformation if utilizing other Dark Transformation buffs, those being Deadliest Coil, Frenzied Monstrosity or Eternal Hunger. Also checks if conditions are met to instead hold for Apocalypse." );
-  cooldowns->add_action( "unholy_blight,if=variable.st_planning&runeforge.deadliest_coil&talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=5&cooldown.apocalypse.remains<3&(cooldown.dark_transformation.remains<gcd|buff.dark_transformation.up)", "Sync Blight with Apocalypse if the cooldown of Apocalypse is low enough. Requires Deadliest Coil, Convocation of the Dead and Army of the Damned together." );
+  cooldowns->add_action( "unholy_blight,if=variable.st_planning&runeforge.deadliest_coil&talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=5&cooldown.apocalypse.remains<=5&(cooldown.dark_transformation.remains<gcd|buff.dark_transformation.up)", "Sync Blight with Apocalypse if the cooldown of Apocalypse is low enough. Requires Deadliest Coil, Convocation of the Dead and Army of the Damned together." );
   cooldowns->add_action( "unholy_blight,if=active_enemies>=2|fight_remains<21" );
   cooldowns->add_action( "dark_transformation,if=variable.st_planning&(dot.unholy_blight_dot.remains|!talent.unholy_blight)" );
   cooldowns->add_action( "dark_transformation,if=active_enemies>=2|fight_remains<21" );
