@@ -369,6 +369,8 @@ struct sim_t : private sc_thread_t
     // strings. Anything else will result in the item's bonus IDs being
     // used to determine which version the player is currently using.
     std::string unbound_changeling_stat_type = "default";
+    /// Chance player is getting overhealed by Gluttonous Spike proc.
+    double gluttonous_spike_overheal_chance = 1.0;
 
     /// Anima Field Emitter buff duration distribution, defaults to full duration.
     double anima_field_emitter_mean = std::numeric_limits<double>::max(),
