@@ -310,7 +310,6 @@ void unholy( player_t* p )
   default_->add_action( "variable,name=pooling_runic_power,value=cooldown.summon_gargoyle.remains<5&talent.summon_gargoyle", "Variables" );
   default_->add_action( "variable,name=pooling_runes,value=talent.soul_reaper&rune<2&target.time_to_pct_35<5" );
   default_->add_action( "variable,name=st_planning,value=active_enemies=1&(!raid_event.adds.exists|raid_event.adds.in>15)" );
-  default_->add_action( "variable,name=soul_reaper_priority,value=cooldown.soul_reaper.remains<gcd&target.time_to_pct_35<5&talent.soul_reaper" );
   default_->add_action( "variable,name=sync_with_cooldowns,value=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&pet.apoc_ghoul.active|buff.dark_transformation.up" );
   default_->add_action( "arcane_torrent,if=runic_power.deficit>65&(pet.gargoyle.active|!talent.summon_gargoyle.enabled)&rune.deficit>=5", "Racials" );
   default_->add_action( "blood_fury,if=variable.sync_with_cooldowns|target.time_to_die<=buff.blood_fury.duration" );
@@ -351,6 +350,7 @@ void unholy( player_t* p )
   cooldowns->add_action( "army_of_the_dead,if=cooldown.unholy_blight.remains<3&cooldown.dark_transformation.remains<3&talent.unholy_blight&!soulbind.lead_by_example|!talent.unholy_blight|fight_remains<35", "Cooldowns" );
   cooldowns->add_action( "army_of_the_dead,if=cooldown.unholy_blight.remains<3&cooldown.abomination_limb.ready&soulbind.lead_by_example" );
   cooldowns->add_action( "soul_reaper,target_if=target.time_to_pct_35<5&target.time_to_die>5" );
+  cooldowns->add_action( "wait_for_cooldown,name=soul_reaper,if=talent.soul_reaper&target_time_to_pct_35<5&fight_remains>5&cooldown.soul_reaper.remains<(gcd*0.75)" );
   cooldowns->add_action( "unholy_blight,if=variable.st_planning&(cooldown.dark_transformation.remains<gcd|buff.dark_transformation.up)&(!runeforge.deadliest_coil|!talent.army_of_the_damned|conduit.convocation_of_the_dead.rank<5)", "Sync Blight with Dark Transformation if utilizing other Dark Transformation buffs, those being Deadliest Coil, Frenzied Monstrosity or Eternal Hunger. Also checks if conditions are met to instead hold for Apocalypse." );
   cooldowns->add_action( "unholy_blight,if=variable.st_planning&runeforge.deadliest_coil&talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=5&cooldown.apocalypse.remains<3&(cooldown.dark_transformation.remains<gcd|buff.dark_transformation.up)", "Sync Blight with Apocalypse if the cooldown of Apocalypse is low enough. Requires Deadliest Coil, Convocation of the Dead and Army of the Damned together." );
   cooldowns->add_action( "unholy_blight,if=active_enemies>=2|fight_remains<21" );
@@ -366,6 +366,7 @@ void unholy( player_t* p )
   cooldowns->add_action( "raise_dead,if=!pet.ghoul.active" );
   cooldowns->add_action( "sacrificial_pact,if=active_enemies>=2&!buff.dark_transformation.up&!cooldown.dark_transformation.ready|fight_remains<gcd" );
 
+  covenants->add_action( "wait_for_cooldown,name=soul_reaper,if=talent.soul_reaper&target_time_to_pct_35<5&fight_remains>5&cooldown.soul_reaper.remains<(gcd*0.75)" );
   covenants->add_action( "swarming_mist,if=variable.st_planning&runic_power.deficit>16|fight_remains<11", "Covenant Abilities" );
   covenants->add_action( "swarming_mist,if=cooldown.apocalypse.remains&(active_enemies>=2&active_enemies<=5&runic_power.deficit>10+(active_enemies*6)|active_enemies>5&runic_power.deficit>40)", "Set to use after apoc is on CD as to prevent overcapping RP while setting up CD's" );
   covenants->add_action( "abomination_limb,if=variable.st_planning&!soulbind.lead_by_example&cooldown.apocalypse.remains&rune.time_to_4>(3+buff.runic_corruption.remains)|fight_remains<21" );
@@ -374,18 +375,20 @@ void unholy( player_t* p )
   covenants->add_action( "shackle_the_unworthy,if=variable.st_planning&cooldown.apocalypse.remains|fight_remains<15" );
   covenants->add_action( "shackle_the_unworthy,if=active_enemies>=2&(death_and_decay.ticking|raid_event.adds.remains<=14)" );
 
+  generic->add_action( "wait_for_cooldown,name=soul_reaper,if=talent.soul_reaper&target_time_to_pct_35<5&fight_remains>5&cooldown.soul_reaper.remains<(gcd*0.75)" );
   generic->add_action( "death_coil,if=buff.sudden_doom.react&!variable.pooling_runic_power|pet.gargoyle.active", "Single Target" );
   generic->add_action( "death_coil,if=runic_power.deficit<13" );
-  generic->add_action( "any_dnd,if=cooldown.apocalypse.remains&(talent.defile.enabled|covenant.night_fae|runeforge.phearomones)&!variable.soul_reaper_priority&(!variable.pooling_runes|fight_remains<5)" );
-  generic->add_action( "wound_spender,if=debuff.festering_wound.stack>4&!variable.soul_reaper_priority&(!variable.pooling_runes|fight_remains<5)" );
-  generic->add_action( "wound_spender,if=debuff.festering_wound.up&cooldown.apocalypse.remains>5&!variable.soul_reaper_priority&(!variable.pooling_runes|fight_remains<5)&(!talent.unholy_blight|talent.army_of_the_damned&conduit.convocation_of_the_dead.rank<5|!talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=5|!conduit.convocation_of_the_dead)" );
-  generic->add_action( "wound_spender,if=debuff.festering_wound.up&talent.unholy_blight&!variable.soul_reaper_priority&(!variable.pooling_runes|fight_remains<5)&(!talent.army_of_the_damned&conduit.convocation_of_the_dead.rank<5|talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=5)&(cooldown.unholy_blight.remains>10&!dot.unholy_blight_dot.remains|cooldown.apocalypse.remains>10)" );
+  generic->add_action( "any_dnd,if=cooldown.apocalypse.remains&(talent.defile.enabled|covenant.night_fae|runeforge.phearomones)&(!variable.pooling_runes|fight_remains<5)" );
+  generic->add_action( "wound_spender,if=debuff.festering_wound.stack>4&(!variable.pooling_runes|fight_remains<5)" );
+  generic->add_action( "wound_spender,if=debuff.festering_wound.up&cooldown.apocalypse.remains>5&(!variable.pooling_runes|fight_remains<5)&(!talent.unholy_blight|talent.army_of_the_damned&conduit.convocation_of_the_dead.rank<5|!talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=5|!conduit.convocation_of_the_dead)" );
+  generic->add_action( "wound_spender,if=debuff.festering_wound.up&talent.unholy_blight&(!variable.pooling_runes|fight_remains<5)&(!talent.army_of_the_damned&conduit.convocation_of_the_dead.rank<5|talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=5)&(cooldown.unholy_blight.remains>10&!dot.unholy_blight_dot.remains|cooldown.apocalypse.remains>10)" );
   generic->add_action( "death_coil,if=runic_power.deficit<20&!variable.pooling_runic_power" );
-  generic->add_action( "festering_strike,if=debuff.festering_wound.stack<1&!variable.soul_reaper_priority&(!variable.pooling_runes|fight_remains<5)" );
-  generic->add_action( "festering_strike,if=debuff.festering_wound.stack<4&cooldown.apocalypse.remains<5&!variable.soul_reaper_priority&(!variable.pooling_runes|fight_remains<5)&(!talent.unholy_blight|talent.army_of_the_damned&conduit.convocation_of_the_dead.rank<5|!talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=5|!conduit.convocation_of_the_dead)" );
-  generic->add_action( "festering_strike,if=debuff.festering_wound.stack<4&talent.unholy_blight&!variable.soul_reaper_priority&(!variable.pooling_runes|fight_remains<5)&(!talent.army_of_the_damned&conduit.convocation_of_the_dead.rank<5|talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=5)&(cooldown.unholy_blight.remains<10|cooldown.apocalypse.remains<10&dot.unholy_blight_dot.remains)" );
+  generic->add_action( "festering_strike,if=debuff.festering_wound.stack<1&(!variable.pooling_runes|fight_remains<5)" );
+  generic->add_action( "festering_strike,if=debuff.festering_wound.stack<4&cooldown.apocalypse.remains<5&(!variable.pooling_runes|fight_remains<5)&(!talent.unholy_blight|talent.army_of_the_damned&conduit.convocation_of_the_dead.rank<5|!talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=5|!conduit.convocation_of_the_dead)" );
+  generic->add_action( "festering_strike,if=debuff.festering_wound.stack<4&talent.unholy_blight&(!variable.pooling_runes|fight_remains<5)&(!talent.army_of_the_damned&conduit.convocation_of_the_dead.rank<5|talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=5)&(cooldown.unholy_blight.remains<10|cooldown.apocalypse.remains<10&dot.unholy_blight_dot.remains)" );
   generic->add_action( "death_coil,if=!variable.pooling_runic_power" );
 
+  generic_aoe->add_action( "wait_for_cooldown,name=soul_reaper,if=talent.soul_reaper&target_time_to_pct_35<5&fight_remains>5&cooldown.soul_reaper.remains<(gcd*0.75)&active_enemies<=3" );
   generic_aoe->add_action( "death_coil,if=(!variable.pooling_runic_power|buff.sudden_doom.react)&(buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3|active_enemies=2)", "Generic AoE Priority" );
   generic_aoe->add_action( "epidemic,if=buff.sudden_doom.react|!variable.pooling_runic_power" );
   generic_aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=(cooldown.apocalypse.remains>5&debuff.festering_wound.up|debuff.festering_wound.stack>4)&(fight_remains<cooldown.death_and_decay.remains+10|fight_remains>cooldown.apocalypse.remains)" );
