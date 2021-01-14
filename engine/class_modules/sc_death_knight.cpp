@@ -2524,7 +2524,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
   dancing_rune_weapon_pet_t( death_knight_t* owner ) :
     death_knight_pet_t( owner, "dancing_rune_weapon", true, true ),
-    ability()
+    ability(),
+    blood_plague_dot( false )
   {
     // The pet wields the same weapon type as its owner for spells with weapon requirements
     main_hand_weapon.type       = owner -> main_hand_weapon.type;
@@ -3038,8 +3039,7 @@ struct death_knight_disease_t : public death_knight_spell_t
   std::vector<action_t*> superstrain_diseases;
 
   death_knight_disease_t( util::string_view n, death_knight_t* p, const spell_data_t* s ) :
-    death_knight_spell_t( n, p, s ),
-    superstrain_diseases()
+    death_knight_spell_t( n, p, s )
   { }
 
   void impact( action_state_t* s ) override
