@@ -787,7 +787,7 @@ void gluttonous_spike( special_effect_t& effect )
   struct gluttonous_spike_buff_t : public buff_t
   {
     gluttonous_spike_pulse_t* pulse;
-    gluttonous_spike_buff_t( const special_effect_t& e ) : buff_t( e.player, "gluttonous_spike", e.player->find_spell( 344154 ), e.item )
+    gluttonous_spike_buff_t( const special_effect_t& e, action_t* action ) : buff_t( e.player, "gluttonous_spike", e.player->find_spell( 344154 ), e.item )
     {
       // Buff should never refresh itself since the trigger is disabled while it's up, but just in case
       set_refresh_behavior( buff_refresh_behavior::DISABLED );
@@ -795,10 +795,9 @@ void gluttonous_spike( special_effect_t& effect )
       // Only applies the aura if you get overhealed, according to user configuration
       set_chance( player->sim->shadowlands_opts.gluttonous_spike_overheal_chance );
 
-      // Create our action for the pulse and proc it on each tick
-      auto pulse_action = create_proc_action<gluttonous_spike_pulse_t>( "gluttonous_spike_pulse", e );
-      set_tick_callback( [pulse_action]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ ) {
-        pulse_action->execute();
+      // Triggers the given action for each tick
+      set_tick_callback( [action]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ ) {
+        action->execute();
       } );
     }
   };
@@ -810,11 +809,14 @@ void gluttonous_spike( special_effect_t& effect )
     gluttonous_spike_t( const special_effect_t& e ) :
       proc_spell_t( "gluttonous_spike", e.player, e.trigger() )
     {
+      // Create the pulse action and pass it to the buff
+      action_t* pulse_action = create_proc_action<gluttonous_spike_pulse_t>( "gluttonous_spike_pulse", e );
+
       buff = buff_t::find(player, "gluttonous_spike");
       // Creates the buff if absent
       if (!buff)
       {
-        buff = make_buff<gluttonous_spike_buff_t>( player );
+        buff = make_buff<gluttonous_spike_buff_t>( player, pulse_action );
       }
 
       // Main proc damage is in its own spell 344153, and not in the tooltip of the main spell
@@ -830,7 +832,7 @@ void gluttonous_spike( special_effect_t& effect )
     void execute() override
     {
       // If the aura isn't currently running, execute the spell and triggers the buff
-      if (buff->expiration.empty())
+      if (!buff->check())
       {
         proc_spell_t::execute();
         buff->trigger();
@@ -838,7 +840,6 @@ void gluttonous_spike( special_effect_t& effect )
     }
   };
 
-  create_proc_action<gluttonous_spike_pulse_t>( "gluttonous_spike_pulse", effect );
   effect.execute_action = create_proc_action<gluttonous_spike_t>( "gluttonous_spike", effect );
   new dbc_proc_callback_t( effect.player, effect );
 }
