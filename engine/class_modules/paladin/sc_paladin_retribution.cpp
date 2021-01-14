@@ -940,11 +940,11 @@ void paladin_t::generate_action_prio_list_ret()
   cds -> add_action( "use_item,name=overwhelming_power_crystal,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10" );
   cds -> add_action( "use_item,name=darkmoon_deck_voracity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10" );
   cds -> add_action( "use_item,name=macabre_sheet_music,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10" );
-  cds -> add_action( "use_item,name=dreadfire_vessel,if=(!talent.execution_sentence.enabled|debuff.execution_sentence.up|cooldown.execution_sentence.remains>25)" );
-  cds -> add_action( "use_item,name=skulkers_wing,if=(!talent.execution_sentence.enabled|debuff.execution_sentence.up|cooldown.execution_sentence.remains>25)" );
-  cds -> add_action( "use_item,name=grim_codex,if=(!talent.execution_sentence.enabled|debuff.execution_sentence.up|cooldown.execution_sentence.remains>25)" );
-  cds -> add_action( "use_item,name=memory_of_past_sins,if=(!talent.execution_sentence.enabled|debuff.execution_sentence.up)" );
-  cds -> add_action( "use_item,name=spare_meat_hook,if=(!talent.execution_sentence.enabled|debuff.execution_sentence.up)" );
+  cds -> add_action( "use_item,name=dreadfire_vessel" );
+  cds -> add_action( "use_item,name=skulkers_wing" );
+  cds -> add_action( "use_item,name=grim_codex" );
+  cds -> add_action( "use_item,name=memory_of_past_sins" );
+  cds -> add_action( "use_item,name=spare_meat_hook" );
   cds -> add_action( "use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45" );
   cds -> add_action( "use_item,name=sinful_aspirants_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45" );
   
