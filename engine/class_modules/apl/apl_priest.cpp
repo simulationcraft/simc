@@ -132,12 +132,14 @@ void shadow( player_t* p )
                         "Default fallback for usable items: Use on cooldown in order by trinket slot." );
 
   // CDs
-  cds->add_action( p, "Power Infusion",
-                   "if=priest.self_power_infusion&(buff.voidform.up|!soulbind.combat_meditation.enabled&cooldown.void_"
-                   "eruption.remains>=10|fight_remains<cooldown.void_eruption.remains)",
-                   "Use Power Infusion with Voidform. Hold for Voidform comes off cooldown in the next 10 seconds "
-                   "otherwise use on cd unless the Pelagos Trait Combat Meditation is talented, or if there will not "
-                   "be another Void Eruption this fight." );
+  cds->add_action(
+      p, "Power Infusion",
+      "if=priest.self_power_infusion&(buff.voidform.up|!soulbind.grove_invigoration.enabled&!soulbind.combat_"
+      "meditation.enabled&cooldown.void_eruption.remains>=10|fight_remains<cooldown.void_eruption.remains|soulbind."
+      "grove_invigoration.enabled&(buff.redirected_anima.stack>=12|cooldown.fae_guardians.remains>10))",
+      "Use Power Infusion with Voidform. Hold for Voidform comes off cooldown in the next 10 seconds "
+      "otherwise use on cd unless the Pelagos Trait Combat Meditation is talented, or if there will not "
+      "be another Void Eruption this fight." );
   cds->add_action( p, "Silence",
                    "target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)",
                    "Use Silence on CD to proc Sephuz's Proclamation." );
@@ -158,12 +160,14 @@ void shadow( player_t* p )
       "15)&(buff.power_infusion.up|cooldown.power_infusion.remains>=10|!priest.self_power_infusion)&(!talent.hungering_"
       "void.enabled|debuff.hungering_void.up|!buff.voidform.up)",
       "Use Unholy Nova on CD, holding briefly to wait for power infusion or add spawns." );
-  cds->add_action( p, priest->covenant.boon_of_the_ascended, "boon_of_the_ascended",
-                   "if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_"
-                   "nightmare.enabled|(buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled&"
-                   "prev_gcd.1.void_bolt)|(buff.voidform.up&talent.searing_nightmare.enabled)",
-                   "Use on CD but prioritise using Void Eruption first, if used inside of VF on ST use after a "
-                   "voidbolt for cooldown efficiency and for hungering void uptime if talented." );
+  cds->add_action(
+      p, priest->covenant.boon_of_the_ascended, "boon_of_the_ascended",
+      "if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_nightmare.enabled|("
+      "buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled&(prev_gcd.1.void_bolt&!equipped."
+      "empyreal_ordnance|equipped.empyreal_ordnance&trinket.empyreal_ordnance.cooldown.remains<=162&debuff.hungering_"
+      "void.up))|(buff.voidform.up&talent.searing_nightmare.enabled)",
+      "Use on CD but prioritise using Void Eruption first, if used inside of VF on ST use after a "
+      "voidbolt for cooldown efficiency and for hungering void uptime if talented." );
   cds->add_call_action_list( trinkets );
 
   // APL to use when Boon of the Ascended is active
@@ -223,8 +227,9 @@ void shadow( player_t* p )
   main->add_talent( p, "Surrender to Madness", "target_if=target.time_to_die<25&buff.voidform.down",
                     "Use Surrender to Madness on a target that is going to die at the right time." );
   main->add_talent( p, "Void Torrent",
-                    "target_if=variable.dots_up&target.time_to_die>3&buff.voidform.down&active_dot.vampiric_touch=="
-                    "spell_targets.vampiric_touch&spell_targets.mind_sear<(5+(6*talent.twist_of_fate.enabled))",
+                    "target_if=variable.dots_up&target.time_to_die>3&(buff.voidform.down|buff.voidform.remains<"
+                    "cooldown.void_bolt.remains)&active_dot.vampiric_touch==spell_targets.vampiric_touch&spell_targets."
+                    "mind_sear<(5+(6*talent.twist_of_fate.enabled))",
                     "Use Void Torrent only if SW:P and VT are active and the target won't die during the channel." );
   main->add_talent( p, "Mindbender",
                     "if=dot.vampiric_touch.ticking&(talent.searing_nightmare.enabled&spell_targets.mind_sear>variable."
