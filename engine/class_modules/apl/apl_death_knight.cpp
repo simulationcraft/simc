@@ -309,14 +309,14 @@ void unholy( player_t* p )
   default_->add_action( "variable,name=pooling_runic_power,value=cooldown.summon_gargoyle.remains<5&talent.summon_gargoyle", "Variables" );
   default_->add_action( "variable,name=pooling_runes,value=talent.soul_reaper&rune<2&target.time_to_pct_35<5" );
   default_->add_action( "variable,name=st_planning,value=active_enemies=1&(!raid_event.adds.exists|raid_event.adds.in>15)" );
-  default_->add_action( "variable,name=sync_with_cooldowns,value=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&pet.apoc_ghoul.active|buff.dark_transformation.up" );
+  default_->add_action( "variable,name=major_cooldowns_active,value=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&pet.apoc_ghoul.active|buff.dark_transformation.up" );
   default_->add_action( "arcane_torrent,if=runic_power.deficit>65&(pet.gargoyle.active|!talent.summon_gargoyle.enabled)&rune.deficit>=5", "Racials" );
-  default_->add_action( "blood_fury,if=variable.sync_with_cooldowns|target.time_to_die<=buff.blood_fury.duration" );
-  default_->add_action( "berserking,if=variable.sync_with_cooldowns|target.time_to_die<=buff.berserking.duration" );
+  default_->add_action( "blood_fury,if=variable.major_cooldowns_active|target.time_to_die<=buff.blood_fury.duration" );
+  default_->add_action( "berserking,if=variable.major_cooldowns_active|target.time_to_die<=buff.berserking.duration" );
   default_->add_action( "lights_judgment,if=buff.unholy_strength.up" );
-  default_->add_action( "ancestral_call,if=variable.sync_with_cooldowns|target.time_to_die<=15", "Ancestral Call can trigger 4 potential buffs, each lasting 15 seconds. Utilized hard coded time as a trigger to keep it readable." );
+  default_->add_action( "ancestral_call,if=variable.major_cooldowns_active|target.time_to_die<=15", "Ancestral Call can trigger 4 potential buffs, each lasting 15 seconds. Utilized hard coded time as a trigger to keep it readable." );
   default_->add_action( "arcane_pulse,if=active_enemies>=2|(rune.deficit>=5&runic_power.deficit>=60)" );
-  default_->add_action( "fireblood,if=variable.sync_with_cooldowns|target.time_to_die<=buff.fireblood.duration" );
+  default_->add_action( "fireblood,if=variable.major_cooldowns_active|target.time_to_die<=buff.fireblood.duration" );
   default_->add_action( "bag_of_tricks,if=buff.unholy_strength.up&active_enemies=1" );
   default_->add_action( "outbreak,if=dot.virulent_plague.refreshable&!talent.unholy_blight&!raid_event.adds.exists", "Maintaining Virulent Plague is a priority" );
   default_->add_action( "outbreak,if=dot.virulent_plague.refreshable&active_enemies>=2&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains)" );
@@ -345,7 +345,7 @@ void unholy( player_t* p )
   aoe_setup->add_action( "festering_strike,target_if=debuff.festering_wound.stack<1" );
   aoe_setup->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=rune.time_to_4<(cooldown.death_and_decay.remains&!talent.defile|cooldown.defile.remains&talent.defile)" );
 
-  cooldowns->add_action( "potion,if=variable.sync_with_cooldowns|fight_remains<26", "Potion" );
+  cooldowns->add_action( "potion,if=variable.major_cooldowns_active|fight_remains<26", "Potion" );
   cooldowns->add_action( "army_of_the_dead,if=cooldown.unholy_blight.remains<3&cooldown.dark_transformation.remains<3&talent.unholy_blight|!talent.unholy_blight|fight_remains<35", "Cooldowns" );
   cooldowns->add_action( "soul_reaper,target_if=target.time_to_pct_35<5&target.time_to_die>5" );
   cooldowns->add_action( "wait_for_cooldown,name=soul_reaper,if=talent.soul_reaper&target.time_to_pct_35<5&fight_remains>5&cooldown.soul_reaper.remains<(gcd*0.75)" );
