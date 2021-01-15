@@ -345,7 +345,7 @@ static constexpr auto _attribute_strings = util::make_static_map<unsigned, util:
   { 265, "Periodic effect can crit"          },
   { 273, "Duration affected by haste"        },
   { 292, "Fixed travel time"                 },
-  { 333, "Reset CD on encounter start"       },
+  { 333, "Reset CD on encounter end"         },
   { 354, "Scales with item level"            }
 } );
 
