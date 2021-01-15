@@ -132,12 +132,14 @@ void shadow( player_t* p )
                         "Default fallback for usable items: Use on cooldown in order by trinket slot." );
 
   // CDs
-  cds->add_action( p, "Power Infusion",
-                   "if=priest.self_power_infusion&(buff.voidform.up|!soulbind.combat_meditation.enabled&cooldown.void_"
-                   "eruption.remains>=10|fight_remains<cooldown.void_eruption.remains)",
-                   "Use Power Infusion with Voidform. Hold for Voidform comes off cooldown in the next 10 seconds "
-                   "otherwise use on cd unless the Pelagos Trait Combat Meditation is talented, or if there will not "
-                   "be another Void Eruption this fight." );
+  cds->add_action(
+      p, "Power Infusion",
+      "if=priest.self_power_infusion&(buff.voidform.up|!soulbind.grove_invigoration.enabled&!soulbind.combat_"
+      "meditation.enabled&cooldown.void_eruption.remains>=10|fight_remains<cooldown.void_eruption.remains|soulbind."
+      "grove_invigoration.enabled&(buff.redirected_anima.stack>=12|cooldown.fae_guardians.remains>10))",
+      "Use Power Infusion with Voidform. Hold for Voidform comes off cooldown in the next 10 seconds "
+      "otherwise use on cd unless the Pelagos Trait Combat Meditation is talented, or if there will not "
+      "be another Void Eruption this fight." );
   cds->add_action( p, "Silence",
                    "target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)",
                    "Use Silence on CD to proc Sephuz's Proclamation." );
