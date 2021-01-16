@@ -773,14 +773,14 @@ struct vampiric_touch_t final : public priest_spell_t
     }
   };
 
-  vampiric_touch_heal_t* vampiric_touch_heal;
+  propagate_const<vampiric_touch_heal_t*> vampiric_touch_heal;
   propagate_const<shadow_word_pain_t*> child_swp;
   propagate_const<unfurling_darkness_t*> child_ud;
   bool casted;
 
   vampiric_touch_t( priest_t& p, bool _casted = false )
     : priest_spell_t( "vampiric_touch", p, p.dot_spells.vampiric_touch ),
-      vampiric_touch_heal( nullptr ),
+      vampiric_touch_heal( new vampiric_touch_heal_t( p ) ),
       child_swp( nullptr ),
       child_ud( nullptr )
   {
@@ -802,8 +802,6 @@ struct vampiric_touch_t final : public priest_spell_t
       child_ud = new unfurling_darkness_t( priest() );
       add_child( child_ud );
     }
-
-    vampiric_touch_heal = new vampiric_touch_heal_t( p );
   }
 
   vampiric_touch_t( priest_t& p, util::string_view options_str ) : vampiric_touch_t( p, true )
@@ -928,17 +926,16 @@ struct devouring_plague_t final : public priest_spell_t
     }
   };
 
-  devouring_plague_heal_t* devouring_plague_heal;
+  propagate_const<devouring_plague_heal_t*> devouring_plague_heal;
   bool casted;
 
   devouring_plague_t( priest_t& p, bool _casted = false )
-    : priest_spell_t( "devouring_plague", p, p.dot_spells.devouring_plague ), devouring_plague_heal( nullptr )
+    : priest_spell_t( "devouring_plague", p, p.dot_spells.devouring_plague ),
+      devouring_plague_heal( new devouring_plague_heal_t( p ) )
   {
     casted                     = _casted;
     may_crit                   = true;
     affected_by_shadow_weaving = true;
-
-    devouring_plague_heal = new devouring_plague_heal_t( p );
   }
 
   devouring_plague_t( priest_t& p, util::string_view options_str ) : devouring_plague_t( p, true )
