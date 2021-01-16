@@ -8897,7 +8897,7 @@ void shaman_t::init_action_list_enhancement()
   single->add_action("fae_transfusion");
   single->add_action(this, "Lightning Bolt", "if=buff.stormkeeper.up");
   single->add_talent(this, "Elemental Blast", "if=buff.maelstrom_weapon.stack>=5");
-  single->add_action("chain_harvest,if=buff.maelstrom_weapon.stack>=5");
+  single->add_action("chain_harvest,if=buff.maelstrom_weapon.stack>=5&raid_event.adds.in>=90");
   single->add_action(this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack=10");
   single->add_action(this, "Lava Lash", "if=buff.hot_hand.up|(runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6)");
   single->add_action(this, "Stormstrike");
