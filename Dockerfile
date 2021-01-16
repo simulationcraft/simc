@@ -40,10 +40,10 @@ RUN apk --no-cache add --virtual build_dependencies \
     make && \
     if [ $NONETWORKING -eq 0 ] ; then \
         echo "Building networking version" && \
-        make -C /app/SimulationCraft/engine optimized -j $THREADS LTO_THIN=1 OPTS+="-Os -mtune=native" SC_DEFAULT_APIKEY=${APIKEY} ;  \
+        make -C /app/SimulationCraft/engine optimized -j $THREADS LTO=1 OPTS+="-Os -mtune=native" SC_DEFAULT_APIKEY=${APIKEY} ;  \
     else \
         echo "Building no-networking version" && \
-        make -C /app/SimulationCraft/engine optimized -j $THREADS LTO_THIN=1 SC_NO_NETWORKING=1 OPTS+="-Os -mtune=native" SC_DEFAULT_APIKEY=${APIKEY} ; \
+        make -C /app/SimulationCraft/engine optimized -j $THREADS LTO=1 SC_NO_NETWORKING=1 OPTS+="-Os -mtune=native" SC_DEFAULT_APIKEY=${APIKEY} ; \
     fi && \
     apk del build_dependencies
 
