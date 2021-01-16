@@ -844,12 +844,30 @@ public:
 // ==========================================================================
 struct summon_shadowfiend_t final : public summon_pet_t
 {
+  double benevolent_faerie_rate;
+
   summon_shadowfiend_t( priest_t& p, util::string_view options_str )
-    : summon_pet_t( "shadowfiend", p, p.find_class_spell( "Shadowfiend" ) )
+    : summon_pet_t( "shadowfiend", p, p.find_class_spell( "Shadowfiend" ) ),
+      benevolent_faerie_rate( priest().find_spell( 327710 )->effectN( 1 ).percent() )
   {
     parse_options( options_str );
     harmful            = false;
     summoning_duration = data().duration();
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = summon_pet_t::recharge_multiplier( cd );
+
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/796
+    // Fae Guardians also affects Shadowfiend's CDR
+    if ( &cd == cooldown && priest().buffs.fae_guardians->check() && priest().options.self_benevolent_faerie &&
+         priest().bugs )
+    {
+      m /= 1.0 + benevolent_faerie_rate;
+    }
+
+    return m;
   }
 };
 
@@ -925,13 +943,23 @@ namespace buffs
 struct fae_guardians_t final : public priest_buff_t<buff_t>
 {
   propagate_const<cooldown_t*> void_eruption_cooldown;
+  propagate_const<cooldown_t*> shadowfiend_cooldown;
 
   fae_guardians_t( priest_t& p )
     : base_t( p, "fae_guardians", p.covenant.fae_guardians ),
-      void_eruption_cooldown( p.get_cooldown( "void_eruption" ) )
+      void_eruption_cooldown( p.get_cooldown( "void_eruption" ) ),
+      shadowfiend_cooldown( p.get_cooldown( "shadowfiend" ) )
   {
-    set_stack_change_callback(
-        [ this ]( buff_t*, int, int ) { void_eruption_cooldown->adjust_recharge_multiplier(); } );
+    set_stack_change_callback( [ this ]( buff_t*, int, int ) {
+      void_eruption_cooldown->adjust_recharge_multiplier();
+
+      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/796
+      // Fae Guardians also affects Shadowfiend's CDR
+      if ( !priest().talents.mindbender->ok() )
+      {
+        shadowfiend_cooldown->adjust_recharge_multiplier();
+      }
+    } );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
