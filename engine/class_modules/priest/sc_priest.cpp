@@ -659,18 +659,36 @@ struct boon_of_the_ascended_t final : public priest_spell_t
   }
 };
 
+struct ascended_nova_heal_t final : public priest_heal_t
+{
+  ascended_nova_heal_t( priest_t& p )
+    : priest_heal_t( "ascended_nova_heal", p, p.covenant.ascended_nova->effectN( 2 ).trigger() )
+  {
+    background = true;
+    aoe        = data().effectN( 2 ).base_value();
+
+    // TODO: Confirm if this healing can proc trinkets/etc
+    callbacks = false;
+  }
+};
+
 struct ascended_nova_t final : public priest_spell_t
 {
+  propagate_const<ascended_nova_heal_t*> child_ascended_nova_heal;
   int grants_stacks;
 
   ascended_nova_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "ascended_nova", p, p.find_spell( 325020 ) ),
+    : priest_spell_t( "ascended_nova", p, p.covenant.ascended_nova ),
+      child_ascended_nova_heal( nullptr ),
       grants_stacks( as<int>( data().effectN( 3 ).base_value() ) )
   {
     parse_options( options_str );
     aoe                        = -1;
     radius                     = data().effectN( 1 ).radius_max();
     affected_by_shadow_weaving = true;
+
+    child_ascended_nova_heal = new ascended_nova_heal_t( priest() );
+    add_child( child_ascended_nova_heal );
   }
 
   void impact( action_state_t* s ) override
@@ -700,6 +718,34 @@ struct ascended_nova_t final : public priest_spell_t
 
     return cam / std::sqrt( state->n_targets );
   }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( child_ascended_nova_heal )
+    {
+      child_ascended_nova_heal->execute();
+    }
+  }
+};
+
+struct ascended_blast_heal_t final : public priest_heal_t
+{
+  ascended_blast_heal_t( priest_t& p ) : priest_heal_t( "ascended_blast_heal", p, p.covenant.ascended_blast_heal )
+  {
+    background = true;
+    may_crit   = false;
+
+    // TODO: Confirm if this healing can proc trinkets/etc
+    callbacks = false;
+  }
+
+  void trigger( double original_amount )
+  {
+    base_dd_min = base_dd_max = original_amount * priest().covenant.ascended_blast->effectN( 2 ).percent();
+    execute();
+  }
 };
 
 struct ascended_blast_t final : public priest_spell_t
@@ -707,7 +753,7 @@ struct ascended_blast_t final : public priest_spell_t
   int grants_stacks;
 
   ascended_blast_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "ascended_blast", p, p.find_spell( 325283 ) ),
+    : priest_spell_t( "ascended_blast", p, p.covenant.ascended_blast ),
       grants_stacks( as<int>( data().effectN( 3 ).base_value() ) )
   {
     parse_options( options_str );
@@ -729,6 +775,11 @@ struct ascended_blast_t final : public priest_spell_t
     {
       priest().buffs.boon_of_the_ascended->increment( grants_stacks );
     }
+
+    if ( result_is_hit( s->result ) )
+    {
+      priest().background_actions.ascended_blast_heal->trigger( s->result_amount );
+    }
   }
 
   bool ready() override
@@ -742,13 +793,58 @@ struct ascended_blast_t final : public priest_spell_t
   }
 };
 
+struct ascended_eruption_heal_t final : public priest_heal_t
+{
+  int trigger_stacks;  // Set as action variable since this will not be triggered multiple times.
+  double base_da_increase;
+
+  ascended_eruption_heal_t( priest_t& p )
+    : priest_heal_t( "ascended_eruption_heal", p, p.covenant.ascended_eruption->effectN( 2 ).trigger() ),
+      base_da_increase( p.covenant.boon_of_the_ascended->effectN( 5 ).percent() +
+                        p.conduits.courageous_ascension->effectN( 2 ).percent() )
+  {
+    aoe        = -1;
+    background = true;
+
+    // TODO: Confirm if this healing can proc trinkets/etc
+    callbacks = false;
+  }
+
+  void trigger_eruption( int stacks )
+  {
+    assert( stacks > 0 );
+    trigger_stacks = stacks;
+
+    execute();
+  }
+
+  double action_da_multiplier() const override
+  {
+    double m = priest_heal_t::action_da_multiplier();
+
+    m *= 1 + base_da_increase * trigger_stacks;
+
+    return m;
+  }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double cam  = priest_heal_t::composite_aoe_multiplier( state );
+    int targets = state->n_targets;
+    sim->print_debug( "{} {} sets damage multiplier as if it hit an additional {} targets.", *player, *this,
+                      priest().options.ascended_eruption_additional_targets );
+    targets += priest().options.ascended_eruption_additional_targets;
+    return cam / std::sqrt( targets );
+  }
+};
+
 struct ascended_eruption_t final : public priest_spell_t
 {
   int trigger_stacks;  // Set as action variable since this will not be triggered multiple times.
   double base_da_increase;
 
   ascended_eruption_t( priest_t& p )
-    : priest_spell_t( "ascended_eruption", p, p.find_spell( 325326 ) ),
+    : priest_spell_t( "ascended_eruption", p, p.covenant.ascended_eruption ),
       base_da_increase( p.covenant.boon_of_the_ascended->effectN( 5 ).percent() +
                         p.conduits.courageous_ascension->effectN( 2 ).percent() )
   {
@@ -965,6 +1061,7 @@ struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
     if ( priest().options.use_ascended_eruption )
     {
       priest().background_actions.ascended_eruption->trigger_eruption( expiration_stacks );
+      priest().background_actions.ascended_eruption_heal->trigger_eruption( expiration_stacks );
     }
   }
 };
@@ -1611,6 +1708,10 @@ void priest_t::init_spells()
   conduits.shattered_perceptions = find_conduit_spell( "Shattered Perceptions" );
 
   // Covenant Abilities
+  covenant.ascended_blast             = find_spell( 325283 );
+  covenant.ascended_blast_heal        = find_spell( 325315 );
+  covenant.ascended_eruption          = find_spell( 325326 );
+  covenant.ascended_nova              = find_spell( 325020 );
   covenant.boon_of_the_ascended       = find_covenant_spell( "Boon of the Ascended" );
   covenant.fae_guardians              = find_covenant_spell( "Fae Guardians" );
   covenant.benevolent_faerie          = find_spell( 327710 );
@@ -1656,7 +1757,11 @@ void priest_t::init_rng()
 
 void priest_t::init_background_actions()
 {
+  background_actions.ascended_blast_heal = new actions::spells::ascended_blast_heal_t( *this );
+
   background_actions.ascended_eruption = new actions::spells::ascended_eruption_t( *this );
+
+  background_actions.ascended_eruption_heal = new actions::spells::ascended_eruption_heal_t( *this );
 
   background_actions.wrathful_faerie = new actions::spells::wrathful_faerie_t( *this );
 

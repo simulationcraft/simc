@@ -25,6 +25,7 @@ namespace actions
 {
 namespace spells
 {
+struct ascended_blast_heal_t;
 struct mind_sear_tick_t;
 struct shadowy_apparition_spell_t;
 struct angelic_feather_t;
@@ -37,6 +38,7 @@ struct summon_pet_t;
 struct summon_shadowfiend_t;
 struct summon_mindbender_t;
 struct ascended_eruption_t;
+struct ascended_eruption_heal_t;
 struct wrathful_faerie_t;
 struct wrathful_faerie_fermata_t;
 struct psychic_link_t;
@@ -339,7 +341,9 @@ public:
   // Special
   struct
   {
+    propagate_const<actions::spells::ascended_blast_heal_t*> ascended_blast_heal;
     propagate_const<actions::spells::ascended_eruption_t*> ascended_eruption;
+    propagate_const<actions::spells::ascended_eruption_heal_t*> ascended_eruption_heal;
     propagate_const<actions::spells::devouring_plague_heal_t*> devouring_plague_heal;
     propagate_const<actions::spells::eternal_call_to_the_void_t*> eternal_call_to_the_void;
     propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
@@ -452,6 +456,10 @@ public:
     const spell_data_t* mindgames_healing_reversal;
     const spell_data_t* mindgames_damage_reversal;
     // Kyrian
+    const spell_data_t* ascended_blast;
+    const spell_data_t* ascended_blast_heal;
+    const spell_data_t* ascended_eruption;
+    const spell_data_t* ascended_nova;
     const spell_data_t* boon_of_the_ascended;
   } covenant;
 
