@@ -44,8 +44,6 @@ struct wrathful_faerie_fermata_t;
 struct psychic_link_t;
 struct eternal_call_to_the_void_t;
 struct unholy_transfusion_healing_t;
-struct vampiric_touch_heal_t;
-struct devouring_plague_heal_t;
 }  // namespace spells
 namespace heals
 {
@@ -295,7 +293,6 @@ public:
   struct
   {
     propagate_const<gain_t*> cauterizing_shadows_health;
-    propagate_const<gain_t*> devouring_plague_health;
     propagate_const<gain_t*> insanity_auspicious_spirits;
     propagate_const<gain_t*> insanity_death_and_madness;
     propagate_const<gain_t*> insanity_eternal_call_to_the_void_mind_flay;
@@ -309,7 +306,6 @@ public:
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> power_word_solace;
     propagate_const<gain_t*> shadow_word_death_self_damage;
-    propagate_const<gain_t*> vampiric_touch_health;
   } gains;
 
   // Benefits
@@ -344,13 +340,11 @@ public:
     propagate_const<actions::spells::ascended_blast_heal_t*> ascended_blast_heal;
     propagate_const<actions::spells::ascended_eruption_t*> ascended_eruption;
     propagate_const<actions::spells::ascended_eruption_heal_t*> ascended_eruption_heal;
-    propagate_const<actions::spells::devouring_plague_heal_t*> devouring_plague_heal;
     propagate_const<actions::spells::eternal_call_to_the_void_t*> eternal_call_to_the_void;
     propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
     propagate_const<actions::spells::psychic_link_t*> psychic_link;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<actions::spells::unholy_transfusion_healing_t*> unholy_transfusion_healing;
-    propagate_const<actions::spells::vampiric_touch_heal_t*> vampiric_touch_heal;
     propagate_const<actions::spells::wrathful_faerie_t*> wrathful_faerie;
     propagate_const<actions::spells::wrathful_faerie_fermata_t*> wrathful_faerie_fermata;
   } background_actions;
