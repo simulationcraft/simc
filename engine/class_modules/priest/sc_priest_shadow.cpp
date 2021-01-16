@@ -759,6 +759,9 @@ struct vampiric_touch_heal_t final : public priest_heal_t
     // Turn off all damage parts of the spell
     spell_power_mod.direct = spell_power_mod.tick = base_td_multiplier = 0;
     dot_duration                                                       = timespan_t::from_seconds( 0 );
+
+    // TODO: Confirm if this healing can proc trinkets/etc
+    callbacks = false;
   }
 
   void trigger( double original_amount )
@@ -869,6 +872,9 @@ struct devouring_plague_heal_t final : public priest_heal_t
     // Turn off all damage parts of the spell
     spell_power_mod.direct = spell_power_mod.tick = base_td_multiplier = 0;
     dot_duration                                                       = timespan_t::from_seconds( 0 );
+
+    // TODO: Confirm if this healing can proc trinkets/etc
+    callbacks = false;
   }
 
   void trigger( double original_amount )
