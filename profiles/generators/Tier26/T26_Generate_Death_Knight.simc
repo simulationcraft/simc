@@ -68,17 +68,17 @@ covenant=necrolord
 soulbind=emeni,lead_by_example/eternal_hunger:7/convocation_of_the_dead:7
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173130
-neck=sin_stained_pendant,id=178827,bonus_id=6536/1540/6646,gem_id=173128
-shoulders=epaulettes_of_overwhelming_force,id=182994,bonus_id=7187/1498
-back=drape_of_twisted_loyalties,id=180123,bonus_id=6536/1540/6646
+neck=sin_stained_pendant,id=178827,bonus_id=6536/1540/6646,gem_id=173130
+shoulders=vile_butchers_pauldrons,id=178749,bonus_id=6536/1540/6646
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=shadowghast_breastplate,id=171412,bonus_id=6716/6952/6649/6648/1532,enchant=eternal_stats
 wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498/6935,gem_id=173130
 hands=fogweaver_gauntlets,id=178706,bonus_id=6536/1540/6646,enchant=eternal_strength
-waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498/6935,gem_id=173127
+waist=stoic_guardsmans_belt,id=183025,bonus_id=7187/1498/6935,gem_id=173127
 legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
 feet=errant_crusaders_greaves,id=183027,bonus_id=7187/1498
-finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_mastery
-finger2=fleshfused_circle,id=178869,bonus_id=6536/1540/6646/6935,gem_id=173129,enchant=tenet_of_mastery
+finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_critical_strike
+finger2=fleshfused_circle,id=178869,bonus_id=6536/1540/6646/6935,gem_id=173130,enchant=tenet_of_critical_strike
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1540/6646
 trinket2=stone_legion_heraldry,id=184027,bonus_id=7187/1498
 main_hand=nathrian_crusaders_bastard_sword,id=182389,bonus_id=7187/1531,enchant=rune_of_the_fallen_crusader
