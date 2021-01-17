@@ -665,7 +665,7 @@ struct ascended_nova_heal_t final : public priest_heal_t
     : priest_heal_t( "ascended_nova_heal", p, p.covenant.ascended_nova->effectN( 2 ).trigger() )
   {
     background = true;
-    aoe        = data().effectN( 2 ).base_value();
+    aoe        = as<int>( data().effectN( 2 ).base_value() );
 
     // TODO: Confirm if this healing can proc trinkets/etc
     callbacks = false;
@@ -1265,7 +1265,6 @@ void priest_t::create_cooldowns()
 void priest_t::create_gains()
 {
   gains.cauterizing_shadows_health  = get_gain( "Health from Cauterizing Shadows" );
-  gains.devouring_plague_health     = get_gain( "Health from Devouring Plague" );
   gains.insanity_auspicious_spirits = get_gain( "Insanity Gained from Auspicious Spirits" );
   gains.insanity_death_and_madness  = get_gain( "Insanity Gained from Death and Madness" );
   gains.insanity_eternal_call_to_the_void_mind_flay =
@@ -1281,7 +1280,6 @@ void priest_t::create_gains()
   gains.painbreaker_psalm             = get_gain( "Insanity Gained from Painbreaker Psalm" );
   gains.power_word_solace             = get_gain( "Mana Gained from Power Word: Solace" );
   gains.shadow_word_death_self_damage = get_gain( "Shadow Word: Death self inflicted damage" );
-  gains.vampiric_touch_health         = get_gain( "Health from Vampiric Touch" );
 }
 
 /** Construct priest procs */

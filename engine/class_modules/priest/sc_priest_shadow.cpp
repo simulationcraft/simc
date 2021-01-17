@@ -742,43 +742,47 @@ struct unfurling_darkness_t final : public priest_spell_t
 // ==========================================================================
 // Vampiric Touch
 // ==========================================================================
-struct vampiric_touch_heal_t final : public priest_heal_t
-{
-  vampiric_touch_heal_t( priest_t& p ) : priest_heal_t( "vampiric_touch_heal", p, p.dot_spells.vampiric_touch )
-  {
-    background         = true;
-    may_crit           = false;
-    may_miss           = false;
-    base_dd_multiplier = 1.0;
-
-    // Turn off Insanity gen from hit action
-    energize_type     = action_energize::NONE;  // no insanity gain
-    energize_amount   = 0;
-    energize_resource = RESOURCE_NONE;
-
-    // Turn off all damage parts of the spell
-    spell_power_mod.direct = spell_power_mod.tick = base_td_multiplier = 0;
-    dot_duration                                                       = timespan_t::from_seconds( 0 );
-
-    // TODO: Confirm if this healing can proc trinkets/etc
-    callbacks = false;
-  }
-
-  void trigger( double original_amount )
-  {
-    base_dd_min = base_dd_max = original_amount * data().effectN( 2 ).m_value();
-    execute();
-  }
-};
-
 struct vampiric_touch_t final : public priest_spell_t
 {
+  struct vampiric_touch_heal_t final : public priest_heal_t
+  {
+    vampiric_touch_heal_t( priest_t& p ) : priest_heal_t( "vampiric_touch_heal", p, p.dot_spells.vampiric_touch )
+    {
+      background         = true;
+      may_crit           = false;
+      may_miss           = false;
+      base_dd_multiplier = 1.0;
+
+      // Turn off Insanity gen from hit action
+      energize_type     = action_energize::NONE;  // no insanity gain
+      energize_amount   = 0;
+      energize_resource = RESOURCE_NONE;
+
+      // Turn off all damage parts of the spell
+      spell_power_mod.direct = spell_power_mod.tick = base_td_multiplier = 0;
+      dot_duration                                                       = timespan_t::from_seconds( 0 );
+
+      // TODO: Confirm if this healing can proc trinkets/etc
+      callbacks = false;
+    }
+
+    void trigger( double original_amount )
+    {
+      base_dd_min = base_dd_max = original_amount * data().effectN( 2 ).m_value();
+      execute();
+    }
+  };
+
+  propagate_const<vampiric_touch_heal_t*> vampiric_touch_heal;
   propagate_const<shadow_word_pain_t*> child_swp;
   propagate_const<unfurling_darkness_t*> child_ud;
   bool casted;
 
   vampiric_touch_t( priest_t& p, bool _casted = false )
-    : priest_spell_t( "vampiric_touch", p, p.dot_spells.vampiric_touch ), child_swp( nullptr ), child_ud( nullptr )
+    : priest_spell_t( "vampiric_touch", p, p.dot_spells.vampiric_touch ),
+      vampiric_touch_heal( new vampiric_touch_heal_t( p ) ),
+      child_swp( nullptr ),
+      child_ud( nullptr )
   {
     casted                     = _casted;
     may_crit                   = false;
@@ -849,7 +853,7 @@ struct vampiric_touch_t final : public priest_spell_t
 
     if ( result_is_hit( d->state->result ) )
     {
-      priest().background_actions.vampiric_touch_heal->trigger( d->state->result_amount );
+      vampiric_touch_heal->trigger( d->state->result_amount );
     }
   }
 };
@@ -857,33 +861,6 @@ struct vampiric_touch_t final : public priest_spell_t
 // ==========================================================================
 // Devouring Plague
 // ==========================================================================
-struct devouring_plague_heal_t final : public priest_heal_t
-{
-  devouring_plague_heal_t( priest_t& p ) : priest_heal_t( "devouring_plague_heal", p, p.dot_spells.devouring_plague )
-  {
-    background         = true;
-    may_crit           = false;
-    may_miss           = false;
-    base_dd_multiplier = 1.0;
-
-    // Turn off resource consumption
-    base_costs[ RESOURCE_INSANITY ] = 0;
-
-    // Turn off all damage parts of the spell
-    spell_power_mod.direct = spell_power_mod.tick = base_td_multiplier = 0;
-    dot_duration                                                       = timespan_t::from_seconds( 0 );
-
-    // TODO: Confirm if this healing can proc trinkets/etc
-    callbacks = false;
-  }
-
-  void trigger( double original_amount )
-  {
-    base_dd_min = base_dd_max = original_amount * data().effectN( 2 ).m_value();
-    execute();
-  }
-};
-
 struct devouring_plague_dot_state_t : public action_state_t
 {
   double rolling_multiplier;
@@ -922,10 +899,39 @@ struct devouring_plague_dot_state_t : public action_state_t
 
 struct devouring_plague_t final : public priest_spell_t
 {
+  struct devouring_plague_heal_t final : public priest_heal_t
+  {
+    devouring_plague_heal_t( priest_t& p ) : priest_heal_t( "devouring_plague_heal", p, p.dot_spells.devouring_plague )
+    {
+      background         = true;
+      may_crit           = false;
+      may_miss           = false;
+      base_dd_multiplier = 1.0;
+
+      // Turn off resource consumption
+      base_costs[ RESOURCE_INSANITY ] = 0;
+
+      // Turn off all damage parts of the spell
+      spell_power_mod.direct = spell_power_mod.tick = base_td_multiplier = 0;
+      dot_duration                                                       = timespan_t::from_seconds( 0 );
+
+      // TODO: Confirm if this healing can proc trinkets/etc
+      callbacks = false;
+    }
+
+    void trigger( double original_amount )
+    {
+      base_dd_min = base_dd_max = original_amount * data().effectN( 2 ).m_value();
+      execute();
+    }
+  };
+
+  propagate_const<devouring_plague_heal_t*> devouring_plague_heal;
   bool casted;
 
   devouring_plague_t( priest_t& p, bool _casted = false )
-    : priest_spell_t( "devouring_plague", p, p.dot_spells.devouring_plague )
+    : priest_spell_t( "devouring_plague", p, p.dot_spells.devouring_plague ),
+      devouring_plague_heal( new devouring_plague_heal_t( p ) )
   {
     casted                     = _casted;
     may_crit                   = true;
@@ -979,7 +985,7 @@ struct devouring_plague_t final : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      priest().background_actions.devouring_plague_heal->trigger( s->result_amount );
+      devouring_plague_heal->trigger( s->result_amount );
     }
   }
 
@@ -989,7 +995,7 @@ struct devouring_plague_t final : public priest_spell_t
 
     if ( result_is_hit( d->state->result ) )
     {
-      priest().background_actions.devouring_plague_heal->trigger( d->state->result_amount );
+      devouring_plague_heal->trigger( d->state->result_amount );
     }
   }
 
@@ -2008,16 +2014,6 @@ void priest_t::init_background_actions_shadow()
   if ( legendary.eternal_call_to_the_void->ok() )
   {
     background_actions.eternal_call_to_the_void = new actions::spells::eternal_call_to_the_void_t( *this );
-  }
-
-  if ( dot_spells.vampiric_touch->ok() )
-  {
-    background_actions.vampiric_touch_heal = new actions::spells::vampiric_touch_heal_t( *this );
-  }
-
-  if ( dot_spells.devouring_plague->ok() )
-  {
-    background_actions.devouring_plague_heal = new actions::spells::devouring_plague_heal_t( *this );
   }
 }
 
