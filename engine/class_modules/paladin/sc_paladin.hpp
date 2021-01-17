@@ -911,8 +911,7 @@ public:
       paladin_td_t* td = this -> td( s -> target );
       if ( td -> debuff.reckoning -> up() )
         td -> debuff.reckoning -> expire();
-      // todo: triple-check whether ab::special is the right thing
-      if ( td -> debuff.execution_sentence -> check() && ab::special )
+      if ( td -> debuff.execution_sentence -> check() )
       {
         td -> debuff.execution_sentence -> accumulate_damage( s );
       }
