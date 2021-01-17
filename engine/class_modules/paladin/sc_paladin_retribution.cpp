@@ -516,7 +516,7 @@ struct reckoning_t : public paladin_spell_t
 
 struct final_reckoning_t : public paladin_spell_t
 {
-  final_reckoning_t( paladin_t* p, const std::string& options_str) :
+  final_reckoning_t( paladin_t* p, const std::string& options_str ) :
     paladin_spell_t( "final_reckoning", p, p -> talents.final_reckoning )
   {
     parse_options( options_str );

@@ -1941,25 +1941,6 @@ void paladin_t::init_scaling()
 void paladin_t::init_assessors()
 {
   player_t::init_assessors();
-
-  if ( talents.execution_sentence -> ok() )
-  {
-    auto assessor_fn = [ this ] ( result_amount_type /* rt */, action_state_t* s )
-    {
-      auto td = this -> get_target_data( s -> target );
-
-      if ( td -> debuff.execution_sentence -> check() )
-      {
-        td -> debuff.execution_sentence -> accumulate_damage( s );
-      }
-
-      return assessor::CONTINUE;
-    };
-
-    assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
-    for ( auto pet : pet_list )
-      pet -> assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
-  }
 }
 
 // paladin_t::init_buffs ====================================================
