@@ -163,9 +163,9 @@ void shadow( player_t* p )
   cds->add_action(
       p, priest->covenant.boon_of_the_ascended, "boon_of_the_ascended",
       "if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_nightmare.enabled|("
-      "buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled&(prev_gcd.1.void_bolt&!equipped."
-      "empyreal_ordnance|equipped.empyreal_ordnance&trinket.empyreal_ordnance.cooldown.remains<=162&debuff.hungering_"
-      "void.up))|(buff.voidform.up&talent.searing_nightmare.enabled)",
+      "buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled&(prev_gcd.1.void_bolt&(!equipped."
+      "empyreal_ordnance|!talent.hungering_void.enabled)|equipped.empyreal_ordnance&trinket.empyreal_ordnance.cooldown."
+      "remains<=162&debuff.hungering_void.up))|(buff.voidform.up&talent.searing_nightmare.enabled)",
       "Use on CD but prioritise using Void Eruption first, if used inside of VF on ST use after a "
       "voidbolt for cooldown efficiency and for hungering void uptime if talented." );
   cds->add_call_action_list( trinkets );
