@@ -1272,6 +1272,8 @@ class SpellDataGenerator(DataGenerator):
          345020,
          # Tablet of Despair
          336183,
+         # Rotbriar Sprout
+         329548,
         ),
 
         # Warrior:

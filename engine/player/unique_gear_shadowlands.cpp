@@ -1793,7 +1793,6 @@ void flame_of_battle( special_effect_t& effect )
 
 // id=336182 driver, effect#2 has multiplier
 // id=336183 damage spell, effect#1 value seems to be overridden by driver effect#1 value
-
 void tablet_of_despair( special_effect_t& effect )
 {
   struct burst_of_despair_t : public proc_spell_t
@@ -1839,6 +1838,25 @@ void tablet_of_despair( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<growing_despair_t>( "growing_despair", effect );
+}
+
+// id=329536 driver, damage value in effect#2
+// id=329540 unknown use, triggered by driver
+// id=329548 damage spell
+void rotbriar_sprout( special_effect_t& effect )
+{
+  struct rotbriar_sprout_t : public shadowlands_aoe_proc_t
+  {
+    rotbriar_sprout_t( const special_effect_t& e ) : shadowlands_aoe_proc_t( e, "rotbriar_sprout", 329548, true )
+    {
+      base_dd_min = e.driver()->effectN( 2 ).min( e.item );
+      base_dd_max = e.driver()->effectN( 2 ).max( e.item );
+    }
+  };
+
+  effect.execute_action = create_proc_action<rotbriar_sprout_t>( "rotbriar_sprout", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Runecarves
@@ -2034,6 +2052,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 336841, items::flame_of_battle );
     unique_gear::register_special_effect( 329831, items::overwhelming_power_crystal );
     unique_gear::register_special_effect( 336182, items::tablet_of_despair );
+    unique_gear::register_special_effect( 329536, items::rotbriar_sprout );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );

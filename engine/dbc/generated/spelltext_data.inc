@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.37176
-static const std::array<spelltext_data_t, 15095> __spelltext_data { {
+static const std::array<spelltext_data_t, 15096> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -13657,6 +13657,7 @@ static const std::array<spelltext_data_t, 15095> __spelltext_data { {
   { 329492, "$@spelldesc329490", "Your Slumberwood Band has no dream dust remaining.", 0 },
   { 329536, "Your damaging abilities have a very low chance to manifest a drust behemoth, smashing your target and dealing $s2 Physical damage to all nearby enemies.", 0, 0 },
   { 329540, "$@spelldesc329536", 0, 0 },
+  { 329548, "$@spelldesc329536", 0, 0 },
   { 329554, "Call forth and defeat a demon from the Theater of Pain to release an Empowered Demon Soul, increasing your damage done by $347765s1% and reducing all damage taken by $347765s4% for $347765d.\r\n \r\nThe demon will escape to the Nether after $d. Throw Glaive deals considerably more damage to the demon and Fleshcraft treats it as a powerful enemy.", "Battling a demon from the Theater of Pain...", "Necrolord" },
   { 329666, "Increases Haste by $s1.", "Haste increased by $w1.", 0 },
   { 329720, " ", 0, "Night Fae" },
