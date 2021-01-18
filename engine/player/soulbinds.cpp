@@ -424,7 +424,11 @@ void thrill_seeker( special_effect_t& effect )
 
   auto counter_buff = buff_t::find( effect.player, "thrill_seeker" );
   if ( !counter_buff )
-    counter_buff = make_buff( effect.player, "thrill_seeker", effect.player->find_spell( 331939 ) );
+  {
+    counter_buff = make_buff( effect.player, "thrill_seeker", effect.player->find_spell( 331939 ) )
+      ->set_period( 0_ms )
+      ->set_tick_behavior( buff_tick_behavior::NONE );
+  }
 
   auto buff = buff_t::find( effect.player, "euphoria" );
   if ( !buff )
