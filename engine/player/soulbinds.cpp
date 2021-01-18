@@ -426,19 +426,18 @@ void thrill_seeker( special_effect_t& effect )
   if ( !counter_buff )
   {
     counter_buff = make_buff( effect.player, "thrill_seeker", effect.player->find_spell( 331939 ) )
-      ->set_period( 0_ms )
-      ->set_tick_behavior( buff_tick_behavior::NONE );
+                       ->set_period( 0_ms )
+                       ->set_tick_behavior( buff_tick_behavior::NONE );
   }
 
   auto buff = buff_t::find( effect.player, "euphoria" );
   if ( !buff )
   {
     buff = make_buff( effect.player, "euphoria", effect.player->find_spell( 331937 ) )
-      ->set_default_value_from_effect_type( A_HASTE_ALL )
-      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+               ->set_default_value_from_effect_type( A_HASTE_ALL )
+               ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
-    counter_buff->set_stack_change_callback( [ buff ] ( buff_t* b, int, int )
-    {
+    counter_buff->set_stack_change_callback( [ buff ]( buff_t* b, int, int ) {
       if ( b->at_max_stacks() )
       {
         buff->trigger();
@@ -449,12 +448,28 @@ void thrill_seeker( special_effect_t& effect )
 
   auto eff_data = &effect.driver()->effectN( 1 );
 
-  // TODO: do you still gain stacks while euphoria is active?
+  // You still gain stacks while euphoria is active
   effect.player->register_combat_begin( [ eff_data, counter_buff ]( player_t* p ) {
     make_repeating_event( *p->sim, eff_data->period(), [ counter_buff ] { counter_buff->trigger(); } );
   } );
 
-  // TODO: implement gains from killing blows
+  auto p                  = effect.player;
+  int killing_blow_stacks = as<int>( p->find_spell( 331586 )->effectN( 1 ).base_value() );
+
+  range::for_each( p->sim->actor_list, [ p, counter_buff, killing_blow_stacks ]( player_t* t ) {
+    if ( !t->is_enemy() )
+      return;
+
+    t->register_on_demise_callback( p, [ p, counter_buff, killing_blow_stacks ]( player_t* t ) {
+      if ( p->sim->event_mgr.canceled )
+        return;
+
+      if ( p->rng().roll( p->sim->shadowlands_opts.thrill_seeker_killing_blow_chance ) )
+      {
+        counter_buff->trigger( killing_blow_stacks );
+      }
+    } );
+  } );
 }
 
 void soothing_shade( special_effect_t& effect )

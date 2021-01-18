@@ -380,6 +380,8 @@ struct sim_t : private sc_thread_t
     timespan_t retarget_shadowgrasp_totem = 0_s;
     /// Disables the execute effect of Inscrutable Quantum Device since it is avoidable in game
     bool disable_iqd_execute = false;
+    /// Sets chance that the actor gets the killing blow when a target demises for Thrill Seeker stacks
+    double thrill_seeker_killing_blow_chance = 0.25;
   } shadowlands_opts;
 
   // Auras and De-Buffs
