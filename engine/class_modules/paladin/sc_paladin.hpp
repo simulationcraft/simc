@@ -911,10 +911,6 @@ public:
       paladin_td_t* td = this -> td( s -> target );
       if ( td -> debuff.reckoning -> up() )
         td -> debuff.reckoning -> expire();
-      if ( td -> debuff.execution_sentence -> check() )
-      {
-        td -> debuff.execution_sentence -> accumulate_damage( s );
-      }
     }
   }
 
@@ -996,6 +992,17 @@ public:
   {
     if ( cd_waste ) cd_waste -> add( cd, ab::time_to_execute );
     ab::update_ready( cd );
+  }
+
+  virtual void assess_damage( result_amount_type typ, action_state_t* s ) override
+  {
+    ab::assess_damage( typ, s );
+
+    paladin_td_t* td = this -> td( s -> target );
+    if ( td -> debuff.execution_sentence -> check() )
+    {
+      td -> debuff.execution_sentence -> accumulate_damage( s );
+    }
   }
 };
 
