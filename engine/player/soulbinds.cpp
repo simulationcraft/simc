@@ -453,18 +453,33 @@ void thrill_seeker( special_effect_t& effect )
     make_repeating_event( *p->sim, eff_data->period(), [ counter_buff ] { counter_buff->trigger(); } );
   } );
 
-  auto p                  = effect.player;
-  int killing_blow_stacks = as<int>( p->find_spell( 331586 )->effectN( 1 ).base_value() );
+  auto p                     = effect.player;
+  int killing_blow_stacks    = as<int>( p->find_spell( 331586 )->effectN( 1 ).base_value() );
+  double killing_blow_chance = p->sim->shadowlands_opts.thrill_seeker_killing_blow_chance;
+  // If the user does not override the value for this we will set different defaults based on the sim here
+  // Default: 1/20 = 0.05
+  // DungeonSlice: 1/4 = 0.25
+  if ( killing_blow_chance < 0 )
+  {
+    if ( effect.player->sim->fight_style == "DungeonSlice" )
+    {
+      killing_blow_chance = 0.25;
+    }
+    else
+    {
+      killing_blow_chance = 0.05;
+    }
+  }
 
-  range::for_each( p->sim->actor_list, [ p, counter_buff, killing_blow_stacks ]( player_t* t ) {
+  range::for_each( p->sim->actor_list, [ p, counter_buff, killing_blow_stacks, killing_blow_chance ]( player_t* t ) {
     if ( !t->is_enemy() )
       return;
 
-    t->register_on_demise_callback( p, [ p, counter_buff, killing_blow_stacks ]( player_t* t ) {
+    t->register_on_demise_callback( p, [ p, counter_buff, killing_blow_stacks, killing_blow_chance ]( player_t* t ) {
       if ( p->sim->event_mgr.canceled )
         return;
 
-      if ( p->rng().roll( p->sim->shadowlands_opts.thrill_seeker_killing_blow_chance ) )
+      if ( p->rng().roll( killing_blow_chance ) )
       {
         counter_buff->trigger( killing_blow_stacks );
       }

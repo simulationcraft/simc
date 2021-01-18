@@ -381,7 +381,8 @@ struct sim_t : private sc_thread_t
     /// Disables the execute effect of Inscrutable Quantum Device since it is avoidable in game
     bool disable_iqd_execute = false;
     /// Sets chance that the actor gets the killing blow when a target demises for Thrill Seeker stacks
-    double thrill_seeker_killing_blow_chance = 0.25;
+    /// The default value of -1.0 adjusts to 1/20 for most sims, and 1/4 for DungeonSlice sims
+    double thrill_seeker_killing_blow_chance = -1.0;
   } shadowlands_opts;
 
   // Auras and De-Buffs
