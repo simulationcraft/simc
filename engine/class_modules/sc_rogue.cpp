@@ -5662,6 +5662,12 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
     multiplier = p()->buffs.blade_flurry->check_value();
   }
 
+  // Between the Eyes crit damage multiplier does not transfer across correctly due to a Shadowlands-specific bug
+  if ( p()->bugs && ab::data().id() == p()->spec.between_the_eyes->id() && state->result == RESULT_CRIT )
+  {
+    multiplier *= 0.5;
+  }
+
   // Target multipliers do not replicate to secondary targets, need to reverse them out
   const double target_da_multiplier = ( 1.0 / state->target_da_multiplier );
 
@@ -6234,9 +6240,8 @@ double rogue_t::composite_melee_crit_chance() const
 {
   double crit = player_t::composite_melee_crit_chance();
 
-  crit += spell.critical_strikes -> effectN( 1 ).percent();
+  crit += spell.critical_strikes->effectN( 1 ).percent();
 
-  // TOCHECK: Currently no whitelist on beta
   crit += buffs.master_assassins_mark->stack_value();
   crit += buffs.master_assassins_mark_aura->stack_value();
 
@@ -6255,6 +6260,14 @@ double rogue_t::composite_spell_crit_chance() const
   double crit = player_t::composite_spell_crit_chance();
 
   crit += spell.critical_strikes->effectN( 1 ).percent();
+
+  crit += buffs.master_assassins_mark->stack_value();
+  crit += buffs.master_assassins_mark_aura->stack_value();
+
+  if ( conduit.planned_execution.ok() && buffs.symbols_of_death->up() )
+  {
+    crit += conduit.planned_execution.percent();
+  }
 
   return crit;
 }
@@ -6596,7 +6609,8 @@ void rogue_t::init_action_list()
     cds->add_action( "fireblood" );
     cds->add_action( "ancestral_call" );
 
-    cds->add_action( "use_items,if=debuff.between_the_eyes.up&(!talent.ghostly_strike.enabled|debuff.ghostly_strike.up)|fight_remains<=20", "Default fallback for usable items." );
+    cds->add_action( "use_items,slots=trinket1,if=!runeforge.mark_of_the_master_assassin&debuff.between_the_eyes.up&(!talent.ghostly_strike.enabled|debuff.ghostly_strike.up)|master_assassin_remains>0|trinket.1.has_stat.any|fight_remains<=20", "Default conditions for usable items." );
+    cds->add_action( "use_items,slots=trinket2,if=!runeforge.mark_of_the_master_assassin&debuff.between_the_eyes.up&(!talent.ghostly_strike.enabled|debuff.ghostly_strike.up)|master_assassin_remains>0|trinket.2.has_stat.any|fight_remains<=20" );
 
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
