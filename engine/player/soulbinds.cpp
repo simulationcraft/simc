@@ -456,6 +456,7 @@ void thrill_seeker( special_effect_t& effect )
   auto p                     = effect.player;
   int killing_blow_stacks    = as<int>( p->find_spell( 331586 )->effectN( 1 ).base_value() );
   double killing_blow_chance = p->sim->shadowlands_opts.thrill_seeker_killing_blow_chance;
+  int number_of_players      = 1;
   // If the user does not override the value for this we will set different defaults based on the sim here
   // Default: 1/20 = 0.05
   // DungeonSlice: 1/4 = 0.25
@@ -463,12 +464,13 @@ void thrill_seeker( special_effect_t& effect )
   {
     if ( effect.player->sim->fight_style == "DungeonSlice" )
     {
-      killing_blow_chance = 0.25;
+      number_of_players = 4;
     }
     else
     {
-      killing_blow_chance = 0.05;
+      number_of_players = 20;
     }
+    killing_blow_chance = 1 / number_of_players;
   }
 
   range::for_each( p->sim->actor_list, [ p, counter_buff, killing_blow_stacks, killing_blow_chance ]( player_t* t ) {
