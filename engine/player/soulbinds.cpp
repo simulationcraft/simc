@@ -470,7 +470,7 @@ void thrill_seeker( special_effect_t& effect )
     {
       number_of_players = 20;
     }
-    killing_blow_chance = 1 / number_of_players;
+    killing_blow_chance = 1.0 / number_of_players;
   }
 
   range::for_each( p->sim->actor_list, [ p, counter_buff, killing_blow_stacks, killing_blow_chance ]( player_t* t ) {
