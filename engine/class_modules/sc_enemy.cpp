@@ -948,7 +948,7 @@ struct add_t : public pet_t
 
       const double health_pct = health_percentage();
       const double scale      = ( health_pct - percent ) / ( 100 - health_pct );
-      return ( duration - expiration->remains() ) * scale;
+      return std::max( 0_ms, ( duration - expiration->remains() ) * scale );
     }
 
     return pet_t::time_to_percent( percent );
