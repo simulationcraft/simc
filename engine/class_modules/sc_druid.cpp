@@ -8395,7 +8395,7 @@ void druid_t::apl_balance()
   def->add_action( "variable,name=is_aoe,value=spell_targets.starfall>1&(!talent.starlord.enabled|talent.stellar_drift.enabled)|spell_targets.starfall>2" );
   def->add_action( "variable,name=is_cleave,value=spell_targets.starfire>1" );
   def->add_action( "berserking,if=(!covenant.night_fae|!cooldown.convoke_the_spirits.up)&buff.ca_inc.up" );
-  def->add_action( "potion,if=buff.ca_inc.up" );
+  def->add_action( "potion,if=buff.ca_inc.remains>10" );
   def->add_action( "variable,name=convoke_desync,value=ceil((interpolated_fight_remains-15-cooldown.ca_inc.remains)%180)=ceil((interpolated_fight_remains-15-120-cooldown.convoke_the_spirits.remains)%180)|cooldown.ca_inc.remains>interpolated_fight_remains|cooldown.convoke_the_spirits.remains>interpolated_fight_remains|!covenant.night_fae" );
   def->add_action( "variable,name=cd_condition,value=(!equipped.empyreal_ordnance|cooldown.empyreal_ordnance.remains<160&!cooldown.empyreal_ordnance.ready)|covenant.kyrian" );
   def->add_action( "use_item,name=empyreal_ordnance,if=cooldown.ca_inc.remains<20&cooldown.convoke_the_spirits.remains<20|fight_remains<37" );
