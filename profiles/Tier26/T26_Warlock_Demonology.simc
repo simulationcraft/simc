@@ -71,18 +71,19 @@ actions.summon_tyrant+=/shadow_bolt,if=buff.wild_imps.stack+incoming_imps<4&(tal
 actions.summon_tyrant+=/call_dreadstalkers
 actions.summon_tyrant+=/hand_of_guldan
 actions.summon_tyrant+=/demonbolt,if=buff.demonic_core.up&buff.nether_portal.up&((buff.vilefiend.remains>5|!talent.summon_vilefiend.enabled)&(buff.grimoire_felguard.remains>5|buff.grimoire_felguard.down))
+actions.summon_tyrant+=/soul_strike,if=buff.nether_portal.up&((buff.vilefiend.remains>5|!talent.summon_vilefiend.enabled)&(buff.grimoire_felguard.remains>5|buff.grimoire_felguard.down))
 actions.summon_tyrant+=/shadow_bolt,if=buff.nether_portal.up&((buff.vilefiend.remains>5|!talent.summon_vilefiend.enabled)&(buff.grimoire_felguard.remains>5|buff.grimoire_felguard.down))
 actions.summon_tyrant+=/variable,name=tyrant_ready,value=!cooldown.summon_demonic_tyrant.ready
 actions.summon_tyrant+=/summon_demonic_tyrant
 actions.summon_tyrant+=/shadow_bolt
 
 actions.tyrant_prep=doom,line_cd=30
-actions.tyrant_prep+=/demonic_strength,if=!talent.demonic_consumption.enabled
 actions.tyrant_prep+=/nether_portal
 actions.tyrant_prep+=/grimoire_felguard
 actions.tyrant_prep+=/summon_vilefiend
 actions.tyrant_prep+=/call_dreadstalkers
 actions.tyrant_prep+=/demonbolt,if=buff.demonic_core.up&soul_shard<4&(talent.demonic_consumption.enabled|buff.nether_portal.down)
+actions.tyrant_prep+=/soul_strike,if=soul_shard<5-4*buff.nether_portal.up
 actions.tyrant_prep+=/shadow_bolt,if=soul_shard<5-4*buff.nether_portal.up
 actions.tyrant_prep+=/variable,name=tyrant_ready,value=1
 actions.tyrant_prep+=/hand_of_guldan

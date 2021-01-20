@@ -33,6 +33,7 @@ actions.precombat+=/snapshot_stats
 actions=charge
 actions+=/auto_attack
 actions+=/potion
+actions+=/pummel,if=target.debuff.casting.react
 actions+=/blood_fury,if=debuff.colossus_smash.up
 actions+=/berserking,if=debuff.colossus_smash.remains>6
 actions+=/arcane_torrent,if=cooldown.mortal_strike.remains>1.5&rage<50
