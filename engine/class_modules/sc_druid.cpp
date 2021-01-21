@@ -8385,6 +8385,9 @@ void druid_t::apl_balance()
   action_priority_list_t* boat = get_action_priority_list( "boat" );
   action_priority_list_t* fallthru = get_action_priority_list( "fallthru" );
 
+  precombat->add_action( "variable,name=on_use_trinket,value=0" );
+  precombat->add_action( "variable,name=on_use_trinket,op=add,value=trinket.1.has_proc.any&trinket.1.cooldown.duration" );
+  precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.2.has_proc.any&trinket.2.cooldown.duration)*2" );
   precombat->add_action( "moonkin_form" );
   precombat->add_action( "wrath" );
   precombat->add_action( "wrath" );
@@ -8395,13 +8398,13 @@ void druid_t::apl_balance()
   def->add_action( "variable,name=is_cleave,value=spell_targets.starfire>1" );
   def->add_action( "berserking,if=(!covenant.night_fae|!cooldown.convoke_the_spirits.up)&buff.ca_inc.up" );
   def->add_action( "potion,if=buff.ca_inc.remains>10" );
-  def->add_action( "variable,name=convoke_desync,value=ceil((interpolated_fight_remains-15-cooldown.ca_inc.remains)%180)=ceil((interpolated_fight_remains-15-120-cooldown.convoke_the_spirits.remains)%180)|cooldown.ca_inc.remains>interpolated_fight_remains|cooldown.convoke_the_spirits.remains>interpolated_fight_remains|!covenant.night_fae" );
-  def->add_action( "variable,name=cd_condition,value=(!equipped.empyreal_ordnance|cooldown.empyreal_ordnance.remains<160&!cooldown.empyreal_ordnance.ready)|covenant.kyrian" );
+  def->add_action( "variable,name=convoke_desync,value=ceil((interpolated_fight_remains-15-cooldown.ca_inc.remains)%180)=ceil((interpolated_fight_remains-15-120-cooldown.convoke_the_spirits.remains)%180)|cooldown.ca_inc.remains>interpolated_fight_remains|cooldown.convoke_the_spirits.remains>interpolated_fight_remains-10|!covenant.night_fae" );
+  def->add_action( "variable,name=cd_condition,value=(!equipped.empyreal_ordnance|cooldown.empyreal_ordnance.remains<160&!cooldown.empyreal_ordnance.ready)&((variable.on_use_trinket=1|variable.on_use_trinket=3)&(trinket.1.ready_cooldown|trinket.1.cooldown.remains>interpolated_fight_remains-10)|variable.on_use_trinket=2&(trinket.2.ready_cooldown|trinket.2.cooldown.remains>interpolated_fight_remains-10)|variable.on_use_trinket=0)|covenant.kyrian" );
   def->add_action( "use_item,name=empyreal_ordnance,if=cooldown.ca_inc.remains<20&cooldown.convoke_the_spirits.remains<20|fight_remains<37" );
   def->add_action( "use_item,name=soulletting_ruby,if=cooldown.ca_inc.remains<6&!variable.convoke_desync|cooldown.convoke_the_spirits.remains<6&variable.convoke_desync|fight_remains<25" );
   def->add_action( "use_item,name=inscrutable_quantum_device,if=buff.ca_inc.up" );
-  def->add_action( "use_items,slots=trinket1,if=!trinket.1.has_proc.any&(!trinket.2.has_proc.any|!trinket.2.ready_cooldown|!trinket.2.cooldown.duration)|(!trinket.1.has_proc.any&!trinket.2.has_proc.any&!trinket.2.cooldown.duration|trinket.1.has_proc.any)&(buff.ca_inc.up|cooldown.ca_inc.remains-10>trinket.1.cooldown.duration&!covenant.kyrian|covenant.night_fae&variable.convoke_desync&cooldown.convoke_the_spirits.up&!cooldown.ca_inc.up&((buff.eclipse_lunar.remains>10|buff.eclipse_solar.remains>10)&!runeforge.balance_of_all_things|runeforge.balance_of_all_things&(buff.balance_of_all_things_nature.stack>3|buff.balance_of_all_things_arcane.stack>3))|buff.kindred_empowerment_energize.up)|fight_remains<20" );
-  def->add_action( "use_items,slots=trinket2,if=!trinket.2.has_proc.any&(!trinket.1.has_proc.any|!trinket.1.ready_cooldown|!trinket.1.cooldown.duration)|trinket.1.has_proc.any&trinket.2.has_proc.any&!trinket.1.ready_cooldown|buff.ca_inc.up|cooldown.ca_inc.remains-10>trinket.2.cooldown.duration&!covenant.kyrian|covenant.night_fae&variable.convoke_desync&cooldown.convoke_the_spirits.up&!cooldown.ca_inc.up&((buff.eclipse_lunar.remains>10|buff.eclipse_solar.remains>10)&!runeforge.balance_of_all_things|runeforge.balance_of_all_things&(buff.balance_of_all_things_nature.stack>3|buff.balance_of_all_things_arcane.stack>3))|buff.kindred_empowerment_energize.up|fight_remains<20" );
+  def->add_action( "use_items,slots=trinket1,if=(variable.on_use_trinket=1|variable.on_use_trinket=3)&(buff.ca_inc.up|cooldown.ca_inc.remains+2>trinket.1.cooldown.duration&(!covenant.night_fae|!variable.convoke_desync)&!covenant.kyrian|covenant.night_fae&variable.convoke_desync&cooldown.convoke_the_spirits.up&!cooldown.ca_inc.up&((buff.eclipse_lunar.remains>10|buff.eclipse_solar.remains>10)&!runeforge.balance_of_all_things|(buff.balance_of_all_things_nature.stack=5|buff.balance_of_all_things_arcane.stack=5))|buff.kindred_empowerment_energize.up)|fight_remains<20" );
+  def->add_action( "use_items,slots=trinket2,if=variable.on_use_trinket=3&!trinket.1.ready_cooldown|(buff.ca_inc.up|cooldown.ca_inc.remains+2>trinket.2.cooldown.duration&(!covenant.night_fae|!variable.convoke_desync)&!covenant.kyrian|covenant.night_fae&variable.convoke_desync&cooldown.convoke_the_spirits.up&!cooldown.ca_inc.up&((buff.eclipse_lunar.remains>10|buff.eclipse_solar.remains>10)&!runeforge.balance_of_all_things|(buff.balance_of_all_things_nature.stack=5|buff.balance_of_all_things_arcane.stack=5)))|buff.kindred_empowerment_energize.up|fight_remains<20" );
   def->add_action( "use_items" );
   def->add_action( "run_action_list,name=aoe,if=variable.is_aoe" );
   def->add_action( "run_action_list,name=boat,if=runeforge.balance_of_all_things.equipped" );
