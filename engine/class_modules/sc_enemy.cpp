@@ -1575,10 +1575,11 @@ double enemy_t::health_percentage() const
 
 timespan_t enemy_t::time_to_percent( double percent ) const
 {
-  if ( fixed_health_percentage > 0 )
+  // time_to_pct_0, or time_to_die, should probably ignore fixed_health_percentage
+  if ( fixed_health_percentage > 0 && percent != 0 )
   {
     // If we're at or below the given health percentage, it's already been reached
-    if ( fixed_health_percentage >= percent )
+    if ( fixed_health_percentage <= percent )
       return timespan_t::zero();
     // Otherwise, it will never be reached, so return something unreachable
     else
