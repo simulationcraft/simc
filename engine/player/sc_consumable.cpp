@@ -545,11 +545,6 @@ struct flask_base_t : public dbc_consumable_base_t
 
       range::for_each( buff->stats, [mul]( stat_buff_t::buff_stat_t& s ) { s.amount *= mul; } );
     }
-
-
-    auto ep = player->find_soulbind_spell( "Exacting Preparation" );
-    if ( !ep->ok() )
-      return;
   }
 
   bool ready() override
