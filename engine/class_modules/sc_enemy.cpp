@@ -82,6 +82,7 @@ struct enemy_t : public player_t
   pet_t* create_pet( util::string_view add_name, util::string_view pet_type = "" ) override;
   void create_pets() override;
   double health_percentage() const override;
+  timespan_t time_to_percent( double ) const override;
   void combat_begin() override;
   void combat_end() override;
   virtual void recalculate_health();
@@ -1097,7 +1098,7 @@ struct tank_dummy_enemy_t : public enemy_t
       // results but the one that is correct will generally be the one that has the ArmorConstMod value being greater
       // than 1.000 9.0 values here
 
-      /* 
+      /*
         Level 60 Base/open world: 2500.000 (Level 60 Armor mitigation constants (K-values))
         Level 60 M0/M+: 2455.0 (ExpectedStatModID: 176; ArmorConstMod: 0.982)
         Castle Nathria LFR: 2500.0 (ExpectedStatModID: 181; ArmorConstMod: 1.000)
@@ -1330,7 +1331,7 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   int background_spell_damage[ numTankDummies ] = { 0, 257, 455, 1188, 1627, 2648 };  // Base background dot damage (currently set to 0.04x auto damage)
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
-  als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) + 
+  als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) +
          ",range=" + util::to_string( floor( aa_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=1.5,aoe_tanks=1";
   als += "/melee_nuke,damage=" + util::to_string( dummy_strike_damage[ tank_dummy_index ] ) +
          ",range=" + util::to_string( floor( dummy_strike_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=2,cooldown=25,aoe_tanks=1";
@@ -1568,6 +1569,23 @@ double enemy_t::health_percentage() const
   }
 
   return resources.pct( RESOURCE_HEALTH ) * 100;
+}
+
+// enemy_t::time_to_percent() ===============================================
+
+timespan_t enemy_t::time_to_percent( double percent ) const
+{
+  if ( fixed_health_percentage > 0 )
+  {
+    // If we're at or below the given health percentage, it's already been reached
+    if ( fixed_health_percentage >= percent )
+      return timespan_t::zero();
+    // Otherwise, it will never be reached, so return something unreachable
+    else
+      return sim -> expected_iteration_time * 2;
+  }
+
+  return player_t::time_to_percent( percent );
 }
 
 // enemy_t::recalculate_health ==============================================
