@@ -380,6 +380,8 @@ struct sim_t : private sc_thread_t
     timespan_t retarget_shadowgrasp_totem = 0_s;
     /// Disables the execute effect of Inscrutable Quantum Device since it is avoidable in game
     bool disable_iqd_execute = false;
+    /// Sets the chance for the Inscrutable Quantum Device to give no buff or execute outside Bloodlust
+    double iqd_fail_chance = 0.0;
   } shadowlands_opts;
 
   // Auras and De-Buffs

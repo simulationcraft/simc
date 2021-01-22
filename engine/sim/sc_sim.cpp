@@ -3812,6 +3812,8 @@ void sim_t::create_options()
   add_option( opt_bool( "shadowlands.disable_iqd_execute", shadowlands_opts.disable_iqd_execute ) );
   add_option( opt_float( "shadowlands.gluttonous_spike_overheal_chance",
     shadowlands_opts.gluttonous_spike_overheal_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "shadowlands.iqd_fail_chance",
+    shadowlands_opts.iqd_fail_chance, 0.0, 1.0 ) );
 }
 
 // sim_t::parse_option ======================================================
