@@ -5424,46 +5424,7 @@ std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expressio
 {
   auto splits = util::string_split<util::string_view>( expression_str, "." );
 
-  if ( splits.size() == 3 && splits[ 0 ] == "cooldown")
-  {
-    if ( splits[ 2 ] == "remains_guess" )
-    {
-      if ( cooldown_t* cooldown = get_cooldown( splits[ 1 ] ) )
-      {
-        return make_fn_expr( expression_str,
-          [ cooldown ] {
-            if ( cooldown -> remains() == cooldown -> duration )
-              return cooldown -> duration;
-
-            if ( cooldown -> up() )
-              return 0_ms;
-
-            double reduction = ( cooldown -> sim.current_time() - cooldown -> last_start ) /
-                               ( cooldown -> duration - cooldown -> remains() );
-            return cooldown -> remains() * reduction;
-          } );
-      }
-    }
-    else if ( splits[ 2 ] == "duration_guess" )
-    {
-      if ( cooldown_t* cooldown = get_cooldown( splits[ 1 ] ) )
-      {
-        return make_fn_expr( expression_str,
-          [ cooldown ] {
-            if ( cooldown -> last_charged == 0_ms || cooldown -> remains() == cooldown -> duration )
-              return cooldown -> duration;
-
-            if ( cooldown -> up() )
-              return ( cooldown -> last_charged - cooldown -> last_start );
-
-            double reduction = ( cooldown -> sim.current_time() - cooldown -> last_start ) /
-                               ( cooldown -> duration - cooldown -> remains() );
-            return cooldown -> duration * reduction;
-          } );
-      }
-    }
-  }
-  else if ( splits.size() == 2 && splits[ 0 ] == "next_wi_bomb" )
+  if ( splits.size() == 2 && splits[ 0 ] == "next_wi_bomb" )
   {
     if ( splits[ 1 ] == "shrapnel" )
       return make_fn_expr( expression_str, [ this ] { return talents.wildfire_infusion.ok() && state.next_wi_bomb == WILDFIRE_INFUSION_SHRAPNEL; } );
@@ -6493,7 +6454,7 @@ void hunter_t::apl_surv()
   st -> add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
   st -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(runeforge.nessingwarys_trapping_apparatus.equipped&cooldown.freezing_trap.remains&cooldown.tar_trap.remains|!runeforge.nessingwarys_trapping_apparatus.equipped)" );
   st -> add_action( "carve,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped" );
-  st -> add_action( "butchery,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped&cooldown.wildfire_bomb.full_recharge_time>spell_targets&(charges_fractional>2.5|dot.shrapnel_bomb.ticking)" );  
+  st -> add_action( "butchery,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped&cooldown.wildfire_bomb.full_recharge_time>spell_targets&(charges_fractional>2.5|dot.shrapnel_bomb.ticking)" );
   st -> add_action( "a_murder_of_crows" );
   st -> add_action( "mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if=dot.shrapnel_bomb.ticking|buff.mongoose_fury.stack=5" );
   st -> add_action( "serpent_sting,target_if=min:remains,if=refreshable|buff.vipers_venom.up" );
@@ -6514,7 +6475,7 @@ void hunter_t::apl_surv()
   apst -> add_action( "a_murder_of_crows" );
   apst -> add_action( "wildfire_bomb,if=full_recharge_time<gcd|focus+cast_regen<focus.max&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)|time_to_die<10" );
   apst -> add_action( "carve,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped" );
-  apst -> add_action( "butchery,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped&cooldown.wildfire_bomb.full_recharge_time>spell_targets&(charges_fractional>2.5|dot.shrapnel_bomb.ticking)" );  
+  apst -> add_action( "butchery,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped&cooldown.wildfire_bomb.full_recharge_time>spell_targets&(charges_fractional>2.5|dot.shrapnel_bomb.ticking)" );
   apst -> add_action( "steel_trap,if=focus+cast_regen<focus.max" );
   apst -> add_action( "mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if=buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(action.mongoose_bite.cost-cast_regen)*gcd&!buff.wild_spirits.remains|buff.mongoose_fury.remains&next_wi_bomb.pheromone" );
   apst -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max" );
