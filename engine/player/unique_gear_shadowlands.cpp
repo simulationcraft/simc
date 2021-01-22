@@ -1384,7 +1384,7 @@ void inscrutable_quantum_device ( special_effect_t& effect )
         }
         else
         {
-          if ( rng().roll( sim->shadowlands_opts.iqd_fail_chance ) )
+          if ( rng().roll( sim->shadowlands_opts.iqd_stat_fail_chance ) )
             return;
           for ( auto s : ratings )
           {
