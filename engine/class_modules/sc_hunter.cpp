@@ -6288,6 +6288,7 @@ void hunter_t::apl_bm()
   cleave -> add_action( "cobra_shot,if=focus.time_to_max<gcd*2" );
   cleave -> add_action( "tar_trap,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus" );
   cleave -> add_action( "freezing_trap,if=runeforge.nessingwarys_trapping_apparatus" );
+  cleave -> add_action( "arcane_torrent,if=(focus+focus.regen+15)<focus.max");
 
   st -> add_action( "aspect_of_the_wild" );
   st -> add_action( "barbed_shot,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd" );
@@ -6312,6 +6313,7 @@ void hunter_t::apl_bm()
   st -> add_action( "arcane_pulse,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st -> add_action( "tar_trap,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus" );
   st -> add_action( "freezing_trap,if=runeforge.nessingwarys_trapping_apparatus" );
+  st -> add_action( "arcane_torrent,if=(focus+focus.regen+15)<focus.max");
 }
 
 // Marksman Action List ======================================================================
