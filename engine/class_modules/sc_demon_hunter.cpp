@@ -5713,7 +5713,8 @@ void demon_hunter_t::apl_havoc()
 {
   action_priority_list_t* apl_default = get_action_priority_list( "default" );
   apl_default->add_action( "auto_attack" );
-  apl_default->add_action( "variable,name=blade_dance,value=talent.first_blood.enabled|spell_targets.blade_dance1>=(3-(talent.trail_of_ruin.enabled+buff.metamorphosis.up))|runeforge.chaos_theory&buff.chaos_theory.down" );
+  apl_default->add_action( "variable,name=blade_dance,if=!runeforge.chaos_theory,value=talent.first_blood.enabled|spell_targets.blade_dance1>=(3-talent.trail_of_ruin.enabled)", "Without Chaos Theory, Blade Dance with First Blood or at 3+ (2+ with Trail of Ruin) targets" );
+  apl_default->add_action( "variable,name=blade_dance,if=runeforge.chaos_theory,value=buff.chaos_theory.down|talent.first_blood.enabled&spell_targets.blade_dance1>=(2-talent.trail_of_ruin.enabled)|!talent.cycle_of_hatred.enabled&spell_targets.blade_dance1>=(4-talent.trail_of_ruin.enabled)", "With Chaos Theory, Blade Dance when the buff is down, with First Blood at 2+ (1+ with Trail of Ruin) or with Essence Break at 4+ (3+ with Trail of Ruin) targets" );
   apl_default->add_action( "variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30" );
   apl_default->add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)" );
   apl_default->add_action( "variable,name=pooling_for_eye_beam,value=talent.demonic.enabled&!talent.blind_fury.enabled&cooldown.eye_beam.remains<(gcd.max*2)&fury.deficit>20" );
