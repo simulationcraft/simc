@@ -1074,7 +1074,7 @@ void warlock_t::create_apl_affliction()
 
   def->add_action( "corruption,if=active_enemies<4-(talent.sow_the_seeds.enabled|talent.siphon_life.enabled)&dot.corruption.remains<2" );
   def->add_action( "corruption,cycle_targets=1,if=active_enemies<4-(talent.sow_the_seeds.enabled|talent.siphon_life.enabled),target_if=dot.corruption.remains<2" );
-  def->add_action( "phantom_singularity,if=covenant.necrolord|covenant.night_fae|covenant.kyrian|covenant.none" );
+  def->add_action( "phantom_singularity" );
   def->add_action( "malefic_rapture,if=soul_shard>4" );
 
   def->add_action( "call_action_list,name=darkglare_prep,if=covenant.venthyr&(cooldown.impending_catastrophe.ready|dot.impending_catastrophe_dot.ticking)&cooldown.summon_darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)" );
