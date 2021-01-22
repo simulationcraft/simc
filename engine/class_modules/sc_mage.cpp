@@ -2363,7 +2363,7 @@ struct icicle_t final : public frost_mage_spell_t
   icicle_t( util::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 148022 ) )
   {
-    background = true;
+    background = track_shatter = true;
     callbacks = false;
     base_dd_min = base_dd_max = 1.0;
 
