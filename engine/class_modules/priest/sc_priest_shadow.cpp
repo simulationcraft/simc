@@ -91,12 +91,8 @@ public:
   {
     if ( !priest().legendary.talbadars_stratagem->ok() )
       return false;
-    const priest_td_t* td = find_td( target );
-    if ( !td )
-      return false;
 
-    return td->dots.shadow_word_pain->is_ticking() && td->dots.vampiric_touch->is_ticking() &&
-           td->dots.devouring_plague->is_ticking();
+    return priest().buffs.talbadars_stratagem->check();
   }
 
   double composite_target_da_multiplier( player_t* t ) const override
@@ -306,6 +302,8 @@ struct painbreaker_psalm_t final : public priest_spell_t
 
     swp->adjust_duration( -consume_time );
     vt->adjust_duration( -consume_time );
+
+    priest().refresh_talbadars_buff( s );
   }
 };
 
@@ -700,6 +698,8 @@ struct shadow_word_pain_t final : public priest_spell_t
           td.buffs.wrathful_faerie->trigger();
         }
       }
+
+      priest().refresh_talbadars_buff( s );
     }
   }
 
@@ -835,6 +835,8 @@ struct vampiric_touch_t final : public priest_spell_t
     }
 
     priest_spell_t::impact( s );
+
+    priest().refresh_talbadars_buff( s );
   }
 
   timespan_t execute_time() const override
@@ -986,6 +988,8 @@ struct devouring_plague_t final : public priest_spell_t
     if ( result_is_hit( s->result ) )
     {
       devouring_plague_heal->trigger( s->result_amount );
+
+      priest().refresh_talbadars_buff( s );
     }
   }
 
@@ -1098,6 +1102,8 @@ struct void_bolt_t final : public priest_spell_t
 
       td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
       td.dots.vampiric_touch->adjust_duration( dot_extension, true );
+
+      priest().refresh_talbadars_buff( s );
     }
   };
 
@@ -1831,7 +1837,12 @@ void priest_t::create_buffs_shadow()
   buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 338333 ) )
                             ->set_trigger_spell( conduits.mind_devourer )
                             ->set_chance( conduits.mind_devourer->effectN( 2 ).percent() );
+
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
+
+  buffs.talbadars_stratagem = make_buff( this, "talbadars_stratagem", find_spell( 342415 ) )
+                                  ->set_duration( timespan_t::zero() )
+                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 }
 
 void priest_t::init_rng_shadow()
@@ -2090,4 +2101,29 @@ void priest_t::remove_hungering_void( player_t* target )
     }
   }
 }
+
+// Helper function to refresh talbadars buff
+void priest_t::refresh_talbadars_buff( action_state_t* s )
+{
+  if ( !legendary.talbadars_stratagem->ok() )
+    return;
+
+  const priest_td_t* td = find_target_data( s->target );
+
+  if ( !td )
+    return;
+
+  if ( td->dots.shadow_word_pain->is_ticking() && td->dots.vampiric_touch->is_ticking() &&
+       td->dots.devouring_plague->is_ticking() )
+  {
+    timespan_t min_length = std::min( { td->dots.shadow_word_pain->remains(), td->dots.vampiric_touch->remains(),
+                                        td->dots.devouring_plague->remains() } );
+
+    if ( buffs.talbadars_stratagem->up() && min_length <= buffs.talbadars_stratagem->remains() )
+      return;
+
+    buffs.talbadars_stratagem->trigger( min_length );
+  }
+}
+
 }  // namespace priestspace
