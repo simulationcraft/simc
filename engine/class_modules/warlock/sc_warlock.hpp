@@ -48,7 +48,7 @@ struct warlock_td_t : public actor_target_data_t
 
   propagate_const<buff_t*> debuffs_shadowburn;
   propagate_const<buff_t*> debuffs_eradication;
-  propagate_const<buff_t*> debuffs_roaring_blaze; 
+  propagate_const<buff_t*> debuffs_roaring_blaze;
   propagate_const<buff_t*> debuffs_havoc;
 
   // SL - Legendary
@@ -415,7 +415,7 @@ public:
     const spell_data_t* conflagrate_2; //Rank 2 passive (increased charges)
     const spell_data_t* firebolt; //TODO: SL Beta - Pet spell? Does not appear in specialization data
     const spell_data_t* havoc; //This is the primary active ability
-    //TODO: SL Beta - debuffs_havoc is currently referencing the spellID directly for rank 2, fix or remove. 
+    //TODO: SL Beta - debuffs_havoc is currently referencing the spellID directly for rank 2, fix or remove.
     const spell_data_t* havoc_2; //Rank 2 passive (increased duration)
     const spell_data_t* immolate; //TODO: SL Beta - this is supposed to be the primary active ability but is not being used at the moment - fix this
     const spell_data_t* rain_of_fire_2; //Rank 2 passive (increased damage)
@@ -546,6 +546,7 @@ public:
     proc_t* nightfall;
     proc_t* corrupting_leer;
     proc_t* malefic_wrath;
+    std::vector<proc_t*> malefic_rapture;
 
     // demo
     proc_t* demonic_calling;
@@ -773,7 +774,7 @@ struct borrowed_power_event_t : public player_event_t
         pl->sim->print_log( "Borrowed power proc occurred for Warlock {}, refunding {} soul shards.", pl->name(), shards_used );
         pl->resource_gain( RESOURCE_SOUL_SHARD, shards_used, shard_gain );
         pl->procs.mark_of_borrowed_power->occur();
-      } 
+      }
   }
 };
 
