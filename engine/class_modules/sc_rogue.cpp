@@ -6577,10 +6577,11 @@ void rogue_t::init_action_list()
     // Main Rotation
     def->add_action( "variable,name=rtb_reroll,value=rtb_buffs<2&(!buff.true_bearing.up&!buff.broadside.up)", "Reroll single buffs early other than True Bearing and Broadside" );
     def->add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+buff.broadside.up&energy>=50&(!conduit.count_the_odds|buff.roll_the_bones.remains>=10)", "Ensure we get full Ambush CP gains and aren't rerolling Count the Odds buffs away" );
+    def->add_action( "variable,name=finish_condition,value=combo_points>=cp_max_spend-buff.broadside.up-(buff.opportunity.up*talent.quick_draw.enabled)|combo_points=animacharged_cp", "Finish at maximum CP but avoid wasting Broadside and Quick Draw bonus combo points" );
     def->add_action( "variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up", "With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry" );
     def->add_action( "run_action_list,name=stealth,if=stealthed.all" );
     def->add_action( "call_action_list,name=cds" );
-    def->add_action( "run_action_list,name=finish,if=combo_points>=cp_max_spend-buff.broadside.up-(buff.opportunity.up*talent.quick_draw.enabled)|combo_points=animacharged_cp", "Finish at maximum CP but avoid wasting Broadside and Quick Draw bonus combo points" );
+    def->add_action( "run_action_list,name=finish,if=variable.finish_condition" );
     def->add_action( "call_action_list,name=build" );
     def->add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen" );
     def->add_action( "arcane_pulse" );
@@ -6590,11 +6591,12 @@ void rogue_t::init_action_list()
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds->add_action( this, "Blade Flurry", "if=spell_targets>=2&!buff.blade_flurry.up", "Blade Flurry on 2+ enemies" );
-    cds->add_action( this, "Vanish", "if=!stealthed.all&variable.ambush_condition&master_assassin_remains=0&(!runeforge.deathly_shadows|buff.deathly_shadows.down&combo_points<=2)", "Using Ambush is a 2% increase, so Vanish can be sometimes be used as a utility spell unless using Master Assassin or Deathly Shadows" );
+    cds->add_action( this, "Vanish", "if=!runeforge.mark_of_the_master_assassin&!stealthed.all&variable.ambush_condition&(!runeforge.deathly_shadows|buff.deathly_shadows.down&combo_points<=2)", "Using Ambush is a 2% increase, so Vanish can be sometimes be used as a utility spell unless using Master Assassin or Deathly Shadows" );
+    cds->add_action( this, "Vanish", "if=runeforge.mark_of_the_master_assassin&master_assassin_remains=0&(!cooldown.between_the_eyes.ready&variable.finish_condition|cooldown.between_the_eyes.ready&variable.ambush_condition)&(!conduit.count_the_odds|buff.roll_the_bones.remains>=10)" );
     cds->add_action( "flagellation" );
     cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2" );
     cds->add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&(!cooldown.killing_spree.up|!talent.killing_spree.enabled)" );
-    cds->add_action( this, "Roll the Bones", "if=buff.roll_the_bones.remains<=3|variable.rtb_reroll" );
+    cds->add_action( this, "Roll the Bones", "if=master_assassin_remains=0&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)" );
     cds->add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
     cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1", "If no adds will die within the next 30s, use MfD on boss without any CP." );
     cds->add_talent( this, "Killing Spree", "if=variable.blade_flurry_sync&(energy.time_to_max>2|spell_targets>2)" );
@@ -6614,7 +6616,7 @@ void rogue_t::init_action_list()
 
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
-    stealth->add_action( this, "Dispatch", "if=combo_points>=cp_max_spend" );
+    stealth->add_action( this, "Dispatch", "if=variable.finish_condition" );
     stealth->add_action( this, "Ambush" );
 
     // Finishers
