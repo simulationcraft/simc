@@ -324,7 +324,7 @@ void unholy( player_t* p )
   default_->add_action( "wait_for_cooldown,name=soul_reaper,if=talent.soul_reaper&target.time_to_pct_35<5&fight_remains>5&cooldown.soul_reaper.remains<(gcd*0.75)&active_enemies=1" );
   default_->add_action( "call_action_list,name=trinkets", "Action Lists and Openers" );
   default_->add_action( "call_action_list,name=covenants" );
-  default_->add_action( "sequence,if=active_enemies=1&!death_knight.disable_aotd,name=opener:army_of_the_dead:festering_strike:festering_strike:unholy_blight:potion:dark_transformation:apocalypse" );
+  default_->add_action( "sequence,if=active_enemies=1&!death_knight.disable_aotd,name=opener:army_of_the_dead:festering_strike:festering_strike:potion:unholy_blight:dark_transformation:apocalypse" );
   default_->add_action( "call_action_list,name=cooldowns" );
   default_->add_action( "run_action_list,name=aoe_setup,if=active_enemies>=2&(cooldown.death_and_decay.remains<10&!talent.defile|cooldown.defile.remains<10&talent.defile)&!death_and_decay.ticking" );
   default_->add_action( "run_action_list,name=aoe_burst,if=active_enemies>=2&death_and_decay.ticking" );
