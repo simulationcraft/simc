@@ -170,6 +170,7 @@ struct sim_t : private sc_thread_t
   bool pvp_crit; // Sets critical strike damage to 150% instead of 200%
   bool feast_as_dps = true;
   bool auto_attacks_always_land; /// Allow Auto Attacks (white attacks) to always hit the enemy
+  bool log_spell_id; // Add spell data ids to log/debug output where available. (actions, buffs)
 
   // Actor tracking
   int active_enemies;

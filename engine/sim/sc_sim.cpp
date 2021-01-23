@@ -1484,6 +1484,7 @@ sim_t::sim_t() :
   disable_set_bonuses( false ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
   pvp_crit( false ),
   auto_attacks_always_land( false ),
+  log_spell_id(),
   active_enemies( 0 ), active_allies( 0 ),
   _rng(), seed( 0 ), deterministic( 0 ), strict_work_queue( 0 ),
   average_range( true ), average_gauss( false ),
@@ -3541,6 +3542,7 @@ void sim_t::create_options()
   add_option( opt_uint( "enable_4_set", enable_4_set ) );
   add_option( opt_bool( "pvp", pvp_crit ) );
   add_option( opt_bool( "auto_attacks_always_land", auto_attacks_always_land ) );
+  add_option( opt_bool( "log_spell_id", log_spell_id ) );
   add_option( opt_int( "desired_targets", desired_targets ) );
   add_option( opt_bool( "show_etmi", show_etmi ) );
   add_option( opt_float( "tmi_window_global", tmi_window_global ) );

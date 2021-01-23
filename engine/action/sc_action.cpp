@@ -4440,7 +4440,14 @@ double action_t::last_tick_factor(const dot_t* /* d */, timespan_t time_to_tick,
 
 void format_to( const action_t& action, fmt::format_context::iterator out )
 {
-  fmt::format_to(  out, "Action {}", action.name() );
+  if ( action.sim->log_spell_id )
+  {
+    fmt::format_to( out, "Action {} ({})", action.name(), action.data().id() );
+  }
+  else
+  {
+    fmt::format_to( out, "Action {}", action.name() );
+  }
 }
 
 bool action_t::execute_targeting(action_t* action) const
