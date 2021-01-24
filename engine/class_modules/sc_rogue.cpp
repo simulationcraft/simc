@@ -1922,7 +1922,7 @@ struct instant_poison_t : public rogue_poison_t
       double m = rogue_poison_t::composite_da_multiplier( state );
 
       // 10/18/2020 - Nightstalker appears to buff Instant Poison by the base 50% amount, despite being in no whitelists
-      if ( p()->bugs && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+      if ( p()->bugs && p()->talent.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
       {
         m *= 1.0 + p()->spell.nightstalker_dmg_amp->effectN( 2 ).percent();
       }
