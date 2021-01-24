@@ -2374,7 +2374,14 @@ void buff_t::aura_gain()
     {
       if ( !player->is_sleeping() )
       {
-        sim->print_log( "{} gains {} (value={})", *player, buff_display_name, current_value );
+        if ( sim->log_spell_id )
+        {
+          sim->print_log( "{} gains {} ({}) (value={})", *player, buff_display_name, s_data->id(), current_value );
+        }
+        else
+        {
+          sim->print_log( "{} gains {} (value={})", *player, buff_display_name, current_value );
+        }
       }
     }
     else
@@ -2390,7 +2397,14 @@ void buff_t::aura_loss()
   {
     if ( !player->is_sleeping() )
     {
-      sim->print_log( "{} loses {}", *player, name_str );
+      if ( sim->log_spell_id )
+      {
+        sim->print_log( "{} loses {} ({})", *player, buff_display_name, s_data->id() );
+      }
+      else
+      {
+        sim->print_log( "{} loses {}", *player, name_str );
+      }
     }
   }
   else
