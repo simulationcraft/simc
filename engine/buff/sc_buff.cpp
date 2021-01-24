@@ -2399,7 +2399,7 @@ void buff_t::aura_loss()
     {
       if ( sim->log_spell_id )
       {
-        sim->print_log( "{} loses {} ({})", *player, buff_display_name, s_data->id() );
+        sim->print_log( "{} loses {} ({})", *player, name_str, s_data->id() );
       }
       else
       {
@@ -3313,4 +3313,3 @@ bool damage_buff_t::is_affecting_periodic( const spell_data_t* s )
 
   return false;
 }
-
