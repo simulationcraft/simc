@@ -6473,9 +6473,9 @@ void rogue_t::init_action_list()
 
   // Pre-Combat MfD
   if ( specialization() == ROGUE_ASSASSINATION )
-    precombat->add_talent( this, "Marked for Death", "precombat_seconds=5,if=raid_event.adds.in>15" );
+    precombat->add_talent( this, "Marked for Death", "precombat_seconds=10,if=raid_event.adds.in>15" );
   if ( specialization() == ROGUE_OUTLAW )
-    precombat->add_talent( this, "Marked for Death", "precombat_seconds=5,if=raid_event.adds.in>25" );
+    precombat->add_talent( this, "Marked for Death", "precombat_seconds=10,if=raid_event.adds.in>25" );
 
   // Make restealth first action in the default list.
   def->add_action( this, "Stealth", "", "Restealth if possible (no vulnerable enemies in combat)" );
@@ -6574,8 +6574,8 @@ void rogue_t::init_action_list()
   else if ( specialization() == ROGUE_OUTLAW )
   {
     // Pre-Combat
-    precombat->add_action( this, "Roll the Bones", "precombat_seconds=1" );
-    precombat->add_action( this, "Slice and Dice", "precombat_seconds=2" );
+    precombat->add_action( this, "Roll the Bones", "precombat_seconds=2" );
+    precombat->add_action( this, "Slice and Dice", "precombat_seconds=1" );
     precombat->add_action( this, "Stealth" );
 
     // Main Rotation
@@ -6626,7 +6626,7 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish->add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<fight_remains&refreshable" );
-    finish->add_action( this, "Between the Eyes", "", "BtE on cooldown to keep the Crit debuff up" );
+    finish->add_action( this, "Between the Eyes", "if=target.time_to_die>3", "BtE on cooldown to keep the Crit debuff up, unless the target is about to die" );
     finish->add_action( this, "Dispatch" );
 
     // Builders
