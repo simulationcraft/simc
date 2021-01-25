@@ -2399,7 +2399,7 @@ void buff_t::aura_loss()
     {
       if ( sim->log_spell_id )
       {
-        sim->print_log( "{} loses {} ({})", *player, name_str, s_data->id() );
+        sim->print_log( "{} loses {}", *player, *this );
       }
       else
       {
