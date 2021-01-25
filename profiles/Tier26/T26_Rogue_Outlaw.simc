@@ -29,9 +29,9 @@ actions.precombat+=/augmentation
 actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/marked_for_death,precombat_seconds=5,if=raid_event.adds.in>25
-actions.precombat+=/roll_the_bones,precombat_seconds=1
-actions.precombat+=/slice_and_dice,precombat_seconds=2
+actions.precombat+=/marked_for_death,precombat_seconds=10,if=raid_event.adds.in>25
+actions.precombat+=/roll_the_bones,precombat_seconds=2
+actions.precombat+=/slice_and_dice,precombat_seconds=1
 actions.precombat+=/stealth
 
 # Executed every time the actor is available.
@@ -97,8 +97,8 @@ actions.cds+=/use_items,slots=trinket2,if=!runeforge.mark_of_the_master_assassin
 
 # Finishers
 actions.finish=slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&refreshable
-# BtE on cooldown to keep the Crit debuff up
-actions.finish+=/between_the_eyes
+# BtE on cooldown to keep the Crit debuff up, unless the target is about to die
+actions.finish+=/between_the_eyes,if=target.time_to_die>3
 actions.finish+=/dispatch
 
 # Stealth
