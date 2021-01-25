@@ -55,7 +55,7 @@ public:
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double pm = warlock_spell_t::composite_da_multiplier( s );
-        
+
     if ( this->data().affected_by( p()->mastery_spells.potent_afflictions->effectN( 2 ) ) )
     {
       pm *= 1.0 + p()->cache.mastery_value();
@@ -194,11 +194,11 @@ struct agony_t : public affliction_spell_t
 
     //There is TECHNICALLY a prepatch bug on PTR (as of 9/23) where having both the talent and the azerite starts at 3 stacks
     //Making a note of it here in this comment but not going to implement it at this time
-    if ( p()->talents.writhe_in_agony->ok() && td( execute_state->target )->dots_agony->current_stack() < 
+    if ( p()->talents.writhe_in_agony->ok() && td( execute_state->target )->dots_agony->current_stack() <
       (int)p()->talents.writhe_in_agony->effectN( 3 ).base_value() )
     {
       td ( execute_state->target )
-        ->dots_agony->increment( (int)p()->talents.writhe_in_agony->effectN( 3 ).base_value() - 
+        ->dots_agony->increment( (int)p()->talents.writhe_in_agony->effectN( 3 ).base_value() -
           td( execute_state->target )->dots_agony->current_stack() );
     }
     else if ( p()->azerite.sudden_onset.ok() && td( execute_state->target )->dots_agony->current_stack() <
@@ -292,12 +292,12 @@ struct corruption_t : public affliction_spell_t
     tick_zero                  = false;
     pandemic_invocation_usable = false;  // BFA - Azerite
 
-    
+
     if ( !p->spec.corruption_3->ok() || seed_action )
     {
       spell_power_mod.direct = 0; //Rank 3 is required for direct damage
     }
-    
+
 
     spell_power_mod.tick       = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
     base_tick_time             = data().effectN( 1 ).trigger()->effectN( 1 ).period();
@@ -320,7 +320,7 @@ struct corruption_t : public affliction_spell_t
     {
       base_execute_time *= 1.0 * p->spec.corruption_2->effectN( 1 ).percent();
     }
-    
+
     affected_by_woc = true; //Hardcoding this in for now because of how this spell is hacked together!
   }
 
@@ -328,11 +328,11 @@ struct corruption_t : public affliction_spell_t
   {
     if ( result_is_hit( d->state->result ) && p()->talents.nightfall->ok() )
     {
-      // TOCHECK regularly. 
-      // Blizzard did not publicly release how nightfall was changed. 
-      // We determined this is the probable functionality copied from Agony by first confirming the 
+      // TOCHECK regularly.
+      // Blizzard did not publicly release how nightfall was changed.
+      // We determined this is the probable functionality copied from Agony by first confirming the
       // DR formula was the same and then confirming that you can get procs on 1st tick.
-      // The procs also have a regularity that suggest it does not use a proc chance or rppm. 
+      // The procs also have a regularity that suggest it does not use a proc chance or rppm.
       // Last checked 09-28-2020.
       double increment_max = 0.13;
 
@@ -439,14 +439,14 @@ struct unstable_affliction_t : public affliction_spell_t
   }
 };
 
-struct summon_darkglare_t : public affliction_spell_t   
+struct summon_darkglare_t : public affliction_spell_t
 {
   summon_darkglare_t( warlock_t* p, util::string_view options_str )
     : affliction_spell_t( "summon_darkglare", p, p->spec.summon_darkglare )
   {
     parse_options( options_str );
     harmful = may_crit = may_miss = false;
-    
+
     cooldown->duration += timespan_t::from_millis( p->talents.dark_caller->effectN( 1 ).base_value() );
 
     //PTR for prepatch presumably does additive CDR, then multiplicative
@@ -594,7 +594,7 @@ struct malefic_rapture_t : public affliction_spell_t
 {
     struct malefic_rapture_damage_instance_t : public affliction_spell_t
     {
-      malefic_rapture_damage_instance_t( warlock_t *p, double spc ) : 
+      malefic_rapture_damage_instance_t( warlock_t *p, double spc ) :
           affliction_spell_t( "malefic_rapture_aoe", p, p->find_spell( 324540 ) )
       {
         aoe = 1;
@@ -604,7 +604,7 @@ struct malefic_rapture_t : public affliction_spell_t
 
         p->spells.malefic_rapture_aoe = this;
       }
-       
+
       double get_dots_ticking(player_t *target) const
       {
         double mult = 0.0;
@@ -645,14 +645,14 @@ struct malefic_rapture_t : public affliction_spell_t
         double m = affliction_spell_t::composite_da_multiplier( s );
         m *= get_dots_ticking( s->target );
 
-        if ( td( s->target )->dots_unstable_affliction->is_ticking() ) 
+        if ( td( s->target )->dots_unstable_affliction->is_ticking() )
         {
-          m *= 1 + p()->conduit.focused_malignancy.percent(); 
+          m *= 1 + p()->conduit.focused_malignancy.percent();
         }
 
         return m;
       }
-      
+
       void execute() override
       {
         if ( p()->legendary.malefic_wrath->ok() )
@@ -661,7 +661,15 @@ struct malefic_rapture_t : public affliction_spell_t
           p()->procs.malefic_wrath->occur();
         }
 
-          affliction_spell_t::execute();
+        int d = as<int>( get_dots_ticking( target ) );
+        if ( d > 0 )
+        {
+          for ( size_t i = p()->procs.malefic_rapture.size(); i < d; i++ )
+            p()->procs.malefic_rapture.push_back( p()->get_proc( "Malefic Rapture " + util::to_string( i + 1 ) ) );
+          p()->procs.malefic_rapture[ d - 1 ]->occur();
+        }
+
+        affliction_spell_t::execute();
       }
     };
 
@@ -946,7 +954,7 @@ void warlock_t::create_buffs_affliction()
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   buffs.malefic_wrath = make_buff( this, "malefic_wrath", find_spell( 337125 ) )->set_default_value_from_effect( 1 );
 }
- 
+
 void warlock_t::vision_of_perfection_proc_aff()
 {
   timespan_t summon_duration = spec.summon_darkglare->duration() * vision_of_perfection_multiplier;
@@ -1074,7 +1082,7 @@ void warlock_t::create_apl_affliction()
 
   def->add_action( "corruption,if=active_enemies<4-(talent.sow_the_seeds.enabled|talent.siphon_life.enabled)&dot.corruption.remains<2" );
   def->add_action( "corruption,cycle_targets=1,if=active_enemies<4-(talent.sow_the_seeds.enabled|talent.siphon_life.enabled),target_if=dot.corruption.remains<2" );
-  def->add_action( "phantom_singularity,if=covenant.necrolord|covenant.night_fae|covenant.kyrian|covenant.none" );
+  def->add_action( "phantom_singularity" );
   def->add_action( "malefic_rapture,if=soul_shard>4" );
 
   def->add_action( "call_action_list,name=darkglare_prep,if=covenant.venthyr&(cooldown.impending_catastrophe.ready|dot.impending_catastrophe_dot.ticking)&cooldown.summon_darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)" );

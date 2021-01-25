@@ -3,6 +3,12 @@ import getopt
 import os
 import shutil
 
+# Add spec names here; these will be used to find the method in the apl file so should match your method name not necessarily tokenized spec name
+# The script will only attempt to generate the APL of specs listed here
+specList = ['blood', 'frost', 'unholy',  # Death Knight
+            'arcane', 'fire', # Mage (frost is ignored because of duplicate name)
+           ]
+
 ignored_comments = [
     '# This default action priority list is automatically created based on your character.',
     '# It is a attempt to provide you with a action list that is both simple and practicable,',
@@ -28,38 +34,32 @@ def read_apl(inputFilePath):
     commentString = ""
     aplList = []
     subaplList = ["default"]
-    try:
-        inputFile = open(inputFilePath, 'r')
-    except IOError as e:
-        print('Error opening input file with path: ' + inputFilePath)
-        print(e)
-        sys.exit(2)
-    else:
-        with inputFile:
-            for token in read_by_whitespace(inputFile):
-                sublist = ""
-                if "actions" in token and token[0] != '#': #Should this whole section be more robust? It should catch any legit comment or action line however will not error gracefully with improper inputs. Consider refactor if others end up using.
-                    action = token.replace("\"", "").split('=',1)
-                    if token[7] == ".":
-                        if action[0][-1] == "+":
-                            sublist = action[0][8:-1]
-                        else:
-                            sublist = action[0][8:]
+
+    with open(inputFilePath) as inputFile:
+        for token in read_by_whitespace(inputFile):
+            sublist = ""
+            if "actions" in token and token[0] != '#': #Should this whole section be more robust? It should catch any legit comment or action line however will not error gracefully with improper inputs. Consider refactor if others end up using.
+                action = token.replace("\"", "").split('=',1)
+                if token[7] == ".":
+                    if action[0][-1] == "+":
+                        sublist = action[0][8:-1]
                     else:
-                        sublist="default"
-                    if sublist not in subaplList:
-                        subaplList.append(sublist)
-                    if sublist == "default":
-                        sublist = "default_"
-                    if action[1][0] == "/":
-                        action [1] = action[1][1:]
-                    if commentString == "":
-                        aplList.append(f"  {sublist}->add_action( \"{action[1]}\" );")
-                    else:
-                        aplList.append(f"  {sublist}->add_action( \"{action[1]}\", \"{commentString.strip()}\" );")
-                    commentString = ""
+                        sublist = action[0][8:]
                 else:
-                    commentString = commentString + " " + token[1:-1]
+                    sublist="default"
+                if sublist not in subaplList:
+                    subaplList.append(sublist)
+                if sublist == "default":
+                    sublist = "default_"
+                if action[1][0] == "/":
+                    action [1] = action[1][1:]
+                if commentString == "":
+                    aplList.append(f"  {sublist}->add_action( \"{action[1]}\" );")
+                else:
+                    aplList.append(f"  {sublist}->add_action( \"{action[1]}\", \"{commentString.strip()}\" );")
+                commentString = ""
+            else:
+                commentString = commentString + " " + token[1:-1]
     return subaplList, aplList
 
 # Replaces the existing outputFile with tempFile
@@ -98,8 +98,6 @@ def main(argv):
     inputFilePath = ''
     outputFilePath = ''
     specString = ''
-    # Add spec names here; these will be used to find the method in the apl file so should match your method name not necessarily tokenized spec name
-    specList = ['arcane', 'blood', 'fire', 'frost', 'unholy']
     try:
         opts, args = getopt.getopt(argv,"hi:o:s:",["input=","output=","spec="])
     except getopt.GetoptError:
@@ -119,41 +117,28 @@ def main(argv):
                 print('Invalid spec selected')
                 sys.exit(2)
     subaplList, aplList = read_apl(inputFilePath)
-    try:
-        outputFile = open(outputFilePath, 'r')
-    except IOError as e:
-        print('Error opening output file with path: ' + outputFilePath)
-        print(e)
-        sys.exit(2)
-    else:
-        try:
-            tempFile = open('tempFile.txt', 'w')
-        except IOError as e:
-            print('Error creating temp file')
-            print(e)
-            sys.exit(2)
-        else:
-            with outputFile:
-                with tempFile:
-                    changeMade = False
-                    inExistingMethod = False
-                    for line in outputFile:
-                        if not inExistingMethod:
-                            if f"//{specString}_apl_start" in line:
-                                inExistingMethod = True
-                                changeMade = True
-                                tempFile.write(f"//{specString}_apl_start\n")
-                            else:
-                                tempFile.write(line)
-                        else:
-                            if f"//{specString}_apl_end" in line:
-                                inExistingMethod = False
-                                write_apl_method(tempFile, specString, subaplList, aplList)
-                                tempFile.write(f"\n//{specString}_apl_end\n")
-                    if changeMade == True:
-                        replace_file(outputFile, tempFile)
+
+    with open(outputFilePath) as outputFile, open('tempFile.txt', 'w') as tempFile:
+        with tempFile:
+            changeMade = False
+            inExistingMethod = False
+            for line in outputFile:
+                if not inExistingMethod:
+                    if f"//{specString}_apl_start" in line:
+                        inExistingMethod = True
+                        changeMade = True
+                        tempFile.write(f"//{specString}_apl_start\n")
                     else:
-                        print('Method to replace not found or no changes to output file. Please check your file skeleton and spec names are correct')
+                        tempFile.write(line)
+                else:
+                    if f"//{specString}_apl_end" in line:
+                        inExistingMethod = False
+                        write_apl_method(tempFile, specString, subaplList, aplList)
+                        tempFile.write(f"\n//{specString}_apl_end\n")
+            if changeMade == True:
+                replace_file(outputFile, tempFile)
+            else:
+                print('Method to replace not found or no changes to output file. Please check your file skeleton and spec names are correct')
 
 if __name__ == "__main__":
     main(sys.argv[1:])

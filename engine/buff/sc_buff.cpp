@@ -2685,7 +2685,14 @@ void buff_t::update_stack_uptime_array( timespan_t current_time, int old_stacks 
 
 void format_to( const buff_t& buff, fmt::format_context::iterator out )
 {
-  fmt::format_to( out, "Buff {}", buff.name() );
+  if ( buff.sim->log_spell_id )
+  {
+    fmt::format_to( out, "Buff {} ({})", buff.name(), buff.data().id() );
+  }
+  else
+  {
+    fmt::format_to( out, "Buff {}", buff.name() );
+  }
 }
 
 // ==========================================================================

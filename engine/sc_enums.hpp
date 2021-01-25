@@ -964,7 +964,9 @@ enum stat_e
   STAT_WEAPON_DPS,
   STAT_WEAPON_OFFHAND_DPS,
   STAT_ALL,
-  STAT_MAX
+  STAT_MAX,
+  
+  STAT_ANY_DPS, // Only for use with buff_has_stat() queries
 };
 #define check( x )                                                             \
   static_assert( static_cast<int>( STAT_##x ) == static_cast<int>( ATTR_##x ), \

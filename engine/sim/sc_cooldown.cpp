@@ -575,6 +575,39 @@ std::unique_ptr<expr_t> cooldown_t::create_expression( util::string_view name_st
   else if ( name_str == "max_charges" )
     return make_ref_expr( name_str, charges );
 
+  // For cooldowns that can be reduced through various means, _guess and _expected will return an approximate
+  // duration based on a comparison between time since last start and the current remaining cooldown
+  else if ( name_str == "remains_guess" || name_str == "remains_expected" )
+  {
+    return make_fn_expr( name_str, [ this ]
+    {
+      if ( remains() == duration )
+        return duration;
+      if ( up() )
+        return 0_ms;
+
+      double reduction = ( sim.current_time() - last_start ) /
+                         ( duration - remains() );
+      return remains() * reduction;
+    } );
+  }
+
+  else if ( name_str == "duration_guess" || name_str == "duration_expected" )
+  {
+    return make_fn_expr( name_str, [ this ]
+    {
+      if ( last_charged == 0_ms || remains() == duration )
+        return duration;
+
+      if ( up() )
+        return ( last_charged - last_start );
+
+      double reduction = ( sim.current_time() - last_start ) /
+                         ( duration - remains() );
+      return duration * reduction;
+    } );
+   }
+
   throw std::invalid_argument( fmt::format( "Unsupported cooldown expression '{}'.", name_str ) );
 }
 

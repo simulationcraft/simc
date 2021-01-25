@@ -42,4 +42,4 @@ void frost( player_t* p )
 ### -s spec documentation
 
 The final argument 'spec' has to be a member of specList, defined in 
-[ConvertAPL.py](https://github.com/simulationcraft/simc/blob/shadowlands/engine/class_modules/apl/ConvertAPL.py#L102)
+[ConvertAPL.py](https://github.com/simulationcraft/simc/blob/shadowlands/engine/class_modules/apl/ConvertAPL.py#L6)

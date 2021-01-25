@@ -1484,6 +1484,7 @@ sim_t::sim_t() :
   disable_set_bonuses( false ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
   pvp_crit( false ),
   auto_attacks_always_land( false ),
+  log_spell_id(),
   active_enemies( 0 ), active_allies( 0 ),
   _rng(), seed( 0 ), deterministic( 0 ), strict_work_queue( 0 ),
   average_range( true ), average_gauss( false ),
@@ -3541,6 +3542,7 @@ void sim_t::create_options()
   add_option( opt_uint( "enable_4_set", enable_4_set ) );
   add_option( opt_bool( "pvp", pvp_crit ) );
   add_option( opt_bool( "auto_attacks_always_land", auto_attacks_always_land ) );
+  add_option( opt_bool( "log_spell_id", log_spell_id ) );
   add_option( opt_int( "desired_targets", desired_targets ) );
   add_option( opt_bool( "show_etmi", show_etmi ) );
   add_option( opt_float( "tmi_window_global", tmi_window_global ) );
@@ -3796,9 +3798,9 @@ void sim_t::create_options()
   add_option( opt_int( "shadowlands.lead_by_example_nearby",
     shadowlands_opts.lead_by_example_nearby, 0, 4 ) );
   add_option( opt_uint( "shadowlands.stone_legionnaires_in_party",
-    shadowlands_opts.stone_legionnaires_in_party, 0, 5 ) );
+    shadowlands_opts.stone_legionnaires_in_party, 0, 4 ) );
   add_option( opt_uint( "shadowlands.crimson_choir_in_party",
-    shadowlands_opts.crimson_choir_in_party, 0, 5 ) );
+    shadowlands_opts.crimson_choir_in_party, 0, 4 ) );
   add_option( opt_float( "shadowlands.judgment_of_the_arbiter_arc_chance",
     shadowlands_opts.judgment_of_the_arbiter_arc_chance, 0.0, 1.0 ) );
   add_option( opt_string( "shadowlands.volatile_solvent_type", shadowlands_opts.volatile_solvent_type ) );
@@ -3812,6 +3814,8 @@ void sim_t::create_options()
   add_option( opt_bool( "shadowlands.disable_iqd_execute", shadowlands_opts.disable_iqd_execute ) );
   add_option( opt_float( "shadowlands.gluttonous_spike_overheal_chance",
     shadowlands_opts.gluttonous_spike_overheal_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "shadowlands.iqd_stat_fail_chance",
+    shadowlands_opts.iqd_stat_fail_chance, 0.0, 1.0 ) );
   add_option( opt_float( "shadowlands.thrill_seeker_killing_blow_chance",
                          shadowlands_opts.thrill_seeker_killing_blow_chance, 0.0, 1.0 ) );
 }

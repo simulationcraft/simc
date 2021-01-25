@@ -170,6 +170,7 @@ struct sim_t : private sc_thread_t
   bool pvp_crit; // Sets critical strike damage to 150% instead of 200%
   bool feast_as_dps = true;
   bool auto_attacks_always_land; /// Allow Auto Attacks (white attacks) to always hit the enemy
+  bool log_spell_id; // Add spell data ids to log/debug output where available. (actions, buffs)
 
   // Actor tracking
   int active_enemies;
@@ -380,6 +381,8 @@ struct sim_t : private sc_thread_t
     timespan_t retarget_shadowgrasp_totem = 0_s;
     /// Disables the execute effect of Inscrutable Quantum Device since it is avoidable in game
     bool disable_iqd_execute = false;
+    /// Sets the chance for the Inscrutable Quantum Device to give no stat buff outside Bloodlust
+    double iqd_stat_fail_chance = 0.0;
     /// Sets chance that the actor gets the killing blow when a target demises for Thrill Seeker stacks
     /// The default value of -1.0 adjusts to 1/20 for most sims, and 1/4 for DungeonSlice sims
     double thrill_seeker_killing_blow_chance = -1.0;

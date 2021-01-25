@@ -539,17 +539,12 @@ struct flask_base_t : public dbc_consumable_base_t
     {
       double mul = 1.0;
 
-      auto ep = player->find_soulbind_spell( "Exacting Prepartion" );
+      auto ep = player->find_soulbind_spell( "Exacting Preparation" );
       if ( ep->ok() )
         mul *= 1.0 + ep->effectN( 1 ).percent();  // While all effects have the same value, effect#1 applies to flasks
 
       range::for_each( buff->stats, [mul]( stat_buff_t::buff_stat_t& s ) { s.amount *= mul; } );
     }
-
-
-    auto ep = player->find_soulbind_spell( "Exacting Prepartion" );
-    if ( !ep->ok() )
-      return;
   }
 
   bool ready() override
@@ -933,7 +928,7 @@ struct food_t : public dbc_consumable_base_t
         mul *= 2.0;
 
       // TODO: confirm if these two modifiers are multiplicative or additive
-      auto ep = player->find_soulbind_spell( "Exacting Prepartion" );
+      auto ep = player->find_soulbind_spell( "Exacting Preparation" );
       if ( ep->ok() )
         mul *= 1.0 + ep->effectN( 2 ).percent();  // While all effects have the same value, effect#2 applies to well fed
 

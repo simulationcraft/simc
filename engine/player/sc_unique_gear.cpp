@@ -3594,7 +3594,18 @@ bool buff_has_stat( const buff_t* buff, stat_e stat )
   if ( stat == STAT_ALL )
     return true;
 
-  for (auto & elem : stat_buff -> stats)
+  // TODO: Probably needs more cases or potentially a more elegant solution here
+  //       Just filter tertiaries for now since they are present on some DPS trinket use effects
+  if ( stat == STAT_ANY_DPS )
+  {
+    auto it = range::find_if( stat_buff->stats, []( auto elem ) {
+      return elem.stat != STAT_LEECH_RATING && elem.stat != STAT_SPEED_RATING && elem.stat != STAT_AVOIDANCE_RATING;
+    } );
+
+    return it != stat_buff->stats.end();
+  }
+
+  for ( auto & elem : stat_buff->stats )
   {
     if ( elem.stat == stat )
       return true;
@@ -4151,6 +4162,8 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
     // Use "all stat" to indicate "any" ..
     if ( util::str_compare_ci( splits[ stat_idx ], "any" ) )
       stat = STAT_ALL;
+    else if ( util::str_compare_ci( splits[ stat_idx ], "any_dps" ) )
+      stat = STAT_ANY_DPS;
     else
     {
       stat = util::parse_stat_type( splits[ stat_idx ] );

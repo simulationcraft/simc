@@ -138,6 +138,7 @@ public:
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
     propagate_const<buff_t*> sephuzs_proclamation;
+    propagate_const<buff_t*> talbadars_stratagem;
 
     // Conduits
     propagate_const<buff_t*> mind_devourer;
@@ -540,6 +541,7 @@ public:
   void trigger_psychic_link( action_state_t* );
   bool hungering_void_active( player_t* target ) const;
   void remove_hungering_void( player_t* target );
+  void refresh_talbadars_buff( action_state_t* s );
   void trigger_wrathful_faerie();
   void trigger_wrathful_faerie_fermata();
   void remove_wrathful_faerie();

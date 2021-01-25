@@ -71,6 +71,7 @@ actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=target.tim
 actions.cleave+=/cobra_shot,if=focus.time_to_max<gcd*2
 actions.cleave+=/tar_trap,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus
 actions.cleave+=/freezing_trap,if=runeforge.nessingwarys_trapping_apparatus
+actions.cleave+=/arcane_torrent,if=(focus+focus.regen+30)<focus.max
 
 actions.st=aspect_of_the_wild
 actions.st+=/barbed_shot,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd
@@ -95,6 +96,7 @@ actions.st+=/barbed_shot,if=buff.wild_spirits.up
 actions.st+=/arcane_pulse,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.st+=/tar_trap,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus
 actions.st+=/freezing_trap,if=runeforge.nessingwarys_trapping_apparatus
+actions.st+=/arcane_torrent,if=(focus+focus.regen+15)<focus.max
 
 head=nathrian_usurpers_mask,id=178816,bonus_id=6807/1498/6646
 neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
