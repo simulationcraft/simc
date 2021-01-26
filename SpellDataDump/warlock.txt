@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37176 Live (hotfix 2021-01-20/37176, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.37176 Live (hotfix 2021-01-26/37176, no-networking)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -1652,8 +1652,13 @@ Effects          :
 #3 (id=710724)   : Apply Aura (6) | Modify Aggro Distance (152)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=874662)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : Base Value (0 -> -20)
+#5 (id=879205)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Hotfixed         : NEW EFFECT
 Description      : Reduces the damage your pet takes from area of effect attacks by an additional $s1%.
 Reduces the range at which enemies detect your pet.
 
@@ -11283,7 +11288,7 @@ Description      : When a target dies under the effect of Scouring Tithe, gain |
 Name             : Fatal Decimation (id=340268) [Spell Family (5), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 218 (values=50, 55, 60, 65, 70, 15, 75, 80, 85, 90, 95, 100, 105, 110, 115)
+Conduit Id       : 218 (values=50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

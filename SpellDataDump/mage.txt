@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37176 Live (hotfix 2021-01-20/37176, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.37176 Live (hotfix 2021-01-26/37176, no-networking)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -1707,6 +1707,14 @@ Effects          :
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=710726)   : Apply Aura (6) | Modify Aggro Distance (152)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
+#5 (id=879204)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Hotfixed         : NEW EFFECT
+#6 (id=879224)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Hotfixed         : NEW EFFECT
 Description      : Reduces the damage your pet takes from area of effect attacks by an additional $s1%.
 Reduces the range at which enemies detect your pet.
 
@@ -2680,11 +2688,11 @@ Description      : Your mana regeneration is increased by $s1%.
 Tooltip          : Increases your mana regeneration by $s1%.
 
 Name             : Alter Time (id=127140) [Spell Family (3)] 
+Hotfixed         : Category (1388 -> 0)
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
 Spell Level      : 58
-Category         : 1388
 Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 67
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -10470,7 +10478,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=828497)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 0.77000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.77)
 Description      : Casting any Barrier spell grants the effects of Blazing Barrier, Ice Barrier, and Prismatic Barrier. Each absorb shield has $s1% effectiveness.
 Tooltip          : Casting any Barrier spell grants the effects of Blazing Barrier, Ice Barrier, and Prismatic Barrier.
 
@@ -10684,7 +10693,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=834478)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.67000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.67)
 Description      : While Combustion is active, your Fire Blast grants you |cFFFFFFFF${$s1}.1% |r increased Fire damage for $336832d, stacking up to $336832u times.
 
 Name             : Master Flame (id=336852) [Spell Family (3), Passive, Hidden] 
