@@ -2259,15 +2259,12 @@ void sim_t::init_fight_style()
   }
   else if ( util::str_compare_ci( fight_style, "LightMovement" ) )
   {
-    auto first_time = static_cast<unsigned>( max_time.total_seconds() * 0.1 );
-    auto last_time = static_cast<unsigned>( max_time.total_seconds() * 0.8 );
-
-    raid_events_str += fmt::format( "/movement,players_only=1,cooldown=85,distance=50,first={},last={}",
-                                   first_time, last_time );
+    raid_events_str += "/movement,players_only=1,cooldown=45,cooldown_stddev=15,distance=25,distance_min=20,distance_max=30,first=15";
   }
   else if ( util::str_compare_ci( fight_style, "HeavyMovement" ) )
   {
-    raid_events_str += "/movement,players_only=1,first=10,cooldown=10,distance=25";
+    raid_events_str += "/movement,players_only=1,cooldown=20,cooldown_stddev=15,distance=25,distance_min=20,distance_max=30,first=15";
+    raid_events_str += "/movement,players_only=1,cooldown=45,cooldown_stddev=15,distance=45,distance_min=40,distance_max=50,first=30";
   }
   else if ( util::str_compare_ci( fight_style, "HecticAddCleave" ) )
   {
