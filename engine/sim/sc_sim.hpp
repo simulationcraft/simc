@@ -383,6 +383,9 @@ struct sim_t : private sc_thread_t
     bool disable_iqd_execute = false;
     /// Sets the chance for the Inscrutable Quantum Device to give no stat buff outside Bloodlust
     double iqd_stat_fail_chance = 0.0;
+    /// Sets chance that the actor gets the killing blow when a target demises for Thrill Seeker stacks
+    /// The default value of -1.0 adjusts to 1/20 for most sims, and 1/4 for DungeonSlice sims
+    double thrill_seeker_killing_blow_chance = -1.0;
   } shadowlands_opts;
 
   // Auras and De-Buffs
