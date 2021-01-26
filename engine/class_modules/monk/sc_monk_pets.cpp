@@ -1476,7 +1476,7 @@ public:
       background              = true;
       aoe                     = 1 + (int)o()->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value();
       attack_power_mod.direct = o()->passives.fallen_monk_fists_of_fury->effectN( 5 ).ap_coeff();
-      ap_type                 = attack_power_type::WEAPON_MAINHAND;
+      ap_type                 = attack_power_type::WEAPON_BOTH;
       dot_duration            = timespan_t::zero();
       trigger_gcd             = timespan_t::zero();
     }

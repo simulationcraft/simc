@@ -1091,6 +1091,9 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     background = dual = true;
     may_crit          = true;
     trigger_chiji     = true;
+
+    if ( p->specialization() == MONK_WINDWALKER )
+      ap_type         = attack_power_type::WEAPON_BOTH;
   }
 
   double action_multiplier() const override
@@ -1112,14 +1115,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
       c += p()->buff.pressure_point->value();
 
     return c;
-  }
-
-  void init() override
-  {
-    monk_melee_attack_t::init();
-
-    if ( p()->specialization() == MONK_WINDWALKER )
-      ap_type = attack_power_type::WEAPON_BOTH;
   }
 
   void execute() override
@@ -1194,18 +1189,12 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     may_combo_strike     = true;
     sef_ability          = SEF_RISING_SUN_KICK;
     affected_by.serenity = true;
+    ap_type              = attack_power_type::NONE;
 
     attack_power_mod.direct = 0;
 
     trigger_attack        = new rising_sun_kick_dmg_t( p, "rising_sun_kick_dmg" );
     trigger_attack->stats = stats;
-  }
-
-  void init() override
-  {
-    monk_melee_attack_t::init();
-
-    ap_type = attack_power_type::NONE;
   }
 
   double cost() const override
@@ -1358,6 +1347,11 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     switch ( p->specialization() )
     {
+      case MONK_BREWMASTER:
+      {
+        ap_type = attack_power_type::WEAPON_BOTH;
+        break;
+      }
       case MONK_MISTWEAVER:
       {
         bok_totm_proc = new blackout_kick_totm_proc( p );
@@ -1369,19 +1363,13 @@ struct blackout_kick_t : public monk_melee_attack_t
           // Saved as -1
           base_costs[ RESOURCE_CHI ] +=
               p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 2
+
+        ap_type = attack_power_type::WEAPON_BOTH;
         break;
       }
       default:
         break;
     }
-  }
-
-  void init() override
-  {
-    monk_melee_attack_t::init();
-
-    if ( p()->specialization() == MONK_WINDWALKER )
-      ap_type = attack_power_type::WEAPON_BOTH;
   }
 
   double cost() const override
@@ -1520,7 +1508,7 @@ struct rjw_tick_action_t : public monk_melee_attack_t
     ww_mastery = true;
 
     dual = background = true;
-    aoe               = p->talent.rushing_jade_wind->effectN( 1 ).base_value();
+    aoe               = (int)p->talent.rushing_jade_wind->effectN( 1 ).base_value();
     radius            = data->effectN( 1 ).radius();
 
     // Reset some variables to ensure proper execution
@@ -1611,19 +1599,14 @@ struct sck_tick_action_t : public monk_melee_attack_t
     aoe               = (int)p->spec.spinning_crane_kick->effectN( 1 ).base_value();
     radius            = data->effectN( 1 ).radius();
 
+    if ( p->specialization() == MONK_WINDWALKER || p->specialization() == MONK_BREWMASTER )
+        ap_type       = attack_power_type::WEAPON_BOTH;
+
     // Reset some variables to ensure proper execution
     dot_duration                  = timespan_t::zero();
     school                        = SCHOOL_PHYSICAL;
     cooldown->duration            = timespan_t::zero();
     base_costs[ RESOURCE_ENERGY ] = 0;
-  }
-
-  void init() override
-  {
-    monk_melee_attack_t::init();
-
-    if ( p()->specialization() == MONK_WINDWALKER )
-      ap_type = attack_power_type::WEAPON_BOTH;
   }
 
   double cost() const override
@@ -1828,7 +1811,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     ww_mastery = true;
 
     attack_power_mod.direct    = p->spec.fists_of_fury->effectN( 5 ).ap_coeff();
-    ap_type                    = attack_power_type::WEAPON_MAINHAND;
+    ap_type                    = attack_power_type::WEAPON_BOTH;
     base_costs[ RESOURCE_CHI ] = 0;
     dot_duration               = timespan_t::zero();
     trigger_gcd                = timespan_t::zero();
@@ -1951,6 +1934,7 @@ struct whirling_dragon_punch_tick_t : public monk_melee_attack_t
     background = true;
     aoe        = -1;
     radius     = s->effectN( 1 ).radius();
+    ap_type    = attack_power_type::WEAPON_BOTH;
   }
 };
 
@@ -2024,6 +2008,7 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
     may_combo_strike     = true;
     affected_by.serenity = false;
     cooldown->hasted     = false;
+    ap_type              = attack_power_type::WEAPON_BOTH;
 
     parse_options( options_str );
     may_dodge = may_parry = may_block = true;
@@ -2194,7 +2179,7 @@ struct keg_smash_t : public monk_melee_attack_t
     cooldown->duration = p.spec.keg_smash->charge_cooldown();
 
     if ( p.legendary.stormstouts_last_keg->ok() )
-      cooldown->charges += p.legendary.stormstouts_last_keg->effectN( 2 ).base_value();
+      cooldown->charges += (int)p.legendary.stormstouts_last_keg->effectN( 2 ).base_value();
 
     // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
     // Forcing the trigger GCD to 1 second.
@@ -3340,7 +3325,7 @@ struct purifying_brew_t : public monk_spell_t
 
     if ( p()->spec.celestial_brew_2->ok() )
     {
-      double count = 1;
+      int count = 1;
       for ( auto&& buff : { p()->buff.light_stagger, p()->buff.moderate_stagger, p()->buff.heavy_stagger } )
       {
         if ( buff && buff->check() )
@@ -3771,7 +3756,7 @@ struct faeline_stomp_t : public monk_spell_t
   {
     parse_options( options_str );
     may_combo_strike = true;
-    aoe              = p.covenant.night_fae->effectN( 3 ).base_value();
+    aoe              = (int)p.covenant.night_fae->effectN( 3 ).base_value();
   }
 
   void impact( action_state_t* s ) override
