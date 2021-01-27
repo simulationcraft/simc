@@ -2391,14 +2391,7 @@ void buff_t::aura_loss()
   {
     if ( !player->is_sleeping() )
     {
-      if ( sim->log_spell_id )
-      {
-        sim->print_log( "{} loses {}", *player, *this );
-      }
-      else
-      {
-        sim->print_log( "{} loses {}", *player, name_str );
-      }
+      sim->print_log( "{} loses {}", *player, *this );
     }
   }
   else
