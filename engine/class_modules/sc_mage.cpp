@@ -2471,7 +2471,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
-    double mana_pct = p()->buffs.arcane_charge->check() * p()->spec.arcane_barrage_3->effectN( 1 ).percent();
+    double mana_pct = p()->buffs.arcane_charge->check() * 0.01 * p()->spec.arcane_barrage_3->effectN( 1 ).percent();
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
 
     p()->buffs.arcane_charge->expire();
