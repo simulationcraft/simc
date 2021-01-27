@@ -2471,9 +2471,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
-    // Arcane Barrage restores 1% mana per charge in game and states that 2% is restored
-    // in the tooltip. The data has a value of 1.5, so this is likely a rounding issue.
-    double mana_pct = p()->buffs.arcane_charge->check() * 0.01 * std::floor( p()->spec.arcane_barrage_3->effectN( 1 ).base_value() );
+    double mana_pct = p()->buffs.arcane_charge->check() * p()->spec.arcane_barrage_3->effectN( 1 ).percent();
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
 
     p()->buffs.arcane_charge->expire();
