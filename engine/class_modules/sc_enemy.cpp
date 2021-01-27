@@ -1247,10 +1247,13 @@ void enemy_t::create_buffs()
 {
   player_t::create_buffs();
 
-  for ( unsigned int i = 1; i <= 10; ++i )
+  if ( !sim->fixed_time && fixed_health_percentage == 0.0 )
   {
-    buffs_health_decades.push_back(
+    for ( unsigned int i = 1; i <= 10; ++i )
+    {
+      buffs_health_decades.push_back(
         make_buff( this, fmt::format( "Health Decade ({} - {})", ( i - 1 ) * 10, i * 10 ) ) );
+    }
   }
 }
 
@@ -1499,7 +1502,7 @@ double enemy_t::resource_loss( resource_e resource_type, double amount, gain_t* 
   double r        = player_t::resource_loss( resource_type, amount, source, action );
   int post_health = static_cast<int>( resources.pct( RESOURCE_HEALTH ) * 100 ) / 10;
 
-  if ( pre_health < 10 && pre_health > post_health && post_health >= 0 )
+  if ( buffs_health_decades.size() && pre_health < 10 && pre_health > post_health && post_health >= 0 )
   {
     buffs_health_decades.at( post_health + 1 )->expire();
     buffs_health_decades.at( post_health )->trigger();
@@ -1708,7 +1711,8 @@ void enemy_t::combat_begin()
 {
   player_t::combat_begin();
 
-  buffs_health_decades[ 9 ]->trigger();
+  if ( buffs_health_decades.size() )
+    buffs_health_decades[ 9 ]->trigger();
 }
 
 // enemy_t::combat_end ======================================================
