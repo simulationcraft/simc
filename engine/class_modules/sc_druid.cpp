@@ -8496,7 +8496,7 @@ void druid_t::apl_balance()
   boat->add_action( "run_action_list,name=fallthru" );
 
   fallthru->add_action( "starsurge,if=!runeforge.balance_of_all_things.equipped","Starsurge for movement unless using BoAT" );
-  fallthru->add_action( "sunfire,target_if=dot.moonfire.remains>remains","Cast the dot with least time remaining" );
+  fallthru->add_action( "sunfire,target_if=dot.moonfire.remains>remains*22%18","Cast the dot with the most time to add until the max duration is hit. Sunfire remains multiplied to match moonfire duration" );
   fallthru->add_action( "moonfire" );
   // ### BALANCE_APL_END ###
 }
