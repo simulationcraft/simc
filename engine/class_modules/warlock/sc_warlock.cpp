@@ -679,6 +679,17 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     m *= 1.0 + spec.demonology->effectN( 3 ).percent();
+    m *= 1.0 + cache.mastery_value();
+
+    if ( buffs.demonic_power->check() )
+      m *= 1.0 + buffs.demonic_power->default_value;
+
+    if ( buffs.tyrants_soul->check() )
+      m *= 1.0 + buffs.tyrants_soul->current_value;
+
+    if ( buffs.soul_tithe->check() )
+      m *= 1.0 + buffs.soul_tithe->check_stack_value();
+
   }
   if ( specialization() == WARLOCK_AFFLICTION )
   {
