@@ -2368,7 +2368,7 @@ void buff_t::aura_gain()
 {
   if ( sim->log )
   {
-    std::string buff_display_name = fmt::format("{}_{}", name_str, current_stack );
+    std::string buff_display_name = fmt::format("{} (stacks={})", *this, current_stack );
 
     if ( player )
     {
@@ -2390,7 +2390,7 @@ void buff_t::aura_loss()
   {
     if ( !player->is_sleeping() )
     {
-      sim->print_log( "{} loses {}", *player, name_str );
+      sim->print_log( "{} loses {}", *player, *this );
     }
   }
   else
@@ -3299,4 +3299,3 @@ bool damage_buff_t::is_affecting_periodic( const spell_data_t* s )
 
   return false;
 }
-
