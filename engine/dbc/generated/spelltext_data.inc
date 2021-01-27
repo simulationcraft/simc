@@ -1454,7 +1454,7 @@ static const std::array<spelltext_data_t, 15096> __spelltext_data { {
   {  44300, "Increases the damage dealt by your Crusader Strike ability by $s1%.", 0, 0 },
   {  44301, "Reduces the global cooldown triggered by Blink by ${$m1/-1000}.1 sec.", 0, 0 },
   {  44383, "Permanently enchant a shield to increase armor by $ec1. Cannot be applied to items higher than level $ecix", 0, 0 },
-  {  44425, "Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. \r\n\r\nFor each Arcane Charge, deals $36032s2% additional damage$?a321526[, grants you $321526s1% of your maximum mana,][]$?a231564[ and hits $36032s3 additional nearby $Ltarget:targets; for $s2% of its damage][].\r\n\r\n|cFFFFFFFFConsumes all Arcane Charges.|r", 0, 0 },
+  {  44425, "Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. \r\n\r\nFor each Arcane Charge, deals $36032s2% additional damage$?a321526[, grants you ${$321526s1/100}.1% of your maximum mana,][]$?a231564[ and hits $36032s3 additional nearby $Ltarget:targets; for $s2% of its damage][].\r\n\r\n|cFFFFFFFFConsumes all Arcane Charges.|r", 0, 0 },
   {  44457, "The target becomes a Living Bomb, taking $217694o1 Fire damage over $217694d, and then exploding to deal an additional $44461s2 Fire damage to the target and reduced damage to all other enemies within $44461A2 yards.\r\n\r\nOther enemies hit by this explosion also become a Living Bomb, but this effect cannot spread further.", "Causes $w1 Fire damage every $t1 sec. After $d, the target explodes, causing $w2 Fire damage to the target and all other enemies within $44461A2 yards$?$w3>0[, and spreading Living Bomb][].", 0 },
   {  44461, "$@spelldesc44457", 0, 0 },
   {  44484, "Permanently enchant gloves to increase haste by $ec1. Cannot be applied to items higher than level $ecix", 0, 0 },
@@ -13216,7 +13216,7 @@ static const std::array<spelltext_data_t, 15096> __spelltext_data { {
   { 321510, "$@spelldesc320662", "Haste increased by $w1%.", 0 },
   { 321519, "$@spelldesc320660", "Suffering $w1 Nature damage every $t1 sec.", 0 },
   { 321524, "$@spelldesc320660", 0, 0 },
-  { 321526, "Arcane Barrage grants you $s1% of your maximum mana per Arcane Charge spent.", 0, "Rank 3" },
+  { 321526, "Arcane Barrage grants you ${$S1/100}% of your maximum mana per Arcane Charge spent.", 0, "Rank 3" },
   { 321527, "$@spelldesc320687", "Movement speed increased by $m1%.", 0 },
   { 321530, "Command your pet to tear into your target, causing your target to bleed for $<damage> over $321538d and increase all damage taken from your pet by $321538s2% for $321538d.", 0, 0 },
   { 321535, "Permanently attaches a scope to a ranged weapon, causing it to occasionally increase Haste by $329666s1 for $329666d when dealing damage with ranged attacks.\r\n\r\nAttaching this device to a ranged weapon causes it to become soulbound.", 0, 0 },
@@ -15099,7 +15099,9 @@ static const std::array<spelltext_data_t, 15096> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.0.2.37176
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+  {   44425,  0, "Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. \r\n\r\nFor each Arcane Charge, deals $36032s2% additional damage$?a321526[, grants you $321526s1% of your maximum mana,][]$?a231564[ and hits $36032s3 additional nearby $Ltarget:targets; for $s2% of its damage][].\r\n\r\n|cFFFFFFFFConsumes all Arcane Charges.|r", "Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. \r\n\r\nFor each Arcane Charge, deals $36032s2% additional damage$?a321526[, grants you ${$321526s1/100}.1% of your maximum mana,][]$?a231564[ and hits $36032s3 additional nearby $Ltarget:targets; for $s2% of its damage][].\r\n\r\n|cFFFFFFFFConsumes all Arcane Charges.|r" },
+  {  321526,  0, "Arcane Barrage grants you $s1% of your maximum mana per Arcane Charge spent.", "Arcane Barrage grants you ${$S1/100}% of your maximum mana per Arcane Charge spent." },
   {  334456,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs. Warning: Components are hot!\r\n\r\nCannot be applied to items higher than level $ecix. ", "Increase the stamina of an item worn on the chest by $ec for 2 hrs. Warning: Components are hot!\r\n\r\nCannot be applied to items higher than level $ecix. " },
 } };
 
