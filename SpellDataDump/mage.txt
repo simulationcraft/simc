@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37176 Live (hotfix 2021-01-26/37176, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.37176 Live (hotfix 2021-01-27/37176)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -1208,6 +1208,7 @@ Effects          :
 Description      : Increases Agility by $s1.
 
 Name             : Arcane Barrage (id=44425) [Spell Family (3)] 
+Hotfixed         : Description
 Class            : Arcane Mage
 School           : Arcane
 Spell Type       : Magic
@@ -1235,7 +1236,7 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Target: Enemy (6)
 Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. 
 
-For each Arcane Charge, deals $36032s2% additional damage$?a321526[, grants you $321526s1% of your maximum mana,][]$?a231564[ and hits $36032s3 additional nearby $Ltarget:targets; for $s2% of its damage][].
+For each Arcane Charge, deals $36032s2% additional damage$?a321526[, grants you ${$321526s1/100}.1% of your maximum mana,][]$?a231564[ and hits $36032s3 additional nearby $Ltarget:targets; for $s2% of its damage][].
 
 |cFFFFFFFFConsumes all Arcane Charges.|r
 
@@ -9435,6 +9436,7 @@ Description      : Applies Touch of the Magi to your current target, accumulatin
 |cFFFFFFFFGenerates $s2 Arcane Charges.|r][]
 
 Name             : Arcane Barrage (desc=Rank 3) (id=321526) [Spell Family (3), Passive] 
+Hotfixed         : Description
 Class            : Arcane Mage
 School           : Arcane
 Spell Type       : None
@@ -9450,8 +9452,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=809283)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1.5 | Scaled Value: 1.5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Arcane Barrage grants you $s1% of your maximum mana per Arcane Charge spent.
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (1.5 -> 150)
+Description      : Arcane Barrage grants you ${$S1/100}% of your maximum mana per Arcane Charge spent.
 
 Name             : Mastery: Icicles (desc=Rank 2) (id=321684) [Spell Family (3), Passive] 
 Class            : Frost Mage
