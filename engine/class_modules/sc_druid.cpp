@@ -3504,7 +3504,7 @@ struct ferocious_bite_t : public cat_attack_t
     if ( p()->talent.soul_of_the_forest_cat->ok() && p()->specialization() == DRUID_FERAL )
     {
       p()->resource_gain( RESOURCE_ENERGY,
-                          5 * p()->talent.soul_of_the_forest_cat->effectN( 1 ).resource( RESOURCE_ENERGY ),
+                          p()->resources.current[ RESOURCE_COMBO_POINT ] * p()->talent.soul_of_the_forest_cat->effectN( 1 ).resource( RESOURCE_ENERGY ),
                           p()->gain.soul_of_the_forest );
     }
 
