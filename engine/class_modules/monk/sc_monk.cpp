@@ -7382,9 +7382,11 @@ void monk_t::trigger_bonedust_brew( action_state_t* s )
       if ( td->debuff.bonedust_brew->up() && rng().roll( covenant.necrolord->proc_chance() ) )
       {
         double damage = s->result_total * covenant.necrolord->effectN( 1 ).percent();
+
         // Bone Marrow Hops DOES NOT work with SEF or pets
-        //          if ( o()->conduit.bone_marrow_hops->ok() )
-        //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
+        // "This" is referring to the player and does not work with "guardians" which is what SEF and pets are registered as
+        if ( s->action->player == this && conduit.bone_marrow_hops->ok() )
+          damage *= 1 + conduit.bone_marrow_hops.percent();
 
         active_actions.bonedust_brew_dmg->base_dd_min = damage;
         active_actions.bonedust_brew_dmg->base_dd_max = damage;
