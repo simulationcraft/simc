@@ -2368,13 +2368,12 @@ void buff_t::aura_gain()
 {
   if ( sim->log )
   {
-    std::string buff_display_name = fmt::format("{}_{}", name_str, current_stack );
+    std::string buff_display_name = fmt::format("{} (stacks={})", *this, current_stack );
 
     if ( player )
     {
       if ( !player->is_sleeping() )
       {
-        std::string buff_display_name = fmt::format("{} (stacks={})", *this, current_stack );
         sim->print_log( "{} gains {} (value={})", *player, buff_display_name, current_value );
       }
     }
