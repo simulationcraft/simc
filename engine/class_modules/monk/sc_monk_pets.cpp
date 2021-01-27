@@ -1105,6 +1105,9 @@ public:
   {
     double cpm = owner->cache.player_multiplier( school );
 
+    if ( o()->buff.hit_combo->up() )
+      cpm *= 1 + o()->buff.hit_combo->stack_value();
+
     if ( o()->conduit.xuens_bond->ok() )
       cpm *= 1 + o()->conduit.xuens_bond.percent();
 
