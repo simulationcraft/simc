@@ -156,20 +156,6 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 {
   double m = pet_t::composite_player_multiplier( school );
 
-  if ( o()->specialization() == WARLOCK_DEMONOLOGY )
-  {
-    m *= 1.0 + o()->cache.mastery_value();
-
-    if ( o()->buffs.demonic_power->check() )
-      m *= 1.0 + o()->buffs.demonic_power->default_value;
-
-    if ( o()->buffs.tyrants_soul->check() )
-      m *= 1.0 + o()->buffs.tyrants_soul->current_value;
-
-    if ( o()->buffs.soul_tithe->check() )
-      m *= 1.0 + o()->buffs.soul_tithe->check_stack_value();
-  }
-
   m *= 1.0 + buffs.grimoire_of_service->check_value();
 
   if ( pet_type == PET_FELGUARD && o()->conduit.fel_commando->ok() )
