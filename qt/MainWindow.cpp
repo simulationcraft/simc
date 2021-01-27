@@ -20,6 +20,7 @@
 #include "sc_SimulationThread.hpp"
 #include "sc_SpellQueryTab.hpp"
 #include "sc_WelcomeTab.hpp"
+#include "sc_importWindow.hpp"
 #include "sim/sc_sim.hpp"
 #include "simulationcraftqt.hpp"
 #include "util/git_info.hpp"
@@ -288,9 +289,7 @@ SC_MainWindow::SC_MainWindow( QWidget* parent )
   setAcceptDrops( true );
   loadHistory();
 
-#if defined( Q_OS_MAC ) || defined( VS_NEW_BUILD_SYSTEM )
-  new BattleNetImportWindow( this );
-#endif /* Q_OS_MAC || VS_NEW_BUILD_SYSTEM */
+  new BattleNetImportWindow( this, false );
 }
 
 void SC_MainWindow::createCmdLine()
