@@ -2374,14 +2374,8 @@ void buff_t::aura_gain()
     {
       if ( !player->is_sleeping() )
       {
-        if ( sim->log_spell_id )
-        {
-          sim->print_log( "{} gains {} ({}) (value={})", *player, buff_display_name, s_data->id(), current_value );
-        }
-        else
-        {
-          sim->print_log( "{} gains {} (value={})", *player, buff_display_name, current_value );
-        }
+        std::string buff_display_name = fmt::format("{} (stacks={})", *this, current_stack );
+        sim->print_log( "{} gains {} (value={})", *player, buff_display_name, current_value );
       }
     }
     else
