@@ -1594,7 +1594,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
     aoe               = (int)p->spec.spinning_crane_kick->effectN( 1 ).base_value();
     radius            = data->effectN( 1 ).radius();
 
-    if ( p->specialization() == MONK_WINDWALKER || p->specialization() == MONK_BREWMASTER )
+    if ( p->specialization() == MONK_WINDWALKER )
         ap_type       = attack_power_type::WEAPON_BOTH;
 
     // Reset some variables to ensure proper execution
