@@ -857,6 +857,8 @@ public:
         return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_TERTIARY_CR_CURVE, value * 100.0 ) / 100.0;
       case RATING_MASTERY:
         return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_SECONDARY_CR_CURVE, value );
+      case RATING_MOD_VERS_MITIG:
+        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_VERS_MITIG_CR_CURVE, value * 100.0 ) / 100.0;
       default:
         // Note, curve uses %-based values, not values divided by 100
         return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_SECONDARY_CR_CURVE, value * 100.0 ) / 100.0;

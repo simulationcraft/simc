@@ -81,6 +81,7 @@ enum
   // Shadowlands: Curves used to apply diminishing returns to Combat Ratings
   DIMINISHING_RETURN_SECONDARY_CR_CURVE = 21024u,
   DIMINISHING_RETURN_TERTIARY_CR_CURVE = 21025u,
+  DIMINISHING_RETURN_VERS_MITIG_CR_CURVE  = 21035u,
 };
 
 // Enable/Disable azerite effects
