@@ -5204,33 +5204,6 @@ struct numbing_poison_t : public rogue_poison_buff_t
   { }
 };
 
-struct marked_for_death_debuff_t : public buff_t
-{
-  cooldown_t* mod_cd;
-
-  marked_for_death_debuff_t( rogue_td_t& r ) :
-    buff_t( r, "marked_for_death", r.source -> find_talent_spell( "Marked for Death" ) ),
-    mod_cd( r.source -> get_cooldown( "marked_for_death" ) )
-  {
-    set_cooldown( timespan_t::zero() );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    if ( remaining_duration > timespan_t::zero() )
-    {
-      if ( sim -> debug )
-      {
-        sim -> out_debug.printf("%s marked_for_death cooldown reset", player -> name() );
-      }
-
-      mod_cd -> reset( false );
-    }
-
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-  }
-};
-
 struct vendetta_debuff_t : public damage_buff_t
 {
   action_t* nothing_personal;
@@ -6131,12 +6104,13 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots.serrated_bone_spike  = target->get_dot( "serrated_bone_spike_dot", source );
   dots.mutilated_flesh      = target->get_dot( "mutilated_flesh", source );
 
-  debuffs.marked_for_death  = new buffs::marked_for_death_debuff_t( *this );
   debuffs.wound_poison      = new buffs::wound_poison_t( *this );
   debuffs.crippling_poison  = new buffs::crippling_poison_t( *this );
   debuffs.numbing_poison    = new buffs::numbing_poison_t( *this );
   debuffs.vendetta          = new buffs::vendetta_debuff_t( *this );
 
+  debuffs.marked_for_death = make_buff( *this, "marked_for_death", source->talent.marked_for_death )
+    ->set_cooldown( timespan_t::zero() );
   debuffs.shiv = make_buff<damage_buff_t>( *this, "shiv", source->spec.shiv_2_debuff )
     ->apply_affecting_conduit( source->conduit.well_placed_steel );
   debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source->talent.ghostly_strike )
@@ -6165,12 +6139,22 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
       ->set_partial_tick( true );
   }
 
-  // Register on-demise callback for assassination to perform Venomous Wounds energy replenish on death.
+  // Marked for Death Reset
+  if ( source->talent.marked_for_death->ok() )
+  {
+    target->register_on_demise_callback( source, [ this, source ]( player_t* demise_target ) {
+      if ( debuffs.marked_for_death->up() && !demise_target->debuffs.invulnerable->check() )
+        source->cooldowns.marked_for_death->reset( false );
+    } );
+  }
+
+  // Venomous Wounds Energy Refund
   if ( source->specialization() == ROGUE_ASSASSINATION && source->spec.venomous_wounds->ok() )
   {
     target->register_on_demise_callback( source, std::bind( &rogue_t::trigger_venomous_wounds_death, source, std::placeholders::_1 ) );
   }
 
+  // Sepsis Cooldown Reduction
   if ( source->covenant.sepsis->ok() )
   {
     target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
@@ -6179,6 +6163,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     } );
   }
 
+  // Serrated Bone Spike Charge Refund
   if ( source->covenant.serrated_bone_spike->ok() )
   {
     target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
@@ -6187,6 +6172,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     } );
   }
 
+  // Flagellation On-Death Buff Trigger
   if (source->covenant.flagellation->ok())
   {
     target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
