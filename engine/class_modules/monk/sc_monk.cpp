@@ -1347,11 +1347,6 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     switch ( p->specialization() )
     {
-      case MONK_BREWMASTER:
-      {
-        ap_type = attack_power_type::WEAPON_BOTH;
-        break;
-      }
       case MONK_MISTWEAVER:
       {
         bok_totm_proc = new blackout_kick_totm_proc( p );
