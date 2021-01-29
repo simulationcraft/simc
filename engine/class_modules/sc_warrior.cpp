@@ -343,6 +343,7 @@ public:
     const spell_data_t* fury_warrior;
     const spell_data_t* prot_warrior;
     const spell_data_t* avatar;
+    const spell_data_t* avatar_buff;
     const spell_data_t* vanguard;
   } spec;
 
@@ -879,12 +880,8 @@ public:
     affected_by.rend                = ab::data().affected_by( p()->talents.rend->effectN( 3 ) );
     affected_by.siegebreaker        = ab::data().affected_by( p()->spell.siegebreaker_debuff->effectN( 1 ) );
     affected_by.glory               = ab::data().affected_by( p()->covenant.glory->effectN( 1 ) );
-
-    if ( p()->specialization() == WARRIOR_PROTECTION )
-      affected_by.avatar              = ab::data().affected_by( p()->spec.avatar->effectN( 1 ) );
-    else
-      affected_by.avatar              = ab::data().affected_by( p()->talents.avatar->effectN( 1 ) );
-
+    affected_by.avatar              = ab::data().affected_by( p()->spec.avatar_buff->effectN( 1 ) );
+    
     initialized = true;
   }
 
@@ -1026,7 +1023,7 @@ public:
 
     if ( affected_by.avatar && p()->buff.avatar->up() )
     {
-      tm *= 1.0 + p()->talents.avatar->effectN( 1 ).percent();
+      tm *= 1.0 + p()->buff.avatar->data().effectN( 8 ).percent();
     }
 
     return tm;
@@ -1410,14 +1407,10 @@ struct melee_t : public warrior_attack_t
     warrior_attack_t::init();
     affected_by.fury_mastery_direct = p()->mastery.unshackled_fury->ok();
     affected_by.arms_mastery_direct = p()->mastery.deep_wounds_ARMS->ok();
-    affected_by.avatar              = p()->talents.avatar->ok();
     affected_by.colossus_smash      = p()->spec.colossus_smash->ok();
     affected_by.siegebreaker        = p()->talents.siegebreaker->ok();
-    if ( p()->specialization() == WARRIOR_PROTECTION )
-      affected_by.avatar            = p()->spec.avatar->ok();
-    else
-      affected_by.avatar            = p()->talents.avatar->ok();
     affected_by.booming_voice       = p()->talents.booming_voice->ok();
+    affected_by.avatar = true;
   }
 
   void reset() override
@@ -6153,6 +6146,8 @@ void warrior_t::init_spells()
   spec.victory_rush     = find_specialization_spell( "Victory Rush" );
   // Only for Protection, the arms talent is under talents.avatar
   spec.avatar           = find_specialization_spell( "Avatar" );
+  // Makes the buff spec agnostic
+  spec.avatar_buff      = find_spell( 107574 );
   spec.vanguard         = find_specialization_spell( "Vanguard" );
   if ( specialization() == WARRIOR_FURY )
   {
@@ -7110,7 +7105,7 @@ void warrior_t::create_buffs()
       make_buff( this, "revenge", find_spell( 5302 ) )
       ->set_default_value( find_spell( 5302 )->effectN( 1 ).percent() );
 
-  buff.avatar = make_buff( this, "avatar", specialization() == WARRIOR_PROTECTION ? spec.avatar : talents.avatar )
+  buff.avatar = make_buff( this, "avatar", spec.avatar_buff )
       ->set_chance(1)
       ->set_cooldown( timespan_t::zero() );
 
