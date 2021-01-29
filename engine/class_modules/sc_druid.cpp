@@ -3590,6 +3590,16 @@ struct lunar_inspiration_t : public cat_attack_t
     gcd_type      = gcd_haste_type::ATTACK_HASTE;
   }
 
+  double action_multiplier() const override
+  {
+    double am = cat_attack_t::action_multiplier();
+
+    if ( p()->legendary.draught_of_deep_focus->ok() && p()->get_active_dots( internal_id ) == 1 )
+      am *= 1.0 + p()->legendary.draught_of_deep_focus->effectN( 1 ).percent();
+
+    return am;
+  }
+
   void execute() override
   {
     // Force invalidate target cache so that it will impact on the correct targets.
