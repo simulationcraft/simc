@@ -35,7 +35,7 @@ def->add_action( "call_action_list,name=stealth,if=buff.bs_inc.up|buff.sudden_am
 def->add_action( "pool_resource,if=talent.bloodtalons.enabled&buff.bloodtalons.down&(energy+3.5*energy.regen+(40*buff.clearcasting.up))<(115-23*buff.incarnation_king_of_the_jungle.up)&active_bt_triggers=0", "The most expensive BT cycle (Thresh Shred Swipe cost 115 energy, make sure we can make that in 4 globals)" );
 def->add_action( "run_action_list,name=bloodtalons,if=talent.bloodtalons.enabled&buff.bloodtalons.down" );
 def->add_action( "ferocious_bite,target_if=max:target.time_to_die,if=buff.apex_predators_craving.up" );
-def->add_action( "pool_resource,for_next=1", "actions+=/primal_wrath,if=(combo_points+spell_targets.primal_wrath>=8&combo_points>=3)" );
+def->add_action( "pool_resource,for_next=1", "Todo: test this with more adverse setups (legendaries, gear, talents) to make sure that this stays a dps increase" );
 def->add_action( "rake,target_if=(refreshable|persistent_multiplier>dot.rake.pmultiplier)&druid.rake.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2" );
 def->add_action( "moonfire_cat,target_if=refreshable&druid.moonfire_cat.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2" );
 def->add_action( "pool_resource,for_next=1" );
