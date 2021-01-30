@@ -3509,11 +3509,18 @@ struct flamestrike_t final : public hot_streak_spell_t
 
     if ( flame_patch )
     {
-      p()->ground_aoe_expiration[ AOE_FLAME_PATCH ] = sim->current_time() + flame_patch_duration;
+      // Flame Patch does not gain its extra ticks at exact haste breakpoints. Instead, extra
+      // ticks occur with an increasing probability as haste approaches the expected breakpoint
+      // with a 100% probability after the breakpoint is reached. This is likely due to technical
+      // details of how Flame Patch or ground effects in general are implemented. For Flame Patch,
+      // adding uniform delay to the duration between 5 ms and 105 ms gives an average number of
+      // ticks that closely matches the observed values at haste levels near the breakpoints.
+      timespan_t ground_aoe_duration = flame_patch_duration + rng().range( 5_ms, 105_ms );
+      p()->ground_aoe_expiration[ AOE_FLAME_PATCH ] = sim->current_time() + ground_aoe_duration;
 
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .target( target )
-        .duration( flame_patch_duration )
+        .duration( ground_aoe_duration )
         .action( flame_patch )
         .hasted( ground_aoe_params_t::SPELL_SPEED ) );
     }
