@@ -843,14 +843,19 @@ private:
 
 public:
   template <typename T, typename... Ts>
-  T* find_secondary_trigger_action( secondary_trigger_e source )
+  T* find_secondary_trigger_action( secondary_trigger_e source, util::string_view n = "" )
   {
     T* found_action = nullptr;
     for ( auto action : secondary_trigger_actions )
     {
       found_action = dynamic_cast<T*>( action );
       if ( found_action && found_action->secondary_trigger == source )
-        break;
+      {
+        if ( n.empty() || found_action->name_str == n )
+          break;
+        else
+          found_action = nullptr;
+      } 
     }
     return found_action;
   }
@@ -858,7 +863,7 @@ public:
   template <typename T, typename... Ts>
   T* get_secondary_trigger_action( secondary_trigger_e source, util::string_view n, Ts&&... args )
   {
-    T* found_action = find_secondary_trigger_action<T>( source );
+    T* found_action = find_secondary_trigger_action<T>( source, n );
     if ( !found_action )
     {
       // Actions will follow form of foo_t( util::string_view name, rogue_t* p, ... )
@@ -1341,7 +1346,7 @@ public:
 
   // Generic rules for proccing Blade Flurry, used by rogue_t::trigger_blade_flurry()
   virtual bool procs_blade_flurry() const
-  { return true; }
+  { return false; }
 
   virtual double proc_chance_main_gauche() const
   { return p()->mastery.main_gauche->proc_chance(); }
@@ -1853,9 +1858,6 @@ struct rogue_poison_t : public rogue_attack_t
       p()->resource_gain( RESOURCE_ENERGY, p()->legendary.dashing_scoundrel_gain, p()->gains.dashing_scoundrel );
     }
   }
-
-  bool procs_blade_flurry() const override
-  { return false; }
 };
 
 // Deadly Poison ============================================================
@@ -2181,6 +2183,9 @@ struct melee_t : public rogue_attack_t
 
   bool procs_main_gauche() const override
   { return weapon->slot == SLOT_MAIN_HAND; }
+
+  bool procs_blade_flurry() const override
+  { return true; }
 };
 
 // Auto Attack ==============================================================
@@ -2299,6 +2304,9 @@ struct ambush_t : public rogue_attack_t
     rogue_attack_t::execute();
     trigger_count_the_odds( execute_state );
   }
+
+  bool procs_blade_flurry() const override
+  { return true; }
 };
 
 // Backstab =================================================================
@@ -2408,6 +2416,9 @@ struct between_the_eyes_t : public rogue_attack_t
     rogue_attack_t::impact( state );
     trigger_prey_on_the_weak( state );
   }
+
+  bool procs_blade_flurry() const override
+  { return true; }
 };
 
 // Blade Flurry =============================================================
@@ -2434,9 +2445,6 @@ struct blade_flurry_attack_t : public rogue_attack_t
   bool procs_poison() const override
   { return true; }
 
-  bool procs_blade_flurry() const override
-  { return false; }
-
   size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     rogue_attack_t::available_targets( tl );
@@ -2457,9 +2465,6 @@ struct blade_flurry_t : public rogue_attack_t
     {
       range = -1.0;
     }
-
-    bool procs_blade_flurry() const override
-    { return false; }
   };
 
   blade_flurry_instant_attack_t* instant_attack;
@@ -2501,6 +2506,7 @@ struct blade_rush_t : public rogue_attack_t
     blade_rush_attack_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p -> find_spell( 271881 ) )
     {
+      dual = true;
       aoe = -1;
     }
 
@@ -2527,6 +2533,7 @@ struct blade_rush_t : public rogue_attack_t
     rogue_attack_t( name, p, p -> talent.blade_rush, options_str )
   {
     execute_action = p->get_background_action<blade_rush_attack_t>( "blade_rush_attack" );
+    execute_action->stats = stats;
   }
 };
 
@@ -2609,6 +2616,9 @@ struct dispatch_t: public rogue_attack_t
     trigger_grand_melee( execute_state );
     trigger_count_the_odds( execute_state );
   }
+
+  bool procs_blade_flurry() const override
+  { return true; }
 };
 
 // Dreadblades ==============================================================
@@ -2624,6 +2634,9 @@ struct dreadblades_t : public rogue_attack_t
     rogue_attack_t::execute();
     p()->buffs.dreadblades->trigger();
   }
+
+  bool procs_blade_flurry() const override
+  { return true; }
 };
 
 // Envenom ==================================================================
@@ -2883,6 +2896,9 @@ struct ghostly_strike_t : public rogue_attack_t
       td( state->target )->debuffs.ghostly_strike->trigger();
     }
   }
+
+  bool procs_blade_flurry() const override
+  { return true; }
 };
 
 
@@ -2952,9 +2968,12 @@ struct killing_spree_tick_t : public rogue_attack_t
   bool procs_main_gauche() const override
   { return weapon->slot == SLOT_MAIN_HAND; }
 
-  // Only procs combat potency indirectly through Main Gauche
+  // OH hits do not proc Combat Potency
   bool procs_combat_potency() const override
   { return false; }
+
+  bool procs_blade_flurry() const override
+  { return true; }
 };
 
 struct killing_spree_t : public rogue_attack_t
@@ -3023,12 +3042,6 @@ struct pistol_shot_t : public rogue_attack_t
     }
   }
 
-  bool procs_combat_potency() const override
-  {
-    // TOCHECK: On beta as of 8/28, Blunderbuss procs don't trigger. Possibly only "on cast".
-    return secondary_trigger != TRIGGER_CONCEALED_BLUNDERBUSS;
-  }
-
   double cost() const override
   {
     double c = rogue_attack_t::cost();
@@ -3089,6 +3102,15 @@ struct pistol_shot_t : public rogue_attack_t
       p()->buffs.concealed_blunderbuss->expire();
     }
   }
+
+  bool procs_combat_potency() const override
+  {
+    // TOCHECK: On beta as of 8/28, Blunderbuss procs don't trigger. Possibly only "on cast".
+    return secondary_trigger != TRIGGER_CONCEALED_BLUNDERBUSS;
+  }
+
+  bool procs_blade_flurry() const override
+  { return true; }
 };
 
 // Main Gauche ==============================================================
@@ -3116,6 +3138,9 @@ struct main_gauche_t : public rogue_attack_t
 
   bool procs_poison() const override
   { return false; }
+
+  bool procs_blade_flurry() const override
+  { return true; }
 };
 
 // Marked for Death =========================================================
@@ -3383,7 +3408,6 @@ struct secret_technique_t : public rogue_attack_t
     secret_technique_attack_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
       rogue_attack_t( name, p, s )
     {
-      aoe = aoe != 0 ? aoe : -1;
     }
 
     double combo_point_da_multiplier( const action_state_t* state ) const override
@@ -3846,6 +3870,9 @@ struct sinister_strike_t : public rogue_attack_t
       trigger_guile_charm( execute_state );
       p()->active.triple_threat_mh->trigger_secondary_action( execute_state->target );
     }
+
+    bool procs_blade_flurry() const override
+    { return true; }
   };
 
   struct sinister_strike_extra_attack_t : public rogue_attack_t
@@ -3876,6 +3903,9 @@ struct sinister_strike_t : public rogue_attack_t
     }
 
     bool procs_main_gauche() const override
+    { return true; }
+
+    bool procs_blade_flurry() const override
     { return true; }
   };
 
@@ -3926,6 +3956,9 @@ struct sinister_strike_t : public rogue_attack_t
   }
 
   bool procs_main_gauche() const override
+  { return true; }
+
+  bool procs_blade_flurry() const override
   { return true; }
 };
 
@@ -4053,6 +4086,9 @@ struct shiv_t : public rogue_attack_t
   // 1/23/2021 - Does not appear to proc Combat Potency despite being an OH attack
   bool procs_combat_potency() const override
   { return false; }
+
+  bool procs_blade_flurry() const override
+  { return true; }
 };
 
 // Vanish ===================================================================
@@ -4296,6 +4332,9 @@ struct echoing_reprimand_t : public rogue_attack_t
       buffs[ buff_idx ]->trigger();
     }
   }
+
+  bool procs_blade_flurry() const override
+  { return true; }
 };
 
 // Flagellation =============================================================
@@ -4402,10 +4441,6 @@ struct sepsis_t : public rogue_attack_t
       rogue_attack_t::impact( state );
       trigger_seal_fate( state );
     }
-
-    // 11/29/2020 - Does not proc Blade Flurry on live
-    bool procs_blade_flurry() const override
-    { return false; }
   };
 
   sepsis_expire_damage_t* sepsis_expire_damage;
@@ -4530,6 +4565,9 @@ struct serrated_bone_spike_t : public rogue_attack_t
       serrated_bone_spike_dot->execute();
     }
   }
+
+  bool procs_blade_flurry() const override
+  { return true; }
 };
 
 // ==========================================================================
