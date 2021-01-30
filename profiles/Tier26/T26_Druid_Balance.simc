@@ -60,8 +60,8 @@ actions+=/use_item,name=empyreal_ordnance,if=cooldown.ca_inc.remains<20&cooldown
 actions+=/use_item,name=soulletting_ruby,if=cooldown.ca_inc.remains<6&!variable.convoke_desync|cooldown.convoke_the_spirits.remains<6&variable.convoke_desync|fight_remains<25
 actions+=/use_item,name=inscrutable_quantum_device,if=buff.ca_inc.up
 # This is a rather elaborate way to make all on use stat trinkets to be lined up with CA/Inc and Convoke and use the 2nd slot on cd if both trinkets are on use stat trinkets
-actions+=/use_items,slots=trinket1,if=(variable.on_use_trinket=1|variable.on_use_trinket=3)&(buff.ca_inc.up|cooldown.ca_inc.remains+2>trinket.1.cooldown.duration&(!covenant.night_fae|!variable.convoke_desync)&!covenant.kyrian|covenant.night_fae&variable.convoke_desync&cooldown.convoke_the_spirits.up&!cooldown.ca_inc.up&((buff.eclipse_lunar.remains>10|buff.eclipse_solar.remains>10)&!runeforge.balance_of_all_things|(buff.balance_of_all_things_nature.stack=5|buff.balance_of_all_things_arcane.stack=5))|buff.kindred_empowerment_energize.up)|fight_remains<20
-actions+=/use_items,slots=trinket2,if=variable.on_use_trinket=3&!trinket.1.ready_cooldown|(buff.ca_inc.up|cooldown.ca_inc.remains+2>trinket.2.cooldown.duration&(!covenant.night_fae|!variable.convoke_desync)&!covenant.kyrian|covenant.night_fae&variable.convoke_desync&cooldown.convoke_the_spirits.up&!cooldown.ca_inc.up&((buff.eclipse_lunar.remains>10|buff.eclipse_solar.remains>10)&!runeforge.balance_of_all_things|(buff.balance_of_all_things_nature.stack=5|buff.balance_of_all_things_arcane.stack=5)))|buff.kindred_empowerment_energize.up|fight_remains<20
+actions+=/use_items,slots=trinket1,if=(variable.on_use_trinket=1|variable.on_use_trinket=3)&(buff.ca_inc.up|cooldown.ca_inc.remains+2>trinket.1.cooldown.duration&(!covenant.night_fae|!variable.convoke_desync)&!covenant.kyrian|covenant.night_fae&variable.convoke_desync&cooldown.convoke_the_spirits.up&!cooldown.ca_inc.up&((buff.eclipse_lunar.remains>10|buff.eclipse_solar.remains>10)&!runeforge.balance_of_all_things|(buff.balance_of_all_things_nature.stack=5|buff.balance_of_all_things_arcane.stack=5))|buff.kindred_empowerment_energize.up)|fight_remains<20|variable.on_use_trinket=0
+actions+=/use_items,slots=trinket2,if=variable.on_use_trinket=3&!trinket.1.ready_cooldown|(buff.ca_inc.up|cooldown.ca_inc.remains+2>trinket.2.cooldown.duration&(!covenant.night_fae|!variable.convoke_desync)&!covenant.kyrian|covenant.night_fae&variable.convoke_desync&cooldown.convoke_the_spirits.up&!cooldown.ca_inc.up&((buff.eclipse_lunar.remains>10|buff.eclipse_solar.remains>10)&!runeforge.balance_of_all_things|(buff.balance_of_all_things_nature.stack=5|buff.balance_of_all_things_arcane.stack=5)))|buff.kindred_empowerment_energize.up|fight_remains<20|variable.on_use_trinket=0
 # Uses all other on use items on cd
 actions+=/use_items
 # Decide action list based on situation/legis
@@ -165,8 +165,8 @@ actions.boat+=/run_action_list,name=fallthru
 
 # Starsurge for movement unless using BoAT
 actions.fallthru=starsurge,if=!runeforge.balance_of_all_things.equipped
-# Cast the dot with least time remaining
-actions.fallthru+=/sunfire,target_if=dot.moonfire.remains>remains
+# Cast the dot with the most time to add until the max duration is hit. Sunfire remains multiplied to match moonfire duration
+actions.fallthru+=/sunfire,target_if=dot.moonfire.remains>remains*22%18
 actions.fallthru+=/moonfire
 
 # Calculates whether Starsurge needs to be used to keep up the Dreambinder buff or to dump before convoke

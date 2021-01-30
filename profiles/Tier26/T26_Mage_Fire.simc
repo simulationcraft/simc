@@ -210,27 +210,27 @@ actions.standard_rotation+=/flamestrike,if=active_enemies>=variable.hard_cast_fl
 actions.standard_rotation+=/fireball
 
 head=grimveiled_hood,id=173245,bonus_id=6649/6647/6758/6931/1532/6935,gem_id=173128
-neck=sin_stained_pendant,id=178827,bonus_id=1540/6646/6935,gem_id=173128
+neck=charm_of_eternal_winter,id=183040,bonus_id=1498/6646/6935,gem_id=173128
 shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_insight
-wrists=deathshackle_wristwraps,id=178704,bonus_id=1540/6646/6935,gem_id=173128,enchant=eternal_intellect
-hands=mitts_of_flawless_duplication,id=178930,bonus_id=1540/6646
-waist=kintaras_baleful_cord,id=180109,bonus_id=1540/6646/6935,gem_id=173128
-legs=muehzalas_hexthread_sarong,id=179351,bonus_id=1540/6646
+wrists=grim_pursuants_maille,id=182996,bonus_id=1498/6646/6935,gem_id=173128,enchant=eternal_intellect
+hands=impossibly_oversized_mitts,id=183022,bonus_id=1498/6646
+waist=fallen_empresss_cord,id=178804,bonus_id=1540/6646/6935,gem_id=173128
+legs=courtiers_costume_trousers,id=183011,bonus_id=1498/6646
 feet=sparkling_glass_slippers,id=183023,bonus_id=7187/1498
 finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=ardent_sunstar_signet,id=183035,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
 trinket1=soul_igniter,id=184019,bonus_id=1498/6646
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
+trinket2=sinful_gladiators_badge_of_ferocity,id=175921,bonus_id=1498/6646
 main_hand=spire_of_the_long_dark,id=180002,bonus_id=7187/6652/1531/6646,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=229.40
+# gear_ilvl=228.93
 # gear_stamina=1531
-# gear_intellect=1181
-# gear_crit_rating=226
-# gear_haste_rating=1041
-# gear_mastery_rating=273
-# gear_versatility_rating=411
+# gear_intellect=1098
+# gear_crit_rating=350
+# gear_haste_rating=740
+# gear_mastery_rating=523
+# gear_versatility_rating=438
 # gear_armor=373
