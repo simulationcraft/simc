@@ -2989,13 +2989,9 @@ struct killing_spree_t : public rogue_attack_t
     interrupt_auto_attack = false;
 
     attack_mh = p->get_background_action<killing_spree_tick_t>( "killing_spree_mh", p->spell.killing_spree_mh );
+    attack_oh = p->get_background_action<killing_spree_tick_t>( "killing_spree_oh", p->spell.killing_spree_oh );
     add_child( attack_mh );
-
-    if ( player->off_hand_weapon.type != WEAPON_NONE )
-    {
-      attack_oh = p->get_background_action<killing_spree_tick_t>( "killing_spree_oh", p->spell.killing_spree_oh );
-      add_child( attack_oh );
-    }
+    add_child( attack_oh );
   }
 
   timespan_t tick_time( const action_state_t* ) const override
@@ -3012,8 +3008,18 @@ struct killing_spree_t : public rogue_attack_t
   {
     rogue_attack_t::tick( d );
 
-    attack_mh->set_target( d->target );
-    attack_oh->set_target( d->target );
+    // If Blade Flurry is up, pick a random target per tick, otherwise use the primary target
+    // On static dummies, this appears to have cycling for selection, but in real-world situations it is likely effectively random
+    // TODO: Analyze dungeon logs to see if there is any deterministic pattern here with moving enemies
+    player_t* tick_target = d->target;
+    if ( p()->buffs.blade_flurry->check() )
+    {
+      auto candidate_targets = targets_in_range_list( target_list() );
+      tick_target = candidate_targets[ rng().range( candidate_targets.size() ) ];
+    }
+
+    attack_mh->set_target( tick_target );
+    attack_oh->set_target( tick_target );
     attack_mh->execute();
     attack_oh->execute();
   }
