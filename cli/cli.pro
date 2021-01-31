@@ -23,6 +23,7 @@ unix {
   LIBS += -lpthread
 }
 
+
 # Deployment for Linux
 unix:!macx {
   DISTFILES  += CHANGES COPYING
@@ -32,6 +33,7 @@ unix:!macx {
 
   target.path = $$DESTDIR$$PREFIX/bin/
 
+  Profiles.files = $$files(../profiles/*, recursive=true)
   Profiles.path = $$SHAREPATH/profiles
   Profiles.commands = @echo Installing profiles to $$SHAREPATH/profiles
 }

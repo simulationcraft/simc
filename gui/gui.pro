@@ -27,7 +27,8 @@ CONFIG(to_install) {
 }
 
 Resources.files = ../qt/Welcome.html ../qt/Welcome.png ../qt/Error.html
-Localization.files = ../locale/*.qm
+Localization.files = $$files(../locale/*.qm)
+Profiles.files = $$files(../profiles/*, recursive=true)
 
 
 macx {
