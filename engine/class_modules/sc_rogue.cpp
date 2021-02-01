@@ -6626,7 +6626,9 @@ void rogue_t::init_action_list()
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds->add_action( this, "Blade Flurry", "if=spell_targets>=2&!buff.blade_flurry.up", "Blade Flurry on 2+ enemies" );
     cds->add_action( this, "Vanish", "if=!runeforge.mark_of_the_master_assassin&!stealthed.all&variable.ambush_condition&(!runeforge.deathly_shadows|buff.deathly_shadows.down&combo_points<=2)", "Using Ambush is a 2% increase, so Vanish can be sometimes be used as a utility spell unless using Master Assassin or Deathly Shadows" );
-    cds->add_action( this, "Vanish", "if=runeforge.mark_of_the_master_assassin&master_assassin_remains=0&variable.blade_flurry_sync&(!cooldown.between_the_eyes.ready&variable.finish_condition|cooldown.between_the_eyes.ready&variable.ambush_condition)&(!conduit.count_the_odds|buff.roll_the_bones.remains>=10)" );
+    cds->add_action( "variable,name=vanish_ma_condition,if=runeforge.mark_of_the_master_assassin&!talent.marked_for_death.enabled,value=(!cooldown.between_the_eyes.ready&variable.finish_condition)|(cooldown.between_the_eyes.ready&variable.ambush_condition)", "With Master Asssassin, sync Vanish with a finisher or Ambush depending on BtE cooldown, or always a finisher with MfD" );
+    cds->add_action( "variable,name=vanish_ma_condition,if=runeforge.mark_of_the_master_assassin&talent.marked_for_death.enabled,value=variable.finish_condition" );
+    cds->add_action( this, "Vanish", "if=variable.vanish_ma_condition&master_assassin_remains=0&variable.blade_flurry_sync" );
     cds->add_action( "flagellation" );
     cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2" );
     cds->add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up" );
