@@ -87,7 +87,7 @@ public:
     }
   }
 
-  bool talbadars_stratagem_active( const player_t* target ) const
+  bool talbadars_stratagem_active() const
   {
     if ( !priest().legendary.talbadars_stratagem->ok() )
       return false;
@@ -95,16 +95,16 @@ public:
     return priest().buffs.talbadars_stratagem->check();
   }
 
-  double composite_target_da_multiplier( player_t* t ) const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double tdm = priest_spell_t::composite_target_da_multiplier( t );
+    double m = priest_spell_t::composite_da_multiplier( s );
 
-    if ( talbadars_stratagem_active( t ) )
+    if ( talbadars_stratagem_active() )
     {
-      tdm *= 1 + priest().legendary.talbadars_stratagem->effectN( 1 ).percent();
+      m *= 1 + priest().legendary.talbadars_stratagem->effectN( 1 ).percent();
     }
 
-    return tdm;
+    return m;
   }
 
   void impact( action_state_t* s ) override
