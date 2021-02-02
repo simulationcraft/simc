@@ -1778,7 +1778,7 @@ double priest_t::tick_damage_over_time( timespan_t duration, const dot_t* dot ) 
   double total_damage = ticks_left * tick_base_damage;
   action_state_t::release( state );
   return total_damage;
-};
+}
 
 // ==========================================================================
 // Generate Insanity

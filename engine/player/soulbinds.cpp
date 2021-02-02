@@ -477,7 +477,7 @@ void thrill_seeker( special_effect_t& effect )
     if ( !t->is_enemy() )
       return;
 
-    t->register_on_demise_callback( p, [ p, counter_buff, killing_blow_stacks, killing_blow_chance ]( player_t* t ) {
+    t->register_on_demise_callback( p, [ p, counter_buff, killing_blow_stacks, killing_blow_chance ]( player_t* ) {
       if ( p->sim->event_mgr.canceled )
         return;
 

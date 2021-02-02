@@ -1006,8 +1006,8 @@ public:
     mastery(),
     talent(),
     spell(),
-    pets( this ),
     pet_spell(),
+    pets( this ),
     procs(),
     options(),
     _runes( this )
@@ -2524,8 +2524,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
   dancing_rune_weapon_pet_t( death_knight_t* owner ) :
     death_knight_pet_t( owner, "dancing_rune_weapon", true, true ),
-    ability(),
-    blood_plague_dot( false )
+    blood_plague_dot( false ),
+    ability()
   {
     // The pet wields the same weapon type as its owner for spells with weapon requirements
     main_hand_weapon.type       = owner -> main_hand_weapon.type;
@@ -6274,7 +6274,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   {
     std::vector<player_t*>& current_targets = death_knight_melee_attack_t::target_list();
     // Don't bother ordering the list if all the valid targets will be hit
-    if ( current_targets.size() <= n_targets() )
+    if ( current_targets.size() <= as<size_t>( n_targets() ) )
       return current_targets;
 
     // first target, the action target, needs to be left in place

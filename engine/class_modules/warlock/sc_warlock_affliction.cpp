@@ -664,7 +664,7 @@ struct malefic_rapture_t : public affliction_spell_t
         int d = as<int>( get_dots_ticking( target ) );
         if ( d > 0 )
         {
-          for ( size_t i = p()->procs.malefic_rapture.size(); i < d; i++ )
+          for ( int i = p()->procs.malefic_rapture.size(); i < d; i++ )
             p()->procs.malefic_rapture.push_back( p()->get_proc( "Malefic Rapture " + util::to_string( i + 1 ) ) );
           p()->procs.malefic_rapture[ d - 1 ]->occur();
         }
