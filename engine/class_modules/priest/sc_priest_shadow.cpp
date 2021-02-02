@@ -97,14 +97,14 @@ public:
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double tdm = priest_spell_t::composite_da_multiplier( s );
+    double m = priest_spell_t::composite_da_multiplier( s );
 
     if ( talbadars_stratagem_active() )
     {
-      tdm *= 1 + priest().legendary.talbadars_stratagem->effectN( 1 ).percent();
+      m *= 1 + priest().legendary.talbadars_stratagem->effectN( 1 ).percent();
     }
 
-    return tdm;
+    return m;
   }
 
   void impact( action_state_t* s ) override
