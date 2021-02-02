@@ -46,7 +46,7 @@ actions+=/variable,name=ambush_condition,value=combo_points.deficit>=2+buff.broa
 # Finish at maximum CP but avoid wasting Broadside and Quick Draw bonus combo points
 actions+=/variable,name=finish_condition,value=combo_points>=cp_max_spend-buff.broadside.up-(buff.opportunity.up*talent.quick_draw.enabled)|combo_points=animacharged_cp
 # With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry
-actions+=/variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up
+actions+=/variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.remains>1+talent.killing_spree.enabled
 actions+=/run_action_list,name=stealth,if=stealthed.all
 actions+=/call_action_list,name=cds
 actions+=/run_action_list,name=finish,if=variable.finish_condition
