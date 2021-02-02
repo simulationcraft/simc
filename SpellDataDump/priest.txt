@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37176 Live (hotfix 2021-01-27/37176)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.37176 Live (hotfix 2021-02-02/37176)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -3465,6 +3465,7 @@ Effects          :
                    Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000 | Misc Value: 13 | Trigger Spell: 218413 | Target: Self (1)
 
 Name             : Shadow Mend (id=186263) [Spell Family (6)] 
+Hotfixed         : Description
 Replaces         : Flash Heal (id=2061)
 Class            : Discipline Shadow Priest
 School           : Shadow
@@ -3492,10 +3493,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 3.20000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : Wraps an ally in shadows which heal for $s1, but at a price.
 
-The ally will take ${$s1/20} damage every $187464t1 sec, until they have taken ${$s1/2} total damage from all sources, or leave combat. $?s342991[$@spelldesc342991][]
+The ally will take ${$s1/20} damage every $187464t1 sec, until they have taken ${$s1/2} total damage from all sources, or leave combat.
 
 Name             : Shadow Mend (id=186440) [Spell Family (6), Passive, Hidden] 
-Class            : Discipline Priest
+Class            : Discipline Shadow Priest
 School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
