@@ -6532,6 +6532,7 @@ void warrior_t::default_apl_dps_precombat()
 
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
+  if ( specialization() == WARRIOR_FURY )
   precombat->add_action( this, "recklessness", "if=!runeforge.signet_of_tormented_kings.equipped" );
 
 }
