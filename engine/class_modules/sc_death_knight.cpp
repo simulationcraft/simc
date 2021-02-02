@@ -6944,7 +6944,8 @@ void runeforge::fallen_crusader( special_effect_t& effect )
       background = true;
       target = player;
       callbacks = may_crit = false;
-      base_pct_heal = data -> effectN( 2 ).percent() * (1.0 + p -> spell.exacting_preparation -> effectN ( 5 ).percent());
+      base_pct_heal = data -> effectN( 2 ).percent();
+      base_pct_heal *= 1.0 + p -> spell.exacting_preparation -> effectN ( 5 ).percent();
     }
 
     // Procs by default target the target of the action that procced them.
@@ -7015,7 +7016,8 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
     -> apply_affecting_aura( p -> spell.exacting_preparation );
 
   // Change the player's base armor multiplier
-  p -> base.armor_multiplier *= 1.0 + effect.driver() -> effectN( 1 ).percent() * (1.0 + p -> spell.exacting_preparation -> effectN( 5 ).percent());
+  p -> base.armor_multiplier *= 1.0 + effect.driver() -> effectN( 1 ).percent();
+  p -> base.armor_multiplier *= 1.0 + p -> spell.exacting_preparation -> effectN( 5 ).percent();
 
   // This buff can only be applied on a 2H weapon, stacking mechanic is unknown territory
 
@@ -7092,7 +7094,8 @@ void runeforge::sanguination( special_effect_t& effect )
       health_threshold( effect.driver() -> effectN( 1 ).base_value() )
     {
       background = true;
-      tick_pct_heal = data().effectN( 1 ).percent() * (1.0 + p() -> spell.exacting_preparation -> effectN( 4 ).percent());
+      tick_pct_heal = data().effectN( 1 ).percent();
+      tick_pct_heal *= 1.0 + p() -> spell.exacting_preparation -> effectN( 4 ).percent();
       // Sated-type debuff, for simplicity the debuff's duration is used as a simple cooldown in simc
       cooldown -> duration = effect.player -> find_spell( 326809 ) -> duration();
     }
