@@ -6532,6 +6532,8 @@ void warrior_t::default_apl_dps_precombat()
 
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
+  precombat->add_action( this, "recklessness", "if=!runeforge.signet_of_tormented_kings.equipped" );
+
 }
 
 // Fury Warrior Action Priority List ========================================
@@ -6547,6 +6549,7 @@ void warrior_t::apl_fury()
 
   default_list->add_action( "auto_attack" );
   default_list->add_action( this, "Charge" );
+  default_list->add_action( "variable,name=execute_phase,value=talent.massacre&target.health.pct<35|target.health.pct<20|target.health.pct>80&covenant.venthyr" );
   default_list->add_action( "run_action_list,name=movement,if=movement.distance>5",
                             "This is mostly to prevent cooldowns from being accidentally used during movement." );
   default_list->add_action(
@@ -6564,9 +6567,10 @@ void warrior_t::apl_fury()
 
   default_list->add_action( this, covenant.conquerors_banner, "conquerors_banner", "if=cooldown.recklessness.remains<3|target.time_to_die<50" );
 
-  default_list->add_action( this, "Recklessness", "if=gcd.remains=0&((buff.bloodlust.up|talent.anger_management.enabled|"
-                                  "raid_event.adds.in>10)|target.time_to_die>100|(talent.massacre.enabled&target.health.pct<35)|"
-                                  "target.health.pct<20|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)" );
+  default_list->add_action( this, "Recklessness", "if=!runeforge.signet_of_tormented_kings.equipped&gcd.remains=0&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)" );
+
+  default_list->add_action( this, "Recklessness", "use_off_gcd=1,if=runeforge.signet_of_tormented_kings.equipped&gcd.remains&prev_gcd.1.rampage&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)" );
+
   default_list->add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1&!buff.meat_cleaver.up|raid_event.adds.in<gcd&!buff.meat_cleaver.up" );
 
   for ( size_t i = 0; i < items.size(); i++ )
@@ -6610,16 +6614,19 @@ void warrior_t::apl_fury()
 
   single_target->add_action( this, "Raging Blow", "if=runeforge.will_of_the_berserker.equipped&buff.will_of_the_berserker.remains<gcd" );
   single_target->add_action( this, spec.crushing_blow, "crushing_blow", "if=runeforge.will_of_the_berserker.equipped&buff.will_of_the_berserker.remains<gcd" );
+  single_target->add_talent( this, "Bladestorm",  "if=buff.enrage.remains>gcd*2.5&spell_targets.whirlwind>1" );
+  single_target->add_action( this, covenant.condemn, "condemn", "if=buff.enrage.up&variable.execute_phase" );
   single_target->add_talent( this, "Siegebreaker", "if=spell_targets.whirlwind>1|raid_event.adds.in>15" );
   single_target->add_action( this, "Rampage", "if=buff.recklessness.up|(buff.enrage.remains<gcd|rage>90)|buff.frenzy.remains<1.5" );
   single_target->add_action( this, covenant.condemn, "condemn" );
   single_target->add_action( this, covenant.ancient_aftershock, "ancient_aftershock", "if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>75)" );
   single_target->add_action( this, covenant.spear_of_bastion, "spear_of_bastion", "if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>45)" );
   single_target->add_action( this, "Execute" );
-  single_target->add_talent( this, "Bladestorm",  "if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>45)" );
+  single_target->add_talent( this, "Bladestorm",  "if=buff.enrage.up&spell_targets.whirlwind=1&raid_event.adds.in>45,interrupt_global=1,interrupt_if=spell_targets.whirlwind=1&gcd.remains=0&(rage>90|variable.execute_phase&!cooldown.condemn.remains)" );
   single_target->add_action( this, "Bloodthirst", "if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35&!talent.cruelty.enabled" );
   single_target->add_action( this, spec.bloodbath, "bloodbath", "if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35&!talent.cruelty.enabled" );
   single_target->add_talent( this, "Dragon Roar", "if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
+  single_target->add_action( this, "Whirlwind", "if=buff.merciless_bonegrinder.up&spell_targets.whirlwind>3" );
   single_target->add_talent( this, "Onslaught" );
   single_target->add_action( this, "Raging Blow", "if=charges=2" );
   single_target->add_action( this, spec.crushing_blow, "crushing_blow", "if=charges=2" );
@@ -7421,7 +7428,7 @@ std::string warrior_t::default_potion() const
 {
   std::string fury_pot =
       ( true_level > 50 )
-          ? "potion_of_phantom_fire"
+          ? "spectral_strength"
           : ( true_level > 40 )
                 ? "potion_of_unbridled_fury"
                 : "disabled";
@@ -7512,7 +7519,7 @@ std::string warrior_t::default_rune() const
 std::string warrior_t::default_temporary_enchant() const
 {
   std::string fury_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:shadowcore_oil/off_hand:shadowcore_oil"
+                              ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone"
                               : "disabled";
 
   std::string arms_temporary_enchant = ( true_level >= 60 )
