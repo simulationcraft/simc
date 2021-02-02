@@ -1,5 +1,5 @@
 // Talent tree specialization abilities, wow build 9.0.2.37176
-static const std::array<specialization_spell_entry_t, 925> __specialization_spell_data { {
+static const std::array<specialization_spell_entry_t, 926> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -352,6 +352,7 @@ static const std::array<specialization_spell_entry_t, 925> __specialization_spel
   {  5,  258, 162699,      0, "Stat Negation Aura - Intellect DPS", 0 },
   {  5,  258, 185916,      0, "Voidform"                          , 0 },
   {  5,  258, 186263,   2061, "Shadow Mend"                       , 0 },
+  {  5,  258, 186440,      0, "Shadow Mend"                       , 0 },
   {  5,  258, 213634,      0, "Purify Disease"                    , 0 },
   {  5,  258, 228260,      0, "Void Eruption"                     , 0 },
   {  5,  258, 228264,      0, "Voidform"                          , 0 },

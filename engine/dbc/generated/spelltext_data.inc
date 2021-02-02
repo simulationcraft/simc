@@ -5735,7 +5735,7 @@ static const std::array<spelltext_data_t, 15096> __spelltext_data { {
   { 186257, "Increases your movement speed by $s1% for $d, and then by $186258s1% for another $186258d.", "Movement speed increased by $w1%.", 0 },
   { 186258, "Increases your movement speed by $s1% for $d.", "Movement speed increased by $w1%.", 0 },
   { 186260, "$@spelldesc190925", "Stunned.", 0 },
-  { 186263, "Wraps an ally in shadows which heal for $s1, but at a price.\r\n\r\nThe ally will take ${$s1/20} damage every $187464t1 sec, until they have taken ${$s1/2} total damage from all sources, or leave combat. $?s342991[$@spelldesc342991][]", 0, 0 },
+  { 186263, "Wraps an ally in shadows which heal for $s1, but at a price.\r\n\r\nThe ally will take ${$s1/20} damage every $187464t1 sec, until they have taken ${$s1/2} total damage from all sources, or leave combat.", 0, 0 },
   { 186265, "Deflects all attacks and reduces all damage you take by $s4% for $d, but you cannot attack.$?s83495[  Additionally, you have a $83495s1% chance to reflect spells back at the attacker.][]", "Deflecting all attacks.\r\nDamage taken reduced by $w4%.", 0 },
   { 186270, "A vicious slash dealing $s1 Physical damage.", 0, 0 },
   { 186289, "Increases the range of your $?s259387[Mongoose Bite][Raptor Strike] to $265189r yds for $d.", "The range of $?s259387[Mongoose Bite][Raptor Strike] is increased to $265189r yds.", 0 },
@@ -15099,8 +15099,9 @@ static const std::array<spelltext_data_t, 15096> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.0.2.37176
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
   {   44425,  0, "Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. \r\n\r\nFor each Arcane Charge, deals $36032s2% additional damage$?a321526[, grants you $321526s1% of your maximum mana,][]$?a231564[ and hits $36032s3 additional nearby $Ltarget:targets; for $s2% of its damage][].\r\n\r\n|cFFFFFFFFConsumes all Arcane Charges.|r", "Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. \r\n\r\nFor each Arcane Charge, deals $36032s2% additional damage$?a321526[, grants you ${$321526s1/100}.1% of your maximum mana,][]$?a231564[ and hits $36032s3 additional nearby $Ltarget:targets; for $s2% of its damage][].\r\n\r\n|cFFFFFFFFConsumes all Arcane Charges.|r" },
+  {  186263,  0, "Wraps an ally in shadows which heal for $s1, but at a price.\r\n\r\nThe ally will take ${$s1/20} damage every $187464t1 sec, until they have taken ${$s1/2} total damage from all sources, or leave combat. $?s342991[$@spelldesc342991][]", "Wraps an ally in shadows which heal for $s1, but at a price.\r\n\r\nThe ally will take ${$s1/20} damage every $187464t1 sec, until they have taken ${$s1/2} total damage from all sources, or leave combat." },
   {  321526,  0, "Arcane Barrage grants you $s1% of your maximum mana per Arcane Charge spent.", "Arcane Barrage grants you ${$S1/100}% of your maximum mana per Arcane Charge spent." },
   {  334456,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs. Warning: Components are hot!\r\n\r\nCannot be applied to items higher than level $ecix. ", "Increase the stamina of an item worn on the chest by $ec for 2 hrs. Warning: Components are hot!\r\n\r\nCannot be applied to items higher than level $ecix. " },
 } };
