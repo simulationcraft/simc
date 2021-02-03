@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37176 Live (hotfix 2021-02-02/37176)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.37176 Live (hotfix 2021-02-03/37176, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2204,6 +2204,7 @@ Deals $204598s1 Fire damage$?s320794[, and an additional $204598o3 Fire damage o
 Tooltip          : Sigil of Flame is active.
 
 Name             : Sigil of Flame (id=204598) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
@@ -2213,7 +2214,7 @@ Proc Chance      : 101%
 Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Empowered Demon Soul (347765 effects: #1, #2)
 Family Flags     : 33, 70, 72
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
-                 : ..x..... ......x. ........ ....x...   ........ ........ ........ ......x. 
+                 : ..x..... ......x. ........ ....x.x.   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : .....x.. .x..x... ........ ........   ........ ........ ....x... ........ 
@@ -7071,6 +7072,7 @@ Description      : Place a Kyrian Sigil at the target location that activates af
 Detonates to deal $307046s1 Arcane damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.
 
 Name             : Elysian Decree (desc=Kyrian) (id=307046) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Arcane
 Spell Type       : Magic
@@ -7078,7 +7080,7 @@ Range            : 100 yards
 Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Empowered Demon Soul (347765 effects: #1, #2)
 Family Flags     : 16, 33, 42, 70
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
-                 : ..x..... ......x. ........ ....x...   ........ ........ ........ ......x. 
+                 : ..x..... ......x. ........ ......x.   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : .....x.. ....x... ........ ........   ........ ........ ....x... ........ 
@@ -9725,6 +9727,7 @@ Description      : Demon's Bite leaves an open wound on your enemy dealing $3462
 Tooltip          : Demon's Bite leaves an open wound on your enemy dealing $346278o1 Chaos damage over $346278d and increasing damage taken from your Immolation Aura by $346278s2%.
 
 Name             : Throw Glaive (id=346665) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
@@ -9734,7 +9737,7 @@ Affecting spells : Demon Soul (163073 effects: #1, #2), Mo'arg Bionic Stabilizer
 Triggered by     : Throw Glaive (204157)
 Family Flags     : 5, 32, 70, 85
 Attributes       : ........ ........ ..x..x.. ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ......x.   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ .......x ........ ........ 
                  : ........ x....... .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
