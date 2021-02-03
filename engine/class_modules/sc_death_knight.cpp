@@ -7016,8 +7016,9 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
     -> apply_affecting_aura( p -> spell.exacting_preparation );
 
   // Change the player's base armor multiplier
-  p -> base.armor_multiplier *= 1.0 + effect.driver() -> effectN( 1 ).percent();
-  p -> base.armor_multiplier *= 1.0 + p -> spell.exacting_preparation -> effectN( 5 ).percent();
+  double am = effect.driver() -> effectN( 1 ).percent();
+  am *= 1.0 + p -> spell.exacting_preparation -> effectN( 5 ).percent();
+  p -> base.armor_multiplier *= 1.0 + am;
 
   // This buff can only be applied on a 2H weapon, stacking mechanic is unknown territory
 
