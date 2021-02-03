@@ -5164,7 +5164,10 @@ struct fury_condemn_parent_t : public warrior_attack_t
     if ( p->talents.massacre->ok() )
     {
       execute_pct_below = p->talents.massacre->effectN( 2 )._base_value;
-      cooldown -> duration -= timespan_t::from_millis( p -> talents.massacre -> effectN( 3 ).base_value() );
+      if ( cooldown->action == this )
+      {
+        cooldown -> duration -= timespan_t::from_millis( p -> talents.massacre -> effectN( 3 ).base_value() );
+      }
     }
   }
 
