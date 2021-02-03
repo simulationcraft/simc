@@ -82,8 +82,8 @@ finger1=ritualists_treasured_ring,id=183037,bonus_id=4800/4786/1498/6935,gem_id=
 finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=4800/4786/1498/6935,gem_id=173127,enchant=tenet_of_versatility
 trinket1=stone_legion_heraldry,id=184027,bonus_id=4800/4786/1498
 trinket2=dreadfire_vessel,id=184030,bonus_id=4800/4786/1498
-main_hand=talons_of_the_legion_generals,id=182390,bonus_id=7187/1531,enchant=sinful_revelation
-off_hand=talons_of_the_legion_generals,id=182390,bonus_id=7187/1531,enchant=celestial_guidance
+main_hand=jaws_of_the_hungerer,id=179579,bonus_id=7187/1531,enchant=sinful_revelation
+off_hand=jaws_of_the_hungerer,id=179579,bonus_id=7187/1531,enchant=celestial_guidance
 
 save=T26_Shaman_Enhancement.simc
 
