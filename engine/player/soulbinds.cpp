@@ -171,7 +171,13 @@ void niyas_tools_burrs( special_effect_t& effect )
     spiked_burrs_t( const special_effect_t& e ) :
       niyas_tools_proc_t( "spiked_burrs", e.player, e.player->find_spell( 333526 ),
                           value_from_desc_vars( e, "points", "\\$SP\\*" ), false )
-    {}
+    {
+      // In-game, the driver (id=320659) triggers the projectile (id=321659) which triggers the ground effect
+      // (id=321660) which finally triggers the dot (id=333526). Since we don't have a way of accounting for the ground
+      // effects and mobs moving into it, we execute the dot directly and pull the fixed travel time from the projectile
+      // spell.
+      travel_delay = e.player->find_spell( 321659 )->missile_speed();
+    }
 
     // UPDATE: Not the case anymore as of 2020-11-20 hotfixes. Keeping commented just in case.
     /*result_e calculate_result( action_state_t* s ) const override
