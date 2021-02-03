@@ -2819,6 +2819,7 @@ struct fury_execute_parent_t : public warrior_attack_t
     if ( p->talents.massacre->ok() )
     {
       execute_pct = p->talents.massacre->effectN( 2 ).base_value();
+      cooldown -> duration -= timespan_t::from_millis( p -> talents.massacre -> effectN( 3 ).base_value() );
     }
   }
 
@@ -2854,10 +2855,6 @@ struct fury_execute_parent_t : public warrior_attack_t
       p()->resource_gain( RESOURCE_RAGE, rage_from_execute_rank_3, p()->gain.execute );
     }
 
-    if ( p()->talents.massacre->ok() )
-     {
-       p()->cooldown.execute->adjust( - timespan_t::from_millis( p()->talents.massacre->effectN( 3 ).base_value() ) );
-     }
     if ( p()->conduit.ashen_juggernaut.ok() )
     {
       p()->buff.ashen_juggernaut->trigger();
@@ -5167,6 +5164,7 @@ struct fury_condemn_parent_t : public warrior_attack_t
     if ( p->talents.massacre->ok() )
     {
       execute_pct_below = p->talents.massacre->effectN( 2 )._base_value;
+      cooldown -> duration -= timespan_t::from_millis( p -> talents.massacre -> effectN( 3 ).base_value() );
     }
   }
 
@@ -5201,10 +5199,7 @@ struct fury_condemn_parent_t : public warrior_attack_t
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_execute_rank_3, p()->gain.execute );
     }
-    if ( p()->talents.massacre->ok() )
-     {
-       p()->cooldown.condemn->adjust( - timespan_t::from_millis( p()->talents.massacre->effectN( 3 ).base_value() ) );
-     }
+
     if ( p()->conduit.ashen_juggernaut.ok() )
     {
       p()->buff.ashen_juggernaut->trigger();
