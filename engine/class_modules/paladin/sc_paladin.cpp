@@ -2488,7 +2488,7 @@ double paladin_t::composite_mastery() const
   double m = player_t::composite_mastery();
 
   if( buffs.seraphim -> up() )
-    m += buffs.seraphim -> data().effectN( 4 ).percent();
+    m += buffs.seraphim -> data().effectN( 4 ).base_value();
 
   return m;
 }
