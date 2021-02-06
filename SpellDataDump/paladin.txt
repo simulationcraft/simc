@@ -451,6 +451,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (12 seconds cooldown)
 Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#5), Protection Paladin (137028 effect#8), Holy Paladin (137029 effect#6), Crusader's Judgment (204023 effect#1)
+Labels           : 189: Avenging Crusader (216331 effect#2)
 Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2, #4, #11), Protection Paladin (137028 effects: #1, #2, #7, #13), Holy Paladin (137029 effects: #5, #11), Avenging Crusader (216331 effect#1), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Divine Toll (326011 effect#1), Judgment (327977 effect#1), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 23, 27, 65
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
@@ -819,7 +820,7 @@ Spell Type       : None
 Spell Level      : 37
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
 Affecting spells : Sanctified Wrath (53376 effect#1), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Avenging Wrath (327979 effects: #1, #2, #3, #4, #5)
 Family Flags     : 40
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -961,6 +962,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (6 seconds cooldown)
 Category         : 1627: Paladin (137026 effect#4), Retribution Paladin (137027 effect#5), Fires of Justice (203316 effect#3), Crusader Strike (231667 effect#1)
+Labels           : 189: Avenging Crusader (216331 effect#2)
 Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Improved Crusader Strike (44300 effect#1), Retribution Paladin (137027 effects: #1, #2, #3, #4, #12, #14), Protection Paladin (137028 effects: #1, #2, #6, #7), Holy Paladin (137029 effects: #4, #5, #10), Judgment (214222 effect#1), Avenging Crusader (216331 effect#1), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2), Crusader Strike (342348 effect#1)
 Family Flags     : 47, 65
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ....x... 
@@ -4403,7 +4405,7 @@ Resource         : 50% Base Mana (0) (id=191685)
 Spell Level      : 28
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, Generic Hostile Spell
@@ -4423,8 +4425,9 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Judgment (20271), Crusader Strike (35395), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779)
                    Family Flags: 23, 47
-#2 (id=321879)   : Apply Aura (6) | Modify Cooldown Recharge Rate (143)
+#2 (id=321879)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 189 | Target: Self (1)
+                   Affected Spells (Label): Judgment (20271), Crusader Strike (35395), Judgment (220637), Judgment (275773), Judgment (275779)
 #3 (id=321880)   : Apply Aura (6) | Unknown(173)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 180 | Target: Self (1)
 #4 (id=321881)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
@@ -4496,6 +4499,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Melee
 Spell Level      : 1
+Labels           : 189: Avenging Crusader (216331 effect#2)
 Affecting spells : Avenging Wrath (31884 effect#8)
 Family Flags     : 98
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -4848,7 +4852,7 @@ Duration         : 25 seconds
 Cooldown         : 20 seconds
 Charges          : 1 (120 seconds cooldown)
 Category         : 1550: Strive for Perfection (296320 effect#6), Strive for Perfection (299367 effect#6), Strive for Perfection (299369 effect#6), Benevolent Faerie (327710 effect#2)
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
 Stacks           : 10 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x.x. x.x..... ........ 
@@ -6571,6 +6575,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (12 seconds cooldown)
 Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#5), Protection Paladin (137028 effect#8), Holy Paladin (137029 effect#6), Crusader's Judgment (204023 effect#1)
+Labels           : 189: Avenging Crusader (216331 effect#2)
 Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2, #4, #11), Protection Paladin (137028 effects: #1, #2, #7, #13), Holy Paladin (137029 effects: #5, #11), Avenging Crusader (216331 effect#1), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Divine Toll (326011 effect#1), Judgment (327977 effect#1), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 23, 27, 65
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
@@ -6599,6 +6604,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (12 seconds cooldown)
 Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#5), Protection Paladin (137028 effect#8), Holy Paladin (137029 effect#6), Crusader's Judgment (204023 effect#1)
+Labels           : 189: Avenging Crusader (216331 effect#2)
 Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2, #4, #11), Protection Paladin (137028 effects: #1, #2, #7, #13), Holy Paladin (137029 effects: #5, #11), Avenging Crusader (216331 effect#1), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Divine Toll (326011 effect#1), Judgment (327977 effect#1), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 3, 23, 27, 65
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
@@ -9148,7 +9154,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=821267)   : Apply Aura (6) | Modify Cooldown Recharge Rate (143)
+#1 (id=821267)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 16 | Target: Friend (21)
 #2 (id=821268)   : Apply Aura (6) | Unknown(173)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Friend (21)

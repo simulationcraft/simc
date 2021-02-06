@@ -573,7 +573,7 @@ Spell Type       : Magic
 Spell Level      : 29
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
 Affecting spells : Icy Veins (12472 effect#2), Overpowered (155147 effects: #1, #2, #3), Wild Arcanist (184903 effects: #1, #2, #3), Norgannon's Foresight (236380 effect#1), Arcane Power (321739 effect#1)
 Family Flags     : 51, 67
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -635,7 +635,7 @@ Spell Type       : Magic
 Spell Level      : 29
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
 Affecting spells : Thermal Void (155149 effect#2), Norgannon's Foresight (236380 effect#1), Icy Veins (321702 effect#1)
 Family Flags     : 46, 67, 105
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -3593,7 +3593,7 @@ Resource         : 10% Base Mana (0) (id=10319)
 Spell Level      : 29
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
 Affecting spells : Norgannon's Foresight (236380 effect#1), Combustion (321710 effect#1)
 Family Flags     : 58, 67
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -9204,7 +9204,6 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #3 (id=806878)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cast Time (10)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 10 | Misc Value 2: 16 (Label) | Target: Unknown(25)
-                   Affected Spells (Label): 
 Description      : $@spelldesc314793
 Tooltip          : Movement speed and cast speed slowed by $s3%.
 
