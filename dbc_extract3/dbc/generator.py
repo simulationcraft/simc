@@ -2019,6 +2019,7 @@ class SpellDataGenerator(DataGenerator):
 
     # Effect subtype, field name
     _label_whitelist = [
+        ( 143, 'misc_value_1' ),
         ( 218, 'misc_value_2' ),
         ( 219, 'misc_value_2' ),
     ]

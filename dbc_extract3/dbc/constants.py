@@ -177,7 +177,8 @@ SPELL_NAME_BLACKLIST = [
 ]
 
 SPELL_LABEL_BLACKLIST = [
-  16,     # Agonizing Backlash
+  16,     # all player spells
+  203,    # Legion artifact abilities
 ]
 
 ACTIVE_SPELL_WHITELIST = [
