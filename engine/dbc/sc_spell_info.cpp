@@ -578,7 +578,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 138, "Modify Melee Haste%"                          },
   { 140, "Modify Ranged Haste%"                         },
   { 142, "Modify Base Resistance"                       },
-  { 143, "Modify Cooldown Recharge Rate"                },
+  { 143, "Modify Cooldown Recharge Rate% (Label)"       },
   { 144, "Reduce Fall Damage"                           },
   { 148, "Modify Cooldown Recharge Rate% (Category)"    },
   { 149, "Modify Casting Pushback"                      },
@@ -1102,12 +1102,29 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
        ( e -> subtype() == A_ADD_PCT_LABEL_MODIFIER || e -> subtype() == A_ADD_FLAT_LABEL_MODIFIER ) )
   {
     auto affected_spells = dbc.spells_by_label( e -> misc_value2() );
-    s << "                   Affected Spells (Label): ";
-    s << concatenate( affected_spells,
-          []( std::stringstream& s, const spell_data_t* spell ) {
-            fmt::print( s, "{} ({})", spell -> name_cstr(), spell -> id() );
-          } );
-    s << std::endl;
+    if ( !affected_spells.empty() )
+    {
+      s << "                   Affected Spells (Label): ";
+      s << concatenate( affected_spells,
+            []( std::stringstream& s, const spell_data_t* spell ) {
+              fmt::print( s, "{} ({})", spell -> name_cstr(), spell -> id() );
+            } );
+      s << std::endl;
+    }
+  }
+
+  if ( e -> type() == E_APPLY_AURA && e -> subtype() == A_MOD_RECHARGE_RATE_LABEL )
+  {
+    auto affected_spells = dbc.spells_by_label( e -> misc_value1() );
+    if ( !affected_spells.empty() )
+    {
+      s << "                   Affected Spells (Label): ";
+      s << concatenate( affected_spells,
+            []( std::stringstream& s, const spell_data_t* spell ) {
+              fmt::print( s, "{} ({})", spell -> name_cstr(), spell -> id() );
+            } );
+      s << std::endl;
+    }
   }
 
   if ( e -> type() == E_APPLY_AURA && range::contains( dbc::effect_category_subtypes(), e -> subtype() ) )
