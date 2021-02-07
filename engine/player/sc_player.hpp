@@ -505,6 +505,9 @@ struct player_t : public actor_t
     buff_t* focus_magic; // Mage talent
     buff_t* power_infusion; // Priest spell
 
+    // 9.0 class covenant buffs
+    buff_t* benevolent_faerie; // Night Fae Priest spell
+
     // 9.0 Soulbinds
     buff_t* wild_hunt_tactics;  // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
     buff_t* volatile_solvent_damage; // necrolord/marileth - elemental (magic) and giant (physical) % damage done buffs
@@ -537,6 +540,7 @@ struct player_t : public actor_t
   {
     bool focus_magic;
     std::vector<timespan_t> power_infusion;
+    std::vector<timespan_t> benevolent_faerie;
   } external_buffs;
 
   struct gains_t
