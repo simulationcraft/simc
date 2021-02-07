@@ -4614,7 +4614,7 @@ void player_t::combat_begin()
     buffs.tyrants_immortality->trigger( buffs.tyrants_immortality->max_stack() );
   }
 
-  auto add_timed_buff_triggers = [ this ] ( std::vector<timespan_t> times, buff_t* buff )
+  auto add_timed_buff_triggers = [ this ] ( const std::vector<timespan_t>& times, buff_t* buff )
   {
     if ( buff )
       for ( auto t : times )

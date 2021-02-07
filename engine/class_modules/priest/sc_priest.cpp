@@ -2096,23 +2096,15 @@ buffs::benevolent_faerie_t::benevolent_faerie_t( player_t* p )
   {
     if ( !affected_actions_initialized )
     {
-      std::vector<int> affecting_labels;
-      for ( auto e : data().effects() )
-        if ( e.subtype() == A_MOD_RECHARGE_RATE_LABEL )
-          affecting_labels.push_back( e.misc_value1() );
-
+      int label = data().effectN( 1 ).misc_value1();
       affected_actions.clear();
       for ( auto a : player->action_list )
       {
-        for ( auto l : affecting_labels )
+        if ( a->data().affected_by_label( label ) )
         {
-          if ( a->data().affected_by_label( l ) )
+          if ( range::find( affected_actions, a ) == affected_actions.end() )
           {
-            if ( range::find( affected_actions, a ) == affected_actions.end() )
-            {
-              affected_actions.push_back( a );
-              break;
-            }
+            affected_actions.push_back( a );
           }
         }
       }
