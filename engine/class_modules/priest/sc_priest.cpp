@@ -340,6 +340,11 @@ struct fae_guardians_t final : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
+    // Currently impossible to give someone else the benevolent faeire while still auto applying the wrathful faerie
+    // This will cause the APL to cast Shadow Word: Pain manually to apply the faerie after using Fae Guardians
+    if ( !priest().options.self_benevolent_faerie )
+      return;
+
     priest_spell_t::impact( s );
     priest_td_t& td = get_td( s->target );
     td.buffs.wrathful_faerie->trigger();
@@ -1022,9 +1027,9 @@ namespace buffs
 // ==========================================================================
 struct fae_guardians_t final : public priest_buff_t<buff_t>
 {
-  fae_guardians_t( priest_t& p )
-    : base_t( p, "fae_guardians", p.covenant.fae_guardians )
-  {}
+  fae_guardians_t( priest_t& p ) : base_t( p, "fae_guardians", p.covenant.fae_guardians )
+  {
+  }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
@@ -2087,13 +2092,11 @@ buffs::dispersion_t::dispersion_t( priest_t& p )
 }
 
 buffs::benevolent_faerie_t::benevolent_faerie_t( player_t* p )
-  : buff_t( p, "benevolent_faerie", p->find_spell( 327710 ) ),
-    affected_actions_initialized( false )
+  : buff_t( p, "benevolent_faerie", p->find_spell( 327710 ) ), affected_actions_initialized( false )
 {
   set_default_value_from_effect( 1 );
 
-  set_stack_change_callback( [ this ]( buff_t* b, int, int new_ )
-  {
+  set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
     if ( !affected_actions_initialized )
     {
       int label = data().effectN( 1 ).misc_value1();
