@@ -2087,11 +2087,39 @@ buffs::dispersion_t::dispersion_t( priest_t& p )
 }
 
 buffs::benevolent_faerie_t::benevolent_faerie_t( player_t* p )
-  : buff_t( p, "benevolent_faerie", p->find_spell( 327710 ) )
+  : buff_t( p, "benevolent_faerie", p->find_spell( 327710 ) ),
+    affected_actions_initialized( false )
 {
   set_default_value_from_effect( 1 );
+
   set_stack_change_callback( [ this ]( buff_t* b, int, int new_ )
   {
+    if ( !affected_actions_initialized )
+    {
+      std::vector<int> affecting_labels;
+      for ( auto e : data().effects() )
+        if ( e.subtype() == A_MOD_RECHARGE_RATE_LABEL )
+          affecting_labels.push_back( e.misc_value1() );
+
+      affected_actions.clear();
+      for ( auto a : player->action_list )
+      {
+        for ( auto l : affecting_labels )
+        {
+          if ( a->data().affected_by_label( l ) )
+          {
+            if ( range::find( affected_actions, a ) == affected_actions.end() )
+            {
+              affected_actions.push_back( a );
+              break;
+            }
+          }
+        }
+      }
+
+      affected_actions_initialized = true;
+    }
+
     double recharge_rate_multiplier = 1.0 / ( 1 + b->default_value );
     for ( auto a : affected_actions )
     {
@@ -2105,32 +2133,6 @@ buffs::benevolent_faerie_t::benevolent_faerie_t( player_t* p )
         a->internal_cooldown->adjust_recharge_multiplier();
     }
   } );
-}
-
-void buffs::benevolent_faerie_t::reset()
-{
-  buff_t::reset();
-
-  std::vector<int> affecting_labels;
-  for ( auto e : data().effects() )
-    if ( e.subtype() == A_MOD_RECHARGE_RATE_LABEL )
-      affecting_labels.push_back( e.misc_value1() );
-
-  affected_actions.clear();
-  for ( auto a : player->action_list )
-  {
-    for ( auto l : affecting_labels )
-    {
-      if ( a->data().affected_by_label( l ) )
-      {
-        if ( range::find( affected_actions, a ) == affected_actions.end() )
-        {
-          affected_actions.push_back( a );
-          break;
-        }
-      }
-    }
-  }
 }
 
 }  // namespace priestspace

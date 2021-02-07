@@ -1038,10 +1038,9 @@ struct dispersion_t final : public priest_buff_t<buff_t>
 struct benevolent_faerie_t final : public buff_t
 {
   std::vector<action_t*> affected_actions;
+  bool affected_actions_initialized;
 
   benevolent_faerie_t( player_t* p );
-
-  void reset() override;
 };
 
 }  // namespace buffs
