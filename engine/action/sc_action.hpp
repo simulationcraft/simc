@@ -334,6 +334,9 @@ public:
   /// Static action cooldown duration multiplier
   double base_recharge_multiplier;
 
+  /// A second static action cooldown duration multiplier that also reduces the effectiveness of flat cooldown adjustments
+  double base_recharge_rate_multiplier;
+
   /// Maximum distance that the ability can travel. Used on abilities that instantly move you, or nearly instantly move you to a location.
   double base_teleport_distance;
 
@@ -589,7 +592,7 @@ public:
   }
 
   void parse_spell_data( const spell_data_t& );
-  
+
   void parse_effect_data( const spelleffect_data_t& );
 
   void parse_target_str();
@@ -668,6 +671,9 @@ public:
 
   virtual double recharge_multiplier( const cooldown_t& ) const
   { return base_recharge_multiplier; }
+
+  virtual double recharge_rate_multiplier( const cooldown_t& ) const
+  { return base_recharge_rate_multiplier; }
 
   /** Cooldown base duration for action based cooldowns. */
   virtual timespan_t cooldown_base_duration( const cooldown_t& cd ) const;

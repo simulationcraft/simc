@@ -1245,11 +1245,8 @@ struct void_eruption_damage_t final : public priest_spell_t
 
 struct void_eruption_t final : public priest_spell_t
 {
-  double benevolent_faerie_rate;
-
   void_eruption_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "void_eruption", p, p.specs.void_eruption ),
-      benevolent_faerie_rate( p.covenant.benevolent_faerie->effectN( 1 ).percent() )
+    : priest_spell_t( "void_eruption", p, p.specs.void_eruption )
   {
     parse_options( options_str );
 
@@ -1280,18 +1277,6 @@ struct void_eruption_t final : public priest_spell_t
     }
 
     return priest_spell_t::ready();
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double m = priest_spell_t::recharge_multiplier( cd );
-
-    if ( &cd == cooldown && priest().buffs.fae_guardians->check() && priest().options.self_benevolent_faerie )
-    {
-      m /= 1.0 + benevolent_faerie_rate;
-    }
-
-    return m;
   }
 };
 

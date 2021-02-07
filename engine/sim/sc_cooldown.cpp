@@ -145,7 +145,7 @@ void cooldown_t::adjust_recharge_multiplier()
 
   double old_multiplier = recharge_multiplier;
   assert( action && "Only cooldowns with associated action can have their recharge multiplier adjusted." );
-  recharge_multiplier = action->recharge_multiplier( *this );
+  recharge_multiplier = action->recharge_multiplier( *this ) * action->recharge_rate_multiplier( *this );
   assert( recharge_multiplier > 0.0 );
   if ( old_multiplier == recharge_multiplier )
   {
@@ -245,6 +245,9 @@ void cooldown_t::adjust( timespan_t amount, bool requires_reaction )
 {
   if ( amount == 0_ms )
     return;
+
+  if ( action )
+    amount *= action->recharge_rate_multiplier( *this );
 
   // Normal cooldown, just adjust as we see fit
   if ( charges == 1 )
@@ -433,7 +436,7 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
 
   if ( a )
   {
-    recharge_multiplier = a->recharge_multiplier( *this );
+    recharge_multiplier = a->recharge_multiplier( *this ) * a->recharge_rate_multiplier( *this );
   }
   else
   {
@@ -497,7 +500,7 @@ timespan_t cooldown_t::cooldown_duration( const cooldown_t* cd )
   if ( cd->ongoing() )
     return cd->recharge_multiplier * cd->base_duration;
   else if ( cd->action )
-    return cd->action->recharge_multiplier( *cd ) * cd->action->cooldown_base_duration( *cd );
+    return cd->action->recharge_multiplier( *cd ) * cd->action->recharge_rate_multiplier( *cd ) * cd->action->cooldown_base_duration( *cd );
   else
     return cd->duration;
 }
