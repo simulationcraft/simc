@@ -1,0 +1,328 @@
+{
+  "realms": [
+    {
+      "name": "가로나",
+      "slug": "garona",
+      "names": {
+        "en_US": "Garona",
+        "es_MX": "Garona",
+        "pt_BR": "Garona",
+        "de_DE": "Garona",
+        "en_GB": "Garona",
+        "es_ES": "Garona",
+        "fr_FR": "Garona",
+        "it_IT": "Garona",
+        "ru_RU": "Garona",
+        "ko_KR": "가로나",
+        "zh_TW": "迦羅娜",
+        "zh_CN": "迦罗娜"
+      }
+    },
+    {
+      "name": "굴단",
+      "slug": "guldan",
+      "names": {
+        "en_US": "Gul'dan",
+        "es_MX": "Gul'dan",
+        "pt_BR": "Gul'dan",
+        "de_DE": "Gul'dan",
+        "en_GB": "Gul'dan",
+        "es_ES": "Gul'dan",
+        "fr_FR": "Gul'dan",
+        "it_IT": "Gul'dan",
+        "ru_RU": "Gul'dan",
+        "ko_KR": "굴단",
+        "zh_TW": "古爾丹",
+        "zh_CN": "古尔丹"
+      }
+    },
+    {
+      "name": "노르간논",
+      "slug": "norgannon",
+      "names": {
+        "en_US": "Norgannon",
+        "es_MX": "Norgannon",
+        "pt_BR": "Norgannon",
+        "de_DE": "Norgannon",
+        "en_GB": "Norgannon",
+        "es_ES": "Norgannon",
+        "fr_FR": "Norgannon",
+        "it_IT": "Norgannon",
+        "ru_RU": "Norgannon",
+        "ko_KR": "노르간논",
+        "zh_TW": "諾甘農",
+        "zh_CN": "诺甘农"
+      }
+    },
+    {
+      "name": "달라란",
+      "slug": "dalaran",
+      "names": {
+        "en_US": "Dalaran",
+        "es_MX": "Dalaran",
+        "pt_BR": "Dalaran",
+        "de_DE": "Dalaran",
+        "en_GB": "Dalaran",
+        "es_ES": "Dalaran",
+        "fr_FR": "Dalaran",
+        "it_IT": "Dalaran",
+        "ru_RU": "Dalaran",
+        "ko_KR": "달라란",
+        "zh_TW": "達拉然",
+        "zh_CN": "达拉然"
+      }
+    },
+    {
+      "name": "데스윙",
+      "slug": "deathwing",
+      "names": {
+        "en_US": "Deathwing",
+        "es_MX": "Deathwing",
+        "pt_BR": "Deathwing",
+        "de_DE": "Deathwing",
+        "en_GB": "Deathwing",
+        "es_ES": "Deathwing",
+        "fr_FR": "Deathwing",
+        "it_IT": "Deathwing",
+        "ru_RU": "Deathwing",
+        "ko_KR": "데스윙",
+        "zh_TW": "死亡之翼",
+        "zh_CN": "死亡之翼"
+      }
+    },
+    {
+      "name": "듀로탄",
+      "slug": "durotan",
+      "names": {
+        "en_US": "Durotan",
+        "es_MX": "Durotan",
+        "pt_BR": "Durotan",
+        "de_DE": "Durotan",
+        "en_GB": "Durotan",
+        "es_ES": "Durotan",
+        "fr_FR": "Durotan",
+        "it_IT": "Durotan",
+        "ru_RU": "Durotan",
+        "ko_KR": "듀로탄",
+        "zh_TW": "杜洛坦",
+        "zh_CN": "杜隆坦"
+      }
+    },
+    {
+      "name": "렉사르",
+      "slug": "rexxar",
+      "names": {
+        "en_US": "Rexxar",
+        "es_MX": "Rexxar",
+        "pt_BR": "Rexxar",
+        "de_DE": "Rexxar",
+        "en_GB": "Rexxar",
+        "es_ES": "Rexxar",
+        "fr_FR": "Rexxar",
+        "it_IT": "Rexxar",
+        "ru_RU": "Rexxar",
+        "ko_KR": "렉사르",
+        "zh_TW": "雷克薩",
+        "zh_CN": "雷克萨"
+      }
+    },
+    {
+      "name": "말퓨리온",
+      "slug": "malfurion",
+      "names": {
+        "en_US": "Malfurion",
+        "es_MX": "Malfurion",
+        "pt_BR": "Malfurion",
+        "de_DE": "Malfurion",
+        "en_GB": "Malfurion",
+        "es_ES": "Malfurion",
+        "fr_FR": "Malfurion",
+        "it_IT": "Malfurion",
+        "ru_RU": "Malfurion",
+        "ko_KR": "말퓨리온",
+        "zh_TW": "瑪法里恩",
+        "zh_CN": "玛法里奥"
+      }
+    },
+    {
+      "name": "불타는 군단",
+      "slug": "burning-legion",
+      "names": {
+        "en_US": "Burning Legion",
+        "es_MX": "Burning Legion",
+        "pt_BR": "Burning Legion",
+        "de_DE": "Burning Legion",
+        "en_GB": "Burning Legion",
+        "es_ES": "Burning Legion",
+        "fr_FR": "Burning Legion",
+        "it_IT": "Burning Legion",
+        "ru_RU": "Burning Legion",
+        "ko_KR": "불타는 군단",
+        "zh_TW": "燃燒軍團",
+        "zh_CN": "燃烧军团"
+      }
+    },
+    {
+      "name": "세나리우스",
+      "slug": "cenarius",
+      "names": {
+        "en_US": "Cenarius",
+        "es_MX": "Cenarius",
+        "pt_BR": "Cenarius",
+        "de_DE": "Cenarius",
+        "en_GB": "Cenarius",
+        "es_ES": "Cenarius",
+        "fr_FR": "Cenarius",
+        "it_IT": "Cenarius",
+        "ru_RU": "Cenarius",
+        "ko_KR": "세나리우스",
+        "zh_TW": "塞納留斯",
+        "zh_CN": "塞纳留斯"
+      }
+    },
+    {
+      "name": "스톰레이지",
+      "slug": "stormrage",
+      "names": {
+        "en_US": "Stormrage",
+        "es_MX": "Stormrage",
+        "pt_BR": "Stormrage",
+        "de_DE": "Stormrage",
+        "en_GB": "Stormrage",
+        "es_ES": "Stormrage",
+        "fr_FR": "Stormrage",
+        "it_IT": "Stormrage",
+        "ru_RU": "Stormrage",
+        "ko_KR": "스톰레이지",
+        "zh_TW": "怒風",
+        "zh_CN": "风暴之怒"
+      }
+    },
+    {
+      "name": "아즈샤라",
+      "slug": "azshara",
+      "names": {
+        "en_US": "Azshara",
+        "es_MX": "Azshara",
+        "pt_BR": "Azshara",
+        "de_DE": "Azshara",
+        "en_GB": "Azshara",
+        "es_ES": "Azshara",
+        "fr_FR": "Azshara",
+        "it_IT": "Azshara",
+        "ru_RU": "Azshara",
+        "ko_KR": "아즈샤라",
+        "zh_TW": "艾薩拉",
+        "zh_CN": "艾萨拉"
+      }
+    },
+    {
+      "name": "알렉스트라자",
+      "slug": "alexstrasza",
+      "names": {
+        "en_US": "Alexstrasza",
+        "es_MX": "Alexstrasza",
+        "pt_BR": "Alexstrasza",
+        "de_DE": "Alexstrasza",
+        "en_GB": "Alexstrasza",
+        "es_ES": "Alexstrasza",
+        "fr_FR": "Alexstrasza",
+        "it_IT": "Alexstrasza",
+        "ru_RU": "Alexstrasza",
+        "ko_KR": "알렉스트라자",
+        "zh_TW": "雅立史卓莎",
+        "zh_CN": "红龙女王"
+      }
+    },
+    {
+      "name": "와일드해머",
+      "slug": "wildhammer",
+      "names": {
+        "en_US": "Wildhammer",
+        "es_MX": "Wildhammer",
+        "pt_BR": "Wildhammer",
+        "de_DE": "Wildhammer",
+        "en_GB": "Wildhammer",
+        "es_ES": "Wildhammer",
+        "fr_FR": "Wildhammer",
+        "it_IT": "Wildhammer",
+        "ru_RU": "Wildhammer",
+        "ko_KR": "와일드해머",
+        "zh_TW": "蠻錘",
+        "zh_CN": "蛮锤"
+      }
+    },
+    {
+      "name": "윈드러너",
+      "slug": "windrunner",
+      "names": {
+        "en_US": "Windrunner",
+        "es_MX": "Windrunner",
+        "pt_BR": "Windrunner",
+        "de_DE": "Windrunner",
+        "en_GB": "Windrunner",
+        "es_ES": "Windrunner",
+        "fr_FR": "Windrunner",
+        "it_IT": "Windrunner",
+        "ru_RU": "Ветрокрылая",
+        "ko_KR": "윈드러너",
+        "zh_TW": "風行者",
+        "zh_CN": "风行者"
+      }
+    },
+    {
+      "name": "줄진",
+      "slug": "zuljin",
+      "names": {
+        "en_US": "Zul'jin",
+        "es_MX": "Zul'jin",
+        "pt_BR": "Zul'jin",
+        "de_DE": "Zul'jin",
+        "en_GB": "Zul'jin",
+        "es_ES": "Zul'jin",
+        "fr_FR": "Zul'jin",
+        "it_IT": "Zul'jin",
+        "ru_RU": "Zul'jin",
+        "ko_KR": "줄진",
+        "zh_TW": "祖爾金",
+        "zh_CN": "祖尔金"
+      }
+    },
+    {
+      "name": "하이잘",
+      "slug": "hyjal",
+      "names": {
+        "en_US": "Hyjal",
+        "es_MX": "Hyjal",
+        "pt_BR": "Hyjal",
+        "de_DE": "Hyjal",
+        "en_GB": "Hyjal",
+        "es_ES": "Hyjal",
+        "fr_FR": "Hyjal",
+        "it_IT": "Hyjal",
+        "ru_RU": "Hyjal",
+        "ko_KR": "하이잘",
+        "zh_TW": "海加爾山",
+        "zh_CN": "海加尔"
+      }
+    },
+    {
+      "name": "헬스크림",
+      "slug": "hellscream",
+      "names": {
+        "en_US": "Hellscream",
+        "es_MX": "Hellscream",
+        "pt_BR": "Hellscream",
+        "de_DE": "Hellscream",
+        "en_GB": "Hellscream",
+        "es_ES": "Hellscream",
+        "fr_FR": "Hellscream",
+        "it_IT": "Hellscream",
+        "ru_RU": "Hellscream",
+        "ko_KR": "헬스크림",
+        "zh_TW": "地獄吼",
+        "zh_CN": "地狱咆哮"
+      }
+    }
+  ]
+}

@@ -1,0 +1,4810 @@
+{
+  "realms": [
+    {
+      "name": "Aegwynn",
+      "slug": "aegwynn",
+      "names": {
+        "en_US": "Aegwynn",
+        "es_MX": "Aegwynn",
+        "pt_BR": "Aegwynn",
+        "de_DE": "Aegwynn",
+        "en_GB": "Aegwynn",
+        "es_ES": "Aegwynn",
+        "fr_FR": "Aegwynn",
+        "it_IT": "Aegwynn",
+        "ru_RU": "Aegwynn",
+        "ko_KR": "Aegwynn",
+        "zh_TW": "艾格文",
+        "zh_CN": "艾格文"
+      }
+    },
+    {
+      "name": "Aerie Peak",
+      "slug": "aerie-peak",
+      "names": {
+        "en_US": "Aerie Peak",
+        "es_MX": "Aerie Peak",
+        "pt_BR": "Aerie Peak",
+        "de_DE": "Aerie Peak",
+        "en_GB": "Aerie Peak",
+        "es_ES": "Aerie Peak",
+        "fr_FR": "Aerie Peak",
+        "it_IT": "Aerie Peak",
+        "ru_RU": "Aerie Peak",
+        "ko_KR": "Aerie Peak",
+        "zh_TW": "鷹巢山",
+        "zh_CN": "鹰巢山"
+      }
+    },
+    {
+      "name": "Agamaggan",
+      "slug": "agamaggan",
+      "names": {
+        "en_US": "Agamaggan",
+        "es_MX": "Agamaggan",
+        "pt_BR": "Agamaggan",
+        "de_DE": "Agamaggan",
+        "en_GB": "Agamaggan",
+        "es_ES": "Agamaggan",
+        "fr_FR": "Agamaggan",
+        "it_IT": "Agamaggan",
+        "ru_RU": "Agamaggan",
+        "ko_KR": "Agamaggan",
+        "zh_TW": "阿迦瑪甘",
+        "zh_CN": "阿迦玛甘"
+      }
+    },
+    {
+      "name": "Aggra (Português)",
+      "slug": "aggra-português",
+      "names": {
+        "en_US": "Aggra (Português)",
+        "es_MX": "Aggra (Português)",
+        "pt_BR": "Aggra (Português)",
+        "de_DE": "Aggra (Portugiesisch)",
+        "en_GB": "Aggra (Português)",
+        "es_ES": "Aggra (Português)",
+        "fr_FR": "Aggra (Português)",
+        "it_IT": "Aggra (Português)",
+        "ru_RU": "Aggra (Português)",
+        "ko_KR": "Aggra (Português)",
+        "zh_TW": "阿格拉(葡萄牙語)",
+        "zh_CN": "Aggra (Português)"
+      }
+    },
+    {
+      "name": "Aggramar",
+      "slug": "aggramar",
+      "names": {
+        "en_US": "Aggramar",
+        "es_MX": "Aggramar",
+        "pt_BR": "Aggramar",
+        "de_DE": "Aggramar",
+        "en_GB": "Aggramar",
+        "es_ES": "Aggramar",
+        "fr_FR": "Aggramar",
+        "it_IT": "Aggramar",
+        "ru_RU": "Aggramar",
+        "ko_KR": "Aggramar",
+        "zh_TW": "阿格拉瑪",
+        "zh_CN": "阿格拉玛"
+      }
+    },
+    {
+      "name": "Ahn'Qiraj",
+      "slug": "ahnqiraj",
+      "names": {
+        "en_US": "Ahn'Qiraj",
+        "es_MX": "Ahn'Qiraj",
+        "pt_BR": "Ahn'Qiraj",
+        "de_DE": "Ahn'Qiraj",
+        "en_GB": "Ahn'Qiraj",
+        "es_ES": "Ahn'Qiraj",
+        "fr_FR": "Ahn'Qiraj",
+        "it_IT": "Ahn'qiraj",
+        "ru_RU": "Ahn'Qiraj",
+        "ko_KR": "Ahn'Qiraj",
+        "zh_TW": "安其拉",
+        "zh_CN": "安其拉"
+      }
+    },
+    {
+      "name": "Al'Akir",
+      "slug": "alakir",
+      "names": {
+        "en_US": "Al'Akir",
+        "es_MX": "Al'Akir",
+        "pt_BR": "Al'Akir",
+        "de_DE": "Al'Akir",
+        "en_GB": "Al'Akir",
+        "es_ES": "Al'Akir",
+        "fr_FR": "Al'Akir",
+        "it_IT": "Al'Akir",
+        "ru_RU": "Al'Akir",
+        "ko_KR": "Al'Akir",
+        "zh_TW": "奧拉基爾",
+        "zh_CN": "奥拉基尔"
+      }
+    },
+    {
+      "name": "Alexstrasza",
+      "slug": "alexstrasza",
+      "names": {
+        "en_US": "Alexstrasza",
+        "es_MX": "Alexstrasza",
+        "pt_BR": "Alexstrasza",
+        "de_DE": "Alexstrasza",
+        "en_GB": "Alexstrasza",
+        "es_ES": "Alexstrasza",
+        "fr_FR": "Alexstrasza",
+        "it_IT": "Alexstrasza",
+        "ru_RU": "Alexstrasza",
+        "ko_KR": "Alexstrasza",
+        "zh_TW": "雅立史卓莎",
+        "zh_CN": "红龙女王"
+      }
+    },
+    {
+      "name": "Alleria",
+      "slug": "alleria",
+      "names": {
+        "en_US": "Alleria",
+        "es_MX": "Alleria",
+        "pt_BR": "Alleria",
+        "de_DE": "Alleria",
+        "en_GB": "Alleria",
+        "es_ES": "Alleria",
+        "fr_FR": "Alleria",
+        "it_IT": "Alleria",
+        "ru_RU": "Alleria",
+        "ko_KR": "Alleria",
+        "zh_TW": "艾蘭里亞",
+        "zh_CN": "奥蕾莉亚"
+      }
+    },
+    {
+      "name": "Alonsus",
+      "slug": "alonsus",
+      "names": {
+        "en_US": "Alonsus",
+        "es_MX": "Alonsus",
+        "pt_BR": "Alonsus",
+        "de_DE": "Alonsus",
+        "en_GB": "Alonsus",
+        "es_ES": "Alonsus",
+        "fr_FR": "Alonsus",
+        "it_IT": "Alonsus",
+        "ru_RU": "Alonsus",
+        "ko_KR": "Alonsus",
+        "zh_TW": "阿隆索斯",
+        "zh_CN": "阿隆索斯"
+      }
+    },
+    {
+      "name": "Aman'Thul",
+      "slug": "amanthul",
+      "names": {
+        "en_US": "Aman'Thul",
+        "es_MX": "Aman'Thul",
+        "pt_BR": "Aman'Thul",
+        "de_DE": "Aman'thul",
+        "en_GB": "Aman'Thul",
+        "es_ES": "Aman'thul",
+        "fr_FR": "Aman'Thul",
+        "it_IT": "Aman'Thul",
+        "ru_RU": "Aman'Thul",
+        "ko_KR": "Aman'Thul",
+        "zh_TW": "阿曼蘇爾",
+        "zh_CN": "阿曼苏尔"
+      }
+    },
+    {
+      "name": "Ambossar",
+      "slug": "ambossar",
+      "names": {
+        "en_US": "Ambossar",
+        "es_MX": "Ambossar",
+        "pt_BR": "Ambossar",
+        "de_DE": "Ambossar",
+        "en_GB": "Ambossar",
+        "es_ES": "Ambossar",
+        "fr_FR": "Ambossar",
+        "it_IT": "Ambossar",
+        "ru_RU": "Ambossar",
+        "ko_KR": "Ambossar",
+        "zh_TW": "安伯薩",
+        "zh_CN": "Ambossar"
+      }
+    },
+    {
+      "name": "Anachronos",
+      "slug": "anachronos",
+      "names": {
+        "en_US": "Anachronos",
+        "es_MX": "Anachronos",
+        "pt_BR": "Anachronos",
+        "de_DE": "Anachronos",
+        "en_GB": "Anachronos",
+        "es_ES": "Anachronos",
+        "fr_FR": "Anachronos",
+        "it_IT": "Anacronos",
+        "ru_RU": "Anachronos",
+        "ko_KR": "Anachronos",
+        "zh_TW": "安納克羅斯",
+        "zh_CN": "阿纳克洛斯"
+      }
+    },
+    {
+      "name": "Anetheron",
+      "slug": "anetheron",
+      "names": {
+        "en_US": "Anetheron",
+        "es_MX": "Anetheron",
+        "pt_BR": "Anetheron",
+        "de_DE": "Anetheron",
+        "en_GB": "Anetheron",
+        "es_ES": "Anetheron",
+        "fr_FR": "Anetheron",
+        "it_IT": "Anetheron",
+        "ru_RU": "Anetheron",
+        "ko_KR": "Anetheron",
+        "zh_TW": "安納塞隆",
+        "zh_CN": "安纳塞隆"
+      }
+    },
+    {
+      "name": "Antonidas",
+      "slug": "antonidas",
+      "names": {
+        "en_US": "Antonidas",
+        "es_MX": "Antonidas",
+        "pt_BR": "Antonidas",
+        "de_DE": "Antonidas",
+        "en_GB": "Antonidas",
+        "es_ES": "Antonidas",
+        "fr_FR": "Antonidas",
+        "it_IT": "Antonidas",
+        "ru_RU": "Antonidas",
+        "ko_KR": "Antonidas",
+        "zh_TW": "安東尼達斯",
+        "zh_CN": "安东尼达斯"
+      }
+    },
+    {
+      "name": "Anub'arak",
+      "slug": "anubarak",
+      "names": {
+        "en_US": "Anub'arak",
+        "es_MX": "Anub'arak",
+        "pt_BR": "Anub'arak",
+        "de_DE": "Anub'arak",
+        "en_GB": "Anub'arak",
+        "es_ES": "Anub'arak",
+        "fr_FR": "Anub'arak",
+        "it_IT": "Anub'arak",
+        "ru_RU": "Anub'arak",
+        "ko_KR": "Anub'arak",
+        "zh_TW": "阿努巴拉克",
+        "zh_CN": "阿努巴拉克"
+      }
+    },
+    {
+      "name": "Arak-arahm",
+      "slug": "arakarahm",
+      "names": {
+        "en_US": "Arak-arahm",
+        "es_MX": "Arak-arahm",
+        "pt_BR": "Arak-arahm",
+        "de_DE": "Arak-arahm",
+        "en_GB": "Arak-arahm",
+        "es_ES": "Arak-arahm",
+        "fr_FR": "Arak-arahm",
+        "it_IT": "Arak-arahm",
+        "ru_RU": "Arak-arahm",
+        "ko_KR": "Arak-arahm",
+        "zh_TW": "阿蘭卡拉",
+        "zh_CN": "阿兰卡拉"
+      }
+    },
+    {
+      "name": "Arathi",
+      "slug": "arathi",
+      "names": {
+        "en_US": "Arathi",
+        "es_MX": "Arathi",
+        "pt_BR": "Arathi",
+        "de_DE": "Arathi",
+        "en_GB": "Arathi",
+        "es_ES": "Arathi",
+        "fr_FR": "Arathi",
+        "it_IT": "Arathi",
+        "ru_RU": "Arathi",
+        "ko_KR": "Arathi",
+        "zh_TW": "阿拉希",
+        "zh_CN": "阿拉希"
+      }
+    },
+    {
+      "name": "Arathor",
+      "slug": "arathor",
+      "names": {
+        "en_US": "Arathor",
+        "es_MX": "Arathor",
+        "pt_BR": "Arathor",
+        "de_DE": "Arathor",
+        "en_GB": "Arathor",
+        "es_ES": "Arathor",
+        "fr_FR": "Arathor",
+        "it_IT": "Arathor",
+        "ru_RU": "Arathor",
+        "ko_KR": "Arathor",
+        "zh_TW": "阿拉索",
+        "zh_CN": "阿拉索"
+      }
+    },
+    {
+      "name": "Archimonde",
+      "slug": "archimonde",
+      "names": {
+        "en_US": "Archimonde",
+        "es_MX": "Archimonde",
+        "pt_BR": "Archimonde",
+        "de_DE": "Archimonde",
+        "en_GB": "Archimonde",
+        "es_ES": "Archimonde",
+        "fr_FR": "Archimonde",
+        "it_IT": "Archimonde",
+        "ru_RU": "Archimonde",
+        "ko_KR": "Archimonde",
+        "zh_TW": "阿克蒙德",
+        "zh_CN": "阿克蒙德"
+      }
+    },
+    {
+      "name": "Area 52",
+      "slug": "area-52",
+      "names": {
+        "en_US": "Area 52",
+        "es_MX": "Area 52",
+        "pt_BR": "Area 52",
+        "de_DE": "Area 52",
+        "en_GB": "Area 52",
+        "es_ES": "Area 52",
+        "fr_FR": "Area 52",
+        "it_IT": "Area 52",
+        "ru_RU": "Area 52",
+        "ko_KR": "Area 52",
+        "zh_TW": "52區",
+        "zh_CN": "Area 52"
+      }
+    },
+    {
+      "name": "Argent Dawn",
+      "slug": "argent-dawn",
+      "names": {
+        "en_US": "Argent Dawn",
+        "es_MX": "Argent Dawn",
+        "pt_BR": "Argent Dawn",
+        "de_DE": "Argent Dawn",
+        "en_GB": "Argent Dawn",
+        "es_ES": "Argent Dawn",
+        "fr_FR": "Argent Dawn",
+        "it_IT": "Argent Dawn",
+        "ru_RU": "Argent Dawn",
+        "ko_KR": "Argent Dawn",
+        "zh_TW": "銀色黎明",
+        "zh_CN": "银色黎明"
+      }
+    },
+    {
+      "name": "Arthas",
+      "slug": "arthas",
+      "names": {
+        "en_US": "Arthas",
+        "es_MX": "Arthas",
+        "pt_BR": "Arthas",
+        "de_DE": "Arthas",
+        "en_GB": "Arthas",
+        "es_ES": "Arthas",
+        "fr_FR": "Arthas",
+        "it_IT": "Arthas",
+        "ru_RU": "Arthas",
+        "ko_KR": "Arthas",
+        "zh_TW": "阿薩斯",
+        "zh_CN": "阿尔萨斯"
+      }
+    },
+    {
+      "name": "Arygos",
+      "slug": "arygos",
+      "names": {
+        "en_US": "Arygos",
+        "es_MX": "Arygos",
+        "pt_BR": "Arygos",
+        "de_DE": "Arygos",
+        "en_GB": "Arygos",
+        "es_ES": "Arygos",
+        "fr_FR": "Arygos",
+        "it_IT": "Arygos",
+        "ru_RU": "Arygos",
+        "ko_KR": "Arygos",
+        "zh_TW": "亞雷戈斯",
+        "zh_CN": "亚雷戈斯"
+      }
+    },
+    {
+      "name": "Ashenvale",
+      "slug": "ashenvale",
+      "names": {
+        "en_US": "Ashenvale",
+        "es_MX": "Ashenvale",
+        "pt_BR": "Ясеневый лес",
+        "de_DE": "Ashenvale",
+        "en_GB": "Ashenvale",
+        "es_ES": "Ashenvale",
+        "fr_FR": "Ashenvale",
+        "it_IT": "Ясеневый лес",
+        "ru_RU": "Ясеневый лес",
+        "ko_KR": "Ashenvale",
+        "zh_TW": "Ashenvale",
+        "zh_CN": "灰谷"
+      }
+    },
+    {
+      "name": "Aszune",
+      "slug": "aszune",
+      "names": {
+        "en_US": "Aszune",
+        "es_MX": "Aszune",
+        "pt_BR": "Aszune",
+        "de_DE": "Aszune",
+        "en_GB": "Aszune",
+        "es_ES": "Aszune",
+        "fr_FR": "Aszune",
+        "it_IT": "Aszune",
+        "ru_RU": "Aszune",
+        "ko_KR": "Aszune",
+        "zh_TW": "亞斯隼",
+        "zh_CN": "艾苏恩"
+      }
+    },
+    {
+      "name": "Auchindoun",
+      "slug": "auchindoun",
+      "names": {
+        "en_US": "Auchindoun",
+        "es_MX": "Auchindoun",
+        "pt_BR": "Auchindoun",
+        "de_DE": "Auchindoun",
+        "en_GB": "Auchindoun",
+        "es_ES": "Auchindoun",
+        "fr_FR": "Auchindoun",
+        "it_IT": "Auchindoun",
+        "ru_RU": "Auchindoun",
+        "ko_KR": "Auchindoun",
+        "zh_TW": "奧齊頓",
+        "zh_CN": "奥金顿"
+      }
+    },
+    {
+      "name": "Azjol-Nerub",
+      "slug": "azjolnerub",
+      "names": {
+        "en_US": "Azjol-Nerub",
+        "es_MX": "Azjol-Nerub",
+        "pt_BR": "Azjol-Nerub",
+        "de_DE": "Azjol-Nerub",
+        "en_GB": "Azjol-Nerub",
+        "es_ES": "Azjol-Nerub",
+        "fr_FR": "Azjol-Nerub",
+        "it_IT": "Azjol-Nerub",
+        "ru_RU": "Azjol-Nerub",
+        "ko_KR": "Azjol-Nerub",
+        "zh_TW": "阿茲歐-奈幽",
+        "zh_CN": "蜘蛛王国"
+      }
+    },
+    {
+      "name": "Azshara",
+      "slug": "azshara",
+      "names": {
+        "en_US": "Azshara",
+        "es_MX": "Azshara",
+        "pt_BR": "Azshara",
+        "de_DE": "Azshara",
+        "en_GB": "Azshara",
+        "es_ES": "Azshara",
+        "fr_FR": "Azshara",
+        "it_IT": "Azshara",
+        "ru_RU": "Azshara",
+        "ko_KR": "Azshara",
+        "zh_TW": "艾薩拉",
+        "zh_CN": "艾萨拉"
+      }
+    },
+    {
+      "name": "Azuregos",
+      "slug": "azuregos",
+      "names": {
+        "en_US": "Azuregos",
+        "es_MX": "Azuregos",
+        "pt_BR": "Азурегос",
+        "de_DE": "Azuregos",
+        "en_GB": "Azuregos",
+        "es_ES": "Azuregos",
+        "fr_FR": "Azuregos",
+        "it_IT": "Азурегос",
+        "ru_RU": "Азурегос",
+        "ko_KR": "Azuregos",
+        "zh_TW": "艾索雷苟斯",
+        "zh_CN": "埃苏雷格"
+      }
+    },
+    {
+      "name": "Azuremyst",
+      "slug": "azuremyst",
+      "names": {
+        "en_US": "Azuremyst",
+        "es_MX": "Azuremyst",
+        "pt_BR": "Azuremyst",
+        "de_DE": "Azuremyst",
+        "en_GB": "Azuremyst",
+        "es_ES": "Azuremyst",
+        "fr_FR": "Azuremyst",
+        "it_IT": "Azuremyst",
+        "ru_RU": "Azuremyst",
+        "ko_KR": "Azuremyst",
+        "zh_TW": "藍謎島",
+        "zh_CN": "秘蓝岛"
+      }
+    },
+    {
+      "name": "Baelgun",
+      "slug": "baelgun",
+      "names": {
+        "en_US": "Baelgun",
+        "es_MX": "Baelgun",
+        "pt_BR": "Baelgun",
+        "de_DE": "Baelgun",
+        "en_GB": "Baelgun",
+        "es_ES": "Baelgun",
+        "fr_FR": "Baelgun",
+        "it_IT": "Baelgun",
+        "ru_RU": "Baelgun",
+        "ko_KR": "Baelgun",
+        "zh_TW": "巴爾古恩",
+        "zh_CN": "巴尔古恩"
+      }
+    },
+    {
+      "name": "Balnazzar",
+      "slug": "balnazzar",
+      "names": {
+        "en_US": "Balnazzar",
+        "es_MX": "Balnazzar",
+        "pt_BR": "Balnazzar",
+        "de_DE": "Balnazzar",
+        "en_GB": "Balnazzar",
+        "es_ES": "Balnazzar",
+        "fr_FR": "Balnazzar",
+        "it_IT": "Balnazzar",
+        "ru_RU": "Balnazzar",
+        "ko_KR": "Balnazzar",
+        "zh_TW": "巴納札爾",
+        "zh_CN": "巴纳扎尔"
+      }
+    },
+    {
+      "name": "Blackhand",
+      "slug": "blackhand",
+      "names": {
+        "en_US": "Blackhand",
+        "es_MX": "Blackhand",
+        "pt_BR": "Blackhand",
+        "de_DE": "Blackhand",
+        "en_GB": "Blackhand",
+        "es_ES": "Blackhand",
+        "fr_FR": "Blackhand",
+        "it_IT": "Blackhand",
+        "ru_RU": "Blackhand",
+        "ko_KR": "Blackhand",
+        "zh_TW": "黑手氏族",
+        "zh_CN": "黑手军团"
+      }
+    },
+    {
+      "name": "Blackmoore",
+      "slug": "blackmoore",
+      "names": {
+        "en_US": "Blackmoore",
+        "es_MX": "Blackmoore",
+        "pt_BR": "Blackmoore",
+        "de_DE": "Blackmoore",
+        "en_GB": "Blackmoore",
+        "es_ES": "Blackmoore",
+        "fr_FR": "Blackmoore",
+        "it_IT": "Blackmoore",
+        "ru_RU": "Blackmoore",
+        "ko_KR": "Blackmoore",
+        "zh_TW": "布萊克摩爾",
+        "zh_CN": "布莱克摩"
+      }
+    },
+    {
+      "name": "Blackrock",
+      "slug": "blackrock",
+      "names": {
+        "en_US": "Blackrock",
+        "es_MX": "Blackrock",
+        "pt_BR": "Blackrock",
+        "de_DE": "Blackrock",
+        "en_GB": "Blackrock",
+        "es_ES": "Blackrock",
+        "fr_FR": "Blackrock",
+        "it_IT": "Blackrock",
+        "ru_RU": "Blackrock",
+        "ko_KR": "Blackrock",
+        "zh_TW": "黑石氏族",
+        "zh_CN": "黑石尖塔"
+      }
+    },
+    {
+      "name": "Blackscar",
+      "slug": "blackscar",
+      "names": {
+        "en_US": "Blackscar",
+        "es_MX": "Blackscar",
+        "pt_BR": "Черный Шрам",
+        "de_DE": "Blackscar",
+        "en_GB": "Blackscar",
+        "es_ES": "Blackscar",
+        "fr_FR": "Blackscar",
+        "it_IT": "Черный Шрам",
+        "ru_RU": "Черный Шрам",
+        "ko_KR": "Blackscar",
+        "zh_TW": "Blackscar",
+        "zh_CN": "黑痕"
+      }
+    },
+    {
+      "name": "Blade's Edge",
+      "slug": "blades-edge",
+      "names": {
+        "en_US": "Blade's Edge",
+        "es_MX": "Blade's Edge",
+        "pt_BR": "Blade's Edge",
+        "de_DE": "Blade's Edge",
+        "en_GB": "Blade's Edge",
+        "es_ES": "Blade's Edge",
+        "fr_FR": "Blade's Edge",
+        "it_IT": "Blade's Edge",
+        "ru_RU": "Blade's Edge",
+        "ko_KR": "Blade's Edge",
+        "zh_TW": "劍刃山脈",
+        "zh_CN": "刀锋山"
+      }
+    },
+    {
+      "name": "Bladefist",
+      "slug": "bladefist",
+      "names": {
+        "en_US": "Bladefist",
+        "es_MX": "Bladefist",
+        "pt_BR": "Bladefist",
+        "de_DE": "Bladefist",
+        "en_GB": "Bladefist",
+        "es_ES": "Bladefist",
+        "fr_FR": "Bladefist",
+        "it_IT": "Bladefist",
+        "ru_RU": "Bladefist",
+        "ko_KR": "Bladefist",
+        "zh_TW": "刃拳",
+        "zh_CN": "利刃之拳"
+      }
+    },
+    {
+      "name": "Bloodfeather",
+      "slug": "bloodfeather",
+      "names": {
+        "en_US": "Bloodfeather",
+        "es_MX": "Bloodfeather",
+        "pt_BR": "Bloodfeather",
+        "de_DE": "Bloodfeather",
+        "en_GB": "Bloodfeather",
+        "es_ES": "Bloodfeather",
+        "fr_FR": "Bloodfeather",
+        "it_IT": "Bloodfeather",
+        "ru_RU": "Bloodfeather",
+        "ko_KR": "Bloodfeather",
+        "zh_TW": "血羽",
+        "zh_CN": "血羽"
+      }
+    },
+    {
+      "name": "Bloodhoof",
+      "slug": "bloodhoof",
+      "names": {
+        "en_US": "Bloodhoof",
+        "es_MX": "Bloodhoof",
+        "pt_BR": "Bloodhoof",
+        "de_DE": "Bloodhoof",
+        "en_GB": "Bloodhoof",
+        "es_ES": "Bloodhoof",
+        "fr_FR": "Bloodhoof",
+        "it_IT": "Bloodhoof",
+        "ru_RU": "Bloodhoof",
+        "ko_KR": "Bloodhoof",
+        "zh_TW": "血蹄",
+        "zh_CN": "凯恩血蹄"
+      }
+    },
+    {
+      "name": "Bloodscalp",
+      "slug": "bloodscalp",
+      "names": {
+        "en_US": "Bloodscalp",
+        "es_MX": "Bloodscalp",
+        "pt_BR": "Bloodscalp",
+        "de_DE": "Bloodscalp",
+        "en_GB": "Bloodscalp",
+        "es_ES": "Bloodscalp",
+        "fr_FR": "Bloodscalp",
+        "it_IT": "Bloodscalp",
+        "ru_RU": "Bloodscalp",
+        "ko_KR": "Bloodscalp",
+        "zh_TW": "血頂部族",
+        "zh_CN": "血顶"
+      }
+    },
+    {
+      "name": "Blutkessel",
+      "slug": "blutkessel",
+      "names": {
+        "en_US": "Blutkessel",
+        "es_MX": "Blutkessel",
+        "pt_BR": "Blutkessel",
+        "de_DE": "Blutkessel",
+        "en_GB": "Blutkessel",
+        "es_ES": "Blutkessel",
+        "fr_FR": "Blutkessel",
+        "it_IT": "Blutkessel",
+        "ru_RU": "Blutkessel",
+        "ko_KR": "Blutkessel",
+        "zh_TW": "布魯克塞爾",
+        "zh_CN": "Blutkessel"
+      }
+    },
+    {
+      "name": "Booty Bay",
+      "slug": "booty-bay",
+      "names": {
+        "en_US": "Booty Bay",
+        "es_MX": "Booty Bay",
+        "pt_BR": "Пиратская бухта",
+        "de_DE": "Booty Bay",
+        "en_GB": "Booty Bay",
+        "es_ES": "Booty Bay",
+        "fr_FR": "Booty Bay",
+        "it_IT": "Пиратская бухта",
+        "ru_RU": "Пиратская Бухта",
+        "ko_KR": "Booty Bay",
+        "zh_TW": "Booty Bay",
+        "zh_CN": "藏宝海湾"
+      }
+    },
+    {
+      "name": "Borean Tundra",
+      "slug": "borean-tundra",
+      "names": {
+        "en_US": "Borean Tundra",
+        "es_MX": "Borean Tundra",
+        "pt_BR": "Борейская тундра",
+        "de_DE": "Borean Tundra",
+        "en_GB": "Borean Tundra",
+        "es_ES": "Borean Tundra",
+        "fr_FR": "Borean Tundra",
+        "it_IT": "Борейская тундра",
+        "ru_RU": "Борейская тундра",
+        "ko_KR": "Borean Tundra",
+        "zh_TW": "Borean Tundra",
+        "zh_CN": "北风苔原"
+      }
+    },
+    {
+      "name": "Boulderfist",
+      "slug": "boulderfist",
+      "names": {
+        "en_US": "Boulderfist",
+        "es_MX": "Boulderfist",
+        "pt_BR": "Boulderfist",
+        "de_DE": "Boulderfist",
+        "en_GB": "Boulderfist",
+        "es_ES": "Boulderfist",
+        "fr_FR": "Boulderfist",
+        "it_IT": "Boulderfist",
+        "ru_RU": "Boulderfist",
+        "ko_KR": "Boulderfist",
+        "zh_TW": "石拳",
+        "zh_CN": "冰川之拳"
+      }
+    },
+    {
+      "name": "Bronze Dragonflight",
+      "slug": "bronze-dragonflight",
+      "names": {
+        "en_US": "Bronze Dragonflight",
+        "es_MX": "Bronze Dragonflight",
+        "pt_BR": "Bronze Dragonflight",
+        "de_DE": "Bronze Dragonflight",
+        "en_GB": "Bronze Dragonflight",
+        "es_ES": "Bronze Dragonflight",
+        "fr_FR": "Bronze Dragonflight",
+        "it_IT": "Bronze Dragonflight",
+        "ru_RU": "Bronze Dragonflight",
+        "ko_KR": "Bronze Dragonflight",
+        "zh_TW": "青銅龍軍團",
+        "zh_CN": "铜龙军团"
+      }
+    },
+    {
+      "name": "Bronzebeard",
+      "slug": "bronzebeard",
+      "names": {
+        "en_US": "Bronzebeard",
+        "es_MX": "Bronzebeard",
+        "pt_BR": "Bronzebeard",
+        "de_DE": "Bronzebeard",
+        "en_GB": "Bronzebeard",
+        "es_ES": "Bronzebeard",
+        "fr_FR": "Bronzebeard",
+        "it_IT": "Bronzebeard",
+        "ru_RU": "Bronzebeard",
+        "ko_KR": "Bronzebeard",
+        "zh_TW": "銅鬚",
+        "zh_CN": "山丘之王"
+      }
+    },
+    {
+      "name": "Burning Blade",
+      "slug": "burning-blade",
+      "names": {
+        "en_US": "Burning Blade",
+        "es_MX": "Burning Blade",
+        "pt_BR": "Burning Blade",
+        "de_DE": "Burning Blade",
+        "en_GB": "Burning Blade",
+        "es_ES": "Burning Blade",
+        "fr_FR": "Burning Blade",
+        "it_IT": "Burning Blade",
+        "ru_RU": "Burning Blade",
+        "ko_KR": "Burning Blade",
+        "zh_TW": "燃刃",
+        "zh_CN": "燃烧之刃"
+      }
+    },
+    {
+      "name": "Burning Legion",
+      "slug": "burning-legion",
+      "names": {
+        "en_US": "Burning Legion",
+        "es_MX": "Burning Legion",
+        "pt_BR": "Burning Legion",
+        "de_DE": "Burning Legion",
+        "en_GB": "Burning Legion",
+        "es_ES": "Burning Legion",
+        "fr_FR": "Burning Legion",
+        "it_IT": "Burning Legion",
+        "ru_RU": "Burning Legion",
+        "ko_KR": "Burning Legion",
+        "zh_TW": "燃燒軍團",
+        "zh_CN": "燃烧军团"
+      }
+    },
+    {
+      "name": "Burning Steppes",
+      "slug": "burning-steppes",
+      "names": {
+        "en_US": "Burning Steppes",
+        "es_MX": "Burning Steppes",
+        "pt_BR": "Burning Steppes",
+        "de_DE": "Burning Steppes",
+        "en_GB": "Burning Steppes",
+        "es_ES": "Burning Steppes",
+        "fr_FR": "Burning Steppes",
+        "it_IT": "Burning Steppes",
+        "ru_RU": "Burning Steppes",
+        "ko_KR": "Burning Steppes",
+        "zh_TW": "燃燒平原",
+        "zh_CN": "燃烧平原"
+      }
+    },
+    {
+      "name": "C'Thun",
+      "slug": "cthun",
+      "names": {
+        "en_US": "C'Thun",
+        "es_MX": "C'Thun",
+        "pt_BR": "C'Thun",
+        "de_DE": "C'Thun",
+        "en_GB": "C'Thun",
+        "es_ES": "C'Thun",
+        "fr_FR": "C'Thun",
+        "it_IT": "C'Thun",
+        "ru_RU": "C'Thun",
+        "ko_KR": "C'Thun",
+        "zh_TW": "克蘇恩",
+        "zh_CN": "克苏恩"
+      }
+    },
+    {
+      "name": "Chamber of Aspects",
+      "slug": "chamber-of-aspects",
+      "names": {
+        "en_US": "Chamber of Aspects",
+        "es_MX": "Chamber of Aspects",
+        "pt_BR": "Chamber of Aspects",
+        "de_DE": "Chamber of Aspects",
+        "en_GB": "Chamber of Aspects",
+        "es_ES": "Chamber of Aspects",
+        "fr_FR": "Chamber of Aspects",
+        "it_IT": "Chamber of Aspects",
+        "ru_RU": "Chamber of Aspects",
+        "ko_KR": "위상의 방",
+        "zh_TW": "守護巨龍之間",
+        "zh_CN": "龙神之厅"
+      }
+    },
+    {
+      "name": "Chants éternels",
+      "slug": "chants-éternels",
+      "names": {
+        "en_US": "Chants éternels",
+        "es_MX": "Chants éternels",
+        "pt_BR": "Chants éternels",
+        "de_DE": "Chants éternels",
+        "en_GB": "Chants éternels",
+        "es_ES": "Chants éternels",
+        "fr_FR": "Chants éternels",
+        "it_IT": "Chants éternels",
+        "ru_RU": "Chants éternels",
+        "ko_KR": "Chants éternels",
+        "zh_TW": "Chants eternels",
+        "zh_CN": "Chants éternels"
+      }
+    },
+    {
+      "name": "Cho'gall",
+      "slug": "chogall",
+      "names": {
+        "en_US": "Cho'gall",
+        "es_MX": "Cho'gall",
+        "pt_BR": "Cho'gall",
+        "de_DE": "Cho'gall",
+        "en_GB": "Cho'gall",
+        "es_ES": "Cho'gall",
+        "fr_FR": "Cho'gall",
+        "it_IT": "Cho'gall",
+        "ru_RU": "Cho'gall",
+        "ko_KR": "Cho'gall",
+        "zh_TW": "丘加利",
+        "zh_CN": "古加尔"
+      }
+    },
+    {
+      "name": "Chromaggus",
+      "slug": "chromaggus",
+      "names": {
+        "en_US": "Chromaggus",
+        "es_MX": "Chromaggus",
+        "pt_BR": "Chromaggus",
+        "de_DE": "Chromaggus",
+        "en_GB": "Chromaggus",
+        "es_ES": "Chromaggus",
+        "fr_FR": "Chromaggus",
+        "it_IT": "Chromaggus",
+        "ru_RU": "Chromaggus",
+        "ko_KR": "Chromaggus",
+        "zh_TW": "克洛瑪古斯",
+        "zh_CN": "克洛玛古斯"
+      }
+    },
+    {
+      "name": "Colinas Pardas",
+      "slug": "colinas-pardas",
+      "names": {
+        "en_US": "Colinas Pardas",
+        "es_MX": "Colinas Pardas",
+        "pt_BR": "Colinas Pardas",
+        "de_DE": "Colinas Pardas",
+        "en_GB": "Colinas Pardas",
+        "es_ES": "Colinas Pardas",
+        "fr_FR": "Colinas Pardas",
+        "it_IT": "Colinas Pardas",
+        "ru_RU": "Spirestone",
+        "ko_KR": "Colinas Pardas",
+        "zh_TW": "Colinas Pardas",
+        "zh_CN": "Colinas Pardas"
+      }
+    },
+    {
+      "name": "Confrérie du Thorium",
+      "slug": "confrérie-du-thorium",
+      "names": {
+        "en_US": "Confrérie du Thorium",
+        "es_MX": "Confrérie du Thorium",
+        "pt_BR": "Confrérie du Thorium",
+        "de_DE": "Confrérie du Thorium",
+        "en_GB": "Confrérie du Thorium",
+        "es_ES": "Confrérie du Thorium",
+        "fr_FR": "Confrérie du Thorium",
+        "it_IT": "Confrérie du Thorium",
+        "ru_RU": "Confrérie du Thorium",
+        "ko_KR": "Confrérie du Thorium",
+        "zh_TW": "Confrerie du Thorium",
+        "zh_CN": "Confrérie du Thorium"
+      }
+    },
+    {
+      "name": "Conseil des Ombres",
+      "slug": "conseil-des-ombres",
+      "names": {
+        "en_US": "Conseil des Ombres",
+        "es_MX": "Conseil des Ombres",
+        "pt_BR": "Conseil des Ombres",
+        "de_DE": "Conseil des Ombres",
+        "en_GB": "Conseil des Ombres",
+        "es_ES": "Conseil des Ombres",
+        "fr_FR": "Conseil des Ombres",
+        "it_IT": "Conseil des Ombres",
+        "ru_RU": "Conseil des Ombres",
+        "ko_KR": "Conseil des Ombres",
+        "zh_TW": "Conseil des Ombres",
+        "zh_CN": "Conseil des Ombres"
+      }
+    },
+    {
+      "name": "Crushridge",
+      "slug": "crushridge",
+      "names": {
+        "en_US": "Crushridge",
+        "es_MX": "Crushridge",
+        "pt_BR": "Crushridge",
+        "de_DE": "Crushridge",
+        "en_GB": "Crushridge",
+        "es_ES": "Crushridge",
+        "fr_FR": "Crushridge",
+        "it_IT": "Crushridge",
+        "ru_RU": "Crushridge",
+        "ko_KR": "Crushridge",
+        "zh_TW": "破碎之嶺",
+        "zh_CN": "破碎岭"
+      }
+    },
+    {
+      "name": "Culte de la Rive noire",
+      "slug": "culte-de-la-rive-noire",
+      "names": {
+        "en_US": "Culte de la Rive noire",
+        "es_MX": "Culte de la Rive noire",
+        "pt_BR": "Culte de la Rive noire",
+        "de_DE": "Culte de la Rive noire",
+        "en_GB": "Culte de la Rive noire",
+        "es_ES": "Culte de la Rive noire",
+        "fr_FR": "Culte de la Rive noire",
+        "it_IT": "Culte de la Rive noire",
+        "ru_RU": "Culte de la Rive noire",
+        "ko_KR": "Kurdran",
+        "zh_TW": "Culte de la Rive noire",
+        "zh_CN": "Culte de la Rive noire"
+      }
+    },
+    {
+      "name": "Daggerspine",
+      "slug": "daggerspine",
+      "names": {
+        "en_US": "Daggerspine",
+        "es_MX": "Daggerspine",
+        "pt_BR": "Daggerspine",
+        "de_DE": "Daggerspine",
+        "en_GB": "Daggerspine",
+        "es_ES": "Daggerspine",
+        "fr_FR": "Daggerspine",
+        "it_IT": "Daggerspine",
+        "ru_RU": "Daggerspine",
+        "ko_KR": "Daggerspine",
+        "zh_TW": "刺脊部族",
+        "zh_CN": "刺骨利刃"
+      }
+    },
+    {
+      "name": "Dalaran",
+      "slug": "dalaran",
+      "names": {
+        "en_US": "Dalaran",
+        "es_MX": "Dalaran",
+        "pt_BR": "Dalaran",
+        "de_DE": "Dalaran",
+        "en_GB": "Dalaran",
+        "es_ES": "Dalaran",
+        "fr_FR": "Dalaran",
+        "it_IT": "Dalaran",
+        "ru_RU": "Dalaran",
+        "ko_KR": "Dalaran",
+        "zh_TW": "達拉然",
+        "zh_CN": "达拉然"
+      }
+    },
+    {
+      "name": "Dalvengyr",
+      "slug": "dalvengyr",
+      "names": {
+        "en_US": "Dalvengyr",
+        "es_MX": "Dalvengyr",
+        "pt_BR": "Dalvengyr",
+        "de_DE": "Dalvengyr",
+        "en_GB": "Dalvengyr",
+        "es_ES": "Dalvengyr",
+        "fr_FR": "Dalvengyr",
+        "it_IT": "Dalvengyr",
+        "ru_RU": "Dalvengyr",
+        "ko_KR": "Dalvengyr",
+        "zh_TW": "達拉溫格",
+        "zh_CN": "达文格尔"
+      }
+    },
+    {
+      "name": "Darkmoon Faire",
+      "slug": "darkmoon-faire",
+      "names": {
+        "en_US": "Darkmoon Faire",
+        "es_MX": "Darkmoon Faire",
+        "pt_BR": "Darkmoon Faire",
+        "de_DE": "Darkmoon Faire",
+        "en_GB": "Darkmoon Faire",
+        "es_ES": "Darkmoon Faire",
+        "fr_FR": "Darkmoon Faire",
+        "it_IT": "Darkmoon Faire",
+        "ru_RU": "Darkmoon Faire",
+        "ko_KR": "Darkmoon Faire",
+        "zh_TW": "暗月馬戲團",
+        "zh_CN": "暗月马戏团"
+      }
+    },
+    {
+      "name": "Darksorrow",
+      "slug": "darksorrow",
+      "names": {
+        "en_US": "Darksorrow",
+        "es_MX": "Darksorrow",
+        "pt_BR": "Darksorrow",
+        "de_DE": "Darksorrow",
+        "en_GB": "Darksorrow",
+        "es_ES": "Darksorrow",
+        "fr_FR": "Darksorrow",
+        "it_IT": "Darksorrow",
+        "ru_RU": "Darksorrow",
+        "ko_KR": "Darksorrow",
+        "zh_TW": "暗悲",
+        "zh_CN": "Darksorrow"
+      }
+    },
+    {
+      "name": "Darkspear",
+      "slug": "darkspear",
+      "names": {
+        "en_US": "Darkspear",
+        "es_MX": "Darkspear",
+        "pt_BR": "Darkspear",
+        "de_DE": "Darkspear",
+        "en_GB": "Darkspear",
+        "es_ES": "Darkspear",
+        "fr_FR": "Darkspear",
+        "it_IT": "Darkspear",
+        "ru_RU": "Darkspear",
+        "ko_KR": "Darkspear",
+        "zh_TW": "暗矛部族",
+        "zh_CN": "黑暗之矛"
+      }
+    },
+    {
+      "name": "Das Konsortium",
+      "slug": "das-konsortium",
+      "names": {
+        "en_US": "Das Konsortium",
+        "es_MX": "Das Konsortium",
+        "pt_BR": "Das Konsortium",
+        "de_DE": "Das Konsortium",
+        "en_GB": "Das Konsortium",
+        "es_ES": "Das Konsortium",
+        "fr_FR": "Das Konsortium",
+        "it_IT": "Das Konsortium",
+        "ru_RU": "Das Konsortium",
+        "ko_KR": "Das Konsortium",
+        "zh_TW": "Das Konsortium",
+        "zh_CN": "Das Konsortium"
+      }
+    },
+    {
+      "name": "Das Syndikat",
+      "slug": "das-syndikat",
+      "names": {
+        "en_US": "Das Syndikat",
+        "es_MX": "Das Syndikat",
+        "pt_BR": "Das Syndikat",
+        "de_DE": "Das Syndikat",
+        "en_GB": "Das Syndikat",
+        "es_ES": "Das Syndikat",
+        "fr_FR": "Das Syndikat",
+        "it_IT": "Das Syndikat",
+        "ru_RU": "Das Syndikat",
+        "ko_KR": "Das Syndikat",
+        "zh_TW": "Das Syndikat",
+        "zh_CN": "Das Syndikat"
+      }
+    },
+    {
+      "name": "Deathguard",
+      "slug": "deathguard",
+      "names": {
+        "en_US": "Deathguard",
+        "es_MX": "Deathguard",
+        "pt_BR": "Страж Смерти",
+        "de_DE": "Deathguard",
+        "en_GB": "Deathguard",
+        "es_ES": "Deathguard",
+        "fr_FR": "Deathguard",
+        "it_IT": "Страж Смерти",
+        "ru_RU": "Страж Смерти",
+        "ko_KR": "Deathguard",
+        "zh_TW": "全球爭霸戰12",
+        "zh_CN": "亡灵卫士"
+      }
+    },
+    {
+      "name": "Deathweaver",
+      "slug": "deathweaver",
+      "names": {
+        "en_US": "Deathweaver",
+        "es_MX": "Deathweaver",
+        "pt_BR": "Ткач Смерти",
+        "de_DE": "Deathweaver",
+        "en_GB": "Deathweaver",
+        "es_ES": "Deathweaver",
+        "fr_FR": "Deathweaver",
+        "it_IT": "Ткач Смерти",
+        "ru_RU": "Ткач Смерти",
+        "ko_KR": "Deathweaver",
+        "zh_TW": "Deathweaver",
+        "zh_CN": "织亡者"
+      }
+    },
+    {
+      "name": "Deathwing",
+      "slug": "deathwing",
+      "names": {
+        "en_US": "Deathwing",
+        "es_MX": "Deathwing",
+        "pt_BR": "Deathwing",
+        "de_DE": "Deathwing",
+        "en_GB": "Deathwing",
+        "es_ES": "Deathwing",
+        "fr_FR": "Deathwing",
+        "it_IT": "Deathwing",
+        "ru_RU": "Deathwing",
+        "ko_KR": "Deathwing",
+        "zh_TW": "死亡之翼",
+        "zh_CN": "死亡之翼"
+      }
+    },
+    {
+      "name": "Deepholm",
+      "slug": "deepholm",
+      "names": {
+        "en_US": "Deepholm",
+        "es_MX": "Deephome",
+        "pt_BR": "Подземье",
+        "de_DE": "Deephome",
+        "en_GB": "Deepholm",
+        "es_ES": "Deephome",
+        "fr_FR": "Deepholm",
+        "it_IT": "Подземье",
+        "ru_RU": "Подземье",
+        "ko_KR": "Deepholm",
+        "zh_TW": "Deephome",
+        "zh_CN": "深渊之巢"
+      }
+    },
+    {
+      "name": "Defias Brotherhood",
+      "slug": "defias-brotherhood",
+      "names": {
+        "en_US": "Defias Brotherhood",
+        "es_MX": "Defias Brotherhood",
+        "pt_BR": "Defias Brotherhood",
+        "de_DE": "Defias Brotherhood",
+        "en_GB": "Defias Brotherhood",
+        "es_ES": "Defias Brotherhood",
+        "fr_FR": "Defias Brotherhood",
+        "it_IT": "Defias Brotherhood",
+        "ru_RU": "Defias Brotherhood",
+        "ko_KR": "Defias Brotherhood",
+        "zh_TW": "迪菲亞兄弟會",
+        "zh_CN": "迪菲亚兄弟会"
+      }
+    },
+    {
+      "name": "Dentarg",
+      "slug": "dentarg",
+      "names": {
+        "en_US": "Dentarg",
+        "es_MX": "Dentarg",
+        "pt_BR": "Dentarg",
+        "de_DE": "Dentarg",
+        "en_GB": "Dentarg",
+        "es_ES": "Dentarg",
+        "fr_FR": "Dentarg",
+        "it_IT": "Dentarg",
+        "ru_RU": "Dentarg",
+        "ko_KR": "Dentarg",
+        "zh_TW": "登塔格",
+        "zh_CN": "丹塔格"
+      }
+    },
+    {
+      "name": "Der Mithrilorden",
+      "slug": "der-mithrilorden",
+      "names": {
+        "en_US": "Der Mithrilorden",
+        "es_MX": "Der Mithrilorden",
+        "pt_BR": "Der Mithrilorden",
+        "de_DE": "Der Mithrilorden",
+        "en_GB": "Der Mithrilorden",
+        "es_ES": "Der Mithrilorden",
+        "fr_FR": "Der Mithrilorden",
+        "it_IT": "Der Mithrilorden",
+        "ru_RU": "Der Mithrilorden",
+        "ko_KR": "Der Mithrilorden",
+        "zh_TW": "Der Mithrilorden",
+        "zh_CN": "Der Mithrilorden"
+      }
+    },
+    {
+      "name": "Der Rat von Dalaran",
+      "slug": "der-rat-von-dalaran",
+      "names": {
+        "en_US": "Der Rat von Dalaran",
+        "es_MX": "Der Rat von Dalaran",
+        "pt_BR": "Der Rat von Dalaran",
+        "de_DE": "Der Rat von Dalaran",
+        "en_GB": "Der Rat von Dalaran",
+        "es_ES": "Der Rat von Dalaran",
+        "fr_FR": "Der Rat von Dalaran",
+        "it_IT": "Der Rat von Dalaran",
+        "ru_RU": "Der Rat von Dalaran",
+        "ko_KR": "Der Rat von Dalaran",
+        "zh_TW": "Der Rat von Dalaran",
+        "zh_CN": "Der Rat von Dalaran"
+      }
+    },
+    {
+      "name": "Der abyssische Rat",
+      "slug": "der-abyssische-rat",
+      "names": {
+        "en_US": "Der abyssische Rat",
+        "es_MX": "Der abyssische Rat",
+        "pt_BR": "Der abyssische Rat",
+        "de_DE": "Der Abyssische Rat",
+        "en_GB": "Der abyssische Rat",
+        "es_ES": "Der abyssische Rat",
+        "fr_FR": "Der abyssische Rat",
+        "it_IT": "Der abyssische Rat",
+        "ru_RU": "Der abyssische Rat",
+        "ko_KR": "Der abyssische Rat",
+        "zh_TW": "Der abyssische Rat",
+        "zh_CN": "Der abyssische Rat"
+      }
+    },
+    {
+      "name": "Destromath",
+      "slug": "destromath",
+      "names": {
+        "en_US": "Destromath",
+        "es_MX": "Destromath",
+        "pt_BR": "Destromath",
+        "de_DE": "Destromath",
+        "en_GB": "Destromath",
+        "es_ES": "Destromath",
+        "fr_FR": "Destromath",
+        "it_IT": "Destromath",
+        "ru_RU": "Destromath",
+        "ko_KR": "Destromath",
+        "zh_TW": "代斯特麥斯",
+        "zh_CN": "迪托马斯"
+      }
+    },
+    {
+      "name": "Dethecus",
+      "slug": "dethecus",
+      "names": {
+        "en_US": "Dethecus",
+        "es_MX": "Dethecus",
+        "pt_BR": "Dethecus",
+        "de_DE": "Dethecus",
+        "en_GB": "Dethecus",
+        "es_ES": "Dethecus",
+        "fr_FR": "Dethecus",
+        "it_IT": "Dethecus",
+        "ru_RU": "Dethecus",
+        "ko_KR": "Dethecus",
+        "zh_TW": "閃電之刃",
+        "zh_CN": "Dethecus"
+      }
+    },
+    {
+      "name": "Die Aldor",
+      "slug": "die-aldor",
+      "names": {
+        "en_US": "Die Aldor",
+        "es_MX": "Die Aldor",
+        "pt_BR": "Die Aldor",
+        "de_DE": "Die Aldor",
+        "en_GB": "Die Aldor",
+        "es_ES": "Die Aldor",
+        "fr_FR": "Die Aldor",
+        "it_IT": "Die Aldor",
+        "ru_RU": "Die Aldor",
+        "ko_KR": "Die Aldor",
+        "zh_TW": "Die Aldor",
+        "zh_CN": "Die Aldor"
+      }
+    },
+    {
+      "name": "Die Arguswacht",
+      "slug": "die-arguswacht",
+      "names": {
+        "en_US": "Die Arguswacht",
+        "es_MX": "Die Arguswacht",
+        "pt_BR": "Die Arguswacht",
+        "de_DE": "Die Arguswacht",
+        "en_GB": "Die Arguswacht",
+        "es_ES": "Die Arguswacht",
+        "fr_FR": "Die Arguswacht",
+        "it_IT": "Die Arguswacht",
+        "ru_RU": "Die Arguswacht",
+        "ko_KR": "Die Arguswacht",
+        "zh_TW": "Die Arguswacht",
+        "zh_CN": "Die Arguswacht"
+      }
+    },
+    {
+      "name": "Die Nachtwache",
+      "slug": "die-nachtwache",
+      "names": {
+        "en_US": "Die Nachtwache",
+        "es_MX": "Die Nachtwache",
+        "pt_BR": "Die Nachtwache",
+        "de_DE": "Die Nachtwache",
+        "en_GB": "Die Nachtwache",
+        "es_ES": "Die Nachtwache",
+        "fr_FR": "Die Nachtwache",
+        "it_IT": "Die Nachtwache",
+        "ru_RU": "Die Nachtwache",
+        "ko_KR": "Die Nachtwache",
+        "zh_TW": "Die Nachtwache",
+        "zh_CN": "Die Nachtwache"
+      }
+    },
+    {
+      "name": "Die Silberne Hand",
+      "slug": "die-silberne-hand",
+      "names": {
+        "en_US": "Die Silberne Hand",
+        "es_MX": "Die Silberne Hand",
+        "pt_BR": "Die Silberne Hand",
+        "de_DE": "Die Silberne Hand",
+        "en_GB": "Die Silberne Hand",
+        "es_ES": "Die Silberne Hand",
+        "fr_FR": "Die Silberne Hand",
+        "it_IT": "Die Silberne Hand",
+        "ru_RU": "Die Silberne Hand",
+        "ko_KR": "Die Silberne Hand",
+        "zh_TW": "白銀之手",
+        "zh_CN": "Die Silberne Hand"
+      }
+    },
+    {
+      "name": "Die Todeskrallen",
+      "slug": "die-todeskrallen",
+      "names": {
+        "en_US": "Die Todeskrallen",
+        "es_MX": "Die Todeskrallen",
+        "pt_BR": "Die Todeskrallen",
+        "de_DE": "Die Todeskrallen",
+        "en_GB": "Die Todeskrallen",
+        "es_ES": "Die Todeskrallen",
+        "fr_FR": "Die Todeskrallen",
+        "it_IT": "Die Todeskrallen",
+        "ru_RU": "Die Todeskrallen",
+        "ko_KR": "Die Todeskrallen",
+        "zh_TW": "Die Todeskrallen",
+        "zh_CN": "Die Todeskrallen"
+      }
+    },
+    {
+      "name": "Die ewige Wacht",
+      "slug": "die-ewige-wacht",
+      "names": {
+        "en_US": "Die ewige Wacht",
+        "es_MX": "Die ewige Wacht",
+        "pt_BR": "Die ewige Wacht",
+        "de_DE": "Die ewige Wacht",
+        "en_GB": "Die ewige Wacht",
+        "es_ES": "Die ewige Wacht",
+        "fr_FR": "Die ewige Wacht",
+        "it_IT": "Die ewige Wacht",
+        "ru_RU": "Die ewige Wacht",
+        "ko_KR": "Die ewige Wacht",
+        "zh_TW": "Die ewige Wacht",
+        "zh_CN": "Die ewige Wacht"
+      }
+    },
+    {
+      "name": "Doomhammer",
+      "slug": "doomhammer",
+      "names": {
+        "en_US": "Doomhammer",
+        "es_MX": "Doomhammer",
+        "pt_BR": "Doomhammer",
+        "de_DE": "Doomhammer",
+        "en_GB": "Doomhammer",
+        "es_ES": "Doomhammer",
+        "fr_FR": "Doomhammer",
+        "it_IT": "Doomhammer",
+        "ru_RU": "Doomhammer",
+        "ko_KR": "Doomhammer",
+        "zh_TW": "末日錘",
+        "zh_CN": "毁灭之锤"
+      }
+    },
+    {
+      "name": "Draenor",
+      "slug": "draenor",
+      "names": {
+        "en_US": "Draenor",
+        "es_MX": "Draenor",
+        "pt_BR": "Draenor",
+        "de_DE": "Draenor",
+        "en_GB": "Draenor",
+        "es_ES": "Draenor",
+        "fr_FR": "Draenor",
+        "it_IT": "Draenor",
+        "ru_RU": "Draenor",
+        "ko_KR": "Draenor",
+        "zh_TW": "德拉諾",
+        "zh_CN": "德拉诺"
+      }
+    },
+    {
+      "name": "Dragonblight",
+      "slug": "dragonblight",
+      "names": {
+        "en_US": "Dragonblight",
+        "es_MX": "Dragonblight",
+        "pt_BR": "Dragonblight",
+        "de_DE": "Dragonblight",
+        "en_GB": "Dragonblight",
+        "es_ES": "Dragonblight",
+        "fr_FR": "Dragonblight",
+        "it_IT": "Dragonblight",
+        "ru_RU": "Dragonblight",
+        "ko_KR": "Dragonblight",
+        "zh_TW": "龍骨荒野",
+        "zh_CN": "龙骨平原"
+      }
+    },
+    {
+      "name": "Dragonmaw",
+      "slug": "dragonmaw",
+      "names": {
+        "en_US": "Dragonmaw",
+        "es_MX": "Dragonmaw",
+        "pt_BR": "Dragonmaw",
+        "de_DE": "Dragonmaw",
+        "en_GB": "Dragonmaw",
+        "es_ES": "Dragonmaw",
+        "fr_FR": "Dragonmaw",
+        "it_IT": "Dragonmaw",
+        "ru_RU": "Dragonmaw",
+        "ko_KR": "Dragonmaw",
+        "zh_TW": "龍喉",
+        "zh_CN": "巨龙之吼"
+      }
+    },
+    {
+      "name": "Drak'thul",
+      "slug": "drakthul",
+      "names": {
+        "en_US": "Drak'thul",
+        "es_MX": "Drak'thul",
+        "pt_BR": "Drak'thul",
+        "de_DE": "Drak'thul",
+        "en_GB": "Drak'thul",
+        "es_ES": "Drak'thul",
+        "fr_FR": "Drak'thul",
+        "it_IT": "Drak'thul",
+        "ru_RU": "Drak'thul",
+        "ko_KR": "Drak'thul",
+        "zh_TW": "德拉克蘇爾",
+        "zh_CN": "Drak'thul"
+      }
+    },
+    {
+      "name": "Drek'Thar",
+      "slug": "drekthar",
+      "names": {
+        "en_US": "Drek'Thar",
+        "es_MX": "Drek'Thar",
+        "pt_BR": "Drek'Thar",
+        "de_DE": "Drek'Thar",
+        "en_GB": "Drek'Thar",
+        "es_ES": "Drek'Thar",
+        "fr_FR": "Drek'Thar",
+        "it_IT": "Drek'Thar",
+        "ru_RU": "Drek'Thar",
+        "ko_KR": "Drek'Thar",
+        "zh_TW": "德雷克塔爾",
+        "zh_CN": "德雷克塔尔"
+      }
+    },
+    {
+      "name": "Dun Modr",
+      "slug": "dun-modr",
+      "names": {
+        "en_US": "Dun Modr",
+        "es_MX": "Dun Modr",
+        "pt_BR": "Dun Modr",
+        "de_DE": "Dun Modr",
+        "en_GB": "Dun Modr",
+        "es_ES": "Dun Modr",
+        "fr_FR": "Dun Modr",
+        "it_IT": "Dun Modr",
+        "ru_RU": "Dun Modr",
+        "ko_KR": "Dun Modr",
+        "zh_TW": "丹莫德",
+        "zh_CN": "丹莫德"
+      }
+    },
+    {
+      "name": "Dun Morogh",
+      "slug": "dun-morogh",
+      "names": {
+        "en_US": "Dun Morogh",
+        "es_MX": "Dun Morogh",
+        "pt_BR": "Dun Morogh",
+        "de_DE": "Dun Morogh",
+        "en_GB": "Dun Morogh",
+        "es_ES": "Dun Morogh",
+        "fr_FR": "Dun Morogh",
+        "it_IT": "Dun Morogh",
+        "ru_RU": "Dun Morogh",
+        "ko_KR": "Dun Morogh",
+        "zh_TW": "丹莫洛",
+        "zh_CN": "丹莫罗"
+      }
+    },
+    {
+      "name": "Dunemaul",
+      "slug": "dunemaul",
+      "names": {
+        "en_US": "Dunemaul",
+        "es_MX": "Dunemaul",
+        "pt_BR": "Dunemaul",
+        "de_DE": "Dunemaul",
+        "en_GB": "Dunemaul",
+        "es_ES": "Dunemaul",
+        "fr_FR": "Dunemaul",
+        "it_IT": "Dunemaul",
+        "ru_RU": "Dunemaul",
+        "ko_KR": "Dunemaul",
+        "zh_TW": "流沙之槌",
+        "zh_CN": "流沙之槌"
+      }
+    },
+    {
+      "name": "Durotan",
+      "slug": "durotan",
+      "names": {
+        "en_US": "Durotan",
+        "es_MX": "Durotan",
+        "pt_BR": "Durotan",
+        "de_DE": "Durotan",
+        "en_GB": "Durotan",
+        "es_ES": "Durotan",
+        "fr_FR": "Durotan",
+        "it_IT": "Durotan",
+        "ru_RU": "Durotan",
+        "ko_KR": "Durotan",
+        "zh_TW": "杜洛坦",
+        "zh_CN": "杜隆坦"
+      }
+    },
+    {
+      "name": "Earthen Ring",
+      "slug": "earthen-ring",
+      "names": {
+        "en_US": "Earthen Ring",
+        "es_MX": "Earthen Ring",
+        "pt_BR": "Earthen Ring",
+        "de_DE": "Earthen Ring",
+        "en_GB": "Earthen Ring",
+        "es_ES": "Earthen Ring",
+        "fr_FR": "Earthen Ring",
+        "it_IT": "Earthen Ring",
+        "ru_RU": "Earthen Ring",
+        "ko_KR": "Earthen Ring",
+        "zh_TW": "陶土議會",
+        "zh_CN": "大地之环"
+      }
+    },
+    {
+      "name": "Echsenkessel",
+      "slug": "echsenkessel",
+      "names": {
+        "en_US": "Echsenkessel",
+        "es_MX": "Echsenkessel",
+        "pt_BR": "Echsenkessel",
+        "de_DE": "Echsenkessel",
+        "en_GB": "Echsenkessel",
+        "es_ES": "Echsenkessel",
+        "fr_FR": "Echsenkessel",
+        "it_IT": "Echsenkessel",
+        "ru_RU": "Echsenkessel",
+        "ko_KR": "Echsenkessel",
+        "zh_TW": "Echsenkessel",
+        "zh_CN": "Echsenkessel"
+      }
+    },
+    {
+      "name": "Eitrigg",
+      "slug": "eitrigg",
+      "names": {
+        "en_US": "Eitrigg",
+        "es_MX": "Eitrigg",
+        "pt_BR": "Eitrigg",
+        "de_DE": "Etrigg",
+        "en_GB": "Eitrigg",
+        "es_ES": "Eitrigg",
+        "fr_FR": "Eitrigg",
+        "it_IT": "Eitrigg",
+        "ru_RU": "Eitrigg",
+        "ko_KR": "Eitrigg",
+        "zh_TW": "伊崔格",
+        "zh_CN": "伊崔格"
+      }
+    },
+    {
+      "name": "Eldre'Thalas",
+      "slug": "eldrethalas",
+      "names": {
+        "en_US": "Eldre'Thalas",
+        "es_MX": "Eldre'Thalas",
+        "pt_BR": "Eldre'Thalas",
+        "de_DE": "Eldre'Thalas",
+        "en_GB": "Eldre'Thalas",
+        "es_ES": "Eldre'Thalas",
+        "fr_FR": "Eldre'Thalas",
+        "it_IT": "Eldre'Thalas",
+        "ru_RU": "Eldre'Thalas",
+        "ko_KR": "Eldre'Thalas",
+        "zh_TW": "埃德薩拉斯",
+        "zh_CN": "埃德萨拉"
+      }
+    },
+    {
+      "name": "Elune",
+      "slug": "elune",
+      "names": {
+        "en_US": "Elune",
+        "es_MX": "Elune",
+        "pt_BR": "Elune",
+        "de_DE": "Elune",
+        "en_GB": "Elune",
+        "es_ES": "Elune",
+        "fr_FR": "Elune",
+        "it_IT": "Elune",
+        "ru_RU": "Elune",
+        "ko_KR": "Elune",
+        "zh_TW": "伊露恩",
+        "zh_CN": "艾露恩"
+      }
+    },
+    {
+      "name": "Emerald Dream",
+      "slug": "emerald-dream",
+      "names": {
+        "en_US": "Emerald Dream",
+        "es_MX": "Emerald Dream",
+        "pt_BR": "Emerald Dream",
+        "de_DE": "Emerald Dream",
+        "en_GB": "Emerald Dream",
+        "es_ES": "Emerald Dream",
+        "fr_FR": "Emerald Dream",
+        "it_IT": "Emerald Dream",
+        "ru_RU": "Emerald Dream",
+        "ko_KR": "Emerald Dream",
+        "zh_TW": "翡翠夢境",
+        "zh_CN": "翡翠梦境"
+      }
+    },
+    {
+      "name": "Emeriss",
+      "slug": "emeriss",
+      "names": {
+        "en_US": "Emeriss",
+        "es_MX": "Emeriss",
+        "pt_BR": "Emeriss",
+        "de_DE": "Emeriss",
+        "en_GB": "Emeriss",
+        "es_ES": "Emeriss",
+        "fr_FR": "Emeriss",
+        "it_IT": "Emeriss",
+        "ru_RU": "Emeriss",
+        "ko_KR": "Emeriss",
+        "zh_TW": "艾莫莉絲",
+        "zh_CN": "艾莫莉丝"
+      }
+    },
+    {
+      "name": "Eonar",
+      "slug": "eonar",
+      "names": {
+        "en_US": "Eonar",
+        "es_MX": "Eonar",
+        "pt_BR": "Eonar",
+        "de_DE": "Eonar",
+        "en_GB": "Eonar",
+        "es_ES": "Eonar",
+        "fr_FR": "Eonar",
+        "it_IT": "Eonar",
+        "ru_RU": "Eonar",
+        "ko_KR": "Eonar",
+        "zh_TW": "伊歐娜",
+        "zh_CN": "艾欧娜尔"
+      }
+    },
+    {
+      "name": "Eredar",
+      "slug": "eredar",
+      "names": {
+        "en_US": "Eredar",
+        "es_MX": "Eredar",
+        "pt_BR": "Eredar",
+        "de_DE": "Eredar",
+        "en_GB": "Eredar",
+        "es_ES": "Eredar",
+        "fr_FR": "Eredar",
+        "it_IT": "Eredar",
+        "ru_RU": "Eredar",
+        "ko_KR": "Eredar",
+        "zh_TW": "埃雷達爾",
+        "zh_CN": "埃雷达尔"
+      }
+    },
+    {
+      "name": "Eversong",
+      "slug": "eversong",
+      "names": {
+        "en_US": "Eversong",
+        "es_MX": "Eversong",
+        "pt_BR": "Вечная Песня",
+        "de_DE": "Eversong",
+        "en_GB": "Eversong",
+        "es_ES": "Eversong",
+        "fr_FR": "Eversong",
+        "it_IT": "Вечная Песня",
+        "ru_RU": "Вечная Песня",
+        "ko_KR": "Eversong",
+        "zh_TW": "Eversong",
+        "zh_CN": "永歌"
+      }
+    },
+    {
+      "name": "Executus",
+      "slug": "executus",
+      "names": {
+        "en_US": "Executus",
+        "es_MX": "Executus",
+        "pt_BR": "Executus",
+        "de_DE": "Executus",
+        "en_GB": "Executus",
+        "es_ES": "Executus",
+        "fr_FR": "Executus",
+        "it_IT": "Executus",
+        "ru_RU": "Executus",
+        "ko_KR": "Executus",
+        "zh_TW": "埃克索圖斯",
+        "zh_CN": "埃克索图斯"
+      }
+    },
+    {
+      "name": "Exodar",
+      "slug": "exodar",
+      "names": {
+        "en_US": "Exodar",
+        "es_MX": "Exodar",
+        "pt_BR": "Exodar",
+        "de_DE": "Exodar",
+        "en_GB": "Exodar",
+        "es_ES": "Exodar",
+        "fr_FR": "Exodar",
+        "it_IT": "Exodar",
+        "ru_RU": "Exodar",
+        "ko_KR": "Exodar",
+        "zh_TW": "艾克索達",
+        "zh_CN": "埃索达"
+      }
+    },
+    {
+      "name": "Festung der Stürme",
+      "slug": "festung-der-stürme",
+      "names": {
+        "en_US": "Festung der Stürme",
+        "es_MX": "Festung der Stürme",
+        "pt_BR": "Festung der Stürme",
+        "de_DE": "Festung der Stürme",
+        "en_GB": "Festung der Stürme",
+        "es_ES": "Festung der Stürme",
+        "fr_FR": "Festung der Stürme",
+        "it_IT": "Festung der Stürme",
+        "ru_RU": "Festung der Stürme",
+        "ko_KR": "Festung der Stürme",
+        "zh_TW": "Festung der Sturme",
+        "zh_CN": "Festung der Stürme"
+      }
+    },
+    {
+      "name": "Fordragon",
+      "slug": "fordragon",
+      "names": {
+        "en_US": "Fordragon",
+        "es_MX": "Fordragon",
+        "pt_BR": "Дракономор",
+        "de_DE": "Fordragon",
+        "en_GB": "Fordragon",
+        "es_ES": "Fordragon",
+        "fr_FR": "Fordragon",
+        "it_IT": "Дракономор",
+        "ru_RU": "Дракономор",
+        "ko_KR": "Fordragon",
+        "zh_TW": "Fordragon",
+        "zh_CN": "弗塔根"
+      }
+    },
+    {
+      "name": "Forscherliga",
+      "slug": "forscherliga",
+      "names": {
+        "en_US": "Forscherliga",
+        "es_MX": "Forscherliga",
+        "pt_BR": "Forscherliga",
+        "de_DE": "Forscherliga",
+        "en_GB": "Forscherliga",
+        "es_ES": "Forscherliga",
+        "fr_FR": "Forscherliga",
+        "it_IT": "Forscherliga",
+        "ru_RU": "Forscherliga",
+        "ko_KR": "Forscherliga",
+        "zh_TW": "弗塞雷迦",
+        "zh_CN": "Forscherliga"
+      }
+    },
+    {
+      "name": "Frostmane",
+      "slug": "frostmane",
+      "names": {
+        "en_US": "Frostmane",
+        "es_MX": "Frostmane",
+        "pt_BR": "Frostmane",
+        "de_DE": "Frostmane",
+        "en_GB": "Frostmane",
+        "es_ES": "Frostmane",
+        "fr_FR": "Frostmane",
+        "it_IT": "Frostmane",
+        "ru_RU": "Frostmane",
+        "ko_KR": "Frostmane",
+        "zh_TW": "冰霜之刺",
+        "zh_CN": "冰霜之刃"
+      }
+    },
+    {
+      "name": "Frostmourne",
+      "slug": "frostmourne",
+      "names": {
+        "en_US": "Frostmourne",
+        "es_MX": "Frostmourne",
+        "pt_BR": "Frostmourne",
+        "de_DE": "Frostmourne",
+        "en_GB": "Frostmourne",
+        "es_ES": "Frostmourne",
+        "fr_FR": "Frostmourne",
+        "it_IT": "Frostmourne",
+        "ru_RU": "Frostmourne",
+        "ko_KR": "Frostmourne",
+        "zh_TW": "霜之哀傷",
+        "zh_CN": "霜之哀伤"
+      }
+    },
+    {
+      "name": "Frostwhisper",
+      "slug": "frostwhisper",
+      "names": {
+        "en_US": "Frostwhisper",
+        "es_MX": "Frostwhisper",
+        "pt_BR": "Frostwhisper",
+        "de_DE": "Frostwhisper",
+        "en_GB": "Frostwhisper",
+        "es_ES": "Frostwhisper",
+        "fr_FR": "Frostwhisper",
+        "it_IT": "Frostwhisper",
+        "ru_RU": "Frostwhisper",
+        "ko_KR": "Frostwhisper",
+        "zh_TW": "霜語",
+        "zh_CN": "霜语"
+      }
+    },
+    {
+      "name": "Frostwolf",
+      "slug": "frostwolf",
+      "names": {
+        "en_US": "Frostwolf",
+        "es_MX": "Frostwolf",
+        "pt_BR": "Frostwolf",
+        "de_DE": "Frostwolf",
+        "en_GB": "Frostwolf",
+        "es_ES": "Frostwolf",
+        "fr_FR": "Frostwolf",
+        "it_IT": "Frostwolf",
+        "ru_RU": "Frostwolf",
+        "ko_KR": "Frostwolf",
+        "zh_TW": "霜狼",
+        "zh_CN": "霜狼"
+      }
+    },
+    {
+      "name": "Galakrond",
+      "slug": "galakrond",
+      "names": {
+        "en_US": "Galakrond",
+        "es_MX": "Galakrond",
+        "pt_BR": "Галакронд",
+        "de_DE": "Galakrond",
+        "en_GB": "Galakrond",
+        "es_ES": "Galakrond",
+        "fr_FR": "Galakrond",
+        "it_IT": "Галакронд",
+        "ru_RU": "Галакронд",
+        "ko_KR": "Galakrond",
+        "zh_TW": "Galakrond",
+        "zh_CN": "迦拉克隆"
+      }
+    },
+    {
+      "name": "Garona",
+      "slug": "garona",
+      "names": {
+        "en_US": "Garona",
+        "es_MX": "Garona",
+        "pt_BR": "Garona",
+        "de_DE": "Garona",
+        "en_GB": "Garona",
+        "es_ES": "Garona",
+        "fr_FR": "Garona",
+        "it_IT": "Garona",
+        "ru_RU": "Garona",
+        "ko_KR": "Garona",
+        "zh_TW": "迦羅娜",
+        "zh_CN": "迦罗娜"
+      }
+    },
+    {
+      "name": "Garrosh",
+      "slug": "garrosh",
+      "names": {
+        "en_US": "Garrosh",
+        "es_MX": "Garrosh",
+        "pt_BR": "Garrosh",
+        "de_DE": "Garrosh",
+        "en_GB": "Garrosh",
+        "es_ES": "Garrosh",
+        "fr_FR": "Garrosh",
+        "it_IT": "Garrosh",
+        "ru_RU": "Garrosh",
+        "ko_KR": "Garrosh",
+        "zh_TW": "卡爾洛斯",
+        "zh_CN": "加尔鲁什"
+      }
+    },
+    {
+      "name": "Genjuros",
+      "slug": "genjuros",
+      "names": {
+        "en_US": "Genjuros",
+        "es_MX": "Genjuros",
+        "pt_BR": "Genjuros",
+        "de_DE": "Genjuros",
+        "en_GB": "Genjuros",
+        "es_ES": "Genjuros",
+        "fr_FR": "Genjuros",
+        "it_IT": "Genjuros",
+        "ru_RU": "Genjuros",
+        "ko_KR": "Genjuros",
+        "zh_TW": "洛克漢",
+        "zh_CN": "Genjuros"
+      }
+    },
+    {
+      "name": "Ghostlands",
+      "slug": "ghostlands",
+      "names": {
+        "en_US": "Ghostlands",
+        "es_MX": "Ghostlands",
+        "pt_BR": "Ghostlands",
+        "de_DE": "Ghostlands",
+        "en_GB": "Ghostlands",
+        "es_ES": "Ghostlands",
+        "fr_FR": "Ghostlands",
+        "it_IT": "Ghostlands",
+        "ru_RU": "Ghostlands",
+        "ko_KR": "Ghostlands",
+        "zh_TW": "鬼魂之地",
+        "zh_CN": "幽魂之地"
+      }
+    },
+    {
+      "name": "Gilneas",
+      "slug": "gilneas",
+      "names": {
+        "en_US": "Gilneas",
+        "es_MX": "Gilneas",
+        "pt_BR": "Gilneas",
+        "de_DE": "Gilneas",
+        "en_GB": "Gilneas",
+        "es_ES": "Gilneas",
+        "fr_FR": "Gilneas",
+        "it_IT": "Gilneas",
+        "ru_RU": "Gilneas",
+        "ko_KR": "Gilneas",
+        "zh_TW": "吉爾尼斯",
+        "zh_CN": "吉尔尼斯"
+      }
+    },
+    {
+      "name": "Goldrinn",
+      "slug": "goldrinn",
+      "names": {
+        "en_US": "Goldrinn",
+        "es_MX": "Goldrinn",
+        "pt_BR": "Голдринн",
+        "de_DE": "Goldrinn",
+        "en_GB": "Goldrinn",
+        "es_ES": "Goldrinn",
+        "fr_FR": "Goldrinn",
+        "it_IT": "Голдринн",
+        "ru_RU": "Голдринн",
+        "ko_KR": "Goldrinn",
+        "zh_TW": "Goldrinn",
+        "zh_CN": "戈德林"
+      }
+    },
+    {
+      "name": "Gordunni",
+      "slug": "gordunni",
+      "names": {
+        "en_US": "Gordunni",
+        "es_MX": "Gordunni",
+        "pt_BR": "Гордунни",
+        "de_DE": "Gordunni",
+        "en_GB": "Gordunni",
+        "es_ES": "Gordunni",
+        "fr_FR": "Gordunni",
+        "it_IT": "Гордунни",
+        "ru_RU": "Гордунни",
+        "ko_KR": "Gordunni",
+        "zh_TW": "戈杜尼",
+        "zh_CN": "戈杜尼"
+      }
+    },
+    {
+      "name": "Gorgonnash",
+      "slug": "gorgonnash",
+      "names": {
+        "en_US": "Gorgonnash",
+        "es_MX": "Gorgonnash",
+        "pt_BR": "Gorgonnash",
+        "de_DE": "Gorgonnash",
+        "en_GB": "Gorgonnash",
+        "es_ES": "Gorgonnash",
+        "fr_FR": "Gorgonnash",
+        "it_IT": "Gorgonnash",
+        "ru_RU": "Gorgonnash",
+        "ko_KR": "Gorgonnash",
+        "zh_TW": "戈古納斯",
+        "zh_CN": "戈古纳斯"
+      }
+    },
+    {
+      "name": "Greymane",
+      "slug": "greymane",
+      "names": {
+        "en_US": "Greymane",
+        "es_MX": "Greymane",
+        "pt_BR": "Седогрив",
+        "de_DE": "Greymane",
+        "en_GB": "Greymane",
+        "es_ES": "Greymane",
+        "fr_FR": "Greymane",
+        "it_IT": "Седогрив",
+        "ru_RU": "Седогрив",
+        "ko_KR": "Greymane",
+        "zh_TW": "Greymane",
+        "zh_CN": "格雷迈恩"
+      }
+    },
+    {
+      "name": "Grim Batol",
+      "slug": "grim-batol",
+      "names": {
+        "en_US": "Grim Batol",
+        "es_MX": "Grim Batol",
+        "pt_BR": "Grim Batol",
+        "de_DE": "Grim Batol",
+        "en_GB": "Grim Batol",
+        "es_ES": "Grim Batol",
+        "fr_FR": "Grim Batol",
+        "it_IT": "Grim Batol",
+        "ru_RU": "Grim Batol",
+        "ko_KR": "Grim Batol",
+        "zh_TW": "格瑞姆巴托",
+        "zh_CN": "格瑞姆巴托"
+      }
+    },
+    {
+      "name": "Grom",
+      "slug": "grom",
+      "names": {
+        "en_US": "Grom",
+        "es_MX": "Grom",
+        "pt_BR": "Гром",
+        "de_DE": "Grom",
+        "en_GB": "Grom",
+        "es_ES": "Grom",
+        "fr_FR": "Grom",
+        "it_IT": "Гром",
+        "ru_RU": "Гром",
+        "ko_KR": "Grom",
+        "zh_TW": "Grom",
+        "zh_CN": "格罗姆"
+      }
+    },
+    {
+      "name": "Gul'dan",
+      "slug": "guldan",
+      "names": {
+        "en_US": "Gul'dan",
+        "es_MX": "Gul'dan",
+        "pt_BR": "Gul'dan",
+        "de_DE": "Gul'dan",
+        "en_GB": "Gul'dan",
+        "es_ES": "Gul'dan",
+        "fr_FR": "Gul'dan",
+        "it_IT": "Gul'dan",
+        "ru_RU": "Gul'dan",
+        "ko_KR": "Gul'dan",
+        "zh_TW": "古爾丹",
+        "zh_CN": "古尔丹"
+      }
+    },
+    {
+      "name": "Hakkar",
+      "slug": "hakkar",
+      "names": {
+        "en_US": "Hakkar",
+        "es_MX": "Hakkar",
+        "pt_BR": "Hakkar",
+        "de_DE": "Hakkar",
+        "en_GB": "Hakkar",
+        "es_ES": "Hakkar",
+        "fr_FR": "Hakkar",
+        "it_IT": "Hakkar",
+        "ru_RU": "Hakkar",
+        "ko_KR": "Hakkar",
+        "zh_TW": "哈卡",
+        "zh_CN": "哈卡"
+      }
+    },
+    {
+      "name": "Haomarush",
+      "slug": "haomarush",
+      "names": {
+        "en_US": "Haomarush",
+        "es_MX": "Haomarush",
+        "pt_BR": "Haomarush",
+        "de_DE": "Haomarush",
+        "en_GB": "Haomarush",
+        "es_ES": "Haomarush",
+        "fr_FR": "Haomarush",
+        "it_IT": "Haomarush",
+        "ru_RU": "Haomarush",
+        "ko_KR": "Haomarush",
+        "zh_TW": "哈姆魯什",
+        "zh_CN": "Haomarush"
+      }
+    },
+    {
+      "name": "Hellfire",
+      "slug": "hellfire",
+      "names": {
+        "en_US": "Hellfire",
+        "es_MX": "Hellfire",
+        "pt_BR": "Hellfire",
+        "de_DE": "Hellfire",
+        "en_GB": "Hellfire",
+        "es_ES": "Hellfire",
+        "fr_FR": "Hellfire",
+        "it_IT": "Hellfire",
+        "ru_RU": "Hellfire",
+        "ko_KR": "Hellfire",
+        "zh_TW": "地獄火",
+        "zh_CN": "地狱火"
+      }
+    },
+    {
+      "name": "Hellscream",
+      "slug": "hellscream",
+      "names": {
+        "en_US": "Hellscream",
+        "es_MX": "Hellscream",
+        "pt_BR": "Hellscream",
+        "de_DE": "Hellscream",
+        "en_GB": "Hellscream",
+        "es_ES": "Hellscream",
+        "fr_FR": "Hellscream",
+        "it_IT": "Hellscream",
+        "ru_RU": "Hellscream",
+        "ko_KR": "Hellscream",
+        "zh_TW": "地獄吼",
+        "zh_CN": "地狱咆哮"
+      }
+    },
+    {
+      "name": "Howling Fjord",
+      "slug": "howling-fjord",
+      "names": {
+        "en_US": "Howling Fjord",
+        "es_MX": "Howling Fjord",
+        "pt_BR": "Ревущий фьорд",
+        "de_DE": "Howling Fjord",
+        "en_GB": "Howling Fjord",
+        "es_ES": "Howling Fjord",
+        "fr_FR": "Howling Fjord",
+        "it_IT": "Ревущий фьорд",
+        "ru_RU": "Ревущий фьорд",
+        "ko_KR": "Howling Fjord",
+        "zh_TW": "Howling Fjord",
+        "zh_CN": "嚎风峡湾"
+      }
+    },
+    {
+      "name": "Hyjal",
+      "slug": "hyjal",
+      "names": {
+        "en_US": "Hyjal",
+        "es_MX": "Hyjal",
+        "pt_BR": "Hyjal",
+        "de_DE": "Hyjal",
+        "en_GB": "Hyjal",
+        "es_ES": "Hyjal",
+        "fr_FR": "Hyjal",
+        "it_IT": "Hyjal",
+        "ru_RU": "Hyjal",
+        "ko_KR": "Hyjal",
+        "zh_TW": "海加爾山",
+        "zh_CN": "海加尔"
+      }
+    },
+    {
+      "name": "Illidan",
+      "slug": "illidan",
+      "names": {
+        "en_US": "Illidan",
+        "es_MX": "Illidan",
+        "pt_BR": "Illidan",
+        "de_DE": "Illidan",
+        "en_GB": "Illidan",
+        "es_ES": "Illidan",
+        "fr_FR": "Illidan",
+        "it_IT": "Illidan",
+        "ru_RU": "Illidan",
+        "ko_KR": "Illidan",
+        "zh_TW": "伊利丹",
+        "zh_CN": "伊利丹"
+      }
+    },
+    {
+      "name": "Jaedenar",
+      "slug": "jaedenar",
+      "names": {
+        "en_US": "Jaedenar",
+        "es_MX": "Jaedenar",
+        "pt_BR": "Jaedenar",
+        "de_DE": "Jaedenar",
+        "en_GB": "Jaedenar",
+        "es_ES": "Jaedenar",
+        "fr_FR": "Jaedenar",
+        "it_IT": "Jaedenar",
+        "ru_RU": "Jaedenar",
+        "ko_KR": "Jaedenar",
+        "zh_TW": "加德納爾",
+        "zh_CN": "加德纳尔"
+      }
+    },
+    {
+      "name": "Kael'thas",
+      "slug": "kaelthas",
+      "names": {
+        "en_US": "Kael'thas",
+        "es_MX": "Kael'thas",
+        "pt_BR": "Kael'thas",
+        "de_DE": "Kael'thas",
+        "en_GB": "Kael'thas",
+        "es_ES": "Kael'thas",
+        "fr_FR": "Kael'thas",
+        "it_IT": "Kael'thas",
+        "ru_RU": "Kael'thas",
+        "ko_KR": "Kael'thas",
+        "zh_TW": "凱爾薩斯",
+        "zh_CN": "凯尔萨斯"
+      }
+    },
+    {
+      "name": "Karazhan",
+      "slug": "karazhan",
+      "names": {
+        "en_US": "Karazhan",
+        "es_MX": "Karazhan",
+        "pt_BR": "Karazhan",
+        "de_DE": "Karazhan",
+        "en_GB": "Karazhan",
+        "es_ES": "Karazhan",
+        "fr_FR": "Karazhan",
+        "it_IT": "Karazhan",
+        "ru_RU": "Karazhan",
+        "ko_KR": "Karazhan",
+        "zh_TW": "卡拉贊",
+        "zh_CN": "卡拉赞"
+      }
+    },
+    {
+      "name": "Kargath",
+      "slug": "kargath",
+      "names": {
+        "en_US": "Kargath",
+        "es_MX": "Kargath",
+        "pt_BR": "Kargath",
+        "de_DE": "Kargath",
+        "en_GB": "Kargath",
+        "es_ES": "Kargath",
+        "fr_FR": "Kargath",
+        "it_IT": "Kargath",
+        "ru_RU": "Kargath",
+        "ko_KR": "Kargath",
+        "zh_TW": "卡加斯",
+        "zh_CN": "卡格斯"
+      }
+    },
+    {
+      "name": "Kazzak",
+      "slug": "kazzak",
+      "names": {
+        "en_US": "Kazzak",
+        "es_MX": "Kazzak",
+        "pt_BR": "Kazzak",
+        "de_DE": "Kazzak",
+        "en_GB": "Kazzak",
+        "es_ES": "Kazzak",
+        "fr_FR": "Kazzak",
+        "it_IT": "Kazzak",
+        "ru_RU": "Kazzak",
+        "ko_KR": "Kazzak",
+        "zh_TW": "卡札克",
+        "zh_CN": "卡扎克"
+      }
+    },
+    {
+      "name": "Kel'Thuzad",
+      "slug": "kelthuzad",
+      "names": {
+        "en_US": "Kel'Thuzad",
+        "es_MX": "Kel'Thuzad",
+        "pt_BR": "Kel'Thuzad",
+        "de_DE": "Kel'Thuzad",
+        "en_GB": "Kel'Thuzad",
+        "es_ES": "Kel'Thuzad",
+        "fr_FR": "Kel'Thuzad",
+        "it_IT": "Kel'Thuzad",
+        "ru_RU": "Kel'Thuzad",
+        "ko_KR": "Kel'Thuzad",
+        "zh_TW": "科爾蘇加德",
+        "zh_CN": "克尔苏加德"
+      }
+    },
+    {
+      "name": "Khadgar",
+      "slug": "khadgar",
+      "names": {
+        "en_US": "Khadgar",
+        "es_MX": "Khadgar",
+        "pt_BR": "Khadgar",
+        "de_DE": "Khadgar",
+        "en_GB": "Khadgar",
+        "es_ES": "Khadgar",
+        "fr_FR": "Khadgar",
+        "it_IT": "Khadgar",
+        "ru_RU": "Khadgar",
+        "ko_KR": "Khadgar",
+        "zh_TW": "卡德加",
+        "zh_CN": "卡德加"
+      }
+    },
+    {
+      "name": "Khaz Modan",
+      "slug": "khaz-modan",
+      "names": {
+        "en_US": "Khaz Modan",
+        "es_MX": "Khaz Modan",
+        "pt_BR": "Khaz Modan",
+        "de_DE": "Khaz Modan",
+        "en_GB": "Khaz Modan",
+        "es_ES": "Khaz Modan",
+        "fr_FR": "Khaz Modan",
+        "it_IT": "Khaz Modan",
+        "ru_RU": "Khaz Modan",
+        "ko_KR": "Khaz Modan",
+        "zh_TW": "卡茲莫丹",
+        "zh_CN": "卡兹莫丹"
+      }
+    },
+    {
+      "name": "Khaz'goroth",
+      "slug": "khazgoroth",
+      "names": {
+        "en_US": "Khaz'goroth",
+        "es_MX": "Khaz'goroth",
+        "pt_BR": "Khaz'goroth",
+        "de_DE": "Khaz'goroth",
+        "en_GB": "Khaz'goroth",
+        "es_ES": "Khaz'goroth",
+        "fr_FR": "Khaz'goroth",
+        "it_IT": "Khaz'goroth",
+        "ru_RU": "Khaz'goroth",
+        "ko_KR": "Khaz'goroth",
+        "zh_TW": "卡茲格羅斯",
+        "zh_CN": "卡兹格罗斯"
+      }
+    },
+    {
+      "name": "Kil'jaeden",
+      "slug": "kiljaeden",
+      "names": {
+        "en_US": "Kil'jaeden",
+        "es_MX": "Kil'jaeden",
+        "pt_BR": "Kil'jaeden",
+        "de_DE": "Kil'jaeden",
+        "en_GB": "Kil'jaeden",
+        "es_ES": "Kil'jaeden",
+        "fr_FR": "Kil'jaeden",
+        "it_IT": "Kil'jaeden",
+        "ru_RU": "Kil'jaeden",
+        "ko_KR": "Kil'jaeden",
+        "zh_TW": "基爾加丹",
+        "zh_CN": "基尔加丹"
+      }
+    },
+    {
+      "name": "Kilrogg",
+      "slug": "kilrogg",
+      "names": {
+        "en_US": "Kilrogg",
+        "es_MX": "Kilrogg",
+        "pt_BR": "Kilrogg",
+        "de_DE": "Kilrogg",
+        "en_GB": "Kilrogg",
+        "es_ES": "Kilrogg",
+        "fr_FR": "Kilrogg",
+        "it_IT": "Kilrogg",
+        "ru_RU": "Kilrogg",
+        "ko_KR": "Kilrogg",
+        "zh_TW": "基爾羅格",
+        "zh_CN": "基尔罗格"
+      }
+    },
+    {
+      "name": "Kirin Tor",
+      "slug": "kirin-tor",
+      "names": {
+        "en_US": "Kirin Tor",
+        "es_MX": "Kirin Tor",
+        "pt_BR": "Kirin Tor",
+        "de_DE": "Kirin Tor",
+        "en_GB": "Kirin Tor",
+        "es_ES": "Kirin Tor",
+        "fr_FR": "Kirin Tor",
+        "it_IT": "Kirin Tor",
+        "ru_RU": "Kirin Tor",
+        "ko_KR": "Kirin Tor",
+        "zh_TW": "祈倫托",
+        "zh_CN": "肯瑞托"
+      }
+    },
+    {
+      "name": "Kor'gall",
+      "slug": "korgall",
+      "names": {
+        "en_US": "Kor'gall",
+        "es_MX": "Kor'gall",
+        "pt_BR": "Kor'gall",
+        "de_DE": "Kor'gall",
+        "en_GB": "Kor'gall",
+        "es_ES": "Kor'gall",
+        "fr_FR": "Kor'gall",
+        "it_IT": "Kor'gall",
+        "ru_RU": "Kor'gall",
+        "ko_KR": "Kor'gall",
+        "zh_TW": "寇加爾",
+        "zh_CN": "考戈尔"
+      }
+    },
+    {
+      "name": "Krag'jin",
+      "slug": "kragjin",
+      "names": {
+        "en_US": "Krag'jin",
+        "es_MX": "Krag'jin",
+        "pt_BR": "Krag'jin",
+        "de_DE": "Krag'jin",
+        "en_GB": "Krag'jin",
+        "es_ES": "Krag'jin",
+        "fr_FR": "Krag'jin",
+        "it_IT": "Krag'jin",
+        "ru_RU": "Krag'jin",
+        "ko_KR": "Krag'jin",
+        "zh_TW": "克雷金",
+        "zh_CN": "Krag'jin"
+      }
+    },
+    {
+      "name": "Krasus",
+      "slug": "krasus",
+      "names": {
+        "en_US": "Krasus",
+        "es_MX": "Krasus",
+        "pt_BR": "Krasus",
+        "de_DE": "Krasus",
+        "en_GB": "Krasus",
+        "es_ES": "Krasus",
+        "fr_FR": "Krasus",
+        "it_IT": "Krasus",
+        "ru_RU": "Krasus",
+        "ko_KR": "Krasus",
+        "zh_TW": "卡薩斯",
+        "zh_CN": "克拉苏斯"
+      }
+    },
+    {
+      "name": "Kul Tiras",
+      "slug": "kul-tiras",
+      "names": {
+        "en_US": "Kul Tiras",
+        "es_MX": "Kul Tiras",
+        "pt_BR": "Kul Tiras",
+        "de_DE": "Kul Tiras",
+        "en_GB": "Kul Tiras",
+        "es_ES": "Kul Tiras",
+        "fr_FR": "Kul Tiras",
+        "it_IT": "Kul Tiras",
+        "ru_RU": "Kul Tiras",
+        "ko_KR": "Kul Tiras",
+        "zh_TW": "庫爾提拉斯",
+        "zh_CN": "库尔提拉斯"
+      }
+    },
+    {
+      "name": "Kult der Verdammten",
+      "slug": "kult-der-verdammten",
+      "names": {
+        "en_US": "Kult der Verdammten",
+        "es_MX": "Kult der Verdammten",
+        "pt_BR": "Kult der Verdammten",
+        "de_DE": "Kult der Verdammten",
+        "en_GB": "Kult der Verdammten",
+        "es_ES": "Kult der Verdammten",
+        "fr_FR": "Kult der Verdammten",
+        "it_IT": "Kult der Verdammten",
+        "ru_RU": "Kult der Verdammten",
+        "ko_KR": "Kult der Verdammten",
+        "zh_TW": "Kult der Verdammten",
+        "zh_CN": "Kult der Verdammten"
+      }
+    },
+    {
+      "name": "La Croisade écarlate",
+      "slug": "la-croisade-écarlate",
+      "names": {
+        "en_US": "La Croisade écarlate",
+        "es_MX": "La Croisade écarlate",
+        "pt_BR": "La Croisade écarlate",
+        "de_DE": "La Croisade écarlate",
+        "en_GB": "La Croisade écarlate",
+        "es_ES": "La Croisade écarlate",
+        "fr_FR": "La Croisade écarlate",
+        "it_IT": "La Croisade écarlate",
+        "ru_RU": "La Croisade écarlate",
+        "ko_KR": "La Croisade écarlate",
+        "zh_TW": "La Croisade ecarlate",
+        "zh_CN": "La Croisade écarlate"
+      }
+    },
+    {
+      "name": "Laughing Skull",
+      "slug": "laughing-skull",
+      "names": {
+        "en_US": "Laughing Skull",
+        "es_MX": "Laughing Skull",
+        "pt_BR": "Laughing Skull",
+        "de_DE": "Laughing Skull",
+        "en_GB": "Laughing Skull",
+        "es_ES": "Laughing Skull",
+        "fr_FR": "Laughing Skull",
+        "it_IT": "Laughing Skull",
+        "ru_RU": "Laughing Skull",
+        "ko_KR": "Laughing Skull",
+        "zh_TW": "獰笑骷髏",
+        "zh_CN": "嘲颅"
+      }
+    },
+    {
+      "name": "Les Clairvoyants",
+      "slug": "les-clairvoyants",
+      "names": {
+        "en_US": "Les Clairvoyants",
+        "es_MX": "Les Clairvoyants",
+        "pt_BR": "Les Clairvoyants",
+        "de_DE": "Les Clairvoyants",
+        "en_GB": "Les Clairvoyants",
+        "es_ES": "Les Clairvoyants",
+        "fr_FR": "Les Clairvoyants",
+        "it_IT": "Les Clairvoyants",
+        "ru_RU": "Les Clairvoyants",
+        "ko_KR": "Les Clairvoyants",
+        "zh_TW": "Les Clairvoyants",
+        "zh_CN": "Les Clairvoyants"
+      }
+    },
+    {
+      "name": "Les Sentinelles",
+      "slug": "les-sentinelles",
+      "names": {
+        "en_US": "Les Sentinelles",
+        "es_MX": "Les Sentinelles",
+        "pt_BR": "Les Sentinelles",
+        "de_DE": "Les Sentinelles",
+        "en_GB": "Les Sentinelles",
+        "es_ES": "Les Sentinelles",
+        "fr_FR": "Les Sentinelles",
+        "it_IT": "Les Sentinelles",
+        "ru_RU": "Les Sentinelles",
+        "ko_KR": "Les Sentinelles",
+        "zh_TW": "Les Sentinelles",
+        "zh_CN": "Les Sentinelles"
+      }
+    },
+    {
+      "name": "Lich King",
+      "slug": "lich-king",
+      "names": {
+        "en_US": "Lich King",
+        "es_MX": "Lich King",
+        "pt_BR": "Король-лич",
+        "de_DE": "Lich King",
+        "en_GB": "Lich King",
+        "es_ES": "Lich King",
+        "fr_FR": "Lich King",
+        "it_IT": "Король-лич",
+        "ru_RU": "Король-лич",
+        "ko_KR": "Lich King",
+        "zh_TW": "Lich King",
+        "zh_CN": "巫妖之王"
+      }
+    },
+    {
+      "name": "Lightbringer",
+      "slug": "lightbringer",
+      "names": {
+        "en_US": "Lightbringer",
+        "es_MX": "Lightbringer",
+        "pt_BR": "Lightbringer",
+        "de_DE": "Lightbringer",
+        "en_GB": "Lightbringer",
+        "es_ES": "Lightbringer",
+        "fr_FR": "Lightbringer",
+        "it_IT": "Lightbringer",
+        "ru_RU": "Lightbringer",
+        "ko_KR": "Lightbringer",
+        "zh_TW": "光明使者",
+        "zh_CN": "光明使者"
+      }
+    },
+    {
+      "name": "Lightning's Blade",
+      "slug": "lightnings-blade",
+      "names": {
+        "en_US": "Lightning's Blade",
+        "es_MX": "Lightning's Blade",
+        "pt_BR": "Lightning's Blade",
+        "de_DE": "Lightning's Blade",
+        "en_GB": "Lightning's Blade",
+        "es_ES": "Lightning's Blade",
+        "fr_FR": "Lightning's Blade",
+        "it_IT": "Lightning's Blade",
+        "ru_RU": "Lightning's Blade",
+        "ko_KR": "Lightning's Blade",
+        "zh_TW": "閃電之刃",
+        "zh_CN": "闪电之刃"
+      }
+    },
+    {
+      "name": "Lordaeron",
+      "slug": "lordaeron",
+      "names": {
+        "en_US": "Lordaeron",
+        "es_MX": "Lordaeron",
+        "pt_BR": "Lordaeron",
+        "de_DE": "Lordaeron",
+        "en_GB": "Lordaeron",
+        "es_ES": "Lordaeron",
+        "fr_FR": "Lordaeron",
+        "it_IT": "Lordaeron",
+        "ru_RU": "Lordaeron",
+        "ko_KR": "Lordaeron",
+        "zh_TW": "羅德隆",
+        "zh_CN": "洛丹伦"
+      }
+    },
+    {
+      "name": "Los Errantes",
+      "slug": "los-errantes",
+      "names": {
+        "en_US": "Los Errantes",
+        "es_MX": "Los Errantes",
+        "pt_BR": "Los Errantes",
+        "de_DE": "Los Errantes",
+        "en_GB": "Los Errantes",
+        "es_ES": "Los Errantes",
+        "fr_FR": "Los Errantes",
+        "it_IT": "Los Errantes",
+        "ru_RU": "Los Errantes",
+        "ko_KR": "Los Errantes",
+        "zh_TW": "Los Errantes",
+        "zh_CN": "Los Errantes"
+      }
+    },
+    {
+      "name": "Lothar",
+      "slug": "lothar",
+      "names": {
+        "en_US": "Lothar",
+        "es_MX": "Lothar",
+        "pt_BR": "Lothar",
+        "de_DE": "Lothar",
+        "en_GB": "Lothar",
+        "es_ES": "Lothar",
+        "fr_FR": "Lothar",
+        "it_IT": "Lothar",
+        "ru_RU": "Lothar",
+        "ko_KR": "Lothar",
+        "zh_TW": "洛薩",
+        "zh_CN": "洛萨"
+      }
+    },
+    {
+      "name": "Madmortem",
+      "slug": "madmortem",
+      "names": {
+        "en_US": "Madmortem",
+        "es_MX": "Madmortem",
+        "pt_BR": "Madmortem",
+        "de_DE": "Madmortem",
+        "en_GB": "Madmortem",
+        "es_ES": "Madmortem",
+        "fr_FR": "Madmortem",
+        "it_IT": "Madmortem",
+        "ru_RU": "Madmortem",
+        "ko_KR": "Madmortem",
+        "zh_TW": "麥德摩迪",
+        "zh_CN": "Madmortem"
+      }
+    },
+    {
+      "name": "Magtheridon",
+      "slug": "magtheridon",
+      "names": {
+        "en_US": "Magtheridon",
+        "es_MX": "Magtheridon",
+        "pt_BR": "Magtheridon",
+        "de_DE": "Magtheridon",
+        "en_GB": "Magtheridon",
+        "es_ES": "Magtheridon",
+        "fr_FR": "Magtheridon",
+        "it_IT": "Magtheridon",
+        "ru_RU": "Magtheridon",
+        "ko_KR": "Magtheridon",
+        "zh_TW": "瑪瑟里頓",
+        "zh_CN": "玛瑟里顿"
+      }
+    },
+    {
+      "name": "Mal'Ganis",
+      "slug": "malganis",
+      "names": {
+        "en_US": "Mal'Ganis",
+        "es_MX": "Mal'Ganis",
+        "pt_BR": "Mal'Ganis",
+        "de_DE": "Mal'Ganis",
+        "en_GB": "Mal'Ganis",
+        "es_ES": "Mal'Ganis",
+        "fr_FR": "Mal'Ganis",
+        "it_IT": "Mal'Ganis",
+        "ru_RU": "Mal'Ganis",
+        "ko_KR": "Mal'Ganis",
+        "zh_TW": "瑪爾加尼斯",
+        "zh_CN": "梅尔加尼"
+      }
+    },
+    {
+      "name": "Malfurion",
+      "slug": "malfurion",
+      "names": {
+        "en_US": "Malfurion",
+        "es_MX": "Malfurion",
+        "pt_BR": "Malfurion",
+        "de_DE": "Malfurion",
+        "en_GB": "Malfurion",
+        "es_ES": "Malfurion",
+        "fr_FR": "Malfurion",
+        "it_IT": "Malfurion",
+        "ru_RU": "Malfurion",
+        "ko_KR": "Malfurion",
+        "zh_TW": "瑪法里恩",
+        "zh_CN": "玛法里奥"
+      }
+    },
+    {
+      "name": "Malorne",
+      "slug": "malorne",
+      "names": {
+        "en_US": "Malorne",
+        "es_MX": "Malorne",
+        "pt_BR": "Malorne",
+        "de_DE": "Malorne",
+        "en_GB": "Malorne",
+        "es_ES": "Malorne",
+        "fr_FR": "Malorne",
+        "it_IT": "Malorne",
+        "ru_RU": "Malorne",
+        "ko_KR": "Malorne",
+        "zh_TW": "瑪洛尼",
+        "zh_CN": "玛洛恩"
+      }
+    },
+    {
+      "name": "Malygos",
+      "slug": "malygos",
+      "names": {
+        "en_US": "Malygos",
+        "es_MX": "Malygos",
+        "pt_BR": "Malygos",
+        "de_DE": "Malygos",
+        "en_GB": "Malygos",
+        "es_ES": "Malygos",
+        "fr_FR": "Malygos",
+        "it_IT": "Malygos",
+        "ru_RU": "Malygos",
+        "ko_KR": "Malygos",
+        "zh_TW": "瑪里苟斯",
+        "zh_CN": "玛里苟斯"
+      }
+    },
+    {
+      "name": "Mannoroth",
+      "slug": "mannoroth",
+      "names": {
+        "en_US": "Mannoroth",
+        "es_MX": "Mannoroth",
+        "pt_BR": "Mannoroth",
+        "de_DE": "Mannoroth",
+        "en_GB": "Mannoroth",
+        "es_ES": "Mannoroth",
+        "fr_FR": "Mannoroth",
+        "it_IT": "Mannoroth",
+        "ru_RU": "Mannoroth",
+        "ko_KR": "Mannoroth",
+        "zh_TW": "瑪諾洛斯",
+        "zh_CN": "玛诺洛斯"
+      }
+    },
+    {
+      "name": "Marécage de Zangar",
+      "slug": "marécage-de-zangar",
+      "names": {
+        "en_US": "Marécage de Zangar",
+        "es_MX": "Marécage de Zangar",
+        "pt_BR": "Marécage de Zangar",
+        "de_DE": "Marécage de Zangar",
+        "en_GB": "Marécage de Zangar",
+        "es_ES": "Marécage de Zangar",
+        "fr_FR": "Marécage de Zangar",
+        "it_IT": "Marécage de Zangar",
+        "ru_RU": "Marécage de Zangar",
+        "ko_KR": "Marécage de Zangar",
+        "zh_TW": "Marecage de Zangar",
+        "zh_CN": "Marécage de Zangar"
+      }
+    },
+    {
+      "name": "Mazrigos",
+      "slug": "mazrigos",
+      "names": {
+        "en_US": "Mazrigos",
+        "es_MX": "Mazrigos",
+        "pt_BR": "Mazrigos",
+        "de_DE": "Mazrigos",
+        "en_GB": "Mazrigos",
+        "es_ES": "Mazrigos",
+        "fr_FR": "Mazrigos",
+        "it_IT": "Mazrigos",
+        "ru_RU": "Mazrigos",
+        "ko_KR": "Mazrigos",
+        "zh_TW": "馬茲瑞葛斯",
+        "zh_CN": "Mazrigos"
+      }
+    },
+    {
+      "name": "Medivh",
+      "slug": "medivh",
+      "names": {
+        "en_US": "Medivh",
+        "es_MX": "Medivh",
+        "pt_BR": "Medivh",
+        "de_DE": "Medivh",
+        "en_GB": "Medivh",
+        "es_ES": "Medivh",
+        "fr_FR": "Medivh",
+        "it_IT": "Medivh",
+        "ru_RU": "Medivh",
+        "ko_KR": "Medivh",
+        "zh_TW": "麥迪文",
+        "zh_CN": "麦迪文"
+      }
+    },
+    {
+      "name": "Minahonda",
+      "slug": "minahonda",
+      "names": {
+        "en_US": "Minahonda",
+        "es_MX": "Minahonda",
+        "pt_BR": "Minahonda",
+        "de_DE": "Minahonda",
+        "en_GB": "Minahonda",
+        "es_ES": "Minahonda",
+        "fr_FR": "Minahonda",
+        "it_IT": "Minahonda",
+        "ru_RU": "Minahonda",
+        "ko_KR": "Minahonda",
+        "zh_TW": "米那弘達",
+        "zh_CN": "Minahonda"
+      }
+    },
+    {
+      "name": "Moonglade",
+      "slug": "moonglade",
+      "names": {
+        "en_US": "Moonglade",
+        "es_MX": "Moonglade",
+        "pt_BR": "Moonglade",
+        "de_DE": "Moonglade",
+        "en_GB": "Moonglade",
+        "es_ES": "Moonglade",
+        "fr_FR": "Moonglade",
+        "it_IT": "Moonglade",
+        "ru_RU": "Moonglade",
+        "ko_KR": "Moonglade",
+        "zh_TW": "月光林地",
+        "zh_CN": "月光林地"
+      }
+    },
+    {
+      "name": "Mug'thol",
+      "slug": "mugthol",
+      "names": {
+        "en_US": "Mug'thol",
+        "es_MX": "Mug'thol",
+        "pt_BR": "Mug'thol",
+        "de_DE": "Mug'thol",
+        "en_GB": "Mug'thol",
+        "es_ES": "Mug'thol",
+        "fr_FR": "Mug'thol",
+        "it_IT": "Mug'thol",
+        "ru_RU": "Mug'thol",
+        "ko_KR": "Mug'thol",
+        "zh_TW": "瑪格索爾",
+        "zh_CN": "玛格索尔"
+      }
+    },
+    {
+      "name": "Nagrand",
+      "slug": "nagrand",
+      "names": {
+        "en_US": "Nagrand",
+        "es_MX": "Nagrand",
+        "pt_BR": "Nagrand",
+        "de_DE": "Nagrand",
+        "en_GB": "Nagrand",
+        "es_ES": "Nagrand",
+        "fr_FR": "Nagrand",
+        "it_IT": "Nagrand",
+        "ru_RU": "Nagrand",
+        "ko_KR": "Nagrand",
+        "zh_TW": "納葛蘭",
+        "zh_CN": "纳格兰"
+      }
+    },
+    {
+      "name": "Nathrezim",
+      "slug": "nathrezim",
+      "names": {
+        "en_US": "Nathrezim",
+        "es_MX": "Nathrezim",
+        "pt_BR": "Nathrezim",
+        "de_DE": "Nathrezim",
+        "en_GB": "Nathrezim",
+        "es_ES": "Nathrezim",
+        "fr_FR": "Nathrezim",
+        "it_IT": "Nathrezim",
+        "ru_RU": "Nathrezim",
+        "ko_KR": "Nathrezim",
+        "zh_TW": "納斯雷茲姆",
+        "zh_CN": "纳斯雷兹姆"
+      }
+    },
+    {
+      "name": "Naxxramas",
+      "slug": "naxxramas",
+      "names": {
+        "en_US": "Naxxramas",
+        "es_MX": "Naxxramas",
+        "pt_BR": "Naxxramas",
+        "de_DE": "Naxxramas",
+        "en_GB": "Naxxramas",
+        "es_ES": "Naxxramas",
+        "fr_FR": "Naxxramas",
+        "it_IT": "Naxxramas",
+        "ru_RU": "Naxxramas",
+        "ko_KR": "Naxxramas",
+        "zh_TW": "納克薩瑪斯",
+        "zh_CN": "纳克萨玛斯"
+      }
+    },
+    {
+      "name": "Nazjatar",
+      "slug": "nazjatar",
+      "names": {
+        "en_US": "Nazjatar",
+        "es_MX": "Nazjatar",
+        "pt_BR": "Nazjatar",
+        "de_DE": "Nazjatar",
+        "en_GB": "Nazjatar",
+        "es_ES": "Nazjatar",
+        "fr_FR": "Nazjatar",
+        "it_IT": "Nazjatar",
+        "ru_RU": "Nazjatar",
+        "ko_KR": "Nazjatar",
+        "zh_TW": "納沙塔爾",
+        "zh_CN": "纳沙塔尔"
+      }
+    },
+    {
+      "name": "Nefarian",
+      "slug": "nefarian",
+      "names": {
+        "en_US": "Nefarian",
+        "es_MX": "Nefarian",
+        "pt_BR": "Nefarian",
+        "de_DE": "Nefarian",
+        "en_GB": "Nefarian",
+        "es_ES": "Nefarian",
+        "fr_FR": "Nefarian",
+        "it_IT": "Nefarian",
+        "ru_RU": "Nefarian",
+        "ko_KR": "Nefarian",
+        "zh_TW": "奈法利安",
+        "zh_CN": "奈法利安"
+      }
+    },
+    {
+      "name": "Nemesis",
+      "slug": "nemesis",
+      "names": {
+        "en_US": "Nemesis",
+        "es_MX": "Nemesis",
+        "pt_BR": "Nemesis",
+        "de_DE": "Nemesis",
+        "en_GB": "Nemesis",
+        "es_ES": "Nemesis",
+        "fr_FR": "Nemesis",
+        "it_IT": "Nemesis",
+        "ru_RU": "Nemesis",
+        "ko_KR": "Nemesis",
+        "zh_TW": "涅密希斯",
+        "zh_CN": "涅墨西斯"
+      }
+    },
+    {
+      "name": "Neptulon",
+      "slug": "neptulon",
+      "names": {
+        "en_US": "Neptulon",
+        "es_MX": "Neptulon",
+        "pt_BR": "Neptulon",
+        "de_DE": "Neptulon",
+        "en_GB": "Neptulon",
+        "es_ES": "Neptulon",
+        "fr_FR": "Neptulon",
+        "it_IT": "Neptulon",
+        "ru_RU": "Neptulon",
+        "ko_KR": "Neptulon",
+        "zh_TW": "奈普圖隆",
+        "zh_CN": "耐普图隆"
+      }
+    },
+    {
+      "name": "Ner'zhul",
+      "slug": "nerzhul",
+      "names": {
+        "en_US": "Ner'zhul",
+        "es_MX": "Ner'zhul",
+        "pt_BR": "Ner'zhul",
+        "de_DE": "Ner'zhul",
+        "en_GB": "Ner'zhul",
+        "es_ES": "Ner'zhul",
+        "fr_FR": "Ner'zhul",
+        "it_IT": "Ner'zhul",
+        "ru_RU": "Ner'zhul",
+        "ko_KR": "Ner'zhul",
+        "zh_TW": "耐祖奧",
+        "zh_CN": "耐奥祖"
+      }
+    },
+    {
+      "name": "Nera'thor",
+      "slug": "nerathor",
+      "names": {
+        "en_US": "Nera'thor",
+        "es_MX": "Nera'thor",
+        "pt_BR": "Nera'thor",
+        "de_DE": "Nera'thor",
+        "en_GB": "Nera'thor",
+        "es_ES": "Nera'thor",
+        "fr_FR": "Nera'thor",
+        "it_IT": "Nera'thor",
+        "ru_RU": "Nera'thor",
+        "ko_KR": "Nera'thor",
+        "zh_TW": "奈拉索爾",
+        "zh_CN": "Nera'thor"
+      }
+    },
+    {
+      "name": "Nethersturm",
+      "slug": "nethersturm",
+      "names": {
+        "en_US": "Nethersturm",
+        "es_MX": "Nethersturm",
+        "pt_BR": "Nethersturm",
+        "de_DE": "Nethersturm",
+        "en_GB": "Nethersturm",
+        "es_ES": "Nethersturm",
+        "fr_FR": "Nethersturm",
+        "it_IT": "Nethersturm",
+        "ru_RU": "Nethersturm",
+        "ko_KR": "Nethersturm",
+        "zh_TW": "奈瑟史頓",
+        "zh_CN": "虚空风暴"
+      }
+    },
+    {
+      "name": "Nordrassil",
+      "slug": "nordrassil",
+      "names": {
+        "en_US": "Nordrassil",
+        "es_MX": "Nordrassil",
+        "pt_BR": "Nordrassil",
+        "de_DE": "Nordrassil",
+        "en_GB": "Nordrassil",
+        "es_ES": "Nordrassil",
+        "fr_FR": "Nordrassil",
+        "it_IT": "Nordrassil",
+        "ru_RU": "Nordrassil",
+        "ko_KR": "Nordrassil",
+        "zh_TW": "諾達希爾",
+        "zh_CN": "诺达希尔"
+      }
+    },
+    {
+      "name": "Norgannon",
+      "slug": "norgannon",
+      "names": {
+        "en_US": "Norgannon",
+        "es_MX": "Norgannon",
+        "pt_BR": "Norgannon",
+        "de_DE": "Norgannon",
+        "en_GB": "Norgannon",
+        "es_ES": "Norgannon",
+        "fr_FR": "Norgannon",
+        "it_IT": "Norgannon",
+        "ru_RU": "Norgannon",
+        "ko_KR": "Norgannon",
+        "zh_TW": "諾甘農",
+        "zh_CN": "诺甘农"
+      }
+    },
+    {
+      "name": "Nozdormu",
+      "slug": "nozdormu",
+      "names": {
+        "en_US": "Nozdormu",
+        "es_MX": "Nozdormu",
+        "pt_BR": "Nozdormu",
+        "de_DE": "Nozdormu",
+        "en_GB": "Nozdormu",
+        "es_ES": "Nozdormu",
+        "fr_FR": "Nozdormu",
+        "it_IT": "Nozdormu",
+        "ru_RU": "Nozdormu",
+        "ko_KR": "Nozdormu",
+        "zh_TW": "諾茲多姆",
+        "zh_CN": "诺滋多姆"
+      }
+    },
+    {
+      "name": "Onyxia",
+      "slug": "onyxia",
+      "names": {
+        "en_US": "Onyxia",
+        "es_MX": "Onyxia",
+        "pt_BR": "Onyxia",
+        "de_DE": "Onyxia",
+        "en_GB": "Onyxia",
+        "es_ES": "Onyxia",
+        "fr_FR": "Onyxia",
+        "it_IT": "Onyxia",
+        "ru_RU": "Onyxia",
+        "ko_KR": "Onyxia",
+        "zh_TW": "奧妮克希亞",
+        "zh_CN": "奥妮克希亚"
+      }
+    },
+    {
+      "name": "Outland",
+      "slug": "outland",
+      "names": {
+        "en_US": "Outland",
+        "es_MX": "Outland",
+        "pt_BR": "Outland",
+        "de_DE": "Outland",
+        "en_GB": "Outland",
+        "es_ES": "Outland",
+        "fr_FR": "Outland",
+        "it_IT": "Outland",
+        "ru_RU": "Outland",
+        "ko_KR": "Outland",
+        "zh_TW": "外域",
+        "zh_CN": "外域"
+      }
+    },
+    {
+      "name": "Perenolde",
+      "slug": "perenolde",
+      "names": {
+        "en_US": "Perenolde",
+        "es_MX": "Perenolde",
+        "pt_BR": "Perenolde",
+        "de_DE": "Perenolde",
+        "en_GB": "Perenolde",
+        "es_ES": "Perenolde",
+        "fr_FR": "Perenolde",
+        "it_IT": "Perenolde",
+        "ru_RU": "Perenolde",
+        "ko_KR": "Perenolde",
+        "zh_TW": "匹瑞諾德",
+        "zh_CN": "匹瑞诺德"
+      }
+    },
+    {
+      "name": "Pozzo dell'Eternità",
+      "slug": "pozzo-delleternità",
+      "names": {
+        "en_US": "Pozzo dell'Eternità",
+        "es_MX": "Pozzo dell'Eternità",
+        "pt_BR": "Well of Eternity",
+        "de_DE": "Pozzo dell'Eternità",
+        "en_GB": "Pozzo dell'Eternità",
+        "es_ES": "Pozzo dell'Eternità",
+        "fr_FR": "Pozzo dell'Eternità",
+        "it_IT": "Pozzo dell'Eternità",
+        "ru_RU": "Pozzo dell'Eternità",
+        "ko_KR": "Pozzo dell'Eternità",
+        "zh_TW": "Pozzo dell'Eternità",
+        "zh_CN": "Pozzo dell'Eternità"
+      }
+    },
+    {
+      "name": "Proudmoore",
+      "slug": "proudmoore",
+      "names": {
+        "en_US": "Proudmoore",
+        "es_MX": "Proudmoore",
+        "pt_BR": "Proudmoore",
+        "de_DE": "Proudmoore",
+        "en_GB": "Proudmoore",
+        "es_ES": "Proudmoore",
+        "fr_FR": "Proudmoore",
+        "it_IT": "Proudmoore",
+        "ru_RU": "Proudmoore",
+        "ko_KR": "Proudmoore",
+        "zh_TW": "普勞德摩爾",
+        "zh_CN": "普罗德摩"
+      }
+    },
+    {
+      "name": "Quel'Thalas",
+      "slug": "quelthalas",
+      "names": {
+        "en_US": "Quel'Thalas",
+        "es_MX": "Quel'Thalas",
+        "pt_BR": "Quel'Thalas",
+        "de_DE": "Quel'Thalas",
+        "en_GB": "Quel'Thalas",
+        "es_ES": "Quel'Thalas",
+        "fr_FR": "Quel'Thalas",
+        "it_IT": "Quel'Thalas",
+        "ru_RU": "Quel'Thalas",
+        "ko_KR": "Quel'Thalas",
+        "zh_TW": "奎爾薩拉斯",
+        "zh_CN": "奎尔萨拉斯"
+      }
+    },
+    {
+      "name": "Ragnaros",
+      "slug": "ragnaros",
+      "names": {
+        "en_US": "Ragnaros",
+        "es_MX": "Ragnaros",
+        "pt_BR": "Ragnaros",
+        "de_DE": "Ragnaros",
+        "en_GB": "Ragnaros",
+        "es_ES": "Ragnaros",
+        "fr_FR": "Ragnaros",
+        "it_IT": "Ragnaros",
+        "ru_RU": "Ragnaros",
+        "ko_KR": "Ragnaros",
+        "zh_TW": "拉格納羅斯",
+        "zh_CN": "拉格纳罗斯"
+      }
+    },
+    {
+      "name": "Rajaxx",
+      "slug": "rajaxx",
+      "names": {
+        "en_US": "Rajaxx",
+        "es_MX": "Rajaxx",
+        "pt_BR": "Rajaxx",
+        "de_DE": "Rajaxx",
+        "en_GB": "Rajaxx",
+        "es_ES": "Rajaxx",
+        "fr_FR": "Rajaxx",
+        "it_IT": "Rajaxx",
+        "ru_RU": "Rajaxx",
+        "ko_KR": "Rajaxx",
+        "zh_TW": "拉賈克斯",
+        "zh_CN": "拉贾克斯"
+      }
+    },
+    {
+      "name": "Rashgarroth",
+      "slug": "rashgarroth",
+      "names": {
+        "en_US": "Rashgarroth",
+        "es_MX": "Rashgarroth",
+        "pt_BR": "Rashgarroth",
+        "de_DE": "Rashgarroth",
+        "en_GB": "Rashgarroth",
+        "es_ES": "Rashgarroth",
+        "fr_FR": "Rashgarroth",
+        "it_IT": "Rashgarroth",
+        "ru_RU": "Rashgarroth",
+        "ko_KR": "Rashgarroth",
+        "zh_TW": "瑞許加羅斯",
+        "zh_CN": "Rashgarroth"
+      }
+    },
+    {
+      "name": "Ravencrest",
+      "slug": "ravencrest",
+      "names": {
+        "en_US": "Ravencrest",
+        "es_MX": "Ravencrest",
+        "pt_BR": "Ravencrest",
+        "de_DE": "Ravencrest",
+        "en_GB": "Ravencrest",
+        "es_ES": "Ravencrest",
+        "fr_FR": "Ravencrest",
+        "it_IT": "Ravencrest",
+        "ru_RU": "Ravencrest",
+        "ko_KR": "Ravencrest",
+        "zh_TW": "黑羽",
+        "zh_CN": "拉文凯斯"
+      }
+    },
+    {
+      "name": "Ravenholdt",
+      "slug": "ravenholdt",
+      "names": {
+        "en_US": "Ravenholdt",
+        "es_MX": "Ravenholdt",
+        "pt_BR": "Ravenholdt",
+        "de_DE": "Ravenholdt",
+        "en_GB": "Ravenholdt",
+        "es_ES": "Ravenholdt",
+        "fr_FR": "Ravenholdt",
+        "it_IT": "Ravenholdt",
+        "ru_RU": "Ravenholdt",
+        "ko_KR": "Ravenholdt",
+        "zh_TW": "拉文霍德",
+        "zh_CN": "拉文霍德"
+      }
+    },
+    {
+      "name": "Razuvious",
+      "slug": "razuvious",
+      "names": {
+        "en_US": "Razuvious",
+        "es_MX": "Razuvious",
+        "pt_BR": "Разувий",
+        "de_DE": "Razuvious",
+        "en_GB": "Razuvious",
+        "es_ES": "Razuvious",
+        "fr_FR": "Razuvious",
+        "it_IT": "Разувий",
+        "ru_RU": "Разувий",
+        "ko_KR": "Razuvious",
+        "zh_TW": "Razuvious",
+        "zh_CN": "拉苏维奥斯"
+      }
+    },
+    {
+      "name": "Rexxar",
+      "slug": "rexxar",
+      "names": {
+        "en_US": "Rexxar",
+        "es_MX": "Rexxar",
+        "pt_BR": "Rexxar",
+        "de_DE": "Rexxar",
+        "en_GB": "Rexxar",
+        "es_ES": "Rexxar",
+        "fr_FR": "Rexxar",
+        "it_IT": "Rexxar",
+        "ru_RU": "Rexxar",
+        "ko_KR": "Rexxar",
+        "zh_TW": "雷克薩",
+        "zh_CN": "雷克萨"
+      }
+    },
+    {
+      "name": "Runetotem",
+      "slug": "runetotem",
+      "names": {
+        "en_US": "Runetotem",
+        "es_MX": "Runetotem",
+        "pt_BR": "Runetotem",
+        "de_DE": "Runetotem",
+        "en_GB": "Runetotem",
+        "es_ES": "Runetotem",
+        "fr_FR": "Runetotem",
+        "it_IT": "Runetotem",
+        "ru_RU": "Runetotem",
+        "ko_KR": "Runetotem",
+        "zh_TW": "符文圖騰",
+        "zh_CN": "符文图腾"
+      }
+    },
+    {
+      "name": "Sanguino",
+      "slug": "sanguino",
+      "names": {
+        "en_US": "Sanguino",
+        "es_MX": "Sanguino",
+        "pt_BR": "Sanguino",
+        "de_DE": "Sanguino",
+        "en_GB": "Sanguino",
+        "es_ES": "Sanguino",
+        "fr_FR": "Sanguino",
+        "it_IT": "Sanguino",
+        "ru_RU": "Sanguino",
+        "ko_KR": "Sanguino",
+        "zh_TW": "杉圭諾",
+        "zh_CN": "Sanguino"
+      }
+    },
+    {
+      "name": "Sargeras",
+      "slug": "sargeras",
+      "names": {
+        "en_US": "Sargeras",
+        "es_MX": "Sargeras",
+        "pt_BR": "Sargeras",
+        "de_DE": "Sargeras",
+        "en_GB": "Sargeras",
+        "es_ES": "Sargeras",
+        "fr_FR": "Sargeras",
+        "it_IT": "Sargeras",
+        "ru_RU": "Sargeras",
+        "ko_KR": "Sargeras",
+        "zh_TW": "薩格拉斯",
+        "zh_CN": "萨格拉斯"
+      }
+    },
+    {
+      "name": "Saurfang",
+      "slug": "saurfang",
+      "names": {
+        "en_US": "Saurfang",
+        "es_MX": "Saurfang",
+        "pt_BR": "Saurfang",
+        "de_DE": "Saurfang",
+        "en_GB": "Saurfang",
+        "es_ES": "Saurfang",
+        "fr_FR": "Saurfang",
+        "it_IT": "Saurfang",
+        "ru_RU": "Saurfang",
+        "ko_KR": "Saurfang",
+        "zh_TW": "薩魯法爾",
+        "zh_CN": "萨鲁法尔"
+      }
+    },
+    {
+      "name": "Scarshield Legion",
+      "slug": "scarshield-legion",
+      "names": {
+        "en_US": "Scarshield Legion",
+        "es_MX": "Scarshield Legion",
+        "pt_BR": "Scarshield Legion",
+        "de_DE": "Scarshield Legion",
+        "en_GB": "Scarshield Legion",
+        "es_ES": "Scarshield Legion",
+        "fr_FR": "Scarshield Legion",
+        "it_IT": "Scarshield Legion",
+        "ru_RU": "Scarshield Legion",
+        "ko_KR": "Scarshield Legion",
+        "zh_TW": "裂盾軍團",
+        "zh_CN": "裂盾军团"
+      }
+    },
+    {
+      "name": "Sen'jin",
+      "slug": "senjin",
+      "names": {
+        "en_US": "Sen'jin",
+        "es_MX": "Sen'jin",
+        "pt_BR": "Sen'jin",
+        "de_DE": "Sen'jin",
+        "en_GB": "Sen'jin",
+        "es_ES": "Sen'jin",
+        "fr_FR": "Sen'jin",
+        "it_IT": "Sen'jin",
+        "ru_RU": "Sen'jin",
+        "ko_KR": "Sen'jin",
+        "zh_TW": "森金",
+        "zh_CN": "森金"
+      }
+    },
+    {
+      "name": "Shadowsong",
+      "slug": "shadowsong",
+      "names": {
+        "en_US": "Shadowsong",
+        "es_MX": "Shadowsong",
+        "pt_BR": "Shadowsong",
+        "de_DE": "Shadowsong",
+        "en_GB": "Shadowsong",
+        "es_ES": "Shadowsong",
+        "fr_FR": "Shadowsong",
+        "it_IT": "Shadowsong",
+        "ru_RU": "Shadowsong",
+        "ko_KR": "Shadowsong",
+        "zh_TW": "影歌",
+        "zh_CN": "影歌"
+      }
+    },
+    {
+      "name": "Shattered Halls",
+      "slug": "shattered-halls",
+      "names": {
+        "en_US": "Shattered Halls",
+        "es_MX": "Shattered Halls",
+        "pt_BR": "Shattered Halls",
+        "de_DE": "Shattered Halls",
+        "en_GB": "Shattered Halls",
+        "es_ES": "Shattered Halls",
+        "fr_FR": "Shattered Halls",
+        "it_IT": "Shattered Halls",
+        "ru_RU": "Shattered Halls",
+        "ko_KR": "Shattered Halls",
+        "zh_TW": "破碎大廳",
+        "zh_CN": "破碎大厅"
+      }
+    },
+    {
+      "name": "Shattered Hand",
+      "slug": "shattered-hand",
+      "names": {
+        "en_US": "Shattered Hand",
+        "es_MX": "Shattered Hand",
+        "pt_BR": "Shattered Hand",
+        "de_DE": "Shattered Hand",
+        "en_GB": "Shattered Hand",
+        "es_ES": "Shattered Hand",
+        "fr_FR": "Shattered Hand",
+        "it_IT": "Shattered Hand",
+        "ru_RU": "Shattered Hand",
+        "ko_KR": "Shattered Hand",
+        "zh_TW": "破碎之手",
+        "zh_CN": "碎手"
+      }
+    },
+    {
+      "name": "Shattrath",
+      "slug": "shattrath",
+      "names": {
+        "en_US": "Shattrath",
+        "es_MX": "Shattrath",
+        "pt_BR": "Shattrath",
+        "de_DE": "Shattrath",
+        "en_GB": "Shattrath",
+        "es_ES": "Shattrath",
+        "fr_FR": "Shattrath",
+        "it_IT": "Shattrath",
+        "ru_RU": "Shattrath",
+        "ko_KR": "Shattrath",
+        "zh_TW": "撒塔斯",
+        "zh_CN": "沙塔斯"
+      }
+    },
+    {
+      "name": "Shen'dralar",
+      "slug": "shendralar",
+      "names": {
+        "en_US": "Shen'dralar",
+        "es_MX": "Shen'dralar",
+        "pt_BR": "Shen'dralar",
+        "de_DE": "Shen'dralar",
+        "en_GB": "Shen'dralar",
+        "es_ES": "Shen'dralar",
+        "fr_FR": "Shen'dralar",
+        "it_IT": "Shen'dralar",
+        "ru_RU": "Shen'dralar",
+        "ko_KR": "Shen'dralar",
+        "zh_TW": "辛德拉",
+        "zh_CN": "辛德拉"
+      }
+    },
+    {
+      "name": "Silvermoon",
+      "slug": "silvermoon",
+      "names": {
+        "en_US": "Silvermoon",
+        "es_MX": "Silvermoon",
+        "pt_BR": "Silvermoon",
+        "de_DE": "Silvermoon",
+        "en_GB": "Silvermoon",
+        "es_ES": "Silvermoon",
+        "fr_FR": "Silvermoon",
+        "it_IT": "Silvermoon",
+        "ru_RU": "Silvermoon",
+        "ko_KR": "Silvermoon",
+        "zh_TW": "銀月",
+        "zh_CN": "银月"
+      }
+    },
+    {
+      "name": "Sinstralis",
+      "slug": "sinstralis",
+      "names": {
+        "en_US": "Sinstralis",
+        "es_MX": "Sinstralis",
+        "pt_BR": "Sinstralis",
+        "de_DE": "Sinstralis",
+        "en_GB": "Sinstralis",
+        "es_ES": "Sinstralis",
+        "fr_FR": "Sinstralis",
+        "it_IT": "Sinstralis",
+        "ru_RU": "Sinstralis",
+        "ko_KR": "Sinstralis",
+        "zh_TW": "辛司特拉利斯",
+        "zh_CN": "Sinstralis"
+      }
+    },
+    {
+      "name": "Skullcrusher",
+      "slug": "skullcrusher",
+      "names": {
+        "en_US": "Skullcrusher",
+        "es_MX": "Skullcrusher",
+        "pt_BR": "Skullcrusher",
+        "de_DE": "Skullcrusher",
+        "en_GB": "Skullcrusher",
+        "es_ES": "Skullcrusher",
+        "fr_FR": "Skullcrusher",
+        "it_IT": "Skullcrusher",
+        "ru_RU": "Skullcrusher",
+        "ko_KR": "Skullcrusher",
+        "zh_TW": "碎顱氏族",
+        "zh_CN": "碎颅者"
+      }
+    },
+    {
+      "name": "Soulflayer",
+      "slug": "soulflayer",
+      "names": {
+        "en_US": "Soulflayer",
+        "es_MX": "Soulflayer",
+        "pt_BR": "Свежеватель Душ",
+        "de_DE": "Soulflayer",
+        "en_GB": "Soulflayer",
+        "es_ES": "Soulflayer",
+        "fr_FR": "Soulflayer",
+        "it_IT": "Свежеватель Душ",
+        "ru_RU": "Свежеватель Душ",
+        "ko_KR": "Soulflayer",
+        "zh_TW": "全球爭霸戰11",
+        "zh_CN": "夺灵者"
+      }
+    },
+    {
+      "name": "Spinebreaker",
+      "slug": "spinebreaker",
+      "names": {
+        "en_US": "Spinebreaker",
+        "es_MX": "Spinebreaker",
+        "pt_BR": "Spinebreaker",
+        "de_DE": "Spinebreaker",
+        "en_GB": "Spinebreaker",
+        "es_ES": "Spinebreaker",
+        "fr_FR": "Spinebreaker",
+        "it_IT": "Spinebreaker",
+        "ru_RU": "Spinebreaker",
+        "ko_KR": "Spinebreaker",
+        "zh_TW": "斷脊氏族",
+        "zh_CN": "断背"
+      }
+    },
+    {
+      "name": "Sporeggar",
+      "slug": "sporeggar",
+      "names": {
+        "en_US": "Sporeggar",
+        "es_MX": "Sporeggar",
+        "pt_BR": "Sporeggar",
+        "de_DE": "Sporeggar",
+        "en_GB": "Sporeggar",
+        "es_ES": "Sporeggar",
+        "fr_FR": "Sporeggar",
+        "it_IT": "Sporeggar",
+        "ru_RU": "Sporeggar",
+        "ko_KR": "Sporeggar",
+        "zh_TW": "斯博格爾",
+        "zh_CN": "孢子村"
+      }
+    },
+    {
+      "name": "Steamwheedle Cartel",
+      "slug": "steamwheedle-cartel",
+      "names": {
+        "en_US": "Steamwheedle Cartel",
+        "es_MX": "Steamwheedle Cartel",
+        "pt_BR": "Steamwheedle Cartel",
+        "de_DE": "Steamwheedle Cartel",
+        "en_GB": "Steamwheedle Cartel",
+        "es_ES": "Steamwheedle Cartel",
+        "fr_FR": "Steamwheedle Cartel",
+        "it_IT": "Steamwheedle Cartel",
+        "ru_RU": "Steamwheedle Cartel",
+        "ko_KR": "Steamwheedle Cartel",
+        "zh_TW": "熱砂企業",
+        "zh_CN": "热砂港"
+      }
+    },
+    {
+      "name": "Stormrage",
+      "slug": "stormrage",
+      "names": {
+        "en_US": "Stormrage",
+        "es_MX": "Stormrage",
+        "pt_BR": "Stormrage",
+        "de_DE": "Stormrage",
+        "en_GB": "Stormrage",
+        "es_ES": "Stormrage",
+        "fr_FR": "Stormrage",
+        "it_IT": "Stormrage",
+        "ru_RU": "Stormrage",
+        "ko_KR": "Stormrage",
+        "zh_TW": "怒風",
+        "zh_CN": "风暴之怒"
+      }
+    },
+    {
+      "name": "Stormreaver",
+      "slug": "stormreaver",
+      "names": {
+        "en_US": "Stormreaver",
+        "es_MX": "Stormreaver",
+        "pt_BR": "Stormreaver",
+        "de_DE": "Stormreaver",
+        "en_GB": "Stormreaver",
+        "es_ES": "Stormreaver",
+        "fr_FR": "Stormreaver",
+        "it_IT": "Stormreaver",
+        "ru_RU": "Stormreaver",
+        "ko_KR": "Stormreaver",
+        "zh_TW": "暴掠氏族",
+        "zh_CN": "风暴裂隙"
+      }
+    },
+    {
+      "name": "Stormscale",
+      "slug": "stormscale",
+      "names": {
+        "en_US": "Stormscale",
+        "es_MX": "Stormscale",
+        "pt_BR": "Stormscale",
+        "de_DE": "Stormscale",
+        "en_GB": "Stormscale",
+        "es_ES": "Stormscale",
+        "fr_FR": "Stormscale",
+        "it_IT": "Stormscale",
+        "ru_RU": "Stormscale",
+        "ko_KR": "Stormscale",
+        "zh_TW": "雷鱗",
+        "zh_CN": "风暴之鳞"
+      }
+    },
+    {
+      "name": "Sunstrider",
+      "slug": "sunstrider",
+      "names": {
+        "en_US": "Sunstrider",
+        "es_MX": "Sunstrider",
+        "pt_BR": "Sunstrider",
+        "de_DE": "Sunstrider",
+        "en_GB": "Sunstrider",
+        "es_ES": "Sunstrider",
+        "fr_FR": "Sunstrider",
+        "it_IT": "Sunstrider",
+        "ru_RU": "Sunstrider",
+        "ko_KR": "Sunstrider",
+        "zh_TW": "逐日者",
+        "zh_CN": "逐日者"
+      }
+    },
+    {
+      "name": "Suramar",
+      "slug": "suramar",
+      "names": {
+        "en_US": "Suramar",
+        "es_MX": "Suramar",
+        "pt_BR": "Suramar",
+        "de_DE": "Suramar",
+        "en_GB": "Suramar",
+        "es_ES": "Suramar",
+        "fr_FR": "Suramar",
+        "it_IT": "Suramar",
+        "ru_RU": "Suramar",
+        "ko_KR": "Suramar",
+        "zh_TW": "蘇拉瑪爾",
+        "zh_CN": "苏拉玛"
+      }
+    },
+    {
+      "name": "Sylvanas",
+      "slug": "sylvanas",
+      "names": {
+        "en_US": "Sylvanas",
+        "es_MX": "Sylvanas",
+        "pt_BR": "Sylvanas",
+        "de_DE": "Sylvanas",
+        "en_GB": "Sylvanas",
+        "es_ES": "Sylvanas",
+        "fr_FR": "Sylvanas",
+        "it_IT": "Sylvanas",
+        "ru_RU": "Sylvanas",
+        "ko_KR": "Sylvanas",
+        "zh_TW": "希瓦娜斯",
+        "zh_CN": "希尔瓦娜斯"
+      }
+    },
+    {
+      "name": "Taerar",
+      "slug": "taerar",
+      "names": {
+        "en_US": "Taerar",
+        "es_MX": "Taerar",
+        "pt_BR": "Taerar",
+        "de_DE": "Taerar",
+        "en_GB": "Taerar",
+        "es_ES": "Taerar",
+        "fr_FR": "Taerar",
+        "it_IT": "Taerar",
+        "ru_RU": "Taerar",
+        "ko_KR": "Taerar",
+        "zh_TW": "泰拉爾",
+        "zh_CN": "泰拉尔"
+      }
+    },
+    {
+      "name": "Talnivarr",
+      "slug": "talnivarr",
+      "names": {
+        "en_US": "Talnivarr",
+        "es_MX": "Talnivarr",
+        "pt_BR": "Talnivarr",
+        "de_DE": "Talnivarr",
+        "en_GB": "Talnivarr",
+        "es_ES": "Talnivarr",
+        "fr_FR": "Talnivarr",
+        "it_IT": "Talnivarr",
+        "ru_RU": "Talnivarr",
+        "ko_KR": "Talnivarr",
+        "zh_TW": "泰爾尼瓦",
+        "zh_CN": "托尼瓦尔"
+      }
+    },
+    {
+      "name": "Tarren Mill",
+      "slug": "tarren-mill",
+      "names": {
+        "en_US": "Tarren Mill",
+        "es_MX": "Tarren Mill",
+        "pt_BR": "Tarren Mill",
+        "de_DE": "Tarren Mill",
+        "en_GB": "Tarren Mill",
+        "es_ES": "Tarren Mill",
+        "fr_FR": "Tarren Mill",
+        "it_IT": "Tarren Mill",
+        "ru_RU": "Tarren Mill",
+        "ko_KR": "Tarren Mill",
+        "zh_TW": "塔倫米爾",
+        "zh_CN": "塔伦米尔"
+      }
+    },
+    {
+      "name": "Teldrassil",
+      "slug": "teldrassil",
+      "names": {
+        "en_US": "Teldrassil",
+        "es_MX": "Teldrassil",
+        "pt_BR": "Teldrassil",
+        "de_DE": "Teldrassil",
+        "en_GB": "Teldrassil",
+        "es_ES": "Teldrassil",
+        "fr_FR": "Teldrassil",
+        "it_IT": "Teldrassil",
+        "ru_RU": "Teldrassil",
+        "ko_KR": "Teldrassil",
+        "zh_TW": "泰達希爾",
+        "zh_CN": "泰达希尔"
+      }
+    },
+    {
+      "name": "Temple noir",
+      "slug": "temple-noir",
+      "names": {
+        "en_US": "Temple noir",
+        "es_MX": "Temple noir",
+        "pt_BR": "Temple noir",
+        "de_DE": "Temple noir",
+        "en_GB": "Temple noir",
+        "es_ES": "Temple noir",
+        "fr_FR": "Temple noir",
+        "it_IT": "Temple noir",
+        "ru_RU": "Temple noir",
+        "ko_KR": "Temple noir",
+        "zh_TW": "黑暗神廟",
+        "zh_CN": "Temple noir"
+      }
+    },
+    {
+      "name": "Terenas",
+      "slug": "terenas",
+      "names": {
+        "en_US": "Terenas",
+        "es_MX": "Terenas",
+        "pt_BR": "Terenas",
+        "de_DE": "Terenas",
+        "en_GB": "Terenas",
+        "es_ES": "Terenas",
+        "fr_FR": "Terenas",
+        "it_IT": "Terenas",
+        "ru_RU": "Terenas",
+        "ko_KR": "Terenas",
+        "zh_TW": "泰瑞納斯",
+        "zh_CN": "泰瑞纳斯"
+      }
+    },
+    {
+      "name": "Terokkar",
+      "slug": "terokkar",
+      "names": {
+        "en_US": "Terokkar",
+        "es_MX": "Terokkar",
+        "pt_BR": "Terokkar",
+        "de_DE": "Terokkar",
+        "en_GB": "Terokkar",
+        "es_ES": "Terokkar",
+        "fr_FR": "Terokkar",
+        "it_IT": "Terokkar",
+        "ru_RU": "Terokkar",
+        "ko_KR": "Terokkar",
+        "zh_TW": "泰洛卡",
+        "zh_CN": "泰罗卡"
+      }
+    },
+    {
+      "name": "Terrordar",
+      "slug": "terrordar",
+      "names": {
+        "en_US": "Terrordar",
+        "es_MX": "Terrordar",
+        "pt_BR": "Terrordar",
+        "de_DE": "Terrordar",
+        "en_GB": "Terrordar",
+        "es_ES": "Terrordar",
+        "fr_FR": "Terrordar",
+        "it_IT": "Terrordar",
+        "ru_RU": "Terrordar",
+        "ko_KR": "Terrordar",
+        "zh_TW": "泰洛達",
+        "zh_CN": "泰罗达尔"
+      }
+    },
+    {
+      "name": "The Maelstrom",
+      "slug": "the-maelstrom",
+      "names": {
+        "en_US": "The Maelstrom",
+        "es_MX": "The Maelstrom",
+        "pt_BR": "The Maelstrom",
+        "de_DE": "The Maelstrom",
+        "en_GB": "The Maelstrom",
+        "es_ES": "The Maelstrom",
+        "fr_FR": "The Maelstrom",
+        "it_IT": "The Maelstrom",
+        "ru_RU": "The Maelstrom",
+        "ko_KR": "The Maelstrom",
+        "zh_TW": "大漩渦",
+        "zh_CN": "大漩涡"
+      }
+    },
+    {
+      "name": "The Sha'tar",
+      "slug": "the-shatar",
+      "names": {
+        "en_US": "The Sha'tar",
+        "es_MX": "The Sha'tar",
+        "pt_BR": "The Sha'tar",
+        "de_DE": "The Sha'tar",
+        "en_GB": "The Sha'tar",
+        "es_ES": "The Sha'tar",
+        "fr_FR": "The Sha'tar",
+        "it_IT": "The Sha'tar",
+        "ru_RU": "The Sha'tar",
+        "ko_KR": "The Sha'tar",
+        "zh_TW": "薩塔",
+        "zh_CN": "沙塔尔"
+      }
+    },
+    {
+      "name": "The Venture Co",
+      "slug": "the-venture-co",
+      "names": {
+        "en_US": "The Venture Co",
+        "es_MX": "The Venture Co",
+        "pt_BR": "The Venture Co",
+        "de_DE": "The Venture Co",
+        "en_GB": "The Venture Co",
+        "es_ES": "The Venture Co",
+        "fr_FR": "The Venture Co",
+        "it_IT": "The Venture Co",
+        "ru_RU": "The Venture Co",
+        "ko_KR": "The Venture Co.",
+        "zh_TW": "風險投資公司",
+        "zh_CN": "The Venture Co"
+      }
+    },
+    {
+      "name": "Theradras",
+      "slug": "theradras",
+      "names": {
+        "en_US": "Theradras",
+        "es_MX": "Theradras",
+        "pt_BR": "Theradras",
+        "de_DE": "Theradras",
+        "en_GB": "Theradras",
+        "es_ES": "Theradras",
+        "fr_FR": "Theradras",
+        "it_IT": "Theradras",
+        "ru_RU": "Theradras",
+        "ko_KR": "Theradras",
+        "zh_TW": "瑟萊德絲",
+        "zh_CN": "瑟莱德丝"
+      }
+    },
+    {
+      "name": "Thermaplugg",
+      "slug": "thermaplugg",
+      "names": {
+        "en_US": "Thermaplugg",
+        "es_MX": "Thermaplugg",
+        "pt_BR": "Термоштепсель",
+        "de_DE": "Thermaplugg",
+        "en_GB": "Thermaplugg",
+        "es_ES": "Thermaplugg",
+        "fr_FR": "Thermaplugg",
+        "it_IT": "Термоштепсель",
+        "ru_RU": "Термоштепсель",
+        "ko_KR": "Thermaplugg",
+        "zh_TW": "Thermaplugg",
+        "zh_CN": "瑟玛普拉格"
+      }
+    },
+    {
+      "name": "Thrall",
+      "slug": "thrall",
+      "names": {
+        "en_US": "Thrall",
+        "es_MX": "Thrall",
+        "pt_BR": "Thrall",
+        "de_DE": "Thrall",
+        "en_GB": "Thrall",
+        "es_ES": "Thrall",
+        "fr_FR": "Thrall",
+        "it_IT": "Thrall",
+        "ru_RU": "Thrall",
+        "ko_KR": "Thrall",
+        "zh_TW": "索爾",
+        "zh_CN": "萨尔"
+      }
+    },
+    {
+      "name": "Throk'Feroth",
+      "slug": "throkferoth",
+      "names": {
+        "en_US": "Throk'Feroth",
+        "es_MX": "Throk'Feroth",
+        "pt_BR": "Throk'Feroth",
+        "de_DE": "Throk'Feroth",
+        "en_GB": "Throk'Feroth",
+        "es_ES": "Throk'Feroth",
+        "fr_FR": "Throk'Feroth",
+        "it_IT": "Throk'Feroth",
+        "ru_RU": "Throk'Feroth",
+        "ko_KR": "Throk'Feroth",
+        "zh_TW": "索克費羅斯",
+        "zh_CN": "Throk'Feroth"
+      }
+    },
+    {
+      "name": "Thunderhorn",
+      "slug": "thunderhorn",
+      "names": {
+        "en_US": "Thunderhorn",
+        "es_MX": "Thunderhorn",
+        "pt_BR": "Thunderhorn",
+        "de_DE": "Thunderhorn",
+        "en_GB": "Thunderhorn",
+        "es_ES": "Thunderhorn",
+        "fr_FR": "Thunderhorn",
+        "it_IT": "Thunderhorn",
+        "ru_RU": "Thunderhorn",
+        "ko_KR": "Thunderhorn",
+        "zh_TW": "雷角",
+        "zh_CN": "雷霆号角"
+      }
+    },
+    {
+      "name": "Tichondrius",
+      "slug": "tichondrius",
+      "names": {
+        "en_US": "Tichondrius",
+        "es_MX": "Tichondrius",
+        "pt_BR": "Tichondrius",
+        "de_DE": "Tichondrius",
+        "en_GB": "Tichondrius",
+        "es_ES": "Tichondrius",
+        "fr_FR": "Tichondrius",
+        "it_IT": "Tichondrius",
+        "ru_RU": "Tichondrius",
+        "ko_KR": "Tichondrius",
+        "zh_TW": "提克迪奧斯",
+        "zh_CN": "提克迪奥斯"
+      }
+    },
+    {
+      "name": "Tirion",
+      "slug": "tirion",
+      "names": {
+        "en_US": "Tirion",
+        "es_MX": "Tirion",
+        "pt_BR": "Tirion",
+        "de_DE": "Tirion",
+        "en_GB": "Tirion",
+        "es_ES": "Tirion",
+        "fr_FR": "Tirion",
+        "it_IT": "Tirion",
+        "ru_RU": "Tirion",
+        "ko_KR": "Tirion",
+        "zh_TW": "提里奧",
+        "zh_CN": "提里奥"
+      }
+    },
+    {
+      "name": "Todeswache",
+      "slug": "todeswache",
+      "names": {
+        "en_US": "Todeswache",
+        "es_MX": "Todeswache",
+        "pt_BR": "Todeswache",
+        "de_DE": "Todeswache",
+        "en_GB": "Todeswache",
+        "es_ES": "Todeswache",
+        "fr_FR": "Todeswache",
+        "it_IT": "Todeswache",
+        "ru_RU": "Todeswache",
+        "ko_KR": "Todeswache",
+        "zh_TW": "Todeswache",
+        "zh_CN": "Todeswache"
+      }
+    },
+    {
+      "name": "Trollbane",
+      "slug": "trollbane",
+      "names": {
+        "en_US": "Trollbane",
+        "es_MX": "Trollbane",
+        "pt_BR": "Trollbane",
+        "de_DE": "Trollbane",
+        "en_GB": "Trollbane",
+        "es_ES": "Trollbane",
+        "fr_FR": "Trollbane",
+        "it_IT": "Trollbane",
+        "ru_RU": "Trollbane",
+        "ko_KR": "Trollbane",
+        "zh_TW": "托爾貝恩",
+        "zh_CN": "托尔贝恩"
+      }
+    },
+    {
+      "name": "Turalyon",
+      "slug": "turalyon",
+      "names": {
+        "en_US": "Turalyon",
+        "es_MX": "Turalyon",
+        "pt_BR": "Turalyon",
+        "de_DE": "Turalyon",
+        "en_GB": "Turalyon",
+        "es_ES": "Turalyon",
+        "fr_FR": "Turalyon",
+        "it_IT": "Turalyon",
+        "ru_RU": "Turalyon",
+        "ko_KR": "Turalyon",
+        "zh_TW": "圖拉揚",
+        "zh_CN": "图拉扬"
+      }
+    },
+    {
+      "name": "Twilight's Hammer",
+      "slug": "twilights-hammer",
+      "names": {
+        "en_US": "Twilight's Hammer",
+        "es_MX": "Twilight's Hammer",
+        "pt_BR": "Twilight's Hammer",
+        "de_DE": "Twilight's Hammer",
+        "en_GB": "Twilight's Hammer",
+        "es_ES": "Twilight's Hammer",
+        "fr_FR": "Twilight's Hammer",
+        "it_IT": "Twilight's Hammer",
+        "ru_RU": "Twilight's Hammer",
+        "ko_KR": "Twilight's Hammer",
+        "zh_TW": "暮光之錘",
+        "zh_CN": "暮光之锤"
+      }
+    },
+    {
+      "name": "Twisting Nether",
+      "slug": "twisting-nether",
+      "names": {
+        "en_US": "Twisting Nether",
+        "es_MX": "Twisting Nether",
+        "pt_BR": "Twisting Nether",
+        "de_DE": "Twisting Nether",
+        "en_GB": "Twisting Nether",
+        "es_ES": "Twisting Nether",
+        "fr_FR": "Twisting Nether",
+        "it_IT": "Twisting Nether",
+        "ru_RU": "Twisting Nether",
+        "ko_KR": "Twisting Nether",
+        "zh_TW": "扭曲虛空",
+        "zh_CN": "黑暗虚空"
+      }
+    },
+    {
+      "name": "Tyrande",
+      "slug": "tyrande",
+      "names": {
+        "en_US": "Tyrande",
+        "es_MX": "Tyrande",
+        "pt_BR": "Tyrande",
+        "de_DE": "Tyrande",
+        "en_GB": "Tyrande",
+        "es_ES": "Tyrande",
+        "fr_FR": "Tyrande",
+        "it_IT": "Tyrande",
+        "ru_RU": "Tyrande",
+        "ko_KR": "Tyrande",
+        "zh_TW": "泰蘭妲",
+        "zh_CN": "泰兰德"
+      }
+    },
+    {
+      "name": "Uldaman",
+      "slug": "uldaman",
+      "names": {
+        "en_US": "Uldaman",
+        "es_MX": "Uldaman",
+        "pt_BR": "Uldaman",
+        "de_DE": "Uldaman",
+        "en_GB": "Uldaman",
+        "es_ES": "Uldaman",
+        "fr_FR": "Uldaman",
+        "it_IT": "Uldaman",
+        "ru_RU": "Uldaman",
+        "ko_KR": "Uldaman",
+        "zh_TW": "奧達曼",
+        "zh_CN": "奥达曼"
+      }
+    },
+    {
+      "name": "Ulduar",
+      "slug": "ulduar",
+      "names": {
+        "en_US": "Ulduar",
+        "es_MX": "Ulduar",
+        "pt_BR": "Ulduar",
+        "de_DE": "Ulduar",
+        "en_GB": "Ulduar",
+        "es_ES": "Ulduar",
+        "fr_FR": "Ulduar",
+        "it_IT": "Ulduar",
+        "ru_RU": "Ulduar",
+        "ko_KR": "Ulduar",
+        "zh_TW": "奧杜亞",
+        "zh_CN": "奥杜尔"
+      }
+    },
+    {
+      "name": "Uldum",
+      "slug": "uldum",
+      "names": {
+        "en_US": "Uldum",
+        "es_MX": "Uldum",
+        "pt_BR": "Uldum",
+        "de_DE": "Uldum",
+        "en_GB": "Uldum",
+        "es_ES": "Uldum",
+        "fr_FR": "Uldum",
+        "it_IT": "Uldum",
+        "ru_RU": "Uldum",
+        "ko_KR": "Uldum",
+        "zh_TW": "奧丹姆",
+        "zh_CN": "奥丹姆"
+      }
+    },
+    {
+      "name": "Un'Goro",
+      "slug": "ungoro",
+      "names": {
+        "en_US": "Un'Goro",
+        "es_MX": "Un'Goro",
+        "pt_BR": "Un'Goro",
+        "de_DE": "Un'Goro",
+        "en_GB": "Un'Goro",
+        "es_ES": "Un'Goro",
+        "fr_FR": "Un'Goro",
+        "it_IT": "Un'Goro",
+        "ru_RU": "Un'Goro",
+        "ko_KR": "Un'Goro",
+        "zh_TW": "安戈洛",
+        "zh_CN": "安戈洛"
+      }
+    },
+    {
+      "name": "Varimathras",
+      "slug": "varimathras",
+      "names": {
+        "en_US": "Varimathras",
+        "es_MX": "Varimathras",
+        "pt_BR": "Varimathras",
+        "de_DE": "Varimathras",
+        "en_GB": "Varimathras",
+        "es_ES": "Varimathras",
+        "fr_FR": "Varimathras",
+        "it_IT": "Varimathras",
+        "ru_RU": "Varimathras",
+        "ko_KR": "Varimathras",
+        "zh_TW": "瓦里瑪薩斯",
+        "zh_CN": "瓦里玛萨斯"
+      }
+    },
+    {
+      "name": "Vashj",
+      "slug": "vashj",
+      "names": {
+        "en_US": "Vashj",
+        "es_MX": "Vashj",
+        "pt_BR": "Vashj",
+        "de_DE": "Vashj",
+        "en_GB": "Vashj",
+        "es_ES": "Vashj",
+        "fr_FR": "Vashj",
+        "it_IT": "Vashj",
+        "ru_RU": "Vashj",
+        "ko_KR": "Vashj",
+        "zh_TW": "瓦許",
+        "zh_CN": "瓦丝琪"
+      }
+    },
+    {
+      "name": "Vek'lor",
+      "slug": "veklor",
+      "names": {
+        "en_US": "Vek'lor",
+        "es_MX": "Vek'lor",
+        "pt_BR": "Vek'lor",
+        "de_DE": "Vek'lor",
+        "en_GB": "Vek'lor",
+        "es_ES": "Vek'lor",
+        "fr_FR": "Vek'lor",
+        "it_IT": "Vek'lor",
+        "ru_RU": "Vek'lor",
+        "ko_KR": "Vek'lor",
+        "zh_TW": "維克洛爾",
+        "zh_CN": "维克洛尔"
+      }
+    },
+    {
+      "name": "Vek'nilash",
+      "slug": "veknilash",
+      "names": {
+        "en_US": "Vek'nilash",
+        "es_MX": "Vek'nilash",
+        "pt_BR": "Vek'nilash",
+        "de_DE": "Vek'nilash",
+        "en_GB": "Vek'nilash",
+        "es_ES": "Vek'nilash",
+        "fr_FR": "Vek'nilash",
+        "it_IT": "Vek'nilash",
+        "ru_RU": "Vek'nilash",
+        "ko_KR": "Vek'nilash",
+        "zh_TW": "維克尼拉斯",
+        "zh_CN": "维克尼拉斯"
+      }
+    },
+    {
+      "name": "Vol'jin",
+      "slug": "voljin",
+      "names": {
+        "en_US": "Vol'jin",
+        "es_MX": "Vol'jin",
+        "pt_BR": "Vol'jin",
+        "de_DE": "Vol'jin",
+        "en_GB": "Vol'jin",
+        "es_ES": "Vol'jin",
+        "fr_FR": "Vol'jin",
+        "it_IT": "Vol'jin",
+        "ru_RU": "Vol'jin",
+        "ko_KR": "Vol'jin",
+        "zh_TW": "沃金",
+        "zh_CN": "沃金"
+      }
+    },
+    {
+      "name": "Wildhammer",
+      "slug": "wildhammer",
+      "names": {
+        "en_US": "Wildhammer",
+        "es_MX": "Wildhammer",
+        "pt_BR": "Wildhammer",
+        "de_DE": "Wildhammer",
+        "en_GB": "Wildhammer",
+        "es_ES": "Wildhammer",
+        "fr_FR": "Wildhammer",
+        "it_IT": "Wildhammer",
+        "ru_RU": "Wildhammer",
+        "ko_KR": "Wildhammer",
+        "zh_TW": "蠻錘",
+        "zh_CN": "蛮锤"
+      }
+    },
+    {
+      "name": "Wrathbringer",
+      "slug": "wrathbringer",
+      "names": {
+        "en_US": "Wrathbringer",
+        "es_MX": "Wrathbringer",
+        "pt_BR": "Wrathbringer",
+        "de_DE": "Wrathbringer",
+        "en_GB": "Wrathbringer",
+        "es_ES": "Wrathbringer",
+        "fr_FR": "Wrathbringer",
+        "it_IT": "Wrathbringer",
+        "ru_RU": "Wrathbringer",
+        "ko_KR": "Wrathbringer",
+        "zh_TW": "憤怒使者",
+        "zh_CN": "天罚使者"
+      }
+    },
+    {
+      "name": "Xavius",
+      "slug": "xavius",
+      "names": {
+        "en_US": "Xavius",
+        "es_MX": "Xavius",
+        "pt_BR": "Xavius",
+        "de_DE": "Xavius",
+        "en_GB": "Xavius",
+        "es_ES": "Xavius",
+        "fr_FR": "Xavius",
+        "it_IT": "Xavius",
+        "ru_RU": "Xavius",
+        "ko_KR": "Xavius",
+        "zh_TW": "薩維斯",
+        "zh_CN": "萨维斯"
+      }
+    },
+    {
+      "name": "Ysera",
+      "slug": "ysera",
+      "names": {
+        "en_US": "Ysera",
+        "es_MX": "Ysera",
+        "pt_BR": "Ysera",
+        "de_DE": "Ysera",
+        "en_GB": "Ysera",
+        "es_ES": "Ysera",
+        "fr_FR": "Ysera",
+        "it_IT": "Ysera",
+        "ru_RU": "Ysera",
+        "ko_KR": "Ysera",
+        "zh_TW": "伊瑟拉",
+        "zh_CN": "伊瑟拉"
+      }
+    },
+    {
+      "name": "Ysondre",
+      "slug": "ysondre",
+      "names": {
+        "en_US": "Ysondre",
+        "es_MX": "Ysondre",
+        "pt_BR": "Ysondre",
+        "de_DE": "Ysondre",
+        "en_GB": "Ysondre",
+        "es_ES": "Ysondre",
+        "fr_FR": "Ysondre",
+        "it_IT": "Ysondre",
+        "ru_RU": "Ysondre",
+        "ko_KR": "Ysondre",
+        "zh_TW": "伊索德雷",
+        "zh_CN": "伊森德雷"
+      }
+    },
+    {
+      "name": "Zenedar",
+      "slug": "zenedar",
+      "names": {
+        "en_US": "Zenedar",
+        "es_MX": "Zenedar",
+        "pt_BR": "Zenedar",
+        "de_DE": "Zenedar",
+        "en_GB": "Zenedar",
+        "es_ES": "Zenedar",
+        "fr_FR": "Zenedar",
+        "it_IT": "Zenedar",
+        "ru_RU": "Zenedar",
+        "ko_KR": "Zenedar",
+        "zh_TW": "奈達",
+        "zh_CN": "Zenedar"
+      }
+    },
+    {
+      "name": "Zirkel des Cenarius",
+      "slug": "zirkel-des-cenarius",
+      "names": {
+        "en_US": "Zirkel des Cenarius",
+        "es_MX": "Zirkel des Cenarius",
+        "pt_BR": "Zirkel des Cenarius",
+        "de_DE": "Zirkel des Cenarius",
+        "en_GB": "Zirkel des Cenarius",
+        "es_ES": "Zirkel des Cenarius",
+        "fr_FR": "Zirkel des Cenarius",
+        "it_IT": "Zirkel des Cenarius",
+        "ru_RU": "Zirkel des Cenarius",
+        "ko_KR": "Zirkel des Cenarius",
+        "zh_TW": "Zirkel des Cenarius",
+        "zh_CN": "Zirkel des Cenarius"
+      }
+    },
+    {
+      "name": "Zul'jin",
+      "slug": "zuljin",
+      "names": {
+        "en_US": "Zul'jin",
+        "es_MX": "Zul'jin",
+        "pt_BR": "Zul'jin",
+        "de_DE": "Zul'jin",
+        "en_GB": "Zul'jin",
+        "es_ES": "Zul'jin",
+        "fr_FR": "Zul'jin",
+        "it_IT": "Zul'jin",
+        "ru_RU": "Zul'jin",
+        "ko_KR": "Zul'jin",
+        "zh_TW": "祖爾金",
+        "zh_CN": "祖尔金"
+      }
+    },
+    {
+      "name": "Zuluhed",
+      "slug": "zuluhed",
+      "names": {
+        "en_US": "Zuluhed",
+        "es_MX": "Zuluhed",
+        "pt_BR": "Zuluhed",
+        "de_DE": "Zuluhed",
+        "en_GB": "Zuluhed",
+        "es_ES": "Zuluhed",
+        "fr_FR": "Zuluhed",
+        "it_IT": "Zuluhed",
+        "ru_RU": "Zuluhed",
+        "ko_KR": "Zuluhed",
+        "zh_TW": "祖魯希德",
+        "zh_CN": "祖鲁希德"
+      }
+    }
+  ]
+}
