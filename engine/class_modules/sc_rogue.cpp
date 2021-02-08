@@ -3291,6 +3291,9 @@ struct mutilate_t : public rogue_attack_t
       }
     }
   }
+
+  bool has_amount_result() const override
+  { return true; }
 };
 
 // Roll the Bones ===========================================================

@@ -584,7 +584,7 @@ public:
   bool has_travel_events_for( const player_t* target ) const;
 
   /** Determine if the action can have a resulting damage/heal amount > 0 */
-  bool has_amount_result() const
+  virtual bool has_amount_result() const
   {
     return attack_power_mod.direct > 0 || attack_power_mod.tick > 0
         || spell_power_mod.direct > 0 || spell_power_mod.tick > 0

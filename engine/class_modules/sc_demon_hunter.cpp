@@ -3521,6 +3521,9 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       dodge_buff->trigger();
     }
   }
+
+  bool has_amount_result() const override
+  { return true; }
 };
 
 struct blade_dance_t : public blade_dance_base_t
@@ -3748,6 +3751,9 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     // Seething Power
     p()->buff.seething_power->trigger();
   }
+
+  bool has_amount_result() const override
+  { return true; }
 };
 
 struct chaos_strike_t : public chaos_strike_base_t
