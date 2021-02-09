@@ -716,6 +716,22 @@ static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::
   { 282, "Taunt"          },
 } );
 
+static constexpr auto _label_strings = util::make_static_map<int, util::string_view>( {
+  { 16, "Class Spells"        },
+  { 17, "Mage Spells"         },
+  { 18, "Priest Spells"       },
+  { 19, "Warlock Spells"      },
+  { 20, "Rogue Spells"        },
+  { 21, "Druid Spells"        },
+  { 22, "Monk Spells"         },
+  { 23, "Hunter Spells"       },
+  { 24, "Shaman Spells"       },
+  { 25, "Warrior Spells"      },
+  { 26, "Paladin Spells"      },
+  { 27, "Death Knight Spells" },
+  { 66, "Demon Hunter Spells" },
+} );
+
 std::string mechanic_str( unsigned mechanic ) {
   auto it = _mechanic_strings.find( mechanic );
   if ( it != _mechanic_strings.end() )
@@ -723,6 +739,31 @@ std::string mechanic_str( unsigned mechanic ) {
     return to_string( it -> second );
   }
   return fmt::format( "Unknown({})", mechanic );
+}
+
+std::string label_str( int label, const dbc_t& dbc ) {
+  auto it = _label_strings.find( label );
+  if ( it != _label_strings.end() )
+  {
+    return fmt::format( "{} ({})", it -> second, label );
+  }
+  auto affected_spells = dbc.spells_by_label( label );
+  return concatenate( affected_spells,
+          []( std::stringstream& s, const spell_data_t* spell ) {
+            fmt::print( s, "{} ({})", spell -> name_cstr(), spell -> id() );
+          } );
+}
+
+int ignored_label_count( const spell_data_t* spell )
+{
+  int count = 0;
+  for ( size_t i = 1, end = spell -> label_count(); i <= end; ++i )
+  {
+    auto label = spell -> labelN( i );
+    if ( _label_strings.find( label ) != _label_strings.end() )
+      count++;
+  }
+  return count;
 }
 
 std::string spell_flags( const spell_data_t* spell )
@@ -1101,30 +1142,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   if ( e -> type() == E_APPLY_AURA &&
        ( e -> subtype() == A_ADD_PCT_LABEL_MODIFIER || e -> subtype() == A_ADD_FLAT_LABEL_MODIFIER ) )
   {
-    auto affected_spells = dbc.spells_by_label( e -> misc_value2() );
-    if ( !affected_spells.empty() )
-    {
-      s << "                   Affected Spells (Label): ";
-      s << concatenate( affected_spells,
-            []( std::stringstream& s, const spell_data_t* spell ) {
-              fmt::print( s, "{} ({})", spell -> name_cstr(), spell -> id() );
-            } );
-      s << std::endl;
-    }
+    s << "                   Affected Spells (Label): ";
+    s << label_str( e -> misc_value2(), dbc );
+    s << std::endl;
   }
 
   if ( e -> type() == E_APPLY_AURA && e -> subtype() == A_MOD_RECHARGE_RATE_LABEL )
   {
-    auto affected_spells = dbc.spells_by_label( e -> misc_value1() );
-    if ( !affected_spells.empty() )
-    {
-      s << "                   Affected Spells (Label): ";
-      s << concatenate( affected_spells,
-            []( std::stringstream& s, const spell_data_t* spell ) {
-              fmt::print( s, "{} ({})", spell -> name_cstr(), spell -> id() );
-            } );
-      s << std::endl;
-    }
+    s << "                   Affected Spells (Label): ";
+    s << label_str( e -> misc_value1(), dbc );
+    s << std::endl;
   }
 
   if ( e -> type() == E_APPLY_AURA && range::contains( dbc::effect_category_subtypes(), e -> subtype() ) )
@@ -1467,15 +1494,19 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
-  if ( spell -> label_count() > 0 )
+  if ( spell -> label_count() > ignored_label_count( spell ) )
   {
     s << "Labels           : ";
+    bool new_line = false;
     for ( size_t i = 1, end = spell -> label_count(); i <= end; ++i )
     {
       auto label = spell -> labelN( i );
+      if ( _label_strings.find( label ) != _label_strings.end() )
+        continue;
+
       auto affecting_effects = dbc.effect_labels_affecting_label( label );
 
-      if ( i > 1 )
+      if ( new_line )
       {
         if ( affecting_effects.empty() )
         {
@@ -1500,6 +1531,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
             s << e -> spell() -> name_cstr() << " (" << e -> spell() -> id()
               << " effect#" << ( e -> index() + 1 ) << ")";
           } );
+        new_line = true;
       }
     }
     s << std::endl;
