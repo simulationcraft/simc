@@ -1643,7 +1643,7 @@ struct death_knight_pet_t : public pet_t
     double haste = pet_t::composite_melee_haste();
 
     // 2020-11-14: Phearomones is double dipping for pets as they're affected by both the aura
-    // and the player's own attack speed increase
+    // and the player's own haste buff, inherited by the pet
     if ( dk() -> legendary.phearomones -> ok() && dk() -> bugs )
     {
       haste *= 1.0 / ( 1.0 + dk() -> buffs.death_turf -> check_value() );
@@ -1657,7 +1657,7 @@ struct death_knight_pet_t : public pet_t
     double haste = pet_t::composite_spell_haste();
 
     // 2020-11-14: Phearomones is double dipping for pets as they're affected by both the aura
-    // and the player's own attack speed increase
+    // and the player's own haste buff, inherited by the pet
     if ( dk() -> legendary.phearomones -> ok() && dk() -> bugs )
     {
       haste *= 1.0 / ( 1.0 + dk() -> buffs.death_turf -> check_value() );
@@ -1706,6 +1706,12 @@ struct death_knight_pet_t : public pet_t
     block_result_e calculate_block_result( action_state_t* ) const override
     { return BLOCK_RESULT_UNBLOCKED; }
 
+    void cancel() override
+    {
+      action_t::cancel();
+      executed = false;
+    }
+
     void execute() override
     {
       action_t::execute();
@@ -1713,17 +1719,12 @@ struct death_knight_pet_t : public pet_t
       debug_cast<death_knight_pet_t*>( player ) -> precombat_spawn = false;
     }
 
-    void cancel() override
-    {
-      action_t::cancel();
-      executed = false;
-    }
-
     timespan_t execute_time() const override
     {
       death_knight_pet_t* p = debug_cast<death_knight_pet_t*>( player );
       double mean_duration = p -> spawn_travel_duration;
 
+      // Reduce the spawn timer by the precombat time if necessary
       if ( p -> precombat_spawn )
         mean_duration -= p -> precombat_spawn_adjust;
       // Don't bother gaussing null delays
@@ -1826,38 +1827,34 @@ struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
     }
   }
 
-  void impact( action_state_t* state ) override
+  // Apocalypse debuffs only trigger on the main target
+  void execute() override
   {
-    pet_action_t<T_PET, melee_attack_t>::impact( state );
+    pet_action_t<T_PET, melee_attack_t>::execute();
 
-    if ( triggers_runeforge_apocalypse && this -> dk() -> runeforge.rune_of_apocalypse )
+    if ( triggers_runeforge_apocalypse && this -> dk() -> runeforge.rune_of_apocalypse && this -> hit_any_target )
     {
-      // Only triggers on main target for aoe spells
-      if ( this -> target == state -> target )
+      int n = static_cast<int>( this -> pet() -> rng().range( 0, runeforge_apocalypse::MAX ) );
+
+      death_knight_td_t* td = this -> dk() -> get_target_data( this -> target );
+
+      switch ( n )
       {
-        int n = static_cast<int>( this -> pet() -> rng().range( 0, runeforge_apocalypse::MAX ) );
-
-        death_knight_td_t* td = this -> dk() -> get_target_data( state -> target );
-
-        switch ( n )
-        {
-        case runeforge_apocalypse::DEATH:
-          td -> debuff.apocalypse_death -> trigger();
-          break;
-        case runeforge_apocalypse::FAMINE:
-          td -> debuff.apocalypse_famine -> trigger();
-          break;
-        case runeforge_apocalypse::PESTILENCE:
-          this -> dk() -> active_spells.runeforge_pestilence -> set_target( state -> target );
-          this -> dk() -> active_spells.runeforge_pestilence -> execute();
-          break;
-        case runeforge_apocalypse::WAR:
-          td -> debuff.apocalypse_war -> trigger();
-          break;
-        }
+      case runeforge_apocalypse::DEATH:
+        td -> debuff.apocalypse_death -> trigger();
+        break;
+      case runeforge_apocalypse::FAMINE:
+        td -> debuff.apocalypse_famine -> trigger();
+        break;
+      case runeforge_apocalypse::PESTILENCE:
+        this -> dk() -> active_spells.runeforge_pestilence -> set_target( this -> target );
+        this -> dk() -> active_spells.runeforge_pestilence -> execute();
+        break;
+      case runeforge_apocalypse::WAR:
+        td -> debuff.apocalypse_war -> trigger();
+        break;
       }
     }
-
   }
 };
 
@@ -2052,8 +2049,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     m *= 1.0 + dk() -> buffs.dark_transformation -> value();
 
-    if ( frenzied_monstrosity -> up() )
-      m *= 1.0 + frenzied_monstrosity -> data().effectN( 1 ).percent();
+    m *= 1.0 + frenzied_monstrosity -> value();
 
     return m;
   }
@@ -2076,6 +2072,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   {
     double haste = base_ghoul_pet_t::composite_melee_speed();
 
+    // The default value stores the %damage increase
     if ( frenzied_monstrosity -> up() )
       haste *= 1.0 / ( 1.0 + frenzied_monstrosity -> data().effectN( 2 ).percent() );
 
@@ -2129,6 +2126,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     // The pet buff has its own data, different from the player buff
     frenzied_monstrosity = make_buff( this, "frenzied_monstrosity", find_spell ( 334895 ) )
+      -> set_default_value_from_effect( 1 )
       -> set_duration( 0_s );
   }
 };
@@ -3664,22 +3662,24 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
     if ( ! p() -> in_combat && precombat_time > 0 )
     {
+      // The first pet spawns after the interval timer
       double duration_penalty = precombat_time - summon_interval;
       while ( duration_penalty >= 0 && n_ghoul < 8 )
       {
+        // Spawn with a duration penalty, and adjust the spawn/travel delay by the penalty
         auto pet = p() -> pets.army_ghouls.spawn( summon_duration - timespan_t::from_seconds( duration_penalty ), 1 ).front();
         pet -> precombat_spawn_adjust = duration_penalty;
         pet -> precombat_spawn = true;
+        // For each pet, reduce the duration penalty by the 0.5s interval
         duration_penalty -= summon_interval;
         n_ghoul++;
       }
 
+      // Adjust the cooldown based on the precombat time
       p() -> cooldown.army_of_the_dead -> adjust( timespan_t::from_seconds( -precombat_time ), false );
 
-      // Simulate RP decay for X seconds
+      // Simulate RP decay and rune regeneration
       p() -> resource_loss( RESOURCE_RUNIC_POWER, RUNIC_POWER_DECAY_RATE * precombat_time, nullptr, nullptr );
-
-      // Simulate rune regeneration for X seconds
       p() -> _runes.regenerate_immediate( timespan_t::from_seconds( precombat_time ) );
 
       sim -> print_debug( "{} used Army of the Dead in precombat with precombat time = {}, adjusting pets' duration and remaining cooldown.",
@@ -5677,7 +5677,7 @@ struct mind_freeze_t : public death_knight_spell_t
     death_knight_spell_t( "mind_freeze", p, p -> find_class_spell( "Mind Freeze" ) )
   {
     parse_options( options_str );
-    ignore_false_positive = true;
+    ignore_false_positive = is_interrupt = true;
 
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
