@@ -1226,7 +1226,6 @@ struct ashen_hallow_t : public paladin_spell_t
 {
   ashen_hallow_tick_t* damage_tick;
   ashen_hallow_heal_tick_t* heal_tick;
-  ground_aoe_params_t hallow_params;
   hallowed_discernment_tick_t* hd_damage;
 
   ashen_hallow_t( paladin_t* p, const std::string& options_str ) :
@@ -1252,11 +1251,10 @@ struct ashen_hallow_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    hallow_params = ground_aoe_params_t()
+    ground_aoe_params_t hallow_params = ground_aoe_params_t()
       .duration( data().duration() )
       .pulse_time( data().effectN( 2 ).period() )
       .hasted( ground_aoe_params_t::SPELL_HASTE )
-      .start_time( sim -> current_time() )
       .x( execute_state -> target -> x_position )
       .y( execute_state -> target -> y_position );
 
