@@ -1251,19 +1251,18 @@ struct ashen_hallow_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    timespan_t tick_time = data().effectN( 2 ).period();
 
     hallow_params = ground_aoe_params_t()
-      .duration( data().duration() - tick_time - 100_ms )
-      .pulse_time( tick_time )
+      .duration( data().duration() )
+      .pulse_time( data().effectN( 2 ).period() )
       .hasted( ground_aoe_params_t::SPELL_HASTE )
-      .start_time( sim -> current_time() + tick_time )
+      .start_time( sim -> current_time() )
       .x( execute_state -> target -> x_position )
       .y( execute_state -> target -> y_position );
 
-    make_event<ground_aoe_event_t>( *sim, p(),
-      hallow_params.action( damage_tick )
-        .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+    make_event<ground_aoe_event_t>( *sim, p(), hallow_params.action( damage_tick )
+      .target( execute_state -> target )
+      .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
         switch ( type )
         {
         case ground_aoe_params_t::EVENT_CREATED:
@@ -1274,14 +1273,9 @@ struct ashen_hallow_t : public paladin_spell_t
           break;
         default:
           break;
-        } } )
-        .target( execute_state -> target ),
-      true );
+        } } ) );
 
-    make_event<ground_aoe_event_t>( *sim, p() ,
-      hallow_params.action( heal_tick )
-      .target( p() ), true
-    );
+    make_event<ground_aoe_event_t>( *sim, p(), hallow_params.action( heal_tick ).target( p() ) );
   }
 };
 
