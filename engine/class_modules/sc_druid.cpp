@@ -1603,6 +1603,8 @@ public:
   bool triggers_galactic_guardian;
   bool is_auto_attack;
 
+  // !!! WARNING: free_cast is CLEARED from the action and set on the state upon execute() !!!
+  // !!! You MUST use get_state_free_cast( state ) to get the value from the STATE, not the action !!!
   free_cast_e free_cast;
   std::vector<free_cast_stats_t> free_cast_stats;
   stats_t* orig_stats;
@@ -5196,7 +5198,7 @@ struct moon_base_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( free_cast )
+    if ( get_state_free_cast( execute_state ) )
       return;
 
     p()->moon_stage++;
@@ -5937,16 +5939,22 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( !free_cast && ( p()->specialization() == DRUID_BALANCE || p()->specialization() == DRUID_RESTORATION ) )
+    if ( !get_state_free_cast( execute_state ) &&
+         ( p()->specialization() == DRUID_BALANCE || p()->specialization() == DRUID_RESTORATION ) )
+    {
       p()->eclipse_handler.cast_wrath();
+    }
   }
 
   void impact( action_state_t* s ) override
   {
     druid_spell_t::impact( s );
 
-    if ( !free_cast && ( p()->specialization() == DRUID_FERAL || p()->specialization() == DRUID_GUARDIAN ) )
+    if ( !get_state_free_cast( s ) &&
+         ( p()->specialization() == DRUID_FERAL || p()->specialization() == DRUID_GUARDIAN ) )
+    {
       p()->eclipse_handler.cast_wrath();
+    }
   }
 };
 
