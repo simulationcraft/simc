@@ -1943,8 +1943,6 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     parse_options( options_str );
     interrupt_auto_attack = callbacks = false;
     channeled                         = true;
-    dot_duration                      = data().duration();
-    tick_zero                         = false;
     may_combo_strike                  = true;
 
     spell_power_mod.direct = 0.0;
