@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37176 Live (hotfix 2021-02-06/37176, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, no-networking)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -3678,6 +3678,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 90 seconds
+Labels           : 203: Thundercharge (204366 effect#5)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4079,6 +4080,7 @@ Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
+Labels           : 203: Thundercharge (204366 effect#5)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4157,6 +4159,7 @@ Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 60 seconds
+Labels           : 203: Thundercharge (204366 effect#5)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9156,6 +9159,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=821267)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 16 | Target: Friend (21)
+                   Affected Spells (Label): Class Spells (16)
 #2 (id=821268)   : Apply Aura (6) | Unknown(173)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Friend (21)
 #3 (id=823063)   : Apply Aura (6) | Modify Rating (189)
@@ -9675,7 +9679,6 @@ Effects          :
 Description      : When you drop below $s2% health, you become infused with Guardian of the Ancient Kings for $s1 sec. This cannot occur again for $337852d.
 
 Name             : Guardian of Ancient Kings (id=337851) [Spell Family (10)] 
-Hotfixed         : Affecting Spells
 School           : Holy
 Spell Type       : None
 Spell Level      : 39

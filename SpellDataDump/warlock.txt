@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37176 Live (hotfix 2021-02-06/37176, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, no-networking)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -1654,11 +1654,9 @@ Effects          :
 #4 (id=874662)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : Base Value (0 -> -20)
 #5 (id=879205)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : NEW EFFECT
 Description      : Reduces the damage your pet takes from area of effect attacks by an additional $s1%.
 Reduces the range at which enemies detect your pet.
 
@@ -3547,15 +3545,12 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Conflagrate (265931), Bilescourge Bombers (267213), Umbral Blaze (273526), Vile Taint (278350), Pandemic Invocation (289367), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072)
                    Family Flags: 49
-Hotfixed         : Base Value (0 -> 5)
 #2 (id=191023)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Conflagrate (265931), Bilescourge Bombers (267213), Umbral Blaze (273526), Vile Taint (278350), Pandemic Invocation (289367), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072)
                    Family Flags: 49
-Hotfixed         : Base Value (0 -> 5)
 #3 (id=191024)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 5)
 #4 (id=191025)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=191026)   : Apply Aura (6) | Dummy (4)
@@ -4392,6 +4387,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 3 (45 seconds cooldown)
 Category         : 1630
+Labels           : 203: Thundercharge (204366 effect#5)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4884,6 +4880,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
+Labels           : 203: Thundercharge (204366 effect#5)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ......x. .....x..   ........ ........ .x...... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -5075,6 +5072,7 @@ School           : Shadow
 Spell Type       : None
 Velocity         : 20 yards/sec
 Cooldown         : 5 seconds
+Labels           : 203: Thundercharge (204366 effect#5)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9673,7 +9671,6 @@ Description      : Deal $s1 Arcane damage instantly, and $o2 over $d. If the ene
 Tooltip          : Suffering $w2 Arcane damage every $t2 sec.
 
 Name             : Unstable Affliction (id=316099) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Affliction Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -9692,7 +9689,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. .....x.. ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ .x..x... ........ ......x.   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ....x... ........ 
                  : ........ ........ ........ ........   
@@ -10797,7 +10794,6 @@ Effects          :
 Description      : Enemies marked by your Havoc take $337164s1% increased damage from your single target spells.
 
 Name             : Odr, Shawl of the Ymirjar (id=337164) [Spell Family (5)] 
-Hotfixed         : Attributes
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards

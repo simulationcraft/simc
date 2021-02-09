@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37176 Live (hotfix 2021-02-06/37176, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, no-networking)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -255,7 +255,6 @@ Description      : $?s199023[Demoralizes all enemies within $A2 yards, reducing 
 Tooltip          : $?s199023[Demoralized, dealing $w2% less damage.][Demoralized, dealing $w1% less damage to $@auracaster.]
 
 Name             : Challenging Shout (id=1161) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -1549,7 +1548,6 @@ Effects          :
 Description      : $@spelldesc58104
 
 Name             : Shattering Throw (id=64380) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -2909,12 +2907,10 @@ Effects          :
                    Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 9
-Hotfixed         : Base Value (6 -> 9)
 #3 (id=191014)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 9
-Hotfixed         : Base Value (6 -> 9)
 #4 (id=191015)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847)
@@ -2958,12 +2954,10 @@ Effects          :
                    Base Value: 29 | Scaled Value: 29 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 9
-Hotfixed         : Base Value (16 -> 29)
 #2 (id=191010)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 29 | Scaled Value: 29 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 9
-Hotfixed         : Base Value (16 -> 29)
 #3 (id=191011)   : Apply Aura (6) | Unknown(213)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191012)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
@@ -2975,12 +2969,10 @@ Hotfixed         : Base Value (16 -> 29)
                    Base Value: 21 | Scaled Value: 21 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847)
                    Family Flags: 46
-Hotfixed         : Base Value (30 -> 21)
 #7 (id=877674)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -7 | Scaled Value: -7 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Dragon Roar (118000)
                    Family Flags: 49
-Hotfixed         : NEW EFFECT
 
 Name             : Glyph of the Weaponmaster (id=146974) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -4340,6 +4332,7 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 45 seconds
+Labels           : 203: Thundercharge (204366 effect#5)
 Attributes       : ........ ........ ........ ........   ......x. ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4392,6 +4385,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 45 seconds
 Category         : 891
+Labels           : 203: Thundercharge (204366 effect#5)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -4609,6 +4603,7 @@ Spell Type       : Melee
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
+Labels           : 203: Thundercharge (204366 effect#5)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -7559,7 +7554,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Whirlwind (1680), Whirlwind Off-Hand (44949), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852)
                    Family Flags: 34
-Hotfixed         : Base Value (30 -> 25)
 #2 (id=737899)   : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Whirlwind (85739)
@@ -10754,6 +10748,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=831748)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1147 (Label) | Target: Self (1)
+                   Affected Spells (Label): 
 Description      : When $?s152277[Ravager][Bladestorm] ends, Whirlwind deals |cFFFFFFFF$s1%|r increased damage for $?s152277[$<rav>][$<bstorm>] sec.
 Variables        : $rav=${7}
 $bstorm=${9}
@@ -11036,6 +11031,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=874571)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value 2: 1164 (Label) | Target: Self (1)
+                   Affected Spells (Label): 
 #4 (id=874572)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : If Whirlwind $?a137048[or Revenge ][]hits $s1 or more enemies, it hits them $s2 additional time for $?c1[${100+$s3}]?c2[${100+$s4}]?c3[${100+$335759s3}][100]% damage.

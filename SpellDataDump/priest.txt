@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37176 Live (hotfix 2021-02-06/37176, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -3465,7 +3465,6 @@ Effects          :
                    Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000 | Misc Value: 13 | Trigger Spell: 218413 | Target: Self (1)
 
 Name             : Shadow Mend (id=186263) [Spell Family (6)] 
-Hotfixed         : Description
 Replaces         : Flash Heal (id=2061)
 Class            : Discipline Shadow Priest
 School           : Shadow
@@ -3967,6 +3966,7 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
+Labels           : 203: Thundercharge (204366 effect#5)
 Internal Cooldown: 15 seconds
 Proc Chance      : 20%
 Proc Flags       : ........ ..x.x.x. x....x.. ........ 
@@ -4720,6 +4720,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 60 seconds
+Labels           : 203: Thundercharge (204366 effect#5)
 Attributes       : ........ ........ ........ ..x.....   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -4963,6 +4964,7 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 90 seconds
+Labels           : 203: Thundercharge (204366 effect#5)
 Attributes       : ........ ........ ..x..... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
