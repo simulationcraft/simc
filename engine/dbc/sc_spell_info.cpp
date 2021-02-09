@@ -754,18 +754,6 @@ std::string label_str( int label, const dbc_t& dbc ) {
           } );
 }
 
-int ignored_label_count( const spell_data_t* spell )
-{
-  int count = 0;
-  for ( size_t i = 1, end = spell -> label_count(); i <= end; ++i )
-  {
-    auto label = spell -> labelN( i );
-    if ( _label_strings.find( label ) != _label_strings.end() )
-      count++;
-  }
-  return count;
-}
-
 std::string spell_flags( const spell_data_t* spell )
 {
   std::ostringstream s;
@@ -1142,16 +1130,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   if ( e -> type() == E_APPLY_AURA &&
        ( e -> subtype() == A_ADD_PCT_LABEL_MODIFIER || e -> subtype() == A_ADD_FLAT_LABEL_MODIFIER ) )
   {
-    s << "                   Affected Spells (Label): ";
-    s << label_str( e -> misc_value2(), dbc );
-    s << std::endl;
+    auto str = label_str( e -> misc_value2(), dbc );
+    if ( str != "" )
+      s << "                   Affected Spells (Label): " << str << std::endl;
   }
 
   if ( e -> type() == E_APPLY_AURA && e -> subtype() == A_MOD_RECHARGE_RATE_LABEL )
   {
-    s << "                   Affected Spells (Label): ";
-    s << label_str( e -> misc_value1(), dbc );
-    s << std::endl;
+    auto str = label_str( e -> misc_value1(), dbc );
+    if ( str != "" )
+      s << "                   Affected Spells (Label): " << str << std::endl;
   }
 
   if ( e -> type() == E_APPLY_AURA && range::contains( dbc::effect_category_subtypes(), e -> subtype() ) )
@@ -1494,47 +1482,45 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
-  if ( spell -> label_count() > ignored_label_count( spell ) )
+  bool first_label = true;
+  for ( size_t i = 1, end = spell -> label_count(); i <= end; ++i )
   {
-    s << "Labels           : ";
-    bool new_line = false;
-    for ( size_t i = 1, end = spell -> label_count(); i <= end; ++i )
+    auto label = spell -> labelN( i );
+    if ( _label_strings.find( label ) != _label_strings.end() )
+      continue;
+
+    auto affecting_effects = dbc.effect_labels_affecting_label( label );
+
+    if ( !first_label )
     {
-      auto label = spell -> labelN( i );
-      if ( _label_strings.find( label ) != _label_strings.end() )
-        continue;
-
-      auto affecting_effects = dbc.effect_labels_affecting_label( label );
-
-      if ( new_line )
+      if ( affecting_effects.empty() )
       {
-        if ( affecting_effects.empty() )
+        if ( i < end )
         {
-          if ( i < end )
-          {
-            s << ", ";
-          }
-        }
-        else
-        {
-          s << std::endl;
-          s << "                 : ";
+          s << ", ";
         }
       }
-
-      s << label;
-
-      if ( !affecting_effects.empty() )
+      else
       {
-        s << ": " << concatenate( affecting_effects,
-          []( std::stringstream& s, const spelleffect_data_t* e ) {
-            s << e -> spell() -> name_cstr() << " (" << e -> spell() -> id()
-              << " effect#" << ( e -> index() + 1 ) << ")";
-          } );
-        new_line = true;
+        s << "                 : ";
       }
     }
-    s << std::endl;
+    else
+    {
+      first_label = false;
+      s << "Labels           : ";
+    }
+
+    s << label;
+
+    if ( !affecting_effects.empty() )
+    {
+      s << ": " << concatenate( affecting_effects,
+        []( std::stringstream& s, const spelleffect_data_t* e ) {
+          s << e -> spell() -> name_cstr() << " (" << e -> spell() -> id()
+            << " effect#" << ( e -> index() + 1 ) << ")";
+        } ) << std::endl;
+    }
   }
 
   if ( spell -> category_cooldown() > timespan_t::zero() )

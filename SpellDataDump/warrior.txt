@@ -10748,7 +10748,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=831748)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1147 (Label) | Target: Self (1)
-                   Affected Spells (Label): 
 Description      : When $?s152277[Ravager][Bladestorm] ends, Whirlwind deals |cFFFFFFFF$s1%|r increased damage for $?s152277[$<rav>][$<bstorm>] sec.
 Variables        : $rav=${7}
 $bstorm=${9}
@@ -11031,7 +11030,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=874571)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value 2: 1164 (Label) | Target: Self (1)
-                   Affected Spells (Label): 
 #4 (id=874572)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : If Whirlwind $?a137048[or Revenge ][]hits $s1 or more enemies, it hits them $s2 additional time for $?c1[${100+$s3}]?c2[${100+$s4}]?c3[${100+$335759s3}][100]% damage.
