@@ -3609,7 +3609,8 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       assert( eff.type() == E_TRIGGER_SPELL );
       background = dual = true;
 
-      may_refund = ( weapon == &( p->off_hand_weapon ) );
+      // Disable refunds on secondary procs such as Relentless Onslaught
+      may_refund = ( weapon == &( p->off_hand_weapon ) ) && !a->from_onslaught;
       if ( may_refund )
       {
         refund_proc_chance = p->spec.chaos_strike_refund->proc_chance();
@@ -3651,7 +3652,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     {
       demon_hunter_attack_t::execute();
 
-      // Technically this appears to have a 0.5s ICD, but this is not relevant at the moment
+      // Technically this appears to have a 0.5s ICD, but this is handled elsewhere
       if ( may_refund && p()->rng().roll( this->get_refund_proc_chance() ) )
       {
         p()->resource_gain( RESOURCE_FURY, p()->spec.chaos_strike_fury->effectN( 1 ).resource( RESOURCE_FURY ), parent->gain );
@@ -3668,7 +3669,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     {
       demon_hunter_attack_t::impact( s );
 
-      // TOCHECK: Double check the timing of this as well as the ICD and refunds
+      // 02/09/2021 -- Confirmed that due to timing changes, Onslaught can't proc refunds
       if ( result_is_hit( s->result ) && may_refund && p()->conduit.relentless_onslaught->ok() )
       {
         if ( p()->rng().roll( p()->conduit.relentless_onslaught.percent() ) )
@@ -3683,14 +3684,19 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
   };
 
   std::vector<chaos_strike_damage_t*> attacks;
+  bool from_onslaught;
 
-  chaos_strike_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, const std::string& options_str = "" )
-    : demon_hunter_attack_t( n, p, s, options_str )
+  chaos_strike_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, const std::string& options_str = "", bool from_onslaught = false )
+    : demon_hunter_attack_t( n, p, s, options_str ),
+    from_onslaught( from_onslaught )
   {
   }
 
   double cost() const override
   {
+    if ( from_onslaught )
+      return 0.0;
+
     double c = demon_hunter_attack_t::cost();
 
     c = std::max( 0.0, c - p()->buff.thirsting_blades->check() );
@@ -3758,8 +3764,8 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
 struct chaos_strike_t : public chaos_strike_base_t
 {
-  chaos_strike_t( util::string_view name, demon_hunter_t* p, const std::string& options_str = "" )
-    : chaos_strike_base_t( name, p, p->spec.chaos_strike, options_str )
+  chaos_strike_t( util::string_view name, demon_hunter_t* p, const std::string& options_str = "", bool from_onslaught = false )
+    : chaos_strike_base_t( name, p, p->spec.chaos_strike, options_str, from_onslaught )
   {
     if ( attacks.empty() )
     {
@@ -3767,7 +3773,7 @@ struct chaos_strike_t : public chaos_strike_base_t
       attacks.push_back( p->get_background_action<chaos_strike_damage_t>( fmt::format( "{}_damage_2", name ), data().effectN( 3 ), this ) );
     }
 
-    if ( p->active.relentless_onslaught )
+    if ( !from_onslaught && p->active.relentless_onslaught )
     {
       add_child( p->active.relentless_onslaught );
     }
@@ -3788,8 +3794,8 @@ struct chaos_strike_t : public chaos_strike_base_t
 
 struct annihilation_t : public chaos_strike_base_t
 {
-  annihilation_t( util::string_view name, demon_hunter_t* p, const std::string& options_str = "" )
-    : chaos_strike_base_t( name, p, p->spec.annihilation, options_str )
+  annihilation_t( util::string_view name, demon_hunter_t* p, const std::string& options_str = "", bool from_onslaught = false )
+    : chaos_strike_base_t( name, p, p->spec.annihilation, options_str, from_onslaught )
   {
     if ( attacks.empty() )
     {
@@ -5550,10 +5556,8 @@ void demon_hunter_t::init_spells()
 
   if ( conduit.relentless_onslaught.ok() && specialization() == DEMON_HUNTER_HAVOC )
   {
-    active.relentless_onslaught = get_background_action<chaos_strike_t>( "chaos_strike_onslaught" );
-    active.relentless_onslaught->base_costs.fill( 0 );
-    active.relentless_onslaught_annihilation = get_background_action<annihilation_t>( "annihilation_onslaught" );
-    active.relentless_onslaught_annihilation->base_costs.fill( 0 );
+    active.relentless_onslaught = get_background_action<chaos_strike_t>( "chaos_strike_onslaught", "", true );
+    active.relentless_onslaught_annihilation = get_background_action<annihilation_t>( "annihilation_onslaught", "", true );
   }
 }
 
