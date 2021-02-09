@@ -1962,8 +1962,10 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
+    // WDP has an automatic "tick_on_application" flag set which is causing a tick zero application.
+    // have to set the duration at 2 ticks since the first of the 3 ticks happens at tick zero.
     timespan_t tt = tick_time( s );
-    return tt * 3;
+    return tt * 2;
   }
 };
 
