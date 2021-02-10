@@ -2889,7 +2889,10 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
+    // XXX TODO 9.0.5: separate out into 2 buffs with proper attribution
     am *= 1 + p() -> buffs.flayers_mark -> check_value();
+    if ( p() -> dbc -> ptr )
+      am *= 1 + p() -> buffs.flayers_mark -> data().effectN( 3 ).percent();
 
     return am;
   }
