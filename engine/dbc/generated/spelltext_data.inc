@@ -1,4 +1,4 @@
-// Spell text, wow build 9.0.2.37176
+// Spell text, wow build 9.0.2.37474
 static const std::array<spelltext_data_t, 15096> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -15098,15 +15098,11 @@ static const std::array<spelltext_data_t, 15096> __spelltext_data { {
   { 348439, "Restores ${$m1/5*$d} health over $d.  Must remain seated while eating.", "Restores ${$m1/5} health per second.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.0.2.37176
-static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
-  {   44425,  0, "Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. \r\n\r\nFor each Arcane Charge, deals $36032s2% additional damage$?a321526[, grants you $321526s1% of your maximum mana,][]$?a231564[ and hits $36032s3 additional nearby $Ltarget:targets; for $s2% of its damage][].\r\n\r\n|cFFFFFFFFConsumes all Arcane Charges.|r", "Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. \r\n\r\nFor each Arcane Charge, deals $36032s2% additional damage$?a321526[, grants you ${$321526s1/100}.1% of your maximum mana,][]$?a231564[ and hits $36032s3 additional nearby $Ltarget:targets; for $s2% of its damage][].\r\n\r\n|cFFFFFFFFConsumes all Arcane Charges.|r" },
-  {  186263,  0, "Wraps an ally in shadows which heal for $s1, but at a price.\r\n\r\nThe ally will take ${$s1/20} damage every $187464t1 sec, until they have taken ${$s1/2} total damage from all sources, or leave combat. $?s342991[$@spelldesc342991][]", "Wraps an ally in shadows which heal for $s1, but at a price.\r\n\r\nThe ally will take ${$s1/20} damage every $187464t1 sec, until they have taken ${$s1/2} total damage from all sources, or leave combat." },
-  {  321526,  0, "Arcane Barrage grants you $s1% of your maximum mana per Arcane Charge spent.", "Arcane Barrage grants you ${$S1/100}% of your maximum mana per Arcane Charge spent." },
-  {  334456,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs. Warning: Components are hot!\r\n\r\nCannot be applied to items higher than level $ecix. ", "Increase the stamina of an item worn on the chest by $ec for 2 hrs. Warning: Components are hot!\r\n\r\nCannot be applied to items higher than level $ecix. " },
+// spelltext hotfix entries, wow build 9.0.2.37474
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.0.2.37176
+// Spell description variables, wow build 9.0.2.37474
 static const std::array<spelldesc_vars_data_t, 295> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15405,7 +15401,7 @@ static const std::array<spelldesc_vars_data_t, 295> __spelldesc_vars_data { {
   {  345549, "$phylacteryhealth=$s2*15" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.0.2.37176
+// spelldesc_vars hotfix entries, wow build 9.0.2.37474
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

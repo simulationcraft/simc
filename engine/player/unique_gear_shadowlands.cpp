@@ -726,9 +726,12 @@ void memory_of_past_sins( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* trigger_state ) override
     {
-      damage->target = trigger_state->target;
-      damage->execute();
-      buff->decrement();
+      if ( buff->check() )
+      {
+        damage->set_target( trigger_state->target );
+        damage->execute();
+        buff->decrement();
+      }
     }
   };
 
@@ -748,6 +751,8 @@ void memory_of_past_sins( special_effect_t& effect )
   cb_driver->name_str = "shattered_psyche_driver";
   cb_driver->spell_id = 344662;
   cb_driver->cooldown_ = 0_s;
+  cb_driver->proc_flags_ = effect.driver()->proc_flags();
+  cb_driver->proc_flags2_ = PF2_CAST_DAMAGE; // Only triggers from damaging casts
   effect.player->special_effects.push_back( cb_driver );
 
   auto callback = new shattered_psyche_cb_t( *cb_driver, damage, buff );

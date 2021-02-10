@@ -4614,9 +4614,15 @@ void player_t::combat_begin()
     buffs.tyrants_immortality->trigger( buffs.tyrants_immortality->max_stack() );
   }
 
-  if ( buffs.power_infusion )
-    for ( auto t : external_buffs.power_infusion )
-      make_event( *sim, t, [ this ] { buffs.power_infusion->trigger(); } );
+  auto add_timed_buff_triggers = [ this ] ( const std::vector<timespan_t>& times, buff_t* buff )
+  {
+    if ( buff )
+      for ( auto t : times )
+        make_event( *sim, t, [ buff ] { buff->trigger(); } );
+  };
+
+  add_timed_buff_triggers( external_buffs.power_infusion, buffs.power_infusion );
+  add_timed_buff_triggers( external_buffs.benevolent_faerie, buffs.benevolent_faerie );
 
   if ( buffs.windfury_totem )
   {
@@ -11170,20 +11176,30 @@ void player_t::create_options()
   add_option( opt_timespan( "reaction_time_max", reaction_max ) );
   add_option( opt_bool( "stat_cache", cache.active ) );
   add_option( opt_bool( "karazhan_trinkets_paired", karazhan_trinkets_paired ) );
+
+  // Permanent External Buffs
   add_option( opt_bool( "external_buffs.focus_magic", external_buffs.focus_magic ) );
-  add_option( opt_func( "external_buffs.power_infusion", [ this ] ( sim_t*, util::string_view, util::string_view val )
+
+  // Timed External Buffs
+  auto opt_external_buff_times = [ this ] ( util::string_view name, std::vector<timespan_t>& times )
   {
-    external_buffs.power_infusion.clear();
-    auto splits = util::string_split<util::string_view>( val, "/" );
-    for ( auto split : splits )
+    return opt_func( name, [ this, & times ] ( sim_t*, util::string_view, util::string_view val )
     {
-      double t = util::to_double( split );
-      if ( t < 0.0 )
-        throw std::invalid_argument( "The external Power Infusion buff cannot be applied at a negative time" );
-      external_buffs.power_infusion.push_back( timespan_t::from_seconds( t ) );
-    }
-    return true;
-  } ) );
+      times.clear();
+      auto splits = util::string_split<util::string_view>( val, "/" );
+      for ( auto split : splits )
+      {
+        double t = util::to_double( split );
+        if ( t < 0.0 )
+          throw std::invalid_argument( "external buffs cannot be applied at negative times" );
+        times.push_back( timespan_t::from_seconds( t ) );
+      }
+      return true;
+    } );
+  };
+
+  add_option( opt_external_buff_times( "external_buffs.power_infusion", external_buffs.power_infusion ) );
+  add_option( opt_external_buff_times( "external_buffs.benevolent_faerie", external_buffs.benevolent_faerie ) );
 
   // Azerite options
   if ( ! is_enemy() && ! is_pet() )

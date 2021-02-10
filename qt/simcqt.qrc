@@ -3,9 +3,9 @@
         <file>icon/Simcraft2.ico</file>
         <file>icon/addtab.png</file>
         <file>icon/closealltabs.png</file>
-        <file>us-realmlist.json</file>
-        <file>eu-realmlist.json</file>
-        <file>kr-realmlist.json</file>
-        <file>tw-realmlist.json</file>
+        <file>realms/us.json</file>
+        <file>realms/eu.json</file>
+        <file>realms/kr.json</file>
+        <file>realms/tw.json</file>
     </qresource>
 </RCC>

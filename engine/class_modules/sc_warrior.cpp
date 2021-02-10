@@ -247,7 +247,6 @@ public:
     const spell_data_t* charge;
     const spell_data_t* charge_rank_2;
     const spell_data_t* colossus_smash_debuff;
-    const spell_data_t* deep_wounds_debuff;
     const spell_data_t* hamstring;
     const spell_data_t* ignore_pain;
     const spell_data_t* warrior_aura;
@@ -753,7 +752,7 @@ struct warrior_action_t : public Base
   struct affected_by_t
   {
     // mastery/buff damage increase.
-    bool fury_mastery_direct, fury_mastery_dot, arms_mastery_direct, arms_mastery_dot,
+    bool fury_mastery_direct, fury_mastery_dot, arms_mastery,
     colossus_smash, rend, siegebreaker, glory, ashen_juggernaut;
     // talents
     bool avatar, sweeping_strikes, deadly_calm, booming_voice;
@@ -763,8 +762,7 @@ struct warrior_action_t : public Base
     affected_by_t()
       : fury_mastery_direct( false ),
         fury_mastery_dot( false ),
-        arms_mastery_direct( false ),
-        arms_mastery_dot( false ),
+        arms_mastery( false ),
         colossus_smash( false ),
         rend( false ),
         siegebreaker( false ),
@@ -873,15 +871,14 @@ public:
     affected_by.deadly_calm         = ab::data().affected_by( p()->talents.deadly_calm->effectN( 1 ) );
     affected_by.fury_mastery_direct = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
     affected_by.fury_mastery_dot    = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
-    affected_by.arms_mastery_direct = ab::data().affected_by( p()->spell.deep_wounds_debuff->effectN( 2 ) );
-    affected_by.arms_mastery_dot    = ab::data().affected_by( p()->spell.deep_wounds_debuff->effectN( 2 ) );
+    affected_by.arms_mastery = ab::data().affected_by( p()->mastery.deep_wounds_ARMS -> effectN( 3 ).trigger()->effectN( 2 ) );
     affected_by.booming_voice       = ab::data().affected_by( p()->spec.demoralizing_shout->effectN( 3 ) );
     affected_by.colossus_smash      = ab::data().affected_by( p()->spell.colossus_smash_debuff->effectN( 1 ) );
     affected_by.rend                = ab::data().affected_by( p()->talents.rend->effectN( 3 ) );
     affected_by.siegebreaker        = ab::data().affected_by( p()->spell.siegebreaker_debuff->effectN( 1 ) );
     affected_by.glory               = ab::data().affected_by( p()->covenant.glory->effectN( 1 ) );
     affected_by.avatar              = ab::data().affected_by( p()->spec.avatar_buff->effectN( 1 ) );
-    
+
     initialized = true;
   }
 
@@ -944,7 +941,7 @@ public:
       m *= 1.0 + ( td->debuffs_colossus_smash->value() );
     }
 
-    if ( affected_by.arms_mastery_direct && td->dots_deep_wounds->is_ticking() )
+    if ( affected_by.arms_mastery && td->dots_deep_wounds->is_ticking() )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
@@ -1406,7 +1403,7 @@ struct melee_t : public warrior_attack_t
   {
     warrior_attack_t::init();
     affected_by.fury_mastery_direct = p()->mastery.unshackled_fury->ok();
-    affected_by.arms_mastery_direct = p()->mastery.deep_wounds_ARMS->ok();
+    affected_by.arms_mastery = p()->mastery.deep_wounds_ARMS->ok();
     affected_by.colossus_smash      = p()->spec.colossus_smash->ok();
     affected_by.siegebreaker        = p()->talents.siegebreaker->ok();
     affected_by.booming_voice       = p()->talents.booming_voice->ok();
@@ -4684,8 +4681,8 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
 
     if ( p()->talents.meat_cleaver->ok() )
     {
-      p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->data().max_stacks() + 
-      ( p()->talents.meat_cleaver->effectN( 2 ).base_value() ) );
+      p()->buff.meat_cleaver->trigger( as<int>( p()->buff.meat_cleaver->data().max_stacks() +
+      p()->talents.meat_cleaver->effectN( 2 ).base_value() ) );
     }
     else
       p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->data().max_stacks() );
@@ -6287,7 +6284,6 @@ void warrior_t::init_spells()
   spell.charge                = find_class_spell( "Charge" );
   spell.charge_rank_2         = find_spell( 319157 );
   spell.colossus_smash_debuff = find_spell( 208086 );
-  spell.deep_wounds_debuff    = find_spell( 262115 );
   spell.intervene             = find_spell( 147833 );
   spell.hamstring             = find_class_spell( "Hamstring" );
   spell.warrior_aura          = find_spell( 137047 );  // Warrior class aura

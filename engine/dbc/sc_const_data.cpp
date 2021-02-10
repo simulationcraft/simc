@@ -187,6 +187,13 @@ static void generate_indices( bool ptr )
         if ( value != 0 )
           spell_label_index.add_effect( value, &effect, ptr );
       }
+
+      if ( effect.subtype() == A_MOD_RECHARGE_RATE_LABEL )
+      {
+        const short value = as<short>( effect.misc_value1() );
+        if ( value != 0 )
+          spell_label_index.add_effect( value, &effect, ptr );
+      }
     }
   }
 }

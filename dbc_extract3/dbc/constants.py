@@ -176,9 +176,7 @@ SPELL_NAME_BLACKLIST = [
   re.compile("^Apply Equipment$"),
 ]
 
-SPELL_LABEL_BLACKLIST = [
-  16,     # Agonizing Backlash
-]
+SPELL_LABEL_BLACKLIST = [ ]
 
 ACTIVE_SPELL_WHITELIST = [
     114074  # Lava Beam (Shaman)

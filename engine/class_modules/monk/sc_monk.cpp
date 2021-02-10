@@ -1802,7 +1802,8 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, p, p->passives.fists_of_fury_tick )
   {
     background = true;
-    aoe        = 1 + (int)p->spec.fists_of_fury->effectN( 1 ).base_value();
+    // Currently a bug where the it's a max of 5 targets; instead of primary + 5
+    aoe        = (int)p->spec.fists_of_fury->effectN( 1 ).base_value() + ( p->bugs ? 0 : 1 );
     ww_mastery = true;
 
     attack_power_mod.direct    = p->spec.fists_of_fury->effectN( 5 ).ap_coeff();
@@ -1943,8 +1944,6 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     parse_options( options_str );
     interrupt_auto_attack = callbacks = false;
     channeled                         = true;
-    dot_duration                      = data().duration();
-    tick_zero                         = false;
     may_combo_strike                  = true;
 
     spell_power_mod.direct = 0.0;
@@ -1964,8 +1963,10 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
+    // WDP has an automatic "tick_on_application" flag set which is causing a tick zero application.
+    // have to set the duration at 2 ticks since the first of the 3 ticks happens at tick zero.
     timespan_t tt = tick_time( s );
-    return tt * 3;
+    return tt * 2;
   }
 };
 

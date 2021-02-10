@@ -49,8 +49,8 @@ BattleNetImportWidget::BattleNetImportWidget( QWidget* parent )
 // Populate realmlists
 void BattleNetImportWidget::loadRealmData()
 {
-  static const QVector<QString> files = { "://us-realmlist.json", "://eu-realmlist.json", "://tw-realmlist.json",
-                                          "://kr-realmlist.json" };
+  static const QVector<QString> files = { "://realms/us.json", "://realms/eu.json", "://realms/tw.json",
+                                          "://realms/kr.json" };
 
   for ( const auto& file : files )
   {
@@ -105,7 +105,7 @@ void BattleNetImportWidget::parseRealmListFile( QFile& file )
     realmList.push_back( std::make_pair( obj[ "name" ].toString(), obj[ "slug" ].toString() ) );
   }
 
-  QRegExp region( "([A-Za-z]+)-realmlist.json$" );
+  QRegExp region( "([A-Za-z]+).json$" );
   QString region_str;
 
   if ( region.indexIn( file.fileName() ) >= 0 )

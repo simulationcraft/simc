@@ -334,10 +334,17 @@ struct fae_guardians_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.fae_guardians->trigger();
+    if ( priest().options.self_benevolent_faerie )
+      player->buffs.benevolent_faerie->trigger();
   }
 
   void impact( action_state_t* s ) override
   {
+    // Currently impossible to give someone else the benevolent faeire while still auto applying the wrathful faerie
+    // This will cause the APL to cast Shadow Word: Pain manually to apply the faerie after using Fae Guardians
+    if ( !priest().options.self_benevolent_faerie )
+      return;
+
     priest_spell_t::impact( s );
     priest_td_t& td = get_td( s->target );
     td.buffs.wrathful_faerie->trigger();
@@ -1020,14 +1027,8 @@ namespace buffs
 // ==========================================================================
 struct fae_guardians_t final : public priest_buff_t<buff_t>
 {
-  propagate_const<cooldown_t*> void_eruption_cooldown;
-
-  fae_guardians_t( priest_t& p )
-    : base_t( p, "fae_guardians", p.covenant.fae_guardians ),
-      void_eruption_cooldown( p.get_cooldown( "void_eruption" ) )
+  fae_guardians_t( priest_t& p ) : base_t( p, "fae_guardians", p.covenant.fae_guardians )
   {
-    set_stack_change_callback(
-        [ this ]( buff_t*, int, int ) { void_eruption_cooldown->adjust_recharge_multiplier(); } );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1712,7 +1713,6 @@ void priest_t::init_spells()
   covenant.ascended_nova              = find_spell( 325020 );
   covenant.boon_of_the_ascended       = find_covenant_spell( "Boon of the Ascended" );
   covenant.fae_guardians              = find_covenant_spell( "Fae Guardians" );
-  covenant.benevolent_faerie          = find_spell( 327710 );
   covenant.mindgames                  = find_covenant_spell( "Mindgames" );
   covenant.mindgames_healing_reversal = find_spell( 323707 );
   covenant.mindgames_damage_reversal  = find_spell( 323706 );
@@ -2089,6 +2089,45 @@ buffs::dispersion_t::dispersion_t( priest_t& p )
   : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) ),
     rank2( p.find_specialization_spell( 322108, PRIEST_SHADOW ) )
 {
+}
+
+buffs::benevolent_faerie_t::benevolent_faerie_t( player_t* p )
+  : buff_t( p, "benevolent_faerie", p->find_spell( 327710 ) ), affected_actions_initialized( false )
+{
+  set_default_value_from_effect( 1 );
+
+  set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+    if ( !affected_actions_initialized )
+    {
+      int label = data().effectN( 1 ).misc_value1();
+      affected_actions.clear();
+      for ( auto a : player->action_list )
+      {
+        if ( a->data().affected_by_label( label ) )
+        {
+          if ( range::find( affected_actions, a ) == affected_actions.end() )
+          {
+            affected_actions.push_back( a );
+          }
+        }
+      }
+
+      affected_actions_initialized = true;
+    }
+
+    double recharge_rate_multiplier = 1.0 / ( 1 + b->default_value );
+    for ( auto a : affected_actions )
+    {
+      if ( new_ == 1 )
+        a->base_recharge_rate_multiplier *= recharge_rate_multiplier;
+      else
+        a->base_recharge_rate_multiplier /= recharge_rate_multiplier;
+      if ( a->cooldown->action == a )
+        a->cooldown->adjust_recharge_multiplier();
+      if ( a->internal_cooldown->action == a )
+        a->internal_cooldown->adjust_recharge_multiplier();
+    }
+  } );
 }
 
 }  // namespace priestspace

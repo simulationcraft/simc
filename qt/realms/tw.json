@@ -1,0 +1,454 @@
+{
+  "realms": [
+    {
+      "name": "世界之樹",
+      "slug": "world-tree",
+      "names": {
+        "en_US": "World Tree",
+        "es_MX": "World Tree",
+        "pt_BR": "World Tree",
+        "de_DE": "World Tree",
+        "en_GB": "World Tree",
+        "es_ES": "World Tree",
+        "fr_FR": "World Tree",
+        "it_IT": "World Tree",
+        "ru_RU": "World Tree",
+        "ko_KR": "World Tree",
+        "zh_TW": "世界之樹",
+        "zh_CN": "世界之树"
+      }
+    },
+    {
+      "name": "亞雷戈斯",
+      "slug": "arygos",
+      "names": {
+        "en_US": "Arygos",
+        "es_MX": "Arygos",
+        "pt_BR": "Arygos",
+        "de_DE": "Arygos",
+        "en_GB": "Arygos",
+        "es_ES": "Arygos",
+        "fr_FR": "Arygos",
+        "it_IT": "Arygos",
+        "ru_RU": "Arygos",
+        "ko_KR": "Arygos",
+        "zh_TW": "亞雷戈斯",
+        "zh_CN": "亚雷戈斯"
+      }
+    },
+    {
+      "name": "冰霜之刺",
+      "slug": "frostmane",
+      "names": {
+        "en_US": "Frostmane",
+        "es_MX": "Frostmane",
+        "pt_BR": "Frostmane",
+        "de_DE": "Frostmane",
+        "en_GB": "Frostmane",
+        "es_ES": "Frostmane",
+        "fr_FR": "Frostmane",
+        "it_IT": "Frostmane",
+        "ru_RU": "Frostmane",
+        "ko_KR": "Frostmane",
+        "zh_TW": "冰霜之刺",
+        "zh_CN": "冰霜之刃"
+      }
+    },
+    {
+      "name": "冰風崗哨",
+      "slug": "chillwind-point",
+      "names": {
+        "en_US": "Chillwind Point",
+        "es_MX": "Chillwind Point",
+        "pt_BR": "Chillwind Point",
+        "de_DE": "Chillwind Point",
+        "en_GB": "Chillwind Point",
+        "es_ES": "Chillwind Point",
+        "fr_FR": "Chillwind Point",
+        "it_IT": "Chillwind Point",
+        "ru_RU": "Берег Промозглого Ветра",
+        "ko_KR": "Chillwind Point",
+        "zh_TW": "冰風崗哨",
+        "zh_CN": "冰风岗"
+      }
+    },
+    {
+      "name": "地獄吼",
+      "slug": "hellscream",
+      "names": {
+        "en_US": "Hellscream",
+        "es_MX": "Hellscream",
+        "pt_BR": "Hellscream",
+        "de_DE": "Hellscream",
+        "en_GB": "Hellscream",
+        "es_ES": "Hellscream",
+        "fr_FR": "Hellscream",
+        "it_IT": "Hellscream",
+        "ru_RU": "Hellscream",
+        "ko_KR": "Hellscream",
+        "zh_TW": "地獄吼",
+        "zh_CN": "地狱咆哮"
+      }
+    },
+    {
+      "name": "夜空之歌",
+      "slug": "nightsong",
+      "names": {
+        "en_US": "Nightsong",
+        "es_MX": "Nightsong",
+        "pt_BR": "Nightsong",
+        "de_DE": "Nightsong",
+        "en_GB": "Nightsong",
+        "es_ES": "Nightsong",
+        "fr_FR": "Nightsong",
+        "it_IT": "Nightsong",
+        "ru_RU": "Nightsong",
+        "ko_KR": "Nightsong",
+        "zh_TW": "夜空之歌",
+        "zh_CN": "夜空之歌"
+      }
+    },
+    {
+      "name": "天空之牆",
+      "slug": "skywall",
+      "names": {
+        "en_US": "Skywall",
+        "es_MX": "Skywall",
+        "pt_BR": "Skywall",
+        "de_DE": "Skywall",
+        "en_GB": "Skywall",
+        "es_ES": "Skywall",
+        "fr_FR": "Skywall",
+        "it_IT": "Skywall",
+        "ru_RU": "Skywall",
+        "ko_KR": "Skywall",
+        "zh_TW": "天空之牆",
+        "zh_CN": "天空之墙"
+      }
+    },
+    {
+      "name": "寒冰皇冠",
+      "slug": "icecrown",
+      "names": {
+        "en_US": "Icecrown",
+        "es_MX": "Icecrown",
+        "pt_BR": "Icecrown",
+        "de_DE": "Icecrown",
+        "en_GB": "Icecrown",
+        "es_ES": "Icecrown",
+        "fr_FR": "Icecrown",
+        "it_IT": "Icecrown",
+        "ru_RU": "Icecrown",
+        "ko_KR": "Icecrown",
+        "zh_TW": "寒冰皇冠",
+        "zh_CN": "寒冰皇冠"
+      }
+    },
+    {
+      "name": "尖石",
+      "slug": "spirestone",
+      "names": {
+        "en_US": "Spirestone",
+        "es_MX": "Spirestone",
+        "pt_BR": "Spirestone",
+        "de_DE": "Spirestone",
+        "en_GB": "Spirestone",
+        "es_ES": "Spirestone",
+        "fr_FR": "Spirestone",
+        "it_IT": "Spirestone",
+        "ru_RU": "Spirestone",
+        "ko_KR": "Spirestone",
+        "zh_TW": "尖石",
+        "zh_CN": "岩石巨塔"
+      }
+    },
+    {
+      "name": "屠魔山谷",
+      "slug": "demon-fall-canyon",
+      "names": {
+        "en_US": "Demon Fall Canyon",
+        "es_MX": "Demon Fall Canyon",
+        "pt_BR": "Demon Fall Canyon",
+        "de_DE": "Demon Fall Canyon",
+        "en_GB": "Demon Fall Canyon",
+        "es_ES": "Demon Fall Canyon",
+        "fr_FR": "Demon Fall Canyon",
+        "it_IT": "Demon Fall Canyon",
+        "ru_RU": "Demon Fall Canyon",
+        "ko_KR": "Demon Fall Canyon",
+        "zh_TW": "屠魔山谷",
+        "zh_CN": "屠魔山谷"
+      }
+    },
+    {
+      "name": "巨龍之喉",
+      "slug": "dragonmaw",
+      "names": {
+        "en_US": "Dragonmaw",
+        "es_MX": "Dragonmaw",
+        "pt_BR": "Dragonmaw",
+        "de_DE": "Dragonmaw",
+        "en_GB": "Dragonmaw",
+        "es_ES": "Dragonmaw",
+        "fr_FR": "Dragonmaw",
+        "it_IT": "Dragonmaw",
+        "ru_RU": "Dragonmaw",
+        "ko_KR": "Dragonmaw",
+        "zh_TW": "巨龍之喉",
+        "zh_CN": "巨龙之吼"
+      }
+    },
+    {
+      "name": "憤怒使者",
+      "slug": "wrathbringer",
+      "names": {
+        "en_US": "Wrathbringer",
+        "es_MX": "Wrathbringer",
+        "pt_BR": "Wrathbringer",
+        "de_DE": "Wrathbringer",
+        "en_GB": "Wrathbringer",
+        "es_ES": "Wrathbringer",
+        "fr_FR": "Wrathbringer",
+        "it_IT": "Wrathbringer",
+        "ru_RU": "Wrathbringer",
+        "ko_KR": "Wrathbringer",
+        "zh_TW": "憤怒使者",
+        "zh_CN": "天罚使者"
+      }
+    },
+    {
+      "name": "日落沼澤",
+      "slug": "sundown-marsh",
+      "names": {
+        "en_US": "Sundown Marsh",
+        "es_MX": "Sundown Marsh",
+        "pt_BR": "Sundown Marsh",
+        "de_DE": "Sundown Marsh",
+        "en_GB": "Sundown Marsh",
+        "es_ES": "Sundown Marsh",
+        "fr_FR": "Sundown Marsh",
+        "it_IT": "Sundown Marsh",
+        "ru_RU": "Sundown Marsh",
+        "ko_KR": "Sundown Marsh",
+        "zh_TW": "日落沼澤",
+        "zh_CN": "日落沼泽"
+      }
+    },
+    {
+      "name": "暗影之月",
+      "slug": "shadowmoon",
+      "names": {
+        "en_US": "Shadowmoon",
+        "es_MX": "Shadowmoon",
+        "pt_BR": "Shadowmoon",
+        "de_DE": "Shadowmoon",
+        "en_GB": "Shadowmoon",
+        "es_ES": "Shadowmoon",
+        "fr_FR": "Shadowmoon",
+        "it_IT": "Shadowmoon",
+        "ru_RU": "Shadowmoon",
+        "ko_KR": "Shadowmoon",
+        "zh_TW": "暗影之月",
+        "zh_CN": "暗影之月"
+      }
+    },
+    {
+      "name": "水晶之刺",
+      "slug": "crystalpine-stinger",
+      "names": {
+        "en_US": "Crystalpine Stinger",
+        "es_MX": "Crystalpine Stinger",
+        "pt_BR": "Crystalpine Stinger",
+        "de_DE": "Crystalpine Stinger",
+        "en_GB": "Crystalpine Stinger",
+        "es_ES": "Crystalpine Stinger",
+        "fr_FR": "Crystalpine Stinger",
+        "it_IT": "Crystalpine Stinger",
+        "ru_RU": "Crystalpine Stinger",
+        "ko_KR": "Crystalpine Stinger",
+        "zh_TW": "水晶之刺",
+        "zh_CN": "水晶之刺"
+      }
+    },
+    {
+      "name": "狂熱之刃",
+      "slug": "zealot-blade",
+      "names": {
+        "en_US": "Zealot Blade",
+        "es_MX": "Zealot Blade",
+        "pt_BR": "Zealot Blade",
+        "de_DE": "Zealot Blade",
+        "en_GB": "Zealot Blade",
+        "es_ES": "Zealot Blade",
+        "fr_FR": "Zealot Blade",
+        "it_IT": "Zealot Blade",
+        "ru_RU": "Zealot Blade",
+        "ko_KR": "Zealot Blade",
+        "zh_TW": "狂熱之刃",
+        "zh_CN": "狂热之刃"
+      }
+    },
+    {
+      "name": "眾星之子",
+      "slug": "queldorei",
+      "names": {
+        "en_US": "Quel'dorei",
+        "es_MX": "Quel'dorei",
+        "pt_BR": "Quel'dorei",
+        "de_DE": "Quel'dorei",
+        "en_GB": "Quel'dorei",
+        "es_ES": "Quel'dorei",
+        "fr_FR": "Quel'dorei",
+        "it_IT": "Quel'dorei",
+        "ru_RU": "Quel'dorei",
+        "ko_KR": "Quel'dorei",
+        "zh_TW": "眾星之子",
+        "zh_CN": "奎尔多雷"
+      }
+    },
+    {
+      "name": "米奈希爾",
+      "slug": "menethil",
+      "names": {
+        "en_US": "Menethil",
+        "es_MX": "Menethil",
+        "pt_BR": "Menethil",
+        "de_DE": "Menethil",
+        "en_GB": "Menethil",
+        "es_ES": "Menethil",
+        "fr_FR": "Menethil",
+        "it_IT": "Menethil",
+        "ru_RU": "Menethil",
+        "ko_KR": "Menethil",
+        "zh_TW": "米奈希爾",
+        "zh_CN": "米奈希尔"
+      }
+    },
+    {
+      "name": "聖光之願",
+      "slug": "lights-hope",
+      "names": {
+        "en_US": "Light's Hope",
+        "es_MX": "Light's Hope",
+        "pt_BR": "Light's Hope",
+        "de_DE": "Light's Hope",
+        "en_GB": "Light's Hope",
+        "es_ES": "Light's Hope",
+        "fr_FR": "Light's Hope",
+        "it_IT": "Light's Hope",
+        "ru_RU": "Light's Hope",
+        "ko_KR": "Light's Hope",
+        "zh_TW": "聖光之願",
+        "zh_CN": "圣光之愿"
+      }
+    },
+    {
+      "name": "血之谷",
+      "slug": "bleeding-hollow",
+      "names": {
+        "en_US": "Bleeding Hollow",
+        "es_MX": "Bleeding Hollow",
+        "pt_BR": "Bleeding Hollow",
+        "de_DE": "Bleeding Hollow",
+        "en_GB": "Bleeding Hollow",
+        "es_ES": "Bleeding Hollow",
+        "fr_FR": "Bleeding Hollow",
+        "it_IT": "Bleeding Hollow",
+        "ru_RU": "Bleeding Hollow",
+        "ko_KR": "Bleeding Hollow",
+        "zh_TW": "血之谷",
+        "zh_CN": "血环"
+      }
+    },
+    {
+      "name": "語風",
+      "slug": "whisperwind",
+      "names": {
+        "en_US": "Whisperwind",
+        "es_MX": "Whisperwind",
+        "pt_BR": "Whisperwind",
+        "de_DE": "Whisperwind",
+        "en_GB": "Whisperwind",
+        "es_ES": "Whisperwind",
+        "fr_FR": "Whisperwind",
+        "it_IT": "Whisperwind",
+        "ru_RU": "Whisperwind",
+        "ko_KR": "Whisperwind",
+        "zh_TW": "語風",
+        "zh_CN": "轻风之语"
+      }
+    },
+    {
+      "name": "銀翼要塞",
+      "slug": "silverwing-hold",
+      "names": {
+        "en_US": "Silverwing Hold",
+        "es_MX": "Silverwing Hold",
+        "pt_BR": "Silverwing Hold",
+        "de_DE": "Silverwing Hold",
+        "en_GB": "Silverwing Hold",
+        "es_ES": "Silverwing Hold",
+        "fr_FR": "Silverwing Hold",
+        "it_IT": "Silverwing Hold",
+        "ru_RU": "Silverwing Hold",
+        "ko_KR": "Silverwing Hold",
+        "zh_TW": "銀翼要塞",
+        "zh_CN": "银翼要塞"
+      }
+    },
+    {
+      "name": "阿薩斯",
+      "slug": "arthas",
+      "names": {
+        "en_US": "Arthas",
+        "es_MX": "Arthas",
+        "pt_BR": "Arthas",
+        "de_DE": "Arthas",
+        "en_GB": "Arthas",
+        "es_ES": "Arthas",
+        "fr_FR": "Arthas",
+        "it_IT": "Arthas",
+        "ru_RU": "Arthas",
+        "ko_KR": "Arthas",
+        "zh_TW": "阿薩斯",
+        "zh_CN": "阿尔萨斯"
+      }
+    },
+    {
+      "name": "雲蛟衛",
+      "slug": "order-of-the-cloud-serpent",
+      "names": {
+        "en_US": "Order of the Cloud Serpent",
+        "es_MX": "Order of the Cloud Serpent",
+        "pt_BR": "Order of the Cloud Serpent",
+        "de_DE": "Order of the Cloud Serpent",
+        "en_GB": "Order of the Cloud Serpent",
+        "es_ES": "Order of the Cloud Serpent",
+        "fr_FR": "Order of the Cloud Serpent",
+        "it_IT": "Order of the Cloud Serpent",
+        "ru_RU": "Order of the Cloud Serpent",
+        "ko_KR": "Order of the Cloud Serpent",
+        "zh_TW": "雲蛟衛",
+        "zh_CN": "云端翔龙骑士团"
+      }
+    },
+    {
+      "name": "雷鱗",
+      "slug": "stormscale",
+      "names": {
+        "en_US": "Stormscale",
+        "es_MX": "Stormscale",
+        "pt_BR": "Stormscale",
+        "de_DE": "Stormscale",
+        "en_GB": "Stormscale",
+        "es_ES": "Stormscale",
+        "fr_FR": "Stormscale",
+        "it_IT": "Stormscale",
+        "ru_RU": "Stormscale",
+        "ko_KR": "Stormscale",
+        "zh_TW": "雷鱗",
+        "zh_CN": "风暴之鳞"
+      }
+    }
+  ]
+}
