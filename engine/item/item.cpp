@@ -1468,18 +1468,14 @@ void item_t::decode_armor_type()
 
 void item_t::decode_ilevel()
 {
-  if ( ! option_ilevel_str.empty() )
+  if ( !option_ilevel_str.empty() )
   {
     parsed.item_level = util::to_int( option_ilevel_str );
-    if ( parsed.item_level == 0 )
-    {
-      throw std::invalid_argument("Parsed item level is zero.");
-    }
 
-    if ( parsed.item_level > MAX_ILEVEL )
+    if ( parsed.item_level < 1 || parsed.item_level > MAX_ILEVEL )
     {
-      throw std::invalid_argument(fmt::format("Too high item level {}, maximum level supported is {}.",
-          parsed.item_level, MAX_ILEVEL));
+      throw std::invalid_argument(
+          fmt::format( "Invalid item level {}, item level must be between 1 and {}.", parsed.item_level, MAX_ILEVEL ) );
     }
   }
 }
