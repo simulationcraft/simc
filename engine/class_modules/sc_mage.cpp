@@ -1235,7 +1235,8 @@ struct mirrors_of_torment_t final : public buff_t
     switch ( p->specialization() )
     {
       case MAGE_ARCANE:
-        mana_pct = p->find_spell( 345417 )->effectN( 1 ).percent();
+        if ( !p->dbc->ptr )
+          mana_pct = p->find_spell( 345417 )->effectN( 1 ).percent();
         break;
       case MAGE_FIRE:
         reduction = -1000 * data().effectN( 2 ).time_value();
@@ -1270,7 +1271,10 @@ struct mirrors_of_torment_t final : public buff_t
       switch ( p->specialization() )
       {
         case MAGE_ARCANE:
-          p->resource_gain( RESOURCE_MANA, p->resources.max[ RESOURCE_MANA ] * mana_pct, p->gains.mirrors_of_torment );
+          if ( p->dbc->ptr )
+            p->trigger_delayed_buff( p->buffs.clearcasting, 1.0, 0_ms );
+          else
+            p->resource_gain( RESOURCE_MANA, p->resources.max[ RESOURCE_MANA ] * mana_pct, p->gains.mirrors_of_torment );
           break;
         case MAGE_FIRE:
           p->cooldowns.fire_blast->adjust( reduction );
