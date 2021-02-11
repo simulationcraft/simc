@@ -4628,10 +4628,10 @@ void player_t::combat_begin()
 
   add_timed_buff_triggers( external_buffs.power_infusion, buffs.power_infusion );
   add_timed_buff_triggers( external_buffs.benevolent_faerie, buffs.benevolent_faerie );
-  add_timed_buff_triggers( external_buffs.blessing_of_summer, buffs.blessing_of_summer); // TODO: Add a way to specify different durations (The Long Summer conduit).
-  add_timed_buff_triggers( external_buffs.blessing_of_autumn, buffs.blessing_of_autumn);
-  add_timed_buff_triggers( external_buffs.blessing_of_winter, buffs.blessing_of_winter);
-  add_timed_buff_triggers( external_buffs.blessing_of_spring, buffs.blessing_of_spring);
+  add_timed_buff_triggers( external_buffs.blessing_of_summer, buffs.blessing_of_summer ); // TODO: Add a way to specify different durations (The Long Summer conduit).
+  add_timed_buff_triggers( external_buffs.blessing_of_autumn, buffs.blessing_of_autumn );
+  add_timed_buff_triggers( external_buffs.blessing_of_winter, buffs.blessing_of_winter );
+  add_timed_buff_triggers( external_buffs.blessing_of_spring, buffs.blessing_of_spring );
 
   if ( buffs.windfury_totem )
   {
@@ -11212,10 +11212,10 @@ void player_t::create_options()
 
   add_option( opt_external_buff_times( "external_buffs.power_infusion", external_buffs.power_infusion ) );
   add_option( opt_external_buff_times( "external_buffs.benevolent_faerie", external_buffs.benevolent_faerie ) );
-  add_option( opt_external_buff_times( "external_buffs.blessing_of_summer", external_buffs.blessing_of_summer) );
-  add_option( opt_external_buff_times( "external_buffs.blessing_of_autumn", external_buffs.blessing_of_autumn) );
-  add_option( opt_external_buff_times( "external_buffs.blessing_of_winter", external_buffs.blessing_of_winter) );
-  add_option( opt_external_buff_times( "external_buffs.blessing_of_spring", external_buffs.blessing_of_spring) );
+  add_option( opt_external_buff_times( "external_buffs.blessing_of_summer", external_buffs.blessing_of_summer ) );
+  add_option( opt_external_buff_times( "external_buffs.blessing_of_autumn", external_buffs.blessing_of_autumn ) );
+  add_option( opt_external_buff_times( "external_buffs.blessing_of_winter", external_buffs.blessing_of_winter ) );
+  add_option( opt_external_buff_times( "external_buffs.blessing_of_spring", external_buffs.blessing_of_spring ) );
 
   // Azerite options
   if ( ! is_enemy() && ! is_pet() )
