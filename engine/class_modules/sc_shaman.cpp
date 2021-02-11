@@ -3418,7 +3418,7 @@ struct stormstrike_base_t : public shaman_attack_t
 
     p()->buff.gathering_storms->decrement();
 
-    if ( p()->talent.elemental_assault->ok() )
+    if ( p()->talent.elemental_assault->ok() && !stormflurry )
     {
       p()->buff.maelstrom_weapon->trigger(
         p()->talent.elemental_assault->effectN( 2 ).base_value() );
