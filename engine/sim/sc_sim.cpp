@@ -2492,6 +2492,13 @@ void sim_t::init_actor( player_t* p )
     // First, create all the action objects and set up action lists properly
     p -> create_actions();
 
+    // More initilization of class modules. Needed to create shared actions provided by a class.
+    for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
+    {
+      const module_t* m = module_t::get( i );
+      if ( m ) m -> create_actions( p );
+    }
+
     // Create persistent actors from dynamic spawners
     spawner::create_persistent_actors( *p );
 

@@ -35,6 +35,9 @@ struct module_t
   virtual void register_hotfixes() const
   {
   }
+  virtual void create_actions( player_t* ) const
+  {
+  }
   virtual void combat_begin( sim_t* ) const = 0;
   virtual void combat_end( sim_t* ) const   = 0;
 
