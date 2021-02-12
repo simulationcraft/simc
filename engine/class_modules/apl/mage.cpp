@@ -422,7 +422,8 @@ void frost( player_t* p )
   precombat->add_action( "arcane_intellect" );
   precombat->add_action( "summon_water_elemental" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "frostbolt" );
+  precombat->add_action( "blizzard,if=active_enemies>=2" );
+  precombat->add_action( "frostbolt,if=active_enemies=1" );
 
   default_->add_action( "counterspell" );
   default_->add_action( "call_action_list,name=cds" );
