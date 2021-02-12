@@ -617,6 +617,9 @@ public:
     resource_regeneration = regen_type::DYNAMIC;
     regen_caches[ CACHE_HASTE ] = true;
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
+
+    if ( dbc -> ptr ) // XXX TODO 9.0.5
+      options.serpentstalkers_triggers_wild_spirits = false;
   }
 
   // Character Definition
