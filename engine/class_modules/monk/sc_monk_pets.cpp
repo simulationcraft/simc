@@ -1392,7 +1392,7 @@ private:
 
     void impact( action_state_t* s ) override
     {
-      o()->trigger_empowered_tiger_lightning( s );
+      //o()->trigger_empowered_tiger_lightning( s );
 
       pet_melee_t::impact( s );
     }
@@ -1516,7 +1516,7 @@ public:
 
     void impact( action_state_t* s ) override
     {
-      o()->trigger_empowered_tiger_lightning( s );
+      //o()->trigger_empowered_tiger_lightning( s );
 
       pet_melee_attack_t::impact( s );
     }
@@ -1573,7 +1573,7 @@ public:
 
     void impact( action_state_t* s ) override
     {
-      o()->trigger_empowered_tiger_lightning( s );
+      //o()->trigger_empowered_tiger_lightning( s );
 
       pet_melee_attack_t::impact( s );
     }
@@ -1619,7 +1619,7 @@ private:
 
     void impact( action_state_t* s ) override
     {
-      o()->trigger_empowered_tiger_lightning( s );
+      //o()->trigger_empowered_tiger_lightning( s );
 
       pet_melee_t::impact( s );
     }
@@ -1734,7 +1734,7 @@ public:
 
     void impact( action_state_t* s ) override
     {
-      o()->trigger_empowered_tiger_lightning( s );
+      //o()->trigger_empowered_tiger_lightning( s );
 
       pet_melee_attack_t::impact( s );
 
@@ -1767,7 +1767,7 @@ public:
 
       void impact( action_state_t* s ) override
       {
-        o()->trigger_empowered_tiger_lightning( s );
+        //o()->trigger_empowered_tiger_lightning( s );
 
         pet_spell_t::impact( s );
       }
