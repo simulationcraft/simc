@@ -437,7 +437,7 @@ void frost( player_t* p )
   aoe->add_action( "ice_nova" );
   aoe->add_action( "comet_storm" );
   aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>travel_time|remaining_winters_chill&debuff.winters_chill.remains>travel_time" );
-  aoe->add_action( "radiant_spark" );
+  aoe->add_action( "radiant_spark,if=soulbind.combat_meditation" );
   aoe->add_action( "mirrors_of_torment" );
   aoe->add_action( "shifting_power" );
   aoe->add_action( "fire_blast,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down" );
