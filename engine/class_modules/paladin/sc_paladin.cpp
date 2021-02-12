@@ -1279,7 +1279,6 @@ struct ashen_hallow_t : public paladin_spell_t
 
 
 // Blessing of Seasons
-// For now, this just casts on the player itself. TODO: make this an option
 
 struct blessing_of_summer_proc_t : public spell_t
 {
@@ -2281,7 +2280,7 @@ void paladin_t::init_spells()
   covenant.kyrian = find_covenant_spell( "Divine Toll" );
   covenant.venthyr = find_covenant_spell( "Ashen Hallow" );
   covenant.necrolord = find_covenant_spell( "Vanquisher's Hammer" );
-  covenant.night_fae = find_covenant_spell( "Blessing of Summer" ); // TODO: fix
+  covenant.night_fae = find_covenant_spell( "Blessing of Summer" );
 
   spells.ashen_hallow_how = find_spell( 330382 );
 
@@ -2292,7 +2291,7 @@ void paladin_t::init_spells()
   conduit.focused_light = find_conduit_spell( "Focused Light" );
   conduit.expurgation = find_conduit_spell( "Expurgation" );
   conduit.templars_vindication = find_conduit_spell( "Templar's Vindication" );
-  conduit.the_long_summer = find_conduit_spell( "The Long Summer" ); // TODO: implement
+  conduit.the_long_summer = find_conduit_spell( "The Long Summer" );
   conduit.truths_wake = find_conduit_spell( "Truth's Wake" );
   conduit.virtuous_command = find_conduit_spell( "Virtuous Command" );
   conduit.righteous_might = find_conduit_spell( "Righteous Might" );
@@ -3284,46 +3283,50 @@ struct paladin_module_t : public module_t
     // Only create these if the player is a Night Fae Paladin or sets the option to get the buff.
     // If the Paladin action is ever updated to allow manually casting it on other players, this
     // will need to be adjusted to also work if there is a Night Fae Paladin in the raid.
-    if ( p -> type == PALADIN && debug_cast<paladin_t*>( p ) -> covenant.night_fae -> ok() || ! p -> external_buffs.blessing_of_summer.empty() )
+    if ( p -> type == PALADIN && p -> covenant && p -> covenant -> type() == covenant_e::NIGHT_FAE || ! p -> external_buffs.blessing_of_summer.empty() )
     {
-      action_t* summer_damage = new blessing_of_summer_proc_t( p );
+      action_t* summer_proc = new blessing_of_summer_proc_t( p );
       const spell_data_t* summer_data = p -> find_spell( 328620 );
 
       // This effect can proc on almost any damage, including many actions in simc that have callbacks = false.
       // Using an assessor here will cause this to have the chance to proc on damage from any action.
       // TODO: Ensure there is no incorrect looping that can happen with other similar effects.
-      p -> assessor_out_damage.add( assessor::CALLBACKS, [ p, summer_damage, summer_data ]( result_amount_type, action_state_t* s )
+      p -> assessor_out_damage.add( assessor::CALLBACKS, [ p, summer_proc, summer_data ]( result_amount_type, action_state_t* s )
                                 {
-                                  if ( s -> action != summer_damage
+                                  if ( s -> action != summer_proc
                                     && s -> result_total > 0.0
                                     && p -> buffs.blessing_of_summer -> up()
                                     && summer_data -> proc_flags() & ( 1 << s -> proc_type() )
                                     && p -> rng().roll( summer_data -> proc_chance() ) )
                                   {
-                                    summer_damage -> set_target ( s -> target );
-                                    summer_damage -> base_dd_min = summer_damage -> base_dd_max = s -> result_amount * summer_data -> effectN( 1 ).percent();
-                                    summer_damage -> execute();
+                                    double da = s -> result_amount * summer_data -> effectN( 1 ).percent();
+                                    make_event( p -> sim, [ t = s -> target, summer_proc, da ]
+                                    {
+                                      summer_proc -> set_target( t );
+                                      summer_proc -> base_dd_min = summer_proc -> base_dd_max = da;
+                                      summer_proc -> execute();
+                                    } );
                                   }
 
                                   return assessor::CONTINUE;
                                 } );
     }
 
-    if ( p -> type == PALADIN && debug_cast<paladin_t*>( p ) -> covenant.night_fae -> ok() || ! p -> external_buffs.blessing_of_winter.empty() )
+    if ( p -> type == PALADIN && p -> covenant && p -> covenant -> type() == covenant_e::NIGHT_FAE || ! p -> external_buffs.blessing_of_winter.empty() )
     {
-      action_t* winter_damage;
+      action_t* winter_proc;
       if ( p -> type == PALADIN )
         // Some Paladin auras affect this spell and are handled in paladin_spell_t.
-        winter_damage = new blessing_of_winter_proc_t<paladin_spell_t, paladin_t>( debug_cast<paladin_t*>( p ) );
+        winter_proc = new blessing_of_winter_proc_t<paladin_spell_t, paladin_t>( debug_cast<paladin_t*>( p ) );
       else
-        winter_damage = new blessing_of_winter_proc_t<spell_t, player_t>( p );
+        winter_proc = new blessing_of_winter_proc_t<spell_t, player_t>( p );
 
       auto winter_effect              = new special_effect_t( p );
       winter_effect -> name_str       = "blessing_of_winter_cb";
       winter_effect -> type           = SPECIAL_EFFECT_EQUIP;
       winter_effect -> spell_id       = 328281;
       winter_effect -> cooldown_      = p -> find_spell( 328281 ) -> internal_cooldown();
-      winter_effect -> execute_action = winter_damage;
+      winter_effect -> execute_action = winter_proc;
       p -> special_effects.push_back( winter_effect );
 
       auto winter_cb = new dbc_proc_callback_t( p, *winter_effect );
