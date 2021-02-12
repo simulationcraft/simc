@@ -31,6 +31,8 @@ actions.precombat+=/snapshot_stats
 
 # Executed every time the actor is available.
 actions=auto_attack
+# Interrupt
+actions+=/mind_freeze,if=target.debuff.casting.react
 actions+=/blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)
 actions+=/berserking
 actions+=/arcane_pulse,if=active_enemies>=2|rune<1&runic_power.deficit>60

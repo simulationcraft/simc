@@ -5,7 +5,7 @@ level=60
 race=blood_elf
 role=attack
 position=back
-talents=3102013
+talents=3101013
 covenant=kyrian
 soulbind=pelagos,combat_meditation/accelerated_cold:7/everfrost:7
 
@@ -31,6 +31,10 @@ actions.precombat+=/snapshot_stats
 
 # Executed every time the actor is available.
 actions=auto_attack
+# Apply Frost Fever, maintain Icy Talons and keep Remorseless Winter rolling
+actions+=/remorseless_winter,if=conduit.everfrost&talent.gathering_storm&!talent.obliteration&cooldown.pillar_of_frost.remains
+# Interrupt
+actions+=/mind_freeze,if=target.debuff.casting.react
 # Apply Frost Fever and maintain Icy Talons
 actions+=/howling_blast,if=!dot.frost_fever.ticking&(talent.icecap|cooldown.breath_of_sindragosa.remains>15|talent.obliteration&cooldown.pillar_of_frost.remains&!buff.killing_machine.up)
 actions+=/glacial_advance,if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&spell_targets.glacial_advance>=2&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>15)
@@ -75,14 +79,14 @@ actions.bos_pooling+=/glacial_advance,if=cooldown.pillar_of_frost.remains>rune.t
 actions.bos_pooling+=/frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40
 
 # Breath of Sindragosa Active Rotation
-actions.bos_ticking=obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>=60
-actions.bos_ticking+=/remorseless_winter,if=talent.gathering_storm|conduit.everfrost|runeforge.biting_cold|active_enemies>=2
-actions.bos_ticking+=/howling_blast,if=buff.rime.up&(runic_power.deficit<55|rune.time_to_3<=gcd|spell_targets.howling_blast>=2)
-actions.bos_ticking+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=rune.time_to_4<gcd|runic_power.deficit>=45
+actions.bos_ticking=obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>=(45+talent.runic_attenuation*3)
+actions.bos_ticking+=/remorseless_winter,if=talent.gathering_storm|conduit.everfrost|runeforge.biting_cold|active_enemies>=2|!talent.gathering_storm&!conduit.everfrost&!runeforge.biting_cold&runic_power<32
+actions.bos_ticking+=/death_and_decay,if=runic_power<32
+actions.bos_ticking+=/howling_blast,if=buff.rime.up&(runic_power.deficit<55|rune.time_to_3<=gcd|spell_targets.howling_blast>=2)|runic_power<32
 actions.bos_ticking+=/frostscythe,if=buff.killing_machine.up&spell_targets.frostscythe>=2&(!death_and_decay.ticking&covenant.night_fae|!covenant.night_fae)
 actions.bos_ticking+=/horn_of_winter,if=runic_power.deficit>=40&rune.time_to_3>gcd
 actions.bos_ticking+=/frostscythe,if=spell_targets.frostscythe>=2&(buff.deaths_due.stack=8|!death_and_decay.ticking|!covenant.night_fae)
-actions.bos_ticking+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>25&rune>3
+actions.bos_ticking+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>25|rune.time_to_3<gcd
 actions.bos_ticking+=/howling_blast,if=buff.rime.up
 actions.bos_ticking+=/arcane_torrent,if=runic_power.deficit>50
 
@@ -97,9 +101,9 @@ actions.cold_heart+=/chains_of_ice,if=!talent.obliteration&!death_knight.runefor
 actions.cold_heart+=/chains_of_ice,if=talent.obliteration&!buff.pillar_of_frost.up&(buff.cold_heart.stack>=16&buff.unholy_strength.up|buff.cold_heart.stack>=19|cooldown.pillar_of_frost.remains<3&buff.cold_heart.stack>=14)
 
 # On Use Items, Potion and Racials
-actions.cooldowns=use_items,if=cooldown.pillar_of_frost.ready|cooldown.pillar_of_frost.remains>20
-actions.cooldowns+=/potion,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up
-actions.cooldowns+=/blood_fury,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up
+actions.cooldowns=use_items,if=buff.pillar_of_frost.up|cooldown.pillar_of_frost.remains>20
+actions.cooldowns+=/potion,if=buff.pillar_of_frost.up
+actions.cooldowns+=/blood_fury,if=buff.pillar_of_frost.up
 actions.cooldowns+=/berserking,if=buff.pillar_of_frost.up
 actions.cooldowns+=/arcane_pulse,if=(!buff.pillar_of_frost.up&active_enemies>=2)|!buff.pillar_of_frost.up&(rune.deficit>=5&runic_power.deficit>=60)
 actions.cooldowns+=/lights_judgment,if=buff.pillar_of_frost.up
@@ -108,9 +112,9 @@ actions.cooldowns+=/fireblood,if=buff.pillar_of_frost.remains<=8&buff.empower_ru
 actions.cooldowns+=/bag_of_tricks,if=buff.pillar_of_frost.up&active_enemies=1&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)
 # Cooldowns
 actions.cooldowns+=/empower_rune_weapon,if=talent.obliteration&(cooldown.pillar_of_frost.ready&rune.time_to_5>gcd&runic_power.deficit>=10|buff.pillar_of_frost.up&rune.time_to_5>gcd)|fight_remains<20
-actions.cooldowns+=/empower_rune_weapon,if=talent.breath_of_sindragosa&runic_power.deficit>40&rune.time_to_5>gcd&(buff.breath_of_sindragosa.up|fight_remains<20)
+actions.cooldowns+=/empower_rune_weapon,if=talent.breath_of_sindragosa&runic_power.deficit>30&rune.time_to_5>gcd&(buff.breath_of_sindragosa.up|fight_remains<20)
 actions.cooldowns+=/empower_rune_weapon,if=talent.icecap&rune<3
-actions.cooldowns+=/pillar_of_frost,if=talent.breath_of_sindragosa&(cooldown.breath_of_sindragosa.remains|cooldown.breath_of_sindragosa.ready&runic_power.deficit<60)
+actions.cooldowns+=/pillar_of_frost,if=talent.breath_of_sindragosa&(cooldown.breath_of_sindragosa.remains|cooldown.breath_of_sindragosa.ready&runic_power.deficit<50)
 actions.cooldowns+=/pillar_of_frost,if=talent.icecap&!buff.pillar_of_frost.up
 actions.cooldowns+=/pillar_of_frost,if=talent.obliteration&(talent.gathering_storm.enabled&buff.remorseless_winter.up|!talent.gathering_storm.enabled)
 actions.cooldowns+=/breath_of_sindragosa,if=buff.pillar_of_frost.up
@@ -127,7 +131,7 @@ actions.covenants=deaths_due,if=raid_event.adds.in>15|!raid_event.adds.exists|ac
 actions.covenants+=/swarming_mist,if=active_enemies=1&runic_power.deficit>3&cooldown.pillar_of_frost.remains<3&!talent.breath_of_sindragosa&(!raid_event.adds.exists|raid_event.adds.in>15)
 actions.covenants+=/swarming_mist,if=active_enemies>=2&!talent.breath_of_sindragosa
 actions.covenants+=/swarming_mist,if=talent.breath_of_sindragosa&(buff.breath_of_sindragosa.up&(active_enemies=1&runic_power.deficit>40|active_enemies>=2&runic_power.deficit>60)|!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains)
-actions.covenants+=/abomination_limb,if=active_enemies=1&cooldown.pillar_of_frost.remains<3&(!raid_event.adds.exists|raid_event.adds.in>15)
+actions.covenants+=/abomination_limb,if=active_enemies=1&cooldown.pillar_of_frost.remains<3&(!raid_event.adds.exists|raid_event.adds.in>15)&(talent.breath_of_sindragosa&runic_power.deficit<60&cooldown.breath_of_sindragosa.remains<2|!talent.breath_of_sindragosa)
 actions.covenants+=/abomination_limb,if=active_enemies>=2
 actions.covenants+=/shackle_the_unworthy,if=active_enemies=1&cooldown.pillar_of_frost.remains<3&(!raid_event.adds.exists|raid_event.adds.in>15)
 actions.covenants+=/shackle_the_unworthy,if=active_enemies>=2

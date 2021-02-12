@@ -32,6 +32,8 @@ actions.precombat+=/raise_dead
 
 # Executed every time the actor is available.
 actions=auto_attack
+# Interrupt
+actions+=/mind_freeze,if=target.debuff.casting.react
 # Variables
 actions+=/variable,name=pooling_runic_power,value=cooldown.summon_gargoyle.remains<5&talent.summon_gargoyle
 actions+=/variable,name=pooling_runes,value=talent.soul_reaper&rune<2&target.time_to_pct_35<5&fight_remains>5

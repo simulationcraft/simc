@@ -10,11 +10,11 @@ covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/ashen_juggernaut:4
 
 # Default consumables
-potion=potion_of_phantom_fire
+potion=spectral_strength
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
-temporary_enchant=main_hand:shadowcore_oil/off_hand:shadowcore_oil
+temporary_enchant=main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -28,17 +28,20 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/recklessness,if=!runeforge.signet_of_tormented_kings.equipped
 
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/charge
+actions+=/variable,name=execute_phase,value=talent.massacre&target.health.pct<35|target.health.pct<20|target.health.pct>80&covenant.venthyr
 # This is mostly to prevent cooldowns from being accidentally used during movement.
 actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)
 actions+=/potion
 actions+=/pummel,if=target.debuff.casting.react
 actions+=/rampage,if=cooldown.recklessness.remains<3&talent.reckless_abandon.enabled
-actions+=/recklessness,if=gcd.remains=0&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)
+actions+=/recklessness,if=!runeforge.signet_of_tormented_kings.equipped&gcd.remains=0&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)
+actions+=/recklessness,use_off_gcd=1,if=runeforge.signet_of_tormented_kings.equipped&gcd.remains&prev_gcd.1.rampage&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)
 actions+=/whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up|raid_event.adds.in<gcd&!buff.meat_cleaver.up
 actions+=/blood_fury
 actions+=/berserking,if=buff.recklessness.up
@@ -52,14 +55,17 @@ actions.movement=heroic_leap
 
 actions.single_target=raging_blow,if=runeforge.will_of_the_berserker.equipped&buff.will_of_the_berserker.remains<gcd
 actions.single_target+=/crushing_blow,if=runeforge.will_of_the_berserker.equipped&buff.will_of_the_berserker.remains<gcd
+actions.single_target+=/bladestorm,if=buff.enrage.remains>gcd*2.5&spell_targets.whirlwind>1
+actions.single_target+=/condemn,if=buff.enrage.up&variable.execute_phase
 actions.single_target+=/siegebreaker,if=spell_targets.whirlwind>1|raid_event.adds.in>15
 actions.single_target+=/rampage,if=buff.recklessness.up|(buff.enrage.remains<gcd|rage>90)|buff.frenzy.remains<1.5
 actions.single_target+=/condemn
 actions.single_target+=/execute
-actions.single_target+=/bladestorm,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>45)
+actions.single_target+=/bladestorm,if=buff.enrage.up&spell_targets.whirlwind=1&raid_event.adds.in>45,interrupt_global=1,interrupt_if=spell_targets.whirlwind=1&gcd.remains=0&(rage>90|variable.execute_phase&!cooldown.condemn.remains)
 actions.single_target+=/bloodthirst,if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35&!talent.cruelty.enabled
 actions.single_target+=/bloodbath,if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35&!talent.cruelty.enabled
 actions.single_target+=/dragon_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)
+actions.single_target+=/whirlwind,if=buff.merciless_bonegrinder.up&spell_targets.whirlwind>3
 actions.single_target+=/onslaught
 actions.single_target+=/raging_blow,if=charges=2
 actions.single_target+=/crushing_blow,if=charges=2
@@ -90,6 +96,7 @@ off_hand=drustlords_greataxe,id=178713,bonus_id=6807/1498/6646,enchant=celestial
 # gear_ilvl=184.38
 # gear_strength=642
 # gear_stamina=944
+# gear_attack_power=40
 # gear_crit_rating=155
 # gear_haste_rating=862
 # gear_mastery_rating=330
