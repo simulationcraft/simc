@@ -588,6 +588,7 @@ public:
     // random testing stuff
     bool brutal_projectiles_on_execute = false;
     bool serpentstalkers_triggers_wild_spirits = true;
+    bool stomp_triggers_wild_spirits = true;
   } options;
 
   hunter_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
@@ -2073,7 +2074,7 @@ struct stomp_t : public hunter_pet_action_t<hunter_pet_t, attack_t>
     hunter_pet_action_t::impact( s );
 
     // Animal Companion can't proc Wild Spirits, but Dire Beast can
-    if ( player != o() -> pets.animal_companion )
+    if ( player != o() -> pets.animal_companion && o() -> options.stomp_triggers_wild_spirits )
       o() -> trigger_wild_spirits( s );
   }
 };
@@ -6472,6 +6473,7 @@ void hunter_t::create_options()
 
   add_option( opt_bool( "hunter.brutal_projectiles_on_execute", options.brutal_projectiles_on_execute ) );
   add_option( opt_bool( "hunter.serpenstalkers_triggers_wild_spirits", options.serpentstalkers_triggers_wild_spirits ) );
+  add_option( opt_bool( "hunter.stomp_triggers_wild_spirits", options.stomp_triggers_wild_spirits ) );
 
   add_option( opt_obsoleted( "hunter_fixed_time" ) );
   add_option( opt_obsoleted( "hunter.memory_of_lucid_dreams_proc_chance" ) );
@@ -6495,6 +6497,7 @@ std::string hunter_t::create_profile( save_e stype )
 
   print_option( &options_t::brutal_projectiles_on_execute, "hunter.brutal_projectiles_on_execute" );
   print_option( &options_t::serpentstalkers_triggers_wild_spirits, "hunter.serpenstalkers_triggers_wild_spirits" );
+  print_option( &options_t::stomp_triggers_wild_spirits, "hunter.stomp_triggers_wild_spirits" );
 
   return profile_str;
 }
