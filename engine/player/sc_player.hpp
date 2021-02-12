@@ -507,6 +507,10 @@ struct player_t : public actor_t
 
     // 9.0 class covenant buffs
     buff_t* benevolent_faerie; // Night Fae Priest spell
+    buff_t* blessing_of_summer; // Night Fae Paladin spell
+    buff_t* blessing_of_autumn; // Night Fae Paladin spell
+    buff_t* blessing_of_winter; // Night Fae Paladin spell
+    buff_t* blessing_of_spring; // Night Fae Paladin spell
 
     // 9.0 Soulbinds
     buff_t* wild_hunt_tactics;  // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
@@ -541,6 +545,10 @@ struct player_t : public actor_t
     bool focus_magic;
     std::vector<timespan_t> power_infusion;
     std::vector<timespan_t> benevolent_faerie;
+    std::vector<timespan_t> blessing_of_summer;
+    std::vector<timespan_t> blessing_of_autumn;
+    std::vector<timespan_t> blessing_of_winter;
+    std::vector<timespan_t> blessing_of_spring;
   } external_buffs;
 
   struct gains_t
