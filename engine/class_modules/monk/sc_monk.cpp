@@ -3878,7 +3878,7 @@ struct fallen_order_t : public monk_spell_t
         {
           if ( i % 2 )
             fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, primary_duration ) );
-          else if ( rng().roll( 0.75 ) )
+          else if ( rng().roll( 0.5 ) )
             fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, summon_duration ) );
           else
             fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, summon_duration ) );
@@ -3888,7 +3888,7 @@ struct fallen_order_t : public monk_spell_t
         {
           if ( i % 2 )
             fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, primary_duration ) );
-          else if ( rng().roll( 0.75 ) )
+          else if ( rng().roll( 0.5 ) )
             fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, summon_duration ) );
           else
             fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, summon_duration ) );
@@ -3898,7 +3898,7 @@ struct fallen_order_t : public monk_spell_t
         {
           if ( i % 2 )
             fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, primary_duration ) );
-          else if ( rng().roll( 0.75 ) )
+          else if ( rng().roll( 0.5 ) )
             fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, summon_duration ) );
           else
             fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, summon_duration ) );
