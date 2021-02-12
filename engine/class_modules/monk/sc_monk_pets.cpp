@@ -1240,6 +1240,9 @@ public:
   {
     double cpm = pet_t::composite_player_multiplier( school );
 
+    if ( o()->buff.hit_combo->up() )
+      cpm *= 1 + o()->buff.hit_combo->stack_value();
+
     cpm *= 1 + o()->spec.brewmaster_monk->effectN( 3 ).percent();
 
     return cpm;
@@ -1304,6 +1307,9 @@ public:
   double composite_player_multiplier( school_e school ) const override
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
+
+    if ( o()->buff.hit_combo->up() )
+      cpm *= 1 + o()->buff.hit_combo->stack_value();
 
     return cpm;
   }
@@ -1446,6 +1452,9 @@ public:
   double composite_player_multiplier( school_e school ) const override
   {
     double cpm = o()->cache.player_multiplier( school );
+
+    if ( o()->buff.hit_combo->up() )
+      cpm *= 1 + o()->buff.hit_combo->stack_value();
 
     if ( o()->conduit.imbued_reflections->ok() )
       cpm *= 1 + o()->conduit.imbued_reflections.percent();
@@ -1665,6 +1674,9 @@ public:
   {
     double cpm = o()->cache.player_multiplier( school );
 
+    if ( o()->buff.hit_combo->up() )
+      cpm *= 1 + o()->buff.hit_combo->stack_value();
+
     if ( o()->conduit.imbued_reflections->ok() )
       cpm *= 1 + o()->conduit.imbued_reflections.percent();
 
@@ -1869,6 +1881,9 @@ public:
   double composite_player_multiplier( school_e school ) const override
   {
     double cpm = o()->cache.player_multiplier( school );
+
+    if ( o()->buff.hit_combo->up() )
+      cpm *= 1 + o()->buff.hit_combo->stack_value();
 
     if ( o()->conduit.imbued_reflections->ok() )
       cpm *= 1 + o()->conduit.imbued_reflections.percent();
