@@ -4864,7 +4864,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
     if ( p()->buff.primordial_wave->check() && p()->specialization() == SHAMAN_ENHANCEMENT )
     {
-      m *= 1.0 + p()->covenant.necrolord->effectN( 4 ).percent();
+      m *= p()->covenant.necrolord->effectN( 4 ).percent();
     }
 
     return m;
@@ -4900,12 +4900,12 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( p()->specialization() == SHAMAN_ENHANCEMENT &&
          type == lightning_bolt_type::NORMAL && p()->buff.primordial_wave->up() )
     {
-      p()->buff.primordial_wave->expire();
       p()->action.lightning_bolt_pw->set_target( target );
       if ( !p()->action.lightning_bolt_pw->target_list().empty() )
       {
         p()->action.lightning_bolt_pw->execute();
       }
+      p()->buff.primordial_wave->expire();
     }
 
     shaman_spell_t::execute();
