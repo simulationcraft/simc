@@ -677,26 +677,29 @@ bool dot_t::channel_interrupt()
       if ( expr )
       {
         interrupt = expr->success();
-        if ( sim.debug )
-          sim.out_debug.printf( "Dot interrupt expression check=%d",
-                                interrupt );
+        sim.print_debug( "Dot interrupt expression check=%d", interrupt );
       }
     }
     if ( interrupt )
     {
       bool gcd_ready = current_action->player->gcd_ready <= sim.current_time();
       bool action_available = is_higher_priority_action_available();
-      if ( sim.debug )
-        sim.out_debug.printf(
-            "Dot interrupt check: gcd_ready=%d action_available=%d.", gcd_ready,
-            action_available );
-      if ( ( gcd_ready || current_action->option.interrupt_immediate ) &&
-           action_available )
+      sim.print_debug( "Dot interrupt check: gcd_ready=%d action_available=%d.", gcd_ready, action_available );
+      if ( ( gcd_ready || current_action->option.interrupt_immediate ) && action_available )
       {
         if ( current_action->option.interrupt_immediate )
         {
           current_action->interrupt_immediate_occurred = true;
         }
+
+        // While an ability is channeling, the auto_attack is paused during execute
+        // If we interrupt the channel, we need to unpause this early by the remaining delay time
+        if ( !current_action->background && current_action->special &&
+          ( current_action->interrupt_auto_attack || current_action->reset_auto_attack ) )
+        {
+          current_action->player->delay_auto_attacks( -remains() );
+        }
+
         // cancel dot
         last_tick();
         return true;
@@ -722,7 +725,7 @@ void dot_t::tick()
       current_action->player->do_dynamic_regen();
     }
 
-    if ( current_action->interrupt_auto_attack )
+    if ( ( current_action->interrupt_auto_attack || current_action->reset_auto_attack ) )
     {  // Channeled dots that interrupt auto attacks will also be interrupted by
       // the target running out of range.
       // This should capture most dot driver spells that require a target in

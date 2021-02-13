@@ -2807,10 +2807,6 @@ struct barrage_t: public hunter_spell_t
     static_cast<damage_t*>( tick_action ) -> triggers_wild_spirits = true;
 
     hunter_spell_t::schedule_execute( state );
-
-    // Delay auto shot, add 500ms to simulate "wind up"
-    if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
-      p() -> main_hand_attack -> reschedule_execute( dot_duration * composite_haste() + 500_ms );
   }
 };
 
@@ -3580,7 +3576,7 @@ struct rapid_fire_t: public hunter_spell_t
     parse_options( options_str );
 
     may_miss = may_crit = false;
-    channeled = true;
+    channeled = reset_auto_attack = true;
     triggers_wild_spirits = false;
 
     procs.double_tap = p -> get_proc( "double_tap_rapid_fire" );
@@ -3593,15 +3589,6 @@ struct rapid_fire_t: public hunter_spell_t
     damage -> gain  = gain;
     damage -> stats = stats;
     stats -> action_list.push_back( damage );
-  }
-
-  void schedule_execute( action_state_t* state ) override
-  {
-    hunter_spell_t::schedule_execute( state );
-
-    // RF does not simply delay auto shot, but completely resets it
-    if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
-      event_t::cancel( p() -> main_hand_attack -> execute_event );
   }
 
   void execute() override
@@ -3634,10 +3621,6 @@ struct rapid_fire_t: public hunter_spell_t
     p() -> buffs.double_tap -> decrement();
 
     p() -> buffs.brutal_projectiles_hidden -> expire();
-
-    // schedule auto shot
-    if ( p() -> main_hand_attack )
-      p() -> main_hand_attack -> schedule_execute();
   }
 
   timespan_t tick_time( const action_state_t* s ) const override

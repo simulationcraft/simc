@@ -2128,13 +2128,6 @@ struct melee_t : public rogue_attack_t
       first = false;
     }
 
-    // If we are channeling (e.g. Cyclotronic Blast) cancel the attack
-    if ( p()->channeling && p()->channeling->interrupt_auto_attack )
-    {
-      this->cancel();
-      return;
-    }
-
     rogue_attack_t::execute();
   }
 

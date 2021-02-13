@@ -1697,7 +1697,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     may_combo_strike = true;
 
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
-    tick_zero = hasted_ticks = interrupt_auto_attack = true;
+    tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
 
     spell_power_mod.direct = 0.0;
     dot_behavior           = DOT_REFRESH;  // Spell uses Pandemic Mechanics.

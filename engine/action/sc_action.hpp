@@ -138,8 +138,11 @@ public:
   /// True if ability is usable while casting another spell
   bool usable_while_casting;
 
-  /// true if channeled action does not reschedule autoattacks, used on abilities such as bladestorm.
+  /// False if channeled action does not reschedule autoattacks, used on abilities such as bladestorm.
   bool interrupt_auto_attack;
+
+  /// True if channeled action fully resets the autoattack timer rather than simply delaying it
+  bool reset_auto_attack;
 
   /// Used for actions that will do awful things to the sim when a "false positive" skill roll happens.
   bool ignore_false_positive;

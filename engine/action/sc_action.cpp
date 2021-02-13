@@ -301,6 +301,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     use_while_casting(),
     usable_while_casting( false ),
     interrupt_auto_attack( true ),
+    reset_auto_attack( false ),
     ignore_false_positive(),
     action_skill( p->base.skill ),
     direct_tick(),
@@ -1724,6 +1725,21 @@ void action_t::execute()
   if ( repeating && !proc )
     schedule_execute();
 
+  // While an ability is channeling, the auto_attack is paused
+  // TODO: Further confirm exact "lost contact" delay time on channeling AA rescheduling
+  //       This now appears that it may be latency-based rather than the old 500ms delay
+  //       Roughly should be 2*world_lag as per the normal casting delay, as logs show ~150-200ms
+  if ( execute_state && !background && special && channeled && !proc && ( interrupt_auto_attack || reset_auto_attack ) )
+  {
+    timespan_t lag        = player->world_lag_override        ? player->world_lag        : sim->world_lag;
+    timespan_t lag_stddev = player->world_lag_stddev_override ? player->world_lag_stddev : sim->world_lag_stddev;
+    timespan_t total_delay = composite_dot_duration( execute_state ) + ( 2 * rng().gauss( lag, lag_stddev ) );
+    if( reset_auto_attack )
+      player->reset_auto_attacks( total_delay, player->procs.reset_aa_channel );
+    else
+      player->delay_auto_attacks( total_delay, player->procs.delayed_aa_channel );
+  }
+
   last_used = sim->current_time();
 }
 
@@ -1961,27 +1977,14 @@ void action_t::schedule_execute( action_state_t* state )
       player->schedule_cwc_ready( timespan_t::zero() );
     }
 
-    if ( special && time_to_execute > timespan_t::zero() && !proc && interrupt_auto_attack )
+    if ( special && time_to_execute > timespan_t::zero() && !proc && ( interrupt_auto_attack || reset_auto_attack ) )
     {
       // While an ability is casting, the auto_attack is paused
-      // So we simply reschedule the auto_attack by the ability's casttime
-      timespan_t time_to_next_hit;
-      // Mainhand
-      if ( player->main_hand_attack && player->main_hand_attack->execute_event )
-      {
-        time_to_next_hit = player->main_hand_attack->execute_event->occurs();
-        time_to_next_hit -= sim->current_time();
-        time_to_next_hit += time_to_execute;
-        player->main_hand_attack->execute_event->reschedule( time_to_next_hit );
-      }
-      // Offhand
-      if ( player->off_hand_attack && player->off_hand_attack->execute_event )
-      {
-        time_to_next_hit = player->off_hand_attack->execute_event->occurs();
-        time_to_next_hit -= sim->current_time();
-        time_to_next_hit += time_to_execute;
-        player->off_hand_attack->execute_event->reschedule( time_to_next_hit );
-      }
+      // So we simply reschedule the auto_attack by the ability's cast time
+      if( reset_auto_attack )
+        player->reset_auto_attacks( time_to_execute, player->procs.reset_aa_cast );
+      else
+        player->delay_auto_attacks( time_to_execute, player->procs.delayed_aa_cast );
     }
 
     if ( player->resource_regeneration == regen_type::DYNAMIC )
@@ -2707,6 +2710,7 @@ void action_t::interrupt_action()
     player->executing = nullptr;
   if ( player->queueing == this )
     player->queueing = nullptr;
+  
   if ( player->channeling == this )
   {
     // Forcefully interrupting a channel should not incur the channel lag.
@@ -2714,6 +2718,14 @@ void action_t::interrupt_action()
 
     dot_t* dot = get_dot( execute_state->target );
     assert( dot->is_ticking() );
+
+    // While an ability is channeling, the auto_attack is paused during execute
+    // If we interrupt the channel, we need to unpause this early by the remaining delay time
+    if ( !background && special && ( interrupt_auto_attack || reset_auto_attack ) )
+    {
+      player->delay_auto_attacks( -dot->remains() );
+    }
+
     dot->cancel();
   }
 
@@ -2725,6 +2737,13 @@ void action_t::interrupt_action()
     timespan_t lag        = player->world_lag_override        ? player->world_lag        : sim->world_lag;
     timespan_t lag_stddev = player->world_lag_stddev_override ? player->world_lag_stddev : sim->world_lag_stddev;
     player->gcd_ready = std::min( player->gcd_ready, sim->current_time() + 2 * rng().gauss( lag, lag_stddev ) );
+
+    // While an ability is casting, the auto_attack is paused during schedule_execute
+    // If we interrupt the cast, we need to unpause this early by the remaining delay time
+    if ( special && !proc && ( interrupt_auto_attack || reset_auto_attack ) )
+    {
+      player->delay_auto_attacks( -execute_event->remains() );
+    }
   }
 
   event_t::cancel( execute_event );

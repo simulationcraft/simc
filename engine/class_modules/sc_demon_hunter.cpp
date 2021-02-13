@@ -3275,23 +3275,10 @@ namespace attacks
 
     void execute() override
     {
-      if ( p()->current.distance_to_move > 5 || p()->buff.out_of_range->check() ||
-        ( p()->channeling && p()->channeling->interrupt_auto_attack ) )
+      if ( p()->current.distance_to_move > 5 || p()->buff.out_of_range->check() )
       {
-        status_e s;
-
-        // Cancel autoattacks, auto_attack_t will restart them when we're able to
-        // attack again.
-        if ( p()->channeling && p()->channeling->interrupt_auto_attack )
-        {
-          p()->proc.delayed_aa_channel->occur();
-          s = LOST_CONTACT_CHANNEL;
-        }
-        else
-        {
-          p()->proc.delayed_aa_range->occur();
-          s = LOST_CONTACT_RANGE;
-        }
+        status_e s = LOST_CONTACT_RANGE;
+        p()->proc.delayed_aa_range->occur();
 
         if ( weapon->slot == SLOT_MAIN_HAND )
         {
@@ -3803,7 +3790,7 @@ struct annihilation_t : public chaos_strike_base_t
       attacks.push_back( p->get_background_action<chaos_strike_damage_t>( fmt::format( "{}_damage_2", name ), data().effectN( 3 ), this ) );
     }
 
-    if ( p->active.relentless_onslaught_annihilation )
+    if ( !from_onslaught && p->active.relentless_onslaught_annihilation )
     {
       add_child( p->active.relentless_onslaught_annihilation );
     }
@@ -5235,8 +5222,7 @@ void demon_hunter_t::init_procs()
   base_t::init_procs();
 
   // General
-  proc.delayed_aa_range               = get_proc( "delayed_swing__out_of_range" );
-  proc.delayed_aa_channel             = get_proc( "delayed_swing__channeling" );
+  proc.delayed_aa_range               = get_proc( "delayed_aa_out_of_range" );
   proc.soul_fragment_greater          = get_proc( "soul_fragment_greater" );
   proc.soul_fragment_greater_demon    = get_proc( "soul_fragment_greater_demon" );
   proc.soul_fragment_empowered_demon  = get_proc( "soul_fragment_empowered_demon" );

@@ -6853,7 +6853,6 @@ struct convoke_the_spirits_t : public druid_spell_t
   {
     // Generic routine
     druid_spell_t::execute();
-    p()->reset_auto_attacks( composite_dot_duration( execute_state ) );
     p()->buff.convoke_the_spirits->trigger();
 
     cast_list.clear();

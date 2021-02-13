@@ -2399,6 +2399,10 @@ void player_t::init_procs()
   sim->print_debug( "Initializing procs for {}.", *this );
 
   procs.parry_haste = get_proc( "parry_haste" );
+  procs.delayed_aa_cast = get_proc( "delayed_aa_cast" );
+  procs.delayed_aa_channel = get_proc( "delayed_aa_channel" );
+  procs.reset_aa_cast = get_proc( "reset_aa_cast" );
+  procs.reset_aa_channel = get_proc( "reset_aa_channel" );
 }
 
 void player_t::init_uptimes()
@@ -12673,21 +12677,20 @@ bool player_t::verify_use_items() const
 }
 
 /**
- * Reset the main hand (and off hand, if application) swing timer
+ * Reset the main hand (and off hand, if applicable) swing timer
  * Optionally delay by a set amount
  */
-void player_t::reset_auto_attacks( timespan_t delay )
+void player_t::reset_auto_attacks( timespan_t delay, proc_t* proc )
 {
-  if ( sim->debug )
+  if( main_hand_attack || off_hand_attack )
   {
     if ( delay == timespan_t::zero() )
-    {
       sim->print_debug( "Resetting auto attack swing timers" );
-    }
     else
-    {
       sim->print_debug( "Resetting auto attack swing timers with an additional delay of {}", delay );
-    }
+
+    if ( proc )
+      proc->occur();
   }
 
   if ( main_hand_attack && main_hand_attack->execute_event )
@@ -12708,6 +12711,30 @@ void player_t::reset_auto_attacks( timespan_t delay )
     {
       off_hand_attack->execute_event->reschedule( off_hand_attack->execute_event->remains() + delay );
     }
+  }
+}
+
+/**
+ * Delay the main hand (and off hand, if applicable) swing timer
+ */
+void player_t::delay_auto_attacks( timespan_t delay, proc_t* proc )
+{
+  if ( delay == timespan_t::zero() )
+    return;
+
+  if ( proc && ( main_hand_attack || off_hand_attack ) )
+    proc->occur();
+
+  if ( main_hand_attack && main_hand_attack->execute_event )
+  {
+    sim->print_debug( "Delaying MH auto attack swing timer by {} to {}", delay, main_hand_attack->execute_event->remains() + delay );
+    main_hand_attack->execute_event->reschedule( main_hand_attack->execute_event->remains() + delay );
+  }
+
+  if ( off_hand_attack && off_hand_attack->execute_event )
+  {
+    sim->print_debug( "Delaying OH auto attack swing timer by {} to {}", delay, off_hand_attack->execute_event->remains() + delay );
+    off_hand_attack->execute_event->reschedule( off_hand_attack->execute_event->remains() + delay );
   }
 }
 

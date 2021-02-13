@@ -575,6 +575,10 @@ struct player_t : public actor_t
   struct procs_t
   {
     proc_t* parry_haste;
+    proc_t* delayed_aa_cast;
+    proc_t* delayed_aa_channel;
+    proc_t* reset_aa_cast;
+    proc_t* reset_aa_channel;
   } procs;
 
   struct uptimes_t
@@ -1111,7 +1115,8 @@ public:
   virtual movement_direction_type movement_direction() const
   { return current.movement_direction; }
 
-  virtual void reset_auto_attacks( timespan_t delay = timespan_t::zero() );
+  virtual void reset_auto_attacks( timespan_t delay = timespan_t::zero(), proc_t* proc = nullptr );
+  virtual void delay_auto_attacks( timespan_t delay, proc_t* proc = nullptr );
 
   virtual void acquire_target( retarget_source /* event */, player_t* /* context */ = nullptr );
 
