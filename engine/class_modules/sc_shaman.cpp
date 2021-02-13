@@ -6642,6 +6642,11 @@ struct chain_harvest_t : public shaman_spell_t
     aoe = 5;
     spell_power_mod.direct = player->find_spell( 320752 )->effectN( 1 ).sp_coeff();
 
+    if ( player->dbc->ptr )
+    {
+      base_multiplier *= 1.0 + player->spec.elemental_shaman->effectN( 7 ).percent();
+    }
+
     base_crit += p()->conduit.lavish_harvest.percent();
   }
 
