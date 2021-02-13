@@ -4862,6 +4862,11 @@ struct lightning_bolt_t : public shaman_spell_t
       m *= 1.0 + p()->talent.stormkeeper->effectN( 2 ).percent();
     }
 
+    if ( p()->buff.primordial_wave->check() && p()->specialization() == SHAMAN_ENHANCEMENT )
+    {
+      m *= 1.0 + p()->covenant.necrolord->effectN( 4 ).percent();
+    }
+
     return m;
   }
 
