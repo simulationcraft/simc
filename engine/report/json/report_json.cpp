@@ -724,6 +724,17 @@ void scale_factors_all_to_json( JsonOutput root, const player_t& p )
   }
 }
 
+void scale_deltas_to_json( JsonOutput root, const player_t& p )
+{
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+  {
+    if ( p.scaling->scales_with[ i ] )
+    {
+      root[ util::stat_type_abbrev( i ) ] = p.sim->scaling->stats->get_stat( i );
+    }
+  }
+}
+
 void talents_to_json( JsonOutput root, const player_t& p )
 {
   root.make_array();
@@ -845,6 +856,7 @@ void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& rep
   {
     scale_factors_to_json( root[ "scale_factors" ], p );
     scale_factors_all_to_json( root[ "scale_factors_all" ], p );
+    scale_deltas_to_json( root[ "scale_deltas" ], p );
   }
 
   collected_data_to_json( root[ "collected_data" ], report_configuration, p );
