@@ -1507,7 +1507,8 @@ public:
       m *= td( target )->debuffs.shiv->value_direct();
     }
 
-    if ( affected_by.zoldyck_insignia && target->health_percentage() < p()->legendary.zoldyck_insignia->effectN( 2 ).base_value() )
+    if ( p()->legendary.zoldyck_insignia->ok() && affected_by.zoldyck_insignia
+         && target->health_percentage() < p()->legendary.zoldyck_insignia->effectN( 2 ).base_value() )
     {
       m *= 1.0 + p()->legendary.zoldyck_insignia->effectN( 1 ).percent();
     }
@@ -4505,6 +4506,8 @@ struct serrated_bone_spike_t : public rogue_attack_t
       rogue_attack_t( name, p, p->covenant.serrated_bone_spike->effectN( 2 ).trigger() ),
       sudden_fractures( nullptr )
     {
+      // 02/13/2021 - Logs show that the SBS DoT is affected by Zoldyck
+      affected_by.zoldyck_insignia = true;
       dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 2 );
 
       if ( p->conduit.sudden_fractures.ok() )
