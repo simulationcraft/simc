@@ -355,6 +355,10 @@ struct sim_t : private sc_thread_t
     unsigned stone_legionnaires_in_party = 0;
     /// Number of Crimson Choir in party (Cabalist's Effigy trinket)
     unsigned crimson_choir_in_party = 0;
+    /// Seconds before combat to apply the Shattered Psyche buff to the player.
+    timespan_t memory_of_past_sins_precast = 0_s;
+    /// Number of allies applying Shattered Psyche stacks to the enemy.
+    unsigned shattered_psyche_allies = 0;
     /// Chance for each target to be hit by a Judgment of the Arbiter arc
     double judgment_of_the_arbiter_arc_chance = 0.0;
     /// Type of corpse used for Volatile Solvent. Accepts corpse type string or buff string
