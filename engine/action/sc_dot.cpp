@@ -694,8 +694,7 @@ bool dot_t::channel_interrupt()
 
         // While an ability is channeling, the auto_attack is paused during execute
         // If we interrupt the channel, we need to unpause this early by the remaining delay time
-        if ( !current_action->background && current_action->special &&
-          ( current_action->interrupt_auto_attack || current_action->reset_auto_attack ) )
+        if ( !current_action->background && current_action->special && current_action->reset_auto_attack )
         {
           current_action->player->delay_auto_attacks( -remains() );
         }
