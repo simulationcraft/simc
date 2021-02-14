@@ -4636,6 +4636,7 @@ void player_t::combat_begin()
   add_timed_buff_triggers( external_buffs.blessing_of_autumn, buffs.blessing_of_autumn );
   add_timed_buff_triggers( external_buffs.blessing_of_winter, buffs.blessing_of_winter );
   add_timed_buff_triggers( external_buffs.blessing_of_spring, buffs.blessing_of_spring );
+  add_timed_buff_triggers( external_buffs.conquerors_banner, buffs.conquerors_banner );
 
   if ( buffs.windfury_totem )
   {
@@ -11220,6 +11221,7 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.blessing_of_autumn", external_buffs.blessing_of_autumn ) );
   add_option( opt_external_buff_times( "external_buffs.blessing_of_winter", external_buffs.blessing_of_winter ) );
   add_option( opt_external_buff_times( "external_buffs.blessing_of_spring", external_buffs.blessing_of_spring ) );
+  add_option( opt_external_buff_times( "external_buffs.conquerors_banner", external_buffs.conquerors_banner ) );
 
   // Azerite options
   if ( ! is_enemy() && ! is_pet() )
