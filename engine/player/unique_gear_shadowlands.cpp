@@ -1409,6 +1409,8 @@ void inscrutable_quantum_device ( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<inscrutable_quantum_device_t>( "inscrutable_quantum_device", effect );
+  effect.disable_buff();
+  effect.stat = STAT_ALL;
 }
 
 void phial_of_putrefaction( special_effect_t& effect )

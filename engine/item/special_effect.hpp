@@ -9,6 +9,7 @@
 #include "sc_enums.hpp"
 #include "util/timespan.hpp"
 #include "util/format.hpp"
+#include "dbc/spell_data.hpp"
 
 #include <string>
 #include <vector>
@@ -121,6 +122,7 @@ struct special_effect_t
   special_effect_buff_e buff_type() const;
   int max_stack() const;
 
+  stat_e stat_buff_type( const spelleffect_data_t& ) const;
   bool is_stat_buff() const;
   stat_e stat_type() const;
   stat_buff_t* initialize_stat_buff() const;

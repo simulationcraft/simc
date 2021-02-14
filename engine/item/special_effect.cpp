@@ -80,58 +80,6 @@ void parse_proc_flags( util::string_view flags,
   }
 }
 
-/**
- * Detect stat buff type from spelleffect data.
- *
- * Helper function to detect stat buff type from spell effect data, more specifically by mapping Blizzard's
- * effect sub types to actual stats in simc.
- */
-stat_e stat_buff_type( const spelleffect_data_t& effect )
-{
-  stat_e stat = STAT_NONE;
-
-  // All stat buffs in game client data are "auras"
-  if ( effect.type() != E_APPLY_AURA )
-    return stat;
-
-  switch ( effect.subtype() )
-  {
-    case A_MOD_STAT:
-      if ( effect.misc_value1() == -1 )
-        stat = STAT_ALL; // Primary stats only, ratings are A_MOD_RATING
-      else if ( effect.misc_value1() == -2 )
-        stat = STAT_STR_AGI_INT;
-      else
-        stat = static_cast< stat_e >( effect.misc_value1() + 1 );
-      break;
-    case A_MOD_RATING:
-      stat = util::translate_rating_mod( effect.misc_value1() );
-      break;
-    case A_MOD_INCREASE_HEALTH_2:
-    case A_MOD_INCREASE_HEALTH:
-      stat = STAT_MAX_HEALTH;
-      break;
-    case A_MOD_RESISTANCE:
-      stat = STAT_BONUS_ARMOR;
-      break;
-    case A_MOD_ATTACK_POWER:
-    case A_MOD_RANGED_ATTACK_POWER:
-      stat = STAT_ATTACK_POWER;
-      break;
-    case A_MOD_DAMAGE_DONE:
-      if ( effect.misc_value1() & 0x7E )
-        stat = STAT_SPELL_POWER;
-      break;
-    case A_465:
-      stat = STAT_BONUS_ARMOR;
-      break;
-    default:
-      break;
-  }
-
-  return stat;
-}
-
 } // unnamed namespace
 
 special_effect_t::special_effect_t( const item_t* item ) :
@@ -237,6 +185,59 @@ const spell_data_t* special_effect_t::trigger() const
   // allows on-use side of special effects use the same code paths, and
   // shouldnt break procs.
   return driver();
+}
+
+
+/**
+ * Detect stat buff type from spelleffect data.
+ *
+ * Helper function to detect stat buff type from spell effect data, more specifically by mapping Blizzard's
+ * effect sub types to actual stats in simc.
+ */
+stat_e special_effect_t::stat_buff_type( const spelleffect_data_t& effect ) const
+{
+  stat_e stat = STAT_NONE;
+
+  // All stat buffs in game client data are "auras"
+  if ( effect.type() != E_APPLY_AURA )
+    return stat;
+
+  switch ( effect.subtype() )
+  {
+    case A_MOD_STAT:
+      if ( effect.misc_value1() == -1 )
+        stat = STAT_ALL;  // Primary stats only, ratings are A_MOD_RATING
+      else if ( effect.misc_value1() == -2 )
+        stat = STAT_STR_AGI_INT;
+      else
+        stat = static_cast<stat_e>( effect.misc_value1() + 1 );
+      break;
+    case A_MOD_RATING:
+      stat = util::translate_rating_mod( effect.misc_value1() );
+      break;
+    case A_MOD_INCREASE_HEALTH_2:
+    case A_MOD_INCREASE_HEALTH:
+      stat = STAT_MAX_HEALTH;
+      break;
+    case A_MOD_RESISTANCE:
+      stat = STAT_BONUS_ARMOR;
+      break;
+    case A_MOD_ATTACK_POWER:
+    case A_MOD_RANGED_ATTACK_POWER:
+      stat = STAT_ATTACK_POWER;
+      break;
+    case A_MOD_DAMAGE_DONE:
+      if ( effect.misc_value1() & 0x7E )
+        stat = STAT_SPELL_POWER;
+      break;
+    case A_465:
+      stat = STAT_BONUS_ARMOR;
+      break;
+    default:
+      break;
+  }
+
+  return stat;
 }
 
 bool special_effect_t::is_stat_buff() const
@@ -433,6 +434,7 @@ special_effect_buff_e special_effect_t::buff_type() const
 
 buff_t* special_effect_t::create_buff() const
 {
+
   if ( buff_type() != SPECIAL_EFFECT_BUFF_CUSTOM &&
        buff_type() != SPECIAL_EFFECT_BUFF_NONE &&
        buff_type() != SPECIAL_EFFECT_BUFF_DISABLED )

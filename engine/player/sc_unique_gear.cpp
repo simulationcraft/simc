@@ -3578,6 +3578,20 @@ void generic::windfury_totem( special_effect_t& effect )
   proc->deactivate();
 }
 
+bool stat_fits_criteria( stat_e stat, stat_e criteria )
+{
+  if ( !stat )
+    return false;
+
+  if ( criteria == STAT_ALL )
+    return true;
+
+  if ( criteria == STAT_ANY_DPS )
+    return stat != STAT_LEECH_RATING && stat != STAT_SPEED_RATING && stat != STAT_AVOIDANCE_RATING;
+
+  return stat == criteria;
+}
+
 // Figure out if a given generic buff (associated with a trinket/item) is a
 // stat buff of the correct type
 bool buff_has_stat( const buff_t* buff, stat_e stat )
@@ -3917,8 +3931,6 @@ struct item_buff_expr_t : public item_effect_expr_t
   {
     for (auto e : effects)
     {
-      
-
       buff_t* b = buff_t::find( &player, e -> name() );
       if ( buff_has_stat( b, s ) && ( ( ! stacking && b -> max_stack() <= 1 ) || ( stacking && b -> max_stack() > 1 ) ) )
       {
@@ -3938,8 +3950,6 @@ struct item_buff_exists_expr_t : public item_effect_expr_t
   {
     for (auto e : effects)
     {
-      
-
       buff_t* b = buff_t::find( &player, e -> name() );
       if ( buff_has_stat( b, s ) )
       {
@@ -4042,6 +4052,75 @@ struct item_cooldown_exists_expr_t : public item_effect_expr_t
   { return v; }
 };
 
+struct item_has_use_buff_expr_t : public item_effect_expr_t
+{
+  double v;
+  bool has_use;
+  bool has_buff;
+
+  item_has_use_buff_expr_t( player_t& player, const std::vector<slot_e>& slots )
+    : item_effect_expr_t( player, slots ), v( 0 ), has_use( false ), has_buff(false)
+  {
+
+    for ( auto e : effects )
+    {
+      if ( e->cooldown() != timespan_t::zero() && e->rppm() == 0 )  // Technically, rppm doesn't have a cooldown.
+      {
+        has_use = true;
+        break;
+      }
+    }
+
+    for ( auto e : effects )
+    {
+      if ( stat_fits_criteria( e->stat_type(), STAT_ANY_DPS ) )
+      {
+        has_buff = true;
+        break;
+      }
+
+      // Check if the effect has buffs
+      for ( size_t i = 1, end = e->trigger()->effect_count(); i <= end; i++ )
+      {
+        const spelleffect_data_t& effect = e->trigger()->effectN( i );
+        if ( effect.id() == 0 )
+          continue;
+
+        if ( stat_fits_criteria( e->stat_buff_type( effect ), STAT_ANY_DPS ) )
+        {
+          has_buff = true;
+          break;
+        }
+
+        // Check if the effect triggers effects with buffs
+        if ( effect.trigger() )
+        {
+          for ( size_t i = 1, end = effect.trigger()->effect_count(); i <= end; i++ )
+          {
+            const spelleffect_data_t& trigger_effect = effect.trigger()->effectN( i );
+            if ( trigger_effect.id() == 0 )
+              continue;
+
+            if ( stat_fits_criteria( e->stat_buff_type( trigger_effect ), STAT_ANY_DPS ) )
+            {
+              has_buff = true;
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    if ( has_use && has_buff )
+      v = 1;
+  }
+
+  double evaluate() override
+  {
+    return v;
+  }
+};
+
 /**
  * Create "trinket" expressions, or anything relating to special effects.
  *
@@ -4136,6 +4215,9 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
 
   if ( util::str_compare_ci( splits[ ptype_idx ], "is" ) )
     return std::make_unique<item_is_expr_t>( player, slots, splits[ expr_idx - 1 ] );
+
+  if ( util::str_compare_ci( splits[ ptype_idx ], "has_use_buff" ) )
+    return std::make_unique<item_has_use_buff_expr_t>( player, slots );
 
   if ( util::str_prefix_ci( splits[ ptype_idx ], "has_" ) )
     pexprtype = PROC_EXISTS;
