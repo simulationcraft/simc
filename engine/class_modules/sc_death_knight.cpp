@@ -5770,7 +5770,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   void impact( action_state_t* state ) override
   {
     death_knight_melee_attack_t::impact( state );
-    if ( p() -> covenant.deaths_due && p() -> in_death_and_decay() )
+    if ( p() -> covenant.deaths_due -> ok() && p() -> in_death_and_decay() )
     {
       p() -> buffs.deaths_due->trigger();
     }
