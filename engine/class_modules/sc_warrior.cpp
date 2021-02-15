@@ -1866,7 +1866,7 @@ struct bladestorm_t : public warrior_attack_t
       torment_triggered( torment_triggered )
   {
     parse_options( options_str );
-    channeled = !torment_triggered;
+    channeled = false;
     tick_zero = true;
     callbacks = interrupt_auto_attack = false;
     travel_speed                      = 0;
@@ -1899,6 +1899,13 @@ struct bladestorm_t : public warrior_attack_t
     }
   }
 
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    if ( torment_triggered )
+      return warrior_attack_t::composite_dot_duration( s );
+    return dot_duration * ( tick_time( s ) / base_tick_time );
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -1921,6 +1928,14 @@ struct bladestorm_t : public warrior_attack_t
 
   void tick( dot_t* d ) override
   {
+    // dont tick if BS buff not up
+    // since first tick is instant the buff won't be up yet
+    if ( d->ticks_left() < d->num_ticks() && !p()->buff.bladestorm->up() )
+    {
+      make_event( sim, [ d ] { d->cancel(); } );
+      return;
+    }
+
     if ( d->ticks_left() > 0 )
     {
       p()->buff.tornados_eye->trigger();
