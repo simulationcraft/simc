@@ -177,6 +177,7 @@ public:
     cooldown_t* execute;
     cooldown_t* heroic_leap;
     cooldown_t* iron_fortress_icd;
+    cooldown_t* impending_victory;
     cooldown_t* last_stand;
     cooldown_t* mortal_strike;
     cooldown_t* overpower;
@@ -588,7 +589,7 @@ public:
       azerite()
   {
     non_dps_mechanics =
-        false;  // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
+        true;  // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
     warrior_fixed_time    = true;
     into_the_fray_friends = -1;
     never_surrender_percentage = 70;
@@ -3017,11 +3018,11 @@ struct heroic_leap_t : public warrior_attack_t
   }
 };
 
-// Impending Victory ========================================================
+// Impending Victory Heal ========================================================
 
 struct impending_victory_heal_t : public warrior_heal_t
 {
-  impending_victory_heal_t( warrior_t* p ) : warrior_heal_t( "impending_victory_heal", p, p->find_spell( 118340 ) )
+  impending_victory_heal_t( warrior_t* p ) : warrior_heal_t( "impending_victory_heal", p, p->find_spell( 202166 ) )
   {
     base_pct_heal = data().effectN( 1 ).percent();
     background    = true;
@@ -3033,18 +3034,19 @@ struct impending_victory_heal_t : public warrior_heal_t
   }
 };
 
+// Impending Victory ==============================================================
+
 struct impending_victory_t : public warrior_attack_t
 {
   impending_victory_heal_t* impending_victory_heal;
   impending_victory_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "impending_victory", p ), impending_victory_heal( nullptr )
+    : warrior_attack_t( "impending_victory", p, p->talents.impending_victory ), impending_victory_heal( nullptr )
   {
     parse_options( options_str );
     if ( p->non_dps_mechanics )
     {
       impending_victory_heal = new impending_victory_heal_t( p );
     }
-    parse_effect_data( data().effectN( 2 ) );  // Both spell effects list an ap coefficient, #2 is correct.
   }
 
   void execute() override
