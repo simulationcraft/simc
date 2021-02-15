@@ -1578,15 +1578,20 @@ double enemy_t::health_percentage() const
 
 timespan_t enemy_t::time_to_percent( double percent ) const
 {
-  // time_to_pct_0, or time_to_die, should probably ignore fixed_health_percentage
-  if ( fixed_health_percentage > 0 && percent != 0 )
+  // time_to_pct_0 and time_to_die should probably ignore fixed/initial_health_percentage for end-of-combat expression purpose
+  if ( percent != 0 && ( fixed_health_percentage > 0 || initial_health_percentage < 100 ) )
   {
-    // If we're at or below the given health percentage, it's already been reached
-    if ( fixed_health_percentage <= percent )
-      return timespan_t::zero();
-    // Otherwise, it will never be reached, so return something unreachable
-    else
+    // If we're above the pct value and health percentage is fixed, it will never be reached
+    if ( fixed_health_percentage > 0 && fixed_health_percentage > percent )
       return sim -> expected_iteration_time * 2;
+
+    // If we're above the pct value and there's a custom initial health percentage,
+    // return the time_to_pct adjusted for our initial percentage
+    if ( initial_health_percentage < 100 && initial_health_percentage > percent )
+      return player_t::time_to_percent( percent * 100 / initial_health_percentage );
+
+    // Otherwise the custom fixed/initial health% is at or below the pct value so time to percent is 0
+    return timespan_t::zero();
   }
 
   return player_t::time_to_percent( percent );
