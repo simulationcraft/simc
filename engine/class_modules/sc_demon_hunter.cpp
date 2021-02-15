@@ -4945,7 +4945,7 @@ void demon_hunter_t::create_buffs()
   // Fake Growing Inferno buff for tracking purposes
   buff.growing_inferno = make_buff<buff_t>( this, "growing_inferno", conduit.growing_inferno )
     ->set_default_value( conduit.growing_inferno.percent() )
-    ->set_max_stack( as<int>( 10 / conduit.growing_inferno.percent() ) ) // 12/02/2020 - Manual hotfix, not in spell data
+    ->set_max_stack( (int)( 10 / conduit.growing_inferno.percent() ) ) // 12/02/2020 - Manual hotfix, not in spell data
     ->set_duration( 20_s );
 
   buff.soul_furance = make_buff<buff_t>( this, "soul_furance", conduit.soul_furnace->effectN( 1 ).trigger() )
