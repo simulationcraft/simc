@@ -145,6 +145,7 @@ public:
     // Covenant
     buff_t* conquerors_banner;
     buff_t* conquerors_frenzy;
+    buff_t* conquerors_mastery;
     buff_t* glory;
     // Conduits
     buff_t* ashen_juggernaut;
@@ -1159,7 +1160,7 @@ public:
 
     if ( ab::current_resource() == RESOURCE_RAGE && ab::last_resource_cost > 0 )
     {
-      if ( p()->covenant.conquerors_banner->ok() && p()->buff.conquerors_banner->check() )
+      if ( !p()->dbc->ptr && p()->covenant.conquerors_banner->ok() && p()->buff.conquerors_banner->check() )
       {
         p()->covenant.glory_counter += ab::last_resource_cost;
         double glory_threshold = p()->specialization() == WARRIOR_FURY ? 30 : 20;
@@ -5264,6 +5265,11 @@ struct conquerors_banner_t : public warrior_spell_t
     warrior_spell_t::execute();
 
     p()->buff.conquerors_banner->trigger();
+    if ( player->dbc->ptr )
+    {
+      p()->buff.conquerors_mastery->trigger();    
+    }
+    else
     p()->buff.conquerors_frenzy->trigger();
     if ( p()->conduit.veterans_repute->ok() )
     {
@@ -7314,6 +7320,13 @@ void warrior_t::create_buffs()
   buff.conquerors_frenzy    = make_buff( this, "conquerors_frenzy", find_spell( 325862 ) )
                                ->set_default_value( find_spell( 325862 )->effectN( 2 ).percent() )
                                ->add_invalidate( CACHE_CRIT_CHANCE );
+
+  buff.conquerors_mastery   = make_buff( this, "conquerors_frenzy", find_spell( 325862 ) )
+                               ->set_default_value( find_spell( 325862 )->effectN( 1 ).percent() )
+                               ->add_invalidate( CACHE_MASTERY );
+
+  buff.conquerors_mastery = make_buff<stat_buff_t>( this, "conquerors_mastery", find_spell( 325862 ) )
+                               ->add_stat( STAT_MASTERY_RATING, 400 ); //find_spell( 325862 )->effectN( 1 ).scaled_value() );
 
   // Conduits===============================================================================================================
 
