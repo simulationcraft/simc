@@ -4010,8 +4010,8 @@ struct ravager_t : public warrior_attack_t
   double torment_chance;
   bool torment_triggered;
   ravager_t( warrior_t* p, const std::string& options_str, util::string_view /* n */, const spell_data_t* /* spell */, bool torment_triggered = false )
-    : warrior_attack_t( "ravager", p, p->talents.ravager ),
-      ravager( new ravager_tick_t( p, "ravager_tick" ) ),
+    : warrior_attack_t( torment_triggered ? "ravager_torment" : "ravager", p, p->talents.ravager ),
+      ravager( new ravager_tick_t( p, torment_triggered ? "torment_tick" : "ravager_tick" ) ),
       mortal_strike( nullptr ),
       torment_chance( 0.5 * p->legendary.signet_of_tormented_kings->proc_chance() ),
       torment_triggered( torment_triggered )
@@ -4039,6 +4039,19 @@ struct ravager_t : public warrior_attack_t
     }
   }
 
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t tt = tick_time( s );
+      
+    if ( torment_triggered )
+    {
+      int num_ticks = static_cast<int>( warrior_attack_t::composite_dot_duration( s ) / tt );
+      return num_ticks * tt;
+    }
+
+    return dot_duration * ( tt / base_tick_time );
+  }
+
   void execute() override
   {
     if ( p()->specialization() == WARRIOR_ARMS )
@@ -4064,32 +4077,10 @@ struct ravager_t : public warrior_attack_t
 
   void tick( dot_t* d ) override
   {
-    // the ticks do scale with haste so I turned hasted_ticks on
-    // however this made it tick more than 6 times (2 with signet)
-    if ( torment_triggered && d->current_tick > 2 )
-      return;
-
-    else if ( d->current_tick > 6 )
-      return;
-
-    // the helm buff occurs before each tick
-    // it refreshes and adds one stack on the first 6 ticks
-    // only duration is refreshed on last tick, no stack is added
-    if ( d->current_tick <= 5 )
-    {
-      p()->buff.tornados_eye->trigger();
-      p()->buff.gathering_storm->trigger();
-    }
-    if ( d->current_tick == 6 )
-    {
-      p()->buff.tornados_eye->trigger( 0 );
-      p()->buff.gathering_storm->trigger( 0 );
-    }
     warrior_attack_t::tick( d );
     ravager->execute();
-    // the 4pc occurs on the first and 4th tick
-    // if (mortal_strike && (d->current_tick == 1 || d->current_tick == 4))
-    // As of 2017-12-05, this was hotfixed to only one tick total. Seems to be third one.
+    // proc occurs on the third tick
+    // cannot currently use alongside Signet - revisit if double legendary is added
     if ( mortal_strike && d->current_tick == 3 )
     {
       auto t = select_random_target();
