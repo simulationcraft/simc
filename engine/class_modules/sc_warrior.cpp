@@ -4019,7 +4019,7 @@ struct ravager_t : public warrior_attack_t
   bool torment_triggered;
   ravager_t( warrior_t* p, const std::string& options_str, util::string_view /* n */, const spell_data_t* /* spell */, bool torment_triggered = false )
     : warrior_attack_t( torment_triggered ? "ravager_torment" : "ravager", p, p->talents.ravager ),
-      ravager( new ravager_tick_t( p, torment_triggered ? "torment_tick" : "ravager_tick" ) ),
+      ravager( new ravager_tick_t( p, torment_triggered ? "ravager_torment_tick" : "ravager_tick" ) ),
       mortal_strike( nullptr ),
       torment_chance( 0.5 * p->legendary.signet_of_tormented_kings->proc_chance() ),
       torment_triggered( torment_triggered )
@@ -4032,7 +4032,7 @@ struct ravager_t : public warrior_attack_t
     add_child( ravager );
     if ( p->legendary.unhinged->ok() )
     {
-      mortal_strike = new mortal_strike_unhinged_t( p, "ravager_mortal_strike" );
+      mortal_strike = new mortal_strike_unhinged_t( p, torment_triggered ? "mortal_strike_ravager_torment" : "mortal_strike_ravager" );
       add_child( mortal_strike );
     }
     // Vision of Perfection only reduces the cooldown for Arms
