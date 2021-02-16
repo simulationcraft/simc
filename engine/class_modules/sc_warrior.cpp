@@ -5255,7 +5255,6 @@ struct conquerors_banner_t : public warrior_spell_t
     : warrior_spell_t( "conquerors_banner", p, p->covenant.conquerors_banner )
   {
     parse_options( options_str );
-    callbacks  = false;
 
     harmful = false;
   }
@@ -7321,12 +7320,7 @@ void warrior_t::create_buffs()
                                ->set_default_value( find_spell( 325862 )->effectN( 2 ).percent() )
                                ->add_invalidate( CACHE_CRIT_CHANCE );
 
-  buff.conquerors_mastery   = make_buff( this, "conquerors_frenzy", find_spell( 325862 ) )
-                               ->set_default_value( find_spell( 325862 )->effectN( 1 ).percent() )
-                               ->add_invalidate( CACHE_MASTERY );
-
-  buff.conquerors_mastery = make_buff<stat_buff_t>( this, "conquerors_mastery", find_spell( 325862 ) )
-                               ->add_stat( STAT_MASTERY_RATING, 400 ); //find_spell( 325862 )->effectN( 1 ).scaled_value() );
+  buff.conquerors_mastery = make_buff<stat_buff_t>( this, "conquerors_mastery", find_spell( 325862 ) );
 
   // Conduits===============================================================================================================
 

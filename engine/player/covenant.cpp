@@ -610,6 +610,11 @@ covenant_ability_cast_cb_t::covenant_ability_cast_cb_t( player_t* p, const speci
   {
     class_abilities.push_back( 152280 );  // Defile
   }
+  if ( p -> type == WARRIOR && p -> covenant -> type() == covenant_e::VENTHYR )
+  {
+    class_abilities.push_back( 317349 );  // Condemn Arms
+    class_abilities.push_back( 317485 );  // Condemn Fury
+  }
 }
 
 void covenant_ability_cast_cb_t::initialize()
