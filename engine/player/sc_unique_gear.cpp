@@ -4073,15 +4073,19 @@ struct item_has_use_buff_expr_t : public item_effect_expr_t
 
     for ( auto e : effects )
     {
-      if ( stat_fits_criteria( e->stat_type(), STAT_ANY_DPS ) )
+      // Check if there is a stat set on the special effect
+      if ( stat_fits_criteria( e->stat, STAT_ANY_DPS ) )
       {
         has_buff = true;
         break;
       }
 
-      // Check if the effect has buffs
+      // Check if the special effect has a suitable buff effect
       for ( size_t i = 1, end = e->trigger()->effect_count(); i <= end; i++ )
       {
+        if ( has_buff )
+          break;
+
         const spelleffect_data_t& effect = e->trigger()->effectN( i );
         if ( effect.id() == 0 )
           continue;
@@ -4092,7 +4096,7 @@ struct item_has_use_buff_expr_t : public item_effect_expr_t
           break;
         }
 
-        // Check if the effect triggers effects with buffs
+        // Check if an effect triggers something with a suitable buff effect
         if ( effect.trigger() )
         {
           for ( size_t i = 1, end = effect.trigger()->effect_count(); i <= end; i++ )
@@ -4108,6 +4112,14 @@ struct item_has_use_buff_expr_t : public item_effect_expr_t
             }
           }
         }
+      }
+
+      // Check if the special effect created a suitable buff
+      buff_t* b = buff_t::find( &player, e->name() );
+      if ( buff_has_stat( b, STAT_ANY_DPS ) )
+      {
+        has_buff = true;
+        break;
       }
     }
 
