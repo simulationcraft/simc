@@ -6048,22 +6048,34 @@ double player_t::current_health() const
 
 timespan_t player_t::time_to_percent( double percent ) const
 {
+  // Adjust time_to_0/time_to_die expressions to point to the death_pct, if applicable
+  if ( percent == 0.0 )
+    percent = death_pct;
+
+  // Early exit if we're already at the relevant health percentage
+  if ( health_percentage() <= percent )
+    return timespan_t::zero();
+
   timespan_t time_to_percent;
-  double ttp;
 
   if ( iteration_dmg_taken > 0.0 && resources.base[ RESOURCE_HEALTH ] > 0 &&
        sim->current_time() >= timespan_t::from_seconds( 1.0 ) && !sim->fixed_time )
-    ttp = ( resources.current[ RESOURCE_HEALTH ] - ( percent * 0.01 * resources.base[ RESOURCE_HEALTH ] ) ) /
-          ( iteration_dmg_taken / sim->current_time().total_seconds() );
+  {
+    // If not using fixed_time and we have tracked damage intake, use the incoming DPS to predict
+    double ttp = ( resources.current[ RESOURCE_HEALTH ] - ( percent * 0.01 * resources.base[ RESOURCE_HEALTH ] ) ) /
+      ( iteration_dmg_taken / sim->current_time().total_seconds() );
+    time_to_percent = timespan_t::from_seconds( ttp );
+  }
   else
-    ttp = ( sim->expected_iteration_time * ( 1.0 - percent * 0.01 ) - sim->current_time() ).total_seconds();
-
-  time_to_percent = timespan_t::from_seconds( ttp );
+  {
+    // Otherwise, just use the simulation length as a basis for the predictions
+    time_to_percent = sim->expected_iteration_time * ( 1.0 - percent * 0.01 ) - sim->current_time();
+  }
 
   if ( time_to_percent < timespan_t::zero() )
     return timespan_t::zero();
-  else
-    return time_to_percent;
+
+  return time_to_percent;
 }
 
 timespan_t player_t::total_reaction_time()
