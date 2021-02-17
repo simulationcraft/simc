@@ -4270,6 +4270,10 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
 
   if ( pexprtype == PROC_ENABLED && ptype != PROC_COOLDOWN && splits.size() >= 4 )
   {
+    if ( splits.size() <= expr_idx )
+    {
+      throw std::invalid_argument(fmt::format("Cannot create unique gear expression: too few parts to parse buff expression: '{}' < '{}'.", splits.size(), expr_idx + 1));
+    }
     return std::make_unique<item_buff_expr_t>( player, slots, stat, ptype == PROC_STACKING_STAT, splits[ expr_idx ] );
   }
   else if ( pexprtype == PROC_ENABLED && ptype == PROC_COOLDOWN && splits.size() >= 3 )
