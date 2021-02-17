@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, git build shadowlands beecde0f, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, no-networking)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -267,7 +267,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=279)      : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Enemy (6)
-#2 (id=824003)   : Apply Aura (6) | Modify Crit% (52)
+#2 (id=824003)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Increases the time between an enemy's attacks by $6343s2% for $d.$?s103112[
 
@@ -1359,11 +1359,11 @@ Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Afflicti
 Family Flags     : 47, 49
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   x....... .x...... ........ ......x. 
-                 : ........ .......x ........ ........   ........ ........ ........ ..x..... 
+                 : .......x .......x ........ ........   ...x.... ........ .xx..... ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   xx...... ........ ........ ........ 
                  : ........ ........ ........ ........   
                  : Not a proc (105), Requires line of sight (186)
 Effects          :
@@ -1708,8 +1708,10 @@ Effects          :
 #1 (id=22181)    : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
+#2 (id=880936)   : Apply Aura (6) | Unknown(381)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc32388
-Tooltip          : Damage taken increased by ${$s1}.1%.
+Tooltip          : Damage taken from $@auracaster increased by ${$s1}.1%.
 
 Name             : Blood Fury (desc=Racial) (id=33702) [Scaling Spell (-1)] 
 Class            : Mage, Warlock
@@ -1802,6 +1804,8 @@ Effects          :
 #2 (id=40332)    : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
+#3 (id=880934)   : Apply Aura (6) | Unknown(381)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage and increasing your damage dealt to the target by $s2% for $d.
 
 If the target dies, Haunt's cooldown is reset.
@@ -3581,10 +3585,10 @@ Triggered by     : Corruption (172)
 Family Flags     : 1, 49
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
-                 : x....... .......x ....x... ........   ........ .....x.. ........ ........ 
+                 : x......x .......x ....x... ........   ...x.... .....x.. .xx..... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ .....x.. ........ 
+                 : .....x.. .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ......x. ........   ........ ........ .....x.. ..x..... 
                  : ........ ........ ........ ........   x......x ........ ....x... ........ 
                  : ........ ........ ........ ........   
                  : Not a proc (105), Periodic effect affected by haste (173), Periodic effect can crit (265)
@@ -4306,6 +4310,8 @@ Effects          :
 #1 (id=288282)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
+#2 (id=880933)   : Apply Aura (6) | Unknown(381)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc196412
 Tooltip          : Damage taken from the Warlock increased by $s1%.
 
@@ -7501,7 +7507,7 @@ Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
 Spell Level      : 1
-Range            : 40 yards
+Range            : 45 yards
 Cast Time        : 2 seconds
 Velocity         : 35 yards/sec
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -9875,17 +9881,17 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Family Flags     : 127
 Attributes       : ........ ........ x....... .....x..   ...x...x ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
+                 : ........ ........ ........ ........   ........ ........ .xx..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Always hits (114)
+                 : Disable target procs (113), Always hits (114)
 Effects          :
 #1 (id=814173)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.27500 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.33500 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Your damaging periodic effects erupt on all targets, causing $<damage> Shadow damage per effect.
 Variables        : $damage=${$bc1*($SP)*(1+$@versadmg)}
 
@@ -10590,7 +10596,7 @@ Description      : Malefic Rapture increases the damage of your $?s198590[Drain 
 Name             : Malefic Wrath (id=337125) [Spell Family (5)] 
 School           : Physical
 Spell Type       : None
-Duration         : 8 seconds
+Duration         : 10 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
@@ -10607,11 +10613,11 @@ Attributes       : ........ ........ ........ .......x   ........ ..x..... .....
                  : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=834935)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Drain Soul (198590)
                    Family Flags: 0, 23
 #2 (id=834936)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Drain Soul (198590)
                    Family Flags: 0, 23
 Description      : $@spelldesc337122
@@ -10676,8 +10682,8 @@ Attributes       : ......x. ........ ........ .......x   ........ ..x..... .....
                  : Passive (6), Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=834957)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Each Soul Shard spent on Hand of Gul'dan increases the damage of your next Call Dreadstalkers by 3%.
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Each Soul Shard spent on Hand of Gul'dan increases the damage of your next Call Dreadstalkers by $s1%.
 
 Name             : Grim Inquisitor's Dread Calling (id=337142) [Spell Family (5)] 
 Class            : Warlock
@@ -10741,7 +10747,7 @@ Description      : Shadow Bolt increases the damage of your Demonbolt by $337161
 Name             : Balespider's Burning Core (id=337161) [Spell Family (5)] 
 School           : Physical
 Spell Type       : None
-Duration         : 15 seconds
+Duration         : 20 seconds
 Stacks           : 4 maximum
 Proc Chance      : 101%
 Triggered by     : Balespider's Burning Core (337159)
@@ -10756,7 +10762,7 @@ Attributes       : ........ ........ ........ .......x   ........ ..x..... .....
                  : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=834993)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Demonbolt (264178)
                    Family Flags: 70
 Description      : $@spelldesc337159
@@ -10849,7 +10855,7 @@ Description      : Chaos Bolt increases the damage of Chaos Bolt by $337170s1% a
 Name             : Madness of the Azj'Aqir (id=337170) [Spell Family (5)] 
 School           : Physical
 Spell Type       : None
-Duration         : 3 seconds
+Duration         : 4 seconds
 Triggered by     : Madness of the Azj'Aqir (337169)
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ..x..... 

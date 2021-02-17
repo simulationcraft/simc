@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, git build shadowlands beecde0f, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -628,7 +628,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Fracture (263642)
                    Family Flags: 73
-Description      : Transform to demon form for $d, increasing current and maximum health by $s2% and Armor by $s7%.$?s321067[ While transformed, Shear and Fracture generate one additional Lesser Soul Fragment][]$?s321068[ and $s4 additional Fury][].
+Description      : Transform to demon form for $d, increasing current and maximum health by $s2% and Armor by $s7%$?s321067[. While transformed, Shear and Fracture generate one additional Lesser Soul Fragment][]$?s321068[ and $s4 additional Fury][].
 Tooltip          : Maximum health increased by $w2%.
 Armor increased by $w7%.
 $?s263642[Fracture][Shear] generates $w4 additional Fury and one additional Lesser Soul Fragment.
@@ -8442,9 +8442,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=835619)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: -1 | Target: Self (1)
-Description      : $?a212612[Eye Beam]?a212613[Fel Devastation][] has a $s1% chance to not incur its cooldown.
-Tooltip          : $?a212612[Eye Beam]?a212613[Fel Devastation][] has a $s1% chance to not incur its cooldown.
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: -1 | Target: Self (1)
+#2 (id=880529)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $?a212612[Eye Beam]?a212613[Fel Devastation][] has a $?a212612[$s1][$s2]% chance to not incur its cooldown and refund $?a212612[$350726s1][$350726s2] Fury.
+Tooltip          : $?a212612[Eye Beam]?a212613[Fel Devastation][] has a $?a212612[$s1][$s2]% chance to not incur its cooldown and refund $?a212612[$350726s1][$350726s2] Fury.
 
 Name             : Darkest Hour (id=337539) [Spell Family (107), Passive] 
 School           : Physical
@@ -8483,8 +8485,8 @@ Effects          :
 #1 (id=835628)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 #2 (id=835629)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
-Description      : Your Fiery Brand now heals you for $s1% of its initial damage done, and each enemy hit by your Sigil of Flame increases the instant damage of your next Fiery Brand by $337542s1%, stacking up to $337542u times.
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
+Description      : Your Fiery Brand now heals you for $s1% of its initial damage done over $s337543d, and each enemy hit by your Sigil of Flame increases the instant damage of your next Fiery Brand by $337542s1%, stacking up to $337542u times.
 
 Name             : Razelikh's Defilement (id=337544) [Spell Family (107), Passive] 
 School           : Physical
@@ -8670,7 +8672,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Duration         : 30 seconds
+Duration         : 40 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9028,7 +9030,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838972)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When Sigil of Silence's effect ends, affected enemies deal |cFFFFFFFF${$s1}.1%|r reduced magic damage to you for $339589d.
+Description      : When Sigil of Silence's effect ends, affected enemies deal |cFFFFFFFF${-$s1}.1%|r reduced magic damage to you for $339589d.
 
 Name             : Roaring Fire (id=339644) [Spell Family (107), Passive, Hidden] 
 School           : Physical
@@ -9728,9 +9730,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Periodic effect can crit (265)
 Effects          :
 #1 (id=872713)   : Apply Aura (6) | Periodic Damage (3): chromatic every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=872715)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922)
                    Family Flags: 11, 49, 61
 Description      : $@spelldesc346279
@@ -9755,7 +9757,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=872714)   : Apply Aura (6) | Proc Trigger Spell (42): Burning Wound
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Trigger Spell: 346278 | Target: Enemy (6)
-Description      : Demon's Bite leaves an open wound on your enemy dealing $346278s1 Chaos damage over $346278d and increasing damage taken from your Immolation Aura by $346278s2%.
+Description      : Demon's Bite leaves an open wound on your enemy dealing $346278o1 Chaos damage over $346278d and increasing damage taken from your Immolation Aura by $346278s2%.
 Tooltip          : Demon's Bite leaves an open wound on your enemy dealing $346278o1 Chaos damage over $346278d and increasing damage taken from your Immolation Aura by $346278s2%.
 
 Name             : Throw Glaive (id=346665) [Spell Family (107)] 
@@ -9817,7 +9819,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=874736)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 600 | Scaled Value: 600 | PvP Coefficient: 1.00000 | Target: Self (1)
 Tooltip          : Damage of your next Fel Rush increased by $s1%.
 
 Name             : Demon Soul (id=347765) [Spell Family (107)] 
@@ -9858,7 +9860,9 @@ Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
 Spell Level      : 48
+Internal Cooldown: 30 seconds
 Proc Chance      : 100%
+Real PPM         : 1.58
 Proc Flags       : ....x.x. ....x... ........ ........ 
                  : Yellow Melee, White Ranged, Generic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9871,7 +9875,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6)
 Effects          :
-#1 (id=880257)   : Apply Aura (6) | Dummy (4)
+#1 (id=880257)   : Apply Aura (6) | Proc Trigger Spell (42): Fodder to the Flame
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 329554 | Target: Self (1)
 Description      : Your damaging abilities have a chance to call forth a demon from the Theater of Pain for $329554d. Throw Glaive deals lethal damage to the demon, which explodes on death, dealing $350631s1 damage to nearby enemies and healing you for $350631s2% of your maximum health. The explosion deals reduced damage beyond 5 targets.
 

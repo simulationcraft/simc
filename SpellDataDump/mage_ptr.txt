@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, git build shadowlands beecde0f, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, no-networking)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -4094,7 +4094,7 @@ Effects          :
 #1 (id=302648)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=303101)   : Apply Aura (6) | Periodic Damage (3): frost every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | PvP Coefficient: 0.85000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=718208)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 #4 (id=740366)   : Dummy (3)
@@ -5147,7 +5147,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=344289)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.97000 | PvP Coefficient: 0.80000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.97000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=344290)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Root | Target: Enemy (6)
 Description      : $@spelldesc199786
@@ -9891,7 +9891,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=818696)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Casting $s1 Frostbolts or Flurries calls down a Frozen Orb toward your target. Hitting an enemy player counts as double.
 
 Name             : Cold Front (id=327327) [Spell Family (3)] 
@@ -9899,7 +9899,7 @@ Class            : Mage
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
-Stacks           : 60 maximum
+Stacks           : 30 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -9956,7 +9956,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=818816)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : While Frozen Orb is active, you gain Fingers of Frost every $327478t1 sec.
 
 Name             : Disciplinary Command (id=327365) [Passive] 
@@ -10052,7 +10052,7 @@ Attributes       : ........ ........ ........ x..x.x..   .....x.. ..x..... .....
                  : Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=818825)   : Apply Aura (6) | Modify Crit Damage Done% (163)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=818826)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -10073,7 +10073,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=818969)   : Apply Aura (6) | Periodic Trigger Spell (23): Fingers of Frost every 3 seconds
+#1 (id=818969)   : Apply Aura (6) | Periodic Trigger Spell (23): Fingers of Frost every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 44544 | Target: Self (1)
 Description      : $@spelldesc327364
 Tooltip          : Gaining Fingers of Frost every $t1 sec.
@@ -10082,7 +10082,7 @@ Name             : Expanded Potential (id=327489) [Spell Family (3), Passive]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Real PPM         : 1.66 (Haste multiplier)
+Real PPM         : 2 (Haste multiplier)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10206,14 +10206,14 @@ Effects          :
 #1 (id=827567)   : Apply Aura (6) | Dummy (4)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=827578)   : Apply Aura (6) | Proc Trigger Spell (42): Arcane Harmony
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 332777 | Target: Self (1)
-Description      : Each time Arcane Missiles hits an enemy, the damage of your next Arcane Barrage is increased by $332777s1%. This effect stacks up to $332777u times.
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Trigger Spell: 332777 | Target: Self (1)
+Description      : Each time Arcane Missiles hits an enemy, the damage of your next Arcane Barrage is increased by $332777s1%. $?a134735[This effect stacks up to $s2 times.][This effect stacks up to $332777u times.]
 
 Name             : Arcane Harmony (id=332777) [Spell Family (3)] 
 School           : Arcane
 Spell Type       : None
 Duration         : Aura (infinite)
-Stacks           : 15 maximum
+Stacks           : 18 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -10228,7 +10228,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=827577)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Arcane Barrage (44425)
                    Family Flags: 47
 Description      : $@spelldesc332769
@@ -10354,7 +10354,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=828203)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Damaging an enemy with $s1 Fireballs or Pyroblasts causes your next Fireball to call down a Meteor on your target. Hitting an enemy player counts as double.
 
 Name             : Molten Skyfall (id=333170) [Spell Family (3)] 
@@ -10362,7 +10362,7 @@ Class            : Mage
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
-Stacks           : 25 maximum
+Stacks           : 18 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -10417,9 +10417,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=828406)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=828420)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : After consuming $s1 Hot Streaks, your next non-instant Pyroblast cast within $333315d grants you Combustion for $s2 sec.
 
 Name             : Sun King's Blessing (id=333314) [Spell Family (3)] 
@@ -10427,7 +10427,7 @@ Class            : Mage
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
-Stacks           : 12 maximum
+Stacks           : 8 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -10818,7 +10818,7 @@ Effects          :
 #1 (id=834722)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: -1000 | Scaled Value: -1000 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 1048 (Label) | Target: Self (1)
                    Affected Spells (Label): Shifting Power (314791)
-Description      : Shifting Power reduces your Mage ability cooldowns by an additional ${-$s1/1000*$314791d/$314791t} sec over $314791d.
+Description      : Shifting Power reduces your Mage ability cooldowns by an additional |cFFFFFFFF${-$s1/1000*$314791d/$314791t}.1 sec|r over $314791d.
 
 Name             : Gift of the Lich (id=336999) [Spell Family (3), Passive, Hidden] 
 School           : Physical

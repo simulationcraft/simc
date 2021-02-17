@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, git build shadowlands beecde0f, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, no-networking)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -195,8 +195,10 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 23
 Duration         : 8 seconds
-Cooldown         : 240 seconds
-Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Shield Wall (316834 effect#1), Stalwart Guardian (334993 effect#1)
+Cooldown         : 8 seconds
+Charges          : 1 (240 seconds cooldown)
+Category         : 1929: Stalwart Guardian (334993 effect#2), Unbreakable Will (335629 effect#2)
+Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Shield Wall (316834 effect#1)
 Family Flags     : 11, 13
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -710,7 +712,7 @@ Spell Level      : 12
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
-Affecting spells : Rend (772 effect#3), Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Revenge! (5302 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #8), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Best Served Cold (202560 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Callous Reprisal (278760 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), Reprisal (335734 effects: #1, #2), Seismic Reverberation (335759 effect#1)
+Affecting spells : Rend (772 effect#3), Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Revenge! (5302 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #8), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Best Served Cold (202560 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Callous Reprisal (278760 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), Seismic Reverberation (335759 effect#1)
 Family Flags     : 8, 9, 10, 18
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -9576,7 +9578,7 @@ Effects          :
 #5 (id=836244)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 330334 | Scaled Value: 330334 | PvP Coefficient: 1.00000 | Misc Value: 281000 | Misc Value 2: 0x3 | Target: Self (1)
 #6 (id=872286)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: -7 | Scaled Value: -7 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1138 (Label) | Target: Self (1)
+                   Base Value: -14 | Scaled Value: -14 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1138 (Label) | Target: Self (1)
                    Affected Spells (Label): Exploiter (335451)
 #7 (id=873357)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1148 (Label) | Target: Self (1)
@@ -10255,8 +10257,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=831281)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -20000 | Scaled Value: -20000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Shield Wall (871), Die by the Sword (118038), Enraged Regeneration (184364)
-                   Family Flags: 13, 64, 97
+                   Affected Spells: Die by the Sword (118038), Enraged Regeneration (184364)
+                   Family Flags: 64, 97
+#2 (id=880715)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: -20000 | Scaled Value: -20000 | PvP Coefficient: 1.00000 | Misc Value: 1929 | Target: Self (1)
+                   Affected Spells (Category): Shield Wall (871)
 Description      : The cooldown of $?c1[Die by the Sword]?c2[Enraged Regeneration][Shield Wall] is reduced by |cFFFFFFFF${$s1/-1000} sec|r.
 Variables        : $swCDR=${$s1/-500}
 
@@ -10809,6 +10814,7 @@ Tooltip          : Activating  $?s152277[Ravager][Bladestorm], Recklessness, or 
 Name             : Battlelord (id=335274) [Spell Family (4), Passive] 
 School           : Physical
 Spell Type       : None
+Internal Cooldown: 0.1 seconds
 Proc Chance      : 40%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -10826,7 +10832,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 346369 | Target: Self (1)
 #2 (id=872866)   : Apply Aura (6) | Proc Trigger Spell (42): Battlelord
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 346370 | Target: Self (1)
-Description      : Your Slam has a $h% chance to reset the cooldown of Mortal Strike and reduce the Rage cost of your next Mortal Strike by ${$346369s1/-10}.
+Description      : Your Overpower has a $h% chance to reset the cooldown of Mortal Strike and reduce the Rage cost of your next Mortal Strike by ${$346369s1/-10}.
 
 Name             : Unhinged (id=335282) [Spell Family (4), Passive, Hidden] 
 School           : Physical
@@ -10865,7 +10871,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=832066)   : Apply Aura (6) | Trigger Spell with Value (231)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Trigger Spell: 335452 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Trigger Spell: 335452 | Target: Self (1)
 Description      : $?a317320[Condemn][Execute] causes the target to take $s1% more damage from your next Mortal Strike, stacking up to $335452u times.
 
 Name             : Exploiter (id=335452) [Spell Family (4)] 
@@ -10897,7 +10903,7 @@ Tooltip          : Damage from $@auracaster's next Mortal Strike increased by $w
 Name             : Enduring Blow (id=335458) [Spell Family (4), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Proc Chance      : 15%
+Proc Chance      : 25%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10911,7 +10917,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=832077)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your Mortal Strike has a $h% chance to apply the Colossus Smash effect to your target for ${$s1/1000} sec.
 
 Name             : Cadence of Fujieda (id=335555) [Spell Family (4), Passive] 
@@ -10938,7 +10944,7 @@ Description      : Bloodthirst increases your Haste by $335558s1% for $335558d, 
 Name             : Cadence of Fujieda (id=335558) [Spell Family (4)] 
 School           : Physical
 Spell Type       : None
-Duration         : 8 seconds
+Duration         : 12 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered by     : Cadence of Fujieda (335555)
@@ -10993,10 +10999,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=832298)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=871357)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
-Description      : Rampage critical strikes have $s2% chance to reduce the remaining cooldown of your Recklessness and Enraged Regeneration by $s1 sec.
+Description      : Rampage strikes have $s2% chance to reduce the remaining cooldown of your Recklessness and Enraged Regeneration by $s1 sec.
 
 Name             : Unbreakable Will (id=335629) [Spell Family (4), Passive] 
 School           : Physical
@@ -11013,15 +11019,18 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=832360)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Shield Wall also grants $s1% of its effect to all party members.
+#2 (id=880714)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1929 | Target: Self (1)
+                   Affected Spells (Category): Shield Wall (871)
+Description      : Shield Wall gains $s2 additional charge, and grants $s1% of its effect to all party members.
 
 Name             : Reprisal (id=335718) [Spell Family (4), Passive] 
 School           : Physical
 Spell Type       : None
-Internal Cooldown: 6 seconds
+Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...... ........ ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken
+Proc Flags       : ........ ..x..... ........ ........ 
+                 : Generic Heal
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11032,9 +11041,27 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6)
 Effects          :
-#1 (id=832499)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : The first attack you intercept with Intervene grants you Ignore Pain, and makes your next Revenge cost no Rage and deal $335734s2% more damage.
+#1 (id=832499)   : Apply Aura (6) | Proc Trigger Spell (42): Reprisal
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 335734 | Target: Self (1)
+Description      : Charge and Intervene grant you Shield Block, Revenge!, and generate ${$335734s1/10} Rage.
+
+Name             : Reprisal (id=335734) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Triggered by     : Reprisal (335718)
+Attributes       : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=832527)   : Energize Power (30)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+Description      : $@spelldesc335718
+
 
 Name             : Seismic Reverberation (id=335758) [Spell Family (4), Passive] 
 School           : Physical
@@ -11530,7 +11557,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=872864)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
-                   Base Value: -120 | Scaled Value: -120 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -150 | Scaled Value: -150 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Mortal Strike (12294)
                    Family Flags: 25
 Description      : $@spelldesc335274

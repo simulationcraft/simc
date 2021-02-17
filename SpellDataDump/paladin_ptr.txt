@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, git build shadowlands beecde0f, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, no-networking)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -1449,8 +1449,8 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : Cannot crit (93)
 Effects          :
 #1 (id=60407)    : Direct Heal (10)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Heals Paladin back to a percentage of maximum health.
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc31850
 
 Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
@@ -1656,7 +1656,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Radius: 0 - 4 yards | Target: At Caster (22) -> AOE friendly (30)
 #3 (id=736030)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 40 yards | Target: Unknown(59)
-Description      : Unleashes a wave of holy energy, healing up to $s1 injured allies within a $a1 yd frontal cone for $225311s1.
+Description      : Unleashes a wave of holy energy, healing up to $s1 injured allies within a $?a337812[$a3][$a1] yd frontal cone for $225311s1.
 
 Name             : Templar's Verdict (id=85256) [Spell Family (10)] 
 Class            : Retribution Paladin
@@ -4978,6 +4978,24 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When both of your Greater Blessings are active, gain Blessing of the Ashbringer. Blessing of the Ashbringer grants $242981s1% Strength.
 
+Name             : Sacred Dawn (id=238132) [Spell Family (10), Passive] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6)
+Effects          :
+#1 (id=360817)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : All allies inside your Light of Dawn receive $243174s1% increased healing from your spells for $243174d.
+
 Name             : Righteous Verdict (id=238996) [Spell Family (10)] 
 Class            : Paladin
 School           : Physical
@@ -5022,6 +5040,28 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
 Description      : $@spelldesc238098
 Tooltip          : Strength increased by $s1%.
+
+Name             : Sacred Dawn (id=243174) [Spell Family (10)] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 6 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=369379)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Affected Spells: Lay on Hands (633), Flash of Light (19750), Holy Shock (25914), Beacon of Light (53652), Holy Light (82326), Light of Dawn (85222), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Judgment of Light (183811), Light of the Martyr (183998), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Hallowed Discernment (340214)
+                   Family Flags: 15, 30, 32, 41, 48, 74, 82, 90, 97, 100, 124
+Description      : $@spelldesc238132
+Tooltip          : Receiving $w1% increased healing from the Paladin.
 
 Name             : Awakening (id=248033) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -9470,7 +9510,7 @@ $@spelldesc337757
 Name             : Blessing of Dawn (id=337747) [Spell Family (10)] 
 School           : Physical
 Spell Type       : None
-Duration         : 8 seconds
+Duration         : 12 seconds
 Triggered by     : Of Dusk and Dawn (337746)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9497,7 +9537,7 @@ Tooltip          : Damage and healing increased by $w1%.
 Name             : Blessing of Dusk (id=337757) [Spell Family (10)] 
 School           : Physical
 Spell Type       : None
-Duration         : 8 seconds
+Duration         : 12 seconds
 Triggered by     : Of Dusk and Dawn (337746)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9509,7 +9549,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=835956)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 Description      : Damage taken reduced by $s1% for $d.
 Tooltip          : Damage taken reduced by $w1%.
@@ -9532,16 +9572,17 @@ Effects          :
                    Affected Spells: Infusion of Light (54149)
                    Family Flags: 116
 #2 (id=835985)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Infusion of Light (54149)
                    Family Flags: 116
 #3 (id=835986)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Infusion of Light (54149)
                    Family Flags: 116
 Description      : Infusion of Light has $s1 additional charge and its effects are increased by $s3%.
 
 Name             : Shadowbreaker, Dawn of the Sun (id=337812) [Spell Family (10), Passive] 
+Class            : Paladin
 School           : Physical
 Spell Type       : None
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -9563,6 +9604,26 @@ Effects          :
 Description      : Light of Dawn's range is increased to $85222a3 yards. All allies within your Light of Dawn benefit from Mastery: Lightbringer as though they were within $s2 yards for $337815d.
 
 Word of Glory receives $s3% increased benefit from your Mastery.
+
+Name             : Shadowbreaker, Dawn of the Sun (id=337815) [Spell Family (10)] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 10 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : .......x ........ ........ ........   ...x.... ........ ..x..... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ....x... ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=836033)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Radius: 40 yards | Target: Unknown(59)
+Description      : $@spelldesc238132
+Tooltip          : Receiving increased healing from $@auracaster.
 
 Name             : Shock Barrier (id=337825) [Spell Family (10), Passive] 
 School           : Physical
@@ -9610,9 +9671,6 @@ Description      : Your Avenger's Shield has a $h% chance to have its cooldown i
 Name             : The Ardent Protector's Sanctum (id=337838) [Spell Family (10), Passive] 
 School           : Physical
 Spell Type       : None
-Proc Chance      : 100%
-Proc Flags       : ........ ..x..... ........ ........ 
-                 : Generic Heal
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9623,11 +9681,15 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Cannot cancel aura (31), Don't display in aura bar (60)
 Effects          :
-#1 (id=836062)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+#1 (id=836062)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Ardent Defender (31850), Ardent Defender (66235)
                    Family Flags: 87
-Description      : Reduces damage taken while Ardent Defender is active by an additional $s1%, and when you activate Ardent Defender, it will also apply to the nearest ally within $171431a1 yards.
+#2 (id=880972)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : When Ardent Defender saves you from death, it restores $s1% additional health.
+
+When Ardent Defender expires without saving you from death, reduce its remaining cooldown to $s2 seconds.
 
 
 Name             : Bulwark of Righteous Fury (id=337847) [Spell Family (10), Passive] 

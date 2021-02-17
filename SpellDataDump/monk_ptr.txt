@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, git build shadowlands beecde0f, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -956,7 +956,7 @@ Name             : Renewing Mist (id=115151) [Spell Family (53)]
 Class            : Mistweaver Monk
 School           : Nature
 Spell Type       : Magic
-Resource         : 2.1% Base Mana (0) (id=5696)
+Resource         : 1.8% Base Mana (0) (id=5696)
 Spell Level      : 18
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -11017,10 +11017,10 @@ Attributes       : ......x. ........ ........ .......x   ........ ..x..... .....
                  : Passive (6), Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=835235)   : Apply Aura (6) | Proc Trigger Spell (42): Mighty Pour
-                   Base Value: 25 | Scaled Value: 25 | Trigger Spell: 337994 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Trigger Spell: 337994 | Target: Self (1)
 #2 (id=835236)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Celestial Brew increases your Armor by $337994m1% for $337994d, and Purifying Brew has a $m2% chance to not consume a charge.
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Purifying Brew has a $m2% chance to not consume a charge and Celestial Brew increases your Armor by $337994m1% for $337994d.
 
 Name             : The Emperor's Capacitor (id=337291) [Spell Family (53)] 
 School           : Physical
@@ -11297,15 +11297,15 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=835525)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Vivify (116670)
                    Family Flags: 26
 #2 (id=835526)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Vivify (116670), Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Mist (344008)
                    Family Flags: 26, 79
 #3 (id=871622)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Mist (344008)
                    Family Flags: 79
 Description      : $@spelldesc337343
@@ -11331,12 +11331,12 @@ Effects          :
 #1 (id=835532)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
 #2 (id=835533)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2500 | Scaled Value: 2500 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
+                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
 #3 (id=835534)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-Description      : When Fists of Fury ends, the critical strike chance of Rising Sun Kick is increased by $337482m1% for $337482d.
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
+Description      : Rising Sun Kick critical strikes reduce the cooldown of Fists of Fury by ${$m2/1000}.1 sec.
 
-Rising Sun Kick critical strikes reduce the cooldown of Fists of Fury by ${$m2/1000}.1 sec.
+When Fists of Fury ends, the critical strike chance of Rising Sun Kick is increased by $337482m1% for $337482d.
 
 Name             : Jade Ignition (id=337483) [Spell Family (53), Passive] 
 School           : Physical
@@ -11377,11 +11377,11 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : Passive (6), Cannot cancel aura (31), Don't display in aura bar (60)
 Effects          :
 #1 (id=835670)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
 #2 (id=872671)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
 #3 (id=872672)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
 Description      : Tiger Palm has a $s1% chance to deal $s2% of normal damage and reduce the remaining cooldown of your Brews by ${$s3/1000} additional sec.
 
 Name             : Chi Energy (id=337571) [Spell Family (53)] 
@@ -11411,7 +11411,7 @@ Chi Explosion is triggered whenever you use Spinning Crane Kick.
 Name             : Mighty Pour (id=337994) [Spell Family (53)] 
 School           : Physical
 Spell Type       : None
-Duration         : 7 seconds
+Duration         : 8 seconds
 Triggered by     : Mighty Pour (337290)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
@@ -11424,7 +11424,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=836306)   : Apply Aura (6) | Modify Armor% (101)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 Description      : $@spelldesc337290
 Tooltip          : Armor increased by $w1%.
 

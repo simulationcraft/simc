@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.0.5.37503
-static const std::array<item_name_description_t, 582> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 9.0.5.37623
+static const std::array<item_name_description_t, 583> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -582,5 +582,6 @@ static const std::array<item_name_description_t, 582> __ptr_item_name_descriptio
   { 13826, "Upgrade Level: 5/7"                          },
   { 13827, "Upgrade Level: 6/7"                          },
   { 13828, "Upgrade Level: 1/6"                          },
+  { 13829, "Stygia Crafting"                             },
 } };
 

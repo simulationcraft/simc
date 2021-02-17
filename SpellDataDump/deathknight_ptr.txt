@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, git build shadowlands beecde0f, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1655,7 +1655,7 @@ Cooldown         : 90 seconds
 Category         : 1641
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
 Stance Mask      : 0x01000000
-Affecting spells : Vampiric Blood (317133 effects: #1, #2, #3)
+Affecting spells : Vampiric Blood (317133 effects: #1, #2, #3), Vampiric Aura (334547 effects: #2, #3)
 Family Flags     : 35
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1674,6 +1674,8 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=734281)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+#5 (id=880877)   : Apply Aura (6) | Modify Leech% (443)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Embrace your undeath, increasing your maximum health by $s4% and increasing all healing and absorbs received by $s1% for $d.
 Tooltip          : Maximum health increased by $s4%. Healing and absorbs received increased by $s1%.
 
@@ -5926,7 +5928,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Always hits (114), Disable weapon procs (151), Periodic effect can crit (265)
 Effects          :
 #1 (id=281049)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12500 | PvP Coefficient: 0.90000 | Misc Value: 127 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12500 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : A disease that deals $o Shadow damage over $d. It erupts when the infected target dies, dealing $191685s1 Shadow damage to nearby enemies.
@@ -5950,7 +5952,7 @@ Attributes       : ........ ........ ........ ...x....   ...x...x ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=281173)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24000 | PvP Coefficient: 0.90000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc191587
 
 Name             : Storm Elemental (id=192249) [Spell Family (11)] 
@@ -8404,7 +8406,7 @@ Effects          :
 #3 (id=334784)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 #4 (id=334785)   : Dummy (3)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000
 Description      : A vicious strike that deals $s2 Plague damage, and converts $s3 Festering $LWound:Wounds; into a Necrotic Wound, absorbing up to $s4% of the target's maximum health in healing received.
 
 Name             : Consumption (id=224685) [Spell Family (15)] 
@@ -8621,7 +8623,7 @@ Spell Type       : Magic
 Range            : 20 yards
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 120
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13580,7 +13582,7 @@ Proc Chance      : 101%
 Triggered by     : Rune of Sanguination (326808)
 Attributes       : ........ ........ ........ ..x..x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14051,8 +14053,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=830516)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-Description      : When a charge of Bone Shield is consumed, the cooldown of Dancing Rune Weapon is reduced by ${$s1/-1000} sec. Additionally, when Dancing Rune Weapon fades, your Rune regeneration rate is increased by $334526s1% for $334526d.
+                   Base Value: -5000 | Scaled Value: -5000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+#2 (id=880874)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Description      : Dancing Rune Weapon generates $s2 Bone Shield charges. When a charge of Bone Shield is consumed, the cooldown of Dancing Rune Weapon is reduced by ${$s1/-1000} sec. Additionally, when Dancing Rune Weapon fades, your Rune regeneration rate is increased by $334526s1% for $334526d.
 
 Name             : Vampiric Aura (id=334547) [Spell Family (15), Passive, Hidden] 
 School           : Physical
@@ -14069,7 +14073,15 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=830546)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your Vampiric Blood ability also affects all party members for $s1% of the effect it has on you.
+#2 (id=880876)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Vampiric Blood (55233)
+                   Family Flags: 35
+#3 (id=880878)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
+                   Affected Spells: Vampiric Blood (55233)
+                   Family Flags: 35
+Description      : Vampiric Blood grants you $s3% Leech and its duration is increased by ${$s2/1000} sec. Additionally, your Vampiric Blood affects all party members for $s1% of the effect it has on you.
 
 Name             : Gorefiend's Domination (id=334580) [Spell Family (15), Passive] 
 School           : Physical
@@ -14086,7 +14098,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=830592)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Heart Strike reduces the remaining cooldown on Vampiric Blood by $s1 seconds.
+Description      : Vampiric Blood generates ${$350914s1/10} Runic Power. Additionally, Heart Strike reduces the remaining cooldown on Vampiric Blood by $s1 seconds.
 
 Name             : Koltira's Favor (id=334583) [Spell Family (15), Passive] 
 School           : Physical
@@ -14215,7 +14227,7 @@ Name             : Reanimated Shambler (id=334836) [Spell Family (15), Passive]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Real PPM         : 1.5
+Real PPM         : 1.75
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -14230,7 +14242,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=831016)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your attacks have a chance to summon a Super Zombie that shambles forward and explodes, dealing $334851s1 Shadow damage and applying a Festering Wound to $334851s2 nearby enemies.
+Description      : Your attacks have a chance to summon a Super Zombie that shambles forward and explodes, dealing $?a137007[${((100+$77515m1)/100*$334851s1)}][$334851s1] Shadow damage and applying a Festering Wound to $334851s2 nearby enemies.
 
 Name             : Frenzied Monstrosity (id=334888) [Spell Family (15), Passive] 
 School           : Physical
@@ -14358,7 +14370,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=831631)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : You and your minions gain $?a137008[${$335180s1/2}%][$335180s1%] Haste while you are inside your Death and Decay and enemies damaged by your Death and Decay have a chance to cower in place for $206961d.
+Description      : You and your minions gain $?a137008[$s2%][$335180s1%] Haste while you are inside your Death and Decay and enemies damaged by your Death and Decay have a chance to cower in place for $206961d.
 
 Name             : Will of the Berserker (id=335594) [Spell Family (15), Passive] 
 School           : Physical
