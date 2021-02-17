@@ -5922,6 +5922,7 @@ void hunter_t::create_buffs()
           else if ( old == 0 )
             buffs.eagletalons_true_focus -> trigger();
         } )
+      -> apply_affecting_aura( legendary.eagletalons_true_focus )
       -> apply_affecting_conduit( conduits.sharpshooters_focus );
 
   buffs.volley =
