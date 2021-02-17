@@ -576,6 +576,7 @@ public:
     gain_t* antimagic_shell; // RP from magic damage absorbed
     gain_t* rune; // Rune regeneration
     gain_t* rune_of_hysteria;
+    gain_t* spirit_drain;
     gain_t* start_of_combat_overflow;
 
     // Covenant
@@ -911,7 +912,7 @@ public:
     conduit_data_t withering_ground;   // Night Fae, 250
 
     // Shared - other throughput
-    // conduit_data_t spirit_drain; Finesse trait, 70
+    conduit_data_t spirit_drain;       // Finesse trait, 70
 
     // Blood
     conduit_data_t debilitating_malady;     // 123
@@ -5682,6 +5683,18 @@ struct mind_freeze_t : public death_knight_spell_t
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
 
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    if ( p() -> conduits.spirit_drain.ok() )
+    {
+      p() -> resource_gain( RESOURCE_RUNIC_POWER,
+        p() -> conduits.spirit_drain.value() / 10,
+        p() -> gains.spirit_drain, this );
+    }
+  }
+
   bool target_ready( player_t* candidate_target ) override
   {
     if ( ! candidate_target -> debuffs.casting || ! candidate_target -> debuffs.casting -> check() )
@@ -8268,7 +8281,7 @@ void death_knight_t::init_spells()
   conduits.withering_ground = find_conduit_spell( "Withering Ground" );
 
   // Shared - other throughput
-  // conduits.spirit_drain = find_conduit_spell( "Spirit Drain" );
+  conduits.spirit_drain = find_conduit_spell( "Spirit Drain" );
 
   // Blood
   conduits.debilitating_malady = find_conduit_spell( "Debilitating Malady" );
@@ -8604,8 +8617,9 @@ void death_knight_t::init_gains()
   // Shared
   gains.antimagic_shell                  = get_gain( "Antimagic Shell" );
   gains.rune                             = get_gain( "Rune Regeneration" );
-  gains.start_of_combat_overflow         = get_gain( "Start of Combat Overflow" );
   gains.rune_of_hysteria                 = get_gain( "Rune of Hysteria" );
+  gains.spirit_drain                     = get_gain( "Spirit Drain" );
+  gains.start_of_combat_overflow         = get_gain( "Start of Combat Overflow" );
 
   // Blood
   gains.blood_tap                        = get_gain( "Blood Tap" );
