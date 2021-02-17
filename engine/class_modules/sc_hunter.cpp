@@ -781,6 +781,7 @@ public:
 
     // passive legendary effects
     ab::apply_affecting_aura( p -> legendary.call_of_the_wild );
+    ab::apply_affecting_aura( p -> legendary.qapla_eredun_war_order );
     ab::apply_affecting_aura( p -> legendary.surging_shots );
 
     // passive conduits
