@@ -291,8 +291,9 @@ void frost( player_t* p )
   racials->add_action( "fireblood,if=buff.pillar_of_frost.remains<=8&buff.empower_rune_weapon.up" );
   racials->add_action( "bag_of_tricks,if=buff.pillar_of_frost.up&active_enemies=1&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)" );
   
-  trinkets->add_action( "use_item,slot=trinket1,if=trinket.1.has_use_buff&buff.pillar_of_frost.up&(trinket.1.cooldown.duration>trinket.2.cooldown.duration|!trinket.2.has_use_buff)|!trinket.1.has_use_buff&trinket.2.cooldown.remains>20", "Trinkets" );
-  trinkets->add_action( "use_item,slot=trinket2,if=trinket.2.has_use_buff&buff.pillar_of_frost.up&(trinket.2.cooldown.duration>trinket.1.cooldown.duration|!trinket.1.has_use_buff)|!trinket.2.has_use_buff&trinket.1.cooldown.remains>20" );
+  trinkets->add_action( "use_item,name=inscrutable_quantum_device,if=(buff.pillar_of_frost.up|target.time_to_pct_20<5)|fight_remains<21", "Trinkets" );
+  trinkets->add_action( "use_item,slot=trinket1,if=(buff.pillar_of_frost.up&((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1+trinket.1.has_stat.strength))>((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1+trinket.2.has_stat.strength))|trinket.2.cooldown.remains|trinket.1.proc.any_dps.duration<=fight_remains)&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
+  trinkets->add_action( "use_item,slot=trinket2,if=(buff.pillar_of_frost.up&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1+trinket.2.has_stat.strength))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1+trinket.1.has_stat.strength))|trinket.1.cooldown.remains|trinket.2.proc.any_dps.duration<=fight_remains)&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
   trinkets->add_action( "use_items,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff" );
 }
 //frost_apl_end
@@ -402,11 +403,9 @@ void unholy( player_t* p )
   racials->add_action( "bag_of_tricks,if=buff.unholy_strength.up&active_enemies=1" );
 
   trinkets->add_action( "use_item,name=inscrutable_quantum_device,if=(cooldown.unholy_blight.remains|cooldown.dark_transformation.remains)&(pet.army_ghoul.active|pet.apoc_ghoul.active&!talent.army_of_the_damned|target.time_to_pct_20<5)|fight_remains<21", "Trinkets" );
-  trinkets->add_action( "use_item,name=macabre_sheet_music,if=cooldown.apocalypse.remains<5&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<21" );
-  trinkets->add_action( "use_item,name=dreadfire_vessel,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<3" );
-  trinkets->add_action( "use_item,name=darkmoon_deck_voracity,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<21" );
-  trinkets->add_action( "use_item,name=overwhelming_power_crystal,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<16" );
-  trinkets->add_action( "use_items,if=(cooldown.apocalypse.remains|buff.dark_transformation.up)&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
+  trinkets->add_action( "use_item,slot=trinket1,if=((dot.unholy_blight.ticking|cooldown.dark_transformation.remains)&(pet.army_ghoul.active|pet.apoc_ghoul.active|buff.dark_transformation.up)&((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1+trinket.1.has_stat.strength))>((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1+trinket.2.has_stat.strength))|trinket.2.cooldown.remains|trinket.1.proc.any_dps.duration<=fight_remains)&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
+  trinkets->add_action( "use_item,slot=trinket2,if=((dot.unholy_blight.ticking|cooldown.dark_transformation.remains)&(pet.army_ghoul.active|pet.apoc_ghoul.active|buff.dark_transformation.up)&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1+trinket.2.has_stat.strength))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1+trinket.1.has_stat.strength))|trinket.1.cooldown.remains|trinket.2.proc.any_dps.duration<=fight_remains)&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
+  trinkets->add_action( "use_items,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff" );
 }
 //unholy_apl_end
 
