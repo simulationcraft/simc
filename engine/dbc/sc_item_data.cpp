@@ -548,7 +548,12 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
       v_raw = apply_stamina_multiplier( item, as<double>( v_raw ) );
     }
 
-    return static_cast<int>( util::round( v_raw ) );
+    if ( dbc.ptr )
+    {
+      v_raw = util::round( v_raw );
+    }
+
+    return static_cast<int>( v_raw );
   }
   // TODO(?): Should we warn the user that we are using an approximation of
   // the upgraded stats, and that certain stats may be off by one?
