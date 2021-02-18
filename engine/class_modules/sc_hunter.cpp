@@ -617,6 +617,9 @@ public:
     resource_regeneration = regen_type::DYNAMIC;
     regen_caches[ CACHE_HASTE ] = true;
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
+
+    if ( dbc -> ptr ) // XXX TODO 9.0.5
+      options.serpentstalkers_triggers_wild_spirits = false;
   }
 
   // Character Definition
@@ -778,6 +781,7 @@ public:
 
     // passive legendary effects
     ab::apply_affecting_aura( p -> legendary.call_of_the_wild );
+    ab::apply_affecting_aura( p -> legendary.qapla_eredun_war_order );
     ab::apply_affecting_aura( p -> legendary.surging_shots );
 
     // passive conduits
@@ -5918,6 +5922,7 @@ void hunter_t::create_buffs()
           else if ( old == 0 )
             buffs.eagletalons_true_focus -> trigger();
         } )
+      -> apply_affecting_aura( legendary.eagletalons_true_focus )
       -> apply_affecting_conduit( conduits.sharpshooters_focus );
 
   buffs.volley =
