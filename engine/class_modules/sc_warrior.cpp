@@ -1724,11 +1724,16 @@ struct mortal_strike_t : public warrior_attack_t
 
   double cost() const override
   {
+    if ( p()->buff.battlelord->check() )
+    {
+      if ( player->dbc->ptr )
+        return 15;
+      else
+        return 18;
+    }
+
     if ( from_mortal_combo )
       return 0;
-
-    if ( p()->buff.battlelord->check() )
-      return 15;
     return warrior_attack_t::cost();
   }
 
@@ -3638,10 +3643,12 @@ struct dreadnaught_t : warrior_attack_t
 };
 struct overpower_t : public warrior_attack_t
 {
+  double battlelord_chance;
   warrior_attack_t* seismic_wave;
   warrior_attack_t* dreadnaught;
   overpower_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "overpower", p, p->spec.overpower ), seismic_wave( nullptr ), dreadnaught( nullptr )
+    : warrior_attack_t( "overpower", p, p->spec.overpower ), seismic_wave( nullptr ), dreadnaught( nullptr ),
+      battlelord_chance( p->legendary.battlelord->proc_chance() )
   {
     parse_options( options_str );
     may_block = may_parry = may_dodge = false;
@@ -3697,6 +3704,12 @@ struct overpower_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+    if ( player->dbc->ptr && p()->legendary.battlelord->ok() && rng().roll( battlelord_chance ) )
+    {
+      p()->cooldown.mortal_strike->reset( true );
+      p() -> buff.battlelord -> trigger();
+    }
+
     p()->buff.overpower->trigger();
     p()->buff.striking_the_anvil->expire();
   }
@@ -3819,10 +3832,18 @@ struct rampage_attack_t : public warrior_attack_t
       {
         p()->resource_gain( RESOURCE_RAGE, rage_from_simmering_rage, p()->gain.simmering_rage );
       }
-      if ( p()->legendary.reckless_defense->ok() && target == s->target && execute_state->result == RESULT_CRIT
-      && rng().roll( reckless_defense_chance ) )
+      if ( p()->legendary.reckless_defense->ok() )
       {
-        p()->cooldown.recklessness->adjust( - timespan_t::from_seconds( p()->legendary.reckless_defense->effectN( 1 ).base_value() ) );
+        if ( !player->dbc->ptr && target == s->target && execute_state->result == RESULT_CRIT
+        && rng().roll( reckless_defense_chance ) )
+        {
+          p()->cooldown.recklessness->adjust( - timespan_t::from_seconds( p()->legendary.reckless_defense->effectN( 1 ).base_value() ) );
+        }
+        if ( player->dbc->ptr && target == s->target && execute_state->result == RESULT_HIT
+        && rng().roll( reckless_defense_chance ) )
+        {
+          p()->cooldown.recklessness->adjust( - timespan_t::from_seconds( p()->legendary.reckless_defense->effectN( 1 ).base_value() ) );
+        }
       }
     }
   }
@@ -4400,7 +4421,7 @@ struct slam_t : public warrior_attack_t
       {
         p()->buff.deadly_calm->decrement();
       }
-    if ( p()->legendary.battlelord->ok() && rng().roll( battlelord_chance ) )
+    if ( !player->dbc->ptr && p()->legendary.battlelord->ok() && rng().roll( battlelord_chance ) )
     {
       p()->cooldown.mortal_strike->reset( true );
       p() -> buff.battlelord -> trigger();
