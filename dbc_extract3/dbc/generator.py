@@ -1417,6 +1417,7 @@ class SpellDataGenerator(DataGenerator):
             ( 319190, 0 ),          # Shadow Vault shadow damage spell
             ( 345316, 0 ), ( 345390, 0 ), # Flagellation damage spells
             ( 185422, 0 ),          # Shadow Dance buff spell
+            ( 350964, 0 ),          # Subtlety-specific Deathly Shadows legendary buff
         ),
 
         # Priest:
