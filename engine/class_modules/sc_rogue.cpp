@@ -1635,8 +1635,9 @@ public:
           p()->legendary.duskwalkers_patch_counter += ab::last_resource_cost;
           if ( p()->legendary.duskwalkers_patch_counter > p()->legendary.duskwalkers_patch->effectN( 2 ).base_value() )
           {
-            p()->cooldowns.vendetta->adjust( -timespan_t::from_seconds( p()->legendary.duskwalkers_patch->effectN( 1 ).base_value() ) );
-            p()->legendary.duskwalkers_patch_counter -= p()->legendary.duskwalkers_patch->effectN( 2 ).base_value();
+            double reduction = floor( p()->legendary.duskwalkers_patch_counter / p()->legendary.duskwalkers_patch->effectN( 2 ).base_value() );
+            p()->cooldowns.vendetta->adjust( -timespan_t::from_seconds( p()->legendary.duskwalkers_patch->effectN( 1 ).base_value() ) * reduction );
+            p()->legendary.duskwalkers_patch_counter -= p()->legendary.duskwalkers_patch->effectN( 2 ).base_value() * reduction;
             p()->procs.dustwalker_patch->occur();
           }
         }
@@ -8616,6 +8617,12 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 8 )
       .verification_value( 7 );
+
+    hotfix::register_effect( "Rogue", "2021-02-18", "Bloodfang has bugged 10x value", 840280, hotfix::HOTFIX_FLAG_PTR )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.1235 )
+      .verification_value( 1.235 );
   }
 
   void init( player_t* ) const override {}
