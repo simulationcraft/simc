@@ -4107,10 +4107,17 @@ struct dancing_rune_weapon_buff_t : public buff_t
 
 struct dancing_rune_weapon_t : public death_knight_spell_t
 {
+  int bone_shield_stack_gain;
   dancing_rune_weapon_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "dancing_rune_weapon", p, p -> spec.dancing_rune_weapon )
   {
     may_miss = may_crit = may_dodge = may_parry = harmful = false;
+
+    bone_shield_stack_gain = 0;
+    if ( p -> dbc -> ptr )
+    {
+      bone_shield_stack_gain = as<int>( p -> legendary.crimson_rune_weapon -> effectN( 2 ).base_value());
+    }
 
     parse_options( options_str );
   }
@@ -4118,6 +4125,10 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
+    if ( p() -> dbc -> ptr && p() -> legendary.crimson_rune_weapon.ok() )
+    {
+      p() -> buffs.bone_shield -> trigger ( bone_shield_stack_gain );
+    }
 
     p() -> pets.dancing_rune_weapon_pet -> summon( timespan_t::from_seconds( p() -> spec.dancing_rune_weapon -> effectN( 4 ).base_value() ) +
                                                                              p() -> conduits.meat_shield -> effectN( 2 ).time_value() );
