@@ -3414,21 +3414,14 @@ class RandomPropertyPointsGenerator(DataGenerator):
                 length = len(data))
 
         for rpp in sorted(data, key = lambda e: e.id):
-            fields = rpp.field('id')
             # Temporary check until live builds conform to PTR field format
             if self._options.build >= 37503:
-                fields += rpp.field('damage_replace_stat_f', 'damage_secondary_f', 'damage_replace_stat', 'damage_secondary')
+                fields = rpp.field('id', 'damage_replace_stat_f', 'damage_secondary_f')
                 fields += [ '{ %s }' % ', '.join( rpp.field('epic_points_f_1', 'epic_points_f_2', 'epic_points_f_3', 'epic_points_f_4', 'epic_points_f_5')) ]
                 fields += [ '{ %s }' % ', '.join( rpp.field('rare_points_f_1', 'rare_points_f_2', 'rare_points_f_3', 'rare_points_f_4', 'rare_points_f_5')) ]
                 fields += [ '{ %s }' % ', '.join( rpp.field('uncm_points_f_1', 'uncm_points_f_2', 'uncm_points_f_3', 'uncm_points_f_4', 'uncm_points_f_5')) ]
-                fields += [ '{ %s }' % ', '.join( rpp.field('epic_points_1', 'epic_points_2', 'epic_points_3', 'epic_points_4', 'epic_points_5')) ]
-                fields += [ '{ %s }' % ', '.join( rpp.field('rare_points_1', 'rare_points_2', 'rare_points_3', 'rare_points_4', 'rare_points_5')) ]
-                fields += [ '{ %s }' % ', '.join( rpp.field('uncm_points_1', 'uncm_points_2', 'uncm_points_3', 'uncm_points_4', 'uncm_points_5')) ]
             else:
-                fields += rpp.field('damage_replace_stat', 'damage_secondary', 'damage_replace_stat', 'damage_secondary')
-                fields += [ '{ %s }' % ', '.join( rpp.field('epic_points_1', 'epic_points_2', 'epic_points_3', 'epic_points_4', 'epic_points_5')) ]
-                fields += [ '{ %s }' % ', '.join( rpp.field('rare_points_1', 'rare_points_2', 'rare_points_3', 'rare_points_4', 'rare_points_5')) ]
-                fields += [ '{ %s }' % ', '.join( rpp.field('uncm_points_1', 'uncm_points_2', 'uncm_points_3', 'uncm_points_4', 'uncm_points_5')) ]
+                fields = rpp.field('id', 'damage_replace_stat', 'damage_secondary')
                 fields += [ '{ %s }' % ', '.join( rpp.field('epic_points_1', 'epic_points_2', 'epic_points_3', 'epic_points_4', 'epic_points_5')) ]
                 fields += [ '{ %s }' % ', '.join( rpp.field('rare_points_1', 'rare_points_2', 'rare_points_3', 'rare_points_4', 'rare_points_5')) ]
                 fields += [ '{ %s }' % ', '.join( rpp.field('uncm_points_1', 'uncm_points_2', 'uncm_points_3', 'uncm_points_4', 'uncm_points_5')) ]
