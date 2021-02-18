@@ -541,11 +541,11 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
 
     if ( util::is_combat_rating( stat_type ) )
     {
-      v_raw = apply_combat_rating_multiplier( item, as<double>( v_raw ) );
+      v_raw = apply_combat_rating_multiplier( item, v_raw );
     }
     else if ( stat_type == ITEM_MOD_STAMINA )
     {
-      v_raw = apply_stamina_multiplier( item, as<double>( v_raw ) );
+      v_raw = apply_stamina_multiplier( item, v_raw );
     }
 
     if ( dbc.ptr )
