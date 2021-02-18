@@ -1556,10 +1556,7 @@ public:
 
       // We only want the monk to cast Tiger Palm 2 times during the duration.
       // Increase the cooldown for non-windwalkers so that it only casts 2 times.
-      if ( o()->specialization() == MONK_WINDWALKER )
-        cooldown->duration = timespan_t::from_seconds( 2.5 );
-      else
-        cooldown->duration = timespan_t::from_seconds( 3 );
+      cooldown->duration = timespan_t::from_seconds( 3 );
     }
 
     double cost() const override
