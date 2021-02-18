@@ -390,6 +390,8 @@ struct sim_t : private sc_thread_t
     /// Sets chance that the actor gets the killing blow when a target demises for Thrill Seeker stacks
     /// The default value of -1.0 adjusts to 1/20 for most sims, and 1/4 for DungeonSlice sims
     double thrill_seeker_killing_blow_chance = -1.0;
+    /// Percentage of default duration for the damage portion of Wild Hunt Tactics to use.
+    double wild_hunt_tactics_duration_multiplier = 1.0;
   } shadowlands_opts;
 
   // Auras and De-Buffs

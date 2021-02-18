@@ -3826,6 +3826,7 @@ void sim_t::create_options()
     shadowlands_opts.iqd_stat_fail_chance, 0.0, 1.0 ) );
   add_option( opt_float( "shadowlands.thrill_seeker_killing_blow_chance",
                          shadowlands_opts.thrill_seeker_killing_blow_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "shadowlands.wild_hunt_tactics_duration_multiplier", shadowlands_opts.wild_hunt_tactics_duration_multiplier ) );
 }
 
 // sim_t::parse_option ======================================================
