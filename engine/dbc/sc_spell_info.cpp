@@ -953,7 +953,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   else
   {
     const random_prop_data_t& ilevel_data = dbc.random_property( level );
-    double item_budget = ilevel_data.p_epic[ 0 ];
+    double item_budget = ilevel_data.p_epic_f[ 0 ];
     auto coefficient = 1.0;
 
     if ( spell -> scaling_class() == PLAYER_SPECIAL_SCALE7 )
@@ -1955,7 +1955,7 @@ void spell_info::effect_to_xml( const dbc_t& dbc,
   else
   {
     const random_prop_data_t& ilevel_data = dbc.random_property( level );
-    double item_budget = ilevel_data.p_epic[ 0 ];
+    double item_budget = ilevel_data.p_epic_f[ 0 ];
 
     node -> add_parm( "scaled_value", item_budget * e -> m_coefficient() );
   }

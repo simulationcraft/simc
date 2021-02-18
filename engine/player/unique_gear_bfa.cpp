@@ -5897,7 +5897,7 @@ void set_bonus::titanic_empowerment( special_effect_t& effect )
       int average_ilvl = ( vita_shard->item_level() + void_shard->item_level() ) / 2;
       buff = make_buff<stat_buff_t>( effect.player, "titanic_empowerment", effect.player->find_spell( 315858 ) );
       const auto& budget = effect.player->dbc->random_property( average_ilvl );
-      double value       = budget.p_epic[ 0 ] * buff->data().effectN( 1 ).m_coefficient();
+      double value       = budget.p_epic_f[ 0 ] * buff->data().effectN( 1 ).m_coefficient();
       buff->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), value );
     }
 
