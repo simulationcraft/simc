@@ -105,6 +105,15 @@ struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
   pet_melee_attack_t( util::string_view n, monk_pet_t* p, const spell_data_t* data = spell_data_t::nil() )
     : base_t( n, p, data )
   {
+    base_t::apply_affecting_aura( p->o()->passives.aura_monk );
+    base_t::apply_affecting_aura( p->o()->spec.windwalker_monk );
+    base_t::apply_affecting_aura( p->o()->spec.brewmaster_monk );
+    base_t::apply_affecting_aura( p->o()->spec.mistweaver_monk );
+
+    if ( p->o()->main_hand_weapon.group() == weapon_e::WEAPON_1H )
+    {
+      base_t::apply_affecting_aura( p->o()->spec.two_hand_adjustment );
+    }
   }
 
   // Physical tick_action abilities need amount_type() override, so the
@@ -137,6 +146,19 @@ struct pet_melee_t : pet_melee_attack_t
     special           = false;
 
     // TODO: check if there should be a dual wield hit malus here.
+  }
+
+  double action_multiplier() const override
+  {
+    double am = base_t::action_multiplier();
+
+    if ( o()->buff.serenity->up() )
+    {
+      if ( base_t::data().affected_by( o()->talent.serenity->effectN( 2 ) ) )
+        am *= 1 + o()->talent.serenity->effectN( 2 ).percent();
+    }
+
+    return am;
   }
 
   void execute() override
@@ -1362,34 +1384,6 @@ private:
       base_hit -= 0.19;
     }
 
-    // Copy melee code from Storm, Earth and Fire
-    double composite_attack_power() const override
-    {
-      double ap  = pet_melee_t::composite_attack_power();
-      auto owner = o();
-
-      if ( owner->main_hand_weapon.group() == WEAPON_2H )
-      {
-        ap += owner->main_hand_weapon.dps * 3.5;
-      }
-      else
-      {
-        // 1h/dual wield equation. Note, this formula is slightly off (~3%) for
-        // owner dw/pet dw variation.
-        double total_dps = owner->main_hand_weapon.dps;
-        double dw_mul    = 1.0;
-        if ( owner->off_hand_weapon.group() != WEAPON_NONE )
-        {
-          total_dps += owner->off_hand_weapon.dps * 0.5;
-          dw_mul = 0.898882275;
-        }
-
-        ap += total_dps * 3.5 * dw_mul;
-      }
-
-      return ap;
-    }
-
     void impact( action_state_t* s ) override
     {
       //o()->trigger_empowered_tiger_lightning( s );
@@ -1435,13 +1429,13 @@ public:
     {
       case MONK_WINDWALKER:
       case MONK_BREWMASTER:
-        owner_coeff.ap_from_ap = ( o()->dbc->ptr ? 0.4 : 0.3333 );
-        owner_coeff.sp_from_ap = ( o()->dbc->ptr ? 0.384 : 0.32 );
+        owner_coeff.ap_from_ap = ( dbc->ptr ? 0.4 : 0.3333 );
+        owner_coeff.sp_from_ap = ( dbc->ptr ? 0.384 : 0.32 );
         break;
       case MONK_MISTWEAVER:
       {
-        owner_coeff.ap_from_ap = ( o()->dbc->ptr ? 0.4 : 0.3333 );
-        owner_coeff.sp_from_sp = ( o()->dbc->ptr ? 0.4 : 0.3333 );
+        owner_coeff.ap_from_ap = ( dbc->ptr ? 0.4 : 0.3333 );
+        owner_coeff.sp_from_sp = ( dbc->ptr ? 0.4 : 0.3333 );
         break;
       }
       default:
@@ -1483,10 +1477,10 @@ public:
   struct fallen_monk_fists_of_fury_tick_t : public pet_melee_attack_t
   {
     fallen_monk_fists_of_fury_tick_t( fallen_monk_ww_pet_t* p )
-      : pet_melee_attack_t( "fists_of_fury_tick_fo", p, p->o()->passives.fallen_monk_fists_of_fury_tick )
+      : pet_melee_attack_t( "fists_of_fury_fo_tick", p, p->o()->passives.fallen_monk_fists_of_fury_tick )
     {
       background              = true;
-      aoe                     = 1 + (int)o()->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value();
+      aoe                     = (int)o()->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value() + ( o()->bugs ? 0 : 1 );
       attack_power_mod.direct = o()->passives.fallen_monk_fists_of_fury->effectN( 5 ).ap_coeff();
       ap_type                 = attack_power_type::WEAPON_BOTH;
       dot_duration            = timespan_t::zero();
@@ -1507,7 +1501,6 @@ public:
     {
       double am = pet_melee_attack_t::action_multiplier();
 
-      // monk_t* o = static_cast<monk_t*>( player );
       if ( o()->conduit.inner_fury->ok() )
         am *= 1 + o()->conduit.inner_fury.percent();
 
@@ -1531,6 +1524,7 @@ public:
 
       channeled = tick_zero = true;
       interrupt_auto_attack = true;
+      harmful               = false;
 
       attack_power_mod.direct = 0;
       attack_power_mod.tick   = 0;
@@ -1539,6 +1533,8 @@ public:
       // Effect 2 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
       base_tick_time = dot_duration / 4;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+
+      cooldown->duration = p->o()->passives.fallen_monk_spec_duration->duration();
 
       tick_action = new fallen_monk_fists_of_fury_tick_t( p );
     }
@@ -1563,7 +1559,7 @@ public:
       if ( o()->specialization() == MONK_WINDWALKER )
         cooldown->duration = timespan_t::from_seconds( 2.5 );
       else
-        cooldown->duration = timespan_t::from_seconds( 3.1 );
+        cooldown->duration = timespan_t::from_seconds( 3 );
     }
 
     double cost() const override
@@ -1656,13 +1652,13 @@ public:
     {
       case MONK_WINDWALKER:
       case MONK_BREWMASTER:
-        owner_coeff.ap_from_ap = ( o()->dbc->ptr ? 0.4 : 0.3333);
-        owner_coeff.sp_from_ap = ( o()->dbc->ptr ? 0.384 : 0.32);
+        owner_coeff.ap_from_ap = ( dbc->ptr ? 0.4 : 0.3333);
+        owner_coeff.sp_from_ap = ( dbc->ptr ? 0.384 : 0.32);
         break;
       case MONK_MISTWEAVER:
       {
-        owner_coeff.ap_from_ap = ( o()->dbc->ptr ? 0.4 : 0.3333 );
-        owner_coeff.sp_from_sp = ( o()->dbc->ptr ? 0.4 : 0.3333 );
+        owner_coeff.ap_from_ap = ( dbc->ptr ? 0.4 : 0.3333 );
+        owner_coeff.sp_from_sp = ( dbc->ptr ? 0.4 : 0.3333 );
         break;
       }
       default:
@@ -1694,10 +1690,11 @@ public:
       attack_power_mod.direct = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).ap_coeff();
       radius                  = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).radius();
 
-      if ( o()->specialization() == MONK_BREWMASTER )
+/*      if ( o()->specialization() == MONK_BREWMASTER )
         cooldown->duration = timespan_t::from_seconds( 6.0 );
       else
         cooldown->duration = timespan_t::from_seconds( 9.0 );
+        */
       trigger_gcd = timespan_t::from_seconds( 1.5 );
     }
 
