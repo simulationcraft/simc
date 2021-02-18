@@ -807,16 +807,16 @@
   },
   "RandPropPoints": {
     "fields": [
-      { "data_type": "f", "field": "damage_replace_stat_f", "formats": { "cpp": "%#.8f" } },
-      { "data_type": "f", "field": "damage_secondary_f", "formats": { "cpp": "%#.8f" } },
-      { "data_type": "i", "field": "damage_replace_stat", "formats": { "cpp": "%8u" } },
-      { "data_type": "i", "field": "damage_secondary", "formats": { "cpp": "%8u" } },
-      { "data_type": "f", "field": "epic_points_f", "elements": 5, "formats": { "cpp": "%#.8f" } },
-      { "data_type": "f", "field": "rare_points_f", "elements": 5, "formats": { "cpp": "%#.8f" } },
-      { "data_type": "f", "field": "uncm_points_f", "elements": 5, "formats": { "cpp": "%#.8f" } },
-      { "data_type": "I", "field": "epic_points", "elements": 5, "formats": { "cpp": "%8u" } },
-      { "data_type": "I", "field": "rare_points", "elements": 5, "formats": { "cpp": "%8u" } },
-      { "data_type": "I", "field": "uncm_points", "elements": 5, "formats": { "cpp": "%8u" } }
+      { "data_type": "f", "field": "damage_replace_stat", "formats": { "cpp": "%#.8f" } },
+      { "data_type": "f", "field": "damage_secondary", "formats": { "cpp": "%#.8f" } },
+      { "data_type": "i", "field": "damage_replace_stat_int", "formats": { "cpp": "%8u" } },
+      { "data_type": "i", "field": "damage_secondary_int", "formats": { "cpp": "%8u" } },
+      { "data_type": "f", "field": "epic_points", "elements": 5, "formats": { "cpp": "%#.8f" } },
+      { "data_type": "f", "field": "rare_points", "elements": 5, "formats": { "cpp": "%#.8f" } },
+      { "data_type": "f", "field": "uncm_points", "elements": 5, "formats": { "cpp": "%#.8f" } },
+      { "data_type": "I", "field": "epic_points_int", "elements": 5, "formats": { "cpp": "%8u" } },
+      { "data_type": "I", "field": "rare_points_int", "elements": 5, "formats": { "cpp": "%8u" } },
+      { "data_type": "I", "field": "uncm_points_int", "elements": 5, "formats": { "cpp": "%8u" } }
     ]
   },
   "RelicTalent": {
