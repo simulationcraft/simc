@@ -383,6 +383,9 @@ public:
     const spell_data_t* soul_cleave_rank_3;
     const spell_data_t* thick_skin;
     const spell_data_t* throw_glaive_rank_3;
+
+    // Legendary
+    const spell_data_t* darkglare_boon_refund;
   } spec;
 
   struct azerite_t
@@ -519,6 +522,9 @@ public:
     gain_t* thirsting_blades;
     gain_t* revolving_blades;
     gain_t* memory_of_lucid_dreams;
+
+    // Legendary
+    gain_t* darkglare_boon_refund;
   } gain;
 
   // Benefits
@@ -2067,6 +2073,12 @@ struct eye_beam_t : public demon_hunter_spell_t
     {
       cooldown->reset( true );
       p()->proc.darkglare_boon_resets->occur();
+      // 02/18/2021 -- Added in PTR build
+      if ( p()->spec.darkglare_boon_refund->ok() )
+      {
+        p()->resource_gain( RESOURCE_FURY, p()->spec.darkglare_boon_refund->effectN( 1 ).resource( RESOURCE_FURY ),
+                            p()->gain.darkglare_boon_refund );
+      }
     }
 
     // Collective Anguish Legendary
@@ -2160,10 +2172,17 @@ struct fel_devastation_t : public demon_hunter_spell_t
     }
 
     // Darkglare Boon Legendary
-    if ( p()->legendary.darkglare_boon->ok() && p()->rng().roll( p()->legendary.darkglare_boon->effectN( 1 ).percent() ) )
+    double darkglare_percent = p()->legendary.darkglare_boon->effectN( p()->dbc->ptr ? 2 : 1 ).percent();
+    if ( p()->legendary.darkglare_boon->ok() && p()->rng().roll( darkglare_percent ) )
     {
       cooldown->reset( true );
       p()->proc.darkglare_boon_resets->occur();
+      // 02/18/2021 -- Added in PTR build
+      if ( p()->spec.darkglare_boon_refund->ok() )
+      {
+        p()->resource_gain( RESOURCE_FURY, p()->spec.darkglare_boon_refund->effectN( 2 ).resource( RESOURCE_FURY ),
+                            p()->gain.darkglare_boon_refund );
+      }
     }
 
     // Collective Anquish Legendary
@@ -5520,6 +5539,8 @@ void demon_hunter_t::init_spells()
   legendary.fel_flame_fortification       = find_runeforge_legendary( "Fel Flame Fortification" );
   legendary.spirit_of_the_darkness_flame  = find_runeforge_legendary( "Spirit of the Darkness Flame" );
 
+  spec.darkglare_boon_refund = ( dbc->ptr && legendary.darkglare_boon->ok() ) ? find_spell( 350726 ) : spell_data_t::not_found();
+
   // Spell Initialization ===================================================
 
   using namespace actions::attacks;
@@ -5888,6 +5909,9 @@ void demon_hunter_t::create_gains()
   gain.thirsting_blades         = get_gain( "thirsting_blades" );
   gain.revolving_blades         = get_gain( "revolving_blades" );
   gain.memory_of_lucid_dreams   = get_gain( "memory_of_lucid_dreams_proc" );
+
+  // Legendary
+  gain.darkglare_boon_refund    = get_gain( "darkglare_boon_refund" );
 }
 
 // demon_hunter_t::create_benefits ==========================================
