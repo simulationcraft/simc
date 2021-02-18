@@ -116,7 +116,7 @@ double spelleffect_data_t::delta( const item_t* item ) const
   else if ( _spell -> scaling_class() == PLAYER_SPECIAL_SCALE8 )
   {
     const auto& props = item -> player -> dbc->random_property( item -> item_level() );
-    m_scale = props.damage_replace_stat;
+    m_scale = props.damage_replace_stat_f;
   }
 
   return scaled_delta( m_scale );
@@ -195,13 +195,13 @@ double spelleffect_data_t::average( const item_t* item ) const
   else if ( _spell -> scaling_class() == PLAYER_SPECIAL_SCALE8 )
   {
     const auto& props = item -> player -> dbc->random_property( item -> item_level() );
-    budget = props.damage_replace_stat;
+    budget = props.damage_replace_stat_f;
   }
   else if ( _spell->scaling_class() == PLAYER_NONE &&
             _spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
   {
     const auto& props = item -> player -> dbc->random_property( item -> item_level() );
-    budget = props.damage_secondary;
+    budget = props.damage_secondary_f;
   }
 
   return _m_coeff * budget;

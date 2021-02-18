@@ -155,7 +155,7 @@ std::vector<double> azerite_power_t::budget( const spell_data_t* scaling_spell )
     if ( scaling_spell->scaling_class() == PLAYER_SPECIAL_SCALE8 )
     {
       const auto& props = m_player->dbc->random_property( min_ilevel );
-      budget = props.damage_replace_stat;
+      budget = props.damage_replace_stat_f;
     }
     b.push_back( budget );
   } );

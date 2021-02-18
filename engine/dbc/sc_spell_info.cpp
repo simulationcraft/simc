@@ -963,12 +963,12 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     }
     else if ( spell -> scaling_class() == PLAYER_SPECIAL_SCALE8 )
     {
-      item_budget = ilevel_data.damage_replace_stat;
+      item_budget = ilevel_data.damage_replace_stat_f;
     }
     else if ( spell->scaling_class() == PLAYER_NONE &&
               spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
     {
-      item_budget = ilevel_data.damage_secondary;
+      item_budget = ilevel_data.damage_secondary_f;
     }
 
     s << item_budget * e -> m_coefficient() * coefficient;
