@@ -12,8 +12,13 @@
 struct random_prop_data_t
 {
   unsigned ilevel;
+  float    damage_replace_stat_f;
+  float    damage_secondary_f;
   unsigned damage_replace_stat;
   unsigned damage_secondary;
+  float    p_epic_f[5];
+  float    p_rare_f[5];
+  float    p_uncommon_f[5];
   float    p_epic[5];
   float    p_rare[5];
   float    p_uncommon[5];
