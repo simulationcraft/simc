@@ -10118,15 +10118,15 @@ double druid_t::calculate_expected_max_health() const
 
     const random_prop_data_t item_data = dbc->random_property( item->item_level() );
     int index                          = item_database::random_suffix_type( item->parsed.data );
-    if ( item_data.p_epic[ 0 ] == 0 )
+    if ( item_data.p_epic_f[ 0 ] == 0 )
       continue;
 
-    slot_weights += item_data.p_epic[ index ] / item_data.p_epic[ 0 ];
+    slot_weights += item_data.p_epic_f[ index ] / item_data.p_epic_f[ 0 ];
 
     if ( !item->active() )
       continue;
 
-    prop_values += item_data.p_epic[ index ];
+    prop_values += item_data.p_epic_f[ index ];
   }
 
   double expected_health = ( prop_values / slot_weights ) * 8.318556;
