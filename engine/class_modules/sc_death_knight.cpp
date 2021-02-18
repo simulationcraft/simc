@@ -8640,7 +8640,6 @@ void death_knight_t::create_buffs()
     {
       buffs.death_turf -> default_value /= 2;
     }
-    sim->print_debug("DEBUGME:  {}", buffs.death_turf -> default_value);
   }
 
   // Covenants
