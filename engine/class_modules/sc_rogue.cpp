@@ -397,6 +397,7 @@ public:
     const spell_data_t* subtlety_rogue;
 
     // Assassination
+    const spell_data_t* cut_to_the_chase;
     const spell_data_t* deadly_poison;
     const spell_data_t* envenom;
     const spell_data_t* improved_poisons;
@@ -1030,6 +1031,7 @@ public:
     bool adrenaline_rush_gcd = false;
     bool broadside_cp = false;
     bool master_assassin = false;
+    bool master_assassins_mark = false;
     bool shiv_2 = false;
     bool ruthless_precision = false;
     bool symbols_of_death_autocrit = false;
@@ -1096,6 +1098,10 @@ public:
     affected_by.symbols_of_death_autocrit = ab::data().affected_by( p->spec.symbols_of_death_autocrit->effectN( 1 ) );
     affected_by.blindside = ab::data().affected_by( p->find_spell( 121153 )->effectN( 1 ) );
     affected_by.between_the_eyes = ab::data().affected_by( p->spec.between_the_eyes->effectN( 2 ) );
+    if ( p->legendary.master_assassins_mark.ok() && p->dbc->ptr )
+    {
+      affected_by.master_assassins_mark = ab::data().affected_by( p->find_spell( 340094 )->effectN( 1 ) );
+    }
     if ( p->legendary.dashing_scoundrel.ok() )
     {
       affected_by.dashing_scoundrel = ab::data().affected_by( p->spec.envenom->effectN( 3 ) );
@@ -1539,6 +1545,12 @@ public:
     {
       c += p()->buffs.master_assassin->stack_value();
       c += p()->buffs.master_assassin_aura->stack_value();
+    }
+
+    if ( affected_by.master_assassins_mark )
+    {
+      c += p()->buffs.master_assassins_mark->stack_value();
+      c += p()->buffs.master_assassins_mark_aura->stack_value();
     }
 
     if ( affected_by.ruthless_precision )
@@ -2151,11 +2163,16 @@ struct melee_t : public rogue_attack_t
   {
     double c = rogue_attack_t::composite_crit_chance();
 
-    // 3/3/2019 - Logs show that Master Assassin also affects melee auto attacks
     if ( p()->talent.master_assassin->ok() )
     {
       c += p()->buffs.master_assassin->stack_value();
       c += p()->buffs.master_assassin_aura->stack_value();
+    }
+
+    if ( p()->dbc->ptr && p()->legendary.master_assassins_mark->ok() )
+    {
+      c += p()->buffs.master_assassins_mark->stack_value();
+      c += p()->buffs.master_assassins_mark_aura->stack_value();
     }
 
     return c;
@@ -2677,6 +2694,12 @@ struct envenom_t : public rogue_attack_t
     if ( state->result == RESULT_CRIT && p()->legendary.dashing_scoundrel->ok() )
     {
       p()->resource_gain( RESOURCE_ENERGY, p()->legendary.dashing_scoundrel_gain, p()->gains.dashing_scoundrel );
+    }
+
+    if ( p()->spec.cut_to_the_chase->ok() && p()->buffs.slice_and_dice->check() )
+    {
+      double extend_duration = p()->spec.cut_to_the_chase->effectN( 1 ).base_value() * cast_state( state )->get_combo_points();
+      p()->buffs.slice_and_dice->extend_duration( p(), timespan_t::from_seconds( extend_duration ) );
     }
   }
 };
@@ -5114,7 +5137,7 @@ struct vanish_t : public stealth_like_buff_t<buff_t>
     // Confirmed on early beta that Deathly Shadows triggers from Vanish buff (via old Sepsis), not just Vanish casts
     if ( rogue->buffs.deathly_shadows->trigger() )
     {
-      const int combo_points = as<int>( rogue->buffs.deathly_shadows->data().effectN( 3 ).base_value() );
+      const int combo_points = as<int>( rogue->buffs.deathly_shadows->data().effectN( rogue->dbc->ptr ? 4 : 3 ).base_value() );
       rogue->resource_gain( RESOURCE_COMBO_POINT, combo_points, rogue->gains.deathly_shadows );
     }
   }
@@ -6275,8 +6298,11 @@ double rogue_t::composite_melee_crit_chance() const
 
   crit += spell.critical_strikes->effectN( 1 ).percent();
 
-  crit += buffs.master_assassins_mark->stack_value();
-  crit += buffs.master_assassins_mark_aura->stack_value();
+  if ( !dbc->ptr )
+  {
+    crit += buffs.master_assassins_mark->stack_value();
+    crit += buffs.master_assassins_mark_aura->stack_value();
+  }
 
   if ( conduit.planned_execution.ok() && buffs.symbols_of_death->up() )
   {
@@ -6294,8 +6320,11 @@ double rogue_t::composite_spell_crit_chance() const
 
   crit += spell.critical_strikes->effectN( 1 ).percent();
 
-  crit += buffs.master_assassins_mark->stack_value();
-  crit += buffs.master_assassins_mark_aura->stack_value();
+  if ( !dbc->ptr )
+  {
+    crit += buffs.master_assassins_mark->stack_value();
+    crit += buffs.master_assassins_mark_aura->stack_value();
+  }
 
   if ( conduit.planned_execution.ok() && buffs.symbols_of_death->up() )
   {
@@ -7264,6 +7293,7 @@ void rogue_t::init_spells()
   spec.subtlety_rogue       = find_specialization_spell( "Subtlety Rogue" );
 
   // Assassination
+  spec.cut_to_the_chase     = find_specialization_spell( "Cut to the Chase" );
   spec.deadly_poison        = find_specialization_spell( "Deadly Poison" );
   spec.envenom              = find_specialization_spell( "Envenom" );
   spec.improved_poisons     = find_specialization_spell( "Improved Poisons" );
@@ -7851,22 +7881,46 @@ void rogue_t::create_buffs()
 
   // Legendary Items ========================================================
 
-  buffs.deathly_shadows = make_buff<damage_buff_t>( this, "deathly_shadows", legendary.deathly_shadows->effectN( 1 ).trigger() );
+  // 02/18/2021 -- Sub-specific Deathly Shadows buff added in PTR build
+  if ( dbc->ptr && specialization() == ROGUE_SUBTLETY )
+    buffs.deathly_shadows = make_buff<damage_buff_t>( this, "deathly_shadows", find_spell( 350964 ) );
+  else
+    buffs.deathly_shadows = make_buff<damage_buff_t>( this, "deathly_shadows", legendary.deathly_shadows->effectN( 1 ).trigger() );
 
+  // 02/18/2021 -- Master Assassin's Mark is whitelisted on PTR
   const spell_data_t* master_assassins_mark = legendary.master_assassins_mark->ok() ? find_spell( 340094 ) : spell_data_t::not_found();
-  buffs.master_assassins_mark = make_buff( this, "master_assassins_mark", master_assassins_mark )
-    ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-    ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_duration( timespan_t::from_seconds( legendary.master_assassins_mark->effectN( 1 ).base_value() ) );
-  buffs.master_assassins_mark_aura = make_buff( this, "master_assassins_mark_aura", master_assassins_mark )
-    ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-    ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+  if ( dbc->ptr )
+  {
+    buffs.master_assassins_mark = make_buff( this, "master_assassins_mark", master_assassins_mark )
+      ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
+      ->add_invalidate( CACHE_CRIT_CHANCE )
+      ->set_duration( timespan_t::from_seconds( legendary.master_assassins_mark->effectN( 1 ).base_value() ) );
+    buffs.master_assassins_mark_aura = make_buff( this, "master_assassins_mark_aura", master_assassins_mark )
+      ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
+      ->add_invalidate( CACHE_CRIT_CHANCE )
+      ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
       if ( new_ == 0 )
         buffs.master_assassins_mark->trigger();
       else
         buffs.master_assassins_mark->expire();
     } );
+  }
+  else
+  {
+    buffs.master_assassins_mark = make_buff( this, "master_assassins_mark", master_assassins_mark )
+      ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+      ->add_invalidate( CACHE_CRIT_CHANCE )
+      ->set_duration( timespan_t::from_seconds( legendary.master_assassins_mark->effectN( 1 ).base_value() ) );
+    buffs.master_assassins_mark_aura = make_buff( this, "master_assassins_mark_aura", master_assassins_mark )
+      ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+      ->add_invalidate( CACHE_CRIT_CHANCE )
+      ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( new_ == 0 )
+        buffs.master_assassins_mark->trigger();
+      else
+        buffs.master_assassins_mark->expire();
+    } );
+  }
 
   buffs.the_rotten = make_buff<damage_buff_t>( this, "the_rotten", legendary.the_rotten->effectN( 1 ).trigger() );
   buffs.the_rotten->set_default_value_from_effect( 1 ); // Combo Point Gain
@@ -8443,6 +8497,7 @@ void rogue_t::regen( timespan_t periodicity )
       mult_regen_base += energy_regen;
     }
 
+    // 02/18/2021 -- Fully removed from PTR, but we check the spell data here so works for both builds
     if ( buffs.slice_and_dice->up() && spec.slice_and_dice_2->ok() )
     {
       double energy_regen = mult_regen_base * spec.slice_and_dice_2->effectN( 1 ).percent();
@@ -8556,6 +8611,11 @@ public:
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Rogue", "2021-02-18", "Venomous Wounds now restores 8 Energy (was 7)", 86614, hotfix::HOTFIX_FLAG_PTR )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 8 )
+      .verification_value( 7 );
   }
 
   void init( player_t* ) const override {}
