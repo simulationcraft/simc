@@ -1436,7 +1436,7 @@ public:
       case MONK_WINDWALKER:
       case MONK_BREWMASTER:
         owner_coeff.ap_from_ap = ( o()->dbc->ptr ? 0.4 : 0.3333 );
-        owner_coeff.sp_from_ap = ( o()->dbc->ptr ? 0.4 : 0.32 );
+        owner_coeff.sp_from_ap = ( o()->dbc->ptr ? 0.384 : 0.32 );
         break;
       case MONK_MISTWEAVER:
       {
@@ -1657,7 +1657,7 @@ public:
       case MONK_WINDWALKER:
       case MONK_BREWMASTER:
         owner_coeff.ap_from_ap = ( o()->dbc->ptr ? 0.4 : 0.3333);
-        owner_coeff.sp_from_ap = ( o()->dbc->ptr ? 0.4 : 0.32);
+        owner_coeff.sp_from_ap = ( o()->dbc->ptr ? 0.384 : 0.32 );
         break;
       case MONK_MISTWEAVER:
       {
