@@ -525,22 +525,35 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
         return item._dbc_stats[ idx ].socket_mul;
       return 0.0f;
     };
-    double v_socket_penalty = socket_mul( item.parsed.data, idx ) *
-                              dbc.item_socket_cost( item.base_item_level() );
+    double v_socket_penalty = socket_mul( item.parsed.data, idx ) * dbc.item_socket_cost( item.base_item_level() );
+    double v_raw;
 
-    int v_raw = as<int>( std::lround( item.parsed.data.stat_alloc[ idx ] * item_budget * 0.0001 - v_socket_penalty ) );
+    if ( dbc.ptr )
+    {
+      v_raw = item.parsed.data.stat_alloc[ idx ] * item_budget * 0.0001 - v_socket_penalty;
+    }
+    else
+    {
+      v_raw = as<double>( std::lround( item.parsed.data.stat_alloc[ idx ] * item_budget * 0.0001 - v_socket_penalty ) );
+    }
+
     auto stat_type = static_cast<item_mod_type>( item.parsed.data.stat_type_e[ idx ] );
 
     if ( util::is_combat_rating( stat_type ) )
     {
-      v_raw = static_cast<int>(apply_combat_rating_multiplier( item, as<double>( v_raw ) ));
+      v_raw = apply_combat_rating_multiplier( item, v_raw );
     }
     else if ( stat_type == ITEM_MOD_STAMINA )
     {
-      v_raw = static_cast<int>(apply_stamina_multiplier( item, as<double>( v_raw ) ));
+      v_raw = apply_stamina_multiplier( item, v_raw );
     }
 
-    return v_raw;
+    if ( dbc.ptr )
+    {
+      v_raw = util::round( v_raw );
+    }
+
+    return static_cast<int>( v_raw );
   }
   // TODO(?): Should we warn the user that we are using an approximation of
   // the upgraded stats, and that certain stats may be off by one?
