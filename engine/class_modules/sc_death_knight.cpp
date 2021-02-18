@@ -978,7 +978,7 @@ public:
     // item_runeforge_t deaths_embrace;           // 6947
     // item_runeforge_t grip_of_the_everlasting;  // 6948
     item_runeforge_t gorefiends_domination;       // 6943
-    // item_runeforge_t vampiric_aura;            // 6942
+    item_runeforge_t vampiric_aura;               // 6942
   } legendary;
 
   // Death Knight Options
@@ -6823,6 +6823,12 @@ struct vampiric_blood_buff_t : public buff_t
     // Cooldown handled by the action
     cooldown -> duration = 0_ms;
     base_buff_duration += player -> spec.vampiric_blood_2 -> effectN( 3 ).time_value();
+    if ( player -> dbc -> ptr )
+    {
+      set_default_value_from_effect( 5 );
+      apply_affecting_aura( player -> legendary.vampiric_aura );
+      add_invalidate( CACHE_LEECH );
+    }
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -8361,7 +8367,7 @@ void death_knight_t::init_spells()
   // legendary.deaths_embrace = find_runeforge_legendary( "Death's Embrace" );
   // legendary.grip_of_the_everlasting = find_runeforge_legendary( "Grip of the Everlasting" );
   legendary.gorefiends_domination = find_runeforge_legendary( "Gorefiend's Domination" );
-  // legendary.vampiric_aura = find_runeforge_legendary( "Vampiric Aura" );
+  legendary.vampiric_aura = find_runeforge_legendary( "Vampiric Aura" );
 
   // Covenants
   covenant.abomination_limb = find_covenant_spell( "Abomination Limb" );
@@ -8959,6 +8965,11 @@ double death_knight_t::composite_leech() const
   if ( buffs.voracious -> up() )
   {
     m += buffs.voracious -> data().effectN( 1 ).percent();
+  }
+
+  if ( dbc -> ptr && legendary.vampiric_aura.ok() && buffs.vampiric_blood -> up() )
+  {
+    m += buffs.vampiric_blood -> check_value();
   }
 
   return m;
