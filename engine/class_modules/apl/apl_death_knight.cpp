@@ -167,7 +167,7 @@ void frost( player_t* p )
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   default_->add_action( "auto_attack" );
-  default_->add_action( "variable,name=specified_on_use,value=(equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains<20)|(equipped.overwhelming_power_crystal|cooldown.overwhelming_power_crystal.remains<20)" );
+  default_->add_action( "variable,name=specified_on_use,value=(equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.ready)|(equipped.overwhelming_power_crystal|cooldown.overwhelming_power_crystal.ready)" );
   default_->add_action( "remorseless_winter,if=conduit.everfrost&talent.gathering_storm&!talent.obliteration&cooldown.pillar_of_frost.remains", "Apply Frost Fever, maintain Icy Talons and keep Remorseless Winter rolling" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
   default_->add_action( "howling_blast,if=!dot.frost_fever.ticking&(talent.icecap|cooldown.breath_of_sindragosa.remains>15|talent.obliteration&cooldown.pillar_of_frost.remains&!buff.killing_machine.up)", "Apply Frost Fever and maintain Icy Talons" );
@@ -328,7 +328,7 @@ void unholy( player_t* p )
   default_->add_action( "variable,name=pooling_runes,value=talent.soul_reaper&rune<2&target.time_to_pct_35<5&fight_remains>5" );
   default_->add_action( "variable,name=st_planning,value=active_enemies=1&(!raid_event.adds.exists|raid_event.adds.in>15)" );
   default_->add_action( "variable,name=major_cooldowns_active,value=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&pet.apoc_ghoul.active|buff.dark_transformation.up" );
-  default_->add_action( "variable,name=specified_on_use,value=(equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains<20)|(equipped.overwhelming_power_crystal|cooldown.overwhelming_power_crystal.remains<20)" );
+  default_->add_action( "variable,name=specified_on_use,value=(equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.ready)|(equipped.overwhelming_power_crystal|cooldown.overwhelming_power_crystal.ready)" );
   default_->add_action( "outbreak,if=dot.virulent_plague.refreshable&!talent.unholy_blight&!raid_event.adds.exists", "Maintaining Virulent Plague is a priority" );
   default_->add_action( "outbreak,if=dot.virulent_plague.refreshable&active_enemies>=2&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains)" );
   default_->add_action( "outbreak,if=runeforge.superstrain&(dot.frost_fever.refreshable|dot.blood_plague.refreshable)" );
