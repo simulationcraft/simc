@@ -5841,7 +5841,7 @@ void monk_t::init_spells()
   legendary.jade_ignition           = find_runeforge_legendary( "Jade Ignition" );
   legendary.keefers_skyreach        = find_runeforge_legendary( "Keefer's Skyreach" );
   legendary.last_emperors_capacitor = find_runeforge_legendary( "Last Emperor's Capacitor" );
-  legendary.xuens_battlegear        = find_runeforge_legendary( "Xuen's Battlegear" );
+  legendary.xuens_battlegear        = find_runeforge_legendary( "Xuen's Treasure" );
 
   // Passives =========================================
   // General
