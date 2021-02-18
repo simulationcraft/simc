@@ -582,6 +582,9 @@ public:
     // Covenant
     gain_t* swarming_mist;
 
+    // Legendary
+    gain_t* gorefiends_domination;
+
     // Blood
     gain_t* blood_tap;
     gain_t* bryndaors_might;
@@ -6857,6 +6860,7 @@ struct vampiric_blood_buff_t : public buff_t
 
 struct vampiric_blood_t : public death_knight_spell_t
 {
+  int gorefiends_domination_energize_amount;
   vampiric_blood_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "vampiric_blood", p, p -> spec.vampiric_blood )
   {
@@ -6864,6 +6868,10 @@ struct vampiric_blood_t : public death_knight_spell_t
 
     harmful = false;
     base_dd_min = base_dd_max = 0;
+    if( p -> dbc -> ptr )
+    {
+      gorefiends_domination_energize_amount = as<int>( p -> legendary.gorefiends_domination->ok() ? p -> find_spell( 350914 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) : 0 );
+    }
   }
 
   void execute() override
@@ -6871,6 +6879,13 @@ struct vampiric_blood_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.vampiric_blood -> trigger();
+
+    if ( p() -> dbc -> ptr )
+    {
+      p() -> resource_gain( RESOURCE_RUNIC_POWER,
+                 gorefiends_domination_energize_amount,
+                 p() -> gains.gorefiends_domination );
+    }
   }
 };
 
@@ -8658,6 +8673,7 @@ void death_knight_t::init_gains()
 
   // Shadowlands / Covenants
   gains.swarming_mist                    = get_gain( "Swarming Mist" );
+  gains.gorefiends_domination            = get_gain( "Gorefiends Domination" );
 }
 
 // death_knight_t::init_procs ===============================================
