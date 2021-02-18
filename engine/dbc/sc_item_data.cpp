@@ -964,7 +964,7 @@ double item_database::item_budget( const player_t* player, unsigned ilevel )
   // Since we don't know the quality of the "item", just return the uncommon item budget. The
   // budgets have been the same for all qualities for a long while, but this function will break if
   // this ever changes.
-  return budget.p_uncommon_f[ 0 ];
+  return budget.p_uncommon[ 0 ];
 }
 
 double item_database::item_budget( const item_t* item, unsigned max_ilevel )
@@ -978,11 +978,11 @@ double item_database::item_budget( const item_t* item, unsigned max_ilevel )
   const random_prop_data_t& budget = item -> player -> dbc->random_property( scaling_level );
 
   if ( item -> parsed.data.quality >= 4 )
-    m_scale = budget.p_epic_f[ 0 ];
+    m_scale = budget.p_epic[ 0 ];
   else if ( item -> parsed.data.quality == 3 )
-    m_scale = budget.p_rare_f[ 0 ];
+    m_scale = budget.p_rare[ 0 ];
   else
-    m_scale = budget.p_uncommon_f[ 0 ];
+    m_scale = budget.p_uncommon[ 0 ];
 
   return m_scale;
 }
@@ -1578,17 +1578,17 @@ void item_database::convert_stat_values( item_t& item )
   double budget = 0.0;
   if ( item.parsed.data.quality == 4 || item.parsed.data.quality == 5 )
   {
-    budget = ilevel_data.p_epic_f[ slot_type ];
+    budget = ilevel_data.p_epic[ slot_type ];
   }
   // Rare/Heirloom
   else if ( item.parsed.data.quality == 3 || item.parsed.data.quality == 7 )
   {
-    budget = ilevel_data.p_rare_f[ slot_type ];
+    budget = ilevel_data.p_rare[ slot_type ];
   }
   // Rest
   else
   {
-    budget = ilevel_data.p_uncommon_f[ slot_type ];
+    budget = ilevel_data.p_uncommon[ slot_type ];
   }
 
   for ( size_t i = 0; i < item.parsed.stat_val.size() && item.parsed.stat_val[ i ] > 0; ++i )
