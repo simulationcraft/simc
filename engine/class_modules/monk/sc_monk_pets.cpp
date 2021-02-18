@@ -1690,11 +1690,6 @@ public:
       attack_power_mod.direct = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).ap_coeff();
       radius                  = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).radius();
 
-/*      if ( o()->specialization() == MONK_BREWMASTER )
-        cooldown->duration = timespan_t::from_seconds( 6.0 );
-      else
-        cooldown->duration = timespan_t::from_seconds( 9.0 );
-        */
       trigger_gcd = timespan_t::from_seconds( 1.5 );
     }
 
