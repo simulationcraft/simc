@@ -1535,6 +1535,7 @@ public:
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
       cooldown->duration = p->o()->passives.fallen_monk_spec_duration->duration();
+      cooldown->hasted   = false;
 
       tick_action = new fallen_monk_fists_of_fury_tick_t( p );
     }
@@ -1556,7 +1557,12 @@ public:
 
       // We only want the monk to cast Tiger Palm 2 times during the duration.
       // Increase the cooldown for non-windwalkers so that it only casts 2 times.
-      cooldown->duration = timespan_t::from_seconds( 3 );
+      if ( o()->specialization() == MONK_WINDWALKER )
+        cooldown->duration = timespan_t::from_seconds( 3.6 );
+      else
+        cooldown->duration = timespan_t::from_seconds( 3 );
+
+      cooldown->hasted = false;
     }
 
     double cost() const override
@@ -1687,6 +1693,8 @@ public:
       attack_power_mod.direct = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).ap_coeff();
       radius                  = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).radius();
 
+      cooldown->hasted        = false;
+
       trigger_gcd = timespan_t::from_seconds( 1.5 );
     }
 
@@ -1769,6 +1777,7 @@ public:
     {
       parse_options( options_str );
       cooldown->duration = timespan_t::from_seconds( 9 );
+      cooldown->hasted   = false;
       trigger_gcd        = timespan_t::from_seconds( 2 );
 
       add_child( dot_action );
