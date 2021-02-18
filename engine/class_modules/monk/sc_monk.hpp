@@ -690,7 +690,7 @@ public:
     item_runeforge_t jade_ignition;            // 7071
     item_runeforge_t keefers_skyreach;         // 7068
     item_runeforge_t last_emperors_capacitor;  // 7069
-    item_runeforge_t xuens_treasure;           // 7070
+    item_runeforge_t xuens_battlegear;         // 7070
   } legendary;
 
   struct pets_t

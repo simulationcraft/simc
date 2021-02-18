@@ -1166,8 +1166,8 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
           s->target->debuffs.mortal_wounds->trigger();
         }
 
-        if ( p()->legendary.xuens_treasure->ok() && ( s->result == RESULT_CRIT ) )
-          p()->cooldown.fists_of_fury->adjust( -1 * p()->legendary.xuens_treasure->effectN( 2 ).time_value() );
+        if ( p()->legendary.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
+          p()->cooldown.fists_of_fury->adjust( -1 * p()->legendary.xuens_battlegear->effectN( 2 ).time_value(), true );
 
         // Apply Mark of the Crane
         if ( p()->spec.spinning_crane_kick_2_ww->ok() )
@@ -1911,7 +1911,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::last_tick( dot );
 
-    if ( p()->legendary.xuens_treasure->ok() )
+    if ( p()->legendary.xuens_battlegear->ok() )
       p()->buff.pressure_point->trigger();
   }
 };
@@ -5841,7 +5841,7 @@ void monk_t::init_spells()
   legendary.jade_ignition           = find_runeforge_legendary( "Jade Ignition" );
   legendary.keefers_skyreach        = find_runeforge_legendary( "Keefer's Skyreach" );
   legendary.last_emperors_capacitor = find_runeforge_legendary( "Last Emperor's Capacitor" );
-  legendary.xuens_treasure          = find_runeforge_legendary( "Xuen's Treasure" );
+  legendary.xuens_battlegear        = find_runeforge_legendary( "Xuen's Battlegear" );
 
   // Passives =========================================
   // General
