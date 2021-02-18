@@ -981,7 +981,7 @@ struct tiger_palm_t : public monk_melee_attack_t
       am *= 1 + p()->buff.blackout_combo->data().effectN( 1 ).percent();
 
     if ( shaohoas_might )
-      am *= 1 + p()->passives.face_palm->effectN( 1 ).percent();
+      am *= 1 + p()->passives.shaohaos_might->effectN( 2 ).percent();
 
     return am;
   }
@@ -1042,7 +1042,7 @@ struct tiger_palm_t : public monk_melee_attack_t
           p()->buff.blackout_combo->expire();
 
         if ( shaohoas_might )
-          brew_cooldown_reduction( p()->passives.face_palm->effectN( 2 ).base_value() );
+          brew_cooldown_reduction( p()->passives.shaohaos_might->effectN( 3 ).base_value() );
         break;
       }
       default:
@@ -5932,7 +5932,7 @@ void monk_t::init_spells()
 
   // Shadowland Legendary
   passives.chi_explosion        = find_spell( 337342 );
-  passives.face_palm            = find_spell( 227679 );
+  passives.shaohaos_might            = find_spell( 337570 );
   passives.charred_passions_dmg = find_spell( 338141 );
 
   // Mastery spells =========================================

@@ -590,7 +590,7 @@ public:
 
     // Shadowland Legendary
     const spell_data_t* chi_explosion;
-    const spell_data_t* face_palm;
+    const spell_data_t* shaohaos_might;
     const spell_data_t* charred_passions_dmg;
   } passives;
 
