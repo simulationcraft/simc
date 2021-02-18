@@ -4075,9 +4075,6 @@ struct tigers_fury_t : public cat_attack_t
     autoshift = form_mask = CAT_FORM;
     energize_type = action_energize::ON_CAST;
     energize_amount += p->find_rank_spell( "Tiger's Fury", "Rank 2" )->effectN( 1 ).resource( RESOURCE_ENERGY );
-
-    if ( p->talent.predator->ok() )
-      duration += p->talent.predator->effectN( 1 ).time_value();
   }
 
   void execute() override
