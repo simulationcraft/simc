@@ -3853,24 +3853,9 @@ struct fallen_order_t : public monk_spell_t
     std::vector<std::pair<specialization_e, timespan_t>> fallen_monks;
 
     // Monks alternate summoning primary spec and non-primary spec
-    // 11 summons in total (6 primary and a mix of 5 non-primary)
+    // 8 summons in total (4 primary and a mix of 4 non-primary)
     // for non-primary, there is a 50% chance one or the other non-primary is summoned
-    switch ( spec )
-    {
-      case MONK_WINDWALKER:
-        fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, primary_duration ) );
-        break;
-      case MONK_BREWMASTER:
-        fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, primary_duration ) );
-        break;
-      case MONK_MISTWEAVER:
-        fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, primary_duration ) );
-        break;
-      default:
-        break;
-    }
-
-    for ( int i = 0; i < 7; i++ )
+    for ( int i = 0; i < 8; i++ )
     {
       switch ( spec )
       {
