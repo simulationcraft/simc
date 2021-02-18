@@ -8632,7 +8632,15 @@ void death_knight_t::create_buffs()
   // According to tooltip data and ingame testing, the buff's value is halved for blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
-    buffs.death_turf -> default_value /= 2;
+    if ( dbc -> ptr )
+    {
+      buffs.death_turf -> default_value = legendary.phearomones -> effectN( 2 ).percent();
+    }
+    else
+    {
+      buffs.death_turf -> default_value /= 2;
+    }
+    sim->print_debug("DEBUGME:  {}", buffs.death_turf -> default_value);
   }
 
   // Covenants
