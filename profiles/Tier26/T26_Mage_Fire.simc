@@ -27,22 +27,31 @@ actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/arcane_intellect
-# If set to a non-zero value, the Combustion action and cooldowns that are constrained to only be used when Combustion is up will not be used during the simulation.
+# APL Variable Option: If set to a non-zero value, the Combustion action and cooldowns that are constrained to only be used when Combustion is up will not be used during the simulation.
 actions.precombat+=/variable,name=disable_combustion,op=reset
-# This variable specifies the number of targets at which Hot Streak Flamestrikes outside of Combustion should be used.
+# APL Variable Option: This variable specifies whether Combustion should be used during Firestarter.
+actions.precombat+=/variable,name=firestarter_combustion,default=-1,value=1*!talent.pyroclasm,if=variable.firestarter_combustion<0
+# APL Variable Option: This variable specifies the number of targets at which Hot Streak Flamestrikes outside of Combustion should be used.
 actions.precombat+=/variable,name=hot_streak_flamestrike,if=variable.hot_streak_flamestrike=0,value=2*talent.flame_patch+3*!talent.flame_patch
-# This variable specifies the number of targets at which Hard Cast Flamestrikes outside of Combustion should be used as filler.
+# APL Variable Option: This variable specifies the number of targets at which Hard Cast Flamestrikes outside of Combustion should be used as filler.
 actions.precombat+=/variable,name=hard_cast_flamestrike,if=variable.hard_cast_flamestrike=0,value=2*talent.flame_patch+3*!talent.flame_patch
-# This variable specifies the number of targets at which Hot Streak Flamestrikes are used during Combustion.
+# APL Variable Option: This variable specifies the number of targets at which Hot Streak Flamestrikes are used during Combustion.
 actions.precombat+=/variable,name=combustion_flamestrike,if=variable.combustion_flamestrike=0,value=3*talent.flame_patch+6*!talent.flame_patch
-# This variable specifies the number of targets at which Arcane Explosion outside of Combustion should be used.
+# APL Variable Option: This variable specifies the number of targets at which Arcane Explosion outside of Combustion should be used.
 actions.precombat+=/variable,name=arcane_explosion,if=variable.arcane_explosion=0,value=99*talent.flame_patch+2*!talent.flame_patch
-# This variable specifies the percentage of mana below which Arcane Explosion will not be used.
+# APL Variable Option: This variable specifies the percentage of mana below which Arcane Explosion will not be used.
 actions.precombat+=/variable,name=arcane_explosion_mana,default=40,op=reset
-# With Kindling, Combustion's cooldown will be reduced by a random amount, but the number of crits starts very high after activating Combustion and slows down towards the end of Combustion's cooldown. When making decisions in the APL, Combustion's remaining cooldown is reduced by this fraction to account for Kindling.
+# APL Variable Option: With Kindling, Combustion's cooldown will be reduced by a random amount, but the number of crits starts very high after activating Combustion and slows down towards the end of Combustion's cooldown. When making decisions in the APL, Combustion's remaining cooldown is reduced by this fraction to account for Kindling.
 actions.precombat+=/variable,name=kindling_reduction,default=0.4,op=reset
+# APL Variable Option: The number of targets Shifting Power should be used on during Combustion.
+actions.precombat+=/variable,name=combustion_shifting_power,default=2,op=reset
+# APL Variable Option: The time remaining on a cast when Combustion can be used in seconds.
+actions.precombat+=/variable,name=combustion_cast_remains,default=0.7,op=reset
+# If Combustion is disabled, schedule the first Combustion far after the fight ends.
+actions.precombat+=/variable,name=time_to_combustion,value=fight_remains+100,if=variable.disable_combustion
 # The duration of a Sun King's Blessing Combustion.
 actions.precombat+=/variable,name=skb_duration,value=dbc.effect.828420.base_value
+# Whether a usable item used to buff Combustion is equipped.
 actions.precombat+=/variable,name=combustion_on_use,value=equipped.gladiators_badge|equipped.macabre_sheet_music|equipped.inscrutable_quantum_device|equipped.sunblood_amethyst|equipped.empyreal_ordnance|equipped.flame_of_battle|equipped.wakeners_frond|equipped.instructors_divine_bell
 # How long before Combustion should Empyreal Ordnance be used?
 actions.precombat+=/variable,name=empyreal_ordnance_delay,default=18,op=reset
@@ -50,35 +59,21 @@ actions.precombat+=/variable,name=empyreal_ordnance_delay,default=18,op=reset
 actions.precombat+=/variable,name=on_use_cutoff,value=20,if=variable.combustion_on_use
 actions.precombat+=/variable,name=on_use_cutoff,value=25,if=equipped.macabre_sheet_music
 actions.precombat+=/variable,name=on_use_cutoff,value=20+variable.empyreal_ordnance_delay,if=equipped.empyreal_ordnance
-# The number of targets Shifting Power should be used on during Combustion.
-actions.precombat+=/variable,name=combustion_shifting_power,default=2,op=reset
-# The time remaining on a cast when Combustion can be used in seconds.
-actions.precombat+=/variable,name=combustion_cast_remains,default=0.7,op=reset
 actions.precombat+=/snapshot_stats
-actions.precombat+=/use_item,name=soul_igniter,if=!variable.combustion_on_use
+actions.precombat+=/use_item,name=soul_igniter,if=!variable.combustion_on_use&!equipped.dreadfire_vessel&(!talent.firestarter|variable.firestarter_combustion)
 actions.precombat+=/mirror_image
 actions.precombat+=/pyroblast
 
 # Executed every time the actor is available.
 actions=counterspell,if=!runeforge.disciplinary_command
-# Variable that controls when Combustion is used. This line sets Combustion to be used after Firestarter and applies the kindling_reduction variable to the remaining cooldown of Combustion. Additionally, if Combustion is disabled this just sets the variable to a time past the end of the simulation.
-actions+=/variable,name=time_to_combustion,value=talent.firestarter*firestarter.remains+(cooldown.combustion.remains*(1-variable.kindling_reduction*talent.kindling))*!cooldown.combustion.ready*buff.combustion.down+fight_remains*2*(variable.disable_combustion!=0)
-# Make sure Combustion is delayed if needed based on the empyreal_ordnance_delay variable.
-actions+=/variable,name=time_to_combustion,op=max,value=variable.empyreal_ordnance_delay-(cooldown.empyreal_ordnance.duration-cooldown.empyreal_ordnance.remains)*!cooldown.empyreal_ordnance.ready,if=equipped.empyreal_ordnance
-# Delay Combustion for Gladiators Badge, unless it would be delayed longer than 20 seconds.
-actions+=/variable,name=time_to_combustion,op=max,value=cooldown.gladiators_badge_345228.remains,if=equipped.gladiators_badge&cooldown.gladiators_badge_345228.remains<20
-# Delay Combustion until RoP expires if it's up.
-actions+=/variable,name=time_to_combustion,op=max,value=buff.rune_of_power.remains,if=talent.rune_of_power&buff.combustion.down
-# Delay Combustion for an extra Rune of Power if the Rune of Power would come off cooldown at least 5 seconds before Combustion would.
-actions+=/variable,name=time_to_combustion,op=max,value=cooldown.rune_of_power.remains+buff.rune_of_power.duration,if=talent.rune_of_power&buff.combustion.down&cooldown.rune_of_power.remains+5<variable.time_to_combustion
-# Delay Combustion if Disciplinary Command would not be ready for it yet.
-actions+=/variable,name=time_to_combustion,op=max,value=cooldown.buff_disciplinary_command.remains,if=runeforge.disciplinary_command&buff.disciplinary_command.down
+# The combustion_timing action list schedules when Combustion will be used and stores the result in variable.time_to_combustion.
+actions+=/call_action_list,name=combustion_timing,if=!variable.disable_combustion
 # Variable that estimates whether Shifting Power will be used before Combustion is ready.
 actions+=/variable,name=shifting_power_before_combustion,value=(active_enemies<variable.combustion_shifting_power|active_enemies<variable.combustion_flamestrike|variable.time_to_combustion-action.shifting_power.full_reduction>cooldown.shifting_power.duration)&variable.time_to_combustion-cooldown.shifting_power.remains>action.shifting_power.full_reduction&(cooldown.rune_of_power.remains-cooldown.shifting_power.remains>5|!talent.rune_of_power)
-actions+=/shifting_power,if=buff.combustion.down&!(buff.infernal_cascade.up&buff.hot_streak.react)&variable.shifting_power_before_combustion
-actions+=/radiant_spark,if=(buff.combustion.down&buff.rune_of_power.down&(variable.time_to_combustion<execute_time|variable.time_to_combustion>cooldown.radiant_spark.duration))|(buff.rune_of_power.up&variable.time_to_combustion>30)
+actions+=/shifting_power,if=buff.combustion.down&action.fire_blast.charges<=1&!(buff.infernal_cascade.up&buff.hot_streak.react)&variable.shifting_power_before_combustion
+actions+=/radiant_spark,if=buff.combustion.down&(variable.time_to_combustion<2*gcd.max|variable.time_to_combustion>cooldown-10)
 actions+=/deathborne,if=buff.combustion.down&buff.rune_of_power.down&variable.time_to_combustion<execute_time
-actions+=/mirrors_of_torment,if=variable.time_to_combustion<=3&buff.combustion.down
+actions+=/mirrors_of_torment,if=variable.time_to_combustion<=4&buff.combustion.down
 # For Venthyr, use a Fire Blast charge during Mirrors of Torment cast to avoid capping charges.
 actions+=/fire_blast,use_while_casting=1,if=action.mirrors_of_torment.executing&full_recharge_time-action.mirrors_of_torment.execute_remains<4&!hot_streak_spells_in_flight&!buff.hot_streak.react
 actions+=/use_item,effect_name=gladiators_badge,if=variable.time_to_combustion>cooldown-5
@@ -93,10 +88,12 @@ actions+=/use_item,name=soul_igniter,if=(variable.time_to_combustion>=30*(variab
 actions+=/cancel_buff,name=soul_ignition,if=!conduit.infernal_cascade&time<5|buff.infernal_cascade.stack=buff.infernal_cascade.max_stack
 # Items that do not benefit Combustion should just be used outside of Combustion at some point.
 actions+=/use_items,if=variable.time_to_combustion>=variable.on_use_cutoff
+# Use Frost Nova to trigger Grisly Icicle.
+actions+=/frost_nova,if=runeforge.grisly_icicle&buff.combustion.down&(variable.time_to_combustion>cooldown|variable.time_to_combustion<execute_time)
 # Get the Disciplinary Command buff up, unless combustion is soon.
-actions+=/counterspell,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down&!buff.disciplinary_command.up&variable.time_to_combustion>25
-actions+=/arcane_explosion,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down&!buff.disciplinary_command.up&variable.time_to_combustion>25
-actions+=/frostbolt,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_frost.down&!buff.disciplinary_command.up&variable.time_to_combustion>25
+actions+=/counterspell,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.remains<action.frostbolt.cast_time&buff.disciplinary_command_arcane.down&!buff.disciplinary_command.up&(variable.time_to_combustion>20|variable.time_to_combustion<5)
+actions+=/arcane_explosion,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.remains<execute_time+action.frostbolt.cast_time&buff.disciplinary_command_arcane.down&!buff.disciplinary_command.up&(variable.time_to_combustion>20|variable.time_to_combustion<5&!talent.rune_of_power)
+actions+=/frostbolt,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.remains<cast_time&buff.disciplinary_command_frost.down&!buff.disciplinary_command.up&(variable.time_to_combustion>20|variable.time_to_combustion<5)
 actions+=/call_action_list,name=combustion_phase,if=variable.time_to_combustion<=0
 actions+=/rune_of_power,if=buff.rune_of_power.down&!buff.firestorm.react&(variable.time_to_combustion>=buff.rune_of_power.duration&variable.time_to_combustion>action.fire_blast.full_recharge_time|variable.time_to_combustion>fight_remains)
 # Variable that controls Fire Blast usage to ensure its charges pooled for Combustion.
@@ -147,13 +144,8 @@ actions.combustion_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=!cond
 actions.combustion_phase+=/variable,use_off_gcd=1,use_while_casting=1,name=expected_fire_blasts,value=action.fire_blast.charges_fractional+(variable.extended_combustion_remains-buff.infernal_cascade.duration)%cooldown.fire_blast.duration,if=conduit.infernal_cascade
 actions.combustion_phase+=/variable,use_off_gcd=1,use_while_casting=1,name=needed_fire_blasts,value=ceil(variable.extended_combustion_remains%(buff.infernal_cascade.duration-gcd.max)),if=conduit.infernal_cascade
 actions.combustion_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=conduit.infernal_cascade&charges>=1&(variable.expected_fire_blasts>=variable.needed_fire_blasts|variable.extended_combustion_remains<=buff.infernal_cascade.duration|buff.infernal_cascade.stack<2|buff.infernal_cascade.remains<gcd.max|cooldown.shifting_power.ready&active_enemies>=variable.combustion_shifting_power&covenant.night_fae)&buff.combustion.up&(!buff.firestorm.react|buff.infernal_cascade.remains<0.5)&!buff.hot_streak.react&hot_streak_spells_in_flight+buff.heating_up.react<2
-# Prepare Disciplinary Command for Combustion. Note that the Rune of Power from Combustion counts as an Arcane spell, so Arcane spells are only necessary if that talent is not used.
-actions.combustion_phase+=/counterspell,if=runeforge.disciplinary_command&buff.disciplinary_command.down&buff.disciplinary_command_arcane.down&cooldown.buff_disciplinary_command.ready&!talent.rune_of_power
-actions.combustion_phase+=/arcane_explosion,if=runeforge.disciplinary_command&buff.disciplinary_command.down&buff.disciplinary_command_arcane.down&cooldown.buff_disciplinary_command.ready&!talent.rune_of_power
-actions.combustion_phase+=/frostbolt,if=runeforge.disciplinary_command&buff.disciplinary_command.down&buff.disciplinary_command_frost.down
-actions.combustion_phase+=/frost_nova,if=runeforge.grisly_icicle&buff.combustion.down
 actions.combustion_phase+=/call_action_list,name=active_talents
-actions.combustion_phase+=/combustion,use_off_gcd=1,use_while_casting=1,if=buff.combustion.down&(!runeforge.disciplinary_command|buff.disciplinary_command.up|buff.disciplinary_command_frost.up&talent.rune_of_power&cooldown.buff_disciplinary_command.ready)&(!runeforge.grisly_icicle|debuff.grisly_icicle.up)&(action.meteor.in_flight&action.meteor.in_flight_remains<=variable.combustion_cast_remains|action.scorch.executing&action.scorch.execute_remains<variable.combustion_cast_remains|action.fireball.executing&action.fireball.execute_remains<variable.combustion_cast_remains|action.pyroblast.executing&action.pyroblast.execute_remains<variable.combustion_cast_remains|action.flamestrike.executing&action.flamestrike.execute_remains<variable.combustion_cast_remains)
+actions.combustion_phase+=/combustion,use_off_gcd=1,use_while_casting=1,if=buff.combustion.down&(!runeforge.disciplinary_command|buff.disciplinary_command.up|buff.disciplinary_command_frost.up&talent.rune_of_power&cooldown.buff_disciplinary_command.ready)&(!runeforge.grisly_icicle|debuff.grisly_icicle.up)&(!covenant.necrolord|cooldown.deathborne.remains|buff.deathborne.up)&(action.meteor.in_flight&action.meteor.in_flight_remains<=variable.combustion_cast_remains|action.scorch.executing&action.scorch.execute_remains<variable.combustion_cast_remains|action.fireball.executing&action.fireball.execute_remains<variable.combustion_cast_remains|action.pyroblast.executing&action.pyroblast.execute_remains<variable.combustion_cast_remains|action.flamestrike.executing&action.flamestrike.execute_remains<variable.combustion_cast_remains)
 # Other cooldowns that should be used with Combustion should only be used with an actual Combustion cast and not with a Sun King's Blessing proc.
 actions.combustion_phase+=/call_action_list,name=combustion_cooldowns,if=buff.combustion.remains>8|cooldown.combustion.remains<5
 actions.combustion_phase+=/flamestrike,if=(buff.hot_streak.react&active_enemies>=variable.combustion_flamestrike)|(buff.firestorm.react&active_enemies>=variable.combustion_flamestrike-runeforge.firestorm)
@@ -171,6 +163,36 @@ actions.combustion_phase+=/scorch,if=buff.combustion.remains>cast_time&buff.comb
 actions.combustion_phase+=/living_bomb,if=buff.combustion.remains<gcd.max&active_enemies>1
 actions.combustion_phase+=/dragons_breath,if=buff.combustion.remains<gcd.max&buff.combustion.up
 actions.combustion_phase+=/scorch,if=searing_touch.active
+
+# Helper variable that contains the actual estimated time that the next Combustion will be ready.
+actions.combustion_timing=variable,name=combustion_ready_time,value=cooldown.combustion.remains*(1-(variable.kindling_reduction+0.2*firestarter.active)*talent.kindling)
+actions.combustion_timing+=/variable,name=combustion_time,value=variable.combustion_ready_time
+# Delay Combustion for after Firestarter unless variable.firestarter_combustion is set.
+actions.combustion_timing+=/variable,name=combustion_time,op=max,value=firestarter.remains,if=talent.firestarter&!variable.firestarter_combustion
+# Delay Combustion for Radiant Spark if it will come off cooldown soon.
+actions.combustion_timing+=/variable,name=combustion_time,op=max,value=cooldown.radiant_spark.remains,if=covenant.kyrian&cooldown.radiant_spark.remains-10<variable.combustion_time
+# Delay Combustion for Deathborne.
+actions.combustion_timing+=/variable,name=combustion_time,op=max,value=cooldown.deathborne.remains,if=covenant.necrolord&cooldown.deathborne.remains-10<variable.combustion_time
+# Delay Combustion for the Empyreal Ordnance buff if the player is using that trinket.
+actions.combustion_timing+=/variable,name=combustion_time,op=max,value=variable.empyreal_ordnance_delay-(cooldown.empyreal_ordnance.duration-cooldown.empyreal_ordnance.remains)*!cooldown.empyreal_ordnance.ready,if=equipped.empyreal_ordnance
+# Delay Combustion for Gladiators Badge, unless it would be delayed longer than 20 seconds.
+actions.combustion_timing+=/variable,name=combustion_time,op=max,value=cooldown.gladiators_badge_345228.remains,if=equipped.gladiators_badge&cooldown.gladiators_badge_345228.remains-20<variable.combustion_time
+# Delay Combustion until RoP expires if it's up.
+actions.combustion_timing+=/variable,name=combustion_time,op=max,value=buff.rune_of_power.remains,if=talent.rune_of_power&buff.combustion.down
+# Delay Combustion for an extra Rune of Power if the Rune of Power would come off cooldown at least 5 seconds before Combustion would.
+actions.combustion_timing+=/variable,name=combustion_time,op=max,value=cooldown.rune_of_power.remains+buff.rune_of_power.duration,if=talent.rune_of_power&buff.combustion.down&cooldown.rune_of_power.remains+5<variable.combustion_time
+# Delay Combustion if Disciplinary Command would not be ready for it yet.
+actions.combustion_timing+=/variable,name=combustion_time,op=max,value=cooldown.buff_disciplinary_command.remains,if=runeforge.disciplinary_command&buff.disciplinary_command.down
+# Raid Events: Delay Combustion for add spawns of 3 or more adds that will last longer than 15 seconds. These values aren't necessarily optimal in all cases.
+actions.combustion_timing+=/variable,name=combustion_time,op=max,value=raid_event.adds.in,if=raid_event.adds.exists&raid_event.adds.count>=3&raid_event.adds.duration>15
+# Raid Events: Always use Combustion with vulnerability raid events, override any delays listed above to make sure it gets used here.
+actions.combustion_timing+=/variable,name=combustion_time,value=raid_event.vulnerable.in*!raid_event.vulnerable.up,if=raid_event.vulnerable.exists&variable.combustion_ready_time<raid_event.vulnerable.in
+# Use the next Combustion on cooldown if it would not be expected to delay the scheduled one or the scheduled one would happen less than 15 seconds before the fight ends. Add to variable.kindling_reduction because this includes the frontloaded triggers during Combustion and that variable is meant to be used after Combustion.
+actions.combustion_timing+=/variable,name=combustion_time,value=variable.combustion_ready_time,if=variable.combustion_ready_time+cooldown.combustion.duration*(1-(0.2+variable.kindling_reduction+0.2*firestarter.active)*talent.kindling)<=variable.combustion_time|variable.combustion_time>fight_remains-20
+# Add the current time to the scheduled Combustion to put it in absolute time so that it is still accurate after a little time passes.
+actions.combustion_timing+=/variable,name=combustion_time,op=add,value=time
+# Finally, convert from absolute time and store the relative time in variable.time_to_combustion. Unlike the rest of the calculations, which happen less frequently to speed up the simulation, this happens off-GCD and while casting.
+actions.combustion_timing+=/variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,value=(variable.combustion_time-time)*buff.combustion.down
 
 actions.rop_phase=flamestrike,if=active_enemies>=variable.hot_streak_flamestrike&(buff.hot_streak.react|buff.firestorm.react)
 actions.rop_phase+=/pyroblast,if=buff.sun_kings_blessing_ready.up&buff.sun_kings_blessing_ready.remains>cast_time
