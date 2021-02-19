@@ -231,7 +231,8 @@ void shadow( player_t* p )
                     "Use Void Torrent only if SW:P and VT are active and the target won't die during the channel." );
   main->add_talent( p, "Mindbender",
                     "if=dot.vampiric_touch.ticking&(talent.searing_nightmare.enabled&spell_targets.mind_sear>variable."
-                    "mind_sear_cutoff|dot.shadow_word_pain.ticking)" );
+                    "mind_sear_cutoff|dot.shadow_word_pain.ticking)&(!runeforge.shadowflame_prism.equipped|active_dot."
+                    "vampiric_touch==spell_targets.vampiric_touch)" );
   main->add_action(
       p, "Shadow Word: Death",
       "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.time_to_pct_20>(cooldown.shadow_word_death."
