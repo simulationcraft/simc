@@ -1304,6 +1304,11 @@ public:
     make_event<secondary_action_trigger_t<base_t>>( *ab::sim, target, this, cp, delay );
   }
 
+  virtual void trigger_secondary_action( player_t* target, timespan_t delay )
+  {
+    trigger_secondary_action( target, 0, delay );
+  }
+
   virtual void trigger_secondary_action( action_state_t* s, timespan_t delay = timespan_t::zero() )
   {
     assert( is_secondary_action() && s->action == this );
@@ -3121,7 +3126,7 @@ struct pistol_shot_t : public rogue_attack_t
       unsigned int num_shots = as<unsigned>( p()->buffs.concealed_blunderbuss->value() );
       for ( unsigned i = 0; i < num_shots; ++i )
       {
-        p()->active.concealed_blunderbuss->trigger_secondary_action( execute_state->target );
+        p()->active.concealed_blunderbuss->trigger_secondary_action( execute_state->target, 0.1_s * ( 1 + i ) );
       }
       p()->buffs.concealed_blunderbuss->expire();
     }
@@ -3925,7 +3930,7 @@ struct sinister_strike_t : public rogue_attack_t
 
       if ( p()->active.triple_threat_oh && p()->rng().roll( p()->conduit.triple_threat.percent() ) )
       {
-        p()->active.triple_threat_oh->trigger_secondary_action( execute_state->target, 0, 300_ms );
+        p()->active.triple_threat_oh->trigger_secondary_action( execute_state->target, 300_ms );
       }
     }
 
@@ -3977,7 +3982,7 @@ struct sinister_strike_t : public rogue_attack_t
     // Only trigger secondary hits on initial casts of Sinister Strike
     if ( p()->spec.sinister_strike_2->ok() && p()->buffs.opportunity->trigger( 1, buff_t::DEFAULT_VALUE(), extra_attack_proc_chance() ) )
     {
-      extra_attack->trigger_secondary_action( execute_state->target, 0, 300_ms );
+      extra_attack->trigger_secondary_action( execute_state->target, 300_ms );
       p()->buffs.concealed_blunderbuss->trigger();
     }
   }
@@ -4434,7 +4439,7 @@ struct flagellation_t : public rogue_attack_t
     p()->active.flagellation->debuff->trigger();
     for ( int i = 1; i < initial_lashes; i++ )
     {
-      p()->active.flagellation->trigger_secondary_action( execute_state->target, 0, 0.25_s * ( 1 + i ) );
+      p()->active.flagellation->trigger_secondary_action( execute_state->target, 0.25_s * ( 1 + i ) );
     }
   }
 
@@ -4485,12 +4490,11 @@ struct sepsis_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_ta_multiplier( state );
 
-    // TOCHECK: Possibly refactor this when a proper buff is put into the game or logs are available
     if ( p()->conduit.septic_shock.ok() )
     {
       const dot_t* dot = td( state->target )->dots.sepsis;
       const double reduction = ( dot->current_tick - 1 ) * p()->conduit.septic_shock->effectN( 2 ).percent();
-      const double multiplier = std::max( p()->conduit.septic_shock.percent() - reduction , 0.0 );
+      const double multiplier = p()->conduit.septic_shock.percent() * std::max( 1.0 - reduction , 0.0 );
       m *= 1.0 + multiplier;
     }
 
@@ -5977,7 +5981,7 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     {
       for ( unsigned i = 1; i <= max_spend; ++i )
       {
-        p()->active.flagellation->trigger_secondary_action( debuff->player, 0, 0.25_s * ( 1 + i ) );
+        p()->active.flagellation->trigger_secondary_action( debuff->player, 0.25_s * ( 1 + i ) );
       }
     }
   }
