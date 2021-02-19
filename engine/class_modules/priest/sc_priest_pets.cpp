@@ -385,7 +385,9 @@ struct shadowflame_rift_t final : public priest_pet_spell_t
 {
   shadowflame_rift_t( base_fiend_pet_t& p ) : priest_pet_spell_t( "shadowflame_rift", p, p.o().find_spell( 344748 ) )
   {
-    background = true;
+    background                 = true;
+    affected_by_shadow_weaving = true;
+    
     // This is hard coded in the spell
     // Depending on Mindbender or Shadowfiend this hits differently
     switch ( p.pet_type )
