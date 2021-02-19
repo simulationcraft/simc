@@ -630,6 +630,7 @@ public:
   void init_base_stats() override;
   void init_procs() override;
   void init_resources( bool force ) override;
+  void init_special_effects() override;
   void init_rng() override;
   void init_scaling() override;
   void init_spells() override;
@@ -3094,6 +3095,86 @@ struct elysian_decree_t : public demon_hunter_spell_t
 
 // Fodder to the Flame ======================================================
 
+// New 9.0.5 PTR Implementation
+struct fodder_to_the_flame_cb_t : public dbc_proc_callback_t
+{
+  struct fodder_to_the_flame_damage_t : public demon_hunter_spell_t
+  {
+    double target_soft_cap;
+
+    fodder_to_the_flame_damage_t( util::string_view name, demon_hunter_t* p )
+      : demon_hunter_spell_t( name, p, p->find_spell( 350631 ) ),
+      target_soft_cap( p->find_spell( 350570 )->effectN( 1 ).base_value() )
+    {
+      background = true;
+      aoe = -1;
+    }
+
+    double composite_aoe_multiplier( const action_state_t* state ) const override
+    {
+      double cam = demon_hunter_spell_t::composite_aoe_multiplier( state );
+
+      if ( state->n_targets > target_soft_cap )
+      {
+        cam *= std::sqrt( target_soft_cap / state->n_targets );
+      }
+
+      return cam;
+    }
+
+    void execute() override
+    {
+      demon_hunter_spell_t::execute();
+      p()->spawn_soul_fragment( soul_fragment::EMPOWERED_DEMON );
+    }
+  };
+
+  // Dummy trigger spell in order to trigger Covenant cast callbacks
+  struct fodder_to_the_flame_spawn_trigger_t : public demon_hunter_spell_t
+  {
+    struct fodder_to_the_flame_state_t : public action_state_t
+    {
+      fodder_to_the_flame_state_t( action_t* a, player_t* target ) : action_state_t( a, target ) {}
+
+      proc_types2 cast_proc_type2() const override
+      { return PROC2_CAST; }
+    };
+
+    fodder_to_the_flame_spawn_trigger_t( util::string_view name, demon_hunter_t* p )
+      : demon_hunter_spell_t( name, p, p->find_spell( 350570 ) )
+    {
+      quiet = true;
+    }
+
+    proc_types proc_type() const override
+    { return PROC1_NONE_SPELL; }
+
+    action_state_t* new_state() override
+    { return new fodder_to_the_flame_state_t( this, target ); }
+  };
+
+  fodder_to_the_flame_damage_t* damage;
+  fodder_to_the_flame_spawn_trigger_t* spawn_trigger;
+  timespan_t trigger_delay;
+  demon_hunter_t* dh;
+
+  fodder_to_the_flame_cb_t( demon_hunter_t* p, const special_effect_t& e )
+    : dbc_proc_callback_t( p, e ), dh( p )
+  {
+    damage = dh->get_background_action<fodder_to_the_flame_damage_t>( "fodder_to_the_flame" );
+    spawn_trigger = dh->get_background_action<fodder_to_the_flame_spawn_trigger_t>( "fodder_to_the_flame_spawn" );
+    trigger_delay = timespan_t::from_seconds( p->options.fodder_to_the_flame_kill_seconds );
+  }
+
+  void execute( action_t* a, action_state_t* s ) override
+  {
+    dbc_proc_callback_t::execute( a, s );
+    make_event<delayed_execute_event_t>( *dh->sim, dh, damage, s->target, trigger_delay );
+    spawn_trigger->execute();
+  }
+}; 
+
+// Old 9.0.0 Implementation
 struct fodder_to_the_flame_t : public demon_hunter_spell_t
 {
   struct fodder_to_the_flame_death_t : public demon_hunter_spell_t
@@ -3125,6 +3206,15 @@ struct fodder_to_the_flame_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
     make_event<delayed_execute_event_t>( *sim, p(), death_trigger, p(), trigger_delay );
+  }
+
+  bool ready() override
+  {
+    // 02/18/2021 -- Fodder to the Flame reworked to no longer be an ability on PTR
+    if ( p()->dbc->ptr )
+      return false;
+
+    return demon_hunter_spell_t::ready();
   }
 };
 
@@ -4964,7 +5054,8 @@ void demon_hunter_t::create_buffs()
   // Fake Growing Inferno buff for tracking purposes
   buff.growing_inferno = make_buff<buff_t>( this, "growing_inferno", conduit.growing_inferno )
     ->set_default_value( conduit.growing_inferno.percent() )
-    ->set_max_stack( (int)( 10 / conduit.growing_inferno.percent() ) ) // 12/02/2020 - Manual hotfix, not in spell data
+    // 12/02/2020 - Manual hotfix, not in spell data
+    ->set_max_stack( conduit.growing_inferno->ok() ? (int)( 10 / conduit.growing_inferno.percent() ) : 1 )
     ->set_duration( 20_s );
 
   buff.soul_furance = make_buff<buff_t>( this, "soul_furance", conduit.soul_furnace->effectN( 1 ).trigger() )
@@ -5277,6 +5368,24 @@ void demon_hunter_t::init_resources( bool force )
 
   resources.current[ RESOURCE_FURY ] = options.initial_fury;
   expected_max_health = calculate_expected_max_health();
+}
+
+// demon_hunter_t::init_special_effects =====================================
+
+void demon_hunter_t::init_special_effects()
+{
+  base_t::init_special_effects();
+
+  if ( covenant.fodder_to_the_flame->ok() && dbc->ptr )
+  {
+    auto const fodder_to_the_flame_driver = new special_effect_t( this );
+    fodder_to_the_flame_driver->name_str = "fodder_to_the_flame_driver";
+    fodder_to_the_flame_driver->spell_id = 350570;
+    special_effects.push_back( fodder_to_the_flame_driver );
+
+    auto cb = new actions::spells::fodder_to_the_flame_cb_t( this, *fodder_to_the_flame_driver );
+    cb->initialize();
+  }
 }
 
 // demon_hunter_t::init_rng =================================================
