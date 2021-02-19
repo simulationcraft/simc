@@ -14,11 +14,9 @@ namespace priest_apl
 {
 std::string potion( const player_t* p )
 {
-  std::string lvl60_potion =
-      ( p->specialization() == PRIEST_SHADOW ) ? "potion_of_phantom_fire" : "potion_of_spectral_intellect";
   std::string lvl50_potion = ( p->specialization() == PRIEST_SHADOW ) ? "unbridled_fury" : "battle_potion_of_intellect";
 
-  return ( p->true_level > 50 ) ? lvl60_potion : lvl50_potion;
+  return ( p->true_level > 50 ) ? "potion_of_spectral_intellect" : lvl50_potion;
 }
 
 std::string flask( const player_t* p )
