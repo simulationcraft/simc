@@ -7888,7 +7888,8 @@ void rogue_t::create_buffs()
 
   // 02/18/2021 -- Sub-specific Deathly Shadows buff added in PTR build
   if ( dbc->ptr && specialization() == ROGUE_SUBTLETY )
-    buffs.deathly_shadows = make_buff<damage_buff_t>( this, "deathly_shadows", find_spell( 350964 ) );
+    buffs.deathly_shadows = make_buff<damage_buff_t>( this, "deathly_shadows", legendary.deathly_shadows->ok() ?
+                                                      find_spell( 350964 ) : spell_data_t::not_found() );
   else
     buffs.deathly_shadows = make_buff<damage_buff_t>( this, "deathly_shadows", legendary.deathly_shadows->effectN( 1 ).trigger() );
 
