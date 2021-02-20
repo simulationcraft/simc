@@ -4059,7 +4059,7 @@ struct chain_lightning_t : public chained_base_t
   // will allow Chain Lightning to fully benefit from the stacks.
   bool consume_maelstrom_weapon() const override
   {
-    if ( p()->buff.stormkeeper->check() )
+    if ( !p()->dbc->ptr && p()->buff.stormkeeper->check() )
     {
       return false;
     }
@@ -4073,7 +4073,7 @@ struct chain_lightning_t : public chained_base_t
 
     t *= 1.0 + p()->buff.wind_gust->stack_value();
 
-    if ( p()->buff.stormkeeper->up() )
+    if ( !p()->dbc->ptr && p()->buff.stormkeeper->up() )
     {
       // stormkeeper has a -100% value as effect 1
       t *= 1 + p()->talent.stormkeeper->effectN( 1 ).percent();
@@ -4781,7 +4781,7 @@ struct lightning_bolt_t : public shaman_spell_t
   // Chain Lightning, but the spell still benefits from the damage increase.
   bool benefit_from_maelstrom_weapon() const override
   {
-    if ( p()->buff.stormkeeper->check() )
+    if ( !p()->dbc->ptr && p()->buff.stormkeeper->check() )
     {
       return false;
     }
@@ -4857,7 +4857,8 @@ struct lightning_bolt_t : public shaman_spell_t
   double action_multiplier() const override
   {
     double m = shaman_spell_t::action_multiplier();
-    if ( p()->buff.stormkeeper->up() )
+    if ( p()->buff.stormkeeper->up() &&
+         ( !p()->dbc->ptr || p()->specialization() == SHAMAN_ELEMENTAL ) )
     {
       m *= 1.0 + p()->talent.stormkeeper->effectN( 2 ).percent();
     }
@@ -4872,7 +4873,8 @@ struct lightning_bolt_t : public shaman_spell_t
 
   timespan_t execute_time() const override
   {
-    if ( p()->buff.stormkeeper->up() )
+    if ( p()->buff.stormkeeper->up() &&
+         ( !p()->dbc->ptr || p()->specialization() == SHAMAN_ELEMENTAL ) )
     {
       return timespan_t::zero();
     }
@@ -4927,7 +4929,8 @@ struct lightning_bolt_t : public shaman_spell_t
       }
     }
 
-    if ( type == lightning_bolt_type::NORMAL )
+    if ( type == lightning_bolt_type::NORMAL &&
+         ( !p()->dbc->ptr || p()->specialization() == SHAMAN_ELEMENTAL ) )
     {
       p()->buff.stormkeeper->decrement();
     }
