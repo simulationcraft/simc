@@ -206,7 +206,7 @@ public:
     actions::rogue_poison_t* lethal_poison = nullptr;
     actions::rogue_poison_t* nonlethal_poison = nullptr;
     actions::flagellation_damage_t* flagellation = nullptr;
-    actions::rogue_spell_t* poison_bomb = nullptr;
+    actions::rogue_attack_t* poison_bomb = nullptr;
     actions::rogue_attack_t* akaaris_shadowstrike = nullptr;
     actions::rogue_attack_t* blade_flurry = nullptr;
     actions::rogue_attack_t* bloodfang = nullptr;
@@ -1108,8 +1108,7 @@ public:
     }
     if ( p->legendary.zoldyck_insignia.ok() )
     {
-      // TOCHECK: This is just temporary, using the periodic whitelist from mastery until we are clear what it should work on
-      //          Currently on beta, it doesn't work on much of anything, so this is quite unclear
+      // Not in spell data. Using the mastery whitelist as a baseline, most seem to apply
       affected_by.zoldyck_insignia = ab::data().affected_by( p->mastery.potent_assassin->effectN( 1 ) ) ||
                                      ab::data().affected_by( p->mastery.potent_assassin->effectN( 2 ) );
     }
@@ -1421,8 +1420,9 @@ public:
   void trigger_master_of_shadows();
   void trigger_akaaris_soul_fragment( const action_state_t* state );
   void trigger_bloodfang( const action_state_t* state );
-  void trigger_count_the_odds( const action_state_t* state );
   void trigger_guile_charm( const action_state_t* state );
+  void trigger_dashing_scoundrel( const action_state_t* state );
+  void trigger_count_the_odds( const action_state_t* state );
 
   // General Methods ==========================================================
 
@@ -1785,6 +1785,7 @@ struct rogue_attack_t : public rogue_action_t<melee_attack_t>
     trigger_blade_flurry( state );
     trigger_shadow_blades_attack( state );
     trigger_bloodfang( state );
+    trigger_dashing_scoundrel( state );
   }
 
   void tick( dot_t* d ) override
@@ -1792,8 +1793,8 @@ struct rogue_attack_t : public rogue_action_t<melee_attack_t>
     base_t::tick( d );
 
     trigger_shadow_blades_attack( d->state );
+    trigger_dashing_scoundrel( d->state );
   }
-
 };
 
 // ==========================================================================
@@ -1856,26 +1857,6 @@ struct rogue_poison_t : public rogue_attack_t
 
     set_target( source_state->target );
     execute();
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    rogue_attack_t::impact( state );
-
-    if ( state->result == RESULT_CRIT && p()->legendary.dashing_scoundrel->ok() && p()->buffs.envenom->check() )
-    {
-      p()->resource_gain( RESOURCE_ENERGY, p()->legendary.dashing_scoundrel_gain, p()->gains.dashing_scoundrel );
-    }
-  }
-
-  void tick( dot_t* d ) override
-  {
-    rogue_attack_t::tick( d );
-
-    if ( d->state->result == RESULT_CRIT && p()->legendary.dashing_scoundrel->ok() && p()->buffs.envenom->check() )
-    {
-      p()->resource_gain( RESOURCE_ENERGY, p()->legendary.dashing_scoundrel_gain, p()->gains.dashing_scoundrel );
-    }
   }
 };
 
@@ -2664,6 +2645,7 @@ struct envenom_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spec.envenom, options_str )
   {
     dot_duration = timespan_t::zero();
+    affected_by.zoldyck_insignia = false;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -2695,12 +2677,6 @@ struct envenom_t : public rogue_attack_t
     p()->buffs.envenom->trigger( envenom_duration );
 
     rogue_attack_t::impact( state );
-
-    // TOCHECK: Envenom itself currently triggers this on beta, need to confirm closer to launch
-    if ( state->result == RESULT_CRIT && p()->legendary.dashing_scoundrel->ok() )
-    {
-      p()->resource_gain( RESOURCE_ENERGY, p()->legendary.dashing_scoundrel_gain, p()->gains.dashing_scoundrel );
-    }
 
     if ( p()->spec.cut_to_the_chase->ok() && p()->buffs.slice_and_dice->check() )
     {
@@ -4317,10 +4293,10 @@ struct cheap_shot_t : public rogue_attack_t
 
 // Poison Bomb ==============================================================
 
-struct poison_bomb_t : public rogue_spell_t
+struct poison_bomb_t : public rogue_attack_t
 {
   poison_bomb_t( util::string_view name, rogue_t* p ) :
-    rogue_spell_t( name, p, p -> find_spell( 255546 ) )
+    rogue_attack_t( name, p, p->find_spell( 255546 ) )
   {
     aoe = -1;
   }
@@ -4396,7 +4372,6 @@ struct flagellation_cleanse_t : public rogue_spell_t
   flagellation_cleanse_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_spell_t( name, p, p->covenant.flagellation_buff, options_str )
   {
-    // TOCHECK: See if this is on the GCD or not
   }
 
   void execute() override
@@ -4509,7 +4484,6 @@ struct sepsis_t : public rogue_attack_t
     p()->buffs.sepsis->trigger();
   }
 
-  // TOCHECK: Nightstalker currently does not affect the Sepsis DoT on beta
   bool snapshots_nightstalker() const override
   { return false; }
 };
@@ -4555,7 +4529,6 @@ struct serrated_bone_spike_t : public rogue_attack_t
       }
     }
 
-    // TOCHECK: Nightstalker currently does not affect the Bone Spike DoT on beta
     bool snapshots_nightstalker() const override
     { return false; }
   };
@@ -6107,23 +6080,16 @@ void actions::rogue_action_t<Base>::trigger_bloodfang( const action_state_t* sta
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_count_the_odds( const action_state_t* state )
+void actions::rogue_action_t<Base>::trigger_dashing_scoundrel( const action_state_t* state )
 {
-  if ( !ab::result_is_hit( state->result ) || !p()->conduit.count_the_odds.ok() )
+  if ( !p()->legendary.dashing_scoundrel->ok() )
     return;
 
-  // Currently it appears all Rogues can trigger this with Ambush
-  if ( !p()->bugs && p()->specialization() != ROGUE_OUTLAW )
+  // 02/21/2021 -- Use the Crit-modifier whitelist to control this as it currently matches
+  if ( !affected_by.dashing_scoundrel || state->result != RESULT_CRIT || !p()->buffs.envenom->check() )
     return;
 
-  // 1/8/2020 - Confirmed via logs this works with Shadowmeld
-  const double stealth_bonus = p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD ) ? 1.0 + p()->conduit.count_the_odds->effectN( 3 ).percent() : 1.0;
-  if ( !p()->rng().roll( p()->conduit.count_the_odds.percent() * stealth_bonus ) )
-    return;
-
-  const timespan_t trigger_duration = timespan_t::from_seconds( p()->conduit.count_the_odds->effectN( 2 ).base_value() ) * stealth_bonus;
-  debug_cast<buffs::roll_the_bones_t*>( p()->buffs.roll_the_bones )->count_the_odds_trigger( trigger_duration );
-  p()->procs.count_the_odds->occur();
+  p()->resource_gain( RESOURCE_ENERGY, p()->legendary.dashing_scoundrel_gain, p()->gains.dashing_scoundrel );
 }
 
 template <typename Base>
@@ -6155,6 +6121,26 @@ void actions::rogue_action_t<Base>::trigger_guile_charm( const action_state_t* s
   {
     p()->buffs.guile_charm_insight_1->trigger();
   }
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_count_the_odds( const action_state_t* state )
+{
+  if ( !ab::result_is_hit( state->result ) || !p()->conduit.count_the_odds.ok() )
+    return;
+
+  // Currently it appears all Rogues can trigger this with Ambush
+  if ( !p()->bugs && p()->specialization() != ROGUE_OUTLAW )
+    return;
+
+  // 1/8/2020 - Confirmed via logs this works with Shadowmeld
+  const double stealth_bonus = p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD ) ? 1.0 + p()->conduit.count_the_odds->effectN( 3 ).percent() : 1.0;
+  if ( !p()->rng().roll( p()->conduit.count_the_odds.percent() * stealth_bonus ) )
+    return;
+
+  const timespan_t trigger_duration = timespan_t::from_seconds( p()->conduit.count_the_odds->effectN( 2 ).base_value() ) * stealth_bonus;
+  debug_cast<buffs::roll_the_bones_t*>( p()->buffs.roll_the_bones )->count_the_odds_trigger( trigger_duration );
+  p()->procs.count_the_odds->occur();
 }
 
 // ==========================================================================
@@ -7709,7 +7695,8 @@ void rogue_t::create_buffs()
     ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_PROC_CHANCE )
     ->set_duration( timespan_t::min() )
     ->set_period( timespan_t::zero() )
-    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+    // 02/21/2021 -- Blizzard ninja-changed to Duration refresh at some point in Shadowlands
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buffs.vendetta = make_buff( this, "vendetta_energy", spec.vendetta->effectN( 4 ).trigger() )
     ->set_default_value_from_effect_type( A_RESTORE_POWER )
