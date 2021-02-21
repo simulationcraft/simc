@@ -165,8 +165,8 @@ void frost( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  precombat->add_action( "variable,name=trinket_1_priority,value=trinket.1.has_use_buff&((trinket.1.has_cooldown.duration)*(1.5+trinket.1.has_buff.strength))>((trinket.2.has_cooldown.duration)*(1.5+trinket.2.has_buff.strength))", "Estimates a trinkets value by comparing the cooldown of the trinkets. Has a strength modifier to give a higher priority to strength trinkets." );
-  precombat->add_action( "variable,name=trinket_2_priority,value=trinket.2.has_use_buff&((trinket.2.has_cooldown.duration)*(1.5+trinket.2.has_buff.strength))>((trinket.1.has_cooldown.duration)*(1.5+trinket.1.has_buff.strength))" );
+  precombat->add_action( "variable,name=trinket_priority,value=1", "Estimates a trinkets value by comparing the cooldown of the trinkets. Has a strength modifier to give a higher priority to strength trinkets." );
+  precombat->add_action( "variable,name=trinket_priority,op=add,value=1,if=((trinket.2.has_cooldown.duration)*(1.5+trinket.2.has_buff.strength))>((trinket.1.has_cooldown.duration)*(1.5+trinket.1.has_buff.strength))" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "remorseless_winter,if=conduit.everfrost&talent.gathering_storm&!talent.obliteration&cooldown.pillar_of_frost.remains", "Apply Frost Fever, maintain Icy Talons and keep Remorseless Winter rolling" );
@@ -294,9 +294,9 @@ void frost( player_t* p )
   racials->add_action( "bag_of_tricks,if=buff.pillar_of_frost.up&active_enemies=1&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)" );
   
   trinkets->add_action( "use_item,name=inscrutable_quantum_device,if=buff.pillar_of_frost.up|target.time_to_pct_20<5|fight_remains<21", "Trinkets" );
-  trinkets->add_action( "use_item,name=overwhelming_power_crystal,if=buff.pillar_of_frost.up&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<16|cooldown.pillar_of_frost.remains>20" );
-  trinkets->add_action( "use_item,slot=trinket1,if=buff.pillar_of_frost.up&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_1_priority)|trinket.1.proc.any_dps.duration>=fight_remains", "The trinket with the highest estimated value, will be used first and paired with Pillar of Frost." );
-  trinkets->add_action( "use_item,slot=trinket2,if=buff.pillar_of_frost.up&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_2_priority)|trinket.2.proc.any_dps.duration>=fight_remains" );
+  trinkets->add_action( "use_item,name=overwhelming_power_crystal,if=buff.pillar_of_frost.up|fight_remains<16|cooldown.pillar_of_frost.remains>20" );
+  trinkets->add_action( "use_item,slot=trinket1,if=buff.pillar_of_frost.up&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains", "The trinket with the highest estimated value, will be used first and paired with Pillar of Frost." );
+  trinkets->add_action( "use_item,slot=trinket2,if=buff.pillar_of_frost.up&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains" );
   trinkets->add_action( "use_item,slot=trinket1,if=!trinket.1.has_use_buff&trinket.2.cooldown.remains", "If only one on use trinket provides a buff, use the other on cooldown" );
   trinkets->add_action( "use_item,slot=trinket2,if=!trinket.2.has_use_buff&trinket.1.cooldown.remains" );
   trinkets->add_action( "use_item,slot=trinket1,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff", "If neither trinket provides a buff, use both on cooldown." );
@@ -323,8 +323,8 @@ void unholy( player_t* p )
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "raise_dead" );
-  precombat->add_action( "variable,name=trinket_1_priority,value=trinket.1.has_use_buff&((trinket.1.has_cooldown.duration)*(1.5+trinket.1.has_buff.strength))>((trinket.2.has_cooldown.duration)*(1.5+trinket.2.has_buff.strength))", "Estimates a trinkets value by comparing the cooldown of the trinkets. Has a strength modifier to give a higher priority to strength trinkets." );
-  precombat->add_action( "variable,name=trinket_2_priority,value=trinket.2.has_use_buff&((trinket.2.has_cooldown.duration)*(1.5+trinket.2.has_buff.strength))>((trinket.1.has_cooldown.duration)*(1.5+trinket.1.has_buff.strength))" );
+  precombat->add_action( "variable,name=trinket_priority,value=1", "Estimates a trinkets value by comparing the cooldown of the trinkets. Has a strength modifier to give a higher priority to strength trinkets." );
+  precombat->add_action( "variable,name=trinket_priority,op=add,value=1,if=((trinket.2.has_cooldown.duration)*(1.5+trinket.2.has_buff.strength))>((trinket.1.has_cooldown.duration)*(1.5+trinket.1.has_buff.strength))" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
@@ -411,9 +411,9 @@ void unholy( player_t* p )
   racials->add_action( "bag_of_tricks,if=buff.unholy_strength.up&active_enemies=1" );
 
   trinkets->add_action( "use_item,name=inscrutable_quantum_device,if=(cooldown.unholy_blight.remains|cooldown.dark_transformation.remains)&(pet.army_ghoul.active|pet.apoc_ghoul.active&!talent.army_of_the_damned|target.time_to_pct_20<5)|fight_remains<21", "Trinkets" );
-  trinkets->add_action( "use_item,name=overwhelming_power_crystal,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<16" );
-  trinkets->add_action( "use_item,slot=trinket1,if=((trinket.1.proc.any_dps.duration<=15&cooldown.apocalypse.remains|trinket.1.proc.any_dps.duration>15&(cooldown.unholy_blight.remains|cooldown.dark_transformation.remains))&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_1_priority))|trinket.1.proc.any_dps.duration>=fight_remains", "The trinket with the highest estimated value, will be used first and paired with Apocalypse (if buff is 15 seconds or less) or Blight/DT (if greater than 15 seconds)" );
-  trinkets->add_action( "use_item,slot=trinket2,if=((trinket.2.proc.any_dps.duration<=15&cooldown.apocalypse.remains|trinket.2.proc.any_dps.duration>15&(cooldown.unholy_blight.remains|cooldown.dark_transformation.remains))&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_2_priority))|trinket.2.proc.any_dps.duration>=fight_remains" );
+  trinkets->add_action( "use_item,name=overwhelming_power_crystal,if=cooldown.apocalypse.remains|fight_remains<16" );
+  trinkets->add_action( "use_item,slot=trinket1,if=((trinket.1.proc.any_dps.duration<=15&cooldown.apocalypse.remains|trinket.1.proc.any_dps.duration>15&(cooldown.unholy_blight.remains|cooldown.dark_transformation.remains))&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1))|trinket.1.proc.any_dps.duration>=fight_remains", "The trinket with the highest estimated value, will be used first and paired with Apocalypse (if buff is 15 seconds or less) or Blight/DT (if greater than 15 seconds)" );
+  trinkets->add_action( "use_item,slot=trinket2,if=((trinket.2.proc.any_dps.duration<=15&cooldown.apocalypse.remains|trinket.2.proc.any_dps.duration>15&(cooldown.unholy_blight.remains|cooldown.dark_transformation.remains))&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2))|trinket.2.proc.any_dps.duration>=fight_remains" );
   trinkets->add_action( "use_item,slot=trinket1,if=!trinket.1.has_use_buff&trinket.2.cooldown.remains", "If only one on use trinket provides a buff, use the other on cooldown" );
   trinkets->add_action( "use_item,slot=trinket2,if=!trinket.2.has_use_buff&trinket.1.cooldown.remains" );
   trinkets->add_action( "use_item,slot=trinket1,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff", "If neither trinket provides a buff, use both on cooldown." );
