@@ -165,9 +165,10 @@ void frost( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat->add_action( "variable,name=trinket_1_priority,value=trinket.1.has_use_buff&((trinket.1.has_cooldown.duration)*(1.5+trinket.1.has_buff.strength))>((trinket.2.has_cooldown.duration)*(1.5+trinket.2.has_buff.strength))", "Estimates a trinkets value by comparing the cooldown of the trinkets. Has a strength modifier to give a higher priority to strength trinkets." );
+  precombat->add_action( "variable,name=trinket_2_priority,value=trinket.2.has_use_buff&((trinket.2.has_cooldown.duration)*(1.5+trinket.2.has_buff.strength))>((trinket.1.has_cooldown.duration)*(1.5+trinket.1.has_buff.strength))" );
 
   default_->add_action( "auto_attack" );
-  default_->add_action( "variable,name=specified_on_use,value=(equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.ready)|(equipped.overwhelming_power_crystal|cooldown.overwhelming_power_crystal.ready)" );
   default_->add_action( "remorseless_winter,if=conduit.everfrost&talent.gathering_storm&!talent.obliteration&cooldown.pillar_of_frost.remains", "Apply Frost Fever, maintain Icy Talons and keep Remorseless Winter rolling" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
   default_->add_action( "howling_blast,if=!dot.frost_fever.ticking&(talent.icecap|cooldown.breath_of_sindragosa.remains>15|talent.obliteration&cooldown.pillar_of_frost.remains&!buff.killing_machine.up)", "Apply Frost Fever and maintain Icy Talons" );
@@ -294,11 +295,12 @@ void frost( player_t* p )
   
   trinkets->add_action( "use_item,name=inscrutable_quantum_device,if=buff.pillar_of_frost.up|target.time_to_pct_20<5|fight_remains<21", "Trinkets" );
   trinkets->add_action( "use_item,name=overwhelming_power_crystal,if=buff.pillar_of_frost.up&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<16|cooldown.pillar_of_frost.remains>20" );
-  trinkets->add_action( "use_item,slot=trinket1,if=trinket.1.has_use_buff&(buff.pillar_of_frost.up&(!trinket.2.has_use_buff|trinket.2.cooldown.remains|trinket.1.proc.any_dps.duration>=fight_remains|((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_stat.strength))>((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_stat.strength))))&!variable.specified_on_use", "Estimates a trinkets value by comparing the cooldown of the trinket, divided by the duration of the buff it provides. Has a strength modifier to give a higher priority to strength trinkets. The trinket with the highest estimated value, will be used first and paired with Pillar of Frost." );
-  trinkets->add_action( "use_item,slot=trinket2,if=trinket.2.has_use_buff&(buff.pillar_of_frost.up&(!trinket.1.has_use_buff|trinket.1.cooldown.remains|trinket.2.proc.any_dps.duration>=fight_remains|((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_stat.strength))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_stat.strength))))&!variable.specified_on_use" );
+  trinkets->add_action( "use_item,slot=trinket1,if=buff.pillar_of_frost.up&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_1_priority)|trinket.1.proc.any_dps.duration>=fight_remains", "The trinket with the highest estimated value, will be used first and paired with Pillar of Frost." );
+  trinkets->add_action( "use_item,slot=trinket2,if=buff.pillar_of_frost.up&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_2_priority)|trinket.2.proc.any_dps.duration>=fight_remains" );
   trinkets->add_action( "use_item,slot=trinket1,if=!trinket.1.has_use_buff&trinket.2.cooldown.remains", "If only one on use trinket provides a buff, use the other on cooldown" );
   trinkets->add_action( "use_item,slot=trinket2,if=!trinket.2.has_use_buff&trinket.1.cooldown.remains" );
-  trinkets->add_action( "use_items,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff", "If neither trinket provides a buff, use both on cooldown." );
+  trinkets->add_action( "use_item,slot=trinket1,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff", "If neither trinket provides a buff, use both on cooldown." );
+  trinkets->add_action( "use_item,slot=trinket2,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff" );
 }
 //frost_apl_end
 
@@ -321,6 +323,8 @@ void unholy( player_t* p )
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "raise_dead" );
+  precombat->add_action( "variable,name=trinket_1_priority,value=trinket.1.has_use_buff&((trinket.1.has_cooldown.duration)*(1.5+trinket.1.has_buff.strength))>((trinket.2.has_cooldown.duration)*(1.5+trinket.2.has_buff.strength))", "Estimates a trinkets value by comparing the cooldown of the trinkets. Has a strength modifier to give a higher priority to strength trinkets." );
+  precombat->add_action( "variable,name=trinket_2_priority,value=trinket.2.has_use_buff&((trinket.2.has_cooldown.duration)*(1.5+trinket.2.has_buff.strength))>((trinket.1.has_cooldown.duration)*(1.5+trinket.1.has_buff.strength))" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
@@ -328,7 +332,6 @@ void unholy( player_t* p )
   default_->add_action( "variable,name=pooling_runes,value=talent.soul_reaper&rune<2&target.time_to_pct_35<5&fight_remains>5" );
   default_->add_action( "variable,name=st_planning,value=active_enemies=1&(!raid_event.adds.exists|raid_event.adds.in>15)" );
   default_->add_action( "variable,name=major_cooldowns_active,value=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&pet.apoc_ghoul.active|buff.dark_transformation.up" );
-  default_->add_action( "variable,name=specified_on_use,value=(equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.ready)|(equipped.overwhelming_power_crystal|cooldown.overwhelming_power_crystal.ready)" );
   default_->add_action( "outbreak,if=dot.virulent_plague.refreshable&!talent.unholy_blight&!raid_event.adds.exists", "Maintaining Virulent Plague is a priority" );
   default_->add_action( "outbreak,if=dot.virulent_plague.refreshable&active_enemies>=2&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains)" );
   default_->add_action( "outbreak,if=runeforge.superstrain&(dot.frost_fever.refreshable|dot.blood_plague.refreshable)" );
@@ -409,11 +412,12 @@ void unholy( player_t* p )
 
   trinkets->add_action( "use_item,name=inscrutable_quantum_device,if=(cooldown.unholy_blight.remains|cooldown.dark_transformation.remains)&(pet.army_ghoul.active|pet.apoc_ghoul.active&!talent.army_of_the_damned|target.time_to_pct_20<5)|fight_remains<21", "Trinkets" );
   trinkets->add_action( "use_item,name=overwhelming_power_crystal,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<16" );
-  trinkets->add_action( "use_item,slot=trinket1,if=trinket.1.has_use_buff&((trinket.1.proc.any_dps.duration<=15&cooldown.apocalypse.remains|trinket.1.proc.any_dps.duration>15&(cooldown.unholy_blight.remains|cooldown.dark_transformation.remains))&(!trinket.2.has_use_buff|trinket.2.cooldown.remains|trinket.1.proc.any_dps.duration>=fight_remains|((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_stat.strength))>((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_stat.strength))))&!variable.specified_on_use", "Estimates a trinkets value by comparing the cooldown of the trinket, divided by the duration of the buff it provides. Has a strength modifier to give a higher priority to strength trinkets. The trinket with the highest estimated value, will be used first and paired with Apocalypse (if buff is 15 seconds or less) or Blight/DT (if greater than 15 seconds)" );
-  trinkets->add_action( "use_item,slot=trinket2,if=trinket.2.has_use_buff&((trinket.2.proc.any_dps.duration<=15&cooldown.apocalypse.remains|trinket.2.proc.any_dps.duration>15&(cooldown.unholy_blight.remains|cooldown.dark_transformation.remains))&(!trinket.1.has_use_buff|trinket.1.cooldown.remains|trinket.2.proc.any_dps.duration>=fight_remains|((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_stat.strength))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_stat.strength))))&!variable.specified_on_use" );
+  trinkets->add_action( "use_item,slot=trinket1,if=((trinket.1.proc.any_dps.duration<=15&cooldown.apocalypse.remains|trinket.1.proc.any_dps.duration>15&(cooldown.unholy_blight.remains|cooldown.dark_transformation.remains))&(!trinket.2.has_use_buff|trinket.2.cooldown.remains|variable.trinket_1_priority))|trinket.1.proc.any_dps.duration>=fight_remains", "The trinket with the highest estimated value, will be used first and paired with Apocalypse (if buff is 15 seconds or less) or Blight/DT (if greater than 15 seconds)" );
+  trinkets->add_action( "use_item,slot=trinket2,if=((trinket.2.proc.any_dps.duration<=15&cooldown.apocalypse.remains|trinket.2.proc.any_dps.duration>15&(cooldown.unholy_blight.remains|cooldown.dark_transformation.remains))&(!trinket.1.has_use_buff|trinket.1.cooldown.remains|variable.trinket_2_priority))|trinket.2.proc.any_dps.duration>=fight_remains" );
   trinkets->add_action( "use_item,slot=trinket1,if=!trinket.1.has_use_buff&trinket.2.cooldown.remains", "If only one on use trinket provides a buff, use the other on cooldown" );
   trinkets->add_action( "use_item,slot=trinket2,if=!trinket.2.has_use_buff&trinket.1.cooldown.remains" );
-  trinkets->add_action( "use_items,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff", "If neither trinket provides a buff, use both on cooldown." );
+  trinkets->add_action( "use_item,slot=trinket1,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff", "If neither trinket provides a buff, use both on cooldown." );
+  trinkets->add_action( "use_item,slot=trinket2,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff" );
 }
 //unholy_apl_end
 
