@@ -336,7 +336,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left->addRow( tr( "Default Role" ),
                               choice.default_role = createChoice( 4, "Auto", "DPS", "Heal", "Tank" ) );
   globalsLayout_left->addRow( tr( "GUI Localization" ),
-                              choice.gui_localization = createChoice( 5, "auto", "en", "de", "zh", "it" ) );
+                              choice.gui_localization = createChoice( 6, "auto", "en", "de", "zh", "it", "ko" ) );
   globalsLayout_left->addRow( tr( "Update Check" ), choice.update_check = createChoice( 2, "Yes", "No" ) );
 
   QPushButton* resetb = new QPushButton( tr( "Reset all Settings" ), this );
