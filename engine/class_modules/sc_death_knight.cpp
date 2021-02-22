@@ -6867,7 +6867,8 @@ struct vampiric_blood_t : public death_knight_spell_t
 {
   int gorefiends_domination_energize_amount;
   vampiric_blood_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "vampiric_blood", p, p -> spec.vampiric_blood )
+    death_knight_spell_t( "vampiric_blood", p, p -> spec.vampiric_blood ),
+    gorefiends_domination_energize_amount( 0 )
   {
     parse_options( options_str );
 
