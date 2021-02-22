@@ -1329,15 +1329,13 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // Damage is normally increased from 10-man to 30-man by an average of 10% for every 5 players added.
   // 10-man -> 20-man = 20% increase; 20-man -> 30-man = 20% increase
   // Raid values using Sludgefist as a baseline
-  // Attack speed is normally 1.5 seconds. However it is not often that you are tanking 100% of the time.
-  // To simulate 50% downtime, increasing to 3.0 second attack speed.
   int aa_damage[ numTankDummies ]               = { 0, 6415, 11378, 29703, 40678, 66192 };     // Base auto attack damage
   int dummy_strike_damage[ numTankDummies ]     = { 0, 19245, 34134, 89109, 122034, 198576 };  // Base melee nuke damage (currently set to 3x auto damage)
   int background_spell_damage[ numTankDummies ] = { 0, 257, 455, 1188, 1627, 2648 };  // Base background dot damage (currently set to 0.04x auto damage)
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) +
-         ",range=" + util::to_string( floor( aa_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=3,aoe_tanks=1";
+         ",range=" + util::to_string( floor( aa_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=1.5,aoe_tanks=1";
   als += "/melee_nuke,damage=" + util::to_string( dummy_strike_damage[ tank_dummy_index ] ) +
          ",range=" + util::to_string( floor( dummy_strike_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=2,cooldown=25,aoe_tanks=1";
   als += "/spell_dot,damage=" + util::to_string( background_spell_damage[ tank_dummy_index ] ) +
