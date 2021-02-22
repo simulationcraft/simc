@@ -51,7 +51,7 @@ finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,e
 finger2=ring_of_perpetual_conflict,id=178872,bonus_id=6536/1540/6646/6935,enchant=tenet_of_critical_strike,gem_id=173130
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1540/6646
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=barbededge_of_the_stone_legion,id=182421,bonus_id=7187/1531,enchant=rune_of_razorice
+main_hand=stoneborn_terrorblade,id=182395,bonus_id=7187/1531,enchant=rune_of_razorice
 off_hand=stoneborn_terrorblade,id=182395,bonus_id=7187/1531,enchant=rune_of_the_fallen_crusader
 
 save=T26_Death_Knight_Frost.simc
