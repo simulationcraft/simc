@@ -8609,12 +8609,6 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 8 )
       .verification_value( 7 );
-
-    hotfix::register_effect( "Rogue", "2021-02-18", "Bloodfang has bugged 10x value", 840280, hotfix::HOTFIX_FLAG_PTR )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.1235 )
-      .verification_value( 1.235 );
   }
 
   void init( player_t* ) const override {}
