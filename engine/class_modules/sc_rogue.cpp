@@ -4351,11 +4351,10 @@ struct echoing_reprimand_t : public rogue_attack_t
 struct flagellation_damage_t : public rogue_spell_t
 {
   buff_t* debuff;
-  double last_finisher_cp;
 
   flagellation_damage_t( util::string_view name, rogue_t* p ) :
     rogue_spell_t( name, p, p->find_spell( 345316 ) ),
-    debuff( nullptr ), last_finisher_cp()
+    debuff( nullptr )
   {
     dual = true;
   }
@@ -4368,11 +4367,11 @@ struct flagellation_damage_t : public rogue_spell_t
       debuff->trigger();
   }
 
-  double combo_point_da_multiplier( const action_state_t* ) const override
+  double combo_point_da_multiplier( const action_state_t* s ) const override
   {
     if ( !p()->dbc->ptr )
       return 1.0;
-    return last_finisher_cp;
+    return as<double>( cast_state( s )->get_combo_points() );
   }
 };
 
@@ -5978,7 +5977,6 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     if ( p()->dbc->ptr && p()->buffs.flagellation->up() )
     {
       p()->buffs.flagellation->trigger( as<int>(max_spend) );
-      p()->active.flagellation->last_finisher_cp = max_spend;
     }
     buff_t* debuff = p()->active.flagellation->debuff;
     if ( debuff && debuff->up() )
@@ -5992,7 +5990,7 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
       }
       else
       {
-        p()->active.flagellation->trigger_secondary_action( debuff->player, 0.75_s );
+        p()->active.flagellation->trigger_secondary_action( debuff->player, as<int>( max_spend ), 0.75_s );
       }
     }
   }
