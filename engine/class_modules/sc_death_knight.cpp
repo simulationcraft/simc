@@ -4112,11 +4112,10 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
 {
   int bone_shield_stack_gain;
   dancing_rune_weapon_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "dancing_rune_weapon", p, p -> spec.dancing_rune_weapon )
+    death_knight_spell_t( "dancing_rune_weapon", p, p -> spec.dancing_rune_weapon ),
+    bone_shield_stack_gain( 0 )
   {
     may_miss = may_crit = may_dodge = may_parry = harmful = false;
-
-    bone_shield_stack_gain = 0;
     if ( p -> dbc -> ptr )
     {
       bone_shield_stack_gain = as<int>( p -> legendary.crimson_rune_weapon -> effectN( 2 ).base_value());
