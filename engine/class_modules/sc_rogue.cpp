@@ -310,6 +310,7 @@ public:
     buff_t* echoing_reprimand_3;
     buff_t* echoing_reprimand_4;
     buff_t* flagellation;
+    buff_t* flagellation_persist;
     buff_t* sepsis;
 
     // Conduits
@@ -4350,10 +4351,11 @@ struct echoing_reprimand_t : public rogue_attack_t
 struct flagellation_damage_t : public rogue_spell_t
 {
   buff_t* debuff;
+  double last_finisher_cp;
 
   flagellation_damage_t( util::string_view name, rogue_t* p ) :
     rogue_spell_t( name, p, p->find_spell( 345316 ) ),
-    debuff( nullptr )
+    debuff( nullptr ), last_finisher_cp()
   {
     dual = true;
   }
@@ -4362,8 +4364,15 @@ struct flagellation_damage_t : public rogue_spell_t
   {
     // Damage can be scheduled prior to the buff being consumed, this still works but doesn't re-stack
     rogue_spell_t::execute();
-    if ( debuff && debuff->check() )
+    if ( !p()->dbc->ptr && debuff && debuff->check() )
       debuff->trigger();
+  }
+
+  double combo_point_da_multiplier( const action_state_t* ) const override
+  {
+    if ( !p()->dbc->ptr )
+      return 1.0;
+    return last_finisher_cp;
   }
 };
 
@@ -4383,6 +4392,8 @@ struct flagellation_cleanse_t : public rogue_spell_t
 
   bool ready() override
   {
+    if ( p()->dbc->ptr )
+      return false;
     const buff_t* current_debuff = p()->active.flagellation->debuff;
     return current_debuff && current_debuff->check();
   }
@@ -4396,6 +4407,8 @@ struct flagellation_t : public rogue_attack_t
     rogue_attack_t( name, p, p->covenant.flagellation, options_str ),
     initial_lashes( as<int>( p->covenant.flagellation->effectN( 2 ).base_value() ) )
   {
+    dot_duration = timespan_t::zero();
+
     if ( p->active.flagellation )
     {
       add_child( p->active.flagellation );
@@ -4410,19 +4423,31 @@ struct flagellation_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
+
     p()->active.flagellation->debuff = td( execute_state->target )->debuffs.flagellation;
     p()->active.flagellation->debuff->trigger();
-    for ( int i = 1; i < initial_lashes; i++ )
+
+    if ( !p()->dbc->ptr )
     {
-      p()->active.flagellation->trigger_secondary_action( execute_state->target, 0.25_s * ( 1 + i ) );
+      for ( int i = 1; i < initial_lashes; i++ )
+      {
+        p()->active.flagellation->trigger_secondary_action( execute_state->target, 0.25_s * ( 1 + i ) );
+      }
+    }
+    else
+    {
+      p()->buffs.flagellation->trigger();
     }
   }
 
   bool ready() override
   {
-    const buff_t* current_debuff = p()->active.flagellation->debuff;
-    if ( current_debuff && current_debuff->check() )
-      return false;
+    if ( !p()->dbc->ptr )
+    {
+      const buff_t* current_debuff = p()->active.flagellation->debuff;
+      if ( current_debuff && current_debuff->check() )
+        return false;
+    }
 
     return rogue_attack_t::ready();
   }
@@ -5949,12 +5974,25 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   // Proc Flagellation Damage Triggers
   if ( p()->covenant.flagellation->ok() )
   {
+    // TOCHECK: Does this continue stacking with target dead (no debuff up) but buff on player and finishing on other target. Assume yes, atm.
+    if ( p()->dbc->ptr && p()->buffs.flagellation->up() )
+    {
+      p()->buffs.flagellation->trigger( as<int>(max_spend) );
+      p()->active.flagellation->last_finisher_cp = max_spend;
+    }
     buff_t* debuff = p()->active.flagellation->debuff;
     if ( debuff && debuff->up() )
     {
-      for ( unsigned i = 1; i <= max_spend; ++i )
+      if ( !p()->dbc->ptr )
       {
-        p()->active.flagellation->trigger_secondary_action( debuff->player, 0.25_s * ( 1 + i ) );
+        for ( unsigned i = 1; i <= max_spend; ++i )
+        {
+          p()->active.flagellation->trigger_secondary_action( debuff->player, 0.25_s * ( 1 + i ) );
+        }
+      }
+      else
+      {
+        p()->active.flagellation->trigger_secondary_action( debuff->player, 0.75_s );
       }
     }
   }
@@ -6183,6 +6221,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.flagellation = make_buff( *this, "flagellation", source->covenant.flagellation )
     ->set_initial_stack( 1 )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+    ->set_period( timespan_t::zero() )
     ->set_cooldown( timespan_t::zero() );
 
   if ( source->legendary.akaaris_soul_fragment.ok() )
@@ -6230,7 +6269,8 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   }
 
   // Flagellation On-Death Buff Trigger
-  if (source->covenant.flagellation->ok())
+  // TOCHECK: Does any autoconversion still exist on 9.0.5? Assume no.
+  if ( source->covenant.flagellation->ok() && !source->dbc->ptr )
   {
     target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
       if ( debuffs.flagellation->check() )
@@ -6276,6 +6316,10 @@ double rogue_t::composite_melee_haste() const
   if ( buffs.flagellation->check() )
   {
     h *= 1.0 / ( 1.0 + buffs.flagellation->check_stack_value() );
+  }
+  if ( buffs.flagellation_persist->check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.flagellation_persist->check_stack_value() );
   }
 
   return h;
@@ -6339,6 +6383,10 @@ double rogue_t::composite_spell_haste() const
   if ( buffs.flagellation->check() )
   {
     h *= 1.0 / ( 1.0 + buffs.flagellation->check_stack_value() );
+  }
+  if ( buffs.flagellation_persist->check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.flagellation_persist->check_stack_value() );
   }
 
   return h;
@@ -7836,8 +7884,18 @@ void rogue_t::create_buffs()
 
   // Covenants ==============================================================
 
-  buffs.flagellation = make_buff( this, "flagellation_buff", covenant.flagellation_buff )
-    ->set_default_value_from_effect_type( A_HASTE_ALL, P_MAX, 0.001 ) // Thar be server magic here to divide by 10.
+  buffs.flagellation = make_buff( this, "flagellation_buff", dbc->ptr ? covenant.flagellation : covenant.flagellation_buff )
+    ->set_default_value_from_effect_type( A_HASTE_ALL, P_MAX, dbc->ptr ? 0.01 : 0.001 ) // Thar be server magic here to divide by 10 (pre 9.0.5).
+    ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_period( timespan_t::zero() )
+    ->add_invalidate( CACHE_HASTE )
+    ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+        if ( new_ == 0 && dbc->ptr )
+          buffs.flagellation_persist->trigger( old_ );
+      } );
+  buffs.flagellation_persist = make_buff( this, "flagellation_persist", dbc->ptr ? covenant.flagellation_buff : spell_data_t::not_found() )
+    ->set_default_value_from_effect_type( A_HASTE_ALL, P_MAX, 0.001 ) // Thar be server magic here to divide by 10 (9.0.5).
     ->add_invalidate( CACHE_HASTE );
 
   buffs.echoing_reprimand_2 = make_buff( this, "echoing_reprimand_2", covenant.echoing_reprimand->ok() ?
