@@ -988,7 +988,7 @@ void item::rune_of_reorigination( special_effect_t& effect )
 
     void execute( action_t* action, action_state_t* /* state */ ) override
     {
-      // We can never allow this trinket to refresh, so force the trinket to 
+      // We can never allow this trinket to refresh, so force the trinket to
       // always expire, before we proc a new one.
       buff -> expire();
 
@@ -3103,10 +3103,10 @@ struct burning_mirror_t : public spell_t
     for ( size_t i = 0; i < n_mirrors; ++i )
     {
       pet_t* blade_master = nullptr;
-      if ( use_custom ) 
+      if ( use_custom )
         blade_master = effect.player -> create_pet( BLADEMASTER_PET_NAME );
       if ( blade_master == nullptr )
-      { 
+      {
         use_custom = false;
         blade_master = new blademaster_pet_t( effect.player );
       }
@@ -3151,7 +3151,7 @@ void item::mirror_of_the_blademaster( special_effect_t& effect )
   // properly detect the special effect.
   effect.type = SPECIAL_EFFECT_USE;
 }
-  
+
 static void tyrants_decree_driver_callback( buff_t* buff, int, timespan_t )
 {
   if ( buff -> player -> resources.pct( RESOURCE_HEALTH ) >= buff -> data().effectN( 2 ).percent() )
@@ -3177,7 +3177,7 @@ void item::tyrants_decree( special_effect_t& effect )
         p -> buffs.tyrants_immortality -> expire();
     }
   };
-  
+
   buff_t* driver  = make_buff( effect.player, "tyrants_decree_driver", effect.driver() )
                     ->set_period( effect.driver() -> effectN( 1 ).period() )
                     ->set_tick_behavior( buff_tick_behavior::REFRESH )
@@ -3190,7 +3190,7 @@ void item::tyrants_decree( special_effect_t& effect )
   // Driver is triggered in player_t::arise()
   effect.player -> buffs.tyrants_decree_driver = driver;
   effect.player -> buffs.tyrants_immortality   = trigger;
-  
+
   // Create a callback that triggers on damage taken to check if the buff should be expired.
   effect.proc_flags_= PF_DAMAGE_TAKEN;
   effect.proc_chance_ = 1.0;
@@ -3205,13 +3205,13 @@ double warlords_unseeing_eye_handler( const action_state_t* s )
 
      Max current health to 0 to keep the trinket's value somewhat sane when the
      actor goes negative.
-     
+
      TOCHECK: If the actor would die from the hit, does the size of the absorb
      scale with the amount of overkill? */
   player_t* p = s -> target;
 
   double absorb_amount = s -> result_amount * p -> warlords_unseeing_eye;
-  
+
   absorb_amount *= 1 - ( std::max( p -> resources.current[ RESOURCE_HEALTH ], 0.0 ) - s -> result_amount )
                        / p -> resources.max[ RESOURCE_HEALTH ];
 
@@ -3225,7 +3225,7 @@ void item::warlords_unseeing_eye( special_effect_t& effect )
   // Register our handler function so it can be managed by player_t::account_absorb_buffs()
   effect.player -> instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>( effect.driver() -> id(),
       instant_absorb_t( effect.player, effect.driver(), "warlords_unseeing_eye", &warlords_unseeing_eye_handler ) ));
-  // Push the effect into the priority list. 
+  // Push the effect into the priority list.
   effect.player -> absorb_priority.push_back( 184762 );
 }
 
@@ -3417,7 +3417,7 @@ struct embrace_of_kimbul_t : public spell_t
 
 void racial::zandalari_loa( special_effect_t& effect )
 {
-  //only handle the proc loas here. 
+  //only handle the proc loas here.
   //Gonk is handled in player_t::passive_movement_modifier() when chosen (TODO: Should we add a constant buff for report feedback when Gonk is chosen?)
   if ( effect.player->zandalari_loa == player_t::AKUNDA )
   {
@@ -3444,7 +3444,7 @@ void racial::zandalari_loa( special_effect_t& effect )
     driver->execute_action = new embrace_of_kimbul_t(effect.player, effect.player->find_spell(292473));
 
     effect.player->special_effects.push_back(driver);
-    
+
     new dbc_proc_callback_t(effect.player, *driver);
   }
   else if ( effect.player->zandalari_loa == player_t::KRAGWA )
@@ -3452,7 +3452,7 @@ void racial::zandalari_loa( special_effect_t& effect )
     //Kragwa - Grants health and armor (not implemented)
   }
   else if ( effect.player->zandalari_loa == player_t::PAKU )
-  {    
+  {
     special_effect_t* driver = new special_effect_t(effect.player);
     driver->source = SPECIAL_EFFECT_SOURCE_RACE;
     unique_gear::initialize_special_effect(*driver, 292361); //Permanent buff spell id, contains proc data
@@ -3932,7 +3932,7 @@ struct item_buff_expr_t : public item_effect_expr_t
     for (auto e : effects)
     {
       buff_t* b = buff_t::find( &player, e -> name() );
-      if ( buff_has_stat( b, s ) && ( ( ! stacking && b -> max_stack() <= 1 ) || ( stacking && b -> max_stack() > 1 ) ) )
+      if ( buff_has_stat( b, s ) && ( ! stacking || ( stacking && b -> max_stack() > 1 ) ) )
       {
         if ( auto expr_obj = buff_t::create_expression( b -> name(), expr_str, *b ) )
           exprs.push_back( std::move(expr_obj) );
@@ -4458,7 +4458,7 @@ bool unique_gear::create_fallback_buffs( const special_effect_t& effect, const s
  * 2) Enchants, and profession specific enchants
  * 3) Engineering special effects (tinkers, ranged enchants)
  * 4) Gems
- * 
+ *
  * Blizzard does not discriminate between the different types, nor do we
  * anymore. Each spell can be mapped to a special effect in the simc client.
  * Each special effect is fed to a new proc callback object
@@ -4475,7 +4475,7 @@ bool unique_gear::create_fallback_buffs( const special_effect_t& effect, const s
  *    form: void custom_function_of_awesome( special_effect_t& effect,
  *                                           const item_t& item,
  *                                           const special_effect_db_item_t& dbitem )
- *    Where 'effect' is the effect being created, 'item' is the item that has 
+ *    Where 'effect' is the effect being created, 'item' is the item that has
  *    the special effect, and 'dbitem' is the database entry itself.
  *
  * Now, special effect creation in this new system is currently a two phase
@@ -4715,7 +4715,7 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   register_target_data_initializers_legion( sim );
   register_target_data_initializers_bfa( sim );
   azerite::register_azerite_target_data_initializers( sim );
-  
+
   shadowlands::register_target_data_initializers( *sim );
   covenant::soulbinds::register_target_data_initializers( sim );
 }
