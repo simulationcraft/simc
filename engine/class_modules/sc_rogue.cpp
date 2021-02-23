@@ -3109,14 +3109,13 @@ struct pistol_shot_t : public rogue_attack_t
     }
   }
 
+  // TOCHECK: On beta as of 8/28/2020, Blunderbuss procs don't trigger. Possibly only "on cast".
   bool procs_combat_potency() const override
-  {
-    // TOCHECK: On beta as of 8/28, Blunderbuss procs don't trigger. Possibly only "on cast".
-    return secondary_trigger != TRIGGER_CONCEALED_BLUNDERBUSS;
-  }
+  { return secondary_trigger != TRIGGER_CONCEALED_BLUNDERBUSS; }
 
+  // TOCHECK: On PTR as of 2/22/2021, Blunderbuss procs don't trigger Blade Flurry hits.
   bool procs_blade_flurry() const override
-  { return true; }
+  { return secondary_trigger != TRIGGER_CONCEALED_BLUNDERBUSS || !p()->bugs; }
 };
 
 // Main Gauche ==============================================================
@@ -8665,6 +8664,12 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 8 )
       .verification_value( 7 );
+
+    hotfix::register_effect( "Rogue", "2021-02-22", "Concealed Blunderbuss hits 3 times (not 2) on PTR", 840605, hotfix::HOTFIX_FLAG_PTR )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3 )
+      .verification_value( 2 );
   }
 
   void init( player_t* ) const override {}
