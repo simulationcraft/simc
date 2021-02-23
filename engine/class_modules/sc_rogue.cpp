@@ -4414,7 +4414,10 @@ struct flagellation_t : public rogue_attack_t
 
     if ( p->conduit.lashing_scars->ok() )
     {
-      initial_lashes += as<int>( p->conduit.lashing_scars->effectN( 2 ).base_value() );
+      if ( p->dbc->ptr )
+        initial_lashes = as<int>( p->conduit.lashing_scars->effectN( 2 ).base_value() );
+      else
+        initial_lashes += as<int>( p->conduit.lashing_scars->effectN( 2 ).base_value() );
     }
   }
 
@@ -4435,6 +4438,16 @@ struct flagellation_t : public rogue_attack_t
     else
     {
       p()->buffs.flagellation->trigger();
+      if ( p()->conduit.lashing_scars->ok() )
+      {
+        // Additional lashes via the conduit seem to just cause an extra lash event as if an X CP Finisher has been cast.
+        // Only difference to finishers is the buff stacks are delayed and happen with the lash whereas for finishers they happen instantly.
+        make_event( *sim, 0.75_s, [ this ]( )
+        {
+          p()->buffs.flagellation->trigger( initial_lashes );
+          p()->active.flagellation->trigger_secondary_action( execute_state->target, initial_lashes );
+        } );
+      }
     }
   }
 
@@ -5972,11 +5985,6 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   // Proc Flagellation Damage Triggers
   if ( p()->covenant.flagellation->ok() )
   {
-    // TOCHECK: Does this continue stacking with target dead (no debuff up) but buff on player and finishing on other target. Assume yes, atm.
-    if ( p()->dbc->ptr && p()->buffs.flagellation->up() )
-    {
-      p()->buffs.flagellation->trigger( as<int>(max_spend) );
-    }
     buff_t* debuff = p()->active.flagellation->debuff;
     if ( debuff && debuff->up() )
     {
@@ -5989,6 +5997,7 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
       }
       else
       {
+        p()->buffs.flagellation->trigger( as<int>(max_spend) );
         p()->active.flagellation->trigger_secondary_action( debuff->player, as<int>( max_spend ), 0.75_s );
       }
     }
@@ -6266,12 +6275,22 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   }
 
   // Flagellation On-Death Buff Trigger
-  // TOCHECK: Does any autoconversion still exist on 9.0.5? Assume no.
-  if ( source->covenant.flagellation->ok() && !source->dbc->ptr )
+  if ( source->covenant.flagellation->ok() )
   {
     target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
       if ( debuffs.flagellation->check() )
-        source->buffs.flagellation->trigger( debuffs.flagellation->stack() );
+      {
+        if ( !source->dbc->ptr )
+        {
+          source->buffs.flagellation->trigger( debuffs.flagellation->stack() );
+        }
+        else
+        {
+          // As of PTR for 9.0.5, dying target appears to give 10 stacks for free to the persisting buff.
+          source->buffs.flagellation->increment( 10 );
+          source->buffs.flagellation->expire(); // Triggers persist buff
+        }
+      }
     } );
   }
 }
@@ -7889,10 +7908,9 @@ void rogue_t::create_buffs()
     ->add_invalidate( CACHE_HASTE )
     ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
         if ( new_ == 0 && dbc->ptr )
-          buffs.flagellation_persist->trigger( old_ );
+          buffs.flagellation_persist->trigger( old_, buffs.flagellation->default_value );
       } );
   buffs.flagellation_persist = make_buff( this, "flagellation_persist", dbc->ptr ? covenant.flagellation_buff : spell_data_t::not_found() )
-    ->set_default_value_from_effect_type( A_HASTE_ALL, P_MAX, 0.001 ) // Thar be server magic here to divide by 10 (9.0.5).
     ->add_invalidate( CACHE_HASTE );
 
   buffs.echoing_reprimand_2 = make_buff( this, "echoing_reprimand_2", covenant.echoing_reprimand->ok() ?
