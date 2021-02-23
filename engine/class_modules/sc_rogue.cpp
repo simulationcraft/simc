@@ -8677,17 +8677,6 @@ public:
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Rogue", "2021-02-18", "Venomous Wounds now restores 8 Energy (was 7)", 86614, hotfix::HOTFIX_FLAG_PTR )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 8 )
-      .verification_value( 7 );
-
-    hotfix::register_effect( "Rogue", "2021-02-22", "Concealed Blunderbuss hits 3 times (not 2) on PTR", 840605, hotfix::HOTFIX_FLAG_PTR )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 3 )
-      .verification_value( 2 );
   }
 
   void init( player_t* ) const override {}
