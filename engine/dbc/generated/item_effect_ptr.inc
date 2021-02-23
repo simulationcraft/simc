@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 // Item effects, wow build 9.0.5.37623
 static const std::array<item_effect_t, 7493> __ptr_item_effect_data { {
+=======
+// Item effects, wow build 9.0.5.37705
+static const std::array<item_effect_t, 7497> __ptr_item_effect_data { {
+>>>>>>> 4446c1d0bc... [PTR] spell data update build 9.0.5.37623
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -181,7 +186,7 @@ static const std::array<item_effect_t, 7493> __ptr_item_effect_data { {
   { 126460, 338658,      0,   0,   1,    0,      -1,      -1 }, // Draught of Deep Focus
   { 126461, 338661,      0,   0,   1,    0,      -1,      -1 }, // Oneth's Clear Vision
   { 126462, 338668,      0,   0,   1,    0,      -1,      -1 }, // Primordial Arcanic Pulsar
-  { 126463, 339144,      0,   0,   1,    0,      -1,      -1 }, // Cat-eye Curio
+  { 126463, 339144,      0,   0,   1,    0,      -1,      -1 }, // Cat-Eye Curio
   { 126464, 339141,      0,   0,   1,    0,      -1,      -1 }, // Eye of Fearful Symmetry
   { 126465, 339139,      0,   0,   1,    0,      -1,      -1 }, // Apex Predator's Craving
   { 126466, 339060,      0,   0,   1,    0,      -1,      -1 }, // Luffa-Infused Embrace

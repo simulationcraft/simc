@@ -1984,8 +1984,12 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #9 (id=840552)   : Apply Aura (6) | Unknown(147)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2071 | Target: Self (1)
-Description      : Go berserk for $d, reducing the cooldowns of Mangle, Thrash, Growl, and Frenzied Regeneration by $s1% and the cost of Ironfur by $s3%.
-Tooltip          : Cooldowns of Mangle, Thrash, Growl, and Frenzied Regeneration are reduced by $w1%. Ironfur cost reduced by $w3%.
+Description      : Go berserk for $d, reducing the cooldowns of Mangle, Thrash, Growl, and Frenzied Regeneration by $s1% and the cost of Ironfur by $s3%.$?a339062[
+
+Grants immunity to effects that cause loss of control of your character.][]
+Tooltip          : Cooldowns of Mangle, Thrash, Growl, and Frenzied Regeneration are reduced by $w1%. Ironfur cost reduced by $w3%.$?a339062[
+
+Immune to effects that cause loss of control of your character.][]
 
 Name             : Nourish (id=50464) [Spell Family (7)] 
 Class            : Druid
@@ -3285,13 +3289,17 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #11 (id=868055)   : Apply Aura (6) | Unknown(147)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2071 | Target: Self (1)
-Description      : An improved Bear Form that grants the benefits of Berserk, causes Mangle to hit up to $s6 targets, and increases maximum health by $s5%.
+Description      : An improved Bear Form that grants the benefits of Berserk, causes Mangle to hit up to $s6 targets, and increases maximum health by $s5%.$?a339062[
+
+Grants immunity to effects that cause loss of control of your character.][]
 
 Lasts $d. You may freely shapeshift in and out of this improved Bear Form for its duration.
 Tooltip          : Cooldowns of Mangle, Thrash, Growl, and Frenzied Regeneration are reduced by $w1%.
 Ironfur cost reduced by $w3%.
 Mangle hits up to $w6 targets.
-Health increased by $w5%.
+Health increased by $w5%.$?a339062[
+
+Immune to effects that cause loss of control of your character.][]
 
 Name             : Incarnation: Chosen of Elune (desc=Talent, Shapeshift) (id=102560) [Spell Family (7)] 
 Replaces         : Celestial Alignment (id=194223)
@@ -6775,7 +6783,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Guardian Druid (137010 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 77
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11462,7 +11470,7 @@ Range            : 100 yards
 Cooldown         : 0.5 seconds
 Affecting spells : Moonkin Form (24858 effects: #9, #10), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Balance Druid (137013 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 18
-Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ ..x..... x..x....   .......x ..x..... ........ ........ 
                  : ........ ........ ......x. ....x...   ........ ........ ........ ......x. 
                  : ...xx..x .......x ........ ....x...   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -12641,6 +12649,7 @@ Effects          :
 Description      : Thrash has $s1% increased damage, $s3% increased radius, and can stack $s4 additional $ltime:times;.
 
 Name             : Legacy of the Sleeper (id=339062) [Spell Family (7), Passive] 
+Class            : Druid
 School           : Physical
 Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -12796,7 +12805,7 @@ Effects          :
 Description      : $@spelldesc339141
 Tooltip          : Your next finishing move restores $339143s1 combo points.
 
-Name             : Cat-eye Curio (id=339144) [Spell Family (7), Passive] 
+Name             : Cat-Eye Curio (id=339144) [Spell Family (7), Passive] 
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
@@ -12813,7 +12822,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=838231)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=838232)   : Apply Aura (6) | Modify Max Resource (418)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 Description      : Clearcast abilities generate $s1% of their Energy cost, and your maximum energy is increased by $s2.
