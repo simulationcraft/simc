@@ -9239,7 +9239,6 @@ Tooltip          : Rogue's fourth combo point is Animacharged.
 Damaging finishing moves using exactly 4 combo points deal damage as if 7 combo points are consumed.
 
 Name             : Flagellation (desc=Venthyr) (id=323654) [Spell Family (8)] 
-Hotfixed         : Cooldown (0 -> 90000), Category Cooldown (90000 -> 0), Category (1914 -> 0)
 Class            : Rogue
 Covenant         : Venthyr
 School           : Shadow
@@ -9249,6 +9248,8 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 12 seconds
 Cooldown         : 90 seconds
+Category         : 1914
+Category Cooldown: 90 seconds
 Internal Cooldown: 0.1 seconds
 Stacks           : 30 maximum
 Proc Chance      : 100%
@@ -9272,9 +9273,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=812729)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=881094)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Lash the target for $s1 Shadow damage, causing each combo point spent within $d to lash for an additional $345316s1. Dealing damage with Flagellation increases your Haste by $s2%, persisting $345569d after their torment fades.
 Tooltip          : $?$W2>0[Nearby Rogue is tormenting the target, dealing $s1 Shadow damage for each combo point spent.][Combo points spent deal $s1 Shadow damage to the Rogue's tormented target. Haste increased by $s3%.]
 
@@ -11091,8 +11089,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=871535)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 10)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc323654
 Tooltip          : Haste increased by ${$s1/10}.1%.
 
