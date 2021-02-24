@@ -9891,6 +9891,12 @@ struct shaman_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Shaman", "2021-02-24", "Chain Lightning Spell Power Modifier was accidentally missed",
+                             275203, hotfix::HOTFIX_FLAG_PTR )
+        .field( "sp_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0.635 )
+        .verification_value( 0.47 );
   }
 
   void combat_begin( sim_t* ) const override
