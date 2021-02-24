@@ -6192,10 +6192,6 @@ void monk_t::create_buffs()
           ->set_can_cancel( false )  // Undocumented hotfix 28/09/2018 - SEF can no longer be canceled.
           ->set_cooldown( timespan_t::zero() );
 
-  buff.pressure_point = make_buff( this, "pressure_point", find_spell( 337482 ) )
-                            ->set_default_value_from_effect( 1 )
-                            ->set_refresh_behavior( buff_refresh_behavior::NONE );
-
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", find_spell( 125174 ) );
 
   buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 166646 ) );
@@ -6249,6 +6245,10 @@ void monk_t::create_buffs()
 
   // Windwalker
   buff.chi_energy = make_buff( this, "chi_energy", find_spell( 337571 ) )->set_default_value_from_effect( 1 );
+
+  buff.pressure_point = make_buff( this, "pressure_point", find_spell( 337482 ) )
+                            ->set_default_value_from_effect( 1 )
+                            ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   buff.the_emperors_capacitor =
       make_buff( this, "the_emperors_capacitor", find_spell( 337291 ) )->set_default_value_from_effect( 1 );
