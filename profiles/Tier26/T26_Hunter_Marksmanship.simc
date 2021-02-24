@@ -96,15 +96,15 @@ actions.trickshots+=/serpent_sting,target_if=min:dot.serpent_sting.remains,if=re
 actions.trickshots+=/multishot,if=focus>cost+action.aimed_shot.cost
 actions.trickshots+=/steady_shot
 
-head=helm_of_insatiable_appetite,id=183001,bonus_id=7187/1498/6935,gem_id=173127
-neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
+head=rattling_deadeye_hood,id=178738,bonus_id=6536/1540/6646/6935,gem_id=173127
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
 shoulders=pauldrons_of_fatal_finality,id=183003,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=consumptive_chainmail_carapace,id=183000,bonus_id=7187/1498,enchant=eternal_skirmish
 wrists=bangles_of_errant_pride,id=182977,bonus_id=7187/1498/6935,gem_id=173127
 hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=7187/1498
 waist=doublechained_utility_belt,id=182976,bonus_id=7187/1498/6935,gem_id=173127
-legs=greaves_of_enigmatic_energies,id=183012,bonus_id=7187/1498
+legs=blightborne_chain_legguards,id=178762,bonus_id=6536/1540/6646
 feet=stoneclas_stompers,id=183006,bonus_id=7187/1498,enchant=eternal_agility
 finger1=shadowghast_ring,id=178926,bonus_id=6647/6648/6758/7013/1532/1808,gem_id=173127,enchant=tenet_of_critical_strike
 finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_haste
@@ -116,8 +116,8 @@ main_hand=dredfang_ironspitter,id=182398,bonus_id=7187/1531,enchant=sinful_revel
 # gear_ilvl=229.40
 # gear_agility=875
 # gear_stamina=1521
-# gear_crit_rating=677
-# gear_haste_rating=437
-# gear_mastery_rating=582
-# gear_versatility_rating=263
+# gear_crit_rating=852
+# gear_haste_rating=338
+# gear_mastery_rating=438
+# gear_versatility_rating=333
 # gear_armor=872
