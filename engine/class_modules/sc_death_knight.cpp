@@ -8974,7 +8974,7 @@ double death_knight_t::composite_leech() const
     m += buffs.voracious -> data().effectN( 1 ).percent();
   }
 
-  if ( dbc -> ptr && legendary.vampiric_aura.ok() && buffs.vampiric_blood -> up() )
+  if ( dbc -> ptr && legendary.vampiric_aura.ok() && buffs.vampiric_blood -> check() )
   {
     m += buffs.vampiric_blood -> check_value();
   }
