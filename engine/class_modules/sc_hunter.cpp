@@ -1678,8 +1678,13 @@ struct spitting_cobra_t final : public hunter_pet_t
     hunter_pet_t( o, "spitting_cobra", PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
   {
     owner_coeff.ap_from_ap = 0.15;
-    if ( dbc -> ptr ) // XXXX TODO 9.0.5
-      owner_coeff.ap_from_ap = 0.15*2.6;
+
+    // XXXX TODO 9.0.5
+    // The patch note for the PTR says increased BY 260%, when in fact it was 
+    // only increased by 160% or otherwise increased TO 260% of the live value.
+    // Tested in-game 25 Feb 2021
+    if ( dbc -> ptr ) 
+      owner_coeff.ap_from_ap *= 2.6;
 
     resource_regeneration = regen_type::DISABLED;
 
