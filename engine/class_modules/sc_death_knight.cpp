@@ -6825,8 +6825,11 @@ struct vampiric_blood_buff_t : public buff_t
     if ( player -> dbc -> ptr )
     {
       set_default_value_from_effect( 5 );
-      apply_affecting_aura( player -> legendary.vampiric_aura );
-      add_invalidate( CACHE_LEECH );
+      if ( player -> legendary.vampiric_aura.ok() )
+      {
+        apply_affecting_aura( player -> legendary.vampiric_aura );
+        add_invalidate( CACHE_LEECH );
+      }
     }
   }
 
