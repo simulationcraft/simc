@@ -1678,6 +1678,9 @@ struct spitting_cobra_t final : public hunter_pet_t
     hunter_pet_t( o, "spitting_cobra", PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
   {
     owner_coeff.ap_from_ap = 0.15;
+    if ( dbc -> ptr ) // XXXX TODO 9.0.5
+      owner_coeff.ap_from_ap = 0.15*2.6;
+
     resource_regeneration = regen_type::DISABLED;
 
     action_list_str = "cobra_spit";
