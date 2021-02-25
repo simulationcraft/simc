@@ -582,6 +582,9 @@ public:
     // Covenant
     gain_t* swarming_mist;
 
+    // Legendary
+    gain_t* gorefiends_domination;
+
     // Blood
     gain_t* blood_tap;
     gain_t* bryndaors_might;
@@ -975,7 +978,7 @@ public:
     // item_runeforge_t deaths_embrace;           // 6947
     // item_runeforge_t grip_of_the_everlasting;  // 6948
     item_runeforge_t gorefiends_domination;       // 6943
-    // item_runeforge_t vampiric_aura;            // 6942
+    item_runeforge_t vampiric_aura;               // 6942
   } legendary;
 
   // Death Knight Options
@@ -4107,10 +4110,16 @@ struct dancing_rune_weapon_buff_t : public buff_t
 
 struct dancing_rune_weapon_t : public death_knight_spell_t
 {
+  int bone_shield_stack_gain;
   dancing_rune_weapon_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "dancing_rune_weapon", p, p -> spec.dancing_rune_weapon )
+    death_knight_spell_t( "dancing_rune_weapon", p, p -> spec.dancing_rune_weapon ),
+    bone_shield_stack_gain( 0 )
   {
     may_miss = may_crit = may_dodge = may_parry = harmful = false;
+    if ( p -> dbc -> ptr )
+    {
+      bone_shield_stack_gain = as<int>( p -> legendary.crimson_rune_weapon -> effectN( 2 ).base_value());
+    }
 
     parse_options( options_str );
   }
@@ -4118,6 +4127,10 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
+    if ( p() -> dbc -> ptr && p() -> legendary.crimson_rune_weapon.ok() )
+    {
+      p() -> buffs.bone_shield -> trigger ( bone_shield_stack_gain );
+    }
 
     p() -> pets.dancing_rune_weapon_pet -> summon( timespan_t::from_seconds( p() -> spec.dancing_rune_weapon -> effectN( 4 ).base_value() ) +
                                                                              p() -> conduits.meat_shield -> effectN( 2 ).time_value() );
@@ -6809,6 +6822,15 @@ struct vampiric_blood_buff_t : public buff_t
     // Cooldown handled by the action
     cooldown -> duration = 0_ms;
     base_buff_duration += player -> spec.vampiric_blood_2 -> effectN( 3 ).time_value();
+    if ( player -> dbc -> ptr )
+    {
+      set_default_value_from_effect( 5 );
+      if ( player -> legendary.vampiric_aura.ok() )
+      {
+        apply_affecting_aura( player -> legendary.vampiric_aura );
+        add_invalidate( CACHE_LEECH );
+      }
+    }
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -6846,13 +6868,19 @@ struct vampiric_blood_buff_t : public buff_t
 
 struct vampiric_blood_t : public death_knight_spell_t
 {
+  int gorefiends_domination_energize_amount;
   vampiric_blood_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "vampiric_blood", p, p -> spec.vampiric_blood )
+    death_knight_spell_t( "vampiric_blood", p, p -> spec.vampiric_blood ),
+    gorefiends_domination_energize_amount( 0 )
   {
     parse_options( options_str );
 
     harmful = false;
     base_dd_min = base_dd_max = 0;
+    if( p -> dbc -> ptr )
+    {
+      gorefiends_domination_energize_amount = as<int>( p -> legendary.gorefiends_domination->ok() ? p -> find_spell( 350914 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) : 0 );
+    }
   }
 
   void execute() override
@@ -6860,6 +6888,13 @@ struct vampiric_blood_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.vampiric_blood -> trigger();
+
+    if ( p() -> dbc -> ptr )
+    {
+      p() -> resource_gain( RESOURCE_RUNIC_POWER,
+                 gorefiends_domination_energize_amount,
+                 p() -> gains.gorefiends_domination );
+    }
   }
 };
 
@@ -8335,7 +8370,7 @@ void death_knight_t::init_spells()
   // legendary.deaths_embrace = find_runeforge_legendary( "Death's Embrace" );
   // legendary.grip_of_the_everlasting = find_runeforge_legendary( "Grip of the Everlasting" );
   legendary.gorefiends_domination = find_runeforge_legendary( "Gorefiend's Domination" );
-  // legendary.vampiric_aura = find_runeforge_legendary( "Vampiric Aura" );
+  legendary.vampiric_aura = find_runeforge_legendary( "Vampiric Aura" );
 
   // Covenants
   covenant.abomination_limb = find_covenant_spell( "Abomination Limb" );
@@ -8600,7 +8635,14 @@ void death_knight_t::create_buffs()
   // According to tooltip data and ingame testing, the buff's value is halved for blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
-    buffs.death_turf -> default_value /= 2;
+    if ( dbc -> ptr )
+    {
+      buffs.death_turf -> default_value = legendary.phearomones -> effectN( 2 ).percent();
+    }
+    else
+    {
+      buffs.death_turf -> default_value /= 2;
+    }
   }
 
   // Covenants
@@ -8647,6 +8689,7 @@ void death_knight_t::init_gains()
 
   // Shadowlands / Covenants
   gains.swarming_mist                    = get_gain( "Swarming Mist" );
+  gains.gorefiends_domination            = get_gain( "Gorefiends Domination" );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -8932,6 +8975,11 @@ double death_knight_t::composite_leech() const
   if ( buffs.voracious -> up() )
   {
     m += buffs.voracious -> data().effectN( 1 ).percent();
+  }
+
+  if ( dbc -> ptr && legendary.vampiric_aura.ok() && buffs.vampiric_blood -> check() )
+  {
+    m += buffs.vampiric_blood -> check_value();
   }
 
   return m;
