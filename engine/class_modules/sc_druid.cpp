@@ -8557,9 +8557,9 @@ void druid_t::apl_guardian()
   def->add_action(
       "run_action_list,name=catweave,if=druid.catweave_bear&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&"
       "dot.moonfire.remains>=gcd+0.5&rage<40&buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&buff."
-      "galactic_guardian.down)|(buff.cat_form.up&energy>25)|(runeforge.oath_of_the_elder_druid.equipped&!buff.oath_of_"
-      "the_elder_druid.up&(buff.cat_form.up&energy>20))|(covenant.kyrian&cooldown.empower_bond.remains<=1&active_enemies<"
-      "2))", "Catweaving action list will be ran if, mangle/thrash are on cd, rage is below 40,zerk and incarnation are down"
+      "galactic_guardian.down)|(buff.cat_form.up&energy>25)|(dot.rake.refreshable&dot.rip.refreshable)|(runeforge.oath_of_the_elder_druid.equipped&!buff.oath_of_"
+      "the_elder_druid.up&(buff.cat_form.up&energy>20)&buff.heart_of_the_wild.remains<=10)|(covenant.kyrian&cooldown.empower_bond.remains<=1&active_enemies<"
+      "2)|(buff.heart_of_the_wild.up&energy>90))", "Catweaving action list will be ran if, mangle/thrash are on cd, rage is below 40,zerk and incarnation are down"
       "and Gualactic guardian buff is not active, or if, we're in catform and energy is above 25, Or if we have the Oath legendary equipped," 
       "the debuff linked to it is not up and energy is above 20,Or if we're kyrian and Empower bond cooldown is up and enemies are inferior to 2." );
 	 
@@ -8622,12 +8622,12 @@ void druid_t::apl_guardian()
   catweave->add_action( "rake,if=buff.prowl.up" );
   catweave->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up" );
   catweave->add_action( "empower_bond,if=druid.catweave_bear" );
+  catweave->add_action( "rake,if=dot.rake.refreshable&combo_points<4" );
+  catweave->add_action( "rip,if=dot.rip.refreshable&combo_points>=1" );
   catweave->add_action( "convoke_the_spirits,if=druid.catweave_bear" );
-  catweave->add_action( "rip,if=dot.rip.refreshable&combo_points>=4" );
-  catweave->add_action( "ferocious_bite,if=combo_points>=4" );
+  catweave->add_action( "ferocious_bite,if=combo_points>=4&energy>50" );
   catweave->add_action(
            "adaptive_swarm,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)" );
-  catweave->add_action( "rake,if=dot.rake.refreshable&combo_points<4" );
   catweave->add_action( "shred" );
 
   owlweave->add_action( "moonkin_form,if=!buff.moonkin_form.up" );
