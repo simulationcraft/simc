@@ -8752,6 +8752,48 @@ struct pool_resource_t : public action_t
   }
 };
 
+// Auto-Attack Retargeting ==================================================
+
+struct retarget_auto_attack_t : public action_t
+{
+  retarget_auto_attack_t( player_t* player, util::string_view options_str ) :
+    action_t( ACTION_OTHER, "retarget_auto_attack", player )
+  {
+    parse_options( options_str );
+    use_off_gcd = quiet = true;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  void execute() override
+  {
+    if ( player->main_hand_attack && player->main_hand_attack->target != target )
+    {
+      sim->print_debug( "{} MH auto attack changed from target {} to {}.", name(), player->main_hand_attack->target->name(), target->name() );
+      player->main_hand_attack->set_target( target );
+    }
+
+    if ( player->off_hand_attack && player->off_hand_attack->target != target )
+    {
+      sim->print_debug( "{} OH auto attack changed from target {} to {}.", name(), player->off_hand_attack->target->name(), target->name() );
+      player->off_hand_attack->set_target( target );
+    }
+  }
+
+  bool action_ready() override
+  {
+    if ( !action_t::action_ready() )
+      return false;
+
+    if ( player->main_hand_attack && player->main_hand_attack->target != target )
+      return true;
+
+    if ( player->off_hand_attack && player->off_hand_attack->target != target )
+      return true;
+
+    return false;
+  }
+};
+
 }  // UNNAMED NAMESPACE
 
 action_t* player_t::create_action( util::string_view name, const std::string& options_str )
@@ -8821,8 +8863,10 @@ action_t* player_t::create_action( util::string_view name, const std::string& op
     return new variable_t( this, options_str );
   if ( name == "cycling_variable" )
     return new cycling_variable_t( this, options_str );
-  if ( name == "wait_for_cooldown")
+  if ( name == "wait_for_cooldown" )
     return new wait_for_cooldown_t( this, options_str );
+  if ( name == "retarget_auto_attack" )
+    return new retarget_auto_attack_t( this, options_str );
 
   if ( auto action = azerite::create_action( this, name, options_str ) )
     return action;
