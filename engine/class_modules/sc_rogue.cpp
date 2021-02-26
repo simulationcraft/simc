@@ -5502,9 +5502,8 @@ struct roll_the_bones_t : public buff_t
   void execute( int stacks, double value, timespan_t duration ) override
   {
     // 11/21/2020 -- Count the Odds buffs are cleared if rerolling, but not if the buff is down
-    // Apparently fixed on 9.0.5 PTR
-    if ( !rogue->dbc->ptr )
-      count_the_odds_expire( !check() );
+    //               Apparently fixed on 9.0.5 PTR
+    count_the_odds_expire( !check() || rogue->dbc->ptr );
 
     buff_t::execute( stacks, value, duration );
 
@@ -5516,8 +5515,7 @@ struct roll_the_bones_t : public buff_t
     procs[ buffs_rolled - 1 ]->occur();
     rogue->buffs.loaded_dice->expire();
 
-    if ( !rogue->dbc->ptr )
-      count_the_odds_restore();
+    count_the_odds_restore();
   }
 
   void expire_override( int stacks, timespan_t duration ) override
