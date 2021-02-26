@@ -2562,7 +2562,8 @@ struct crimson_tempest_t : public rogue_attack_t
     rogue_attack_t::init();
 
     // BUG: CT does not trigger alacrity, see https://github.com/SimCMinMax/WoW-BugTracker/issues/791
-    if ( p()->bugs )
+    // Apparently fixed on 9.0.5 PTR
+    if ( p()->bugs && !p()->dbc->ptr )
       affected_by.alacrity = false;
   }
 
@@ -5501,7 +5502,9 @@ struct roll_the_bones_t : public buff_t
   void execute( int stacks, double value, timespan_t duration ) override
   {
     // 11/21/2020 -- Count the Odds buffs are cleared if rerolling, but not if the buff is down
-    count_the_odds_expire( !check() );
+    // Apparently fixed on 9.0.5 PTR
+    if ( !rogue->dbc->ptr )
+      count_the_odds_expire( !check() );
 
     buff_t::execute( stacks, value, duration );
 
@@ -5513,14 +5516,17 @@ struct roll_the_bones_t : public buff_t
     procs[ buffs_rolled - 1 ]->occur();
     rogue->buffs.loaded_dice->expire();
 
-    count_the_odds_restore();
+    if ( !rogue->dbc->ptr )
+      count_the_odds_restore();
   }
 
   void expire_override( int stacks, timespan_t duration ) override
   {
     buff_t::expire_override( stacks, duration );
     // 11/21/2020 -- Count the Odds buffs are cleared if the container buff expires
-    count_the_odds_expire( false );
+    // Apparently fixed on 9.0.5 PTR
+    if ( !rogue->dbc->ptr )
+      count_the_odds_expire( false );
   }
 };
 
