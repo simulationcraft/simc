@@ -3425,11 +3425,13 @@ struct auto_attack_t : public demon_hunter_attack_t
 
   void execute() override
   {
+    p()->main_hand_attack->set_target( target );
     if ( p()->main_hand_attack->execute_event == nullptr )
     {
       p()->main_hand_attack->schedule_execute();
     }
 
+    p()->off_hand_attack->set_target( target );
     if ( p()->off_hand_attack->execute_event == nullptr )
     {
       p()->off_hand_attack->schedule_execute();
@@ -3438,16 +3440,12 @@ struct auto_attack_t : public demon_hunter_attack_t
 
   bool ready() override
   {
-    bool ready = demon_hunter_attack_t::ready();
-
-    if ( ready )  // Range check
-    {
-      if ( p()->main_hand_attack->execute_event == nullptr )
-        return ready;
-
-      if ( p()->off_hand_attack->execute_event == nullptr )
-        return ready;
-    }
+    // Range check
+    if ( !demon_hunter_attack_t::ready() )
+      return false;
+    
+    if ( p()->main_hand_attack->execute_event == nullptr || p()->off_hand_attack->execute_event == nullptr )
+      return true;
 
     return false;
   }
