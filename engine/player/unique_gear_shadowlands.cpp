@@ -1885,6 +1885,33 @@ void rotbriar_sprout( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// id=339343 driver, buff & debuff rating values
+// id=339342 buff
+// id=339341 debuff
+void murmurs_in_the_dark( special_effect_t& effect )
+{
+  auto debuff = buff_t::find( effect.player, "end_of_night" );
+  if ( !debuff )
+  {
+    debuff = make_buff<stat_buff_t>( effect.player, "end_of_night", effect.player->find_spell( 339341 ) )
+      ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
+  }
+
+  auto buff = buff_t::find( effect.player, "fall_of_night" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "fall_of_night", effect.player->find_spell( 339342 ) )
+      ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) )
+      ->set_stack_change_callback( [ debuff ]( buff_t*, int, int new_ ) {
+        if ( !new_ )
+          debuff->trigger();
+      } );
+  }
+
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -2079,6 +2106,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 329831, items::overwhelming_power_crystal );
     unique_gear::register_special_effect( 336182, items::tablet_of_despair );
     unique_gear::register_special_effect( 329536, items::rotbriar_sprout );
+    unique_gear::register_special_effect( 339343, items::murmurs_in_the_dark );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
