@@ -31,6 +31,9 @@ actions.precombat+=/food
 actions.precombat+=/snapshot_stats
 actions.precombat+=/marked_for_death,precombat_seconds=10,if=raid_event.adds.in>15
 actions.precombat+=/variable,name=vendetta_cdr,value=1-(runeforge.duskwalkers_patch*0.45)
+# Determine which (if any) stat buff trinket we want to attempt to sync with Vendetta.
+actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)
+actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)
 actions.precombat+=/stealth
 actions.precombat+=/slice_and_dice,precombat_seconds=1
 
@@ -80,10 +83,9 @@ actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/fireblood,if=debuff.vendetta.up
 actions.cds+=/ancestral_call,if=debuff.vendetta.up
 actions.cds+=/call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0
-actions.cds+=/use_item,effect_name=gladiators_medallion,if=debuff.vendetta.up
-actions.cds+=/use_item,effect_name=gladiators_badge,if=debuff.vendetta.up
-# Default fallback for usable items: Use on cooldown.
-actions.cds+=/use_items
+# Sync the priority stat buff trinket with Vendetta, otherwise use on cooldown
+actions.cds+=/use_items,slots=trinket1,if=variable.trinket_sync_slot=1&(debuff.vendetta.up|fight_remains<=20)|(variable.trinket_sync_slot=2&!trinket.2.cooldown.ready)|!variable.trinket_sync_slot
+actions.cds+=/use_items,slots=trinket2,if=variable.trinket_sync_slot=2&(debuff.vendetta.up|fight_remains<=20)|(variable.trinket_sync_slot=1&!trinket.1.cooldown.ready)|!variable.trinket_sync_slot
 
 # Direct damage abilities
 # Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up.

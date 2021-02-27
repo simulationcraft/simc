@@ -6602,6 +6602,8 @@ void rogue_t::init_action_list()
   {
     // Pre-Combat
     precombat->add_action( "variable,name=vendetta_cdr,value=1-(runeforge.duskwalkers_patch*0.45)" );
+    precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)", "Determine which (if any) stat buff trinket we want to attempt to sync with Vendetta." );
+    precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)" );
     precombat->add_action( this, "Stealth" );
     precombat->add_action( this, "Slice and Dice", "precombat_seconds=1" );
 
@@ -6642,9 +6644,8 @@ void rogue_t::init_action_list()
     cds->add_action( "fireblood,if=debuff.vendetta.up" );
     cds->add_action( "ancestral_call,if=debuff.vendetta.up" );
     cds->add_action( "call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0" );
-    cds->add_action( "use_item,effect_name=gladiators_medallion,if=debuff.vendetta.up" );
-    cds->add_action( "use_item,effect_name=gladiators_badge,if=debuff.vendetta.up" );
-    cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
+    cds->add_action( "use_items,slots=trinket1,if=variable.trinket_sync_slot=1&(debuff.vendetta.up|fight_remains<=20)|(variable.trinket_sync_slot=2&!trinket.2.cooldown.ready)|!variable.trinket_sync_slot", "Sync the priority stat buff trinket with Vendetta, otherwise use on cooldown" );
+    cds->add_action( "use_items,slots=trinket2,if=variable.trinket_sync_slot=2&(debuff.vendetta.up|fight_remains<=20)|(variable.trinket_sync_slot=1&!trinket.1.cooldown.ready)|!variable.trinket_sync_slot" );
 
     // Vanish
     action_priority_list_t* vanish = get_action_priority_list( "vanish", "Vanish" );
@@ -7866,6 +7867,7 @@ void rogue_t::create_buffs()
   buffs.master_assassin_aura = make_buff( this, "master_assassin_aura", master_assassin )
     ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
     ->add_invalidate( CACHE_CRIT_CHANCE )
+    ->set_duration( sim->max_time / 2 ) // So it appears in sample sequence table
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
       if ( new_ == 0 )
         buffs.master_assassin->trigger();
@@ -7974,6 +7976,7 @@ void rogue_t::create_buffs()
     buffs.master_assassins_mark_aura = make_buff( this, "master_assassins_mark_aura", master_assassins_mark )
       ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
       ->add_invalidate( CACHE_CRIT_CHANCE )
+      ->set_duration( sim->max_time / 2 ) // So it appears in sample sequence table
       ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
       if ( new_ == 0 )
         buffs.master_assassins_mark->trigger();
