@@ -57,7 +57,7 @@ actions.cds=marked_for_death,target_if=min:target.time_to_die,if=raid_event.adds
 # If no adds will die within the next 30s, use MfD on boss without any CP.
 actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend
 # Sync Flagellation with Vendetta as long as we won't lose a cast over the fight duration
-actions.cds+=/flagellation,if=!stealthed.rogue&(cooldown.vendetta.remains<3|debuff.vendetta.up|fight_remains<24)
+actions.cds+=/flagellation,if=!stealthed.rogue&(cooldown.vendetta.remains<3&effective_combo_points>=4|debuff.vendetta.up|fight_remains<24)
 actions.cds+=/flagellation,if=!stealthed.rogue&(floor((fight_remains-24)%cooldown)>floor((fight_remains-24-cooldown.vendetta.remains*variable.vendetta_cdr)%cooldown))
 actions.cds+=/flagellation_cleanse,if=debuff.flagellation.remains<2
 # Sync Sepsis with Vendetta as long as we won't lose a cast over the fight duration, but prefer targets that will live at least 10s
