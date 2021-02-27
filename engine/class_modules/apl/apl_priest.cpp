@@ -193,8 +193,9 @@ void shadow( player_t* p )
                     "searing_nightmare_cutoff)&!cooldown.fiend.up&(!cooldown.mind_blast.up|spell_targets.mind_sear>2)",
                     "Use Void Eruption on cooldown pooling at least 40 insanity but not if you will overcap insanity "
                     "in VF. Make sure shadowfiend/mindbender and Mind Blast is on cooldown before VE." );
-  main->add_action( p, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up",
-                    "Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active." );
+  main->add_action(
+      p, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up&spell_targets.mind_sear<4",
+      "Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active when fighting 1-3 targets." );
   main->add_call_action_list( cds );
   main->add_action( p, "Mind Sear",
                     "target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>variable.mind_sear_cutoff&!dot."
