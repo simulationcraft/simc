@@ -3452,6 +3452,15 @@ struct secret_technique_t : public rogue_attack_t
     add_child( clone_attack );
   }
 
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    // BUG: Does not trigger alacrity, see https://github.com/SimCMinMax/WoW-BugTracker/issues/816
+    if ( p()->bugs )
+      affected_by.alacrity = false;
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
