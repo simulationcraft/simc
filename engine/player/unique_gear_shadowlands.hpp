@@ -64,6 +64,13 @@ void third_eye_of_the_jailer( special_effect_t& );
 void vitality_sacrifice( special_effect_t& );
 }  // namespace items
 
+namespace set_bonus
+{
+// Covenant Sets
+void penance_brand( special_effect_t& );     // Venthyr 5pc
+void one_with_shadows( special_effect_t& );  // Venthyr 8pc
+}  // namespace set_bonus
+
 void register_hotfixes();
 void register_special_effects();
 void register_target_data_initializers( sim_t& );

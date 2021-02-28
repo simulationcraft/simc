@@ -3158,7 +3158,7 @@ class SetBonusListGenerator(DataGenerator):
     # NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
     # ====================================================================
     # The ordering of this array _MUST_ match the ordering of
-    # "set_bonus_type_e" enumeration in simulationcraft.hpp or very bad
+    # "set_bonus_type_e" enumeration in sc_enums.hpp or very bad
     # things will happen.
     # ====================================================================
     # NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
@@ -3218,6 +3218,26 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'titanic_empowerment',
             'bonuses': [ 1452 ],
             'tier'   : 24
+        },
+        {
+            'name'   : 'soulbreakers_ebony_vestments',
+            'bonuses': [ 1462 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'ebony_death_shroud_armor',
+            'bonuses': [ 1481 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'fearstalkers_ebony_battlegear',
+            'bonuses': [ 1482 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'dread_sentinels_ebony_battleplate',
+            'bonuses': [ 1483 ],
+            'tier'   : 26
         }
     ]
 

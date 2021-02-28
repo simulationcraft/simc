@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.37474
-static const std::array<spelltext_data_t, 15096> __spelltext_data { {
+static const std::array<spelltext_data_t, 15100> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14991,6 +14991,7 @@ static const std::array<spelltext_data_t, 15096> __spelltext_data { {
   { 345569, "$@spelldesc323654", "Haste increased by ${$s1/10}.1%.", "Venthyr" },
   { 345594, "Earth Shock has a |cFFFFFFFF${$s1}.1%|r chance to extend the duration of your Flame Shock on the enemy by ${$s2/1000} sec.", 0, 0 },
   { 345595, "Spew out a Slimey Morsel for every stack of Gluttonous. The Morsels immediately attempt to return to you, each healing you for $334512s1.", 0, 0 },
+  { 345606, "Increases your out-of-combat regeneration in outdoor Shadowland zones. While in your Covenant's realm, the regeneration amount is increased.", 0, 0 },
   { 345638, "$@spelldesc345567", 0, 0 },
   { 345669, "Snap the gauntlet's fingers, instantly destroying half the critters within 40 yards.", 0, 0 },
   { 345675, "Reduce the effectiveness of crowd controlling effects by $s2%. Successfully applying a loss of control effect to an enemy, interrupting an enemy, or dispelling any target will increase all your secondary stats by $339463s1 for $339463d. This effect cannot occur more than once every 30 seconds.", 0, 0 },
@@ -14998,8 +14999,11 @@ static const std::array<spelltext_data_t, 15096> __spelltext_data { {
   { 345697, "$@spelldesc345698", 0, 0 },
   { 345698, "Your abilities have a very high chance to lash out with a Hateful Strike, dealing $s2 Physical damage to an enemy and healing you for $s1. These effects are increased by ${($s4*100)-100}% while you are below $s3% health.", 0, 0 },
   { 345704, "$@spelldesc345695", 0, 0 },
+  { 345709, "Your spells and abilities have a chance to inflict Penance Brand on your target dealing ${$s1*6} Shadow damage over $345710d and healing you for the same amount.", 0, 0 },
+  { 345710, "$@spelldesc345709\r\n", "Suffering $w1 shadow damage every $t1 sec.", 0 },
   { 345714, "$@spelldesc330898", 0, 0 },
   { 345727, "$@spelldesc327104", 0, "Night Fae" },
+  { 345737, "While Door of Shadows is off cooldown your $pri is increased by $s3 and its range is increased by $s2 while in outdoor Shadowland zones.\r\n", 0, 0 },
   { 345739, "Conjure a Spectral Scythe, dealing $345877s1 Shadow damage to your target and $345877s2 Shadow damage in a $345963A1 yd cone to enemies behind your target.", 0, 0 },
   { 345753, "Deploy a stretcher to carry a wounded ally in comfort.", 0, 0 },
   { 345780, "Peer into the glass.", 0, 0 },

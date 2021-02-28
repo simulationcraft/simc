@@ -343,6 +343,10 @@ struct sim_t : private sc_thread_t
 
   struct shadowlands_opt_t
   {
+    /// Generic Options
+    bool outdoors = false;
+
+    /// Covenant/Soulbind Options
     /// Chance to catch each expelled sorrowful memory to extend the buff duration
     /// TODO: Set this to a reasonable value
     double combat_meditation_extend_chance = 1.0;
@@ -351,6 +355,13 @@ struct sim_t : private sc_thread_t
     /// Number of nearby allies when you proc lead by example,
     /// the default value of -1 adjusts to 2 for ranged position and 4 for front/back position
     int lead_by_example_nearby = -1;
+    /// Sets chance that the actor gets the killing blow when a target demises for Thrill Seeker stacks
+    /// The default value of -1.0 adjusts to 1/20 for most sims, and 1/4 for DungeonSlice sims
+    double thrill_seeker_killing_blow_chance = -1.0;
+    /// Percentage of default duration for the damage portion of Wild Hunt Tactics to use.
+    double wild_hunt_tactics_duration_multiplier = 1.0;
+
+    /// Trinket/Legendary Options
     /// Number of Stone Legionnaires in party (Stone Legion Heraldry trinket)
     unsigned stone_legionnaires_in_party = 0;
     /// Number of Crimson Choir in party (Cabalist's Effigy trinket)
@@ -376,22 +387,15 @@ struct sim_t : private sc_thread_t
     std::string unbound_changeling_stat_type = "default";
     /// Chance player is getting overhealed by Gluttonous Spike proc.
     double gluttonous_spike_overheal_chance = 1.0;
-
     /// Anima Field Emitter buff duration distribution, defaults to full duration.
-    double anima_field_emitter_mean = std::numeric_limits<double>::max(),
-           anima_field_emitter_stddev = 0.0;
-
+    double anima_field_emitter_mean = std::numeric_limits<double>::max(), anima_field_emitter_stddev = 0.0;
     /// Retarget Shadowgrasp Totem if the use_item target demises after this many seconds
     timespan_t retarget_shadowgrasp_totem = 0_s;
     /// Disables the execute effect of Inscrutable Quantum Device since it is avoidable in game
     bool disable_iqd_execute = false;
     /// Sets the chance for the Inscrutable Quantum Device to give no stat buff outside Bloodlust
     double iqd_stat_fail_chance = 0.0;
-    /// Sets chance that the actor gets the killing blow when a target demises for Thrill Seeker stacks
-    /// The default value of -1.0 adjusts to 1/20 for most sims, and 1/4 for DungeonSlice sims
-    double thrill_seeker_killing_blow_chance = -1.0;
-    /// Percentage of default duration for the damage portion of Wild Hunt Tactics to use.
-    double wild_hunt_tactics_duration_multiplier = 1.0;
+
   } shadowlands_opts;
 
   // Auras and De-Buffs

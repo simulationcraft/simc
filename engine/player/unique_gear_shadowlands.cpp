@@ -2042,6 +2042,31 @@ void vitality_sacrifice( special_effect_t& /* effect */ )
 }
 }  // namespace items
 
+namespace set_bonus
+{
+void penance_brand( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<proc_spell_t>( "penance_brand", effect );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void one_with_shadows( special_effect_t& effect )
+{
+  if ( !effect.player->sim->shadowlands_opts.outdoors )
+    return;
+
+  // There is no buff in-game, but we create one here just for readability
+  auto buff = buff_t::find( effect.player, "one_with_shadows " );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "one_with_shadows", effect.driver() )
+      ->add_stat( STAT_STR_AGI_INT, effect.driver()->effectN( 1 ).average( effect.player ) );
+  }
+
+  effect.player->register_on_arise_callback( effect.player, [ buff ]() { buff->trigger(); } );
+}
+}  // namespace set_bonus
+
 void register_hotfixes()
 {
 }
@@ -2121,6 +2146,10 @@ void register_special_effects()
     unique_gear::register_special_effect( 329028, items::DISABLED_EFFECT ); // Light-Infused Armor shield
     unique_gear::register_special_effect( 333885, items::DISABLED_EFFECT ); // Darkmoon Deck: Putrescence shuffler
     unique_gear::register_special_effect( 329446, items::DISABLED_EFFECT ); // Darkmoon Deck: Voracity shuffler
+
+    // Set Bonuses
+    unique_gear::register_special_effect( 345709, set_bonus::penance_brand );     // Venthyr 5pc
+    unique_gear::register_special_effect( 345737, set_bonus::one_with_shadows );  // Venthyr 8pc
 }
 
 void register_target_data_initializers( sim_t& sim )

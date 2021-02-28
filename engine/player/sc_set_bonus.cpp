@@ -268,12 +268,13 @@ void format_to( const set_bonus_t& sb, fmt::format_context::iterator out )
         if ( data.overridden >= 1 ||
            ( data.overridden == -1 && sb.set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus->bonus ) )
         {
-          fmt::format_to( out, "{}{{ {}, {}, {}, {} piece bonus {} }}",
+          fmt::format_to( out, "{}{{ {}, {}, {}, {} piece bonus ({}) {} }}",
               i > 0 ? ", " : "",
               data.bonus->set_name,
               data.bonus->set_opt_name,
               util::specialization_string( sb.actor->specialization() ),
               data.bonus->bonus,
+              data.bonus->spell_id,
               ( data.overridden >= 1 ) ? " (overridden)" : "");
           ++i;
         }
