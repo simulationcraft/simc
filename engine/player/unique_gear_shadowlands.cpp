@@ -2044,6 +2044,44 @@ void vitality_sacrifice( special_effect_t& /* effect */ )
 
 namespace set_bonus
 {
+void serenity_blessing( special_effect_t& effect )
+{
+  // NYI
+}
+
+// id=345666 driver
+// id=345667 damage spell, always and procs off damage abilities
+// id=345668 heal spell, NYI
+void aspirants_touch( special_effect_t& effect )
+{
+  struct aspirants_touch_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    action_t* heal;
+
+    aspirants_touch_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        damage( create_proc_action<generic_proc_t>( "aspirants_touch_damage", e, "aspirants_touch_damage", 345667 ) ),
+        heal( create_proc_action<generic_proc_t>( "aspirants_touch_heal", e, "aspirants_touch_heal", 345668 ) )
+    {}
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      switch ( s->proc_type() )
+      {
+        case PROC1_PERIODIC_HEAL:
+        case PROC1_MAGIC_HEAL:
+        case PROC1_NONE_HEAL: proc_action = heal; break;
+        default: proc_action = damage; break;
+      }
+
+      dbc_proc_callback_t::execute( a, s );
+    }
+  };
+
+  new aspirants_touch_cb_t( effect );
+}
+
 void penance_brand( special_effect_t& effect )
 {
   effect.execute_action = create_proc_action<proc_spell_t>( "penance_brand", effect );
@@ -2148,8 +2186,10 @@ void register_special_effects()
     unique_gear::register_special_effect( 329446, items::DISABLED_EFFECT ); // Darkmoon Deck: Voracity shuffler
 
     // Set Bonuses
-    unique_gear::register_special_effect( 345709, set_bonus::penance_brand );     // Venthyr 5pc
-    unique_gear::register_special_effect( 345737, set_bonus::one_with_shadows );  // Venthyr 8pc
+    unique_gear::register_special_effect( 345615, set_bonus::serenity_blessing );  // kyrian 5pc
+    unique_gear::register_special_effect( 345666, set_bonus::aspirants_touch );    // kyrian 8pc
+    unique_gear::register_special_effect( 345709, set_bonus::penance_brand );      // Venthyr 5pc
+    unique_gear::register_special_effect( 345737, set_bonus::one_with_shadows );   // Venthyr 8pc
 }
 
 void register_target_data_initializers( sim_t& sim )

@@ -3238,7 +3238,27 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'dread_sentinels_ebony_battleplate',
             'bonuses': [ 1483 ],
             'tier'   : 26
-        }
+        },
+        {
+            'name'   : 'vestments_of_the_selfless',
+            'bonuses': [ 1459 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'garb_of_the_selfless',
+            'bonuses': [ 1466 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'chain_of_the_selfless',
+            'bonuses': [ 1467 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'vestments_of_the_selfless',
+            'bonuses': [ 1468 ],
+            'tier'   : 26
+        },
     ]
 
     @staticmethod
