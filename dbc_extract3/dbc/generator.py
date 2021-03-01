@@ -3259,6 +3259,26 @@ class SetBonusListGenerator(DataGenerator):
             'bonuses': [ 1468 ],
             'tier'   : 26
         },
+        {
+            'name'   : 'faewoven_regalia',
+            'bonuses': [ 1461 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'oakheart_raiment',
+            'bonuses': [ 1478 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'runewardens_guise',
+            'bonuses': [ 1479 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'queensguard_warbark',
+            'bonuses': [ 1480 ],
+            'tier'   : 26
+        }
     ]
 
     @staticmethod

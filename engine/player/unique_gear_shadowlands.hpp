@@ -67,10 +67,12 @@ void vitality_sacrifice( special_effect_t& );
 namespace set_bonus
 {
 // Covenant Sets
-void serenity_blessing( special_effect_t& );  // Kyrian 5pc
-void aspirants_touch( special_effect_t& );    // Kyrian 8pc
-void penance_brand( special_effect_t& );      // Venthyr 5pc
-void one_with_shadows( special_effect_t& );   // Venthyr 8pc
+void serenity_blessing( special_effect_t& );    // Kyrian 5pc
+void aspirants_touch( special_effect_t& );      // Kyrian 8pc
+void fae_swiftness( special_effect_t& );        // Night Fae 5pc
+void guardian_of_the_fae( special_effect_t& );  // Night Fae 8pc
+void penance_brand( special_effect_t& );        // Venthyr 5pc
+void one_with_shadows( special_effect_t& );     // Venthyr 8pc
 }  // namespace set_bonus
 
 void register_hotfixes();

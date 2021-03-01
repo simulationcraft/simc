@@ -813,7 +813,7 @@ enum set_bonus_e
  * @brief Type safe tier enum.
  *
  * MUST correspond to the ordering in
- * dbc_extract/dbc/generator.py SetBonusGenerator::set_bonus_map
+ * dbc_extract/dbc/generator.py SetBonusListGenerator::set_bonus_map
  */
 enum set_bonus_type_e
 {
@@ -838,6 +838,10 @@ enum set_bonus_type_e
   T26_KYRIAN_LEATHER,
   T26_KYRIAN_MAIL,
   T26_KYRIAN_PLATE,
+  T26_NIGHT_FAE_CLOTH,
+  T26_NIGHT_FAE_LEATHER,
+  T26_NIGHT_FAE_MAIL,
+  T26_NIGHT_FAE_PLATE,
 
   SET_BONUS_MAX
 };

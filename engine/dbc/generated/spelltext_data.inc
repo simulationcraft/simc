@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.37474
-static const std::array<spelltext_data_t, 15106> __spelltext_data { {
+static const std::array<spelltext_data_t, 15111> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15001,6 +15001,7 @@ static const std::array<spelltext_data_t, 15106> __spelltext_data { {
   { 345668, "$@spelldesc345666\r\n", 0, 0 },
   { 345669, "Snap the gauntlet's fingers, instantly destroying half the critters within 40 yards.", 0, 0 },
   { 345675, "Reduce the effectiveness of crowd controlling effects by $s2%. Successfully applying a loss of control effect to an enemy, interrupting an enemy, or dispelling any target will increase all your secondary stats by $339463s1 for $339463d. This effect cannot occur more than once every 30 seconds.", 0, 0 },
+  { 345694, "Soulshape's duration is increased by ${$s1/1000} sec and Flicker grants a short burst of speed while in outdoor Shadowland zones.", 0, 0 },
   { 345695, "Bind a spectral essence to an enemy for $d, causing allied attacks to heal for $s2% of damage dealt, up to $s1 total healing.\r\n\r\nWhen the essence expires or is removed early, the remaining healing bursts, healing up to $s3 allies within $345704a1 yds.", "Attacks heal for $s2% of damage dealt, with $w1 healing remaining.\r\n\r\nIf the essence expires or is removed early, the remaining healing is split between $s3 allies within $345704a1 yds.", 0 },
   { 345697, "$@spelldesc345698", 0, 0 },
   { 345698, "Your abilities have a very high chance to lash out with a Hateful Strike, dealing $s2 Physical damage to an enemy and healing you for $s1. These effects are increased by ${($s4*100)-100}% while you are below $s3% health.", 0, 0 },
@@ -15012,6 +15013,10 @@ static const std::array<spelltext_data_t, 15106> __spelltext_data { {
   { 345737, "While Door of Shadows is off cooldown your $pri is increased by $s3 and its range is increased by $s2 while in outdoor Shadowland zones.\r\n", 0, 0 },
   { 345739, "Conjure a Spectral Scythe, dealing $345877s1 Shadow damage to your target and $345877s2 Shadow damage in a $345963A1 yd cone to enemies behind your target.", 0, 0 },
   { 345753, "Deploy a stretcher to carry a wounded ally in comfort.", 0, 0 },
+  { 345769, "Your spells and abilities have a low chance to summon a Fae Guardian to protect you for $345771d, increasing your $pri by $s2 while alive and periodically healing $345772s2 nearby allies for $s1 health. \r\n", 0, 0 },
+  { 345771, "$@spelldesc345769", 0, 0 },
+  { 345772, "$@spelldesc345769", 0, 0 },
+  { 345773, "$@spelldesc345769", "$pri increased by $w1.", 0 },
   { 345780, "Peer into the glass.", 0, 0 },
   { 345799, "Place a Soothing Vesper at the desired location.", 0, 0 },
   { 345801, "Draw out a piece of the target's soul, decreasing their movement speed by $s1% until the soul reaches you. The soul instantly heals you for $345806s1, and grants you up to ${$345807s1+$345807s2} Critical Strike for $345805d. You gain more Critical Strike from lower health targets.", "Movement speed reduced by $s1%.", 0 },
