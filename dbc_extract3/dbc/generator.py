@@ -3158,7 +3158,7 @@ class SetBonusListGenerator(DataGenerator):
     # NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
     # ====================================================================
     # The ordering of this array _MUST_ match the ordering of
-    # "set_bonus_type_e" enumeration in simulationcraft.hpp or very bad
+    # "set_bonus_type_e" enumeration in sc_enums.hpp or very bad
     # things will happen.
     # ====================================================================
     # NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
@@ -3218,6 +3218,66 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'titanic_empowerment',
             'bonuses': [ 1452 ],
             'tier'   : 24
+        },
+        {
+            'name'   : 'soulbreakers_ebony_vestments',
+            'bonuses': [ 1462 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'ebony_death_shroud_armor',
+            'bonuses': [ 1481 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'fearstalkers_ebony_battlegear',
+            'bonuses': [ 1482 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'dread_sentinels_ebony_battleplate',
+            'bonuses': [ 1483 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'vestments_of_the_selfless',
+            'bonuses': [ 1459 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'garb_of_the_selfless',
+            'bonuses': [ 1466 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'chain_of_the_selfless',
+            'bonuses': [ 1467 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'vestments_of_the_selfless',
+            'bonuses': [ 1468 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'faewoven_regalia',
+            'bonuses': [ 1461 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'oakheart_raiment',
+            'bonuses': [ 1478 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'runewardens_guise',
+            'bonuses': [ 1479 ],
+            'tier'   : 26
+        },
+        {
+            'name'   : 'queensguard_warbark',
+            'bonuses': [ 1480 ],
+            'tier'   : 26
         }
     ]
 

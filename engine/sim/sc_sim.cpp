@@ -3691,97 +3691,52 @@ void sim_t::create_options()
   } ) );
 
   add_option( opt_uint( "bfa.jes_howler_allies", bfa_opts.jes_howler_allies, 0, 4 ) );
-  add_option( opt_float( "bfa.secrets_of_the_deep_chance",
-        bfa_opts.secrets_of_the_deep_chance, 0, 1 ) );
-  add_option( opt_float( "bfa.secrets_of_the_deep_collect_chance",
-        bfa_opts.secrets_of_the_deep_collect_chance, 0, 1 ) );
-  add_option( opt_int( "bfa.initial_archive_of_the_titans_stacks",
-        bfa_opts.initial_archive_of_the_titans_stacks, 0, 20 ) );
-  add_option( opt_int( "bfa.reorigination_array_stacks",
-        bfa_opts.reorigination_array_stacks, 0, 10 ) );
-  add_option( opt_bool( "bfa.reorigination_array_ignore_scale_factors",
-        bfa_opts.reorigination_array_ignore_scale_factors ) );
-  add_option( opt_float( "bfa.seductive_power_pickup_chance",
-        bfa_opts.seductive_power_pickup_chance, 0.0, 1.0 ) );
-  add_option( opt_int( "bfa.initial_seductive_power_stacks",
-        bfa_opts.initial_seductive_power_stacks, 0, 5 ) );
-  add_option( opt_bool( "bfa.randomize_oscillation",
-        bfa_opts.randomize_oscillation ) );
-  add_option( opt_bool( "bfa.auto_oscillating_overload",
-        bfa_opts.auto_oscillating_overload ) );
-  add_option( opt_bool( "bfa.zuldazar",
-        bfa_opts.zuldazar ) );
-  add_option( opt_timespan( "bfa.covenant_period",
-        bfa_opts.covenant_period, 1_ms, timespan_t::max() ) );
-  add_option( opt_float( "bfa.covenant_chance",
-        bfa_opts.covenant_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "bfa.incandescent_sliver_chance",
-        bfa_opts.incandescent_sliver_chance, 0.0, 1.0 ) );
-  add_option( opt_timespan( "bfa.fight_or_flight_period",
-        bfa_opts.fight_or_flight_period, 1_ms, timespan_t::max() ) );
-  add_option( opt_float( "bfa.fight_or_flight_chance",
-        bfa_opts.fight_or_flight_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "bfa.harbingers_inscrutable_will_silence_chance",
-        bfa_opts.harbingers_inscrutable_will_silence_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "bfa.harbingers_inscrutable_will_move_chance",
-        bfa_opts.harbingers_inscrutable_will_move_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "bfa.aberrant_tidesage_damage_chance",
-        bfa_opts.aberrant_tidesage_damage_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "bfa.fathuuls_floodguards_damage_chance",
-        bfa_opts.fathuuls_floodguards_damage_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "bfa.grips_of_forsaken_sanity_damage_chance",
-        bfa_opts.grips_of_forsaken_sanity_damage_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "bfa.stormglide_steps_take_damage_chance",
-        bfa_opts.stormglide_steps_take_damage_chance, 0.0, 1.0 ) );
-  add_option( opt_timespan( "bfa.lurkers_insidious_gift_duration",
-        bfa_opts.lurkers_insidious_gift_duration, 0_ms, timespan_t::max() ) );
-  add_option( opt_timespan( "bfa.abyssal_speakers_gauntlets_shield_duration",
-        bfa_opts.abyssal_speakers_gauntlets_shield_duration, 0_ms, timespan_t::max() ) );
-  add_option( opt_timespan( "bfa.trident_of_deep_ocean_duration",
-        bfa_opts.trident_of_deep_ocean_duration, 0_ms, timespan_t::max() ) );
-  add_option( opt_float( "bfa.legplates_of_unbound_anguish_chance",
-        bfa_opts.legplates_of_unbound_anguish_chance, 0.0, 1.0 ) );
-  add_option( opt_int( "bfa.loyal_to_the_end_allies",
-        bfa_opts.loyal_to_the_end_allies, 0, 4 ) );
-  add_option( opt_timespan( "bfa.loyal_to_the_end_ally_death_timer",
-        bfa_opts.loyal_to_the_end_ally_death_timer, 1_s, timespan_t::max() ) );
-  add_option( opt_float( "bfa.loyal_to_the_end_ally_death_chance",
-        bfa_opts.loyal_to_the_end_ally_death_chance, 0.0, 1.0 ) );
-  add_option( opt_int( "bfa.worldvein_allies",
-        bfa_opts.worldvein_allies, 0, 10 ) );
-  add_option( opt_float( "bfa.ripple_in_space_proc_chance",
-        bfa_opts.ripple_in_space_proc_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "bfa.blood_of_the_enemy_in_range",
-        bfa_opts.blood_of_the_enemy_in_range, 0.0, 1.0 ) );
-  add_option( opt_timespan( "bfa.undulating_tides_lockout_timer",
-        bfa_opts.undulating_tides_lockout_timer, 1_s, timespan_t::max() ) );
-  add_option( opt_float( "bfa.undulating_tides_lockout_chance",
-        bfa_opts.undulating_tides_lockout_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "bfa.leviathans_lure_base_rppm",
-        bfa_opts.leviathans_lure_base_rppm, 0.0, 2.0 ) );
-  add_option( opt_float( "bfa.aquipotent_nautilus_catch_chance",
-        bfa_opts.aquipotent_nautilus_catch_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "bfa.zaquls_portal_key_move_chance",
-        bfa_opts.zaquls_portal_key_move_chance, 0.0, 1.0 ) );
-  add_option( opt_timespan( "bfa.anuazshara_unleash_time",
-        bfa_opts.anuazshara_unleash_time, 1_s, timespan_t::max() ) );
-  add_option( opt_bool( "bfa.nazjatar",
-        bfa_opts.nazjatar ) );
-  add_option( opt_bool( "bfa.shiver_venom",
-        bfa_opts.shiver_venom ) );
-  add_option( opt_float( "bfa.storm_of_the_eternal_ratio",
-        bfa_opts.storm_of_the_eternal_ratio, 0.0, 1.0 ) );
-  add_option( opt_timespan( "bfa.font_of_power_precombat_channel",
-        bfa_opts.font_of_power_precombat_channel, 0_ms, 34_s ) );
-  add_option( opt_uint( "bfa.arcane_heart_hps", bfa_opts.arcane_heart_hps) );
-  add_option( opt_int( "bfa.subroutine_recalibration_precombat_stacks",
-    bfa_opts.subroutine_recalibration_precombat_stacks, 0, 11 ) );
-  add_option( opt_int( "bfa.subroutine_recalibration_dummy_casts",
-    bfa_opts.subroutine_recalibration_dummy_casts, 0, 11 ) );
-  add_option( opt_float( "bfa.voidtwisted_titanshard_percent_duration",
-    bfa_opts.voidtwisted_titanshard_percent_duration, 0.01, 1.0 ) );
-  add_option( opt_timespan( "bfa.surging_vitality_damage_taken_period", bfa_opts.surging_vitality_damage_taken_period,
-                            1_s, timespan_t::max() ) );
+  add_option( opt_float( "bfa.secrets_of_the_deep_chance", bfa_opts.secrets_of_the_deep_chance, 0, 1 ) );
+  add_option( opt_float( "bfa.secrets_of_the_deep_collect_chance", bfa_opts.secrets_of_the_deep_collect_chance, 0, 1 ) );
+  add_option( opt_int( "bfa.initial_archive_of_the_titans_stacks", bfa_opts.initial_archive_of_the_titans_stacks, 0, 20 ) );
+  add_option( opt_int( "bfa.reorigination_array_stacks", bfa_opts.reorigination_array_stacks, 0, 10 ) );
+  add_option( opt_bool( "bfa.reorigination_array_ignore_scale_factors", bfa_opts.reorigination_array_ignore_scale_factors ) );
+  add_option( opt_float( "bfa.seductive_power_pickup_chance", bfa_opts.seductive_power_pickup_chance, 0.0, 1.0 ) );
+  add_option( opt_int( "bfa.initial_seductive_power_stacks", bfa_opts.initial_seductive_power_stacks, 0, 5 ) );
+  add_option( opt_bool( "bfa.randomize_oscillation", bfa_opts.randomize_oscillation ) );
+  add_option( opt_bool( "bfa.auto_oscillating_overload", bfa_opts.auto_oscillating_overload ) );
+  add_option( opt_bool( "bfa.zuldazar", bfa_opts.zuldazar ) );
+  add_option( opt_timespan( "bfa.covenant_period", bfa_opts.covenant_period, 1_ms, timespan_t::max() ) );
+  add_option( opt_float( "bfa.covenant_chance", bfa_opts.covenant_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "bfa.incandescent_sliver_chance", bfa_opts.incandescent_sliver_chance, 0.0, 1.0 ) );
+  add_option( opt_timespan( "bfa.fight_or_flight_period", bfa_opts.fight_or_flight_period, 1_ms, timespan_t::max() ) );
+  add_option( opt_float( "bfa.fight_or_flight_chance", bfa_opts.fight_or_flight_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "bfa.harbingers_inscrutable_will_silence_chance", bfa_opts.harbingers_inscrutable_will_silence_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "bfa.harbingers_inscrutable_will_move_chance", bfa_opts.harbingers_inscrutable_will_move_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "bfa.aberrant_tidesage_damage_chance", bfa_opts.aberrant_tidesage_damage_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "bfa.fathuuls_floodguards_damage_chance", bfa_opts.fathuuls_floodguards_damage_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "bfa.grips_of_forsaken_sanity_damage_chance", bfa_opts.grips_of_forsaken_sanity_damage_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "bfa.stormglide_steps_take_damage_chance", bfa_opts.stormglide_steps_take_damage_chance, 0.0, 1.0 ) );
+  add_option( opt_timespan( "bfa.lurkers_insidious_gift_duration", bfa_opts.lurkers_insidious_gift_duration, 0_ms, timespan_t::max() ) );
+  add_option( opt_timespan( "bfa.abyssal_speakers_gauntlets_shield_duration", bfa_opts.abyssal_speakers_gauntlets_shield_duration, 0_ms, timespan_t::max() ) );
+  add_option( opt_timespan( "bfa.trident_of_deep_ocean_duration", bfa_opts.trident_of_deep_ocean_duration, 0_ms, timespan_t::max() ) );
+  add_option( opt_float( "bfa.legplates_of_unbound_anguish_chance", bfa_opts.legplates_of_unbound_anguish_chance, 0.0, 1.0 ) );
+  add_option( opt_int( "bfa.loyal_to_the_end_allies", bfa_opts.loyal_to_the_end_allies, 0, 4 ) );
+  add_option( opt_timespan( "bfa.loyal_to_the_end_ally_death_timer", bfa_opts.loyal_to_the_end_ally_death_timer, 1_s, timespan_t::max() ) );
+  add_option( opt_float( "bfa.loyal_to_the_end_ally_death_chance", bfa_opts.loyal_to_the_end_ally_death_chance, 0.0, 1.0 ) );
+  add_option( opt_int( "bfa.worldvein_allies", bfa_opts.worldvein_allies, 0, 10 ) );
+  add_option( opt_float( "bfa.ripple_in_space_proc_chance", bfa_opts.ripple_in_space_proc_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "bfa.blood_of_the_enemy_in_range", bfa_opts.blood_of_the_enemy_in_range, 0.0, 1.0 ) );
+  add_option( opt_timespan( "bfa.undulating_tides_lockout_timer", bfa_opts.undulating_tides_lockout_timer, 1_s, timespan_t::max() ) );
+  add_option( opt_float( "bfa.undulating_tides_lockout_chance", bfa_opts.undulating_tides_lockout_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "bfa.leviathans_lure_base_rppm", bfa_opts.leviathans_lure_base_rppm, 0.0, 2.0 ) );
+  add_option( opt_float( "bfa.aquipotent_nautilus_catch_chance", bfa_opts.aquipotent_nautilus_catch_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "bfa.zaquls_portal_key_move_chance", bfa_opts.zaquls_portal_key_move_chance, 0.0, 1.0 ) );
+  add_option( opt_timespan( "bfa.anuazshara_unleash_time", bfa_opts.anuazshara_unleash_time, 1_s, timespan_t::max() ) );
+  add_option( opt_bool( "bfa.nazjatar", bfa_opts.nazjatar ) );
+  add_option( opt_bool( "bfa.shiver_venom", bfa_opts.shiver_venom ) );
+  add_option( opt_float( "bfa.storm_of_the_eternal_ratio", bfa_opts.storm_of_the_eternal_ratio, 0.0, 1.0 ) );
+  add_option( opt_timespan( "bfa.font_of_power_precombat_channel", bfa_opts.font_of_power_precombat_channel, 0_ms, 34_s ) );
+  add_option( opt_uint( "bfa.arcane_heart_hps", bfa_opts.arcane_heart_hps ) );
+  add_option( opt_int( "bfa.subroutine_recalibration_precombat_stacks", bfa_opts.subroutine_recalibration_precombat_stacks, 0, 11 ) );
+  add_option( opt_int( "bfa.subroutine_recalibration_dummy_casts", bfa_opts.subroutine_recalibration_dummy_casts, 0, 11 ) );
+  add_option( opt_float( "bfa.voidtwisted_titanshard_percent_duration", bfa_opts.voidtwisted_titanshard_percent_duration, 0.01, 1.0 ) );
+  add_option( opt_timespan( "bfa.surging_vitality_damage_taken_period", bfa_opts.surging_vitality_damage_taken_period, 1_s, timespan_t::max() ) );
   add_option( opt_uint( "bfa.manifesto_allies_start", bfa_opts.manifesto_allies_start, 0, 12 ) );
   add_option( opt_uint( "bfa.manifesto_allies_end", bfa_opts.manifesto_allies_end, 0, 5 ) );
   add_option( opt_obsoleted( "bfa.echoing_void_collapse_chance" ) );
@@ -3790,43 +3745,30 @@ void sim_t::create_options()
   add_option( opt_float( "bfa.whispered_truths_offensive_chance", bfa_opts.whispered_truths_offensive_chance, 0.0, 1.0 ) );
   add_option( opt_bool( "bfa.nyalotha", bfa_opts.nyalotha ) );
   add_option( opt_obsoleted( "bfa.infinite_stars_miss_chance" ) );
-
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );
 
   // Shadowlands
-  add_option( opt_float( "shadowlands.combat_meditation_extend_chance",
-    shadowlands_opts.combat_meditation_extend_chance, 0.0, 1.0 ) );
-  add_option( opt_uint( "shadowlands.pointed_courage_nearby",
-    shadowlands_opts.pointed_courage_nearby, 0, 5 ) );
-  add_option( opt_int( "shadowlands.lead_by_example_nearby",
-    shadowlands_opts.lead_by_example_nearby, 0, 4 ) );
-  add_option( opt_uint( "shadowlands.stone_legionnaires_in_party",
-    shadowlands_opts.stone_legionnaires_in_party, 0, 4 ) );
-  add_option( opt_uint( "shadowlands.crimson_choir_in_party",
-    shadowlands_opts.crimson_choir_in_party, 0, 4 ) );
-  add_option( opt_timespan( "shadowlands.memory_of_past_sins_precast",
-    shadowlands_opts.memory_of_past_sins_precast, 0_s, 30_s ) );
-  add_option( opt_uint( "shadowlands.shattered_psyche_allies",
-    shadowlands_opts.shattered_psyche_allies, 0, 4 ) );
-  add_option( opt_float( "shadowlands.judgment_of_the_arbiter_arc_chance",
-    shadowlands_opts.judgment_of_the_arbiter_arc_chance, 0.0, 1.0 ) );
+  add_option( opt_bool( "shadowlands.outdoors", shadowlands_opts.outdoors ) );
+  add_option( opt_float( "shadowlands.combat_meditation_extend_chance", shadowlands_opts.combat_meditation_extend_chance, 0.0, 1.0 ) );
+  add_option( opt_uint( "shadowlands.pointed_courage_nearby", shadowlands_opts.pointed_courage_nearby, 0, 5 ) );
+  add_option( opt_int( "shadowlands.lead_by_example_nearby", shadowlands_opts.lead_by_example_nearby, 0, 4 ) );
+  add_option( opt_float( "shadowlands.thrill_seeker_killing_blow_chance", shadowlands_opts.thrill_seeker_killing_blow_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "shadowlands.wild_hunt_tactics_duration_multiplier", shadowlands_opts.wild_hunt_tactics_duration_multiplier ) );
+  add_option( opt_uint( "shadowlands.stone_legionnaires_in_party", shadowlands_opts.stone_legionnaires_in_party, 0, 4 ) );
+  add_option( opt_uint( "shadowlands.crimson_choir_in_party", shadowlands_opts.crimson_choir_in_party, 0, 4 ) );
+  add_option( opt_timespan( "shadowlands.memory_of_past_sins_precast", shadowlands_opts.memory_of_past_sins_precast, 0_s, 30_s ) );
+  add_option( opt_uint( "shadowlands.shattered_psyche_allies", shadowlands_opts.shattered_psyche_allies, 0, 4 ) );
+  add_option( opt_float( "shadowlands.judgment_of_the_arbiter_arc_chance", shadowlands_opts.judgment_of_the_arbiter_arc_chance, 0.0, 1.0 ) );
   add_option( opt_string( "shadowlands.volatile_solvent_type", shadowlands_opts.volatile_solvent_type ) );
   add_option( opt_bool( "shadowlands.disable_soul_igniter_second_use", shadowlands_opts.disable_soul_igniter_second_use ) );
   add_option( opt_string( "shadowlands.unbound_changeling_stat_type", shadowlands_opts.unbound_changeling_stat_type ) );
-  add_option( opt_float( "shadowlands.anima_field_emitter_mean",
-    shadowlands_opts.anima_field_emitter_mean, 0.0, std::numeric_limits<double>::max() ) );
-  add_option( opt_float( "shadowlands.anima_field_emitter_stddev",
-    shadowlands_opts.anima_field_emitter_stddev, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_float( "shadowlands.anima_field_emitter_mean", shadowlands_opts.anima_field_emitter_mean, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_float( "shadowlands.anima_field_emitter_stddev", shadowlands_opts.anima_field_emitter_stddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_timespan( "shadowlands.retarget_shadowgrasp_totem", shadowlands_opts.retarget_shadowgrasp_totem ) );
   add_option( opt_bool( "shadowlands.disable_iqd_execute", shadowlands_opts.disable_iqd_execute ) );
-  add_option( opt_float( "shadowlands.gluttonous_spike_overheal_chance",
-    shadowlands_opts.gluttonous_spike_overheal_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "shadowlands.iqd_stat_fail_chance",
-    shadowlands_opts.iqd_stat_fail_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "shadowlands.thrill_seeker_killing_blow_chance",
-                         shadowlands_opts.thrill_seeker_killing_blow_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "shadowlands.wild_hunt_tactics_duration_multiplier", shadowlands_opts.wild_hunt_tactics_duration_multiplier ) );
+  add_option( opt_float( "shadowlands.gluttonous_spike_overheal_chance", shadowlands_opts.gluttonous_spike_overheal_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "shadowlands.iqd_stat_fail_chance", shadowlands_opts.iqd_stat_fail_chance, 0.0, 1.0 ) );
 }
 
 // sim_t::parse_option ======================================================
