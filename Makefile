@@ -1,5 +1,5 @@
 
-OPTS = -mtune=pentium-m -malign-double -msse -msse2 -mfpmath=sse -maccumulate-outgoing-args -O3
+OPTS = -malign-double -msse -msse2 -mfpmath=sse -maccumulate-outgoing-args -O3
 
 SRC =\
 	sc_action.cpp		\
