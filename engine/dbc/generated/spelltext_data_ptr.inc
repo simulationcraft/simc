@@ -1,4 +1,4 @@
-// Spell text, wow build 9.0.5.37705
+// Spell text, wow build 9.0.5.37774
 static const std::array<spelltext_data_t, 15112> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -1641,7 +1641,7 @@ static const std::array<spelltext_data_t, 15112> __ptr_spelltext_data { {
   {  50285, "The Tallstrider kicks up a cloud of dust towards the target, slowing movement by $s1% for $d.", "Movement slowed by $s1%.", "Special Ability" },
   {  50286, "$@spelldesc48505", 0, 0 },
   {  50322, "$@spelldesc61336", "Damage taken reduced by $w1%.", 0 },
-  {  50334, "Go berserk for $d, reducing the cooldowns of Mangle, Thrash, Growl, and Frenzied Regeneration by $s1% and the cost of Ironfur by $s3%.$?a339062[\r\n\r\nGrants immunity to effects that cause loss of control of your character.][]", "Cooldowns of Mangle, Thrash, Growl, and Frenzied Regeneration are reduced by $w1%. Ironfur cost reduced by $w3%.$?a339062[\r\n\r\nImmune to effects that cause loss of control of your character.][]", 0 },
+  {  50334, "Go berserk for $d, reducing the cooldowns of Mangle, Thrash, Growl, and Frenzied Regeneration by $s1% and the cost of Ironfur by $s3%.$?a339062[\r\n\r\nGrants immunity to effects that cause loss of control of your character.][]", "Cooldowns of Mangle, Thrash, Growl, and Frenzied Regeneration are reduced by $w1%. Ironfur cost reduced by $w3%.$?$w5>0[\r\n\r\nImmune to effects that cause loss of control of your character.][]", 0 },
   {  50401, "$@spelldesc53343", 0, 0 },
   {  50433, "Snap at the target's feet, reducing movement speed by $s1% for $d.", "Movement speed reduced by $s1%.", "Special Ability" },
   {  50464, "Heals a friendly target for $s1.  Receives triple bonus from $@spellname77495.", 0, 0 },
@@ -3061,7 +3061,7 @@ static const std::array<spelltext_data_t, 15112> __ptr_spelltext_data { {
   { 102441, "Increases Agility by $s1 for $d.", "Increases Agility by $s1.", 0 },
   { 102543, "An improved Cat Form that grants the benefits of Berserk, reduces the Energy cost of all Cat Form abilities by $s2%, and allows the use of Prowl once while in combat.\r\n\r\nLasts $d. You may shapeshift in and out of this improved Cat Form for its duration.", "Rake and Shred deal damage as though you were stealthed.\r\n\r\nFinishing moves have a $w1% chance per combo point spent to refund $343216s1 combo $lpoint:points;.\r\n\r\nEnergy costs reduced by $w2%.", "Talent, Shapeshift" },
   { 102547, "Allows the Druid to vanish from sight, entering an improved stealth mode.  Lasts until cancelled.", "Stealthed.", 0 },
-  { 102558, "An improved Bear Form that grants the benefits of Berserk, causes Mangle to hit up to $s6 targets, and increases maximum health by $s5%.$?a339062[\r\n\r\nGrants immunity to effects that cause loss of control of your character.][]\r\n\r\nLasts $d. You may freely shapeshift in and out of this improved Bear Form for its duration.", "Cooldowns of Mangle, Thrash, Growl, and Frenzied Regeneration are reduced by $w1%.\r\nIronfur cost reduced by $w3%.\r\nMangle hits up to $w6 targets.\r\nHealth increased by $w5%.$?a339062[\r\n\r\nImmune to effects that cause loss of control of your character.][]", "Talent, Shapeshift" },
+  { 102558, "An improved Bear Form that grants the benefits of Berserk, causes Mangle to hit up to $s6 targets, and increases maximum health by $s5%.$?a339062[\r\n\r\nGrants immunity to effects that cause loss of control of your character.][]\r\n\r\nLasts $d. You may freely shapeshift in and out of this improved Bear Form for its duration.", "Cooldowns of Mangle, Thrash, Growl, and Frenzied Regeneration are reduced by $w1%.\r\nIronfur cost reduced by $w3%.\r\nMangle hits up to $w6 targets.\r\nHealth increased by $w5%.$?$w7>0[\r\n\r\nImmune to effects that cause loss of control of your character.][]", "Talent, Shapeshift" },
   { 102560, "An improved Moonkin Form that grants the benefits of Celestial Alignment, and $s2% critical strike chance.\r\n\r\nLasts $d. You may shapeshift in and out of this improved Moonkin Form for its duration.", "Both Eclipses active. Haste increased by $w1% and critical strike chance by $w2%.", "Talent, Shapeshift" },
   { 102658, "Your melee and ranged attacks have a chance to grant $102659s1 Haste for $102659d.", 0, 0 },
   { 102659, "$@spelldesc102658", "Haste increased by $s1.", 0 },
@@ -15114,11 +15114,11 @@ static const std::array<spelltext_data_t, 15112> __ptr_spelltext_data { {
   { 351140, "$@spelldesc153561", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.0.5.37705
+// spelltext hotfix entries, wow build 9.0.5.37774
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.0.5.37705
+// Spell description variables, wow build 9.0.5.37774
 static const std::array<spelldesc_vars_data_t, 296> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15418,7 +15418,7 @@ static const std::array<spelldesc_vars_data_t, 296> __ptr_spelldesc_vars_data { 
   {  345549, "$phylacteryhealth=$s2*15" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.0.5.37705
+// spelldesc_vars hotfix entries, wow build 9.0.5.37774
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

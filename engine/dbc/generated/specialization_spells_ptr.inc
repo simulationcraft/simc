@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 9.0.5.37705
-static const std::array<specialization_spell_entry_t, 926> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 9.0.5.37774
+static const std::array<specialization_spell_entry_t, 925> __ptr_specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -862,7 +862,6 @@ static const std::array<specialization_spell_entry_t, 926> __ptr_specialization_
   { 12,  577, 196718,      0, "Darkness"                          , 0 },
   { 12,  577, 197125,      0, "Chaos Strike"                      , 0 },
   { 12,  577, 198013,      0, "Eye Beam"                          , 0 },
-  { 12,  577, 198589,      0, "Blur"                              , 0 },
   { 12,  577, 198793, 344866, "Vengeful Retreat"                  , 0 },
   { 12,  577, 212612,      0, "Havoc Demon Hunter"                , 0 },
   { 12,  577, 320377,      0, "Immolation Aura"                   , "Rank 3" },
@@ -899,7 +898,7 @@ static const std::array<specialization_spell_entry_t, 926> __ptr_specialization_
   { 12,  581, 204254, 178940, "Shattered Souls"                   , 0 },
   { 12,  581, 204596,      0, "Sigil of Flame"                    , 0 },
   { 12,  581, 207197,      0, "Riposte"                           , 0 },
-  { 12,  581, 207684,      0, "Sigil of Misery"                   , 0 },
+  { 12,  581, 207684, 198589, "Sigil of Misery"                   , 0 },
   { 12,  581, 212084,      0, "Fel Devastation"                   , 0 },
   { 12,  581, 212611,      0, "Demon Hunter"                      , 0 },
   { 12,  581, 212613,      0, "Vengeance Demon Hunter"            , 0 },

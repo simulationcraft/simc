@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, git build shadowlands 87037ac8b9)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -11314,6 +11314,7 @@ Description      : $@spelldesc337343
 Tooltip          : Healing done by your Enveloping Mists and Vivify increased by $w1%, and mana cost reduced by $w2%.
 
 Name             : Xuen's Battlegear (id=337481) [Spell Family (53), Passive] 
+Class            : Monk
 School           : Physical
 Spell Type       : None
 Req. Max Level   : 60
@@ -11339,6 +11340,27 @@ Effects          :
 Description      : Rising Sun Kick critical strikes reduce the cooldown of Fists of Fury by ${$m2/1000}.1 sec.
 
 When Fists of Fury ends, the critical strike chance of Rising Sun Kick is increased by $337482m1% for $337482d.
+
+Name             : Pressure Point (id=337482) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Duration         : 5 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=835536)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
+                   Family Flags: 39
+Description      : $@spelldesc337481
+Tooltip          : Rising Sun Kick critical strike chance increased by $w1%.
 
 Name             : Jade Ignition (id=337483) [Spell Family (53), Passive] 
 School           : Physical
