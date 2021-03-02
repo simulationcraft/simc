@@ -2683,7 +2683,10 @@ struct envenom_t : public rogue_attack_t
     if ( p()->spec.cut_to_the_chase->ok() && p()->buffs.slice_and_dice->check() )
     {
       double extend_duration = p()->spec.cut_to_the_chase->effectN( 1 ).base_value() * cast_state( state )->get_combo_points();
-      p()->buffs.slice_and_dice->extend_duration( p(), timespan_t::from_seconds( extend_duration ) );
+      // Max duration it extends to is the maximum possible full pandemic duration, i.e. around 46s without and 54s with Deeper Stratagem.
+      timespan_t max_duration = ( p()->consume_cp_max() + 1 ) * p()->buffs.slice_and_dice->data().duration() * 1.3;
+      timespan_t effective_extend = std::min( timespan_t::from_seconds( extend_duration ), max_duration - p()->buffs.slice_and_dice->remains() );
+      p()->buffs.slice_and_dice->extend_duration( p(), effective_extend );
     }
   }
 };
@@ -3197,6 +3200,21 @@ struct mutilate_t : public rogue_attack_t
       {
         dual = true;
       }
+
+      void init() override
+      {
+        residual_action::residual_periodic_action_t<spell_t>::init();
+
+        // Hack to force it to mitigate the damage with armor.
+        // Bug, see https://github.com/SimCMinMax/WoW-BugTracker/issues/812
+        if ( player->bugs )
+          snapshot_flags |= STATE_TGT_ARMOR;
+      }
+
+      // Hack to force it to mitigate the damage with armor.
+      // Bug, see https://github.com/SimCMinMax/WoW-BugTracker/issues/812
+      void assess_damage( result_amount_type t, action_state_t* s ) override
+      { residual_action::residual_periodic_action_t<spell_t>::assess_damage( player->bugs ? result_amount_type::DMG_DIRECT : t, s ); }
     };
 
     doomblade_t* doomblade_dot;
@@ -6639,7 +6657,7 @@ void rogue_t::init_action_list()
     cds->add_action( "sepsis,if=!stealthed.rogue&(cooldown.vendetta.remains<1&target.time_to_die>10|debuff.vendetta.up|fight_remains<10)", "Sync Sepsis with Vendetta as long as we won't lose a cast over the fight duration, but prefer targets that will live at least 10s" );
     cds->add_action( "sepsis,if=!stealthed.rogue&(floor((fight_remains-10)%cooldown)>floor((fight_remains-10-cooldown.vendetta.remains*variable.vendetta_cdr)%cooldown))" );
     cds->add_action( "variable,name=vendetta_nightstalker_condition,value=!talent.nightstalker.enabled|!talent.exsanguinate.enabled|cooldown.exsanguinate.remains<5-2*talent.deeper_stratagem.enabled", "Sync Vendetta window with Nightstalker+Exsanguinate if applicable" );
-    cds->add_action( "variable,name=vendetta_covenant_condition,if=covenant.kyrian|covenant.necrolord,value=1", "Sync Vendetta with Flagellation and Sepsis as long as we won't lose a cast over the fight duration" );
+    cds->add_action( "variable,name=vendetta_covenant_condition,if=covenant.kyrian|covenant.necrolord|covenant.none,value=1", "Sync Vendetta with Flagellation and Sepsis as long as we won't lose a cast over the fight duration" );
     cds->add_action( "variable,name=vendetta_covenant_condition,if=covenant.venthyr,value=floor((fight_remains-20)%(120*variable.vendetta_cdr))>floor((fight_remains-20-cooldown.flagellation.remains)%(120*variable.vendetta_cdr))|buff.flagellation_buff.up|debuff.flagellation.up|fight_remains<20" );
     cds->add_action( "variable,name=vendetta_covenant_condition,if=covenant.night_fae,value=floor((fight_remains-20)%(120*variable.vendetta_cdr))>floor((fight_remains-20-cooldown.sepsis.remains)%(120*variable.vendetta_cdr))|dot.sepsis.ticking|fight_remains<20" );
     cds->add_action( this, "Vendetta", "if=!stealthed.rogue&dot.rupture.ticking&!debuff.vendetta.up&variable.vendetta_nightstalker_condition&variable.vendetta_covenant_condition" );
