@@ -13,15 +13,12 @@
 #include "gear_stats.hpp"
 #include "rating.hpp"
 #include "weapon.hpp"
-#include "runeforge_data.hpp"
-#include "effect_callbacks.hpp"
 #include "util/plot_data.hpp"
 #include "player_collected_data.hpp"
 #include "player_processed_report_information.hpp"
 #include "player_stat_cache.hpp"
 #include "scaling_metric_data.hpp"
 #include "util/cache.hpp"
-#include "dbc/item_database.hpp"
 #include "assessor.hpp"
 #include <map>
 #include <set>

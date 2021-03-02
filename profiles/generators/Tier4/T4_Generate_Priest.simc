@@ -1,0 +1,33 @@
+priest="T4_Priest_Shadow"
+level=70
+talents=0502300110000000000000000000000000000000000503250510250103051551
+covenant=kyrian
+soulbind=pelagos,combat_meditation/dissonant_echoes:7/haunting_apparitions:7
+
+default_actions=0
+
+actions.precombat=shadowform,if=!buff.shadowform.up
+actions.precombat+=/mind_blast
+
+actions=run_action_list,name=main
+
+actions.main=shadow_word_death
+actions.main+=/mind_blast
+actions.main+=/shadowfiend
+actions.main+=/shadow_word_pain,if=refreshable
+actions.main+=/vampiric_touch,if=refreshable
+actions.main+=/vampiric_embrace,if=refreshable
+actions.main+=/mind_flay,chain=1
+# Use SW:D as last resort if on the move
+actions.main+=/shadow_word_death
+# Use SW:P as last resort if on the move and SW:D is on CD
+actions.main+=/shadow_word_pain
+
+gear_stamina=296
+gear_intellect=196
+gear_spirit=18
+gear_spell_power=1230
+gear_spell_hit_rating=114
+gear_spell_crit_rating=86
+
+save=T4_Priest_Shadow.simc

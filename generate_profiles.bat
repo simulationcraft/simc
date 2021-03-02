@@ -6,18 +6,8 @@ goto exit
 
 :32
 cd "profiles"
-:: PreRaids doesn't match the typical pattern
-cd "PreRaids"
-echo Running PR_Generate.simc in %cd%
-"%~dp0simc.exe" PR_Generate.simc
-cd ..\
-:: DungeonSlice doesn't match the typical pattern
-:: cd "DungeonSlice"
-:: echo Running DS_Generate.simc in %cd%
-:: "%~dp0simc.exe" DS_Generate.simc
-:: cd ..\
 :: TierXX profiles generation
-for %%g in (26) do (
+for %%g in (4) do (
   cd Tier%%g
   echo Running T%%g_Generate.simc in %cd%
   "%~dp0simc.exe" T%%g_Generate.simc

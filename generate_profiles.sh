@@ -3,28 +3,8 @@ if [ ! -d "profiles" ]; then
   exit 0
 fi
 cd 'profiles'
-# PreRaids doesn't match the typical pattern
-PROFDIR='PreRaids'
-echo "---$PROFDIR---"
-if [ -d $PROFDIR ]; then
-  cd $PROFDIR/
-  ../../engine/simc "../generators/$PROFDIR/PR_Generate.simc"
-  cd ../
-else
-  echo 'Skipped PreRaids, directory not found.'
-fi
-# DungeonSlice doesn't match the typical pattern
-PROFDIR='DungeonSlice'
-echo "---$PROFDIR---"
-if [ -d $PROFDIR ]; then
-  cd $PROFDIR/
-  ../../engine/simc "../generators/$PROFDIR/DS_Generate.simc"
-  cd ../
-else
-  echo 'Skipped DungeonSlice, directory not found.'
-fi
 # TierXX profiles generation
-for tier in 26
+for tier in 4
 do
   PROFDIR="Tier$tier"
   echo "---$PROFDIR---"

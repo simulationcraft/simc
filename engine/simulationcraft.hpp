@@ -37,17 +37,11 @@
 
 #include "class_modules/class_module.hpp"
 
-#include "dbc/dbc.hpp"
-#include "dbc/item_database.hpp"
-#include "dbc/data_enums.hh"
-#include "dbc/data_definitions.hh"
-
 #include "item/special_effect.hpp"
 #include "item/item.hpp"
 #include "item/enchants.hpp"
 #include "item/item_targetdata_initializer.hpp"
 
-#include "player/azerite_data.hpp"
 #include "player/consumable.hpp"
 #include "player/sample_data_helper.hpp"
 #include "player/gear_stats.hpp"

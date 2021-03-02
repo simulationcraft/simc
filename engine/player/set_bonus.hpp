@@ -7,7 +7,6 @@
 
 #include "config.hpp"
 #include "sc_enums.hpp"
-#include "dbc/data_definitions.hh"
 #include "util/string_view.hpp"
 
 #include <memory>

@@ -7,8 +7,6 @@
 
 #include "config.hpp"
 
-#include "dbc/data_enums.hh"
-#include "dbc/specialization.hpp"
 #include "sc_enums.hpp"
 #include "util/timespan.hpp"
 #include "util/span.hpp"

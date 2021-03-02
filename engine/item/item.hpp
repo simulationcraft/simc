@@ -6,8 +6,6 @@
 #pragma once
 
 #include "config.hpp"
-#include "dbc/item_data.hpp"
-#include "dbc/item_effect.hpp"
 #include "player/gear_stats.hpp"
 #include "sc_enums.hpp"
 #include "util/timespan.hpp"

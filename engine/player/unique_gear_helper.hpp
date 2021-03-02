@@ -10,7 +10,6 @@
 #include "action/sc_action.hpp"
 #include "action/spell.hpp"
 #include "buff/sc_buff.hpp"
-#include "dbc/dbc.hpp"
 #include "player/wrapper_callback.hpp"
 #include "player/special_effect_db_item.hpp"
 #include "player/unique_gear.hpp"

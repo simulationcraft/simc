@@ -9,7 +9,6 @@
 #include "sc_enums.hpp"
 #include "util/timespan.hpp"
 #include "util/format.hpp"
-#include "dbc/spell_data.hpp"
 
 #include <string>
 #include <vector>

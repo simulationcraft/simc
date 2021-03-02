@@ -11,7 +11,6 @@
 #include "config.hpp"
 #include "util/generic.hpp"
 #include "sc_enums.hpp"
-#include "dbc/data_enums.hh"
 #include "sim/event.hpp"
 
 struct action_t;

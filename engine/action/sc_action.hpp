@@ -6,9 +6,7 @@
 #pragma once
 
 #include "config.hpp"
-#include "dbc/data_definitions.hh"
 #include "player/target_specific.hpp"
-#include "player/covenant.hpp"
 #include "sc_enums.hpp"
 #include "util/timespan.hpp"
 #include "util/generic.hpp"
