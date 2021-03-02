@@ -3208,7 +3208,7 @@ struct mutilate_t : public rogue_attack_t
         // Hack to force it to mitigate the damage with armor.
         // Bug, see https://github.com/SimCMinMax/WoW-BugTracker/issues/812
         if ( player->bugs )
-          snapshot_flags |= STATE_TGT_ARMOR;
+          snapshot_flags |= STATE_TARGET;
       }
 
       // Hack to force it to mitigate the damage with armor.
