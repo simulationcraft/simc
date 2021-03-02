@@ -24,8 +24,7 @@ namespace spells
 // ==========================================================================
 struct levitate_t final : public priest_spell_t
 {
-  levitate_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "levitate", p, p.find_class_spell( "Levitate" ) )
+  levitate_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "levitate", p )
   {
     parse_options( options_str );
     ignore_false_positive = true;
@@ -37,8 +36,7 @@ struct levitate_t final : public priest_spell_t
 // ==========================================================================
 struct power_word_fortitude_t final : public priest_spell_t
 {
-  power_word_fortitude_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "power_word_fortitude", p, p.find_class_spell( "Power Word: Fortitude" ) )
+  power_word_fortitude_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "power_word_fortitude", p )
   {
     parse_options( options_str );
     harmful               = false;
@@ -132,8 +130,7 @@ struct smite_t final : public priest_spell_t
 // ==========================================================================
 struct power_infusion_t final : public priest_spell_t
 {
-  power_infusion_t( priest_t& p, util::string_view options_str, util::string_view name )
-    : priest_spell_t( name, p, p.find_class_spell( "Power Infusion" ) )
+  power_infusion_t( priest_t& p, util::string_view options_str, util::string_view name ) : priest_spell_t( name, p )
   {
     parse_options( options_str );
     harmful = false;
@@ -205,8 +202,7 @@ public:
 // ==========================================================================
 struct summon_shadowfiend_t final : public summon_pet_t
 {
-  summon_shadowfiend_t( priest_t& p, util::string_view options_str )
-    : summon_pet_t( "shadowfiend", p )
+  summon_shadowfiend_t( priest_t& p, util::string_view options_str ) : summon_pet_t( "shadowfiend", p )
   {
     parse_options( options_str );
     harmful            = false;
@@ -226,7 +222,7 @@ struct power_word_shield_t final : public priest_absorb_t
   bool ignore_debuff;
 
   power_word_shield_t( priest_t& p, util::string_view options_str )
-    : priest_absorb_t( "power_word_shield", p, p.find_class_spell( "Power Word: Shield" ) ), ignore_debuff( false )
+    : priest_absorb_t( "power_word_shield", p ), ignore_debuff( false )
   {
     add_option( opt_bool( "ignore_debuff", ignore_debuff ) );
     parse_options( options_str );

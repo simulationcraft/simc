@@ -56,8 +56,8 @@ public:
 
   struct buffs_t
   {
-    propagate_const<buff_t*> shadow_weaving; // NYI
-    propagate_const<buff_t*> misery; // NYI
+    propagate_const<buff_t*> shadow_weaving;  // NYI
+    propagate_const<buff_t*> misery;          // NYI
   } buffs;
 
   priest_t& priest()
@@ -88,77 +88,77 @@ public:
   {
     // Talents
     // Discipline
-    propagate_const<buff_t*> inner_focus; // NYI
-    propagate_const<buff_t*> divine_spirit; // NYI
-    propagate_const<buff_t*> power_infusion; // NYI
+    propagate_const<buff_t*> inner_focus;     // NYI
+    propagate_const<buff_t*> divine_spirit;   // NYI
+    propagate_const<buff_t*> power_infusion;  // NYI
 
     // Holy
-    propagate_const<buff_t*> surge_of_light; // NYI
+    propagate_const<buff_t*> surge_of_light;  // NYI
 
     // Shadow
     propagate_const<buff_t*> shadowform;
     propagate_const<buff_t*> shadowform_state;  // Dummy buff to track whether player entered Shadowform initially
-    propagate_const<buff_t*> spirit_tap; // NYI
-    
+    propagate_const<buff_t*> spirit_tap;        // NYI
+
   } buffs;
 
   // Talents
   struct
   {
     // Discipline
-    const spell_data_t* wand_specialization; // NYI
-    const spell_data_t* improved_power_word_fortitude; // NYI
-    const spell_data_t* improved_power_word_shield; // NYI
-    const spell_data_t* inner_focus; // NYI
-    const spell_data_t* meditation; // NYI
-    const spell_data_t* mental_agility; // NYI
-    const spell_data_t* mental_strength; // NYI
-    const spell_data_t* divine_spirit; // NYI
-    const spell_data_t* improved_divine_spirit; // NYI
-    const spell_data_t* focused_power; // NYI
-    const spell_data_t* force_of_will; // NYI
-    const spell_data_t* power_infusion; // NYI
-    const spell_data_t* enlightenment; // NYI
+    const spell_data_t* wand_specialization;            // NYI
+    const spell_data_t* improved_power_word_fortitude;  // NYI
+    const spell_data_t* improved_power_word_shield;     // NYI
+    const spell_data_t* inner_focus;                    // NYI
+    const spell_data_t* meditation;                     // NYI
+    const spell_data_t* mental_agility;                 // NYI
+    const spell_data_t* mental_strength;                // NYI
+    const spell_data_t* divine_spirit;                  // NYI
+    const spell_data_t* improved_divine_spirit;         // NYI
+    const spell_data_t* focused_power;                  // NYI
+    const spell_data_t* force_of_will;                  // NYI
+    const spell_data_t* power_infusion;                 // NYI
+    const spell_data_t* enlightenment;                  // NYI
 
     // Holy
-    const spell_data_t* holy_specialization; // NYI
-    const spell_data_t* divine_fury; // NYI
-    const spell_data_t* holy_nova; // NYI
-    const spell_data_t* holy_reach; // NYI
-    const spell_data_t* searing_light; // NYI
-    const spell_data_t* spirit_of_redemption; // NYI
-    const spell_data_t* spiritual_guidance; // NYI
-    const spell_data_t* surge_of_light; // NYI 
+    const spell_data_t* holy_specialization;   // NYI
+    const spell_data_t* divine_fury;           // NYI
+    const spell_data_t* holy_nova;             // NYI
+    const spell_data_t* holy_reach;            // NYI
+    const spell_data_t* searing_light;         // NYI
+    const spell_data_t* spirit_of_redemption;  // NYI
+    const spell_data_t* spiritual_guidance;    // NYI
+    const spell_data_t* surge_of_light;        // NYI
 
     // Shadow
-    const spell_data_t* spirit_tap; // NYI
-    const spell_data_t* blackout; // NYI
-    const spell_data_t* improved_shadow_word_pain; // NYI
-    const spell_data_t* shadow_focus; // NYI
-    const spell_data_t* improved_psychic_scream; // NYI
-    const spell_data_t* improved_mind_blast; // NYI
-    const spell_data_t* mind_flay; // NYI
-    const spell_data_t* improved_fade; // NYI
-    const spell_data_t* shadow_reach; // NYI
-    const spell_data_t* shadow_weaving; // NYI
-    const spell_data_t* silence; // NYI
-    const spell_data_t* vampiric_embrace; // NYI
-    const spell_data_t* improved_vampiric_embrace; // NYI
-    const spell_data_t* focused_mind; // NYI
-    const spell_data_t* darkness; // NYI
-    const spell_data_t* shadowform; // NYI
-    const spell_data_t* shadow_power; // NYI
-    const spell_data_t* misery; // NYI
-    const spell_data_t* vampiric_touch; // NYI
+    const spell_data_t* spirit_tap;                 // NYI
+    const spell_data_t* blackout;                   // NYI
+    const spell_data_t* improved_shadow_word_pain;  // NYI
+    const spell_data_t* shadow_focus;               // NYI
+    const spell_data_t* improved_psychic_scream;    // NYI
+    const spell_data_t* improved_mind_blast;        // NYI
+    const spell_data_t* mind_flay;                  // NYI
+    const spell_data_t* improved_fade;              // NYI
+    const spell_data_t* shadow_reach;               // NYI
+    const spell_data_t* shadow_weaving;             // NYI
+    const spell_data_t* silence;                    // NYI
+    const spell_data_t* vampiric_embrace;           // NYI
+    const spell_data_t* improved_vampiric_embrace;  // NYI
+    const spell_data_t* focused_mind;               // NYI
+    const spell_data_t* darkness;                   // NYI
+    const spell_data_t* shadowform;                 // NYI
+    const spell_data_t* shadow_power;               // NYI
+    const spell_data_t* misery;                     // NYI
+    const spell_data_t* vampiric_touch;             // NYI
   } talents;
 
   // Specialization Spells
   struct
   {
     // Misc
-    const spell_data_t* consume_magic; // NYI
-    const spell_data_t* starshards; // NYI
-    const spell_data_t* chastise; // NYI
+    const spell_data_t* consume_magic;  // NYI
+    const spell_data_t* starshards;     // NYI
+    const spell_data_t* chastise;       // NYI
 
     // Discipline
     const spell_data_t* power_word_shield;
@@ -166,12 +166,12 @@ public:
     const spell_data_t* power_word_fortitude;
 
     // Holy
-    const spell_data_t* holy_fire; // NYI
+    const spell_data_t* holy_fire;  // NYI
     const spell_data_t* smite;
 
     // Shadow
-    const spell_data_t* fade; // NYI
-    const spell_data_t* mana_burn; // NYI
+    const spell_data_t* fade;       // NYI
+    const spell_data_t* mana_burn;  // NYI
     const spell_data_t* mind_blast;
     const spell_data_t* shadow_word_death;
     const spell_data_t* shadowfiend;
@@ -401,7 +401,7 @@ public:
     {
       m *= 1.0 + priest().buffs.shadowform->data().effectN( 4 ).percent();
     }
-    
+
     return m;
   }
 
@@ -431,8 +431,7 @@ private:
 struct priest_absorb_t : public priest_action_t<absorb_t>
 {
 public:
-  priest_absorb_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s )
+  priest_absorb_t( util::string_view name, priest_t& player ) : base_t( name, player )
   {
     may_crit      = true;
     tick_may_crit = false;
@@ -442,8 +441,7 @@ public:
 
 struct priest_heal_t : public priest_action_t<heal_t>
 {
-  priest_heal_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s )
+  priest_heal_t( util::string_view name, priest_t& player ) : base_t( name, player )
   {
   }
 
@@ -457,8 +455,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
 struct priest_spell_t : public priest_action_t<spell_t>
 {
-  priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s )
+  priest_spell_t( util::string_view name, priest_t& player ) : base_t( name, player )
   {
     weapon_multiplier = 0.0;
   }
