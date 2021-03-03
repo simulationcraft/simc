@@ -4055,11 +4055,21 @@ struct chain_lightning_t : public chained_base_t
     return m;
   }
 
+  bool benefit_from_maelstrom_weapon() const override
+  {
+    if ( p()->dbc->ptr && p()->buff.stormkeeper->check() )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::benefit_from_maelstrom_weapon();
+  }
+
   // If Stormkeeper is up, Chain Lightning will not consume Maelstrom Weapon stacks, but
   // will allow Chain Lightning to fully benefit from the stacks.
   bool consume_maelstrom_weapon() const override
   {
-    if ( !p()->dbc->ptr && p()->buff.stormkeeper->check() )
+    if ( p()->buff.stormkeeper->check() )
     {
       return false;
     }
@@ -4781,7 +4791,7 @@ struct lightning_bolt_t : public shaman_spell_t
   // Chain Lightning, but the spell still benefits from the damage increase.
   bool benefit_from_maelstrom_weapon() const override
   {
-    if ( !p()->dbc->ptr && p()->buff.stormkeeper->check() )
+    if ( p()->buff.stormkeeper->check() )
     {
       return false;
     }
