@@ -460,7 +460,7 @@ void frost( player_t* p )
   precombat->add_action( "blizzard,if=active_enemies>=2" );
   precombat->add_action( "frostbolt,if=active_enemies=1" );
 
-  default_->add_action( "counterspell" );
+  default_->add_action( "counterspell,if=!runeforge.disciplinary_command|cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
   default_->add_action( "call_action_list,name=st,if=active_enemies<3" );
