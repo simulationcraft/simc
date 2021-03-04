@@ -399,6 +399,7 @@ public:
     // Conduits
     buff_t* brutal_projectiles;
     buff_t* brutal_projectiles_hidden;
+    buff_t* empowered_release;
     buff_t* flame_infusion;
     buff_t* strength_of_the_pack;
 
@@ -1680,10 +1681,10 @@ struct spitting_cobra_t final : public hunter_pet_t
     owner_coeff.ap_from_ap = 0.15;
 
     // XXXX TODO 9.0.5
-    // The patch note for the PTR says increased BY 260%, when in fact it was 
+    // The patch note for the PTR says increased BY 260%, when in fact it was
     // only increased by 160% or otherwise increased TO 260% of the live value.
     // Tested in-game 25 Feb 2021
-    if ( dbc -> ptr ) 
+    if ( dbc -> ptr )
       owner_coeff.ap_from_ap *= 2.6;
 
     resource_regeneration = regen_type::DISABLED;
@@ -2627,7 +2628,10 @@ struct flayed_shot_t : hunter_ranged_attack_t
     hunter_ranged_attack_t::tick( d );
 
     if ( p() -> buffs.flayers_mark -> trigger() )
+    {
       p() -> cooldowns.kill_shot -> reset( true );
+      p() -> buffs.empowered_release -> trigger();
+    }
   }
 };
 
@@ -2869,6 +2873,7 @@ struct kill_shot_t : hunter_ranged_attack_t
 
     p() -> buffs.flayers_mark -> up(); // benefit tracking
     p() -> buffs.flayers_mark -> decrement();
+    p() -> buffs.empowered_release -> decrement();
   }
 
   void impact( action_state_t* s ) override
@@ -2898,10 +2903,8 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
-    // XXX TODO 9.0.5: separate out into 2 buffs with proper attribution
     am *= 1 + p() -> buffs.flayers_mark -> check_value();
-    if ( p() -> dbc -> ptr )
-      am *= 1 + p() -> buffs.flayers_mark -> data().effectN( 3 ).percent();
+    am *= 1 + p() -> buffs.empowered_release -> check_value();
 
     return am;
   }
@@ -5986,6 +5989,11 @@ void hunter_t::create_buffs()
     make_buff( this, "brutal_projectiles_hidden", find_spell( 339929 ) )
       -> set_default_value( conduits.brutal_projectiles.percent() );
 
+  buffs.empowered_release =
+    make_buff( this, "empowered_release", find_spell( 339061 ) )
+      -> set_default_value( conduits.empowered_release.percent() )
+      -> set_chance( conduits.empowered_release.ok() );
+
   buffs.flame_infusion =
     make_buff( this, "flame_infusion", find_spell( 341401 ) )
       -> set_default_value( conduits.flame_infusion.percent() )
@@ -6001,7 +6009,7 @@ void hunter_t::create_buffs()
 
   buffs.flayers_mark =
     make_buff( this, "flayers_mark", find_spell( 324156 ) )
-      -> set_default_value( conduits.empowered_release.percent() )
+      -> set_default_value( dbc -> ptr ? find_spell( 324156 ) -> effectN( 3 ).percent() : 0 ) // XXX TODO 9.0.5
       -> set_chance( covenants.flayed_shot -> effectN( 2 ).percent() +
                      conduits.empowered_release -> effectN( 1 ).percent() );
 
