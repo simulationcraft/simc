@@ -272,10 +272,10 @@ bool variable_t::is_constant() const
 
 void variable_t::optimize_expressions()
 {
-  expr_t::optimize_expression(if_expr);
-  expr_t::optimize_expression(value_expression);
-  expr_t::optimize_expression(condition_expression);
-  expr_t::optimize_expression(value_else_expression);
+  expr_t::optimize_expression(if_expr, *sim);
+  expr_t::optimize_expression(value_expression, *sim);
+  expr_t::optimize_expression(condition_expression, *sim);
+  expr_t::optimize_expression(value_else_expression, *sim);
 }
 
 // Note note note, doesn't do anything that a real action does

@@ -122,10 +122,12 @@ struct sim_t : private sc_thread_t
   double      travel_variance, default_skill;
   timespan_t  reaction_time, regen_periodicity;
   timespan_t  ignite_sampling_delta;
-  bool        fixed_time, optimize_expressions;
+  int         optimize_expressions;
+  int         optimize_expressions_rounds;
   int         current_slot;
   int         optimal_raid, log, debug_each;
   std::vector<uint64_t> debug_seed;
+  bool        fixed_time;
   bool        save_profiles;
   bool        save_profile_with_actions; // When saving full profiles, include actions or not
   bool        default_actions;

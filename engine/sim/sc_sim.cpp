@@ -1455,10 +1455,12 @@ sim_t::sim_t() :
   travel_variance( 0 ), default_skill( 1.0 ), reaction_time( timespan_t::from_seconds( 0.5 ) ),
   regen_periodicity( timespan_t::from_seconds( 0.25 ) ),
   ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) ),
-  fixed_time( true ), optimize_expressions( false ),
+  optimize_expressions( 0 ),
+  optimize_expressions_rounds( 2),
   current_slot( -1 ),
   optimal_raid( 0 ), log( 0 ),
   debug_each( 0 ),
+  fixed_time( true ),
   save_profiles( false ),
   save_profile_with_actions( true ),
   default_actions( false ),
@@ -3450,7 +3452,8 @@ void sim_t::create_options()
   add_option( opt_func( "proxy", parse_proxy ) );
   add_option( opt_int( "stat_cache", stat_cache ) );
   add_option( opt_int( "max_aoe_enemies", max_aoe_enemies ) );
-  add_option( opt_bool( "optimize_expressions", optimize_expressions ) );
+  add_option( opt_int( "optimize_expressions", optimize_expressions ) );
+  add_option( opt_int( "optimize_expressions_rounds", optimize_expressions_rounds ) );
   add_option( opt_bool( "single_actor_batch", single_actor_batch ) );
   add_option( opt_bool( "progressbar_type", progressbar_type ) );
   add_option( opt_bool( "allow_experimental_specializations", allow_experimental_specializations ) );

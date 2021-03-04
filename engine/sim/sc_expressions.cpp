@@ -389,7 +389,7 @@ public:
       printf("%*d %s ( %s )\n", spacing, id(), name(), input->name());
     }
 
-    expr_t::optimize_expression(input, spacing + 2);
+    expr_t::optimize_expression(input, analyze_further, spacing + 2);
 
     double input_value;
     if ( input->is_constant( &input_value ) )
@@ -512,8 +512,8 @@ public:
                     left_true, left_false, right_true, right_false,
                     left->name(), right->name() );
     }
-    expr_t::optimize_expression(left, spacing + 2);
-    expr_t::optimize_expression(right, spacing + 2);
+    expr_t::optimize_expression(left, analyze_further, spacing + 2);
+    expr_t::optimize_expression(right, analyze_further, spacing + 2);
     bool left_always_true   = left->always_true();
     bool left_always_false  = left->always_false();
     bool right_always_true  = right->always_true();
@@ -619,8 +619,8 @@ public:
                     left_true, left_false, right_true, right_false,
                     left->name(), right->name() );
     }
-    expr_t::optimize_expression(left, spacing + 2);
-    expr_t::optimize_expression(right, spacing + 2);
+    expr_t::optimize_expression(left, analyze_further, spacing + 2);
+    expr_t::optimize_expression(right, analyze_further, spacing + 2);
     bool left_always_true   = left->always_true();
     bool left_always_false  = left->always_false();
     bool right_always_true  = right->always_true();
@@ -724,8 +724,8 @@ public:
       printf("%*d xor ( %s %s )\n", spacing, id(), left->name(),
         right->name());
     }
-    expr_t::optimize_expression(left, spacing + 2);
-    expr_t::optimize_expression(right, spacing + 2);
+    expr_t::optimize_expression(left, analyze_further, spacing + 2);
+    expr_t::optimize_expression(right, analyze_further, spacing + 2);
     bool left_always_true   = left->always_true();
     bool left_always_false  = left->always_false();
     bool right_always_true  = right->always_true();
@@ -802,8 +802,8 @@ public:
       printf("%*d %s ( %s %s )\n", spacing, id(), name(), left->name(),
         right->name());
     }
-    expr_t::optimize_expression(left, spacing + 2);
-    expr_t::optimize_expression(right, spacing + 2);
+    expr_t::optimize_expression(left, analyze_further, spacing + 2);
+    expr_t::optimize_expression(right, analyze_further, spacing + 2);
     double left_value;
     double right_value;
     bool left_constant  = left->is_constant( &left_value );
@@ -1300,6 +1300,36 @@ static std::unique_ptr<expr_t> build_expression_tree(
   auto res = std::move(stack.back());
   stack.pop_back();
   return res;
+}
+
+void expr_t::optimize_expression( std::unique_ptr<expr_t>& expression, bool analyze_further, int spacing )
+{
+  if ( !expression )
+  {
+    return;
+  }
+  if ( auto optimized = expression->build_optimized_expression( analyze_further, spacing ) )
+  {
+    expression.swap( optimized );
+  }
+}
+
+void expr_t::optimize_expression( std::unique_ptr<expr_t>& expression, sim_t& sim )
+{
+  auto iterations = sim.current_iteration;
+  if ( iterations < 0 )
+  {
+    return;
+  }
+  if ( iterations - sim.optimize_expressions >= 0 )
+  {
+    return;
+  }
+  bool analyze_further = ( sim.current_iteration - iterations ) > 0;
+  for(int i = 0; i < sim.optimize_expressions_rounds; ++i)
+  {
+    optimize_expression( expression, analyze_further );
+  }
 }
 
 // action_expr_t::create_constant ===========================================
