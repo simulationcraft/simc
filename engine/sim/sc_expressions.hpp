@@ -152,7 +152,7 @@ public:
     {
       return;
     }
-    if (auto optimized = expression->build_optimized_expression(spacing))
+    if (auto optimized = expression->build_optimized_expression( false, spacing))
     {
       expression.swap(optimized);
     }
@@ -171,7 +171,7 @@ private:
   /* Attempts to create a optimized version of the expression.
   Should return null if no improved version can be built.
   */
-  virtual std::unique_ptr<expr_t> build_optimized_expression( int /* spacing */ )
+  virtual std::unique_ptr<expr_t> build_optimized_expression( bool analyze_further, int /* spacing */ )
   {
     return {};
   }

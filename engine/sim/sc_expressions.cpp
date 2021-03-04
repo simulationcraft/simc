@@ -359,6 +359,10 @@ std::unique_ptr<expr_t> select_binary( util::string_view name, token_e op, std::
   }
 }
 
+std::unique_ptr<expr_t> select_unary( bool analyze, util::string_view name, token_e op, std::unique_ptr<expr_t> input );
+std::unique_ptr<expr_t> select_binary( bool analyze, util::string_view name, token_e op, std::unique_ptr<expr_t> left,
+                                       std::unique_ptr<expr_t> right );
+
 // Analyzing Unary Operators ================================================
 
 template <class F>
@@ -378,7 +382,7 @@ public:
     return F()( input->eval() );
   }
 
-  std::unique_ptr<expr_t> build_optimized_expression( int spacing ) override
+  std::unique_ptr<expr_t> build_optimized_expression( bool analyze_further, int spacing ) override
   {
     if (EXPRESSION_DEBUG)
     {
@@ -400,7 +404,7 @@ public:
       return std::make_unique<const_expr_t>( new_name, result );
     }
 
-    return select_unary( name(), op_, std::move(input));
+    return select_unary( analyze_further, name(), op_, std::move(input));
   }
 };
 
@@ -500,7 +504,7 @@ public:
     return result;
   }
 
-  std::unique_ptr<expr_t> build_optimized_expression( int spacing ) override
+  std::unique_ptr<expr_t> build_optimized_expression( bool analyze_further, int spacing ) override
   {
     if ( EXPRESSION_DEBUG )
     {
@@ -586,7 +590,7 @@ public:
       std::swap( left, right );
       std::swap( left, static_cast<logical_and_t*>( right.get() )->left );
     }
-    return std::make_unique<logical_and_t>( name(), std::move(left), std::move(right) );
+    return select_binary( analyze_further, name(), TOK_AND, std::move(left), std::move(right) );
   }
 };
 
@@ -607,7 +611,7 @@ public:
     return result;
   }
 
-  std::unique_ptr<expr_t> build_optimized_expression( int spacing ) override
+  std::unique_ptr<expr_t> build_optimized_expression( bool analyze_further, int spacing ) override
   {
     if ( EXPRESSION_DEBUG )
     {
@@ -691,7 +695,7 @@ public:
       std::swap( left, right );
       std::swap( left, static_cast<logical_or_t*>( right.get() )->left );
     }
-    return std::make_unique<logical_or_t>( name(), std::move(left), std::move(right) );
+    return select_binary( analyze_further, name(), TOK_OR, std::move(left), std::move(right) );
   }
 };
 
@@ -713,7 +717,7 @@ public:
     return result;
   }
 
-  std::unique_ptr<expr_t> build_optimized_expression( int spacing ) override
+  std::unique_ptr<expr_t> build_optimized_expression( bool analyze_further, int spacing ) override
   {
     if (EXPRESSION_DEBUG)
     {
@@ -763,16 +767,16 @@ public:
       if ( EXPRESSION_DEBUG )
         printf( "%*d %s xor expression reduced to !right\n", spacing, id(),
                 name() );
-      return select_unary( fmt::format("const_xor_left_atrue('{}','{}')", left->name(), right->name()), TOK_NOT, std::move(right) );
+      return select_unary( analyze_further, fmt::format("const_xor_left_atrue('{}','{}')", left->name(), right->name()), TOK_NOT, std::move(right) );
     }
     if ( right_always_true )
     {
       if ( EXPRESSION_DEBUG )
         printf( "%*d %s xor expression reduced to !left\n", spacing, id(),
                 name() );
-      return select_unary( fmt::format("const_xor_right_atrue('{}','{}')", left->name(), right->name()), TOK_NOT, std::move(left) );
+      return select_unary( analyze_further, fmt::format("const_xor_right_atrue('{}','{}')", left->name(), right->name()), TOK_NOT, std::move(left) );
     }
-    return std::make_unique<logical_xor_t>( name(), std::move(left), std::move(right) );
+    return select_binary( analyze_further, name(), TOK_XOR, std::move(left), std::move(right) );
   }
 };
 
@@ -791,7 +795,7 @@ public:
     return result;
   }
 
-  std::unique_ptr<expr_t> build_optimized_expression( int spacing ) override
+  std::unique_ptr<expr_t> build_optimized_expression( bool analyze_further, int spacing ) override
   {
     if (EXPRESSION_DEBUG)
     {
@@ -821,6 +825,7 @@ public:
         printf("Reduced %*d %s (%s) binary expression left\n", spacing, id(),
           name(), left->name());
       }
+      // TODO: add analye-version
       struct left_reduced_t : public expr_t
       {
         double left;
@@ -843,6 +848,7 @@ public:
       if ( EXPRESSION_DEBUG )
         printf( "Reduced %*d %s (%s) binary expression right\n", spacing, id(),
                 name(), right->name() );
+      // TODO: add analye-version
       struct right_reduced_t : public expr_t
       {
         std::unique_ptr<expr_t> left;
@@ -860,7 +866,7 @@ public:
           fmt::format( "{}_right_reduced('{}')", name(), left->name() ),
           op_, std::move(left), right_value );
     }
-    return select_binary( name(), op_, std::move(left), std::move(right) );
+    return select_binary( analyze_further, name(), op_, std::move(left), std::move(right) );
   }
 };
 
