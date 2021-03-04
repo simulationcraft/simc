@@ -825,7 +825,6 @@ public:
         printf("Reduced %*d %s (%s) binary expression left\n", spacing, id(),
           name(), left->name());
       }
-      // TODO: add analye-version
       struct left_reduced_t : public expr_t
       {
         double left;
@@ -834,6 +833,24 @@ public:
           : expr_t( n, o ), left( l ), right( std::move(r) )
         {
         }
+        
+        std::unique_ptr<expr_t> build_optimized_expression( bool analyze_further, int spacing ) override
+        {
+          expr_t::optimize_expression( right, analyze_further, spacing + 2 );
+          double right_value;
+          bool right_constant = right->is_constant( &right_value );
+          if ( right_constant )
+          {
+            auto result = static_cast<double>( F<T>()( static_cast<T>( left ), static_cast<T>( right_value ) ) );
+            if ( EXPRESSION_DEBUG )
+            {
+              printf( "Reduced %*d %s binary expression to %f\n", spacing, id(), name(), result );
+            }
+            return std::make_unique<const_expr_t>( fmt::format( "const_binary({})", name() ), result );
+          }
+          return {};
+        }
+
         double evaluate() override
         {
           return static_cast<double>( F<T>()( static_cast<T>( left ), static_cast<T>( right->eval() ) ) );
@@ -848,7 +865,6 @@ public:
       if ( EXPRESSION_DEBUG )
         printf( "Reduced %*d %s (%s) binary expression right\n", spacing, id(),
                 name(), right->name() );
-      // TODO: add analye-version
       struct right_reduced_t : public expr_t
       {
         std::unique_ptr<expr_t> left;
@@ -857,6 +873,24 @@ public:
           : expr_t( n, o ), left( std::move(l) ), right( r )
         {
         }
+
+        std::unique_ptr<expr_t> build_optimized_expression( bool analyze_further, int spacing ) override
+        {
+          expr_t::optimize_expression( left, analyze_further, spacing + 2 );
+          double left_value;
+          bool left_constant = left->is_constant( &left_value );
+          if ( left_constant )
+          {
+            auto result = static_cast<double>( F<T>()( static_cast<T>( left_value ), static_cast<T>( right ) ) );
+            if ( EXPRESSION_DEBUG )
+            {
+              printf( "Reduced %*d %s binary expression to %f\n", spacing, id(), name(), result );
+            }
+            return std::make_unique<const_expr_t>( fmt::format( "const_binary({})", name() ), result );
+          }
+          return {};
+        }
+
         double evaluate() override
         {
           return static_cast<double>( F<T>()( static_cast<T>( left->eval() ), static_cast<T>( right ) ) );
