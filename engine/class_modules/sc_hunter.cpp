@@ -5897,6 +5897,7 @@ void hunter_t::create_buffs()
   buffs.lone_wolf =
     make_buff( this, "lone_wolf", find_spell( 164273 ) )
       -> set_default_value( specs.lone_wolf -> effectN( 1 ).percent() )
+      -> set_period( 0_ms ) // disable ticks as an optimization
       -> set_chance( specs.lone_wolf.ok() );
 
   buffs.precise_shots =
