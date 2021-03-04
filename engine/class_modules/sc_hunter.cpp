@@ -6597,6 +6597,16 @@ struct hunter_module_t: public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Hunter", "2021-03-04", "9.0.5 Eagletalon's True Focus - value", 880586, hotfix::HOTFIX_FLAG_PTR )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3000 )
+      .verification_value( 5000 );
+    hotfix::register_effect( "Hunter", "2021-03-04", "9.0.5 Eagletalon's True Focus - sub type", 880586, hotfix::HOTFIX_FLAG_PTR )
+      .field( "sub_type" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( A_ADD_FLAT_MODIFIER )
+      .verification_value( A_ADD_PCT_MODIFIER );
   }
 
   void combat_begin( sim_t* ) const override {}
