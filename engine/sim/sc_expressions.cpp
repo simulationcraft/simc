@@ -429,6 +429,15 @@ std::unique_ptr<expr_t> select_analyze_unary( util::string_view name, token_e op
   }
 }
 
+std::unique_ptr<expr_t> select_unary( bool analyze, util::string_view name, token_e op, std::unique_ptr<expr_t> input )
+{
+  if (analyze)
+  {
+    return select_analyze_unary(name, std::move( op ), std::move( input ));
+  }
+  return select_unary(name, std::move( op ), std::move( input ));
+}
+
 // Analyzing Binary Operators ===============================================
 
 class analyze_binary_base_t : public expr_t
@@ -902,6 +911,16 @@ std::unique_ptr<expr_t> select_analyze_binary( util::string_view name, token_e o
   }
 }
 
+std::unique_ptr<expr_t> select_binary( bool analyze, util::string_view name, token_e op, std::unique_ptr<expr_t> left,
+                                       std::unique_ptr<expr_t> right )
+{
+  if ( analyze )
+  {
+    return select_analyze_binary( name, op, std::move( left ), std::move( right ) );
+  }
+  return select_binary( name, op, std::move( left ), std::move( right ) );
+}
+
 int precedence( token_e expr_token_type )
 {
   switch ( expr_token_type )
@@ -1195,10 +1214,7 @@ std::unique_ptr<expr_t> build_player_expression_tree(
       auto left = std::move(stack.back());
       stack.pop_back();
       assert( left );
-      auto expr = ( optimize ? expression::select_analyze_binary(
-                                      t.label, t.type, std::move(left), std::move(right) )
-                                : expression::select_binary( t.label, t.type,
-                                                             std::move(left), std::move(right) ) );
+      auto expr = expression::select_binary( optimize, t.label, t.type, std::move(left), std::move(right) );
       stack.push_back( std::move(expr) );
     }
   }
@@ -1267,10 +1283,7 @@ static std::unique_ptr<expr_t> build_expression_tree(
       auto left = std::move(stack.back());
       stack.pop_back();
       assert( left );
-      auto expr = ( optimize ? expression::select_analyze_binary(
-                                      t.label, t.type, std::move(left), std::move(right) )
-                                : expression::select_binary( t.label, t.type,
-                                                             std::move(left), std::move(right) ) );
+      auto expr = expression::select_binary( optimize, t.label, t.type, std::move(left), std::move(right) );
       stack.push_back( std::move(expr) );
     }
   }
