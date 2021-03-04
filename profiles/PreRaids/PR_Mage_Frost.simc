@@ -33,7 +33,7 @@ actions.precombat+=/blizzard,if=active_enemies>=2
 actions.precombat+=/frostbolt,if=active_enemies=1
 
 # Executed every time the actor is available.
-actions=counterspell
+actions=counterspell,if=!runeforge.disciplinary_command|cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=aoe,if=active_enemies>=3
 actions+=/call_action_list,name=st,if=active_enemies<3
