@@ -2198,8 +2198,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68022)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Deadly Poison (113780), Crippling Poison (115196), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Dreadblades (343142)
-                   Family Flags: 8, 14, 16, 20, 28, 35, 36, 81, 86, 95, 97, 115, 119
+                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Deadly Poison (113780), Crippling Poison (115196), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581), Slaughter Poison (323660), Dreadblades (343142)
+                   Family Flags: 8, 14, 16, 20, 28, 35, 36, 81, 86, 95, 97, 119
+Hotfixed         : Affects Spells
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crippling Poison (115196), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Double Dose (273009), Nothing Personal (286581), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Dreadblades (343142)
@@ -9307,7 +9308,7 @@ Range            : 100 yards
 GCD              : 1 seconds
 Duration         : Aura (infinite)
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
 Triggered by     : Serrated Bone Spike (328547)
 Family Flags     : 54, 115
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -9322,8 +9323,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=813416)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
-#2 (id=821219)   : Apply Aura (6) | Trigger Spell Based on Health% (468)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 328549 | Target: Enemy (6)
 Description      : $@spelldesc328547
 Tooltip          : Bleeding for $w1 every $t1 sec.
 
@@ -9336,7 +9335,7 @@ Range            : 100 yards
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
 Family Flags     : 54, 115
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -9487,6 +9486,7 @@ Effects          :
 Description      : $@spelldesc328305
 
 Name             : Serrated Bone Spike (desc=Necrolord) (id=328547) [Spell Family (8)] 
+Hotfixed         : Attributes, Description
 Class            : Rogue
 Covenant         : Necrolord
 School           : Physical
@@ -9500,31 +9500,32 @@ Duration         : Aura (infinite)
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Charges          : 3 (30 seconds cooldown)
 Category         : 1889
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
 Family Flags     : 54, 115
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...xx... 
-                 : ........ ........ ........ .....x..   ........ ..x..... ....x... ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ....x... ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Don't display in aura bar (60), Cannot crit (93), Requires main-hand weapon (106)
+                 : Don't display in aura bar (60), Requires main-hand weapon (106)
 Effects          :
 #1 (id=821129)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.3 -> 1.2)
 #2 (id=821130)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 324073 | Target: Enemy (6)
 #3 (id=821131)   : Dummy (3)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=821132)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Embed a bone spike in the target, dealing $s1 damage and $324073s1 Bleed damage every $324073t1 sec until they die. 
+Description      : Embed a bone spike in the target, dealing $s1 damage and $324073s1 Bleed damage every $324073t1 sec until they die or leave combat. 
 
-Refunds a charge when target dies or is healed to full.
+Refunds a charge when target dies.
 
-|cFFFFFFFFAwards 1 combo point per active bone spike.|r
+|cFFFFFFFFAwards 1 combo point plus 1 additional per active bone spike.|r
 
 Name             : Serrated Bone Spike (id=328548) 
 Class            : Rogue
@@ -9548,7 +9549,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 48
-Triggered by     : Serrated Bone Spike (324073)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx...... ........ 
                  : .......x ........ .......x ........   ........ ........ ........ ........ 

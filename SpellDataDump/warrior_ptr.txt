@@ -410,8 +410,9 @@ Effects          :
                    Family Flags: 57, 59
 #8 (id=737895)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 4 (32)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
-                   Affected Spells: Thunder Clap (6343), Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847)
-                   Family Flags: 7, 46
+                   Affected Spells: Thunder Clap (6343), Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Conqueror's Banner (324143)
+                   Family Flags: 7, 46, 88
+Hotfixed         : Affects Spells
 #9 (id=738384)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 5 (33)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160), Avatar (107574)
@@ -9776,6 +9777,7 @@ Effects          :
 Description      : Heals for an additional $s1% of maximum health.
 
 Name             : Conqueror's Banner (desc=Necrolord) (id=324143) [Scaling Spell (-6), Spell Family (4)] 
+Hotfixed         : Affecting Spells
 Class            : Warrior
 Covenant         : Necrolord
 School           : Shadow
@@ -9785,8 +9787,8 @@ Max Scaling Level: 60
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 120 seconds
-Affecting spells : Warrior (137047 effect#2)
-Family Flags     : 8
+Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2)
+Family Flags     : 8, 88
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

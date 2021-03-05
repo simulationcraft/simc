@@ -11274,9 +11274,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=832809)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
+Hotfixed         : Base Value (10 -> 20)
 Description      : $@spelldesc335893
 Tooltip          : Your next Chain Heal will heal for an additional $s1%.
 
