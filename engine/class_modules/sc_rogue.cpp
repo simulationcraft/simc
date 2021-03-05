@@ -2660,6 +2660,13 @@ struct envenom_t : public rogue_attack_t
       int active_dots = td->dots.garrote->is_ticking() + td->dots.rupture->is_ticking() +
         td->dots.crimson_tempest->is_ticking() + td->dots.internal_bleeding->is_ticking() +
         td->dots.mutilated_flesh->is_ticking();
+
+      // 03/04/2021 -- PTR notes now specify SBS works with Doomblade
+      if ( p()->dbc->ptr )
+      {
+        active_dots += td->dots.serrated_bone_spike->is_ticking();
+      }
+
       m *= 1.0 + p()->legendary.doomblade->effectN( 2 ).percent() * active_dots;
     }
 
@@ -4611,6 +4618,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
     energize_type = action_energize::ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = p->find_spell( 328548 )->effectN( 1 ).base_value();
+    may_crit = p->dbc->ptr; // 03/04/2021 -- Manual PTR hotfix awaiting spell data change
 
     serrated_bone_spike_dot = p->get_background_action<serrated_bone_spike_dot_t>( "serrated_bone_spike_dot" );
 
@@ -4627,15 +4635,22 @@ struct serrated_bone_spike_t : public rogue_attack_t
 
     // Bonus CP gain includes the primary target DoT, but only after first activation
     unsigned active_dots = p()->get_active_dots( serrated_bone_spike_dot->internal_id );
-    if ( active_dots > 0 )
-    {
-      trigger_combo_point_gain( active_dots, p()->gains.serrated_bone_spike );
-    }
 
     if ( !td( target )->dots.serrated_bone_spike->is_ticking() )
     {
       serrated_bone_spike_dot->set_target( target );
       serrated_bone_spike_dot->execute();
+    }
+
+    if ( p()->dbc->ptr )
+    {
+      // 03/04/2021 -- Bonus CP gain now includes the primary target DoT even on first activation
+      active_dots = p()->get_active_dots( serrated_bone_spike_dot->internal_id );
+    }
+
+    if ( active_dots > 0 )
+    {
+      trigger_combo_point_gain( active_dots, p()->gains.serrated_bone_spike );
     }
   }
 
@@ -6642,7 +6657,9 @@ void rogue_t::init_action_list()
     def->add_action( "variable,name=single_target,value=spell_targets.fan_of_knives<2" );
     def->add_action( "call_action_list,name=stealthed,if=stealthed.rogue" );
     def->add_action( "call_action_list,name=cds,if=(!talent.master_assassin.enabled|dot.garrote.ticking)" );
-    def->add_action( this, "Slice and Dice", "if=spell_targets.fan_of_knives<=(5-runeforge.dashing_scoundrel)&buff.slice_and_dice.remains<fight_remains&refreshable&combo_points>=3" );
+    def->add_action( this, "Slice and Dice", "if=!ptr&spell_targets.fan_of_knives<=(5-runeforge.dashing_scoundrel)&buff.slice_and_dice.remains<fight_remains&refreshable&combo_points>=3" );
+    def->add_action( this, "Slice and Dice", "if=ptr&!buff.slice_and_dice.up&combo_points>=3", "Put SnD up initially for Cut to the Chase, refresh with Envenom if at low duration" );
+    def->add_action( this, "Envenom", "if=ptr&buff.slice_and_dice.up&buff.slice_and_dice.remains<5&combo_points>=4" );
     def->add_action( "call_action_list,name=dot" );
     def->add_action( "call_action_list,name=direct" );
     def->add_action( "arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined" );
@@ -6654,7 +6671,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds->add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit*1.5|combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
     cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP." );
-    cds->add_action( "flagellation,if=!stealthed.rogue&(cooldown.vendetta.remains<3&effective_combo_points>=4|debuff.vendetta.up|fight_remains<24)", "Sync Flagellation with Vendetta as long as we won't lose a cast over the fight duration" );
+    cds->add_action( "flagellation,if=!stealthed.rogue&(cooldown.vendetta.remains<3&effective_combo_points>=4&target.time_to_die>10|debuff.vendetta.up|fight_remains<24)", "Sync Flagellation with Vendetta as long as we won't lose a cast over the fight duration" );
     cds->add_action( "flagellation,if=!stealthed.rogue&(floor((fight_remains-24)%cooldown)>floor((fight_remains-24-cooldown.vendetta.remains*variable.vendetta_cdr)%cooldown))" );
     cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2" );
     cds->add_action( "sepsis,if=!stealthed.rogue&(cooldown.vendetta.remains<1&target.time_to_die>10|debuff.vendetta.up|fight_remains<10)", "Sync Sepsis with Vendetta as long as we won't lose a cast over the fight duration, but prefer targets that will live at least 10s" );
@@ -6709,7 +6726,7 @@ void rogue_t::init_action_list()
     dot->add_action( this, "Garrote", "cycle_targets=1,if=!variable.skip_cycle_garrote&target!=self.target&refreshable&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>12&master_assassin_remains=0" );
     dot->add_talent( this, "Crimson Tempest", "if=spell_targets>=2&remains<2+(spell_targets>=5)&effective_combo_points>=4", "Crimson Tempest on multiple targets at 4+ CP when running out in 2s (up to 4 targets) or 3s (5+ targets)" );
     dot->add_action( this, "Rupture", "if=!variable.skip_rupture&(effective_combo_points>=4&refreshable|!ticking&(time>10|combo_points>=2))&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>4", "Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)" );
-    dot->add_action( this, "Rupture", "cycle_targets=1,if=!variable.skip_cycle_rupture&!variable.skip_rupture&target!=self.target&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>4" );
+    dot->add_action( this, "Rupture", "cycle_targets=1,if=!variable.skip_cycle_rupture&!variable.skip_rupture&target!=self.target&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>(4+runeforge.dashing_scoundrel*9+runeforge.doomblade*6)" );
     dot->add_talent( this, "Crimson Tempest", "if=spell_targets=1&effective_combo_points>=(cp_max_spend-1)&refreshable&!exsanguinated&!debuff.shiv.up&master_assassin_remains=0&(energy.deficit<=25+variable.energy_regen_combined)&target.time_to_die-remains>4", "Crimson Tempest on ST if in pandemic and nearly max energy and if Envenom won't do more damage due to TB/MA" );
 
     // Direct damage abilities
@@ -8720,6 +8737,11 @@ public:
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Rogue", "2020-10-29", "Serrated Bone Spike initial damage increased by 300%", 821129, hotfix::HOTFIX_FLAG_PTR )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.2 )
+      .verification_value( 0.3 );
   }
 
   void init( player_t* ) const override {}
