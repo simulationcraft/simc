@@ -6,8 +6,8 @@ race=mechagnome
 role=attack
 position=back
 talents=3030022
-covenant=kyrian
-soulbind=pelagos,combat_meditation/count_the_odds:7/sleight_of_hand:7
+covenant=night_fae
+soulbind=niya,grove_invigoration/count_the_odds:7/niyas_tools_burrs
 
 # Default consumables
 potion=phantom_fire

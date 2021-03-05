@@ -6,8 +6,8 @@ race=mechagnome
 role=attack
 position=back
 talents=1320031
-covenant=kyrian
-soulbind=pelagos,combat_meditation/planned_execution:7/stiletto_staccato:7
+covenant=venthyr
+soulbind=nadjia_the_mistblade,thrill_seeker/lashing_scars:7/dauntless_duelist
 
 # Default consumables
 potion=phantom_fire

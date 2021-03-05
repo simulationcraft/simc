@@ -4,9 +4,9 @@ race=mechagnome
 spec=assassination
 role=attack
 position=back
-talents=3210021
-covenant=kyrian
-soulbind=pelagos,combat_meditation/lethal_poisons:7/wellplaced_steel:7
+talents=3310021
+covenant=venthyr
+soulbind=nadjia_the_mistblade,thrill_seeker/lashing_scars:7/dauntless_duelist
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173127
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
@@ -14,9 +14,9 @@ shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=corset_of_the_deft_duelist,id=182989,bonus_id=7187/1498,enchant=eternal_stats
 wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173127
-hands=bleakwing_assassins_grips,id=183007,bonus_id=7187/1498
+hands=umbrahide_gauntlets,id=172316,bonus_id=6647/6649/6758/7116/1532
 waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498/6935,gem_id=173127
-legs=umbrahide_leggings,id=172318,bonus_id=6647/6649/6758/7117/1532
+legs=fearless_challengers_leggings,id=178801,bonus_id=6536/1540/6646
 feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
 finger1=arachnid_cipher_ring,id=178933,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_versatility
 finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_versatility
@@ -35,8 +35,8 @@ spec=outlaw
 role=attack
 position=back
 talents=3030022
-covenant=kyrian
-soulbind=pelagos,combat_meditation/count_the_odds:7/sleight_of_hand:7
+covenant=night_fae
+soulbind=niya,grove_invigoration/count_the_odds:7/niyas_tools_burrs
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173129
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173129
@@ -65,8 +65,8 @@ spec=subtlety
 role=attack
 position=back
 talents=1320031
-covenant=kyrian
-soulbind=pelagos,combat_meditation/planned_execution:7/stiletto_staccato:7
+covenant=venthyr
+soulbind=nadjia_the_mistblade,thrill_seeker/lashing_scars:7/dauntless_duelist
 
 head=umbrahide_helm,id=172317,bonus_id=6647/6650/6758/7124/1532/6935,gem_id=173127
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127

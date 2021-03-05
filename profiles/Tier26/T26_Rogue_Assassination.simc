@@ -5,9 +5,9 @@ level=60
 race=mechagnome
 role=attack
 position=back
-talents=3210021
-covenant=kyrian
-soulbind=pelagos,combat_meditation/lethal_poisons:7/wellplaced_steel:7
+talents=3310021
+covenant=venthyr
+soulbind=nadjia_the_mistblade,thrill_seeker/lashing_scars:7/dauntless_duelist
 
 # Default consumables
 potion=phantom_fire
@@ -159,9 +159,9 @@ shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=corset_of_the_deft_duelist,id=182989,bonus_id=7187/1498,enchant=eternal_stats
 wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173127
-hands=bleakwing_assassins_grips,id=183007,bonus_id=7187/1498
+hands=umbrahide_gauntlets,id=172316,bonus_id=6647/6649/6758/7116/1532
 waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498/6935,gem_id=173127
-legs=umbrahide_leggings,id=172318,bonus_id=6647/6649/6758/7117/1532
+legs=fearless_challengers_leggings,id=178801,bonus_id=6536/1540/6646
 feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
 finger1=arachnid_cipher_ring,id=178933,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_versatility
 finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_versatility
@@ -172,11 +172,11 @@ off_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=229.19
-# gear_agility=891
-# gear_stamina=1524
+# gear_agility=890
+# gear_stamina=1519
 # gear_attack_power=40
-# gear_crit_rating=717
-# gear_haste_rating=714
-# gear_mastery_rating=71
-# gear_versatility_rating=432
-# gear_armor=609
+# gear_crit_rating=791
+# gear_haste_rating=660
+# gear_mastery_rating=120
+# gear_versatility_rating=362
+# gear_armor=608
