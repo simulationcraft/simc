@@ -190,7 +190,6 @@ public:
     cooldown_t* raging_blow;
     cooldown_t* crushing_blow;
     cooldown_t* ravager;
-    cooldown_t* revenge_reset;
     cooldown_t* shield_slam;
     cooldown_t* shield_wall;
     cooldown_t* shockwave;
@@ -4071,7 +4070,7 @@ struct ravager_t : public warrior_attack_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t tt = tick_time( s );
-      
+
     if ( torment_triggered )
     {
       int num_ticks = static_cast<int>( warrior_attack_t::composite_dot_duration( s ) / tt );
@@ -5287,7 +5286,7 @@ struct conquerors_banner_t : public warrior_spell_t
     p()->buff.conquerors_banner->trigger();
     if ( player->dbc->ptr )
     {
-      p()->buff.conquerors_mastery->trigger();    
+      p()->buff.conquerors_mastery->trigger();
     }
     else
     p()->buff.conquerors_frenzy->trigger();
@@ -6462,8 +6461,6 @@ void warrior_t::init_spells()
   cooldown.raging_blow                      = get_cooldown( "raging_blow" );
   cooldown.crushing_blow                    = get_cooldown( "raging_blow" );
   cooldown.ravager                          = get_cooldown( "ravager" );
-  cooldown.revenge_reset                    = get_cooldown( "revenge_reset" );
-  cooldown.revenge_reset->duration          = spec.revenge_trigger->internal_cooldown();
   cooldown.shield_slam                      = get_cooldown( "shield_slam" );
   cooldown.shield_wall                      = get_cooldown( "shield_wall" );
   cooldown.siegebreaker                     = get_cooldown( "siegebreaker" );
@@ -7144,7 +7141,9 @@ void warrior_t::create_buffs()
 
   buff.revenge =
       make_buff( this, "revenge", find_spell( 5302 ) )
-      ->set_default_value( find_spell( 5302 )->effectN( 1 ).percent() );
+      ->set_default_value( find_spell( 5302 )->effectN( 1 ).percent() )
+      ->set_trigger_spell( spec.revenge_trigger )
+      ->set_cooldown( spec.revenge_trigger -> internal_cooldown() );
 
   buff.avatar = make_buff( this, "avatar", spec.avatar_buff )
       ->set_chance(1)
@@ -8254,11 +8253,7 @@ void warrior_t::assess_damage( school_e school, result_amount_type type, action_
 
   if ( s->result == RESULT_DODGE || s->result == RESULT_PARRY )
   {
-    if ( cooldown.revenge_reset->up() )
-    {
       buff.revenge->trigger();
-      cooldown.revenge_reset->start();
-    }
   }
 
   // Generate 3 Rage on auto-attack taken.
