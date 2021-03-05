@@ -4526,6 +4526,8 @@ struct sepsis_t : public rogue_attack_t
   {
     // 11/29/2020 - Not in the whitelist but confirmed as working in-game
     affected_by.shadow_blades = true;
+    // Not in the whitelist but working as of 9.0.5 PTR.
+    affected_by.broadside_cp = p->dbc->ptr;
     sepsis_expire_damage = p->get_background_action<sepsis_expire_damage_t>( "sepsis_expire_damage" );
     sepsis_expire_damage->stats = stats;
   }
@@ -5635,6 +5637,11 @@ void actions::rogue_action_t<Base>::trigger_seal_fate( const action_state_t* sta
     return;
 
   if ( state->result != RESULT_CRIT )
+    return;
+
+  // Seal Fate says only melee attacks and SBS is not a melee attack. Nevertheless, bluepost said it should be affected.
+  // See https://github.com/SimCMinMax/WoW-BugTracker/issues/822
+  if ( p()->bugs && ab::data().id() == p()->covenant.serrated_bone_spike->id() )
     return;
 
   trigger_combo_point_gain( 1, p()->gains.seal_fate );
