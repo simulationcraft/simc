@@ -2255,6 +2255,8 @@ struct touch_of_death_t : public monk_melee_attack_t
   touch_of_death_t( monk_t& p, util::string_view options_str )
     : monk_melee_attack_t( "touch_of_death", &p, p.spec.touch_of_death )
   {
+    if ( p.dbc->ptr )
+      ww_mastery              = true;
     may_crit = hasted_ticks = false;
     may_combo_strike        = true;
     parse_options( options_str );
