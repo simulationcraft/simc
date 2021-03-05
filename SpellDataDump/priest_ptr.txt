@@ -9667,7 +9667,6 @@ Effects          :
 #1 (id=819281)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Unknown(25)
                    Affected School(s): All
-Hotfixed         : Base Value (-15 -> -20)
 Description      : $@spelldesc327661
 Tooltip          : Reduces damage taken by $s1%.
 
@@ -9719,23 +9718,18 @@ Effects          :
 #1 (id=819312)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 690 | Target: Unknown(25)
                    Affected Spells (Label): Tranquility (740), Summon Infernal (1122), Recklessness (1719), Arcane Power (12042), Icy Veins (12472), Adrenaline Rush (13750), Avenging Wrath (31884), Rapture (47536), Empower Rune Weapon (47568), Berserk (50334), Feral Spirit (51533), Vampiric Blood (55233), Survival Instincts (61336), Divine Hymn (64843), Vendetta (79140), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Berserk (106951), Avatar (107574), Healing Tide Totem (108280), Spirit Shell (109964), Fortifying Brew (115203), Revival (115310), Shadow Blades (121471), Storm, Earth, and Fire (137639), Serenity (152173), Ravager (152277), Metamorphosis (187827), Combustion (190319), Metamorphosis (191427), Storm Elemental (192249), Aspect of the Wild (193530), Celestial Alignment (194223), Voidform (194249), Fire Elemental (198067), Ice Form (198144), Summon Darkglare (205180), Avenging Crusader (216331), Bladestorm (227847), Void Eruption (228260), Crusade (231895), Summon Demonic Tyrant (265187), Coordinated Assault (266779), Apocalypse (275699), Trueshot (288613), Revival (297850), Feral Spirit (333957)
-Hotfixed         : Base Value (150 -> 100)
 #2 (id=868651)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1550 | Target: Unknown(25)
                    Affected Spells (Category): Crusade (231895)
-Hotfixed         : Base Value (150 -> 100)
 #3 (id=868652)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1592 | Target: Unknown(25)
                    Affected Spells (Category): Storm, Earth, and Fire (137639)
-Hotfixed         : Base Value (150 -> 100)
 #4 (id=868655)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1572 | Target: Unknown(25)
                    Affected Spells (Category): Storm Elemental (192249), Fire Elemental (198067)
-Hotfixed         : Base Value (150 -> 100)
 #5 (id=868656)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1614 | Target: Unknown(25)
                    Affected Spells (Category): Empower Rune Weapon (47568), Hungering Rune Weapon (207127)
-Hotfixed         : Base Value (150 -> 100)
 Description      : $@spelldesc327661
 Tooltip          : The cooldown of a major ability recovers $s1% faster.
 
@@ -11459,7 +11453,6 @@ Description      : $@spelldesc345218
 Tooltip          : Damage taken from the Priest increased by $w1%.
 
 Name             : Wrathful Faerie Fermata (desc=Night Fae) (id=345452) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Nature
 Spell Type       : None

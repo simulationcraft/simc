@@ -11909,7 +11909,6 @@ Effects          :
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Trueshot (288613)
                    Family Flags: 53
-Hotfixed         : Sub Type (108 -> 107), Base Value (5000 -> 3000)
 Description      : Trueshot lasts an additional ${$m2/1000}.1 sec and reduces the Focus cost of all of your abilities by $336851s1%.
 
 Name             : Eagletalon's True Focus (id=336851) [Spell Family (9)] 
@@ -11930,22 +11929,18 @@ Effects          :
 #1 (id=834525)   : Apply Aura (6) | Modify Power Cost% (72)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0x4 | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : Base Value (-50 -> -25)
 #2 (id=871729)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Arcane Shot (185358)
                    Family Flags: 105
-Hotfixed         : Base Value (10 -> 5)
 #3 (id=871730)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Barrage (120360)
                    Family Flags: 98
-Hotfixed         : Base Value (15 -> 7)
 #4 (id=871731)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900)
                    Family Flags: 99
-Hotfixed         : Base Value (5 -> 3)
 Description      : $@spelldesc336849
 Tooltip          : Focus cost of all abilities reduced by $s1%.
 

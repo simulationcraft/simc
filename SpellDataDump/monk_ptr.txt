@@ -5363,7 +5363,6 @@ Effects          :
 Description      : $@spelldesc213116
 
 Name             : Mark of the Crane (id=228287) [Spell Family (53)] 
-Hotfixed         : Max Targets (5 -> 6)
 Class            : Monk
 School           : Physical
 Spell Type       : None
