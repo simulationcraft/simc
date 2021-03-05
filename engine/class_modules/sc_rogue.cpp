@@ -3212,19 +3212,14 @@ struct mutilate_t : public rogue_attack_t
       {
         residual_action::residual_periodic_action_t<spell_t>::init();
 
-        // Hack to force it to mitigate the damage with armor.
-        // Bug, see https://github.com/SimCMinMax/WoW-BugTracker/issues/812
+        // 03/05/2021 -- Blizzard fixed the issue with armor, but it is still affected by damage taken debuffs
+        //               Bug, see https://github.com/SimCMinMax/WoW-BugTracker/issues/812
         if ( player->bugs )
         {
           snapshot_flags |= STATE_TARGET;
           update_flags |= STATE_TARGET;
         }
       }
-
-      // Hack to force it to mitigate the damage with armor.
-      // Bug, see https://github.com/SimCMinMax/WoW-BugTracker/issues/812
-      void assess_damage( result_amount_type t, action_state_t* s ) override
-      { residual_action::residual_periodic_action_t<spell_t>::assess_damage( player->bugs ? result_amount_type::DMG_DIRECT : t, s ); }
     };
 
     doomblade_t* doomblade_dot;
