@@ -4613,7 +4613,6 @@ struct serrated_bone_spike_t : public rogue_attack_t
     energize_type = action_energize::ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = p->find_spell( 328548 )->effectN( 1 ).base_value();
-    may_crit = p->dbc->ptr; // 03/04/2021 -- Manual PTR hotfix awaiting spell data change
 
     serrated_bone_spike_dot = p->get_background_action<serrated_bone_spike_dot_t>( "serrated_bone_spike_dot" );
 
@@ -8732,11 +8731,6 @@ public:
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Rogue", "2020-10-29", "Serrated Bone Spike initial damage increased by 300%", 821129, hotfix::HOTFIX_FLAG_PTR )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.2 )
-      .verification_value( 0.3 );
   }
 
   void init( player_t* ) const override {}
