@@ -50,6 +50,7 @@ void arcane( player_t* p )
   action_priority_list_t* rotation = p->get_action_priority_list( "rotation" );
   action_priority_list_t* final_burn = p->get_action_priority_list( "final_burn" );
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
+  action_priority_list_t* harmony = p->get_action_priority_list( "harmony" );
   action_priority_list_t* am_spam = p->get_action_priority_list( "am_spam" );
   action_priority_list_t* movement = p->get_action_priority_list( "movement" );
 
@@ -105,6 +106,7 @@ void arcane( player_t* p )
   default_->add_action( "use_item,name=macabre_sheet_music,if=cooldown.arcane_power.remains<=5&(!variable.fishing_opener=1|time>30)" );
   default_->add_action( "use_item,name=macabre_sheet_music,if=cooldown.arcane_power.remains<=5&variable.fishing_opener=1&buff.rune_of_power.up&buff.rune_of_power.remains<=(10-5*runeforge.siphon_storm)&time<30" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>2" );
+  default_->add_action( "call_action_list,name=harmony,if=covenant.kyrian&runeforge.arcane_infinity&talent.rune_of_power&!conduit.arcane_prodigy" );
   default_->add_action( "call_action_list,name=fishing_opener,if=variable.have_opened=0&variable.fishing_opener", "The fishing opener begins with RoP and fishes for CC procs to use during TotM/AP" );
   default_->add_action( "call_action_list,name=opener,if=variable.have_opened=0" );
   default_->add_action( "call_action_list,name=am_spam,if=variable.am_spam=1" );
@@ -245,6 +247,36 @@ void arcane( player_t* p )
   aoe->add_action( "arcane_explosion,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
   aoe->add_action( "arcane_explosion,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&prev_gcd.1.arcane_barrage" );
   aoe->add_action( "evocation,interrupt_if=mana.pct>=85,interrupt_immediate=1" );
+
+  harmony->add_action( "cancel_action,if=action.evocation.channeling&mana.pct>=95" );
+  harmony->add_action( "evocation,if=mana.pct<=15&cooldown.touch_of_the_magi.remains<=(execute_time+action.touch_of_the_magi.execute_time)&cooldown.arcane_power.remains<=(execute_time+action.touch_of_the_magi.execute_time+action.arcane_power.execute_time)&buff.rune_of_power.down&buff.arcane_power.down&debuff.touch_of_the_magi.down&!dot.radiant_spark.remains", "Use Evocation if we're low on mana and a TotM/AP window is coming up" );
+  harmony->add_action( "evocation,if=mana.pct<=30&cooldown.rune_of_power.remains<=(execute_time+action.rune_of_power.execute_time)&cooldown.touch_of_the_magi.remains<=(execute_time+action.rune_of_power.execute_time+action.radiant_spark.execute_time)&cooldown.arcane_power.remains>40", "Use Evocation if we're low on mana and a RoP window is coming up" );
+  harmony->add_action( "arcane_missiles,if=buff.arcane_harmony.stack<buff.arcane_harmony.max_stack&cooldown.radiant_spark.remains<=(2+(execute_time+action.radiant_spark.execute_time))&cooldown.touch_of_the_magi.remains<=(2+(execute_time+action.radiant_spark.execute_time+action.touch_of_the_magi.execute_time))&cooldown.arcane_power.remains<=(2+(execute_time+action.radiant_spark.execute_time+action.touch_of_the_magi.execute_time+action.arcane_power.execute_time)),chain=1", "Build Harmony stacks for the TotM/AP window" );
+  harmony->add_action( "arcane_missiles,if=buff.arcane_harmony.stack<buff.arcane_harmony.max_stack&cooldown.rune_of_power.remains<=(2+(execute_time+action.rune_of_power.execute_time))&cooldown.radiant_spark.remains<=(2+(execute_time+action.rune_of_power.execute_time+action.radiant_spark.execute_time))&cooldown.touch_of_the_magi.remains<=(2+(execute_time+action.rune_of_power.execute_time+action.radiant_spark.execute_time+action.touch_of_the_magi.execute_time))&cooldown.arcane_power.remains,chain=1", "Build Harmony stacks for the RoP window" );
+  harmony->add_action( "arcane_missiles,if=buff.arcane_harmony.stack<buff.arcane_harmony.max_stack&cooldown.radiant_spark.remains<=(2+(execute_time+action.radiant_spark.execute_time))&cooldown.arcane_power.remains>=30&cooldown.rune_of_power.remains>=30,chain=1", "Build Harmony stacks for the naked RS window" );
+  harmony->add_action( "radiant_spark,if=buff.arcane_harmony.stack=buff.arcane_harmony.max_stack&cooldown.touch_of_the_magi.remains<execute_time&cooldown.arcane_power.remains<=(execute_time+action.touch_of_the_magi.execute_time)&mana.pct>15" );
+  harmony->add_action( "touch_of_the_magi,if=buff.arcane_harmony.stack=buff.arcane_harmony.max_stack&cooldown.arcane_power.remains<=execute_time&dot.radiant_spark.remains" );
+  harmony->add_action( "arcane_power,if=buff.arcane_harmony.stack=buff.arcane_harmony.max_stack&debuff.touch_of_the_magi.up&buff.rune_of_power.down" );
+  harmony->add_action( "rune_of_power,if=buff.arcane_harmony.stack=buff.arcane_harmony.max_stack&cooldown.touch_of_the_magi.remains<=(execute_time+action.radiant_spark.execute_time)&cooldown.arcane_power.remains>40&mana.pct>=35" );
+  harmony->add_action( "radiant_spark,if=buff.arcane_harmony.stack=buff.arcane_harmony.max_stack&cooldown.touch_of_the_magi.remains<execute_time&buff.rune_of_power.up" );
+  harmony->add_action( "touch_of_the_magi,if=buff.arcane_harmony.stack=buff.arcane_harmony.max_stack&cooldown.arcane_power.remains>40&buff.rune_of_power.up&dot.radiant_spark.remains" );
+  harmony->add_action( "rune_of_power,if=cooldown.touch_of_the_magi.remains>10&cooldown.arcane_power.remains>30&buff.arcane_power.down" );
+  harmony->add_action( "radiant_spark,if=buff.arcane_harmony.stack=buff.arcane_harmony.max_stack&cooldown.arcane_power.remains>=25&cooldown.rune_of_power.remains>=25&buff.arcane_harmony.stack=buff.arcane_harmony.max_stack&mana.pct>=15" );
+  harmony->add_action( "presence_of_mind,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&buff.arcane_charge.stack>0&buff.arcane_power.remains|buff.arcane_charge.stack<buff.arcane_charge.max_stack&buff.arcane_charge.stack>0&buff.rune_of_power.remains&debuff.touch_of_the_magi.remains", "Use PoM during AP or RoP windows to build charges after using Arcane Barrage" );
+  harmony->add_action( "arcane_blast,if=buff.presence_of_mind.up" );
+  harmony->add_action( "arcane_orb,if=buff.arcane_charge.stack<2&buff.arcane_power.up" );
+  harmony->add_action( "arcane_orb,if=buff.arcane_charge.stack<2&!(cooldown.arcane_power.remains<=10&cooldown.touch_of_the_magi.remains<=10&cooldown.radiant_spark.remains<=5)" );
+  harmony->add_action( "arcane_missiles,if=buff.arcane_charge.stack>1&buff.arcane_harmony.stack<buff.arcane_harmony.max_stack,chain=1" );
+  harmony->add_action( "arcane_missiles,if=cooldown.arcane_orb.remains<4&buff.arcane_harmony.stack<buff.arcane_harmony.max_stack,chain=1" );
+  harmony->add_action( "arcane_barrage,if=debuff.radiant_spark_vulnerability.stack=4" );
+  harmony->add_action( "arcane_blast,if=dot.radiant_spark.remains&debuff.touch_of_the_magi.remains>execute_time&(debuff.radiant_spark_vulnerability.stack=0|debuff.radiant_spark_vulnerability.stack<4)" );
+  harmony->add_action( "arcane_orb,if=dot.radiant_spark.remains>5&debuff.radiant_spark_vulnerability.stack=0&buff.rune_of_power.down" );
+  harmony->add_action( "arcane_blast,if=dot.radiant_spark.remains>execute_time&debuff.radiant_spark_vulnerability.stack>0&debuff.radiant_spark_vulnerability.stack<4&buff.rune_of_power.down" );
+  harmony->add_action( "arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.arcane_harmony.stack=buff.arcane_harmony.max_stack" );
+  harmony->add_action( "evocation,if=mana.pct<15" );
+  harmony->add_action( "arcane_blast,if=buff.arcane_charge.stack>1", "When between cooldown windows, we only build to full charges after using Arcane Orb" );
+  harmony->add_action( "arcane_barrage,if=buff.arcane_harmony.stack>0", "Immediately spend Harmony stacks when between cooldown windows" );
+  harmony->add_action( "arcane_missiles,chain=1" );
 
   am_spam->add_action( "cancel_action,if=action.evocation.channeling&mana.pct>=95" );
   am_spam->add_action( "evocation,if=mana.pct<=variable.evo_pct&(cooldown.touch_of_the_magi.remains<=action.evocation.execute_time|cooldown.arcane_power.remains<=action.evocation.execute_time|(talent.rune_of_power&cooldown.rune_of_power.remains<=action.evocation.execute_time))&buff.rune_of_power.down&buff.arcane_power.down&debuff.touch_of_the_magi.down" );
