@@ -825,6 +825,24 @@ private:
 
 public:
   template <typename T, typename... Ts>
+  T* find_background_action( util::string_view n = "" )
+  {
+    T* found_action = nullptr;
+    for ( auto action : background_actions )
+    {
+      found_action = dynamic_cast<T*>( action );
+      if ( found_action )
+      {
+        if ( n.empty() || found_action->name_str == n )
+          break;
+        else
+          found_action = nullptr;
+      }
+    }
+    return found_action;
+  }
+
+  template <typename T, typename... Ts>
   T* get_background_action( util::string_view n, Ts&&... args )
   {
     auto it = range::find( background_actions, n, &action_t::name_str );
@@ -4625,6 +4643,16 @@ struct serrated_bone_spike_t : public rogue_attack_t
     }
   }
 
+  virtual double generate_cp() const override
+  {
+    double cp = rogue_attack_t::generate_cp();
+
+    cp += p()->get_active_dots( serrated_bone_spike_dot->internal_id );
+    cp += !td( target )->dots.serrated_bone_spike->is_ticking();
+
+    return cp;
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
@@ -4839,8 +4867,8 @@ struct exsanguinated_expr_t : public expr_t
 
   double evaluate() override
   {
-    dot_t* d = action -> get_dot( action -> target );
-    return d -> is_ticking() && actions::rogue_attack_t::cast_state( d -> state ) -> exsanguinated;
+    dot_t* d = action->get_dot( action->target );
+    return d->is_ticking() && actions::rogue_attack_t::cast_state( d->state )->exsanguinated;
   }
 };
 
@@ -7056,40 +7084,74 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     } );
   }
   else if ( util::str_compare_ci( name_str, "poisoned" ) )
+  {
     return make_fn_expr( name_str, [ this ]() {
       rogue_td_t* tdata = get_target_data( target );
-      return tdata -> is_lethal_poisoned();
+      return tdata->is_lethal_poisoned();
     } );
+  }
   else if ( util::str_compare_ci( name_str, "poison_remains" ) )
+  {
     return make_fn_expr( name_str, [ this ]() {
       rogue_td_t* tdata = get_target_data( target );
-      return tdata -> lethal_poison_remains();
+      return tdata->lethal_poison_remains();
     } );
+  }
   else if ( util::str_compare_ci( name_str, "bleeds" ) )
   {
     return make_fn_expr( name_str, [ this ]() {
       rogue_td_t* tdata = get_target_data( target );
-      return tdata -> dots.garrote -> is_ticking() +
-             tdata -> dots.internal_bleeding -> is_ticking() +
-             tdata -> dots.rupture -> is_ticking() +
-             tdata -> dots.crimson_tempest -> is_ticking();
+      if ( dbc->ptr )
+      {
+        return tdata->dots.garrote->is_ticking() +
+          tdata->dots.internal_bleeding->is_ticking() +
+          tdata->dots.rupture->is_ticking() +
+          tdata->dots.crimson_tempest->is_ticking() +
+          tdata->dots.mutilated_flesh->is_ticking() +
+          tdata->dots.serrated_bone_spike->is_ticking();
+      }
+      else
+      {
+        return tdata->dots.garrote->is_ticking() +
+          tdata->dots.internal_bleeding->is_ticking() +
+          tdata->dots.rupture->is_ticking() +
+          tdata->dots.crimson_tempest->is_ticking() +
+          tdata->dots.mutilated_flesh->is_ticking();
+      }
     } );
   }
   else if ( util::str_compare_ci( name_str, "poisoned_bleeds" ) )
   {
     return make_fn_expr( name_str, [ this ]() {
       int poisoned_bleeds = 0;
-      for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
+      for ( auto p : sim->target_non_sleeping_list )
       {
-        player_t* t = sim -> target_non_sleeping_list[i];
-        rogue_td_t* tdata = get_target_data( t );
-        if ( tdata -> is_lethal_poisoned() ) {
-          poisoned_bleeds += tdata -> dots.garrote -> is_ticking() +
-                             tdata -> dots.internal_bleeding -> is_ticking() +
-                             tdata -> dots.rupture -> is_ticking();
+        rogue_td_t* tdata = get_target_data( p );
+        if ( tdata->is_lethal_poisoned() )
+        {
+          poisoned_bleeds += tdata->dots.garrote->is_ticking() +
+            tdata->dots.internal_bleeding->is_ticking() +
+            tdata->dots.rupture->is_ticking();
         }
       }
       return poisoned_bleeds;
+    } );
+  }
+  else if ( util::str_compare_ci( name_str, "active_bone_spikes" ) )
+  {
+    if ( !covenant.serrated_bone_spike->ok() )
+    {
+      return expr_t::create_constant( name_str, 0 );
+    }
+
+    auto action = find_background_action<actions::serrated_bone_spike_t::serrated_bone_spike_dot_t>( "serrated_bone_spike_dot" );
+    if ( !action )
+    {
+      return expr_t::create_constant( name_str, 0 );
+    }
+
+    return make_fn_expr( name_str, [ this, action ]() {
+      return get_active_dots( action->internal_id );
     } );
   }
   else if ( util::str_compare_ci( name_str, "rtb_buffs" ) )
@@ -7112,12 +7174,12 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
   }
   else if ( util::str_compare_ci(name_str, "priority_rotation") )
   {
-    return make_ref_expr(name_str, options.priority_rotation);
+    return make_ref_expr( name_str, options.priority_rotation );
   }
 
   // Split expressions
 
-  // stealthed.(rogue|mantle|sepsis|all)
+  // stealthed.(rogue|mantle|basic|sepsis|all)
   // rogue: all rogue abilities are checked (stealth, vanish, shadow_dance, subterfuge)
   // mantle: all abilities that maintain Mantle of the Master Assassin aura are checked (stealth, vanish)
   // all: all abilities that allow stealth are checked (rogue + shadowmeld)
@@ -7129,7 +7191,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         return stealthed( STEALTH_BASIC | STEALTH_ROGUE );
       } );
     }
-    else if ( util::str_compare_ci( split[ 1 ], "mantle" ) )
+    else if ( util::str_compare_ci( split[ 1 ], "mantle" ) || util::str_compare_ci( split[ 1 ], "basic" ) )
     {
       return make_fn_expr( split[ 0 ], [ this ]() {
         return stealthed( STEALTH_BASIC );
