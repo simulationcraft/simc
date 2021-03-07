@@ -121,6 +121,7 @@ struct shadow_bolt_t : public affliction_spell_t
       m *= 1.0 + p()->buffs.nightfall->default_value;
 
     m *= 1 + p()->buffs.decimating_bolt->check_value();
+    m *= 1 + p()->buffs.malefic_wrath->check_stack_value();
 
     return m;
   }
