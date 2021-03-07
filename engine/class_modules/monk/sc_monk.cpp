@@ -547,13 +547,24 @@ struct monk_heal_t : public monk_action_t<heal_t>
     if ( p()->buff.storm_earth_and_fire->up() )
     {
       if ( base_t::data().affected_by( p()->spec.storm_earth_and_fire->effectN( 1 ) ) )
-        am *= 1 + p()->spec.storm_earth_and_fire->effectN( 1 ).percent();
+      {
+        double sef_multiplier = p()->spec.storm_earth_and_fire->effectN( 1 ).percent();
+
+        am *= 1 + sef_multiplier;
+      }
     }
 
     if ( p()->buff.serenity->up() )
     {
       if ( base_t::data().affected_by( p()->talent.serenity->effectN( 2 ) ) )
-        am *= 1 + p()->talent.serenity->effectN( 2 ).percent();
+      {
+        double serenity_multiplier = p()->talent.serenity->effectN( 2 ).percent();
+
+        if ( p()->conduit.coordinated_offensive->ok() )
+          serenity_multiplier += p()->conduit.coordinated_offensive.percent();
+
+        am *= 1 + serenity_multiplier;
+      }
     }
 
     if ( p()->buff.hit_combo->up() )
@@ -805,13 +816,24 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     if ( p()->buff.storm_earth_and_fire->up() )
     {
       if ( base_t::data().affected_by( p()->spec.storm_earth_and_fire->effectN( 1 ) ) )
-        am *= 1 + p()->spec.storm_earth_and_fire->effectN( 1 ).percent();
+      {
+        double sef_multiplier = p()->spec.storm_earth_and_fire->effectN( 1 ).percent();
+
+        am *= 1 + sef_multiplier;
+      }
     }
 
     if ( p()->buff.serenity->up() )
     {
       if ( base_t::data().affected_by( p()->talent.serenity->effectN( 2 ) ) )
-        am *= 1 + p()->talent.serenity->effectN( 2 ).percent();
+      {
+        double serenity_multiplier = p()->talent.serenity->effectN( 2 ).percent();
+
+        if ( p()->conduit.coordinated_offensive->ok() )
+          serenity_multiplier += p()->conduit.coordinated_offensive.percent();
+
+        am *= 1 + serenity_multiplier;
+      }
     }
 
     if ( p()->buff.hit_combo->up() )
