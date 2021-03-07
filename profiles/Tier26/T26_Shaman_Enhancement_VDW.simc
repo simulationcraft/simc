@@ -96,6 +96,7 @@ actions.aoe+=/windfury_totem,if=buff.windfury_totem.remains<30
 
 # Single target action priority list
 actions.single=windstrike
+actions.single+=/lava_lash,if=buff.hot_hand.up|(runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6)
 actions.single+=/primordial_wave,if=!buff.primordial_wave.up
 actions.single+=/stormstrike,if=runeforge.doom_winds.equipped&buff.doom_winds.up
 actions.single+=/crash_lightning,if=runeforge.doom_winds.equipped&buff.doom_winds.up
@@ -105,11 +106,10 @@ actions.single+=/vesper_totem
 actions.single+=/frost_shock,if=buff.hailstorm.up
 actions.single+=/earthen_spike
 actions.single+=/fae_transfusion
-actions.single+=/lightning_bolt,if=buff.stormkeeper.up
+actions.single+=/chain_lightning,if=buff.stormkeeper.up
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5
 actions.single+=/chain_harvest,if=buff.maelstrom_weapon.stack>=5&raid_event.adds.in>=90
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack=10
-actions.single+=/lava_lash,if=buff.hot_hand.up|(runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6)
 actions.single+=/stormstrike
 actions.single+=/stormkeeper,if=buff.maelstrom_weapon.stack>=5
 actions.single+=/lava_lash
@@ -124,28 +124,28 @@ actions.single+=/earth_elemental
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
 head=boneshatter_helm,id=172325,bonus_id=6993/6716/6649/6647/1532/6935,gem_id=173127
-neck=charm_of_eternal_winter,id=183040,bonus_id=4800/4786/1498/6935,gem_id=173127
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646,gem_id=173127
 shoulders=pauldrons_of_fatal_finality,id=183003,bonus_id=4800/4786/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=4800/4786/1498
 chest=consumptive_chainmail_carapace,id=183000,bonus_id=4800/4786/1498,enchant=eternal_skirmish
-wrists=bangles_of_errant_pride,id=182977,bonus_id=4800/4786/1498/6935,gem_id=173127
+wrists=shackles_of_alluring_vitality,id=178846,bonus_id=6536/1540/6646,gem_id=173127
 hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=4800/4786/1498
-waist=loadbearing_belt,id=183016,bonus_id=4800/4786/1498/6935,gem_id=173127
+waist=belt_of_wretched_manipulations,id=178932,bonus_id=6536/1540/6646,gem_id=173127
 legs=mementoladen_cuisses,id=182985,bonus_id=4800/4786/1498
-feet=stoneclas_stompers,id=183006,bonus_id=4800/4786/1498,enchant=eternal_agility
+feet=spatial_rift_striders,id=179345,bonus_id=6536/1540/6646,enchant=eternal_agility
 finger1=ritualists_treasured_ring,id=183037,bonus_id=4800/4786/1498/6935,gem_id=173127,enchant=tenet_of_versatility
 finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=4800/4786/1498/6935,gem_id=173127,enchant=tenet_of_versatility
-trinket1=stone_legion_heraldry,id=184027,bonus_id=4800/4786/1498
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1540/6646
 trinket2=dreadfire_vessel,id=184030,bonus_id=4800/4786/1498
 main_hand=talons_of_the_legion_generals,id=182390,bonus_id=7187/1531,enchant=sinful_revelation
 off_hand=talons_of_the_legion_generals,id=182390,bonus_id=7187/1531,enchant=celestial_guidance
 
 # Gear Summary
-# gear_ilvl=230.06
-# gear_agility=886
+# gear_ilvl=229.63
+# gear_agility=880
 # gear_stamina=1528
-# gear_crit_rating=416
-# gear_haste_rating=784
-# gear_mastery_rating=385
-# gear_versatility_rating=364
+# gear_crit_rating=589
+# gear_haste_rating=719
+# gear_mastery_rating=168
+# gear_versatility_rating=472
 # gear_armor=878

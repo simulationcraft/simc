@@ -96,6 +96,7 @@ actions.aoe+=/windfury_totem,if=buff.windfury_totem.remains<30
 
 # Single target action priority list
 actions.single=windstrike
+actions.single+=/lava_lash,if=buff.hot_hand.up|(runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6)
 actions.single+=/primordial_wave,if=!buff.primordial_wave.up
 actions.single+=/stormstrike,if=runeforge.doom_winds.equipped&buff.doom_winds.up
 actions.single+=/crash_lightning,if=runeforge.doom_winds.equipped&buff.doom_winds.up
@@ -105,11 +106,10 @@ actions.single+=/vesper_totem
 actions.single+=/frost_shock,if=buff.hailstorm.up
 actions.single+=/earthen_spike
 actions.single+=/fae_transfusion
-actions.single+=/lightning_bolt,if=buff.stormkeeper.up
+actions.single+=/chain_lightning,if=buff.stormkeeper.up
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5
 actions.single+=/chain_harvest,if=buff.maelstrom_weapon.stack>=5&raid_event.adds.in>=90
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack=10
-actions.single+=/lava_lash,if=buff.hot_hand.up|(runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6)
 actions.single+=/stormstrike
 actions.single+=/stormkeeper,if=buff.maelstrom_weapon.stack>=5
 actions.single+=/lava_lash

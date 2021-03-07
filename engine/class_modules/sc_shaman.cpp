@@ -3531,7 +3531,7 @@ struct ice_strike_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_stormbringer = may_proc_flametongue = false;
+    may_proc_flametongue = false;
   }
 
   void execute() override
@@ -8920,6 +8920,7 @@ void shaman_t::init_action_list_enhancement()
   def->add_action( "call_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );
 
   single->add_action("windstrike");
+  single->add_action(this, "Lava Lash", "if=buff.hot_hand.up|(runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6)");
   single->add_action("primordial_wave,if=!buff.primordial_wave.up");
   single->add_action(this, "Stormstrike", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
   single->add_action(this, "Crash Lightning", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
@@ -8930,11 +8931,10 @@ void shaman_t::init_action_list_enhancement()
   single->add_action(this, "Frost Shock", "if=buff.hailstorm.up");
   single->add_talent(this, "Earthen Spike");
   single->add_action("fae_transfusion");
-  single->add_action(this, "Lightning Bolt", "if=buff.stormkeeper.up");
+  single->add_action(this, "Chain Lightning", "if=buff.stormkeeper.up");
   single->add_talent(this, "Elemental Blast", "if=buff.maelstrom_weapon.stack>=5");
   single->add_action("chain_harvest,if=buff.maelstrom_weapon.stack>=5&raid_event.adds.in>=90");
   single->add_action(this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack=10");
-  single->add_action(this, "Lava Lash", "if=buff.hot_hand.up|(runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6)");
   single->add_action(this, "Stormstrike");
   single->add_talent(this, "Stormkeeper", "if=buff.maelstrom_weapon.stack>=5");
   single->add_action(this, "Lava Lash");
@@ -8960,6 +8960,7 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_action(this, "Lightning Bolt", "if=buff.primordial_wave.up&(buff.stormkeeper.up|buff.maelstrom_weapon.stack>=5)");
   aoe->add_action(this, "Crash Lightning", "if=talent.crashing_storm.enabled|buff.crash_lightning.down");
   aoe->add_action(this, "Lava Lash", "target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled");
+  aoe->add_action(this, "Lava Lash," "if=buff.crash_lightning.up&buff.hot_hand.up");
   aoe->add_action(this, "Stormstrike", "if=buff.crash_lightning.up");
   aoe->add_action(this, "Crash Lightning");
   aoe->add_action(this, "Chain Lightning", "if=buff.stormkeeper.up");

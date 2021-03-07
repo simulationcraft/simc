@@ -33,9 +33,9 @@ race=orc
 spec=enhancement
 role=attack
 position=back
-talents=3111131
+talents=3211131
 covenant=night_fae
-soulbind=niya,grove_invigoration/focused_lightning:4
+soulbind=niya,grove_invigoration/magma_fist:4
 
 head=soulthorn_visage,id=178692,bonus_id=6807/1498/6646
 neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
