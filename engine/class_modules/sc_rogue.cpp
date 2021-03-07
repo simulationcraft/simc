@@ -3534,7 +3534,7 @@ struct shadow_blades_attack_t : public rogue_attack_t
   {
     rogue_attack_t::init();
 
-    snapshot_flags = update_flags = STATE_TGT_MUL_DA;
+    snapshot_flags = update_flags = 0;
   }
 };
 
@@ -6121,7 +6121,6 @@ void actions::rogue_action_t<Base>::trigger_shadow_blades_attack( action_state_t
 
   double amount = state->result_amount * p()->buffs.shadow_blades->check_value();
   // Deeper Daggers, despite Shadow Blades having the disable player multipliers flag, affects Shadow Blades with a manual exclusion for Gloomblade.
-  // TOCHECK: In what form does this go live with SL?
   if ( p()->buffs.deeper_daggers->check() && ab::data().id() != p()->talent.gloomblade->id() )
     amount *= 1.0 + p()->buffs.deeper_daggers->value();
   p()->active.shadow_blades_attack->base_dd_min = amount;
