@@ -347,9 +347,10 @@ struct echoed_spell_event_t : public event_t
   paladin_melee_attack_t* echo;
   paladin_t* paladin;
   player_t* target;
+  float amount;
 
-  echoed_spell_event_t( paladin_t* p, player_t* tgt, paladin_melee_attack_t* spell, timespan_t delay ) :
-    event_t( *p, delay ), echo( spell ), paladin( p ), target( tgt )
+  echoed_spell_event_t( paladin_t* p, player_t* tgt, paladin_melee_attack_t* spell, timespan_t delay, float amt = 0 ) :
+    event_t( *p, delay ), echo( spell ), paladin( p ), target( tgt ), amount( amt )
   {
   }
 
@@ -359,6 +360,8 @@ struct echoed_spell_event_t : public event_t
   void execute() override
   {
     echo -> set_target( target );
+    if ( amount > 0 )
+      echo -> base_dd_min = echo -> base_dd_max = amount * echo -> base_multiplier;
     echo -> schedule_execute();
   }
 };
@@ -390,8 +393,11 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
   // Templar's Verdict damage is stored in a different spell
   struct templars_verdict_damage_t : public paladin_melee_attack_t
   {
-    templars_verdict_damage_t( paladin_t *p ) :
-      paladin_melee_attack_t( "templars_verdict_dmg", p, p -> find_spell( 224266 ) )
+    echoed_templars_verdict_t* echo;
+
+    templars_verdict_damage_t( paladin_t *p, echoed_templars_verdict_t* e ) :
+      paladin_melee_attack_t( "templars_verdict_dmg", p, p -> find_spell( 224266 ) ),
+      echo( e )
     {
       dual = background = true;
 
@@ -409,6 +415,18 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
         vc -> base_dd_min = vc -> base_dd_max = s -> result_amount * p() -> conduit.virtuous_command.percent();
         vc -> set_target( s -> target );
         vc -> schedule_execute();
+      }
+
+      if ( p() -> dbc -> ptr )
+      {
+        if ( p() -> conduit.templars_vindication -> ok() )
+        {
+          if ( rng().roll( p() -> conduit.templars_vindication.percent() ) )
+          {
+            // TODO(mserrano): figure out if 600ms is still correct; there does appear to be some delay
+            make_event<echoed_spell_event_t>( *sim, p(), execute_state -> target, echo, timespan_t::from_millis( 600 ), s -> result_amount );
+          }
+        }
       }
     }
 
@@ -434,13 +452,13 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
     may_block = false;
     callbacks = false;
-    impact_action = new templars_verdict_damage_t( p );
-    impact_action -> stats = stats;
-
     if ( p -> conduit.templars_vindication -> ok() )
     {
       echo = new echoed_templars_verdict_t( p );
     }
+
+    impact_action = new templars_verdict_damage_t( p, echo );
+    impact_action -> stats = stats;
 
     // Okay, when did this get reset to 1?
     weapon_multiplier = 0;
@@ -484,12 +502,15 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       }
     }
 
-    if ( p() -> conduit.templars_vindication -> ok() )
+    if ( ! p() -> dbc -> ptr )
     {
-      if ( rng().roll( p() -> conduit.templars_vindication.percent() ) )
+      if ( p() -> conduit.templars_vindication -> ok() )
       {
-        // TODO(mserrano): figure out if 600ms is still correct; there does appear to be some delay
-        make_event<echoed_spell_event_t>( *sim, p(), execute_state -> target, echo, timespan_t::from_millis( 600 ) );
+        if ( rng().roll( p() -> conduit.templars_vindication.percent() ) )
+        {
+          // TODO(mserrano): figure out if 600ms is still correct; there does appear to be some delay
+          make_event<echoed_spell_event_t>( *sim, p(), execute_state -> target, echo, timespan_t::from_millis( 600 ), 0 );
+        }
       }
     }
   }

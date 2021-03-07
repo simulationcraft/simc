@@ -1101,8 +1101,20 @@ struct divine_toll_t : public paladin_spell_t
       {
         if ( rng().roll( p() -> conduit.ringing_clarity.percent() ) )
         {
-          p() -> active.divine_toll -> set_target( this -> target );
-          p() -> active.divine_toll -> schedule_execute();
+          if ( p() -> dbc -> ptr )
+          {
+            paladin_t* pal = p();
+            player_t* target = this -> target;
+            make_event( *sim, timespan_t::from_millis( 700 * ( hits + 1 ) ), [ target, pal ] {
+                pal -> active.divine_toll -> set_target( target );
+                pal -> active.divine_toll -> schedule_execute();
+              } );
+          }
+          else
+          {
+            p() -> active.divine_toll -> set_target( this -> target );
+            p() -> active.divine_toll -> schedule_execute();
+          }
         }
       }
   }
