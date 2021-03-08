@@ -1214,14 +1214,12 @@ struct mirrors_of_torment_t final : public buff_t
   int successful_triggers;
 
   // Spec-specific effects
-  double mana_pct;
   timespan_t reduction;
 
   mirrors_of_torment_t( mage_td_t* td ) :
     buff_t( *td, "mirrors_of_torment", td->source->find_spell( 314793 ) ),
     icd( td->source->get_cooldown( "mirrors_of_torment_icd" ) ),
     successful_triggers(),
-    mana_pct(),
     reduction()
   {
     set_cooldown( 0_ms );
@@ -1234,10 +1232,6 @@ struct mirrors_of_torment_t final : public buff_t
 
     switch ( p->specialization() )
     {
-      case MAGE_ARCANE:
-        if ( !p->dbc->ptr )
-          mana_pct = p->find_spell( 345417 )->effectN( 1 ).percent();
-        break;
       case MAGE_FIRE:
         reduction = -1000 * data().effectN( 2 ).time_value();
         break;
@@ -1271,10 +1265,7 @@ struct mirrors_of_torment_t final : public buff_t
       switch ( p->specialization() )
       {
         case MAGE_ARCANE:
-          if ( p->dbc->ptr )
-            p->trigger_delayed_buff( p->buffs.clearcasting, 1.0, 0_ms );
-          else
-            p->resource_gain( RESOURCE_MANA, p->resources.max[ RESOURCE_MANA ] * mana_pct, p->gains.mirrors_of_torment );
+          p->trigger_delayed_buff( p->buffs.clearcasting, 1.0, 0_ms );
           break;
         case MAGE_FIRE:
           p->cooldowns.fire_blast->adjust( reduction );
@@ -4357,7 +4348,7 @@ struct meteor_impact_t final : public fire_mage_spell_t
   timespan_t meteor_burn_pulse_time;
 
   meteor_impact_t( util::string_view n, mage_t* p, action_t* burn ) :
-    fire_mage_spell_t( n, p, p->dbc->ptr ? p->find_spell( 351140 ) : p->find_spell( 153564 ) ),
+    fire_mage_spell_t( n, p, p->find_spell( 351140 ) ),
     meteor_burn( burn ),
     meteor_burn_duration( p->find_spell( 175396 )->duration() ),
     meteor_burn_pulse_time( p->find_spell( 155158 )->effectN( 1 ).period() )
@@ -4413,13 +4404,8 @@ struct meteor_t final : public fire_mage_spell_t
 
   timespan_t travel_time() const override
   {
-    timespan_t impact_time = meteor_delay * p()->cache.spell_speed();
-    if ( p()->dbc->ptr )
-      // Travel time cannot go lower than 1 second to give time for Meteor to visually fall.
-      return std::max( impact_time, 1_s );
-
-    timespan_t meteor_spawn = impact_time - impact_action->travel_time();
-    return std::max( meteor_spawn, 0_ms );
+    // Travel time cannot go lower than 1 second to give time for Meteor to visually fall.
+    return std::max( meteor_delay * p()->cache.spell_speed(), 1.0_s );
   }
 };
 
