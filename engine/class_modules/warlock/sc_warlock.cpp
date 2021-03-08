@@ -306,6 +306,7 @@ struct decimating_bolt_dmg_t : public warlock_spell_t
   {
     double m = warlock_spell_t::composite_target_multiplier( target );
 
+    //This currently matches the bonus multiplier to the spec spells, but is not guaranteed to stay this way. Last checked on PTR 2021-03-07
     m *= 2.0 - target->health_percentage() * 0.01;
 
     return m;
@@ -341,7 +342,7 @@ struct decimating_bolt_t : public warlock_spell_t
   {
     //TOCHECK: the formulae for Decimating Bolt bonus damage does not appear in spell data, and should be
     //checked regularly to ensure accuracy
-    double value = p()->buffs.decimating_bolt->default_value - 0.006 * s->target->health_percentage();
+    double value = p()->buffs.decimating_bolt->default_value - 0.01 * s->target->health_percentage();
     if ( p()->talents.fire_and_brimstone->ok() )
       value *= 0.4;
     p()->buffs.decimating_bolt->trigger( 3, value );
@@ -913,7 +914,7 @@ void warlock_t::create_buffs()
   // 4.0 is the multiplier for a 0% health mob
   buffs.decimating_bolt =
       make_buff( this, "decimating_bolt", find_spell( 325299 ) )->set_duration( find_spell( 325299 )->duration() )
-                              ->set_default_value(1.6)
+                              ->set_default_value(2.0)
                               ->set_max_stack( talents.drain_soul->ok() ? 1 : 3 );
 
   // Conduits
