@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 9.0.2.37474
-static const std::array<specialization_spell_entry_t, 926> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 9.0.5.37844
+static const std::array<specialization_spell_entry_t, 925> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -235,6 +235,7 @@ static const std::array<specialization_spell_entry_t, 926> __specialization_spel
   {  4,  259,  14190,      0, "Seal Fate"                         , 0 },
   {  4,  259,  32645, 196819, "Envenom"                           , 0 },
   {  4,  259,  36554,      0, "Shadowstep"                        , 0 },
+  {  4,  259,  51667,      0, "Cut to the Chase"                  , 0 },
   {  4,  259,  51723,      0, "Fan of Knives"                     , 0 },
   {  4,  259,  76803,      0, "Mastery: Potent Assassin"          , 0 },
   {  4,  259,  79134,      0, "Venomous Wounds"                   , 0 },
@@ -248,7 +249,6 @@ static const std::array<specialization_spell_entry_t, 926> __specialization_spel
   {  4,  259, 319066,      0, "Wound Poison"                      , "Rank 2" },
   {  4,  259, 319473,      0, "Mastery: Potent Assassin"          , "Rank 2" },
   {  4,  259, 330542,      0, "Improved Poisons"                  , "Rank 2" },
-  {  4,  259, 344362,      0, "Slice and Dice"                    , "Rank 2" },
   {  4,  260,   1776,      0, "Gouge"                             , 0 },
   {  4,  260,   2098, 196819, "Dispatch"                          , 0 },
   {  4,  260,  13750,      0, "Adrenaline Rush"                   , 0 },
@@ -862,7 +862,6 @@ static const std::array<specialization_spell_entry_t, 926> __specialization_spel
   { 12,  577, 196718,      0, "Darkness"                          , 0 },
   { 12,  577, 197125,      0, "Chaos Strike"                      , 0 },
   { 12,  577, 198013,      0, "Eye Beam"                          , 0 },
-  { 12,  577, 198589,      0, "Blur"                              , 0 },
   { 12,  577, 198793, 344866, "Vengeful Retreat"                  , 0 },
   { 12,  577, 212612,      0, "Havoc Demon Hunter"                , 0 },
   { 12,  577, 320377,      0, "Immolation Aura"                   , "Rank 3" },
@@ -899,7 +898,7 @@ static const std::array<specialization_spell_entry_t, 926> __specialization_spel
   { 12,  581, 204254, 178940, "Shattered Souls"                   , 0 },
   { 12,  581, 204596,      0, "Sigil of Flame"                    , 0 },
   { 12,  581, 207197,      0, "Riposte"                           , 0 },
-  { 12,  581, 207684,      0, "Sigil of Misery"                   , 0 },
+  { 12,  581, 207684, 198589, "Sigil of Misery"                   , 0 },
   { 12,  581, 212084,      0, "Fel Devastation"                   , 0 },
   { 12,  581, 212611,      0, "Demon Hunter"                      , 0 },
   { 12,  581, 212613,      0, "Vengeance Demon Hunter"            , 0 },
