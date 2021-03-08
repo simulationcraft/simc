@@ -491,11 +491,11 @@ void windwalker( player_t* p )
     if ( p->items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
       if ( p->items[ i ].name_str == "inscrutable_quantum_device" )
-        cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst" );
+        cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst" );
       else if ( p->items[ i ].name_str == "wrathone" )
-        cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst" );
+        cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst" );
       else if ( p->items[ i ].name_str == "gladiators_badge" )
-        cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst" );
+        cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst" );
       else
         cd_serenity->add_action(
             "use_item,name=" + p->items[ i ].name_str +
