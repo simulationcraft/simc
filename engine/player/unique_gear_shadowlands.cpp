@@ -1823,7 +1823,7 @@ void tablet_of_despair( special_effect_t& effect )
 {
   struct burst_of_despair_t : public proc_spell_t
   {
-    // each tick has a multiplier of 1.5^(tick #) with tick on application being tick #1
+    // each tick has a multiplier of 1.5^(tick #) with tick on application being tick #0
     double tick_factor;
     int tick_number;
 
@@ -1839,7 +1839,7 @@ void tablet_of_despair( special_effect_t& effect )
     {
       double am = proc_spell_t::composite_da_multiplier( s );
 
-      am *= std::pow( tick_factor, tick_number + 1 );
+      am *= std::pow( tick_factor, tick_number );
 
       return am;
     }
