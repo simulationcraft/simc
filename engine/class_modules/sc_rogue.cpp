@@ -5578,11 +5578,6 @@ void actions::rogue_action_t<Base>::trigger_seal_fate( const action_state_t* sta
   if ( state->result != RESULT_CRIT )
     return;
 
-  // Seal Fate says only melee attacks and SBS is not a melee attack. Nevertheless, bluepost said it should be affected.
-  // See https://github.com/SimCMinMax/WoW-BugTracker/issues/822
-  if ( p()->bugs && ab::data().id() == p()->covenant.serrated_bone_spike->id() )
-    return;
-
   trigger_combo_point_gain( 1, p()->gains.seal_fate );
 
   p()->procs.seal_fate->occur();
@@ -7739,8 +7734,7 @@ void rogue_t::create_buffs()
     ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_PROC_CHANCE )
     ->set_duration( timespan_t::min() )
     ->set_period( timespan_t::zero() )
-    // 02/21/2021 -- Blizzard ninja-changed to Duration refresh at some point in Shadowlands
-    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buffs.vendetta = make_buff( this, "vendetta_energy", spec.vendetta->effectN( 4 ).trigger() )
     ->set_default_value_from_effect_type( A_RESTORE_POWER )
