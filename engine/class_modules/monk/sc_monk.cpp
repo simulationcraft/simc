@@ -1237,7 +1237,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     if ( p()->buff.serenity->up() )
     {
       if ( p()->buff.weapons_of_order_ww->up() )
-        p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] - p()->buff.weapons_of_order_ww->value() );
+        p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] + p()->buff.weapons_of_order_ww->value() );
       else
         p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
     }
@@ -1410,7 +1410,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     if ( p()->buff.serenity->up() )
     {
       if ( p()->buff.weapons_of_order_ww->up() )
-        p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] - p()->buff.weapons_of_order_ww->value() );
+        p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] + p()->buff.weapons_of_order_ww->value() );
       else
         p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
     }
@@ -1761,10 +1761,10 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       double cost = base_costs[ RESOURCE_CHI ];
 
       if ( p()->buff.weapons_of_order_ww->up() )
-        cost -= p()->buff.weapons_of_order_ww->value();
+        cost += p()->buff.weapons_of_order_ww->value();
 
       if ( p()->buff.dance_of_chiji_hidden->up() )
-        cost -= p()->buff.dance_of_chiji->value();
+        cost += p()->buff.dance_of_chiji->value();
 
       if ( cost < 0 )
         cost = 0;
@@ -1909,7 +1909,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     if ( p()->buff.serenity->up() )
     {
       if ( p()->buff.weapons_of_order_ww->up() )
-        p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] - p()->buff.weapons_of_order_ww->value() );
+        p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] + p()->buff.weapons_of_order_ww->value() );
       else
         p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
     }
