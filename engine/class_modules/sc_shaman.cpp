@@ -4202,11 +4202,45 @@ struct lava_beam_t : public chained_base_t
 
 // Lava Burst Spell =========================================================
 
+struct lava_burst_state_t : public shaman_spell_state_t
+{
+  bool wlr_buffed;
+
+  lava_burst_state_t( action_t* action_, player_t* target_ ) :
+    shaman_spell_state_t( action_, target_ ), wlr_buffed( false )
+  { }
+
+  void initialize() override
+  {
+    shaman_spell_state_t::initialize();
+
+    wlr_buffed = false;
+  }
+
+  void copy_state( const action_state_t* s ) override
+  {
+    shaman_spell_state_t::copy_state( s );
+
+    auto lbs = debug_cast<const lava_burst_state_t*>( s );
+    wlr_buffed = lbs->wlr_buffed;
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    shaman_spell_state_t::debug_str( s );
+
+    s << " wlr_buffed=" << wlr_buffed;
+
+    return s;
+  }
+};
+
 // As of 8.1 Lava Burst checks its state on impact. Lava Burst -> Flame Shock now forces the critical strike
 struct lava_burst_overload_t : public elemental_overload_spell_t
 {
   unsigned impact_flags;
   lava_burst_type type;
+  bool wlr_buffed_impact;
 
   static std::string action_name( const std::string& suffix )
   {
@@ -4215,20 +4249,31 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
   lava_burst_overload_t( shaman_t* player, lava_burst_type type, shaman_spell_t* parent_, const std::string& suffix )
     : elemental_overload_spell_t( player, action_name( suffix ), player->find_spell( 77451 ), parent_ ),
-      impact_flags(),
-      type(type)
+      impact_flags(), type(type), wlr_buffed_impact( false )
   {
     maelstrom_gain         = player->spell.maelstrom->effectN( 4 ).resource( RESOURCE_MAELSTROM );
     spell_power_mod.direct = player->find_spell( 285466 )->effectN( 1 ).sp_coeff();
   }
 
+  static lava_burst_state_t* cast_state( action_state_t* s )
+  { return debug_cast<lava_burst_state_t*>( s ); }
+
+  static const lava_burst_state_t* cast_state( const action_state_t* s )
+  { return debug_cast<const lava_burst_state_t*>( s ); }
+
+  action_state_t* new_state() override
+  { return new lava_burst_state_t( this, target ); }
+
   void snapshot_impact_state( action_state_t* s, result_amount_type rt )
   {
     auto et = cast_state( s )->exec_type;
+    wlr_buffed_impact = cast_state( s )->wlr_buffed;
 
     snapshot_internal( s, impact_flags, rt );
 
     cast_state( s )->exec_type = et;
+    // Restore state for debugging purposes, this->wlr_buffed_impact is used for state
+    cast_state( s )->wlr_buffed = wlr_buffed_impact;
   }
 
   double calculate_direct_amount( action_state_t* /* s */ ) const override
@@ -4275,8 +4320,10 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       m *= 1.0 + p()->cache.spell_crit_chance();
     }
 
-    if ( p()->buff.windspeakers_lava_resurgence->up() ) {
-      m *= 1.0 + p()->buff.windspeakers_lava_resurgence->value();
+    // Buff damage in both "snapshotted" and "current state" cases
+    if ( wlr_buffed_impact || p()->buff.windspeakers_lava_resurgence->up() )
+    {
+      m *= 1.0 + p()->buff.windspeakers_lava_resurgence->data().effectN( 1 ).percent();
     }
 
     return m;
@@ -4467,6 +4514,7 @@ struct lava_burst_t : public shaman_spell_t
 {
   lava_burst_type type;
   unsigned impact_flags;
+  bool wlr_buffed_impact;
 
   static std::string action_name( const std::string& suffix )
   {
@@ -4477,7 +4525,7 @@ struct lava_burst_t : public shaman_spell_t
                 const std::string& options_str = std::string() )
     : shaman_spell_t( action_name( suffix ), player,
                       player->find_specialization_spell( "Lava Burst" ) ),
-      type( type_ ), impact_flags()
+      type( type_ ), impact_flags(), wlr_buffed_impact( false )
   {
     parse_options( options_str );
     // Manacost is only for resto
@@ -4535,6 +4583,15 @@ struct lava_burst_t : public shaman_spell_t
     }
   }
 
+  static lava_burst_state_t* cast_state( action_state_t* s )
+  { return debug_cast<lava_burst_state_t*>( s ); }
+
+  static const lava_burst_state_t* cast_state( const action_state_t* s )
+  { return debug_cast<const lava_burst_state_t*>( s ); }
+
+  action_state_t* new_state() override
+  { return new lava_burst_state_t( this, target ); }
+
   void init() override
   {
     shaman_spell_t::init();
@@ -4558,9 +4615,21 @@ struct lava_burst_t : public shaman_spell_t
     return tl.size();
   }
 
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    shaman_spell_t::snapshot_internal( s, flags, rt );
+
+    cast_state( s )->wlr_buffed = p()->buff.windspeakers_lava_resurgence->check();
+  }
+
   void snapshot_impact_state( action_state_t* s, result_amount_type rt )
   {
+    wlr_buffed_impact = cast_state( s )->wlr_buffed;
+
     snapshot_internal( s, impact_flags, rt );
+
+    // Restore state for debugging purposes, this->wlr_buffed_impact is used for state
+    cast_state( s )->wlr_buffed = wlr_buffed_impact;
   }
 
   double calculate_direct_amount( action_state_t* /* s */ ) const override
@@ -4622,16 +4691,11 @@ struct lava_burst_t : public shaman_spell_t
       m *= 1.0 + p()->cache.spell_crit_chance();
     }
 
-    if ( p()->buff.windspeakers_lava_resurgence->up() ){
-      m *= 1.0 + p()->buff.windspeakers_lava_resurgence->value();
+    // Buff damage in both "snapshotted" and "current state" cases
+    if ( wlr_buffed_impact || p()->buff.windspeakers_lava_resurgence->up() )
+    {
+      m *= 1.0 + p()->buff.windspeakers_lava_resurgence->data().effectN( 1 ).percent();
     }
-
-    return m;
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = shaman_spell_t::composite_da_multiplier( state );
 
     return m;
   }
