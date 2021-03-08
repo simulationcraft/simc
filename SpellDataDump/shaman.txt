@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37844 Live (hotfix 2021-03-08/37844, git build shadowlands 2bf2959832)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -126,7 +126,7 @@ Effects          :
 #2 (id=219186)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Chain Friendly (45)
 Description      : Heals the friendly target for $s1, then jumps to heal the $<jumps> most injured nearby allies. Healing is reduced by $s2% with each jump.
-Variables        : $jumps=$?a338346[${$x1-2}][${$x1-1}]
+Variables        : $jumps=${$x1-1}
 
 Name             : Earthbind Totem (id=2484) [Spell Family (11)] 
 Class            : Shaman
@@ -357,7 +357,7 @@ Resource         : 60 Maelstrom (11) (id=215295)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Lava Shock (273453 effect#1)
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Lava Shock (273453 effect#1), Bottle of Swirling Maelstrom (329580 effect#4)
 Family Flags     : 20, 39
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -369,7 +369,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=3248)     : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.10000 | PvP Coefficient: 0.90000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.73000 | PvP Coefficient: 0.90000 | Target: Enemy (6)
 Description      : Instantly shocks the target with concussive force, causing $s1 Nature damage.$?a190493[
 
 Earth Shock will consume all stacks of Fulmination to deal extra Nature damage to your target.][]
@@ -516,7 +516,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 10467 | Misc Value 2: 0x12e9 | Target: Water Totem (42)
 #2 (id=808050)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
-Description      : Summons a Mana Tide Totem at the feet of the caster for $d, granting $320763s1% increased mana regeneration to party and raid members within $s2 yds.
+Description      : Summons a Mana Tide Totem at the feet of the caster for $d, granting $320763s1% increased mana regeneration to allies within $s2 yds.
 
 Name             : Resurgence (id=16196) [Spell Family (11), Passive] 
 Class            : Restoration Shaman
@@ -985,7 +985,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=37247)    : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.47000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.63500 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.
 
 Name             : Earthgrab Totem (id=51485) [Spell Family (11)] 
@@ -1540,7 +1540,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=53784)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.54000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.75600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=53785)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Charges your off-hand weapon with lava and burns your target, dealing $s1 Fire damage.
@@ -1620,7 +1620,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Proc Chance      : 100%
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Bottle of Swirling Maelstrom (329580 effects: #5, #6)
 Family Flags     : 83
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
@@ -1639,7 +1639,8 @@ Effects          :
 #3 (id=263791)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3691 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : Causes the earth within $a1 yards of the target location to tremble and break, dealing $<damage> Physical damage over $d and sometimes knocking down enemies.
-Variables        : $damage=${$SPN*0.23*$d/$t2*(1+$@versadmg)*($137040s1+100)/100}
+Variables        : $mawPower=$?a329580[${1+($329580m5/100)}][${1}]
+$damage=${$SPN*0.391*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}
 
 Name             : Earthgrab (id=64695) [Spell Family (11)] 
 Class            : Shaman
@@ -2018,7 +2019,7 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 22
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Bottle of Swirling Maelstrom (329580 effects: #5, #6)
 Family Flags     : 39, 83
 Attributes       : ........ ........ ........ x..x....   ...x...x ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ ........ ......x. 
@@ -2308,7 +2309,7 @@ Spell Level      : 16
 Duration         : 10 seconds
 Attributes       : .......x x....... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2329,7 +2330,7 @@ Triggered by     : Spirit Link (98017)
 Family Flags     : 116
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ..x..... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2554,7 +2555,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Tectonic Thunder (286976 effect#1), Stormkeeper (320137 effect#1), Chains of Devastation (336736 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Tectonic Thunder (286976 effect#1), Chains of Devastation (336736 effects: #1, #2)
 Family Flags     : 34, 39
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2566,7 +2567,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=127188)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.47000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1.1 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.63500 | PvP Coefficient: 1.00000 | Chain Multiplier: 1.1 | Chain Targets: 3 | Target: Enemy (6)
 #2 (id=188522)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
 #3 (id=325441)   : Dummy (3)
@@ -2653,7 +2654,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=128188)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.47000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1.1 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.63500 | PvP Coefficient: 1.00000 | Chain Multiplier: 1.1 | Chain Targets: 3 | Target: Enemy (6)
 Description      : Unleash a blast of superheated flame at the enemy, dealing $s1 Fire damage and then jumping to additional nearby enemies. Affects up to $x1 total targets.
 
 Name             : Ancestral Guidance (id=114911) 
@@ -3063,7 +3064,7 @@ Effects          :
                    Family Flags: 0, 27, 36, 66, 75, 85, 90, 112
 #3 (id=190241)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Stormstrike (17364), Feral Spirit (51533), Lava Lash (60103), Windstrike (115356), Crash Lightning (187874), Crash Lightning (195592), Feral Lunge (196884), Sundering (197214), Feral Spirit (228562), Feral Spirit (333957), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357)
+                   Affected Spells: Stormstrike (17364), Feral Spirit (51533), Lava Lash (60103), Windstrike (115356), Crash Lightning (187874), Crash Lightning (195592), Feral Lunge (196884), Sundering (197214), Molten Weapon (224125), Icy Edge (224126), Crackling Surge (224127), Feral Spirit (228562), Feral Spirit (333957), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357)
                    Family Flags: 16, 27, 36, 48, 66, 75, 85, 112
 #4 (id=191050)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1634 | Target: Self (1)
@@ -3119,6 +3120,9 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Purge (370)
                    Family Flags: 88
+#10 (id=880173)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value 2: 983 (Label) | Target: Self (1)
+                   Affected Spells (Label): Chain Harvest (320751), Chain Harvest (320752)
 Description      : Restoration Shaman core passive
 
 Name             : Elemental Shaman (id=137040) [Spell Family (11), Passive, Hidden] 
@@ -3157,6 +3161,9 @@ Effects          :
                    Base Value: 68 | Scaled Value: 68 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Earth Shield (379)
                    Family Flags: 70
+#7 (id=880172)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value 2: 983 (Label) | Target: Self (1)
+                   Affected Spells (Label): Chain Harvest (320751), Chain Harvest (320752)
 Description      : Elemental Shaman baseline passive
 
 Name             : Enhancement Shaman (id=137041) [Spell Family (11), Passive, Hidden] 
@@ -3880,6 +3887,7 @@ Class            : Shaman
 School           : Physical
 Spell Type       : Magic
 Duration         : 30 seconds
+Labels           : 1207: Bottle of Swirling Maelstrom (329580 effect#1), Bottle of Swirling Maelstrom (329580 effect#2)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Affecting spells : Focused Lightning (338322 effects: #1, #2)
@@ -3946,7 +3954,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Stormkeeper (320137 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1)
 Family Flags     : 0, 39, 56
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4017,7 +4025,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=275203)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.47000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.63500 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
 #2 (id=325428)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.$?s187874[
@@ -4402,7 +4410,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=281806)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.03600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc192106
 
 Name             : Liquid Magma Totem (id=192222) [Spell Family (11)] 
@@ -6081,7 +6089,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 2 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Stormkeeper (320137 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1)
 Family Flags     : 0
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6217,6 +6225,8 @@ Duration         : 15 seconds
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Family Flags     : 48
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -6247,6 +6257,8 @@ Duration         : 15 seconds
 Proc Chance      : 101%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Family Flags     : 48
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -6270,6 +6282,8 @@ School           : Nature
 Spell Type       : Magic
 Range            : 5 yards
 Duration         : 15 seconds
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Family Flags     : 48
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -6827,7 +6841,7 @@ Attributes       : ......xx ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=623976)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Feral Spirit (51533), Feral Spirit (228562), Feral Spirit (333957)
+                   Affected Spells: Feral Spirit (51533), Molten Weapon (224125), Icy Edge (224126), Crackling Surge (224127), Feral Spirit (228562), Feral Spirit (333957)
                    Family Flags: 48
 Description      : Reduces the cooldown of Feral Spirit by ${$m1/-1000} sec and causes your Feral Spirits to be imbued with Fire, Frost, or Lightning, enhancing your abilities.
 
@@ -9515,7 +9529,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=747255)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.08000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.97200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc51505
 
 Name             : Lava Burst Overload (id=285466) [Spell Family (11)] 
@@ -9536,7 +9550,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=747277)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.08000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.97200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=845773)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: maelstrom | Target: Self (1)
 Description      : $@spelldesc51505
@@ -10191,7 +10205,7 @@ Affecting spells : Mastery: Enhanced Elements (77223 effect#4), Doom Winds (2049
 Family Flags     : 72
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10216,7 +10230,7 @@ Affecting spells : Elemental Fury (60188 effect#1)
 Family Flags     : 21
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10308,17 +10322,16 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=807047)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Lava Beam (114074), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt Overload (214816)
-                   Family Flags: 0, 1, 34
+                   Affected Spells: Chain Lightning (188443)
+                   Family Flags: 1
 #2 (id=807048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.76667 | Target: Self (1)
-                   Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt Overload (214816)
-                   Family Flags: 0, 1
-Description      : Charge yourself with lightning, causing your next $n Lightning Bolts or Chain Lightnings to deal $s2% more damage and be instant cast.
-Tooltip          : Your next Lightning Bolt or Chain Lightning will deal $s2% increased damage and be instant cast.
+                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 0.76667 | Target: Self (1)
+                   Affected Spells: Chain Lightning (188443)
+                   Family Flags: 1
+Description      : Charge yourself with lightning, causing your next $n Chain Lightnings to deal $s2% more damage and be instant cast.
+Tooltip          : Your next Chain Lightning will deal $s2% increased damage and be instant cast.
 
 Name             : Chain Harvest (desc=Venthyr) (id=320674) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 Covenant         : Venthyr
 School           : Shadow
@@ -10393,13 +10406,12 @@ Effects          :
 Description      : $@spelldesc320746
 
 Name             : Chain Harvest (desc=Venthyr) (id=320751) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Shadow
 Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
-Labels           : 983: Elemental Fury (60188 effect#3), Maelstrom Weapon (187881 effect#3), Lavish Harvest (339185 effect#1)
+Labels           : 983: Elemental Fury (60188 effect#3), Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#7), Maelstrom Weapon (187881 effect#3), Lavish Harvest (339185 effect#1)
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2)
 Family Flags     : 41
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10416,13 +10428,12 @@ Effects          :
 Description      : $@spelldesc320674
 
 Name             : Chain Harvest (desc=Venthyr) (id=320752) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Shadow
 Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
-Labels           : 983: Elemental Fury (60188 effect#3), Maelstrom Weapon (187881 effect#3), Lavish Harvest (339185 effect#1)
+Labels           : 983: Elemental Fury (60188 effect#3), Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#7), Maelstrom Weapon (187881 effect#3), Lavish Harvest (339185 effect#1)
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2)
 Family Flags     : 39
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10462,7 +10473,6 @@ Description      : $@spelldesc16191
 Tooltip          : Mana generation rate increased by $s1%.
 
 Name             : Vesper Totem (desc=Kyrian) (id=324386) [Spell Family (11)] 
-Hotfixed         : Learn Level (1 -> 48), Required Level (1 -> 48)
 Class            : Shaman
 Covenant         : Kyrian
 School           : Arcane
@@ -10506,7 +10516,6 @@ Description      : Summon a totem at the target location for $d. Your next $s2 d
 Casting this ability again while the totem is active will relocate the totem.
 
 Name             : Vesper Totem (desc=Kyrian) (id=324519) [Spell Family (11)] 
-Hotfixed         : Learn Level (1 -> 48), Required Level (1 -> 48)
 Class            : Shaman
 School           : Arcane
 Spell Type       : Magic
@@ -10527,7 +10536,6 @@ Effects          :
 Description      : $@spelldesc324386
 
 Name             : Vesper Totem (desc=Kyrian) (id=324520) [Spell Family (11)] 
-Hotfixed         : Learn Level (1 -> 48), Required Level (1 -> 48)
 Class            : Shaman
 School           : Arcane
 Spell Type       : Magic
@@ -10546,11 +10554,10 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=814143)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.64000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc324386
 
 Name             : Vesper Totem (desc=Kyrian) (id=324522) [Spell Family (11)] 
-Hotfixed         : Learn Level (1 -> 48), Required Level (1 -> 48)
 Class            : Shaman
 School           : Arcane
 Spell Type       : Magic
@@ -10570,11 +10577,10 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=814146)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.73000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.91000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE friendly (31)
 Description      : $@spelldesc324386
 
 Name             : Primordial Wave (desc=Necrolord) (id=326059) [Spell Family (11)] 
-Hotfixed         : Learn Level (1 -> 48), Required Level (1 -> 48)
 Class            : Shaman
 Covenant         : Necrolord
 School           : Shadow
@@ -10604,13 +10610,12 @@ Effects          :
 #3 (id=871500)   : Dummy (3)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #4 (id=871501)   : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : Blast your target with a Primordial Wave, dealing $327162s1 Shadow damage and apply Flame Shock to an enemy, or $?a137039[heal an ally for $327163s1 and apply Riptide to them][heal an ally for $327163s1].
 
 Your next $?a137040[Lava Burst]?a137041[Lightning Bolt][Healing Wave] will also hit all targets affected by your $?a137040|a137041[Flame Shock][Riptide] for $?a137039[$s2%]?a137040[$s3%][$s4%] of normal $?a137039[healing][damage].
 
 Name             : Primordial Wave (desc=Necrolord) (id=327161) [Spell Family (11), Hidden] 
-Hotfixed         : Learn Level (1 -> 48), Attributes, Required Level (1 -> 48)
 Class            : Shaman
 School           : Shadowstorm
 Spell Type       : None
@@ -10632,7 +10637,6 @@ Effects          :
 Description      : $@spelldesc326059
 
 Name             : Primordial Wave (desc=Necrolord) (id=327162) [Spell Family (11)] 
-Hotfixed         : Learn Level (1 -> 48), Attributes, Required Level (1 -> 48)
 Class            : Shaman
 School           : Shadow
 Spell Type       : Magic
@@ -10653,7 +10657,6 @@ Effects          :
 Description      : $@spelldesc326059
 
 Name             : Primordial Wave (desc=Necrolord) (id=327163) [Spell Family (11)] 
-Hotfixed         : Learn Level (1 -> 48), Attributes, Required Level (1 -> 48)
 Class            : Shaman
 School           : Shadow
 Spell Type       : Magic
@@ -10676,7 +10679,6 @@ Effects          :
 Description      : $@spelldesc326059
 
 Name             : Primordial Wave (desc=Necrolord) (id=327164) [Spell Family (11)] 
-Hotfixed         : Learn Level (1 -> 48), Attributes, Required Level (1 -> 48)
 Class            : Shaman
 School           : Shadow
 Spell Type       : Magic
@@ -10724,7 +10726,6 @@ Description      : $@spelldesc8512
 Tooltip          : Your auto-attacks have a $h% chance to instantly attack again.
 
 Name             : Fae Transfusion (desc=Night Fae) (id=328923) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 Covenant         : Night Fae
 School           : Nature
@@ -10748,7 +10749,7 @@ Attributes       : ........ ........ x....... ........   ..x...x. ........ .....
                  : Channeled (34), Channeled (38), Tick on application (169), Periodic effect affected by haste (173), Duration affected by haste (273)
 Effects          :
 #1 (id=821748)   : Dummy (3)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=821762)   : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=821773)   : Trigger Spell (64): Fae Transfusion
@@ -10759,10 +10760,9 @@ Description      : Transfer the life force of up to $328928I enemies in the targ
 
 Fully channeling Fae Transfusion generates $s4 $Lstack:stacks; of Maelstrom Weapon.][]
 
-Pressing Fae Transfusion again within $328933d will release $s1% of all damage from Fae Transfusion, healing up to $328930s2 allies near yourself.
+Pressing Fae Transfusion again within $328933d will release $s1% of all damage from Fae Transfusion, healing up to $328930s2 allies within $328930A1 yds.
 
 Name             : Fae Transfusion (desc=Night Fae) (id=328928) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -10783,11 +10783,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=821760)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.94000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.17500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc328923
 
 Name             : Fae Transfusion (desc=Night Fae) (id=328930) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -10807,13 +10806,12 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Cannot crit (93), Requires line of sight (186)
 Effects          :
 #1 (id=821765)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: At Caster (22) -> AOE friendly (30)
 #2 (id=843695)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : $@spelldesc328923
 
 Name             : Fae Transfusion (desc=Night Fae) (id=328933) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -10836,7 +10834,47 @@ Effects          :
 #2 (id=821772)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 328930 | Scaled Value: 328930 | PvP Coefficient: 1.00000 | Misc Value: 328923 | Target: Self (1)
 Description      : $@spelldesc328923
-Tooltip          : Fae Transfusion will heal up to $328930I nearby allies for $w1.
+Tooltip          : Fae Transfusion will heal up to $328930s2 nearby allies for $w1.
+
+Name             : Bottle of Swirling Maelstrom (id=329580) [Spell Family (11)] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ .......x .......x   ........ ..x..... ........ ........ 
+                 : x....... ........ ........ ....x...   ........ ........ xx..x... ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ....x... ........   ........ ....x... ........ .x...... 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=822847)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 1207 (Label) | Target: Self (1)
+                   Affected Spells (Label): Maelstrom Weapon (187881)
+#2 (id=879555)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 1207 (Label) | Target: Self (1)
+                   Affected Spells (Label): Maelstrom Weapon (187881)
+#3 (id=879556)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=879557)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Earth Shock (8042)
+                   Family Flags: 20
+#5 (id=879558)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Earthquake (61882), Earthquake (77478)
+                   Family Flags: 83
+#6 (id=879559)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Earthquake (61882), Earthquake (77478)
+                   Family Flags: 83
+Description      : $?a137041[The effects of Maelstrom Weapon are increased by $s1%]?a137039[Deal ${$350122s1*$s3} Nature damage every $350121t1 sec to all enemies inside of your Healing Rain][Increase the damage of Earthquake by $s5% and the damage of Earth Shock by $s4%].
+Tooltip          : $?a137041[The effects of Maelstrom Weapon are increased by $s1%]?a137039[Deal ${$350122s1*$s3} Nature damage every $350121t1 sec to all enemies inside of your Healing Rain][Increase the damage of Earthquake by $s5% and the damage of Earth Shock by $s4%].
 
 Name             : Echo of the Elements (id=333919) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -11190,7 +11228,7 @@ Effects          :
                    Affected Spells: Chain Heal (1064), Healing Wave (77472)
                    Family Flags: 8, 80
 #2 (id=832807)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Wave (77472)
                    Family Flags: 8, 80
 Description      : $@spelldesc335891
@@ -11236,9 +11274,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=832809)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
+Hotfixed         : Base Value (10 -> 20)
 Description      : $@spelldesc335893
 Tooltip          : Your next Chain Heal will heal for an additional $s1%.
 
@@ -11458,9 +11497,9 @@ Effects          :
 #1 (id=833324)   : Apply Aura (6) | Dummy (4)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
 #2 (id=833325)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 175 | Scaled Value: 175 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=833326)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 175 | Scaled Value: 175 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
 Description      : $@spelldesc336215
 Tooltip          : Your next Earthquake will deal $s2% additional damage.
 
@@ -11659,7 +11698,6 @@ Effects          :
 Description      : $?s32182[Heroism][Bloodlust] or any similar effects last an additional ${$m1/1000}.1 sec on you, and you gain an extra $s2% Haste from any $?s32182[Heroism][Bloodlust] type effect.
 
 Name             : Astral Protection (id=337964) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -11688,7 +11726,6 @@ Effects          :
 Description      : Reincarnation's cooldown is reduced by |cFFFFFFFF${-$s1}.1 min|r, and reincarnating instantly grants you Astral Shift.
 
 Name             : Refreshing Waters (id=337974) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -11710,7 +11747,6 @@ Effects          :
 Description      : Your Healing Surge is |cFFFFFFFF$s1%|r more effective on yourself.
 
 Name             : Vital Accretion (id=337981) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Spell Level      : 60
@@ -11730,7 +11766,6 @@ Effects          :
 Description      : Your Earth Elemental increases your maximum health by |cFFFFFFFF$s1%|r.
 
 Name             : Thunderous Paws (id=338033) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Spell Level      : 60
@@ -11757,7 +11792,6 @@ Effects          :
 Description      : Ghost Wolf increases your movement speed by an additional |cFFFFFFFF$s1%|r for the first $338036d. May only occur once every $proccooldown sec.
 
 Name             : Thunderous Paws (id=338036) [Spell Family (11)] 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Spell Level      : 60
@@ -11779,7 +11813,6 @@ Description      : $@spelldesc338033
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Totemic Surge (id=338042) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -11801,7 +11834,6 @@ Effects          :
 Description      : The cooldowns of Tremor Totem, Earthbind Totem, and Capacitor Totem are reduced by |cFFFFFFFF${$s1/-1000} sec|r.
 
 Name             : Spiritual Resonance (id=338048) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -11824,7 +11856,6 @@ Effects          :
 Description      : $?s32182[Heroism][Bloodlust] or any similar effects also grant you |cFFFFFFFF${$s1/1000}.1 sec|r of $?c2[Spirit Walk][Spiritwalker's Grace].
 
 Name             : Crippling Hex (id=338054) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -11844,7 +11875,6 @@ Effects          :
 Description      : Enemies affected by your Hex deal |cFFFFFFFF$s1%|r reduced damage for $338055d after Hex is removed.
 
 Name             : High Voltage (id=338131) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -11867,7 +11897,6 @@ Effects          :
 Description      : Lightning Bolt has a |cFFFFFFFF$s1%|r chance to generate double Maelstrom.
 
 Name             : Shake the Foundations (id=338252) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -11887,7 +11916,6 @@ Effects          :
 Description      : Casting Earthquake has a |cFFFFFFFF$s1%|r chance to instantly cast Chain Lightning at a random enemy in the Earthquake.
 
 Name             : Call of Flame (id=338303) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -11909,7 +11937,6 @@ Effects          :
 Description      : $?s192249[Storm Elemental][Fire Elemental] lasts |cFFFFFFFF$s1%|r longer.
 
 Name             : Unruly Winds (id=338318) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -11929,7 +11956,6 @@ Effects          :
 Description      : Windfury Weapon has a |cFFFFFFFF$s1%|r chance to trigger a third attack.
 
 Name             : Focused Lightning (id=338322) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -11955,7 +11981,6 @@ Effects          :
 Description      : Maelstrom Weapon increases the damage or healing of your next spell by an additional |cFFFFFFFF${$s1}.1%|r per stack.
 
 Name             : Chilled to the Core (id=338325) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -11980,7 +12005,6 @@ Effects          :
 Description      : Frost Shock has a |cFFFFFFFF$s1%|r chance to grant $s2 $Lstack:stacks; of Maelstrom Weapon.
 
 Name             : Embrace of Earth (id=338329) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -12002,7 +12026,6 @@ Effects          :
 Description      : Earth Shield increases your healing done to the target by an additional |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Magma Fist (id=338331) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -12022,7 +12045,6 @@ Effects          :
 Description      : Lava Lash has an additional |cFFFFFFFF$s1%|r critical strike chance against enemies affected by your Flame Shock.
 
 Name             : Swirling Currents (id=338339) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -12048,7 +12070,6 @@ Effects          :
 Description      : Using $?s157153[Cloudburst Totem][Healing Stream Totem] increases the healing of your next $338340n Healing Surge, Healing Wave, or Riptide spells by |cFFFFFFFF$s1%|r.
 
 Name             : Swirling Currents (id=338340) [Spell Family (11)] 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 60
@@ -12076,7 +12097,6 @@ Description      : $@spelldesc338339
 Tooltip          : Your next Healing Surge, Healing Wave, or Riptide will be $w1% more effective.
 
 Name             : Heavy Rainfall (id=338343) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -12102,7 +12122,6 @@ Effects          :
 Description      : Using Healing Tide Totem increases the healing of your Healing Rain by |cFFFFFFFF$s1%|r for $338344d.
 
 Name             : Heavy Rainfall (id=338344) [Spell Family (11)] 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 60
@@ -12126,8 +12145,6 @@ Description      : $@spelldesc338343
 Tooltip          : Healing Rain is $w1% more effective.
 
 Name             : Nature's Focus (id=338346) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
-Class            : Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -12147,7 +12164,6 @@ Effects          :
 Description      : The primary target of your Chain Heal is healed for an additional |cFFFFFFFF$s1%|r.
 
 Name             : Elysian Dirge (id=339182) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -12167,7 +12183,6 @@ Effects          :
 Description      : Vesper Totem is |cFFFFFFFF$s1%|r more effective against the target nearest to it.
 
 Name             : Essential Extraction (id=339183) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -12189,7 +12204,6 @@ Effects          :
 Description      : Fae Transfusion cooldown is reduced by |cFFFFFFFF${$s1/-1000}.1|r sec.
 
 Name             : Lavish Harvest (id=339185) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -12210,7 +12224,6 @@ Effects          :
 Description      : The critical strike chance of Chain Harvest is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Tumbling Waves (id=339186) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Shadow
 Spell Type       : None
 Spell Level      : 60
@@ -12563,7 +12576,6 @@ Effects          :
 Description      : $@spelldesc114051
 
 Name             : Pyroclastic Shock (id=345594) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -12628,5 +12640,43 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc336730
 Tooltip          : Unable to gain Elemental Equilibrium effects.
+
+Name             : Bottle of Swirling Maelstrom (id=350121) [Spell Family (11), Hidden] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Attributes       : .......x ........ .......x .......x   ........ ..x..... ........ ........ 
+                 : x....... ........ ........ ....x...   ........ ........ xx..x... ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ....x... ........   ........ ....x... ........ .x...... 
+                 : ........ ........ ........ ........   
+                 : Hidden (7), Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=879534)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc329580
+
+Name             : Bottle of Swirling Maelstrom (id=350122) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Type       : Magic
+Range            : 100 yards
+Attributes       : ........ ........ .......x .......x   ........ ..x..... ........ ........ 
+                 : x....... ........ ........ ....x...   ........ ........ xx..x... ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ..x..... 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ....x... ........   ........ ....x... ........ .x...... 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151), Requires line of sight (186)
+Effects          :
+#1 (id=879535)   : School Damage (2): nature
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+Description      : $@spelldesc329580
 
 
