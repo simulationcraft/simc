@@ -411,7 +411,6 @@ public:
     const spell_data_t* garrote_2;
     const spell_data_t* shiv_2;
     const spell_data_t* shiv_2_debuff;
-    const spell_data_t* slice_and_dice_2;
     const spell_data_t* wound_poison_2;
 
     // Outlaw
@@ -7262,11 +7261,6 @@ std::unique_ptr<expr_t> rogue_t::create_resource_expression( util::string_view n
           energy_regen_per_second *= 1.0 + buffs.adrenaline_rush->data().effectN( 1 ).percent();
         }
 
-        if ( buffs.slice_and_dice->check() && spec.slice_and_dice_2->ok() )
-        {
-          energy_regen_per_second *= 1.0 + spec.slice_and_dice_2->effectN( 1 ).percent();
-        }
-
         energy_regen_per_second += buffs.buried_treasure->check_value();
         energy_regen_per_second += buffs.vendetta->check_value();
 
@@ -7348,7 +7342,6 @@ void rogue_t::init_spells()
   spec.garrote_2            = find_specialization_spell( 231719 );
   spec.shiv_2               = find_rank_spell( "Shiv", "Rank 2" );
   spec.shiv_2_debuff        = find_spell( 319504 );
-  spec.slice_and_dice_2     = find_rank_spell( "Slice and Dice", "Rank 2" );
   spec.wound_poison_2       = find_rank_spell( "Wound Poison", "Rank 2" );
 
   // Outlaw
