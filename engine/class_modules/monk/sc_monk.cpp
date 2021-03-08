@@ -1463,7 +1463,7 @@ struct blackout_kick_t : public monk_melee_attack_t
             cd_reduction += ( -1 * p()->covenant.kyrian->effectN( 8 ).time_value() );
 
           // Reduction is getting halved during Serenity
-          if ( p()->buff.serenity->up() )
+          if ( p()->buff.serenity->up() && !p()->bugs )
             cd_reduction *= 1.0 / ( 1 + p()->talent.serenity->effectN( 4 ).percent() );
 
           p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
