@@ -1226,7 +1226,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     if ( p()->buff.weapons_of_order_ww->up() )
       c += p()->buff.weapons_of_order_ww->value();  // saved as -1
 
-    if ( c <= 0 )
+    if ( c < 0 )
       c = 0;
 
     return c;
