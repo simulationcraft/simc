@@ -2173,7 +2173,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
     }
 
     // Darkglare Boon Legendary
-    double darkglare_percent = p()->legendary.darkglare_boon->effectN( p()->dbc->ptr ? 2 : 1 ).percent();
+    double darkglare_percent = p()->legendary.darkglare_boon->effectN( 2 ).percent();
     if ( p()->legendary.darkglare_boon->ok() && p()->rng().roll( darkglare_percent ) )
     {
       cooldown->reset( true );
@@ -3095,7 +3095,6 @@ struct elysian_decree_t : public demon_hunter_spell_t
 
 // Fodder to the Flame ======================================================
 
-// New 9.0.5 PTR Implementation
 struct fodder_to_the_flame_cb_t : public dbc_proc_callback_t
 {
   struct fodder_to_the_flame_damage_t : public demon_hunter_spell_t
@@ -3173,50 +3172,6 @@ struct fodder_to_the_flame_cb_t : public dbc_proc_callback_t
     spawn_trigger->execute();
   }
 }; 
-
-// Old 9.0.0 Implementation
-struct fodder_to_the_flame_t : public demon_hunter_spell_t
-{
-  struct fodder_to_the_flame_death_t : public demon_hunter_spell_t
-  {
-    fodder_to_the_flame_death_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->find_spell( 342357 ) )
-    {
-      quiet = true;
-    }
-
-    void execute() override
-    {
-      demon_hunter_spell_t::execute();
-      p()->spawn_soul_fragment( soul_fragment::EMPOWERED_DEMON );
-    }
-  };
-
-  fodder_to_the_flame_death_t* death_trigger;
-  timespan_t trigger_delay;
-
-  fodder_to_the_flame_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "fodder_to_the_flame", p, p->covenant.fodder_to_the_flame, options_str )
-  {
-    death_trigger = p->get_background_action<fodder_to_the_flame_death_t>( "fodder_to_the_flame_death" );
-    trigger_delay = timespan_t::from_seconds( p->options.fodder_to_the_flame_kill_seconds );
-  }
-
-  void execute() override
-  {
-    demon_hunter_spell_t::execute();
-    make_event<delayed_execute_event_t>( *sim, p(), death_trigger, p(), trigger_delay );
-  }
-
-  bool ready() override
-  {
-    // 02/18/2021 -- Fodder to the Flame reworked to no longer be an ability on PTR
-    if ( p()->dbc->ptr )
-      return false;
-
-    return demon_hunter_spell_t::ready();
-  }
-};
 
 // Sinful Brand =============================================================
 
@@ -4914,7 +4869,6 @@ action_t* demon_hunter_t::create_action( util::string_view name, const std::stri
   if ( name == "spirit_bomb" )        return new spirit_bomb_t( this, options_str );
 
   if ( name == "elysian_decree" )     return new elysian_decree_t( this, options_str );
-  if ( name == "fodder_to_the_flame" )return new fodder_to_the_flame_t( this, options_str );
   if ( name == "sinful_brand" )       return new sinful_brand_t( this, options_str );
   if ( name == "the_hunt" )           return new the_hunt_t( this, options_str );
 
@@ -5374,7 +5328,7 @@ void demon_hunter_t::init_special_effects()
 {
   base_t::init_special_effects();
 
-  if ( covenant.fodder_to_the_flame->ok() && dbc->ptr )
+  if ( covenant.fodder_to_the_flame->ok() )
   {
     auto const fodder_to_the_flame_driver = new special_effect_t( this );
     fodder_to_the_flame_driver->name_str = "fodder_to_the_flame_driver";
@@ -5646,7 +5600,7 @@ void demon_hunter_t::init_spells()
   legendary.fel_flame_fortification       = find_runeforge_legendary( "Fel Flame Fortification" );
   legendary.spirit_of_the_darkness_flame  = find_runeforge_legendary( "Spirit of the Darkness Flame" );
 
-  spec.darkglare_boon_refund = ( dbc->ptr && legendary.darkglare_boon->ok() ) ? find_spell( 350726 ) : spell_data_t::not_found();
+  spec.darkglare_boon_refund = ( legendary.darkglare_boon->ok() ) ? find_spell( 350726 ) : spell_data_t::not_found();
 
   // Spell Initialization ===================================================
 
@@ -5859,7 +5813,6 @@ void demon_hunter_t::apl_havoc()
   apl_cooldown->add_action( this, "Metamorphosis", "if=talent.demonic.enabled&(cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max))&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)" );
   apl_cooldown->add_action( "sinful_brand,if=!dot.sinful_brand.ticking" );
   apl_cooldown->add_action( "the_hunt,if=!talent.demonic.enabled&!variable.waiting_for_momentum|buff.furious_gaze.up" );
-  apl_cooldown->add_action( "fodder_to_the_flame" );
   apl_cooldown->add_action( "elysian_decree,if=(active_enemies>desired_targets|raid_event.adds.in>30)" );
   apl_cooldown->add_action( "potion,if=buff.metamorphosis.remains>25|fight_remains<60" );
   add_havoc_use_items( this, apl_cooldown );
@@ -5943,7 +5896,6 @@ void demon_hunter_t::apl_vengeance()
   cooldowns->add_action( "use_items", "Default fallback for usable items." );
   cooldowns->add_action( "sinful_brand,if=!dot.sinful_brand.ticking" );
   cooldowns->add_action( "the_hunt" );
-  cooldowns->add_action( "fodder_to_the_flame" );
   cooldowns->add_action( "elysian_decree" );
 
   action_priority_list_t* apl_brand = get_action_priority_list( "brand", "Fiery Brand Rotation" );

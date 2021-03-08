@@ -52,7 +52,6 @@ actions.cooldowns=potion
 actions.cooldowns+=/use_items
 actions.cooldowns+=/sinful_brand,if=!dot.sinful_brand.ticking
 actions.cooldowns+=/the_hunt
-actions.cooldowns+=/fodder_to_the_flame
 actions.cooldowns+=/elysian_decree
 
 # Defensives

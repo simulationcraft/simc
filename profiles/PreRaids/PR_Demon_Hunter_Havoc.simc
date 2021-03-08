@@ -57,7 +57,6 @@ actions.cooldown=metamorphosis,if=!(talent.demonic.enabled|variable.pooling_for_
 actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&(cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max))&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)
 actions.cooldown+=/sinful_brand,if=!dot.sinful_brand.ticking
 actions.cooldown+=/the_hunt,if=!talent.demonic.enabled&!variable.waiting_for_momentum|buff.furious_gaze.up
-actions.cooldown+=/fodder_to_the_flame
 actions.cooldown+=/elysian_decree,if=(active_enemies>desired_targets|raid_event.adds.in>30)
 actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|fight_remains<60
 # Default fallback for usable items.
