@@ -4550,6 +4550,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
     { return false; }
   };
 
+  double base_impact_cp;
   serrated_bone_spike_dot_t* serrated_bone_spike_dot;
 
   serrated_bone_spike_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
@@ -4560,7 +4561,8 @@ struct serrated_bone_spike_t : public rogue_attack_t
     affected_by.broadside_cp = true;
     energize_type = action_energize::ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
-    energize_amount = p->find_spell( 328548 )->effectN( 1 ).base_value();
+    energize_amount = 0.0; // Not done on execute but we keep the other energize settings for things like Dreadblades or Broadside
+    base_impact_cp = p->find_spell( 328548 )->effectN( 1 ).base_value();
 
     serrated_bone_spike_dot = p->get_background_action<serrated_bone_spike_dot_t>( "serrated_bone_spike_dot" );
 
@@ -4575,29 +4577,33 @@ struct serrated_bone_spike_t : public rogue_attack_t
   {
     double cp = rogue_attack_t::generate_cp();
 
+    cp += base_impact_cp;
     cp += p()->get_active_dots( serrated_bone_spike_dot->internal_id );
     cp += !td( target )->dots.serrated_bone_spike->is_ticking();
 
     return cp;
   }
 
-  void execute() override
+  void impact( action_state_t* state ) override
   {
-    rogue_attack_t::execute();
+    rogue_attack_t::impact( state );
+
+    // 03/04/2021 -- 9.0.5: Bonus CP gain now **supposed to** include the primary target DoT even on first activation
+    unsigned active_dots = p()->get_active_dots( serrated_bone_spike_dot->internal_id );
+
+    // BUG, see https://github.com/SimCMinMax/WoW-BugTracker/issues/823
+    // Race condition on when the spikes are counted. We just make it 50% chance.
+    bool count_after = p()->bugs ? rng().roll( 0.5 ) : true;
 
     if ( !td( target )->dots.serrated_bone_spike->is_ticking() )
     {
       serrated_bone_spike_dot->set_target( target );
       serrated_bone_spike_dot->execute();
+      if (count_after)
+        active_dots += 1;
     }
 
-    // 03/04/2021 -- 9.0.5: Bonus CP gain now includes the primary target DoT even on first activation
-    unsigned active_dots = p()->get_active_dots( serrated_bone_spike_dot->internal_id );
-
-    if ( active_dots > 0 )
-    {
-      trigger_combo_point_gain( active_dots, p()->gains.serrated_bone_spike );
-    }
+    trigger_combo_point_gain( base_impact_cp + active_dots, p()->gains.serrated_bone_spike );
   }
 
   bool procs_blade_flurry() const override
