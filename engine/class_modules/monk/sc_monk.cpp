@@ -7382,6 +7382,7 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t* s )
 
 void monk_t::trigger_bonedust_brew( action_state_t* s )
 {
+  // Make sure Bonedust Brew does not trigger from itself
   if ( covenant.necrolord->ok() && s->result_total > 0 && s->action->id != 325217 && s->action->id != 325218 )
   {
     if ( auto td = find_target_data( s->target ) )
