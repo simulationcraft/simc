@@ -6423,11 +6423,6 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
     return;
   }
 
-  if ( buff.empowered_demon_soul->check() )
-  {
-    s->result_amount *= 1.0 + buff.empowered_demon_soul->data().effectN( 4 ).percent();
-  }
-
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
     s->result_amount *= 1.0 + buff.blur->value();
