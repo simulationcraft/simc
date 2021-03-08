@@ -145,11 +145,11 @@ main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinfu
 
 # Gear Summary
 # gear_ilvl=229.40
-# gear_stamina=1531
-# gear_intellect=1191
+# gear_stamina=1528
+# gear_intellect=1189
 # gear_crit_rating=261
 # gear_haste_rating=631
-# gear_mastery_rating=774
+# gear_mastery_rating=771
 # gear_versatility_rating=286
 # gear_armor=373
 default_pet=imp

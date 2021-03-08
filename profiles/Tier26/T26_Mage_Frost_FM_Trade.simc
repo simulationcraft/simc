@@ -113,11 +113,11 @@ off_hand=master_stonewrights_chisel,id=182400,bonus_id=7187/1531
 
 # Gear Summary
 # gear_ilvl=229.63
-# gear_stamina=1531
+# gear_stamina=1528
 # gear_intellect=1178
 # gear_crit_rating=639
 # gear_haste_rating=971
 # gear_mastery_rating=98
-# gear_versatility_rating=241
+# gear_versatility_rating=239
 # gear_armor=374
 mage.focus_magic_trade=1

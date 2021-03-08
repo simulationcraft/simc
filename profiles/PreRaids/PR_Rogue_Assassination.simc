@@ -42,14 +42,13 @@ actions.precombat+=/slice_and_dice,precombat_seconds=1
 actions=stealth
 # Interrupt on cooldown to allow simming interactions with that
 actions+=/kick
-actions+=/variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7+ptr)%(2*spell_haste)
+actions+=/variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*8%(2*spell_haste)
 actions+=/variable,name=single_target,value=spell_targets.fan_of_knives<2
 actions+=/call_action_list,name=stealthed,if=stealthed.rogue
 actions+=/call_action_list,name=cds,if=(!talent.master_assassin.enabled|dot.garrote.ticking)
-actions+=/slice_and_dice,if=!ptr&spell_targets.fan_of_knives<=(5-runeforge.dashing_scoundrel)&buff.slice_and_dice.remains<fight_remains&refreshable&combo_points>=3
 # Put SnD up initially for Cut to the Chase, refresh with Envenom if at low duration
-actions+=/slice_and_dice,if=ptr&!buff.slice_and_dice.up&combo_points>=3
-actions+=/envenom,if=ptr&buff.slice_and_dice.up&buff.slice_and_dice.remains<5&combo_points>=4
+actions+=/slice_and_dice,if=!buff.slice_and_dice.up&combo_points>=3
+actions+=/envenom,if=buff.slice_and_dice.up&buff.slice_and_dice.remains<5&combo_points>=4
 actions+=/call_action_list,name=dot
 actions+=/call_action_list,name=direct
 actions+=/arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined
@@ -65,7 +64,6 @@ actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration
 # Sync Flagellation with Vendetta as long as we won't lose a cast over the fight duration
 actions.cds+=/flagellation,if=!stealthed.rogue&(cooldown.vendetta.remains<3&effective_combo_points>=4&target.time_to_die>10|debuff.vendetta.up|fight_remains<24)
 actions.cds+=/flagellation,if=!stealthed.rogue&effective_combo_points>=4&(floor((fight_remains-24)%cooldown)>floor((fight_remains-24-cooldown.vendetta.remains*variable.vendetta_cdr)%cooldown))
-actions.cds+=/flagellation_cleanse,if=debuff.flagellation.remains<2
 # Sync Sepsis with Vendetta as long as we won't lose a cast over the fight duration, but prefer targets that will live at least 10s
 actions.cds+=/sepsis,if=!stealthed.rogue&(cooldown.vendetta.remains<1&target.time_to_die>10|debuff.vendetta.up|fight_remains<10)
 actions.cds+=/sepsis,if=!stealthed.rogue&(floor((fight_remains-10)%cooldown)>floor((fight_remains-10-cooldown.vendetta.remains*variable.vendetta_cdr)%cooldown))
@@ -173,9 +171,9 @@ off_hand=tanglewood_thorn,id=178710,bonus_id=6807/1498/6646,enchant=sinful_revel
 # Gear Summary
 # gear_ilvl=184.38
 # gear_agility=597
-# gear_stamina=860
+# gear_stamina=852
 # gear_attack_power=40
 # gear_crit_rating=622
-# gear_haste_rating=368
-# gear_versatility_rating=388
+# gear_haste_rating=366
+# gear_versatility_rating=389
 # gear_armor=479

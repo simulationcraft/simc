@@ -78,8 +78,7 @@ actions.cds+=/variable,name=vanish_ma_condition,if=runeforge.mark_of_the_master_
 actions.cds+=/variable,name=vanish_ma_condition,if=runeforge.mark_of_the_master_assassin&talent.marked_for_death.enabled,value=variable.finish_condition
 actions.cds+=/vanish,if=variable.vanish_ma_condition&master_assassin_remains=0&variable.blade_flurry_sync
 actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up
-actions.cds+=/flagellation,if=!stealthed.all&(!ptr|variable.finish_condition|target.time_to_die<13)
-actions.cds+=/flagellation_cleanse,if=debuff.flagellation.remains<2
+actions.cds+=/flagellation,if=!stealthed.all&(variable.finish_condition|target.time_to_die<13)
 actions.cds+=/dreadblades,if=!stealthed.all&combo_points<=2&(!covenant.venthyr|debuff.flagellation.up)
 actions.cds+=/roll_the_bones,if=master_assassin_remains=0&buff.dreadblades.down&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP.
@@ -130,8 +129,8 @@ off_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=228.75
-# gear_agility=886
-# gear_stamina=1509
+# gear_agility=883
+# gear_stamina=1506
 # gear_attack_power=40
 # gear_crit_rating=407
 # gear_haste_rating=658

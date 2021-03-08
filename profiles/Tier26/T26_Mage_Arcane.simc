@@ -76,6 +76,7 @@ actions+=/use_item,name=glyph_of_assimilation,if=cooldown.arcane_power.remains>=
 actions+=/use_item,name=macabre_sheet_music,if=cooldown.arcane_power.remains<=5&(!variable.fishing_opener=1|time>30)
 actions+=/use_item,name=macabre_sheet_music,if=cooldown.arcane_power.remains<=5&variable.fishing_opener=1&buff.rune_of_power.up&buff.rune_of_power.remains<=(10-5*runeforge.siphon_storm)&time<30
 actions+=/call_action_list,name=aoe,if=active_enemies>2
+actions+=/call_action_list,name=harmony,if=covenant.kyrian&runeforge.arcane_infinity&talent.rune_of_power&!conduit.arcane_prodigy
 # The fishing opener begins with RoP and fishes for CC procs to use during TotM/AP
 actions+=/call_action_list,name=fishing_opener,if=variable.have_opened=0&variable.fishing_opener
 actions+=/call_action_list,name=opener,if=variable.have_opened=0
@@ -207,6 +208,44 @@ actions.fishing_opener+=/arcane_blast,if=buff.rune_of_power.up|mana.pct>15
 actions.fishing_opener+=/evocation,if=buff.rune_of_power.down&buff.arcane_power.down,interrupt_if=mana.pct>=85,interrupt_immediate=1
 actions.fishing_opener+=/arcane_barrage
 
+actions.harmony=cancel_action,if=action.evocation.channeling&mana.pct>=95
+# Use Evocation if we're low on mana and a TotM/AP window is coming up
+actions.harmony+=/evocation,if=mana.pct<=15&cooldown.touch_of_the_magi.remains<=(execute_time+action.touch_of_the_magi.execute_time)&cooldown.arcane_power.remains<=(execute_time+action.touch_of_the_magi.execute_time+action.arcane_power.execute_time)&buff.rune_of_power.down&buff.arcane_power.down&debuff.touch_of_the_magi.down&!dot.radiant_spark.remains
+# Use Evocation if we're low on mana and a RoP window is coming up
+actions.harmony+=/evocation,if=mana.pct<=30&cooldown.rune_of_power.remains<=(execute_time+action.rune_of_power.execute_time)&cooldown.touch_of_the_magi.remains<=(execute_time+action.rune_of_power.execute_time+action.radiant_spark.execute_time)&cooldown.arcane_power.remains>40
+# Build Harmony stacks for the TotM/AP window
+actions.harmony+=/arcane_missiles,if=buff.arcane_harmony.stack<buff.arcane_harmony.max_stack&cooldown.radiant_spark.remains<=(2+(execute_time+action.radiant_spark.execute_time))&cooldown.touch_of_the_magi.remains<=(2+(execute_time+action.radiant_spark.execute_time+action.touch_of_the_magi.execute_time))&cooldown.arcane_power.remains<=(2+(execute_time+action.radiant_spark.execute_time+action.touch_of_the_magi.execute_time+action.arcane_power.execute_time)),chain=1
+# Build Harmony stacks for the RoP window
+actions.harmony+=/arcane_missiles,if=buff.arcane_harmony.stack<buff.arcane_harmony.max_stack&cooldown.rune_of_power.remains<=(2+(execute_time+action.rune_of_power.execute_time))&cooldown.radiant_spark.remains<=(2+(execute_time+action.rune_of_power.execute_time+action.radiant_spark.execute_time))&cooldown.touch_of_the_magi.remains<=(2+(execute_time+action.rune_of_power.execute_time+action.radiant_spark.execute_time+action.touch_of_the_magi.execute_time))&cooldown.arcane_power.remains,chain=1
+# Build Harmony stacks for the naked RS window
+actions.harmony+=/arcane_missiles,if=buff.arcane_harmony.stack<buff.arcane_harmony.max_stack&cooldown.radiant_spark.remains<=(2+(execute_time+action.radiant_spark.execute_time))&cooldown.arcane_power.remains>=30&cooldown.rune_of_power.remains>=30,chain=1
+actions.harmony+=/radiant_spark,if=buff.arcane_harmony.stack=buff.arcane_harmony.max_stack&cooldown.touch_of_the_magi.remains<execute_time&cooldown.arcane_power.remains<=(execute_time+action.touch_of_the_magi.execute_time)&mana.pct>15
+actions.harmony+=/touch_of_the_magi,if=buff.arcane_harmony.stack=buff.arcane_harmony.max_stack&cooldown.arcane_power.remains<=execute_time&dot.radiant_spark.remains
+actions.harmony+=/arcane_power,if=buff.arcane_harmony.stack=buff.arcane_harmony.max_stack&debuff.touch_of_the_magi.up&buff.rune_of_power.down
+actions.harmony+=/rune_of_power,if=buff.arcane_harmony.stack=buff.arcane_harmony.max_stack&cooldown.touch_of_the_magi.remains<=(execute_time+action.radiant_spark.execute_time)&cooldown.arcane_power.remains>40&mana.pct>=35
+actions.harmony+=/radiant_spark,if=buff.arcane_harmony.stack=buff.arcane_harmony.max_stack&cooldown.touch_of_the_magi.remains<execute_time&buff.rune_of_power.up
+actions.harmony+=/touch_of_the_magi,if=buff.arcane_harmony.stack=buff.arcane_harmony.max_stack&cooldown.arcane_power.remains>40&buff.rune_of_power.up&dot.radiant_spark.remains
+actions.harmony+=/rune_of_power,if=cooldown.touch_of_the_magi.remains>10&cooldown.arcane_power.remains>30&buff.arcane_power.down
+actions.harmony+=/radiant_spark,if=buff.arcane_harmony.stack=buff.arcane_harmony.max_stack&cooldown.arcane_power.remains>=25&cooldown.rune_of_power.remains>=25&buff.arcane_harmony.stack=buff.arcane_harmony.max_stack&mana.pct>=15
+# Use PoM during AP or RoP windows to build charges after using Arcane Barrage
+actions.harmony+=/presence_of_mind,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&buff.arcane_charge.stack>0&buff.arcane_power.remains|buff.arcane_charge.stack<buff.arcane_charge.max_stack&buff.arcane_charge.stack>0&buff.rune_of_power.remains&debuff.touch_of_the_magi.remains
+actions.harmony+=/arcane_blast,if=buff.presence_of_mind.up
+actions.harmony+=/arcane_orb,if=buff.arcane_charge.stack<2&buff.arcane_power.up
+actions.harmony+=/arcane_orb,if=buff.arcane_charge.stack<2&!(cooldown.arcane_power.remains<=10&cooldown.touch_of_the_magi.remains<=10&cooldown.radiant_spark.remains<=5)
+actions.harmony+=/arcane_missiles,if=buff.arcane_charge.stack>1&buff.arcane_harmony.stack<buff.arcane_harmony.max_stack,chain=1
+actions.harmony+=/arcane_missiles,if=cooldown.arcane_orb.remains<4&buff.arcane_harmony.stack<buff.arcane_harmony.max_stack,chain=1
+actions.harmony+=/arcane_barrage,if=debuff.radiant_spark_vulnerability.stack=4
+actions.harmony+=/arcane_blast,if=dot.radiant_spark.remains&debuff.touch_of_the_magi.remains>execute_time&(debuff.radiant_spark_vulnerability.stack=0|debuff.radiant_spark_vulnerability.stack<4)
+actions.harmony+=/arcane_orb,if=dot.radiant_spark.remains>5&debuff.radiant_spark_vulnerability.stack=0&buff.rune_of_power.down
+actions.harmony+=/arcane_blast,if=dot.radiant_spark.remains>execute_time&debuff.radiant_spark_vulnerability.stack>0&debuff.radiant_spark_vulnerability.stack<4&buff.rune_of_power.down
+actions.harmony+=/arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.arcane_harmony.stack=buff.arcane_harmony.max_stack
+actions.harmony+=/evocation,if=mana.pct<15
+# When between cooldown windows, we only build to full charges after using Arcane Orb
+actions.harmony+=/arcane_blast,if=buff.arcane_charge.stack>1
+# Immediately spend Harmony stacks when between cooldown windows
+actions.harmony+=/arcane_barrage,if=buff.arcane_harmony.stack>0
+actions.harmony+=/arcane_missiles,chain=1
+
 actions.movement=blink_any,if=movement.distance>=10
 actions.movement+=/presence_of_mind
 actions.movement+=/arcane_missiles,if=movement.distance<10
@@ -286,10 +325,10 @@ main_hand=spire_of_the_long_dark,id=180002,bonus_id=7187/1531,enchant=sinful_rev
 
 # Gear Summary
 # gear_ilvl=228.93
-# gear_stamina=1517
-# gear_intellect=1095
+# gear_stamina=1514
+# gear_intellect=1092
 # gear_crit_rating=363
 # gear_haste_rating=439
-# gear_mastery_rating=1029
+# gear_mastery_rating=1026
 # gear_versatility_rating=226
 # gear_armor=369
