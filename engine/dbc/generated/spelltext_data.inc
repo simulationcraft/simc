@@ -13615,7 +13615,7 @@ static const std::array<spelltext_data_t, 15112> __spelltext_data { {
   { 328305, "Infect the target's blood, dealing $o1 Nature damage over $d. If the target survives its full duration, they suffer an additional $328306s1 damage and you gain $s6 use of any Stealth ability for $347037d.\r\n\r\nCooldown reduced by $s3 sec if Sepsis does not last its full duration.\r\n\r\n|cFFFFFFFFAwards $s7 combo $lpoint:points;.|r", "Suffering $w1 Nature damage every $t1 sec, and $328306s1 when the poison ends.", "Night Fae" },
   { 328306, "$@spelldesc328305", 0, "Night Fae" },
   { 328506, "$@spelldesc328281", "Attack speed reduced by $w3%.\r\nMovement speed reduced by $w4%.", "Night Fae" },
-  { 328547, "Embed a bone spike in the target, dealing $s1 damage and $324073s1 Bleed damage every $324073t1 sec until they die. \r\n\r\nRefunds a charge when target dies or is healed to full.\r\n\r\n|cFFFFFFFFAwards 1 combo point per active bone spike.|r", 0, "Necrolord" },
+  { 328547, "Embed a bone spike in the target, dealing $s1 damage and $324073s1 Bleed damage every $324073t1 sec until they die or leave combat. \r\n\r\nRefunds a charge when target dies.\r\n\r\n|cFFFFFFFFAwards 1 combo point plus 1 additional per active bone spike.|r", 0, "Necrolord" },
   { 328548, "$@spelldesc328547", 0, 0 },
   { 328603, "Targets under $s2% health are stung dealing ${$329127s1*($329127d/$329127t1)} Shadow damage over $329127d, returning $s3% of the damage to you as healing. This effect can only occur once every $s4 seconds.", 0, 0 },
   { 328620, "Bless an ally for $d, causing their attacks to have a $h% chance to deal $s1% additional damage as Holy.\r\n\r\n|cFFFFFFFFBlessing of the Seasons:|r Turns to Autumn after use.", "Attacks have a $h% chance to deal $w1% additional damage as Holy.", "Night Fae" },
@@ -15115,7 +15115,8 @@ static const std::array<spelltext_data_t, 15112> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.0.5.37844
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  328547,  0, "Embed a bone spike in the target, dealing $s1 damage and $324073s1 Bleed damage every $324073t1 sec until they die. \r\n\r\nRefunds a charge when target dies or is healed to full.\r\n\r\n|cFFFFFFFFAwards 1 combo point per active bone spike.|r", "Embed a bone spike in the target, dealing $s1 damage and $324073s1 Bleed damage every $324073t1 sec until they die or leave combat. \r\n\r\nRefunds a charge when target dies.\r\n\r\n|cFFFFFFFFAwards 1 combo point plus 1 additional per active bone spike.|r" },
 } };
 
 // Spell description variables, wow build 9.0.5.37844
