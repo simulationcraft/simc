@@ -440,31 +440,42 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
   };
 
   echoed_templars_verdict_t* echo;
+  bool is_fv;
 
   templars_verdict_t( paladin_t* p, const std::string& options_str ) :
-    holy_power_consumer_t( "templars_verdict", p, p -> find_specialization_spell( "Templar's Verdict" ) ),
-    echo( nullptr )
+    holy_power_consumer_t(
+      p -> legendary.final_verdict -> ok() ? "final_verdict" : "templars_verdict",
+      p,
+      p -> legendary.final_verdict -> ok() ? ( p -> find_spell( 336872 ) ) : ( p -> find_specialization_spell( "Templar's Verdict" ) ) ),
+    echo( nullptr ),
+    is_fv( p -> legendary.final_verdict -> ok() )
   {
     parse_options( options_str );
 
     // wtf is happening in spell data?
     aoe = 0;
 
-    may_block = false;
-    callbacks = false;
     if ( p -> conduit.templars_vindication -> ok() )
     {
       echo = new echoed_templars_verdict_t( p );
     }
 
-    impact_action = new templars_verdict_damage_t( p, echo );
-    impact_action -> stats = stats;
+    if ( ! is_fv ) {
+      callbacks = false;
+      may_block = false;
 
-    // Okay, when did this get reset to 1?
-    weapon_multiplier = 0;
+      impact_action = new templars_verdict_damage_t( p, echo );
+      impact_action -> stats = stats;
+
+      // Okay, when did this get reset to 1?
+      weapon_multiplier = 0;
+    }
   }
 
-  void record_data( action_state_t* ) override {}
+  void record_data( action_state_t* state ) override {
+    if ( is_fv )
+      holy_power_consumer_t::record_data( state );
+  }
 
   void execute() override
   {
@@ -514,6 +525,43 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       }
     }
   }
+
+  void impact( action_state_t* s ) override
+  {
+    holy_power_consumer_t::impact( s );
+
+    if ( is_fv )
+    {
+      if ( p() -> buffs.virtuous_command -> up() && p() -> active.virtuous_command )
+      {
+        action_t* vc = p() -> active.virtuous_command;
+        vc -> base_dd_min = vc -> base_dd_max = s -> result_amount * p() -> conduit.virtuous_command.percent();
+        vc -> set_target( s -> target );
+        vc -> schedule_execute();
+      }
+
+      if ( p() -> dbc -> ptr )
+      {
+        if ( p() -> conduit.templars_vindication -> ok() )
+        {
+          if ( rng().roll( p() -> conduit.templars_vindication.percent() ) )
+          {
+            // TODO(mserrano): figure out if 600ms is still correct; there does appear to be some delay
+            make_event<echoed_spell_event_t>( *sim, p(), execute_state -> target, echo, timespan_t::from_millis( 600 ), s -> result_amount );
+          }
+        }
+      }
+    }
+  }
+
+  double action_multiplier() const override
+  {
+    double am = holy_power_consumer_t::action_multiplier();
+    if ( is_fv && p() -> buffs.righteous_verdict -> check() )
+      am *= 1.0 + p() -> buffs.righteous_verdict -> data().effectN( 1 ).percent();
+    return am;
+  }
+
 };
 
 // Final Reckoning
