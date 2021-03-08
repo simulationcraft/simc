@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37844 Live (hotfix 2021-03-08/37844, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37844 Live (hotfix 2021-03-08/37844, git build shadowlands 2bf2959832)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
