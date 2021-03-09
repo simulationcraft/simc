@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37844 Live (hotfix 2021-03-08/37844, git build shadowlands 2bf2959832)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37862 Live (hotfix 2021-03-09/37862, no-networking)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -3994,7 +3994,6 @@ Effects          :
 Description      : $@spelldesc348
 
 Name             : Grimoire of Sacrifice (id=196099) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
