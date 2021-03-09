@@ -159,7 +159,12 @@ public:
     buff_t* will_of_the_berserker;
 
   } buff;
-
+  
+  struct rppm_t
+  {
+    real_ppm_t* revenge;
+  } rppm;
+  
   // Cooldowns
   struct cooldowns_t
   {
@@ -451,6 +456,7 @@ public:
     const spell_data_t* the_great_storms_eye;
     const spell_data_t* the_wall;
     const spell_data_t* thunderlord;
+    const spell_data_t* reprisal;
 
     legendary_t()
       : sephuzs_secret( spell_data_t::not_found() ),
@@ -465,7 +471,8 @@ public:
         raging_fury( spell_data_t::not_found() ),
         the_great_storms_eye( spell_data_t::not_found() ),
         the_wall( spell_data_t::not_found() ),
-        thunderlord( spell_data_t::not_found() )
+        thunderlord( spell_data_t::not_found() ),
+        reprisal(spell_data_t::not_found() )
 
     {
     }
@@ -628,6 +635,7 @@ public:
   void init_resources( bool ) override;
   void arise() override;
   void combat_begin() override;
+  void init_rng() override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
   double composite_rating_multiplier( rating_e rating ) const override;
   double composite_player_multiplier( school_e school ) const override;
@@ -2337,6 +2345,11 @@ struct charge_t : public warrior_attack_t
     energize_resource       = RESOURCE_RAGE;
     energize_type           = action_energize::ON_CAST;
     attack_power_mod.direct = charge_damage->effectN( 1 ).ap_coeff();
+   //Reprisal extra rage gain for Charge
+    if ( p->legendary.reprisal->ok() )
+    {
+      energize_amount +=  p->find_spell( 335734 )->effectN( 1 ).resource( RESOURCE_RAGE );
+    }
 
     if ( p->talents.double_time->ok() )
     {
@@ -2360,7 +2373,22 @@ struct charge_t : public warrior_attack_t
     }
 
     warrior_attack_t::execute();
-
+    
+    if ( p()->legendary.reprisal->ok() )
+    {
+      if ( p()->buff.shield_block->check() )
+      // Even though it isn't mentionned anywhere in spelldata, reprisal only triggers shield block for 4s
+      {
+        p()->buff.shield_block->extend_duration( p(), 4_s ); 
+      }
+      else
+      {
+        p()->buff.shield_block->trigger( 4_s );
+      }
+      p()->buff.revenge->trigger();
+    }
+  
+    
     p()->buff.furious_charge->trigger();
 
     if ( p()->legendary.sephuzs_secret != spell_data_t::not_found() && execute_state->target->type == ENEMY_ADD )
@@ -6330,6 +6358,7 @@ void warrior_t::init_spells()
 
   legendary.the_wall              = find_runeforge_legendary( "The Wall" );
   legendary.thunderlord           = find_runeforge_legendary( "Thunderlord" );
+  legendary.reprisal              = find_runeforge_legendary( "Reprisal" );
 
   if ( specialization() == WARRIOR_FURY )
   {
@@ -6794,7 +6823,9 @@ void warrior_t::apl_prot()
     default_list -> add_action( racial_actions[ i ] );
 
   default_list -> add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
-  default_list -> add_action( this, "Ignore Pain","if=buff.ignore_pain.down&rage>50");
+  default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>20&!covenant.venthyr,line_cd=15","Prioritize Execute over Ignore Pain as a rage dump below 20%" ); 
+  default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>20&target.health.pct<80&covenant.venthyr,line_cd=15","Venthyr Condemn has 2 execute windows, 20% and 80%" ); 
+  default_list -> add_action( this, "Heroic Charge", "if=rage<60&buff.revenge.down&runeforge.reprisal");
   default_list -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
   default_list -> add_action( this, "Avatar" );
   default_list -> add_action( "ancient_aftershock");
@@ -6811,7 +6842,7 @@ void warrior_t::apl_prot()
   generic -> add_action( this, "Shield Slam" );
   generic -> add_action( this, covenant.condemn, "condemn");
   generic -> add_action( this, "Execute");
-  generic -> add_action( this, "Revenge", "if=rage>=70" );
+  generic -> add_action( this, "Revenge", "if=rage>80&target.health.pct>20|buff.revenge.up" );
   generic -> add_action( this, "Thunder Clap" );
   generic -> add_action( this, "Revenge" );
   generic -> add_action( this, "Devastate" );
@@ -7111,7 +7142,6 @@ void warrior_t::create_buffs()
   buff.revenge =
       make_buff( this, "revenge", find_spell( 5302 ) )
       ->set_default_value( find_spell( 5302 )->effectN( 1 ).percent() )
-      ->set_trigger_spell( spec.revenge_trigger )
       ->set_cooldown( spec.revenge_trigger -> internal_cooldown() );
 
   buff.avatar = make_buff( this, "avatar", spec.avatar_buff )
@@ -7339,7 +7369,12 @@ void warrior_t::create_buffs()
                                ->add_invalidate( CACHE_CRIT_CHANCE );
 
 }
-
+// warrior_t::init_rng ==================================================
+void warrior_t::init_rng()
+{
+  player_t::init_rng();
+  rppm.revenge        = get_rppm( "revenge_trigger", spec.revenge_trigger );
+}
 // warrior_t::init_scaling ==================================================
 
 void warrior_t::init_scaling()
@@ -8222,7 +8257,10 @@ void warrior_t::assess_damage( school_e school, result_amount_type type, action_
 
   if ( s->result == RESULT_DODGE || s->result == RESULT_PARRY )
   {
+   if ( rppm.revenge->trigger() )
+    {
       buff.revenge->trigger();
+    }
   }
 
   // Generate 3 Rage on auto-attack taken.
