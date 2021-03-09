@@ -4057,7 +4057,7 @@ struct chain_lightning_t : public chained_base_t
 
   bool benefit_from_maelstrom_weapon() const override
   {
-    if ( p()->dbc->ptr && p()->buff.stormkeeper->check() )
+    if ( p()->buff.stormkeeper->check() )
     {
       return false;
     }
@@ -4083,7 +4083,7 @@ struct chain_lightning_t : public chained_base_t
 
     t *= 1.0 + p()->buff.wind_gust->stack_value();
 
-    if ( !p()->dbc->ptr && p()->buff.stormkeeper->up() )
+    if ( p()->buff.stormkeeper->up() )
     {
       // stormkeeper has a -100% value as effect 1
       t *= 1 + p()->talent.stormkeeper->effectN( 1 ).percent();
@@ -4851,18 +4851,6 @@ struct lightning_bolt_t : public shaman_spell_t
     }
   }
 
-  // Apparently if Stormkeeper is up, Maelstrom Weapon is not consumed by Lightning Bolt /
-  // Chain Lightning, but the spell still benefits from the damage increase.
-  bool benefit_from_maelstrom_weapon() const override
-  {
-    if ( p()->buff.stormkeeper->check() )
-    {
-      return false;
-    }
-
-    return shaman_spell_t::benefit_from_maelstrom_weapon();
-  }
-
   double composite_maelstrom_gain_coefficient( const action_state_t* state ) const override
   {
     double coeff = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
@@ -4931,8 +4919,7 @@ struct lightning_bolt_t : public shaman_spell_t
   double action_multiplier() const override
   {
     double m = shaman_spell_t::action_multiplier();
-    if ( p()->buff.stormkeeper->up() &&
-         ( !p()->dbc->ptr || p()->specialization() == SHAMAN_ELEMENTAL ) )
+    if ( p()->buff.stormkeeper->up() && p()->specialization() == SHAMAN_ELEMENTAL )
     {
       m *= 1.0 + p()->talent.stormkeeper->effectN( 2 ).percent();
     }
@@ -4947,8 +4934,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
   timespan_t execute_time() const override
   {
-    if ( p()->buff.stormkeeper->up() &&
-         ( !p()->dbc->ptr || p()->specialization() == SHAMAN_ELEMENTAL ) )
+    if ( p()->buff.stormkeeper->up() && p()->specialization() == SHAMAN_ELEMENTAL )
     {
       return timespan_t::zero();
     }
@@ -5003,8 +4989,7 @@ struct lightning_bolt_t : public shaman_spell_t
       }
     }
 
-    if ( type == lightning_bolt_type::NORMAL &&
-         ( !p()->dbc->ptr || p()->specialization() == SHAMAN_ELEMENTAL ) )
+    if ( type == lightning_bolt_type::NORMAL && p()->specialization() == SHAMAN_ELEMENTAL )
     {
       p()->buff.stormkeeper->decrement();
     }
@@ -6721,10 +6706,7 @@ struct chain_harvest_t : public shaman_spell_t
     aoe = 5;
     spell_power_mod.direct = player->find_spell( 320752 )->effectN( 1 ).sp_coeff();
 
-    if ( player->dbc->ptr )
-    {
-      base_multiplier *= 1.0 + player->spec.elemental_shaman->effectN( 7 ).percent();
-    }
+    base_multiplier *= 1.0 + player->spec.elemental_shaman->effectN( 7 ).percent();
 
     base_crit += p()->conduit.lavish_harvest.percent();
   }
