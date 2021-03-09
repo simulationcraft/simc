@@ -143,10 +143,12 @@ void shadow( player_t* p )
                    "target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)",
                    "Use Silence on CD to proc Sephuz's Proclamation." );
   cds->add_action( p, priest->covenant.fae_guardians, "fae_guardians",
-                   "if=!buff.voidform.up&(!cooldown.void_torrent.up|!talent.void_torrent.enabled)|buff.voidform.up&("
-                   "soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled)",
+                   "if=!buff.voidform.up&(!cooldown.void_torrent.up|!talent.void_torrent.enabled)&(variable.dots_up&"
+                   "spell_targets.vampiric_touch==1|active_dot.vampiric_touch==spell_targets.vampiric_touch)|buff."
+                   "voidform.up&(soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled)",
                    "Use Fae Guardians on CD outside of Voidform. Use Fae Guardiands in Voidform if you have either "
-                   "Grove Invigoration or Field of Blossoms" );
+                   "Grove Invigoration or Field of Blossoms. Wait for dots to be up before activating Fae Guardians to "
+                   "maximise the buff." );
   cds->add_action( p, priest->covenant.mindgames, "mindgames",
                    "target_if=insanity<90&((variable.all_dots_up&(!cooldown.void_eruption.up|!talent.hungering_void."
                    "enabled))|buff.voidform.up)&(!talent.hungering_void.enabled|debuff.hungering_void.up|!buff."
@@ -264,9 +266,11 @@ void shadow( player_t* p )
                     "than redotting unless dark thoughts is about to time out" );
   main->add_action( p, "Mind Blast",
                     "if=variable.dots_up&raid_event.movement.in>cast_time+0.5&spell_targets.mind_sear<(4+2*talent."
-                    "misery.enabled+active_dot.vampiric_touch*talent.psychic_link.enabled)",
+                    "misery.enabled+active_dot.vampiric_touch*talent.psychic_link.enabled+(spell_targets.mind_sear>?5)*"
+                    "(pet.fiend.active&runeforge.shadowflame_prism.equipped))",
                     "Use Mind Blast if you don't need to refresh DoTs. Stop casting at 4 or more targets with Searing "
-                    "Nightmare talented and you are not using Shadowflame Prism or Psychic Link." );
+                    "Nightmare talented and you are not using Shadowflame Prism or Psychic Link."
+                    "spell_targets.mind_sear>?5 gets the minimum of 5 and the number of targets." );
   main->add_action( p, "Vampiric Touch",
                     "target_if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain."
                     "refreshable)|buff.unfurling_darkness.up" );
