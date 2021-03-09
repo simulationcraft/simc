@@ -408,11 +408,11 @@ public:
       }
     }
 
+    ab::impact( s );
+
     p()->trigger_empowered_tiger_lightning( s );
 
     p()->trigger_bonedust_brew( s );
-
-    ab::impact( s );
   }
 
   void trigger_storm_earth_and_fire( const action_t* a )
