@@ -209,7 +209,7 @@ void shadow( player_t* p )
                     "High Priority Mind Sear action to refresh DoTs with Searing Nightmare" );
   main->add_talent( p, "Damnation", "target_if=!variable.all_dots_up",
                     "Prefer to use Damnation ASAP if any DoT is not up." );
-  main->add_talent(
+  main->add_action(
       p, "Mind Blast",
       "if=cooldown.mind_blast.charges>1&pet.fiend.active&runeforge.shadowflame_prism.equipped&!cooldown.void_bolt.up",
       "Instantly spend a mind blast charge after voidbolt if using shadowflame prism and mindblasts are capped." );
