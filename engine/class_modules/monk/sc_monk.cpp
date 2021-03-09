@@ -1669,10 +1669,19 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     if ( p()->specialization() == MONK_WINDWALKER )
     {
-      for ( player_t* target : targets )
+      // Current bug has Mark of the Crane not count non-primary MotC debuffs
+      if ( p()->bugs )
       {
-        if ( td( target )->debuff.mark_of_the_crane->up() )
-          mark_of_the_crane_counter++;
+        if ( td( p()->target )->debuff.mark_of_the_crane->up() )
+          mark_of_the_crane_counter = 1;
+      }
+      else
+      {
+        for ( player_t* target : targets )
+        {
+          if ( td( target )->debuff.mark_of_the_crane->up() )
+            mark_of_the_crane_counter++;
+        }
       }
     }
     return mark_of_the_crane_counter;
@@ -1682,8 +1691,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    // Current bug has Mark of the Crane not increase SEF's damage at all
-    double motc_multiplier = ( p()->bugs ? 0 : p()->passives.cyclone_strikes->effectN( 1 ).percent() );
+    double motc_multiplier = p()->passives.cyclone_strikes->effectN( 1 ).percent();
 
     if ( p()->conduit.calculated_strikes->ok() )
       motc_multiplier += p()->conduit.calculated_strikes.percent();
@@ -7424,18 +7432,6 @@ void monk_t::trigger_bonedust_brew( action_state_t* s )
         // "This" is referring to the player and does not work with "guardians" which is what SEF and pets are registered as
         if ( s->action->player == this && conduit.bone_marrow_hops->ok() )
           damage *= 1 + conduit.bone_marrow_hops.percent();
-
-        // Bonedust Brew scales with Serenity (so it double dips).
-        // Since Bonedust Brew is not part of Effect 2 of Serenity, chaulking this as a bug
-        if ( buff.serenity->up() && bugs )
-        {
-          double serenity_multiplier = talent.serenity->effectN( 2 ).percent();
-
-          if ( conduit.coordinated_offensive->ok() )
-            serenity_multiplier += conduit.coordinated_offensive.percent();
-
-          damage *= 1 + serenity_multiplier;
-        }
 
         active_actions.bonedust_brew_dmg->base_dd_min = damage;
         active_actions.bonedust_brew_dmg->base_dd_max = damage;
