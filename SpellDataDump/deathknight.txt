@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37862 Live (hotfix 2021-03-09/37862, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37864 Live (hotfix 2021-03-09/37864)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter

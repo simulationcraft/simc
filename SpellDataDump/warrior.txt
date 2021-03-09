@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37862 Live (hotfix 2021-03-09/37862, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37864 Live (hotfix 2021-03-09/37864)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -10874,7 +10874,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=832066)   : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Trigger Spell: 335452 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $?a317320[Condemn][Execute] causes the target to take $s1% more damage from your next Mortal Strike, stacking up to $335452u times.
 
 Name             : Exploiter (id=335452) [Spell Family (4)] 
