@@ -1682,7 +1682,8 @@ struct sck_tick_action_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    double motc_multiplier = p()->passives.cyclone_strikes->effectN( 1 ).percent();
+    // Current bug has Mark of the Crane not increase SEF's damage at all
+    double motc_multiplier = ( p()->bugs ? 0 : p()->passives.cyclone_strikes->effectN( 1 ).percent() );
 
     if ( p()->conduit.calculated_strikes->ok() )
       motc_multiplier += p()->conduit.calculated_strikes.percent();
