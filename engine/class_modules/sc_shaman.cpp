@@ -9021,11 +9021,11 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_action("primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up");
   aoe->add_talent(this, "Fire Nova", "if=active_dot.flame_shock>=3");
   aoe->add_action("vesper_totem");
-  aoe->add_action(this, "Lightning Bolt", "if=buff.primordial_wave.up&(buff.stormkeeper.up|buff.maelstrom_weapon.stack>=5)");
+  aoe->add_action(this, "Lightning Bolt", "if=buff.primordial_wave.up&buff.maelstrom_weapon.stack>=5");
   aoe->add_action(this, "Chain Lightning", "if=buff.stormkeeper.up");
   aoe->add_action(this, "Crash Lightning", "if=talent.crashing_storm.enabled|buff.crash_lightning.down");
-  aoe->add_action(this, "Lava Lash", "target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled|(runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6)");
-  aoe->add_action(this, "Lava Lash," "if=buff.crash_lightning.up&buff.hot_hand.up");
+  aoe->add_action(this, "Lava Lash", "target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled");
+  aoe->add_action(this, "Lava Lash", "if=buff.crash_lightning.up&(buff.hot_hand.up|(runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6))");
   aoe->add_action(this, "Stormstrike", "if=buff.crash_lightning.up");
   aoe->add_action(this, "Crash Lightning");
   aoe->add_action("chain_harvest,if=buff.maelstrom_weapon.stack>=5");

@@ -68,10 +68,11 @@ actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1,if=talent.fire_n
 actions.aoe+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up
 actions.aoe+=/fire_nova,if=active_dot.flame_shock>=3
 actions.aoe+=/vesper_totem
-actions.aoe+=/lightning_bolt,if=buff.primordial_wave.up&(buff.stormkeeper.up|buff.maelstrom_weapon.stack>=5)
+actions.aoe+=/lightning_bolt,if=buff.primordial_wave.up&buff.maelstrom_weapon.stack>=5
 actions.aoe+=/chain_lightning,if=buff.stormkeeper.up
 actions.aoe+=/crash_lightning,if=talent.crashing_storm.enabled|buff.crash_lightning.down
-actions.aoe+=/lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled|(runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6)
+actions.aoe+=/lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled
+actions.aoe+=/lava_lash,if=buff.crash_lightning.up&(buff.hot_hand.up|(runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6))
 actions.aoe+=/stormstrike,if=buff.crash_lightning.up
 actions.aoe+=/crash_lightning
 actions.aoe+=/chain_harvest,if=buff.maelstrom_weapon.stack>=5
@@ -140,9 +141,9 @@ off_hand=talons_of_the_legion_generals,id=182390,bonus_id=7187/1531,enchant=cele
 # Gear Summary
 # gear_ilvl=229.63
 # gear_agility=877
-# gear_stamina=1526
-# gear_crit_rating=589
-# gear_haste_rating=717
-# gear_mastery_rating=168
-# gear_versatility_rating=472
+# gear_stamina=1528
+# gear_crit_rating=593
+# gear_haste_rating=722
+# gear_mastery_rating=171
+# gear_versatility_rating=476
 # gear_armor=878
