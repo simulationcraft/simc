@@ -7425,18 +7425,6 @@ void monk_t::trigger_bonedust_brew( action_state_t* s )
         if ( s->action->player == this && conduit.bone_marrow_hops->ok() )
           damage *= 1 + conduit.bone_marrow_hops.percent();
 
-        // Bonedust Brew scales with Serenity (so it double dips).
-        // Since Bonedust Brew is not part of Effect 2 of Serenity, chaulking this as a bug
-        if ( buff.serenity->up() && bugs )
-        {
-          double serenity_multiplier = talent.serenity->effectN( 2 ).percent();
-
-          if ( conduit.coordinated_offensive->ok() )
-            serenity_multiplier += conduit.coordinated_offensive.percent();
-
-          damage *= 1 + serenity_multiplier;
-        }
-
         active_actions.bonedust_brew_dmg->base_dd_min = damage;
         active_actions.bonedust_brew_dmg->base_dd_max = damage;
         active_actions.bonedust_brew_dmg->execute();
