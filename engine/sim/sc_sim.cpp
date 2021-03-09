@@ -1207,7 +1207,7 @@ struct bloodlust_check_t : public event_t
      player_t* t = sim.target;
      if ( ( sim.bloodlust_percent  > 0                  && t -> health_percentage() <  sim.bloodlust_percent ) ||
           ( sim.bloodlust_time     < timespan_t::zero() && t -> time_to_percent( 0.0 ) < -sim.bloodlust_time ) ||
-          ( sim.bloodlust_time     > timespan_t::zero() && sim.current_time() >  sim.bloodlust_time ) )
+          ( sim.bloodlust_time     >= timespan_t::zero() && sim.current_time() >=  sim.bloodlust_time ) )
      {
        if ( ! sim.single_actor_batch )
        {
