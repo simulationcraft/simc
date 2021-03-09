@@ -954,7 +954,7 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
     if ( p()->buff.storm_earth_and_fire->up() )
     {
       // Hard code Patch 9.0.5
-      // Eye of the Tiger's damage is now increased by 35% when Storm, Earth, and Fire is out
+      // Eye of the Tiger's heal is now increased by 35% when Storm, Earth, and Fire is out
       am *= 1 + 0.35;
     }
     
