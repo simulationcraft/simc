@@ -5207,17 +5207,7 @@ struct earthquake_damage_t : public shaman_spell_t
     school                  = SCHOOL_PHYSICAL;
 
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
-    if ( player->dbc->ptr )
-    {
-      // TODO: remove this conditional once 9.0.5 is live
-      // PTR for 9.0.5 buffed EQ by 70%,
-      // https://us.forums.blizzard.com/en/wow/t/905-ptr-changes-updated-february-23/875072/1
-      spell_power_mod.direct = 0.391;
-    }
-    else
-    {
-      spell_power_mod.direct = 0.23;
-    }
+    spell_power_mod.direct = 0.391;
   }
 
   double composite_target_armor( player_t* ) const override
