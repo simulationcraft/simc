@@ -1193,8 +1193,8 @@ std::string get_api_key()
 /// Setup a periodic check for Bloodlust
 struct bloodlust_check_t : public event_t
  {
-   bloodlust_check_t( sim_t& sim ) :
-     event_t( sim, timespan_t::from_seconds( 1.0 ) )
+   bloodlust_check_t( sim_t& sim, timespan_t time_until_next_check = timespan_t::from_seconds( 1.0 ) ) :
+     event_t( sim, time_until_next_check )
    {
    }
 
@@ -1505,7 +1505,7 @@ sim_t::sim_t() :
   merge_time(), init_time(), analyze_time(),
   report_iteration_data( 0.025 ), min_report_iteration_data( -1 ),
   report_progress( 1 ),
-  bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 0.5 ) ),
+  bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 0 ) ),
   // Report
   report_precision(2), report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
   report_rng( 0 ), hosted_html( 0 ),
@@ -1881,7 +1881,7 @@ void sim_t::combat_begin()
 
   if ( overrides.bloodlust )
   {
-     make_event<bloodlust_check_t>( *this, *this );
+    make_event<bloodlust_check_t>( *this, *this, timespan_t::from_seconds( 0.0 ) );
   }
 
   if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
