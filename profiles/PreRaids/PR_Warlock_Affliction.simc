@@ -145,11 +145,11 @@ main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=sinful_revel
 
 # Gear Summary
 # gear_ilvl=184.40
-# gear_stamina=849
+# gear_stamina=859
 # gear_intellect=735
-# gear_crit_rating=361
-# gear_haste_rating=419
-# gear_mastery_rating=592
-# gear_versatility_rating=81
+# gear_crit_rating=363
+# gear_haste_rating=421
+# gear_mastery_rating=594
+# gear_versatility_rating=83
 # gear_armor=292
 default_pet=imp

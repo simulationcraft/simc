@@ -106,11 +106,11 @@ main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=celestial_gu
 
 # Gear Summary
 # gear_ilvl=184.40
-# gear_stamina=849
+# gear_stamina=859
 # gear_intellect=787
-# gear_crit_rating=416
-# gear_haste_rating=565
-# gear_mastery_rating=263
-# gear_versatility_rating=127
+# gear_crit_rating=419
+# gear_haste_rating=569
+# gear_mastery_rating=265
+# gear_versatility_rating=128
 # gear_armor=292
 default_pet=felguard
