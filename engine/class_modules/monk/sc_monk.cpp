@@ -7396,13 +7396,13 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t* s )
   {
     // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself (335913)
     // Touch of Karma (id = 124280) does not contribute to Empowered Tiger Lightning
-    if ( buff.invoke_xuen->check() && s->result_total > 0 && s->action->id != 335913 && s->action->id != 124280 )
+    if ( buff.invoke_xuen->check() && s->result_amount > 0 && s->action->id != 335913 && s->action->id != 124280 )
     {
       auto td = get_target_data( s->target );
 
       auto previous_value =
           td->debuff.empowered_tiger_lightning->check() ? td->debuff.empowered_tiger_lightning->current_value : 0;
-      auto new_value = previous_value + s->result_total;
+      auto new_value = previous_value + s->result_amount;
 
       td->debuff.empowered_tiger_lightning->trigger( -1, new_value, -1, buff.invoke_xuen->remains() );
     }
@@ -7412,18 +7412,30 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t* s )
 void monk_t::trigger_bonedust_brew( action_state_t* s )
 {
   // Make sure Bonedust Brew does not trigger from itself
-  if ( covenant.necrolord->ok() && s->result_total > 0 && s->action->id != 325217 && s->action->id != 325218 )
+  if ( covenant.necrolord->ok() && s->result_amount > 0 && s->action->id != 325217 && s->action->id != 325218 )
   {
     if ( auto td = find_target_data( s->target ) )
     {
       if ( td->debuff.bonedust_brew->up() && rng().roll( covenant.necrolord->proc_chance() ) )
       {
-        double damage = s->result_total * covenant.necrolord->effectN( 1 ).percent();
+        double damage = s->result_amount * covenant.necrolord->effectN( 1 ).percent();
 
         // Bone Marrow Hops DOES NOT work with SEF or pets
         // "This" is referring to the player and does not work with "guardians" which is what SEF and pets are registered as
         if ( s->action->player == this && conduit.bone_marrow_hops->ok() )
           damage *= 1 + conduit.bone_marrow_hops.percent();
+
+        // Bonedust Brew scales with Serenity (so it double dips).
+        // Since Bonedust Brew is not part of Effect 2 of Serenity, chaulking this as a bug
+        if ( buff.serenity->up() && bugs )
+        {
+          double serenity_multiplier = talent.serenity->effectN( 2 ).percent();
+
+          if ( conduit.coordinated_offensive->ok() )
+            serenity_multiplier += conduit.coordinated_offensive.percent();
+
+          damage *= 1 + serenity_multiplier;
+        }
 
         active_actions.bonedust_brew_dmg->base_dd_min = damage;
         active_actions.bonedust_brew_dmg->base_dd_max = damage;
