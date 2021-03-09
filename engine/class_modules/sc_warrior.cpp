@@ -1156,21 +1156,6 @@ public:
         }
       }
     }
-
-    if ( ab::current_resource() == RESOURCE_RAGE && ab::last_resource_cost > 0 )
-    {
-      if ( !p()->dbc->ptr && p()->covenant.conquerors_banner->ok() && p()->buff.conquerors_banner->check() )
-      {
-        p()->covenant.glory_counter += ab::last_resource_cost;
-        double glory_threshold = p()->specialization() == WARRIOR_FURY ? 30 : 20;
-        if (p()->covenant.glory_counter >= glory_threshold)
-        {
-          int stacks = as<int>( floor( p()->covenant.glory_counter / glory_threshold ) );
-          p()->buff.glory->trigger( stacks );
-          p()->covenant.glory_counter -= stacks * glory_threshold;
-        }
-      }
-     }
   }
 
   virtual void tactician()
@@ -1725,10 +1710,7 @@ struct mortal_strike_t : public warrior_attack_t
   {
     if ( p()->buff.battlelord->check() )
     {
-      if ( player->dbc->ptr )
         return 15;
-      else
-        return 18;
     }
 
     if ( from_mortal_combo )
@@ -3703,7 +3685,7 @@ struct overpower_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    if ( player->dbc->ptr && p()->legendary.battlelord->ok() && rng().roll( battlelord_chance ) )
+    if ( p()->legendary.battlelord->ok() && rng().roll( battlelord_chance ) )
     {
       p()->cooldown.mortal_strike->reset( true );
       p() -> buff.battlelord -> trigger();
@@ -3833,12 +3815,7 @@ struct rampage_attack_t : public warrior_attack_t
       }
       if ( p()->legendary.reckless_defense->ok() )
       {
-        if ( !player->dbc->ptr && target == s->target && execute_state->result == RESULT_CRIT
-        && rng().roll( reckless_defense_chance ) )
-        {
-          p()->cooldown.recklessness->adjust( - timespan_t::from_seconds( p()->legendary.reckless_defense->effectN( 1 ).base_value() ) );
-        }
-        if ( player->dbc->ptr && target == s->target && execute_state->result == RESULT_HIT
+        if ( target == s->target && execute_state->result == RESULT_HIT
         && rng().roll( reckless_defense_chance ) )
         {
           p()->cooldown.recklessness->adjust( - timespan_t::from_seconds( p()->legendary.reckless_defense->effectN( 1 ).base_value() ) );
@@ -4376,10 +4353,8 @@ struct shield_slam_t : public warrior_attack_t
 struct slam_t : public warrior_attack_t
 {
   bool from_Fervor;
-  double battlelord_chance;
   slam_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "slam", p, p->spec.slam ), from_Fervor( false ),
-      battlelord_chance( p->legendary.battlelord->proc_chance() )
+    : warrior_attack_t( "slam", p, p->spec.slam ), from_Fervor( false )
   {
     parse_options( options_str );
     weapon                       = &( p->main_hand_weapon );
@@ -4420,11 +4395,6 @@ struct slam_t : public warrior_attack_t
       {
         p()->buff.deadly_calm->decrement();
       }
-    if ( !player->dbc->ptr && p()->legendary.battlelord->ok() && rng().roll( battlelord_chance ) )
-    {
-      p()->cooldown.mortal_strike->reset( true );
-      p() -> buff.battlelord -> trigger();
-    }
   }
 
   bool ready() override
@@ -5284,12 +5254,8 @@ struct conquerors_banner_t : public warrior_spell_t
     warrior_spell_t::execute();
 
     p()->buff.conquerors_banner->trigger();
-    if ( player->dbc->ptr )
-    {
-      p()->buff.conquerors_mastery->trigger();
-    }
-    else
-    p()->buff.conquerors_frenzy->trigger();
+    p()->buff.conquerors_mastery->trigger();
+
     if ( p()->conduit.veterans_repute->ok() )
     {
       p()->buff.veterans_repute->trigger();
@@ -8712,7 +8678,6 @@ struct warrior_module_t : public module_t
 
   void init( player_t* p ) const override
   {
-    if ( p->dbc->ptr )
         p->buffs.conquerors_banner = make_buff<stat_buff_t>( p, "conquerors_banner_external", p -> find_spell( 325862 ) );
   }
   void combat_begin( sim_t* ) const override
