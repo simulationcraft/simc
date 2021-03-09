@@ -492,7 +492,7 @@ void windwalker( player_t* p )
     {
       if ( p->items[ i ].name_str == "inscrutable_quantum_device" )
         cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst" );
-      else if ( p->items[ i ].name_str == "wrathone" )
+      else if ( p->items[ i ].name_str == "wrathstone" )
         cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst" );
       else if ( p->items[ i ].name_str == "gladiators_badge" )
         cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst" );
@@ -550,7 +550,7 @@ void windwalker( player_t* p )
       if ( p->items[ i ].name_str == "inscrutable_quantum_device" )
         cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str + 
                             ",if=pet.xuen_the_white_tiger.active|fight_remains<20" );
-      else if ( p->items[ i ].name_str == "wrathone" )
+      else if ( p->items[ i ].name_str == "wrathstone" )
         cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str +
                             ",if=pet.xuen_the_white_tiger.active|fight_remains<20" );
       else if ( p->items[ i ].name_str == "gladiators_badge" )
