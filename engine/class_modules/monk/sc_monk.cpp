@@ -946,6 +946,20 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
     may_crit = tick_may_crit = true;
     target                   = player;
   }
+
+  double action_multiplier() const override
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    if ( p()->buff.storm_earth_and_fire->up() )
+    {
+      // Hard code Patch 9.0.5
+      // Eye of the Tiger's damage is now increased by 35% when Storm, Earth, and Fire is out
+      am *= 1 + 0.35;
+    }
+    
+    return am;
+  }
 };
 
 struct eye_of_the_tiger_dmg_tick_t : public monk_spell_t
@@ -958,6 +972,20 @@ struct eye_of_the_tiger_dmg_tick_t : public monk_spell_t
     may_crit = tick_may_crit = true;
     attack_power_mod.direct  = 0;
     attack_power_mod.tick    = data().effectN( 2 ).ap_coeff();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    if ( p()->buff.storm_earth_and_fire->up() )
+    {
+      // Hard code Patch 9.0.5
+      // Eye of the Tiger's damage is now increased by 35% when Storm, Earth, and Fire is out
+      am *= 1 + 0.35;
+    }
+
+    return am;
   }
 };
 
