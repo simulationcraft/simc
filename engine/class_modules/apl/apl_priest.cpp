@@ -142,13 +142,14 @@ void shadow( player_t* p )
   cds->add_action( p, "Silence",
                    "target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)",
                    "Use Silence on CD to proc Sephuz's Proclamation." );
-  cds->add_action( p, priest->covenant.fae_guardians, "fae_guardians",
-                   "if=!buff.voidform.up&(!cooldown.void_torrent.up|!talent.void_torrent.enabled)&(variable.dots_up&"
-                   "spell_targets.vampiric_touch==1|active_dot.vampiric_touch==spell_targets.vampiric_touch)|buff."
-                   "voidform.up&(soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled)",
-                   "Use Fae Guardians on CD outside of Voidform. Use Fae Guardiands in Voidform if you have either "
-                   "Grove Invigoration or Field of Blossoms. Wait for dots to be up before activating Fae Guardians to "
-                   "maximise the buff." );
+  cds->add_action(
+      p, priest->covenant.fae_guardians, "fae_guardians",
+      "!buff.voidform.up&(!cooldown.void_torrent.up|!talent.void_torrent.enabled)&(variable.dots_up&spell_targets."
+      "vampiric_touch==1|active_dot.vampiric_touch==spell_targets.vampiric_touch&spell_targets.vampiric_touch>1)|buff."
+      "voidform.up&(soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled)",
+      "Use Fae Guardians on CD outside of Voidform. Use Fae Guardiands in Voidform if you have either "
+      "Grove Invigoration or Field of Blossoms. Wait for dots to be up before activating Fae Guardians to "
+      "maximise the buff." );
   cds->add_action( p, priest->covenant.mindgames, "mindgames",
                    "target_if=insanity<90&((variable.all_dots_up&(!cooldown.void_eruption.up|!talent.hungering_void."
                    "enabled))|buff.voidform.up)&(!talent.hungering_void.enabled|debuff.hungering_void.up|!buff."
