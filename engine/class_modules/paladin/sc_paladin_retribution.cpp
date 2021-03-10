@@ -539,8 +539,14 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
   double action_multiplier() const override
   {
     double am = holy_power_consumer_t::action_multiplier();
-    if ( is_fv && p() -> buffs.righteous_verdict -> check() )
-      am *= 1.0 + p() -> buffs.righteous_verdict -> data().effectN( 1 ).percent();
+    if ( is_fv )
+    {
+      if ( p() -> buffs.righteous_verdict -> check() )
+        am *= 1.0 + p() -> buffs.righteous_verdict -> data().effectN( 1 ).percent();
+      // for some reason FV double dips DP
+      if ( p() -> bugs && p() -> buffs.divine_purpose -> up() )
+        am *= 1.0 + p() -> buffs.divine_purpose -> data().effectN( 2 ).percent();
+    }
     return am;
   }
 
