@@ -3795,13 +3795,41 @@ struct faeline_stomp_damage_t : public monk_spell_t
   }
 };
 
+struct faeline_stomp_heal_t : public monk_heal_t
+{
+  faeline_stomp_heal_t( monk_t& p ) : monk_heal_t( "faeline_stomp_heal", p, p.passives.faeline_stomp_damage )
+  {
+    background = true;
+
+    attack_power_mod.direct = 0;
+    spell_power_mod.direct  = p.passives.faeline_stomp_damage->effectN( 2 ).sp_coeff();
+  }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double cam = monk_heal_t::composite_aoe_multiplier( state );
+
+    const std::vector<player_t*>& targets = state->action->target_list();
+
+    if ( p()->conduit.way_of_the_fae->ok() && !targets.empty() )
+    {
+      cam *= 1 + ( p()->conduit.way_of_the_fae.percent() *
+                   std::min( (double)targets.size(), p()->conduit.way_of_the_fae->effectN( 2 ).base_value() ) );
+    }
+
+    return cam;
+  }
+};
+
 struct faeline_stomp_t : public monk_spell_t
 {
   faeline_stomp_damage_t* damage;
+  faeline_stomp_heal_t* heal;
   faeline_stomp_ww_damage_t* ww_damage;
   faeline_stomp_t( monk_t& p, util::string_view options_str )
     : monk_spell_t( "faeline_stomp", &p, p.covenant.night_fae ),
       damage( new faeline_stomp_damage_t( p ) ),
+      heal( new faeline_stomp_heal_t( p ) ),
       ww_damage( new faeline_stomp_ww_damage_t( p ) )
   {
     parse_options( options_str );
@@ -3812,6 +3840,8 @@ struct faeline_stomp_t : public monk_spell_t
   void impact( action_state_t* s ) override
   {
     monk_spell_t::impact( s );
+
+    heal->execute();
 
     damage->set_target( s->target );
     damage->execute();
