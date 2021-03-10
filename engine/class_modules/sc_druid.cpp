@@ -1285,12 +1285,14 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
     }
   }
 
-  void start( int s, double v, timespan_t d ) override
+  bool trigger( int s, double v, double c, timespan_t d ) override
   {
-    base_t::start( s, v, d );
+    bool ret = base_t::trigger( s, v, c, d );
 
-    p().eclipse_handler.trigger_both( buff_duration() );
+    p().eclipse_handler.trigger_both( remains() );
     p().uptime.combined_ca_inc->update( true, sim->current_time() );
+
+    return ret;
   }
 
   void extend_duration( player_t* player, timespan_t d ) override
