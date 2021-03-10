@@ -279,7 +279,7 @@ void arcane( player_t* p )
   harmony->add_action( "arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.arcane_harmony.stack=buff.arcane_harmony.max_stack" );
   harmony->add_action( "evocation,if=mana.pct<15" );
   harmony->add_action( "arcane_blast,if=buff.arcane_charge.stack>1", "When between cooldown windows, we only build to full charges after using Arcane Orb" );
-  harmony->add_action( "arcane_barrage,if=buff.arcane_harmony.stack>0", "Immediately spend Harmony stacks when between cooldown windows" );
+  harmony->add_action( "arcane_barrage,if=buff.arcane_harmony.stack>0&!(cooldown.arcane_power.remains<=10&cooldown.touch_of_the_magi.remains<=10&cooldown.radiant_spark.remains<=5)", "Immediately spend Harmony stacks when between cooldown windows" );
   harmony->add_action( "arcane_missiles,chain=1" );
 
   am_spam->add_action( "cancel_action,if=action.evocation.channeling&mana.pct>=95" );
