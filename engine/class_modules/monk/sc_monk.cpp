@@ -1669,19 +1669,10 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     if ( p()->specialization() == MONK_WINDWALKER )
     {
-      // Current bug has Mark of the Crane not count non-primary MotC debuffs
-      if ( p()->bugs )
+      for ( player_t* target : targets )
       {
-        if ( td( p()->target )->debuff.mark_of_the_crane->up() )
-          mark_of_the_crane_counter = 1;
-      }
-      else
-      {
-        for ( player_t* target : targets )
-        {
-          if ( td( target )->debuff.mark_of_the_crane->up() )
-            mark_of_the_crane_counter++;
-        }
+        if ( td( target )->debuff.mark_of_the_crane->up() )
+          mark_of_the_crane_counter++;
       }
     }
     return mark_of_the_crane_counter;

@@ -214,6 +214,10 @@ void shadow( player_t* p )
       "if=cooldown.mind_blast.charges>1&pet.fiend.active&runeforge.shadowflame_prism.equipped&!cooldown.void_bolt.up",
       "Instantly spend a mind blast charge after voidbolt if using shadowflame prism and mindblasts are capped." );
   main->add_action(
+      p, "Mind Blast",
+      "if=cooldown.mind_blast.charges>1&pet.fiend.active&runeforge.shadowflame_prism.equipped&!cooldown.void_bolt.up",
+      "Instantly spend a mind blast charge after voidbolt if using shadowflame prism and mindblasts are capped." );
+  main->add_action(
       p, "Void Bolt",
       "if=insanity<=85&talent.hungering_void.enabled&talent.searing_nightmare.enabled&spell_targets.mind_sear<=6|(("
       "talent.hungering_void.enabled&!talent.searing_nightmare.enabled)|spell_targets.mind_sear=1)",

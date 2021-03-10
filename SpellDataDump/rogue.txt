@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37862 Live (hotfix 2021-03-09/37862, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37864 Live (hotfix 2021-03-09/37864)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -1656,7 +1656,6 @@ Effects          :
                    Family Flags: 33, 34
 #6 (id=882804)   : Apply Aura (6) | Periodic Dummy (226): every 5 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Finishing move that drives your poisoned blades in deep, dealing instant Nature damage and increasing your poison application chance by $s2%. Damage and duration increased per combo point.
 
    1 point  : ${$m1*1} damage, 2 sec

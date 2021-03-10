@@ -1194,11 +1194,10 @@ struct holy_power_consumer_t : public Base
       num_stacks = as<int>( hp_used );
 
     // as of 2020-11-08 magistrate's causes *extra* stacks?
+    // fixed at least for ret as of 9.0.5
     if ( p -> bugs && p -> buffs.the_magistrates_judgment -> up() )
     {
-      if ( p -> specialization() == PALADIN_RETRIBUTION && ! p -> dbc -> ptr )
-        num_stacks += 1;
-      else if ( p -> specialization() == PALADIN_PROTECTION &&
+      if ( p -> specialization() == PALADIN_PROTECTION &&
           is_wog && !p -> buffs.divine_purpose -> up() &&
           ( p -> buffs.shining_light_free -> up() || p -> buffs.royal_decree -> up() ) )
         num_stacks += 1;
