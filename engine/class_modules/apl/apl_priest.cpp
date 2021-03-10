@@ -144,7 +144,7 @@ void shadow( player_t* p )
                    "Use Silence on CD to proc Sephuz's Proclamation." );
   cds->add_action(
       p, priest->covenant.fae_guardians, "fae_guardians",
-      "!buff.voidform.up&(!cooldown.void_torrent.up|!talent.void_torrent.enabled)&(variable.dots_up&spell_targets."
+      "if=!buff.voidform.up&(!cooldown.void_torrent.up|!talent.void_torrent.enabled)&(variable.dots_up&spell_targets."
       "vampiric_touch==1|active_dot.vampiric_touch==spell_targets.vampiric_touch&spell_targets.vampiric_touch>1)|buff."
       "voidform.up&(soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled)",
       "Use Fae Guardians on CD outside of Voidform. Use Fae Guardiands in Voidform if you have either "
