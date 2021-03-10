@@ -170,7 +170,7 @@ void frost( player_t* p )
   precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!trinket.1.has_use_buff&trinket.2.has_use_buff|trinket.2.has_use_buff&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync))", "Estimates a trinkets value by comparing the cooldown of the trinket, divided by the duration of the buff it provides. Has a strength modifier to give a higher priority to strength trinkets, as well as a modifier for if a trinket will or will not sync with cooldowns." );
 
   default_->add_action( "auto_attack" );
-  default_->add_action( "variable,variable,name=specified_trinket,value=(equipped.inscrutable_quantum_device&!cooldown.inscrutable_quantum_device.remains)", "Prevent specified trinkets being used with automatic lines" );
+  default_->add_action( "variable,name=specified_trinket,value=(equipped.inscrutable_quantum_device&!cooldown.inscrutable_quantum_device.remains)", "Prevent specified trinkets being used with automatic lines" );
   default_->add_action( "remorseless_winter,if=conduit.everfrost&talent.gathering_storm&!talent.obliteration&cooldown.pillar_of_frost.remains", "Apply Frost Fever, maintain Icy Talons and keep Remorseless Winter rolling" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
   default_->add_action( "howling_blast,if=!dot.frost_fever.ticking&(talent.icecap|cooldown.breath_of_sindragosa.remains>15|talent.obliteration&cooldown.pillar_of_frost.remains&!buff.killing_machine.up)", "Apply Frost Fever and maintain Icy Talons" );
@@ -328,7 +328,7 @@ void unholy( player_t* p )
 
   default_->add_action( "auto_attack" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
-  default_->add_action( "variable,variable,name=specified_trinket,value=(equipped.inscrutable_quantum_device&!cooldown.inscrutable_quantum_device.remains)", "Prevent specified trinkets being used with automatic lines" );
+  default_->add_action( "variable,name=specified_trinket,value=(equipped.inscrutable_quantum_device&!cooldown.inscrutable_quantum_device.remains)", "Prevent specified trinkets being used with automatic lines" );
   default_->add_action( "variable,name=pooling_runic_power,value=cooldown.summon_gargoyle.remains<5&talent.summon_gargoyle", "Variables" );
   default_->add_action( "variable,name=pooling_runes,value=talent.soul_reaper&rune<2&target.time_to_pct_35<5&fight_remains>5" );
   default_->add_action( "variable,name=st_planning,value=active_enemies=1&(!raid_event.adds.exists|raid_event.adds.in>15)" );
