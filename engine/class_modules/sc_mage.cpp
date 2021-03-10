@@ -3814,13 +3814,14 @@ struct frozen_orb_t final : public frost_mage_spell_t
     return t;
   }
 
-  void adjust_orb_count( timespan_t duration, int& counter )
+  void adjust_orb_count( timespan_t duration, bool active )
   {
+    int& counter = active ? p()->state.active_frozen_orbs : p()->state.inactive_frozen_orbs;
     counter++;
-    make_event( *sim, duration, [ this, &counter ]
+    make_event( *sim, duration, [ this, &counter, active ]
     {
       counter--;
-      if ( p()->state.active_frozen_orbs + p()->state.inactive_frozen_orbs == 0 || p()->bugs )
+      if ( p()->state.active_frozen_orbs + p()->state.inactive_frozen_orbs == 0 || active && p()->bugs )
         p()->buffs.freezing_winds->expire();
     } );
   }
@@ -3829,7 +3830,7 @@ struct frozen_orb_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    adjust_orb_count( travel_time(), p()->state.inactive_frozen_orbs );
+    adjust_orb_count( travel_time(), false );
 
     if ( background )
       return;
@@ -3849,7 +3850,7 @@ struct frozen_orb_t final : public frost_mage_spell_t
     timespan_t duration = ( pulse_count - 1 ) * pulse_time;
     p()->ground_aoe_expiration[ AOE_FROZEN_ORB ] = sim->current_time() + duration;
 
-    adjust_orb_count( duration, p()->state.active_frozen_orbs );
+    adjust_orb_count( duration, true );
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( pulse_time )
