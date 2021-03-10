@@ -172,10 +172,10 @@ void frost( player_t* p )
   default_->add_action( "auto_attack" );
   default_->add_action( "variable,name=specified_trinket,value=(equipped.inscrutable_quantum_device&cooldown.inscrutable_quantum_device.ready)", "Prevent specified trinkets being used with automatic lines" );
   default_->add_action( "remorseless_winter,if=conduit.everfrost&talent.gathering_storm&!talent.obliteration&cooldown.pillar_of_frost.remains", "Apply Frost Fever, maintain Icy Talons and keep Remorseless Winter rolling" );
-  default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
-  default_->add_action( "howling_blast,if=!dot.frost_fever.ticking&(talent.icecap|cooldown.breath_of_sindragosa.remains>15|talent.obliteration&cooldown.pillar_of_frost.remains&!buff.killing_machine.up)", "Apply Frost Fever and maintain Icy Talons" );
+  default_->add_action( "howling_blast,if=!dot.frost_fever.ticking&(talent.icecap|cooldown.breath_of_sindragosa.remains>15|talent.obliteration&cooldown.pillar_of_frost.remains&!buff.killing_machine.up)" );
   default_->add_action( "glacial_advance,if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&spell_targets.glacial_advance>=2&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>15)" );
   default_->add_action( "frost_strike,if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>15)" );
+  default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
   default_->add_action( "call_action_list,name=covenants", "Choose Action list to run" );
   default_->add_action( "call_action_list,name=racials" );
   default_->add_action( "call_action_list,name=trinkets" );
