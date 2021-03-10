@@ -1753,7 +1753,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
 
     spell_power_mod.direct = 0.0;
-    dot_behavior           = DOT_REFRESH;  // Spell uses Pandemic Mechanics.
+    dot_behavior           = dot_behavior_e::DOT_REFRESH;  // Spell uses Pandemic Mechanics.
 
     tick_action =
         new sck_tick_action_t( "spinning_crane_kick_tick", p, p->spec.spinning_crane_kick->effectN( 1 ).trigger() );
