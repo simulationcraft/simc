@@ -417,15 +417,12 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
         vc -> schedule_execute();
       }
 
-      if ( p() -> dbc -> ptr )
+      if ( p() -> conduit.templars_vindication -> ok() )
       {
-        if ( p() -> conduit.templars_vindication -> ok() )
+        if ( rng().roll( p() -> conduit.templars_vindication.percent() ) )
         {
-          if ( rng().roll( p() -> conduit.templars_vindication.percent() ) )
-          {
-            // TODO(mserrano): figure out if 600ms is still correct; there does appear to be some delay
-            make_event<echoed_spell_event_t>( *sim, p(), execute_state -> target, echo, timespan_t::from_millis( 600 ), s -> result_amount );
-          }
+          // TODO(mserrano): figure out if 600ms is still correct; there does appear to be some delay
+          make_event<echoed_spell_event_t>( *sim, p(), execute_state -> target, echo, timespan_t::from_millis( 600 ), s -> result_amount );
         }
       }
     }
@@ -512,18 +509,6 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
         p() -> buffs.final_verdict -> trigger();
       }
     }
-
-    if ( ! p() -> dbc -> ptr )
-    {
-      if ( p() -> conduit.templars_vindication -> ok() )
-      {
-        if ( rng().roll( p() -> conduit.templars_vindication.percent() ) )
-        {
-          // TODO(mserrano): figure out if 600ms is still correct; there does appear to be some delay
-          make_event<echoed_spell_event_t>( *sim, p(), execute_state -> target, echo, timespan_t::from_millis( 600 ), 0 );
-        }
-      }
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -540,15 +525,12 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
         vc -> schedule_execute();
       }
 
-      if ( p() -> dbc -> ptr )
+      if ( p() -> conduit.templars_vindication -> ok() )
       {
-        if ( p() -> conduit.templars_vindication -> ok() )
+        if ( rng().roll( p() -> conduit.templars_vindication.percent() ) )
         {
-          if ( rng().roll( p() -> conduit.templars_vindication.percent() ) )
-          {
-            // TODO(mserrano): figure out if 600ms is still correct; there does appear to be some delay
-            make_event<echoed_spell_event_t>( *sim, p(), execute_state -> target, echo, timespan_t::from_millis( 600 ), s -> result_amount );
-          }
+          // TODO(mserrano): figure out if 600ms is still correct; there does appear to be some delay
+          make_event<echoed_spell_event_t>( *sim, p(), execute_state -> target, echo, timespan_t::from_millis( 600 ), s -> result_amount );
         }
       }
     }
