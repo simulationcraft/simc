@@ -4410,6 +4410,8 @@ struct flagellation_t : public rogue_attack_t
     initial_lashes()
   {
     dot_duration = timespan_t::zero();
+    // Manually setting to false because the spell is still in the Shadow Blades whitelist.
+    affected_by.shadow_blades = false;
 
     if ( p->active.flagellation )
     {
