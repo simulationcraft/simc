@@ -6833,14 +6833,14 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
 
   if ( school == SCHOOL_PHYSICAL && dmg_type == result_amount_type::DMG_DIRECT )
   {
-    if ( s -> action && !s -> target -> is_enemy() && !s-> target -> is_add() )
-      sim -> print_debug( "Damage to {} before armor mitigation is {}", s -> target -> name(), s -> result_amount );
+    if ( s->action && !s->target->is_enemy() && !s->target->is_add() )
+      sim->print_debug( "Damage to {} before armor mitigation is {}", s->target->name(), s->result_amount );
 
     // Maximum amount of damage reduced by armor
     double armor_cap = 0.85;
 
     // Armor
-    if ( s -> action )
+    if ( s->action && !s->action->ignores_armor )
     {
       double armor  = s -> target_armor;
       double resist = armor / ( armor + s -> target-> base.armor_coeff );
@@ -6848,9 +6848,14 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
       s -> result_amount *= 1.0 - resist;
     }
 
-    if ( s -> action && !s -> target -> is_enemy() && !s-> target -> is_add() )
-      sim -> print_debug( "Damage to {} after armor mitigation is {} ({} armor, {} armor coeff)",
-                          s -> target -> name(), s -> result_amount, s -> target_armor, s -> action -> player -> current.armor_coeff );
+    if ( s->action && !s->target->is_enemy() && !s->target->is_add() )
+    {
+      if ( s->action->ignores_armor )
+        sim->print_debug( "Damage to {} after armor mitigation is {} (ignores armor)", s->target->name(), s->result_amount );
+      else
+        sim->print_debug( "Damage to {} after armor mitigation is {} ({} armor, {} armor coeff)",
+                          s->target->name(), s->result_amount, s->target_armor, s->action->player->current.armor_coeff );
+    }
 
     double pre_block_amount = s->result_amount;
 

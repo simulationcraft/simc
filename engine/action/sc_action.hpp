@@ -153,6 +153,9 @@ public:
   /// Used with DoT Drivers, tells simc that the direct hit is actually a tick.
   bool direct_tick;
 
+  /// Used with psudo-DoT effects, tells us to ignore armor even if the physical damage is direct
+  bool ignores_armor;
+
   /// Used for abilities that repeat themselves without user interaction, only used on autoattacks.
   bool repeating;
 
