@@ -57,6 +57,35 @@ off_hand=stoneborn_terrorblade,id=182395,bonus_id=7187/1531,enchant=rune_of_the_
 save=T26_Death_Knight_Frost.simc
 
 
+deathknight="T26_Death_Knight_Frost_2H"
+level=60
+race=blood_elf
+spec=frost
+role=attack
+position=back
+talents=3231212
+covenant=kyrian
+soulbind=pelagos,combat_meditation/accelerated_cold:7/everfrost:7
+
+head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173127
+neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
+shoulders=shadowghast_pauldrons,id=171417,bonus_id=6716/6944/6647/6648/1532
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498,enchant=soul_vitality
+chest=breastplate_of_cautious_calculation,id=182987,bonus_id=7187/1498,enchant=eternal_stats
+wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498,gem_id=173127
+hands=colossal_plate_gauntlets,id=182984,bonus_id=7187/1498,enchant=eternal_strength
+waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498,gem_id=173127
+legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
+feet=dynamo_doomstompers,id=179338,bonus_id=6536/1540/6646
+finger1=arachnid_cipher_ring,id=178933,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1540/6646
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
+main_hand=ossified_greataxe,id=184263,bonus_id=7187/1531,enchant=rune_of_razorice
+
+save=T26_Death_Knight_Frost_2H.simc
+
+
 deathknight="T26_Death_Knight_Unholy"
 level=60
 race=troll
