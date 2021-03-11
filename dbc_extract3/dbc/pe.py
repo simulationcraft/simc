@@ -3,6 +3,7 @@ import os, mmap, logging, struct, collections
 try:
     from pefile import PE
 except Exception as error:
+    import sys
     print(('ERROR: %s, dbc_extract.py requires the Python pefile (https://pypi.org/project/pefile/)'
            ' package to perform client data file validation') % error, file = sys.stderr)
     sys.exit(1)
