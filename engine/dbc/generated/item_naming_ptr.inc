@@ -1,4 +1,4 @@
-// Item name descriptions, wow build 9.0.5.37844
+// Item name descriptions, wow build 9.0.5.37893
 static const std::array<item_name_description_t, 583> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },

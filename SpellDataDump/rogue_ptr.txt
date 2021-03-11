@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37864 Live (hotfix 2021-03-09/37864, no-networking)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -1654,6 +1654,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Mutilate (5374), Mutilate (27576)
                    Family Flags: 33, 34
+#6 (id=882804)   : Apply Aura (6) | Periodic Dummy (226): every 5 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Finishing move that drives your poisoned blades in deep, dealing instant Nature damage and increasing your poison application chance by $s2%. Damage and duration increased per combo point.
 
    1 point  : ${$m1*1} damage, 2 sec
@@ -2200,7 +2202,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Deadly Poison (113780), Crippling Poison (115196), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581), Slaughter Poison (323660), Dreadblades (343142)
                    Family Flags: 8, 14, 16, 20, 28, 35, 36, 81, 86, 95, 97, 119
-Hotfixed         : Affects Spells
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crippling Poison (115196), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Double Dose (273009), Nothing Personal (286581), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Dreadblades (343142)
@@ -9486,7 +9487,6 @@ Effects          :
 Description      : $@spelldesc328305
 
 Name             : Serrated Bone Spike (desc=Necrolord) (id=328547) [Spell Family (8)] 
-Hotfixed         : Attributes, Description
 Class            : Rogue
 Covenant         : Necrolord
 School           : Physical
@@ -9514,7 +9514,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=821129)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.3 -> 1.2)
 #2 (id=821130)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 324073 | Target: Enemy (6)
 #3 (id=821131)   : Dummy (3)
