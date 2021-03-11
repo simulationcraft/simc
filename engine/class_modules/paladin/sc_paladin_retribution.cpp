@@ -824,7 +824,8 @@ void paladin_t::create_buffs_retribution()
 
   buffs.shield_of_vengeance = new buffs::shield_of_vengeance_buff_t( this );
   buffs.zeal = make_buff( this, "zeal", find_spell( 269571 ) )
-             -> add_invalidate( CACHE_ATTACK_SPEED );
+             -> add_invalidate( CACHE_ATTACK_SPEED )
+             -> set_cooldown( timespan_t::from_millis( 500 ) );
 
   // Azerite
   buffs.empyrean_power_azerite = make_buff( this, "empyrean_power_azerite", find_spell( 286393 ) )
