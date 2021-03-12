@@ -4530,6 +4530,8 @@ struct serrated_bone_spike_t : public rogue_attack_t
       // 02/13/2021 - Logs show that the SBS DoT is affected by Zoldyck
       affected_by.zoldyck_insignia = true;
       dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 2 );
+      // 2021-03-12 - Bone spike dot is hasted, despite not being flagged as such
+      hasted_ticks = true;
 
       if ( p->conduit.sudden_fractures.ok() )
       {
