@@ -859,6 +859,7 @@ public:
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
   void      trigger_arcane_charge( int stacks = 1 );
   bool      trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t duration = timespan_t::min() );
+  void      trigger_disciplinary_command( school_e );
 };
 
 namespace pets {
@@ -1202,9 +1203,21 @@ struct rune_of_power_t final : public buff_t
   {
     auto mage = debug_cast<mage_t*>( player );
     mage->distance_from_rune = 0.0;
-    mage->buffs.disciplinary_command_arcane->trigger();
+    mage->trigger_disciplinary_command( data().get_school_type() );
 
     return buff_t::trigger( stacks, value, chance, duration );
+  }
+
+  void expire_override( int stacks, timespan_t duration ) override
+  {
+    buff_t::expire_override( stacks, duration );
+
+    // When the Rune of Power buff fades at the same time as its area trigger, there is a
+    // chance that the buff will fade first and the area trigger will reapply the buff for
+    // an instant, which counts as executing an Arcane spell.
+    auto mage = debug_cast<mage_t*>( player );
+    if ( duration == 0_ms && rng().roll( 0.5 ) )
+      mage->trigger_disciplinary_command( data().get_school_type() );
   }
 };
 
@@ -1682,24 +1695,7 @@ public:
     if ( !background && affected_by.ice_floes && time_to_execute > 0_ms )
       p()->buffs.ice_floes->decrement();
 
-    // TODO: Verify how this effect interacts with spells that have multiple
-    // schools and how it interacts with spells that are not Mage spells.
-    if ( !background && p()->runeforge.disciplinary_command.ok() )
-    {
-      if ( dbc::is_school( get_school(), SCHOOL_ARCANE ) )
-        p()->buffs.disciplinary_command_arcane->trigger();
-      if ( dbc::is_school( get_school(), SCHOOL_FROST ) )
-        p()->buffs.disciplinary_command_frost->trigger();
-      if ( dbc::is_school( get_school(), SCHOOL_FIRE ) )
-        p()->buffs.disciplinary_command_fire->trigger();
-      if ( p()->buffs.disciplinary_command_arcane->check() && p()->buffs.disciplinary_command_frost->check() && p()->buffs.disciplinary_command_fire->check() )
-      {
-        p()->buffs.disciplinary_command->trigger();
-        p()->buffs.disciplinary_command_arcane->expire();
-        p()->buffs.disciplinary_command_frost->expire();
-        p()->buffs.disciplinary_command_fire->expire();
-      }
-    }
+    p()->trigger_disciplinary_command( get_school() );
   }
 
   void impact( action_state_t* s ) override
@@ -2311,6 +2307,9 @@ struct frost_mage_spell_t : public mage_spell_t
       snapshot_impact_state( s, amount_type( s ) );
       s->result = calculate_impact_result( s );
       s->result_amount = calculate_impact_direct_amount( s );
+
+      // Spells that calculate on impact actually execute a second spell when they impact.
+      p()->trigger_disciplinary_command( get_school() );
     }
 
     mage_spell_t::impact( s );
@@ -5580,6 +5579,28 @@ bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type
   }
 
   return false;
+}
+
+void mage_t::trigger_disciplinary_command( school_e school )
+{
+  if ( runeforge.disciplinary_command.ok() && !buffs.disciplinary_command->up() )
+  {
+    // Only one school is triggered for Disciplinary Command if multiple are present.
+    // Schools are checked in order from the largest school mask to smallest.
+    if ( dbc::is_school( school, SCHOOL_ARCANE ) )
+      buffs.disciplinary_command_arcane->trigger();
+    else if ( dbc::is_school( school, SCHOOL_FROST ) )
+      buffs.disciplinary_command_frost->trigger();
+    else if ( dbc::is_school( school, SCHOOL_FIRE ) )
+      buffs.disciplinary_command_fire->trigger();
+    if ( buffs.disciplinary_command_arcane->check() && buffs.disciplinary_command_frost->check() && buffs.disciplinary_command_fire->check() )
+    {
+      buffs.disciplinary_command->trigger();
+      buffs.disciplinary_command_arcane->expire();
+      buffs.disciplinary_command_frost->expire();
+      buffs.disciplinary_command_fire->expire();
+    }
+  }
 }
 
 action_t* mage_t::create_action( util::string_view name, const std::string& options_str )
