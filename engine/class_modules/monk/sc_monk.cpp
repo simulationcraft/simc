@@ -1689,24 +1689,10 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
 
-    if ( p()->buff.dance_of_chiji_hidden->up() && !p()->bugs )
-      am *= 1 + p()->buff.dance_of_chiji_hidden->value();
+    if ( p()->buff.dance_of_chiji_hidden->up() )
+      am *= 1 + p()->talent.dance_of_chiji->effectN( 1 ).percent();
 
     return am;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = monk_melee_attack_t::bonus_da( s );
-
-    // Not sure if this is a bug or intended but this appears to be applying the old Azerite format
-    // where it applies a bonus damage instead of the 200% as mentioned in the tooltip.
-    // This does the full scaled damage per tick (pre-armor).
-    // 439.8155886135744 Bonus Damage at 60
-    if ( p()->buff.dance_of_chiji_hidden->up() && p()->bugs )
-      b += p()->passives.dance_of_chiji_bug->effectN( 1 ).average( p(), p()->level() );
-
-    return b;
   }
 
   void execute() override
@@ -1856,7 +1842,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
   {
     background = true;
     // Currently a bug where the it's a max of 5 targets; instead of primary + 5
-    aoe        = (int)p->spec.fists_of_fury->effectN( 1 ).base_value() + ( p->bugs ? 0 : 1 );
+    aoe        = 1 + (int)p->spec.fists_of_fury->effectN( 1 ).base_value();
     ww_mastery = true;
 
     attack_power_mod.direct    = p->spec.fists_of_fury->effectN( 5 ).ap_coeff();
