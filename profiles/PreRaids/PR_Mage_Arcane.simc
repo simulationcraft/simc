@@ -247,7 +247,7 @@ actions.harmony+=/evocation,if=mana.pct<15
 # When between cooldown windows, we only build to full charges after using Arcane Orb
 actions.harmony+=/arcane_blast,if=buff.arcane_charge.stack>1
 # Immediately spend Harmony stacks when between cooldown windows
-actions.harmony+=/arcane_barrage,if=buff.arcane_harmony.stack>0
+actions.harmony+=/arcane_barrage,if=buff.arcane_harmony.stack>0&!(cooldown.arcane_power.remains<=10&cooldown.touch_of_the_magi.remains<=10&cooldown.radiant_spark.remains<=5)
 actions.harmony+=/arcane_missiles,chain=1
 
 actions.movement=blink_any,if=movement.distance>=10
