@@ -395,9 +395,29 @@ struct call_dreadstalkers_t : public demonology_spell_t
 
     auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( as<unsigned>( dreadstalker_count ) );
 
-    p()->buffs.demonic_calling->up();  // benefit tracking
-    p()->buffs.demonic_calling->decrement();
+    if ( p()->buffs.demonic_calling->up() )
+    {  // benefit tracking
 
+      //Despite having no cost when Demonic Calling is up, this spell will still proc effects based on shard spending (last checked 2021-03-11)
+      double base_cost = demonology_spell_t::cost();
+
+      if ( p()->legendary.wilfreds_sigil_of_superior_summoning->ok() )
+        p()->cooldowns.demonic_tyrant->adjust( -base_cost * p()->legendary.wilfreds_sigil_of_superior_summoning->effectN( 2 ).time_value(), false );
+
+      if ( p()->buffs.nether_portal->up() )
+      {
+        p()->active.summon_random_demon->execute();
+        p()->buffs.portal_summons->trigger();
+        p()->procs.portal_summon->occur();
+      }
+
+      if ( p()->talents.soul_conduit->ok() )
+      {
+        make_event<sc_event_t>( *p()->sim, p(), as<int>( base_cost ) );
+      }
+
+      p()->buffs.demonic_calling->decrement();
+    }
     //TOCHECK: This should really be applied by the pet(s) and not the Warlock?
     if ( p()->talents.from_the_shadows->ok() )
     {
