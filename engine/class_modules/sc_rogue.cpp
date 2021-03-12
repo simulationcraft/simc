@@ -1343,10 +1343,7 @@ public:
     if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
     {
       cp += ab::energize_amount;
-    }
 
-    if ( cp > 0 )
-    {
       if ( affected_by.broadside_cp )
       {
         cp += p()->buffs.broadside->check_value();
