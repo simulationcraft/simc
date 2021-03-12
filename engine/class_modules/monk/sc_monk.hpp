@@ -236,6 +236,7 @@ public:
     buff_t* weapons_of_order_ww;
     buff_t* faeline_stomp;
     buff_t* faeline_stomp_brm;
+    buff_t* faeline_stomp_reset;
 
     // Covenant Conduits
     absorb_buff_t* fortifying_ingrediences;

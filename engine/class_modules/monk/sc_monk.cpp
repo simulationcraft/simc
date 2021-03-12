@@ -380,7 +380,10 @@ public:
     if ( p()->buff.faeline_stomp->up() && ab::background == false &&
          p()->rng().roll( p()->user_options.faeline_stomp_uptime ) )
       if ( p()->rng().roll( p()->buff.faeline_stomp->value() ) )
+      {
         p()->cooldown.faeline_stomp->reset( true, 1 );
+        p()->buff.faeline_stomp_reset->trigger();
+      }
   }
 
   void impact( action_state_t* s ) override
@@ -3822,6 +3825,13 @@ struct faeline_stomp_t : public monk_spell_t
     aoe              = (int)p.covenant.night_fae->effectN( 3 ).base_value();
   }
 
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->buff.faeline_stomp_reset->expire();
+  }
+
   void impact( action_state_t* s ) override
   {
     monk_spell_t::impact( s );
@@ -6291,6 +6301,8 @@ void monk_t::create_buffs()
 
   buff.faeline_stomp_brm =
       make_buff( this, "faeline_stomp_brm", passives.faeline_stomp_brm )->set_default_value_from_effect( 1 );
+
+  buff.faeline_stomp_reset = make_buff( this, "faeline_stomp_reset", find_spell( 327276 ) );
 
   // Covenant Conduits
   buff.fortifying_ingrediences = make_buff<absorb_buff_t>( this, "fortifying_ingredients", find_spell( 336874 ) );
