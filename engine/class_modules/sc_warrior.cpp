@@ -6748,7 +6748,7 @@ void warrior_t::apl_arms()
   execute->add_action( this, "Colossus Smash" );
   execute->add_action( this, covenant.condemn, "condemn", "if=debuff.colossus_smash.up|buff.sudden_death.react|rage>65" );
   execute->add_action( this, "Overpower", "if=charges=2" );
-  execute->add_action( this, "Mortal Strike", "if=runeforge.enduring_blow|dot.deep_wounds.remains<=gcd" );
+  execute->add_action( this, "Mortal Strike", "if=runeforge.enduring_blow|dot.deep_wounds.remains<=gcd|((debuff.exploiter.stack=2|buff.battlelord.up)&!covenant.venthyr)" );
   execute->add_action( this, covenant.ancient_aftershock, "ancient_aftershock" );
   execute->add_action( this, covenant.spear_of_bastion, "spear_of_bastion" );
   execute->add_action( this, "Bladestorm", "if=buff.deadly_calm.down&rage<50" );
