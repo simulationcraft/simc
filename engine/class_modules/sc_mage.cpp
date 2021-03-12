@@ -5583,7 +5583,7 @@ bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type
 
 void mage_t::trigger_disciplinary_command( school_e school )
 {
-  if ( runeforge.disciplinary_command.ok() && !buffs.disciplinary_command->up() )
+  if ( runeforge.disciplinary_command.ok() && !buffs.disciplinary_command->check() )
   {
     // Only one school is triggered for Disciplinary Command if multiple are present.
     // Schools are checked in order from the largest school mask to smallest.
