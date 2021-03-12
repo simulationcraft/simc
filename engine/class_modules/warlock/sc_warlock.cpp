@@ -521,7 +521,14 @@ void warlock_td_t::target_demise()
 
   if ( dots_agony->is_ticking() && warlock.legendary.wrath_of_consumption.ok() )
   {
-    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption.", target->name(), warlock.name() );
+    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption from Agony.", target->name(), warlock.name() );
+
+    warlock.buffs.wrath_of_consumption->trigger();
+  }
+
+  if ( dots_corruption->is_ticking() && warlock.legendary.wrath_of_consumption.ok() )
+  {
+    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption from Corruption.", target->name(), warlock.name() );
 
     warlock.buffs.wrath_of_consumption->trigger();
   }
