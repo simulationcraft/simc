@@ -482,7 +482,6 @@ public:
     gain_t* evocation;
     gain_t* mana_gem;
     gain_t* arcane_barrage;
-    gain_t* mirrors_of_torment;
   } gains;
 
   // Options
@@ -6264,10 +6263,9 @@ void mage_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.evocation          = get_gain( "Evocation"          );
-  gains.mana_gem           = get_gain( "Mana Gem"           );
-  gains.arcane_barrage     = get_gain( "Arcane Barrage"     );
-  gains.mirrors_of_torment = get_gain( "Mirrors of Torment" );
+  gains.evocation      = get_gain( "Evocation"      );
+  gains.mana_gem       = get_gain( "Mana Gem"       );
+  gains.arcane_barrage = get_gain( "Arcane Barrage" );
 }
 
 void mage_t::init_procs()
