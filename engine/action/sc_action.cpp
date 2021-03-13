@@ -317,6 +317,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     ignore_false_positive(),
     action_skill( p->base.skill ),
     direct_tick(),
+    ignores_armor(),
     repeating(),
     harmful( true ),
     proc(),
@@ -574,6 +575,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   tick_may_crit       = spell_data.flags( spell_attribute::SX_TICK_MAY_CRIT );
   hasted_ticks        = spell_data.flags( spell_attribute::SX_DOT_HASTED );
   tick_on_application = spell_data.flags( spell_attribute::SX_TICK_ON_APPLICATION );
+  ignores_armor       = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
   may_miss            = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
   may_dodge = may_parry = may_block = !spell_data.flags( spell_attribute::SX_NO_D_P_B );
 

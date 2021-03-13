@@ -247,7 +247,7 @@ actions.harmony+=/evocation,if=mana.pct<15
 # When between cooldown windows, we only build to full charges after using Arcane Orb
 actions.harmony+=/arcane_blast,if=buff.arcane_charge.stack>1
 # Immediately spend Harmony stacks when between cooldown windows
-actions.harmony+=/arcane_barrage,if=buff.arcane_harmony.stack>0
+actions.harmony+=/arcane_barrage,if=buff.arcane_harmony.stack>0&!(cooldown.arcane_power.remains<=10&cooldown.touch_of_the_magi.remains<=10&cooldown.radiant_spark.remains<=5)
 actions.harmony+=/arcane_missiles,chain=1
 
 actions.movement=blink_any,if=movement.distance>=10
@@ -315,17 +315,17 @@ head=confidants_favored_cap,id=183021,bonus_id=7187/1498/6935,gem_id=173127
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
 shoulders=shawl_of_the_penitent,id=183020,bonus_id=1498/6646
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=1498/6646
-chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_insight,enchant_id=6230
+chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_insight
 wrists=acolytes_velvet_bindings,id=183017,bonus_id=7187/1498/6935,gem_id=173127,enchant=eternal_intellect
 hands=grimveiled_mittens,id=173244,bonus_id=6716/6926/6647/6650/1532
 waist=cinch_of_infinite_tightness,id=183028,bonus_id=7187/1498/6935,gem_id=173127
 legs=courtiers_costume_trousers,id=183011,bonus_id=7187/1498
 feet=windscale_moccasins,id=179322,bonus_id=1540/6646
-finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_mastery,enchant_id=6164
-finger2=hyperlight_band,id=183038,ilevel=226,gem_id=173130,enchant=tenet_of_mastery,enchant_id=6164
+finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_mastery
+finger2=hyperlight_band,id=183038,bonus_id=1498/6646/6935,gem_id=173130,enchant=tenet_of_mastery
 trinket1=cabalists_hymnal,id=184028,bonus_id=7187/1498
 trinket2=soulletting_ruby,id=178809,bonus_id=1540/6646
-main_hand=vesiphones_vesper_of_reflection,id=178975,bonus_id=7187/6652/1531/6646,enchant_id=6228
+main_hand=vesiphones_vesper_of_reflection,id=178975,bonus_id=7187/6652/1531/6646,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=229.40

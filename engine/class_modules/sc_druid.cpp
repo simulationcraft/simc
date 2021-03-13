@@ -1285,12 +1285,14 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
     }
   }
 
-  void start( int s, double v, timespan_t d ) override
+  bool trigger( int s, double v, double c, timespan_t d ) override
   {
-    base_t::start( s, v, d );
+    bool ret = base_t::trigger( s, v, c, d );
 
-    p().eclipse_handler.trigger_both( buff_duration() );
+    p().eclipse_handler.trigger_both( remains() );
     p().uptime.combined_ca_inc->update( true, sim->current_time() );
+
+    return ret;
   }
 
   void extend_duration( player_t* player, timespan_t d ) override
@@ -8410,13 +8412,13 @@ void druid_t::apl_balance()
 
   def->add_action( "variable,name=is_aoe,value=spell_targets.starfall>1&(!talent.starlord.enabled|talent.stellar_drift.enabled)|spell_targets.starfall>2","Sets AoE on 3+ without drift and with Starlord and 2+ otherwise" );
   def->add_action( "variable,name=is_cleave,value=spell_targets.starfire>1","Sets cleave when Starfire can hit 2+ targets which is relevant for the Eclipse to be preferred and which filler to cast" );
-  def->add_action( "berserking,if=(!covenant.night_fae|!cooldown.convoke_the_spirits.up)&buff.ca_inc.up","Use Berserking with CA/Inc or after Convoke in CA/Inc" );
+  def->add_action( "berserking,if=(!covenant.night_fae|!cooldown.convoke_the_spirits.up)&buff.ca_inc.remains>15","Use Berserking with CA/Inc or after Convoke in CA/Inc" );
   def->add_action( "potion,if=buff.ca_inc.remains>15|fight_remains<25","Pot with a CA/Inc that isn't a Pulsar proc or when the fight is about to end" );
   def->add_action( "variable,name=convoke_desync,value=ceil((interpolated_fight_remains-15-cooldown.ca_inc.remains)%180)=ceil((interpolated_fight_remains-15-120-cooldown.convoke_the_spirits.remains)%180)|cooldown.ca_inc.remains>interpolated_fight_remains|cooldown.convoke_the_spirits.remains>interpolated_fight_remains-10|!covenant.night_fae","Calculates whether using Convoke now will allow you to still cast the same amount of Convoke+CA/Inc casts" );
   def->add_action( "variable,name=cd_condition,value=(!equipped.empyreal_ordnance|cooldown.empyreal_ordnance.remains<160&!cooldown.empyreal_ordnance.ready)&((variable.on_use_trinket=1|variable.on_use_trinket=3)&(trinket.1.ready_cooldown|trinket.1.cooldown.remains>interpolated_fight_remains-10)|variable.on_use_trinket=2&(trinket.2.ready_cooldown|trinket.2.cooldown.remains>interpolated_fight_remains-10)|variable.on_use_trinket=0)|covenant.kyrian","Used to delay the usage of CA/Inc when using double on use" );
   def->add_action( "use_item,name=empyreal_ordnance,if=cooldown.ca_inc.remains<20&cooldown.convoke_the_spirits.remains<20|fight_remains<37","Use Empyreal Ordnance 20secs before a CA/Inc use." );
   def->add_action( "use_item,name=soulletting_ruby,if=cooldown.ca_inc.remains<6&!variable.convoke_desync|cooldown.convoke_the_spirits.remains<6&variable.convoke_desync|fight_remains<25","Use Soulleting Ruby 6secs before a CA/Inc use." );
-  def->add_action( "use_item,name=inscrutable_quantum_device,if=buff.ca_inc.up" );
+  def->add_action( "use_item,name=inscrutable_quantum_device,if=buff.ca_inc.remains>15" );
   def->add_action( "use_items,slots=trinket1,if=(variable.on_use_trinket=1|variable.on_use_trinket=3)&(buff.ca_inc.up|cooldown.ca_inc.remains+2>trinket.1.cooldown.duration&(!covenant.night_fae|!variable.convoke_desync)&!covenant.kyrian|covenant.night_fae&variable.convoke_desync&cooldown.convoke_the_spirits.up&!cooldown.ca_inc.up&((buff.eclipse_lunar.remains>10|buff.eclipse_solar.remains>10)&!runeforge.balance_of_all_things|(buff.balance_of_all_things_nature.stack=5|buff.balance_of_all_things_arcane.stack=5))|buff.kindred_empowerment_energize.up)|fight_remains<20|variable.on_use_trinket=0","This is a rather elaborate way to make all on use stat trinkets to be lined up with CA/Inc and Convoke and use the 2nd slot on cd if both trinkets are on use stat trinkets" );
   def->add_action( "use_items,slots=trinket2,if=variable.on_use_trinket=3&!trinket.1.ready_cooldown|(buff.ca_inc.up|cooldown.ca_inc.remains+2>trinket.2.cooldown.duration&(!covenant.night_fae|!variable.convoke_desync)&!covenant.kyrian|covenant.night_fae&variable.convoke_desync&cooldown.convoke_the_spirits.up&!cooldown.ca_inc.up&((buff.eclipse_lunar.remains>10|buff.eclipse_solar.remains>10)&!runeforge.balance_of_all_things|(buff.balance_of_all_things_nature.stack=5|buff.balance_of_all_things_arcane.stack=5)))|buff.kindred_empowerment_energize.up|fight_remains<20|variable.on_use_trinket=0" );
   def->add_action( "use_items","Uses all other on use items on cd" );
@@ -8427,7 +8429,7 @@ void druid_t::apl_balance()
   st->add_action( "ravenous_frenzy,if=buff.ca_inc.remains>15","Use the Venthyr with a CA/Inc that isn't from Pulsar" );
   st->add_action( "starsurge,if=runeforge.timeworn_dreambinder.equipped&(eclipse.in_any&!((buff.timeworn_dreambinder.remains>action.wrath.execute_time+0.1&(eclipse.in_both|eclipse.in_solar|eclipse.lunar_next)|buff.timeworn_dreambinder.remains>action.starfire.execute_time+0.1&(eclipse.in_lunar|eclipse.solar_next|eclipse.any_next))|!buff.timeworn_dreambinder.up)|(buff.ca_inc.up|variable.convoke_desync)&cooldown.convoke_the_spirits.ready&covenant.night_fae)&(!covenant.kyrian|cooldown.empower_bond.remains>8)&(buff.ca_inc.up|!cooldown.ca_inc.ready)","Use Starsurge to keep up the Dreambinder buff if it would expire before finishing the next cast or to dump before Convoke" );
   st->add_action( "adaptive_swarm,target_if=!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>5)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<3&dot.adaptive_swarm_damage.ticking","Use Adaptive Swarm when there is no active swarm, as late as possible on swarm with 2 or fewer stacks or on a 3+ swarm so that the new swarm arrives just after that swarm expires" );
-  st->add_action( "convoke_the_spirits,if=!druid.no_cds&((variable.convoke_desync&!cooldown.ca_inc.ready|buff.ca_inc.up)&astral_power<40&(buff.eclipse_lunar.remains>10|buff.eclipse_solar.remains>10)|fight_remains<10)","Uses Convoke if CA/Inc is up or you are desyncing CA/Inc with Convoke and you are below 40 AsP" );
+  st->add_action( "convoke_the_spirits,if=!druid.no_cds&((variable.convoke_desync&!cooldown.ca_inc.ready&!runeforge.primordial_arcanic_pulsar|buff.ca_inc.up)&astral_power<40&(buff.eclipse_lunar.remains>10|buff.eclipse_solar.remains>10)|fight_remains<10)","Uses Convoke if CA/Inc is up or you are desyncing CA/Inc with Convoke and you are below 40 AsP" );
   st->add_action( "variable,name=dot_requirements,value=(buff.ravenous_frenzy.remains>5|!buff.ravenous_frenzy.up)&(buff.kindred_empowerment_energize.remains<gcd.max)&(buff.eclipse_solar.remains>gcd.max|buff.eclipse_lunar.remains>gcd.max)","Condition for all dots that makes sure they aren't refreshed when Ravenous Frenzy has less than 5 secs remaining or the kyrian buff is about to fall off or any Eclipse is about to expire" );
   st->add_action( "moonfire,target_if=refreshable&target.time_to_die>12,if=ap_check&variable.dot_requirements" );
   st->add_action( "sunfire,target_if=refreshable&target.time_to_die>12,if=ap_check&variable.dot_requirements" );

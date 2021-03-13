@@ -1343,10 +1343,7 @@ public:
     if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
     {
       cp += ab::energize_amount;
-    }
 
-    if ( cp > 0 )
-    {
       if ( affected_by.broadside_cp )
       {
         cp += p()->buffs.broadside->check_value();
@@ -4410,6 +4407,8 @@ struct flagellation_t : public rogue_attack_t
     initial_lashes()
   {
     dot_duration = timespan_t::zero();
+    // Manually setting to false because the spell is still in the Shadow Blades whitelist.
+    affected_by.shadow_blades = false;
 
     if ( p->active.flagellation )
     {
@@ -4528,6 +4527,8 @@ struct serrated_bone_spike_t : public rogue_attack_t
       // 02/13/2021 - Logs show that the SBS DoT is affected by Zoldyck
       affected_by.zoldyck_insignia = true;
       dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 2 );
+      // 2021-03-12 - Bone spike dot is hasted, despite not being flagged as such
+      hasted_ticks = true;
 
       if ( p->conduit.sudden_fractures.ok() )
       {

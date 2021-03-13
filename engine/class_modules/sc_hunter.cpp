@@ -587,8 +587,6 @@ public:
     timespan_t pet_attack_speed = 2_s;
     timespan_t pet_basic_attack_delay = 0.15_s;
     // random testing stuff
-    bool brutal_projectiles_on_execute = false;
-    bool serpentstalkers_triggers_wild_spirits = true;
     bool stomp_triggers_wild_spirits = true;
   } options;
 
@@ -618,9 +616,6 @@ public:
     resource_regeneration = regen_type::DYNAMIC;
     regen_caches[ CACHE_HASTE ] = true;
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
-
-    if ( dbc -> ptr ) // XXX TODO 9.0.5
-      options.serpentstalkers_triggers_wild_spirits = false;
   }
 
   // Character Definition
@@ -1680,12 +1675,10 @@ struct spitting_cobra_t final : public hunter_pet_t
   {
     owner_coeff.ap_from_ap = 0.15;
 
-    // XXXX TODO 9.0.5
+    // 25 Feb 2021
     // The patch note for the PTR says increased BY 260%, when in fact it was
     // only increased by 160% or otherwise increased TO 260% of the live value.
-    // Tested in-game 25 Feb 2021
-    if ( dbc -> ptr )
-      owner_coeff.ap_from_ap *= 2.6;
+    owner_coeff.ap_from_ap *= 2.6;
 
     resource_regeneration = regen_type::DISABLED;
 
@@ -3292,7 +3285,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
-      triggers_wild_spirits = p -> options.serpentstalkers_triggers_wild_spirits;
+      triggers_wild_spirits = false;
     }
   };
 
@@ -3538,8 +3531,9 @@ struct rapid_fire_t: public hunter_spell_t
       if ( p() -> buffs.trueshot -> check() && rng().roll( .5 ) )
         p() -> resource_gain( RESOURCE_FOCUS, composite_energize_amount( execute_state ), p() -> gains.trueshot, this );
 
-      if ( p() -> options.brutal_projectiles_on_execute )
-        trigger_brutal_projectiles();
+      // TODO
+      // As of 2021-03-09 this seems to miss 1 trigger under Double Tap stacking only to 12. Need more testing etc.
+      trigger_brutal_projectiles();
     }
 
     void impact( action_state_t* s ) override
@@ -3549,9 +3543,6 @@ struct rapid_fire_t: public hunter_spell_t
       // XXX: Wild Spirits kludge
       if ( s -> chain_target == 0 )
         triggers_wild_spirits = false;
-
-      if ( !p() -> options.brutal_projectiles_on_execute )
-        trigger_brutal_projectiles();
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -6010,7 +6001,7 @@ void hunter_t::create_buffs()
 
   buffs.flayers_mark =
     make_buff( this, "flayers_mark", find_spell( 324156 ) )
-      -> set_default_value( dbc -> ptr ? find_spell( 324156 ) -> effectN( 3 ).percent() : 0 ) // XXX TODO 9.0.5
+      -> set_default_value_from_effect( 3 )
       -> set_chance( covenants.flayed_shot -> effectN( 2 ).percent() +
                      conduits.empowered_release -> effectN( 1 ).percent() );
 
@@ -6476,12 +6467,12 @@ void hunter_t::create_options()
   add_option( opt_timespan( "hunter.pet_basic_attack_delay", options.pet_basic_attack_delay,
                             0_ms, 0.6_s ) );
 
-  add_option( opt_bool( "hunter.brutal_projectiles_on_execute", options.brutal_projectiles_on_execute ) );
-  add_option( opt_bool( "hunter.serpenstalkers_triggers_wild_spirits", options.serpentstalkers_triggers_wild_spirits ) );
   add_option( opt_bool( "hunter.stomp_triggers_wild_spirits", options.stomp_triggers_wild_spirits ) );
 
   add_option( opt_obsoleted( "hunter_fixed_time" ) );
+  add_option( opt_obsoleted( "hunter.brutal_projectiles_on_execute" ) );
   add_option( opt_obsoleted( "hunter.memory_of_lucid_dreams_proc_chance" ) );
+  add_option( opt_obsoleted( "hunter.serpenstalkers_triggers_wild_spirits" ) );
 }
 
 // hunter_t::create_profile =================================================
@@ -6500,8 +6491,6 @@ std::string hunter_t::create_profile( save_e stype )
   print_option( &options_t::pet_attack_speed, "hunter.pet_attack_speed" );
   print_option( &options_t::pet_basic_attack_delay, "hunter.pet_basic_attack_delay" );
 
-  print_option( &options_t::brutal_projectiles_on_execute, "hunter.brutal_projectiles_on_execute" );
-  print_option( &options_t::serpentstalkers_triggers_wild_spirits, "hunter.serpenstalkers_triggers_wild_spirits" );
   print_option( &options_t::stomp_triggers_wild_spirits, "hunter.stomp_triggers_wild_spirits" );
 
   return profile_str;
@@ -6597,16 +6586,6 @@ struct hunter_module_t: public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Hunter", "2021-03-04", "9.0.5 Eagletalon's True Focus - value", 880586, hotfix::HOTFIX_FLAG_PTR )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 3000 )
-      .verification_value( 5000 );
-    hotfix::register_effect( "Hunter", "2021-03-04", "9.0.5 Eagletalon's True Focus - sub type", 880586, hotfix::HOTFIX_FLAG_PTR )
-      .field( "sub_type" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( A_ADD_FLAT_MODIFIER )
-      .verification_value( A_ADD_PCT_MODIFIER );
   }
 
   void combat_begin( sim_t* ) const override {}

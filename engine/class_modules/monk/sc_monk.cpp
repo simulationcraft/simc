@@ -380,7 +380,10 @@ public:
     if ( p()->buff.faeline_stomp->up() && ab::background == false &&
          p()->rng().roll( p()->user_options.faeline_stomp_uptime ) )
       if ( p()->rng().roll( p()->buff.faeline_stomp->value() ) )
+      {
         p()->cooldown.faeline_stomp->reset( true, 1 );
+        p()->buff.faeline_stomp_reset->trigger();
+      }
   }
 
   void impact( action_state_t* s ) override
@@ -1490,10 +1493,6 @@ struct blackout_kick_t : public monk_melee_attack_t
           if ( p()->buff.weapons_of_order->up() )
             cd_reduction += ( -1 * p()->covenant.kyrian->effectN( 8 ).time_value() );
 
-          // Reduction is getting halved during Serenity
-          if ( p()->buff.serenity->up() && !p()->bugs )
-            cd_reduction *= 1.0 / ( 1 + p()->talent.serenity->effectN( 4 ).percent() );
-
           p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
           p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
         }
@@ -1669,19 +1668,10 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     if ( p()->specialization() == MONK_WINDWALKER )
     {
-      // Current bug has Mark of the Crane not count non-primary MotC debuffs
-      if ( p()->bugs )
+      for ( player_t* target : targets )
       {
-        if ( td( p()->target )->debuff.mark_of_the_crane->up() )
-          mark_of_the_crane_counter = 1;
-      }
-      else
-      {
-        for ( player_t* target : targets )
-        {
-          if ( td( target )->debuff.mark_of_the_crane->up() )
-            mark_of_the_crane_counter++;
-        }
+        if ( td( target )->debuff.mark_of_the_crane->up() )
+          mark_of_the_crane_counter++;
       }
     }
     return mark_of_the_crane_counter;
@@ -1698,24 +1688,10 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
 
-    if ( p()->buff.dance_of_chiji_hidden->up() && !p()->bugs )
-      am *= 1 + p()->buff.dance_of_chiji_hidden->value();
+    if ( p()->buff.dance_of_chiji_hidden->up() )
+      am *= 1 + p()->talent.dance_of_chiji->effectN( 1 ).percent();
 
     return am;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = monk_melee_attack_t::bonus_da( s );
-
-    // Not sure if this is a bug or intended but this appears to be applying the old Azerite format
-    // where it applies a bonus damage instead of the 200% as mentioned in the tooltip.
-    // This does the full scaled damage per tick (pre-armor).
-    // 439.8155886135744 Bonus Damage at 60
-    if ( p()->buff.dance_of_chiji_hidden->up() && p()->bugs )
-      b += p()->passives.dance_of_chiji_bug->effectN( 1 ).average( p(), p()->level() );
-
-    return b;
   }
 
   void execute() override
@@ -1762,7 +1738,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
 
     spell_power_mod.direct = 0.0;
-    dot_behavior           = DOT_REFRESH;  // Spell uses Pandemic Mechanics.
+    dot_behavior           = dot_behavior_e::DOT_REFRESH;  // Spell uses Pandemic Mechanics.
 
     tick_action =
         new sck_tick_action_t( "spinning_crane_kick_tick", p, p->spec.spinning_crane_kick->effectN( 1 ).trigger() );
@@ -1864,8 +1840,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, p, p->passives.fists_of_fury_tick )
   {
     background = true;
-    // Currently a bug where the it's a max of 5 targets; instead of primary + 5
-    aoe        = (int)p->spec.fists_of_fury->effectN( 1 ).base_value() + ( p->bugs ? 0 : 1 );
+    aoe        = 1 + (int)p->spec.fists_of_fury->effectN( 1 ).base_value();
     ww_mastery = true;
 
     attack_power_mod.direct    = p->spec.fists_of_fury->effectN( 5 ).ap_coeff();
@@ -3804,13 +3779,41 @@ struct faeline_stomp_damage_t : public monk_spell_t
   }
 };
 
+struct faeline_stomp_heal_t : public monk_heal_t
+{
+  faeline_stomp_heal_t( monk_t& p ) : monk_heal_t( "faeline_stomp_heal", p, p.passives.faeline_stomp_damage )
+  {
+    background = true;
+
+    attack_power_mod.direct = 0;
+    spell_power_mod.direct  = p.passives.faeline_stomp_damage->effectN( 2 ).sp_coeff();
+  }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double cam = monk_heal_t::composite_aoe_multiplier( state );
+
+    const std::vector<player_t*>& targets = state->action->target_list();
+
+    if ( p()->conduit.way_of_the_fae->ok() && !targets.empty() )
+    {
+      cam *= 1 + ( p()->conduit.way_of_the_fae.percent() *
+                   std::min( (double)targets.size(), p()->conduit.way_of_the_fae->effectN( 2 ).base_value() ) );
+    }
+
+    return cam;
+  }
+};
+
 struct faeline_stomp_t : public monk_spell_t
 {
   faeline_stomp_damage_t* damage;
+  faeline_stomp_heal_t* heal;
   faeline_stomp_ww_damage_t* ww_damage;
   faeline_stomp_t( monk_t& p, util::string_view options_str )
     : monk_spell_t( "faeline_stomp", &p, p.covenant.night_fae ),
       damage( new faeline_stomp_damage_t( p ) ),
+      heal( new faeline_stomp_heal_t( p ) ),
       ww_damage( new faeline_stomp_ww_damage_t( p ) )
   {
     parse_options( options_str );
@@ -3818,9 +3821,18 @@ struct faeline_stomp_t : public monk_spell_t
     aoe              = (int)p.covenant.night_fae->effectN( 3 ).base_value();
   }
 
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->buff.faeline_stomp_reset->expire();
+  }
+
   void impact( action_state_t* s ) override
   {
     monk_spell_t::impact( s );
+
+    heal->execute();
 
     damage->set_target( s->target );
     damage->execute();
@@ -6285,6 +6297,8 @@ void monk_t::create_buffs()
 
   buff.faeline_stomp_brm =
       make_buff( this, "faeline_stomp_brm", passives.faeline_stomp_brm )->set_default_value_from_effect( 1 );
+
+  buff.faeline_stomp_reset = make_buff( this, "faeline_stomp_reset", find_spell( 327276 ) );
 
   // Covenant Conduits
   buff.fortifying_ingrediences = make_buff<absorb_buff_t>( this, "fortifying_ingredients", find_spell( 336874 ) );

@@ -102,7 +102,7 @@ void beast_mastery( player_t* p )
   st -> add_action( "bloodshed" );
   st -> add_action( "wild_spirits" );
   st -> add_action( "flayed_shot" );
-  st -> add_action( "kill_shot,if=buff.flayers_mark.remains<5|target.health.pct<=20" );
+  st -> add_action( "kill_shot" );
   st -> add_action( "barbed_shot,if=cooldown.bestial_wrath.remains<12*charges_fractional+gcd&talent.scent_of_blood|full_recharge_time<gcd&cooldown.bestial_wrath.remains|target.time_to_die<9" );
   st -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
   st -> add_action( "stampede,if=buff.aspect_of_the_wild.up|target.time_to_die<15" );
