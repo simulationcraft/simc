@@ -1483,6 +1483,7 @@ sim_t::sim_t() :
   challenge_mode( false ), timewalk( -1 ), scale_to_itemlevel( -1 ), scale_itemlevel_down_only( false ),
   disable_set_bonuses( false ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
   pvp_crit( false ),
+  pvp_rules(),
   auto_attacks_always_land( false ),
   log_spell_id(),
   active_enemies( 0 ), active_allies( 0 ),
@@ -2619,6 +2620,9 @@ void sim_t::init()
     }
     scale_itemlevel_down_only = true;
   }
+
+  if ( pvp_crit )
+    pvp_rules = dbc::find_spell( this, 134735 );
 
   // set scaling metric
   if ( ! scaling -> scale_over.empty() )
