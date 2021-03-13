@@ -16,16 +16,11 @@
 // Shadowlands TODO
 //
 // Elemental
-// - Spec Conduits
-//   - Shake the Foundations
-//     - Background CL cast will be similar to Echoing Shock implementation
-// - PreRaid profile gear
-// - Castle Nathria profile gear
-// - APL
-//   - We intentionally have a very simplified version of the APL in place now to indicate
-//     that we have not done *any* work on developing one for Shadowlands yet.
-//   - From discussions:
-//     - single_target, cleave, and aoe APLs
+// - Master of the Elements needs to affect Deeptremor Stone Earthquake from Earth Elemental permanently, not just occasionally like it does now
+// - Summoning Earth Elemental should consume Master of the Elements
+// - Fae Transfusion should be affected by Master of the Elements
+// - Fae Transfusion should consume Master of the Elements
+// - Fae Transfusion shouldn't grant Maelstrom Weapons buffs for Elemental
 //
 // Enhancement
 // - Review target caps
@@ -2437,7 +2432,7 @@ struct earth_elemental_t : public primal_elemental_t
     {
       deeptremor_stone = make_buff<buff_t>( this, "deeptremor_stone", o()->legendary.deeptremor_stone )
         ->set_period( 1_s )
-        ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
+        ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
         ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
           deeptremor_eq->set_target( target );
           deeptremor_eq->execute();
@@ -2450,7 +2445,7 @@ struct earth_elemental_t : public primal_elemental_t
     primal_elemental_t::arise();
 
     if ( deeptremor_stone )
-    {
+    {     
       deeptremor_stone->trigger();
     }
   }
