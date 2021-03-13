@@ -1772,6 +1772,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::consume_resource();
 
+    // Register how much chi is saved without actually refunding the chi
     if ( p()->buff.serenity->up() )
     {
       double cost = base_costs[ RESOURCE_CHI ];
@@ -1785,7 +1786,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       if ( cost < 0 )
         cost = 0;
 
-      p()->resource_gain( RESOURCE_CHI, cost, p()->gain.serenity );
+      p()->gain.serenity->add( RESOURCE_CHI, cost );
     }
   }
 
