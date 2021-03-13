@@ -56,7 +56,7 @@ actions.execute+=/warbreaker
 actions.execute+=/colossus_smash
 actions.execute+=/condemn,if=debuff.colossus_smash.up|buff.sudden_death.react|rage>65
 actions.execute+=/overpower,if=charges=2
-actions.execute+=/mortal_strike,if=runeforge.enduring_blow|dot.deep_wounds.remains<=gcd
+actions.execute+=/mortal_strike,if=runeforge.enduring_blow|dot.deep_wounds.remains<=gcd|((debuff.exploiter.stack=2|buff.battlelord.up)&!covenant.venthyr)
 actions.execute+=/bladestorm,if=buff.deadly_calm.down&rage<50
 actions.execute+=/skullsplitter,if=rage<40
 actions.execute+=/overpower
