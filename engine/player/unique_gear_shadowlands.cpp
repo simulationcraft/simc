@@ -1912,6 +1912,34 @@ void murmurs_in_the_dark( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Weapons
+
+// id=331011 driver
+// id=331016 DoT proc debuff
+void poxstorm( special_effect_t& effect )
+{
+  // When dual-wielded, Poxstorm has one shared DoT which is duration refreshed
+  // The damage is overwritten by the last proc'd version in the case of unequal item levels
+  struct bubbling_pox_t : public proc_spell_t
+  {
+    bubbling_pox_t( const special_effect_t& effect )
+      : proc_spell_t( "bubbling_pox", effect.player, effect.trigger(), effect.item )
+    {
+    }
+
+    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t duration ) const override
+    {
+      return dot->time_to_next_tick() + duration;
+    }
+  };
+
+  // Note, no create_proc_action here, since there is the possibility of dual-wielding them and
+  // special_effect_t does not have enough support for defining "shared spells" on initialization
+  effect.execute_action = new bubbling_pox_t( effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -2062,6 +2090,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 324747, enchants::celestial_guidance );
     unique_gear::register_special_effect( 323932, enchants::lightless_force );
     unique_gear::register_special_effect( 324250, enchants::sinful_revelation );
+
     // Scopes
     unique_gear::register_special_effect( 321532, "329666trigger" ); // Infra-green Reflex Sight
     unique_gear::register_special_effect( 321533, "330038trigger" ); // Optical Target Embiggener
@@ -2107,6 +2136,9 @@ void register_special_effects()
     unique_gear::register_special_effect( 336182, items::tablet_of_despair );
     unique_gear::register_special_effect( 329536, items::rotbriar_sprout );
     unique_gear::register_special_effect( 339343, items::murmurs_in_the_dark );
+
+    // Weapons
+    unique_gear::register_special_effect( 331011, items::poxstorm );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
