@@ -6577,7 +6577,7 @@ struct fae_transfusion_tick_t : public shaman_spell_t
   fae_transfusion_tick_t( const std::string& n, shaman_t* player )
     : shaman_spell_t( n, player, player->find_spell( 328928 ) )
   {
-    affected_by_master_of_the_elements = false;
+    affected_by_master_of_the_elements = true;
 
     aoe        = 4;
     background = split_aoe_damage = true;
@@ -6625,6 +6625,7 @@ struct fae_transfusion_t : public shaman_spell_t
       {
         p()->proc.maelstrom_weapon_ft->occur();
       }
+      p()->buff.master_of_the_elements->decrement();
     }
   }
 };
@@ -8660,7 +8661,7 @@ void shaman_t::init_action_list_elemental()
     def->add_action(
         "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up" );
     def->add_action( "vesper_totem,if=covenant.kyrian" );
-    def->add_action( "fae_transfusion,if=covenant.night_fae" );
+    def->add_action( "fae_transfusion,if=covenant.night_fae&(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up)" );
 
     // Pick APL to run
     def->add_action(
