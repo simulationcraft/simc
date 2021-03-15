@@ -6577,7 +6577,7 @@ struct fae_transfusion_tick_t : public shaman_spell_t
   fae_transfusion_tick_t( const std::string& n, shaman_t* player )
     : shaman_spell_t( n, player, player->find_spell( 328928 ) )
   {
-    affected_by_master_of_the_elements = false;
+    affected_by_master_of_the_elements = true;
 
     aoe        = 4;
     background = split_aoe_damage = true;
@@ -6625,6 +6625,7 @@ struct fae_transfusion_t : public shaman_spell_t
       {
         p()->proc.maelstrom_weapon_ft->occur();
       }
+      p()->buff.master_of_the_elements->decrement();
     }
   }
 };
