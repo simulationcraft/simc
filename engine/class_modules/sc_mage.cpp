@@ -482,7 +482,6 @@ public:
     gain_t* evocation;
     gain_t* mana_gem;
     gain_t* arcane_barrage;
-    gain_t* mirrors_of_torment;
   } gains;
 
   // Options
@@ -4639,11 +4638,8 @@ struct pyroblast_dot_t final : public fire_mage_spell_t
 
 struct pyroblast_t final : public hot_streak_spell_t
 {
-  action_t* pyroblast_dot;
-
   pyroblast_t( util::string_view n, mage_t* p, util::string_view options_str ) :
-    hot_streak_spell_t( n, p, p->find_specialization_spell( "Pyroblast" ) ),
-    pyroblast_dot()
+    hot_streak_spell_t( n, p, p->find_specialization_spell( "Pyroblast" ) )
   {
     parse_options( options_str );
     triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
@@ -4652,8 +4648,8 @@ struct pyroblast_t final : public hot_streak_spell_t
 
     if ( p->spec.pyroblast_2->ok() )
     {
-      pyroblast_dot = get_action<pyroblast_dot_t>( "pyroblast_dot", p );
-      add_child( pyroblast_dot );
+      impact_action = get_action<pyroblast_dot_t>( "pyroblast_dot", p );
+      add_child( impact_action );
     }
   }
 
@@ -4697,11 +4693,6 @@ struct pyroblast_t final : public hot_streak_spell_t
     {
       consume_molten_skyfall( s->target );
       trigger_molten_skyfall();
-      if ( pyroblast_dot )
-      {
-        pyroblast_dot->set_target( s->target );
-        pyroblast_dot->execute();
-      }
     }
   }
 
@@ -6272,10 +6263,9 @@ void mage_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.evocation          = get_gain( "Evocation"          );
-  gains.mana_gem           = get_gain( "Mana Gem"           );
-  gains.arcane_barrage     = get_gain( "Arcane Barrage"     );
-  gains.mirrors_of_torment = get_gain( "Mirrors of Torment" );
+  gains.evocation      = get_gain( "Evocation"      );
+  gains.mana_gem       = get_gain( "Mana Gem"       );
+  gains.arcane_barrage = get_gain( "Arcane Barrage" );
 }
 
 void mage_t::init_procs()

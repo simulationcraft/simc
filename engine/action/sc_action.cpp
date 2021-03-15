@@ -203,7 +203,7 @@ struct action_execute_event_t : public player_event_t
     {
       can_execute = false;
       p()->procs.delayed_aa_channel->occur();
-      
+
       if ( action->repeating )
       {
         action->schedule_execute();
@@ -1135,7 +1135,7 @@ double action_t::total_crit_bonus( const action_state_t* state ) const
 
   double base_crit_bonus = crit_bonus;
   if ( sim->pvp_crit )
-    base_crit_bonus -= 0.5;  // Players in pvp take 150% critical hits baseline.
+    base_crit_bonus += sim->pvp_rules->effectN( 3 ).percent();
   if ( player->buffs.amplification )
     base_crit_bonus += player->passive_values.amplification_1;
   if ( player->buffs.amplification_2 )
@@ -1991,7 +1991,7 @@ void action_t::schedule_execute( action_state_t* state )
     // While an ability is casting, the auto_attack is paused
     // So we simply reschedule the auto_attack by the ability's cast time
     if ( special && time_to_execute > timespan_t::zero() && !proc && ( interrupt_auto_attack || reset_auto_attack ) )
-    { 
+    {
       if( reset_auto_attack )
         player->reset_auto_attacks( time_to_execute, player->procs.reset_aa_cast );
       else
@@ -2721,7 +2721,7 @@ void action_t::interrupt_action()
     player->executing = nullptr;
   if ( player->queueing == this )
     player->queueing = nullptr;
-  
+
   if ( player->channeling == this )
   {
     // Forcefully interrupting a channel should not incur the channel lag.

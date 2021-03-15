@@ -616,7 +616,7 @@ covenant_ability_cast_cb_t::covenant_ability_cast_cb_t( player_t* p, const speci
     class_abilities.push_back( 317485 );  // Condemn Fury
   }
   // Fodder to the Flame proc spell (9.0.5 rework)
-  if ( p->dbc->ptr && p->type == DEMON_HUNTER && p->covenant->type() == covenant_e::NECROLORD )
+  if ( p->type == DEMON_HUNTER && p->covenant->type() == covenant_e::NECROLORD )
   {
     class_abilities.push_back( 350570 );
   }

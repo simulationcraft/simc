@@ -2439,9 +2439,8 @@ struct between_the_eyes_t : public rogue_attack_t
 struct blade_flurry_attack_t : public rogue_attack_t
 {
   blade_flurry_attack_t( util::string_view name, rogue_t* p ) :
-    rogue_attack_t( name, p, p -> find_spell( 22482 ) )
+    rogue_attack_t( name, p, p->find_spell( 22482 ) )
   {
-    callbacks = false;
     radius = 5;
     range = -1.0;
 
@@ -2474,7 +2473,7 @@ struct blade_flurry_t : public rogue_attack_t
   struct blade_flurry_instant_attack_t : public rogue_attack_t
   {
     blade_flurry_instant_attack_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p -> find_spell( 331850 ) )
+      rogue_attack_t( name, p, p->find_spell( 331850 ) )
     {
       range = -1.0;
     }

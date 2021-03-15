@@ -2033,8 +2033,8 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     }
   };
 
-  ghoul_pet_t( death_knight_t* owner ) :
-    base_ghoul_pet_t( owner, "ghoul" , false )
+  ghoul_pet_t( death_knight_t* owner, bool guardian ) :
+    base_ghoul_pet_t( owner, "ghoul" , guardian )
   {
     gnaw_cd = get_cooldown( "gnaw" );
     gnaw_cd -> duration = owner -> pet_spell.gnaw -> cooldown();
@@ -7948,7 +7948,8 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
 void death_knight_t::create_pets()
 {
   // Created unconditionally for APL purpose
-  pets.ghoul_pet = new pets::ghoul_pet_t( this );
+  // Only the permanent version with raise dead 2 is a pet, others are guardians
+  pets.ghoul_pet = new pets::ghoul_pet_t( this, ! spec.raise_dead_2 -> ok() );
 
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
