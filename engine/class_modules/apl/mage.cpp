@@ -524,7 +524,7 @@ void frost( player_t* p )
   cds->add_action( "mirrors_of_torment,if=active_enemies<3&(conduit.siphoned_malice|soulbind.wasteland_propriety)" );
   cds->add_action( "rune_of_power,if=cooldown.icy_veins.remains>12&buff.rune_of_power.down" );
   cds->add_action( "icy_veins,if=buff.rune_of_power.down&(buff.icy_veins.down|talent.rune_of_power)&(buff.slick_ice.down|active_enemies>=2)" );
-  cds->add_action( "time_warp,if=runeforge.temporal_warp&buff.exhaustion.up&(prev_off_gcd.icy_veins|fight_remains<30)" );
+  cds->add_action( "time_warp,if=runeforge.temporal_warp&buff.exhaustion.up&(prev_off_gcd.icy_veins|fight_remains<40)" );
   cds->add_action( "use_items" );
   cds->add_action( "blood_fury" );
   cds->add_action( "berserking" );
