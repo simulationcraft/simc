@@ -73,9 +73,9 @@ void arcane( player_t* p )
   precombat->add_action( "variable,name=mot_max_delay_for_ap,op=reset,default=15" );
   precombat->add_action( "variable,name=ap_max_delay_for_totm,op=reset,default=10" );
   precombat->add_action( "variable,name=ap_max_delay_for_mot,op=reset,default=20" );
-  precombat->add_action( "variable,name=rop_max_delay_for_totm,op=reset,default=20" );
+  precombat->add_action( "variable,name=rop_max_delay_for_totm,default=-1,op=set,if=variable.rop_max_delay_for_totm=-1,value=20-(5*conduit.arcane_prodigy)" );
   precombat->add_action( "variable,name=totm_max_delay_for_ap,default=-1,op=set,if=variable.totm_max_delay_for_ap=-1,value=5+10*(covenant.night_fae|(conduit.arcane_prodigy&active_enemies<3))" );
-  precombat->add_action( "variable,name=totm_max_delay_for_rop,op=reset,default=20" );
+  precombat->add_action( "variable,name=totm_max_delay_for_rop,default=-1,op=set,if=variable.totm_max_delay_for_rop=-1,value=20-(8*conduit.arcane_prodigy)" );
   precombat->add_action( "variable,name=barrage_mana_pct,default=-1,op=set,if=variable.barrage_mana_pct=-1,value=((80-(20*covenant.night_fae)+(15*covenant.kyrian))-(mastery_value*100))" );
   precombat->add_action( "variable,name=ap_minimum_mana_pct,op=reset,default=15" );
   precombat->add_action( "variable,name=totm_max_charges,op=reset,default=2" );
@@ -103,7 +103,7 @@ void arcane( player_t* p )
   default_->add_action( "ancestral_call,if=buff.arcane_power.up" );
   default_->add_action( "use_items,if=buff.arcane_power.up" );
   default_->add_action( "use_item,effect_name=gladiators_badge,if=buff.arcane_power.up|cooldown.arcane_power.remains>=55&debuff.touch_of_the_magi.up" );
-  default_->add_action( "use_item,name=empyreal_ordnance,if=cooldown.arcane_power.remains<=20" );
+  default_->add_action( "use_item,name=empyreal_ordnance,if=cooldown.arcane_power.remains<=(13+7*variable.ap_on_use)" );
   default_->add_action( "use_item,name=dreadfire_vessel,if=cooldown.arcane_power.remains>=20|!variable.ap_on_use=1|(time=0&variable.fishing_opener=1&runeforge.siphon_storm)" );
   default_->add_action( "use_item,name=soul_igniter,if=cooldown.arcane_power.remains>=30|!variable.ap_on_use=1" );
   default_->add_action( "use_item,name=glyph_of_assimilation,if=cooldown.arcane_power.remains>=20|!variable.ap_on_use=1|(time=0&variable.fishing_opener=1&runeforge.siphon_storm)" );
@@ -144,7 +144,7 @@ void arcane( player_t* p )
   fishing_opener->add_action( "evocation,if=talent.rune_of_power&cooldown.rune_of_power.remains&cooldown.arcane_power.remains&buff.arcane_power.down&buff.rune_of_power.down&prev_gcd.1.arcane_barrage", "If we've finished our cooldown windows and spent our charges, prioritize Evo over everything else" );
   fishing_opener->add_action( "fire_blast,if=runeforge.disciplinary_command&buff.disciplinary_command_frost.up" );
   fishing_opener->add_action( "frost_nova,if=runeforge.grisly_icicle&mana.pct>95" );
-  fishing_opener->add_action( "deathborne,if=!runeforge.siphon_storm" );
+  fishing_opener->add_action( "deathborne,if=!runeforge.siphon_storm&!runeforge.temporal_warp" );
   fishing_opener->add_action( "arcane_orb,if=cooldown.rune_of_power.ready" );
   fishing_opener->add_action( "arcane_blast,if=cooldown.rune_of_power.ready&buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
   fishing_opener->add_action( "rune_of_power" );
