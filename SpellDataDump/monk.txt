@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37899 Live (hotfix 2021-03-11/37899, git build shadowlands 32d187fd, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37899 Live (hotfix 2021-03-16/37899, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2046,6 +2046,7 @@ Description      : Clears $s1% of your damage delayed with Stagger.$?s322510[
 Increases the absorption of your next Celestial Brew by up to $322510s1%, based on your current level of Stagger][]
 
 Name             : Renewing Mist (id=119607) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -2053,7 +2054,7 @@ Spell Level      : 1 (max 1)
 Range            : 50000 yards
 Family Flags     : 61
 Attributes       : ........ ........ x....... ...x....   .....x.. ..x..... ........ ........ 
-                 : ..x..... ........ ...x.... ........   ........ ........ ........ ..x...x. 
+                 : ..x..... ........ ...x.... ....x...   ........ ........ ........ ..x...x. 
                  : ........ ........ ...xx... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ......x. 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 

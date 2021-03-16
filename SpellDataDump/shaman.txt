@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37899 Live (hotfix 2021-03-11/37899, git build shadowlands 32d187fd, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37899 Live (hotfix 2021-03-16/37899, no-networking)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -1056,7 +1056,7 @@ GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Charges          : 1 (8 seconds cooldown)
 Category         : 1536: Echo of the Elements (108283 effect#1), Ascendance (114050 effect#3), Echo of the Elements (333919 effect#1)
-Affecting spells : Elemental Fury (60188 effect#1), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3)
+Affecting spells : Elemental Fury (60188 effect#1), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #11), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3)
 Family Flags     : 39, 44
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -3123,6 +3123,11 @@ Effects          :
 #10 (id=880173)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value 2: 983 (Label) | Target: Self (1)
                    Affected Spells (Label): Chain Harvest (320751), Chain Harvest (320752)
+#11 (id=883953)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Lava Burst (51505), Lava Burst (285452)
+                   Family Flags: 44
+Hotfixed         : NEW EFFECT
 Description      : Restoration Shaman core passive
 
 Name             : Elemental Shaman (id=137040) [Spell Family (11), Passive, Hidden] 
@@ -3883,6 +3888,7 @@ Effects          :
 Description      : When you deal damage with a melee weapon, you have a chance to gain Maelstrom Weapon, stacking up to $344179u times. Each stack of Maelstrom Weapon reduces the cast time of your next damage or healing spell by $187881s1% and increase the damage or healing of your next spell by $187881s3%. A maximum of $s2 stacks of Maelstrom Weapon can be consumed at a time.
 
 Name             : Maelstrom Weapon (id=187881) [Spell Family (11), Hidden] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : Magic
@@ -3893,7 +3899,7 @@ Proc Chance      : 101%
 Affecting spells : Focused Lightning (338322 effects: #1, #2)
 Family Flags     : 100
 Attributes       : .......x ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -9516,7 +9522,7 @@ Class            : Shaman
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3)
+Affecting spells : Elemental Fury (60188 effect#1), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #11), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3)
 Triggered by     : Lava Burst (51505)
 Family Flags     : 39, 44
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12502,6 +12508,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
 
 Name             : Maelstrom Weapon (id=344179) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : Magic
@@ -12513,7 +12520,7 @@ Proc Flags       : ....x... x.x.x.x. x....... ........
 Affecting spells : Focused Lightning (338322 effects: #1, #2)
 Family Flags     : 100
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
