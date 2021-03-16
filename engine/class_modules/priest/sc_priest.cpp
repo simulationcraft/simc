@@ -1782,7 +1782,6 @@ void priest_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( specs.shadow_priest );
   action.apply_affecting_aura( specs.holy_priest );
   action.apply_affecting_aura( specs.discipline_priest );
-  action.apply_affecting_aura( legendary.shadowflame_prism );  // Applies CD reduction
 }
 
 void priest_t::invalidate_cache( cache_e cache )
