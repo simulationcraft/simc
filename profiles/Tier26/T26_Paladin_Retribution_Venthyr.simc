@@ -1,13 +1,13 @@
-paladin="T26_Paladin_Retribution"
+paladin="T26_Paladin_Retribution_Venthyr"
 source=default
 spec=retribution
 level=60
 race=dark_iron_dwarf
 role=attack
 position=back
-talents=3201303
-covenant=kyrian
-soulbind=pelagos,combat_meditation/ringing_clarity:7/templars_vindication:7
+talents=1201302
+covenant=venthyr
+soulbind=nadjia,thrill_seeker/expurgation:7/virtuous_command:7
 
 # Default consumables
 potion=spectral_strength
@@ -89,29 +89,29 @@ actions.generators+=/crusader_strike
 actions.generators+=/arcane_torrent
 actions.generators+=/consecration
 
-head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=168636
-neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498/6935,gem_id=173128
-shoulders=pranksters_pauldrons,id=178697,bonus_id=6536/1540/6646
+head=plague_handlers_greathelm,id=178773,bonus_id=6536/1540/6646/6935,gem_id=173127
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
+shoulders=epaulettes_of_overwhelming_force,id=182994,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=shadowghast_breastplate,id=171412,bonus_id=6648/6647/6758/7064/1532,enchant=eternal_skirmish
-wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498/6935,gem_id=173128
+chest=breastplate_of_cautious_calculation,id=182987,bonus_id=7187/1498,enchant=eternal_skirmish
+wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498/6935,gem_id=173127
 hands=colossal_plate_gauntlets,id=182984,bonus_id=7187/1498,enchant=eternal_strength
-waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498/6935,gem_id=173128
+waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498/6935,gem_id=173127
 legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
-feet=errant_crusaders_greaves,id=183027,bonus_id=7187/1498
-finger1=signet_of_the_false_accuser,id=178824,bonus_id=6536/1540/6646/6935,gem_id=173128,enchant=tenet_of_versatility
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_versatility
+feet=shadowghast_sabatons,id=171413,bonus_id=6647/6649/6758/7054/1532
+finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
 trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
-trinket2=sinful_gladiators_badge_of_ferocity,id=175921,bonus_id=1498/6646
-main_hand=guarding_cudgel_of_the_goliath,id=180312,bonus_id=7187/1531,enchant=sinful_revelation
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=6536/1540/6646
+main_hand=stoneborn_goliaths_cleaver,id=182415,bonus_id=7187/1531,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=228.93
-# gear_strength=807
-# gear_stamina=1534
+# gear_ilvl=228.47
+# gear_strength=869
+# gear_stamina=1517
 # gear_attack_power=20
-# gear_crit_rating=283
-# gear_haste_rating=749
-# gear_mastery_rating=685
-# gear_versatility_rating=331
-# gear_armor=1306
+# gear_crit_rating=696
+# gear_haste_rating=693
+# gear_mastery_rating=241
+# gear_versatility_rating=328
+# gear_armor=1294
