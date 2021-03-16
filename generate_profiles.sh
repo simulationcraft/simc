@@ -14,15 +14,15 @@ else
   echo 'Skipped PreRaids, directory not found.'
 fi
 # DungeonSlice doesn't match the typical pattern
-PROFDIR='DungeonSlice'
-echo "---$PROFDIR---"
-if [ -d $PROFDIR ]; then
-  cd $PROFDIR/
-  ../../engine/simc "../generators/$PROFDIR/DS_Generate.simc"
-  cd ../
-else
-  echo 'Skipped DungeonSlice, directory not found.'
-fi
+# PROFDIR='DungeonSlice'
+# echo "---$PROFDIR---"
+# if [ -d $PROFDIR ]; then
+#   cd $PROFDIR/
+#   ../../engine/simc "../generators/$PROFDIR/DS_Generate.simc"
+#   cd ../
+# else
+#   echo 'Skipped DungeonSlice, directory not found.'
+# fi
 # TierXX profiles generation
 for tier in 26
 do
