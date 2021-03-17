@@ -22,7 +22,7 @@ finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=17312
 finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
 trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=guarding_cudgel_of_the_goliath,id=180312,bonus_id=7187/1531,enchant=rune_of_the_fallen_crusader
+main_hand=polemarchs_scepter_of_faith,id=180315,bonus_id=7187/1531,enchant=rune_of_the_fallen_crusader
 
 save=T26_Death_Knight_Blood.simc
 
