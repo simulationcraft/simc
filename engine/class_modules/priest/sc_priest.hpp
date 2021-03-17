@@ -55,7 +55,7 @@ namespace buffs
 {
 struct dispersion_t;
 struct benevolent_faerie_t;
-}
+}  // namespace buffs
 
 /**
  * Priest target data
@@ -941,7 +941,9 @@ struct priest_spell_t : public priest_action_t<spell_t>
       dark_thoughts_proc_percent /= 2;
     }
 
-    if ( rng().roll( dark_thoughts_proc_percent * dots ) )
+    if ( rng().roll( dark_thoughts_proc_percent * swp->is_ticking() ) ||
+         rng().roll( dark_thoughts_proc_percent * vt->is_ticking() ) ||
+         rng().roll( dark_thoughts_proc_percent * dp->is_ticking() ) )
     {
       if ( sim->debug )
       {
