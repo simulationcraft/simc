@@ -392,7 +392,7 @@ void unholy( player_t* p )
   generic->add_action( "death_coil,if=covenant.night_fae&cooldown.deaths_due.remains<3&runic_power.deficit<10" );
   generic->add_action( "any_dnd,if=(talent.defile.enabled|covenant.night_fae|runeforge.phearomones)&(!variable.pooling_runes|fight_remains<5)" );
   generic->add_action( "death_coil,if=covenant.night_fae&runic_power.deficit<20&!variable.pooling_runic_power" );
-  generic->add_action( "festering_strike,if=covenant.night_fae&cooldown.deaths_due.remains<10&debuff.festering_wound.stack<4&!variable.pooling_runes&(!death_and_decay.ticking|buff.deaths_due=4)" );
+  generic->add_action( "festering_strike,if=covenant.night_fae&cooldown.deaths_due.remains<10&debuff.festering_wound.stack<4&!variable.pooling_runes&(!death_and_decay.ticking|buff.deaths_due.stack=4)" );
   generic->add_action( "death_coil,if=runic_power.deficit<13|fight_remains<5&!debuff.festering_wound.up" );
   generic->add_action( "wound_spender,if=debuff.festering_wound.stack>4&!variable.pooling_runes" );
   generic->add_action( "wound_spender,if=debuff.festering_wound.up&cooldown.apocalypse.remains_expected>5&!variable.pooling_runes" );
