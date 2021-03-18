@@ -548,11 +548,12 @@ void frost( player_t* p )
   st->add_action( "comet_storm" );
   st->add_action( "ice_nova" );
   st->add_action( "radiant_spark,if=buff.freezing_winds.up&active_enemies=1" );
+  st->add_action( "radiant_spark,if=buff.brain_freeze.react&talent.glacial_spike&conduit.ire_of_the_ascended&buff.icicles.stack>=4" );
   st->add_action( "ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>travel_time" );
   st->add_action( "ebonbolt" );
-  st->add_action( "radiant_spark,if=(!runeforge.freezing_winds|active_enemies>=2)&buff.brain_freeze.react" );
+  st->add_action( "radiant_spark,if=(!talent.glacial_spike|!conduit.ire_of_the_ascended)&(!runeforge.freezing_winds|active_enemies>=2)&buff.brain_freeze.react" );
   st->add_action( "mirrors_of_torment" );
-  st->add_action( "shifting_power,if=buff.rune_of_power.down&(soulbind.grove_invigoration|soulbind.field_of_blossoms|active_enemies>=2)" );
+  st->add_action( "shifting_power,if=buff.rune_of_power.down&(soulbind.grove_invigoration|soulbind.field_of_blossoms|runeforge.freezing_winds&buff.freezing_winds.down|active_enemies>=2)" );
   st->add_action( "arcane_explosion,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down" );
   st->add_action( "fire_blast,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down" );
   st->add_action( "glacial_spike,if=buff.brain_freeze.react" );
