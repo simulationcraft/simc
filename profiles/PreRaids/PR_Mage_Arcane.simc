@@ -42,9 +42,9 @@ actions.precombat+=/variable,name=mot_max_delay_for_totm,op=reset,default=10
 actions.precombat+=/variable,name=mot_max_delay_for_ap,op=reset,default=15
 actions.precombat+=/variable,name=ap_max_delay_for_totm,op=reset,default=10
 actions.precombat+=/variable,name=ap_max_delay_for_mot,op=reset,default=20
-actions.precombat+=/variable,name=rop_max_delay_for_totm,op=reset,default=20
+actions.precombat+=/variable,name=rop_max_delay_for_totm,default=-1,op=set,if=variable.rop_max_delay_for_totm=-1,value=20-(5*conduit.arcane_prodigy)
 actions.precombat+=/variable,name=totm_max_delay_for_ap,default=-1,op=set,if=variable.totm_max_delay_for_ap=-1,value=5+10*(covenant.night_fae|(conduit.arcane_prodigy&active_enemies<3))
-actions.precombat+=/variable,name=totm_max_delay_for_rop,op=reset,default=20
+actions.precombat+=/variable,name=totm_max_delay_for_rop,default=-1,op=set,if=variable.totm_max_delay_for_rop=-1,value=20-(8*conduit.arcane_prodigy)
 actions.precombat+=/variable,name=barrage_mana_pct,default=-1,op=set,if=variable.barrage_mana_pct=-1,value=((80-(20*covenant.night_fae)+(15*covenant.kyrian))-(mastery_value*100))
 actions.precombat+=/variable,name=ap_minimum_mana_pct,op=reset,default=15
 actions.precombat+=/variable,name=totm_max_charges,op=reset,default=2
@@ -73,7 +73,7 @@ actions+=/fireblood,if=buff.arcane_power.up
 actions+=/ancestral_call,if=buff.arcane_power.up
 actions+=/use_items,if=buff.arcane_power.up
 actions+=/use_item,effect_name=gladiators_badge,if=buff.arcane_power.up|cooldown.arcane_power.remains>=55&debuff.touch_of_the_magi.up
-actions+=/use_item,name=empyreal_ordnance,if=cooldown.arcane_power.remains<=20
+actions+=/use_item,name=empyreal_ordnance,if=cooldown.arcane_power.remains<=(13+7*variable.ap_on_use)
 actions+=/use_item,name=dreadfire_vessel,if=cooldown.arcane_power.remains>=20|!variable.ap_on_use=1|(time=0&variable.fishing_opener=1&runeforge.siphon_storm)
 actions+=/use_item,name=soul_igniter,if=cooldown.arcane_power.remains>=30|!variable.ap_on_use=1
 actions+=/use_item,name=glyph_of_assimilation,if=cooldown.arcane_power.remains>=20|!variable.ap_on_use=1|(time=0&variable.fishing_opener=1&runeforge.siphon_storm)
@@ -180,7 +180,7 @@ actions.fishing_opener=evocation,if=(runeforge.siphon_storm|runeforge.temporal_w
 actions.fishing_opener+=/evocation,if=talent.rune_of_power&cooldown.rune_of_power.remains&cooldown.arcane_power.remains&buff.arcane_power.down&buff.rune_of_power.down&prev_gcd.1.arcane_barrage
 actions.fishing_opener+=/fire_blast,if=runeforge.disciplinary_command&buff.disciplinary_command_frost.up
 actions.fishing_opener+=/frost_nova,if=runeforge.grisly_icicle&mana.pct>95
-actions.fishing_opener+=/deathborne,if=!runeforge.siphon_storm
+actions.fishing_opener+=/deathborne,if=!runeforge.siphon_storm&!runeforge.temporal_warp
 actions.fishing_opener+=/arcane_orb,if=cooldown.rune_of_power.ready
 actions.fishing_opener+=/arcane_blast,if=cooldown.rune_of_power.ready&buff.arcane_charge.stack<buff.arcane_charge.max_stack
 actions.fishing_opener+=/rune_of_power
