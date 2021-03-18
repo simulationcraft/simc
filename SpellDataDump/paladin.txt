@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37899 Live (hotfix 2021-03-16/37899, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-18/37988, no-networking)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -4632,7 +4632,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.66667 | Target: Self (1)
                    Affected Spells: Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Seraphim (152262), Justicar's Vengeance (215661), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872)
                    Family Flags: 44, 49, 52, 78, 82, 88, 111
-Hotfixed         : Affects Spells
 #3 (id=742537)   : Apply Aura (6) | Modify Max Cost (63)
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
                    Family Flags: 55

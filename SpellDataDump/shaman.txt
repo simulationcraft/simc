@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37899 Live (hotfix 2021-03-16/37899, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-18/37988, no-networking)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -3127,7 +3127,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452)
                    Family Flags: 44
-Hotfixed         : NEW EFFECT
 Description      : Restoration Shaman core passive
 
 Name             : Elemental Shaman (id=137040) [Spell Family (11), Passive, Hidden] 
@@ -3888,7 +3887,6 @@ Effects          :
 Description      : When you deal damage with a melee weapon, you have a chance to gain Maelstrom Weapon, stacking up to $344179u times. Each stack of Maelstrom Weapon reduces the cast time of your next damage or healing spell by $187881s1% and increase the damage or healing of your next spell by $187881s3%. A maximum of $s2 stacks of Maelstrom Weapon can be consumed at a time.
 
 Name             : Maelstrom Weapon (id=187881) [Spell Family (11), Hidden] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : Magic
@@ -6719,7 +6717,7 @@ Stacks           : 4 maximum
 Proc Chance      : 101%
 Triggered by     : Spirit Wolf (260882)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ....x...   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12508,7 +12506,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
 
 Name             : Maelstrom Weapon (id=344179) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : Magic
@@ -12671,8 +12668,8 @@ Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
-Attributes       : ........ ........ .......x .......x   ........ ..x..... ........ ........ 
-                 : x....... ........ ........ ....x...   ........ ........ xx..x... ........ 
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ xx...... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ..x..... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 

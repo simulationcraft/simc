@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37899 Live (hotfix 2021-03-16/37899, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-18/37988, no-networking)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -11044,8 +11044,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=832499)   : Apply Aura (6) | Proc Trigger Spell (42): Reprisal
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 335734 | Target: Self (1)
-Description      : Charge and Intervene grant you Shield Block, Revenge!, and generate ${$335734s1/10} Rage.
+                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Trigger Spell: 335734 | Target: Self (1)
+Description      : Charge and Intervene grant you Shield Block for ${$s1/1000} sec, Revenge!, and generate ${$335734s1/10} Rage.
 
 Name             : Reprisal (id=335734) [Spell Family (4)] 
 School           : Physical

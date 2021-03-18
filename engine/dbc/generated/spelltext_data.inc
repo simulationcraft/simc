@@ -1,4 +1,4 @@
-// Spell text, wow build 9.0.5.37899
+// Spell text, wow build 9.0.5.37988
 static const std::array<spelltext_data_t, 15112> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -13992,7 +13992,7 @@ static const std::array<spelltext_data_t, 15112> __spelltext_data { {
   { 335594, "When Recklessness expires, your Critical Strike is increased by $335597s1% for $335597d. Your Raging Blow will refresh the duration of this effect.", 0, 0 },
   { 335597, "$@spelldesc335594", "Critical Strike increased by $w1%. Raging Blow refreshes this duration.", 0 },
   { 335629, "Shield Wall gains $s2 additional charge, and grants $s1% of its effect to all party members.", 0, 0 },
-  { 335718, "Charge and Intervene grant you Shield Block, Revenge!, and generate ${$335734s1/10} Rage.", 0, 0 },
+  { 335718, "Charge and Intervene grant you Shield Block for ${$s1/1000} sec, Revenge!, and generate ${$335734s1/10} Rage.", 0, 0 },
   { 335734, "$@spelldesc335718\r\n", 0, 0 },
   { 335758, "If Whirlwind $?a137048[or Revenge ][]hits $s1 or more enemies, it hits them $s2 additional time for $?c1[${100+$s3}]?c2[${100+$s4}]?c3[${100+$335759s3}][100]% damage.", 0, 0 },
   { 335759, "$@spelldesc335758", 0, 0 },
@@ -15114,11 +15114,11 @@ static const std::array<spelltext_data_t, 15112> __spelltext_data { {
   { 351140, "$@spelldesc153561", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.0.5.37899
+// spelltext hotfix entries, wow build 9.0.5.37988
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.0.5.37899
+// Spell description variables, wow build 9.0.5.37988
 static const std::array<spelldesc_vars_data_t, 296> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15418,7 +15418,7 @@ static const std::array<spelldesc_vars_data_t, 296> __spelldesc_vars_data { {
   {  345549, "$phylacteryhealth=$s2*15" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.0.5.37899
+// spelldesc_vars hotfix entries, wow build 9.0.5.37988
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
