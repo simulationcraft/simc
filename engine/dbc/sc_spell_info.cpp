@@ -90,7 +90,9 @@ static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::
   { 46, "Required Max Level" },
   { 47, "Spell Type" },
   { 48, "Max Targets" },
-  { 49, "Required Level" }
+  { 49, "Required Level" },
+  { 50, "Travel Delay" },
+  { 51, "Min Travel Time" }
 } );
 
 static constexpr auto _hotfix_spelltext_map = util::make_static_map<unsigned, util::string_view>( {
@@ -1417,6 +1419,13 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     else
       s << "Velocity         : " << spell -> missile_speed() << " yards/sec"  << std::endl;
   }
+
+  if ( spell -> missile_delay() )
+    s << "Travel Delay     : " << spell -> missile_delay() << " seconds"  << std::endl;
+
+  if ( spell -> missile_min_duration() )
+    s << "Min Travel Time  : " << spell -> missile_min_duration() << " seconds"  << std::endl;
+
 
   if ( spell -> duration() != timespan_t::zero() )
   {

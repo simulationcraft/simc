@@ -2711,8 +2711,8 @@ class SpellDataGenerator(DataGenerator):
             fields = spell.field('name', 'id')
             hotfix.add(spell, ('name', 0))
 
-            fields += misc.field('school', 'proj_speed')
-            hotfix.add(misc, ('proj_speed', 3), ('school', 4))
+            fields += misc.field('school', 'proj_speed', 'proj_delay', 'proj_min_duration')
+            hotfix.add(misc, ('proj_speed', 3), ('school', 4), ('proj_delay', 50), ('proj_min_duration', 51))
 
             # Hack in the combined class from the id_tuples dict
             fields += [ u'%#.16x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_race'] ]
