@@ -152,6 +152,8 @@ public:
     buff_t* merciless_bonegrinder;
     buff_t* harrowing_punishment;
     buff_t* veterans_repute;
+    buff_t* show_of_force;
+    buff_t* unnerving_focus;
 
     // Shadowland Legendary
     buff_t* battlelord;
@@ -520,6 +522,8 @@ public:
     conduit_data_t piercing_verdict;
     conduit_data_t veterans_repute;
     conduit_data_t vicious_contempt;
+    conduit_data_t show_of_force;
+    conduit_data_t unnerving_focus;
   } conduit;
 
   // Azerite traits
@@ -4206,6 +4210,11 @@ struct revenge_t : public warrior_attack_t
 
     if ( rng().roll( shield_slam_reset ) )
       p()->cooldown.shield_slam->reset( true );
+      
+    if ( p()->conduit.show_of_force->ok() )
+    {
+      p()->buff.show_of_force->trigger();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -4506,7 +4515,12 @@ struct thunder_clap_t : public warrior_attack_t
     {
       am *= 1.0 + p() -> talents.unstoppable_force -> effectN( 1 ).percent();
     }
-
+    
+        if ( p()->buff.show_of_force->check() )
+    {
+      am *= 1.0 + ( p()-> buff.show_of_force -> stack_value() );
+    }
+    
     return am;
   }
 
@@ -4525,7 +4539,12 @@ struct thunder_clap_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-
+    
+    if ( p()->buff.show_of_force->up() )
+    {
+      p()->buff.show_of_force->expire();
+    }
+    
     if ( rng().roll( shield_slam_reset ) )
     {
       p()->cooldown.shield_slam->reset( true );
@@ -5605,6 +5624,12 @@ struct last_stand_t : public warrior_spell_t
   void execute() override
   {
     warrior_spell_t::execute();
+    
+    if ( p()->conduit.unnerving_focus->ok() )
+    {
+      p()->buff.unnerving_focus->trigger();
+    }
+
     if ( p() -> talents.bolster -> ok() )
     {
       if ( p()->buff.shield_block->check() )
@@ -6308,6 +6333,8 @@ void warrior_t::init_spells()
   conduit.harrowing_punishment        = find_conduit_spell( "Harrowing Punishment" );
   conduit.piercing_verdict            = find_conduit_spell( "Piercing Verdict" );
   conduit.veterans_repute             = find_conduit_spell( "Veteran's Repute" );
+  conduit.show_of_force               = find_conduit_spell( "Show of Force" );
+  conduit.unnerving_focus             = find_conduit_spell( "Unnerving Focus" );
 
 
   // Generic spells
@@ -7355,7 +7382,12 @@ void warrior_t::create_buffs()
                           ->add_invalidate( CACHE_STRENGTH )
                           ->set_default_value( conduit.veterans_repute.percent() )
                           ->set_duration( covenant.conquerors_banner->duration() );
+  
+  buff.show_of_force = make_buff( this, "show_of_force", find_spell( 339825 ) )
+                           ->set_default_value( conduit.show_of_force.percent() );
 
+  buff.unnerving_focus = make_buff( this, "unnerving_focus", find_spell( 337155 ) )
+                           ->set_default_value( conduit.unnerving_focus.percent() );
   // Runeforged Legendary Powers============================================================================================
 
   buff.battlelord = make_buff( this, "battlelord", find_spell( 346369 ) );
@@ -8069,6 +8101,11 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
   if ( buffs.memory_of_lucid_dreams->up() )
   {
     a *= 1.0 + buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
+  }
+  
+  if ( buff.unnerving_focus->up() )
+  {
+    a *= 1.0 + buff.unnerving_focus->stack_value();
   }
   return player_t::resource_gain( r, a, g, action );
 }
