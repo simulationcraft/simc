@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-18/37988, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-19/37988)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock

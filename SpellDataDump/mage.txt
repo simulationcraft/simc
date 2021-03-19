@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-18/37988, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-19/37988)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -3851,6 +3851,7 @@ Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
+Travel Delay     : 0.1 seconds
 Charges          : 2 (25 seconds cooldown)
 Category         : 1633: Phoenix Flames (343222 effect#1)
 Labels           : 203: Thundercharge (204366 effect#5)
@@ -6163,6 +6164,7 @@ Spell Level      : 19
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
+Travel Delay     : 0.1 seconds
 Charges          : 2 (25 seconds cooldown)
 Category         : 1633: Phoenix Flames (343222 effect#1)
 Proc Chance      : 101%

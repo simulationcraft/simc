@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-18/37988, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-19/37988)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -8669,6 +8669,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 30 yards
 Velocity         : 40 yards/sec
+Min Travel Time  : 0.1 seconds
 Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Chaos Blades (247938 effects: #2, #3), Throw Glaive (320386 effect#1), Throw Glaive (320387 effect#1), Demon Soul (347765 effects: #1, #2)
 Triggered by     : Throw Glaive (185123)
 Family Flags     : 5, 16, 32, 42, 85
@@ -9785,6 +9786,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 30 yards
 Velocity         : 50 yards/sec
+Travel Delay     : 0.15 seconds
 Affecting spells : Demon Soul (163073 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #1, #2, #3, #4), Throw Glaive (320386 effect#1), Throw Glaive (320387 effect#1), Demon Soul (347765 effects: #1, #2)
 Triggered by     : Throw Glaive (204157)
 Family Flags     : 5, 32, 70, 85

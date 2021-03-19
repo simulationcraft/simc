@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-18/37988, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-19/37988)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -5950,6 +5950,7 @@ Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
+Min Travel Time  : 0.05 seconds
 Charges          : 1 (18 seconds cooldown)
 Category         : 1716: Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)

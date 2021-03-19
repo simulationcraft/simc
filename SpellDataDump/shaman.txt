@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-18/37988, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-19/37988)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -3731,6 +3731,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 45 yards
 Velocity         : 90 yards/sec
+Travel Delay     : 0.75 seconds
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2)
 Family Flags     : 39, 123
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 

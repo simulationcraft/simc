@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-18/37988, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-19/37988)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -600,6 +600,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 40 yards
 Velocity         : 35 yards/sec
+Min Travel Time  : 0.1 seconds
 Proc Chance      : 101%
 Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death March (235556 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1)
 Family Flags     : 13, 43, 64, 78
@@ -624,6 +625,7 @@ Spell Type       : Magic
 Spell Level      : 2
 Range            : 40 yards
 Velocity         : 35 yards/sec
+Min Travel Time  : 0.1 seconds
 Affecting spells : Veteran of the Third War (48263 effect#2), Sudden Doom (81340 effect#1), Death March (235556 effect#2), Veteran of the Fourth War (319278 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1)
 Family Flags     : 13, 31
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -1093,6 +1095,7 @@ Resource         : 45 Runic Power (6) (id=6268)
 Spell Level      : 4
 Range            : 5 yards
 GCD              : 1.5 seconds
+Travel Delay     : 0.25 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 823: Will to Survive (312922 effect#2)
 Stance Mask      : 0x01000000
@@ -6373,6 +6376,7 @@ Spell Level      : 28
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
+Min Travel Time  : 0.35 seconds
 Stance Mask      : 0x01000000
 Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 87
@@ -8418,6 +8422,7 @@ School           : Physical
 Spell Type       : None
 Range            : 30 yards
 Travel Time      : 1.2 seconds
+Travel Delay     : 0.35 seconds
 Triggered by     : Consumption (205223)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9951,6 +9956,7 @@ School           : Physical
 Spell Type       : None
 Range            : 30 yards
 Travel Time      : 1.2 seconds
+Travel Delay     : 0.35 seconds
 Triggered by     : Consumption (274156)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
