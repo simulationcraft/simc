@@ -352,6 +352,9 @@ public:
   /// Missile travel delay in seconds
   double travel_delay;
 
+  /// Minimum travel time in seconds
+  double min_travel_time;
+
   // Amount of resource for the energize to grant.
   double energize_amount;
 

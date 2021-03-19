@@ -388,6 +388,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     base_teleport_distance(),
     travel_speed(),
     travel_delay(),
+    min_travel_time(),
     energize_amount(),
     movement_directionality( movement_direction_type::NONE ),
     parent_dot(),
@@ -567,6 +568,8 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   id                = spell_data.id();
   base_execute_time = spell_data.cast_time();
   range             = spell_data.max_range();
+  travel_delay      = spell_data.missile_delay();
+  min_travel_time   = spell_data.missile_min_duration();
   trigger_gcd       = spell_data.gcd();
   school            = spell_data.get_school_type();
 
@@ -580,7 +583,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   may_dodge = may_parry = may_block = !spell_data.flags( spell_attribute::SX_NO_D_P_B );
 
   if ( spell_data.flags( spell_attribute::SX_FIXED_TRAVEL_TIME ) )
-    travel_delay = spell_data.missile_speed();
+    travel_delay += spell_data.missile_speed();
   else
     travel_speed = spell_data.missile_speed();
 
@@ -1103,7 +1106,7 @@ double action_t::false_negative_pct() const
 timespan_t action_t::travel_time() const
 {
   if ( travel_speed == 0 && travel_delay == 0 )
-    return timespan_t::zero();
+    return timespan_t::from_seconds( min_travel_time );
 
   double t = travel_delay;
 
@@ -1115,16 +1118,16 @@ timespan_t action_t::travel_time() const
     if ( execute_state && execute_state->target )
       distance += execute_state->target->height;
 
-    if ( distance == 0 )
-      return timespan_t::zero();
-
-    t += distance / travel_speed;
+    if ( distance > 0 )
+      t += distance / travel_speed;
   }
 
   double v = sim->travel_variance;
 
   if ( v )
     t = rng().gauss( t, v );
+
+  t = std::max( t, min_travel_time );
 
   return timespan_t::from_seconds( t );
 }

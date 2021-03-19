@@ -986,11 +986,6 @@ void empyreal_ordnance( special_effect_t& effect )
       add_child( empyreal_ordnance_bolt );
     }
 
-    timespan_t travel_time() const override
-    {
-      return data().cast_time();
-    }
-
     void impact( action_state_t* s ) override
     {
       size_t n = num_bolts / s->n_targets + ( as<unsigned>( s->chain_target ) < num_bolts % s->n_targets ? 1 : 0 );
