@@ -367,6 +367,8 @@ void first_strike( special_effect_t& effect )
       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
   }
 
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
   new first_strike_cb_t( effect );
 }
 
