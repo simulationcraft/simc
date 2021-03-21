@@ -6177,7 +6177,9 @@ void monk_t::create_buffs()
   buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
 
   buff.invoke_niuzao =
-      make_buff( this, "invoke_niuzao_the_black_ox", spec.invoke_niuzao )->set_default_value_from_effect( 2 );
+      make_buff( this, "invoke_niuzao_the_black_ox", spec.invoke_niuzao )
+        ->set_default_value_from_effect( 2 )
+        ->set_cooldown( timespan_t::zero() );
 
   buff.purified_chi = make_buff( this, "purified_chi", find_spell( 325092 ) )->set_default_value_from_effect( 1 );
 
