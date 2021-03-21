@@ -701,6 +701,8 @@ void hammer_of_genesis( special_effect_t& effect )
       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
 
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+
   new hammer_of_genesis_cb_t( effect );
 }
 
