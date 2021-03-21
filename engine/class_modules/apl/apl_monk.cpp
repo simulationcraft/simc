@@ -194,7 +194,7 @@ void brewmaster( player_t* p )
       def->add_action( racial_actions[ i ] );
   }
 
-  def->add_action( p, monk->spec.invoke_niuzao, "invoke_niuzao_the_black_ox", "if=target.time_to_die>25" );
+  def->add_action( p, monk->spec.invoke_niuzao, "invoke_niuzao_the_black_ox", "if=target.time_to_die>6&cooldown.purifying_brew.charges_fractional<2" );
   def->add_action( p, "Touch of Death", "if=target.health.pct<=15" );
 
   // Covenant Abilities
@@ -203,7 +203,9 @@ void brewmaster( player_t* p )
   def->add_action( "bonedust_brew" );
 
   // Purifying Brew
-  def->add_action( p, "Purifying Brew" );
+  def->add_action( p, "Purifying Brew", "if=stagger.amounttototalpct>=0.7&(cooldown.invoke_niuzao_the_black_ox.remains<5|buff.invoke_niuzao_the_black_ox.up)", "Cast PB during the Niuzao window, but only if recently hit." );
+  def->add_action( p, "Purifying Brew", "if=buff.invoke_niuzao_the_black_ox.up&buff.invoke_niuzao_the_black_ox.remains<8", "Dump PB charges towards the end of Niuzao: anything is better than nothing." );
+  def->add_action( p, "Purifying Brew", "if=cooldown.purifying_brew.charges_fractional>=1.8&(cooldown.invoke_niuzao_the_black_ox.remains>10|buff.invoke_niuzao_the_black_ox.up)", "Avoid capping charges, but pool charges shortly before Niuzao comes up and allow dumping to avoid capping during Niuzao." );
 
   // Black Ox Brew
   def->add_talent( p, "Black Ox Brew", "if=cooldown.purifying_brew.charges_fractional<0.5",

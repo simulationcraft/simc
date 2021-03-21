@@ -1202,10 +1202,10 @@ private:
 
       auto purify_amount = o()->buff.recent_purifies->value();
       auto actual_damage = purify_amount * o()->spec.invoke_niuzao_2->effectN( 1 ).percent();
-      b += actual_damage;
-      o()->sim->print_debug( "applying bonus purify damage (original: {}, reduced: {})", purify_amount, actual_damage );
+      double res = b + actual_damage;
+      o()->sim->print_debug( "applying bonus purify damage (base stomp: {}, original: {}, reduced: {})", b, purify_amount, actual_damage );
 
-      return b;
+      return res;
     }
 
     double action_multiplier() const override
