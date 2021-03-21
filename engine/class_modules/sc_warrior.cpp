@@ -8105,7 +8105,7 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
   
   if ( buff.unnerving_focus->up() )
   {
-    a *= 1.0 + buff.unnerving_focus->stack_value();
+    a *= 1.0 + buff.unnerving_focus->stack_value();//Spell data lists all the abilities it provides rage gain to separately - currently it is all of our abilities.
   }
   return player_t::resource_gain( r, a, g, action );
 }
