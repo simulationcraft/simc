@@ -206,7 +206,7 @@ static constexpr std::array<proc_map_entry_t, 26> _proc_flag_map { {
   { PF_MELEE_ABILITY,        "Yellow Melee"                },
   { PF_MELEE_ABILITY_TAKEN,  "Yellow Melee Taken"          },
   { PF_RANGED,               "White Ranged"                },
-  { PF_RANGED_TAKEN,         "White Ranged Taken "         },
+  { PF_RANGED_TAKEN,         "White Ranged Taken"          },
   { PF_RANGED_ABILITY,       "Yellow Ranged"               },
   { PF_RANGED_ABILITY_TAKEN, "Yellow Ranged Taken"         },
   { PF_NONE_HEAL,            "Generic Heal"                },
@@ -1425,7 +1425,6 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell -> missile_min_duration() )
     s << "Min Travel Time  : " << spell -> missile_min_duration() << " seconds"  << std::endl;
-
 
   if ( spell -> duration() != timespan_t::zero() )
   {
