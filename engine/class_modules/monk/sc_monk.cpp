@@ -1639,8 +1639,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
   sck_tick_action_t( util::string_view name, monk_t* p, const spell_data_t* data )
     : monk_melee_attack_t( name, p, data ), charred_passions( new charred_passions_t( p ) )
   {
-    if ( !p->bugs )
-      ww_mastery    = true;
+    ww_mastery    = true;
     trigger_chiji = true;
 
     dual = background = true;
