@@ -250,6 +250,7 @@ public:
   eclipse_handler_t eclipse_handler;
   // counters for snapshot tracking
   std::vector<snapshot_counter_t*> counters;
+  bool convoke_ultimate_cast;  // check to see if ultimate was cast this iteration
 
   double expected_max_health;  // For Bristling Fur calculations.
 
@@ -6592,17 +6593,27 @@ struct convoke_the_spirits_t : public druid_spell_t
     switch ( type )
     {
       case CAST_WRATH: return conv_wrath;
-      case CAST_MOONFIRE: if (p()->buff.cat_form->check()) return conv_lunar_inspiration; else return conv_moonfire;
+      case CAST_MOONFIRE:
+        if ( p()->buff.cat_form->check() )
+          return conv_lunar_inspiration;
+        else
+          return conv_moonfire;
       case CAST_RAKE: return conv_rake;
       case CAST_THRASH_BEAR: return conv_thrash_bear;
-      case CAST_FULL_MOON: return conv_full_moon;
+      case CAST_FULL_MOON:
+        p()->convoke_ultimate_cast = true;
+        return conv_full_moon;
       case CAST_STARSURGE: return conv_starsurge;
       case CAST_STARFALL: return conv_starfall;
-      case CAST_PULVERIZE: return conv_pulverize;
+      case CAST_PULVERIZE:
+        p()->convoke_ultimate_cast = true;
+        return conv_pulverize;
       case CAST_IRONFUR: return conv_ironfur;
       case CAST_MANGLE: return conv_mangle;
       case CAST_TIGERS_FURY: return conv_tigers_fury;
-      case CAST_FERAL_FRENZY: return conv_feral_frenzy;
+      case CAST_FERAL_FRENZY:
+        p()->convoke_ultimate_cast = true;
+        return conv_feral_frenzy;
       case CAST_FEROCIOUS_BITE: return conv_ferocious_bite;
       case CAST_THRASH_CAT: return conv_thrash_cat;
       case CAST_SHRED: return conv_shred;
@@ -6662,7 +6673,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     cast_list.insert( cast_list.end(), static_cast<int>( rng().range( 5, 7 ) ), CAST_OFFSPEC );
 
-    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
+    if ( rng().roll( p()->convoke_the_spirits_ultimate ) && ( !p()->bugs || !p()->convoke_ultimate_cast ) )
       cast_list.push_back( CAST_PULVERIZE );
   }
 
@@ -6721,7 +6732,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     cast_list.insert( cast_list.end(), static_cast<size_t>( rng().range( 4, 9 ) ), CAST_OFFSPEC );
 
-    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
+    if ( rng().roll( p()->convoke_the_spirits_ultimate ) && ( !p()->bugs || !p()->convoke_ultimate_cast ) )
       cast_list.push_back( CAST_FERAL_FRENZY );
 
     cast_list.insert( cast_list.end(),
@@ -6764,7 +6775,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     main_count   = 0;
     filler_count = 0;
 
-    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
+    if ( rng().roll( p()->convoke_the_spirits_ultimate ) && ( !p()->bugs || !p()->convoke_ultimate_cast ) )
       cast_list.push_back( CAST_FULL_MOON );
   }
 
@@ -7390,7 +7401,20 @@ void druid_t::activate()
     } );
   }
 
-   player_t::activate();
+  if ( bugs && find_action( "convoke_the_spirits" ) != nullptr )
+  {
+    range::for_each( sim->actor_list, [ this ]( player_t* t ) {
+      if ( !t->is_enemy() )
+        return;
+
+      t->register_on_demise_callback( this, [ this ]( player_t* ) {
+        if ( sim->target_non_sleeping_list.empty() )
+          convoke_ultimate_cast = false;
+      } );
+    } );
+  }
+
+  player_t::activate();
 }
 
 // druid_t::create_action  ==================================================
@@ -8907,8 +8931,9 @@ void druid_t::reset()
   player_t::reset();
 
   // Reset druid_t variables to their original state.
-  form                     = NO_FORM;
-  moon_stage               = (moon_stage_e)initial_moon_stage;
+  form = NO_FORM;
+  moon_stage = static_cast<moon_stage_e>( initial_moon_stage );
+  convoke_ultimate_cast = false;
   eclipse_handler.reset_stacks();
   eclipse_handler.reset_state();
 
