@@ -1330,8 +1330,8 @@ void warlock_t::create_apl_demonology()
   def->add_action( "doom,if=refreshable" );
   def->add_action( "demonic_strength" );
   def->add_action( "bilescourge_bombers" );
-  def->add_action( "implosion,if=active_enemies>1&!talent.sacrificed_souls.enabled&buff.wild_imps.stack>=8&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains>5" );
-  def->add_action( "implosion,if=active_enemies>2&buff.wild_imps.stack>=8&buff.tyrant.down" );
+  def->add_action( "implosion,if=active_enemies>1&!talent.sacrificed_souls.enabled&buff.wild_imps.stack>=6&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains>5" );
+  def->add_action( "implosion,if=active_enemies>2&buff.wild_imps.stack>=6&buff.tyrant.down" );
   def->add_action( "hand_of_guldan,if=soul_shard=5|buff.nether_portal.up" );
   def->add_action( "hand_of_guldan,if=soul_shard>=3&cooldown.summon_demonic_tyrant.remains>20&(cooldown.summon_vilefiend.remains>5|!talent.summon_vilefiend.enabled)&cooldown.call_dreadstalkers.remains>2" );
   def->add_action( "call_action_list,name=covenant,if=(covenant.necrolord|covenant.night_fae)&!talent.nether_portal.enabled" );
@@ -1357,6 +1357,8 @@ void warlock_t::create_apl_demonology()
   sum->add_action( "hand_of_guldan,if=soul_shard=5,line_cd=20" );
   sum->add_action( "demonbolt,if=buff.demonic_core.up&(talent.demonic_consumption.enabled|buff.nether_portal.down),line_cd=20" );
   sum->add_action( "shadow_bolt,if=buff.wild_imps.stack+incoming_imps<4&(talent.demonic_consumption.enabled|buff.nether_portal.down),line_cd=20" );
+  sum->add_action( "grimoire_felguard" );
+  sum->add_action( "summon_vilefiend" );
   sum->add_action( "call_dreadstalkers" );
   sum->add_action( "hand_of_guldan" );
   sum->add_action( "demonbolt,if=buff.demonic_core.up&buff.nether_portal.up&((buff.vilefiend.remains>5|!talent.summon_vilefiend.enabled)&(buff.grimoire_felguard.remains>5|buff.grimoire_felguard.down))" );
