@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-23/37988, git build shadowlands 1747c12cd8)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-23/37988, git build shadowlands 129383b0, no-networking)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -2666,6 +2666,7 @@ Description      : Calls down a demonic meteor full of Wild Imps which burst for
 Deals up to ${$m1*$86040m1} Shadowflame damage on impact to all enemies within $86040A1 yds of the target$?s196283[, applies Doom to each target,][] and summons up to ${$m1*$104317m2} Wild Imps, based on Soul Shards consumed.
 
 Name             : Soul Leech (desc=Talent) (id=108366) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -2674,7 +2675,7 @@ Duration         : 15 seconds
 Affecting spells : Demon Skin (219272 effect#3)
 Family Flags     : 13
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
-                 : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
+                 : ..x..... ........ ........ ....xx..   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
@@ -5121,6 +5122,7 @@ Description      : $@spelldesc216698
 Tooltip          : Increases your damage by $s1%, and doubles the effectiveness of the other traits of the Deadwind Harvester.
 
 Name             : Demon Skin (id=219272) [Spell Family (5), Passive] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Physical
 Spell Type       : Magic
@@ -5129,7 +5131,7 @@ Proc Chance      : 101%
 Affecting spells : Improved Rain of Fire/Hellfire (24430 effect#1)
 Family Flags     : 6
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ....x...   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -10197,6 +10199,7 @@ Effects          :
 Description      : Unstable Affliction's duration is increased by 5 seconds.
 
 Name             : Inevitable Demise (id=334319) [Scaling Spell (-1), Spell Family (5), Passive, Hidden] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -10205,7 +10208,7 @@ Proc Chance      : 100%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
+                 : ........ ........ ........ ....x...   ........ ........ ....x... ..x..... 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -10219,6 +10222,7 @@ Effects          :
 Description      : Damaging an enemy with Agony increases the damage of your next Drain Life by $s1%. This effect stacks up to $334320u times.
 
 Name             : Inevitable Demise (id=334320) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -10227,7 +10231,7 @@ Duration         : 20 seconds
 Stacks           : 50 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ....x...   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
