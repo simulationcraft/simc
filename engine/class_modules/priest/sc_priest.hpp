@@ -934,11 +934,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
     int dots                          = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
     double dark_thoughts_proc_percent = priest().specs.dark_thoughts->effectN( 1 ).percent();
 
-    // Currently Mind-Sear has half the proc rate of Mind Flay
-    // https://github.com/WarcraftPriests/sl-shadow-priest/issues/101
+    // Currently Mind-Sear has 1/3 the proc rate of Mind Flay 3% -> 1%
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/699
     if ( priest().bugs && action_id == mind_sear_id )
     {
-      dark_thoughts_proc_percent /= 2;
+      dark_thoughts_proc_percent /= 3;
     }
 
     if ( rng().roll( dark_thoughts_proc_percent * swp->is_ticking() ) ||
