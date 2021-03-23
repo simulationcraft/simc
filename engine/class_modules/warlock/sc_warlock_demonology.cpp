@@ -1366,6 +1366,7 @@ void warlock_t::create_apl_demonology()
   sum->add_action( "shadow_bolt,if=buff.nether_portal.up&((buff.vilefiend.remains>5|!talent.summon_vilefiend.enabled)&(buff.grimoire_felguard.remains>5|buff.grimoire_felguard.down))" );
   sum->add_action( "variable,name=tyrant_ready,value=!cooldown.summon_demonic_tyrant.ready" );
   sum->add_action( "summon_demonic_tyrant" );
+  sum->add_action( "shadow_bolt" );
 
   ogcd->add_action( "berserking,if=pet.demonic_tyrant.active" );
   ogcd->add_action( "potion,if=buff.berserking.up|pet.demonic_tyrant.active&!race.troll" );
