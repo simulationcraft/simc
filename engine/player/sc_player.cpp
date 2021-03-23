@@ -7490,6 +7490,8 @@ struct rocket_barrage_t : public racial_spell_t
     racial_spell_t( p, "rocket_barrage", p->find_racial_spell( "Rocket Barrage" ) )
   {
     parse_options( options_str );
+    // This extra damage is hardcoded in the tooltip.
+    base_dd_min = base_dd_max = 2 * p->level();
   }
 };
 
