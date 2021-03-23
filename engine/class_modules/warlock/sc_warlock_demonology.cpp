@@ -1321,7 +1321,6 @@ void warlock_t::create_apl_demonology()
   action_priority_list_t* sum    = get_action_priority_list( "summon_tyrant" );
   action_priority_list_t* ogcd   = get_action_priority_list( "off_gcd" );
   action_priority_list_t* cov    = get_action_priority_list( "covenant" );
-  action_priority_list_t* bshard = get_action_priority_list( "build_shard" );
 
   def->add_action( "call_action_list,name=off_gcd" );
   def->add_action( "run_action_list,name=tyrant_prep,if=cooldown.summon_demonic_tyrant.remains<4&!variable.tyrant_ready" );
@@ -1367,7 +1366,6 @@ void warlock_t::create_apl_demonology()
   sum->add_action( "shadow_bolt,if=buff.nether_portal.up&((buff.vilefiend.remains>5|!talent.summon_vilefiend.enabled)&(buff.grimoire_felguard.remains>5|buff.grimoire_felguard.down))" );
   sum->add_action( "variable,name=tyrant_ready,value=!cooldown.summon_demonic_tyrant.ready" );
   sum->add_action( "summon_demonic_tyrant" );
-  sum->add_action( "run_action_list,name=build_shard" );
 
   ogcd->add_action( "berserking,if=pet.demonic_tyrant.active" );
   ogcd->add_action( "potion,if=buff.berserking.up|pet.demonic_tyrant.active&!race.troll" );
@@ -1379,8 +1377,5 @@ void warlock_t::create_apl_demonology()
   cov->add_action( "scouring_tithe,if=!talent.sacrificed_souls.enabled&active_enemies<4" );
   cov->add_action( "soul_rot" );
   cov->add_action( "decimating_bolt" );
-
-  bshard->add_action( "soul_strike" );
-  bshard->add_action( "shadow_bolt" );
 }
 }  // namespace warlock
