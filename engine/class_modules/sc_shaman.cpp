@@ -9037,11 +9037,11 @@ void shaman_t::init_action_list_restoration_dps()
   def->add_action( this, "Earth Elemental" );
 
   // Racials
-  def->add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
-  def->add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
-  def->add_action( "fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
-  def->add_action( "ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
-  def->add_action( "bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up" );
+  def->add_action( "blood_fury" );
+  def->add_action( "berserking" );
+  def->add_action( "fireblood" );
+  def->add_action( "ancestral_call" );
+  def->add_action( "bag_of_tricks" );
 
   // Covenants
   def->add_action( "chain_harvest,if=covenant.venthyr" );
