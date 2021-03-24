@@ -192,7 +192,7 @@ void frost( player_t* p )
   aoe->add_action( "glacial_advance,if=talent.frostscythe" );
   aoe->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm" );
   aoe->add_action( "howling_blast,if=buff.rime.up" );
-  aoe->add_action( "obliterate,if=death_and_decay.ticking&covenant.night_fae&buff.deaths_due.stack<8" );
+  aoe->add_action( "obliterate,if=death_and_decay.ticking&covenant.night_fae&buff.deaths_due.stack<4" );
   aoe->add_action( "frostscythe,if=buff.killing_machine.react&(!death_and_decay.ticking&covenant.night_fae|!covenant.night_fae)" );
   aoe->add_action( "glacial_advance,if=runic_power.deficit<(15+talent.runic_attenuation*3)" );
   aoe->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit<(15+talent.runic_attenuation*3)" );
@@ -336,7 +336,10 @@ void unholy( player_t* p )
   default_->add_action( "outbreak,if=dot.virulent_plague.refreshable&!talent.unholy_blight&!raid_event.adds.exists", "Maintaining Virulent Plague is a priority" );
   default_->add_action( "outbreak,if=dot.virulent_plague.refreshable&active_enemies>=2&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains)" );
   default_->add_action( "outbreak,if=runeforge.superstrain&(dot.frost_fever.refreshable|dot.blood_plague.refreshable)" );
+  default_->add_action( "wound_spender,if=covenant.night_fae&death_and_decay.active_remains<(gcd*1.5)&death_and_decay.ticking", "Refreshes Deaths Due's buff just before deaths due ends" );
   default_->add_action( "wait_for_cooldown,name=soul_reaper,if=talent.soul_reaper&target.time_to_pct_35<5&fight_remains>5&cooldown.soul_reaper.remains<(gcd*0.75)&active_enemies=1" );
+  default_->add_action( "wait_for_cooldown,name=deaths_due,if=covenant.night_fae&cooldown.deaths_due.remains<gcd&active_enemies=1", "Wait for Death's Due/Defile if Night Fae to get strength buff back asap" );
+  default_->add_action( "wait_for_cooldown,name=defile,if=covenant.night_fae&cooldown.defile.remains<gcd&active_enemies=1" );
   default_->add_action( "call_action_list,name=trinkets", "Action Lists and Openers" );
   default_->add_action( "call_action_list,name=covenants" );
   default_->add_action( "call_action_list,name=racials" );
@@ -386,8 +389,11 @@ void unholy( player_t* p )
   covenants->add_action( "shackle_the_unworthy,if=active_enemies>=2&(death_and_decay.ticking|raid_event.adds.remains<=14)" );
 
   generic->add_action( "death_coil,if=buff.sudden_doom.react&!variable.pooling_runic_power|pet.gargoyle.active", "Single Target" );
+  generic->add_action( "death_coil,if=covenant.night_fae&cooldown.deaths_due.remains<3&runic_power.deficit<10" );
+  generic->add_action( "any_dnd,if=(talent.defile.enabled|covenant.night_fae|runeforge.phearomones)&(!variable.pooling_runes|fight_remains<5)" );
+  generic->add_action( "death_coil,if=covenant.night_fae&runic_power.deficit<20&!variable.pooling_runic_power" );
+  generic->add_action( "festering_strike,if=covenant.night_fae&cooldown.deaths_due.remains<10&debuff.festering_wound.stack<4&!variable.pooling_runes&(!death_and_decay.ticking|buff.deaths_due.stack=4)" );
   generic->add_action( "death_coil,if=runic_power.deficit<13|fight_remains<5&!debuff.festering_wound.up" );
-  generic->add_action( "any_dnd,if=cooldown.apocalypse.remains&(talent.defile.enabled|covenant.night_fae|runeforge.phearomones)&(!variable.pooling_runes|fight_remains<5)" );
   generic->add_action( "wound_spender,if=debuff.festering_wound.stack>4&!variable.pooling_runes" );
   generic->add_action( "wound_spender,if=debuff.festering_wound.up&cooldown.apocalypse.remains_expected>5&!variable.pooling_runes" );
   generic->add_action( "death_coil,if=runic_power.deficit<20&!variable.pooling_runic_power" );
