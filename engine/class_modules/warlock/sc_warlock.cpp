@@ -1090,6 +1090,9 @@ void warlock_t::init_base_stats()
 void warlock_t::init_scaling()
 {
   player_t::init_scaling();
+
+  if ( specialization() == WARLOCK_DEMONOLOGY )
+    scaling->enable( STAT_STAMINA );
 }
 
 void warlock_t::init_assessors()
