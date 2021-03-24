@@ -498,6 +498,7 @@ public:
     timespan_t mirrors_of_torment_interval = 1.5_s;
     timespan_t arcane_missiles_chain_delay = 200_ms;
     double arcane_missiles_chain_relstddev = 0.1;
+    bool prepull_dc = false;
   } options;
 
   // Pets
@@ -5739,6 +5740,7 @@ void mage_t::create_options()
   add_option( opt_timespan( "mirrors_of_torment_interval", options.mirrors_of_torment_interval, 1_ms, timespan_t::max() ) );
   add_option( opt_timespan( "arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_bool( "mage.prepull_dc", options.prepull_dc ) );
 
   player_t::create_options();
 }
@@ -6622,6 +6624,11 @@ void mage_t::arise()
   {
     timespan_t first_tick = rng().real() * talents.time_anomaly->effectN( 1 ).period();
     events.time_anomaly = make_event<events::time_anomaly_tick_event_t>( *sim, *this, first_tick );
+  }
+
+  if ( runeforge.disciplinary_command->ok() && options.prepull_dc )
+  {
+    buffs.disciplinary_command->trigger();
   }
 }
 
