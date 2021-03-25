@@ -8576,9 +8576,20 @@ void druid_t::apl_guardian()
   lycara_cat->add_action( "cat_form" );
 
   owlconvoke->add_action( "moonkin_form" );
-  owlconvoke->add_action( "convoke_the_spirits" );
+  owlconvoke->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up" )
+  owlconvoke->add_action( "convoke_the_spirits,if=soulbind.first_strike.enabled&buff.first_strike.up" )
+  owlconvoke->add_action( "starfire,if=eclipse.any_next|eclipse.solar_next" )
+  owlconvoke->add_action( "wrath,if=eclipse.any_next|eclipse.lunar_next" )
+  owlconvoke->add_action( "convoke_the_spirits,if=talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up" )
+  owlconvoke->add_action( "convoke_the_spirits,if=talent.heart_of_the_wild.enabled&cooldown.heart_of_the_wild.remains>15" )
+  owlconvoke->add_action( "convoke_the_spirits,if=!talent.heart_of_the_wild.enabled" );
+	
   catconvoke->add_action( "cat_form" );
-  catconvoke->add_action( "convoke_the_spirits" );
+  catconvoke->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up" )
+  catconvoke->add_action( "convoke_the_spirits,if=soulbind.first_strike.enabled&buff.first_strike.up" )
+  catconvoke->add_action( "convoke_the_spirits,if=talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up" )
+  catconvoke->add_action( "convoke_the_spirits,if=talent.heart_of_the_wild.enabled&cooldown.heart_of_the_wild.remains>15" )
+  catconvoke->add_action( "convoke_the_spirits,if=!talent.heart_of_the_wild.enabled" );
 		
   def->add_action(
       "run_action_list,name=catweave,if=druid.catweave_bear&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&"
