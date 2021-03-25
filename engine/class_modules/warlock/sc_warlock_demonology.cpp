@@ -626,7 +626,6 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
       }
     }
 
-    p()->buffs.tyrant->set_duration( data().duration() );
     p()->buffs.tyrant->trigger();
     if ( p()->buffs.dreadstalkers->check() )
     {
@@ -850,7 +849,6 @@ struct summon_vilefiend_t : public demonology_spell_t
   void execute() override
   {
     demonology_spell_t::execute();
-    p()->buffs.vilefiend->set_duration( data().duration() );
     p()->buffs.vilefiend->trigger();
 
     // Spawn a single vilefiend, and grab it's pointer so we can execute an instant bile split
@@ -875,8 +873,6 @@ struct grimoire_felguard_t : public summon_pet_t
   {
     summon_pet_t::execute();
     pet->buffs.grimoire_of_service->trigger();
-    p()->buffs.grimoire_felguard->set_duration(
-        timespan_t::from_seconds( p()->talents.grimoire_felguard->effectN( 1 ).base_value() ) );
     p()->buffs.grimoire_felguard->trigger();
   }
 
@@ -1166,13 +1162,17 @@ void warlock_t::create_buffs_demonology()
   // to track pets
   buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
 
-  buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 4 );
+  buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 4 )
+                        ->set_duration( find_spell( 193332 )->duration() );
 
-  buffs.vilefiend = make_buff( this, "vilefiend" )->set_max_stack( 1 );
+  buffs.vilefiend = make_buff( this, "vilefiend" )->set_max_stack( 1 )
+                    ->set_duration( talents.summon_vilefiend->duration() );
 
-  buffs.tyrant = make_buff( this, "tyrant" )->set_max_stack( 1 );
+  buffs.tyrant = make_buff( this, "tyrant" )->set_max_stack( 1 )
+                 ->set_duration( find_spell( 265187 )->duration() );
 
-  buffs.grimoire_felguard = make_buff( this, "grimoire_felguard" )->set_max_stack( 1 );
+  buffs.grimoire_felguard = make_buff( this, "grimoire_felguard" )->set_max_stack( 1 )
+                            ->set_duration( talents.grimoire_felguard->duration() );
 
   buffs.prince_malchezaar = make_buff( this, "prince_malchezaar" )->set_max_stack( 1 );
 
