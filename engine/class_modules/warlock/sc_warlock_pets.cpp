@@ -883,7 +883,6 @@ void dreadstalker_t::arise()
 {
   warlock_pet_t::arise();
 
-  o()->buffs.dreadstalkers->set_duration( o()->find_spell( 193332 )->duration() );
   o()->buffs.dreadstalkers->trigger();
 
   dreadbite_executes = 1;
