@@ -337,6 +337,9 @@ void social_butterfly( special_effect_t& effect )
 
 void first_strike( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "first_strike" } ) )
+    return;
+
   struct first_strike_cb_t : public dbc_proc_callback_t
   {
     std::vector<int> target_list;
@@ -1241,7 +1244,7 @@ void register_special_effects()
   register_soulbind_special_effect( 322721, soulbinds::grove_invigoration, true );
   register_soulbind_special_effect( 319191, soulbinds::field_of_blossoms, true );  // Dreamweaver
   register_soulbind_special_effect( 319210, soulbinds::social_butterfly );
-  register_soulbind_special_effect( 325069, soulbinds::first_strike );  // Korayn
+  register_soulbind_special_effect( 325069, soulbinds::first_strike, true );  // Korayn
   register_soulbind_special_effect( 325066, soulbinds::wild_hunt_tactics );
   // Venthyr
   //register_soulbind_special_effect( 331580, soulbinds::exacting_preparation );  // Nadjia
