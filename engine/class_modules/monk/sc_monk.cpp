@@ -5315,7 +5315,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
                                 ->set_default_value_from_effect( 1 )
                                 ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
                                 ->set_refresh_behavior( buff_refresh_behavior::NONE );
-  debuff.recently_rushing_tiger_palm = make_buff( *this, "recently_rushing_tiger_palm", p->find_spell( 337341 ) )
+  debuff.skyreach_exhaustion = make_buff( *this, "skyreach_exhaustion", p->find_spell( 337341 ) )
                                            ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   debuff.storm_earth_and_fire = make_buff( *this, "storm_earth_and_fire_target" )->set_cooldown( timespan_t::zero() );
@@ -5568,10 +5568,10 @@ void monk_t::trigger_keefers_skyreach( action_state_t* s )
 {
   if ( legendary.keefers_skyreach->ok() )
   {
-    if ( !get_target_data( s->target )->debuff.recently_rushing_tiger_palm->up() )
+    if ( !get_target_data( s->target )->debuff.skyreach_exhaustion->up() )
     {
       get_target_data( s->target )->debuff.keefers_skyreach->trigger();
-      get_target_data( s->target )->debuff.recently_rushing_tiger_palm->trigger();
+      get_target_data( s->target )->debuff.skyreach_exhaustion->trigger();
     }
   }
 }

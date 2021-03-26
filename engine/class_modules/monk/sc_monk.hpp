@@ -102,7 +102,7 @@ public:
 
     // Shadowland Legendaries
     buff_t* keefers_skyreach;
-    buff_t* recently_rushing_tiger_palm;
+    buff_t* skyreach_exhaustion;
   } debuff;
 
   monk_t& monk;

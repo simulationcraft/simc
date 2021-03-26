@@ -1737,12 +1737,14 @@ class SpellDataGenerator(DataGenerator):
 
           # Shadowland Legendaries
           ( 337342, 3 ), # Jade Ignition Damage
-          ( 337482, 3 ), # Pressure Point BUff
+          ( 337482, 3 ), # Pressure Point Buff
           ( 338141, 1 ), # Flaming Kicks Legendary damage
           ( 343249, 0 ), # Escape from Reality Buff
           ( 343250, 0 ), # Escape from Reality
           ( 343539, 0 ), # Escape from Reality Mana Refund
           ( 343543, 0 ), # Escape from Reality Energy Refund
+          ( 344021, 3 ), # Keefer's Skyreach Debuff
+          ( 337341, 3 ), # Keefer's Skyreach Exhaustion Debuff
           ( 347687, 1 ), # Charred Passions
           ( 347688, 1 ), # Charred Passions
         ),
