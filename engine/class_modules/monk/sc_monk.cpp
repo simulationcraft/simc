@@ -1116,14 +1116,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     if ( p()->specialization() == MONK_BREWMASTER && td( s->target )->debuff.bonedust_brew->up() )
       brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
 
-    if ( p()->legendary.keefers_skyreach->ok() )
-    {
-      if ( !td( s->target )->debuff.recently_rushing_tiger_palm->up() )
-      {
-        td( s->target )->debuff.keefers_skyreach->trigger();
-        td( s->target )->debuff.recently_rushing_tiger_palm->trigger();
-      }
-    }
+    p()->trigger_keefers_skyreach( s );
     shaohoas_might = false;
   }
 };
@@ -5570,6 +5563,18 @@ void monk_t::trigger_mark_of_the_crane( action_state_t* s )
   if ( get_target_data( s->target )->debuff.mark_of_the_crane->up() ||
        mark_of_the_crane_counter() < as<int>( passives.cyclone_strikes->max_stacks() ) )
     get_target_data( s->target )->debuff.mark_of_the_crane->trigger();
+}
+
+void monk_t::trigger_keefers_skyreach( action_state_t* s )
+{
+  if ( legendary.keefers_skyreach->ok() )
+  {
+    if ( !get_target_data( s->target )->debuff.recently_rushing_tiger_palm->up() )
+    {
+      get_target_data( s->target )->debuff.keefers_skyreach->trigger();
+      get_target_data( s->target )->debuff.recently_rushing_tiger_palm->trigger();
+    }
+  }
 }
 
 player_t* monk_t::next_mark_of_the_crane_target( action_state_t* state )

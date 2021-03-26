@@ -555,6 +555,8 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       if ( result_is_hit( state->result ) && o()->spec.spinning_crane_kick_2_ww->ok() )
         o()->trigger_mark_of_the_crane( state );
+
+      o()->trigger_keefers_skyreach( state );
     }
   };
 

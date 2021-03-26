@@ -808,6 +808,7 @@ public:
   double stagger_total();
   void trigger_celestial_fortune( action_state_t* );
   void trigger_bonedust_brew( const action_state_t* );
+  void trigger_keefers_skyreach( action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
   void trigger_empowered_tiger_lightning( action_state_t* );
   void trigger_bonedust_brew( action_state_t* );
