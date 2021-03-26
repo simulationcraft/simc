@@ -263,13 +263,17 @@ void grove_invigoration( special_effect_t& effect )
   if ( unique_gear::create_fallback_buffs( effect, { "redirected_anima" } ) )
     return;
 
-  effect.custom_buff = buff_t::find( effect.player, "redirected_anima" );
-  if ( !effect.custom_buff )
-  {
-    effect.custom_buff =
-      make_buff<stat_buff_t>( effect.player, "redirected_anima", effect.player->find_spell( 342814 ) )
-        ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  auto buff = buff_t::find( effect.player, "redirected_anima" );
+
+  if ( !buff )
+  {  
+    buff = make_buff<stat_buff_t>( effect.player, "redirected_anima", effect.player->find_spell( 342814 ) )
+             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+             ->set_stack_change_callback( [ effect ] ( buff_t*, int old, int cur) 
+               { effect.player->recalculate_resource_max( RESOURCE_HEALTH ); } );
   }
+
+  effect.player->buffs.redirected_anima = buff;
 
   new dbc_proc_callback_t( effect.player, effect );
 
@@ -278,7 +282,7 @@ void grove_invigoration( special_effect_t& effect )
 
   int stacks = as<int>( effect.driver()->effectN( 3 ).base_value() * stack_mod );
 
-  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.custom_buff, stacks );
+  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff, stacks );
 }
 
 void field_of_blossoms( special_effect_t& effect )
