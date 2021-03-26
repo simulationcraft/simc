@@ -1616,13 +1616,6 @@ struct chi_explosion_t : public monk_spell_t
 
     return am;
   }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    p()->buff.chi_energy->expire();
-  }
 };
 
 struct sck_tick_action_t : public monk_melee_attack_t
@@ -1821,6 +1814,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( p()->buff.dance_of_chiji_hidden->up() )
       p()->buff.dance_of_chiji_hidden->expire();
+
+    if ( p()->buff.chi_energy->up() )
+      p()->buff.chi_energy->expire();
   }
 };
 

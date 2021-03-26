@@ -687,6 +687,26 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     }
   };
 
+  struct sef_chi_explosion_t : public sef_spell_t
+  {
+    sef_chi_explosion_t( storm_earth_and_fire_pet_t* player )
+      : sef_spell_t( "chi_explosion", player, player->o()->passives.chi_explosion )
+    {
+      dual = background = true;
+      aoe               = -1;
+    }
+
+    double action_multiplier() const override
+    {
+      double am = sef_spell_t::action_multiplier();
+
+      if ( o()->buff.chi_energy->up() )
+        am += 1 + o()->buff.chi_energy->stack_value();
+
+      return am;
+    }
+  };
+
   struct sef_spinning_crane_kick_tick_t : public sef_tick_action_t
   {
     sef_spinning_crane_kick_tick_t( storm_earth_and_fire_pet_t* p )
@@ -698,8 +718,10 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   struct sef_spinning_crane_kick_t : public sef_melee_attack_t
   {
+    sef_chi_explosion_t* chi_explosion;
     sef_spinning_crane_kick_t( storm_earth_and_fire_pet_t* player )
-      : sef_melee_attack_t( "spinning_crane_kick", player, player->o()->spec.spinning_crane_kick )
+      : sef_melee_attack_t( "spinning_crane_kick", player, player->o()->spec.spinning_crane_kick ),
+        chi_explosion( nullptr )
     {
       tick_zero = hasted_ticks = interrupt_auto_attack = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
@@ -707,6 +729,16 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       weapon_power_mod = 0;
 
       tick_action = new sef_spinning_crane_kick_tick_t( player );
+
+      chi_explosion = new sef_chi_explosion_t( player );
+    }
+
+    void execute() override
+    {
+      sef_melee_attack_t::execute();
+
+      if ( o()->buff.chi_energy->up() )
+        chi_explosion->execute();
     }
   };
 
