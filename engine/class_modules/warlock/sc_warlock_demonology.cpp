@@ -606,7 +606,9 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
 
       if ( p()->talents.demonic_consumption->ok() )
       {
-        double available = pet->resources.current[ RESOURCE_HEALTH ];
+        //This is a hack to get around the fact we are not currently updating pet HP dynamically
+        //TODO: Pet stats (especially HP) need more reliable modeling of caching/updating
+        double available = p()->max_health() * pet->owner_coeff.health;
 
         // There is no spelldata for how health is converted into damage, current testing indicates the 15% of hp taken
         // from pets is divided by 10 and added to base damage 09-05-2020.
