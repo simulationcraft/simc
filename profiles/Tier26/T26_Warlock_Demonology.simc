@@ -41,8 +41,8 @@ actions+=/call_dreadstalkers
 actions+=/doom,if=refreshable
 actions+=/demonic_strength
 actions+=/bilescourge_bombers
-actions+=/implosion,if=active_enemies>1&!talent.sacrificed_souls.enabled&buff.wild_imps.stack>=8&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains>5
-actions+=/implosion,if=active_enemies>2&buff.wild_imps.stack>=8&buff.tyrant.down
+actions+=/implosion,if=active_enemies>1&!talent.sacrificed_souls.enabled&buff.wild_imps.stack>=6&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains>5
+actions+=/implosion,if=active_enemies>2&buff.wild_imps.stack>=6&buff.tyrant.down
 actions+=/hand_of_guldan,if=soul_shard=5|buff.nether_portal.up
 actions+=/hand_of_guldan,if=soul_shard>=3&cooldown.summon_demonic_tyrant.remains>20&(cooldown.summon_vilefiend.remains>5|!talent.summon_vilefiend.enabled)&cooldown.call_dreadstalkers.remains>2
 actions+=/call_action_list,name=covenant,if=(covenant.necrolord|covenant.night_fae)&!talent.nether_portal.enabled
@@ -68,6 +68,8 @@ actions.off_gcd+=/fireblood,if=pet.demonic_tyrant.active
 actions.summon_tyrant=hand_of_guldan,if=soul_shard=5,line_cd=20
 actions.summon_tyrant+=/demonbolt,if=buff.demonic_core.up&(talent.demonic_consumption.enabled|buff.nether_portal.down),line_cd=20
 actions.summon_tyrant+=/shadow_bolt,if=buff.wild_imps.stack+incoming_imps<4&(talent.demonic_consumption.enabled|buff.nether_portal.down),line_cd=20
+actions.summon_tyrant+=/grimoire_felguard
+actions.summon_tyrant+=/summon_vilefiend
 actions.summon_tyrant+=/call_dreadstalkers
 actions.summon_tyrant+=/hand_of_guldan
 actions.summon_tyrant+=/demonbolt,if=buff.demonic_core.up&buff.nether_portal.up&((buff.vilefiend.remains>5|!talent.summon_vilefiend.enabled)&(buff.grimoire_felguard.remains>5|buff.grimoire_felguard.down))

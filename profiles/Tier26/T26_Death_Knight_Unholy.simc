@@ -48,9 +48,14 @@ actions+=/variable,name=st_planning,value=active_enemies=1&(!raid_event.adds.exi
 actions+=/variable,name=major_cooldowns_active,value=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&pet.apoc_ghoul.active|buff.dark_transformation.up
 # Maintaining Virulent Plague is a priority
 actions+=/outbreak,if=dot.virulent_plague.refreshable&!talent.unholy_blight&!raid_event.adds.exists
-actions+=/outbreak,if=dot.virulent_plague.refreshable&active_enemies>=2&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains)
+actions+=/outbreak,target_if=dot.virulent_plague.refreshable&active_enemies>=2&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains)
 actions+=/outbreak,if=runeforge.superstrain&(dot.frost_fever.refreshable|dot.blood_plague.refreshable)
+# Refreshes Deaths Due's buff just before deaths due ends
+actions+=/wound_spender,if=covenant.night_fae&death_and_decay.active_remains<(gcd*1.5)&death_and_decay.ticking
 actions+=/wait_for_cooldown,name=soul_reaper,if=talent.soul_reaper&target.time_to_pct_35<5&fight_remains>5&cooldown.soul_reaper.remains<(gcd*0.75)&active_enemies=1
+# Wait for Death's Due/Defile if Night Fae to get strength buff back asap
+actions+=/wait_for_cooldown,name=deaths_due,if=covenant.night_fae&cooldown.deaths_due.remains<gcd&active_enemies=1
+actions+=/wait_for_cooldown,name=defile,if=covenant.night_fae&cooldown.defile.remains<gcd&active_enemies=1
 # Action Lists and Openers
 actions+=/call_action_list,name=trinkets
 actions+=/call_action_list,name=covenants
@@ -109,8 +114,11 @@ actions.covenants+=/shackle_the_unworthy,if=active_enemies>=2&(death_and_decay.t
 
 # Single Target
 actions.generic=death_coil,if=buff.sudden_doom.react&!variable.pooling_runic_power|pet.gargoyle.active
+actions.generic+=/death_coil,if=covenant.night_fae&cooldown.deaths_due.remains<3&runic_power.deficit<10
+actions.generic+=/any_dnd,if=(talent.defile.enabled|covenant.night_fae|runeforge.phearomones)&(!variable.pooling_runes|fight_remains<5)
+actions.generic+=/death_coil,if=covenant.night_fae&runic_power.deficit<20&!variable.pooling_runic_power
+actions.generic+=/festering_strike,if=covenant.night_fae&cooldown.deaths_due.remains<10&debuff.festering_wound.stack<4&!variable.pooling_runes&(!death_and_decay.ticking|buff.deaths_due.stack=4)
 actions.generic+=/death_coil,if=runic_power.deficit<13|fight_remains<5&!debuff.festering_wound.up
-actions.generic+=/any_dnd,if=cooldown.apocalypse.remains&(talent.defile.enabled|covenant.night_fae|runeforge.phearomones)&(!variable.pooling_runes|fight_remains<5)
 actions.generic+=/wound_spender,if=debuff.festering_wound.stack>4&!variable.pooling_runes
 actions.generic+=/wound_spender,if=debuff.festering_wound.up&cooldown.apocalypse.remains_expected>5&!variable.pooling_runes
 actions.generic+=/death_coil,if=runic_power.deficit<20&!variable.pooling_runic_power

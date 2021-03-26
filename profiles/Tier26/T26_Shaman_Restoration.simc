@@ -39,11 +39,11 @@ actions+=/potion
 actions+=/use_items
 actions+=/flame_shock,if=!ticking
 actions+=/earth_elemental
-actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
-actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up
-actions+=/fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
-actions+=/ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
-actions+=/bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up
+actions+=/blood_fury
+actions+=/berserking
+actions+=/fireblood
+actions+=/ancestral_call
+actions+=/bag_of_tricks
 actions+=/chain_harvest,if=covenant.venthyr
 actions+=/vesper_totem,if=covenant.kyrian
 actions+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react

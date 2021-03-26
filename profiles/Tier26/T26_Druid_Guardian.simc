@@ -93,14 +93,24 @@ actions.catweave+=/adaptive_swarm,if=(!dot.adaptive_swarm_damage.ticking&!action
 actions.catweave+=/shred
 
 actions.cconvoke=cat_form
-actions.cconvoke+=/convoke_the_spirits
+actions.cconvoke+=/heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up
+actions.cconvoke+=/convoke_the_spirits,if=soulbind.first_strike.enabled&buff.first_strike.up
+actions.cconvoke+=/convoke_the_spirits,if=talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up
+actions.cconvoke+=/convoke_the_spirits,if=talent.heart_of_the_wild.enabled&cooldown.heart_of_the_wild.remains>15
+actions.cconvoke+=/convoke_the_spirits,if=!talent.heart_of_the_wild.enabled
 
 actions.lycarac=cat_form
 
 actions.lycarao=moonkin_form
 
 actions.oconvoke=moonkin_form
-actions.oconvoke+=/convoke_the_spirits
+actions.oconvoke+=/heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up
+actions.oconvoke+=/convoke_the_spirits,if=soulbind.first_strike.enabled&buff.first_strike.up
+actions.oconvoke+=/starfire,if=eclipse.any_next|eclipse.solar_next
+actions.oconvoke+=/wrath,if=eclipse.any_next|eclipse.lunar_next
+actions.oconvoke+=/convoke_the_spirits,if=talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up
+actions.oconvoke+=/convoke_the_spirits,if=talent.heart_of_the_wild.enabled&cooldown.heart_of_the_wild.remains>15
+actions.oconvoke+=/convoke_the_spirits,if=!talent.heart_of_the_wild.enabled
 
 actions.owlweave=moonkin_form,if=!buff.moonkin_form.up
 actions.owlweave+=/heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up
