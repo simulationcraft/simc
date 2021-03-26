@@ -5533,9 +5533,10 @@ void demon_hunter_t::apl_precombat()
   pre->add_action( "flask" );
   pre->add_action( "augmentation" );
   pre->add_action( "food" );
-
-  // Snapshot Stats
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+
+  pre->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)" );
+  pre->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)" );
 }
 
 // demon_hunter_t::apl_default ==============================================
@@ -5549,7 +5550,8 @@ void demon_hunter_t::apl_default()
 
 void add_havoc_use_items( demon_hunter_t*, action_priority_list_t* apl )
 {
-  apl->add_action( "use_items,if=buff.metamorphosis.up", "Default fallback for usable items." );
+  apl->add_action( "use_items,slots=trinket1,if=variable.trinket_sync_slot=1&(buff.metamorphosis.up|(!talent.demonic.enabled&cooldown.metamorphosis.remains>(fight_remains>?trinket.1.cooldown.duration%2))|fight_remains<=20)|(variable.trinket_sync_slot=2&!trinket.2.cooldown.ready)|!variable.trinket_sync_slot", "Default use item logic" );
+  apl->add_action( "use_items,slots=trinket2,if=variable.trinket_sync_slot=2&(buff.metamorphosis.up|(!talent.demonic.enabled&cooldown.metamorphosis.remains>(fight_remains>?trinket.2.cooldown.duration%2))|fight_remains<=20)|(variable.trinket_sync_slot=1&!trinket.1.cooldown.ready)|!variable.trinket_sync_slot" );
 }
 
 void demon_hunter_t::apl_havoc()
