@@ -642,6 +642,9 @@ public:
     proc_t* echoing_reprimand_2;
     proc_t* echoing_reprimand_3;
     proc_t* echoing_reprimand_4;
+    proc_t* serrated_bone_spike_refund;
+    proc_t* serrated_bone_spike_waste;
+    proc_t* serrated_bone_spike_waste_partial;
 
     // Conduits
     proc_t* count_the_odds;
@@ -6247,7 +6250,17 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   {
     target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
       if ( dots.serrated_bone_spike->is_ticking() )
+      {
+        double refund_max = source->cooldowns.serrated_bone_spike->charges - source->cooldowns.serrated_bone_spike->charges_fractional();
+        if ( refund_max > 1 )
+          source->procs.serrated_bone_spike_refund->occur();
+        else if( refund_max <= 0 )
+          source->procs.serrated_bone_spike_waste->occur();
+        else
+          source->procs.serrated_bone_spike_waste_partial->occur();
+
         source->cooldowns.serrated_bone_spike->reset( false, 1 );
+      }
     } );
   }
 
@@ -6640,7 +6653,9 @@ void rogue_t::init_action_list()
     action_priority_list_t* direct = get_action_priority_list( "direct", "Direct damage abilities" );
     direct->add_action( this, "Envenom", "if=effective_combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.shiv.up|debuff.flagellation.up|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)", "Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up." );
     direct->add_action( "variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target" );
-    direct->add_action( "serrated_bone_spike,cycle_targets=1,if=master_assassin_remains=0&(buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75|soulbind.lead_by_example.enabled&!buff.lead_by_example.up)" );
+    direct->add_action( "serrated_bone_spike,if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking", "Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target" );
+    direct->add_action( "serrated_bone_spike,target_if=min:target.time_to_die+(dot.serrated_bone_spike_dot.ticking*600),if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking" );
+    direct->add_action( "serrated_bone_spike,if=variable.use_filler&master_assassin_remains<0.8&(fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75|soulbind.lead_by_example.enabled&!buff.lead_by_example.up&debuff.vendetta.up)", "When MA is not at high duration, use SBS to apply Lead by Example during Vendetta, otherwise keep from capping charges" );
     direct->add_action( this, "Fan of Knives", "if=variable.use_filler&(buff.hidden_blades.stack>=19|(!priority_rotation&spell_targets.fan_of_knives>=4+stealthed.rogue))", "Fan of Knives at 19+ stacks of Hidden Blades or against 4+ targets." );
     direct->add_action( this, "Fan of Knives", "target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives>=3", "Fan of Knives to apply Deadly Poison if inactive on any target at 3 targets." );
     direct->add_action( "echoing_reprimand,if=variable.use_filler&cooldown.vendetta.remains>10" );
@@ -7641,6 +7656,11 @@ void rogue_t::init_procs()
   procs.echoing_reprimand_2 = get_proc( "Animacharged CP 2 Used"       );
   procs.echoing_reprimand_3 = get_proc( "Animacharged CP 3 Used"       );
   procs.echoing_reprimand_4 = get_proc( "Animacharged CP 4 Used"       );
+
+  procs.serrated_bone_spike_refund        = get_proc( "Serrated Bone Spike Refund" );
+  procs.serrated_bone_spike_waste         = get_proc( "Serrated Bone Spike Refund Wasted" );
+  procs.serrated_bone_spike_waste_partial = get_proc( "Serrated Bone Spike Refund Wasted (Partial)" );
+
   procs.count_the_odds      = get_proc( "Count the Odds"               );
 
   procs.dustwalker_patch    = get_proc( "Dustwalker Patch"             );
