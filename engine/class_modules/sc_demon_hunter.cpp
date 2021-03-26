@@ -23,7 +23,6 @@ namespace
   New Issues
   ----------
 
-  * Implement Soulbinds
   * Implement Vengeance Legendaries
 
   Vengeance:
@@ -2453,6 +2452,15 @@ struct collective_anguish_t : public demon_hunter_spell_t
       // TOCHECK: Currently does not use split damage on beta but probably will at some point
       background = dual = true;
       aoe = -1;
+    }
+
+    double composite_crit_chance() const override
+    {
+      // 03/15/2020 -- 100% crit rate as of 9.0.5, does not appear to be in any spell data
+      if ( p()->specialization() == DEMON_HUNTER_VENGEANCE )
+        return 1.0;
+
+      return demon_hunter_spell_t::composite_crit_chance();
     }
   };
 
