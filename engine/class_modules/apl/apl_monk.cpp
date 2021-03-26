@@ -404,12 +404,12 @@ void windwalker( player_t* p )
                       "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3" );
   opener->add_action( p, "Expel Harm", "if=talent.chi_burst.enabled&chi.max-chi>=3" );
   opener->add_action( p, "Tiger Palm",
-                      "target_if=min:debuff.mark_of_the_crane.remains+(debuff.recently_rushing_tiger_palm.up*20),if="
+                      "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if="
                       "combo_strike&chi.max-chi>=2" );
   opener->add_talent( p, "Chi Wave", "if=chi.max-chi=2" );
   opener->add_action( p, "Expel Harm" );
   opener->add_action( p, "Tiger Palm",
-      "target_if=min:debuff.mark_of_the_crane.remains+(debuff.recently_rushing_tiger_palm.up*20),if=chi.max-chi>=2" );
+      "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=chi.max-chi>=2" );
 
   // AoE
   aoe->add_talent( p, "Whirling Dragon Punch" );
@@ -427,7 +427,7 @@ void windwalker( player_t* p )
                    "if=buff.the_emperors_capacitor.stack>19&energy.time_to_max>execute_time-1&cooldown.fists_of_fury."
                    "remains>execute_time" );
   aoe->add_action( p, "Tiger Palm",
-                   "target_if=min:debuff.mark_of_the_crane.remains+(debuff.recently_rushing_tiger_palm.up*20),if=chi."
+                   "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=chi."
                    "max-chi>=2&(!talent.hit_combo|combo_strike)" );
   aoe->add_action( "arcane_torrent,if=chi.max-chi>=1" );
   aoe->add_action( p, "Spinning Crane Kick",
@@ -635,7 +635,7 @@ void windwalker( player_t* p )
   weapons_of_order->add_action( p, "Expel Harm", "if=chi.max-chi>=1" );
   weapons_of_order->add_talent( p, "Chi Burst", "if=chi.max-chi>=(1+active_enemies>1)" );
   weapons_of_order->add_action( p, "Tiger Palm",
-                                "target_if=min:debuff.mark_of_the_crane.remains+(debuff.recently_rushing_tiger_palm.up*"
+                                "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*"
                                 "20),if=(!talent.hit_combo|combo_strike)&chi.max-chi>=2" );
   weapons_of_order->add_action( p, "Blackout Kick",
                                 "target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<=3&chi>=3|buff.weapons_of_order_ww.up" );
@@ -668,7 +668,7 @@ void windwalker( player_t* p )
                   "if=chi.max-chi>=1&active_enemies=1&raid_event.adds.in>20|chi.max-chi>=2&active_enemies>=2" );
   st->add_talent( p, "Chi Wave" );
   st->add_action( p, "Tiger Palm",
-                  "target_if=min:debuff.mark_of_the_crane.remains+(debuff.recently_rushing_tiger_palm.up*20),if=combo_"
+                  "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_"
                   "strike&chi.max-chi>=2&buff.storm_earth_and_fire.down" );
   st->add_action( p, "Spinning Crane Kick",
                   "if=buff.chi_energy.stack>30-5*active_enemies&buff.storm_earth_and_fire.down&(cooldown.rising_sun_"
@@ -681,7 +681,7 @@ void windwalker( player_t* p )
                   "kick.remains<3&cooldown.fists_of_fury.remains>3&chi>2|cooldown.rising_sun_kick.remains>3&cooldown."
                   "fists_of_fury.remains<3&chi>3|chi>5|buff.bok_proc.up)" );
   st->add_action( p, "Tiger Palm",
-                  "target_if=min:debuff.mark_of_the_crane.remains+(debuff.recently_rushing_tiger_palm.up*20),if=combo_"
+                  "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_"
                   "strike&chi.max-chi>=2" );
   st->add_action( "arcane_torrent,if=chi.max-chi>=1" );
   st->add_action( p, "Flying Serpent Kick", "interrupt=1" );
