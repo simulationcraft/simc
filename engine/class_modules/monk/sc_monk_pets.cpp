@@ -1526,16 +1526,6 @@ public:
       return cam;
     }
 
-    double action_multiplier() const override
-    {
-      double am = pet_melee_attack_t::action_multiplier();
-
-      if ( o()->conduit.inner_fury->ok() )
-        am *= 1 + o()->conduit.inner_fury.percent();
-
-      return am;
-    }
-
     void impact( action_state_t* s ) override
     {
       //o()->trigger_empowered_tiger_lightning( s );
