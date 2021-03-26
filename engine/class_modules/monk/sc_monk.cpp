@@ -1603,8 +1603,6 @@ struct chi_explosion_t : public monk_spell_t
 {
   chi_explosion_t( monk_t* player ) : monk_spell_t( "chi_explosion", player, player->passives.chi_explosion )
   {
-    ww_mastery = true;
-
     dual = background = true;
     aoe               = -1;
   }
