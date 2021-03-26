@@ -651,6 +651,16 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       aoe = 1 + as<int>( p->o()->spec.fists_of_fury->effectN( 1 ).base_value() );
     }
+
+    double action_multiplier() const override
+    {
+      double am = sef_tick_action_t::action_multiplier();
+
+      if ( o()->conduit.inner_fury->ok() )
+        am /= 1 + o()->conduit.inner_fury.percent();
+
+      return am;
+    }
   };
 
   struct sef_fists_of_fury_t : public sef_melee_attack_t
