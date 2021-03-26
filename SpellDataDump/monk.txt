@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-23/37988, git build shadowlands 129383b0, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-26/37988, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -434,7 +434,7 @@ Resource         : 50 Energy (3) (id=5167)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #7, #14, #17), Mistweaver Monk (137024 effects: #6, #7, #13, #18), Windwalker Monk (137025 effects: #1, #2, #4, #5, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Combo (228563 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (337334 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #7, #14, #17), Mistweaver Monk (137024 effects: #6, #7, #13, #18), Windwalker Monk (137025 effects: #1, #2, #4, #5, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Combo (228563 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (337334 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 10, 103
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
@@ -484,7 +484,7 @@ Cooldown         : 3 seconds
 Category         : 1561
 Category Cooldown: 3 seconds
 Proc Chance      : 101%
-Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #10, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #10, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 4, 67, 103
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -605,7 +605,7 @@ Name             : Spinning Crane Kick (id=107270) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effect#14), Windwalker Monk (137025 effects: #1, #2, #8), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Cyclone Strikes (220358 effect#1), The Wind Blows (281452 effects: #1, #2), Dance of Chi-Ji (286587 effect#3), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effect#14), Windwalker Monk (137025 effects: #1, #2, #8), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Cyclone Strikes (220358 effect#1), The Wind Blows (281452 effects: #1, #2), Dance of Chi-Ji (286587 effect#3), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Triggered by     : Spinning Crane Kick (101546), Spinning Crane Kick (322729)
 Family Flags     : 8, 103
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -707,7 +707,7 @@ Duration         : 4 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, Polearm, One-handed Sword, Staff, Fist Weapon
 Cooldown         : 24 seconds
 Labels           : 359: Serenity (152173 effect#4)
-Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Katsuo's Eclipse (208045 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Katsuo's Eclipse (208045 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Triggered by     : Katsuo's Eclipse (208045)
 Family Flags     : 55, 67, 103
 Attributes       : ........ ........ x....... ........   ..x...x. .xx..... ........ .....x.. 
@@ -1077,7 +1077,7 @@ Spell Level      : 29
 GCD              : 1 seconds
 Cooldown         : 15 seconds
 Proc Chance      : 101%
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #16), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Combo (228563 effect#2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #16), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Combo (228563 effect#2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 19, 67, 103
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1814,7 +1814,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
 Max Targets      : 6
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effects: #1, #2), Inner Fury (336452 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effects: #1, #2), Inner Fury (336452 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Triggered by     : Fists of Fury (113656), Fists of Fury (330898)
 Family Flags     : 20, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1902,7 +1902,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Proc Chance      : 100%
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #14), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effects: #1, #2, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Emperor's Capacitor (235054 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), The Emperor's Capacitor (337291 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #14), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effects: #1, #2, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Emperor's Capacitor (235054 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), The Emperor's Capacitor (337291 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 32, 70, 103
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ...x.x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2293,7 +2293,7 @@ Cooldown         : 1 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1490: Brewmaster Monk (137023 effect#4), Stormstout's Last Gasp (248044 effect#1), Stormstout's Last Keg (337288 effect#2)
 Proc Chance      : 101%
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Stormstout's Last Gasp (248044 effect#2), The Wind Blows (281452 effects: #1, #2), Stormstout's Last Keg (337288 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Stormstout's Last Gasp (248044 effect#2), The Wind Blows (281452 effects: #1, #2), Stormstout's Last Keg (337288 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 57, 103
 Attributes       : ........ ........ x....... ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2509,7 +2509,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Duration         : 4 seconds
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 69, 103
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3351,7 +3351,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 0.1 seconds
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #7), Windwalker Monk (137025 effects: #1, #2, #6), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #7), Windwalker Monk (137025 effects: #1, #2, #6), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 27, 103
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ....x... 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
@@ -3740,7 +3740,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #7, #14), Windwalker Monk (137025 effects: #1, #2, #13), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #7, #14), Windwalker Monk (137025 effects: #1, #2, #13), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 38, 103
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -3760,7 +3760,7 @@ Name             : Rushing Jade Wind (id=148187) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #6, #16), Windwalker Monk (137025 effects: #1, #2, #6), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #6, #16), Windwalker Monk (137025 effects: #1, #2, #6), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Triggered by     : Rushing Jade Wind (116847)
 Family Flags     : 5, 103
 Attributes       : ....x... ........ ..x..... ...x....   ........ ........ ........ ........ 
@@ -3938,7 +3938,7 @@ Name             : Whirling Dragon Punch (id=158221) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
-Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 103, 122
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4180,7 +4180,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 24
 Range            : 5 yards
-Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #14), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #1, #2, #5, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Rising Sun Kick (262840 effect#1), Swift Roundhouse (278710 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #14), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #1, #2, #5, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Rising Sun Kick (262840 effect#1), Swift Roundhouse (278710 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Triggered by     : Rising Sun Kick (107428)
 Family Flags     : 39, 103
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -4408,7 +4408,7 @@ Spell Type       : Melee
 Range            : 100 yards
 Max Targets      : 2
 Duration         : 8 seconds
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #8), Windwalker Monk (137025 effects: #1, #2, #7), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #8), Windwalker Monk (137025 effects: #1, #2, #7), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Triggered by     : Eye of the Tiger (196607)
 Family Flags     : 44, 103
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -4493,7 +4493,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 15 seconds
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 103
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4978,7 +4978,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, Polearm, One-handed Sword, S
 Charges          : 1 (4 seconds cooldown)
 Category         : 1561
 Proc Chance      : 101%
-Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #10, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), Elusive Footwork (278571 effect#3), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #10, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), Elusive Footwork (278571 effect#3), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 4, 67, 80, 103
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -5428,7 +5428,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 3
 Range            : 100 yards
-Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #10, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #10, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 4, 103
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -6072,7 +6072,7 @@ Resource         : 40 Energy (3) (id=79673) w/ Windwalker Monk (id=137025)
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 30 seconds
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (248101 effect#1), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (248101 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 103, 118
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -6099,7 +6099,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (248101 effect#1), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (248101 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Triggered by     : Fist of the White Tiger (261947)
 Family Flags     : 103, 118
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
@@ -8800,7 +8800,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 24
 Range            : 5 yards
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 103
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10122,7 +10122,7 @@ School           : Nature
 Spell Type       : Melee
 Spell Level      : 48
 Range            : 100 yards
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 103
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10330,7 +10330,7 @@ Resource         : 25 Energy (3) (id=215197) w/ Brewmaster Monk (id=137023)
 Spell Level      : 7
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 103
 Attributes       : ....x... ........ x.x..... .......x   ..x...x. ........ ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10358,7 +10358,7 @@ Name             : Spinning Crane Kick (id=330903) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Triggered by     : Spinning Crane Kick (330901)
 Family Flags     : 103
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -10386,7 +10386,7 @@ Spell Level      : 19
 GCD              : 1 seconds
 Cooldown         : 15 seconds
 Proc Chance      : 101%
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 103
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10435,7 +10435,7 @@ Cooldown         : 1 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1490: Brewmaster Monk (137023 effect#4), Stormstout's Last Gasp (248044 effect#1), Stormstout's Last Keg (337288 effect#2)
 Proc Chance      : 101%
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 103
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11203,7 +11203,6 @@ Name             : Keefer's Skyreach (id=337334) [Spell Family (53), Passive]
 School           : Physical
 Spell Type       : None
 Req. Max Level   : 60
-Proc Chance      : 101%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11227,19 +11226,21 @@ Description      : Tiger Palm now has a ${$m1+5} yard range and dashes you to th
 Tiger Palm also applies an effect which increases your critical strike chance by $344021m1% for $344021d on the target. This effect cannot be applied more than once every $337341d per target.
 
 Name             : Chi Explosion (id=337342) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 103
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x...... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Not a proc (105)
 Effects          :
 #1 (id=835311)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
@@ -12033,7 +12034,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Range            : 8 yards
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Triggered by     : Fists of Fury (330898)
 Family Flags     : 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12058,7 +12059,7 @@ School           : Nature
 Spell Type       : Melee
 Spell Level      : 48
 Range            : 100 yards
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 103
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ...xx... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
