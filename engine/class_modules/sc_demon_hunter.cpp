@@ -221,13 +221,6 @@ public:
     buff_t* demon_spikes;
     absorb_buff_t* soul_barrier;
 
-    // Azerite
-    buff_t* furious_gaze;
-    buff_t* revolving_blades;
-    buff_t* seething_power;
-    buff_t* thirsting_blades;
-    buff_t* thirsting_blades_driver;
-
     // Covenant
     buff_t* growing_inferno;
     buff_t* soul_furance;
@@ -387,31 +380,6 @@ public:
     const spell_data_t* darkglare_boon_refund;
   } spec;
 
-  struct azerite_t
-  {
-    // Havoc
-    azerite_power_t chaotic_transformation;
-    azerite_power_t eyes_of_rage;
-    azerite_power_t furious_gaze;
-    azerite_power_t revolving_blades;
-    azerite_power_t seething_power;
-    azerite_power_t thirsting_blades;
-
-    // General
-    azerite_essence_t conflict_and_strife;
-    azerite_essence_t memory_of_lucid_dreams;
-    azerite_essence_t vision_of_perfection;
-  } azerite;
-
-  struct azerite_spells_t
-  {
-    // General
-    const spell_data_t* memory_of_lucid_dreams;
-    const spell_data_t* vision_of_perfection_1;
-    const spell_data_t* vision_of_perfection_2;
-
-  } azerite_spells;
-
   struct covenant_t
   {
     const spell_data_t* elysian_decree;
@@ -516,11 +484,6 @@ public:
 
     // Vengeance
     gain_t* metamorphosis;
-
-    // Azerite
-    gain_t* thirsting_blades;
-    gain_t* revolving_blades;
-    gain_t* memory_of_lucid_dreams;
 
     // Legendary
     gain_t* darkglare_boon_refund;
@@ -636,7 +599,6 @@ public:
   void invalidate_cache( cache_e ) override;
   resource_e primary_resource() const override;
   role_e primary_role() const override;
-  void vision_of_perfection_proc() override;
 
   // custom demon_hunter_t init functions
 private:
@@ -1029,20 +991,6 @@ struct soul_fragment_t
     {
       timespan_t duration = timespan_t::from_seconds( dh->talent.feed_the_demon->effectN( 1 ).base_value() ) / 10;
       dh->cooldown.demon_spikes->adjust( -duration );
-    }
-
-    if ( dh->azerite.eyes_of_rage.ok() )
-    {
-      timespan_t duration = dh->azerite.eyes_of_rage.spell_ref().effectN( 1 ).time_value();
-      // 3/8/2019 -- Testing has shown that despite the tooltip, 2 ranks of this doubles the CD reduction
-      //             Additionally, this seems to also apply with 1 rank and Demonic Appetite
-      if ( dh->bugs )
-      {
-        if ( dh->talent.demonic_appetite->ok() || dh->azerite.eyes_of_rage.n_items() > 1 )
-          duration *= 2;
-      }
-
-      dh->cooldown.eye_beam->adjust( -duration );
     }
 
     if ( dh->conduit.soul_furnace.ok() )
@@ -1467,31 +1415,6 @@ public:
     if ( !ab::hit_any_target && ab::last_resource_cost > 0 )
     {
       trigger_refund();
-    }
-  }
-
-  void consume_resource() override
-  {
-    ab::consume_resource();
-
-    // Memory of Lucid Dreams
-    if ( p()->azerite.memory_of_lucid_dreams.enabled() && ab::last_resource_cost > 0 )
-    {
-      resource_e cr = ab::current_resource();
-      if ( cr == RESOURCE_FURY )
-      {
-        if ( p()->rng().roll( p()->options.memory_of_lucid_dreams_proc_chance ) )
-        {
-          // Gains are rounded up to the nearest whole value, which can be seen with the Lucid Dreams active up
-          const double amount = ceil( ab::last_resource_cost * p()->azerite_spells.memory_of_lucid_dreams->effectN( 1 ).percent() );
-          p()->resource_gain( cr, amount, p()->gain.memory_of_lucid_dreams );
-
-          if ( p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
-          {
-            p()->buffs.lucid_dreams->trigger();
-          }
-        }
-      }
     }
   }
 
@@ -2007,15 +1930,6 @@ struct eye_beam_t : public demon_hunter_spell_t
 
       return m;
     }
-
-    double bonus_da( const action_state_t* s ) const override
-    {
-      double b = demon_hunter_spell_t::bonus_da( s );
-
-      b += p()->azerite.eyes_of_rage.value( 2 );
-
-      return b;
-    }
   };
 
   eye_beam_t( demon_hunter_t* p, const std::string& options_str )
@@ -2041,7 +1955,6 @@ struct eye_beam_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::last_tick( d );
 
-    p()->buff.furious_gaze->trigger();
     if ( p()->spec.eye_beam_rank_3->ok() )
       p()->buff.eye_beam_rank_3->trigger();
   }
@@ -2703,19 +2616,8 @@ struct metamorphosis_t : public demon_hunter_spell_t
       min_gcd                 = timespan_t::from_seconds( 1.0 );  // Cannot use skills during travel time
       travel_speed            = 1.0;                              // Allows use in the precombat list
 
-      // Conflict and Strife -> Demonic Origins PvP Talent
-      if ( p->azerite.conflict_and_strife.enabled() && p->azerite.conflict_and_strife.is_major() && p->talent.demonic_origins->ok() )
-      {
-        apply_affecting_aura( p->talent.demonic_origins );
-      }
-
       impact_action = p->get_background_action<metamorphosis_impact_t>( "metamorphosis_impact" );
       // Don't assign the stats here because we don't want Meta to show up in the DPET chart
-    }
-
-    if ( p->azerite.vision_of_perfection.enabled() )
-    {
-      cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite.vision_of_perfection );
     }
   }
 
@@ -2737,7 +2639,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
       // Buff is gained at the start of the leap.
       p()->buff.metamorphosis->extend_duration_or_trigger();
 
-      if ( p()->azerite.chaotic_transformation.ok() || p()->spec.metamorphosis_rank_4->ok() )
+      if ( p()->spec.metamorphosis_rank_4->ok() )
       {
         p()->cooldown.eye_beam->reset( false );
         p()->cooldown.blade_dance->reset( false );
@@ -3455,15 +3357,6 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       return dm;
     }
 
-    double bonus_da( const action_state_t* s ) const override
-    {
-      double b = demon_hunter_attack_t::bonus_da( s );
-
-      b += p()->azerite.revolving_blades.value( 2 );
-
-      return b;
-    }
-
     void impact( action_state_t* s ) override
     {
       demon_hunter_attack_t::impact( s );
@@ -3475,8 +3368,6 @@ struct blade_dance_base_t : public demon_hunter_attack_t
           trail_of_ruin_dot->set_target( s->target );
           trail_of_ruin_dot->execute();
         }
-
-        p()->buff.revolving_blades->trigger();
       }
     }
   };
@@ -3504,15 +3395,6 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     {
       trail_of_ruin_dot = p->get_background_action<trail_of_ruin_dot_t>( "trail_of_ruin" );
     }
-  }
-
-  double cost() const override
-  {
-    double c = demon_hunter_attack_t::cost();
-
-    c = std::max( 0.0, c + p()->buff.revolving_blades->check_stack_value() );
-
-    return c;
   }
 
   void init_finished() override
@@ -3546,14 +3428,6 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     // Chaos Theory Legendary
     // This has a 0.5s ICD in the spell data, so just trigger once in the execute and not on impacts
     p()->buff.chaos_theory->trigger();
-
-    // Benefit Tracking and Consume Buff
-    if ( p()->buff.revolving_blades->up() )
-    {
-      const double adjusted_cost = cost();
-      p()->buff.revolving_blades->expire();
-      p()->gain.revolving_blades->add( RESOURCE_FURY, cost() - adjusted_cost );
-    }
 
     // Metamorphosis benefit and Essence Break stats tracking
     if ( p()->buff.metamorphosis->up() )
@@ -3654,14 +3528,12 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     chaos_strike_base_t* parent;
     bool may_refund;
     double refund_proc_chance;
-    double thirsting_blades_bonus_da;
 
     chaos_strike_damage_t( util::string_view name, demon_hunter_t* p, const spelleffect_data_t& eff, chaos_strike_base_t* a )
       : demon_hunter_attack_t( name, p, eff.trigger() ),
       delay( timespan_t::from_millis( eff.misc_value1() ) ),
       parent( a ),
-      refund_proc_chance( 0.0 ),
-      thirsting_blades_bonus_da( 0.0 )
+      refund_proc_chance( 0.0 )
     {
       assert( eff.type() == E_TRIGGER_SPELL );
       background = dual = true;
@@ -3682,15 +3554,6 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       m *= 1.0 + p()->buff.chaos_theory->stack_value();
 
       return m;
-    }
-
-    double bonus_da( const action_state_t* s ) const override
-    {
-      double b = demon_hunter_attack_t::bonus_da( s );
-
-      b += thirsting_blades_bonus_da;
-
-      return b;
     }
 
     double get_refund_proc_chance()
@@ -3754,11 +3617,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     if ( from_onslaught )
       return 0.0;
 
-    double c = demon_hunter_attack_t::cost();
-
-    c = std::max( 0.0, c - p()->buff.thirsting_blades->check() );
-
-    return c;
+    return demon_hunter_attack_t::cost();
   }
 
   void init_finished() override
@@ -3776,19 +3635,9 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
   {
     demon_hunter_attack_t::execute();
 
-    // Thirsting Blades Benefit Tracking and Consume Buff
-    double thirsting_blades_bonus_da = p()->buff.thirsting_blades->stack_value();
-    if ( thirsting_blades_bonus_da > 0 )
-    {
-      p()->gain.thirsting_blades->add( RESOURCE_FURY, p()->buff.thirsting_blades->check() );
-      p()->buff.thirsting_blades->expire();
-    }
-
     // Create Strike Events
     for ( auto& attack : attacks )
     {
-      // Snapshot Thirsting Blades manually as we can't snapshot bonus damage with action states right now
-      attack->thirsting_blades_bonus_da = thirsting_blades_bonus_da;
       make_event<delayed_execute_event_t>( *sim, p(), attack, target, attack->delay );
     }
 
@@ -3810,9 +3659,6 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       p()->proc.demonic_appetite->occur();
       p()->spawn_soul_fragment( soul_fragment::LESSER );
     }
-
-    // Seething Power
-    p()->buff.seething_power->trigger();
   }
 
   bool has_amount_result() const override
@@ -3926,15 +3772,6 @@ struct demons_bite_t : public demon_hunter_attack_t
     return ea;
   }
 
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = demon_hunter_attack_t::bonus_da( s );
-
-    b += p()->azerite.chaotic_transformation.value( 2 );
-
-    return b;
-  }
-
   void execute() override
   {
     demon_hunter_attack_t::execute();
@@ -3977,15 +3814,6 @@ struct demon_blades_t : public demon_hunter_attack_t
       impact_action = p->get_background_action<burning_wound_t>( "burning_wound" );
       add_child( impact_action );
     }
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = demon_hunter_attack_t::bonus_da( s );
-
-    b += p()->azerite.chaotic_transformation.value( 2 );
-
-    return b;
   }
 
   void impact( action_state_t* s ) override
@@ -4593,12 +4421,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       apply_affecting_aura( p->spec.metamorphosis_rank_2 );
       add_invalidate( CACHE_HASTE );
       add_invalidate( CACHE_LEECH );
-
-      // Conflict and Strife -> Demonic Origins PvP Talent
-      if ( p->azerite.conflict_and_strife.enabled() && p->azerite.conflict_and_strife.is_major() && p->talent.demonic_origins->ok() )
-      {
-        apply_affecting_aura( p->talent.demonic_origins );
-      }
     }
     else // DEMON_HUNTER_VENGEANCE
     {
@@ -4974,40 +4796,6 @@ void demon_hunter_t::create_buffs()
     ->set_absorb_gain( get_gain( "soul_barrier" ) )
     ->set_absorb_high_priority( true )  // TOCHECK
     ->set_cooldown( timespan_t::zero() );
-
-  // Azerite ================================================================
-
-  // Furious Gaze doesn't have a trigger reference in the Azerite trait for some reason...
-  const spell_data_t* furious_gaze_buff = azerite.furious_gaze.spell()->ok() ? find_spell( 273232 ) : spell_data_t::not_found();
-  buff.furious_gaze = make_buff<stat_buff_t>( this, "furious_gaze_azerite", furious_gaze_buff )
-    ->add_stat( STAT_HASTE_RATING, azerite.furious_gaze.value( 1 ) )
-    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-    ->set_trigger_spell( azerite.furious_gaze );
-
-  const spell_data_t* revolving_blades_trigger = azerite.revolving_blades.spell()->effectN( 1 ).trigger();
-  const spell_data_t* revolving_blades_buff = revolving_blades_trigger->effectN( 1 ).trigger();
-  buff.revolving_blades = make_buff<buff_t>( this, "revolving_blades", revolving_blades_buff )
-    ->set_default_value( revolving_blades_buff->effectN( 1 ).resource( RESOURCE_FURY ) )
-    ->set_trigger_spell( revolving_blades_trigger );
-
-  const spell_data_t* seething_power_trigger = azerite.seething_power.spell()->effectN( 1 ).trigger();
-  const spell_data_t* seething_power_buff = seething_power_trigger->effectN( 1 ).trigger();
-  buff.seething_power = make_buff<stat_buff_t>( this, "seething_power", seething_power_buff )
-    ->add_stat( STAT_AGILITY, azerite.seething_power.value( 1 ) )
-    ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-    ->set_trigger_spell( seething_power_trigger );
-
-  const spell_data_t* thirsting_blades_trigger = azerite.thirsting_blades.spell()->effectN( 1 ).trigger();
-  const spell_data_t* thirsting_blades_buff = thirsting_blades_trigger->effectN( 1 ).trigger();
-  buff.thirsting_blades_driver = make_buff<buff_t>( this, "thirsting_blades_driver", thirsting_blades_trigger )
-    ->set_trigger_spell( azerite.thirsting_blades )
-    ->set_quiet( true )
-    ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
-    ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { buff.thirsting_blades->trigger(); } );
-
-  buff.thirsting_blades = make_buff<buff_t>( this, "thirsting_blades", thirsting_blades_buff )
-    ->set_trigger_spell( thirsting_blades_trigger )
-    ->set_default_value( azerite.thirsting_blades.value( 1 ) );
 
   // Covenant ===============================================================
 
@@ -5552,24 +5340,6 @@ void demon_hunter_t::init_spells()
   // PvP Talents
   talent.demonic_origins      = find_spell( 235893, DEMON_HUNTER_HAVOC );
 
-  // Azerite ================================================================
-
-  // General
-  azerite.conflict_and_strife           = find_azerite_essence( "Conflict and Strife" );
-  azerite.memory_of_lucid_dreams        = find_azerite_essence( "Memory of Lucid Dreams" );
-  azerite_spells.memory_of_lucid_dreams = azerite.memory_of_lucid_dreams.spell( 1U, essence_type::MINOR );
-  azerite.vision_of_perfection          = find_azerite_essence( "Vision of Perfection" );
-  azerite_spells.vision_of_perfection_1 = azerite.vision_of_perfection.spell( 1U, essence_type::MAJOR );
-  azerite_spells.vision_of_perfection_2 = azerite.vision_of_perfection.spell( 2U, essence_spell::UPGRADE, essence_type::MAJOR );
-
-  // Havoc
-  azerite.chaotic_transformation  = find_azerite_spell( "Chaotic Transformation" );
-  azerite.eyes_of_rage            = find_azerite_spell( "Eyes of Rage" );
-  azerite.furious_gaze            = find_azerite_spell( "Furious Gaze" );
-  azerite.revolving_blades        = find_azerite_spell( "Revolving Blades" );
-  azerite.seething_power          = find_azerite_spell( "Seething Power" );
-  azerite.thirsting_blades        = find_azerite_spell( "Thirsting Blades" );
-
   // Covenant Abilities =====================================================
 
   covenant.elysian_decree       = find_covenant_spell( "Elysian Decree" );
@@ -5701,16 +5471,6 @@ role_e demon_hunter_t::primary_role() const
   }
 }
 
-// demon_hunter_t::vision_of_perfection_proc ================================
-
-void demon_hunter_t::vision_of_perfection_proc()
-{
-  const double percentage = azerite_spells.vision_of_perfection_1->effectN( 1 ).percent() +
-                            azerite_spells.vision_of_perfection_2->effectN( 1 ).percent();
-  const timespan_t duration = buff.metamorphosis->data().duration() * percentage;
-  buff.metamorphosis->extend_duration_or_trigger( duration );
-}
-
 // demon_hunter_t::default_flask ===================================================
 
 std::string demon_hunter_t::default_flask() const
@@ -5776,9 +5536,6 @@ void demon_hunter_t::apl_precombat()
 
   // Snapshot Stats
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
-  pre->add_action( "potion" );
-  pre->add_action( "use_item,name=azsharas_font_of_power" );
 }
 
 // demon_hunter_t::apl_default ==============================================
@@ -5972,11 +5729,6 @@ void demon_hunter_t::create_gains()
 
   // Vengeance
   gain.metamorphosis            = get_gain("metamorphosis");
-
-  // Azerite
-  gain.thirsting_blades         = get_gain( "thirsting_blades" );
-  gain.revolving_blades         = get_gain( "revolving_blades" );
-  gain.memory_of_lucid_dreams   = get_gain( "memory_of_lucid_dreams_proc" );
 
   // Legendary
   gain.darkglare_boon_refund    = get_gain( "darkglare_boon_refund" );
@@ -6331,9 +6083,6 @@ void demon_hunter_t::combat_begin()
   {
     spirit_bomb_driver = make_event<spirit_bomb_event_t>( *sim, this, true );
   }
-
-  buff.thirsting_blades->trigger( buff.thirsting_blades->data().max_stacks() );
-  buff.thirsting_blades_driver->trigger();
 
   // Momentum triggers periodicy-based Restore Power
   if ( talent.momentum->ok() )
