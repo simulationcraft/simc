@@ -481,7 +481,8 @@ struct monk_spell_t : public monk_action_t<spell_t>
 
     if ( p()->buff.storm_earth_and_fire->up() )
     {
-      if ( base_t::data().affected_by( p()->spec.storm_earth_and_fire->effectN( 1 ) ) )
+      // TODO: Check in 9.1 that Storm, Earth and Fire effects affect Chi Explosion
+      if ( base_t::data().affected_by( p()->spec.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
       {
         double sef_multiplier = p()->spec.storm_earth_and_fire->effectN( 1 ).percent();
 
@@ -549,7 +550,8 @@ struct monk_heal_t : public monk_action_t<heal_t>
 
     if ( p()->buff.storm_earth_and_fire->up() )
     {
-      if ( base_t::data().affected_by( p()->spec.storm_earth_and_fire->effectN( 1 ) ) )
+      // TODO: Check in 9.1 that Storm, Earth and Fire effects affect Chi Explosion
+      if ( base_t::data().affected_by( p()->spec.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
       {
         double sef_multiplier = p()->spec.storm_earth_and_fire->effectN( 1 ).percent();
 
@@ -818,7 +820,8 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
     if ( p()->buff.storm_earth_and_fire->up() )
     {
-      if ( base_t::data().affected_by( p()->spec.storm_earth_and_fire->effectN( 1 ) ) )
+      // TODO: Check in 9.1 that Storm, Earth and Fire effects affect Chi Explosion
+      if ( base_t::data().affected_by( p()->spec.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
       {
         double sef_multiplier = p()->spec.storm_earth_and_fire->effectN( 1 ).percent();
 

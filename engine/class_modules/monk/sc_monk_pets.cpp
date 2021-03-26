@@ -349,6 +349,11 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       return source_action->composite_versatility( s );
     }
 
+    double composite_target_crit_chance( player_t* target ) const override
+    {
+      return source_action->composite_target_crit_chance( target );
+    }
+
     double composite_haste() const override
     {
       return source_action->composite_haste();
@@ -694,16 +699,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       dual = background = true;
       aoe               = -1;
-    }
-
-    double action_multiplier() const override
-    {
-      double am = sef_spell_t::action_multiplier();
-
-      if ( o()->buff.chi_energy->up() )
-        am += 1 + o()->buff.chi_energy->stack_value();
-
-      return am;
     }
   };
 
