@@ -972,7 +972,7 @@ void volatile_solvent( special_effect_t& effect )
                   ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
                   ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
                   ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-                  ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT );
+                  ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
         }
         break;
 
@@ -992,7 +992,8 @@ void volatile_solvent( special_effect_t& effect )
         {
           buff = make_buff( effect.player, "volatile_solvent_elemental", effect.player->find_spell( 323504 ) )
                   ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
-                  ->set_schools_from_effect( 1 );
+                  ->set_schools_from_effect( 1 )
+                  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
         }
         effect.player->buffs.volatile_solvent_damage = buff;
         break;
@@ -1003,7 +1004,8 @@ void volatile_solvent( special_effect_t& effect )
         {
           buff = make_buff( effect.player, "volatile_solvent_giant", effect.player->find_spell( 323506 ) )
                   ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
-                  ->set_schools_from_effect( 2 );
+                  ->set_schools_from_effect( 2 )
+                  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
         }
         effect.player->buffs.volatile_solvent_damage = buff;
         break;
