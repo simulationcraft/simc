@@ -1295,7 +1295,7 @@ void infinitely_divisible_ooze( special_effect_t& effect )
  * - illusion: ??? (not tested yet, priority unknown)
  * - execute damage: Deal damage to the target if it is an enemy with less than 20% health remaining.
  *                   The 20% is not in spell data and this also always crits.
- * - healer mana: triggers on a nearby healer with less than 20% mana. Higher priority than secondary
+ * - healer mana: Triggers on a nearby healer with less than 20% mana. Higher priority than secondary
  *                stat buffs, but priority relative to other effects not tested.
  * - secondary stat buffs:
  *   - The secondary stat granted appears to be randomly selected from stat from the player's two highest
@@ -1380,7 +1380,7 @@ void inscrutable_quantum_device ( special_effect_t& effect )
     {
       proc_spell_t::execute();
 
-      if ( target->health_percentage() <= 20 && !player->sim->shadowlands_opts.disable_iqd_execute)
+      if ( target->health_percentage() <= 20 && !player->sim->shadowlands_opts.disable_iqd_execute )
       {
         execute_damage->set_target( target );
         execute_damage->execute();
@@ -1396,7 +1396,7 @@ void inscrutable_quantum_device ( special_effect_t& effect )
 
         if ( is_buff_extended() )
         {
-          buff = buffs[s1];
+          buff = buffs[ s1 ];
           duration_adjustment = 5_s;
         }
         else

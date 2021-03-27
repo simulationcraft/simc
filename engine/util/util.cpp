@@ -278,7 +278,6 @@ double util::stat_value( const player_t* p, stat_e stat )
   {
     if ( is_combat_rating( stat ) )
     {
-      p->sim->print_debug( "stat_value: subtracting {} from {} for {}", p->sim->scaling->scale_value * p->composite_rating_multiplier( stat_to_rating( stat ) ), v, stat_type_string( stat ) );
       v -= p->sim->scaling->scale_value *
         p->composite_rating_multiplier( stat_to_rating( stat ) );
     }
