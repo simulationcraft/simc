@@ -109,8 +109,13 @@ void shadow( player_t* p )
   trinkets->add_action(
       "use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|cooldown.void_eruption.remains>27",
       "Use on CD ASAP to get DoT ticking and expire to line up better with Voidform" );
-  trinkets->add_action( "use_item,name=inscrutable_quantum_device,if=cooldown.void_eruption.remains>10",
-                        "Sync IQD with Voidform" );
+  trinkets->add_action(
+      "use_item,name=inscrutable_quantum_device,if=buff.voidform.up&buff.power_infusion.up|fight_remains<=20|buff."
+      "power_infusion.up&cooldown.void_eruption.remains+15>fight_remains|buff.voidform.up&cooldown.power_infusion."
+      "remains+15>fight_remains|(cooldown.power_infusion.remains>=10&cooldown.void_eruption.remains>=10)&fight_remains>"
+      "=190",
+      "Try to Sync IQD with Double Stacked CDs if possible. On longer fights with more IQD uses attempt to sync with "
+      "any cd or just use it." );
   trinkets->add_action( "use_item,name=macabre_sheet_music,if=cooldown.void_eruption.remains>10",
                         "Sync Sheet Music with Voidform" );
   trinkets->add_action(
