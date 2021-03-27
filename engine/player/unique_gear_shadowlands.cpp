@@ -1405,9 +1405,9 @@ void inscrutable_quantum_device ( special_effect_t& effect )
             return;
           for ( auto s : ratings )
           {
-            auto v = player->get_stat_value( s );
-            if ( ( s2 == STAT_NONE || v > player->get_stat_value( s2 ) ) &&
-                 ( ( player->bugs && v < player->get_stat_value( s1 ) ) || ( !player->bugs && s != s1 ) ) )
+            auto v = util::stat_value( player, s );
+            if ( ( s2 == STAT_NONE || v > util::stat_value( player, s2 ) ) &&
+                 ( ( player->bugs && v < util::stat_value( player, s1 ) ) || ( !player->bugs && s != s1 ) ) )
               s2 = s;
           }
           buff = rng().roll( 0.5 ) ? buffs[ s1 ] : buffs[ s2 ];
