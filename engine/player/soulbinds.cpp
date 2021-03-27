@@ -274,6 +274,7 @@ void grove_invigoration( special_effect_t& effect )
   }
 
   effect.player->buffs.redirected_anima = buff;
+  effect.custom_buff = buff;
 
   new dbc_proc_callback_t( effect.player, effect );
 
