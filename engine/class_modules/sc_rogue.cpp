@@ -6635,8 +6635,8 @@ void rogue_t::init_action_list()
 
     // Damage over time abilities
     action_priority_list_t* dot = get_action_priority_list( "dot", "Damage over time abilities" );
-    dot->add_action( "variable,name=skip_cycle_garrote,value=priority_rotation&spell_targets.fan_of_knives>3&(dot.garrote.remains<cooldown.garrote.duration|poisoned_bleeds>5)", "Limit Garrotes on non-primrary targets for the priority rotation if 5+ bleeds are already up" );
-    dot->add_action( "variable,name=skip_cycle_rupture,value=priority_rotation&spell_targets.fan_of_knives>3&(debuff.shiv.up|poisoned_bleeds>5)", "Limit Ruptures on non-primrary targets for the priority rotation if 5+ bleeds are already up" );
+    dot->add_action( "variable,name=skip_cycle_garrote,value=priority_rotation&spell_targets.fan_of_knives>3&(dot.garrote.remains<cooldown.garrote.duration|energy.regen_combined>35)", "Limit Garrotes on non-primrary targets for the priority rotation if we have 35 energy total regen" );
+    dot->add_action( "variable,name=skip_cycle_rupture,value=priority_rotation&spell_targets.fan_of_knives>3&(debuff.shiv.up|energy.regen_combined>35)", "Limit Ruptures on non-primrary targets for the priority rotation if we have 35 energy total regen" );
     dot->add_action( "variable,name=skip_rupture,value=debuff.vendetta.up&(debuff.shiv.up|master_assassin_remains>0)&dot.rupture.remains>2", "Limit Ruptures if Vendetta+Shiv/Master Assassin is up and we have 2+ seconds left on the Rupture DoT" );
     dot->add_action( this, "Garrote", "if=talent.exsanguinate.enabled&!exsanguinated.garrote&dot.garrote.pmultiplier<=1&cooldown.exsanguinate.remains<2&spell_targets.fan_of_knives=1&raid_event.adds.in>6&dot.garrote.remains*0.5<target.time_to_die", "Special Garrote and Rupture setup prior to Exsanguinate cast" );
     dot->add_action( this, "Rupture", "if=talent.exsanguinate.enabled&(effective_combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&dot.rupture.remains*0.5<target.time_to_die)" );
@@ -7263,10 +7263,13 @@ std::unique_ptr<expr_t> rogue_t::create_resource_expression( util::string_view n
   {
     // Custom Rogue Energy Regen Functions
     // Handles things that are outside of the normal resource_regen_per_second flow
-    if ( splits.size() == 2 && ( splits[ 1 ] == "regen" || splits[ 1 ] == "time_to_max" ) )
+    if ( splits.size() == 2 && ( splits[ 1 ] == "regen" || splits[ 1 ] == "regen_combined" ||
+                                 splits[ 1 ] == "time_to_max" || splits[ 1 ] == "time_to_max_combined" ) )
     {
-      const bool regen = ( splits[ 1 ] == "regen" );
-      return make_fn_expr( name_str, [ this, regen ] {
+      bool regen = splits[ 1 ] == "regen" || splits[ 1 ] == "regen_predicted";
+      bool combined = splits[ 1 ] == "regen_combined" || splits[ 1 ] == "time_to_max_combined";
+
+      return make_fn_expr( name_str, [ this, regen, combined ] {
         const double energy_deficit = resources.max[ RESOURCE_ENERGY ] - resources.current[ RESOURCE_ENERGY ];
         double energy_regen_per_second = resource_regen_per_second( RESOURCE_ENERGY );
 
@@ -7283,7 +7286,38 @@ std::unique_ptr<expr_t> rogue_t::create_resource_expression( util::string_view n
           energy_regen_per_second += ( buffs.blade_rush->data().effectN( 1 ).base_value() / buffs.blade_rush->buff_period.total_seconds() );
         }
 
-        // TODO - Add support for Venomous Vim, Master of Shadows, and potentially also estimated Combat Potency, ShT etc.
+        // Combined non-traditional or inconsistent regen sources
+        if ( combined )
+        {
+          if ( specialization() == ROGUE_ASSASSINATION )
+          {
+            int poisoned_bleeds = 0;
+            int lethal_poisons = 0;
+            for ( auto p : sim->target_non_sleeping_list )
+            {
+              rogue_td_t* tdata = get_target_data( p );
+              if ( tdata->is_lethal_poisoned() )
+              {
+                lethal_poisons++;
+                poisoned_bleeds += tdata->dots.garrote->is_ticking() +
+                  tdata->dots.internal_bleeding->is_ticking() +
+                  tdata->dots.rupture->is_ticking();
+              }
+            }
+
+            // Venomous Wounds -- TODO: Investigate if we should consider Exsanguinated tick rates
+            const double dot_tick_rate = 2.0 * composite_spell_haste();
+            energy_regen_per_second += ( poisoned_bleeds * spec.venomous_wounds->effectN( 2 ).base_value() ) / dot_tick_rate;
+
+            // Dashing Scoundrel -- Estimate ~90% Envenom uptime for energy regen approximation
+            if ( legendary.dashing_scoundrel->ok() )
+            {
+              energy_regen_per_second += ( 0.9 * lethal_poisons * active.lethal_poison->composite_crit_chance() * legendary.dashing_scoundrel_gain ) / dot_tick_rate;
+            }
+          }
+        }
+
+        // TODO - Add support for Master of Shadows, and potentially also estimated Combat Potency, ShT etc.
         //        Also consider if buffs such as Adrenaline Rush should be prorated based on duration for time_to_max
 
         return regen ? energy_regen_per_second : energy_deficit / energy_regen_per_second;
