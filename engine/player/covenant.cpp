@@ -241,8 +241,25 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
 
       if ( soulbind_entry->spell_id == 0 )
       {
-        sim->error( "{} unknown soulbind spell id {}", m_player->name(), entry );
-        return false;
+        switch( soulbind_spell_id ) {
+          case 344052u:
+          case 344053u:
+          case 344057u:
+          case 344068u:
+          case 344069u:
+          case 344070u:
+          case 344076u:
+          case 344077u:
+          case 344078u:
+          case 344087u:
+          case 344089u:
+          case 344091u:
+            m_soulbinds.push_back( soulbind_spell_id );
+            continue;
+          default:
+            sim->error( "{} unknown soulbind spell id {}", m_player->name(), entry );
+            return false;
+        }
       }
 
       m_soulbinds.push_back( soulbind_entry->spell_id );
