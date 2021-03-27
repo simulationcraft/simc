@@ -1246,6 +1246,10 @@ class SpellDataGenerator(DataGenerator):
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
          332525, 341163, 341165, 332526, # Bron's Call to Action (kyrian/mikanikos)
          323491, 323498, 323502, 323504, 323506, # Volatile Solvent's different buff variations
+         344052, 344053, 344057, # Night Fae Stamina Passives
+         344068, 344069, 344070, # Venthyr Stamina Passives
+         344076, 344077, 344078, # Necrolord Stamina Passives
+         344087, 344089, 344091, # Kyrian Stamina Passives
          # Cabalists Hymnal
          344820,
          # Empyreal Ordnance
