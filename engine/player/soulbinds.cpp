@@ -1230,6 +1230,20 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
   new marrowed_gemstone_cb_t( effect, buff );
 }
 
+// Passive which increases Stamina based on Renown level
+void stamina_passive( special_effect_t& effect )
+{
+  const auto spell = effect.driver();
+
+  if ( effect.player->sim->debug )
+  {
+    effect.player->sim->out_debug.print( "{} increasing stamina by {}% ({})",
+        effect.player->name(), spell->effectN( 1 ).base_value(), spell->name_cstr() );
+  }
+
+  effect.player->base.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spell->effectN( 1 ).percent();
+}
+
 // Helper function for registering an effect, with autoamtic skipping initialization if soulbind spell is not available
 void register_soulbind_special_effect( unsigned spell_id, const custom_cb_t& init_callback, bool fallback = false )
 {
@@ -1275,6 +1289,19 @@ void register_special_effects()
   register_soulbind_special_effect( 326514, soulbinds::forgeborne_reveries );  // Heirmir
   register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone, true );
+  // Covenant Renown Stamina Passives
+  register_soulbind_special_effect( 344052, soulbinds::stamina_passive ); // Night Fae Rank 1
+  register_soulbind_special_effect( 344053, soulbinds::stamina_passive ); // Night Fae Rank 2
+  register_soulbind_special_effect( 344057, soulbinds::stamina_passive ); // Night Fae Rank 3
+  register_soulbind_special_effect( 344068, soulbinds::stamina_passive ); // Venthyr Rank 1
+  register_soulbind_special_effect( 344069, soulbinds::stamina_passive ); // Venthyr Rank 2
+  register_soulbind_special_effect( 344070, soulbinds::stamina_passive ); // Venthyr Rank 3
+  register_soulbind_special_effect( 344076, soulbinds::stamina_passive ); // Necrolord Rank 1
+  register_soulbind_special_effect( 344077, soulbinds::stamina_passive ); // Necrolord Rank 2
+  register_soulbind_special_effect( 344078, soulbinds::stamina_passive ); // Necrolord Rank 3
+  register_soulbind_special_effect( 344087, soulbinds::stamina_passive ); // Kyrian Rank 1
+  register_soulbind_special_effect( 344089, soulbinds::stamina_passive ); // Kyrian Rank 2
+  register_soulbind_special_effect( 344091, soulbinds::stamina_passive ); // Kyrian Rank 3
 }
 
 void initialize_soulbinds( player_t* player )
