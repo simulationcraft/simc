@@ -210,7 +210,6 @@ void survival( player_t* p )
   action_priority_list_t* st        = p -> get_action_priority_list( "st" );
   action_priority_list_t* apst      = p -> get_action_priority_list( "apst" );
   action_priority_list_t* bop       = p -> get_action_priority_list( "bop" );
-  action_priority_list_t* apbop     = p -> get_action_priority_list( "apbop" );
   action_priority_list_t* cleave    = p -> get_action_priority_list( "cleave" );
 
   precombat -> add_action( "flask" );
