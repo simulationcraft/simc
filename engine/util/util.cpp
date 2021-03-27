@@ -192,55 +192,6 @@ bool is_proc_description( const std::string& description_str )
   return false;
 }
 
-double stat_value( const player_t* p, stat_e stat )
-{
-  double v = 0;
-  switch ( stat )
-  {
-    case STAT_CRIT_RATING:
-      v = p->composite_melee_crit_rating();
-      break;
-    case STAT_HASTE_RATING:
-      v = p->composite_melee_haste_rating();
-      break;
-    case STAT_MASTERY_RATING:
-      v = p->composite_mastery_rating();
-      break;
-    case STAT_VERSATILITY_RATING:
-      v = p->composite_damage_versatility_rating();
-      break;
-    default:
-      break;
-  }
-
-  // Ignore scale factor contributions when determining highest stat
-  if ( p->sim->scaling->scale_stat == stat )
-  {
-    if ( util::is_combat_rating( stat ) )
-    {
-      v -= p->sim->scaling->scale_value *
-        p->composite_rating_multiplier( util::stat_to_rating( stat ) );
-    }
-    else if ( util::is_primary_stat( stat ) )
-    {
-      // stat_e and attribute_e match on primary stats
-      v -= p->sim->scaling->scale_value *
-        p->composite_attribute_multiplier( static_cast<attribute_e>( stat ) );
-    }
-    else if ( stat == STAT_SPELL_POWER )
-    {
-      v -= p->sim->scaling->scale_value * p->composite_spell_power_multiplier();
-    }
-    else if ( stat == STAT_ATTACK_POWER )
-    {
-      v -= p->sim->scaling->scale_value * p->composite_attack_power_multiplier();
-    }
-  }
-
-  return v;
-}
-
-
 template <typename T, typename Converter>
 T convert_string_to_number( Converter converter, const std::string& str, util::string_view type_name )
 {
@@ -296,6 +247,58 @@ std::string util::version_info_str( const dbc_t* dbc )
       SC_VERSION, dbc::client_data_version_str( dbc->ptr ),
       dbc->wow_ptr_status(),
       build_info );
+}
+
+double util::stat_value( const player_t* p, stat_e stat )
+{
+  double v = 0;
+  switch ( stat )
+  {
+    case STAT_CRIT_RATING:
+      v = p->composite_melee_crit_rating();
+      break;
+    case STAT_HASTE_RATING:
+      v = p->composite_melee_haste_rating();
+      break;
+    case STAT_MASTERY_RATING:
+      v = p->composite_mastery_rating();
+      break;
+    case STAT_VERSATILITY_RATING:
+      v = p->composite_damage_versatility_rating();
+      break;
+    default:
+      break;
+  }
+
+  // Ignore scale factor contributions when determining highest stat
+  // because scale factors are meant to approximate a derivative at the
+  // current stat value. We don't want effects that depend on the amount
+  // of secondary stat to change their behavior due to the scale factors.
+  if ( p->sim->scaling->scale_stat == stat )
+  {
+    if ( is_combat_rating( stat ) )
+    {
+      p->sim->print_debug( "stat_value: subtracting {} from {} for {}", p->sim->scaling->scale_value * p->composite_rating_multiplier( stat_to_rating( stat ) ), v, stat_type_string( stat ) );
+      v -= p->sim->scaling->scale_value *
+        p->composite_rating_multiplier( stat_to_rating( stat ) );
+    }
+    else if ( is_primary_stat( stat ) )
+    {
+      // stat_e and attribute_e match on primary stats
+      v -= p->sim->scaling->scale_value *
+        p->composite_attribute_multiplier( static_cast<attribute_e>( stat ) );
+    }
+    else if ( stat == STAT_SPELL_POWER )
+    {
+      v -= p->sim->scaling->scale_value * p->composite_spell_power_multiplier();
+    }
+    else if ( stat == STAT_ATTACK_POWER )
+    {
+      v -= p->sim->scaling->scale_value * p->composite_attack_power_multiplier();
+    }
+  }
+
+  return v;
 }
 
 // Note, does not take into account that technically players could have different amounts of
@@ -3332,7 +3335,7 @@ bool is_horde( race_e race )
   }
 }
 
-// Approximation of square root 
+// Approximation of square root
 // Used in calculation of distances instead of std::sqrt as it is significantly
 // faster and also returns similar values
 double approx_sqrt( double arg )
