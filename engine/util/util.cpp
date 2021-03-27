@@ -213,30 +213,6 @@ double stat_value( const player_t* p, stat_e stat )
       break;
   }
 
-  // Ignore scale factor contributions when determining highest stat
-  if ( p->sim->scaling->scale_stat == stat )
-  {
-    if ( util::is_combat_rating( stat ) )
-    {
-      v -= p->sim->scaling->scale_value *
-        p->composite_rating_multiplier( util::stat_to_rating( stat ) );
-    }
-    else if ( util::is_primary_stat( stat ) )
-    {
-      // stat_e and attribute_e match on primary stats
-      v -= p->sim->scaling->scale_value *
-        p->composite_attribute_multiplier( static_cast<attribute_e>( stat ) );
-    }
-    else if ( stat == STAT_SPELL_POWER )
-    {
-      v -= p->sim->scaling->scale_value * p->composite_spell_power_multiplier();
-    }
-    else if ( stat == STAT_ATTACK_POWER )
-    {
-      v -= p->sim->scaling->scale_value * p->composite_attack_power_multiplier();
-    }
-  }
-
   return v;
 }
 
@@ -3332,7 +3308,7 @@ bool is_horde( race_e race )
   }
 }
 
-// Approximation of square root 
+// Approximation of square root
 // Used in calculation of distances instead of std::sqrt as it is significantly
 // faster and also returns similar values
 double approx_sqrt( double arg )
