@@ -1538,6 +1538,7 @@ class SpellDataGenerator(DataGenerator):
           ( 286976, 0 ),                                # Tectonic Thunder Azerite Trait buff
           ( 327164, 0 ),                                # Primordial Wave buff
           ( 336732, 0 ), ( 336733, 0 ),                 # Legendary: Elemental Equilibrium school buffs
+	  ( 336737, 0 ),                                # Runeforged Legendary: Chains of Devastation
         ),
 
         # Mage:
