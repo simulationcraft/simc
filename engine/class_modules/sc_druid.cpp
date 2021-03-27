@@ -5546,8 +5546,10 @@ struct incarnation_t : public druid_spell_t
 
 struct heart_of_the_wild_t : public druid_spell_t
 {
+  form_e form;
+
   heart_of_the_wild_t( druid_t* p, util::string_view options_str )
-    : druid_spell_t( "heart_of_the_wild", p, p->talent.heart_of_the_wild, options_str )
+    : druid_spell_t( "heart_of_the_wild", p, p->talent.heart_of_the_wild, options_str ), form( NO_FORM )
   {
     harmful = may_crit = may_miss = false;
 
@@ -5556,6 +5558,14 @@ struct heart_of_the_wild_t : public druid_spell_t
     // Although the effect is coded as modify cooldown time (341) which takes a flat value in milliseconds, the actual
     // effect in-game works as a percent reduction.
     cooldown->duration *= 1.0 + p->conduit.born_of_the_wilds.percent();
+
+    // casting hotw will auto shift into the corresponding affinity form
+    if ( p->talent.balance_affinity->ok() )
+      form = MOONKIN_FORM;
+    else if ( p->talent.feral_affinity->ok() )
+      form = CAT_FORM;
+    else if ( p->talent.guardian_affinity->ok() )
+      form = BEAR_FORM;
   }
 
   void execute() override
@@ -5563,12 +5573,9 @@ struct heart_of_the_wild_t : public druid_spell_t
     druid_spell_t::execute();
 
     p()->buff.heart_of_the_wild->trigger();
-    if ( p()->talent.balance_affinity->ok() )
-      p()->shapeshift( MOONKIN_FORM );
-    else if ( p()->talent.feral_affinity->ok() )
-      p()->shapeshift( CAT_FORM );
-    else if ( p()->talent.guardian_affinity->ok() )
-      p()->shapeshift( BEAR_FORM );
+
+    if ( form != NO_FORM )  // resto affinity hotw does not auto shift
+      p()->shapeshift( form );
   }
 };
 
