@@ -7266,8 +7266,8 @@ std::unique_ptr<expr_t> rogue_t::create_resource_expression( util::string_view n
     if ( splits.size() == 2 && ( splits[ 1 ] == "regen" || splits[ 1 ] == "regen_combined" ||
                                  splits[ 1 ] == "time_to_max" || splits[ 1 ] == "time_to_max_combined" ) )
     {
-      bool regen = splits[ 1 ] == "regen" || splits[ 1 ] == "regen_predicted";
-      bool combined = splits[ 1 ] == "regen_combined" || splits[ 1 ] == "time_to_max_combined";
+      bool regen = ( splits[ 1 ] == "regen" || splits[ 1 ] == "regen_combined" );
+      bool combined = ( splits[ 1 ] == "regen_combined" || splits[ 1 ] == "time_to_max_combined" );
 
       return make_fn_expr( name_str, [ this, regen, combined ] {
         const double energy_deficit = resources.max[ RESOURCE_ENERGY ] - resources.current[ RESOURCE_ENERGY ];
