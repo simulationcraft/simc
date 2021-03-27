@@ -3704,8 +3704,7 @@ struct rake_t : public cat_attack_t
 
   bool stealthed() const override
   {
-    return p()->buff.berserk_cat->up() || p()->buff.incarnation_cat->up() || p()->buff.sudden_ambush->up() ||
-           cat_attack_t::stealthed();
+    return p()->buff.berserk_cat->up() || p()->buff.incarnation_cat->up() || cat_attack_t::stealthed();
   }
 
   dot_t* get_dot( player_t* t ) override
@@ -3720,7 +3719,7 @@ struct rake_t : public cat_attack_t
   {
     double pm = cat_attack_t::composite_persistent_multiplier( s );
 
-    if ( stealth_mul && stealthed() )
+    if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->up() ) )
       pm *= 1.0 + stealth_mul;
 
     return pm;
@@ -3749,11 +3748,12 @@ struct rake_t : public cat_attack_t
     cat_attack_t::execute();
 
     if ( hit_any_target )
+    {
       p()->buff.bt_rake->trigger();
-
-    // TODO: check if consumed on miss
-    if ( p()->buff.sudden_ambush->up() )
-      p()->buff.sudden_ambush->decrement();
+      
+      if ( p()->buff.sudden_ambush->up() && !stealthed() )
+      	p()->buff.sudden_ambush->decrement();
+    }
   }
 };
 
@@ -3979,15 +3979,14 @@ struct shred_t : public cat_attack_t
 
   bool stealthed() const override
   {
-    return p()->buff.berserk_cat->up() || p()->buff.incarnation_cat->up() || p()->buff.sudden_ambush->up() ||
-           cat_attack_t::stealthed();
+    return p()->buff.berserk_cat->up() || p()->buff.incarnation_cat->up() || cat_attack_t::stealthed();
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
   {
     double e = cat_attack_t::composite_energize_amount( s );
 
-    if ( stealth_cp && stealthed() )
+    if ( stealth_cp && ( stealthed() || p()->buff.sudden_ambush->up() ) )
       e += stealth_cp;
 
     return e;
@@ -3998,11 +3997,12 @@ struct shred_t : public cat_attack_t
     cat_attack_t::execute();
 
     if ( hit_any_target )
+    {
       p()->buff.bt_shred->trigger();
 
-    // TODO: Check if consumed on miss
-    if ( p()->buff.sudden_ambush->up() )
-      p()->buff.sudden_ambush->decrement();
+      if ( p()->buff.sudden_ambush->up() && !stealthed() )
+        p()->buff.sudden_ambush->decrement();
+    }
   }
 
   double composite_crit_chance_multiplier() const override
@@ -4019,7 +4019,7 @@ struct shred_t : public cat_attack_t
   {
     double m = cat_attack_t::action_multiplier();
 
-    if ( stealth_mul && stealthed() )
+    if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->up() ) )
       m *= 1.0 + stealth_mul;
 
     return m;
