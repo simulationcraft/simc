@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.5.37988
-static const std::array<spelltext_data_t, 15112> __spelltext_data { {
+static const std::array<spelltext_data_t, 15125> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14090,6 +14090,7 @@ static const std::array<spelltext_data_t, 15112> __spelltext_data { {
   { 336734, "Flame Shock damage over time critical strikes reduce the cooldown of $?s192249[Storm Elemental][Fire Elemental] by $?s192249[${$m1/1000}.1][${$m2/1000}.1] sec, and Flame Shock has a $s3% increased critical strike chance.", 0, 0 },
   { 336735, "Casting Chain Heal makes your next Chain Lightning instant cast$?$c1|c2[ and deal $336736s2% increased damage][]. Casting Chain Lightning makes your next Chain Heal instant cast$?$c1|c2[ and consume no mana][].", 0, 0 },
   { 336736, "$@spelldesc336735", "Your next Chain Lightning will be instant cast$?$c1|c2[ and deal $s2% increased damage][].", 0 },
+  { 336737, "$@spelldesc336735", "Your next Chain Heal will be instant cast$?c1|c2[ and consume no mana][].", 0 },
   { 336738, "$?a137041[Using][Casting] $?a137039[Riptide]?a137040[Lava Burst][Stormstrike] has a $?a137039[$s4]?a137040[$s2][$s3]% chance to activate Ascendance for ${$m1/1000}.1 sec.", 0, 0 },
   { 336739, "Earth Elemental has a permanent Earthquake attached to it.", 0, 0 },
   { 336741, "$?s32182[Heroism][Bloodlust] or any similar effects last an additional ${$m1/1000}.1 sec on you, and you gain an extra $s2% Haste from any $?s32182[Heroism][Bloodlust] type effect.", 0, 0 },
@@ -14239,7 +14240,7 @@ static const std::array<spelltext_data_t, 15112> __spelltext_data { {
   { 337532, "Metamorphosis increases your size, movement speed, and melee range by $326486s1%.", "Metamorphosis increases your size, movement speed, and melee range by $326486s1%.", 0 },
   { 337534, "$?a212612[Eye Beam]?a212613[Fel Devastation][] has a $?a212612[$s1][$s2]% chance to not incur its cooldown and refund $?a212612[$350726s1][$350726s2] Fury.", "$?a212612[Eye Beam]?a212613[Fel Devastation][] has a $?a212612[$s1][$s2]% chance to not incur its cooldown and refund $?a212612[$350726s1][$350726s2] Fury.", 0 },
   { 337539, "You automatically trigger Darkness when you fall below $s1% health. This effect can only occur once every $331497d.", "You automatically trigger Darkness when you fall below $s1% health. This effect can only occur once every $331497d.", 0 },
-  { 337541, "Your Fiery Brand now heals you for $s1% of its initial damage done over $s337543d, and each enemy hit by your Sigil of Flame increases the instant damage of your next Fiery Brand by $337542s1%, stacking up to $337542u times.", 0, 0 },
+  { 337541, "Your Fiery Brand now heals you for $s1% of its initial damage done over $337543d, and each enemy hit by your Sigil of Flame increases the instant damage of your next Fiery Brand by $337542s1%, stacking up to $337542u times.", 0, 0 },
   { 337542, "$@spelldesc235524", "Increases the damage of your next Fiery Brand by $s1%.", 0 },
   { 337543, "$@spelldesc337541", 0, 0 },
   { 337544, "Soul Cleave reduces the remaining cooldown on a random Sigil by $s1 sec$?s306830|s327839[ or Elysian Decree by $s2 sec][].", 0, 0 },
@@ -14871,8 +14872,20 @@ static const std::array<spelltext_data_t, 15112> __spelltext_data { {
   { 343988, "$@spelldesc337678", 0, 0 },
   { 344008, "Wraps the target in healing mists, healing for $o1 over $d$?a231605[, and increasing healing received from your other spells by $m2%][].", "Heals $w1 every $t1 sec.\r\nHealing received from the Monk increased by $m2%.", 0 },
   { 344021, "$@spelldesc337334", "Chance to be critically hit by the Monk increased by $w1%.", 0 },
+  { 344052, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
+  { 344053, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
+  { 344057, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
   { 344063, "Your damaging abilities have a high chance to deal $344153s1 Physical damage, healing you for ${$s2*100}% of the damage dealt. If this effect overheals, deal ${$s1*5*(1+$@versadmg)} Physical damage split between nearby enemies over $344154d, but suppress the lifesteal effect.\r\n\r\nDamage increased per enemy struck, up to $s3 enemies.", 0, 0 },
   { 344067, "$@spelldesc273473", "Suffering $w1 Holy damage every $t1 sec.", 0 },
+  { 344068, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
+  { 344069, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
+  { 344070, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
+  { 344076, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
+  { 344077, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
+  { 344078, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
+  { 344087, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
+  { 344089, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
+  { 344091, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
   { 344117, "Your spells and abilities have a chance to grant you $344118s1 $pri for $344118d.", 0, 0 },
   { 344118, "$@spelldesc344117", "$pri increased by $w1.", 0 },
   { 344120, "$@spelldesc342049", 0, 0 },
@@ -15115,7 +15128,8 @@ static const std::array<spelltext_data_t, 15112> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.0.5.37988
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  337541,  0, "Your Fiery Brand now heals you for $s1% of its initial damage done over $s337543d, and each enemy hit by your Sigil of Flame increases the instant damage of your next Fiery Brand by $337542s1%, stacking up to $337542u times.", "Your Fiery Brand now heals you for $s1% of its initial damage done over $337543d, and each enemy hit by your Sigil of Flame increases the instant damage of your next Fiery Brand by $337542s1%, stacking up to $337542u times." },
 } };
 
 // Spell description variables, wow build 9.0.5.37988
