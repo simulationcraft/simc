@@ -241,6 +241,8 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
 
       if ( soulbind_entry->spell_id == 0 )
       {
+        // Covenant Renown Stamina passives aren't currently in any databases.
+        // TODO: Possibly add "renown=x" option and move this to that string
         switch( soulbind_spell_id ) {
           case 344052u:
           case 344053u:
