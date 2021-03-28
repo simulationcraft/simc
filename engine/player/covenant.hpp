@@ -26,7 +26,6 @@ struct sim_t;
 struct expr_t;
 struct spell_data_t;
 struct conduit_rank_entry_t;
-struct renown_reward_entry_t;
 
 enum class covenant_e : unsigned
 {

@@ -241,27 +241,8 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
 
       if ( soulbind_entry->spell_id == 0 )
       {
-        // Covenant Renown Stamina passives aren't currently in any databases.
-        // TODO: Possibly add "renown=x" option and move this to that string
-        switch( soulbind_spell_id ) {
-          case 344052u:
-          case 344053u:
-          case 344057u:
-          case 344068u:
-          case 344069u:
-          case 344070u:
-          case 344076u:
-          case 344077u:
-          case 344078u:
-          case 344087u:
-          case 344089u:
-          case 344091u:
-            m_soulbinds.push_back( soulbind_spell_id );
-            continue;
-          default:
-            sim->error( "{} unknown soulbind spell id {}", m_player->name(), entry );
-            return false;
-        }
+        sim->error( "{} unknown soulbind spell id {}", m_player->name(), entry );
+        return false;
       }
 
       m_soulbinds.push_back( soulbind_entry->spell_id );
@@ -289,8 +270,8 @@ bool covenant_state_t::parse_renown( sim_t*             sim,
   m_renown.clear();
 
   m_renown_level = util::to_unsigned( value );
-  std::unordered_map<const char*, unsigned> renown_levels;
-  std::unordered_map<const char*, unsigned> renown_spells;
+  std::unordered_map<std::string, unsigned> renown_levels;
+  std::unordered_map<std::string, unsigned> renown_spells;
 
   for ( auto& entry : renown_reward_entry_t::find_by_covenant_id( id(), m_player->dbc->ptr ) )
   {
