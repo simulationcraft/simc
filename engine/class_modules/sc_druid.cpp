@@ -3724,6 +3724,16 @@ struct rake_t : public cat_attack_t
 
     return pm;
   }
+  
+  double action_multiplier() const override
+  {
+    double am = cat_attack_t::action_multiplier();
+
+    if (p()->legendary.draught_of_deep_focus->ok() && p()->get_active_dots(bleed->internal_id) == 1)
+      am *= 1.0 + p()->legendary.draught_of_deep_focus->effectN(1).percent();
+
+    return am;
+  }
 
   void impact( action_state_t* s ) override
   {
