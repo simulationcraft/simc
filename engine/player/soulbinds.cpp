@@ -1290,18 +1290,18 @@ void register_special_effects()
   register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone, true );
   // Covenant Renown Stamina Passives
-  register_soulbind_special_effect( 344052, soulbinds::stamina_passive ); // Night Fae Rank 1
-  register_soulbind_special_effect( 344053, soulbinds::stamina_passive ); // Night Fae Rank 2
-  register_soulbind_special_effect( 344057, soulbinds::stamina_passive ); // Night Fae Rank 3
-  register_soulbind_special_effect( 344068, soulbinds::stamina_passive ); // Venthyr Rank 1
-  register_soulbind_special_effect( 344069, soulbinds::stamina_passive ); // Venthyr Rank 2
-  register_soulbind_special_effect( 344070, soulbinds::stamina_passive ); // Venthyr Rank 3
-  register_soulbind_special_effect( 344076, soulbinds::stamina_passive ); // Necrolord Rank 1
-  register_soulbind_special_effect( 344077, soulbinds::stamina_passive ); // Necrolord Rank 2
-  register_soulbind_special_effect( 344078, soulbinds::stamina_passive ); // Necrolord Rank 3
-  register_soulbind_special_effect( 344087, soulbinds::stamina_passive ); // Kyrian Rank 1
-  register_soulbind_special_effect( 344089, soulbinds::stamina_passive ); // Kyrian Rank 2
-  register_soulbind_special_effect( 344091, soulbinds::stamina_passive ); // Kyrian Rank 3
+  unique_gear::register_special_effect( 344052, soulbinds::stamina_passive ); // Night Fae Rank 1
+  unique_gear::register_special_effect( 344053, soulbinds::stamina_passive ); // Night Fae Rank 2
+  unique_gear::register_special_effect( 344057, soulbinds::stamina_passive ); // Night Fae Rank 3
+  unique_gear::register_special_effect( 344068, soulbinds::stamina_passive ); // Venthyr Rank 1
+  unique_gear::register_special_effect( 344069, soulbinds::stamina_passive ); // Venthyr Rank 2
+  unique_gear::register_special_effect( 344070, soulbinds::stamina_passive ); // Venthyr Rank 3
+  unique_gear::register_special_effect( 344076, soulbinds::stamina_passive ); // Necrolord Rank 1
+  unique_gear::register_special_effect( 344077, soulbinds::stamina_passive ); // Necrolord Rank 2
+  unique_gear::register_special_effect( 344078, soulbinds::stamina_passive ); // Necrolord Rank 3
+  unique_gear::register_special_effect( 344087, soulbinds::stamina_passive ); // Kyrian Rank 1
+  unique_gear::register_special_effect( 344089, soulbinds::stamina_passive ); // Kyrian Rank 2
+  unique_gear::register_special_effect( 344091, soulbinds::stamina_passive ); // Kyrian Rank 3
 }
 
 void initialize_soulbinds( player_t* player )
@@ -1312,6 +1312,7 @@ void initialize_soulbinds( player_t* player )
   for ( auto soulbind_spell : player->covenant->soulbind_spells() )
   {
     auto spell = player->find_spell( soulbind_spell );
+
     if ( !spell->ok() )
       continue;
 
