@@ -4592,3 +4592,19 @@ static const std::array<conduit_rank_entry_t, 4110> __conduit_rank_data { {
   { 282, 14, 346747, 2400.000000 },
 } };
 
+// Renown reward abilities, wow build 9.0.5.37988
+static const std::array<renown_reward_entry_t, 12> __renown_reward_ability_data { {
+  { 1,   2, 344087, "Deepening Bond"                     },
+  { 1,  19, 344089, "Deepening Bond"                     },
+  { 1,  35, 344091, "Deepening Bond"                     },
+  { 2,   2, 344068, "Deepening Bond"                     },
+  { 2,  19, 344069, "Deepening Bond"                     },
+  { 2,  35, 344070, "Deepening Bond"                     },
+  { 3,   2, 344052, "Deepening Bond"                     },
+  { 3,  19, 344053, "Deepening Bond"                     },
+  { 3,  35, 344057, "Deepening Bond"                     },
+  { 4,   2, 344076, "Deepening Bond"                     },
+  { 4,  19, 344077, "Deepening Bond"                     },
+  { 4,  35, 344078, "Deepening Bond"                     },
+} };
+
