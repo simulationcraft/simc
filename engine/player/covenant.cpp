@@ -110,7 +110,7 @@ std::unique_ptr<covenant_state_t> create_player_state( const player_t* player )
 }
 
 covenant_state_t::covenant_state_t( const player_t* player )
-  : m_covenant( covenant_e::INVALID ), m_player( player ), cast_callback( nullptr )
+  : m_covenant( covenant_e::INVALID ), m_player( player ), m_renown_level(), cast_callback( nullptr )
 {
 }
 
@@ -280,6 +280,35 @@ bool covenant_state_t::parse_soulbind_clear( sim_t* sim, util::string_view name,
   m_soulbind_str.clear();
 
   return parse_soulbind( sim, name, value );
+}
+
+bool covenant_state_t::parse_renown( sim_t*             sim,
+                                     util::string_view /* name */,
+                                     util::string_view value )
+{
+  m_renown.clear();
+
+  m_renown_level = util::to_unsigned( value );
+  std::unordered_map<const char*, unsigned> renown_levels;
+  std::unordered_map<const char*, unsigned> renown_spells;
+
+  for ( auto& entry : renown_reward_entry_t::find_by_covenant_id( id(), m_player->dbc->ptr ) )
+  {
+    if ( renown() < entry.renown_level )
+      continue;
+
+    auto it = renown_levels.find( entry.name );
+    if ( it != renown_levels.end() && it->second > entry.renown_level )
+      continue;
+
+    renown_levels[ entry.name ] = entry.renown_level;
+    renown_spells[ entry.name ] = entry.spell_id;
+  }
+
+  for ( auto spell : renown_spells )
+    m_renown.push_back( spell.second );
+
+  return true;
 }
 
 const spell_data_t* covenant_state_t::get_covenant_ability( util::string_view name ) const
@@ -498,9 +527,11 @@ void covenant_state_t::copy_state( const std::unique_ptr<covenant_state_t>& othe
   m_covenant = other->m_covenant;
   m_conduits = other->m_conduits;
   m_soulbinds = other->m_soulbinds;
+  m_renown = other->m_renown;
 
   m_soulbind_str = other->m_soulbind_str;
   m_covenant_str = other->m_covenant_str;
+  m_renown_level = other->m_renown_level;
 }
 
 void covenant_state_t::register_options( player_t* player )
@@ -510,6 +541,8 @@ void covenant_state_t::register_options( player_t* player )
   player->add_option( opt_func( "soulbind+", std::bind( &covenant_state_t::parse_soulbind,
           this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
   player->add_option( opt_func( "covenant", std::bind( &covenant_state_t::parse_covenant,
+          this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
+  player->add_option( opt_func( "renown", std::bind( &covenant_state_t::parse_renown,
           this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
 }
 

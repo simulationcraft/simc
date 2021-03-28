@@ -266,10 +266,10 @@ void grove_invigoration( special_effect_t& effect )
   auto buff = buff_t::find( effect.player, "redirected_anima" );
 
   if ( !buff )
-  {  
+  {
     buff = make_buff<stat_buff_t>( effect.player, "redirected_anima", effect.player->find_spell( 342814 ) )
              ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-             ->set_stack_change_callback( [ effect ] ( buff_t*, int old, int cur) 
+             ->set_stack_change_callback( [ effect ] ( buff_t*, int old, int cur )
                { effect.player->recalculate_resource_max( RESOURCE_HEALTH ); } );
   }
 
@@ -1231,7 +1231,7 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
 }
 
 // Passive which increases Stamina based on Renown level
-void stamina_passive( special_effect_t& effect )
+void deepening_bond( special_effect_t& effect )
 {
   const auto spell = effect.driver();
 
@@ -1290,18 +1290,18 @@ void register_special_effects()
   register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone, true );
   // Covenant Renown Stamina Passives
-  unique_gear::register_special_effect( 344052, soulbinds::stamina_passive ); // Night Fae Rank 1
-  unique_gear::register_special_effect( 344053, soulbinds::stamina_passive ); // Night Fae Rank 2
-  unique_gear::register_special_effect( 344057, soulbinds::stamina_passive ); // Night Fae Rank 3
-  unique_gear::register_special_effect( 344068, soulbinds::stamina_passive ); // Venthyr Rank 1
-  unique_gear::register_special_effect( 344069, soulbinds::stamina_passive ); // Venthyr Rank 2
-  unique_gear::register_special_effect( 344070, soulbinds::stamina_passive ); // Venthyr Rank 3
-  unique_gear::register_special_effect( 344076, soulbinds::stamina_passive ); // Necrolord Rank 1
-  unique_gear::register_special_effect( 344077, soulbinds::stamina_passive ); // Necrolord Rank 2
-  unique_gear::register_special_effect( 344078, soulbinds::stamina_passive ); // Necrolord Rank 3
-  unique_gear::register_special_effect( 344087, soulbinds::stamina_passive ); // Kyrian Rank 1
-  unique_gear::register_special_effect( 344089, soulbinds::stamina_passive ); // Kyrian Rank 2
-  unique_gear::register_special_effect( 344091, soulbinds::stamina_passive ); // Kyrian Rank 3
+  unique_gear::register_special_effect( 344052, soulbinds::deepening_bond ); // Night Fae Rank 1
+  unique_gear::register_special_effect( 344053, soulbinds::deepening_bond ); // Night Fae Rank 2
+  unique_gear::register_special_effect( 344057, soulbinds::deepening_bond ); // Night Fae Rank 3
+  unique_gear::register_special_effect( 344068, soulbinds::deepening_bond ); // Venthyr Rank 1
+  unique_gear::register_special_effect( 344069, soulbinds::deepening_bond ); // Venthyr Rank 2
+  unique_gear::register_special_effect( 344070, soulbinds::deepening_bond ); // Venthyr Rank 3
+  unique_gear::register_special_effect( 344076, soulbinds::deepening_bond ); // Necrolord Rank 1
+  unique_gear::register_special_effect( 344077, soulbinds::deepening_bond ); // Necrolord Rank 2
+  unique_gear::register_special_effect( 344078, soulbinds::deepening_bond ); // Necrolord Rank 3
+  unique_gear::register_special_effect( 344087, soulbinds::deepening_bond ); // Kyrian Rank 1
+  unique_gear::register_special_effect( 344089, soulbinds::deepening_bond ); // Kyrian Rank 2
+  unique_gear::register_special_effect( 344091, soulbinds::deepening_bond ); // Kyrian Rank 3
 }
 
 void initialize_soulbinds( player_t* player )
@@ -1323,6 +1323,26 @@ void initialize_soulbinds( player_t* player )
     unique_gear::initialize_special_effect( effect, soulbind_spell );
 
     // Ensure the soulbind has a custom special effect to protect against errant auto-inference
+    if ( !effect.is_custom() )
+      continue;
+
+    player->special_effects.push_back( new special_effect_t( effect ) );
+  }
+
+  for ( auto renown_spell : player->covenant->renown_spells() )
+  {
+    auto spell = player->find_spell( renown_spell );
+
+    if ( !spell->ok() )
+      continue;
+
+    special_effect_t effect{ player };
+    effect.type   = SPECIAL_EFFECT_EQUIP;
+    effect.source = SPECIAL_EFFECT_SOURCE_SOULBIND;
+
+    unique_gear::initialize_special_effect( effect, renown_spell );
+
+    // Ensure the renown spell has a custom special effect to protect against errant auto-inference
     if ( !effect.is_custom() )
       continue;
 

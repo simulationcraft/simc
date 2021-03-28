@@ -5980,7 +5980,7 @@ void player_t::recalculate_resource_max( resource_e resource_type, gain_t* sourc
   resources.max[ resource_type ] += resources.temporary[ resource_type ];
 
   // Redirected Anima also affects temporary bonus health
-  if ( buffs.redirected_anima && buffs.redirected_anima->up() ) 
+  if ( buffs.redirected_anima && buffs.redirected_anima->up() )
   {
     resources.max[ resource_type ] *= 1.0 + buffs.redirected_anima->stack() * buffs.redirected_anima->data().effectN( 1 ).percent();
   }
