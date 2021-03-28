@@ -7191,10 +7191,15 @@ struct adaptive_swarm_t : public druid_spell_t
 
   adaptive_swarm_base_t* damage;
   adaptive_swarm_base_t* heal;
+  timespan_t precombat_seconds;
 
   adaptive_swarm_t( druid_t* p, util::string_view options_str )
-    : druid_spell_t( "adaptive_swarm", p, p->covenant.necrolord, options_str )
+    : druid_spell_t( "adaptive_swarm", p, p->covenant.necrolord, options_str ),
+    precombat_seconds(11_s)
   {
+    add_option(opt_timespan("precombat_seconds", precombat_seconds));
+    parse_options(options_str);
+
     // These are always necessary to allow APL parsing of dot.adaptive_swarm expressions
     damage = p->get_secondary_action<adaptive_swarm_damage_t>( "adaptive_swarm_damage" );
     heal   = p->get_secondary_action<adaptive_swarm_heal_t>( "adaptive_swarm_heal" );
@@ -7204,6 +7209,7 @@ struct adaptive_swarm_t : public druid_spell_t
 
     may_miss = may_crit = false;
     base_costs[ RESOURCE_MANA ] = 0.0;  // remove mana cost so we don't need to enable mana regen
+    harmful = false;
 
     damage->other = heal;
     damage->stats = stats;
@@ -7214,6 +7220,16 @@ struct adaptive_swarm_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
+
+    if (is_precombat && precombat_seconds > 0_s)
+    {
+      heal->set_target(player);
+      heal->schedule_execute();
+    
+      this->cooldown->adjust(-precombat_seconds, false);
+      heal->get_dot(player)->adjust_duration(-precombat_seconds);
+      return;
+    }
 
     damage->set_target( target );
     damage->schedule_execute();
