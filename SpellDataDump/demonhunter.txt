@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-26/37988, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-28/37988)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -8486,6 +8486,7 @@ Description      : You automatically trigger Darkness when you fall below $s1% h
 Tooltip          : You automatically trigger Darkness when you fall below $s1% health. This effect can only occur once every $331497d.
 
 Name             : Spirit of the Darkness Flame (id=337541) [Spell Family (107), Passive] 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
@@ -8505,7 +8506,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 #2 (id=835629)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
-Description      : Your Fiery Brand now heals you for $s1% of its initial damage done over $s337543d, and each enemy hit by your Sigil of Flame increases the instant damage of your next Fiery Brand by $337542s1%, stacking up to $337542u times.
+Description      : Your Fiery Brand now heals you for $s1% of its initial damage done over $337543d, and each enemy hit by your Sigil of Flame increases the instant damage of your next Fiery Brand by $337542s1%, stacking up to $337542u times.
 
 Name             : Razelikh's Defilement (id=337544) [Spell Family (107), Passive] 
 School           : Physical
