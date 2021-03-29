@@ -4547,8 +4547,10 @@ struct serrated_bone_spike_t : public rogue_attack_t
       }
     }
 
+    // 03/28/2021 -- Testing shows that Nightstalker works if you are very close to the target's hitbox
+    //               This works on both the initial hit and also the DoT, until it is applied again
     bool snapshots_nightstalker() const override
-    { return false; }
+    { return p()->bugs; }
   };
 
   double base_impact_cp;
@@ -4572,6 +4574,13 @@ struct serrated_bone_spike_t : public rogue_attack_t
     {
       add_child( serrated_bone_spike_dot->sudden_fractures );
     }
+  }
+
+  dot_t* get_dot( player_t* t ) override
+  {
+    if ( !t ) t = target;
+    if ( !t ) return nullptr;
+    return td( t )->dots.serrated_bone_spike;
   }
 
   virtual double generate_cp() const override
@@ -4605,6 +4614,16 @@ struct serrated_bone_spike_t : public rogue_attack_t
     }
 
     trigger_combo_point_gain( base_impact_cp + active_dots, p()->gains.serrated_bone_spike );
+  }
+
+  timespan_t travel_time() const override
+  {
+    // 03/28/2021 -- Testing shows that Nightstalker works if you are very close to the target's hitbox
+    // Assume if the player is playing Nightstalker they are getting inside the hitbox to reduce travel time
+    if ( p()->bugs && p()->talent.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+      return timespan_t::zero();
+
+    return rogue_attack_t::travel_time();
   }
 
   bool procs_blade_flurry() const override
