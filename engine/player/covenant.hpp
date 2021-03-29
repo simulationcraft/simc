@@ -147,8 +147,11 @@ public:
   bool parse_soulbind( sim_t* sim, util::string_view name, util::string_view value );
   bool parse_soulbind_clear( sim_t* sim, util::string_view name, util::string_view value );
 
-  // Parse player-scope "renown" option
+  /// Parse player-scope "renown" option
   bool parse_renown( sim_t* sim, util::string_view name, util::string_view value );
+
+  /// Sets renown level and looks up renown abilities based on the level.
+  void set_renown_level( unsigned renown_level );
 
   /// Retrieve covenant ability spell data. Returns spell_data_t::not_found if covenant
   /// ability is not enabled on the actor. Returns spell_data_t::nil if covenant ability

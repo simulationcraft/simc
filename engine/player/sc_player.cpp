@@ -10797,6 +10797,11 @@ std::string player_t::create_profile( save_e stype )
       {
         profile_str += covenant->soulbind_option_str() + term;
       }
+
+      if ( covenant->renown() > 0 )
+      {
+        profile_str += "renown=" + util::to_string( covenant->renown() );
+      }
     }
   }
 

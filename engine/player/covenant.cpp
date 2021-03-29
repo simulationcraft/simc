@@ -267,9 +267,16 @@ bool covenant_state_t::parse_renown( sim_t*             sim,
                                      util::string_view /* name */,
                                      util::string_view value )
 {
-  m_renown.clear();
+  unsigned renown_level = util::to_unsigned( value );
+  set_renown_level( renown_level );
 
-  m_renown_level = util::to_unsigned( value );
+  return true;
+}
+
+void covenant_state_t::set_renown_level( unsigned renown_level )
+{
+  m_renown_level = renown_level;
+  m_renown.clear();
   std::unordered_map<std::string, unsigned> renown_levels;
   std::unordered_map<std::string, unsigned> renown_spells;
 
@@ -288,8 +295,6 @@ bool covenant_state_t::parse_renown( sim_t*             sim,
 
   for ( auto spell : renown_spells )
     m_renown.push_back( spell.second );
-
-  return true;
 }
 
 const spell_data_t* covenant_state_t::get_covenant_ability( util::string_view name ) const
@@ -557,7 +562,7 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
   if ( !enabled() )
     return root;
 
-  root.format( "<tr class=\"left\"><th>{}</th><td><ul class=\"float\">\n", util::covenant_type_string( type(), true ) );
+  root.format( "<tr class=\"left\"><th>{} ({})</th><td><ul class=\"float\">\n", util::covenant_type_string( type(), true ), renown() );
 
   auto cv_spell = m_player->find_spell( get_covenant_ability_spell_id() );
   root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *cv_spell ) );
@@ -586,6 +591,19 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
     {
       auto sb_spell = m_player->find_spell( sb );
       root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *sb_spell ) );
+    }
+
+    root << "</ul></td></tr>\n";
+  }
+
+  if ( !m_renown.empty() )
+  {
+    root << "<tr class=\"left\"><th></th><td><ul class=\"float\">\n";
+
+    for ( const auto& r : m_renown )
+    {
+      auto r_spell = m_player->find_spell( r );
+      root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *r_spell ) );
     }
 
     root << "</ul></td></tr>\n";
@@ -737,6 +755,12 @@ bool parse_blizzard_covenant_information( player_t*               player,
   }
 
   player->covenant->set_type( covenant );
+
+  if ( covenant_data.HasMember( "renown_level" ) )
+  {
+    unsigned renown_level = covenant_data[ "renown_level" ].GetUint();
+    player->covenant->set_renown_level( renown_level );
+  }
 
   // The rest of the code cannot be run because Blizzard API does not indicate the active
   // path.
