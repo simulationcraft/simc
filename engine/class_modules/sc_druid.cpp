@@ -8396,7 +8396,7 @@ std::string druid_t::default_temporary_enchant() const
     case DRUID_RESTORATION:
     case DRUID_GUARDIAN:
     case DRUID_FERAL:
-      if ( true_level >= 60 ) return "main_hand:shadowcore_oil";
+      if ( true_level >= 60 ) return "main_hand:shaded_sharpening_stone";
       SC_FALLTHROUGH;
     default:
       return "disabled";
