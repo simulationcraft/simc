@@ -59,6 +59,11 @@ util::span<const covenant_ability_entry_t> covenant_ability_entry_t::data( bool 
   return SC_DBC_GET_DATA( __covenant_ability_data, __ptr_covenant_ability_data, ptr );
 }
 
+util::span<const renown_reward_entry_t> renown_reward_entry_t::data( bool ptr )
+{
+  return SC_DBC_GET_DATA( __renown_reward_ability_data, __ptr_renown_reward_ability_data, ptr );
+}
+
 const conduit_entry_t& conduit_entry_t::find( util::string_view name,
                                               bool              ptr,
                                               bool              tokenized )

@@ -110,7 +110,7 @@ std::unique_ptr<covenant_state_t> create_player_state( const player_t* player )
 }
 
 covenant_state_t::covenant_state_t( const player_t* player )
-  : m_covenant( covenant_e::INVALID ), m_player( player ), cast_callback( nullptr )
+  : m_covenant( covenant_e::INVALID ), m_player( player ), m_renown_level(), cast_callback( nullptr )
 {
 }
 
@@ -241,27 +241,8 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
 
       if ( soulbind_entry->spell_id == 0 )
       {
-        // Covenant Renown Stamina passives aren't currently in any databases.
-        // TODO: Possibly add "renown=x" option and move this to that string
-        switch( soulbind_spell_id ) {
-          case 344052u:
-          case 344053u:
-          case 344057u:
-          case 344068u:
-          case 344069u:
-          case 344070u:
-          case 344076u:
-          case 344077u:
-          case 344078u:
-          case 344087u:
-          case 344089u:
-          case 344091u:
-            m_soulbinds.push_back( soulbind_spell_id );
-            continue;
-          default:
-            sim->error( "{} unknown soulbind spell id {}", m_player->name(), entry );
-            return false;
-        }
+        sim->error( "{} unknown soulbind spell id {}", m_player->name(), entry );
+        return false;
       }
 
       m_soulbinds.push_back( soulbind_entry->spell_id );
@@ -280,6 +261,40 @@ bool covenant_state_t::parse_soulbind_clear( sim_t* sim, util::string_view name,
   m_soulbind_str.clear();
 
   return parse_soulbind( sim, name, value );
+}
+
+bool covenant_state_t::parse_renown( sim_t*             sim,
+                                     util::string_view /* name */,
+                                     util::string_view value )
+{
+  unsigned renown_level = util::to_unsigned( value );
+  set_renown_level( renown_level );
+
+  return true;
+}
+
+void covenant_state_t::set_renown_level( unsigned renown_level )
+{
+  m_renown_level = renown_level;
+  m_renown.clear();
+  std::unordered_map<std::string, unsigned> renown_levels;
+  std::unordered_map<std::string, unsigned> renown_spells;
+
+  for ( auto& entry : renown_reward_entry_t::find_by_covenant_id( id(), m_player->dbc->ptr ) )
+  {
+    if ( renown() < entry.renown_level )
+      continue;
+
+    auto it = renown_levels.find( entry.name );
+    if ( it != renown_levels.end() && it->second > entry.renown_level )
+      continue;
+
+    renown_levels[ entry.name ] = entry.renown_level;
+    renown_spells[ entry.name ] = entry.spell_id;
+  }
+
+  for ( auto spell : renown_spells )
+    m_renown.push_back( spell.second );
 }
 
 const spell_data_t* covenant_state_t::get_covenant_ability( util::string_view name ) const
@@ -498,9 +513,11 @@ void covenant_state_t::copy_state( const std::unique_ptr<covenant_state_t>& othe
   m_covenant = other->m_covenant;
   m_conduits = other->m_conduits;
   m_soulbinds = other->m_soulbinds;
+  m_renown = other->m_renown;
 
   m_soulbind_str = other->m_soulbind_str;
   m_covenant_str = other->m_covenant_str;
+  m_renown_level = other->m_renown_level;
 }
 
 void covenant_state_t::register_options( player_t* player )
@@ -510,6 +527,8 @@ void covenant_state_t::register_options( player_t* player )
   player->add_option( opt_func( "soulbind+", std::bind( &covenant_state_t::parse_soulbind,
           this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
   player->add_option( opt_func( "covenant", std::bind( &covenant_state_t::parse_covenant,
+          this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
+  player->add_option( opt_func( "renown", std::bind( &covenant_state_t::parse_renown,
           this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
 }
 
@@ -543,7 +562,7 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
   if ( !enabled() )
     return root;
 
-  root.format( "<tr class=\"left\"><th>{}</th><td><ul class=\"float\">\n", util::covenant_type_string( type(), true ) );
+  root.format( "<tr class=\"left\"><th>{} ({})</th><td><ul class=\"float\">\n", util::covenant_type_string( type(), true ), renown() );
 
   auto cv_spell = m_player->find_spell( get_covenant_ability_spell_id() );
   root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *cv_spell ) );
@@ -572,6 +591,19 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
     {
       auto sb_spell = m_player->find_spell( sb );
       root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *sb_spell ) );
+    }
+
+    root << "</ul></td></tr>\n";
+  }
+
+  if ( !m_renown.empty() )
+  {
+    root << "<tr class=\"left\"><th></th><td><ul class=\"float\">\n";
+
+    for ( const auto& r : m_renown )
+    {
+      auto r_spell = m_player->find_spell( r );
+      root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *r_spell ) );
     }
 
     root << "</ul></td></tr>\n";
@@ -723,6 +755,12 @@ bool parse_blizzard_covenant_information( player_t*               player,
   }
 
   player->covenant->set_type( covenant );
+
+  if ( covenant_data.HasMember( "renown_level" ) )
+  {
+    unsigned renown_level = covenant_data[ "renown_level" ].GetUint();
+    player->covenant->set_renown_level( renown_level );
+  }
 
   // The rest of the code cannot be run because Blizzard API does not indicate the active
   // path.
