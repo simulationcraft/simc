@@ -8,6 +8,7 @@ position=ranged_back
 talents=1010132
 covenant=kyrian
 soulbind=pelagos,combat_meditation/dissonant_echoes:7/haunting_apparitions:7
+renown=40
 
 # Default consumables
 potion=potion_of_spectral_intellect

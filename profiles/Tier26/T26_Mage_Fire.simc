@@ -8,6 +8,7 @@ position=ranged_back
 talents=3031021
 covenant=night_fae
 soulbind=korayn,wild_hunt_tactics/infernal_cascade:7/discipline_of_the_grove:7
+renown=40
 
 # Default consumables
 potion=spectral_intellect

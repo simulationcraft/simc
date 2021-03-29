@@ -9,6 +9,7 @@ position=front
 talents=2020121
 covenant=night_fae
 soulbind=niya,grove_invigoration/walk_with_the_ox:7/run_without_tiring/natures_splendor/harm_denial:7/celestial_effervescence:7/niyas_tools_burrs
+renown=40
 
 # Default consumables
 potion=phantom_fire

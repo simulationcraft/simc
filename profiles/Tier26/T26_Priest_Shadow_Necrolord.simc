@@ -8,6 +8,7 @@ position=ranged_back
 talents=1010132
 covenant=necrolord
 soulbind=emeni,lead_by_example/dissonant_echoes:7/haunting_apparitions:7
+renown=40
 
 # Default consumables
 potion=potion_of_spectral_intellect

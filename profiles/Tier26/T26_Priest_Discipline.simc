@@ -8,6 +8,7 @@ position=ranged_back
 talents=3020310
 covenant=kyrian
 soulbind=pelagos,combat_meditation/swift_penitence:7/courageous_ascension:7
+renown=40
 
 # Default consumables
 potion=potion_of_spectral_intellect

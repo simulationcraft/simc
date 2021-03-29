@@ -10800,7 +10800,7 @@ std::string player_t::create_profile( save_e stype )
 
       if ( covenant->renown() > 0 )
       {
-        profile_str += "renown=" + util::to_string( covenant->renown() );
+        profile_str += "renown=" + util::to_string( covenant->renown() ) + term;
       }
     }
   }

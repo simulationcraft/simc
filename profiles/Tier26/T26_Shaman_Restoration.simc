@@ -8,6 +8,7 @@ position=ranged_back
 talents=0100200
 covenant=night_fae
 soulbind=niya,grove_invigoration/essential_extraction:7/niyas_tools_burrs
+renown=40
 
 # Default consumables
 potion=potion_of_spectral_intellect
