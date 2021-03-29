@@ -7,6 +7,7 @@ position=ranged_back
 talents=3302023
 covenant=night_fae
 soulbind=niya,grove_invigoration/focused_malignancy:7/niyas_tools_burrs
+renown=40
 
 head=grimveiled_hood,id=173245,bonus_id=6648/6649/6758/7027/1532/6935,gem_id=173130
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173130
@@ -36,6 +37,7 @@ position=ranged_back
 talents=3303032
 covenant=night_fae
 soulbind=niya,grove_invigoration/borne_of_blood:7/niyas_tools_burrs
+renown=40
 
 head=confidants_favored_cap,id=183021,bonus_id=7187/1498/6935,gem_id=173128
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173128
@@ -65,6 +67,7 @@ position=ranged_back
 talents=3203012
 covenant=night_fae
 soulbind=niya,grove_invigoration/ashen_remains:7/niyas_tools_burrs
+renown=40
 
 head=grimveiled_hood,id=173245,bonus_id=6648/6649/6758/7027/1532/6935,gem_id=173128
 neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498/6935,gem_id=173128

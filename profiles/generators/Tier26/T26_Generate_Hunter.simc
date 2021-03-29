@@ -7,6 +7,7 @@ position=ranged_back
 talents=2102013
 covenant=night_fae
 soulbind=niya,grove_invigoration/spirit_attunement:7/niyas_tools_burrs
+renown=40
 
 head=boneshatter_helm,id=172325,bonus_id=6647/6649/6758/7005/1532/1808,gem_id=173129
 neck=sinful_gladiators_pendant,id=178387,bonus_id=7229/1808/1498,gem_id=173129
@@ -36,6 +37,7 @@ position=ranged_back
 talents=1101032
 covenant=night_fae
 soulbind=niya,grove_invigoration/spirit_attunement:7/niyas_tools_burrs
+renown=40
 
 head=rattling_deadeye_hood,id=178738,bonus_id=6536/1540/6646/6935,gem_id=173127
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
@@ -65,6 +67,7 @@ position=back
 talents=3101012
 covenant=night_fae
 soulbind=niya,grove_invigoration/strength_of_the_pack:7/niyas_tools_burrs
+renown=40
 
 head=helm_of_insatiable_appetite,id=183001,bonus_id=7187/1498/6935,gem_id=173127
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127

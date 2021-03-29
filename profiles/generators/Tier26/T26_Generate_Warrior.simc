@@ -7,6 +7,7 @@ position=back
 talents=3113123
 covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/ashen_juggernaut:7/dauntless_duelist
+renown=40
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173128
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
@@ -36,6 +37,7 @@ position=back
 talents=2113323
 covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/ashen_juggernaut:7/dauntless_duelist
+renown=40
 
 head=wrathbark_greathelm,id=178694,bonus_id=1540/6807,gem_id=173130
 neck=sin_stained_pendant,id=178827,bonus_id=1540/6807,gem_id=173128
@@ -66,6 +68,7 @@ position=front
 talents=3020011
 covenant=kyrian
 soulbind=pelagos,combat_meditation/piercing_verdict:7/show_of_force:7
+renown=40
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173128
 neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498/6935,gem_id=173128

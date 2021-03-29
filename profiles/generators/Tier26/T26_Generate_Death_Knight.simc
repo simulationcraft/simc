@@ -7,6 +7,7 @@ position=front
 talents=2221033
 covenant=kyrian
 soulbind=kleia,pointed_courage/proliferation:7
+renown=40
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173127
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
@@ -36,6 +37,7 @@ position=back
 talents=3101013
 covenant=kyrian
 soulbind=pelagos,combat_meditation/accelerated_cold:7/everfrost:7
+renown=40
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173130
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173130
@@ -66,6 +68,7 @@ position=back
 talents=3231212
 covenant=kyrian
 soulbind=pelagos,combat_meditation/accelerated_cold:7/everfrost:7
+renown=40
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173127
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
@@ -95,6 +98,7 @@ position=back
 talents=2303021
 covenant=necrolord
 soulbind=emeni,lead_by_example/eternal_hunger:7/convocation_of_the_dead:7
+renown=40
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173130
 neck=sin_stained_pendant,id=178827,bonus_id=6536/1540/6646,gem_id=173130

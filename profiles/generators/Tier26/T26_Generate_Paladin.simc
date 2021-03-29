@@ -7,6 +7,7 @@ position=front
 talents=2200202
 covenant=venthyr
 soulbind=theotar,soothing_shade/punish_the_guilty:7/hallowed_discernment:7
+renown=40
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173127
 neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498/6935,gem_id=173127
@@ -37,7 +38,8 @@ position=back
 talents=3201303
 covenant=kyrian
 soulbind=pelagos,combat_meditation/ringing_clarity:7/templars_vindication:7
- 
+renown=40
+
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=168636
 neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498/6935,gem_id=173128
 shoulders=pranksters_pauldrons,id=178697,bonus_id=6536/1540/6646
@@ -66,6 +68,7 @@ position=back
 talents=1201302
 covenant=venthyr
 soulbind=nadjia,thrill_seeker/expurgation:7/virtuous_command:7
+renown=40
 
 head=plague_handlers_greathelm,id=178773,bonus_id=6536/1540/6646/6935,gem_id=173127
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
