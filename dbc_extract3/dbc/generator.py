@@ -4093,7 +4093,7 @@ class RenownRewardGenerator(DataGenerator):
             fields = entry.field('id_covenant', 'level')
             fields += entry.ref('id_spell').field('id', 'name')
 
-            self.output_record(fields)
+            self.output_record(fields, comment = entry.ref('id_covenant').name)
 
         self.output_footer()
 
