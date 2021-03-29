@@ -3240,7 +3240,7 @@ struct rip_state_t : public druid_action_state_t
 struct berserk_cat_t : public cat_attack_t
 {
   berserk_cat_t( druid_t* player, util::string_view options_str )
-    : cat_attack_t( "berserk", player, player->spec.berserk_cat, options_str )
+    : cat_attack_t( "berserk_cat", player, player->spec.berserk_cat, options_str )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
   }
@@ -4221,7 +4221,7 @@ struct bear_melee_t : public bear_attack_t
 struct berserk_bear_t : public bear_attack_t
 {
   berserk_bear_t( druid_t* p, const std::string& o )
-    : bear_attack_t( "berserk", p, p->find_specialization_spell( "berserk" ), o )
+    : bear_attack_t( "berserk_bear", p, p->find_specialization_spell( "berserk" ), o )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
   }
