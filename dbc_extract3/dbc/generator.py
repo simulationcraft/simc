@@ -1691,24 +1691,6 @@ class SpellDataGenerator(DataGenerator):
 		  ( 290461, 3 ), # Reverse Harm Damage
 		  ( 335913, 3 ), # Empowered Tiger Lightning Damage spell
 
-          # Azerite Traits
-          ( 278710, 3 ), # Swift Roundhouse
-          ( 278767, 1 ), # Training of Niuzao buff
-          ( 285958, 1 ), # Straight, No Chaser trait
-          ( 285959, 1 ), # Straight, No Chaser buff
-          ( 286585, 3 ), # Dance of Chi-Ji trait
-          ( 286586, 3 ), # Dance of Chi-Ji RPPM
-          ( 286587, 3 ), # Dance of Chi-Ji buff
-          ( 287055, 3 ), # Fury of Xuen trait
-          ( 287062, 3 ), # Fury of Xuen buff
-          ( 287063, 3 ), # Fury of Xuen proc
-          ( 287831, 2 ), # Secret Infusion Crit Buff
-          ( 287835, 2 ), # Secret Infusion Haste Buff
-          ( 287836, 2 ), # Secret Infusion Mastery Buff
-          ( 287837, 2 ), # Secret Infusion Versatility Buff
-          ( 288634, 3 ), # Glory of the Dawn trait
-          ( 288636, 3 ), # Glory of the Dawn proc
-
           # Covenant
           ( 325217, 0 ), # Necrolord Bonedust Brew damage
           ( 325218, 0 ), # Necrolord Bonedust Brew heal
