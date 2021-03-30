@@ -5980,7 +5980,7 @@ void player_t::recalculate_resource_max( resource_e resource_type, gain_t* sourc
   resources.max[ resource_type ] += resources.temporary[ resource_type ];
 
   // Redirected Anima also affects temporary bonus health
-  if ( buffs.redirected_anima && buffs.redirected_anima->up() ) 
+  if ( buffs.redirected_anima && buffs.redirected_anima->up() )
   {
     resources.max[ resource_type ] *= 1.0 + buffs.redirected_anima->stack() * buffs.redirected_anima->data().effectN( 1 ).percent();
   }
@@ -10796,6 +10796,11 @@ std::string player_t::create_profile( save_e stype )
       if ( !covenant->soulbind_option_str().empty() )
       {
         profile_str += covenant->soulbind_option_str() + term;
+      }
+
+      if ( covenant->renown() > 0 )
+      {
+        profile_str += "renown=" + util::to_string( covenant->renown() ) + term;
       }
     }
   }

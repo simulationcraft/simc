@@ -294,6 +294,24 @@ class CovenantAbilitySet(DataSet):
     def ids(self):
         return list(set(v.id_spell for v in self.get()))
 
+class RenownRewardSet(DataSet):
+    def _filter(self, **kwargs):
+        _renown_rewards = list()
+
+        for entry in self.db('RenownRewards').values():
+            if entry.id_spell == 0:
+                continue
+
+            if entry.ref('id_spell').id != entry.id_spell:
+                continue
+
+            _renown_rewards.append(entry)
+
+        return _renown_rewards
+
+    def ids(self):
+        return list(set(v.id_spell for v in self.get()))
+
 class TalentSet(DataSet):
     def _filter(self, **kwargs):
         talents = list()

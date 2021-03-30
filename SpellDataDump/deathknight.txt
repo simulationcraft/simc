@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-26/37988, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-30/37988, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -643,12 +643,13 @@ Effects          :
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing damage from a friendly Undead target.
 
 Name             : Veteran of the Third War (id=48263) [Spell Family (15), Passive] 
+Hotfixed         : Description
 Class            : Death Knight
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen (0x2007ff)
 School           : Physical
 Spell Type       : None
 Spell Level      : 8
-Affecting spells : Blood Death Knight (137008 effect#13), Veteran of the Third War (316714 effect#1)
+Affecting spells : Blood Death Knight (137008 effect#13), Veteran of the Third War (316714 effects: #1, #2, #3)
 Family Flags     : 107
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -666,7 +667,12 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
                    Affected Spells: Death Coil (47633), Unholy Strength (53365)
                    Family Flags: 31, 106, 109
-Description      : Stamina increased by $s4%.
+#3 (id=884937)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Hotfixed         : NEW EFFECT
+Description      : Stamina increased by $s1%.
+$?s316714[Damage taken reduced by ${$abs($s3)}%.][]
 
 Name             : Death's Advance (id=48265) [Spell Family (15)] 
 Class            : Death Knight
@@ -12563,7 +12569,9 @@ Effects          :
 Description      : Heart Strike hits up to $s1 additional enemies while you remain in Death and Decay.
 
 Name             : Veteran of the Third War (desc=Rank 2) (id=316714) [Spell Family (15), Passive] 
+Hotfixed         : Description
 Class            : Blood Death Knight
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xff207fff)
 School           : Physical
 Spell Type       : None
 Spell Level      : 49
@@ -12581,7 +12589,18 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Veteran of the Third War (48263), Veteran of the Fourth War (319278)
                    Family Flags: 107
-Description      : Increases Stamina by $s1%.
+#2 (id=884939)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Veteran of the Third War (48263), Veteran of the Fourth War (319278)
+                   Family Flags: 107
+Hotfixed         : NEW EFFECT
+#3 (id=884940)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Affected Spells: Veteran of the Third War (48263), Veteran of the Fourth War (319278)
+                   Family Flags: 107
+Hotfixed         : NEW EFFECT
+Description      : Increases Stamina by $s1%.
+Damage taken reduced by ${$abs($s2)}%.
 
 Name             : Marrowrend (desc=Rank 2) (id=316746) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
@@ -13194,11 +13213,12 @@ Description      : $@spelldesc319230
 Tooltip          : Strength increased by $s1%.
 
 Name             : Veteran of the Fourth War (id=319278) [Spell Family (15), Passive] 
+Hotfixed         : Description
 Class            : Death Knight
 Race             : Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xff007800)
 School           : Physical
 Spell Type       : None
-Affecting spells : Blood Death Knight (137008 effect#13), Veteran of the Third War (316714 effect#1)
+Affecting spells : Blood Death Knight (137008 effect#13), Veteran of the Third War (316714 effects: #1, #2, #3)
 Family Flags     : 107
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13216,7 +13236,12 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
                    Affected Spells: Death Coil (47633), Unholy Strength (53365)
                    Family Flags: 31, 106, 109
-Description      : Stamina increased by $s4%.
+#3 (id=885222)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Hotfixed         : NEW EFFECT
+Description      : Stamina increased by $s1%.
+$?s316714[Damage taken reduced by $s3%.][]
 
 Name             : Hypothermic Presence (id=321995) [Spell Family (15)] 
 Class            : Death Knight

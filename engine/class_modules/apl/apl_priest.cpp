@@ -109,8 +109,13 @@ void shadow( player_t* p )
   trinkets->add_action(
       "use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|cooldown.void_eruption.remains>27",
       "Use on CD ASAP to get DoT ticking and expire to line up better with Voidform" );
-  trinkets->add_action( "use_item,name=inscrutable_quantum_device,if=cooldown.void_eruption.remains>10",
-                        "Sync IQD with Voidform" );
+  trinkets->add_action(
+      "use_item,name=inscrutable_quantum_device,if=buff.voidform.up&buff.power_infusion.up|fight_remains<=20|buff."
+      "power_infusion.up&cooldown.void_eruption.remains+15>fight_remains|buff.voidform.up&cooldown.power_infusion."
+      "remains+15>fight_remains|(cooldown.power_infusion.remains>=10&cooldown.void_eruption.remains>=10)&fight_remains>"
+      "=190",
+      "Try to Sync IQD with Double Stacked CDs if possible. On longer fights with more IQD uses attempt to sync with "
+      "any cd or just use it." );
   trinkets->add_action( "use_item,name=macabre_sheet_music,if=cooldown.void_eruption.remains>10",
                         "Sync Sheet Music with Voidform" );
   trinkets->add_action(
@@ -134,7 +139,7 @@ void shadow( player_t* p )
                    "if=priest.self_power_infusion&(buff.voidform.up|!soulbind.combat_meditation.enabled&cooldown.void_"
                    "eruption.remains>=10|fight_remains<cooldown.void_eruption.remains)&(fight_remains>=cooldown.void_"
                    "eruption.remains+15&cooldown.void_eruption.remains<=gcd*4|fight_remains>cooldown.power_infusion."
-                   "duration|fight_remains<cooldown.void_eruption.remains+15|covenant.kyrian)",
+                   "duration|fight_remains<cooldown.void_eruption.remains+15|covenant.kyrian|buff.bloodlust.up)",
                    "Use Power Infusion with Voidform. Hold for Voidform comes off cooldown in the next 10 seconds "
                    "otherwise use on cd unless the Pelagos Trait Combat Meditation is talented, or if there will not "
                    "be another Void Eruption this fight. Attempt to sync the last power infusion of the fight to void "

@@ -7,6 +7,7 @@ position=front
 talents=2020121
 covenant=night_fae
 soulbind=niya,grove_invigoration/walk_with_the_ox:7/run_without_tiring/natures_splendor/harm_denial:7/celestial_effervescence:7/niyas_tools_burrs
+renown=40
 
 head=hood_of_refracted_shadows,id=178817,bonus_id=6536/1540/6646/6935,gem_id=173127
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
@@ -36,6 +37,7 @@ position=back
 talents=3020012
 covenant=kyrian
 soulbind=pelagos,combat_meditation/strike_with_clarity:7/focusing_mantra/harm_denial:7/cleansed_vestments/coordinated_offensive:7/let_go_of_the_past
+renown=40
 
 head=umbrahide_helm,id=172317,bonus_id=6716/7082/6647/6648/1532/6935,gem_id=173129
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173129
@@ -65,6 +67,7 @@ position=back
 talents=3020013
 covenant=kyrian
 soulbind=pelagos,combat_meditation/strike_with_clarity:7/focusing_mantra/harm_denial:7/cleansed_vestments/coordinated_offensive:7/let_go_of_the_past
+renown=40
 
 head=umbrahide_helm,id=172317,bonus_id=6716/7082/6647/6648/1532/6935,gem_id=173129
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173129

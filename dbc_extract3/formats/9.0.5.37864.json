@@ -829,6 +829,29 @@
       { "data_type": "i", "field": "unk_4" }
     ]
   },
+  "RenownRewards": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "S", "field": "desc" },
+      { "data_type": "S", "field": "desc2" },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "id_covenant", "ref": "Covenant" },
+      { "data_type": "i", "field": "level", "formats": { "cpp": "%3u" } },
+      { "data_type": "i", "field": "icon" },
+      { "data_type": "i", "field": "flags" },
+      { "data_type": "i", "field": "order" },
+      { "data_type": "i", "field": "id_item", "ref": "ItemSparse" },
+      { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%6u" }, "ref": "SpellName" },
+      { "data_type": "i", "field": "id_mount" },
+      { "data_type": "i", "field": "id_transmog" },
+      { "data_type": "i", "field": "id_transmog_set" },
+      { "data_type": "i", "field": "id_char_title" },
+      { "data_type": "i", "field": "id_garr_follower" },
+      { "data_type": "i", "field": "id_transmog_illusion" },
+      { "data_type": "i", "field": "id_quest" },
+      { "data_type": "i", "field": "id_player_cond" }
+    ]
+  },
   "RewardPack": {
     "fields": [
       { "data_type": "i", "field": "id_char_title" },

@@ -8,6 +8,7 @@ position=back
 talents=3320221
 covenant=night_fae
 soulbind=niya,grove_invigoration/growing_inferno:7/niyas_tools_burrs
+renown=40
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173130
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173130
@@ -39,6 +40,7 @@ position=back
 talents=3320222
 covenant=night_fae
 soulbind=niya,grove_invigoration/growing_inferno:7/niyas_tools_burrs
+renown=40
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173130
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173130
@@ -70,6 +72,7 @@ position=front
 talents=1233321
 covenant=kyrian
 soulbind=pelagos,combat_meditation/repeat_decree:7/growing_inferno:7
+renown=40
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173128
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173128

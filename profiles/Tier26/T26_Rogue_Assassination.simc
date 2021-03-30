@@ -8,6 +8,7 @@ position=back
 talents=3320021
 covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/lashing_scars:7/dauntless_duelist
+renown=40
 
 # Default consumables
 potion=phantom_fire
@@ -99,8 +100,8 @@ actions.direct+=/serrated_bone_spike,target_if=min:target.time_to_die+(dot.serra
 actions.direct+=/serrated_bone_spike,if=variable.use_filler&master_assassin_remains<0.8&(fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75|soulbind.lead_by_example.enabled&!buff.lead_by_example.up&debuff.vendetta.up)
 # Fan of Knives at 19+ stacks of Hidden Blades or against 4+ targets.
 actions.direct+=/fan_of_knives,if=variable.use_filler&(buff.hidden_blades.stack>=19|(!priority_rotation&spell_targets.fan_of_knives>=4+stealthed.rogue))
-# Fan of Knives to apply Deadly Poison if inactive on any target at 3 targets.
-actions.direct+=/fan_of_knives,target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives>=3
+# Fan of Knives to apply poisons if inactive on any target (or any bleeding targets with priority rotation) at 3T
+actions.direct+=/fan_of_knives,target_if=!dot.deadly_poison_dot.ticking&(!priority_rotation|dot.garrote.ticking|dot.rupture.ticking),if=variable.use_filler&spell_targets.fan_of_knives>=3
 actions.direct+=/echoing_reprimand,if=variable.use_filler&cooldown.vendetta.remains>10
 actions.direct+=/ambush,if=variable.use_filler&(master_assassin_remains=0&!runeforge.doomblade|buff.blindside.up)
 # Tab-Mutilate to apply Deadly Poison at 2 targets
@@ -108,10 +109,10 @@ actions.direct+=/mutilate,target_if=!dot.deadly_poison_dot.ticking,if=variable.u
 actions.direct+=/mutilate,if=variable.use_filler
 
 # Damage over time abilities
-# Limit Garrotes on non-primrary targets for the priority rotation if 5+ bleeds are already up
-actions.dot=variable,name=skip_cycle_garrote,value=priority_rotation&spell_targets.fan_of_knives>3&(dot.garrote.remains<cooldown.garrote.duration|poisoned_bleeds>5)
-# Limit Ruptures on non-primrary targets for the priority rotation if 5+ bleeds are already up
-actions.dot+=/variable,name=skip_cycle_rupture,value=priority_rotation&spell_targets.fan_of_knives>3&(debuff.shiv.up|poisoned_bleeds>5)
+# Limit secondary Garrotes for priority rotation if we have 35 energy regen or Garrote will expire on the primary target
+actions.dot=variable,name=skip_cycle_garrote,value=priority_rotation&(dot.garrote.remains<cooldown.garrote.duration|energy.regen_combined>35)
+# Limit secondary Ruptures for priority rotation if we have 35 energy regen or Shiv is up on 2T+
+actions.dot+=/variable,name=skip_cycle_rupture,value=priority_rotation&(debuff.shiv.up&spell_targets.fan_of_knives>2|energy.regen_combined>35)
 # Limit Ruptures if Vendetta+Shiv/Master Assassin is up and we have 2+ seconds left on the Rupture DoT
 actions.dot+=/variable,name=skip_rupture,value=debuff.vendetta.up&(debuff.shiv.up|master_assassin_remains>0)&dot.rupture.remains>2
 # Special Garrote and Rupture setup prior to Exsanguinate cast

@@ -3240,7 +3240,7 @@ struct rip_state_t : public druid_action_state_t
 struct berserk_cat_t : public cat_attack_t
 {
   berserk_cat_t( druid_t* player, util::string_view options_str )
-    : cat_attack_t( "berserk", player, player->spec.berserk_cat, options_str )
+    : cat_attack_t( "berserk_cat", player, player->spec.berserk_cat, options_str )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
   }
@@ -3704,8 +3704,7 @@ struct rake_t : public cat_attack_t
 
   bool stealthed() const override
   {
-    return p()->buff.berserk_cat->up() || p()->buff.incarnation_cat->up() || p()->buff.sudden_ambush->up() ||
-           cat_attack_t::stealthed();
+    return p()->buff.berserk_cat->up() || p()->buff.incarnation_cat->up() || cat_attack_t::stealthed();
   }
 
   dot_t* get_dot( player_t* t ) override
@@ -3720,10 +3719,20 @@ struct rake_t : public cat_attack_t
   {
     double pm = cat_attack_t::composite_persistent_multiplier( s );
 
-    if ( stealth_mul && stealthed() )
+    if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->up() ) )
       pm *= 1.0 + stealth_mul;
 
     return pm;
+  }
+  
+  double action_multiplier() const override
+  {
+    double am = cat_attack_t::action_multiplier();
+
+    if (p()->legendary.draught_of_deep_focus->ok() && p()->get_active_dots(bleed->internal_id) == 1)
+      am *= 1.0 + p()->legendary.draught_of_deep_focus->effectN(1).percent();
+
+    return am;
   }
 
   void impact( action_state_t* s ) override
@@ -3749,11 +3758,12 @@ struct rake_t : public cat_attack_t
     cat_attack_t::execute();
 
     if ( hit_any_target )
+    {
       p()->buff.bt_rake->trigger();
-
-    // TODO: check if consumed on miss
-    if ( p()->buff.sudden_ambush->up() )
-      p()->buff.sudden_ambush->decrement();
+      
+      if ( p()->buff.sudden_ambush->up() && !stealthed() )
+      	p()->buff.sudden_ambush->decrement();
+    }
   }
 };
 
@@ -3979,15 +3989,14 @@ struct shred_t : public cat_attack_t
 
   bool stealthed() const override
   {
-    return p()->buff.berserk_cat->up() || p()->buff.incarnation_cat->up() || p()->buff.sudden_ambush->up() ||
-           cat_attack_t::stealthed();
+    return p()->buff.berserk_cat->up() || p()->buff.incarnation_cat->up() || cat_attack_t::stealthed();
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
   {
     double e = cat_attack_t::composite_energize_amount( s );
 
-    if ( stealth_cp && stealthed() )
+    if ( stealth_cp && ( stealthed() || p()->buff.sudden_ambush->up() ) )
       e += stealth_cp;
 
     return e;
@@ -3998,11 +4007,12 @@ struct shred_t : public cat_attack_t
     cat_attack_t::execute();
 
     if ( hit_any_target )
+    {
       p()->buff.bt_shred->trigger();
 
-    // TODO: Check if consumed on miss
-    if ( p()->buff.sudden_ambush->up() )
-      p()->buff.sudden_ambush->decrement();
+      if ( p()->buff.sudden_ambush->up() && !stealthed() )
+        p()->buff.sudden_ambush->decrement();
+    }
   }
 
   double composite_crit_chance_multiplier() const override
@@ -4019,7 +4029,7 @@ struct shred_t : public cat_attack_t
   {
     double m = cat_attack_t::action_multiplier();
 
-    if ( stealth_mul && stealthed() )
+    if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->up() ) )
       m *= 1.0 + stealth_mul;
 
     return m;
@@ -4211,7 +4221,7 @@ struct bear_melee_t : public bear_attack_t
 struct berserk_bear_t : public bear_attack_t
 {
   berserk_bear_t( druid_t* p, const std::string& o )
-    : bear_attack_t( "berserk", p, p->find_specialization_spell( "berserk" ), o )
+    : bear_attack_t( "berserk_bear", p, p->find_specialization_spell( "berserk" ), o )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
   }
@@ -7181,10 +7191,15 @@ struct adaptive_swarm_t : public druid_spell_t
 
   adaptive_swarm_base_t* damage;
   adaptive_swarm_base_t* heal;
+  timespan_t precombat_seconds;
 
   adaptive_swarm_t( druid_t* p, util::string_view options_str )
-    : druid_spell_t( "adaptive_swarm", p, p->covenant.necrolord, options_str )
+    : druid_spell_t( "adaptive_swarm", p, p->covenant.necrolord, options_str ),
+    precombat_seconds(11_s)
   {
+    add_option(opt_timespan("precombat_seconds", precombat_seconds));
+    parse_options(options_str);
+
     // These are always necessary to allow APL parsing of dot.adaptive_swarm expressions
     damage = p->get_secondary_action<adaptive_swarm_damage_t>( "adaptive_swarm_damage" );
     heal   = p->get_secondary_action<adaptive_swarm_heal_t>( "adaptive_swarm_heal" );
@@ -7194,6 +7209,7 @@ struct adaptive_swarm_t : public druid_spell_t
 
     may_miss = may_crit = false;
     base_costs[ RESOURCE_MANA ] = 0.0;  // remove mana cost so we don't need to enable mana regen
+    harmful = false;
 
     damage->other = heal;
     damage->stats = stats;
@@ -7204,6 +7220,16 @@ struct adaptive_swarm_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
+
+    if (is_precombat && precombat_seconds > 0_s)
+    {
+      heal->set_target(player);
+      heal->schedule_execute();
+    
+      this->cooldown->adjust(-precombat_seconds, false);
+      heal->get_dot(player)->adjust_duration(-precombat_seconds);
+      return;
+    }
 
     damage->set_target( target );
     damage->schedule_execute();
@@ -8370,7 +8396,7 @@ std::string druid_t::default_temporary_enchant() const
     case DRUID_RESTORATION:
     case DRUID_GUARDIAN:
     case DRUID_FERAL:
-      if ( true_level >= 60 ) return "main_hand:shadowcore_oil";
+      if ( true_level >= 60 ) return "main_hand:shaded_sharpening_stone";
       SC_FALLTHROUGH;
     default:
       return "disabled";
@@ -9611,23 +9637,30 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
   {
     std::string replacement;
 
-    if ( util::str_compare_ci( splits[ 0 ], "cooldown" ) )
+    // special case since incarnation is handled via the proxy action and the cooldown obj is not explicitly named for
+    // the spec variant
+    if ( util::str_compare_ci( splits[ 0 ], "cooldown" ) &&
+         ( talent.incarnation_cat->ok() || talent.incarnation_bear->ok() ) )
     {
-      if ( talent.incarnation_cat->ok() || talent.incarnation_bear->ok() )
-        replacement = "incarnation";
-      else
-        replacement = "berserk";
+      replacement = "incarnation";
     }
-    else
+    else if ( specialization() == DRUID_FERAL )
     {
       if ( talent.incarnation_cat->ok() )
         replacement = "incarnation_king_of_the_jungle";
-      else if ( talent.incarnation_bear->ok() )
-        replacement = "incarnation_guardian_of_ursoc";
-      else if ( specialization() == DRUID_GUARDIAN )
-        replacement = "berserk_bear";
       else
         replacement = "berserk_cat";
+    }
+    else if ( specialization() == DRUID_GUARDIAN )
+    {
+      if ( talent.incarnation_bear->ok() )
+        replacement = "incarnation_guardian_of_ursoc";
+      else
+        replacement = "berserk_bear";
+    }
+    else
+    {
+      replacement = "berserk";
     }
 
     return druid_t::create_expression( fmt::format( "{}.{}.{}", splits[ 0 ], replacement, splits[ 2 ] ) );
@@ -9655,11 +9688,11 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
       std::string replacement;
 
       if ( util::str_compare_ci( splits[ 0 ], "cooldown" ) )
-        replacement = talent.incarnation_moonkin->ok() ? ".incarnation." : ".celestial_alignment.";
+        replacement = talent.incarnation_moonkin->ok() ? "incarnation" : "celestial_alignment";
       else
-        replacement = talent.incarnation_moonkin->ok() ? ".incarnation_chosen_of_elune." : ".celestial_alignment.";
+        replacement = talent.incarnation_moonkin->ok() ? "incarnation_chosen_of_elune" : "celestial_alignment";
 
-      return player_t::create_expression( fmt::format( "{}{}{}", splits[ 0 ], replacement, splits[ 2 ] ) );
+      return player_t::create_expression( fmt::format( "{}.{}.{}", splits[ 0 ], replacement, splits[ 2 ] ) );
     }
 
     // check for AP overcap on action other than current action. check for current action handled in
@@ -9756,28 +9789,31 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "incarnation" ) &&
        ( util::str_compare_ci( splits[ 0 ], "buff" ) || util::str_compare_ci( splits[ 0 ], "talent" ) ) )
   {
-    std::string replacement_name;
+    std::string replacement;
+
     switch ( specialization() )
     {
-      case DRUID_BALANCE: replacement_name = ".incarnation_chosen_of_elune."; break;
-      case DRUID_FERAL: replacement_name = ".incarnation_king_of_the_jungle."; break;
-      case DRUID_GUARDIAN: replacement_name = ".incarnation_guardian_of_ursoc."; break;
-      case DRUID_RESTORATION: replacement_name = ".incarnation_tree_of_life."; break;
+      case DRUID_BALANCE: replacement = "incarnation_chosen_of_elune"; break;
+      case DRUID_FERAL: replacement = "incarnation_king_of_the_jungle"; break;
+      case DRUID_GUARDIAN: replacement = "incarnation_guardian_of_ursoc"; break;
+      case DRUID_RESTORATION: replacement = "incarnation_tree_of_life"; break;
       default: break;
     }
-    return player_t::create_expression( fmt::format("{}{}{}", splits[ 0 ], replacement_name, splits[ 2 ]) );
+    return player_t::create_expression( fmt::format("{}.{}.{}", splits[ 0 ], replacement, splits[ 2 ]) );
   }
 
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "berserk" ) )
   {
     std::string replacement;
-    switch ( specialization() )
-    {
-      case DRUID_FERAL: replacement = ".berserk_cat."; break;
-      case DRUID_GUARDIAN: replacement = ".berserk_bear."; break;
-      default: break;
-    }
-    return player_t::create_expression( fmt::format( "{}{}{}", splits[ 0 ], replacement, splits[ 2 ] ) );
+
+    if ( specialization() == DRUID_FERAL )
+      replacement = "berserk_cat";
+    else if ( specialization() == DRUID_GUARDIAN )
+      replacement = "berserk_bear";
+    else
+      replacement = "berserk";
+
+    return player_t::create_expression( fmt::format( "{}.{}.{}", splits[ 0 ], replacement, splits[ 2 ] ) );
   }
 
   return player_t::create_expression( name_str );

@@ -8,6 +8,7 @@ position=front
 talents=3020011
 covenant=kyrian
 soulbind=pelagos,combat_meditation/piercing_verdict:7/show_of_force:7
+renown=40
 
 # Default consumables
 potion=potion_of_phantom_fire

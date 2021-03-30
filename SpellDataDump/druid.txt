@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-26/37988, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-30/37988, no-networking)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -11324,6 +11324,7 @@ Effects          :
 Description      : Once per minute while in combat, gain $s1 Haste, Critical Strike, Mastery, and Versatility for $300174d.
 
 Name             : Ursine Adept (id=300346) [Spell Family (7), Passive] 
+Hotfixed         : Description
 Class            : Guardian Druid
 School           : Physical
 Spell Type       : None
@@ -11340,7 +11341,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=773723)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
-Description      : Moonfire, Soothe, Remove Corruption, and Rebirth are usable in Bear Form.
+#2 (id=885105)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Hotfixed         : NEW EFFECT
+Description      : Moonfire, Soothe, Remove Corruption, and Rebirth are usable in Bear Form.
+
+All damage taken reduced by $s2%.
 
 Name             : Feline Adept (id=300349) [Spell Family (7), Passive] 
 Class            : Feral Druid

@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-26/37988, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-30/37988, no-networking)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -419,6 +419,7 @@ Description      : Subjugates the target demon up to level $s1, forcing it to do
 Tooltip          : $@auracaster's subject.
 
 Name             : Summon Infernal (desc=Guardian) (id=1122) [Spell Family (5)] 
+Hotfixed         : Cooldown (180000 -> 0), Category Cooldown (180000 -> 0), Category (731 -> 0)
 Class            : Destruction Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -429,9 +430,7 @@ GCD              : 1.5 seconds
 Travel Time      : 1 seconds
 Duration         : 0.25 seconds
 Cooldown         : 180 seconds
-Category         : 731
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
-Category Cooldown: 180 seconds
 Affecting spells : Crashing Chaos (277705 effect#2), Summon Infernal (335175 effect#1)
 Family Flags     : 50, 105
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ....x... 
@@ -853,6 +852,7 @@ Description      : Whips the enemy, reducing movement speed by $s2% for $d.
 Tooltip          : Movement slowed by $s2%.
 
 Name             : Mortal Coil (id=6789) [Spell Family (5)] 
+Hotfixed         : Cooldown (0 -> 45000), Category Cooldown (45000 -> 0), Category (633 -> 0)
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -863,8 +863,6 @@ GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Duration         : 3 seconds
 Cooldown         : 45 seconds
-Category         : 633
-Category Cooldown: 45 seconds
 Proc Chance      : 101%
 Affecting spells : Odr, Shawl of the Ymirjar (212173 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1)
 Family Flags     : 19, 118
@@ -3080,6 +3078,7 @@ Description      : Summons a Felhunter who attacks the target for $108501s1 sec.
 Felhunters will Spell Lock their target when summoned.
 
 Name             : Grimoire: Felguard (desc=Summon) (id=111898) [Spell Family (5)] 
+Hotfixed         : Cooldown (0 -> 120000), Category Cooldown (120000 -> 0), Category (1336 -> 0)
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -3089,8 +3088,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 17 seconds
 Cooldown         : 120 seconds
-Category         : 1336
-Category Cooldown: 120 seconds
 Attributes       : ........ ........ x....... ........   .......x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

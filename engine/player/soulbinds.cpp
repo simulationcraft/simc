@@ -266,14 +266,15 @@ void grove_invigoration( special_effect_t& effect )
   auto buff = buff_t::find( effect.player, "redirected_anima" );
 
   if ( !buff )
-  {  
+  {
     buff = make_buff<stat_buff_t>( effect.player, "redirected_anima", effect.player->find_spell( 342814 ) )
              ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-             ->set_stack_change_callback( [ effect ] ( buff_t*, int old, int cur) 
+             ->set_stack_change_callback( [ effect ] ( buff_t*, int old, int cur )
                { effect.player->recalculate_resource_max( RESOURCE_HEALTH ); } );
   }
 
   effect.player->buffs.redirected_anima = buff;
+  effect.custom_buff = buff;
 
   new dbc_proc_callback_t( effect.player, effect );
 
@@ -1229,6 +1230,20 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
   new marrowed_gemstone_cb_t( effect, buff );
 }
 
+// Passive which increases Stamina based on Renown level
+void deepening_bond( special_effect_t& effect )
+{
+  const auto spell = effect.driver();
+
+  if ( effect.player->sim->debug )
+  {
+    effect.player->sim->out_debug.print( "{} increasing stamina by {}% ({})",
+        effect.player->name(), spell->effectN( 1 ).base_value(), spell->name_cstr() );
+  }
+
+  effect.player->base.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spell->effectN( 1 ).percent();
+}
+
 // Helper function for registering an effect, with autoamtic skipping initialization if soulbind spell is not available
 void register_soulbind_special_effect( unsigned spell_id, const custom_cb_t& init_callback, bool fallback = false )
 {
@@ -1274,6 +1289,19 @@ void register_special_effects()
   register_soulbind_special_effect( 326514, soulbinds::forgeborne_reveries );  // Heirmir
   register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone, true );
+  // Covenant Renown Stamina Passives
+  unique_gear::register_special_effect( 344052, soulbinds::deepening_bond ); // Night Fae Rank 1
+  unique_gear::register_special_effect( 344053, soulbinds::deepening_bond ); // Night Fae Rank 2
+  unique_gear::register_special_effect( 344057, soulbinds::deepening_bond ); // Night Fae Rank 3
+  unique_gear::register_special_effect( 344068, soulbinds::deepening_bond ); // Venthyr Rank 1
+  unique_gear::register_special_effect( 344069, soulbinds::deepening_bond ); // Venthyr Rank 2
+  unique_gear::register_special_effect( 344070, soulbinds::deepening_bond ); // Venthyr Rank 3
+  unique_gear::register_special_effect( 344076, soulbinds::deepening_bond ); // Necrolord Rank 1
+  unique_gear::register_special_effect( 344077, soulbinds::deepening_bond ); // Necrolord Rank 2
+  unique_gear::register_special_effect( 344078, soulbinds::deepening_bond ); // Necrolord Rank 3
+  unique_gear::register_special_effect( 344087, soulbinds::deepening_bond ); // Kyrian Rank 1
+  unique_gear::register_special_effect( 344089, soulbinds::deepening_bond ); // Kyrian Rank 2
+  unique_gear::register_special_effect( 344091, soulbinds::deepening_bond ); // Kyrian Rank 3
 }
 
 void initialize_soulbinds( player_t* player )
@@ -1284,6 +1312,7 @@ void initialize_soulbinds( player_t* player )
   for ( auto soulbind_spell : player->covenant->soulbind_spells() )
   {
     auto spell = player->find_spell( soulbind_spell );
+
     if ( !spell->ok() )
       continue;
 
@@ -1294,6 +1323,26 @@ void initialize_soulbinds( player_t* player )
     unique_gear::initialize_special_effect( effect, soulbind_spell );
 
     // Ensure the soulbind has a custom special effect to protect against errant auto-inference
+    if ( !effect.is_custom() )
+      continue;
+
+    player->special_effects.push_back( new special_effect_t( effect ) );
+  }
+
+  for ( auto renown_spell : player->covenant->renown_spells() )
+  {
+    auto spell = player->find_spell( renown_spell );
+
+    if ( !spell->ok() )
+      continue;
+
+    special_effect_t effect{ player };
+    effect.type   = SPECIAL_EFFECT_EQUIP;
+    effect.source = SPECIAL_EFFECT_SOURCE_SOULBIND;
+
+    unique_gear::initialize_special_effect( effect, renown_spell );
+
+    // Ensure the renown spell has a custom special effect to protect against errant auto-inference
     if ( !effect.is_custom() )
       continue;
 

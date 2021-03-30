@@ -8,6 +8,7 @@ position=ranged_back
 talents=2301032
 covenant=necrolord
 soulbind=bonesmith_heirmir,forgeborne_reveries/call_of_flame:7/heirmirs_arsenal_marrowed_gemstone
+renown=40
 
 # Default consumables
 potion=potion_of_spectral_intellect

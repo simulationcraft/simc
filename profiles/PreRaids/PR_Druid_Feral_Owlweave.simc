@@ -15,7 +15,7 @@ potion=spectral_agility
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
-temporary_enchant=main_hand:shadowcore_oil
+temporary_enchant=main_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -155,6 +155,7 @@ main_hand=quarterstaff_of_discordant_ethic,id=180097,bonus_id=6807/1498/6646,enc
 # gear_ilvl=185.47
 # gear_agility=597
 # gear_stamina=860
+# gear_attack_power=20
 # gear_crit_rating=783
 # gear_haste_rating=70
 # gear_mastery_rating=350

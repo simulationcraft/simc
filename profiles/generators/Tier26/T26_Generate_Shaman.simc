@@ -7,6 +7,7 @@ position=ranged_back
 talents=2301032
 covenant=necrolord
 soulbind=bonesmith_heirmir,forgeborne_reveries/call_of_flame:7/heirmirs_arsenal_marrowed_gemstone
+renown=40
 
 head=nathrian_usurpers_mask,id=178816,bonus_id=6536/1540/6646,gem_id=173129
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646,gem_id=173129
@@ -37,6 +38,7 @@ position=ranged_back
 talents=2301032
 covenant=night_fae
 soulbind=niya,grove_invigoration/call_of_flame:7/niyas_tools_burrs
+renown=40
 
 head=nathrian_usurpers_mask,id=178816,bonus_id=6536/1540/6646,gem_id=173129
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646,gem_id=173129
@@ -67,6 +69,7 @@ position=back
 talents=3211131
 covenant=night_fae
 soulbind=niya,grove_invigoration/magma_fist:7/niyas_tools_burrs
+renown=40
 
 head=helm_of_insatiable_appetite,id=183001,bonus_id=4800/4786/1498/6935,gem_id=173128
 neck=charm_of_eternal_winter,id=183040,bonus_id=4800/4786/1498/6935,gem_id=173128
@@ -97,6 +100,7 @@ position=back
 talents=2111133
 covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/unruly_winds:7/dauntless_duelist
+renown=40
 
 head=boneshatter_helm,id=172325,bonus_id=6993/6716/6649/6647/1532/6935,gem_id=173127
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646,gem_id=173127
@@ -127,6 +131,7 @@ position=ranged_back
 talents=0100200
 covenant=night_fae
 soulbind=niya,grove_invigoration/essential_extraction:7/niyas_tools_burrs
+renown=40
 
 head=nathrian_usurpers_mask,id=178816,bonus_id=6536/1540/6646,gem_id=173129
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646,gem_id=173129

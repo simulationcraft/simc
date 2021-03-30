@@ -5,7 +5,7 @@ from collections import defaultdict
 import dbc.db, dbc.data, dbc.parser, dbc.file
 
 from dbc import constants, util
-from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet, TalentSet, TemporaryEnchantItemSet
+from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet
 
 # Special hotfix field_id value to indicate an entry is new (added completely through the hotfix entry)
 HOTFIX_MAP_NEW_ENTRY  = 0xFFFFFFFF
@@ -1246,6 +1246,10 @@ class SpellDataGenerator(DataGenerator):
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
          332525, 341163, 341165, 332526, # Bron's Call to Action (kyrian/mikanikos)
          323491, 323498, 323502, 323504, 323506, # Volatile Solvent's different buff variations
+         344052, 344053, 344057, # Night Fae Stamina Passives
+         344068, 344069, 344070, # Venthyr Stamina Passives
+         344076, 344077, 344078, # Necrolord Stamina Passives
+         344087, 344089, 344091, # Kyrian Stamina Passives
          # Cabalists Hymnal
          344820,
          # Empyreal Ordnance
@@ -1538,6 +1542,7 @@ class SpellDataGenerator(DataGenerator):
           ( 286976, 0 ),                                # Tectonic Thunder Azerite Trait buff
           ( 327164, 0 ),                                # Primordial Wave buff
           ( 336732, 0 ), ( 336733, 0 ),                 # Legendary: Elemental Equilibrium school buffs
+	  ( 336737, 0 ),                                # Runeforged Legendary: Chains of Devastation
         ),
 
         # Mage:
@@ -2549,6 +2554,10 @@ class SpellDataGenerator(DataGenerator):
 
         # Souldbind conduits
         for spell_id in ConduitSet(self._options).ids():
+            self.process_spell(spell_id, ids, 0, 0)
+
+        # Renown rewards
+        for spell_id in RenownRewardSet(self._options).ids():
             self.process_spell(spell_id, ids, 0, 0)
 
         # Explicitly add Shadowlands legendaries
@@ -4046,6 +4055,27 @@ class CovenantAbilityGenerator(DataGenerator):
             fields += entry.ref('id_spell').field('id', 'name')
 
             self.output_record(fields)
+
+        self.output_footer()
+
+class RenownRewardGenerator(DataGenerator):
+    def filter(self):
+        return RenownRewardSet(self._options).get()
+
+    def generate(self, data=None):
+        data.sort(key = lambda v: (v.id_covenant, v.level, v.id_spell))
+
+        self.output_header(
+                header = 'Renown reward abilities',
+                type = 'renown_reward_entry_t',
+                array = 'renown_reward_ability',
+                length = len(data))
+
+        for entry in data:
+            fields = entry.field('id_covenant', 'level')
+            fields += entry.ref('id_spell').field('id', 'name')
+
+            self.output_record(fields, comment = entry.ref('id_covenant').name)
 
         self.output_footer()
 

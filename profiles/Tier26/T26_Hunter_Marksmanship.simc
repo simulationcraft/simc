@@ -8,6 +8,7 @@ position=ranged_back
 talents=1101032
 covenant=night_fae
 soulbind=niya,grove_invigoration/spirit_attunement:7/niyas_tools_burrs
+renown=40
 
 # Default consumables
 potion=spectral_agility

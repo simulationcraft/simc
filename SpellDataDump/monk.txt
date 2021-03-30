@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-26/37988, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-30/37988, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -5746,6 +5746,7 @@ Damage taken reduced by $w2%.$?$w4>1[
 Absorbs $w4 damage.][]
 
 Name             : Brewmaster's Balance (id=245013) [Spell Family (53), Passive] 
+Hotfixed         : Description
 Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : None
@@ -5762,7 +5763,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=372570)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Description      : Your Armor is increased by $s1%$?s322719[, and you continue to dodge and parry while channeling Spinning Crane Kick][].
+#2 (id=884935)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Hotfixed         : NEW EFFECT
+Description      : All damage taken is reduced by $s2% and your Armor is increased by $s1%.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -11200,6 +11205,7 @@ Effects          :
 Description      : Increases the initial damage of Faeline Stomp by |cFFFFFFFF${$s1}.1%|r per target hit by that damage, up to a maximum of |cFFFFFFFF${$s1*$s2}.1%|r additional damage.
 
 Name             : Keefer's Skyreach (id=337334) [Spell Family (53), Passive] 
+Class            : Monk
 School           : Physical
 Spell Type       : None
 Req. Max Level   : 60
@@ -11224,6 +11230,26 @@ Effects          :
 Description      : Tiger Palm now has a ${$m1+5} yard range and dashes you to the target when used.
 
 Tiger Palm also applies an effect which increases your critical strike chance by $344021m1% for $344021d on the target. This effect cannot be applied more than once every $337341d per target.
+
+Name             : Skyreach Exhaustion (id=337341) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 60 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=835310)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+Description      : $@spelldesc337334
+Tooltip          : Unable to gain Keefer's Skyreach from attacking this target for $d.
 
 Name             : Chi Explosion (id=337342) [Spell Family (53)] 
 Hotfixed         : Attributes
@@ -11906,6 +11932,33 @@ Effects          :
 Description      : Wraps the target in healing mists, healing for $o1 over $d$?a231605[, and increasing healing received from your other spells by $m2%][].
 Tooltip          : Heals $w1 every $t1 sec.
 Healing received from the Monk increased by $m2%.
+
+Name             : Keefer's Skyreach (id=344021) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 6 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ xx...... ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Disable player procs (112), Disable target procs (113)
+Effects          :
+#1 (id=868060)   : Apply Aura (6) | Modify Crit Chance% from Caster's Spells (308)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727)
+                   Family Flags: 103
+Hotfixed         : Sub Type (306 -> 308), Affects Spells
+#2 (id=884941)   : Apply Aura (6) | Modify Crit Chance% from Caster's Pets (339)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : NEW EFFECT
+Description      : $@spelldesc337334
+Tooltip          : Chance to be critically hit by the Monk increased by $w1%.
 
 Name             : Soothing Mist (id=344239) [Spell Family (53)] 
 Class            : Monk

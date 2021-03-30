@@ -7,6 +7,7 @@ position=back
 talents=3320021
 covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/lashing_scars:7/dauntless_duelist
+renown=40
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173127
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
@@ -37,6 +38,7 @@ position=back
 talents=3030022
 covenant=night_fae
 soulbind=niya,grove_invigoration/count_the_odds:7/niyas_tools_burrs
+renown=40
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173129
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173129
@@ -67,6 +69,7 @@ position=back
 talents=1320031
 covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/lashing_scars:7/dauntless_duelist
+renown=40
 
 head=umbrahide_helm,id=172317,bonus_id=6647/6650/6758/7124/1532/6935,gem_id=173127
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127

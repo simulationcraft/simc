@@ -8,6 +8,7 @@ position=back
 talents=2111133
 covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/unruly_winds:7/dauntless_duelist
+renown=40
 
 # Default consumables
 potion=potion_of_spectral_agility
@@ -99,6 +100,7 @@ actions.single+=/primordial_wave,if=!buff.primordial_wave.up
 actions.single+=/stormstrike,if=runeforge.doom_winds.equipped&buff.doom_winds.up
 actions.single+=/crash_lightning,if=runeforge.doom_winds.equipped&buff.doom_winds.up
 actions.single+=/ice_strike,if=runeforge.doom_winds.equipped&buff.doom_winds.up
+actions.single+=/sundering,if=runeforge.doom_winds.equipped&buff.doom_winds.up
 actions.single+=/flame_shock,if=!ticking
 actions.single+=/vesper_totem
 actions.single+=/frost_shock,if=buff.hailstorm.up

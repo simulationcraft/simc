@@ -8,13 +8,14 @@ position=ranged_back
 talents=3000231
 covenant=night_fae
 soulbind=niya,grove_invigoration/conflux_of_elements:7/niyas_tools_burrs
+renown=40
 
 # Default consumables
 potion=spectral_intellect
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
-temporary_enchant=main_hand:shadowcore_oil
+temporary_enchant=main_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -245,6 +246,7 @@ main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinfu
 # gear_ilvl=229.87
 # gear_stamina=1531
 # gear_intellect=1184
+# gear_attack_power=20
 # gear_crit_rating=110
 # gear_haste_rating=662
 # gear_mastery_rating=646
