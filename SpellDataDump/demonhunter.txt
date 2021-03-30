@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-28/37988)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-30/37988, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -341,7 +341,7 @@ Description      : $@spelldesc208195
 Tooltip          : Dealing $w1% increased damage.
 
 Name             : Shattered Souls (id=178940) [Spell Family (107), Passive] 
-Class            : Demon Hunter
+Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : Magic
 Proc Chance      : 100%
@@ -1594,7 +1594,7 @@ Effects          :
 Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and generate $?s203513[${$m3/10} Pain][$m2 Fury].
 
 Name             : Demonic Wards (id=203513) [Spell Family (107), Passive] 
-Replaces         : Demonic Wards (id=278386)
+Hotfixed         : Attributes
 Class            : Vengeance Demon Hunter
 Race             : Blood Elf (0x200)
 School           : Physical
@@ -1609,15 +1609,17 @@ Attributes       : ....x.x. ........ ..x..... x..x.x.x   ........ ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : x....... ........ ........ ........   
+                 : ........ ........ ........ ........   
                  : Passive (6), Cannot cancel aura (31), Don't display in aura bar (60)
 Effects          :
 #1 (id=300162)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+Hotfixed         : Base Value (-5 -> -10)
 #2 (id=872124)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
+Hotfixed         : Base Value (-5 -> -10)
 Description      : Your tattoos reduce $?$s338682[magic damage taken by $s1% and physical damage taken by $s2%.][all damage taken by $s1%.]
 
 Name             : Blind Fury (id=203550) [Spell Family (107), Passive] 
@@ -2041,7 +2043,7 @@ Effects          :
 Description      : Throw a demonic glaive at the target, dealing $346665s1 Physical damage. The glaive can ricochet to $?$s320386[${$346665x1-1} additional enemies][an additional enemy] within 10 yards. Generates high threat.
 
 Name             : Shattered Souls (id=204254) [Spell Family (107), Passive] 
-Replaces         : Shattered Souls (id=178940)
+Hotfixed         : Attributes
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : Magic
@@ -2056,7 +2058,7 @@ Attributes       : ....x.x. x....... ........ x..x....   .....x.. ........ .....
                  : .....x.. ........ ........ ........   ........ ...x.... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   xx...... ........ ........ ........ 
-                 : x....... ........ ........ ........   
+                 : ........ ........ ........ ........   
                  : Passive (6), Does not break stealth (37)
 Effects          :
 #1 (id=301462)   : Apply Aura (6) | Dummy (4)
@@ -5790,7 +5792,7 @@ Effects          :
 Description      : Consume $m1 beneficial Magic effect removing it from the target$?s320313[ and granting you $s2 Fury][].
 
 Name             : Demonic Wards (id=278386) [Spell Family (107), Passive] 
-Class            : Demon Hunter
+Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 13
@@ -6627,29 +6629,6 @@ Effects          :
 #1 (id=738417)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 5.29283 (coefficient=0.055714) | PvP Coefficient: 0.50000 | Trigger Spell: 280712 | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
-
-Name             : Chaos Brand (id=281242) [Spell Family (107), Passive] 
-Replaces         : Chaos Brand (id=255260)
-Class            : Vengeance Demon Hunter
-School           : Physical
-Spell Type       : None
-Spell Level      : 49
-Proc Chance      : 100%
-Proc Flags       : ....x.x. x...x... x.x..... ........ 
-                 : Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : x....... ........ ........ ........   
-                 : Passive (6)
-Effects          :
-#1 (id=739514)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your damage brands the target, increasing magic damage taken by $1490s1%.
 
 Name             : Unstable Catalyst (id=281514) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter

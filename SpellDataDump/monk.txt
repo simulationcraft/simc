@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-28/37988)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-30/37988, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -5746,6 +5746,7 @@ Damage taken reduced by $w2%.$?$w4>1[
 Absorbs $w4 damage.][]
 
 Name             : Brewmaster's Balance (id=245013) [Spell Family (53), Passive] 
+Hotfixed         : Description
 Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : None
@@ -5762,7 +5763,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=372570)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Description      : Your Armor is increased by $s1%$?s322719[, and you continue to dodge and parry while channeling Spinning Crane Kick][].
+#2 (id=884935)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Hotfixed         : NEW EFFECT
+Description      : All damage taken is reduced by $s2% and your Armor is increased by $s1%.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
