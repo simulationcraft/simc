@@ -1,4 +1,4 @@
-priest="PR_Priest_Shadow"
+priest="PR_Priest_Shadow_Venthyr"
 source=default
 spec=shadow
 level=60
@@ -6,8 +6,8 @@ race=mechagnome
 role=spell
 position=ranged_back
 talents=1010132
-covenant=night_fae
-soulbind=niya,grove_invigoration/dissonant_echoes:4
+covenant=necrolord
+soulbind=nadjia,thrill_seeker/dissonant_echoes:4
 
 # Default consumables
 potion=potion_of_spectral_intellect
@@ -55,8 +55,8 @@ actions+=/run_action_list,name=main
 actions.cds=power_infusion,if=priest.self_power_infusion&(buff.voidform.up|!soulbind.combat_meditation.enabled&cooldown.void_eruption.remains>=10|fight_remains<cooldown.void_eruption.remains)&(fight_remains>=cooldown.void_eruption.remains+15&cooldown.void_eruption.remains<=gcd*4|fight_remains>cooldown.power_infusion.duration|fight_remains<cooldown.void_eruption.remains+15|covenant.kyrian|buff.bloodlust.up)
 # Use Silence on CD to proc Sephuz's Proclamation.
 actions.cds+=/silence,target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)
-# Use Fae Guardians on CD outside of Voidform. Use Fae Guardiands in Voidform if you have either Grove Invigoration or Field of Blossoms. Wait for dots to be up before activating Fae Guardians to maximise the buff.
-actions.cds+=/fae_guardians,if=!buff.voidform.up&(!cooldown.void_torrent.up|!talent.void_torrent.enabled)&(variable.dots_up&spell_targets.vampiric_touch==1|active_dot.vampiric_touch==spell_targets.vampiric_touch&spell_targets.vampiric_touch>1)|buff.voidform.up&(soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled)
+# Use Unholy Nova on CD, holding briefly to wait for power infusion or add spawns.
+actions.cds+=/unholy_nova,if=((!raid_event.adds.up&raid_event.adds.in>20)|raid_event.adds.remains>=15|raid_event.adds.duration<15)&(buff.power_infusion.up|cooldown.power_infusion.remains>=10|!priest.self_power_infusion)&(!talent.hungering_void.enabled|debuff.hungering_void.up|!buff.voidform.up)
 actions.cds+=/call_action_list,name=trinkets
 
 # Use Searing Nightmare if you will hit enough targets and Power Infusion and Voidform are not ready, or to refresh SW:P on two or more targets.
