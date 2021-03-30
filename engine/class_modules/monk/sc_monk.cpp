@@ -7077,10 +7077,9 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
     return;
   }
 
-  // March 30, 2021 - Brewmaster’s Balance now also reduces all damage taken by 10%.
   if ( spec.brewmasters_balance->ok() )
   {
-    //s->result_amount *= 1.0 + spec.brewmasters_balance->effectN( 2 ).percent();
+    s->result_amount *= 1.0 + spec.brewmasters_balance->effectN( 2 ).percent();
   }
 
   // Diffuse Magic
