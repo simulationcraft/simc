@@ -71,7 +71,7 @@ actions.demonic=fel_rush,if=(talent.unbound_chaos.enabled&buff.unbound_chaos.up)
 actions.demonic+=/death_sweep,if=variable.blade_dance
 actions.demonic+=/glaive_tempest,if=active_enemies>desired_targets|raid_event.adds.in>10
 actions.demonic+=/throw_glaive,if=conduit.serrated_glaive.enabled&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up
-actions.demonic+=/eye_beam,if=active_enemies>desired_targets|raid_event.adds.in>25&(!variable.use_eye_beam_fury_condition|spell_targets>1|fury<60)
+actions.demonic+=/eye_beam,if=active_enemies>desired_targets|raid_event.adds.in>25&(!variable.use_eye_beam_fury_condition|spell_targets>1|fury<70)
 actions.demonic+=/blade_dance,if=variable.blade_dance&!cooldown.metamorphosis.ready&(cooldown.eye_beam.remains>5|(raid_event.adds.in>cooldown&raid_event.adds.in<25))
 actions.demonic+=/immolation_aura
 actions.demonic+=/annihilation,if=!variable.pooling_for_blade_dance
@@ -98,7 +98,7 @@ actions.normal+=/death_sweep,if=variable.blade_dance
 actions.normal+=/immolation_aura
 actions.normal+=/glaive_tempest,if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>10)
 actions.normal+=/throw_glaive,if=conduit.serrated_glaive.enabled&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up
-actions.normal+=/eye_beam,if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>15&(!variable.use_eye_beam_fury_condition|spell_targets>1|fury<60))
+actions.normal+=/eye_beam,if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>15&(!variable.use_eye_beam_fury_condition|spell_targets>1|fury<70))
 actions.normal+=/blade_dance,if=variable.blade_dance
 actions.normal+=/felblade,if=fury.deficit>=40
 actions.normal+=/annihilation,if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance&!variable.waiting_for_essence_break
