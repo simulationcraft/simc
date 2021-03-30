@@ -465,6 +465,17 @@ struct monk_spell_t : public monk_action_t<spell_t>
     return m;
   }
 
+  double composite_target_crit_chance( player_t* target ) const override
+  {
+    double c = base_t::composite_target_crit_chance( target );
+
+    if ( td( target )->debuff.keefers_skyreach->up() &&
+         base_t::data().affected_by( td( target )->debuff.keefers_skyreach->data().effectN( 1 ) ) )
+      c += td( target )->debuff.keefers_skyreach->value();
+
+    return c;
+  }
+
   double composite_persistent_multiplier( const action_state_t* action_state ) const override
   {
     double pm = base_t::composite_persistent_multiplier( action_state );
@@ -526,6 +537,17 @@ struct monk_heal_t : public monk_action_t<heal_t>
     double m = base_t::composite_target_multiplier( target );
 
     return m;
+  }
+
+  double composite_target_crit_chance( player_t* target ) const override
+  {
+    double c = base_t::composite_target_crit_chance( target );
+
+    if ( td( target )->debuff.keefers_skyreach->up() &&
+         base_t::data().affected_by( td( target )->debuff.keefers_skyreach->data().effectN( 1 ) ) )
+      c += td( target )->debuff.keefers_skyreach->value();
+
+    return c;
   }
 
   double action_multiplier() const override
@@ -796,10 +818,11 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
   double composite_target_crit_chance( player_t* target ) const override
   {
-    double c = player->composite_player_target_crit_chance( target );
+    double c = base_t::composite_target_crit_chance( target );
 
-    if ( td( target )->debuff.keefers_skyreach->up() )
-      c += td( target )->debuff.keefers_skyreach->value();
+    if ( td( target )->debuff.keefers_skyreach->up() && 
+      base_t::data().affected_by( td( target )->debuff.keefers_skyreach->data().effectN( 1 ) ) )
+        c += td( target )->debuff.keefers_skyreach->value();
 
     return c;
   }
