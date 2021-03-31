@@ -6810,6 +6810,9 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
   {
     return make_fn_expr( name, [ this ]
     {
+      if ( buffs.combustion->last_expire_time() < 0_ms )
+        return 0.0;
+
       timespan_t t = sim->current_time() - buffs.combustion->last_expire_time();
       return t / ( t + state.kindling_reduction );
     } );
