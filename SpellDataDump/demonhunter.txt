@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37988 Live (hotfix 2021-03-30/37988, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-03-31/38134, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -8465,7 +8465,6 @@ Description      : You automatically trigger Darkness when you fall below $s1% h
 Tooltip          : You automatically trigger Darkness when you fall below $s1% health. This effect can only occur once every $331497d.
 
 Name             : Spirit of the Darkness Flame (id=337541) [Spell Family (107), Passive] 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
@@ -9602,7 +9601,6 @@ Description      : $@spelldesc179057
 Tooltip          : $@spellaura179057
 
 Name             : The Hunt (id=345335) [Spell Family (107)] 
-Hotfixed         : Affecting Spells
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : Magic

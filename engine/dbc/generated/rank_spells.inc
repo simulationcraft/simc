@@ -1,4 +1,4 @@
-// Rank class spells, wow build 9.0.5.37988
+// Rank class spells, wow build 9.0.5.38134
 static const std::array<rank_class_spell_t, 335> __rank_spells_data { {
   { 10, 269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9, 265, 231792,      0, "Agony"                             , "Rank 2" },
