@@ -614,6 +614,7 @@ public:
     int active_frozen_orbs;
     double from_the_ashes_mastery;
     timespan_t last_enlightened_update;
+    timespan_t kindling_reduction;
   } state;
 
   // Talents
@@ -1069,6 +1070,8 @@ struct combustion_t final : public buff_t
       {
         player->stat_loss( STAT_MASTERY_RATING, current_amount );
         current_amount = 0.0;
+        mage_t* mage = debug_cast<mage_t*>( player );
+        mage->state.kindling_reduction = 0_ms;
       }
     } );
 
@@ -1899,7 +1902,9 @@ struct fire_mage_spell_t : public mage_spell_t
         && s->result == RESULT_CRIT
         && p()->talents.kindling->ok() )
       {
-        p()->cooldowns.combustion->adjust( -p()->talents.kindling->effectN( 1 ).time_value() );
+        timespan_t amount = p()->talents.kindling->effectN( 1 ).time_value();
+        p()->cooldowns.combustion->adjust( -amount );
+        p()->state.kindling_reduction += amount;
       }
 
       if ( triggers.from_the_ashes
@@ -6798,6 +6803,15 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
       for ( auto a : in_flight_list )
         spells += a->num_travel_events();
       return spells;
+    } );
+  }
+
+  if ( util::str_compare_ci( name, "expected_kindling_reduction" ) )
+  {
+    return make_fn_expr( name, [ this ]
+    {
+      timespan_t t = sim->current_time() - buffs.combustion->last_expire_time();
+      return t / ( t + state.kindling_reduction );
     } );
   }
 
