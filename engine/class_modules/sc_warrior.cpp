@@ -109,7 +109,6 @@ public:
     buff_t* last_stand;
     buff_t* meat_cleaver;
     buff_t* overpower;
-    buff_t* rallying_cry;
     buff_t* ravager;
     buff_t* recklessness;
     buff_t* revenge;
@@ -161,12 +160,12 @@ public:
     buff_t* will_of_the_berserker;
 
   } buff;
-  
+
   struct rppm_t
   {
     real_ppm_t* revenge;
   } rppm;
-  
+
   // Cooldowns
   struct cooldowns_t
   {
@@ -2377,13 +2376,13 @@ struct charge_t : public warrior_attack_t
     }
 
     warrior_attack_t::execute();
-    
+
     if ( p()->legendary.reprisal->ok() )
     {
       if ( p()->buff.shield_block->check() )
       // Even though it isn't mentionned anywhere in spelldata, reprisal only triggers shield block for 4s
       {
-        p()->buff.shield_block->extend_duration( p(), 4_s ); 
+        p()->buff.shield_block->extend_duration( p(), 4_s );
       }
       else
       {
@@ -2391,8 +2390,8 @@ struct charge_t : public warrior_attack_t
       }
       p()->buff.revenge->trigger();
     }
-  
-    
+
+
     p()->buff.furious_charge->trigger();
 
     if ( p()->legendary.sephuzs_secret != spell_data_t::not_found() && execute_state->target->type == ENEMY_ADD )
@@ -4210,7 +4209,7 @@ struct revenge_t : public warrior_attack_t
 
     if ( rng().roll( shield_slam_reset ) )
       p()->cooldown.shield_slam->reset( true );
-      
+
     if ( p()->conduit.show_of_force->ok() )
     {
       p()->buff.show_of_force->trigger();
@@ -4515,12 +4514,12 @@ struct thunder_clap_t : public warrior_attack_t
     {
       am *= 1.0 + p() -> talents.unstoppable_force -> effectN( 1 ).percent();
     }
-    
+
         if ( p()->buff.show_of_force->check() )
     {
       am *= 1.0 + ( p()-> buff.show_of_force -> stack_value() );
     }
-    
+
     return am;
   }
 
@@ -4539,12 +4538,12 @@ struct thunder_clap_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    
+
     if ( p()->buff.show_of_force->up() )
     {
       p()->buff.show_of_force->expire();
     }
-    
+
     if ( rng().roll( shield_slam_reset ) )
     {
       p()->cooldown.shield_slam->reset( true );
@@ -5624,7 +5623,7 @@ struct last_stand_t : public warrior_spell_t
   void execute() override
   {
     warrior_spell_t::execute();
-    
+
     if ( p()->conduit.unnerving_focus->ok() )
     {
       p()->buff.unnerving_focus->trigger();
@@ -5660,7 +5659,7 @@ struct rallying_cry_t : public warrior_spell_t
   void execute() override
   {
     warrior_spell_t::execute();
-    p()->buff.rallying_cry->trigger();
+    player->buffs.rallying_cry->trigger();
   }
 };
 
@@ -6850,8 +6849,8 @@ void warrior_t::apl_prot()
     default_list -> add_action( racial_actions[ i ] );
 
   default_list -> add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
-  default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>20&!covenant.venthyr,line_cd=15","Prioritize Execute over Ignore Pain as a rage dump below 20%" ); 
-  default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>20&target.health.pct<80&covenant.venthyr,line_cd=15","Venthyr Condemn has 2 execute windows, 20% and 80%" ); 
+  default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>20&!covenant.venthyr,line_cd=15","Prioritize Execute over Ignore Pain as a rage dump below 20%" );
+  default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>20&target.health.pct<80&covenant.venthyr,line_cd=15","Venthyr Condemn has 2 execute windows, 20% and 80%" );
   default_list -> add_action( this, "heroic_charge,if=rage<60&buff.revenge.down&runeforge.reprisal","Uses Charge when Reprisal is equiped for the benefits");
   default_list -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
   default_list -> add_action( this, "Avatar" );
@@ -6943,16 +6942,16 @@ struct deadly_calm_t : public warrior_buff_t<buff_t>
 
 // Rallying Cry ==============================================================
 
-struct rallying_cry_t : public warrior_buff_t<buff_t>
+struct rallying_cry_t : public buff_t
 {
   double health_change;
-  rallying_cry_t( warrior_t& p, const std::string& n, const spell_data_t* s ) :
-    base_t( p, n, s ), health_change( data().effectN( 1 ).percent() )
+  rallying_cry_t( player_t* p ) :
+    buff_t( p, "rallying_cry", p->find_spell( 97463 ) ), health_change( p->find_spell( 97462 )->effectN( 1 ).percent() )
   { }
 
   void start( int stacks, double value, timespan_t duration ) override
   {
-    warrior_buff_t<buff_t>::start( stacks, value, duration );
+    buff_t::start( stacks, value, duration );
 
     double old_health = player -> resources.current[ RESOURCE_HEALTH ];
     double old_max_health = player -> resources.max[ RESOURCE_HEALTH ];
@@ -7224,8 +7223,6 @@ void warrior_t::create_buffs()
   buff.meat_cleaver = make_buff( this, "meat_cleaver", spell.whirlwind_buff );
   buff.meat_cleaver->set_max_stack(buff.meat_cleaver->max_stack() + as<int>( talents.meat_cleaver->effectN( 2 ).base_value() ) );
 
-  buff.rallying_cry = new buffs::rallying_cry_t( *this, "rallying_cry", find_spell( 97463 ) );
-
   buff.overpower =
     make_buff(this, "overpower", spec.overpower)
     ->set_default_value(spec.overpower->effectN(2).percent() );
@@ -7382,7 +7379,7 @@ void warrior_t::create_buffs()
                           ->add_invalidate( CACHE_STRENGTH )
                           ->set_default_value( conduit.veterans_repute.percent() )
                           ->set_duration( covenant.conquerors_banner->duration() );
-  
+
   buff.show_of_force = make_buff( this, "show_of_force", find_spell( 339825 ) )
                            ->set_default_value( conduit.show_of_force.percent() );
 
@@ -8102,7 +8099,7 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
   {
     a *= 1.0 + buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
   }
-  
+
   if ( buff.unnerving_focus->up() )
   {
     a *= 1.0 + buff.unnerving_focus->stack_value();//Spell data lists all the abilities it provides rage gain to separately - currently it is all of our abilities.
@@ -8753,7 +8750,8 @@ struct warrior_module_t : public module_t
 
   void init( player_t* p ) const override
   {
-        p->buffs.conquerors_banner = make_buff<stat_buff_t>( p, "conquerors_banner_external", p -> find_spell( 325862 ) );
+        p->buffs.conquerors_banner = make_buff<stat_buff_t>( p, "conquerors_banner_external", p->find_spell( 325862 ) );
+        p->buffs.rallying_cry = make_buff<buffs::rallying_cry_t>( p );
   }
   void combat_begin( sim_t* ) const override
   {
