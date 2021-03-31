@@ -30,7 +30,7 @@ save=T26_Mage_Arcane.simc
 
 mage="T26_Mage_Fire"
 level=60
-race=troll
+race=void_elf
 spec=fire
 role=spell
 position=ranged_back
