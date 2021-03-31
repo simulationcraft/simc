@@ -41,8 +41,6 @@ actions.precombat+=/variable,name=combustion_flamestrike,if=variable.combustion_
 actions.precombat+=/variable,name=arcane_explosion,if=variable.arcane_explosion=0,value=99*talent.flame_patch+2*!talent.flame_patch
 # APL Variable Option: This variable specifies the percentage of mana below which Arcane Explosion will not be used.
 actions.precombat+=/variable,name=arcane_explosion_mana,default=40,op=reset
-# APL Variable Option: With Kindling, Combustion's cooldown will be reduced by a random amount, but the number of crits starts very high after activating Combustion and slows down towards the end of Combustion's cooldown. When making decisions in the APL, Combustion's remaining cooldown is reduced by this fraction to account for Kindling.
-actions.precombat+=/variable,name=kindling_reduction,default=0.4,op=reset
 # APL Variable Option: The number of targets Shifting Power should be used on during Combustion.
 actions.precombat+=/variable,name=combustion_shifting_power,default=2,op=reset
 # APL Variable Option: The time remaining on a cast when Combustion can be used in seconds.
@@ -98,9 +96,9 @@ actions+=/use_items,if=variable.time_to_combustion>=variable.on_use_cutoff
 # Use Frost Nova to trigger Grisly Icicle.
 actions+=/frost_nova,if=runeforge.grisly_icicle&buff.combustion.down&(variable.time_to_combustion>cooldown|variable.time_to_combustion<variable.combustion_precast_time+execute_time)
 # Get the Disciplinary Command buff up, unless combustion is soon.
-actions+=/counterspell,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.remains<action.frostbolt.cast_time&buff.disciplinary_command_arcane.down&!buff.disciplinary_command.up&(variable.time_to_combustion>cooldown.buff_disciplinary_command.duration|variable.time_to_combustion<5)
-actions+=/arcane_explosion,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.remains<execute_time+action.frostbolt.cast_time&buff.disciplinary_command_arcane.down&!buff.disciplinary_command.up&(variable.time_to_combustion>cooldown.buff_disciplinary_command.duration|variable.time_to_combustion<5&!talent.rune_of_power)
-actions+=/frostbolt,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.remains<cast_time&buff.disciplinary_command_frost.down&!buff.disciplinary_command.up&(variable.time_to_combustion>cooldown.buff_disciplinary_command.duration|variable.time_to_combustion<5)
+actions+=/counterspell,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.remains<action.frostbolt.cast_time&buff.disciplinary_command_arcane.down&!buff.disciplinary_command.up&(variable.time_to_combustion+action.frostbolt.cast_time>cooldown.buff_disciplinary_command.duration|variable.time_to_combustion<5)
+actions+=/arcane_explosion,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.remains<execute_time+action.frostbolt.cast_time&buff.disciplinary_command_arcane.down&!buff.disciplinary_command.up&(variable.time_to_combustion+execute_time+action.frostbolt.cast_time>cooldown.buff_disciplinary_command.duration|variable.time_to_combustion<5&!talent.rune_of_power)
+actions+=/frostbolt,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.remains<cast_time&buff.disciplinary_command_frost.down&!buff.disciplinary_command.up&(variable.time_to_combustion+cast_time>cooldown.buff_disciplinary_command.duration|variable.time_to_combustion<5)
 actions+=/frost_nova,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_frost.down&!buff.disciplinary_command.up&(variable.time_to_combustion>cooldown.buff_disciplinary_command.duration|variable.time_to_combustion<5)
 actions+=/call_action_list,name=combustion_phase,if=variable.time_to_combustion<=0|variable.time_to_combustion<variable.combustion_precast_time&cooldown.combustion.remains<variable.combustion_precast_time
 actions+=/rune_of_power,if=buff.rune_of_power.down&!buff.firestorm.react&(variable.time_to_combustion>=buff.rune_of_power.duration&variable.time_to_combustion>action.fire_blast.full_recharge_time|variable.time_to_combustion>fight_remains)
@@ -172,7 +170,7 @@ actions.combustion_phase+=/living_bomb,if=buff.combustion.remains<gcd.max&active
 actions.combustion_phase+=/dragons_breath,if=buff.combustion.remains<gcd.max&buff.combustion.up
 
 # Helper variable that contains the actual estimated time that the next Combustion will be ready.
-actions.combustion_timing=variable,name=combustion_ready_time,value=cooldown.combustion.remains*(1-(variable.kindling_reduction+0.2*firestarter.active)*talent.kindling)
+actions.combustion_timing=variable,name=combustion_ready_time,value=cooldown.combustion.remains*expected_kindling_reduction
 # The cast time of the spell that will be precast into Combustion.
 actions.combustion_timing+=/variable,name=combustion_precast_time,value=(action.fireball.cast_time*!conduit.flame_accretion+action.scorch.cast_time+conduit.flame_accretion)*(active_enemies<variable.combustion_flamestrike)+action.flamestrike.cast_time*(active_enemies>=variable.combustion_flamestrike)-variable.combustion_cast_remains
 actions.combustion_timing+=/variable,name=combustion_time,value=variable.combustion_ready_time
@@ -190,8 +188,6 @@ actions.combustion_timing+=/variable,name=combustion_time,op=max,value=cooldown.
 actions.combustion_timing+=/variable,name=combustion_time,op=max,value=buff.rune_of_power.remains,if=talent.rune_of_power&buff.combustion.down
 # Delay Combustion for an extra Rune of Power if the Rune of Power would come off cooldown at least 5 seconds before Combustion would.
 actions.combustion_timing+=/variable,name=combustion_time,op=max,value=cooldown.rune_of_power.remains+buff.rune_of_power.duration,if=talent.rune_of_power&buff.combustion.down&cooldown.rune_of_power.remains+5<variable.combustion_time
-# Delay Combustion by up to 10 seconds to fit in extra usages of Disciplinary Command.
-actions.combustion_timing+=/variable,name=combustion_time,op=max,value=cooldown.buff_disciplinary_command.duration+cooldown.buff_disciplinary_command.remains,if=cooldown.buff_disciplinary_command.remains+cooldown.buff_disciplinary_command.duration<variable.combustion_time-10
 # Delay Combustion if Disciplinary Command would not be ready for it yet.
 actions.combustion_timing+=/variable,name=combustion_time,op=max,value=cooldown.buff_disciplinary_command.remains,if=runeforge.disciplinary_command&buff.disciplinary_command.down
 # Raid Events: Delay Combustion for add spawns of 3 or more adds that will last longer than 15 seconds. These values aren't necessarily optimal in all cases.
@@ -199,7 +195,7 @@ actions.combustion_timing+=/variable,name=combustion_time,op=max,value=raid_even
 # Raid Events: Always use Combustion with vulnerability raid events, override any delays listed above to make sure it gets used here.
 actions.combustion_timing+=/variable,name=combustion_time,value=raid_event.vulnerable.in*!raid_event.vulnerable.up,if=raid_event.vulnerable.exists&variable.combustion_ready_time<raid_event.vulnerable.in
 # Use the next Combustion on cooldown if it would not be expected to delay the scheduled one or the scheduled one would happen less than 15 seconds before the fight ends. Add to variable.kindling_reduction because this includes the frontloaded triggers during Combustion and that variable is meant to be used after Combustion.
-actions.combustion_timing+=/variable,name=combustion_time,value=variable.combustion_ready_time,if=variable.combustion_ready_time+cooldown.combustion.duration*(1-(0.2+variable.kindling_reduction+0.2*firestarter.active)*talent.kindling)<=variable.combustion_time|variable.combustion_time>fight_remains-20
+actions.combustion_timing+=/variable,name=combustion_time,value=variable.combustion_ready_time,if=variable.combustion_ready_time+cooldown.combustion.duration*expected_kindling_reduction<=variable.combustion_time|variable.combustion_time>fight_remains-20
 # Add the current time to the scheduled Combustion to put it in absolute time so that it is still accurate after a little time passes.
 actions.combustion_timing+=/variable,name=combustion_time,op=add,value=time
 # Finally, convert from absolute time and store the relative time in variable.time_to_combustion. Unlike the rest of the calculations, which happen less frequently to speed up the simulation, this happens off-GCD and while casting.
