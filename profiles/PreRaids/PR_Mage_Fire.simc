@@ -194,8 +194,8 @@ actions.combustion_timing+=/variable,name=combustion_time,op=max,value=cooldown.
 actions.combustion_timing+=/variable,name=combustion_time,op=max,value=raid_event.adds.in,if=raid_event.adds.exists&raid_event.adds.count>=3&raid_event.adds.duration>15
 # Raid Events: Always use Combustion with vulnerability raid events, override any delays listed above to make sure it gets used here.
 actions.combustion_timing+=/variable,name=combustion_time,value=raid_event.vulnerable.in*!raid_event.vulnerable.up,if=raid_event.vulnerable.exists&variable.combustion_ready_time<raid_event.vulnerable.in
-# Use the next Combustion on cooldown if it would not be expected to delay the scheduled one or the scheduled one would happen less than 15 seconds before the fight ends. Add to variable.kindling_reduction because this includes the frontloaded triggers during Combustion and that variable is meant to be used after Combustion.
-actions.combustion_timing+=/variable,name=combustion_time,value=variable.combustion_ready_time,if=variable.combustion_ready_time+cooldown.combustion.duration*expected_kindling_reduction<=variable.combustion_time|variable.combustion_time>fight_remains-20
+# Use the next Combustion on cooldown if it would not be expected to delay the scheduled one or the scheduled one would happen less than 20 seconds before the fight ends.
+actions.combustion_timing+=/variable,name=combustion_time,value=variable.combustion_ready_time,if=variable.combustion_ready_time+cooldown.combustion.duration*(1-(0.6+0.2*talent.firestarter)*talent.kindling)<=variable.combustion_time|variable.combustion_time>fight_remains-20
 # Add the current time to the scheduled Combustion to put it in absolute time so that it is still accurate after a little time passes.
 actions.combustion_timing+=/variable,name=combustion_time,op=add,value=time
 # Finally, convert from absolute time and store the relative time in variable.time_to_combustion. Unlike the rest of the calculations, which happen less frequently to speed up the simulation, this happens off-GCD and while casting.
