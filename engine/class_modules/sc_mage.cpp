@@ -332,11 +332,6 @@ public:
   // Ground AoE tracking
   std::array<timespan_t, AOE_MAX> ground_aoe_expiration;
 
-  // Miscellaneous
-  player_t* last_bomb_target;
-  int remaining_winters_chill; // Estimation of remaining Winter's Chill stacks, accounting for travel time
-  double distance_from_rune;
-
   // Data collection
   auto_dispose<std::vector<cooldown_waste_data_t*> > cooldown_waste_data_list;
   auto_dispose<std::vector<shatter_source_t*> > shatter_source_list;
@@ -612,10 +607,17 @@ public:
     int mana_gem_charges;
     int inactive_frozen_orbs;
     int active_frozen_orbs;
+    double distance_from_rune;
     double from_the_ashes_mastery;
     timespan_t last_enlightened_update;
-    timespan_t kindling_reduction;
+    player_t* last_bomb_target;
   } state;
+
+  struct expression_support_t
+  {
+    timespan_t kindling_reduction; // Cumulative reduction from Kindling not counting guaranteed crits from Combustion
+    int remaining_winters_chill; // Estimation of remaining Winter's Chill stacks, accounting for travel time
+  } expression_support;
 
   // Talents
   struct talents_list_t
@@ -1070,8 +1072,6 @@ struct combustion_t final : public buff_t
       {
         player->stat_loss( STAT_MASTERY_RATING, current_amount );
         current_amount = 0.0;
-        mage_t* mage = debug_cast<mage_t*>( player );
-        mage->state.kindling_reduction = 0_ms;
       }
     } );
 
@@ -1205,7 +1205,7 @@ struct rune_of_power_t final : public buff_t
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     auto mage = debug_cast<mage_t*>( player );
-    mage->distance_from_rune = 0.0;
+    mage->state.distance_from_rune = 0.0;
     mage->trigger_disciplinary_command( data().get_school_type() );
 
     return buff_t::trigger( stacks, value, chance, duration );
@@ -1904,7 +1904,8 @@ struct fire_mage_spell_t : public mage_spell_t
       {
         timespan_t amount = p()->talents.kindling->effectN( 1 ).time_value();
         p()->cooldowns.combustion->adjust( -amount );
-        p()->state.kindling_reduction += amount;
+        if ( !p()->buffs.combustion->check() )
+          p()->expression_support.kindling_reduction += amount;
       }
 
       if ( triggers.from_the_ashes
@@ -2300,7 +2301,7 @@ struct frost_mage_spell_t : public mage_spell_t
     mage_spell_t::execute();
 
     if ( consumes_winters_chill )
-      p()->remaining_winters_chill = std::max( p()->remaining_winters_chill - 1, 0 );
+      p()->expression_support.remaining_winters_chill = std::max( p()->expression_support.remaining_winters_chill - 1, 0 );
   }
 
   void impact( action_state_t* s ) override
@@ -3068,6 +3069,7 @@ struct combustion_t final : public fire_mage_spell_t
 
     p()->buffs.combustion->trigger();
     p()->buffs.rune_of_power->trigger();
+    p()->expression_support.kindling_reduction = 0_ms;
   }
 };
 
@@ -3100,7 +3102,7 @@ struct comet_storm_t final : public frost_mage_spell_t
   void execute() override
   {
     frost_mage_spell_t::execute();
-    p()->remaining_winters_chill = 0;
+    p()->expression_support.remaining_winters_chill = 0;
   }
 
   void impact( action_state_t* s ) override
@@ -3609,7 +3611,7 @@ struct flurry_t final : public frost_mage_spell_t
     if ( brain_freeze )
     {
       if ( p()->spec.brain_freeze_2->ok() )
-        p()->remaining_winters_chill = 2;
+        p()->expression_support.remaining_winters_chill = 2;
 
       p()->procs.brain_freeze_used->occur();
     }
@@ -4484,9 +4486,9 @@ struct nether_tempest_t final : public arcane_mage_spell_t
 
     if ( hit_any_target )
     {
-      if ( p()->last_bomb_target && p()->last_bomb_target != target )
-        get_td( p()->last_bomb_target )->dots.nether_tempest->cancel();
-      p()->last_bomb_target = target;
+      if ( p()->state.last_bomb_target && p()->state.last_bomb_target != target )
+        get_td( p()->state.last_bomb_target )->dots.nether_tempest->cancel();
+      p()->state.last_bomb_target = target;
     }
   }
 
@@ -5525,9 +5527,6 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   player_t( sim, MAGE, name, r ),
   events(),
   ground_aoe_expiration(),
-  last_bomb_target(),
-  remaining_winters_chill(),
-  distance_from_rune(),
   action(),
   benefits(),
   buffs(),
@@ -5540,6 +5539,7 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   sample_data(),
   spec(),
   state(),
+  expression_support(),
   talents(),
   runeforge(),
   conduits(),
@@ -6562,10 +6562,8 @@ void mage_t::reset()
   events = events_t();
   burn_phase.reset();
   ground_aoe_expiration = std::array<timespan_t, AOE_MAX>();
-  last_bomb_target = nullptr;
-  remaining_winters_chill = 0;
-  distance_from_rune = 0.0;
   state = state_t();
+  expression_support = expression_support_t();
 }
 
 void mage_t::update_movement( timespan_t duration )
@@ -6777,7 +6775,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
   if ( util::str_compare_ci( name, "remaining_winters_chill" ) )
   {
     return make_fn_expr( name, [ this ]
-    { return remaining_winters_chill; } );
+    { return expression_support.remaining_winters_chill; } );
   }
 
   if ( util::str_compare_ci( name, "hot_streak_spells_in_flight" ) )
@@ -6810,11 +6808,14 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
   {
     return make_fn_expr( name, [ this ]
     {
-      if ( buffs.combustion->last_expire_time() < 0_ms )
+      if ( !talents.kindling->ok() || cooldowns.combustion->last_start < 0_ms )
         return 1.0;
 
-      timespan_t t = sim->current_time() - buffs.combustion->last_expire_time();
-      return t / ( t + state.kindling_reduction );
+      timespan_t t = sim->current_time() - cooldowns.combustion->last_start - buffs.combustion->buff_duration();
+      if ( t < 0_ms )
+        return 1.0;
+
+      return t / ( t + expression_support.kindling_reduction );
     } );
   }
 
@@ -6938,9 +6939,9 @@ stat_e mage_t::convert_hybrid_stat( stat_e s ) const
 
 void mage_t::update_rune_distance( double distance )
 {
-  distance_from_rune += distance;
+  state.distance_from_rune += distance;
 
-  if ( buffs.rune_of_power->check() && distance_from_rune > talents.rune_of_power->effectN( 2 ).radius() )
+  if ( buffs.rune_of_power->check() && state.distance_from_rune > talents.rune_of_power->effectN( 2 ).radius() )
   {
     buffs.rune_of_power->expire();
     sim->print_debug( "{} moved out of Rune of Power.", name() );
