@@ -6812,7 +6812,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
         return 1.0;
 
       timespan_t t = sim->current_time() - cooldowns.combustion->last_start - buffs.combustion->buff_duration();
-      if ( t < 0_ms )
+      if ( t <= 0_ms )
         return 1.0;
 
       return t / ( t + expression_support.kindling_reduction );
