@@ -261,7 +261,15 @@ public:
     double spell_power;
   } spec_override;
 
+  // RPPM objects
+  struct rppms_t
+  {
+    // Feral
+    real_ppm_t* predator;    // Optional RPPM approximation
+  } rppm;
+
   // Options
+  double predator_rppm_rate;
   double initial_astral_power;
   double thorns_attack_period;
   double thorns_hit_chance;
@@ -761,6 +769,7 @@ public:
       form( NO_FORM ),
       eclipse_handler( this ),
       spec_override( spec_override_t() ),
+      predator_rppm_rate( 0.0 ),
       initial_astral_power( 0 ),
       thorns_attack_period( 2.0 ),
       thorns_hit_chance( 0.75 ),
@@ -830,6 +839,7 @@ public:
   void init_procs() override;
   void init_uptimes() override;
   void init_resources( bool ) override;
+  void init_rng() override;
   void init_spells() override;
   void init_scaling() override;
   void init_assessors() override;
@@ -3145,6 +3155,12 @@ public:
 
   void trigger_predator()
   {
+    if ( !( p()->talent.predator->ok() && p()->predator_rppm_rate > 0 ) )
+      return;
+
+    if ( !p()->rppm.predator->trigger() )
+      return;
+
     if ( !p()->cooldown.tigers_fury->down() )
       p()->proc.predator_wasted->occur();
 
@@ -8631,6 +8647,16 @@ void druid_t::init_resources( bool force )
   expected_max_health = calculate_expected_max_health();
 }
 
+// druid_t::init_rng ========================================================
+
+void druid_t::init_rng()
+{
+  // RPPM objects
+  rppm.predator = get_rppm( "predator", predator_rppm_rate );  // Predator: optional RPPM approximation.
+
+  player_t::init_rng();
+}
+
 // druid_t::init_actions ====================================================
 
 void druid_t::init_action_list()
@@ -9522,6 +9548,7 @@ void druid_t::create_options()
 {
   player_t::create_options();
 
+  add_option( opt_deprecated( "predator_rppm", "druid.predator_rppm" ) );
   add_option( opt_deprecated( "initial_astral_power", "druid.initial_astral_power" ) );
   add_option( opt_deprecated( "initial_moon_stage", "druid.initial_moon_stage" ) );
   add_option( opt_deprecated( "eclipse_snapshot_period", "druid.eclipse_snapshot_period" ) );
@@ -9538,6 +9565,7 @@ void druid_t::create_options()
   add_option( opt_deprecated( "convoke_the_spirits_ultimate", "druid.convoke_the_spirits_ultimate" ) );
   add_option( opt_deprecated( "adaptive_swarm_jump_distance", "druid.adaptive_swarm_jump_distance" ) );
 
+  add_option( opt_float( "druid.predator_rppm", predator_rppm_rate ) );
   add_option( opt_float( "druid.initial_astral_power", initial_astral_power ) );
   add_option( opt_int( "druid.initial_moon_stage", initial_moon_stage ) );
   add_option( opt_float( "druid.eclipse_snapshot_period", eclipse_snapshot_period ) );
@@ -10148,6 +10176,7 @@ void druid_t::copy_from( player_t* source )
 
   druid_t* p = debug_cast<druid_t*>( source );
 
+  predator_rppm_rate           = p->predator_rppm_rate;
   initial_astral_power         = p->initial_astral_power;
   initial_moon_stage           = p->initial_moon_stage;
   eclipse_snapshot_period      = p->eclipse_snapshot_period;
