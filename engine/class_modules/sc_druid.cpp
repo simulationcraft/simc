@@ -830,7 +830,6 @@ public:
   void init_procs() override;
   void init_uptimes() override;
   void init_resources( bool ) override;
-  void init_rng() override;
   void init_spells() override;
   void init_scaling() override;
   void init_assessors() override;
