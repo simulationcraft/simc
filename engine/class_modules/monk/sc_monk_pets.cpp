@@ -774,8 +774,11 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   struct sef_whirling_dragon_punch_tick_t : public sef_tick_action_t
   {
-    sef_whirling_dragon_punch_tick_t( storm_earth_and_fire_pet_t* p )
-      : sef_tick_action_t( "whirling_dragon_punch_tick", p, p->o()->passives.whirling_dragon_punch_tick )
+    timespan_t delay;
+
+    sef_whirling_dragon_punch_tick_t( storm_earth_and_fire_pet_t* p, timespan_t delay )
+      : sef_tick_action_t( "whirling_dragon_punch_tick", p, p->o()->passives.whirling_dragon_punch_tick ),
+      delay( delay )
     {
       aoe = -1;
     }
@@ -783,16 +786,47 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   struct sef_whirling_dragon_punch_t : public sef_melee_attack_t
   {
+    sef_whirling_dragon_punch_tick_t* ticks[3];
+
+    struct sef_whirling_dragon_punch_tick_event_t : public event_t
+    {
+      sef_whirling_dragon_punch_tick_t* tick;
+
+      sef_whirling_dragon_punch_tick_event_t( sef_whirling_dragon_punch_tick_t* tick, timespan_t delay )
+          : event_t( *tick->player, delay ), tick( tick )
+      {}
+
+      void execute() override
+      {
+        tick->execute();
+      }
+    };
+
     sef_whirling_dragon_punch_t( storm_earth_and_fire_pet_t* player )
       : sef_melee_attack_t( "whirling_dragon_punch", player, player->o()->talent.whirling_dragon_punch )
     {
-      channeled = true;
+      channeled = false;
 
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
       weapon_power_mod = 0;
 
-      tick_action = new sef_whirling_dragon_punch_tick_t( player );
+      for ( size_t i = 0; i < 3; ++i )
+      {
+        auto delay = base_tick_time * i;
+        ticks[i] = 
+          new sef_whirling_dragon_punch_tick_t( player, delay );
+      }
+    }
+
+    void execute() override
+    {
+      sef_melee_attack_t::execute();
+
+      for ( auto& tick : ticks )
+      {
+        make_event<sef_whirling_dragon_punch_tick_event_t>( *sim, tick, tick->delay );
+      }
     }
   };
 
