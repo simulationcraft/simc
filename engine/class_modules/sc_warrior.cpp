@@ -25,7 +25,6 @@ struct warrior_td_t : public actor_target_data_t
   dot_t* dots_rend;
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_exploiter;
-  buff_t* debuffs_rend;
   buff_t* debuffs_siegebreaker;
   buff_t* debuffs_demoralizing_shout;
   buff_t* debuffs_taunt;
@@ -662,8 +661,6 @@ public:
   double composite_melee_crit_chance() const override;
   double composite_melee_crit_rating() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
-  double composite_target_crit_damage_bonus_multiplier( player_t* ) const
-  { return 1.0; }
   // double composite_leech() const override;
   double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   void teleport( double yards, timespan_t duration ) override;
@@ -975,16 +972,16 @@ public:
 
   double composite_target_crit_damage_bonus_multiplier( player_t* target ) const override
   {
-    double ctdm = ab::composite_target_crit_damage_bonus_multiplier( target );
+    double tcdbm = ab::composite_target_crit_damage_bonus_multiplier( target );
 
     warrior_td_t* td = p()->get_target_data( target );
 
-    if ( affected_by.rend && td->debuffs_rend->check() )
+    if ( affected_by.rend && td->dots_rend->is_ticking() )
     {
-      ctdm *= 1.0 + ( td->debuffs_rend->value() );
+      tcdbm *= 1.0 + ( p()->talents.rend->effectN( 3 ).percent() );
     }
 
-    return ctdm;
+    return tcdbm;
   }
 
   double composite_crit_chance() const override
@@ -4277,16 +4274,6 @@ struct rend_t : public warrior_attack_t
     hasted_ticks  = true;
   }
 
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-    {
-      td( s->target )->debuffs_rend->trigger();
-    }
-  }
-
   bool ready() override
   {
     if ( p()->main_hand_weapon.type == WEAPON_NONE )
@@ -7139,9 +7126,6 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   debuffs_callous_reprisal = make_buff( *this, "callous_reprisal",
                                              p.azerite.callous_reprisal.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
     ->set_default_value( p.azerite.callous_reprisal.spell() -> effectN( 1 ).percent() );
-
-  debuffs_rend = make_buff( *this , "rend" )
-    ->set_default_value( p.talents.rend->effectN( 3 ).percent() );
 
   debuffs_taunt = make_buff( *this, "taunt", p.find_class_spell( "Taunt" ) );
 
