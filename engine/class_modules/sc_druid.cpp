@@ -7441,7 +7441,7 @@ void druid_t::activate()
     } );
   }
 
-  if ( bugs && find_action( "convoke_the_spirits" ) != nullptr )
+  if ( bugs && sim->ignore_invulnerable_targets && find_action( "convoke_the_spirits" ) != nullptr )
   {
     range::for_each( sim->actor_list, [ this ]( player_t* t ) {
       if ( !t->is_enemy() )
@@ -8052,7 +8052,7 @@ void druid_t::create_buffs()
     ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
         auto ap = talent.natures_balance->effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
 
-        if ( sim->target_non_sleeping_list.empty() )
+        if ( sim->ignore_invulnerable_targets && sim->target_non_sleeping_list.empty() )
           ap *= 3.0;  // simulate triple regen when out of combat for 'M+' fight models utilizing invuln
 
         resource_gain( RESOURCE_ASTRAL_POWER, ap, gain.natures_balance );
