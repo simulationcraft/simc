@@ -430,8 +430,12 @@ void darkmoon_deck_voracity( special_effect_t& effect )
     {
       may_crit = false;
 
-      buff = make_buff<stat_buff_t>( player, "voracious_haste", e.driver()->effectN( 2 ).trigger(), item )
-        ->add_stat( STAT_HASTE_RATING, 0 );
+      buff = debug_cast<stat_buff_t*>( buff_t::find( player, "voracious_haste" ) );
+      if ( !buff )
+      {
+        buff = make_buff<stat_buff_t>( player, "voracious_haste", e.driver()->effectN( 2 ).trigger(), item )
+          ->add_stat( STAT_HASTE_RATING, 0 );
+      }
     }
 
     void execute() override
