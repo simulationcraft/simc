@@ -7443,14 +7443,9 @@ void druid_t::activate()
 
   if ( bugs && sim->ignore_invulnerable_targets && find_action( "convoke_the_spirits" ) != nullptr )
   {
-    range::for_each( sim->actor_list, [ this ]( player_t* t ) {
-      if ( !t->is_enemy() )
-        return;
-
-      t->register_on_demise_callback( this, [ this ]( player_t* ) {
-        if ( sim->target_non_sleeping_list.empty() )
-          convoke_ultimate_cast = false;
-      } );
+    sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+      if ( sim->target_non_sleeping_list.empty() )
+        convoke_ultimate_cast = false;
     } );
   }
 
