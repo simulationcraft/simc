@@ -322,6 +322,8 @@ public:
 
   // Druid Events
   std::vector<event_t*> persistent_event_delay;
+  event_t* lycaras_event;
+  timespan_t lycaras_event_remains;
 
   // Buffs
   struct buffs_t
@@ -7382,9 +7384,9 @@ struct lycaras_fleeting_glimpse_t : public action_t
 
     execute_lycaras_action( a, druid->target );
 
-    make_event( *sim, timespan_t::from_seconds( druid->buff.lycaras_fleeting_glimpse->default_value ), [ this ]() {
-      druid->buff.lycaras_fleeting_glimpse->trigger();
-    } );
+    druid->lycaras_event =
+        make_event( *sim, timespan_t::from_seconds( druid->buff.lycaras_fleeting_glimpse->default_value ),
+                    [ this ]() { druid->buff.lycaras_fleeting_glimpse->trigger(); } );
   }
 };
 
@@ -7446,6 +7448,41 @@ void druid_t::activate()
     sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
       if ( sim->target_non_sleeping_list.empty() )
         convoke_ultimate_cast = false;
+    } );
+  }
+
+  if ( sim->ignore_invulnerable_targets && legendary.lycaras_fleeting_glimpse->ok() )
+  {
+    sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+      if ( sim->target_non_sleeping_list.empty() )
+      {
+        if ( buff.lycaras_fleeting_glimpse->check() )
+        {
+          lycaras_event_remains = buff.lycaras_fleeting_glimpse->remains();
+          buff.lycaras_fleeting_glimpse->expire();
+        }
+        else if ( lycaras_event )
+        {
+          // If only the event is up (and not the buff) add the base buff duration so we can determine whether to
+          // trigger the event or the buff when a target becomes active and we back 'in combat'
+          lycaras_event_remains = lycaras_event->remains() + buff.lycaras_fleeting_glimpse->buff_duration();
+          event_t::cancel( lycaras_event );
+        }
+      }
+      else
+      {
+        if ( lycaras_event_remains > buff.lycaras_fleeting_glimpse->buff_duration() )  // trigger the event
+        {
+          lycaras_event = make_event( *sim, lycaras_event_remains - buff.lycaras_fleeting_glimpse->buff_duration(),
+                                      [ this ]() { buff.lycaras_fleeting_glimpse->trigger(); } );
+          lycaras_event_remains = 0_ms;
+        }
+        else if ( lycaras_event_remains > 0_ms )  // trigger the buff
+        {
+          buff.lycaras_fleeting_glimpse->trigger( lycaras_event_remains );
+          lycaras_event_remains = 0_ms;
+        }
+      }
     } );
   }
 
@@ -8706,7 +8743,7 @@ void druid_t::reset()
   eclipse_handler.reset_stacks();
   eclipse_handler.reset_state();
 
-  base_gcd = timespan_t::from_seconds( 1.5 );
+  base_gcd = 1.5_s;
 
   // Restore main hand attack / weapon to normal state
   main_hand_attack = caster_melee_attack;
@@ -8714,6 +8751,8 @@ void druid_t::reset()
 
   // Reset any custom events to be safe.
   persistent_event_delay.clear();
+  lycaras_event = nullptr;
+  lycaras_event_remains = 0_ms;
 
   if ( mastery.natures_guardian->ok() )
     recalculate_resource_max( RESOURCE_HEALTH );
@@ -8793,13 +8832,6 @@ void druid_t::arise()
     }, timespan_t::from_seconds( eclipse_snapshot_period ) ) );
   }
 
-  if ( legendary.lycaras_fleeting_glimpse->ok() )
-  {
-    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, [ this ]() {
-      buff.lycaras_fleeting_glimpse->trigger();
-    }, timespan_t::from_seconds( buff.lycaras_fleeting_glimpse->default_value ) ) );
-  }
-
   if ( buff.yseras_gift )
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.yseras_gift ) );
 
@@ -8824,9 +8856,8 @@ void druid_t::combat_begin()
 
   if ( legendary.lycaras_fleeting_glimpse->ok() )
   {
-    make_event( *sim, timespan_t::from_seconds( buff.lycaras_fleeting_glimpse->default_value ), [ this ]() {
-      buff.lycaras_fleeting_glimpse->trigger();
-    } );
+    lycaras_event = make_event( *sim, timespan_t::from_seconds( buff.lycaras_fleeting_glimpse->default_value ),
+                                [ this ]() { buff.lycaras_fleeting_glimpse->trigger(); } );
   }
 }
 
