@@ -8049,7 +8049,7 @@ void druid_t::create_buffs()
   buff.lycaras_fleeting_glimpse = make_buff( this, "lycaras_fleeting_glimpse", find_spell( 340060 ) )
     ->set_period( 0_ms )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      if ( !new_ )
+      if ( !new_ && lycaras_event_remains == 0_ms )
         active.lycaras_fleeting_glimpse->execute();
     } );
   // default value used as interval for event
