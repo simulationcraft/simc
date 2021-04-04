@@ -6829,7 +6829,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
       if ( !mf_tl.empty() )
       {
-        dist.emplace_back( std::make_pair( CAST_MOONFIRE, 2.0 ) );
+        dist.emplace_back( std::make_pair( CAST_MOONFIRE, 2.5 ) );
         add_more = false;
       }
 
@@ -6867,6 +6867,8 @@ struct convoke_the_spirits_t : public druid_spell_t
         dist.emplace_back( std::make_pair( CAST_WRATH, 0.2 ) );
 
       if ( off_count < 6 )
+        dist.emplace_back( std::make_pair( CAST_HEAL, 0.75 ) );
+      else if ( off_count < 7 )
         dist.emplace_back( std::make_pair( CAST_HEAL, 0.25 ) );
 
       type_ = get_cast_from_dist( dist );
