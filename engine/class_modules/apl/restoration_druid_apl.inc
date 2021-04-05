@@ -21,7 +21,7 @@ def->add_action( "moonfire,target_if=refreshable" );
 def->add_action( "wrath" );
 def->add_action( "moonfire" );
 
-cat->add_action( "heart_of_the_wild,if=cooldown.convoke_the_spirits.remains<30|!covenant.night_fae" );
+cat->add_action( "heart_of_the_wild,if=(cooldown.convoke_the_spirits.remains<30|!covenant.night_fae)&!buff.heart_of_the_wild.up" );
 cat->add_action( "rake,if=buff.shadowmeld.up|buff.prowl.up" );
 cat->add_action( "auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up" );
 cat->add_action( "adaptive_swarm,target_if=!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>5|dot.adaptive_swarm_heal.stack=1)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<3&dot.adaptive_swarm_damage.ticking" );
@@ -39,8 +39,10 @@ cat->add_action( "rake,target_if=refreshable&time_to_die>10&(combo_points<5|rema
 cat->add_action( "swipe_cat,if=spell_targets.swipe_cat>=2" );
 cat->add_action( "shred,if=combo_points<5|energy>90" );
 
-owl->add_action( "heart_of_the_wild,if=cooldown.convoke_the_spirits.remains<30|!covenant.night_fae" );
-owl->add_action( "convoke_the_spirits,if=(buff.heart_of_the_wild.up|cooldown.heart_of_the_wild.remains>60|!talent.heart_of_the_wild.enabled)&(buff.eclipse_solar.up|spell_targets.starfire>1&eclipse.in_any|spell_targets.starfire>=9)&(!equipped.soulleting_ruby|cooldown.soulleting_ruby.remains<114&!cooldown.soulleting_ruby.ready)" );
+owl->add_action( "heart_of_the_wild,if=(cooldown.convoke_the_spirits.remains<30|cooldown.convoke_the_spirits.remains>90|!covenant.night_fae)&!buff.heart_of_the_wild.up" );
+owl->add_action( "cat_form,if=runeforge.oath_of_the_elder_druid&!buff.oath_of_the_elder_druid.up" );
+owl->add_action( "moonkin_form,if=!buff.moonkin_form.up" );
+owl->add_action( "convoke_the_spirits,if=(buff.heart_of_the_wild.up|cooldown.heart_of_the_wild.remains>60|!talent.heart_of_the_wild.enabled)&(buff.eclipse_solar.up|spell_targets.starfire>1&eclipse.in_any|spell_targets.starfire>=9)&(!equipped.soulleting_ruby|cooldown.soulleting_ruby.remains<114&!cooldown.soulleting_ruby.ready)&(buff.heart_of_the_wild.remains>4|!buff.heart_of_the_wild.up)" );
 owl->add_action( "adaptive_swarm,target_if=!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>5|dot.adaptive_swarm_heal.stack=1)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<3&dot.adaptive_swarm_damage.ticking" );
 owl->add_action( "ravenous_frenzy,if=(buff.heart_of_the_wild.up|cooldown.heart_of_the_wild.remains>60|!talent.heart_of_the_wild.enabled)" );
 owl->add_action( "kindred_spirits,if=(buff.heart_of_the_wild.up|cooldown.heart_of_the_wild.remains>60|!talent.heart_of_the_wild.enabled)" );
