@@ -6835,30 +6835,27 @@ struct convoke_the_spirits_t : public druid_spell_t
 
       if ( add_more )
       {
-        if ( main_count < 3 )
-          dist.emplace_back( std::make_pair( CAST_STARSURGE, 5.0 ) );
-        else if ( main_count < 4 )
-          dist.emplace_back( std::make_pair( CAST_STARSURGE, 4.0 ) );
-
         if ( filler_count < 3 )
           dist.emplace_back( std::make_pair( CAST_WRATH, 5.0 ) );
         else if ( filler_count < 4 )
           dist.emplace_back( std::make_pair( CAST_WRATH, 4.0 ) );
         else if ( filler_count < 5 )
-          dist.emplace_back( std::make_pair( CAST_WRATH, 0.5 ) );
+          dist.emplace_back( std::make_pair( CAST_WRATH, 1.0 ) );
       }
 
-      else if ( main_count < 3 )
-        dist.emplace_back( std::make_pair( CAST_STARSURGE, 5.0 ) );
-      else if ( main_count < 4 )
+      if ( main_count < 3 )
         dist.emplace_back( std::make_pair( CAST_STARSURGE, 4.0 ) );
+      else if ( main_count < 4 )
+        dist.emplace_back( std::make_pair( CAST_STARSURGE, 3.0 ) );
       else if ( main_count < 5 )
         dist.emplace_back( std::make_pair( CAST_STARSURGE, 0.5 ) );
+      else if ( main_count < 6 )
+        dist.emplace_back( std::make_pair( CAST_STARSURGE, 0.2 ) );
 
       if ( filler_count < 4 )
         dist.emplace_back( std::make_pair( CAST_WRATH, 4.0 ) );
       else if ( filler_count < 5 )
-        dist.emplace_back( std::make_pair( CAST_WRATH, 2.0 ) );
+        dist.emplace_back( std::make_pair( CAST_WRATH, 1.0 ) );
       else if ( filler_count < 6 )
         dist.emplace_back( std::make_pair( CAST_WRATH, 0.5 ) );
       else if ( filler_count < 7 )
