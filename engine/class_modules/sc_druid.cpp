@@ -6818,7 +6818,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
       if ( !p()->buff.starfall->check() )
       {
-        dist.emplace_back( std::make_pair( CAST_STARFALL, 10.0 ) );
+        dist.emplace_back( std::make_pair( CAST_STARFALL, 3.0 ) );
         add_more = false;
       }
 
@@ -6829,40 +6829,38 @@ struct convoke_the_spirits_t : public druid_spell_t
 
       if ( !mf_tl.empty() )
       {
-        dist.emplace_back( std::make_pair( CAST_MOONFIRE, 2.5 ) );
+        dist.emplace_back( std::make_pair( CAST_MOONFIRE, 3.5 ) );
         add_more = false;
       }
 
       if ( add_more )
       {
         if ( main_count < 3 )
-          dist.emplace_back( std::make_pair( CAST_STARSURGE, 2.0 ) );
+          dist.emplace_back( std::make_pair( CAST_STARSURGE, 5.0 ) );
         else if ( main_count < 4 )
-          dist.emplace_back( std::make_pair( CAST_STARSURGE, 1.0 ) );
+          dist.emplace_back( std::make_pair( CAST_STARSURGE, 4.0 ) );
 
         if ( filler_count < 3 )
-          dist.emplace_back( std::make_pair( CAST_WRATH, 2.25 ) );
+          dist.emplace_back( std::make_pair( CAST_WRATH, 5.0 ) );
         else if ( filler_count < 4 )
-          dist.emplace_back( std::make_pair( CAST_WRATH, 1.5 ) );
+          dist.emplace_back( std::make_pair( CAST_WRATH, 4.0 ) );
         else if ( filler_count < 5 )
-          dist.emplace_back( std::make_pair( CAST_WRATH, 0.75 ) );
+          dist.emplace_back( std::make_pair( CAST_WRATH, 0.5 ) );
       }
 
-      if ( main_count < 2 )
-        dist.emplace_back( std::make_pair( CAST_STARSURGE, 20.0 ) );
       else if ( main_count < 3 )
-        dist.emplace_back( std::make_pair( CAST_STARSURGE, 2.0 ) );
+        dist.emplace_back( std::make_pair( CAST_STARSURGE, 5.0 ) );
       else if ( main_count < 4 )
-        dist.emplace_back( std::make_pair( CAST_STARSURGE, 1.0 ) );
+        dist.emplace_back( std::make_pair( CAST_STARSURGE, 4.0 ) );
       else if ( main_count < 5 )
-        dist.emplace_back( std::make_pair( CAST_STARSURGE, 0.05 ) );
+        dist.emplace_back( std::make_pair( CAST_STARSURGE, 0.5 ) );
 
       if ( filler_count < 4 )
-        dist.emplace_back( std::make_pair( CAST_WRATH, 2.75 ) );
+        dist.emplace_back( std::make_pair( CAST_WRATH, 4.0 ) );
       else if ( filler_count < 5 )
         dist.emplace_back( std::make_pair( CAST_WRATH, 2.0 ) );
       else if ( filler_count < 6 )
-        dist.emplace_back( std::make_pair( CAST_WRATH, 1.0 ) );
+        dist.emplace_back( std::make_pair( CAST_WRATH, 0.5 ) );
       else if ( filler_count < 7 )
         dist.emplace_back( std::make_pair( CAST_WRATH, 0.2 ) );
 
