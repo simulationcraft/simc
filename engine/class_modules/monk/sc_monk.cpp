@@ -62,6 +62,7 @@ struct monk_action_t : public Base
   bool ww_mastery;
   bool may_combo_strike;
   bool trigger_chiji;
+  bool trigger_faeline_stomp;
 
   // Affect flags for various dynamic effects
   struct
@@ -81,6 +82,7 @@ public:
       ww_mastery( false ),
       may_combo_strike( false ),
       trigger_chiji( false ),
+      trigger_faeline_stomp( false ),
       affected_by()
   {
     ab::may_crit = true;
@@ -377,7 +379,7 @@ public:
 
     trigger_storm_earth_and_fire( this );
 
-    if ( p()->buff.faeline_stomp->up() && ab::background == false &&
+    if ( p()->buff.faeline_stomp->up() && trigger_faeline_stomp &&
          p()->rng().roll( p()->user_options.faeline_stomp_uptime ) )
       if ( p()->rng().roll( p()->buff.faeline_stomp->value() ) )
       {
@@ -1036,6 +1038,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     ww_mastery       = true;
     may_combo_strike = true;
     trigger_chiji    = true;
+    trigger_faeline_stomp = true;
     sef_ability      = SEF_TIGER_PALM;
 
     add_child( eye_of_the_tiger_damage );
@@ -1162,7 +1165,8 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
     background = dual = true;
     may_crit          = true;
-    trigger_chiji     = true;
+    trigger_chiji         = true;
+    trigger_faeline_stomp = true;
 
     if ( p->specialization() == MONK_WINDWALKER )
       ap_type         = attack_power_type::WEAPON_BOTH;
@@ -1258,7 +1262,8 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    may_combo_strike     = true;
+    may_combo_strike      = true;
+    trigger_faeline_stomp = true;
     sef_ability          = SEF_RISING_SUN_KICK;
     affected_by.serenity = true;
     ap_type              = attack_power_type::NONE;
@@ -1418,7 +1423,8 @@ struct blackout_kick_t : public monk_melee_attack_t
     parse_options( options_str );
     sef_ability      = SEF_BLACKOUT_KICK;
     may_combo_strike = true;
-    trigger_chiji    = true;
+    trigger_chiji         = true;
+    trigger_faeline_stomp = true;
 
     switch ( p->specialization() )
     {
@@ -1590,7 +1596,8 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   {
     parse_options( options_str );
     sef_ability      = SEF_RUSHING_JADE_WIND;
-    may_combo_strike = true;
+    may_combo_strike      = true;
+    trigger_faeline_stomp = true;
     gcd_type         = gcd_haste_type::NONE;
 
     // Set dot data to 0, since we handle everything through the buff.
@@ -1744,7 +1751,8 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     parse_options( options_str );
 
     sef_ability      = SEF_SPINNING_CRANE_KICK;
-    may_combo_strike = true;
+    may_combo_strike      = true;
+    trigger_faeline_stomp = true;
 
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
     tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
@@ -1903,7 +1911,8 @@ struct fists_of_fury_t : public monk_melee_attack_t
     parse_options( options_str );
 
     sef_ability          = SEF_FISTS_OF_FURY;
-    may_combo_strike     = true;
+    may_combo_strike      = true;
+    trigger_faeline_stomp = true;
     affected_by.serenity = true;
 
     channeled = tick_zero = true;
@@ -1998,6 +2007,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     interrupt_auto_attack = callbacks = false;
     channeled                         = true;
     may_combo_strike                  = true;
+    trigger_faeline_stomp             = true;
 
     spell_power_mod.direct = 0.0;
 
@@ -2036,7 +2046,8 @@ struct fist_of_the_white_tiger_main_hand_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, p, s )
   {
     sef_ability = SEF_FIST_OF_THE_WHITE_TIGER;
-    ww_mastery  = true;
+    ww_mastery            = true;
+    trigger_faeline_stomp = true;
 
     may_dodge = may_parry = may_block = may_miss = true;
     dual                                         = true;
@@ -2054,7 +2065,8 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
   {
     sef_ability          = SEF_FIST_OF_THE_WHITE_TIGER_OH;
     ww_mastery           = true;
-    may_combo_strike     = true;
+    may_combo_strike      = true;
+    trigger_faeline_stomp = true;
     affected_by.serenity = false;
     cooldown->hasted     = false;
     ap_type              = attack_power_type::WEAPON_BOTH;
@@ -2311,6 +2323,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     ww_mastery              = true;
     may_crit = hasted_ticks = false;
     may_combo_strike        = true;
+    trigger_faeline_stomp   = true;
     parse_options( options_str );
     cooldown->duration = data().cooldown();
 
@@ -2793,6 +2806,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
   {
     sef_ability      = SEF_CRACKLING_JADE_LIGHTNING;
     may_combo_strike = true;
+    trigger_faeline_stomp = true;
 
     parse_options( options_str );
 
@@ -4526,6 +4540,7 @@ struct chi_wave_heal_tick_t : public monk_heal_t
   chi_wave_heal_tick_t( monk_t& p, util::string_view name ) : monk_heal_t( name, p, p.passives.chi_wave_heal )
   {
     background = direct_tick = true;
+    trigger_faeline_stomp    = true;
     target                   = player;
   }
 };
@@ -4537,6 +4552,7 @@ struct chi_wave_dmg_tick_t : public monk_spell_t
   {
     background              = true;
     ww_mastery              = true;
+    trigger_faeline_stomp   = true;
     attack_power_mod.direct = player->passives.chi_wave_damage->effectN( 1 ).ap_coeff();
     attack_power_mod.tick   = 0;
   }
@@ -4554,7 +4570,8 @@ struct chi_wave_t : public monk_spell_t
       dmg( true )
   {
     sef_ability      = SEF_CHI_WAVE;
-    may_combo_strike = true;
+    may_combo_strike      = true;
+    trigger_faeline_stomp = true;
     parse_options( options_str );
     hasted_ticks = harmful = false;
     cooldown->hasted       = false;
@@ -4595,7 +4612,8 @@ struct chi_burst_heal_t : public monk_heal_t
 {
   chi_burst_heal_t( monk_t& player ) : monk_heal_t( "chi_burst_heal", player, player.passives.chi_burst_heal )
   {
-    background = true;
+    background            = true;
+    trigger_faeline_stomp = true;
     target     = p();
     aoe        = -1;
   }
@@ -4608,7 +4626,8 @@ struct chi_burst_damage_t : public monk_spell_t
     : monk_spell_t( "chi_burst_damage", &player, player.passives.chi_burst_damage ), num_hit( 0 )
   {
     background = true;
-    ww_mastery = true;
+    ww_mastery            = true;
+    trigger_faeline_stomp = true;
     aoe        = -1;
   }
 
@@ -4641,7 +4660,8 @@ struct chi_burst_t : public monk_spell_t
     : monk_spell_t( "chi_burst", player, player->talent.chi_burst ), heal( nullptr )
   {
     parse_options( options_str );
-    may_combo_strike = true;
+    may_combo_strike      = true;
+    trigger_faeline_stomp = true;
     heal             = new chi_burst_heal_t( *player );
     heal->stats      = stats;
     damage           = new chi_burst_damage_t( *player );
