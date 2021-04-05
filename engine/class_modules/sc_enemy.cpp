@@ -998,7 +998,7 @@ struct heal_enemy_t : public enemy_t
 
     collected_data.htps.change_mode( false );
 
-    true_level = std::min( 100, true_level );
+    true_level = std::min( sim->max_player_level, true_level );
   }
   resource_e primary_resource() const override
   {
