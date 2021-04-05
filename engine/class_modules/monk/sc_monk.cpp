@@ -4540,7 +4540,6 @@ struct chi_wave_heal_tick_t : public monk_heal_t
   chi_wave_heal_tick_t( monk_t& p, util::string_view name ) : monk_heal_t( name, p, p.passives.chi_wave_heal )
   {
     background = direct_tick = true;
-    trigger_faeline_stomp    = true;
     target                   = player;
   }
 };
@@ -4552,7 +4551,6 @@ struct chi_wave_dmg_tick_t : public monk_spell_t
   {
     background              = true;
     ww_mastery              = true;
-    trigger_faeline_stomp   = true;
     attack_power_mod.direct = player->passives.chi_wave_damage->effectN( 1 ).ap_coeff();
     attack_power_mod.tick   = 0;
   }
