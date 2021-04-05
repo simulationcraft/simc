@@ -19,6 +19,7 @@ def->add_action( "kindred_spirits,if=(buff.heart_of_the_wild.up|cooldown.heart_o
 def->add_action( "sunfire,target_if=refreshable" );
 def->add_action( "moonfire,target_if=refreshable" );
 def->add_action( "wrath" );
+def->add_action( "moonfire" );
 
 cat->add_action( "heart_of_the_wild,if=cooldown.convoke_the_spirits.remains<30|!covenant.night_fae" );
 cat->add_action( "rake,if=buff.shadowmeld.up|buff.prowl.up" );
