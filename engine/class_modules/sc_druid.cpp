@@ -4918,7 +4918,7 @@ struct druid_form_t : public druid_spell_t
 
     p()->shapeshift( form );
 
-    if ( p()->legendary.oath_of_the_elder_druid->ok() && !p()->buff.oath_of_the_elder_druid->check() && affinity->ok() )
+    if ( p()->legendary.oath_of_the_elder_druid->ok() && !p()->buff.oath_of_the_elder_druid->check() && !p()->buff.heart_of_the_wild->check() && affinity->ok() )
     {
       p()->buff.oath_of_the_elder_druid->trigger();
       p()->buff.heart_of_the_wild->trigger(
