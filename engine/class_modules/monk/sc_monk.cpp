@@ -4613,7 +4613,8 @@ struct chi_burst_heal_t : public monk_heal_t
     background            = true;
     trigger_faeline_stomp = true;
     target     = p();
-    aoe        = -1;
+    // If we are using the user option, each heal just heals 1 target, otherwise use the old SimC code
+    aoe        = ( p()->user_options.chi_burst_healing_targets > 1 ? 1 : -1 );
   }
 };
 
@@ -4684,7 +4685,15 @@ struct chi_burst_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    heal->execute();
+    // AoE healing is wonky in SimC. Try to simulate healing multiple players without over burdening sims
+    if ( p()->user_options.chi_burst_healing_targets > 1 )
+    {
+      int healing_targets = p()->user_options.chi_burst_healing_targets;
+      for ( int i = 1; i < healing_targets; i++ )
+        heal->execute();
+    }
+    else
+      heal->execute();
     damage->execute();
   }
 };
@@ -5436,6 +5445,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   user_options.initial_chi              = 1;
   user_options.expel_harm_effectiveness = 1.0;
   user_options.faeline_stomp_uptime     = 1.0;
+  user_options.chi_burst_healing_targets = 1;
 }
 
 // monk_t::create_action ====================================================
@@ -6874,6 +6884,7 @@ void monk_t::create_options()
       opt_float( "memory_of_lucid_dreams_proc_chance", user_options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
   add_option( opt_float( "expel_harm_effectiveness", user_options.expel_harm_effectiveness, 0.0, 1.0 ) );
   add_option( opt_float( "faeline_stomp_uptime", user_options.faeline_stomp_uptime, 0.0, 1.0 ) );
+  add_option( opt_int( "chi_burst_healing_targets", user_options.chi_burst_healing_targets ) );
 }
 
 // monk_t::copy_from =========================================================
