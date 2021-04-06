@@ -1984,10 +1984,12 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
 struct whirling_dragon_punch_tick_t : public monk_melee_attack_t
 {
-  whirling_dragon_punch_tick_t( util::string_view name, monk_t* p, const spell_data_t* s )
-    : monk_melee_attack_t( name, p, s )
+  timespan_t delay;
+  whirling_dragon_punch_tick_t( util::string_view name, monk_t* p, const spell_data_t* s, timespan_t delay )
+    : monk_melee_attack_t( name, p, s ), delay( delay )
   {
     ww_mastery = true;
+    trigger_faeline_stomp = true;
 
     background = true;
     aoe        = -1;
@@ -1998,6 +2000,23 @@ struct whirling_dragon_punch_tick_t : public monk_melee_attack_t
 
 struct whirling_dragon_punch_t : public monk_melee_attack_t
 {
+  whirling_dragon_punch_tick_t* ticks[3];
+
+  struct whirling_dragon_punch_tick_event_t : public event_t
+  {
+    whirling_dragon_punch_tick_t* tick;
+
+    whirling_dragon_punch_tick_event_t( whirling_dragon_punch_tick_t* tick, timespan_t delay )
+        : event_t( *tick->player, delay ), tick( tick )
+    {
+    }
+
+    void execute() override
+    {
+      tick->execute();
+    }
+  };
+
   whirling_dragon_punch_t( monk_t* p, util::string_view options_str )
     : monk_melee_attack_t( "whirling_dragon_punch", p, p->talent.whirling_dragon_punch )
   {
@@ -2005,14 +2024,29 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
 
     parse_options( options_str );
     interrupt_auto_attack = callbacks = false;
-    channeled                         = true;
+    channeled                         = false;
     may_combo_strike                  = true;
     trigger_faeline_stomp             = true;
 
     spell_power_mod.direct = 0.0;
 
-    tick_action =
-        new whirling_dragon_punch_tick_t( "whirling_dragon_punch_tick", p, p->passives.whirling_dragon_punch_tick );
+    // 3 server-side hardcoded ticks
+    for ( size_t i = 0; i < 3; ++i )
+    {
+      auto delay = base_tick_time * i;
+      ticks[i] = 
+        new whirling_dragon_punch_tick_t( "whirling_dragon_punch_tick", p, p->passives.whirling_dragon_punch_tick, delay );
+    }
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    for ( auto& tick : ticks )
+    {
+      make_event<whirling_dragon_punch_tick_event_t>( *sim, tick, tick->delay );
+    }
   }
 
   bool ready() override
@@ -2022,14 +2056,6 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
       return monk_melee_attack_t::ready();
 
     return false;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    // WDP has an automatic "tick_on_application" flag set which is causing a tick zero application.
-    // have to set the duration at 2 ticks since the first of the 3 ticks happens at tick zero.
-    timespan_t tt = tick_time( s );
-    return tt * 2;
   }
 };
 
