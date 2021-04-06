@@ -4717,7 +4717,7 @@ struct chi_burst_t : public monk_spell_t
     if ( p()->user_options.chi_burst_healing_targets > 1 )
     {
       int healing_targets = p()->user_options.chi_burst_healing_targets;
-      for ( int i = 1; i < healing_targets; i++ )
+      for ( int i = 0; i < healing_targets; i++ )
         heal->execute();
     }
     else
