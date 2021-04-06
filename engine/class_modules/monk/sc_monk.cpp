@@ -2232,6 +2232,7 @@ struct keg_smash_t : public monk_melee_attack_t
     parse_options( options_str );
 
     aoe = -1;
+    trigger_faeline_stomp = true;
 
     attack_power_mod.direct = p.spec.keg_smash->effectN( 2 ).ap_coeff();
     radius                  = p.spec.keg_smash->effectN( 2 ).radius();
@@ -2912,7 +2913,8 @@ struct breath_of_fire_t : public monk_spell_t
     parse_options( options_str );
     gcd_type = gcd_haste_type::NONE;
 
-    aoe = 1;
+    aoe                   = 1;
+    trigger_faeline_stomp = true;
 
     add_child( p.active_actions.breath_of_fire );
   }
