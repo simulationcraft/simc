@@ -277,7 +277,7 @@ void arcane( player_t* p )
   harmony->add_action( "radiant_spark,if=buff.arcane_harmony.stack=buff.arcane_harmony.max_stack&cooldown.arcane_power.remains>=30&cooldown.touch_of_the_magi.remains+30<=cooldown.arcane_power.remains&cooldown.rune_of_power.remains+30<=cooldown.arcane_power.remains&mana.pct>=15&!conduit.arcane_prodigy" );
   harmony->add_action( "arcane_orb,if=dot.radiant_spark.remains>5&debuff.radiant_spark_vulnerability.stack=0&buff.rune_of_power.down" );
   harmony->add_action( "arcane_barrage,if=debuff.radiant_spark_vulnerability.stack=4" );
-  harmony->add_action( "arcane_blast,if=dot.radiant_spark.remains&debuff.touch_of_the_magi.remains>execute_time&(debuff.radiant_spark_vulnerability.stack=0|debuff.radiant_spark_vulnerability.stack<4)" );
+  harmony->add_action( "arcane_blast,if=dot.radiant_spark.remains&debuff.touch_of_the_magi.remains>execute_time&(debuff.radiant_spark_vulnerability.stack=0|debuff.radiant_spark_vulnerability.stack<4)&!prev_gcd.1.arcane_barrage" );
   harmony->add_action( "arcane_blast,if=dot.radiant_spark.remains>execute_time&debuff.radiant_spark_vulnerability.stack>0&debuff.radiant_spark_vulnerability.stack<4&buff.rune_of_power.down" );
   harmony->add_action( "arcane_orb,if=buff.arcane_charge.stack<2&buff.arcane_power.up" );
   harmony->add_action( "arcane_missiles,if=buff.clearcasting.react&buff.arcane_power.up,chain=1" );
