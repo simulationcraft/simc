@@ -325,7 +325,10 @@ void unholy( player_t* p )
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=trinket.1.has_use_buff&(trinket.1.cooldown.duration%%45=0)", "Evaluates a trinkets cooldown, divided by 45. This was chosen as unholy works on 45 second burst cycles, but has too many cdr effects to give a cooldown.x.duration divisor instead. If it's value has no remainder return 1, else return 0.5." );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=trinket.2.has_use_buff&(trinket.2.cooldown.duration%%45=0)" );
   precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!trinket.1.has_use_buff&trinket.2.has_use_buff|trinket.2.has_use_buff&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync))", "Estimates a trinkets value by comparing the cooldown of the trinket, divided by the duration of the buff it provides. Has a strength modifier to give a higher priority to strength trinkets, as well as a modifier for if a trinket will or will not sync with cooldowns." );
-
+  precombat->add_action( "variable,name=full_cdr,value=talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=9", "Evaluates current setup for the quantity of Apocalypse CDR effects" );
+  precombat->add_action( "variable,name=partial_cdr,value=(talent.army_of_the_damned|conduit.convocation_of_the_dead.rank<9)&!variable.full_cdr" );
+  precombat->add_action( "variable,name=no_cdr,value=!talent.army_of_the_damned&!conduit.convocation_of_the_dead" );
+  
   default_->add_action( "auto_attack" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
   default_->add_action( "variable,name=specified_trinket,value=(equipped.inscrutable_quantum_device&cooldown.inscrutable_quantum_device.ready)", "Prevent specified trinkets being used with automatic lines" );
@@ -350,6 +353,7 @@ void unholy( player_t* p )
   default_->add_action( "run_action_list,name=generic_aoe,if=active_enemies>=2&(!death_and_decay.ticking&(cooldown.death_and_decay.remains>10&!talent.defile|cooldown.defile.remains>10&talent.defile))" );
   default_->add_action( "call_action_list,name=generic,if=active_enemies=1" );
 
+  aoe_burst->add_action( "clawing_shadows,if=active_enemies<=5&((active_enemies*46)+(death_knight.fwounded_targets*23)>(active_enemies*20)+(8*(active_enemies*(active_enemies-1))))" );
   aoe_burst->add_action( "death_coil,if=(buff.sudden_doom.react|!variable.pooling_runic_power)&(buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3|active_enemies=2)", "AoE Burst" );
   aoe_burst->add_action( "epidemic,if=runic_power.deficit<(10+death_knight.fwounded_targets*3)&death_knight.fwounded_targets<6&!variable.pooling_runic_power|buff.swarming_mist.up" );
   aoe_burst->add_action( "epidemic,if=runic_power.deficit<25&death_knight.fwounded_targets>5&!variable.pooling_runic_power" );
@@ -375,7 +379,7 @@ void unholy( player_t* p )
   cooldowns->add_action( "apocalypse,if=active_enemies=1&debuff.festering_wound.stack>=4" );
   cooldowns->add_action( "apocalypse,target_if=max:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack>=4&!death_and_decay.ticking" );
   cooldowns->add_action( "summon_gargoyle,if=runic_power.deficit<14&(cooldown.unholy_blight.remains<10|dot.unholy_blight_dot.remains)" );
-  cooldowns->add_action( "unholy_assault,if=variable.st_planning&debuff.festering_wound.stack<2&(pet.apoc_ghoul.active|buff.dark_transformation.up&!pet.army_ghoul.active)" );
+  cooldowns->add_action( "unholy_assault,if=variable.st_planning&debuff.festering_wound.stack<2&(pet.apoc_ghoul.active|buff.dark_transformation.up&!pet.army_ghoul.active&cooldown.apocalypse.remains>20)" );
   cooldowns->add_action( "unholy_assault,target_if=min:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack<2" );
   cooldowns->add_action( "raise_dead,if=!pet.ghoul.active" );
   cooldowns->add_action( "sacrificial_pact,if=active_enemies>=2&!buff.dark_transformation.up&!cooldown.dark_transformation.ready|fight_remains<gcd" );
@@ -395,10 +399,10 @@ void unholy( player_t* p )
   generic->add_action( "festering_strike,if=covenant.night_fae&cooldown.deaths_due.remains<10&debuff.festering_wound.stack<4&!variable.pooling_runes&(!death_and_decay.ticking|buff.deaths_due.stack=4)" );
   generic->add_action( "death_coil,if=runic_power.deficit<13|fight_remains<5&!debuff.festering_wound.up" );
   generic->add_action( "wound_spender,if=debuff.festering_wound.stack>4&!variable.pooling_runes" );
-  generic->add_action( "wound_spender,if=debuff.festering_wound.up&cooldown.apocalypse.remains_expected>5&!variable.pooling_runes" );
+  generic->add_action( "wound_spender,if=debuff.festering_wound.up&cooldown.apocalypse.remains_expected>5&!variable.pooling_runes&(variable.full_cdr&cooldown.dark_transformation.remains_expected>10&(cooldown.unholy_blight.remains>10|!talent.unholy_blight)|variable.partial_cdr|variable.no_cdr)" );
   generic->add_action( "death_coil,if=runic_power.deficit<20&!variable.pooling_runic_power" );
   generic->add_action( "festering_strike,if=debuff.festering_wound.stack<1&!variable.pooling_runes" );
-  generic->add_action( "festering_strike,if=debuff.festering_wound.stack<4&cooldown.apocalypse.remains_expected<5&!variable.pooling_runes" );
+  generic->add_action( "festering_strike,if=debuff.festering_wound.stack<4&cooldown.apocalypse.remains_expected<5&!variable.pooling_runes&(variable.full_cdr&cooldown.dark_transformation.remains_expected<10&(cooldown.unholy_blight.remains<10|!talent.unholy_blight)|variable.partial_cdr|variable.no_cdr)" );
   generic->add_action( "death_coil,if=!variable.pooling_runic_power" );
 
   generic_aoe->add_action( "wait_for_cooldown,name=soul_reaper,if=talent.soul_reaper&target.time_to_pct_35<5&fight_remains>5&cooldown.soul_reaper.remains<(gcd*0.75)&active_enemies<=3", "Generic AoE Priority" );
