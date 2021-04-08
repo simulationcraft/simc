@@ -357,8 +357,8 @@ void unholy( player_t* p )
   default_->add_action( "run_action_list,name=generic_aoe,if=active_enemies>=2&(!death_and_decay.ticking&(cooldown.death_and_decay.remains>10&!talent.defile|cooldown.defile.remains>10&talent.defile))" );
   default_->add_action( "call_action_list,name=generic,if=active_enemies=1" );
 
-  aoe_burst->add_action( "clawing_shadows,if=active_enemies<=5&((active_enemies*variable.clawing_shadows_damage)+(death_knight.fwounded_targets*variable.wound_damage)>(active_enemies*variable.epidemic_main_damage)+(variable.epidemic_cleave_damage*(active_enemies*(active_enemies-1))))" );
-  aoe_burst->add_action( "death_coil,if=(buff.sudden_doom.react|!variable.pooling_runic_power)&(buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3|active_enemies=2)", "AoE Burst" );
+  aoe_burst->add_action( "clawing_shadows,if=active_enemies<=5&((active_enemies*variable.clawing_shadows_damage)+(death_knight.fwounded_targets*variable.wound_damage)>(active_enemies*variable.epidemic_main_damage)+(variable.epidemic_cleave_damage*(active_enemies*(active_enemies-1))))", "AoE Burst, Clawing shadows evaluates the damage per global of Clawing shadows versus Epidemic, using clawing shadows if it would deal more damage." );
+  aoe_burst->add_action( "death_coil,if=(buff.sudden_doom.react|!variable.pooling_runic_power)&(buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3|active_enemies=2)" );
   aoe_burst->add_action( "epidemic,if=runic_power.deficit<(10+death_knight.fwounded_targets*3)&death_knight.fwounded_targets<6&!variable.pooling_runic_power|buff.swarming_mist.up" );
   aoe_burst->add_action( "epidemic,if=runic_power.deficit<25&death_knight.fwounded_targets>5&!variable.pooling_runic_power" );
   aoe_burst->add_action( "epidemic,if=!death_knight.fwounded_targets&!variable.pooling_runic_power|fight_remains<5|raid_event.adds.exists&raid_event.adds.remains<5" );
