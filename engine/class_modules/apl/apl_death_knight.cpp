@@ -328,7 +328,11 @@ void unholy( player_t* p )
   precombat->add_action( "variable,name=full_cdr,value=talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=9", "Evaluates current setup for the quantity of Apocalypse CDR effects" );
   precombat->add_action( "variable,name=partial_cdr,value=(talent.army_of_the_damned|conduit.convocation_of_the_dead.rank<9)&!variable.full_cdr" );
   precombat->add_action( "variable,name=no_cdr,value=!talent.army_of_the_damned&!conduit.convocation_of_the_dead" );
-  
+  precombat->add_action( "variable,name=epidemic_main_damage,value=dbc.effect.315517.ap_coefficent", "Check DBC for AP coefficents to reduce magic number use." );
+  precombat->add_action( "variable,name=epidemic_cleave_damage,value=dbc.effect.872659.ap_coefficent" );
+  precombat->add_action( "variable,name=wound_damage,value=dbc.effect.285232.ap_coefficent" );
+  precombat->add_action( "variable,name=clawing_shadows_damage,value=dbc.effect.324719.ap_coefficent" );
+
   default_->add_action( "auto_attack" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
   default_->add_action( "variable,name=specified_trinket,value=(equipped.inscrutable_quantum_device&cooldown.inscrutable_quantum_device.ready)", "Prevent specified trinkets being used with automatic lines" );
@@ -353,7 +357,7 @@ void unholy( player_t* p )
   default_->add_action( "run_action_list,name=generic_aoe,if=active_enemies>=2&(!death_and_decay.ticking&(cooldown.death_and_decay.remains>10&!talent.defile|cooldown.defile.remains>10&talent.defile))" );
   default_->add_action( "call_action_list,name=generic,if=active_enemies=1" );
 
-  aoe_burst->add_action( "clawing_shadows,if=active_enemies<=5&((active_enemies*46)+(death_knight.fwounded_targets*23)>(active_enemies*20)+(8*(active_enemies*(active_enemies-1))))" );
+  aoe_burst->add_action( "clawing_shadows,if=active_enemies<=5&((active_enemies*variable.clawing_shadows_damage)+(death_knight.fwounded_targets*variable.wound_damage)>(active_enemies*variable.epidemic_main_damage)+(variable.epidemic_cleave_damage*(active_enemies*(active_enemies-1))))" );
   aoe_burst->add_action( "death_coil,if=(buff.sudden_doom.react|!variable.pooling_runic_power)&(buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3|active_enemies=2)", "AoE Burst" );
   aoe_burst->add_action( "epidemic,if=runic_power.deficit<(10+death_knight.fwounded_targets*3)&death_knight.fwounded_targets<6&!variable.pooling_runic_power|buff.swarming_mist.up" );
   aoe_burst->add_action( "epidemic,if=runic_power.deficit<25&death_knight.fwounded_targets>5&!variable.pooling_runic_power" );
