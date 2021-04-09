@@ -418,11 +418,6 @@ struct call_dreadstalkers_t : public demonology_spell_t
 
       p()->buffs.demonic_calling->decrement();
     }
-    //TOCHECK: This should really be applied by the pet(s) and not the Warlock?
-    if ( p()->talents.from_the_shadows->ok() )
-    {
-      td( target )->debuffs_from_the_shadows->trigger();
-    }
 
     //TOCHECK: Verify only the new pair of dreadstalkers gets the buff
     if ( p()->legendary.grim_inquisitors_dread_calling.ok() )
