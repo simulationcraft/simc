@@ -353,9 +353,9 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=racials" );
   default_->add_action( "sequence,if=active_enemies=1&!death_knight.disable_aotd,name=opener:army_of_the_dead:festering_strike:festering_strike:potion:unholy_blight:dark_transformation:apocalypse" );
   default_->add_action( "call_action_list,name=cooldowns" );
-  default_->add_action( "run_action_list,name=aoe_setup,if=active_enemies>=2&(cooldown.death_and_decay.remains<10&!talent.defile|cooldown.defile.remains<10&talent.defile)&!death_and_decay.ticking" );
+  default_->add_action( "run_action_list,name=aoe_setup,if=active_enemies>=2&(cooldown.death_and_decay.remains<10&!talent.defile|cooldown.defile.remains<10&talent.defile|covenant.night_fae&cooldown.deaths_due.remains<10)&!death_and_decay.ticking" );
   default_->add_action( "run_action_list,name=aoe_burst,if=active_enemies>=2&death_and_decay.ticking" );
-  default_->add_action( "run_action_list,name=generic_aoe,if=active_enemies>=2&(!death_and_decay.ticking&(cooldown.death_and_decay.remains>10&!talent.defile|cooldown.defile.remains>10&talent.defile))" );
+  default_->add_action( "run_action_list,name=generic_aoe,if=active_enemies>=2&(!death_and_decay.ticking&(cooldown.death_and_decay.remains>10&!talent.defile|cooldown.defile.remains>10&talent.defile|covenant.night_fae&cooldown.deaths_due.remains>10))" );
   default_->add_action( "call_action_list,name=generic,if=active_enemies=1" );
 
   aoe_burst->add_action( "clawing_shadows,if=active_enemies<=6&((active_enemies*(variable.clawing_shadows_damage*variable.scourge_strike_rank2))+(death_knight.fwounded_targets*variable.wound_damage)>(active_enemies*variable.epidemic_main_damage)+(variable.epidemic_cleave_damage*(active_enemies*(active_enemies-1))))", "AoE Burst, Clawing shadows evaluates the damage per global of Clawing shadows versus Epidemic, using clawing shadows if it would deal more damage." );
