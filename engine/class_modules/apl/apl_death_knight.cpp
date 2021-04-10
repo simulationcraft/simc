@@ -385,7 +385,7 @@ void unholy( player_t* p )
   cooldowns->add_action( "apocalypse,if=active_enemies=1&debuff.festering_wound.stack>=4" );
   cooldowns->add_action( "apocalypse,target_if=max:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack>=4&!death_and_decay.ticking" );
   cooldowns->add_action( "summon_gargoyle,if=runic_power.deficit<14&(cooldown.unholy_blight.remains<10|dot.unholy_blight_dot.remains)" );
-  cooldowns->add_action( "unholy_assault,if=variable.st_planning&debuff.festering_wound.stack<2&(pet.apoc_ghoul.active|buff.dark_transformation.up&!pet.army_ghoul.active&cooldown.apocalypse.remains>20)" );
+  cooldowns->add_action( "unholy_assault,if=variable.st_planning&debuff.festering_wound.stack<2&(pet.apoc_ghoul.active|buff.dark_transformation.up&!pet.army_ghoul.active&cooldown.apocalypse.remains>10)" );
   cooldowns->add_action( "unholy_assault,target_if=min:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack<2" );
   cooldowns->add_action( "raise_dead,if=!pet.ghoul.active" );
   cooldowns->add_action( "sacrificial_pact,if=active_enemies>=2&!buff.dark_transformation.up&!cooldown.dark_transformation.ready|fight_remains<gcd" );
