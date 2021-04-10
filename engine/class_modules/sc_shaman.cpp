@@ -1001,6 +1001,8 @@ struct ascendance_buff_t : public buff_t
 
 shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t( target, p )
 {
+  heal.riptide = nullptr;
+  heal.earthliving = nullptr;
   // Shared
   dot.flame_shock = target->get_dot( "flame_shock", p );
 
@@ -1885,20 +1887,9 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
 
   bool proc_tidal_waves, consume_tidal_waves;
 
-  shaman_heal_t( const std::string& token, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
+  shaman_heal_t( util::string_view n, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options = std::string() )
-    : base_t( token, p, s ),
-      elw_proc_high( .2 ),
-      elw_proc_low( 1.0 ),
-      resurgence_gain( 0 ),
-      proc_tidal_waves( false ),
-      consume_tidal_waves( false )
-  {
-    parse_options( options );
-  }
-
-  shaman_heal_t( shaman_t* p, const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() )
-    : base_t( "", p, s ),
+    : base_t( n, p, s ),
       elw_proc_high( .2 ),
       elw_proc_low( 1.0 ),
       resurgence_gain( 0 ),
@@ -4038,6 +4029,11 @@ struct chain_lightning_t : public chained_base_t
       m *= 1.0 + p()->talent.stormkeeper->effectN( 2 ).percent();
     }
 
+    if (p()->buff.chains_of_devastation_chain_lightning->up())
+    {
+      m *= 1.0 + p()->buff.chains_of_devastation_chain_lightning->data().effectN( 2 ).percent();
+    }
+
     return m;
   }
 
@@ -5987,7 +5983,7 @@ struct echoing_shock_t : public shaman_spell_t
 struct healing_surge_t : public shaman_heal_t
 {
   healing_surge_t( shaman_t* player, const std::string& options_str )
-    : shaman_heal_t( player, player->find_class_spell( "Healing Surge" ), options_str )
+    : shaman_heal_t("healing_surge", player, player->find_class_spell( "Healing Surge" ), options_str )
   {
     resurgence_gain =
         0.6 * p()->spell.resurgence->effectN( 1 ).average( player ) * p()->spec.resurgence->effectN( 1 ).percent();
@@ -6011,7 +6007,7 @@ struct healing_surge_t : public shaman_heal_t
 struct healing_wave_t : public shaman_heal_t
 {
   healing_wave_t( shaman_t* player, const std::string& options_str )
-    : shaman_heal_t( player, player->find_specialization_spell( "Healing Wave" ), options_str )
+    : shaman_heal_t("healing_wave", player, player->find_specialization_spell( "Healing Wave" ), options_str )
   {
     resurgence_gain =
         p()->spell.resurgence->effectN( 1 ).average( player ) * p()->spec.resurgence->effectN( 1 ).percent();
@@ -6035,7 +6031,7 @@ struct healing_wave_t : public shaman_heal_t
 struct greater_healing_wave_t : public shaman_heal_t
 {
   greater_healing_wave_t( shaman_t* player, const std::string& options_str )
-    : shaman_heal_t( player, player->find_specialization_spell( "Greater Healing Wave" ), options_str )
+    : shaman_heal_t("greater_healing_wave", player, player->find_specialization_spell( "Greater Healing Wave" ), options_str )
   {
     resurgence_gain =
         p()->spell.resurgence->effectN( 1 ).average( player ) * p()->spec.resurgence->effectN( 1 ).percent();
@@ -6059,7 +6055,7 @@ struct greater_healing_wave_t : public shaman_heal_t
 struct riptide_t : public shaman_heal_t
 {
   riptide_t( shaman_t* player, const std::string& options_str )
-    : shaman_heal_t( player, player->find_specialization_spell( "Riptide" ), options_str )
+    : shaman_heal_t("riptide", player, player->find_specialization_spell( "Riptide" ), options_str )
   {
     resurgence_gain =
         0.6 * p()->spell.resurgence->effectN( 1 ).average( player ) * p()->spec.resurgence->effectN( 1 ).percent();
@@ -6071,7 +6067,7 @@ struct riptide_t : public shaman_heal_t
 struct chain_heal_t : public shaman_heal_t
 {
   chain_heal_t( shaman_t* player, const std::string& options_str )
-    : shaman_heal_t( player, player->find_class_spell( "Chain Heal" ), options_str )
+    : shaman_heal_t("chain_heal", player, player->find_class_spell( "Chain Heal" ), options_str )
   {
     resurgence_gain =
         0.333 * p()->spell.resurgence->effectN( 1 ).average( player ) * p()->spec.resurgence->effectN( 1 ).percent();
@@ -6081,7 +6077,7 @@ struct chain_heal_t : public shaman_heal_t
   {
     double m = shaman_heal_t::composite_target_da_multiplier( t );
 
-    if ( td( t )->heal.riptide->is_ticking() )
+    if ( td( t )->heal.riptide && td( t )->heal.riptide->is_ticking() )
       m *= 1.0 + p()->spec.riptide->effectN( 3 ).percent();
 
     return m;
@@ -6109,6 +6105,17 @@ struct chain_heal_t : public shaman_heal_t
       p()->buff.chains_of_devastation_chain_heal->expire();
     }
   }
+
+  double cost() const
+  {
+    if ( p()->buff.chains_of_devastation_chain_heal->up() &&
+         ( p()->specialization() == SHAMAN_ENHANCEMENT || p()->specialization() == SHAMAN_ELEMENTAL ) )
+    {
+      return 0.0;
+    }
+
+    return shaman_heal_t::cost();
+  }
 };
 
 // Healing Rain Spell =======================================================
@@ -6126,7 +6133,8 @@ struct healing_rain_t : public shaman_heal_t
   };
 
   healing_rain_t( shaman_t* player, const std::string& options_str )
-    : shaman_heal_t( player, player->find_specialization_spell( "Healing Rain" ), options_str )
+    : shaman_heal_t( "healing_rain", player, player->find_specialization_spell( "Healing Rain" ),
+                     options_str )
   {
     base_tick_time = data().effectN( 2 ).period();
     dot_duration   = data().duration();
@@ -8308,10 +8316,10 @@ void shaman_t::create_buffs()
   buff.echoes_of_great_sundering = make_buff( this, "echoes_of_great_sundering", find_spell( 336217 ) )
                                        ->set_default_value( find_spell( 336217 )->effectN( 2 ).percent() );
 
-  buff.chains_of_devastation_chain_heal = make_buff( this, "chains_of_devastation_chain_heal", find_spell( 329772 ) );
+  buff.chains_of_devastation_chain_heal = make_buff( this, "chains_of_devastation_chain_heal", find_spell( 336737 ) );
   buff.chains_of_devastation_chain_lightning =
-      make_buff( this, "chains_of_devastation_chain_lightning", find_spell( 329771 ) );
-
+      make_buff( this, "chains_of_devastation_chain_lightning", find_spell( 336736 ) );
+  
   buff.windspeakers_lava_resurgence = make_buff( this, "windspeakers_lava_resurgence", find_spell( 336065 ) )
                             ->set_default_value( find_spell( 336065 )->effectN( 1 ).percent() );
 
