@@ -2427,12 +2427,6 @@ struct between_the_eyes_t : public rogue_attack_t
     }
   }
 
-  void impact( action_state_t* state ) override
-  {
-    rogue_attack_t::impact( state );
-    trigger_prey_on_the_weak( state );
-  }
-
   bool procs_blade_flurry() const override
   { return true; }
 };
