@@ -42,7 +42,6 @@ actions.precombat+=/slice_and_dice,precombat_seconds=1
 actions=stealth
 # Interrupt on cooldown to allow simming interactions with that
 actions+=/kick
-actions+=/variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*8%(2*spell_haste)
 actions+=/variable,name=single_target,value=spell_targets.fan_of_knives<2
 actions+=/call_action_list,name=stealthed,if=stealthed.rogue
 actions+=/call_action_list,name=cds,if=(!talent.master_assassin.enabled|dot.garrote.ticking)
@@ -51,7 +50,7 @@ actions+=/slice_and_dice,if=!buff.slice_and_dice.up&combo_points>=3
 actions+=/envenom,if=buff.slice_and_dice.up&buff.slice_and_dice.remains<5&combo_points>=4
 actions+=/call_action_list,name=dot
 actions+=/call_action_list,name=direct
-actions+=/arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined
+actions+=/arcane_torrent,if=energy.deficit>=15+energy.regen_combined
 actions+=/arcane_pulse
 actions+=/lights_judgment
 actions+=/bag_of_tricks
@@ -90,8 +89,8 @@ actions.cds+=/use_items,slots=trinket2,if=variable.trinket_sync_slot=2&(debuff.v
 
 # Direct damage abilities
 # Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up.
-actions.direct=envenom,if=effective_combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.shiv.up|debuff.flagellation.up|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)
-actions.direct+=/variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target
+actions.direct=envenom,if=effective_combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.shiv.up|debuff.flagellation.up|energy.deficit<=25+energy.regen_combined|!variable.single_target)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)
+actions.direct+=/variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+energy.regen_combined|!variable.single_target
 # Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target
 actions.direct+=/serrated_bone_spike,if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking
 actions.direct+=/serrated_bone_spike,target_if=min:target.time_to_die+(dot.serrated_bone_spike_dot.ticking*600),if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking
@@ -122,13 +121,15 @@ actions.dot+=/pool_resource,for_next=1
 actions.dot+=/garrote,if=refreshable&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>4&master_assassin_remains=0
 actions.dot+=/pool_resource,for_next=1
 actions.dot+=/garrote,cycle_targets=1,if=!variable.skip_cycle_garrote&target!=self.target&refreshable&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>12&master_assassin_remains=0
-# Crimson Tempest on multiple targets at 4+ CP when running out in 2s (up to 4 targets) or 3s (5+ targets)
-actions.dot+=/crimson_tempest,if=spell_targets>=2&remains<2+(spell_targets>=5)&effective_combo_points>=4
+# Crimson Tempest on multiple targets at 4+ CP when running out in 2-3s as long as we have enough regen and aren't setting up for Vendetta
+actions.dot+=/crimson_tempest,if=spell_targets>=2&remains<2+(spell_targets>=5)&effective_combo_points>=4&energy.regen_combined>20&(!cooldown.vendetta.ready|dot.rupture.ticking)
 # Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)
 actions.dot+=/rupture,if=!variable.skip_rupture&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>(4+runeforge.dashing_scoundrel*9+runeforge.doomblade*6)
 actions.dot+=/rupture,cycle_targets=1,if=!variable.skip_cycle_rupture&!variable.skip_rupture&target!=self.target&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>(4+runeforge.dashing_scoundrel*9+runeforge.doomblade*6)
+# Fallback AoE Crimson Tempest with the same logic as above, but ignoring the energy conditions if we aren't using Rupture
+actions.dot+=/crimson_tempest,if=spell_targets>=2&remains<2+(spell_targets>=5)&effective_combo_points>=4
 # Crimson Tempest on ST if in pandemic and nearly max energy and if Envenom won't do more damage due to TB/MA
-actions.dot+=/crimson_tempest,if=spell_targets=1&!runeforge.dashing_scoundrel&master_assassin_remains=0&effective_combo_points>=(cp_max_spend-1)&refreshable&!exsanguinated&!debuff.shiv.up&(energy.deficit<=25+variable.energy_regen_combined)&target.time_to_die-remains>4
+actions.dot+=/crimson_tempest,if=spell_targets=1&!runeforge.dashing_scoundrel&master_assassin_remains=0&effective_combo_points>=(cp_max_spend-1)&refreshable&!exsanguinated&!debuff.shiv.up&(energy.deficit<=25+energy.regen_combined)&target.time_to_die-remains>4
 
 # Stealthed Actions
 # Nighstalker on 3T: Crimson Tempest
