@@ -342,7 +342,7 @@ void unholy( player_t* p )
   default_->add_action( "variable,name=st_planning,value=active_enemies=1&(!raid_event.adds.exists|raid_event.adds.in>15)" );
   default_->add_action( "variable,name=major_cooldowns_active,value=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&pet.apoc_ghoul.active|buff.dark_transformation.up" );
   default_->add_action( "variable,name=apocalypse_timing,value=cooldown.dark_transformation.remains_expected<7&(cooldown.unholy_blight.remains<7|!talent.unholy_blight)" );
-  default_->add_action( "variable,name=apocalypse_setup,value=((4%debuff.festering_wound.stack)*(gcd*gcd))" );
+  default_->add_action( "variable,name=apocalypse_setup,value=((4%debuff.festering_wound.stack)*(gcd*1.3))", "Utilizes this formula to estimate an optimal period before apocalypse comes off cooldown to start setting up for it, 4 because 4 wounds required to use apocalypse, and 1.3x gcd to give it a little more breathing room" );
   default_->add_action( "outbreak,if=dot.virulent_plague.refreshable&!talent.unholy_blight&!raid_event.adds.exists", "Maintaining Virulent Plague is a priority" );
   default_->add_action( "outbreak,target_if=dot.virulent_plague.refreshable&active_enemies>=2&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains)" );
   default_->add_action( "outbreak,if=runeforge.superstrain&(dot.frost_fever.refreshable|dot.blood_plague.refreshable)" );
@@ -410,7 +410,7 @@ void unholy( player_t* p )
   generic->add_action( "death_coil,if=runic_power.deficit<20&!variable.pooling_runic_power" );
   generic->add_action( "festering_strike,if=debuff.festering_wound.stack<1&!variable.pooling_runes" );
   generic->add_action( "festering_strike,if=!variable.pooling_runes&debuff.festering_wound.stack<4&cooldown.apocalypse.remains_expected<=(variable.apocalypse_setup)&(variable.full_cdr&variable.apocalypse_timing|variable.partial_cdr|variable.no_cdr)" );
-  generic->add_action( "wound_spender,if=!variable.pooling_runes&debuff.festering_wound.up&cooldown.apocalypse.remains_expected>(variable.apocalypse_setup+1)&(variable.full_cdr&!variable.apocalypse_timing|variable.partial_cdr|variable.no_cdr)" );
+  generic->add_action( "wound_spender,if=!variable.pooling_runes&debuff.festering_wound.up&cooldown.apocalypse.remains_expected>(variable.apocalypse_setup+gcd)&(variable.full_cdr&!variable.apocalypse_timing|variable.partial_cdr|variable.no_cdr)" );
   generic->add_action( "death_coil,if=!variable.pooling_runic_power" );
 
   generic_aoe->add_action( "wait_for_cooldown,name=soul_reaper,if=talent.soul_reaper&target.time_to_pct_35<5&fight_remains>5&cooldown.soul_reaper.remains<(gcd*0.75)&active_enemies<=3", "Generic AoE Priority" );
