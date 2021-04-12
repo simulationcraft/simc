@@ -4992,7 +4992,7 @@ struct fortifying_brew_t : public monk_buff_t<buff_t>
       // The tooltip is hard-coded with 20% if Brewmaster Rank 2 is activated
       // Currently it's bugged and giving 17.39% HP instead of the intended 20%
       // The intended calculation is:
-      // health_multiplier = health_multiplier * ( 0.20 * ( 1 / (1 + health_multiplier ) ) );
+      // health_multiplier = ( 1 + health_multiplier ) * 0.20 * ( 1 / ( 1 + health_multiplier ) );
       health_multiplier = 0.20 * ( 1 / ( 1 + health_multiplier ) );
     }
 
