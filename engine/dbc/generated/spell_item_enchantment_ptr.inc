@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 9.0.5.37893
-static const std::array<item_enchantment_data_t, 4174> __ptr_spell_item_ench_data { {
+// Item enchantment data, wow build 9.1.0.38312
+static const std::array<item_enchantment_data_t, 4192> __ptr_spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 2, 50,   0,   0, {   2,   0,   0 }, {    3,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 8, 50,   0,   0, {   2,   0,   0 }, {    4,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 50,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720,  0.0000,  0.0000 },   2831, "Reinforced (+$k1 Armor)"           },
@@ -4174,5 +4174,23 @@ static const std::array<item_enchantment_data_t, 4174> __ptr_spell_item_ench_dat
   { 6265,      0, -4,  50,  62, 0, 0,   0,   0, {   5,   3,   3 }, {    0,    0,    0 }, {      5, 342315, 348272 }, {  1.2500,  0.0000,  0.0000 }, 342316, "Eternal Insight"                   },
   { 6266,      0,  0,   0,  50, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Sinful Flame"                      },
   { 6267,      0,  0,   0,  50, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Sinful Flame"                      },
+  { 6269,      0, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 350525,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "Taking Magic damage heals you for $350525S1" },
+  { 6270,      0, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 350530,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "Healing a target below 30% health increases your Int by $350530S1 for $350530D." },
+  { 6271,      0, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 350561,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "Your critical hits cause an additional $350511s1 Shadow damage over $350511d, stacking up to 3 times" },
+  { 6272, 186579, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 354179,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "Your helpful abilities send a Swarm of Locusts to protect your ally." },
+  { 6273, 186581, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 354190,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "Your Swarm of Locusts now chains to up to 3 additional allies." },
+  { 6274, 186582, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 354191,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "Swarm of Locusts casts automatically on a nearby ally every 60 seconds." },
+  { 6275, 186583, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 354192,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "Swarm of Locusts has a 25% chance to cast twice when it casts." },
+  { 6276, 186584, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 354197,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "When your allies with Swarm of Locusts are healed to full health, the Swarm damages a nearby enemy." },
+  { 6277, 186585, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 354199,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "Your melee attacks have a chance to drain a Soul Fragment from your target." },
+  { 6278, 186586, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 354200,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "Soul Fragments from Grim Harvest now stack up to 10 times." },
+  { 6279, 186587, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 354201,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "Reaching 10 stacks unleashes Chaos Bane, dealing Shadow damage and granting you additional power." },
+  { 6280, 186588, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 354202,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "Chaos Bane's damage is increased by 100%." },
+  { 6281, 186589, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 354203,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "Chaos Bane explodes again when it expires." },
+  { 6282, 186592, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 354209,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "Your Critical Hits have a chance to spill your enemy's blood on the ground, which you can absorb." },
+  { 6283, 186594, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 354210,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "Your healing from Blood Patches is increased by 50%." },
+  { 6284, 186595, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 354215,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "If 5 Blood Patches exist at once, they congeal into a Blood Beast." },
+  { 6285, 186596, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 354216,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "When you drop below 50% health, your blood spills into 3 Blood Patches." },
+  { 6286, 186597, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 354218,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "When your Blood Beast expires, heal for all their remaining health." },
 } };
 

@@ -1,4 +1,4 @@
-// Covenant abilities, wow build 9.0.5.37893
+// Covenant abilities, wow build 9.1.0.38312
 static const std::array<covenant_ability_entry_t, 64> __ptr_covenant_ability_data { {
   {  6, 4, 0, 315443, "Abomination Limb"                   },
   { 11, 4, 0, 325727, "Adaptive Swarm"                     },
@@ -66,8 +66,8 @@ static const std::array<covenant_ability_entry_t, 64> __ptr_covenant_ability_dat
   {  3, 3, 0, 328231, "Wild Spirits"                       },
 } };
 
-// Soulbind abilities, wow build 9.0.5.37893
-static const std::array<soulbind_ability_entry_t, 92> __ptr_soulbind_ability_data { {
+// Soulbind abilities, wow build 9.1.0.38312
+static const std::array<soulbind_ability_entry_t, 128> __ptr_soulbind_ability_data { {
   { 319191, 3,  824, "Field of Blossoms"                  },
   { 319210, 3,  826, "Social Butterfly"                   },
   { 319211, 3,  827, "Soothing Voice"                     },
@@ -160,9 +160,45 @@ static const std::array<soulbind_ability_entry_t, 92> __ptr_soulbind_ability_dat
   { 341650, 4, 1770, "Emeni's Ambulatory Flesh"           },
   { 342156, 4, 1154, "Lead by Example"                    },
   { 342270, 3,  863, "Run Without Tiring"                 },
+  { 350899, 4, 1806, "Carver's Eye"                       },
+  { 350935, 4, 1807, "Waking Bone Breastplate"            },
+  { 350936, 4, 1810, "Mnemonic Equipment"                 },
+  { 351089, 4, 1800, "Sole Slough"                        },
+  { 351093, 4, 1803, "Resilient Stitching"                },
+  { 351094, 4, 1802, "Pustule Eruption"                   },
+  { 351146, 1, 1812, "Better Together"                    },
+  { 351147, 1, 1813, "Path of the Devoted"                },
+  { 351149, 1, 1816, "Newfound Resolve"                   },
+  { 351488, 1, 1826, "Spear of the Archon"                },
+  { 351489, 1, 1827, "Hope Springs Eternal"               },
+  { 351491, 1, 1830, "Light the Path"                     },
+  { 351747, 2, 1873, "It's Always Tea Time"               },
+  { 351748, 2, 1874, "Life is but an Appetizer"           },
+  { 351750, 2, 1877, "Party Favors"                       },
+  { 352108, 4, 1820, "Viscous Trail"                      },
+  { 352109, 4, 1821, "Undulating Maneuvers"               },
+  { 352110, 4, 1824, "Kevin's Oozeling"                   },
+  { 352186, 1, 1832, "Soulglow Spectrometer"              },
+  { 352187, 1, 1833, "Reactive Retrofitting"              },
+  { 352188, 1, 1836, "Effusive Anima Accelerator"         },
+  { 352365, 2, 1856, "Regenerative Stone Skin"            },
+  { 352366, 2, 1868, "Nimble Steps"                       },
+  { 352373, 2, 1871, "Fatal Flaw"                         },
+  { 352405, 2, 1867, "Sinful Preservation"                },
+  { 352415, 2, 1857, "Intimidation Tactics"               },
+  { 352417, 2, 1860, "Battlefield Presence"               },
+  { 352501, 3, 1838, "Called Shot"                        },
+  { 352502, 3, 1839, "Survivor's Rally"                   },
+  { 352503, 3, 1842, "Bonded Hearts"                      },
+  { 352779, 3, 1845, "Waking Dreams"                      },
+  { 352782, 3, 1844, "Cunning Dreams"                     },
+  { 352786, 3, 1848, "Dream Delver"                       },
+  { 352800, 3, 1850, "Vorkai Ambush"                      },
+  { 352805, 3, 1854, "Wild Hunt Strategem"                },
+  { 352806, 3, 1851, "Hunt's Exhilaration"                },
 } };
 
-// Conduits, wow build 9.0.5.37893
+// Conduits, wow build 9.1.0.38312
 static const std::array<conduit_entry_t, 274> __ptr_conduit_data { {
   {   5, 334993, "Stalwart Guardian"                  },
   {   7, 335010, "Brutal Vitality"                    },
@@ -312,7 +348,7 @@ static const std::array<conduit_entry_t, 274> __ptr_conduit_data { {
   { 152, 339230, "Serrated Glaive"                    },
   { 153, 339231, "Growing Inferno"                    },
   { 154, 339259, "Piercing Verdict"                   },
-  { 157, 339264, "Markman's Advantage"                },
+  { 157, 339264, "Marksman's Advantage"               },
   { 158, 339265, "Veteran's Repute"                   },
   { 159, 339268, "Light's Barding"                    },
   { 160, 339272, "Resolute Barrier"                   },
@@ -478,7 +514,7 @@ static const std::array<uint16_t, 274> __ptr_conduit_spell_id_index { {
     273,     4,
 } };
 
-// Conduit ranks, wow build 9.0.5.37893
+// Conduit ranks, wow build 9.1.0.38312
 static const std::array<conduit_rank_entry_t, 4110> __ptr_conduit_rank_data { {
   {   5,  0, 334993, -20000.000000 },
   {   5,  1, 334993, -22000.000000 },
@@ -840,21 +876,21 @@ static const std::array<conduit_rank_entry_t, 4110> __ptr_conduit_rank_data { {
   {  29, 12, 336777, 55.000000 },
   {  29, 13, 336777, 57.500000 },
   {  29, 14, 336777, 60.000000 },
-  {  30,  0, 336821, 9.000000 },
-  {  30,  1, 336821, 9.900000 },
-  {  30,  2, 336821, 10.800000 },
-  {  30,  3, 336821, 11.700000 },
-  {  30,  4, 336821, 12.600000 },
-  {  30,  5, 336821, 13.500000 },
-  {  30,  6, 336821, 14.400000 },
-  {  30,  7, 336821, 15.300000 },
-  {  30,  8, 336821, 16.200001 },
-  {  30,  9, 336821, 17.100000 },
-  {  30, 10, 336821, 18.000000 },
-  {  30, 11, 336821, 18.900000 },
-  {  30, 12, 336821, 19.799999 },
-  {  30, 13, 336821, 20.700001 },
-  {  30, 14, 336821, 21.600000 },
+  {  30,  0, 336821, 7.000000 },
+  {  30,  1, 336821, 7.700000 },
+  {  30,  2, 336821, 8.400000 },
+  {  30,  3, 336821, 9.100000 },
+  {  30,  4, 336821, 9.800000 },
+  {  30,  5, 336821, 10.500000 },
+  {  30,  6, 336821, 11.200000 },
+  {  30,  7, 336821, 11.900000 },
+  {  30,  8, 336821, 12.600000 },
+  {  30,  9, 336821, 13.300000 },
+  {  30, 10, 336821, 14.000000 },
+  {  30, 11, 336821, 14.700000 },
+  {  30, 12, 336821, 15.400000 },
+  {  30, 13, 336821, 16.100000 },
+  {  30, 14, 336821, 16.799999 },
   {  31,  0, 336812, 50.000000 },
   {  31,  1, 336812, 55.000000 },
   {  31,  2, 336812, 60.000000 },
@@ -2634,12 +2670,12 @@ static const std::array<conduit_rank_entry_t, 4110> __ptr_conduit_rank_data { {
   { 150,  6, 339151, 8.000000 },
   { 150,  7, 339151, 8.500000 },
   { 150,  8, 339151, 9.000000 },
-  { 150,  9, 339151, 10.000000 },
-  { 150, 10, 339151, 11.000000 },
-  { 150, 11, 339151, 12.000000 },
-  { 150, 12, 339151, 13.000000 },
-  { 150, 13, 339151, 14.000000 },
-  { 150, 14, 339151, 14.500000 },
+  { 150,  9, 339151, 9.500000 },
+  { 150, 10, 339151, 10.000000 },
+  { 150, 11, 339151, 10.500000 },
+  { 150, 12, 339151, 11.000000 },
+  { 150, 13, 339151, 11.500000 },
+  { 150, 14, 339151, 12.000000 },
   { 151,  0, 339228, 10.000000 },
   { 151,  1, 339228, 11.000000 },
   { 151,  2, 339228, 12.000000 },
@@ -3375,21 +3411,21 @@ static const std::array<conduit_rank_entry_t, 4110> __ptr_conduit_rank_data { {
   { 201, 12, 339481, 8800.000000 },
   { 201, 13, 339481, 9200.000000 },
   { 201, 14, 339481, 9600.000000 },
-  { 202,  0, 339500, 15.000000 },
-  { 202,  1, 339500, 16.500000 },
-  { 202,  2, 339500, 18.000000 },
-  { 202,  3, 339500, 19.500000 },
-  { 202,  4, 339500, 21.000000 },
-  { 202,  5, 339500, 22.500000 },
-  { 202,  6, 339500, 24.000000 },
-  { 202,  7, 339500, 25.500000 },
-  { 202,  8, 339500, 27.000000 },
-  { 202,  9, 339500, 28.500000 },
-  { 202, 10, 339500, 30.000000 },
-  { 202, 11, 339500, 31.500000 },
-  { 202, 12, 339500, 33.000000 },
-  { 202, 13, 339500, 34.500000 },
-  { 202, 14, 339500, 36.000000 },
+  { 202,  0, 339500, 7.000000 },
+  { 202,  1, 339500, 7.700000 },
+  { 202,  2, 339500, 8.400000 },
+  { 202,  3, 339500, 9.100000 },
+  { 202,  4, 339500, 9.800000 },
+  { 202,  5, 339500, 10.500000 },
+  { 202,  6, 339500, 11.200000 },
+  { 202,  7, 339500, 11.900000 },
+  { 202,  8, 339500, 12.600000 },
+  { 202,  9, 339500, 13.300000 },
+  { 202, 10, 339500, 14.000000 },
+  { 202, 11, 339500, 14.700000 },
+  { 202, 12, 339500, 15.400000 },
+  { 202, 13, 339500, 16.100000 },
+  { 202, 14, 339500, 16.799999 },
   { 203,  0, 339576, 33.000000 },
   { 203,  1, 339576, 36.000000 },
   { 203,  2, 339576, 39.000000 },
@@ -4590,5 +4626,29 @@ static const std::array<conduit_rank_entry_t, 4110> __ptr_conduit_rank_data { {
   { 282, 12, 346747, 1000.000000 },
   { 282, 13, 346747, 2300.000000 },
   { 282, 14, 346747, 2400.000000 },
+} };
+
+// Renown reward abilities, wow build 9.1.0.38312
+static const std::array<renown_reward_entry_t, 20> __ptr_renown_reward_ability_data { {
+  { 1,   2, 344087, "Deepening Bond"                     }, // Kyrian
+  { 1,  19, 344089, "Deepening Bond"                     }, // Kyrian
+  { 1,  35, 344091, "Deepening Bond"                     }, // Kyrian
+  { 1,  60, 354252, "Deepening Bond"                     }, // Kyrian
+  { 1,  73, 354257, "Deepening Bond"                     }, // Kyrian
+  { 2,   2, 344068, "Deepening Bond"                     }, // Venthyr
+  { 2,  19, 344069, "Deepening Bond"                     }, // Venthyr
+  { 2,  35, 344070, "Deepening Bond"                     }, // Venthyr
+  { 2,  60, 354195, "Deepening Bond"                     }, // Venthyr
+  { 2,  73, 354204, "Deepening Bond"                     }, // Venthyr
+  { 3,   2, 344052, "Deepening Bond"                     }, // Night Fae
+  { 3,  19, 344053, "Deepening Bond"                     }, // Night Fae
+  { 3,  35, 344057, "Deepening Bond"                     }, // Night Fae
+  { 3,  60, 353870, "Deepening Bond"                     }, // Night Fae
+  { 3,  73, 353886, "Deepening Bond"                     }, // Night Fae
+  { 4,   2, 344076, "Deepening Bond"                     }, // Necrolord
+  { 4,  19, 344077, "Deepening Bond"                     }, // Necrolord
+  { 4,  35, 344078, "Deepening Bond"                     }, // Necrolord
+  { 4,  60, 354025, "Deepening Bond"                     }, // Necrolord
+  { 4,  73, 354129, "Deepening Bond"                     }, // Necrolord
 } };
 

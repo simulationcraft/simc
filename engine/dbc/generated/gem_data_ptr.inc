@@ -1,5 +1,5 @@
-// Gem properties, wow build 9.0.5.37893
-static const std::array<gem_property_data_t, 1857> __ptr_gem_property_data { {
+// Gem properties, wow build 9.1.0.38312
+static const std::array<gem_property_data_t, 1875> __ptr_gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
   {    4,  2688, 0x00000004 }, // +$k1 Stamina
@@ -1857,5 +1857,23 @@ static const std::array<gem_property_data_t, 1857> __ptr_gem_property_data { {
   { 3823,  6238, 0x0000000e }, // +$k1 Haste
   { 3824,  6239, 0x0000000e }, // Speed increased by $325335s2 for each Shadowlands gem you have socketed.
   { 3825,  6240, 0x0000000e }, // Restores $325492s2 health every $325492t1 sec for each Shadowlands gem you have socketed.
+  { 3829,  6271, 0x00000020 }, // Your critical hits cause an additional $350511s1 Shadow damage over $350511d, stacking up to 3 times
+  { 3830,  6269, 0x00000020 }, // Taking Magic damage heals you for $350525S1
+  { 3831,  6270, 0x00000020 }, // Healing a target below 30% health increases your Int by $350530S1 for $350530D.
+  { 3832,  6272, 0x00000020 }, // Your helpful abilities send a Swarm of Locusts to protect your ally.
+  { 3833,  6273, 0x00000020 }, // Your Swarm of Locusts now chains to up to 3 additional allies.
+  { 3834,  6274, 0x00000020 }, // Swarm of Locusts casts automatically on a nearby ally every 60 seconds.
+  { 3835,  6275, 0x00000020 }, // Swarm of Locusts has a 25% chance to cast twice when it casts.
+  { 3836,  6276, 0x00000020 }, // When your allies with Swarm of Locusts are healed to full health, the Swarm damages a nearby enemy.
+  { 3837,  6277, 0x00000020 }, // Your melee attacks have a chance to drain a Soul Fragment from your target.
+  { 3838,  6278, 0x00000020 }, // Soul Fragments from Grim Harvest now stack up to 10 times.
+  { 3839,  6279, 0x00000020 }, // Reaching 10 stacks unleashes Chaos Bane, dealing Shadow damage and granting you additional power.
+  { 3840,  6280, 0x00000020 }, // Chaos Bane's damage is increased by 100%.
+  { 3841,  6281, 0x00000020 }, // Chaos Bane explodes again when it expires.
+  { 3842,  6282, 0x00000020 }, // Your Critical Hits have a chance to spill your enemy's blood on the ground, which you can absorb.
+  { 3843,  6283, 0x00000020 }, // Your healing from Blood Patches is increased by 50%.
+  { 3844,  6284, 0x00000020 }, // If 5 Blood Patches exist at once, they congeal into a Blood Beast.
+  { 3845,  6285, 0x00000020 }, // When you drop below 50% health, your blood spills into 3 Blood Patches.
+  { 3846,  6286, 0x00000020 }, // When your Blood Beast expires, heal for all their remaining health.
 } };
 
