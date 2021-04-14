@@ -69,6 +69,7 @@ public:
   // Active
   struct active_t
   {
+    action_t* natures_fury;
     action_t* ancient_aftershock_pulse;
     action_t* spear_of_bastion_attack;
     action_t* deep_wounds_ARMS;
@@ -1176,6 +1177,7 @@ public:
           double times_over_threshold = floor( p()->legendary.glory_counter / (p()->specialization() == WARRIOR_PROTECTION ? 10 : 20) );
           p()->buff.conquerors_banner->extend_duration( p(), timespan_t::from_millis( p()->legendary.glory->effectN( 3 ).base_value() ) * times_over_threshold );
           p()->buff.conquerors_mastery->extend_duration( p(), timespan_t::from_millis( p()->legendary.glory->effectN( 3 ).base_value() ) * times_over_threshold );
+          p()->buff.veterans_repute->extend_duration( p(), timespan_t::from_millis( p()->legendary.glory->effectN( 3 ).base_value() ) * times_over_threshold );
           p()->legendary.glory_counter -= (p()->specialization() == WARRIOR_PROTECTION ? 10 : 20) * times_over_threshold ;
           p()->proc.glory->occur();
         }
@@ -4944,7 +4946,28 @@ struct ancient_aftershock_pulse_t : public warrior_attack_t
     energize_type     = action_energize::PER_HIT;
     energize_resource = RESOURCE_RAGE;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( p()->active.natures_fury )
+    {
+      p()->active.natures_fury->set_target( s->target );
+      p()->active.natures_fury->execute();
+    }
+   }
 };
+
+struct natures_fury_dot_t : public warrior_attack_t
+{
+  natures_fury_dot_t( warrior_t* p ) : warrior_attack_t( "natures_fury", p, p->find_spell( 354163 ) ) 
+  {
+    //background = tick_may_crit = true;
+    //hasted_ticks               = false;
+  }
+};
+
 struct ancient_aftershock_t : public warrior_attack_t
 {
   ancient_aftershock_t( warrior_t* p, const std::string& options_str )
@@ -4958,13 +4981,27 @@ struct ancient_aftershock_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+    timespan_t duration = p()->spell.aftershock_duration->duration();
+    if ( p()->legendary.natures_fury->ok() )
+      duration += p()->legendary.natures_fury->effectN( 1 ).time_value();
 
     make_event<ground_aoe_event_t>( *p()->sim, p(), ground_aoe_params_t()
       .target( execute_state->target )
       .pulse_time( timespan_t::from_seconds( 3.0 ) ) // hard coded by interns
-      .duration( p()->spell.aftershock_duration->duration() )
+      .duration( duration )
       .action( p()->active.ancient_aftershock_pulse ) );
   }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( p()->active.natures_fury )
+    {
+      p()->active.natures_fury->set_target( s->target );
+      p()->active.natures_fury->execute();
+    }
+   }
 };
 
 // Arms Condemn==============================================================
@@ -6379,7 +6416,7 @@ void warrior_t::init_spells()
   legendary.glory                     = find_runeforge_legendary( "Glory" );
   legendary.leaper                    = find_runeforge_legendary( "Leaper" );
   legendary.misshapen_mirror          = find_runeforge_legendary( "Misshapen Mirror" );
-  legendary.natures_fury              = find_runeforge_legendary( "Natures Fury" );
+  legendary.natures_fury              = find_runeforge_legendary( "Nature's Fury" );
   legendary.seismic_reverberation     = find_runeforge_legendary( "Seismic Reverberation" );
   legendary.signet_of_tormented_kings = find_runeforge_legendary( "Signet of Tormented Kings" );
   legendary.sinful_surge              = find_runeforge_legendary( "Sinful Surge" );
@@ -6411,6 +6448,8 @@ void warrior_t::init_spells()
     auto_attack_multiplier *= 1.0 + spec.single_minded_fury->effectN( 4 ).percent();
   }
 
+  if ( legendary.natures_fury->ok() )
+    active.natures_fury = new natures_fury_dot_t( this );
   if ( covenant.ancient_aftershock->ok() )
     active.ancient_aftershock_pulse = new ancient_aftershock_pulse_t( this );
   if ( covenant.spear_of_bastion->ok() )
