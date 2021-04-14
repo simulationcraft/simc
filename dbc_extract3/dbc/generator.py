@@ -625,7 +625,7 @@ class ItemDataGenerator(DataGenerator):
                     filter_ilevel = False
                 else:
                     # On-use item, with a valid spell (and cooldown)
-                    for item_effect in item.children('ItemEffect'):
+                    for item_effect in [c.ref('id_item_effect') for c in item.children('ItemXItemEffect')]:
                         if item_effect.trigger_type == 0 and item_effect.id_spell > 0 and (item_effect.cooldown_group_duration > 0 or item_effect.cooldown_duration > 0):
                             filter_ilevel = False
                             break
@@ -639,7 +639,7 @@ class ItemDataGenerator(DataGenerator):
             elif classdata.classs == 0:
                 # Potions, Elixirs, Flasks. Simple spells only.
                 if classdata.has_value('subclass', [1, 2, 3]):
-                    for item_effect in item.children('ItemEffect'):
+                    for item_effect in [c.ref('id_item_effect') for c in item.children('ItemXItemEffect')]:
                         spell = item_effect.ref('id_spell')
                         if not spell.has_effect('type', 6):
                             continue
@@ -651,7 +651,7 @@ class ItemDataGenerator(DataGenerator):
                         filter_ilevel = False
                 # Food
                 elif classdata.has_value('subclass', 5):
-                    for item_effect in item.children('ItemEffect'):
+                    for item_effect in [c.ref('id_item_effect') for c in item.children('ItemXItemEffect')]:
                         spell = item_effect.ref('id_spell')
                         for effect in spell._effects:
                             if not effect:
@@ -675,7 +675,7 @@ class ItemDataGenerator(DataGenerator):
             # Hunter scopes and whatnot
             elif classdata.classs == 7:
                 if classdata.has_value('subclass', 3):
-                    for item_effect in item.children('ItemEffect'):
+                    for item_effect in [c.ref('id_item_effect') for c in item.children('ItemXItemEffect')]:
                         spell = item_effect.ref('id_spell')
                         for effect in spell._effects:
                             if not effect:
@@ -686,7 +686,7 @@ class ItemDataGenerator(DataGenerator):
             # Only very select quest-item permanent item enchantments
             elif classdata.classs == 12:
                 valid = False
-                for item_effect in item.children('ItemEffect'):
+                for item_effect in [c.ref('id_item_effect') for c in item.children('ItemXItemEffect')]:
                     spell = item_effect.ref('id_spell')
                     for effect in spell._effects:
                         if not effect or effect.type != 53:
@@ -941,7 +941,7 @@ class ItemDataGenerator(DataGenerator):
                     stats['socket_mul'] = float(item.field('stat_socket_mul_%d' % i)[0])
                     item_entry['stats'].append(stats)
 
-            item_effects = item.children('ItemEffect')
+            item_effects = [c.ref('id_item_effect') for c in item.children('ItemXItemEffect')]
             if len(item_effects) > 0:
                 item_entry['spells'] = list()
                 for spell in item_effects:
@@ -2358,7 +2358,7 @@ class SpellDataGenerator(DataGenerator):
                     if not item.id or item.gem_props == 0:
                         continue
 
-                    for item_effect in item.children('ItemEffect'):
+                    for item_effect in [c.ref('id_item_effect') for c in item.children('ItemXItemEffect')]:
                         enchant_spell = item_effect.ref('id_spell')
                         for enchant_effect in enchant_spell._effects:
                             if not enchant_effect or (enchant_effect.type != 53 and enchant_effect.type != 6):
@@ -2406,7 +2406,7 @@ class SpellDataGenerator(DataGenerator):
             # Grab relevant spells from quest items, this in essence only
             # includes certain permanent enchants
             if class_ == 12:
-                for item_effect in item.children('ItemEffect'):
+                for item_effect in [c.ref('id_item_effect') for c in item.children('ItemXItemEffect')]:
                     spell = item_effect.ref('id_spell')
                     for effect in spell._effects:
                         if not effect or effect.type != 53:
@@ -2415,7 +2415,7 @@ class SpellDataGenerator(DataGenerator):
                         self.process_spell(spell.id, ids, 0, 0)
             # Grab relevant spells from consumables as well
             elif class_ == 0:
-                for item_effect in item.children('ItemEffect'):
+                for item_effect in [c.ref('id_item_effect') for c in item.children('ItemXItemEffect')]:
                     spell = item_effect.ref('id_spell')
                     if not spell.id:
                         continue
@@ -2440,7 +2440,7 @@ class SpellDataGenerator(DataGenerator):
             # Hunter scopes and whatnot
             elif class_ == 7:
                 if classdata.has_value('subclass', 3):
-                    for item_effect in item.children('ItemEffect'):
+                    for item_effect in [c.ref('id_item_effect') for c in item.children('ItemXItemEffect')]:
                         spell = item_effect.ref('id_spell')
                         for effect in spell._effects:
                             if not effect:
@@ -2494,7 +2494,7 @@ class SpellDataGenerator(DataGenerator):
                (ilevel < self._options.min_ilevel or ilevel > self._options.max_ilevel):
                 continue
 
-            for item_effect in item.children('ItemEffect'):
+            for item_effect in [c.ref('id_item_effect') for c in item.children('ItemXItemEffect')]:
                 spell = item_effect.ref('id_spell')
                 if spell.id == 0:
                     continue
@@ -3766,7 +3766,7 @@ class ItemEffectGenerator(ItemDataGenerator):
 
         # exported items effects
         for item in super().filter():
-            ids.extend(item.children('ItemEffect'))
+            ids.extend([c.ref('id_item_effect') for c in item.children('ItemXItemEffect')])
 
         return list(set(ids))
 

@@ -332,7 +332,8 @@ class TemporaryEnchantItemSet(DataSet):
         items = list()
 
         for effect in self.db('ItemEffect').values():
-            if effect.parent_record().id == 0:
+            item = effect.child_ref('ItemXItemEffect').parent_record()
+            if item.id == 0:
                 continue
 
             spell_effects = effect.ref('id_spell').children('SpellEffect')
@@ -369,7 +370,7 @@ class TemporaryEnchantItemSet(DataSet):
             if True in mod_skill_effects:
                 continue
 
-            items.append((effect.parent_record(), effect.ref('id_spell'), enchant_id))
+            items.append((item, effect.ref('id_spell'), enchant_id))
 
         return items
 
