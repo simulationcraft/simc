@@ -1127,7 +1127,7 @@ struct tank_dummy_enemy_t : public enemy_t
           sim->print_debug( "{} Heroic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::MYTHIC:
-          base.armor_coeff = k_value * (dbc->ptr ? 1.418 : 1.220;  // Mythic Raid
+          base.armor_coeff = k_value * (dbc->ptr ? 1.418 : 1.220);  // Mythic Raid
           sim->print_debug( "{} Mythic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         default:
