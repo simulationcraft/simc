@@ -6051,10 +6051,13 @@ struct starfall_t : public druid_spell_t
   };
 
   action_t* damage;
+  cooldown_t* dummy_cd;  // dummy cd obj to swap to when oneth buff is up
+  cooldown_t* orig_cd;
 
   starfall_t( druid_t* p, util::string_view opt ) : starfall_t( p, p->spec.starfall, opt ) {}
 
-  starfall_t( druid_t* p, const spell_data_t* s, util::string_view opt ) : druid_spell_t( "starfall", p, s, opt )
+  starfall_t( druid_t* p, const spell_data_t* s, util::string_view opt )
+    : druid_spell_t( "starfall", p, s, opt ), dummy_cd( p->get_cooldown( "starfall_dummy_cd" ) ), orig_cd( cooldown )
   {
     may_miss = may_crit = false;
 
@@ -6066,6 +6069,19 @@ struct starfall_t : public druid_spell_t
 
     if ( p->legendary.oneths_clear_vision->ok() )
       p->active.oneths_clear_vision->stats->add_child( init_free_cast_stats( free_cast_e::ONETHS ) );
+  }
+
+  bool ready() override
+  {
+    if ( p()->dbc->ptr && p()->buff.oneths_free_starfall->check() && !cooldown->is_ready() )
+      cooldown = dummy_cd;
+
+    return druid_spell_t::ready();
+  }
+
+  timespan_t cooldown_duration() const override
+  {
+    return ( p()->dbc->ptr && free_cast ) ? 0_ms : druid_spell_t::cooldown_duration();
   }
 
   void execute() override
@@ -6105,7 +6121,12 @@ struct starfall_t : public druid_spell_t
       return;  // convoke/lycaras doesn't process any further
 
     if ( p()->buff.oneths_free_starfall->check() )
+    {
+      if ( p()->dbc->ptr )
+        cooldown = orig_cd;
+
       p()->buff.oneths_free_starfall->expire();
+    }
 
     if ( p()->talent.starlord->ok() )
       p()->buff.starlord->trigger();
@@ -8103,8 +8124,9 @@ void druid_t::create_buffs()
   buff.starfall = make_buff( this, "starfall", spec.starfall )
     ->set_period( 1_s )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-    ->set_tick_zero( true )
-    ->apply_affecting_aura( talent.stellar_drift );
+    ->set_tick_zero( true );
+  if ( !dbc->ptr )
+    buff.starfall->apply_affecting_aura( talent.stellar_drift );
 
   buff.starlord = make_buff( this, "starlord", find_spell( 279709 ) )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
