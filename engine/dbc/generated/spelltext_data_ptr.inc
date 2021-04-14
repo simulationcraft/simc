@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.38312
-static const std::array<spelltext_data_t, 15272> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15275> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -2478,6 +2478,8 @@ static const std::array<spelltext_data_t, 15272> __ptr_spelltext_data { {
   {  79635, "Increases your Mastery by $s1 for $d.  Battle Elixir.", "Mastery increased by $w1. Battle Elixir.", 0 },
   {  79639, "Increases Agility by $w1.  Counts as both a Battle and Guardian elixir.  This effect persists through death.", "Agility increased by $w1.", 0 },
   {  79684, "For each ${$c*100/$s1} mana you spend, you have a 1% chance to gain Clearcasting, making your next Arcane Missiles or Arcane Explosion free and channel $277726s1% faster.$?a321758[\r\n\r\nArcane Missiles fires $321758s2 additional missile.][]", 0, 0 },
+  {  80167, "Restores ${$m2/5*30} mana over $d.  Must remain seated while drinking.", "Restores ${$m2/5} mana per second.", 0 },
+  {  80169, "Restores ${$s1*$d/5} health over $d.  Must remain seated while eating.", "Restores $/5;s1 health per second.", 0 },
   {  80240, "Marks a target with Havoc for $d, causing your single target spells to also strike the Havoc victim for $s1% of normal initial damage.", "Spells cast by the Warlock also hit this target for $s1% of normal initial damage.", 0 },
   {  80313, "A devastating blow that consumes $s3 stacks of your Thrash on the target to deal $s1 Physical damage and reduce the damage they deal to you by $s2% for $d.", "Dealing $w2% reduced damage to $@auracaster.", 0 },
   {  80353, "Warp the flow of time, increasing haste by $s1% $?a320919[and time rate by $s4% ][]for all party and raid members for $d.\r\n\r\nAllies will be unable to benefit from Bloodlust, Heroism, or Time Warp again for $57724d.$?a320920[\r\n\r\nWhen the effect ends, you die.][]", "Haste increased by $w1%. $?$W4>0[Time rate increased by $w4%.][]$?$W3=1[\r\n\r\nWhen the effect ends, you die.][]", 0 },
@@ -2616,6 +2618,7 @@ static const std::array<spelltext_data_t, 15272> __ptr_spelltext_data { {
   {  87635, "Haste and Stamina increased by $s1. Lasts $d.", "Haste and Stamina increased by $w1.", 0 },
   {  87636, "Restores ${$s1*$d/5} health and ${$87958m2/5*30} mana over $d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $87634s1 haste and $87634s2 Stamina for $87634d.", "Restores $/5;s1 health per second.", 0 },
   {  87637, "Restores ${$s1*$d/5} health and ${$87959m2/5*30} mana over $d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $87635s1 haste and $87635s2 Stamina for $87635d.", "Restores $/5;s1 health per second.", 0 },
+  {  87644, "Set out a seafood feast to feed your entire raid or party!\r\n\r\nRestores $80169o1 health and ${$80167m2/5*30} mana over $80169d.  If you spend at least 10 seconds eating you will become well fed and gain $87545s2 Stamina and $87545s1 in another useful stat for $87545d.", 0, 0 },
   {  87958, "Restores ${$m2/5*30} mana over $d.  Must remain seated while drinking.", "Restores ${$m2/5} mana per second.", 0 },
   {  87959, "Restores ${$m2/5*30} mana over $d.  Must remain seated while drinking.", "Restores ${$m2/5} mana per second.", 0 },
   {  88082, "Hurls a fiery ball that causes $s1 Fire damage.", 0, 0 },
