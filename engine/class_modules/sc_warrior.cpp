@@ -144,7 +144,6 @@ public:
     buff_t* conquerors_banner;
     buff_t* conquerors_frenzy;
     buff_t* conquerors_mastery;
-    buff_t* glory;
     // Conduits
     buff_t* ashen_juggernaut;
     buff_t* merciless_bonegrinder;
@@ -282,6 +281,7 @@ public:
   struct procs_t
   {
     proc_t* delayed_auto_attack;
+    proc_t* glory;
     proc_t* tactician;
   } proc;
 
@@ -485,6 +485,7 @@ public:
     item_runeforge_t glory;
     item_runeforge_t natures_fury;
     item_runeforge_t sinful_surge;
+    double glory_counter = 0.0; // Track Glory rage spent
     // Arms
     item_runeforge_t battlelord;
     item_runeforge_t enduring_blow;
@@ -505,9 +506,7 @@ public:
     const spell_data_t* condemn;
     const spell_data_t* condemn_driver;
     const spell_data_t* conquerors_banner;
-    const spell_data_t* glory;
     const spell_data_t* spear_of_bastion;
-    double glory_counter = 0.0; // Track Glory rage spent
   } covenant;
 
   // Conduits
@@ -766,7 +765,7 @@ struct warrior_action_t : public Base
   {
     // mastery/buff damage increase.
     bool fury_mastery_direct, fury_mastery_dot, arms_mastery,
-    colossus_smash, rend, siegebreaker, glory, ashen_juggernaut;
+    colossus_smash, rend, siegebreaker, ashen_juggernaut;
     // talents
     bool avatar, sweeping_strikes, deadly_calm, booming_voice;
     // azerite
@@ -779,7 +778,6 @@ struct warrior_action_t : public Base
         colossus_smash( false ),
         rend( false ),
         siegebreaker( false ),
-        glory( false),
         ashen_juggernaut( false ),
         avatar( false ),
         sweeping_strikes( false ),
@@ -889,7 +887,6 @@ public:
     affected_by.colossus_smash      = ab::data().affected_by( p()->spell.colossus_smash_debuff->effectN( 1 ) );
     affected_by.rend                = ab::data().affected_by( p()->talents.rend->effectN( 3 ) );
     affected_by.siegebreaker        = ab::data().affected_by( p()->spell.siegebreaker_debuff->effectN( 1 ) );
-    affected_by.glory               = ab::data().affected_by( p()->covenant.glory->effectN( 1 ) );
     affected_by.avatar              = ab::data().affected_by( p()->spec.avatar_buff->effectN( 1 ) );
 
     initialized = true;
@@ -1165,6 +1162,22 @@ public:
           {
           p()->buffs.lucid_dreams->trigger();
           }
+        }
+      }
+    }
+
+    if ( ab::current_resource() == RESOURCE_RAGE && ab::last_resource_cost > 0 )
+    {
+      if ( p()->legendary.glory->ok() && p()->buff.conquerors_banner->check() )
+      {
+        p()->legendary.glory_counter += ab::last_resource_cost;
+        if ( p()->legendary.glory_counter > p()->specialization() >= WARRIOR_PROTECTION ? 10 : 20 );
+        {
+          double times_over_threshold = floor( p()->legendary.glory_counter / (p()->specialization() == WARRIOR_PROTECTION ? 10 : 20) );
+          p()->buff.conquerors_banner->extend_duration( p(), timespan_t::from_millis( p()->legendary.glory->effectN( 3 ).base_value() ) * times_over_threshold );
+          p()->buff.conquerors_mastery->extend_duration( p(), timespan_t::from_millis( p()->legendary.glory->effectN( 3 ).base_value() ) * times_over_threshold );
+          p()->legendary.glory_counter -= (p()->specialization() == WARRIOR_PROTECTION ? 10 : 20) * times_over_threshold ;
+          p()->proc.glory->occur();
         }
       }
     }
@@ -6314,7 +6327,6 @@ void warrior_t::init_spells()
   else
   covenant.condemn               = find_spell(as<unsigned>( covenant.condemn_driver->effectN( 1 ).base_value() ) );
   covenant.conquerors_banner     = find_covenant_spell( "Conqueror's Banner" );
-  covenant.glory                 = find_spell( 325787 );
   covenant.spear_of_bastion      = find_covenant_spell( "Spear of Bastion" );
 
   // Conduits ===============================================================
@@ -7355,10 +7367,6 @@ void warrior_t::create_buffs()
 
   buff.conquerors_banner = make_buff( this, "conquerors_banner", covenant.conquerors_banner );
 
-  buff.glory = make_buff( this, "glory", find_spell( 325787 ) )
-                               ->set_default_value( find_spell( 325787 )->effectN( 1 ).percent() );
-                               //->add_invalidate( CACHE_CRITICAL_DAMAGE_MULTIPLIER )
-
   buff.conquerors_frenzy    = make_buff( this, "conquerors_frenzy", find_spell( 325862 ) )
                                ->set_default_value( find_spell( 325862 )->effectN( 2 ).percent() )
                                ->add_invalidate( CACHE_CRIT_CHANCE );
@@ -7475,8 +7483,8 @@ void warrior_t::init_procs()
 {
   player_t::init_procs();
   proc.delayed_auto_attack = get_proc( "delayed_auto_attack" );
-
-  proc.tactician = get_proc( "tactician" );
+  proc.glory               = get_proc( "glory" );
+  proc.tactician           = get_proc( "tactician" );
 }
 
 // warrior_t::init_resources ================================================
@@ -7749,7 +7757,7 @@ void warrior_t::reset()
 
   heroic_charge  = nullptr;
   rampage_driver = nullptr;
-  covenant.glory_counter  = 0;
+  legendary.glory_counter  = 0;
 }
 
 // Movement related overrides. =============================================
@@ -8057,11 +8065,6 @@ double warrior_t::composite_melee_crit_rating() const
 double warrior_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
 {
   double cdm = player_t::composite_player_critical_damage_multiplier( s );
-
-  if ( buff.glory->check() )
-  {
-    cdm *= 1.0 + buff.glory->stack_value();
-  }
 
   return cdm;
 }
