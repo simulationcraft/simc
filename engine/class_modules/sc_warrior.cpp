@@ -481,6 +481,10 @@ public:
     item_runeforge_t misshapen_mirror;
     item_runeforge_t seismic_reverberation;
     item_runeforge_t signet_of_tormented_kings;
+    // Covenant
+    item_runeforge_t glory;
+    item_runeforge_t natures_fury;
+    item_runeforge_t sinful_surge;
     // Arms
     item_runeforge_t battlelord;
     item_runeforge_t enduring_blow;
@@ -5073,6 +5077,10 @@ struct condemn_arms_t : public warrior_attack_t
     {
       p()->buff.ashen_juggernaut->trigger();
     }
+    if ( p()->legendary.sinful_surge->ok() && td( execute_state->target )->debuffs_colossus_smash->check() )
+    {
+      td( execute_state->target )->debuffs_colossus_smash->extend_duration( p(), timespan_t::from_millis( p()->legendary.sinful_surge->effectN( 1 ).base_value() ) );
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -5243,6 +5251,11 @@ struct fury_condemn_parent_t : public warrior_attack_t
     if ( p()->conduit.ashen_juggernaut.ok() )
     {
       p()->buff.ashen_juggernaut->trigger();
+    }
+
+    if ( p()->legendary.sinful_surge->ok() && p()->buff.recklessness->check() )
+    {
+      p()->buff.recklessness->extend_duration( p(), timespan_t::from_millis( p()->legendary.sinful_surge->effectN( 2 ).base_value() ) );
     }
   }
 
@@ -6351,27 +6364,30 @@ void warrior_t::init_spells()
   active.charge           = nullptr;
 
   // Runeforged Legendary Items
+  legendary.glory                     = find_runeforge_legendary( "Glory" );
   legendary.leaper                    = find_runeforge_legendary( "Leaper" );
   legendary.misshapen_mirror          = find_runeforge_legendary( "Misshapen Mirror" );
+  legendary.natures_fury              = find_runeforge_legendary( "Natures Fury" );
   legendary.seismic_reverberation     = find_runeforge_legendary( "Seismic Reverberation" );
   legendary.signet_of_tormented_kings = find_runeforge_legendary( "Signet of Tormented Kings" );
+  legendary.sinful_surge              = find_runeforge_legendary( "Sinful Surge" );
 
-  legendary.battlelord        = find_runeforge_legendary( "Battlelord" );
-  legendary.enduring_blow     = find_runeforge_legendary( "Enduring Blow" );
-  legendary.exploiter         = find_runeforge_legendary( "Exploiter" );
-  legendary.unhinged          = find_runeforge_legendary( "Unhinged" );
+  legendary.battlelord                = find_runeforge_legendary( "Battlelord" );
+  legendary.enduring_blow             = find_runeforge_legendary( "Enduring Blow" );
+  legendary.exploiter                 = find_runeforge_legendary( "Exploiter" );
+  legendary.unhinged                  = find_runeforge_legendary( "Unhinged" );
   // Bypass the spec check for Mortral Strike if Unhinged is equipped
   if ( legendary.unhinged -> ok() && !spec.mortal_strike -> ok() )
     spec.mortal_strike = find_spell( 12294 );
 
-  legendary.cadence_of_fujieda = find_runeforge_legendary( "Cadence of Fujieda" );
-  legendary.deathmaker         = find_runeforge_legendary( "Deathmaker" );
-  legendary.reckless_defense   = find_runeforge_legendary( "Reckless Defense" );
-  legendary.will_of_the_berserker = find_runeforge_legendary( "Will of the Berserker" );
+  legendary.cadence_of_fujieda        = find_runeforge_legendary( "Cadence of Fujieda" );
+  legendary.deathmaker                = find_runeforge_legendary( "Deathmaker" );
+  legendary.reckless_defense          = find_runeforge_legendary( "Reckless Defense" );
+  legendary.will_of_the_berserker     = find_runeforge_legendary( "Will of the Berserker" );
 
-  legendary.the_wall              = find_runeforge_legendary( "The Wall" );
-  legendary.thunderlord           = find_runeforge_legendary( "Thunderlord" );
-  legendary.reprisal              = find_runeforge_legendary( "Reprisal" );
+  legendary.the_wall                  = find_runeforge_legendary( "The Wall" );
+  legendary.thunderlord               = find_runeforge_legendary( "Thunderlord" );
+  legendary.reprisal                  = find_runeforge_legendary( "Reprisal" );
 
   if ( specialization() == WARRIOR_FURY )
   {
