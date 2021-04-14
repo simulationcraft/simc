@@ -668,7 +668,8 @@ class ItemDataGenerator(DataGenerator):
                 else:
                     # Finally, check consumable whitelist
                     map_ = constants.CONSUMABLE_ITEM_WHITELIST.get(classdata.subclass, {})
-                    if item_effect.id_parent in map_:
+                    item = item_effect.child_ref('ItemXItemEffect').parent_record()
+                    if item.id in map_:
                         filter_ilevel = False
                     else:
                         continue
@@ -2434,7 +2435,8 @@ class SpellDataGenerator(DataGenerator):
 
                     # Finally, check consumable whitelist
                     map_ = constants.CONSUMABLE_ITEM_WHITELIST.get(classdata.subclass, {})
-                    if item_effect.id_parent in map_:
+                    item = item_effect.child_ref('ItemXItemEffect').parent_record()
+                    if item.id in map_:
                         self.process_spell(spell.id, ids, 0, 0)
 
             # Hunter scopes and whatnot
@@ -3779,11 +3781,13 @@ class ItemEffectGenerator(ItemDataGenerator):
                 array = 'item_effect',
                 length = len(data))
 
-        for index, entry in enumerate(sorted(data, key = lambda e: (e.id_parent, e.index, e.id))):
+        for index, entry in enumerate(sorted(data, key = lambda e: (e.child_ref('ItemXItemEffect').parent_record().id, e.index, e.id))):
             item_effect_id_index.append((entry.id, index))
+            item = entry.child_ref('ItemXItemEffect').parent_record()
 
-            fields = entry.field( 'id', 'id_spell', 'id_parent', 'index', 'trigger_type',
-                    'cooldown_group', 'cooldown_duration', 'cooldown_group_duration' )
+            fields = entry.field('id', 'id_spell')
+            fields += item.field('id')
+            fields += entry.field('index', 'trigger_type', 'cooldown_group', 'cooldown_duration', 'cooldown_group_duration')
 
             self.output_record(fields, comment = entry.ref('id_spell').name)
 
