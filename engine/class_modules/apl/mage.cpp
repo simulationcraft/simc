@@ -247,7 +247,7 @@ void arcane( player_t* p )
   aoe->add_action( "arcane_orb,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=3" );
   aoe->add_action( "arcane_barrage,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=2" );
   aoe->add_action( "arcane_blast,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&prev_gcd.2.radiant_spark&active_enemies=3" );
-  aoe->add_action( "arcane_blast,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=1&active_enemies=3" );
+  aoe->add_action( "arcane_blast,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&dot.radiant_spark.remains&debuff.radiant_spark_vulnerability.stack<1&active_enemies=3" );
   aoe->add_action( "arcane_explosion,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&prev_gcd.2.radiant_spark&active_enemies>3" );
   aoe->add_action( "arcane_explosion,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=1&active_enemies>3" );
   aoe->add_action( "presence_of_mind,if=buff.deathborne.up&debuff.touch_of_the_magi.up&debuff.touch_of_the_magi.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time&((talent.resonance&active_enemies<4)|active_enemies<5)&(!runeforge.arcane_bombardment|target.health.pct>35)" );
