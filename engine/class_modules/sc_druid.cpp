@@ -747,6 +747,12 @@ public:
     item_runeforge_t draught_of_deep_focus;     // 7086
     item_runeforge_t lycaras_fleeting_glimpse;  // 7110
 
+    // Covenant
+    item_runeforge_t kyrian_legendary_1;
+    item_runeforge_t wrathful_swarm;  // 7472
+    item_runeforge_t night_fae_legendary_1;
+    item_runeforge_t sinful_hysteria;  // 7474
+
     // Balance
     item_runeforge_t oneths_clear_vision;        // 7087
     item_runeforge_t primordial_arcanic_pulsar;  // 7088
@@ -7793,6 +7799,12 @@ void druid_t::init_spells()
   legendary.draught_of_deep_focus     = find_runeforge_legendary( "Draught of Deep Focus" );
   legendary.lycaras_fleeting_glimpse  = find_runeforge_legendary( "Lycara's Fleeting Glimpse" );
 
+  // Covenant
+  legendary.kyrian_legendary_1        = find_runeforge_legendary( "Kindred Affinity" );
+  legendary.wrathful_swarm            = find_runeforge_legendary( "Wrathful Swarm" );
+  legendary.night_fae_legendary_1     = find_runeforge_legendary( "Celestial Spirits" );
+  legendary.sinful_hysteria           = find_runeforge_legendary( "Sinful Hysteria" );
+
   // Balance
   legendary.oneths_clear_vision       = find_runeforge_legendary( "Oneth's Clear Vision" );
   legendary.primordial_arcanic_pulsar = find_runeforge_legendary( "Primordial Arcanic Pulsar" );
@@ -8319,6 +8331,13 @@ void druid_t::create_buffs()
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   if ( conduit.endless_thirst->ok() )
     buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
+  if ( dbc->ptr )
+  {
+    buff.ravenous_frenzy->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
+      if ( legendary.sinful_hysteria->ok() && new_ && old_ )
+        b->extend_duration( this, timespan_t::from_seconds( legendary.sinful_hysteria->effectN( 1 ).base_value() ) );
+    } );
+  }
 }
 
 void druid_t::create_actions()
