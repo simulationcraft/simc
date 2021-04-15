@@ -7063,11 +7063,14 @@ struct adaptive_swarm_t : public druid_spell_t
       return druid_spell_t::travel_time();
     }
 
-    player_t* new_swarm_target()
+    player_t* new_swarm_target( player_t* exclude = nullptr )
     {
-      const auto &tl = other->target_list();
+      auto& tl = other->target_list();
       if ( tl.empty() )
         return nullptr;
+
+      if ( exclude )
+        tl.erase( std::remove( tl.begin(), tl.end(), exclude ), tl.end() );
 
       player_t* tar = nullptr;
 
@@ -7130,6 +7133,21 @@ struct adaptive_swarm_t : public druid_spell_t
                         incoming, existing, d->current_stack() );
     }
 
+    void jump_swarm( player_t* t, dot_t* d )
+    {
+      int stacks = d->current_stack() - 1;
+
+      sim->print_debug( "adaptive_swarm stacks: jumping {} stacks of {} to {}", stacks, heal ? "damage" : "heal",
+                        t->name() );
+
+      auto new_state    = debug_cast<adaptive_swarm_state_t*>( get_state() );
+      new_state->stacks = stacks;
+      new_state->jump   = true;
+      new_state->target = t;
+      other->set_target( t );
+      other->schedule_execute( new_state );
+    }
+
     void last_tick( dot_t* d ) override
     {
       druid_spell_t::last_tick( d );
@@ -7157,17 +7175,17 @@ struct adaptive_swarm_t : public druid_spell_t
         return;
       }
 
-      stacks--;
+      jump_swarm( new_target, d );
 
-      sim->print_debug( "adaptive_swarm stacks: jumping {} stacks of {} to {}", stacks, heal ? "damage" : "heal",
-                        new_target->name() );
+      if ( p()->dbc->ptr && p()->legendary.wrathful_swarm->ok() &&
+           rng().roll( p()->legendary.wrathful_swarm->effectN( 1 ).percent() ) )
+      {
+        // TODO: confirm the second jump cannot hit the same target as the primary jump
+        auto second_target = new_swarm_target( new_target );
 
-      auto new_state    = debug_cast<adaptive_swarm_state_t*>( get_state() );
-      new_state->stacks = stacks;
-      new_state->jump   = true;
-      new_state->target = new_target;
-      other->set_target( new_target );
-      other->schedule_execute( new_state );
+        if ( second_target )
+          jump_swarm( second_target, d );
+      }
     }
   };
 
