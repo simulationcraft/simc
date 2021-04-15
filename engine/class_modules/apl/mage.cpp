@@ -77,7 +77,7 @@ void arcane( player_t* p )
   precombat->add_action( "variable,name=ap_max_delay_for_totm,op=reset,default=10" );
   precombat->add_action( "variable,name=ap_max_delay_for_mot,op=reset,default=20" );
   precombat->add_action( "variable,name=rop_max_delay_for_totm,default=-1,op=set,if=variable.rop_max_delay_for_totm=-1,value=20-(5*conduit.arcane_prodigy)" );
-  precombat->add_action( "variable,name=totm_max_delay_for_ap,default=-1,op=set,if=variable.totm_max_delay_for_ap=-1,value=5+10*(covenant.night_fae|(conduit.arcane_prodigy&active_enemies<3))" );
+  precombat->add_action( "variable,name=totm_max_delay_for_ap,default=-1,op=set,if=variable.totm_max_delay_for_ap=-1,value=5+10*(covenant.night_fae|(conduit.arcane_prodigy&active_enemies<3))+15*(covenant.kyrian&runeforge.arcane_infinity&active_enemies>2)" );
   precombat->add_action( "variable,name=totm_max_delay_for_rop,default=-1,op=set,if=variable.totm_max_delay_for_rop=-1,value=20-(8*conduit.arcane_prodigy)" );
   precombat->add_action( "variable,name=barrage_mana_pct,default=-1,op=set,if=variable.barrage_mana_pct=-1,value=((80-(20*covenant.night_fae)+(15*covenant.kyrian))-(mastery_value*100))" );
   precombat->add_action( "variable,name=ap_minimum_mana_pct,op=reset,default=15" );
@@ -229,6 +229,7 @@ void arcane( player_t* p )
   aoe->add_action( "fire_blast,if=(runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down&prev_gcd.1.frostbolt)|(runeforge.disciplinary_command&time=0)" );
   aoe->add_action( "frost_nova,if=runeforge.grisly_icicle&cooldown.arcane_power.remains>30&cooldown.touch_of_the_magi.remains=0&(buff.arcane_charge.stack<=variable.aoe_totm_max_charges&((talent.rune_of_power&cooldown.rune_of_power.remains<=gcd&cooldown.arcane_power.remains>variable.totm_max_delay_for_ap)|(!talent.rune_of_power&cooldown.arcane_power.remains>variable.totm_max_delay_for_ap)|cooldown.arcane_power.remains<=gcd))" );
   aoe->add_action( "frost_nova,if=runeforge.grisly_icicle&cooldown.arcane_power.remains=0&(((cooldown.touch_of_the_magi.remains>variable.ap_max_delay_for_totm&buff.arcane_charge.stack=buff.arcane_charge.max_stack)|(cooldown.touch_of_the_magi.remains=0&buff.arcane_charge.stack<=variable.aoe_totm_max_charges))&buff.rune_of_power.down)" );
+  aoe->add_action( "arcane_missiles,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_harmony.stack<15&cooldown.radiant_spark.remains<=variable.KH_prestacking_time+execute_time&cooldown.touch_of_the_magi.remains<=variable.KH_prestacking_time+execute_time+action.radiant_spark.execute_time&cooldown.arcane_power.remains<=variable.KH_prestacking_time+execute_time+action.radiant_spark.execute_time+action.touch_of_the_magi.execute_time,chain=1" );
   aoe->add_action( "touch_of_the_magi,if=runeforge.siphon_storm&prev_gcd.1.evocation" );
   aoe->add_action( "arcane_power,if=runeforge.siphon_storm&(prev_gcd.1.evocation|prev_gcd.1.touch_of_the_magi)" );
   aoe->add_action( "evocation,if=time>30&runeforge.siphon_storm&buff.arcane_charge.stack<=variable.aoe_totm_max_charges&cooldown.touch_of_the_magi.remains=0&cooldown.arcane_power.remains<=gcd" );
@@ -241,12 +242,20 @@ void arcane( player_t* p )
   aoe->add_action( "arcane_power,if=((cooldown.touch_of_the_magi.remains>variable.ap_max_delay_for_totm&buff.arcane_charge.stack=buff.arcane_charge.max_stack)|(cooldown.touch_of_the_magi.remains=0&buff.arcane_charge.stack<=variable.aoe_totm_max_charges))&buff.rune_of_power.down" );
   aoe->add_action( "rune_of_power,if=buff.rune_of_power.down&((cooldown.touch_of_the_magi.remains>20&buff.arcane_charge.stack=buff.arcane_charge.max_stack)|(cooldown.touch_of_the_magi.remains=0&buff.arcane_charge.stack<=variable.aoe_totm_max_charges))&(cooldown.arcane_power.remains>12|debuff.touch_of_the_magi.up)" );
   aoe->add_action( "shifting_power,if=cooldown.arcane_orb.remains>5|!talent.arcane_orb" );
+  aoe->add_action( "arcane_blast,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=4&prev_gcd.1.arcane_orb" );
+  aoe->add_action( "arcane_barrage,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=4" );
+  aoe->add_action( "arcane_orb,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=3" );
+  aoe->add_action( "arcane_barrage,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=2" );
+  aoe->add_action( "arcane_blast,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&prev_gcd.2.radiant_spark&active_enemies=3" );
+  aoe->add_action( "arcane_blast,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=1&active_enemies=3" );
+  aoe->add_action( "arcane_explosion,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&prev_gcd.2.radiant_spark&active_enemies>3" );
+  aoe->add_action( "arcane_explosion,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=1&active_enemies>3" );
   aoe->add_action( "presence_of_mind,if=buff.deathborne.up&debuff.touch_of_the_magi.up&debuff.touch_of_the_magi.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time&((talent.resonance&active_enemies<4)|active_enemies<5)&(!runeforge.arcane_bombardment|target.health.pct>35)" );
   aoe->add_action( "arcane_blast,if=buff.deathborne.up&((talent.resonance&active_enemies<4)|active_enemies<5)&(!runeforge.arcane_bombardment|target.health.pct>35)" );
   aoe->add_action( "supernova" );
   aoe->add_action( "arcane_barrage,if=buff.arcane_charge.stack>=(active_enemies-1)&runeforge.arcane_bombardment&target.health.pct<35" );
   aoe->add_action( "arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
-  aoe->add_action( "arcane_orb,if=buff.arcane_charge.stack=0" );
+  aoe->add_action( "arcane_orb,if=buff.arcane_charge.stack=0&(cooldown.arcane_power.remains>15|!(covenant.kyrian&runeforge.arcane_infinity))" );
   aoe->add_action( "nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
   aoe->add_action( "arcane_missiles,if=buff.clearcasting.react&runeforge.arcane_infinity&((talent.amplification&active_enemies<8)|active_enemies<5)" );
   aoe->add_action( "arcane_missiles,if=buff.clearcasting.react&talent.arcane_echo&debuff.touch_of_the_magi.up&(talent.amplification|active_enemies<9)" );
