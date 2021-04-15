@@ -369,7 +369,7 @@ void unholy( player_t* p )
   aoe_burst->add_action( "wound_spender" );
   aoe_burst->add_action( "epidemic,if=!variable.pooling_runic_power" );
 
-  aoe_setup->add_action( "any_dnd,if=death_knight.fwounded_targets=active_enemies|raid_event.adds.exists&raid_event.adds.remains<=11", "AoE Setup" );
+  aoe_setup->add_action( "any_dnd,if=death_knight.fwounded_targets=active_enemies|raid_event.adds.exists&raid_event.adds.remains<=11|fight_remains<=11", "AoE Setup" );
   aoe_setup->add_action( "any_dnd,if=death_knight.fwounded_targets>=5" );
   aoe_setup->add_action( "death_coil,if=!variable.pooling_runic_power&(buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3|active_enemies=2)" );
   aoe_setup->add_action( "epidemic,if=!variable.pooling_runic_power" );
