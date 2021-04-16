@@ -408,6 +408,27 @@ void social_butterfly( special_effect_t& effect )
   effect.player->register_combat_begin( buff );
 }
 
+void dream_delver( special_effect_t& effect )
+{
+  struct dream_delver_cb_t : public dbc_proc_callback_t
+  {
+    dream_delver_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {}
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      auto td = a->player->get_target_data( s->target );
+      td->debuff.dream_delver->trigger();
+    }
+  };
+
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+
+  new dream_delver_cb_t( effect );
+}
+
 void first_strike( special_effect_t& effect )
 {
   if ( unique_gear::create_fallback_buffs( effect, { "first_strike" } ) )
@@ -1334,6 +1355,7 @@ void register_special_effects()
   register_soulbind_special_effect( 352503, soulbinds::bonded_hearts );
   register_soulbind_special_effect( 319191, soulbinds::field_of_blossoms, true );  // Dreamweaver
   register_soulbind_special_effect( 319210, soulbinds::social_butterfly );
+  register_soulbind_special_effect( 352786, soulbinds::dream_delver );
   register_soulbind_special_effect( 325069, soulbinds::first_strike, true );  // Korayn
   register_soulbind_special_effect( 325066, soulbinds::wild_hunt_tactics );
   // Venthyr
@@ -1448,6 +1470,20 @@ void register_target_data_initializers( sim_t* sim )
     }
     else
       td->debuff.plagueys_preemptive_strike = make_buff( *td, "plagueys_preemptive_strike" )->set_quiet( true );
+  } );
+
+  // Dream Delver
+  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( td->source->find_soulbind_spell( "Dream Delver" )->ok() )
+    {
+      assert( !td->debuff.dream_delver );
+
+      td->debuff.dream_delver = make_buff( *td, "dream_delver", td->source->find_spell( 353354 ) )
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
+      td->debuff.dream_delver->reset();
+    }
+    else
+      td->debuff.dream_delver = make_buff( *td, "dream_delver" )->set_quiet( true );
   } );
 }
 
