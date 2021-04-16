@@ -394,6 +394,9 @@ struct sim_t : private sc_thread_t
     double thrill_seeker_killing_blow_chance = -1.0;
     /// Percentage of default duration for the damage portion of Wild Hunt Tactics to use.
     double wild_hunt_tactics_duration_multiplier = 1.0;
+    /// Chance bonded hearts will heal a member of the other covenants when grove invigoration procs
+    double bonded_hearts_other_covenant_chance = 1.0;
+
   } shadowlands_opts;
 
   // Auras and De-Buffs

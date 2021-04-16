@@ -1280,6 +1280,8 @@ class SpellDataGenerator(DataGenerator):
          336183,
          # Rotbriar Sprout
          329548,
+         # 9.1 Soulbinds
+         352881, # Bonded Hearts (night fae/niya)
         ),
 
         # Warrior:

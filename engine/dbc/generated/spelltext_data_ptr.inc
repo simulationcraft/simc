@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.38312
-static const std::array<spelltext_data_t, 15275> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15276> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15192,6 +15192,7 @@ static const std::array<spelltext_data_t, 15275> __ptr_spelltext_data { {
   { 352865, "$@spelldesc352501", "Movement speed increased by $w1%.", 0 },
   { 352875, "$@spelldesc351147", "Damage taken reduced by $w1% and movement speed cannot be reduced below $w2%.", 0 },
   { 352876, "$@spelldesc351147", 0, 0 },
+  { 352881, 0, "Redirected Anima's effectiveness is increased by $w1%.", 0 },
   { 352916, "$spelldesc351149", 0, 0 },
   { 352917, "$@spelldesc351149", "$w1% increased $pri and Stamina.", 0 },
   { 352939, "$@spelldesc352186", "Damage taken from $@auracaster increased by $w1%.", 0 },

@@ -3799,38 +3799,26 @@ void sim_t::create_options()
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );
 
   // Shadowlands
-  add_option( opt_float( "shadowlands.combat_meditation_extend_chance",
-    shadowlands_opts.combat_meditation_extend_chance, 0.0, 1.0 ) );
-  add_option( opt_uint( "shadowlands.pointed_courage_nearby",
-    shadowlands_opts.pointed_courage_nearby, 0, 5 ) );
-  add_option( opt_int( "shadowlands.lead_by_example_nearby",
-    shadowlands_opts.lead_by_example_nearby, 0, 4 ) );
-  add_option( opt_uint( "shadowlands.stone_legionnaires_in_party",
-    shadowlands_opts.stone_legionnaires_in_party, 0, 4 ) );
-  add_option( opt_uint( "shadowlands.crimson_choir_in_party",
-    shadowlands_opts.crimson_choir_in_party, 0, 4 ) );
-  add_option( opt_timespan( "shadowlands.memory_of_past_sins_precast",
-    shadowlands_opts.memory_of_past_sins_precast, 0_s, 30_s ) );
-  add_option( opt_uint( "shadowlands.shattered_psyche_allies",
-    shadowlands_opts.shattered_psyche_allies, 0, 4 ) );
-  add_option( opt_float( "shadowlands.judgment_of_the_arbiter_arc_chance",
-    shadowlands_opts.judgment_of_the_arbiter_arc_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "shadowlands.combat_meditation_extend_chance", shadowlands_opts.combat_meditation_extend_chance, 0.0, 1.0 ) );
+  add_option( opt_uint( "shadowlands.pointed_courage_nearby", shadowlands_opts.pointed_courage_nearby, 0, 5 ) );
+  add_option( opt_int( "shadowlands.lead_by_example_nearby", shadowlands_opts.lead_by_example_nearby, 0, 4 ) );
+  add_option( opt_uint( "shadowlands.stone_legionnaires_in_party", shadowlands_opts.stone_legionnaires_in_party, 0, 4 ) );
+  add_option( opt_uint( "shadowlands.crimson_choir_in_party", shadowlands_opts.crimson_choir_in_party, 0, 4 ) );
+  add_option( opt_timespan( "shadowlands.memory_of_past_sins_precast", shadowlands_opts.memory_of_past_sins_precast, 0_s, 30_s ) );
+  add_option( opt_uint( "shadowlands.shattered_psyche_allies", shadowlands_opts.shattered_psyche_allies, 0, 4 ) );
+  add_option( opt_float( "shadowlands.judgment_of_the_arbiter_arc_chance", shadowlands_opts.judgment_of_the_arbiter_arc_chance, 0.0, 1.0 ) );
   add_option( opt_string( "shadowlands.volatile_solvent_type", shadowlands_opts.volatile_solvent_type ) );
   add_option( opt_bool( "shadowlands.disable_soul_igniter_second_use", shadowlands_opts.disable_soul_igniter_second_use ) );
   add_option( opt_string( "shadowlands.unbound_changeling_stat_type", shadowlands_opts.unbound_changeling_stat_type ) );
-  add_option( opt_float( "shadowlands.anima_field_emitter_mean",
-    shadowlands_opts.anima_field_emitter_mean, 0.0, std::numeric_limits<double>::max() ) );
-  add_option( opt_float( "shadowlands.anima_field_emitter_stddev",
-    shadowlands_opts.anima_field_emitter_stddev, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_float( "shadowlands.anima_field_emitter_mean", shadowlands_opts.anima_field_emitter_mean, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_float( "shadowlands.anima_field_emitter_stddev", shadowlands_opts.anima_field_emitter_stddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_timespan( "shadowlands.retarget_shadowgrasp_totem", shadowlands_opts.retarget_shadowgrasp_totem ) );
   add_option( opt_bool( "shadowlands.disable_iqd_execute", shadowlands_opts.disable_iqd_execute ) );
-  add_option( opt_float( "shadowlands.gluttonous_spike_overheal_chance",
-    shadowlands_opts.gluttonous_spike_overheal_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "shadowlands.iqd_stat_fail_chance",
-    shadowlands_opts.iqd_stat_fail_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "shadowlands.thrill_seeker_killing_blow_chance",
-                         shadowlands_opts.thrill_seeker_killing_blow_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "shadowlands.gluttonous_spike_overheal_chance", shadowlands_opts.gluttonous_spike_overheal_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "shadowlands.iqd_stat_fail_chance", shadowlands_opts.iqd_stat_fail_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "shadowlands.thrill_seeker_killing_blow_chance", shadowlands_opts.thrill_seeker_killing_blow_chance, 0.0, 1.0 ) );
   add_option( opt_float( "shadowlands.wild_hunt_tactics_duration_multiplier", shadowlands_opts.wild_hunt_tactics_duration_multiplier ) );
+  add_option( opt_float( "shadowlands.bonded_hearts_other_covenant_chance", shadowlands_opts.bonded_hearts_other_covenant_chance, 0.0, 1.0 ) );
 }
 
 // sim_t::parse_option ======================================================
