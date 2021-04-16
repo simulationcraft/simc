@@ -149,7 +149,7 @@ struct hand_of_guldan_t : public demonology_spell_t
         shards_used( 0 ),
         blaze( new umbral_blaze_t( p ) ),
         summon_spell( p->find_spell( 104317 ) ),
-        meteor_time( 700_ms )
+        meteor_time( 400_ms )
     {
       parse_options(options_str);
       aoe = -1;
@@ -206,9 +206,14 @@ struct hand_of_guldan_t : public demonology_spell_t
         // BFA - Trinket
         expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, p() );
 
+
+        //Wild Imp spawns appear to have been sped up in Shadowlands. Last tested 2021-04-16.
+        //Current behavior: HoG will spawn a meteor on cast finish. Travel time in spell data is 0.7 seconds.
+        //However, damage event occurs before spell effect lands, happening 0.4 seconds after cast.
+        //Imps then spawn roughly every 0.18 seconds seconds after the damage event.
         for ( int i = 1; i <= shards_used; i++ )
         {
-          auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 400.0 * i, 50.0 ), 400.0 * i );
+          auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
           this->p()->wild_imp_spawns.push_back( ev );
         }
 
@@ -230,7 +235,8 @@ struct hand_of_guldan_t : public demonology_spell_t
   {
     parse_options( options_str );
 
-    impact_spell->meteor_time = timespan_t::from_seconds( data().missile_speed() );
+    //impact_spell->meteor_time = timespan_t::from_seconds( data().missile_speed() );
+    impact_spell->meteor_time = 400_ms; //See comments in impact spell for current behavior
   }
 
   timespan_t travel_time() const override
