@@ -6138,7 +6138,8 @@ void actions::rogue_action_t<Base>::trigger_guile_charm( const action_state_t* s
   if ( p()->buffs.guile_charm_insight_3->check() )
     return;
 
-  bool trigger_next_insight = ( ++p()->legendary.guile_charm_counter >= 4 );
+  // 04/16/2021 -- Logs show this is now 6 SS impacts per insight transition
+  bool trigger_next_insight = ( ++p()->legendary.guile_charm_counter >= 6 );
 
   if ( p()->buffs.guile_charm_insight_1->check() )
   {
