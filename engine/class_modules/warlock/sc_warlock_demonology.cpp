@@ -210,10 +210,10 @@ struct hand_of_guldan_t : public demonology_spell_t
         //Wild Imp spawns appear to have been sped up in Shadowlands. Last tested 2021-04-16.
         //Current behavior: HoG will spawn a meteor on cast finish. Travel time in spell data is 0.7 seconds.
         //However, damage event occurs before spell effect lands, happening 0.4 seconds after cast.
-        //Imps then spawn roughly every 0.18 seconds starting 0.1 seconds after the damage event.
+        //Imps then spawn roughly every 0.18 seconds seconds after the damage event.
         for ( int i = 1; i <= shards_used; i++ )
         {
-          auto ev = make_event<imp_delay_event_t>( *sim, p(), 100.0 + rng().gauss( 180.0 * ( i - 1 ), 25.0 ), 100.0 + 180.0 * ( i - 1 ) );
+          auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
           this->p()->wild_imp_spawns.push_back( ev );
         }
 
