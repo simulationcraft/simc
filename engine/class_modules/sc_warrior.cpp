@@ -1172,7 +1172,7 @@ public:
       if ( p()->legendary.glory->ok() && p()->buff.conquerors_banner->check() )
       {
         p()->legendary.glory_counter += ab::last_resource_cost;
-        if ( p()->legendary.glory_counter > p()->specialization() >= WARRIOR_PROTECTION ? 10 : 20 );
+        if ( p()->legendary.glory_counter > ( p()->specialization() >= WARRIOR_PROTECTION ? 10 : 20 ) );
         {
           double times_over_threshold = floor( p()->legendary.glory_counter / (p()->specialization() == WARRIOR_PROTECTION ? 10 : 20) );
           p()->buff.conquerors_banner->extend_duration( p(), timespan_t::from_millis( p()->legendary.glory->effectN( 3 ).base_value() ) * times_over_threshold );
