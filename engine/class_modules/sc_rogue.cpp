@@ -301,6 +301,7 @@ public:
     buff_t* guile_charm_insight_1;
     buff_t* guile_charm_insight_2;
     buff_t* guile_charm_insight_3;
+    buff_t* guile_charm_insight_3_hidden;
     buff_t* master_assassins_mark;
     buff_t* master_assassins_mark_aura;
     damage_buff_t* the_rotten;
@@ -6146,14 +6147,14 @@ void actions::rogue_action_t<Base>::trigger_guile_charm( const action_state_t* s
     if( trigger_next_insight )
       p()->buffs.guile_charm_insight_2->trigger();
     else
-      p()->buffs.guile_charm_insight_1->refresh();
+      p()->buffs.guile_charm_insight_1->trigger();
   }
   else if ( p()->buffs.guile_charm_insight_2->check() )
   {
     if ( trigger_next_insight )
       p()->buffs.guile_charm_insight_3->trigger();
     else
-      p()->buffs.guile_charm_insight_2->refresh();
+      p()->buffs.guile_charm_insight_2->trigger();
   }
   else if( trigger_next_insight )
   {
@@ -6433,6 +6434,7 @@ double rogue_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.guile_charm_insight_1->value();
     m *= 1.0 + buffs.guile_charm_insight_2->value();
     m *= 1.0 + buffs.guile_charm_insight_3->value();
+    m *= 1.0 + buffs.guile_charm_insight_3_hidden->value();
   }
 
   if ( legendary.celerity.ok() && buffs.adrenaline_rush->check() )
@@ -8024,7 +8026,11 @@ void rogue_t::create_buffs()
   buffs.guile_charm_insight_1 = make_buff( this, "shallow_insight", find_spell( 340582 ) )
     ->set_default_value_from_effect( 1 ) // Bonus Damage%
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( bugs && new_ == 1 )
+      {
+        buffs.guile_charm_insight_3_hidden->expire();
+      }
       legendary.guile_charm_counter = 0;
     } );
   buffs.guile_charm_insight_2 = make_buff( this, "moderate_insight", find_spell( 340583 ) )
@@ -8037,10 +8043,22 @@ void rogue_t::create_buffs()
   buffs.guile_charm_insight_3 = make_buff( this, "deep_insight", find_spell( 340584 ) )
     ->set_default_value_from_effect( 1 ) // Bonus Damage%
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
       buffs.guile_charm_insight_2->expire();
       legendary.guile_charm_counter = 0;
+      if ( bugs && new_ == 0 )
+      {
+        buffs.guile_charm_insight_3_hidden->trigger();
+      }
     } );
+  // 04/16/2021 -- Due to the hidden 340580 buff, the effective duration of the final buff is 15s
+  if ( bugs )
+  {
+    buffs.guile_charm_insight_3_hidden = make_buff( this, "deep_insight_hidden", find_spell( 340584 ) )
+      ->set_default_value_from_effect( 1 ) // Bonus Damage%
+      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+      ->set_duration( 5_s );
+  }
 
   buffs.finality_eviscerate = make_buff<damage_buff_t>( this, "finality_eviscerate", find_spell( 340600 ) );
   buffs.finality_rupture = make_buff( this, "finality_rupture", find_spell( 340601 ) )
