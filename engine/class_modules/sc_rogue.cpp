@@ -1657,11 +1657,10 @@ public:
         if ( p()->legendary.duskwalkers_patch.ok() )
         {
           p()->legendary.duskwalkers_patch_counter += ab::last_resource_cost;
-          if ( p()->legendary.duskwalkers_patch_counter > p()->legendary.duskwalkers_patch->effectN( 2 ).base_value() )
+          while ( p()->legendary.duskwalkers_patch_counter >= p()->legendary.duskwalkers_patch->effectN( 2 ).base_value() )
           {
-            double reduction = floor( p()->legendary.duskwalkers_patch_counter / p()->legendary.duskwalkers_patch->effectN( 2 ).base_value() );
-            p()->cooldowns.vendetta->adjust( -timespan_t::from_seconds( p()->legendary.duskwalkers_patch->effectN( 1 ).base_value() ) * reduction );
-            p()->legendary.duskwalkers_patch_counter -= p()->legendary.duskwalkers_patch->effectN( 2 ).base_value() * reduction;
+            p()->cooldowns.vendetta->adjust( -timespan_t::from_seconds( p()->legendary.duskwalkers_patch->effectN( 1 ).base_value() ) );
+            p()->legendary.duskwalkers_patch_counter -= p()->legendary.duskwalkers_patch->effectN( 2 ).base_value();
             p()->procs.dustwalker_patch->occur();
           }
         }
@@ -4274,7 +4273,7 @@ struct kidney_shot_t : public rogue_attack_t
     rogue_attack_t( name, p, p -> find_class_spell( "Kidney Shot" ), options_str ),
     internal_bleeding( nullptr )
   {
-    if ( p->talent.internal_bleeding )
+    if ( p->talent.internal_bleeding->ok() )
     {
       internal_bleeding = p->get_secondary_trigger_action<internal_bleeding_t>( TRIGGER_INTERNAL_BLEEDING, "internal_bleeding" );
       add_child( internal_bleeding );
