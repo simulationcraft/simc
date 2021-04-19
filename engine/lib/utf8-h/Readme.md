@@ -2,4 +2,4 @@
 
 Source: https://github.com/sheredom/utf8.h
 
-Version https://github.com/sheredom/utf8.h/commit/09fcedb948608341ac585cfc571e75b89d5e7ca6 downloaded on 2020-09-14
+Version https://github.com/sheredom/utf8.h/commit/ee5a7d4beb7755da13e4d4ec3eccfb65a0530456 downloaded on 2021-04-19
