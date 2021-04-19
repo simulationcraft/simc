@@ -408,6 +408,7 @@ void unholy( player_t* p )
   generic->add_action( "death_coil,if=runic_power.deficit<13|fight_remains<5&!debuff.festering_wound.up" );
   generic->add_action( "wound_spender,if=debuff.festering_wound.stack>4&!variable.pooling_runes" );
   generic->add_action( "wound_spender,if=!variable.pooling_runes&debuff.festering_wound.stack>=3&cooldown.apocalypse.remains_expected>2&(variable.full_cdr&!variable.apocalypse_timing|variable.partial_cdr|variable.no_cdr)" );
+  generic->add_action( "wound_spender,if=debuff.festering_wound.up&fight_remains<(debuff.festering_wound.stack*gcd)" );
   generic->add_action( "death_coil,if=runic_power.deficit<20&!variable.pooling_runic_power" );
   generic->add_action( "festering_strike,if=debuff.festering_wound.stack<4&!variable.pooling_runes" );
   generic->add_action( "festering_strike,if=!variable.pooling_runes&debuff.festering_wound.stack<4&cooldown.apocalypse.remains_expected<=2&(variable.full_cdr&variable.apocalypse_timing|variable.partial_cdr|variable.no_cdr)" );
