@@ -14,5 +14,5 @@ std::string s = fmt::format("{0}{1}{0}", "abra", "cad");
 
 SimC Integration:
 -----------------
-* Release 7.1.0 from https://github.com/fmtlib/fmt/releases/tag/7.1.0
+* Release 7.1.3 from https://github.com/fmtlib/fmt/releases/tag/7.1.3
 * rename .cc files to .cpp for simpler integration into our build systems.
