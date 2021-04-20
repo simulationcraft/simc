@@ -263,13 +263,19 @@ void grove_invigoration( special_effect_t& effect )
   if ( unique_gear::create_fallback_buffs( effect, { "redirected_anima" } ) )
     return;
 
-  effect.custom_buff = buff_t::find( effect.player, "redirected_anima" );
-  if ( !effect.custom_buff )
+  auto buff = buff_t::find( effect.player, "redirected_anima" );
+
+  if ( !buff )
   {
-    effect.custom_buff =
-      make_buff<stat_buff_t>( effect.player, "redirected_anima", effect.player->find_spell( 342814 ) )
-        ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    buff = make_buff<stat_buff_t>( effect.player, "redirected_anima", effect.player->find_spell( 342814 ) )
+             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+             ->set_default_value_from_effect( 1 )  // default value is used to hold the hp %
+             ->set_stack_change_callback( [ effect ] ( buff_t*, int old, int cur )
+               { effect.player->recalculate_resource_max( RESOURCE_HEALTH ); } );
   }
+
+  effect.player->buffs.redirected_anima = buff;
+  effect.custom_buff = buff;
 
   new dbc_proc_callback_t( effect.player, effect );
 
@@ -278,7 +284,74 @@ void grove_invigoration( special_effect_t& effect )
 
   int stacks = as<int>( effect.driver()->effectN( 3 ).base_value() * stack_mod );
 
-  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.custom_buff, stacks );
+  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff, stacks );
+}
+
+void bonded_hearts( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "bonded_hearts" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "bonded_hearts", effect.player->find_spell( 352881 ) )
+               ->add_invalidate( CACHE_MASTERY )
+               ->set_default_value_from_effect( 1 );
+
+    buff->set_stack_change_callback( [ effect ]( buff_t* b, int, int new_ ) {
+      auto ra  = debug_cast<stat_buff_t*>( effect.player->buffs.redirected_anima );
+      auto mul = 1.0 + b->default_value;
+
+      // In stat_buff_t::bump, the stat value is applied AFTER buff_t::stack_change_callback is triggered, so the
+      // sequence will be:
+      //  1. redirected_anima is triggered
+      //  2. bonded_hearts is triggered via stack_change_callback on redirected_anima
+      //  3. the stat value of redirected_anima is applied
+      // This means that when bonded_hearts is triggered, the amount will be adjusted before the stat buff is applied,
+      // so we don't need to do any manual adjusting of the stat buff amoutn. But when bonded_hearts ends, we will
+      // need to manually recalculate and update the stat buff amount.
+      if ( new_ )
+      {
+        for ( auto& s : ra->stats )
+        {
+          s.amount *= mul;
+        }
+
+        ra->default_value *= mul;
+      }
+      else
+      {
+        for ( auto& s : ra->stats )
+        {
+          s.amount /= mul;
+
+          double delta = s.amount * ra->current_stack - s.current_value;
+
+          if ( delta > 0 )
+            b->player->stat_gain( s.stat, delta, ra->stat_gain, nullptr, ra->buff_duration() > 0_ms );
+          else if ( delta < 0 )
+            b->player->stat_loss( s.stat, std::fabs( delta ), ra->stat_gain, nullptr, ra->buff_duration() > 0_ms );
+
+          s.current_value += delta;
+        }
+
+        ra->default_value /= mul;
+      }
+
+      effect.player->recalculate_resource_max( RESOURCE_HEALTH );
+    } );
+  }
+
+  effect.player->register_on_arise_callback( effect.player, [ effect, buff ]() {
+    auto ra = effect.player->buffs.redirected_anima;
+    if ( ra )
+    {
+      ra->set_stack_change_callback( [ buff ]( buff_t*, int old_, int new_ ) {
+        if ( new_ > old_ && buff->rng().roll( buff->sim->shadowlands_opts.bonded_hearts_other_covenant_chance ) )
+          buff->trigger();
+
+        buff->player->recalculate_resource_max( RESOURCE_HEALTH );
+      } );
+    }
+  } );
 }
 
 void field_of_blossoms( special_effect_t& effect )
@@ -335,8 +408,32 @@ void social_butterfly( special_effect_t& effect )
   effect.player->register_combat_begin( buff );
 }
 
+void dream_delver( special_effect_t& effect )
+{
+  struct dream_delver_cb_t : public dbc_proc_callback_t
+  {
+    dream_delver_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {}
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      auto td = a->player->get_target_data( s->target );
+      td->debuff.dream_delver->trigger();
+    }
+  };
+
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+
+  new dream_delver_cb_t( effect );
+}
+
 void first_strike( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "first_strike" } ) )
+    return;
+
   struct first_strike_cb_t : public dbc_proc_callback_t
   {
     std::vector<int> target_list;
@@ -366,6 +463,12 @@ void first_strike( special_effect_t& effect )
       ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
   }
+
+  // The effect does not actually proc on periodic damage at all.
+  effect.proc_flags_ = effect.proc_flags() & ~PF_PERIODIC;
+
+  // The effect procs when damage actually happens.
+  effect.proc_flags2_ = PF2_ALL_HIT;
 
   new first_strike_cb_t( effect );
 }
@@ -699,6 +802,8 @@ void hammer_of_genesis( special_effect_t& effect )
       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
 
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+
   new hammer_of_genesis_cb_t( effect );
 }
 
@@ -957,7 +1062,7 @@ void volatile_solvent( special_effect_t& effect )
                   ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
                   ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
                   ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-                  ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT );
+                  ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
         }
         break;
 
@@ -977,7 +1082,8 @@ void volatile_solvent( special_effect_t& effect )
         {
           buff = make_buff( effect.player, "volatile_solvent_elemental", effect.player->find_spell( 323504 ) )
                   ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
-                  ->set_schools_from_effect( 1 );
+                  ->set_schools_from_effect( 1 )
+                  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
         }
         effect.player->buffs.volatile_solvent_damage = buff;
         break;
@@ -988,7 +1094,8 @@ void volatile_solvent( special_effect_t& effect )
         {
           buff = make_buff( effect.player, "volatile_solvent_giant", effect.player->find_spell( 323506 ) )
                   ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
-                  ->set_schools_from_effect( 2 );
+                  ->set_schools_from_effect( 2 )
+                  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
         }
         effect.player->buffs.volatile_solvent_damage = buff;
         break;
@@ -1212,6 +1319,20 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
   new marrowed_gemstone_cb_t( effect, buff );
 }
 
+// Passive which increases Stamina based on Renown level
+void deepening_bond( special_effect_t& effect )
+{
+  const auto spell = effect.driver();
+
+  if ( effect.player->sim->debug )
+  {
+    effect.player->sim->out_debug.print( "{} increasing stamina by {}% ({})",
+        effect.player->name(), spell->effectN( 1 ).base_value(), spell->name_cstr() );
+  }
+
+  effect.player->base.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spell->effectN( 1 ).percent();
+}
+
 // Helper function for registering an effect, with autoamtic skipping initialization if soulbind spell is not available
 void register_soulbind_special_effect( unsigned spell_id, const custom_cb_t& init_callback, bool fallback = false )
 {
@@ -1231,9 +1352,11 @@ void register_special_effects()
   register_soulbind_special_effect( 320660, soulbinds::niyas_tools_poison );
   register_soulbind_special_effect( 320662, soulbinds::niyas_tools_herbs );
   register_soulbind_special_effect( 322721, soulbinds::grove_invigoration, true );
+  register_soulbind_special_effect( 352503, soulbinds::bonded_hearts );
   register_soulbind_special_effect( 319191, soulbinds::field_of_blossoms, true );  // Dreamweaver
   register_soulbind_special_effect( 319210, soulbinds::social_butterfly );
-  register_soulbind_special_effect( 325069, soulbinds::first_strike );  // Korayn
+  register_soulbind_special_effect( 352786, soulbinds::dream_delver );
+  register_soulbind_special_effect( 325069, soulbinds::first_strike, true );  // Korayn
   register_soulbind_special_effect( 325066, soulbinds::wild_hunt_tactics );
   // Venthyr
   //register_soulbind_special_effect( 331580, soulbinds::exacting_preparation );  // Nadjia
@@ -1257,6 +1380,19 @@ void register_special_effects()
   register_soulbind_special_effect( 326514, soulbinds::forgeborne_reveries );  // Heirmir
   register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone, true );
+  // Covenant Renown Stamina Passives
+  unique_gear::register_special_effect( 344052, soulbinds::deepening_bond ); // Night Fae Rank 1
+  unique_gear::register_special_effect( 344053, soulbinds::deepening_bond ); // Night Fae Rank 2
+  unique_gear::register_special_effect( 344057, soulbinds::deepening_bond ); // Night Fae Rank 3
+  unique_gear::register_special_effect( 344068, soulbinds::deepening_bond ); // Venthyr Rank 1
+  unique_gear::register_special_effect( 344069, soulbinds::deepening_bond ); // Venthyr Rank 2
+  unique_gear::register_special_effect( 344070, soulbinds::deepening_bond ); // Venthyr Rank 3
+  unique_gear::register_special_effect( 344076, soulbinds::deepening_bond ); // Necrolord Rank 1
+  unique_gear::register_special_effect( 344077, soulbinds::deepening_bond ); // Necrolord Rank 2
+  unique_gear::register_special_effect( 344078, soulbinds::deepening_bond ); // Necrolord Rank 3
+  unique_gear::register_special_effect( 344087, soulbinds::deepening_bond ); // Kyrian Rank 1
+  unique_gear::register_special_effect( 344089, soulbinds::deepening_bond ); // Kyrian Rank 2
+  unique_gear::register_special_effect( 344091, soulbinds::deepening_bond ); // Kyrian Rank 3
 }
 
 void initialize_soulbinds( player_t* player )
@@ -1267,6 +1403,7 @@ void initialize_soulbinds( player_t* player )
   for ( auto soulbind_spell : player->covenant->soulbind_spells() )
   {
     auto spell = player->find_spell( soulbind_spell );
+
     if ( !spell->ok() )
       continue;
 
@@ -1277,6 +1414,26 @@ void initialize_soulbinds( player_t* player )
     unique_gear::initialize_special_effect( effect, soulbind_spell );
 
     // Ensure the soulbind has a custom special effect to protect against errant auto-inference
+    if ( !effect.is_custom() )
+      continue;
+
+    player->special_effects.push_back( new special_effect_t( effect ) );
+  }
+
+  for ( auto renown_spell : player->covenant->renown_spells() )
+  {
+    auto spell = player->find_spell( renown_spell );
+
+    if ( !spell->ok() )
+      continue;
+
+    special_effect_t effect{ player };
+    effect.type   = SPECIAL_EFFECT_EQUIP;
+    effect.source = SPECIAL_EFFECT_SOURCE_SOULBIND;
+
+    unique_gear::initialize_special_effect( effect, renown_spell );
+
+    // Ensure the renown spell has a custom special effect to protect against errant auto-inference
     if ( !effect.is_custom() )
       continue;
 
@@ -1313,6 +1470,20 @@ void register_target_data_initializers( sim_t* sim )
     }
     else
       td->debuff.plagueys_preemptive_strike = make_buff( *td, "plagueys_preemptive_strike" )->set_quiet( true );
+  } );
+
+  // Dream Delver
+  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( td->source->find_soulbind_spell( "Dream Delver" )->ok() )
+    {
+      assert( !td->debuff.dream_delver );
+
+      td->debuff.dream_delver = make_buff( *td, "dream_delver", td->source->find_spell( 353354 ) )
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
+      td->debuff.dream_delver->reset();
+    }
+    else
+      td->debuff.dream_delver = make_buff( *td, "dream_delver" )->set_quiet( true );
   } );
 }
 

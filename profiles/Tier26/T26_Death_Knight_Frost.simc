@@ -8,6 +8,7 @@ position=back
 talents=3101013
 covenant=kyrian
 soulbind=pelagos,combat_meditation/accelerated_cold:7/everfrost:7
+renown=40
 
 # Default consumables
 potion=potion_of_spectral_strength
@@ -28,19 +29,27 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+# Evaluates a trinkets cooldown, divided by pillar of frost or breath of sindragosa's cooldown. If it's value has no remainder return 1, else return 0.5.
+actions.precombat+=/variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=trinket.1.has_use_buff&(!talent.breath_of_sindragosa&(trinket.1.cooldown.duration%%cooldown.pillar_of_frost.duration=0)|talent.breath_of_sindragosa&(cooldown.breath_of_sindragosa.duration%%trinket.1.cooldown.duration=0)|talent.icecap)
+actions.precombat+=/variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=trinket.2.has_use_buff&(!talent.breath_of_sindragosa&(trinket.2.cooldown.duration%%cooldown.pillar_of_frost.duration=0)|talent.breath_of_sindragosa&(cooldown.breath_of_sindragosa.duration%%trinket.2.cooldown.duration=0)|talent.icecap)
+# Estimates a trinkets value by comparing the cooldown of the trinket, divided by the duration of the buff it provides. Has a strength modifier to give a higher priority to strength trinkets, as well as a modifier for if a trinket will or will not sync with cooldowns.
+actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!trinket.1.has_use_buff&trinket.2.has_use_buff|trinket.2.has_use_buff&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync))
 
 # Executed every time the actor is available.
 actions=auto_attack
+# Prevent specified trinkets being used with automatic lines
+actions+=/variable,name=specified_trinket,value=(equipped.inscrutable_quantum_device&cooldown.inscrutable_quantum_device.ready)
 # Apply Frost Fever, maintain Icy Talons and keep Remorseless Winter rolling
 actions+=/remorseless_winter,if=conduit.everfrost&talent.gathering_storm&!talent.obliteration&cooldown.pillar_of_frost.remains
-# Interrupt
-actions+=/mind_freeze,if=target.debuff.casting.react
-# Apply Frost Fever and maintain Icy Talons
 actions+=/howling_blast,if=!dot.frost_fever.ticking&(talent.icecap|cooldown.breath_of_sindragosa.remains>15|talent.obliteration&cooldown.pillar_of_frost.remains&!buff.killing_machine.up)
 actions+=/glacial_advance,if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&spell_targets.glacial_advance>=2&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>15)
 actions+=/frost_strike,if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>15)
+# Interrupt
+actions+=/mind_freeze,if=target.debuff.casting.react
 # Choose Action list to run
 actions+=/call_action_list,name=covenants
+actions+=/call_action_list,name=racials
+actions+=/call_action_list,name=trinkets
 actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=cold_heart,if=talent.cold_heart&(buff.cold_heart.stack>=10&(debuff.razorice.stack=5|!death_knight.runeforge.razorice)|fight_remains<=gcd)
 actions+=/run_action_list,name=bos_ticking,if=buff.breath_of_sindragosa.up
@@ -55,7 +64,7 @@ actions.aoe=remorseless_winter
 actions.aoe+=/glacial_advance,if=talent.frostscythe
 actions.aoe+=/frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm
 actions.aoe+=/howling_blast,if=buff.rime.up
-actions.aoe+=/obliterate,if=death_and_decay.ticking&covenant.night_fae&buff.deaths_due.stack>8
+actions.aoe+=/obliterate,if=death_and_decay.ticking&covenant.night_fae&buff.deaths_due.stack<4
 actions.aoe+=/frostscythe,if=buff.killing_machine.react&(!death_and_decay.ticking&covenant.night_fae|!covenant.night_fae)
 actions.aoe+=/glacial_advance,if=runic_power.deficit<(15+talent.runic_attenuation*3)
 actions.aoe+=/frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit<(15+talent.runic_attenuation*3)
@@ -100,16 +109,8 @@ actions.cold_heart+=/chains_of_ice,if=!talent.obliteration&!death_knight.runefor
 # Prevent Cold Heart overcapping during pillar
 actions.cold_heart+=/chains_of_ice,if=talent.obliteration&!buff.pillar_of_frost.up&(buff.cold_heart.stack>=16&buff.unholy_strength.up|buff.cold_heart.stack>=19|cooldown.pillar_of_frost.remains<3&buff.cold_heart.stack>=14)
 
-# On Use Items, Potion and Racials
-actions.cooldowns=use_items,if=buff.pillar_of_frost.up|cooldown.pillar_of_frost.remains>20
-actions.cooldowns+=/potion,if=buff.pillar_of_frost.up
-actions.cooldowns+=/blood_fury,if=buff.pillar_of_frost.up
-actions.cooldowns+=/berserking,if=buff.pillar_of_frost.up
-actions.cooldowns+=/arcane_pulse,if=(!buff.pillar_of_frost.up&active_enemies>=2)|!buff.pillar_of_frost.up&(rune.deficit>=5&runic_power.deficit>=60)
-actions.cooldowns+=/lights_judgment,if=buff.pillar_of_frost.up
-actions.cooldowns+=/ancestral_call,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up
-actions.cooldowns+=/fireblood,if=buff.pillar_of_frost.remains<=8&buff.empower_rune_weapon.up
-actions.cooldowns+=/bag_of_tricks,if=buff.pillar_of_frost.up&active_enemies=1&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)
+# Potion
+actions.cooldowns=potion,if=buff.pillar_of_frost.up
 # Cooldowns
 actions.cooldowns+=/empower_rune_weapon,if=talent.obliteration&(cooldown.pillar_of_frost.ready&rune.time_to_5>gcd&runic_power.deficit>=10|buff.pillar_of_frost.up&rune.time_to_5>gcd)|fight_remains<20
 actions.cooldowns+=/empower_rune_weapon,if=talent.breath_of_sindragosa&runic_power.deficit>30&rune.time_to_5>gcd&(buff.breath_of_sindragosa.up|fight_remains<20)
@@ -158,6 +159,15 @@ actions.obliteration_pooling+=/frost_strike,target_if=max:(debuff.razorice.stack
 actions.obliteration_pooling+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=rune>4
 actions.obliteration_pooling+=/frostscythe,if=active_enemies>=4&(!death_and_decay.ticking&covenant.night_fae|!covenant.night_fae)
 
+# Racial Abilities
+actions.racials=blood_fury,if=buff.pillar_of_frost.up
+actions.racials+=/berserking,if=buff.pillar_of_frost.up
+actions.racials+=/arcane_pulse,if=(!buff.pillar_of_frost.up&active_enemies>=2)|!buff.pillar_of_frost.up&(rune.deficit>=5&runic_power.deficit>=60)
+actions.racials+=/lights_judgment,if=buff.pillar_of_frost.up
+actions.racials+=/ancestral_call,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up
+actions.racials+=/fireblood,if=buff.pillar_of_frost.remains<=8&buff.empower_rune_weapon.up
+actions.racials+=/bag_of_tricks,if=buff.pillar_of_frost.up&active_enemies=1&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)
+
 # Standard single-target rotation
 actions.standard=remorseless_winter,if=talent.gathering_storm|conduit.everfrost|runeforge.biting_cold
 actions.standard+=/glacial_advance,if=!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<7)
@@ -170,6 +180,15 @@ actions.standard+=/obliterate,if=runic_power.deficit>(25+talent.runic_attenuatio
 actions.standard+=/frost_strike
 actions.standard+=/horn_of_winter
 actions.standard+=/arcane_torrent
+
+# Trinkets
+actions.trinkets=use_item,name=inscrutable_quantum_device,if=buff.pillar_of_frost.up|target.time_to_pct_20<5|fight_remains<21
+# The trinket with the highest estimated value, will be used first and paired with Pillar of Frost.
+actions.trinkets+=/use_item,slot=trinket1,if=!variable.specified_trinket&buff.pillar_of_frost.up&(!talent.icecap|talent.icecap&buff.pillar_of_frost.remains>=10)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains
+actions.trinkets+=/use_item,slot=trinket2,if=!variable.specified_trinket&buff.pillar_of_frost.up&(!talent.icecap|talent.icecap&buff.pillar_of_frost.remains>=10)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains
+# If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown.
+actions.trinkets+=/use_item,slot=trinket1,if=!trinket.1.has_use_buff&(trinket.2.cooldown.remains|!trinket.2.has_use_buff)|cooldown.pillar_of_frost.remains>20
+actions.trinkets+=/use_item,slot=trinket2,if=!trinket.2.has_use_buff&(trinket.1.cooldown.remains|!trinket.1.has_use_buff)|cooldown.pillar_of_frost.remains>20
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173130
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173130
@@ -185,16 +204,16 @@ finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,g
 finger2=ring_of_perpetual_conflict,id=178872,bonus_id=6536/1540/6646/6935,gem_id=173130,enchant=tenet_of_critical_strike
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1540/6646
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=barbededge_of_the_stone_legion,id=182421,bonus_id=7187/1531,enchant=rune_of_razorice
+main_hand=stoneborn_terrorblade,id=182395,bonus_id=7187/1531,enchant=rune_of_razorice
 off_hand=stoneborn_terrorblade,id=182395,bonus_id=7187/1531,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=228.75
-# gear_strength=883
-# gear_stamina=1539
+# gear_strength=880
+# gear_stamina=1540
 # gear_attack_power=40
-# gear_crit_rating=738
-# gear_haste_rating=348
-# gear_mastery_rating=562
-# gear_versatility_rating=288
+# gear_crit_rating=697
+# gear_haste_rating=400
+# gear_mastery_rating=542
+# gear_versatility_rating=314
 # gear_armor=1291

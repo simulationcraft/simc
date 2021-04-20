@@ -336,6 +336,11 @@ struct shadow_word_death_t final : public priest_spell_t
       add_child( impact_action );
     }
 
+    if ( priest().legendary.kiss_of_death->ok() )
+    {
+      cooldown->duration += priest().legendary.kiss_of_death->effectN( 1 ).time_value();
+    }
+
     cooldown->hasted = true;
   }
 

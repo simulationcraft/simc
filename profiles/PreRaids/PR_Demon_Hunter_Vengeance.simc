@@ -29,8 +29,6 @@ actions.precombat+=/augmentation
 actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
-actions.precombat+=/use_item,name=azsharas_font_of_power
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -52,7 +50,6 @@ actions.cooldowns=potion
 actions.cooldowns+=/use_items
 actions.cooldowns+=/sinful_brand,if=!dot.sinful_brand.ticking
 actions.cooldowns+=/the_hunt
-actions.cooldowns+=/fodder_to_the_flame
 actions.cooldowns+=/elysian_decree
 
 # Defensives
@@ -93,10 +90,10 @@ off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,ench
 # Gear Summary
 # gear_ilvl=184.38
 # gear_agility=587
-# gear_stamina=860
+# gear_stamina=861
 # gear_attack_power=40
-# gear_crit_rating=141
-# gear_haste_rating=789
-# gear_mastery_rating=93
-# gear_versatility_rating=347
+# gear_crit_rating=142
+# gear_haste_rating=798
+# gear_mastery_rating=95
+# gear_versatility_rating=349
 # gear_armor=479

@@ -71,6 +71,11 @@ else
   OPTS_INTERNAL += -DSC_NO_NETWORKING
 endif
 
+# Enable universal binary mode for MacOS
+ifneq (${UNIVERSAL},)
+  MACOS_ARCHS=x86_64 arm64
+endif
+
 # Include build setting from user configuration file
 -include ../build.conf
 
@@ -79,9 +84,15 @@ ifeq (${FLAVOR},Darwin)
   # Workaround for XCode 11 issues when using optimized builds. Potentially related to
   # https://forums.developer.apple.com/thread/121887
   CPP_FLAGS += -mmacosx-version-min=10.12
-ifeq (${OPENSSL},)
-  LINK_LIBS += -framework Security -framework CoreFoundation
-endif
+
+  # Explicitly state architectures to compile with
+  ifneq ($(MACOS_ARCHS),)
+    OPTS_INTERNAL += $(addprefix -arch ,$(MACOS_ARCHS))
+  endif
+
+  ifeq (${OPENSSL},)
+    LINK_LIBS += -framework Security -framework CoreFoundation
+  endif
 endif
 
 ifneq (${DEBUG},)

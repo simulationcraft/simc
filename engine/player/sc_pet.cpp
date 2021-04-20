@@ -112,6 +112,16 @@ double pet_t::composite_player_target_multiplier( player_t* target, school_e sch
 {
   double m = player_t::composite_player_target_multiplier( target, school );
 
+  // Same logic as in player_t::composite_player_target_multiplier() above
+  // As the Covenant buff isn't created on pets, we need to check the owner
+  // Testing shows this appears to work on all pets, even trinkets and such
+  if ( owner->buffs.wild_hunt_tactics )
+  {
+    double health_threshold = 100.0 - ( 100.0 - owner->buffs.wild_hunt_tactics->data().effectN( 5 ).base_value() ) * sim->shadowlands_opts.wild_hunt_tactics_duration_multiplier;
+    if ( target->health_percentage() > health_threshold )
+      m *= 1.0 + owner->buffs.wild_hunt_tactics->default_value;
+  }
+
   if ( auto td = owner->find_target_data( target ) )
   {
     m *= 1.0 + td->debuff.condensed_lifeforce->check_value();

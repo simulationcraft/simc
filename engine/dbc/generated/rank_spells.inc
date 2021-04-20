@@ -1,5 +1,5 @@
-// Rank class spells, wow build 9.0.2.37474
-static const std::array<rank_class_spell_t, 336> __rank_spells_data { {
+// Rank class spells, wow build 9.0.5.38134
+static const std::array<rank_class_spell_t, 335> __rank_spells_data { {
   { 10, 269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9, 265, 231792,      0, "Agony"                             , "Rank 2" },
   {  6, 252, 316961,      0, "Apocalypse"                        , "Rank 2" },
@@ -267,7 +267,6 @@ static const std::array<rank_class_spell_t, 336> __rank_spells_data { {
   {  4, 260, 279876,      0, "Sinister Strike"                   , "Rank 2" },
   {  1,  71, 261901,      0, "Slam"                              , "Rank 2" },
   {  1,  71, 316534,      0, "Slam"                              , "Rank 3" },
-  {  4, 259, 344362,      0, "Slice and Dice"                    , "Rank 2" },
   {  8,  62, 321747,      0, "Slow"                              , "Rank 2" },
   {  5, 256, 262861,      0, "Smite"                             , "Rank 2" },
   {  5, 257, 262861,      0, "Smite"                             , "Rank 2" },

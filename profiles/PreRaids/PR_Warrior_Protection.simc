@@ -41,7 +41,10 @@ actions+=/fireblood
 actions+=/ancestral_call
 actions+=/bag_of_tricks
 actions+=/potion,if=buff.avatar.up|target.time_to_die<25
-actions+=/ignore_pain,if=buff.ignore_pain.down&rage>50
+# Prioritize Execute over Ignore Pain as a rage dump below 20%
+actions+=/ignore_pain,if=target.health.pct>20&!covenant.venthyr,line_cd=15
+# Venthyr Condemn has 2 execute windows, 20% and 80%
+actions+=/ignore_pain,if=target.health.pct>20&target.health.pct<80&covenant.venthyr,line_cd=15
 actions+=/demoralizing_shout,if=talent.booming_voice.enabled
 actions+=/avatar
 actions+=/ancient_aftershock
@@ -63,7 +66,7 @@ actions.generic+=/shield_slam,if=buff.shield_block.up
 actions.generic+=/thunder_clap,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains)&talent.unstoppable_force.enabled&buff.avatar.up
 actions.generic+=/shield_slam
 actions.generic+=/execute
-actions.generic+=/revenge,if=rage>=70
+actions.generic+=/revenge,if=rage>80&target.health.pct>20|buff.revenge.up
 actions.generic+=/thunder_clap
 actions.generic+=/revenge
 actions.generic+=/devastate
@@ -88,10 +91,10 @@ off_hand=encrusted_canopic_lid,id=178750,bonus_id=6807/1498/6646
 # Gear Summary
 # gear_ilvl=184.38
 # gear_strength=587
-# gear_stamina=857
+# gear_stamina=860
 # gear_intellect=84
-# gear_crit_rating=456
-# gear_haste_rating=653
+# gear_crit_rating=459
+# gear_haste_rating=657
 # gear_mastery_rating=165
-# gear_versatility_rating=96
+# gear_versatility_rating=100
 # gear_armor=1544

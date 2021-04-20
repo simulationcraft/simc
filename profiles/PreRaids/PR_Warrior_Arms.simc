@@ -47,17 +47,17 @@ actions+=/run_action_list,name=execute,if=(talent.massacre.enabled&target.health
 actions+=/run_action_list,name=single_target
 
 actions.execute=deadly_calm
-actions.execute+=/rend,if=remains<=duration*0.3
-actions.execute+=/skullsplitter,if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)
+actions.execute+=/cancel_buff,name=bladestorm,if=spell_targets.whirlwind=1&gcd.remains=0&(rage>75|rage>50&buff.recklessness.up)
 actions.execute+=/avatar,if=cooldown.colossus_smash.remains<8&gcd.remains=0
-actions.execute+=/ravager,if=buff.avatar.remains<18&!dot.ravager.remains
+actions.execute+=/skullsplitter,if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)
+actions.execute+=/ravager
 actions.execute+=/cleave,if=spell_targets.whirlwind>1&dot.deep_wounds.remains<gcd
 actions.execute+=/warbreaker
 actions.execute+=/colossus_smash
 actions.execute+=/condemn,if=debuff.colossus_smash.up|buff.sudden_death.react|rage>65
 actions.execute+=/overpower,if=charges=2
+actions.execute+=/mortal_strike,if=runeforge.enduring_blow|dot.deep_wounds.remains<=gcd|((debuff.exploiter.stack=2|buff.battlelord.up)&!covenant.venthyr)
 actions.execute+=/bladestorm,if=buff.deadly_calm.down&rage<50
-actions.execute+=/mortal_strike,if=dot.deep_wounds.remains<=gcd
 actions.execute+=/skullsplitter,if=rage<40
 actions.execute+=/overpower
 actions.execute+=/condemn
@@ -65,11 +65,11 @@ actions.execute+=/execute
 
 actions.hac=skullsplitter,if=rage<60&buff.deadly_calm.down
 actions.hac+=/avatar,if=cooldown.colossus_smash.remains<1
-actions.hac+=/cleave,if=dot.deep_wounds.remains<=gcd
 actions.hac+=/warbreaker
+actions.hac+=/colossus_smash
+actions.hac+=/cleave,if=dot.deep_wounds.remains<=gcd
 actions.hac+=/bladestorm
 actions.hac+=/ravager
-actions.hac+=/colossus_smash
 actions.hac+=/rend,if=remains<=duration*0.3&buff.sweeping_strikes.up
 actions.hac+=/cleave
 actions.hac+=/mortal_strike,if=buff.sweeping_strikes.up|dot.deep_wounds.remains<gcd&!talent.cleave.enabled
@@ -79,15 +79,15 @@ actions.hac+=/execute,if=buff.sweeping_strikes.up
 actions.hac+=/overpower
 actions.hac+=/whirlwind
 
-actions.single_target=avatar,if=cooldown.colossus_smash.remains<8&gcd.remains=0
-actions.single_target+=/rend,if=remains<=duration*0.3
+actions.single_target=rend,if=remains<=duration*0.3
+actions.single_target+=/avatar,if=cooldown.colossus_smash.remains<8&gcd.remains=0
 actions.single_target+=/cleave,if=spell_targets.whirlwind>1&dot.deep_wounds.remains<gcd
+actions.single_target+=/ravager
 actions.single_target+=/warbreaker
 actions.single_target+=/colossus_smash
-actions.single_target+=/ravager,if=buff.avatar.remains<18&!dot.ravager.remains
 actions.single_target+=/overpower,if=charges=2
-actions.single_target+=/bladestorm,if=buff.deadly_calm.down&(debuff.colossus_smash.up&rage<30|rage<70)
-actions.single_target+=/mortal_strike,if=buff.overpower.stack>=2&buff.deadly_calm.down|(dot.deep_wounds.remains<=gcd&cooldown.colossus_smash.remains>gcd)
+actions.single_target+=/mortal_strike,if=runeforge.enduring_blow|buff.overpower.stack>=2|(dot.deep_wounds.remains<=gcd&cooldown.colossus_smash.remains>gcd)
+actions.single_target+=/bladestorm,if=buff.deadly_calm.down&(debuff.colossus_smash.up&rage<30|rage<50)
 actions.single_target+=/deadly_calm
 actions.single_target+=/skullsplitter,if=rage<60&buff.deadly_calm.down
 actions.single_target+=/overpower
@@ -95,7 +95,7 @@ actions.single_target+=/condemn,if=buff.sudden_death.react
 actions.single_target+=/execute,if=buff.sudden_death.react
 actions.single_target+=/mortal_strike
 actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled
-actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled
+actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled&(rage>50|runeforge.signet_of_tormented_kings)
 
 head=plague_handlers_greathelm,id=178773,bonus_id=6807/1498/6646
 neck=trailspinner_pendant,id=178707,bonus_id=6807/1498/6646
@@ -118,8 +118,8 @@ main_hand=zinkhas_blade_of_the_fallen_god,id=179330,bonus_id=6807/1498/6646,ench
 # gear_strength=587
 # gear_stamina=857
 # gear_attack_power=20
-# gear_crit_rating=810
-# gear_haste_rating=197
-# gear_mastery_rating=242
-# gear_versatility_rating=119
+# gear_crit_rating=817
+# gear_haste_rating=200
+# gear_mastery_rating=244
+# gear_versatility_rating=121
 # gear_armor=1022

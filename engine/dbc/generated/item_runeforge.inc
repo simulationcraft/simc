@@ -1,4 +1,4 @@
-// Runeforge legendary bonuses, wow build 9.0.2.37474
+// Runeforge legendary bonuses, wow build 9.0.5.38134
 static const std::array<runeforge_legendary_entry_t, 582> __runeforge_legendary_data { {
   { 6823, 64, 327508, 0x000000c0, "Slick Ice" },
   { 6828, 64, 327284, 0x00110020, "Cold Front" },
@@ -239,7 +239,7 @@ static const std::array<runeforge_legendary_entry_t, 582> __runeforge_legendary_
   { 7086, 105, 338658, 0x00100024, "Draught of Deep Focus" },
   { 7087, 102, 338661, 0x00010100, "Oneth's Clear Vision" },
   { 7088, 102, 338668, 0x00000408, "Primordial Arcanic Pulsar" },
-  { 7089, 103, 339144, 0x00000804, "Cat-eye Curio" },
+  { 7089, 103, 339144, 0x00000804, "Cat-Eye Curio" },
   { 7090, 103, 339141, 0x00000402, "Eye of Fearful Symmetry" },
   { 7091, 103, 339139, 0x00000048, "Apex Predator's Craving" },
   { 7092, 104, 339060, 0x00110020, "Luffa-Infused Embrace" },

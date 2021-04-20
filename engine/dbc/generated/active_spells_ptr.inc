@@ -1,4 +1,4 @@
-// Active class spells, wow build 9.0.5.37623
+// Active class spells, wow build 9.1.0.38312
 static const std::array<active_class_spell_t, 611> __ptr_active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
@@ -583,6 +583,7 @@ static const std::array<active_class_spell_t, 611> __ptr_active_spells_data { {
   { 12,    0, 185245,      0, "Torment"                            },
   { 12,    0, 188501,      0, "Spectral Sight"                     },
   { 12,    0, 191427,      0, "Metamorphosis"                      },
+  { 12,    0, 198589,      0, "Blur"                               },
   { 12,    0, 217832,      0, "Imprison"                           },
   { 12,    0, 258920,      0, "Immolation Aura"                    },
   { 12,    0, 278326,      0, "Consume Magic"                      },
@@ -598,7 +599,6 @@ static const std::array<active_class_spell_t, 611> __ptr_active_spells_data { {
   { 12,  577, 195072, 344865, "Fel Rush"                           },
   { 12,  577, 196718,      0, "Darkness"                           },
   { 12,  577, 198013,      0, "Eye Beam"                           },
-  { 12,  577, 198589,      0, "Blur"                               },
   { 12,  577, 198793, 344866, "Vengeful Retreat"                   },
   { 12,  581, 187827, 191427, "Metamorphosis"                      },
   { 12,  581, 189110, 344865, "Infernal Strike"                    },
@@ -608,12 +608,12 @@ static const std::array<active_class_spell_t, 611> __ptr_active_spells_data { {
   { 12,  581, 204021, 344867, "Fiery Brand"                        },
   { 12,  581, 204157, 185123, "Throw Glaive"                       },
   { 12,  581, 204596,      0, "Sigil of Flame"                     },
-  { 12,  581, 207684,      0, "Sigil of Misery"                    },
+  { 12,  581, 207684, 198589, "Sigil of Misery"                    },
   { 12,  581, 212084,      0, "Fel Devastation"                    },
   { 12,  581, 228477, 344862, "Soul Cleave"                        },
 } };
 
-// Pet active spells, wow build 9.0.5.37623
+// Pet active spells, wow build 9.1.0.38312
 static const std::array<active_pet_spell_t, 133> __ptr_active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

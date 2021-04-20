@@ -731,6 +731,7 @@
 3055899, DBFilesClient\SpellScript.db2
 3055901, DBFilesClient\SpellScriptText.db2
 3069763, DBFilesClient\GarrTalentRank.db2
+3177687, DBFilesClient\ItemXItemEffect.db2
 3384973, DBFilesClient\Covenant.db2
 3488583, DBFilesClient\Soulbind.db2
 3490472, DBFilesClient\SoulbindUiDisplayInfo.db2

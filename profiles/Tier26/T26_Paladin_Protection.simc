@@ -8,6 +8,7 @@ position=front
 talents=2200202
 covenant=venthyr
 soulbind=theotar,soothing_shade/punish_the_guilty:7/hallowed_discernment:7
+renown=40
 
 # Default consumables
 potion=phantom_fire
@@ -87,10 +88,10 @@ off_hand=stonewrought_gargoyles_barrier,id=182399,bonus_id=7187/1531
 
 # Gear Summary
 # gear_ilvl=230.06
-# gear_strength=887
-# gear_stamina=1529
-# gear_crit_rating=377
-# gear_haste_rating=872
-# gear_mastery_rating=473
-# gear_versatility_rating=225
+# gear_strength=884
+# gear_stamina=1530
+# gear_crit_rating=379
+# gear_haste_rating=876
+# gear_mastery_rating=477
+# gear_versatility_rating=230
 # gear_armor=1980

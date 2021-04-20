@@ -149,7 +149,7 @@ struct hand_of_guldan_t : public demonology_spell_t
         shards_used( 0 ),
         blaze( new umbral_blaze_t( p ) ),
         summon_spell( p->find_spell( 104317 ) ),
-        meteor_time( 700_ms )
+        meteor_time( 400_ms )
     {
       parse_options(options_str);
       aoe = -1;
@@ -206,9 +206,14 @@ struct hand_of_guldan_t : public demonology_spell_t
         // BFA - Trinket
         expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, p() );
 
+
+        //Wild Imp spawns appear to have been sped up in Shadowlands. Last tested 2021-04-16.
+        //Current behavior: HoG will spawn a meteor on cast finish. Travel time in spell data is 0.7 seconds.
+        //However, damage event occurs before spell effect lands, happening 0.4 seconds after cast.
+        //Imps then spawn roughly every 0.18 seconds seconds after the damage event.
         for ( int i = 1; i <= shards_used; i++ )
         {
-          auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 400.0 * i, 50.0 ), 400.0 * i );
+          auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
           this->p()->wild_imp_spawns.push_back( ev );
         }
 
@@ -230,7 +235,8 @@ struct hand_of_guldan_t : public demonology_spell_t
   {
     parse_options( options_str );
 
-    impact_spell->meteor_time = timespan_t::from_seconds( data().missile_speed() );
+    //impact_spell->meteor_time = timespan_t::from_seconds( data().missile_speed() );
+    impact_spell->meteor_time = 400_ms; //See comments in impact spell for current behavior
   }
 
   timespan_t travel_time() const override
@@ -395,13 +401,28 @@ struct call_dreadstalkers_t : public demonology_spell_t
 
     auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( as<unsigned>( dreadstalker_count ) );
 
-    p()->buffs.demonic_calling->up();  // benefit tracking
-    p()->buffs.demonic_calling->decrement();
+    if ( p()->buffs.demonic_calling->up() )
+    {  // benefit tracking
 
-    //TOCHECK: This should really be applied by the pet(s) and not the Warlock?
-    if ( p()->talents.from_the_shadows->ok() )
-    {
-      td( target )->debuffs_from_the_shadows->trigger();
+      //Despite having no cost when Demonic Calling is up, this spell will still proc effects based on shard spending (last checked 2021-03-11)
+      double base_cost = demonology_spell_t::cost();
+
+      if ( p()->legendary.wilfreds_sigil_of_superior_summoning->ok() )
+        p()->cooldowns.demonic_tyrant->adjust( -base_cost * p()->legendary.wilfreds_sigil_of_superior_summoning->effectN( 2 ).time_value(), false );
+
+      if ( p()->buffs.nether_portal->up() )
+      {
+        p()->active.summon_random_demon->execute();
+        p()->buffs.portal_summons->trigger();
+        p()->procs.portal_summon->occur();
+      }
+
+      if ( p()->talents.soul_conduit->ok() )
+      {
+        make_event<sc_event_t>( *p()->sim, p(), as<int>( base_cost ) );
+      }
+
+      p()->buffs.demonic_calling->decrement();
     }
 
     //TOCHECK: Verify only the new pair of dreadstalkers gets the buff
@@ -586,7 +607,9 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
 
       if ( p()->talents.demonic_consumption->ok() )
       {
-        double available = pet->resources.current[ RESOURCE_HEALTH ];
+        //This is a hack to get around the fact we are not currently updating pet HP dynamically
+        //TODO: Pet stats (especially HP) need more reliable modeling of caching/updating
+        double available = p()->max_health() * pet->owner_coeff.health;
 
         // There is no spelldata for how health is converted into damage, current testing indicates the 15% of hp taken
         // from pets is divided by 10 and added to base damage 09-05-2020.
@@ -606,7 +629,6 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
       }
     }
 
-    p()->buffs.tyrant->set_duration( data().duration() );
     p()->buffs.tyrant->trigger();
     if ( p()->buffs.dreadstalkers->check() )
     {
@@ -830,7 +852,6 @@ struct summon_vilefiend_t : public demonology_spell_t
   void execute() override
   {
     demonology_spell_t::execute();
-    p()->buffs.vilefiend->set_duration( data().duration() );
     p()->buffs.vilefiend->trigger();
 
     // Spawn a single vilefiend, and grab it's pointer so we can execute an instant bile split
@@ -855,8 +876,6 @@ struct grimoire_felguard_t : public summon_pet_t
   {
     summon_pet_t::execute();
     pet->buffs.grimoire_of_service->trigger();
-    p()->buffs.grimoire_felguard->set_duration(
-        timespan_t::from_seconds( p()->talents.grimoire_felguard->effectN( 1 ).base_value() ) );
     p()->buffs.grimoire_felguard->trigger();
   }
 
@@ -1146,13 +1165,17 @@ void warlock_t::create_buffs_demonology()
   // to track pets
   buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
 
-  buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 4 );
+  buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 4 )
+                        ->set_duration( find_spell( 193332 )->duration() );
 
-  buffs.vilefiend = make_buff( this, "vilefiend" )->set_max_stack( 1 );
+  buffs.vilefiend = make_buff( this, "vilefiend" )->set_max_stack( 1 )
+                    ->set_duration( talents.summon_vilefiend->duration() );
 
-  buffs.tyrant = make_buff( this, "tyrant" )->set_max_stack( 1 );
+  buffs.tyrant = make_buff( this, "tyrant" )->set_max_stack( 1 )
+                 ->set_duration( find_spell( 265187 )->duration() );
 
-  buffs.grimoire_felguard = make_buff( this, "grimoire_felguard" )->set_max_stack( 1 );
+  buffs.grimoire_felguard = make_buff( this, "grimoire_felguard" )->set_max_stack( 1 )
+                            ->set_duration( talents.grimoire_felguard->duration() );
 
   buffs.prince_malchezaar = make_buff( this, "prince_malchezaar" )->set_max_stack( 1 );
 
@@ -1310,8 +1333,8 @@ void warlock_t::create_apl_demonology()
   def->add_action( "doom,if=refreshable" );
   def->add_action( "demonic_strength" );
   def->add_action( "bilescourge_bombers" );
-  def->add_action( "implosion,if=active_enemies>1&!talent.sacrificed_souls.enabled&buff.wild_imps.stack>=8&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains>5" );
-  def->add_action( "implosion,if=active_enemies>2&buff.wild_imps.stack>=8&buff.tyrant.down" );
+  def->add_action( "implosion,if=active_enemies>1&!talent.sacrificed_souls.enabled&buff.wild_imps.stack>=6&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains>5" );
+  def->add_action( "implosion,if=active_enemies>2&buff.wild_imps.stack>=6&buff.tyrant.down" );
   def->add_action( "hand_of_guldan,if=soul_shard=5|buff.nether_portal.up" );
   def->add_action( "hand_of_guldan,if=soul_shard>=3&cooldown.summon_demonic_tyrant.remains>20&(cooldown.summon_vilefiend.remains>5|!talent.summon_vilefiend.enabled)&cooldown.call_dreadstalkers.remains>2" );
   def->add_action( "call_action_list,name=covenant,if=(covenant.necrolord|covenant.night_fae)&!talent.nether_portal.enabled" );
@@ -1337,6 +1360,8 @@ void warlock_t::create_apl_demonology()
   sum->add_action( "hand_of_guldan,if=soul_shard=5,line_cd=20" );
   sum->add_action( "demonbolt,if=buff.demonic_core.up&(talent.demonic_consumption.enabled|buff.nether_portal.down),line_cd=20" );
   sum->add_action( "shadow_bolt,if=buff.wild_imps.stack+incoming_imps<4&(talent.demonic_consumption.enabled|buff.nether_portal.down),line_cd=20" );
+  sum->add_action( "grimoire_felguard" );
+  sum->add_action( "summon_vilefiend" );
   sum->add_action( "call_dreadstalkers" );
   sum->add_action( "hand_of_guldan" );
   sum->add_action( "demonbolt,if=buff.demonic_core.up&buff.nether_portal.up&((buff.vilefiend.remains>5|!talent.summon_vilefiend.enabled)&(buff.grimoire_felguard.remains>5|buff.grimoire_felguard.down))" );

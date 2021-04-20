@@ -1,7 +1,6 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-03-31/38134, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Physical
 Spell Type       : None
@@ -23,7 +22,6 @@ Description      : $?a137005[Death's Due]?a212611[The Hunt]?a137009[Convoke the 
 Variables        : $mod=$?a137005[${0.25}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${0.75}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}][${1}]
 
 Name             : Social Butterfly (id=319210) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -49,7 +47,6 @@ Effects          :
 Description      : When at least $s3 allies are within $s4 yd, your Versatility increases by $320130s1% for $320130d. When this expires, $s3 nearby allies gain ${$320212s1/$320130s1*100}% of this effect for $320212d before passing it back to you.
 
 Name             : Soothing Voice (id=319211) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Physical
 Spell Type       : None
@@ -69,7 +66,6 @@ Effects          :
 Description      : When your roots, stuns, and incapacitating class effects expire or are dispelled, your target's movement speed is reduced by $320267s1%, decaying rapidly over $320267d.
 
 Name             : Empowered Chrysalis (id=319213) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Physical
 Spell Type       : None
@@ -98,7 +94,6 @@ Effects          :
 Description      : $s3% of your overhealing received or done remains as a shield on the target up to $s4% of the caster's health, lasting for $320009d.
 
 Name             : Faerie Dust (id=319214) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Physical
 Spell Type       : None
@@ -120,7 +115,6 @@ Effects          :
 Description      : When falling farther than $m2 yd, faerie dust slows your fall for the next $319970d. This cannot occur more often than once per $332913d.
 
 Name             : Somnambulist (id=319216) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Physical
 Spell Type       : None
@@ -140,7 +134,6 @@ Effects          :
 Description      : After spending $s1 sec in a rested area, you gain $320235s1% increased movement speed for $320235d.
 
 Name             : Podtender (id=319217) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 Covenant         : Night Fae
 School           : Nature
@@ -166,7 +159,6 @@ This effect may only occur once every $320227d.
 Variables        : $points=${$cond($gt($SP,$AP),$SP*10,$AP*10)*(1)}
 
 Name             : Built for War (id=319973) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Shadow
 Spell Type       : None
@@ -188,7 +180,6 @@ Effects          :
 Description      : While you are above $s1% health you gain $332842s1% $pri every $t1 sec, stacking up to $332842u times. If you fall below $s2% health, this effect is lost.
 
 Name             : Enduring Gloom (id=319978) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Shadow
 Spell Type       : None
@@ -209,7 +200,6 @@ Description      : Door of Shadows grants you a shield that absorbs damage equal
 Variables        : $absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}
 
 Name             : Move As One (id=319982) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Shadow
 Spell Type       : None
@@ -232,11 +222,11 @@ Effects          :
 Description      : When a nearby ally gains temporary increased movement speed, you also gain the benefit, up to $s1% for $333104d.
 
 Name             : Wasteland Propriety (id=319983) [Passive] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
+Internal Cooldown: 5 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
@@ -258,7 +248,6 @@ You may only serve tea every $333221d.][]
 Variables        : $mod=$?a137005[${1.0}]?a212611[${1.0}]?a137009[${3.0}]?a137014[${0.5}.1]?a137018[${1.5}.1]?a137022[${3.0}]?a137026[${4.0}]?a137030[${0.8}.2]?a137034[${1.5}]?a137038[${1.4}.1]?a137042[${1.0}]?a137047[${1.0}][${1.0}]
 
 Name             : Stay on the Move (id=320658) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -284,7 +273,6 @@ Effects          :
 Description      : Soulshape's cooldown is reduced by ${$s3/-1000} sec, and defeating an enemy reduces Soulshape's cooldown by ${$321467s1/-1000} sec.
 
 Name             : Niya's Tools: Burrs (id=320659) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -309,7 +297,6 @@ Description      : Your damaging attacks and spells have a chance to toss Niya's
 Variables        : $points=${$cond($gt($SP,$AP),$SP*0.36,$AP*0.36)*(1+$@versadmg)}
 
 Name             : Niya's Tools: Poison (id=320660) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -334,7 +321,6 @@ Variables        : $pointsA=${$cond($gt($SP,$AP),$SP*0.05,$AP*0.05)*(1+$@versadm
 $pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}
 
 Name             : Niya's Tools: Herbs (id=320662) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -358,7 +344,6 @@ Effects          :
 Description      : Your healing spells and abilities have a chance to apply Niya's Invigorating Herbs, increasing the target's Haste by $321510s1% for $321510d.
 
 Name             : Nature's Splendor (id=320668) [Passive] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -382,7 +367,6 @@ Effects          :
 Description      : You have a chance to obtain leather, meat, and fish when you kill an enemy that yields experience or honor.
 
 Name             : Swift Patrol (id=320687) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -403,7 +387,6 @@ Effects          :
 Description      : Movement speed increased by $321527s1% for $321527d after defeating an enemy. Combat cancels this effect.
 
 Name             : Grove Invigoration (id=322721) [Passive] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 Covenant         : Night Fae
 School           : Nature
@@ -436,7 +419,6 @@ Tooltip          : $spelldesc322721
 Variables        : $mod=$?a137005[${0.25}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${0.75}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}][${1}]
 
 Name             : Volatile Solvent (id=323074) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 Covenant         : Necrolord
 School           : Shadow
@@ -456,10 +438,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=833121)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Using Fleshcraft with nearby corpses consumes their essence completely, granting a benefit based on the creature's type.
+Description      : Fleshcraft's passive effect consumes a corpse's essence completely, granting a benefit based on the creature's type.
 
 Name             : Kevin's Keyring (id=323079) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Physical
 Spell Type       : None
@@ -489,7 +470,6 @@ Description      : Allows opening of locks that require up to $s2 skill, once ev
 Each $s4 sec spent channeling Fleshcraft reduces Kevin's Keyring's cooldown by $s3 min.
 
 Name             : Plagueborn Cleansing Slime (id=323081) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -511,7 +491,6 @@ Effects          :
 Description      : Defeating enemies has a chance to deploy your Plagueborn Cleansing Slime, which improves the remaining durability on your armor.
 
 Name             : Travel with Bloop (id=323089) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -533,7 +512,6 @@ Effects          :
 Description      : While standing still, you slowly build stacks of Bloop's Wanderlust. At $m2 stacks, your movement speed is increased by $323399m1% for $323399d.
 
 Name             : Plaguey's Preemptive Strike (id=323090) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -556,7 +534,6 @@ Effects          :
 Description      : Your first attack or spell cast on an enemy increases your damage done to them by $323416s1% for $323416d. Limit 1.
 
 Name             : Ooz's Frictionless Coating (id=323091) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Nature
 Spell Type       : None
@@ -576,7 +553,6 @@ Effects          :
 Description      : When reduced below $m1% health, Ooz courses over you, granting you a shield for $323385m2% of your maximum health for $323385d. May only occur once per $323536d.
 
 Name             : Ultimate Form (id=323095) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -598,14 +574,13 @@ Description      : While channeling Fleshcraft, you are immune to crowd control 
 If you finish the full channel, you gain $324631d of crowd control immunity, during which you regenerate $323524s17% health every $323524t17 sec.
 
 Name             : Sulfuric Emission (id=323916) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
                  : .......x ........ ...x...x ........   ...x.... ........ .xx..... ........ 
@@ -621,7 +596,6 @@ Effects          :
 Description      : When reduced below $m1% health, you fear nearby enemies for $324263d. May only occur once per $324263s3 sec.
 
 Name             : Gristled Toes (id=323918) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -641,7 +615,6 @@ Effects          :
 Description      : Movement speed increased by $324463m1% for every nearby enemy, up to ${$324463m1*$324463u}%.
 
 Name             : Gnashing Chompers (id=323919) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -662,7 +635,6 @@ Effects          :
 Description      : Gain $324242m1% Haste for $324242d after defeating an enemy, up to ${$324242m1*$324242u}%.
 
 Name             : Emeni's Magnificent Skin (id=323921) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -685,7 +657,6 @@ Effects          :
 Description      : Fleshcraft increases your maximum health by $328210m% for $328210d.
 
 Name             : Cartilaginous Legs (id=324440) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -708,7 +679,6 @@ Effects          :
 Description      : After taking falling damage, the health lost becomes a shield lasting $324523d.
 
 Name             : Hearth Kidneystone (id=324441) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -739,7 +709,6 @@ Effects          :
 Description      : You may attune your Hearth Kidneystone to any resting location and return to it. $m5 hour cooldown, reduced by $m4 min every killing blow.
 
 Name             : Wild Hunt's Charge (id=325065) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -759,7 +728,6 @@ Effects          :
 Description      : While out of combat, your Soulshape's teleport becomes a charge, stunning your target for $325321d and ending your Soulshape.
 
 Name             : Wild Hunt Tactics (id=325066) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 Covenant         : Night Fae
 School           : Nature
@@ -794,7 +762,6 @@ Description      : Your damage to targets above $s5% health and healing to targe
 When your spells and abilities are enhanced this way, you gain $343594s1% increased movement speed for $343594d.
 
 Name             : Horn of the Wild Hunt (id=325067) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -814,7 +781,6 @@ Effects          :
 Description      : Soulshape increases the movement speed of allies within $s1 yds by $325268s1%.
 
 Name             : Face Your Foes (id=325068) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -837,14 +803,13 @@ Effects          :
 Description      : When in front of your target, your spells and abilities decrease the damage they inflict on you by $325437s1% for $325437d.
 
 Name             : First Strike (id=325069) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 100%
 Proc Flags       : ..xxxxxx xx..xx.. xxxx.... ........ 
-                 : White Melee, White Melee Taken, Yellow Melee, Yellow Melee Taken, White Ranged, White Ranged Taken , Yellow Ranged, Yellow Ranged Taken, Generic Hostile Spell, Generic Hostile Spell Taken, Magic Hostile Spell, Magic Hostile Spell Taken, Periodic, Periodic Taken
+                 : White Melee, White Melee Taken, Yellow Melee, Yellow Melee Taken, White Ranged, White Ranged Taken, Yellow Ranged, Yellow Ranged Taken, Generic Hostile Spell, Generic Hostile Spell Taken, Magic Hostile Spell, Magic Hostile Spell Taken, Periodic, Periodic Taken
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
@@ -860,7 +825,6 @@ Effects          :
 Description      : Damaging an enemy before they damage you increases your chance to critical strike by $325381s1% for $325381d.
 
 Name             : Vorkai Sharpening Techniques (id=325072) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -888,7 +852,6 @@ Effects          :
 Description      : Your weapon takes no durability damage.
 
 Name             : Get In Formation (id=325073) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -908,7 +871,6 @@ Effects          :
 Description      : Your mounted movement speed is increased by $325443s1%. Allies behind you within $s1 yds gain this benefit.
 
 Name             : Hold the Line (id=325601) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -928,7 +890,6 @@ Effects          :
 Description      : After standing still for $325613d, you take $325612s1% less Physical damage until you move.
 
 Name             : Serrated Spaulders (id=326504) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -953,12 +914,10 @@ Description      : Inflict ${$<points>*$326939d} Shadow damage to your attacker 
 Variables        : $points=${$cond($gt($SP,$AP),$SP*0.03,$AP*0.03)*(1+$@versadmg)}
 
 Name             : Resourceful Fleshcrafting (id=326507) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
 Spell Level      : 60
-Proc Chance      : 101%
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
@@ -969,12 +928,12 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=817559)   : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Defeating an enemy reduces Fleshcraft's cooldown by ${$326866s1/-1000} sec.
+#1 (id=817559)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1210 (Label) | Target: Self (1)
+                   Affected Spells (Label): Fleshcraft (350228)
+Description      : Fleshcraft's passive effect reduces the cooldown by an additional ${$s1/1000} sec when it consumes a corpse.
 
 Name             : Heirmir's Arsenal: Ravenous Pendant (id=326509) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -995,7 +954,6 @@ Effects          :
 Description      : Defeating an enemy restores $326946s1% of your maximum health every $326946d for $326946d, stacking up to $326946u times. Adding stacks refreshes duration.
 
 Name             : Heirmir's Arsenal: Gorestompers (id=326511) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -1018,7 +976,6 @@ Effects          :
 Description      : Damaging or healing a target below $s1% grants you $327159s1% increased movement speed for $327159d after you start moving. May only occur once per $327160d.
 
 Name             : Runeforged Spurs (id=326512) [Passive] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -1026,7 +983,7 @@ Spell Level      : 60
 Internal Cooldown: 30 seconds
 Proc Chance      : 101%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Attributes       : ......x. ........ .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
@@ -1044,7 +1001,6 @@ Effects          :
 Description      : Mounted movement speed is increased by $s1%. If attacked while mounted, mounted movement speed is increased by an additional $327852s1% for $327852d.
 
 Name             : Bonesmith's Satchel (id=326513) [Passive] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -1068,7 +1024,6 @@ Effects          :
 Description      : You have a chance to obtain a satchel of a bonesmith's preferred ore and gems when you kill an enemy that yields experience or honor.
 
 Name             : Forgeborne Reveries (id=326514) [Passive] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 Covenant         : Necrolord
 School           : Shadow
@@ -1106,7 +1061,6 @@ Variables        : $buff=${$348272s1}
 $max=${3*$<buff>}
 
 Name             : Heirmir's Arsenal: Marrowed Gemstone (id=326572) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -1132,7 +1086,6 @@ Effects          :
 Description      : After landing ${$327066u+1} critical strikes, you gain $327069s1% increased chance to critical strike for $327069d. May only occur once per ${$327073d+$327069d} sec.
 
 Name             : Let Go of the Past (id=328257) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1156,7 +1109,6 @@ Effects          :
 Description      : Using a spell or ability reduces your magic damage taken by $328900s1% for $328900d. Using another spell or ability increases this amount by $328900s1% when it is not a repeat of the previous spell or ability, stacking to $328900u%.
 
 Name             : Ever Forward (id=328258) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1180,7 +1132,6 @@ Effects          :
 Description      : While above 90% health, your mounted movement speed is increased by 10%.
 
 Name             : Focusing Mantra (id=328261) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1201,7 +1152,6 @@ Effects          :
 Description      : Defeating an enemy lowers the cooldown on your Phial of Serenity by ${$328738s1/-1000} sec.
 
 Name             : Cleansed Vestments (id=328263) [Passive] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1225,7 +1175,6 @@ Effects          :
 Description      : You have a chance to obtain cleansed cloth and enchanting materials when you kill an enemy that yields experience or honor.
 
 Name             : Bond of Friendship (id=328265) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1246,7 +1195,6 @@ Effects          :
 Description      : Defeating an enemy reduces the cooldown on your steward's non-Phial services by ${$s1/1000} sec.
 
 Name             : Combat Meditation (id=328266) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 Covenant         : Kyrian
 School           : Arcane
@@ -1272,7 +1220,6 @@ Variables        : $mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}
 $modb=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${1}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]
 
 Name             : Ascendant Phial (id=329776) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1292,7 +1239,6 @@ Effects          :
 Description      : Phial of Serenity renders you immune to Curse, Disease, Poison, and Bleed effects for $330752d.
 
 Name             : Phial of Patience (id=329777) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1312,7 +1258,6 @@ Effects          :
 Description      : Phial of Serenity heals you for $s1% additional health, but all of its healing is done over $330749d.
 
 Name             : Pointed Courage (id=329778) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1332,7 +1277,6 @@ Effects          :
 Description      : Chance to critical strike is increased by $330511s1% for every nearby enemy or ally, up to $330511u%.
 
 Name             : Bearer's Pursuit (id=329779) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1356,7 +1300,6 @@ Effects          :
 Description      : Your damaging spells and abilities have a chance to decrease your target's movement speed by $321759m% for $321759d.
 
 Name             : Resonant Accolades (id=329781) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1381,7 +1324,6 @@ Effects          :
 Description      : When receiving healing while above $s1% health or healing an ally that's above $s1% health, $s2% of the healing done is repeated on the target over $330859d.
 
 Name             : Cleansing Rites (id=329784) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1401,7 +1343,6 @@ Effects          :
 Description      : After $330921d out of combat, gain a shield for $330927s2% of your maximum health.
 
 Name             : Road of Trials (id=329786) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1422,7 +1363,6 @@ Effects          :
 Description      : Defeating an enemy grants you 10% movement speed for 20 sec. This effect is increased if defeating a powerful enemy.
 
 Name             : Valiant Strikes (id=329791) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 Covenant         : Kyrian
 School           : Arcane
@@ -1453,7 +1393,6 @@ Description      : Your critical strikes grant you stacks of Valiant Strikes, up
 After healing this way, you may not benefit from Valiant Strikes for $348236d.
 
 Name             : Agent of Chaos (id=331576) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Shadow
 Spell Type       : None
@@ -1473,7 +1412,6 @@ Effects          :
 Description      : Door of Shadows disorients all nearby enemies at the target location for $331866d when you appear.
 
 Name             : Fancy Footwork (id=331577) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Physical
 Spell Type       : None
@@ -1493,7 +1431,6 @@ Effects          :
 Description      : Door of Shadows increases your movement speed by $331868s1%, decaying over $331868d.
 
 Name             : Friends in Low Places (id=331579) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Physical
 Spell Type       : None
@@ -1513,7 +1450,6 @@ Effects          :
 Description      : You loot $s1% more Infused Rubies, and dredgers throughout Revendreth offer you an expanded selection of goods.
 
 Name             : Exacting Preparation (id=331580) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Physical
 Spell Type       : None
@@ -1549,7 +1485,6 @@ Effects          :
 Description      : The benefits of Well Fed, Flask, $?a137005[weapon enchant, and Runeforge][and weapon enchant] effects are increased by $s1%.
 
 Name             : Familiar Predicaments (id=331582) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Physical
 Spell Type       : None
@@ -1577,7 +1512,6 @@ Effects          :
 Description      : The duration of incoming interrupt, snare, and root effects are reduced by $s1%.
 
 Name             : Dauntless Duelist (id=331584) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Physical
 Spell Type       : None
@@ -1601,7 +1535,6 @@ Description      : The first enemy you damage in combat is marked as your Advers
 Variables        : $reduc=${1.5}.1
 
 Name             : Thrill Seeker (id=331586) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 Covenant         : Venthyr
 School           : Physical
@@ -1625,7 +1558,6 @@ Effects          :
 Description      : While in combat, you gain a stack of Thrill Seeker every $t1 sec, or $s1 stacks on killing an enemy. At $331939u stacks Thrill Seeker is consumed to grant you Euphoria, increasing your Haste by $331937s1% for $331937d. Thrill Seeker decays rapidly while you are not in combat.
 
 Name             : Forgelite Filter (id=331609) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1647,7 +1579,6 @@ Effects          :
 Description      : When reduced below $s1% health, your Phial of Serenity automatically heals you and consumes a charge.
 
 Name             : Charged Additive (id=331610) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1667,7 +1598,6 @@ Effects          :
 Description      : Phial of Serenity also knocks nearby enemies away from you.
 
 Name             : Soulsteel Clamps (id=331611) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1687,7 +1617,6 @@ Effects          :
 Description      : After ${$332507u+1} sec standing still, incoming stun and incapacitate durations are reduced by $332506s%. Lasts for $332506d once you start moving.
 
 Name             : Sparkling Driftglobe Core (id=331612) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1709,7 +1638,6 @@ Effects          :
 Description      : When reduced below $s1% health, you stun nearby enemies for $332423d. This effect may only occur once every $s2 sec.
 
 Name             : Resilient Plumage (id=331725) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1734,7 +1662,6 @@ Effects          :
 Description      : Fall damage decreased by $s1%, and after taking fall damage, damage you take is reduced by $337697s1% for $337697d.
 
 Name             : Regenerating Materials (id=331726) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1758,7 +1685,6 @@ Effects          :
 Description      : Casting or receiving healing has a chance to improve the remaining durability on your armor.
 
 Name             : Superior Tactics (id=332753) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Shadow
 Spell Type       : None
@@ -1781,7 +1707,6 @@ Effects          :
 Description      : Successfully interrupting an enemy or dispelling an ally increases your critical strike chance by $332922s1% for $332922d. This may only occur once every $332926d.
 
 Name             : Hold Your Ground (id=332754) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Shadow
 Spell Type       : None
@@ -1801,7 +1726,6 @@ Effects          :
 Description      : Standing still for at least $333085d grants you $333089s1% increased Stamina, and $333089s2% increased healing done. This effect persists for ${$s1/1000} sec after you start moving.
 
 Name             : Unbreakable Body (id=332755) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Shadow
 Spell Type       : None
@@ -1821,7 +1745,6 @@ Effects          :
 Description      : Your equipment takes $s1% less durability damage from death.
 
 Name             : Expedition Leader (id=332756) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Shadow
 Spell Type       : None
@@ -1841,7 +1764,6 @@ Effects          :
 Description      : Leaving a resting area increases your mounted speed by $332862s1%, and your out of combat regeneration by $332862s3%. Lasts $332862d, and completing a World Quest refreshes the duration.
 
 Name             : Hammer of Genesis (id=333935) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1867,7 +1789,6 @@ Effects          :
 Description      : Damaging a new enemy grants you $333943m% Haste for $333943d, up to $333943u stacks.
 
 Name             : Bron's Call to Action (id=333950) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 Covenant         : Kyrian
 School           : Arcane
@@ -1890,7 +1811,6 @@ Effects          :
 Description      : After using ${$332514u+1} damaging or healing spells and abilities, your next spell or ability summons Bron, who knocks enemies back on arrival and then attacks and heals your targets for $333961d.
 
 Name             : Mentorship (id=334066) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1910,7 +1830,6 @@ Effects          :
 Description      : While above $m1% health, you increase nearby party members' maximum health by $334067m1%.
 
 Name             : Watch the Shoes! (id=336140) [Passive] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Physical
 Spell Type       : None
@@ -1930,7 +1849,6 @@ Effects          :
 Description      : Door of Shadows frees you from roots and snares.
 
 Name             : Leisurely Gait (id=336147) [Passive] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Physical
 Spell Type       : None
@@ -1954,7 +1872,6 @@ Effects          :
 Description      : Door of Shadows has ${$s1+1} charges, but its cooldown is increased by ${$s2/1000} sec.
 
 Name             : Exquisite Ingredients (id=336184) [Passive] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Physical
 Spell Type       : None
@@ -1978,7 +1895,6 @@ Effects          :
 Description      : You have a chance to obtain an assortment of flavorful herbs and beverages when you kill an enemy that yields experience or honor.
 
 Name             : Soothing Shade (id=336239) [Passive] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 Covenant         : Venthyr
 School           : Shadow
@@ -2004,7 +1920,6 @@ Effects          :
 Description      : Your spells and abilities have a chance to call Tubbins and Gubbins to your side for $336808d, parasol in hand. Standing in the shaded area grants you $336885s1 Mastery.
 
 Name             : Refined Palate (id=336243) [Passive] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Physical
 Spell Type       : None
@@ -2026,7 +1941,6 @@ Effects          :
 Description      : The effects of combat potions last $s1% to $s2% longer.
 
 Name             : Token of Appreciation (id=336245) [Passive] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Physical
 Spell Type       : None
@@ -2051,7 +1965,6 @@ Description      : Grant a shield that absorbs $<points> damage to allies who ai
 Variables        : $points=${$cond($gt($SP,$AP),$SP*1.5,$AP*1.5)*(1+$@versadmg)}
 
 Name             : Life of the Party (id=336247) [Passive] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 School           : Physical
 Spell Type       : None
@@ -2077,7 +1990,6 @@ Effects          :
 Description      : During the Ember Court, your Guests gain additional Happiness for each event completed. When the Court concludes, the effects of any Decrees bestowed upon you are increased.
 
 Name             : Service In Stone (id=340159) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Venthyr
 Covenant         : Venthyr
 School           : Physical
@@ -2100,12 +2012,11 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Trigger Spell: 340223 | Target: Self (1)
 #3 (id=840537)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
-Description      : Damage taken below $<health>% health is reduced by $<reduction>%. Upon death you leave a stone husk behind which shatters after $340454d, inflicting $s2% of your maximum health in damage split among nearby enemies, and healing for $s3% of your maximum health split among nearby allies.
+Description      : Damage taken below $<health>% health is reduced by $<reduction>%. Upon death you leave a stone husk behind which shatters after $340454d, inflicting $s2% of your maximum health in Physical damage split among nearby enemies, and healing for $s3% of your maximum health split among allies within $340542A1 yds.
 Variables        : $health=${40}
 $reduction=${10}
 
 Name             : Emeni's Ambulatory Flesh (id=341650) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -2125,7 +2036,6 @@ Effects          :
 Description      : You may channel Fleshcraft while moving.
 
 Name             : Lead by Example (id=342156) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Necrolord
 Covenant         : Necrolord
 School           : Shadow
@@ -2152,10 +2062,9 @@ Effects          :
 #4 (id=872117)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $?a137005[Abomination Limb]?a212611[Fodder to the Flame]?a137009[Adaptive Swarm]?a137014[Death Chakram]?a137018[Deathborne]?a137022[Bonedust Brew]?a137026[Vanquisher's Hammer]?a137030[Unholy Nova]?a137034[Serrated Bone Spike]?a137038[Primordial Wave]?a137042[Decimating Bolt]?a137047[Conqueror's Banner][Activating your Necrolord class ability] increases your $pri by $342181s1% and up to $342181s3 nearby allies' primary stat by $342181s2% for ${$s3*$<mod>}.1 sec. You gain $342181s2% additional $pri for each ally affected.
-Variables        : $mod=$?a137005[${2}]?a212611[${2}]?a137009[${.4}.1]?a137014[${.75}.1]?a137018[${3}]?a137022[${1}]?a137026[${.5}]?a137030[${1.0}]?a137034[${.5}]?a137038[${.75}.1]?a137042[${.75}.1]?a137047[${3}][${1.0}]
+Variables        : $mod=$?a137005[${2}]?a212611[${2}]?a137009[${.4}.1]?a137014[${.75}.1]?a137018[${3}]?a137022[${1}]?a137026[${.5}]?a137030[${1.0}]?a137034[${.5}]?a137038[${.75}.1]?a137042[${.75}.1]?a137047[${2}][${1.0}]
 
 Name             : Run Without Tiring (id=342270) [Passive, Hidden] 
-Hotfixed         : Attributes
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None

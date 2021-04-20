@@ -12,7 +12,8 @@ DEFINES += SC_USE_WEBENGINE
 TRANSLATIONS = \
   ../locale/sc_de.ts \
   ../locale/sc_cn.ts \
-  ../locale/sc_it.ts
+  ../locale/sc_it.ts \
+  ../locale/sc_ko.ts
 
 # Linux puts binaries to a different place (see simulationcraft.pri)
 win32|macx {

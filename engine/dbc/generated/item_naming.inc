@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.0.2.37474
-static const std::array<item_name_description_t, 575> __item_name_description_data { {
+// Item name descriptions, wow build 9.0.5.38134
+static const std::array<item_name_description_t, 583> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -379,7 +379,7 @@ static const std::array<item_name_description_t, 575> __item_name_description_da
   { 13620, "Primordial Arcanic Pulsar"                   },
   { 13621, "Balance of All Things"                       },
   { 13622, "Timeworn Dreambinder"                        },
-  { 13623, "Cat-eye Curio"                               },
+  { 13623, "Cat-Eye Curio"                               },
   { 13624, "Apex Predator's Craving"                     },
   { 13625, "Frenzyband"                                  },
   { 13626, "Luffa-Infused Embrace"                       },
@@ -575,5 +575,13 @@ static const std::array<item_name_description_t, 575> __item_name_description_da
   { 13819, "Rank 5 of 7"                                 },
   { 13820, "Rank 6 of 7"                                 },
   { 13821, "Rank 7 of 7"                                 },
+  { 13822, "Upgrade Level: 1/7"                          },
+  { 13823, "Upgrade Level: 2/7"                          },
+  { 13824, "Upgrade Level: 3/7"                          },
+  { 13825, "Upgrade Level: 4/7"                          },
+  { 13826, "Upgrade Level: 5/7"                          },
+  { 13827, "Upgrade Level: 6/7"                          },
+  { 13828, "Upgrade Level: 1/6"                          },
+  { 13829, "Stygia Crafting"                             },
 } };
 

@@ -504,6 +504,7 @@ struct player_t : public actor_t
     // 9.0 class buffs
     buff_t* focus_magic; // Mage talent
     buff_t* power_infusion; // Priest spell
+    buff_t* rallying_cry; // Warrior spell
 
     // 9.0 class covenant buffs
     buff_t* benevolent_faerie; // Night Fae Priest spell
@@ -516,6 +517,7 @@ struct player_t : public actor_t
     // 9.0 Soulbinds
     buff_t* wild_hunt_tactics;  // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
     buff_t* volatile_solvent_damage; // necrolord/marileth - elemental (magic) and giant (physical) % damage done buffs
+    buff_t* redirected_anima; // night_fae/niya - mastery and max health % increase per stack
 
     // 9.0 Runecarves
     buff_t* norgannons_sagacity_stacks;  // stacks on every cast
@@ -551,6 +553,7 @@ struct player_t : public actor_t
     std::vector<timespan_t> blessing_of_winter;
     std::vector<timespan_t> blessing_of_spring;
     std::vector<timespan_t> conquerors_banner;
+    std::vector<timespan_t> rallying_cry;
   } external_buffs;
 
   struct gains_t

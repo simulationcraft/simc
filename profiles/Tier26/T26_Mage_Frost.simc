@@ -8,6 +8,7 @@ position=ranged_back
 talents=2032021
 covenant=venthyr
 soulbind=nadjia_the_mistblade,dauntless_duelist/thrill_seeker/icy_propulsion:7
+renown=40
 
 # Default consumables
 potion=phantom_fire
@@ -33,7 +34,7 @@ actions.precombat+=/blizzard,if=active_enemies>=2
 actions.precombat+=/frostbolt,if=active_enemies=1
 
 # Executed every time the actor is available.
-actions=counterspell
+actions=counterspell,if=!runeforge.disciplinary_command|cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=aoe,if=active_enemies>=3
 actions+=/call_action_list,name=st,if=active_enemies<3
@@ -60,7 +61,7 @@ actions.cds+=/deathborne
 actions.cds+=/mirrors_of_torment,if=active_enemies<3&(conduit.siphoned_malice|soulbind.wasteland_propriety)
 actions.cds+=/rune_of_power,if=cooldown.icy_veins.remains>12&buff.rune_of_power.down
 actions.cds+=/icy_veins,if=buff.rune_of_power.down&(buff.icy_veins.down|talent.rune_of_power)&(buff.slick_ice.down|active_enemies>=2)
-actions.cds+=/time_warp,if=runeforge.temporal_warp&buff.exhaustion.up&(prev_off_gcd.icy_veins|fight_remains<30)
+actions.cds+=/time_warp,if=runeforge.temporal_warp&buff.exhaustion.up&(prev_off_gcd.icy_veins|fight_remains<40)
 actions.cds+=/use_items
 actions.cds+=/blood_fury
 actions.cds+=/berserking
@@ -84,11 +85,12 @@ actions.st+=/ice_lance,if=remaining_winters_chill&remaining_winters_chill>buff.f
 actions.st+=/comet_storm
 actions.st+=/ice_nova
 actions.st+=/radiant_spark,if=buff.freezing_winds.up&active_enemies=1
+actions.st+=/radiant_spark,if=buff.brain_freeze.react&talent.glacial_spike&conduit.ire_of_the_ascended&buff.icicles.stack>=4
 actions.st+=/ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>travel_time
 actions.st+=/ebonbolt
-actions.st+=/radiant_spark,if=(!runeforge.freezing_winds|active_enemies>=2)&buff.brain_freeze.react
+actions.st+=/radiant_spark,if=(!talent.glacial_spike|!conduit.ire_of_the_ascended)&(!runeforge.freezing_winds|active_enemies>=2)&buff.brain_freeze.react
 actions.st+=/mirrors_of_torment
-actions.st+=/shifting_power,if=buff.rune_of_power.down&(soulbind.grove_invigoration|soulbind.field_of_blossoms|active_enemies>=2)
+actions.st+=/shifting_power,if=buff.rune_of_power.down&(soulbind.grove_invigoration|soulbind.field_of_blossoms|runeforge.freezing_winds&buff.freezing_winds.down|active_enemies>=2)
 actions.st+=/arcane_explosion,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down
 actions.st+=/fire_blast,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down
 actions.st+=/glacial_spike,if=buff.brain_freeze.react
@@ -115,8 +117,8 @@ off_hand=master_stonewrights_chisel,id=182400,bonus_id=7187/1531
 # gear_ilvl=228.75
 # gear_stamina=1517
 # gear_intellect=1175
-# gear_crit_rating=795
-# gear_haste_rating=918
-# gear_mastery_rating=99
-# gear_versatility_rating=123
+# gear_crit_rating=797
+# gear_haste_rating=921
+# gear_mastery_rating=101
+# gear_versatility_rating=125
 # gear_armor=372

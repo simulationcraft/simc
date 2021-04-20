@@ -7,6 +7,7 @@ position=back
 talents=3113123
 covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/ashen_juggernaut:7/dauntless_duelist
+renown=40
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173128
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
@@ -29,30 +30,32 @@ save=T26_Warrior_Arms.simc
 
 warrior="T26_Warrior_Fury"
 level=60
-race=human
+race=mechagnome
 spec=fury
 role=attack
 position=back
-talents=2113323
+talents=2113331
 covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/ashen_juggernaut:7/dauntless_duelist
+renown=40
 
-head=wrathbark_greathelm,id=178694,bonus_id=1540/6807,gem_id=173130
+head=diadem_of_imperious_desire,id=182997,bonus_id=4800/4786/1808/1498,gem_id=173130
 neck=sin_stained_pendant,id=178827,bonus_id=1540/6807,gem_id=173128
-shoulders=epaulettes_of_overwhelming_force,id=182994,bonus_id=7187/1498
+shoulders=unyielding_combatants_pauldrons,id=178802,bonus_id=3535/4786/1540
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=breastplate_of_cautious_calculation,id=182987,bonus_id=7187/1498,enchant=eternal_skirmish
 wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498,gem_id=173128
-hands=colossal_plate_gauntlets,id=182984,bonus_id=7187/1498,enchant=eternal_strength
-waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498,gem_id=173128
-legs=shadowghast_greaves,id=171416,bonus_id=6648/6649/6758/6964/1532
+hands=guilewind_stone_talons,id=178840,bonus_id=3535/4786/1540,enchant=eternal_strength
+waist=stoic_guardsmans_belt,id=183025,bonus_id=4800/4786/1808/1498,gem_id=173130
+legs=ceremonial_parade_legguards,id=183002,bonus_id=4800/4786/1498
 feet=errant_crusaders_greaves,id=183027,bonus_id=7187/1498
-finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_mastery
+finger1=shadowghast_ring,id=178926,bonus_id=6959/6649/6648/6758/1532/6935,gem_id=173128,enchant=tenant_of_hste
 finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
-trinket1=phial_of_putrefaction,id=178771,bonus_id=1540/6807
+trinket1=stone_legion_heraldry,id=184027,bonus_id=4800/4786/1498
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=nathrian_crusaders_bastard_sword,id=182389,bonus_id=7187/1531,enchant=celestial_guidance
 off_hand=nathrian_crusaders_bastard_sword,id=182389,bonus_id=7187/1531,enchant=sinful_revelation
+
 
 save=T26_Warrior_Fury.simc
 
@@ -66,6 +69,7 @@ position=front
 talents=3020011
 covenant=kyrian
 soulbind=pelagos,combat_meditation/piercing_verdict:7/show_of_force:7
+renown=40
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173128
 neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498/6935,gem_id=173128

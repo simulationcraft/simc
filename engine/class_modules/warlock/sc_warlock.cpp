@@ -306,6 +306,7 @@ struct decimating_bolt_dmg_t : public warlock_spell_t
   {
     double m = warlock_spell_t::composite_target_multiplier( target );
 
+    //This currently matches the bonus multiplier to the spec spells, but is not guaranteed to stay this way. Last checked on PTR 2021-03-07
     m *= 2.0 - target->health_percentage() * 0.01;
 
     return m;
@@ -341,7 +342,7 @@ struct decimating_bolt_t : public warlock_spell_t
   {
     //TOCHECK: the formulae for Decimating Bolt bonus damage does not appear in spell data, and should be
     //checked regularly to ensure accuracy
-    double value = p()->buffs.decimating_bolt->default_value - 0.006 * s->target->health_percentage();
+    double value = p()->buffs.decimating_bolt->default_value - 0.01 * s->target->health_percentage();
     if ( p()->talents.fire_and_brimstone->ok() )
       value *= 0.4;
     p()->buffs.decimating_bolt->trigger( 3, value );
@@ -520,7 +521,14 @@ void warlock_td_t::target_demise()
 
   if ( dots_agony->is_ticking() && warlock.legendary.wrath_of_consumption.ok() )
   {
-    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption.", target->name(), warlock.name() );
+    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption from Agony.", target->name(), warlock.name() );
+
+    warlock.buffs.wrath_of_consumption->trigger();
+  }
+
+  if ( dots_corruption->is_ticking() && warlock.legendary.wrath_of_consumption.ok() )
+  {
+    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption from Corruption.", target->name(), warlock.name() );
 
     warlock.buffs.wrath_of_consumption->trigger();
   }
@@ -913,7 +921,7 @@ void warlock_t::create_buffs()
   // 4.0 is the multiplier for a 0% health mob
   buffs.decimating_bolt =
       make_buff( this, "decimating_bolt", find_spell( 325299 ) )->set_duration( find_spell( 325299 )->duration() )
-                              ->set_default_value(1.6)
+                              ->set_default_value(2.0)
                               ->set_max_stack( talents.drain_soul->ok() ? 1 : 3 );
 
   // Conduits
@@ -1082,6 +1090,9 @@ void warlock_t::init_base_stats()
 void warlock_t::init_scaling()
 {
   player_t::init_scaling();
+
+  if ( specialization() == WARLOCK_DEMONOLOGY )
+    scaling->enable( STAT_STAMINA );
 }
 
 void warlock_t::init_assessors()
@@ -1132,11 +1143,9 @@ void warlock_t::apl_precombat()
   }
   if ( specialization() == WARLOCK_AFFLICTION )
   {
-    precombat->add_action( "use_item,name=azsharas_font_of_power" );
-    precombat->add_action( "seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>=3&!equipped.169314" );
+    precombat->add_action( "seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>=3" );
     precombat->add_action( "haunt" );
-    precombat->add_action(
-        "shadow_bolt,if=!talent.haunt.enabled&spell_targets.seed_of_corruption_aoe<3&!equipped.169314" );
+    precombat->add_action( "unstable_affliction" );
   }
 }
 

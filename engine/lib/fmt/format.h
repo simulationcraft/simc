@@ -866,8 +866,8 @@ template <typename T> struct FMT_EXTERN_TEMPLATE_API divtest_table_entry {
 // Static data is placed in this class template for the header-only config.
 template <typename T = void> struct FMT_EXTERN_TEMPLATE_API basic_data {
   static const uint64_t powers_of_10_64[];
-  static const uint32_t zero_or_powers_of_10_32[];
-  static const uint64_t zero_or_powers_of_10_64[];
+  static const uint32_t zero_or_powers_of_10_32_new[];
+  static const uint64_t zero_or_powers_of_10_64_new[];
   static const uint64_t grisu_pow10_significands[];
   static const int16_t grisu_pow10_exponents[];
   static const divtest_table_entry<uint32_t> divtest_table_for_pow5_32[];
@@ -891,6 +891,10 @@ template <typename T = void> struct FMT_EXTERN_TEMPLATE_API basic_data {
   static const char signs[];
   static const char left_padding_shifts[5];
   static const char right_padding_shifts[5];
+
+  // DEPRECATED! These are for ABI compatibility.
+  static const uint32_t zero_or_powers_of_10_32[];
+  static const uint64_t zero_or_powers_of_10_64[];
 };
 
 // Maps bsr(n) to ceil(log10(pow(2, bsr(n) + 1) - 1)).
@@ -917,7 +921,7 @@ struct data : basic_data<> {};
 inline int count_digits(uint64_t n) {
   // https://github.com/fmtlib/format-benchmark/blob/master/digits10
   auto t = bsr2log10(FMT_BUILTIN_CLZLL(n | 1) ^ 63);
-  return t - (n < data::zero_or_powers_of_10_64[t]);
+  return t - (n < data::zero_or_powers_of_10_64_new[t]);
 }
 #else
 // Fallback version of count_digits used when __builtin_clz is not available.
@@ -984,7 +988,7 @@ template <> int count_digits<4>(detail::fallback_uintptr n);
 // Optional version of count_digits for better performance on 32-bit platforms.
 inline int count_digits(uint32_t n) {
   auto t = bsr2log10(FMT_BUILTIN_CLZ(n | 1) ^ 31);
-  return t - (n < data::zero_or_powers_of_10_32[t]);
+  return t - (n < data::zero_or_powers_of_10_32_new[t]);
 }
 #endif
 
@@ -1141,8 +1145,8 @@ template <typename T = void> struct null {};
 template <typename Char> struct fill_t {
  private:
   enum { max_size = 4 };
-  Char data_[max_size];
-  unsigned char size_;
+  Char data_[max_size] = {Char(' '), Char(0), Char(0), Char(0)};
+  unsigned char size_ = 1;
 
  public:
   FMT_CONSTEXPR void operator=(basic_string_view<Char> s) {
@@ -1161,13 +1165,6 @@ template <typename Char> struct fill_t {
   FMT_CONSTEXPR Char& operator[](size_t index) { return data_[index]; }
   FMT_CONSTEXPR const Char& operator[](size_t index) const {
     return data_[index];
-  }
-
-  static FMT_CONSTEXPR fill_t<Char> make() {
-    auto fill = fill_t<Char>();
-    fill[0] = Char(' ');
-    fill.size_ = 1;
-    return fill;
   }
 };
 }  // namespace detail
@@ -1200,8 +1197,7 @@ template <typename Char> struct basic_format_specs {
         type(0),
         align(align::none),
         sign(sign::none),
-        alt(false),
-        fill(detail::fill_t<Char>::make()) {}
+        alt(false) {}
 };
 
 using format_specs = basic_format_specs<char>;
@@ -1270,7 +1266,7 @@ template <typename T> struct decimal_fp {
   int exponent;
 };
 
-template <typename T> decimal_fp<T> to_decimal(T x) FMT_NOEXCEPT;
+template <typename T> FMT_API decimal_fp<T> to_decimal(T x) FMT_NOEXCEPT;
 }  // namespace dragonbox
 
 template <typename T>
@@ -3056,8 +3052,7 @@ struct format_handler : detail::error_handler {
   basic_format_parse_context<Char> parse_context;
   Context context;
 
-  format_handler(OutputIt out,
-                 basic_string_view<Char> str,
+  format_handler(OutputIt out, basic_string_view<Char> str,
                  basic_format_args<Context> format_args, detail::locale_ref loc)
       : parse_context(str), context(out, format_args, loc) {}
 
@@ -3080,8 +3075,8 @@ struct format_handler : detail::error_handler {
   FMT_INLINE void on_replacement_field(int id, const Char*) {
     auto arg = get_arg(context, id);
     context.advance_to(visit_format_arg(
-        default_arg_formatter<OutputIt, Char>{
-            context.out(), context.args(), context.locale()},
+        default_arg_formatter<OutputIt, Char>{context.out(), context.args(),
+                                              context.locale()},
         arg));
   }
 
@@ -3105,8 +3100,8 @@ struct format_handler : detail::error_handler {
       if (begin == end || *begin != '}')
         on_error("missing '}' in format string");
     }
-    context.advance_to(
-        visit_format_arg(arg_formatter<OutputIt, Char>(context, &parse_context, &specs), arg));
+    context.advance_to(visit_format_arg(
+        arg_formatter<OutputIt, Char>(context, &parse_context, &specs), arg));
     return begin;
   }
 };
@@ -3776,8 +3771,8 @@ void detail::vformat_to(
                      arg);
     return;
   }
-  format_handler<iterator, Char, buffer_context<Char>> h(
-      out, format_str, args, loc);
+  format_handler<iterator, Char, buffer_context<Char>> h(out, format_str, args,
+                                                         loc);
   parse_format_string<false>(format_str, h);
 }
 
@@ -3786,6 +3781,7 @@ extern template void detail::vformat_to(detail::buffer<char>&, string_view,
                                         basic_format_args<format_context>,
                                         detail::locale_ref);
 namespace detail {
+
 extern template FMT_API std::string grouping_impl<char>(locale_ref loc);
 extern template FMT_API std::string grouping_impl<wchar_t>(locale_ref loc);
 extern template FMT_API char thousands_sep_impl<char>(locale_ref loc);

@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.37474 Live (hotfix 2021-02-08/37474, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-03-31/38134, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -268,11 +268,10 @@ Spell Level      : 3
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
-Cooldown         : 30 seconds
-Category         : 1877
-Category Cooldown: 30 seconds
+Charges          : 1 (30 seconds cooldown)
+Category         : 1877: Blood Death Knight (137008 effect#5)
 Stance Mask      : 0x01000000
-Affecting spells : Crimson Scourge (81141 effects: #1, #2), Blood Death Knight (137008 effect#5), Rapid Decomposition (194662 effect#1), Toxic Accumulator (333388 effect#1)
+Affecting spells : Crimson Scourge (81141 effects: #1, #2), Rapid Decomposition (194662 effect#1), Toxic Accumulator (333388 effect#1)
 Family Flags     : 5
 Attributes       : ........ ........ ........ ..x.....   ...x...x .x...... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -292,9 +291,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=274827)   : Unknown(179)
                    Base Value: 26 | Scaled Value: 26 | PvP Coefficient: 1.00000 | Misc Value: 4485 | Target: Unknown(87)
-Description      : Corrupts the targeted ground, causing ${$52212m1*11} Shadow damage over $d to targets within the area.$?!c2[
+Description      : Corrupts the targeted ground, causing ${$52212m1*11} Shadow damage over $d to targets within the area.$?!c2&(a316664|a316916)[
 
-While you remain within the area, your ][]$?s223829&!c2[Necrotic Strike and ][]$?c1[Heart Strike will hit up to $188290m3 additional targets.]?s207311&!c2[Clawing Shadows will hit up to ${$55090s4-1} enemies near the target.]?!c2[Scourge Strike will hit up to ${$55090s4-1} enemies near the target.][]
+While you remain within the area, your ][]$?s223829&a316916[Necrotic Strike and ][]$?a316664[Heart Strike will hit up to $188290m3 additional targets.]?s207311&a316916[Clawing Shadows will hit up to ${$55090s4-1} enemies near the target.]?a316916[Scourge Strike will hit up to ${$55090s4-1} enemies near the target.][]
 
 Name             : Death Strike (id=45470) [Spell Family (15)] 
 Class            : Death Knight
@@ -345,6 +344,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Snare
 #3 (id=83376)    : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#4 (id=879783)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Misc Value: 0x11 | Chain Targets: 1 | Target: Enemy (6)
+                   Affected School(s): Frost, Physical
 Description      : Shackles the target with frozen chains, reducing movement speed by $s1% for $d.
 Tooltip          : Movement slowed $s1% by frozen chains.
 
@@ -598,6 +600,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 40 yards
 Velocity         : 35 yards/sec
+Min Travel Time  : 0.1 seconds
 Proc Chance      : 101%
 Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death March (235556 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1)
 Family Flags     : 13, 43, 64, 78
@@ -622,6 +625,7 @@ Spell Type       : Magic
 Spell Level      : 2
 Range            : 40 yards
 Velocity         : 35 yards/sec
+Min Travel Time  : 0.1 seconds
 Affecting spells : Veteran of the Third War (48263 effect#2), Sudden Doom (81340 effect#1), Death March (235556 effect#2), Veteran of the Fourth War (319278 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1)
 Family Flags     : 13, 31
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -636,17 +640,16 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=39873)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.65000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
-#2 (id=826512)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 332004 | Target: Unknown(25)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing damage from a friendly Undead target.
 
 Name             : Veteran of the Third War (id=48263) [Spell Family (15), Passive] 
+Hotfixed         : Description
 Class            : Death Knight
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen (0x2007ff)
 School           : Physical
 Spell Type       : None
 Spell Level      : 8
-Affecting spells : Blood Death Knight (137008 effect#13), Veteran of the Third War (316714 effect#1)
+Affecting spells : Blood Death Knight (137008 effect#13), Veteran of the Third War (316714 effects: #1, #2, #3)
 Family Flags     : 107
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -664,7 +667,12 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
                    Affected Spells: Death Coil (47633), Unholy Strength (53365)
                    Family Flags: 31, 106, 109
-Description      : Stamina increased by $s4%.
+#3 (id=884937)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Hotfixed         : NEW EFFECT
+Description      : Stamina increased by $s1%.
+$?s316714[Damage taken reduced by ${$abs($s3)}%.][]
 
 Name             : Death's Advance (id=48265) [Spell Family (15)] 
 Class            : Death Knight
@@ -727,6 +735,10 @@ Effects          :
 #3 (id=306615)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+#4 (id=879326)   : Apply Aura (6) | Spell Reflection (28)
+                   Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+#5 (id=879331)   : Apply Aura (6) | Modify Resource Generation% (329)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
 Description      : Surrounds you in an Anti-Magic Shell for $d, absorbing up to $<shield> magic damage and preventing application of harmful magical effects.$?s207188[][ Damage absorbed generates Runic Power.]
 Tooltip          : Absorbing up to $w1 magic damage.
 Immune to harmful magic effects.
@@ -1089,6 +1101,7 @@ Resource         : 45 Runic Power (6) (id=6268)
 Spell Level      : 4
 Range            : 5 yards
 GCD              : 1.5 seconds
+Travel Delay     : 0.25 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 823: Will to Survive (312922 effect#2)
 Stance Mask      : 0x01000000
@@ -1651,7 +1664,7 @@ Cooldown         : 90 seconds
 Category         : 1641
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
 Stance Mask      : 0x01000000
-Affecting spells : Vampiric Blood (317133 effects: #1, #2, #3)
+Affecting spells : Vampiric Blood (317133 effects: #1, #2, #3), Vampiric Aura (334547 effects: #2, #3)
 Family Flags     : 35
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1670,6 +1683,8 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=734281)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+#5 (id=880877)   : Apply Aura (6) | Modify Leech% (443)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Embrace your undeath, increasing your maximum health by $s4% and increasing all healing and absorbs received by $s1% for $d.
 Tooltip          : Maximum health increased by $s4%. Healing and absorbs received increased by $s1%.
 
@@ -2803,7 +2818,7 @@ Duration         : 2 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x00000040
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Triggered by     : Shambling Rush (91802)
 Attributes       : ........ ........ ..x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ..x..... 
@@ -3044,7 +3059,7 @@ Cooldown         : 6 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Jungle Stalker (252071 effect#1)
 Family Flags     : 14
 Attributes       : ....x... ........ ..x.x... .x.x....   ....x... ..x..... ........ ........ 
@@ -3631,14 +3646,13 @@ Effects          :
 #3 (id=191167)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 138.6 | Scaled Value: 138.6 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
-                   Family Flags: 4, 47
+                   Family Flags: 4
 #4 (id=191168)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -5000 | Scaled Value: -5000 | PvP Coefficient: 1.00000 | Misc Value: 1428 | Target: Self (1)
                    Affected Spells (Category): Death Grip (49576)
-#5 (id=191169)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Death and Decay (43265), Defile (152280), Death's Due (324128), Death's Due (324164), Death's Due (324165)
-                   Family Flags: 5
+#5 (id=191169)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 1877 | Target: Self (1)
+                   Affected Spells (Category): Death and Decay (43265), Death's Due (324128)
 #6 (id=260807)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 276 (Label) | Target: Self (1)
                    Affected Spells (Label): Xavaric's Magnum Opus (207472)
@@ -4008,11 +4022,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179702)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #2 (id=191125)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #3 (id=191126)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4061,11 +4075,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179703)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #2 (id=191121)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #3 (id=191122)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4115,11 +4129,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179704)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #2 (id=191116)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #3 (id=191117)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4146,11 +4160,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179707)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Fists of Fury (345714), Faeline Stomp (345727)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
 #2 (id=191108)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Fists of Fury (345714), Faeline Stomp (345727)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
 #3 (id=191109)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4305,11 +4319,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179709)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -11 | Scaled Value: -11 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Fists of Fury (345714), Faeline Stomp (345727)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -11 | Scaled Value: -11 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Fists of Fury (345714), Faeline Stomp (345727)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
 #3 (id=191101)   : Apply Aura (6) | Dummy (4)
                    Base Value: -11 | Scaled Value: -11 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4371,11 +4385,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179711)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -24 | Scaled Value: -24 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Templar's Verdict (339538), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724)
+                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724)
                    Family Flags: 65
 #2 (id=191092)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -24 | Scaled Value: -24 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Templar's Verdict (339538), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724)
+                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724)
                    Family Flags: 65
 #3 (id=191093)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
@@ -4440,11 +4454,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179712)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Templar's Verdict (339538), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724)
+                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724)
                    Family Flags: 65
 #2 (id=191088)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Templar's Verdict (339538), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724)
+                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724)
                    Family Flags: 65
 #3 (id=191089)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
@@ -4576,7 +4590,7 @@ Effects          :
                    Family Flags: 72
 #5 (id=191079)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -19.1 | Scaled Value: -19.1 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Shadow Word: Death (32379)
+                   Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
                    Family Flags: 33
 #6 (id=869198)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4622,7 +4636,7 @@ Effects          :
                    Family Flags: 7
 #6 (id=733881)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Shadow Word: Death (32379)
+                   Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
                    Family Flags: 33
 #7 (id=743448)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 7.1 | Scaled Value: 7.1 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
@@ -4732,11 +4746,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179719)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 21 | Scaled Value: 21 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Flagellation (345390)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316)
                    Family Flags: 54
 #2 (id=191060)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 21 | Scaled Value: 21 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Flagellation (345390)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316)
                    Family Flags: 54
 #3 (id=191061)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -38 | Scaled Value: -38 | PvP Coefficient: 0.89400 | Misc Value: 12 | Target: Self (1)
@@ -4772,11 +4786,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179720)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 13 | Scaled Value: 13 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Flagellation (345390)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316)
                    Family Flags: 54
 #2 (id=191056)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 13 | Scaled Value: 13 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Flagellation (345390)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316)
                    Family Flags: 54
 #3 (id=191057)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4821,11 +4835,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179721)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 51 | Scaled Value: 51 | PvP Coefficient: 0.77778 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Flagellation (345390)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316)
                    Family Flags: 54
 #2 (id=191052)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 51 | Scaled Value: 51 | PvP Coefficient: 0.77778 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Flagellation (345390)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316)
                    Family Flags: 54
 #3 (id=191053)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
@@ -4912,6 +4926,13 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Purge (370)
                    Family Flags: 88
+#10 (id=880173)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value 2: 983 (Label) | Target: Self (1)
+                   Affected Spells (Label): Chain Harvest (320751), Chain Harvest (320752)
+#11 (id=883953)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Lava Burst (51505), Lava Burst (285452)
+                   Family Flags: 44
 Description      : Restoration Shaman core passive
 
 Name             : Elemental Shaman (id=137040) [Spell Family (11), Passive, Hidden] 
@@ -4950,6 +4971,9 @@ Effects          :
                    Base Value: 68 | Scaled Value: 68 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Earth Shield (379)
                    Family Flags: 70
+#7 (id=880172)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value 2: 983 (Label) | Target: Self (1)
+                   Affected Spells (Label): Chain Harvest (320751), Chain Harvest (320752)
 Description      : Elemental Shaman baseline passive
 
 Name             : Enhancement Shaman (id=137041) [Spell Family (11), Passive, Hidden] 
@@ -5027,11 +5051,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179727)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Conflagrate (265931), Bilescourge Bombers (267213), Umbral Blaze (273526), Vile Taint (278350), Pandemic Invocation (289367), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072)
+                   Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Conflagrate (265931), Bilescourge Bombers (267213), Umbral Blaze (273526), Vile Taint (278350), Pandemic Invocation (289367), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072)
                    Family Flags: 49
 #2 (id=191031)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Conflagrate (265931), Bilescourge Bombers (267213), Umbral Blaze (273526), Vile Taint (278350), Pandemic Invocation (289367), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072)
+                   Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Conflagrate (265931), Bilescourge Bombers (267213), Umbral Blaze (273526), Vile Taint (278350), Pandemic Invocation (289367), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072)
                    Family Flags: 49
 #3 (id=191032)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -5072,15 +5096,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179728)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Conflagrate (265931), Bilescourge Bombers (267213), Umbral Blaze (273526), Vile Taint (278350), Pandemic Invocation (289367), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Conflagrate (265931), Bilescourge Bombers (267213), Umbral Blaze (273526), Vile Taint (278350), Pandemic Invocation (289367), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072)
                    Family Flags: 49
 #2 (id=191027)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Conflagrate (265931), Bilescourge Bombers (267213), Umbral Blaze (273526), Vile Taint (278350), Pandemic Invocation (289367), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Conflagrate (265931), Bilescourge Bombers (267213), Umbral Blaze (273526), Vile Taint (278350), Pandemic Invocation (289367), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072)
                    Family Flags: 49
 #3 (id=191028)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 18.45 | Scaled Value: 18.45 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191029)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686)
@@ -5128,11 +5152,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179730)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Conflagrate (265931), Bilescourge Bombers (267213), Umbral Blaze (273526), Vile Taint (278350), Pandemic Invocation (289367), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072)
+                   Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Conflagrate (265931), Bilescourge Bombers (267213), Umbral Blaze (273526), Vile Taint (278350), Pandemic Invocation (289367), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072)
                    Family Flags: 49
 #2 (id=191023)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Conflagrate (265931), Bilescourge Bombers (267213), Umbral Blaze (273526), Vile Taint (278350), Pandemic Invocation (289367), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072)
+                   Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Conflagrate (265931), Bilescourge Bombers (267213), Umbral Blaze (273526), Vile Taint (278350), Pandemic Invocation (289367), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072)
                    Family Flags: 49
 #3 (id=191024)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -5170,12 +5194,12 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179732)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 9
 #2 (id=186944)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 9
 #3 (id=191017)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
@@ -5233,11 +5257,11 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=186754)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 9
 #3 (id=191014)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 9
 #4 (id=191015)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -5280,11 +5304,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179734)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 29 | Scaled Value: 29 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 9
 #2 (id=191010)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 29 | Scaled Value: 29 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 9
 #3 (id=191011)   : Apply Aura (6) | Unknown(213)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -5311,7 +5335,7 @@ Range            : 50000 yards
 Duration         : 10 seconds
 Proc Chance      : 101%
 Affecting spells : Reinforced Shell (337764 effect#1)
-Family Flags     : 51
+Family Flags     : 47, 51
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x .....x.x ........ ........   ...x.... ..x..... .xx..... ........ 
@@ -5327,6 +5351,8 @@ Effects          :
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #2 (id=196268)   : Apply Aura (6) | Modify Casting Pushback (149)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0xf | Target: Friend (21)
+#3 (id=883610)   : Apply Aura (6) | Modify Resource Generation% (329)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Friend (21)
 Description      : $@spelldesc51052
 Tooltip          : Magic damage taken reduced by $w1%.
 
@@ -5396,7 +5422,7 @@ Effects          :
                    Family Flags: 4, 5, 16, 39, 55, 63, 118
 #2 (id=303755)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Fists of Fury (345714), Faeline Stomp (345727)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
 #3 (id=303756)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
@@ -5407,7 +5433,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 359 | Target: Self (1)
 #6 (id=479822)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Fists of Fury (345714), Faeline Stomp (345727)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
 #7 (id=739494)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -5516,11 +5542,10 @@ Resource         : -10 Runic Power (6) (id=191729)
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
-Cooldown         : 20 seconds
-Category         : 1877
-Category Cooldown: 20 seconds
+Charges          : 1 (20 seconds cooldown)
+Category         : 1927
 Stance Mask      : 0x01000000
-Affecting spells : Crimson Scourge (81141 effects: #1, #2), Blood Death Knight (137008 effect#5), Rapid Decomposition (194662 effect#1), Toxic Accumulator (333388 effect#1)
+Affecting spells : Crimson Scourge (81141 effects: #1, #2), Rapid Decomposition (194662 effect#1), Toxic Accumulator (333388 effect#1)
 Family Flags     : 5
 Attributes       : ........ ........ x....... ........   ........ .x...... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -5623,7 +5648,7 @@ Class            : Warrior, Death Knight
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
-Affecting spells : Rend (772 effect#3), Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #8), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1)
+Affecting spells : Rend (772 effect#3), Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #8), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1)
 Family Flags     : 9, 107
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5916,7 +5941,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Always hits (114), Disable weapon procs (151), Periodic effect can crit (265)
 Effects          :
 #1 (id=281049)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12500 | PvP Coefficient: 0.90000 | Misc Value: 127 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12500 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : A disease that deals $o Shadow damage over $d. It erupts when the infected target dies, dealing $191685s1 Shadow damage to nearby enemies.
@@ -5940,7 +5965,7 @@ Attributes       : ........ ........ ........ ...x....   ...x...x ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=281173)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24000 | PvP Coefficient: 0.90000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc191587
 
 Name             : Storm Elemental (id=192249) [Spell Family (11)] 
@@ -6357,6 +6382,7 @@ Spell Level      : 28
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
+Min Travel Time  : 0.35 seconds
 Stance Mask      : 0x01000000
 Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 87
@@ -6678,7 +6704,6 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Spell Level      : 18
-GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 60 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
@@ -7290,7 +7315,7 @@ Proc Chance      : 100%
 Stance Mask      : 0x01000000
 Mechanic         : Disorient
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7890,11 +7915,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=315235)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342817), Glaive Tempest (342857), Chaos Nova (344867)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342817), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (345335)
                    Family Flags: 16
 #2 (id=315236)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342817), Glaive Tempest (342857), Chaos Nova (344867)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342817), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (345335)
                    Family Flags: 16
 #3 (id=315237)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -7924,11 +7949,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=315250)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Infernal Strike (189112), Shear (203782), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Cleave (228478), Spirit Bomb (247455), Infernal Armor (273239), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Elysian Decree (339893), Elysian Decree (339894), Throw Glaive (346665)
+                   Affected Spells: Infernal Strike (189112), Shear (203782), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Cleave (228478), Spirit Bomb (247455), Infernal Armor (273239), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), Throw Glaive (346665)
                    Family Flags: 70
 #2 (id=315251)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Infernal Strike (189112), Shear (203782), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Cleave (228478), Spirit Bomb (247455), Infernal Armor (273239), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Elysian Decree (339893), Elysian Decree (339894), Throw Glaive (346665)
+                   Affected Spells: Infernal Strike (189112), Shear (203782), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Cleave (228478), Spirit Bomb (247455), Infernal Armor (273239), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), Throw Glaive (346665)
                    Family Flags: 70
 #3 (id=315252)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -8394,7 +8419,7 @@ Effects          :
 #3 (id=334784)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 #4 (id=334785)   : Dummy (3)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000
 Description      : A vicious strike that deals $s2 Plague damage, and converts $s3 Festering $LWound:Wounds; into a Necrotic Wound, absorbing up to $s4% of the target's maximum health in healing received.
 
 Name             : Consumption (id=224685) [Spell Family (15)] 
@@ -8403,6 +8428,7 @@ School           : Physical
 Spell Type       : None
 Range            : 30 yards
 Travel Time      : 1.2 seconds
+Travel Delay     : 0.35 seconds
 Triggered by     : Consumption (205223)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8444,11 +8470,11 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=349842)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Templar's Verdict (339538), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724)
+                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724)
                    Family Flags: 65
 #2 (id=349843)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Templar's Verdict (339538), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724)
+                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724)
                    Family Flags: 65
 #3 (id=474662)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -8590,9 +8616,9 @@ Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8611,7 +8637,7 @@ Spell Type       : Magic
 Range            : 20 yards
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 120
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9025,7 +9051,7 @@ Spell Type       : None
 Proc Chance      : 100%
 Azerite Power Id : 43
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Triggered by     : Winds of War (269214)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9252,7 +9278,7 @@ Internal Cooldown: 6 seconds
 Proc Chance      : 100%
 Azerite Power Id : 83
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Triggered by     : Impassive Visage (270117)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9936,6 +9962,7 @@ School           : Physical
 Spell Type       : None
 Range            : 30 yards
 Travel Time      : 1.2 seconds
+Travel Delay     : 0.35 seconds
 Triggered by     : Consumption (274156)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10116,8 +10143,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $?s207317[Death Coil and Epidemic reduce][Death Coil reduces] the cooldown of Apocalypse by $<cd1> sec and Army of the Dead by $<cd2> sec. 
 
-Additionally Apocalypse and Army of the Dead summon a Magus of the Dead for $317776d who hurls Frostbolts and Shadow Bolts at your foes.
-
+Apocalypse and Army of the Dead also summon a Magus of the Dead who hurls Frostbolts and Shadow Bolts at your foes.
 Variables        : $cd1=${$s1/10}
 $cd2=${$s2/10}
 
@@ -10555,7 +10581,7 @@ Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 503
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10644,7 +10670,7 @@ Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 502
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11161,9 +11187,9 @@ Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effec
 Triggered by     : Cold Heart (281208)
 Family Flags     : 43, 120
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12241,7 +12267,6 @@ Effects          :
 Description      : $@spelldesc155166
 
 Name             : Swarming Mist (desc=Venthyr) (id=311648) [Scaling Spell (-1), Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 Covenant         : Venthyr
 School           : Shadow
@@ -12286,7 +12311,6 @@ Deals $311730s1 Shadow damage every $t1 sec to enemies within $311730A1 yds. Eve
 Tooltip          : Surrounded by a mist of Anima, increasing your chance to Dodge by $s2% and dealing $311730s1 Shadow damage every $t1 sec to nearby enemies.
 
 Name             : Swarming Mist (id=311730) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -12309,7 +12333,6 @@ Effects          :
 Description      : $@spelldesc311648
 
 Name             : Shackle the Unworthy (desc=Kyrian) (id=312202) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 Covenant         : Kyrian
 School           : Arcane
@@ -12338,9 +12361,9 @@ Attributes       : ....x... ........ ..x..... .......x   ........ ........ .....
                  : Cannot cancel aura (31), Tick on application (169), Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=793659)   : Apply Aura (6) | Periodic Damage (3): arcane every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.29325 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=793695)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
 #3 (id=793985)   : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -12355,7 +12378,6 @@ While Shackle the Unworthy is active on an enemy, your direct-damage attacks tha
 Tooltip          : Suffering $w1 Arcane damage every $t1 sec. Dealing $s2% less damage to $@auracaster.
 
 Name             : Swarming Mist (id=312546) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -12374,18 +12396,17 @@ Effects          :
 Description      : $@spelldesc311648
 
 Name             : Death's Due (desc=Night Fae) (id=315442) [Spell Family (15), Passive] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Nature
 Spell Type       : None
 Spell Level      : 48
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ....xx.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
                  : Passive (6)
 Effects          :
@@ -12400,7 +12421,6 @@ Description      : Learn Death's Due, replacing Death and Decay.
 Tooltip          : Drain power from each enemy within the area, reducing their damage done by 10% and increasing your Strength by 80 for 10 sec.
 
 Name             : Abomination Limb (desc=Necrolord) (id=315443) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 Covenant         : Necrolord
 School           : Shadow
@@ -12546,7 +12566,9 @@ Effects          :
 Description      : Heart Strike hits up to $s1 additional enemies while you remain in Death and Decay.
 
 Name             : Veteran of the Third War (desc=Rank 2) (id=316714) [Spell Family (15), Passive] 
+Hotfixed         : Description
 Class            : Blood Death Knight
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xff207fff)
 School           : Physical
 Spell Type       : None
 Spell Level      : 49
@@ -12564,7 +12586,18 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Veteran of the Third War (48263), Veteran of the Fourth War (319278)
                    Family Flags: 107
-Description      : Increases Stamina by $s1%.
+#2 (id=884939)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Veteran of the Third War (48263), Veteran of the Fourth War (319278)
+                   Family Flags: 107
+Hotfixed         : NEW EFFECT
+#3 (id=884940)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Affected Spells: Veteran of the Third War (48263), Veteran of the Fourth War (319278)
+                   Family Flags: 107
+Hotfixed         : NEW EFFECT
+Description      : Increases Stamina by $s1%.
+Damage taken reduced by ${$abs($s2)}%.
 
 Name             : Marrowrend (desc=Rank 2) (id=316746) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
@@ -12707,9 +12740,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6)
 Effects          :
-#1 (id=801745)   : Dummy (3)
+#1 (id=801745)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Scourge Strike hits all enemies near the target while you remain in Death and Decay.
+Description      : $??s207311[Clawing Shadows][Scourge Strike] $?s223829[and Necrotic Strike hit][hits] up to ${$55090s4-1} enemies near the target while you remain in Death and Decay.
 
 Name             : Death Coil (desc=Rank 2) (id=316941) [Spell Family (15), Passive] 
 Class            : Unholy Death Knight
@@ -12921,7 +12954,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=802865)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While Crimson Scourge is active, your next Death and Decay heals you for $317614s1 health per Bone Shield charge and you immediately gain ${$317614s2/10} Runic Power
+Description      : While Crimson Scourge is active, your next Death and Decay heals you for $317614s1 health per Bone Shield charge and you immediately gain ${$317614s2/10} Runic Power.
 
 Name             : Relish in Blood (id=317614) [Spell Family (15)] 
 Class            : Death Knight
@@ -12941,27 +12974,6 @@ Effects          :
 #2 (id=802874)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
 Description      : $@spelldesc317610
-
-Name             : Army of the Damned (id=317776) [Spell Family (15)] 
-Class            : Death Knight
-School           : Shadow
-Spell Type       : None
-Duration         : 15 seconds
-Family Flags     : 96
-Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-Effects          :
-#1 (id=803145)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8.5 yards | Target: Unknown(48)
-#2 (id=803146)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 163366 | Misc Value 2: 0xebc | Target: Unknown(86)
-Description      : $@spelldesc276837
 
 Name             : Shadow Bolt (id=317791) [Spell Family (15)] 
 Class            : Death Knight
@@ -13198,11 +13210,12 @@ Description      : $@spelldesc319230
 Tooltip          : Strength increased by $s1%.
 
 Name             : Veteran of the Fourth War (id=319278) [Spell Family (15), Passive] 
+Hotfixed         : Description
 Class            : Death Knight
 Race             : Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xff007800)
 School           : Physical
 Spell Type       : None
-Affecting spells : Blood Death Knight (137008 effect#13), Veteran of the Third War (316714 effect#1)
+Affecting spells : Blood Death Knight (137008 effect#13), Veteran of the Third War (316714 effects: #1, #2, #3)
 Family Flags     : 107
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13220,7 +13233,12 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
                    Affected Spells: Death Coil (47633), Unholy Strength (53365)
                    Family Flags: 31, 106, 109
-Description      : Stamina increased by $s4%.
+#3 (id=885222)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Hotfixed         : NEW EFFECT
+Description      : Stamina increased by $s1%.
+$?s316714[Damage taken reduced by $s3%.][]
 
 Name             : Hypothermic Presence (id=321995) [Spell Family (15)] 
 Class            : Death Knight
@@ -13266,7 +13284,6 @@ Effects          :
 Description      : Delays magical attacks at $s1% effectiveness.
 
 Name             : Abomination Limb (desc=Necrolord) (id=323710) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -13284,7 +13301,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
                  : Not a proc (105)
@@ -13299,7 +13316,6 @@ Description      : $@spelldesc315443
 Tooltip          : Recently pulled  by Abomination Limb and can't be pulled again.
 
 Name             : Abomination Limb (desc=Necrolord) (id=323798) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -13315,7 +13331,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
                  : Not a proc (105)
@@ -13325,7 +13341,6 @@ Effects          :
 Description      : $@spelldesc315443
 
 Name             : Death's Due (desc=Night Fae) (id=324128) [Spell Family (15)] 
-Hotfixed         : Learn Level (0 -> 48), Attributes, Required Level (0 -> 48)
 Class            : Death Knight
 Covenant         : Night Fae
 School           : Shadow
@@ -13336,11 +13351,10 @@ Spell Level      : 48
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
-Cooldown         : 30 seconds
-Category         : 1877
-Category Cooldown: 30 seconds
+Charges          : 1 (30 seconds cooldown)
+Category         : 1877: Blood Death Knight (137008 effect#5)
 Stance Mask      : 0x01000000
-Affecting spells : Crimson Scourge (81141 effects: #1, #2), Blood Death Knight (137008 effect#5), Rapid Decomposition (194662 effect#1), Toxic Accumulator (333388 effect#1)
+Affecting spells : Crimson Scourge (81141 effects: #1, #2), Rapid Decomposition (194662 effect#1), Toxic Accumulator (333388 effect#1)
 Family Flags     : 5
 Attributes       : ........ ........ x....... ..x.....   ...x...x .x...... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -13369,16 +13383,15 @@ While you remain within the area, your Obliterate will hit up to $315442s2 addit
 Death's Due reduces damage enemies deal to you by $324164s1%, up to a maximum of ${$324164s1*-$324164u}% and their power is transferred to you as an equal amount of Strength.
 
 Name             : Death's Due (id=324164) [Spell Family (15)] 
-Hotfixed         : Learn Level (0 -> 48), Attributes, Required Level (0 -> 48)
 Class            : Death Knight
 School           : Nature
 Spell Type       : Melee
 Spell Level      : 48
 Range            : 50000 yards
 Duration         : 12 seconds
-Stacks           : 8 maximum
+Stacks           : 4 maximum
 Proc Chance      : 100%
-Affecting spells : Crimson Scourge (81141 effects: #1, #2), Blood Death Knight (137008 effect#5), Rapid Decomposition (194662 effect#1), Toxic Accumulator (333388 effect#1)
+Affecting spells : Crimson Scourge (81141 effects: #1, #2), Rapid Decomposition (194662 effect#1), Toxic Accumulator (333388 effect#1)
 Triggered by     : Toxic Accumulator (333388)
 Family Flags     : 5
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -13392,7 +13405,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Always hits (114), Disable weapon procs (151)
 Effects          :
 #1 (id=813578)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
 #2 (id=828523)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
@@ -13406,16 +13419,15 @@ Tooltip          : Weakened by Death's Due, damage dealt to $@auracaster reduced
 Toxins accumulate, increasing Death's Due damage by $s3%.][]
 
 Name             : Death's Due (id=324165) [Spell Family (15)] 
-Hotfixed         : Learn Level (23 -> 48), Attributes, Required Level (0 -> 48)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 48
 Range            : 50000 yards
 Duration         : 12 seconds
-Stacks           : 8 maximum
+Stacks           : 4 maximum
 Proc Chance      : 101%
-Affecting spells : Crimson Scourge (81141 effects: #1, #2), Blood Death Knight (137008 effect#5), Rapid Decomposition (194662 effect#1), Toxic Accumulator (333388 effect#1)
+Affecting spells : Crimson Scourge (81141 effects: #1, #2), Rapid Decomposition (194662 effect#1), Toxic Accumulator (333388 effect#1)
 Family Flags     : 5
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -13428,7 +13440,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Cannot crit (93)
 Effects          :
 #1 (id=813579)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
 Description      : $@spelldesc324128
 Tooltip          : Strength increased by $s1%.
 
@@ -13506,7 +13518,7 @@ School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ....x.xx x..x.x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -13582,7 +13594,7 @@ Proc Chance      : 101%
 Triggered by     : Rune of Sanguination (326808)
 Attributes       : ........ ........ ........ ..x..x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13968,34 +13980,6 @@ Effects          :
                    Affected Spells: Death and Decay (188290)
                    Family Flags: 118
 
-Name             : Monstrous Concoction (id=332004) [Spell Family (15)] 
-Class            : Death Knight
-School           : Physical
-Spell Type       : None
-Range            : 40 yards
-Duration         : 60 seconds
-Stacks           : 2 maximum
-Proc Chance      : 101%
-Triggered by     : Death Coil (47633)
-Attributes       : ........ x....... .......x x..x....   .....x.. ........ ........ ........ 
-                 : x....... ......x. ...x.... ........   ........ ........ ....x... ........ 
-                 : .....x.x ........ .x.x.x.. ........   x..x.... ........ .xx..... ........ 
-                 : ........ .x..x... .x...... ........   x....... ........ ........ ........ 
-                 : .....x.. ....x... ........ ........   ........ ......x. ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Does not break stealth (37)
-Effects          :
-#1 (id=826481)   : Apply Aura (6) | Scale% (Stacking) (61)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Friend (21)
-#2 (id=826482)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friend (21)
-                   Affected School(s): All
-#3 (id=826483)   : Apply Aura (6) | Modify Melee Attack Speed% (319)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Tooltip          : Damage increased by $w2%, and attack speed increased by $w3%.
-
 Name             : Rune of Razorice (id=332944) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
@@ -14081,8 +14065,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=830516)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-Description      : When a charge of Bone Shield is consumed, the cooldown of Dancing Rune Weapon is reduced by ${$s1/-1000} sec. Additionally, when Dancing Rune Weapon fades, your Rune regeneration rate is increased by $334526s1% for $334526d.
+                   Base Value: -5000 | Scaled Value: -5000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+#2 (id=880874)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Description      : Dancing Rune Weapon generates $s2 Bone Shield charges. When a charge of Bone Shield is consumed, the cooldown of Dancing Rune Weapon is reduced by ${$s1/-1000} sec. Additionally, when Dancing Rune Weapon fades, your Rune regeneration rate is increased by $334526s1% for $334526d.
 
 Name             : Vampiric Aura (id=334547) [Spell Family (15), Passive, Hidden] 
 School           : Physical
@@ -14099,7 +14085,15 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=830546)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your Vampiric Blood ability also affects all party members for $s1% of the effect it has on you.
+#2 (id=880876)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Vampiric Blood (55233)
+                   Family Flags: 35
+#3 (id=880878)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
+                   Affected Spells: Vampiric Blood (55233)
+                   Family Flags: 35
+Description      : Vampiric Blood grants you $s3% Leech and its duration is increased by ${$s2/1000} sec. Additionally, your Vampiric Blood affects all party members for $s1% of the effect it has on you.
 
 Name             : Gorefiend's Domination (id=334580) [Spell Family (15), Passive] 
 School           : Physical
@@ -14116,7 +14110,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=830592)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Heart Strike reduces the remaining cooldown on Vampiric Blood by $s1 seconds.
+Description      : Vampiric Blood generates ${$350914s1/10} Runic Power. Additionally, Heart Strike reduces the remaining cooldown on Vampiric Blood by $s1 seconds.
 
 Name             : Koltira's Favor (id=334583) [Spell Family (15), Passive] 
 School           : Physical
@@ -14245,7 +14239,7 @@ Name             : Reanimated Shambler (id=334836) [Spell Family (15), Passive]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Real PPM         : 1.5
+Real PPM         : 1.75
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -14260,7 +14254,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=831016)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your attacks have a chance to summon a Super Zombie that shambles forward and explodes, dealing $334851s1 Shadow damage and applying a Festering Wound to $334851s2 nearby enemies.
+Description      : Your attacks have a chance to summon a Super Zombie that shambles forward and explodes, dealing $?a137007[${((100+$77515m1)/100*$334851s1)}][$334851s1] Shadow damage and applying a Festering Wound to $334851s2 nearby enemies.
 
 Name             : Frenzied Monstrosity (id=334888) [Spell Family (15), Passive] 
 School           : Physical
@@ -14388,7 +14382,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=831631)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : You and your minions gain $?a137008[${$335180s1/2}%][$335180s1%] Haste while you are inside your Death and Decay and enemies damaged by your Death and Decay have a chance to cower in place for $206961d.
+Description      : You and your minions gain $?a137008[$s2%][$335180s1%] Haste while you are inside your Death and Decay and enemies damaged by your Death and Decay have a chance to cower in place for $206961d.
 
 Name             : Will of the Berserker (id=335594) [Spell Family (15), Passive] 
 School           : Physical
@@ -14408,11 +14402,10 @@ Effects          :
 Description      : When Recklessness expires, your Critical Strike is increased by $335597s1% for $335597d. Your Raging Blow will refresh the duration of this effect.
 
 Name             : Eternal Hunger (id=337381) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
-Conduit Id       : 65 (values=3, 3.3, 3.9, 3.9, 4.2, 4.5, 4.8, 5.1, 5.4, 5.7, 6, 6.3, 6.6, 6.9, 7.2)
+Conduit Id       : 65 (values=3, 3.3, 3.6, 3.9, 4.2, 4.5, 4.8, 5.1, 5.4, 5.7, 6, 6.3, 6.6, 6.9, 7.2)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14432,7 +14425,6 @@ Effects          :
 Description      : Dark Transformation's duration is increased by ${$s2/1000} sec and your Minion damage is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Chilled Resilience (id=337704) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14454,7 +14446,6 @@ Effects          :
 Description      : Icebound Fortitude's cooldown is reduced by |cFFFFFFFF${$s1/-1000}.1 sec|r.
 
 Name             : Spirit Drain (id=337705) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14477,7 +14468,6 @@ Effects          :
 Description      : Successfully interrupting an enemy with Mind Freeze grants |cFFFFFFFF${$s1/10}|r Runic Power.
 
 Name             : Reinforced Shell (id=337764) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14503,7 +14493,6 @@ Effects          :
 Description      : Anti-Magic Zone's radius is increased by $s3% and the duration is increased by |cFFFFFFFF${$s1/1000}.1 sec|r.
 
 Name             : Accelerated Cold (id=337822) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14528,7 +14517,6 @@ Effects          :
 Description      : Empower Rune Weapon takes $s2% less time to recharge and grants |cFFFFFFFF${$s1}.1%|r additional Haste.
 
 Name             : Withering Plague (id=337884) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14550,7 +14538,6 @@ Effects          :
 Description      : Heart Strike deals |cFFFFFFFF${$s1}.1%|r increased damage to enemies infected by Blood Plague.
 
 Name             : Eradicating Blow (id=337934) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14574,7 +14561,6 @@ Effects          :
 Description      : Obliterate increases the damage of your next Frost Strike by |cFFFFFFFF${$s1}.1%|r, stacks up to $337936u times.
 
 Name             : Blood Bond (id=337957) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14597,7 +14583,6 @@ Effects          :
 Description      : Rune Tap heals you and your party for |cFFFFFFFF${$s1}.1%|r of your maximum health.
 
 Name             : Hardened Bones (id=337972) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14620,7 +14605,6 @@ Effects          :
 Description      : While Lichborne is active the damage you take is reduced by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Embrace Death (id=337980) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14642,7 +14626,6 @@ Effects          :
 Description      : Sudden Doom increases the damage of your next Death Coil by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Everfrost (id=337988) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14665,7 +14648,6 @@ Effects          :
 Description      : Remorseless Winter deals |cFFFFFFFF${$s1}.1%|r increased damage to enemies it hits, stacking up to $337989u times.
 
 Name             : Fleeting Wind (id=338089) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14688,7 +14670,6 @@ Effects          :
 Description      : Death's Advance grants an additional |cFFFFFFFF${$s1}.1%|r movement speed over the first $338093d.
 
 Name             : Fleeting Wind (id=338093) [Spell Family (15), Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14710,7 +14691,6 @@ Description      : $@spelldesc338089
 Tooltip          : Death's Advance movement speed increased by $w1%.
 
 Name             : Unending Grip (id=338311) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14730,7 +14710,6 @@ Effects          :
 Description      : Death Grip slows enemy movement speed by |cFFFFFFFF${$s1*-1}.1%|r for $338312d.
 
 Name             : Insatiable Appetite (id=338330) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14752,7 +14731,6 @@ Effects          :
 Description      : Death Strike's minimum healing is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Meat Shield (id=338435) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14779,7 +14757,6 @@ Effects          :
 Description      : Increases the duration of Dancing Rune Weapon by ${$s2/1000} sec and while active, your parries increase your maximum health by |cFFFFFFFF${$s1}.1%|r, stacking up to $338438u times for $338438d.
 
 Name             : Unleashed Frenzy (id=338492) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14802,7 +14779,6 @@ Effects          :
 Description      : Frost Strike increases your strength by |cFFFFFFFF${$s1}.1%|r for 6 seconds, stacks up to $338501u times.
 
 Name             : Unleashed Frenzy (id=338501) [Spell Family (15)] 
-Hotfixed         : Attributes
 School           : Frost
 Spell Type       : None
 Spell Level      : 60
@@ -14825,7 +14801,6 @@ Description      : $@spelldesc338492
 Tooltip          : Strength increased by ${$W1}.1%.
 
 Name             : Debilitating Malady (id=338516) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14848,7 +14823,6 @@ Effects          :
 Description      : Blood Boil increases the damage enemies take from your Blood Plague by |cFFFFFFFF${$s1}.1%|r for $338523d, stacks up to $338523u times.
 
 Name             : Convocation of the Dead (id=338553) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14871,7 +14845,6 @@ Effects          :
 Description      : When a Festering Wound bursts the cooldown of Apocalypse is reduced by |cFFFFFFFF${$s1/10}.1 sec|r.
 
 Name             : Lingering Plague (id=338566) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14897,7 +14870,6 @@ Effects          :
 Description      : Virulent Plague's duration is increased by ${$s2/1000} sec and its damage is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Impenetrable Gloom (id=338628) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14921,7 +14893,6 @@ Effects          :
 Description      : Swarming Mist's dodge chance is increased by $s2% and damage increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Brutal Grasp (id=338651) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14942,7 +14913,6 @@ Effects          :
 Description      : Abomination Limb deals |cFFFFFFFF${$s1}.1%|r increased damage.
 
 Name             : Proliferation (id=338664) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -14991,7 +14961,6 @@ Effects          :
 Description      : Corrupts the ground targeted by the Death Knight, causing Shadow damage every sec that targets remain in the area for $43265d.
 
 Name             : Withering Ground (id=341344) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60

@@ -8,6 +8,7 @@ position=ranged_back
 talents=3020310
 covenant=kyrian
 soulbind=pelagos,combat_meditation/swift_penitence:7/courageous_ascension:7
+renown=40
 
 # Default consumables
 potion=potion_of_spectral_intellect
@@ -93,9 +94,9 @@ main_hand=torch_of_fiery_atonement,id=182418,bonus_id=7187/1524,enchant=sinful_r
 
 # Gear Summary
 # gear_ilvl=228.00
-# gear_stamina=1493
-# gear_intellect=1152
-# gear_crit_rating=792
-# gear_haste_rating=451
+# gear_stamina=1494
+# gear_intellect=1146
+# gear_crit_rating=798
+# gear_haste_rating=454
 # gear_versatility_rating=687
 # gear_armor=370

@@ -34,6 +34,34 @@ spec=shadow
 role=spell
 position=ranged_back
 talents=1010132
+covenant=night_fae
+soulbind=niya,grove_invigoration/dissonant_echoes:4
+
+head=cowl_of_the_devoted_general,id=178860,bonus_id=6807/1498/6646
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
+shoulders=reanimators_mantle,id=178740,bonus_id=6807/1498/6646
+back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498/6646,enchant=fortified_speed
+chest=sinister_requiem_vestments,id=180098,bonus_id=6807/1498/6646,enchant=eternal_insight
+wrists=deathshackle_wristwraps,id=178704,bonus_id=6807/1498/6646,enchant=eternal_intellect
+hands=tricksprite_gloves,id=178705,bonus_id=6807/1498/6646
+waist=kintaras_baleful_cord,id=180109,bonus_id=6807/1498/6646
+legs=grimveiled_pants,id=173246,bonus_id=6648/6649/6716/7162/1487
+feet=slippers_of_leavened_station,id=178831,bonus_id=6807/1498/6646
+finger1=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+trinket1=empyreal_ordnance,id=180117,bonus_id=6807/1498/6646
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
+main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=celestial_guidance
+
+save=PR_Priest_Shadow.simc
+
+priest="PR_Priest_Shadow_Kyrian"
+level=60
+race=mechagnome
+spec=shadow
+role=spell
+position=ranged_back
+talents=1010132
 covenant=kyrian
 soulbind=pelagos,combat_meditation/dissonant_echoes:4
 
@@ -53,7 +81,7 @@ trinket1=empyreal_ordnance,id=180117,bonus_id=6807/1498/6646
 trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=celestial_guidance
 
-save=PR_Priest_Shadow.simc
+save=PR_Priest_Shadow_Kyrian.simc
 
 priest="PR_Priest_Shadow_Necrolord"
 level=60
@@ -82,3 +110,31 @@ trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=celestial_guidance
 
 save=PR_Priest_Shadow_Necrolord.simc
+
+priest="PR_Priest_Shadow_Venthyr"
+level=60
+race=mechagnome
+spec=shadow
+role=spell
+position=ranged_back
+talents=1010132
+covenant=necrolord
+soulbind=nadjia,thrill_seeker/dissonant_echoes:4
+
+head=cowl_of_the_devoted_general,id=178860,bonus_id=6807/1498/6646
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
+shoulders=reanimators_mantle,id=178740,bonus_id=6807/1498/6646
+back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498/6646,enchant=fortified_speed
+chest=sinister_requiem_vestments,id=180098,bonus_id=6807/1498/6646,enchant=eternal_insight
+wrists=deathshackle_wristwraps,id=178704,bonus_id=6807/1498/6646,enchant=eternal_intellect
+hands=tricksprite_gloves,id=178705,bonus_id=6807/1498/6646
+waist=kintaras_baleful_cord,id=180109,bonus_id=6807/1498/6646
+legs=grimveiled_pants,id=173246,bonus_id=6648/6649/6716/7162/1487
+feet=slippers_of_leavened_station,id=178831,bonus_id=6807/1498/6646
+finger1=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+trinket1=empyreal_ordnance,id=180117,bonus_id=6807/1498/6646
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
+main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=celestial_guidance
+
+save=PR_Priest_Shadow_Venthyr.simc

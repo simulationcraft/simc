@@ -8,6 +8,7 @@ position=ranged_back
 talents=2301032
 covenant=necrolord
 soulbind=bonesmith_heirmir,forgeborne_reveries/call_of_flame:7/heirmirs_arsenal_marrowed_gemstone
+renown=40
 
 # Default consumables
 potion=potion_of_spectral_intellect
@@ -113,7 +114,7 @@ actions.single_target+=/echoing_shock,if=talent.echoing_shock.enabled&cooldown.l
 actions.single_target+=/lava_burst,if=talent.echoing_shock.enabled&buff.echoing_shock.up
 actions.single_target+=/liquid_magma_totem,if=talent.liquid_magma_totem.enabled
 actions.single_target+=/lightning_bolt,if=buff.stormkeeper.up&spell_targets.chain_lightning<2&(buff.master_of_the_elements.up)
-actions.single_target+=/earthquake,if=buff.echoes_of_great_sundering.up&(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up)
+actions.single_target+=/earthquake,if=buff.echoes_of_great_sundering.up&(talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|cooldown.lava_burst.remains>0&maelstrom>=92|spell_targets.chain_lightning<2&buff.stormkeeper.up&cooldown.lava_burst.remains<=gcd)|!talent.master_of_the_elements.enabled|cooldown.elemental_blast.remains<=1.1*gcd*2)
 actions.single_target+=/earthquake,if=spell_targets.chain_lightning>1&!dot.flame_shock.refreshable&!runeforge.echoes_of_great_sundering.equipped&(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up|cooldown.lava_burst.remains>0&maelstrom>=92)
 actions.single_target+=/earth_shock,if=talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|cooldown.lava_burst.remains>0&maelstrom>=92|spell_targets.chain_lightning<2&buff.stormkeeper.up&cooldown.lava_burst.remains<=gcd)|!talent.master_of_the_elements.enabled
 actions.single_target+=/lightning_bolt,if=(buff.stormkeeper.remains<1.1*gcd*buff.stormkeeper.stack|buff.stormkeeper.up&buff.master_of_the_elements.up)
@@ -156,10 +157,10 @@ off_hand=burden_of_the_protectorate,id=184257,bonus_id=4800/4786/1531
 # Gear Summary
 # gear_ilvl=229.63
 # gear_strength=43
-# gear_stamina=1523
-# gear_intellect=1176
-# gear_crit_rating=366
-# gear_haste_rating=678
-# gear_mastery_rating=146
-# gear_versatility_rating=760
+# gear_stamina=1524
+# gear_intellect=1174
+# gear_crit_rating=369
+# gear_haste_rating=681
+# gear_mastery_rating=148
+# gear_versatility_rating=762
 # gear_armor=1556

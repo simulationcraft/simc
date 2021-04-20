@@ -5,26 +5,27 @@ timeofday=night
 spec=havoc
 role=attack
 position=back
-talents=3310221
-covenant=venthyr
-soulbind=nadjia_the_mistblade,thrill_seeker/growing_inferno:7/dauntless_duelist
+talents=3320221
+covenant=night_fae
+soulbind=niya,grove_invigoration/growing_inferno:7/niyas_tools_burrs
+renown=40
 
-head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173128
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173128
+head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173130
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173130
 shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=miasmalacquered_jerkin,id=183009,bonus_id=7187/1498,enchant=eternal_stats
-wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173128
+wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173130
 hands=umbrahide_gauntlets,id=172316,bonus_id=6649/6650/6758/7050/1532
-waist=heedless_pugilists_harness,id=183005,bonus_id=7187/1498/6935,gem_id=173128
+waist=heedless_pugilists_harness,id=183005,bonus_id=7187/1498/6935,gem_id=173130
 legs=abyssal_disharmony_breeches,id=180108,bonus_id=6536/1540/6646
 feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
-finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_critical_strike
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_critical_strike
 trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=claws_of_the_stone_generals,id=182416,bonus_id=7187/1531,enchant=celestial_guidance
-off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=3535/4786/1540,enchant=celestial_guidance
+off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=3535/4786/1540,enchant=sinful_revelation
 
 save=T26_Demon_Hunter_Havoc.simc
 
@@ -36,26 +37,27 @@ timeofday=night
 spec=havoc
 role=attack
 position=back
-talents=3310222
-covenant=venthyr
-soulbind=nadjia_the_mistblade,thrill_seeker/growing_inferno:7/dauntless_duelist
+talents=3320222
+covenant=night_fae
+soulbind=niya,grove_invigoration/growing_inferno:7/niyas_tools_burrs
+renown=40
 
-head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173128
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173128
+head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173130
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173130
 shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=miasmalacquered_jerkin,id=183009,bonus_id=7187/1498,enchant=eternal_stats
-wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173128
+wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173130
 hands=umbrahide_gauntlets,id=172316,bonus_id=6649/6650/6758/7050/1532
-waist=heedless_pugilists_harness,id=183005,bonus_id=7187/1498/6935,gem_id=173128
+waist=heedless_pugilists_harness,id=183005,bonus_id=7187/1498/6935,gem_id=173130
 legs=abyssal_disharmony_breeches,id=180108,bonus_id=6536/1540/6646
 feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
-finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_critical_strike
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_critical_strike
 trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=claws_of_the_stone_generals,id=182416,bonus_id=7187/1531,enchant=celestial_guidance
-off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=3535/4786/1540,enchant=celestial_guidance
+off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=3535/4786/1540,enchant=sinful_revelation
 
 save=T26_Demon_Hunter_Havoc_Momentum.simc
 
@@ -70,6 +72,7 @@ position=front
 talents=1233321
 covenant=kyrian
 soulbind=pelagos,combat_meditation/repeat_decree:7/growing_inferno:7
+renown=40
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173128
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173128

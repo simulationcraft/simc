@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.0.5.37623
-static const std::array<item_name_description_t, 583> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 9.1.0.38312
+static const std::array<item_name_description_t, 597> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -379,7 +379,7 @@ static const std::array<item_name_description_t, 583> __ptr_item_name_descriptio
   { 13620, "Primordial Arcanic Pulsar"                   },
   { 13621, "Balance of All Things"                       },
   { 13622, "Timeworn Dreambinder"                        },
-  { 13623, "Cat-eye Curio"                               },
+  { 13623, "Cat-Eye Curio"                               },
   { 13624, "Apex Predator's Craving"                     },
   { 13625, "Frenzyband"                                  },
   { 13626, "Luffa-Infused Embrace"                       },
@@ -583,5 +583,19 @@ static const std::array<item_name_description_t, 583> __ptr_item_name_descriptio
   { 13827, "Upgrade Level: 6/7"                          },
   { 13828, "Upgrade Level: 1/6"                          },
   { 13829, "Stygia Crafting"                             },
+  { 13830, "Korthian Knowledge"                          },
+  { 13831, "Enhanced"                                    },
+  { 13832, "Abomination's Frenzy"                        },
+  { 13833, "Rampant Transference"                        },
+  { 13834, "Final Sentence"                              },
+  { 13835, "Insatiable Hunger"                           },
+  { 13836, "Glory"                                       },
+  { 13837, "Sinful Surge"                                },
+  { 13838, "Nature's Fury"                               },
+  { 13839, "Sinful Hysteria"                             },
+  { 13840, "Harmonic Echo"                               },
+  { 13841, "Wrathful Swarm"                              },
+  { 13842, "Death's Fathom"                              },
+  { 13843, "Sinful Delight"                              },
 } };
 

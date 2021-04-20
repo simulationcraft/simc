@@ -7,6 +7,7 @@ position=ranged_back
 talents=3000231
 covenant=night_fae
 soulbind=niya,grove_invigoration/conflux_of_elements:7/niyas_tools_burrs
+renown=40
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173130
 neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498/6935,gem_id=173130
@@ -37,6 +38,7 @@ position=back
 talents=2313122
 covenant=night_fae
 soulbind=niya,grove_invigoration/taste_for_blood:7/born_of_the_wilds:7/niyas_tools_burrs
+renown=40
 druid.owlweave_cat=1
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173127
@@ -67,6 +69,7 @@ position=back
 talents=2331122
 covenant=night_fae
 soulbind=niya,grove_invigoration/taste_for_blood:7/niyas_tools_burrs
+renown=40
 druid.owlweave_cat=0
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173127
@@ -98,6 +101,7 @@ position=front
 talents=1013221
 covenant=night_fae
 soulbind=niya,grove_invigoration/savage_combatant:7/niyas_tools_burrs
+renown=40
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173128
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173128

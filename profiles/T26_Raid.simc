@@ -3,6 +3,7 @@ default_actions=1
 
 T26_Death_Knight_Blood.simc
 T26_Death_Knight_Frost.simc
+T26_Death_Knight_Frost_2H.simc
 T26_Death_Knight_Unholy.simc
 
 T26_Demon_Hunter_Havoc.simc
@@ -29,10 +30,13 @@ T26_Monk_Windwalker_Serenity.simc
 
 T26_Paladin_Protection.simc
 T26_Paladin_Retribution.simc
+T26_Paladin_Retribution_Venthyr.simc
 
 # T26_Priest_Discipline.simc
 T26_Priest_Shadow.simc
+T26_Priest_Shadow_Kyrian.simc
 T26_Priest_Shadow_Necrolord.simc
+T26_Priest_Shadow_Venthyr.simc
 
 T26_Rogue_Assassination.simc
 T26_Rogue_Outlaw.simc

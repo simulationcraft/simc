@@ -582,6 +582,9 @@ public:
     // Covenant
     gain_t* swarming_mist;
 
+    // Legendary
+    gain_t* gorefiends_domination;
+
     // Blood
     gain_t* blood_tap;
     gain_t* bryndaors_might;
@@ -975,7 +978,7 @@ public:
     // item_runeforge_t deaths_embrace;           // 6947
     // item_runeforge_t grip_of_the_everlasting;  // 6948
     item_runeforge_t gorefiends_domination;       // 6943
-    // item_runeforge_t vampiric_aura;            // 6942
+    item_runeforge_t vampiric_aura;               // 6942
   } legendary;
 
   // Death Knight Options
@@ -2030,8 +2033,8 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     }
   };
 
-  ghoul_pet_t( death_knight_t* owner ) :
-    base_ghoul_pet_t( owner, "ghoul" , false )
+  ghoul_pet_t( death_knight_t* owner, bool guardian ) :
+    base_ghoul_pet_t( owner, "ghoul" , guardian )
   {
     gnaw_cd = get_cooldown( "gnaw" );
     gnaw_cd -> duration = owner -> pet_spell.gnaw -> cooldown();
@@ -3515,13 +3518,11 @@ struct abomination_limb_t : public death_knight_spell_t
 struct apocalypse_t : public death_knight_melee_attack_t
 {
   timespan_t summon_duration;
-  timespan_t magus_duration;
   int rune_generation;
 
   apocalypse_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "apocalypse", p, p -> spec.apocalypse ),
     summon_duration( p -> find_spell( 221180 ) -> duration() ),
-    magus_duration( p -> find_spell( 317776 ) -> duration() ),
     rune_generation( as<int>( p -> find_spell( 343758 ) -> effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
@@ -3542,7 +3543,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
 
     if ( p() -> talent.army_of_the_damned -> ok() )
     {
-      p() -> pets.magus_of_the_dead.spawn( magus_duration, 1 );
+      p() -> pets.magus_of_the_dead.spawn( summon_duration, 1 );
     }
 
     if ( p() -> spec.apocalypse_3 -> ok() )
@@ -3569,7 +3570,6 @@ struct army_of_the_dead_t : public death_knight_spell_t
 {
   double precombat_time;
   timespan_t summon_duration;
-  timespan_t magus_duration;
 
   struct summon_army_event_t : public event_t
   {
@@ -3599,8 +3599,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
   army_of_the_dead_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "army_of_the_dead", p, p -> spec.army_of_the_dead ),
     precombat_time( 6.0 ),
-    summon_duration( p -> spec.army_of_the_dead -> effectN( 1 ).trigger() -> duration() ),
-    magus_duration( p -> find_spell( 317776 ) -> duration() )
+    summon_duration( p -> spec.army_of_the_dead -> effectN( 1 ).trigger() -> duration() )
   {
     // disable_aotd=1 can be added to the profile to disable aotd usage, for example for specific dungeon simming
 
@@ -3694,12 +3693,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
       make_event<summon_army_event_t>( *sim, p(), n_ghoul, timespan_t::from_seconds( summon_interval ), summon_duration );
 
     if ( p() -> talent.army_of_the_damned -> ok() )
-    {
-      // Bug? Magus of the dead is summoned for the same duration as Army of the Dead even though Army of the Damned's tooltip states 15s.
-      timespan_t actual_magus_duration = p() -> bugs ? summon_duration : magus_duration;
-
-      p() -> pets.magus_of_the_dead.spawn( actual_magus_duration - timespan_t::from_seconds( precombat_time ), 1 );
-    }
+      p() -> pets.magus_of_the_dead.spawn( summon_duration - timespan_t::from_seconds( precombat_time ), 1 );
   }
 };
 
@@ -4107,10 +4101,13 @@ struct dancing_rune_weapon_buff_t : public buff_t
 
 struct dancing_rune_weapon_t : public death_knight_spell_t
 {
+  int bone_shield_stack_gain;
   dancing_rune_weapon_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "dancing_rune_weapon", p, p -> spec.dancing_rune_weapon )
+    death_knight_spell_t( "dancing_rune_weapon", p, p -> spec.dancing_rune_weapon ),
+    bone_shield_stack_gain( 0 )
   {
     may_miss = may_crit = may_dodge = may_parry = harmful = false;
+    bone_shield_stack_gain = as<int>( p -> legendary.crimson_rune_weapon -> effectN( 2 ).base_value());
 
     parse_options( options_str );
   }
@@ -4118,6 +4115,10 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
+    if ( p() -> legendary.crimson_rune_weapon.ok() )
+    {
+      p() -> buffs.bone_shield -> trigger ( bone_shield_stack_gain );
+    }
 
     p() -> pets.dancing_rune_weapon_pet -> summon( timespan_t::from_seconds( p() -> spec.dancing_rune_weapon -> effectN( 4 ).base_value() ) +
                                                                              p() -> conduits.meat_shield -> effectN( 2 ).time_value() );
@@ -5783,7 +5784,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   void impact( action_state_t* state ) override
   {
     death_knight_melee_attack_t::impact( state );
-    if ( p() -> covenant.deaths_due -> ok() && p() -> in_death_and_decay() )
+    if ( p() -> covenant.deaths_due -> ok() && p() -> in_death_and_decay() && weapon -> slot == SLOT_MAIN_HAND )
     {
       p() -> buffs.deaths_due->trigger();
     }
@@ -6491,6 +6492,7 @@ struct tombstone_t : public death_knight_spell_t
     p() -> resource_gain( RESOURCE_RUNIC_POWER, power, p() -> gains.tombstone, this );
     p() -> buffs.tombstone -> trigger( 1, shield * p() -> resources.max[ RESOURCE_HEALTH ] );
     p() -> buffs.bone_shield -> decrement( charges );
+    p() -> cooldown.dancing_rune_weapon -> adjust( p() -> legendary.crimson_rune_weapon -> effectN( 1 ).time_value() * charges );
   }
 };
 
@@ -6809,6 +6811,12 @@ struct vampiric_blood_buff_t : public buff_t
     // Cooldown handled by the action
     cooldown -> duration = 0_ms;
     base_buff_duration += player -> spec.vampiric_blood_2 -> effectN( 3 ).time_value();
+    set_default_value_from_effect( 5 );
+    if ( player -> legendary.vampiric_aura.ok() )
+    {
+      apply_affecting_aura( player -> legendary.vampiric_aura );
+      add_invalidate( CACHE_LEECH );
+    }
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -6846,13 +6854,16 @@ struct vampiric_blood_buff_t : public buff_t
 
 struct vampiric_blood_t : public death_knight_spell_t
 {
+  int gorefiends_domination_energize_amount;
   vampiric_blood_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "vampiric_blood", p, p -> spec.vampiric_blood )
+    death_knight_spell_t( "vampiric_blood", p, p -> spec.vampiric_blood ),
+    gorefiends_domination_energize_amount( 0 )
   {
     parse_options( options_str );
 
     harmful = false;
     base_dd_min = base_dd_max = 0;
+    gorefiends_domination_energize_amount = as<int>( p -> legendary.gorefiends_domination->ok() ? p -> find_spell( 350914 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) : 0 );
   }
 
   void execute() override
@@ -6860,6 +6871,10 @@ struct vampiric_blood_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.vampiric_blood -> trigger();
+
+    p() -> resource_gain( RESOURCE_RUNIC_POWER,
+                gorefiends_domination_energize_amount,
+                p() -> gains.gorefiends_domination );
   }
 };
 
@@ -7933,7 +7948,8 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
 void death_knight_t::create_pets()
 {
   // Created unconditionally for APL purpose
-  pets.ghoul_pet = new pets::ghoul_pet_t( this );
+  // Only the permanent version with raise dead 2 is a pet, others are guardians
+  pets.ghoul_pet = new pets::ghoul_pet_t( this, ! spec.raise_dead_2 -> ok() );
 
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
@@ -8335,7 +8351,7 @@ void death_knight_t::init_spells()
   // legendary.deaths_embrace = find_runeforge_legendary( "Death's Embrace" );
   // legendary.grip_of_the_everlasting = find_runeforge_legendary( "Grip of the Everlasting" );
   legendary.gorefiends_domination = find_runeforge_legendary( "Gorefiend's Domination" );
-  // legendary.vampiric_aura = find_runeforge_legendary( "Vampiric Aura" );
+  legendary.vampiric_aura = find_runeforge_legendary( "Vampiric Aura" );
 
   // Covenants
   covenant.abomination_limb = find_covenant_spell( "Abomination Limb" );
@@ -8600,7 +8616,7 @@ void death_knight_t::create_buffs()
   // According to tooltip data and ingame testing, the buff's value is halved for blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
-    buffs.death_turf -> default_value /= 2;
+    buffs.death_turf -> default_value = legendary.phearomones -> effectN( 2 ).percent();
   }
 
   // Covenants
@@ -8647,6 +8663,7 @@ void death_knight_t::init_gains()
 
   // Shadowlands / Covenants
   gains.swarming_mist                    = get_gain( "Swarming Mist" );
+  gains.gorefiends_domination            = get_gain( "Gorefiends Domination" );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -8932,6 +8949,11 @@ double death_knight_t::composite_leech() const
   if ( buffs.voracious -> up() )
   {
     m += buffs.voracious -> data().effectN( 1 ).percent();
+  }
+
+  if ( legendary.vampiric_aura.ok() && buffs.vampiric_blood -> check() )
+  {
+    m += buffs.vampiric_blood -> check_value();
   }
 
   return m;

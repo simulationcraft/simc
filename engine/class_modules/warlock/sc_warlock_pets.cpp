@@ -832,6 +832,14 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
 
     p()->dreadbite_executes--;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_pet_melee_attack_t::impact( s );
+
+    if ( p()->o()->talents.from_the_shadows->ok() )
+      this->owner_td( s->target )->debuffs_from_the_shadows->trigger();
+  }
 };
 
 // SL - Soulbind conduit (Carnivorous Stalkers) handling requires special version of melee attack
@@ -883,7 +891,6 @@ void dreadstalker_t::arise()
 {
   warlock_pet_t::arise();
 
-  o()->buffs.dreadstalkers->set_duration( o()->find_spell( 193332 )->duration() );
   o()->buffs.dreadstalkers->trigger();
 
   dreadbite_executes = 1;

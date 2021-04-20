@@ -102,7 +102,7 @@ public:
 
     // Shadowland Legendaries
     buff_t* keefers_skyreach;
-    buff_t* recently_rushing_tiger_palm;
+    buff_t* skyreach_exhaustion;
   } debuff;
 
   monk_t& monk;
@@ -236,6 +236,7 @@ public:
     buff_t* weapons_of_order_ww;
     buff_t* faeline_stomp;
     buff_t* faeline_stomp_brm;
+    buff_t* faeline_stomp_reset;
 
     // Covenant Conduits
     absorb_buff_t* fortifying_ingrediences;
@@ -714,6 +715,7 @@ public:
     double memory_of_lucid_dreams_proc_chance = 0.15;
     double expel_harm_effectiveness;
     double faeline_stomp_uptime;
+    int chi_burst_healing_targets;
   } user_options;
 
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond
@@ -807,6 +809,7 @@ public:
   double stagger_total();
   void trigger_celestial_fortune( action_state_t* );
   void trigger_bonedust_brew( const action_state_t* );
+  void trigger_keefers_skyreach( action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
   void trigger_empowered_tiger_lightning( action_state_t* );
   void trigger_bonedust_brew( action_state_t* );

@@ -52,6 +52,7 @@ void flame_of_battle( special_effect_t& );
 void overwhelming_power_crystal( special_effect_t& );
 void tablet_of_despair( special_effect_t& );
 void rotbriar_sprout( special_effect_t& );
+void murmurs_in_the_dark( special_effect_t& );
 
 // Runecarves
 void echo_of_eonar( special_effect_t& );

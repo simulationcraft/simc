@@ -153,6 +153,9 @@ public:
   /// Used with DoT Drivers, tells simc that the direct hit is actually a tick.
   bool direct_tick;
 
+  /// Used with psudo-DoT effects, tells us to ignore armor even if the physical damage is direct
+  bool ignores_armor;
+
   /// Used for abilities that repeat themselves without user interaction, only used on autoattacks.
   bool repeating;
 
@@ -348,6 +351,9 @@ public:
 
   /// Missile travel delay in seconds
   double travel_delay;
+
+  /// Minimum travel time in seconds
+  double min_travel_time;
 
   // Amount of resource for the energize to grant.
   double energize_amount;

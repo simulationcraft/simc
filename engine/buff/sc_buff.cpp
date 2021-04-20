@@ -1909,6 +1909,9 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   if ( _max_stack == 0 )
     return;
 
+  if ( value == DEFAULT_VALUE() )
+    value = default_value;
+
 #ifndef NDEBUG
   if ( stack_behavior != buff_stack_behavior::ASYNCHRONOUS && current_stack != 0 )
   {
@@ -2005,6 +2008,9 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
   if ( _max_stack == 0 )
     return;
 
+  if ( value == DEFAULT_VALUE() )
+    value = current_value;
+
   bump( stacks, value );
 
   refresh_count++;
@@ -2087,6 +2093,9 @@ void buff_t::bump( int stacks, double value )
 {
   if ( _max_stack == 0 )
     return;
+
+  if ( value == DEFAULT_VALUE() )
+    value = default_value;
 
   bool changes_stack_value = false; // Flag to check if we need to adjust haste and invalidate cache at the end of bump
 

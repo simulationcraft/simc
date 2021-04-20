@@ -8,6 +8,7 @@ position=ranged_back
 talents=3020310
 covenant=kyrian
 soulbind=pelagos,combat_meditation/swift_penitence:7/courageous_ascension:7
+renown=40
 
 head=cocoonsilk_cowl,id=178693,bonus_id=6536/1540/6646/6935,gem_id=173127
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
@@ -27,14 +28,45 @@ main_hand=torch_of_fiery_atonement,id=182418,bonus_id=7187/1524,enchant=sinful_r
 
 save=T26_Priest_Discipline.simc
 
-
 priest="T26_Priest_Shadow"
 level=60
 race=mechagnome
-spec=shadow
-role=spell
+role="spell"
 position=ranged_back
+spec="shadow"
+talents=1010122
+renown=40
+
+covenant=night_fae
+soulbind=niya,grove_invigoration/dissonant_echoes:7/run_without_tiring/haunting_apparitions:7/niyas_tools_poison
+
+head=grimveiled_hood,id=173245,bonus_id=6648/6649/6758/1532/6935/6982,gem_id=173128
+neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498/6935,gem_id=173130
+shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
+chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_insight
+wrists=acolytes_velvet_bindings,id=183017,bonus_id=7187/1498/6935,gem_id=173130,enchant=eternal_intellect
+hands=impossibly_oversized_mitts,id=183022,bonus_id=7187/1498
+waist=shadewarped_sash,id=183004,bonus_id=7187/1498/6935,gem_id=173130
+legs=purge_protocol_legwraps,id=180107,bonus_id=7187/1540
+feet=slippers_of_leavened_station,id=178831,bonus_id=7187/1540
+finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,enchant=tenet_of_haste,gem_id=173130
+finger2=death_gods_signet,id=179355,bonus_id=7187/1540/6935,enchant=tenet_of_mastery,gem_id=173130
+trinket1=soulletting_ruby,id=178809,bonus_id=6536/1540/6646
+trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498
+main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinful_revelation
+
+save=T26_Priest_Shadow.simc
+
+priest="T26_Priest_Shadow_Kyrian"
+level=60
+race=mechagnome
+role="spell"
+position=ranged_back
+spec="shadow"
 talents=1010132
+renown=40
+
 covenant=kyrian
 soulbind=pelagos,combat_meditation/dissonant_echoes:7/haunting_apparitions:7
 
@@ -54,7 +86,7 @@ trinket1=empyreal_ordnance,id=180117,bonus_id=6536/1540/6646
 trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498
 main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=celestial_guidance
 
-save=T26_Priest_Shadow.simc
+save=T26_Priest_Shadow_Kyrian.simc
 
 priest="T26_Priest_Shadow_Necrolord"
 level=60
@@ -65,6 +97,7 @@ position=ranged_back
 talents=1010132
 covenant=necrolord
 soulbind=emeni,lead_by_example/dissonant_echoes:7/haunting_apparitions:7
+renown=40
 
 head=confidants_favored_cap,id=183021,bonus_id=7187/1498/6935,gem_id=173128
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173128
@@ -83,3 +116,32 @@ trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498
 main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=celestial_guidance
 
 save=T26_Priest_Shadow_Necrolord.simc
+
+priest="T26_Priest_Shadow_Venthyr"
+level=60
+race=mechagnome
+spec=shadow
+role=spell
+position=ranged_back
+talents=1010132
+covenant=venthyr
+soulbind=nadjia,thrill_seeker/dissonant_echoes:7/haunting_apparitions:7
+renown=40
+
+head=confidants_favored_cap,id=183021,bonus_id=7187/1498/6935,gem_id=173128
+neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173128
+shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
+chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_insight
+wrists=grim_pursuants_maille,id=182996,bonus_id=7187/1498/6935,gem_id=173128,enchant=eternal_intellect
+hands=impossibly_oversized_mitts,id=183022,bonus_id=7187/1498
+waist=shadewarped_sash,id=183004,bonus_id=7187/1498/6935,gem_id=173128
+legs=grimveiled_pants,id=173246,bonus_id=6648/6649/6758/7162/1532
+feet=slippers_of_the_forgotten_heretic,id=182979,bonus_id=7187/1498
+finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_mastery
+finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_mastery
+trinket1=empyreal_ordnance,id=180117,bonus_id=6536/1540/6646
+trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498
+main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=celestial_guidance
+
+save=T26_Priest_Shadow_Venthyr.simc

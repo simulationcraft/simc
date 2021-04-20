@@ -203,7 +203,7 @@ struct action_execute_event_t : public player_event_t
     {
       can_execute = false;
       p()->procs.delayed_aa_channel->occur();
-      
+
       if ( action->repeating )
       {
         action->schedule_execute();
@@ -317,6 +317,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     ignore_false_positive(),
     action_skill( p->base.skill ),
     direct_tick(),
+    ignores_armor(),
     repeating(),
     harmful( true ),
     proc(),
@@ -387,6 +388,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     base_teleport_distance(),
     travel_speed(),
     travel_delay(),
+    min_travel_time(),
     energize_amount(),
     movement_directionality( movement_direction_type::NONE ),
     parent_dot(),
@@ -566,6 +568,8 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   id                = spell_data.id();
   base_execute_time = spell_data.cast_time();
   range             = spell_data.max_range();
+  travel_delay      = spell_data.missile_delay();
+  min_travel_time   = spell_data.missile_min_duration();
   trigger_gcd       = spell_data.gcd();
   school            = spell_data.get_school_type();
 
@@ -574,11 +578,12 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   tick_may_crit       = spell_data.flags( spell_attribute::SX_TICK_MAY_CRIT );
   hasted_ticks        = spell_data.flags( spell_attribute::SX_DOT_HASTED );
   tick_on_application = spell_data.flags( spell_attribute::SX_TICK_ON_APPLICATION );
+  ignores_armor       = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
   may_miss            = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
   may_dodge = may_parry = may_block = !spell_data.flags( spell_attribute::SX_NO_D_P_B );
 
   if ( spell_data.flags( spell_attribute::SX_FIXED_TRAVEL_TIME ) )
-    travel_delay = spell_data.missile_speed();
+    travel_delay += spell_data.missile_speed();
   else
     travel_speed = spell_data.missile_speed();
 
@@ -1101,7 +1106,7 @@ double action_t::false_negative_pct() const
 timespan_t action_t::travel_time() const
 {
   if ( travel_speed == 0 && travel_delay == 0 )
-    return timespan_t::zero();
+    return timespan_t::from_seconds( min_travel_time );
 
   double t = travel_delay;
 
@@ -1113,16 +1118,16 @@ timespan_t action_t::travel_time() const
     if ( execute_state && execute_state->target )
       distance += execute_state->target->height;
 
-    if ( distance == 0 )
-      return timespan_t::zero();
-
-    t += distance / travel_speed;
+    if ( distance > 0 )
+      t += distance / travel_speed;
   }
 
   double v = sim->travel_variance;
 
   if ( v )
     t = rng().gauss( t, v );
+
+  t = std::max( t, min_travel_time );
 
   return timespan_t::from_seconds( t );
 }
@@ -1133,7 +1138,7 @@ double action_t::total_crit_bonus( const action_state_t* state ) const
 
   double base_crit_bonus = crit_bonus;
   if ( sim->pvp_crit )
-    base_crit_bonus -= 0.5;  // Players in pvp take 150% critical hits baseline.
+    base_crit_bonus += sim->pvp_rules->effectN( 3 ).percent();
   if ( player->buffs.amplification )
     base_crit_bonus += player->passive_values.amplification_1;
   if ( player->buffs.amplification_2 )
@@ -1989,7 +1994,7 @@ void action_t::schedule_execute( action_state_t* state )
     // While an ability is casting, the auto_attack is paused
     // So we simply reschedule the auto_attack by the ability's cast time
     if ( special && time_to_execute > timespan_t::zero() && !proc && ( interrupt_auto_attack || reset_auto_attack ) )
-    { 
+    {
       if( reset_auto_attack )
         player->reset_auto_attacks( time_to_execute, player->procs.reset_aa_cast );
       else
@@ -2719,7 +2724,7 @@ void action_t::interrupt_action()
     player->executing = nullptr;
   if ( player->queueing == this )
     player->queueing = nullptr;
-  
+
   if ( player->channeling == this )
   {
     // Forcefully interrupting a channel should not incur the channel lag.

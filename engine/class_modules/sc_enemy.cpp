@@ -998,7 +998,7 @@ struct heal_enemy_t : public enemy_t
 
     collected_data.htps.change_mode( false );
 
-    true_level = std::min( 100, true_level );
+    true_level = std::min( sim->max_player_level, true_level );
   }
   resource_e primary_resource() const override
   {
@@ -1105,25 +1105,30 @@ struct tank_dummy_enemy_t : public enemy_t
         Castle Nathria Normal: 2662.5 (ExpectedStatModID: 177; ArmorConstMod: 1.065)
         Castle Nathria Heroic: 2845.0 (ExpectedStatModID: 178; ArmorConstMod: 1.138)
         Castle Nathria Mythic: 3050.0‬ (ExpectedStatModID: 179; ArmorConstMod: 1.220)
+        Tazavesh M+ Dungeon: 3050 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
+        Sanctum of Domination LFR: 2662.5 (ExpectedStatModID: 177; ArmorConstMod: 1.065)
+        Sanctum of Domination Nomral: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
+        Sanctum of Domination Heroic: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
+        Sanctum of Domination Mythic: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
       */
       double k_value = dbc->armor_mitigation_constant( sim->max_player_level );
 
       switch ( tank_dummy_enum )
       {
         case tank_dummy_e::DUNGEON:
-          base.armor_coeff = k_value * 0.982;  // M0/M+
+          base.armor_coeff = k_value * (dbc->ptr ? 1.220 : 0.982);  // M0/M+
           sim->print_debug( "{} Dungeon base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::RAID:
-          base.armor_coeff = k_value * 1.065;  // Normal Raid
+          base.armor_coeff = k_value * (dbc->ptr ? 1.220 : 1.065);  // Normal Raid
           sim->print_debug( "{} Normal Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::HEROIC:
-          base.armor_coeff = k_value * 1.138;  // Heroic Raid
+          base.armor_coeff = k_value * (dbc->ptr ? 1.313 : 1.138);  // Heroic Raid
           sim->print_debug( "{} Heroic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::MYTHIC:
-          base.armor_coeff = k_value * 1.220;  // Mythic Raid
+          base.armor_coeff = k_value * (dbc->ptr ? 1.418 : 1.220);  // Mythic Raid
           sim->print_debug( "{} Mythic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         default:

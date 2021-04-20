@@ -206,6 +206,14 @@ namespace binary
     }
   };
 
+  template<class T = void>
+  struct modulus
+  {
+    constexpr T operator()(const T& _Left, const T& _Right) const
+    {
+      return (std::fmod(_Left, _Right));
+    }
+  };
 }
 
 std::unique_ptr<expr_t> select_unary( util::string_view name, token_e op, std::unique_ptr<expr_t> input )
@@ -325,7 +333,7 @@ std::unique_ptr<expr_t> select_binary( util::string_view name, token_e op, std::
     case TOK_DIV:
       return std::make_unique<expr_binary_t<std::divides>>( name, op, std::move(left), std::move(right) );
     case TOK_MOD:
-      return std::make_unique<expr_binary_t<std::modulus, int64_t>>( name, op, std::move(left), std::move(right) );
+      return std::make_unique<expr_binary_t<binary::modulus>>( name, op, std::move(left), std::move(right) );
 
     case TOK_MAX:
       return std::make_unique<expr_binary_t<binary::max>>(name, op, std::move(left), std::move(right));
@@ -868,7 +876,7 @@ std::unique_ptr<expr_t> select_analyze_binary( util::string_view name, token_e o
     case TOK_DIV:
       return std::make_unique<expr_analyze_binary_t<std::divides>>( name, op, std::move(left), std::move(right) );
     case TOK_MOD:
-      return std::make_unique<expr_analyze_binary_t<std::modulus, int64_t>>( name, op, std::move(left), std::move(right) );
+      return std::make_unique<expr_analyze_binary_t<binary::modulus>>( name, op, std::move(left), std::move(right) );
 
     case TOK_MAX:
       return std::make_unique<expr_analyze_binary_t<binary::max>>( name, op, std::move(left), std::move(right) );

@@ -8,6 +8,7 @@ position=ranged_back
 talents=0100200
 covenant=night_fae
 soulbind=niya,grove_invigoration/essential_extraction:7/niyas_tools_burrs
+renown=40
 
 # Default consumables
 potion=potion_of_spectral_intellect
@@ -39,11 +40,11 @@ actions+=/potion
 actions+=/use_items
 actions+=/flame_shock,if=!ticking
 actions+=/earth_elemental
-actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
-actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up
-actions+=/fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
-actions+=/ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
-actions+=/bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up
+actions+=/blood_fury
+actions+=/berserking
+actions+=/fireblood
+actions+=/ancestral_call
+actions+=/bag_of_tricks
 actions+=/chain_harvest,if=covenant.venthyr
 actions+=/vesper_totem,if=covenant.kyrian
 actions+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react
@@ -74,10 +75,10 @@ off_hand=burden_of_the_protectorate,id=184257,bonus_id=4800/4786/1531
 # Gear Summary
 # gear_ilvl=228.31
 # gear_strength=43
-# gear_stamina=1499
-# gear_intellect=1169
-# gear_crit_rating=438
-# gear_haste_rating=542
-# gear_mastery_rating=22
-# gear_versatility_rating=928
+# gear_stamina=1500
+# gear_intellect=1167
+# gear_crit_rating=442
+# gear_haste_rating=545
+# gear_mastery_rating=23
+# gear_versatility_rating=931
 # gear_armor=1550

@@ -363,6 +363,8 @@ struct conflagrate_t : public destruction_spell_t
 
 struct incinerate_fnb_t : public destruction_spell_t
 {
+  double energize_mult;
+
   incinerate_fnb_t( warlock_t* p ) : destruction_spell_t( "incinerate_fnb", p, p->find_class_spell( "Incinerate" ) )
   {
     aoe        = -1;
@@ -374,11 +376,10 @@ struct incinerate_fnb_t : public destruction_spell_t
       energize_type     = action_energize::PER_HIT;
       energize_resource = RESOURCE_SOUL_SHARD;
       energize_amount   = ( p->talents.fire_and_brimstone->effectN( 2 ).base_value() ) / 10.0;
-      // SL - Legendary
-      // TOCHECK - Embers currently only doubles the baseline shards generated, not bonuses from critical strikes
-      // 08-24-2020.
-      if ( p->legendary.embers_of_the_diabolic_raiment->ok() )
-        energize_amount *= 1.0 + ( p->legendary.embers_of_the_diabolic_raiment->effectN( 1 ).percent() );
+      energize_mult = 1.0 + ( p->legendary.embers_of_the_diabolic_raiment->ok() ? p->legendary.embers_of_the_diabolic_raiment->effectN( 1 ).percent() : 0.0 );
+
+      energize_amount *= energize_mult;
+
       gain = p->gains.incinerate_fnb;
     }
   }
@@ -433,7 +434,7 @@ struct incinerate_fnb_t : public destruction_spell_t
     destruction_spell_t::impact( s );
 
     if ( s->result == RESULT_CRIT )
-      p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_fnb_crits );
+      p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_fnb_crits );
   }
 
   double composite_target_crit_chance( player_t* target ) const override
@@ -470,6 +471,7 @@ struct incinerate_t : public destruction_spell_t
 {
   double backdraft_gcd;
   double backdraft_cast_time;
+  double energize_mult;
   incinerate_fnb_t* fnb_action;
 
   incinerate_t( warlock_t* p, util::string_view options_str )
@@ -487,11 +489,9 @@ struct incinerate_t : public destruction_spell_t
     energize_type     = action_energize::PER_HIT;
     energize_resource = RESOURCE_SOUL_SHARD;
     energize_amount   = ( p->find_spell( 244670 )->effectN( 1 ).base_value() ) / 10.0;
-    // SL - Legendary
-    // TOCHECK - Embers currently only doubles the baseline shards generated, not bonuses from critical strikes
-    // 08-24-2020.
-    if ( p->legendary.embers_of_the_diabolic_raiment->ok() )
-      energize_amount *= 1.0 + ( p->legendary.embers_of_the_diabolic_raiment->effectN( 1 ).percent() );
+    energize_mult     = 1.0 + ( p->legendary.embers_of_the_diabolic_raiment->ok() ? p->legendary.embers_of_the_diabolic_raiment->effectN( 1 ).percent() : 0.0 );
+
+    energize_amount *= energize_mult;
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -557,8 +557,9 @@ struct incinerate_t : public destruction_spell_t
   {
     destruction_spell_t::impact( s );
 
+    //As of 9.0.5, critical strike gains should also be increased by Embers of the Diabolic Raiment. Checked on PTR 2021-03-07
     if ( s->result == RESULT_CRIT )
-      p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits );
+      p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_crits );
   }
 
   double composite_target_crit_chance( player_t* target ) const override

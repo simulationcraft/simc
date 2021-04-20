@@ -210,10 +210,12 @@ struct spell_conduit_id_t : func_field_t<spell_conduit_id_t, spell_data_t> {
   }
 };
 
-static constexpr std::array<sdata_field_t, 40> _spell_data_fields { {
+static constexpr std::array<sdata_field_t, 42> _spell_data_fields { {
   { "name",              FIELD( &spell_data_t::_name ) },
   { "id",                FIELD( &spell_data_t::_id ) },
   { "speed",             FIELD( &spell_data_t::_prj_speed ) },
+  { "delay",             FIELD( &spell_data_t::_prj_delay ) },
+  { "min_duration",      FIELD( &spell_data_t::_prj_min_duration ) },
   { "scaling",           FIELD( &spell_data_t::_scaling_type ) },
   { "max_scaling_level", FIELD( &spell_data_t::_max_scaling_level ) },
   { "level",             FIELD( &spell_data_t::_spell_level ) },

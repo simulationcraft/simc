@@ -70,6 +70,8 @@ double get_field( const T* data, const Fields& fields, util::string_view name ) 
 
 static constexpr auto spell_data_fields = std::make_tuple(
   data_field( "prj_speed",         &spell_data_t::_prj_speed ),
+  data_field( "prj_delay",         &spell_data_t::_prj_delay ),
+  data_field( "prj_min_duration",  &spell_data_t::_prj_min_duration ),
   data_field( "school",            &spell_data_t::_school ),
   data_field( "scaling_class",     &spell_data_t::_scaling_type ),
   data_field( "spell_level",       &spell_data_t::_spell_level ),

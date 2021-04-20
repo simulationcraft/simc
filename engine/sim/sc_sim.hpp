@@ -40,6 +40,7 @@ struct reforge_plot_t;
 struct scale_factor_control_t;
 struct sim_control_t;
 struct spell_data_expr_t;
+struct spell_data_t;
 
 struct sim_progress_t
 {
@@ -167,7 +168,8 @@ struct sim_t : private sc_thread_t
   unsigned int disable_4_set; // Disables all 4 set bonuses for this tier/integer that this is set as
   unsigned int enable_2_set;// Enables all 2 set bonuses for the tier/integer that this is set as
   unsigned int enable_4_set; // Enables all 4 set bonuses for the tier/integer that this is set as
-  bool pvp_crit; // Sets critical strike damage to 150% instead of 200%
+  bool pvp_crit; // Enables crit damage reduction in PvP
+  const spell_data_t* pvp_rules; // Hidden aura that contains the PvP crit damage reduction
   bool feast_as_dps = true;
   bool auto_attacks_always_land; /// Allow Auto Attacks (white attacks) to always hit the enemy
   bool log_spell_id; // Add spell data ids to log/debug output where available. (actions, buffs)
@@ -392,6 +394,9 @@ struct sim_t : private sc_thread_t
     double thrill_seeker_killing_blow_chance = -1.0;
     /// Percentage of default duration for the damage portion of Wild Hunt Tactics to use.
     double wild_hunt_tactics_duration_multiplier = 1.0;
+    /// Chance bonded hearts will heal a member of the other covenants when grove invigoration procs
+    double bonded_hearts_other_covenant_chance = 1.0;
+
   } shadowlands_opts;
 
   // Auras and De-Buffs

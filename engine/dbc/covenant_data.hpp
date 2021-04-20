@@ -80,6 +80,22 @@ struct covenant_ability_entry_t
   static util::span<const covenant_ability_entry_t> data( bool ptr );
 };
 
+struct renown_reward_entry_t
+{
+  unsigned covenant_id;
+  unsigned renown_level;
+  unsigned spell_id;
+  const char* name;
+
+  static util::span<const renown_reward_entry_t> find_by_covenant_id( unsigned covenant_id, bool ptr )
+  { return dbc::find_many<renown_reward_entry_t>( covenant_id, ptr, {}, &renown_reward_entry_t::covenant_id ); }
+
+  static const renown_reward_entry_t& nil()
+  { return dbc::nil<renown_reward_entry_t>; }
+
+  static util::span<const renown_reward_entry_t> data( bool ptr );
+};
+
 #endif /* COVENANT_DATA_HPP */
 
 

@@ -8,6 +8,7 @@ position=ranged_back
 talents=3203012
 covenant=night_fae
 soulbind=niya,grove_invigoration/ashen_remains:7/niyas_tools_burrs
+renown=40
 
 # Default consumables
 potion=spectral_intellect
@@ -124,10 +125,10 @@ main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinfu
 # Gear Summary
 # gear_ilvl=229.40
 # gear_stamina=1531
-# gear_intellect=1191
-# gear_crit_rating=209
-# gear_haste_rating=863
-# gear_mastery_rating=550
-# gear_versatility_rating=330
+# gear_intellect=1189
+# gear_crit_rating=211
+# gear_haste_rating=866
+# gear_mastery_rating=553
+# gear_versatility_rating=331
 # gear_armor=373
 default_pet=imp

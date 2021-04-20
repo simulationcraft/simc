@@ -47,12 +47,17 @@ actions+=/lights_judgment
 actions+=/fireblood
 actions+=/ancestral_call
 actions+=/bag_of_tricks
-actions+=/invoke_niuzao_the_black_ox,if=target.time_to_die>25
+actions+=/invoke_niuzao_the_black_ox,if=target.time_to_die>6&cooldown.purifying_brew.charges_fractional<2
 actions+=/touch_of_death,if=target.health.pct<=15
 actions+=/weapons_of_order
 actions+=/fallen_order
 actions+=/bonedust_brew
-actions+=/purifying_brew
+# Cast PB during the Niuzao window, but only if recently hit.
+actions+=/purifying_brew,if=stagger.amounttototalpct>=0.7&(cooldown.invoke_niuzao_the_black_ox.remains<5|buff.invoke_niuzao_the_black_ox.up)
+# Dump PB charges towards the end of Niuzao: anything is better than nothing.
+actions+=/purifying_brew,if=buff.invoke_niuzao_the_black_ox.up&buff.invoke_niuzao_the_black_ox.remains<8
+# Avoid capping charges, but pool charges shortly before Niuzao comes up and allow dumping to avoid capping during Niuzao.
+actions+=/purifying_brew,if=cooldown.purifying_brew.charges_fractional>=1.8&(cooldown.invoke_niuzao_the_black_ox.remains>10|buff.invoke_niuzao_the_black_ox.up)
 # Black Ox Brew is currently used to either replenish brews based on less than half a brew charge available, or low energy to enable Keg Smash
 actions+=/black_ox_brew,if=cooldown.purifying_brew.charges_fractional<0.5
 actions+=/black_ox_brew,if=(energy+(energy.regen*cooldown.keg_smash.remains))<40&buff.blackout_combo.down&cooldown.keg_smash.up
@@ -100,9 +105,9 @@ off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,ench
 # Gear Summary
 # gear_ilvl=184.38
 # gear_agility=586
-# gear_stamina=886
-# gear_crit_rating=601
-# gear_haste_rating=131
-# gear_mastery_rating=218
-# gear_versatility_rating=415
+# gear_stamina=888
+# gear_crit_rating=607
+# gear_haste_rating=133
+# gear_mastery_rating=223
+# gear_versatility_rating=419
 # gear_armor=478

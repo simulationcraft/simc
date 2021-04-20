@@ -162,7 +162,7 @@ constexpr double m_pi = 3.14159265358979323846;
 // Simc related value definitions
 // ==========================================================================
 
-#define SC_MAJOR_VERSION "902"
+#define SC_MAJOR_VERSION "905"
 #define SC_MINOR_VERSION "01"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 #define SC_BETA 0

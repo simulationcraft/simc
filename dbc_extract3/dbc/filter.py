@@ -294,6 +294,24 @@ class CovenantAbilitySet(DataSet):
     def ids(self):
         return list(set(v.id_spell for v in self.get()))
 
+class RenownRewardSet(DataSet):
+    def _filter(self, **kwargs):
+        _renown_rewards = list()
+
+        for entry in self.db('RenownRewards').values():
+            if entry.id_spell == 0:
+                continue
+
+            if entry.ref('id_spell').id != entry.id_spell:
+                continue
+
+            _renown_rewards.append(entry)
+
+        return _renown_rewards
+
+    def ids(self):
+        return list(set(v.id_spell for v in self.get()))
+
 class TalentSet(DataSet):
     def _filter(self, **kwargs):
         talents = list()
@@ -314,7 +332,8 @@ class TemporaryEnchantItemSet(DataSet):
         items = list()
 
         for effect in self.db('ItemEffect').values():
-            if effect.parent_record().id == 0:
+            item = effect.child_ref('ItemXItemEffect').parent_record()
+            if item.id == 0:
                 continue
 
             spell_effects = effect.ref('id_spell').children('SpellEffect')
@@ -351,7 +370,7 @@ class TemporaryEnchantItemSet(DataSet):
             if True in mod_skill_effects:
                 continue
 
-            items.append((effect.parent_record(), effect.ref('id_spell'), enchant_id))
+            items.append((item, effect.ref('id_spell'), enchant_id))
 
         return items
 

@@ -1501,22 +1501,6 @@ void player_t::init_base_stats()
     // 1% of base mana as mana regen per second for all classes.
     resources.base_regen_per_second[ RESOURCE_MANA ] = dbc->resource_base( type, level() ) * 0.01;
 
-    // Automatically parse mana regen and max mana modifiers from class passives.
-    for ( auto spell : dbc::class_passives( this ) )
-    {
-      for ( const spelleffect_data_t& effect : spell->effects() )
-      {
-        if ( effect.subtype() == A_MOD_MANA_REGEN_PCT )
-        {
-          resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + effect.percent();
-        }
-        if ( effect.subtype() == A_MOD_MAX_MANA_PCT || effect.subtype() == A_MOD_MANA_POOL_PCT )
-        {
-          resources.base[ RESOURCE_MANA ] *= 1.0 + effect.percent();
-        }
-      }
-    }
-
     base.health_per_stamina = dbc->health_per_stamina( level() );
 
     // players have a base 7.5% hit/exp
@@ -1643,6 +1627,23 @@ void player_t::init_initial_stats()
 
   initial = base;
   initial.stats += passive;
+
+  // Automatically parse mana regen and max mana modifiers from class passives.
+  // Applied to initial stats because actions' mana costs are based on the per-level per-class amounts before modifiers
+  for ( auto spell : dbc::class_passives( this ) )
+  {
+    for ( const spelleffect_data_t& effect : spell->effects() )
+    {
+      if ( effect.subtype() == A_MOD_MANA_REGEN_PCT )
+      {
+        resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + effect.percent();
+      }
+      if ( effect.subtype() == A_MOD_MAX_MANA_PCT || effect.subtype() == A_MOD_MANA_POOL_PCT )
+      {
+        resources.initial[ RESOURCE_MANA ] *= 1.0 + effect.percent();
+      }
+    }
+  }
 
   // Compute current "total from gear" into total gear. Per stat, this is either the amount of stats
   // the items for the actor gives, or the overridden value (player_t::gear + player_t::enchant +
@@ -4029,6 +4030,7 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     m *= 1.0 + td->debuff.adversary->check_value();
     m *= 1.0 + td->debuff.plagueys_preemptive_strike->check_value();
     m *= 1.0 + td->debuff.sinful_revelation->check_value();
+    m *= 1.0 + td->debuff.dream_delver->check_stack_value();
   }
 
   return m;
@@ -4641,6 +4643,7 @@ void player_t::combat_begin()
   add_timed_buff_triggers( external_buffs.blessing_of_winter, buffs.blessing_of_winter );
   add_timed_buff_triggers( external_buffs.blessing_of_spring, buffs.blessing_of_spring );
   add_timed_buff_triggers( external_buffs.conquerors_banner, buffs.conquerors_banner );
+  add_timed_buff_triggers( external_buffs.rallying_cry, buffs.rallying_cry );
 
   if ( buffs.windfury_totem )
   {
@@ -5960,6 +5963,7 @@ void player_t::recalculate_resource_max( resource_e resource_type, gain_t* sourc
   resources.max[ resource_type ] = resources.base[ resource_type ];
   resources.max[ resource_type ] *= resources.base_multiplier[ resource_type ];
   resources.max[ resource_type ] += total_gear.resource[ resource_type ];
+  resources.max[ resource_type ] += resources.temporary[ resource_type ];
 
   switch ( resource_type )
   {
@@ -5967,6 +5971,12 @@ void player_t::recalculate_resource_max( resource_e resource_type, gain_t* sourc
     {
       // Calculate & set maximum health
       resources.max[ resource_type ] += floor( stamina() ) * current.health_per_stamina;
+
+      // Redirected Anima also affects temporary bonus health
+      if ( buffs.redirected_anima && buffs.redirected_anima->up() )
+      {
+        resources.max[ resource_type ] *= 1.0 + buffs.redirected_anima->stack() * buffs.redirected_anima->default_value;
+      }
 
       // Make sure the player starts combat with full health
       if ( !in_combat )
@@ -5977,7 +5987,6 @@ void player_t::recalculate_resource_max( resource_e resource_type, gain_t* sourc
       break;
   }
 
-  resources.max[ resource_type ] += resources.temporary[ resource_type ];
   resources.max[ resource_type ] *= resources.initial_multiplier[ resource_type ];
 
   // Sanity check on current values
@@ -6833,14 +6842,14 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
 
   if ( school == SCHOOL_PHYSICAL && dmg_type == result_amount_type::DMG_DIRECT )
   {
-    if ( s -> action && !s -> target -> is_enemy() && !s-> target -> is_add() )
-      sim -> print_debug( "Damage to {} before armor mitigation is {}", s -> target -> name(), s -> result_amount );
+    if ( s->action && !s->target->is_enemy() && !s->target->is_add() )
+      sim->print_debug( "Damage to {} before armor mitigation is {}", s->target->name(), s->result_amount );
 
     // Maximum amount of damage reduced by armor
     double armor_cap = 0.85;
 
     // Armor
-    if ( s -> action )
+    if ( s->action && !s->action->ignores_armor )
     {
       double armor  = s -> target_armor;
       double resist = armor / ( armor + s -> target-> base.armor_coeff );
@@ -6848,9 +6857,14 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
       s -> result_amount *= 1.0 - resist;
     }
 
-    if ( s -> action && !s -> target -> is_enemy() && !s-> target -> is_add() )
-      sim -> print_debug( "Damage to {} after armor mitigation is {} ({} armor, {} armor coeff)",
-                          s -> target -> name(), s -> result_amount, s -> target_armor, s -> action -> player -> current.armor_coeff );
+    if ( s->action && !s->target->is_enemy() && !s->target->is_add() )
+    {
+      if ( s->action->ignores_armor )
+        sim->print_debug( "Damage to {} after armor mitigation is {} (ignores armor)", s->target->name(), s->result_amount );
+      else
+        sim->print_debug( "Damage to {} after armor mitigation is {} ({} armor, {} armor coeff)",
+                          s->target->name(), s->result_amount, s->target_armor, s->action->player->current.armor_coeff );
+    }
 
     double pre_block_amount = s->result_amount;
 
@@ -7485,6 +7499,8 @@ struct rocket_barrage_t : public racial_spell_t
     racial_spell_t( p, "rocket_barrage", p->find_racial_spell( "Rocket Barrage" ) )
   {
     parse_options( options_str );
+    // This extra damage is hardcoded in the tooltip.
+    base_dd_min = base_dd_max = 2 * p->level();
   }
 };
 
@@ -8752,6 +8768,48 @@ struct pool_resource_t : public action_t
   }
 };
 
+// Auto-Attack Retargeting ==================================================
+
+struct retarget_auto_attack_t : public action_t
+{
+  retarget_auto_attack_t( player_t* player, util::string_view options_str ) :
+    action_t( ACTION_OTHER, "retarget_auto_attack", player )
+  {
+    parse_options( options_str );
+    use_off_gcd = quiet = true;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  void execute() override
+  {
+    if ( player->main_hand_attack && player->main_hand_attack->target != target )
+    {
+      sim->print_debug( "{} MH auto attack changed from target {} to {}.", name(), player->main_hand_attack->target->name(), target->name() );
+      player->main_hand_attack->set_target( target );
+    }
+
+    if ( player->off_hand_attack && player->off_hand_attack->target != target )
+    {
+      sim->print_debug( "{} OH auto attack changed from target {} to {}.", name(), player->off_hand_attack->target->name(), target->name() );
+      player->off_hand_attack->set_target( target );
+    }
+  }
+
+  bool action_ready() override
+  {
+    if ( !action_t::action_ready() )
+      return false;
+
+    if ( player->main_hand_attack && player->main_hand_attack->target != target )
+      return true;
+
+    if ( player->off_hand_attack && player->off_hand_attack->target != target )
+      return true;
+
+    return false;
+  }
+};
+
 }  // UNNAMED NAMESPACE
 
 action_t* player_t::create_action( util::string_view name, const std::string& options_str )
@@ -8821,8 +8879,10 @@ action_t* player_t::create_action( util::string_view name, const std::string& op
     return new variable_t( this, options_str );
   if ( name == "cycling_variable" )
     return new cycling_variable_t( this, options_str );
-  if ( name == "wait_for_cooldown")
+  if ( name == "wait_for_cooldown" )
     return new wait_for_cooldown_t( this, options_str );
+  if ( name == "retarget_auto_attack" )
+    return new retarget_auto_attack_t( this, options_str );
 
   if ( auto action = azerite::create_action( this, name, options_str ) )
     return action;
@@ -10739,6 +10799,11 @@ std::string player_t::create_profile( save_e stype )
       {
         profile_str += covenant->soulbind_option_str() + term;
       }
+
+      if ( covenant->renown() > 0 )
+      {
+        profile_str += "renown=" + util::to_string( covenant->renown() ) + term;
+      }
     }
   }
 
@@ -11238,6 +11303,7 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.blessing_of_winter", external_buffs.blessing_of_winter ) );
   add_option( opt_external_buff_times( "external_buffs.blessing_of_spring", external_buffs.blessing_of_spring ) );
   add_option( opt_external_buff_times( "external_buffs.conquerors_banner", external_buffs.conquerors_banner ) );
+  add_option( opt_external_buff_times( "external_buffs.rallying_cry", external_buffs.rallying_cry ) );
 
   // Azerite options
   if ( ! is_enemy() && ! is_pet() )

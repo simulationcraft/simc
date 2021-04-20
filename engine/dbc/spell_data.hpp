@@ -370,6 +370,8 @@ struct spell_data_t
   unsigned    _id;                 // Spell ID in dbc
   unsigned    _school;             // Spell school mask
   double      _prj_speed;          // Projectile Speed
+  double      _prj_delay;          // Projectile Delay
+  double      _prj_min_duration;   // Minimum Travel Time
   uint64_t    _race_mask;          // Racial mask for the spell
   unsigned    _class_mask;         // Class mask for spell
   int         _scaling_type;       // Array index for gtSpellScaling.dbc. -1 means the first non-class-specific sub array, and so on, 0 disabled
@@ -496,6 +498,12 @@ struct spell_data_t
 
   double missile_speed() const
   { return _prj_speed; }
+
+  double missile_delay() const
+  { return _prj_delay; }
+
+  double missile_min_duration() const
+  { return _prj_min_duration; }
 
   double min_range() const
   { return _min_range; }

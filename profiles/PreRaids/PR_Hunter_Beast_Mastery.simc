@@ -35,7 +35,9 @@ actions.precombat+=/bestial_wrath,precast_time=1.5,if=!talent.scent_of_blood&!ru
 # Executed every time the actor is available.
 actions=auto_shot
 actions+=/counter_shot,line_cd=30,if=runeforge.sephuzs_proclamation|soulbind.niyas_tools_poison|(conduit.reversal_of_fortune&!runeforge.sephuzs_proclamation)
-actions+=/use_items
+# If the trinket has a on-use buff, sync it with Aspect of the Wild. If two are competing for a Aspect of the Wild sync, use the stronger on-use effect. If an on-use buff is ready but another stronger on-use buff will also be ready by the time Aspect of the Wild comes back off cooldown, use it if the shared trinket cooldown won't interfere with the upcoming Aspect of the Wild sync. If an on-use buff could be used and still come back for a future Aspect of the Wild, use it. If a non-buff on-use is ready, use it if it won't interfere with potential on-use buffs trying to Aspect of the Wild sync or if the other trinket isn't an on-use, is a non-buff on-use with a longer cooldown, or isn't ready. If the fight is going to end before your next Aspect of the Wild, just start using trinkets to make sure they get used.
+actions+=/use_items,slots=trinket1,if=trinket.1.has_use_buff&(buff.aspect_of_the_wild.up&(!trinket.2.has_use_buff|trinket.2.cooldown.remains|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|buff.aspect_of_the_wild.down&(trinket.2.has_use_buff&trinket.2.cooldown.duration>=trinket.1.cooldown.duration&trinket.2.cooldown.remains-5<cooldown.aspect_of_the_wild.remains&cooldown.aspect_of_the_wild.remains>20|trinket.1.cooldown.duration-5<cooldown.aspect_of_the_wild.remains)|target.time_to_die<cooldown.aspect_of_the_wild.remains)|!trinket.1.has_use_buff&(trinket.2.has_use_buff&(buff.aspect_of_the_wild.down|trinket.2.cooldown.remains>5)&(cooldown.aspect_of_the_wild.remains>20|trinket.2.cooldown.remains-5>cooldown.aspect_of_the_wild.remains)|!trinket.2.has_use_buff&(!trinket.2.has_cooldown|trinket.2.cooldown.duration>=trinket.1.cooldown.duration|trinket.2.cooldown.remains))
+actions+=/use_items,slots=trinket2,if=trinket.2.has_use_buff&(buff.aspect_of_the_wild.up&(!trinket.1.has_use_buff|trinket.1.cooldown.remains|trinket.2.cooldown.duration>=trinket.1.cooldown.duration)|buff.aspect_of_the_wild.down&(trinket.1.has_use_buff&trinket.1.cooldown.duration>=trinket.2.cooldown.duration&trinket.1.cooldown.remains-5<cooldown.aspect_of_the_wild.remains&cooldown.aspect_of_the_wild.remains>20|trinket.2.cooldown.duration-5<cooldown.aspect_of_the_wild.remains)|target.time_to_die<cooldown.aspect_of_the_wild.remains)|!trinket.2.has_use_buff&(trinket.1.has_use_buff&(buff.aspect_of_the_wild.down|trinket.1.cooldown.remains>5)&(cooldown.aspect_of_the_wild.remains>20|trinket.1.cooldown.remains-5>cooldown.aspect_of_the_wild.remains)|!trinket.1.has_use_buff&(!trinket.1.has_cooldown|trinket.1.cooldown.duration>=trinket.2.cooldown.duration|trinket.1.cooldown.remains))
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=st,if=active_enemies<2
 actions+=/call_action_list,name=cleave,if=active_enemies>1
@@ -80,7 +82,7 @@ actions.st+=/flare,if=tar_trap.up&runeforge.soulforge_embers
 actions.st+=/bloodshed
 actions.st+=/wild_spirits
 actions.st+=/flayed_shot
-actions.st+=/kill_shot,if=buff.flayers_mark.remains<5|target.health.pct<=20
+actions.st+=/kill_shot
 actions.st+=/barbed_shot,if=cooldown.bestial_wrath.remains<12*charges_fractional+gcd&talent.scent_of_blood|full_recharge_time<gcd&cooldown.bestial_wrath.remains|target.time_to_die<9
 actions.st+=/death_chakram,if=focus+cast_regen<focus.max
 actions.st+=/stampede,if=buff.aspect_of_the_wild.up|target.time_to_die<15
@@ -117,9 +119,9 @@ main_hand=the_philosopher,id=180112,bonus_id=6807/1498/6646,enchant=optical_targ
 # Gear Summary
 # gear_ilvl=184.40
 # gear_agility=588
-# gear_stamina=858
-# gear_crit_rating=389
-# gear_haste_rating=751
+# gear_stamina=859
+# gear_crit_rating=392
+# gear_haste_rating=756
 # gear_mastery_rating=42
-# gear_versatility_rating=190
+# gear_versatility_rating=191
 # gear_armor=691

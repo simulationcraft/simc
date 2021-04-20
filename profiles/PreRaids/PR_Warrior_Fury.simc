@@ -37,6 +37,8 @@ actions+=/variable,name=execute_phase,value=talent.massacre&target.health.pct<35
 # This is mostly to prevent cooldowns from being accidentally used during movement.
 actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)
+actions+=/sequence,if=active_enemies=1&covenant.venthyr.enabled&runeforge.signet_of_tormented_kings.equipped,name=BT&Reck:bloodthirst:recklessness
+actions+=/sequence,if=active_enemies=1&!covenant.venthyr.enabled&runeforge.signet_of_tormented_kings.equipped,name=BT&Charge:bloodthirst:heroic_charge
 actions+=/potion
 actions+=/pummel,if=target.debuff.casting.react
 actions+=/rampage,if=cooldown.recklessness.remains<3&talent.reckless_abandon.enabled
@@ -55,19 +57,20 @@ actions.movement=heroic_leap
 
 actions.single_target=raging_blow,if=runeforge.will_of_the_berserker.equipped&buff.will_of_the_berserker.remains<gcd
 actions.single_target+=/crushing_blow,if=runeforge.will_of_the_berserker.equipped&buff.will_of_the_berserker.remains<gcd
+actions.single_target+=/cancel_buff,name=bladestorm,if=spell_targets.whirlwind=1&gcd.remains=0&(talent.massacre.enabled|covenant.venthyr.enabled)&variable.execute_phase&(rage>90|!cooldown.condemn.remains)
 actions.single_target+=/bladestorm,if=buff.enrage.remains>gcd*2.5&spell_targets.whirlwind>1
 actions.single_target+=/condemn,if=buff.enrage.up&variable.execute_phase
 actions.single_target+=/siegebreaker,if=spell_targets.whirlwind>1|raid_event.adds.in>15
 actions.single_target+=/rampage,if=buff.recklessness.up|(buff.enrage.remains<gcd|rage>90)|buff.frenzy.remains<1.5
 actions.single_target+=/condemn
 actions.single_target+=/execute
-actions.single_target+=/bladestorm,if=buff.enrage.up&spell_targets.whirlwind=1&raid_event.adds.in>45,interrupt_global=1,interrupt_if=spell_targets.whirlwind=1&gcd.remains=0&(rage>90|variable.execute_phase&!cooldown.condemn.remains)
+actions.single_target+=/bladestorm,if=buff.enrage.up&(!buff.recklessness.remains|rage<50)&spell_targets.whirlwind=1&raid_event.adds.in>45
 actions.single_target+=/bloodthirst,if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35&!talent.cruelty.enabled
 actions.single_target+=/bloodbath,if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35&!talent.cruelty.enabled
 actions.single_target+=/dragon_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)
 actions.single_target+=/whirlwind,if=buff.merciless_bonegrinder.up&spell_targets.whirlwind>3
 actions.single_target+=/onslaught
-actions.single_target+=/raging_blow,if=charges=2
+actions.single_target+=/raging_blow,if=charges=2|buff.recklessness.up&variable.execute_phase&talent.massacre.enabled
 actions.single_target+=/crushing_blow,if=charges=2
 actions.single_target+=/bloodthirst
 actions.single_target+=/bloodbath
@@ -97,8 +100,8 @@ off_hand=drustlords_greataxe,id=178713,bonus_id=6807/1498/6646,enchant=celestial
 # gear_strength=642
 # gear_stamina=944
 # gear_attack_power=40
-# gear_crit_rating=155
-# gear_haste_rating=862
-# gear_mastery_rating=330
-# gear_versatility_rating=136
+# gear_crit_rating=158
+# gear_haste_rating=865
+# gear_mastery_rating=332
+# gear_versatility_rating=138
 # gear_armor=1021

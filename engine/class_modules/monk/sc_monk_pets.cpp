@@ -349,6 +349,11 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       return source_action->composite_versatility( s );
     }
 
+    double composite_target_crit_chance( player_t* target ) const override
+    {
+      return source_action->composite_target_crit_chance( target );
+    }
+
     double composite_haste() const override
     {
       return source_action->composite_haste();
@@ -555,6 +560,8 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       if ( result_is_hit( state->result ) && o()->spec.spinning_crane_kick_2_ww->ok() )
         o()->trigger_mark_of_the_crane( state );
+
+      o()->trigger_keefers_skyreach( state );
     }
   };
 
@@ -685,6 +692,16 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     }
   };
 
+  struct sef_chi_explosion_t : public sef_spell_t
+  {
+    sef_chi_explosion_t( storm_earth_and_fire_pet_t* player )
+      : sef_spell_t( "chi_explosion", player, player->o()->passives.chi_explosion )
+    {
+      dual = background = true;
+      aoe               = -1;
+    }
+  };
+
   struct sef_spinning_crane_kick_tick_t : public sef_tick_action_t
   {
     sef_spinning_crane_kick_tick_t( storm_earth_and_fire_pet_t* p )
@@ -696,8 +713,10 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   struct sef_spinning_crane_kick_t : public sef_melee_attack_t
   {
+    sef_chi_explosion_t* chi_explosion;
     sef_spinning_crane_kick_t( storm_earth_and_fire_pet_t* player )
-      : sef_melee_attack_t( "spinning_crane_kick", player, player->o()->spec.spinning_crane_kick )
+      : sef_melee_attack_t( "spinning_crane_kick", player, player->o()->spec.spinning_crane_kick ),
+        chi_explosion( nullptr )
     {
       tick_zero = hasted_ticks = interrupt_auto_attack = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
@@ -705,6 +724,16 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       weapon_power_mod = 0;
 
       tick_action = new sef_spinning_crane_kick_tick_t( player );
+
+      chi_explosion = new sef_chi_explosion_t( player );
+    }
+
+    void execute() override
+    {
+      sef_melee_attack_t::execute();
+
+      if ( o()->buff.chi_energy->up() )
+        chi_explosion->execute();
     }
   };
 
@@ -745,8 +774,11 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   struct sef_whirling_dragon_punch_tick_t : public sef_tick_action_t
   {
-    sef_whirling_dragon_punch_tick_t( storm_earth_and_fire_pet_t* p )
-      : sef_tick_action_t( "whirling_dragon_punch_tick", p, p->o()->passives.whirling_dragon_punch_tick )
+    timespan_t delay;
+
+    sef_whirling_dragon_punch_tick_t( storm_earth_and_fire_pet_t* p, timespan_t delay )
+      : sef_tick_action_t( "whirling_dragon_punch_tick", p, p->o()->passives.whirling_dragon_punch_tick ),
+      delay( delay )
     {
       aoe = -1;
     }
@@ -754,16 +786,47 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   struct sef_whirling_dragon_punch_t : public sef_melee_attack_t
   {
+    sef_whirling_dragon_punch_tick_t* ticks[3];
+
+    struct sef_whirling_dragon_punch_tick_event_t : public event_t
+    {
+      sef_whirling_dragon_punch_tick_t* tick;
+
+      sef_whirling_dragon_punch_tick_event_t( sef_whirling_dragon_punch_tick_t* tick, timespan_t delay )
+          : event_t( *tick->player, delay ), tick( tick )
+      {}
+
+      void execute() override
+      {
+        tick->execute();
+      }
+    };
+
     sef_whirling_dragon_punch_t( storm_earth_and_fire_pet_t* player )
       : sef_melee_attack_t( "whirling_dragon_punch", player, player->o()->talent.whirling_dragon_punch )
     {
-      channeled = true;
+      channeled = false;
 
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
       weapon_power_mod = 0;
 
-      tick_action = new sef_whirling_dragon_punch_tick_t( player );
+      for ( size_t i = 0; i < 3; ++i )
+      {
+        auto delay = base_tick_time * i;
+        ticks[i] = 
+          new sef_whirling_dragon_punch_tick_t( player, delay );
+      }
+    }
+
+    void execute() override
+    {
+      sef_melee_attack_t::execute();
+
+      for ( auto& tick : ticks )
+      {
+        make_event<sef_whirling_dragon_punch_tick_event_t>( *sim, tick, tick->delay );
+      }
     }
   };
 
@@ -1202,10 +1265,10 @@ private:
 
       auto purify_amount = o()->buff.recent_purifies->value();
       auto actual_damage = purify_amount * o()->spec.invoke_niuzao_2->effectN( 1 ).percent();
-      b += actual_damage;
-      o()->sim->print_debug( "applying bonus purify damage (original: {}, reduced: {})", purify_amount, actual_damage );
+      double res = b + actual_damage;
+      o()->sim->print_debug( "applying bonus purify damage (base stomp: {}, original: {}, reduced: {})", b, purify_amount, actual_damage );
 
-      return b;
+      return res;
     }
 
     double action_multiplier() const override
@@ -1429,13 +1492,13 @@ public:
     {
       case MONK_WINDWALKER:
       case MONK_BREWMASTER:
-        owner_coeff.ap_from_ap = ( dbc->ptr ? 0.4 : 0.3333 );
-        owner_coeff.sp_from_ap = ( dbc->ptr ? 0.384 : 0.32 );
+        owner_coeff.ap_from_ap = 0.4;
+        owner_coeff.sp_from_ap = 0.384;
         break;
       case MONK_MISTWEAVER:
       {
-        owner_coeff.ap_from_ap = ( dbc->ptr ? 0.4 : 0.3333 );
-        owner_coeff.sp_from_sp = ( dbc->ptr ? 0.4 : 0.3333 );
+        owner_coeff.ap_from_ap = 0.4;
+        owner_coeff.sp_from_sp = 0.4;
         break;
       }
       default:
@@ -1495,16 +1558,6 @@ public:
         cam *= o()->passives.fallen_monk_fists_of_fury->effectN( 6 ).percent();
 
       return cam;
-    }
-
-    double action_multiplier() const override
-    {
-      double am = pet_melee_attack_t::action_multiplier();
-
-      if ( o()->conduit.inner_fury->ok() )
-        am *= 1 + o()->conduit.inner_fury.percent();
-
-      return am;
     }
 
     void impact( action_state_t* s ) override
@@ -1655,13 +1708,13 @@ public:
     {
       case MONK_WINDWALKER:
       case MONK_BREWMASTER:
-        owner_coeff.ap_from_ap = ( dbc->ptr ? 0.4 : 0.3333);
-        owner_coeff.sp_from_ap = ( dbc->ptr ? 0.384 : 0.32);
+        owner_coeff.ap_from_ap = 0.4;
+        owner_coeff.sp_from_ap = 0.384;
         break;
       case MONK_MISTWEAVER:
       {
-        owner_coeff.ap_from_ap = ( dbc->ptr ? 0.4 : 0.3333 );
-        owner_coeff.sp_from_sp = ( dbc->ptr ? 0.4 : 0.3333 );
+        owner_coeff.ap_from_ap = 0.4;
+        owner_coeff.sp_from_sp = 0.4;
         break;
       }
       default:
