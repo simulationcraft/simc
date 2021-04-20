@@ -574,6 +574,7 @@ public:
   struct gains_t {
     // Shared
     gain_t* antimagic_shell; // RP from magic damage absorbed
+    gain_t* rampant_transference;
     gain_t* rune; // Rune regeneration
     gain_t* rune_of_hysteria;
     gain_t* spirit_drain;
@@ -957,6 +958,10 @@ public:
     // Shared
     item_runeforge_t phearomones;                 // 6954
     item_runeforge_t superstrain;                 // 6953
+    item_runeforge_t insatiable_hunger;           // 7468
+    item_runeforge_t final_sentence;              // 7467
+    item_runeforge_t rampant_transference;        // 7466
+    item_runeforge_t abominations_frenzy;         // 7458
 
     // Blood
     item_runeforge_t bryndaors_might;             // 6940
@@ -7185,6 +7190,12 @@ double death_knight_t::resource_gain( resource_e resource_type, double amount, g
     actual_amount += player_t::resource_gain( resource_type, bonus_rp, gains.rune_of_hysteria, action );
   }
 
+  if ( legendary.rampant_transference -> ok() && resource_type == RESOURCE_RUNIC_POWER && in_death_and_decay() )
+  {
+    double bonus_rp = amount * legendary.rampant_transference -> effectN( 3 ).percent();
+    actual_amount += player_t::resource_gain( resource_type, bonus_rp, gains.rampant_transference, action );
+  }
+
   return actual_amount;
 }
 
@@ -8328,8 +8339,12 @@ void death_knight_t::init_spells()
   // Legendary Items
 
   // Shared
-  legendary.phearomones = find_runeforge_legendary( "Phearomones" );
-  legendary.superstrain = find_runeforge_legendary( "Superstrain" );
+  legendary.phearomones          = find_runeforge_legendary( "Phearomones" );
+  legendary.superstrain          = find_runeforge_legendary( "Superstrain" );
+  legendary.insatiable_hunger    = find_runeforge_legendary( "Insatiable Hunger" );
+  legendary.final_sentence       = find_runeforge_legendary( "Final Sentence" );
+  legendary.rampant_transference = find_runeforge_legendary( "Rampant Transference" );
+  legendary.abominations_frenzy  = find_runeforge_legendary( "Abomination's Frenzy" );
 
   // Blood
   legendary.bryndaors_might = find_runeforge_legendary( "Bryndaor's Might" );
@@ -8608,7 +8623,8 @@ void death_knight_t::create_buffs()
   // Covenants
   buffs.deaths_due = make_buff( this, "deaths_due", find_spell( 324165 ) )
       -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-      -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+      -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+      -> apply_affecting_aura( legendary.rampant_transference );
 
   buffs.death_turf = make_buff( this, "death_turf", find_spell ( 335180) )
     -> set_default_value_from_effect( 1 )
@@ -8632,6 +8648,7 @@ void death_knight_t::init_gains()
 
   // Shared
   gains.antimagic_shell                  = get_gain( "Antimagic Shell" );
+  gains.rampant_transference             = get_gain( "Rampant Transference" );
   gains.rune                             = get_gain( "Rune Regeneration" );
   gains.rune_of_hysteria                 = get_gain( "Rune of Hysteria" );
   gains.spirit_drain                     = get_gain( "Spirit Drain" );
