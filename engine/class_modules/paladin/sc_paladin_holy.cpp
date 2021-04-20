@@ -336,7 +336,7 @@ struct holy_shock_t : public paladin_spell_t
 
   double cost() const override
   {
-    return paladin_spell_t::cost() / 5;
+    return paladin_spell_t::cost();
   }
 };
 

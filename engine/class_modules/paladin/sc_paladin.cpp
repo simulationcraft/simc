@@ -828,14 +828,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     if ( has_crusader_2 )
       return 0;
 
-    double cost = paladin_melee_attack_t::cost();
-
-    if ( p()->specialization() == PALADIN_HOLY )
-    {
-      return cost / 5;
-    }
-
-    return cost;
+    return paladin_melee_attack_t::cost();
   }
 };
 
