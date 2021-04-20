@@ -511,6 +511,7 @@ public:
     buff_t* crimson_rune_weapon;
     buff_t* death_turf; // Phearomones legendary
     buff_t* frenzied_monstrosity;
+    buff_t* final_sentence;
 
     // Covenants
     buff_t* abomination_limb; // Necrolord
@@ -574,7 +575,6 @@ public:
   struct gains_t {
     // Shared
     gain_t* antimagic_shell; // RP from magic damage absorbed
-    gain_t* rampant_transference;
     gain_t* rune; // Rune regeneration
     gain_t* rune_of_hysteria;
     gain_t* spirit_drain;
@@ -584,7 +584,9 @@ public:
     gain_t* swarming_mist;
 
     // Legendary
+    gain_t* final_sentence;
     gain_t* gorefiends_domination;
+    gain_t* rampant_transference;
 
     // Blood
     gain_t* blood_tap;
@@ -2937,6 +2939,10 @@ struct death_knight_action_t : public Base
                 *action_t::player, *this, *action_t::target, *destination, source_dot->remains() );
 
         source_dot->copy(destination, DOT_COPY_CLONE);
+        if ( p() -> legendary.final_sentence.ok() )
+        {
+          p() -> buffs.final_sentence -> trigger();
+        }
         p() -> cooldown.shackle_the_unworthy_icd -> start();
         // after we successfully spread to one target, return.
         return;
@@ -8629,9 +8635,20 @@ void death_knight_t::create_buffs()
       -> set_affects_regen( true )
       -> set_stack_change_callback( [ this ]( buff_t*, int, int )
            { _runes.update_coefficient(); } );
+
   buffs.frenzied_monstrosity = make_buff( this, "frenzied_monstrosity", find_spell ( 334896 ) )
     -> add_invalidate( CACHE_ATTACK_SPEED )
     -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buffs.final_sentence = make_buff( this, "final_sentence", find_spell( 353823 ) )
+    -> set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+    -> set_schools_from_effect( 2 )
+    -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    -> set_stack_change_callback( [ this ]( buff_t*, int old_stacks, int new_stacks)
+          {
+            if ( new_stacks > old_stacks )
+              replenish_rune( as<unsigned int>( find_spell( 353823 ) -> effectN( 1 ).resource( RESOURCE_RUNE ) ), gains.final_sentence );
+          });
 
   // Covenants
   buffs.deaths_due = make_buff( this, "deaths_due", find_spell( 324165 ) )
@@ -8661,7 +8678,6 @@ void death_knight_t::init_gains()
 
   // Shared
   gains.antimagic_shell                  = get_gain( "Antimagic Shell" );
-  gains.rampant_transference             = get_gain( "Rampant Transference" );
   gains.rune                             = get_gain( "Rune Regeneration" );
   gains.rune_of_hysteria                 = get_gain( "Rune of Hysteria" );
   gains.spirit_drain                     = get_gain( "Spirit Drain" );
@@ -8692,8 +8708,10 @@ void death_knight_t::init_gains()
   gains.festering_wound                  = get_gain( "Festering Wound" );
 
   // Shadowlands / Covenants
-  gains.swarming_mist                    = get_gain( "Swarming Mist" );
+  gains.final_sentence                   = get_gain( "Final Sentence" );
   gains.gorefiends_domination            = get_gain( "Gorefiends Domination" );
+  gains.rampant_transference             = get_gain( "Rampant Transference" );
+  gains.swarming_mist                    = get_gain( "Swarming Mist" );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -9067,6 +9085,11 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   if ( buffs.frenzied_monstrosity->up() )
   {
     m *= 1.0 + buffs.frenzied_monstrosity->data().effectN( 2 ).percent();
+  }
+
+  if ( buffs.final_sentence->up() )
+  {
+    m *= 1.0 + buffs.final_sentence->stack_value();
   }
 
   return m;
