@@ -530,6 +530,11 @@ public:
     proc_t* winters_chill_consumed;
   } procs;
 
+  struct rppm_t
+  {
+    real_ppm_t* deaths_fathom;
+  } rppm;
+
   struct shuffled_rngs_t
   {
     shuffled_rng_t* time_anomaly;
@@ -710,6 +715,7 @@ public:
     item_runeforge_t slick_ice;
 
     // Shared
+    item_runeforge_t deaths_fathom;
     item_runeforge_t disciplinary_command;
     item_runeforge_t expanded_potential;
     item_runeforge_t grisly_icicle;
@@ -1790,6 +1796,15 @@ public:
       counter->trigger();
     }
   }
+
+  void trigger_deaths_fathom()
+  {
+    if ( p()->buffs.deathborne->check() )
+      p()->buffs.deathborne->current_value += p()->runeforge.deaths_fathom->effectN( 2 ).percent();
+
+    if ( p()->rppm.deaths_fathom->trigger() )
+      p()->buffs.deathborne->extend_duration_or_trigger( p()->runeforge.deaths_fathom->effectN( 1 ).time_value() );
+  }
 };
 
 using residual_action_t = residual_action::residual_periodic_action_t<mage_spell_t>;
@@ -2565,8 +2580,13 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     // Clearcasting immediately after Arcane Blast, a stack of Nether Precision
     // will be consumed by Arcane Blast will not benefit from the damage bonus.
     // Check if this is still the case closer to Shadowlands release.
-    if ( result_is_hit( s-> result ) && p()->conduits.nether_precision.ok() )
-      make_event( *sim, 15_ms, [ this ] { p()->buffs.nether_precision->decrement(); } );
+    if ( result_is_hit( s->result ) )
+    {
+      trigger_deaths_fathom();
+
+      if ( p()->conduits.nether_precision.ok() )
+        make_event( *sim, 15_ms, [ this ] { p()->buffs.nether_precision->decrement(); } );
+    }
   }
 
   double action_multiplier() const override
@@ -3437,6 +3457,7 @@ struct fireball_t final : public fire_mage_spell_t
     {
       consume_molten_skyfall( s->target );
       trigger_molten_skyfall();
+      trigger_deaths_fathom();
     }
   }
 
@@ -3714,6 +3735,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     {
       consume_cold_front( s->target );
       trigger_cold_front();
+      trigger_deaths_fathom();
     }
   }
 };
@@ -5535,6 +5557,7 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   options(),
   pets(),
   procs(),
+  rppm(),
   shuffled_rng(),
   sample_data(),
   spec(),
@@ -6025,6 +6048,7 @@ void mage_t::init_spells()
   runeforge.glacial_fragments    = find_runeforge_legendary( "Glacial Fragments"    );
   runeforge.slick_ice            = find_runeforge_legendary( "Slick Ice"            );
 
+  runeforge.deaths_fathom        = find_runeforge_legendary( "Death's Fathom"       );
   runeforge.disciplinary_command = find_runeforge_legendary( "Disciplinary Command" );
   runeforge.expanded_potential   = find_runeforge_legendary( "Expanded Potential"   );
   runeforge.grisly_icicle        = find_runeforge_legendary( "Grisly Icicle"        );
@@ -6240,6 +6264,7 @@ void mage_t::create_buffs()
 
   // Covenant Abilities
   buffs.deathborne = make_buff( this, "deathborne", find_spell( 324220 ) )
+                       ->set_cooldown( 0_ms )
                        ->set_default_value_from_effect( 2 )
                        ->modify_duration( conduits.gift_of_the_lich.time_value() );
 
@@ -6365,6 +6390,8 @@ void mage_t::init_uptimes()
 void mage_t::init_rng()
 {
   player_t::init_rng();
+
+  rppm.deaths_fathom = get_rppm( "deaths_fathom", runeforge.deaths_fathom, runeforge.deaths_fathom.item() );
 
   // TODO: There's no data about this in game. Keep an eye out in case Blizzard
   // changes this behind the scenes.
