@@ -3452,18 +3452,22 @@ struct abomination_limb_damage_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
     // We proc this on cast, then every 6 seconds thereafter, on tick
+    // Every 4 seconds if we have abominations_frenzy legendary equipped
     if ( p() ->cooldown.abomination_limb -> is_ready() )
     {
       switch ( p() ->specialization() )
       {
         case DEATH_KNIGHT_BLOOD:
           p() -> buffs.bone_shield -> trigger( bone_shield_stack_gain );
+          sim -> print_debug( "{} triggers bone shield via abominations_limb", player -> name() );
           break;
         case DEATH_KNIGHT_FROST:
           p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+          sim -> print_debug( "{} triggers rime via abominations_limb", player -> name() );
           break;
         case DEATH_KNIGHT_UNHOLY:
           p() -> trigger_runic_corruption( p() -> procs.al_runic_corruption, 0, 1.0 );
+          sim -> print_debug( "{} triggers runic corruption via abominations_limb", player -> name() );
           break;
         default:
           break;
@@ -3487,6 +3491,10 @@ struct abomination_limb_buff_t : public buff_t
       damage -> execute();
     } );
     set_partial_tick( true );
+    if ( p -> legendary.abominations_frenzy.ok() )
+    {
+      apply_affecting_aura( p -> legendary.abominations_frenzy );
+    }
   }
 };
 
@@ -8382,12 +8390,17 @@ void death_knight_t::init_spells()
   if ( talent.icecap )
     cooldown.icecap_icd -> duration = talent.icecap -> internal_cooldown();
   if ( covenant.abomination_limb )
+  {
     cooldown.abomination_limb -> duration = timespan_t::from_seconds( covenant.abomination_limb -> effectN ( 4 ).base_value() );
+    if ( legendary.abominations_frenzy.ok() )
+    {
+      cooldown.abomination_limb -> duration -= timespan_t::from_seconds( legendary.abominations_frenzy -> effectN ( 2 ).base_value() );
+    }
+  }
   if ( covenant.shackle_the_unworthy )
     cooldown.shackle_the_unworthy_icd -> duration = covenant.shackle_the_unworthy -> internal_cooldown();
   if ( legendary.koltiras_favor )
     cooldown.koltiras_favor_icd -> duration = legendary.koltiras_favor -> internal_cooldown();
-
 
 }
 
