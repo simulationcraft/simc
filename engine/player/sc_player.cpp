@@ -1512,7 +1512,7 @@ void player_t::init_base_stats()
         }
         if ( effect.subtype() == A_MOD_MAX_MANA_PCT || effect.subtype() == A_MOD_MANA_POOL_PCT )
         {
-          resources.base[ RESOURCE_MANA ] *= 1.0 + effect.percent();
+          resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + effect.percent();
         }
       }
     }
