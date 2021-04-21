@@ -1889,11 +1889,6 @@ void paladin_t::init_base_stats()
     resources.base_regen_per_second[ RESOURCE_MANA ] = 0;
   }
 
-  if ( specialization() == PALADIN_HOLY )
-  {
-    resources.base_regen_per_second[ RESOURCE_MANA ] = resources.base[ RESOURCE_MANA ] * 0.015;
-  }
-
   // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
   // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
   // Just need to add class- or spec-based modifiers here.
