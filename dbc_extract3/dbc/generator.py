@@ -1792,6 +1792,8 @@ class SpellDataGenerator(DataGenerator):
           ( 339800, 1 ),       # Oneth's Perception (free starfall)
           ( 345048, 3 ),       # Ursoc's Fury Remembered absorb buff
           ( 340060, 0 ),       # Lycara's Fleeting Glimpse coming soon buff
+          # 9.1 Legendary
+          ( 354805, 0 ), ( 354802, 0 ), ( 354815, 0 ), ( 354345, 0 ), # Kindred Affinity (kyrian)
 
           # Shadowlands Covenant
           ( 326446, 0, True ), # Kyrian Empower Bond on DPS
