@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-03-31/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-03-31/38134, git build shadowlands 4d77f16e, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -2785,7 +2785,7 @@ Description      : When you take damage below $s2% health, you gain a shield for
 
 Name             : Cunning Dreams (id=352782) [Passive, Hidden] 
 Covenant         : Night Fae
-School           : Physical
+School           : Nature
 Spell Type       : None
 Spell Level      : 60
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
