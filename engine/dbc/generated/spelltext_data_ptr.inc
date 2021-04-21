@@ -1,5 +1,5 @@
-// Spell text, wow build 9.1.0.38312
-static const std::array<spelltext_data_t, 15276> __ptr_spelltext_data { {
+// Spell text, wow build 9.1.0.38394
+static const std::array<spelltext_data_t, 15299> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -597,7 +597,7 @@ static const std::array<spelltext_data_t, 15276> __ptr_spelltext_data { {
   {  18796, "Hurls a fiery ball that causes $s1 Fire damage and an additional $o2 damage over $d.", "$s2 Fire damage every $t2 sec.", 0 },
   {  18798, "Stunned and Frozen.", "Stunned and Frozen.", 0 },
   {  18799, "When struck in combat has a 1% chance of inflicting $18798s2 Frost damage to the attacker and freezing them for $18798d.", 0, 0 },
-  {  18803, "Increases Haste by $s1.", "Haste is increased by $s1.", 0 },
+  {  18803, "Increases Haste by $s1.", "Haste is increased by $w1.", 0 },
   {  18805, "Restores $s2 health and mana to a friendly target and attempts to dispel any polymorph effects from them.  Reduced effectiveness against polymorph effects from casters of level $ctrmin2066 and higher.", 0, 0 },
   {  18826, "Increases armor by $s1 for $d.", "Increased armor.", 0 },
   {  18831, "Conjures a Lily Root that restores health and mana when eaten.", 0, "Rank 1" },
@@ -1869,7 +1869,7 @@ static const std::array<spelltext_data_t, 15276> __ptr_spelltext_data { {
   {  57841, "$@spelldesc51690", 0, 0 },
   {  57842, "$@spelldesc51690", 0, 0 },
   {  57870, "Slightly reduces the size of your pet.", 0, 0 },
-  {  57934, "$?s221622[Increases you and the target's damage by $221622m1%, and redirects][Redirects] all threat you cause to the targeted party or raid member, beginning with your next damaging attack within the next $d and lasting $59628d.", "Threat redirected from Rogue.\r\n$?$w2>0[Damage increased by $221622m1%.][]", 0 },
+  {  57934, "$?s221622[Increases the target's damage by $221622m1%, and redirects][Redirects] all threat you cause to the targeted party or raid member, beginning with your next damaging attack within the next $d and lasting $59628d.", "Threat redirected from Rogue.", 0 },
   {  57954, "Your Judgment criticals call down fire from the sky.", 0, 0 },
   {  57979, "Your Avenging Wrath depicts 4 wings.", 0, "Holy, Retribution" },
   {  57984, "Inflicts Fire damage to an enemy.", 0, 0 },
@@ -1883,7 +1883,7 @@ static const std::array<spelltext_data_t, 15276> __ptr_spelltext_data { {
   {  58135, "Alters the appearance of your Ghost Wolf transformation, causing it to resemble a large, spectral wolf.", 0, 0 },
   {  58157, "Battle Shout grants you up to $s1 additional attack power.", "Battle Shout grants you up to $s1 additional attack power.", 0 },
   {  58158, "$@spelldesc107059", 0, 0 },
-  {  58180, "$@spelldesc48484", "Movement speed slowed by $s1%.", 0 },
+  {  58180, "$@spelldesc48484", "Movement speed slowed by $w1%.$?e1[ Healing taken reduced by $w2%.][]", 0 },
   {  58188, "$@spelldesc57870", 0, 0 },
   {  58244, "$@spelldesc57979", 0, 0 },
   {  58247, "$@spelldesc57954", 0, 0 },
@@ -4768,7 +4768,7 @@ static const std::array<spelltext_data_t, 15276> __ptr_spelltext_data { {
   { 157136, "When you heal or deal damage you have a chance to increase your Strength, Agility, or Intellect by $s1 for $60229d.  Your highest stat is always chosen.", 0, 0 },
   { 157153, "Summons a totem at your feet for $d that collects power from all of your healing spells. When the totem expires or dies, the stored power is released, healing all injured allies within $157503A1 yards for $157503s2% of all healing done while it was active, divided evenly among targets.\r\n\r\nCasting this spell a second time recalls the totem and releases the healing.", 0, 0 },
   { 157154, "Every ${$c*$s1} mana you spend brings a High Tide, making your next $288675n Chain Heals heal for an additional $288675s1% and not reduce with each jump.", 0, 0 },
-  { 157228, "$@spelldesc24858", "Your next Starfire is instant cast.", 0 },
+  { 157228, "$@spelldesc24858", "Your next Starfire is instant cast$?s354541[ or your next Cyclone or Entangling Roots cast time is reduced by $s2%.][.]", 0 },
   { 157299, "$@spelldesc192249", 0, 0 },
   { 157331, "Conjures a gust of wind that deals $s1 Nature damage to an enemy.", 0, 0 },
   { 157348, "Call down a lightning strike on an enemy, dealing $s1 Nature damage, and leaving the Storm Elemental charged with energy for $d.\r\n\r\nWhile charged, the Storm Elemental's damage is increased by $s2%.", "Damage done increased by $w2%.", 0 },
@@ -5718,7 +5718,7 @@ static const std::array<spelltext_data_t, 15276> __ptr_spelltext_data { {
   { 185229, "$@spelldesc184924", "Critical strike chance of the Warlock's spells increased by $w1%.", 0 },
   { 185230, "$@spelldesc184926", "Haste increased by $w1%.\r\nThis effect is reset if you auto attack a different target.", 0 },
   { 185245, "Taunts the target to attack you.", "Taunted.", 0 },
-  { 185311, "Drink an alchemical concoction that heals you for $o1% of your maximum health over $d.", "Healing for $w1% of maximum health every $t1 sec.", 0 },
+  { 185311, "Drink an alchemical concoction that heals you for $?a354425&a193546[${$O1}.1][$o1]% of your maximum health over $d.", "Healing for $?a354425|a193546[${$W1}.2][$w1]% of maximum health every $t1 sec.", 0 },
   { 185313, "Allows use of all Stealth abilities and grants all the combat benefits of Stealth for $d, and increases damage by $s2%. Effect not broken from taking damage or attacking. $?s14062[Movement speed while active is increased by $1784s3% and damage dealt is increased by $1784s4%. ]?s108209[Abilities cost $112942s1% less while active. ][]$?s31223[Attacks from Shadow Dance and for $31223s1 sec after deal $31665s1% more damage.  ][]", 0, 0 },
   { 185314, "Your finishing moves reduce the remaining cooldown on Shadow Dance by $?s238104[${$sw1/10}.1][${$sw1/10}] sec per combo point spent.", 0, 0 },
   { 185358, "A quick shot that causes $sw2 Arcane damage.", 0, 0 },
@@ -6335,7 +6335,7 @@ static const std::array<spelltext_data_t, 15276> __ptr_spelltext_data { {
   { 196976, "Gain ${$196980s1*$196980d/$196980t1+$196980s2} Energy over $196980d when you enter Stealth or activate Shadow Dance.", 0, "Passive" },
   { 196980, "$@spelldesc196976", "Regenerating ${$s1*$d/$t1+$s2} Energy over $d.", 0 },
   { 196985, "The cooldowns of your Holy Words are reduced by an additional $s1% when you cast the relevant spells.", 0, 0 },
-  { 197000, "Sprint suppresses all movement-impairing effects for $197003d when used.", 0, "PvP Talent" },
+  { 197000, "Sprint removes all root effects and suppresses all movement-slowing effects for $197003d when used.", 0, "PvP Talent" },
   { 197003, "$@spelldesc197000", "Movement-impairing effects suppressed.", 0 },
   { 197045, "When your Power Word: Shield is completely absorbed, you restore $<mana>% of your maximum mana.", 0, 0 },
   { 197061, "Ironbark increases healing from your heal over time effects by $s1%.", 0, "Rank 2" },
@@ -7524,7 +7524,7 @@ static const std::array<spelltext_data_t, 15276> __ptr_spelltext_data { {
   { 221558, "$@spelldesc222664\r\n\r\nThis effect is only active in the Broken Isles and is unique with other Brewhouse Brews.", "$@spelldesc222664\r\n\r\nThis effect is only active in the Broken Isles and is unique with other Brewhouse Brews.", 0 },
   { 221562, "Lifts the enemy target off the ground, crushing their throat with dark energy and stunning them for $d.", "Stunned.", 0 },
   { 221585, "Push off the ground and catch a gust of wind. Can only be used in Broken Isles.", 0, 0 },
-  { 221622, "Your Tricks of the Trade now increases your and the friendly target's damage by $m1% for $59628d.", 0, "PvP Talent" },
+  { 221622, "Tricks of the Trade now increases the friendly target's damage by $m1% for $59628d.", 0, "PvP Talent" },
   { 221631, "Slip into the dream to stay aloft.", "Dozing...", 0 },
   { 221640, "Increases movement speed by $s1%.", "Increases movement speed by $s1%.", 0 },
   { 221674, "Increases damage dealt by $s1% while under the sky.", "Increases damage dealt by $s1% while under the sky.", 0 },
@@ -10403,7 +10403,6 @@ static const std::array<spelltext_data_t, 15276> __ptr_spelltext_data { {
   { 276204, "$@spelldesc276202", "Stamina increased by $w1.", 0 },
   { 276211, "$@spelldesc276202", "Stamina increased by $w1.", 0 },
   { 276214, "Eat to give your attacks a chance to grant $274375s1 Versatility for $274375d.\r\n", "Your attacks have a chance to grant you $274375s1 Versatility for $274375d.", 0 },
-  { 276440, 0, "You're covered in abyssal residue, strenghtening your connection to the void.", 0 },
   { 276837, "$?s207317[Death Coil and Epidemic reduce][Death Coil reduces] the cooldown of Apocalypse by $<cd1> sec and Army of the Dead by $<cd2> sec. \r\n\r\nApocalypse and Army of the Dead also summon a Magus of the Dead who hurls Frostbolts and Shadow Bolts at your foes.", 0, 0 },
   { 276970, "Grants the effect of a flask based on your class and talents.  Lasts $92725d and persists through death.", 0, 0 },
   { 276972, "Creates a cauldron that raid members can use to gain the benefit of a flask appropriate to their class and talents.   Cauldron has 30 uses and lasts for $d.", 0, 0 },
@@ -13075,7 +13074,7 @@ static const std::array<spelltext_data_t, 15276> __ptr_spelltext_data { {
   { 319912, "Prayer of Mending is now instant cast.", 0, "Rank 2" },
   { 319930, "Stormbringer now also increases the damage of your next Stormstrike by $s1%.", 0, "Rank 2" },
   { 319949, "When you are behind your target, Backstab critical strikes now also expose a flaw in their defenses, applying Find Weakness for $s1 sec.", 0, "Rank 2" },
-  { 319951, "Shuriken Storm critical strikes apply Find Weakness for $s1 sec.", 0, "Rank 2" },
+  { 319951, "Shuriken Storm has an additional $s2% chance to crit, and its critical strikes apply Find Weakness for $s1 sec.", 0, "Rank 2" },
   { 319952, "Deals ${$228360s1*2} Shadow damage to the target and activates Voidform.\r\n\r\nFor the next $d, your Insanity-generating abilities generate $s2% more Insanity and you can cast while moving.\r\n\r\nIf the target does not die within $d of using Surrender to Madness, you die.", "The Priest has surrendered to madness, sharing its fate with its target. If the target doesn't die within $d, the Priest dies.\r\n\r\nCan cast while moving, and  Insanity-generating abilities generate $w2% more Insanity.", 0 },
   { 319973, "While you are above $s1% health you gain $332842s1% $pri every $t1 sec, stacking up to $332842u times. If you fall below $s2% health, this effect is lost.", 0, 0 },
   { 319978, "Door of Shadows grants you a shield that absorbs damage equal to $s1% of your maximum health. Lasts $321012d.", 0, 0 },
@@ -13802,6 +13801,8 @@ static const std::array<spelltext_data_t, 15276> __ptr_spelltext_data { {
   { 333313, "After consuming $s1 Hot Streaks, your next non-instant Pyroblast cast within $333315d grants you Combustion for $s2 sec.", 0, 0 },
   { 333314, "$@spelldesc333313", "Building up a Combustion.", 0 },
   { 333315, "$@spelldesc333313", "Your next non-instant Pyroblast will grant you Combustion.", 0 },
+  { 333339, "Each additional $?a137039[Healing Wave]?a137040[Lava Burst][Lightning Bolt] generated by Primordial Wave increases your Haste by $s1% for $333340d.", "Each additional $?a137039[Healing Wave]?a137040[Lava Burst][Lightning Bolt] generated by Primordial Wave increases your Haste by $s1% for $333340d.", 0 },
+  { 333340, "$@spelldesc333339", "Haste increased by $w1%.", 0 },
   { 333373, "Casting any Barrier spell grants the effects of Blazing Barrier, Ice Barrier, and Prismatic Barrier. Each absorb shield has $s1% effectiveness.", "Casting any Barrier spell grants the effects of Blazing Barrier, Ice Barrier, and Prismatic Barrier.", 0 },
   { 333388, "Enemies damaged by Death's Due take $s1% increased damage from Death's Due, stacking up to $324164u times.", "Enemies damaged by Death's Due take $s1% increased damage from Death's Due, stacking up to $324164u times.", 0 },
   { 333389, "Blasts all enemies in front of you, dealing guaranteed critical strikes for up to ${$s1*10*2} Chaos damage over $d. Deals reduced damage to secondary targets.", 0, 0 },
@@ -15136,7 +15137,7 @@ static const std::array<spelltext_data_t, 15276> __ptr_spelltext_data { {
   { 351747, "When Soothing Shade activates, Tubbins and Gubbins each offer you a cup of tea, healing you for ${$MHP*$m1/100} health every $353334t1 sec and reducing damage taken by $353334s2% while standing in the shaded area.", 0, 0 },
   { 351748, "While you are Well Fed, gain $353365s1 Speed and $353365s2 Avoidance.", 0, 0 },
   { 351750, "Once per day you can speak with Theotar in Sinfall to obtain The Mad Duke's Tea, which increase your $pri by $353266s1%, or your Haste by $354016s1%, or your Critical Strike chance by $354017s1%, or your Versatility by $354018s1% for $353266d.", 0, 0 },
-  { 351867, "Giant spikes emerge from your armor dealing $s1 physical damage split between enemies within $a1 yds and continue to deal $351872s1 Physcial damage to attackers that hit you until they deal $351872s2 total damage.", 0, 0 },
+  { 351867, "Giant spikes emerge from your armor dealing $s1 Physical damage split between enemies within $a1 yds and continue to deal $351872s1 Physcial damage to attackers that hit you until they deal $351872s2 total damage.", 0, 0 },
   { 351872, "$@spelldesc351867", "Attackers take $w1 damage each time they attack you. The spikes will break after $d or once $w2 damage is dealt.", 0 },
   { 351914, "$@spelldesc351089", "Movement speed increased by $w%.", 0 },
   { 351915, "$@spelldesc351089", "Movement speed increased by $w1%.", 0 },
@@ -15190,9 +15191,10 @@ static const std::array<spelltext_data_t, 15276> __ptr_spelltext_data { {
   { 352857, "$@spelldesc352502", "Healing $w1% health every $t sec.\r\nHealing received increased by $w2%.", 0 },
   { 352858, "$@spelldesc352417", "Damage and healing done increased by $s1%.\r\nDamage taken reduced by $s4%.", 0 },
   { 352865, "$@spelldesc352501", "Movement speed increased by $w1%.", 0 },
+  { 352871, "$@spelldesc352503", 0, 0 },
   { 352875, "$@spelldesc351147", "Damage taken reduced by $w1% and movement speed cannot be reduced below $w2%.", 0 },
   { 352876, "$@spelldesc351147", 0, 0 },
-  { 352881, 0, "Redirected Anima's effectiveness is increased by $w1%.", 0 },
+  { 352881, "$@spelldesc352503", "Redirected Anima's effectiveness is increased by $w1%.", 0 },
   { 352916, "$spelldesc351149", 0, 0 },
   { 352917, "$@spelldesc351149", "$w1% increased $pri and Stamina.", 0 },
   { 352939, "$@spelldesc352186", "Damage taken from $@auracaster increased by $w1%.", 0 },
@@ -15218,7 +15220,7 @@ static const std::array<spelltext_data_t, 15276> __ptr_spelltext_data { {
   { 353475, "Use on a non-accessory armor or weapon you have obtained in Korthia or the Maw to increase the primary stat by 5%.", 0, 0 },
   { 353477, "$@spelldesc352779", "Absorbs $w damage.", 0 },
   { 353492, "Passively increases your damage. Also, when you die, become a Semi-Lich for 20 sec. [DNT]", 0, 0 },
-  { 353511, "Replace your Kill Shot with Wailing Arrow, which deals $s1 Shadow damage to your target and an additional $s2 Shadow damage to all nearby targets within 8 yds of your target. Lesser creatures struck by a Wailing Arrow are stunned for $s3 sec.", 0, 0 },
+  { 353511, "Gain the ability to fire a Wailing Arrow.\r\n\r\n|Tinterface\\icons\\ABILITY_THEBLACKARROW.blp:24|t |cFFFFFFFF$@spellname354831|r\r\n$@spelldesc354831", 0, 0 },
   { 353513, "Every $353514U shots, trigger Withering Fire, striking up to $s2 enemies in front of you for $s1 Shadow damage.", 0, 0 },
   { 353514, "$@spelldesc353513", "Building towards a volley of Withering Fire.", 0 },
   { 353527, "Use on a non-accessory armor or weapon you have obtained in Korthia or the Maw to increase the primary stat by 10%.", 0, 0 },
@@ -15247,11 +15249,13 @@ static const std::array<spelltext_data_t, 15276> __ptr_spelltext_data { {
   { 354051, "$@spelldesc352366", "Rooted.", 0 },
   { 354053, "$@spelldesc352373", "Critical strike chance increased by $s1%.", 0 },
   { 354109, "Each time Ravenous Frenzy is applied its duration is increased by 0.2 seconds.", 0, 0 },
+  { 354115, "You and your partner each gain Kindred Affinity when bonded, increasing a secondary stat based on your partner's Covenant. While your bond is empowered, Kindred Affinity is doubled.\r\n\r\nKyrian: Mastery increased by 5%.\r\nNight Fae: Critical Strike increased by 5%.\r\nVenthyr: Haste increased by 5%.\r\nNecrolord: Versatility increased by 5%.", 0, 0 },
+  { 354118, "Convoke the Spirits' cooldown is reduced by ${$s1/1000*-1} seconds and has a chance to use an exceptional spell. Additionally, Convoke the Spirits' duration and number of spells cast are reduced by $s2%.", 0, 0 },
   { 354123, "Adaptive Swarm has a $s1% chance to split into two Swarms each time it jumps.", "Adaptive Swarm has a $w1% chance to split into two Swarms each time it jumps.", 0 },
   { 354124, "Shiv also reduces the target's healing received by $S1% for $319504d.", 0, "PvP Talent" },
   { 354129, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
-  { 354131, "Condemn extends the duration of $?c1[Colossus Smash by ${$s1/1000}.1 sec]?c2[Recklessness by ${$s2/1000} sec][Last Stand by ${$s3/1000} sec].\r\n", 0, 0 },
-  { 354161, "Ancient Aftershock's duration is increased by ${$s1/1000} sec and enemies hit take ${$354163s1o*3} nature damage over $354163d, stacking $354163u times.\r\n", 0, 0 },
+  { 354131, "Condemn extends the duration of $?c1[Colossus Smash by ${$s1/1000}.1 sec]?c2[Recklessness by ${$s2/1000}.1 sec][Last Stand by ${$s3/1000} sec].\r\n", 0, 0 },
+  { 354161, "Ancient Aftershock's duration is increased by ${$s1/1000} sec and enemies hit take ${$354163s1o*3} Nature damage over $354163d, stacking $354163u times.", 0, 0 },
   { 354163, "$@spelldesc354161", "Taking $w1 Nature damage every $t1 sec.", 0 },
   { 354179, "Your helpful abilities send a Swarm of Locusts to protect target ally, absorbing 50% of X damage they take within 10 sec. Can only occur once per 30 sec.", 0, 0 },
   { 354186, "Damage dealt to enemies affected by Radiant Spark's vulnerability echo to $354189i nearby enemies for $s1% of the damage dealt.", 0, 0 },
@@ -15276,14 +15280,33 @@ static const std::array<spelltext_data_t, 15276> __ptr_spelltext_data { {
   { 354257, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
   { 354294, "Your Fireball, Frostbolt, and Arcane Blast have a chance to grant Deathborne for ${$s1/1000} sec. While in the form of a skeletal mage the spell damage granted is increased by $s2% for each enemy hit by Fireball, Frostbolt and Arcane Blast.", 0, 0 },
   { 354333, "Consuming $?c1[Clearcast]?c2[a Fire Blast charge][Brain Freeze] reduces Mirrors of Torment cooldown by ${$s1/1000} sec. If Mirrors of Torment is dispelled the cooldown is reduced by ${$s2/1000} sec.", 0, 0 },
+  { 354383, "Attune yourself to the energies of the targeted Sanctum of Domination raid boss, increasing your Versatility by $354399s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
+  { 354425, "Crimson Vial restores $s1% additional maximum health and grants $s3% of its healing to allies within $354494a yds.", 0, "PvP Talent" },
+  { 354473, "Your ability used from Stealth while Sepsis is active grants you one of Shadow Blades, Adrenaline Rush, or applies Vendetta to your current target for ${$s1/1000} sec.", 0, 0 },
+  { 354494, "Drink an alchemical concoction that heals you for $o1% of your maximum health over $d.", "Healing for ${$W1}.2% of maximum health every $t1 sec.", 0 },
+  { 354541, "Owlkin Frenzy reduces the cast time of your next Cyclone or Entangling Roots by $s1% and can stack up to $<stacks> times.", 0, "PvP Talent" },
+  { 354583, "Recall brighter times in Oribos, before the Maw grew in power. Lasts $d.", "Recalling brighter times in Oribos.", "Passive" },
+  { 354647, "Each additional $?a137039[Healing Wave]?a137040[Lava Burst][Lightning Bolt] generated by Primordial Wave increases your Haste by $s1% for $333340d.", 0, 0 },
+  { 354703, "Flagellation now also increases your Versatility by $323654s5%. Each combo point spent while Flagellation is active decreases it's cooldown by ${$s1/1000} sec. ", 0, 0 },
+  { 354731, "Serrated Bone Spike has $s1 additional charges and hits $s2 additional nearby enemies.", 0, 0 },
+  { 354759, "Enjoy a tasty treat.", "In a good mood!", 0 },
+  { 354831, "Fire an enchanted arrow, dealing $s1 Shadow damage to your target and an additional $s2 Shadow damage to all enemies within $a2 yds of your target. Lesser creatures struck by a Wailing Arrow are stunned for $s3 sec.", 0, 0 },
+  { 354837, "Echoing Reprimand now animacharges $s1 combo points.", "Echoing Reprimand now animacharges $s1 combo points.", 0 },
+  { 354965, "Summons a Torghast anima hoard.", "Summons a Torghast anima hoard.", 0 },
+  { 355023, "Your damaging and healing spells have a chance to increase your Critical Strike by $355044s1.", 0, 0 },
+  { 355044, "$@spelldesc355023", "Critical Strike increased by $w1.", 0 },
+  { 355065, "Your damaging melee attacks have a chance to cause $355068s1 Physical Damage to creatures in a cone up to $355068a1 yds.", 0, 0 },
+  { 355068, "$@spelldesc355065", 0, 0 },
+  { 355085, "Your melee and ranged attacks have a chance to cause the target to Bleed for ${$355087s1*$s2} over $355087d. ", 0, 0 },
+  { 355087, "$@spelldesc355085", "Bleeding for $w1 every $t sec.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.0.38312
+// spelltext hotfix entries, wow build 9.1.0.38394
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.1.0.38312
-static const std::array<spelldesc_vars_data_t, 298> __ptr_spelldesc_vars_data { {
+// Spell description variables, wow build 9.1.0.38394
+static const std::array<spelldesc_vars_data_t, 299> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -15582,9 +15605,10 @@ static const std::array<spelldesc_vars_data_t, 298> __ptr_spelldesc_vars_data { 
   {  351094, "$pointsA=${$cond($gt($SP,$AP),$SP*0.48,$AP*0.48)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.72,$AP*0.72)*(1+$@versadmg)}" },
   {  352110, "$shield=${$max($SP,$AP)*.1*(1+$@versadmg)}\r\n$mod=$?a137005[${2}]?a212611[${2}]?a137009[${.4}.1]?a137014[${.75}.1]?a137018[${3}]?a137022[${1}]?a137026[${.5}]?a137030[${1.0}]?a137034[${.5}]?a137038[${.75}.1]?a137042[${.75}.1]?a137047[${2}][${1.0}]" },
   {  352188, "$mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${0.5}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${0.4}]?a137047[${1}][${1}]\r\n$points=${$353248s2/100*$max($AP,$SP)*(1+$@versadmg)}\r\n$final=${$<mod>*$<points>*($353248d/$353248t1+1)}\r\n$cd=$?a137005[${4}]?a212611[${4}]?a137009[${4}]?a137014[${4}]?a137018[${2}]?a137022[${8}]?a137026[${4}]?a137030[${12}]?a137034[${3}]?a137038[${4}]?a137042[${3}]?a137047[${4}][${4}]" },
+  {  354541, "$stacks=${2}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.0.38312
+// spelldesc_vars hotfix entries, wow build 9.1.0.38394
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
