@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.38394
-static const std::array<spelltext_data_t, 15299> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15304> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15280,6 +15280,7 @@ static const std::array<spelltext_data_t, 15299> __ptr_spelltext_data { {
   { 354257, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
   { 354294, "Your Fireball, Frostbolt, and Arcane Blast have a chance to grant Deathborne for ${$s1/1000} sec. While in the form of a skeletal mage the spell damage granted is increased by $s2% for each enemy hit by Fireball, Frostbolt and Arcane Blast.", 0, 0 },
   { 354333, "Consuming $?c1[Clearcast]?c2[a Fire Blast charge][Brain Freeze] reduces Mirrors of Torment cooldown by ${$s1/1000} sec. If Mirrors of Torment is dispelled the cooldown is reduced by ${$s2/1000} sec.", 0, 0 },
+  { 354345, "$@spelldesc354115\r\n", "Your partner is a part of the Venthyr Covenant. Your Haste is increased by $s1%.", 0 },
   { 354383, "Attune yourself to the energies of the targeted Sanctum of Domination raid boss, increasing your Versatility by $354399s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
   { 354425, "Crimson Vial restores $s1% additional maximum health and grants $s3% of its healing to allies within $354494a yds.", 0, "PvP Talent" },
   { 354473, "Your ability used from Stealth while Sepsis is active grants you one of Shadow Blades, Adrenaline Rush, or applies Vendetta to your current target for ${$s1/1000} sec.", 0, 0 },
@@ -15290,8 +15291,12 @@ static const std::array<spelltext_data_t, 15299> __ptr_spelltext_data { {
   { 354703, "Flagellation now also increases your Versatility by $323654s5%. Each combo point spent while Flagellation is active decreases it's cooldown by ${$s1/1000} sec. ", 0, 0 },
   { 354731, "Serrated Bone Spike has $s1 additional charges and hits $s2 additional nearby enemies.", 0, 0 },
   { 354759, "Enjoy a tasty treat.", "In a good mood!", 0 },
+  { 354802, "$@spelldesc354115\r\n", "Your partner is a part of the Necrolord Covenant. Your Versatility is increased by $s1%.", 0 },
+  { 354805, "$@spelldesc354115\r\n", "Your partner is a part of the Kyrian Covenant. Your Mastery is increased by $m1%.", 0 },
+  { 354815, "$@spelldesc354115\r\n", "Your partner is a part of the Night Fae Covenant. Your Critical Strike Chance is increased by $s1%.", 0 },
   { 354831, "Fire an enchanted arrow, dealing $s1 Shadow damage to your target and an additional $s2 Shadow damage to all enemies within $a2 yds of your target. Lesser creatures struck by a Wailing Arrow are stunned for $s3 sec.", 0, 0 },
   { 354837, "Echoing Reprimand now animacharges $s1 combo points.", "Echoing Reprimand now animacharges $s1 combo points.", 0 },
+  { 354838, "$@spelldesc323547", "Rogue's fifth combo point is Animacharged. \r\n\r\nDamaging finishing moves using exactly 5 combo points deal damage as if 7 combo points are consumed.", "Kyrian" },
   { 354965, "Summons a Torghast anima hoard.", "Summons a Torghast anima hoard.", 0 },
   { 355023, "Your damaging and healing spells have a chance to increase your Critical Strike by $355044s1.", 0, 0 },
   { 355044, "$@spelldesc355023", "Critical Strike increased by $w1.", 0 },
