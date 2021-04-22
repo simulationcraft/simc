@@ -307,10 +307,7 @@ public:
     damage_buff_t* the_rotten;
 
     // Covenant
-    buff_t* echoing_reprimand_2;
-    buff_t* echoing_reprimand_3;
-    buff_t* echoing_reprimand_4;
-    buff_t* echoing_reprimand_5;
+    std::vector<buff_t*> echoing_reprimand;
     buff_t* flagellation;
     buff_t* flagellation_persist;
     buff_t* sepsis;
@@ -647,10 +644,7 @@ public:
     proc_t* weaponmaster;
 
     // Covenant
-    proc_t* echoing_reprimand_2;
-    proc_t* echoing_reprimand_3;
-    proc_t* echoing_reprimand_4;
-    proc_t* echoing_reprimand_5;
+    std::vector<proc_t*> echoing_reprimand;
     proc_t* flagellation_cp_spend;
     proc_t* serrated_bone_spike_refund;
     proc_t* serrated_bone_spike_waste;
@@ -794,15 +788,10 @@ public:
   {
     double current_cp = resources.current[ RESOURCE_COMBO_POINT ];
 
-    if ( use_echoing_reprimand )
+    if ( use_echoing_reprimand && current_cp > 0 )
     {
-      if ( ( current_cp == 2 && buffs.echoing_reprimand_2->check() ) ||
-           ( current_cp == 3 && buffs.echoing_reprimand_3->check() ) ||
-           ( current_cp == 4 && buffs.echoing_reprimand_4->check() ) ||
-           ( current_cp == 5 && buffs.echoing_reprimand_5->check() ) )
-      {
+      if ( range::any_of( buffs.echoing_reprimand, [ current_cp ]( const buff_t* buff ) { return buff->check_value() == current_cp; } ) )
         return covenant.echoing_reprimand->effectN( 2 ).base_value();
-      }
     }
 
     return current_cp;
@@ -1056,7 +1045,7 @@ public:
   };
   struct
   {
-    bool shadow_blades = false;
+    bool shadow_blades_cp = false;
     bool ruthlessness = false;
     bool relentless_strikes = false;
     bool deepening_shadows = false;
@@ -1121,7 +1110,7 @@ public:
 
     // Dynamically affected flags
     // Special things like CP, Energy, Crit, etc.
-    affected_by.shadow_blades = ab::data().affected_by( p->spec.shadow_blades->effectN( 2 ) ) ||
+    affected_by.shadow_blades_cp = ab::data().affected_by( p->spec.shadow_blades->effectN( 2 ) ) ||
       ab::data().affected_by( p->spec.shadow_blades->effectN( 3 ) );
     affected_by.vendetta = ab::data().affected_by( p->spec.vendetta->effectN( 1 ) );
     affected_by.adrenaline_rush_gcd = ab::data().affected_by( p->spec.adrenaline_rush->effectN( 3 ) );
@@ -1315,13 +1304,8 @@ public:
     // Apply and Snapshot Echoing Reprimand Buffs
     if ( p()->covenant.echoing_reprimand->ok() && consumes_echoing_reprimand() )
     {
-      if ( ( consume_cp == 2 && p()->buffs.echoing_reprimand_2->up() ) || 
-           ( consume_cp == 3 && p()->buffs.echoing_reprimand_3->up() ) || 
-           ( consume_cp == 4 && p()->buffs.echoing_reprimand_4->up() ) ||
-           ( consume_cp == 5 && p()->buffs.echoing_reprimand_5->up() ) )
-      {
+      if ( range::any_of( p()->buffs.echoing_reprimand, [ consume_cp ]( const buff_t* buff ) { return buff->check_value() == consume_cp; } ) )
         effective_cp = as<int>( p()->covenant.echoing_reprimand->effectN( 2 ).base_value() );
-      }
     }
 
     cast_state( state )->set_combo_points( consume_cp, effective_cp );
@@ -1368,7 +1352,7 @@ public:
         cp += p()->buffs.broadside->check_value();
       }
 
-      if ( affected_by.shadow_blades && p()->buffs.shadow_blades->check() )
+      if ( affected_by.shadow_blades_cp && p()->buffs.shadow_blades->check() )
       {
         cp += p()->buffs.shadow_blades->data().effectN( 2 ).base_value();
       }
@@ -1392,15 +1376,17 @@ public:
   virtual bool procs_blade_flurry() const
   { return false; }
 
+  // Generic rules for proccing Shadow Blades, used by rogue_t::trigger_shadow_blades_attack()
+  virtual bool procs_shadow_blades_damage() const
+  { return ab::energize_type != action_energize::NONE && ab::energize_amount > 0 && ab::energize_resource == RESOURCE_COMBO_POINT; }
+
   virtual double proc_chance_main_gauche() const
   { return p()->mastery.main_gauche->proc_chance(); }
 
   // Generic rules for snapshotting the Nightstalker pmultiplier, default to DoTs only.
   // If a DoT with DD component is whitelisted in the direct damage effect #1 on 130493 this can double dip.
   virtual bool snapshots_nightstalker() const
-  {
-    return ab::dot_duration > timespan_t::zero() && ab::base_tick_time > timespan_t::zero();
-  }
+  { return ab::dot_duration > timespan_t::zero() && ab::base_tick_time > timespan_t::zero(); }
 
   // Overridable wrapper for checking stealth requirement
   virtual bool requires_stealth() const
@@ -1416,11 +1402,7 @@ public:
 
   // Overridable function to determine whether a finisher is working with Echoing Reprimand.
   virtual bool consumes_echoing_reprimand() const
-  {
-    if ( ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 && ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ) )
-      return true;
-    return false;
-  }
+  { return ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 && ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ); }
 
 private:
   void do_exsanguinate( dot_t* dot, double coeff );
@@ -1690,25 +1672,16 @@ public:
     if ( affected_by.sepsis && p()->buffs.sepsis->check() && !p()->stealthed( STEALTH_ALL & ~STEALTH_SEPSIS ) )
     {
       p()->buffs.sepsis->decrement();
-      // 2021-04-22 - Appears to select randomly from the three cooldowns.
-      // Also does not extend but straight overrides the duration
       if ( p()->legendary.toxic_onslaught->ok() )
       {
+        // 2021-04-22 - Appears to select randomly from the three cooldowns, not spec-specific
+        // TOCHECK: Currently on PTR does not extend but straight overrides the duration
         const timespan_t trigger_duration = p()->legendary.toxic_onslaught->effectN( 1 ).time_value();
-        switch ( as<int>( p()->sim->rng().range( 1.0, 4.0 ) ) )
-        {
-        case 1:
-          p()->get_target_data( ab::target )->debuffs.vendetta->trigger( trigger_duration );
-          break;
-        case 2:
-          p()->buffs.adrenaline_rush->trigger( trigger_duration );
-          break;
-        case 3:
-          p()->buffs.shadow_blades->trigger( trigger_duration );
-          break;
-        default:
-          break;
-        }
+        std::vector<buff_t*> buffs = { p()->get_target_data( ab::target )->debuffs.vendetta, p()->buffs.adrenaline_rush, p()->buffs.shadow_blades };
+        if ( p()->bugs )
+          buffs[ p()->sim->rng().range( buffs.size() ) ]->trigger( trigger_duration );
+        else
+          buffs[ p()->sim->rng().range( buffs.size() ) ]->extend_duration_or_trigger( trigger_duration );
       }
     }
 
@@ -1722,7 +1695,7 @@ public:
 
     if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
     {
-      if ( affected_by.shadow_blades && p()->buffs.shadow_blades->up() )
+      if ( affected_by.shadow_blades_cp && p()->buffs.shadow_blades->up() )
       {
         trigger_combo_point_gain( as<int>( p()->buffs.shadow_blades->data().effectN( 2 ).base_value() ), p()->gains.shadow_blades );
       }
@@ -1902,9 +1875,8 @@ struct rogue_poison_t : public rogue_attack_t
   {
     bool result = rng().roll( proc_chance( source_state ) );
 
-    if ( sim->debug )
-      sim->out_debug.printf( "%s attempts to proc %s, target=%s source_action=%s proc_chance=%.3f: %d", player->name(), name(),
-                             source_state->target->name(), source_state->action->name(), proc_chance( source_state ), result );
+    sim->print_debug( "{} attempts to proc {}, target={} source={} proc_chance={}: {}", *player, *this,
+                      *source_state->target, *source_state->action, proc_chance( source_state ), result );
 
     if ( !result )
       return;
@@ -2833,6 +2805,10 @@ struct fan_of_knives_t: public rogue_attack_t
 
   bool procs_poison() const override
   { return true; }
+
+  // 04/22/2021 -- TOCHECK: Testing with the NF legendary shows this doesn't work
+  bool procs_shadow_blades_damage() const override
+  { return false; }
 };
 
 // Feint ====================================================================
@@ -2896,7 +2872,7 @@ struct garrote_t : public rogue_attack_t
   void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
-    trigger_venomous_wounds( d -> state );
+    trigger_venomous_wounds( d->state );
   }
 };
 
@@ -3537,7 +3513,7 @@ struct secret_technique_t : public rogue_attack_t
 struct shadow_blades_attack_t : public rogue_attack_t
 {
   shadow_blades_attack_t( util::string_view name, rogue_t* p ) :
-    rogue_attack_t( name, p, p -> find_spell( 279043 ) )
+    rogue_attack_t( name, p, p->find_spell( 279043 ) )
   {
     may_dodge = may_block = may_parry = false;
     attack_power_mod.direct = 0;
@@ -3546,7 +3522,6 @@ struct shadow_blades_attack_t : public rogue_attack_t
   void init() override
   {
     rogue_attack_t::init();
-
     snapshot_flags = update_flags = 0;
   }
 };
@@ -3556,7 +3531,7 @@ struct shadow_blades_t : public rogue_spell_t
   timespan_t precombat_seconds;
 
   shadow_blades_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
-    rogue_spell_t( name, p, p -> find_specialization_spell( "Shadow Blades" ) ),
+    rogue_spell_t( name, p, p->spec.shadow_blades ),
     precombat_seconds( 0_s )
   {
     add_option( opt_timespan( "precombat_seconds", precombat_seconds ) );
@@ -3565,7 +3540,6 @@ struct shadow_blades_t : public rogue_spell_t
     harmful = false;
     school = SCHOOL_SHADOW;
 
-    p->active.shadow_blades_attack = p->get_background_action<shadow_blades_attack_t>( "shadow_blades_attack" );
     add_child( p->active.shadow_blades_attack );
   }
 
@@ -3573,11 +3547,12 @@ struct shadow_blades_t : public rogue_spell_t
   {
     rogue_spell_t::execute();
 
-    p() -> buffs.shadow_blades -> trigger();
+    p()->buffs.shadow_blades->trigger();
 
-    if ( precombat_seconds > 0_s && ! p() -> in_combat ) {
-      p() -> cooldowns.shadow_blades -> adjust( -precombat_seconds, false );
-      p() -> buffs.shadow_blades -> extend_duration( p(), -precombat_seconds );
+    if ( precombat_seconds > 0_s && !p()->in_combat )
+    {
+      p()->cooldowns.shadow_blades->adjust( -precombat_seconds, false );
+      p()->buffs.shadow_blades->extend_duration( p(), -precombat_seconds );
     }
   }
 };
@@ -3864,14 +3839,8 @@ struct shuriken_storm_t: public rogue_attack_t
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = 1;
     ap_type = attack_power_type::WEAPON_BOTH;
-  }
-
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    // As of 2020-12-05 not in spell data.
-    affected_by.shadow_blades = true;
+    // 04/22/2021 - Not in the whitelist but confirmed as working in-game
+    affected_by.shadow_blades_cp = true;
   }
 
   void impact(action_state_t* state) override
@@ -4372,7 +4341,8 @@ struct poisoned_knife_t : public rogue_attack_t
 {
   poisoned_knife_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_attack_t( name, p, p -> find_specialization_spell( "Poisoned Knife" ), options_str )
-  { }
+  {
+  }
 
   double composite_poison_flat_modifier( const action_state_t* ) const override
   { return 1.0; }
@@ -4386,12 +4356,12 @@ struct poisoned_knife_t : public rogue_attack_t
 
 struct echoing_reprimand_t : public rogue_attack_t
 {
-  std::vector<buff_t*> buffs;
+  double random_min, random_max;
 
   echoing_reprimand_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
-    rogue_attack_t( name, p, p->covenant.echoing_reprimand, options_str )
+    rogue_attack_t( name, p, p->covenant.echoing_reprimand, options_str ),
+    random_min( 0 ), random_max( 3 ) // Randomizes between 2CP and 4CP buffs
   {
-    buffs = { p->buffs.echoing_reprimand_2, p->buffs.echoing_reprimand_3, p->buffs.echoing_reprimand_4 };
   }
 
   void impact( action_state_t* state ) override
@@ -4402,14 +4372,13 @@ struct echoing_reprimand_t : public rogue_attack_t
     {
       if ( p()->legendary.resounding_clarity->ok() )
       {
-        p()->buffs.echoing_reprimand_5->trigger();
-        for ( buff_t* b : buffs )
+        for ( buff_t* b : p()->buffs.echoing_reprimand )
           b->trigger();
       }
       else
       {
-        unsigned buff_idx = static_cast<int>( rng().range( 0, as<double>( buffs.size() ) ) );
-        buffs[ buff_idx ]->trigger();
+        unsigned buff_idx = static_cast<int>( rng().range( random_min, random_max ) );
+        p()->buffs.echoing_reprimand[ buff_idx ]->trigger();
       }
     }
   }
@@ -4447,7 +4416,7 @@ struct flagellation_t : public rogue_attack_t
   {
     dot_duration = timespan_t::zero();
     // Manually setting to false because the spell is still in the Shadow Blades whitelist.
-    affected_by.shadow_blades = false;
+    affected_by.shadow_blades_cp = false;
 
     if ( p->active.flagellation )
     {
@@ -4491,8 +4460,6 @@ struct sepsis_t : public rogue_attack_t
       rogue_attack_t( name, p, p->find_spell( 328306 ) )
     {
       dual = true;
-      // 11/29/2020 - Not in the whitelist but confirmed as working in-game
-      affected_by.shadow_blades = true;
     }
 
     void impact( action_state_t* state ) override
@@ -4501,6 +4468,10 @@ struct sepsis_t : public rogue_attack_t
       rogue_attack_t::impact( state );
       trigger_seal_fate( state );
     }
+
+    // 04/22/2021 -- Confirmed as working in-game
+    bool procs_shadow_blades_damage() const override
+    { return true; }
   };
 
   sepsis_expire_damage_t* sepsis_expire_damage;
@@ -4508,9 +4479,7 @@ struct sepsis_t : public rogue_attack_t
   sepsis_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_attack_t( name, p, p->covenant.sepsis, options_str )
   {
-    // 11/29/2020 - Not in the whitelist but confirmed as working in-game
-    affected_by.shadow_blades = true;
-    // Not in the whitelist but working as of 9.0.5 PTR.
+    // 04/22/2021 - Not in the whitelist but confirmed as working in-game
     affected_by.broadside_cp = true;
     sepsis_expire_damage = p->get_background_action<sepsis_expire_damage_t>( "sepsis_expire_damage" );
     sepsis_expire_damage->stats = stats;
@@ -5242,7 +5211,7 @@ struct shuriken_tornado_t : public buff_t
   actions::shuriken_storm_t* shuriken_storm_action;
 
   shuriken_tornado_t( rogue_t* r ) :
-    buff_t( r, "shuriken_tornado", r -> talent.shuriken_tornado ),
+    buff_t( r, "shuriken_tornado", r->talent.shuriken_tornado ),
     rogue( r ),
     shuriken_storm_action( nullptr )
   {
@@ -5343,11 +5312,8 @@ struct numbing_poison_t : public rogue_poison_buff_t
 
 struct vendetta_debuff_t : public damage_buff_t
 {
-  action_t* nothing_personal;
-
   vendetta_debuff_t( rogue_td_t& r ) :
-    damage_buff_t( r, "vendetta", r.source->find_spell( 79140 ) ),
-    nothing_personal( r.source->find_action( "nothing_personal" ) )
+    damage_buff_t( r, "vendetta", debug_cast<rogue_t*>( r.source )->spec.vendetta )
   {
     set_cooldown( timespan_t::zero() );
   }
@@ -6061,34 +6027,11 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     int base_cp = rs->get_combo_points( true );
     if ( rs->get_combo_points() > base_cp )
     {
-      if ( base_cp == 2 )
-      {
-        assert( p()->buffs.echoing_reprimand_2->check() );
-        p()->buffs.echoing_reprimand_2->expire();
-        p()->procs.echoing_reprimand_2->occur();
-        animacharged_cp_proc->occur();
-      }
-      else if ( base_cp == 3 )
-      {
-        assert( p()->buffs.echoing_reprimand_3->check() );
-        p()->buffs.echoing_reprimand_3->expire();
-        p()->procs.echoing_reprimand_3->occur();
-        animacharged_cp_proc->occur();
-      }
-      else if ( base_cp == 4 )
-      {
-        assert( p()->buffs.echoing_reprimand_4->check() );
-        p()->buffs.echoing_reprimand_4->expire();
-        p()->procs.echoing_reprimand_4->occur();
-        animacharged_cp_proc->occur();
-      }
-      else if ( base_cp == 5 )
-      {
-        assert( p()->buffs.echoing_reprimand_5->check() );
-        p()->buffs.echoing_reprimand_5->expire();
-        p()->procs.echoing_reprimand_5->occur();
-        animacharged_cp_proc->occur();
-      }
+      auto it = range::find_if( p()->buffs.echoing_reprimand, [ base_cp ]( const buff_t* buff ) { return buff->check_value() == base_cp; } );
+      assert( it != p()->buffs.echoing_reprimand.end() );
+      ( *it )->expire();
+      p()->procs.echoing_reprimand[ it - p()->buffs.echoing_reprimand.begin() ]->occur();
+      animacharged_cp_proc->occur();
     }
   }
 }
@@ -6096,13 +6039,14 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_shadow_blades_attack( action_state_t* state )
 {
-  if ( !p()->buffs.shadow_blades->check() || state->result_total <= 0 || !ab::result_is_hit( state->result ) || !affected_by.shadow_blades )
+  if ( !p()->buffs.shadow_blades->check() || state->result_total <= 0 || !ab::result_is_hit( state->result ) || !procs_shadow_blades_damage() )
     return;
 
   double amount = state->result_amount * p()->buffs.shadow_blades->check_value();
   // Deeper Daggers, despite Shadow Blades having the disable player multipliers flag, affects Shadow Blades with a manual exclusion for Gloomblade.
   if ( p()->buffs.deeper_daggers->check() && ab::data().id() != p()->talent.gloomblade->id() )
     amount *= 1.0 + p()->buffs.deeper_daggers->value();
+
   p()->active.shadow_blades_attack->base_dd_min = amount;
   p()->active.shadow_blades_attack->base_dd_max = amount;
   p()->active.shadow_blades_attack->set_target( state->target );
@@ -7040,16 +6984,13 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
       return make_mem_fn_expr( name_str, *this, &rogue_t::consume_cp_max );
 
     return make_fn_expr( name_str, [ this ]() {
-      if ( buffs.echoing_reprimand_2->check() )
-        return 2;
-      else if ( buffs.echoing_reprimand_3->check() )
-        return 3;
-      else if ( buffs.echoing_reprimand_4->check() )
-        return 4;
-      else if ( buffs.echoing_reprimand_5->check() )
-        return 5;
+      for ( unsigned i = 0; i < buffs.echoing_reprimand.size(); i++ )
+      {
+        if ( buffs.echoing_reprimand[ i ]->check() )
+          return buffs.echoing_reprimand[ i ]->check_value();
+      }
 
-      return as<int>( consume_cp_max() );
+      return consume_cp_max();
     } );
   }
   else if ( util::str_compare_ci( name_str, "master_assassin_remains" ) && !legendary.master_assassins_mark->ok() )
@@ -7494,7 +7435,7 @@ void rogue_t::init_spells()
   spec.improved_poisons_2   = find_rank_spell( "Improved Poisons", "Rank 2" );
   spec.seal_fate            = find_specialization_spell( "Seal Fate" );
   spec.venomous_wounds      = find_specialization_spell( "Venomous Wounds" );
-  spec.vendetta             = find_specialization_spell( "Vendetta" );
+  spec.vendetta             = find_spell( 79140 ); // Generic due to Toxic Onslaught
   spec.master_assassin      = find_spell( 256735 );
   spec.garrote              = find_specialization_spell( "Garrote" );
   spec.garrote_2            = find_specialization_spell( 231719 );
@@ -7503,7 +7444,7 @@ void rogue_t::init_spells()
   spec.wound_poison_2       = find_rank_spell( "Wound Poison", "Rank 2" );
 
   // Outlaw
-  spec.adrenaline_rush      = find_spell( 13750 );
+  spec.adrenaline_rush      = find_spell( 13750 ); // Generic due to Toxic Onslaught
   spec.between_the_eyes     = find_specialization_spell( "Between the Eyes" );
   spec.between_the_eyes_2   = find_rank_spell( "Between the Eyes", "Rank 2" );
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
@@ -7523,7 +7464,7 @@ void rogue_t::init_spells()
   spec.deepening_shadows    = find_specialization_spell( "Deepening Shadows" );
   spec.find_weakness        = find_specialization_spell( "Find Weakness" );
   spec.relentless_strikes   = find_specialization_spell( "Relentless Strikes" );
-  spec.shadow_blades        = find_spell( 121471 );
+  spec.shadow_blades        = find_spell( 121471 ); // Generic due to Toxic Onslaught
   spec.shadow_dance         = find_specialization_spell( "Shadow Dance" );
   spec.shadow_techniques    = find_specialization_spell( "Shadow Techniques" );
   spec.shadow_techniques_effect = find_spell( 196911 );
@@ -7738,6 +7679,11 @@ void rogue_t::init_spells()
     active.weaponmaster.akaaris_shadowstrike = get_secondary_trigger_action<actions::akaaris_shadowstrike_t>( TRIGGER_WEAPONMASTER, "shadowstrike_akaaris_weaponmaster" );
   }
 
+  if ( specialization() == ROGUE_SUBTLETY || legendary.toxic_onslaught->ok() )
+  {
+    active.shadow_blades_attack = get_background_action<actions::shadow_blades_attack_t>( "shadow_blades_attack" );
+  }
+
   if ( conduit.triple_threat.ok() && specialization() == ROGUE_OUTLAW )
   {
     active.triple_threat_mh = get_secondary_trigger_action<actions::sinister_strike_t::sinister_strike_extra_attack_t>( TRIGGER_TRIPLE_THREAT, "sinister_strike_triple_threat_mh" );
@@ -7803,10 +7749,11 @@ void rogue_t::init_procs()
 
   procs.deepening_shadows   = get_proc( "Deepening Shadows"            );
 
-  procs.echoing_reprimand_2 = get_proc( "Animacharged CP 2 Used"       );
-  procs.echoing_reprimand_3 = get_proc( "Animacharged CP 3 Used"       );
-  procs.echoing_reprimand_4 = get_proc( "Animacharged CP 4 Used"       );
-  procs.echoing_reprimand_5 = get_proc( "Animacharged CP 5 Used"       );
+  procs.echoing_reprimand.clear();
+  procs.echoing_reprimand.push_back( get_proc( "Animacharged CP 2 Used" ) );
+  procs.echoing_reprimand.push_back( get_proc( "Animacharged CP 3 Used" ) );
+  procs.echoing_reprimand.push_back( get_proc( "Animacharged CP 4 Used" ) );
+  procs.echoing_reprimand.push_back( get_proc( "Animacharged CP 5 Used" ) );
 
   procs.flagellation_cp_spend = get_proc( "CP Spent During Flagellation" );
 
@@ -8071,22 +8018,23 @@ void rogue_t::create_buffs()
     buffs.flagellation->add_invalidate( CACHE_VERSATILITY );
   }
 
-  buffs.echoing_reprimand_2 = make_buff( this, "echoing_reprimand_2", covenant.echoing_reprimand->ok() ?
+  buffs.echoing_reprimand.clear();
+  buffs.echoing_reprimand.push_back( make_buff( this, "echoing_reprimand_2", covenant.echoing_reprimand->ok() ?
                                          find_spell( 323558 ) : spell_data_t::not_found() )
                                           ->set_max_stack( 1 )
-                                          ->set_default_value( 2 );
-  buffs.echoing_reprimand_3 = make_buff( this, "echoing_reprimand_3", covenant.echoing_reprimand->ok() ?
+                                          ->set_default_value( 2 ) );
+  buffs.echoing_reprimand.push_back( make_buff( this, "echoing_reprimand_3", covenant.echoing_reprimand->ok() ?
                                          find_spell( 323559 ) : spell_data_t::not_found() )
                                           ->set_max_stack( 1 )
-                                          ->set_default_value( 3 );
-  buffs.echoing_reprimand_4 = make_buff( this, "echoing_reprimand_4", covenant.echoing_reprimand->ok() ?
+                                          ->set_default_value( 3 ) );
+  buffs.echoing_reprimand.push_back( make_buff( this, "echoing_reprimand_4", covenant.echoing_reprimand->ok() ?
                                          find_spell( 323560 ) : spell_data_t::not_found() )
                                           ->set_max_stack( 1 )
-                                          ->set_default_value( 4 );
-  buffs.echoing_reprimand_5 = make_buff( this, "echoing_reprimand_5", covenant.echoing_reprimand->ok() && dbc->ptr ?
+                                          ->set_default_value( 4 ) );
+  buffs.echoing_reprimand.push_back( make_buff( this, "echoing_reprimand_5", covenant.echoing_reprimand->ok() && dbc->ptr ?
                                          find_spell( 354838 ) : spell_data_t::not_found() )
                                           ->set_max_stack( 1 )
-                                          ->set_default_value( 5 );
+                                          ->set_default_value( 5 ) );
 
   buffs.sepsis = make_buff( this, "sepsis_buff", covenant.sepsis_buff );
   if( covenant.sepsis->ok() )
