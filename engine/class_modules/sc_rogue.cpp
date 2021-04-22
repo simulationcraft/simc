@@ -1685,6 +1685,33 @@ public:
 
   void execute() override
   {
+    // 12/04/2020 - Hotfix notes this is no longer consumed "while under the effects Stealth, Vanish, Subterfuge, Shadow Dance, and Shadowmeld"
+    // 2021-04-22 - Night Fae Lego Toxic Onslaught on PTR shows this happens and applies proc buffs before damage (Shadow Blades)
+    if ( affected_by.sepsis && p()->buffs.sepsis->check() && !p()->stealthed( STEALTH_ALL & ~STEALTH_SEPSIS ) )
+    {
+      p()->buffs.sepsis->decrement();
+      // 2021-04-22 - Appears to select randomly from the three cooldowns.
+      // Also does not extend but straight overrides the duration
+      if ( p()->legendary.toxic_onslaught->ok() )
+      {
+        const timespan_t trigger_duration = p()->legendary.toxic_onslaught->effectN( 1 ).time_value();
+        switch ( as<int>( p()->sim->rng().range( 1.0, 4.0 ) ) )
+        {
+        case 1:
+          p()->get_target_data( ab::target )->debuffs.vendetta->trigger( trigger_duration );
+          break;
+        case 2:
+          p()->buffs.adrenaline_rush->trigger( trigger_duration );
+          break;
+        case 3:
+          p()->buffs.shadow_blades->trigger( trigger_duration );
+          break;
+        default:
+          break;
+        }
+      }
+    }
+
     ab::execute();
 
     if ( ab::harmful )
@@ -1728,31 +1755,6 @@ public:
     if ( affected_by.blindside )
     {
       p()->buffs.blindside->expire();
-    }
-
-    // 12/04/2020 - Hotfix notes this is no longer consumed "while under the effects Stealth, Vanish, Subterfuge, Shadow Dance, and Shadowmeld"
-    if ( affected_by.sepsis && !p()->stealthed( STEALTH_ALL & ~STEALTH_SEPSIS ) )
-    {
-      p()->buffs.sepsis->decrement();
-      // 04/22/2021 -- TOCHECK: Rough implementation until more testing can be performed on PTR
-      if ( p()->legendary.toxic_onslaught->ok() )
-      {
-        const timespan_t trigger_duration = p()->legendary.toxic_onslaught->effectN( 1 ).time_value();
-        switch ( p()->specialization() )
-        {
-          case ROGUE_ASSASSINATION: 
-            p()->get_target_data( ab::execute_state->target )->debuffs.vendetta->extend_duration_or_trigger( trigger_duration );
-            break;
-          case ROGUE_OUTLAW:
-            p()->buffs.adrenaline_rush->extend_duration_or_trigger( trigger_duration );
-            break;
-          case ROGUE_SUBTLETY:
-            p()->buffs.shadow_blades->extend_duration_or_trigger( trigger_duration );
-            break;
-          default:
-            break;
-        }
-      }
     }
   }
 
@@ -5344,7 +5346,7 @@ struct vendetta_debuff_t : public damage_buff_t
   action_t* nothing_personal;
 
   vendetta_debuff_t( rogue_td_t& r ) :
-    damage_buff_t( r, "vendetta", r.source->find_specialization_spell( "Vendetta" ) ),
+    damage_buff_t( r, "vendetta", r.source->find_spell( 79140 ) ),
     nothing_personal( r.source->find_action( "nothing_personal" ) )
   {
     set_cooldown( timespan_t::zero() );
@@ -7501,7 +7503,7 @@ void rogue_t::init_spells()
   spec.wound_poison_2       = find_rank_spell( "Wound Poison", "Rank 2" );
 
   // Outlaw
-  spec.adrenaline_rush      = find_specialization_spell( "Adrenaline Rush" );
+  spec.adrenaline_rush      = find_spell( 13750 );
   spec.between_the_eyes     = find_specialization_spell( "Between the Eyes" );
   spec.between_the_eyes_2   = find_rank_spell( "Between the Eyes", "Rank 2" );
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
@@ -7521,7 +7523,7 @@ void rogue_t::init_spells()
   spec.deepening_shadows    = find_specialization_spell( "Deepening Shadows" );
   spec.find_weakness        = find_specialization_spell( "Find Weakness" );
   spec.relentless_strikes   = find_specialization_spell( "Relentless Strikes" );
-  spec.shadow_blades        = find_specialization_spell( "Shadow Blades" );
+  spec.shadow_blades        = find_spell( 121471 );
   spec.shadow_dance         = find_specialization_spell( "Shadow Dance" );
   spec.shadow_techniques    = find_specialization_spell( "Shadow Techniques" );
   spec.shadow_techniques_effect = find_spell( 196911 );
