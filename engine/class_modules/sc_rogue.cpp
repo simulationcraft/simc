@@ -310,6 +310,7 @@ public:
     buff_t* echoing_reprimand_2;
     buff_t* echoing_reprimand_3;
     buff_t* echoing_reprimand_4;
+    buff_t* echoing_reprimand_5;
     buff_t* flagellation;
     buff_t* flagellation_persist;
     buff_t* sepsis;
@@ -597,6 +598,12 @@ public:
     item_runeforge_t tiny_toxic_blade;
     item_runeforge_t invigorating_shadowdust;
 
+    // Generic Covenant
+    item_runeforge_t deathspike;
+    item_runeforge_t obedience;
+    item_runeforge_t resounding_clarity;
+    item_runeforge_t toxic_onslaught;
+
     // Assassination
     item_runeforge_t dashing_scoundrel;
     item_runeforge_t doomblade;
@@ -643,6 +650,8 @@ public:
     proc_t* echoing_reprimand_2;
     proc_t* echoing_reprimand_3;
     proc_t* echoing_reprimand_4;
+    proc_t* echoing_reprimand_5;
+    proc_t* flagellation_cp_spend;
     proc_t* serrated_bone_spike_refund;
     proc_t* serrated_bone_spike_waste;
     proc_t* serrated_bone_spike_waste_partial;
@@ -758,6 +767,8 @@ public:
   double    composite_melee_crit_chance() const override;
   double    composite_spell_crit_chance() const override;
   double    composite_spell_haste() const override;
+  double    composite_damage_versatility() const override;
+  double    composite_heal_versatility() const override;
   double    composite_leech() const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    composite_player_multiplier( school_e school ) const override;
@@ -787,7 +798,8 @@ public:
     {
       if ( ( current_cp == 2 && buffs.echoing_reprimand_2->check() ) ||
            ( current_cp == 3 && buffs.echoing_reprimand_3->check() ) ||
-           ( current_cp == 4 && buffs.echoing_reprimand_4->check() ) )
+           ( current_cp == 4 && buffs.echoing_reprimand_4->check() ) ||
+           ( current_cp == 5 && buffs.echoing_reprimand_5->check() ) )
       {
         return covenant.echoing_reprimand->effectN( 2 ).base_value();
       }
@@ -1093,11 +1105,13 @@ public:
     // Affecting Passive Auras
     // Put ability specific ones here; class/spec wide ones with labels that can effect things like trinkets in rogue_t::apply_affecting_auras.
     ab::apply_affecting_aura( p->spec.between_the_eyes_2 );
+    ab::apply_affecting_aura( p->spec.shuriken_storm_2 );
     ab::apply_affecting_aura( p->spell.sprint_2 );
     ab::apply_affecting_aura( p->talent.deeper_stratagem );
     ab::apply_affecting_aura( p->talent.master_poisoner );
     ab::apply_affecting_aura( p->talent.dancing_steel );
     ab::apply_affecting_aura( p->legendary.tiny_toxic_blade );
+    ab::apply_affecting_aura( p->legendary.deathspike );
 
     // Affecting Passive Conduits
     ab::apply_affecting_conduit( p->conduit.lashing_scars );
@@ -1303,7 +1317,8 @@ public:
     {
       if ( ( consume_cp == 2 && p()->buffs.echoing_reprimand_2->up() ) || 
            ( consume_cp == 3 && p()->buffs.echoing_reprimand_3->up() ) || 
-           ( consume_cp == 4 && p()->buffs.echoing_reprimand_4->up() ) )
+           ( consume_cp == 4 && p()->buffs.echoing_reprimand_4->up() ) ||
+           ( consume_cp == 5 && p()->buffs.echoing_reprimand_5->up() ) )
       {
         effective_cp = as<int>( p()->covenant.echoing_reprimand->effectN( 2 ).base_value() );
       }
@@ -1719,6 +1734,25 @@ public:
     if ( affected_by.sepsis && !p()->stealthed( STEALTH_ALL & ~STEALTH_SEPSIS ) )
     {
       p()->buffs.sepsis->decrement();
+      // 04/22/2021 -- TOCHECK: Rough implementation until more testing can be performed on PTR
+      if ( p()->legendary.toxic_onslaught->ok() )
+      {
+        const timespan_t trigger_duration = p()->legendary.toxic_onslaught->effectN( 1 ).time_value();
+        switch ( p()->specialization() )
+        {
+          case ROGUE_ASSASSINATION: 
+            p()->get_target_data( ab::execute_state->target )->debuffs.vendetta->extend_duration_or_trigger( trigger_duration );
+            break;
+          case ROGUE_OUTLAW:
+            p()->buffs.adrenaline_rush->extend_duration_or_trigger( trigger_duration );
+            break;
+          case ROGUE_SUBTLETY:
+            p()->buffs.shadow_blades->extend_duration_or_trigger( trigger_duration );
+            break;
+          default:
+            break;
+        }
+      }
     }
   }
 
@@ -4364,8 +4398,17 @@ struct echoing_reprimand_t : public rogue_attack_t
 
     if ( result_is_hit( state->result ) )
     {
-      unsigned buff_idx = static_cast<int>( rng().range( 0, as<double>( buffs.size() ) ) );
-      buffs[ buff_idx ]->trigger();
+      if ( p()->legendary.resounding_clarity->ok() )
+      {
+        p()->buffs.echoing_reprimand_5->trigger();
+        for ( buff_t* b : buffs )
+          b->trigger();
+      }
+      else
+      {
+        unsigned buff_idx = static_cast<int>( rng().range( 0, as<double>( buffs.size() ) ) );
+        buffs[ buff_idx ]->trigger();
+      }
     }
   }
 
@@ -4547,7 +4590,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
     { return p()->bugs; }
   };
 
-  double base_impact_cp;
+  int base_impact_cp;
   serrated_bone_spike_dot_t* serrated_bone_spike_dot;
 
   serrated_bone_spike_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
@@ -4559,7 +4602,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
     energize_type = action_energize::ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = 0.0; // Not done on execute but we keep the other energize settings for things like Dreadblades or Broadside
-    base_impact_cp = p->find_spell( 328548 )->effectN( 1 ).base_value();
+    base_impact_cp = as<int>( p->find_spell( 328548 )->effectN( 1 ).base_value() );
 
     serrated_bone_spike_dot = p->get_background_action<serrated_bone_spike_dot_t>( "serrated_bone_spike_dot" );
 
@@ -5811,7 +5854,10 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
   if ( p()->sim->debug )
     p()->sim->out_debug.printf( "Melee attack landed, so shadow techniques increment from %d to %d", p()->shadow_techniques, p()->shadow_techniques + 1 );
 
-  if ( ++p()->shadow_techniques >= 5 || ( p()->shadow_techniques == 4 && p()->rng().roll( 0.5 ) ) )
+  // 04/22/2021 -- Initial 9.1.0 testing appears to show the threshold is reduced to 4/3 vs. 5/4 on live
+  const unsigned shadow_techniques_upper = p()->dbc->ptr ? 4 : 5;
+  const unsigned shadow_techniques_lower = p()->dbc->ptr ? 3 : 4;
+  if ( ++p()->shadow_techniques >= shadow_techniques_upper || ( p()->shadow_techniques == shadow_techniques_lower && p()->rng().roll( 0.5 ) ) )
   {
     if ( p()->sim->debug )
       p()->sim->out_debug.printf( "Shadow techniques proc'd at %d, resetting counter to 0", p()->shadow_techniques );
@@ -5992,8 +6038,17 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     buff_t* debuff = p()->active.flagellation->debuff;
     if ( debuff && debuff->up() )
     {
-      p()->buffs.flagellation->trigger( as<int>(max_spend) );
+      p()->buffs.flagellation->trigger( as<int>( max_spend ) );
       p()->active.flagellation->trigger_secondary_action( debuff->player, as<int>( max_spend ), 0.75_s );
+      if ( p()->legendary.obedience->ok() )
+      {
+        const timespan_t obedience_cdr = p()->legendary.obedience->effectN( 1 ).time_value() * max_spend;
+        p()->cooldowns.flagellation->adjust( -obedience_cdr );
+      }
+      for ( int i = 0; i < max_spend; i++ )
+      {
+        p()->procs.flagellation_cp_spend->occur();
+      }
     }
   }
 
@@ -6023,6 +6078,13 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
         assert( p()->buffs.echoing_reprimand_4->check() );
         p()->buffs.echoing_reprimand_4->expire();
         p()->procs.echoing_reprimand_4->occur();
+        animacharged_cp_proc->occur();
+      }
+      else if ( base_cp == 5 )
+      {
+        assert( p()->buffs.echoing_reprimand_5->check() );
+        p()->buffs.echoing_reprimand_5->expire();
+        p()->procs.echoing_reprimand_5->occur();
         animacharged_cp_proc->occur();
       }
     }
@@ -6391,6 +6453,34 @@ double rogue_t::composite_spell_haste() const
   }
 
   return h;
+}
+
+// rogue_t::composite_damage_versatility ===================================
+
+double rogue_t::composite_damage_versatility() const
+{
+  double cdv = player_t::composite_damage_versatility();
+
+  if ( legendary.obedience->ok() && buffs.flagellation->check() )
+  {
+    cdv += buffs.flagellation->check_stack_value();
+  }
+
+  return cdv;
+}
+
+// rogue_t::composite_heal_versatility =====================================
+
+double rogue_t::composite_heal_versatility() const
+{
+  double chv = player_t::composite_heal_versatility();
+
+  if ( legendary.obedience->ok() && buffs.flagellation->check() )
+  {
+    chv += buffs.flagellation->check_stack_value();
+  }
+
+  return chv;
 }
 
 // rogue_t::composite_leech ===============================================
@@ -6954,6 +7044,8 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         return 3;
       else if ( buffs.echoing_reprimand_4->check() )
         return 4;
+      else if ( buffs.echoing_reprimand_5->check() )
+        return 5;
 
       return as<int>( consume_cp_max() );
     } );
@@ -7573,6 +7665,12 @@ void rogue_t::init_spells()
   legendary.tiny_toxic_blade          = find_runeforge_legendary( "Tiny Toxic Blade" );
   legendary.invigorating_shadowdust   = find_runeforge_legendary( "Invigorating Shadowdust" );
 
+  // Generic Covenant
+  legendary.deathspike                = find_runeforge_legendary( "Deathspike" );
+  legendary.obedience                 = find_runeforge_legendary( "Obedience" );
+  legendary.resounding_clarity        = find_runeforge_legendary( "Resounding Clarity" );
+  legendary.toxic_onslaught           = find_runeforge_legendary( "Toxic Onslaught" );
+
   // Assassination
   legendary.dashing_scoundrel         = find_runeforge_legendary( "Dashing Scoundrel" );
   legendary.doomblade                 = find_runeforge_legendary( "Doomblade" );
@@ -7706,6 +7804,9 @@ void rogue_t::init_procs()
   procs.echoing_reprimand_2 = get_proc( "Animacharged CP 2 Used"       );
   procs.echoing_reprimand_3 = get_proc( "Animacharged CP 3 Used"       );
   procs.echoing_reprimand_4 = get_proc( "Animacharged CP 4 Used"       );
+  procs.echoing_reprimand_5 = get_proc( "Animacharged CP 5 Used"       );
+
+  procs.flagellation_cp_spend = get_proc( "CP Spent During Flagellation" );
 
   procs.serrated_bone_spike_refund        = get_proc( "Serrated Bone Spike Refund" );
   procs.serrated_bone_spike_waste         = get_proc( "Serrated Bone Spike Refund Wasted" );
@@ -7961,6 +8062,12 @@ void rogue_t::create_buffs()
       } );
   buffs.flagellation_persist = make_buff( this, "flagellation_persist", covenant.flagellation_buff )
     ->add_invalidate( CACHE_HASTE );
+  
+  // 04/22/2021 -- TOCHECK: Currently doesn't appear to be present on the persist buff, probably unintentional
+  if ( legendary.obedience->ok() )
+  {
+    buffs.flagellation->add_invalidate( CACHE_VERSATILITY );
+  }
 
   buffs.echoing_reprimand_2 = make_buff( this, "echoing_reprimand_2", covenant.echoing_reprimand->ok() ?
                                          find_spell( 323558 ) : spell_data_t::not_found() )
@@ -7974,6 +8081,10 @@ void rogue_t::create_buffs()
                                          find_spell( 323560 ) : spell_data_t::not_found() )
                                           ->set_max_stack( 1 )
                                           ->set_default_value( 4 );
+  buffs.echoing_reprimand_5 = make_buff( this, "echoing_reprimand_5", covenant.echoing_reprimand->ok() && dbc->ptr ?
+                                         find_spell( 354838 ) : spell_data_t::not_found() )
+                                          ->set_max_stack( 1 )
+                                          ->set_default_value( 5 );
 
   buffs.sepsis = make_buff( this, "sepsis_buff", covenant.sepsis_buff );
   if( covenant.sepsis->ok() )
