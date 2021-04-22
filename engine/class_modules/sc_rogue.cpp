@@ -6984,10 +6984,10 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
       return make_mem_fn_expr( name_str, *this, &rogue_t::consume_cp_max );
 
     return make_fn_expr( name_str, [ this ]() {
-      for ( unsigned i = 0; i < buffs.echoing_reprimand.size(); i++ )
+      for ( auto buff : buffs.echoing_reprimand )
       {
-        if ( buffs.echoing_reprimand[ i ]->check() )
-          return buffs.echoing_reprimand[ i ]->check_value();
+        if ( buff->check() )
+          return buff->check_value();
       }
 
       return consume_cp_max();
