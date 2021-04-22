@@ -327,8 +327,6 @@ void unholy( player_t* p )
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=trinket.2.has_use_buff&(trinket.2.cooldown.duration%%45=0)" );
   precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!trinket.1.has_use_buff&trinket.2.has_use_buff|trinket.2.has_use_buff&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync))", "Estimates a trinkets value by comparing the cooldown of the trinket, divided by the duration of the buff it provides. Has a strength modifier to give a higher priority to strength trinkets, as well as a modifier for if a trinket will or will not sync with cooldowns." );
   precombat->add_action( "variable,name=full_cdr,value=talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=9", "Evaluates current setup for the quantity of Apocalypse CDR effects" );
-  precombat->add_action( "variable,name=partial_cdr,value=(talent.army_of_the_damned|conduit.convocation_of_the_dead)&!variable.full_cdr" );
-  precombat->add_action( "variable,name=no_cdr,value=!talent.army_of_the_damned&!conduit.convocation_of_the_dead" );
   precombat->add_action( "variable,name=epidemic_main_damage,value=dbc.effect.315517.ap_coefficent", "Check DBC for AP coefficents to reduce magic number use." );
   precombat->add_action( "variable,name=epidemic_cleave_damage,value=dbc.effect.872659.ap_coefficent" );
   precombat->add_action( "variable,name=wound_damage,value=dbc.effect.285232.ap_coefficent" );
@@ -384,7 +382,7 @@ void unholy( player_t* p )
   cooldowns->add_action( "unholy_blight,if=active_enemies>=2|fight_remains<21" );
   cooldowns->add_action( "dark_transformation,if=variable.st_planning&(dot.unholy_blight_dot.remains|!talent.unholy_blight)" );
   cooldowns->add_action( "dark_transformation,if=active_enemies>=2|fight_remains<21" );
-  cooldowns->add_action( "apocalypse,if=active_enemies=1&debuff.festering_wound.stack>=4" );
+  cooldowns->add_action( "apocalypse,if=active_enemies=1&debuff.festering_wound.stack>=4&(!variable.full_cdr|variable.full_cdr&(cooldown.unholy_blight.remains>10|cooldown.dark_transformation.remains>10))" );
   cooldowns->add_action( "apocalypse,target_if=max:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack>=4&!death_and_decay.ticking" );
   cooldowns->add_action( "summon_gargoyle,if=runic_power.deficit<14&(cooldown.unholy_blight.remains<10|dot.unholy_blight_dot.remains)" );
   cooldowns->add_action( "unholy_assault,if=variable.st_planning&debuff.festering_wound.stack<2&(pet.apoc_ghoul.active|buff.dark_transformation.up&cooldown.apocalypse.remains>10)" );
@@ -406,12 +404,10 @@ void unholy( player_t* p )
   generic->add_action( "death_coil,if=covenant.night_fae&runic_power.deficit<20&!variable.pooling_runic_power" );
   generic->add_action( "festering_strike,if=covenant.night_fae&cooldown.deaths_due.remains<10&debuff.festering_wound.stack<4&!variable.pooling_runes&(!death_and_decay.ticking|buff.deaths_due.stack=4)" );
   generic->add_action( "death_coil,if=runic_power.deficit<13|fight_remains<5&!debuff.festering_wound.up" );
-  generic->add_action( "wound_spender,if=debuff.festering_wound.stack>4&!variable.pooling_runes" );
-  generic->add_action( "wound_spender,if=!variable.pooling_runes&debuff.festering_wound.stack>=3&cooldown.apocalypse.remains_expected>2&(variable.full_cdr&!variable.apocalypse_timing|variable.partial_cdr|variable.no_cdr)" );
+  generic->add_action( "wound_spender,if=debuff.festering_wound.stack>3&!variable.pooling_runes" );
   generic->add_action( "wound_spender,if=debuff.festering_wound.up&fight_remains<(debuff.festering_wound.stack*gcd)" );
   generic->add_action( "death_coil,if=runic_power.deficit<20&!variable.pooling_runic_power" );
   generic->add_action( "festering_strike,if=debuff.festering_wound.stack<4&!variable.pooling_runes" );
-  generic->add_action( "festering_strike,if=!variable.pooling_runes&debuff.festering_wound.stack<4&cooldown.apocalypse.remains_expected<=2&(variable.full_cdr&variable.apocalypse_timing|variable.partial_cdr|variable.no_cdr)" );
   generic->add_action( "death_coil,if=!variable.pooling_runic_power" );
 
   generic_aoe->add_action( "wait_for_cooldown,name=soul_reaper,if=talent.soul_reaper&target.time_to_pct_35<5&fight_remains>5&cooldown.soul_reaper.remains<(gcd*0.75)&active_enemies<=3", "Generic AoE Priority" );
