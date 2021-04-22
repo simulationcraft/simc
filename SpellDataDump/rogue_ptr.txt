@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-03-31/38134, git build shadowlands 4d77f16e, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-03-31/38134, git build shadowlands f94acc54ba)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -2992,7 +2992,7 @@ Effects          :
                    Family Flags: 10, 19, 75, 104, 109, 124
 #3 (id=150620)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
-                   Affected Spells: Backstab (53), Shiv (5938), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560)
+                   Affected Spells: Backstab (53), Shiv (5938), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Echoing Reprimand (354838)
                    Family Flags: 2, 29, 82
 Description      : Draws upon surrounding shadows to empower your weapons, causing your combo point generating abilities to generate $s2 additional combo point and deal $s1% additional damage as Shadow for $d.
 Tooltip          : Combo point generating abilities generate $s2 additional combo point and deal $s1% additional damage as Shadow.
@@ -3040,7 +3040,7 @@ Attributes       : .......x x....... ........ x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=167769)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Backstab (53), Sinister Strike (1752), Mutilate (5374), Shiv (5938), Ambush (8676), Mutilate (27576), Envenom (32645), Killing Spree (51690), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Blindside (111240), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Eviscerate (196819), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Poison Bomb (255546), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Serrated Bone Spike (328547), Dreadblades (343142), Shadowstrike (345121)
+                   Affected Spells: Backstab (53), Sinister Strike (1752), Mutilate (5374), Shiv (5938), Ambush (8676), Mutilate (27576), Envenom (32645), Killing Spree (51690), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Blindside (111240), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Eviscerate (196819), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Poison Bomb (255546), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Serrated Bone Spike (328547), Dreadblades (343142), Shadowstrike (345121), Echoing Reprimand (354838)
                    Family Flags: 0, 1, 2, 9, 17, 25, 29, 33, 34, 35, 36, 50, 55, 60, 72, 75, 82, 86, 92, 104, 109, 115, 119, 127
 #2 (id=167770)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
@@ -3759,11 +3759,11 @@ Effects          :
                    Family Flags: 3, 9, 10, 26, 98, 101
 #3 (id=318640)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
-                   Affected Spells: Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560)
+                   Affected Spells: Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Echoing Reprimand (354838)
                    Family Flags: 82
 #4 (id=370530)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Ambush (8676), Pistol Shot (185763), Sinister Strike (193315), Sinister Strike (197834), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Sinister Strike (341541)
+                   Affected Spells: Ambush (8676), Pistol Shot (185763), Sinister Strike (193315), Sinister Strike (197834), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Sinister Strike (341541), Echoing Reprimand (354838)
                    Family Flags: 9, 82, 98, 101, 115, 118
 #5 (id=875455)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
@@ -4282,7 +4282,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289148)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Kidney Shot (408), Kick (1766), Gouge (1776), Cheap Shot (1833), Dispatch (2098), Shiv (5938), Ambush (8676), Blade Flurry (22482), Quaking Palm (107079), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Dismantle (207777), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Flagellation (323654), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Sinister Strike (341541), Dreadblades (343142)
+                   Affected Spells: Kidney Shot (408), Kick (1766), Gouge (1776), Cheap Shot (1833), Dispatch (2098), Shiv (5938), Ambush (8676), Blade Flurry (22482), Quaking Palm (107079), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Dismantle (207777), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Flagellation (323654), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Sinister Strike (341541), Dreadblades (343142), Echoing Reprimand (354838)
                    Family Flags: 3, 4, 9, 10, 17, 21, 26, 29, 45, 52, 82, 93, 98, 112, 118, 119, 124
 #2 (id=289149)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
@@ -5099,7 +5099,7 @@ Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=341220)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Backstab (53), Shiv (5938), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Flagellation (323654), Shadowstrike (345121)
+                   Affected Spells: Backstab (53), Shiv (5938), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Flagellation (323654), Shadowstrike (345121), Echoing Reprimand (354838)
                    Family Flags: 2, 29, 75, 82, 104, 109, 124, 127
 Description      : $@spelldesc212283
 Tooltip          : Your next combo point generator will critically strike.
@@ -10311,7 +10311,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=841560)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560)
+                   Affected Spells: Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Echoing Reprimand (354838)
                    Family Flags: 82
 Description      : Echoing Reprimand's damage is increased by |cFFFFFFFF$s1%|r.
 
@@ -11313,5 +11313,31 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Echoing Reprimand now animacharges $s1 combo points.
 Tooltip          : Echoing Reprimand now animacharges $s1 combo points.
+
+Name             : Echoing Reprimand (desc=Kyrian) (id=354838) [Spell Family (8)] 
+Class            : Rogue
+School           : Arcane
+Spell Type       : None
+Spell Level      : 48
+Duration         : 45 seconds
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Affecting spells : Shadow Blades (121471 effect#3), Nightstalker (130493 effect#1), Broadside (193356 effects: #3, #4), Acrobatic Strikes (196924 effect#1), Symbols of Death (227151 effect#1), Reverberation (341264 effect#1)
+Family Flags     : 82
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=887552)   : Apply Aura (6) | Unknown(494)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
+Description      : $@spelldesc323547
+Tooltip          : Rogue's fifth combo point is Animacharged. 
+
+Damaging finishing moves using exactly 5 combo points deal damage as if 7 combo points are consumed.
 
 

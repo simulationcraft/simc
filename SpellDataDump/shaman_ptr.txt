@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-03-31/38134, git build shadowlands 4d77f16e, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-03-31/38134, git build shadowlands f94acc54ba)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman

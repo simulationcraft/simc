@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-03-31/38134, git build shadowlands 4d77f16e, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-03-31/38134, git build shadowlands f94acc54ba)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -14007,6 +14007,29 @@ Effects          :
 Description      : $@spelldesc345208
 Tooltip          : Movement speed slowed by $w1%.
 
+Name             : Kindred Affinity NYI (id=354115) [Passive, Hidden] 
+Class            : Druid
+School           : Arcane
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=886314)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : You and your partner each gain Kindred Affinity when bonded, increasing a secondary stat based on your partner's Covenant. While your bond is empowered, Kindred Affinity is doubled.
+
+Kyrian: Mastery increased by 5%.
+Night Fae: Critical Strike increased by 5%.
+Venthyr: Haste increased by 5%.
+Necrolord: Versatility increased by 5%.
+
 Name             : Celestial Spirits (id=354118) [Spell Family (7), Passive, Hidden] 
 School           : Nature
 Spell Type       : None
@@ -14033,6 +14056,28 @@ Effects          :
                    Affected Spells: Convoke the Spirits (323764)
                    Family Flags: 16
 Description      : Convoke the Spirits' cooldown is reduced by ${$s1/1000*-1} seconds and has a chance to use an exceptional spell. Additionally, Convoke the Spirits' duration and number of spells cast are reduced by $s2%.
+
+Name             : Kindred Affinity (id=354345) 
+Class            : Druid
+School           : Arcane
+Spell Type       : None
+Range            : 50000 yards
+Duration         : Aura (infinite)
+Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   .....x.. x....... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ......x. ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31)
+Effects          :
+#1 (id=886697)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+Description      : $@spelldesc354115
+
+Tooltip          : Your partner is a part of the Venthyr Covenant. Your Haste is increased by $s1%.
 
 Name             : Owlkin Adept (desc=PvP Talent) (id=354541) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -14062,5 +14107,71 @@ Effects          :
                    Family Flags: 117
 Description      : Owlkin Frenzy reduces the cast time of your next Cyclone or Entangling Roots by $s1% and can stack up to $<stacks> times.
 Variables        : $stacks=${2}
+
+Name             : Kindred Affinity (id=354802) 
+Class            : Druid
+School           : Arcane
+Spell Type       : None
+Range            : 50000 yards
+Duration         : Aura (infinite)
+Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   .....x.. x....... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ......x. ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31)
+Effects          :
+#1 (id=887488)   : Apply Aura (6) | Modify Versatility% (471)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+Description      : $@spelldesc354115
+
+Tooltip          : Your partner is a part of the Necrolord Covenant. Your Versatility is increased by $s1%.
+
+Name             : Kindred Affinity (id=354805) 
+Class            : Druid
+School           : Arcane
+Spell Type       : None
+Range            : 50000 yards
+Duration         : Aura (infinite)
+Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   .....x.. x....... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ......x. ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31)
+Effects          :
+#1 (id=887492)   : Apply Aura (6) | Modify Combat Rating Multiplier (405)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Unknown(25)
+Description      : $@spelldesc354115
+
+Tooltip          : Your partner is a part of the Kyrian Covenant. Your Mastery is increased by $m1%.
+
+Name             : Kindred Affinity (id=354815) 
+Class            : Druid
+School           : Arcane
+Spell Type       : None
+Range            : 50000 yards
+Duration         : Aura (infinite)
+Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   .....x.. x....... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ......x. ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31)
+Effects          :
+#1 (id=887508)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Unknown(25)
+Description      : $@spelldesc354115
+
+Tooltip          : Your partner is a part of the Night Fae Covenant. Your Critical Strike Chance is increased by $s1%.
 
 
