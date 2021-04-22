@@ -1411,7 +1411,7 @@ class SpellDataGenerator(DataGenerator):
             ( 341541, 0 ),          # Sinister Strike third attack from Triple Threat conduit
             ( 328306, 0 ),          # Sepsis expiry direct damage hit
             ( 323660, 0 ),          # Slaughter instant damage
-            ( 323558, 0 ), ( 323559, 0 ), ( 323560, 0 ), # Echoing Reprimand buffs
+            ( 323558, 0 ), ( 323559, 0 ), ( 323560, 0 ), ( 354838, 0 ), # Echoing Reprimand buffs
             ( 324074, 0 ), ( 341277, 0 ), # Serrated Bone Spike secondary instant damage spells
             ( 328548, 0 ), ( 328549, 0 ), # Serrated Bone Spike combo point spells
             ( 340582, 0 ), ( 340583, 0 ), ( 340584, 0 ), # Guile Charm legendary buffs
