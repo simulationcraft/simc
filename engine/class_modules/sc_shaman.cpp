@@ -8639,6 +8639,7 @@ void shaman_t::init_action_list_elemental()
   precombat->add_talent( this, "Stormkeeper",
                          "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
                          "Use Stormkeeper precombat unless some adds will spawn soon." );
+  precombat->add_action( this, "Fire Elemental"
   precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
   precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
 
@@ -8655,8 +8656,9 @@ void shaman_t::init_action_list_elemental()
     def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
     def->add_action( "potion" );
     def->add_action( "use_items" );
-    def->add_action( this, "Flame Shock", "if=!ticking" );
+    def->add_action( this, "Flame Shock", "if=!covenant.necrolord&!ticking"  );
     def->add_action( this, "Fire Elemental" );
+    def->add_action( this, "Flame Shock", "if=!(ticking&pet.storm_elemental.active)"  );
     def->add_talent( this, "Storm Elemental" );
     // Racials
     def->add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
@@ -8727,7 +8729,7 @@ void shaman_t::init_action_list_elemental()
         this, "Stormkeeper",
         "if=talent.stormkeeper.enabled&(maelstrom<44)" );
     se_single_target->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled" );
-    se_single_target->add_action( this, "Lava Burst", "if=buff.wind_gust.stack<18|buff.lava_surge.up" );
+    se_single_target->add_action( this, "Lava Burst", "if=(runeforge.echoes_of_great_sundering.equipped)&!(buff.bloodlust.up&pet.storm_elemental.active)&buff.wind_gust.stack<18|buff.lava_surge.up" );
     se_single_target->add_action( this, "Lightning Bolt", "if=buff.stormkeeper.up" );
     se_single_target->add_action( this, "Earthquake", "if=buff.echoes_of_great_sundering.up" );
     se_single_target->add_action( this, "Earthquake",
@@ -8743,7 +8745,9 @@ void shaman_t::init_action_list_elemental()
         this, "Frost Shock",
                                "if=talent.icefury.enabled&talent.master_of_the_elements.enabled&buff.icefury.up&buff."
                                "master_of_the_elements.up" );
+    se_single_target->add_action( this, "Lava Burst", "if=buff.primordial_wave.up&(buff.lava_surge.up|buff.primordial_wave.remains<=2*gcd"  );
     se_single_target->add_action( this, "Lava Burst", "if=buff.ascendance.up" );
+    se_single_target->add_action( this, "Lightning Bolt", "if=(runeforge.echoes_of_great_sundering.equipped)&buff.bloodlust.up&pet.storm_elemental.active"  );
     se_single_target->add_action( this, "Lava Burst", "if=cooldown_react&!talent.master_of_the_elements.enabled" );
     se_single_target->add_talent( this, "Icefury",
                                "if=talent.icefury.enabled&!(maelstrom>75&cooldown.lava_burst.remains<=0)" );
