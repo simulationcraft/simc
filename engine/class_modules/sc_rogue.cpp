@@ -2094,8 +2094,7 @@ struct apply_poison_t : public action_t
   void execute() override
   {
     executed = true;
-    if ( sim -> log )
-      sim -> out_log.printf( "%s performs %s", player -> name(), name() );
+    sim->print_log( "{} performs {}", *player, *this );
   }
 
   bool ready() override
@@ -4208,10 +4207,6 @@ struct stealth_t : public rogue_spell_t
   void execute() override
   {
     rogue_spell_t::execute();
-
-    if ( sim -> log )
-      sim -> out_log.printf( "%s performs %s", p() -> name(), name() );
-
     p()->buffs.stealth->trigger();
     trigger_master_of_shadows();
   }
@@ -4870,37 +4865,25 @@ weapon_slot_e weapon_info_t::slot() const
 
 void weapon_info_t::callback_state( current_weapon_e weapon, bool state )
 {
-  sim_t* sim = item_data[ WEAPON_PRIMARY ] -> sim;
-
+  sim_t* sim = item_data[ WEAPON_PRIMARY ]->sim;
   for ( size_t i = 0, end = cb_data[ weapon ].size(); i < end; ++i )
   {
     if ( state )
     {
-      cb_data[ weapon ][ i ] -> activate();
-      if ( cb_data[ weapon ][ i ] -> rppm )
+      cb_data[ weapon ][ i ]->activate();
+      if ( cb_data[ weapon ][ i ]->rppm )
       {
-        cb_data[ weapon ][ i ] -> rppm -> set_accumulated_blp( timespan_t::zero() );
-        cb_data[ weapon ][ i ] -> rppm -> set_last_trigger_attempt( sim -> current_time() );
+        cb_data[ weapon ][ i ]->rppm->set_accumulated_blp( timespan_t::zero() );
+        cb_data[ weapon ][ i ]->rppm->set_last_trigger_attempt( sim->current_time() );
       }
-
-      if ( sim -> debug )
-      {
-        sim -> out_debug.printf( "%s enabling callback %s on item %s",
-            item_data[ WEAPON_PRIMARY ] -> player -> name(),
-            cb_data[ weapon ][ i ] -> effect.name().c_str(),
-            item_data[ weapon ] -> name() );
-      }
+      sim->print_debug( "{} enabling callback {} on {}", *item_data[ WEAPON_PRIMARY ]->player,
+                        cb_data[ weapon ][ i ]->effect, *item_data[ weapon ] );
     }
     else
     {
       cb_data[ weapon ][ i ] -> deactivate();
-      if ( sim -> debug )
-      {
-        sim -> out_debug.printf( "%s disabling callback %s on item %s",
-            item_data[ WEAPON_PRIMARY ] -> player -> name(),
-            cb_data[ weapon ][ i ] -> effect.name().c_str(),
-            item_data[ weapon ] -> name() );
-      }
+      sim->print_debug( "{} disabling callback {} on {}", *item_data[ WEAPON_PRIMARY ]->player,
+                        cb_data[ weapon ][ i ]->effect, *item_data[ weapon ] );
     }
   }
 }
@@ -5571,14 +5554,8 @@ void rogue_t::trigger_venomous_wounds_death( player_t* target )
       (unsigned)( td->dots.rupture->remains() / td->dots.rupture->current_action->base_tick_time );
   int replenish = as<int>( spec.venomous_wounds->effectN( 2 ).base_value() );
 
-  if ( sim->debug )
-  {
-    sim->out_debug.printf(
-        "%s venomous_wounds replenish on target death: full_ticks=%u, ticks_left=%u, vw_replenish=%d, "
-        "remaining_time=%.3f",
-        name(), full_ticks_remaining, td->dots.rupture->ticks_left(), replenish,
-        td->dots.rupture->remains().total_seconds() );
-  }
+  sim->print_debug( "{} venomous_wounds replenish on death: full_ticks={}, ticks_left={}, vw_replenish={}, remaining_time={}",
+                    *this, full_ticks_remaining, td->dots.rupture->ticks_left(), replenish, td->dots.rupture->remains() );
 
   resource_gain( RESOURCE_ENERGY, full_ticks_remaining * replenish, gains.venomous_wounds_death,
                  td->dots.rupture->current_action );
@@ -5819,17 +5796,14 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
   if ( !p()->spec.shadow_techniques->ok() || !ab::result_is_hit( state->result ) )
     return;
 
-  if ( p()->sim->debug )
-    p()->sim->out_debug.printf( "Melee attack landed, so shadow techniques increment from %d to %d", p()->shadow_techniques, p()->shadow_techniques + 1 );
+  p()->sim->print_debug( "{} trigger_shadow_techniques increment from {} to {}", *p(), p()->shadow_techniques, p()->shadow_techniques + 1 );
 
   // 04/22/2021 -- Initial 9.1.0 testing appears to show the threshold is reduced to 4/3 vs. 5/4 on live
   const unsigned shadow_techniques_upper = p()->dbc->ptr ? 4 : 5;
   const unsigned shadow_techniques_lower = p()->dbc->ptr ? 3 : 4;
   if ( ++p()->shadow_techniques >= shadow_techniques_upper || ( p()->shadow_techniques == shadow_techniques_lower && p()->rng().roll( 0.5 ) ) )
   {
-    if ( p()->sim->debug )
-      p()->sim->out_debug.printf( "Shadow techniques proc'd at %d, resetting counter to 0", p()->shadow_techniques );
-
+    p()->sim->print_debug( "{} trigger_shadow_techniques proc'd at {}, resetting counter to 0", *p(), p()->shadow_techniques );
     p()->shadow_techniques = 0;
     p()->resource_gain( RESOURCE_ENERGY, p()->spec.shadow_techniques_effect->effectN( 2 ).base_value(), p()->gains.shadow_techniques, state->action );
     trigger_combo_point_gain( as<int>( p()->spec.shadow_techniques_effect->effectN( 1 ).base_value() ), p()->gains.shadow_techniques );
@@ -5850,10 +5824,7 @@ void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* 
   p()->procs.weaponmaster->occur();
   p()->cooldowns.weaponmaster->start( p()->talent.weaponmaster->internal_cooldown() );
 
-  if ( p()->sim->debug )
-  {
-    p()->sim->out_debug.printf( "%s procs weaponmaster for %s", p()->name(), ab::name() );
-  }
+  p()->sim->print_debug( "{} procs weaponmaster for {}", *p(), *this );
 
   // Direct damage re-computes on execute
   action->trigger_secondary_action( state->target, cast_state( state )->get_combo_points() );
@@ -5986,10 +5957,8 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   ab::stats->consume_resource( RESOURCE_COMBO_POINT, max_spend );
   p()->resource_loss( RESOURCE_COMBO_POINT, max_spend );
 
-  if ( p()->sim->log )
-    p()->sim->out_log.printf( "%s consumes %.1f %s for %s (%.0f)", p()->name(), max_spend,
-                              util::resource_type_string( RESOURCE_COMBO_POINT ), ab::name(),
-                              p()->resources.current[ RESOURCE_COMBO_POINT ] );
+  p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), max_spend, util::resource_type_string( RESOURCE_COMBO_POINT ),
+                                                        *this, p()->resources.current[ RESOURCE_COMBO_POINT ] );
 
   if ( ab::name_str != "secret_technique" )
   {
@@ -7226,13 +7195,9 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
       if ( main_hand_attack && attack_x > shadow_techniques && attack_x <= 5 )
       {
         unsigned remaining_aa = attack_x - shadow_techniques;
-        if ( sim->debug ) sim->out_debug.printf( "Inside the shadowtechniques handler, attack_x = %u, remaining_aa = %u", attack_x, remaining_aa );
-
+        sim->print_debug( "{} time_to_sht: attack_x = {}, remaining_aa = {}", *this, attack_x, remaining_aa );
+        
         timespan_t mh_swing_time = main_hand_attack->execute_time();
-        if ( sim->debug )
-        {
-          sim->out_debug.printf( "mh_swing_time, %.3f", mh_swing_time.total_seconds() );
-        }
         timespan_t mh_next_swing = timespan_t::from_seconds( 0.0 );
         if ( main_hand_attack->execute_event == nullptr )
         {
@@ -7242,17 +7207,13 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         {
           mh_next_swing = main_hand_attack->execute_event->remains();
         }
-        if ( sim->debug ) sim->out_debug.printf( "Main hand next_swing in: %.3f", mh_next_swing.total_seconds() );
+        sim->print_debug( "{} time_to_sht: MH swing_time: {}, next_swing in: {}", *this, mh_swing_time, mh_next_swing );
 
         timespan_t oh_swing_time = timespan_t::from_seconds( 0.0 );
         timespan_t oh_next_swing = timespan_t::from_seconds( 0.0 );
         if ( off_hand_attack )
         {
           oh_swing_time = off_hand_attack->execute_time();
-          if ( sim->debug )
-          {
-            sim->out_debug.printf( "oh_swing_time:%.3f", oh_swing_time.total_seconds() );
-          }
           if ( off_hand_attack->execute_event == nullptr )
           {
             oh_next_swing = oh_swing_time;
@@ -7261,11 +7222,11 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
           {
             oh_next_swing = off_hand_attack->execute_event->remains();
           }
-          if ( sim->debug ) sim->out_debug.printf( "Off hand next_swing in: %.3f", oh_next_swing.total_seconds() );
+          sim->print_debug( "{} time_to_sht: OH swing_time: {}, next_swing in: {}", *this, oh_swing_time, oh_next_swing );
         }
         else
         {
-          if ( sim->debug ) sim->out_debug.printf( "Off hand attack not found, using only main hand timers" );
+          sim->print_debug( "{} time_to_sht: OH attack not found, using only MH timers", *this );
         }
 
         // Store upcoming attack timers and sort
@@ -7283,19 +7244,19 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
       else if ( main_hand_attack == nullptr )
       {
         return_value = timespan_t::from_seconds( 0.0 );
-        if ( sim->debug ) sim->out_debug.printf( "Main hand attack is required but was not found" );
+        sim->print_debug( "{} time_to_sht: MH attack is required but was not found", *this );
       }
       else if ( attack_x > 5 )
       {
         return_value = timespan_t::from_seconds( 0.0 );
-        if ( sim->debug ) sim->out_debug.printf( "Invalid value %u for attack_x (must be 5 or less)", attack_x );
+        sim->print_debug( "{} time_to_sht: Invalid value {} for attack_x (must be 5 or less)", *this, attack_x );
       }
       else
       {
         return_value = timespan_t::from_seconds( 0.0 );
-        if ( sim->debug ) sim->out_debug.printf( "attack_x value %u is not greater than shadow techniques count %u, returning %.3f", attack_x, shadow_techniques, return_value.total_seconds() );
+        sim->print_debug( "{} time_to_sht: attack_x value {} is not greater than shadow techniques count {}", *this, attack_x, shadow_techniques );
       }
-      if ( sim->debug ) sim->out_debug.printf( "Shadow techniques return value is: %.3f", return_value.total_seconds() );
+      sim->print_debug( "{} time_to_sht: return value is: {}", *this, return_value );
       return return_value;
     } );
   }
@@ -8494,12 +8455,8 @@ void rogue_t::swap_weapon( weapon_slot_e slot, current_weapon_e to_weapon, bool 
     return;
   }
 
-  if ( sim -> debug )
-  {
-    sim -> out_debug.printf( "%s performing weapon swap from %s to %s",
-        name(), weapon_data[ slot ].item_data[ ! to_weapon ] -> name(),
-        weapon_data[ slot ].item_data[ to_weapon ] -> name() );
-  }
+  sim->print_debug( "{} performing weapon swap from {} to {}", *this,
+                    *weapon_data[ slot ].item_data[ !to_weapon ], *weapon_data[ slot ].item_data[ to_weapon ] );
 
   // First, swap stats on actor, but only if it is in combat. Outside of combat (basically
   // during iteration reset) there is no need to adjust actor stats, as they are always reset to
