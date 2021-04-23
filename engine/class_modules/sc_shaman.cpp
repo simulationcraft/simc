@@ -8745,7 +8745,7 @@ void shaman_t::init_action_list_elemental()
         this, "Frost Shock",
                                "if=talent.icefury.enabled&talent.master_of_the_elements.enabled&buff.icefury.up&buff."
                                "master_of_the_elements.up" );
-    se_single_target->add_action( this, "Lava Burst", "if=buff.primordial_wave.up&(buff.lava_surge.up|buff.primordial_wave.remains<=2*gcd"  );
+    se_single_target->add_action( this, "Lava Burst", "if=buff.primordial_wave.up&(buff.lava_surge.up|buff.primordial_wave.remains<=2*gcd)"  );
     se_single_target->add_action( this, "Lava Burst", "if=buff.ascendance.up" );
     se_single_target->add_action( this, "Lightning Bolt", "if=(runeforge.echoes_of_great_sundering.equipped)&buff.bloodlust.up&pet.storm_elemental.active"  );
     se_single_target->add_action( this, "Lava Burst", "if=cooldown_react&!talent.master_of_the_elements.enabled" );
