@@ -49,7 +49,7 @@ hands=guilewind_stone_talons,id=178840,bonus_id=3535/4786/1540,enchant=eternal_s
 waist=stoic_guardsmans_belt,id=183025,bonus_id=4800/4786/1808/1498,gem_id=173130
 legs=ceremonial_parade_legguards,id=183002,bonus_id=4800/4786/1498
 feet=errant_crusaders_greaves,id=183027,bonus_id=7187/1498
-finger1=shadowghast_ring,id=178926,bonus_id=6959/6649/6648/6758/1532/6935,gem_id=173128,enchant=tenant_of_hste
+finger1=shadowghast_ring,id=178926,bonus_id=6959/6649/6648/6758/1532/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
 trinket1=stone_legion_heraldry,id=184027,bonus_id=4800/4786/1498
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
