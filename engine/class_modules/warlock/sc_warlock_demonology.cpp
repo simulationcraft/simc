@@ -277,15 +277,6 @@ struct demonbolt_t : public demonology_spell_t
     return et;
   }
 
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double da = demonology_spell_t::bonus_da( s );
-
-    da += p()->buffs.shadows_bite->check_value();
-
-    return da;
-  }
-
   void execute() override
   {
     demonology_spell_t::execute();
@@ -1082,9 +1073,6 @@ void warlock_t::create_buffs_demonology()
       make_buff( this, "nether_portal", talents.nether_portal )->set_duration( talents.nether_portal->duration() );
 
   // Azerite
-  buffs.shadows_bite = make_buff( this, "shadows_bite", azerite.shadows_bite )
-                           ->set_duration( find_spell( 272945 )->duration() )
-                           ->set_default_value( azerite.shadows_bite.value() );
   buffs.supreme_commander = make_buff<stat_buff_t>( this, "supreme_commander", azerite.supreme_commander )
                                 ->add_stat( STAT_INTELLECT, azerite.supreme_commander.value() )
                                 ->set_duration( find_spell( 279885 )->duration() );
@@ -1168,7 +1156,6 @@ void warlock_t::init_spells_demonology()
   talents.nether_portal       = find_talent_spell( "Nether Portal" );
 
   // BFA - Azerite
-  azerite.shadows_bite        = find_azerite_spell( "Shadow's Bite" );
   azerite.supreme_commander   = find_azerite_spell( "Supreme Commander" );
   azerite.explosive_potential = find_azerite_spell( "Explosive Potential" );
   azerite.baleful_invocation  = find_azerite_spell( "Baleful Invocation" );
