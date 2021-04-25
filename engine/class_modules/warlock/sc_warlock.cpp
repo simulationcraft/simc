@@ -591,7 +591,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     havoc_target( nullptr ),
     ua_target( nullptr ),
     havoc_spells(),
-    wracking_brilliance( false ),  // BFA - Azerite
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
     memory_of_lucid_dreams_accumulator( 0.0 ),  // BFA - Essence

@@ -78,7 +78,6 @@ public:
   player_t* havoc_target;
   player_t* ua_target; //Used for handling Unstable Affliction target swaps
   std::vector<action_t*> havoc_spells;  // Used for smarter target cache invalidation.
-  bool wracking_brilliance;             //TODO: Remove
   double agony_accumulator;
   double corruption_accumulator;
   double memory_of_lucid_dreams_accumulator;  //TODO: Remvoe
@@ -268,7 +267,6 @@ public:
     azerite_power_t dreadful_calling;
     azerite_power_t inevitable_demise;
     azerite_power_t sudden_onset;
-    azerite_power_t wracking_brilliance;
     azerite_power_t pandemic_invocation;
 
     // Destro
@@ -435,7 +433,6 @@ public:
     // BFA - Affliction Azerite
     propagate_const<buff_t*> cascading_calamity;
     propagate_const<buff_t*> id_azerite;
-    propagate_const<buff_t*> wracking_brilliance;
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_core;

@@ -246,20 +246,6 @@ struct agony_t : public affliction_spell_t
 
     if ( p()->agony_accumulator >= 1 )
     {
-      // BFA - Azerite
-      if ( p()->azerite.wracking_brilliance.ok() )
-      {
-        if ( p()->wracking_brilliance )
-        {
-          p()->wracking_brilliance = false;
-          p()->buffs.wracking_brilliance->trigger();
-        }
-        else
-        {
-          p()->wracking_brilliance = true;
-        }
-      }
-
       p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony );
       p()->agony_accumulator -= 1.0;
     }
@@ -949,10 +935,7 @@ void warlock_t::create_buffs_affliction()
                                  ->add_stat( STAT_HASTE_RATING, azerite.cascading_calamity.value() )
                                  ->set_duration( find_spell( 275378 )->duration() )
                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-  buffs.wracking_brilliance = make_buff<stat_buff_t>( this, "wracking_brilliance", azerite.wracking_brilliance )
-                                  ->add_stat( STAT_INTELLECT, azerite.wracking_brilliance.value() )
-                                  ->set_duration( find_spell( 272893 )->duration() )
-                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+
   buffs.malefic_wrath = make_buff( this, "malefic_wrath", find_spell( 337125 ) )->set_default_value_from_effect( 1 );
 }
 
@@ -1008,7 +991,6 @@ void warlock_t::init_spells_affliction()
   azerite.dreadful_calling    = find_azerite_spell( "Dreadful Calling" );
   azerite.inevitable_demise   = find_azerite_spell( "Inevitable Demise" );
   azerite.sudden_onset        = find_azerite_spell( "Sudden Onset" );
-  azerite.wracking_brilliance = find_azerite_spell( "Wracking Brilliance" );
   azerite.pandemic_invocation = find_azerite_spell( "Pandemic Invocation" );
 
   // Legendaries
