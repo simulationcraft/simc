@@ -546,46 +546,6 @@ static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
   }
 }
 
-// BFA - Essence
-void warlock_t::trigger_memory_of_lucid_dreams( double gain )
-{
-  if ( !azerite_essence.memory_of_lucid_dreams.enabled() )
-  {
-    return;
-  }
-
-  if ( gain <= 0 )
-  {
-    return;
-  }
-
-  if ( specialization() == SPEC_NONE )
-  {
-    return;
-  }
-
-  // Harcoded 15% proc chance.
-  if ( !rng().roll( 0.15 ) )
-  {
-    return;
-  }
-
-  memory_of_lucid_dreams_accumulator += gain * spells.memory_of_lucid_dreams_base->effectN( 1 ).percent();
-
-  double shards_to_give = floor( memory_of_lucid_dreams_accumulator );
-
-  if ( shards_to_give > 0 )
-  {
-    resource_gain( RESOURCE_SOUL_SHARD, shards_to_give, gains.memory_of_lucid_dreams );
-    memory_of_lucid_dreams_accumulator -= shards_to_give;
-
-    if ( azerite_essence.memory_of_lucid_dreams.rank() >= 3 )
-    {
-      player_t::buffs.lucid_dreams->trigger();
-    }
-  }
-}
-
 warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   : player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
@@ -593,7 +553,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     havoc_spells(),
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
-    memory_of_lucid_dreams_accumulator( 0.0 ),  // BFA - Essence
     strive_for_perfection_multiplier(),         // BFA - Essence
     vision_of_perfection_multiplier(),          // BFA - Essence
     active_pets( 0 ),
@@ -758,9 +717,6 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
 {
   if ( resource_type == RESOURCE_SOUL_SHARD )
   {
-    if ( player_t::buffs.memory_of_lucid_dreams->up() )  // BFA - Essence
-      amount *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
-
     int current_soul_shards = (int)resources.current[ resource_type ];
 
     // BFA - Azerite
@@ -976,10 +932,6 @@ void warlock_t::init_spells()
   covenant.scouring_tithe        = find_covenant_spell( "Scouring Tithe" );         // Kyrian
   covenant.soul_rot              = find_covenant_spell( "Soul Rot" );               // Night Fae
 
-  // BFA - Essence
-  azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-  spells.memory_of_lucid_dreams_base     = azerite_essence.memory_of_lucid_dreams.spell( 1U, essence_type::MINOR );
-
   azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
   strive_for_perfection_multiplier = 1.0 + azerite::vision_of_perfection_cdr( azerite_essence.vision_of_perfection );
   vision_of_perfection_multiplier =
@@ -1021,7 +973,6 @@ void warlock_t::init_gains()
   gains.scouring_tithe = get_gain( "souring_tithe" );
 
   gains.chaos_shards           = get_gain( "chaos_shards" );
-  gains.memory_of_lucid_dreams = get_gain( "memory_of_lucid_dreams" );
 }
 
 void warlock_t::init_procs()
@@ -1262,7 +1213,6 @@ void warlock_t::reset()
   ua_target                          = nullptr;
   agony_accumulator                  = rng().range( 0.0, 0.99 );
   corruption_accumulator             = rng().range( 0.0, 0.99 ); // TOCHECK - Unsure if it procs on application
-  memory_of_lucid_dreams_accumulator = 0.0;
   wild_imp_spawns.clear();
 }
 

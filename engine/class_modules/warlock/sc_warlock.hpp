@@ -80,7 +80,6 @@ public:
   std::vector<action_t*> havoc_spells;  // Used for smarter target cache invalidation.
   double agony_accumulator;
   double corruption_accumulator;
-  double memory_of_lucid_dreams_accumulator;  //TODO: Remvoe
   double strive_for_perfection_multiplier;    //TODO: Remove
   double vision_of_perfection_multiplier;     //TODO: Remove
   std::vector<event_t*> wild_imp_spawns;      // Used for tracking incoming imps from HoG
@@ -281,7 +280,6 @@ public:
   //TODO: Remove all of this
   struct
   {
-    azerite_essence_t memory_of_lucid_dreams;  // Memory of Lucid Dreams minor
     azerite_essence_t vision_of_perfection;
   } azerite_essence;
 
@@ -524,8 +522,6 @@ public:
     gain_t* demonic_meteor;      //TODO: Remove
     gain_t* baleful_invocation;  //TODO: Remove
 
-    gain_t* memory_of_lucid_dreams;  //TODO: Remove
-
     // SL
     gain_t* scouring_tithe;
   } gains;
@@ -568,7 +564,6 @@ public:
     spell_t* malefic_rapture_aoe; //Is this unused?
     spell_t* corruption_impact_effect; //Is this unused?
     spell_t* implosion_aoe; //Is this unused?
-    const spell_data_t* memory_of_lucid_dreams_base;  //TODO: Remove
   } spells;
 
   int initial_soul_shards;
@@ -594,7 +589,6 @@ public:
   int get_spawning_imp_count();
   timespan_t time_to_imps( int count );
   int imps_spawned_during( timespan_t period );
-  void trigger_memory_of_lucid_dreams( double gain );
   void vision_of_perfection_proc() override;
   void vision_of_perfection_proc_destro();
   void vision_of_perfection_proc_aff();
@@ -857,8 +851,6 @@ public:
 
     if ( resource_current == RESOURCE_SOUL_SHARD && p()->in_combat )
     {
-      p()->trigger_memory_of_lucid_dreams( last_resource_cost );  // BFA - Essence
-
       // lets try making all lock specs not react instantly to shard gen
       if ( p()->talents.soul_conduit->ok() )
       {

@@ -1311,7 +1311,6 @@ void warlock_t::create_apl_destruction()
   havoc->add_action( "shadowburn" );
   havoc->add_action( "incinerate,if=cast_time<havoc_remains" );
   ess->add_action( "worldvein_resonance" );
-  ess->add_action( "memory_of_lucid_dreams" );
   ess->add_action( "blood_of_the_enemy" );
   ess->add_action( "guardian_of_azeroth" );
   ess->add_action( "ripple_in_space" );
