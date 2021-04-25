@@ -128,26 +128,15 @@ struct shadow_bolt_t : public demonology_spell_t
 
 struct hand_of_guldan_t : public demonology_spell_t
 {
-  struct umbral_blaze_t : public demonology_spell_t
-  {
-    umbral_blaze_t( warlock_t* p ) : demonology_spell_t( "Umbral Blaze", p, p->find_spell( 273526 ) )
-    {
-      base_td      = p->azerite.umbral_blaze.value();  // BFA - Azerite
-      hasted_ticks = false;
-    }
-  };
-
   struct hog_impact_t : public demonology_spell_t
   {
     int shards_used;
-    umbral_blaze_t* blaze; // BFA - Azerite
     const spell_data_t* summon_spell;
     timespan_t meteor_time;
 
     hog_impact_t( warlock_t* p, util::string_view options_str )
       : demonology_spell_t( "Hand of Gul'dan (Impact)", p, p->find_spell( 86040 ) ),
         shards_used( 0 ),
-        blaze( new umbral_blaze_t( p ) ),
         summon_spell( p->find_spell( 104317 ) ),
         meteor_time( 400_ms )
     {
@@ -156,10 +145,6 @@ struct hand_of_guldan_t : public demonology_spell_t
       dual = 1;
 
       parse_effect_data( s_data->effectN( 1 ) );
-
-      // BFA - Azerite
-      if ( p->azerite.umbral_blaze.ok() )
-        add_child( blaze );
     }
 
     void execute() override
@@ -212,13 +197,6 @@ struct hand_of_guldan_t : public demonology_spell_t
         {
           auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
           this->p()->wild_imp_spawns.push_back( ev );
-        }
-
-        // BFA - Azerite
-        if ( p()->azerite.umbral_blaze.ok() && rng().roll( p()->find_spell( 273524 )->proc_chance() ) )
-        {
-          blaze->set_target( target );
-          blaze->execute();
         }
       }
     }

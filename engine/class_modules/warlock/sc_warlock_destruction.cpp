@@ -725,7 +725,6 @@ struct chaos_bolt_t : public destruction_spell_t
     // BFA - Azerite
     da += p()->azerite.chaotic_inferno.value( 2 );
     da += p()->buffs.crashing_chaos->check_value();
-    da += p()->buffs.crashing_chaos_vop->check_value();
     return da;
   }
 
