@@ -145,13 +145,11 @@ struct shadow_bolt_t : public affliction_spell_t
 struct agony_t : public affliction_spell_t
 {
   double chance;
-  bool pandemic_invocation_usable;  // BFA - Azerite
 
   agony_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Agony", p, p->spec.agony )
   {
     parse_options( options_str );
     may_crit                   = false;
-    pandemic_invocation_usable = false;  // BFA - Azerite
 
     dot_max_stack = as<int>( data().max_stacks() + p->spec.agony_2->effectN( 1 ).base_value() );
     dot_duration += p->conduit.rolling_agony.time_value();
@@ -179,19 +177,7 @@ struct agony_t : public affliction_spell_t
 
   void execute() override
   {
-    // BFA - Azerite
-    // Do checks for Pandemic Invocation before parent execute() is called so we get the correct DoT states.
-    if ( p()->azerite.pandemic_invocation.ok() && td( target )->dots_agony->is_ticking() &&
-         td( target )->dots_agony->remains() <= p()->azerite.pandemic_invocation.spell_ref().effectN( 2 ).time_value() )
-      pandemic_invocation_usable = true;
-
     affliction_spell_t::execute();
-
-    if ( pandemic_invocation_usable )
-    {
-      p()->active.pandemic_invocation->schedule_execute();
-      pandemic_invocation_usable = false;
-    }
 
     //There is TECHNICALLY a prepatch bug on PTR (as of 9/23) where having both the talent and the azerite starts at 3 stacks
     //Making a note of it here in this comment but not going to implement it at this time
@@ -268,8 +254,6 @@ struct agony_t : public affliction_spell_t
 
 struct corruption_t : public affliction_spell_t
 {
-  bool pandemic_invocation_usable;
-
   corruption_t( warlock_t* p, util::string_view options_str, bool seed_action )
     : affliction_spell_t( "corruption", p, p->find_spell( 172 ) )   // 172 triggers 146739
   {
@@ -277,8 +261,6 @@ struct corruption_t : public affliction_spell_t
     parse_options( options_str );
     may_crit                   = false;
     tick_zero                  = false;
-    pandemic_invocation_usable = false;  // BFA - Azerite
-
 
     if ( !p->spec.corruption_3->ok() || seed_action )
     {
@@ -337,26 +319,6 @@ struct corruption_t : public affliction_spell_t
       }
     }
     affliction_spell_t::tick( d );
-  }
-
-  void execute() override
-  {
-    // BFA - Azerite
-    // Do checks for Pandemic Invocation before parent execute() is called so we get the correct DoT states.
-    if ( p()->azerite.pandemic_invocation.ok() && td( target )->dots_corruption->is_ticking() &&
-         td( target )->dots_corruption->remains() <=
-             p()->azerite.pandemic_invocation.spell_ref().effectN( 2 ).time_value() )
-      pandemic_invocation_usable = true;
-
-    affliction_spell_t::execute();
-
-    if ( pandemic_invocation_usable )
-    {
-      p()->active.pandemic_invocation->schedule_execute();
-      pandemic_invocation_usable = false;
-    }
-
-
   }
 
   double composite_ta_multiplier(const action_state_t* s) const override
@@ -748,32 +710,11 @@ struct haunt_t : public affliction_spell_t
 
 struct siphon_life_t : public affliction_spell_t
 {
-  bool pandemic_invocation_usable;
-
   siphon_life_t( warlock_t* p, util::string_view options_str )
     : affliction_spell_t( "siphon_life", p, p->talents.siphon_life )
   {
     parse_options( options_str );
     may_crit                   = false;
-    pandemic_invocation_usable = false;  // BFA - Azerite
-  }
-
-  void execute() override
-  {
-    // BFA - Azerite
-    // Do checks for Pandemic Invocation before parent execute() is called so we get the correct DoT states.
-    if ( p()->azerite.pandemic_invocation.ok() && td( target )->dots_siphon_life->is_ticking() &&
-         td( target )->dots_siphon_life->remains() <=
-             p()->azerite.pandemic_invocation.spell_ref().effectN( 2 ).time_value() )
-      pandemic_invocation_usable = true;
-
-    affliction_spell_t::execute();
-
-    if ( pandemic_invocation_usable )
-    {
-      p()->active.pandemic_invocation->schedule_execute();
-      pandemic_invocation_usable = false;
-    }
   }
 };
 
@@ -824,26 +765,6 @@ struct vile_taint_t : public affliction_spell_t
 
     hasted_ticks = tick_zero = true;
     aoe                      = -1;
-  }
-};
-
-// BFA - Azerite
-// TOCHECK: Does this damage proc affect Seed of Corruption?
-struct pandemic_invocation_t : public affliction_spell_t
-{
-  pandemic_invocation_t( warlock_t* p ) : affliction_spell_t( "Pandemic Invocation", p, p->find_spell( 289367 ) )
-  {
-    background = true;
-
-    base_dd_min = base_dd_max = p->azerite.pandemic_invocation.value();
-  }
-
-  void execute() override
-  {
-    affliction_spell_t::execute();
-
-    if ( p()->rng().roll( p()->azerite.pandemic_invocation.spell_ref().effectN( 3 ).percent() / 100.0 ) )
-      p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.pandemic_invocation );
   }
 };
 
@@ -974,7 +895,6 @@ void warlock_t::init_spells_affliction()
   azerite.dreadful_calling    = find_azerite_spell( "Dreadful Calling" );
   azerite.inevitable_demise   = find_azerite_spell( "Inevitable Demise" );
   azerite.sudden_onset        = find_azerite_spell( "Sudden Onset" );
-  azerite.pandemic_invocation = find_azerite_spell( "Pandemic Invocation" );
 
   // Legendaries
   legendary.malefic_wrath              = find_runeforge_legendary( "Malefic Wrath" );
@@ -986,9 +906,6 @@ void warlock_t::init_spells_affliction()
   conduit.corrupting_leer    = find_conduit_spell( "Corrupting Leer" );
   conduit.focused_malignancy = find_conduit_spell( "Focused Malignancy" );
   conduit.rolling_agony      = find_conduit_spell( "Rolling Agony" );
-
-  // Actives
-  active.pandemic_invocation = new pandemic_invocation_t( this );
 }
 
 void warlock_t::init_gains_affliction()
@@ -997,8 +914,6 @@ void warlock_t::init_gains_affliction()
   gains.seed_of_corruption         = get_gain( "seed_of_corruption" );
   gains.unstable_affliction_refund = get_gain( "unstable_affliction_refund" );
   gains.drain_soul                 = get_gain( "drain_soul" );
-  // BFA - Azerite
-  gains.pandemic_invocation = get_gain( "pandemic_invocation" );
 }
 
 void warlock_t::init_rng_affliction()

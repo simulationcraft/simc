@@ -126,7 +126,6 @@ public:
   //TODO: Refactor or remove this whole damn section
   struct active_t
   {
-    spell_t* pandemic_invocation;  // BFA - Azerite
     spell_t* corruption; //TODO: SL Beta - This is currently unused, was this meant to be the definition for the primary active ability? Fix this!
     spell_t* roaring_blaze; //TODO: SL Beta - This is currently unused, is there any need to define it or is debuffs_roaring_blaze sufficient?
     spell_t* internal_combustion; //TODO: SL Beta - This is currently unused, is there any need to define it or is talents.internal_combustion sufficient?
@@ -257,7 +256,6 @@ public:
     azerite_power_t dreadful_calling;
     azerite_power_t inevitable_demise;
     azerite_power_t sudden_onset;
-    azerite_power_t pandemic_invocation;
 
     // Destro
     azerite_power_t bursting_flare;
@@ -486,7 +484,6 @@ public:
     gain_t* drain_soul;
     gain_t* seed_of_corruption;
     gain_t* unstable_affliction_refund;
-    gain_t* pandemic_invocation;  //TODO: Remove
 
     gain_t* conflagrate;
     gain_t* incinerate;
