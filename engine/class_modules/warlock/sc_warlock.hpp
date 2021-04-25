@@ -236,7 +236,6 @@ public:
   struct azerite_t
   {
     // Aff
-    azerite_power_t inevitable_demise;
     azerite_power_t sudden_onset;
 
     // Destro
@@ -395,10 +394,6 @@ public:
     propagate_const<buff_t*> nightfall;
     propagate_const<buff_t*> inevitable_demise;
     propagate_const<buff_t*> dark_soul_misery;
-
-    //TODO: Remove
-    // BFA - Affliction Azerite
-    propagate_const<buff_t*> id_azerite;
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_core;

@@ -37,8 +37,6 @@ struct drain_life_t : public warlock_spell_t
     {
       double ta = warlock_spell_t::bonus_ta( s );
 
-      ta += p()->buffs.id_azerite->check_stack_value();
-
       if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
         ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
 
@@ -93,12 +91,6 @@ struct drain_life_t : public warlock_spell_t
         p()->buffs.inevitable_demise->expire();
     }
 
-    if ( p()->azerite.inevitable_demise.ok() && p()->buffs.id_azerite->check() )
-    {
-      if ( p()->buffs.drain_life->check() )
-        p()->buffs.id_azerite->expire();
-    }
-
     warlock_spell_t::execute();
 
     p()->buffs.drain_life->trigger();
@@ -126,8 +118,6 @@ struct drain_life_t : public warlock_spell_t
   double bonus_ta( const action_state_t* s ) const override
   {
     double ta = warlock_spell_t::bonus_ta( s );
-
-    ta += p()->buffs.id_azerite->check_stack_value();
 
     if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
       ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
@@ -162,7 +152,6 @@ struct drain_life_t : public warlock_spell_t
   {
     p()->buffs.drain_life->expire();
     p()->buffs.inevitable_demise->expire();
-    p()->buffs.id_azerite->expire();
 
     warlock_spell_t::last_tick( d );
 
