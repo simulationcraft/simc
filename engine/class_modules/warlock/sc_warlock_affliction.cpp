@@ -352,11 +352,6 @@ struct unstable_affliction_t : public affliction_spell_t
     {
       td( p()->ua_target )->dots_unstable_affliction->cancel();
     }
-    else if ( p()->ua_target && td( p()->ua_target )->dots_unstable_affliction->is_ticking() &&
-      p()->azerite.cascading_calamity.ok() )
-    {
-      p()->buffs.cascading_calamity->trigger();
-    }
 
     p()->ua_target = target;
 
@@ -849,11 +844,6 @@ void warlock_t::create_buffs_affliction()
                          // Inevitable Demise has a built in 25% reduction to the value of ranks 2 and 3. This is applied as a flat multiplier to the total value.
                          ->set_default_value(azerite.inevitable_demise.value() * ((1.0 + 0.75 * (azerite.inevitable_demise.n_items() - 1)) / azerite.inevitable_demise.n_items()));
 
-  buffs.cascading_calamity = make_buff<stat_buff_t>( this, "cascading_calamity", azerite.cascading_calamity )
-                                 ->add_stat( STAT_HASTE_RATING, azerite.cascading_calamity.value() )
-                                 ->set_duration( find_spell( 275378 )->duration() )
-                                 ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-
   buffs.malefic_wrath = make_buff( this, "malefic_wrath", find_spell( 337125 ) )->set_default_value_from_effect( 1 );
 }
 
@@ -891,7 +881,6 @@ void warlock_t::init_spells_affliction()
   talents.dark_soul_misery    = find_talent_spell( "Dark Soul: Misery" );
 
   // BFA - Azerite
-  azerite.cascading_calamity  = find_azerite_spell( "Cascading Calamity" );
   azerite.dreadful_calling    = find_azerite_spell( "Dreadful Calling" );
   azerite.inevitable_demise   = find_azerite_spell( "Inevitable Demise" );
   azerite.sudden_onset        = find_azerite_spell( "Sudden Onset" );

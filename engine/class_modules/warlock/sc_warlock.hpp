@@ -236,7 +236,6 @@ public:
   struct azerite_t
   {
     // Aff
-    azerite_power_t cascading_calamity;
     azerite_power_t dreadful_calling;
     azerite_power_t inevitable_demise;
     azerite_power_t sudden_onset;
@@ -400,7 +399,6 @@ public:
 
     //TODO: Remove
     // BFA - Affliction Azerite
-    propagate_const<buff_t*> cascading_calamity;
     propagate_const<buff_t*> id_azerite;
 
     // Demonology Buffs
