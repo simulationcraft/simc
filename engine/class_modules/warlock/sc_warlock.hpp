@@ -58,7 +58,6 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_doom;
 
   propagate_const<buff_t*> debuffs_from_the_shadows;
-  propagate_const<buff_t*> debuffs_jaws_of_shadow;  //TODO: Remove
 
   double soc_threshold; //Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
