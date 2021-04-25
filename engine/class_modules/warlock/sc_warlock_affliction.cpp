@@ -356,9 +356,6 @@ struct unstable_affliction_t : public affliction_spell_t
     p()->ua_target = target;
 
     affliction_spell_t::execute();
-
-    if ( p()->azerite.dreadful_calling.ok() )
-      p()->cooldowns.darkglare->adjust( (-1 * p()->azerite.dreadful_calling.spell_ref().effectN( 1 ).time_value() ) );
   }
 
   void last_tick( dot_t* d) override
@@ -373,13 +370,6 @@ struct unstable_affliction_t : public affliction_spell_t
     p()->malignancy_reduction_helper();
 
     affliction_spell_t::tick( d );
-  }
-
-  double bonus_ta( const action_state_t* s ) const override
-  {
-    double ta = affliction_spell_t::bonus_ta( s );
-    ta += p()->azerite.dreadful_calling.value( 2 );
-    return ta;
   }
 };
 
@@ -881,7 +871,6 @@ void warlock_t::init_spells_affliction()
   talents.dark_soul_misery    = find_talent_spell( "Dark Soul: Misery" );
 
   // BFA - Azerite
-  azerite.dreadful_calling    = find_azerite_spell( "Dreadful Calling" );
   azerite.inevitable_demise   = find_azerite_spell( "Inevitable Demise" );
   azerite.sudden_onset        = find_azerite_spell( "Sudden Onset" );
 
