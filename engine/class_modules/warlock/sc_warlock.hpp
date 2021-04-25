@@ -126,9 +126,6 @@ public:
   //TODO: Refactor or remove this whole damn section
   struct active_t
   {
-    spell_t* corruption; //TODO: SL Beta - This is currently unused, was this meant to be the definition for the primary active ability? Fix this!
-    spell_t* roaring_blaze; //TODO: SL Beta - This is currently unused, is there any need to define it or is debuffs_roaring_blaze sufficient?
-    spell_t* internal_combustion; //TODO: SL Beta - This is currently unused, is there any need to define it or is talents.internal_combustion sufficient?
     spell_t* rain_of_fire; //TODO: SL Beta - This is the definition for the ground aoe event, should we move this?
     spell_t* bilescourge_bombers; //TODO: SL Beta - This is the definition for the ground aoe event, should we move this?
     spell_t* summon_random_demon; //TODO: SL Beta - This is the definition for a helper action for Nether Portal, should we move this?
