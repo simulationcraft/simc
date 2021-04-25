@@ -978,8 +978,6 @@ struct demonfire_t : public warlock_pet_spell_t
   {
     double da = warlock_pet_spell_t::bonus_da( s );
 
-    da += p()->o()->azerite.baleful_invocation.value( 1 );
-
     if ( p()->buffs.demonic_consumption->check() )
     {
       da += p()->buffs.demonic_consumption->check_value();

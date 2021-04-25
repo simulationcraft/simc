@@ -529,11 +529,6 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
       p()->resource_gain( RESOURCE_SOUL_SHARD, p()->spec.summon_demonic_tyrant_2->effectN( 1 ).base_value() / 10.0,
                           p()->gains.summon_demonic_tyrant );
 
-    // BFA - Azerite
-    if ( p()->azerite.baleful_invocation.ok() )
-      p()->resource_gain( RESOURCE_SOUL_SHARD, p()->find_spell( 287060 )->effectN( 1 ).base_value() / 10.0,
-                          p()->gains.baleful_invocation );
-
     demonic_consumption_added_damage = 0;
 
     for ( auto& pet : p()->pet_list )
@@ -1144,9 +1139,6 @@ void warlock_t::init_spells_demonology()
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
   talents.nether_portal       = find_talent_spell( "Nether Portal" );
 
-  // BFA - Azerite
-  azerite.baleful_invocation  = find_azerite_spell( "Baleful Invocation" );
-
   // Legendaries
   legendary.balespiders_burning_core       = find_runeforge_legendary( "Balespider's Burning Core" );
   legendary.forces_of_the_horned_nightmare = find_runeforge_legendary( "Forces of the Horned Nightmare" );
@@ -1171,7 +1163,6 @@ void warlock_t::init_spells_demonology()
 
 void warlock_t::init_gains_demonology()
 {
-  gains.baleful_invocation    = get_gain( "baleful_invocation" );
   gains.summon_demonic_tyrant = get_gain( "summon_demonic_tyrant" );
 }
 

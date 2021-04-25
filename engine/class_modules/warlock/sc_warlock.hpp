@@ -235,9 +235,6 @@ public:
   // Azerite traits
   struct azerite_t
   {
-    // Demo
-    azerite_power_t baleful_invocation;
-
     // Aff
     azerite_power_t cascading_calamity;
     azerite_power_t dreadful_calling;
@@ -484,7 +481,6 @@ public:
     gain_t* shadow_bolt;
     gain_t* doom;
     gain_t* summon_demonic_tyrant;
-    gain_t* baleful_invocation;  //TODO: Remove
 
     // SL
     gain_t* scouring_tithe;
