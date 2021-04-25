@@ -42,7 +42,6 @@ struct warlock_td_t : public actor_target_data_t
 
   // Destro
   propagate_const<dot_t*> dots_immolate;
-  propagate_const<dot_t*> dots_roaring_blaze; //TODO: Remove
 
   propagate_const<buff_t*> debuffs_shadowburn;
   propagate_const<buff_t*> debuffs_eradication;
