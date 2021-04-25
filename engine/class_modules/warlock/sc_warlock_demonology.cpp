@@ -203,9 +203,6 @@ struct hand_of_guldan_t : public demonology_spell_t
       // Still keep it in impact instead of execute because of travel delay.
       if ( result_is_hit( s->result ) && s->target == target )
       {
-        // BFA - Trinket
-        expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, p() );
-
 
         //Wild Imp spawns appear to have been sped up in Shadowlands. Last tested 2021-04-16.
         //Current behavior: HoG will spawn a meteor on cast finish. Travel time in spell data is 0.7 seconds.
@@ -802,13 +799,6 @@ struct doom_t : public demonology_spell_t
   {
     return s->action->tick_time( s ); //Doom is a case where dot duration scales with haste so use the tick time to get the current correct value
   }
-
-  void tick( dot_t* d ) override
-  {
-    demonology_spell_t::tick( d );
-
-    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, p() );
-  }
 };
 
 struct soul_strike_t : public demonology_spell_t
@@ -1121,7 +1111,6 @@ void warlock_t::create_buffs_demonology()
                              {
                                active.summon_random_demon->execute();
                              }
-                             expansion::bfa::trigger_leyshocks_grand_compilation( STAT_MASTERY_RATING, this );
                            } );
 
   buffs.nether_portal =

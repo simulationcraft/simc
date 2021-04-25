@@ -20,8 +20,7 @@ action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
 
 struct warlock_td_t : public actor_target_data_t
 {
-  //TODO: Remove Leyshocks
-
+  // Cross-spec
   propagate_const<dot_t*> dots_drain_life;
   propagate_const<dot_t*> dots_drain_life_aoe; // SL - Soul Rot covenant effect
   propagate_const<dot_t*> dots_scouring_tithe;
@@ -1157,7 +1156,6 @@ struct imp_delay_event_t : public player_event_t
     warlock_t* p = static_cast<warlock_t*>( player() );
 
     p->warlock_pet_list.wild_imps.spawn();
-    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, p );
 
     // Remove this event from the vector
     auto it = std::find( p->wild_imp_spawns.begin(), p->wild_imp_spawns.end(), this );

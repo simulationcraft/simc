@@ -259,10 +259,6 @@ struct immolate_t : public destruction_spell_t
     if ( d->state->result_amount > 0.0 && p()->azerite.flashpoint.ok() &&
          d->target->health_percentage() > p()->flashpoint_threshold * 100 )
       p()->buffs.flashpoint->trigger();
-
-    // BFA - Trinket
-    // For some reason this triggers on every tick
-    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, p() );
   }
 
   void last_tick( dot_t* d ) override
@@ -900,21 +896,6 @@ struct channel_demonfire_tick_t : public destruction_spell_t
 
     aoe                 = -1;
     base_aoe_multiplier = data().effectN( 2 ).sp_coeff() / data().effectN( 1 ).sp_coeff();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    destruction_spell_t::impact( s );
-
-    // BFA - Trinket
-    if ( s->chain_target == 0 )
-    {
-      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_MASTERY_RATING, p() );
-    }
-    else
-    {
-      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, p() );
-    }
   }
 };
 
