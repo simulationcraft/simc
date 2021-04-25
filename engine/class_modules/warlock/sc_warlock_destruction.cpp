@@ -800,8 +800,6 @@ struct summon_infernal_t : public destruction_spell_t
     // BFA - Azerite
     if ( p()->azerite.crashing_chaos.ok() )
     {
-      // Cancel the Vision of Perfection version if necessary
-      p()->buffs.crashing_chaos_vop->expire();
       p()->buffs.crashing_chaos->trigger( p()->buffs.crashing_chaos->max_stack() );
     }
   }
