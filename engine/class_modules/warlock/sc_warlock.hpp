@@ -20,7 +20,7 @@ action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
 
 struct warlock_td_t : public actor_target_data_t
 {
-  //TODO: SL Beta - Should Leyshocks triggers be removed from the modules?
+  //TODO: Remove Leyshocks
 
   propagate_const<dot_t*> dots_drain_life;
   propagate_const<dot_t*> dots_drain_life_aoe; // SL - Soul Rot covenant effect
@@ -30,7 +30,7 @@ struct warlock_td_t : public actor_target_data_t
 
   // Aff
   propagate_const<dot_t*> dots_agony;
-  propagate_const<dot_t*> dots_corruption; //TODO: SL Beta - For bookkeeping purposes this is technically available to all specs
+  propagate_const<dot_t*> dots_corruption; //TODO: Add offspec corruption
   propagate_const<dot_t*> dots_seed_of_corruption;
   propagate_const<dot_t*> dots_drain_soul;
   propagate_const<dot_t*> dots_siphon_life;
@@ -39,12 +39,12 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_vile_taint;
 
   propagate_const<buff_t*> debuffs_haunt;
-  propagate_const<buff_t*> debuffs_shadow_embrace;
+  propagate_const<buff_t*> debuffs_shadow_embrace; //TODO: 9.1 PTR - Modify SE behavior (see UA)
 
   // Destro
   propagate_const<dot_t*> dots_immolate;
-  propagate_const<dot_t*> dots_channel_demonfire; //TODO: SL Beta - is a CDF target data needed?
-  propagate_const<dot_t*> dots_roaring_blaze; //TODO: SL Beta - may only need debuffs_roaring_blaze now
+  propagate_const<dot_t*> dots_channel_demonfire; //TODO: Remove
+  propagate_const<dot_t*> dots_roaring_blaze; //TODO: Remove
 
   propagate_const<buff_t*> debuffs_shadowburn;
   propagate_const<buff_t*> debuffs_eradication;
@@ -55,14 +55,14 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_odr;
 
   // SL - Conduit
-  propagate_const<buff_t*> debuffs_combusting_engine;
+  propagate_const<buff_t*> debuffs_combusting_engine; //TODO: Check Roaring Blaze + Combusting Engine interaction 
 
   // Demo
   propagate_const<dot_t*> dots_doom;
-  propagate_const<dot_t*> dots_umbral_blaze;  // BFA - Azerite
+  propagate_const<dot_t*> dots_umbral_blaze;  //TODO: Remove
 
   propagate_const<buff_t*> debuffs_from_the_shadows;
-  propagate_const<buff_t*> debuffs_jaws_of_shadow;  // BFA - Azerite
+  propagate_const<buff_t*> debuffs_jaws_of_shadow;  //TODO: Remove
 
   double soc_threshold; //Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
@@ -83,18 +83,18 @@ public:
   player_t* havoc_target;
   player_t* ua_target; //Used for handling Unstable Affliction target swaps
   std::vector<action_t*> havoc_spells;  // Used for smarter target cache invalidation.
-  bool wracking_brilliance;             // BFA - Azerite
+  bool wracking_brilliance;             //TODO: Remove
   double agony_accumulator;
   double corruption_accumulator;
-  double memory_of_lucid_dreams_accumulator;  // BFA - Essences
-  double strive_for_perfection_multiplier;    // BFA - Essences
-  double vision_of_perfection_multiplier;     // BFA - Essences
+  double memory_of_lucid_dreams_accumulator;  //TODO: Remvoe
+  double strive_for_perfection_multiplier;    //TODO: Remove
+  double vision_of_perfection_multiplier;     //TODO: Remove
   std::vector<event_t*> wild_imp_spawns;      // Used for tracking incoming imps from HoG
-  double flashpoint_threshold;                // BFA - Azerite
+  double flashpoint_threshold;                //TODO: Remove and update wiki
 
   unsigned active_pets;
 
-  //TODO: SL Beta - Are the pet definitions here only for temporary pets? If so, should Grimoire: Felguard be included?
+  //TODO: Are the pet definitions here only for temporary pets? If so, should Grimoire: Felguard be included?
   // Active Pet
   struct pets_t
   {
@@ -103,14 +103,15 @@ public:
     static const int INFERNAL_LIMIT  = 1;
     static const int DARKGLARE_LIMIT = 1;
 
-    //TODO: SL Beta - Refactor infernal code including new talent Rain of Chaos, potentially reuse VoP Infernals for this?
+    //TODO: Refactor infernal code including new talent Rain of Chaos, potentially reuse VoP Infernals for this?
+    //TODO: Remove VoP infernals
     std::array<pets::destruction::infernal_t*, INFERNAL_LIMIT> infernals;
     spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t>
         vop_infernals;  // Infernal(s) summoned by Vision of Perfection
     spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t>
         roc_infernals;  // Infernal(s) summoned by Rain of Chaos
 
-    //TODO: SL Beta - Vision of Perfection spawns should be removed once SL launches
+    //TODO: Remove VoP darkglares
     std::array<pets::affliction::darkglare_t*, DARKGLARE_LIMIT> darkglare;
     spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t>
         vop_darkglares;  // Darkglare(s) summoned by Vision of Perfection
@@ -121,7 +122,7 @@ public:
 
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
 
-    //TODO: SL Beta - confirm Nether Portal demons still same? (minor, only for sanity checking)
+    //Nether Portal demons - Check regularly for accuracy!
     spawner::pet_spawner_t<pets::demonology::random_demons::shivarra_t, warlock_t> shivarra;
     spawner::pet_spawner_t<pets::demonology::random_demons::darkhound_t, warlock_t> darkhounds;
     spawner::pet_spawner_t<pets::demonology::random_demons::bilescourge_t, warlock_t> bilescourges;
@@ -138,7 +139,7 @@ public:
 
   std::vector<std::string> pet_name_list;
 
-  //TODO: SL Beta - what is this struct for/should it be renamed for clarity?
+  //TODO: Refactor or remove this whole damn section
   struct active_t
   {
     spell_t* pandemic_invocation;  // BFA - Azerite
@@ -151,8 +152,8 @@ public:
     melee_attack_t* soul_strike; //TODO: SL Beta - This is currently unused, Felguard pets are using manual spellID. Fix or remove.
   } active;
 
-  //TODO: SL Beta - Check all labels here since there was a level squish (EXTREMELY minor, just for clarity)
-  //TODO: SL Beta - Do we need definitions for non-DPS related rows?
+  //TODO: Check all labels here since there was a level squish (EXTREMELY minor, just for clarity)
+  //TODO: Add all talents data for referencing purposes
   // Talents
   struct talents_t
   {
@@ -175,18 +176,18 @@ public:
 
     // AFF
     // tier 15
-    const spell_data_t* nightfall; //TODO: SL Beta - RNG information is missing from spell data, and data also says buff can potentially stack to 2. Serious testing needed, especially with multiple corruptions out!
+    const spell_data_t* nightfall; //TODO: RNG information is missing from spell data, and data also says buff can potentially stack to 2. Serious testing needed, especially with multiple corruptions out!
     const spell_data_t* inevitable_demise;
     const spell_data_t* drain_soul;
 
     // tier 25
-    const spell_data_t* writhe_in_agony; //Note: there is an unimplemented bug for SL prepatch
+    const spell_data_t* writhe_in_agony;
     const spell_data_t* absolute_corruption;
     const spell_data_t* siphon_life;
 
     // tier 35
-    const spell_data_t* sow_the_seeds; //TODO: SL Beta - aoe value seems to be hardcoded and should be pulled from spell data instead
-    const spell_data_t* phantom_singularity; //TODO: SL Beta - dot duration seems to be hardcoded and should be pulled from spell data instead
+    const spell_data_t* sow_the_seeds;
+    const spell_data_t* phantom_singularity; //TODO: Dot duration uses hardcoded tick count and should be pulled from spell data instead
     const spell_data_t* vile_taint;
 
     // tier 45
@@ -203,56 +204,56 @@ public:
     // tier 15
     const spell_data_t* dreadlash;
     const spell_data_t* bilescourge_bombers;
-    const spell_data_t* demonic_strength; //TODO: SL Beta - pet buff for Demonic Strength is currently not using this, should that be fixed?
+    const spell_data_t* demonic_strength; //TODO: Investigate pet buff usage
 
     // tier 25
     const spell_data_t* demonic_calling;
     const spell_data_t* power_siphon;
-    const spell_data_t* doom; //TODO: SL Beta - Doom is now working in the sim and seems to match some tests against beta client, but haste/refresh behavior needs checking still
+    const spell_data_t* doom; //TODO: Haste/refresh behavior needs checking still
 
     // tier 35
     const spell_data_t* from_the_shadows;
-    const spell_data_t* soul_strike;  //TODO: SL Beta - double check automagic is handling damage correctly
+    const spell_data_t* soul_strike;
     const spell_data_t* summon_vilefiend;
 
     // tier 45
     // soul conduit
-    const spell_data_t* inner_demons; //TODO: SL Beta - WHY DOES THIS TALENT NEED AN APL LINE TO WORK FIX THIS
-    const spell_data_t* grimoire_felguard; //TODO: SL Beta - Check summoning/buff durations and if permanent Felguard is affected by this ability
+    const spell_data_t* inner_demons; //TODO: WHY DOES THIS TALENT NEED AN APL LINE TO WORK FIX THIS
+    const spell_data_t* grimoire_felguard; //TODO: Check summoning/buff durations and if permanent Felguard is affected by this ability
 
     // tier 50
-    const spell_data_t* sacrificed_souls; //TODO: SL Beta - check what pets/guardians count for this talent. Also relevant for demonic consumption
-    const spell_data_t* demonic_consumption; //TODO: SL Beta - CAREFULLY test and audit damage buff behavior for this talent
+    const spell_data_t* sacrificed_souls; //TODO: Check what pets/guardians count for this talent. Also relevant for demonic consumption
+    const spell_data_t* demonic_consumption;
     const spell_data_t* nether_portal;
 
     // DESTRO
     // tier 15
     const spell_data_t* flashover;
     const spell_data_t* eradication;
-    const spell_data_t* soul_fire; //TODO: SL Beta - confirm refresh/pandemic behavior matchup for immolates between sim and client
+    const spell_data_t* soul_fire; //TODO: Confirm refresh/pandemic behavior matchup for immolates
 
     // tier 25
     const spell_data_t* reverse_entropy; //Note: talent spell (not the buff spell) contains RPPM data
     const spell_data_t* internal_combustion;
-    const spell_data_t* shadowburn; //TODO: SL Beta - debuffs_shadowburn may be able to use this definition
+    const spell_data_t* shadowburn; //TODO: Replace instances of hardcoding
 
     // tier 35
-    const spell_data_t* inferno; //TODO: SL Beta - confirm interaction between Inferno and Rank 2 Rain of Fire, as well as if soul shard generation is per-target hit
+    const spell_data_t* inferno; //TODO: Confirm interaction between Inferno and Rank 2 Rain of Fire, as well as if soul shard generation is per-target hit
     const spell_data_t* fire_and_brimstone;
     const spell_data_t* cataclysm;
 
     // tier 45
-    const spell_data_t* roaring_blaze; //TODO: SL Beta - confirm interaction between roaring blaze and eradication
-    const spell_data_t* rain_of_chaos; //TODO: THIS HAS NOT BEEN IMPLEMENTED. FIX THIS. (Also need to add the rain of chaos buff 266087)
+    const spell_data_t* roaring_blaze; //TODO: Confirm interaction between roaring blaze and eradication
+    const spell_data_t* rain_of_chaos;
     // grimoire of sacrifice
 
     // tier 50
     // soul conduit
-    const spell_data_t* channel_demonfire; //TODO: SL Beta - confirm aoe behavior on each tick is correct in sims
+    const spell_data_t* channel_demonfire; //TODO: Confirm aoe behavior on each tick is correct in sims
     const spell_data_t* dark_soul_instability;
   } talents;
 
-  //TODO: SL Beta - Traits and Essences can be removed once SL launches
+  //TODO: Remove all of this
   // Azerite traits
   struct azerite_t
   {
@@ -285,24 +286,24 @@ public:
     azerite_power_t chaos_shards;
   } azerite;
 
+  //TODO: Remove all of this
   struct
   {
     azerite_essence_t memory_of_lucid_dreams;  // Memory of Lucid Dreams minor
     azerite_essence_t vision_of_perfection;
   } azerite_essence;
 
-  //TODO: SL Beta - Legendary, Conduit, and Covenant implementation is unchecked/incomplete. Replace this TODO with individual TODOs once audited
   struct legendary_t
   {
     // Legendaries
     // Cross-spec
     item_runeforge_t claw_of_endereth;
-    item_runeforge_t relic_of_demonic_synergy; //TODO: SL Beta - Do pet and warlock procs share a single RPPM?
+    item_runeforge_t relic_of_demonic_synergy; //TODO: Do pet and warlock procs share a single RPPM?
     item_runeforge_t wilfreds_sigil_of_superior_summoning;
     // Affliction
     item_runeforge_t malefic_wrath;
     item_runeforge_t perpetual_agony_of_azjaqir;
-    item_runeforge_t sacrolashs_dark_strike; //TODO: SL Beta - Check if slow effect (unimplemented atm) can proc anything important
+    item_runeforge_t sacrolashs_dark_strike; //TODO: Check if slow effect (unimplemented atm) can proc anything important
     item_runeforge_t wrath_of_consumption;
     // Demonology
     item_runeforge_t balespiders_burning_core;
@@ -321,8 +322,8 @@ public:
     // Conduits
     // Covenant Abilities
     conduit_data_t catastrophic_origin;   // Venthyr
-    conduit_data_t soul_eater;          // Night Fae
-    conduit_data_t fatal_decimation;  // Necrolord
+    conduit_data_t soul_eater;            // Night Fae
+    conduit_data_t fatal_decimation;      // Necrolord
     conduit_data_t soul_tithe;            // Kyrian
     // Affliction
     conduit_data_t cold_embrace;
@@ -358,11 +359,11 @@ public:
     const spell_data_t* chaotic_energies;
   } mastery_spells;
 
-  //TODO: SL Beta - Is this necessary or can this be refactored?
+  //TODO: Is this necessary or can this be refactored?
   // Procs and RNG
   propagate_const<real_ppm_t*> grimoire_of_sacrifice_rppm;  // grimoire of sacrifice
 
-  //TODO: SL Beta - Cleanup useless ones and add any as needed
+  //TODO: Cleanup useless ones and add any as needed
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
   struct cooldowns_t
   {
@@ -375,15 +376,15 @@ public:
     propagate_const<cooldown_t*> infernal;
   } cooldowns;
 
-  //TODO: SL Beta - this struct is supposedly for passives per the comment here, but that is potentially outdated. Consider refactoring and reorganizing ALL of this.
+  //TODO: this struct is supposedly for passives per the comment here, but that is potentially outdated. Consider refactoring and reorganizing ALL of this.
   // Passives
   struct specs_t
   {
     // All Specs
-    const spell_data_t* fel_armor; //TODO: SL Beta - removed? Or is this now Demonic Embrace?
-    const spell_data_t* nethermancy; //TODO: SL Beta - this name doesn't show in spell book but is still in spell data, is this correct?
-    //TODO: SL Beta - Corruption is now class-wide
-    //TODO: SL Beta - Ritual of Doom?
+    const spell_data_t* fel_armor; //TODO: removed? Or is this now Demonic Embrace?
+    const spell_data_t* nethermancy; //TODO: this name doesn't show in spell book but is still in spell data, is this correct?
+    //TODO: Corruption is now class-wide
+    //TODO: Ritual of Doom?
 
     // Affliction only
     const spell_data_t* affliction; //Spec aura
@@ -391,9 +392,9 @@ public:
     const spell_data_t* agony_2; //Rank 2 passive (increased stacks)
     const spell_data_t* corruption_2; //Rank 2 passive (instant cast)
     const spell_data_t* corruption_3; //Rank 3 passive (damage on cast component)
-    const spell_data_t* nightfall;  // TODO: SL Beta - There is no specialization data for this spell, remove or fix. (Potential duplicate of talents.nightfall)
-    const spell_data_t* shadow_bite; //TODO: SL Beta - Pet spell? Does not appear in specialization data
-    const spell_data_t* shadow_bolt; //TODO: SL Beta - This is currently unused. Decide on fix or remove.
+    const spell_data_t* nightfall;  // TODO: There is no specialization data for this spell, remove or fix. (Potential duplicate of talents.nightfall)
+    const spell_data_t* shadow_bite; //TODO: Pet spell? Does not appear in specialization data
+    const spell_data_t* shadow_bolt; //TODO: This is currently unused. Decide on fix or remove.
     const spell_data_t* summon_darkglare; //This is the active summon ability
     const spell_data_t* unstable_affliction;  //This is the primary active ability
     const spell_data_t* unstable_affliction_2; //Rank 2 passive (soul shard on death)
@@ -403,24 +404,24 @@ public:
     const spell_data_t* demonology; //Spec aura
     const spell_data_t* call_dreadstalkers_2; //Rank 2 passive (reduced cast time, increased pet move speed)
     const spell_data_t* demonic_core; //Spec passive for the ability. See also: buffs.demonic_core
-    const spell_data_t* doom; //TODO: SL Beta - Currently not being used - potential duplicate of talents.doom
+    const spell_data_t* doom; //TODO: Currently not being used - potential duplicate of talents.doom
     const spell_data_t* fel_firebolt_2; //Rank 2 passive (reduced energy)
     const spell_data_t* summon_demonic_tyrant_2; //Rank 2 passive (instant soul shard generation)
-    const spell_data_t* wild_imps; //TODO: SL Beta - What is this? There doesn't appear to be any spell data matching this name
-    //TODO: SL Beta - Should Implosion be in this list? Currently in spells.implosion_aoe
+    const spell_data_t* wild_imps; //TODO: What is this? There doesn't appear to be any spell data matching this name
+    //TODO: Should Implosion be in this list? Currently in spells.implosion_aoe
 
     // Destruction only
     const spell_data_t* destruction; //Spec aura
-    const spell_data_t* conflagrate; //TODO: SL Beta - This is the primary active ability, but is not currently being used. Fix this.
+    const spell_data_t* conflagrate; //TODO: This is the primary active ability, but is not currently being used. Fix this.
     const spell_data_t* conflagrate_2; //Rank 2 passive (increased charges)
-    const spell_data_t* firebolt; //TODO: SL Beta - Pet spell? Does not appear in specialization data
+    const spell_data_t* firebolt; //TODO: Pet spell? Does not appear in specialization data
     const spell_data_t* havoc; //This is the primary active ability
-    //TODO: SL Beta - debuffs_havoc is currently referencing the spellID directly for rank 2, fix or remove.
+    //TODO: debuffs_havoc is currently referencing the spellID directly for rank 2, fix or remove.
     const spell_data_t* havoc_2; //Rank 2 passive (increased duration)
-    const spell_data_t* immolate; //TODO: SL Beta - this is supposed to be the primary active ability but is not being used at the moment - fix this
+    const spell_data_t* immolate; //TODO: this is supposed to be the primary active ability but is not being used at the moment - fix this
     const spell_data_t* rain_of_fire_2; //Rank 2 passive (increased damage)
     const spell_data_t* summon_infernal_2; //Rank 2 passive (impact damage)
-    const spell_data_t* unending_resolve; //TODO: SL Beta - this isn't even a DPS ability, and doesn't appear in specialization data. Probably remove
+    const spell_data_t* unending_resolve; //TODO: this isn't even a DPS ability, and doesn't appear in specialization data. Probably remove
   } spec;
 
   // Buffs
@@ -430,13 +431,13 @@ public:
     propagate_const<buff_t*> grimoire_of_sacrifice; //Buff which grants damage proc
 
     // Affliction Buffs
-    propagate_const<buff_t*> active_uas; //TODO: SL Beta - Unstable Affliction behavior has changed in Shadowlands, this is probably outdated and can be removed.
+    propagate_const<buff_t*> active_uas; //TODO: Remove
     propagate_const<buff_t*> drain_life; //Dummy buff used internally for handling Inevitable Demise cases
     propagate_const<buff_t*> nightfall;
     propagate_const<buff_t*> inevitable_demise;
     propagate_const<buff_t*> dark_soul_misery;
 
-    //TODO: SL Beta - Azerite powers that became talents - do we need to consider edge cases during prepatch involving both?
+    //TODO: Remove
     // BFA - Affliction Azerite
     propagate_const<buff_t*> cascading_calamity;
     propagate_const<buff_t*> id_azerite;
@@ -452,11 +453,12 @@ public:
     propagate_const<buff_t*> dreadstalkers; //Buff for tracking number of Dreadstalkers currently out
     propagate_const<buff_t*> vilefiend; //Buff for tracking if Vilefiend is currently out
     propagate_const<buff_t*> tyrant; //Buff for tracking if Demonic Tyrant is currently out
-    propagate_const<buff_t*> portal_summons; //TODO: SL Beta - Is this for tracking purposes or just outdated? Appears unused
+    propagate_const<buff_t*> portal_summons; //TODO: Fix tracking with this or remove
     propagate_const<buff_t*> grimoire_felguard; //Buff for tracking if GFG pet is currently out
-    propagate_const<buff_t*> prince_malchezaar; //Buff for tracking if rare random summon is currently out
+    propagate_const<buff_t*> prince_malchezaar; //TODO: Do we need this? (Malchezaar does not work in m+/raid)
     propagate_const<buff_t*> eyes_of_guldan; //Buff for tracking if rare random summon is currently out
 
+    //TODO: Remove
     // BFA - Demonology Azerite
     propagate_const<buff_t*> shadows_bite;
     propagate_const<buff_t*> supreme_commander;
@@ -466,10 +468,11 @@ public:
     propagate_const<buff_t*> backdraft; //Buff associated with Conflagrate
     propagate_const<buff_t*> reverse_entropy;
     propagate_const<buff_t*> rain_of_chaos;
-    propagate_const<buff_t*> grimoire_of_supremacy_driver; //TODO: SL Beta - GSup is removed in Shadowlands so this should be removed.
-    propagate_const<buff_t*> grimoire_of_supremacy; //TODO: SL Beta - GSup is removed in Shadowlands so this should be removed.
+    propagate_const<buff_t*> grimoire_of_supremacy_driver; //TODO: Remove
+    propagate_const<buff_t*> grimoire_of_supremacy; //TODO: Remove
     propagate_const<buff_t*> dark_soul_instability;
 
+    //TODO: Remove
     // BFA - Destruction Azerite
     propagate_const<buff_t*> bursting_flare;
     propagate_const<buff_t*> chaotic_inferno;
@@ -496,7 +499,7 @@ public:
     propagate_const<buff_t*> demonic_synergy;
   } buffs;
 
-  //TODO: SL Beta - Some of these gains are unused, should they be pruned?
+  //TODO: Some of these gains are unused, should they be pruned?
   // Gains
   struct gains_t
   {
@@ -507,7 +510,7 @@ public:
     gain_t* drain_soul;
     gain_t* seed_of_corruption;
     gain_t* unstable_affliction_refund;
-    gain_t* pandemic_invocation;  // BFA - Azerite
+    gain_t* pandemic_invocation;  //TODO: Remove
 
     gain_t* conflagrate;
     gain_t* incinerate;
@@ -520,17 +523,17 @@ public:
     gain_t* infernal;
     gain_t* shadowburn_refund;
     gain_t* inferno;
-    gain_t* chaos_shards;  // BFA - Azerite
+    gain_t* chaos_shards;  //TODO: Remove
 
     gain_t* miss_refund;
 
     gain_t* shadow_bolt;
     gain_t* doom;
     gain_t* summon_demonic_tyrant;
-    gain_t* demonic_meteor;      // BFA - Azerite
-    gain_t* baleful_invocation;  // BFA - Azerite
+    gain_t* demonic_meteor;      //TODO: Remove
+    gain_t* baleful_invocation;  //TODO: Remove
 
-    gain_t* memory_of_lucid_dreams;  // BFA - Essence
+    gain_t* memory_of_lucid_dreams;  //TODO: Remove
 
     // SL
     gain_t* scouring_tithe;
@@ -566,20 +569,20 @@ public:
     proc_t* rain_of_chaos;
   } procs;
 
-  //TODO: SL Beta - Why does this catchall struct exist but is barely used?
+  //TODO: What the heck is this for anyway?
   struct spells_t
   {
     spell_t* melee; //Is this necessary?
     spell_t* seed_of_corruption_aoe; //Is this unused?
     spell_t* malefic_rapture_aoe; //Is this unused?
-    spell_t* corruption_impact_effect;
+    spell_t* corruption_impact_effect; //Is this unused?
     spell_t* implosion_aoe; //Is this unused?
-    const spell_data_t* memory_of_lucid_dreams_base;  // BFA - Essence
+    const spell_data_t* memory_of_lucid_dreams_base;  //TODO: Remove
   } spells;
 
   int initial_soul_shards;
   std::string default_pet;
-  timespan_t shard_react; //Was this planned to be used for RNG soul shard reaction timing? Currently unused
+  timespan_t shard_react; //TODO: Remove
   shuffled_rng_t* rain_of_chaos_rng;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
@@ -670,7 +673,7 @@ public:
   void init_gains_affliction();
   void init_rng_affliction();
   void init_procs_affliction();
-  void create_options_affliction();
+  void create_options_affliction(); //TODO: Add function?
   void create_apl_affliction();
 
   // sc_warlock_demonology
@@ -744,8 +747,7 @@ struct sc_event_t : public player_event_t
   }
 };
 
-//Event for triggering refunds from Mark of Borrowed Power legendary
-//TOCHECK: Currently, this refund can occur independently of Soul Conduit refunds, granting more shards than originally spent
+//TODO: This legendary was removed in beta, remove this
 struct borrowed_power_event_t : public player_event_t
 {
   gain_t* shard_gain;
@@ -802,7 +804,7 @@ public:
   bool can_havoc; //Needed in main module for cross-spec spells such as Covenants
   bool affected_by_woc; // SL - Legendary (Wrath of Consumption) checker
   bool affected_by_soul_tithe; // SL - Covenant (Kyrian) checker
-  //TODO: SL Beta - Refactor affected_by stuff to be more streamlined
+  //TODO: Refactor affected_by stuff to be more streamlined
 
   warlock_spell_t( warlock_t* p, util::string_view n ) : warlock_spell_t( n, p, p->find_class_spell( n ) )
   {
