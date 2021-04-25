@@ -52,7 +52,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_odr;
 
   // SL - Conduit
-  propagate_const<buff_t*> debuffs_combusting_engine; //TODO: Check Roaring Blaze + Combusting Engine interaction 
+  propagate_const<buff_t*> debuffs_combusting_engine;
 
   // Demo
   propagate_const<dot_t*> dots_doom;
