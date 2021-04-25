@@ -80,8 +80,6 @@ public:
   std::vector<action_t*> havoc_spells;  // Used for smarter target cache invalidation.
   double agony_accumulator;
   double corruption_accumulator;
-  double strive_for_perfection_multiplier;    //TODO: Remove
-  double vision_of_perfection_multiplier;     //TODO: Remove
   std::vector<event_t*> wild_imp_spawns;      // Used for tracking incoming imps from HoG
   double flashpoint_threshold;                //TODO: Remove and update wiki
 
@@ -96,18 +94,12 @@ public:
     static const int INFERNAL_LIMIT  = 1;
     static const int DARKGLARE_LIMIT = 1;
 
-    //TODO: Refactor infernal code including new talent Rain of Chaos, potentially reuse VoP Infernals for this?
-    //TODO: Remove VoP infernals
+    //TODO: Refactor infernal code including new talent Rain of Chaos
     std::array<pets::destruction::infernal_t*, INFERNAL_LIMIT> infernals;
-    spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t>
-        vop_infernals;  // Infernal(s) summoned by Vision of Perfection
     spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t>
         roc_infernals;  // Infernal(s) summoned by Rain of Chaos
 
-    //TODO: Remove VoP darkglares
     std::array<pets::affliction::darkglare_t*, DARKGLARE_LIMIT> darkglare;
-    spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t>
-        vop_darkglares;  // Darkglare(s) summoned by Vision of Perfection
 
     spawner::pet_spawner_t<pets::demonology::dreadstalker_t, warlock_t> dreadstalkers;
     spawner::pet_spawner_t<pets::demonology::vilefiend_t, warlock_t> vilefiends;
@@ -280,7 +272,6 @@ public:
   //TODO: Remove all of this
   struct
   {
-    azerite_essence_t vision_of_perfection;
   } azerite_essence;
 
   struct legendary_t
@@ -466,7 +457,6 @@ public:
     propagate_const<buff_t*> bursting_flare;
     propagate_const<buff_t*> chaotic_inferno;
     propagate_const<buff_t*> crashing_chaos;
-    propagate_const<buff_t*> crashing_chaos_vop;
     propagate_const<buff_t*> rolling_havoc;
     propagate_const<buff_t*> flashpoint;
     propagate_const<buff_t*> chaos_shards;
@@ -589,10 +579,6 @@ public:
   int get_spawning_imp_count();
   timespan_t time_to_imps( int count );
   int imps_spawned_during( timespan_t period );
-  void vision_of_perfection_proc() override;
-  void vision_of_perfection_proc_destro();
-  void vision_of_perfection_proc_aff();
-  void vision_of_perfection_proc_demo();
   void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
   void malignancy_reduction_helper();
   action_t* create_action( util::string_view name, const std::string& options ) override;

@@ -553,8 +553,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     havoc_spells(),
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
-    strive_for_perfection_multiplier(),         // BFA - Essence
-    vision_of_perfection_multiplier(),          // BFA - Essence
     active_pets( 0 ),
     warlock_pet_list( this ),
     active(),
@@ -931,14 +929,6 @@ void warlock_t::init_spells()
   covenant.impending_catastrophe = find_covenant_spell( "Impending Catastrophe" );  // Venthyr
   covenant.scouring_tithe        = find_covenant_spell( "Scouring Tithe" );         // Kyrian
   covenant.soul_rot              = find_covenant_spell( "Soul Rot" );               // Night Fae
-
-  azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
-  strive_for_perfection_multiplier = 1.0 + azerite::vision_of_perfection_cdr( azerite_essence.vision_of_perfection );
-  vision_of_perfection_multiplier =
-      azerite_essence.vision_of_perfection.spell( 1U, essence_type::MAJOR )->effectN( 1 ).percent() +
-      azerite_essence.vision_of_perfection.spell( 2U, essence_spell::UPGRADE, essence_type::MAJOR )
-          ->effectN( 1 )
-          .percent();
 }
 
 void warlock_t::init_rng()
@@ -1371,27 +1361,6 @@ stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
-void warlock_t::vision_of_perfection_proc()
-{
-  if ( vision_of_perfection_multiplier <= 0.0 )
-    return;
-
-  switch ( specialization() )
-  {
-    case WARLOCK_DESTRUCTION:
-      vision_of_perfection_proc_destro();
-      break;
-    case WARLOCK_AFFLICTION:
-      vision_of_perfection_proc_aff();
-      break;
-    case WARLOCK_DEMONOLOGY:
-      vision_of_perfection_proc_demo();
-      break;
-    default:
-      return;
-  }
-}
-
 pet_t* warlock_t::create_main_pet( util::string_view pet_name, util::string_view pet_type )
 {
   pet_t* p = find_pet( pet_name );
@@ -1676,9 +1645,7 @@ struct warlock_module_t : public module_t
 warlock::warlock_t::pets_t::pets_t( warlock_t* w )
   : active( nullptr ),
     last( nullptr ),
-    vop_infernals( "vop_infernal", w ),
     roc_infernals( "roc_infernal", w ),
-    vop_darkglares( "vop_darkglare", w ),
     dreadstalkers( "dreadstalker", w ),
     vilefiends( "vilefiend", w ),
     demonic_tyrants( "demonic_tyrant", w ),

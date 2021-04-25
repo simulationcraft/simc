@@ -560,8 +560,7 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
   {
     parse_options( options_str );
     harmful = may_crit = false;
-    // BFA - Essence
-    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
+
     demonic_consumption_health_percentage = p->find_spell( 267971 )->effectN( 1 ).percent();
   }
 
@@ -1174,59 +1173,6 @@ void warlock_t::create_buffs_demonology()
                              ->set_duration( timespan_t::from_seconds( 15 ) )
                              ->set_max_stack( 40 )
                              ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-}
-
-void warlock_t::vision_of_perfection_proc_demo()
-{
-  timespan_t summon_duration = find_spell( 265187 )->duration() * vision_of_perfection_multiplier;
-
-  warlock_pet_list.demonic_tyrants.spawn( summon_duration, 1U );
-
-  auto essence         = find_azerite_essence( "Vision of Perfection" );
-  timespan_t extension = timespan_t::from_seconds(
-      essence.spell_ref( essence.rank(), essence_type::MAJOR ).effectN( 2 ).base_value() / 1000 );
-
-  if ( azerite.baleful_invocation.ok() )
-    resource_gain(
-        RESOURCE_SOUL_SHARD,
-        std::round( find_spell( 287060 )->effectN( 1 ).base_value() / 10.0 * vision_of_perfection_multiplier ),
-        gains.baleful_invocation );
-  buffs.demonic_power->trigger( 1, buffs.demonic_power->DEFAULT_VALUE(), -1.0, summon_duration );
-
-  // TOCHECK: Azerite traits, does proc tyrant extend summoned tyrant and vice versa?
-  for ( auto& pet : pet_list )
-  {
-    auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
-
-    if ( lock_pet == nullptr )
-      continue;
-    if ( lock_pet->is_sleeping() )
-      continue;
-
-    if ( lock_pet->pet_type == PET_DEMONIC_TYRANT )
-      continue;
-
-    if ( lock_pet->expiration )
-    {
-      timespan_t new_time                   = lock_pet->expiration->time + extension;
-      lock_pet->expiration->reschedule_time = new_time;
-    }
-  }
-
-  buffs.tyrant->set_duration( std::max( buffs.tyrant->remains(), summon_duration ) );
-  buffs.tyrant->trigger( 1, buffs.tyrant->DEFAULT_VALUE(), -1.0, summon_duration );
-  if ( buffs.dreadstalkers->check() )
-  {
-    buffs.dreadstalkers->extend_duration( this, extension );
-  }
-  if ( buffs.grimoire_felguard->check() )
-  {
-    buffs.grimoire_felguard->extend_duration( this, extension );
-  }
-  if ( buffs.vilefiend->check() )
-  {
-    buffs.vilefiend->extend_duration( this, extension );
-  }
 }
 
 void warlock_t::init_spells_demonology()

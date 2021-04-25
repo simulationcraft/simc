@@ -706,7 +706,6 @@ struct chaos_bolt_t : public destruction_spell_t
       p()->buffs.chaotic_inferno->trigger();
 
     p()->buffs.crashing_chaos->decrement();
-    p()->buffs.crashing_chaos_vop->decrement();
     p()->buffs.backdraft->decrement();
 
     // SL - Legendary
@@ -776,8 +775,6 @@ struct summon_infernal_t : public destruction_spell_t
     // BFA - Azerite
     if ( p->azerite.crashing_chaos.ok() )
       cooldown->duration += p->find_spell( 277705 )->effectN( 2 ).time_value();
-    // BFA - Essence
-    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
   }
 
   void execute() override
@@ -1107,9 +1104,7 @@ void warlock_t::create_buffs_destruction()
                               ->set_chance( find_spell( 279672 )->proc_chance() );
   buffs.crashing_chaos =
       make_buff( this, "crashing_chaos", find_spell( 277706 ) )->set_default_value( azerite.crashing_chaos.value() );
-  buffs.crashing_chaos_vop =
-      make_buff( this, "crashing_chaos_vop", find_spell( 277706 ) )
-          ->set_default_value( azerite.crashing_chaos.value() * vision_of_perfection_multiplier );
+
   buffs.rolling_havoc = make_buff<stat_buff_t>( this, "rolling_havoc", find_spell( 278931 ) )
                             ->add_stat( STAT_INTELLECT, azerite.rolling_havoc.value() );
   buffs.flashpoint = make_buff<stat_buff_t>( this, "flashpoint", find_spell( 275429 ) )
@@ -1127,31 +1122,6 @@ void warlock_t::create_buffs_destruction()
   buffs.madness_of_the_azjaqir =
       make_buff( this, "madness_of_the_azjaqir", legendary.madness_of_the_azjaqir->effectN( 1 ).trigger() )
           ->set_trigger_spell( legendary.madness_of_the_azjaqir );
-}
-
-void warlock_t::vision_of_perfection_proc_destro()
-{
-  // BFA - Essence
-  // TODO: Does the proc trigger infernal awakening?
-
-  // Summoning an Infernal overwrites the previous buff with the new one
-  buffs.crashing_chaos->expire();
-
-  timespan_t summon_duration = find_spell( 111685 )->duration() * vision_of_perfection_multiplier;
-
-  warlock_pet_list.vop_infernals.spawn( summon_duration, 1U );
-
-  // BFA - Azerite
-  if ( azerite.crashing_chaos.ok() )
-  {
-    buffs.crashing_chaos->expire();
-    buffs.crashing_chaos_vop->trigger( buffs.crashing_chaos_vop->max_stack() );
-  }
-
-  if ( talents.rain_of_chaos->ok() )
-  {
-      buffs.rain_of_chaos->extend_duration_or_trigger( summon_duration );
-  }
 }
 
 void warlock_t::init_spells_destruction()

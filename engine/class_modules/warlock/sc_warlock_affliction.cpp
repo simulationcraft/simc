@@ -435,9 +435,6 @@ struct summon_darkglare_t : public affliction_spell_t
     harmful = may_crit = may_miss = false;
 
     cooldown->duration += timespan_t::from_millis( p->talents.dark_caller->effectN( 1 ).base_value() );
-
-    //PTR for prepatch presumably does additive CDR, then multiplicative
-    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
   }
 
   void execute() override
@@ -937,20 +934,6 @@ void warlock_t::create_buffs_affliction()
                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buffs.malefic_wrath = make_buff( this, "malefic_wrath", find_spell( 337125 ) )->set_default_value_from_effect( 1 );
-}
-
-void warlock_t::vision_of_perfection_proc_aff()
-{
-  timespan_t summon_duration = spec.summon_darkglare->duration() * vision_of_perfection_multiplier;
-
-  warlock_pet_list.vop_darkglares.spawn( summon_duration, 1U );
-
-  auto vop = find_azerite_essence( "Vision of Perfection" );
-
-  timespan_t darkglare_extension =
-      timespan_t::from_seconds( vop.spell_ref( vop.rank(), essence_type::MAJOR ).effectN( 3 ).base_value() / 1000 );
-
-  darkglare_extension_helper( this, darkglare_extension );
 }
 
 void warlock_t::init_spells_affliction()
