@@ -494,10 +494,6 @@ struct implosion_t : public demonology_spell_t
       }
     }
 
-    // BFA - Azerite
-    if ( p()->azerite.explosive_potential.ok() && imps_consumed >= 3 )
-      p()->buffs.explosive_potential->trigger();
-
     if ( p()->legendary.implosive_potential.ok() && target_list().size() >= as<size_t>( p()->legendary.implosive_potential->effectN( 1 ).base_value() ) )
       p()->buffs.implosive_potential->trigger( imps_consumed );
     else if ( p()->legendary.implosive_potential.ok() )
@@ -1072,10 +1068,6 @@ void warlock_t::create_buffs_demonology()
   buffs.nether_portal =
       make_buff( this, "nether_portal", talents.nether_portal )->set_duration( talents.nether_portal->duration() );
 
-  // Azerite
-  buffs.explosive_potential = make_buff<stat_buff_t>( this, "explosive_potential", find_spell( 275398 ) )
-                                  ->add_stat( STAT_HASTE_RATING, azerite.explosive_potential.value() );
-
   // Conduits
   buffs.tyrants_soul = make_buff( this, "tyrants_soul", find_spell( 339784 ) )
                            ->set_default_value( conduit.tyrants_soul.percent() );
@@ -1153,7 +1145,6 @@ void warlock_t::init_spells_demonology()
   talents.nether_portal       = find_talent_spell( "Nether Portal" );
 
   // BFA - Azerite
-  azerite.explosive_potential = find_azerite_spell( "Explosive Potential" );
   azerite.baleful_invocation  = find_azerite_spell( "Baleful Invocation" );
 
   // Legendaries

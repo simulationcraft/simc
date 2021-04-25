@@ -236,7 +236,6 @@ public:
   struct azerite_t
   {
     // Demo
-    azerite_power_t explosive_potential;
     azerite_power_t baleful_invocation;
 
     // Aff
@@ -421,10 +420,6 @@ public:
     propagate_const<buff_t*> grimoire_felguard; //Buff for tracking if GFG pet is currently out
     propagate_const<buff_t*> prince_malchezaar; //TODO: Do we need this? (Malchezaar does not work in m+/raid)
     propagate_const<buff_t*> eyes_of_guldan; //Buff for tracking if rare random summon is currently out
-
-    //TODO: Remove
-    // BFA - Demonology Azerite
-    propagate_const<buff_t*> explosive_potential;
 
     // Destruction Buffs
     propagate_const<buff_t*> backdraft; //Buff associated with Conflagrate
