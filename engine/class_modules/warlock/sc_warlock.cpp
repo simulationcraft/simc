@@ -423,7 +423,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   // Destro
   dots_immolate          = target->get_dot( "immolate", &p );
   dots_roaring_blaze     = target->get_dot( "roaring_blaze", &p );
-  dots_channel_demonfire = target->get_dot( "channel_demonfire", &p );
 
   debuffs_eradication = make_buff( *this, "eradication", source->find_spell( 196414 ) )
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION );
