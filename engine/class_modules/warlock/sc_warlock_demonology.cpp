@@ -1259,7 +1259,6 @@ void warlock_t::init_spells_demonology()
   azerite.demonic_meteor      = find_azerite_spell( "Demonic Meteor" );
   azerite.shadows_bite        = find_azerite_spell( "Shadow's Bite" );
   azerite.supreme_commander   = find_azerite_spell( "Supreme Commander" );
-  azerite.umbral_blaze        = find_azerite_spell( "Umbral Blaze" );
   azerite.explosive_potential = find_azerite_spell( "Explosive Potential" );
   azerite.baleful_invocation  = find_azerite_spell( "Baleful Invocation" );
 

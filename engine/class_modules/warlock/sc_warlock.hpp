@@ -56,7 +56,6 @@ struct warlock_td_t : public actor_target_data_t
 
   // Demo
   propagate_const<dot_t*> dots_doom;
-  propagate_const<dot_t*> dots_umbral_blaze;  //TODO: Remove
 
   propagate_const<buff_t*> debuffs_from_the_shadows;
   propagate_const<buff_t*> debuffs_jaws_of_shadow;  //TODO: Remove
@@ -262,7 +261,6 @@ public:
     azerite_power_t demonic_meteor;
     azerite_power_t shadows_bite;
     azerite_power_t supreme_commander;
-    azerite_power_t umbral_blaze;
     azerite_power_t explosive_potential;
     azerite_power_t baleful_invocation;
 
