@@ -254,11 +254,6 @@ struct immolate_t : public destruction_spell_t
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate_crits );
 
     p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate );
-
-    // BFA - Azerite
-    if ( d->state->result_amount > 0.0 && p()->azerite.flashpoint.ok() &&
-         d->target->health_percentage() > p()->flashpoint_threshold * 100 )
-      p()->buffs.flashpoint->trigger();
   }
 
   void last_tick( dot_t* d ) override
@@ -1104,8 +1099,7 @@ void warlock_t::create_buffs_destruction()
 
   buffs.rolling_havoc = make_buff<stat_buff_t>( this, "rolling_havoc", find_spell( 278931 ) )
                             ->add_stat( STAT_INTELLECT, azerite.rolling_havoc.value() );
-  buffs.flashpoint = make_buff<stat_buff_t>( this, "flashpoint", find_spell( 275429 ) )
-                         ->add_stat( STAT_HASTE_RATING, azerite.flashpoint.value() );
+
   // TOCHECK What happens when we get 2 procs within 2 seconds?
   buffs.chaos_shards =
       make_buff<stat_buff_t>( this, "chaos_shards", find_spell( 287660 ) )
@@ -1159,7 +1153,6 @@ void warlock_t::init_spells_destruction()
   azerite.chaotic_inferno = find_azerite_spell( "Chaotic Inferno" );
   azerite.crashing_chaos  = find_azerite_spell( "Crashing Chaos" );
   azerite.rolling_havoc   = find_azerite_spell( "Rolling Havoc" );
-  azerite.flashpoint      = find_azerite_spell( "Flashpoint" );
   azerite.chaos_shards    = find_azerite_spell( "Chaos Shards" );
 
   // Legendaries

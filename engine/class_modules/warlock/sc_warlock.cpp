@@ -583,8 +583,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   resource_regeneration             = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ]       = true;
   regen_caches[ CACHE_SPELL_HASTE ] = true;
-
-  flashpoint_threshold = 0.8;
 }
 
 void warlock_t::invalidate_cache( cache_e c )
@@ -1212,7 +1210,6 @@ void warlock_t::create_options()
 
   add_option( opt_int( "soul_shards", initial_soul_shards ) );
   add_option( opt_string( "default_pet", default_pet ) );
-  add_option( opt_float( "flashpoint_threshold", flashpoint_threshold, 0.0, 1.0 ) );
 }
 
 // Used to determine how many Wild Imps are waiting to be spawned from Hand of Guldan
@@ -1335,7 +1332,6 @@ void warlock_t::copy_from( player_t* source )
 
   initial_soul_shards  = p->initial_soul_shards;
   default_pet          = p->default_pet;
-  flashpoint_threshold = p->flashpoint_threshold;
 }
 
 stat_e warlock_t::convert_hybrid_stat( stat_e s ) const

@@ -81,7 +81,6 @@ public:
   double agony_accumulator;
   double corruption_accumulator;
   std::vector<event_t*> wild_imp_spawns;      // Used for tracking incoming imps from HoG
-  double flashpoint_threshold;                //TODO: Remove and update wiki
 
   unsigned active_pets;
 
@@ -265,7 +264,6 @@ public:
     azerite_power_t chaotic_inferno;
     azerite_power_t crashing_chaos;
     azerite_power_t rolling_havoc;
-    azerite_power_t flashpoint;
     azerite_power_t chaos_shards;
   } azerite;
 
@@ -458,7 +456,6 @@ public:
     propagate_const<buff_t*> chaotic_inferno;
     propagate_const<buff_t*> crashing_chaos;
     propagate_const<buff_t*> rolling_havoc;
-    propagate_const<buff_t*> flashpoint;
     propagate_const<buff_t*> chaos_shards;
 
     // SL
