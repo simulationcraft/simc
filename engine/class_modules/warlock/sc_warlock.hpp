@@ -236,7 +236,6 @@ public:
   struct azerite_t
   {
     // Demo
-    azerite_power_t demonic_meteor;
     azerite_power_t shadows_bite;
     azerite_power_t supreme_commander;
     azerite_power_t explosive_potential;
@@ -494,7 +493,6 @@ public:
     gain_t* shadow_bolt;
     gain_t* doom;
     gain_t* summon_demonic_tyrant;
-    gain_t* demonic_meteor;      //TODO: Remove
     gain_t* baleful_invocation;  //TODO: Remove
 
     // SL

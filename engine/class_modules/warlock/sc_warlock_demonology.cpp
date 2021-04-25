@@ -163,14 +163,6 @@ struct hand_of_guldan_t : public demonology_spell_t
       return meteor_time;
     }
 
-    double bonus_da( const action_state_t* s ) const override
-    {
-      double da = demonology_spell_t::bonus_da( s );
-      // BFA - Azerite
-      da += p()->azerite.demonic_meteor.value();
-      return da;
-    }
-
     double action_multiplier() const override
     {
       double m = demonology_spell_t::action_multiplier();
@@ -245,10 +237,6 @@ struct hand_of_guldan_t : public demonology_spell_t
   void consume_resource() override
   {
     demonology_spell_t::consume_resource();
-
-    // BFA - Azerite
-    if ( rng().roll( p()->azerite.demonic_meteor.spell_ref().effectN( 2 ).percent() * as<int>(last_resource_cost)) )
-      p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.demonic_meteor );
 
     if ( last_resource_cost == 1.0 )
       p()->procs.one_shard_hog->occur();
@@ -1180,7 +1168,6 @@ void warlock_t::init_spells_demonology()
   talents.nether_portal       = find_talent_spell( "Nether Portal" );
 
   // BFA - Azerite
-  azerite.demonic_meteor      = find_azerite_spell( "Demonic Meteor" );
   azerite.shadows_bite        = find_azerite_spell( "Shadow's Bite" );
   azerite.supreme_commander   = find_azerite_spell( "Supreme Commander" );
   azerite.explosive_potential = find_azerite_spell( "Explosive Potential" );
@@ -1210,7 +1197,6 @@ void warlock_t::init_spells_demonology()
 
 void warlock_t::init_gains_demonology()
 {
-  gains.demonic_meteor        = get_gain( "demonic_meteor" );
   gains.baleful_invocation    = get_gain( "baleful_invocation" );
   gains.summon_demonic_tyrant = get_gain( "summon_demonic_tyrant" );
 }
