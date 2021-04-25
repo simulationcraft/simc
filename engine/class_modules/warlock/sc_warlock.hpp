@@ -132,18 +132,16 @@ public:
     melee_attack_t* soul_strike; //TODO: SL Beta - This is currently unused, Felguard pets are using manual spellID. Fix or remove.
   } active;
 
-  //TODO: Check all labels here since there was a level squish (EXTREMELY minor, just for clarity)
-  //TODO: Add all talents data for referencing purposes
   // Talents
   struct talents_t
   {
     // shared
-    // tier 30
+    // tier 30 - Not Implemented
     const spell_data_t* demon_skin;
     const spell_data_t* burning_rush;
     const spell_data_t* dark_pact;
 
-    // tier 40
+    // tier 40 - Not Implemented
     const spell_data_t* darkfury;
     const spell_data_t* mortal_coil;
     const spell_data_t* howl_of_terror;
