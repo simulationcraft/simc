@@ -1005,12 +1005,6 @@ void demonic_tyrant_t::demise()
 {
   if ( !current.sleeping )
   {
-    if ( o()->azerite.supreme_commander.ok() )
-    {
-      o()->buffs.demonic_core->trigger( 1 );
-      o()->buffs.supreme_commander->trigger();
-    }
-
     if ( o()->conduit.tyrants_soul.value() > 0 )
     {
       o()->buffs.demonic_core->trigger( 1 );

@@ -1073,9 +1073,6 @@ void warlock_t::create_buffs_demonology()
       make_buff( this, "nether_portal", talents.nether_portal )->set_duration( talents.nether_portal->duration() );
 
   // Azerite
-  buffs.supreme_commander = make_buff<stat_buff_t>( this, "supreme_commander", azerite.supreme_commander )
-                                ->add_stat( STAT_INTELLECT, azerite.supreme_commander.value() )
-                                ->set_duration( find_spell( 279885 )->duration() );
   buffs.explosive_potential = make_buff<stat_buff_t>( this, "explosive_potential", find_spell( 275398 ) )
                                   ->add_stat( STAT_HASTE_RATING, azerite.explosive_potential.value() );
 
@@ -1156,7 +1153,6 @@ void warlock_t::init_spells_demonology()
   talents.nether_portal       = find_talent_spell( "Nether Portal" );
 
   // BFA - Azerite
-  azerite.supreme_commander   = find_azerite_spell( "Supreme Commander" );
   azerite.explosive_potential = find_azerite_spell( "Explosive Potential" );
   azerite.baleful_invocation  = find_azerite_spell( "Baleful Invocation" );
 

@@ -236,7 +236,6 @@ public:
   struct azerite_t
   {
     // Demo
-    azerite_power_t supreme_commander;
     azerite_power_t explosive_potential;
     azerite_power_t baleful_invocation;
 
@@ -425,7 +424,6 @@ public:
 
     //TODO: Remove
     // BFA - Demonology Azerite
-    propagate_const<buff_t*> supreme_commander;
     propagate_const<buff_t*> explosive_potential;
 
     // Destruction Buffs
