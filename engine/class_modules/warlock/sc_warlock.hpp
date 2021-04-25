@@ -235,9 +235,6 @@ public:
   // Azerite traits
   struct azerite_t
   {
-    // Aff
-    azerite_power_t sudden_onset;
-
     // Destro
     azerite_power_t bursting_flare;
     azerite_power_t chaotic_inferno;

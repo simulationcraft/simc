@@ -179,8 +179,6 @@ struct agony_t : public affliction_spell_t
   {
     affliction_spell_t::execute();
 
-    //There is TECHNICALLY a prepatch bug on PTR (as of 9/23) where having both the talent and the azerite starts at 3 stacks
-    //Making a note of it here in this comment but not going to implement it at this time
     if ( p()->talents.writhe_in_agony->ok() && td( execute_state->target )->dots_agony->current_stack() <
       (int)p()->talents.writhe_in_agony->effectN( 3 ).base_value() )
     {
@@ -188,22 +186,6 @@ struct agony_t : public affliction_spell_t
         ->dots_agony->increment( (int)p()->talents.writhe_in_agony->effectN( 3 ).base_value() -
           td( execute_state->target )->dots_agony->current_stack() );
     }
-    else if ( p()->azerite.sudden_onset.ok() && td( execute_state->target )->dots_agony->current_stack() <
-                                               (int)p()->azerite.sudden_onset.spell_ref().effectN( 2 ).base_value() )
-    {
-      td( execute_state->target )
-          ->dots_agony->increment( (int)p()->azerite.sudden_onset.spell_ref().effectN( 2 ).base_value() -
-                                   td( execute_state->target )->dots_agony->current_stack() );
-    }
-  }
-
-  double bonus_ta( const action_state_t* s ) const override
-  {
-    double ta = affliction_spell_t::bonus_ta( s );
-    // BFA - Azerite
-    // TOCHECK: How does Sudden Onset behave with Writhe in Agony's increased stack cap?
-    ta += p()->azerite.sudden_onset.value();
-    return ta;
   }
 
   void tick( dot_t* d ) override
@@ -859,9 +841,6 @@ void warlock_t::init_spells_affliction()
   talents.dark_caller         = find_talent_spell( "Dark Caller" );
   talents.creeping_death      = find_talent_spell( "Creeping Death" );
   talents.dark_soul_misery    = find_talent_spell( "Dark Soul: Misery" );
-
-  // BFA - Azerite
-  azerite.sudden_onset        = find_azerite_spell( "Sudden Onset" );
 
   // Legendaries
   legendary.malefic_wrath              = find_runeforge_legendary( "Malefic Wrath" );
