@@ -235,10 +235,6 @@ public:
   // Azerite traits
   struct azerite_t
   {
-    // Shared
-    azerite_power_t desperate_power;  // healing
-    azerite_power_t lifeblood;        // healing
-
     // Demo
     azerite_power_t demonic_meteor;
     azerite_power_t shadows_bite;
