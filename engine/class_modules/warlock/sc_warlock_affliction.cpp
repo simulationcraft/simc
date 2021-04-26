@@ -856,7 +856,6 @@ void warlock_t::init_spells_affliction()
 void warlock_t::init_gains_affliction()
 {
   gains.agony                      = get_gain( "agony" );
-  gains.seed_of_corruption         = get_gain( "seed_of_corruption" );
   gains.unstable_affliction_refund = get_gain( "unstable_affliction_refund" );
   gains.drain_soul                 = get_gain( "drain_soul" );
 }

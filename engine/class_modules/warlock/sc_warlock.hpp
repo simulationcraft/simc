@@ -450,8 +450,6 @@ public:
     proc_t* one_shard_hog;
     proc_t* two_shard_hog;
     proc_t* three_shard_hog;
-    proc_t* wild_imp;
-    proc_t* dreadstalker_debug;
     proc_t* summon_random_demon;
     proc_t* portal_summon;
     proc_t* carnivorous_stalkers; // SL - Conduit
