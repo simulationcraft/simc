@@ -462,7 +462,6 @@ public:
 
   int initial_soul_shards;
   std::string default_pet;
-  timespan_t shard_react; //TODO: Remove
   shuffled_rng_t* rain_of_chaos_rng;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
