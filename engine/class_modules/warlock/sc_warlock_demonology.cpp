@@ -797,31 +797,21 @@ struct summon_vilefiend_t : public demonology_spell_t
   }
 };
 
-struct grimoire_felguard_t : public summon_pet_t
+struct grimoire_felguard_t : public demonology_spell_t
 {
   grimoire_felguard_t( warlock_t* p, util::string_view options_str )
-    : summon_pet_t( "grimoire_felguard", p, p->talents.grimoire_felguard )
+    : demonology_spell_t( "grimoire_felguard", p, p->talents.grimoire_felguard )
   {
     parse_options( options_str );
-    cooldown->duration = data().cooldown();
-    summoning_duration = data().duration() + timespan_t::from_millis( 1 );  // TODO: why?
+    harmful = may_crit = false;
   }
 
   void execute() override
   {
-    summon_pet_t::execute();
-    pet->buffs.grimoire_of_service->trigger();
+    demonology_spell_t::execute();
+    
+    p()->warlock_pet_list.grimoire_felguards.spawn( data().duration() );
     p()->buffs.grimoire_felguard->trigger();
-  }
-
-  void init_finished() override
-  {
-    if ( pet )
-    {
-      pet->summon_stats = stats;
-    }
-
-    summon_pet_t::init_finished();
   }
 };
 
@@ -983,8 +973,6 @@ pet_t* warlock_t::create_demo_pet( util::string_view pet_name, util::string_view
   using namespace pets;
 
   if ( pet_name == "felguard" )
-    return new pets::demonology::felguard_pet_t( this, pet_name );
-  if ( pet_name == "grimoire_felguard" )
     return new pets::demonology::felguard_pet_t( this, pet_name );
 
   return nullptr;

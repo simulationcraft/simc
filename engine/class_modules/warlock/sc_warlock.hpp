@@ -84,8 +84,7 @@ public:
 
   unsigned active_pets;
 
-  //TODO: Are the pet definitions here only for temporary pets? If so, should Grimoire: Felguard be included?
-  // Active Pet
+  // Main pet held in active/last, guardians should be handled by pet spawners. TODO: Use spawner for Infernal/Darkglare?
   struct pets_t
   {
     warlock_pet_t* active;
@@ -103,6 +102,7 @@ public:
     spawner::pet_spawner_t<pets::demonology::dreadstalker_t, warlock_t> dreadstalkers;
     spawner::pet_spawner_t<pets::demonology::vilefiend_t, warlock_t> vilefiends;
     spawner::pet_spawner_t<pets::demonology::demonic_tyrant_t, warlock_t> demonic_tyrants;
+    spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
 
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
 

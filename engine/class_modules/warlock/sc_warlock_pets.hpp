@@ -397,6 +397,23 @@ struct felguard_pet_t : public warlock_pet_t
   void queue_ds_felstorm();
 };
 
+struct grimoire_felguard_pet_t : public warlock_pet_t
+{
+  const spell_data_t* felstorm_spell;
+  cooldown_t* felstorm_cd;
+
+  // Energy thresholds to wake felguard up for something to do, minimum is the felstorm energy cost,
+  // and maximum is a predetermined empirical value from in game
+  double min_energy_threshold;
+  double max_energy_threshold;
+
+  grimoire_felguard_pet_t( warlock_t* owner, const std::string& name = "grimoire_felguard" );
+  void init_base_stats() override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
+  timespan_t available() const override;
+  void arise() override;
+};
+
 struct wild_imp_pet_t : public warlock_pet_t
 {
   action_t* firebolt;
