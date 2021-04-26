@@ -1336,6 +1336,7 @@ void warlock_t::create_all_pets()
   }
 }
 
+//TODO: Are these expressions outdated?
 std::unique_ptr<expr_t> warlock_t::create_pet_expression( util::string_view name_str )
 {
   if ( name_str == "last_cast_imps" )
@@ -1480,6 +1481,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
       return this->time_to_imps( amt );
     } );
   }
+  //TODO: Is this outdated in Shadowlands?
   else if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "imps_spawned_during" ) )
   {
     auto period = util::to_double( splits[ 1 ] );
@@ -1551,6 +1553,7 @@ struct warlock_module_t : public module_t
     return p;
   }
 
+  //TODO: Hotfix may not be needed any longer, if so leave this function empty instead
   void register_hotfixes() const override
   {
     hotfix::register_spell("Warlock", "2020-11-15", "Manually set secondary Malefic Rapture level requirement", 324540)
