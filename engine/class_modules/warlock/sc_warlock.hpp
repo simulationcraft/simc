@@ -460,15 +460,6 @@ public:
     proc_t* rain_of_chaos;
   } procs;
 
-  //TODO: What the heck is this for anyway?
-  struct spells_t
-  {
-    spell_t* seed_of_corruption_aoe; //Is this unused?
-    spell_t* malefic_rapture_aoe; //Is this unused?
-    spell_t* corruption_impact_effect; //Is this unused?
-    spell_t* implosion_aoe; //Is this unused?
-  } spells;
-
   int initial_soul_shards;
   std::string default_pet;
   timespan_t shard_react; //TODO: Remove

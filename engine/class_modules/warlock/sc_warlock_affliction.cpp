@@ -391,7 +391,6 @@ struct seed_of_corruption_t : public affliction_spell_t
     {
       aoe                              = -1;
       background                       = true;
-      p->spells.seed_of_corruption_aoe = this;
       base_costs[ RESOURCE_MANA ]      = 0;
 
       corruption->background                  = true;
@@ -509,8 +508,6 @@ struct malefic_rapture_t : public affliction_spell_t
         background = true;
         spell_power_mod.direct = spc;
         callbacks = false; //TOCHECK: Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
-
-        p->spells.malefic_rapture_aoe = this;
       }
 
       double get_dots_ticking(player_t *target) const
