@@ -1001,6 +1001,7 @@ struct eye_of_the_tiger_dmg_tick_t : public monk_spell_t
     background   = true;
     hasted_ticks = false;
     may_crit = tick_may_crit = true;
+    aoe                      = 1;
     attack_power_mod.direct  = 0;
     attack_power_mod.tick    = data().effectN( 2 ).ap_coeff();
   }
