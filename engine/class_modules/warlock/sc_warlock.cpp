@@ -701,13 +701,6 @@ double warlock_t::resource_regen_per_second( resource_e r ) const
   return reg;
 }
 
-void warlock_t::halt()
-{
-  player_t::halt();
-  if ( spells.melee )
-    spells.melee->cancel();
-}
-
 //Note: Level is checked to be >=27 by the function calling this. This is technically wrong for warlocks due to
 //a missing level requirement in data, but correct generally.
 double warlock_t::matching_gear_multiplier( attribute_e attr ) const

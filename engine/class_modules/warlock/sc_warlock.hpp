@@ -463,7 +463,6 @@ public:
   //TODO: What the heck is this for anyway?
   struct spells_t
   {
-    spell_t* melee; //Is this necessary?
     spell_t* seed_of_corruption_aoe; //Is this unused?
     spell_t* malefic_rapture_aoe; //Is this unused?
     spell_t* corruption_impact_effect; //Is this unused?
@@ -521,7 +520,6 @@ public:
   double composite_melee_crit_chance() const override;
   double composite_mastery() const override;
   double resource_regen_per_second( resource_e ) const override;
-  void halt() override;
   void combat_begin() override;
   void init_assessors() override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
