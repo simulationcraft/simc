@@ -297,10 +297,6 @@ public:
     const spell_data_t* chaotic_energies;
   } mastery_spells;
 
-  //TODO: Is this necessary or can this be refactored?
-  // Procs and RNG
-  propagate_const<real_ppm_t*> grimoire_of_sacrifice_rppm;  // grimoire of sacrifice
-
   //TODO: Cleanup useless ones and add any as needed
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
   struct cooldowns_t

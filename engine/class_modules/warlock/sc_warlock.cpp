@@ -902,8 +902,6 @@ void warlock_t::init_rng()
   if ( specialization() == WARLOCK_DESTRUCTION )
     init_rng_destruction();
 
-  grimoire_of_sacrifice_rppm = get_rppm( "grimoire_of_sacrifice", find_spell( 196099 ) );
-
   player_t::init_rng();
 }
 
