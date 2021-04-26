@@ -1172,7 +1172,6 @@ void warlock_t::init_rng_demonology()
 
 void warlock_t::init_procs_demonology()
 {
-  procs.dreadstalker_debug  = get_proc( "dreadstalker_debug" );
   procs.summon_random_demon = get_proc( "summon_random_demon" );
 }
 

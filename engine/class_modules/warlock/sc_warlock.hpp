@@ -437,7 +437,7 @@ public:
   struct procs_t
   {
     proc_t* soul_conduit;
-    proc_t* mark_of_borrowed_power;
+    proc_t* mark_of_borrowed_power; //TODO: Remove when removing Borrowed Power event
 
     // aff
     proc_t* nightfall;
@@ -447,7 +447,6 @@ public:
 
     // demo
     proc_t* demonic_calling;
-    proc_t* souls_consumed;
     proc_t* one_shard_hog;
     proc_t* two_shard_hog;
     proc_t* three_shard_hog;
