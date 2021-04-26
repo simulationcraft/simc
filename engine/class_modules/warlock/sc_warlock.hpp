@@ -231,17 +231,6 @@ public:
     const spell_data_t* dark_soul_instability;
   } talents;
 
-  //TODO: Remove all of this
-  // Azerite traits
-  struct azerite_t
-  {
-  } azerite;
-
-  //TODO: Remove all of this
-  struct
-  {
-  } azerite_essence;
-
   struct legendary_t
   {
     // Legendaries

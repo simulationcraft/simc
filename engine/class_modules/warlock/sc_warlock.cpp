@@ -546,8 +546,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     warlock_pet_list( this ),
     active(),
     talents(),
-    azerite(),
-    azerite_essence(),
     legendary(),
     conduit(),
     covenant(),
