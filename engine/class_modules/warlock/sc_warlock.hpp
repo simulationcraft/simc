@@ -297,12 +297,11 @@ public:
     const spell_data_t* chaotic_energies;
   } mastery_spells;
 
-  //TODO: Cleanup useless ones and add any as needed
+  //TODO: Are there any other cooldown reducing/resetting mechanisms not currently in this struct?
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
   struct cooldowns_t
   {
     propagate_const<cooldown_t*> haunt;
-    propagate_const<cooldown_t*> call_dreadstalkers; //probably unneeded
     propagate_const<cooldown_t*> phantom_singularity;
     propagate_const<cooldown_t*> darkglare;
     propagate_const<cooldown_t*> demonic_tyrant;

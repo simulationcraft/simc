@@ -560,7 +560,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     default_pet()
 {
   cooldowns.haunt               = get_cooldown( "haunt" );
-  cooldowns.call_dreadstalkers  = get_cooldown( "call_dreadstalkers" );
   cooldowns.phantom_singularity = get_cooldown( "phantom_singularity" );
   cooldowns.darkglare           = get_cooldown( "summon_darkglare" );
   cooldowns.demonic_tyrant      = get_cooldown( "summon_demonic_tyrant" );
