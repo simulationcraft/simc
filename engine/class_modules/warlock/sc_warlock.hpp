@@ -235,8 +235,6 @@ public:
   // Azerite traits
   struct azerite_t
   {
-    // Destro
-    azerite_power_t chaos_shards;
   } azerite;
 
   //TODO: Remove all of this
@@ -411,10 +409,6 @@ public:
     propagate_const<buff_t*> grimoire_of_supremacy; //TODO: Remove
     propagate_const<buff_t*> dark_soul_instability;
 
-    //TODO: Remove
-    // BFA - Destruction Azerite
-    propagate_const<buff_t*> chaos_shards;
-
     // SL
     propagate_const<buff_t*> decimating_bolt;
     propagate_const<buff_t*> tyrants_soul;
@@ -455,7 +449,6 @@ public:
     gain_t* infernal;
     gain_t* shadowburn_refund;
     gain_t* inferno;
-    gain_t* chaos_shards;  //TODO: Remove
 
     gain_t* miss_refund;
 
@@ -557,7 +550,6 @@ public:
   double composite_melee_haste() const override;
   double composite_melee_crit_chance() const override;
   double composite_mastery() const override;
-  double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   double resource_regen_per_second( resource_e ) const override;
   double composite_armor() const override;
   void halt() override;

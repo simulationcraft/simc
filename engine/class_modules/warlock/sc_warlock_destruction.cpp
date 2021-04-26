@@ -370,16 +370,6 @@ struct incinerate_fnb_t : public destruction_spell_t
     p()->havoc_spells.push_back( this );
   }
 
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double da = destruction_spell_t::bonus_da( s );
-
-    // BFA - Azerite
-    da += p()->azerite.chaos_shards.value( 2 );
-
-    return da;
-  }
-
   double cost() const override
   {
     return 0;
@@ -469,16 +459,6 @@ struct incinerate_t : public destruction_spell_t
     energize_mult     = 1.0 + ( p->legendary.embers_of_the_diabolic_raiment->ok() ? p->legendary.embers_of_the_diabolic_raiment->effectN( 1 ).percent() : 0.0 );
 
     energize_amount *= energize_mult;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double da = destruction_spell_t::bonus_da( s );
-
-    // BFA - Azerite
-    da += p()->azerite.chaos_shards.value( 2 );
-
-    return da;
   }
 
   timespan_t execute_time() const override
@@ -1041,15 +1021,6 @@ void warlock_t::create_buffs_destruction()
                                     ->add_invalidate( CACHE_CRIT_CHANCE )
                                     ->set_default_value( talents.dark_soul_instability->effectN( 1 ).percent() );
 
-  // TOCHECK What happens when we get 2 procs within 2 seconds?
-  buffs.chaos_shards =
-      make_buff<stat_buff_t>( this, "chaos_shards", find_spell( 287660 ) )
-          ->set_period( find_spell( 287660 )->effectN( 1 ).period() )
-          ->set_tick_zero( true )
-          ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-            resource_gain( RESOURCE_SOUL_SHARD, b->data().effectN( 1 ).base_value() / 10.0, gains.chaos_shards );
-          } );
-
   // Legendaries
   buffs.madness_of_the_azjaqir =
       make_buff( this, "madness_of_the_azjaqir", legendary.madness_of_the_azjaqir->effectN( 1 ).trigger() )
@@ -1088,9 +1059,6 @@ void warlock_t::init_spells_destruction()
 
   talents.channel_demonfire     = find_talent_spell( "Channel Demonfire" );
   talents.dark_soul_instability = find_talent_spell( "Dark Soul: Instability" );
-
-  // Azerite
-  azerite.chaos_shards    = find_azerite_spell( "Chaos Shards" );
 
   // Legendaries
   legendary.cinders_of_the_azjaqir         = find_runeforge_legendary( "Cinders of the Azj'Aqir" );

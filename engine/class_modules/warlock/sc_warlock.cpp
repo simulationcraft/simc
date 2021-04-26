@@ -698,29 +698,6 @@ double warlock_t::composite_rating_multiplier( rating_e rating ) const
   return m;
 }
 
-double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
-{
-  if ( resource_type == RESOURCE_SOUL_SHARD )
-  {
-    int current_soul_shards = (int)resources.current[ resource_type ];
-
-    // BFA - Azerite
-    // Chaos Shards triggers for all specializations
-    if ( azerite.chaos_shards.ok() )
-    {
-      // Check if soul shard was filled
-      if ( std::floor( resources.current[ RESOURCE_SOUL_SHARD ] ) <
-           std::floor( std::min( resources.current[ RESOURCE_SOUL_SHARD ] + amount, 5.0 ) ) )
-      {
-        if ( rng().roll( azerite.chaos_shards.spell_ref().effectN( 1 ).percent() / 10.0 ) )
-          buffs.chaos_shards->trigger();
-      }
-    }
-  }
-
-  return player_t::resource_gain( resource_type, amount, source, action );
-}
-
 double warlock_t::resource_regen_per_second( resource_e r ) const
 {
   double reg = player_t::resource_regen_per_second( r );
@@ -948,8 +925,6 @@ void warlock_t::init_gains()
   gains.soul_conduit = get_gain( "soul_conduit" );
   gains.borrowed_power = get_gain( "borrowed_power" );
   gains.scouring_tithe = get_gain( "souring_tithe" );
-
-  gains.chaos_shards           = get_gain( "chaos_shards" );
 }
 
 void warlock_t::init_procs()
