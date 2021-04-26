@@ -331,11 +331,6 @@ struct conflagrate_t : public destruction_spell_t
     p()->buffs.backdraft->trigger(
         as<int>( 1 + ( p()->talents.flashover->ok() ? p()->talents.flashover->effectN( 1 ).base_value() : 0 ) ) );
 
-    // BFA - Azerite
-    auto td = this->td( target );
-    if ( p()->azerite.bursting_flare.ok() && td->dots_immolate->is_ticking() )
-      p()->buffs.bursting_flare->trigger();
-
     sim->print_log( "{}: Action {} {} charges remain", player->name(), name(), this->cooldown->current_charge );
   }
 
@@ -460,8 +455,8 @@ struct incinerate_fnb_t : public destruction_spell_t
 
 struct incinerate_t : public destruction_spell_t
 {
-  double backdraft_gcd;
-  double backdraft_cast_time;
+  double backdraft_gcd_mult;
+  double backdraft_cast_mult;
   double energize_mult;
   incinerate_fnb_t* fnb_action;
 
@@ -474,8 +469,8 @@ struct incinerate_t : public destruction_spell_t
 
     can_havoc = true;
 
-    backdraft_cast_time = 1.0 + p->buffs.backdraft->data().effectN( 1 ).percent();
-    backdraft_gcd       = 1.0 + p->buffs.backdraft->data().effectN( 2 ).percent();
+    backdraft_cast_mult = 1.0 + p->buffs.backdraft->data().effectN( 1 ).percent();
+    backdraft_gcd_mult = 1.0 + p->buffs.backdraft->data().effectN( 2 ).percent();
 
     energize_type     = action_energize::PER_HIT;
     energize_resource = RESOURCE_SOUL_SHARD;
@@ -499,12 +494,8 @@ struct incinerate_t : public destruction_spell_t
   {
     timespan_t h = spell_t::execute_time();
 
-    if ( p()->buffs.backdraft->check() && !p()->buffs.chaotic_inferno->check() )
-      h *= backdraft_cast_time;
-
-    // BFA - Azerite
-    if ( p()->buffs.chaotic_inferno->check() )
-      h *= 1.0 + p()->buffs.chaotic_inferno->check_value();
+    if ( p()->buffs.backdraft->check() )
+      h *= backdraft_cast_mult;
 
     return h;
   }
@@ -516,9 +507,8 @@ struct incinerate_t : public destruction_spell_t
     if ( t == 0_ms )
       return t;
 
-    // BFA - Azerite
-    if ( p()->buffs.backdraft->check() && !p()->buffs.chaotic_inferno->check() )
-      t *= backdraft_gcd;
+    if ( p()->buffs.backdraft->check() )
+      t *= backdraft_gcd_mult;
 
     if ( t < min_gcd )
       t = min_gcd;
@@ -530,11 +520,7 @@ struct incinerate_t : public destruction_spell_t
   {
     destruction_spell_t::execute();
 
-    // BFA - Azerite
-    if ( !p()->buffs.chaotic_inferno->check() )
-      p()->buffs.backdraft->decrement();
-
-    p()->buffs.chaotic_inferno->decrement();
+    p()->buffs.backdraft->decrement();
 
     if ( p()->talents.fire_and_brimstone->ok() )
     {
@@ -696,10 +682,6 @@ struct chaos_bolt_t : public destruction_spell_t
   {
     destruction_spell_t::execute();
 
-    // BFA - Azerite
-    if ( p()->azerite.chaotic_inferno.ok() )
-      p()->buffs.chaotic_inferno->trigger();
-
     p()->buffs.crashing_chaos->decrement();
     p()->buffs.backdraft->decrement();
 
@@ -718,7 +700,6 @@ struct chaos_bolt_t : public destruction_spell_t
   {
     double da = destruction_spell_t::bonus_da( s );
     // BFA - Azerite
-    da += p()->azerite.chaotic_inferno.value( 2 );
     da += p()->buffs.crashing_chaos->check_value();
     return da;
   }
@@ -1089,11 +1070,6 @@ void warlock_t::create_buffs_destruction()
                                     ->set_default_value( talents.dark_soul_instability->effectN( 1 ).percent() );
 
   // BFA - Azerite
-  buffs.bursting_flare = make_buff<stat_buff_t>( this, "bursting_flare", find_spell( 279913 ) )
-                             ->add_stat( STAT_MASTERY_RATING, azerite.bursting_flare.value() );
-  buffs.chaotic_inferno = make_buff( this, "chaotic_inferno", find_spell( 279673 ) )
-                              ->set_default_value( find_spell( 279673 )->effectN( 1 ).percent() )
-                              ->set_chance( find_spell( 279672 )->proc_chance() );
   buffs.crashing_chaos =
       make_buff( this, "crashing_chaos", find_spell( 277706 ) )->set_default_value( azerite.crashing_chaos.value() );
 
@@ -1149,8 +1125,6 @@ void warlock_t::init_spells_destruction()
   talents.dark_soul_instability = find_talent_spell( "Dark Soul: Instability" );
 
   // Azerite
-  azerite.bursting_flare  = find_azerite_spell( "Bursting Flare" );
-  azerite.chaotic_inferno = find_azerite_spell( "Chaotic Inferno" );
   azerite.crashing_chaos  = find_azerite_spell( "Crashing Chaos" );
   azerite.rolling_havoc   = find_azerite_spell( "Rolling Havoc" );
   azerite.chaos_shards    = find_azerite_spell( "Chaos Shards" );

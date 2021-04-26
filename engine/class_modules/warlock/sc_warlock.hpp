@@ -236,8 +236,6 @@ public:
   struct azerite_t
   {
     // Destro
-    azerite_power_t bursting_flare;
-    azerite_power_t chaotic_inferno;
     azerite_power_t crashing_chaos;
     azerite_power_t rolling_havoc;
     azerite_power_t chaos_shards;
@@ -417,8 +415,6 @@ public:
 
     //TODO: Remove
     // BFA - Destruction Azerite
-    propagate_const<buff_t*> bursting_flare;
-    propagate_const<buff_t*> chaotic_inferno;
     propagate_const<buff_t*> crashing_chaos;
     propagate_const<buff_t*> rolling_havoc;
     propagate_const<buff_t*> chaos_shards;
