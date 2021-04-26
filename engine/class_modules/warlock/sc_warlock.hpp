@@ -405,7 +405,6 @@ public:
   struct gains_t
   {
     gain_t* soul_conduit;
-    gain_t* borrowed_power; // TODO: Remove this when removing Borrowed Power event
 
     gain_t* agony;
     gain_t* drain_soul;
@@ -437,7 +436,6 @@ public:
   struct procs_t
   {
     proc_t* soul_conduit;
-    proc_t* mark_of_borrowed_power; //TODO: Remove when removing Borrowed Power event
 
     // aff
     proc_t* nightfall;
@@ -615,39 +613,6 @@ struct sc_event_t : public player_event_t
         pl->procs.soul_conduit->occur();
       }
     }
-  }
-};
-
-//TODO: This legendary was removed in beta, remove this
-struct borrowed_power_event_t : public player_event_t
-{
-  gain_t* shard_gain;
-  warlock_t* pl;
-  int shards_used;
-  double refund_chance;
-
-  borrowed_power_event_t( warlock_t* p, int c, double chance )
-    : player_event_t( *p, 100_ms ),
-    shard_gain( p->gains.borrowed_power ),
-    pl( p ),
-    shards_used( c ),
-    refund_chance( chance )
-  {
-  }
-
-  virtual const char* name() const override
-  {
-    return "borrowed_power_event";
-  }
-
-  virtual void execute() override
-  {
-      if ( rng().roll( refund_chance ) )
-      {
-        pl->sim->print_log( "Borrowed power proc occurred for Warlock {}, refunding {} soul shards.", pl->name(), shards_used );
-        pl->resource_gain( RESOURCE_SOUL_SHARD, shards_used, shard_gain );
-        pl->procs.mark_of_borrowed_power->occur();
-      }
   }
 };
 

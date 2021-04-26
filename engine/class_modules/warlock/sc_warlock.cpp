@@ -901,7 +901,6 @@ void warlock_t::init_gains()
   gains.miss_refund  = get_gain( "miss_refund" );
   gains.shadow_bolt  = get_gain( "shadow_bolt" );
   gains.soul_conduit = get_gain( "soul_conduit" );
-  gains.borrowed_power = get_gain( "borrowed_power" );
   gains.scouring_tithe = get_gain( "souring_tithe" );
 }
 
@@ -925,8 +924,6 @@ void warlock_t::init_procs()
   procs.corrupting_leer = get_proc( "corrupting_leer" );
   procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
   procs.horned_nightmare = get_proc( "horned_nightmare" );
-  procs.mark_of_borrowed_power = get_proc( "mark_of_borrowed_power" );
-
 }
 
 void warlock_t::init_base_stats()
