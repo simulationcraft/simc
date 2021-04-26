@@ -682,7 +682,6 @@ struct chaos_bolt_t : public destruction_spell_t
   {
     destruction_spell_t::execute();
 
-    p()->buffs.crashing_chaos->decrement();
     p()->buffs.backdraft->decrement();
 
     // SL - Legendary
@@ -694,14 +693,6 @@ struct chaos_bolt_t : public destruction_spell_t
   double composite_crit_chance() const override
   {
     return 1.0;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double da = destruction_spell_t::bonus_da( s );
-    // BFA - Azerite
-    da += p()->buffs.crashing_chaos->check_value();
-    return da;
   }
 
   double calculate_direct_amount( action_state_t* state ) const override
@@ -746,10 +737,6 @@ struct summon_infernal_t : public destruction_spell_t
     infernal_awakening        = new infernal_awakening_t( p );
     infernal_awakening->stats = stats;
     radius                    = infernal_awakening->radius;
-
-    // BFA - Azerite
-    if ( p->azerite.crashing_chaos.ok() )
-      cooldown->duration += p->find_spell( 277705 )->effectN( 2 ).time_value();
   }
 
   void execute() override
@@ -771,12 +758,6 @@ struct summon_infernal_t : public destruction_spell_t
     if ( p()->talents.rain_of_chaos->ok() )
     {
       p()->buffs.rain_of_chaos->trigger();
-    }
-
-    // BFA - Azerite
-    if ( p()->azerite.crashing_chaos.ok() )
-    {
-      p()->buffs.crashing_chaos->trigger( p()->buffs.crashing_chaos->max_stack() );
     }
   }
 
@@ -1070,9 +1051,6 @@ void warlock_t::create_buffs_destruction()
                                     ->set_default_value( talents.dark_soul_instability->effectN( 1 ).percent() );
 
   // BFA - Azerite
-  buffs.crashing_chaos =
-      make_buff( this, "crashing_chaos", find_spell( 277706 ) )->set_default_value( azerite.crashing_chaos.value() );
-
   buffs.rolling_havoc = make_buff<stat_buff_t>( this, "rolling_havoc", find_spell( 278931 ) )
                             ->add_stat( STAT_INTELLECT, azerite.rolling_havoc.value() );
 
@@ -1125,7 +1103,6 @@ void warlock_t::init_spells_destruction()
   talents.dark_soul_instability = find_talent_spell( "Dark Soul: Instability" );
 
   // Azerite
-  azerite.crashing_chaos  = find_azerite_spell( "Crashing Chaos" );
   azerite.rolling_havoc   = find_azerite_spell( "Rolling Havoc" );
   azerite.chaos_shards    = find_azerite_spell( "Chaos Shards" );
 
