@@ -1414,7 +1414,7 @@ public:
   void trigger_seal_fate( const action_state_t* );
   void trigger_main_gauche( const action_state_t* );
   void trigger_combat_potency( const action_state_t* );
-  void trigger_energy_refund( const action_state_t* );
+  void trigger_energy_refund();
   void trigger_poison_bomb( const action_state_t* );
   void trigger_venomous_wounds( const action_state_t* );
   void trigger_blade_flurry( const action_state_t* );
@@ -1642,13 +1642,13 @@ public:
 
     spend_combo_points( ab::execute_state );
 
-    if ( ab::result_is_miss( ab::execute_state->result ) && ab::last_resource_cost > 0 )
+    if ( ab::current_resource() == RESOURCE_ENERGY && ab::last_resource_cost > 0 )
     {
-      trigger_energy_refund( ab::execute_state );
-    }
-    else
-    {
-      if ( ab::current_resource() == RESOURCE_ENERGY && ab::last_resource_cost > 0 )
+      if ( !ab::hit_any_target )
+      {
+        trigger_energy_refund();
+      }
+      else
       {
         // Dustwalker's Patch Legendary
         if ( p()->legendary.duskwalkers_patch.ok() )
@@ -1690,27 +1690,30 @@ public:
     if ( ab::harmful )
       p()->restealth_allowed = false;
 
-    trigger_auto_attack( ab::execute_state );
-    trigger_ruthlessness_cp( ab::execute_state );
-
-    if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
+    if ( ab::hit_any_target )
     {
-      if ( affected_by.shadow_blades_cp && p()->buffs.shadow_blades->up() )
+      trigger_auto_attack( ab::execute_state );
+      trigger_ruthlessness_cp( ab::execute_state );
+
+      if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
       {
-        trigger_combo_point_gain( as<int>( p()->buffs.shadow_blades->data().effectN( 2 ).base_value() ), p()->gains.shadow_blades );
+        if ( affected_by.shadow_blades_cp && p()->buffs.shadow_blades->up() )
+        {
+          trigger_combo_point_gain( as<int>( p()->buffs.shadow_blades->data().effectN( 2 ).base_value() ), p()->gains.shadow_blades );
+        }
+
+        if ( affected_by.broadside_cp && p()->buffs.broadside->up() )
+        {
+          trigger_combo_point_gain( as<int>( p()->buffs.broadside->check_value() ), p()->gains.broadside );
+        }
       }
 
-      if ( affected_by.broadside_cp && p()->buffs.broadside->up() )
-      {
-        trigger_combo_point_gain( as<int>( p()->buffs.broadside->check_value() ), p()->gains.broadside );
-      }
+      trigger_dreadblades( ab::execute_state );
+      trigger_relentless_strikes( ab::execute_state );
+      trigger_elaborate_planning( ab::execute_state );
+      trigger_alacrity( ab::execute_state );
+      trigger_deepening_shadows( ab::execute_state );
     }
-
-    trigger_dreadblades( ab::execute_state );
-    trigger_relentless_strikes( ab::execute_state );
-    trigger_elaborate_planning( ab::execute_state );
-    trigger_alacrity( ab::execute_state );
-    trigger_deepening_shadows( ab::execute_state );
 
     // Trigger the 1ms delayed breaking of all stealth buffs
     if ( ab::harmful && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD ) )
@@ -5637,7 +5640,7 @@ void actions::rogue_action_t<Base>::trigger_combat_potency( const action_state_t
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_energy_refund( const action_state_t* /* state */ )
+void actions::rogue_action_t<Base>::trigger_energy_refund()
 {
   double energy_restored = ab::last_resource_cost * 0.80;
   p()->resource_gain( RESOURCE_ENERGY, energy_restored, p()->gains.energy_refund );
@@ -5950,7 +5953,7 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 )
     return;
 
-  if ( !ab::result_is_hit( state->result ) )
+  if ( !ab::hit_any_target )
     return;
 
   double max_spend = std::min( p()->resources.current[ RESOURCE_COMBO_POINT ], p()->consume_cp_max() );
