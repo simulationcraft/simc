@@ -632,6 +632,111 @@ void felguard_pet_t::queue_ds_felstorm()
   }
 }
 
+grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner, const std::string& name )
+  : warlock_pet_t( owner, name, PET_SERVICE_FELGUARD, true ),
+    felstorm_spell( find_spell( 89751 ) ),
+    min_energy_threshold( felstorm_spell->cost( POWER_ENERGY ) ),
+    max_energy_threshold( 100 )
+{
+  action_list_str = "travel";
+  action_list_str += "/felstorm";
+  action_list_str += "/legion_strike,if=energy>=" + util::to_string( max_energy_threshold );
+
+  felstorm_cd = get_cooldown( "felstorm" );
+
+  owner_coeff.health = 0.75;
+
+  is_main_pet = true;
+}
+
+ void grimoire_felguard_pet_t::arise()
+ {
+   warlock_pet_t::arise();
+
+   buffs.grimoire_of_service->trigger();
+ }
+
+timespan_t grimoire_felguard_pet_t::available() const
+{
+  double energy_threshold = max_energy_threshold;
+  double time_to_felstorm = ( felstorm_cd->ready - sim->current_time() ).total_seconds();
+  if ( time_to_felstorm <= 0 )
+  {
+    energy_threshold = min_energy_threshold;
+  }
+
+  double deficit           = resources.current[ RESOURCE_ENERGY ] - energy_threshold;
+  double rps               = resource_regen_per_second( RESOURCE_ENERGY );
+  double time_to_threshold = 0;
+  // Not enough energy, figure out how many milliseconds it'll take to get
+  if ( deficit < 0 )
+  {
+    time_to_threshold = util::ceil( std::fabs( deficit ) / rps, 3 );
+  }
+
+  // Fuzz regen by making the pet wait a bit extra if it's just below the resource threshold
+  if ( time_to_threshold < 0.001 )
+  {
+    return warlock_pet_t::available();
+  }
+
+  // Next event is either going to be the time to felstorm, or the time to gain enough energy for a
+  // threshold value
+  double time_to_next_event = 0;
+  if ( time_to_felstorm <= 0 )
+  {
+    time_to_next_event = time_to_threshold;
+  }
+  else
+  {
+    time_to_next_event = std::min( time_to_felstorm, time_to_threshold );
+  }
+
+  if ( sim->debug )
+  {
+    sim->out_debug.print( "{} waiting, deficit={}, threshold={}, t_threshold={}, t_felstorm={} t_wait={}", name(),
+                          deficit, energy_threshold, time_to_threshold, time_to_felstorm, time_to_next_event );
+  }
+
+  if ( time_to_next_event < 0.001 )
+  {
+    return warlock_pet_t::available();
+  }
+  else
+  {
+    return timespan_t::from_seconds( time_to_next_event );
+  }
+}
+
+void grimoire_felguard_pet_t::init_base_stats()
+{
+  warlock_pet_t::init_base_stats();
+
+  // Felguard is the only warlock pet to use an actual weapon.
+  main_hand_weapon.type = WEAPON_AXE_2H;
+  melee_attack          = new warlock_pet_melee_t( this );
+
+  // TOCHECK Increased by 15% in 8.1.
+  owner_coeff.ap_from_sp *= 1.15;
+  owner_coeff.sp_from_sp *= 1.15;
+
+  // TOCHECK Felguard has a hardcoded 10% multiplier for its auto attack damage. Live as of 10-17-2018
+  melee_attack->base_dd_multiplier *= 1.1;
+  special_action = new axe_toss_t( this, "" );
+}
+
+action_t* grimoire_felguard_pet_t::create_action( util::string_view name, const std::string& options_str )
+{
+  if ( name == "legion_strike" )
+    return new legion_strike_t( this, options_str );
+  if ( name == "felstorm" )
+    return new felstorm_t( this, options_str );
+  if ( name == "axe_toss" )
+    return new axe_toss_t( this, options_str );
+
+  return warlock_pet_t::create_action( name, options_str );
+}
+
 struct fel_firebolt_t : public warlock_pet_spell_t
 {
   bool demonic_power_on_cast_start;
