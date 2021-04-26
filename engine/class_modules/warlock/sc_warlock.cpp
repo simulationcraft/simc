@@ -555,7 +555,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     buffs(),
     gains(),
     procs(),
-    spells(),
     initial_soul_shards( 3 ),
     default_pet()
 {
