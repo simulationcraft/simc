@@ -53,15 +53,6 @@ public:
     }
   }
 
-  void execute() override
-  {
-    warlock_spell_t::execute();
-
-    // BFA - Azerite
-    if ( can_havoc && num_targets_hit > 1 && p()->azerite.rolling_havoc.enabled() )
-      p()->buffs.rolling_havoc->trigger();
-  }
-
   void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
@@ -1050,10 +1041,6 @@ void warlock_t::create_buffs_destruction()
                                     ->add_invalidate( CACHE_CRIT_CHANCE )
                                     ->set_default_value( talents.dark_soul_instability->effectN( 1 ).percent() );
 
-  // BFA - Azerite
-  buffs.rolling_havoc = make_buff<stat_buff_t>( this, "rolling_havoc", find_spell( 278931 ) )
-                            ->add_stat( STAT_INTELLECT, azerite.rolling_havoc.value() );
-
   // TOCHECK What happens when we get 2 procs within 2 seconds?
   buffs.chaos_shards =
       make_buff<stat_buff_t>( this, "chaos_shards", find_spell( 287660 ) )
@@ -1103,7 +1090,6 @@ void warlock_t::init_spells_destruction()
   talents.dark_soul_instability = find_talent_spell( "Dark Soul: Instability" );
 
   // Azerite
-  azerite.rolling_havoc   = find_azerite_spell( "Rolling Havoc" );
   azerite.chaos_shards    = find_azerite_spell( "Chaos Shards" );
 
   // Legendaries
