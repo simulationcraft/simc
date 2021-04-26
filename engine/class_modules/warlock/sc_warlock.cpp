@@ -701,11 +701,6 @@ double warlock_t::resource_regen_per_second( resource_e r ) const
   return reg;
 }
 
-double warlock_t::composite_armor() const
-{
-  return player_t::composite_armor() + spec.fel_armor->effectN( 2 ).base_value();
-}
-
 void warlock_t::halt()
 {
   player_t::halt();
@@ -713,6 +708,8 @@ void warlock_t::halt()
     spells.melee->cancel();
 }
 
+//Note: Level is checked to be >=27 by the function calling this. This is technically wrong for warlocks due to
+//a missing level requirement in data, but correct generally.
 double warlock_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_INTELLECT )
@@ -847,7 +844,6 @@ void warlock_t::init_spells()
   warlock_t::init_spells_destruction();
 
   // General
-  spec.fel_armor   = find_spell( 104938 );
   spec.nethermancy = find_spell( 86091 );
 
   // Specialization Spells
@@ -956,8 +952,6 @@ void warlock_t::init_base_stats()
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 0.0;
   base.spell_power_per_intellect = 1.0;
-
-  base.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spec.fel_armor->effectN( 1 ).percent();
 
   resources.base[ RESOURCE_SOUL_SHARD ] = 5;
 

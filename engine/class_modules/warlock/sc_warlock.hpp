@@ -314,8 +314,7 @@ public:
   struct specs_t
   {
     // All Specs
-    const spell_data_t* fel_armor; //TODO: removed? Or is this now Demonic Embrace?
-    const spell_data_t* nethermancy; //TODO: this name doesn't show in spell book but is still in spell data, is this correct?
+    const spell_data_t* nethermancy; //The probably actual spell controlling armor type bonus. NOTE: Level req is missing, this matches in game behavior.
     //TODO: Corruption is now class-wide
     //TODO: Ritual of Doom?
 
@@ -535,7 +534,6 @@ public:
   double composite_melee_crit_chance() const override;
   double composite_mastery() const override;
   double resource_regen_per_second( resource_e ) const override;
-  double composite_armor() const override;
   void halt() override;
   void combat_begin() override;
   void init_assessors() override;
