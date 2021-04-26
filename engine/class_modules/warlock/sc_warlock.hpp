@@ -400,16 +400,15 @@ public:
     propagate_const<buff_t*> demonic_synergy;
   } buffs;
 
-  //TODO: Some of these gains are unused, should they be pruned?
-  // Gains
+  //TODO: Determine if any gains are not currently being tracked
+  // Gains - Many of these are automatically handled for resource gains if get_gain( name ) is given the same name as the action source
   struct gains_t
   {
     gain_t* soul_conduit;
-    gain_t* borrowed_power; // SL - Legendary
+    gain_t* borrowed_power; // TODO: Remove this when removing Borrowed Power event
 
     gain_t* agony;
     gain_t* drain_soul;
-    gain_t* seed_of_corruption;
     gain_t* unstable_affliction_refund;
 
     gain_t* conflagrate;
