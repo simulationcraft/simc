@@ -868,6 +868,10 @@ void warlock_t::init_procs_affliction()
   procs.malefic_wrath   = get_proc( "malefic_wrath" );
 }
 
+void warlock_t::create_options_affliction()
+{
+}
+
 void warlock_t::create_apl_affliction()
 {
   action_priority_list_t* def   = get_action_priority_list( "default" );

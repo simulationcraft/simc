@@ -544,7 +544,7 @@ public:
   void init_gains_affliction();
   void init_rng_affliction();
   void init_procs_affliction();
-  void create_options_affliction(); //TODO: Add function?
+  void create_options_affliction();
   void create_apl_affliction();
 
   // sc_warlock_demonology
