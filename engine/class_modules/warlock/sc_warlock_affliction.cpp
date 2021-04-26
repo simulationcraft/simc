@@ -825,7 +825,6 @@ void warlock_t::init_spells_affliction()
   spec.corruption_3        = find_specialization_spell( "Corruption", "Rank 3" );
   spec.unstable_affliction_2 = find_specialization_spell( "Unstable Affliction", "Rank 2" );
   spec.unstable_affliction_3 = find_specialization_spell( "Unstable Affliction", "Rank 3" );
-  spec.shadow_bolt            = find_specialization_spell( "Shadow Bolt" );
 
   // Talents
   talents.nightfall           = find_talent_spell( "Nightfall" );

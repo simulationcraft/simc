@@ -848,12 +848,7 @@ void warlock_t::init_spells()
 
   // Specialization Spells
   spec.immolate         = find_specialization_spell( "Immolate" );
-  spec.nightfall        = find_specialization_spell( "Nightfall" );
-  spec.wild_imps        = find_specialization_spell( "Wild Imps" );
   spec.demonic_core     = find_specialization_spell( "Demonic Core" );
-  spec.shadow_bite      = find_specialization_spell( "Shadow Bite" );
-  spec.unending_resolve = find_specialization_spell( "Unending Resolve" );
-  spec.firebolt         = find_specialization_spell( "Firebolt" );
 
   // Talents
   talents.demon_skin                = find_talent_spell( "Demon Skin" );

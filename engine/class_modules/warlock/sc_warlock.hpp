@@ -310,6 +310,7 @@ public:
   } cooldowns;
 
   //TODO: this struct is supposedly for passives per the comment here, but that is potentially outdated. Consider refactoring and reorganizing ALL of this.
+  //TODO: Does find spec spell have rank support? If so, USE IT in assigning data to these
   // Passives
   struct specs_t
   {
@@ -324,9 +325,6 @@ public:
     const spell_data_t* agony_2; //Rank 2 passive (increased stacks)
     const spell_data_t* corruption_2; //Rank 2 passive (instant cast)
     const spell_data_t* corruption_3; //Rank 3 passive (damage on cast component)
-    const spell_data_t* nightfall;  // TODO: There is no specialization data for this spell, remove or fix. (Potential duplicate of talents.nightfall)
-    const spell_data_t* shadow_bite; //TODO: Pet spell? Does not appear in specialization data
-    const spell_data_t* shadow_bolt; //TODO: This is currently unused. Decide on fix or remove.
     const spell_data_t* summon_darkglare; //This is the active summon ability
     const spell_data_t* unstable_affliction;  //This is the primary active ability
     const spell_data_t* unstable_affliction_2; //Rank 2 passive (soul shard on death)
@@ -336,24 +334,20 @@ public:
     const spell_data_t* demonology; //Spec aura
     const spell_data_t* call_dreadstalkers_2; //Rank 2 passive (reduced cast time, increased pet move speed)
     const spell_data_t* demonic_core; //Spec passive for the ability. See also: buffs.demonic_core
-    const spell_data_t* doom; //TODO: Currently not being used - potential duplicate of talents.doom
     const spell_data_t* fel_firebolt_2; //Rank 2 passive (reduced energy)
     const spell_data_t* summon_demonic_tyrant_2; //Rank 2 passive (instant soul shard generation)
-    const spell_data_t* wild_imps; //TODO: What is this? There doesn't appear to be any spell data matching this name
     //TODO: Should Implosion be in this list? Currently in spells.implosion_aoe
 
     // Destruction only
     const spell_data_t* destruction; //Spec aura
     const spell_data_t* conflagrate; //TODO: This is the primary active ability, but is not currently being used. Fix this.
     const spell_data_t* conflagrate_2; //Rank 2 passive (increased charges)
-    const spell_data_t* firebolt; //TODO: Pet spell? Does not appear in specialization data
     const spell_data_t* havoc; //This is the primary active ability
     //TODO: debuffs_havoc is currently referencing the spellID directly for rank 2, fix or remove.
     const spell_data_t* havoc_2; //Rank 2 passive (increased duration)
     const spell_data_t* immolate; //TODO: this is supposed to be the primary active ability but is not being used at the moment - fix this
     const spell_data_t* rain_of_fire_2; //Rank 2 passive (increased damage)
     const spell_data_t* summon_infernal_2; //Rank 2 passive (impact damage)
-    const spell_data_t* unending_resolve; //TODO: this isn't even a DPS ability, and doesn't appear in specialization data. Probably remove
   } spec;
 
   // Buffs
