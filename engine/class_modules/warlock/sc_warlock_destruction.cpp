@@ -1122,7 +1122,6 @@ void warlock_t::create_apl_destruction()
   def->add_action( "immolate,cycle_targets=1,if=refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   def->add_action( "immolate,if=talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains<duration*0.5" );
   def->add_action( "call_action_list,name=cds" );
-  def->add_action( "call_action_list,name=essences" );
   def->add_action( "channel_demonfire" );
   def->add_action( "scouring_tithe" );
   def->add_action( "decimating_bolt" );
@@ -1145,7 +1144,6 @@ void warlock_t::create_apl_destruction()
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time" );
   aoe->add_action( "immolate,cycle_targets=1,if=remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   aoe->add_action( "call_action_list,name=cds" );
-  aoe->add_action( "call_action_list,name=essences" );
   aoe->add_action( "havoc,cycle_targets=1,if=!(target=self.target)&active_enemies<4" );
   aoe->add_action( "rain_of_fire" );
   aoe->add_action( "havoc,cycle_targets=1,if=!(self.target=target)" );
