@@ -357,7 +357,6 @@ public:
     propagate_const<buff_t*> grimoire_of_sacrifice; //Buff which grants damage proc
 
     // Affliction Buffs
-    propagate_const<buff_t*> active_uas; //TODO: Remove
     propagate_const<buff_t*> drain_life; //Dummy buff used internally for handling Inevitable Demise cases
     propagate_const<buff_t*> nightfall;
     propagate_const<buff_t*> inevitable_demise;
@@ -375,21 +374,19 @@ public:
     propagate_const<buff_t*> tyrant; //Buff for tracking if Demonic Tyrant is currently out
     propagate_const<buff_t*> portal_summons; //TODO: Fix tracking with this or remove
     propagate_const<buff_t*> grimoire_felguard; //Buff for tracking if GFG pet is currently out
-    propagate_const<buff_t*> prince_malchezaar; //TODO: Do we need this? (Malchezaar does not work in m+/raid)
+    propagate_const<buff_t*> prince_malchezaar; //Buff for tracking Malchezaar (who is currently disabled in sims)
     propagate_const<buff_t*> eyes_of_guldan; //Buff for tracking if rare random summon is currently out
 
     // Destruction Buffs
     propagate_const<buff_t*> backdraft; //Buff associated with Conflagrate
     propagate_const<buff_t*> reverse_entropy;
     propagate_const<buff_t*> rain_of_chaos;
-    propagate_const<buff_t*> grimoire_of_supremacy_driver; //TODO: Remove
-    propagate_const<buff_t*> grimoire_of_supremacy; //TODO: Remove
     propagate_const<buff_t*> dark_soul_instability;
 
-    // SL
+    // Covenants
     propagate_const<buff_t*> decimating_bolt;
     propagate_const<buff_t*> tyrants_soul;
-    propagate_const<buff_t*> soul_tithe; //TODO: Soul Tithe whitelist includes Immolate despite this not being mentioned in tooltip. Investigate. Also check if all demons affected.
+    propagate_const<buff_t*> soul_tithe;
     propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
 
     // Legendaries
