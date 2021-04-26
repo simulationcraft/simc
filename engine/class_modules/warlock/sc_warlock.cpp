@@ -37,8 +37,6 @@ struct drain_life_t : public warlock_spell_t
     {
       double ta = warlock_spell_t::bonus_ta( s );
 
-      ta += p()->buffs.id_azerite->check_stack_value();
-
       if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
         ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
 
@@ -93,12 +91,6 @@ struct drain_life_t : public warlock_spell_t
         p()->buffs.inevitable_demise->expire();
     }
 
-    if ( p()->azerite.inevitable_demise.ok() && p()->buffs.id_azerite->check() )
-    {
-      if ( p()->buffs.drain_life->check() )
-        p()->buffs.id_azerite->expire();
-    }
-
     warlock_spell_t::execute();
 
     p()->buffs.drain_life->trigger();
@@ -126,8 +118,6 @@ struct drain_life_t : public warlock_spell_t
   double bonus_ta( const action_state_t* s ) const override
   {
     double ta = warlock_spell_t::bonus_ta( s );
-
-    ta += p()->buffs.id_azerite->check_stack_value();
 
     if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
       ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
@@ -162,7 +152,6 @@ struct drain_life_t : public warlock_spell_t
   {
     p()->buffs.drain_life->expire();
     p()->buffs.inevitable_demise->expire();
-    p()->buffs.id_azerite->expire();
 
     warlock_spell_t::last_tick( d );
 
@@ -422,8 +411,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   // Destro
   dots_immolate          = target->get_dot( "immolate", &p );
-  dots_roaring_blaze     = target->get_dot( "roaring_blaze", &p );
-  dots_channel_demonfire = target->get_dot( "channel_demonfire", &p );
 
   debuffs_eradication = make_buff( *this, "eradication", source->find_spell( 196414 ) )
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION );
@@ -458,7 +445,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   // Demo
   dots_doom         = target->get_dot( "doom", &p );
-  dots_umbral_blaze = target->get_dot( "umbral_blaze", &p );
 
   debuffs_from_the_shadows = make_buff( *this, "from_the_shadows", source->find_spell( 270569 ) );
 
@@ -549,63 +535,17 @@ static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
   }
 }
 
-// BFA - Essence
-void warlock_t::trigger_memory_of_lucid_dreams( double gain )
-{
-  if ( !azerite_essence.memory_of_lucid_dreams.enabled() )
-  {
-    return;
-  }
-
-  if ( gain <= 0 )
-  {
-    return;
-  }
-
-  if ( specialization() == SPEC_NONE )
-  {
-    return;
-  }
-
-  // Harcoded 15% proc chance.
-  if ( !rng().roll( 0.15 ) )
-  {
-    return;
-  }
-
-  memory_of_lucid_dreams_accumulator += gain * spells.memory_of_lucid_dreams_base->effectN( 1 ).percent();
-
-  double shards_to_give = floor( memory_of_lucid_dreams_accumulator );
-
-  if ( shards_to_give > 0 )
-  {
-    resource_gain( RESOURCE_SOUL_SHARD, shards_to_give, gains.memory_of_lucid_dreams );
-    memory_of_lucid_dreams_accumulator -= shards_to_give;
-
-    if ( azerite_essence.memory_of_lucid_dreams.rank() >= 3 )
-    {
-      player_t::buffs.lucid_dreams->trigger();
-    }
-  }
-}
-
 warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   : player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
     ua_target( nullptr ),
     havoc_spells(),
-    wracking_brilliance( false ),  // BFA - Azerite
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
-    memory_of_lucid_dreams_accumulator( 0.0 ),  // BFA - Essence
-    strive_for_perfection_multiplier(),         // BFA - Essence
-    vision_of_perfection_multiplier(),          // BFA - Essence
     active_pets( 0 ),
     warlock_pet_list( this ),
     active(),
     talents(),
-    azerite(),
-    azerite_essence(),
     legendary(),
     conduit(),
     covenant(),
@@ -615,12 +555,10 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     buffs(),
     gains(),
     procs(),
-    spells(),
     initial_soul_shards( 3 ),
     default_pet()
 {
   cooldowns.haunt               = get_cooldown( "haunt" );
-  cooldowns.call_dreadstalkers  = get_cooldown( "call_dreadstalkers" );
   cooldowns.phantom_singularity = get_cooldown( "phantom_singularity" );
   cooldowns.darkglare           = get_cooldown( "summon_darkglare" );
   cooldowns.demonic_tyrant      = get_cooldown( "summon_demonic_tyrant" );
@@ -630,8 +568,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   resource_regeneration             = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ]       = true;
   regen_caches[ CACHE_SPELL_HASTE ] = true;
-
-  flashpoint_threshold = 0.8;
 }
 
 void warlock_t::invalidate_cache( cache_e c )
@@ -758,59 +694,14 @@ double warlock_t::composite_rating_multiplier( rating_e rating ) const
   return m;
 }
 
-double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
-{
-  if ( resource_type == RESOURCE_SOUL_SHARD )
-  {
-    if ( player_t::buffs.memory_of_lucid_dreams->up() )  // BFA - Essence
-      amount *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
-
-    int current_soul_shards = (int)resources.current[ resource_type ];
-    // BFA - Trinket
-    if ( current_soul_shards % 2 == 0 )
-    {
-      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, this );
-    }
-    else
-    {
-      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, this );
-    }
-
-    // BFA - Azerite
-    // Chaos Shards triggers for all specializations
-    if ( azerite.chaos_shards.ok() )
-    {
-      // Check if soul shard was filled
-      if ( std::floor( resources.current[ RESOURCE_SOUL_SHARD ] ) <
-           std::floor( std::min( resources.current[ RESOURCE_SOUL_SHARD ] + amount, 5.0 ) ) )
-      {
-        if ( rng().roll( azerite.chaos_shards.spell_ref().effectN( 1 ).percent() / 10.0 ) )
-          buffs.chaos_shards->trigger();
-      }
-    }
-  }
-
-  return player_t::resource_gain( resource_type, amount, source, action );
-}
-
 double warlock_t::resource_regen_per_second( resource_e r ) const
 {
   double reg = player_t::resource_regen_per_second( r );
   return reg;
 }
 
-double warlock_t::composite_armor() const
-{
-  return player_t::composite_armor() + spec.fel_armor->effectN( 2 ).base_value();
-}
-
-void warlock_t::halt()
-{
-  player_t::halt();
-  if ( spells.melee )
-    spells.melee->cancel();
-}
-
+//Note: Level is checked to be >=27 by the function calling this. This is technically wrong for warlocks due to
+//a missing level requirement in data, but correct generally.
 double warlock_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_INTELLECT )
@@ -945,17 +836,11 @@ void warlock_t::init_spells()
   warlock_t::init_spells_destruction();
 
   // General
-  spec.fel_armor   = find_spell( 104938 );
   spec.nethermancy = find_spell( 86091 );
 
   // Specialization Spells
   spec.immolate         = find_specialization_spell( "Immolate" );
-  spec.nightfall        = find_specialization_spell( "Nightfall" );
-  spec.wild_imps        = find_specialization_spell( "Wild Imps" );
   spec.demonic_core     = find_specialization_spell( "Demonic Core" );
-  spec.shadow_bite      = find_specialization_spell( "Shadow Bite" );
-  spec.unending_resolve = find_specialization_spell( "Unending Resolve" );
-  spec.firebolt         = find_specialization_spell( "Firebolt" );
 
   // Talents
   talents.demon_skin                = find_talent_spell( "Demon Skin" );
@@ -988,18 +873,6 @@ void warlock_t::init_spells()
   covenant.impending_catastrophe = find_covenant_spell( "Impending Catastrophe" );  // Venthyr
   covenant.scouring_tithe        = find_covenant_spell( "Scouring Tithe" );         // Kyrian
   covenant.soul_rot              = find_covenant_spell( "Soul Rot" );               // Night Fae
-
-  // BFA - Essence
-  azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-  spells.memory_of_lucid_dreams_base     = azerite_essence.memory_of_lucid_dreams.spell( 1U, essence_type::MINOR );
-
-  azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
-  strive_for_perfection_multiplier = 1.0 + azerite::vision_of_perfection_cdr( azerite_essence.vision_of_perfection );
-  vision_of_perfection_multiplier =
-      azerite_essence.vision_of_perfection.spell( 1U, essence_type::MAJOR )->effectN( 1 ).percent() +
-      azerite_essence.vision_of_perfection.spell( 2U, essence_spell::UPGRADE, essence_type::MAJOR )
-          ->effectN( 1 )
-          .percent();
 }
 
 void warlock_t::init_rng()
@@ -1010,8 +883,6 @@ void warlock_t::init_rng()
     init_rng_demonology();
   if ( specialization() == WARLOCK_DESTRUCTION )
     init_rng_destruction();
-
-  grimoire_of_sacrifice_rppm = get_rppm( "grimoire_of_sacrifice", find_spell( 196099 ) );
 
   player_t::init_rng();
 }
@@ -1030,11 +901,7 @@ void warlock_t::init_gains()
   gains.miss_refund  = get_gain( "miss_refund" );
   gains.shadow_bolt  = get_gain( "shadow_bolt" );
   gains.soul_conduit = get_gain( "soul_conduit" );
-  gains.borrowed_power = get_gain( "borrowed_power" );
   gains.scouring_tithe = get_gain( "souring_tithe" );
-
-  gains.chaos_shards           = get_gain( "chaos_shards" );
-  gains.memory_of_lucid_dreams = get_gain( "memory_of_lucid_dreams" );
 }
 
 void warlock_t::init_procs()
@@ -1057,8 +924,6 @@ void warlock_t::init_procs()
   procs.corrupting_leer = get_proc( "corrupting_leer" );
   procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
   procs.horned_nightmare = get_proc( "horned_nightmare" );
-  procs.mark_of_borrowed_power = get_proc( "mark_of_borrowed_power" );
-
 }
 
 void warlock_t::init_base_stats()
@@ -1071,8 +936,6 @@ void warlock_t::init_base_stats()
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 0.0;
   base.spell_power_per_intellect = 1.0;
-
-  base.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spec.fel_armor->effectN( 1 ).percent();
 
   resources.base[ RESOURCE_SOUL_SHARD ] = 5;
 
@@ -1275,7 +1138,6 @@ void warlock_t::reset()
   ua_target                          = nullptr;
   agony_accumulator                  = rng().range( 0.0, 0.99 );
   corruption_accumulator             = rng().range( 0.0, 0.99 ); // TOCHECK - Unsure if it procs on application
-  memory_of_lucid_dreams_accumulator = 0.0;
   wild_imp_spawns.clear();
 }
 
@@ -1285,7 +1147,6 @@ void warlock_t::create_options()
 
   add_option( opt_int( "soul_shards", initial_soul_shards ) );
   add_option( opt_string( "default_pet", default_pet ) );
-  add_option( opt_float( "flashpoint_threshold", flashpoint_threshold, 0.0, 1.0 ) );
 }
 
 // Used to determine how many Wild Imps are waiting to be spawned from Hand of Guldan
@@ -1408,7 +1269,6 @@ void warlock_t::copy_from( player_t* source )
 
   initial_soul_shards  = p->initial_soul_shards;
   default_pet          = p->default_pet;
-  flashpoint_threshold = p->flashpoint_threshold;
 }
 
 stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
@@ -1431,27 +1291,6 @@ stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
       return STAT_NONE;
     default:
       return s;
-  }
-}
-
-void warlock_t::vision_of_perfection_proc()
-{
-  if ( vision_of_perfection_multiplier <= 0.0 )
-    return;
-
-  switch ( specialization() )
-  {
-    case WARLOCK_DESTRUCTION:
-      vision_of_perfection_proc_destro();
-      break;
-    case WARLOCK_AFFLICTION:
-      vision_of_perfection_proc_aff();
-      break;
-    case WARLOCK_DEMONOLOGY:
-      vision_of_perfection_proc_demo();
-      break;
-    default:
-      return;
   }
 }
 
@@ -1497,6 +1336,7 @@ void warlock_t::create_all_pets()
   }
 }
 
+//TODO: Are these expressions outdated?
 std::unique_ptr<expr_t> warlock_t::create_pet_expression( util::string_view name_str )
 {
   if ( name_str == "last_cast_imps" )
@@ -1641,6 +1481,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
       return this->time_to_imps( amt );
     } );
   }
+  //TODO: Is this outdated in Shadowlands?
   else if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "imps_spawned_during" ) )
   {
     auto period = util::to_double( splits[ 1 ] );
@@ -1712,111 +1553,7 @@ struct warlock_module_t : public module_t
     return p;
   }
 
-  void static_init() const override
-  {
-    // BFA - Trinket
-    // Leyshock's!
-    // Shared spells
-    // Drain Life
-    expansion::bfa::register_leyshocks_trigger( 234153, STAT_HASTE_RATING );
-    // Burning Rush
-    expansion::bfa::register_leyshocks_trigger( 111400, STAT_CRIT_RATING );
-    // Mortal Coil
-    expansion::bfa::register_leyshocks_trigger( 6789, STAT_HASTE_RATING );
-    // Summon Demonic Circle
-    expansion::bfa::register_leyshocks_trigger( 268358, STAT_CRIT_RATING );
-    // Demonic Circle: Teleport
-    expansion::bfa::register_leyshocks_trigger( 48020, STAT_VERSATILITY_RATING );
-
-    // Affliction-specific spells
-    // Agony
-    expansion::bfa::register_leyshocks_trigger( 980, STAT_CRIT_RATING );
-    // Corruption
-    expansion::bfa::register_leyshocks_trigger( 172, STAT_VERSATILITY_RATING );
-    // Seed of Corruption
-    expansion::bfa::register_leyshocks_trigger( 27243, STAT_HASTE_RATING );
-    // Shadow Bolt
-    expansion::bfa::register_leyshocks_trigger( 232670, STAT_MASTERY_RATING );
-    // Darkglare
-    expansion::bfa::register_leyshocks_trigger( 205180, STAT_HASTE_RATING );
-    // Unstable Affliction
-    expansion::bfa::register_leyshocks_trigger( 233490, STAT_MASTERY_RATING );
-    expansion::bfa::register_leyshocks_trigger( 233496, STAT_HASTE_RATING );
-    expansion::bfa::register_leyshocks_trigger( 233497, STAT_CRIT_RATING );
-    expansion::bfa::register_leyshocks_trigger( 233498, STAT_MASTERY_RATING );
-    expansion::bfa::register_leyshocks_trigger( 233499, STAT_VERSATILITY_RATING );
-    // Dark Soul: Misery
-    expansion::bfa::register_leyshocks_trigger( 113860, STAT_CRIT_RATING );
-    // Haunt
-    expansion::bfa::register_leyshocks_trigger( 48181, STAT_HASTE_RATING );
-    // Vile Taint
-    expansion::bfa::register_leyshocks_trigger( 278350, STAT_HASTE_RATING );
-    // Phantom Singularity
-    expansion::bfa::register_leyshocks_trigger( 205179, STAT_CRIT_RATING );
-    expansion::bfa::register_leyshocks_trigger( 205246, STAT_MASTERY_RATING );
-    // Siphon Life
-    expansion::bfa::register_leyshocks_trigger( 63106, STAT_MASTERY_RATING );
-    // Deathbolt
-    expansion::bfa::register_leyshocks_trigger( 264106, STAT_MASTERY_RATING );
-
-    // Destruction
-    // Chaos Bolt
-    expansion::bfa::register_leyshocks_trigger( 116858, STAT_HASTE_RATING );
-    // Conflagrate
-    expansion::bfa::register_leyshocks_trigger( 17962, STAT_MASTERY_RATING );
-    // Havoc
-    expansion::bfa::register_leyshocks_trigger( 80240, STAT_CRIT_RATING );
-    // Immolate
-    expansion::bfa::register_leyshocks_trigger( 348, STAT_CRIT_RATING );
-    // Internal Combustion
-    expansion::bfa::register_leyshocks_trigger( 266134, STAT_CRIT_RATING );
-    // Incinerate
-    expansion::bfa::register_leyshocks_trigger( 29722, STAT_MASTERY_RATING );
-    // Rain of Fire
-    expansion::bfa::register_leyshocks_trigger( 5740, STAT_HASTE_RATING );
-    expansion::bfa::register_leyshocks_trigger( 42223, STAT_VERSATILITY_RATING );
-    // Infernal
-    expansion::bfa::register_leyshocks_trigger( 1122, STAT_HASTE_RATING );
-    expansion::bfa::register_leyshocks_trigger( 22703, STAT_VERSATILITY_RATING );
-    // Cataclysm
-    expansion::bfa::register_leyshocks_trigger( 152108, STAT_CRIT_RATING );
-    // Channel Demonfire
-    expansion::bfa::register_leyshocks_trigger( 196447, STAT_VERSATILITY_RATING );
-    // Dark Soul: Instability
-    expansion::bfa::register_leyshocks_trigger( 113858, STAT_MASTERY_RATING );
-    // Soul Fire
-    expansion::bfa::register_leyshocks_trigger( 6353, STAT_MASTERY_RATING );
-    // Shadowburn
-    expansion::bfa::register_leyshocks_trigger( 17877, STAT_VERSATILITY_RATING );
-
-    // Demonology
-    // Call Dreadstalkers
-    expansion::bfa::register_leyshocks_trigger( 104316, STAT_CRIT_RATING );
-    // Demonbolt
-    expansion::bfa::register_leyshocks_trigger( 264178, STAT_VERSATILITY_RATING );
-    // Hand of Gul'dan
-    expansion::bfa::register_leyshocks_trigger( 105174, STAT_CRIT_RATING );
-    // Implosion
-    expansion::bfa::register_leyshocks_trigger( 196277, STAT_HASTE_RATING );
-    // Demonic Tyrant
-    expansion::bfa::register_leyshocks_trigger( 265187, STAT_HASTE_RATING );
-    // Demonic Strength
-    expansion::bfa::register_leyshocks_trigger( 267171, STAT_VERSATILITY_RATING );
-    // Bilescourge Bombers
-    expansion::bfa::register_leyshocks_trigger( 267211, STAT_CRIT_RATING );
-    expansion::bfa::register_leyshocks_trigger( 267213, STAT_CRIT_RATING );
-    // Doom
-    expansion::bfa::register_leyshocks_trigger( 265412, STAT_CRIT_RATING );
-    // Soul Strike
-    expansion::bfa::register_leyshocks_trigger( 264057, STAT_VERSATILITY_RATING );
-    // Grimoire: felguard
-    expansion::bfa::register_leyshocks_trigger( 111898, STAT_HASTE_RATING );
-    // Nether Portal
-    expansion::bfa::register_leyshocks_trigger( 267217, STAT_MASTERY_RATING );
-    // Summon Vilefiend
-    expansion::bfa::register_leyshocks_trigger( 264119, STAT_HASTE_RATING );
-  }
-
+  //TODO: Hotfix may not be needed any longer, if so leave this function empty instead
   void register_hotfixes() const override
   {
     hotfix::register_spell("Warlock", "2020-11-15", "Manually set secondary Malefic Rapture level requirement", 324540)
@@ -1844,9 +1581,7 @@ struct warlock_module_t : public module_t
 warlock::warlock_t::pets_t::pets_t( warlock_t* w )
   : active( nullptr ),
     last( nullptr ),
-    vop_infernals( "vop_infernal", w ),
     roc_infernals( "roc_infernal", w ),
-    vop_darkglares( "vop_darkglare", w ),
     dreadstalkers( "dreadstalker", w ),
     vilefiends( "vilefiend", w ),
     demonic_tyrants( "demonic_tyrant", w ),

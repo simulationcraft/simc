@@ -781,8 +781,6 @@ void wild_imp_pet_t::demise()
     if ( !power_siphon )
     {
       o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN( 1 ).percent() );
-      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, o() );
-      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, o() );
     }
 
     if ( expiration )
@@ -902,10 +900,6 @@ void dreadstalker_t::demise()
   {
     o()->buffs.dreadstalkers->decrement();
     o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN( 2 ).percent() );
-    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, o() );
-    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, o() );
-    if ( o()->azerite.shadows_bite.ok() )
-      o()->buffs.shadows_bite->trigger();
   }
 
   warlock_pet_t::demise();
@@ -984,8 +978,6 @@ struct demonfire_t : public warlock_pet_spell_t
   {
     double da = warlock_pet_spell_t::bonus_da( s );
 
-    da += p()->o()->azerite.baleful_invocation.value( 1 );
-
     if ( p()->buffs.demonic_consumption->check() )
     {
       da += p()->buffs.demonic_consumption->check_value();
@@ -1011,14 +1003,6 @@ void demonic_tyrant_t::demise()
 {
   if ( !current.sleeping )
   {
-    if ( o()->azerite.supreme_commander.ok() )
-    {
-      o()->buffs.demonic_core->trigger( 1 );
-      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, o() );
-      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, o() );
-      o()->buffs.supreme_commander->trigger();
-    }
-
     if ( o()->conduit.tyrants_soul.value() > 0 )
     {
       o()->buffs.demonic_core->trigger( 1 );

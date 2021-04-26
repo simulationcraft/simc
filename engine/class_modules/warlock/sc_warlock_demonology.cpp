@@ -128,26 +128,15 @@ struct shadow_bolt_t : public demonology_spell_t
 
 struct hand_of_guldan_t : public demonology_spell_t
 {
-  struct umbral_blaze_t : public demonology_spell_t
-  {
-    umbral_blaze_t( warlock_t* p ) : demonology_spell_t( "Umbral Blaze", p, p->find_spell( 273526 ) )
-    {
-      base_td      = p->azerite.umbral_blaze.value();  // BFA - Azerite
-      hasted_ticks = false;
-    }
-  };
-
   struct hog_impact_t : public demonology_spell_t
   {
     int shards_used;
-    umbral_blaze_t* blaze; // BFA - Azerite
     const spell_data_t* summon_spell;
     timespan_t meteor_time;
 
     hog_impact_t( warlock_t* p, util::string_view options_str )
       : demonology_spell_t( "Hand of Gul'dan (Impact)", p, p->find_spell( 86040 ) ),
         shards_used( 0 ),
-        blaze( new umbral_blaze_t( p ) ),
         summon_spell( p->find_spell( 104317 ) ),
         meteor_time( 400_ms )
     {
@@ -156,10 +145,6 @@ struct hand_of_guldan_t : public demonology_spell_t
       dual = 1;
 
       parse_effect_data( s_data->effectN( 1 ) );
-
-      // BFA - Azerite
-      if ( p->azerite.umbral_blaze.ok() )
-        add_child( blaze );
     }
 
     void execute() override
@@ -176,14 +161,6 @@ struct hand_of_guldan_t : public demonology_spell_t
     timespan_t travel_time() const override
     {
       return meteor_time;
-    }
-
-    double bonus_da( const action_state_t* s ) const override
-    {
-      double da = demonology_spell_t::bonus_da( s );
-      // BFA - Azerite
-      da += p()->azerite.demonic_meteor.value();
-      return da;
     }
 
     double action_multiplier() const override
@@ -203,9 +180,6 @@ struct hand_of_guldan_t : public demonology_spell_t
       // Still keep it in impact instead of execute because of travel delay.
       if ( result_is_hit( s->result ) && s->target == target )
       {
-        // BFA - Trinket
-        expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, p() );
-
 
         //Wild Imp spawns appear to have been sped up in Shadowlands. Last tested 2021-04-16.
         //Current behavior: HoG will spawn a meteor on cast finish. Travel time in spell data is 0.7 seconds.
@@ -215,13 +189,6 @@ struct hand_of_guldan_t : public demonology_spell_t
         {
           auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
           this->p()->wild_imp_spawns.push_back( ev );
-        }
-
-        // BFA - Azerite
-        if ( p()->azerite.umbral_blaze.ok() && rng().roll( p()->find_spell( 273524 )->proc_chance() ) )
-        {
-          blaze->set_target( target );
-          blaze->execute();
         }
       }
     }
@@ -271,10 +238,6 @@ struct hand_of_guldan_t : public demonology_spell_t
   {
     demonology_spell_t::consume_resource();
 
-    // BFA - Azerite
-    if ( rng().roll( p()->azerite.demonic_meteor.spell_ref().effectN( 2 ).percent() * as<int>(last_resource_cost)) )
-      p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.demonic_meteor );
-
     if ( last_resource_cost == 1.0 )
       p()->procs.one_shard_hog->occur();
     if ( last_resource_cost == 2.0 )
@@ -312,15 +275,6 @@ struct demonbolt_t : public demonology_spell_t
     }
 
     return et;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double da = demonology_spell_t::bonus_da( s );
-
-    da += p()->buffs.shadows_bite->check_value();
-
-    return da;
   }
 
   void execute() override
@@ -456,8 +410,6 @@ struct implosion_t : public demonology_spell_t
       background         = true;
       callbacks          = false;
       reduced_aoe_damage = false;
-
-      p->spells.implosion_aoe = this;
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -540,10 +492,6 @@ struct implosion_t : public demonology_spell_t
       }
     }
 
-    // BFA - Azerite
-    if ( p()->azerite.explosive_potential.ok() && imps_consumed >= 3 )
-      p()->buffs.explosive_potential->trigger();
-
     if ( p()->legendary.implosive_potential.ok() && target_list().size() >= as<size_t>( p()->legendary.implosive_potential->effectN( 1 ).base_value() ) )
       p()->buffs.implosive_potential->trigger( imps_consumed );
     else if ( p()->legendary.implosive_potential.ok() )
@@ -563,8 +511,7 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
   {
     parse_options( options_str );
     harmful = may_crit = false;
-    // BFA - Essence
-    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
+
     demonic_consumption_health_percentage = p->find_spell( 267971 )->effectN( 1 ).percent();
   }
 
@@ -579,11 +526,6 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
     if ( p()->spec.summon_demonic_tyrant_2->ok() )
       p()->resource_gain( RESOURCE_SOUL_SHARD, p()->spec.summon_demonic_tyrant_2->effectN( 1 ).base_value() / 10.0,
                           p()->gains.summon_demonic_tyrant );
-
-    // BFA - Azerite
-    if ( p()->azerite.baleful_invocation.ok() )
-      p()->resource_gain( RESOURCE_SOUL_SHARD, p()->find_spell( 287060 )->effectN( 1 ).base_value() / 10.0,
-                          p()->gains.baleful_invocation );
 
     demonic_consumption_added_damage = 0;
 
@@ -801,13 +743,6 @@ struct doom_t : public demonology_spell_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return s->action->tick_time( s ); //Doom is a case where dot duration scales with haste so use the tick time to get the current correct value
-  }
-
-  void tick( dot_t* d ) override
-  {
-    demonology_spell_t::tick( d );
-
-    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, p() );
   }
 };
 
@@ -1121,21 +1056,10 @@ void warlock_t::create_buffs_demonology()
                              {
                                active.summon_random_demon->execute();
                              }
-                             expansion::bfa::trigger_leyshocks_grand_compilation( STAT_MASTERY_RATING, this );
                            } );
 
   buffs.nether_portal =
       make_buff( this, "nether_portal", talents.nether_portal )->set_duration( talents.nether_portal->duration() );
-
-  // Azerite
-  buffs.shadows_bite = make_buff( this, "shadows_bite", azerite.shadows_bite )
-                           ->set_duration( find_spell( 272945 )->duration() )
-                           ->set_default_value( azerite.shadows_bite.value() );
-  buffs.supreme_commander = make_buff<stat_buff_t>( this, "supreme_commander", azerite.supreme_commander )
-                                ->add_stat( STAT_INTELLECT, azerite.supreme_commander.value() )
-                                ->set_duration( find_spell( 279885 )->duration() );
-  buffs.explosive_potential = make_buff<stat_buff_t>( this, "explosive_potential", find_spell( 275398 ) )
-                                  ->add_stat( STAT_HASTE_RATING, azerite.explosive_potential.value() );
 
   // Conduits
   buffs.tyrants_soul = make_buff( this, "tyrants_soul", find_spell( 339784 ) )
@@ -1187,59 +1111,6 @@ void warlock_t::create_buffs_demonology()
                              ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 }
 
-void warlock_t::vision_of_perfection_proc_demo()
-{
-  timespan_t summon_duration = find_spell( 265187 )->duration() * vision_of_perfection_multiplier;
-
-  warlock_pet_list.demonic_tyrants.spawn( summon_duration, 1U );
-
-  auto essence         = find_azerite_essence( "Vision of Perfection" );
-  timespan_t extension = timespan_t::from_seconds(
-      essence.spell_ref( essence.rank(), essence_type::MAJOR ).effectN( 2 ).base_value() / 1000 );
-
-  if ( azerite.baleful_invocation.ok() )
-    resource_gain(
-        RESOURCE_SOUL_SHARD,
-        std::round( find_spell( 287060 )->effectN( 1 ).base_value() / 10.0 * vision_of_perfection_multiplier ),
-        gains.baleful_invocation );
-  buffs.demonic_power->trigger( 1, buffs.demonic_power->DEFAULT_VALUE(), -1.0, summon_duration );
-
-  // TOCHECK: Azerite traits, does proc tyrant extend summoned tyrant and vice versa?
-  for ( auto& pet : pet_list )
-  {
-    auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
-
-    if ( lock_pet == nullptr )
-      continue;
-    if ( lock_pet->is_sleeping() )
-      continue;
-
-    if ( lock_pet->pet_type == PET_DEMONIC_TYRANT )
-      continue;
-
-    if ( lock_pet->expiration )
-    {
-      timespan_t new_time                   = lock_pet->expiration->time + extension;
-      lock_pet->expiration->reschedule_time = new_time;
-    }
-  }
-
-  buffs.tyrant->set_duration( std::max( buffs.tyrant->remains(), summon_duration ) );
-  buffs.tyrant->trigger( 1, buffs.tyrant->DEFAULT_VALUE(), -1.0, summon_duration );
-  if ( buffs.dreadstalkers->check() )
-  {
-    buffs.dreadstalkers->extend_duration( this, extension );
-  }
-  if ( buffs.grimoire_felguard->check() )
-  {
-    buffs.grimoire_felguard->extend_duration( this, extension );
-  }
-  if ( buffs.vilefiend->check() )
-  {
-    buffs.vilefiend->extend_duration( this, extension );
-  }
-}
-
 void warlock_t::init_spells_demonology()
 {
   spec.demonology                    = find_specialization_spell( 137044 );
@@ -1266,14 +1137,6 @@ void warlock_t::init_spells_demonology()
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
   talents.nether_portal       = find_talent_spell( "Nether Portal" );
 
-  // BFA - Azerite
-  azerite.demonic_meteor      = find_azerite_spell( "Demonic Meteor" );
-  azerite.shadows_bite        = find_azerite_spell( "Shadow's Bite" );
-  azerite.supreme_commander   = find_azerite_spell( "Supreme Commander" );
-  azerite.umbral_blaze        = find_azerite_spell( "Umbral Blaze" );
-  azerite.explosive_potential = find_azerite_spell( "Explosive Potential" );
-  azerite.baleful_invocation  = find_azerite_spell( "Baleful Invocation" );
-
   // Legendaries
   legendary.balespiders_burning_core       = find_runeforge_legendary( "Balespider's Burning Core" );
   legendary.forces_of_the_horned_nightmare = find_runeforge_legendary( "Forces of the Horned Nightmare" );
@@ -1298,8 +1161,6 @@ void warlock_t::init_spells_demonology()
 
 void warlock_t::init_gains_demonology()
 {
-  gains.demonic_meteor        = get_gain( "demonic_meteor" );
-  gains.baleful_invocation    = get_gain( "baleful_invocation" );
   gains.summon_demonic_tyrant = get_gain( "summon_demonic_tyrant" );
 }
 
@@ -1309,7 +1170,6 @@ void warlock_t::init_rng_demonology()
 
 void warlock_t::init_procs_demonology()
 {
-  procs.dreadstalker_debug  = get_proc( "dreadstalker_debug" );
   procs.summon_random_demon = get_proc( "summon_random_demon" );
 }
 
