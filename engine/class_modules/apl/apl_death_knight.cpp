@@ -327,12 +327,7 @@ void unholy( player_t* p )
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=trinket.1.has_use_buff&(trinket.1.cooldown.duration%%45=0)", "Evaluates a trinkets cooldown, divided by 45. This was chosen as unholy works on 45 second burst cycles, but has too many cdr effects to give a cooldown.x.duration divisor instead. If it's value has no remainder return 1, else return 0.5." );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=trinket.2.has_use_buff&(trinket.2.cooldown.duration%%45=0)" );
   precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!trinket.1.has_use_buff&trinket.2.has_use_buff|trinket.2.has_use_buff&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync))", "Estimates a trinkets value by comparing the cooldown of the trinket, divided by the duration of the buff it provides. Has a strength modifier to give a higher priority to strength trinkets, as well as a modifier for if a trinket will or will not sync with cooldowns." );
-  precombat->add_action( "variable,name=full_cdr,value=talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=9", "Evaluates current setup for the quantity of Apocalypse CDR effects" );
-  precombat->add_action( "variable,name=epidemic_main_damage,value=dbc.effect.315517.ap_coefficent", "Check DBC for AP coefficents to reduce magic number use." );
-  precombat->add_action( "variable,name=epidemic_cleave_damage,value=dbc.effect.872659.ap_coefficent" );
-  precombat->add_action( "variable,name=wound_damage,value=dbc.effect.285232.ap_coefficent" );
-  precombat->add_action( "variable,name=clawing_shadows_damage,value=dbc.effect.324719.ap_coefficent" );
-  precombat->add_action( "variable,name=scourge_strike_rank2,value=dbc.effect.802301.base_value%100+1" );
+  precombat->add_action( "variable,name=full_cdr,value=talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=7", "Evaluates current setup for the quantity of Apocalypse CDR effects" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
@@ -358,7 +353,8 @@ void unholy( player_t* p )
   default_->add_action( "run_action_list,name=generic_aoe,if=active_enemies>=2&(!death_and_decay.ticking&(cooldown.death_and_decay.remains>10&!talent.defile|cooldown.defile.remains>10&talent.defile|covenant.night_fae&cooldown.deaths_due.remains>10))" );
   default_->add_action( "call_action_list,name=generic,if=active_enemies=1" );
 
-  aoe_burst->add_action( "clawing_shadows,if=active_enemies<=6&((active_enemies*(variable.clawing_shadows_damage*variable.scourge_strike_rank2))+(death_knight.fwounded_targets*variable.wound_damage)>(active_enemies*variable.epidemic_main_damage)+(variable.epidemic_cleave_damage*(active_enemies*(active_enemies-1))))", "AoE Burst, Clawing shadows evaluates the damage per global of Clawing shadows versus Epidemic, using clawing shadows if it would deal more damage." );
+  aoe_burst->add_action( "clawing_shadows,if=active_enemies<=5", "AoE Burst" );
+  aoe_burst->add_action( "clawing_shadows,if=active_enemies=6&death_knight.fwounded_targets>=3" );
   aoe_burst->add_action( "wound_spender,if=talent.bursting_sores&death_knight.fwounded_targets>=(active_enemies|3)|talent.bursting_sores&talent.clawing_shadows&death_knight.fwounded_targets>=1" );
   aoe_burst->add_action( "death_coil,if=(buff.sudden_doom.react|!variable.pooling_runic_power)&(buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3|active_enemies=2)" );
   aoe_burst->add_action( "epidemic,if=runic_power.deficit<(10+death_knight.fwounded_targets*3)&death_knight.fwounded_targets<6&!variable.pooling_runic_power|buff.swarming_mist.up" );
@@ -376,7 +372,7 @@ void unholy( player_t* p )
   aoe_setup->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=rune.time_to_4<(cooldown.death_and_decay.remains&!talent.defile|cooldown.defile.remains&talent.defile|covenant.night_fae&cooldown.deaths_due.remains)" );
 
   cooldowns->add_action( "potion,if=variable.major_cooldowns_active|fight_remains<26", "Potion" );
-  cooldowns->add_action( "army_of_the_dead,if=cooldown.unholy_blight.remains<5&cooldown.dark_transformation.remains_expected<5&talent.unholy_blight|!talent.unholy_blight|fight_remains<35", "Cooldowns" );
+  cooldowns->add_action( "army_of_the_dead,if=cooldown.unholy_blight.remains<10&cooldown.dark_transformation.remains_expected<10&talent.unholy_blight&(cooldown.apocalypse.remains_expected<10&variable.full_cdr|!variable.full_cdr)|!talent.unholy_blight|fight_remains<35", "Cooldowns" );
   cooldowns->add_action( "soul_reaper,target_if=target.time_to_pct_35<5&target.time_to_die>5&active_enemies<=3" );
   cooldowns->add_action( "unholy_blight,if=variable.st_planning&(cooldown.apocalypse.remains_expected<5|cooldown.apocalypse.remains_expected>10)&(cooldown.dark_transformation.remains<gcd|buff.dark_transformation.up)", "Holds Blight for up to 5 seconds to sync with Apocalypse, Otherwise, use with Dark Transformation." );
   cooldowns->add_action( "unholy_blight,if=active_enemies>=2|fight_remains<21" );
