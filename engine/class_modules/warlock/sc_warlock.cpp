@@ -987,8 +987,6 @@ void warlock_t::apl_precombat()
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "summon_pet" );
-  if ( specialization() == WARLOCK_DEMONOLOGY )
-    precombat->add_action( "inner_demons,if=talent.inner_demons.enabled" );
   if ( specialization() != WARLOCK_DEMONOLOGY )
     precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
 
@@ -1113,6 +1111,9 @@ void warlock_t::init_special_effects()
 void warlock_t::combat_begin()
 {
   player_t::combat_begin();
+
+  if ( specialization() == WARLOCK_DEMONOLOGY && buffs.inner_demons && talents.inner_demons->ok() )
+    buffs.inner_demons->trigger();
 }
 
 void warlock_t::reset()
