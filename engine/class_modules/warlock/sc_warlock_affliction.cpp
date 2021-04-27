@@ -799,8 +799,7 @@ void warlock_t::create_buffs_affliction()
   buffs.nightfall = make_buff( this, "nightfall", find_spell( 264571 ) )
                         ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() )
                         ->set_trigger_spell( talents.nightfall );
-  buffs.inevitable_demise = make_buff( this, "inevitable_demise", talents.inevitable_demise )
-                                ->set_max_stack( find_spell( 334320 )->max_stacks() )
+  buffs.inevitable_demise = make_buff( this, "inevitable_demise", find_spell( 334320 ) )
                                 ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() );
 
   buffs.malefic_wrath = make_buff( this, "malefic_wrath", find_spell( 337125 ) )->set_default_value_from_effect( 1 );
