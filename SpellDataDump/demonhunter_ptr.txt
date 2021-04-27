@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-03-31/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-03-31/38134, git build shadowlands f94acc54ba)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -189,7 +189,7 @@ Effects          :
 #1 (id=227730)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=227731)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.49807 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.57278 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=287985)   : Energize Power (30)
                    Base Value: 25 | Scaled Value: 25 (coefficient=0, delta coefficient=0.4) | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : Quickly attack for $s2 Physical damage.
@@ -1138,7 +1138,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=293648)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60500 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.69575 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc162794
 
 Name             : Blade Dance (id=199552) [Spell Family (107)] 
@@ -1286,7 +1286,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=296759)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.78650 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.90448 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc201427
 
 Name             : Metamorphosis (id=201453) [Spell Family (107), Hidden] 
@@ -1952,7 +1952,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=300651)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.13200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.15180 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=300652)   : Energize Power (30)
                    Base Value: 16 | Scaled Value: 16 (coefficient=0, delta coefficient=0.5) | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : Inflicts $s1 Shadow damage and generates $m2 to $M2 Fury.
@@ -3776,7 +3776,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=331359)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.38500 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.44275 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc162794
 
 Name             : Fel Barrage (desc=Passive) (id=222703) [Spell Family (107), Passive, Hidden] 
@@ -3928,7 +3928,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=342015)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50050 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.57557 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc201427
 
 Name             : Soul Cleave (id=228477) [Spell Family (107)] 
@@ -9818,7 +9818,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=874736)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 600 | Scaled Value: 600 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Target: Self (1)
 Tooltip          : Damage of your next Fel Rush increased by $s1%.
 
 Name             : Demon Soul (id=347765) [Spell Family (107)] 

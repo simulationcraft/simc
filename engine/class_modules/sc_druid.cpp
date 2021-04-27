@@ -3430,6 +3430,11 @@ struct feral_frenzy_driver_t : public cat_attack_t
     dynamic_tick_action = true;
   }
 
+  timespan_t cooldown_duration() const override
+  {
+    return free_cast ? 0_ms : cat_attack_t::cooldown_duration();
+  }
+
   void tick( dot_t* d ) override
   {
     auto f = get_state_free_cast( d->state );
@@ -4365,6 +4370,11 @@ struct pulverize_t : public bear_attack_t
   pulverize_t( druid_t* p, const spell_data_t* s, util::string_view opt ) : bear_attack_t( "pulverize", p, s, opt )
   {
     consume = as<int>( data().effectN( 3 ).base_value() );
+  }
+
+  timespan_t cooldown_duration() const override
+  {
+    return free_cast ? 0_ms : bear_attack_t::cooldown_duration();
   }
 
   void impact( action_state_t* s ) override
@@ -6618,6 +6628,16 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     if ( p->find_action( "cat_form" ) )
       _init_cat();
+
+    if ( p->talent.heart_of_the_wild->ok() && p->find_action( "heart_of_the_wild" ) )
+    {
+      if ( p->talent.balance_affinity->ok() )
+        _init_moonkin();
+      else if ( p->talent.guardian_affinity->ok() )
+        _init_bear();
+      else if ( p->talent.feral_affinity->ok() )
+        _init_cat();
+    }
   }
 
   template <typename T, typename... Ts>

@@ -244,6 +244,7 @@ public:
     gain_t* lord_of_war;
     gain_t* simmering_rage;
     gain_t* memory_of_lucid_dreams;
+    gain_t* conquerors_banner;
   } gain;
 
   // Spells
@@ -5341,7 +5342,7 @@ struct conquerors_banner_t : public warrior_spell_t
     : warrior_spell_t( "conquerors_banner", p, p->covenant.conquerors_banner )
   {
     parse_options( options_str );
-
+    energize_resource       = RESOURCE_NONE;
     harmful = false;
   }
 
@@ -5813,6 +5814,7 @@ struct ignore_pain_t : public warrior_spell_t
     may_crit     = false;
     range        = -1;
     target       = player;
+    base_costs[ RESOURCE_RAGE ] = ( p->specialization() == WARRIOR_FURY ? 60 : 40 );
 
     base_dd_max = base_dd_min = 0;
     cooldown->duration += p->spec.ignore_pain_2->effectN( 1 ).time_value();
@@ -5884,14 +5886,6 @@ struct ignore_pain_t : public warrior_spell_t
     {
       p()->buff.ignore_pain->trigger( 1, new_ip );
     }
-  }
-
-  bool ready() override
-  {
-    if ( !p()->has_shield_equipped() )
-      return false;
-
-    return warrior_spell_t::ready();
   }
 };
 
@@ -7404,7 +7398,12 @@ void warrior_t::create_buffs()
 
   // Covenant Abilities====================================================================================================
 
-  buff.conquerors_banner = make_buff( this, "conquerors_banner", covenant.conquerors_banner );
+  buff.conquerors_banner = make_buff( this, "conquerors_banner", covenant.conquerors_banner )
+    ->set_default_value_from_effect_type( A_PERIODIC_ENERGIZE )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+    ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+      resource_gain( RESOURCE_RAGE, (specialization() == WARRIOR_FURY ? 6 : 4), gain.conquerors_banner );
+    } );
 
   buff.conquerors_frenzy    = make_buff( this, "conquerors_frenzy", find_spell( 325862 ) )
                                ->set_default_value( find_spell( 325862 )->effectN( 2 ).percent() )
@@ -7479,6 +7478,7 @@ void warrior_t::init_gains()
   gain.archavons_heavy_hand             = get_gain( "archavons_heavy_hand" );
   gain.avoided_attacks                  = get_gain( "avoided_attacks" );
   gain.charge                           = get_gain( "charge" );
+  gain.conquerors_banner                = get_gain( "conquerors_banner" );
   gain.critical_block                   = get_gain( "critical_block" );
   gain.execute                          = get_gain( "execute" );
   gain.frothing_berserker               = get_gain(" frothing_berserker" );

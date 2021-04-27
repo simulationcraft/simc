@@ -18,11 +18,10 @@ TODO:
 GENERAL:
 - Change Eye of the Tiger from a dot to an interaction with a buff
 
-- Convert Pet base abilities to somethign more generic
-- Trigger Bonedust Brew from SEF, Xuen, Niuzao, and Chiji
+- Convert Bonedust Brew to use the assessor function. Tinkets and racials also trigger
+- Add assessor to the monk pet module
 
 WINDWALKER:
-- Implement Xuen Rank 2 (Enhanced Tiger Lightning)
 - Implement Touch of Death Rank 3
 - Add Cyclone Strike Counter as an expression
 
@@ -32,7 +31,7 @@ MISTWEAVER:
 - Not Modeled:
 
 BREWMASTER:
-- Not Modeled:
+- Breath of Fire is not AoE's on the initial hit. It is only hitting the initial target
 */
 #include "sc_monk.hpp"
 
@@ -1001,6 +1000,7 @@ struct eye_of_the_tiger_dmg_tick_t : public monk_spell_t
     background   = true;
     hasted_ticks = false;
     may_crit = tick_may_crit = true;
+    aoe                      = 1;
     attack_power_mod.direct  = 0;
     attack_power_mod.tick    = data().effectN( 2 ).ap_coeff();
   }

@@ -25,10 +25,10 @@ struct warlock_pet_td_t : public actor_target_data_t
 struct warlock_pet_t : public pet_t
 {
   action_t* special_action; //Used for Felguard's Axe Toss
-  action_t* special_action_two; //Does any pet currently need this?
+  action_t* special_action_two; //TODO: Determine if this can be removed
   melee_attack_t* melee_attack;
   stats_t* summon_stats;
-  spell_t* ascendance; //TODO: SL Beta - Is this outdated?
+  spell_t* ascendance; //TODO: Remove
 
   struct buffs_t
   {
@@ -40,13 +40,13 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> demonic_synergy; //Buff used by SL Legendary (Relic of Demonic Synergy)
   } buffs;
 
-  //TODO: SL Beta - this struct and spell_t are unused
+  //TODO: Utilize this or remove it
   struct active_t
   {
     spell_t* bile_spit;
   } active;
 
-  //TODO: SL Beta - these booleans may be unused
+  //TODO: Remove demonbolt and lord of flames booleans
   bool is_demonbolt_enabled = true;
   bool is_lord_of_flames    = false;
   bool is_main_pet          = false;
@@ -60,12 +60,12 @@ struct warlock_pet_t : public pet_t
   double composite_player_multiplier( school_e school ) const override;
   double resource_regen_per_second( resource_e ) const override;
 
-  void create_buffs_pets();
+  void create_buffs_pets(); //TODO: Remove or create empty function?
   void create_buffs_demonology();
-  void init_spells_pets();
+  void init_spells_pets(); //TODO: Remove or create empty function?
   void init_special_effects() override;
 
-  void create_buffs_destruction();
+  void create_buffs_destruction(); //TODO: ??? Why destruction? Remove?
 
   target_specific_t<warlock_pet_td_t> target_data;
 
@@ -99,6 +99,7 @@ struct warlock_pet_t : public pet_t
     pet_t::arise();
   }
 
+  //TODO: Formatting?
   struct travel_t : public action_t
   {
     travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player )
@@ -227,7 +228,7 @@ public:
 
 struct warlock_pet_melee_t : public warlock_pet_action_t<melee_attack_t>
 {
-  bool first;
+  bool first; //TODO: Is this for ensuring an auto-attack on summons with no lag?
 
   struct off_hand_swing : public warlock_pet_action_t<melee_attack_t>
   {
@@ -394,6 +395,23 @@ struct felguard_pet_t : public warlock_pet_t
   timespan_t available() const override;
 
   void queue_ds_felstorm();
+};
+
+struct grimoire_felguard_pet_t : public warlock_pet_t
+{
+  const spell_data_t* felstorm_spell;
+  cooldown_t* felstorm_cd;
+
+  // Energy thresholds to wake felguard up for something to do, minimum is the felstorm energy cost,
+  // and maximum is a predetermined empirical value from in game
+  double min_energy_threshold;
+  double max_energy_threshold;
+
+  grimoire_felguard_pet_t( warlock_t* owner, const std::string& name = "grimoire_felguard" );
+  void init_base_stats() override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
+  timespan_t available() const override;
+  void arise() override;
 };
 
 struct wild_imp_pet_t : public warlock_pet_t

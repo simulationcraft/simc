@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-03-31/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-03-31/38134, git build shadowlands f94acc54ba)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -11693,6 +11693,7 @@ Description      : Conqueror's Banner affects $s4 additional ally and every $?c1
 Name             : Sinful Surge (id=354131) [Spell Family (4), Passive] 
 School           : Physical
 Spell Type       : None
+Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -11709,10 +11710,10 @@ Effects          :
 #1 (id=886337)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=886345)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=886346)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Condemn extends the duration of $?c1[Colossus Smash by ${$s1/1000}.1 sec]?c2[Recklessness by ${$s2/1000} sec][Last Stand by ${$s3/1000} sec].
+                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Condemn extends the duration of $?c1[Colossus Smash by ${$s1/1000}.1 sec]?c2[Recklessness by ${$s2/1000}.1 sec][Last Stand by ${$s3/1000} sec].
 
 
 Name             : Nature's Fury (id=354161) [Spell Family (4), Passive] 
@@ -11731,7 +11732,6 @@ Effects          :
 #1 (id=886399)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 1283 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Aftershock (343607)
-Description      : Ancient Aftershock's duration is increased by ${$s1/1000} sec and enemies hit take ${$354163s1o*3} nature damage over $354163d, stacking $354163u times.
-
+Description      : Ancient Aftershock's duration is increased by ${$s1/1000} sec and enemies hit take ${$354163s1o*3} Nature damage over $354163d, stacking $354163u times.
 
 

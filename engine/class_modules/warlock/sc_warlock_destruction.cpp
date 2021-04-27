@@ -53,15 +53,6 @@ public:
     }
   }
 
-  void execute() override
-  {
-    warlock_spell_t::execute();
-
-    // BFA - Azerite
-    if ( can_havoc && num_targets_hit > 1 && p()->azerite.rolling_havoc.enabled() )
-      p()->buffs.rolling_havoc->trigger();
-  }
-
   void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
@@ -254,15 +245,6 @@ struct immolate_t : public destruction_spell_t
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate_crits );
 
     p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate );
-
-    // BFA - Azerite
-    if ( d->state->result_amount > 0.0 && p()->azerite.flashpoint.ok() &&
-         d->target->health_percentage() > p()->flashpoint_threshold * 100 )
-      p()->buffs.flashpoint->trigger();
-
-    // BFA - Trinket
-    // For some reason this triggers on every tick
-    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, p() );
   }
 
   void last_tick( dot_t* d ) override
@@ -340,11 +322,6 @@ struct conflagrate_t : public destruction_spell_t
     p()->buffs.backdraft->trigger(
         as<int>( 1 + ( p()->talents.flashover->ok() ? p()->talents.flashover->effectN( 1 ).base_value() : 0 ) ) );
 
-    // BFA - Azerite
-    auto td = this->td( target );
-    if ( p()->azerite.bursting_flare.ok() && td->dots_immolate->is_ticking() )
-      p()->buffs.bursting_flare->trigger();
-
     sim->print_log( "{}: Action {} {} charges remain", player->name(), name(), this->cooldown->current_charge );
   }
 
@@ -391,16 +368,6 @@ struct incinerate_fnb_t : public destruction_spell_t
     // F&B Incinerate's target list depends on the current Havoc target, so it
     // needs to invalidate its target list with the rest of the Havoc spells.
     p()->havoc_spells.push_back( this );
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double da = destruction_spell_t::bonus_da( s );
-
-    // BFA - Azerite
-    da += p()->azerite.chaos_shards.value( 2 );
-
-    return da;
   }
 
   double cost() const override
@@ -469,8 +436,8 @@ struct incinerate_fnb_t : public destruction_spell_t
 
 struct incinerate_t : public destruction_spell_t
 {
-  double backdraft_gcd;
-  double backdraft_cast_time;
+  double backdraft_gcd_mult;
+  double backdraft_cast_mult;
   double energize_mult;
   incinerate_fnb_t* fnb_action;
 
@@ -483,8 +450,8 @@ struct incinerate_t : public destruction_spell_t
 
     can_havoc = true;
 
-    backdraft_cast_time = 1.0 + p->buffs.backdraft->data().effectN( 1 ).percent();
-    backdraft_gcd       = 1.0 + p->buffs.backdraft->data().effectN( 2 ).percent();
+    backdraft_cast_mult = 1.0 + p->buffs.backdraft->data().effectN( 1 ).percent();
+    backdraft_gcd_mult = 1.0 + p->buffs.backdraft->data().effectN( 2 ).percent();
 
     energize_type     = action_energize::PER_HIT;
     energize_resource = RESOURCE_SOUL_SHARD;
@@ -494,26 +461,12 @@ struct incinerate_t : public destruction_spell_t
     energize_amount *= energize_mult;
   }
 
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double da = destruction_spell_t::bonus_da( s );
-
-    // BFA - Azerite
-    da += p()->azerite.chaos_shards.value( 2 );
-
-    return da;
-  }
-
   timespan_t execute_time() const override
   {
     timespan_t h = spell_t::execute_time();
 
-    if ( p()->buffs.backdraft->check() && !p()->buffs.chaotic_inferno->check() )
-      h *= backdraft_cast_time;
-
-    // BFA - Azerite
-    if ( p()->buffs.chaotic_inferno->check() )
-      h *= 1.0 + p()->buffs.chaotic_inferno->check_value();
+    if ( p()->buffs.backdraft->check() )
+      h *= backdraft_cast_mult;
 
     return h;
   }
@@ -525,9 +478,8 @@ struct incinerate_t : public destruction_spell_t
     if ( t == 0_ms )
       return t;
 
-    // BFA - Azerite
-    if ( p()->buffs.backdraft->check() && !p()->buffs.chaotic_inferno->check() )
-      t *= backdraft_gcd;
+    if ( p()->buffs.backdraft->check() )
+      t *= backdraft_gcd_mult;
 
     if ( t < min_gcd )
       t = min_gcd;
@@ -539,11 +491,7 @@ struct incinerate_t : public destruction_spell_t
   {
     destruction_spell_t::execute();
 
-    // BFA - Azerite
-    if ( !p()->buffs.chaotic_inferno->check() )
-      p()->buffs.backdraft->decrement();
-
-    p()->buffs.chaotic_inferno->decrement();
+    p()->buffs.backdraft->decrement();
 
     if ( p()->talents.fire_and_brimstone->ok() )
     {
@@ -705,12 +653,6 @@ struct chaos_bolt_t : public destruction_spell_t
   {
     destruction_spell_t::execute();
 
-    // BFA - Azerite
-    if ( p()->azerite.chaotic_inferno.ok() )
-      p()->buffs.chaotic_inferno->trigger();
-
-    p()->buffs.crashing_chaos->decrement();
-    p()->buffs.crashing_chaos_vop->decrement();
     p()->buffs.backdraft->decrement();
 
     // SL - Legendary
@@ -722,16 +664,6 @@ struct chaos_bolt_t : public destruction_spell_t
   double composite_crit_chance() const override
   {
     return 1.0;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double da = destruction_spell_t::bonus_da( s );
-    // BFA - Azerite
-    da += p()->azerite.chaotic_inferno.value( 2 );
-    da += p()->buffs.crashing_chaos->check_value();
-    da += p()->buffs.crashing_chaos_vop->check_value();
-    return da;
   }
 
   double calculate_direct_amount( action_state_t* state ) const override
@@ -776,12 +708,6 @@ struct summon_infernal_t : public destruction_spell_t
     infernal_awakening        = new infernal_awakening_t( p );
     infernal_awakening->stats = stats;
     radius                    = infernal_awakening->radius;
-
-    // BFA - Azerite
-    if ( p->azerite.crashing_chaos.ok() )
-      cooldown->duration += p->find_spell( 277705 )->effectN( 2 ).time_value();
-    // BFA - Essence
-    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
   }
 
   void execute() override
@@ -803,14 +729,6 @@ struct summon_infernal_t : public destruction_spell_t
     if ( p()->talents.rain_of_chaos->ok() )
     {
       p()->buffs.rain_of_chaos->trigger();
-    }
-
-    // BFA - Azerite
-    if ( p()->azerite.crashing_chaos.ok() )
-    {
-      // Cancel the Vision of Perfection version if necessary
-      p()->buffs.crashing_chaos_vop->expire();
-      p()->buffs.crashing_chaos->trigger( p()->buffs.crashing_chaos->max_stack() );
     }
   }
 
@@ -900,21 +818,6 @@ struct channel_demonfire_tick_t : public destruction_spell_t
 
     aoe                 = -1;
     base_aoe_multiplier = data().effectN( 2 ).sp_coeff() / data().effectN( 1 ).sp_coeff();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    destruction_spell_t::impact( s );
-
-    // BFA - Trinket
-    if ( s->chain_target == 0 )
-    {
-      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_MASTERY_RATING, p() );
-    }
-    else
-    {
-      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, p() );
-    }
   }
 };
 
@@ -1118,59 +1021,10 @@ void warlock_t::create_buffs_destruction()
                                     ->add_invalidate( CACHE_CRIT_CHANCE )
                                     ->set_default_value( talents.dark_soul_instability->effectN( 1 ).percent() );
 
-  // BFA - Azerite
-  buffs.bursting_flare = make_buff<stat_buff_t>( this, "bursting_flare", find_spell( 279913 ) )
-                             ->add_stat( STAT_MASTERY_RATING, azerite.bursting_flare.value() );
-  buffs.chaotic_inferno = make_buff( this, "chaotic_inferno", find_spell( 279673 ) )
-                              ->set_default_value( find_spell( 279673 )->effectN( 1 ).percent() )
-                              ->set_chance( find_spell( 279672 )->proc_chance() );
-  buffs.crashing_chaos =
-      make_buff( this, "crashing_chaos", find_spell( 277706 ) )->set_default_value( azerite.crashing_chaos.value() );
-  buffs.crashing_chaos_vop =
-      make_buff( this, "crashing_chaos_vop", find_spell( 277706 ) )
-          ->set_default_value( azerite.crashing_chaos.value() * vision_of_perfection_multiplier );
-  buffs.rolling_havoc = make_buff<stat_buff_t>( this, "rolling_havoc", find_spell( 278931 ) )
-                            ->add_stat( STAT_INTELLECT, azerite.rolling_havoc.value() );
-  buffs.flashpoint = make_buff<stat_buff_t>( this, "flashpoint", find_spell( 275429 ) )
-                         ->add_stat( STAT_HASTE_RATING, azerite.flashpoint.value() );
-  // TOCHECK What happens when we get 2 procs within 2 seconds?
-  buffs.chaos_shards =
-      make_buff<stat_buff_t>( this, "chaos_shards", find_spell( 287660 ) )
-          ->set_period( find_spell( 287660 )->effectN( 1 ).period() )
-          ->set_tick_zero( true )
-          ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-            resource_gain( RESOURCE_SOUL_SHARD, b->data().effectN( 1 ).base_value() / 10.0, gains.chaos_shards );
-          } );
-
   // Legendaries
   buffs.madness_of_the_azjaqir =
       make_buff( this, "madness_of_the_azjaqir", legendary.madness_of_the_azjaqir->effectN( 1 ).trigger() )
           ->set_trigger_spell( legendary.madness_of_the_azjaqir );
-}
-
-void warlock_t::vision_of_perfection_proc_destro()
-{
-  // BFA - Essence
-  // TODO: Does the proc trigger infernal awakening?
-
-  // Summoning an Infernal overwrites the previous buff with the new one
-  buffs.crashing_chaos->expire();
-
-  timespan_t summon_duration = find_spell( 111685 )->duration() * vision_of_perfection_multiplier;
-
-  warlock_pet_list.vop_infernals.spawn( summon_duration, 1U );
-
-  // BFA - Azerite
-  if ( azerite.crashing_chaos.ok() )
-  {
-    buffs.crashing_chaos->expire();
-    buffs.crashing_chaos_vop->trigger( buffs.crashing_chaos_vop->max_stack() );
-  }
-
-  if ( talents.rain_of_chaos->ok() )
-  {
-      buffs.rain_of_chaos->extend_duration_or_trigger( summon_duration );
-  }
 }
 
 void warlock_t::init_spells_destruction()
@@ -1205,14 +1059,6 @@ void warlock_t::init_spells_destruction()
 
   talents.channel_demonfire     = find_talent_spell( "Channel Demonfire" );
   talents.dark_soul_instability = find_talent_spell( "Dark Soul: Instability" );
-
-  // Azerite
-  azerite.bursting_flare  = find_azerite_spell( "Bursting Flare" );
-  azerite.chaotic_inferno = find_azerite_spell( "Chaotic Inferno" );
-  azerite.crashing_chaos  = find_azerite_spell( "Crashing Chaos" );
-  azerite.rolling_havoc   = find_azerite_spell( "Rolling Havoc" );
-  azerite.flashpoint      = find_azerite_spell( "Flashpoint" );
-  azerite.chaos_shards    = find_azerite_spell( "Chaos Shards" );
 
   // Legendaries
   legendary.cinders_of_the_azjaqir         = find_runeforge_legendary( "Cinders of the Azj'Aqir" );
@@ -1267,7 +1113,6 @@ void warlock_t::create_apl_destruction()
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
   action_priority_list_t* cds = get_action_priority_list( "cds" );
   action_priority_list_t* havoc = get_action_priority_list( "havoc" );
-  action_priority_list_t* ess = get_action_priority_list( "essences" );
 
   def->add_action( "call_action_list,name=havoc,if=havoc_active&active_enemies>1&active_enemies<5-talent.inferno.enabled+(talent.inferno.enabled&talent.internal_combustion.enabled)" );
   def->add_action( "conflagrate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.remains<1.5" );
@@ -1277,7 +1122,6 @@ void warlock_t::create_apl_destruction()
   def->add_action( "immolate,cycle_targets=1,if=refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   def->add_action( "immolate,if=talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains<duration*0.5" );
   def->add_action( "call_action_list,name=cds" );
-  def->add_action( "call_action_list,name=essences" );
   def->add_action( "channel_demonfire" );
   def->add_action( "scouring_tithe" );
   def->add_action( "decimating_bolt" );
@@ -1300,7 +1144,6 @@ void warlock_t::create_apl_destruction()
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time" );
   aoe->add_action( "immolate,cycle_targets=1,if=remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   aoe->add_action( "call_action_list,name=cds" );
-  aoe->add_action( "call_action_list,name=essences" );
   aoe->add_action( "havoc,cycle_targets=1,if=!(target=self.target)&active_enemies<4" );
   aoe->add_action( "rain_of_fire" );
   aoe->add_action( "havoc,cycle_targets=1,if=!(self.target=target)" );
@@ -1329,16 +1172,6 @@ void warlock_t::create_apl_destruction()
   havoc->add_action( "chaos_bolt,if=cast_time<havoc_remains" );
   havoc->add_action( "shadowburn" );
   havoc->add_action( "incinerate,if=cast_time<havoc_remains" );
-  ess->add_action( "worldvein_resonance" );
-  ess->add_action( "memory_of_lucid_dreams" );
-  ess->add_action( "blood_of_the_enemy" );
-  ess->add_action( "guardian_of_azeroth" );
-  ess->add_action( "ripple_in_space" );
-  ess->add_action( "focused_azerite_beam" );
-  ess->add_action( "purifying_blast" );
-  ess->add_action( "reaping_flames" );
-  ess->add_action( "concentrated_flame" );
-  ess->add_action( "the_unbound_force,if=buff.reckless_force.remains" );
 }
 //destruction_apl_end
 }  // namespace warlock

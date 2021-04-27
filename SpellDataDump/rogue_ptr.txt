@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-03-31/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-03-31/38134, git build shadowlands f94acc54ba)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -25,7 +25,7 @@ Effects          :
 #1 (id=30)       : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=31)       : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.41106 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.49327 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=32)       : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #4 (id=297239)   : Dummy (3)
@@ -506,7 +506,7 @@ Spell Type       : Melee
 Resource         : 35 Energy (3) (id=148)
 Spell Level      : 34
 GCD              : 1 seconds
-Duration         : 5 seconds
+Duration         : 6 seconds
 Cooldown         : 15 seconds
 Affecting spells : Elusiveness (79008 effect#1), Nimble Fingers (341311 effect#1)
 Family Flags     : 27
@@ -1193,7 +1193,7 @@ Effects          :
 #1 (id=6243)     : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=136652)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.50000 | Target: Self (1)
 #3 (id=180823)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #4 (id=181788)   : Apply Aura (6) | Dummy (4)
@@ -1994,7 +1994,6 @@ Cooldown         : 30 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x....... ........ ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged
-Affecting spells : Thick as Thieves (221622 effect#1)
 Family Flags     : 49
 Attributes       : ....x... ........ x.x..... .x......   .....x.. ..x..... ...x.... ..x..... 
                  : ...x.... ........ ........ ........   ........ x....... ........ ........ 
@@ -2012,9 +2011,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=344026)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Unknown(57)
-Description      : $?s221622[Increases you and the target's damage by $221622m1%, and redirects][Redirects] all threat you cause to the targeted party or raid member, beginning with your next damaging attack within the next $d and lasting $59628d.
-Tooltip          : Threat redirected from Rogue.
-$?$w2>0[Damage increased by $221622m1%.][]
+Description      : $?s221622[Increases the target's damage by $221622m1%, and redirects][Redirects] all threat you cause to the targeted party or raid member, beginning with your next damaging attack within the next $d and lasting $59628d.
+Tooltip          : Threat redirected from Rogue.
 
 Name             : Relentless Strikes (desc=Passive) (id=58423) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
@@ -2994,7 +2992,7 @@ Effects          :
                    Family Flags: 10, 19, 75, 104, 109, 124
 #3 (id=150620)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
-                   Affected Spells: Backstab (53), Shiv (5938), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560)
+                   Affected Spells: Backstab (53), Shiv (5938), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Echoing Reprimand (354838)
                    Family Flags: 2, 29, 82
 Description      : Draws upon surrounding shadows to empower your weapons, causing your combo point generating abilities to generate $s2 additional combo point and deal $s1% additional damage as Shadow for $d.
 Tooltip          : Combo point generating abilities generate $s2 additional combo point and deal $s1% additional damage as Shadow.
@@ -3042,7 +3040,7 @@ Attributes       : .......x x....... ........ x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=167769)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Backstab (53), Sinister Strike (1752), Mutilate (5374), Shiv (5938), Ambush (8676), Mutilate (27576), Envenom (32645), Killing Spree (51690), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Blindside (111240), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Eviscerate (196819), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Poison Bomb (255546), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Serrated Bone Spike (328547), Dreadblades (343142), Shadowstrike (345121)
+                   Affected Spells: Backstab (53), Sinister Strike (1752), Mutilate (5374), Shiv (5938), Ambush (8676), Mutilate (27576), Envenom (32645), Killing Spree (51690), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Blindside (111240), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Eviscerate (196819), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Poison Bomb (255546), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Serrated Bone Spike (328547), Dreadblades (343142), Shadowstrike (345121), Echoing Reprimand (354838)
                    Family Flags: 0, 1, 2, 9, 17, 25, 29, 33, 34, 35, 36, 50, 55, 60, 72, 75, 82, 86, 92, 104, 109, 115, 119, 127
 #2 (id=167770)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
@@ -3445,7 +3443,8 @@ Spell Level      : 8
 GCD              : 1 seconds
 Duration         : 4 seconds
 Cooldown         : 30 seconds
-Affecting spells : Iron Stomach (193546 effect#1), Nimble Fingers (341311 effect#1)
+Labels           : 1284: Symbol of Hope (265144 effect#2)
+Affecting spells : Iron Stomach (193546 effect#1), Nimble Fingers (341311 effect#1), Drink Up Me Hearties (354425 effect#2)
 Family Flags     : 99
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....xx..   ........ ........ ........ ........ 
@@ -3459,8 +3458,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=269014)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Drink an alchemical concoction that heals you for $o1% of your maximum health over $d.
-Tooltip          : Healing for $w1% of maximum health every $t1 sec.
+Description      : Drink an alchemical concoction that heals you for $?a354425&a193546[${$O1}.1][$o1]% of your maximum health over $d.
+Tooltip          : Healing for $?a354425|a193546[${$W1}.2][$w1]% of maximum health every $t1 sec.
 
 Name             : Shadow Dance (id=185313) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -3760,11 +3759,11 @@ Effects          :
                    Family Flags: 3, 9, 10, 26, 98, 101
 #3 (id=318640)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
-                   Affected Spells: Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560)
+                   Affected Spells: Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Echoing Reprimand (354838)
                    Family Flags: 82
 #4 (id=370530)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Ambush (8676), Pistol Shot (185763), Sinister Strike (193315), Sinister Strike (197834), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Sinister Strike (341541)
+                   Affected Spells: Ambush (8676), Pistol Shot (185763), Sinister Strike (193315), Sinister Strike (197834), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Sinister Strike (341541), Echoing Reprimand (354838)
                    Family Flags: 9, 82, 98, 101, 115, 118
 #5 (id=875455)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
@@ -3991,9 +3990,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6)
 Effects          :
-#1 (id=283945)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effects (8)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
-                   Affected Spells: Crimson Vial (185311), Crimson Vial (212198)
+#1 (id=283945)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Crimson Vial (185311), Crimson Vial (212198), Crimson Vial (354494)
                    Family Flags: 99
 Description      : Increases the healing you receive from Crimson Vial, healing potions, and healthstones by $s1%.
 
@@ -4283,7 +4282,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289148)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Kidney Shot (408), Kick (1766), Gouge (1776), Cheap Shot (1833), Dispatch (2098), Shiv (5938), Ambush (8676), Blade Flurry (22482), Quaking Palm (107079), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Dismantle (207777), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Flagellation (323654), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Sinister Strike (341541), Dreadblades (343142)
+                   Affected Spells: Kidney Shot (408), Kick (1766), Gouge (1776), Cheap Shot (1833), Dispatch (2098), Shiv (5938), Ambush (8676), Blade Flurry (22482), Quaking Palm (107079), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Dismantle (207777), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Flagellation (323654), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Sinister Strike (341541), Dreadblades (343142), Echoing Reprimand (354838)
                    Family Flags: 3, 4, 9, 10, 17, 21, 26, 29, 45, 52, 82, 93, 98, 112, 118, 119, 124
 #2 (id=289149)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
@@ -4544,7 +4543,7 @@ Spell Level      : 19
 Max Targets      : 8
 GCD              : 1 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Symbols of Death (227151 effect#1), The Dreadlord's Deceit (228224 effect#1), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Symbols of Death (227151 effect#1), The Dreadlord's Deceit (228224 effect#1), Master Assassin (256735 effect#1), Shuriken Storm (319951 effect#2), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
 Family Flags     : 54, 127
 Attributes       : ....x... ........ x....... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4759,7 +4758,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=295616)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.47151 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.56581 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=295617)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 Description      : Punctures your target with your shadow-infused blade for $s1 Shadow damage, bypassing armor.$?s319949[ Critical strikes apply Find Weakness for $319949s1 sec.][]
@@ -4978,7 +4977,7 @@ Duration         : 6 seconds
 Cooldown         : 60 seconds
 Category         : 30
 Category Cooldown: 60 seconds
-Affecting spells : Iron Stomach (193546 effect#1), Nimble Fingers (341311 effect#1)
+Affecting spells : Iron Stomach (193546 effect#1), Nimble Fingers (341311 effect#1), Drink Up Me Hearties (354425 effect#2)
 Family Flags     : 99
 Attributes       : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -5073,11 +5072,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=330681)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Tricks of the Trade (57934)
-                   Family Flags: 49
-Description      : Your Tricks of the Trade now increases your and the friendly target's damage by $m1% for $59628d.
+#1 (id=330681)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Tricks of the Trade now increases the friendly target's damage by $m1% for $59628d.
 
 Name             : Symbols of Death (id=227151) [Spell Family (8)] 
 Class            : Rogue
@@ -5102,7 +5099,7 @@ Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=341220)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Backstab (53), Shiv (5938), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Flagellation (323654), Shadowstrike (345121)
+                   Affected Spells: Backstab (53), Shiv (5938), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Flagellation (323654), Shadowstrike (345121), Echoing Reprimand (354838)
                    Family Flags: 2, 29, 75, 82, 104, 109, 124, 127
 Description      : $@spelldesc212283
 Tooltip          : Your next combo point generator will critically strike.
@@ -8922,7 +8919,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=805458)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.06000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.08000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=805481)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=806748)   : Dummy (3)
@@ -8955,7 +8952,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=805461)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Black Powder now deals additional Shadow damage to targets affected by your Find Weakness.
 
 Name             : Black Powder (id=319190) [Spell Family (8)] 
@@ -8975,7 +8972,7 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=805486)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.03000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.03200 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc319175
 
 Name             : Mastery: Potent Assassin (desc=Rank 2) (id=319473) [Spell Family (8), Passive] 
@@ -9123,7 +9120,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=806754)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Shuriken Storm critical strikes apply Find Weakness for $s1 sec.
+#2 (id=887574)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Affected Spells: Shuriken Storm (197835)
+                   Family Flags: 127
+Description      : Shuriken Storm has an additional $s2% chance to crit, and its critical strikes apply Find Weakness for $s1 sec.
 
 Name             : Echoing Reprimand (desc=Kyrian) (id=323547) [Spell Family (8)] 
 Class            : Rogue
@@ -9276,6 +9277,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=881094)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#5 (id=887338)   : Apply Aura (6) | Modify Versatility% (471)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Lash the target for $s1 Shadow damage, causing each combo point spent within $d to lash for an additional $345316s1. Dealing damage with Flagellation increases your Haste by $s2%, persisting $345569d after their torment fades.
 Tooltip          : $?$W2>0[Nearby Rogue is tormenting the target, dealing $345316s1 Shadow damage for each combo point spent.][Combo points spent deal $345316s1 Shadow damage to the Rogue's tormented target. Haste increased by $s3%.]
 
@@ -9310,13 +9313,13 @@ Range            : 100 yards
 GCD              : 1 seconds
 Duration         : Aura (infinite)
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deathspike (354731 effect#2)
 Triggered by     : Serrated Bone Spike (328547)
 Family Flags     : 54, 115
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ......x. 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ....xx.. ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
@@ -9324,7 +9327,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=813416)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc328547
 Tooltip          : Bleeding for $w1 every $t1 sec.
 
@@ -9337,7 +9340,7 @@ Range            : 100 yards
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deathspike (354731 effect#2)
 Family Flags     : 54, 115
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -9500,13 +9503,13 @@ Velocity         : 40 yards/sec
 Duration         : Aura (infinite)
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Charges          : 3 (30 seconds cooldown)
-Category         : 1889
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
+Category         : 1889: Deathspike (354731 effect#1)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deathspike (354731 effect#2)
 Family Flags     : 54, 115
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...xx... 
                  : ........ ........ ........ ........   ........ ..x..... ....x... ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ x.x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
@@ -9514,7 +9517,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Don't display in aura bar (60), Requires main-hand weapon (106)
 Effects          :
 #1 (id=821129)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=821130)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 324073 | Target: Enemy (6)
 #3 (id=821131)   : Dummy (3)
@@ -10036,6 +10039,26 @@ Effects          :
 Description      : $@spelldesc340085
 Tooltip          : Your next Pistol Shot deals $s2% increased damage.
 
+Name             : Guile Charm (id=340580) [Spell Family (8), Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 15 seconds
+Attributes       : .......x x....... ........ ........   ........ ..x..... ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Hidden (7), Don't display in aura bar (60)
+Effects          :
+#1 (id=840593)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+
 Name             : Shallow Insight (id=340582) 
 Class            : Rogue
 School           : Physical
@@ -10288,7 +10311,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=841560)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560)
+                   Affected Spells: Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Echoing Reprimand (354838)
                    Family Flags: 82
 Description      : Echoing Reprimand's damage is increased by |cFFFFFFFF$s1%|r.
 
@@ -10398,7 +10421,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=841637)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Feint (1966), Crimson Vial (185311), Crimson Vial (212198)
+                   Affected Spells: Feint (1966), Crimson Vial (185311), Crimson Vial (212198), Crimson Vial (354494)
                    Family Flags: 27, 99
 Description      : Energy cost of Feint and Crimson Vial reduced by |cFFFFFFFF$s1|r.
 
@@ -11147,5 +11170,174 @@ Effects          :
                    Affected Spells: Shiv (319504)
                    Family Flags: 91
 Description      : Shiv also reduces the target's healing received by $S1% for $319504d.
+
+Name             : Drink Up Me Hearties (desc=PvP Talent) (id=354425) [Spell Family (8), Passive, Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=886821)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=886851)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Crimson Vial (185311), Crimson Vial (212198), Crimson Vial (354494)
+                   Family Flags: 99
+#3 (id=886928)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Crimson Vial restores $s1% additional maximum health and grants $s3% of its healing to allies within $354494a yds.
+
+Name             : Toxic Onslaught (id=354473) [Spell Family (8), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=886894)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 8000 | Scaled Value: 8000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your ability used from Stealth while Sepsis is active grants you one of Shadow Blades, Adrenaline Rush, or applies Vendetta to your current target for ${$s1/1000} sec.
+
+Name             : Crimson Vial (id=354494) [Spell Family (8)] 
+Class            : Rogue
+School           : Nature
+Spell Type       : Magic
+Spell Level      : 8
+Range            : 100 yards
+Duration         : 4 seconds
+Affecting spells : Iron Stomach (193546 effect#1), Nimble Fingers (341311 effect#1), Drink Up Me Hearties (354425 effect#2)
+Family Flags     : 99
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ....xx..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   
+                 : Cannot crit (93)
+Effects          :
+#1 (id=886927)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Caster (22) -> AOE friendly (30)
+Description      : Drink an alchemical concoction that heals you for $o1% of your maximum health over $d.
+Tooltip          : Healing for ${$W1}.2% of maximum health every $t1 sec.
+
+Name             : Splintered Elements (id=354647) [Spell Family (8), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=887239)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Each additional $?a137039[Healing Wave]?a137040[Lava Burst][Lightning Bolt] generated by Primordial Wave increases your Haste by $s1% for $333340d.
+
+Name             : Obedience (id=354703) [Spell Family (8), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Internal Cooldown: 0.1 seconds
+Proc Chance      : 101%
+Proc Flags       : ....x... x.x.x.x. x....... ........ 
+                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=887327)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Flagellation now also increases your Versatility by $323654s5%. Each combo point spent while Flagellation is active decreases it's cooldown by ${$s1/1000} sec. 
+
+Name             : Deathspike (id=354731) [Spell Family (8), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=887362)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 1889 | Target: Self (1)
+                   Affected Spells (Category): Serrated Bone Spike (328547)
+#2 (id=887363)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
+                   Affected Spells: Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547)
+                   Family Flags: 115
+Description      : Serrated Bone Spike has $s1 additional charges and hits $s2 additional nearby enemies.
+
+Name             : Resounding Clarity (id=354837) [Spell Family (8), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=887551)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Echoing Reprimand now animacharges $s1 combo points.
+Tooltip          : Echoing Reprimand now animacharges $s1 combo points.
+
+Name             : Echoing Reprimand (desc=Kyrian) (id=354838) [Spell Family (8)] 
+Class            : Rogue
+School           : Arcane
+Spell Type       : None
+Spell Level      : 48
+Duration         : 45 seconds
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Affecting spells : Shadow Blades (121471 effect#3), Nightstalker (130493 effect#1), Broadside (193356 effects: #3, #4), Acrobatic Strikes (196924 effect#1), Symbols of Death (227151 effect#1), Reverberation (341264 effect#1)
+Family Flags     : 82
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=887552)   : Apply Aura (6) | Unknown(494)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
+Description      : $@spelldesc323547
+Tooltip          : Rogue's fifth combo point is Animacharged. 
+
+Damaging finishing moves using exactly 5 combo points deal damage as if 7 combo points are consumed.
 
 

@@ -397,6 +397,7 @@ public:
     conduit_data_t serrated_glaive;
 
     conduit_data_t soul_furnace;
+    conduit_data_t fel_defender;
 
     conduit_data_t repeat_decree;
     conduit_data_t increased_scrutiny;
@@ -1181,6 +1182,7 @@ public:
 
     // Conduit Passives
     ab::apply_affecting_conduit( p->conduit.dancing_with_fate );
+    ab::apply_affecting_conduit( p->conduit.fel_defender );
     ab::apply_affecting_conduit( p->conduit.increased_scrutiny );
     ab::apply_affecting_conduit( p->conduit.unnatural_malice );
 
@@ -5354,6 +5356,7 @@ void demon_hunter_t::init_spells()
   conduit.relentless_onslaught  = find_conduit_spell( "Relentless Onslaught" );
   conduit.serrated_glaive       = find_conduit_spell( "Serrated Glaive" );
 
+  conduit.fel_defender          = find_conduit_spell( "Fel Defender" );
   conduit.soul_furnace          = find_conduit_spell( "Soul Furnace" );
 
   conduit.repeat_decree         = find_conduit_spell( "Repeat Decree" );

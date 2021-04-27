@@ -1501,6 +1501,22 @@ void player_t::init_base_stats()
     // 1% of base mana as mana regen per second for all classes.
     resources.base_regen_per_second[ RESOURCE_MANA ] = dbc->resource_base( type, level() ) * 0.01;
 
+    // Automatically parse mana regen and max mana modifiers from class passives.
+    for ( auto spell : dbc::class_passives( this ) )
+    {
+      for ( const spelleffect_data_t& effect : spell->effects() )
+      {
+        if ( effect.subtype() == A_MOD_MANA_REGEN_PCT )
+        {
+          resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + effect.percent();
+        }
+        if ( effect.subtype() == A_MOD_MAX_MANA_PCT || effect.subtype() == A_MOD_MANA_POOL_PCT )
+        {
+          resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + effect.percent();
+        }
+      }
+    }
+
     base.health_per_stamina = dbc->health_per_stamina( level() );
 
     // players have a base 7.5% hit/exp
@@ -1627,23 +1643,6 @@ void player_t::init_initial_stats()
 
   initial = base;
   initial.stats += passive;
-
-  // Automatically parse mana regen and max mana modifiers from class passives.
-  // Applied to initial stats because actions' mana costs are based on the per-level per-class amounts before modifiers
-  for ( auto spell : dbc::class_passives( this ) )
-  {
-    for ( const spelleffect_data_t& effect : spell->effects() )
-    {
-      if ( effect.subtype() == A_MOD_MANA_REGEN_PCT )
-      {
-        resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + effect.percent();
-      }
-      if ( effect.subtype() == A_MOD_MAX_MANA_PCT || effect.subtype() == A_MOD_MANA_POOL_PCT )
-      {
-        resources.initial[ RESOURCE_MANA ] *= 1.0 + effect.percent();
-      }
-    }
-  }
 
   // Compute current "total from gear" into total gear. Per stat, this is either the amount of stats
   // the items for the actor gives, or the overridden value (player_t::gear + player_t::enchant +
