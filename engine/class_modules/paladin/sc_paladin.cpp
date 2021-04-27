@@ -2592,6 +2592,12 @@ double paladin_t::composite_melee_attack_power() const
 
 double paladin_t::composite_melee_attack_power_by_type( attack_power_type ap_type ) const
 {
+  //Make sure its not based on weapon
+  if ( specialization() == PALADIN_HOLY )
+  {
+    return player_t::composite_melee_attack_power_by_type( attack_power_type::NO_WEAPON );
+  }
+
   return player_t::composite_melee_attack_power_by_type( ap_type );
 }
 
