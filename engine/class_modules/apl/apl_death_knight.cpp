@@ -372,7 +372,7 @@ void unholy( player_t* p )
   aoe_setup->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=rune.time_to_4<(cooldown.death_and_decay.remains&!talent.defile|cooldown.defile.remains&talent.defile|covenant.night_fae&cooldown.deaths_due.remains)" );
 
   cooldowns->add_action( "potion,if=variable.major_cooldowns_active|fight_remains<26", "Potion" );
-  cooldowns->add_action( "army_of_the_dead,if=cooldown.unholy_blight.remains<10&cooldown.dark_transformation.remains_expected<10&talent.unholy_blight&(cooldown.apocalypse.remains_expected<10&variable.full_cdr|!variable.full_cdr)|!talent.unholy_blight|fight_remains<35", "Cooldowns" );
+  cooldowns->add_action( "army_of_the_dead,if=cooldown.unholy_blight.remains<7&cooldown.dark_transformation.remains_expected<7&talent.unholy_blight&(cooldown.apocalypse.remains_expected<7&variable.full_cdr|!variable.full_cdr)|!talent.unholy_blight|fight_remains<35", "Cooldowns" );
   cooldowns->add_action( "soul_reaper,target_if=target.time_to_pct_35<5&target.time_to_die>5&active_enemies<=3" );
   cooldowns->add_action( "unholy_blight,if=variable.st_planning&(cooldown.apocalypse.remains_expected<5|cooldown.apocalypse.remains_expected>10)&(cooldown.dark_transformation.remains<gcd|buff.dark_transformation.up)", "Holds Blight for up to 5 seconds to sync with Apocalypse, Otherwise, use with Dark Transformation." );
   cooldowns->add_action( "unholy_blight,if=active_enemies>=2|fight_remains<21" );
