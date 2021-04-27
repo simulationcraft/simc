@@ -6618,6 +6618,16 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     if ( p->find_action( "cat_form" ) )
       _init_cat();
+
+    if ( p->talent.heart_of_the_wild->ok() && p->find_action( "heart_of_the_wild" ) )
+    {
+      if ( p->talent.balance_affinity->ok() )
+        _init_moonkin();
+      else if ( p->talent.guardian_affinity->ok() )
+        _init_bear();
+      else if ( p->talent.feral_affinity->ok() )
+        _init_cat();
+    }
   }
 
   template <typename T, typename... Ts>
