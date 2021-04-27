@@ -279,6 +279,21 @@ struct scouring_tithe_t : public warlock_spell_t
       p()->cooldowns.scouring_tithe->reset( true );
     }
   }
+
+  double action_multiplier() const override
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->mastery_spells.chaotic_energies->ok() )
+    {
+      double destro_mastery_value = p()->cache.mastery_value() / 2.0;
+      double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
+
+      m *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
+    }
+
+    return m;
+  }
 };
 
 struct soul_rot_t : public warlock_spell_t
