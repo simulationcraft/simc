@@ -682,6 +682,14 @@ struct power_siphon_t : public demonology_spell_t
     ignore_false_positive = true;
   }
 
+  bool ready() override
+  {
+    if ( p()->warlock_pet_list.wild_imps.n_active_pets() < 1 )
+      return false;
+
+    return demonology_spell_t::ready();
+  }
+
   void execute() override
   {
     demonology_spell_t::execute();
@@ -712,12 +720,9 @@ struct power_siphon_t : public demonology_spell_t
     if ( imps.size() > max_imps )
       imps.resize( max_imps );
 
-    //TOCHECK: As of 9/21/2020, Power Siphon is bugged to always provide 2 stacks of the damage buff regardless of imps consumed
-    //Move this inside the while loop (and remove the 2!) if it is ever changed to be based on imp count
-    p()->buffs.power_siphon->trigger(2);
-
     while ( !imps.empty() )
     {
+      p()->buffs.power_siphon->trigger();
       p()->buffs.demonic_core->trigger();
       pets::demonology::wild_imp_pet_t* imp = imps.front();
       imps.erase( imps.begin() );
