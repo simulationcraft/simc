@@ -815,24 +815,6 @@ struct grimoire_felguard_t : public demonology_spell_t
   }
 };
 
-struct inner_demons_t : public demonology_spell_t
-{
-  inner_demons_t( warlock_t* p, util::string_view options_str ) : demonology_spell_t( "inner_demons", p )
-  {
-    parse_options( options_str );
-    trigger_gcd           = timespan_t::zero();
-    harmful               = false;
-    ignore_false_positive = true;
-    action_skill          = 1;
-  }
-
-  void execute() override
-  {
-    demonology_spell_t::execute();
-    p()->buffs.inner_demons->trigger();
-  }
-};
-
 struct nether_portal_t : public demonology_spell_t
 {
   nether_portal_t( warlock_t* p, util::string_view options_str )
@@ -1001,11 +983,8 @@ action_t* warlock_t::create_action_demonology( util::string_view action_name, co
     return new power_siphon_t( this, options_str );
   if ( action_name == "soul_strike" )
     return new soul_strike_t( this, options_str );
-  if ( action_name == "inner_demons" )
-    return new inner_demons_t( this, options_str );
   if ( action_name == "nether_portal" )
     return new nether_portal_t( this, options_str );
-
   if ( action_name == "call_dreadstalkers" )
     return new call_dreadstalkers_t( this, options_str );
   if ( action_name == "summon_felguard" )

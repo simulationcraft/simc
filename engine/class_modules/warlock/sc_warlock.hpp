@@ -196,7 +196,7 @@ public:
 
     // tier 45
     // soul conduit
-    const spell_data_t* inner_demons; //TODO: WHY DOES THIS TALENT NEED AN APL LINE TO WORK FIX THIS
+    const spell_data_t* inner_demons;
     const spell_data_t* grimoire_felguard; //TODO: Check summoning/buff durations and if permanent Felguard is affected by this ability
 
     // tier 50
