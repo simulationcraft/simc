@@ -187,6 +187,21 @@ struct impending_catastrophe_dot_t : public warlock_spell_t
 
    return dot_duration;
   }
+
+  double action_multiplier() const override
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->mastery_spells.chaotic_energies->ok() )
+    {
+      double destro_mastery_value = p()->cache.mastery_value() / 2.0;
+      double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
+
+      m *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
+    }
+
+    return m;
+  }
 };
 
 struct impending_catastrophe_impact_t : public warlock_spell_t
@@ -197,6 +212,21 @@ struct impending_catastrophe_impact_t : public warlock_spell_t
     background = true;
     may_miss   = false;
     dual       = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->mastery_spells.chaotic_energies->ok() )
+    {
+      double destro_mastery_value = p()->cache.mastery_value() / 2.0;
+      double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
+
+      m *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
+    }
+
+    return m;
   }
 };
 
@@ -218,6 +248,7 @@ struct impending_catastrophe_t : public warlock_spell_t
     add_child( impending_catastrophe_dot );
   }
 
+  //Currently we model the "pass-through" damage as occuring on all targets when the projectile hits
   void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
