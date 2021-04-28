@@ -187,12 +187,23 @@
     "fields": [
       { "data_type": "i", "field": "id" },
       { "data_type": "i", "field": "flags" },
-      { "data_type": "i", "field": "unk_3" },
+      { "data_type": "i", "field": "id_expansion" },
       { "data_type": "i", "field": "min_level" },
       { "data_type": "i", "field": "max_level" },
-      { "data_type": "i", "field": "unk_6" },
-      { "data_type": "i", "field": "unk_7" },
-      { "data_type": "i", "field": "unk_8" }
+      { "data_type": "i", "field": "lower_bound_semantics" },
+      { "data_type": "i", "field": "upper_bound_semantics" },
+      { "data_type": "i", "field": "target_level_delta" },
+      { "data_type": "i", "field": "target_level_delta_max" },
+      { "data_type": "i", "field": "target_level_min" },
+      { "data_type": "i", "field": "target_level_max" },
+      { "data_type": "i", "field": "item_level_min" }
+    ]
+  },
+  "ContentTuningXExpected": {
+    "parent": "ContentTuning",
+    "fields": [
+      { "data_type": "i", "field": "id_expected_stat_mod" },
+      { "data_type": "i", "field": "id_mythic_plus_season" }
     ]
   },
   "Covenant": {
@@ -792,6 +803,20 @@
       { "data_type": "i", "field": "id_zmp_file_data" },
       { "data_type": "i", "field": "unk_1" },
       { "data_type": "I", "field": "flags", "elements": 2 }
+    ]
+  },
+  "MapDifficulty": {
+    "parent": "Map",
+    "fields": [
+      { "data_type": "S", "field": "message" },
+      { "data_type": "i", "field": "difficulty" },
+      { "data_type": "i", "field": "id_lock" },
+      { "data_type": "b", "field": "reset_interval" },
+      { "data_type": "i", "field": "max_players" },
+      { "data_type": "i", "field": "item_context" },
+      { "data_type": "i", "field": "item_context_picker_id" },
+      { "data_type": "i", "field": "flags" },
+      { "data_type": "i", "field": "id_content_tuning" }
     ]
   },
   "MinorTalent": {
