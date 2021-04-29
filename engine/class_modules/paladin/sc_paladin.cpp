@@ -109,6 +109,12 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
         base_buff_duration *= 1.0 + p->talents.holy_sanctified_wrath->effectN( 1 ).percent();
         took_sw = true;
       }
+      if ( p->spells.avenging_wrath_3->ok() )
+      {
+        healing_modifier += p->spells.avenging_wrath_3->effectN( 1 ).percent();
+        crit_bonus += p->spells.avenging_wrath_3->effectN( 4 ).percent();
+        damage_modifier += p->spells.avenging_wrath_3->effectN( 1 ).percent();
+      }
       break;
     case PALADIN_RETRIBUTION:
       if ( p->talents.ret_sanctified_wrath->ok() )
@@ -185,6 +191,8 @@ struct avenging_wrath_t : public paladin_spell_t
     parse_options( options_str );
 
     if ( p->talents.crusade->ok() )
+      background = true;
+    if ( p->specialization() == PALADIN_HOLY && p->talents.avenging_crusader->ok() )
       background = true;
 
     harmful = false;
@@ -2233,6 +2241,7 @@ void paladin_t::init_spells()
   spells.avenging_wrath         = find_class_spell( "Avenging Wrath" );
   spells.judgment_2             = find_rank_spell( "Judgment", "Rank 2" );         // 327977
   spells.avenging_wrath_2       = find_rank_spell( "Avenging Wrath", "Rank 2" );   // 317872
+  spells.avenging_wrath_3       = find_rank_spell( "Avenging Wrath", "Rank 3" );   // 327979
   spells.hammer_of_wrath_2      = find_rank_spell( "Hammer of Wrath", "Rank 2" );  // 326730
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
   spells.divine_purpose_buff    = find_spell( 223819 );
@@ -2592,7 +2601,7 @@ double paladin_t::composite_melee_attack_power() const
 
 double paladin_t::composite_melee_attack_power_by_type( attack_power_type ap_type ) const
 {
-  //Make sure its not based on weapon
+  //for some reason on the second pass it of AP cacluatotion
   if ( specialization() == PALADIN_HOLY )
   {
     return player_t::composite_melee_attack_power_by_type( attack_power_type::NO_WEAPON );

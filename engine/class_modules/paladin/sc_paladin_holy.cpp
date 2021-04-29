@@ -220,23 +220,23 @@ struct holy_prism_t : public paladin_spell_t
 
 struct holy_shock_damage_t : public paladin_spell_t
 {
-  double crit_chance_multiplier;
+  double crit_chance_boost;
 
   holy_shock_damage_t( paladin_t* p ) : paladin_spell_t( "holy_shock_damage", p, p->find_spell( 25912 ) )
   {
     background = may_crit = true;
     trigger_gcd           = 0_ms;
 
-    // this grabs the 100% base crit bonus from 20473
-    crit_chance_multiplier = p->find_class_spell( "Holy Shock" )->effectN( 1 ).base_value() / 10.0;
+    // this grabs the 30% base crit bonus from 272906
+    crit_chance_boost = p->spec.holy_shock_2->effectN( 1 ).percent();
   }
 
   double composite_crit_chance() const override
   {
     double cc = paladin_spell_t::composite_crit_chance();
 
-    // effect 1 doubles crit chance
-    cc *= crit_chance_multiplier;
+    // effect 1 increases crit chance flattly
+    cc += crit_chance_boost;
 
     return cc;
   }
@@ -246,23 +246,23 @@ struct holy_shock_damage_t : public paladin_spell_t
 
 struct holy_shock_heal_t : public paladin_heal_t
 {
-  double crit_chance_multiplier;
+  double crit_chance_boost;
 
   holy_shock_heal_t( paladin_t* p ) : paladin_heal_t( "holy_shock_heal", p, p->find_spell( 25914 ) )
   {
     background  = true;
     trigger_gcd = 0_ms;
 
-    // this grabs the crit multiplier bonus from 20473
-    crit_chance_multiplier = p->find_class_spell( "Holy Shock" )->effectN( 1 ).base_value() / 10.0;
+    // this grabs the crit multiplier bonus from 272906
+    crit_chance_boost = p->spec.holy_shock_2->effectN( 1 ).percent();
   }
 
   double composite_crit_chance() const override
   {
     double cc = paladin_heal_t::composite_crit_chance();
 
-    // effect 1 doubles crit chance
-    cc *= crit_chance_multiplier;
+    // effect 1 increases crit chance flattly
+    cc += crit_chance_boost;
 
     return cc;
   }
@@ -308,20 +308,19 @@ struct holy_shock_t : public paladin_spell_t
 
   void execute() override
   {
-    paladin_spell_t::execute();
-
     if ( dmg )
     {
       // damage enemy
-      damage->set_target( execute_state->target );
+      damage->set_target( target );
       damage->execute();
     }
     else
     {
       // heal friendly
-      heal->set_target( execute_state->target );
+      heal->set_target( target );
       heal->execute();
     }
+    paladin_spell_t::execute();
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
@@ -456,20 +455,21 @@ struct lights_hammer_t : public paladin_spell_t
 
 // Light of Dawn (Holy) =======================================================
 
-struct light_of_dawn_t : public paladin_heal_t
+struct light_of_dawn_t : public holy_power_consumer_t<paladin_heal_t>
 {
   light_of_dawn_t( paladin_t* p, const std::string& options_str )
-    : paladin_heal_t( "light_of_dawn", p, p->find_class_spell( "Light of Dawn" ) )
+    : holy_power_consumer_t( "light_of_dawn", p, p->find_class_spell( "Light of Dawn" ) )
   {
     parse_options( options_str );
 
     aoe = 6;
-
-    cooldown = p->cooldowns.light_of_dawn;
   }
 
   void execute() override
   {
+    holy_power_consumer_t::execute();
+
+    //deal with awakening
     if ( p()->talents.awakening->ok() )
     {
       if ( rng().roll( p()->talents.awakening->effectN( 1 ).percent() ) )
@@ -486,6 +486,59 @@ struct light_of_dawn_t : public paladin_heal_t
         }
       }
     }
+  }
+};
+
+// Word Of Glory (Holy) =======================================================
+
+struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
+{
+  word_of_glory_t( paladin_t* p, const std::string& options_str )
+    : holy_power_consumer_t( "word_of_glory", p, p->find_class_spell( "Word Of Glory" ) )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    holy_power_consumer_t::execute();
+
+    // deal with awakening
+    if ( p()->talents.awakening->ok() )
+    {
+      if ( rng().roll( p()->talents.awakening->effectN( 1 ).percent() ) )
+      {
+        buff_t* main_buff           = p()->buffs.avenging_wrath;
+        timespan_t trigger_duration = timespan_t::from_seconds( p()->talents.awakening->effectN( 2 ).base_value() );
+        if ( main_buff->check() )
+        {
+          p()->buffs.avengers_might->extend_duration( p(), trigger_duration );
+        }
+        else
+        {
+          main_buff->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
+        }
+      }
+    }
+  }
+};
+
+struct avenging_crusader_t : public paladin_spell_t
+{
+  avenging_crusader_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "avenging_crusader", p, p->talents.avenging_crusader )
+  {
+    parse_options( options_str );
+
+    if ( !( p->talents.avenging_crusader->ok() ) )
+      background = true;
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    p()->buffs.avenging_crusader->trigger();
   }
 };
 
@@ -518,6 +571,10 @@ action_t* paladin_t::create_action_holy( util::string_view name, const std::stri
     return new light_of_dawn_t( this, options_str );
   if ( name == "lights_hammer" )
     return new lights_hammer_t( this, options_str );
+  if ( name == "word_of_glory" )
+    return new word_of_glory_t( this, options_str );
+  if ( name == "avenging_crusader" )
+    return new avenging_crusader_t( this, options_str );
 
   if ( specialization() == PALADIN_HOLY )
   {
@@ -533,6 +590,7 @@ void paladin_t::create_buffs_holy()
   buffs.divine_protection = make_buff( this, "divine_protection", find_class_spell( "Divine Protection" ) )
                                 ->set_cooldown( 0_ms );  // Handled by the action
   buffs.infusion_of_light = make_buff( this, "infusion_of_light", find_spell( 54149 ) );
+  buffs.avenging_crusader = make_buff( this, "avenging_crusader", find_spell( 216331 ) );
 }
 
 void paladin_t::init_spells_holy()
@@ -565,6 +623,7 @@ void paladin_t::init_spells_holy()
     spec.judgment_3 = find_specialization_spell( 231644 );
 
     spells.judgment_debuff = find_spell( 214222 );
+    spec.holy_shock_2      = find_spell( 272906 );
   }
 
   passives.infusion_of_light = find_specialization_spell( "Infusion of Light" );

@@ -172,6 +172,7 @@ public:
     // Holy
     buff_t* divine_protection;
     buff_t* holy_avenger;
+    buff_t* avenging_crusader;
     buff_t* infusion_of_light;
 
     // Prot
@@ -252,6 +253,7 @@ public:
     const spell_data_t* retribution_paladin;
     const spell_data_t* hammer_of_the_righteous_2;
     const spell_data_t* word_of_glory_2;
+    const spell_data_t* holy_shock_2;
   } spec;
 
   // Cooldowns
@@ -342,6 +344,7 @@ public:
 
     const spell_data_t* judgment_2;
     const spell_data_t* avenging_wrath_2;
+    const spell_data_t* avenging_wrath_3;
     const spell_data_t* hammer_of_wrath_2;
 
     const spell_data_t* ashen_hallow_how;
