@@ -10,6 +10,7 @@ struct blessing_of_sacrifice_redirect_t;
 namespace buffs {
                   struct avenging_wrath_buff_t;
                   struct crusade_buff_t;
+                  struct avenging_crusader_buff_t;
                   struct holy_avenger_buff_t;
                   struct ardent_defender_buff_t;
                   struct forbearance_t;
@@ -172,7 +173,7 @@ public:
     // Holy
     buff_t* divine_protection;
     buff_t* holy_avenger;
-    buff_t* avenging_crusader;
+    buffs:: avenging_crusader_buff_t* avenging_crusader;
     buff_t* infusion_of_light;
 
     // Prot
@@ -676,6 +677,19 @@ namespace buffs {
     double crit_bonus;
   };
 
+  struct avenging_crusader_buff_t : public buff_t
+  {
+    avenging_crusader_buff_t( paladin_t* p );
+
+    double get_damage_mod() const
+    {
+      return damage_modifier;
+    }
+
+  private:
+    double damage_modifier;
+  };
+
   struct crusade_buff_t : public buff_t
   {
     crusade_buff_t( player_t* p );
@@ -773,6 +787,7 @@ public:
   {
     bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment; // Shared
     bool crusade, divine_purpose, divine_purpose_cost, hand_of_light, final_reckoning, reckoning; // Ret
+    bool avenging_crusader; // Holy
   } affected_by;
 
   // haste scaling bools
@@ -798,6 +813,11 @@ public:
       this -> affected_by.reckoning = this -> data().affected_by( p -> spells.reckoning -> effectN( 1 ) );
       this -> affected_by.final_reckoning = this -> data().affected_by( p -> talents.final_reckoning -> effectN( 3 ) );
     }
+    if ( p->specialization() == PALADIN_HOLY )
+    {
+      this->affected_by.avenging_crusader = this->data().affected_by( p->talents.avenging_crusader->effectN(1) );
+    }
+
     this -> affected_by.judgment = this -> data().affected_by( p -> spells.judgment_debuff -> effectN( 1 ) );
     this -> affected_by.avenging_wrath = this -> data().affected_by( p -> spells.avenging_wrath -> effectN( 1 ) );
     this -> affected_by.divine_purpose_cost = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 1 ) );
@@ -918,6 +938,11 @@ public:
     if ( affected_by.avenging_wrath && p() -> buffs.avenging_wrath -> up() )
     {
       am *= 1.0 + p() -> buffs.avenging_wrath -> get_damage_mod();
+    }
+
+    if ( affected_by.avenging_crusader && p()->buffs.avenging_crusader->up() )
+    {
+      am *= 1.0 + p() -> buffs.avenging_crusader -> get_damage_mod();
     }
 
     // Divine purpose damage increase handled here,
@@ -1357,6 +1382,7 @@ struct judgment_t : public paladin_melee_attack_t
   proc_types proc_type() const override;
   void impact( action_state_t* s ) override;
   void execute() override;
+
 private:
   void do_ctor_common( paladin_t* p );
 };

@@ -146,7 +146,7 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
   // invalidate Healing
   add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 }
-}  // namespace buffs
+} // namespace buffs
 
 // end namespace buffs
 // ==========================================================================
@@ -1126,14 +1126,6 @@ struct hallowed_discernment_tick_t : public paladin_spell_t
   {
     base_multiplier *= p->conduit.hallowed_discernment.percent();
     background     = true;
-    aoe_multiplier = 1.0;  // This gets overwritten
-  }
-
-  double action_multiplier() const override
-  {
-    double am = paladin_spell_t::action_multiplier();
-    am *= aoe_multiplier;
-    return am;
   }
 };
 
@@ -1195,8 +1187,6 @@ struct ashen_hallow_tick_t : public paladin_spell_t
           } );
       hd_damage_tick->set_target( lowest_hp_target );
       // Damage is calculated independently of Ashen Hallow. ie. they crit separately
-      // Hitting more targets with Ashen Hallow reduces the damage of Hallowed Discernment
-      hd_damage_tick->aoe_multiplier = composite_aoe_multiplier( execute_state );
       hd_damage_tick->execute();
     }
   }

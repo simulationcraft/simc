@@ -6,6 +6,16 @@
 
 namespace paladin
 {
+
+namespace buffs
+{     
+  avenging_crusader_buff_t::avenging_crusader_buff_t( paladin_t* p )
+  : buff_t( p, "avenging_crusader", p->find_spell( 216331 ) ), damage_modifier( 0.0 )
+  {
+    damage_modifier = data().effectN( 1 ).percent();
+  }
+}
+
 // Beacon of Light ==========================================================
 struct beacon_of_light_t : public paladin_heal_t
 {
@@ -590,7 +600,7 @@ void paladin_t::create_buffs_holy()
   buffs.divine_protection = make_buff( this, "divine_protection", find_class_spell( "Divine Protection" ) )
                                 ->set_cooldown( 0_ms );  // Handled by the action
   buffs.infusion_of_light = make_buff( this, "infusion_of_light", find_spell( 54149 ) );
-  buffs.avenging_crusader = make_buff( this, "avenging_crusader", find_spell( 216331 ) );
+  buffs.avenging_crusader = new buffs::avenging_crusader_buff_t( this );
 }
 
 void paladin_t::init_spells_holy()
