@@ -1749,11 +1749,15 @@ public:
 
   double mod_spell_effects_percent( const spell_data_t*, const spelleffect_data_t& e ) { return e.percent(); }
 
-  double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t& )
+  double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t& e )
   {
     // HOTFIX HACK to reflect server-side scripting
     if ( c == p()->conduit.endless_thirst )
       return c.percent() / 10.0;
+
+    // HOTFIX HACK to reflect bug where conflux of elements rank only applies to direct damage and not to dots
+    if ( p()->bugs && c == p()->conduit.conflux_of_elements && e.id() == 841848 )
+      return e.percent();
 
     return c.percent();
   }
