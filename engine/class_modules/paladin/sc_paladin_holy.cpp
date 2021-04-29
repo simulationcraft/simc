@@ -342,11 +342,6 @@ struct holy_shock_t : public paladin_spell_t
 
     return rm;
   }
-
-  double cost() const override
-  {
-    return paladin_spell_t::cost();
-  }
 };
 
 // Judgment - Holy =================================================================
