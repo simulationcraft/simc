@@ -215,10 +215,10 @@ void shadow( player_t* p )
                     "High Priority Mind Sear action to refresh DoTs with Searing Nightmare" );
   main->add_talent( p, "Damnation", "target_if=!variable.all_dots_up",
                     "Prefer to use Damnation ASAP if any DoT is not up." );
-  main->add_talent( p, "Shadow Word: Death",
+  main->add_action( p, "Shadow Word: Death",
                     "if=pet.fiend.active&runeforge.shadowflame_prism.equipped&pet.fiend.remains<=gcd",
                     "Use Shadow Word Death if using Shadowflame Prism and bender will expire during the next gcd." );
-  main->add_talent(
+  main->add_action(
       p, "Mind Blast",
       "(cooldown.mind_blast.charges>1&(debuff.hungering_void.up|!talent.hungering_void.enabled)|pet.fiend.remains<="
       "cast_time+gcd)&pet.fiend.active&runeforge.shadowflame_prism.equipped&pet.fiend.remains>=cast_time",
