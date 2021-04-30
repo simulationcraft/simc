@@ -146,7 +146,7 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
   // invalidate Healing
   add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 }
-} // namespace buffs
+}  // namespace buffs
 
 // end namespace buffs
 // ==========================================================================
@@ -1125,7 +1125,7 @@ struct hallowed_discernment_tick_t : public paladin_spell_t
   hallowed_discernment_tick_t( paladin_t* p ) : paladin_spell_t( "hallowed_discernment", p, p->find_spell( 340203 ) )
   {
     base_multiplier *= p->conduit.hallowed_discernment.percent();
-    background     = true;
+    background = true;
   }
 };
 
@@ -2042,7 +2042,7 @@ void paladin_t::create_buffs()
                                     ->add_invalidate( CACHE_HASTE );
   buffs.the_magistrates_judgment = make_buff( this, "the_magistrates_judgment", find_spell( 337682 ) )
                                        ->set_default_value( find_spell( 337682 )->effectN( 1 ).base_value() );
-  buffs.final_verdict = make_buff( this, "final_verdict", find_spell( 337228 ) );
+  buffs.final_verdict    = make_buff( this, "final_verdict", find_spell( 337228 ) );
   buffs.virtuous_command = make_buff( this, "virtuous_command", find_spell( 339664 ) );
 
   // Covenants
@@ -2591,7 +2591,7 @@ double paladin_t::composite_melee_attack_power() const
 
 double paladin_t::composite_melee_attack_power_by_type( attack_power_type ap_type ) const
 {
-  //for some reason on the second pass it of AP cacluatotion
+  // for some reason on the second pass it of AP cacluatotion
   if ( specialization() == PALADIN_HOLY )
   {
     return player_t::composite_melee_attack_power_by_type( attack_power_type::NO_WEAPON );

@@ -6,15 +6,14 @@
 
 namespace paladin
 {
-
 namespace buffs
-{     
-  avenging_crusader_buff_t::avenging_crusader_buff_t( paladin_t* p )
+{
+avenging_crusader_buff_t::avenging_crusader_buff_t( paladin_t* p )
   : buff_t( p, "avenging_crusader", p->find_spell( 216331 ) ), damage_modifier( 0.0 )
-  {
-    damage_modifier = data().effectN( 1 ).percent();
-  }
+{
+  damage_modifier = data().effectN( 1 ).percent();
 }
+}  // namespace buffs
 
 // Beacon of Light ==========================================================
 struct beacon_of_light_t : public paladin_heal_t
@@ -474,7 +473,7 @@ struct light_of_dawn_t : public holy_power_consumer_t<paladin_heal_t>
   {
     holy_power_consumer_t::execute();
 
-    //deal with awakening
+    // deal with awakening
     if ( p()->talents.awakening->ok() )
     {
       if ( rng().roll( p()->talents.awakening->effectN( 1 ).percent() ) )
