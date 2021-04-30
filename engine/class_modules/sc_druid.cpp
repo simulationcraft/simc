@@ -422,18 +422,11 @@ public:
   struct cooldowns_t
   {
     cooldown_t* berserk_cat;
-    cooldown_t* celestial_alignment;
-    cooldown_t* innervate;
-    cooldown_t* growl;
     cooldown_t* incarnation;
     cooldown_t* mangle;
-    cooldown_t* thrash_bear;
-    cooldown_t* maul;
     cooldown_t* moon_cd;  // New / Half / Full Moon
-    cooldown_t* swiftmend;
     cooldown_t* tigers_fury;
     cooldown_t* warrior_of_elune;
-    cooldown_t* barkskin;
     cooldown_t* rage_from_melees;
   } cooldown;
 
@@ -812,18 +805,11 @@ public:
       legendary( legendary_t() )
   {
     cooldown.berserk_cat         = get_cooldown( "berserk_cat" );
-    cooldown.celestial_alignment = get_cooldown( "celestial_alignment" );
-    cooldown.growl               = get_cooldown( "growl" );
     cooldown.incarnation         = get_cooldown( "incarnation" );
     cooldown.mangle              = get_cooldown( "mangle" );
-    cooldown.thrash_bear         = get_cooldown( "thrash_bear" );
-    cooldown.maul                = get_cooldown( "maul" );
     cooldown.moon_cd             = get_cooldown( "moon_cd" );
-    cooldown.swiftmend           = get_cooldown( "swiftmend" );
     cooldown.tigers_fury         = get_cooldown( "tigers_fury" );
     cooldown.warrior_of_elune    = get_cooldown( "warrior_of_elune" );
-    cooldown.barkskin            = get_cooldown( "barkskin" );
-    cooldown.innervate           = get_cooldown( "innervate" );
     cooldown.rage_from_melees    = get_cooldown( "rage_from_melees" );
 
     cooldown.rage_from_melees->duration = timespan_t::from_seconds( 1.0 );
