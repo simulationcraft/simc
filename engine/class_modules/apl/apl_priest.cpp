@@ -220,7 +220,7 @@ void shadow( player_t* p )
                     "Use Shadow Word Death if using Shadowflame Prism and bender will expire during the next gcd." );
   main->add_action(
       p, "Mind Blast",
-      "(cooldown.mind_blast.charges>1&(debuff.hungering_void.up|!talent.hungering_void.enabled)|pet.fiend.remains<="
+      "if=(cooldown.mind_blast.charges>1&(debuff.hungering_void.up|!talent.hungering_void.enabled)|pet.fiend.remains<="
       "cast_time+gcd)&pet.fiend.active&runeforge.shadowflame_prism.equipped&pet.fiend.remains>=cast_time",
       "Always use mindblasts if capped and hungering void is up and using Shadowflame Prism and bender is up."
       "Additionally, cast mindblast if you would be unable to get the rift by waiting a gcd." );
