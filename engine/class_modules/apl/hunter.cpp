@@ -89,7 +89,7 @@ void beast_mastery( player_t* p )
   cleave -> add_action( "kill_command,if=focus>cost+action.multishot.cost" );
   cleave -> add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
   cleave -> add_action( "dire_beast" );
-  cleave -> add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=target.time_to_die<9" );
+  cleave -> add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=target.time_to_die<9|charges_fractional>1.2&conduit.bloodletting" );
   cleave -> add_action( "cobra_shot,if=focus.time_to_max<gcd*2" );
   cleave -> add_action( "tar_trap,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus" );
   cleave -> add_action( "freezing_trap,if=runeforge.nessingwarys_trapping_apparatus" );
@@ -108,13 +108,13 @@ void beast_mastery( player_t* p )
   st -> add_action( "stampede,if=buff.aspect_of_the_wild.up|target.time_to_die<15" );
   st -> add_action( "a_murder_of_crows" );
   st -> add_action( "resonating_arrow,if=buff.bestial_wrath.up|target.time_to_die<10" );
-  st -> add_action( "bestial_wrath,if=cooldown.wild_spirits.remains>15|!covenant.night_fae|target.time_to_die<15" );
+  st -> add_action( "bestial_wrath,if=cooldown.wild_spirits.remains>15|covenant.kyrian&(cooldown.resonating_arrow.remains<5|cooldown.resonating_arrow.remains>20)|target.time_to_die<15|(!covenant.night_fae&!covenant.kyrian)" );
   st -> add_action( "chimaera_shot" );
   st -> add_action( "kill_command" );
   st -> add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st -> add_action( "dire_beast" );
   st -> add_action( "cobra_shot,if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)|(buff.bestial_wrath.up|buff.nesingwarys_trapping_apparatus.up)&!runeforge.qapla_eredun_war_order|target.time_to_die<3" );
-  st -> add_action( "barbed_shot,if=buff.wild_spirits.up" );
+  st -> add_action( "barbed_shot,if=buff.wild_spirits.up|charges_fractional>1.2&conduit.bloodletting" );
   st -> add_action( "arcane_pulse,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st -> add_action( "tar_trap,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus" );
   st -> add_action( "freezing_trap,if=runeforge.nessingwarys_trapping_apparatus" );

@@ -7,8 +7,6 @@
 */
 #include "sc_paladin.hpp"
 
-#include <iostream>
-
 #include "simulationcraft.hpp"
 
 // ==========================================================================
@@ -2042,8 +2040,10 @@ void paladin_t::create_buffs()
                                     ->add_invalidate( CACHE_HASTE );
   buffs.the_magistrates_judgment = make_buff( this, "the_magistrates_judgment", find_spell( 337682 ) )
                                        ->set_default_value( find_spell( 337682 )->effectN( 1 ).base_value() );
-  buffs.final_verdict    = make_buff( this, "final_verdict", find_spell( 337228 ) );
-  buffs.virtuous_command = make_buff( this, "virtuous_command", find_spell( 339664 ) );
+  buffs.final_verdict = make_buff( this, "final_verdict", find_spell( 337228 ) );
+  buffs.virtuous_command =
+      make_buff( this, "virtuous_command", find_spell( 339664 ) )
+          ->set_refresh_behavior( buff_refresh_behavior::DISABLED );  // doesn't refresh on reapplication
 
   // Covenants
   buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )->set_cooldown( 0_ms );

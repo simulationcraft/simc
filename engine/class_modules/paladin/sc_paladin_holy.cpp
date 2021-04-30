@@ -1,7 +1,4 @@
 #include "sc_paladin.hpp"
-
-#include <iostream>
-
 #include "simulationcraft.hpp"
 
 namespace paladin
@@ -235,7 +232,6 @@ struct holy_shock_damage_t : public paladin_spell_t
   {
     background = may_crit = true;
     trigger_gcd           = 0_ms;
-
     // this grabs the 30% base crit bonus from 272906
     crit_chance_boost = p->spec.holy_shock_2->effectN( 1 ).percent();
   }

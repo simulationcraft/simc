@@ -421,19 +421,12 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* berserk;
-    cooldown_t* celestial_alignment;
-    cooldown_t* innervate;
-    cooldown_t* growl;
+    cooldown_t* berserk_cat;
     cooldown_t* incarnation;
     cooldown_t* mangle;
-    cooldown_t* thrash_bear;
-    cooldown_t* maul;
     cooldown_t* moon_cd;  // New / Half / Full Moon
-    cooldown_t* swiftmend;
     cooldown_t* tigers_fury;
     cooldown_t* warrior_of_elune;
-    cooldown_t* barkskin;
     cooldown_t* rage_from_melees;
   } cooldown;
 
@@ -811,19 +804,12 @@ public:
       uptime( uptimes_t() ),
       legendary( legendary_t() )
   {
-    cooldown.berserk             = get_cooldown( "berserk" );
-    cooldown.celestial_alignment = get_cooldown( "celestial_alignment" );
-    cooldown.growl               = get_cooldown( "growl" );
+    cooldown.berserk_cat         = get_cooldown( "berserk_cat" );
     cooldown.incarnation         = get_cooldown( "incarnation" );
     cooldown.mangle              = get_cooldown( "mangle" );
-    cooldown.thrash_bear         = get_cooldown( "thrash_bear" );
-    cooldown.maul                = get_cooldown( "maul" );
     cooldown.moon_cd             = get_cooldown( "moon_cd" );
-    cooldown.swiftmend           = get_cooldown( "swiftmend" );
     cooldown.tigers_fury         = get_cooldown( "tigers_fury" );
     cooldown.warrior_of_elune    = get_cooldown( "warrior_of_elune" );
-    cooldown.barkskin            = get_cooldown( "barkskin" );
-    cooldown.innervate           = get_cooldown( "innervate" );
     cooldown.rage_from_melees    = get_cooldown( "rage_from_melees" );
 
     cooldown.rage_from_melees->duration = timespan_t::from_seconds( 1.0 );
@@ -1749,11 +1735,15 @@ public:
 
   double mod_spell_effects_percent( const spell_data_t*, const spelleffect_data_t& e ) { return e.percent(); }
 
-  double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t& )
+  double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t& e )
   {
     // HOTFIX HACK to reflect server-side scripting
     if ( c == p()->conduit.endless_thirst )
       return c.percent() / 10.0;
+
+    // HOTFIX HACK to reflect bug where conflux of elements rank only applies to direct damage and not to dots
+    if ( p()->bugs && c == p()->conduit.conflux_of_elements && e.id() == 841848 )
+      return e.percent();
 
     return c.percent();
   }
@@ -3095,7 +3085,7 @@ public:
     {
       if ( p()->legendary.frenzyband->ok() )
       {
-        p()->cooldown.berserk->adjust( -p()->legendary.frenzyband->effectN( 1 ).time_value(), false );
+        p()->cooldown.berserk_cat->adjust( -p()->legendary.frenzyband->effectN( 1 ).time_value(), false );
         p()->cooldown.incarnation->adjust( -p()->legendary.frenzyband->effectN( 1 ).time_value(), false );
       }
 

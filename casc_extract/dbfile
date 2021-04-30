@@ -728,6 +728,7 @@
 2960257, DBFilesClient\ContentTuningXExpectedStatMod.db2
 2965645, DBFilesClient\ChallengeModeItemBonusOverride.db2
 2966426, DBFilesClient\PvpSeason.db2
+2976765, DBFilesClient\ContentTuningXExpected.db2
 3055899, DBFilesClient\SpellScript.db2
 3055901, DBFilesClient\SpellScriptText.db2
 3069763, DBFilesClient\GarrTalentRank.db2

@@ -279,6 +279,21 @@ struct scouring_tithe_t : public warlock_spell_t
       p()->cooldowns.scouring_tithe->reset( true );
     }
   }
+
+  double action_multiplier() const override
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->mastery_spells.chaotic_energies->ok() )
+    {
+      double destro_mastery_value = p()->cache.mastery_value() / 2.0;
+      double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
+
+      m *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
+    }
+
+    return m;
+  }
 };
 
 struct soul_rot_t : public warlock_spell_t
@@ -311,6 +326,21 @@ struct soul_rot_t : public warlock_spell_t
 
     return pm;
   }
+
+  double action_multiplier() const override
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->mastery_spells.chaotic_energies->ok() )
+    {
+      double destro_mastery_value = p()->cache.mastery_value() / 2.0;
+      double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
+
+      m *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
+    }
+
+    return m;
+  }
 };
 
 struct decimating_bolt_dmg_t : public warlock_spell_t
@@ -319,7 +349,6 @@ struct decimating_bolt_dmg_t : public warlock_spell_t
   {
     background = true;
     may_miss   = false;
-    dual       = true;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -842,8 +871,8 @@ void warlock_t::create_buffs()
 
   // 4.0 is the multiplier for a 0% health mob
   buffs.decimating_bolt =
-      make_buff( this, "decimating_bolt", find_spell( 325299 ) )->set_duration( find_spell( 325299 )->duration() )
-                              ->set_default_value(2.0)
+      make_buff( this, "decimating_bolt", find_spell( 325299 ) )
+                              ->set_default_value( 2.0 )
                               ->set_max_stack( talents.drain_soul->ok() ? 1 : 3 );
 
   // Conduits
