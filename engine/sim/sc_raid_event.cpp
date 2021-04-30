@@ -351,7 +351,7 @@ struct move_enemy_t final : public raid_event_t
 {
   double x_coord;
   double y_coord;
-  std::string name;
+  std::string enemy_name;
   player_t* enemy;
   double original_x;
   double original_y;
@@ -360,23 +360,23 @@ struct move_enemy_t final : public raid_event_t
     : raid_event_t( s, "move_enemy" ),
       x_coord( 0.0 ),
       y_coord( 0.0 ),
-      name( "" ),
+      enemy_name(),
       enemy( nullptr ),
       original_x( 0.0 ),
       original_y( 0.0 )
   {
     add_option( opt_float( "x", x_coord ) );
     add_option( opt_float( "y", y_coord ) );
-    add_option( opt_string( "name", name ) );
+    add_option( opt_string( "enemy_name", enemy_name ) );
     parse_options( options_str );
 
-    enemy                           = sim->find_player( name );
+    enemy                           = sim->find_player( enemy_name );
     sim->distance_targeting_enabled = true;
 
     if ( !enemy )
     {
       throw std::invalid_argument(
-          fmt::format( "Move enemy event cannot be created, there is no enemy named '{}'.", name ) );
+          fmt::format( "Move enemy event cannot be created, there is no enemy named '{}'.", enemy_name ) );
     }
   }
 
