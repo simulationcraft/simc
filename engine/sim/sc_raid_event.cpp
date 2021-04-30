@@ -28,7 +28,6 @@ struct adds_event_t final : public raid_event_t
   double count;
   double health;
   std::string master_str;
-  std::string name_str;
   player_t* master;
   std::vector<pet_t*> adds;
   double count_range;
@@ -52,7 +51,6 @@ struct adds_event_t final : public raid_event_t
       count( 1 ),
       health( 100000 ),
       master_str(),
-      name_str( "Add" ),
       master(),
       count_range( false ),
       adds_to_remove( 0 ),
@@ -70,7 +68,6 @@ struct adds_event_t final : public raid_event_t
       enemy_type( ENEMY_ADD ),
       same_duration( false )
   {
-    add_option( opt_string( "name", name_str ) );
     add_option( opt_string( "master", master_str ) );
     add_option( opt_float( "count", count ) );
     add_option( opt_float( "health", health ) );
@@ -244,14 +241,14 @@ struct adds_event_t final : public raid_event_t
         std::string add_name_str;
 
         if ( sim->add_waves > 1 &&
-             name_str == "Add" )  // Only add wave to secondary wave that aren't given manual names.
+             name == "adds" )  // Only add wave to secondary wave that aren't given manual names.
         {
           add_name_str += "Wave";
           add_name_str += util::to_string( sim->add_waves );
           add_name_str += "_";
         }
 
-        add_name_str += name_str;
+        add_name_str += name;
         add_name_str += util::to_string( add + 1 );
 
         pet_t* p = master->create_pet( add_name_str );
