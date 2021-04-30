@@ -241,7 +241,7 @@ struct adds_event_t final : public raid_event_t
         std::string add_name_str;
 
         if ( sim->add_waves > 1 &&
-             name == "adds" )  // Only add wave to secondary wave that aren't given manual names.
+             name.empty() )  // Only add wave to secondary wave that aren't given manual names.
         {
           add_name_str += "Wave";
           add_name_str += util::to_string( sim->add_waves );
