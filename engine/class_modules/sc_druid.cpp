@@ -421,7 +421,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* berserk;
+    cooldown_t* berserk_cat;
     cooldown_t* celestial_alignment;
     cooldown_t* innervate;
     cooldown_t* growl;
@@ -811,7 +811,7 @@ public:
       uptime( uptimes_t() ),
       legendary( legendary_t() )
   {
-    cooldown.berserk             = get_cooldown( "berserk" );
+    cooldown.berserk_cat         = get_cooldown( "berserk_cat" );
     cooldown.celestial_alignment = get_cooldown( "celestial_alignment" );
     cooldown.growl               = get_cooldown( "growl" );
     cooldown.incarnation         = get_cooldown( "incarnation" );
@@ -3099,7 +3099,7 @@ public:
     {
       if ( p()->legendary.frenzyband->ok() )
       {
-        p()->cooldown.berserk->adjust( -p()->legendary.frenzyband->effectN( 1 ).time_value(), false );
+        p()->cooldown.berserk_cat->adjust( -p()->legendary.frenzyband->effectN( 1 ).time_value(), false );
         p()->cooldown.incarnation->adjust( -p()->legendary.frenzyband->effectN( 1 ).time_value(), false );
       }
 
