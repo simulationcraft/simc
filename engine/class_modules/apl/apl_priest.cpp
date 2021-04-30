@@ -279,13 +279,16 @@ void shadow( player_t* p )
                     "cooldown.void_bolt.up",
                     "Use Mind Flay to consume Dark Thoughts procs on ST. TODO Confirm if this is a higher priority "
                     "than redotting unless dark thoughts is about to time out" );
-  main->add_action( p, "Mind Blast",
-                    "if=variable.dots_up&raid_event.movement.in>cast_time+0.5&spell_targets.mind_sear<(4+2*talent."
-                    "misery.enabled+active_dot.vampiric_touch*talent.psychic_link.enabled+(spell_targets.mind_sear>?5)*"
-                    "(pet.fiend.active&runeforge.shadowflame_prism.equipped))",
-                    "Use Mind Blast if you don't need to refresh DoTs. Stop casting at 4 or more targets with Searing "
-                    "Nightmare talented and you are not using Shadowflame Prism or Psychic Link."
-                    "spell_targets.mind_sear>?5 gets the minimum of 5 and the number of targets." );
+  main->add_action(
+      p, "Mind Blast",
+      "if=variable.dots_up&raid_event.movement.in>cast_time+0.5&spell_targets.mind_sear<(4+2*talent.misery.enabled+"
+      "active_dot.vampiric_touch*talent.psychic_link.enabled+(spell_targets.mind_sear>?5)*(pet.fiend.active&runeforge."
+      "shadowflame_prism.equipped))&(!runeforge.shadowflame_prism.equipped|!cooldown.fiend.up&runeforge.shadowflame_"
+      "prism.equipped|active_dot.vampiric_touch==spell_targets.vampiric_touch)",
+      "Use Mind Blast if you don't need to refresh DoTs. Stop casting at 4 or more targets with Searing "
+      "Nightmare talented and you are not using Shadowflame Prism or Psychic Link."
+      "spell_targets.mind_sear>?5 gets the minimum of 5 and the number of targets. Also, do not press mindblast until "
+      "all targets are dotted with VT when using shadowflame prism if bender is available." );
   main->add_action( p, "Vampiric Touch",
                     "target_if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain."
                     "refreshable)|buff.unfurling_darkness.up" );
