@@ -5593,7 +5593,7 @@ void demon_hunter_t::apl_havoc()
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal" );
   apl_normal->add_action( this, "Vengeful Retreat", "if=talent.momentum.enabled&buff.prepared.down&time>1" );
-  apl_normal->add_action( this, "Fel Rush", "if=(variable.waiting_for_momentum|talent.unbound_chaos.enabled&buff.unbound_chaos.up)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
+  apl_normal->add_action( this, "Fel Rush", "if=(buff.unbound_chaos.up|variable.waiting_for_momentum&(!talent.unbound_chaos.enabled|!cooldown.immolation_aura.ready))&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_normal->add_talent( this, "Fel Barrage", "if=active_enemies>desired_targets|raid_event.adds.in>30" );
   apl_normal->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
   apl_normal->add_action( this, "Immolation Aura" );
@@ -5615,7 +5615,7 @@ void demon_hunter_t::apl_havoc()
   apl_normal->add_action( this, "Throw Glaive", "if=talent.demon_blades.enabled" );
 
   action_priority_list_t* apl_demonic = get_action_priority_list( "demonic" );
-  apl_demonic->add_action( this, "Fel Rush", "if=(talent.unbound_chaos.enabled&buff.unbound_chaos.up)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
+  apl_demonic->add_action( this, "Fel Rush", "if=talent.unbound_chaos.enabled&buff.unbound_chaos.up&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_demonic->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
   apl_demonic->add_talent( this, "Glaive Tempest", "if=active_enemies>desired_targets|raid_event.adds.in>10" );
   apl_demonic->add_action( this, "Throw Glaive", "if=conduit.serrated_glaive.enabled&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up" );
@@ -5629,6 +5629,7 @@ void demon_hunter_t::apl_havoc()
   apl_demonic->add_action( this, "Chaos Strike", "if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam" );
   apl_demonic->add_action( this, "Fel Rush", "if=talent.demon_blades.enabled&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_demonic->add_action( this, "Demon's Bite", "target_if=min:debuff.burning_wound.remains,if=runeforge.burning_wound&debuff.burning_wound.remains<4" );
+  apl_demonic->add_action( this, "Fel Rush", "if=!talent.demon_blades.enabled&(raid_event.movement.in>10&raid_event.adds.in>10)&spell_targets>1" );
   apl_demonic->add_action( this, "Demon's Bite" );
   apl_demonic->add_action( this, "Throw Glaive", "if=buff.out_of_range.up" );
   apl_demonic->add_action( this, "Fel Rush", "if=movement.distance>15|buff.out_of_range.up" );
