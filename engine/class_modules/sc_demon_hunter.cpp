@@ -5629,7 +5629,7 @@ void demon_hunter_t::apl_havoc()
   apl_demonic->add_action( this, "Chaos Strike", "if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam" );
   apl_demonic->add_action( this, "Fel Rush", "if=talent.demon_blades.enabled&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_demonic->add_action( this, "Demon's Bite", "target_if=min:debuff.burning_wound.remains,if=runeforge.burning_wound&debuff.burning_wound.remains<4" );
-  apl_demonic->add_action( this, "Fel Rush", "if=!talent.demon_blades.enabled&(raid_event.movement.in>10&raid_event.adds.in>10)&spell_targets>1" );
+  apl_demonic->add_action( this, "Fel Rush", "if=!talent.demon_blades.enabled&spell_targets>1&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_demonic->add_action( this, "Demon's Bite" );
   apl_demonic->add_action( this, "Throw Glaive", "if=buff.out_of_range.up" );
   apl_demonic->add_action( this, "Fel Rush", "if=movement.distance>15|buff.out_of_range.up" );
