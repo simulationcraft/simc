@@ -3,14 +3,6 @@
 
 namespace paladin
 {
-namespace buffs
-{
-avenging_crusader_buff_t::avenging_crusader_buff_t( paladin_t* p )
-  : buff_t( p, "avenging_crusader", p->find_spell( 216331 ) ), damage_modifier( 0.0 )
-{
-  damage_modifier = data().effectN( 1 ).percent();
-}
-}  // namespace buffs
 
 // Beacon of Light ==========================================================
 struct beacon_of_light_t : public paladin_heal_t
@@ -325,6 +317,9 @@ struct holy_shock_t : public paladin_spell_t
       heal->set_target( target );
       heal->execute();
     }
+    // The reason the subspell is allowed to execute first is so we can consume judgment correctly. 
+    // If this is first then a dummy holy shock is fired off that consumes the judgment debuff 
+    // meaning when we attempt to do damage judgment will not be factored in even when it should be.
     paladin_spell_t::execute();
   }
 
@@ -489,49 +484,12 @@ struct light_of_dawn_t : public holy_power_consumer_t<paladin_heal_t>
   }
 };
 
-// Word Of Glory (Holy) =======================================================
-
-struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
-{
-  word_of_glory_t( paladin_t* p, const std::string& options_str )
-    : holy_power_consumer_t( "word_of_glory", p, p->find_class_spell( "Word Of Glory" ) )
-  {
-    parse_options( options_str );
-  }
-
-  void execute() override
-  {
-    holy_power_consumer_t::execute();
-
-    // deal with awakening
-    if ( p()->talents.awakening->ok() )
-    {
-      if ( rng().roll( p()->talents.awakening->effectN( 1 ).percent() ) )
-      {
-        buff_t* main_buff           = p()->buffs.avenging_wrath;
-        timespan_t trigger_duration = timespan_t::from_seconds( p()->talents.awakening->effectN( 2 ).base_value() );
-        if ( main_buff->check() )
-        {
-          p()->buffs.avengers_might->extend_duration( p(), trigger_duration );
-        }
-        else
-        {
-          main_buff->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
-        }
-      }
-    }
-  }
-};
-
 struct avenging_crusader_t : public paladin_spell_t
 {
   avenging_crusader_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "avenging_crusader", p, p->talents.avenging_crusader )
   {
     parse_options( options_str );
-
-    if ( !( p->talents.avenging_crusader->ok() ) )
-      background = true;
   }
 
   void execute() override
@@ -571,8 +529,6 @@ action_t* paladin_t::create_action_holy( util::string_view name, const std::stri
     return new light_of_dawn_t( this, options_str );
   if ( name == "lights_hammer" )
     return new lights_hammer_t( this, options_str );
-  if ( name == "word_of_glory" )
-    return new word_of_glory_t( this, options_str );
   if ( name == "avenging_crusader" )
     return new avenging_crusader_t( this, options_str );
 
@@ -590,7 +546,8 @@ void paladin_t::create_buffs_holy()
   buffs.divine_protection = make_buff( this, "divine_protection", find_class_spell( "Divine Protection" ) )
                                 ->set_cooldown( 0_ms );  // Handled by the action
   buffs.infusion_of_light = make_buff( this, "infusion_of_light", find_spell( 54149 ) );
-  buffs.avenging_crusader = new buffs::avenging_crusader_buff_t( this );
+  buffs.avenging_crusader =
+      make_buff( this, "avenging_crusader", talents.avenging_crusader )->set_default_value_from_effect( 1 );
 }
 
 void paladin_t::init_spells_holy()

@@ -425,81 +425,6 @@ struct judgment_prot_t : public judgment_t
   }
 };
 
-// Word of Glory ===================================================
-
-struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
-{
-  word_of_glory_t( paladin_t* p, const std::string& options_str ) :
-    holy_power_consumer_t( "word_of_glory", p, p -> find_class_spell( "Word of Glory" ) )
-  {
-    parse_options( options_str );
-    target = p;
-    is_wog = true;
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = holy_power_consumer_t::composite_target_multiplier( t );
-
-    if ( p() -> spec.word_of_glory_2 -> ok() )
-    {
-      // Heals for a base amount, increased by up to +300% based on the target's missing health
-      // Linear increase, each missing health % increases the healing by 3%
-      double missing_health_percent = std::min( 1.0 - t -> resources.pct( RESOURCE_HEALTH ), 1.0 );
-
-      m *= 1.0 + missing_health_percent * p() -> spec.word_of_glory_2 -> effectN( 1 ).percent();
-
-      sim -> print_debug( "Player {} missing {:.2f}% health, healing increased by {:.2f}%",
-                        t -> name(), missing_health_percent * 100,
-                        missing_health_percent * p() -> spec.word_of_glory_2 -> effectN( 1 ).percent() * 100 );
-    }
-    return m;
-  }
-
-  void impact( action_state_t *s ) override
-  {
-    holy_power_consumer_t::impact( s );
-    if ( p() -> conduit.shielding_words -> ok() && s -> result_amount > 0 )
-    {
-      p() -> buffs.shielding_words -> trigger( 1,
-        s -> result_amount * p() -> conduit.shielding_words.percent()
-      );
-    }
-  }
-
-  void execute() override
-  {
-    holy_power_consumer_t::execute();
-
-    if ( p() -> specialization() == PALADIN_PROTECTION && p() -> buffs.vanquishers_hammer -> up() )
-    {
-      p() -> buffs.vanquishers_hammer -> expire();
-      p() -> active.necrolord_shield_of_the_righteous -> execute();
-    }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = holy_power_consumer_t::action_multiplier();
-    if ( p() -> buffs.shining_light_free -> up() && p() -> buffs.divine_purpose -> up() )
-    // Shining Light does not benefit from divine purpose
-      am /= 1.0 + p() -> spells.divine_purpose_buff -> effectN( 2 ).percent();
-    return am;
-  }
-
-  double cost() const override
-  {
-    double c = holy_power_consumer_t::cost();
-
-    if ( p() -> buffs.shining_light_free -> check() )
-      c *= 1.0 + p() -> buffs.shining_light_free -> data().effectN( 1 ).percent();
-    if ( p() -> buffs.royal_decree -> check() )
-      c *= 1.0 + p() -> buffs.royal_decree -> data().effectN( 1 ).percent();
-
-    return c;
-  }
-};
-
 // Shield of the Righteous ==================================================
 
 shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p ) :
@@ -834,7 +759,6 @@ action_t* paladin_t::create_action_protection( util::string_view name, const std
   if ( name == "blessing_of_spellwarding"  ) return new blessing_of_spellwarding_t ( this, options_str );
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
-  if ( name == "word_of_glory"             ) return new word_of_glory_t            ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "moment_of_glory"           ) return new moment_of_glory_t          ( this, options_str );
 

@@ -173,7 +173,7 @@ public:
     // Holy
     buff_t* divine_protection;
     buff_t* holy_avenger;
-    buffs:: avenging_crusader_buff_t* avenging_crusader;
+    buff_t* avenging_crusader;
     buff_t* infusion_of_light;
 
     // Prot
@@ -677,19 +677,6 @@ namespace buffs {
     double crit_bonus;
   };
 
-  struct avenging_crusader_buff_t : public buff_t
-  {
-    avenging_crusader_buff_t( paladin_t* p );
-
-    double get_damage_mod() const
-    {
-      return damage_modifier;
-    }
-
-  private:
-    double damage_modifier;
-  };
-
   struct crusade_buff_t : public buff_t
   {
     crusade_buff_t( player_t* p );
@@ -940,9 +927,9 @@ public:
       am *= 1.0 + p() -> buffs.avenging_wrath -> get_damage_mod();
     }
 
-    if ( affected_by.avenging_crusader && p()->buffs.avenging_crusader->up() )
+    if ( affected_by.avenging_crusader )
     {
-      am *= 1.0 + p() -> buffs.avenging_crusader -> get_damage_mod();
+      am *= 1.0 + p()->buffs.avenging_crusader->check_value();
     }
 
     // Divine purpose damage increase handled here,

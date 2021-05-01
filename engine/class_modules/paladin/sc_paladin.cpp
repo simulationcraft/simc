@@ -190,7 +190,7 @@ struct avenging_wrath_t : public paladin_spell_t
 
     if ( p->talents.crusade->ok() )
       background = true;
-    if ( p->specialization() == PALADIN_HOLY && p->talents.avenging_crusader->ok() )
+    if ( p->talents.avenging_crusader->ok() )
       background = true;
 
     harmful = false;
@@ -835,6 +835,96 @@ struct crusader_strike_t : public paladin_melee_attack_t
       return 0;
 
     return paladin_melee_attack_t::cost();
+  }
+};
+
+// Word of Glory ===================================================
+
+struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
+{
+  word_of_glory_t( paladin_t* p, const std::string& options_str )
+    : holy_power_consumer_t( "word_of_glory", p, p->find_class_spell( "Word of Glory" ) )
+  {
+    parse_options( options_str );
+    target = p;
+    is_wog = true;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = holy_power_consumer_t::composite_target_multiplier( t );
+
+    if ( p()->spec.word_of_glory_2->ok() )
+    {
+      // Heals for a base amount, increased by up to +300% based on the target's missing health
+      // Linear increase, each missing health % increases the healing by 3%
+      double missing_health_percent = std::min( 1.0 - t->resources.pct( RESOURCE_HEALTH ), 1.0 );
+
+      m *= 1.0 + missing_health_percent * p()->spec.word_of_glory_2->effectN( 1 ).percent();
+
+      sim->print_debug( "Player {} missing {:.2f}% health, healing increased by {:.2f}%", t->name(),
+                        missing_health_percent * 100,
+                        missing_health_percent * p()->spec.word_of_glory_2->effectN( 1 ).percent() * 100 );
+    }
+    return m;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    holy_power_consumer_t::impact( s );
+    if ( p()->conduit.shielding_words->ok() && s->result_amount > 0 )
+    {
+      p()->buffs.shielding_words->trigger( 1, s->result_amount * p()->conduit.shielding_words.percent() );
+    }
+  }
+
+  void execute() override
+  {
+    holy_power_consumer_t::execute();
+
+    if ( p()->specialization() == PALADIN_PROTECTION && p()->buffs.vanquishers_hammer->up() )
+    {
+      p()->buffs.vanquishers_hammer->expire();
+      p()->active.necrolord_shield_of_the_righteous->execute();
+    }
+
+    if ( p()->specialization() == PALADIN_HOLY && p()->talents.awakening->ok() )
+    {
+      if ( rng().roll( p()->talents.awakening->effectN( 1 ).percent() ) )
+      {
+        buff_t* main_buff           = p()->buffs.avenging_wrath;
+        timespan_t trigger_duration = timespan_t::from_seconds( p()->talents.awakening->effectN( 2 ).base_value() );
+        if ( main_buff->check() )
+        {
+          p()->buffs.avengers_might->extend_duration( p(), trigger_duration );
+        }
+        else
+        {
+          main_buff->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
+        }
+      }
+    }
+  }
+
+  double action_multiplier() const override
+  {
+    double am = holy_power_consumer_t::action_multiplier();
+    if ( p()->buffs.shining_light_free->up() && p()->buffs.divine_purpose->up() )
+      // Shining Light does not benefit from divine purpose
+      am /= 1.0 + p()->spells.divine_purpose_buff->effectN( 2 ).percent();
+    return am;
+  }
+
+  double cost() const override
+  {
+    double c = holy_power_consumer_t::cost();
+
+    if ( p()->buffs.shining_light_free->check() )
+      c *= 1.0 + p()->buffs.shining_light_free->data().effectN( 1 ).percent();
+    if ( p()->buffs.royal_decree->check() )
+      c *= 1.0 + p()->buffs.royal_decree->data().effectN( 1 ).percent();
+
+    return c;
   }
 };
 
@@ -1783,6 +1873,8 @@ action_t* paladin_t::create_action( util::string_view name, const std::string& o
     return new ashen_hallow_t( this, options_str );
   if ( name == "blessing_of_the_seasons" )
     return new blessing_of_the_seasons_t( this, options_str );
+  if ( name == "word_of_glory" )
+    return new word_of_glory_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -2591,7 +2683,7 @@ double paladin_t::composite_melee_attack_power() const
 
 double paladin_t::composite_melee_attack_power_by_type( attack_power_type ap_type ) const
 {
-  // for some reason on the second pass it of AP cacluatotion
+  // Holy paladin AP scales purely off of Spell power and nothing else not even Weapon
   if ( specialization() == PALADIN_HOLY )
   {
     return player_t::composite_melee_attack_power_by_type( attack_power_type::NO_WEAPON );
@@ -2610,6 +2702,9 @@ double paladin_t::composite_attack_power_multiplier() const
   if ( specialization() == PALADIN_PROTECTION )
     ap *= 1.0 + cache.mastery() * mastery.divine_bulwark->effectN( 2 ).mastery_value();
 
+  // Holy paladin AP scales purely off of Spell power and nothing else not even Weapon
+  // This means literally nothing, not sharpning/weight stones, battle shout, weapon, etc etc
+  // It is purely off SP and nothing effects it.
   if ( specialization() == PALADIN_HOLY )
   {
     return 1.0;
