@@ -41,7 +41,6 @@ actions+=/soul_fire,cycle_targets=1,if=refreshable&soul_shard<=4&(!talent.catacl
 actions+=/immolate,cycle_targets=1,if=refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)
 actions+=/immolate,if=talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains<duration*0.5
 actions+=/call_action_list,name=cds
-actions+=/call_action_list,name=essences
 actions+=/channel_demonfire
 actions+=/scouring_tithe
 actions+=/decimating_bolt
@@ -64,7 +63,6 @@ actions.aoe+=/soul_rot
 actions.aoe+=/channel_demonfire,if=dot.immolate.remains>cast_time
 actions.aoe+=/immolate,cycle_targets=1,if=remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)
 actions.aoe+=/call_action_list,name=cds
-actions.aoe+=/call_action_list,name=essences
 actions.aoe+=/havoc,cycle_targets=1,if=!(target=self.target)&active_enemies<4
 actions.aoe+=/rain_of_fire
 actions.aoe+=/havoc,cycle_targets=1,if=!(self.target=target)
@@ -84,17 +82,6 @@ actions.cds+=/berserking,if=pet.infernal.active
 actions.cds+=/blood_fury,if=pet.infernal.active
 actions.cds+=/fireblood,if=pet.infernal.active
 actions.cds+=/use_items,if=pet.infernal.active|target.time_to_die<20
-
-actions.essences=worldvein_resonance
-actions.essences+=/memory_of_lucid_dreams
-actions.essences+=/blood_of_the_enemy
-actions.essences+=/guardian_of_azeroth
-actions.essences+=/ripple_in_space
-actions.essences+=/focused_azerite_beam
-actions.essences+=/purifying_blast
-actions.essences+=/reaping_flames
-actions.essences+=/concentrated_flame
-actions.essences+=/the_unbound_force,if=buff.reckless_force.remains
 
 actions.havoc=conflagrate,if=buff.backdraft.down&soul_shard>=1&soul_shard<=4
 actions.havoc+=/soul_fire,if=cast_time<havoc_remains

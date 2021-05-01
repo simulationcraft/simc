@@ -69,7 +69,7 @@ actions.cleave+=/barrage,if=pet.main.buff.frenzy.remains>execute_time
 actions.cleave+=/kill_command,if=focus>cost+action.multishot.cost
 actions.cleave+=/bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.cleave+=/dire_beast
-actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=target.time_to_die<9
+actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=target.time_to_die<9|charges_fractional>1.2&conduit.bloodletting
 actions.cleave+=/cobra_shot,if=focus.time_to_max<gcd*2
 actions.cleave+=/tar_trap,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus
 actions.cleave+=/freezing_trap,if=runeforge.nessingwarys_trapping_apparatus
@@ -88,13 +88,13 @@ actions.st+=/death_chakram,if=focus+cast_regen<focus.max
 actions.st+=/stampede,if=buff.aspect_of_the_wild.up|target.time_to_die<15
 actions.st+=/a_murder_of_crows
 actions.st+=/resonating_arrow,if=buff.bestial_wrath.up|target.time_to_die<10
-actions.st+=/bestial_wrath,if=cooldown.wild_spirits.remains>15|!covenant.night_fae|target.time_to_die<15
+actions.st+=/bestial_wrath,if=cooldown.wild_spirits.remains>15|covenant.kyrian&(cooldown.resonating_arrow.remains<5|cooldown.resonating_arrow.remains>20)|target.time_to_die<15|(!covenant.night_fae&!covenant.kyrian)
 actions.st+=/chimaera_shot
 actions.st+=/kill_command
 actions.st+=/bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.st+=/dire_beast
 actions.st+=/cobra_shot,if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)|(buff.bestial_wrath.up|buff.nesingwarys_trapping_apparatus.up)&!runeforge.qapla_eredun_war_order|target.time_to_die<3
-actions.st+=/barbed_shot,if=buff.wild_spirits.up
+actions.st+=/barbed_shot,if=buff.wild_spirits.up|charges_fractional>1.2&conduit.bloodletting
 actions.st+=/arcane_pulse,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.st+=/tar_trap,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus
 actions.st+=/freezing_trap,if=runeforge.nessingwarys_trapping_apparatus

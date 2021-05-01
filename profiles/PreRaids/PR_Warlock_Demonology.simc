@@ -27,7 +27,6 @@ actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/summon_pet
-actions.precombat+=/inner_demons,if=talent.inner_demons.enabled
 actions.precombat+=/snapshot_stats
 actions.precombat+=/demonbolt
 actions.precombat+=/variable,name=tyrant_ready,value=0
