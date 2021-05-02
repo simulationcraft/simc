@@ -1,4 +1,4 @@
-// Talent tree specialization abilities, wow build 9.1.0.38394
+// Talent tree specialization abilities, wow build 9.1.0.38524
 static const std::array<specialization_spell_entry_t, 927> __ptr_specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
@@ -601,7 +601,6 @@ static const std::array<specialization_spell_entry_t, 927> __ptr_specialization_
   {  8,   64, 343183,      0, "Frost Nova"                        , "Rank 2" },
   {  9,  265,    980,      0, "Agony"                             , 0 },
   {  9,  265,  27243,      0, "Seed of Corruption"                , 0 },
-  {  9,  265,  32388,      0, "Shadow Embrace"                    , 0 },
   {  9,  265,  77215,      0, "Mastery: Potent Afflictions"       , 0 },
   {  9,  265, 137043,      0, "Affliction Warlock"                , 0 },
   {  9,  265, 162699,      0, "Stat Negation Aura - Intellect DPS", 0 },
@@ -612,6 +611,7 @@ static const std::array<specialization_spell_entry_t, 927> __ptr_specialization_
   {  9,  265, 316099,      0, "Unstable Affliction"               , 0 },
   {  9,  265, 317031,      0, "Corruption"                        , "Rank 2" },
   {  9,  265, 324536,      0, "Malefic Rapture"                   , 0 },
+  {  9,  265, 334183,      0, "Dark Caller"                       , 0 },
   {  9,  265, 334315,      0, "Unstable Affliction"               , "Rank 3" },
   {  9,  265, 334342,      0, "Corruption"                        , "Rank 3" },
   {  9,  266,  30146,      0, "Summon Felguard"                   , 0 },

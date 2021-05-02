@@ -1,4 +1,4 @@
-// 636 talents, wow build 9.1.0.38394
+// 636 talents, wow build 9.1.0.38524
 static std::array<talent_data_t, 636> __ptr_talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,  71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,  73,   1,   0,  275334,       0,  0 },
@@ -583,7 +583,7 @@ static std::array<talent_data_t, 636> __ptr_talent_data { {
   { "Alacrity"                          , 23128, 0x00, 0x0008, 260,   1,   5,  193539,       0,  0 },
   { "Last Word"                         , 23137, 0x00, 0x0010, 258,   0,   3,  263716,       0,  0 },
   { "Demonic Strength"                  , 23138, 0x00, 0x0100, 266,   2,   0,  267171,       0,  0 },
-  { "Dark Caller"                       , 23139, 0x00, 0x0100, 265,   0,   5,  334183,       0,  0 },
+  { "Shadow Embrace"                    , 23139, 0x00, 0x0100, 265,   0,   5,   32388,       0,  0 },
   { "Inevitable Demise"                 , 23140, 0x00, 0x0100, 265,   1,   0,  334319,       0,  0 },
   { "Drain Soul"                        , 23141, 0x00, 0x0100, 265,   2,   0,  198590,     686,  0 },
   { "Cataclysm"                         , 23143, 0x00, 0x0100, 267,   2,   3,  152108,       0,  0 },

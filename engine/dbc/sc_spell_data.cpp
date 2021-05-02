@@ -132,12 +132,13 @@ static constexpr std::array<sdata_field_t, 5> _talent_data_fields { {
   { "row",   FIELD( &talent_data_t::_row ) },
 } };
 
-static constexpr std::array<sdata_field_t, 26> _effect_data_fields { {
+static constexpr std::array<sdata_field_t, 27> _effect_data_fields { {
   { "id",              FIELD( &spelleffect_data_t::_id ) },
   { "spell_id",        FIELD( &spelleffect_data_t::_spell_id ) },
   { "index",           FIELD( &spelleffect_data_t::_index ) },
   { "type",            FIELD( &spelleffect_data_t::_type ) },
   { "sub_type" ,       FIELD( &spelleffect_data_t::_subtype ) },
+  { "scaling",         FIELD( &spelleffect_data_t::_scaling_type ) },
   { "m_coefficient",   FIELD( &spelleffect_data_t::_m_coeff ) },
   { "m_delta",         FIELD( &spelleffect_data_t::_m_delta ) },
   { "m_bonus" ,        FIELD( &spelleffect_data_t::_m_unk ) },
@@ -210,13 +211,12 @@ struct spell_conduit_id_t : func_field_t<spell_conduit_id_t, spell_data_t> {
   }
 };
 
-static constexpr std::array<sdata_field_t, 42> _spell_data_fields { {
+static constexpr std::array<sdata_field_t, 41> _spell_data_fields { {
   { "name",              FIELD( &spell_data_t::_name ) },
   { "id",                FIELD( &spell_data_t::_id ) },
   { "speed",             FIELD( &spell_data_t::_prj_speed ) },
   { "delay",             FIELD( &spell_data_t::_prj_delay ) },
   { "min_duration",      FIELD( &spell_data_t::_prj_min_duration ) },
-  { "scaling",           FIELD( &spell_data_t::_scaling_type ) },
   { "max_scaling_level", FIELD( &spell_data_t::_max_scaling_level ) },
   { "level",             FIELD( &spell_data_t::_spell_level ) },
   { "max_level",         FIELD( &spell_data_t::_max_level ) },

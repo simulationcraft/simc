@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.5.38134
-static const std::array<spelltext_data_t, 15116> __spelltext_data { {
+static const std::array<spelltext_data_t, 15115> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -9026,7 +9026,6 @@ static const std::array<spelltext_data_t, 15116> __spelltext_data { {
   { 254774, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254775, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254776, "Create a soulbound item appropriate for your Loot Specialization ($@lootspec).", 0, 0 },
-  { 254777, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254778, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254779, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254780, "Create a soulbound item appropriate for your Loot Specialization ($@lootspec).", 0, 0 },

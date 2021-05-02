@@ -73,7 +73,6 @@ static constexpr auto spell_data_fields = std::make_tuple(
   data_field( "prj_delay",         &spell_data_t::_prj_delay ),
   data_field( "prj_min_duration",  &spell_data_t::_prj_min_duration ),
   data_field( "school",            &spell_data_t::_school ),
-  data_field( "scaling_class",     &spell_data_t::_scaling_type ),
   data_field( "spell_level",       &spell_data_t::_spell_level ),
   data_field( "max_level",         &spell_data_t::_max_level ),
   data_field( "req_max_level",     &spell_data_t::_req_max_level ),
@@ -114,6 +113,7 @@ double spell_data_t::get_field( util::string_view field ) const
 
 static constexpr auto spelleffect_data_fields = std::make_tuple(
   data_field( "sub_type",                &spelleffect_data_t::_subtype ),
+  data_field( "scaling_class",           &spelleffect_data_t::_scaling_type ),
   data_field( "coefficient",             &spelleffect_data_t::_m_coeff ),
   data_field( "delta",                   &spelleffect_data_t::_m_delta ),
   data_field( "bonus",                   &spelleffect_data_t::_m_unk ),

@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 9.1.0.38394
-static const std::array<item_enchantment_data_t, 4192> __ptr_spell_item_ench_data { {
+// Item enchantment data, wow build 9.1.0.38524
+static const std::array<item_enchantment_data_t, 4194> __ptr_spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 2, 50,   0,   0, {   2,   0,   0 }, {    3,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 8, 50,   0,   0, {   2,   0,   0 }, {    4,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 50,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720,  0.0000,  0.0000 },   2831, "Reinforced (+$k1 Armor)"           },
@@ -4192,5 +4192,7 @@ static const std::array<item_enchantment_data_t, 4192> __ptr_spell_item_ench_dat
   { 6284, 186595, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 354215,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "If 5 Blood Patches exist at once, they congeal into a Blood Beast." },
   { 6285, 186596, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 354216,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "When you drop below 50% health, your blood spills into 3 Blood Patches." },
   { 6286, 186597, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 354218,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "When your Blood Beast expires, heal for all their remaining health." },
+  { 6287,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "9.1 - Sylvanas Enchant - High"     },
+  { 6288,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "9.1 - Sylvanas Enchant - Low"      },
 } };
 
