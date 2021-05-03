@@ -28,7 +28,6 @@ struct adds_event_t final : public raid_event_t
   double count;
   double health;
   std::string master_str;
-  std::string name_str;
   player_t* master;
   std::vector<pet_t*> adds;
   double count_range;
@@ -52,7 +51,6 @@ struct adds_event_t final : public raid_event_t
       count( 1 ),
       health( 100000 ),
       master_str(),
-      name_str( "Add" ),
       master(),
       count_range( false ),
       adds_to_remove( 0 ),
@@ -70,7 +68,6 @@ struct adds_event_t final : public raid_event_t
       enemy_type( ENEMY_ADD ),
       same_duration( false )
   {
-    add_option( opt_string( "name", name_str ) );
     add_option( opt_string( "master", master_str ) );
     add_option( opt_float( "count", count ) );
     add_option( opt_float( "health", health ) );
@@ -244,14 +241,14 @@ struct adds_event_t final : public raid_event_t
         std::string add_name_str;
 
         if ( sim->add_waves > 1 &&
-             name_str == "Add" )  // Only add wave to secondary wave that aren't given manual names.
+             name.empty() )  // Only add wave to secondary wave that aren't given manual names.
         {
           add_name_str += "Wave";
           add_name_str += util::to_string( sim->add_waves );
           add_name_str += "_";
         }
 
-        add_name_str += name_str;
+        add_name_str += name;
         add_name_str += util::to_string( add + 1 );
 
         pet_t* p = master->create_pet( add_name_str );
@@ -354,7 +351,7 @@ struct move_enemy_t final : public raid_event_t
 {
   double x_coord;
   double y_coord;
-  std::string name;
+  std::string enemy_name;
   player_t* enemy;
   double original_x;
   double original_y;
@@ -363,23 +360,23 @@ struct move_enemy_t final : public raid_event_t
     : raid_event_t( s, "move_enemy" ),
       x_coord( 0.0 ),
       y_coord( 0.0 ),
-      name( "" ),
+      enemy_name(),
       enemy( nullptr ),
       original_x( 0.0 ),
       original_y( 0.0 )
   {
     add_option( opt_float( "x", x_coord ) );
     add_option( opt_float( "y", y_coord ) );
-    add_option( opt_string( "name", name ) );
+    add_option( opt_string( "enemy_name", enemy_name ) );
     parse_options( options_str );
 
-    enemy                           = sim->find_player( name );
+    enemy                           = sim->find_player( enemy_name );
     sim->distance_targeting_enabled = true;
 
     if ( !enemy )
     {
       throw std::invalid_argument(
-          fmt::format( "Move enemy event cannot be created, there is no enemy named '{}'.", name ) );
+          fmt::format( "Move enemy event cannot be created, there is no enemy named '{}'.", enemy_name ) );
     }
   }
 
