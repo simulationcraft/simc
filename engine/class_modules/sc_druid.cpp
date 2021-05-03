@@ -356,6 +356,7 @@ public:
     buff_t* kindred_empowerment_energize;
     buff_t* kindred_affinity;
     buff_t* ravenous_frenzy;
+    buff_t* sinful_hysteria;
     buff_t* convoke_the_spirits;  // dummy buff for conduit
 
     // Balance
@@ -2036,6 +2037,7 @@ public:
     using C = const conduit_data_t&;
 
     parse_buff_effects<C>( p()->buff.ravenous_frenzy, p()->conduit.endless_thirst );
+    parse_buff_effects<C>( p()->buff.sinful_hysteria, p()->conduit.endless_thirst );  // endless thirst interaction NYI in-game
     parse_buff_effects( p()->buff.heart_of_the_wild );
     parse_buff_effects<C>( p()->buff.convoke_the_spirits, p()->conduit.conflux_of_elements );
 
@@ -8447,11 +8449,21 @@ void druid_t::create_buffs()
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   if ( conduit.endless_thirst->ok() )
     buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
-  if ( dbc->ptr )
+
+  if ( legendary.sinful_hysteria->ok() )
   {
+    buff.sinful_hysteria = make_buff( this, "sinful_hysteria", find_spell( 355315 ) )
+      ->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    if ( conduit.endless_thirst->ok() )
+      buff.sinful_hysteria->add_invalidate( CACHE_CRIT_CHANCE );
+
     buff.ravenous_frenzy->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
-      if ( legendary.sinful_hysteria->ok() && new_ && old_ )
+      if ( old_ && new_ )
         b->extend_duration( this, timespan_t::from_seconds( legendary.sinful_hysteria->effectN( 1 ).base_value() ) );
+      else if ( old_ )
+        buff.sinful_hysteria->trigger( old_ );
     } );
   }
 }
