@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, git build shadowlands 65587e17, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -316,6 +316,7 @@ School           : Shadow
 Spell Type       : Melee
 Duration         : 15 seconds
 Proc Chance      : 101%
+Affecting spells : Demonic Oath (355996 effect#1)
 Family Flags     : 21
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
@@ -699,6 +700,8 @@ Effects          :
 #5 (id=305109)   : Apply Aura (6) | Unknown(312)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 499 | Target: Self (1)
 #6 (id=320783)   : Unknown(167)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#7 (id=889549)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Allows you to see enemies and treasures through physical barriers, as well as enemies that are stealthed and invisible. Lasts $d.
 
@@ -2790,6 +2793,7 @@ School           : Shadow
 Spell Type       : Melee
 Duration         : 20 seconds
 Proc Chance      : 101%
+Affecting spells : Demonic Oath (355996 effect#1)
 Family Flags     : 21
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
@@ -5788,6 +5792,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Enemy (6)
 #2 (id=733971)   : Energize Power (30)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+#3 (id=889544)   : Dispel (38)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Consume $m1 beneficial Magic effect removing it from the target$?s320313[ and granting you $s2 Fury][].
 
 Name             : Demonic Wards (id=278386) [Spell Family (107), Passive] 
@@ -7101,7 +7107,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Chaos Blades (247938 effects: #2, #3), Increased Scrutiny (340028 effect#1), Demon Soul (347765 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Chaos Blades (247938 effects: #2, #3), Increased Scrutiny (340028 effect#1), Demon Soul (347765 effects: #1, #2), Agony Gaze (355886 effect#1)
 Family Flags     : 16, 32, 70, 83
 Attributes       : ....x... ........ x....... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -8049,9 +8055,9 @@ Spell Type       : Melee
 Spell Level      : 48
 Range            : 100 yards
 Duration         : 30 seconds
-Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Unnatural Malice (344358 effect#1), Demon Soul (347765 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2)
 Triggered by     : The Hunt (323639)
-Family Flags     : 16, 42, 70, 87
+Family Flags     : 16, 42, 70
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9481,10 +9487,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=868593)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: The Hunt (323802)
+                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: The Hunt (345335)
                    Family Flags: 87
-Description      : Increase the damage of The Hunt's strike against its primary target by |cFFFFFFFF${$s1}.1%|r.
+Description      : Increase the damage over time effect of The Hunt by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Demon's Bite (id=344859) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -9606,9 +9612,9 @@ Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Unnatural Malice (344358 effect#1), Demon Soul (347765 effects: #1, #2)
 Triggered by     : The Hunt (323639)
-Family Flags     : 16, 70, 82
+Family Flags     : 16, 70, 87
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -9911,7 +9917,7 @@ Spell Type       : Melee
 Spell Level      : 48
 Duration         : 15 seconds
 Proc Chance      : 101%
-Affecting spells : Brooding Pool (340063 effect#1)
+Affecting spells : Brooding Pool (340063 effect#1), Demonic Oath (355996 effect#1)
 Family Flags     : 21, 91
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
@@ -10001,5 +10007,86 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=880380)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+
+Name             : Agony Gaze (id=355886) [Spell Family (107), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ....x... x....... ........ 
+                 : Generic Hostile Spell, Magic Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=889341)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Sinful Brand (317009)
+                   Family Flags: 83
+#2 (id=889342)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Sinful Brand deals $s1% increased damage and $?c1[Eye Beam][Fel Devastation] damage increases the duration of Sinful Brand by ${$s2/1000}.1 sec.
+
+Name             : Blazing Slaughter (id=355890) [Spell Family (107), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=889346)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : The Hunt engulfs you with Immolation Aura upon reaching your target and you gain $355892s1% Agility for $355892d for each enemy hit.
+
+Name             : Blind Faith (id=355893) [Spell Family (107), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=889351)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=889354)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Elysian Decree shatters $s1 additional Lesser Soul Fragments and grants you Blind Faith for $355894d. For each Lesser Soul Fragment you consume while Blind Faith is active you gain $s2% Mastery and $356070s1 Fury.
+
+Name             : Demonic Oath (id=355996) [Spell Family (107), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=889546)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 8000 | Scaled Value: 8000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Demon Soul (163073), Demon Soul (208195), Demon Soul (347765)
+                   Family Flags: 21
+#2 (id=889571)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Description      : When Fodder to the Flame's demon explodes it inflicts Fiery Brand to $s2 nearby enemies for $s2 sec. Additionally Shattered Soul's duration is increased by ${$s1/1000} sec.
 
 

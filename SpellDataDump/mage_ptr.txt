@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, git build shadowlands 65587e17, no-networking)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -4841,9 +4841,9 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Scales with item level (354)
 Effects          :
 #1 (id=331819)   : School Damage (2): fire | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 0 (coefficient=100) | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 2417.058 (coefficient=100) | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=342491)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 0 (coefficient=15) | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 362.5587 (coefficient=15) | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Deal $sw1 Fire damage and an additional $sw2 Fire damage over $d.
 Tooltip          : Taking $sw2 Fire damage every $t2 sec.
 
@@ -4865,7 +4865,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Scales with item level (354)
 Effects          :
 #1 (id=331848)   : School Damage (2): frost | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 0 (coefficient=165) | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 3988.146 (coefficient=165) | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=342164)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Deal $s1 Frost damage and reduces the target's movement speed by $s2% for $d.
@@ -4887,7 +4887,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Scales with item level (354)
 Effects          :
 #1 (id=331849)   : School Damage (2): arcane | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 0 (coefficient=175) | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 4229.851 (coefficient=175) | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Deal $s1 Arcane damage.
 
 Name             : Phoenix's Flames (desc=Artifact) (id=224637) [Spell Family (3)] 

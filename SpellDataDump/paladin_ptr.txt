@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, git build shadowlands 65587e17, no-networking)
 
 Name             : Haste (id=65) 
 Class            : Paladin
@@ -8290,6 +8290,8 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 240 seconds
+Affecting spells : Radiant Embers (355447 effect#1)
+Family Flags     : 85
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -8976,12 +8978,12 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Duration         : 20 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 1938
+Category         : 1938: Duty-Bound Gavel (355099 effect#1)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ..x.x.x. x....x.. ........ 
                  : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Trap Triggered
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2), Righteous Might (340192 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2), Righteous Might (340192 effect#1), Duty-Bound Gavel (355099 effects: #2, #3)
 Family Flags     : 65, 123
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10841,5 +10843,52 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 Description      : All damage taken reduced by $s1%.
+
+Name             : Duty-Bound Gavel (id=355099) [Spell Family (10), Passive, Hidden] 
+School           : Shadow
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=887942)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1938 | Target: Self (1)
+                   Affected Spells (Category): Vanquisher's Hammer (328204)
+#2 (id=888846)   : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
+                   Affected Spells: Vanquisher's Hammer (328204)
+                   Family Flags: 123
+#3 (id=888850)   : Apply Aura (6) | Add Flat Modifier (107): Spell Initial Stacks (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
+                   Affected Spells: Vanquisher's Hammer (328204)
+                   Family Flags: 123
+Description      : Vanquisher's Hammer gains $s1 charge. An additional cast of $?c3[Templar's Verdict]?c1[Word of Glory][Word of Glory] is empowered.
+
+Name             : Radiant Embers (id=355447) [Spell Family (10), Passive, Hidden] 
+School           : Shadow
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=888568)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Ashen Hallow (316958)
+                   Family Flags: 85
+#2 (id=889678)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Ashen Hallow's duration is increased by $s1%. Leaving the hallowed area will end the effect and its cooldown will be reduced by up to $s2%, proportional to its remaining duration.
 
 

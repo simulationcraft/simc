@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, git build shadowlands 65587e17, no-networking)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -1880,7 +1880,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=67015)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.26500 | PvP Coefficient: 1.00000 | Radius: 0 - 11 yards | Target: Unknown(87) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.26500 | PvP Coefficient: 1.20000 | Radius: 0 - 11 yards | Target: Unknown(87) -> AOE friendly (31)
 Description      : $@spelldesc73920
 
 Name             : Purify Spirit (id=77130) [Spell Family (11)] 
@@ -2389,7 +2389,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : Don't display in aura bar (60), Tick on application (169), Periodic effect affected by haste (173), Reset CD on encounter end (333)
 Effects          :
 #1 (id=119337)   : Summon (28)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 59764 | Misc Value 2: 0x52 | Target: Water Totem (42)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 59764 | Misc Value 2: 0x1454 | Target: Water Totem (42)
 #2 (id=247825)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Summons a totem at your feet for $d, which pulses every $t2 sec, healing all party or raid members within $114942A1 yards for $114942m1.

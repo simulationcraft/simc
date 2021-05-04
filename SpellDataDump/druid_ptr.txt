@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, git build shadowlands 65587e17, no-networking)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -5460,7 +5460,7 @@ Description      : Calls down waves of falling stars upon enemies within $50286A
 
 Extends the duration of active Moonfires and Sunfires by $327541s1 sec.][]
 Tooltip          : Calling down falling stars on nearby enemies.
-Variables        : $damage=$?s202354[${11*$191037s1}][${9*$191037s1}]
+Variables        : $damage=$?s202354[${9*$191037s1}][${9*$191037s1}]
 
 Name             : Starfall (id=191037) [Spell Family (7)] 
 Class            : Druid
@@ -6496,7 +6496,7 @@ Effects          :
                    Affected Spells: Starfall (191034)
                    Family Flags: 119
 #2 (id=298474)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Starfall (50286), Starfall (191034), Starfall (191037)
                    Family Flags: 55
 Description      : Starfall deals $s2% additional damage and allows you to cast while moving while it is active, but now has a ${$s1/1000} sec cooldown.
@@ -9427,7 +9427,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=726522)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=726523)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=726524)   : Energize Power (30)
@@ -9458,7 +9458,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=726525)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=726526)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=726527)   : Energize Power (30)
@@ -11883,6 +11883,7 @@ School           : Arcane
 Spell Type       : None
 Resource         : 2% Base Mana (0) (id=192730)
 Spell Level      : 48
+Max Scaling Level: 60
 Range            : 40 yards
 Max Targets      : 1
 Cast Time        : 2.5 seconds
@@ -11901,6 +11902,16 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=817451)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+#2 (id=889281)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+#3 (id=889282)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Friend (21)
+#4 (id=889283)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Friend (21)
+#5 (id=889284)   : Apply Aura (6) | Modify Versatility% (471)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Friend (21)
+#6 (id=889338)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
+                   Base Value: 0 | Scaled Value: 100 (coefficient=1.052632) | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Friend (21)
 Description      : Form a bond with an ally. Every $327097d, you may empower the bond for $327037d, granting you an effect based on your partner's role, and granting them an effect based on your role.
 
 $?c3[|cFFFFFFFFTank|r
@@ -13935,7 +13946,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=845635)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Shooting Stars (202342)
                    Family Flags: 124
 Description      : $@spelldesc343647
@@ -14023,12 +14034,12 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=886314)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : You and your Kindred Spirit each gain 5% of a secondary stat based on their Covenant. This bonus is doubled while the bond is Empowered.
+Description      : You and your Kindred Spirit each gain a bonus secondary stat based on their Covenant. This bonus is doubled while the bond is Empowered.
 
-|CFFffffffKyrian|r: Mastery increased by 5%.
-|CFFffffffNight Fae|r: Haste increased by 5%.
-|CFFffffffVenthyr|r: Critical Strike chance increased by 5%.
-|CFFffffffNecrolord|r: Versatility increased by 5%.
+|CFFffffffKyrian|r: Mastery increased by $354805s1.
+|CFFffffffNight Fae|r: Haste increased by $354815s1%.
+|CFFffffffVenthyr|r: Critical Strike chance increased by $354345s1%.
+|CFFffffffNecrolord|r: Versatility increased by $354802s1%.
 
 Name             : Celestial Spirits (id=354118) [Spell Family (7), Passive, Hidden] 
 School           : Nature
@@ -14063,7 +14074,7 @@ School           : Arcane
 Spell Type       : None
 Range            : 50000 yards
 Duration         : Aura (infinite)
-Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   .....x.. x....... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14134,9 +14145,10 @@ Name             : Kindred Affinity (id=354805)
 Class            : Druid
 School           : Arcane
 Spell Type       : None
+Max Scaling Level: 60
 Range            : 50000 yards
 Duration         : Aura (infinite)
-Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   .....x.. x....... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14146,11 +14158,11 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Cannot cancel aura (31)
 Effects          :
-#1 (id=887492)   : Apply Aura (6) | Modify Combat Rating Multiplier (405)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Unknown(25)
+#1 (id=887492)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
+                   Base Value: 0 | Scaled Value: 100 (coefficient=1.052632) | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Unknown(25)
 Description      : $@spelldesc354115
 
-Tooltip          : Your partner is a part of the Kyrian Covenant. Your Mastery is increased by $w1%.
+Tooltip          : Your partner is a part of the Kyrian Covenant. Your Mastery is increased by $?a355435[${$m1*2}][$m1].
 
 Name             : Kindred Affinity (id=354815) 
 Class            : Druid
@@ -14173,5 +14185,26 @@ Effects          :
 Description      : $@spelldesc354115
 
 Tooltip          : Your partner is a part of the Night Fae Covenant. Your Haste is increased by $w1%.
+
+Name             : Kindred Affinity (id=355435) [Spell Family (7), Hidden] 
+Class            : Druid
+School           : Arcane
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 10 seconds
+Attributes       : .......x ........ x....... .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   .....x.. x....... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ......x. ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Hidden (7), Cannot cancel aura (31), Don't display in aura bar (60)
+Effects          :
+#1 (id=888549)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+Description      : $@spelldesc354115
+
 
 

@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, git build shadowlands 65587e17, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -372,7 +372,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=613)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 2.03000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 2.03000 | PvP Coefficient: 1.15000 | Target: Friend (21)
 Description      : A fast spell that heals an ally for $s1.
 
 Name             : Mind Vision (id=2096) [Spell Family (6)] 
@@ -463,7 +463,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (15 seconds cooldown)
 Category         : 1602: Priest (137030 effect#2), Voidform (194249 effect#6), Mangaza's Madness (207701 effect#1), Mind Blast (319899 effect#1), Dark Thought (341207 effect#1)
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #9, #12, #13), Shadow Priest (137033 effects: #1, #2, #12), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effects: #2, #4), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2), Mind Devourer (338332 effect#1), Dark Thought (341207 effect#2), Hungering Void (345219 effect#1)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #9, #12, #13), Shadow Priest (137033 effects: #1, #2, #12), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effects: #2, #4), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2), Mind Devourer (338332 effect#1), Dark Thought (341207 effect#2), Hungering Void (345219 effect#1)
 Family Flags     : 13, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1117,7 +1117,7 @@ Cooldown         : 180 seconds
 Category         : 1417
 Category Cooldown: 180 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Glyph of the Sha (147776 effect#1), Surrender to Madness (193223 effect#2), Trinity (290793 effect#1), Surrender to Madness (319952 effect#7), Shadowflame Prism (336143 effect#1)
+Affecting spells : Glyph of the Sha (147776 effect#1), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Shadowflame Prism (336143 effect#1)
 Family Flags     : 40, 120
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ......x.   ........ ........ ........ ........ 
@@ -2152,7 +2152,7 @@ Spell Level      : 12
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Magic Hostile Spell, Periodic
-Affecting spells : Surrender to Madness (193223 effect#2), Trinity (214205 effects: #2, #4), Surrender to Madness (319952 effect#7)
+Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 35
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2165,7 +2165,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.20000 | Target: Self (1)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
 Description      : $?s214205[Power Word: Shield applies Atonement to your target for $214206d.
@@ -3010,7 +3010,7 @@ Cooldown         : 180 seconds
 Category         : 1417
 Category Cooldown: 180 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Surrender to Madness (193223 effect#2), Trinity (290793 effect#1), Surrender to Madness (319952 effect#7), Shadowflame Prism (336143 effect#1)
+Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Shadowflame Prism (336143 effect#1)
 Family Flags     : 40
 Attributes       : ........ ........ x.x..... ........   x....... ........ ........ ....x... 
                  : ........ ........ ...x.... ......x.   ........ ........ ........ ........ 
@@ -5145,19 +5145,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=318065)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-#2 (id=318082)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Atonement (81749)
-                   Family Flags: 35
-#3 (id=357967)   : None (0)
+#2 (id=318082)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
-#4 (id=716563)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Atonement (81749)
-                   Family Flags: 35
-#5 (id=756462)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-Description      : Atonement's duration is increased by $m3 sec, and healing transfer increased by $m2%, but can only be applied through Power Word: Shield.
+Description      : Atonement's duration is increased by $m2 sec, but can only be applied through Power Word: Shield.
 
 Smite, Penance, and Shadowfiend critical strike chance increased by $290793m1% when you have Atonement on $m1 or more allies.
 
@@ -5557,7 +5547,7 @@ GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Attributes       : ........ ........ x....... x.......   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... x..x....   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6198,10 +6188,10 @@ Effects          :
 #1 (id=709098)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: mana | Radius: 40 yards | Target: Raid Members (56)
 #2 (id=759288)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
-                   Base Value: 1100 | Scaled Value: 1100 | PvP Coefficient: 1.00000 | Misc Value: 1284 | Radius: 40 yards | Target: Raid Members (56)
+                   Base Value: 1200 | Scaled Value: 1200 | PvP Coefficient: 1.00000 | Misc Value: 1284 | Radius: 40 yards | Target: Raid Members (56)
                    Affected Spells (Label): Divine Protection (498), Shield Wall (871), Desperate Prayer (19236), Barkskin (22812), Ardent Defender (31850), Icebound Fortitude (48792), Mirror Image (55342), Unending Resolve (104773), Astral Shift (108271), Exhilaration (109304), Fortifying Brew (115203), Die by the Sword (118038), Enraged Regeneration (184364), Shield of Vengeance (184662), Crimson Vial (185311), Blur (198589), Fiery Brand (204021), Blur (212800), Fortifying Brew (243435)
 #3 (id=888372)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
-                   Base Value: 1100 | Scaled Value: 1100 | PvP Coefficient: 1.00000 | Misc Value: 1929 | Radius: 40 yards | Target: Raid Members (56)
+                   Base Value: 1200 | Scaled Value: 1200 | PvP Coefficient: 1.00000 | Misc Value: 1929 | Radius: 40 yards | Target: Raid Members (56)
                    Affected Spells (Category): Shield Wall (871)
 Description      : $@spelldesc64901
 Tooltip          : Rapidly recovering a major defensive ability, and regaining $64901s2% missing mana every $64901t1 sec.
@@ -8625,11 +8615,11 @@ Attributes       : ........ ........ x....... .......x   ........ ..x..... .x...
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=756463)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Smite (585), Shadowfiend (34433), Penance (47540), Penance (47666), Penance (47750), Penance (47758), Shadowfiend (132603)
-                   Family Flags: 7, 40, 47, 48, 55, 71
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Affected Spells: Smite (585), Mind Blast (8092), Penance (47540), Penance (47666), Penance (47750), Penance (47758)
+                   Family Flags: 7, 13, 47, 48, 55, 71
 #2 (id=758882)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc214205
 Tooltip          : Critical strike chance of your Penance, Smite and Shadowfiend increased by $w1%.
 
