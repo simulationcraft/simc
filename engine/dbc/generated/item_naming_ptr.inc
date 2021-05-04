@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.1.0.38524
-static const std::array<item_name_description_t, 605> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 9.1.0.38549
+static const std::array<item_name_description_t, 614> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -605,5 +605,14 @@ static const std::array<item_name_description_t, 605> __ptr_item_name_descriptio
   { 13849, "Death's Advance"                             },
   { 13850, "Lost"                                        },
   { 13851, "Resounding Clarity"                          },
+  { 13852, "Shard of Domination"                         },
+  { 13853, "Radiant Embers"                              },
+  { 13854, "Duty-Bound Gavel"                            },
+  { 13855, "Agony Gaze"                                  },
+  { 13856, "Maw-Touched"                                 },
+  { 13857, "Blazing Slaughter"                           },
+  { 13858, "Blind Faith"                                 },
+  { 13859, "Renown Quartermaster"                        },
+  { 13860, "Demonic Oath"                                },
 } };
 
