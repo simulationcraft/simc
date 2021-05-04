@@ -1857,6 +1857,7 @@ int util::class_id( player_e type )
     case PLAYER_SPECIAL_SCALE6: return 18;
     case PLAYER_SPECIAL_SCALE7: return 13;
     case PLAYER_SPECIAL_SCALE8: return 19;
+    case PLAYER_SPECIAL_SCALE9: return 19;
     default:           return 0;
   }
 }
