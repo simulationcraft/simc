@@ -1566,6 +1566,9 @@ struct kindred_affinity_buff_t : public druid_buff_t<buff_t>
 {
   kindred_affinity_buff_t( druid_t& p ) : base_t( p, "kindred_affinity", _get_spell_data( &p ) )
   {
+    if ( !p.legendary.kindred_affinity->ok() )
+      return;
+
     set_max_stack( 2 );  // artificially allow second stack to simulate doubling during kindred empowerment
 
     switch ( _get_cov( &p ) )
@@ -8430,9 +8433,7 @@ void druid_t::create_buffs()
   buff.kindred_empowerment_energize =
       make_buff( this, "kindred_empowerment_energize", covenant.kindred_empowerment_energize );
 
-  // note that construction of this buff adds a stack_change_callback to kindred_empowerment_energize
-  if ( legendary.kindred_affinity->ok() )
-    buff.kindred_affinity = make_buff<kindred_affinity_buff_t>( *this );
+  buff.kindred_affinity = make_buff<kindred_affinity_buff_t>( *this );
 
   buff.convoke_the_spirits = make_buff( this, "convoke_the_spirits", covenant.night_fae )
     ->set_cooldown( 0_ms )
@@ -8450,15 +8451,14 @@ void druid_t::create_buffs()
   if ( conduit.endless_thirst->ok() )
     buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
 
+  buff.sinful_hysteria = make_buff( this, "sinful_hysteria", find_spell( 355315 ) )
+    ->set_default_value_from_effect_type( A_HASTE_ALL )
+    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  if ( conduit.endless_thirst->ok() )
+    buff.sinful_hysteria->add_invalidate( CACHE_CRIT_CHANCE );
   if ( legendary.sinful_hysteria->ok() )
   {
-    buff.sinful_hysteria = make_buff( this, "sinful_hysteria", find_spell( 355315 ) )
-      ->set_default_value_from_effect_type( A_HASTE_ALL )
-      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    if ( conduit.endless_thirst->ok() )
-      buff.sinful_hysteria->add_invalidate( CACHE_CRIT_CHANCE );
-
     buff.ravenous_frenzy->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
       if ( old_ && new_ )
         b->extend_duration( this, timespan_t::from_seconds( legendary.sinful_hysteria->effectN( 1 ).base_value() ) );
