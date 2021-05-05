@@ -1,0 +1,81 @@
+paladin="PR_Paladin_Holy"
+source=default
+spec=holy
+level=60
+race=blood_elf
+role=attack
+position=back
+talents=1212231
+covenant=venthyr
+soulbind=theotar,soothing_shade/templars_vindication:4
+renown=40
+
+# Default consumables
+potion=phantom_fire
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=priority
+
+actions.cooldowns=avenging_wrath
+actions.cooldowns+=/ashen_hallow
+actions.cooldowns+=/potion,if=(buff.avenging_wrath.up)
+actions.cooldowns+=/blood_fury,if=(buff.avenging_wrath.up)
+actions.cooldowns+=/berserking,if=(buff.avenging_wrath.up)
+actions.cooldowns+=/holy_avenger,if=(buff.avenging_wrath.up)
+actions.cooldowns+=/use_items,if=(buff.avenging_wrath.up)
+actions.cooldowns+=/seraphim,if=(buff.avenging_wrath.up)
+
+actions.priority=shield_of_the_righteous
+actions.priority+=/hammer_of_wrath
+actions.priority+=/holy_shock,damage=1
+actions.priority+=/judgment
+actions.priority+=/crusader_strike
+actions.priority+=/holy_prism,target=self,if=active_enemies>=2
+actions.priority+=/holy_prism
+actions.priority+=/consecration
+actions.priority+=/light_of_dawn
+
+head=plague_handlers_greathelm,id=178773,bonus_id=6807/1498/6646
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
+shoulders=pauldrons_of_unleashed_pride,id=178820,bonus_id=6807/1498/6646
+back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
+chest=abdominal_securing_chestguard,id=178793,bonus_id=6807/1498/6646,enchant=eternal_skirmish
+wrists=vambraces_of_the_depraved_warden,id=178845,bonus_id=6807/1498/6646,enchant=eternal_intellect
+hands=fleshfused_crushers,id=178775,bonus_id=6807/1498/6646
+waist=scarred_bloodbound_girdle,id=178931,bonus_id=6807/1498/6646
+legs=galvanized_oxxein_legguards,id=178800,bonus_id=6807/1498/6646
+feet=shadowghast_sabatons,id=171413,bonus_id=6647/6649/6716/7054/1487
+finger1=death_gods_signet,id=179355,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+finger2=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+main_hand=amarths_spellblade,id=178737,bonus_id=6807/1498/6646,enchant=sinful_revelation
+off_hand=encrusted_canopic_lid,id=178750,bonus_id=6807/1498/6646
+
+# Gear Summary
+# gear_ilvl=184.43
+# gear_stamina=860
+# gear_intellect=653
+# gear_crit_rating=342
+# gear_haste_rating=541
+# gear_mastery_rating=233
+# gear_versatility_rating=266
+# gear_armor=1543

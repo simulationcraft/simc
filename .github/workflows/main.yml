@@ -168,7 +168,7 @@ jobs:
             Hunter_Beast_Mastery, Hunter_Marksmanship, Hunter_Survival,
             Mage_Arcane, Mage_Fire, Mage_Frost,
             Monk_Brewmaster, Monk_Windwalker,
-            Paladin_Protection, Paladin_Retribution,
+            Paladin_Holy, Paladin_Protection, Paladin_Retribution,
             Priest_Discipline, Priest_Shadow,
             Rogue_Assassination, Rogue_Outlaw, Rogue_Subtlety,
             Shaman_Elemental, Shaman_Enhancement, Shaman_Restoration,

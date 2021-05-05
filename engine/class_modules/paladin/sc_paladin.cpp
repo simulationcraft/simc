@@ -107,6 +107,12 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
         base_buff_duration *= 1.0 + p->talents.holy_sanctified_wrath->effectN( 1 ).percent();
         took_sw = true;
       }
+      if ( p->spells.avenging_wrath_3->ok() )
+      {
+        healing_modifier += p->spells.avenging_wrath_3->effectN( 1 ).percent();
+        crit_bonus += p->spells.avenging_wrath_3->effectN( 4 ).percent();
+        damage_modifier += p->spells.avenging_wrath_3->effectN( 1 ).percent();
+      }
       break;
     case PALADIN_RETRIBUTION:
       if ( p->talents.ret_sanctified_wrath->ok() )
@@ -183,6 +189,8 @@ struct avenging_wrath_t : public paladin_spell_t
     parse_options( options_str );
 
     if ( p->talents.crusade->ok() )
+      background = true;
+    if ( p->talents.avenging_crusader->ok() )
       background = true;
 
     harmful = false;
@@ -784,7 +792,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
     {
       timespan_t cm_cdr = p()->talents.crusaders_might->effectN( 1 ).time_value();
       p()->cooldowns.holy_shock->adjust( cm_cdr );
-      p()->cooldowns.light_of_dawn->adjust( cm_cdr );
     }
 
     // Special things that happen when CS connects
@@ -828,6 +835,96 @@ struct crusader_strike_t : public paladin_melee_attack_t
       return 0;
 
     return paladin_melee_attack_t::cost();
+  }
+};
+
+// Word of Glory ===================================================
+
+struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
+{
+  word_of_glory_t( paladin_t* p, const std::string& options_str )
+    : holy_power_consumer_t( "word_of_glory", p, p->find_class_spell( "Word of Glory" ) )
+  {
+    parse_options( options_str );
+    target = p;
+    is_wog = true;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = holy_power_consumer_t::composite_target_multiplier( t );
+
+    if ( p()->spec.word_of_glory_2->ok() )
+    {
+      // Heals for a base amount, increased by up to +300% based on the target's missing health
+      // Linear increase, each missing health % increases the healing by 3%
+      double missing_health_percent = std::min( 1.0 - t->resources.pct( RESOURCE_HEALTH ), 1.0 );
+
+      m *= 1.0 + missing_health_percent * p()->spec.word_of_glory_2->effectN( 1 ).percent();
+
+      sim->print_debug( "Player {} missing {:.2f}% health, healing increased by {:.2f}%", t->name(),
+                        missing_health_percent * 100,
+                        missing_health_percent * p()->spec.word_of_glory_2->effectN( 1 ).percent() * 100 );
+    }
+    return m;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    holy_power_consumer_t::impact( s );
+    if ( p()->conduit.shielding_words->ok() && s->result_amount > 0 )
+    {
+      p()->buffs.shielding_words->trigger( 1, s->result_amount * p()->conduit.shielding_words.percent() );
+    }
+  }
+
+  void execute() override
+  {
+    holy_power_consumer_t::execute();
+
+    if ( p()->specialization() == PALADIN_PROTECTION && p()->buffs.vanquishers_hammer->up() )
+    {
+      p()->buffs.vanquishers_hammer->expire();
+      p()->active.necrolord_shield_of_the_righteous->execute();
+    }
+
+    if ( p()->specialization() == PALADIN_HOLY && p()->talents.awakening->ok() )
+    {
+      if ( rng().roll( p()->talents.awakening->effectN( 1 ).percent() ) )
+      {
+        buff_t* main_buff           = p()->buffs.avenging_wrath;
+        timespan_t trigger_duration = timespan_t::from_seconds( p()->talents.awakening->effectN( 2 ).base_value() );
+        if ( main_buff->check() )
+        {
+          p()->buffs.avengers_might->extend_duration( p(), trigger_duration );
+        }
+        else
+        {
+          main_buff->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
+        }
+      }
+    }
+  }
+
+  double action_multiplier() const override
+  {
+    double am = holy_power_consumer_t::action_multiplier();
+    if ( p()->buffs.shining_light_free->up() && p()->buffs.divine_purpose->up() )
+      // Shining Light does not benefit from divine purpose
+      am /= 1.0 + p()->spells.divine_purpose_buff->effectN( 2 ).percent();
+    return am;
+  }
+
+  double cost() const override
+  {
+    double c = holy_power_consumer_t::cost();
+
+    if ( p()->buffs.shining_light_free->check() )
+      c *= 1.0 + p()->buffs.shining_light_free->data().effectN( 1 ).percent();
+    if ( p()->buffs.royal_decree->check() )
+      c *= 1.0 + p()->buffs.royal_decree->data().effectN( 1 ).percent();
+
+    return c;
   }
 };
 
@@ -1116,15 +1213,7 @@ struct hallowed_discernment_tick_t : public paladin_spell_t
   hallowed_discernment_tick_t( paladin_t* p ) : paladin_spell_t( "hallowed_discernment", p, p->find_spell( 340203 ) )
   {
     base_multiplier *= p->conduit.hallowed_discernment.percent();
-    background     = true;
-    aoe_multiplier = 1.0;  // This gets overwritten
-  }
-
-  double action_multiplier() const override
-  {
-    double am = paladin_spell_t::action_multiplier();
-    am *= aoe_multiplier;
-    return am;
+    background = true;
   }
 };
 
@@ -1186,8 +1275,6 @@ struct ashen_hallow_tick_t : public paladin_spell_t
           } );
       hd_damage_tick->set_target( lowest_hp_target );
       // Damage is calculated independently of Ashen Hallow. ie. they crit separately
-      // Hitting more targets with Ashen Hallow reduces the damage of Hallowed Discernment
-      hd_damage_tick->aoe_multiplier = composite_aoe_multiplier( execute_state );
       hd_damage_tick->execute();
     }
   }
@@ -1786,6 +1873,8 @@ action_t* paladin_t::create_action( util::string_view name, const std::string& o
     return new ashen_hallow_t( this, options_str );
   if ( name == "blessing_of_the_seasons" )
     return new blessing_of_the_seasons_t( this, options_str );
+  if ( name == "word_of_glory" )
+    return new word_of_glory_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -2060,9 +2149,9 @@ std::string paladin_t::default_potion() const
 
   std::string protection_pot = ( true_level > 50 ) ? "phantom_fire" : "disabled";
 
-  std::string holy_dps_pot = ( true_level > 100 ) ? "old_war" : "disabled";
+  std::string holy_dps_pot = ( true_level > 50 ) ? "phantom_fire" : "disabled";
 
-  std::string holy_pot = "disabled";
+  std::string holy_pot = ( true_level > 50 ) ? "spectral_intellect" : "disabled";
 
   switch ( specialization() )
   {
@@ -2083,17 +2172,9 @@ std::string paladin_t::default_food() const
 
   std::string protection_food = ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "disabled";
 
-  std::string holy_dps_food = ( true_level > 100 )   ? "the_hungry_magister"
-                              : ( true_level >= 90 ) ? "pickled_eel"
-                              : ( true_level >= 85 ) ? "mogu_fish_stew"
-                              : ( true_level >= 80 ) ? "seafood_magnifique_feast"
-                                                     : "disabled";
+  std::string holy_dps_food = ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "disabled";
 
-  std::string holy_food = ( true_level > 100 )   ? "lavish_suramar_feast"
-                          : ( true_level >= 90 ) ? "pickled_eel"
-                          : ( true_level >= 85 ) ? "mogu_fish_stew"
-                          : ( true_level >= 80 ) ? "seafood_magnifique_feast"
-                                                 : "disabled";
+  std::string holy_food = ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "disabled";
 
   switch ( specialization() )
   {
@@ -2114,17 +2195,9 @@ std::string paladin_t::default_flask() const
 
   std::string protection_flask = ( true_level > 50 ) ? "spectral_flask_of_power" : "disabled";
 
-  std::string holy_dps_flask = ( true_level > 100 )   ? "flask_of_the_whispered_pact"
-                               : ( true_level >= 90 ) ? "greater_draenic_intellect_flask"
-                               : ( true_level >= 85 ) ? "warm_sun"
-                               : ( true_level >= 80 ) ? "draconic_mind"
-                                                      : "disabled";
+  std::string holy_dps_flask = ( true_level > 50 ) ? "spectral_flask_of_power" : "disabled";
 
-  std::string holy_flask = ( true_level > 100 )   ? "flask_of_the_whispered_pact"
-                           : ( true_level >= 90 ) ? "greater_draenic_intellect_flask"
-                           : ( true_level >= 85 ) ? "warm_sun"
-                           : ( true_level >= 80 ) ? "draconic_mind"
-                                                  : "disabled";
+  std::string holy_flask = ( true_level > 50 ) ? "spectral_flask_of_power" : "disabled";
 
   switch ( specialization() )
   {
@@ -2164,16 +2237,6 @@ std::string paladin_t::default_temporary_enchant() const
 
 void paladin_t::init_action_list()
 {
-  // 2019-04-03: The Holy module is outdated and not supported (both for dps and healing)
-  if ( !sim->allow_experimental_specializations && specialization() == PALADIN_HOLY )
-  {
-    if ( !quiet )
-      sim->errorf( "Paladin holy for player %s is not currently supported.", name() );
-
-    quiet = true;
-    return;
-  }
-
   // sanity check - Prot/Ret can't do anything w/o main hand weapon equipped
   if ( main_hand_weapon.type == WEAPON_NONE &&
        ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION ) )
@@ -2260,6 +2323,7 @@ void paladin_t::init_spells()
   spells.avenging_wrath         = find_class_spell( "Avenging Wrath" );
   spells.judgment_2             = find_rank_spell( "Judgment", "Rank 2" );         // 327977
   spells.avenging_wrath_2       = find_rank_spell( "Avenging Wrath", "Rank 2" );   // 317872
+  spells.avenging_wrath_3       = find_rank_spell( "Avenging Wrath", "Rank 3" );   // 327979
   spells.hammer_of_wrath_2      = find_rank_spell( "Hammer of Wrath", "Rank 2" );  // 326730
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
   spells.divine_purpose_buff    = find_spell( 223819 );
@@ -2619,6 +2683,12 @@ double paladin_t::composite_melee_attack_power() const
 
 double paladin_t::composite_melee_attack_power_by_type( attack_power_type ap_type ) const
 {
+  // Holy paladin AP scales purely off of Spell power and nothing else not even Weapon
+  if ( specialization() == PALADIN_HOLY )
+  {
+    return player_t::composite_melee_attack_power_by_type( attack_power_type::NO_WEAPON );
+  }
+
   return player_t::composite_melee_attack_power_by_type( ap_type );
 }
 
@@ -2631,6 +2701,14 @@ double paladin_t::composite_attack_power_multiplier() const
   // Mastery bonus is multiplicative with other effects
   if ( specialization() == PALADIN_PROTECTION )
     ap *= 1.0 + cache.mastery() * mastery.divine_bulwark->effectN( 2 ).mastery_value();
+
+  // Holy paladin AP scales purely off of Spell power and nothing else not even Weapon
+  // This means literally nothing, not sharpning/weight stones, battle shout, weapon, etc etc
+  // It is purely off SP and nothing effects it.
+  if ( specialization() == PALADIN_HOLY )
+  {
+    return 1.0;
+  }
 
   return ap;
 }
