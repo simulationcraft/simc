@@ -320,6 +320,8 @@ struct holy_shock_t : public paladin_spell_t
     // The reason the subspell is allowed to execute first is so we can consume judgment correctly. 
     // If this is first then a dummy holy shock is fired off that consumes the judgment debuff 
     // meaning when we attempt to do damage judgment will not be factored in even when it should be.
+    // because of dumb blizz spelldata that makes every holy shock spell affected by judgment,
+    // instead of just affecting the damaging holy shock spell.
     paladin_spell_t::execute();
   }
 

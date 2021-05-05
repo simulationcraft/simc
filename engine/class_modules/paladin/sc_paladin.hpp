@@ -10,7 +10,6 @@ struct blessing_of_sacrifice_redirect_t;
 namespace buffs {
                   struct avenging_wrath_buff_t;
                   struct crusade_buff_t;
-                  struct avenging_crusader_buff_t;
                   struct holy_avenger_buff_t;
                   struct ardent_defender_buff_t;
                   struct forbearance_t;
