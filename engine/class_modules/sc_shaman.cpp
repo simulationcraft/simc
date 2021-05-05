@@ -1735,6 +1735,13 @@ public:
       p()->trigger_vesper_totem( execute_state );
       trigger_echoing_shock( execute_state->target );
     }
+
+    // Apparently spells that benefit from Maelstrom Weapon always
+    // reset the main- and off-hand swing timers. Presume this is a bug for now.
+    if ( affected_by_maelstrom_weapon && p()->bugs )
+    {
+      p()->reset_auto_attacks();
+    }
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -6106,7 +6113,7 @@ struct chain_heal_t : public shaman_heal_t
     }
   }
 
-  double cost() const
+  double cost() const override
   {
     if ( p()->buff.chains_of_devastation_chain_heal->up() &&
          ( p()->specialization() == SHAMAN_ENHANCEMENT || p()->specialization() == SHAMAN_ELEMENTAL ) )
