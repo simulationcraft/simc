@@ -5,6 +5,7 @@
 
 #include "report/reports.hpp"
 #include "interfaces/sc_js.hpp"
+#include "player/player_talent_points.hpp"
 #include "report/json/report_configuration.hpp"
 #include "report/report_timer.hpp"
 #include "sim/scale_factor_control.hpp"
@@ -742,7 +743,7 @@ void talents_to_json( JsonOutput root, const player_t& p )
 
   for ( auto talent_row = 0; talent_row < MAX_TALENT_ROWS; talent_row++ )
   {
-    auto talent_col = p.talent_points.choice( talent_row );
+    auto talent_col = p.talent_points->choice( talent_row );
     if ( talent_col == -1 )
     {
       continue;

@@ -5,6 +5,7 @@
 
 #include "dbc/specialization.hpp"
 #include "simulationcraft.hpp"
+#include "player/player_talent_points.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE
@@ -610,7 +611,7 @@ public:
 
     resource_regeneration = regen_type::DISABLED;
 
-    talent_points.register_validity_fn( [this]( const spell_data_t* spell ) {
+    talent_points->register_validity_fn( [this]( const spell_data_t* spell ) {
       // Soul of the Battlelord
       if ( find_item_by_id( 151650 ) )
       {
@@ -8641,7 +8642,7 @@ struct the_great_storms_eye_t : public unique_gear::class_buff_cb_t<warrior_t>
 
   buff_t* creator( const special_effect_t& e ) const override
   {
-    if ( e.player->talent_points.has_row_col( 6, 3 ) )
+    if ( e.player->talent_points->has_row_col( 6, 3 ) )
       return make_buff( e.player, buff_name, e.player->find_spell( 248145 ) )
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
           ->add_invalidate( CACHE_RUN_SPEED );

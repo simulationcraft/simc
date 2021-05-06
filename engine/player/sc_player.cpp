@@ -43,6 +43,7 @@
 #include "player/soulbinds.hpp"
 #include "player/spawner_base.hpp"
 #include "player/stats.hpp"
+#include "player/player_talent_points.hpp"
 #include "player/unique_gear.hpp"
 #include "sim/benefit.hpp"
 #include "sim/event.hpp"
@@ -1097,7 +1098,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     cooldown_tolerance_( timespan_t::min() ),
     dbc( new dbc_t(*(s->dbc)) ),
     dbc_override( sim->dbc_override.get() ),
-    talent_points(),
+    talent_points( new player_talent_points_t()),
     profession(),
     azerite( nullptr ),
     base(),
@@ -2284,7 +2285,7 @@ void player_t::override_talent( util::string_view override_str )
         throw std::invalid_argument(fmt::format("talent_override: Invalid talent row {} in '{}'.", row, override_str ));
       }
 
-      talent_points.clear( row - 1 );
+      talent_points->clear( row - 1 );
       if ( sim->num_players == 1 )
       {
         sim->error( "talent_override: Talent row {} for {} disabled.\n", row, *this );
@@ -2313,7 +2314,7 @@ void player_t::override_talent( util::string_view override_str )
               override_str ));
         }
 
-        if ( talent_points.has_row_col( j, i ) )
+        if ( talent_points->has_row_col( j, i ) )
         {
           sim->print_debug( "talent_override: talent {} for {} is already enabled\n",
                                  override_str, *this );
@@ -2322,9 +2323,9 @@ void player_t::override_talent( util::string_view override_str )
         if ( sim->num_players == 1 )
         {  // To prevent spamming up raid reports, only do this with 1 player sims.
           sim->error( "talent_override: talent '{}' for {}s replaced talent {} in tier {}.\n", override_str,
-                       *this, talent_points.choice( j ) + 1, j + 1 );
+                       *this, talent_points->choice( j ) + 1, j + 1 );
         }
-        talent_points.select_row_col( j, i );
+        talent_points->select_row_col( j, i );
       }
     }
   }
@@ -8899,7 +8900,7 @@ action_t* player_t::create_action( util::string_view name, const std::string& op
 
 void player_t::parse_talents_numbers( util::string_view talent_string )
 {
-  talent_points.clear();
+  talent_points->clear();
 
   int i_max = std::min( static_cast<int>( talent_string.size() ), MAX_TALENT_ROWS );
 
@@ -8911,7 +8912,7 @@ void player_t::parse_talents_numbers( util::string_view talent_string )
       throw std::runtime_error(fmt::format("Illegal character '{}' in talent encoding.", c ));
     }
     if ( c > '0' )
-      talent_points.select_row_col( i, c - '1' );
+      talent_points->select_row_col( i, c - '1' );
   }
 
   create_talents_numbers();
@@ -8927,7 +8928,7 @@ pet_t* player_t::create_pet( util::string_view, util::string_view )
  */
 bool player_t::parse_talents_armory( util::string_view talent_string )
 {
-  talent_points.clear();
+  talent_points->clear();
 
   if ( talent_string.size() < 2 )
   {
@@ -9049,7 +9050,7 @@ bool player_t::parse_talents_armory( util::string_view talent_string )
       case '0':
       case '1':
       case '2':
-        talent_points.select_row_col( static_cast<int>( i ), t_str[ i ] - '0' );
+        talent_points->select_row_col( static_cast<int>( i ), t_str[ i ] - '0' );
         break;
       default:
         sim->error( "Player {} has malformed talent string '{}': talent list has invalid character '{}'.\n", name(),
@@ -9133,7 +9134,7 @@ bool player_t::parse_talents_armory2( util::string_view talent_url )
     return false;
   }
 
-  talent_points.clear();
+  talent_points->clear();
 
   auto idx_max = std::min( as<int>( split[ OFFSET_TALENTS ].size() ), MAX_TALENT_ROWS );
 
@@ -9148,7 +9149,7 @@ bool player_t::parse_talents_armory2( util::string_view talent_url )
 
     if ( c > '0' )
     {
-      talent_points.select_row_col( talent_idx, c - '1' );
+      talent_points->select_row_col( talent_idx, c - '1' );
     }
   }
 
@@ -9253,7 +9254,7 @@ void player_t::create_talents_wowhead()
     {
       for ( int col = 0; col < MAX_TALENT_COLS; ++col )
       {
-        if ( talent_points.has_row_col( ( tier * 3 ) + row, col ) )
+        if ( talent_points->has_row_col( ( tier * 3 ) + row, col ) )
         {
           encoding[ tier ] += ( col + 1 ) * multiplier;
           break;
@@ -9318,7 +9319,7 @@ void player_t::create_talents_numbers()
 
   for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
   {
-    talents_str += util::to_string( talent_points.choice( j ) + 1 );
+    talents_str += util::to_string( talent_points->choice( j ) + 1 );
   }
 }
 
@@ -9375,7 +9376,7 @@ void player_t::replace_spells()
   {
     for ( int i = 0; i < MAX_TALENT_COLS; i++ )
     {
-      if ( talent_points.has_row_col( j, i ) && true_level < 20 + ( j == 0 ? -1 : j ) * 5 )
+      if ( talent_points->has_row_col( j, i ) && true_level < 20 + ( j == 0 ? -1 : j ) * 5 )
       {
         const talent_data_t* td = talent_data_t::find( type, j, i, specialization(), dbc->ptr );
         if ( td && td->replace_id() )
@@ -9481,7 +9482,7 @@ const spell_data_t* player_t::find_talent_spell( util::string_view n, specializa
         // check if we have the talent enabled or not
         // Level tiers are hardcoded here which means they will need to changed when levels change
         if ( check_validity &&
-          ( !talent_points.validate( spell, j, i ) || true_level < 20 + ( j == 0 ? -1 : j ) * 5 ) )
+          ( !talent_points->validate( spell, j, i ) || true_level < 20 + ( j == 0 ? -1 : j ) * 5 ) )
           return spell_data_t::not_found();
 
         return spell;

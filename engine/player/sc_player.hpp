@@ -8,7 +8,6 @@
 #include "config.hpp"
 #include "actor.hpp"
 #include "sc_enums.hpp"
-#include "player_talent_points.hpp"
 #include "player_resources.hpp"
 #include "gear_stats.hpp"
 #include "rating.hpp"
@@ -65,6 +64,7 @@ struct special_effect_t;
 struct spelleffect_data_t;
 struct stat_buff_t;
 struct stats_t;
+struct player_talent_points_t;
 struct uptime_t;
 namespace azerite {
     class azerite_state_t;
@@ -183,7 +183,7 @@ struct player_t : public actor_t
   std::vector<stat_e> stat_timelines;
 
   // Talent Parsing
-  player_talent_points_t talent_points;
+  std::unique_ptr<player_talent_points_t> talent_points;
   std::string talent_overrides_str;
 
   // Profs

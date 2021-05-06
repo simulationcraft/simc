@@ -15,6 +15,7 @@
 #include "player/azerite_data.hpp"
 #include "player/covenant.hpp"
 #include "player/sc_player.hpp"
+#include "player/player_talent_points.hpp"
 #include "sc_enums.hpp"
 #include "sim/sc_sim.hpp"
 #include "util/concurrency.hpp"
@@ -463,7 +464,7 @@ void parse_talents( player_t* p, const player_spec_t& spec_info, const std::stri
         continue;
       }
 
-      p->talent_points.select_row_col( talent->row(), talent->col() );
+      p->talent_points->select_row_col( talent->row(), talent->col() );
     }
   }
 
