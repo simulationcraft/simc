@@ -18,6 +18,7 @@
 #include "player/unique_gear.hpp"
 #include "player/wrapper_callback.hpp"
 #include "util/scoped_callback.hpp"
+#include "sim/sc_sim.hpp"
 
 #include <type_traits>
 

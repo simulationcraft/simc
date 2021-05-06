@@ -15,6 +15,7 @@
 #include "report/decorators.hpp"
 #include "sim/sc_expressions.hpp"
 #include "sim/sc_option.hpp"
+#include "sim/sc_sim.hpp"
 #include "util/io.hpp"
 #include "util/util.hpp"
 

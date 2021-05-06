@@ -22,9 +22,12 @@
 #include "scaling_metric_data.hpp"
 #include "util/cache.hpp"
 #include "dbc/item_database.hpp"
+#include "dbc/specialization.hpp"
+#include "util/util.hpp"
 #include "assessor.hpp"
 #include <map>
 #include <set>
+#include <unordered_map>
 
 struct absorb_buff_t;
 struct action_t;
@@ -38,6 +41,7 @@ class azerite_essence_t;
 class azerite_power_t;
 class conduit_data_t;
 class dbc_t;
+class dbc_override_t;
 struct benefit_t;
 struct item_t;
 struct buff_t;
@@ -284,7 +288,7 @@ struct player_t : public actor_t
   timespan_t cast_delay_occurred;
 
   // Callbacks
-  effect_callbacks_t<action_callback_t> callbacks;
+  effect_callbacks_t callbacks;
   auto_dispose< std::vector<special_effect_t*> > special_effects;
   std::vector<std::pair<player_t*, std::function<void( player_t* )>>> callbacks_on_demise;
   std::vector<std::pair<player_t*, std::function<void( void )>>> callbacks_on_arise;
@@ -1013,8 +1017,7 @@ public:
   virtual void schedule_cwc_ready( timespan_t delta_time = timespan_t::min() );
   virtual void arise();
   virtual void demise();
-  virtual timespan_t available() const
-  { return rng().gauss( 100_ms, 10_ms ); }
+  virtual timespan_t available() const;
   virtual action_t* select_action( const action_priority_list_t&, execute_type type = execute_type::FOREGROUND, const action_t* context = nullptr );
   virtual action_t* execute_action();
 

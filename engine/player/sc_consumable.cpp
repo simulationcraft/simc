@@ -13,6 +13,7 @@
 #include "buff/sc_buff.hpp"
 #include "sim/sc_cooldown.hpp"
 #include "sim/sc_expressions.hpp"
+#include "sim/sc_sim.hpp"
 #include "item/special_effect.hpp"
 #include "player/unique_gear.hpp"
 #include "util/rng.hpp"

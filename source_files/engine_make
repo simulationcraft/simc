@@ -100,6 +100,7 @@ SRC += \
     player$(PATHSEP)azerite_data.cpp \
     player$(PATHSEP)covenant.cpp \
     player$(PATHSEP)darkmoon_deck.cpp \
+    player$(PATHSEP)effect_callbacks.cpp \
     player$(PATHSEP)ground_aoe.cpp \
     player$(PATHSEP)instant_absorb.cpp \
     player$(PATHSEP)player_event.cpp \

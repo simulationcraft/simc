@@ -10,6 +10,7 @@
 #include "player/sc_player.hpp"
 #include "player/stats.hpp"
 #include "util/util.hpp"
+#include "sim/sc_sim.hpp"
 
 #include <algorithm>
 #include <utility>

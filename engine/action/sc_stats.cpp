@@ -9,6 +9,7 @@
 #include "player/pet.hpp"
 #include "sim/sc_sim.hpp"
 #include <memory>
+#include <unordered_map>
 
 // stats_t::stats_t =========================================================
 

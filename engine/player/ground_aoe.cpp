@@ -8,6 +8,7 @@
 #include "action/sc_action.hpp"
 #include "action/sc_action_state.hpp"
 #include "player/sc_player.hpp"
+#include "sim/sc_sim.hpp"
 
 ground_aoe_params_t::ground_aoe_params_t() :
   target_(nullptr), x_(-1), y_(-1), hasted_(NOTHING), action_(nullptr),

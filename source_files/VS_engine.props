@@ -280,6 +280,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\player\azerite_data.cpp" />
 		<ClCompile Include="..\engine\player\covenant.cpp" />
 		<ClCompile Include="..\engine\player\darkmoon_deck.cpp" />
+		<ClCompile Include="..\engine\player\effect_callbacks.cpp" />
 		<ClCompile Include="..\engine\player\ground_aoe.cpp" />
 		<ClCompile Include="..\engine\player\instant_absorb.cpp" />
 		<ClCompile Include="..\engine\player\player_event.cpp" />

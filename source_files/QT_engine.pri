@@ -277,6 +277,7 @@ SOURCES += engine/player/actor_target_data.cpp
 SOURCES += engine/player/azerite_data.cpp
 SOURCES += engine/player/covenant.cpp
 SOURCES += engine/player/darkmoon_deck.cpp
+SOURCES += engine/player/effect_callbacks.cpp
 SOURCES += engine/player/ground_aoe.cpp
 SOURCES += engine/player/instant_absorb.cpp
 SOURCES += engine/player/player_event.cpp

@@ -8,6 +8,7 @@
 #include "action/sc_action.hpp"
 #include "action/variable.hpp"
 #include "player/sc_player.hpp"
+#include "sim/sc_sim.hpp"
 
 #include <limits>
 

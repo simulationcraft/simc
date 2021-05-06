@@ -5558,6 +5558,11 @@ void player_t::arise()
   }
 }
 
+timespan_t player_t::available() const
+{
+  return rng().gauss( 100_ms, 10_ms );
+}
+
 /**
  * Player dies.
  */
