@@ -1,21 +1,22 @@
+// ==========================================================================
+// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
 #include "covenant.hpp"
 
-#include "util/util.hpp"
-#include "util/io.hpp"
-#include "report/decorators.hpp"
-
-#include "sim/sc_expressions.hpp"
-
-#include "player/sc_player.hpp"
-#include "player/actor_target_data.hpp"
-#include "buff/sc_buff.hpp"
 #include "action/spell.hpp"
-
-#include "sim/sc_option.hpp"
-
+#include "buff/sc_buff.hpp"
+#include "dbc/covenant_data.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/spell_data.hpp"
-#include "dbc/covenant_data.hpp"
+#include "item/special_effect.hpp"
+#include "player/actor_target_data.hpp"
+#include "player/sc_player.hpp"
+#include "report/decorators.hpp"
+#include "sim/sc_expressions.hpp"
+#include "sim/sc_option.hpp"
+#include "util/io.hpp"
+#include "util/util.hpp"
 
 conduit_data_t::conduit_data_t() :
   /* m_player( nullptr ), */ m_conduit( &conduit_rank_entry_t::nil() ), m_spell( spell_data_t::not_found() )

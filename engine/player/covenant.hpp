@@ -5,19 +5,13 @@
 #ifndef COVENANT_HPP
 #define COVENANT_HPP
 
+#include "action/dbc_proc_callback.hpp"
+#include "report/reports.hpp"
+#include "util/cache.hpp"
 #include "util/format.hpp"
 #include "util/span.hpp"
 #include "util/string_view.hpp"
 #include "util/timespan.hpp"
-#include "util/cache.hpp"
-
-#include "report/reports.hpp"
-
-#include "item/special_effect.hpp"
-#include "action/sc_action_state.hpp"
-#include "action/dbc_proc_callback.hpp"
-
-#include "interfaces/bcp_api.hpp"
 
 #include "rapidjson/document.h"
 
