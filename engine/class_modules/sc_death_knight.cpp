@@ -3207,8 +3207,8 @@ void death_knight_melee_attack_t::impact( action_state_t* state )
   base_t::impact( state );
 
   if ( state -> result_amount > 0 && callbacks && weapon &&
-       ( p() -> runeforge.rune_of_razorice_mh && weapon -> slot == SLOT_MAIN_HAND ||
-         p() -> runeforge.rune_of_razorice_oh && weapon -> slot == SLOT_OFF_HAND ) )
+       ( ( p() -> runeforge.rune_of_razorice_mh && weapon -> slot == SLOT_MAIN_HAND ) ||
+         ( p() -> runeforge.rune_of_razorice_oh && weapon -> slot == SLOT_OFF_HAND ) ) )
   {
     // Razorice is executed after the attack that triggers it
     p() -> active_spells.runeforge_razorice -> set_target( state -> target );

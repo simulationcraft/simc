@@ -270,7 +270,7 @@ void grove_invigoration( special_effect_t& effect )
     buff = make_buff<stat_buff_t>( effect.player, "redirected_anima", effect.player->find_spell( 342814 ) )
              ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
              ->set_default_value_from_effect( 1 )  // default value is used to hold the hp %
-             ->set_stack_change_callback( [ effect ] ( buff_t*, int old, int cur )
+             ->set_stack_change_callback( [ effect ] ( buff_t*, int /* old */, int /* cur */ )
                { effect.player->recalculate_resource_max( RESOURCE_HEALTH ); } );
   }
 
@@ -1263,7 +1263,7 @@ void forgeborne_reveries( special_effect_t& effect )
   effect.player->register_combat_begin( buff );
 }
 
-void serrated_spaulders( special_effect_t& effect )
+void serrated_spaulders( special_effect_t& )
 {
 
 }

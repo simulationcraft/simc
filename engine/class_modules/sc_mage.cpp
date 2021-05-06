@@ -3850,7 +3850,7 @@ struct frozen_orb_t final : public frost_mage_spell_t
     make_event( *sim, duration, [ this, &counter, active ]
     {
       counter--;
-      if ( p()->state.active_frozen_orbs + p()->state.inactive_frozen_orbs == 0 || active && p()->bugs )
+      if ( p()->state.active_frozen_orbs + p()->state.inactive_frozen_orbs == 0 || ( active && p()->bugs ) )
         p()->buffs.freezing_winds->expire();
     } );
   }

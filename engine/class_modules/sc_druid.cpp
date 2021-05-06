@@ -9452,7 +9452,6 @@ std::unique_ptr<expr_t> druid_t::create_action_expression(action_t& a, util::str
 	dot_t* dot = dot_action->get_dot(target);
 	timespan_t ttd = target->time_to_percent(0);
 	timespan_t duration = dot_action->composite_dot_duration(state) * mod;
-	timespan_t tick_time = dot_action->tick_time(state);
 
 	double remaining_ticks = std::min(dot->remains(), ttd) / dot_action->tick_time(state) * ((pmul && dot->state) ? dot->state->persistent_multiplier : 1.0);
 	double new_ticks = std::min(dot_action->calculate_dot_refresh_duration(dot, duration), ttd) / dot_action->tick_time(state) * (pmul ? state->persistent_multiplier : 1.0);

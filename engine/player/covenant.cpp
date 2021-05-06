@@ -263,7 +263,7 @@ bool covenant_state_t::parse_soulbind_clear( sim_t* sim, util::string_view name,
   return parse_soulbind( sim, name, value );
 }
 
-bool covenant_state_t::parse_renown( sim_t*             sim,
+bool covenant_state_t::parse_renown( sim_t*,
                                      util::string_view /* name */,
                                      util::string_view value )
 {

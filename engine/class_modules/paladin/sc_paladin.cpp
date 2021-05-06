@@ -3374,7 +3374,7 @@ struct paladin_module_t : public module_t
     // Only create these if the player is a Night Fae Paladin or sets the option to get the buff.
     // If the Paladin action is ever updated to allow manually casting it on other players, this
     // will need to be adjusted to also work if there is a Night Fae Paladin in the raid.
-    if ( p->type == PALADIN && p->covenant && p->covenant->type() == covenant_e::NIGHT_FAE ||
+    if ( ( p->type == PALADIN && p->covenant && p->covenant->type() == covenant_e::NIGHT_FAE ) ||
          !p->external_buffs.blessing_of_summer.empty() )
     {
       action_t* summer_proc           = new blessing_of_summer_proc_t( p );
@@ -3400,7 +3400,7 @@ struct paladin_module_t : public module_t
           } );
     }
 
-    if ( p->type == PALADIN && p->covenant && p->covenant->type() == covenant_e::NIGHT_FAE ||
+    if ( ( p->type == PALADIN && p->covenant && p->covenant->type() == covenant_e::NIGHT_FAE ) ||
          !p->external_buffs.blessing_of_winter.empty() )
     {
       action_t* winter_proc;
@@ -3422,7 +3422,7 @@ struct paladin_module_t : public module_t
       winter_cb->deactivate();
       winter_cb->initialize();
 
-      p->buffs.blessing_of_winter->set_stack_change_callback( [ winter_cb ]( buff_t* b, int, int new_ ) {
+      p->buffs.blessing_of_winter->set_stack_change_callback( [ winter_cb ]( buff_t*, int, int new_ ) {
         if ( new_ )
           winter_cb->activate();
         else
