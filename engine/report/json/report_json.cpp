@@ -8,6 +8,7 @@
 #include "report/json/report_configuration.hpp"
 #include "report/report_timer.hpp"
 #include "sim/scale_factor_control.hpp"
+#include "sim/iteration_data_entry.hpp"
 #include "simulationcraft.hpp"
 #include "util/git_info.hpp"
 

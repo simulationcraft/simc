@@ -40,6 +40,7 @@ BREWMASTER:
 #include "player/pet_spawner.hpp"
 
 #include "simulationcraft.hpp"
+#include <deque>
 
 // ==========================================================================
 // Monk
