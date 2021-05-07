@@ -1,4 +1,4 @@
-// Spell text, wow build 9.1.0.38549
+// Spell text, wow build 9.1.0.38600
 static const std::array<spelltext_data_t, 15337> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -15339,11 +15339,11 @@ static const std::array<spelltext_data_t, 15337> __ptr_spelltext_data { {
   { 356070, "$@spelldesc355893", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.0.38549
+// spelltext hotfix entries, wow build 9.1.0.38600
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.1.0.38549
+// Spell description variables, wow build 9.1.0.38600
 static const std::array<spelldesc_vars_data_t, 299> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15646,7 +15646,7 @@ static const std::array<spelldesc_vars_data_t, 299> __ptr_spelldesc_vars_data { 
   {  354541, "$stacks=${2}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.0.38549
+// spelldesc_vars hotfix entries, wow build 9.1.0.38600
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
