@@ -803,7 +803,9 @@ void paladin_t::create_buffs_protection()
         -> set_default_value( find_spell( 337848 ) -> effectN( 1 ).percent() );
   buffs.shielding_words = make_buff<absorb_buff_t>( this, "shielding_words", conduit.shielding_words )
         -> set_absorb_source( get_stats( "shielding_words" ) );
-  buffs.shining_light_stacks = make_buff( this, "shining_light_stacks", find_spell( 182104 ) );
+  buffs.shining_light_stacks = make_buff( this, "shining_light_stacks", find_spell( 182104 ) )
+  // Kind of lazy way to make sure that SL only triggers for prot. That spelldata doesn't have to be used anywhere else so /shrug
+    -> set_trigger_spell( find_specialization_spell( "Shining Light" ) );
   buffs.shining_light_free = make_buff( this, "shining_light_free", find_spell( 327510 ) );
 
   buffs.royal_decree = make_buff( this, "royal_decree", find_spell( 340147 ) );
