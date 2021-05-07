@@ -22,10 +22,9 @@ public:
   // This is initialized in SIMPLE mode. Only change mode for infrequent procs to keep memory usage reasonable.
   extended_sample_data_t ratio;
   const std::string name_str;
-  sim_t& sim;
 
-  explicit benefit_t( sim_t& s, util::string_view n )
-    : up( 0 ), down( 0 ), ratio( "Ratio", true ), name_str( n ), sim( s )
+  explicit benefit_t( util::string_view n )
+    : up( 0 ), down( 0 ), ratio( "Ratio", true ), name_str( n )
   {
   }
 
@@ -62,5 +61,5 @@ public:
     return name_str.c_str();
   }
 
-  benefit_t* collect_ratio(bool collect = true);
+  benefit_t* collect_ratio(sim_t& sim, bool collect = true);
 };

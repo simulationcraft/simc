@@ -8,7 +8,7 @@
 
 #include "sim/sc_sim.hpp"
 
-benefit_t* benefit_t::collect_ratio(bool collect)
+benefit_t* benefit_t::collect_ratio(sim_t& sim, bool collect)
 {
   if (sim.report_details)
   {

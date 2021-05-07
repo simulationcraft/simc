@@ -7208,7 +7208,7 @@ benefit_t* player_t::get_benefit( util::string_view name )
 
   if ( !u )
   {
-    u = new benefit_t( *sim, name );
+    u = new benefit_t( name );
 
     benefit_list.push_back( u );
   }
