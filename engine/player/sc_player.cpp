@@ -7222,7 +7222,7 @@ uptime_t* player_t::get_uptime( util::string_view name )
 
   if ( !u )
   {
-    u = new uptime_t( *sim, name );
+    u = new uptime_t( name );
 
     uptime_list.push_back( u );
   }
