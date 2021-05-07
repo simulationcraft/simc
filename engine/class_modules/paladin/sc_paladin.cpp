@@ -155,7 +155,7 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
 
 struct blessing_of_protection_t : public paladin_spell_t
 {
-  blessing_of_protection_t( paladin_t* p, const std::string& options_str )
+  blessing_of_protection_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "blessing_of_protection", p, p->find_class_spell( "Blessing of Protection" ) )
   {
     parse_options( options_str );
@@ -183,7 +183,7 @@ struct blessing_of_protection_t : public paladin_spell_t
 
 struct avenging_wrath_t : public paladin_spell_t
 {
-  avenging_wrath_t( paladin_t* p, const std::string& options_str )
+  avenging_wrath_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "avenging_wrath", p, p->spells.avenging_wrath )
   {
     parse_options( options_str );
@@ -219,7 +219,7 @@ struct avenging_wrath_t : public paladin_spell_t
 // Holy Avenger
 struct holy_avenger_t : public paladin_spell_t
 {
-  holy_avenger_t( paladin_t* p, const std::string& options_str )
+  holy_avenger_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "holy_avenger", p, p->talents.holy_avenger )
   {
     parse_options( options_str );
@@ -237,7 +237,7 @@ struct holy_avenger_t : public paladin_spell_t
 // seraphim
 struct seraphim_t : public holy_power_consumer_t<paladin_spell_t>
 {
-  seraphim_t( paladin_t* p, const std::string& options_str )
+  seraphim_t( paladin_t* p, util::string_view options_str )
     : holy_power_consumer_t( "seraphim", p, p->talents.seraphim )
   {
     parse_options( options_str );
@@ -296,7 +296,7 @@ struct consecration_t : public paladin_spell_t
 
   double precombat_time;
 
-  consecration_t( paladin_t* p, const std::string& options_str )
+  consecration_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "consecration", p, p->find_spell( "Consecration" ) ),
       damage_tick( new consecration_tick_t( p ) ),
       precombat_time( 2.0 )
@@ -408,7 +408,7 @@ struct consecration_t : public paladin_spell_t
 
 struct divine_shield_t : public paladin_spell_t
 {
-  divine_shield_t( paladin_t* p, const std::string& options_str )
+  divine_shield_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "divine_shield", p, p->find_class_spell( "Divine Shield" ) )
   {
     parse_options( options_str );
@@ -459,7 +459,7 @@ struct divine_shield_t : public paladin_spell_t
 
 struct divine_steed_t : public paladin_spell_t
 {
-  divine_steed_t( paladin_t* p, const std::string& options_str )
+  divine_steed_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "divine_steed", p, p->find_class_spell( "Divine Steed" ) )
   {
     parse_options( options_str );
@@ -477,7 +477,7 @@ struct divine_steed_t : public paladin_spell_t
 
 struct flash_of_light_t : public paladin_heal_t
 {
-  flash_of_light_t( paladin_t* p, const std::string& options_str )
+  flash_of_light_t( paladin_t* p, util::string_view options_str )
     : paladin_heal_t( "flash_of_light", p, p->find_class_spell( "Flash of Light" ) )
   {
     parse_options( options_str );
@@ -512,7 +512,7 @@ struct blessing_of_sacrifice_redirect_t : public paladin_spell_t
 
 struct blessing_of_sacrifice_t : public paladin_spell_t
 {
-  blessing_of_sacrifice_t( paladin_t* p, const std::string& options_str )
+  blessing_of_sacrifice_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "blessing_of_sacrifice", p, p->find_class_spell( "Blessing of Sacrifice" ) )
   {
     parse_options( options_str );
@@ -549,7 +549,7 @@ struct judgment_of_light_proc_t : public paladin_heal_t
 
 struct lay_on_hands_t : public paladin_heal_t
 {
-  lay_on_hands_t( paladin_t* p, const std::string& options_str )
+  lay_on_hands_t( paladin_t* p, util::string_view options_str )
     : paladin_heal_t( "lay_on_hands", p, p->find_class_spell( "Lay on Hands" ) )
   {
     parse_options( options_str );
@@ -587,7 +587,7 @@ struct lay_on_hands_t : public paladin_heal_t
 
 struct blinding_light_t : public paladin_spell_t
 {
-  blinding_light_t( paladin_t* p, const std::string& options_str )
+  blinding_light_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "blinding_light", p, p->find_talent_spell( "Blinding Light" ) )
   {
     parse_options( options_str );
@@ -603,7 +603,7 @@ struct blinding_light_t : public paladin_spell_t
 struct paladin_aura_base_t : public paladin_spell_t
 {
   buff_t* aura_buff;
-  paladin_aura_base_t( const std::string& n, paladin_t* p, const spell_data_t* s ) : paladin_spell_t( n, p, s )
+  paladin_aura_base_t( util::string_view n, paladin_t* p, const spell_data_t* s ) : paladin_spell_t( n, p, s )
   {
     harmful   = false;
     aura_buff = nullptr;
@@ -636,7 +636,7 @@ struct paladin_aura_base_t : public paladin_spell_t
 
 struct devotion_aura_t : public paladin_aura_base_t
 {
-  devotion_aura_t( paladin_t* p, const std::string& options_str )
+  devotion_aura_t( paladin_t* p, util::string_view options_str )
     : paladin_aura_base_t( "devotion_aura", p, p->find_class_spell( "Devotion Aura" ) )
   {
     parse_options( options_str );
@@ -734,7 +734,7 @@ struct melee_t : public paladin_melee_attack_t
 
 struct auto_melee_attack_t : public paladin_melee_attack_t
 {
-  auto_melee_attack_t( paladin_t* p, const std::string& options_str )
+  auto_melee_attack_t( paladin_t* p, util::string_view options_str )
     : paladin_melee_attack_t( "auto_attack", p, spell_data_t::nil() )
   {
     school = SCHOOL_PHYSICAL;
@@ -766,7 +766,7 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
 struct crusader_strike_t : public paladin_melee_attack_t
 {
   bool has_crusader_2;
-  crusader_strike_t( paladin_t* p, const std::string& options_str )
+  crusader_strike_t( paladin_t* p, util::string_view options_str )
     : paladin_melee_attack_t( "crusader_strike", p, p->find_class_spell( "Crusader Strike" ) ),
       has_crusader_2( p->find_specialization_spell( 342348 )->ok() )
   {
@@ -842,7 +842,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
 struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
 {
-  word_of_glory_t( paladin_t* p, const std::string& options_str )
+  word_of_glory_t( paladin_t* p, util::string_view options_str )
     : holy_power_consumer_t( "word_of_glory", p, p->find_class_spell( "Word of Glory" ) )
   {
     parse_options( options_str );
@@ -932,7 +932,7 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
 
 struct hammer_of_justice_t : public paladin_melee_attack_t
 {
-  hammer_of_justice_t( paladin_t* p, const std::string& options_str )
+  hammer_of_justice_t( paladin_t* p, util::string_view options_str )
     : paladin_melee_attack_t( "hammer_of_justice", p, p->find_class_spell( "Hammer of Justice" ) )
   {
     parse_options( options_str );
@@ -994,7 +994,7 @@ void judgment_t::do_ctor_common( paladin_t* p )
   }
 }
 
-judgment_t::judgment_t( paladin_t* p, const std::string& options_str )
+judgment_t::judgment_t( paladin_t* p, util::string_view options_str )
   : paladin_melee_attack_t( "judgment", p, p->find_class_spell( "Judgment" ) )
 {
   parse_options( options_str );
@@ -1079,7 +1079,7 @@ void judgment_t::execute()
 
 struct rebuke_t : public paladin_melee_attack_t
 {
-  rebuke_t( paladin_t* p, const std::string& options_str )
+  rebuke_t( paladin_t* p, util::string_view options_str )
     : paladin_melee_attack_t( "rebuke", p, p->find_class_spell( "Rebuke" ) )
   {
     parse_options( options_str );
@@ -1104,7 +1104,7 @@ struct rebuke_t : public paladin_melee_attack_t
 
 struct hand_of_reckoning_t : public paladin_melee_attack_t
 {
-  hand_of_reckoning_t( paladin_t* p, const std::string& options_str )
+  hand_of_reckoning_t( paladin_t* p, util::string_view options_str )
     : paladin_melee_attack_t( "hand_of_reckoning", p, p->find_class_spell( "Hand of Reckoning" ) )
   {
     parse_options( options_str );
@@ -1135,7 +1135,7 @@ struct righteous_might_t : public heal_t
 struct vanquishers_hammer_t : public paladin_melee_attack_t
 {
   righteous_might_t* r_m_heal;
-  vanquishers_hammer_t( paladin_t* p, const std::string& options_str )
+  vanquishers_hammer_t( paladin_t* p, util::string_view options_str )
     : paladin_melee_attack_t( "vanquishers_hammer", p, p->covenant.necrolord )
   {
     parse_options( options_str );
@@ -1167,7 +1167,7 @@ struct vanquishers_hammer_t : public paladin_melee_attack_t
 
 struct divine_toll_t : public paladin_spell_t
 {
-  divine_toll_t( paladin_t* p, const std::string& options_str )
+  divine_toll_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "divine_toll", p, p->covenant.kyrian )
   {
     parse_options( options_str );
@@ -1311,7 +1311,7 @@ struct ashen_hallow_t : public paladin_spell_t
   ashen_hallow_heal_tick_t* heal_tick;
   hallowed_discernment_tick_t* hd_damage;
 
-  ashen_hallow_t( paladin_t* p, const std::string& options_str )
+  ashen_hallow_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "ashen_hallow", p, p->covenant.venthyr )
   {
     parse_options( options_str );
@@ -1485,7 +1485,7 @@ struct blessing_of_winter_t : public paladin_spell_t
 
 struct blessing_of_the_seasons_t : public paladin_spell_t
 {
-  blessing_of_the_seasons_t( paladin_t* p, const std::string& options_str )
+  blessing_of_the_seasons_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "blessing_of_the_seasons", p, spell_data_t::nil() )
   {
     parse_options( options_str );
@@ -1519,7 +1519,7 @@ struct blessing_of_the_seasons_t : public paladin_spell_t
 
 struct hammer_of_wrath_t : public paladin_melee_attack_t
 {
-  hammer_of_wrath_t( paladin_t* p, const std::string& options_str )
+  hammer_of_wrath_t( paladin_t* p, util::string_view options_str )
     : paladin_melee_attack_t( "hammer_of_wrath", p, p->find_class_spell( "Hammer of Wrath" ) )
   {
     parse_options( options_str );

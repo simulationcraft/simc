@@ -55,7 +55,7 @@ namespace buffs {
 // Crusade
 struct crusade_t : public paladin_spell_t
 {
-  crusade_t( paladin_t* p, const std::string& options_str ) :
+  crusade_t( paladin_t* p, util::string_view options_str ) :
     paladin_spell_t( "crusade", p, p -> talents.crusade )
   {
     parse_options( options_str );
@@ -86,7 +86,7 @@ struct crusade_t : public paladin_spell_t
 
 struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
-  execution_sentence_t( paladin_t* p, const std::string& options_str ) :
+  execution_sentence_t( paladin_t* p, util::string_view options_str ) :
     holy_power_consumer_t( "execution_sentence", p, p -> talents.execution_sentence )
   {
     parse_options( options_str );
@@ -219,7 +219,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
   azerite_expurgation_t* azerite_expurgation;
   expurgation_t* expurgation;
 
-  blade_of_justice_t( paladin_t* p, const std::string& options_str ) :
+  blade_of_justice_t( paladin_t* p, util::string_view options_str ) :
     paladin_melee_attack_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ) ),
     azerite_expurgation( nullptr ),
     expurgation( nullptr )
@@ -294,7 +294,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
 struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 {
-  divine_storm_t( paladin_t* p, const std::string& options_str ) :
+  divine_storm_t( paladin_t* p, util::string_view options_str ) :
     holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) )
   {
     parse_options( options_str );
@@ -439,7 +439,7 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
   echoed_templars_verdict_t* echo;
   bool is_fv;
 
-  templars_verdict_t( paladin_t* p, const std::string& options_str ) :
+  templars_verdict_t( paladin_t* p, util::string_view options_str ) :
     holy_power_consumer_t(
       p -> legendary.final_verdict -> ok() ? "final_verdict" : "templars_verdict",
       p,
@@ -570,7 +570,7 @@ struct reckoning_t : public paladin_spell_t
 
 struct final_reckoning_t : public paladin_spell_t
 {
-  final_reckoning_t( paladin_t* p, const std::string& options_str ) :
+  final_reckoning_t( paladin_t* p, util::string_view options_str ) :
     paladin_spell_t( "final_reckoning", p, p -> talents.final_reckoning )
   {
     parse_options( options_str );
@@ -598,7 +598,7 @@ struct judgment_ret_t : public judgment_t
 {
   int holy_power_generation;
 
-  judgment_ret_t( paladin_t* p, const std::string& options_str ) :
+  judgment_ret_t( paladin_t* p, util::string_view options_str ) :
     judgment_t( p, options_str ),
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
   {}
@@ -644,7 +644,7 @@ struct judgment_ret_t : public judgment_t
 // Justicar's Vengeance
 struct justicars_vengeance_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
-  justicars_vengeance_t( paladin_t* p, const std::string& options_str ) :
+  justicars_vengeance_t( paladin_t* p, util::string_view options_str ) :
     holy_power_consumer_t( "justicars_vengeance", p, p -> talents.justicars_vengeance )
   {
     parse_options( options_str );
@@ -683,7 +683,7 @@ struct shield_of_vengeance_proc_t : public paladin_spell_t
 
 struct shield_of_vengeance_t : public paladin_absorb_t
 {
-  shield_of_vengeance_t( paladin_t* p, const std::string& options_str ) :
+  shield_of_vengeance_t( paladin_t* p, util::string_view options_str ) :
     paladin_absorb_t( "shield_of_vengeance", p, p -> find_specialization_spell( "Shield of Vengeance" ) )
   {
     parse_options( options_str );
@@ -726,7 +726,7 @@ struct wake_of_ashes_t : public paladin_spell_t
 
   truths_wake_t* truths_wake;
 
-  wake_of_ashes_t( paladin_t* p, const std::string& options_str ) :
+  wake_of_ashes_t( paladin_t* p, util::string_view options_str ) :
     paladin_spell_t( "wake_of_ashes", p, p -> find_specialization_spell( "Wake of Ashes" ) ),
     truths_wake( nullptr )
   {

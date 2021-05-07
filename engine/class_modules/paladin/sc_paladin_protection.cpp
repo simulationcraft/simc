@@ -12,7 +12,7 @@ namespace paladin {
 
 struct ardent_defender_t : public paladin_spell_t
 {
-  ardent_defender_t( paladin_t* p, const std::string& options_str ) :
+  ardent_defender_t( paladin_t* p, util::string_view options_str ) :
     paladin_spell_t( "ardent_defender", p, p -> find_specialization_spell( "Ardent Defender" ) )
   {
     parse_options( options_str );
@@ -38,7 +38,7 @@ struct ardent_defender_t : public paladin_spell_t
 
 struct avengers_shield_base_t : public paladin_spell_t
 {
-  avengers_shield_base_t( const std::string& n, paladin_t* p, const spell_data_t* s, const std::string& options_str ) :
+  avengers_shield_base_t( util::string_view n, paladin_t* p, const spell_data_t* s, util::string_view options_str ) :
     paladin_spell_t( n, p, s )
   {
     parse_options( options_str );
@@ -102,7 +102,7 @@ struct avengers_shield_dt_t : public avengers_shield_base_t
 
 struct avengers_shield_t : public avengers_shield_base_t
 {
-  avengers_shield_t( paladin_t* p, const std::string& options_str ) :
+  avengers_shield_t( paladin_t* p, util::string_view options_str ) :
     avengers_shield_base_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ), options_str )
   {
     cooldown = p -> cooldowns.avengers_shield;
@@ -161,7 +161,7 @@ struct avengers_shield_t : public avengers_shield_base_t
 
 struct moment_of_glory_t : public paladin_spell_t
 {
-  moment_of_glory_t( paladin_t* p, const std::string& options_str ) :
+  moment_of_glory_t( paladin_t* p, util::string_view options_str ) :
     paladin_spell_t( "moment_of_glory", p, p -> talents.moment_of_glory )
   {
     parse_options( options_str );
@@ -218,7 +218,7 @@ struct blessed_hammer_t : public paladin_spell_t
   blessed_hammer_tick_t* hammer;
   double num_strikes;
 
-  blessed_hammer_t( paladin_t* p, const std::string& options_str ) :
+  blessed_hammer_t( paladin_t* p, util::string_view options_str ) :
     paladin_spell_t( "blessed_hammer", p, p -> talents.blessed_hammer ),
     hammer( new blessed_hammer_tick_t( p ) ), num_strikes( 2 )
   {
@@ -272,7 +272,7 @@ struct blessed_hammer_t : public paladin_spell_t
 
 struct blessing_of_spellwarding_t : public paladin_spell_t
 {
-  blessing_of_spellwarding_t( paladin_t* p, const std::string& options_str ) :
+  blessing_of_spellwarding_t( paladin_t* p, util::string_view options_str ) :
     paladin_spell_t( "blessing_of_spellwarding", p, p -> talents.blessing_of_spellwarding )
   {
     parse_options( options_str );
@@ -299,7 +299,7 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
 
 struct guardian_of_ancient_kings_t : public paladin_spell_t
 {
-  guardian_of_ancient_kings_t( paladin_t* p, const std::string& options_str ) :
+  guardian_of_ancient_kings_t( paladin_t* p, util::string_view options_str ) :
     paladin_spell_t( "guardian_of_ancient_kings", p, p -> find_specialization_spell( "Guardian of Ancient Kings" ) )
   {
     parse_options( options_str );
@@ -353,7 +353,7 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
 struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 {
   hammer_of_the_righteous_aoe_t* hotr_aoe;
-  hammer_of_the_righteous_t( paladin_t* p, const std::string& options_str ) :
+  hammer_of_the_righteous_t( paladin_t* p, util::string_view options_str ) :
     paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ) )
   {
     parse_options( options_str );
@@ -396,7 +396,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 struct judgment_prot_t : public judgment_t
 {
   int judge_holy_power, sw_holy_power;
-  judgment_prot_t( paladin_t* p, const std::string& options_str ) :
+  judgment_prot_t( paladin_t* p, util::string_view options_str ) :
     judgment_t( p, options_str ),
     judge_holy_power( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) ),
     sw_holy_power( as<int>( p -> talents.prot_sanctified_wrath -> effectN( 2 ).base_value() ) )
@@ -450,7 +450,7 @@ void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, tim
 
 struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
-  shield_of_the_righteous_t( paladin_t* p, const std::string& options_str ) :
+  shield_of_the_righteous_t( paladin_t* p, util::string_view options_str ) :
     holy_power_consumer_t( "shield_of_the_righteous", p, p -> spec.shield_of_the_righteous )
   {
     parse_options( options_str );
