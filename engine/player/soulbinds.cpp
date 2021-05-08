@@ -630,6 +630,73 @@ void wasteland_propriety( special_effect_t& effect )
   add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff );
 }
 
+// 354017 - Critical Strike
+// 353266 - Primary Stat
+// 354016 - Haste
+// 354018 - Versatility
+void party_favors( special_effect_t& effect )
+{
+  auto opt_str = effect.player->sim->shadowlands_opts.party_favor_type;
+  if ( util::str_compare_ci( opt_str, "none" ) )
+    return;
+
+  buff_t* buff;
+
+  // TODO: Figure out if you can have multiple buffs at a time
+  if ( util::str_compare_ci( opt_str, "haste" ) )
+  {
+    buff = buff_t::find( effect.player, "the_mad_dukes_tea_haste" );
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_haste", effect.player->find_spell( 354016 ) )
+                 ->set_default_value_from_effect_type( A_HASTE_ALL )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    }
+  }
+  else if ( util::str_compare_ci( opt_str, "crit" ) )
+  {
+    buff = buff_t::find( effect.player, "the_mad_dukes_tea_crit" );
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_crit", effect.player->find_spell( 354017 ) )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                 ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
+    }
+  }
+  else if ( util::str_compare_ci( opt_str, "primary" ) )
+  {
+    buff = buff_t::find( effect.player, "the_mad_dukes_tea_primary" );
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_primary", effect.player->find_spell( 353266 ) )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+                 ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
+    }
+  }
+  else if ( util::str_compare_ci( opt_str, "versatility" ) )
+  {
+    buff = buff_t::find( effect.player, "the_mad_dukes_tea_versatility" );
+    if ( !buff )
+    {
+      buff =
+          make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_versatility", effect.player->find_spell( 354018 ) )
+              ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
+              ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
+    }
+  }
+  else
+  {
+    buff = nullptr;
+  }
+
+  if ( buff )
+    effect.player->register_combat_begin( buff );
+  else
+    effect.player->sim->error( "Warning: Invalid type '{}' for Party Favors, ignoring.", opt_str );
+}
+
 void built_for_war( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "built_for_war" );
@@ -1362,6 +1429,7 @@ void register_special_effects()
   register_soulbind_special_effect( 331586, soulbinds::thrill_seeker, true );
   register_soulbind_special_effect( 336239, soulbinds::soothing_shade );  // Theotar
   register_soulbind_special_effect( 319983, soulbinds::wasteland_propriety );
+  register_soulbind_special_effect( 351750, soulbinds::party_favors );
   register_soulbind_special_effect( 319973, soulbinds::built_for_war );  // Draven
   register_soulbind_special_effect( 332753, soulbinds::superior_tactics );
   // Kyrian

@@ -378,11 +378,9 @@ struct sim_t : private sc_thread_t
     std::string unbound_changeling_stat_type = "default";
     /// Chance player is getting overhealed by Gluttonous Spike proc.
     double gluttonous_spike_overheal_chance = 1.0;
-
     /// Anima Field Emitter buff duration distribution, defaults to full duration.
     double anima_field_emitter_mean = std::numeric_limits<double>::max(),
            anima_field_emitter_stddev = 0.0;
-
     /// Retarget Shadowgrasp Totem if the use_item target demises after this many seconds
     timespan_t retarget_shadowgrasp_totem = 0_s;
     /// Disables the execute effect of Inscrutable Quantum Device since it is avoidable in game
@@ -396,7 +394,9 @@ struct sim_t : private sc_thread_t
     double wild_hunt_tactics_duration_multiplier = 1.0;
     /// Chance bonded hearts will heal a member of the other covenants when grove invigoration procs
     double bonded_hearts_other_covenant_chance = 1.0;
-
+    // Stat buff provided by Theotar's Party Favors soulbind (The Mad Duke's Tea buffs)
+    // Buff Types: "primary", "haste", "crit", "versatility"
+    std::string party_favor_type = "none";
   } shadowlands_opts;
 
   // Auras and De-Buffs
