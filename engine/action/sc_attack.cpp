@@ -10,6 +10,7 @@
 #include "player/stats.hpp"
 #include "sim/sc_cooldown.hpp"
 #include "sim/event.hpp"
+#include "sim/sc_sim.hpp"
 #include "util/rng.hpp"
 
 // ==========================================================================

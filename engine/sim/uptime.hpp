@@ -62,14 +62,13 @@ struct uptime_simple_t : public uptime_base_t
 struct uptime_t : public uptime_base_t
 {
   std::string name_str;
-  sim_t& sim;
 
   extended_sample_data_t uptime_sum;
   extended_sample_data_t uptime_instance;
 
-  uptime_t(sim_t& s, util::string_view n) :
+  uptime_t(util::string_view n) :
+    uptime_base_t(),
     name_str(n),
-    sim(s),
     uptime_sum("Uptime", true),
     uptime_instance("Duration", true)
   {}
@@ -101,7 +100,7 @@ struct uptime_t : public uptime_base_t
     return name_str.c_str();
   }
 
-  uptime_t* collect_uptime(bool collect = true);
+  uptime_t* collect_uptime(sim_t& sim, bool collect = true);
 
-  uptime_t* collect_duration(bool collect = true);
+  uptime_t* collect_duration(sim_t& sim, bool collect = true);
 };

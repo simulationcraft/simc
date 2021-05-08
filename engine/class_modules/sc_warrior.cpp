@@ -5,6 +5,7 @@
 
 #include "dbc/specialization.hpp"
 #include "simulationcraft.hpp"
+#include "player/player_talent_points.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE
@@ -610,7 +611,7 @@ public:
 
     resource_regeneration = regen_type::DISABLED;
 
-    talent_points.register_validity_fn( [this]( const spell_data_t* spell ) {
+    talent_points->register_validity_fn( [this]( const spell_data_t* spell ) {
       // Soul of the Battlelord
       if ( find_item_by_id( 151650 ) )
       {
@@ -1173,7 +1174,7 @@ public:
       if ( p()->legendary.glory->ok() && p()->buff.conquerors_banner->check() )
       {
         p()->legendary.glory_counter += ab::last_resource_cost;
-        if ( p()->legendary.glory_counter > ( p()->specialization() >= WARRIOR_PROTECTION ? 10 : 20 ) );
+        if ( p()->legendary.glory_counter > ( p()->specialization() >= WARRIOR_PROTECTION ? 10 : 20 ) )
         {
           double times_over_threshold = floor( p()->legendary.glory_counter / (p()->specialization() == WARRIOR_PROTECTION ? 10 : 20) );
           p()->buff.conquerors_banner->extend_duration( p(), timespan_t::from_millis( p()->legendary.glory->effectN( 3 ).base_value() ) * times_over_threshold );
@@ -3675,9 +3676,12 @@ struct overpower_t : public warrior_attack_t
   double battlelord_chance;
   warrior_attack_t* seismic_wave;
   warrior_attack_t* dreadnaught;
+
   overpower_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "overpower", p, p->spec.overpower ), seismic_wave( nullptr ), dreadnaught( nullptr ),
-      battlelord_chance( p->legendary.battlelord->proc_chance() )
+    : warrior_attack_t( "overpower", p, p->spec.overpower ),
+      battlelord_chance( p->legendary.battlelord->proc_chance() ),
+      seismic_wave( nullptr ),
+      dreadnaught( nullptr )
   {
     parse_options( options_str );
     may_block = may_parry = may_dodge = false;
@@ -7401,7 +7405,7 @@ void warrior_t::create_buffs()
   buff.conquerors_banner = make_buff( this, "conquerors_banner", covenant.conquerors_banner )
     ->set_default_value_from_effect_type( A_PERIODIC_ENERGIZE )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-    ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+    ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       resource_gain( RESOURCE_RAGE, (specialization() == WARRIOR_FURY ? 6 : 4), gain.conquerors_banner );
     } );
 
@@ -8638,7 +8642,7 @@ struct the_great_storms_eye_t : public unique_gear::class_buff_cb_t<warrior_t>
 
   buff_t* creator( const special_effect_t& e ) const override
   {
-    if ( e.player->talent_points.has_row_col( 6, 3 ) )
+    if ( e.player->talent_points->has_row_col( 6, 3 ) )
       return make_buff( e.player, buff_name, e.player->find_spell( 248145 ) )
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
           ->add_invalidate( CACHE_RUN_SPEED );

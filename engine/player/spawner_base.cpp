@@ -7,6 +7,7 @@
 
 #include "player/sc_player.hpp"
 #include "util/util.hpp"
+#include "sim/sc_sim.hpp"
 
 namespace spawner
 {

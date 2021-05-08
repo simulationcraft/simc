@@ -6,6 +6,7 @@
 #pragma once
 
 #include "config.hpp"
+#include "dbc/data_enums.hh"
 #include <cstdint>
 #include <string>
 

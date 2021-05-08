@@ -6,11 +6,12 @@
 #pragma once
 
 #include "config.hpp"
-#include "spell_base.hpp"
+
 #include "player/target_specific.hpp"
-#include "buff/sc_buff.hpp"
+#include "spell_base.hpp"
 
 struct action_state_t;
+struct absorb_buff_t;
 
 struct absorb_t : public spell_base_t
 {

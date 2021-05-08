@@ -12,6 +12,7 @@
 #include "item/item.hpp"
 #include "player/pet.hpp"
 #include "player/sc_player.hpp"
+#include "player/covenant.hpp"
 #include "report/gear_weights.hpp"
 #include "sim/sc_sim.hpp"
 #include "sim/scale_factor_control.hpp"

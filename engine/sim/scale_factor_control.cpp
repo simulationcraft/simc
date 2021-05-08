@@ -305,10 +305,6 @@ void scale_factor_control_t::analyze_stats()
         double delta_error = delta_p -> scaling_for_metric( sm ).stddev * delta_sim -> confidence_estimator;
         double   ref_error = ref_p -> scaling_for_metric( sm ).stddev * ref_sim -> confidence_estimator;
 
-        // TODO: this is the only place in the entire code base where scaling_delta_dps shows up, 
-        // apart from declaration in simulationcraft.hpp line 4535. Possible to remove?
-        p -> scaling -> scaling_delta_dps[ sm ].set_stat( stat, delta_score );
-
         double score = ( delta_score - ref_score ) / divisor;
         double error = delta_error * delta_error + ref_error * ref_error;
 

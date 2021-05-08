@@ -13,6 +13,7 @@
 #include "player/pet.hpp"
 #include "report/color.hpp"
 #include "util/util.hpp"
+#include "sim/sc_sim.hpp"
 
 #include <vector>
 

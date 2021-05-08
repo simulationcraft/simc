@@ -5,7 +5,6 @@
 
 #include "action/sc_action.hpp"
 #include "action/sc_action_state.hpp"
-#include "action/attack.hpp"
 #include "action/action_callback.hpp"
 #include "dbc/data_enums.hh"
 #include "dbc/dbc.hpp"
@@ -22,7 +21,6 @@
 #include "sim/sc_expressions.hpp"
 #include "sim/sc_cooldown.hpp"
 #include "sim/sc_sim.hpp"
-#include "sim/raid_event.hpp"
 #include "util/rng.hpp"
 #include "player/expansion_effects.hpp" // try to implement leyshocks_grand_compilation as a callback
 #include "util/util.hpp"

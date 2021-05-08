@@ -10,6 +10,7 @@
 #include "player/action_priority_list.hpp"
 #include "sim/sc_expressions.hpp"
 #include "sim/sc_cooldown.hpp"
+#include "sim/sc_sim.hpp"
 
 
 variable_t::variable_t(player_t* player, util::string_view options_str) :

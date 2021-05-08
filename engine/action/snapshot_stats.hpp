@@ -6,9 +6,10 @@
 #pragma once
 
 #include "config.hpp"
+
 #include "action/sc_action.hpp"
 #include "sc_enums.hpp"
-#include <string>
+#include "util/string_view.hpp"
 
 struct attack_t;
 struct player_t;

@@ -24,6 +24,7 @@ GENERAL:
 WINDWALKER:
 - Implement Touch of Death Rank 3
 - Add Cyclone Strike Counter as an expression
+- Venthyr's Windwalker Fallen Monk's Fist of Fury is reporting double damage.
 
 MISTWEAVER:
 - Essence Font - See if the implementation can be corrected to the intended design.
@@ -40,6 +41,7 @@ BREWMASTER:
 #include "player/pet_spawner.hpp"
 
 #include "simulationcraft.hpp"
+#include <deque>
 
 // ==========================================================================
 // Monk
@@ -4992,8 +4994,8 @@ struct fortifying_brew_t : public monk_buff_t<buff_t>
       // The tooltip is hard-coded with 20% if Brewmaster Rank 2 is activated
       // Currently it's bugged and giving 17.39% HP instead of the intended 20%
       // The intended calculation is:
-      // health_multiplier = ( 1 + health_multiplier ) * 0.20 * ( 1 / ( 1 + health_multiplier ) );
-      health_multiplier = 0.20 * ( 1 / ( 1 + health_multiplier ) );
+      // health_multiplier = ( 1 + health_multiplier ) * p().passives.fortifying_brew->effectN( 5 ).percent() * ( 1 / ( 1 + health_multiplier ) );
+      health_multiplier = p().passives.fortifying_brew->effectN( 5 ).percent() * ( 1 / ( 1 + health_multiplier ) );
     }
 
     // Extra Health is set by current max_health, doesn't change when max_health changes.

@@ -6,7 +6,9 @@
 #include "util.hpp"
 #include "util/git_info.hpp"
 #include "player/sc_player.hpp"
+#include "player/player_talent_points.hpp"
 #include "sim/scale_factor_control.hpp"
+#include "sim/sc_sim.hpp"
 #include "dbc/dbc.hpp"
 
 #include "lib/utf8-cpp/utf8.h"
@@ -2743,8 +2745,8 @@ std::string util::create_blizzard_talent_url( const player_t& p )
 
   for ( int i = 0; i < MAX_TALENT_ROWS; i++ )
   {
-    if ( p.talent_points.choice( i ) >= 0 )
-      url += util::to_string( p.talent_points.choice( i ) + 1 );
+    if ( p.talent_points->choice( i ) >= 0 )
+      url += util::to_string( p.talent_points->choice( i ) + 1 );
     else
       url += "0";
   }

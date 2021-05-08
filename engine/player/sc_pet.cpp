@@ -12,6 +12,7 @@
 #include "player/actor_target_data.hpp"
 #include "player/spawner_base.hpp"
 #include "sim/event.hpp"
+#include "sim/sc_sim.hpp"
 
 namespace {
 struct expiration_t : public event_t
