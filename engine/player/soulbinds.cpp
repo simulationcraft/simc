@@ -738,6 +738,46 @@ void superior_tactics( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void battlefield_presence( special_effect_t& effect )
+{
+  auto forced_enemies = effect.player->sim->shadowlands_opts.battlefield_presence_enemies;
+  auto buff           = buff_t::find( effect.player, "battlefield_presence" );
+  auto p              = effect.player;
+
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "battlefield_presence", effect.player->find_spell( 352858 ) )
+               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+               ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+               ->set_period( 0_ms )
+               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+    buff->set_stack_change_callback( [ p, forced_enemies ]( buff_t* b, int, int ) {
+      int enemy_count = 0;
+
+      if ( forced_enemies == -1 )
+      {
+        for ( size_t i = 0, actors = p->sim->actor_list.size(); i < actors; i++ )
+        {
+          player_t* t = p->sim->actor_list[ i ];
+
+          if ( !t->is_sleeping() && t->is_enemy() )
+            enemy_count++;
+        }
+      }
+      else
+      {
+        enemy_count = forced_enemies;
+      }
+
+      b->trigger( enemy_count );
+    } );
+  }
+
+  if ( buff )
+    effect.player->register_combat_begin( buff );
+}
+
 void let_go_of_the_past( special_effect_t& effect )
 {
   struct let_go_of_the_past_cb_t : public dbc_proc_callback_t
@@ -1432,6 +1472,7 @@ void register_special_effects()
   register_soulbind_special_effect( 351750, soulbinds::party_favors );
   register_soulbind_special_effect( 319973, soulbinds::built_for_war );  // Draven
   register_soulbind_special_effect( 332753, soulbinds::superior_tactics );
+  register_soulbind_special_effect( 352417, soulbinds::battlefield_presence );
   // Kyrian
   register_soulbind_special_effect( 328257, soulbinds::let_go_of_the_past );  // Pelagos
   register_soulbind_special_effect( 328266, soulbinds::combat_meditation );
