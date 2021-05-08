@@ -3959,6 +3959,10 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t* )
 
   m *= 1.0 + racials.command->effectN( 1 ).percent();
 
+  if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
+    m *=
+        1.0 + ( buffs.battlefield_presence->data().effectN( 2 ).percent() * buffs.battlefield_presence->current_stack );
+
   return m;
 }
 
@@ -3992,6 +3996,9 @@ double player_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.volatile_solvent_damage && buffs.volatile_solvent_damage->has_common_school( school ) )
     m *= 1.0 + buffs.volatile_solvent_damage->check_value();
+
+  if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
+    m *= 1.0 + buffs.battlefield_presence->check_stack_value();
 
   return m;
 }

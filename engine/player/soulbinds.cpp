@@ -747,12 +747,11 @@ void battlefield_presence( special_effect_t& effect )
   if ( !buff )
   {
     buff = make_buff( effect.player, "battlefield_presence", effect.player->find_spell( 352858 ) )
-               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
-               ->set_period( 0_ms )
-               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+               ->set_period( 10_ms );
 
-    buff->set_stack_change_callback( [ p, forced_enemies ]( buff_t* b, int, int ) {
+    buff->set_stack_change_callback( [ p, forced_enemies, effect ]( buff_t* b, int, int ) {
       int enemy_count = 0;
 
       if ( forced_enemies == -1 )
@@ -764,18 +763,32 @@ void battlefield_presence( special_effect_t& effect )
           if ( !t->is_sleeping() && t->is_enemy() )
             enemy_count++;
         }
+        if ( enemy_count > b->max_stack() )
+          enemy_count = b->max_stack();
       }
       else
       {
         enemy_count = forced_enemies;
       }
 
-      b->trigger( enemy_count );
+      if ( b->current_stack != enemy_count )
+      {
+        if ( effect.player->sim->debug )
+        {
+          effect.player->sim->out_debug.print( "{} increasing battlefield presence to {} enemies",
+                                               effect.player->name(), enemy_count );
+        }
+        b->expire();
+        b->trigger( enemy_count );
+      }
     } );
   }
 
   if ( buff )
+  {
+    effect.player->buffs.battlefield_presence = buff;
     effect.player->register_combat_begin( buff );
+  }
 }
 
 void let_go_of_the_past( special_effect_t& effect )
