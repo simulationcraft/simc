@@ -738,6 +738,57 @@ void superior_tactics( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void battlefield_presence( special_effect_t& effect )
+{
+  auto forced_enemies = effect.player->sim->shadowlands_opts.battlefield_presence_enemies;
+  auto buff           = buff_t::find( effect.player, "battlefield_presence" );
+  auto p              = effect.player;
+
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "battlefield_presence", effect.player->find_spell( 352858 ) )
+               ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+               ->set_period( 0_ms );
+  }
+
+  // If the option is not set, adjust stacks every time the target_non_sleeping_list changes
+  if ( forced_enemies == -1 )
+  {
+    effect.activation_cb = [ p, buff ]() {
+      p->sim->target_non_sleeping_list.register_callback( [ p, buff ]( player_t* t ) {
+        auto enemies       = p->sim->target_non_sleeping_list.size();
+        auto current_stack = buff->current_stack;
+        auto max_stack     = buff->max_stack();
+
+        if ( enemies != current_stack )
+        {
+          // Short circuit if there are more enemies than 3 and we are already at max stacks
+          if ( enemies > max_stack && current_stack == max_stack )
+            return;
+
+          auto diff = as<int>( enemies ) - current_stack;
+          if ( diff > 0 )
+            buff->trigger( diff );
+          else if ( diff < 0 )
+            buff->decrement( -diff );
+        }
+      } );
+    };
+  }
+  else
+  {
+    if ( forced_enemies != 0 )
+      buff->set_initial_stack( forced_enemies );
+  }
+
+  if ( buff && forced_enemies != 0 )
+  {
+    effect.player->register_combat_begin( buff );
+    effect.player->buffs.battlefield_presence = buff;
+  }
+}
+
 void let_go_of_the_past( special_effect_t& effect )
 {
   struct let_go_of_the_past_cb_t : public dbc_proc_callback_t
@@ -1432,6 +1483,7 @@ void register_special_effects()
   register_soulbind_special_effect( 351750, soulbinds::party_favors );
   register_soulbind_special_effect( 319973, soulbinds::built_for_war );  // Draven
   register_soulbind_special_effect( 332753, soulbinds::superior_tactics );
+  register_soulbind_special_effect( 352417, soulbinds::battlefield_presence );
   // Kyrian
   register_soulbind_special_effect( 328257, soulbinds::let_go_of_the_past );  // Pelagos
   register_soulbind_special_effect( 328266, soulbinds::combat_meditation );

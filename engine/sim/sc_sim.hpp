@@ -397,6 +397,9 @@ struct sim_t : private sc_thread_t
     // Stat buff provided by Theotar's Party Favors soulbind (The Mad Duke's Tea buffs)
     // Buff Types: "primary", "haste", "crit", "versatility"
     std::string party_favor_type = "none";
+    // Battlefield Presence enemy count override
+    // Defaults to -1 to have the sim constantly adjust the value based on number of enemies in the sim
+    int battlefield_presence_enemies = -1;
   } shadowlands_opts;
 
   // Auras and De-Buffs
