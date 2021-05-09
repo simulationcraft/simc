@@ -319,6 +319,7 @@ struct holy_shock_t : public paladin_spell_t
   glimmer_of_light_damage_t* glimmer_damage;
   glimmer_of_light_heal_t* glimmer_heal;
 
+
   holy_shock_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "holy_shock", p, p->find_specialization_spell( 20473 ) ), dmg( false )
   {
@@ -372,6 +373,7 @@ struct holy_shock_t : public paladin_spell_t
     // because of dumb blizz spelldata that makes every holy shock spell affected by judgment,
     // instead of just affecting the damaging holy shock spell.
     paladin_spell_t::execute();
+
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
@@ -386,10 +388,9 @@ struct holy_shock_t : public paladin_spell_t
 
   void handle_glimmer()
   {
-    auto targets = sim->target_non_sleeping_list.data();
-    for ( player_t* target : targets )
+    for ( player_t* t : sim->target_non_sleeping_list )
     {
-      if ( td( target )->debuff.glimmer_of_light_damage->up() )
+      if ( td( t )->debuff.glimmer_of_light_damage->up() )
       {
         glimmer_damage->set_target( target );
         glimmer_damage->execute();
