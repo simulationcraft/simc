@@ -522,7 +522,9 @@ struct player_t : public actor_t
     buff_t* wild_hunt_tactics;  // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
     buff_t* volatile_solvent_damage; // necrolord/marileth - elemental (magic) and giant (physical) % damage done buffs
     buff_t* redirected_anima; // night_fae/niya - mastery and max health % increase per stack
-    buff_t* battlefield_presence;
+    buff_t* battlefield_presence; // venthyr/draven - damage increase buff based on number of enemies
+    buff_t* fatal_flaw_crit; // venthyr/nadjia - buff applied after euphoria expires if you have more crit than vers
+    buff_t* fatal_flaw_vers; // venthyr/nadjia - buff applied after euphoria expires if you have more vers than crit
 
     // 9.0 Runecarves
     buff_t* norgannons_sagacity_stacks;  // stacks on every cast
