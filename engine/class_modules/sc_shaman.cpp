@@ -3767,6 +3767,13 @@ struct earth_elemental_t : public shaman_spell_t
     {
       p()->pet.guardian_earth_elemental->summon( s_data->duration() );
     }
+
+    // Earth Elemental in game exhibits the same bug as maelstrom-ewapon empowered spells
+    if ( p()->bugs && p()->main_hand_attack && p()->main_hand_attack->execute_event )
+    {
+      event_t::cancel( p()->main_hand_attack->execute_event );
+      p()->main_hand_attack->schedule_execute();
+    }
   }
 };
 
