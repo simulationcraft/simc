@@ -118,6 +118,13 @@ enum class regen_type
   DISABLED
 };
 
+enum class buff_constant_behavior
+{
+  DEFAULT,
+  ALWAYS_CONSTANT,
+  NEVER_CONSTANT
+};
+
 enum class buff_tick_behavior
 {
   NONE,
@@ -967,7 +974,7 @@ enum stat_e
   STAT_WEAPON_OFFHAND_DPS,
   STAT_ALL,
   STAT_MAX,
-  
+
   STAT_ANY_DPS, // Only for use with buff_has_stat() queries
 };
 #define check( x )                                                             \
