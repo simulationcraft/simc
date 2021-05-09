@@ -752,36 +752,39 @@ void battlefield_presence( special_effect_t& effect )
                ->set_period( 0_ms );
   }
 
-  // If the option is not set, adjust stacks every time an enemy arises or demises
+  // If the option is not set, adjust stacks every time the target_non_sleeping_list changes
   if ( forced_enemies == -1 )
   {
-    range::for_each( p->sim->actor_list, [ p, buff ]( player_t* t ) {
-      if ( !t->is_enemy() || t->is_sleeping() )
-        return;
+    effect.activation_cb = [ p, buff ]() {
+      p->sim->target_non_sleeping_list.register_callback( [ p, buff ]( player_t* t ) {
+        auto enemies       = p->sim->target_non_sleeping_list.size();
+        auto current_stack = buff->current_stack;
+        auto max_stack     = buff->max_stack();
 
-      t->register_on_arise_callback( p, [ p, buff ]() {
-        if ( p->sim->event_mgr.canceled )
-          return;
+        if ( enemies != current_stack )
+        {
+          // Short circuit if there are more enemies than 3 and we are already at max stacks
+          if ( enemies > max_stack && current_stack == max_stack )
+            return;
 
-        buff->increment();
+          auto diff = as<int>( enemies ) - current_stack;
+          if ( diff > 0 )
+            buff->trigger( diff );
+          else if ( diff < 0 )
+            buff->decrement( -diff );
+        }
       } );
-
-      t->register_on_demise_callback( p, [ p, buff ]( player_t* ) {
-        if ( p->sim->event_mgr.canceled )
-          return;
-
-        buff->decrement();
-      } );
-    } );
+    };
   }
   else
   {
-    buff->set_initial_stack( forced_enemies );
-    effect.player->register_combat_begin( buff );
+    if ( forced_enemies != 0 )
+      buff->set_initial_stack( forced_enemies );
   }
 
-  if ( buff )
+  if ( buff && forced_enemies != 0 )
   {
+    effect.player->register_combat_begin( buff );
     effect.player->buffs.battlefield_presence = buff;
   }
 }
