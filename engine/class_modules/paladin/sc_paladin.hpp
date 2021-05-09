@@ -45,6 +45,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* final_reckoning;
     buff_t* reckoning;
     buff_t* vengeful_shock;
+    buff_t* glimmer_of_light_damage;
   } debuff;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -174,6 +175,7 @@ public:
     buff_t* holy_avenger;
     buff_t* avenging_crusader;
     buff_t* infusion_of_light;
+    buff_t* glimmer_of_light_heal;
 
     // Prot
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
@@ -1354,6 +1356,27 @@ struct holy_power_consumer_t : public Base
     if ( ab::current_resource() == RESOURCE_HOLY_POWER)
     {
       ab::p() -> trigger_memory_of_lucid_dreams( ab::last_resource_cost );
+    }
+  }
+
+  void trigger_awakening()
+  {
+
+    if (ab::p()->talents.awakening->ok() )
+    {
+      if ( rng::rng_t().roll( ab::p()->talents.awakening->effectN( 1 ).percent() ) )
+      {
+        buff_t* main_buff           = ab::p()->buffs.avenging_wrath;
+        timespan_t trigger_duration = timespan_t::from_seconds( ab::p()->talents.awakening->effectN( 2 ).base_value() );
+        if ( main_buff->check() )
+        {
+          ab::p()->buffs.avengers_might->extend_duration( ab::p(), trigger_duration );
+        }
+        else
+        {
+          main_buff->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
+        }
+      }
     }
   }
 };

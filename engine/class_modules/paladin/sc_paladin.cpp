@@ -888,22 +888,7 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
       p()->active.necrolord_shield_of_the_righteous->execute();
     }
 
-    if ( p()->specialization() == PALADIN_HOLY && p()->talents.awakening->ok() )
-    {
-      if ( rng().roll( p()->talents.awakening->effectN( 1 ).percent() ) )
-      {
-        buff_t* main_buff           = p()->buffs.avenging_wrath;
-        timespan_t trigger_duration = timespan_t::from_seconds( p()->talents.awakening->effectN( 2 ).base_value() );
-        if ( main_buff->check() )
-        {
-          p()->buffs.avengers_might->extend_duration( p(), trigger_duration );
-        }
-        else
-        {
-          main_buff->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
-        }
-      }
-    }
+    trigger_awakening();
   }
 
   double action_multiplier() const override
@@ -1209,11 +1194,20 @@ struct divine_toll_t : public paladin_spell_t
 
 struct hallowed_discernment_tick_t : public paladin_spell_t
 {
-  double aoe_multiplier;
   hallowed_discernment_tick_t( paladin_t* p ) : paladin_spell_t( "hallowed_discernment", p, p->find_spell( 340203 ) )
   {
     base_multiplier *= p->conduit.hallowed_discernment.percent();
     background = true;
+  }
+
+  double action_multiplier() const override 
+  {
+    double am = paladin_spell_t::action_multiplier();
+    // for some god forsaken reason this ability double dips with vers :)
+    // assumption is because it takes a tick of another ability that is already scaled with vers
+    // then runs it through damage code again which applies vers again
+    am *= (1 + p()->composite_damage_versatility());
+    return am;
   }
 };
 
@@ -1743,6 +1737,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.reckoning      = make_buff( *this, "reckoning", paladin->spells.reckoning );
   debuff.vengeful_shock = make_buff( *this, "vengeful_shock", paladin->conduit.vengeful_shock->effectN( 1 ).trigger() )
                               ->set_default_value( paladin->conduit.vengeful_shock.percent() );
+  debuff.glimmer_of_light_damage = make_buff( *this, "glimmer_of_light", paladin->find_spell( 287280 ) );
 }
 
 // paladin_t::create_actions ================================================

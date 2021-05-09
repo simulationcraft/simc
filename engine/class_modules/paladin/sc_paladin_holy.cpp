@@ -1,9 +1,9 @@
 #include "sc_paladin.hpp"
+
 #include "simulationcraft.hpp"
 
 namespace paladin
 {
-
 // Beacon of Light ==========================================================
 struct beacon_of_light_t : public paladin_heal_t
 {
@@ -237,6 +237,19 @@ struct holy_shock_damage_t : public paladin_spell_t
 
     return cc;
   }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    if ( execute_state->result == RESULT_CRIT )
+      p()->buffs.infusion_of_light->trigger();
+
+    if ( p()->talents.glimmer_of_light->ok() )
+    {
+        td( target )->debuff.glimmer_of_light_damage->trigger();
+    }
+  }
 };
 
 // Holy Shock Heal Spell ====================================================
@@ -270,14 +283,41 @@ struct holy_shock_heal_t : public paladin_heal_t
 
     if ( execute_state->result == RESULT_CRIT )
       p()->buffs.infusion_of_light->trigger();
+
+    if ( p()->talents.glimmer_of_light->ok() )
+    {
+      p()->buffs.glimmer_of_light_heal->trigger();
+    }
   }
 };
+
+// Glimmer of light stuff
+
+struct glimmer_of_light_damage_t : public paladin_spell_t
+{
+  glimmer_of_light_damage_t( paladin_t* p ) : paladin_spell_t( "glimmer_of_light", p, p->find_spell( 325984 ) )
+  {
+    background = true;
+  }
+};
+
+struct glimmer_of_light_heal_t : public paladin_spell_t
+{
+  glimmer_of_light_heal_t( paladin_t* p ) : paladin_spell_t( "glimmer_of_light", p, p->find_spell( 325983 ) )
+  {
+    background = true;
+  }
+};
+
 
 struct holy_shock_t : public paladin_spell_t
 {
   holy_shock_damage_t* damage;
   holy_shock_heal_t* heal;
   bool dmg;
+
+  glimmer_of_light_damage_t* glimmer_damage;
+  glimmer_of_light_heal_t* glimmer_heal;
 
   holy_shock_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "holy_shock", p, p->find_specialization_spell( 20473 ) ), dmg( false )
@@ -292,6 +332,12 @@ struct holy_shock_t : public paladin_spell_t
     add_child( damage );
     heal = new holy_shock_heal_t( p );
     add_child( heal );
+
+    glimmer_damage = new glimmer_of_light_damage_t( p );
+    add_child( glimmer_damage );
+    glimmer_heal = new glimmer_of_light_heal_t( p );
+    add_child( glimmer_heal );
+
   }
 
   holy_shock_t( paladin_t* p ) : paladin_spell_t( "holy_shock", p, p->find_specialization_spell( 20473 ) ), dmg( false )
@@ -305,6 +351,9 @@ struct holy_shock_t : public paladin_spell_t
 
   void execute() override
   {
+
+    handle_glimmer();
+    
     if ( dmg )
     {
       // damage enemy
@@ -317,8 +366,8 @@ struct holy_shock_t : public paladin_spell_t
       heal->set_target( target );
       heal->execute();
     }
-    // The reason the subspell is allowed to execute first is so we can consume judgment correctly. 
-    // If this is first then a dummy holy shock is fired off that consumes the judgment debuff 
+    // The reason the subspell is allowed to execute first is so we can consume judgment correctly.
+    // If this is first then a dummy holy shock is fired off that consumes the judgment debuff
     // meaning when we attempt to do damage judgment will not be factored in even when it should be.
     // because of dumb blizz spelldata that makes every holy shock spell affected by judgment,
     // instead of just affecting the damaging holy shock spell.
@@ -333,6 +382,19 @@ struct holy_shock_t : public paladin_spell_t
       rm *= 1.0 + p()->talents.holy_sanctified_wrath->effectN( 2 ).percent();
 
     return rm;
+  }
+
+  void handle_glimmer()
+  {
+    auto targets = sim->target_non_sleeping_list.data();
+    for ( player_t* target : targets )
+    {
+      if ( td( target )->debuff.glimmer_of_light_damage->up() )
+      {
+        glimmer_damage->set_target( target );
+        glimmer_damage->execute();
+      }
+    }
   }
 };
 
@@ -467,22 +529,7 @@ struct light_of_dawn_t : public holy_power_consumer_t<paladin_heal_t>
     holy_power_consumer_t::execute();
 
     // deal with awakening
-    if ( p()->talents.awakening->ok() )
-    {
-      if ( rng().roll( p()->talents.awakening->effectN( 1 ).percent() ) )
-      {
-        buff_t* main_buff           = p()->buffs.avenging_wrath;
-        timespan_t trigger_duration = timespan_t::from_seconds( p()->talents.awakening->effectN( 2 ).base_value() );
-        if ( main_buff->check() )
-        {
-          p()->buffs.avengers_might->extend_duration( p(), trigger_duration );
-        }
-        else
-        {
-          main_buff->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
-        }
-      }
-    }
+    trigger_awakening();
   }
 };
 
@@ -499,6 +546,13 @@ struct avenging_crusader_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     p()->buffs.avenging_crusader->trigger();
+
+    for ( auto a : player->action_list )
+    {
+      a->base_recharge_multiplier *= 1.3;
+
+    }
+
   }
 };
 
@@ -511,7 +565,9 @@ void paladin_t::create_holy_actions()
 
   if ( specialization() == PALADIN_HOLY )
   {
-    active.divine_toll = new holy_shock_t( this );
+    holy_shock_t* toll_spell = new holy_shock_t( this );
+    toll_spell->dmg          = true;
+    active.divine_toll = toll_spell;
   }
 }
 
@@ -550,6 +606,7 @@ void paladin_t::create_buffs_holy()
   buffs.infusion_of_light = make_buff( this, "infusion_of_light", find_spell( 54149 ) );
   buffs.avenging_crusader =
       make_buff( this, "avenging_crusader", talents.avenging_crusader )->set_default_value_from_effect( 1 );
+  buffs.glimmer_of_light_heal = make_buff( this, "glimmer_of_light", find_spell( 287280 ) );
 }
 
 void paladin_t::init_spells_holy()
