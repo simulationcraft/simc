@@ -3959,6 +3959,7 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t* )
 
   m *= 1.0 + racials.command->effectN( 1 ).percent();
 
+  // By default effect 1 is used for the player modifier, effect 2 is for the pet modifier
   if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
     m *=
         1.0 + ( buffs.battlefield_presence->data().effectN( 2 ).percent() * buffs.battlefield_presence->current_stack );

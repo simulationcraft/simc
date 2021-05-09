@@ -749,45 +749,40 @@ void battlefield_presence( special_effect_t& effect )
     buff = make_buff( effect.player, "battlefield_presence", effect.player->find_spell( 352858 ) )
                ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
                ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-               ->set_period( 10_ms );
+               ->set_period( 0_ms );
+  }
 
-    buff->set_stack_change_callback( [ p, forced_enemies, effect ]( buff_t* b, int, int ) {
-      int enemy_count = 0;
+  // If the option is not set, adjust stacks every time an enemy arises or demises
+  if ( forced_enemies == -1 )
+  {
+    range::for_each( p->sim->actor_list, [ p, buff ]( player_t* t ) {
+      if ( !t->is_enemy() || t->is_sleeping() )
+        return;
 
-      if ( forced_enemies == -1 )
-      {
-        for ( size_t i = 0, actors = p->sim->actor_list.size(); i < actors; i++ )
-        {
-          player_t* t = p->sim->actor_list[ i ];
+      t->register_on_arise_callback( p, [ p, buff ]() {
+        if ( p->sim->event_mgr.canceled )
+          return;
 
-          if ( !t->is_sleeping() && t->is_enemy() )
-            enemy_count++;
-        }
-        if ( enemy_count > b->max_stack() )
-          enemy_count = b->max_stack();
-      }
-      else
-      {
-        enemy_count = forced_enemies;
-      }
+        buff->increment();
+      } );
 
-      if ( b->current_stack != enemy_count )
-      {
-        if ( effect.player->sim->debug )
-        {
-          effect.player->sim->out_debug.print( "{} increasing battlefield presence to {} enemies",
-                                               effect.player->name(), enemy_count );
-        }
-        b->expire();
-        b->trigger( enemy_count );
-      }
+      t->register_on_demise_callback( p, [ p, buff ]( player_t* ) {
+        if ( p->sim->event_mgr.canceled )
+          return;
+
+        buff->decrement();
+      } );
     } );
+  }
+  else
+  {
+    buff->set_initial_stack( forced_enemies );
+    effect.player->register_combat_begin( buff );
   }
 
   if ( buff )
   {
     effect.player->buffs.battlefield_presence = buff;
-    effect.player->register_combat_begin( buff );
   }
 }
 
