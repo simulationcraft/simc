@@ -10,6 +10,7 @@
 #include "player/sc_player.hpp"
 #include "sc_OptionsTab.hpp"
 #include "simulationcraftqt.hpp"
+#include "sim/sc_sim.hpp"
 
 #include <utility>
 

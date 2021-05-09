@@ -1251,6 +1251,7 @@ class SpellDataGenerator(DataGenerator):
          344068, 344069, 344070, # Venthyr Stamina Passives
          344076, 344077, 344078, # Necrolord Stamina Passives
          344087, 344089, 344091, # Kyrian Stamina Passives
+         354054, 354053, # Fatal Flaw vers/crit buffs (venthyr/nadjia)
          # Cabalists Hymnal
          344820,
          # Empyreal Ordnance
@@ -1828,9 +1829,8 @@ class SpellDataGenerator(DataGenerator):
           ( 275148, 1 ), # Unbound Chaos Azerite damage spell
           ( 337313, 1 ), # Inner Demon aura for Unbound Chaos talent
           ( 275147, 1 ), # Unbound Chaos delayed trigger aura
-          ( 333105, 1 ), # Sigil of the Illidari Legendary fake Fel Eruption aura
-          ( 333110, 1 ), # Sigil of the Illidari Legendary fake Fel Eruption damage trigger
-          ( 333120, 1 ), # Sigil of the Illidari Legendary fake Fel Eruption heal
+          ( 333105, 1 ), ( 333110, 1 ), # Sigil of the Illidari Legendary fake Fel Devastation spells
+          ( 346502, 1 ), ( 346503, 1 ), # New Sigil of the Illidari Legendary fake Fel Devastation spells
           ( 337567, 1 ), # Chaotic Blades legendary buff
 
           # Vengeance
@@ -1839,8 +1839,8 @@ class SpellDataGenerator(DataGenerator):
           ( 213011, 2 ), # Charred Warblades heal
           ( 212818, 2 ), # Fiery Demise debuff
           ( 207760, 2 ), # Burning Alive spread radius
-          ( 333386, 2 ), # Sigil of the Illidari Legendary fake Eye Beam aura
-          ( 333389, 2 ), # Sigil of the Illidari Legendary fake Eye Beam damage trigger
+          ( 333386, 2 ), ( 333389, 2 ), # Sigil of the Illidari Legendary fake Eye Beam spells
+          ( 346504, 2 ), ( 346505, 2 ), # New Sigil of the Illidari Legendary fake Eye Beam spells
        ),
     ]
 
@@ -2690,6 +2690,9 @@ class SpellDataGenerator(DataGenerator):
         index = 0
         for id in id_keys:
             spell = self.db('SpellName')[id]
+
+            # Unused hotfix IDs: 7,
+            # MAX hotfix id: 39
             hotfix = HotfixDataRecord()
             power_count = 0
 
@@ -2718,10 +2721,9 @@ class SpellDataGenerator(DataGenerator):
             fields += [ u'%#.16x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_race'] ]
             fields += [ u'%#.8x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_class'] ]
 
-            # Set the scaling index for the spell
             scaling_entry = spell.get_link('scaling')
-            fields += scaling_entry.field('id_class', 'max_scaling_level')
-            hotfix.add(scaling_entry, ('id_class', 7), ('max_scaling_level', 8))
+            fields += scaling_entry.field('max_scaling_level')
+            hotfix.add(scaling_entry, ('max_scaling_level', 8))
 
             level_entry = spell.get_link('level')
 
@@ -2866,12 +2868,27 @@ class SpellDataGenerator(DataGenerator):
             #if index % 20 == 0:
             #    self._out.write('//{     Id,Flags,   SpId,Idx, EffectType                  , EffectSubType                              ,       Coefficient,         Delta,       Unknown,   Coefficient, APCoefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, {     Flags1,     Flags2,     Flags3,     Flags4 }, Trigg,   DmgMul,  CboP, RealP,Die,Mech,ChTrg,0, 0 },\n')
 
+            # MAX hotfix id 28
             hotfix = HotfixDataRecord()
 
-            fields = effect.field('id', 'id_parent', 'index', 'type', 'sub_type', 'coefficient', 'delta',
-                                  'bonus', 'sp_coefficient', 'ap_coefficient', 'amplitude')
-            hotfix.add(effect, ('index', 3), ('type', 4), ('sub_type', 5), ('coefficient', 6), ('delta', 7),
-                               ('bonus', 8), ('sp_coefficient', 9), ('ap_coefficient', 10), ('amplitude', 11))
+            fields = effect.field('id', 'id_parent', 'index', 'type', 'sub_type')
+            hotfix.add(effect, ('index', 3), ('type', 4), ('sub_type', 5))
+
+            # Effect scaling changes in 9.1.0 to be effect specific, change Simulationcraft to
+            # support "both worlds" (<9.1.0, >=9.1.0) by adjusting how data is
+            # generated for the former.
+            if self._options.build >= dbc.WowVersion(9, 1, 0, 0):
+                fields += effect.field('id_scaling_class')
+                hotfix.add(effect, ('id_scaling_class', 28))
+            else:
+                fields += effect.parent_record().child_ref('SpellScaling').field('id_class')
+                hotfix.add(effect.parent_record().child_ref('SpellScaling'),
+                        ('id_class', 28))
+
+            fields += effect.field('coefficient', 'delta', 'bonus', 'sp_coefficient',
+                    'ap_coefficient', 'amplitude')
+            hotfix.add(effect, ('coefficient', 6), ('delta', 7), ('bonus', 8),
+                    ('sp_coefficient', 9), ('ap_coefficient', 10), ('amplitude', 11))
 
             radius_entry = effect.ref('id_radius_1')
             fields += radius_entry.field('radius_1')

@@ -8,7 +8,6 @@
 #include "config.hpp"
 #include "player_event.hpp"
 #include "util/timespan.hpp"
-#include "action/sc_action_state.hpp"
 #include <functional>
 
 struct action_t;

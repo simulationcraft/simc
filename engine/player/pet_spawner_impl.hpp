@@ -6,6 +6,7 @@
 
 #include "sim/sc_expressions.hpp"
 #include "dbc/spell_data.hpp"
+#include "sim/sc_sim.hpp"
 
 namespace
 {

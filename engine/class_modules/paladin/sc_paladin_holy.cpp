@@ -1,5 +1,4 @@
 #include "sc_paladin.hpp"
-
 #include "simulationcraft.hpp"
 
 namespace paladin
@@ -7,7 +6,7 @@ namespace paladin
 // Beacon of Light ==========================================================
 struct beacon_of_light_t : public paladin_heal_t
 {
-  beacon_of_light_t( paladin_t* p, const std::string& options_str )
+  beacon_of_light_t( paladin_t* p, util::string_view options_str )
     : paladin_heal_t( "beacon_of_light", p, p->find_class_spell( "Beacon of Light" ) )
   {
     parse_options( options_str );
@@ -50,7 +49,7 @@ struct beacon_of_light_heal_t : public heal_t
 
 struct divine_protection_t : public paladin_spell_t
 {
-  divine_protection_t( paladin_t* p, const std::string& options_str )
+  divine_protection_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "divine_protection", p, p->find_class_spell( "Divine Protection" ) )
   {
     parse_options( options_str );
@@ -76,7 +75,7 @@ struct divine_protection_t : public paladin_spell_t
 
 struct holy_light_t : public paladin_heal_t
 {
-  holy_light_t( paladin_t* p, const std::string& options_str )
+  holy_light_t( paladin_t* p, util::string_view options_str )
     : paladin_heal_t( "holy_light", p, p->find_specialization_spell( "Holy Light" ) )
   {
     parse_options( options_str );
@@ -173,7 +172,7 @@ struct holy_prism_t : public paladin_spell_t
   holy_prism_damage_t* damage;
   holy_prism_heal_t* heal;
 
-  holy_prism_t( paladin_t* p, const std::string& options_str )
+  holy_prism_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "holy_prism", p, p->talents.holy_prism )
   {
     parse_options( options_str );
@@ -403,7 +402,7 @@ struct holy_shock_t : public paladin_spell_t
 
 struct judgment_holy_t : public judgment_t
 {
-  judgment_holy_t( paladin_t* p, const std::string& options_str ) : judgment_t( p, options_str )
+  judgment_holy_t( paladin_t* p, util::string_view options_str ) : judgment_t( p, options_str )
   {
     base_multiplier *= 1.0 + p->spec.holy_paladin->effectN( 11 ).percent();
   }
@@ -470,7 +469,7 @@ struct lights_hammer_t : public paladin_spell_t
   lights_hammer_heal_tick_t* lh_heal_tick;
   lights_hammer_damage_tick_t* lh_damage_tick;
 
-  lights_hammer_t( paladin_t* p, const std::string& options_str )
+  lights_hammer_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "lights_hammer", p, p->talents.lights_hammer ), travel_time_( 1.5_s )
   {
     // 114158: Talent spell, cooldown

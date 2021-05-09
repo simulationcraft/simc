@@ -8,7 +8,6 @@
 #include "config.hpp"
 #include "actor.hpp"
 #include "sc_enums.hpp"
-#include "player_talent_points.hpp"
 #include "player_resources.hpp"
 #include "gear_stats.hpp"
 #include "rating.hpp"
@@ -22,9 +21,12 @@
 #include "scaling_metric_data.hpp"
 #include "util/cache.hpp"
 #include "dbc/item_database.hpp"
+#include "dbc/specialization.hpp"
+#include "util/util.hpp"
 #include "assessor.hpp"
 #include <map>
 #include <set>
+#include <unordered_map>
 
 struct absorb_buff_t;
 struct action_t;
@@ -38,6 +40,7 @@ class azerite_essence_t;
 class azerite_power_t;
 class conduit_data_t;
 class dbc_t;
+class dbc_override_t;
 struct benefit_t;
 struct item_t;
 struct buff_t;
@@ -61,6 +64,7 @@ struct special_effect_t;
 struct spelleffect_data_t;
 struct stat_buff_t;
 struct stats_t;
+struct player_talent_points_t;
 struct uptime_t;
 namespace azerite {
     class azerite_state_t;
@@ -179,7 +183,7 @@ struct player_t : public actor_t
   std::vector<stat_e> stat_timelines;
 
   // Talent Parsing
-  player_talent_points_t talent_points;
+  std::unique_ptr<player_talent_points_t> talent_points;
   std::string talent_overrides_str;
 
   // Profs
@@ -284,7 +288,7 @@ struct player_t : public actor_t
   timespan_t cast_delay_occurred;
 
   // Callbacks
-  effect_callbacks_t<action_callback_t> callbacks;
+  effect_callbacks_t callbacks;
   auto_dispose< std::vector<special_effect_t*> > special_effects;
   std::vector<std::pair<player_t*, std::function<void( player_t* )>>> callbacks_on_demise;
   std::vector<std::pair<player_t*, std::function<void( void )>>> callbacks_on_arise;
@@ -518,6 +522,9 @@ struct player_t : public actor_t
     buff_t* wild_hunt_tactics;  // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
     buff_t* volatile_solvent_damage; // necrolord/marileth - elemental (magic) and giant (physical) % damage done buffs
     buff_t* redirected_anima; // night_fae/niya - mastery and max health % increase per stack
+    buff_t* battlefield_presence; // venthyr/draven - damage increase buff based on number of enemies
+    buff_t* fatal_flaw_crit; // venthyr/nadjia - buff applied after euphoria expires if you have more crit than vers
+    buff_t* fatal_flaw_vers; // venthyr/nadjia - buff applied after euphoria expires if you have more vers than crit
 
     // 9.0 Runecarves
     buff_t* norgannons_sagacity_stacks;  // stacks on every cast
@@ -1013,8 +1020,7 @@ public:
   virtual void schedule_cwc_ready( timespan_t delta_time = timespan_t::min() );
   virtual void arise();
   virtual void demise();
-  virtual timespan_t available() const
-  { return rng().gauss( 100_ms, 10_ms ); }
+  virtual timespan_t available() const;
   virtual action_t* select_action( const action_priority_list_t&, execute_type type = execute_type::FOREGROUND, const action_t* context = nullptr );
   virtual action_t* execute_action();
 

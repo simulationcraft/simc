@@ -17,7 +17,6 @@ struct player_scaling_t
   std::array<gear_stats_t, SCALE_METRIC_MAX> scaling;
   std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_normalized;
   std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_error;
-  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_delta_dps;
   std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_compare_error;
   std::array<double, SCALE_METRIC_MAX> scaling_lag, scaling_lag_error;
   std::array<bool, STAT_MAX> scales_with;

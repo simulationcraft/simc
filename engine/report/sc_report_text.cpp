@@ -8,6 +8,8 @@
 #include "reports.hpp"
 #include "report/report_timer.hpp"
 #include "sim/scale_factor_control.hpp"
+#include "sim/iteration_data_entry.hpp"
+#include "sim/plot.hpp"
 #include "fmt/chrono.h"
 
 #include <iomanip>

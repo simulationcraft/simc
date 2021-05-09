@@ -275,15 +275,19 @@ public:
   double thorns_hit_chance;
   int initial_moon_stage;
   double eclipse_snapshot_period;  // how often to re-snapshot mastery onto eclipse
+  bool affinity_resources;  // activate resources tied to affinities
+
+  // APL options
   bool catweave_bear;
   bool owlweave_bear;
   bool owlweave_cat;
   bool no_cds;
 
-  bool affinity_resources;  // activate resources tied to affinities
+  // Covenant options
   double kindred_spirits_partner_dps;
   bool kindred_spirits_hide_partner;
   double kindred_spirits_absorbed;
+  std::string kindred_affinity_covenant;
   double convoke_the_spirits_ultimate;
   double adaptive_swarm_jump_distance;
 
@@ -350,7 +354,9 @@ public:
     // Covenants
     buff_t* kindred_empowerment;
     buff_t* kindred_empowerment_energize;
+    buff_t* kindred_affinity;
     buff_t* ravenous_frenzy;
+    buff_t* sinful_hysteria;
     buff_t* convoke_the_spirits;  // dummy buff for conduit
 
     // Balance
@@ -741,9 +747,9 @@ public:
     item_runeforge_t lycaras_fleeting_glimpse;  // 7110
 
     // Covenant
-    item_runeforge_t kyrian_legendary_1;
-    item_runeforge_t wrathful_swarm;  // 7472
-    item_runeforge_t night_fae_legendary_1;
+    item_runeforge_t kindred_affinity;
+    item_runeforge_t unbridled_swarm;  // 7472
+    item_runeforge_t celestial_spirits;
     item_runeforge_t sinful_hysteria;  // 7474
 
     // Balance
@@ -776,14 +782,15 @@ public:
       thorns_hit_chance( 0.75 ),
       initial_moon_stage( NEW_MOON ),
       eclipse_snapshot_period( 3.0 ),
+      affinity_resources( false ),
       catweave_bear( false ),
       owlweave_bear( false ),
       owlweave_cat( true ),
       no_cds( false ),
-      affinity_resources( false ),
       kindred_spirits_partner_dps( 1.0 ),
       kindred_spirits_hide_partner( false ),
       kindred_spirits_absorbed( 0.2 ),
+      kindred_affinity_covenant( "night_fae" ),
       convoke_the_spirits_ultimate( 0.2 ),
       adaptive_swarm_jump_distance( 5.0 ),
       active( active_actions_t() ),
@@ -1554,6 +1561,87 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
   }
 };
 
+// Kindred Affinity =========================================================
+struct kindred_affinity_buff_t : public druid_buff_t<buff_t>
+{
+  kindred_affinity_buff_t( druid_t& p ) : base_t( p, "kindred_affinity", _get_spell_data( &p ) )
+  {
+    if ( !p.legendary.kindred_affinity->ok() )
+      return;
+
+    set_max_stack( 2 );  // artificially allow second stack to simulate doubling during kindred empowerment
+
+    switch ( _get_cov( &p ) )
+    {
+      case covenant_e::KYRIAN:
+        set_default_value_from_effect_type( A_MOD_MASTERY_PCT );
+        set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+        break;
+      case covenant_e::NECROLORD:
+        set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
+        set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+        break;
+      case covenant_e::NIGHT_FAE:
+        set_default_value_from_effect_type( A_HASTE_ALL );
+        set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+        break;
+      case covenant_e::VENTHYR:
+        set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
+        set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+        break;
+      default: break;
+    }
+
+    p.buff.kindred_empowerment_energize->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        increment();
+      else
+        decrement();
+    } );
+  }
+
+  covenant_e _get_cov( druid_t* p )
+  {
+    if ( util::str_compare_ci( p->kindred_affinity_covenant, "kyrian" ) ||
+         util::str_compare_ci( p->kindred_affinity_covenant, "mastery" ) )
+    {
+      return covenant_e::KYRIAN;
+    }
+    else if ( util::str_compare_ci( p->kindred_affinity_covenant, "necrolord" ) ||
+              util::str_compare_ci( p->kindred_affinity_covenant, "versatility" ) )
+    {
+      return covenant_e::NECROLORD;
+    }
+    else if ( util::str_compare_ci( p->kindred_affinity_covenant, "night_fae" ) ||
+              util::str_compare_ci( p->kindred_affinity_covenant, "haste" ) )
+    {
+      return covenant_e::NIGHT_FAE;
+    }
+    else if ( util::str_compare_ci( p->kindred_affinity_covenant, "venthyr" ) ||
+              util::str_compare_ci( p->kindred_affinity_covenant, "crit" ) )
+    {
+      return covenant_e::VENTHYR;
+    }
+
+    throw std::invalid_argument(
+        "Invalid option for druid.kindred_affinity_covenent. Valid options are 'kyrian' 'necrolord' 'night_fae' "
+        "'venthyr' 'mastery' 'haste' 'versatility' 'crit'" );
+
+    return covenant_e::INVALID;
+  }
+
+  const spell_data_t* _get_spell_data( druid_t* p )
+  {
+    switch ( _get_cov( p ) )
+    {
+      case covenant_e::KYRIAN: return p->find_spell( 354805 );
+      case covenant_e::NECROLORD: return p->find_spell( 354802 );
+      case covenant_e::NIGHT_FAE: return p->find_spell( 354815 );
+      case covenant_e::VENTHYR: return p->find_spell( 354345 );
+      default: return spell_data_t::not_found();
+    }
+  }
+};
 }  // end namespace buffs
 
 struct buff_effect_t
@@ -1952,6 +2040,7 @@ public:
     using C = const conduit_data_t&;
 
     parse_buff_effects<C>( p()->buff.ravenous_frenzy, p()->conduit.endless_thirst );
+    parse_buff_effects<C>( p()->buff.sinful_hysteria, p()->conduit.endless_thirst );  // endless thirst interaction NYI in-game
     parse_buff_effects( p()->buff.heart_of_the_wild );
     parse_buff_effects<C>( p()->buff.convoke_the_spirits, p()->conduit.conflux_of_elements );
 
@@ -7187,8 +7276,8 @@ struct adaptive_swarm_t : public druid_spell_t
 
       jump_swarm( new_target, d );
 
-      if ( p()->dbc->ptr && p()->legendary.wrathful_swarm->ok() &&
-           rng().roll( p()->legendary.wrathful_swarm->effectN( 1 ).percent() ) )
+      if ( p()->legendary.unbridled_swarm->ok() &&
+           rng().roll( p()->legendary.unbridled_swarm->effectN( 1 ).percent() ) )
       {
         // TODO: confirm the second jump cannot hit the same target as the primary jump
         auto second_target = new_swarm_target( new_target );
@@ -7828,9 +7917,9 @@ void druid_t::init_spells()
   legendary.lycaras_fleeting_glimpse  = find_runeforge_legendary( "Lycara's Fleeting Glimpse" );
 
   // Covenant
-  legendary.kyrian_legendary_1        = find_runeforge_legendary( "Kindred Affinity" );
-  legendary.wrathful_swarm            = find_runeforge_legendary( "Wrathful Swarm" );
-  legendary.night_fae_legendary_1     = find_runeforge_legendary( "Celestial Spirits" );
+  legendary.kindred_affinity          = find_runeforge_legendary( "Kindred Affinity" );
+  legendary.unbridled_swarm           = find_runeforge_legendary( "Unbridled Swarm" );
+  legendary.celestial_spirits         = find_runeforge_legendary( "Celestial Spirits" );
   legendary.sinful_hysteria           = find_runeforge_legendary( "Sinful Hysteria" );
 
   // Balance
@@ -8344,6 +8433,8 @@ void druid_t::create_buffs()
   buff.kindred_empowerment_energize =
       make_buff( this, "kindred_empowerment_energize", covenant.kindred_empowerment_energize );
 
+  buff.kindred_affinity = make_buff<kindred_affinity_buff_t>( *this );
+
   buff.convoke_the_spirits = make_buff( this, "convoke_the_spirits", covenant.night_fae )
     ->set_cooldown( 0_ms )
     ->set_period( 0_ms );
@@ -8359,11 +8450,20 @@ void druid_t::create_buffs()
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   if ( conduit.endless_thirst->ok() )
     buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
-  if ( dbc->ptr )
+
+  buff.sinful_hysteria = make_buff( this, "sinful_hysteria", find_spell( 355315 ) )
+    ->set_default_value_from_effect_type( A_HASTE_ALL )
+    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  if ( conduit.endless_thirst->ok() )
+    buff.sinful_hysteria->add_invalidate( CACHE_CRIT_CHANCE );
+  if ( legendary.sinful_hysteria->ok() )
   {
     buff.ravenous_frenzy->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
-      if ( legendary.sinful_hysteria->ok() && new_ && old_ )
+      if ( old_ && new_ )
         b->extend_duration( this, timespan_t::from_seconds( legendary.sinful_hysteria->effectN( 1 ).base_value() ) );
+      else if ( old_ )
+        buff.sinful_hysteria->trigger( old_ );
     } );
   }
 }
@@ -8920,10 +9020,16 @@ void druid_t::combat_begin()
       sim->print_debug( "Astral Power capped at combat start to {} (was {})", cap, curr );
   }
 
+  // Legendary-related buffs & events
   if ( legendary.lycaras_fleeting_glimpse->ok() )
   {
     lycaras_event = make_event( *sim, timespan_t::from_seconds( buff.lycaras_fleeting_glimpse->default_value ),
                                 [ this ]() { buff.lycaras_fleeting_glimpse->trigger(); } );
+  }
+
+  if ( legendary.kindred_affinity->ok() )
+  {
+    buff.kindred_affinity->increment();  // this is a persistent buff with no proc chance, so trigger() will return false
   }
 }
 
@@ -9346,7 +9452,6 @@ std::unique_ptr<expr_t> druid_t::create_action_expression(action_t& a, util::str
 	dot_t* dot = dot_action->get_dot(target);
 	timespan_t ttd = target->time_to_percent(0);
 	timespan_t duration = dot_action->composite_dot_duration(state) * mod;
-	timespan_t tick_time = dot_action->tick_time(state);
 
 	double remaining_ticks = std::min(dot->remains(), ttd) / dot_action->tick_time(state) * ((pmul && dot->state) ? dot->state->persistent_multiplier : 1.0);
 	double new_ticks = std::min(dot_action->calculate_dot_refresh_duration(dot, duration), ttd) / dot_action->tick_time(state) * (pmul ? state->persistent_multiplier : 1.0);
@@ -9671,6 +9776,7 @@ void druid_t::create_options()
   add_option( opt_float( "druid.kindred_spirits_partner_dps", kindred_spirits_partner_dps ) );
   add_option( opt_bool( "druid.kindred_spirits_hide_partner", kindred_spirits_hide_partner ) );
   add_option( opt_float( "druid.kindred_spirits_absorbed", kindred_spirits_absorbed ) );
+  add_option( opt_string( "druid.kindred_affinity_covenant", kindred_affinity_covenant ) );
   add_option( opt_float( "druid.convoke_the_spirits_ultimate", convoke_the_spirits_ultimate ) );
   add_option( opt_float( "druid.adaptive_swarm_jump_distance", adaptive_swarm_jump_distance ) );
 }
@@ -10276,10 +10382,11 @@ void druid_t::copy_from( player_t* source )
   owlweave_bear                = p->owlweave_bear;
   catweave_bear                = p->catweave_bear;
   owlweave_cat                 = p->owlweave_cat;
-  no_cds                        = p->no_cds;
+  no_cds                       = p->no_cds;
   kindred_spirits_partner_dps  = p->kindred_spirits_partner_dps;
   kindred_spirits_hide_partner = p->kindred_spirits_hide_partner;
   kindred_spirits_absorbed     = p->kindred_spirits_absorbed;
+  kindred_affinity_covenant    = p->kindred_affinity_covenant;
   convoke_the_spirits_ultimate = p->convoke_the_spirits_ultimate;
   adaptive_swarm_jump_distance = p->adaptive_swarm_jump_distance;
   thorns_attack_period         = p->thorns_attack_period;

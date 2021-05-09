@@ -71,7 +71,7 @@ double azerite_power_t::value( size_t index ) const
   }
 
   double sum = 0.0;
-  auto budgets = budget();
+  auto budgets = budget( index );
   for ( size_t budget_index = 0, end = budgets.size(); budget_index < end; ++budget_index )
   {
     auto budget = budgets[ budget_index ];
@@ -84,7 +84,7 @@ double azerite_power_t::value( size_t index ) const
     }
 
     // Apply combat rating penalties consistently
-    if ( m_spell -> scaling_class() == PLAYER_SPECIAL_SCALE7 ||
+    if ( m_spell->effectN( index ).scaling_class() == PLAYER_SPECIAL_SCALE7 ||
          check_combat_rating_penalty( index ) )
     {
       value = item_database::apply_combat_rating_multiplier( m_player,
@@ -127,10 +127,13 @@ timespan_t azerite_power_t::time_value( size_t index, time_type tt ) const
   }
 }
 
-std::vector<double> azerite_power_t::budget() const
-{ return budget( m_spell ); }
+std::vector<double> azerite_power_t::budget( size_t index ) const
+{ return budget( &( m_spell->effectN( index ) ) ); }
 
-std::vector<double> azerite_power_t::budget( const spell_data_t* scaling_spell ) const
+std::vector<double> azerite_power_t::budget( const spelleffect_data_t& effect ) const
+{ return budget( &( effect ) ); }
+
+std::vector<double> azerite_power_t::budget( const spelleffect_data_t* effect ) const
 {
   std::vector<double> b;
 
@@ -146,13 +149,14 @@ std::vector<double> azerite_power_t::budget( const spell_data_t* scaling_spell )
     }
 
     unsigned min_ilevel = ilevel;
-    if ( scaling_spell->max_scaling_level() > 0 && scaling_spell->max_scaling_level() < min_ilevel )
+    if ( effect->spell()->max_scaling_level() > 0 &&
+         effect->spell()->max_scaling_level() < min_ilevel )
     {
-      min_ilevel = scaling_spell->max_scaling_level();
+      min_ilevel = effect->spell()->max_scaling_level();
     }
 
     auto budget = item_database::item_budget( m_player, min_ilevel );
-    if ( scaling_spell->scaling_class() == PLAYER_SPECIAL_SCALE8 )
+    if ( effect->scaling_class() == PLAYER_SPECIAL_SCALE8 )
     {
       const auto& props = m_player->dbc->random_property( min_ilevel );
       budget = props.damage_replace_stat;
@@ -180,7 +184,7 @@ bool azerite_power_t::check_combat_rating_penalty( size_t index ) const
     return false;
   }
 
-  if ( m_spell->scaling_class() != PLAYER_SPECIAL_SCALE )
+  if ( m_spell->effectN( index ).scaling_class() != PLAYER_SPECIAL_SCALE )
   {
     return false;
   }
@@ -1487,7 +1491,7 @@ std::tuple<int, int, int> compute_value( const azerite_power_t& power, const spe
     return std::make_tuple( 0, 0, 0 );
   }
 
-  auto budgets = power.budget( effect.spell() );
+  auto budgets = power.budget( &( effect ) );
   range::for_each( budgets, [&]( double budget ) {
     avg_ += as<int>( std::lround( budget * effect.m_coefficient() ) );
     min_ += as<int>( std::lround( budget * effect.m_coefficient() *
@@ -2865,7 +2869,7 @@ void relational_normalization_gizmo( special_effect_t& effect )
   // Need to manually calculate the stat amounts for the buff, as they are not grabbed from the
   // azerite power spell, like normal
   auto ilevels = power.ilevels();
-  auto budgets = power.budget();
+  auto budgets = power.budget( effect.driver()->effectN( 1 ) );
 
   const spell_data_t* increase_spell = effect.player->find_spell( 280653 );
   const spell_data_t* decrease_spell = effect.player->find_spell( 280654 );

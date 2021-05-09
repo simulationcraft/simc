@@ -4,16 +4,14 @@
 // ==========================================================================
 #include "soulbinds.hpp"
 
-#include "player/actor_target_data.hpp"
-#include "player/unique_gear_helper.hpp"
-#include "player/pet.hpp"
-
 #include "action/dot.hpp"
-
+#include "action/sc_action_state.hpp"
 #include "item/item.hpp"
-
-#include "sim/sc_sim.hpp"
+#include "player/actor_target_data.hpp"
+#include "player/pet.hpp"
+#include "player/unique_gear_helper.hpp"
 #include "sim/sc_cooldown.hpp"
+#include "sim/sc_sim.hpp"
 
 #include <regex>
 
@@ -270,7 +268,7 @@ void grove_invigoration( special_effect_t& effect )
     buff = make_buff<stat_buff_t>( effect.player, "redirected_anima", effect.player->find_spell( 342814 ) )
              ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
              ->set_default_value_from_effect( 1 )  // default value is used to hold the hp %
-             ->set_stack_change_callback( [ effect ] ( buff_t*, int old, int cur )
+             ->set_stack_change_callback( [ effect ] ( buff_t*, int /* old */, int /* cur */ )
                { effect.player->recalculate_resource_max( RESOURCE_HEALTH ); } );
   }
 
@@ -539,12 +537,43 @@ void thrill_seeker( special_effect_t& effect )
                        ->set_tick_behavior( buff_tick_behavior::NONE );
   }
 
+  struct euphoria_buff_t : public buff_t
+  {
+    euphoria_buff_t( player_t* p ) : buff_t( p, "euphoria", p->find_spell( 331937 ) )
+    {
+      set_default_value_from_effect_type( A_HASTE_ALL );
+      set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    }
+
+    void expire_override( int s, timespan_t d ) override
+    {
+      buff_t::expire_override( s, d );
+
+      auto crit = player->cache.spell_crit_chance();
+      auto vers = player->cache.damage_versatility();
+
+      // TODO: implement what happens if vers = crit
+      if ( crit > vers )
+      {
+        if ( player->buffs.fatal_flaw_crit )
+        {
+          player->buffs.fatal_flaw_crit->trigger();
+        }
+      }
+      else if ( vers > crit )
+      {
+        if ( player->buffs.fatal_flaw_vers )
+        {
+          player->buffs.fatal_flaw_vers->trigger();
+        }
+      }
+    }
+  };
+
   auto buff = buff_t::find( effect.player, "euphoria" );
   if ( !buff )
   {
-    buff = make_buff( effect.player, "euphoria", effect.player->find_spell( 331937 ) )
-               ->set_default_value_from_effect_type( A_HASTE_ALL )
-               ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    buff = make_buff<euphoria_buff_t>( effect.player );
 
     counter_buff->set_stack_change_callback( [ buff ]( buff_t* b, int, int ) {
       if ( b->at_max_stacks() )
@@ -598,6 +627,29 @@ void thrill_seeker( special_effect_t& effect )
   } );
 }
 
+// Critical Strike - 354053
+// Versatility - 354054
+void fatal_flaw( special_effect_t& effect )
+{
+  auto crit_buff = buff_t::find( effect.player, "fatal_flaw_crit" );
+  auto vers_buff = buff_t::find( effect.player, "fatal_flaw_vers" );
+  if ( !crit_buff )
+  {
+    crit_buff = make_buff( effect.player, "fatal_flaw_crit", effect.player->find_spell( 354053 ) )
+                    ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+                    ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+  }
+  if ( !vers_buff )
+  {
+    vers_buff = make_buff( effect.player, "fatal_flaw_vers", effect.player->find_spell( 354054 ) )
+                    ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
+                    ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+  }
+
+  effect.player->buffs.fatal_flaw_crit = crit_buff;
+  effect.player->buffs.fatal_flaw_vers = vers_buff;
+}
+
 void soothing_shade( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "soothing_shade" );
@@ -630,6 +682,73 @@ void wasteland_propriety( special_effect_t& effect )
   }
 
   add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff );
+}
+
+// 354017 - Critical Strike
+// 353266 - Primary Stat
+// 354016 - Haste
+// 354018 - Versatility
+void party_favors( special_effect_t& effect )
+{
+  auto opt_str = effect.player->sim->shadowlands_opts.party_favor_type;
+  if ( util::str_compare_ci( opt_str, "none" ) )
+    return;
+
+  buff_t* buff;
+
+  // TODO: Figure out if you can have multiple buffs at a time
+  if ( util::str_compare_ci( opt_str, "haste" ) )
+  {
+    buff = buff_t::find( effect.player, "the_mad_dukes_tea_haste" );
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_haste", effect.player->find_spell( 354016 ) )
+                 ->set_default_value_from_effect_type( A_HASTE_ALL )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    }
+  }
+  else if ( util::str_compare_ci( opt_str, "crit" ) )
+  {
+    buff = buff_t::find( effect.player, "the_mad_dukes_tea_crit" );
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_crit", effect.player->find_spell( 354017 ) )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                 ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
+    }
+  }
+  else if ( util::str_compare_ci( opt_str, "primary" ) )
+  {
+    buff = buff_t::find( effect.player, "the_mad_dukes_tea_primary" );
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_primary", effect.player->find_spell( 353266 ) )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+                 ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
+    }
+  }
+  else if ( util::str_compare_ci( opt_str, "versatility" ) )
+  {
+    buff = buff_t::find( effect.player, "the_mad_dukes_tea_versatility" );
+    if ( !buff )
+    {
+      buff =
+          make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_versatility", effect.player->find_spell( 354018 ) )
+              ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
+              ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
+    }
+  }
+  else
+  {
+    buff = nullptr;
+  }
+
+  if ( buff )
+    effect.player->register_combat_begin( buff );
+  else
+    effect.player->sim->error( "Warning: Invalid type '{}' for Party Favors, ignoring.", opt_str );
 }
 
 void built_for_war( special_effect_t& effect )
@@ -671,6 +790,57 @@ void superior_tactics( special_effect_t& effect )
   }
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+void battlefield_presence( special_effect_t& effect )
+{
+  auto forced_enemies = effect.player->sim->shadowlands_opts.battlefield_presence_enemies;
+  auto buff           = buff_t::find( effect.player, "battlefield_presence" );
+  auto p              = effect.player;
+
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "battlefield_presence", effect.player->find_spell( 352858 ) )
+               ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+               ->set_period( 0_ms );
+  }
+
+  // If the option is not set, adjust stacks every time the target_non_sleeping_list changes
+  if ( forced_enemies == -1 )
+  {
+    effect.activation_cb = [ p, buff ]() {
+      p->sim->target_non_sleeping_list.register_callback( [ p, buff ]( player_t* t ) {
+        auto enemies       = p->sim->target_non_sleeping_list.size();
+        auto current_stack = buff->current_stack;
+        auto max_stack     = buff->max_stack();
+
+        if ( enemies != current_stack )
+        {
+          // Short circuit if there are more enemies than 3 and we are already at max stacks
+          if ( enemies > max_stack && current_stack == max_stack )
+            return;
+
+          auto diff = as<int>( enemies ) - current_stack;
+          if ( diff > 0 )
+            buff->trigger( diff );
+          else if ( diff < 0 )
+            buff->decrement( -diff );
+        }
+      } );
+    };
+  }
+  else
+  {
+    if ( forced_enemies != 0 )
+      buff->set_initial_stack( forced_enemies );
+  }
+
+  if ( buff && forced_enemies != 0 )
+  {
+    effect.player->register_combat_begin( buff );
+    effect.player->buffs.battlefield_presence = buff;
+  }
 }
 
 void let_go_of_the_past( special_effect_t& effect )
@@ -1263,7 +1433,7 @@ void forgeborne_reveries( special_effect_t& effect )
   effect.player->register_combat_begin( buff );
 }
 
-void serrated_spaulders( special_effect_t& effect )
+void serrated_spaulders( special_effect_t& )
 {
 
 }
@@ -1362,10 +1532,13 @@ void register_special_effects()
   //register_soulbind_special_effect( 331580, soulbinds::exacting_preparation );  // Nadjia
   register_soulbind_special_effect( 331584, soulbinds::dauntless_duelist );
   register_soulbind_special_effect( 331586, soulbinds::thrill_seeker, true );
+  register_soulbind_special_effect( 352373, soulbinds::fatal_flaw );
   register_soulbind_special_effect( 336239, soulbinds::soothing_shade );  // Theotar
   register_soulbind_special_effect( 319983, soulbinds::wasteland_propriety );
+  register_soulbind_special_effect( 351750, soulbinds::party_favors );
   register_soulbind_special_effect( 319973, soulbinds::built_for_war );  // Draven
   register_soulbind_special_effect( 332753, soulbinds::superior_tactics );
+  register_soulbind_special_effect( 352417, soulbinds::battlefield_presence );
   // Kyrian
   register_soulbind_special_effect( 328257, soulbinds::let_go_of_the_past );  // Pelagos
   register_soulbind_special_effect( 328266, soulbinds::combat_meditation );

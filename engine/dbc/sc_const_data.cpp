@@ -1461,7 +1461,7 @@ double dbc_t::effect_average( const spelleffect_data_t* e, unsigned level ) cons
 {
   assert( e && ( level > 0 ) && ( level <= MAX_SCALING_LEVEL ) );
 
-  auto scale = e->spell()->scaling_class();
+  auto scale = e->scaling_class();
 
   if ( scale == PLAYER_NONE && e->spell()->max_scaling_level() > 0 )
     scale = PLAYER_SPECIAL_SCALE8;
@@ -1495,9 +1495,9 @@ double dbc_t::effect_delta( const spelleffect_data_t* e, unsigned level ) const
 {
   (void)level; assert( e && ( level > 0 ) && ( level <= MAX_SCALING_LEVEL ) );
 
-  if ( e -> m_delta() != 0 && e -> spell() -> scaling_class() != 0 )
+  if ( e -> m_delta() != 0 && e->scaling_class() != 0 )
   {
-    return  e -> m_delta();
+    return  e->m_delta();
   }
 
   return 0;
@@ -1512,12 +1512,12 @@ double dbc_t::effect_bonus( const spelleffect_data_t* e, unsigned level ) const
 {
   assert( e && ( level > 0 ) && ( level <= MAX_SCALING_LEVEL ) );
 
-  if ( e -> m_unk() != 0 && e -> spell() -> scaling_class() != 0 )
+  if ( e -> m_unk() != 0 && e->scaling_class() != 0 )
   {
     unsigned scaling_level = level;
-    if ( e -> spell() -> max_scaling_level() > 0 )
-      scaling_level = std::min( scaling_level, e -> spell() -> max_scaling_level() );
-    double m_scale = spell_scaling( e -> spell() -> scaling_class(), scaling_level );
+    if ( e->spell()->max_scaling_level() > 0 )
+      scaling_level = std::min( scaling_level, e->spell()->max_scaling_level() );
+    double m_scale = spell_scaling( e->scaling_class(), scaling_level );
 
     return e -> m_unk() * m_scale;
   }
@@ -1545,7 +1545,7 @@ double dbc_t::effect_min( const spelleffect_data_t* e, unsigned level ) const
   assert( e && ( level > 0 ) );
   assert( ( level <= MAX_SCALING_LEVEL ) );
 
-  unsigned c_id = util::class_id( e -> _spell -> scaling_class() );
+  unsigned c_id = util::class_id( e->scaling_class() );
   double avg = effect_average( e, level );
 
   if ( c_id != 0 && ( e -> m_coefficient() != 0 || e -> m_delta() != 0 ) )
@@ -1581,7 +1581,7 @@ double dbc_t::effect_max( const spelleffect_data_t* e, unsigned level ) const
 
   assert( e && ( level > 0 ) && ( level <= MAX_SCALING_LEVEL ) );
 
-  unsigned c_id = util::class_id( e -> _spell -> scaling_class() );
+  unsigned c_id = util::class_id( e->scaling_class() );
   double avg = effect_average( e, level );
 
   if ( c_id != 0 && ( e -> m_coefficient() != 0 || e -> m_delta() != 0 ) )

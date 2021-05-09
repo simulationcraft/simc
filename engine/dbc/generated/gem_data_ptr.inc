@@ -1,5 +1,5 @@
-// Gem properties, wow build 9.1.0.38394
-static const std::array<gem_property_data_t, 1876> __ptr_gem_property_data { {
+// Gem properties, wow build 9.1.0.38600
+static const std::array<gem_property_data_t, 1894> __ptr_gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
   {    4,  2688, 0x00000004 }, // +$k1 Stamina
@@ -1875,6 +1875,24 @@ static const std::array<gem_property_data_t, 1876> __ptr_gem_property_data { {
   { 3844,  6284, 0x00000020 }, // If 5 Blood Patches exist at once, they congeal into a Blood Beast.
   { 3845,  6285, 0x00000020 }, // When you drop below 50% health, your blood spills into 3 Blood Patches.
   { 3846,  6286, 0x00000020 }, // When your Blood Beast expires, heal for all their remaining health.
-  { 3847,  2952, 0x00100000 }, // +$k1 Critical Strike
+  { 3847,  6300, 0x00100000 }, // |cff71d5ff|Hspell:30455|h[Ice Lance]|h|r
+  { 3848,  6289, 0x00100000 }, // $355752@spelldesc355721
+  { 3849,  6290, 0x00100000 }, // $355752@spelldesc355725
+  { 3850,  6291, 0x00100000 }, // $355752@spelldesc355731
+  { 3851,  6292, 0x00100000 }, // $355752@spelldesc355734
+  { 3852,  6293, 0x00100000 }, // $355752@spelldesc355739
+  { 3853,  6294, 0x00100000 }, // $355752@spelldesc355740
+  { 3854,  6295, 0x00100000 }, // $355752@spelldesc355741
+  { 3855,  6296, 0x00100000 }, // $355752@spelldesc355742
+  { 3856,  6297, 0x00100000 }, // $355752@spelldesc355743
+  { 3857,  6298, 0x00100000 }, // $355752@spelldesc355745
+  { 3858,  6301, 0x00100000 }, // $355752@spelldesc355748
+  { 3859,  6301, 0x00100000 }, // $355752@spelldesc355748
+  { 3860,  6302, 0x00100000 }, // $355752@spelldesc355755
+  { 3861,  6303, 0x00100000 }, // $355752@spelldesc355771
+  { 3862,  6304, 0x00100000 }, // $355752@spelldesc355757
+  { 3863,  6306, 0x00100000 }, // $355752@spelldesc355766
+  { 3864,  6306, 0x00100000 }, // $355752@spelldesc355766
+  { 3865,  6304, 0x00100000 }, // $355752@spelldesc355757
 } };
 

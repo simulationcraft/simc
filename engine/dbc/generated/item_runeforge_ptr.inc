@@ -1,5 +1,5 @@
-// Runeforge legendary bonuses, wow build 9.1.0.38394
-static const std::array<runeforge_legendary_entry_t, 643> __ptr_runeforge_legendary_data { {
+// Runeforge legendary bonuses, wow build 9.1.0.38600
+static const std::array<runeforge_legendary_entry_t, 660> __ptr_runeforge_legendary_data { {
   { 6823, 64, 327508, 0x000000c0, "Slick Ice" },
   { 6828, 64, 327284, 0x00110020, "Cold Front" },
   { 6829, 64, 327364, 0x00000402, "Freezing Winds" },
@@ -643,5 +643,22 @@ static const std::array<runeforge_legendary_entry_t, 643> __ptr_runeforge_legend
   { 7577, 259, 354837, 0x00000048, "Resounding Clarity" },
   { 7577, 260, 354837, 0x00000048, "Resounding Clarity" },
   { 7577, 261, 354837, 0x00000048, "Resounding Clarity" },
+  { 7679, 65, 355098, 0x00000060, "Divine Resonance" },
+  { 7679, 66, 355098, 0x00000060, "Divine Resonance" },
+  { 7679, 70, 355098, 0x00000060, "Divine Resonance" },
+  { 7680, 65, 355099, 0x0000000a, "Duty-Bound Gavel" },
+  { 7680, 66, 355099, 0x0000000a, "Duty-Bound Gavel" },
+  { 7680, 70, 355099, 0x0000000a, "Duty-Bound Gavel" },
+  { 7681, 577, 355886, 0x00000082, "Agony Gaze" },
+  { 7681, 581, 355886, 0x00000082, "Agony Gaze" },
+  { 7698, 577, 355890, 0x00000108, "Blazing Slaughter" },
+  { 7698, 581, 355890, 0x00000108, "Blazing Slaughter" },
+  { 7699, 577, 355893, 0x00010020, "Blind Faith" },
+  { 7699, 581, 355893, 0x00010020, "Blind Faith" },
+  { 7700, 577, 355996, 0x00000240, "Demonic Oath" },
+  { 7700, 581, 355996, 0x00000240, "Demonic Oath" },
+  { 7701, 65, 355447, 0x00000600, "Radiant Embers" },
+  { 7701, 66, 355447, 0x00000600, "Radiant Embers" },
+  { 7701, 70, 355447, 0x00000600, "Radiant Embers" },
 } };
 

@@ -782,7 +782,7 @@ public:
   bool hasted_cd;
   bool hasted_gcd;
 
-  paladin_action_t( const std::string& n, paladin_t* p,
+  paladin_action_t( util::string_view n, paladin_t* p,
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, p, s ),
     track_cd_waste( s -> cooldown() > 0_ms || s -> charge_cooldown() > 0_ms ),
@@ -1013,7 +1013,7 @@ private:
 public:
   typedef paladin_spell_base_t base_t;
 
-  paladin_spell_base_t( const std::string& n, paladin_t* player,
+  paladin_spell_base_t( util::string_view n, paladin_t* player,
                         const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s )
   { }
@@ -1034,7 +1034,7 @@ public:
 
 struct paladin_spell_t : public paladin_spell_base_t<spell_t>
 {
-  paladin_spell_t( const std::string& n, paladin_t* p,
+  paladin_spell_t( util::string_view n, paladin_t* p,
                    const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
   { }
@@ -1042,7 +1042,7 @@ struct paladin_spell_t : public paladin_spell_base_t<spell_t>
 
 struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 {
-  paladin_heal_t( const std::string& n, paladin_t* p,
+  paladin_heal_t( util::string_view n, paladin_t* p,
                   const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
   {
@@ -1090,7 +1090,7 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 
 struct paladin_absorb_t : public paladin_spell_base_t< absorb_t >
 {
-  paladin_absorb_t( const std::string& n, paladin_t* p,
+  paladin_absorb_t( util::string_view n, paladin_t* p,
                     const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
   { }
@@ -1098,7 +1098,7 @@ struct paladin_absorb_t : public paladin_spell_base_t< absorb_t >
 
 struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
 {
-  paladin_melee_attack_t( const std::string& n, paladin_t* p,
+  paladin_melee_attack_t( util::string_view n, paladin_t* p,
                           const spell_data_t* s = spell_data_t::nil()) :
     base_t( n, p, s )
   {
@@ -1156,7 +1156,7 @@ struct holy_power_consumer_t : public Base
     typedef holy_power_consumer_t base_t;
   bool is_divine_storm;
   bool is_wog;
-  holy_power_consumer_t( const std::string& n, paladin_t* player, const spell_data_t* s ) :
+  holy_power_consumer_t( util::string_view n, paladin_t* player, const spell_data_t* s ) :
     ab( n, player, s ),
     is_divine_storm ( false ),
     is_wog( false )
@@ -1384,7 +1384,7 @@ struct holy_power_consumer_t : public Base
 struct judgment_t : public paladin_melee_attack_t
 {
   int indomitable_justice_pct;
-  judgment_t( paladin_t* p, const std::string& options_str );
+  judgment_t( paladin_t* p, util::string_view options_str );
   judgment_t( paladin_t* p );
 
   virtual double bonus_da( const action_state_t* s ) const override;

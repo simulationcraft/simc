@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.5.38134
-static const std::array<spelltext_data_t, 15116> __spelltext_data { {
+static const std::array<spelltext_data_t, 15118> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -9026,7 +9026,6 @@ static const std::array<spelltext_data_t, 15116> __spelltext_data { {
   { 254774, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254775, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254776, "Create a soulbound item appropriate for your Loot Specialization ($@lootspec).", 0, 0 },
-  { 254777, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254778, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254779, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254780, "Create a soulbound item appropriate for your Loot Specialization ($@lootspec).", 0, 0 },
@@ -15034,6 +15033,9 @@ static const std::array<spelltext_data_t, 15116> __spelltext_data { {
   { 346279, "Demon's Bite leaves an open wound on your enemy dealing $346278o1 Chaos damage over $346278d and increasing damage taken from your Immolation Aura by $346278s2%.", "Demon's Bite leaves an open wound on your enemy dealing $346278o1 Chaos damage over $346278d and increasing damage taken from your Immolation Aura by $346278s2%.", 0 },
   { 346369, "$@spelldesc335274", "Your next Mortal Strike costs ${$w1/10} less Rage.", 0 },
   { 346370, "$@spelldesc335274", 0, 0 },
+  { 346502, "Unleash the fel within you, damaging enemies directly in front of you for ${$333110s1*(2/$t1)} Fire damage over $d. Causing damage also heals you for up to ${$333120s1*(2/$t1)} health.", 0, 0 },
+  { 346503, "$@spelldesc212084", 0, 0 },
+  { 346505, "Blasts all enemies in front of you, dealing guaranteed critical strikes for up to ${$s1*10*2} Chaos damage over $d. Deals reduced damage to secondary targets.", 0, 0 },
   { 346602, "Strike with the palm of your hand, dealing $s1 Physical damage.", 0, 0 },
   { 346665, "Throw a demonic glaive at the target, dealing $s2 Physical damage. The glaive can ricochet to $?$s320386[${$x1-1} additional enemies][an additional enemy] within 10 yards. Generates high threat.", 0, 0 },
   { 346736, "Psychic Scream can withstand $s1% more damage before breaking.", 0, "Rank 2" },

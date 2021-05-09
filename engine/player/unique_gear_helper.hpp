@@ -5,18 +5,20 @@
 
 #pragma once
 
+#include "action/sc_action_state.hpp"
 #include "action/attack.hpp"
 #include "action/heal.hpp"
 #include "action/sc_action.hpp"
 #include "action/spell.hpp"
 #include "buff/sc_buff.hpp"
 #include "dbc/dbc.hpp"
-#include "player/wrapper_callback.hpp"
+#include "item/special_effect.hpp"
+#include "player/sc_player.hpp"
 #include "player/special_effect_db_item.hpp"
 #include "player/unique_gear.hpp"
+#include "player/wrapper_callback.hpp"
 #include "util/scoped_callback.hpp"
-#include "player/sc_player.hpp"
-#include "item/special_effect.hpp"
+#include "sim/sc_sim.hpp"
 
 #include <type_traits>
 

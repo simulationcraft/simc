@@ -8,7 +8,7 @@
 
 #include "sim/sc_sim.hpp"
 
-benefit_t* benefit_t::collect_ratio(bool collect)
+benefit_t* benefit_t::collect_ratio(sim_t& sim, bool collect)
 {
   if (sim.report_details)
   {
@@ -49,7 +49,7 @@ void uptime_t::update(bool is_up, timespan_t current_time)
   }
 }
 
-uptime_t* uptime_t::collect_uptime(bool collect)
+uptime_t* uptime_t::collect_uptime(sim_t& sim, bool collect)
 {
   if (sim.report_details)
   {
@@ -60,7 +60,7 @@ uptime_t* uptime_t::collect_uptime(bool collect)
   return this;
 }
 
-uptime_t* uptime_t::collect_duration(bool collect)
+uptime_t* uptime_t::collect_duration(sim_t& sim, bool collect)
 {
   if (sim.report_details)
   {

@@ -1802,6 +1802,7 @@ public:
     if ( p()->buffs.deathborne->check() )
       p()->buffs.deathborne->current_value += p()->runeforge.deaths_fathom->effectN( 2 ).percent();
 
+    // TODO: On the PTR, this currently triggers some covenant cast callbacks, such as Lead by Example.
     if ( p()->rppm.deaths_fathom->trigger() )
       p()->buffs.deathborne->extend_duration_or_trigger( p()->runeforge.deaths_fathom->effectN( 1 ).time_value() );
   }
@@ -3849,7 +3850,7 @@ struct frozen_orb_t final : public frost_mage_spell_t
     make_event( *sim, duration, [ this, &counter, active ]
     {
       counter--;
-      if ( p()->state.active_frozen_orbs + p()->state.inactive_frozen_orbs == 0 || active && p()->bugs )
+      if ( p()->state.active_frozen_orbs + p()->state.inactive_frozen_orbs == 0 || ( active && p()->bugs ) )
         p()->buffs.freezing_winds->expire();
     } );
   }
@@ -7004,7 +7005,7 @@ void mage_t::update_from_the_ashes()
   if ( !talents.from_the_ashes->ok() )
     return;
 
-  state.from_the_ashes_mastery = talents.from_the_ashes->effectN( 3 ).base_value() * cooldowns.phoenix_flames->charges_fractional();
+  state.from_the_ashes_mastery = talents.from_the_ashes->effectN( 3 ).base_value() * static_cast<int>( cooldowns.phoenix_flames->charges_fractional() );
   invalidate_cache( CACHE_MASTERY );
 
   sim->print_debug( "{} updates mastery from From the Ashes, new value: {}", name_str, state.from_the_ashes_mastery );

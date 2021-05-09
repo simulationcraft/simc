@@ -88,12 +88,12 @@ double spelleffect_data_t::delta( const player_t* p, unsigned level ) const
   assert( level <= MAX_SCALING_LEVEL );
 
   double m_scale = 0;
-  if ( _m_delta != 0 && _spell -> scaling_class() != 0 )
+  if ( _m_delta != 0 && scaling_class() != 0 )
   {
     unsigned scaling_level = level ? level : p -> level();
     if ( _spell -> max_scaling_level() > 0 )
       scaling_level = std::min( scaling_level, _spell -> max_scaling_level() );
-    m_scale = p -> dbc->spell_scaling( _spell -> scaling_class(), scaling_level );
+    m_scale = p -> dbc->spell_scaling( scaling_class(), scaling_level );
   }
 
   return scaled_delta( m_scale );
@@ -109,11 +109,11 @@ double spelleffect_data_t::delta( const item_t* item ) const
   if ( _m_delta != 0 )
     m_scale = item_database::item_budget( item, _spell -> max_scaling_level() );
 
-  if ( _spell -> scaling_class() == PLAYER_SPECIAL_SCALE7 )
+  if ( scaling_class() == PLAYER_SPECIAL_SCALE7 )
   {
     m_scale = item_database::apply_combat_rating_multiplier( *item, m_scale );
   }
-  else if ( _spell -> scaling_class() == PLAYER_SPECIAL_SCALE8 )
+  else if ( scaling_class() == PLAYER_SPECIAL_SCALE8 )
   {
     const auto& props = item -> player -> dbc->random_property( item -> item_level() );
     m_scale = props.damage_replace_stat;
@@ -159,7 +159,7 @@ double spelleffect_data_t::average( const player_t* p, unsigned level ) const
   if ( level == 0 )
     level = p->level();
 
-  auto scale = _spell->scaling_class();
+  auto scale = scaling_class();
 
   if ( scale == PLAYER_NONE && _spell->max_scaling_level() > 0 )
     scale = PLAYER_SPECIAL_SCALE8;
@@ -188,16 +188,16 @@ double spelleffect_data_t::average( const item_t* item ) const
     return 0;
 
   auto budget = item_database::item_budget( item, _spell -> max_scaling_level() );
-  if ( _spell -> scaling_class() == PLAYER_SPECIAL_SCALE7 )
+  if ( scaling_class() == PLAYER_SPECIAL_SCALE7 )
   {
     budget = item_database::apply_combat_rating_multiplier( *item, budget );
   }
-  else if ( _spell -> scaling_class() == PLAYER_SPECIAL_SCALE8 )
+  else if ( scaling_class() == PLAYER_SPECIAL_SCALE8 )
   {
     const auto& props = item -> player -> dbc->random_property( item -> item_level() );
     budget = props.damage_replace_stat;
   }
-  else if ( _spell->scaling_class() == PLAYER_NONE &&
+  else if ( ( scaling_class() == PLAYER_NONE || scaling_class() == PLAYER_SPECIAL_SCALE9 ) &&
             _spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
   {
     const auto& props = item -> player -> dbc->random_property( item -> item_level() );

@@ -762,9 +762,6 @@ std::string spell_flags( const spell_data_t* spell )
 
   s << "[";
 
-  if ( spell -> scaling_class() != 0 )
-    s << "Scaling Spell (" << spell -> scaling_class() << "), ";
-
   if ( spell -> class_family() != 0 )
     s << "Spell Family (" << spell -> class_family() << "), ";
 
@@ -787,9 +784,6 @@ std::string spell_flags( const spell_data_t* spell )
 
 void spell_flags_xml( const spell_data_t* spell, xml_node_t* parent )
 {
-  if ( spell -> scaling_class() != 0 )
-    parent -> add_parm( "scaling_spell", spell -> scaling_class() );
-
   if ( spell -> flags( spell_attribute::SX_PASSIVE ) )
     parent -> add_parm( "passive", "true" );
 }
@@ -938,6 +932,11 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     }
   }
 
+  if ( e->_scaling_type )
+  {
+    s << " | Scaling Class: " << e->_scaling_type;
+  }
+
   s << std::endl;
 
   s << "                   Base Value: " << e -> base_value();
@@ -958,16 +957,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     double item_budget = ilevel_data.p_epic[ 0 ];
     auto coefficient = 1.0;
 
-    if ( spell -> scaling_class() == PLAYER_SPECIAL_SCALE7 )
+    if ( e->scaling_class() == PLAYER_SPECIAL_SCALE7 )
     {
       // Technically this should check for the item type, but that's not possible right now
       coefficient = dbc.combat_rating_multiplier( level, CR_MULTIPLIER_TRINKET );
     }
-    else if ( spell -> scaling_class() == PLAYER_SPECIAL_SCALE8 )
+    else if ( e->scaling_class() == PLAYER_SPECIAL_SCALE8 )
     {
       item_budget = ilevel_data.damage_replace_stat;
     }
-    else if ( spell->scaling_class() == PLAYER_NONE &&
+    else if ( ( e->scaling_class() == PLAYER_NONE || e->scaling_class() == PLAYER_SPECIAL_SCALE9 ) &&
               spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
     {
       item_budget = ilevel_data.damage_secondary;
@@ -1193,7 +1192,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   std::ostringstream s;
   player_e pt = PLAYER_NONE;
 
-  if ( spell -> scaling_class() != 0 && spell -> level() > static_cast< unsigned >( level ) )
+  if ( spell->has_scaling_effects() && spell->level() > static_cast< unsigned >( level ) )
   {
     s << std::endl << "Too low spell level " << level << " for " << spell -> name_cstr() << ", minimum is " << spell -> level() << "." << std::endl << std::endl;
     return s.str();
@@ -2034,7 +2033,7 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
 {
   player_e pt = PLAYER_NONE;
 
-  if ( spell -> scaling_class() != 0 && spell -> level() > static_cast< unsigned >( level ) )
+  if ( spell->has_scaling_effects() && spell -> level() > static_cast< unsigned >( level ) )
   {
     return;
   }
