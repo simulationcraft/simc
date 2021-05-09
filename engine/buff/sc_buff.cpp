@@ -1072,6 +1072,10 @@ buff_t* buff_t::set_affects_regen( bool state )
 buff_t* buff_t::set_constant_behavior( buff_constant_behavior b )
 {
   constant_behavior = b;
+  if ( b == buff_constant_behavior::ALWAYS_CONSTANT )
+    constant = true;
+  else if ( b == buff_constant_behavior::NEVER_CONSTANT )
+    constant = false;
   return this;
 }
 
