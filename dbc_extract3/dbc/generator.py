@@ -1251,6 +1251,7 @@ class SpellDataGenerator(DataGenerator):
          344068, 344069, 344070, # Venthyr Stamina Passives
          344076, 344077, 344078, # Necrolord Stamina Passives
          344087, 344089, 344091, # Kyrian Stamina Passives
+         354054, 354053, # Fatal Flaw vers/crit buffs (venthyr/nadjia)
          # Cabalists Hymnal
          344820,
          # Empyreal Ordnance

@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.38600
-static const std::array<spelltext_data_t, 15337> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15338> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15244,6 +15244,7 @@ static const std::array<spelltext_data_t, 15337> __ptr_spelltext_data { {
   { 354050, "$@spelldesc352366", "Movement speed reduced by $s1%.", 0 },
   { 354051, "$@spelldesc352366", "Rooted.", 0 },
   { 354053, "$@spelldesc352373", "Critical strike chance increased by $s1%.", 0 },
+  { 354054, "$@spelldesc352373", "Versatility increased by $s1%.", 0 },
   { 354109, "Each time Ravenous Frenzy is applied its duration is increased by 0.2 seconds. Additionally, you gain stacks of Sinful Hysteria equal to Ravenous Frenzy's stack count after it ends.\r\n\r\n$@spellicon355315 $@spellname355315\r\n$@spelldesc355315", 0, 0 },
   { 354115, "You and your Kindred Spirit each gain a bonus secondary stat based on their Covenant. This bonus is doubled while the bond is Empowered.\r\n\r\n|CFFffffffKyrian|r: Mastery increased by $354805s1.\r\n|CFFffffffNight Fae|r: Haste increased by $354815s1%.\r\n|CFFffffffVenthyr|r: Critical Strike chance increased by $354345s1%.\r\n|CFFffffffNecrolord|r: Versatility increased by $354802s1%.", 0, 0 },
   { 354118, "The cooldown and duration of Convoke the Spirits is reduced by $s2%. Convoke the Spirits has an increased chance to use an exceptional spell or ability.", 0, 0 },
