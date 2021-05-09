@@ -6104,7 +6104,8 @@ void mage_t::create_buffs()
   player_t::create_buffs();
 
   // Arcane
-  buffs.arcane_charge        = make_buff( this, "arcane_charge", find_spell( 36032 ) );
+  buffs.arcane_charge        = make_buff( this, "arcane_charge", find_spell( 36032 ) )
+                                 ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buffs.arcane_power         = make_buff( this, "arcane_power", find_spell( 12042 ) )
                                  ->set_cooldown( 0_ms )
                                  ->set_default_value_from_effect( 1 )
@@ -6204,7 +6205,8 @@ void mage_t::create_buffs()
 
 
   // Shared
-  buffs.incanters_flow = make_buff<buffs::incanters_flow_t>( this );
+  buffs.incanters_flow = make_buff<buffs::incanters_flow_t>( this )
+                           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buffs.rune_of_power  = make_buff<buffs::rune_of_power_t>( this );
   buffs.focus_magic    = make_buff( this, "focus_magic_proc", find_spell( 321363 ) )
                            ->set_default_value_from_effect( 2 )
@@ -6214,7 +6216,8 @@ void mage_t::create_buffs()
   // Runeforge Legendaries
   buffs.arcane_harmony = make_buff( this, "arcane_harmony", find_spell( 332777 ) )
                            ->set_default_value_from_effect( 1 )
-                           ->set_chance( runeforge.arcane_harmony.ok() );
+                           ->set_chance( runeforge.arcane_harmony.ok() )
+                           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buffs.siphon_storm   = make_buff( this, "siphon_storm", find_spell( 332934 ) )
                            ->set_default_value_from_effect( 1 )
                            ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
