@@ -175,8 +175,11 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     // Adjust ilevel, value is in 'value_1' field
     case ITEM_BONUS_ILEVEL:
       // Blizzard has currently unknown means to disable adjust ilevel item bonus on
-      // items. Currently "best guess" how this occurs is item bonus 7215 enables it.
-      if ( range::find( item.parsed.bonus_id, 7215 ) != item.parsed.bonus_id.end() )
+      // items. Currently, disable them on when bonus IDs 7215 or 7250 are present.
+      // TODO: This appears to be happening because of some kind of priority system for
+      // item bonuses where these are applied last, overriding any other ajustments.
+      if ( range::find( item.parsed.bonus_id, 7215 ) != item.parsed.bonus_id.end() ||
+           range::find( item.parsed.bonus_id, 7250 ) != item.parsed.bonus_id.end() )
       {
         break;
       }
