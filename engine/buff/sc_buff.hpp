@@ -101,6 +101,7 @@ public:
   std::vector<timespan_t> stack_react_time;
   std::vector<event_t*> stack_react_ready_triggers;
 
+  buff_constant_behavior constant_behavior;
   buff_refresh_behavior refresh_behavior;
   buff_refresh_duration_callback_t refresh_duration_callback;
   buff_stack_behavior stack_behavior;
@@ -344,6 +345,7 @@ public:
   buff_t* set_tick_callback( buff_tick_callback_t );
   buff_t* set_tick_time_callback( buff_tick_time_callback_t );
   buff_t* set_affects_regen( bool state );
+  buff_t* set_constant_behavior( buff_constant_behavior );
   buff_t* set_refresh_behavior( buff_refresh_behavior );
   buff_t* set_refresh_duration_callback( buff_refresh_duration_callback_t );
   buff_t* set_tick_zero( bool v ) { tick_zero = v; return this; }

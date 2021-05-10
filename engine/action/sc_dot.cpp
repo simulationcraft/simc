@@ -804,6 +804,10 @@ void dot_t::schedule_tick()
       current_action->player->gcd_ready =
           sim.current_time() + current_action->gcd();
       current_action->set_target( target );
+      if ( !current_action->quiet )
+      {
+        current_action->player->sequence_add( current_action, target, sim.current_time() );
+      }
       current_action->execute();
       if ( current_action->result_is_hit(
                current_action->execute_state->result ) )

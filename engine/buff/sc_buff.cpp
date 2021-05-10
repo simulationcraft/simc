@@ -504,6 +504,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     activated( true ),
     reactable( false ),
     reverse(),
+    constant_behavior( buff_constant_behavior::DEFAULT ),
     constant(),
     quiet(),
     overridden(),
@@ -540,7 +541,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     trigger_successes(),
     simulation_max_stack( 0 ),
     invalidate_list(),
-    gcd_type(gcd_haste_type::NONE ),
+    gcd_type( gcd_haste_type::NONE ),
     benefit_pct(),
     trigger_pct(),
     avg_start(),
@@ -564,6 +565,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     sim->buff_list.push_back( this );
     cooldown = sim->get_cooldown( "buff_" + name_str );
   }
+
+  constant = ( constant_behavior == buff_constant_behavior::ALWAYS_CONSTANT );
 
   // Set Buff duration
   set_duration( base_buff_duration );
@@ -1063,6 +1066,16 @@ buff_t* buff_t::set_tick_time_callback( buff_tick_time_callback_t cb )
 buff_t* buff_t::set_affects_regen( bool state )
 {
   change_regen_rate = state;
+  return this;
+}
+
+buff_t* buff_t::set_constant_behavior( buff_constant_behavior b )
+{
+  constant_behavior = b;
+  if ( b == buff_constant_behavior::ALWAYS_CONSTANT )
+    constant = true;
+  else if ( b == buff_constant_behavior::NEVER_CONSTANT )
+    constant = false;
   return this;
 }
 
@@ -1925,7 +1938,8 @@ void buff_t::start( int stacks, double value, timespan_t duration )
 
   if ( sim->current_time() <= timespan_t::from_seconds( 0.01 ) )
   {
-    if ( d == timespan_t::zero() || ( d > timespan_t::from_seconds( sim->expected_max_time() ) ) )
+    if ( ( d == timespan_t::zero() || ( d > timespan_t::from_seconds( sim->expected_max_time() ) ) ) &&
+         constant_behavior != buff_constant_behavior::NEVER_CONSTANT )
       constant = true;
   }
 
@@ -1941,7 +1955,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
     for ( size_t i = 0, end = sim->player_non_sleeping_list.size(); i < end; i++ )
     {
       player_t* actor = sim->player_non_sleeping_list[ i ];
-      if ( actor->resource_regeneration != regen_type::DYNAMIC|| actor->is_pet() )
+      if ( actor->resource_regeneration != regen_type::DYNAMIC || actor->is_pet() )
         continue;
 
       for ( auto& elem : invalidate_list )
@@ -2325,7 +2339,7 @@ void buff_t::expire( timespan_t delay )
   last_stack_change = sim->current_time();
 
   if ( sim->target->resources.base[ RESOURCE_HEALTH ] == 0 || sim->target->resources.current[ RESOURCE_HEALTH ] > 0 )
-    if ( !overridden )
+    if ( !overridden && constant_behavior != buff_constant_behavior::ALWAYS_CONSTANT )
     {
       constant = false;
     }
