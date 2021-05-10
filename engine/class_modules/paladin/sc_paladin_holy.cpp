@@ -587,9 +587,11 @@ struct avenging_crusader_t : public paladin_spell_t
 
     for ( auto a : player->action_list )
     {
-      a->base_recharge_multiplier *= 1.3;
+      if ( a->name_str == "judgment" || a->name_str == "cursader_strike" )
+      {
+        a->base_recharge_multiplier /= ( 1 + p()->talents.avenging_crusader->effectN( 2 ).percent() );
+      }
     }
-
   }
 };
 
