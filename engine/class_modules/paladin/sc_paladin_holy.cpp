@@ -1,5 +1,6 @@
 #include "sc_paladin.hpp"
 #include "simulationcraft.hpp"
+#include <vector>
 
 namespace paladin
 {
@@ -243,11 +244,6 @@ struct holy_shock_damage_t : public paladin_spell_t
 
     if ( execute_state->result == RESULT_CRIT )
       p()->buffs.infusion_of_light->trigger();
-
-    if ( p()->talents.glimmer_of_light->ok() )
-    {
-        td( target )->debuff.glimmer_of_light_damage->trigger();
-    }
   }
 };
 
@@ -282,11 +278,6 @@ struct holy_shock_heal_t : public paladin_heal_t
 
     if ( execute_state->result == RESULT_CRIT )
       p()->buffs.infusion_of_light->trigger();
-
-    if ( p()->talents.glimmer_of_light->ok() )
-    {
-      p()->buffs.glimmer_of_light_heal->trigger();
-    }
   }
 };
 
@@ -318,6 +309,7 @@ struct holy_shock_t : public paladin_spell_t
   glimmer_of_light_damage_t* glimmer_damage;
   glimmer_of_light_heal_t* glimmer_heal;
 
+  std::vector<player_t*> glimmer_targets;
 
   holy_shock_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "holy_shock", p, p->find_specialization_spell( 20473 ) ), dmg( false )
@@ -332,12 +324,11 @@ struct holy_shock_t : public paladin_spell_t
     add_child( damage );
     heal = new holy_shock_heal_t( p );
     add_child( heal );
-
+        
     glimmer_damage = new glimmer_of_light_damage_t( p );
     add_child( glimmer_damage );
     glimmer_heal = new glimmer_of_light_heal_t( p );
     add_child( glimmer_heal );
-
   }
 
   holy_shock_t( paladin_t* p ) : paladin_spell_t( "holy_shock", p, p->find_specialization_spell( 20473 ) ), dmg( false )
@@ -347,24 +338,55 @@ struct holy_shock_t : public paladin_spell_t
     add_child( damage );
     heal = new holy_shock_heal_t( p );
     add_child( heal );
+
+    glimmer_damage = new glimmer_of_light_damage_t( p );
+    add_child( glimmer_damage );
+    glimmer_heal = new glimmer_of_light_heal_t( p );
+    add_child( glimmer_heal );
   }
 
   void execute() override
   {
-
-    handle_glimmer();
+    if ( p()->talents.glimmer_of_light->ok() )
+    {
+      handle_glimmer();
+    }
+    
     
     if ( dmg )
     {
       // damage enemy
       damage->set_target( target );
       damage->execute();
+      if ( p()->talents.glimmer_of_light->ok() )
+      {
+        if ( td( target )->debuff.glimmer_of_light_damage->up() )
+        {
+          td( target )->debuff.glimmer_of_light_damage->refresh();
+        }
+        else
+        {
+          td( target )->debuff.glimmer_of_light_damage->trigger();
+        }
+        handle_glimmer_targets( target );
+      }
     }
     else
     {
       // heal friendly
       heal->set_target( target );
       heal->execute();
+      if ( p()->talents.glimmer_of_light->ok() )
+      {
+        if ( p()->buffs.glimmer_of_light_heal->up() )
+        {
+          p()->buffs.glimmer_of_light_heal->refresh();
+        }
+        else
+        {
+          p()->buffs.glimmer_of_light_heal->trigger();
+        }
+      }
     }
     // The reason the subspell is allowed to execute first is so we can consume judgment correctly.
     // If this is first then a dummy holy shock is fired off that consumes the judgment debuff
@@ -385,13 +407,29 @@ struct holy_shock_t : public paladin_spell_t
     return rm;
   }
 
+  void handle_glimmer_targets(player_t* target)
+  {
+    // no matter what we do we check if it already exists and erase it if it does.
+    std::vector<player_t*>::iterator it = std::find( glimmer_targets.begin(), glimmer_targets.end(), target );
+    if ( it != glimmer_targets.end() )
+    {
+      glimmer_targets.erase( it );
+    }
+    // You can only have 8 glimmers out at a time
+    if ( glimmer_targets.size() >= 8 )
+    {
+      glimmer_targets.erase( glimmer_targets.begin() );
+    }
+    glimmer_targets.push_back( target );
+  }
+
   void handle_glimmer()
   {
-    for ( player_t* t : sim->target_non_sleeping_list )
+    for ( player_t* t : glimmer_targets )
     {
       if ( td( t )->debuff.glimmer_of_light_damage->up() )
       {
-        glimmer_damage->set_target( target );
+        glimmer_damage->set_target( t );
         glimmer_damage->execute();
       }
     }
@@ -550,7 +588,6 @@ struct avenging_crusader_t : public paladin_spell_t
     for ( auto a : player->action_list )
     {
       a->base_recharge_multiplier *= 1.3;
-
     }
 
   }
@@ -567,7 +604,7 @@ void paladin_t::create_holy_actions()
   {
     holy_shock_t* toll_spell = new holy_shock_t( this );
     toll_spell->dmg          = true;
-    active.divine_toll = new holy_shock_damage_t(this);
+    active.divine_toll       = toll_spell;
   }
 }
 
