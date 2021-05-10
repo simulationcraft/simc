@@ -567,7 +567,7 @@ void paladin_t::create_holy_actions()
   {
     holy_shock_t* toll_spell = new holy_shock_t( this );
     toll_spell->dmg          = true;
-    active.divine_toll = toll_spell;
+    active.divine_toll = new holy_shock_damage_t(this);
   }
 }
 
