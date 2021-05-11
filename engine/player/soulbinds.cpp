@@ -922,6 +922,19 @@ void combat_meditation( special_effect_t& effect )
   add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff );
 }
 
+void better_together( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "better_together" );
+  if ( !buff )
+    buff = make_buff<stat_buff_t>( effect.player, "better_together", effect.player->find_spell( 352498 ) )
+               ->set_duration( 0_ms );
+
+  effect.player->register_combat_begin( [ buff ]( player_t* p ) {
+    if ( p->sim->shadowlands_opts.better_together_ally )
+      buff->trigger();
+  } );
+}
+
 void pointed_courage( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "pointed_courage" );
@@ -1542,6 +1555,7 @@ void register_special_effects()
   // Kyrian
   register_soulbind_special_effect( 328257, soulbinds::let_go_of_the_past );  // Pelagos
   register_soulbind_special_effect( 328266, soulbinds::combat_meditation );
+  register_soulbind_special_effect( 351146, soulbinds::better_together );
   register_soulbind_special_effect( 329778, soulbinds::pointed_courage );    // Kleia
   register_soulbind_special_effect( 333935, soulbinds::hammer_of_genesis );  // Mikanikos
   register_soulbind_special_effect( 333950, soulbinds::brons_call_to_action, true );

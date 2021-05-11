@@ -3821,6 +3821,7 @@ void sim_t::create_options()
   add_option( opt_float( "shadowlands.bonded_hearts_other_covenant_chance", shadowlands_opts.bonded_hearts_other_covenant_chance, 0.0, 1.0 ) );
   add_option( opt_string( "shadowlands.party_favor_type", shadowlands_opts.party_favor_type ) );
   add_option( opt_int( "shadowlands.battlefield_presence_enemies", shadowlands_opts.battlefield_presence_enemies, 0, 3 ) );
+  add_option( opt_bool( "shadowlands.better_together_ally", shadowlands_opts.better_together_ally ) );
 }
 
 // sim_t::parse_option ======================================================
