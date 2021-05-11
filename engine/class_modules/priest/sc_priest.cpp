@@ -618,6 +618,14 @@ struct mindgames_t final : public priest_spell_t
       child_mindgames_damage_reversal = new mindgames_damage_reversal_t( priest() );
       add_child( child_mindgames_damage_reversal );
     }
+
+    if ( priest().legendary.shadow_word_manipulation->ok() )
+    {
+      base_execute_time /= priest().legendary.shadow_word_manipulation->effectN( 1 ).percent();
+    }
+
+    // Add the extra charge
+    apply_affecting_aura( priest().legendary.shadow_word_manipulation );
   }
 
   void impact( action_state_t* s ) override
@@ -1684,6 +1692,8 @@ void priest_t::init_spells()
   // Shared Legendaries
   legendary.cauterizing_shadows        = find_runeforge_legendary( "Cauterizing Shadows" );
   legendary.twins_of_the_sun_priestess = find_runeforge_legendary( "Twins of the Sun Priestess" );
+  legendary.bwonsamdis_pact            = find_runeforge_legendary( "Bwonsamdi's Pact" );
+  legendary.shadow_word_manipulation   = find_runeforge_legendary( "Shadow Word: Manipulation" );
   // Disc legendaries
   legendary.kiss_of_death    = find_runeforge_legendary( "Kiss of Death" );
   legendary.the_penitent_one = find_runeforge_legendary( "The Penitent One" );
