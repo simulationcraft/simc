@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -11596,6 +11596,27 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: Unknown(87) -> AOE friendly (31)
 Description      : $@spelldesc324724
 
+Name             : Pallid Command (id=356390) [Spell Family (6), Passive, Hidden] 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ......x. x....... ........ 
+                 : Magic Heal, Magic Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=890233)   : Apply Aura (6) | Proc Trigger Spell (42): Pallid Command
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 356418 | Target: Self (1)
+Description      : Casting Unholy Nova summons a Maldraxxi Champion to aid you for X seconds. Each time an ally is healed by Unholy Transfusion your Maldraxxi Champion's healing and damage done is increased by 1%, up to a maximum of X%.
+
 Name             : Bwonsamdi's Pact (id=356391) [Spell Family (6), Passive, Hidden] 
 School           : Nature
 Spell Type       : None
@@ -11637,6 +11658,52 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1944
                    Affected Spells (Category): Mindgames (323673)
 Description      : Mindgames gains 1 addtional charge and its cast time is increased by 50%.
+
+Name             : Spheres' Harmony (id=356395) [Spell Family (6), Passive, Hidden] 
+Class            : Priest
+School           : Arcane
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ....x... x....... ........ 
+                 : Generic Hostile Spell, Magic Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=890239)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=890448)   : Dummy (3)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
+Description      : Boon of the Ascended's cooldown is reduced by $s1 seconds, up to $s2 sec, for each stack of Boon of the Ascended consumed by Ascended Eruption.
+
+Name             : Pallid Command (id=356418) 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Spell Level      : 60
+Range            : 100 yards
+Duration         : 15 seconds
+Triggered by     : Pallid Command (356390)
+Attributes       : ........ ........ .......x x..x.x..   .....x.. ..x..... ........ ....x... 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
+                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Does not break stealth (37), Don't display in aura bar (60), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=890267)   : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 180113 | Misc Value 2: 0x145e | Target: Unknown(81)
+#2 (id=890268)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Bwonsamdi's Pact (id=356532) [Spell Family (6), Hidden] 
 School           : Nature

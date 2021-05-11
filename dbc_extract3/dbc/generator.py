@@ -1457,6 +1457,8 @@ class SpellDataGenerator(DataGenerator):
             ( 336373, 0 ),          # Cauterizing Shadows heal spell
             ( 323707, 0 ),          # Mindgames Healing reversal Damage spell
             ( 323706, 0 ),          # Mindgames Damage reversal Healing spell
+            ( 356390, 0 ),          # Pallid Command Necrolord Legendary Power (UNCONFIRMED)
+            ( 356395, 0 ),          # Spheres' Harmony Kyrian Legendary Power (UNCONFIRMED)
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)

@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.38627
-static const std::array<spelltext_data_t, 15362> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15364> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15354,8 +15354,10 @@ static const std::array<spelltext_data_t, 15362> __ptr_spelltext_data { {
   { 356346, "Frozen in time for $d.", "Frozen in time for $d.", 0 },
   { 356357, 0, "A fragment of your shadow was recently severed from you...", 0 },
   { 356360, "Sever the shadow of a target player.", 0, 0 },
+  { 356390, "Casting Unholy Nova summons a Maldraxxi Champion to aid you for X seconds. Each time an ally is healed by Unholy Transfusion your Maldraxxi Champion's healing and damage done is increased by 1%, up to a maximum of X%.", 0, 0 },
   { 356391, "Each time you take damage from Shadow Word: Death while your Fae Guardians are active your Faeries effectiveness is increased by $356515s1%.", 0, 0 },
   { 356392, "Mindgames gains 1 addtional charge and its cast time is increased by 50%.", 0, 0 },
+  { 356395, "Boon of the Ascended's cooldown is reduced by $s1 seconds, up to $s2 sec, for each stack of Boon of the Ascended consumed by Ascended Eruption.", 0, 0 },
   { 356419, "Judge the soul of the targeted party member, assigning them to a realm of the Shadowlands. Only usable on the recently deceased.", "Your soul has been judged recently.", 0 },
   { 356456, "Heart Strike deals $s1% increased damage, but also costs $s2% of your max health.", 0, "PvP Talent" },
   { 356490, "$description355297s1", 0, 0 },
