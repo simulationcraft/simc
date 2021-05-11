@@ -410,13 +410,13 @@ struct holy_shock_t : public paladin_spell_t
   void handle_glimmer_targets(player_t* target)
   {
     // no matter what we do we check if it already exists and erase it if it does.
-    std::vector<player_t*>::iterator it = std::find( glimmer_targets.begin(), glimmer_targets.end(), target );
+    auto it = range::find( glimmer_targets, target );
     if ( it != glimmer_targets.end() )
     {
       glimmer_targets.erase( it );
     }
     // You can only have 8 glimmers out at a time
-    if ( glimmer_targets.size() >= 8 )
+    if ( glimmer_targets.size() >= 7 )
     {
       glimmer_targets.erase( glimmer_targets.begin() );
     }
@@ -584,14 +584,6 @@ struct avenging_crusader_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     p()->buffs.avenging_crusader->trigger();
-
-    for ( auto a : player->action_list )
-    {
-      if ( a->name_str == "judgment" || a->name_str == "cursader_strike" )
-      {
-        a->base_recharge_multiplier /= ( 1 + p()->talents.avenging_crusader->effectN( 2 ).percent() );
-      }
-    }
   }
 };
 

@@ -1206,7 +1206,10 @@ struct hallowed_discernment_tick_t : public paladin_spell_t
     // for some god forsaken reason this ability double dips with vers :)
     // assumption is because it takes a tick of another ability that is already scaled with vers
     // then runs it through damage code again which applies vers again
-    am *= (1 + p()->composite_damage_versatility());
+    if ( p()->bugs )
+    {
+      am *= ( 1 + p()->composite_damage_versatility() );
+    }
     return am;
   }
 };
