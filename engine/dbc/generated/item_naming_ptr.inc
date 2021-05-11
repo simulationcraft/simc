@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.1.0.38600
-static const std::array<item_name_description_t, 614> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 9.1.0.38627
+static const std::array<item_name_description_t, 617> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -614,5 +614,8 @@ static const std::array<item_name_description_t, 614> __ptr_item_name_descriptio
   { 13858, "Blind Faith"                                 },
   { 13859, "Renown Quartermaster"                        },
   { 13860, "Demonic Oath"                                },
+  { 13861, "Seasons of Plenty"                           },
+  { 13862, "Bwonsamdi's Pact"                            },
+  { 13863, "Shadow Word: Manipulation"                   },
 } };
 

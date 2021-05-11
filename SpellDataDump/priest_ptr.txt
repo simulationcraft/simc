@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -1901,7 +1901,7 @@ Effects          :
 #1 (id=59238)    : Apply Aura (6) | Periodic Trigger Spell (23): Symbol of Hope every 1 seconds
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Trigger Spell: 265144 | Target: Self (1)
 #2 (id=709101)   : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 Description      : Bolster the morale of raid members within $265144a1 yds. They each recover $s1 sec of cooldown of a major defensive ability, and regain ${$s2*($d/$t1+1)}% of their missing mana, over $d.
 Tooltip          : Raid members are rapidly recovering a major defensive ability, and regaining $s2% missing mana every $t1 sec.
 
@@ -9203,9 +9203,10 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Cooldown         : 45 seconds
+Charges          : 1 (45 seconds cooldown)
+Category         : 1944: Shadow Word: Manipulation (356392 effect#2)
 Proc Chance      : 101%
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #14), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2), Shattered Perceptions (338315 effects: #1, #3), Hungering Void (345219 effect#1)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #14), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2), Shattered Perceptions (338315 effects: #1, #3), Hungering Void (345219 effect#1), Shadow Word: Manipulation (356392 effect#1)
 Family Flags     : 72, 84
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9614,6 +9615,7 @@ Spell Level      : 48
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 90 seconds
+Labels           : 1096: Bwonsamdi's Pact (356515 effect#1)
 Stacks           : 1 maximum
 Proc Chance      : 100%
 Stance Mask      : 0x88000000
@@ -9651,6 +9653,7 @@ Range            : 100 yards
 Max Targets      : 1
 Velocity         : 60 yards/sec
 Duration         : 20 seconds
+Labels           : 1096: Bwonsamdi's Pact (356515 effect#1)
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 105
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9677,6 +9680,7 @@ Spell Type       : None
 Spell Level      : 48
 Range            : 100 yards
 Velocity         : 30 yards/sec
+Labels           : 1096: Bwonsamdi's Pact (356515 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9702,6 +9706,7 @@ Range            : 100 yards
 Max Targets      : 1
 Velocity         : 60 yards/sec
 Duration         : 20 seconds
+Labels           : 1096: Bwonsamdi's Pact (356515 effect#1)
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 105
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11062,6 +11067,7 @@ Range            : 100 yards
 Max Targets      : 1
 Velocity         : 60 yards/sec
 Duration         : 20 seconds
+Labels           : 1096: Bwonsamdi's Pact (356515 effect#1)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
@@ -11458,6 +11464,7 @@ Spell Level      : 60
 Range            : 100 yards
 Velocity         : 60 yards/sec
 Duration         : 3 seconds
+Labels           : 1096: Bwonsamdi's Pact (356515 effect#1)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
@@ -11588,5 +11595,67 @@ Effects          :
 #1 (id=875387)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: Unknown(87) -> AOE friendly (31)
 Description      : $@spelldesc324724
+
+Name             : Bwonsamdi's Pact (id=356391) [Spell Family (6), Passive, Hidden] 
+School           : Nature
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ..x...x. ........ ........ 
+                 : Generic Heal, Magic Heal
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=890234)   : Apply Aura (6) | Proc Trigger Spell (42): Bwonsamdi's Pact
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 356532 | Target: Self (1)
+Description      : Each time you take damage from Shadow Word: Death while your Fae Guardians are active your Faeries effectiveness is increased by $356515s1%.
+
+Name             : Shadow Word: Manipulation (id=356392) [Spell Family (6), Passive, Hidden] 
+School           : Shadow
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=890235)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Affected Spells: Mindgames (323673)
+                   Family Flags: 84
+#2 (id=890409)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1944
+                   Affected Spells (Category): Mindgames (323673)
+Description      : Mindgames gains 1 addtional charge and its cast time is increased by 50%.
+
+Name             : Bwonsamdi's Pact (id=356532) [Spell Family (6), Hidden] 
+School           : Nature
+Spell Type       : None
+Duration         : Aura (infinite)
+Proc Chance      : 101%
+Triggered by     : Bwonsamdi's Pact (356391)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Hidden (7)
+Effects          :
+#1 (id=890444)   : Apply Aura (6) | Proc Trigger Spell (42): Bwonsamdi's Pact
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 356515 | Target: Self (1)
+Description      : @spelldesc356391
 
 

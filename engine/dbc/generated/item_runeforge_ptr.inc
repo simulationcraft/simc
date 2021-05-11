@@ -1,5 +1,5 @@
-// Runeforge legendary bonuses, wow build 9.1.0.38600
-static const std::array<runeforge_legendary_entry_t, 660> __ptr_runeforge_legendary_data { {
+// Runeforge legendary bonuses, wow build 9.1.0.38627
+static const std::array<runeforge_legendary_entry_t, 669> __ptr_runeforge_legendary_data { {
   { 6823, 64, 327508, 0x000000c0, "Slick Ice" },
   { 6828, 64, 327284, 0x00110020, "Cold Front" },
   { 6829, 64, 327364, 0x00000402, "Freezing Winds" },
@@ -660,5 +660,14 @@ static const std::array<runeforge_legendary_entry_t, 660> __ptr_runeforge_legend
   { 7701, 65, 355447, 0x00000600, "Radiant Embers" },
   { 7701, 66, 355447, 0x00000600, "Radiant Embers" },
   { 7701, 70, 355447, 0x00000600, "Radiant Embers" },
+  { 7702, 65, 355100, 0x00000180, "Seasons of Plenty" },
+  { 7702, 66, 355100, 0x00000180, "Seasons of Plenty" },
+  { 7702, 70, 355100, 0x00000180, "Seasons of Plenty" },
+  { 7703, 256, 356391, 0x00000042, "Bwonsamdi's Pact" },
+  { 7703, 257, 356391, 0x00000042, "Bwonsamdi's Pact" },
+  { 7703, 258, 356391, 0x00000042, "Bwonsamdi's Pact" },
+  { 7704, 256, 356392, 0x00000204, "Shadow Word: Manipulation" },
+  { 7704, 257, 356392, 0x00000204, "Shadow Word: Manipulation" },
+  { 7704, 258, 356392, 0x00000204, "Shadow Word: Manipulation" },
 } };
 

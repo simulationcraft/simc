@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -2757,7 +2757,7 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=883482)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Gaining a stack of Redirected Anima from Grove Invigoration heals up to 5 nearby allies for 2% of their health. If any of the affected allies are of another covenant, Redirected Anima's Mastery and maximum health effects are increased by 50% for 5 sec.
+Description      : Gaining a stack of Redirected Anima from Grove Invigoration heals up to 5 nearby allies for 2% of their health. If any of the affected allies are of another covenant, Redirected Anima's Mastery and maximum health effects are increased by $352881s1% for $352881d.
 
 Name             : Waking Dreams (id=352779) [Passive, Hidden] 
 Covenant         : Night Fae

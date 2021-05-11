@@ -1,4 +1,4 @@
-// Covenant abilities, wow build 9.1.0.38600
+// Covenant abilities, wow build 9.1.0.38627
 static const std::array<covenant_ability_entry_t, 64> __ptr_covenant_ability_data { {
   {  6, 4, 0, 315443, "Abomination Limb"                   },
   { 11, 4, 0, 325727, "Adaptive Swarm"                     },
@@ -66,7 +66,7 @@ static const std::array<covenant_ability_entry_t, 64> __ptr_covenant_ability_dat
   {  3, 3, 0, 328231, "Wild Spirits"                       },
 } };
 
-// Soulbind abilities, wow build 9.1.0.38600
+// Soulbind abilities, wow build 9.1.0.38627
 static const std::array<soulbind_ability_entry_t, 128> __ptr_soulbind_ability_data { {
   { 319191, 3,  824, "Field of Blossoms"                  },
   { 319210, 3,  826, "Social Butterfly"                   },
@@ -198,7 +198,7 @@ static const std::array<soulbind_ability_entry_t, 128> __ptr_soulbind_ability_da
   { 352806, 3, 1851, "Hunt's Exhilaration"                },
 } };
 
-// Conduits, wow build 9.1.0.38600
+// Conduits, wow build 9.1.0.38627
 static const std::array<conduit_entry_t, 274> __ptr_conduit_data { {
   {   5, 334993, "Stalwart Guardian"                  },
   {   7, 335010, "Brutal Vitality"                    },
@@ -514,7 +514,7 @@ static const std::array<uint16_t, 274> __ptr_conduit_spell_id_index { {
     273,     4,
 } };
 
-// Conduit ranks, wow build 9.1.0.38600
+// Conduit ranks, wow build 9.1.0.38627
 static const std::array<conduit_rank_entry_t, 4110> __ptr_conduit_rank_data { {
   {   5,  0, 334993, -20000.000000 },
   {   5,  1, 334993, -22000.000000 },
@@ -4628,27 +4628,27 @@ static const std::array<conduit_rank_entry_t, 4110> __ptr_conduit_rank_data { {
   { 282, 14, 346747, 2400.000000 },
 } };
 
-// Renown reward abilities, wow build 9.1.0.38600
+// Renown reward abilities, wow build 9.1.0.38627
 static const std::array<renown_reward_entry_t, 20> __ptr_renown_reward_ability_data { {
   { 1,   2, 344087, "Deepening Bond"                     }, // Kyrian
   { 1,  19, 344089, "Deepening Bond"                     }, // Kyrian
   { 1,  35, 344091, "Deepening Bond"                     }, // Kyrian
-  { 1,  60, 354252, "Deepening Bond"                     }, // Kyrian
-  { 1,  73, 354257, "Deepening Bond"                     }, // Kyrian
+  { 1,  50, 354252, "Deepening Bond"                     }, // Kyrian
+  { 1,  59, 354257, "Deepening Bond"                     }, // Kyrian
   { 2,   2, 344068, "Deepening Bond"                     }, // Venthyr
   { 2,  19, 344069, "Deepening Bond"                     }, // Venthyr
   { 2,  35, 344070, "Deepening Bond"                     }, // Venthyr
-  { 2,  60, 354195, "Deepening Bond"                     }, // Venthyr
-  { 2,  73, 354204, "Deepening Bond"                     }, // Venthyr
+  { 2,  50, 354195, "Deepening Bond"                     }, // Venthyr
+  { 2,  59, 354204, "Deepening Bond"                     }, // Venthyr
   { 3,   2, 344052, "Deepening Bond"                     }, // Night Fae
   { 3,  19, 344053, "Deepening Bond"                     }, // Night Fae
   { 3,  35, 344057, "Deepening Bond"                     }, // Night Fae
-  { 3,  60, 353870, "Deepening Bond"                     }, // Night Fae
-  { 3,  73, 353886, "Deepening Bond"                     }, // Night Fae
+  { 3,  50, 353870, "Deepening Bond"                     }, // Night Fae
+  { 3,  59, 353886, "Deepening Bond"                     }, // Night Fae
   { 4,   2, 344076, "Deepening Bond"                     }, // Necrolord
   { 4,  19, 344077, "Deepening Bond"                     }, // Necrolord
   { 4,  35, 344078, "Deepening Bond"                     }, // Necrolord
-  { 4,  60, 354025, "Deepening Bond"                     }, // Necrolord
-  { 4,  73, 354129, "Deepening Bond"                     }, // Necrolord
+  { 4,  50, 354025, "Deepening Bond"                     }, // Necrolord
+  { 4,  59, 354129, "Deepening Bond"                     }, // Necrolord
 } };
 

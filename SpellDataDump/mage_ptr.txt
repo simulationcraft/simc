@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -1876,10 +1876,10 @@ Description      : Warp the flow of time, increasing haste by $s1% $?a320919[and
 
 Allies will be unable to benefit from Bloodlust, Heroism, or Time Warp again for $57724d.$?a320920[
 
-When the effect ends, you die.][]
+When the effect ends, all affected players are frozen in time for $356346d.][]
 Tooltip          : Haste increased by $w1%. $?$W4>0[Time rate increased by $w4%.][]$?$W3=1[
 
-When the effect ends, you die.][]
+When the effect ends, all affected players are frozen in time for $356346d.][]
 
 Name             : Temporal Displacement (id=80354) 
 Class            : Mage
@@ -9228,8 +9228,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Time Warp (80353)
                    Family Flags: 90
-Description      : Time Warp lasts $s1% longer, but causes all affected players to die at the end.
-Tooltip          : Time Warp lasts $s1% longer, but causes all affected players to die at the end.
+Description      : Time Warp lasts $s1% longer, but causes all affected players to be frozen in time for $356346d at the end.
+Tooltip          : Time Warp lasts $s1% longer, but causes all affected players to be frozen in time for $356346d at the end.
 
 Name             : Ring of Frost (id=321329) [Spell Family (3)] 
 Class            : Mage
@@ -11604,5 +11604,26 @@ Effects          :
 #2 (id=886674)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45000 | Scaled Value: 45000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Consuming $?c1[Clearcast]?c2[a Fire Blast charge][Brain Freeze] reduces Mirrors of Torment cooldown by ${$s1/1000} sec. If Mirrors of Torment is dispelled the cooldown is reduced by ${$s2/1000} sec.
+
+Name             : Timebreaker's Paradox (id=356346) 
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Duration         : 10 seconds
+Mechanic         : Stun
+Attributes       : ........ ........ ........ x.xx....   ...x.x.x ........ ........ ........ 
+                 : ...x.... ......x. ........ .....x..   ........ ........ x....... ........ 
+                 : .......x .....x.. ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ........ ....x... ......x. 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Does not break stealth (37), Cannot crit (93), Disable player procs (112), Disable player multipliers (221)
+Effects          :
+#1 (id=890153)   : Apply Aura (6) | Unknown(298)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Frozen in time for $d.
+Tooltip          : Frozen in time for $d.
 
 
