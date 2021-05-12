@@ -4183,6 +4183,11 @@ struct tigers_fury_t : public cat_attack_t
     energize_amount += p->find_rank_spell( "Tiger's Fury", "Rank 2" )->effectN( 1 ).resource( RESOURCE_ENERGY );
   }
 
+  timespan_t cooldown_duration() const override
+  {
+    return free_cast ? 0_ms : cat_attack_t::cooldown_duration();
+  }
+
   void execute() override
   {
     cat_attack_t::execute();
@@ -4191,8 +4196,6 @@ struct tigers_fury_t : public cat_attack_t
 
     if ( p()->legendary.eye_of_fearful_symmetry->ok() )
       p()->buff.eye_of_fearful_symmetry->trigger();
-
-    // p()->buff.jungle_fury->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
   }
 };
 
