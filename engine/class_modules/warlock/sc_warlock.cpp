@@ -1054,8 +1054,11 @@ void warlock_t::apl_precombat()
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    precombat->add_action( "demonbolt" );
-    precombat->add_action( "variable,name=tyrant_ready,value=0" );
+    precombat->add_action("power_siphon");
+    precombat->add_action("fleshcraft");
+    precombat->add_action("demonbolt,if=buff.demonic_core.stack=0");
+    precombat->add_action("shadow_bolt,if=buff.demonic_core.stack>0");
+    precombat->add_action("variable,name=first_tyrant_time,op=set,value=12");
   }
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
