@@ -2112,7 +2112,7 @@ buffs::benevolent_faerie_t::benevolent_faerie_t( player_t* p )
 {
   set_default_value_from_effect( 1 );
 
-  set_stack_change_callback( [ this, p ]( buff_t* b, int, int new_ ) {
+  set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
     if ( !affected_actions_initialized )
     {
       int label = data().effectN( 1 ).misc_value1();
