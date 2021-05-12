@@ -1179,7 +1179,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.death_and_madness_debuff    = make_buff<buffs::death_and_madness_debuff_t>( *this );
   buffs.surrender_to_madness_debuff = make_buff<buffs::surrender_to_madness_debuff_t>( *this );
   // TODO: figure out why the affecting aura is not working
-  buffs.wrathful_faerie             = make_buff( *this, "wrathful_faerie", p.find_spell( 327703 ) )
+  buffs.wrathful_faerie = make_buff( *this, "wrathful_faerie", p.find_spell( 327703 ) )
                               ->apply_affecting_aura( priest().buffs.bwonsamdis_pact->get_trigger_data() );
   buffs.wrathful_faerie_fermata = make_buff( *this, "wrathful_faerie_fermata", p.find_spell( 345452 ) )
                                       ->set_cooldown( timespan_t::zero() )
@@ -1753,6 +1753,7 @@ void priest_t::create_buffs()
   buffs.boon_of_the_ascended = make_buff<buffs::boon_of_the_ascended_t>( *this );
 
   // Runeforge Legendary Buffs
+  // TODO: call the CDR callback that fae guardians uses
   buffs.bwonsamdis_pact =
       make_buff( this, "bwonsamdis_pact", legendary.bwonsamdis_pact->effectN( 1 ).trigger()->effectN( 1 ).trigger() );
 
@@ -2111,7 +2112,7 @@ buffs::benevolent_faerie_t::benevolent_faerie_t( player_t* p )
 {
   set_default_value_from_effect( 1 );
 
-  set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+  set_stack_change_callback( [ this, p ]( buff_t* b, int, int new_ ) {
     if ( !affected_actions_initialized )
     {
       int label = data().effectN( 1 ).misc_value1();
@@ -2130,8 +2131,16 @@ buffs::benevolent_faerie_t::benevolent_faerie_t( player_t* p )
       affected_actions_initialized = true;
     }
 
-    // TODO: hook into buff stacks to get actual modifier
-    double recharge_rate_multiplier = 1.0 / ( 1 + b->default_value );
+    // TODO: call this when bwonsamdis is updated
+    double cdr_value = b->default_value;
+    priest_t* priest = static_cast<priest_t*>( player );
+    if ( priest->legendary.bwonsamdis_pact->ok() && priest->buffs.bwonsamdis_pact->check() )
+    {
+      buff_t* bwonsamdis_pact = priest->buffs.bwonsamdis_pact;
+      cdr_value *=
+          1.0 + ( bwonsamdis_pact->current_stack * priest->buffs.bwonsamdis_pact->data().effectN( 1 ).percent() );
+    }
+    double recharge_rate_multiplier = 1.0 * ( 1 + cdr_value );
     for ( auto a : affected_actions )
     {
       if ( new_ == 1 )
