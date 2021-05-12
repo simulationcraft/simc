@@ -1138,6 +1138,63 @@ struct death_and_madness_debuff_t final : public priest_buff_t<buff_t>
   }
 };
 
+struct benevolent_faerie_t final : public buff_t
+{
+  std::vector<action_t*> affected_actions;
+  bool affected_actions_initialized;
+
+  benevolent_faerie_t( player_t* p )
+    : buff_t( p, "benevolent_faerie", p->find_spell( 327710 ) ), affected_actions_initialized( false )
+  {
+    set_default_value_from_effect( 1 );
+
+    set_stack_change_callback(
+        [ this ]( buff_t* b, int /* old_stack */, int current_stack ) { adjust_cooldown_rates( current_stack ); } );
+  }
+
+  void adjust_cooldown_rates( int current_stack )
+  {
+    if ( !affected_actions_initialized )
+    {
+      int label = data().effectN( 1 ).misc_value1();
+      affected_actions.clear();
+      for ( auto a : player->action_list )
+      {
+        if ( a->data().affected_by_label( label ) )
+        {
+          if ( range::find( affected_actions, a ) == affected_actions.end() )
+          {
+            affected_actions.push_back( a );
+          }
+        }
+      }
+
+      affected_actions_initialized = true;
+    }
+
+    // TODO: call this when bwonsamdis is updated
+    double cdr_value = default_value;
+    priest_t* priest = static_cast<priest_t*>( player );
+    if ( priest->legendary.bwonsamdis_pact->ok() && priest->buffs.bwonsamdis_pact->check() )
+    {
+      buff_t* bwonsamdis_pact = priest->buffs.bwonsamdis_pact;
+      cdr_value *=
+          1.0 + ( bwonsamdis_pact->current_stack * priest->buffs.bwonsamdis_pact->data().effectN( 1 ).percent() );
+    }
+    double recharge_rate_multiplier = 1.0 * ( 1 + cdr_value );
+    for ( auto a : affected_actions )
+    {
+      if ( current_stack == 1 )
+        a->base_recharge_rate_multiplier *= recharge_rate_multiplier;
+      else
+        a->base_recharge_rate_multiplier /= recharge_rate_multiplier;
+      if ( a->cooldown->action == a )
+        a->cooldown->adjust_recharge_multiplier();
+      if ( a->internal_cooldown->action == a )
+        a->internal_cooldown->adjust_recharge_multiplier();
+    }
+  }
+};
 }  // namespace buffs
 
 namespace items
@@ -2107,54 +2164,14 @@ buffs::dispersion_t::dispersion_t( priest_t& p )
 {
 }
 
-buffs::benevolent_faerie_t::benevolent_faerie_t( player_t* p )
-  : buff_t( p, "benevolent_faerie", p->find_spell( 327710 ) ), affected_actions_initialized( false )
+void priest_module_t::init( player_t* p ) const
 {
-  set_default_value_from_effect( 1 );
-
-  set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
-    if ( !affected_actions_initialized )
-    {
-      int label = data().effectN( 1 ).misc_value1();
-      affected_actions.clear();
-      for ( auto a : player->action_list )
-      {
-        if ( a->data().affected_by_label( label ) )
-        {
-          if ( range::find( affected_actions, a ) == affected_actions.end() )
-          {
-            affected_actions.push_back( a );
-          }
-        }
-      }
-
-      affected_actions_initialized = true;
-    }
-
-    // TODO: call this when bwonsamdis is updated
-    double cdr_value = b->default_value;
-    priest_t* priest = static_cast<priest_t*>( player );
-    if ( priest->legendary.bwonsamdis_pact->ok() && priest->buffs.bwonsamdis_pact->check() )
-    {
-      buff_t* bwonsamdis_pact = priest->buffs.bwonsamdis_pact;
-      cdr_value *=
-          1.0 + ( bwonsamdis_pact->current_stack * priest->buffs.bwonsamdis_pact->data().effectN( 1 ).percent() );
-    }
-    double recharge_rate_multiplier = 1.0 * ( 1 + cdr_value );
-    for ( auto a : affected_actions )
-    {
-      if ( new_ == 1 )
-        a->base_recharge_rate_multiplier *= recharge_rate_multiplier;
-      else
-        a->base_recharge_rate_multiplier /= recharge_rate_multiplier;
-      if ( a->cooldown->action == a )
-        a->cooldown->adjust_recharge_multiplier();
-      if ( a->internal_cooldown->action == a )
-        a->internal_cooldown->adjust_recharge_multiplier();
-    }
-  } );
+  p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
+                                        p->find_spell( 47788 ) );  // Let the ability handle the CD
+  p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
+                                         p->find_spell( 33206 ) );  // Let the ability handle the CD
+  p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p );
 }
-
 }  // namespace priestspace
 
 const module_t* module_t::priest()

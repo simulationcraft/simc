@@ -1040,14 +1040,6 @@ struct dispersion_t final : public priest_buff_t<buff_t>
   dispersion_t( priest_t& p );
 };
 
-struct benevolent_faerie_t final : public buff_t
-{
-  std::vector<action_t*> affected_actions;
-  bool affected_actions_initialized;
-
-  benevolent_faerie_t( player_t* p );
-};
-
 }  // namespace buffs
 
 namespace items
@@ -1099,14 +1091,7 @@ struct priest_module_t final : public module_t
   {
     return true;
   }
-  void init( player_t* p ) const override
-  {
-    p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
-    p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
-                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
-    p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p );
-  }
+  void init( player_t* p ) const override;
   void static_init() const override
   {
     items::init();
