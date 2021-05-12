@@ -11618,6 +11618,7 @@ Effects          :
 Description      : Casting Unholy Nova summons a Maldraxxi Champion to aid you for X seconds. Each time an ally is healed by Unholy Transfusion your Maldraxxi Champion's healing and damage done is increased by 1%, up to a maximum of X%.
 
 Name             : Bwonsamdi's Pact (id=356391) [Spell Family (6), Passive, Hidden] 
+Class            : Priest
 School           : Nature
 Spell Type       : None
 Proc Chance      : 101%
@@ -11705,7 +11706,31 @@ Effects          :
 #2 (id=890268)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
+Name             : Bwonsamdi's Pact (id=356515) 
+Class            : Priest
+School           : Nature
+Spell Type       : None
+Duration         : Aura (infinite)
+Stacks           : 99 maximum
+Proc Chance      : 101%
+Triggered by     : Bwonsamdi's Pact (356532)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=890415)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effects (8)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 8 | Misc Value 2: 1096 (Label) | Target: Self (1)
+                   Affected Spells (Label): Fae Guardians (327661), Guardian Faerie (327694), Wrathful Faerie (327703), Benevolent Faerie (327710), Wrathful Faerie (342132), Wrathful Faerie Fermata (345452)
+Description      : @spelldesc356391
+Tooltip          : The effectiveness of your faeries is increased by $m1%.
+
 Name             : Bwonsamdi's Pact (id=356532) [Spell Family (6), Hidden] 
+Class            : Priest
 School           : Nature
 Spell Type       : None
 Duration         : Aura (infinite)

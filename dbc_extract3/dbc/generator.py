@@ -1459,6 +1459,7 @@ class SpellDataGenerator(DataGenerator):
             ( 323706, 0 ),          # Mindgames Damage reversal Healing spell
             ( 356390, 0 ),          # Pallid Command Necrolord Legendary Power (UNCONFIRMED)
             ( 356395, 0 ),          # Spheres' Harmony Kyrian Legendary Power (UNCONFIRMED)
+            ( 356515, 0 ),          # Bwonsamdi's Pact buff from the Legendary Power
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
