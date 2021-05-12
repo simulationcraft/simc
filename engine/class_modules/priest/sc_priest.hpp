@@ -140,6 +140,7 @@ public:
     propagate_const<buff_t*> the_penitent_one;
     propagate_const<buff_t*> sephuzs_proclamation;
     propagate_const<buff_t*> talbadars_stratagem;
+    propagate_const<buff_t*> bwonsamdis_pact;
 
     // Conduits
     propagate_const<buff_t*> mind_devourer;
