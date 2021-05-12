@@ -1045,6 +1045,10 @@ struct fae_guardians_t final : public priest_buff_t<buff_t>
 
     priest().remove_wrathful_faerie();
     priest().remove_wrathful_faerie_fermata();
+    if ( priest().legendary.bwonsamdis_pact->ok() )
+    {
+      priest().buffs.bwonsamdis_pact->expire();
+    }
   }
 };
 
