@@ -54,7 +54,6 @@ struct power_word_shield_t;
 namespace buffs
 {
 struct dispersion_t;
-struct benevolent_faerie_t;
 }  // namespace buffs
 
 /**

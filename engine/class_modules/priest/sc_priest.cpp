@@ -1140,16 +1140,31 @@ struct death_and_madness_debuff_t final : public priest_buff_t<buff_t>
 
 struct benevolent_faerie_t final : public buff_t
 {
+private:
   std::vector<action_t*> affected_actions;
   bool affected_actions_initialized;
+  priest_t* priest;
 
+  double bwonsamdis_pact_multiplier()
+  {
+    if ( priest != nullptr && priest->legendary.bwonsamdis_pact->ok() && priest->buffs.bwonsamdis_pact->check() )
+    {
+      buff_t* bwonsamdis_pact = priest->buffs.bwonsamdis_pact;
+      return 1.0 + ( bwonsamdis_pact->current_stack * priest->buffs.bwonsamdis_pact->data().effectN( 1 ).percent() );
+    }
+    return 1.0;
+  }
+
+public:
   benevolent_faerie_t( player_t* p )
-    : buff_t( p, "benevolent_faerie", p->find_spell( 327710 ) ), affected_actions_initialized( false )
+    : buff_t( p, "benevolent_faerie", p->find_spell( 327710 ) ),
+      affected_actions_initialized( false ),
+      priest( dynamic_cast<priest_t*>( player ) )
   {
     set_default_value_from_effect( 1 );
 
     set_stack_change_callback(
-        [ this ]( buff_t* b, int /* old_stack */, int current_stack ) { adjust_cooldown_rates( current_stack ); } );
+        [ this ]( buff_t*, int /* old_stack */, int current_stack ) { adjust_cooldown_rates( current_stack ); } );
   }
 
   void adjust_cooldown_rates( int current_stack )
@@ -1172,15 +1187,8 @@ struct benevolent_faerie_t final : public buff_t
       affected_actions_initialized = true;
     }
 
-    // TODO: call this when bwonsamdis is updated
-    double cdr_value = default_value;
-    priest_t* priest = static_cast<priest_t*>( player );
-    if ( priest->legendary.bwonsamdis_pact->ok() && priest->buffs.bwonsamdis_pact->check() )
-    {
-      buff_t* bwonsamdis_pact = priest->buffs.bwonsamdis_pact;
-      cdr_value *=
-          1.0 + ( bwonsamdis_pact->current_stack * priest->buffs.bwonsamdis_pact->data().effectN( 1 ).percent() );
-    }
+    double cdr_value = default_value * bwonsamdis_pact_multiplier();
+
     double recharge_rate_multiplier = 1.0 * ( 1 + cdr_value );
     for ( auto a : affected_actions )
     {
@@ -1810,9 +1818,12 @@ void priest_t::create_buffs()
   buffs.boon_of_the_ascended = make_buff<buffs::boon_of_the_ascended_t>( *this );
 
   // Runeforge Legendary Buffs
-  // TODO: call the CDR callback that fae guardians uses
   buffs.bwonsamdis_pact =
-      make_buff( this, "bwonsamdis_pact", legendary.bwonsamdis_pact->effectN( 1 ).trigger()->effectN( 1 ).trigger() );
+      make_buff( this, "bwonsamdis_pact", legendary.bwonsamdis_pact->effectN( 1 ).trigger()->effectN( 1 ).trigger() )
+          ->set_stack_change_callback( [ this ]( buff_t*, int /* old_stack */, int current_stack ) {
+            auto b = debug_cast<buffs::benevolent_faerie_t*>( ( (player_t*)( this ) )->buffs.benevolent_faerie );
+            b->adjust_cooldown_rates( b->check() );
+          } );
 
   create_buffs_shadow();
   create_buffs_discipline();
