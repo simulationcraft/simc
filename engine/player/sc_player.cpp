@@ -45,6 +45,7 @@
 #include "player/stats.hpp"
 #include "player/player_talent_points.hpp"
 #include "player/unique_gear.hpp"
+#include "player/runeforge_data.hpp"
 #include "sim/benefit.hpp"
 #include "sim/event.hpp"
 #include "sim/proc.hpp"

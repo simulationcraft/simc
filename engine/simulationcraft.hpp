@@ -77,6 +77,7 @@
 #include "player/ground_aoe.hpp"
 #include "player/spawner_base.hpp"
 #include "player/instant_absorb.hpp"
+#include "player/runeforge_data.hpp"
 
 #include "report/reports.hpp"
 #include "report/decorators.hpp"

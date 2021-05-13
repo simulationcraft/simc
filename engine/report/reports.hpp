@@ -9,7 +9,6 @@
 #include <string>
 
 #include "config.hpp"
-#include "report/json/report_configuration.hpp"
 
 struct player_t;
 struct sim_t;

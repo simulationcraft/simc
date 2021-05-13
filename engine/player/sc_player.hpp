@@ -12,7 +12,6 @@
 #include "gear_stats.hpp"
 #include "rating.hpp"
 #include "weapon.hpp"
-#include "runeforge_data.hpp"
 #include "effect_callbacks.hpp"
 #include "util/plot_data.hpp"
 #include "player_collected_data.hpp"
@@ -50,6 +49,7 @@ struct event_t;
 struct expr_t;
 struct gain_t;
 struct instant_absorb_t;
+struct item_runeforge_t;
 struct sample_data_helper_t;
 struct option_t;
 struct pet_t;
@@ -64,6 +64,7 @@ struct special_effect_t;
 struct spelleffect_data_t;
 struct stat_buff_t;
 struct stats_t;
+struct spell_data_t;
 struct player_talent_points_t;
 struct uptime_t;
 namespace azerite {
