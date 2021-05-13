@@ -438,8 +438,6 @@ struct implosion_t : public demonology_spell_t
   {
     parse_options( options_str );
     add_child( explosion );
-    // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
-    travel_speed = 65;
   }
 
   bool ready() override
@@ -460,6 +458,13 @@ struct implosion_t : public demonology_spell_t
 
     auto imps_consumed = p()->warlock_pet_list.wild_imps.n_active_pets();
 
+    // Calculate imp travel time
+    double current_travel_speed = travel_speed;
+    // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
+    travel_speed = 65;
+    timespan_t imp_travel_time = this->travel_time();
+    travel_speed = current_travel_speed;
+
     int launch_counter = 0;
     for ( auto imp : p()->warlock_pet_list.wild_imps )
     {
@@ -476,7 +481,7 @@ struct implosion_t : public demonology_spell_t
         // 2020-12-04: Implosion may have been made quicker in Shadowlands, too fast to easily discern with combat log
         // Going to set the interval to 10 ms, which should keep all but the most extreme imp counts from bleeding into the next GCD
         // TODO: There's an awkward possibility of Implosion seeming "ready" after casting it if all the imps have not imploded yet. Find a workaround
-        make_event( sim, 10_ms * launch_counter + this->travel_time(), [ ex, tar, imp ] {
+        make_event( sim, 10_ms * launch_counter + imp_travel_time, [ ex, tar, imp ] {
           if ( imp && !imp->is_sleeping() )
           {
             ex->casts_left = ( imp->resources.current[ RESOURCE_ENERGY ] / 20 );
