@@ -9,8 +9,6 @@
 #include "event_manager.hpp"
 #include "player/gear_stats.hpp"
 #include "progress_bar.hpp"
-#include "report/json/report_configuration.hpp"
-#include "sc_option.hpp"
 #include "sc_profileset.hpp"
 #include "sim_ostream.hpp"
 #include "util/concurrency.hpp"
@@ -41,6 +39,14 @@ struct scale_factor_control_t;
 struct sim_control_t;
 struct spell_data_expr_t;
 struct spell_data_t;
+
+namespace report
+{
+namespace json
+{
+class report_configuration_t;
+}
+}
 
 struct sim_progress_t
 {

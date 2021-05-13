@@ -17,6 +17,7 @@
 #include "player/unique_gear.hpp"
 #include "report/reports.hpp"
 #include "report/sc_highchart.hpp"
+#include "report/json/report_configuration.hpp"
 #include "sim/sc_profileset.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/sim_control.hpp"
