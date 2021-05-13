@@ -1217,7 +1217,7 @@ private:
     }
     for ( auto a : affected_actions )
     {
-      a->base_recharge_rate_multiplier *= rate_change;
+      a->base_recharge_rate_multiplier /= rate_change;
 
       if ( a->cooldown->action == a )
         a->cooldown->adjust_recharge_multiplier();
