@@ -1751,33 +1751,6 @@ void enemy_t::demise()
   player_t::demise();
 }
 
-/* Report Extension Class
- * Here you can define class specific report extensions/overrides
- */
-class enemy_report_t : public player_report_extension_t
-{
-public:
-  enemy_report_t( enemy_t& player ) : p( player )
-  {
-    (void)p;
-  }
-
-  void html_customsection( report::sc_html_stream& /* os*/ ) override
-  {
-    /*// Custom Class Section
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
-        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
-
-    os << p.name();
-
-    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
-  }
-
-private:
-  enemy_t& p;
-};
-
 // ENEMY MODULE INTERFACE ===================================================
 
 struct enemy_module_t : public module_t
@@ -1788,9 +1761,7 @@ struct enemy_module_t : public module_t
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e /* r = RACE_NONE */ ) const override
   {
-    auto p              = new enemy_t( sim, name );
-    p->report_extension = std::unique_ptr<player_report_extension_t>( new enemy_report_t( *p ) );
-    return p;
+    return new enemy_t( sim, name );
   }
   bool valid() const override
   {

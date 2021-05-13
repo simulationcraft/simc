@@ -8695,25 +8695,6 @@ void rogue_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.subtlety_rogue );
 }
 
-/* Report Extension Class
- * Here you can define class specific report extensions/overrides
- */
-class rogue_report_t : public player_report_extension_t
-{
-public:
-  rogue_report_t( rogue_t& player ) : p( player )
-  {
-  }
-
-  void html_customsection( report::sc_html_stream& ) override
-  {
-    // Custom Class Section can be added here
-    ( void )p;
-  }
-private:
-  rogue_t& p;
-};
-
 // ROGUE MODULE INTERFACE ===================================================
 
 class rogue_module_t : public module_t
@@ -8723,9 +8704,7 @@ public:
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
-    auto p = new rogue_t( sim, name, r );
-    p -> report_extension = std::unique_ptr<player_report_extension_t>( new rogue_report_t( *p ) );
-    return p;
+    return new rogue_t( sim, name, r );
   }
 
   bool valid() const override

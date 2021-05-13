@@ -1146,7 +1146,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     no_action_list_provided(),
     // Reporting
     quiet( false ),
-    report_extension( new player_report_extension_t() ),
+    report_extension(),
     arise_time( timespan_t::min() ),
     iteration_fight_length(),
     iteration_waiting_time(),
