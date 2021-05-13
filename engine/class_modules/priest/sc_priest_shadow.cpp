@@ -1746,6 +1746,19 @@ struct ancient_madness_t final : public priest_buff_t<buff_t>
   }
 };
 
+// TODO: implement healing from Intangibility
+struct dispersion_t final : public priest_buff_t<buff_t>
+{
+  // TODO: hook up rank2 to movement speed
+  const spell_data_t* rank2;
+
+  dispersion_t( priest_t& p )
+    : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) ),
+      rank2( p.find_specialization_spell( 322108, PRIEST_SHADOW ) )
+  {
+  }
+};
+
 }  // namespace buffs
 
 // ==========================================================================
@@ -1808,6 +1821,7 @@ void priest_t::create_buffs_shadow()
   buffs.shadowform_state = make_buff<buffs::shadowform_state_t>( *this );
   buffs.vampiric_embrace = make_buff( this, "vampiric_embrace", specs.vampiric_embrace );
   buffs.voidform         = make_buff<buffs::voidform_t>( *this );
+  buffs.dispersion       = make_buff<buffs::dispersion_t>( *this );
 
   // Talents
   buffs.ancient_madness            = make_buff<buffs::ancient_madness_t>( *this );

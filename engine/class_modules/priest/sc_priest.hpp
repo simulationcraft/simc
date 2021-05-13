@@ -53,7 +53,6 @@ struct power_word_shield_t;
 
 namespace buffs
 {
-struct dispersion_t;
 struct benevolent_faerie_t;
 }  // namespace buffs
 
@@ -122,7 +121,7 @@ public:
     propagate_const<buff_t*> apotheosis;
 
     // Shadow
-    propagate_const<buffs::dispersion_t*> dispersion;
+    propagate_const<buff_t*> dispersion;
     propagate_const<buff_t*> shadowform;
     propagate_const<buff_t*> shadowform_state;  // Dummy buff to track whether player entered Shadowform initially
     propagate_const<buff_t*> surrender_to_madness;
@@ -1031,14 +1030,6 @@ protected:
   }
 };
 
-struct dispersion_t final : public priest_buff_t<buff_t>
-{
-  // TODO: hook up rank2 to movement speed
-  const spell_data_t* rank2;
-
-  dispersion_t( priest_t& p );
-};
-
 struct benevolent_faerie_t final : public buff_t
 {
   std::vector<action_t*> affected_actions;
@@ -1048,48 +1039,6 @@ struct benevolent_faerie_t final : public buff_t
 };
 
 }  // namespace buffs
-
-namespace items
-{
-void init();
-}  // namespace items
-
-struct priest_module_t final : public module_t
-{
-  priest_module_t() : module_t( PRIEST )
-  {
-  }
-
-  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
-  {
-    return new priest_t( sim, name, r );
-  }
-  bool valid() const override
-  {
-    return true;
-  }
-  void init( player_t* p ) const override
-  {
-    p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
-    p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
-                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
-    p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p );
-  }
-  void static_init() const override
-  {
-    items::init();
-  }
-  void register_hotfixes() const override
-  {
-  }
-  void combat_begin( sim_t* ) const override
-  {
-  }
-  void combat_end( sim_t* ) const override
-  {
-  }
-};
 
 /**
  * Adjust maximum charges for a cooldown
