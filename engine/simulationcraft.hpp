@@ -49,6 +49,7 @@
 
 #include "player/azerite_data.hpp"
 #include "player/consumable.hpp"
+#include "player/covenant.hpp"
 #include "player/sample_data_helper.hpp"
 #include "player/gear_stats.hpp"
 #include "player/sc_actor_pair.hpp"

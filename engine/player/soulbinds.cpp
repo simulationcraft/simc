@@ -8,6 +8,7 @@
 #include "action/sc_action_state.hpp"
 #include "item/item.hpp"
 #include "player/actor_target_data.hpp"
+#include "player/covenant.hpp"
 #include "player/pet.hpp"
 #include "player/unique_gear_helper.hpp"
 #include "sim/sc_cooldown.hpp"

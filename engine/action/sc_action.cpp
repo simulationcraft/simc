@@ -11,6 +11,7 @@
 #include "buff/sc_buff.hpp"
 #include "action/dot.hpp"
 #include "player/actor_target_data.hpp"
+#include "player/covenant.hpp"
 #include "player/player_event.hpp"
 #include "player/stats.hpp"
 #include "player/sc_player.hpp"

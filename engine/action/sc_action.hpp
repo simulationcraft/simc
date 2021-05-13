@@ -8,7 +8,6 @@
 #include "config.hpp"
 #include "dbc/data_definitions.hh"
 #include "player/target_specific.hpp"
-#include "player/covenant.hpp"
 #include "sc_enums.hpp"
 #include "util/timespan.hpp"
 #include "util/generic.hpp"
@@ -25,6 +24,7 @@ struct action_priority_list_t;
 struct action_state_t;
 struct spell_data_t;
 struct cooldown_t;
+class conduit_data_t;
 struct dot_t;
 struct event_t;
 struct expr_t;
