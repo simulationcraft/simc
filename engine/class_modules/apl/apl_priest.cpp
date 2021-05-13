@@ -262,10 +262,17 @@ void shadow( player_t* p )
                     "Activate mindbender with dots up, if using shadowflame prism make sure vampiric touches are "
                     "applied prior to use." );
   main->add_action( p, "Shadow Word: Death",
-                    "if=((runeforge.painbreaker_psalm.equipped&variable.dots_up)|(runeforge.bwonsamdis_pact.equipped&"
-                    "buff.fae_guardians.up))&target.time_to_pct_20>(cooldown.shadow_word_death.duration+gcd)",
+                    "if=(runeforge.painbreaker_psalm.equipped&variable.dots_up)&target.time_to_pct_20>(cooldown.shadow_"
+                    "word_death.duration+gcd)",
                     "Use SW:D with Painbreaker Psalm unless the target will be below 20% before the cooldown comes "
                     "back. Also use with Bwonsamdi's pact if Fae Guardians is up." );
+  if ( p->dbc->ptr )
+  {
+    main->add_action( p, "Shadow Word: Death",
+                      "if=runeforge.bwonsamdis_pact.equipped&buff.fae_guardians.up&target.time_to_pct_20>(cooldown."
+                      "shadow_word_death.duration+gcd)",
+                      "Use SW:D with Bwonsamdi's pact if Fae Guardians is up." );
+  }
   main->add_talent( p, "Shadow Crash", "if=raid_event.adds.in>10",
                     "Use Shadow Crash on CD unless there are adds incoming." );
   main->add_action(

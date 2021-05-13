@@ -1151,12 +1151,14 @@ private:
 
   double bwonsamdis_pact_multiplier()
   {
+    double modifier = 1.0;
     if ( priest != nullptr && priest->legendary.bwonsamdis_pact->ok() && priest->buffs.bwonsamdis_pact->check() )
     {
       buff_t* bwonsamdis_pact = priest->buffs.bwonsamdis_pact;
-      return 1.0 + ( bwonsamdis_pact->current_stack * priest->buffs.bwonsamdis_pact->data().effectN( 1 ).percent() );
+      modifier += ( bwonsamdis_pact->current_stack * priest->buffs.bwonsamdis_pact->data().effectN( 1 ).percent() );
+      sim->print_debug( "Bwonsamdi's Pact Modifier set to {}", modifier );
     }
-    return 1.0;
+    return modifier;
   }
 
 public:
@@ -1191,13 +1193,15 @@ public:
       affected_actions_initialized = true;
     }
 
-    double cdr_value = default_value * bwonsamdis_pact_multiplier();
-
+    double cdr_value                = default_value * bwonsamdis_pact_multiplier();
     double recharge_rate_multiplier = 1.0 * ( 1 + cdr_value );
+
+    sim->print_debug( "Benevolent Faerie values - default_value: {}, cdr_value: {}, recharge_rate_multiplier: {}",
+                      default_value, cdr_value, recharge_rate_multiplier );
     for ( auto a : affected_actions )
     {
       if ( current_stack == 1 )
-        a->base_recharge_rate_multiplier *= recharge_rate_multiplier;
+        a->base_recharge_rate_multiplier /= recharge_rate_multiplier;
       else
         a->base_recharge_rate_multiplier /= recharge_rate_multiplier;
       if ( a->cooldown->action == a )
