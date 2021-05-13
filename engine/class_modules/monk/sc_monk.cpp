@@ -1742,6 +1742,18 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
 struct spinning_crane_kick_t : public monk_melee_attack_t
 {
+  struct spinning_crane_kick_state_t : public action_state_t
+  {
+    using action_state_t::action_state_t;
+
+    proc_types2 cast_proc_type2() const override
+    {
+      // Spinning Crane Kick seems to trigger Bron's Call to Action (and possibly other
+      // effects that care about casts).
+      return PROC2_CAST_DAMAGE;
+    }
+  };
+
   chi_explosion_t* chi_x;
 
   spinning_crane_kick_t( monk_t* p, util::string_view options_str )
@@ -1766,6 +1778,11 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
         new sck_tick_action_t( "spinning_crane_kick_tick", p, p->spec.spinning_crane_kick->effectN( 1 ).trigger() );
 
     chi_x = new chi_explosion_t( p );
+  }
+
+  action_state_t* new_state() override
+  {
+    return new spinning_crane_kick_state_t( this, target );
   }
 
   // N full ticks, but never additional ones.
@@ -2002,6 +2019,18 @@ struct whirling_dragon_punch_tick_t : public monk_melee_attack_t
 
 struct whirling_dragon_punch_t : public monk_melee_attack_t
 {
+  struct whirling_dragon_punch_state_t : public action_state_t
+  {
+    using action_state_t::action_state_t;
+
+    proc_types2 cast_proc_type2() const override
+    {
+      // Whirling Dragon Punch seems to trigger Bron's Call to Action (and possibly other
+      // effects that care about casts).
+      return PROC2_CAST_DAMAGE;
+    }
+  };
+
   whirling_dragon_punch_tick_t* ticks[3];
 
   struct whirling_dragon_punch_tick_event_t : public event_t
@@ -2039,6 +2068,11 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
       ticks[i] = 
         new whirling_dragon_punch_tick_t( "whirling_dragon_punch_tick", p, p->passives.whirling_dragon_punch_tick, delay );
     }
+  }
+
+  action_state_t* new_state() override
+  {
+    return new whirling_dragon_punch_state_t( this, target );
   }
 
   void execute() override
