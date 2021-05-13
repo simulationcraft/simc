@@ -455,8 +455,6 @@ struct implosion_t : public demonology_spell_t
 
   void execute() override
   {
-    demonology_spell_t::execute();
-
     p()->buffs.implosive_potential->expire();
     p()->buffs.implosive_potential_small->expire();
 
@@ -496,6 +494,8 @@ struct implosion_t : public demonology_spell_t
       p()->buffs.implosive_potential->trigger( imps_consumed );
     else if ( p()->legendary.implosive_potential.ok() )
       p()->buffs.implosive_potential_small->trigger( imps_consumed );
+
+    demonology_spell_t::execute();
   }
 };
 
