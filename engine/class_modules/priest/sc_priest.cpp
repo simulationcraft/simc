@@ -1164,14 +1164,25 @@ public:
 
   void handle_bwonsamdis_pact_stack_change( int old_stack, int new_stack )
   {
-    // TODO: Bwonsamdi's Pact does the adjustment based on its bonus value if Benevolent Faerie is up and does nothing
-    // if Benevolent Faerie is not up.
+    //  Bwonsamdi's Pact does the adjustment based on its bonus value if Benevolent Faerie is up and does nothing if
+    //  Benevolent Faerie is not up.
+    if ( !check() )
+    {
+      return;
+    }
+
+    auto old_multiplier = bwonsamdis_pact_multiplier( old_stack );
+    auto new_multiplier = bwonsamdis_pact_multiplier( new_stack );
+
+    auto rate_change = new_multiplier / old_multiplier;
+
+    adjust_action_cooldown_rates( rate_change );
   }
 
 private:
   void handle_benevolent_faerie_stack_change( int old_stack, int new_stack )
   {
-    double cdr_value                = default_value * bwonsamdis_pact_multiplier();
+    double cdr_value                = default_value * current_bwonsamdis_pact_multiplier();
     double recharge_rate_multiplier = 1.0 * ( 1 + cdr_value );
 
     sim->print_debug( "Benevolent Faerie values - default_value: {}, cdr_value: {}, recharge_rate_multiplier: {}",
@@ -1215,16 +1226,21 @@ private:
     }
   }
 
-  double bwonsamdis_pact_multiplier()
+  double bwonsamdis_pact_multiplier( int stacks )
   {
     double modifier = 1.0;
-    if ( priest != nullptr && priest->legendary.bwonsamdis_pact->ok() && priest->buffs.bwonsamdis_pact->check() )
+    if ( priest != nullptr && priest->legendary.bwonsamdis_pact->ok() && stacks > 0 )
     {
       buff_t* bwonsamdis_pact = priest->buffs.bwonsamdis_pact;
-      modifier += ( bwonsamdis_pact->current_stack * priest->buffs.bwonsamdis_pact->data().effectN( 1 ).percent() );
+      modifier += ( stacks * priest->buffs.bwonsamdis_pact->data().effectN( 1 ).percent() );
       sim->print_debug( "Bwonsamdi's Pact Modifier set to {}", modifier );
     }
     return modifier;
+  }
+
+  double current_bwonsamdis_pact_multiplier()
+  {
+    return bwonsamdis_pact_multiplier( priest->buffs.bwonsamdis_pact->check() );
   }
 };
 }  // namespace buffs
