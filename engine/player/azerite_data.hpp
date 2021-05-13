@@ -15,8 +15,8 @@
 
 #include "util/timespan.hpp"
 
-#include "dbc/azerite.hpp"
-
+struct azerite_power_entry_t;
+struct azerite_essence_entry_t;
 struct spell_data_t;
 struct item_t;
 struct player_t;
@@ -147,8 +147,7 @@ public:
   const player_t* player() const
   { return m_player; }
 
-  const char* name() const
-  { return m_essence->name; }
+  const char* name() const;
 
   unsigned rank() const
   { return m_rank; }

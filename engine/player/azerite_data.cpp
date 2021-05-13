@@ -221,6 +221,11 @@ azerite_essence_t::azerite_essence_t( const player_t* player, const spell_data_t
   m_base_major.push_back( passive );
 }
 
+const char* azerite_essence_t::name() const
+{
+  return m_essence->name;
+}
+
 const item_t* azerite_essence_t::item() const
 {
   if ( m_player->items.size() > static_cast<size_t>( SLOT_NECK ) )
