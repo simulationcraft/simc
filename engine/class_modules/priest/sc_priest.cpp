@@ -1201,9 +1201,10 @@ public:
     for ( auto a : affected_actions )
     {
       if ( current_stack == 1 )
-        a->base_recharge_rate_multiplier /= recharge_rate_multiplier;
+        a->base_recharge_rate_multiplier *= recharge_rate_multiplier;
       else
         a->base_recharge_rate_multiplier /= recharge_rate_multiplier;
+      
       if ( a->cooldown->action == a )
         a->cooldown->adjust_recharge_multiplier();
       if ( a->internal_cooldown->action == a )
