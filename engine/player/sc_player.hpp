@@ -101,14 +101,8 @@ namespace covenant {
 struct player_report_extension_t
 {
 public:
-  virtual ~player_report_extension_t()
-  {
-
-  }
-  virtual void html_customsection(report::sc_html_stream&)
-  {
-
-  }
+  virtual ~player_report_extension_t() = default;
+  virtual void html_customsection(report::sc_html_stream&) = 0;
 };
 
 struct player_t : public actor_t

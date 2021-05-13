@@ -3425,7 +3425,10 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
 void print_html_player_custom_section( report::sc_html_stream& os, const player_t& p,
                                        const player_processed_report_information_t& /*ri*/ )
 {
-  p.report_extension->html_customsection( os );
+  if ( p.report_extension )
+  {
+    p.report_extension->html_customsection( os );
+  }
 }
 
 // print_html_player ========================================================

@@ -51,11 +51,6 @@ struct power_word_shield_t;
 }  // namespace heals
 }  // namespace actions
 
-namespace buffs
-{
-struct dispersion_t;
-}  // namespace buffs
-
 /**
  * Priest target data
  * Contains target specific things
@@ -121,7 +116,7 @@ public:
     propagate_const<buff_t*> apotheosis;
 
     // Shadow
-    propagate_const<buffs::dispersion_t*> dispersion;
+    propagate_const<buff_t*> dispersion;
     propagate_const<buff_t*> shadowform;
     propagate_const<buff_t*> shadowform_state;  // Dummy buff to track whether player entered Shadowform initially
     propagate_const<buff_t*> surrender_to_madness;
@@ -1030,81 +1025,7 @@ protected:
     return *debug_cast<priest_t*>( Base::source );
   }
 };
-
-struct dispersion_t final : public priest_buff_t<buff_t>
-{
-  // TODO: hook up rank2 to movement speed
-  const spell_data_t* rank2;
-
-  dispersion_t( priest_t& p );
-};
-
-}  // namespace buffs
-
-namespace items
-{
-void init();
-}  // namespace items
-
-/**
- * Report Extension Class
- * Here you can define class specific report extensions/overrides
- */
-struct priest_report_t final : public player_report_extension_t
-{
-public:
-  priest_report_t( priest_t& player ) : p( player )
-  {
-  }
-
-  void html_customsection( report::sc_html_stream& /* os*/ ) override
-  {
-    (void)p;
-    /*// Custom Class Section
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-    << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
-    << "\t\t\t\t\t<div class=\"toggle-content\">\n";
-
-    os << p.name();
-
-    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
-  }
-
-private:
-  priest_t& p;
-};
-
-struct priest_module_t final : public module_t
-{
-  priest_module_t() : module_t( PRIEST )
-  {
-  }
-
-  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
-  {
-    auto p              = new priest_t( sim, name, r );
-    p->report_extension = std::unique_ptr<player_report_extension_t>( new priest_report_t( *p ) );
-    return p;
-  }
-  bool valid() const override
-  {
-    return true;
-  }
-  void init( player_t* p ) const override;
-  void static_init() const override
-  {
-    items::init();
-  }
-  void register_hotfixes() const override
-  {
-  }
-  void combat_begin( sim_t* ) const override
-  {
-  }
-  void combat_end( sim_t* ) const override
-  {
-  }
-};
+};  // namespace buffs
 
 /**
  * Adjust maximum charges for a cooldown

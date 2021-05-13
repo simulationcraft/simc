@@ -1204,7 +1204,7 @@ public:
         a->base_recharge_rate_multiplier *= recharge_rate_multiplier;
       else
         a->base_recharge_rate_multiplier /= recharge_rate_multiplier;
-      
+
       if ( a->cooldown->action == a )
         a->cooldown->adjust_recharge_multiplier();
       if ( a->internal_cooldown->action == a )
@@ -1817,8 +1817,6 @@ void priest_t::create_buffs()
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   // Shared buffs
-  buffs.dispersion = make_buff<buffs::dispersion_t>( *this );
-
   buffs.the_penitent_one = make_buff( this, "the_penitent_one", legendary.the_penitent_one->effectN( 1 ).trigger() )
                                ->set_trigger_spell( legendary.the_penitent_one );
 
@@ -2177,21 +2175,43 @@ double priest_t::shadow_weaving_multiplier( const player_t* target, const unsign
   return multiplier;
 }
 
-// TODO: implement healing from Intangibility
-buffs::dispersion_t::dispersion_t( priest_t& p )
-  : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) ),
-    rank2( p.find_specialization_spell( 322108, PRIEST_SHADOW ) )
+struct priest_module_t final : public module_t
 {
-}
+  priest_module_t() : module_t( PRIEST )
+  {
+  }
 
-void priest_module_t::init( player_t* p ) const
-{
-  p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
-                                        p->find_spell( 47788 ) );  // Let the ability handle the CD
-  p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
-                                         p->find_spell( 33206 ) );  // Let the ability handle the CD
-  p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p );
-}
+  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
+  {
+    return new priest_t( sim, name, r );
+  }
+  bool valid() const override
+  {
+    return true;
+  }
+  void init( player_t* p ) const override
+  {
+    p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
+                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
+    p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
+                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
+    p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p );
+  }
+  void static_init() const override
+  {
+    items::init();
+  }
+  void register_hotfixes() const override
+  {
+  }
+  void combat_begin( sim_t* ) const override
+  {
+  }
+  void combat_end( sim_t* ) const override
+  {
+  }
+};
+
 }  // namespace priestspace
 
 const module_t* module_t::priest()
