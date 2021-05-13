@@ -1174,6 +1174,14 @@ void brons_call_to_action( special_effect_t& effect )
         bron = new bron_pet_t( e.player );
     }
 
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( a->background || a->gcd() <= 0_ms || a->data().flags( spell_attribute::SX_NO_THREAT ) )
+        return;
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
+
     void execute( action_t* a, action_state_t* s ) override
     {
       if ( proc_buff->at_max_stacks() )
@@ -1188,8 +1196,7 @@ void brons_call_to_action( special_effect_t& effect )
     }
   };
 
-  // TODO: This does not seem to proc on all of the spells implied by these proc flags.
-  // For example, Arcane Missiles does not trigger a stack of the buff.
+  // TODO: This technically uses proc flag 34 (Cast Successful), which currently isn't supported by simc.
   effect.proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
   effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
 
