@@ -1171,8 +1171,8 @@ public:
       return;
     }
 
-    auto old_multiplier = bwonsamdis_pact_multiplier( old_stack );
-    auto new_multiplier = bwonsamdis_pact_multiplier( new_stack );
+    auto old_multiplier = get_recharge_multiplier( old_stack );
+    auto new_multiplier = get_recharge_multiplier( new_stack );
 
     auto rate_change = new_multiplier / old_multiplier;
 
@@ -1182,11 +1182,11 @@ public:
 private:
   void handle_benevolent_faerie_stack_change( int old_stack, int new_stack )
   {
-    double cdr_value                = default_value * current_bwonsamdis_pact_multiplier();
-    double recharge_rate_multiplier = 1.0 * ( 1 + cdr_value );
+    double recharge_rate_multiplier = get_recharge_multiplier( priest->buffs.bwonsamdis_pact->check() );
 
-    sim->print_debug( "Benevolent Faerie values - default_value: {}, cdr_value: {}, recharge_rate_multiplier: {}",
-                      default_value, cdr_value, recharge_rate_multiplier );
+    sim->print_debug(
+        "Benevolent Faerie values - default_value: {}, bwonsamdis_pact_stacks: {}, recharge_rate_multiplier: {}",
+        default_value, priest->buffs.bwonsamdis_pact->check(), recharge_rate_multiplier );
 
     // When going from 0 to 1 stacks, the recharge rate gets increase
     // When going back to 0 stacks, the recharge rate decreases again to its original level
@@ -1226,6 +1226,11 @@ private:
     }
   }
 
+  double get_recharge_multiplier( int bwonsamdis_pact_stacks )
+  {
+    return 1.0 + default_value * bwonsamdis_pact_multiplier( bwonsamdis_pact_stacks );
+  }
+
   double bwonsamdis_pact_multiplier( int stacks )
   {
     double modifier = 1.0;
@@ -1236,11 +1241,6 @@ private:
       sim->print_debug( "Bwonsamdi's Pact Modifier set to {}", modifier );
     }
     return modifier;
-  }
-
-  double current_bwonsamdis_pact_multiplier()
-  {
-    return bwonsamdis_pact_multiplier( priest->buffs.bwonsamdis_pact->check() );
   }
 };
 }  // namespace buffs
