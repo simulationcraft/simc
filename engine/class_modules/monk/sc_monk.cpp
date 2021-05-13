@@ -1744,13 +1744,15 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 {
   struct spinning_crane_kick_state_t : public action_state_t
   {
-    using action_state_t::action_state_t;
+    spinning_crane_kick_state_t( action_t* a, player_t* target ) : action_state_t( a, target )
+    {
+    }
 
     proc_types2 cast_proc_type2() const override
     {
       // Spinning Crane Kick seems to trigger Bron's Call to Action (and possibly other
       // effects that care about casts).
-      return PROC2_CAST_DAMAGE;
+      return PROC2_CAST;
     }
   };
 
@@ -2021,13 +2023,15 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
 {
   struct whirling_dragon_punch_state_t : public action_state_t
   {
-    using action_state_t::action_state_t;
+    whirling_dragon_punch_state_t( action_t* a, player_t* target ) : action_state_t( a, target )
+    {
+    }
 
     proc_types2 cast_proc_type2() const override
     {
       // Whirling Dragon Punch seems to trigger Bron's Call to Action (and possibly other
       // effects that care about casts).
-      return PROC2_CAST_DAMAGE;
+      return PROC2_CAST;
     }
   };
 
