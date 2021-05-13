@@ -1149,18 +1149,6 @@ private:
   bool affected_actions_initialized;
   priest_t* priest;
 
-  double bwonsamdis_pact_multiplier()
-  {
-    double modifier = 1.0;
-    if ( priest != nullptr && priest->legendary.bwonsamdis_pact->ok() && priest->buffs.bwonsamdis_pact->check() )
-    {
-      buff_t* bwonsamdis_pact = priest->buffs.bwonsamdis_pact;
-      modifier += ( bwonsamdis_pact->current_stack * priest->buffs.bwonsamdis_pact->data().effectN( 1 ).percent() );
-      sim->print_debug( "Bwonsamdi's Pact Modifier set to {}", modifier );
-    }
-    return modifier;
-  }
-
 public:
   benevolent_faerie_t( player_t* p )
     : buff_t( p, "benevolent_faerie", p->find_spell( 327710 ) ),
@@ -1169,11 +1157,35 @@ public:
   {
     set_default_value_from_effect( 1 );
 
-    set_stack_change_callback(
-        [ this ]( buff_t*, int /* old_stack */, int current_stack ) { adjust_cooldown_rates( current_stack ); } );
+    set_stack_change_callback( [ this ]( buff_t*, int old_stack, int current_stack ) {
+      handle_benevolent_faerie_stack_change( old_stack, current_stack );
+    } );
   }
 
-  void adjust_cooldown_rates( int current_stack )
+  void handle_bwonsamdis_pact_stack_change( int old_stack, int new_stack )
+  {
+    // TODO: Bwonsamdi's Pact does the adjustment based on its bonus value if Benevolent Faerie is up and does nothing
+    // if Benevolent Faerie is not up.
+  }
+
+private:
+  void handle_benevolent_faerie_stack_change( int old_stack, int new_stack )
+  {
+    double cdr_value                = default_value * bwonsamdis_pact_multiplier();
+    double recharge_rate_multiplier = 1.0 * ( 1 + cdr_value );
+
+    sim->print_debug( "Benevolent Faerie values - default_value: {}, cdr_value: {}, recharge_rate_multiplier: {}",
+                      default_value, cdr_value, recharge_rate_multiplier );
+
+    // When going from 0 to 1 stacks, the recharge rate gets increase
+    // When going back to 0 stacks, the recharge rate decreases again to its original level
+    if ( new_stack == 0 )
+      recharge_rate_multiplier = 1.0 / recharge_rate_multiplier;
+
+    adjust_action_cooldown_rates( recharge_rate_multiplier );
+  }
+
+  void adjust_action_cooldown_rates( double rate_change )
   {
     if ( !affected_actions_initialized )
     {
@@ -1192,24 +1204,27 @@ public:
 
       affected_actions_initialized = true;
     }
-
-    double cdr_value                = default_value * bwonsamdis_pact_multiplier();
-    double recharge_rate_multiplier = 1.0 * ( 1 + cdr_value );
-
-    sim->print_debug( "Benevolent Faerie values - default_value: {}, cdr_value: {}, recharge_rate_multiplier: {}",
-                      default_value, cdr_value, recharge_rate_multiplier );
     for ( auto a : affected_actions )
     {
-      if ( current_stack == 1 )
-        a->base_recharge_rate_multiplier *= recharge_rate_multiplier;
-      else
-        a->base_recharge_rate_multiplier /= recharge_rate_multiplier;
+      a->base_recharge_rate_multiplier *= rate_change;
 
       if ( a->cooldown->action == a )
         a->cooldown->adjust_recharge_multiplier();
       if ( a->internal_cooldown->action == a )
         a->internal_cooldown->adjust_recharge_multiplier();
     }
+  }
+
+  double bwonsamdis_pact_multiplier()
+  {
+    double modifier = 1.0;
+    if ( priest != nullptr && priest->legendary.bwonsamdis_pact->ok() && priest->buffs.bwonsamdis_pact->check() )
+    {
+      buff_t* bwonsamdis_pact = priest->buffs.bwonsamdis_pact;
+      modifier += ( bwonsamdis_pact->current_stack * priest->buffs.bwonsamdis_pact->data().effectN( 1 ).percent() );
+      sim->print_debug( "Bwonsamdi's Pact Modifier set to {}", modifier );
+    }
+    return modifier;
   }
 };
 }  // namespace buffs
@@ -1827,9 +1842,9 @@ void priest_t::create_buffs()
   // Runeforge Legendary Buffs
   buffs.bwonsamdis_pact =
       make_buff( this, "bwonsamdis_pact", legendary.bwonsamdis_pact->effectN( 1 ).trigger()->effectN( 1 ).trigger() )
-          ->set_stack_change_callback( [ this ]( buff_t*, int /* old_stack */, int current_stack ) {
+          ->set_stack_change_callback( [ this ]( buff_t*, int old_stack, int new_stack ) {
             auto b = debug_cast<buffs::benevolent_faerie_t*>( ( (player_t*)( this ) )->buffs.benevolent_faerie );
-            b->adjust_cooldown_rates( b->check() );
+            b->handle_bwonsamdis_pact_stack_change( old_stack, new_stack );
           } );
 
   create_buffs_shadow();
