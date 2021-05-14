@@ -1770,7 +1770,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     may_combo_strike      = true;
     trigger_faeline_stomp = true;
 
-    may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+    may_crit = may_miss = may_block = may_dodge = may_parry = false;
     tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
 
     spell_power_mod.direct = 0.0;
@@ -1784,7 +1784,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
   action_state_t* new_state() override
   {
-    return new spinning_crane_kick_state_t( this, target );
+    return new spinning_crane_kick_state_t( this, p()->target );
   }
 
   // N full ticks, but never additional ones.
@@ -2058,7 +2058,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     sef_ability = SEF_WHIRLING_DRAGON_PUNCH;
 
     parse_options( options_str );
-    interrupt_auto_attack = callbacks = false;
+    interrupt_auto_attack             = false;
     channeled                         = false;
     may_combo_strike                  = true;
     trigger_faeline_stomp             = true;
@@ -2076,7 +2076,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
 
   action_state_t* new_state() override
   {
-    return new whirling_dragon_punch_state_t( this, target );
+    return new whirling_dragon_punch_state_t( this, p()->target );
   }
 
   void execute() override
