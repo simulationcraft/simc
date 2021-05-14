@@ -7,7 +7,6 @@
 
 #include "action/dbc_proc_callback.hpp"
 #include "report/reports.hpp"
-#include "util/cache.hpp"
 #include "util/format.hpp"
 #include "util/span.hpp"
 #include "util/string_view.hpp"
