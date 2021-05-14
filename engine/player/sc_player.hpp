@@ -44,6 +44,7 @@ struct benefit_t;
 struct item_t;
 struct buff_t;
 struct cooldown_t;
+struct cooldown_waste_data_t;
 struct dot_t;
 struct event_t;
 struct expr_t;
@@ -336,6 +337,7 @@ struct player_t : public actor_t
   std::array< std::vector<plot_data_t>, STAT_MAX > dps_plot_data;
   std::vector<std::vector<plot_data_t> > reforge_plot_data;
   auto_dispose< std::vector<sample_data_helper_t*> > sample_data_list;
+  std::vector<std::unique_ptr<cooldown_waste_data_t>> cooldown_waste_data_list;
 
   // All Data collected during / end of combat
   player_collected_data_t collected_data;
@@ -810,6 +812,7 @@ public:
   sample_data_helper_t* get_sample_data( util::string_view name );
   action_priority_list_t* get_action_priority_list( util::string_view name, util::string_view comment = {} );
   int get_action_id( util::string_view name );
+  cooldown_waste_data_t* get_cooldown_waste_data( const cooldown_t* cd );
 
 
   // Virtual methods

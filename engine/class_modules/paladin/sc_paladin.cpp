@@ -3187,45 +3187,6 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
   return player_t::create_expression( name_str );
 }
 
-void paladin_t::merge( player_t& other )
-{
-  player_t::merge( other );
-
-  const paladin_t& op = static_cast<paladin_t&>( other );
-
-  for ( size_t i = 0; i < cooldown_waste_data_list.size(); i++ )
-  {
-    cooldown_waste_data_list[ i ]->merge( *op.cooldown_waste_data_list[ i ] );
-  }
-}
-
-void paladin_t::analyze( sim_t& s )
-{
-  player_t::analyze( s );
-  for ( auto cdw : cooldown_waste_data_list )
-  {
-    cdw->analyze();
-  }
-}
-
-void paladin_t::datacollection_begin()
-{
-  player_t::datacollection_begin();
-  for ( auto cdw : cooldown_waste_data_list )
-  {
-    cdw->datacollection_begin();
-  }
-}
-
-void paladin_t::datacollection_end()
-{
-  player_t::datacollection_end();
-  for ( auto cdw : cooldown_waste_data_list )
-  {
-    cdw->datacollection_end();
-  }
-}
-
 void paladin_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
@@ -3273,7 +3234,7 @@ public:
   void cdwaste_table_contents( report::sc_html_stream& os )
   {
     size_t row = 0;
-    for ( const cooldown_waste_data_t* data : p.cooldown_waste_data_list )
+    for ( const auto& data : p.cooldown_waste_data_list )
     {
       if ( !data->active() )
         continue;

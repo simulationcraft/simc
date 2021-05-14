@@ -55,6 +55,7 @@
 #include "sim/sc_sim.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/shuffled_rng.hpp"
+#include "sim/cooldown_waste_data.hpp"
 #include "util/io.hpp"
 #include "util/rng.hpp"
 #include "util/util.hpp"
@@ -4759,6 +4760,7 @@ void player_t::datacollection_begin()
   range::for_each( proc_list, std::mem_fn( &proc_t::datacollection_begin ) );
   range::for_each( pet_list, std::mem_fn( &pet_t::datacollection_begin ) );
   range::for_each( sample_data_list, std::mem_fn( &sample_data_helper_t::datacollection_begin ) );
+  range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_begin ) );
 }
 
 /**
@@ -4823,6 +4825,7 @@ void player_t::datacollection_end()
   range::for_each( benefit_list, std::mem_fn( &benefit_t::datacollection_end ) );
   range::for_each( proc_list, std::mem_fn( &proc_t::datacollection_end ) );
   range::for_each( sample_data_list, std::mem_fn( &sample_data_helper_t::datacollection_end ) );
+  range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_end ) );
 }
 
 // player_t::merge ==========================================================
@@ -5071,6 +5074,15 @@ void player_t::merge( player_t& other )
           other.action_list[ i ]->action_list ? other.action_list[ i ]->action_list->name_str.c_str() : "(none)",
           other.action_list[ i ]->signature_str );
     }
+  }
+
+  // Cooldown waste data
+  for ( size_t i = 0; i < cooldown_waste_data_list.size(); i++ )
+  {
+    const auto& ours   = cooldown_waste_data_list[ i ];
+    const auto& theirs = other.cooldown_waste_data_list[ i ];
+    assert( ours->cd->name_str == theirs->cd->name_str );
+    ours->merge( *theirs );
   }
 }
 
@@ -7279,6 +7291,18 @@ int player_t::get_action_id( util::string_view name )
 
   action_map.emplace_back( name );
   return static_cast<int>(action_map.size() - 1);
+}
+
+cooldown_waste_data_t* player_t::get_cooldown_waste_data( const cooldown_t* cd )
+{
+  for ( const auto& cdw : cooldown_waste_data_list )
+  {
+    if ( cdw->cd->name_str == cd->name_str )
+      return cdw.get();
+  }
+
+  cooldown_waste_data_list.push_back( std::make_unique<cooldown_waste_data_t>( cd ) );
+  return cooldown_waste_data_list.back().get();
 }
 
 namespace
@@ -11370,6 +11394,7 @@ void player_t::analyze( sim_t& s )
   range::for_each( proc_list, []( proc_t* pr ) { pr->analyze(); } );
   range::for_each( uptime_list, []( uptime_t* up ) { up->analyze(); } );
   range::for_each( benefit_list, []( benefit_t* ben ) { ben->analyze(); } );
+  range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::analyze ) );
 
   range::sort( stats_list, []( const stats_t* l, const stats_t* r ) { return l->name_str < r->name_str; } );
 
