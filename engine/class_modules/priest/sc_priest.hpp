@@ -38,11 +38,6 @@ struct unholy_transfusion_healing_t;
 }  // namespace spells
 }  // namespace actions
 
-namespace buffs
-{
-struct benevolent_faerie_t;
-}  // namespace buffs
-
 /**
  * Priest target data
  * Contains target specific things
@@ -126,6 +121,7 @@ public:
     propagate_const<buff_t*> the_penitent_one;
     propagate_const<buff_t*> sephuzs_proclamation;
     propagate_const<buff_t*> talbadars_stratagem;
+    propagate_const<buff_t*> bwonsamdis_pact;
 
     // Conduits
     propagate_const<buff_t*> mind_devourer;
@@ -1015,16 +1011,7 @@ protected:
     return *debug_cast<priest_t*>( Base::source );
   }
 };
-
-struct benevolent_faerie_t final : public buff_t
-{
-  std::vector<action_t*> affected_actions;
-  bool affected_actions_initialized;
-
-  benevolent_faerie_t( player_t* p );
-};
-
-}  // namespace buffs
+};  // namespace buffs
 
 /**
  * Adjust maximum charges for a cooldown

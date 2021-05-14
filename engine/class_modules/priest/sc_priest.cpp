@@ -359,18 +359,35 @@ struct wrathful_faerie_t final : public priest_spell_t
     : priest_spell_t( "wrathful_faerie", p, p.find_spell( 342132 ) ),
       insanity_gain( p.find_spell( 327703 )->effectN( 2 ).resource( RESOURCE_INSANITY ) )
   {
-    energize_type     = action_energize::ON_HIT;
-    energize_resource = RESOURCE_INSANITY;
-    energize_amount   = insanity_gain;
-    background        = true;
-
+    energize_type      = action_energize::ON_HIT;
+    energize_resource  = RESOURCE_INSANITY;
+    energize_amount    = insanity_gain;
+    background         = true;
     cooldown->duration = data().internal_cooldown();
+  }
+
+  void adjust_energize_amount()
+  {
+    if ( !priest().legendary.bwonsamdis_pact->ok() )
+      return;
+
+    if ( priest().buffs.bwonsamdis_pact->check() )
+    {
+      energize_amount = insanity_gain * ( 1 + ( priest().buffs.bwonsamdis_pact->current_stack *
+                                                priest().buffs.bwonsamdis_pact->data().effectN( 1 ).percent() ) );
+      sim->print_debug( "Bwonsamdi's Pact adjusts Wrathful Faerie insanity gain to {}", energize_amount );
+    }
+    else
+    {
+      energize_amount = insanity_gain;
+    }
   }
 
   void trigger()
   {
     if ( priest().cooldowns.wrathful_faerie->is_ready() )
     {
+      adjust_energize_amount();
       execute();
       priest().cooldowns.wrathful_faerie->start();
     }
@@ -390,12 +407,31 @@ struct wrathful_faerie_fermata_t final : public priest_spell_t
     background        = true;
 
     cooldown->duration = data().internal_cooldown();
+    apply_affecting_aura( priest().buffs.bwonsamdis_pact->s_data );
+  }
+
+  void adjust_energize_amount()
+  {
+    if ( !priest().legendary.bwonsamdis_pact->ok() )
+      return;
+
+    if ( priest().buffs.bwonsamdis_pact->check() )
+    {
+      energize_amount = insanity_gain * ( 1 + ( priest().buffs.bwonsamdis_pact->current_stack *
+                                                priest().buffs.bwonsamdis_pact->data().effectN( 1 ).percent() ) );
+      sim->print_debug( "Bwonsamdi's Pact adjusts Wrathful Faerie insanity gain to {}", energize_amount );
+    }
+    else
+    {
+      energize_amount = insanity_gain;
+    }
   }
 
   void trigger()
   {
     if ( priest().cooldowns.wrathful_faerie_fermata->is_ready() )
     {
+      adjust_energize_amount();
       execute();
       priest().cooldowns.wrathful_faerie_fermata->start();
     }
@@ -1045,6 +1081,10 @@ struct fae_guardians_t final : public priest_buff_t<buff_t>
 
     priest().remove_wrathful_faerie();
     priest().remove_wrathful_faerie_fermata();
+    if ( priest().legendary.bwonsamdis_pact->ok() )
+    {
+      priest().buffs.bwonsamdis_pact->expire();
+    }
   }
 };
 
@@ -1138,6 +1178,107 @@ struct death_and_madness_debuff_t final : public priest_buff_t<buff_t>
   }
 };
 
+struct benevolent_faerie_t final : public buff_t
+{
+private:
+  std::vector<action_t*> affected_actions;
+  bool affected_actions_initialized;
+  priest_t* priest;
+
+public:
+  benevolent_faerie_t( player_t* p )
+    : buff_t( p, "benevolent_faerie", p->find_spell( 327710 ) ),
+      affected_actions_initialized( false ),
+      priest( dynamic_cast<priest_t*>( player ) )
+  {
+    set_default_value_from_effect( 1 );
+
+    set_stack_change_callback( [ this ]( buff_t*, int old_stack, int current_stack ) {
+      handle_benevolent_faerie_stack_change( old_stack, current_stack );
+    } );
+  }
+
+  void handle_bwonsamdis_pact_stack_change( int old_stack, int new_stack )
+  {
+    //  Bwonsamdi's Pact does the adjustment based on its bonus value if Benevolent Faerie is up and does nothing if
+    //  Benevolent Faerie is not up.
+    if ( !check() )
+    {
+      return;
+    }
+
+    auto old_multiplier = get_recharge_multiplier( old_stack );
+    auto new_multiplier = get_recharge_multiplier( new_stack );
+
+    auto rate_change = new_multiplier / old_multiplier;
+
+    adjust_action_cooldown_rates( rate_change );
+  }
+
+private:
+  void handle_benevolent_faerie_stack_change( int old_stack, int new_stack )
+  {
+    double recharge_rate_multiplier = get_recharge_multiplier( priest->buffs.bwonsamdis_pact->check() );
+
+    sim->print_debug(
+        "Benevolent Faerie values - default_value: {}, bwonsamdis_pact_stacks: {}, recharge_rate_multiplier: {}",
+        default_value, priest->buffs.bwonsamdis_pact->check(), recharge_rate_multiplier );
+
+    // When going from 0 to 1 stacks, the recharge rate gets increase
+    // When going back to 0 stacks, the recharge rate decreases again to its original level
+    if ( new_stack == 0 )
+      recharge_rate_multiplier = 1.0 / recharge_rate_multiplier;
+
+    adjust_action_cooldown_rates( recharge_rate_multiplier );
+  }
+
+  void adjust_action_cooldown_rates( double rate_change )
+  {
+    if ( !affected_actions_initialized )
+    {
+      int label = data().effectN( 1 ).misc_value1();
+      affected_actions.clear();
+      for ( auto a : player->action_list )
+      {
+        if ( a->data().affected_by_label( label ) )
+        {
+          if ( range::find( affected_actions, a ) == affected_actions.end() )
+          {
+            affected_actions.push_back( a );
+          }
+        }
+      }
+
+      affected_actions_initialized = true;
+    }
+    for ( auto a : affected_actions )
+    {
+      a->base_recharge_rate_multiplier /= rate_change;
+
+      if ( a->cooldown->action == a )
+        a->cooldown->adjust_recharge_multiplier();
+      if ( a->internal_cooldown->action == a )
+        a->internal_cooldown->adjust_recharge_multiplier();
+    }
+  }
+
+  double get_recharge_multiplier( int bwonsamdis_pact_stacks )
+  {
+    return 1.0 + default_value * bwonsamdis_pact_multiplier( bwonsamdis_pact_stacks );
+  }
+
+  double bwonsamdis_pact_multiplier( int stacks )
+  {
+    double modifier = 1.0;
+    if ( priest != nullptr && priest->legendary.bwonsamdis_pact->ok() && stacks > 0 )
+    {
+      buff_t* bwonsamdis_pact = priest->buffs.bwonsamdis_pact;
+      modifier += ( stacks * priest->buffs.bwonsamdis_pact->data().effectN( 1 ).percent() );
+      sim->print_debug( "Bwonsamdi's Pact Modifier set to {}", modifier );
+    }
+    return modifier;
+  }
+};
 }  // namespace buffs
 
 namespace items
@@ -1747,6 +1888,14 @@ void priest_t::create_buffs()
   buffs.fae_guardians        = make_buff<buffs::fae_guardians_t>( *this );
   buffs.boon_of_the_ascended = make_buff<buffs::boon_of_the_ascended_t>( *this );
 
+  // Runeforge Legendary Buffs
+  buffs.bwonsamdis_pact =
+      make_buff( this, "bwonsamdis_pact", legendary.bwonsamdis_pact->effectN( 1 ).trigger()->effectN( 1 ).trigger() )
+          ->set_stack_change_callback( [ this ]( buff_t*, int old_stack, int new_stack ) {
+            auto b = debug_cast<buffs::benevolent_faerie_t*>( ( (player_t*)( this ) )->buffs.benevolent_faerie );
+            b->handle_bwonsamdis_pact_stack_change( old_stack, new_stack );
+          } );
+
   create_buffs_shadow();
   create_buffs_discipline();
   create_buffs_holy();
@@ -2088,45 +2237,6 @@ double priest_t::shadow_weaving_multiplier( const player_t* target, const unsign
   }
 
   return multiplier;
-}
-
-buffs::benevolent_faerie_t::benevolent_faerie_t( player_t* p )
-  : buff_t( p, "benevolent_faerie", p->find_spell( 327710 ) ), affected_actions_initialized( false )
-{
-  set_default_value_from_effect( 1 );
-
-  set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
-    if ( !affected_actions_initialized )
-    {
-      int label = data().effectN( 1 ).misc_value1();
-      affected_actions.clear();
-      for ( auto a : player->action_list )
-      {
-        if ( a->data().affected_by_label( label ) )
-        {
-          if ( range::find( affected_actions, a ) == affected_actions.end() )
-          {
-            affected_actions.push_back( a );
-          }
-        }
-      }
-
-      affected_actions_initialized = true;
-    }
-
-    double recharge_rate_multiplier = 1.0 / ( 1 + b->default_value );
-    for ( auto a : affected_actions )
-    {
-      if ( new_ == 1 )
-        a->base_recharge_rate_multiplier *= recharge_rate_multiplier;
-      else
-        a->base_recharge_rate_multiplier /= recharge_rate_multiplier;
-      if ( a->cooldown->action == a )
-        a->cooldown->adjust_recharge_multiplier();
-      if ( a->internal_cooldown->action == a )
-        a->internal_cooldown->adjust_recharge_multiplier();
-    }
-  } );
 }
 
 struct priest_module_t final : public module_t
