@@ -269,9 +269,9 @@ void shadow( player_t* p )
   if ( p->dbc->ptr )
   {
     main->add_action( p, "Shadow Word: Death",
-                      "if=runeforge.bwonsamdis_pact.equipped&buff.fae_guardians.up&target.time_to_pct_20>(cooldown."
-                      "shadow_word_death.duration+gcd)",
-                      "Use SW:D with Bwonsamdi's pact if Fae Guardians is up." );
+                      "if=runeforge.bwonsamdis_pact.equipped&buff.fae_guardians.up&!cooldown.void_eruption.up&target."
+                      "time_to_pct_20>(cooldown.shadow_word_death.duration+gcd)",
+                      "Use SW:D with Bwonsamdi's pact if Fae Guardians is up and Void Eruption is on CD." );
   }
   main->add_talent( p, "Shadow Crash", "if=raid_event.adds.in>10",
                     "Use Shadow Crash on CD unless there are adds incoming." );

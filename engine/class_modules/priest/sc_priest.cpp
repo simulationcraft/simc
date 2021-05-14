@@ -359,18 +359,35 @@ struct wrathful_faerie_t final : public priest_spell_t
     : priest_spell_t( "wrathful_faerie", p, p.find_spell( 342132 ) ),
       insanity_gain( p.find_spell( 327703 )->effectN( 2 ).resource( RESOURCE_INSANITY ) )
   {
-    energize_type     = action_energize::ON_HIT;
-    energize_resource = RESOURCE_INSANITY;
-    energize_amount   = insanity_gain;
-    background        = true;
-
+    energize_type      = action_energize::ON_HIT;
+    energize_resource  = RESOURCE_INSANITY;
+    energize_amount    = insanity_gain;
+    background         = true;
     cooldown->duration = data().internal_cooldown();
+  }
+
+  void adjust_energize_amount()
+  {
+    if ( !priest().legendary.bwonsamdis_pact->ok() )
+      return;
+
+    if ( priest().buffs.bwonsamdis_pact->check() )
+    {
+      energize_amount = insanity_gain * ( 1 + ( priest().buffs.bwonsamdis_pact->current_stack *
+                                                priest().buffs.bwonsamdis_pact->data().effectN( 1 ).percent() ) );
+      sim->print_debug( "Bwonsamdi's Pact adjusts Wrathful Faerie insanity gain to {}", energize_amount );
+    }
+    else
+    {
+      energize_amount = insanity_gain;
+    }
   }
 
   void trigger()
   {
     if ( priest().cooldowns.wrathful_faerie->is_ready() )
     {
+      adjust_energize_amount();
       execute();
       priest().cooldowns.wrathful_faerie->start();
     }
@@ -390,12 +407,31 @@ struct wrathful_faerie_fermata_t final : public priest_spell_t
     background        = true;
 
     cooldown->duration = data().internal_cooldown();
+    apply_affecting_aura( priest().buffs.bwonsamdis_pact->s_data );
+  }
+
+  void adjust_energize_amount()
+  {
+    if ( !priest().legendary.bwonsamdis_pact->ok() )
+      return;
+
+    if ( priest().buffs.bwonsamdis_pact->check() )
+    {
+      energize_amount = insanity_gain * ( 1 + ( priest().buffs.bwonsamdis_pact->current_stack *
+                                                priest().buffs.bwonsamdis_pact->data().effectN( 1 ).percent() ) );
+      sim->print_debug( "Bwonsamdi's Pact adjusts Wrathful Faerie insanity gain to {}", energize_amount );
+    }
+    else
+    {
+      energize_amount = insanity_gain;
+    }
   }
 
   void trigger()
   {
     if ( priest().cooldowns.wrathful_faerie_fermata->is_ready() )
     {
+      adjust_energize_amount();
       execute();
       priest().cooldowns.wrathful_faerie_fermata->start();
     }
@@ -1283,13 +1319,10 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.schism                      = make_buff( *this, "schism", p.talents.schism );
   buffs.death_and_madness_debuff    = make_buff<buffs::death_and_madness_debuff_t>( *this );
   buffs.surrender_to_madness_debuff = make_buff<buffs::surrender_to_madness_debuff_t>( *this );
-  // TODO: figure out why the affecting aura is not working
-  buffs.wrathful_faerie = make_buff( *this, "wrathful_faerie", p.find_spell( 327703 ) )
-                              ->apply_affecting_aura( priest().buffs.bwonsamdis_pact->get_trigger_data() );
-  buffs.wrathful_faerie_fermata = make_buff( *this, "wrathful_faerie_fermata", p.find_spell( 345452 ) )
+  buffs.wrathful_faerie             = make_buff( *this, "wrathful_faerie", p.find_spell( 327703 ) );
+  buffs.wrathful_faerie_fermata     = make_buff( *this, "wrathful_faerie_fermata", p.find_spell( 345452 ) )
                                       ->set_cooldown( timespan_t::zero() )
-                                      ->set_duration( priest().conduits.fae_fermata.time_value() )
-                                      ->apply_affecting_aura( priest().buffs.bwonsamdis_pact->get_trigger_data() );
+                                      ->set_duration( priest().conduits.fae_fermata.time_value() );
   buffs.hungering_void = make_buff( *this, "hungering_void", p.find_spell( 345219 ) );
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
