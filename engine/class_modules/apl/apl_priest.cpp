@@ -261,11 +261,11 @@ void shadow( player_t* p )
                     "vampiric_touch==spell_targets.vampiric_touch)",
                     "Activate mindbender with dots up, if using shadowflame prism make sure vampiric touches are "
                     "applied prior to use." );
-  main->add_action( p, "Shadow Word: Death",
-                    "if=(runeforge.painbreaker_psalm.equipped&variable.dots_up)&target.time_to_pct_20>(cooldown.shadow_"
-                    "word_death.duration+gcd)",
-                    "Use SW:D with Painbreaker Psalm unless the target will be below 20% before the cooldown comes "
-                    "back. Also use with Bwonsamdi's pact if Fae Guardians is up." );
+  main->add_action(
+      p, "Shadow Word: Death",
+      "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.time_to_pct_20>(cooldown.shadow_word_death."
+      "duration+gcd)",
+      "Use SW:D with Painbreaker Psalm unless the target will be below 20% before the cooldown comes back." );
   if ( p->dbc->ptr )
   {
     main->add_action( p, "Shadow Word: Death",
