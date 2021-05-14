@@ -1176,7 +1176,7 @@ void brons_call_to_action( special_effect_t& effect )
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( a->background || a->gcd() <= 0_ms || a->data().flags( spell_attribute::SX_NO_THREAT ) )
+      if ( a->background || a->trigger_gcd <= 0_ms || a->data().flags( spell_attribute::SX_NO_THREAT ) )
         return;
 
       dbc_proc_callback_t::trigger( a, s );
