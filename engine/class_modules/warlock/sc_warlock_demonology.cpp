@@ -458,12 +458,8 @@ struct implosion_t : public demonology_spell_t
 
     auto imps_consumed = p()->warlock_pet_list.wild_imps.n_active_pets();
 
-    // Calculate imp travel time
-    double current_travel_speed = travel_speed;
     // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
-    travel_speed = 65;
-    timespan_t imp_travel_time = this->travel_time();
-    travel_speed = current_travel_speed;
+    timespan_t imp_travel_time = this->calc_imp_travel_time(65);
 
     int launch_counter = 0;
     for ( auto imp : p()->warlock_pet_list.wild_imps )
@@ -501,6 +497,30 @@ struct implosion_t : public demonology_spell_t
       p()->buffs.implosive_potential_small->trigger( imps_consumed );
 
     demonology_spell_t::execute();
+  }
+
+  // A shortened version of action_t::travel_time() for use in calculating the time until the imp is dismissed.
+  // Note that imps explode at the bottom of the target, so no height component is accounted for.
+  timespan_t calc_imp_travel_time( double speed )
+  {
+    double t = 0;
+
+    if ( speed > 0 )
+    {
+      double distance = player->get_player_distance( *target );
+
+      if ( distance > 0 )
+        t += distance / speed;
+    }
+
+    double v = sim->travel_variance;
+
+    if ( v )
+      t = rng().gauss( t, v );
+
+    t = std::max( t, min_travel_time );
+
+    return timespan_t::from_seconds( t );
   }
 };
 
