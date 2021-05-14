@@ -1979,12 +1979,12 @@ bool item_t::download_item( item_t& item )
     for ( unsigned i = 0; ! success && i < sources.size(); i++ )
     {
       if ( sources[ i ] == "wowhead" )
-        success = wowhead::download_item( item, wowhead::LIVE );
+        success = wowhead::download_item( item, wowhead::LIVE, cache::items() );
       else if ( sources[ i ] == "ptrhead" )
-        success = wowhead::download_item( item, wowhead::PTR );
+        success = wowhead::download_item( item, wowhead::PTR, cache::items() );
 #if SC_BETA
       else if ( sources[ i ] == SC_BETA_STR "head" )
-        success = wowhead::download_item( item, wowhead::BETA );
+        success = wowhead::download_item( item, wowhead::BETA, cache::items() );
 #endif
       else if ( sources[ i ] == "bcpapi" )
         success = bcp_api::download_item( item );
