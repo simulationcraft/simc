@@ -338,7 +338,6 @@ void priest_t::init_spells_discipline()
 action_t* priest_t::create_action_discipline( util::string_view name, util::string_view options_str )
 {
   using namespace actions::spells;
-  using namespace actions::heals;
 
   if ( name == "pain_suppression" )
   {

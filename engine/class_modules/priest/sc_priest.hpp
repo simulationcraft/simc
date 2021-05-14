@@ -28,15 +28,6 @@ namespace spells
 struct ascended_blast_heal_t;
 struct mind_sear_tick_t;
 struct shadowy_apparition_spell_t;
-struct angelic_feather_t;
-struct divine_star_t;
-struct apotheosis_t;
-struct halo_t;
-struct levitate_t;
-struct smite_t;
-struct summon_pet_t;
-struct summon_shadowfiend_t;
-struct summon_mindbender_t;
 struct ascended_eruption_t;
 struct ascended_eruption_heal_t;
 struct wrathful_faerie_t;
@@ -45,10 +36,6 @@ struct psychic_link_t;
 struct eternal_call_to_the_void_t;
 struct unholy_transfusion_healing_t;
 }  // namespace spells
-namespace heals
-{
-struct power_word_shield_t;
-}  // namespace heals
 }  // namespace actions
 
 namespace buffs
@@ -342,7 +329,6 @@ public:
     propagate_const<actions::spells::ascended_eruption_t*> ascended_eruption;
     propagate_const<actions::spells::ascended_eruption_heal_t*> ascended_eruption_heal;
     propagate_const<actions::spells::eternal_call_to_the_void_t*> eternal_call_to_the_void;
-    propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
     propagate_const<actions::spells::psychic_link_t*> psychic_link;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<actions::spells::unholy_transfusion_healing_t*> unholy_transfusion_healing;
