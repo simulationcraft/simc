@@ -316,6 +316,7 @@ public:
   {
     // All Specs
     const spell_data_t* nethermancy; //The probably actual spell controlling armor type bonus. NOTE: Level req is missing, this matches in game behavior.
+    const spell_data_t* demonic_embrace; //Warlock stamina passive
     //TODO: Corruption is now class-wide
     //TODO: Ritual of Doom?
 
@@ -508,6 +509,7 @@ public:
   double composite_melee_crit_chance() const override;
   double composite_mastery() const override;
   double resource_regen_per_second( resource_e ) const override;
+  double composite_attribute_multiplier( attribute_e attr ) const override;
   void combat_begin() override;
   void init_assessors() override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
