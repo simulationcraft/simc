@@ -180,74 +180,6 @@ struct buff_stack_benefit_t
   }
 };
 
-struct cooldown_waste_data_t : private noncopyable
-{
-  const cooldown_t* cd;
-  double buffer;
-
-  extended_sample_data_t normal;
-  extended_sample_data_t cumulative;
-
-  cooldown_waste_data_t( const cooldown_t* cooldown, bool simple = true ) :
-    cd( cooldown ),
-    buffer(),
-    normal( cd->name_str + " cooldown waste", simple ),
-    cumulative( cd->name_str + " cumulative cooldown waste", simple )
-  { }
-
-  void add( timespan_t cd_override = timespan_t::min(), timespan_t time_to_execute = 0_ms )
-  {
-    if ( cd_override == 0_ms || ( cd_override < 0_ms && cd->duration <= 0_ms ) )
-      return;
-
-    if ( cd->ongoing() )
-    {
-      normal.add( 0.0 );
-    }
-    else
-    {
-      double wasted = ( cd->sim.current_time() - cd->last_charged ).total_seconds();
-
-      // Waste caused by execute time is unavoidable for single charge spells, don't count it.
-      if ( cd->charges == 1 )
-        wasted -= time_to_execute.total_seconds();
-
-      normal.add( wasted );
-      buffer += wasted;
-    }
-  }
-
-  bool active() const
-  {
-    return normal.count() > 0 && cumulative.sum() > 0;
-  }
-
-  void merge( const cooldown_waste_data_t& other )
-  {
-    normal.merge( other.normal );
-    cumulative.merge( other.cumulative );
-  }
-
-  void analyze()
-  {
-    normal.analyze();
-    cumulative.analyze();
-  }
-
-  void datacollection_begin()
-  {
-    buffer = 0.0;
-  }
-
-  void datacollection_end()
-  {
-    if ( !cd->ongoing() )
-      buffer += ( cd->sim.current_time() - cd->last_charged ).total_seconds();
-
-    cumulative.add( buffer );
-  }
-};
-
 // Generalization of proc tracking (proc_t).
 // Keeps a track of multiple related effects at once.
 //
@@ -333,7 +265,6 @@ public:
   std::array<timespan_t, AOE_MAX> ground_aoe_expiration;
 
   // Data collection
-  auto_dispose<std::vector<cooldown_waste_data_t*> > cooldown_waste_data_list;
   auto_dispose<std::vector<shatter_source_t*> > shatter_source_list;
 
   // Cached actions
@@ -827,20 +758,6 @@ public:
     if ( !td )
       td = new mage_td_t( target, const_cast<mage_t*>( this ) );
     return td;
-  }
-
-  // Public mage functions:
-  cooldown_waste_data_t* get_cooldown_waste_data( const cooldown_t* cd )
-  {
-    for ( auto cdw : cooldown_waste_data_list )
-    {
-      if ( cdw->cd->name_str == cd->name_str )
-        return cdw;
-    }
-
-    auto cdw = new cooldown_waste_data_t( cd );
-    cooldown_waste_data_list.push_back( cdw );
-    return cdw;
   }
 
   shatter_source_t* get_shatter_source( util::string_view name )
@@ -5799,14 +5716,6 @@ void mage_t::merge( player_t& other )
 
   mage_t& mage = dynamic_cast<mage_t&>( other );
 
-  for ( size_t i = 0; i < cooldown_waste_data_list.size(); i++ )
-  {
-    auto ours = cooldown_waste_data_list[ i ];
-    auto theirs = mage.cooldown_waste_data_list[ i ];
-    assert( ours->cd->name_str == theirs->cd->name_str );
-    ours->merge( *theirs );
-  }
-
   for ( size_t i = 0; i < shatter_source_list.size(); i++ )
   {
     auto ours = shatter_source_list[ i ];
@@ -5834,8 +5743,6 @@ void mage_t::analyze( sim_t& s )
 {
   player_t::analyze( s );
 
-  range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::analyze ) );
-
   switch ( specialization() )
   {
     case MAGE_ARCANE:
@@ -5855,7 +5762,6 @@ void mage_t::datacollection_begin()
 {
   player_t::datacollection_begin();
 
-  range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_begin ) );
   range::for_each( shatter_source_list, std::mem_fn( &shatter_source_t::datacollection_begin ) );
 }
 
@@ -5863,7 +5769,6 @@ void mage_t::datacollection_end()
 {
   player_t::datacollection_end();
 
-  range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_end ) );
   range::for_each( shatter_source_list, std::mem_fn( &shatter_source_t::datacollection_end ) );
 }
 
@@ -7201,7 +7106,7 @@ public:
           "</tr>\n"
           "</thead>\n";
 
-    for ( const cooldown_waste_data_t* data : p.cooldown_waste_data_list )
+    for ( const auto& data : p.cooldown_waste_data_list )
     {
       if ( !data->active() )
         continue;

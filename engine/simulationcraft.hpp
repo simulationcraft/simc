@@ -98,6 +98,7 @@
 #include "sim/shuffled_rng.hpp"
 #include "sim/sc_cooldown.hpp"
 #include "sim/gain.hpp"
+#include "sim/cooldown_waste_data.hpp"
 
 #include "util/generic.hpp" // Generic programming tools
 #include "util/sample_data.hpp"
