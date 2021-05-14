@@ -811,8 +811,8 @@ void battlefield_presence( special_effect_t& effect )
   if ( forced_enemies == -1 )
   {
     effect.activation_cb = [ p, buff ]() {
-      p->sim->target_non_sleeping_list.register_callback( [ p, buff ]( player_t* t ) {
-        auto enemies       = p->sim->target_non_sleeping_list.size();
+      p->sim->target_non_sleeping_list.register_callback( [ p, buff ]( player_t* ) {
+        auto enemies       = as<int>( p->sim->target_non_sleeping_list.size() );
         auto current_stack = buff->current_stack;
         auto max_stack     = buff->max_stack();
 
