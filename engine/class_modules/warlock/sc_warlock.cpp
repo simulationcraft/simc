@@ -760,6 +760,15 @@ double warlock_t::resource_regen_per_second( resource_e r ) const
   return reg;
 }
 
+double warlock_t::composite_attribute_multiplier( attribute_e attr ) const
+{
+  double m = player_t::composite_attribute_multiplier( attr );
+  if ( attr == ATTR_STAMINA )
+    m *= 1.0 + spec.demonic_embrace->effectN( 1 ).percent();
+    
+  return m;
+}
+
 //Note: Level is checked to be >=27 by the function calling this. This is technically wrong for warlocks due to
 //a missing level requirement in data, but correct generally.
 double warlock_t::matching_gear_multiplier( attribute_e attr ) const
@@ -897,6 +906,7 @@ void warlock_t::init_spells()
 
   // General
   spec.nethermancy = find_spell( 86091 );
+  spec.demonic_embrace = find_spell( 288843 );
 
   // Specialization Spells
   spec.immolate         = find_specialization_spell( "Immolate" );
