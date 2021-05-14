@@ -1272,7 +1272,6 @@ private:
     double modifier = 1.0;
     if ( priest != nullptr && priest->legendary.bwonsamdis_pact->ok() && stacks > 0 )
     {
-      buff_t* bwonsamdis_pact = priest->buffs.bwonsamdis_pact;
       modifier += ( stacks * priest->buffs.bwonsamdis_pact->data().effectN( 1 ).percent() );
       sim->print_debug( "Bwonsamdi's Pact Modifier set to {}", modifier );
     }

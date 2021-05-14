@@ -50,7 +50,7 @@ struct event_t;
 struct expr_t;
 struct gain_t;
 struct instant_absorb_t;
-struct item_runeforge_t;
+class item_runeforge_t;
 struct sample_data_helper_t;
 struct option_t;
 struct pet_t;

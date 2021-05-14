@@ -11317,9 +11317,9 @@ void player_t::create_options()
   add_option( opt_bool( "external_buffs.focus_magic", external_buffs.focus_magic ) );
 
   // Timed External Buffs
-  auto opt_external_buff_times = [ this ] ( util::string_view name, std::vector<timespan_t>& times )
+  auto opt_external_buff_times = [] ( util::string_view name, std::vector<timespan_t>& times )
   {
-    return opt_func( name, [ this, & times ] ( sim_t*, util::string_view, util::string_view val )
+    return opt_func( name, [ & times ] ( sim_t*, util::string_view, util::string_view val )
     {
       times.clear();
       auto splits = util::string_split<util::string_view>( val, "/" );
