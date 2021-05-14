@@ -1011,7 +1011,7 @@ protected:
     return *debug_cast<priest_t*>( Base::source );
   }
 };
-};  // namespace buffs
+}  // namespace buffs
 
 /**
  * Adjust maximum charges for a cooldown

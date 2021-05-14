@@ -1193,8 +1193,8 @@ public:
   {
     set_default_value_from_effect( 1 );
 
-    set_stack_change_callback( [ this ]( buff_t*, int old_stack, int current_stack ) {
-      handle_benevolent_faerie_stack_change( old_stack, current_stack );
+    set_stack_change_callback( [ this ]( buff_t*, int /* old_stack */, int current_stack ) {
+      handle_benevolent_faerie_stack_change( current_stack );
     } );
   }
 
@@ -1216,7 +1216,7 @@ public:
   }
 
 private:
-  void handle_benevolent_faerie_stack_change( int old_stack, int new_stack )
+  void handle_benevolent_faerie_stack_change( int new_stack )
   {
     double recharge_rate_multiplier = get_recharge_multiplier( priest->buffs.bwonsamdis_pact->check() );
 
