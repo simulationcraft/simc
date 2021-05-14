@@ -148,28 +148,28 @@ void shadow( player_t* p )
                    "target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)",
                    "Use Silence on CD to proc Sephuz's Proclamation." );
   cds->add_action(
-      p, priest->covenant.fae_guardians, "fae_guardians",
-      "if=!buff.voidform.up&(!cooldown.void_torrent.up|!talent.void_torrent.enabled)&(variable.dots_up&spell_targets."
+      "fae_guardians,if=!buff.voidform.up&(!cooldown.void_torrent.up|!talent.void_torrent.enabled)&(variable.dots_up&"
+      "spell_targets."
       "vampiric_touch==1|active_dot.vampiric_touch==spell_targets.vampiric_touch&spell_targets.vampiric_touch>1)|buff."
       "voidform.up&(soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled)",
       "Use Fae Guardians on CD outside of Voidform. Use Fae Guardiands in Voidform if you have either "
       "Grove Invigoration or Field of Blossoms. Wait for dots to be up before activating Fae Guardians to "
       "maximise the buff." );
-  cds->add_action( p, priest->covenant.mindgames, "mindgames",
-                   "target_if=insanity<90&((variable.all_dots_up&(!cooldown.void_eruption.up|!talent.hungering_void."
-                   "enabled))|buff.voidform.up)&(!talent.hungering_void.enabled|debuff.hungering_void.up|!buff."
-                   "voidform.up)&(!talent.searing_nightmare.enabled|spell_targets.mind_sear<5)",
-                   "Use Mindgames when all 3 DoTs are up, or you are in Voidform. Ensure Hungering Void is active on "
-                   "the target if talented. Stop using at 5+ targets with Searing Nightmare." );
   cds->add_action(
-      p, priest->covenant.unholy_nova, "unholy_nova",
-      "if=((!raid_event.adds.up&raid_event.adds.in>20)|raid_event.adds.remains>=15|raid_event.adds.duration<"
+      "mindgames,target_if=insanity<90&((variable.all_dots_up&(!cooldown.void_eruption.up|!talent.hungering_void."
+      "enabled))|buff.voidform.up)&(!talent.hungering_void.enabled|debuff.hungering_void.up|!buff."
+      "voidform.up)&(!talent.searing_nightmare.enabled|spell_targets.mind_sear<5)",
+      "Use Mindgames when all 3 DoTs are up, or you are in Voidform. Ensure Hungering Void is active on "
+      "the target if talented. Stop using at 5+ targets with Searing Nightmare." );
+  cds->add_action(
+      "unholy_nova,if=((!raid_event.adds.up&raid_event.adds.in>20)|raid_event.adds.remains>=15|raid_event.adds."
+      "duration<"
       "15)&(buff.power_infusion.up|cooldown.power_infusion.remains>=10|!priest.self_power_infusion)&(!talent.hungering_"
       "void.enabled|debuff.hungering_void.up|!buff.voidform.up)",
       "Use Unholy Nova on CD, holding briefly to wait for power infusion or add spawns." );
   cds->add_action(
-      p, priest->covenant.boon_of_the_ascended, "boon_of_the_ascended",
-      "if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_nightmare.enabled|("
+      "boon_of_the_ascended,if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_"
+      "nightmare.enabled|("
       "buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled&(prev_gcd.1.void_bolt&(!equipped."
       "empyreal_ordnance|!talent.hungering_void.enabled)|equipped.empyreal_ordnance&trinket.empyreal_ordnance.cooldown."
       "remains<=162&debuff.hungering_void.up))|(buff.voidform.up&talent.searing_nightmare.enabled)",
@@ -178,9 +178,9 @@ void shadow( player_t* p )
   cds->add_call_action_list( trinkets );
 
   // APL to use when Boon of the Ascended is active
-  boon->add_action( p, priest->covenant.boon_of_the_ascended, "ascended_blast", "if=spell_targets.mind_sear<=3" );
-  boon->add_action( p, priest->covenant.boon_of_the_ascended, "ascended_nova",
-                    "if=spell_targets.ascended_nova>1&spell_targets.mind_sear>1+talent.searing_nightmare.enabled" );
+  boon->add_action( "ascended_blast,if=spell_targets.mind_sear<=3" );
+  boon->add_action(
+      "ascended_nova,if=spell_targets.ascended_nova>1&spell_targets.mind_sear>1+talent.searing_nightmare.enabled" );
 
   // Cast While Casting actions. Set at higher priority to short circuit interrupt conditions on Mind Sear/Flay
   cwc->add_talent( p, "Searing Nightmare",
@@ -196,7 +196,7 @@ void shadow( player_t* p )
                    "Only_cwc makes the action only usable during channeling and not as a regular action." );
 
   // Main APL, should cover all ranges of targets and scenarios
-  main->add_call_action_list( p, priest->covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
+  main->add_call_action_list( boon, "if=buff.boon_of_the_ascended.up" );
   main->add_action(
       p, "Void Eruption",
       "if=variable.pool_for_cds&(insanity>=40|pet.fiend.active&runeforge.shadowflame_prism.equipped&!cooldown.mind_"
