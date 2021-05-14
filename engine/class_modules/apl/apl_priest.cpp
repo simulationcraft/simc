@@ -6,7 +6,7 @@
 
 #include "class_modules/apl/apl_priest.hpp"
 
-#include "class_modules/priest/sc_priest.hpp"
+#include "dbc/dbc.hpp"
 #include "player/action_priority_list.hpp"
 #include "player/sc_player.hpp"
 
@@ -41,8 +41,6 @@ std::string temporary_enchant( const player_t* p )
 
 void shadow( player_t* p )
 {
-  auto priest = debug_cast<priestspace::priest_t*>( p );
-
   action_priority_list_t* precombat    = p->get_action_priority_list( "precombat" );
   action_priority_list_t* default_list = p->get_action_priority_list( "default" );
   action_priority_list_t* main         = p->get_action_priority_list( "main" );
