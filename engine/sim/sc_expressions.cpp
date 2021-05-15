@@ -416,8 +416,6 @@ public:
 std::unique_ptr<expr_t> select_analyze_unary( util::string_view name, token_e op,
                               std::unique_ptr<expr_t> input )
 {
-  
-    fmt::print(stderr, "select_analye_unary\n");
   switch ( op )
   {
     case TOK_PLUS:
@@ -491,7 +489,6 @@ public:
       right_true++;
     else
       right_false++;
-    fmt::print(stderr, "blub {} {}\n", name(), op_);
   }
 
   bool is_analyze_expression() override
@@ -709,6 +706,7 @@ public:
       std::swap( left, right );
       std::swap( left, right->is_analyze_expression() ? debug_cast<analyze_logical_or_t*>( right.get() )->left : debug_cast<logical_or_t*>( right.get() )->left );
     }
+    
     return select_binary( analyze_further, name(), TOK_OR, std::move(left), std::move(right) );
   }
 };
@@ -921,7 +919,6 @@ public:
 std::unique_ptr<expr_t> select_analyze_binary( util::string_view name, token_e op,
                                std::unique_ptr<expr_t> left, std::unique_ptr<expr_t> right )
 {
-    fmt::print(stderr, "select_analye_binary\n");
   switch ( op )
   {
     case TOK_AND:
@@ -1253,10 +1250,7 @@ std::unique_ptr<expr_t> build_player_expression_tree(
       auto input = std::move(stack.back());
       stack.pop_back();
       assert( input );
-      auto expr =
-          ( optimize
-                ? expression::select_analyze_unary( t.label, t.type, std::move(input) )
-                : expression::select_unary( t.label, t.type, std::move(input) ) );
+      auto expr = expression::select_unary( optimize, t.label, t.type, std::move(input) );
       stack.push_back( std::move(expr) );
     }
     else if ( expression::is_binary( t.type ) )
@@ -1322,10 +1316,7 @@ static std::unique_ptr<expr_t> build_expression_tree(
       auto input = std::move(stack.back());
       stack.pop_back();
       assert( input );
-      auto expr =
-          ( optimize
-                ? expression::select_analyze_unary( t.label, t.type, std::move(input) )
-                : expression::select_unary( t.label, t.type, std::move(input) ) );
+      auto expr = expression::select_unary( optimize, t.label, t.type, std::move(input) );
       stack.push_back( std::move(expr) );
     }
     else if ( expression::is_binary( t.type ) )
@@ -1376,7 +1367,6 @@ void expr_t::optimize_expression( std::unique_ptr<expr_t>& expression, sim_t& si
   }
   bool analyze_further = sim.optimize_expressions - 1 - iterations  > 0;
   
-    fmt::print(stderr, "{} {} {}\n", iterations, sim.optimize_expressions, analyze_further);
   for(int i = 0; i < sim.optimize_expressions_rounds; ++i)
   {
     optimize_expression( expression, analyze_further );

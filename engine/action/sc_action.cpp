@@ -2668,11 +2668,11 @@ void action_t::reset()
 
       player->dynamic_target_action_list.erase( this );
     }
-    expr_t::optimize_expression( target_if_expr, *sim );
-    expr_t::optimize_expression( interrupt_if_expr, *sim );
-    expr_t::optimize_expression( early_chain_if_expr, *sim );
-    expr_t::optimize_expression( cancel_if_expr, *sim );
   }
+  expr_t::optimize_expression( target_if_expr, *sim );
+  expr_t::optimize_expression( interrupt_if_expr, *sim );
+  expr_t::optimize_expression( early_chain_if_expr, *sim );
+  expr_t::optimize_expression( cancel_if_expr, *sim );
 }
 
 void action_t::cancel()

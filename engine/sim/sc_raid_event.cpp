@@ -1091,7 +1091,7 @@ std::unique_ptr<expr_t> parse_player_if_expr( player_t& player, util::string_vie
   if ( player.sim->debug )
     expression::print_tokens( tokens, player.sim );
 
-  if ( auto e = expression::build_player_expression_tree( player, tokens, player.sim->optimize_expressions ) )
+  if ( auto e = expression::build_player_expression_tree( player, tokens, false ) )
     return e;
 
   throw std::invalid_argument( "No player expression found" );
