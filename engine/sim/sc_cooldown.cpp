@@ -754,8 +754,8 @@ void cooldown_t::set_max_charges( int new_max_charges )
     adjust( -charges_fractional * cooldown_t::cooldown_duration( this ) );
   }
 
-  // If the player is queueing an action, cancel it.
-  if ( player && player->queueing )
+  // If the player is queueing an action that uses this cooldown, cancel it.
+  if ( player && player->queueing && player->queueing->cooldown == this )
   {
     event_t::cancel( player->queueing->queue_event );
     player->queueing = nullptr;
