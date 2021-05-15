@@ -4129,9 +4129,9 @@ void sim_t::print_spell_query()
       std::cerr << "Unable to open spell query xml output file '" << spell_query_xml_output_file_str << "', using stdout instead\n";
       file = io::cfile( stdout, io::cfile::no_close() );
     }
-    std::shared_ptr<xml_node_t> root( new xml_node_t( "spell_query" ) );
+    auto root = xml_node_t( "spell_query" );
 
-    report::print_spell_query( root.get(), file, *this, *spell_query, spell_query_level );
+    report::print_spell_query( &root, file, *this, *spell_query, spell_query_level );
   }
   else
   {
