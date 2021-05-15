@@ -406,11 +406,18 @@ public:
 
     return select_unary( analyze_further, name(), op_, std::move(input));
   }
+  
+  bool is_analyze_expression() override
+  {
+    return true;
+  }
 };
 
 std::unique_ptr<expr_t> select_analyze_unary( util::string_view name, token_e op,
                               std::unique_ptr<expr_t> input )
 {
+  
+    fmt::print(stderr, "select_analye_unary\n");
   switch ( op )
   {
     case TOK_PLUS:
@@ -484,6 +491,12 @@ public:
       right_true++;
     else
       right_false++;
+    fmt::print(stderr, "blub {} {}\n", name(), op_);
+  }
+
+  bool is_analyze_expression() override
+  {
+    return true;
   }
 };
 
@@ -581,14 +594,15 @@ public:
     // We need to separate constant propagation and flattening for proper term sorting.
     if ( left_false < right_false )
     {
-      std::swap( left, right->op_ == TOK_AND
-                           ? static_cast<logical_and_t*>( right.get() )->left
-                           : right );
+      auto& right_ = right->op_ == TOK_AND
+                           ? (right->is_analyze_expression() ? debug_cast<analyze_logical_and_t*>( right.get() )->left: debug_cast<logical_and_t*>( right.get() )->left)
+                           : right;
+      std::swap( left, right_ );
     }
     else if ( left->op_ == TOK_AND )
     {
       std::swap( left, right );
-      std::swap( left, static_cast<logical_and_t*>( right.get() )->left );
+      std::swap( left, right->is_analyze_expression() ? debug_cast<analyze_logical_and_t*>( right.get() )->left : debug_cast<logical_and_t*>( right.get() )->left );
     }
     return select_binary( analyze_further, name(), TOK_AND, std::move(left), std::move(right) );
   }
@@ -687,13 +701,13 @@ public:
     if ( left_true < right_true )
     {
       std::swap( left, right->op_ == TOK_OR
-                           ? static_cast<logical_or_t*>( right.get() )->left
+                           ? ( right->is_analyze_expression() ? debug_cast<analyze_logical_or_t*>( right.get() )->left : debug_cast<logical_or_t*>( right.get() )->left)
                            : right );
     }
     else if ( left->op_ == TOK_OR )
     {
       std::swap( left, right );
-      std::swap( left, static_cast<logical_or_t*>( right.get() )->left );
+      std::swap( left, right->is_analyze_expression() ? debug_cast<analyze_logical_or_t*>( right.get() )->left : debug_cast<logical_or_t*>( right.get() )->left );
     }
     return select_binary( analyze_further, name(), TOK_OR, std::move(left), std::move(right) );
   }
@@ -907,6 +921,7 @@ public:
 std::unique_ptr<expr_t> select_analyze_binary( util::string_view name, token_e op,
                                std::unique_ptr<expr_t> left, std::unique_ptr<expr_t> right )
 {
+    fmt::print(stderr, "select_analye_binary\n");
   switch ( op )
   {
     case TOK_AND:
@@ -1355,11 +1370,13 @@ void expr_t::optimize_expression( std::unique_ptr<expr_t>& expression, sim_t& si
   {
     return;
   }
-  if ( iterations - sim.optimize_expressions >= 0 )
+  if ( sim.optimize_expressions - 1 - iterations < 0 )
   {
     return;
   }
-  bool analyze_further = ( sim.current_iteration - iterations ) > 0;
+  bool analyze_further = sim.optimize_expressions - 1 - iterations  > 0;
+  
+    fmt::print(stderr, "{} {} {}\n", iterations, sim.optimize_expressions, analyze_further);
   for(int i = 0; i < sim.optimize_expressions_rounds; ++i)
   {
     optimize_expression( expression, analyze_further );

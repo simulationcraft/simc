@@ -157,6 +157,11 @@ public:
     return false;
   }
 
+  virtual bool is_analyze_expression()
+  {
+    return false;
+  }
+
   expression::token_e op_;
 
 private:
