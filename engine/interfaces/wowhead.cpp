@@ -59,7 +59,7 @@ std::shared_ptr<xml_node_t> download_id( sim_t*             sim,
   std::string url_www = "https://" + source_str( source ) + ".wowhead.com/item="
                         + util::to_string( id ) + "&xml";
 
-  std::shared_ptr<xml_node_t> node = xml_node_t::get( url_www, caching, "</json>" );
+  auto node = xml_node_t::get( url_www, caching, "</json>" );
   if ( sim -> debug && node ) node -> print();
   return node;
 }
@@ -263,7 +263,7 @@ bool wowhead::download_item_data( item_t& item, wowhead_e source, cache::behavio
       xml->get_value(htmltooltip, "htmlTooltip/cdata");
 
       // Parse out Equip: and On use: strings
-      std::shared_ptr<xml_node_t> htmltooltip_xml = xml_node_t::create(htmltooltip);
+      auto htmltooltip_xml = xml_node_t::create(htmltooltip);
       //htmltooltip_xml -> print( item.sim -> output_file, 2 );
       std::vector<xml_node_t*> spell_links = htmltooltip_xml->get_nodes("span");
       for (size_t i = 0; i < spell_links.size(); i++)
