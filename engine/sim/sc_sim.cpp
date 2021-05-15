@@ -1456,7 +1456,7 @@ sim_t::sim_t() :
   regen_periodicity( timespan_t::from_seconds( 0.25 ) ),
   ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) ),
   optimize_expressions( 0 ),
-  optimize_expressions_rounds( 2),
+  optimize_expressions_rounds( 2 ),
   current_slot( -1 ),
   optimal_raid( 0 ), log( 0 ),
   debug_each( 0 ),
@@ -3452,8 +3452,8 @@ void sim_t::create_options()
   add_option( opt_func( "proxy", parse_proxy ) );
   add_option( opt_int( "stat_cache", stat_cache ) );
   add_option( opt_int( "max_aoe_enemies", max_aoe_enemies ) );
-  add_option( opt_int( "optimize_expressions", optimize_expressions ) );
-  add_option( opt_int( "optimize_expressions_rounds", optimize_expressions_rounds ) );
+  add_option( opt_int( "optimize_expressions", optimize_expressions, 0, std::numeric_limits<int>::max() ) );
+  add_option( opt_int( "optimize_expressions_rounds", optimize_expressions_rounds, 0, 100 ) );
   add_option( opt_bool( "single_actor_batch", single_actor_batch ) );
   add_option( opt_bool( "progressbar_type", progressbar_type ) );
   add_option( opt_bool( "allow_experimental_specializations", allow_experimental_specializations ) );
