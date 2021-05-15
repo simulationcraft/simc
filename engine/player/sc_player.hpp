@@ -1218,4 +1218,7 @@ public:
   int nth_iteration() const;
 
   friend void format_to( const player_t&, fmt::format_context::iterator );
+
+  // Indicates whether the player uses PTR dbc data
+  bool is_ptr() const;
 };

@@ -13127,3 +13127,8 @@ void format_to( const player_t& player, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "Player '{}'", player.name() );
 }
+
+bool player_t::is_ptr() const
+{
+  return maybe_ptr(dbc->ptr);
+}

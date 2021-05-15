@@ -842,7 +842,7 @@ struct damage_event_t final : public raid_event_t
     {
       struct raid_damage_t : public spell_t
       {
-        raid_damage_t( const char* n, player_t* player, school_e s ) : spell_t( n, player, spell_data_t::nil() )
+        raid_damage_t( const char* n, player_t* player, school_e s ) : spell_t( n, player )
         {
           school      = s;
           may_crit    = false;
@@ -900,7 +900,7 @@ struct heal_event_t final : public raid_event_t
     {
       struct raid_heal_t : public heal_t
       {
-        raid_heal_t( const char* n, player_t* player ) : heal_t( n, player, spell_data_t::nil() )
+        raid_heal_t( const char* n, player_t* player ) : heal_t( n, player )
         {
           school      = SCHOOL_HOLY;
           may_crit    = false;

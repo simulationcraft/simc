@@ -6,7 +6,6 @@
 
 #include "class_modules/apl/apl_priest.hpp"
 
-#include "dbc/dbc.hpp"
 #include "player/action_priority_list.hpp"
 #include "player/sc_player.hpp"
 
@@ -264,7 +263,7 @@ void shadow( player_t* p )
       "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.time_to_pct_20>(cooldown.shadow_word_death."
       "duration+gcd)",
       "Use SW:D with Painbreaker Psalm unless the target will be below 20% before the cooldown comes back." );
-  if ( p->dbc->ptr )
+  if ( p->is_ptr() )
   {
     main->add_action( p, "Shadow Word: Death",
                       "if=runeforge.bwonsamdis_pact.equipped&buff.fae_guardians.up&!cooldown.void_eruption.up&target."

@@ -2534,7 +2534,7 @@ static buff_t* find_potion_buff( util::span<buff_t* const> buffs, player_t* sour
       continue;
     }
 
-    const auto& item = dbc::find_consumable( ITEM_SUBCLASS_POTION, maybe_ptr( b->player->dbc->ptr ),
+    const auto& item = dbc::find_consumable( ITEM_SUBCLASS_POTION, b->player->is_ptr(),
                                              potion_spell_filter{ b->data().id(), *b->player->dbc } );
     if ( item.id != 0 )
     {
