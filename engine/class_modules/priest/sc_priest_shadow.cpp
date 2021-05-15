@@ -1619,13 +1619,13 @@ struct voidform_t final : public priest_buff_t<buff_t>
     set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
       if ( cur )
       {
-        adjust_cooldown_max_charges( priest().cooldowns.mind_blast, 1 );
+        priest().cooldowns.mind_blast->adjust_max_charges( 1 );
         priest().cooldowns.mind_blast->reset( true, -1 );
         priest().cooldowns.void_bolt->reset( true );
       }
       else
       {
-        adjust_cooldown_max_charges( priest().cooldowns.mind_blast, -1 );
+        priest().cooldowns.mind_blast->adjust_max_charges( -1 );
       }
     } );
   }
@@ -1692,7 +1692,7 @@ struct dark_thought_t final : public priest_buff_t<buff_t>
 
     // Create a stack change callback to adjust the number of mindblast charges.
     set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
-      adjust_cooldown_max_charges( priest().cooldowns.mind_blast, cur - old );
+      priest().cooldowns.mind_blast->adjust_max_charges( cur - old );
     } );
   }
 
