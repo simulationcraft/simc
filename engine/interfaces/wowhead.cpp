@@ -72,7 +72,7 @@ bool wowhead::download_item_data( item_t& item, wowhead_e source, cache::behavio
 {
   try
   {
-    std::shared_ptr<xml_node_t> xml = item.xml = download_id( item.sim, item.parsed.data.id, cache_behavior, source );
+    auto xml = download_id( item.sim, item.parsed.data.id, cache_behavior, source );
     if ( ! xml )
     {
       if ( cache_behavior != cache::ONLY )

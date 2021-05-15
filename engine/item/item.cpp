@@ -103,7 +103,6 @@ item_t::item_t( player_t* p, util::string_view o ) :
   unique_addon( false ),
   is_ptr( p -> dbc->ptr ),
   parsed(),
-  xml(),
   options_str( o ), option_initial_cd(0)
 {
   parsed.data.name = name_str.c_str();
