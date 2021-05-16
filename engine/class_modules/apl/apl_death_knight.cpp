@@ -336,7 +336,6 @@ void unholy( player_t* p )
   default_->add_action( "variable,name=pooling_runes,value=talent.soul_reaper&rune<2&target.time_to_pct_35<5&fight_remains>5" );
   default_->add_action( "variable,name=st_planning,value=active_enemies=1&(!raid_event.adds.exists|raid_event.adds.in>15)" );
   default_->add_action( "variable,name=major_cooldowns_active,value=(talent.summon_gargoyle&!pet.gargoyle.active&cooldown.summon_gargoyle.remains|!talent.summon_gargoyle)&(buff.unholy_assault.up|talent.army_of_the_damned&pet.apoc_ghoul.active|buff.dark_transformation.up)" );
-  default_->add_action( "variable,name=major_procs_active,value=covenant.necrolord&buff.marrowed_gemstone_enhancement.up|covenant.venthyr&buff.thrill_seeker.up|buff.frenzied_monstrosity.up|covenant.necrolord&buff.lead_by_example.up|covenant.kyrian&buff.combat_meditation.up|buff.unholy_strength.up", "Checks for major buffs to adjust scourge strike/clawing shadows use." );
   default_->add_action( "outbreak,if=dot.virulent_plague.refreshable&!talent.unholy_blight&!raid_event.adds.exists", "Maintaining Virulent Plague is a priority" );
   default_->add_action( "outbreak,target_if=dot.virulent_plague.refreshable&active_enemies>=2&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains)" );
   default_->add_action( "outbreak,if=runeforge.superstrain&(dot.frost_fever.refreshable|dot.blood_plague.refreshable)" );
@@ -397,7 +396,6 @@ void unholy( player_t* p )
 
   generic->add_action( "death_coil,if=!variable.pooling_runic_power&(buff.sudden_doom.react|runic_power.deficit<13)|pet.gargoyle.active&rune<=3|fight_remains<10&!debuff.festering_wound.up", "Single Target" );
   generic->add_action( "any_dnd,if=(talent.defile.enabled|covenant.night_fae|runeforge.phearomones)&(!variable.pooling_runes|fight_remains<5)" );
-  generic->add_action( "wound_spender,if=variable.major_procs_active&debuff.festering_wound.stack>=1&cooldown.apocalypse.remains_expected>5" );
   generic->add_action( "wound_spender,if=covenant.night_fae&death_and_decay.ticking&debuff.festering_wound.stack>=1&buff.deaths_due.stack<=4&!variable.pooling_runes" );
   generic->add_action( "wound_spender,if=debuff.festering_wound.stack>3&!variable.pooling_runes|debuff.festering_wound.up&fight_remains<(debuff.festering_wound.stack*gcd)" );
   generic->add_action( "death_coil,if=runic_power.deficit<20&!variable.pooling_runic_power" );
