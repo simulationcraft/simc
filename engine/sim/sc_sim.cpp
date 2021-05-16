@@ -3364,10 +3364,11 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
     auto filter = splits[ 2 ];
 
     // Call once to see if we have a valid raid expression.
-    raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter, true );
+    bool is_constant = false;
+    raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter, true, &is_constant );
 
-    if ( optimize_expressions && util::str_compare_ci( filter, "exists" ) )
-      return expr_t::create_constant( name_str, raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter ) );
+    if ( is_constant )
+      return expr_t::create_constant( name_str, raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter, false, &is_constant ) );
 
     struct raid_event_expr_t : public expr_t
     {
@@ -3376,12 +3377,12 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
       std::string filter;
 
       raid_event_expr_t( sim_t* s, util::string_view type, util::string_view filter ) :
-        expr_t( "raid_event" ), s( s ), type( type ), filter( filter )
+        expr_t( fmt::format("raid_event_{}_{}", type, filter) ), s( s ), type( type ), filter( filter )
       {}
 
       double evaluate() override
       {
-        return raid_event_t::evaluate_raid_event_expression( s, type, filter );
+        return raid_event_t::evaluate_raid_event_expression( s, type, filter, false, nullptr );
       }
 
     };

@@ -98,7 +98,7 @@ public:
   {
   }
   static double evaluate_raid_event_expression( sim_t* s, util::string_view type, util::string_view filter,
-                                                bool test_filter = false );
+                                                bool test_filter, bool* is_constant );
 
 private:
   virtual void _start()  = 0;
