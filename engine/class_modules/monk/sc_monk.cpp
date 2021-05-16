@@ -4529,7 +4529,7 @@ struct expel_harm_t : public monk_heal_t
     if ( p()->buff.gift_of_the_ox->up() && p()->spec.expel_harm_2_brm->ok() )
     {
       double goto_heal = p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff();
-      goto_heal *= p()->buff.gift_of_the_ox->stack();
+      goto_heal *= p()->buff.gift_of_the_ox->check();
       result += goto_heal;
     }
 
@@ -4537,7 +4537,7 @@ struct expel_harm_t : public monk_heal_t
     dmg->base_dd_max = result;
     dmg->execute();
 
-    for ( int i = 0; i < p()->buff.gift_of_the_ox->stack(); i++ )
+    for ( int i = 0; i < p()->buff.gift_of_the_ox->check(); i++ )
     {
       p()->buff.gift_of_the_ox->decrement();
     }

@@ -583,14 +583,14 @@ namespace buffs {
   {
     crusade_buff_t( player_t* p );
 
-    double get_damage_mod()
+    double get_damage_mod() const
     {
-      return damage_modifier * ( this -> stack() );
+      return damage_modifier * ( this -> check() );
     }
 
-    double get_haste_bonus()
+    double get_haste_bonus() const
     {
-      return haste_bonus * ( this -> stack() );
+      return haste_bonus * ( this -> check() );
     }
     private:
     double damage_modifier;

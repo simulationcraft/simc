@@ -103,7 +103,7 @@ double pet_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( owner -> buffs.legendary_aoe_ring && owner -> buffs.legendary_aoe_ring -> up() )
+  if ( owner -> buffs.legendary_aoe_ring && owner -> buffs.legendary_aoe_ring -> check() )
     m *= 1.0 + owner -> buffs.legendary_aoe_ring -> default_value;
 
   return m;

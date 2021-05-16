@@ -3536,7 +3536,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::impact( state );
     const death_knight_td_t* td = find_td( state -> target );
     assert( td && "apocalypse impacting without any target data" ); // td should should exist because the debuff is a condition of target_ready()
-    auto n_wounds = std::min( as<int>( data().effectN( 2 ).base_value() ), td -> debuff.festering_wound -> stack() );
+    auto n_wounds = std::min( as<int>( data().effectN( 2 ).base_value() ), td -> debuff.festering_wound -> check() );
 
     p() -> burst_festering_wound( state -> target, n_wounds );
     p() -> pets.apoc_ghouls.spawn( summon_duration, n_wounds );
@@ -4031,7 +4031,7 @@ struct cold_heart_damage_t : public death_knight_spell_t
   {
     double m = death_knight_spell_t::action_multiplier();
 
-    m *= p() -> buffs.cold_heart -> stack();
+    m *= p() -> buffs.cold_heart -> check();
 
     return m;
   }
@@ -4427,7 +4427,7 @@ struct relish_in_blood_t : public death_knight_heal_t
   {
     double m = death_knight_heal_t::action_multiplier();
 
-    m *= p() -> buffs.bone_shield -> stack();
+    m *= p() -> buffs.bone_shield -> check();
 
     return m;
   }
@@ -6484,7 +6484,7 @@ struct tombstone_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    int charges = std::min( p() -> buffs.bone_shield -> stack(), as<int>( data().effectN( 5 ).base_value() ) );
+    int charges = std::min( p() -> buffs.bone_shield -> check(), as<int>( data().effectN( 5 ).base_value() ) );
 
     double power = charges * data().effectN( 3 ).base_value();
     double shield = charges * data().effectN( 4 ).percent();

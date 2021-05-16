@@ -3385,7 +3385,7 @@ double player_t::composite_melee_haste() const
     if ( buffs.mongoose_oh && buffs.mongoose_oh->check() )
       h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
 
-    if ( buffs.berserking->up() )
+    if ( buffs.berserking->check() )
       h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
 
     if ( buffs.guardian_of_azeroth->check() )
@@ -4050,7 +4050,7 @@ double player_t::composite_player_heal_multiplier( const action_state_t* ) const
 {
   double m = 1.0;
 
-  if ( buffs.blessing_of_spring->up() )
+  if ( buffs.blessing_of_spring->check() )
     m *= 1.0 + buffs.blessing_of_spring->data().effectN( 1 ).percent();
 
   return m;
@@ -4240,7 +4240,7 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       if ( buffs.archmages_incandescence_int->check() )
         m *= 1.0 + buffs.archmages_incandescence_int->data().effectN( 1 ).percent();
       if ( sim->auras.arcane_intellect->check() )
-        m *= 1.0 + sim->auras.arcane_intellect->value();
+        m *= 1.0 + sim->auras.arcane_intellect->current_value;
       break;
     case ATTR_SPIRIT:
       pct_type = STAT_PCT_BUFF_SPIRIT;
@@ -4253,7 +4253,7 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       pct_type = STAT_PCT_BUFF_STAMINA;
       if ( sim->auras.power_word_fortitude->check() )
       {
-        m *= 1.0 + sim->auras.power_word_fortitude->value();
+        m *= 1.0 + sim->auras.power_word_fortitude->current_value;
       }
       break;
     default:
@@ -6001,7 +6001,7 @@ void player_t::recalculate_resource_max( resource_e resource_type, gain_t* sourc
       // Redirected Anima also affects temporary bonus health
       if ( buffs.redirected_anima && buffs.redirected_anima->up() )
       {
-        resources.max[ resource_type ] *= 1.0 + buffs.redirected_anima->stack() * buffs.redirected_anima->default_value;
+        resources.max[ resource_type ] *= 1.0 + buffs.redirected_anima->check_stack_value();
       }
 
       // Make sure the player starts combat with full health
@@ -12883,7 +12883,7 @@ void player_t::acquire_target( retarget_source event, player_t* context )
   // TODO: Fancier system
   for ( auto enemy : sim->target_non_sleeping_list )
   {
-    if ( enemy->debuffs.invulnerable != nullptr && enemy->debuffs.invulnerable->up() )
+    if ( enemy->debuffs.invulnerable != nullptr && enemy->debuffs.invulnerable->check() )
     {
       if ( first_invuln_target == nullptr )
       {
@@ -12899,7 +12899,7 @@ void player_t::acquire_target( retarget_source event, player_t* context )
   // Invulnerable targets are currently not in the target_non_sleeping_list, so fall back to
   // checking if the first target has the invulnerability buff up, and use that as the fallback
   auto first_target = sim->target_list.data().front();
-  if ( !first_invuln_target && first_target->debuffs.invulnerable->up() )
+  if ( !first_invuln_target && first_target->debuffs.invulnerable->check() )
   {
     first_invuln_target = first_target;
   }

@@ -708,7 +708,7 @@ void memory_of_past_sins( special_effect_t& effect )
       auto td = player->get_target_data( t );
 
       // Assume we get about half of the value from each application of the extra ally stacks (4 allies = 2 stacks on player's first hit, 22 stacks on player's last hit etc.)
-      int base_dmg_stacks = td->debuff.shattered_psyche->stack() * (player->sim->shadowlands_opts.shattered_psyche_allies + 1);
+      int base_dmg_stacks = td->debuff.shattered_psyche->check() * (player->sim->shadowlands_opts.shattered_psyche_allies + 1);
       int bonus_dmg_stacks = player->sim->shadowlands_opts.shattered_psyche_allies / 2;
       m *= 1.0 + ( base_dmg_stacks + bonus_dmg_stacks ) * td->debuff.shattered_psyche->check_value();
       return m;

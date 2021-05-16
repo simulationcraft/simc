@@ -374,7 +374,7 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
   {
     return make_buff_expr( "buff_value",
       []( buff_t* buff ) {
-        return buff->value();
+        return buff->current_value;
       } );
   }
   else if ( type == "stack_value" )

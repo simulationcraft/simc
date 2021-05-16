@@ -1638,7 +1638,7 @@ public:
     }
 
     return std::min(
-          as<unsigned>( p()->buff.maelstrom_weapon->stack() ),
+          as<unsigned>( p()->buff.maelstrom_weapon->check() ),
           p()->spell.maelstrom_weapon->max_stacks() );
   }
 
