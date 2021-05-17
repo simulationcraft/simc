@@ -664,7 +664,6 @@ public:
     std::vector<double> fixed_rtb_odds;
     int initial_combo_points = 0;
     int initial_shadow_techniques = -1;
-    bool rogue_optimize_expressions = true;
     bool rogue_ready_trigger = true;
     bool priority_rotation = false;
   } options;
@@ -8199,7 +8198,6 @@ void rogue_t::create_options()
 
   // Overload default options but with a default true value
   add_option( opt_bool( "ready_trigger", options.rogue_ready_trigger ) );
-  add_option( opt_bool( "optimize_expressions", options.rogue_optimize_expressions ) );
 
   add_option( opt_func( "off_hand_secondary", parse_offhand_secondary ) );
   add_option( opt_func( "main_hand_secondary", parse_mainhand_secondary ) );
@@ -8234,7 +8232,6 @@ void rogue_t::copy_from( player_t* source )
 
   options.fixed_rtb = rogue->options.fixed_rtb;
   options.fixed_rtb_odds = rogue->options.fixed_rtb_odds;
-  options.rogue_optimize_expressions = rogue->options.rogue_optimize_expressions;
   options.rogue_ready_trigger = rogue->options.rogue_ready_trigger;
   options.priority_rotation = rogue->options.priority_rotation;
 }
@@ -8542,22 +8539,6 @@ void rogue_t::arise()
 
 void rogue_t::combat_begin()
 {
-  if ( !sim->optimize_expressions && options.rogue_optimize_expressions )
-  {
-    for ( auto p : sim->player_list )
-    {
-      if ( !p->is_pet() && p->specialization() != ROGUE_ASSASSINATION && p->specialization() != ROGUE_OUTLAW && p->specialization() != ROGUE_SUBTLETY )
-      {
-        options.rogue_optimize_expressions = false;
-        break;
-      }
-    }
-    if ( options.rogue_optimize_expressions )
-    {
-      sim->optimize_expressions = true;
-    }
-  }
-
   player_t::combat_begin();
 
   if ( talent.hidden_blades -> ok() )

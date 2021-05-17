@@ -2649,33 +2649,30 @@ void action_t::reset()
   queue_event                  = nullptr;
   interrupt_immediate_occurred = false;
   travel_events.clear();
-  target = default_target;
+  target    = default_target;
   last_used = timespan_t::min();
 
   target_cache.is_valid = false;
 
-  if( player->nth_iteration() == 1 )
+  if ( if_expr )
   {
-    if ( if_expr )
+    expr_t::optimize_expression( if_expr, *sim );
+    if ( ( player->nth_iteration() - sim->optimize_expressions ) >= 0 && action_list && if_expr->always_false() )
     {
-      expr_t::optimize_expression(if_expr);
-      if ( sim->optimize_expressions && action_list && if_expr->always_false() )
+      std::vector<action_t*>::iterator i =
+          std::find( action_list->foreground_action_list.begin(), action_list->foreground_action_list.end(), this );
+      if ( i != action_list->foreground_action_list.end() )
       {
-        std::vector<action_t*>::iterator i =
-            std::find( action_list->foreground_action_list.begin(), action_list->foreground_action_list.end(), this );
-        if ( i != action_list->foreground_action_list.end() )
-        {
-          action_list->foreground_action_list.erase( i );
-        }
-
-        player->dynamic_target_action_list.erase( this );
+        action_list->foreground_action_list.erase( i );
       }
+
+      player->dynamic_target_action_list.erase( this );
     }
-      expr_t::optimize_expression(target_if_expr);
-      expr_t::optimize_expression(interrupt_if_expr);
-      expr_t::optimize_expression(early_chain_if_expr);
-      expr_t::optimize_expression(cancel_if_expr);
   }
+  expr_t::optimize_expression( target_if_expr, *sim );
+  expr_t::optimize_expression( interrupt_if_expr, *sim );
+  expr_t::optimize_expression( early_chain_if_expr, *sim );
+  expr_t::optimize_expression( cancel_if_expr, *sim );
 }
 
 void action_t::cancel()

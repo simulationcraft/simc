@@ -8726,7 +8726,7 @@ struct pool_resource_t : public action_t
 
     if ( !amount_str.empty() )
     {
-      amount_expr = expr_t::parse( this, amount_str, sim->optimize_expressions );
+      amount_expr = expr_t::parse( this, amount_str, false );
       if (amount_expr == nullptr)
       {
         throw std::invalid_argument(fmt::format("Could not parse amount if expression from '{}'", amount_str));

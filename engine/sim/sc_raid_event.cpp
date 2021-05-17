@@ -1091,7 +1091,7 @@ std::unique_ptr<expr_t> parse_player_if_expr( player_t& player, util::string_vie
   if ( player.sim->debug )
     expression::print_tokens( tokens, player.sim );
 
-  if ( auto e = expression::build_player_expression_tree( player, tokens, player.sim->optimize_expressions ) )
+  if ( auto e = expression::build_player_expression_tree( player, tokens, false ) )
     return e;
 
   throw std::invalid_argument( "No player expression found" );
@@ -1706,7 +1706,7 @@ bool raid_event_t::filter_player( const player_t* p )
 }
 
 double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view type_or_name, util::string_view filter,
-                                                     bool test_filter )
+                                                     bool test_filter, bool* is_constant )
 {
   // correct for "damage" type event
   if ( util::str_compare_ci( type_or_name, "damage" ) )
@@ -1727,14 +1727,22 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
 
   if ( matching_events.empty() )
   {
+    assert(is_constant);
+    *is_constant = true;
     if ( filter == "in" || filter == "cooldown" )
       return timespan_t::max().total_seconds();  // ridiculously large number
     else if ( !test_filter )                     // When evaluating filter expr validity, let this one continue through
+    {
       return 0.0;
+    }
     // return constant based on filter
   }
   else if ( filter == "exists" )
+  {
+    assert(is_constant);
+    *is_constant = true;
     return 1.0;
+  }
 
   if ( filter == "remains" )
   {
