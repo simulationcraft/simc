@@ -4027,6 +4027,16 @@ struct item_ready_expr_t : public item_effect_base_expr_t
 
     return 1;
   }
+    
+  bool is_constant( double* value ) override
+  {
+    if (effects.empty())
+    {
+      *value = 1;
+      return true;
+    }
+    return false;
+  }
 };
 
 struct item_is_expr_t : public expr_t
