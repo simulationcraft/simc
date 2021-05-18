@@ -1584,6 +1584,60 @@ void carvers_eye( special_effect_t& effect )
   new carvers_eye_cb_t( effect );
 }
 
+void mnemonic_equipment( special_effect_t& effect )
+{
+  struct mnemonic_equipment_cb_t : public dbc_proc_callback_t
+  {
+    double hp_pct;
+    double dmg_repeat_pct;
+
+    mnemonic_equipment_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        hp_pct( e.driver()->effectN( 1 ).base_value() ),
+        dmg_repeat_pct( e.driver()->effectN( 2 ).base_value() )
+    {
+    }
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( s->target->health_percentage() < hp_pct && s->target != a->player )
+      {
+        dbc_proc_callback_t::trigger( a, s );
+      }
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( !a->harmful )
+        return;
+
+      // TODO: for some reason this never seems to proc?
+      if ( s->target->health_percentage() < hp_pct )
+      {
+        dbc_proc_callback_t::execute( a, s );
+        auto td = listener->get_target_data( s->target );
+        assert( td );
+        assert( td->debuff.mnemonic_equipment );
+        auto amount = s->result_amount * dmg_repeat_pct;
+
+        // In game this has been bugged, instead of rolling the damage over it expires it
+        if ( td->debuff.mnemonic_equipment->check() )
+        {
+          amount += td->debuff.mnemonic_equipment->current_value;
+        }
+        td->debuff.mnemonic_equipment->trigger( 1, amount );
+      }
+    }
+  };
+
+  // TODO: Confirm flags
+  effect.proc_flags_  = PF_ALL_DAMAGE | PF_PERIODIC;
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+  effect.proc_chance_ = 1.0;
+
+  new mnemonic_equipment_cb_t( effect );
+}
+
 // Passive which increases Stamina based on Renown level
 void deepening_bond( special_effect_t& effect )
 {
@@ -1651,6 +1705,7 @@ void register_special_effects()
   register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone, true );
   register_soulbind_special_effect( 350899, soulbinds::carvers_eye );
+  register_soulbind_special_effect( 350936, soulbinds::mnemonic_equipment );
   // Covenant Renown Stamina Passives
   unique_gear::register_special_effect( 344052, soulbinds::deepening_bond ); // Night Fae Rank 1
   unique_gear::register_special_effect( 344053, soulbinds::deepening_bond ); // Night Fae Rank 2
@@ -1755,6 +1810,20 @@ void register_target_data_initializers( sim_t* sim )
     }
     else
       td->debuff.dream_delver = make_buff( *td, "dream_delver" )->set_quiet( true );
+  } );
+
+  // Mnemonic Equipment
+  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( td->source->find_soulbind_spell( "Mnemonic Equipment" )->ok() )
+    {
+      assert( !td->debuff.mnemonic_equipment );
+
+      // TODO: add some sort of callback to handle value -> base_dd?
+      td->debuff.mnemonic_equipment = make_buff( *td, "mnemonic_equipment", td->source->find_spell( 351687 ) );
+      td->debuff.mnemonic_equipment->reset();
+    }
+    else
+      td->debuff.dream_delver = make_buff( *td, "mnemonic_equipment" )->set_quiet( true );
   } );
 }
 

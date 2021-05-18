@@ -51,6 +51,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* putrid_burst;                // darkmoon deck: putrescence
     buff_t* shattered_psyche;            // memory of past sins
     buff_t* dream_delver;                // nightfae/dreamweaver/dream delver debuff
+    buff_t* mnemonic_equipment;          // necrolord/bonesmith/mnemonic equipment debuff
   } debuff;
 
   struct atd_dot_t
