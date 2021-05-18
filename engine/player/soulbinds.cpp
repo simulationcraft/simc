@@ -1562,14 +1562,18 @@ void carvers_eye( special_effect_t& effect )
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( s->target->health_percentage() > hp_pct && s->target != a->player )
+      // Can only proc on a target you haven't procced on for 10s
+      auto td = a->player->get_target_data( s->target );
+      if ( s->target->health_percentage() > hp_pct && s->target != a->player &&
+           !td->debuff.carvers_eye_debuff->check() )
       {
         dbc_proc_callback_t::trigger( a, s );
+        td->debuff.carvers_eye_debuff->trigger();
       }
     }
   };
 
-  // TODO: Confirm flags
+  // TODO: Confirm flags (including pet damage)
   effect.proc_flags_  = PF_ALL_DAMAGE | PF_PERIODIC;
   effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
   effect.proc_chance_ = 1.0;
@@ -1820,6 +1824,23 @@ void register_target_data_initializers( sim_t* sim )
     }
     else
       td->debuff.dream_delver = make_buff( *td, "dream_delver" )->set_quiet( true );
+  } );
+
+  // Carver's Eye dummy buff to track cooldown
+  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
+    auto carvers_eye = td->source->find_soulbind_spell( "Carver's Eye" );
+    if ( carvers_eye->ok() )
+    {
+      assert( !td->debuff.carvers_eye_debuff );
+
+      td->debuff.carvers_eye_debuff =
+          make_buff( *td, "carvers_eye_debuff", td->source->find_spell( 350899 ) )
+              ->set_quiet( true )
+              ->set_duration( timespan_t::from_seconds( carvers_eye->effectN( 2 ).base_value() ) );
+      td->debuff.carvers_eye_debuff->reset();
+    }
+    else
+      td->debuff.carvers_eye_debuff = make_buff( *td, "carvers_eye_debuff" )->set_quiet( true );
   } );
 }
 
