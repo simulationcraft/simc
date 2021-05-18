@@ -68,7 +68,7 @@ struct buff_expr_t : public expr_t
     return fmt::format( "{}_{}", buff_name, expr );
   }
 #else
-  static util::string_view expr get_full_expression_name( util::string_view expr, util::string_view /* buff_name */ )
+  static util::string_view get_full_expression_name( util::string_view expr, util::string_view /* buff_name */ )
   {
     return expr;
   }
