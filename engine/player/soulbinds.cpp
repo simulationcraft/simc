@@ -14,9 +14,9 @@
 #include "sim/sc_cooldown.hpp"
 #include "sim/sc_sim.hpp"
 
-#include "simulationcraft.hpp"
-
 #include <regex>
+
+#include "simulationcraft.hpp"
 
 namespace covenant
 {
@@ -1627,9 +1627,6 @@ void mnemonic_equipment( special_effect_t& effect )
       if ( s->target->health_percentage() < hp_pct )
       {
         dbc_proc_callback_t::execute( a, s );
-        auto td = listener->get_target_data( s->target );
-        assert( td );
-        assert( td->debuff.mnemonic_equipment );
         auto amount = s->result_amount * dmg_repeat_pct;
 
         // In game this has been bugged, instead of rolling the damage over it overrides it
