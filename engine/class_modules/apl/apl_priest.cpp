@@ -144,20 +144,45 @@ void shadow( player_t* p )
   cds->add_action( p, "Silence",
                    "target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)",
                    "Use Silence on CD to proc Sephuz's Proclamation." );
-  cds->add_action(
-      "fae_guardians,if=!buff.voidform.up&(!cooldown.void_torrent.up|!talent.void_torrent.enabled)&(variable.dots_up&"
-      "spell_targets."
-      "vampiric_touch==1|active_dot.vampiric_touch==spell_targets.vampiric_touch&spell_targets.vampiric_touch>1)|buff."
-      "voidform.up&(soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled)",
-      "Use Fae Guardians on CD outside of Voidform. Use Fae Guardiands in Voidform if you have either "
-      "Grove Invigoration or Field of Blossoms. Wait for dots to be up before activating Fae Guardians to "
-      "maximise the buff." );
-  cds->add_action(
-      "mindgames,target_if=insanity<90&((variable.all_dots_up&(!cooldown.void_eruption.up|!talent.hungering_void."
-      "enabled))|buff.voidform.up)&(!talent.hungering_void.enabled|debuff.hungering_void.up|!buff."
-      "voidform.up)&(!talent.searing_nightmare.enabled|spell_targets.mind_sear<5)",
-      "Use Mindgames when all 3 DoTs are up, or you are in Voidform. Ensure Hungering Void is active on "
-      "the target if talented. Stop using at 5+ targets with Searing Nightmare." );
+  if ( p->is_ptr() )
+  {
+    cds->add_action(
+        "fae_guardians,if=(!runeforge.bwonsamdis_pact.equipped|!cooldown.void_eruption.up)&!buff.voidform.up&(!cooldown."
+        "void_torrent.up|!talent.void_torrent.enabled)&(variable.dots_up&spell_targets.vampiric_touch==1|active_dot."
+        "vampiric_touch==spell_targets.vampiric_touch&spell_targets.vampiric_touch>1)|buff.voidform.up&(soulbind.grove_"
+        "invigoration.enabled|soulbind.field_of_blossoms.enabled)",
+        "Use Fae Guardians on CD outside of Voidform. Use Fae Guardiands in Voidform if you have either "
+        "Grove Invigoration or Field of Blossoms. Wait for dots to be up before activating Fae Guardians to "
+        "maximise the buff. When using Bwonsamdi's Pact only use if Void Eruption is cooling down." );
+    cds->add_action(
+        "mindgames,target_if=insanity<90&((variable.all_dots_up&(!cooldown.void_eruption.up|!talent.hungering_void."
+        "enabled))|buff.voidform.up)&(!talent.hungering_void.enabled|debuff.hungering_void.remains>cast_time|!buff."
+        "voidform.up)&(!talent.searing_nightmare.enabled|spell_targets.mind_sear<5)&(!runeforge.shadow_word_"
+        "manipulation."
+        "equipped|prev_gcd.1.void_bolt|!buff.voidform.up)",
+        "Use Mindgames when all 3 DoTs are up, or you are in Voidform. Ensure Hungering Void will still be up when the "
+        "cast time finishes. Stop using at 5+ targets with Searing Nightmare. When using Shadow Word: Manipulation "
+        "only "
+        "use right after Void Bolt inside of Voidform, or outside of Voidform." );
+  }
+  else
+  {
+    cds->add_action(
+        "fae_guardians,if=!buff.voidform.up&(!cooldown.void_torrent.up|!talent.void_torrent.enabled)&(variable.dots_up&"
+        "spell_targets."
+        "vampiric_touch==1|active_dot.vampiric_touch==spell_targets.vampiric_touch&spell_targets.vampiric_touch>1)|"
+        "buff."
+        "voidform.up&(soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled)",
+        "Use Fae Guardians on CD outside of Voidform. Use Fae Guardiands in Voidform if you have either "
+        "Grove Invigoration or Field of Blossoms. Wait for dots to be up before activating Fae Guardians to "
+        "maximise the buff." );
+    cds->add_action(
+        "mindgames,target_if=insanity<90&((variable.all_dots_up&(!cooldown.void_eruption.up|!talent.hungering_void."
+        "enabled))|buff.voidform.up)&(!talent.hungering_void.enabled|debuff.hungering_void.remains>cast_time|!buff."
+        "voidform.up)&(!talent.searing_nightmare.enabled|spell_targets.mind_sear<5)",
+        "Use Mindgames when all 3 DoTs are up, or you are in Voidform. Ensure Hungering Void will still be up when the "
+        "cast time finishes. Stop using at 5+ targets with Searing Nightmare." );
+  }
   cds->add_action(
       "unholy_nova,if=((!raid_event.adds.up&raid_event.adds.in>20)|raid_event.adds.remains>=15|raid_event.adds."
       "duration<"
@@ -247,6 +272,13 @@ void shadow( player_t* p )
                     "Mindbender or Shadowfiend active." );
   main->add_talent( p, "Surrender to Madness", "target_if=target.time_to_die<25&buff.voidform.down",
                     "Use Surrender to Madness on a target that is going to die at the right time." );
+  if ( p->is_ptr() )
+  {
+    main->add_action( p, "Shadow Word: Death",
+                      "if=runeforge.bwonsamdis_pact.equipped&buff.fae_guardians.up&!cooldown.void_eruption.up&target."
+                      "time_to_pct_20>(cooldown.shadow_word_death.duration+gcd)",
+                      "Use SW:D with Bwonsamdi's pact if Fae Guardians is up and Void Eruption is on CD." );
+  }
   main->add_talent( p, "Void Torrent",
                     "target_if=variable.dots_up&target.time_to_die>3&(buff.voidform.down|buff.voidform.remains<"
                     "cooldown.void_bolt.remains)&active_dot.vampiric_touch==spell_targets.vampiric_touch&spell_targets."
@@ -263,13 +295,6 @@ void shadow( player_t* p )
       "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.time_to_pct_20>(cooldown.shadow_word_death."
       "duration+gcd)",
       "Use SW:D with Painbreaker Psalm unless the target will be below 20% before the cooldown comes back." );
-  if ( p->is_ptr() )
-  {
-    main->add_action( p, "Shadow Word: Death",
-                      "if=runeforge.bwonsamdis_pact.equipped&buff.fae_guardians.up&!cooldown.void_eruption.up&target."
-                      "time_to_pct_20>(cooldown.shadow_word_death.duration+gcd)",
-                      "Use SW:D with Bwonsamdi's pact if Fae Guardians is up and Void Eruption is on CD." );
-  }
   main->add_talent( p, "Shadow Crash", "if=raid_event.adds.in>10",
                     "Use Shadow Crash on CD unless there are adds incoming." );
   main->add_action(
