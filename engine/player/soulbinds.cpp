@@ -1601,14 +1601,14 @@ void mnemonic_equipment( special_effect_t& effect )
   {
     double hp_pct;
     double dmg_repeat_pct;
-    mnemonic_residual_action_t* dot;
+    mnemonic_residual_action_t* mnemonic_residual_action;
 
     mnemonic_equipment_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
         hp_pct( e.driver()->effectN( 1 ).base_value() ),
         dmg_repeat_pct( e.driver()->effectN( 2 ).percent() )
     {
-      dot = new mnemonic_residual_action_t( e );
+      mnemonic_residual_action = new mnemonic_residual_action_t( e );
     }
 
     void trigger( action_t* a, action_state_t* s ) override
@@ -1633,9 +1633,9 @@ void mnemonic_equipment( special_effect_t& effect )
         // Simulating this bug by simply expiring the dot before we trigger a new one
         if ( a->player->bugs )
         {
-          s->target->get_dot( "mnemonic_equipment", a->player )->cancel();
+          mnemonic_residual_action->get_dot( s->target )->cancel();
         }
-        residual_action::trigger( dot, s->target, amount );
+        residual_action::trigger( mnemonic_residual_action, s->target, amount );
       }
     }
   };
