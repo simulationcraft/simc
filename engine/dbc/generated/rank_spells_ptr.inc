@@ -1,5 +1,5 @@
-// Rank class spells, wow build 9.1.0.38627
-static const std::array<rank_class_spell_t, 335> __ptr_rank_spells_data { {
+// Rank class spells, wow build 9.1.0.38709
+static const std::array<rank_class_spell_t, 336> __ptr_rank_spells_data { {
   { 10, 269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9, 265, 231792,      0, "Agony"                             , "Rank 2" },
   {  6, 252, 316961,      0, "Apocalypse"                        , "Rank 2" },
@@ -238,6 +238,7 @@ static const std::array<rank_class_spell_t, 335> __ptr_rank_spells_data { {
   {  6, 251, 316794,      0, "Remorseless Winter"                , "Rank 2" },
   { 10, 270, 281231,      0, "Renewing Mist"                     , "Rank 2" },
   {  2,   0, 317906,      0, "Retribution Aura"                  , "Rank 2" },
+  { 10, 270, 356722,      0, "Revival"                           , "Rank 2" },
   {  6, 251, 316838,      0, "Rime"                              , "Rank 2" },
   { 10, 269, 262840,      0, "Rising Sun Kick"                   , "Rank 2" },
   { 10, 270, 262840,      0, "Rising Sun Kick"                   , "Rank 2" },

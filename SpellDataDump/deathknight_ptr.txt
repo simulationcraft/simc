@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1237,8 +1237,8 @@ Spell Type       : None
 Spell Level      : 47
 Range            : 30 yards
 GCD              : 1.5 seconds
-Duration         : 10 seconds
-Cooldown         : 120 seconds
+Duration         : 8 seconds
+Cooldown         : 180 seconds
 Category Cooldown: 45 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x01000000
@@ -1255,7 +1255,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=43332)    : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1193 | Radius: 6.5 yards | Target: AOE friendly (31)
-Description      : Places an Anti-Magic Zone for $d that reduces spell damage taken by party or raid members by $145629m1%.
+Description      : Places an Anti-Magic Zone that reduces spell damage taken by party or raid members by $145629m1%. The Anti-Magic Zone lasts for $d or until it absorbs $<absorb> damage.
+Variables        : $absorb=${$MHP*(1+$@versadmg)}
 
 Name             : Killing Machine (id=51124) [Spell Family (15)] 
 Class            : Death Knight
@@ -4274,19 +4275,19 @@ Effects          :
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
                    Family Flags: 39
 #11 (id=260832)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000
+                   Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
                    Family Flags: 39
 #12 (id=260833)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
 #13 (id=260834)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
                    Affected Spells: Tiger Palm (100780)
                    Family Flags: 10
 #14 (id=260835)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
+                   Base Value: 92 | Scaled Value: 92 | PvP Coefficient: 1.00000
                    Affected Spells: Spinning Crane Kick (107270)
                    Family Flags: 8
 #15 (id=741702)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
@@ -4898,11 +4899,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179723)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791)
                    Family Flags: 41
 #2 (id=191046)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791)
                    Family Flags: 41
 #3 (id=191047)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -5334,7 +5335,7 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 5
 Range            : 50000 yards
-Duration         : 10 seconds
+Duration         : 8 seconds
 Proc Chance      : 101%
 Affecting spells : Reinforced Shell (337764 effect#1)
 Family Flags     : 47, 51
@@ -5348,13 +5349,15 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   
                  : Does not break stealth (37)
 Effects          :
-#1 (id=196267)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Friend (21)
-                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+#1 (id=196267)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=196268)   : Apply Aura (6) | Modify Casting Pushback (149)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0xf | Target: Friend (21)
 #3 (id=883610)   : Apply Aura (6) | Modify Resource Generation% (329)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Friend (21)
+#4 (id=891170)   : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Misc Value 2: 0xfffffff1 | Target: Friend (21)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 Description      : $@spelldesc51052
 Tooltip          : Magic damage taken reduced by $w1%.
 
@@ -13640,7 +13643,7 @@ Proc Chance      : 101%
 Real PPM         : 3 (Haste multiplier)
 Proc Flags       : ........ .....x.. .x.x.... ........ 
                  : Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : ....x.xx x..x.x.. ........ ........   ........ ........ ........ ........ 
+Attributes       : ....x.xx x..x.x.. ........ ........   ........ ...x.... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
