@@ -14,6 +14,8 @@
 #include "sim/sc_cooldown.hpp"
 #include "sim/sc_sim.hpp"
 
+#include "simulationcraft.hpp"
+
 #include <regex>
 
 namespace covenant
@@ -1584,18 +1586,29 @@ void carvers_eye( special_effect_t& effect )
   new carvers_eye_cb_t( effect );
 }
 
+struct mnemonic_residual_action_t : public residual_action::residual_periodic_action_t<spell_t>
+{
+  mnemonic_residual_action_t( const special_effect_t& effect )
+    : residual_action::residual_periodic_action_t<spell_t>( "mnemonic_equipment", effect.player,
+                                                            effect.player->find_spell( 351687 ) )
+  {
+  }
+};
+
 void mnemonic_equipment( special_effect_t& effect )
 {
   struct mnemonic_equipment_cb_t : public dbc_proc_callback_t
   {
     double hp_pct;
     double dmg_repeat_pct;
+    mnemonic_residual_action_t* dot;
 
     mnemonic_equipment_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
         hp_pct( e.driver()->effectN( 1 ).base_value() ),
-        dmg_repeat_pct( e.driver()->effectN( 2 ).base_value() )
+        dmg_repeat_pct( e.driver()->effectN( 2 ).percent() )
     {
+      dot = new mnemonic_residual_action_t( e );
     }
 
     void trigger( action_t* a, action_state_t* s ) override
@@ -1611,7 +1624,6 @@ void mnemonic_equipment( special_effect_t& effect )
       if ( !a->harmful )
         return;
 
-      // TODO: for some reason this never seems to proc?
       if ( s->target->health_percentage() < hp_pct )
       {
         dbc_proc_callback_t::execute( a, s );
@@ -1620,17 +1632,18 @@ void mnemonic_equipment( special_effect_t& effect )
         assert( td->debuff.mnemonic_equipment );
         auto amount = s->result_amount * dmg_repeat_pct;
 
-        // In game this has been bugged, instead of rolling the damage over it expires it
-        if ( td->debuff.mnemonic_equipment->check() )
+        // In game this has been bugged, instead of rolling the damage over it overrides it
+        // Simulating this bug by simply expiring the dot before we trigger a new one
+        if ( a->player->bugs )
         {
-          amount += td->debuff.mnemonic_equipment->current_value;
+          s->target->get_dot( "mnemonic_equipment", a->player )->cancel();
         }
-        td->debuff.mnemonic_equipment->trigger( 1, amount );
+        residual_action::trigger( dot, s->target, amount );
       }
     }
   };
 
-  // TODO: Confirm flags
+  // TODO: Confirm flags/check if pet damage procs this
   effect.proc_flags_  = PF_ALL_DAMAGE | PF_PERIODIC;
   effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
   effect.proc_chance_ = 1.0;
@@ -1810,20 +1823,6 @@ void register_target_data_initializers( sim_t* sim )
     }
     else
       td->debuff.dream_delver = make_buff( *td, "dream_delver" )->set_quiet( true );
-  } );
-
-  // Mnemonic Equipment
-  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( td->source->find_soulbind_spell( "Mnemonic Equipment" )->ok() )
-    {
-      assert( !td->debuff.mnemonic_equipment );
-
-      // TODO: add some sort of callback to handle value -> base_dd?
-      td->debuff.mnemonic_equipment = make_buff( *td, "mnemonic_equipment", td->source->find_spell( 351687 ) );
-      td->debuff.mnemonic_equipment->reset();
-    }
-    else
-      td->debuff.dream_delver = make_buff( *td, "mnemonic_equipment" )->set_quiet( true );
   } );
 }
 

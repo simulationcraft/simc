@@ -1252,6 +1252,7 @@ class SpellDataGenerator(DataGenerator):
          344076, 344077, 344078, # Necrolord Stamina Passives
          344087, 344089, 344091, # Kyrian Stamina Passives
          354054, 354053, # Fatal Flaw vers/crit buffs (venthyr/nadjia)
+         351687, # Necrolord Bonesmith Heirmir Mnemonic Equipmen debuff
          # Cabalists Hymnal
          344820,
          # Empyreal Ordnance
