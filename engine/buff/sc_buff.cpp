@@ -37,7 +37,7 @@ struct buff_expr_t : public expr_t
   double default_value;
 
   buff_expr_t( util::string_view n, util::string_view bn, action_t* a, buff_t* b, double default_ = 0 )
-    : expr_t( n ), buff_name( bn ), action( a ), static_buff( b ), specific_buff( false ),
+    : expr_t( get_full_expression_name( n, bn ) ), buff_name( bn ), action( a ), static_buff( b ), specific_buff( false ),
       default_value( default_ )
   { }
 
@@ -63,6 +63,18 @@ struct buff_expr_t : public expr_t
 
     return buff;
   }
+
+#if !defined( NDEBUG )
+  static std::string get_full_expression_name( util::string_view expr, util::string_view buff_name )
+  {
+    return fmt::format( "{}_{}", buff_name, expr );
+  }
+#else
+  static util::string_view expr get_full_expression_name( util::string_view expr, util::string_view /* buff_name */ )
+  {
+    return expr;
+  }
+#endif
 
   buff_t* buff() const
   {
