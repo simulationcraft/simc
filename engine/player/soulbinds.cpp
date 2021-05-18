@@ -954,6 +954,41 @@ void pointed_courage( special_effect_t& effect )
   } );
 }
 
+void spear_of_the_archon( special_effect_t& effect )
+{
+  struct spear_of_the_archon_cb_t : public dbc_proc_callback_t
+  {
+    double hp_pct;
+
+    spear_of_the_archon_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), hp_pct( e.driver()->effectN( 1 ).base_value() )
+    {
+    }
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( s->target->health_percentage() > hp_pct && s->target != a->player )
+      {
+        dbc_proc_callback_t::trigger( a, s );
+      }
+    }
+  };
+
+  effect.proc_flags_  = PF_ALL_DAMAGE;
+  effect.proc_flags2_ = PF2_CAST_DAMAGE | PF2_CAST_HEAL | PF2_CAST;
+  effect.proc_chance_ = 1.0;
+
+  effect.custom_buff = buff_t::find( effect.player, "spear_of_the_archon" );
+  if ( !effect.custom_buff )
+  {
+    effect.custom_buff = make_buff( effect.player, "spear_of_the_archon", effect.player->find_spell( 352720 ) )
+                             ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+                             ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+  }
+
+  new spear_of_the_archon_cb_t( effect );
+}
+
 void hammer_of_genesis( special_effect_t& effect )
 {
   struct hammer_of_genesis_cb_t : public dbc_proc_callback_t
@@ -1565,6 +1600,7 @@ void register_special_effects()
   register_soulbind_special_effect( 328266, soulbinds::combat_meditation );
   register_soulbind_special_effect( 351146, soulbinds::better_together );
   register_soulbind_special_effect( 329778, soulbinds::pointed_courage );    // Kleia
+  register_soulbind_special_effect( 351488, soulbinds::spear_of_the_archon );
   register_soulbind_special_effect( 333935, soulbinds::hammer_of_genesis );  // Mikanikos
   register_soulbind_special_effect( 333950, soulbinds::brons_call_to_action, true );
   // Necrolord
