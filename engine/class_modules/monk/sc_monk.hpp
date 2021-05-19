@@ -249,6 +249,7 @@ public:
     // Shadowland Legendary
     buff_t* chi_energy;
     buff_t* charred_passions;
+    buff_t* fae_exposure;
     buff_t* invokers_delight;
     buff_t* mighty_pour;
     buff_t* pressure_point;
@@ -597,7 +598,8 @@ public:
 
     // Shadowland Legendary
     const spell_data_t* chi_explosion;
-    const spell_data_t* fae_exposure;
+    const spell_data_t* fae_exposure_dmg;
+    const spell_data_t* fae_exposure_heal;
     const spell_data_t* shaohaos_might;
     const spell_data_t* charred_passions_dmg;
   } passives;

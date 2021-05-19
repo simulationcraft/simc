@@ -480,7 +480,7 @@ struct monk_spell_t : public monk_action_t<spell_t>
       m *= 1 + td( t )->debuff.weapons_of_order->stack_value();
 
     if ( td( t )->debuff.fae_exposure->up() )
-      m *= 1 + p()->passives.fae_exposure->effectN( 1 ).percent();
+      m *= 1 + p()->passives.fae_exposure_dmg->effectN( 1 ).percent();
 
     return m;
   }
@@ -556,9 +556,6 @@ struct monk_heal_t : public monk_action_t<heal_t>
   {
     double m = base_t::composite_target_multiplier( target );
 
-    if ( td( target )->debuff.fae_exposure->up() )
-      m *= 1 + p()->passives.fae_exposure->effectN( 1 ).percent();
-
     return m;
   }
 
@@ -591,6 +588,9 @@ struct monk_heal_t : public monk_action_t<heal_t>
 
       if ( p()->buff.life_cocoon->up() )
         am *= 1.0 + p()->spec.life_cocoon->effectN( 2 ).percent();
+
+      if ( p()->buff.fae_exposure->up() )
+        am *= 1.0 + p()->passives.fae_exposure_heal->effectN( 1 ).percent();
     }
 
     if ( p()->buff.storm_earth_and_fire->up() )
@@ -837,7 +837,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
       m *= 1 + td( t )->debuff.weapons_of_order->stack_value();
 
     if ( td( t )->debuff.fae_exposure->up() )
-      m *= 1 + p()->passives.fae_exposure->effectN( 1 ).percent();
+      m *= 1 + p()->passives.fae_exposure_dmg->effectN( 1 ).percent();
 
     return m;
   }
@@ -5516,7 +5516,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
       make_buff( *this, "weapons_of_order_debuff", p->find_spell( 312106 ) )->set_default_value_from_effect( 1 );
 
   // Shadowland Legendary
-  debuff.fae_exposure = make_buff( *this, "fae_exposure", p->passives.fae_exposure )
+  debuff.fae_exposure = make_buff( *this, "fae_exposure_damage", p->passives.fae_exposure_dmg )
                             ->set_default_value_from_effect( 1 )
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
@@ -6215,7 +6215,8 @@ void monk_t::init_spells()
 
   // Shadowland Legendary
   passives.chi_explosion        = find_spell( 337342 );
-  passives.fae_exposure         = find_spell( 356774 );
+  passives.fae_exposure_dmg     = find_spell( 356773 );
+  passives.fae_exposure_heal    = find_spell( 356774 );
   passives.shaohaos_might       = find_spell( 337570 );
   passives.charred_passions_dmg = find_spell( 338141 );
 
@@ -6560,6 +6561,10 @@ void monk_t::create_buffs()
 
   buff.the_emperors_capacitor =
       make_buff( this, "the_emperors_capacitor", find_spell( 337291 ) )->set_default_value_from_effect( 1 );
+
+  // Covenants
+  buff.fae_exposure =
+      make_buff( this, "fae_exposure_heal", passives.fae_exposure_heal )->set_default_value_from_effect( 1 );
 }
 
 // monk_t::init_gains =======================================================
