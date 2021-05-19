@@ -426,7 +426,7 @@ public:
 
     if ( p()->legendary.sinister_teachings->ok() )
     {
-      if ( s->result == RESULT_CRIT )
+      if ( s->result == RESULT_CRIT && p()->buff.fallen_order->up() )
         p()->cooldown.fallen_order->adjust( -1 * p()->legendary.sinister_teachings->effectN( 3 ).time_value() );
     }
 
