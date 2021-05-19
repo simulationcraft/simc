@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.38709
-static const std::array<spelltext_data_t, 15441> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15442> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15391,6 +15391,7 @@ static const std::array<spelltext_data_t, 15441> __ptr_spelltext_data { {
   { 356705, "Your abilities chance to reset Faeline Stomp is doubled. Enemies and allies hit by Faeline Stomp are affected by Fae Exposure, increasing your damage and healing against them by $356774s1% for $356774d.", 0, 0 },
   { 356722, "Revival now causes a Gust of Mists on all targets.", 0, "Rank 2" },
   { 356750, "Adjust your weapon.", 0, 0 },
+  { 356773, "$@spelldesc356705", "Damage taken from $@auracaster increased by $s1%", 0 },
   { 356774, "$@spelldesc356705", "Healing taken from $@auracaster increased by $s1%", 0 },
   { 356789, "When all charges of Vesper Totem are consumed, Vesper Totem will radiate one final $356790A1 yd burst of $356790s1 Arcane damage and $356791s2 healing.", 0, 0 },
   { 356790, "$@spelldesc324386", 0, "Kyrian" },
