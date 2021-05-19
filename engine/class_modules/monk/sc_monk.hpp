@@ -153,6 +153,7 @@ public:
     heal_t* evasive_stride;
 
     // Covenant
+    action_t* bonedust_brew;
     action_t* bonedust_brew_dmg;
     action_t* bonedust_brew_heal;
   } active_actions;
@@ -599,6 +600,13 @@ public:
     const spell_data_t* charred_passions_dmg;
   } passives;
 
+  // RPPM objects
+  struct rppms_t
+  {
+    // Shadowland Legendary
+    real_ppm_t* bountiful_brew;
+  } rppm;
+
   // Covenant
   struct covenant_t
   {
@@ -772,6 +780,7 @@ public:
   void init_gains() override;
   void init_procs() override;
   void init_assessors() override;
+  void init_rng() override;
   void reset() override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   void create_options() override;

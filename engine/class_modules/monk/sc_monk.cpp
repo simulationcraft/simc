@@ -394,14 +394,15 @@ public:
         p()->buff.faeline_stomp_reset->trigger();
       }
     }
+
+    if ( p()->legendary.bountiful_brew->ok() && p()->rppm.bountiful_brew->trigger() )
+      p()->active_actions.bonedust_brew->execute();
   }
 
   void impact( action_state_t* s ) override
   {
     if ( s->action->school == SCHOOL_PHYSICAL )
-    {
       trigger_mystic_touch( s );
-    }
 
     // Don't want to cause the buff to be cast and then used up immediately.
     if ( current_resource() == RESOURCE_CHI )
@@ -3788,6 +3789,30 @@ struct weapons_of_order_t : public monk_spell_t
 // ==========================================================================
 // Bonedust Brew - Necrolord Covenant Ability
 // ==========================================================================
+struct bonedust_brew_legendary_t : public monk_spell_t
+{
+  bonedust_brew_legendary_t( monk_t& p )
+    : monk_spell_t( "bonedust_brew_legendary", &p, p.covenant.necrolord )
+  {
+    harmful          = false;
+    aoe              = -1;
+    base_dd_min      = 0;
+    base_dd_max      = 0;
+  }
+
+  void execute() override
+  {
+    p()->buff.bonedust_brew_hidden->trigger();
+    monk_spell_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_spell_t::impact( s );
+
+    td( s->target )->debuff.bonedust_brew->trigger();
+  }
+};
 
 struct bonedust_brew_t : public monk_spell_t
 {
@@ -5526,6 +5551,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
     mastery(),
     cooldown(),
     passives(),
+    rppm(),
     covenant(),
     conduit(),
     legendary(),
@@ -6223,6 +6249,7 @@ void monk_t::init_spells()
   active_actions.evasive_stride = new actions::heals::evasive_stride_t( *this );
 
   // Covenant
+  active_actions.bonedust_brew      = new actions::spells::bonedust_brew_legendary_t( *this );
   active_actions.bonedust_brew_dmg  = new actions::spells::bonedust_brew_damage_t( *this );
   active_actions.bonedust_brew_heal = new actions::spells::bonedust_brew_heal_t( *this );
 }
@@ -6586,6 +6613,15 @@ void monk_t::init_assessors()
     accumulate_gale_burst_damage( s );
     return assessor::CONTINUE;
   } );
+}
+
+// monk_t::init_rng =======================================================
+
+void monk_t::init_rng()
+{
+  player_t::init_rng();
+  if ( legendary.bountiful_brew->ok() )
+    rppm.bountiful_brew = get_rppm( "bountiful_brew", find_spell( 356592 ) );
 }
 
 // monk_t::reset ============================================================
