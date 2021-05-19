@@ -1304,7 +1304,6 @@ void effusive_anima_accelerator( special_effect_t& effect )
   struct effusive_anima_accelerator_t : public effusive_anima_accelerator_proc_t
   {
   private:
-    bool affected_actions_initialized;
     std::vector<action_t*> affected_actions;
     double cdr;
 
@@ -1313,12 +1312,28 @@ void effusive_anima_accelerator( special_effect_t& effect )
       : effusive_anima_accelerator_proc_t(
             "effusive_anima_accelerator", e.player, e.player->find_spell( 353248 ),
             e.player->find_spell( 353248 )->effectN( 2 ).base_value() * class_value_from_desc_vars( e, "mod" ) / 100 ),
-        affected_actions_initialized( false ),
         cdr( class_value_from_desc_vars( e, "cd" ) )
     {
       background = true;
       aoe        = -1;
       radius     = e.player->find_spell( 353248 )->effectN( 1 ).radius_max();
+    }
+
+    void init_finished() override
+    {
+      effusive_anima_accelerator_proc_t::init_finished();
+
+      affected_actions.clear();
+      for ( auto a : player->action_list )
+      {
+        if ( a->data().affected_by_label( 976 ) )
+        {
+          if ( range::find( affected_actions, a ) == affected_actions.end() )
+          {
+            affected_actions.push_back( a );
+          }
+        }
+      }
     }
 
     double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -1332,26 +1347,9 @@ void effusive_anima_accelerator( special_effect_t& effect )
       int targets_hit = std::min( 5U, execute_state->n_targets );
       if ( targets_hit > 0 )
       {
-        if ( !affected_actions_initialized )
-        {
-          affected_actions.clear();
-          for ( auto a : player->action_list )
-          {
-            if ( a->data().affected_by_label( 976 ) )
-            {
-              if ( range::find( affected_actions, a ) == affected_actions.end() )
-              {
-                affected_actions.push_back( a );
-              }
-            }
-          }
-
-          affected_actions_initialized = true;
-        }
-
         for ( auto a : affected_actions )
         {
-          a->cooldown->adjust( timespan_t::from_seconds( cdr * targets_hit ) );
+          a->cooldown->adjust( timespan_t::from_seconds( -cdr * targets_hit ) );
           sim->print_debug( "{} cooldown reduced by {} and set to {}", a->name_str, cdr * targets_hit,
                             a->cooldown->remains() );
         }
