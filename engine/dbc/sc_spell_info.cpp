@@ -1526,8 +1526,10 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
         []( std::stringstream& s, const spelleffect_data_t* e ) {
           s << e -> spell() -> name_cstr() << " (" << e -> spell() -> id()
             << " effect#" << ( e -> index() + 1 ) << ")";
-        } ) << std::endl;
+        } );
     }
+
+    s << std::endl;
   }
 
   if ( spell -> category_cooldown() > timespan_t::zero() )

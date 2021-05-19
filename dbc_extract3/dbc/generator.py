@@ -2672,6 +2672,9 @@ class SpellDataGenerator(DataGenerator):
             if len(effect_ids):
                 spelleffect_index[ id ] = [ effect_ids.get(i, 0) for i in range(max(effect_ids.keys()) + 1) ]
 
+        for label in constants.SPELL_LABEL_WHITELIST:
+            included_labels.add(label)
+
         labels = []
         for label in self.db('SpellLabel').values():
             if label.label not in included_labels:

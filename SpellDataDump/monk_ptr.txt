@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -8772,6 +8772,7 @@ Spell Level      : 48
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 120 seconds
+Labels           : 976
 Internal Cooldown: 0.1 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -9670,6 +9671,7 @@ Velocity         : 20 yards/sec
 Min Travel Time  : 0.2 seconds
 Duration         : 10 seconds
 Cooldown         : 60 seconds
+Labels           : 976
 Proc Chance      : 50%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -9744,6 +9746,7 @@ Spell Level      : 48
 GCD              : 1 seconds
 Duration         : 24 seconds
 Cooldown         : 180 seconds
+Labels           : 976
 Family Flags     : 62
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9780,6 +9783,7 @@ Duration         : 30 seconds
 Cooldown         : 0.5 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1910
+Labels           : 976
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Family Flags     : 14
@@ -12040,6 +12044,7 @@ Effects          :
 Description      : Weapons of Order calls forth $?c1[Niuzao, the Black Ox]?c2[Yu'lon, the Jade Serpent][Xuen, the White Tiger] to assist you for ${$s1/1000} sec.
 
 Name             : Faeline Harmony (id=356705) [Spell Family (53), Passive, Hidden] 
+Class            : Monk
 School           : Physical
 Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -12074,6 +12079,49 @@ Effects          :
 #1 (id=890740)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Revival now causes a Gust of Mists on all targets.
+
+Name             : Fae Exposure (id=356773) 
+Class            : Monk
+School           : Physical
+Spell Type       : Melee
+Range            : 50000 yards
+Duration         : 10 seconds
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ x....... ......x. 
+                 : x....... ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ..x..... ........ 
+                 : ........ ........ ........ ........   
+                 : Disable player procs (112)
+Effects          :
+#1 (id=890814)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
+Description      : $@spelldesc356705
+Tooltip          : Damage taken from $@auracaster increased by $s1%
+
+Name             : Fae Exposure (id=356774) 
+Class            : Monk
+School           : Physical
+Spell Type       : Melee
+Range            : 50000 yards
+Duration         : 10 seconds
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ x....... ......x. 
+                 : x....... ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ..x..... ........ 
+                 : ........ ........ ........ ........   
+                 : Disable player procs (112)
+Effects          :
+#1 (id=890815)   : Apply Aura (6) | Unknown(504)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Friend (21)
+Description      : $@spelldesc356705
+Tooltip          : Healing taken from $@auracaster increased by $s1%
 
 Name             : Sinister Teachings (id=356818) [Spell Family (53), Passive, Hidden] 
 School           : Physical

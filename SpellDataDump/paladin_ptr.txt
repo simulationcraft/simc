@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
 
 Name             : Haste (id=65) 
 Class            : Paladin
@@ -8200,6 +8200,7 @@ Spell Level      : 48
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
+Labels           : 976
 Affecting spells : Paladin (137026 effect#9), Fires of Justice (209785 effect#3), Rule of Law (214202 effects: #1, #2), Divine Purpose (223819 effect#4)
 Family Flags     : 92
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
@@ -8288,6 +8289,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 240 seconds
+Labels           : 976
 Affecting spells : Radiant Embers (355447 effect#1)
 Family Flags     : 85
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
@@ -8977,6 +8979,7 @@ Velocity         : 35 yards/sec
 Duration         : 20 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1938: Duty-Bound Gavel (355099 effect#1)
+Labels           : 976
 Internal Cooldown: 0.001 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -9036,6 +9039,7 @@ GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 45 seconds
 Category         : 1890
+Labels           : 976
 Category Cooldown: 45 seconds
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
@@ -9077,6 +9081,7 @@ GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 45 seconds
 Category         : 1890
+Labels           : 976
 Category Cooldown: 45 seconds
 Affecting spells : Equinox (355567 effects: #1, #2)
 Family Flags     : 114
@@ -9147,7 +9152,8 @@ GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 45 seconds
 Category         : 1890
-Labels           : 1079: The Long Summer (340185 effect#1)
+Labels           : 976
+                 : 1079: The Long Summer (340185 effect#1)
 Category Cooldown: 45 seconds
 Proc Chance      : 40%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
@@ -9185,6 +9191,7 @@ GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 45 seconds
 Category         : 1890
+Labels           : 976
 Category Cooldown: 45 seconds
 Affecting spells : Equinox (355567 effects: #1, #2)
 Family Flags     : 114, 122

@@ -178,6 +178,10 @@ SPELL_NAME_BLACKLIST = [
 
 SPELL_LABEL_BLACKLIST = [ ]
 
+SPELL_LABEL_WHITELIST = [
+  976 # Covenant abilities
+]
+
 ACTIVE_SPELL_WHITELIST = [
     114074  # Lava Beam (Shaman)
 ]

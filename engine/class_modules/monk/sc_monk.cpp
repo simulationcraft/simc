@@ -3968,6 +3968,14 @@ struct faeline_stomp_heal_t : public monk_heal_t
 
     return cam;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_heal_t::impact( s );
+
+    if ( p()->legendary.faeline_harmony->ok() )
+      p()->buff.fae_exposure->trigger();
+  }
 };
 
 struct faeline_stomp_t : public monk_spell_t
