@@ -1080,27 +1080,38 @@ struct fae_guardians_t final : public priest_buff_t<buff_t>
 struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
 {
   int stacks;
-  cooldown_t* boon_of_the_ascended_cd;
+  propagate_const<cooldown_t*> boon_of_the_ascended_cooldown;
 
   boon_of_the_ascended_t( priest_t& p )
     : base_t( p, "boon_of_the_ascended", p.covenant.boon_of_the_ascended ),
       stacks( as<int>( data().max_stacks() ) ),
-      boon_of_the_ascended_cd( priest().get_cooldown( "Boon of the Ascended" ) )
+      boon_of_the_ascended_cooldown( p.get_cooldown( "boon_of_the_ascended" ) )
   {
     // Adding stacks should not refresh the duration
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
     set_max_stack( stacks >= 1 ? stacks : 1 );
+
+    // Cooldown is handled by the Boon of the Ascended spell
+    set_cooldown( timespan_t::from_seconds( 0 ) );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     priest_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
 
-    if ( priest().legendary.spheres_harmony->ok() && boon_of_the_ascended_cd )
+    if ( priest().legendary.spheres_harmony->ok() && boon_of_the_ascended_cooldown )
     {
-      boon_of_the_ascended_cd->adjust( timespan_t::from_seconds(
-          std::max( priest().legendary.spheres_harmony->effectN( 1 ).base_value() * expiration_stacks,
-                    priest().legendary.spheres_harmony->effectN( 2 ).base_value() ) ) );
+      auto max_reduction = priest().legendary.spheres_harmony->effectN( 2 ).base_value();
+      auto adjust_amount = priest().legendary.spheres_harmony->effectN( 1 ).base_value() * expiration_stacks;
+
+      if ( adjust_amount > max_reduction )
+      {
+        adjust_amount = max_reduction;
+      }
+      boon_of_the_ascended_cooldown->adjust( -timespan_t::from_seconds( adjust_amount ) );
+      sim->print_debug(
+          "{} adjusted cooldown of Boon of the Ascended, by {}, with Spheres' Harmony after having {} stacks.",
+          priest(), adjust_amount, expiration_stacks );
     }
 
     if ( priest().options.use_ascended_eruption )
