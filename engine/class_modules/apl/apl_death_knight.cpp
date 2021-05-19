@@ -252,8 +252,7 @@ void frost( player_t* p )
   covenants->add_action( "swarming_mist,if=talent.breath_of_sindragosa&(buff.breath_of_sindragosa.up&(active_enemies=1&runic_power.deficit>40|active_enemies>=2&runic_power.deficit>60)|!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains)" );
   covenants->add_action( "abomination_limb,if=active_enemies=1&cooldown.pillar_of_frost.remains<3&(!raid_event.adds.exists|raid_event.adds.in>15)&(talent.breath_of_sindragosa&runic_power.deficit<60&cooldown.breath_of_sindragosa.remains<2|!talent.breath_of_sindragosa)" );
   covenants->add_action( "abomination_limb,if=active_enemies>=2" );
-  covenants->add_action( "shackle_the_unworthy,if=active_enemies=1&!talent.breath_of_sindragosa&cooldown.pillar_of_frost.remains<2&(!raid_event.adds.exists|raid_event.adds.in>15)" );
-  covenants->add_action( "shackle_the_unworthy,if=active_enemies=1&talent.breath_of_sindragosa&buff.pillar_of_frost.up" );
+  covenants->add_action( "shackle_the_unworthy,if=active_enemies=1&cooldown.pillar_of_frost.remains<2&(!raid_event.adds.exists|raid_event.adds.in>15)" );
   covenants->add_action( "shackle_the_unworthy,if=active_enemies>=2" );
 
   obliteration->add_action( "remorseless_winter,if=active_enemies>=3&(talent.gathering_storm|conduit.everfrost|runeforge.biting_cold)", "Obliteration rotation" );
