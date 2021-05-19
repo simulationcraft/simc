@@ -5085,13 +5085,14 @@ struct radiant_spark_t final : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    if ( auto td = find_td( s->target ) )
-    {
-      // If Radiant Spark is refreshed, the vulnerability debuff can be
-      // triggered once again. Any previous stacks of the debuff are removed.
-      td->debuffs.radiant_spark_vulnerability->cooldown->reset( false );
-      td->debuffs.radiant_spark_vulnerability->expire();
-    }
+    // Create the vulnerability debuff for this target if it doesn't exist yet.
+    // This is necessary because mage_spell_t::assess_damage does not create the
+    // target data by itself.
+    auto td = get_td( s->target );
+    // If Radiant Spark is refreshed, the vulnerability debuff can be
+    // triggered once again. Any previous stacks of the debuff are removed.
+    td->debuffs.radiant_spark_vulnerability->cooldown->reset( false );
+    td->debuffs.radiant_spark_vulnerability->expire();
   }
 
   void last_tick( dot_t* d ) override
