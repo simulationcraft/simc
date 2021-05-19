@@ -396,10 +396,6 @@ struct shadow_word_death_t final : public priest_spell_t
       {
         // target is not killed
         inflict_self_damage( s->result_amount );
-        if ( priest().legendary.bwonsamdis_pact->ok() && priest().buffs.fae_guardians->check() )
-        {
-          priest().buffs.bwonsamdis_pact->trigger();
-        }
       }
 
       if ( priest().talents.death_and_madness->ok() )

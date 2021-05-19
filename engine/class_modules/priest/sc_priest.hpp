@@ -121,7 +121,6 @@ public:
     propagate_const<buff_t*> the_penitent_one;
     propagate_const<buff_t*> sephuzs_proclamation;
     propagate_const<buff_t*> talbadars_stratagem;
-    propagate_const<buff_t*> bwonsamdis_pact;
 
     // Conduits
     propagate_const<buff_t*> mind_devourer;
@@ -376,6 +375,10 @@ public:
 
     // The amount of allies to assume for Cauterizing Shadows healing
     int cauterizing_shadows_allies = 3;
+
+    // Bwonsamdi's Pact Option
+    // Options: "benevolent" or "wrathful"
+    std::string bwonsamdis_pact_mask_type = "benevolent";
   } options;
 
   // Legendaries

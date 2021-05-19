@@ -371,10 +371,9 @@ struct wrathful_faerie_t final : public priest_spell_t
     if ( !priest().legendary.bwonsamdis_pact->ok() )
       return;
 
-    if ( priest().buffs.bwonsamdis_pact->check() )
+    if ( util::str_compare_ci( priest().options.bwonsamdis_pact_mask_type, "wrathful" ) )
     {
-      energize_amount = insanity_gain * ( 1 + ( priest().buffs.bwonsamdis_pact->current_stack *
-                                                priest().buffs.bwonsamdis_pact->data().effectN( 1 ).percent() ) );
+      energize_amount = insanity_gain * 2;
       sim->print_debug( "Bwonsamdi's Pact adjusts Wrathful Faerie insanity gain to {}", energize_amount );
     }
     else
@@ -407,24 +406,12 @@ struct wrathful_faerie_fermata_t final : public priest_spell_t
     background        = true;
 
     cooldown->duration = data().internal_cooldown();
-    apply_affecting_aura( priest().buffs.bwonsamdis_pact->s_data );
   }
 
   void adjust_energize_amount()
   {
-    if ( !priest().legendary.bwonsamdis_pact->ok() )
-      return;
-
-    if ( priest().buffs.bwonsamdis_pact->check() )
-    {
-      energize_amount = insanity_gain * ( 1 + ( priest().buffs.bwonsamdis_pact->current_stack *
-                                                priest().buffs.bwonsamdis_pact->data().effectN( 1 ).percent() ) );
-      sim->print_debug( "Bwonsamdi's Pact adjusts Wrathful Faerie insanity gain to {}", energize_amount );
-    }
-    else
-    {
-      energize_amount = insanity_gain;
-    }
+    // TODO: check if Bwonsamdi's Pact affects the Fae Fermata faerie
+    energize_amount = insanity_gain;
   }
 
   void trigger()
@@ -1084,10 +1071,6 @@ struct fae_guardians_t final : public priest_buff_t<buff_t>
 
     priest().remove_wrathful_faerie();
     priest().remove_wrathful_faerie_fermata();
-    if ( priest().legendary.bwonsamdis_pact->ok() )
-    {
-      priest().buffs.bwonsamdis_pact->expire();
-    }
   }
 };
 
@@ -1211,31 +1194,10 @@ public:
     } );
   }
 
-  void handle_bwonsamdis_pact_stack_change( int old_stack, int new_stack )
-  {
-    //  Bwonsamdi's Pact does the adjustment based on its bonus value if Benevolent Faerie is up and does nothing if
-    //  Benevolent Faerie is not up.
-    if ( !check() )
-    {
-      return;
-    }
-
-    auto old_multiplier = get_recharge_multiplier( old_stack );
-    auto new_multiplier = get_recharge_multiplier( new_stack );
-
-    auto rate_change = new_multiplier / old_multiplier;
-
-    adjust_action_cooldown_rates( rate_change );
-  }
-
 private:
   void handle_benevolent_faerie_stack_change( int new_stack )
   {
-    double recharge_rate_multiplier = get_recharge_multiplier( priest->buffs.bwonsamdis_pact->check() );
-
-    sim->print_debug(
-        "Benevolent Faerie values - default_value: {}, bwonsamdis_pact_stacks: {}, recharge_rate_multiplier: {}",
-        default_value, priest->buffs.bwonsamdis_pact->check(), recharge_rate_multiplier );
+    double recharge_rate_multiplier = get_recharge_multiplier();
 
     // When going from 0 to 1 stacks, the recharge rate gets increase
     // When going back to 0 stacks, the recharge rate decreases again to its original level
@@ -1268,6 +1230,8 @@ private:
     {
       a->base_recharge_rate_multiplier /= rate_change;
 
+      sim->print_debug( "{} recharge_rate_multiplier set to {}", a->name_str, a->base_recharge_rate_multiplier );
+
       if ( a->cooldown->action == a )
         a->cooldown->adjust_recharge_multiplier();
       if ( a->internal_cooldown->action == a )
@@ -1275,18 +1239,18 @@ private:
     }
   }
 
-  double get_recharge_multiplier( int bwonsamdis_pact_stacks )
-  {
-    return 1.0 + default_value * bwonsamdis_pact_multiplier( bwonsamdis_pact_stacks );
-  }
-
-  double bwonsamdis_pact_multiplier( int stacks )
+  double get_recharge_multiplier()
   {
     double modifier = 1.0;
-    if ( priest != nullptr && priest->legendary.bwonsamdis_pact->ok() && stacks > 0 )
+    if ( priest != nullptr && priest->legendary.bwonsamdis_pact->ok() &&
+         util::str_compare_ci( priest->options.bwonsamdis_pact_mask_type, "benevolent" ) )
     {
-      modifier += ( stacks * priest->buffs.bwonsamdis_pact->data().effectN( 1 ).percent() );
+      modifier += ( default_value * 2 );
       sim->print_debug( "Bwonsamdi's Pact Modifier set to {}", modifier );
+    }
+    else
+    {
+      modifier += default_value;
     }
     return modifier;
   }
@@ -1901,14 +1865,6 @@ void priest_t::create_buffs()
   buffs.fae_guardians        = make_buff<buffs::fae_guardians_t>( *this );
   buffs.boon_of_the_ascended = make_buff<buffs::boon_of_the_ascended_t>( *this );
 
-  // Runeforge Legendary Buffs
-  buffs.bwonsamdis_pact =
-      make_buff( this, "bwonsamdis_pact", legendary.bwonsamdis_pact->effectN( 1 ).trigger()->effectN( 1 ).trigger() )
-          ->set_stack_change_callback( [ this ]( buff_t*, int old_stack, int new_stack ) {
-            auto b = debug_cast<buffs::benevolent_faerie_t*>( ( (player_t*)( this ) )->buffs.benevolent_faerie );
-            b->handle_bwonsamdis_pact_stack_change( old_stack, new_stack );
-          } );
-
   create_buffs_shadow();
   create_buffs_discipline();
   create_buffs_holy();
@@ -2110,6 +2066,7 @@ void priest_t::create_options()
   add_option( opt_bool( "priest.self_benevolent_faerie", options.self_benevolent_faerie ) );
   add_option( opt_int( "priest.ascended_eruption_additional_targets", options.ascended_eruption_additional_targets ) );
   add_option( opt_int( "priest.cauterizing_shadows_allies", options.cauterizing_shadows_allies ) );
+  add_option( opt_string( "priest.bwonsamdis_pact_mask_type", options.bwonsamdis_pact_mask_type ) );
 }
 
 std::string priest_t::create_profile( save_e type )
