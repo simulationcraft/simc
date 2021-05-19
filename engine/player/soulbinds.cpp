@@ -1299,6 +1299,7 @@ struct effusive_anima_accelerator_proc_t : public spell_t
   }
 };
 
+// TODO: Confirm behaviour for all Classes. This potentially may be triggered from any 976 labeled action dealing damage. Spell ID 353349 containing the ICD for this. 
 void effusive_anima_accelerator( special_effect_t& effect )
 {
   struct effusive_anima_accelerator_t : public effusive_anima_accelerator_proc_t
