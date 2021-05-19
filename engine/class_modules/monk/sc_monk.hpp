@@ -708,10 +708,10 @@ public:
     item_runeforge_t xuens_battlegear;         // 7070
 
     // Covenant
-    item_runeforge_t bountiful_brew;
-    item_runeforge_t call_to_arms;
-    item_runeforge_t faeline_harmony;
-    item_runeforge_t sinister_teachings;
+    item_runeforge_t bountiful_brew;       // 7707; Necrolord Covenant
+    item_runeforge_t call_to_arms;         // 7718; Bastion Covenant
+    item_runeforge_t faeline_harmony;      // 7721; Night Fae Covenant
+    item_runeforge_t sinister_teachings;   // 7726; Venthyr Covenant
   } legendary;
 
   struct pets_t
