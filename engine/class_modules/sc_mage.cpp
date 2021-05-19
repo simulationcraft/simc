@@ -274,6 +274,7 @@ public:
     action_t* arcane_assault;
     action_t* arcane_echo;
     action_t* conflagration_flare_up;
+    action_t* harmonic_echo;
     action_t* ignite;
     action_t* legendary_frozen_orb;
     action_t* legendary_meteor;
@@ -650,6 +651,7 @@ public:
     item_runeforge_t disciplinary_command;
     item_runeforge_t expanded_potential;
     item_runeforge_t grisly_icicle;
+    item_runeforge_t harmonic_echo;
   } runeforge;
 
   // Soulbind Conduits
@@ -1656,6 +1658,19 @@ public:
       if ( triggers.radiant_spark && spark_dot->is_ticking() )
       {
         auto spark_debuff = td->debuffs.radiant_spark_vulnerability;
+
+        // Handle Harmonic Echo before changing the stack number
+        // TODO: Currently only triggers 3 times, on stacks 1, 2 and 3.
+        if ( p()->runeforge.harmonic_echo.ok()
+          && spark_debuff->check() > 0
+          && spark_debuff->check() < spark_debuff->max_stack() )
+        {
+          auto echo = p()->action.harmonic_echo;
+          echo->base_dd_min = echo->base_dd_max = p()->runeforge.harmonic_echo->effectN( 1 ).percent() * s->result_total;
+          echo->set_target( s->target );
+          echo->execute();
+        }
+
         if ( spark_debuff->at_max_stacks() )
         {
           spark_debuff->expire( p()->bugs ? 30_ms : 0_ms );
@@ -5025,6 +5040,37 @@ struct mirrors_of_torment_t final : public mage_spell_t
 
 // Radiant Spark Spell ======================================================
 
+struct harmonic_echo_t final : public mage_spell_t
+{
+  harmonic_echo_t( util::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( 354189 ) )
+  {
+    background = true;
+    may_miss = may_crit = callbacks = false;
+    affected_by.radiant_spark = false;
+    base_dd_min = base_dd_max = 1.0;
+  }
+
+  void init() override
+  {
+    mage_spell_t::init();
+
+    // TODO: Harmonic Echo currently ignores all damage taken multipliers, which
+    // is almost certainly wrong. Once that's fixed, it should only ignore positive
+    // damage taken multipliers.
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    mage_spell_t::available_targets( tl );
+
+    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
+    return tl.size();
+  }
+};
+
 struct radiant_spark_t final : public mage_spell_t
 {
   radiant_spark_t( util::string_view n, mage_t* p, util::string_view options_str ) :
@@ -5660,6 +5706,9 @@ void mage_t::create_actions()
   if ( runeforge.cold_front.ok() )
     action.legendary_frozen_orb = get_action<frozen_orb_t>( "legendary_frozen_orb", this, "", true );
 
+  if ( runeforge.harmonic_echo.ok() )
+    action.harmonic_echo = get_action<harmonic_echo_t>( "harmonic_echo", this );
+
   if ( find_covenant_spell( "Mirrors of Torment" )->ok() )
   {
     action.agonizing_backlash  = get_action<agonizing_backlash_t>( "agonizing_backlash", this );
@@ -5958,6 +6007,7 @@ void mage_t::init_spells()
   runeforge.disciplinary_command = find_runeforge_legendary( "Disciplinary Command" );
   runeforge.expanded_potential   = find_runeforge_legendary( "Expanded Potential"   );
   runeforge.grisly_icicle        = find_runeforge_legendary( "Grisly Icicle"        );
+  runeforge.harmonic_echo        = find_runeforge_legendary( "Harmonic Echo"        );
 
   // Soulbind Conduits
   conduits.arcane_prodigy           = find_conduit_spell( "Arcane Prodigy"           );
