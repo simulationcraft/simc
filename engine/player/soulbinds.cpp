@@ -1304,7 +1304,7 @@ void effusive_anima_accelerator( special_effect_t& effect )
   struct effusive_anima_accelerator_t : public effusive_anima_accelerator_proc_t
   {
   private:
-    std::vector<action_t*> affected_actions;
+    std::vector<cooldown_t*> affected_cooldowns;
     double cdr;
 
   public:
@@ -1323,14 +1323,14 @@ void effusive_anima_accelerator( special_effect_t& effect )
     {
       effusive_anima_accelerator_proc_t::init_finished();
 
-      affected_actions.clear();
+      affected_cooldowns.clear();
       for ( auto a : player->action_list )
       {
         if ( a->data().affected_by_label( 976 ) )
         {
-          if ( range::find( affected_actions, a ) == affected_actions.end() )
+          if ( range::find( affected_cooldowns, a->cooldown ) == affected_cooldowns.end() )
           {
-            affected_actions.push_back( a );
+            affected_cooldowns.push_back( a->cooldown );
           }
         }
       }
@@ -1347,11 +1347,11 @@ void effusive_anima_accelerator( special_effect_t& effect )
       int targets_hit = std::min( 5U, execute_state->n_targets );
       if ( targets_hit > 0 )
       {
-        for ( auto a : affected_actions )
+        for ( auto c : affected_cooldowns )
         {
-          a->cooldown->adjust( timespan_t::from_seconds( -cdr * targets_hit ) );
-          sim->print_debug( "{} cooldown reduced by {} and set to {}", a->name_str, cdr * targets_hit,
-                            a->cooldown->remains() );
+          c->adjust( timespan_t::from_seconds( -cdr * targets_hit ) );
+          sim->print_debug( "{} cooldown reduced by {} and set to {}", c->name_str, cdr * targets_hit,
+                            c->remains() );
         }
       }
     }
