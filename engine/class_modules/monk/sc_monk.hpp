@@ -101,6 +101,7 @@ public:
     buff_t* weapons_of_order;
 
     // Shadowland Legendaries
+    buff_t* fae_exposure;
     buff_t* keefers_skyreach;
     buff_t* skyreach_exhaustion;
   } debuff;
@@ -152,6 +153,7 @@ public:
     heal_t* evasive_stride;
 
     // Covenant
+    action_t* bonedust_brew;
     action_t* bonedust_brew_dmg;
     action_t* bonedust_brew_heal;
   } active_actions;
@@ -237,6 +239,7 @@ public:
     buff_t* faeline_stomp;
     buff_t* faeline_stomp_brm;
     buff_t* faeline_stomp_reset;
+    buff_t* fallen_order;
 
     // Covenant Conduits
     absorb_buff_t* fortifying_ingrediences;
@@ -445,6 +448,7 @@ public:
     const spell_data_t* renewing_mist;
     const spell_data_t* renewing_mist_2;
     const spell_data_t* revival;
+    const spell_data_t* revival_2;
     const spell_data_t* soothing_mist;
     const spell_data_t* teachings_of_the_monastery;
     const spell_data_t* thunder_focus_tea;
@@ -591,9 +595,17 @@ public:
 
     // Shadowland Legendary
     const spell_data_t* chi_explosion;
+    const spell_data_t* fae_exposure;
     const spell_data_t* shaohaos_might;
     const spell_data_t* charred_passions_dmg;
   } passives;
+
+  // RPPM objects
+  struct rppms_t
+  {
+    // Shadowland Legendary
+    real_ppm_t* bountiful_brew;
+  } rppm;
 
   // Covenant
   struct covenant_t
@@ -692,6 +704,12 @@ public:
     item_runeforge_t keefers_skyreach;         // 7068
     item_runeforge_t last_emperors_capacitor;  // 7069
     item_runeforge_t xuens_battlegear;         // 7070
+
+    // Covenant
+    item_runeforge_t bountiful_brew;
+    item_runeforge_t call_to_arms;
+    item_runeforge_t faeline_harmony;
+    item_runeforge_t sinister_teachings;
   } legendary;
 
   struct pets_t
@@ -762,6 +780,7 @@ public:
   void init_gains() override;
   void init_procs() override;
   void init_assessors() override;
+  void init_rng() override;
   void reset() override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   void create_options() override;
