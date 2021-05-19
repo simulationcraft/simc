@@ -1743,7 +1743,8 @@ class SpellDataGenerator(DataGenerator):
           ( 337341, 3 ), # Keefer's Skyreach Exhaustion Debuff
           ( 347687, 1 ), # Charred Passions
           ( 347688, 1 ), # Charred Passions
-          ( 356774, 0 ), # Fae Exposure Debuff
+          ( 356773, 0 ), # Fae Exposure Damage Debuff
+          ( 356774, 0 ), # Fae Exposure Heal Buff
         ),
 
         # Druid:
