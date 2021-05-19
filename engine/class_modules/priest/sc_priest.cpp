@@ -589,13 +589,18 @@ struct mindgames_healing_reversal_t final : public priest_spell_t
     energize_resource = RESOURCE_NONE;
 
     // Formula found in parent spelldata for $healing
-    // $healing=${($SPS*$s7/100)*(1+$@versadmg)*$m3/100}
-    spell_power_mod.direct = ( priest().covenant.mindgames->effectN( 7 ).base_value() / 100 ) *
+    // $healing=${($SPS*$s5/100)*(1+$@versadmg)*$m3/100}
+    spell_power_mod.direct = ( priest().covenant.mindgames->effectN( 5 ).base_value() / 100 ) *
                              ( priest().covenant.mindgames->effectN( 3 ).base_value() / 100 );
 
     if ( priest().conduits.shattered_perceptions->ok() )
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.shattered_perceptions.percent() );
+    }
+
+    if ( priest().legendary.shadow_word_manipulation->ok() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().legendary.shadow_word_manipulation->effectN( 2 ).percent() );
     }
   }
 };
@@ -620,6 +625,11 @@ struct mindgames_damage_reversal_t final : public priest_heal_t
     if ( priest().conduits.shattered_perceptions->ok() )
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.shattered_perceptions.percent() );
+    }
+
+    if ( priest().legendary.shadow_word_manipulation->ok() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().legendary.shadow_word_manipulation->effectN( 2 ).percent() );
     }
   }
 };
@@ -654,14 +664,6 @@ struct mindgames_t final : public priest_spell_t
       child_mindgames_damage_reversal = new mindgames_damage_reversal_t( priest() );
       add_child( child_mindgames_damage_reversal );
     }
-
-    if ( priest().legendary.shadow_word_manipulation->ok() )
-    {
-      base_execute_time /= priest().legendary.shadow_word_manipulation->effectN( 1 ).percent();
-    }
-
-    // Add the extra charge
-    apply_affecting_aura( priest().legendary.shadow_word_manipulation );
   }
 
   void impact( action_state_t* s ) override
@@ -671,6 +673,7 @@ struct mindgames_t final : public priest_spell_t
     // Mindgames gives a total of 20 insanity
     // 10 if the target deals enough dmg to break the shield
     // 10 if the targets heals enough to break the shield
+    // TODO: Figure out how the crit buff works from Shadow Word: Manipulation
     double insanity = 0;
     // Healing reversal creates damage
     if ( child_mindgames_healing_reversal )
@@ -1094,9 +1097,12 @@ struct fae_guardians_t final : public priest_buff_t<buff_t>
 struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
 {
   int stacks;
+  cooldown_t* boon_of_the_ascended_cd;
 
   boon_of_the_ascended_t( priest_t& p )
-    : base_t( p, "boon_of_the_ascended", p.covenant.boon_of_the_ascended ), stacks( as<int>( data().max_stacks() ) )
+    : base_t( p, "boon_of_the_ascended", p.covenant.boon_of_the_ascended ),
+      stacks( as<int>( data().max_stacks() ) ),
+      boon_of_the_ascended_cd( priest().get_cooldown( "Boon of the Ascended" ) )
   {
     // Adding stacks should not refresh the duration
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
@@ -1106,6 +1112,13 @@ struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     priest_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+
+    if ( priest().legendary.spheres_harmony->ok() && boon_of_the_ascended_cd )
+    {
+      boon_of_the_ascended_cd->adjust( timespan_t::from_seconds(
+          std::max( priest().legendary.spheres_harmony->effectN( 1 ).base_value() * expiration_stacks,
+                    priest().legendary.spheres_harmony->effectN( 2 ).base_value() ) ) );
+    }
 
     if ( priest().options.use_ascended_eruption )
     {
@@ -1834,6 +1847,7 @@ void priest_t::init_spells()
   legendary.twins_of_the_sun_priestess = find_runeforge_legendary( "Twins of the Sun Priestess" );
   legendary.bwonsamdis_pact            = find_runeforge_legendary( "Bwonsamdi's Pact" );
   legendary.shadow_word_manipulation   = find_runeforge_legendary( "Shadow Word: Manipulation" );
+  legendary.spheres_harmony            = find_runeforge_legendary( "Spheres' Harmony" );
   // Disc legendaries
   legendary.kiss_of_death    = find_runeforge_legendary( "Kiss of Death" );
   legendary.the_penitent_one = find_runeforge_legendary( "The Penitent One" );

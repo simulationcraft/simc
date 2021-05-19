@@ -388,6 +388,7 @@ public:
     item_runeforge_t twins_of_the_sun_priestess;
     item_runeforge_t bwonsamdis_pact;
     item_runeforge_t shadow_word_manipulation;
+    item_runeforge_t spheres_harmony;
     // Holy
     item_runeforge_t divine_image;          // NYI
     item_runeforge_t harmonious_apparatus;  // NYI
