@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -8942,6 +8942,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
+Labels           : 976
 Proc Chance      : 100%
 Proc Flags       : ........ x...x... x.x..... ........ 
                  : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -9008,7 +9009,8 @@ Spell Level      : 48
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 60 seconds
-Labels           : 1048: Discipline of the Grove (336992 effect#1)
+Labels           : 976
+                 : 1048: Discipline of the Grove (336992 effect#1)
 Attributes       : ........ ........ x....... ........   ......x. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -9044,6 +9046,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 25 seconds
 Cooldown         : 90 seconds
+Labels           : 976
 Internal Cooldown: 6 seconds
 Stacks           : 3 initial, 3 maximum
 Proc Chance      : 100%
@@ -9791,7 +9794,8 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 25 seconds
 Cooldown         : 180 seconds
-Labels           : 1049: Gift of the Lich (336999 effect#1)
+Labels           : 976
+                 : 1049: Gift of the Lich (336999 effect#1)
 Proc Chance      : 101%
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell

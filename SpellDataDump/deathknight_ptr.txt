@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -12284,7 +12284,8 @@ Spell Level      : 48
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Labels           : 1060: Impenetrable Gloom (338628 effect#2)
+Labels           : 976
+                 : 1060: Impenetrable Gloom (338628 effect#2)
 Proc Chance      : 101%
 Stance Mask      : 0x01000000
 Proc Flags       : ....x... ....x... x.x..... ........ 
@@ -12350,6 +12351,7 @@ GCD              : 1.5 seconds
 Duration         : 14 seconds
 Cooldown         : 60 seconds
 Labels           : 831: Proliferation (338664 effect#1), Proliferation (338664 effect#2)
+976
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x01000000
@@ -12437,7 +12439,8 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 120 seconds
-Labels           : 1078: Abomination's Frenzy (353447 effect#1)
+Labels           : 976
+                 : 1078: Abomination's Frenzy (353447 effect#1)
 Stance Mask      : 0x01000000
 Affecting spells : Death Knight (137005 effect#2)
 Family Flags     : 127
@@ -13356,6 +13359,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1877: Blood Death Knight (137008 effect#5)
+Labels           : 976
 Stance Mask      : 0x01000000
 Affecting spells : Crimson Scourge (81141 effects: #1, #2), Rapid Decomposition (194662 effect#1), Toxic Accumulator (333388 effect#1)
 Family Flags     : 5
