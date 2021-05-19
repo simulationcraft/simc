@@ -78,12 +78,28 @@ void shadow( player_t* p )
   default_list->add_action(
       "variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>2+buff.voidform.up",
       "Start using Searing Nightmare at 3+ targets or 4+ if you are in Voidform" );
-  default_list->add_action(
-      "variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&(!raid_event.adds.up|raid_event.adds.duration<"
-      "=10|raid_event.adds.remains>=10+5*(talent.hungering_void.enabled|covenant.kyrian))&((raid_event.adds.in>20|"
-      "spell_targets.void_eruption>=5)|talent.hungering_void.enabled|covenant.kyrian)",
-      "Cooldown Pool Variable, Used to pool before activating voidform. Currently used to control when to activate "
-      "voidform with incoming adds." );
+
+  if ( p->is_ptr() )
+  {
+    default_list->add_action(
+        "variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&(!raid_event.adds.up|raid_event.adds."
+        "duration<"
+        "=10|raid_event.adds.remains>=10+5*(talent.hungering_void.enabled|covenant.kyrian))&((raid_event.adds.in>20|"
+        "spell_targets.void_eruption>=5)|talent.hungering_void.enabled|covenant.kyrian)&(!runeforge.spheres_harmony."
+        "equipped|(cooldown.power_infusion.remains<=gcd.max*3|buff.power_infusion.up|fight_remains<=25))",
+        "Cooldown Pool Variable, Used to pool before activating voidform. Currently used to control when to activate "
+        "voidform with incoming adds." );
+  }
+  else
+  {
+    default_list->add_action(
+        "variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&(!raid_event.adds.up|raid_event.adds."
+        "duration<"
+        "=10|raid_event.adds.remains>=10+5*(talent.hungering_void.enabled|covenant.kyrian))&((raid_event.adds.in>20|"
+        "spell_targets.void_eruption>=5)|talent.hungering_void.enabled|covenant.kyrian)",
+        "Cooldown Pool Variable, Used to pool before activating voidform. Currently used to control when to activate "
+        "voidform with incoming adds." );
+  }
 
   // Racials
   default_list->add_action( "fireblood,if=buff.voidform.up" );
