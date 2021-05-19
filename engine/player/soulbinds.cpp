@@ -1326,7 +1326,7 @@ void effusive_anima_accelerator( special_effect_t& effect )
       affected_cooldowns.clear();
       for ( auto a : player->action_list )
       {
-        if ( a->data().affected_by_label( 976 ) )
+        if ( a->data().affected_by_label( 976 ) && player->dbc->spell_text( a->data().id() ).rank() == "Kyrian" )
         {
           if ( range::find( affected_cooldowns, a->cooldown ) == affected_cooldowns.end() )
           {
@@ -1350,8 +1350,7 @@ void effusive_anima_accelerator( special_effect_t& effect )
         for ( auto c : affected_cooldowns )
         {
           c->adjust( timespan_t::from_seconds( -cdr * targets_hit ) );
-          sim->print_debug( "{} cooldown reduced by {} and set to {}", c->name_str, cdr * targets_hit,
-                            c->remains() );
+          sim->print_debug( "{} cooldown reduced by {} and set to {}", c->name_str, cdr * targets_hit, c->remains() );
         }
       }
     }
