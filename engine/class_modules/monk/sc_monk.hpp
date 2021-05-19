@@ -153,9 +153,11 @@ public:
     heal_t* evasive_stride;
 
     // Covenant
-    action_t* bonedust_brew;
     action_t* bonedust_brew_dmg;
     action_t* bonedust_brew_heal;
+
+    // Legendary
+    action_t* bountiful_brew;
   } active_actions;
 
   std::vector<action_t*> combo_strike_actions;

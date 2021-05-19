@@ -396,7 +396,7 @@ public:
     }
 
     if ( p()->legendary.bountiful_brew->ok() && p()->rppm.bountiful_brew->trigger() )
-      p()->active_actions.bonedust_brew->execute();
+      p()->active_actions.bountiful_brew->execute();
   }
 
   void impact( action_state_t* s ) override
@@ -3789,15 +3789,16 @@ struct weapons_of_order_t : public monk_spell_t
 // ==========================================================================
 // Bonedust Brew - Necrolord Covenant Ability
 // ==========================================================================
-struct bonedust_brew_legendary_t : public monk_spell_t
+struct bountiful_brew_t : public monk_spell_t
 {
-  bonedust_brew_legendary_t( monk_t& p )
-    : monk_spell_t( "bonedust_brew_legendary", &p, p.covenant.necrolord )
+  bountiful_brew_t( monk_t& p )
+    : monk_spell_t( "bountiful_brew", &p, p.legendary.bountiful_brew )
   {
-    harmful          = false;
-    aoe              = -1;
-    base_dd_min      = 0;
-    base_dd_max      = 0;
+    harmful            = false;
+    cooldown->duration = timespan_t::zero();
+    aoe                = -1;
+    base_dd_min        = 0;
+    base_dd_max        = 0;
   }
 
   void execute() override
@@ -6249,9 +6250,11 @@ void monk_t::init_spells()
   active_actions.evasive_stride = new actions::heals::evasive_stride_t( *this );
 
   // Covenant
-  active_actions.bonedust_brew      = new actions::spells::bonedust_brew_legendary_t( *this );
   active_actions.bonedust_brew_dmg  = new actions::spells::bonedust_brew_damage_t( *this );
   active_actions.bonedust_brew_heal = new actions::spells::bonedust_brew_heal_t( *this );
+
+  // Legendary
+  active_actions.bountiful_brew = new actions::spells::bountiful_brew_t( *this );
 }
 
 // monk_t::init_base ========================================================
