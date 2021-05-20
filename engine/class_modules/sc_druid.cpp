@@ -8213,11 +8213,13 @@ void druid_t::create_buffs()
   // Default value is ONLY used for APL expression, so set via base_value() and not percent()
   buff.balance_of_all_things_arcane = make_buff( this, "balance_of_all_things_arcane", find_spell( 339946 ) )
     ->set_default_value_from_effect( 1, 1.0 )
-    ->set_reverse( true );
+    ->set_reverse( true )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION);
 
   buff.balance_of_all_things_nature = make_buff( this, "balance_of_all_things_nature", find_spell( 339943 ) )
     ->set_default_value_from_effect( 1, 1.0 )
-    ->set_reverse( true );
+    ->set_reverse( true )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buff.celestial_alignment =
       make_buff<celestial_alignment_buff_t>( *this, "celestial_alignment", spec.celestial_alignment );
