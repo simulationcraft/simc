@@ -1736,6 +1736,16 @@ public:
       p()->trigger_vesper_totem( execute_state );
       trigger_echoing_shock( execute_state->target );
     }
+
+    // Main hand swing timer resets if the MW-affected spell is not instant cast
+    if ( affected_by_maelstrom_weapon && execute_time() > 0_ms )
+    {
+      if ( p()->main_hand_attack && p()->main_hand_attack->execute_event )
+      {
+        event_t::cancel( p()->main_hand_attack->execute_event );
+        p()->main_hand_attack->schedule_execute();
+      }
+    }
   }
 
   void schedule_travel( action_state_t* s ) override
