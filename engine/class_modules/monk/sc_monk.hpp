@@ -522,6 +522,9 @@ public:
     cooldown_t* bonedust_brew;
     cooldown_t* faeline_stomp;
     cooldown_t* fallen_order;
+
+    // Legendary
+    cooldown_t* sinister_teachings;
   } cooldown;
 
   struct passives_t

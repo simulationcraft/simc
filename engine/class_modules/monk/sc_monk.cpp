@@ -429,8 +429,11 @@ public:
 
     if ( p()->legendary.sinister_teachings->ok() )
     {
-      if ( s->result == RESULT_CRIT && p()->buff.fallen_order->up() )
+      if ( s->result == RESULT_CRIT && p()->buff.fallen_order->up() && p()->cooldown.sinister_teachings->up() )
+      {
         p()->cooldown.fallen_order->adjust( -1 * p()->legendary.sinister_teachings->effectN( 3 ).time_value() );
+        p()->cooldown.sinister_teachings->start( p()->legendary.sinister_teachings->internal_cooldown() );
+      }
     }
 
     p()->trigger_empowered_tiger_lightning( s );
@@ -5610,6 +5613,9 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   cooldown.bonedust_brew    = get_cooldown( "bonedust_brew" );
   cooldown.faeline_stomp    = get_cooldown( "faeline_stomp" );
   cooldown.fallen_order     = get_cooldown( "fallen_order" );
+
+  // Legendary
+  cooldown.sinister_teachings = get_cooldown( "sinister_teachings" );
 
   resource_regeneration = regen_type::DYNAMIC;
   if ( specialization() != MONK_MISTWEAVER )
