@@ -400,6 +400,7 @@ public:
     cooldown_t* frost_nova;
     cooldown_t* frozen_orb;
     cooldown_t* icy_veins;
+    cooldown_t* mirrors_of_torment;
     cooldown_t* phoenix_flames;
     cooldown_t* presence_of_mind;
   } cooldowns;
@@ -654,6 +655,7 @@ public:
     item_runeforge_t grisly_icicle;
     item_runeforge_t harmonic_echo;
     item_runeforge_t heart_of_the_fae;
+    item_runeforge_t sinful_delight;
   } runeforge;
 
   // Soulbind Conduits
@@ -790,6 +792,7 @@ public:
   void      trigger_arcane_charge( int stacks = 1 );
   bool      trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t duration = timespan_t::min() );
   void      trigger_disciplinary_command( school_e );
+  void      trigger_sinful_delight( specialization_e );
 };
 
 namespace pets {
@@ -1027,17 +1030,29 @@ struct combustion_t final : public buff_t
 // the Fireball also triggers a new instance of Expanded Potential?
 struct expanded_potential_buff_t : public buff_t
 {
+  mage_t* mage;
+
   expanded_potential_buff_t( mage_t* p, util::string_view name, const spell_data_t* spell_data ) :
-    buff_t( p, name, spell_data )
+    buff_t( p, name, spell_data ), mage( p )
   { }
 
   void decrement( int stacks, double value ) override
   {
-    auto mage = debug_cast<mage_t*>( player );
+    // Sinful Delight only triggers when Clearcasting is consumed.
+    mage->trigger_sinful_delight( MAGE_ARCANE );
+
     if ( check() && mage->buffs.expanded_potential->check() )
       mage->buffs.expanded_potential->expire();
     else
       buff_t::decrement( stacks, value );
+  }
+
+  void refresh( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::refresh( stacks, value, duration );
+
+    // Sinful Delight triggers when brain freeze refreshes.
+    mage->trigger_sinful_delight( MAGE_FROST );
   }
 };
 
@@ -4170,6 +4185,13 @@ struct fire_blast_t final : public fire_mage_spell_t
     base_crit += p->spec.fire_blast_2->effectN( 1 ).percent();
   }
 
+  void execute() override
+  {
+    p()->trigger_sinful_delight( MAGE_FIRE );
+
+    fire_mage_spell_t::execute();
+  }
+
   void impact( action_state_t* s ) override
   {
     fire_mage_spell_t::impact( s );
@@ -5550,16 +5572,17 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   uptime()
 {
   // Cooldowns
-  cooldowns.arcane_power     = get_cooldown( "arcane_power"     );
-  cooldowns.combustion       = get_cooldown( "combustion"       );
-  cooldowns.cone_of_cold     = get_cooldown( "cone_of_cold"     );
-  cooldowns.fire_blast       = get_cooldown( "fire_blast"       );
-  cooldowns.from_the_ashes   = get_cooldown( "from_the_ashes"   );
-  cooldowns.frost_nova       = get_cooldown( "frost_nova"       );
-  cooldowns.frozen_orb       = get_cooldown( "frozen_orb"       );
-  cooldowns.icy_veins        = get_cooldown( "icy_veins"        );
-  cooldowns.phoenix_flames   = get_cooldown( "phoenix_flames"   );
-  cooldowns.presence_of_mind = get_cooldown( "presence_of_mind" );
+  cooldowns.arcane_power       = get_cooldown( "arcane_power"       );
+  cooldowns.combustion         = get_cooldown( "combustion"         );
+  cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"       );
+  cooldowns.fire_blast         = get_cooldown( "fire_blast"         );
+  cooldowns.from_the_ashes     = get_cooldown( "from_the_ashes"     );
+  cooldowns.frost_nova         = get_cooldown( "frost_nova"         );
+  cooldowns.frozen_orb         = get_cooldown( "frozen_orb"         );
+  cooldowns.icy_veins          = get_cooldown( "icy_veins"          );
+  cooldowns.mirrors_of_torment = get_cooldown( "mirrors_of_torment" );
+  cooldowns.phoenix_flames     = get_cooldown( "phoenix_flames"     );
+  cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind"   );
 
   // Options
   resource_regeneration = regen_type::DYNAMIC;
@@ -5602,6 +5625,12 @@ void mage_t::trigger_disciplinary_command( school_e school )
       buffs.disciplinary_command_fire->expire();
     }
   }
+}
+
+void mage_t::trigger_sinful_delight( specialization_e spec )
+{
+  if ( specialization() == spec )
+    cooldowns.mirrors_of_torment->adjust( -runeforge.sinful_delight->effectN( 1 ).time_value() );
 }
 
 action_t* mage_t::create_action( util::string_view name, const std::string& options_str )
@@ -6026,6 +6055,7 @@ void mage_t::init_spells()
   runeforge.grisly_icicle        = find_runeforge_legendary( "Grisly Icicle"        );
   runeforge.harmonic_echo        = find_runeforge_legendary( "Harmonic Echo"        );
   runeforge.heart_of_the_fae     = find_runeforge_legendary( "Heart of the Fae"     );
+  runeforge.sinful_delight       = find_runeforge_legendary( "Sinful Delight"       );
 
   // Soulbind Conduits
   conduits.arcane_prodigy           = find_conduit_spell( "Arcane Prodigy"           );
@@ -6158,7 +6188,9 @@ void mage_t::create_buffs()
 
 
   // Frost
-  buffs.brain_freeze     = make_buff<buffs::expanded_potential_buff_t>( this, "brain_freeze", find_spell( 190446 ) );
+  buffs.brain_freeze     = make_buff<buffs::expanded_potential_buff_t>( this, "brain_freeze", find_spell( 190446 ) )
+                             ->set_stack_change_callback( [ this ] ( buff_t*, int old, int new_ )
+                               { if ( old > new_ ) trigger_sinful_delight( MAGE_FROST ); } );
   buffs.fingers_of_frost = make_buff( this, "fingers_of_frost", find_spell( 44544 ) );
   buffs.icicles          = make_buff( this, "icicles", find_spell( 205473 ) );
   buffs.icy_veins        = make_buff<buffs::icy_veins_t>( this );
