@@ -683,6 +683,94 @@ bool cooldown_t::is_ready() const
   return queueable() <= sim.current_time();
 }
 
+void cooldown_t::set_max_charges( int new_max_charges )
+{
+  assert( new_max_charges > 0 && "Cooldown charges must be greater than 0" );
+
+  int charges_max = charges;
+
+  // Charges are not being changed, just end.
+  if ( charges_max == new_max_charges )
+    return;
+
+  sim.print_debug( "{} adjusts {} max charges from {} to {}", *player, *this, charges_max,
+                             new_max_charges );
+  /**
+   * If the cooldown ongoing we can assume that the action isn't a nullptr as otherwise the action would not be ongoing.
+   * If it has no action we cannot call cooldown->start which means we cannot set fractional charges.
+   * However, a cooldown is not ongoing at maximum charges. if we have maximum charges then the number of charges will
+   * only ever change equal to the change in maximum charges. This means we'll never need to use cooldown->start to
+   * handle the case where cooldown is not ongoing and cooldown->reset is satisfactory.
+   */
+  if ( !ongoing() )
+  {
+    // Change charges to new max
+    charges = new_max_charges;
+    // Call reset, which will set current charges to new max and make relevant event calls
+    reset( false, -1 );
+  }
+  else
+  {
+    action_t* cooldown_action = action;
+    double charges_fractional = this->charges_fractional();
+
+    if ( new_max_charges < charges_max )
+    {
+      /**
+       * If our new max charges is less than current max charges, we have lost maximum charges.
+       * If we have lost maximum charges, we'll also lose current charges for charges lost but we'll keep current
+       * cooldown progress.
+       **/
+      int charges_lost   = charges_max - new_max_charges;
+      charges_fractional = charges_fractional >= charges_lost ? charges_fractional - charges_lost
+                                                              : charges_fractional - floor( charges_fractional );
+    }
+    else
+    {
+      /**
+       * Otherwise, we have gained maximum charges.
+       * Gaining maximum charges will give us those charges.
+       **/
+      int charges_gained = new_max_charges - charges_max;
+      charges_fractional += charges_gained;
+    }
+
+    // Set new maximum charges then reset to stop all events.
+    charges = new_max_charges;
+    reset( false, -1 );
+
+    /**
+     * This loop is used to remove all of the charges and start the cooldown recovery event properly.
+     * It does it by repetitively calling cooldown->start which will remove a current charge and restart the event
+     * timers.
+     */
+    for ( int i = 0; i < charges; i++ )
+      start( cooldown_action );
+
+    /**
+     * Use adjust to go from 0 charges and 0 cooldown progress to the previously calculated charges we should have after
+     * changing max charges by making the cooldown advance in time by the multiple of the cooldown.
+     */
+    adjust( -charges_fractional * cooldown_t::cooldown_duration( this ) );
+  }
+
+  // If the player is queueing an action that uses this cooldown, cancel it.
+  if ( player && player->queueing && player->queueing->cooldown == this )
+  {
+    event_t::cancel( player->queueing->queue_event );
+    player->queueing = nullptr;
+    if ( !player->executing && !player->channeling && !player->readying )
+      player->schedule_ready();
+  }
+}
+
+void cooldown_t::adjust_max_charges( int charge_change )
+{
+  auto new_charges = charges + charge_change;
+  assert( new_charges > 0 && "Adjusting cooldown charges results in 0 new charges." );
+  set_max_charges( new_charges );
+}
+
 void format_to( const cooldown_t& cooldown, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "Cooldown {}", cooldown.name_str );

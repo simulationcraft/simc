@@ -1036,7 +1036,7 @@ public:
       buff.bok_proc_sef->trigger( 1, buff_t::DEFAULT_VALUE(), 1, o()->buff.bok_proc->remains() );
 
     if ( o()->buff.hit_combo->up() )
-      buff.hit_combo_sef->trigger( o()->buff.hit_combo->stack() );
+      buff.hit_combo_sef->trigger( o()->buff.hit_combo->check() );
 
     if ( o()->buff.rushing_jade_wind->up() )
       buff.rushing_jade_wind_sef->trigger( 1, buff_t::DEFAULT_VALUE(), 1, o()->buff.rushing_jade_wind->remains() );
@@ -1524,7 +1524,7 @@ public:
     monk_pet_t::summon( duration );
 
     if ( o()->buff.hit_combo->up() )
-      buff.hit_combo_fm_ww->trigger( o()->buff.hit_combo->stack() );
+      buff.hit_combo_fm_ww->trigger( o()->buff.hit_combo->check() );
   }
 
   void create_buffs() override
@@ -1879,7 +1879,7 @@ public:
     monk_pet_t::summon( duration );
 
     if ( o()->buff.hit_combo->up() )
-      buff.hit_combo_fm_brm->trigger( o()->buff.hit_combo->stack() );
+      buff.hit_combo_fm_brm->trigger( o()->buff.hit_combo->check() );
   }
 
   void create_buffs() override

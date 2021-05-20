@@ -9,8 +9,6 @@
 #include "event_manager.hpp"
 #include "player/gear_stats.hpp"
 #include "progress_bar.hpp"
-#include "report/json/report_configuration.hpp"
-#include "sc_option.hpp"
 #include "sc_profileset.hpp"
 #include "sim_ostream.hpp"
 #include "util/concurrency.hpp"
@@ -41,6 +39,14 @@ struct scale_factor_control_t;
 struct sim_control_t;
 struct spell_data_expr_t;
 struct spell_data_t;
+
+namespace report
+{
+namespace json
+{
+class report_configuration_t;
+}
+}
 
 struct sim_progress_t
 {
@@ -116,10 +122,12 @@ struct sim_t : private sc_thread_t
   double      travel_variance, default_skill;
   timespan_t  reaction_time, regen_periodicity;
   timespan_t  ignite_sampling_delta;
-  bool        fixed_time, optimize_expressions;
+  int         optimize_expressions;
+  int         optimize_expressions_rounds;
   int         current_slot;
   int         optimal_raid, log, debug_each;
   std::vector<uint64_t> debug_seed;
+  bool        fixed_time;
   bool        save_profiles;
   bool        save_profile_with_actions; // When saving full profiles, include actions or not
   bool        default_actions;
@@ -378,11 +386,9 @@ struct sim_t : private sc_thread_t
     std::string unbound_changeling_stat_type = "default";
     /// Chance player is getting overhealed by Gluttonous Spike proc.
     double gluttonous_spike_overheal_chance = 1.0;
-
     /// Anima Field Emitter buff duration distribution, defaults to full duration.
     double anima_field_emitter_mean = std::numeric_limits<double>::max(),
            anima_field_emitter_stddev = 0.0;
-
     /// Retarget Shadowgrasp Totem if the use_item target demises after this many seconds
     timespan_t retarget_shadowgrasp_totem = 0_s;
     /// Disables the execute effect of Inscrutable Quantum Device since it is avoidable in game
@@ -396,7 +402,15 @@ struct sim_t : private sc_thread_t
     double wild_hunt_tactics_duration_multiplier = 1.0;
     /// Chance bonded hearts will heal a member of the other covenants when grove invigoration procs
     double bonded_hearts_other_covenant_chance = 1.0;
-
+    // Stat buff provided by Theotar's Party Favors soulbind (The Mad Duke's Tea buffs)
+    // Buff Types: "primary", "haste", "crit", "versatility"
+    std::string party_favor_type = "none";
+    // Battlefield Presence enemy count override
+    // Defaults to -1 to have the sim constantly adjust the value based on number of enemies in the sim
+    int battlefield_presence_enemies = -1;
+    // Better Together Override
+    // Defaults active
+    bool better_together_ally = true;
   } shadowlands_opts;
 
   // Auras and De-Buffs

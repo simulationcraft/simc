@@ -17,6 +17,7 @@
 #include "player/unique_gear.hpp"
 #include "report/reports.hpp"
 #include "report/sc_highchart.hpp"
+#include "report/json/report_configuration.hpp"
 #include "sim/sc_profileset.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/sim_control.hpp"
@@ -1454,10 +1455,12 @@ sim_t::sim_t() :
   travel_variance( 0 ), default_skill( 1.0 ), reaction_time( timespan_t::from_seconds( 0.5 ) ),
   regen_periodicity( timespan_t::from_seconds( 0.25 ) ),
   ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) ),
-  fixed_time( true ), optimize_expressions( false ),
+  optimize_expressions( 2 ),
+  optimize_expressions_rounds( 1 ),
   current_slot( -1 ),
   optimal_raid( 0 ), log( 0 ),
   debug_each( 0 ),
+  fixed_time( true ),
   save_profiles( false ),
   save_profile_with_actions( true ),
   default_actions( false ),
@@ -3361,10 +3364,11 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
     auto filter = splits[ 2 ];
 
     // Call once to see if we have a valid raid expression.
-    raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter, true );
+    bool is_constant = false;
+    raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter, true, &is_constant );
 
-    if ( optimize_expressions && util::str_compare_ci( filter, "exists" ) )
-      return expr_t::create_constant( name_str, raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter ) );
+    if ( is_constant )
+      return expr_t::create_constant( name_str, raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter, false, &is_constant ) );
 
     struct raid_event_expr_t : public expr_t
     {
@@ -3373,12 +3377,12 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
       std::string filter;
 
       raid_event_expr_t( sim_t* s, util::string_view type, util::string_view filter ) :
-        expr_t( "raid_event" ), s( s ), type( type ), filter( filter )
+        expr_t( fmt::format("raid_event_{}_{}", type, filter) ), s( s ), type( type ), filter( filter )
       {}
 
       double evaluate() override
       {
-        return raid_event_t::evaluate_raid_event_expression( s, type, filter );
+        return raid_event_t::evaluate_raid_event_expression( s, type, filter, false, nullptr );
       }
 
     };
@@ -3449,7 +3453,8 @@ void sim_t::create_options()
   add_option( opt_func( "proxy", parse_proxy ) );
   add_option( opt_int( "stat_cache", stat_cache ) );
   add_option( opt_int( "max_aoe_enemies", max_aoe_enemies ) );
-  add_option( opt_bool( "optimize_expressions", optimize_expressions ) );
+  add_option( opt_int( "optimize_expressions", optimize_expressions, 0, std::numeric_limits<int>::max() ) );
+  add_option( opt_int( "optimize_expressions_rounds", optimize_expressions_rounds, 0, 100 ) );
   add_option( opt_bool( "single_actor_batch", single_actor_batch ) );
   add_option( opt_bool( "progressbar_type", progressbar_type ) );
   add_option( opt_bool( "allow_experimental_specializations", allow_experimental_specializations ) );
@@ -3819,6 +3824,9 @@ void sim_t::create_options()
   add_option( opt_float( "shadowlands.thrill_seeker_killing_blow_chance", shadowlands_opts.thrill_seeker_killing_blow_chance, 0.0, 1.0 ) );
   add_option( opt_float( "shadowlands.wild_hunt_tactics_duration_multiplier", shadowlands_opts.wild_hunt_tactics_duration_multiplier ) );
   add_option( opt_float( "shadowlands.bonded_hearts_other_covenant_chance", shadowlands_opts.bonded_hearts_other_covenant_chance, 0.0, 1.0 ) );
+  add_option( opt_string( "shadowlands.party_favor_type", shadowlands_opts.party_favor_type ) );
+  add_option( opt_int( "shadowlands.battlefield_presence_enemies", shadowlands_opts.battlefield_presence_enemies, 0, 3 ) );
+  add_option( opt_bool( "shadowlands.better_together_ally", shadowlands_opts.better_together_ally ) );
 }
 
 // sim_t::parse_option ======================================================
@@ -4125,9 +4133,9 @@ void sim_t::print_spell_query()
       std::cerr << "Unable to open spell query xml output file '" << spell_query_xml_output_file_str << "', using stdout instead\n";
       file = io::cfile( stdout, io::cfile::no_close() );
     }
-    std::shared_ptr<xml_node_t> root( new xml_node_t( "spell_query" ) );
+    auto root = xml_node_t( "spell_query" );
 
-    report::print_spell_query( root.get(), file, *this, *spell_query, spell_query_level );
+    report::print_spell_query( &root, file, *this, *spell_query, spell_query_level );
   }
   else
   {

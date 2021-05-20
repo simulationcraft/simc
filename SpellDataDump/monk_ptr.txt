@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -966,7 +966,7 @@ Category         : 1517: Renewing Mist (281231 effect#1)
 Affecting spells : Thunder Focus Tea (116680 effect#3), Shelter of Rin (281301 effects: #1, #2)
 Family Flags     : 23, 97
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ..x...x. 
+                 : ........ ........ .x...... ........   ........ .x...... ........ ..x...x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ x.......   ...x.... ........ ........ ........ 
@@ -1194,14 +1194,14 @@ Attributes       : ........ ........ x....... ........   ........ ..x....x .....
                  : Reset CD on encounter end (333)
 Effects          :
 #1 (id=129071)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.15000 | PvP Coefficient: 1.75000 | Radius: 0 - 40 yards | Target: At Caster (22) -> Raid Members (56)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.83000 | PvP Coefficient: 1.75000 | Radius: 0 - 40 yards | Target: At Caster (22) -> Raid Members (56)
 #2 (id=140011)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Radius: 0 - 40 yards | Target: At Caster (22) -> Raid Members (56)
 #3 (id=155430)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 4 | Radius: 0 - 40 yards | Target: At Caster (22) -> Raid Members (56)
 #4 (id=155431)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1 | Radius: 0 - 40 yards | Target: At Caster (22) -> Raid Members (56)
-Description      : Heals all party and raid members within $A1 yards for $m1 and clears them of all harmful Magical, Poison, and Disease effects.
+Description      : Heals all party and raid members within $A1 yards for $s1 and clears them of all harmful Magical, Poison, and Disease effects.
 
 Name             : Summon Jade Serpent Statue (id=115313) [Spell Family (53)] 
 Class            : Monk
@@ -1893,7 +1893,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.04200 | PvP Coefficient: 1.00000 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Gust of Mists (191894), Gust of Mists (328748), Gust of Mists (343819)
                    Family Flags: 110
-Description      : Renewing Mist, Enveloping Mist,$?s322104[ Expel Harm][] and Vivify cause a gust of healing mists, instantly healing the primary target for $191894s1.
+Description      : Renewing Mist, Enveloping Mist,$?s322104[ Expel Harm,][]$?s356722[ Revival,][] and Vivify cause a gust of healing mists, instantly healing the primary target for $191894s1.
 
 Name             : Crackling Jade Lightning (id=117952) [Spell Family (53)] 
 Class            : Monk
@@ -2085,7 +2085,7 @@ Proc Flags       : ...x.x.x .x...x.. .x.x.... ........
 Affecting spells : Thunder Focus Tea (116680 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Shelter of Rin (281301 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 23, 48
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
-                 : ..x..... x....... ........ ........   ........ .x...... ........ ..x...x. 
+                 : ..x..... x....... .x...... ........   ........ .x...... ........ ..x...x. 
                  : ........ .......x ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ x.......   ...x.... ........ ........ ........ 
@@ -2926,7 +2926,7 @@ Name             : Enveloping Mist (id=124682) [Spell Family (53)]
 Class            : Mistweaver Monk
 School           : Nature
 Spell Type       : Magic
-Resource         : 6% Base Mana (0) (id=7504)
+Resource         : 5.6% Base Mana (0) (id=7504)
 Spell Level      : 12
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -3553,19 +3553,19 @@ Effects          :
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
                    Family Flags: 39
 #11 (id=260832)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000
+                   Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
                    Family Flags: 39
 #12 (id=260833)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
 #13 (id=260834)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
                    Affected Spells: Tiger Palm (100780)
                    Family Flags: 10
 #14 (id=260835)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
+                   Base Value: 92 | Scaled Value: 92 | PvP Coefficient: 1.00000
                    Affected Spells: Spinning Crane Kick (107270)
                    Family Flags: 8
 #15 (id=741702)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
@@ -8772,6 +8772,7 @@ Spell Level      : 48
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 120 seconds
+Labels           : 976
 Internal Cooldown: 0.1 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -9670,6 +9671,7 @@ Velocity         : 20 yards/sec
 Min Travel Time  : 0.2 seconds
 Duration         : 10 seconds
 Cooldown         : 60 seconds
+Labels           : 976
 Proc Chance      : 50%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -9744,6 +9746,7 @@ Spell Level      : 48
 GCD              : 1 seconds
 Duration         : 24 seconds
 Cooldown         : 180 seconds
+Labels           : 976
 Family Flags     : 62
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9780,6 +9783,7 @@ Duration         : 30 seconds
 Cooldown         : 0.5 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1910
+Labels           : 976
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Family Flags     : 14
@@ -11995,5 +11999,153 @@ Effects          :
 #3 (id=886003)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
 Description      : $@spelldesc353936
+
+Name             : Bountiful Brew (id=356592) [Spell Family (53), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Internal Cooldown: 0.5 seconds
+Proc Chance      : 101%
+Real PPM         : 1.25
+Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
+                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=890548)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your abilities have a low chance to cast Bonedust Brew at your targets location.
+
+Name             : Call to Arms (id=356684) [Spell Family (53), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Internal Cooldown: 0.5 seconds
+Proc Chance      : 101%
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Magic Heal
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=890683)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 12000 | Scaled Value: 12000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Weapons of Order calls forth $?c1[Niuzao, the Black Ox]?c2[Yu'lon, the Jade Serpent][Xuen, the White Tiger] to assist you for ${$s1/1000} sec.
+
+Name             : Faeline Harmony (id=356705) [Spell Family (53), Passive, Hidden] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=890716)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your abilities chance to reset Faeline Stomp is doubled. Enemies and allies hit by Faeline Stomp are affected by Fae Exposure, increasing your damage and healing against them by $356774s1% for $356774d.
+
+Name             : Revival (desc=Rank 2) (id=356722) [Spell Family (53), Passive] 
+Class            : Mistweaver Monk
+School           : Physical
+Spell Type       : None
+Spell Level      : 56
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6)
+Effects          :
+#1 (id=890740)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Revival now causes a Gust of Mists on all targets.
+
+Name             : Fae Exposure (id=356773) 
+Class            : Monk
+School           : Physical
+Spell Type       : Melee
+Range            : 50000 yards
+Duration         : 10 seconds
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ x....... ......x. 
+                 : x....... ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ..x..... ........ 
+                 : ........ ........ ........ ........   
+                 : Disable player procs (112)
+Effects          :
+#1 (id=890814)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
+Description      : $@spelldesc356705
+Tooltip          : Damage taken from $@auracaster increased by $s1%
+
+Name             : Fae Exposure (id=356774) 
+Class            : Monk
+School           : Physical
+Spell Type       : Melee
+Range            : 50000 yards
+Duration         : 10 seconds
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ x....... ......x. 
+                 : x....... ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ..x..... ........ 
+                 : ........ ........ ........ ........   
+                 : Disable player procs (112)
+Effects          :
+#1 (id=890815)   : Apply Aura (6) | Unknown(504)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Friend (21)
+Description      : $@spelldesc356705
+Tooltip          : Healing taken from $@auracaster increased by $s1%
+
+Name             : Sinister Teachings (id=356818) [Spell Family (53), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Internal Cooldown: 0.75 seconds
+Proc Chance      : 101%
+Proc Flags       : ....x... x.x.x.x. x....x.. ........ 
+                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Trap Triggered
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=890898)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=890913)   : Dummy (3)
+                   Base Value: 24 | Scaled Value: 24 | PvP Coefficient: 1.00000
+#3 (id=890914)   : Dummy (3)
+                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000
+Description      : Fallen Order summons $s1 additional $?$C1[Ox]?$C2[Crane][Tiger] adept for $s2 sec. While you have an active adept your abilities that critically hit reduce the cooldown of Fallen Order by ${$s3/1000} sec.
 
 

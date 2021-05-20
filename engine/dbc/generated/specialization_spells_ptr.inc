@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 9.1.0.38600
-static const std::array<specialization_spell_entry_t, 927> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 9.1.0.38709
+static const std::array<specialization_spell_entry_t, 928> __ptr_specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -708,6 +708,7 @@ static const std::array<specialization_spell_entry_t, 927> __ptr_specialization_
   { 10,  270, 343655,      0, "Enveloping Breath"                 , 0 },
   { 10,  270, 343744,      0, "Life Coccoon"                      , "Rank 2" },
   { 10,  270, 344360,      0, "Touch of Death"                    , "Rank 3" },
+  { 10,  270, 356722,      0, "Revival"                           , "Rank 2" },
   { 10,  269, 101545,      0, "Flying Serpent Kick"               , 0 },
   { 10,  269, 107428,      0, "Rising Sun Kick"                   , 0 },
   { 10,  269, 113656,      0, "Fists of Fury"                     , 0 },

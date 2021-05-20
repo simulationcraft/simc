@@ -760,6 +760,15 @@ double warlock_t::resource_regen_per_second( resource_e r ) const
   return reg;
 }
 
+double warlock_t::composite_attribute_multiplier( attribute_e attr ) const
+{
+  double m = player_t::composite_attribute_multiplier( attr );
+  if ( attr == ATTR_STAMINA )
+    m *= 1.0 + spec.demonic_embrace->effectN( 1 ).percent();
+    
+  return m;
+}
+
 //Note: Level is checked to be >=27 by the function calling this. This is technically wrong for warlocks due to
 //a missing level requirement in data, but correct generally.
 double warlock_t::matching_gear_multiplier( attribute_e attr ) const
@@ -897,6 +906,7 @@ void warlock_t::init_spells()
 
   // General
   spec.nethermancy = find_spell( 86091 );
+  spec.demonic_embrace = find_spell( 288843 );
 
   // Specialization Spells
   spec.immolate         = find_specialization_spell( "Immolate" );
@@ -1574,33 +1584,6 @@ void warlock_t::apply_affecting_auras( action_t& action )
   }
 }
 
-/* Report Extension Class
- * Here you can define class specific report extensions/overrides
- */
-class warlock_report_t : public player_report_extension_t
-{
-public:
-  warlock_report_t( warlock_t& player ) : p( player )
-  {
-  }
-
-  void html_customsection( report::sc_html_stream& /* os*/ ) override
-  {
-    (void)p;
-    /*// Custom Class Section
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-    << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
-    << "\t\t\t\t\t<div class=\"toggle-content\">\n";
-
-    os << p.name();
-
-    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
-  }
-
-private:
-  warlock_t& p;
-};
-
 struct warlock_module_t : public module_t
 {
   warlock_module_t() : module_t( WARLOCK )
@@ -1609,9 +1592,7 @@ struct warlock_module_t : public module_t
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
-    auto p              = new warlock_t( sim, name, r );
-    p->report_extension = std::unique_ptr<player_report_extension_t>( new warlock_report_t( *p ) );
-    return p;
+    return new warlock_t( sim, name, r );
   }
 
   //TODO: Hotfix may not be needed any longer, if so leave this function empty instead

@@ -221,6 +221,11 @@ azerite_essence_t::azerite_essence_t( const player_t* player, const spell_data_t
   m_base_major.push_back( passive );
 }
 
+const char* azerite_essence_t::name() const
+{
+  return m_essence->name;
+}
+
 const item_t* azerite_essence_t::item() const
 {
   if ( m_player->items.size() > static_cast<size_t>( SLOT_NECK ) )
@@ -2424,7 +2429,7 @@ void azerite_globules( special_effect_t& effect )
       assert( debuff );
 
       debuff -> trigger();
-      if ( debuff -> stack() == debuff -> max_stack() )
+      if ( debuff -> check() == debuff -> max_stack() )
       {
         debuff -> expire();
         proc_action -> set_target( s -> target );
@@ -5702,7 +5707,7 @@ struct reaping_flames_t : public azerite_essence_major_t
 
     if ( damage_buff )
     {
-      am *= 1.0 + damage_buff->value();
+      am *= 1.0 + damage_buff->check_value();
     }
 
     return am;

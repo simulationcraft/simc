@@ -382,19 +382,30 @@ public:
 
     if ( p()->buff.faeline_stomp->up() && trigger_faeline_stomp &&
          p()->rng().roll( p()->user_options.faeline_stomp_uptime ) )
-      if ( p()->rng().roll( p()->buff.faeline_stomp->value() ) )
+    {
+      double reset_value = p()->buff.faeline_stomp->value();
+
+      if ( p()->legendary.faeline_harmony->ok() )
+        reset_value *= 2; // Right now hard-coded; TODO get effect value once implemented.
+
+      if ( p()->rng().roll( reset_value ) )
       {
         p()->cooldown.faeline_stomp->reset( true, 1 );
         p()->buff.faeline_stomp_reset->trigger();
       }
+    }
+
+    // Only triggers from abilities. Use the May Combo Strike boolean for the time being until a
+    // better solution to indicate triggering abilities.
+    if ( p()->legendary.bountiful_brew->ok() && may_combo_strike && 
+        p()->rppm.bountiful_brew->trigger() )
+      p()->active_actions.bountiful_brew->execute();
   }
 
   void impact( action_state_t* s ) override
   {
     if ( s->action->school == SCHOOL_PHYSICAL )
-    {
       trigger_mystic_touch( s );
-    }
 
     // Don't want to cause the buff to be cast and then used up immediately.
     if ( current_resource() == RESOURCE_CHI )
@@ -415,6 +426,12 @@ public:
     }
 
     ab::impact( s );
+
+    if ( p()->legendary.sinister_teachings->ok() )
+    {
+      if ( s->result == RESULT_CRIT && p()->buff.fallen_order->up() )
+        p()->cooldown.fallen_order->adjust( -1 * p()->legendary.sinister_teachings->effectN( 3 ).time_value() );
+    }
 
     p()->trigger_empowered_tiger_lightning( s );
 
@@ -464,6 +481,9 @@ struct monk_spell_t : public monk_action_t<spell_t>
 
     if ( td( t )->debuff.weapons_of_order->up() )
       m *= 1 + td( t )->debuff.weapons_of_order->stack_value();
+
+    if ( td( t )->debuff.fae_exposure->up() )
+      m *= 1 + p()->passives.fae_exposure_dmg->effectN( 1 ).percent();
 
     return m;
   }
@@ -571,6 +591,9 @@ struct monk_heal_t : public monk_action_t<heal_t>
 
       if ( p()->buff.life_cocoon->up() )
         am *= 1.0 + p()->spec.life_cocoon->effectN( 2 ).percent();
+
+      if ( p()->buff.fae_exposure->up() )
+        am *= 1.0 + p()->passives.fae_exposure_heal->effectN( 1 ).percent();
     }
 
     if ( p()->buff.storm_earth_and_fire->up() )
@@ -815,6 +838,9 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
     if ( td( t )->debuff.weapons_of_order->up() )
       m *= 1 + td( t )->debuff.weapons_of_order->stack_value();
+
+    if ( td( t )->debuff.fae_exposure->up() )
+      m *= 1 + p()->passives.fae_exposure_dmg->effectN( 1 ).percent();
 
     return m;
   }
@@ -1742,6 +1768,20 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
 struct spinning_crane_kick_t : public monk_melee_attack_t
 {
+  struct spinning_crane_kick_state_t : public action_state_t
+  {
+    spinning_crane_kick_state_t( action_t* a, player_t* target ) : action_state_t( a, target )
+    {
+    }
+
+    proc_types2 cast_proc_type2() const override
+    {
+      // Spinning Crane Kick seems to trigger Bron's Call to Action (and possibly other
+      // effects that care about casts).
+      return PROC2_CAST;
+    }
+  };
+
   chi_explosion_t* chi_x;
 
   spinning_crane_kick_t( monk_t* p, util::string_view options_str )
@@ -1756,7 +1796,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     may_combo_strike      = true;
     trigger_faeline_stomp = true;
 
-    may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+    may_crit = may_miss = may_block = may_dodge = may_parry = false;
     tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
 
     spell_power_mod.direct = 0.0;
@@ -1766,6 +1806,11 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
         new sck_tick_action_t( "spinning_crane_kick_tick", p, p->spec.spinning_crane_kick->effectN( 1 ).trigger() );
 
     chi_x = new chi_explosion_t( p );
+  }
+
+  action_state_t* new_state() override
+  {
+    return new spinning_crane_kick_state_t( this, p()->target );
   }
 
   // N full ticks, but never additional ones.
@@ -2002,6 +2047,20 @@ struct whirling_dragon_punch_tick_t : public monk_melee_attack_t
 
 struct whirling_dragon_punch_t : public monk_melee_attack_t
 {
+  struct whirling_dragon_punch_state_t : public action_state_t
+  {
+    whirling_dragon_punch_state_t( action_t* a, player_t* target ) : action_state_t( a, target )
+    {
+    }
+
+    proc_types2 cast_proc_type2() const override
+    {
+      // Whirling Dragon Punch seems to trigger Bron's Call to Action (and possibly other
+      // effects that care about casts).
+      return PROC2_CAST;
+    }
+  };
+
   whirling_dragon_punch_tick_t* ticks[3];
 
   struct whirling_dragon_punch_tick_event_t : public event_t
@@ -2025,7 +2084,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     sef_ability = SEF_WHIRLING_DRAGON_PUNCH;
 
     parse_options( options_str );
-    interrupt_auto_attack = callbacks = false;
+    interrupt_auto_attack             = false;
     channeled                         = false;
     may_combo_strike                  = true;
     trigger_faeline_stomp             = true;
@@ -2039,6 +2098,11 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
       ticks[i] = 
         new whirling_dragon_punch_tick_t( "whirling_dragon_punch_tick", p, p->passives.whirling_dragon_punch_tick, delay );
     }
+  }
+
+  action_state_t* new_state() override
+  {
+    return new whirling_dragon_punch_state_t( this, p()->target );
   }
 
   void execute() override
@@ -3706,12 +3770,57 @@ struct weapons_of_order_t : public monk_spell_t
       p()->cooldown.keg_smash->reset( true, 1 );
 
     monk_spell_t::execute();
+
+    if ( p()->legendary.call_to_arms->ok() )
+    {
+      switch ( p()->specialization() )
+      {
+        case MONK_BREWMASTER:
+          p()->pets.niuzao->summon( p()->legendary.call_to_arms->effectN( 1 ).time_value() );
+          break;
+        case MONK_MISTWEAVER:
+          p()->pets.yulon->summon( p()->legendary.call_to_arms->effectN( 1 ).time_value() );
+          break;
+        case MONK_WINDWALKER:
+        {
+          timespan_t duration = p()->legendary.call_to_arms->effectN( 1 ).time_value();
+          p()->pets.xuen->summon( duration );
+          p()->buff.invoke_xuen->trigger( duration );
+          break;
+        }
+      }
+    }
   }
 };
 
 // ==========================================================================
 // Bonedust Brew - Necrolord Covenant Ability
 // ==========================================================================
+struct bountiful_brew_t : public monk_spell_t
+{
+  bountiful_brew_t( monk_t& p )
+    : monk_spell_t( "bountiful_brew", &p, p.legendary.bountiful_brew )
+  {
+    harmful            = false;
+    cooldown->duration = timespan_t::zero();
+    aoe                = -1;
+    base_dd_min        = 0;
+    base_dd_max        = 0;
+  }
+
+  void execute() override
+  {
+    p()->buff.bonedust_brew_hidden->trigger();
+    monk_spell_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_spell_t::impact( s );
+
+    td( s->target )->debuff.bonedust_brew->trigger();
+  }
+};
 
 struct bonedust_brew_t : public monk_spell_t
 {
@@ -3836,6 +3945,9 @@ struct faeline_stomp_damage_t : public monk_spell_t
     monk_spell_t::impact( s );
 
     td( s->target )->debuff.faeline_stomp->trigger();
+
+    if ( p()->legendary.faeline_harmony->ok() )
+      td( s->target )->debuff.fae_exposure->trigger();
   }
 };
 
@@ -3862,6 +3974,14 @@ struct faeline_stomp_heal_t : public monk_heal_t
     }
 
     return cam;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_heal_t::impact( s );
+
+    if ( p()->legendary.faeline_harmony->ok() )
+      p()->buff.fae_exposure->trigger();
   }
 };
 
@@ -4024,6 +4144,26 @@ struct fallen_order_t : public monk_spell_t
             fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, summon_duration ) );
           break;
         }
+        default:
+          break;
+      }
+    }
+
+    p()->buff.fallen_order->trigger();
+
+    if ( p()->legendary.sinister_teachings->ok() )
+    {
+      switch ( spec )
+      {
+        case MONK_BREWMASTER:
+          p()->pets.fallen_monk_brm.spawn( timespan_t::from_seconds( p()->legendary.sinister_teachings->effectN( 2 ).base_value() ), 1 );
+          break;
+        case MONK_MISTWEAVER:
+          p()->pets.fallen_monk_mw.spawn( timespan_t::from_seconds( p()->legendary.sinister_teachings->effectN( 2 ).base_value() ), 1 );
+          break;
+        case MONK_WINDWALKER:
+          p()->pets.fallen_monk_ww.spawn( timespan_t::from_seconds( p()->legendary.sinister_teachings->effectN( 2 ).base_value() ), 1 );
+          break;
         default:
           break;
       }
@@ -4491,7 +4631,7 @@ struct expel_harm_t : public monk_heal_t
     if ( p()->buff.gift_of_the_ox->up() && p()->spec.expel_harm_2_brm->ok() )
     {
       double goto_heal = p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff();
-      goto_heal *= p()->buff.gift_of_the_ox->stack();
+      goto_heal *= p()->buff.gift_of_the_ox->check();
       result += goto_heal;
     }
 
@@ -4499,7 +4639,7 @@ struct expel_harm_t : public monk_heal_t
     dmg->base_dd_max = result;
     dmg->execute();
 
-    for ( int i = 0; i < p()->buff.gift_of_the_ox->stack(); i++ )
+    for ( int i = 0; i < p()->buff.gift_of_the_ox->check(); i++ )
     {
       p()->buff.gift_of_the_ox->decrement();
     }
@@ -5180,7 +5320,7 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<buff_t>
   invoke_xuen_the_white_tiger_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     set_cooldown( timespan_t::zero() );
-    set_refresh_behavior( buff_refresh_behavior::NONE );
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
 
     set_period( p.spec.invoke_xuen->effectN( 2 ).period() );
 
@@ -5391,6 +5531,10 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
       make_buff( *this, "weapons_of_order_debuff", p->find_spell( 312106 ) )->set_default_value_from_effect( 1 );
 
   // Shadowland Legendary
+  debuff.fae_exposure = make_buff( *this, "fae_exposure_damage", p->passives.fae_exposure_dmg )
+                            ->set_default_value_from_effect( 1 )
+                            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                            ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
   debuff.keefers_skyreach = make_buff( *this, "keefers_skyreach", p->find_spell( 344021 ) )
                                 ->set_default_value_from_effect( 1 )
                                 ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
@@ -5423,6 +5567,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
     mastery(),
     cooldown(),
     passives(),
+    rppm(),
     covenant(),
     conduit(),
     legendary(),
@@ -5907,6 +6052,7 @@ void monk_t::init_spells()
   spec.renewing_mist              = find_specialization_spell( "Renewing Mist" );
   spec.renewing_mist_2            = find_rank_spell( "Renewing Mist", "Rank 2" );
   spec.revival                    = find_specialization_spell( "Revival" );
+  spec.revival_2                  = find_rank_spell( "Revival", "Rank 2" );
   spec.soothing_mist              = find_specialization_spell( "Soothing Mist" );
   spec.teachings_of_the_monastery = find_specialization_spell( "Teachings of the Monastery" );
   spec.thunder_focus_tea          = find_specialization_spell( "Thunder Focus Tea" );
@@ -6004,6 +6150,12 @@ void monk_t::init_spells()
   legendary.last_emperors_capacitor = find_runeforge_legendary( "Last Emperor's Capacitor" );
   legendary.xuens_battlegear        = find_runeforge_legendary( "Xuen's Treasure" );
 
+  // Covenant
+  legendary.bountiful_brew       = find_runeforge_legendary( "Bountiful Brew" );
+  legendary.call_to_arms         = find_runeforge_legendary( "Call to Arms" );
+  legendary.faeline_harmony      = find_runeforge_legendary( "Faeline Harmony" );
+  legendary.sinister_teachings   = find_runeforge_legendary( "Sinister Teachings" );
+
   // Passives =========================================
   // General
   passives.aura_monk        = find_spell( 137022 );
@@ -6078,7 +6230,9 @@ void monk_t::init_spells()
 
   // Shadowland Legendary
   passives.chi_explosion        = find_spell( 337342 );
-  passives.shaohaos_might            = find_spell( 337570 );
+  passives.fae_exposure_dmg     = find_spell( 356773 );
+  passives.fae_exposure_heal    = find_spell( 356774 );
+  passives.shaohaos_might       = find_spell( 337570 );
   passives.charred_passions_dmg = find_spell( 338141 );
 
   // Mastery spells =========================================
@@ -6114,6 +6268,9 @@ void monk_t::init_spells()
   // Covenant
   active_actions.bonedust_brew_dmg  = new actions::spells::bonedust_brew_damage_t( *this );
   active_actions.bonedust_brew_heal = new actions::spells::bonedust_brew_heal_t( *this );
+
+  // Legendary
+  active_actions.bountiful_brew = new actions::spells::bountiful_brew_t( *this );
 }
 
 // monk_t::init_base ========================================================
@@ -6388,6 +6545,8 @@ void monk_t::create_buffs()
 
   buff.faeline_stomp_reset = make_buff( this, "faeline_stomp_reset", find_spell( 327276 ) );
 
+  buff.fallen_order = make_buff( this, "fallen_order", find_spell( 326860 ) );
+
   // Covenant Conduits
   buff.fortifying_ingrediences = make_buff<absorb_buff_t>( this, "fortifying_ingredients", find_spell( 336874 ) );
   buff.fortifying_ingrediences->set_absorb_source( get_stats( "fortifying_ingredients" ) )
@@ -6417,6 +6576,10 @@ void monk_t::create_buffs()
 
   buff.the_emperors_capacitor =
       make_buff( this, "the_emperors_capacitor", find_spell( 337291 ) )->set_default_value_from_effect( 1 );
+
+  // Covenants
+  buff.fae_exposure =
+      make_buff( this, "fae_exposure_heal", passives.fae_exposure_heal )->set_default_value_from_effect( 1 );
 }
 
 // monk_t::init_gains =======================================================
@@ -6473,6 +6636,15 @@ void monk_t::init_assessors()
     accumulate_gale_burst_damage( s );
     return assessor::CONTINUE;
   } );
+}
+
+// monk_t::init_rng =======================================================
+
+void monk_t::init_rng()
+{
+  player_t::init_rng();
+  if ( legendary.bountiful_brew->ok() )
+    rppm.bountiful_brew = get_rppm( "bountiful_brew", find_spell( 356592 ) );
 }
 
 // monk_t::reset ============================================================

@@ -6,17 +6,22 @@
 #pragma once
 
 #include "config.hpp"
+
 #include "dbc/data_enums.hh"
+#include "util/string_view.hpp"
+
 #include <cstdint>
 #include <string>
+#include <vector>
 
-
+class dbc_t;
 struct item_t;
 struct dbc_item_data_t;
 struct item_enchantment_data_t;
 struct item_bonus_entry_t;
 struct special_effect_t;
 struct stat_pair_t;
+struct player_t;
 
 // Item database ============================================================
 

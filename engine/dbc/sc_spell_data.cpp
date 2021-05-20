@@ -1023,6 +1023,31 @@ struct spell_attribute_expr_t : public spell_list_expr_t
   }
 };
 
+struct spell_label_expr_t : public spell_list_expr_t
+{
+  spell_label_expr_t( dbc_t& dbc, expr_data_e type ) : spell_list_expr_t( dbc, "label", type ) { }
+
+  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
+  {
+    if ( other.result_tok != expression::TOK_NUM )
+      return {};
+
+    return filter_spells( [&]( const spell_data_t& spell ) {
+        return spell.affected_by_label( as<unsigned>( other.result_num ) );
+      } );
+  }
+
+  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
+  {
+    if ( other.result_tok != expression::TOK_NUM )
+      return {};
+
+    return filter_spells( [&]( const spell_data_t& spell ) {
+        return !spell.affected_by_label( as<unsigned>( other.result_num ) );
+      } );
+  }
+};
+
 struct spell_school_expr_t : public spell_list_expr_t
 {
   spell_school_expr_t(dbc_t& dbc, expr_data_e type ) : spell_list_expr_t( dbc, "school", type ) { }
@@ -1147,6 +1172,8 @@ std::unique_ptr<spell_data_expr_t> spell_data_expr_t::create_spell_expression( d
     return std::make_unique<spell_race_expr_t>( dbc, data_type );
   else if ( util::str_compare_ci( splits[ 1 ], "attribute" ) )
     return std::make_unique<spell_attribute_expr_t>( dbc, data_type );
+  else if ( util::str_compare_ci( splits[ 1 ], "label" ) )
+    return std::make_unique<spell_label_expr_t>( dbc, data_type );
   else if ( data_type != DATA_TALENT && util::str_compare_ci( splits[ 1 ], "flag" ) )
     return std::make_unique<spell_flag_expr_t>( dbc, data_type );
   else if ( data_type != DATA_TALENT && util::str_compare_ci( splits[ 1 ], "school" ) )

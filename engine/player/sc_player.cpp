@@ -45,6 +45,7 @@
 #include "player/stats.hpp"
 #include "player/player_talent_points.hpp"
 #include "player/unique_gear.hpp"
+#include "player/runeforge_data.hpp"
 #include "sim/benefit.hpp"
 #include "sim/event.hpp"
 #include "sim/proc.hpp"
@@ -54,6 +55,7 @@
 #include "sim/sc_sim.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/shuffled_rng.hpp"
+#include "sim/cooldown_waste_data.hpp"
 #include "util/io.hpp"
 #include "util/rng.hpp"
 #include "util/util.hpp"
@@ -1146,7 +1148,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     no_action_list_provided(),
     // Reporting
     quiet( false ),
-    report_extension( new player_report_extension_t() ),
+    report_extension(),
     arise_time( timespan_t::min() ),
     iteration_fight_length(),
     iteration_waiting_time(),
@@ -3383,7 +3385,7 @@ double player_t::composite_melee_haste() const
     if ( buffs.mongoose_oh && buffs.mongoose_oh->check() )
       h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
 
-    if ( buffs.berserking->up() )
+    if ( buffs.berserking->check() )
       h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
 
     if ( buffs.guardian_of_azeroth->check() )
@@ -3959,6 +3961,11 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t* )
 
   m *= 1.0 + racials.command->effectN( 1 ).percent();
 
+  // By default effect 1 is used for the player modifier, effect 2 is for the pet modifier
+  if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
+    m *=
+        1.0 + ( buffs.battlefield_presence->data().effectN( 2 ).percent() * buffs.battlefield_presence->current_stack );
+
   return m;
 }
 
@@ -3992,6 +3999,9 @@ double player_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.volatile_solvent_damage && buffs.volatile_solvent_damage->has_common_school( school ) )
     m *= 1.0 + buffs.volatile_solvent_damage->check_value();
+
+  if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
+    m *= 1.0 + buffs.battlefield_presence->check_stack_value();
 
   return m;
 }
@@ -4040,7 +4050,7 @@ double player_t::composite_player_heal_multiplier( const action_state_t* ) const
 {
   double m = 1.0;
 
-  if ( buffs.blessing_of_spring->up() )
+  if ( buffs.blessing_of_spring->check() )
     m *= 1.0 + buffs.blessing_of_spring->data().effectN( 1 ).percent();
 
   return m;
@@ -4230,7 +4240,7 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       if ( buffs.archmages_incandescence_int->check() )
         m *= 1.0 + buffs.archmages_incandescence_int->data().effectN( 1 ).percent();
       if ( sim->auras.arcane_intellect->check() )
-        m *= 1.0 + sim->auras.arcane_intellect->value();
+        m *= 1.0 + sim->auras.arcane_intellect->current_value;
       break;
     case ATTR_SPIRIT:
       pct_type = STAT_PCT_BUFF_SPIRIT;
@@ -4243,7 +4253,7 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       pct_type = STAT_PCT_BUFF_STAMINA;
       if ( sim->auras.power_word_fortitude->check() )
       {
-        m *= 1.0 + sim->auras.power_word_fortitude->value();
+        m *= 1.0 + sim->auras.power_word_fortitude->current_value;
       }
       break;
     default:
@@ -4750,6 +4760,7 @@ void player_t::datacollection_begin()
   range::for_each( proc_list, std::mem_fn( &proc_t::datacollection_begin ) );
   range::for_each( pet_list, std::mem_fn( &pet_t::datacollection_begin ) );
   range::for_each( sample_data_list, std::mem_fn( &sample_data_helper_t::datacollection_begin ) );
+  range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_begin ) );
 }
 
 /**
@@ -4814,6 +4825,7 @@ void player_t::datacollection_end()
   range::for_each( benefit_list, std::mem_fn( &benefit_t::datacollection_end ) );
   range::for_each( proc_list, std::mem_fn( &proc_t::datacollection_end ) );
   range::for_each( sample_data_list, std::mem_fn( &sample_data_helper_t::datacollection_end ) );
+  range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_end ) );
 }
 
 // player_t::merge ==========================================================
@@ -5062,6 +5074,15 @@ void player_t::merge( player_t& other )
           other.action_list[ i ]->action_list ? other.action_list[ i ]->action_list->name_str.c_str() : "(none)",
           other.action_list[ i ]->signature_str );
     }
+  }
+
+  // Cooldown waste data
+  for ( size_t i = 0; i < cooldown_waste_data_list.size(); i++ )
+  {
+    const auto& ours   = cooldown_waste_data_list[ i ];
+    const auto& theirs = other.cooldown_waste_data_list[ i ];
+    assert( ours->cd->name_str == theirs->cd->name_str );
+    ours->merge( *theirs );
   }
 }
 
@@ -5980,7 +6001,7 @@ void player_t::recalculate_resource_max( resource_e resource_type, gain_t* sourc
       // Redirected Anima also affects temporary bonus health
       if ( buffs.redirected_anima && buffs.redirected_anima->up() )
       {
-        resources.max[ resource_type ] *= 1.0 + buffs.redirected_anima->stack() * buffs.redirected_anima->default_value;
+        resources.max[ resource_type ] *= 1.0 + buffs.redirected_anima->check_stack_value();
       }
 
       // Make sure the player starts combat with full health
@@ -7270,6 +7291,18 @@ int player_t::get_action_id( util::string_view name )
 
   action_map.emplace_back( name );
   return static_cast<int>(action_map.size() - 1);
+}
+
+cooldown_waste_data_t* player_t::get_cooldown_waste_data( const cooldown_t* cd )
+{
+  for ( const auto& cdw : cooldown_waste_data_list )
+  {
+    if ( cdw->cd->name_str == cd->name_str )
+      return cdw.get();
+  }
+
+  cooldown_waste_data_list.push_back( std::make_unique<cooldown_waste_data_t>( cd ) );
+  return cooldown_waste_data_list.back().get();
 }
 
 namespace
@@ -8693,7 +8726,7 @@ struct pool_resource_t : public action_t
 
     if ( !amount_str.empty() )
     {
-      amount_expr = expr_t::parse( this, amount_str, sim->optimize_expressions );
+      amount_expr = expr_t::parse( this, amount_str, false );
       if (amount_expr == nullptr)
       {
         throw std::invalid_argument(fmt::format("Could not parse amount if expression from '{}'", amount_str));
@@ -11284,9 +11317,9 @@ void player_t::create_options()
   add_option( opt_bool( "external_buffs.focus_magic", external_buffs.focus_magic ) );
 
   // Timed External Buffs
-  auto opt_external_buff_times = [ this ] ( util::string_view name, std::vector<timespan_t>& times )
+  auto opt_external_buff_times = [] ( util::string_view name, std::vector<timespan_t>& times )
   {
-    return opt_func( name, [ this, & times ] ( sim_t*, util::string_view, util::string_view val )
+    return opt_func( name, [ & times ] ( sim_t*, util::string_view, util::string_view val )
     {
       times.clear();
       auto splits = util::string_split<util::string_view>( val, "/" );
@@ -11361,6 +11394,7 @@ void player_t::analyze( sim_t& s )
   range::for_each( proc_list, []( proc_t* pr ) { pr->analyze(); } );
   range::for_each( uptime_list, []( uptime_t* up ) { up->analyze(); } );
   range::for_each( benefit_list, []( benefit_t* ben ) { ben->analyze(); } );
+  range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::analyze ) );
 
   range::sort( stats_list, []( const stats_t* l, const stats_t* r ) { return l->name_str < r->name_str; } );
 
@@ -12849,7 +12883,7 @@ void player_t::acquire_target( retarget_source event, player_t* context )
   // TODO: Fancier system
   for ( auto enemy : sim->target_non_sleeping_list )
   {
-    if ( enemy->debuffs.invulnerable != nullptr && enemy->debuffs.invulnerable->up() )
+    if ( enemy->debuffs.invulnerable != nullptr && enemy->debuffs.invulnerable->check() )
     {
       if ( first_invuln_target == nullptr )
       {
@@ -12865,7 +12899,7 @@ void player_t::acquire_target( retarget_source event, player_t* context )
   // Invulnerable targets are currently not in the target_non_sleeping_list, so fall back to
   // checking if the first target has the invulnerability buff up, and use that as the fallback
   auto first_target = sim->target_list.data().front();
-  if ( !first_invuln_target && first_target->debuffs.invulnerable->up() )
+  if ( !first_invuln_target && first_target->debuffs.invulnerable->check() )
   {
     first_invuln_target = first_target;
   }
@@ -13092,4 +13126,9 @@ void player_t::init_distance_targeting()
 void format_to( const player_t& player, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "Player '{}'", player.name() );
+}
+
+bool player_t::is_ptr() const
+{
+  return maybe_ptr(dbc->ptr);
 }

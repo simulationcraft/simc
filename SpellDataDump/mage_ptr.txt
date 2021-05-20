@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -1876,10 +1876,10 @@ Description      : Warp the flow of time, increasing haste by $s1% $?a320919[and
 
 Allies will be unable to benefit from Bloodlust, Heroism, or Time Warp again for $57724d.$?a320920[
 
-When the effect ends, you die.][]
+When the effect ends, all affected players are frozen in time for $356346d.][]
 Tooltip          : Haste increased by $w1%. $?$W4>0[Time rate increased by $w4%.][]$?$W3=1[
 
-When the effect ends, you die.][]
+When the effect ends, all affected players are frozen in time for $356346d.][]
 
 Name             : Temporal Displacement (id=80354) 
 Class            : Mage
@@ -8942,6 +8942,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
+Labels           : 976
 Proc Chance      : 100%
 Proc Flags       : ........ x...x... x.x..... ........ 
                  : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -9008,7 +9009,8 @@ Spell Level      : 48
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 60 seconds
-Labels           : 1048: Discipline of the Grove (336992 effect#1)
+Labels           : 976
+                 : 1048: Discipline of the Grove (336992 effect#1)
 Attributes       : ........ ........ x....... ........   ......x. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -9044,6 +9046,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 25 seconds
 Cooldown         : 90 seconds
+Labels           : 976
 Internal Cooldown: 6 seconds
 Stacks           : 3 initial, 3 maximum
 Proc Chance      : 100%
@@ -9228,8 +9231,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Time Warp (80353)
                    Family Flags: 90
-Description      : Time Warp lasts $s1% longer, but causes all affected players to die at the end.
-Tooltip          : Time Warp lasts $s1% longer, but causes all affected players to die at the end.
+Description      : Time Warp lasts $s1% longer, but causes all affected players to be frozen in time for $356346d at the end.
+Tooltip          : Time Warp lasts $s1% longer, but causes all affected players to be frozen in time for $356346d at the end.
 
 Name             : Ring of Frost (id=321329) [Spell Family (3)] 
 Class            : Mage
@@ -9791,7 +9794,8 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 25 seconds
 Cooldown         : 180 seconds
-Labels           : 1049: Gift of the Lich (336999 effect#1)
+Labels           : 976
+                 : 1049: Gift of the Lich (336999 effect#1)
 Proc Chance      : 101%
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell
@@ -11604,5 +11608,71 @@ Effects          :
 #2 (id=886674)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45000 | Scaled Value: 45000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Consuming $?c1[Clearcast]?c2[a Fire Blast charge][Brain Freeze] reduces Mirrors of Torment cooldown by ${$s1/1000} sec. If Mirrors of Torment is dispelled the cooldown is reduced by ${$s2/1000} sec.
+
+Name             : Timebreaker's Paradox (id=356346) 
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Duration         : 10 seconds
+Mechanic         : Stun
+Attributes       : ........ ........ ........ x.xx....   ...x.x.x ........ ........ ........ 
+                 : ...x.... ......x. ........ .....x..   ........ ........ x....... ........ 
+                 : .......x .....x.. ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ........ ....x... ......x. 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Does not break stealth (37), Cannot crit (93), Disable player procs (112), Disable player multipliers (221)
+Effects          :
+#1 (id=890153)   : Apply Aura (6) | Unknown(298)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Frozen in time for $d.
+Tooltip          : Frozen in time for $d.
+
+Name             : Heart of the Fae (id=356877) [Spell Family (3), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Magic Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=891012)   : Apply Aura (6) | Unknown(307)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1093 | Target: Self (1)
+#2 (id=891019)   : Apply Aura (6) | Proc Trigger Spell (42): Heart of the Fae
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 356881 | Target: Self (1)
+Description      : Shifting Power can be channeled while moving. Each enemy hit by Shifting Power grants you $356881s1% Critical Strike and Haste, up to ${$356881s1*$356881u}% for $356881d.
+
+Name             : Heart of the Fae (id=356881) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Triggered by     : Heart of the Fae (356877)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=891017)   : Apply Aura (6) | Modify Critical Strike% (290)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=891018)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc356877
+Tooltip          : Haste and Critical Strike increased by $s1%.
 
 

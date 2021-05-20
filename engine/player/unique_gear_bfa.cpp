@@ -4023,14 +4023,14 @@ void items::anuazshara_staff_of_the_eternal( special_effect_t& effect )
 
     double action_multiplier() const override
     {
-      return generic_proc_t::action_multiplier() * buff->stack();
+      return generic_proc_t::action_multiplier() * buff->check();
     }
 
     void execute() override
     {
       lockout->trigger();
       generic_proc_t::execute();
-      sim->print_debug( "anu-azshara potency unleashed at {} stacks!", buff->stack() );
+      sim->print_debug( "anu-azshara potency unleashed at {} stacks!", buff->check() );
       buff->expire();
     }
   };
@@ -4435,7 +4435,7 @@ void items::dribbling_inkpod( special_effect_t& effect )
       assert( td );
       assert( td->debuff.conductive_ink );
 
-      return generic_proc_t::action_multiplier() * td->debuff.conductive_ink->stack();
+      return generic_proc_t::action_multiplier() * td->debuff.conductive_ink->check();
     }
 
     void impact( action_state_t* s ) override
@@ -4552,8 +4552,8 @@ void items::divers_folly( special_effect_t& effect )
 
     void expire_override( int s, timespan_t d ) override
     {
-      proc2->proc_action->base_dd_min = value();
-      proc2->proc_action->base_dd_max = value();
+      proc2->proc_action->base_dd_min = current_value;
+      proc2->proc_action->base_dd_max = current_value;
       proc2->activate();
       buff_t::expire_override( s, d );
     }
@@ -5775,7 +5775,7 @@ void items::torment_in_a_jar( special_effect_t& effect )
 
     double base_da_min( const action_state_t* ) const override
     {
-      return base_dd_min * ( 1 + dmg_mod * buff->stack() );
+      return base_dd_min * ( 1 + dmg_mod * buff->check() );
     }
 
     double base_da_max( const action_state_t* s ) const override

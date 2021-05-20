@@ -392,7 +392,6 @@ struct shadow_word_death_t final : public priest_spell_t
       double save_health_percentage = s->target->health_percentage();
 
       // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
-
       if ( !( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
       {
         // target is not killed
@@ -1616,13 +1615,13 @@ struct voidform_t final : public priest_buff_t<buff_t>
     set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
       if ( cur )
       {
-        adjust_cooldown_max_charges( priest().cooldowns.mind_blast, 1 );
+        priest().cooldowns.mind_blast->adjust_max_charges( 1 );
         priest().cooldowns.mind_blast->reset( true, -1 );
         priest().cooldowns.void_bolt->reset( true );
       }
       else
       {
-        adjust_cooldown_max_charges( priest().cooldowns.mind_blast, -1 );
+        priest().cooldowns.mind_blast->adjust_max_charges( -1 );
       }
     } );
   }
@@ -1689,7 +1688,7 @@ struct dark_thought_t final : public priest_buff_t<buff_t>
 
     // Create a stack change callback to adjust the number of mindblast charges.
     set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
-      adjust_cooldown_max_charges( priest().cooldowns.mind_blast, cur - old );
+      priest().cooldowns.mind_blast->adjust_max_charges( cur - old );
     } );
   }
 
@@ -1743,6 +1742,19 @@ struct ancient_madness_t final : public priest_buff_t<buff_t>
                    as<int>( data().effectN( 2 ).base_value() ) );  // Set max stacks to 30 / 2
     set_reverse( true );
     set_period( timespan_t::from_seconds( 1 ) );
+  }
+};
+
+// TODO: implement healing from Intangibility
+struct dispersion_t final : public priest_buff_t<buff_t>
+{
+  // TODO: hook up rank2 to movement speed
+  const spell_data_t* rank2;
+
+  dispersion_t( priest_t& p )
+    : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) ),
+      rank2( p.find_specialization_spell( 322108, PRIEST_SHADOW ) )
+  {
   }
 };
 
@@ -1808,6 +1820,7 @@ void priest_t::create_buffs_shadow()
   buffs.shadowform_state = make_buff<buffs::shadowform_state_t>( *this );
   buffs.vampiric_embrace = make_buff( this, "vampiric_embrace", specs.vampiric_embrace );
   buffs.voidform         = make_buff<buffs::voidform_t>( *this );
+  buffs.dispersion       = make_buff<buffs::dispersion_t>( *this );
 
   // Talents
   buffs.ancient_madness            = make_buff<buffs::ancient_madness_t>( *this );

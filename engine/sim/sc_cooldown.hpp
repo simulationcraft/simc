@@ -30,6 +30,7 @@ struct cooldown_t
   timespan_t duration;
   timespan_t ready;
   timespan_t reset_react;
+  // Only adjust during initialization, otherwise use adjust/set_max_charges function
   int charges;
   event_t* recharge_event;
   event_t* ready_trigger_event;
@@ -105,6 +106,14 @@ struct cooldown_t
   { return timespan_t::from_seconds( -60 * 60 ); }
 
   static timespan_t cooldown_duration( const cooldown_t* cd );
+
+  /**
+   * Adjust maximum charges for a cooldown
+   * Takes the cooldown and new maximum charge count
+   * Function depends on the internal working of cooldown_t::reset
+   */
+  void set_max_charges( int new_max_charges );
+  void adjust_max_charges( int charge_change );
 
   friend void format_to( const cooldown_t&, fmt::format_context::iterator );
 

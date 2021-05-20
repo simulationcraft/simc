@@ -222,6 +222,7 @@ void survival( player_t* p )
   precombat -> add_action( "steel_trap,precast_time=20" );
 
   cds -> add_action( "harpoon,if=talent.terms_of_engagement.enabled&focus<focus.max" );
+  cds -> add_action( "use_item,name=dreadfire_vessel,if=covenant.kyrian&cooldown.resonating_arrow.remains>10|!covenant.kyrian" );
   cds -> add_action( "blood_fury,if=cooldown.coordinated_assault.remains>30" );
   cds -> add_action( "ancestral_call,if=cooldown.coordinated_assault.remains>30" );
   cds -> add_action( "fireblood,if=cooldown.coordinated_assault.remains>30" );

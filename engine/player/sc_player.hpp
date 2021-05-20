@@ -12,7 +12,6 @@
 #include "gear_stats.hpp"
 #include "rating.hpp"
 #include "weapon.hpp"
-#include "runeforge_data.hpp"
 #include "effect_callbacks.hpp"
 #include "util/plot_data.hpp"
 #include "player_collected_data.hpp"
@@ -45,11 +44,13 @@ struct benefit_t;
 struct item_t;
 struct buff_t;
 struct cooldown_t;
+struct cooldown_waste_data_t;
 struct dot_t;
 struct event_t;
 struct expr_t;
 struct gain_t;
 struct instant_absorb_t;
+class item_runeforge_t;
 struct sample_data_helper_t;
 struct option_t;
 struct pet_t;
@@ -64,6 +65,7 @@ struct special_effect_t;
 struct spelleffect_data_t;
 struct stat_buff_t;
 struct stats_t;
+struct spell_data_t;
 struct player_talent_points_t;
 struct uptime_t;
 namespace azerite {
@@ -101,14 +103,8 @@ namespace covenant {
 struct player_report_extension_t
 {
 public:
-  virtual ~player_report_extension_t()
-  {
-
-  }
-  virtual void html_customsection(report::sc_html_stream&)
-  {
-
-  }
+  virtual ~player_report_extension_t() = default;
+  virtual void html_customsection(report::sc_html_stream&) = 0;
 };
 
 struct player_t : public actor_t
@@ -341,6 +337,7 @@ struct player_t : public actor_t
   std::array< std::vector<plot_data_t>, STAT_MAX > dps_plot_data;
   std::vector<std::vector<plot_data_t> > reforge_plot_data;
   auto_dispose< std::vector<sample_data_helper_t*> > sample_data_list;
+  std::vector<std::unique_ptr<cooldown_waste_data_t>> cooldown_waste_data_list;
 
   // All Data collected during / end of combat
   player_collected_data_t collected_data;
@@ -522,6 +519,9 @@ struct player_t : public actor_t
     buff_t* wild_hunt_tactics;  // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
     buff_t* volatile_solvent_damage; // necrolord/marileth - elemental (magic) and giant (physical) % damage done buffs
     buff_t* redirected_anima; // night_fae/niya - mastery and max health % increase per stack
+    buff_t* battlefield_presence; // venthyr/draven - damage increase buff based on number of enemies
+    buff_t* fatal_flaw_crit; // venthyr/nadjia - buff applied after euphoria expires if you have more crit than vers
+    buff_t* fatal_flaw_vers; // venthyr/nadjia - buff applied after euphoria expires if you have more vers than crit
 
     // 9.0 Runecarves
     buff_t* norgannons_sagacity_stacks;  // stacks on every cast
@@ -812,6 +812,7 @@ public:
   sample_data_helper_t* get_sample_data( util::string_view name );
   action_priority_list_t* get_action_priority_list( util::string_view name, util::string_view comment = {} );
   int get_action_id( util::string_view name );
+  cooldown_waste_data_t* get_cooldown_waste_data( const cooldown_t* cd );
 
 
   // Virtual methods
@@ -1217,4 +1218,7 @@ public:
   int nth_iteration() const;
 
   friend void format_to( const player_t&, fmt::format_context::iterator );
+
+  // Indicates whether the player uses PTR dbc data
+  bool is_ptr() const;
 };

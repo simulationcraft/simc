@@ -359,18 +359,34 @@ struct wrathful_faerie_t final : public priest_spell_t
     : priest_spell_t( "wrathful_faerie", p, p.find_spell( 342132 ) ),
       insanity_gain( p.find_spell( 327703 )->effectN( 2 ).resource( RESOURCE_INSANITY ) )
   {
-    energize_type     = action_energize::ON_HIT;
-    energize_resource = RESOURCE_INSANITY;
-    energize_amount   = insanity_gain;
-    background        = true;
-
+    energize_type      = action_energize::ON_HIT;
+    energize_resource  = RESOURCE_INSANITY;
+    energize_amount    = insanity_gain;
+    background         = true;
     cooldown->duration = data().internal_cooldown();
+  }
+
+  void adjust_energize_amount()
+  {
+    if ( !priest().legendary.bwonsamdis_pact->ok() )
+      return;
+
+    if ( util::str_compare_ci( priest().options.bwonsamdis_pact_mask_type, "wrathful" ) )
+    {
+      energize_amount = insanity_gain * 2;
+      sim->print_debug( "Bwonsamdi's Pact adjusts Wrathful Faerie insanity gain to {}", energize_amount );
+    }
+    else
+    {
+      energize_amount = insanity_gain;
+    }
   }
 
   void trigger()
   {
     if ( priest().cooldowns.wrathful_faerie->is_ready() )
     {
+      adjust_energize_amount();
       execute();
       priest().cooldowns.wrathful_faerie->start();
     }
@@ -392,10 +408,17 @@ struct wrathful_faerie_fermata_t final : public priest_spell_t
     cooldown->duration = data().internal_cooldown();
   }
 
+  void adjust_energize_amount()
+  {
+    // TODO: check if Bwonsamdi's Pact affects the Fae Fermata faerie
+    energize_amount = insanity_gain;
+  }
+
   void trigger()
   {
     if ( priest().cooldowns.wrathful_faerie_fermata->is_ready() )
     {
+      adjust_energize_amount();
       execute();
       priest().cooldowns.wrathful_faerie_fermata->start();
     }
@@ -553,13 +576,18 @@ struct mindgames_healing_reversal_t final : public priest_spell_t
     energize_resource = RESOURCE_NONE;
 
     // Formula found in parent spelldata for $healing
-    // $healing=${($SPS*$s7/100)*(1+$@versadmg)*$m3/100}
-    spell_power_mod.direct = ( priest().covenant.mindgames->effectN( 7 ).base_value() / 100 ) *
+    // $healing=${($SPS*$s5/100)*(1+$@versadmg)*$m3/100}
+    spell_power_mod.direct = ( priest().covenant.mindgames->effectN( 5 ).base_value() / 100 ) *
                              ( priest().covenant.mindgames->effectN( 3 ).base_value() / 100 );
 
     if ( priest().conduits.shattered_perceptions->ok() )
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.shattered_perceptions.percent() );
+    }
+
+    if ( priest().legendary.shadow_word_manipulation->ok() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().legendary.shadow_word_manipulation->effectN( 2 ).percent() );
     }
   }
 };
@@ -584,6 +612,11 @@ struct mindgames_damage_reversal_t final : public priest_heal_t
     if ( priest().conduits.shattered_perceptions->ok() )
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.shattered_perceptions.percent() );
+    }
+
+    if ( priest().legendary.shadow_word_manipulation->ok() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().legendary.shadow_word_manipulation->effectN( 2 ).percent() );
     }
   }
 };
@@ -627,6 +660,7 @@ struct mindgames_t final : public priest_spell_t
     // Mindgames gives a total of 20 insanity
     // 10 if the target deals enough dmg to break the shield
     // 10 if the targets heals enough to break the shield
+    // TODO: Figure out how the crit buff works from Shadow Word: Manipulation
     double insanity = 0;
     // Healing reversal creates damage
     if ( child_mindgames_healing_reversal )
@@ -1046,18 +1080,39 @@ struct fae_guardians_t final : public priest_buff_t<buff_t>
 struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
 {
   int stacks;
+  propagate_const<cooldown_t*> boon_of_the_ascended_cooldown;
 
   boon_of_the_ascended_t( priest_t& p )
-    : base_t( p, "boon_of_the_ascended", p.covenant.boon_of_the_ascended ), stacks( as<int>( data().max_stacks() ) )
+    : base_t( p, "boon_of_the_ascended", p.covenant.boon_of_the_ascended ),
+      stacks( as<int>( data().max_stacks() ) ),
+      boon_of_the_ascended_cooldown( p.get_cooldown( "boon_of_the_ascended" ) )
   {
     // Adding stacks should not refresh the duration
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
     set_max_stack( stacks >= 1 ? stacks : 1 );
+
+    // Cooldown is handled by the Boon of the Ascended spell
+    set_cooldown( timespan_t::from_seconds( 0 ) );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     priest_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+
+    if ( priest().legendary.spheres_harmony->ok() && boon_of_the_ascended_cooldown )
+    {
+      auto max_reduction = priest().legendary.spheres_harmony->effectN( 2 ).base_value();
+      auto adjust_amount = priest().legendary.spheres_harmony->effectN( 1 ).base_value() * expiration_stacks;
+
+      if ( adjust_amount > max_reduction )
+      {
+        adjust_amount = max_reduction;
+      }
+      boon_of_the_ascended_cooldown->adjust( -timespan_t::from_seconds( adjust_amount ) );
+      sim->print_debug(
+          "{} adjusted cooldown of Boon of the Ascended, by {}, with Spheres' Harmony after having {} stacks.",
+          priest(), adjust_amount, expiration_stacks );
+    }
 
     if ( priest().options.use_ascended_eruption )
     {
@@ -1130,6 +1185,98 @@ struct death_and_madness_debuff_t final : public priest_buff_t<buff_t>
   }
 };
 
+struct benevolent_faerie_t final : public buff_t
+{
+private:
+  std::vector<action_t*> affected_actions;
+  bool affected_actions_initialized;
+  priest_t* priest;
+
+public:
+  benevolent_faerie_t( player_t* p )
+    : buff_t( p, "benevolent_faerie", p->find_spell( 327710 ) ),
+      affected_actions_initialized( false ),
+      priest( dynamic_cast<priest_t*>( player ) )
+  {
+    set_default_value_from_effect( 1 );
+
+    set_stack_change_callback( [ this ]( buff_t*, int /* old_stack */, int current_stack ) {
+      handle_benevolent_faerie_stack_change( current_stack );
+    } );
+  }
+
+private:
+  void handle_benevolent_faerie_stack_change( int new_stack )
+  {
+    double recharge_rate_multiplier = get_recharge_multiplier();
+
+    // When going from 0 to 1 stacks, the recharge rate gets increase
+    // When going back to 0 stacks, the recharge rate decreases again to its original level
+    if ( new_stack == 0 )
+      recharge_rate_multiplier = 1.0 / recharge_rate_multiplier;
+
+    adjust_action_cooldown_rates( recharge_rate_multiplier );
+  }
+
+  void adjust_action_cooldown_rates( double rate_change )
+  {
+    if ( !affected_actions_initialized )
+    {
+      int label = data().effectN( 1 ).misc_value1();
+      affected_actions.clear();
+      for ( auto a : player->action_list )
+      {
+        if ( a->data().affected_by_label( label ) )
+        {
+          if ( range::find( affected_actions, a ) == affected_actions.end() )
+          {
+            affected_actions.push_back( a );
+          }
+        }
+      }
+
+      affected_actions_initialized = true;
+    }
+    for ( auto a : affected_actions )
+    {
+      a->base_recharge_rate_multiplier /= rate_change;
+
+      sim->print_debug( "{} recharge_rate_multiplier set to {}", a->name_str, a->base_recharge_rate_multiplier );
+
+      if ( a->cooldown->action == a )
+        a->cooldown->adjust_recharge_multiplier();
+      if ( a->internal_cooldown->action == a )
+        a->internal_cooldown->adjust_recharge_multiplier();
+    }
+  }
+
+  double get_recharge_multiplier()
+  {
+    double modifier = 1.0;
+    if ( priest != nullptr && priest->legendary.bwonsamdis_pact->ok() &&
+         util::str_compare_ci( priest->options.bwonsamdis_pact_mask_type, "benevolent" ) )
+    {
+      // Math is done in the wrong place
+      // (100% base + 100% increase) * 2 = 400% --- should be 100% base + (100% increase * 2) = 300%
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/852
+      if ( priest->bugs )
+      {
+        modifier = ( modifier + default_value ) * 2;
+      }
+      else
+      {
+        modifier += ( default_value * 2 );
+      }
+
+      sim->print_debug( "Bwonsamdi's Pact Modifier set to {}", modifier );
+    }
+    else
+    {
+      modifier += default_value;
+    }
+    return modifier;
+  }
+};
 }  // namespace buffs
 
 namespace items
@@ -1684,6 +1831,9 @@ void priest_t::init_spells()
   // Shared Legendaries
   legendary.cauterizing_shadows        = find_runeforge_legendary( "Cauterizing Shadows" );
   legendary.twins_of_the_sun_priestess = find_runeforge_legendary( "Twins of the Sun Priestess" );
+  legendary.bwonsamdis_pact            = find_runeforge_legendary( "Bwonsamdi's Pact" );
+  legendary.shadow_word_manipulation   = find_runeforge_legendary( "Shadow Word: Manipulation" );
+  legendary.spheres_harmony            = find_runeforge_legendary( "Spheres' Harmony" );
   // Disc legendaries
   legendary.kiss_of_death    = find_runeforge_legendary( "Kiss of Death" );
   legendary.the_penitent_one = find_runeforge_legendary( "The Penitent One" );
@@ -1730,8 +1880,6 @@ void priest_t::create_buffs()
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   // Shared buffs
-  buffs.dispersion = make_buff<buffs::dispersion_t>( *this );
-
   buffs.the_penitent_one = make_buff( this, "the_penitent_one", legendary.the_penitent_one->effectN( 1 ).trigger() )
                                ->set_trigger_spell( legendary.the_penitent_one );
 
@@ -1940,6 +2088,7 @@ void priest_t::create_options()
   add_option( opt_bool( "priest.self_benevolent_faerie", options.self_benevolent_faerie ) );
   add_option( opt_int( "priest.ascended_eruption_additional_targets", options.ascended_eruption_additional_targets ) );
   add_option( opt_int( "priest.cauterizing_shadows_allies", options.cauterizing_shadows_allies ) );
+  add_option( opt_string( "priest.bwonsamdis_pact_mask_type", options.bwonsamdis_pact_mask_type ) );
 }
 
 std::string priest_t::create_profile( save_e type )
@@ -2082,51 +2231,42 @@ double priest_t::shadow_weaving_multiplier( const player_t* target, const unsign
   return multiplier;
 }
 
-// TODO: implement healing from Intangibility
-buffs::dispersion_t::dispersion_t( priest_t& p )
-  : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) ),
-    rank2( p.find_specialization_spell( 322108, PRIEST_SHADOW ) )
+struct priest_module_t final : public module_t
 {
-}
+  priest_module_t() : module_t( PRIEST )
+  {
+  }
 
-buffs::benevolent_faerie_t::benevolent_faerie_t( player_t* p )
-  : buff_t( p, "benevolent_faerie", p->find_spell( 327710 ) ), affected_actions_initialized( false )
-{
-  set_default_value_from_effect( 1 );
-
-  set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
-    if ( !affected_actions_initialized )
-    {
-      int label = data().effectN( 1 ).misc_value1();
-      affected_actions.clear();
-      for ( auto a : player->action_list )
-      {
-        if ( a->data().affected_by_label( label ) )
-        {
-          if ( range::find( affected_actions, a ) == affected_actions.end() )
-          {
-            affected_actions.push_back( a );
-          }
-        }
-      }
-
-      affected_actions_initialized = true;
-    }
-
-    double recharge_rate_multiplier = 1.0 / ( 1 + b->default_value );
-    for ( auto a : affected_actions )
-    {
-      if ( new_ == 1 )
-        a->base_recharge_rate_multiplier *= recharge_rate_multiplier;
-      else
-        a->base_recharge_rate_multiplier /= recharge_rate_multiplier;
-      if ( a->cooldown->action == a )
-        a->cooldown->adjust_recharge_multiplier();
-      if ( a->internal_cooldown->action == a )
-        a->internal_cooldown->adjust_recharge_multiplier();
-    }
-  } );
-}
+  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
+  {
+    return new priest_t( sim, name, r );
+  }
+  bool valid() const override
+  {
+    return true;
+  }
+  void init( player_t* p ) const override
+  {
+    p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
+                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
+    p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
+                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
+    p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p );
+  }
+  void static_init() const override
+  {
+    items::init();
+  }
+  void register_hotfixes() const override
+  {
+  }
+  void combat_begin( sim_t* ) const override
+  {
+  }
+  void combat_end( sim_t* ) const override
+  {
+  }
+};
 
 }  // namespace priestspace
 

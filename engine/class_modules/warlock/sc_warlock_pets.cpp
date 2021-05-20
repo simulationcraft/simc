@@ -632,8 +632,8 @@ void felguard_pet_t::queue_ds_felstorm()
   }
 }
 
-grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner, const std::string& name )
-  : warlock_pet_t( owner, name, PET_SERVICE_FELGUARD, true ),
+grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner )
+  : warlock_pet_t( owner, "grimoire_felguard", PET_SERVICE_FELGUARD, true ),
     felstorm_spell( find_spell( 89751 ) ),
     min_energy_threshold( felstorm_spell->cost( POWER_ENERGY ) ),
     max_energy_threshold( 100 )

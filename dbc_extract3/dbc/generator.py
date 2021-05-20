@@ -1251,6 +1251,8 @@ class SpellDataGenerator(DataGenerator):
          344068, 344069, 344070, # Venthyr Stamina Passives
          344076, 344077, 344078, # Necrolord Stamina Passives
          344087, 344089, 344091, # Kyrian Stamina Passives
+         354054, 354053, # Fatal Flaw vers/crit buffs (venthyr/nadjia)
+         351687, # Necrolord Bonesmith Heirmir Mnemonic Equipmen debuff
          # Cabalists Hymnal
          344820,
          # Empyreal Ordnance
@@ -1456,6 +1458,9 @@ class SpellDataGenerator(DataGenerator):
             ( 336373, 0 ),          # Cauterizing Shadows heal spell
             ( 323707, 0 ),          # Mindgames Healing reversal Damage spell
             ( 323706, 0 ),          # Mindgames Damage reversal Healing spell
+            ( 356390, 0 ),          # Pallid Command Necrolord Legendary Power (UNCONFIRMED)
+            ( 356395, 0 ),          # Spheres' Harmony Kyrian Legendary Power (UNCONFIRMED)
+            ( 356515, 0 ),          # Bwonsamdi's Pact buff from the Legendary Power
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
@@ -1738,6 +1743,8 @@ class SpellDataGenerator(DataGenerator):
           ( 337341, 3 ), # Keefer's Skyreach Exhaustion Debuff
           ( 347687, 1 ), # Charred Passions
           ( 347688, 1 ), # Charred Passions
+          ( 356773, 0 ), # Fae Exposure Damage Debuff
+          ( 356774, 0 ), # Fae Exposure Heal Buff
         ),
 
         # Druid:
@@ -2664,6 +2671,9 @@ class SpellDataGenerator(DataGenerator):
             # and produces a list of effect ids
             if len(effect_ids):
                 spelleffect_index[ id ] = [ effect_ids.get(i, 0) for i in range(max(effect_ids.keys()) + 1) ]
+
+        for label in constants.SPELL_LABEL_WHITELIST:
+            included_labels.add(label)
 
         labels = []
         for label in self.db('SpellLabel').values():

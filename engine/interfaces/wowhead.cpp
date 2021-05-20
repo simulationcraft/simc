@@ -15,6 +15,11 @@
 #include "rapidjson/prettywriter.h"
 
 namespace {
+// 2016-07-20: Wowhead's XML output for item stats produces weird results on certain items that are
+// no longer available in game. Skip very high values to let the sim run, but not use completely
+// silly values.
+constexpr int WOWHEAD_STAT_MAX = 10000;
+
 // source_str ===============================================================
 
 std::string source_str( wowhead::wowhead_e source )
@@ -54,7 +59,7 @@ std::shared_ptr<xml_node_t> download_id( sim_t*             sim,
   std::string url_www = "https://" + source_str( source ) + ".wowhead.com/item="
                         + util::to_string( id ) + "&xml";
 
-  std::shared_ptr<xml_node_t> node = xml_node_t::get( url_www, caching, "</json>" );
+  auto node = xml_node_t::get( url_www, caching, "</json>" );
   if ( sim -> debug && node ) node -> print();
   return node;
 }
@@ -63,11 +68,11 @@ std::shared_ptr<xml_node_t> download_id( sim_t*             sim,
 
 // download_item_data =======================================================
 
-bool wowhead::download_item_data( item_t& item, cache::behavior_e cache_behavior, wowhead_e source )
+bool wowhead::download_item_data( item_t& item, wowhead_e source, cache::behavior_e cache_behavior )
 {
   try
   {
-    std::shared_ptr<xml_node_t> xml = item.xml = download_id( item.sim, item.parsed.data.id, cache_behavior, source );
+    auto xml = download_id( item.sim, item.parsed.data.id, cache_behavior, source );
     if ( ! xml )
     {
       if ( cache_behavior != cache::ONLY )
@@ -216,7 +221,7 @@ bool wowhead::download_item_data( item_t& item, cache::behavior_e cache_behavior
         // 2016-07-20: Wowhead's XML output for item stats produces weird results on certain items
         // that are no longer available in game. Skip very high values to let the sim run, but not use
         // completely silly values.
-        if (i->value.GetInt() > wowhead::WOWHEAD_STAT_MAX)
+        if (i->value.GetInt() > WOWHEAD_STAT_MAX)
         {
           item.sim->errorf("Warning, item %s has abnormal stat value (stat=%s value=%d) in XML output, ignoring ...",
             item.name(), util::stat_type_string(type), i->value.GetInt());
@@ -258,7 +263,7 @@ bool wowhead::download_item_data( item_t& item, cache::behavior_e cache_behavior
       xml->get_value(htmltooltip, "htmlTooltip/cdata");
 
       // Parse out Equip: and On use: strings
-      std::shared_ptr<xml_node_t> htmltooltip_xml = xml_node_t::create(htmltooltip);
+      auto htmltooltip_xml = xml_node_t::create(htmltooltip);
       //htmltooltip_xml -> print( item.sim -> output_file, 2 );
       std::vector<xml_node_t*> spell_links = htmltooltip_xml->get_nodes("span");
       for (size_t i = 0; i < spell_links.size(); i++)
@@ -326,22 +331,10 @@ bool wowhead::download_item( item_t&            item,
                              wowhead_e          source,
                              cache::behavior_e  cache_behavior )
 {
-  bool ret = download_item_data( item, cache_behavior, source );
+  bool ret = download_item_data( item, source, cache_behavior );
 
   if ( ret )
     item.source_str = "Wowhead";
 
   return ret;
-}
-
-std::string wowhead::domain_str( wowhead_e domain )
-{
-  switch ( domain )
-  {
-    case PTR: return "ptr";
-#if SC_BETA
-    case BETA: return SC_BETA_STR;
-#endif
-    default: return "www";
-  }
 }

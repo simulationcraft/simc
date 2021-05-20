@@ -664,7 +664,6 @@ public:
     std::vector<double> fixed_rtb_odds;
     int initial_combo_points = 0;
     int initial_shadow_techniques = -1;
-    bool rogue_optimize_expressions = true;
     bool rogue_ready_trigger = true;
     bool priority_rotation = false;
   } options;
@@ -6592,8 +6591,8 @@ void rogue_t::init_action_list()
   {
     // Pre-Combat
     precombat->add_action( "variable,name=vendetta_cdr,value=1-(runeforge.duskwalkers_patch*0.45)" );
-    precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)", "Determine which (if any) stat buff trinket we want to attempt to sync with Vendetta." );
-    precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)" );
+    precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|trinket.1.is.inscrutable_quantum_device", "Determine which (if any) stat buff trinket we want to attempt to sync with Vendetta." );
+    precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)|trinket.2.is.inscrutable_quantum_device" );
     precombat->add_action( this, "Stealth" );
     precombat->add_action( this, "Slice and Dice", "precombat_seconds=1" );
 
@@ -8199,7 +8198,6 @@ void rogue_t::create_options()
 
   // Overload default options but with a default true value
   add_option( opt_bool( "ready_trigger", options.rogue_ready_trigger ) );
-  add_option( opt_bool( "optimize_expressions", options.rogue_optimize_expressions ) );
 
   add_option( opt_func( "off_hand_secondary", parse_offhand_secondary ) );
   add_option( opt_func( "main_hand_secondary", parse_mainhand_secondary ) );
@@ -8234,7 +8232,6 @@ void rogue_t::copy_from( player_t* source )
 
   options.fixed_rtb = rogue->options.fixed_rtb;
   options.fixed_rtb_odds = rogue->options.fixed_rtb_odds;
-  options.rogue_optimize_expressions = rogue->options.rogue_optimize_expressions;
   options.rogue_ready_trigger = rogue->options.rogue_ready_trigger;
   options.priority_rotation = rogue->options.priority_rotation;
 }
@@ -8542,22 +8539,6 @@ void rogue_t::arise()
 
 void rogue_t::combat_begin()
 {
-  if ( !sim->optimize_expressions && options.rogue_optimize_expressions )
-  {
-    for ( auto p : sim->player_list )
-    {
-      if ( !p->is_pet() && p->specialization() != ROGUE_ASSASSINATION && p->specialization() != ROGUE_OUTLAW && p->specialization() != ROGUE_SUBTLETY )
-      {
-        options.rogue_optimize_expressions = false;
-        break;
-      }
-    }
-    if ( options.rogue_optimize_expressions )
-    {
-      sim->optimize_expressions = true;
-    }
-  }
-
   player_t::combat_begin();
 
   if ( talent.hidden_blades -> ok() )
@@ -8695,25 +8676,6 @@ void rogue_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.subtlety_rogue );
 }
 
-/* Report Extension Class
- * Here you can define class specific report extensions/overrides
- */
-class rogue_report_t : public player_report_extension_t
-{
-public:
-  rogue_report_t( rogue_t& player ) : p( player )
-  {
-  }
-
-  void html_customsection( report::sc_html_stream& ) override
-  {
-    // Custom Class Section can be added here
-    ( void )p;
-  }
-private:
-  rogue_t& p;
-};
-
 // ROGUE MODULE INTERFACE ===================================================
 
 class rogue_module_t : public module_t
@@ -8723,9 +8685,7 @@ public:
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
-    auto p = new rogue_t( sim, name, r );
-    p -> report_extension = std::unique_ptr<player_report_extension_t>( new rogue_report_t( *p ) );
-    return p;
+    return new rogue_t( sim, name, r );
   }
 
   bool valid() const override

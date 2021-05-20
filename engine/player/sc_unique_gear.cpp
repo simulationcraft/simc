@@ -1098,7 +1098,7 @@ void item::spark_of_zandalar( special_effect_t& effect )
     {
       sparks -> trigger();
 
-      if ( sparks -> stack() == sparks -> max_stack() )
+      if ( sparks -> check() == sparks -> max_stack() )
       {
         sparks -> expire();
         proc_buff -> trigger();

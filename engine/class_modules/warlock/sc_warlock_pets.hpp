@@ -407,7 +407,7 @@ struct grimoire_felguard_pet_t : public warlock_pet_t
   double min_energy_threshold;
   double max_energy_threshold;
 
-  grimoire_felguard_pet_t( warlock_t* owner, const std::string& name = "grimoire_felguard" );
+  grimoire_felguard_pet_t( warlock_t* owner );
   void init_base_stats() override;
   action_t* create_action( util::string_view name, const std::string& options_str ) override;
   timespan_t available() const override;
