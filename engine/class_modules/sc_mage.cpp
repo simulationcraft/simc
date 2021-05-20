@@ -1039,7 +1039,8 @@ struct expanded_potential_buff_t : public buff_t
   void decrement( int stacks, double value ) override
   {
     // Sinful Delight only triggers when Clearcasting is consumed.
-    mage->trigger_sinful_delight( MAGE_ARCANE );
+    if ( check() )
+      mage->trigger_sinful_delight( MAGE_ARCANE );
 
     if ( check() && mage->buffs.expanded_potential->check() )
       mage->buffs.expanded_potential->expire();
@@ -1051,7 +1052,7 @@ struct expanded_potential_buff_t : public buff_t
   {
     buff_t::refresh( stacks, value, duration );
 
-    // Sinful Delight triggers when brain freeze refreshes.
+    // Sinful Delight triggers when Brain Freeze refreshes.
     mage->trigger_sinful_delight( MAGE_FROST );
   }
 };
@@ -4187,9 +4188,8 @@ struct fire_blast_t final : public fire_mage_spell_t
 
   void execute() override
   {
-    p()->trigger_sinful_delight( MAGE_FIRE );
-
     fire_mage_spell_t::execute();
+    p()->trigger_sinful_delight( MAGE_FIRE );
   }
 
   void impact( action_state_t* s ) override
@@ -5629,7 +5629,7 @@ void mage_t::trigger_disciplinary_command( school_e school )
 
 void mage_t::trigger_sinful_delight( specialization_e spec )
 {
-  if ( specialization() == spec )
+  if ( runeforge.sinful_delight.ok() && specialization() == spec )
     cooldowns.mirrors_of_torment->adjust( -runeforge.sinful_delight->effectN( 1 ).time_value() );
 }
 
