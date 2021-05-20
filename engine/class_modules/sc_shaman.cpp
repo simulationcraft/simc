@@ -6167,6 +6167,19 @@ struct windfury_totem_t : public shaman_spell_t
     if ( !sim->overrides.windfury_totem || p()->legendary.doom_winds.ok() )
     {
       wft_buff->set_duration( data().duration() );
+
+      // Need to also create the effect since the core sim won't do it when
+      // sim->overrides.windfury_totem is not set
+      if ( !sim->overrides.windfury_totem )
+      {
+        special_effect_t effect( player );
+
+        unique_gear::initialize_special_effect( effect, 327942 );
+        if ( !effect.custom_init_object.empty() )
+        {
+          player->special_effects.push_back( new special_effect_t( effect ) );
+        }
+      }
     }
 
     // Set the proc-chance of the Windfury Totem buff unconditionally to 1.0 so it will
