@@ -395,7 +395,10 @@ public:
       }
     }
 
-    if ( p()->legendary.bountiful_brew->ok() && p()->rppm.bountiful_brew->trigger() )
+    // Only triggers from abilities. Use the May Combo Strike boolean for the time being until a
+    // better solution to indicate triggering abilities.
+    if ( p()->legendary.bountiful_brew->ok() && may_combo_strike && 
+        p()->rppm.bountiful_brew->trigger() )
       p()->active_actions.bountiful_brew->execute();
   }
 
@@ -3779,8 +3782,12 @@ struct weapons_of_order_t : public monk_spell_t
           p()->pets.yulon->summon( p()->legendary.call_to_arms->effectN( 1 ).time_value() );
           break;
         case MONK_WINDWALKER:
-          p()->pets.xuen->summon( p()->legendary.call_to_arms->effectN( 1 ).time_value() );
+        {
+          timespan_t duration = p()->legendary.call_to_arms->effectN( 1 ).time_value();
+          p()->pets.xuen->summon( duration );
+          p()->buff.invoke_xuen->trigger( duration );
           break;
+        }
       }
     }
   }
@@ -5313,7 +5320,7 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<buff_t>
   invoke_xuen_the_white_tiger_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     set_cooldown( timespan_t::zero() );
-    set_refresh_behavior( buff_refresh_behavior::NONE );
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
 
     set_period( p.spec.invoke_xuen->effectN( 2 ).period() );
 
