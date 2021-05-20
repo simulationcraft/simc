@@ -1736,17 +1736,6 @@ public:
       p()->trigger_vesper_totem( execute_state );
       trigger_echoing_shock( execute_state->target );
     }
-
-    // Apparently spells that benefit from Maelstrom Weapon always
-    // reset the main-hand swing timers. Presume this is a bug for now.
-    if ( affected_by_maelstrom_weapon && p()->bugs )
-    {
-      if ( p()->main_hand_attack && p()->main_hand_attack->execute_event )
-      {
-        event_t::cancel( p()->main_hand_attack->execute_event );
-        p()->main_hand_attack->schedule_execute();
-      }
-    }
   }
 
   void schedule_travel( action_state_t* s ) override
