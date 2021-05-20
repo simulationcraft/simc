@@ -373,6 +373,7 @@ public:
     buff_t* disciplinary_command_frost; // Hidden buff
     buff_t* disciplinary_command_fire; // Hidden buff
     buff_t* expanded_potential;
+    buff_t* heart_of_the_fae;
 
 
     // Covenant Abilities
@@ -652,6 +653,7 @@ public:
     item_runeforge_t expanded_potential;
     item_runeforge_t grisly_icicle;
     item_runeforge_t harmonic_echo;
+    item_runeforge_t heart_of_the_fae;
   } runeforge;
 
   // Soulbind Conduits
@@ -5119,6 +5121,12 @@ struct shifting_power_pulse_t final : public mage_spell_t
     background = true;
     aoe = -1;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    mage_spell_t::impact( s );
+    p()->buffs.heart_of_the_fae->trigger();
+  }
 };
 
 struct shifting_power_t final : public mage_spell_t
@@ -5156,6 +5164,14 @@ struct shifting_power_t final : public mage_spell_t
         shifting_power_cooldowns.push_back( m->cooldown );
       }
     }
+  }
+
+  bool usable_moving() const override
+  {
+    if ( p()->runeforge.heart_of_the_fae.ok() )
+      return true;
+
+    return mage_spell_t::usable_moving();
   }
 
   void tick( dot_t* d ) override
@@ -6009,6 +6025,7 @@ void mage_t::init_spells()
   runeforge.expanded_potential   = find_runeforge_legendary( "Expanded Potential"   );
   runeforge.grisly_icicle        = find_runeforge_legendary( "Grisly Icicle"        );
   runeforge.harmonic_echo        = find_runeforge_legendary( "Harmonic Echo"        );
+  runeforge.heart_of_the_fae     = find_runeforge_legendary( "Heart of the Fae"     );
 
   // Soulbind Conduits
   conduits.arcane_prodigy           = find_conduit_spell( "Arcane Prodigy"           );
@@ -6221,6 +6238,11 @@ void mage_t::create_buffs()
                                         ->set_chance( runeforge.disciplinary_command.ok() );
   buffs.expanded_potential          = make_buff( this, "expanded_potential", find_spell( 327495 ) )
                                         ->set_trigger_spell( runeforge.expanded_potential );
+  buffs.heart_of_the_fae            = make_buff( this, "heart_of_the_fae", find_spell( 356881 ) )
+                                        ->set_default_value_from_effect( 1 )
+                                        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                                        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                        ->set_chance( runeforge.heart_of_the_fae.ok() );
 
   // Covenant Abilities
   buffs.deathborne = make_buff( this, "deathborne", find_spell( 324220 ) )
