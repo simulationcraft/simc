@@ -35,6 +35,19 @@ struct monk_pet_t : public pet_t
   {
     return static_cast<monk_t*>( owner );
   }
+
+  void init_assessors() override
+  {
+    base_t::init_assessors();
+
+    auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ) {
+      if ( o()->get_target_data( s->target )->debuff.bonedust_brew->up() )
+        o()->bonedust_brew_assessor( s );
+      return assessor::CONTINUE;
+    };
+
+    assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+  }
 };
 
 template <typename BASE, typename PET_TYPE = monk_pet_t>
@@ -387,7 +400,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       auto owner = this->o();
 
       owner->trigger_empowered_tiger_lightning( s );
-      owner->trigger_bonedust_brew( s );
 
       super_t::impact( s );
     }
@@ -1109,7 +1121,6 @@ private:
     void impact( action_state_t* s ) override
     {
       o()->trigger_empowered_tiger_lightning( s );
-      o()->trigger_bonedust_brew( s );
 
       pet_melee_attack_t::impact( s );
     }
@@ -1128,7 +1139,6 @@ private:
     {
       auto owner = o();
       owner->trigger_empowered_tiger_lightning( s );
-      owner->trigger_bonedust_brew( s );
 
       pet_spell_t::impact( s );
     }
@@ -1221,13 +1231,6 @@ private:
     melee_t( util::string_view n, niuzao_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
     }
-
-    void impact( action_state_t* s ) override
-    {
-      o()->trigger_bonedust_brew( s );
-
-      pet_melee_t::impact( s );
-    }
   };
 
   struct stomp_t : public pet_melee_attack_t
@@ -1279,13 +1282,6 @@ private:
       // purified damage that needs to be split. this occurs after all damage
       // has been dealt
       o()->buff.recent_purifies->cancel();
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      o()->trigger_bonedust_brew( s );
-
-      pet_melee_attack_t::impact( s );
     }
   };
 

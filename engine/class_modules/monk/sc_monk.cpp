@@ -437,8 +437,6 @@ public:
     }
 
     p()->trigger_empowered_tiger_lightning( s );
-
-    p()->trigger_bonedust_brew( s );
   }
 
   void trigger_storm_earth_and_fire( const action_t* a )
@@ -6620,10 +6618,13 @@ void monk_t::init_assessors()
 {
   base_t::init_assessors();
 
-  assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [ this ]( result_amount_type, action_state_t* s ) {
-    accumulate_gale_burst_damage( s );
+  auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ) {
+    if ( get_target_data( s->target )->debuff.bonedust_brew->up() )
+        bonedust_brew_assessor( s );
     return assessor::CONTINUE;
-  } );
+  };
+
+  assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
 }
 
 // monk_t::init_rng =======================================================
@@ -6721,10 +6722,17 @@ std::vector<player_t*> monk_t::create_storm_earth_and_fire_target_list() const
   return l;
 }
 
-void monk_t::accumulate_gale_burst_damage( action_state_t* s )
+void monk_t::bonedust_brew_assessor( action_state_t* s )
 {
   if ( !s->action->harmful )
     return;
+
+  // Don't trigger from Bonedust Brew damage
+  // Don't trigger from Bonedust Brew heal
+  if ( s->result_amount <= 0 || s->action->id == 325217 || s->action->id == 325218 )
+    return;
+
+  trigger_bonedust_brew( s );
 }
 
 // monk_t::retarget_storm_earth_and_fire ====================================
@@ -7747,24 +7755,20 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t* s )
 
 void monk_t::trigger_bonedust_brew( action_state_t* s )
 {
-  // Make sure Bonedust Brew does not trigger from itself
-  if ( covenant.necrolord->ok() && s->result_amount > 0 && s->action->id != 325217 && s->action->id != 325218 )
+  if ( auto td = find_target_data( s->target ) )
   {
-    if ( auto td = find_target_data( s->target ) )
+    if ( rng().roll( covenant.necrolord->proc_chance() ) )
     {
-      if ( td->debuff.bonedust_brew->up() && rng().roll( covenant.necrolord->proc_chance() ) )
-      {
-        double damage = s->result_amount * covenant.necrolord->effectN( 1 ).percent();
+      double damage = s->result_amount * covenant.necrolord->effectN( 1 ).percent();
 
-        // Bone Marrow Hops DOES NOT work with SEF or pets
-        // "This" is referring to the player and does not work with "guardians" which is what SEF and pets are registered as
-        if ( s->action->player == this && conduit.bone_marrow_hops->ok() )
-          damage *= 1 + conduit.bone_marrow_hops.percent();
+      // Bone Marrow Hops DOES NOT work with SEF or pets
+      // "This" is referring to the player and does not work with "guardians" which is what SEF and pets are registered as
+      if ( s->action->player == this && conduit.bone_marrow_hops->ok() )
+        damage *= 1 + conduit.bone_marrow_hops.percent();
 
-        active_actions.bonedust_brew_dmg->base_dd_min = damage;
-        active_actions.bonedust_brew_dmg->base_dd_max = damage;
-        active_actions.bonedust_brew_dmg->execute();
-      }
+      active_actions.bonedust_brew_dmg->base_dd_min = damage;
+      active_actions.bonedust_brew_dmg->base_dd_max = damage;
+      active_actions.bonedust_brew_dmg->execute();
     }
   }
 }
