@@ -1285,24 +1285,11 @@ void brons_call_to_action( special_effect_t& effect )
   new brons_call_to_action_cb_t( effect );
 }
 
-struct effusive_anima_accelerator_proc_t : public spell_t
-{
-  effusive_anima_accelerator_proc_t( util::string_view n, player_t* p, const spell_data_t* s, double mod )
-    : spell_t( n, p, s )
-  {
-    spell_power_mod.tick = mod;
-  }
-
-  double composite_spell_power() const override
-  {
-    return std::max( spell_t::composite_spell_power(), spell_t::composite_attack_power() );
-  }
-};
-
-// TODO: Confirm behaviour for all Classes. This potentially may be triggered from any 976 labeled action dealing damage. Spell ID 353349 containing the ICD for this. 
+// TODO: Confirm behaviour for all Classes. This potentially may be triggered from any 976 labeled action dealing
+// damage. Spell ID 353349 containing the ICD for this.
 void effusive_anima_accelerator( special_effect_t& effect )
 {
-  struct effusive_anima_accelerator_t : public effusive_anima_accelerator_proc_t
+  struct effusive_anima_accelerator_t : public unique_gear::proc_spell_t
   {
   private:
     std::vector<cooldown_t*> affected_cooldowns;
@@ -1310,19 +1297,16 @@ void effusive_anima_accelerator( special_effect_t& effect )
 
   public:
     effusive_anima_accelerator_t( const special_effect_t& e )
-      : effusive_anima_accelerator_proc_t(
-            "effusive_anima_accelerator", e.player, e.player->find_spell( 353248 ),
-            e.player->find_spell( 353248 )->effectN( 2 ).base_value() * class_value_from_desc_vars( e, "mod" ) / 100 ),
+      : unique_gear::proc_spell_t( "effusive_anima_accelerator", e.player, e.player->find_spell( 353248 ) ),
         cdr( class_value_from_desc_vars( e, "cd" ) )
     {
-      background = true;
-      aoe        = -1;
-      radius     = e.player->find_spell( 353248 )->effectN( 1 ).radius_max();
+      spell_power_mod.tick =
+          e.player->find_spell( 353248 )->effectN( 2 ).base_value() * class_value_from_desc_vars( e, "mod" ) / 100;
     }
 
     void init_finished() override
     {
-      effusive_anima_accelerator_proc_t::init_finished();
+      super::init_finished();
 
       affected_cooldowns.clear();
       for ( auto a : player->action_list )
@@ -1337,14 +1321,19 @@ void effusive_anima_accelerator( special_effect_t& effect )
       }
     }
 
+    double composite_spell_power() const override
+    {
+      return std::max( super::composite_spell_power(), super::composite_attack_power() );
+    }
+
     double composite_persistent_multiplier( const action_state_t* s ) const override
     {
-      return effusive_anima_accelerator_proc_t::composite_persistent_multiplier( s ) / s->n_targets;
+      return super::composite_persistent_multiplier( s ) / s->n_targets;
     }
 
     void execute() override
     {
-      effusive_anima_accelerator_proc_t::execute();
+      super::execute();
       int targets_hit = std::min( 5U, execute_state->n_targets );
       if ( targets_hit > 0 )
       {
