@@ -3604,8 +3604,7 @@ struct xuen_spell_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    assert( p()->pets.xuen );
-    p()->pets.xuen->summon( p()->spec.invoke_xuen->duration() );
+    p()->pets.xuen.spawn( p()->spec.invoke_xuen->duration(), 1 );
 
     p()->buff.invoke_xuen->trigger();
 
@@ -3650,8 +3649,7 @@ struct niuzao_spell_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    assert( p()->pets.niuzao );
-    p()->pets.niuzao->summon( p()->spec.invoke_niuzao->duration() );
+    p()->pets.niuzao.spawn( p()->spec.invoke_niuzao->duration(), 1 );
 
     p()->buff.invoke_niuzao->trigger();
 
@@ -3681,8 +3679,7 @@ struct chiji_spell_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    assert( p()->pets.chiji );
-    p()->pets.chiji->summon( p()->talent.invoke_chi_ji->duration() );
+    p()->pets.chiji.spawn( p()->talent.invoke_chi_ji->duration(), 1 );
 
     p()->buff.invoke_chiji->trigger();
 
@@ -3720,8 +3717,7 @@ struct yulon_spell_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    assert( p()->pets.yulon );
-    p()->pets.yulon->summon( p()->spec.invoke_yulon->duration() );
+    p()->pets.yulon.spawn( p()->spec.invoke_yulon->duration(), 1 );
 
     if ( p()->legendary.invokers_delight->ok() )
       p()->buff.invokers_delight->trigger();
@@ -3758,15 +3754,20 @@ struct weapons_of_order_t : public monk_spell_t
       switch ( p()->specialization() )
       {
         case MONK_BREWMASTER:
-          p()->pets.niuzao->summon( p()->legendary.call_to_arms->effectN( 1 ).time_value() );
+          p()->pets.niuzao.spawn( p()->legendary.call_to_arms->effectN( 1 ).time_value(), 1 );
           break;
         case MONK_MISTWEAVER:
-          p()->pets.yulon->summon( p()->legendary.call_to_arms->effectN( 1 ).time_value() );
+        {
+          if ( p()->talent.invoke_chi_ji->ok() )
+            p()->pets.chiji.spawn( p()->legendary.call_to_arms->effectN( 1 ).time_value(), 1 );
+          else
+            p()->pets.yulon.spawn( p()->legendary.call_to_arms->effectN( 1 ).time_value(), 1 );
           break;
+        }
         case MONK_WINDWALKER:
         {
           timespan_t duration = p()->legendary.call_to_arms->effectN( 1 ).time_value();
-          p()->pets.xuen->summon( duration );
+          p()->pets.xuen.spawn( duration, 1 );
           p()->buff.invoke_xuen->trigger( duration );
           break;
         }

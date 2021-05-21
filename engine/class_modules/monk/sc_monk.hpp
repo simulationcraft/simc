@@ -722,10 +722,10 @@ public:
   struct pets_t
   {
     std::array<pets::storm_earth_and_fire_pet_t*, SEF_PET_MAX> sef;
-    pet_t* xuen   = nullptr;
-    pet_t* niuzao = nullptr;
-    pet_t* yulon  = nullptr;
-    pet_t* chiji  = nullptr;
+    spawner::pet_spawner_t<pet_t, monk_t> xuen;
+    spawner::pet_spawner_t<pet_t, monk_t> niuzao;
+    spawner::pet_spawner_t<pet_t, monk_t> yulon;
+    spawner::pet_spawner_t<pet_t, monk_t> chiji;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_ww;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_mw;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_brm;
