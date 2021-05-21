@@ -945,7 +945,6 @@ public:
   struct
   {
     buff_t* bok_proc_sef          = nullptr;
-    buff_t* hit_combo_sef         = nullptr;
     buff_t* pressure_point_sef    = nullptr;
     buff_t* rushing_jade_wind_sef = nullptr;
   } buff;
@@ -1035,9 +1034,6 @@ public:
     if ( o()->buff.bok_proc->up() )
       buff.bok_proc_sef->trigger( 1, buff_t::DEFAULT_VALUE(), 1, o()->buff.bok_proc->remains() );
 
-    if ( o()->buff.hit_combo->up() )
-      buff.hit_combo_sef->trigger( o()->buff.hit_combo->check() );
-
     if ( o()->buff.rushing_jade_wind->up() )
       buff.rushing_jade_wind_sef->trigger( 1, buff_t::DEFAULT_VALUE(), 1, o()->buff.rushing_jade_wind->remains() );
 
@@ -1073,17 +1069,10 @@ public:
                                        else
                                          d->expire( timespan_t::from_millis( 1 ) );
                                      } );
-
-    buff.hit_combo_sef = make_buff( this, "hit_combo_sef", o()->passives.hit_combo )
-                             ->set_default_value_from_effect( 1 )
-                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
   {
-    if ( o()->buff.combo_strikes->up() && o()->talent.hit_combo->ok() )
-      buff.hit_combo_sef->trigger();
-
     if ( ability >= SEF_SPELL_MIN )
     {
       auto spell_index = sef_spell_index( ability );
@@ -1189,9 +1178,6 @@ public:
   double composite_player_multiplier( school_e school ) const override
   {
     double cpm = owner->cache.player_multiplier( school );
-
-    if ( o()->buff.hit_combo->up() )
-      cpm *= 1 + o()->buff.hit_combo->stack_value();
 
     if ( o()->conduit.xuens_bond->ok() )
       cpm *= 1 + o()->conduit.xuens_bond.percent();
@@ -1325,9 +1311,6 @@ public:
   {
     double cpm = pet_t::composite_player_multiplier( school );
 
-    if ( o()->buff.hit_combo->up() )
-      cpm *= 1 + o()->buff.hit_combo->stack_value();
-
     cpm *= 1 + o()->spec.brewmaster_monk->effectN( 3 ).percent();
 
     return cpm;
@@ -1387,16 +1370,6 @@ public:
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
     owner_coeff.ap_from_ap      = o()->spec.mistweaver_monk->effectN( 4 ).percent();
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double cpm = monk_pet_t::composite_player_multiplier( school );
-
-    if ( o()->buff.hit_combo->up() )
-      cpm *= 1 + o()->buff.hit_combo->stack_value();
-
-    return cpm;
   }
 
   void init_action_list() override
@@ -1467,13 +1440,8 @@ private:
   };
 
 public:
-  struct
-  {
-    buff_t* hit_combo_fm_ww = nullptr;
-  } buff;
-
   fallen_monk_ww_pet_t( monk_t* owner )
-    : monk_pet_t( owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true ), buff()
+    : monk_pet_t( owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true )
   {
     npc_id                      = 168033;
     main_hand_weapon.type       = WEAPON_1H;
@@ -1510,31 +1478,10 @@ public:
   {
     double cpm = o()->cache.player_multiplier( school );
 
-    if ( o()->buff.hit_combo->up() )
-      cpm *= 1 + o()->buff.hit_combo->stack_value();
-
     if ( o()->conduit.imbued_reflections->ok() )
       cpm *= 1 + o()->conduit.imbued_reflections.percent();
 
     return cpm;
-  }
-
-  void summon( timespan_t duration = timespan_t::zero() ) override
-  {
-    monk_pet_t::summon( duration );
-
-    if ( o()->buff.hit_combo->up() )
-      buff.hit_combo_fm_ww->trigger( o()->buff.hit_combo->check() );
-  }
-
-  void create_buffs() override
-  {
-    monk_pet_t::create_buffs();
-
-    buff.hit_combo_fm_ww = make_buff( this, "hit_combo_fo_ww", o()->passives.hit_combo )
-                               ->set_default_value_from_effect( 1 )
-                               ->set_quiet( true )
-                               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   struct fallen_monk_fists_of_fury_tick_t : public pet_melee_attack_t
@@ -1689,13 +1636,8 @@ private:
   };
 
 public:
-  struct
-  {
-    buff_t* hit_combo_fm_brm = nullptr;
-  } buff;
-
   fallen_monk_brm_pet_t( monk_t* owner )
-    : monk_pet_t( owner, "fallen_monk_brewmaster", PET_FALLEN_MONK, true, true ), buff()
+    : monk_pet_t( owner, "fallen_monk_brewmaster", PET_FALLEN_MONK, true, true )
   {
     npc_id                      = 168073;
     main_hand_weapon.type       = WEAPON_2H;
@@ -1725,9 +1667,6 @@ public:
   double composite_player_multiplier( school_e school ) const override
   {
     double cpm = o()->cache.player_multiplier( school );
-
-    if ( o()->buff.hit_combo->up() )
-      cpm *= 1 + o()->buff.hit_combo->stack_value();
 
     if ( o()->conduit.imbued_reflections->ok() )
       cpm *= 1 + o()->conduit.imbued_reflections.percent();
@@ -1874,24 +1813,6 @@ public:
     monk_pet_t::init_action_list();
   }
 
-  void summon( timespan_t duration = timespan_t::zero() ) override
-  {
-    monk_pet_t::summon( duration );
-
-    if ( o()->buff.hit_combo->up() )
-      buff.hit_combo_fm_brm->trigger( o()->buff.hit_combo->check() );
-  }
-
-  void create_buffs() override
-  {
-    monk_pet_t::create_buffs();
-
-    buff.hit_combo_fm_brm = make_buff( this, "hit_combo_fo_brm", o()->passives.hit_combo )
-                                ->set_default_value_from_effect( 1 )
-                                ->set_quiet( true )
-                                ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
-
   action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "auto_attack" )
@@ -1932,9 +1853,6 @@ public:
   double composite_player_multiplier( school_e school ) const override
   {
     double cpm = o()->cache.player_multiplier( school );
-
-    if ( o()->buff.hit_combo->up() )
-      cpm *= 1 + o()->buff.hit_combo->stack_value();
 
     if ( o()->conduit.imbued_reflections->ok() )
       cpm *= 1 + o()->conduit.imbued_reflections.percent();
