@@ -95,9 +95,9 @@ struct uptime_t : public uptime_base_t
     uptime_sum.add(t != timespan_t::zero() ? iteration_uptime_sum / t : 0.0);
   }
 
-  const char* name() const
+  const std::string& name() const
   {
-    return name_str.c_str();
+    return name_str;
   }
 
   uptime_t* collect_uptime(sim_t& sim, bool collect = true);

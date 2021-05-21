@@ -157,9 +157,8 @@ void cooldown_t::adjust_recharge_multiplier()
 
   if ( sim.debug )
   {
-    sim.out_debug.printf( "%s dynamic cooldown %s adjusted: new_ready=%.3f old_ready=%.3f old_mul=%f new_mul=%f",
-        action -> player -> name(), name(), ready.total_seconds(), old_ready.total_seconds(),
-        old_multiplier, recharge_multiplier );
+    sim.out_debug.print( "{} dynamic cooldown {} adjusted: new_ready={} old_ready={} old_mul={} new_mul={}",
+        *(action -> player), name(), ready, old_ready, old_multiplier, recharge_multiplier );
   }
 }
 
@@ -190,9 +189,8 @@ void cooldown_t::adjust_base_duration()
 
   if ( sim.debug )
   {
-    sim.out_debug.printf( "%s dynamic cooldown %s adjusted: new_ready=%.3f old_ready=%.3f old_dur=%.3f new_dur=%.3f",
-      action->player->name(), name(), ready.total_seconds(), old_ready.total_seconds(),
-      old_duration.total_seconds(), base_duration.total_seconds() );
+    sim.out_debug.print( "{} dynamic cooldown {} adjusted: new_ready={} old_ready={} old_dur={} new_dur={}",
+      *(action->player), name(), ready, old_ready, old_duration, base_duration );
   }
 }
 

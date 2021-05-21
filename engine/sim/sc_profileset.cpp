@@ -980,7 +980,7 @@ void profilesets_t::output_text( const sim_t& sim, std::ostream& out ) const
 
   range::for_each( results, [ &out ]( const profile_set_t* profileset ) {
       fmt::print( out, "    {:-10.3f} : {:s}\n",
-      profileset -> result().median(), profileset -> name().c_str() );
+      profileset -> result().median(), profileset -> name() );
   } );
 }
 

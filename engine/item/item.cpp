@@ -1377,8 +1377,8 @@ void item_t::init()
 
   if ( ! option_name_str.empty() && ( option_name_str != name_str ) )
   {
-    sim -> errorf( "Player %s at slot %s has inconsistency between name '%s' and '%s' for id %u\n",
-                   player -> name(), slot_name(), option_name_str.c_str(), name_str.c_str(), parsed.data.id );
+    sim -> error( "{} at slot {} has inconsistency between name '{}' and '{}' for id {}\n",
+                   *player, slot_name(), option_name_str, name_str, parsed.data.id );
 
     name_str = option_name_str;
   }
@@ -1386,8 +1386,8 @@ void item_t::init()
   // Verify that slot makes sense, if given (through DBC data)
   if ( ! verify_slot() )
   {
-    sim -> errorf( "Player %s at slot %s has an item '%s' meant for slot %s",
-        player -> name(), slot_name(), name_str.c_str(),
+    sim -> error( "{} at slot {} has an item '{}' meant for slot {}",
+        *player, slot_name(), name_str,
         util::slot_type_string( util::translate_invtype( static_cast<inventory_type>( parsed.data.inventory_type ) ) ) );
   }
 

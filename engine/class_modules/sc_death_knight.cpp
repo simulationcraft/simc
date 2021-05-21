@@ -1204,7 +1204,7 @@ static void log_rune_status( const death_knight_t* p )
 {
   if ( ! p -> sim -> debug ) return;
   std::string rune_string = p -> _runes.string_representation();
-  p -> sim -> print_debug( "{} runes: {}", p -> name(), rune_string.c_str() );
+  p -> sim -> print_debug( "{} runes: {}", p -> name(), rune_string );
 }
 
 inline runes_t::runes_t( death_knight_t* p ) : dk( p ),

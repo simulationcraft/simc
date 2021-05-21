@@ -513,7 +513,7 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
   if ( equipped_gems != max_gems )
   {
     sim.error( "Player {} has {} gems equipped, gems count for {} should be {}.\n",
-                p.name(), equipped_gems, tier_name.c_str(), max_gems );
+                p.name(), equipped_gems, tier_name, max_gems );
   }
 
   // Ensures that the player doesn't have too many legendary items equipped

@@ -41,7 +41,7 @@ void print_profiles(sim_t* sim)
       io::cfile file(p->report_information.save_gear_str, "w");
       if (!file)
       {
-        sim->errorf("Unable to save gear profile %s for player %s\n", p->report_information.save_gear_str.c_str(),
+        sim->error("Unable to save gear profile {} for player {}s\n", p->report_information.save_gear_str,
           p->name());
       }
       else

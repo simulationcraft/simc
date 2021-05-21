@@ -347,9 +347,9 @@ public:
     clear();
   }
 
-  const char* name() const
+  const std::string& name() const
   {
-    return name_str.c_str();
+    return name_str;
   }
 
   // Reserve memory

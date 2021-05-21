@@ -455,9 +455,9 @@ azerite_power_t azerite_state_t::get_power( unsigned id )
           }
         }
 
-        m_player -> sim -> out_debug.printf( "%s initializing overridden azerite power %s: "
-                                             "ilevels=%s",
-            m_player -> name(), power.name, s.str().c_str() );
+        m_player -> sim -> print_debug( "{} initializing overridden azerite power {}: "
+                                             "ilevels={}",
+            *m_player, power.name, s.str() );
       }
 
       return { m_player, &power, override_it -> second };

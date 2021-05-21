@@ -56,9 +56,9 @@ public:
     ratio.merge( other.ratio );
   }
 
-  const char* name() const
+  const std::string& name() const
   {
-    return name_str.c_str();
+    return name_str;
   }
 
   benefit_t* collect_ratio(sim_t& sim, bool collect = true);

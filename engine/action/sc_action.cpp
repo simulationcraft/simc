@@ -838,8 +838,8 @@ void action_t::parse_target_str()
       if ( p )
         target = p;
       else
-        sim->errorf( "%s %s: Unable to locate target for action '%s'.\n", player->name(), name(),
-                     signature_str.c_str() );
+        sim->error( "{} {}: Unable to locate target for action '{}'.\n", player->name(), name(),
+                     signature_str );
     }
   }
 }
@@ -3392,8 +3392,8 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
             }
             if ( !spell )
             {
-              original_spell.sim->errorf( "Warning: %s used invalid spell_targets action \"%s\"",
-                                          original_spell.player->name(), name_of_spell.c_str() );
+              original_spell.sim->error( "Warning: {} used invalid spell_targets action \"{}\"",
+                                          original_spell.player->name(), name_of_spell );
             }
             else
             {
@@ -4015,7 +4015,7 @@ call_action_list_t::call_action_list_t( player_t* player, util::string_view opti
 
   if ( !alist )
   {
-    sim->errorf( "Player %s uses call_action_list with unknown action list %s\n", player->name(), alist_name.c_str() );
+    sim->error( "{} uses call_action_list with unknown action list {}\n", *player, alist_name );
     sim->cancel();
   }
 }

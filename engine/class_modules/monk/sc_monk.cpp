@@ -3771,6 +3771,8 @@ struct weapons_of_order_t : public monk_spell_t
           p()->buff.invoke_xuen->trigger( duration );
           break;
         }
+        default:
+          break;
       }
     }
   }

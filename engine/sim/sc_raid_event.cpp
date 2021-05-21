@@ -842,7 +842,7 @@ struct damage_event_t final : public raid_event_t
     {
       struct raid_damage_t : public spell_t
       {
-        raid_damage_t( const char* n, player_t* player, school_e s ) : spell_t( n, player )
+        raid_damage_t( util::string_view n, player_t* player, school_e s ) : spell_t( n, player )
         {
           school      = s;
           may_crit    = false;
@@ -851,7 +851,7 @@ struct damage_event_t final : public raid_event_t
         }
       };
 
-      raid_damage = new raid_damage_t( type.c_str(), sim->target, damage_type );
+      raid_damage = new raid_damage_t( type, sim->target, damage_type );
       raid_damage->init();
     }
 
@@ -900,7 +900,7 @@ struct heal_event_t final : public raid_event_t
     {
       struct raid_heal_t : public heal_t
       {
-        raid_heal_t( const char* n, player_t* player ) : heal_t( n, player )
+        raid_heal_t( util::string_view n, player_t* player ) : heal_t( n, player )
         {
           school      = SCHOOL_HOLY;
           may_crit    = false;
@@ -909,7 +909,7 @@ struct heal_event_t final : public raid_event_t
         }
       };
 
-      raid_heal = new raid_heal_t( name.empty() ? type.c_str() : name.c_str(), sim->target );
+      raid_heal = new raid_heal_t( name.empty() ? type : name, sim->target );
       raid_heal->init();
     }
 
@@ -943,7 +943,7 @@ struct heal_event_t final : public raid_event_t
         raid_heal->target                               = p;
         raid_heal->execute();
 
-        sim->print_log( "Event {} healed {} for '{}' (before player modifiers).", name.c_str(), p->name(),
+        sim->print_log( "Event {} healed {} for '{}' (before player modifiers).", name, p->name(),
                         amount_to_heal );
       }
     }
