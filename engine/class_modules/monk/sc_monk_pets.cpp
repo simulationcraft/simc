@@ -287,7 +287,10 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       if ( source_action )
       {
         this->update_flags   = source_action->update_flags;
-        this->snapshot_flags = source_action->snapshot_flags;
+        auto pet_multiplier_snapshot = this->snapshot_flags & STATE_MUL_PET;
+        if ( !this->o()->bugs )
+          pet_multiplier_snapshot = 0;
+        this->snapshot_flags = source_action->snapshot_flags | pet_multiplier_snapshot;
       }
     }
 
