@@ -42,9 +42,10 @@ struct pet_action_base_t : public BASE
 {
   using super_t = BASE;
   using base_t  = pet_action_base_t<BASE>;
+  bool merge_report;
 
   pet_action_base_t( util::string_view n, PET_TYPE* p, const spell_data_t* data = spell_data_t::nil() )
-    : BASE( n, p, data )
+    : BASE( n, p, data ), merge_report( true )
   {
     // No costs are needed either
     this->base_costs[ RESOURCE_ENERGY ] = 0;
@@ -54,9 +55,7 @@ struct pet_action_base_t : public BASE
 
   void init() override
   {
-    super_t::init();
-
-    if ( !this->player->sim->report_pets_separately )
+    if ( !this->player->sim->report_pets_separately && merge_report )
     {
       auto it =
           range::find_if( o()->pet_list, [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
@@ -66,6 +65,8 @@ struct pet_action_base_t : public BASE
         this->stats = ( *it )->get_stats( this->name(), this );
       }
     }
+
+    super_t::init();
   }
 
   monk_t* o()
@@ -1117,6 +1118,7 @@ private:
       : pet_spell_t( "crackling_tiger_lightning_tick", p, p->o()->passives.crackling_tiger_lightning )
     {
       dual = direct_tick = background = may_crit = true;
+      merge_report                               = false;
     }
 
     void impact( action_state_t* s ) override
@@ -1144,7 +1146,7 @@ private:
       dynamic_tick_action = true;
       base_tick_time =
           p->o()->passives.crackling_tiger_lightning_driver->effectN( 1 ).period();  // trigger a tick every second
-      cooldown->duration      = p->o()->spec.invoke_xuen->cooldown();                // we're done after 25 seconds
+      cooldown->duration      = p->o()->spec.invoke_xuen->duration();                // we're done after 24 seconds
       attack_power_mod.direct = 0.0;
       attack_power_mod.tick   = 0.0;
 
@@ -1490,6 +1492,7 @@ public:
       : pet_melee_attack_t( "fists_of_fury_fo_tick", p, p->o()->passives.fallen_monk_fists_of_fury_tick )
     {
       background              = true;
+      merge_report            = false;
       aoe                     = (int)o()->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value() + ( o()->bugs ? 0 : 1 );
       attack_power_mod.direct = o()->passives.fallen_monk_fists_of_fury->effectN( 5 ).ap_coeff();
       ap_type                 = attack_power_type::WEAPON_BOTH;
@@ -1739,6 +1742,7 @@ public:
         : pet_spell_t( "breath_of_fire_dot_fo", p, p->o()->passives.breath_of_fire_dot )
       {
         background    = true;
+        merge_report  = false;
         tick_may_crit = may_crit = true;
         hasted_ticks             = false;
       }
