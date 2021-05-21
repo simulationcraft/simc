@@ -18,13 +18,9 @@ TODO:
 GENERAL:
 - Change Eye of the Tiger from a dot to an interaction with a buff
 
-- Convert Bonedust Brew to use the assessor function. Tinkets and racials also trigger
-- Add assessor to the monk pet module
-
 WINDWALKER:
 - Implement Touch of Death Rank 3
 - Add Cyclone Strike Counter as an expression
-- Venthyr's Windwalker Fallen Monk's Fist of Fury is reporting double damage.
 
 MISTWEAVER:
 - Essence Font - See if the implementation can be corrected to the intended design.
