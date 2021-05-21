@@ -16,6 +16,7 @@ namespace
 {  // ANONYMOUS ====================================================
 
 constexpr bool EXPRESSION_DEBUG = false;
+constexpr int EXPRESSION_CONSIDER_MARKING_THRESHOLD = 2; // number of false/true events to have been collected before offering the 'consider marking constant' info.
 
 struct lexer_t
 {
@@ -532,8 +533,8 @@ public:
     {
       if ( left->op_ == TOK_UNKNOWN )
       {
-        if ( ( !left_always_true && left_false == 0 ) ||
-             ( !left_always_false && left_true == 0 ) )
+        if ( left_false + left_true >= EXPRESSION_CONSIDER_MARKING_THRESHOLD && ( ( !left_always_true && left_false == 0 ) ||
+             ( !left_always_false && left_true == 0 ) ) )
         {
           printf( "consider marking expression %d %s as constant\n", left->id(),
                   left->name() );
@@ -541,8 +542,8 @@ public:
       }
       if ( right->op_ == TOK_UNKNOWN )
       {
-        if ( ( !right_always_true && right_false == 0 ) ||
-             ( !right_always_false && right_true == 0 ) )
+        if ( left_false + left_true >= EXPRESSION_CONSIDER_MARKING_THRESHOLD && ( ( !right_always_true && right_false == 0 ) ||
+             ( !right_always_false && right_true == 0 ) ) )
         {
           printf( "consider marking expression %d %s as constant\n",
                   right->id(), right->name() );
@@ -640,8 +641,8 @@ public:
     {
       if ( left->op_ == TOK_UNKNOWN )
       {
-        if ( ( !left_always_true && left_false == 0 ) ||
-             ( !left_always_false && left_true == 0 ) )
+        if ( left_false + left_true >= EXPRESSION_CONSIDER_MARKING_THRESHOLD && ( ( !left_always_true && left_false == 0 ) ||
+             ( !left_always_false && left_true == 0 ) ) )
         {
           printf( "consider marking expression %d %s as constant\n", left->id(),
                   left->name() );
@@ -649,8 +650,8 @@ public:
       }
       if ( right->op_ == TOK_UNKNOWN )
       {
-        if ( ( !right_always_true && right_false == 0 ) ||
-             ( !right_always_false && right_true == 0 ) )
+        if ( left_false + left_true >= EXPRESSION_CONSIDER_MARKING_THRESHOLD && ( ( !right_always_true && right_false == 0 ) ||
+             ( !right_always_false && right_true == 0 ) ) )
         {
           printf( "consider marking expression %d %s as constant\n",
                   right->id(), right->name() );
