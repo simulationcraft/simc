@@ -485,9 +485,6 @@ struct monk_spell_t : public monk_action_t<spell_t>
     if ( td( t )->debuff.weapons_of_order->up() )
       m *= 1 + td( t )->debuff.weapons_of_order->stack_value();
 
-    if ( td( t )->debuff.fae_exposure->up() )
-      m *= 1 + p()->passives.fae_exposure_dmg->effectN( 1 ).percent();
-
     return m;
   }
 
@@ -538,12 +535,6 @@ struct monk_spell_t : public monk_action_t<spell_t>
 
         am *= 1 + serenity_multiplier;
       }
-    }
-
-    if ( p()->buff.hit_combo->up() )
-    {
-      if ( base_t::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
-        am *= 1 + p()->buff.hit_combo->stack_value();
     }
 
     return am;
@@ -621,12 +612,6 @@ struct monk_heal_t : public monk_action_t<heal_t>
 
         am *= 1 + serenity_multiplier;
       }
-    }
-
-    if ( p()->buff.hit_combo->up() )
-    {
-      if ( base_t::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
-        am *= 1 + p()->buff.hit_combo->stack_value();
     }
 
     return am;
@@ -895,12 +880,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
         am *= 1 + serenity_multiplier;
       }
-    }
-
-    if ( p()->buff.hit_combo->up() )
-    {
-      if ( base_t::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
-        am *= 1 + p()->buff.hit_combo->stack_value();
     }
 
     // Increases just physical damage
@@ -2236,7 +2215,7 @@ struct melee_t : public monk_melee_attack_t
       am *= 1 + p()->talent.serenity->effectN( 7 ).percent();
 
     if ( p()->buff.hit_combo->up() )
-      am *= 1 + p()->buff.hit_combo->stack_value();
+      am *= 1 + p()->buff.hit_combo->stack() * p()->passives.hit_combo->effectN( 3 ).percent();
 
     return am;
   }
@@ -7054,6 +7033,56 @@ double monk_t::temporary_movement_modifier() const
     active = std::max( buff.flying_serpent_kick_movement->check_value(), active );
 
   return active;
+}
+
+// monk_t::composite_player_dd_multiplier ================================
+double monk_t::composite_player_dd_multiplier( school_e school, const action_t* action ) const
+{
+  double multiplier = player_t::composite_player_dd_multiplier(school, action);
+
+  if ( buff.hit_combo->up() && action->data().affected_by( passives.hit_combo->effectN( 1 ) ) )
+  {
+    multiplier *= 1 + buff.hit_combo->stack() * passives.hit_combo->effectN( 1 ).percent();
+  }
+
+  return multiplier;
+}
+
+// monk_t::composite_player_td_multiplier ================================
+double monk_t::composite_player_td_multiplier( school_e school, const action_t* action ) const
+{
+  double multiplier = player_t::composite_player_td_multiplier(school, action);
+
+  if ( buff.hit_combo->up() && action->data().affected_by( passives.hit_combo->effectN( 2 ) ) )
+  {
+    multiplier *= 1 + buff.hit_combo->stack() * passives.hit_combo->effectN( 2 ).percent();
+  }
+
+  return multiplier;
+}
+
+// monk_t::composite_player_target_multiplier ============================
+double monk_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  double multiplier = player_t::composite_player_target_multiplier(target, school);
+
+  if ( get_target_data( target )->debuff.fae_exposure->up() )
+    multiplier *= 1 + passives.fae_exposure_dmg->effectN( 1 ).percent();
+
+  return multiplier;
+}
+
+// monk_t::composite_player_pet_damage_multiplier ========================
+double monk_t::composite_player_pet_damage_multiplier( const action_state_t* state ) const
+{
+  double multiplier = player_t::composite_player_pet_damage_multiplier( state );
+
+  if ( buff.hit_combo->up() )
+  {
+    multiplier *= 1 + buff.hit_combo->stack() * passives.hit_combo->effectN( 4 ).percent();
+  }
+
+  return multiplier;
 }
 
 // monk_t::invalidate_cache ==============================================

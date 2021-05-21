@@ -779,6 +779,10 @@ public:
   double composite_mastery_rating() const override;
   double composite_crit_avoidance() const override;
   double temporary_movement_modifier() const override;
+  double composite_player_dd_multiplier( school_e, const action_t* action ) const override;
+  double composite_player_td_multiplier( school_e, const action_t* action ) const override;
+  double composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double composite_player_pet_damage_multiplier( const action_state_t* ) const override;
   void create_pets() override;
   void init_spells() override;
   void init_base_stats() override;
