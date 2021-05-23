@@ -358,7 +358,11 @@ struct summon_darkglare_t : public affliction_spell_t
     parse_options( options_str );
     harmful = may_crit = may_miss = false;
 
-    cooldown->duration += timespan_t::from_millis( p->talents.dark_caller->effectN( 1 ).base_value() );
+    if ( !p->is_ptr() )
+      cooldown->duration += timespan_t::from_millis( p->talents.dark_caller->effectN( 1 ).base_value() );
+
+    if ( p->spec.dark_caller->ok() )
+      cooldown->duration += timespan_t::from_millis( p->spec.dark_caller->effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -822,6 +826,7 @@ void warlock_t::init_spells_affliction()
   spec.corruption_3        = find_specialization_spell( "Corruption", "Rank 3" );
   spec.unstable_affliction_2 = find_specialization_spell( "Unstable Affliction", "Rank 2" );
   spec.unstable_affliction_3 = find_specialization_spell( "Unstable Affliction", "Rank 3" );
+  spec.dark_caller         = find_specialization_spell( "Dark Caller" ); //9.1 PTR - Now a passive learned at level 58
 
   // Talents
   talents.nightfall           = find_talent_spell( "Nightfall" );
@@ -834,7 +839,7 @@ void warlock_t::init_spells_affliction()
   talents.sow_the_seeds       = find_talent_spell( "Sow the Seeds" );
   talents.phantom_singularity = find_talent_spell( "Phantom Singularity" );
   talents.vile_taint          = find_talent_spell( "Vile Taint" );
-  talents.dark_caller         = find_talent_spell( "Dark Caller" );
+  talents.dark_caller         = find_talent_spell( "Dark Caller" ); //9.1 PTR - Removed as talent
   talents.shadow_embrace      = find_talent_spell( "Shadow Embrace" ); //9.1 PTR - Replaces Dark Caller
   talents.creeping_death      = find_talent_spell( "Creeping Death" );
   talents.dark_soul_misery    = find_talent_spell( "Dark Soul: Misery" );

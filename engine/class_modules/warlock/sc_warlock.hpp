@@ -170,7 +170,7 @@ public:
 
     // tier 45
     const spell_data_t* shadow_embrace; //9.1 PTR - Replaces Dark Caller
-    const spell_data_t* dark_caller;
+    const spell_data_t* dark_caller; //9.1 PTR - Removed as talent
     const spell_data_t* haunt;
     // grimoire of sacrifice
 
@@ -331,6 +331,7 @@ public:
     const spell_data_t* unstable_affliction;  //This is the primary active ability
     const spell_data_t* unstable_affliction_2; //Rank 2 passive (soul shard on death)
     const spell_data_t* unstable_affliction_3; //Rank 3 passive (increased duration)
+    const spell_data_t* dark_caller; //9.1 PTR - Now a passive learned at level 58
 
     // Demonology only
     const spell_data_t* demonology; //Spec aura
