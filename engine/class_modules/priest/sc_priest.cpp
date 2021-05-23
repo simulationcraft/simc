@@ -626,14 +626,14 @@ struct mindgames_t final : public priest_spell_t
   propagate_const<mindgames_healing_reversal_t*> child_mindgames_healing_reversal;
   propagate_const<mindgames_damage_reversal_t*> child_mindgames_damage_reversal;
   double insanity_gain;
-  int shattered_perceptions_increase_seconds;
+  timespan_t shattered_perceptions_increase;
 
   mindgames_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mindgames", p, p.covenant.mindgames ),
       child_mindgames_healing_reversal( nullptr ),
       child_mindgames_damage_reversal( nullptr ),
       insanity_gain( p.find_spell( 323706 )->effectN( 2 ).base_value() ),
-      shattered_perceptions_increase_seconds( as<int>( p.conduits.shattered_perceptions->effectN( 3 ).time_value() ) )
+      shattered_perceptions_increase( p.conduits.shattered_perceptions->effectN( 3 ).time_value() )
   {
     parse_options( options_str );
 
@@ -677,18 +677,20 @@ struct mindgames_t final : public priest_spell_t
       child_mindgames_damage_reversal->execute();
     }
 
+    // TODO: Determine what happens if you break both shields
     if ( priest().legendary.shadow_word_manipulation->ok() )
     {
       timespan_t max_time_seconds = priest().covenant.mindgames->duration() +
                                     priest().legendary.shadow_word_manipulation->effectN( 1 ).time_value() +
-                                    timespan_t::from_seconds( shattered_perceptions_increase_seconds );
+                                    ( priest().conduits.shattered_perceptions->ok() * shattered_perceptions_increase );
       // You get 1 stack for each second remaining on Mindgames as a shield expires
-      int stacks = priest().options.shadow_word_manipulation_seconds_remaining +
-                   ( priest().conduits.shattered_perceptions->ok() * shattered_perceptions_increase_seconds );
+      timespan_t stacks = timespan_t::from_seconds( priest().options.shadow_word_manipulation_seconds_remaining ) +
+                          ( priest().conduits.shattered_perceptions->ok() * shattered_perceptions_increase );
       // the delay value is the inverse of how much time is remaining
       // i.e. if you have 6s remaining we need to delay the buff by 2 seconds
-      timespan_t delay = max_time_seconds - timespan_t::from_seconds( stacks );
-      make_event( *sim, delay, [ this, stacks ] { priest().buffs.shadow_word_manipulation->trigger( stacks ); } );
+      timespan_t delay = max_time_seconds - stacks;
+      make_event( *sim, delay,
+                  [ this, stacks ] { priest().buffs.shadow_word_manipulation->trigger( stacks.total_seconds() ); } );
     }
 
     priest().generate_insanity( insanity, priest().gains.insanity_mindgames, s->action );
