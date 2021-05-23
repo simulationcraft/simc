@@ -626,12 +626,14 @@ struct mindgames_t final : public priest_spell_t
   propagate_const<mindgames_healing_reversal_t*> child_mindgames_healing_reversal;
   propagate_const<mindgames_damage_reversal_t*> child_mindgames_damage_reversal;
   double insanity_gain;
+  timespan_t shattered_perceptions_increase;
 
   mindgames_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mindgames", p, p.covenant.mindgames ),
       child_mindgames_healing_reversal( nullptr ),
       child_mindgames_damage_reversal( nullptr ),
-      insanity_gain( p.find_spell( 323706 )->effectN( 2 ).base_value() )
+      insanity_gain( p.find_spell( 323706 )->effectN( 2 ).base_value() ),
+      shattered_perceptions_increase( p.conduits.shattered_perceptions->effectN( 3 ).time_value() )
   {
     parse_options( options_str );
 
@@ -660,7 +662,6 @@ struct mindgames_t final : public priest_spell_t
     // Mindgames gives a total of 20 insanity
     // 10 if the target deals enough dmg to break the shield
     // 10 if the targets heals enough to break the shield
-    // TODO: Figure out how the crit buff works from Shadow Word: Manipulation
     double insanity = 0;
     // Healing reversal creates damage
     if ( child_mindgames_healing_reversal )
@@ -674,6 +675,22 @@ struct mindgames_t final : public priest_spell_t
     {
       insanity += insanity_gain;
       child_mindgames_damage_reversal->execute();
+    }
+
+    // TODO: Determine what happens if you break both shields
+    if ( priest().legendary.shadow_word_manipulation->ok() )
+    {
+      timespan_t max_time_seconds = priest().covenant.mindgames->duration() +
+                                    priest().legendary.shadow_word_manipulation->effectN( 1 ).time_value() +
+                                    ( priest().conduits.shattered_perceptions->ok() * shattered_perceptions_increase );
+      // You get 1 stack for each second remaining on Mindgames as a shield expires
+      timespan_t stacks = timespan_t::from_seconds( priest().options.shadow_word_manipulation_seconds_remaining ) +
+                          ( priest().conduits.shattered_perceptions->ok() * shattered_perceptions_increase );
+      // the delay value is the inverse of how much time is remaining
+      // i.e. if you have 6s remaining we need to delay the buff by 2 seconds
+      timespan_t delay = max_time_seconds - stacks;
+      make_event( *sim, delay,
+                  [ this, stacks ] { priest().buffs.shadow_word_manipulation->trigger( stacks.total_seconds() ); } );
     }
 
     priest().generate_insanity( insanity, priest().gains.insanity_mindgames, s->action );
@@ -1883,6 +1900,11 @@ void priest_t::create_buffs()
   buffs.the_penitent_one = make_buff( this, "the_penitent_one", legendary.the_penitent_one->effectN( 1 ).trigger() )
                                ->set_trigger_spell( legendary.the_penitent_one );
 
+  // Runeforge Buffs
+  buffs.shadow_word_manipulation = make_buff( this, "shadow_word_manipulation", find_spell( 357028 ) )
+                                       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                                       ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
+
   // Covenant Buffs
   buffs.fae_guardians        = make_buff<buffs::fae_guardians_t>( *this );
   buffs.boon_of_the_ascended = make_buff<buffs::boon_of_the_ascended_t>( *this );
@@ -2089,6 +2111,8 @@ void priest_t::create_options()
   add_option( opt_int( "priest.ascended_eruption_additional_targets", options.ascended_eruption_additional_targets ) );
   add_option( opt_int( "priest.cauterizing_shadows_allies", options.cauterizing_shadows_allies ) );
   add_option( opt_string( "priest.bwonsamdis_pact_mask_type", options.bwonsamdis_pact_mask_type ) );
+  add_option( opt_int( "priest.shadow_word_manipulation_seconds_remaining",
+                       options.shadow_word_manipulation_seconds_remaining, 0, 8 ) );
 }
 
 std::string priest_t::create_profile( save_e type )

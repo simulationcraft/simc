@@ -15372,8 +15372,8 @@ static const std::array<spelltext_data_t, 15442> __ptr_spelltext_data { {
   { 356369, "$@spelldesc352362", "Haste increased by $s1%.\r\nCritical strike chance increased by $s2%.", 0 },
   { 356375, "When Wild Spirits hits fewer than $328757I targets, there is a $s1% chance to cause Wild Spirits damage a second time.", 0, 0 },
   { 356390, "Casting Unholy Nova summons a Maldraxxi Champion to aid you for X seconds. Each time an ally is healed by Unholy Transfusion your Maldraxxi Champion's healing and damage done is increased by 1%, up to a maximum of X%.", 0, 0 },
-  { 356391, "Enter a pact with the Death Loa, calling forth a haunted mask that lingers on a target until Fae Guardians ends.\r\n\r\n$@spellname356908: Copies the benefit of the current faerie on its target. Follows your Direct Mask.", 0, 0 },
-  { 356392, "Mindgames lasts an additional $s1 sec and reverses an additional $s2% damage or healing. When Mindgames ends, gain $357028s1% Critical Strike for each second remaining for $357028d.", 0, 0 },
+  { 356391, "Enter a pact with the Death Loa, calling forth a haunted mask that lingers on a target until Fae Guardians ends.\r\n\r\n|CFFffffffHaunted Mask:|r Copies the benefit of the current faerie on its target. Follows your Direct Mask.", 0, 0 },
+  { 356392, "Mindgames lasts an additional ${$s1/1000} sec and reverses an additional $s2% damage or healing. When Mindgames can no longer reverse healing or damage, gain $357028s1% Critical Strike for each second remaining for $357028d.", 0, 0 },
   { 356395, "Boon of the Ascended's cooldown is reduced by $s1 seconds, up to $s2 sec, for each stack of Boon of the Ascended consumed by Ascended Eruption.", 0, 0 },
   { 356419, "Judge the soul of the targeted party member. Only usable on the recently deceased.", "Your soul has been judged recently.", 0 },
   { 356456, "Heart Strike deals $s1% increased damage, but also costs $s2% of your max health.", 0, "PvP Talent" },
@@ -15445,7 +15445,9 @@ static const std::array<spelltext_data_t, 15442> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.1.0.38709
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
+  {  356391,  0, "Enter a pact with the Death Loa, calling forth a haunted mask that lingers on a target until Fae Guardians ends.\r\n\r\n$@spellname356908: Copies the benefit of the current faerie on its target. Follows your Direct Mask.", "Enter a pact with the Death Loa, calling forth a haunted mask that lingers on a target until Fae Guardians ends.\r\n\r\n|CFFffffffHaunted Mask:|r Copies the benefit of the current faerie on its target. Follows your Direct Mask." },
+  {  356392,  0, "Mindgames lasts an additional $s1 sec and reverses an additional $s2% damage or healing. When Mindgames ends, gain $357028s1% Critical Strike for each second remaining for $357028d.", "Mindgames lasts an additional ${$s1/1000} sec and reverses an additional $s2% damage or healing. When Mindgames can no longer reverse healing or damage, gain $357028s1% Critical Strike for each second remaining for $357028d." },
 } };
 
 // Spell description variables, wow build 9.1.0.38709
