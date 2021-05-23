@@ -466,6 +466,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_haunt =
       make_buff( *this, "haunt", source->find_spell( 48181 ) )->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", source->find_spell( 32390 ) )
+                               ->set_default_value( source->find_spell( 32390 )->effectN( 1 ).percent() )
                                ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                                ->set_max_stack( 3 );
 
@@ -657,9 +658,16 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
     if ( td->debuffs_haunt->check() )
       m *= 1.0 + td->debuffs_haunt->data().effectN( 2 ).percent();
 	  
-	  //TOCHECK 
-	  m *= 1.0 + ( ( td->debuffs_shadow_embrace->data().effectN( 1 ).percent() ) * ( 1 + conduit.cold_embrace.percent() )
-		  * td->debuffs_shadow_embrace->check() );
+	if ( !is_ptr() || conduit.cold_embrace.ok() )
+    {
+      m *= 1.0 + ( ( td->debuffs_shadow_embrace->check_value() ) * ( 1 + conduit.cold_embrace.percent() )
+           * td->debuffs_shadow_embrace->check() );
+    }
+
+    if ( is_ptr() && talents.shadow_embrace->ok() )
+    {
+      m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value();
+    }
   }
 
   return m;
