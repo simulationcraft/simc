@@ -38,7 +38,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_vile_taint;
 
   propagate_const<buff_t*> debuffs_haunt;
-  propagate_const<buff_t*> debuffs_shadow_embrace; //TODO: 9.1 PTR - Modify SE behavior (see UA)
+  propagate_const<buff_t*> debuffs_shadow_embrace; //9.1 PTR - Same behavior as 9.0 but enabled by talent
 
   // Destro
   propagate_const<dot_t*> dots_immolate;
@@ -169,6 +169,7 @@ public:
     const spell_data_t* vile_taint;
 
     // tier 45
+    const spell_data_t* shadow_embrace; //9.1 PTR - Replaces Dark Caller
     const spell_data_t* dark_caller;
     const spell_data_t* haunt;
     // grimoire of sacrifice

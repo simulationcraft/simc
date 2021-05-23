@@ -106,7 +106,7 @@ struct shadow_bolt_t : public affliction_spell_t
   void impact( action_state_t* s ) override
   {
     affliction_spell_t::impact( s );
-    if ( result_is_hit( s->result ) )
+    if ( result_is_hit( s->result ) && ( !p()->is_ptr() || p()->talents.shadow_embrace->ok() ) )
     {
       // Add passive check
       td( s->target )->debuffs_shadow_embrace->trigger();
@@ -619,7 +619,7 @@ struct drain_soul_t : public affliction_spell_t
   void tick( dot_t* d ) override
   {
     affliction_spell_t::tick( d );
-    if ( result_is_hit( d->state->result ) )
+    if ( result_is_hit( d->state->result ) && ( !p()->is_ptr() || p()->talents.shadow_embrace->ok() ) )
     {
       // TODO - Add passive check
       td( d->target )->debuffs_shadow_embrace->trigger();
@@ -663,7 +663,8 @@ struct haunt_t : public affliction_spell_t
       td( s->target )->debuffs_haunt->trigger();
     }
 
-    td( s->target )->debuffs_shadow_embrace->trigger();
+    if ( !p()->is_ptr() )
+      td( s->target )->debuffs_shadow_embrace->trigger();
   }
 };
 
@@ -834,6 +835,7 @@ void warlock_t::init_spells_affliction()
   talents.phantom_singularity = find_talent_spell( "Phantom Singularity" );
   talents.vile_taint          = find_talent_spell( "Vile Taint" );
   talents.dark_caller         = find_talent_spell( "Dark Caller" );
+  talents.shadow_embrace      = find_talent_spell( "Shadow Embrace" ); //9.1 PTR - Replaces Dark Caller
   talents.creeping_death      = find_talent_spell( "Creeping Death" );
   talents.dark_soul_misery    = find_talent_spell( "Dark Soul: Misery" );
 
