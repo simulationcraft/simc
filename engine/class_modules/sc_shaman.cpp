@@ -839,7 +839,7 @@ public:
   double composite_spell_power_multiplier() const override;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
-  double composite_player_pet_damage_multiplier( const action_state_t* state ) const override;
+  double composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const override;
   double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const;
   double matching_gear_multiplier( attribute_e attr ) const override;
   action_t* create_action( util::string_view name, const std::string& options ) override;
@@ -9629,9 +9629,9 @@ double shaman_t::composite_player_target_multiplier( player_t* target, school_e 
 
 // shaman_t::composite_player_pet_damage_multiplier =========================
 
-double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s ) const
+double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
-  double m = player_t::composite_player_pet_damage_multiplier( s );
+  double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
   // Elemental
   m *= 1.0 + spec.elemental_shaman->effectN( 3 ).percent();

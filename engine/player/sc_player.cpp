@@ -3955,7 +3955,7 @@ double player_t::composite_total_corruption() const
   return cache.corruption() - cache.corruption_resistance();
 }
 
-double player_t::composite_player_pet_damage_multiplier( const action_state_t* ) const
+double player_t::composite_player_pet_damage_multiplier( const action_state_t*, bool ) const
 {
   double m = 1.0;
 
@@ -3967,6 +3967,11 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t* )
         1.0 + ( buffs.battlefield_presence->data().effectN( 2 ).percent() * buffs.battlefield_presence->current_stack );
 
   return m;
+}
+
+double player_t::composite_player_target_pet_damage_multiplier( player_t*, bool ) const
+{
+  return 1.0;
 }
 
 double player_t::composite_player_multiplier( school_e school ) const
