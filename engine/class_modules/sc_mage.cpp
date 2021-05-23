@@ -731,7 +731,7 @@ public:
   double composite_mastery() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_player_multiplier( school_e ) const override;
-  double composite_player_pet_damage_multiplier( const action_state_t* ) const override;
+  double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
   double composite_player_target_multiplier( player_t*, school_e ) const override;
   double composite_spell_crit_chance() const override;
   double composite_rating_multiplier( rating_e ) const override;
@@ -6531,9 +6531,9 @@ double mage_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s ) const
+double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
-  double m = player_t::composite_player_pet_damage_multiplier( s );
+  double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
   m *= 1.0 + spec.arcane_mage->effectN( 3 ).percent();
   m *= 1.0 + spec.fire_mage->effectN( 3 ).percent();

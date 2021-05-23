@@ -1616,7 +1616,7 @@ void action_t::execute()
       // for aoe spells.
       else
       {
-        snapshot_internal( s, snapshot_flags & STATE_TARGET, pre_execute_state->result_type );
+        snapshot_internal( s, snapshot_flags & STATE_TARGET_MASK, pre_execute_state->result_type );
       }
       s->result       = calculate_result( s );
       s->block_result = calculate_block_result( s );
@@ -2391,7 +2391,7 @@ void action_t::init()
   if ( player->is_pet() && ( snapshot_flags & ( STATE_MUL_DA | STATE_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA |
                                                 STATE_MUL_PERSISTENT | STATE_VERSATILITY ) ) )
   {
-    snapshot_flags |= STATE_MUL_PET;
+    snapshot_flags |= STATE_MUL_PET | STATE_TGT_MUL_PET;
   }
 
   if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) )
@@ -3780,13 +3780,16 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->persistent_multiplier = composite_persistent_multiplier( state );
 
   if ( flags & STATE_MUL_PET )
-    state->pet_multiplier = player->cast_pet()->owner->composite_player_pet_damage_multiplier( state );
+    state->pet_multiplier = player->cast_pet()->owner->composite_player_pet_damage_multiplier( state, player->type == PLAYER_GUARDIAN );
 
   if ( flags & STATE_TGT_MUL_DA )
     state->target_da_multiplier = composite_target_da_multiplier( state->target );
 
   if ( flags & STATE_TGT_MUL_TA )
     state->target_ta_multiplier = composite_target_ta_multiplier( state->target );
+
+  if ( flags & STATE_TGT_MUL_PET )
+    state->target_pet_multiplier = player->cast_pet()->owner->composite_player_target_pet_damage_multiplier( state->target, player->type == PLAYER_GUARDIAN );
 
   if ( flags & STATE_TGT_CRIT )
     state->target_crit_chance = composite_target_crit_chance( state->target ) * composite_crit_chance_multiplier();

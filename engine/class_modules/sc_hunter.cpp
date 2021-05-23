@@ -645,7 +645,7 @@ public:
   double    composite_player_target_crit_chance( player_t* target ) const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
-  double    composite_player_pet_damage_multiplier( const action_state_t* ) const override;
+  double    composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
   double    composite_leech() const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    passive_movement_modifier() const override;
@@ -6318,9 +6318,9 @@ double hunter_t::composite_player_target_multiplier( player_t* target, school_e 
 
 // hunter_t::composite_player_pet_damage_multiplier ======================
 
-double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s ) const
+double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
-  double m = player_t::composite_player_pet_damage_multiplier( s );
+  double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
   m *= 1 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
   m *= 1 + specs.survival_hunter -> effectN( 3 ).percent();

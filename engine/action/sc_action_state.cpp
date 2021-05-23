@@ -105,8 +105,9 @@ void action_state_t::copy_state( const action_state_t* o )
   persistent_multiplier = o->persistent_multiplier;
   pet_multiplier        = o->pet_multiplier;
 
-  target_da_multiplier = o->target_da_multiplier;
-  target_ta_multiplier = o->target_ta_multiplier;
+  target_da_multiplier  = o->target_da_multiplier;
+  target_ta_multiplier  = o->target_ta_multiplier;
+  target_pet_multiplier = o->target_pet_multiplier;
 
   target_mitigation_da_multiplier = o->target_mitigation_da_multiplier;
   target_mitigation_ta_multiplier = o->target_mitigation_ta_multiplier;
@@ -144,6 +145,7 @@ action_state_t::action_state_t( action_t* a, player_t* t )
     pet_multiplier( 1.0 ),
     target_da_multiplier( 1.0 ),
     target_ta_multiplier( 1.0 ),
+    target_pet_multiplier( 1.0 ),
     target_mitigation_da_multiplier( 1.0 ),
     target_mitigation_ta_multiplier( 1.0 ),
     target_armor( 0 )
@@ -218,6 +220,7 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
   if ( action->player->is_pet() )
   {
     s << " pet_mul=" << pet_multiplier;
+    s << " tgt_pet_mul=" << target_pet_multiplier;
   }
   s << " tgt_da_mul=" << target_da_multiplier;
   s << " tgt_ta_mul=" << target_ta_multiplier;
@@ -297,6 +300,7 @@ std::string action_state_t::flags_to_str( unsigned flags )
   concat_flag_str( str, "TGT_CRIT", STATE_TGT_CRIT );
   concat_flag_str( str, "TGT_MUL_DA", STATE_TGT_MUL_DA );
   concat_flag_str( str, "TGT_MUL_TA", STATE_TGT_MUL_TA );
+  concat_flag_str( str, "TGT_MUL_PET", STATE_TGT_MUL_PET );
 
   concat_flag_str( str, "USR1", STATE_USER_1 );
   concat_flag_str( str, "USR2", STATE_USER_2 );

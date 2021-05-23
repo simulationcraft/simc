@@ -1564,9 +1564,9 @@ double priest_t::composite_spell_crit_chance() const
   return sc;
 }
 
-double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s ) const
+double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
-  double m = player_t::composite_player_pet_damage_multiplier( s );
+  double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
   m *= ( 1.0 + specs.shadow_priest->effectN( 3 ).percent() );
   return m;
 }

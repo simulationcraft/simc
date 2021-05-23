@@ -1055,7 +1055,7 @@ public:
   double    composite_melee_expertise( const weapon_t* ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    composite_player_multiplier( school_e school ) const override;
-  double    composite_player_pet_damage_multiplier( const action_state_t* /* state */ ) const override;
+  double    composite_player_pet_damage_multiplier( const action_state_t* /* state */, bool /* guardian */ ) const override;
   double    composite_crit_avoidance() const override;
   void      combat_begin() override;
   void      activate() override;
@@ -9022,9 +9022,9 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double death_knight_t::composite_player_pet_damage_multiplier( const action_state_t* state ) const
+double death_knight_t::composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const
 {
-  double m = player_t::composite_player_pet_damage_multiplier( state );
+  double m = player_t::composite_player_pet_damage_multiplier( state, guardian );
 
   if ( mastery.dreadblade -> ok() )
   {

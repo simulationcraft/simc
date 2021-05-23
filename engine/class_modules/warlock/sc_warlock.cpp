@@ -672,9 +672,9 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* s ) const
+double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
-  double m = player_t::composite_player_pet_damage_multiplier( s );
+  double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
   if ( specialization() == WARLOCK_DESTRUCTION )
   {

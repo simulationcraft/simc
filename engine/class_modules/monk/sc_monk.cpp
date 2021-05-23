@@ -7080,9 +7080,9 @@ double monk_t::composite_player_target_multiplier( player_t* target, school_e sc
 }
 
 // monk_t::composite_player_pet_damage_multiplier ========================
-double monk_t::composite_player_pet_damage_multiplier( const action_state_t* state ) const
+double monk_t::composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const
 {
-  double multiplier = player_t::composite_player_pet_damage_multiplier( state );
+  double multiplier = player_t::composite_player_pet_damage_multiplier( state, guardian );
 
   if ( buff.hit_combo->up() )
   {
