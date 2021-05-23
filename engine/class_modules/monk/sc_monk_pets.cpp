@@ -35,6 +35,19 @@ struct monk_pet_t : public pet_t
   {
     return static_cast<monk_t*>( owner );
   }
+
+  void init_assessors() override
+  {
+    base_t::init_assessors();
+
+    auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ) {
+      if ( o()->get_target_data( s->target )->debuff.bonedust_brew->up() )
+        o()->bonedust_brew_assessor( s );
+      return assessor::CONTINUE;
+    };
+
+    assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+  }
 };
 
 template <typename BASE, typename PET_TYPE = monk_pet_t>
@@ -42,9 +55,10 @@ struct pet_action_base_t : public BASE
 {
   using super_t = BASE;
   using base_t  = pet_action_base_t<BASE>;
+  bool merge_report;
 
   pet_action_base_t( util::string_view n, PET_TYPE* p, const spell_data_t* data = spell_data_t::nil() )
-    : BASE( n, p, data )
+    : BASE( n, p, data ), merge_report( true )
   {
     // No costs are needed either
     this->base_costs[ RESOURCE_ENERGY ] = 0;
@@ -54,9 +68,7 @@ struct pet_action_base_t : public BASE
 
   void init() override
   {
-    super_t::init();
-
-    if ( !this->player->sim->report_pets_separately )
+    if ( !this->player->sim->report_pets_separately && merge_report )
     {
       auto it =
           range::find_if( o()->pet_list, [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
@@ -66,6 +78,8 @@ struct pet_action_base_t : public BASE
         this->stats = ( *it )->get_stats( this->name(), this );
       }
     }
+
+    super_t::init();
   }
 
   monk_t* o()
@@ -287,7 +301,10 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       if ( source_action )
       {
         this->update_flags   = source_action->update_flags;
-        this->snapshot_flags = source_action->snapshot_flags;
+        auto pet_multiplier_snapshot = this->snapshot_flags & STATE_MUL_PET;
+        if ( !this->o()->bugs )
+          pet_multiplier_snapshot = 0;
+        this->snapshot_flags = source_action->snapshot_flags | pet_multiplier_snapshot;
       }
     }
 
@@ -383,7 +400,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       auto owner = this->o();
 
       owner->trigger_empowered_tiger_lightning( s );
-      owner->trigger_bonedust_brew( s );
 
       super_t::impact( s );
     }
@@ -945,7 +961,6 @@ public:
   struct
   {
     buff_t* bok_proc_sef          = nullptr;
-    buff_t* hit_combo_sef         = nullptr;
     buff_t* pressure_point_sef    = nullptr;
     buff_t* rushing_jade_wind_sef = nullptr;
   } buff;
@@ -1035,9 +1050,6 @@ public:
     if ( o()->buff.bok_proc->up() )
       buff.bok_proc_sef->trigger( 1, buff_t::DEFAULT_VALUE(), 1, o()->buff.bok_proc->remains() );
 
-    if ( o()->buff.hit_combo->up() )
-      buff.hit_combo_sef->trigger( o()->buff.hit_combo->check() );
-
     if ( o()->buff.rushing_jade_wind->up() )
       buff.rushing_jade_wind_sef->trigger( 1, buff_t::DEFAULT_VALUE(), 1, o()->buff.rushing_jade_wind->remains() );
 
@@ -1073,17 +1085,10 @@ public:
                                        else
                                          d->expire( timespan_t::from_millis( 1 ) );
                                      } );
-
-    buff.hit_combo_sef = make_buff( this, "hit_combo_sef", o()->passives.hit_combo )
-                             ->set_default_value_from_effect( 1 )
-                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
   {
-    if ( o()->buff.combo_strikes->up() && o()->talent.hit_combo->ok() )
-      buff.hit_combo_sef->trigger();
-
     if ( ability >= SEF_SPELL_MIN )
     {
       auto spell_index = sef_spell_index( ability );
@@ -1116,7 +1121,6 @@ private:
     void impact( action_state_t* s ) override
     {
       o()->trigger_empowered_tiger_lightning( s );
-      o()->trigger_bonedust_brew( s );
 
       pet_melee_attack_t::impact( s );
     }
@@ -1128,13 +1132,13 @@ private:
       : pet_spell_t( "crackling_tiger_lightning_tick", p, p->o()->passives.crackling_tiger_lightning )
     {
       dual = direct_tick = background = may_crit = true;
+      merge_report                               = false;
     }
 
     void impact( action_state_t* s ) override
     {
       auto owner = o();
       owner->trigger_empowered_tiger_lightning( s );
-      owner->trigger_bonedust_brew( s );
 
       pet_spell_t::impact( s );
     }
@@ -1155,7 +1159,7 @@ private:
       dynamic_tick_action = true;
       base_tick_time =
           p->o()->passives.crackling_tiger_lightning_driver->effectN( 1 ).period();  // trigger a tick every second
-      cooldown->duration      = p->o()->spec.invoke_xuen->cooldown();                // we're done after 25 seconds
+      cooldown->duration      = p->o()->spec.invoke_xuen->duration();                // we're done after 24 seconds
       attack_power_mod.direct = 0.0;
       attack_power_mod.tick   = 0.0;
 
@@ -1189,9 +1193,6 @@ public:
   double composite_player_multiplier( school_e school ) const override
   {
     double cpm = owner->cache.player_multiplier( school );
-
-    if ( o()->buff.hit_combo->up() )
-      cpm *= 1 + o()->buff.hit_combo->stack_value();
 
     if ( o()->conduit.xuens_bond->ok() )
       cpm *= 1 + o()->conduit.xuens_bond.percent();
@@ -1229,13 +1230,6 @@ private:
   {
     melee_t( util::string_view n, niuzao_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      o()->trigger_bonedust_brew( s );
-
-      pet_melee_t::impact( s );
     }
   };
 
@@ -1289,13 +1283,6 @@ private:
       // has been dealt
       o()->buff.recent_purifies->cancel();
     }
-
-    void impact( action_state_t* s ) override
-    {
-      o()->trigger_bonedust_brew( s );
-
-      pet_melee_attack_t::impact( s );
-    }
   };
 
   struct auto_attack_t : public pet_auto_attack_t
@@ -1324,9 +1311,6 @@ public:
   double composite_player_multiplier( school_e school ) const override
   {
     double cpm = pet_t::composite_player_multiplier( school );
-
-    if ( o()->buff.hit_combo->up() )
-      cpm *= 1 + o()->buff.hit_combo->stack_value();
 
     cpm *= 1 + o()->spec.brewmaster_monk->effectN( 3 ).percent();
 
@@ -1387,16 +1371,6 @@ public:
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
     owner_coeff.ap_from_ap      = o()->spec.mistweaver_monk->effectN( 4 ).percent();
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double cpm = monk_pet_t::composite_player_multiplier( school );
-
-    if ( o()->buff.hit_combo->up() )
-      cpm *= 1 + o()->buff.hit_combo->stack_value();
-
-    return cpm;
   }
 
   void init_action_list() override
@@ -1467,13 +1441,8 @@ private:
   };
 
 public:
-  struct
-  {
-    buff_t* hit_combo_fm_ww = nullptr;
-  } buff;
-
   fallen_monk_ww_pet_t( monk_t* owner )
-    : monk_pet_t( owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true ), buff()
+    : monk_pet_t( owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true )
   {
     npc_id                      = 168033;
     main_hand_weapon.type       = WEAPON_1H;
@@ -1510,31 +1479,10 @@ public:
   {
     double cpm = o()->cache.player_multiplier( school );
 
-    if ( o()->buff.hit_combo->up() )
-      cpm *= 1 + o()->buff.hit_combo->stack_value();
-
     if ( o()->conduit.imbued_reflections->ok() )
       cpm *= 1 + o()->conduit.imbued_reflections.percent();
 
     return cpm;
-  }
-
-  void summon( timespan_t duration = timespan_t::zero() ) override
-  {
-    monk_pet_t::summon( duration );
-
-    if ( o()->buff.hit_combo->up() )
-      buff.hit_combo_fm_ww->trigger( o()->buff.hit_combo->check() );
-  }
-
-  void create_buffs() override
-  {
-    monk_pet_t::create_buffs();
-
-    buff.hit_combo_fm_ww = make_buff( this, "hit_combo_fo_ww", o()->passives.hit_combo )
-                               ->set_default_value_from_effect( 1 )
-                               ->set_quiet( true )
-                               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   struct fallen_monk_fists_of_fury_tick_t : public pet_melee_attack_t
@@ -1543,6 +1491,7 @@ public:
       : pet_melee_attack_t( "fists_of_fury_fo_tick", p, p->o()->passives.fallen_monk_fists_of_fury_tick )
     {
       background              = true;
+      merge_report            = false;
       aoe                     = (int)o()->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value() + ( o()->bugs ? 0 : 1 );
       attack_power_mod.direct = o()->passives.fallen_monk_fists_of_fury->effectN( 5 ).ap_coeff();
       ap_type                 = attack_power_type::WEAPON_BOTH;
@@ -1689,13 +1638,8 @@ private:
   };
 
 public:
-  struct
-  {
-    buff_t* hit_combo_fm_brm = nullptr;
-  } buff;
-
   fallen_monk_brm_pet_t( monk_t* owner )
-    : monk_pet_t( owner, "fallen_monk_brewmaster", PET_FALLEN_MONK, true, true ), buff()
+    : monk_pet_t( owner, "fallen_monk_brewmaster", PET_FALLEN_MONK, true, true )
   {
     npc_id                      = 168073;
     main_hand_weapon.type       = WEAPON_2H;
@@ -1725,9 +1669,6 @@ public:
   double composite_player_multiplier( school_e school ) const override
   {
     double cpm = o()->cache.player_multiplier( school );
-
-    if ( o()->buff.hit_combo->up() )
-      cpm *= 1 + o()->buff.hit_combo->stack_value();
 
     if ( o()->conduit.imbued_reflections->ok() )
       cpm *= 1 + o()->conduit.imbued_reflections.percent();
@@ -1800,6 +1741,7 @@ public:
         : pet_spell_t( "breath_of_fire_dot_fo", p, p->o()->passives.breath_of_fire_dot )
       {
         background    = true;
+        merge_report  = false;
         tick_may_crit = may_crit = true;
         hasted_ticks             = false;
       }
@@ -1874,24 +1816,6 @@ public:
     monk_pet_t::init_action_list();
   }
 
-  void summon( timespan_t duration = timespan_t::zero() ) override
-  {
-    monk_pet_t::summon( duration );
-
-    if ( o()->buff.hit_combo->up() )
-      buff.hit_combo_fm_brm->trigger( o()->buff.hit_combo->check() );
-  }
-
-  void create_buffs() override
-  {
-    monk_pet_t::create_buffs();
-
-    buff.hit_combo_fm_brm = make_buff( this, "hit_combo_fo_brm", o()->passives.hit_combo )
-                                ->set_default_value_from_effect( 1 )
-                                ->set_quiet( true )
-                                ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
-
   action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "auto_attack" )
@@ -1932,9 +1856,6 @@ public:
   double composite_player_multiplier( school_e school ) const override
   {
     double cpm = o()->cache.player_multiplier( school );
-
-    if ( o()->buff.hit_combo->up() )
-      cpm *= 1 + o()->buff.hit_combo->stack_value();
 
     if ( o()->conduit.imbued_reflections->ok() )
       cpm *= 1 + o()->conduit.imbued_reflections.percent();
@@ -2005,7 +1926,11 @@ public:
 }  // end namespace pets
 
 monk_t::pets_t::pets_t( monk_t* p )
-  : sef(),
+  : sef(), 
+    xuen( "xuen_the_white_tiger", p, []( monk_t* p ) { return new pets::xuen_pet_t( p ); } ),
+    niuzao( "niuzao_the_black_ox", p, []( monk_t* p ) { return new pets::niuzao_pet_t( p ); } ),
+    yulon( "yulon_the_jade_serpent", p, []( monk_t* p ) { return new pets::yulon_pet_t( p ); } ),
+    chiji( "chiji_the_red_crane", p, []( monk_t* p ) { return new pets::chiji_pet_t( p ); } ),
     fallen_monk_ww( "fallen_monk_windwalker", p, []( monk_t* p ) { return new pets::fallen_monk_ww_pet_t( p ); } ),
     fallen_monk_mw( "fallen_monk_mistweaver", p, []( monk_t* p ) { return new pets::fallen_monk_mw_pet_t( p ); } ),
     fallen_monk_brm( "fallen_monk_brewmaster", p, []( monk_t* p ) { return new pets::fallen_monk_brm_pet_t( p ); } )
@@ -2018,7 +1943,7 @@ void monk_t::create_pets()
 {
   base_t::create_pets();
 
-  if ( spec.invoke_xuen->ok() && ( find_action( "invoke_xuen" ) || find_action( "invoke_xuen_the_white_tiger" ) ) )
+/*  if ( spec.invoke_xuen->ok() && ( find_action( "invoke_xuen" ) || find_action( "invoke_xuen_the_white_tiger" ) ) )
   {
     pets.xuen = new pets::xuen_pet_t( this );
   }
@@ -2038,7 +1963,7 @@ void monk_t::create_pets()
   {
     pets.yulon = new pets::yulon_pet_t( this );
   }
-
+*/
   if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
   {
     pets.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", this, true, WEAPON_SWORD );

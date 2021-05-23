@@ -722,10 +722,10 @@ public:
   struct pets_t
   {
     std::array<pets::storm_earth_and_fire_pet_t*, SEF_PET_MAX> sef;
-    pet_t* xuen   = nullptr;
-    pet_t* niuzao = nullptr;
-    pet_t* yulon  = nullptr;
-    pet_t* chiji  = nullptr;
+    spawner::pet_spawner_t<pet_t, monk_t> xuen;
+    spawner::pet_spawner_t<pet_t, monk_t> niuzao;
+    spawner::pet_spawner_t<pet_t, monk_t> yulon;
+    spawner::pet_spawner_t<pet_t, monk_t> chiji;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_ww;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_mw;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_brm;
@@ -779,6 +779,10 @@ public:
   double composite_mastery_rating() const override;
   double composite_crit_avoidance() const override;
   double temporary_movement_modifier() const override;
+  double composite_player_dd_multiplier( school_e, const action_t* action ) const override;
+  double composite_player_td_multiplier( school_e, const action_t* action ) const override;
+  double composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double composite_player_pet_damage_multiplier( const action_state_t* ) const override;
   void create_pets() override;
   void init_spells() override;
   void init_base_stats() override;
@@ -853,7 +857,7 @@ public:
   void retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& targets, size_t n_targets ) const;
   void retarget_storm_earth_and_fire_pets() const;
 
-  void accumulate_gale_burst_damage( action_state_t* );
+  void bonedust_brew_assessor( action_state_t* );
   void trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_ability );
   void storm_earth_and_fire_fixate( player_t* target );
   bool storm_earth_and_fire_fixate_ready( player_t* target );

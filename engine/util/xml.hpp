@@ -86,7 +86,7 @@ struct xml_parm_t
   std::string name_str;
   std::string value_str;
   xml_parm_t( const std::string& n, const std::string& v ) : name_str( n ), value_str( v ) {}
-  const char* name() { return name_str.c_str(); }
+  const std::string& name() { return name_str; }
 };
 
 struct xml_node_t
@@ -96,7 +96,7 @@ struct xml_node_t
   std::vector<xml_parm_t> parameters;
   xml_node_t() {}
   xml_node_t( const std::string& n ) : name_str( n ) {}
-  const char* name() { return name_str.c_str(); }
+  const std::string& name() { return name_str; }
   xml_node_t* get_child( const std::string& name );
   xml_node_t* get_node ( const std::string& path );
   xml_node_t* get_node ( const std::string& path, const std::string& parm_name, const std::string& parm_value );

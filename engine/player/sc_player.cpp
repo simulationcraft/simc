@@ -422,7 +422,7 @@ struct execute_pet_action_t : public action_t
     if ( !pet_action )
     {
 
-      throw std::invalid_argument(fmt::format("Player {} refers to unknown action {} for pet {}.", player->name(), action_str.c_str(),
+      throw std::invalid_argument(fmt::format("Player {} refers to unknown action {} for pet {}.", player->name(), action_str,
           pet->name()));
     }
 
@@ -8264,8 +8264,8 @@ struct use_item_t : public action_t
       cooldown_group->start( cooldown_group_duration );
       if ( sim->debug )
       {
-        sim->out_debug.printf( "%s starts shared cooldown for %s (%s). Will be ready at %.4f", player->name(), name(),
-                               cooldown_group->name(), cooldown_group->ready.total_seconds() );
+        sim->out_debug.print( "{} starts shared cooldown for {} ({}). Will be ready at {}", *player, name(),
+                               cooldown_group->name(), cooldown_group->ready );
       }
     }
   }

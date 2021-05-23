@@ -97,9 +97,10 @@ struct spell_data_expr_t
   {
     return result_tok;
   }
-  const char* name()
+  
+  const std::string& name()
   {
-    return name_str.c_str();
+    return name_str;
   }
 
   virtual std::vector<uint32_t> operator|( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }

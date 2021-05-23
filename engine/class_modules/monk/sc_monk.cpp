@@ -18,13 +18,9 @@ TODO:
 GENERAL:
 - Change Eye of the Tiger from a dot to an interaction with a buff
 
-- Convert Bonedust Brew to use the assessor function. Tinkets and racials also trigger
-- Add assessor to the monk pet module
-
 WINDWALKER:
 - Implement Touch of Death Rank 3
 - Add Cyclone Strike Counter as an expression
-- Venthyr's Windwalker Fallen Monk's Fist of Fury is reporting double damage.
 
 MISTWEAVER:
 - Essence Font - See if the implementation can be corrected to the intended design.
@@ -437,8 +433,6 @@ public:
     }
 
     p()->trigger_empowered_tiger_lightning( s );
-
-    p()->trigger_bonedust_brew( s );
   }
 
   void trigger_storm_earth_and_fire( const action_t* a )
@@ -484,9 +478,6 @@ struct monk_spell_t : public monk_action_t<spell_t>
 
     if ( td( t )->debuff.weapons_of_order->up() )
       m *= 1 + td( t )->debuff.weapons_of_order->stack_value();
-
-    if ( td( t )->debuff.fae_exposure->up() )
-      m *= 1 + p()->passives.fae_exposure_dmg->effectN( 1 ).percent();
 
     return m;
   }
@@ -538,12 +529,6 @@ struct monk_spell_t : public monk_action_t<spell_t>
 
         am *= 1 + serenity_multiplier;
       }
-    }
-
-    if ( p()->buff.hit_combo->up() )
-    {
-      if ( base_t::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
-        am *= 1 + p()->buff.hit_combo->stack_value();
     }
 
     return am;
@@ -621,12 +606,6 @@ struct monk_heal_t : public monk_action_t<heal_t>
 
         am *= 1 + serenity_multiplier;
       }
-    }
-
-    if ( p()->buff.hit_combo->up() )
-    {
-      if ( base_t::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
-        am *= 1 + p()->buff.hit_combo->stack_value();
     }
 
     return am;
@@ -895,12 +874,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
         am *= 1 + serenity_multiplier;
       }
-    }
-
-    if ( p()->buff.hit_combo->up() )
-    {
-      if ( base_t::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
-        am *= 1 + p()->buff.hit_combo->stack_value();
     }
 
     // Increases just physical damage
@@ -2236,7 +2209,7 @@ struct melee_t : public monk_melee_attack_t
       am *= 1 + p()->talent.serenity->effectN( 7 ).percent();
 
     if ( p()->buff.hit_combo->up() )
-      am *= 1 + p()->buff.hit_combo->stack_value();
+      am *= 1 + p()->buff.hit_combo->stack() * p()->passives.hit_combo->effectN( 3 ).percent();
 
     return am;
   }
@@ -3625,8 +3598,7 @@ struct xuen_spell_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    assert( p()->pets.xuen );
-    p()->pets.xuen->summon( p()->spec.invoke_xuen->duration() );
+    p()->pets.xuen.spawn( p()->spec.invoke_xuen->duration(), 1 );
 
     p()->buff.invoke_xuen->trigger();
 
@@ -3671,8 +3643,7 @@ struct niuzao_spell_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    assert( p()->pets.niuzao );
-    p()->pets.niuzao->summon( p()->spec.invoke_niuzao->duration() );
+    p()->pets.niuzao.spawn( p()->spec.invoke_niuzao->duration(), 1 );
 
     p()->buff.invoke_niuzao->trigger();
 
@@ -3702,8 +3673,7 @@ struct chiji_spell_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    assert( p()->pets.chiji );
-    p()->pets.chiji->summon( p()->talent.invoke_chi_ji->duration() );
+    p()->pets.chiji.spawn( p()->talent.invoke_chi_ji->duration(), 1 );
 
     p()->buff.invoke_chiji->trigger();
 
@@ -3741,8 +3711,7 @@ struct yulon_spell_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    assert( p()->pets.yulon );
-    p()->pets.yulon->summon( p()->spec.invoke_yulon->duration() );
+    p()->pets.yulon.spawn( p()->spec.invoke_yulon->duration(), 1 );
 
     if ( p()->legendary.invokers_delight->ok() )
       p()->buff.invokers_delight->trigger();
@@ -3779,18 +3748,25 @@ struct weapons_of_order_t : public monk_spell_t
       switch ( p()->specialization() )
       {
         case MONK_BREWMASTER:
-          p()->pets.niuzao->summon( p()->legendary.call_to_arms->effectN( 1 ).time_value() );
+          p()->pets.niuzao.spawn( p()->legendary.call_to_arms->effectN( 1 ).time_value(), 1 );
           break;
         case MONK_MISTWEAVER:
-          p()->pets.yulon->summon( p()->legendary.call_to_arms->effectN( 1 ).time_value() );
+        {
+          if ( p()->talent.invoke_chi_ji->ok() )
+            p()->pets.chiji.spawn( p()->legendary.call_to_arms->effectN( 1 ).time_value(), 1 );
+          else
+            p()->pets.yulon.spawn( p()->legendary.call_to_arms->effectN( 1 ).time_value(), 1 );
           break;
+        }
         case MONK_WINDWALKER:
         {
           timespan_t duration = p()->legendary.call_to_arms->effectN( 1 ).time_value();
-          p()->pets.xuen->summon( duration );
+          p()->pets.xuen.spawn( duration, 1 );
           p()->buff.invoke_xuen->trigger( duration );
           break;
         }
+        default:
+          break;
       }
     }
   }
@@ -6638,10 +6614,13 @@ void monk_t::init_assessors()
 {
   base_t::init_assessors();
 
-  assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [ this ]( result_amount_type, action_state_t* s ) {
-    accumulate_gale_burst_damage( s );
+  auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ) {
+    if ( get_target_data( s->target )->debuff.bonedust_brew->up() )
+        bonedust_brew_assessor( s );
     return assessor::CONTINUE;
-  } );
+  };
+
+  assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
 }
 
 // monk_t::init_rng =======================================================
@@ -6739,10 +6718,17 @@ std::vector<player_t*> monk_t::create_storm_earth_and_fire_target_list() const
   return l;
 }
 
-void monk_t::accumulate_gale_burst_damage( action_state_t* s )
+void monk_t::bonedust_brew_assessor( action_state_t* s )
 {
   if ( !s->action->harmful )
     return;
+
+  // Don't trigger from Bonedust Brew damage
+  // Don't trigger from Bonedust Brew heal
+  if ( s->result_amount <= 0 || s->action->id == 325217 || s->action->id == 325218 )
+    return;
+
+  trigger_bonedust_brew( s );
 }
 
 // monk_t::retarget_storm_earth_and_fire ====================================
@@ -7054,6 +7040,56 @@ double monk_t::temporary_movement_modifier() const
     active = std::max( buff.flying_serpent_kick_movement->check_value(), active );
 
   return active;
+}
+
+// monk_t::composite_player_dd_multiplier ================================
+double monk_t::composite_player_dd_multiplier( school_e school, const action_t* action ) const
+{
+  double multiplier = player_t::composite_player_dd_multiplier(school, action);
+
+  if ( buff.hit_combo->up() && action->data().affected_by( passives.hit_combo->effectN( 1 ) ) )
+  {
+    multiplier *= 1 + buff.hit_combo->stack() * passives.hit_combo->effectN( 1 ).percent();
+  }
+
+  return multiplier;
+}
+
+// monk_t::composite_player_td_multiplier ================================
+double monk_t::composite_player_td_multiplier( school_e school, const action_t* action ) const
+{
+  double multiplier = player_t::composite_player_td_multiplier(school, action);
+
+  if ( buff.hit_combo->up() && action->data().affected_by( passives.hit_combo->effectN( 2 ) ) )
+  {
+    multiplier *= 1 + buff.hit_combo->stack() * passives.hit_combo->effectN( 2 ).percent();
+  }
+
+  return multiplier;
+}
+
+// monk_t::composite_player_target_multiplier ============================
+double monk_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  double multiplier = player_t::composite_player_target_multiplier(target, school);
+
+  if ( get_target_data( target )->debuff.fae_exposure->up() )
+    multiplier *= 1 + passives.fae_exposure_dmg->effectN( 1 ).percent();
+
+  return multiplier;
+}
+
+// monk_t::composite_player_pet_damage_multiplier ========================
+double monk_t::composite_player_pet_damage_multiplier( const action_state_t* state ) const
+{
+  double multiplier = player_t::composite_player_pet_damage_multiplier( state );
+
+  if ( buff.hit_combo->up() )
+  {
+    multiplier *= 1 + buff.hit_combo->stack() * passives.hit_combo->effectN( 4 ).percent();
+  }
+
+  return multiplier;
 }
 
 // monk_t::invalidate_cache ==============================================
@@ -7715,24 +7751,20 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t* s )
 
 void monk_t::trigger_bonedust_brew( action_state_t* s )
 {
-  // Make sure Bonedust Brew does not trigger from itself
-  if ( covenant.necrolord->ok() && s->result_amount > 0 && s->action->id != 325217 && s->action->id != 325218 )
+  if ( auto td = find_target_data( s->target ) )
   {
-    if ( auto td = find_target_data( s->target ) )
+    if ( rng().roll( covenant.necrolord->proc_chance() ) )
     {
-      if ( td->debuff.bonedust_brew->up() && rng().roll( covenant.necrolord->proc_chance() ) )
-      {
-        double damage = s->result_amount * covenant.necrolord->effectN( 1 ).percent();
+      double damage = s->result_amount * covenant.necrolord->effectN( 1 ).percent();
 
-        // Bone Marrow Hops DOES NOT work with SEF or pets
-        // "This" is referring to the player and does not work with "guardians" which is what SEF and pets are registered as
-        if ( s->action->player == this && conduit.bone_marrow_hops->ok() )
-          damage *= 1 + conduit.bone_marrow_hops.percent();
+      // Bone Marrow Hops DOES NOT work with SEF or pets
+      // "This" is referring to the player and does not work with "guardians" which is what SEF and pets are registered as
+      if ( s->action->player == this && conduit.bone_marrow_hops->ok() )
+        damage *= 1 + conduit.bone_marrow_hops.percent();
 
-        active_actions.bonedust_brew_dmg->base_dd_min = damage;
-        active_actions.bonedust_brew_dmg->base_dd_max = damage;
-        active_actions.bonedust_brew_dmg->execute();
-      }
+      active_actions.bonedust_brew_dmg->base_dd_min = damage;
+      active_actions.bonedust_brew_dmg->base_dd_max = damage;
+      active_actions.bonedust_brew_dmg->execute();
     }
   }
 }

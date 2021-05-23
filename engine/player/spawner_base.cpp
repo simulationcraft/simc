@@ -73,7 +73,7 @@ void base_actor_spawner_t::register_object()
   }
   else
   {
-    m_owner->sim->errorf( "%s attempting to create duplicate pet spawner object %s", m_owner->name(), name().c_str() );
+    m_owner->sim->error( "{} attempting to create duplicate pet spawner object {}", *m_owner, name() );
   }
 }
 

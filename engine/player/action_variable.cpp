@@ -29,12 +29,18 @@ bool action_variable_t::is_constant( double* constant_value ) const
 void action_variable_t::optimize()
 {
   player_t* player = variable_actions.front()->player;
-  if ( !player->sim->optimize_expressions )
+  auto iteration = player->sim->current_iteration;
+  if ( iteration < 0 )
+  {
+    return;
+  }
+  if ( player->sim->optimize_expressions - 1 - iteration < 0 )
   {
     return;
   }
 
-  if ( player->nth_iteration() != 1 )
+  // Do nothing if the variable is already constant
+  if (constant_value_ != std::numeric_limits<double>::lowest())
   {
     return;
   }

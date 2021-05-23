@@ -109,7 +109,7 @@ public:
 inline FILE* fopen( const std::string& filename, const char* mode )
 { return std::fopen( filename.c_str(), mode ); }
 #else
-std::string ansi_to_utf8( const char* src );
+std::string ansi_to_utf8( util::string_view src );
 #endif
 
 inline int fclose( cfile& file ) { file.close(); return 0; }

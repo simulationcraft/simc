@@ -120,7 +120,7 @@ void SC_SampleProfilesTab::fillTree( QDir baseDir )
           if ( !playerItems[ player ] )
           {
             QTreeWidgetItem* top = new QTreeWidgetItem(
-                QStringList( util::inverse_tokenize( util::player_type_string( player ) ).c_str() ) );
+                QStringList( QString::fromStdString(util::inverse_tokenize( util::player_type_string( player ) ) ) ) );
             playerItems[ player ] = top;
           }
 

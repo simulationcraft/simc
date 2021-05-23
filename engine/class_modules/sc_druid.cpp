@@ -10081,7 +10081,7 @@ const spell_data_t* druid_t::find_affinity_spell( const std::string& name ) cons
   }
 
   spec_spell =
-      find_spell( dbc->specialization_ability_id( get_affinity_spec(), util::inverse_tokenize( name ).c_str() ) );
+      find_spell( dbc->specialization_ability_id( get_affinity_spec(), util::inverse_tokenize( name ) ) );
 
   if ( spec_spell->found() )
     return spec_spell;
