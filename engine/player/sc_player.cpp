@@ -3258,6 +3258,12 @@ void player_t::create_buffs()
       // Runecarves
       buffs.norgannons_sagacity_stacks = make_buff( this, "norgannons_sagacity_stacks", find_spell( 339443 ) );
       buffs.norgannons_sagacity = make_buff( this, "norgannons_sagacity", find_spell( 339445 ) );
+
+      // 9.1 Legendary Party Buffs
+
+      buffs.soulstalkers = make_buff( this, "pact_of_the_soulstalkers", find_spell( 356263 ) )
+       ->set_default_value_from_effect( 1 )
+       ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
     }
   }
   // .. for enemies
@@ -3516,6 +3522,8 @@ double player_t::composite_melee_crit_chance() const
 
   if ( timeofday == DAY_TIME )
     ac += racials.touch_of_elune->effectN( 1 ).percent();
+  if ( buffs.soulstalkers )
+    ac += buffs.soulstalkers->check_value();
 
   return ac;
 }
@@ -3820,6 +3828,8 @@ double player_t::composite_spell_crit_chance() const
 
   if ( buffs.focus_magic )
     sc += buffs.focus_magic->check_value();
+  if ( buffs.soulstalkers )
+    sc += buffs.soulstalkers->check_value();
 
   return sc;
 }
@@ -4659,6 +4669,7 @@ void player_t::combat_begin()
   add_timed_buff_triggers( external_buffs.blessing_of_spring, buffs.blessing_of_spring );
   add_timed_buff_triggers( external_buffs.conquerors_banner, buffs.conquerors_banner );
   add_timed_buff_triggers( external_buffs.rallying_cry, buffs.rallying_cry );
+  add_timed_buff_triggers( external_buffs.soulstalkers, buffs.soulstalkers );
 
   if ( buffs.windfury_totem )
   {
@@ -11347,6 +11358,7 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.blessing_of_spring", external_buffs.blessing_of_spring ) );
   add_option( opt_external_buff_times( "external_buffs.conquerors_banner", external_buffs.conquerors_banner ) );
   add_option( opt_external_buff_times( "external_buffs.rallying_cry", external_buffs.rallying_cry ) );
+  add_option( opt_external_buff_times( "external_buffs.soulstalkers", external_buffs.soulstalkers ) );
 
   // Azerite options
   if ( ! is_enemy() && ! is_pet() )
