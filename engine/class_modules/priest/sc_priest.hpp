@@ -121,6 +121,7 @@ public:
     propagate_const<buff_t*> the_penitent_one;
     propagate_const<buff_t*> sephuzs_proclamation;
     propagate_const<buff_t*> talbadars_stratagem;
+    propagate_const<buff_t*> shadow_word_manipulation;
 
     // Conduits
     propagate_const<buff_t*> mind_devourer;
@@ -379,6 +380,12 @@ public:
     // Bwonsamdi's Pact Option
     // Options: "benevolent" or "wrathful"
     std::string bwonsamdis_pact_mask_type = "benevolent";
+
+    // Shadow Word: Manipulation expire time
+    // Accepts a range of the amount of time left on Mindgames when the shield expires
+    // Min: 0, Max: 8, Default: 7
+    // Shattered Perception Conduit increase is handled outside of this
+    int shadow_word_manipulation_seconds_remaining = 7;
   } options;
 
   // Legendaries
@@ -472,7 +479,7 @@ public:
   double composite_melee_haste() const override;
   double composite_spell_haste() const override;
   double composite_spell_crit_chance() const override;
-  double composite_player_pet_damage_multiplier( const action_state_t* ) const override;
+  double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
   double composite_player_absorb_multiplier( const action_state_t* s ) const override;
   double composite_player_heal_multiplier( const action_state_t* s ) const override;
   double composite_player_target_multiplier( player_t* t, school_e school ) const override;

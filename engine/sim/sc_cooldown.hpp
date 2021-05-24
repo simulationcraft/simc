@@ -94,8 +94,8 @@ struct cooldown_t
   // Trigger update of specialized execute thresholds for this cooldown
   void update_ready_thresholds();
 
-  const char* name() const
-  { return name_str.c_str(); }
+  const std::string& name() const
+  { return name_str; }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name_str );
 

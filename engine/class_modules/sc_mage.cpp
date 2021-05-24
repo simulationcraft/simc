@@ -731,7 +731,7 @@ public:
   double composite_mastery() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_player_multiplier( school_e ) const override;
-  double composite_player_pet_damage_multiplier( const action_state_t* ) const override;
+  double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
   double composite_player_target_multiplier( player_t*, school_e ) const override;
   double composite_spell_crit_chance() const override;
   double composite_rating_multiplier( rating_e ) const override;
@@ -1039,7 +1039,8 @@ struct expanded_potential_buff_t : public buff_t
   void decrement( int stacks, double value ) override
   {
     // Sinful Delight only triggers when Clearcasting is consumed.
-    mage->trigger_sinful_delight( MAGE_ARCANE );
+    if ( check() )
+      mage->trigger_sinful_delight( MAGE_ARCANE );
 
     if ( check() && mage->buffs.expanded_potential->check() )
       mage->buffs.expanded_potential->expire();
@@ -1051,7 +1052,7 @@ struct expanded_potential_buff_t : public buff_t
   {
     buff_t::refresh( stacks, value, duration );
 
-    // Sinful Delight triggers when brain freeze refreshes.
+    // Sinful Delight triggers when Brain Freeze refreshes.
     mage->trigger_sinful_delight( MAGE_FROST );
   }
 };
@@ -4187,9 +4188,8 @@ struct fire_blast_t final : public fire_mage_spell_t
 
   void execute() override
   {
-    p()->trigger_sinful_delight( MAGE_FIRE );
-
     fire_mage_spell_t::execute();
+    p()->trigger_sinful_delight( MAGE_FIRE );
   }
 
   void impact( action_state_t* s ) override
@@ -5629,7 +5629,7 @@ void mage_t::trigger_disciplinary_command( school_e school )
 
 void mage_t::trigger_sinful_delight( specialization_e spec )
 {
-  if ( specialization() == spec )
+  if ( runeforge.sinful_delight.ok() && specialization() == spec )
     cooldowns.mirrors_of_torment->adjust( -runeforge.sinful_delight->effectN( 1 ).time_value() );
 }
 
@@ -6531,9 +6531,9 @@ double mage_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s ) const
+double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
-  double m = player_t::composite_player_pet_damage_multiplier( s );
+  double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
   m *= 1.0 + spec.arcane_mage->effectN( 3 ).percent();
   m *= 1.0 + spec.fire_mage->effectN( 3 ).percent();

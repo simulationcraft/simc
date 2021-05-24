@@ -38,7 +38,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_vile_taint;
 
   propagate_const<buff_t*> debuffs_haunt;
-  propagate_const<buff_t*> debuffs_shadow_embrace; //TODO: 9.1 PTR - Modify SE behavior (see UA)
+  propagate_const<buff_t*> debuffs_shadow_embrace; //9.1 PTR - Same behavior as 9.0 but enabled by talent
 
   // Destro
   propagate_const<dot_t*> dots_immolate;
@@ -169,7 +169,8 @@ public:
     const spell_data_t* vile_taint;
 
     // tier 45
-    const spell_data_t* dark_caller;
+    const spell_data_t* shadow_embrace; //9.1 PTR - Replaces Dark Caller
+    const spell_data_t* dark_caller; //9.1 PTR - Removed as talent
     const spell_data_t* haunt;
     // grimoire of sacrifice
 
@@ -330,6 +331,7 @@ public:
     const spell_data_t* unstable_affliction;  //This is the primary active ability
     const spell_data_t* unstable_affliction_2; //Rank 2 passive (soul shard on death)
     const spell_data_t* unstable_affliction_3; //Rank 3 passive (increased duration)
+    const spell_data_t* dark_caller; //9.1 PTR - Now a passive learned at level 58
 
     // Demonology only
     const spell_data_t* demonology; //Spec aura
@@ -500,7 +502,8 @@ public:
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
-  double composite_player_pet_damage_multiplier( const action_state_t* ) const override;
+  double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
+  double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
   double composite_rating_multiplier( rating_e rating ) const override;
   void invalidate_cache( cache_e ) override;
   double composite_spell_crit_chance() const override;

@@ -3000,7 +3000,7 @@ void sim_t::merge( sim_t& other_sim )
 
   for ( auto & buff : buff_list )
   {
-    if ( buff_t* otherbuff = buff_t::find( &other_sim, buff -> name_str.c_str() ) )
+    if ( buff_t* otherbuff = buff_t::find( &other_sim, buff -> name_str ) )
     {
       buff -> merge( *otherbuff );
     }
@@ -4249,7 +4249,7 @@ void sim_t::enable_debug_seed()
     }
     else
     {
-      errorf( "Unable to open output file '%s'\n", fname.c_str() );
+      error( "Unable to open output file '{}'\n", fname );
       return;
     }
 

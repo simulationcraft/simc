@@ -1055,7 +1055,7 @@ public:
   double    composite_melee_expertise( const weapon_t* ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    composite_player_multiplier( school_e school ) const override;
-  double    composite_player_pet_damage_multiplier( const action_state_t* /* state */ ) const override;
+  double    composite_player_pet_damage_multiplier( const action_state_t* /* state */, bool /* guardian */ ) const override;
   double    composite_crit_avoidance() const override;
   void      combat_begin() override;
   void      activate() override;
@@ -1204,7 +1204,7 @@ static void log_rune_status( const death_knight_t* p )
 {
   if ( ! p -> sim -> debug ) return;
   std::string rune_string = p -> _runes.string_representation();
-  p -> sim -> print_debug( "{} runes: {}", p -> name(), rune_string.c_str() );
+  p -> sim -> print_debug( "{} runes: {}", p -> name(), rune_string );
 }
 
 inline runes_t::runes_t( death_knight_t* p ) : dk( p ),
@@ -7780,61 +7780,41 @@ std::unique_ptr<expr_t> death_knight_t::create_runeforge_expression( util::strin
 {
   // Razorice, looks for the damage procs related to MH and OH
   if ( util::str_compare_ci( runeforge_name, "razorice" ) )
-    return make_fn_expr( "razorice_runforge_expression", [ this ]() {
-      return runeforge.rune_of_razorice_mh || runeforge.rune_of_razorice_oh;
-    } );
+    return expr_t::create_constant( "razorice_runforge_expression", runeforge.rune_of_razorice_mh || runeforge.rune_of_razorice_oh );
 
   // Razorice MH and OH expressions (this can matter for razorice application)
   if ( util::str_compare_ci( runeforge_name, "razorice_mh" ) )
-    return make_fn_expr( "razorice_mh_runforge_expression", [ this ]() {
-      return runeforge.rune_of_razorice_mh;
-    } );
+    return expr_t::create_constant( "razorice_mh_runforge_expression", runeforge.rune_of_razorice_mh );
   if ( util::str_compare_ci( runeforge_name, "razorice_oh" ) )
-    return make_fn_expr( "razorice_oh_runforge_expression", [ this ]() {
-      return runeforge.rune_of_razorice_oh;
-    } );
+    return expr_t::create_constant( "razorice_oh_runforge_expression", runeforge.rune_of_razorice_oh );
 
   // Fallen Crusader, looks for the unholy strength healing action
   if ( util::str_compare_ci( runeforge_name, "fallen_crusader" ) )
-    return make_fn_expr( "fallen_crusader_runforge_expression", [ this ]() {
-      return runeforge.rune_of_the_fallen_crusader;
-    } );
+    return expr_t::create_constant( "fallen_crusader_runforge_expression", runeforge.rune_of_the_fallen_crusader );
 
   // Stoneskin Gargoyle
   if ( util::str_compare_ci( runeforge_name, "stoneskin_gargoyle" ) )
-    return make_fn_expr( "stoneskin_gargoyle_runforge_expression", [ this ]() {
-      return runeforge.rune_of_the_stoneskin_gargoyle;
-    } );
+    return expr_t::create_constant( "stoneskin_gargoyle_runforge_expression", runeforge.rune_of_the_stoneskin_gargoyle );
 
   // Apocalypse
   if ( util::str_compare_ci( runeforge_name, "apocalypse" ) )
-    return make_fn_expr( "apocalypse_runforge_expression", [ this ]() {
-      return runeforge.rune_of_apocalypse;
-    } );
+    return expr_t::create_constant( "apocalypse_runforge_expression", runeforge.rune_of_apocalypse);
 
   // Hysteria
   if ( util::str_compare_ci( runeforge_name, "hysteria" ) )
-    return make_fn_expr( "hysteria_runeforge_expression", [ this ]() {
-      return runeforge.rune_of_hysteria;
-    } );
+    return expr_t::create_constant( "hysteria_runeforge_expression", runeforge.rune_of_hysteria  );
 
   // Sanguination
   if ( util::str_compare_ci( runeforge_name, "sanguination" ) )
-    return make_fn_expr( "sanguination_runeforge_expression", [ this ]() {
-      return runeforge.rune_of_sanguination;
-    } );
+    return expr_t::create_constant( "sanguination_runeforge_expression", runeforge.rune_of_sanguination );
 
   // Spellwarding
   if ( util::str_compare_ci( runeforge_name, "spellwarding" ) )
-    return make_fn_expr( "spellwarding_runeforge_expression", [ this ]() {
-      return runeforge.rune_of_spellwarding != 0;
-    } );
+    return expr_t::create_constant( "spellwarding_runeforge_expression", runeforge.rune_of_spellwarding != 0 );
 
   // Unending Thirst, effect NYI
   if ( util::str_compare_ci( runeforge_name, "unending_thirst" ) )
-    return make_fn_expr( "unending_thirst_runeforge_expression", [ this ]() {
-      return runeforge.rune_of_unending_thirst;
-    } );
+    return expr_t::create_constant( "unending_thirst_runeforge_expression", runeforge.rune_of_unending_thirst );
 
   // Only throw an error with death_knight.runeforge expressions
   // runeforge.x already spits out a warning for relevant runeforges and has to send a runeforge legendary if needed
@@ -9042,9 +9022,9 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double death_knight_t::composite_player_pet_damage_multiplier( const action_state_t* state ) const
+double death_knight_t::composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const
 {
-  double m = player_t::composite_player_pet_damage_multiplier( state );
+  double m = player_t::composite_player_pet_damage_multiplier( state, guardian );
 
   if ( mastery.dreadblade -> ok() )
   {

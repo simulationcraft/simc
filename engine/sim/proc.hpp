@@ -41,7 +41,7 @@ public:
 
   void datacollection_end();
 
-  const char* name() const;
+  const std::string& name() const;
 
   proc_t* collect_count(bool collect = true);
 

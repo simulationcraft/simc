@@ -241,8 +241,8 @@ void plot_t::write_output_file()
   out.open( sim->reforge_plot_output_file_str );
   if ( !out.is_open() )
   {
-    sim->errorf( "Unable to open output file '%s' . \n",
-                 sim->reforge_plot_output_file_str.c_str() );
+    sim->error( "Unable to open output file '{}' . \n",
+                 sim->reforge_plot_output_file_str );
     return;
   }
 

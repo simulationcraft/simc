@@ -239,8 +239,8 @@ void reforge_plot_t::write_output_file()
             io::ofstream::out | io::ofstream::app );
   if ( !out.is_open() )
   {
-    sim->errorf( "Unable to open plot output file '%s'.\n",
-                 sim->reforge_plot_output_file_str.c_str() );
+    sim->error( "Unable to open plot output file '{}'.\n",
+                 sim->reforge_plot_output_file_str );
     return;
   }
 

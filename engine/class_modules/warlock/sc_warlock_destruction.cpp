@@ -72,8 +72,6 @@ public:
     double m = warlock_spell_t::composite_target_multiplier( t );
 
     auto td = this->td( t );
-    if ( td->debuffs_eradication->check() )
-      m *= 1.0 + td->debuffs_eradication->data().effectN( 1 ).percent();
 
     if ( td->debuffs_roaring_blaze->check() && data().affected_by( td->debuffs_roaring_blaze->data().effectN( 1 ) ) )
       m *= 1.0 + td->debuffs_roaring_blaze->data().effectN( 1 ).percent();
@@ -116,7 +114,7 @@ struct internal_combustion_t : public destruction_spell_t
   {
     destruction_spell_t::init();
 
-    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+    snapshot_flags &= STATE_NO_MULTIPLIER;
   }
 
   void execute() override

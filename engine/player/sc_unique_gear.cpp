@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "sc_enums.hpp"
+#include "sim/sc_expressions.hpp"
 #include "unique_gear.hpp"
 
 #include "unique_gear_shadowlands.hpp"
@@ -11,6 +12,7 @@
 #include "simulationcraft.hpp"
 #include "dbc/racial_spells.hpp"
 #include <cctype>
+#include <memory>
 
 using namespace unique_gear;
 
@@ -3555,9 +3557,15 @@ void generic::windfury_totem( special_effect_t& effect )
     return;
   }
 
-  // Apply rank 2 automatically
-  effect.proc_chance_ = effect.driver()->proc_chance() +
-    effect.player->find_spell( 343211 )->effectN( 1 ).percent();
+  effect.proc_chance_ = effect.driver()->proc_chance();
+
+  // Apply rank 2 automatically, except that currently (2021-05-24) the implementation is
+  // bugged in-game, and only the Enhancement Shaman who cast the totem gets the buff.
+  // Model this by giving the buff only to Enhancement Shamans.
+  if ( !effect.player->bugs || effect.player->specialization() == SHAMAN_ENHANCEMENT )
+  {
+    effect.proc_chance_ += effect.player->find_spell( 343211 )->effectN( 1 ).percent();
+  }
 
   auto proc = new wft_proc_callback_t( effect );
 
@@ -3920,6 +3928,16 @@ struct item_effect_expr_t : public item_effect_base_expr_t
 
     return result;
   }
+  
+  bool is_constant( double* value ) override
+  {
+    if (exprs.empty())
+    {
+      *value = 0;
+      return true;
+    }
+    return false;
+  }
 };
 
 // Buff based item expressions, creates buff expressions for the items from
@@ -3957,6 +3975,12 @@ struct item_buff_exists_expr_t : public item_effect_expr_t
         break;
       }
     }
+  }
+
+  bool is_constant( double* value) override
+  {
+    *value = v;
+    return true;
   }
 
   double evaluate() override
@@ -4009,6 +4033,16 @@ struct item_ready_expr_t : public item_effect_base_expr_t
 
     return 1;
   }
+    
+  bool is_constant( double* value ) override
+  {
+    if (effects.empty())
+    {
+      *value = 1;
+      return true;
+    }
+    return false;
+  }
 };
 
 struct item_is_expr_t : public expr_t
@@ -4023,6 +4057,12 @@ struct item_is_expr_t : public expr_t
       if ( player.items[ slots[ i ] ].name() == item_name )
         is = 1;
     }
+  }
+
+  bool is_constant( double* value) override
+  {
+    *value = is;
+    return true;
   }
 
   double evaluate() override
@@ -4046,6 +4086,12 @@ struct item_cooldown_exists_expr_t : public item_effect_expr_t
         break;
       }
     }
+  }
+
+  bool is_constant( double* value) override
+  {
+    *value = v;
+    return true;
   }
 
   double evaluate() override
@@ -4125,6 +4171,12 @@ struct item_has_use_buff_expr_t : public item_effect_expr_t
 
     if ( has_use && has_buff )
       v = 1;
+  }
+
+  bool is_constant( double* value) override
+  {
+    *value = v;
+    return true;
   }
 
   double evaluate() override
@@ -4226,10 +4278,14 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
   }
 
   if ( util::str_compare_ci( splits[ ptype_idx ], "is" ) )
+  {
     return std::make_unique<item_is_expr_t>( player, slots, splits[ expr_idx - 1 ] );
+  }
 
   if ( util::str_compare_ci( splits[ ptype_idx ], "has_use_buff" ) )
+  {
     return std::make_unique<item_has_use_buff_expr_t>( player, slots );
+  }
 
   if ( util::str_prefix_ci( splits[ ptype_idx ], "has_" ) )
     pexprtype = PROC_EXISTS;

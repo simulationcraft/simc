@@ -849,7 +849,7 @@ public:
   double composite_spell_power_multiplier() const override;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
-  double composite_player_pet_damage_multiplier( const action_state_t* state ) const override;
+  double composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const override;
   double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const;
   double matching_gear_multiplier( attribute_e attr ) const override;
   action_t* create_action( util::string_view name, const std::string& options ) override;
@@ -1745,6 +1745,16 @@ public:
 
       p()->trigger_vesper_totem( execute_state );
       trigger_echoing_shock( execute_state->target );
+    }
+
+    // Main hand swing timer resets if the MW-affected spell is not instant cast
+    if ( affected_by_maelstrom_weapon && execute_time() > 0_ms )
+    {
+      if ( p()->main_hand_attack && p()->main_hand_attack->execute_event )
+      {
+        event_t::cancel( p()->main_hand_attack->execute_event );
+        p()->main_hand_attack->schedule_execute();
+      }
     }
   }
 
@@ -6182,6 +6192,19 @@ struct windfury_totem_t : public shaman_spell_t
     if ( !sim->overrides.windfury_totem || p()->legendary.doom_winds.ok() )
     {
       wft_buff->set_duration( data().duration() );
+
+      // Need to also create the effect since the core sim won't do it when
+      // sim->overrides.windfury_totem is not set
+      if ( !sim->overrides.windfury_totem )
+      {
+        special_effect_t effect( player );
+
+        unique_gear::initialize_special_effect( effect, 327942 );
+        if ( !effect.custom_init_object.empty() )
+        {
+          player->special_effects.push_back( new special_effect_t( effect ) );
+        }
+      }
     }
 
     // Set the proc-chance of the Windfury Totem buff unconditionally to 1.0 so it will
@@ -9665,9 +9688,9 @@ double shaman_t::composite_player_target_multiplier( player_t* target, school_e 
 
 // shaman_t::composite_player_pet_damage_multiplier =========================
 
-double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s ) const
+double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
-  double m = player_t::composite_player_pet_damage_multiplier( s );
+  double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
   // Elemental
   m *= 1.0 + spec.elemental_shaman->effectN( 3 ).percent();
