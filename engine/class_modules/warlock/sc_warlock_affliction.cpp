@@ -120,8 +120,19 @@ struct shadow_bolt_t : public affliction_spell_t
     if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
       m *= 1.0 + p()->buffs.nightfall->default_value;
 
-    m *= 1 + p()->buffs.decimating_bolt->check_value();
-    m *= 1 + p()->buffs.malefic_wrath->check_stack_value();
+    m *= 1.0 + p()->buffs.decimating_bolt->check_value();
+    m *= 1.0 + p()->buffs.malefic_wrath->check_stack_value();
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = affliction_spell_t::composite_target_multiplier( t );
+
+    //Withering Bolt does 2x% more per DoT on the target for Shadow Bolt
+    //TODO: Check what happens if a DoT falls off mid-cast and mid-flight
+    m *= 1.0 + p()->conduit.withering_bolt.percent() * 2.0 * p()->get_target_data( t )->count_affliction_dots();
 
     return m;
   }
@@ -514,49 +525,15 @@ struct malefic_rapture_t : public affliction_spell_t
         callbacks = false; //TOCHECK: Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
       }
 
-      double get_dots_ticking(player_t *target) const
-      {
-        double mult = 0.0;
-        auto td = this->td( target );
-
-        if ( td->dots_agony->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_corruption->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_unstable_affliction->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_vile_taint->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_phantom_singularity->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_soul_rot->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_siphon_life->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_scouring_tithe->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_impending_catastrophe->is_ticking() )
-          mult += 1.0;
-
-        return mult;
-      }
-
       double composite_da_multiplier( const action_state_t* s ) const override
       {
         double m = affliction_spell_t::composite_da_multiplier( s );
-        m *= get_dots_ticking( s->target );
+
+        m *= p()->get_target_data( s->target )->count_affliction_dots();
 
         if ( td( s->target )->dots_unstable_affliction->is_ticking() )
         {
-          m *= 1 + p()->conduit.focused_malignancy.percent();
+          m *= 1.0 + p()->conduit.focused_malignancy.percent();
         }
 
         return m;
@@ -570,7 +547,7 @@ struct malefic_rapture_t : public affliction_spell_t
           p()->procs.malefic_wrath->occur();
         }
 
-        int d = as<int>( get_dots_ticking( target ) );
+        int d = p()->get_target_data( target )->count_affliction_dots();
         if ( d > 0 )
         {
           for ( int i = p()->procs.malefic_rapture.size(); i < d; i++ )
@@ -637,8 +614,12 @@ struct drain_soul_t : public affliction_spell_t
     if ( t->health_percentage() < p()->talents.drain_soul->effectN( 3 ).base_value() )
       m *= 1.0 + p()->talents.drain_soul->effectN( 2 ).percent();
 
-    m *= 1 + p()->buffs.decimating_bolt->check_value();
+    m *= 1.0 + p()->buffs.decimating_bolt->check_value();
     m *= 1.0 + p()->buffs.malefic_wrath->check_stack_value();
+
+    //Withering Bolt does x% more damage per DoT on the target
+    //TODO: Check what happens if a DoT falls off mid-channel
+    m *= 1.0 + p()->conduit.withering_bolt.percent() * p()->get_target_data( t )->count_affliction_dots();
 
     return m;
   }
@@ -850,10 +831,11 @@ void warlock_t::init_spells_affliction()
   //Wrath of Consumption and Sacrolash's Dark Strike are implemented in main module
 
   // Conduits
-  conduit.cold_embrace       = find_conduit_spell( "Cold Embrace" );
+  conduit.cold_embrace       = find_conduit_spell( "Cold Embrace" ); //9.1 PTR - Removed
   conduit.corrupting_leer    = find_conduit_spell( "Corrupting Leer" );
   conduit.focused_malignancy = find_conduit_spell( "Focused Malignancy" );
   conduit.rolling_agony      = find_conduit_spell( "Rolling Agony" );
+  conduit.withering_bolt     = find_conduit_spell( "Withering Bolt" ); //9.1 PTR - New, replaces Cold Embrace
 }
 
 void warlock_t::init_gains_affliction()

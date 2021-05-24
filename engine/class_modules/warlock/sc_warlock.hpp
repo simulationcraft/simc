@@ -70,6 +70,8 @@ struct warlock_td_t : public actor_target_data_t
   }
 
   void target_demise();
+
+  int count_affliction_dots();
 };
 
 struct warlock_t : public player_t
@@ -265,10 +267,11 @@ public:
     conduit_data_t fatal_decimation;      // Necrolord
     conduit_data_t soul_tithe;            // Kyrian
     // Affliction
-    conduit_data_t cold_embrace;
+    conduit_data_t cold_embrace; //9.1 PTR - Removed
     conduit_data_t corrupting_leer;
     conduit_data_t focused_malignancy;
     conduit_data_t rolling_agony;
+    conduit_data_t withering_bolt; //9.1 PTR - New, replaces Cold Embrace
     // Demonology
     conduit_data_t borne_of_blood;
     conduit_data_t carnivorous_stalkers;
