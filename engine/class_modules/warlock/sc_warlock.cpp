@@ -737,7 +737,7 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
         m *= 1.0 + td->debuffs_haunt->data().effectN( 4 ).percent();
     }
 
-	if ( !is_ptr() || conduit.cold_embrace.ok() )
+    if ( !is_ptr() || conduit.cold_embrace.ok() )
     {
       m *= 1.0 + ( ( td->debuffs_shadow_embrace->check_value() ) * ( 1 + conduit.cold_embrace.percent() )
            * td->debuffs_shadow_embrace->check() );
