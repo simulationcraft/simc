@@ -474,7 +474,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots_immolate          = target->get_dot( "immolate", &p );
 
   debuffs_eradication = make_buff( *this, "eradication", source->find_spell( 196414 ) )
-                            ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+                            ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                            ->set_default_value( source->find_spell( 196414 )->effectN( 1 ).percent() );
   debuffs_roaring_blaze = make_buff( *this, "roaring_blaze", source->find_spell( 265931 ) );
   debuffs_shadowburn    = make_buff( *this, "shadowburn", source->find_spell( 17877 ) );
   debuffs_havoc         = make_buff( *this, "havoc", source->find_specialization_spell( 80240 ) )
@@ -668,6 +669,12 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
     {
       m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value();
     }
+  }
+
+  if ( specialization() == WARLOCK_DESTRUCTION )
+  {
+    if ( td->debuffs_eradication->check() )
+      m *= 1.0 + td->debuffs_eradication->check_value();
   }
 
   return m;
