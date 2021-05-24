@@ -72,9 +72,9 @@ public:
 
     auto td = this->td( t );
 
-    if (td->debuffs_from_the_shadows->check() && data().affected_by( td->debuffs_from_the_shadows->data().effectN( 1 ) ) )
+    if ( td->debuffs_from_the_shadows->check() && data().affected_by( td->debuffs_from_the_shadows->data().effectN( 1 ) ) )
     {
-      m *= 1.0 + td->debuffs_from_the_shadows->data().effectN(1).percent();
+      m *= 1.0 + td->debuffs_from_the_shadows->check_value();
     }
 
     return m;
