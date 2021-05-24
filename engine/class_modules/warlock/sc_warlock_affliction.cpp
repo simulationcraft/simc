@@ -123,9 +123,16 @@ struct shadow_bolt_t : public affliction_spell_t
     m *= 1.0 + p()->buffs.decimating_bolt->check_value();
     m *= 1.0 + p()->buffs.malefic_wrath->check_stack_value();
 
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = affliction_spell_t::composite_target_multiplier( t );
+
     //Withering Bolt does 2x% more per DoT on the target for Shadow Bolt
     //TODO: Check what happens if a DoT falls off mid-cast and mid-flight
-    m *= 1.0 + p()->conduit.withering_bolt.percent() * 2.0 * 0.0;
+    m *= 1.0 + p()->conduit.withering_bolt.percent() * 2.0 * p()->get_target_data( t )->count_affliction_dots();
 
     return m;
   }
@@ -612,7 +619,7 @@ struct drain_soul_t : public affliction_spell_t
 
     //Withering Bolt does x% more damage per DoT on the target
     //TODO: Check what happens if a DoT falls off mid-channel
-    m *= 1.0 + p()->conduit.withering_bolt.percent() * 0.0;
+    m *= 1.0 + p()->conduit.withering_bolt.percent() * p()->get_target_data( t )->count_affliction_dots();
 
     return m;
   }
