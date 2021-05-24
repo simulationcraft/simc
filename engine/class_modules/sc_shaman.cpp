@@ -4980,6 +4980,12 @@ struct lightning_bolt_t : public shaman_spell_t
       p()->action.lightning_bolt_pw->set_target( target );
       if ( !p()->action.lightning_bolt_pw->target_list().empty() )
       {
+        if ( p()->legendary.splintered_elements->ok() )
+        {
+          auto count_duplicates = p()->action.lightning_bolt_pw->target_list().size();
+          p()->buff.splintered_elemental_rod->trigger(
+              1, count_duplicates * p()->spell.splintered_elemental_rod->effectN( 1 ).percent() );
+        }
         p()->action.lightning_bolt_pw->execute();
       }
       p()->buff.primordial_wave->expire();
@@ -6631,8 +6637,8 @@ struct fae_transfusion_tick_t : public shaman_spell_t
   const spell_data_t* seeds_effect;
 
   fae_transfusion_tick_t( const std::string& n, shaman_t* player )
-    : shaman_spell_t( n, player, player->find_spell( 328928 ) ),
-      seeds_effect( player->find_spell( 336734 ) )
+    : shaman_spell_t( n, player, player->find_spell( 328928 ) ), 
+      seeds_effect( player->find_spell( 356218 ) )
   {
     affected_by_master_of_the_elements = true;
 
@@ -6656,11 +6662,11 @@ struct fae_transfusion_tick_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-    auto const test = p()->legendary.seeds_of_rampant_growth->ok();
     if ( p()->legendary.seeds_of_rampant_growth->ok() )
     {
       if ( p()->specialization() == SHAMAN_ELEMENTAL )
       {
+        const auto test = seeds_effect->effectN( 2 ).time_value();
         p()->cooldown.fire_elemental->adjust( -1.0 * seeds_effect->effectN( 2 ).time_value() );
       }
       if ( p()->specialization() == SHAMAN_ENHANCEMENT )
@@ -6796,8 +6802,11 @@ struct chain_harvest_t : public shaman_spell_t
   void impact(action_state_t* s ) override
   {
     shaman_spell_t::impact( s );
-    fs->set_target( target );
-    fs->execute();
+    if ( p()->legendary.elemental_conduit->ok() )
+    {
+      fs->set_target( execute_state->target );
+      fs->execute();
+    }
   }
 
   void update_ready( timespan_t ) override
@@ -9046,18 +9055,14 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action( this, "Earthquake",
                      "if=spell_targets.chain_lightning>=2&!runeforge.echoes_of_great_sundering.equipped&(talent.master_"
                      "of_the_elements.enabled&maelstrom>=50&!buff.master_of_the_elements.up)" );
-    aoe->add_action( this, "Lava Burst", "target_if=dot.flame_shock.remains",
-                     "if=buff.lava_surge.up&buff.primordial_wave.up" );
-    aoe->add_action( this, "Lava Burst", "target_if=dot.flame_shock.remains",
-                     "if=spell_targets.chain_lightning<4&runeforge.skybreakers_fiery_demise.equipped&buff.lava_surge."
+    aoe->add_action( this, "Lava Burst", "target_if=dot.flame_shock.remains,if=buff.lava_surge.up&buff.primordial_wave.up" );
+    aoe->add_action( this, "Lava Burst", "target_if=dot.flame_shock.remains,if=spell_targets.chain_lightning<4&runeforge.skybreakers_fiery_demise.equipped&buff.lava_surge."
                      "up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&maelstrom>=50" );
-    aoe->add_action( this, "Lava Burst", "target_if=dot.flame_shock.remains",
-                     "if=(spell_targets.chain_lightning<4&runeforge.skybreakers_fiery_demise.equipped&talent.master_of_"
+    aoe->add_action( this, "Lava Burst", "target_if=dot.flame_shock.remains,if=(spell_targets.chain_lightning<4&runeforge.skybreakers_fiery_demise.equipped&talent.master_of_"
                      "the_elements.enabled)|(talent.master_of_the_elements.enabled&maelstrom>=50&!buff.master_of_the_"
                      "elements.up&(!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_sundering.up)&!"
                      "runeforge.skybreakers_fiery_demise.equipped)" );
-    aoe->add_action( this, "Lava Burst", "target_if=dot.flame_shock.remains",
-                     "if=spell_targets.chain_lightning=4&runeforge.skybreakers_fiery_demise.equipped&buff.lava_surge."
+    aoe->add_action( this, "Lava Burst", "target_if=dot.flame_shock.remains,if=spell_targets.chain_lightning=4&runeforge.skybreakers_fiery_demise.equipped&buff.lava_surge."
                      "up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&maelstrom>=50" );
     aoe->add_action( this, "Earthquake", "if=spell_targets.chain_lightning>=2" );
     aoe->add_action( this, "Chain Lightning", "if=buff.stormkeeper.remains<3*gcd*buff.stormkeeper.stack" );
