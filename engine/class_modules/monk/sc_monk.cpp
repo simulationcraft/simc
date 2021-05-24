@@ -472,16 +472,6 @@ struct monk_spell_t : public monk_action_t<spell_t>
     ap_type = attack_power_type::WEAPON_MAINHAND;
   }
 
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = base_t::composite_target_multiplier( t );
-
-    if ( td( t )->debuff.weapons_of_order->up() )
-      m *= 1 + td( t )->debuff.weapons_of_order->stack_value();
-
-    return m;
-  }
-
   double composite_target_crit_chance( player_t* target ) const override
   {
     double c = base_t::composite_target_crit_chance( target );
@@ -812,19 +802,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     }
 
     base_t::init_finished();
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = base_t::composite_target_multiplier( t );
-
-    if ( td( t )->debuff.weapons_of_order->up() )
-      m *= 1 + td( t )->debuff.weapons_of_order->stack_value();
-
-    if ( td( t )->debuff.fae_exposure->up() )
-      m *= 1 + p()->passives.fae_exposure_dmg->effectN( 1 ).percent();
-
-    return m;
   }
 
   double composite_target_crit_chance( player_t* target ) const override
@@ -7075,6 +7052,9 @@ double monk_t::composite_player_target_multiplier( player_t* target, school_e sc
 
   if ( get_target_data( target )->debuff.fae_exposure->up() )
     multiplier *= 1 + passives.fae_exposure_dmg->effectN( 1 ).percent();
+
+  if ( get_target_data( target )->debuff.weapons_of_order->up() )
+    multiplier *= 1 + get_target_data( target )->debuff.weapons_of_order->stack_value();
 
   return multiplier;
 }
