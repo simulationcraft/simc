@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, git build shadowlands e623a717, no-networking)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -1706,9 +1706,9 @@ Effects          :
 #1 (id=22181)    : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
-#2 (id=889618)   : Apply Aura (6) | Unknown(381)
+#2 (id=889618)   : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#3 (id=889619)   : Apply Aura (6) | Unknown(380)
+#3 (id=889619)   : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc32388
 Tooltip          : Damage taken from $@auracaster increased by ${$s1}.1%.
@@ -1804,9 +1804,9 @@ Effects          :
 #2 (id=40332)    : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
-#3 (id=889616)   : Apply Aura (6) | Unknown(381)
+#3 (id=889616)   : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#4 (id=889617)   : Apply Aura (6) | Unknown(380)
+#4 (id=889617)   : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage and increasing your damage dealt to the target by $s2% for $d.
 
@@ -4309,9 +4309,9 @@ Effects          :
 #1 (id=288282)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
-#2 (id=889620)   : Apply Aura (6) | Unknown(381)
+#2 (id=889620)   : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#3 (id=889621)   : Apply Aura (6) | Unknown(380)
+#3 (id=889621)   : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc196412
 Tooltip          : Damage taken from the Warlock increased by $s1%.

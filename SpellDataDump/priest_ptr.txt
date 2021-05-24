@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, git build shadowlands e623a717, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -9206,7 +9206,7 @@ Duration         : 5 seconds
 Cooldown         : 45 seconds
 Labels           : 976
 Proc Chance      : 101%
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #14), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2), Shattered Perceptions (338315 effects: #1, #3), Hungering Void (345219 effect#1), Shadow Word: Manipulation (356392 effects: #1, #2, #3)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #14), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2), Shattered Perceptions (338315 effects: #1, #3), Hungering Void (345219 effect#1), Shadow Word: Manipulation (356392 effects: #1, #2, #3), Shadow Word: Manipulation (357028 effects: #1, #2)
 Family Flags     : 72, 84
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11451,7 +11451,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Devouring Plague (335467), Searing Nightmare (341385), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625)
                    Family Flags: 72
-#2 (id=874718)   : Apply Aura (6) | Unknown(380)
+#2 (id=874718)   : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc345218
 Tooltip          : Damage taken from the Priest increased by $w1%.
@@ -11618,7 +11618,6 @@ Effects          :
 Description      : Casting Unholy Nova summons a Maldraxxi Champion to aid you for X seconds. Each time an ally is healed by Unholy Transfusion your Maldraxxi Champion's healing and damage done is increased by 1%, up to a maximum of X%.
 
 Name             : Bwonsamdi's Pact (id=356391) [Spell Family (6), Passive, Hidden] 
-Hotfixed         : Description
 School           : Nature
 Spell Type       : None
 Proc Chance      : 101%
@@ -11638,10 +11637,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 356959 | Target: Self (1)
 Description      : Enter a pact with the Death Loa, calling forth a haunted mask that lingers on a target until Fae Guardians ends.
 
-|CFFffffffHaunted Mask:|r Copies the benefit of the current faerie on its target. Follows your Direct Mask.
+$@spellname356908: Copies the benefit of the current faerie on its target. Follows your Direct Mask.
 
 Name             : Shadow Word: Manipulation (id=356392) [Spell Family (6), Passive, Hidden] 
-Hotfixed         : Description
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -11667,7 +11665,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Mindgames (323673)
                    Family Flags: 84
-Description      : Mindgames lasts an additional ${$s1/1000} sec and reverses an additional $s2% damage or healing. When Mindgames can no longer reverse healing or damage, gain $357028s1% Critical Strike for each second remaining for $357028d.
+Description      : Mindgames lasts an additional $s1 sec and reverses an additional $s2% damage or healing. When Mindgames ends, gain $357028s1% Critical Strike for each second remaining for $357028d.
 
 Name             : Spheres' Harmony (id=356395) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -11729,9 +11727,14 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=891259)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (108 -> 290), Misc Value (7 -> 0), Affects Spells
+#1 (id=891259)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Affected Spells: Mindgames (323673)
+                   Family Flags: 84
+#2 (id=891260)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
+                   Affected Spells: Mindgames (323673)
+                   Family Flags: 84
 Description      : @spelldesc356392
 Tooltip          : Critical Strike is increased by $s1%.
 
