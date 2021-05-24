@@ -11358,7 +11358,7 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.blessing_of_spring", external_buffs.blessing_of_spring ) );
   add_option( opt_external_buff_times( "external_buffs.conquerors_banner", external_buffs.conquerors_banner ) );
   add_option( opt_external_buff_times( "external_buffs.rallying_cry", external_buffs.rallying_cry ) );
-  add_option( opt_external_buff_times( "external_buffs.soulstalkers", external_buffs.soulstalkers ) );
+  add_option( opt_external_buff_times( "external_buffs.soulstalkers", external_buffs.soulstalkers ) ); // 9.1 Kyrian Hunter Legendary
 
   // Azerite options
   if ( ! is_enemy() && ! is_pet() )

@@ -565,6 +565,7 @@ struct player_t : public actor_t
     std::vector<timespan_t> soulstalkers;
   } external_buffs;
 
+
   struct gains_t
   {
     gain_t* arcane_torrent;

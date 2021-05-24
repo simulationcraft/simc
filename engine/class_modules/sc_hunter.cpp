@@ -2893,9 +2893,9 @@ struct kill_shot_t : hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     p() -> buffs.flayers_mark -> up(); // benefit tracking
-    if ( p()->legendary.razor_fragments.ok() && p()->buffs.flayers_mark->up() ) // Schedule Razor Fragments Dot
+    if ( p()->legendary.razor_fragments.ok() && p()->buffs.flayers_mark->up() )
     {
-      trigger_razor_fragments = true;
+      trigger_razor_fragments = true; // Schedule Razor Fragments Dot
     }
     else
       trigger_razor_fragments = false;
