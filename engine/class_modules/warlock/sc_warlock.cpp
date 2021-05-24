@@ -710,6 +710,35 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
   return m;
 }
 
+double warlock_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
+{
+  double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
+
+  if ( !is_ptr() )
+    return m;
+
+  const warlock_td_t* td = get_target_data( target );
+
+  if ( specialization() == WARLOCK_AFFLICTION )
+  {
+    if ( td->debuffs_haunt->check() )
+      m *= 1.0 + td->debuffs_haunt->data().effectN( 2 ).percent();
+	  
+	if ( !is_ptr() || conduit.cold_embrace.ok() )
+    {
+      m *= 1.0 + ( ( td->debuffs_shadow_embrace->check_value() ) * ( 1 + conduit.cold_embrace.percent() )
+           * td->debuffs_shadow_embrace->check() );
+    }
+
+    if ( is_ptr() && talents.shadow_embrace->ok() )
+    {
+      m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value();
+    }
+  }
+
+  return m;
+}
+
 double warlock_t::composite_spell_crit_chance() const
 {
   double sc = player_t::composite_spell_crit_chance();
