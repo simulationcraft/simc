@@ -387,6 +387,9 @@ public:
     buff_t* primordial_wave;
     buff_t* vesper_totem;
 
+    //Covenant Legendaries
+    buff_t* splintered_elemental_rod;
+
     // Legendaries
     buff_t* chains_of_devastation_chain_heal;
     buff_t* chains_of_devastation_chain_lightning;
@@ -494,7 +497,7 @@ public:
     conduit_data_t essential_extraction;  // Night Fae
     conduit_data_t lavish_harvest;        // Venthyr
     conduit_data_t tumbling_waves;        // Necrolord
-    conduit_data_t elysian_dirge;
+    conduit_data_t elysian_dirge;         // Kyrian
 
     // Elemental
     conduit_data_t call_of_flame;
@@ -517,6 +520,12 @@ public:
     item_runeforge_t chains_of_devastation;
     item_runeforge_t deeptremor_stone;
     item_runeforge_t deeply_rooted_elements;
+
+    //Covenant
+    item_runeforge_t splintered_elements;
+    item_runeforge_t seeds_of_rampant_growth;
+    item_runeforge_t elemental_conduit;
+    item_runeforge_t raging_vesper_vortex;
 
     // Elemental
     item_runeforge_t skybreakers_fiery_demise;
@@ -691,6 +700,7 @@ public:
     const spell_data_t* feral_spirit;
     const spell_data_t* fire_elemental;
     const spell_data_t* storm_elemental;
+    const spell_data_t* splintered_elemental_rod;
     const spell_data_t* flametongue_weapon;
     const spell_data_t* maelstrom;
     const spell_data_t* windfury_weapon;
@@ -4750,6 +4760,11 @@ struct lava_burst_t : public shaman_spell_t
       p()->action.lava_burst_pw->set_target( execute_state->target );
       if ( !p()->action.lava_burst_pw->target_list().empty() )
       {
+        if ( p() ->legendary.splintered_elements->ok())
+        {
+          auto count_duplicates = p()->action.lava_burst_pw->target_list().size();
+          p()->buff.splintered_elemental_rod->trigger( 1, count_duplicates * p()->spell.splintered_elemental_rod->effectN(1).percent() );
+        }
         p()->action.lava_burst_pw->schedule_execute();
       }
     }
@@ -6590,8 +6605,11 @@ struct thundercharge_t : public shaman_spell_t
 
 struct fae_transfusion_tick_t : public shaman_spell_t
 {
+  const spell_data_t* seeds_effect;
+
   fae_transfusion_tick_t( const std::string& n, shaman_t* player )
-    : shaman_spell_t( n, player, player->find_spell( 328928 ) )
+    : shaman_spell_t( n, player, player->find_spell( 328928 ) ),
+      seeds_effect( player->find_spell( 336734 ) )
   {
     affected_by_master_of_the_elements = true;
 
@@ -6610,6 +6628,23 @@ struct fae_transfusion_tick_t : public shaman_spell_t
   result_amount_type amount_type( const action_state_t*, bool ) const override
   {
     return result_amount_type::DMG_DIRECT;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+    auto const test = p()->legendary.seeds_of_rampant_growth->ok();
+    if ( p()->legendary.seeds_of_rampant_growth->ok() )
+    {
+      if ( p()->specialization() == SHAMAN_ELEMENTAL )
+      {
+        p()->cooldown.fire_elemental->adjust( -1.0 * seeds_effect->effectN( 2 ).time_value() );
+      }
+      if ( p()->specialization() == SHAMAN_ENHANCEMENT )
+      {
+        p()->cooldown.feral_spirits->adjust( -1.0 * seeds_effect->effectN( 3 ).time_value() );
+      }
+    }
   }
 };
 
@@ -6708,9 +6743,10 @@ struct primordial_wave_t : public shaman_spell_t
 struct chain_harvest_t : public shaman_spell_t
 {
   int critical_hits = 0;
-
+  flame_shock_t* fs;
   chain_harvest_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "chain_harvest", player, player->covenant.venthyr )
+    shaman_spell_t( "chain_harvest", player, player->covenant.venthyr ),
+      fs(new flame_shock_t(player, ""))
   {
     parse_options( options_str );
     aoe = 5;
@@ -6719,6 +6755,9 @@ struct chain_harvest_t : public shaman_spell_t
     base_multiplier *= 1.0 + player->spec.elemental_shaman->effectN( 7 ).percent();
 
     base_crit += p()->conduit.lavish_harvest.percent();
+    fs->background = true;
+    fs->cooldown   = player->get_cooldown( "flame_shock_chain_harvest" );
+    fs->base_costs[ RESOURCE_MANA ] = 0;
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -6729,6 +6768,13 @@ struct chain_harvest_t : public shaman_spell_t
     }
 
     shaman_spell_t::schedule_travel( s );
+  }
+
+  void impact(action_state_t* s ) override
+  {
+    shaman_spell_t::impact( s );
+    fs->set_target( target );
+    fs->execute();
   }
 
   void update_ready( timespan_t ) override
@@ -7609,6 +7655,12 @@ void shaman_t::init_spells()
   legendary.deeptremor_stone       = find_runeforge_legendary( "Deeptremor Stone" );
   legendary.deeply_rooted_elements = find_runeforge_legendary( "Deeply Rooted Elements" );
 
+  // Covenant Legendaries
+  legendary.splintered_elements = find_runeforge_legendary( "Splintered Elements" );
+  legendary.raging_vesper_vortex = find_runeforge_legendary( "Raging Vesper Vortex" );
+  legendary.seeds_of_rampant_growth = find_runeforge_legendary( "Seeds of Rampant Growth" );
+  legendary.elemental_conduit      = find_runeforge_legendary( "Elemental Conduit" );
+
   // Elemental Legendaries
   legendary.skybreakers_fiery_demise     = find_runeforge_legendary( "Skybreaker's Fiery Demise" );
   legendary.elemental_equilibrium        = find_runeforge_legendary( "Elemental Equilibrium" );
@@ -7632,7 +7684,8 @@ void shaman_t::init_spells()
   spell.storm_elemental    = find_spell( 157299 );
   spell.flametongue_weapon = find_spell( 318038 );
   spell.maelstrom          = find_spell( 343725 );
-  spell.windfury_weapon    = find_spell( 319773 );
+  spell.windfury_weapon          = find_spell( 319773 );
+  spell.splintered_elemental_rod = find_spell( 333339 );
 
   player_t::init_spells();
 }
@@ -8281,7 +8334,13 @@ void shaman_t::create_buffs()
                               event_t::cancel( vesper_totem );
                             }
                           } );
-
+  // Covenant Legendaries
+  if ( legendary.splintered_elements->ok() )
+  {
+    buff.splintered_elemental_rod = make_buff( this, "splintered_elemental_rod", find_spell( 333340 ) )
+                                   ->set_default_value_from_effect_type( A_HASTE_ALL )
+                                   ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  }
   //
   // Elemental
   //
