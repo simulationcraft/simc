@@ -730,8 +730,13 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
   if ( specialization() == WARLOCK_AFFLICTION )
   {
     if ( td->debuffs_haunt->check() )
-      m *= 1.0 + td->debuffs_haunt->data().effectN( 2 ).percent();
-	  
+    {
+      if ( !guardian )
+        m *= 1.0 + td->debuffs_haunt->data().effectN( 3 ).percent();
+      else
+        m *= 1.0 + td->debuffs_haunt->data().effectN( 4 ).percent();
+    }
+
 	if ( !is_ptr() || conduit.cold_embrace.ok() )
     {
       m *= 1.0 + ( ( td->debuffs_shadow_embrace->check_value() ) * ( 1 + conduit.cold_embrace.percent() )
@@ -740,14 +745,22 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
 
     if ( is_ptr() && talents.shadow_embrace->ok() )
     {
-      m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value();
+      if ( !guardian )
+        m *= 1.0 + td->debuffs_shadow_embrace->data().effectN( 2 ).percent();
+      else
+        m *= 1.0 + td->debuffs_shadow_embrace->data().effectN( 3 ).percent();
     }
   }
 
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
     if ( td->debuffs_eradication->check() )
-      m *= 1.0 + td->debuffs_eradication->check_value();
+    {
+      if ( !guardian )
+        m *= 1.0 + td->debuffs_eradication->data().effectN( 2 ).percent();
+      else
+        m *= 1.0 + td->debuffs_eradication->data().effectN( 3 ).percent();
+    }
   }
 
   return m;
