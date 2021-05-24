@@ -599,6 +599,41 @@ static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
   }
 }
 
+int warlock_td_t::count_affliction_dots()
+{
+  int count = 0;
+
+  if ( dots_agony->is_ticking() )
+    count++;
+
+  if ( dots_corruption->is_ticking() )
+    count++;
+
+  if ( dots_unstable_affliction->is_ticking() )
+    count++;
+
+  if ( dots_vile_taint->is_ticking() )
+    count++;
+
+  if ( dots_phantom_singularity->is_ticking() )
+    count++;
+
+  if ( dots_soul_rot->is_ticking() )
+    count++;
+
+  if ( dots_siphon_life->is_ticking() )
+    count++;
+
+  if ( dots_scouring_tithe->is_ticking() )
+    count++;
+
+  if ( dots_impending_catastrophe->is_ticking() )
+    count++;
+
+  return count;
+}
+
+
 warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   : player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
