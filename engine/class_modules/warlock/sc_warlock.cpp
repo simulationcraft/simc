@@ -463,10 +463,11 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots_unstable_affliction = target->get_dot( "unstable_affliction", &p );
   dots_vile_taint          = target->get_dot( "vile_taint", &p );
 
-  debuffs_haunt =
-      make_buff( *this, "haunt", source->find_spell( 48181 ) )->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+  debuffs_haunt = make_buff( *this, "haunt", source->find_spell( 48181 ) )
+                      ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+                      ->set_default_value_from_effect( 2 );
   debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", source->find_spell( 32390 ) )
-                               ->set_default_value( source->find_spell( 32390 )->effectN( 1 ).percent() )
+                               ->set_default_value_from_effect( 1 )
                                ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                                ->set_max_stack( 3 );
 
@@ -475,7 +476,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   debuffs_eradication = make_buff( *this, "eradication", source->find_spell( 196414 ) )
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                            ->set_default_value( source->find_spell( 196414 )->effectN( 1 ).percent() );
+                            ->set_default_value_from_effect( 1 );
   debuffs_roaring_blaze = make_buff( *this, "roaring_blaze", source->find_spell( 265931 ) );
   debuffs_shadowburn    = make_buff( *this, "shadowburn", source->find_spell( 17877 ) );
   debuffs_havoc         = make_buff( *this, "havoc", source->find_specialization_spell( 80240 ) )
@@ -509,7 +510,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots_doom         = target->get_dot( "doom", &p );
 
   debuffs_from_the_shadows = make_buff( *this, "from_the_shadows", source->find_spell( 270569 ) )
-                                 ->set_default_value( source->find_spell( 270569 )->effectN( 1 ).percent() );
+                                 ->set_default_value_from_effect( 1 );
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
@@ -658,7 +659,7 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
   if ( specialization() == WARLOCK_AFFLICTION )
   {
     if ( td->debuffs_haunt->check() )
-      m *= 1.0 + td->debuffs_haunt->data().effectN( 2 ).percent();
+      m *= 1.0 + td->debuffs_haunt->check_value();
 	  
 	if ( !is_ptr() || conduit.cold_embrace.ok() )
     {
@@ -731,10 +732,7 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
   {
     if ( td->debuffs_haunt->check() )
     {
-      if ( !guardian )
-        m *= 1.0 + td->debuffs_haunt->data().effectN( 3 ).percent();
-      else
-        m *= 1.0 + td->debuffs_haunt->data().effectN( 4 ).percent();
+      m *= 1.0 + td->debuffs_haunt->data().effectN( guardian ? 4 : 3 ).percent();
     }
 
     if ( !is_ptr() || conduit.cold_embrace.ok() )
@@ -745,10 +743,7 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
 
     if ( is_ptr() && talents.shadow_embrace->ok() )
     {
-      if ( !guardian )
-        m *= 1.0 + td->debuffs_shadow_embrace->data().effectN( 2 ).percent();
-      else
-        m *= 1.0 + td->debuffs_shadow_embrace->data().effectN( 3 ).percent();
+      m *= 1.0 + td->debuffs_shadow_embrace->data().effectN( guardian ? 3 : 2 ).percent();
     }
   }
 
@@ -756,10 +751,7 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
   {
     if ( td->debuffs_eradication->check() )
     {
-      if ( !guardian )
-        m *= 1.0 + td->debuffs_eradication->data().effectN( 2 ).percent();
-      else
-        m *= 1.0 + td->debuffs_eradication->data().effectN( 3 ).percent();
+      m *= 1.0 + td->debuffs_eradication->data().effectN( guardian ? 3 : 2 ).percent();
     }
   }
 
