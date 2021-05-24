@@ -518,49 +518,15 @@ struct malefic_rapture_t : public affliction_spell_t
         callbacks = false; //TOCHECK: Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
       }
 
-      double get_dots_ticking(player_t *target) const
-      {
-        double mult = 0.0;
-        auto td = this->td( target );
-
-        if ( td->dots_agony->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_corruption->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_unstable_affliction->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_vile_taint->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_phantom_singularity->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_soul_rot->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_siphon_life->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_scouring_tithe->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_impending_catastrophe->is_ticking() )
-          mult += 1.0;
-
-        return mult;
-      }
-
       double composite_da_multiplier( const action_state_t* s ) const override
       {
         double m = affliction_spell_t::composite_da_multiplier( s );
-        m *= get_dots_ticking( s->target );
+
+        m *= p()->get_target_data( s->target )->count_affliction_dots();
 
         if ( td( s->target )->dots_unstable_affliction->is_ticking() )
         {
-          m *= 1 + p()->conduit.focused_malignancy.percent();
+          m *= 1.0 + p()->conduit.focused_malignancy.percent();
         }
 
         return m;
@@ -574,7 +540,7 @@ struct malefic_rapture_t : public affliction_spell_t
           p()->procs.malefic_wrath->occur();
         }
 
-        int d = as<int>( get_dots_ticking( target ) );
+        int d = p()->get_target_data( target )->count_affliction_dots();
         if ( d > 0 )
         {
           for ( int i = p()->procs.malefic_rapture.size(); i < d; i++ )
