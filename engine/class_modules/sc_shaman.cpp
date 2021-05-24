@@ -6666,7 +6666,6 @@ struct fae_transfusion_tick_t : public shaman_spell_t
     {
       if ( p()->specialization() == SHAMAN_ELEMENTAL )
       {
-        const auto test = seeds_effect->effectN( 2 ).time_value();
         p()->cooldown.fire_elemental->adjust( -1.0 * seeds_effect->effectN( 2 ).time_value() );
       }
       if ( p()->specialization() == SHAMAN_ENHANCEMENT )
