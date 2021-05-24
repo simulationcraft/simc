@@ -120,8 +120,12 @@ struct shadow_bolt_t : public affliction_spell_t
     if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
       m *= 1.0 + p()->buffs.nightfall->default_value;
 
-    m *= 1 + p()->buffs.decimating_bolt->check_value();
-    m *= 1 + p()->buffs.malefic_wrath->check_stack_value();
+    m *= 1.0 + p()->buffs.decimating_bolt->check_value();
+    m *= 1.0 + p()->buffs.malefic_wrath->check_stack_value();
+
+    //Withering Bolt does 2x% more per DoT on the target for Shadow Bolt
+    //TODO: Check what happens if a DoT falls off mid-cast and mid-flight
+    m *= 1.0 + p()->conduit.withering_bolt.percent() * 2.0 * 0.0;
 
     return m;
   }
@@ -637,8 +641,12 @@ struct drain_soul_t : public affliction_spell_t
     if ( t->health_percentage() < p()->talents.drain_soul->effectN( 3 ).base_value() )
       m *= 1.0 + p()->talents.drain_soul->effectN( 2 ).percent();
 
-    m *= 1 + p()->buffs.decimating_bolt->check_value();
+    m *= 1.0 + p()->buffs.decimating_bolt->check_value();
     m *= 1.0 + p()->buffs.malefic_wrath->check_stack_value();
+
+    //Withering Bolt does x% more damage per DoT on the target
+    //TODO: Check what happens if a DoT falls off mid-channel
+    m *= 1.0 + p()->conduit.withering_bolt.percent() * 0.0;
 
     return m;
   }
@@ -850,10 +858,11 @@ void warlock_t::init_spells_affliction()
   //Wrath of Consumption and Sacrolash's Dark Strike are implemented in main module
 
   // Conduits
-  conduit.cold_embrace       = find_conduit_spell( "Cold Embrace" );
+  conduit.cold_embrace       = find_conduit_spell( "Cold Embrace" ); //9.1 PTR - Removed
   conduit.corrupting_leer    = find_conduit_spell( "Corrupting Leer" );
   conduit.focused_malignancy = find_conduit_spell( "Focused Malignancy" );
   conduit.rolling_agony      = find_conduit_spell( "Rolling Agony" );
+  conduit.withering_bolt     = find_conduit_spell( "Withering Bolt" ); //9.1 PTR - New, replaces Cold Embrace
 }
 
 void warlock_t::init_gains_affliction()
