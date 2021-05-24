@@ -743,6 +743,12 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
     }
   }
 
+  if ( specialization() == WARLOCK_DESTRUCTION )
+  {
+    if ( td->debuffs_eradication->check() )
+      m *= 1.0 + td->debuffs_eradication->check_value();
+  }
+
   return m;
 }
 
