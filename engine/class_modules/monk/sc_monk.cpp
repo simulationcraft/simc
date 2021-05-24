@@ -7092,6 +7092,22 @@ double monk_t::composite_player_pet_damage_multiplier( const action_state_t* sta
   return multiplier;
 }
 
+// monk_t::composite_player_target_pet_damage_multiplier ========================
+double monk_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
+{
+  double multiplier = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
+
+  if ( get_target_data( target )->debuff.weapons_of_order->up() )
+  {
+    if ( guardian )
+        multiplier *= 1 + ( get_target_data( target )->debuff.weapons_of_order->stack() * find_spell( 312106 )->effectN( 3 ).percent() );
+    else
+        multiplier *= 1 + ( get_target_data( target )->debuff.weapons_of_order->stack() * find_spell( 312106 )->effectN( 2 ).percent() );
+  }
+
+  return multiplier;
+}
+
 // monk_t::invalidate_cache ==============================================
 
 void monk_t::invalidate_cache( cache_e c )
