@@ -171,6 +171,8 @@ void frost( player_t* p )
 
   default_->add_action( "auto_attack" );
   default_->add_action( "variable,name=specified_trinket,value=(equipped.inscrutable_quantum_device&cooldown.inscrutable_quantum_device.ready)", "Prevent specified trinkets being used with automatic lines" );
+  default_->add_action( "variable,name=st_planning,value=active_enemies=1&(raid_event.adds.in>15|!raid_event.adds.exists)" );
+  default_->add_action( "variable,name=adds_remain,value=active_enemies>=2&(raid_event.adds.exists&raid_event.adds.remains>5|!raid_event.adds.exists)" );
   default_->add_action( "remorseless_winter,if=conduit.everfrost&talent.gathering_storm&!talent.obliteration&cooldown.pillar_of_frost.remains", "Apply Frost Fever, maintain Icy Talons and keep Remorseless Winter rolling" );
   default_->add_action( "howling_blast,if=!dot.frost_fever.ticking&(talent.icecap|cooldown.breath_of_sindragosa.remains>15|talent.obliteration&cooldown.pillar_of_frost.remains&!buff.killing_machine.up)" );
   default_->add_action( "glacial_advance,if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&spell_targets.glacial_advance>=2&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>15)" );
@@ -231,12 +233,12 @@ void frost( player_t* p )
   cold_heart->add_action( "chains_of_ice,if=talent.obliteration&!buff.pillar_of_frost.up&(buff.cold_heart.stack>=16&buff.unholy_strength.up|buff.cold_heart.stack>=19|cooldown.pillar_of_frost.remains<3&buff.cold_heart.stack>=14)", "Prevent Cold Heart overcapping during pillar" );
 
   cooldowns->add_action( "potion,if=buff.pillar_of_frost.up", "Potion" );
-  cooldowns->add_action( "empower_rune_weapon,if=talent.obliteration&rune<6&(cooldown.pillar_of_frost.remains<5|buff.pillar_of_frost.up)|fight_remains<20", "Cooldowns" );
-  cooldowns->add_action( "empower_rune_weapon,if=talent.breath_of_sindragosa&runic_power.deficit>30&rune.time_to_5>gcd&(buff.breath_of_sindragosa.up|fight_remains<20)" );
+  cooldowns->add_action( "empower_rune_weapon,if=talent.obliteration&(variable.st_planning|variable.adds_remain)&(cooldown.pillar_of_frost.ready&rune.time_to_5>gcd&runic_power.deficit>=10|buff.pillar_of_frost.up&rune.time_to_5>gcd)|fight_remains<20", "Cooldowns" );
+  cooldowns->add_action( "empower_rune_weapon,if=talent.breath_of_sindragosa&runic_power.deficit>30&rune.time_to_5>gcd&(variable.st_planning|variable.adds_remain)&(buff.breath_of_sindragosa.up|fight_remains<20)" );
   cooldowns->add_action( "empower_rune_weapon,if=talent.icecap&rune<3" );
-  cooldowns->add_action( "pillar_of_frost,if=talent.breath_of_sindragosa&(cooldown.breath_of_sindragosa.remains|cooldown.breath_of_sindragosa.ready&runic_power.deficit<50)" );
+  cooldowns->add_action( "pillar_of_frost,if=talent.breath_of_sindragosa&(variable.st_planning|variable.adds_remain)&(cooldown.breath_of_sindragosa.remains|cooldown.breath_of_sindragosa.ready&runic_power.deficit<50)" );
   cooldowns->add_action( "pillar_of_frost,if=talent.icecap&!buff.pillar_of_frost.up" );
-  cooldowns->add_action( "pillar_of_frost,if=talent.obliteration&(talent.gathering_storm.enabled&buff.remorseless_winter.up|!talent.gathering_storm.enabled)" );
+  cooldowns->add_action( "pillar_of_frost,if=talent.obliteration&(variable.st_planning|variable.adds_remain)&(talent.gathering_storm.enabled&buff.remorseless_winter.up|!talent.gathering_storm.enabled)" );
   cooldowns->add_action( "breath_of_sindragosa,if=buff.pillar_of_frost.up" );
   cooldowns->add_action( "frostwyrms_fury,if=buff.pillar_of_frost.remains<gcd&buff.pillar_of_frost.up&!talent.obliteration" );
   cooldowns->add_action( "frostwyrms_fury,if=active_enemies>=2&(buff.pillar_of_frost.up&buff.pillar_of_frost.remains<gcd|raid_event.adds.exists&raid_event.adds.remains<gcd|fight_remains<gcd)" );
@@ -247,13 +249,13 @@ void frost( player_t* p )
   cooldowns->add_action( "death_and_decay,if=active_enemies>5|runeforge.phearomones" );
 
   covenants->add_action( "deaths_due,if=raid_event.adds.in>15|!raid_event.adds.exists|active_enemies>=2", "Covenant Abilities" );
-  covenants->add_action( "swarming_mist,if=active_enemies=1&runic_power.deficit>3&cooldown.pillar_of_frost.remains<3&!talent.breath_of_sindragosa&(!raid_event.adds.exists|raid_event.adds.in>15)" );
-  covenants->add_action( "swarming_mist,if=active_enemies>=2&!talent.breath_of_sindragosa" );
+  covenants->add_action( "swarming_mist,if=active_enemies=1&runic_power.deficit>3&cooldown.pillar_of_frost.remains<3&!talent.breath_of_sindragosa&variable.st_planning" );
+  covenants->add_action( "swarming_mist,if=active_enemies>=2&!talent.breath_of_sindragosa&variable.adds_remain" );
   covenants->add_action( "swarming_mist,if=talent.breath_of_sindragosa&(buff.breath_of_sindragosa.up&(active_enemies=1&runic_power.deficit>40|active_enemies>=2&runic_power.deficit>60)|!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains)" );
-  covenants->add_action( "abomination_limb,if=active_enemies=1&cooldown.pillar_of_frost.remains<3&(!raid_event.adds.exists|raid_event.adds.in>15)&(talent.breath_of_sindragosa&runic_power.deficit<60&cooldown.breath_of_sindragosa.remains<2|!talent.breath_of_sindragosa)" );
-  covenants->add_action( "abomination_limb,if=active_enemies>=2" );
-  covenants->add_action( "shackle_the_unworthy,if=active_enemies=1&cooldown.pillar_of_frost.remains<2&(!raid_event.adds.exists|raid_event.adds.in>15)" );
-  covenants->add_action( "shackle_the_unworthy,if=active_enemies>=2" );
+  covenants->add_action( "abomination_limb,if=active_enemies=1&cooldown.pillar_of_frost.remains<3&variable.st_planning&(talent.breath_of_sindragosa&runic_power.deficit<60&cooldown.breath_of_sindragosa.remains<2|!talent.breath_of_sindragosa)" );
+  covenants->add_action( "abomination_limb,if=active_enemies>=2&variable.adds_remain" );
+  covenants->add_action( "shackle_the_unworthy,if=active_enemies=1&cooldown.pillar_of_frost.remains<3&variable.st_planning" );
+  covenants->add_action( "shackle_the_unworthy,if=active_enemies>=2&variable.adds_remain" );
 
   obliteration->add_action( "remorseless_winter,if=active_enemies>=3&(talent.gathering_storm|conduit.everfrost|runeforge.biting_cold)", "Obliteration rotation" );
   obliteration->add_action( "howling_blast,if=!dot.frost_fever.ticking&!buff.killing_machine.up&rune>=3" );
