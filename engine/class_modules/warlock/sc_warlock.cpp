@@ -993,7 +993,7 @@ void warlock_t::init_spells()
   spec.nethermancy = find_spell( 86091 );
   spec.demonic_embrace = find_spell( 288843 );
 
-  version_check_data = find_spell( 339576 ); //For 9.1 PTR version checking, Withering Bolt data
+  version_check_data = find_spell( 356342 ); //For 9.1 PTR version checking, Shard of Annihilation data
 
   // Specialization Spells
   spec.immolate         = find_specialization_spell( "Immolate" );
@@ -1390,12 +1390,12 @@ void warlock_t::malignancy_reduction_helper()
 
 // Use this as a helper function when two versions are needed simultaneously (ie a PTR cycle)
 // It must be adjusted manually, and any use of it should be removed once a patch goes live
-// Returns TRUE if version >= version specified in the asert
+// Returns TRUE if version >= version specified in the assert
 bool warlock_t::min_version_check( util::string_view version ) const
 {
   //Manually set the newer version string here
   //If we are checking for any other version somewhere in code, that code is WRONG
-  assert( version == "9.1" );
+  assert( version == "9.1" && "Incorrect version passed to a min_version_check" );
 
   //Since we should only be ever checking if we're on the newest version, PTR will be guaranteed newest
   if ( is_ptr() )
