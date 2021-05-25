@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, git build shadowlands a1782479, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -1043,8 +1043,8 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : Blasts a target for $s1 Shadowflame damage, gaining $s3% critical strike chance on targets that have 20% or less health.
 
-|cFFFFFFFFRestores ${$245731s1/10} Soul Shard and resets its cooldown if the target dies within $d.|r
-Tooltip          : If the target dies and yields experience or honor, Shadowburn restores ${$245731s1/10} Soul Shard and resets its cooldown.
+|cFFFFFFFFRestores ${$245731s1/10} Soul Shard and refunds a charge if the target dies within $d.|r
+Tooltip          : If the target dies and yields experience or honor, Shadowburn restores ${$245731s1/10} Soul Shard and refunds a charge.
 
 Name             : Agony (id=17941) [Spell Family (5)] 
 Class            : Warlock
@@ -11085,7 +11085,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 60
 Labels           : 1067: Resolute Barrier (339272 effect#1)
-Conduit Id       : 203 (values=5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 22, 23, 24)
+Conduit Id       : 203 (values=5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

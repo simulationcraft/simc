@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, git build shadowlands a1782479, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -4403,7 +4403,7 @@ Spell Type       : None
 Duration         : 60 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11607,7 +11607,7 @@ Effects          :
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=886674)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45000 | Scaled Value: 45000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Consuming $?c1[Clearcast]?c2[a Fire Blast charge][Brain Freeze] reduces Mirrors of Torment cooldown by ${$s1/1000} sec. If Mirrors of Torment is dispelled the cooldown is reduced by ${$s2/1000} sec.
+Description      : Consuming $?c1[Clearcast]?c2[a Fire Blast charge][Brain Freeze] reduces Mirrors of Torment's cooldown by ${$s1/1000} sec. If Mirrors of Torment is dispelled the cooldown is reduced by ${$s2/1000} sec.
 
 Name             : Timebreaker's Paradox (id=356346) 
 Class            : Mage

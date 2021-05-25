@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, git build shadowlands a1782479, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -923,7 +923,7 @@ Spell Level      : 39
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 300 seconds
-Affecting spells : Darkness (320420 effect#1)
+Affecting spells : Darkness (320420 effect#1), Cover of Darkness (357419 effect#2)
 Family Flags     : 77
 Attributes       : ....x... ........ x....... .......x   .....x.. ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -939,7 +939,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6615 | Target: Unknown(62)
 #2 (id=374312)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Summons darkness around you in an 8 yd radius, granting friendly targets a $209426s2% chance to avoid all damage from an attack. Lasts $d.
+Description      : Summons darkness around you in a$?a357419[ 12 yd][n 8 yd] radius, granting friendly targets a $209426s2% chance to avoid all damage from an attack. Lasts $d.
 
 Name             : Chaos Strike (desc=Passive) (id=197125) [Spell Family (107), Passive, Hidden] 
 Class            : Havoc Demon Hunter
@@ -2981,7 +2981,7 @@ Family Flags     : 51, 63
 Attributes       : ........ x....... ........ .......x   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ..x.x...   ........ ........ xx...... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
@@ -2992,7 +2992,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xffffffd8 | Target: Unknown(25)
                    Affected School(s): All
 #2 (id=727831)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Unknown(25)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 2.50000 | Misc Value: 127 | Target: Unknown(25)
 Description      : $@spelldesc196718
 Tooltip          : Attacks against you have a $s2% chance to inflict no damage.
 
@@ -10040,6 +10040,7 @@ Effects          :
 Description      : Sinful Brand deals $s1% increased damage and $?c1[Eye Beam][Fel Devastation] damage increases the duration of Sinful Brand by ${$s2/1000}.1 sec.
 
 Name             : Blazing Slaughter (id=355890) [Spell Family (107), Passive, Hidden] 
+Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10056,7 +10057,31 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : The Hunt engulfs you with Immolation Aura upon reaching your target and you gain $355892s1% Agility for $355892d for each enemy hit.
 
+Name             : Blazing Slaughter (id=355892) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 12 seconds
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot crit (93)
+Effects          :
+#1 (id=889349)   : Apply Aura (6) | Modify Total Stat% (137)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value 2: 0x2 | Target: Self (1)
+Description      : $@spelldesc355890
+Tooltip          : Agility increased by $s1%.
+
 Name             : Blind Faith (id=355893) [Spell Family (107), Passive, Hidden] 
+Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10074,6 +10099,29 @@ Effects          :
 #2 (id=889354)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Elysian Decree shatters $s1 additional Lesser Soul Fragments and grants you Blind Faith for $355894d. For each Lesser Soul Fragment you consume while Blind Faith is active you gain $s2% Mastery and $356070s1 Fury.
+
+Name             : Blind Faith (id=355894) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 20 seconds
+Stacks           : 20 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot crit (93)
+Effects          :
+#1 (id=889352)   : Apply Aura (6) | Modify Mastery% (318)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc355893
+Tooltip          : Mastery increased by $w1%.
 
 Name             : Demonic Oath (id=355996) [Spell Family (107), Passive, Hidden] 
 School           : Physical
@@ -10095,5 +10143,46 @@ Effects          :
 #2 (id=889571)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : When Fodder to the Flame's demon explodes it inflicts Fiery Brand to $s2 nearby enemies for $s2 sec. Additionally Shattered Soul's duration is increased by ${$s1/1000} sec.
+
+Name             : Blind Faith (id=356070) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Range            : 50000 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot crit (93)
+Effects          :
+#1 (id=889671)   : Energize Power (30)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+Description      : $@spelldesc355893
+
+Name             : Cover of Darkness (desc=PvP Talent) (id=357419) [Spell Family (107), Passive, Hidden] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=891975)   : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
+#2 (id=891976)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Darkness (196718)
+                   Family Flags: 77
+Description      : The radius of Darkness is increased by $s1 yds, and its duration by ${$s2/1000} sec.
 
 
