@@ -3262,8 +3262,9 @@ void player_t::create_buffs()
       // 9.1 Legendary Party Buffs
 
       buffs.soulstalkers = make_buff( this, "pact_of_the_soulstalkers", find_spell( 356263 ) )
-       ->set_default_value_from_effect( 1 )
-       ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
+                               ->set_default_value_from_effect( 1 )
+                               ->add_invalidate( CACHE_SPELL_CRIT_CHANCE )
+                               ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE );
     }
   }
   // .. for enemies
