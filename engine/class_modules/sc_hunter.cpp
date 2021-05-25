@@ -6111,13 +6111,10 @@ void hunter_t::create_buffs()
       -> set_default_value_from_effect( 1 )
       -> set_trigger_spell( legendary.secrets_of_the_vigil );
 
-    buffs.soulstalkers = 
+  buffs.soulstalkers =
     make_buff( this, "pact_of_the_soulstalkers", find_spell( 356263 ) )
-      -> set_default_value( find_spell( 356263 )->effectN( 1 ).percent() )
-      -> set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-      -> set_trigger_spell( legendary.soulstalkers );
-
-
+      -> set_default_value_from_effect( 1 )
+      -> set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 }
 
 // hunter_t::init_gains =====================================================
@@ -6657,8 +6654,12 @@ struct hunter_module_t: public module_t
   {
   }
 
-  void init( player_t* ) const override
+  void init( player_t* p ) const override
   {
+    p -> buffs.pact_of_the_soulstalkers =
+      make_buff( p, "pact_of_the_soulstalkers_external", p -> find_spell( 356263 ) )
+        -> set_default_value_from_effect( 1 )
+        -> set_pct_buff_type( STAT_PCT_BUFF_CRIT );
   }
 
   void register_hotfixes() const override
