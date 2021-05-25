@@ -999,6 +999,8 @@ void warlock_t::init_spells()
   spec.nethermancy = find_spell( 86091 );
   spec.demonic_embrace = find_spell( 288843 );
 
+  version_check_data = find_spell( 339576 ); //For 9.1 PTR version checking, Withering Bolt data
+
   // Specialization Spells
   spec.immolate         = find_specialization_spell( "Immolate" );
   spec.demonic_core     = find_specialization_spell( "Demonic Core" );
@@ -1390,6 +1392,23 @@ void warlock_t::malignancy_reduction_helper()
     procs.corrupting_leer->occur();
     cooldowns.darkglare->adjust( -5.0_s );  // Value is in the description so had to hardcode it
   }
+}
+
+// Use this as a helper function when two versions are needed simultaneously (ie a PTR cycle)
+// It must be adjusted manually, and any use of it should be removed once a patch goes live
+// Returns TRUE if version >= version specified in the asert
+bool warlock_t::min_version_check( util::string_view version )
+{
+  //Manually set the newer version string here
+  //If we are checking for any other version somewhere in code, that code is WRONG
+  assert( version == "9.1" );
+
+  //Since we should only be ever checking if we're on the newest version, PTR will be guaranteed newest
+  if ( is_ptr() )
+    return true;
+
+  //Do a check for spell data that only exists in newer version
+  return !( version_check_data == spell_data_t::not_found() );
 }
 
 // Function for returning the the number of imps that will spawn in a specified time period.
