@@ -397,7 +397,7 @@ struct stat_buff_t : public buff_t
 
   stat_buff_t* add_stat( stat_e s, double a, const std::function<bool(const stat_buff_t&)>& c = std::function<bool(const stat_buff_t&)>() );
 
-  stat_buff_t(actor_pair_t q, util::string_view name);
+  stat_buff_t( actor_pair_t q, util::string_view name );
   stat_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const item_t* item = nullptr );
 };
 

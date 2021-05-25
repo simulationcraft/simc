@@ -856,8 +856,6 @@ public:
 
     if ( triggers_wild_spirits )
       p()->trigger_wild_spirits( s );
-
-   
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1157,6 +1155,7 @@ struct hunter_pet_t: public pet_t
     double crit = pet_t::composite_player_target_crit_chance( target );
 
     crit += o()->buffs.resonating_arrow->check_value();
+
     return crit;
   }
 
@@ -2303,6 +2302,7 @@ void hunter_t::trigger_wild_spirits( const action_state_t* s )
     sim -> print_debug( "{} procs wild_spirits from {} on {}",
                         name(), s -> action -> name(), s -> target -> name() );
   }
+
   actions.wild_spirits -> set_target( s -> target );
   actions.wild_spirits -> execute();
 
@@ -2671,7 +2671,7 @@ struct resonating_arrow_t : hunter_spell_t
       {
         p()->buffs.soulstalkers->trigger();
       }
-      
+
     }
   };
 
@@ -2886,7 +2886,6 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     parse_options( options_str );
   }
-  
 
   void execute() override
   {
@@ -2899,7 +2898,7 @@ struct kill_shot_t : hunter_ranged_attack_t
     }
     else
       trigger_razor_fragments = false;
-    
+
     p() -> buffs.flayers_mark -> decrement();
     p() -> buffs.empowered_release -> decrement();
   }
@@ -6079,10 +6078,10 @@ void hunter_t::create_buffs()
       -> set_activated( true );
 
   buffs.wild_spirits =
-      make_buff( this, "wild_spirits", covenants.wild_spirits -> effectN( 1 ).trigger() )
-        -> set_default_value( find_spell( 328275 ) -> effectN( 2 ).percent() )
-        -> set_activated( true )
-        -> apply_affecting_conduit( conduits.spirit_attunement );
+    make_buff( this, "wild_spirits", covenants.wild_spirits -> effectN( 1 ).trigger() )
+      -> set_default_value( find_spell( 328275 ) -> effectN( 2 ).percent() )
+      -> set_activated( true )
+      -> apply_affecting_conduit( conduits.spirit_attunement );
 
   // Legendaries
 
@@ -6360,7 +6359,6 @@ double hunter_t::composite_player_target_crit_chance( player_t* target ) const
   double crit = player_t::composite_player_target_crit_chance( target );
 
   crit += buffs.resonating_arrow -> check_value();
-  
 
   return crit;
 }
