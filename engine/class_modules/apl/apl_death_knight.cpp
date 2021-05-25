@@ -233,7 +233,7 @@ void frost( player_t* p )
   cold_heart->add_action( "chains_of_ice,if=talent.obliteration&!buff.pillar_of_frost.up&(buff.cold_heart.stack>=16&buff.unholy_strength.up|buff.cold_heart.stack>=19|cooldown.pillar_of_frost.remains<3&buff.cold_heart.stack>=14)", "Prevent Cold Heart overcapping during pillar" );
 
   cooldowns->add_action( "potion,if=buff.pillar_of_frost.up", "Potion" );
-  cooldowns->add_action( "empower_rune_weapon,if=talent.obliteration&(variable.st_planning|variable.adds_remain)&(cooldown.pillar_of_frost.ready&rune.time_to_5>gcd&runic_power.deficit>=10|buff.pillar_of_frost.up&rune.time_to_5>gcd)|fight_remains<20", "Cooldowns" );
+  cooldowns->add_action( "empower_rune_weapon,if=talent.obliteration&rune<6&(variable.st_planning|variable.adds_remain)&(cooldown.pillar_of_frost.remains<5|buff.pillar_of_frost.up)|fight_remains<20", "Cooldowns" );
   cooldowns->add_action( "empower_rune_weapon,if=talent.breath_of_sindragosa&runic_power.deficit>30&rune.time_to_5>gcd&(variable.st_planning|variable.adds_remain)&(buff.breath_of_sindragosa.up|fight_remains<20)" );
   cooldowns->add_action( "empower_rune_weapon,if=talent.icecap&rune<3" );
   cooldowns->add_action( "pillar_of_frost,if=talent.breath_of_sindragosa&(variable.st_planning|variable.adds_remain)&(cooldown.breath_of_sindragosa.remains|cooldown.breath_of_sindragosa.ready&runic_power.deficit<50)" );
