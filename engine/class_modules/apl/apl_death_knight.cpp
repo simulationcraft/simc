@@ -248,14 +248,14 @@ void frost( player_t* p )
   cooldowns->add_action( "sacrificial_pact,if=active_enemies>=2&(pet.ghoul.remains<gcd|target.time_to_die<gcd)" );
   cooldowns->add_action( "death_and_decay,if=active_enemies>5|runeforge.phearomones" );
 
-  covenants->add_action( "deaths_due,if=raid_event.adds.in>15|!raid_event.adds.exists|active_enemies>=2", "Covenant Abilities" );
-  covenants->add_action( "swarming_mist,if=active_enemies=1&runic_power.deficit>3&cooldown.pillar_of_frost.remains<3&!talent.breath_of_sindragosa&variable.st_planning" );
-  covenants->add_action( "swarming_mist,if=active_enemies>=2&!talent.breath_of_sindragosa&variable.adds_remain" );
+  covenants->add_action( "deaths_due,if=variable.st_planning|variable.adds_remain", "Covenant Abilities" );
+  covenants->add_action( "swarming_mist,if=runic_power.deficit>3&cooldown.pillar_of_frost.remains<3&!talent.breath_of_sindragosa&variable.st_planning" );
+  covenants->add_action( "swarming_mist,if=!talent.breath_of_sindragosa&variable.adds_remain" );
   covenants->add_action( "swarming_mist,if=talent.breath_of_sindragosa&(buff.breath_of_sindragosa.up&(active_enemies=1&runic_power.deficit>40|active_enemies>=2&runic_power.deficit>60)|!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains)" );
-  covenants->add_action( "abomination_limb,if=active_enemies=1&cooldown.pillar_of_frost.remains<3&variable.st_planning&(talent.breath_of_sindragosa&runic_power.deficit<60&cooldown.breath_of_sindragosa.remains<2|!talent.breath_of_sindragosa)" );
-  covenants->add_action( "abomination_limb,if=active_enemies>=2&variable.adds_remain" );
-  covenants->add_action( "shackle_the_unworthy,if=active_enemies=1&cooldown.pillar_of_frost.remains<3&variable.st_planning" );
-  covenants->add_action( "shackle_the_unworthy,if=active_enemies>=2&variable.adds_remain" );
+  covenants->add_action( "abomination_limb,if=cooldown.pillar_of_frost.remains<3&variable.st_planning&(talent.breath_of_sindragosa&runic_power.deficit<60&cooldown.breath_of_sindragosa.remains<2|!talent.breath_of_sindragosa)" );
+  covenants->add_action( "abomination_limb,if=variable.adds_remain" );
+  covenants->add_action( "shackle_the_unworthy,if=cooldown.pillar_of_frost.remains<3&variable.st_planning" );
+  covenants->add_action( "shackle_the_unworthy,if=variable.adds_remain" );
 
   obliteration->add_action( "remorseless_winter,if=active_enemies>=3&(talent.gathering_storm|conduit.everfrost|runeforge.biting_cold)", "Obliteration rotation" );
   obliteration->add_action( "howling_blast,if=!dot.frost_fever.ticking&!buff.killing_machine.up&rune>=3" );
