@@ -696,13 +696,13 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
     if ( td->debuffs_haunt->check() )
       m *= 1.0 + td->debuffs_haunt->check_value();
 	  
-	if ( !is_ptr() || conduit.cold_embrace.ok() )
+	if ( !min_version_check( "9.1" ) )
     {
       m *= 1.0 + ( ( td->debuffs_shadow_embrace->check_value() ) * ( 1 + conduit.cold_embrace.percent() )
            * td->debuffs_shadow_embrace->check() );
     }
 
-    if ( is_ptr() && talents.shadow_embrace->ok() )
+    if ( min_version_check( "9.1" ) && talents.shadow_embrace->ok() )
     {
       m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value();
     }
@@ -758,7 +758,7 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
 {
   double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
 
-  if ( !is_ptr() )
+  if ( !min_version_check( "9.1" ) )
     return m;
 
   const warlock_td_t* td = get_target_data( target );
@@ -770,13 +770,7 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
       m *= 1.0 + td->debuffs_haunt->data().effectN( guardian ? 4 : 3 ).percent();
     }
 
-    if ( !is_ptr() || conduit.cold_embrace.ok() )
-    {
-      m *= 1.0 + ( ( td->debuffs_shadow_embrace->check_value() ) * ( 1 + conduit.cold_embrace.percent() )
-           * td->debuffs_shadow_embrace->check() );
-    }
-
-    if ( is_ptr() && talents.shadow_embrace->ok() )
+    if ( talents.shadow_embrace->ok() )
     {
       m *= 1.0 + td->debuffs_shadow_embrace->data().effectN( guardian ? 3 : 2 ).percent();
     }
@@ -1397,7 +1391,7 @@ void warlock_t::malignancy_reduction_helper()
 // Use this as a helper function when two versions are needed simultaneously (ie a PTR cycle)
 // It must be adjusted manually, and any use of it should be removed once a patch goes live
 // Returns TRUE if version >= version specified in the asert
-bool warlock_t::min_version_check( util::string_view version )
+bool warlock_t::min_version_check( util::string_view version ) const
 {
   //Manually set the newer version string here
   //If we are checking for any other version somewhere in code, that code is WRONG

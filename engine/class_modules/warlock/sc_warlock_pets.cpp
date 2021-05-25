@@ -173,7 +173,7 @@ double warlock_pet_t::composite_player_target_multiplier( player_t* target, scho
 {
   double m = pet_t::composite_player_target_multiplier( target, school );
 
-  if ( !is_ptr() )
+  if ( !o()->min_version_check( "9.1" ) )
     return m;
 
   if ( o()->specialization() == WARLOCK_DEMONOLOGY && school == SCHOOL_SHADOWFLAME &&
