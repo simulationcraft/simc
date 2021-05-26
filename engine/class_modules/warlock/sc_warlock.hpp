@@ -8,6 +8,16 @@ namespace warlock
 {
 struct warlock_t;
 
+//Used for version checking in code (e.g. PTR vs Live)
+enum version_check_e
+{
+  VERSION_PTR,
+  VERSION_9_1_0,
+  VERSION_9_0_5,
+  VERSION_9_0_0,
+  VERSION_ANY
+};
+
 template <typename Action, typename Actor, typename... Args>
 action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
 {
@@ -467,7 +477,7 @@ public:
   int initial_soul_shards;
   std::string default_pet;
   shuffled_rng_t* rain_of_chaos_rng;
-  const spell_data_t* version_check_data;
+  const spell_data_t* version_9_1_0_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 
@@ -489,7 +499,7 @@ public:
   int imps_spawned_during( timespan_t period );
   void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
   void malignancy_reduction_helper();
-  bool min_version_check( util::string_view version ) const;
+  bool min_version_check( version_check_e version ) const;
   action_t* create_action( util::string_view name, const std::string& options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = "" ) override;
   void create_pets() override;
@@ -1046,4 +1056,6 @@ protected:
   }
 };
 }  // namespace buffs
+
+
 }  // namespace warlock
