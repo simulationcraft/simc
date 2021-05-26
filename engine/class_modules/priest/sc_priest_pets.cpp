@@ -9,6 +9,57 @@
 
 #include "simulationcraft.hpp"
 
+namespace
+{
+// Merge pet stats with the same action from other pets, as well as with the owners action responsible for triggering
+// this pet action.
+void merge_pet_stats_to_owner_action( player_t& owner, pet_t& pet, action_t& action,
+                                      util::string_view owner_action_name )
+{
+  auto first_pet = owner.find_pet( pet.name_str );
+  if ( first_pet )
+  {
+    auto first_pet_action = first_pet->find_action( action.name_str );
+    if ( first_pet_action )
+    {
+      if ( action.stats == first_pet_action->stats )
+      {
+        // This is the first pet created. Add its stat as a child to priest action associated with triggering this pet
+        // spell
+        auto owner_action = owner.find_action( owner_action_name );
+        if ( owner_action )
+        {
+          owner_action->add_child( &action );
+        }
+      }
+      if ( !owner.sim->report_pets_separately )
+      {
+        action.stats = first_pet_action->stats;
+      }
+    }
+  }
+}
+
+// Merge pet stats with the same action from other pets
+void merge_pet_stats( player_t& owner, pet_t& pet, action_t& action )
+{
+  if ( !owner.sim->report_pets_separately )
+  {
+    auto first_pet = owner.find_pet( pet.name_str );
+    if ( first_pet )
+    {
+      auto first_pet_action = first_pet->find_action( action.name_str );
+      if ( first_pet_action )
+      {
+        {
+          action.stats = first_pet_action->stats;
+        }
+      }
+    }
+  }
+}
+}  // namespace
+
 namespace priestspace
 {
 namespace pets
@@ -526,19 +577,6 @@ struct rattling_mage_unholy_bolt_t final : public priest_pet_spell_t
   {
     // TODO: add bug report
     affected_by_shadow_weaving = false;
-
-    auto first_pet = p.o().find_pet( p.name_str );
-    if ( first_pet )
-    {
-      auto first_pet_action = first_pet->find_action( name_str );
-      if ( first_pet_action )
-      {
-        if ( !sim->report_pets_separately )
-        {
-          stats = first_pet_action->stats;
-        }
-      }
-    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -552,6 +590,13 @@ struct rattling_mage_unholy_bolt_t final : public priest_pet_spell_t
 
     return m;
   }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats( p().o(), p(), *this );
+  }
 };
 
 struct cackling_chemist_throw_viscous_concoction_t final : public priest_pet_spell_t
@@ -562,18 +607,13 @@ struct cackling_chemist_throw_viscous_concoction_t final : public priest_pet_spe
     : priest_pet_spell_t( "throw_viscous_concoction", p, p.o().find_spell( 356633 ) ),
       rigor_mortis_buff( p.o().buffs.rigor_mortis )
   {
-    auto first_pet = p.o().find_pet( p.name_str );
-    if ( first_pet )
-    {
-      auto first_pet_action = first_pet->find_action( name_str );
-      if ( first_pet_action )
-      {
-        if ( !sim->report_pets_separately )
-        {
-          stats = first_pet_action->stats;
-        }
-      }
-    }
+  }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats( p().o(), p(), *this );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -632,29 +672,13 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     channeled                  = true;
     hasted_ticks               = false;
     affected_by_shadow_weaving = true;
+  }
 
-    // Merge the stats object with other instances of the pet
-    auto first_pet = p.o().find_pet( p.name_str );
-    if ( first_pet )
-    {
-      auto first_pet_action = first_pet->find_action( name_str );
-      if ( first_pet_action )
-      {
-        if ( stats == first_pet_action->stats )
-        {
-          // This is the first pet created. Add its stat as a child to priest mind_flay
-          auto owner_ecttv_action = p.o().find_action( "eternal_call_to_the_void" );
-          if ( owner_ecttv_action )
-          {
-            owner_ecttv_action->add_child( this );
-          }
-        }
-        if ( !sim->report_pets_separately )
-        {
-          stats = first_pet_action->stats;
-        }
-      }
-    }
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats_to_owner_action( p().o(), p(), *this, "eternal_call_to_the_void" );
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -748,29 +772,13 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
     channeled    = true;
     hasted_ticks = false;
     tick_action  = new void_lasher_mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
+  }
 
-    // Merge the stats object with other instances of the pet
-    auto first_pet = p.o().find_pet( p.name_str );
-    if ( first_pet )
-    {
-      auto first_pet_action = first_pet->find_action( name_str );
-      if ( first_pet_action )
-      {
-        if ( stats == first_pet_action->stats )
-        {
-          // This is the first pet created. Add its stat as a child to priest mind_sear
-          auto owner_ecttv_action = p.o().find_action( "eternal_call_to_the_void" );
-          if ( owner_ecttv_action )
-          {
-            owner_ecttv_action->add_child( this );
-          }
-        }
-        if ( !sim->report_pets_separately )
-        {
-          stats = first_pet_action->stats;
-        }
-      }
-    }
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats_to_owner_action( p().o(), p(), *this, "eternal_call_to_the_void" );
   }
 };
 
