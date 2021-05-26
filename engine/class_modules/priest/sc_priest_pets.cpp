@@ -387,7 +387,7 @@ struct shadowflame_rift_t final : public priest_pet_spell_t
   {
     background                 = true;
     affected_by_shadow_weaving = true;
-    
+
     // This is hard coded in the spell
     // Depending on Mindbender or Shadowfiend this hits differently
     switch ( p.pet_type )
@@ -470,6 +470,139 @@ action_t* base_fiend_pet_t::create_action( util::string_view name, const std::st
 }
 
 }  // namespace fiend
+
+struct priest_pallid_command_t : public priest_pet_t
+{
+  priest_pallid_command_t( priest_t* owner, util::string_view pet_name, pet_e pet )
+    : priest_pet_t( owner->sim, *owner, pet_name, pet, true )
+  {
+  }
+
+  // TODO on expiration need to
+  // owner().buffs.rigor_mortis->expire()
+
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
+};
+
+struct rattling_mage_t final : public priest_pallid_command_t
+{
+  rattling_mage_t( priest_t* owner ) : priest_pallid_command_t( owner, "rattling_mage", PET_RATTLING_MAGE )
+  {
+  }
+
+  void init_action_list() override
+  {
+    priest_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "unholy_bolt" );
+  }
+};
+
+struct cackling_chemist_t final : public priest_pallid_command_t
+{
+  cackling_chemist_t( priest_t* owner ) : priest_pallid_command_t( owner, "cackling_chemist", PET_CACKLING_CHEMIST )
+  {
+  }
+
+  void init_action_list() override
+  {
+    priest_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "throw_viscous_concoction" );
+  }
+};
+
+struct rattling_mage_unholy_bolt_t final : public priest_pet_spell_t
+{
+  propagate_const<buff_t*> rigor_mortis_buff;
+
+  rattling_mage_unholy_bolt_t( priest_pallid_command_t& p )
+    : priest_pet_spell_t( "unholy_bolt", p, p.o().find_spell( 356431 ) ), rigor_mortis_buff( p.o().buffs.rigor_mortis )
+  {
+    // TODO: add bug report
+    affected_by_shadow_weaving = false;
+
+    auto first_pet = p.o().find_pet( p.name_str );
+    if ( first_pet )
+    {
+      auto first_pet_action = first_pet->find_action( name_str );
+      if ( first_pet_action )
+      {
+        if ( stats == first_pet_action->stats )
+        {
+          // This is the first pet created. Add its stat as a child to priest unholy_bolt
+          auto owner_unholy_bolt_action = p.o().find_action( "unholy_bolt" );
+          if ( owner_unholy_bolt_action )
+          {
+            owner_unholy_bolt_action->add_child( this );
+          }
+        }
+        if ( !sim->report_pets_separately )
+        {
+          stats = first_pet_action->stats;
+        }
+      }
+    }
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_pet_spell_t::composite_da_multiplier( s );
+
+    if ( rigor_mortis_buff->check() )
+    {
+      m *= 1 + ( rigor_mortis_buff->current_stack * rigor_mortis_buff->data().effectN( 2 ).percent() );
+    }
+
+    return m;
+  }
+};
+
+struct cackling_chemist_throw_viscous_concoction_t final : public priest_pet_spell_t
+{
+  cackling_chemist_throw_viscous_concoction_t( priest_pallid_command_t& p )
+    : priest_pet_spell_t( "throw_viscous_concoction", p, p.o().find_spell( 356633 ) )
+  {
+    auto first_pet = p.o().find_pet( p.name_str );
+    if ( first_pet )
+    {
+      auto first_pet_action = first_pet->find_action( name_str );
+      if ( first_pet_action )
+      {
+        if ( stats == first_pet_action->stats )
+        {
+          // This is the first pet created. Add its stat as a child to priest throw_viscous_concoction
+          auto owner_throw_viscous_concoction_action = p.o().find_action( "throw_viscous_concoction" );
+          if ( owner_throw_viscous_concoction_action )
+          {
+            owner_throw_viscous_concoction_action->add_child( this );
+          }
+        }
+        if ( !sim->report_pets_separately )
+        {
+          stats = first_pet_action->stats;
+        }
+      }
+    }
+  }
+};
+
+action_t* priest_pallid_command_t::create_action( util::string_view name, const std::string& options_str )
+{
+  if ( name == "unholy_bolt" )
+  {
+    return new rattling_mage_unholy_bolt_t( *this );
+  }
+
+  if ( name == "throw_viscous_concoction" )
+  {
+    return new cackling_chemist_throw_viscous_concoction_t( *this );
+  }
+
+  return priest_pet_t::create_action( name, options_str );
+};
 
 struct void_tendril_t final : public priest_pet_t
 {
@@ -772,7 +905,10 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   : shadowfiend(),
     mindbender(),
     void_tendril( "void_tendril", &p, []( priest_t* priest ) { return new pets::void_tendril_t( priest ); } ),
-    void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new pets::void_lasher_t( priest ); } )
+    void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new pets::void_lasher_t( priest ); } ),
+    rattling_mage( "rattling_mage", &p, []( priest_t* priest ) { return new pets::rattling_mage_t( priest ); } ),
+    cackling_chemist( "cackling_chemist", &p,
+                      []( priest_t* priest ) { return new pets::cackling_chemist_t( priest ); } )
 {
   auto void_tendril_spell = p.find_spell( 193473 );
   // Add 1ms to ensure pet is dismissed after last dot tick.
