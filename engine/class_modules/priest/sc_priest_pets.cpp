@@ -533,15 +533,6 @@ struct rattling_mage_unholy_bolt_t final : public priest_pet_spell_t
       auto first_pet_action = first_pet->find_action( name_str );
       if ( first_pet_action )
       {
-        if ( stats == first_pet_action->stats )
-        {
-          // This is the first pet created. Add its stat as a child to priest unholy_bolt
-          auto owner_unholy_bolt_action = p.o().find_action( "unholy_bolt" );
-          if ( owner_unholy_bolt_action )
-          {
-            owner_unholy_bolt_action->add_child( this );
-          }
-        }
         if ( !sim->report_pets_separately )
         {
           stats = first_pet_action->stats;
@@ -565,8 +556,11 @@ struct rattling_mage_unholy_bolt_t final : public priest_pet_spell_t
 
 struct cackling_chemist_throw_viscous_concoction_t final : public priest_pet_spell_t
 {
+  propagate_const<buff_t*> rigor_mortis_buff;
+
   cackling_chemist_throw_viscous_concoction_t( priest_pallid_command_t& p )
-    : priest_pet_spell_t( "throw_viscous_concoction", p, p.o().find_spell( 356633 ) )
+    : priest_pet_spell_t( "throw_viscous_concoction", p, p.o().find_spell( 356633 ) ),
+      rigor_mortis_buff( p.o().buffs.rigor_mortis )
   {
     auto first_pet = p.o().find_pet( p.name_str );
     if ( first_pet )
@@ -574,21 +568,24 @@ struct cackling_chemist_throw_viscous_concoction_t final : public priest_pet_spe
       auto first_pet_action = first_pet->find_action( name_str );
       if ( first_pet_action )
       {
-        if ( stats == first_pet_action->stats )
-        {
-          // This is the first pet created. Add its stat as a child to priest throw_viscous_concoction
-          auto owner_throw_viscous_concoction_action = p.o().find_action( "throw_viscous_concoction" );
-          if ( owner_throw_viscous_concoction_action )
-          {
-            owner_throw_viscous_concoction_action->add_child( this );
-          }
-        }
         if ( !sim->report_pets_separately )
         {
           stats = first_pet_action->stats;
         }
       }
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_pet_spell_t::composite_da_multiplier( s );
+
+    if ( rigor_mortis_buff->check() )
+    {
+      m *= 1 + ( rigor_mortis_buff->current_stack * rigor_mortis_buff->data().effectN( 2 ).percent() );
+    }
+
+    return m;
   }
 };
 

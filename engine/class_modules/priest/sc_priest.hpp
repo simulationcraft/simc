@@ -875,13 +875,14 @@ struct priest_spell_t : public priest_action_t<spell_t>
           }
         }
 
-        // Unholy Transfusion leech healing
         if ( td && td->dots.unholy_transfusion->is_ticking() )
         {
           priest().trigger_unholy_transfusion_healing();
 
           if ( priest().legendary.pallid_command->ok() )
           {
+            // TODO: need to test how quickly you gain stacks solo/dungeon/raid setting
+            // likely need some kind of option to control this
             priest().buffs.rigor_mortis->trigger();
           }
         }
