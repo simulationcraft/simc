@@ -478,8 +478,11 @@ struct priest_pallid_command_t : public priest_pet_t
   {
   }
 
-  // TODO on expiration need to
-  // owner().buffs.rigor_mortis->expire()
+  void demise() override
+  {
+    priest_pet_t::demise();
+    o().buffs.rigor_mortis->expire();
+  }
 
   action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
@@ -917,6 +920,10 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   auto void_lasher_spell = p.find_spell( 336216 );
   // Add 1ms to ensure pet is dismissed after last dot tick.
   void_lasher.set_default_duration( void_lasher_spell->duration() + timespan_t::from_millis( 1 ) );
+
+  timespan_t rigor_mortis_duration = p.find_spell( 356467 )->duration();
+  rattling_mage.set_default_duration( rigor_mortis_duration );
+  cackling_chemist.set_default_duration( rigor_mortis_duration );
 }
 
 }  // namespace priestspace
