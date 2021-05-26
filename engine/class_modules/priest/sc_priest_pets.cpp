@@ -9,6 +9,57 @@
 
 #include "simulationcraft.hpp"
 
+namespace
+{
+// Merge pet stats with the same action from other pets, as well as with the owners action responsible for triggering
+// this pet action.
+void merge_pet_stats_to_owner_action( player_t& owner, pet_t& pet, action_t& action,
+                                      util::string_view owner_action_name )
+{
+  auto first_pet = owner.find_pet( pet.name_str );
+  if ( first_pet )
+  {
+    auto first_pet_action = first_pet->find_action( action.name_str );
+    if ( first_pet_action )
+    {
+      if ( action.stats == first_pet_action->stats )
+      {
+        // This is the first pet created. Add its stat as a child to priest action associated with triggering this pet
+        // spell
+        auto owner_action = owner.find_action( owner_action_name );
+        if ( owner_action )
+        {
+          owner_action->add_child( &action );
+        }
+      }
+      if ( !owner.sim->report_pets_separately )
+      {
+        action.stats = first_pet_action->stats;
+      }
+    }
+  }
+}
+
+// Merge pet stats with the same action from other pets
+void merge_pet_stats( player_t& owner, pet_t& pet, action_t& action )
+{
+  if ( !owner.sim->report_pets_separately )
+  {
+    auto first_pet = owner.find_pet( pet.name_str );
+    if ( first_pet )
+    {
+      auto first_pet_action = first_pet->find_action( action.name_str );
+      if ( first_pet_action )
+      {
+        {
+          action.stats = first_pet_action->stats;
+        }
+      }
+    }
+  }
+}
+}  // namespace
+
 namespace priestspace
 {
 namespace pets
@@ -387,7 +438,7 @@ struct shadowflame_rift_t final : public priest_pet_spell_t
   {
     background                 = true;
     affected_by_shadow_weaving = true;
-    
+
     // This is hard coded in the spell
     // Depending on Mindbender or Shadowfiend this hits differently
     switch ( p.pet_type )
@@ -471,6 +522,130 @@ action_t* base_fiend_pet_t::create_action( util::string_view name, const std::st
 
 }  // namespace fiend
 
+struct priest_pallid_command_t : public priest_pet_t
+{
+  priest_pallid_command_t( priest_t* owner, util::string_view pet_name, pet_e pet )
+    : priest_pet_t( owner->sim, *owner, pet_name, pet, true )
+  {
+  }
+
+  void demise() override
+  {
+    priest_pet_t::demise();
+    o().buffs.rigor_mortis->expire();
+  }
+
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
+};
+
+struct rattling_mage_t final : public priest_pallid_command_t
+{
+  rattling_mage_t( priest_t* owner ) : priest_pallid_command_t( owner, "rattling_mage", PET_RATTLING_MAGE )
+  {
+  }
+
+  void init_action_list() override
+  {
+    priest_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "unholy_bolt" );
+  }
+};
+
+struct cackling_chemist_t final : public priest_pallid_command_t
+{
+  cackling_chemist_t( priest_t* owner ) : priest_pallid_command_t( owner, "cackling_chemist", PET_CACKLING_CHEMIST )
+  {
+  }
+
+  void init_action_list() override
+  {
+    priest_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "throw_viscous_concoction" );
+  }
+};
+
+struct rattling_mage_unholy_bolt_t final : public priest_pet_spell_t
+{
+  propagate_const<buff_t*> rigor_mortis_buff;
+
+  rattling_mage_unholy_bolt_t( priest_pallid_command_t& p, util::string_view options )
+    : priest_pet_spell_t( "unholy_bolt", p, p.o().find_spell( 356431 ) ), rigor_mortis_buff( p.o().buffs.rigor_mortis )
+  {
+    // TODO: add bug report
+    affected_by_shadow_weaving = false;
+    parse_options( options );
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_pet_spell_t::composite_da_multiplier( s );
+
+    if ( rigor_mortis_buff->check() )
+    {
+      m *= 1 + ( rigor_mortis_buff->current_stack * rigor_mortis_buff->data().effectN( 2 ).percent() );
+    }
+
+    return m;
+  }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats( p().o(), p(), *this );
+  }
+};
+
+struct cackling_chemist_throw_viscous_concoction_t final : public priest_pet_spell_t
+{
+  propagate_const<buff_t*> rigor_mortis_buff;
+
+  cackling_chemist_throw_viscous_concoction_t( priest_pallid_command_t& p, util::string_view options )
+    : priest_pet_spell_t( "throw_viscous_concoction", p, p.o().find_spell( 356633 ) ),
+      rigor_mortis_buff( p.o().buffs.rigor_mortis )
+  {
+    parse_options( options );
+  }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats( p().o(), p(), *this );
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_pet_spell_t::composite_da_multiplier( s );
+
+    if ( rigor_mortis_buff->check() )
+    {
+      m *= 1 + ( rigor_mortis_buff->current_stack * rigor_mortis_buff->data().effectN( 2 ).percent() );
+    }
+
+    return m;
+  }
+};
+
+action_t* priest_pallid_command_t::create_action( util::string_view name, const std::string& options_str )
+{
+  if ( name == "unholy_bolt" )
+  {
+    return new rattling_mage_unholy_bolt_t( *this, options_str );
+  }
+
+  if ( name == "throw_viscous_concoction" )
+  {
+    return new cackling_chemist_throw_viscous_concoction_t( *this, options_str );
+  }
+
+  return priest_pet_t::create_action( name, options_str );
+};
+
 struct void_tendril_t final : public priest_pet_t
 {
   void_tendril_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "void_tendril", PET_VOID_TENDRIL, true )
@@ -499,29 +674,13 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     channeled                  = true;
     hasted_ticks               = false;
     affected_by_shadow_weaving = true;
+  }
 
-    // Merge the stats object with other instances of the pet
-    auto first_pet = p.o().find_pet( p.name_str );
-    if ( first_pet )
-    {
-      auto first_pet_action = first_pet->find_action( name_str );
-      if ( first_pet_action )
-      {
-        if ( stats == first_pet_action->stats )
-        {
-          // This is the first pet created. Add its stat as a child to priest mind_flay
-          auto owner_ecttv_action = p.o().find_action( "eternal_call_to_the_void" );
-          if ( owner_ecttv_action )
-          {
-            owner_ecttv_action->add_child( this );
-          }
-        }
-        if ( !sim->report_pets_separately )
-        {
-          stats = first_pet_action->stats;
-        }
-      }
-    }
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats_to_owner_action( p().o(), p(), *this, "eternal_call_to_the_void" );
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -615,29 +774,13 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
     channeled    = true;
     hasted_ticks = false;
     tick_action  = new void_lasher_mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
+  }
 
-    // Merge the stats object with other instances of the pet
-    auto first_pet = p.o().find_pet( p.name_str );
-    if ( first_pet )
-    {
-      auto first_pet_action = first_pet->find_action( name_str );
-      if ( first_pet_action )
-      {
-        if ( stats == first_pet_action->stats )
-        {
-          // This is the first pet created. Add its stat as a child to priest mind_sear
-          auto owner_ecttv_action = p.o().find_action( "eternal_call_to_the_void" );
-          if ( owner_ecttv_action )
-          {
-            owner_ecttv_action->add_child( this );
-          }
-        }
-        if ( !sim->report_pets_separately )
-        {
-          stats = first_pet_action->stats;
-        }
-      }
-    }
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats_to_owner_action( p().o(), p(), *this, "eternal_call_to_the_void" );
   }
 };
 
@@ -772,7 +915,10 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   : shadowfiend(),
     mindbender(),
     void_tendril( "void_tendril", &p, []( priest_t* priest ) { return new pets::void_tendril_t( priest ); } ),
-    void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new pets::void_lasher_t( priest ); } )
+    void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new pets::void_lasher_t( priest ); } ),
+    rattling_mage( "rattling_mage", &p, []( priest_t* priest ) { return new pets::rattling_mage_t( priest ); } ),
+    cackling_chemist( "cackling_chemist", &p,
+                      []( priest_t* priest ) { return new pets::cackling_chemist_t( priest ); } )
 {
   auto void_tendril_spell = p.find_spell( 193473 );
   // Add 1ms to ensure pet is dismissed after last dot tick.
@@ -781,6 +927,10 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   auto void_lasher_spell = p.find_spell( 336216 );
   // Add 1ms to ensure pet is dismissed after last dot tick.
   void_lasher.set_default_duration( void_lasher_spell->duration() + timespan_t::from_millis( 1 ) );
+
+  timespan_t rigor_mortis_duration = p.find_spell( 356467 )->duration();
+  rattling_mage.set_default_duration( rigor_mortis_duration );
+  cackling_chemist.set_default_duration( rigor_mortis_duration );
 }
 
 }  // namespace priestspace

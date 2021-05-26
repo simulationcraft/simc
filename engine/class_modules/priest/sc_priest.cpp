@@ -557,6 +557,23 @@ struct unholy_nova_t final : public priest_spell_t
       child_unholy_nova_healing->execute();
     }
 
+    if ( priest().legendary.pallid_command->ok() )
+    {
+      if ( priest().specialization() == PRIEST_SHADOW )
+      {
+        auto spawned_pets = priest().pets.rattling_mage.spawn();
+      }
+      else if ( priest().specialization() == PRIEST_DISCIPLINE )
+      {
+        auto spawned_pets = priest().pets.cackling_chemist.spawn();
+      }
+      else
+      {
+        sim->print_debug( "{} in current spec: {} does not have support for Pallid Command.", priest(),
+                          priest().specialization() );
+      }
+    }
+
     priest_spell_t::impact( s );
   }
 };
@@ -1294,6 +1311,20 @@ private:
     return modifier;
   }
 };
+
+struct rigor_mortis_t final : public priest_buff_t<buff_t>
+{
+  timespan_t rigor_mortis_duration;
+  rigor_mortis_t( priest_t& p )
+    : base_t( p, "rigor_mortis", p.find_spell( 357165 ) ),
+      rigor_mortis_duration( p.find_spell( 356467 )->duration() )
+  {
+    // 1st effect is for healing
+    set_default_value_from_effect( 2 );
+    // Duration is in the legendary spell itself, base aura is infinite
+    set_duration( rigor_mortis_duration );
+  }
+};
 }  // namespace buffs
 
 namespace items
@@ -1851,6 +1882,7 @@ void priest_t::init_spells()
   legendary.bwonsamdis_pact            = find_runeforge_legendary( "Bwonsamdi's Pact" );
   legendary.shadow_word_manipulation   = find_runeforge_legendary( "Shadow Word: Manipulation" );
   legendary.spheres_harmony            = find_runeforge_legendary( "Spheres' Harmony" );
+  legendary.pallid_command             = find_runeforge_legendary( "Pallid Command" );
   // Disc legendaries
   legendary.kiss_of_death    = find_runeforge_legendary( "Kiss of Death" );
   legendary.the_penitent_one = find_runeforge_legendary( "The Penitent One" );
@@ -1904,6 +1936,7 @@ void priest_t::create_buffs()
   buffs.shadow_word_manipulation = make_buff( this, "shadow_word_manipulation", find_spell( 357028 ) )
                                        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
                                        ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
+  buffs.rigor_mortis = make_buff<buffs::rigor_mortis_t>( *this );
 
   // Covenant Buffs
   buffs.fae_guardians        = make_buff<buffs::fae_guardians_t>( *this );
