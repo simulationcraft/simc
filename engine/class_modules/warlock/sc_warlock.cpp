@@ -696,13 +696,13 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
     if ( td->debuffs_haunt->check() )
       m *= 1.0 + td->debuffs_haunt->check_value();
 	  
-	if ( !is_ptr() || conduit.cold_embrace.ok() )
+	if ( !min_version_check( VERSION_9_1_0 ) )
     {
       m *= 1.0 + ( ( td->debuffs_shadow_embrace->check_value() ) * ( 1 + conduit.cold_embrace.percent() )
            * td->debuffs_shadow_embrace->check() );
     }
 
-    if ( is_ptr() && talents.shadow_embrace->ok() )
+    if ( min_version_check( VERSION_9_1_0 ) && talents.shadow_embrace->ok() )
     {
       m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value();
     }
@@ -758,7 +758,7 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
 {
   double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
 
-  if ( !is_ptr() )
+  if ( !min_version_check( VERSION_9_1_0 ) )
     return m;
 
   const warlock_td_t* td = get_target_data( target );
@@ -770,13 +770,7 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
       m *= 1.0 + td->debuffs_haunt->data().effectN( guardian ? 4 : 3 ).percent();
     }
 
-    if ( !is_ptr() || conduit.cold_embrace.ok() )
-    {
-      m *= 1.0 + ( ( td->debuffs_shadow_embrace->check_value() ) * ( 1 + conduit.cold_embrace.percent() )
-           * td->debuffs_shadow_embrace->check() );
-    }
-
-    if ( is_ptr() && talents.shadow_embrace->ok() )
+    if ( talents.shadow_embrace->ok() )
     {
       m *= 1.0 + td->debuffs_shadow_embrace->data().effectN( guardian ? 3 : 2 ).percent();
     }
@@ -998,6 +992,8 @@ void warlock_t::init_spells()
   // General
   spec.nethermancy = find_spell( 86091 );
   spec.demonic_embrace = find_spell( 288843 );
+
+  version_9_1_0_data = find_spell( 356342 ); //For 9.1 PTR version checking, Shard of Annihilation data
 
   // Specialization Spells
   spec.immolate         = find_specialization_spell( "Immolate" );
@@ -1390,6 +1386,28 @@ void warlock_t::malignancy_reduction_helper()
     procs.corrupting_leer->occur();
     cooldowns.darkglare->adjust( -5.0_s );  // Value is in the description so had to hardcode it
   }
+}
+
+// Use this as a helper function when two versions are needed simultaneously (ie a PTR cycle)
+// It must be adjusted manually over time, and any use of it should be removed once a patch goes live
+// Returns TRUE if actor's dbc version >= version specified
+// When checking VERSION_PTR, will only return true if PTR dbc is being used, regardless of version number
+bool warlock_t::min_version_check( version_check_e version ) const
+{
+  //If we ever get a full DBC version string checker, replace these returns with that function
+  switch ( version )
+  {
+    case VERSION_PTR:
+      return is_ptr();
+    case VERSION_9_1_0:
+      return !( version_9_1_0_data == spell_data_t::not_found() );
+    case VERSION_9_0_5:
+    case VERSION_9_0_0:
+    case VERSION_ANY:
+      return true;
+  }
+
+  return false;
 }
 
 // Function for returning the the number of imps that will spawn in a specified time period.

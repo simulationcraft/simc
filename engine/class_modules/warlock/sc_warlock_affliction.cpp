@@ -106,7 +106,7 @@ struct shadow_bolt_t : public affliction_spell_t
   void impact( action_state_t* s ) override
   {
     affliction_spell_t::impact( s );
-    if ( result_is_hit( s->result ) && ( !p()->is_ptr() || p()->talents.shadow_embrace->ok() ) )
+    if ( result_is_hit( s->result ) && ( !p()->min_version_check( VERSION_9_1_0 ) || p()->talents.shadow_embrace->ok() ) )
     {
       // Add passive check
       td( s->target )->debuffs_shadow_embrace->trigger();
@@ -369,10 +369,9 @@ struct summon_darkglare_t : public affliction_spell_t
     parse_options( options_str );
     harmful = may_crit = may_miss = false;
 
-    if ( !p->is_ptr() )
+    if ( !p->min_version_check( VERSION_9_1_0 ) )
       cooldown->duration += timespan_t::from_millis( p->talents.dark_caller->effectN( 1 ).base_value() );
-
-    if ( p->spec.dark_caller->ok() )
+    else if ( p->spec.dark_caller->ok() )
       cooldown->duration += timespan_t::from_millis( p->spec.dark_caller->effectN( 1 ).base_value() );
   }
 
@@ -600,7 +599,7 @@ struct drain_soul_t : public affliction_spell_t
   void tick( dot_t* d ) override
   {
     affliction_spell_t::tick( d );
-    if ( result_is_hit( d->state->result ) && ( !p()->is_ptr() || p()->talents.shadow_embrace->ok() ) )
+    if ( result_is_hit( d->state->result ) && ( !p()->min_version_check( VERSION_9_1_0 ) || p()->talents.shadow_embrace->ok() ) )
     {
       // TODO - Add passive check
       td( d->target )->debuffs_shadow_embrace->trigger();
@@ -648,7 +647,7 @@ struct haunt_t : public affliction_spell_t
       td( s->target )->debuffs_haunt->trigger();
     }
 
-    if ( !p()->is_ptr() )
+    if ( !p()->min_version_check( VERSION_9_1_0 ) )
       td( s->target )->debuffs_shadow_embrace->trigger();
   }
 };
