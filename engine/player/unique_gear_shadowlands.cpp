@@ -1930,7 +1930,25 @@ void murmurs_in_the_dark( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// Weapons
+
+  // 9.1 Trinkets
+
+// id=356029 buff
+// id=353492 driver
+void forbidden_necromantic_tome( special_effect_t& effect )  // NYI: Battle Rezz Ghoul
+{
+  auto buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "forbidden_knowledge" ) );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "forbidden_knowledge", effect.player -> find_spell( 356029 ))
+           ->add_stat( STAT_CRIT_RATING, effect.driver() ->effectN( 1 ).average( effect.item ) );
+    
+    effect.custom_buff = buff;
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+}
+
+  // Weapons
 
 // id=331011 driver
 // id=331016 DoT proc debuff
@@ -2154,6 +2172,9 @@ void register_special_effects()
     unique_gear::register_special_effect( 336182, items::tablet_of_despair );
     unique_gear::register_special_effect( 329536, items::rotbriar_sprout );
     unique_gear::register_special_effect( 339343, items::murmurs_in_the_dark );
+
+    // 9.1 Trinkets
+    unique_gear::register_special_effect( 353492, items::forbidden_necromantic_tome );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
