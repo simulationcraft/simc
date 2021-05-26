@@ -572,11 +572,12 @@ struct rattling_mage_unholy_bolt_t final : public priest_pet_spell_t
 {
   propagate_const<buff_t*> rigor_mortis_buff;
 
-  rattling_mage_unholy_bolt_t( priest_pallid_command_t& p )
+  rattling_mage_unholy_bolt_t( priest_pallid_command_t& p, util::string_view options )
     : priest_pet_spell_t( "unholy_bolt", p, p.o().find_spell( 356431 ) ), rigor_mortis_buff( p.o().buffs.rigor_mortis )
   {
     // TODO: add bug report
     affected_by_shadow_weaving = false;
+    parse_options( options );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -603,10 +604,11 @@ struct cackling_chemist_throw_viscous_concoction_t final : public priest_pet_spe
 {
   propagate_const<buff_t*> rigor_mortis_buff;
 
-  cackling_chemist_throw_viscous_concoction_t( priest_pallid_command_t& p )
+  cackling_chemist_throw_viscous_concoction_t( priest_pallid_command_t& p, util::string_view options )
     : priest_pet_spell_t( "throw_viscous_concoction", p, p.o().find_spell( 356633 ) ),
       rigor_mortis_buff( p.o().buffs.rigor_mortis )
   {
+    parse_options( options );
   }
 
   void init() override
@@ -633,12 +635,12 @@ action_t* priest_pallid_command_t::create_action( util::string_view name, const 
 {
   if ( name == "unholy_bolt" )
   {
-    return new rattling_mage_unholy_bolt_t( *this );
+    return new rattling_mage_unholy_bolt_t( *this, options_str );
   }
 
   if ( name == "throw_viscous_concoction" )
   {
-    return new cackling_chemist_throw_viscous_concoction_t( *this );
+    return new cackling_chemist_throw_viscous_concoction_t( *this, options_str );
   }
 
   return priest_pet_t::create_action( name, options_str );
