@@ -562,11 +562,20 @@ void warlock_td_t::target_demise()
 
   if ( debuffs_shadowburn->check() )
   {
-    warlock.sim->print_log( "Player {} demised. Warlock {} reset Shadowburn's cooldown.", target->name(),
+    if ( warlock.min_version_check( VERSION_9_1_0 ) )
+    {
+      warlock.sim->print_log( "Player {} demised. Warlock {} refunds one charge of Shadowburn.", target->name(),
                             warlock.name() );
+      
+      warlock.cooldowns.shadowburn->reset( true );
+    }
+    else
+    {
+      warlock.sim->print_log( "Player {} demised. Warlock {} gains 1 shard from Shadowburn.", target->name(), warlock.name() );
 
-    warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.find_spell( 245731 )->effectN( 1 ).base_value() / 10,
+      warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.find_spell( 245731 )->effectN( 1 ).base_value() / 10,
                            warlock.gains.shadowburn_refund );
+    }
   }
 
   if ( dots_agony->is_ticking() && warlock.legendary.wrath_of_consumption.ok() )
@@ -663,6 +672,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.demonic_tyrant      = get_cooldown( "summon_demonic_tyrant" );
   cooldowns.scouring_tithe      = get_cooldown( "scouring_tithe" );
   cooldowns.infernal            = get_cooldown( "summon_infernal" );
+  cooldowns.shadowburn          = get_cooldown( "shadowburn" );
 
   resource_regeneration             = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ]       = true;

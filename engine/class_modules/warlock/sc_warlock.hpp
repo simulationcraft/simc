@@ -321,6 +321,7 @@ public:
     propagate_const<cooldown_t*> demonic_tyrant;
     propagate_const<cooldown_t*> scouring_tithe;
     propagate_const<cooldown_t*> infernal;
+    propagate_const<cooldown_t*> shadowburn;
   } cooldowns;
 
   //TODO: this struct is supposedly for passives per the comment here, but that is potentially outdated. Consider refactoring and reorganizing ALL of this.
