@@ -1935,7 +1935,7 @@ void priest_t::create_buffs()
   buffs.shadow_word_manipulation = make_buff( this, "shadow_word_manipulation", find_spell( 357028 ) )
                                        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
                                        ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
-  buffs.rigor_mortis = make_buff<buffs::rigor_mortis_t>( *this );
+  buffs.rigor_mortis = make_buff<buffs::rigor_mortis_t>( *this )->set_default_value_from_effect( 2 );
 
   // Covenant Buffs
   buffs.fae_guardians        = make_buff<buffs::fae_guardians_t>( *this );

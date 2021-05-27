@@ -145,7 +145,7 @@ struct priest_pet_melee_t : public melee_attack_t
   {
     double mul = attack_t::composite_target_multiplier( target );
 
-    mul *= debug_cast<priest_t*>( debug_cast<priest_pet_t*>( player )->owner )->shadow_weaving_multiplier( target, 0 );
+    mul *= p().o().shadow_weaving_multiplier( target, 0 );
 
     return mul;
   }
@@ -164,6 +164,15 @@ struct priest_pet_melee_t : public melee_attack_t
     melee_attack_t::schedule_execute( state );
 
     first_swing = false;
+  }
+
+  priest_pet_t& p()
+  {
+    return static_cast<priest_pet_t&>( *player );
+  }
+  const priest_pet_t& p() const
+  {
+    return static_cast<priest_pet_t&>( *player );
   }
 };
 
@@ -239,7 +248,11 @@ struct base_fiend_pet_t : public priest_pet_t
   double direct_power_mod;
 
   base_fiend_pet_t( sim_t* sim, priest_t& owner, util::string_view name, enum fiend_type type )
-    : priest_pet_t( sim, owner, name), shadowflame_prism( nullptr ), gains(), fiend_type( type ), direct_power_mod( 0.0 )    
+    : priest_pet_t( sim, owner, name ),
+      shadowflame_prism( nullptr ),
+      gains(),
+      fiend_type( type ),
+      direct_power_mod( 0.0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
@@ -339,6 +352,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
     double m = mindbender_spell->effectN( 1 ).percent();
     return m / 100;
   }
+
   double insanity_gain() const override
   {
     return power_leech_insanity;
@@ -410,12 +424,11 @@ struct fiend_melee_t : public priest_pet_melee_t
       if ( p().o().specialization() == PRIEST_SHADOW )
       {
         double amount = p().insanity_gain();
-        if ( p().o().buffs.surrender_to_madness->up() )
+        if ( p().o().buffs.surrender_to_madness->check() )
         {
-          p().o().resource_gain(
-              RESOURCE_INSANITY,
-              ( amount * ( 1.0 + p().o().talents.surrender_to_madness->effectN( 2 ).percent() ) ) - amount,
-              p().o().gains.insanity_surrender_to_madness );
+          p().o().resource_gain( RESOURCE_INSANITY,
+                                 amount * p().o().talents.surrender_to_madness->effectN( 2 ).percent(),
+                                 p().o().gains.insanity_surrender_to_madness );
         }
         p().o().resource_gain( RESOURCE_INSANITY, amount, p().gains.fiend, nullptr );
       }
@@ -587,10 +600,7 @@ struct rattling_mage_unholy_bolt_t final : public priest_pet_spell_t
   {
     double m = priest_pet_spell_t::composite_da_multiplier( s );
 
-    if ( rigor_mortis_buff->check() )
-    {
-      m *= 1 + ( rigor_mortis_buff->current_stack * rigor_mortis_buff->data().effectN( 2 ).percent() );
-    }
+    m *= 1 + rigor_mortis_buff->check_stack_value();
 
     return m;
   }
@@ -625,10 +635,7 @@ struct cackling_chemist_throw_viscous_concoction_t final : public priest_pet_spe
   {
     double m = priest_pet_spell_t::composite_da_multiplier( s );
 
-    if ( rigor_mortis_buff->check() )
-    {
-      m *= 1 + ( rigor_mortis_buff->current_stack * rigor_mortis_buff->data().effectN( 2 ).percent() );
-    }
+    m *= 1 + rigor_mortis_buff->check_stack_value();
 
     return m;
   }
@@ -668,12 +675,13 @@ struct void_tendril_t final : public priest_pet_t
 
 struct void_tendril_mind_flay_t final : public priest_pet_spell_t
 {
-  const spell_data_t* void_tendril_insanity;
+  double void_tendril_insanity_gain;
 
-  void_tendril_mind_flay_t( void_tendril_t& p )
+  void_tendril_mind_flay_t( void_tendril_t& p, util::string_view options )
     : priest_pet_spell_t( "mind_flay", p, p.o().find_spell( 193473 ) ),
-      void_tendril_insanity( p.o().find_spell( 336214 ) )
+      void_tendril_insanity_gain( p.o().find_spell( 336214 )->effectN( 1 ).base_value() )
   {
+    parse_options( options );
     channeled                  = true;
     hasted_ticks               = false;
     affected_by_shadow_weaving = true;
@@ -702,8 +710,8 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::tick( d );
 
-    p().o().generate_insanity( void_tendril_insanity->effectN( 1 ).base_value(),
-                               p().o().gains.insanity_eternal_call_to_the_void_mind_flay, d->state->action );
+    p().o().generate_insanity( void_tendril_insanity_gain, p().o().gains.insanity_eternal_call_to_the_void_mind_flay,
+                               d->state->action );
   }
 };
 
@@ -711,7 +719,7 @@ action_t* void_tendril_t::create_action( util::string_view name, const std::stri
 {
   if ( name == "mind_flay" )
   {
-    return new void_tendril_mind_flay_t( *this );
+    return new void_tendril_mind_flay_t( *this, options_str );
   }
 
   return priest_pet_t::create_action( name, options_str );
@@ -736,11 +744,11 @@ struct void_lasher_t final : public priest_pet_t
 
 struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
 {
-  const double void_lasher_insanity;
+  const double void_lasher_insanity_gain;
 
   void_lasher_mind_sear_tick_t( void_lasher_t& p, const spell_data_t* s )
     : priest_pet_spell_t( "mind_sear_tick", p, s ),
-      void_lasher_insanity( p.o().find_spell( 208232 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+      void_lasher_insanity_gain( p.o().find_spell( 208232 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     background = true;
     dual       = true;
@@ -765,15 +773,17 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::impact( s );
 
-    p().o().generate_insanity( void_lasher_insanity, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
+    p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
                                s->action );
   }
 };
 
 struct void_lasher_mind_sear_t final : public priest_pet_spell_t
 {
-  void_lasher_mind_sear_t( void_lasher_t& p ) : priest_pet_spell_t( "mind_sear", p, p.o().find_spell( 344754 ) )
+  void_lasher_mind_sear_t( void_lasher_t& p, util::string_view options )
+    : priest_pet_spell_t( "mind_sear", p, p.o().find_spell( 344754 ) )
   {
+    parse_options( options );
     channeled    = true;
     hasted_ticks = false;
     tick_action  = new void_lasher_mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
@@ -791,7 +801,7 @@ action_t* void_lasher_t::create_action( util::string_view name, const std::strin
 {
   if ( name == "mind_sear" )
   {
-    return new void_lasher_mind_sear_t( *this );
+    return new void_lasher_mind_sear_t( *this, options_str );
   }
 
   return priest_pet_t::create_action( name, options_str );
@@ -922,8 +932,7 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
     void_tendril( "void_tendril", &p, []( priest_t* priest ) { return new void_tendril_t( priest ); } ),
     void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new void_lasher_t( priest ); } ),
     rattling_mage( "rattling_mage", &p, []( priest_t* priest ) { return new rattling_mage_t( priest ); } ),
-    cackling_chemist( "cackling_chemist", &p,
-                      []( priest_t* priest ) { return new cackling_chemist_t( priest ); } )
+    cackling_chemist( "cackling_chemist", &p, []( priest_t* priest ) { return new cackling_chemist_t( priest ); } )
 {
   auto void_tendril_spell = p.find_spell( 193473 );
   // Add 1ms to ensure pet is dismissed after last dot tick.
@@ -933,7 +942,7 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   // Add 1ms to ensure pet is dismissed after last dot tick.
   void_lasher.set_default_duration( void_lasher_spell->duration() + timespan_t::from_millis( 1 ) );
 
-  timespan_t rigor_mortis_duration = p.find_spell( 356467 )->duration();
+  auto rigor_mortis_duration = p.find_spell( 356467 )->duration();
   rattling_mage.set_default_duration( rigor_mortis_duration );
   cackling_chemist.set_default_duration( rigor_mortis_duration );
 }
