@@ -478,7 +478,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                             ->set_default_value_from_effect( 1 );
   debuffs_roaring_blaze = make_buff( *this, "roaring_blaze", source->find_spell( 265931 ) );
-  debuffs_shadowburn    = make_buff( *this, "shadowburn", source->find_spell( 17877 ) );
+  debuffs_shadowburn    = make_buff( *this, "shadowburn", source->find_spell( 17877 ) )
+                              ->set_default_value( source->find_spell( 245731 )->effectN( 1 ).base_value() );
   debuffs_havoc         = make_buff( *this, "havoc", source->find_specialization_spell( 80240 ) )
                       ->set_duration( source->find_specialization_spell( 80240 )->duration() +
                                       source->find_specialization_spell( 335174 )->effectN( 1 ).time_value() )
@@ -569,13 +570,11 @@ void warlock_td_t::target_demise()
       
       warlock.cooldowns.shadowburn->reset( true );
     }
-    else
-    {
-      warlock.sim->print_log( "Player {} demised. Warlock {} gains 1 shard from Shadowburn.", target->name(), warlock.name() );
+   
+    warlock.sim->print_log( "Player {} demised. Warlock {} gains 1 shard from Shadowburn.", target->name(), warlock.name() );
 
-      warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.find_spell( 245731 )->effectN( 1 ).base_value() / 10,
+    warlock.resource_gain( RESOURCE_SOUL_SHARD, debuffs_shadowburn->check_value() / 10,
                            warlock.gains.shadowburn_refund );
-    }
   }
 
   if ( dots_agony->is_ticking() && warlock.legendary.wrath_of_consumption.ok() )
