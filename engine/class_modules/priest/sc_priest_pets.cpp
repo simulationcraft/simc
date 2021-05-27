@@ -575,7 +575,7 @@ struct rattling_mage_unholy_bolt_t final : public priest_pet_spell_t
   rattling_mage_unholy_bolt_t( priest_pallid_command_t& p, util::string_view options )
     : priest_pet_spell_t( "unholy_bolt", p, p.o().find_spell( 356431 ) ), rigor_mortis_buff( p.o().buffs.rigor_mortis )
   {
-    // TODO: add bug report
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/854
     affected_by_shadow_weaving = false;
     parse_options( options );
   }

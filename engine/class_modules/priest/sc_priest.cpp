@@ -1316,8 +1316,7 @@ struct rigor_mortis_t final : public priest_buff_t<buff_t>
 {
   timespan_t rigor_mortis_duration;
   rigor_mortis_t( priest_t& p )
-    : base_t( p, "rigor_mortis", p.find_spell( 357165 ) ),
-      rigor_mortis_duration( p.find_spell( 356467 )->duration() )
+    : base_t( p, "rigor_mortis", p.find_spell( 357165 ) ), rigor_mortis_duration( p.find_spell( 356467 )->duration() )
   {
     // 1st effect is for healing
     set_default_value_from_effect( 2 );
@@ -2146,6 +2145,7 @@ void priest_t::create_options()
   add_option( opt_string( "priest.bwonsamdis_pact_mask_type", options.bwonsamdis_pact_mask_type ) );
   add_option( opt_int( "priest.shadow_word_manipulation_seconds_remaining",
                        options.shadow_word_manipulation_seconds_remaining, 0, 8 ) );
+  add_option( opt_int( "priest.pallid_command_allies", options.pallid_command_allies, 0, 50 ) );
 }
 
 std::string priest_t::create_profile( save_e type )

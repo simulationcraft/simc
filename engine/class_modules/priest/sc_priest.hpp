@@ -389,6 +389,13 @@ public:
     // Min: 0, Max: 8, Default: 7
     // Shattered Perception Conduit increase is handled outside of this
     int shadow_word_manipulation_seconds_remaining = 7;
+
+    // Pallid Command Allies
+    // Sets number of allies to use as an artificial modifier for Rigor Mortis stacks
+    // For each damage ability the priest will do it will add the amount of stacks equal
+    // to the number of allies
+    // TODO: tune this around raid testing
+    int pallid_command_allies = 5;
   } options;
 
   // Legendaries
@@ -879,11 +886,13 @@ struct priest_spell_t : public priest_action_t<spell_t>
         {
           priest().trigger_unholy_transfusion_healing();
 
-          if ( priest().legendary.pallid_command->ok() )
+          if ( priest().legendary.pallid_command->ok() && s->result_type == result_amount_type::DMG_DIRECT )
           {
-            // TODO: need to test how quickly you gain stacks solo/dungeon/raid setting
-            // likely need some kind of option to control this
-            priest().buffs.rigor_mortis->trigger();
+            // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/856
+            if ( priest().options.pallid_command_allies > 0 )
+            {
+              priest().buffs.rigor_mortis->trigger( priest().options.pallid_command_allies );
+            }
           }
         }
       }
