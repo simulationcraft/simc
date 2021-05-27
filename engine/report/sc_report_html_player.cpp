@@ -3524,16 +3524,16 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
     os << "<li><b>BETA activated</b></li>\n";
 #endif
   }
+  fmt::print( os, "<li><b>Race:</b> {}</li>\n", util::inverse_tokenize( p.race_str ) );
+
   const char* pt;
   if ( p.is_pet() )
+  {
     pt = util::pet_type_string( p.cast_pet()->pet_type );
+  }
   else
     pt = util::player_type_string( p.type );
-
-  os.printf( "<li><b>Race:</b> %s</li>\n"
-             "<li><b>Class:</b> %s</li>\n",
-             util::inverse_tokenize( p.race_str ).c_str(),
-             util::inverse_tokenize( pt ).c_str() );
+  fmt::print( os, "<li><b>Class:</b> {}</li>\n", util::inverse_tokenize( p.race_str ) );
 
   if ( p.specialization() != SPEC_NONE )
   {

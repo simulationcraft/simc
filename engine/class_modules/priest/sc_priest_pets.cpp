@@ -68,8 +68,8 @@ void merge_pet_stats( player_t& owner, pet_t& pet, action_t& action )
  */
 struct priest_pet_t : public pet_t
 {
-  priest_pet_t( sim_t* sim, priest_t& owner, util::string_view pet_name, pet_e pt, bool guardian = false )
-    : pet_t( sim, &owner, pet_name, pt, guardian )
+  priest_pet_t( sim_t* sim, priest_t& owner, util::string_view pet_name, bool guardian = false )
+    : pet_t( sim, &owner, pet_name, PET_NONE, guardian )
   {
   }
 
@@ -230,10 +230,16 @@ struct base_fiend_pet_t : public priest_pet_t
     propagate_const<gain_t*> fiend;
   } gains;
 
+  enum class fiend_type
+  {
+    Shadowfiend,
+    Mindbender
+  } fiend_type;
+
   double direct_power_mod;
 
-  base_fiend_pet_t( sim_t* sim, priest_t& owner, pet_e pt, util::string_view name )
-    : priest_pet_t( sim, owner, name, pt ), shadowflame_prism( nullptr ), gains(), direct_power_mod( 0.0 )
+  base_fiend_pet_t( sim_t* sim, priest_t& owner, util::string_view name, enum fiend_type type )
+    : priest_pet_t( sim, owner, name), shadowflame_prism( nullptr ), gains(), fiend_type( type ), direct_power_mod( 0.0 )    
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
@@ -258,9 +264,9 @@ struct base_fiend_pet_t : public priest_pet_t
     }
     else
     {
-      switch ( pet_type )
+      switch ( fiend_type )
       {
-        case PET_MINDBENDER:
+        case fiend_type::Mindbender:
         {
           gains.fiend = o().gains.mindbender;
         }
@@ -288,7 +294,7 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   double power_leech_insanity;
 
   shadowfiend_pet_t( sim_t* sim, priest_t& owner, util::string_view name = "shadowfiend" )
-    : base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name ),
+    : base_fiend_pet_t( sim, owner, name, fiend_type::Shadowfiend ),
       power_leech_insanity( o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     direct_power_mod = 0.408;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
@@ -316,7 +322,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
   double power_leech_insanity;
 
   mindbender_pet_t( sim_t* sim, priest_t& owner, util::string_view name = "mindbender" )
-    : base_fiend_pet_t( sim, owner, PET_MINDBENDER, name ),
+    : base_fiend_pet_t( sim, owner, name, fiend_type::Mindbender ),
       mindbender_spell( owner.find_spell( 123051 ) ),
       power_leech_insanity( o().find_spell( 200010 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
@@ -438,9 +444,9 @@ struct shadowflame_rift_t final : public priest_pet_spell_t
 
     // This is hard coded in the spell
     // Depending on Mindbender or Shadowfiend this hits differently
-    switch ( p.pet_type )
+    switch ( p.fiend_type )
     {
-      case PET_MINDBENDER:
+      case base_fiend_pet_t::fiend_type::Mindbender:
       {
         spell_power_mod.direct *= 0.442;
       }
@@ -521,8 +527,8 @@ action_t* base_fiend_pet_t::create_action( util::string_view name, const std::st
 
 struct priest_pallid_command_t : public priest_pet_t
 {
-  priest_pallid_command_t( priest_t* owner, util::string_view pet_name, pet_e pet )
-    : priest_pet_t( owner->sim, *owner, pet_name, pet, true )
+  priest_pallid_command_t( priest_t* owner, util::string_view pet_name )
+    : priest_pet_t( owner->sim, *owner, pet_name, true )
   {
   }
 
@@ -537,7 +543,7 @@ struct priest_pallid_command_t : public priest_pet_t
 
 struct rattling_mage_t final : public priest_pallid_command_t
 {
-  rattling_mage_t( priest_t* owner ) : priest_pallid_command_t( owner, "rattling_mage", PET_RATTLING_MAGE )
+  rattling_mage_t( priest_t* owner ) : priest_pallid_command_t( owner, "rattling_mage" )
   {
   }
 
@@ -552,7 +558,7 @@ struct rattling_mage_t final : public priest_pallid_command_t
 
 struct cackling_chemist_t final : public priest_pallid_command_t
 {
-  cackling_chemist_t( priest_t* owner ) : priest_pallid_command_t( owner, "cackling_chemist", PET_CACKLING_CHEMIST )
+  cackling_chemist_t( priest_t* owner ) : priest_pallid_command_t( owner, "cackling_chemist" )
   {
   }
 
@@ -645,7 +651,7 @@ action_t* priest_pallid_command_t::create_action( util::string_view name, const 
 
 struct void_tendril_t final : public priest_pet_t
 {
-  void_tendril_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "void_tendril", PET_VOID_TENDRIL, true )
+  void_tendril_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "void_tendril", true )
   {
   }
 
@@ -713,7 +719,7 @@ action_t* void_tendril_t::create_action( util::string_view name, const std::stri
 
 struct void_lasher_t final : public priest_pet_t
 {
-  void_lasher_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "void_lasher", PET_VOID_LASHER, true )
+  void_lasher_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "void_lasher", true )
   {
   }
 
