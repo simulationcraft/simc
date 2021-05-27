@@ -9,6 +9,8 @@
 
 #include "simulationcraft.hpp"
 
+using namespace priestspace;
+
 namespace
 {
 // Merge pet stats with the same action from other pets, as well as with the owners action responsible for triggering
@@ -58,12 +60,7 @@ void merge_pet_stats( player_t& owner, pet_t& pet, action_t& action )
     }
   }
 }
-}  // namespace
 
-namespace priestspace
-{
-namespace pets
-{
 /**
  * Pet base class
  *
@@ -794,8 +791,18 @@ action_t* void_lasher_t::create_action( util::string_view name, const std::strin
   return priest_pet_t::create_action( name, options_str );
 }
 
-}  // namespace pets
+// Returns mindbender or shadowfiend, depending on talent choice. The returned pointer can be null if no fiend is
+// summoned through the action list, so please check for null.
+fiend::base_fiend_pet_t* get_current_main_pet( priest_t& priest )
+{
+  pet_t* current_main_pet = priest.talents.mindbender->ok() ? priest.pets.mindbender : priest.pets.shadowfiend;
+  return debug_cast<fiend::base_fiend_pet_t*>( current_main_pet );
+}
 
+}  // namespace
+
+namespace priestspace
+{
 pet_t* priest_t::create_pet( util::string_view pet_name, util::string_view /* pet_type */ )
 {
   pet_t* p = find_pet( pet_name );
@@ -805,24 +812,16 @@ pet_t* priest_t::create_pet( util::string_view pet_name, util::string_view /* pe
 
   if ( pet_name == "shadowfiend" )
   {
-    return new pets::fiend::shadowfiend_pet_t( sim, *this );
+    return new fiend::shadowfiend_pet_t( sim, *this );
   }
   if ( pet_name == "mindbender" )
   {
-    return new pets::fiend::mindbender_pet_t( sim, *this );
+    return new fiend::mindbender_pet_t( sim, *this );
   }
 
   sim->error( "{} Tried to create unknown priest pet {}.", *this, pet_name );
 
   return nullptr;
-}
-
-// Returns mindbender or shadowfiend, depending on talent choice. The returned pointer can be null if no fiend is
-// summoned through the action list, so please check for null.
-static pets::fiend::base_fiend_pet_t* get_current_main_pet( priest_t& priest )
-{
-  pet_t* current_main_pet = priest.talents.mindbender->ok() ? priest.pets.mindbender : priest.pets.shadowfiend;
-  return debug_cast<pets::fiend::base_fiend_pet_t*>( current_main_pet );
 }
 
 void priest_t::trigger_shadowflame_prism( player_t* target )
@@ -914,11 +913,11 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
 priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   : shadowfiend(),
     mindbender(),
-    void_tendril( "void_tendril", &p, []( priest_t* priest ) { return new pets::void_tendril_t( priest ); } ),
-    void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new pets::void_lasher_t( priest ); } ),
-    rattling_mage( "rattling_mage", &p, []( priest_t* priest ) { return new pets::rattling_mage_t( priest ); } ),
+    void_tendril( "void_tendril", &p, []( priest_t* priest ) { return new void_tendril_t( priest ); } ),
+    void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new void_lasher_t( priest ); } ),
+    rattling_mage( "rattling_mage", &p, []( priest_t* priest ) { return new rattling_mage_t( priest ); } ),
     cackling_chemist( "cackling_chemist", &p,
-                      []( priest_t* priest ) { return new pets::cackling_chemist_t( priest ); } )
+                      []( priest_t* priest ) { return new cackling_chemist_t( priest ); } )
 {
   auto void_tendril_spell = p.find_spell( 193473 );
   // Add 1ms to ensure pet is dismissed after last dot tick.
