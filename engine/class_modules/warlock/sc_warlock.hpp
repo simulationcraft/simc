@@ -226,7 +226,7 @@ public:
     // tier 25
     const spell_data_t* reverse_entropy; //Note: talent spell (not the buff spell) contains RPPM data
     const spell_data_t* internal_combustion;
-    const spell_data_t* shadowburn; //TODO: Replace instances of hardcoding
+    const spell_data_t* shadowburn;
 
     // tier 35
     const spell_data_t* inferno; //TODO: Confirm interaction between Inferno and Rank 2 Rain of Fire, as well as if soul shard generation is per-target hit
@@ -321,6 +321,7 @@ public:
     propagate_const<cooldown_t*> demonic_tyrant;
     propagate_const<cooldown_t*> scouring_tithe;
     propagate_const<cooldown_t*> infernal;
+    propagate_const<cooldown_t*> shadowburn;
   } cooldowns;
 
   //TODO: this struct is supposedly for passives per the comment here, but that is potentially outdated. Consider refactoring and reorganizing ALL of this.

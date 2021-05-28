@@ -478,7 +478,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                             ->set_default_value_from_effect( 1 );
   debuffs_roaring_blaze = make_buff( *this, "roaring_blaze", source->find_spell( 265931 ) );
-  debuffs_shadowburn    = make_buff( *this, "shadowburn", source->find_spell( 17877 ) );
+  debuffs_shadowburn    = make_buff( *this, "shadowburn", source->find_spell( 17877 ) )
+                              ->set_default_value( source->find_spell( 245731 )->effectN( 1 ).base_value() );
   debuffs_havoc         = make_buff( *this, "havoc", source->find_specialization_spell( 80240 ) )
                       ->set_duration( source->find_specialization_spell( 80240 )->duration() +
                                       source->find_specialization_spell( 335174 )->effectN( 1 ).time_value() )
@@ -562,10 +563,17 @@ void warlock_td_t::target_demise()
 
   if ( debuffs_shadowburn->check() )
   {
-    warlock.sim->print_log( "Player {} demised. Warlock {} reset Shadowburn's cooldown.", target->name(),
+    if ( warlock.min_version_check( VERSION_9_1_0 ) )
+    {
+      warlock.sim->print_log( "Player {} demised. Warlock {} refunds one charge of Shadowburn.", target->name(),
                             warlock.name() );
+      
+      warlock.cooldowns.shadowburn->reset( true );
+    }
+   
+    warlock.sim->print_log( "Player {} demised. Warlock {} gains 1 shard from Shadowburn.", target->name(), warlock.name() );
 
-    warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.find_spell( 245731 )->effectN( 1 ).base_value() / 10,
+    warlock.resource_gain( RESOURCE_SOUL_SHARD, debuffs_shadowburn->check_value() / 10,
                            warlock.gains.shadowburn_refund );
   }
 
@@ -663,6 +671,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.demonic_tyrant      = get_cooldown( "summon_demonic_tyrant" );
   cooldowns.scouring_tithe      = get_cooldown( "scouring_tithe" );
   cooldowns.infernal            = get_cooldown( "summon_infernal" );
+  cooldowns.shadowburn          = get_cooldown( "shadowburn" );
 
   resource_regeneration             = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ]       = true;
