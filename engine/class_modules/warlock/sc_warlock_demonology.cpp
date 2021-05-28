@@ -317,9 +317,9 @@ struct demonbolt_t : public demonology_spell_t
     return m;
   }
 
-  double composite_target_crit_chance( player_t* t ) const override
+  double composite_crit_chance_multiplier() const override
   {
-    double m = demonology_spell_t::composite_target_crit_chance( t );
+    double m = demonology_spell_t::composite_crit_chance_multiplier();
 
     if ( p()->legendary.shard_of_annihilation.ok() )
     {

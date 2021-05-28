@@ -402,9 +402,9 @@ struct incinerate_fnb_t : public destruction_spell_t
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_fnb_crits );
   }
 
-  double composite_target_crit_chance( player_t* t ) const override
+  double composite_crit_chance_multiplier() const override
   {
-    double m = destruction_spell_t::composite_target_crit_chance( t );
+    double m = destruction_spell_t::composite_crit_chance_multiplier();
 
     if ( p()->legendary.shard_of_annihilation.ok() )
     {
@@ -528,9 +528,9 @@ struct incinerate_t : public destruction_spell_t
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_crits );
   }
 
-  double composite_target_crit_chance( player_t* t ) const override
+  double composite_crit_chance_multiplier() const override
   {
-    double m = destruction_spell_t::composite_target_crit_chance( t );
+    double m = destruction_spell_t::composite_crit_chance_multiplier();
 
     if ( p()->legendary.shard_of_annihilation.ok() )
     {
