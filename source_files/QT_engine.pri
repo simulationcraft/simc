@@ -156,6 +156,7 @@ HEADERS += engine/sim/shuffled_rng.hpp
 HEADERS += engine/sim/sim_control.hpp
 HEADERS += engine/sim/sim_ostream.hpp
 HEADERS += engine/sim/uptime.hpp
+HEADERS += engine/sim/work_queue.hpp
 HEADERS += engine/simulationcraft.hpp
 HEADERS += engine/util/allocator.hpp
 HEADERS += engine/util/cache.hpp

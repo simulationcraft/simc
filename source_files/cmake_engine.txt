@@ -154,6 +154,7 @@ sim/shuffled_rng.hpp
 sim/sim_control.hpp
 sim/sim_ostream.hpp
 sim/uptime.hpp
+sim/work_queue.hpp
 simulationcraft.hpp
 util/allocator.hpp
 util/cache.hpp

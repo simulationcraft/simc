@@ -9,6 +9,7 @@
 #include "player/sc_player.hpp"
 #include "scale_factor_control.hpp"
 #include "sim/sc_sim.hpp"
+#include "sim/work_queue.hpp"
 #include "util/io.hpp"
 
 #include <sstream>

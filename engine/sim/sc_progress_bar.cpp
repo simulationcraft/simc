@@ -11,6 +11,7 @@
 #include "sim_control.hpp"
 #include "sim/plot.hpp"
 #include "sim/reforge_plot.hpp"
+#include "sim/work_queue.hpp"
 #include "scale_factor_control.hpp"
 #include "gsl-lite/gsl-lite.hpp"
 

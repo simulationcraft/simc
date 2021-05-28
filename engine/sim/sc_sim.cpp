@@ -29,6 +29,7 @@
 #include "sim/plot.hpp"
 #include "sim/reforge_plot.hpp"
 #include "sim/sc_cooldown.hpp"
+#include "sim/work_queue.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
 #include "util/xml.hpp"
 #include "util/string_view.hpp"
@@ -1386,7 +1387,7 @@ struct compare_name
 
 // Standard progress method, normal mode sims use the single (first) index, single actor batch
 // sims progress with the main thread's current index.
-sim_progress_t sim_t::work_queue_t::progress( int idx )
+sim_progress_t work_queue_t::progress( int idx )
 {
   G l(m);
   size_t current_index = idx;
