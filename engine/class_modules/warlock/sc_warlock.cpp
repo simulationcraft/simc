@@ -396,6 +396,12 @@ struct decimating_bolt_t : public warlock_spell_t
       value *= 0.4;
     p()->buffs.decimating_bolt->trigger( 3, value );
     
+    if ( p()->legendary.shard_of_annihilation.ok() )
+    {
+      //Note: For Drain Soul, 3 stacks appear to be triggered but all are removed when the Decimating Bolt buff is
+      p()->buffs.shard_of_annihilation->trigger( 3 );
+    }
+
     warlock_spell_t::impact( s );
     
     auto e = make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
@@ -997,6 +1003,8 @@ void warlock_t::create_buffs()
   buffs.languishing_soul_detritus = make_buff( this, "languishing_soul_detritus", find_spell( 356255 ) )
                                         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
                                         ->set_default_value( find_spell( 356255 )->effectN( 2 ).percent() );
+
+  buffs.shard_of_annihilation = make_buff( this, "shard_of_annihilation", find_spell( 356342 ) );
 }
 
 void warlock_t::init_spells()
