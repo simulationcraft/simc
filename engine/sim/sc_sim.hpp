@@ -74,24 +74,28 @@ struct sim_t : private sc_thread_t
    * given scope.
    **/
   bool strict_parsing;
+  bool canceled;
+  // Clean up memory for threads after iterating (defaults to no in normal operation, some options
+  // will force-enable the option)
+  bool cleanup_threads;
+  bool initialized;
+  bool fixed_time;
+  bool save_profiles;
+  bool save_profile_with_actions;  // When saving full profiles, include actions or not
+  bool default_actions;
 
   // Iteration Controls
   timespan_t max_time, expected_iteration_time;
   double vary_combat_length;
   int current_iteration, iterations;
-  bool canceled;
   double target_error;
   role_e target_error_role;
   double current_error;
   double current_mean;
   int analyze_error_interval, analyze_number;
-  // Clean up memory for threads after iterating (defaults to no in normal operation, some options
-  // will force-enable the option)
-  bool cleanup_threads;
 
   sim_control_t* control;
   sim_t*      parent;
-  bool initialized;
   player_t*   target;
   player_t*   heal_target;
   vector_with_callback<player_t*> target_list;
@@ -115,7 +119,7 @@ struct sim_t : private sc_thread_t
   timespan_t  channel_lag, channel_lag_stddev;
   timespan_t  queue_gcd_reduction;
   timespan_t  default_cooldown_tolerance;
-  int         strict_gcd_queue;
+  bool         strict_gcd_queue;
   double      confidence, confidence_estimator;
   // Latency
   timespan_t  world_lag, world_lag_stddev;
@@ -127,26 +131,22 @@ struct sim_t : private sc_thread_t
   int         current_slot;
   int         optimal_raid, log, debug_each;
   std::vector<uint64_t> debug_seed;
-  bool        fixed_time;
-  bool        save_profiles;
-  bool        save_profile_with_actions; // When saving full profiles, include actions or not
-  bool        default_actions;
   stat_e      normalized_stat;
   std::string current_name, default_region_str, default_server_str, save_prefix_str, save_suffix_str;
-  int         save_talent_str;
+  bool         save_talent_str;
   talent_format talent_input_format;
   auto_dispose< std::vector<player_t*> > actor_list;
   std::string main_target_str;
   int         stat_cache;
   int         max_aoe_enemies;
-  bool        show_etmi;
   double      tmi_window_global;
   double      tmi_bin_size;
+  bool        show_etmi;
   bool        requires_regen_event;
   bool        single_actor_batch;
+  bool        allow_experimental_specializations;
   int         progressbar_type;
   int         armory_retries;
-  bool        allow_experimental_specializations;
 
   // Target options
   double      enemy_death_pct;
@@ -155,10 +155,7 @@ struct sim_t : private sc_thread_t
   int         target_adds;
   std::string sim_progress_base_str, sim_progress_phase_str;
   int         desired_targets; // desired number of targets
-  bool        enable_taunts;
 
-  // Disable use-item action verification in the simulator
-  bool        use_item_verification;
 
   // Data access
   std::unique_ptr<dbc_t> dbc;
@@ -167,17 +164,19 @@ struct sim_t : private sc_thread_t
   // Default stat enchants
   gear_stats_t enchant;
 
-  bool challenge_mode; // if active, players will get scaled down to 620 and set bonuses are deactivated
   int timewalk;
   int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
+  bool challenge_mode; // if active, players will get scaled down to 620 and set bonuses are deactivated
   bool scale_itemlevel_down_only; // Items below the value of scale_to_itemlevel will not be scaled up.
   bool disable_set_bonuses; // Disables all set bonuses.
+  bool enable_taunts;
+  bool use_item_verification;  // Disable use-item action verification in the simulator
   unsigned int disable_2_set; // Disables all 2 set bonuses for this tier/integer that this is set as
   unsigned int disable_4_set; // Disables all 4 set bonuses for this tier/integer that this is set as
   unsigned int enable_2_set;// Enables all 2 set bonuses for the tier/integer that this is set as
   unsigned int enable_4_set; // Enables all 4 set bonuses for the tier/integer that this is set as
-  bool pvp_crit; // Enables crit damage reduction in PvP
   const spell_data_t* pvp_rules; // Hidden aura that contains the PvP crit damage reduction
+  bool pvp_crit; // Enables crit damage reduction in PvP
   bool feast_as_dps = true;
   bool auto_attacks_always_land; /// Allow Auto Attacks (white attacks) to always hit the enemy
   bool log_spell_id; // Add spell data ids to log/debug output where available. (actions, buffs)
