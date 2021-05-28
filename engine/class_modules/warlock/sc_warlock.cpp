@@ -552,6 +552,11 @@ void warlock_td_t::target_demise()
     {
       warlock.buffs.soul_tithe->trigger();
     }
+
+    if ( warlock.legendary.languishing_soul_detritus.ok() )
+    {
+      warlock.buffs.languishing_soul_detritus->trigger();
+    }
   }
 
   if ( debuffs_haunt->check() )
@@ -988,6 +993,10 @@ void warlock_t::create_buffs()
 
   buffs.demonic_synergy = make_buff( this, "demonic_synergy", find_spell( 337060 ) )
                               ->set_default_value( legendary.relic_of_demonic_synergy->effectN( 1 ).percent() * ( this->specialization() == WARLOCK_DEMONOLOGY ? 1.5 : 1.0 ) );
+
+  buffs.languishing_soul_detritus = make_buff( this, "languishing_soul_detritus", find_spell( 356255 ) )
+                                        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                                        ->set_default_value( find_spell( 356255 )->effectN( 2 ).percent() );
 }
 
 void warlock_t::init_spells()

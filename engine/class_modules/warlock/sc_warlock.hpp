@@ -420,6 +420,7 @@ public:
     propagate_const<buff_t*> implosive_potential_small;
     propagate_const<buff_t*> dread_calling;
     propagate_const<buff_t*> demonic_synergy;
+    propagate_const<buff_t*> languishing_soul_detritus;
   } buffs;
 
   //TODO: Determine if any gains are not currently being tracked
