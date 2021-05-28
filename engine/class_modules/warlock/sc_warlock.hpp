@@ -266,6 +266,11 @@ public:
     item_runeforge_t embers_of_the_diabolic_raiment;
     item_runeforge_t madness_of_the_azjaqir;
     item_runeforge_t odr_shawl_of_the_ymirjar;
+    // Covenant
+    item_runeforge_t languishing_soul_detritus;
+    item_runeforge_t shard_of_annihilation;
+    item_runeforge_t decaying_soul_satchel;
+    item_runeforge_t contained_perpetual_explosion;
   } legendary;
 
   struct conduit_t

@@ -1027,6 +1027,11 @@ void warlock_t::init_spells()
   //Wrath is implemented here to catch any potential cross-spec periodic effects
   legendary.wrath_of_consumption = find_runeforge_legendary("Wrath of Consumption");
 
+  legendary.languishing_soul_detritus = find_runeforge_legendary( "Languishing Soul Detritus" );
+  legendary.shard_of_annihilation = find_runeforge_legendary( "Shard of Annihilation" );
+  legendary.decaying_soul_satchel = find_runeforge_legendary( "Decaying Soul Satchel" );
+  legendary.contained_perpetual_explosion = find_runeforge_legendary( "Contained Perpetual Explosion" );
+
   // Conduits
   conduit.catastrophic_origin  = find_conduit_spell( "Catastrophic Origin" );   // Venthyr
   conduit.soul_eater           = find_conduit_spell( "Soul Eater" );            // Night Fae
