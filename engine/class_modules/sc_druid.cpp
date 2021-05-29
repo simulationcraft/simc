@@ -4194,7 +4194,7 @@ struct tigers_fury_t : public cat_attack_t
 
     p()->buff.tigers_fury->trigger( duration );
 
-    if ( p()->legendary.eye_of_fearful_symmetry->ok() )
+    if ( !free_cast && p()->legendary.eye_of_fearful_symmetry->ok() )
       p()->buff.eye_of_fearful_symmetry->trigger();
   }
 };
