@@ -396,6 +396,12 @@ struct decimating_bolt_t : public warlock_spell_t
       value *= 0.4;
     p()->buffs.decimating_bolt->trigger( 3, value );
     
+    if ( p()->legendary.shard_of_annihilation.ok() )
+    {
+      //Note: For Drain Soul, 3 stacks appear to be triggered but all are removed when the Decimating Bolt buff is
+      p()->buffs.shard_of_annihilation->trigger( 3 );
+    }
+
     warlock_spell_t::impact( s );
     
     auto e = make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
@@ -551,6 +557,11 @@ void warlock_td_t::target_demise()
     if ( warlock.conduit.soul_tithe.value() > 0 )
     {
       warlock.buffs.soul_tithe->trigger();
+    }
+
+    if ( warlock.legendary.languishing_soul_detritus.ok() )
+    {
+      warlock.buffs.languishing_soul_detritus->trigger();
     }
   }
 
@@ -988,6 +999,12 @@ void warlock_t::create_buffs()
 
   buffs.demonic_synergy = make_buff( this, "demonic_synergy", find_spell( 337060 ) )
                               ->set_default_value( legendary.relic_of_demonic_synergy->effectN( 1 ).percent() * ( this->specialization() == WARLOCK_DEMONOLOGY ? 1.5 : 1.0 ) );
+
+  buffs.languishing_soul_detritus = make_buff( this, "languishing_soul_detritus", find_spell( 356255 ) )
+                                        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                                        ->set_default_value( find_spell( 356255 )->effectN( 2 ).percent() );
+
+  buffs.shard_of_annihilation = make_buff( this, "shard_of_annihilation", find_spell( 356342 ) );
 }
 
 void warlock_t::init_spells()
@@ -1026,6 +1043,11 @@ void warlock_t::init_spells()
   legendary.sacrolashs_dark_strike = find_runeforge_legendary( "Sacrolash's Dark Strike" );
   //Wrath is implemented here to catch any potential cross-spec periodic effects
   legendary.wrath_of_consumption = find_runeforge_legendary("Wrath of Consumption");
+
+  legendary.languishing_soul_detritus = find_runeforge_legendary( "Languishing Soul Detritus" );
+  legendary.shard_of_annihilation = find_runeforge_legendary( "Shard of Annihilation" );
+  legendary.decaying_soul_satchel = find_runeforge_legendary( "Decaying Soul Satchel" );
+  legendary.contained_perpetual_explosion = find_runeforge_legendary( "Contained Perpetual Explosion" );
 
   // Conduits
   conduit.catastrophic_origin  = find_conduit_spell( "Catastrophic Origin" );   // Venthyr

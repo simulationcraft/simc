@@ -402,9 +402,26 @@ struct incinerate_fnb_t : public destruction_spell_t
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_fnb_crits );
   }
 
-  double composite_target_crit_chance( player_t* target ) const override
+  double composite_crit_chance_multiplier() const override
   {
-    double m = destruction_spell_t::composite_target_crit_chance( target );
+    double m = destruction_spell_t::composite_crit_chance_multiplier();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+    {
+      //PTR 2020-05-28: "Critical Strike chance increased by 100%" was not producing guaranteed crits, assuming multiplicative
+      m *= 1.0 + p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = destruction_spell_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+      m += p()->buffs.shard_of_annihilation->data().effectN( 2 ).percent();
+
     return m;
   }
 
@@ -497,6 +514,9 @@ struct incinerate_t : public destruction_spell_t
       fnb_action->execute();
     }
     p()->buffs.decimating_bolt->decrement();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+      p()->buffs.shard_of_annihilation->decrement();
   }
 
   void impact( action_state_t* s ) override
@@ -508,9 +528,16 @@ struct incinerate_t : public destruction_spell_t
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_crits );
   }
 
-  double composite_target_crit_chance( player_t* target ) const override
+  double composite_crit_chance_multiplier() const override
   {
-    double m = destruction_spell_t::composite_target_crit_chance( target );
+    double m = destruction_spell_t::composite_crit_chance_multiplier();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+    {
+      //PTR 2020-05-28: "Critical Strike chance increased by 100%" was not producing guaranteed crits, assuming multiplicative
+      m *= 1.0 + p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
+    }
+
     return m;
   }
 

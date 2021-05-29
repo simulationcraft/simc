@@ -291,6 +291,9 @@ struct demonbolt_t : public demonology_spell_t
       p()->buffs.demonic_calling->trigger();
 
     p()->buffs.decimating_bolt->decrement();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+      p()->buffs.shard_of_annihilation->decrement();
   }
 
   double action_multiplier() const override
@@ -310,6 +313,29 @@ struct demonbolt_t : public demonology_spell_t
     m *= 1.0 + p()->buffs.balespiders_burning_core->check_stack_value();
 
     m *= 1 + p()->buffs.decimating_bolt->check_value();
+
+    return m;
+  }
+
+  double composite_crit_chance_multiplier() const override
+  {
+    double m = demonology_spell_t::composite_crit_chance_multiplier();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+    {
+      //PTR 2020-05-28: "Critical Strike chance increased by 100%" was not producing guaranteed crits, assuming multiplicative
+      m *= 1.0 + p()->buffs.shard_of_annihilation->data().effectN( 5 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = demonology_spell_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+      m += p()->buffs.shard_of_annihilation->data().effectN( 6 ).percent();
 
     return m;
   }

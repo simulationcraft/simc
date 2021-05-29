@@ -137,6 +137,29 @@ struct shadow_bolt_t : public affliction_spell_t
     return m;
   }
 
+  double composite_crit_chance_multiplier() const override
+  {
+    double m = affliction_spell_t::composite_crit_chance_multiplier();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+    {
+      //PTR 2020-05-28: "Critical Strike chance increased by 100%" was not producing guaranteed crits, assuming multiplicative
+      m *= 1.0 + p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = affliction_spell_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+      m += p()->buffs.shard_of_annihilation->data().effectN( 2 ).percent();
+
+    return m;
+  }
+
   void schedule_execute( action_state_t* s ) override
   {
     affliction_spell_t::schedule_execute( s );
@@ -149,6 +172,9 @@ struct shadow_bolt_t : public affliction_spell_t
       p()->buffs.nightfall->decrement();
 
     p()->buffs.decimating_bolt->decrement();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+      p()->buffs.shard_of_annihilation->decrement();
   }
 };
 
@@ -591,8 +617,12 @@ struct drain_soul_t : public affliction_spell_t
   {
     dot_t* dot = get_dot( target );
     if ( dot->is_ticking() )
+    {
       p()->buffs.decimating_bolt->decrement();
 
+      if ( p()->legendary.shard_of_annihilation.ok() )
+        p()->buffs.shard_of_annihilation->decrement( 3 );
+    }
     affliction_spell_t::execute();
   }
 
@@ -623,10 +653,37 @@ struct drain_soul_t : public affliction_spell_t
     return m;
   }
 
+  double composite_crit_chance_multiplier() const override
+  {
+    double m = affliction_spell_t::composite_crit_chance_multiplier();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+    {
+      //PTR 2020-05-28: "Critical Strike chance increased by 100%" was not producing guaranteed crits, assuming multiplicative
+      m *= 1.0 + p()->buffs.shard_of_annihilation->data().effectN( 3 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = affliction_spell_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+      m += p()->buffs.shard_of_annihilation->data().effectN( 4 ).percent();
+
+    return m;
+  }
+
   void last_tick( dot_t* d ) override
   {
     affliction_spell_t::last_tick( d );
+
     p()->buffs.decimating_bolt->decrement();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+      p()->buffs.shard_of_annihilation->decrement( 3 );
   }
 
 };
