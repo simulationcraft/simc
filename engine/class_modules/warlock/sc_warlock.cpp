@@ -314,6 +314,17 @@ struct soul_rot_t : public warlock_spell_t
     p()->buffs.soul_rot->trigger();
   }
 
+  void impact( action_state_t* s ) override
+  {
+    warlock_spell_t::impact( s );
+
+    if ( p()->legendary.decaying_soul_satchel.ok() )
+    {
+      p()->buffs.decaying_soul_satchel_haste->trigger();
+      p()->buffs.decaying_soul_satchel_crit->trigger();
+    }
+  }
+
   double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double pm = warlock_spell_t::composite_ta_multiplier( s );
@@ -1005,6 +1016,14 @@ void warlock_t::create_buffs()
                                         ->set_default_value( find_spell( 356255 )->effectN( 2 ).percent() );
 
   buffs.shard_of_annihilation = make_buff( this, "shard_of_annihilation", find_spell( 356342 ) );
+
+  buffs.decaying_soul_satchel_haste = make_buff( this, "decaying_soul_satchel_haste", find_spell( 356369 ) )
+                                          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                          ->set_default_value( find_spell( 356369 )->effectN( 1 ).percent() );
+
+  buffs.decaying_soul_satchel_crit = make_buff( this, "decaying_soul_satchel_crit", find_spell( 356369 ) )
+                                         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                                         ->set_default_value( find_spell( 356369 )->effectN( 2 ).percent() );
 }
 
 void warlock_t::init_spells()
