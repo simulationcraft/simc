@@ -4339,11 +4339,9 @@ void sim_t::activate_actors()
 
 bool sim_t::has_raid_event( util::string_view type ) const
 {
-  auto it = range::find_if( raid_events, [ &type ]( const std::unique_ptr<raid_event_t>& event ) {
+  return range::any_of( raid_events, [ &type ]( const std::unique_ptr<raid_event_t>& event ) {
       return util::str_compare_ci( type, event -> type );
   } );
-
-  return it != raid_events.end();
 }
 
 // Determine when the main thread must clean up child threads (i.e., delete them)

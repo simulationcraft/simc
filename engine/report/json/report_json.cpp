@@ -82,7 +82,7 @@ void add_non_zero( JsonOutput root, util::string_view name, util::string_view v 
 
 bool has_resources( const gain_t* gain )
 {
-  return range::find_if( gain -> count, []( double v ) { return v != 0; } ) != gain -> count.end();
+  return range::any_of( gain -> count, []( double v ) { return v != 0; } );
 }
 
 bool has_resources( const gain_t& gain )
@@ -219,7 +219,7 @@ void procs_to_json( JsonOutput root, const player_t& p )
 
 bool has_valid_stats( const std::vector<stats_t*>& stats_list, int level = 0 )
 {
-  auto it = range::find_if( stats_list, [level]( const stats_t* stats ) {
+  return range::any_of( stats_list, [level]( const stats_t* stats ) {
     if ( stats->quiet )
     {
       return false;
@@ -247,8 +247,6 @@ bool has_valid_stats( const std::vector<stats_t*>& stats_list, int level = 0 )
 
     return true;
   } );
-
-  return it != stats_list.end();
 }
 
 void stats_to_json( JsonOutput root, const std::vector<stats_t*>& stats_list, int level = 0 )

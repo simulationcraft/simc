@@ -63,11 +63,11 @@ void create_persistent_actors( player_t& player )
 
 void base_actor_spawner_t::register_object()
 {
-  auto it = range::find_if( m_owner->spawners, [this]( const base_actor_spawner_t* obj ) {
+  auto already_exists = range::any_of( m_owner->spawners, [this]( const base_actor_spawner_t* obj ) {
     return util::str_compare_ci( obj->name(), name() );
   } );
 
-  if ( it == m_owner->spawners.end() )
+  if ( !already_exists )
   {
     m_owner->spawners.push_back( this );
   }

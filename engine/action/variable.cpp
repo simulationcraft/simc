@@ -238,11 +238,9 @@ bool variable_t::is_constant() const
   if (operation == OPERATION_RESET || operation == OPERATION_FLOOR ||
     operation == OPERATION_CEIL)
   {
-    auto it = range::find_if(var->variable_actions, [this](const action_t* action) {
+    return !range::any_of(var->variable_actions, [this](const action_t* action) {
       return action != this && !debug_cast<const variable_t*>(action)->is_constant();
       });
-
-    return it == var->variable_actions.end();
   }
   else if (operation != OPERATION_SETIF)
   {

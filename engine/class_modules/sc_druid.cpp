@@ -6288,8 +6288,8 @@ struct starsurge_t : public druid_spell_t
     auto apl = player->precombat_action_list;
 
     // emulate performing check_form_restriction()
-    auto it = range::find_if( apl, []( action_t* a ) { return util::str_compare_ci( a->name(), "moonkin_form" ); } );
-    if ( it == apl.end() )
+    // TODO: Try to avoid string comparison during combat
+    if ( !range::any_of( apl, []( action_t* a ) { return util::str_compare_ci( a->name(), "moonkin_form" ); } ) )
       return false;
 
     // emulate performing resource_available( current_resource(), cost() )

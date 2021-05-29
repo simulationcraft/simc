@@ -1266,8 +1266,8 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       item_sim_desc += report_decorators::decorated_spell_data_item( *item.sim, spell, item );
     }
 
-    auto has_relics = range::find_if( item.parsed.gem_actual_ilevel, []( unsigned v ) { return v != 0; } );
-    if ( has_relics != item.parsed.gem_actual_ilevel.end() )
+    auto has_relics = range::any_of( item.parsed.gem_actual_ilevel, []( unsigned v ) { return v != 0; } );
+    if ( has_relics )
     {
       item_sim_desc += ", relics: { ";
       auto first = true;

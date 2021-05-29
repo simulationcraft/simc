@@ -8566,13 +8566,13 @@ struct use_items_t : public action_t
     // Note that this only looks at item-sourced on-use actions (e.g., no engineering addons).
     range::for_each( slot_order, [this]( slot_e slot ) {
       const auto& item     = player->items[ slot ];
-      const auto effect_it = range::find_if( item.parsed.special_effects, []( const special_effect_t* e ) {
+      const auto has_effect = range::any_of( item.parsed.special_effects, []( const special_effect_t* e ) {
         return (e->source == SPECIAL_EFFECT_SOURCE_ITEM || e->source == SPECIAL_EFFECT_SOURCE_GEM ||
                 e->source == SPECIAL_EFFECT_SOURCE_ENCHANT) && e->type == SPECIAL_EFFECT_USE;
       } );
 
       // No item-based on-use effect in the slot, skip
-      if ( effect_it == item.parsed.special_effects.end() )
+      if ( !has_effect )
       {
         return;
       }

@@ -2505,10 +2505,10 @@ void items::variable_intensity_gigavolt_oscillating_reactor( special_effect_t& e
 {
   // Ensure the sim don't do stupid things if someone thinks it wise to try initializing 2 of these
   // trinkets on a single actor
-  auto it = range::find_if( e.player->special_effects,
+  auto effect_already_exists = range::any_of( e.player->special_effects,
                             [&e]( const special_effect_t* effect ) { return e.spell_id == effect->spell_id; } );
 
-  if ( it == e.player->special_effects.end() )
+  if ( !effect_already_exists )
   {
     e.player->special_effects.push_back( new vigor_engaged_t( e ) );
     e.type = SPECIAL_EFFECT_NONE;
