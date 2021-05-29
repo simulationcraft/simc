@@ -320,7 +320,6 @@ struct soul_rot_t : public warlock_spell_t
 
     if ( p()->legendary.decaying_soul_satchel.ok() )
     {
-      //TOCHECK: What happens if one of the Soul Rot targets dies before 8 seconds is up?
       p()->buffs.decaying_soul_satchel_haste->trigger();
       p()->buffs.decaying_soul_satchel_crit->trigger();
     }
