@@ -17,6 +17,7 @@
 #include "sim/sc_sim.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/sim_control.hpp"
+#include "sim/sc_profileset.hpp"
 #include "util/git_info.hpp"
 #include "util/io.hpp"
 
@@ -70,7 +71,7 @@ struct sim_signal_handler_t
           global_sim -> target -> resources.initial[ RESOURCE_HEALTH ]);
     }
 
-    auto profileset = global_sim -> profilesets.current_profileset_name();
+    auto profileset = global_sim -> profilesets->current_profileset_name();
     if ( ! profileset.empty() )
     {
       std::cerr << " ProfileSet=" << profileset;
@@ -338,7 +339,7 @@ int sim_t::main( const std::vector<std::string>& args )
         plot         -> analyze();
         reforge_plot -> analyze();
 
-        if ( canceled == 0 && ! profilesets.iterate( this ))
+        if ( canceled == 0 && ! profilesets->iterate( this ))
         {
           canceled = true;
         }

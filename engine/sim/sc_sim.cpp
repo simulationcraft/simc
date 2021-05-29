@@ -28,6 +28,7 @@
 #include "sim/raid_event.hpp"
 #include "sim/plot.hpp"
 #include "sim/reforge_plot.hpp"
+#include "sc_profileset.hpp"
 #include "sim/sc_cooldown.hpp"
 #include "sim/work_queue.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
@@ -1549,7 +1550,8 @@ sim_t::sim_t() :
   profileset_output_data(),
   profileset_enabled( false ),
   profileset_work_threads( 0 ),
-  profileset_init_threads( 1 )
+  profileset_init_threads( 1 ),
+  profilesets(std::make_unique<profileset::profilesets_t>())
 {
   item_db_sources.assign( std::begin( default_item_db_sources ),
                           std::end( default_item_db_sources ) );
@@ -1717,7 +1719,7 @@ void sim_t::cancel()
 
   if ( ! parent )
   {
-    profilesets.cancel();
+    profilesets->cancel();
   }
 }
 
@@ -2776,7 +2778,7 @@ void sim_t::init()
   // exit in any case
   if ( active_player && active_player->report_information.save_str.empty() )
   {
-    profilesets.initialize( this );
+    profilesets->initialize( this );
   }
 
   initialized = true;

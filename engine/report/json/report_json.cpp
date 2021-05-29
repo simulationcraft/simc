@@ -10,6 +10,7 @@
 #include "report/report_timer.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/iteration_data_entry.hpp"
+#include "sim/sc_profileset.hpp"
 #include "simulationcraft.hpp"
 #include "util/git_info.hpp"
 
@@ -1157,10 +1158,10 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
     to_json( players_arr, report_configuration, *p );
   } );
 
-  if ( sim.profilesets.n_profilesets() > 0 )
+  if ( sim.profilesets->n_profilesets() > 0 )
   {
     auto profileset_root = root[ "profilesets" ];
-    profileset_json( report_configuration, sim.profilesets, sim, profileset_root );
+    profileset_json( report_configuration, *sim.profilesets, sim, profileset_root );
   }
 
   auto stats_root = root[ "statistics" ];

@@ -11,6 +11,7 @@
 #include "interfaces/sc_js.hpp"
 #include "util/git_info.hpp"
 #include "sim/scale_factor_control.hpp"
+#include "sim/sc_profileset.hpp"
 #include "fmt/chrono.h"
 
 #include <iostream>
@@ -1359,7 +1360,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
     print_html_scale_factors( os, sim );
   }
 
-  sim.profilesets.output_html( sim, os );
+  sim.profilesets->output_html( sim, os );
 
   // Report Players
   for ( auto& player : sim.players_by_name )

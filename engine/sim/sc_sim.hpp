@@ -9,8 +9,8 @@
 #include "event_manager.hpp"
 #include "player/gear_stats.hpp"
 #include "progress_bar.hpp"
-#include "sc_profileset.hpp"
 #include "sim_ostream.hpp"
+#include "sim/sc_option.hpp"
 #include "util/concurrency.hpp"
 #include "util/rng.hpp"
 #include "util/sample_data.hpp"
@@ -46,6 +46,10 @@ namespace json
 {
 class report_configuration_t;
 }
+}
+
+namespace profileset{
+  class profilesets_t;
 }
 
 struct sim_progress_t
@@ -542,7 +546,7 @@ struct sim_t : private sc_thread_t
   std::vector<std::string> profileset_output_data;
   bool profileset_enabled;
   int profileset_work_threads, profileset_init_threads;
-  profileset::profilesets_t profilesets;
+  std::unique_ptr<profileset::profilesets_t> profilesets;
 
 
   sim_t();
