@@ -174,7 +174,7 @@ void frost( player_t* p )
   default_->add_action( "variable,name=st_planning,value=active_enemies=1&(raid_event.adds.in>15|!raid_event.adds.exists)" );
   default_->add_action( "variable,name=adds_remain,value=active_enemies>=2&(!raid_event.adds.exists|raid_event.adds.exists&(raid_event.adds.remains>5|target.1.time_to_die>20))" );
   default_->add_action( "remorseless_winter,if=conduit.everfrost&talent.gathering_storm&!talent.obliteration&cooldown.pillar_of_frost.remains", "Apply Frost Fever, maintain Icy Talons and keep Remorseless Winter rolling" );
-  default_->add_action( "howling_blast,target_if=dot.frost_fever.refreshable&(talent.icecap|!breath_of_sindragosa.ticking&talent.breath_of_sindragosa|talent.obliteration&cooldown.pillar_of_frost.remains&!buff.killing_machine.up)" );
+  default_->add_action( "howling_blast,target_if=dot.frost_fever.refreshable&(talent.icecap|!buff.breath_of_sindragosa.up&talent.breath_of_sindragosa|talent.obliteration&cooldown.pillar_of_frost.remains&!buff.killing_machine.up)" );
   default_->add_action( "glacial_advance,if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&spell_targets.glacial_advance>=2&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>15)" );
   default_->add_action( "frost_strike,if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>15)" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
