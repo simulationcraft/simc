@@ -1931,7 +1931,7 @@ void murmurs_in_the_dark( special_effect_t& effect )
 }
 
 
-  // 9.1 Trinkets
+// 9.1 Trinkets
 
 // id=356029 buff
 // id=353492 driver
@@ -1948,7 +1948,7 @@ void forbidden_necromantic_tome( special_effect_t& effect )  // NYI: Battle Rezz
   }
 }
 
-void soul_cage_fragment( special_effect_t& effect ) 
+void soul_cage_fragment( special_effect_t& effect )
 {
   auto buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "torturous_might" ) );
   if ( !buff )
@@ -1965,7 +1965,7 @@ void fine_razorwing_quill( special_effect_t& effect )
 {
 }
 
-void decanter_of_endless_howling( special_effect_t& effect ) 
+void decanter_of_endless_howling( special_effect_t& effect )
 {
   effect.proc_flags2_ = PF2_CRIT;
   auto buff           = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "decanted_warsong" ) );
@@ -1978,9 +1978,7 @@ void decanter_of_endless_howling( special_effect_t& effect )
     effect.custom_buff = buff;
     new dbc_proc_callback_t( effect.player, effect );
   }
-}    
-
-
+}
 
 void tome_of_monstrous_constructions( special_effect_t& effect ) // TODO: Create buff that tracks the name of the mob, and only trigger on mobs with the same name.
 {
@@ -2038,7 +2036,7 @@ void tormentors_rack_fragment( special_effect_t& effect )
       if ( state->target->is_sleeping() )
 
         return;
-      
+
       proc_action->target = target( state );
       proc_action->schedule_execute();
     }
@@ -2063,7 +2061,7 @@ void tormentors_rack_fragment( special_effect_t& effect )
   } );
 
   effect.execute_action = create_proc_action<excruciating_twinge_t>( "excruciating_twinge", effect );
- 
+
   new tormentors_rack_fragment_callback_t( effect.player, effect );
 }
 
@@ -2187,9 +2185,111 @@ void miniscule_mailemental_in_an_envelope( special_effect_t& effect )
   new unstable_goods_callback_t( effect.player, effect );
 }
 
+/**Titanic Ocular Gland
+ * id=355313 coefficients for stat amounts
+ * id=355794 "Worthy" buff
+ * id=355951 "Unworthy" debuff
+ */
+void titanic_ocular_gland( special_effect_t& effect )
+{
+  // When selecting the highest stat, the priority of equal secondary stats is Vers > Mastery > Haste > Crit.
+  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
 
+  // Use a separate buff for each rating type so that individual uptimes are reported nicely and APLs can easily reference them.
+  // Store these in pointers to reduce the size of the events that use them.
+  auto worthy_buffs = std::make_shared<std::map<stat_e, buff_t*>>();
+  auto unworthy_buffs = std::make_shared<std::map<stat_e, buff_t*>>();
+  double amount = effect.driver()->effectN( 1 ).average( effect.item );
 
-  // Weapons
+  for ( auto stat : ratings )
+  {
+    auto name = std::string( "worthy_" ) + util::stat_type_string( stat );
+    buff_t* buff = buff_t::find( effect.player, name );
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 355794 ), effect.item )
+               ->add_stat( stat, amount )
+               ->set_can_cancel( false );
+    }
+    ( *worthy_buffs )[ stat ] = buff;
+
+    name = std::string( "unworthy_" ) + util::stat_type_string( stat );
+    buff = buff_t::find( effect.player, name );
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 355951 ), effect.item )
+               ->add_stat( stat, -amount )
+               ->set_can_cancel( false );
+    }
+    ( *unworthy_buffs )[ stat ] = buff;
+  }
+
+  auto update_buffs = [p = effect.player, worthy_buffs, unworthy_buffs]() mutable
+  {
+    bool worthy = p->rng().roll( p->sim->shadowlands_opts.titanic_ocular_gland_worthy_chance );
+    bool buff_active = false;
+    stat_e max_stat = util::highest_stat( p, ratings );
+
+    // Iterate over all of the buffs and expire any that should not be active. Only one buff is
+    // active at a time, so this process only needs to continue until a single active buff is found.
+    for ( auto stat : ratings )
+    {
+      if ( ( *worthy_buffs )[ stat ]->check() )
+      {
+        // The Worthy buff will update to a different stat if that stat becomes higher.
+        if ( max_stat != stat || !worthy )
+        {
+          ( *worthy_buffs )[ stat ]->expire();
+          max_stat = util::highest_stat( p, ratings );
+        }
+        else
+        {
+          buff_active = true;
+        }
+        break;
+      }
+      if ( ( *unworthy_buffs )[ stat ]->check() )
+      {
+        // The Unworthy debuff will never update its stat.
+        if ( worthy )
+        {
+          ( *unworthy_buffs )[ stat ]->expire();
+          max_stat = util::highest_stat( p, ratings );
+        }
+        else
+        {
+          buff_active = true;
+        }
+        break;
+      }
+    }
+
+    if ( !buff_active )
+    {
+      if ( worthy )
+        ( *worthy_buffs )[ max_stat ]->execute();
+      else
+        ( *unworthy_buffs )[ max_stat ]->execute();
+    }
+  };
+
+  // While above the health threshold, this trinket appears to check your secondary stats every 5.25 seconds.
+  // Also use this as an interval for checking whether the player is above the health threshold to toggle between
+  // Worthy and Unworthy. In game, the buffs will actually switch instantly as soon as the player's health changes.
+  effect.player->register_combat_begin( [update_buffs]( player_t* p ) mutable
+  {
+    timespan_t period = 5.25_s;
+    timespan_t first_update = p->rng().real() * period;
+    update_buffs();
+    make_event( p->sim, first_update, [period, update_buffs, p]() mutable
+    {
+      update_buffs();
+      make_repeating_event( p->sim, period, update_buffs );
+    } );
+  } );
+}
+
+// Weapons
 
 // id=331011 driver
 // id=331016 DoT proc debuff
@@ -2417,13 +2517,14 @@ void register_special_effects()
     // 9.1 Trinkets
     unique_gear::register_special_effect( 353492, items::forbidden_necromantic_tome );
     unique_gear::register_special_effect( 357672, items::soul_cage_fragment );
-    unique_gear::register_special_effect( 353692, items::tome_of_monstrous_constructions ); 
-    unique_gear::register_special_effect( 352429, items::miniscule_mailemental_in_an_envelope );  
+    unique_gear::register_special_effect( 353692, items::tome_of_monstrous_constructions );
+    unique_gear::register_special_effect( 352429, items::miniscule_mailemental_in_an_envelope );
     unique_gear::register_special_effect( 355085, items::fine_razorwing_quill );
     unique_gear::register_special_effect( 355323, items::decanter_of_endless_howling );
     unique_gear::register_special_effect( 355324, items::tormentors_rack_fragment );
     unique_gear::register_special_effect( 355297, items::old_warriors_soul );
     unique_gear::register_special_effect( 355333, items::salvaged_fusion_amplifier );
+    unique_gear::register_special_effect( 355313, items::titanic_ocular_gland );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );

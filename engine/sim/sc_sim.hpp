@@ -415,8 +415,9 @@ struct sim_t : private sc_thread_t
     timespan_t salvaged_fusion_amplifier_precast = 0_s;
     // Better Together Override
     // Defaults active
-    
     bool better_together_ally = true;
+    /// Fraction of the time that the player is above the health threshold for Titanic Ocular Gland.
+    double titanic_ocular_gland_worthy_chance = 1.0;
   } shadowlands_opts;
 
   // Auras and De-Buffs
