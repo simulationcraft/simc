@@ -6832,7 +6832,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
     std::vector<action_t*> in_flight_list;
     for ( auto a : action_list )
     {
-      if ( is_hss( a ) || range::find_if( a->child_action, is_hss ) != a->child_action.end() )
+      if ( is_hss( a ) || range::any_of( a->child_action, is_hss ) )
         in_flight_list.push_back( a );
     }
 

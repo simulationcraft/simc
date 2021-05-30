@@ -235,13 +235,9 @@ void shadow( player_t* p )
   main->add_action(
       p, "Mind Blast",
       "if=(cooldown.mind_blast.charges>1&(debuff.hungering_void.up|!talent.hungering_void.enabled)|pet.fiend.remains<="
-      "cast_time+gcd)&pet.fiend.active&runeforge.shadowflame_prism.equipped&pet.fiend.remains>=cast_time",
+      "cast_time+gcd)&pet.fiend.active&runeforge.shadowflame_prism.equipped&pet.fiend.remains>cast_time",
       "Always use mindblasts if capped and hungering void is up and using Shadowflame Prism and bender is up."
       "Additionally, cast mindblast if you would be unable to get the rift by waiting a gcd." );
-  main->add_action(
-      p, "Mind Blast",
-      "if=cooldown.mind_blast.charges>1&pet.fiend.active&runeforge.shadowflame_prism.equipped&!cooldown.void_bolt.up",
-      "Instantly spend a mind blast charge after voidbolt if using shadowflame prism and mindblasts are capped." );
   main->add_action(
       p, "Void Bolt",
       "if=insanity<=85&talent.hungering_void.enabled&talent.searing_nightmare.enabled&spell_targets.mind_sear<=6|(("

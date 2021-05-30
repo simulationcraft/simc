@@ -9,8 +9,8 @@
 #include "event_manager.hpp"
 #include "player/gear_stats.hpp"
 #include "progress_bar.hpp"
-#include "sc_profileset.hpp"
 #include "sim_ostream.hpp"
+#include "sim/sc_option.hpp"
 #include "util/concurrency.hpp"
 #include "util/rng.hpp"
 #include "util/sample_data.hpp"
@@ -18,7 +18,6 @@
 #include "util/vector_with_callback.hpp"
 
 #include <map>
-#include <mutex>
 #include <memory>
 
 struct actor_target_data_t;
@@ -39,6 +38,7 @@ struct scale_factor_control_t;
 struct sim_control_t;
 struct spell_data_expr_t;
 struct spell_data_t;
+struct work_queue_t;
 
 namespace report
 {
@@ -46,6 +46,10 @@ namespace json
 {
 class report_configuration_t;
 }
+}
+
+namespace profileset{
+  class profilesets_t;
 }
 
 struct sim_progress_t
@@ -74,24 +78,28 @@ struct sim_t : private sc_thread_t
    * given scope.
    **/
   bool strict_parsing;
+  bool canceled;
+  // Clean up memory for threads after iterating (defaults to no in normal operation, some options
+  // will force-enable the option)
+  bool cleanup_threads;
+  bool initialized;
+  bool fixed_time;
+  bool save_profiles;
+  bool save_profile_with_actions;  // When saving full profiles, include actions or not
+  bool default_actions;
 
   // Iteration Controls
   timespan_t max_time, expected_iteration_time;
   double vary_combat_length;
   int current_iteration, iterations;
-  bool canceled;
   double target_error;
   role_e target_error_role;
   double current_error;
   double current_mean;
   int analyze_error_interval, analyze_number;
-  // Clean up memory for threads after iterating (defaults to no in normal operation, some options
-  // will force-enable the option)
-  bool cleanup_threads;
 
   sim_control_t* control;
   sim_t*      parent;
-  bool initialized;
   player_t*   target;
   player_t*   heal_target;
   vector_with_callback<player_t*> target_list;
@@ -115,7 +123,7 @@ struct sim_t : private sc_thread_t
   timespan_t  channel_lag, channel_lag_stddev;
   timespan_t  queue_gcd_reduction;
   timespan_t  default_cooldown_tolerance;
-  int         strict_gcd_queue;
+  bool         strict_gcd_queue;
   double      confidence, confidence_estimator;
   // Latency
   timespan_t  world_lag, world_lag_stddev;
@@ -127,26 +135,22 @@ struct sim_t : private sc_thread_t
   int         current_slot;
   int         optimal_raid, log, debug_each;
   std::vector<uint64_t> debug_seed;
-  bool        fixed_time;
-  bool        save_profiles;
-  bool        save_profile_with_actions; // When saving full profiles, include actions or not
-  bool        default_actions;
   stat_e      normalized_stat;
   std::string current_name, default_region_str, default_server_str, save_prefix_str, save_suffix_str;
-  int         save_talent_str;
+  bool         save_talent_str;
   talent_format talent_input_format;
   auto_dispose< std::vector<player_t*> > actor_list;
   std::string main_target_str;
   int         stat_cache;
   int         max_aoe_enemies;
-  bool        show_etmi;
   double      tmi_window_global;
   double      tmi_bin_size;
+  bool        show_etmi;
   bool        requires_regen_event;
   bool        single_actor_batch;
+  bool        allow_experimental_specializations;
   int         progressbar_type;
   int         armory_retries;
-  bool        allow_experimental_specializations;
 
   // Target options
   double      enemy_death_pct;
@@ -155,10 +159,7 @@ struct sim_t : private sc_thread_t
   int         target_adds;
   std::string sim_progress_base_str, sim_progress_phase_str;
   int         desired_targets; // desired number of targets
-  bool        enable_taunts;
 
-  // Disable use-item action verification in the simulator
-  bool        use_item_verification;
 
   // Data access
   std::unique_ptr<dbc_t> dbc;
@@ -167,17 +168,19 @@ struct sim_t : private sc_thread_t
   // Default stat enchants
   gear_stats_t enchant;
 
-  bool challenge_mode; // if active, players will get scaled down to 620 and set bonuses are deactivated
   int timewalk;
   int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
+  bool challenge_mode; // if active, players will get scaled down to 620 and set bonuses are deactivated
   bool scale_itemlevel_down_only; // Items below the value of scale_to_itemlevel will not be scaled up.
   bool disable_set_bonuses; // Disables all set bonuses.
+  bool enable_taunts;
+  bool use_item_verification;  // Disable use-item action verification in the simulator
   unsigned int disable_2_set; // Disables all 2 set bonuses for this tier/integer that this is set as
   unsigned int disable_4_set; // Disables all 4 set bonuses for this tier/integer that this is set as
   unsigned int enable_2_set;// Enables all 2 set bonuses for the tier/integer that this is set as
   unsigned int enable_4_set; // Enables all 4 set bonuses for the tier/integer that this is set as
-  bool pvp_crit; // Enables crit damage reduction in PvP
   const spell_data_t* pvp_rules; // Hidden aura that contains the PvP crit damage reduction
+  bool pvp_crit; // Enables crit damage reduction in PvP
   bool feast_as_dps = true;
   bool auto_attacks_always_land; /// Allow Auto Attacks (white attacks) to always hit the enemy
   bool log_spell_id; // Add spell data ids to log/debug output where available. (actions, buffs)
@@ -408,9 +411,13 @@ struct sim_t : private sc_thread_t
     // Battlefield Presence enemy count override
     // Defaults to -1 to have the sim constantly adjust the value based on number of enemies in the sim
     int battlefield_presence_enemies = -1;
+    /// Seconds before combat to apply the Shattered Psyche buff to the player.
+    timespan_t salvaged_fusion_amplifier_precast = 0_s;
     // Better Together Override
     // Defaults active
     bool better_together_ally = true;
+    /// Fraction of the time that the player is above the health threshold for Titanic Ocular Gland.
+    double titanic_ocular_gland_worthy_chance = 1.0;
   } shadowlands_opts;
 
   // Auras and De-Buffs
@@ -500,81 +507,7 @@ struct sim_t : private sc_thread_t
   std::vector<sim_t*> children; // Manual delete!
   int thread_index;
   computer_process::priority_e process_priority;
-  struct work_queue_t
-  {
-    private:
-#ifndef SC_NO_THREADING
-    std::recursive_mutex m;
-    using G = std::lock_guard<std::recursive_mutex>;
-#else
-    struct no_m {
-      void lock() {}
-      void unlock() {}
-    };
-    struct nop {
-      nop(no_m i) { (void)i; }
-    };
-    no_m m;
-    using G = nop;
-#endif
-    public:
-    std::vector<int> _total_work, _work, _projected_work;
-    size_t index;
-
-    work_queue_t() : index( 0 )
-    { _total_work.resize( 1 ); _work.resize( 1 ); _projected_work.resize( 1 ); }
-
-    void init( int w )    { G l(m); range::fill( _total_work, w ); range::fill( _projected_work, w ); }
-    // Single actor batch sim init methods. Batches is the number of active actors
-    void batches( size_t n ) { G l(m); _total_work.resize( n ); _work.resize( n ); _projected_work.resize( n ); }
-
-    void flush()          { G l(m); _total_work[ index ] = _projected_work[ index ] = _work[ index ]; }
-    int  size()           { G l(m); return index < _total_work.size() ? _total_work[ index ] : _total_work.back(); }
-    bool more_work()      { G l(m); return index < _total_work.size() && _work[ index ] < _total_work[ index ]; }
-    void lock()           { m.lock(); }
-    void unlock()         { m.unlock(); }
-
-    void project( int w )
-    {
-      G l(m);
-      _projected_work[ index ] = w;
-#ifdef NDEBUG
-      if ( w > _work[ index ] )
-      {
-      }
-#endif
-    }
-
-    // Single-actor batch pop, uses several indices of work (per active actor), each thread has it's
-    // own state on what index it is simulating
-    size_t pop()
-    {
-      G l(m);
-
-      if ( _work[ index ] >= _total_work[ index ] )
-      {
-        if ( index < _work.size() - 1 )
-        {
-          ++index;
-        }
-        return index;
-      }
-
-      if ( ++_work[ index ] == _total_work[ index ] )
-      {
-        _projected_work[ index ] = _work[ index ];
-        if ( index < _work.size() - 1 )
-        {
-          ++index;
-        }
-        return index;
-      }
-
-      return index;
-    }
-
-    sim_progress_t progress( int idx = -1 );
-  };
+  
   std::shared_ptr<work_queue_t> work_queue;
 
   // Related Simulations
@@ -617,7 +550,7 @@ struct sim_t : private sc_thread_t
   std::vector<std::string> profileset_output_data;
   bool profileset_enabled;
   int profileset_work_threads, profileset_init_threads;
-  profileset::profilesets_t profilesets;
+  std::unique_ptr<profileset::profilesets_t> profilesets;
 
 
   sim_t();

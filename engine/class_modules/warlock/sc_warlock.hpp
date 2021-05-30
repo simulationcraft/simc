@@ -8,6 +8,16 @@ namespace warlock
 {
 struct warlock_t;
 
+//Used for version checking in code (e.g. PTR vs Live)
+enum version_check_e
+{
+  VERSION_PTR,
+  VERSION_9_1_0,
+  VERSION_9_0_5,
+  VERSION_9_0_0,
+  VERSION_ANY
+};
+
 template <typename Action, typename Actor, typename... Args>
 action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
 {
@@ -70,6 +80,8 @@ struct warlock_td_t : public actor_target_data_t
   }
 
   void target_demise();
+
+  int count_affliction_dots();
 };
 
 struct warlock_t : public player_t
@@ -214,7 +226,7 @@ public:
     // tier 25
     const spell_data_t* reverse_entropy; //Note: talent spell (not the buff spell) contains RPPM data
     const spell_data_t* internal_combustion;
-    const spell_data_t* shadowburn; //TODO: Replace instances of hardcoding
+    const spell_data_t* shadowburn;
 
     // tier 35
     const spell_data_t* inferno; //TODO: Confirm interaction between Inferno and Rank 2 Rain of Fire, as well as if soul shard generation is per-target hit
@@ -254,6 +266,11 @@ public:
     item_runeforge_t embers_of_the_diabolic_raiment;
     item_runeforge_t madness_of_the_azjaqir;
     item_runeforge_t odr_shawl_of_the_ymirjar;
+    // Covenant
+    item_runeforge_t languishing_soul_detritus;
+    item_runeforge_t shard_of_annihilation;
+    item_runeforge_t decaying_soul_satchel;
+    item_runeforge_t contained_perpetual_explosion;
   } legendary;
 
   struct conduit_t
@@ -265,10 +282,11 @@ public:
     conduit_data_t fatal_decimation;      // Necrolord
     conduit_data_t soul_tithe;            // Kyrian
     // Affliction
-    conduit_data_t cold_embrace;
+    conduit_data_t cold_embrace; //9.1 PTR - Removed
     conduit_data_t corrupting_leer;
     conduit_data_t focused_malignancy;
     conduit_data_t rolling_agony;
+    conduit_data_t withering_bolt; //9.1 PTR - New, replaces Cold Embrace
     // Demonology
     conduit_data_t borne_of_blood;
     conduit_data_t carnivorous_stalkers;
@@ -308,6 +326,7 @@ public:
     propagate_const<cooldown_t*> demonic_tyrant;
     propagate_const<cooldown_t*> scouring_tithe;
     propagate_const<cooldown_t*> infernal;
+    propagate_const<cooldown_t*> shadowburn;
   } cooldowns;
 
   //TODO: this struct is supposedly for passives per the comment here, but that is potentially outdated. Consider refactoring and reorganizing ALL of this.
@@ -401,6 +420,10 @@ public:
     propagate_const<buff_t*> implosive_potential_small;
     propagate_const<buff_t*> dread_calling;
     propagate_const<buff_t*> demonic_synergy;
+    propagate_const<buff_t*> languishing_soul_detritus;
+    propagate_const<buff_t*> shard_of_annihilation; //TODO: 2021-05-28 PTR has a bug where it is not benefiting the last cast of spells (Drain Soul ticks work normally)
+    propagate_const<buff_t*> decaying_soul_satchel_haste; //These are one unified buff in-game but splitting them in simc to make it easier to apply stat pcts
+    propagate_const<buff_t*> decaying_soul_satchel_crit;
   } buffs;
 
   //TODO: Determine if any gains are not currently being tracked
@@ -464,6 +487,7 @@ public:
   int initial_soul_shards;
   std::string default_pet;
   shuffled_rng_t* rain_of_chaos_rng;
+  const spell_data_t* version_9_1_0_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 
@@ -485,6 +509,7 @@ public:
   int imps_spawned_during( timespan_t period );
   void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
   void malignancy_reduction_helper();
+  bool min_version_check( version_check_e version ) const;
   action_t* create_action( util::string_view name, const std::string& options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = "" ) override;
   void create_pets() override;
@@ -1041,4 +1066,6 @@ protected:
   }
 };
 }  // namespace buffs
+
+
 }  // namespace warlock

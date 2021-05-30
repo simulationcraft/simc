@@ -13,6 +13,7 @@
 #include "player/unique_gear_helper.hpp"
 #include "sim/sc_cooldown.hpp"
 #include "sim/sc_sim.hpp"
+#include "util/util.hpp"
 
 #include <regex>
 
@@ -1311,9 +1312,9 @@ void effusive_anima_accelerator( special_effect_t& effect )
       affected_cooldowns.clear();
       for ( auto a : player->action_list )
       {
-        if ( a->data().affected_by_label( 976 ) && player->dbc->spell_text( a->data().id() ).rank() == "Kyrian" )
+        if ( a->data().affected_by_label( 976 ) && util::str_compare_ci( player->dbc->spell_text( a->data().id() ).rank(), "Kyrian" ) )
         {
-          if ( range::find( affected_cooldowns, a->cooldown ) == affected_cooldowns.end() )
+          if ( !range::contains( affected_cooldowns, a->cooldown ) )
           {
             affected_cooldowns.push_back( a->cooldown );
           }

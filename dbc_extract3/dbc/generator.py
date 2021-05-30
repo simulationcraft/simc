@@ -1284,6 +1284,12 @@ class SpellDataGenerator(DataGenerator):
          329548,
          # 9.1 Soulbinds
          352881, # Bonded Hearts (night fae/niya)
+         # Miniscule Mailemental in an Envelope
+         352542,
+         # Tome of Monstrous Constructions
+         357163,
+         357168,
+         357169
         ),
 
         # Warrior:
@@ -1821,6 +1827,8 @@ class SpellDataGenerator(DataGenerator):
           ( 339229, 0 ), # Serrated Glaive conduit debuff
           ( 337849, 0 ), ( 345604, 0 ), ( 346664, 0 ), # Fel Bombardment legendary spells
           ( 347765, 0 ), # Fodder to the Flame Empowered Demon Soul buff
+          ( 355894, 0 ), ( 356070, 0 ), # Blind Faith legendary spells
+          ( 355892, 0 ), # Blazing Slaughter legendary buff
 
           # Havoc
           ( 236167, 1 ), # Felblade proc rate

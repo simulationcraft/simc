@@ -115,6 +115,7 @@ actions.bop+=/wildfire_bomb,if=dot.wildfire_bomb.refreshable
 actions.bop+=/serpent_sting,target_if=min:remains,if=buff.vipers_venom.up
 
 actions.cds=harpoon,if=talent.terms_of_engagement.enabled&focus<focus.max
+actions.cds+=/use_item,name=dreadfire_vessel,if=covenant.kyrian&cooldown.resonating_arrow.remains>10|!covenant.kyrian
 actions.cds+=/blood_fury,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/ancestral_call,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/fireblood,if=cooldown.coordinated_assault.remains>30

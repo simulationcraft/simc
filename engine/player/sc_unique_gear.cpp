@@ -3620,11 +3620,9 @@ bool buff_has_stat( const buff_t* buff, stat_e stat )
   //       Just filter tertiaries for now since they are present on some DPS trinket use effects
   if ( stat == STAT_ANY_DPS )
   {
-    auto it = range::find_if( stat_buff->stats, []( auto elem ) {
+    return range::any_of( stat_buff->stats, []( auto elem ) {
       return elem.stat != STAT_LEECH_RATING && elem.stat != STAT_SPEED_RATING && elem.stat != STAT_AVOIDANCE_RATING;
     } );
-
-    return it != stat_buff->stats.end();
   }
 
   for ( auto & elem : stat_buff->stats )

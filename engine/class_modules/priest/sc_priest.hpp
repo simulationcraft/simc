@@ -122,6 +122,7 @@ public:
     propagate_const<buff_t*> sephuzs_proclamation;
     propagate_const<buff_t*> talbadars_stratagem;
     propagate_const<buff_t*> shadow_word_manipulation;
+    propagate_const<buff_t*> rigor_mortis;
 
     // Conduits
     propagate_const<buff_t*> mind_devourer;
@@ -344,6 +345,8 @@ public:
     propagate_const<pet_t*> mindbender;
     spawner::pet_spawner_t<pet_t, priest_t> void_tendril;
     spawner::pet_spawner_t<pet_t, priest_t> void_lasher;
+    spawner::pet_spawner_t<pet_t, priest_t> rattling_mage;
+    spawner::pet_spawner_t<pet_t, priest_t> cackling_chemist;
 
     priest_pets_t( priest_t& p );
   } pets;
@@ -386,6 +389,13 @@ public:
     // Min: 0, Max: 8, Default: 7
     // Shattered Perception Conduit increase is handled outside of this
     int shadow_word_manipulation_seconds_remaining = 7;
+
+    // Pallid Command Allies
+    // Sets number of allies to use as an artificial modifier for Rigor Mortis stacks
+    // For each damage ability the priest will do it will add the amount of stacks equal
+    // to the number of allies
+    // TODO: tune this around raid testing
+    int pallid_command_allies = 5;
   } options;
 
   // Legendaries
@@ -399,6 +409,7 @@ public:
     item_runeforge_t bwonsamdis_pact;
     item_runeforge_t shadow_word_manipulation;
     item_runeforge_t spheres_harmony;
+    item_runeforge_t pallid_command;
     // Holy
     item_runeforge_t divine_image;          // NYI
     item_runeforge_t harmonious_apparatus;  // NYI
@@ -871,10 +882,18 @@ struct priest_spell_t : public priest_action_t<spell_t>
           }
         }
 
-        // Unholy Transfusion leech healing
         if ( td && td->dots.unholy_transfusion->is_ticking() )
         {
           priest().trigger_unholy_transfusion_healing();
+
+          if ( priest().legendary.pallid_command->ok() && s->result_type == result_amount_type::DMG_DIRECT )
+          {
+            // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/856
+            if ( priest().options.pallid_command_allies > 0 )
+            {
+              priest().buffs.rigor_mortis->trigger( priest().options.pallid_command_allies );
+            }
+          }
         }
       }
     }

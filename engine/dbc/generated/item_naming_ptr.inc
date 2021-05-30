@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.1.0.38709
-static const std::array<item_name_description_t, 641> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 9.1.0.38802
+static const std::array<item_name_description_t, 642> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -641,5 +641,6 @@ static const std::array<item_name_description_t, 641> __ptr_item_name_descriptio
   { 13885, "Sinister Teachings"                          },
   { 13886, "Heart of the Fae"                            },
   { 13887, "Spheres' Harmony"                            },
+  { 13888, "Pallid Command"                              },
 } };
 

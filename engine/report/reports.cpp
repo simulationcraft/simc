@@ -87,7 +87,7 @@ void print_profiles(sim_t* sim)
     {
       file_name = sim->save_prefix_str;
       file_name += p->name_str;
-      if (sim->save_talent_str != 0)
+      if (sim->save_talent_str)
       {
         file_name += "_";
         file_name += p->primary_tree_name();
@@ -148,7 +148,7 @@ void print_profiles(sim_t* sim)
             p->name(), p->primary_tree_name(), util::role_type_string(p->primary_role()),
             sim->save_prefix_str.c_str(), p->name());
 
-          if (sim->save_talent_str != 0)
+          if (sim->save_talent_str)
             fprintf(file, "-%s", p->primary_tree_name());
 
           fprintf(file, "%s.simc\n\n", sim->save_suffix_str.c_str());

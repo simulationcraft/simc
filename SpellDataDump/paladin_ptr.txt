@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, git build shadowlands a1782479, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
 
 Name             : Haste (id=65) 
 Class            : Paladin
@@ -10879,7 +10879,6 @@ Description      : Vanquisher's Hammer gains $s1 additional charge. An additiona
 Name             : Seasons of Plenty (id=355100) [Spell Family (10), Passive, Hidden] 
 School           : Nature
 Spell Type       : None
-Range            : 100 yards
 Proc Chance      : 101%
 Proc Flags       : ........ ..x...x. .....x.. ........ 
                  : Generic Heal, Magic Heal, Trap Triggered
@@ -10893,9 +10892,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=887946)   : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Description      : Blessings of the Seasons' effectiveness is increased by 100% after $s1 sec. This effect lasts for $355567d.
+#1 (id=887946)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Casting $?a328278[Blessing of Autumn]?a329722[Blessing of Winter]?a329720[Blessing of Spring][Blessing of Summer] grants Equinox after $s1 sec.
+
+|cFFFFFFFFEquinox:|r The effectiveness of $?a328278[Blessing of Autumn]?a329722[Blessing of Winter]?a329720[Blessing of Spring][Blessing of Summer] is increased by 100% for $355567d.
 
 Name             : Radiant Embers (id=355447) [Spell Family (10), Passive, Hidden] 
 School           : Shadow

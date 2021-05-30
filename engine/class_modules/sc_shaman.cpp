@@ -1722,6 +1722,7 @@ public:
     }
 
     auto stacks = maelstrom_weapon_stacks();
+    auto cast_time = execute_time();
     if ( stacks && consume_maelstrom_weapon() )
     {
       p()->buff.maelstrom_weapon->decrement( stacks );
@@ -1748,7 +1749,7 @@ public:
     }
 
     // Main hand swing timer resets if the MW-affected spell is not instant cast
-    if ( affected_by_maelstrom_weapon && execute_time() > 0_ms )
+    if ( affected_by_maelstrom_weapon && cast_time > 0_ms )
     {
       if ( p()->main_hand_attack && p()->main_hand_attack->execute_event )
       {

@@ -2493,7 +2493,7 @@ void action_t::init()
 #endif
 
   consume_per_tick_ =
-      range::find_if( base_costs_per_tick, []( const double& d ) { return d != 0; } ) != base_costs_per_tick.end();
+      range::any_of( base_costs_per_tick, []( const double& d ) { return d != 0; } );
 
   // Setup default target in init
   default_target = target;

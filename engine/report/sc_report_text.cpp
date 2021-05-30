@@ -10,6 +10,7 @@
 #include "sim/scale_factor_control.hpp"
 #include "sim/iteration_data_entry.hpp"
 #include "sim/plot.hpp"
+#include "sim/sc_profileset.hpp"
 #include "fmt/chrono.h"
 
 #include <iomanip>
@@ -1261,7 +1262,7 @@ void print_text_report( std::ostream& os, sim_t* sim, bool detail )
     print_player_sequence( os, sim, sim->targets_by_name, detail );
   }
 
-  sim -> profilesets.output_text( *sim, os );
+  sim -> profilesets->output_text( *sim, os );
 
   sim_summary_performance( os, sim );
 

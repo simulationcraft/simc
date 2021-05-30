@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, git build shadowlands a1782479, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -7436,7 +7436,6 @@ Allies receiving this effect will become Sated and unable to benefit from Primal
 Tooltip          : Haste increased by $s1%.
 
 Name             : Survival of the Fittest (desc=Tenacity Ability) (id=264735) [Spell Family (9)] 
-Hotfixed         : Affecting Spells
 Class            : Tenacity Hunter Pet
 School           : Physical
 Spell Type       : None
@@ -13284,7 +13283,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=890001)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (3 -> 2)
 Description      : Up to $s1 targets hit by your Death Chakram are also hit by Explosive Shot.
 
 Name             : Pouch of Razor Fragments (id=356618) [Spell Family (9), Passive, Hidden] 

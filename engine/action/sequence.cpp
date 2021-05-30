@@ -237,11 +237,11 @@ bool strict_sequence_t::ready()
     return true;
   }
   else
-  {
-    auto it = range::find_if( sub_actions, []( action_t* a ) {
+  { 
+    // Ready if at least one action is usable
+    return range::any_of( sub_actions, []( action_t* a ) {
         return ! a -> background && a -> ready();
     } );
-    return it != sub_actions.end(); // Ready if at least one action is usable
   }
 }
 

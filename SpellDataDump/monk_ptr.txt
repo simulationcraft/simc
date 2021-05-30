@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, git build shadowlands a1782479, no-networking)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -4091,9 +4091,8 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : Aura (infinite)
-Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Stacks           : 3 maximum
+Proc Chance      : 101%
 Affecting spells : March of the Legion (212132 effect#1)
 Family Flags     : 120
 Attributes       : ....x... ........ ..x..... x..x.x.x   .....x.. ..x..... .x...... ........ 
@@ -12020,7 +12019,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=890548)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your abilities have a low chance to cast Bonedust Brew at your targets location.
+Description      : Your abilities have a low chance to cast Bonedust Brew at your target's location.
 
 Name             : Call to Arms (id=356684) [Spell Family (53), Passive, Hidden] 
 School           : Physical
@@ -12059,7 +12058,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=890716)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your abilities chance to reset Faeline Stomp is doubled. Enemies and allies hit by Faeline Stomp are affected by Fae Exposure, increasing your damage and healing against them by $356774s1% for $356774d.
+#2 (id=891846)   : Dummy (3)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
+Description      : Your abilities reset Faeline Stomp $s2% more often. Enemies and allies hit by Faeline Stomp are affected by Fae Exposure, increasing your damage and healing against them by $356774s1% for $356774d.
 
 Name             : Revival (desc=Rank 2) (id=356722) [Spell Family (53), Passive] 
 Class            : Mistweaver Monk
@@ -12146,6 +12147,6 @@ Effects          :
                    Base Value: 24 | Scaled Value: 24 | PvP Coefficient: 1.00000
 #3 (id=890914)   : Dummy (3)
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000
-Description      : Fallen Order summons $s1 additional $?$C1[Ox]?$C2[Crane][Tiger] adept for $s2 sec. While you have an active adept your abilities that critically hit reduce the cooldown of Fallen Order by ${$s3/1000} sec.
+Description      : Fallen Order summons $s1 additional $?$C1[Ox]?$C2[Crane][Tiger] adept for $s2 sec. While you have an active adept, your abilities that critically hit reduce the cooldown of Fallen Order by ${$s3/1000} sec.
 
 

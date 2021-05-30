@@ -527,6 +527,9 @@ struct player_t : public actor_t
     buff_t* norgannons_sagacity_stacks;  // stacks on every cast
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
     buff_t* echo_of_eonar;               // passive self buff
+
+    // 9.1 Legendary Party Buffs
+    buff_t* pact_of_the_soulstalkers; // Kyrian Hunter Legendary
   } buffs;
 
   struct debuffs_t
@@ -558,7 +561,9 @@ struct player_t : public actor_t
     std::vector<timespan_t> blessing_of_spring;
     std::vector<timespan_t> conquerors_banner;
     std::vector<timespan_t> rallying_cry;
+    std::vector<timespan_t> pact_of_the_soulstalkers;
   } external_buffs;
+
 
   struct gains_t
   {

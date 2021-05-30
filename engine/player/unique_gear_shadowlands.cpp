@@ -1930,6 +1930,365 @@ void murmurs_in_the_dark( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+
+// 9.1 Trinkets
+
+// id=356029 buff
+// id=353492 driver
+void forbidden_necromantic_tome( special_effect_t& effect )  // NYI: Battle Rezz Ghoul
+{
+  auto buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "forbidden_knowledge" ) );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "forbidden_knowledge", effect.player -> find_spell( 356029 ))
+           ->add_stat( STAT_CRIT_RATING, effect.driver() ->effectN( 1 ).average( effect.item ) );
+    
+    effect.custom_buff = buff;
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+}
+
+void soul_cage_fragment( special_effect_t& effect )
+{
+  auto buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "torturous_might" ) );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "torturous_might", effect.player->find_spell( 357672 ) )
+           ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), effect.driver()->effectN( 1 ).average( effect.item ) );
+
+    effect.custom_buff = buff;
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+}
+
+void fine_razorwing_quill( special_effect_t& effect )
+{
+}
+
+void decanter_of_endless_howling( special_effect_t& effect )
+{
+  effect.proc_flags2_ = PF2_CRIT;
+  auto buff           = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "decanted_warsong" ) );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "decanted_warsong", effect.player->find_spell( 356687 ) )
+               ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI ),
+                           effect.driver()->effectN( 1 ).average( effect.item ) );
+
+    effect.custom_buff = buff;
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+}
+
+void tome_of_monstrous_constructions( special_effect_t& effect ) // TODO: Create buff that tracks the name of the mob, and only trigger on mobs with the same name.
+{
+  // Assume the player keeps the buff up on its own as the item is off-gcd and
+  // the buff has a 60 minute duration which is enough for any encounter.
+  effect.type = SPECIAL_EFFECT_EQUIP;
+
+  struct tome_of_monstrous_constructions_t : public proc_spell_t
+  {
+    tome_of_monstrous_constructions_t( const special_effect_t& e )
+      : proc_spell_t( "studious_comprehension", e.player, e.player -> find_spell( 357168 ), e.item )
+    {
+      base_dd_min = e.player -> find_spell( 357169 ) -> effectN( 1 ).min( e.item );
+      base_dd_max = e.player-> find_spell( 357169 ) -> effectN( 1 ).max( e.item );
+    }
+  };
+
+  auto secondary      = new special_effect_t( effect.item );
+  secondary->type     = SPECIAL_EFFECT_EQUIP;
+  secondary->source   = SPECIAL_EFFECT_SOURCE_ITEM;
+  secondary->spell_id = 357163;
+  secondary->execute_action =
+      create_proc_action<tome_of_monstrous_constructions_t>( "studious_comprehension", *secondary );
+  effect.player->special_effects.push_back( secondary );
+
+  auto callback = new dbc_proc_callback_t( effect.item, *secondary );
+  callback->initialize();
+}
+
+
+
+void tormentors_rack_fragment( special_effect_t& effect )
+{
+  struct excruciating_twinge_t : public proc_spell_t
+    {
+      excruciating_twinge_t( const special_effect_t& e )
+        : proc_spell_t( "excruciating_twinge", e.player, e.player->find_spell( 356181 ), e.item )
+      {
+        base_td = e.driver()->effectN( 1 ).average( e.item );
+      }
+
+      timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t ) const override
+      {
+        return dot->remains();
+      }
+    };
+
+  struct tormentors_rack_fragment_callback_t : public dbc_proc_callback_t
+  {
+    using dbc_proc_callback_t::dbc_proc_callback_t;
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+
+      if ( state->target->is_sleeping() )
+
+        return;
+
+      proc_action->target = target( state );
+      proc_action->schedule_execute();
+    }
+  };
+
+  auto p    = effect.player;
+  auto buff = make_buff<stat_buff_t>( p, "shredded_soul", p->find_spell( 356281 ) );
+  buff->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
+
+  range::for_each( p->sim->actor_list, [ p, buff ]( player_t* t ) {
+    if ( !t->is_enemy() )
+      return;
+
+    t->register_on_demise_callback( p, [ p, buff ]( player_t* t ) {
+      if ( p->sim->event_mgr.canceled )
+        return;
+
+      auto d = t->get_dot( "excruciating_twinge", p );
+      if ( d->remains() > 0_ms )
+        buff->trigger(); // Going to assume that the player picks this up automatically, might need to add delay.
+    } );
+  } );
+
+  effect.execute_action = create_proc_action<excruciating_twinge_t>( "excruciating_twinge", effect );
+
+  new tormentors_rack_fragment_callback_t( effect.player, effect );
+}
+
+void old_warriors_soul( special_effect_t& effect )
+{
+  player_t* p = effect.player;
+  auto buff   = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "undying_rage" ) );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "undying_rage", effect.player->find_spell( 356492 ) )
+               ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+    effect.custom_buff = buff;
+    effect.player->register_combat_begin( [ &effect, buff ]( player_t* ) {
+      buff->trigger();
+      make_repeating_event( buff->source->sim, effect.player->find_spell( 356490 )->effectN( 1 ).period(),
+                            [ buff ]() { buff->trigger(); } );
+    } );
+  }
+}
+
+
+void salvaged_fusion_amplifier( special_effect_t& effect)
+{
+  struct salvaged_fusion_amplifier_damage_t : public generic_proc_t
+    {
+    salvaged_fusion_amplifier_damage_t( const special_effect_t& e ) : generic_proc_t( e, "fusion_amplification", 355605 )
+      {
+        base_dd_min = e.driver() -> effectN( 1 ).average( e.item );
+        base_dd_max = e.driver() -> effectN( 1 ).average( e.item );
+      }
+    };
+
+    struct salvaged_fusion_amplifier_cb_t : public dbc_proc_callback_t
+    {
+      salvaged_fusion_amplifier_damage_t* damage;
+      buff_t* buff;
+
+      salvaged_fusion_amplifier_cb_t( const special_effect_t& effect, action_t* d, buff_t* b )
+        : dbc_proc_callback_t( effect.player, effect ),
+          damage( debug_cast<salvaged_fusion_amplifier_damage_t*>( d ) ),
+          buff( b )
+      {
+      }
+
+      void execute( action_t*, action_state_t* trigger_state ) override
+      {
+        if ( buff->check() )
+        {
+          damage->set_target( trigger_state->target );
+          damage->execute();
+        }
+      }
+    };
+
+    auto buff = buff_t::find( effect.player, "salvaged_fusion_amplifier" );
+    if ( !buff )
+    {
+      buff = make_buff( effect.player, "salvaged_fusion_amplifier", effect.driver() );
+    }
+
+    action_t* damage = create_proc_action<salvaged_fusion_amplifier_damage_t>( "fusion_amplification", effect );
+
+    effect.custom_buff = buff;
+    effect.disable_action();
+
+    auto cb_driver          = new special_effect_t( effect.player );
+    cb_driver->name_str     = "salvaged_fusion_amplifier_driver";
+    cb_driver->spell_id     = 355333;
+    cb_driver->cooldown_    = 0_s;
+    cb_driver->proc_flags_  = effect.driver()->proc_flags();
+    cb_driver->proc_flags2_ = PF2_CAST_DAMAGE;  // Only triggers from damaging casts
+    effect.player->special_effects.push_back( cb_driver );
+
+    auto callback      = new salvaged_fusion_amplifier_cb_t( *cb_driver, damage, buff );
+
+    timespan_t precast = effect.player->sim->shadowlands_opts.salvaged_fusion_amplifier_precast;
+    if ( precast > 0_s )
+    {
+      effect.player->register_combat_begin( [ &effect, buff, precast ]( player_t* ) {
+        buff->trigger( buff->buff_duration() - precast );
+
+        cooldown_t* cd = effect.player->get_cooldown( effect.cooldown_name() );
+        cd->start( effect.cooldown() - precast );
+
+        cooldown_t* group_cd = effect.player->get_cooldown( effect.cooldown_group_name() );
+        group_cd->start( effect.cooldown_group_duration() - precast );
+      } );
+    }
+  }
+
+
+void miniscule_mailemental_in_an_envelope( special_effect_t& effect )
+{
+  struct unstable_goods_t : public proc_spell_t
+  {
+    unstable_goods_t( const special_effect_t& e )
+      : proc_spell_t( "unstable_goods", e.player, e.player->find_spell( 352542 ) )
+    {
+      base_dd_min = e.driver()->effectN( 1 ).min( e.item );
+      base_dd_max = e.driver()->effectN( 1 ).max( e.item );
+    }
+  };
+
+  struct unstable_goods_callback_t : public dbc_proc_callback_t
+  {
+    using dbc_proc_callback_t::dbc_proc_callback_t;
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      if ( state->target->is_sleeping() )
+        return;
+
+      proc_action->target = target( state );
+      proc_action->schedule_execute();
+    }
+  };
+
+  effect.execute_action = create_proc_action<unstable_goods_t>( "unstable_goods", effect );
+
+  new unstable_goods_callback_t( effect.player, effect );
+}
+
+/**Titanic Ocular Gland
+ * id=355313 coefficients for stat amounts
+ * id=355794 "Worthy" buff
+ * id=355951 "Unworthy" debuff
+ */
+void titanic_ocular_gland( special_effect_t& effect )
+{
+  // When selecting the highest stat, the priority of equal secondary stats is Vers > Mastery > Haste > Crit.
+  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
+
+  // Use a separate buff for each rating type so that individual uptimes are reported nicely and APLs can easily reference them.
+  // Store these in pointers to reduce the size of the events that use them.
+  auto worthy_buffs = std::make_shared<std::map<stat_e, buff_t*>>();
+  auto unworthy_buffs = std::make_shared<std::map<stat_e, buff_t*>>();
+  double amount = effect.driver()->effectN( 1 ).average( effect.item );
+
+  for ( auto stat : ratings )
+  {
+    auto name = std::string( "worthy_" ) + util::stat_type_string( stat );
+    buff_t* buff = buff_t::find( effect.player, name );
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 355794 ), effect.item )
+               ->add_stat( stat, amount )
+               ->set_can_cancel( false );
+    }
+    ( *worthy_buffs )[ stat ] = buff;
+
+    name = std::string( "unworthy_" ) + util::stat_type_string( stat );
+    buff = buff_t::find( effect.player, name );
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 355951 ), effect.item )
+               ->add_stat( stat, -amount )
+               ->set_can_cancel( false );
+    }
+    ( *unworthy_buffs )[ stat ] = buff;
+  }
+
+  auto update_buffs = [p = effect.player, worthy_buffs, unworthy_buffs]() mutable
+  {
+    bool worthy = p->rng().roll( p->sim->shadowlands_opts.titanic_ocular_gland_worthy_chance );
+    bool buff_active = false;
+    stat_e max_stat = util::highest_stat( p, ratings );
+
+    // Iterate over all of the buffs and expire any that should not be active. Only one buff is
+    // active at a time, so this process only needs to continue until a single active buff is found.
+    for ( auto stat : ratings )
+    {
+      if ( ( *worthy_buffs )[ stat ]->check() )
+      {
+        // The Worthy buff will update to a different stat if that stat becomes higher.
+        if ( max_stat != stat || !worthy )
+        {
+          ( *worthy_buffs )[ stat ]->expire();
+          max_stat = util::highest_stat( p, ratings );
+        }
+        else
+        {
+          buff_active = true;
+        }
+        break;
+      }
+      if ( ( *unworthy_buffs )[ stat ]->check() )
+      {
+        // The Unworthy debuff will never update its stat.
+        if ( worthy )
+        {
+          ( *unworthy_buffs )[ stat ]->expire();
+          max_stat = util::highest_stat( p, ratings );
+        }
+        else
+        {
+          buff_active = true;
+        }
+        break;
+      }
+    }
+
+    if ( !buff_active )
+    {
+      if ( worthy )
+        ( *worthy_buffs )[ max_stat ]->execute();
+      else
+        ( *unworthy_buffs )[ max_stat ]->execute();
+    }
+  };
+
+  // While above the health threshold, this trinket appears to check your secondary stats every 5.25 seconds.
+  // Also use this as an interval for checking whether the player is above the health threshold to toggle between
+  // Worthy and Unworthy. In game, the buffs will actually switch instantly as soon as the player's health changes.
+  effect.player->register_combat_begin( [update_buffs]( player_t* p ) mutable
+  {
+    timespan_t period = 5.25_s;
+    timespan_t first_update = p->rng().real() * period;
+    update_buffs();
+    make_event( p->sim, first_update, [period, update_buffs, p]() mutable
+    {
+      update_buffs();
+      make_repeating_event( p->sim, period, update_buffs );
+    } );
+  } );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -2154,6 +2513,18 @@ void register_special_effects()
     unique_gear::register_special_effect( 336182, items::tablet_of_despair );
     unique_gear::register_special_effect( 329536, items::rotbriar_sprout );
     unique_gear::register_special_effect( 339343, items::murmurs_in_the_dark );
+
+    // 9.1 Trinkets
+    unique_gear::register_special_effect( 353492, items::forbidden_necromantic_tome );
+    unique_gear::register_special_effect( 357672, items::soul_cage_fragment );
+    unique_gear::register_special_effect( 353692, items::tome_of_monstrous_constructions );
+    unique_gear::register_special_effect( 352429, items::miniscule_mailemental_in_an_envelope );
+    unique_gear::register_special_effect( 355085, items::fine_razorwing_quill );
+    unique_gear::register_special_effect( 355323, items::decanter_of_endless_howling );
+    unique_gear::register_special_effect( 355324, items::tormentors_rack_fragment );
+    unique_gear::register_special_effect( 355297, items::old_warriors_soul );
+    unique_gear::register_special_effect( 355333, items::salvaged_fusion_amplifier );
+    unique_gear::register_special_effect( 355313, items::titanic_ocular_gland );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );

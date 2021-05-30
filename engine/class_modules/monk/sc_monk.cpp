@@ -382,7 +382,7 @@ public:
       double reset_value = p()->buff.faeline_stomp->value();
 
       if ( p()->legendary.faeline_harmony->ok() )
-        reset_value *= 2; // Right now hard-coded; TODO get effect value once implemented.
+        reset_value *= 1 + p()->legendary.faeline_harmony->effectN( 2 ).percent(); 
 
       if ( p()->rng().roll( reset_value ) )
       {

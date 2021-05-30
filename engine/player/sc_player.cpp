@@ -4659,6 +4659,7 @@ void player_t::combat_begin()
   add_timed_buff_triggers( external_buffs.blessing_of_spring, buffs.blessing_of_spring );
   add_timed_buff_triggers( external_buffs.conquerors_banner, buffs.conquerors_banner );
   add_timed_buff_triggers( external_buffs.rallying_cry, buffs.rallying_cry );
+  add_timed_buff_triggers( external_buffs.pact_of_the_soulstalkers, buffs.pact_of_the_soulstalkers );
 
   if ( buffs.windfury_totem )
   {
@@ -8565,13 +8566,13 @@ struct use_items_t : public action_t
     // Note that this only looks at item-sourced on-use actions (e.g., no engineering addons).
     range::for_each( slot_order, [this]( slot_e slot ) {
       const auto& item     = player->items[ slot ];
-      const auto effect_it = range::find_if( item.parsed.special_effects, []( const special_effect_t* e ) {
+      const auto has_effect = range::any_of( item.parsed.special_effects, []( const special_effect_t* e ) {
         return (e->source == SPECIAL_EFFECT_SOURCE_ITEM || e->source == SPECIAL_EFFECT_SOURCE_GEM ||
                 e->source == SPECIAL_EFFECT_SOURCE_ENCHANT) && e->type == SPECIAL_EFFECT_USE;
       } );
 
       // No item-based on-use effect in the slot, skip
-      if ( effect_it == item.parsed.special_effects.end() )
+      if ( !has_effect )
       {
         return;
       }
@@ -11347,6 +11348,7 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.blessing_of_spring", external_buffs.blessing_of_spring ) );
   add_option( opt_external_buff_times( "external_buffs.conquerors_banner", external_buffs.conquerors_banner ) );
   add_option( opt_external_buff_times( "external_buffs.rallying_cry", external_buffs.rallying_cry ) );
+  add_option( opt_external_buff_times( "external_buffs.pact_of_the_soulstalkers", external_buffs.pact_of_the_soulstalkers ) ); // 9.1 Kyrian Hunter Legendary
 
   // Azerite options
   if ( ! is_enemy() && ! is_pet() )

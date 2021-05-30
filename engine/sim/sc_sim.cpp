@@ -28,7 +28,9 @@
 #include "sim/raid_event.hpp"
 #include "sim/plot.hpp"
 #include "sim/reforge_plot.hpp"
+#include "sc_profileset.hpp"
 #include "sim/sc_cooldown.hpp"
+#include "sim/work_queue.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
 #include "util/xml.hpp"
 #include "util/string_view.hpp"
@@ -1386,7 +1388,7 @@ struct compare_name
 
 // Standard progress method, normal mode sims use the single (first) index, single actor batch
 // sims progress with the main thread's current index.
-sim_progress_t sim_t::work_queue_t::progress( int idx )
+sim_progress_t work_queue_t::progress( int idx )
 {
   G l(m);
   size_t current_index = idx;
@@ -1415,22 +1417,26 @@ sim_t::sim_t() :
   out_debug(*this, &std::cout, sim_ostream_t::no_close() ),
   debug( false ),
   strict_parsing( false ),
+  canceled( false ),
+  cleanup_threads( false ),
+  initialized( false ),
+  fixed_time( true ),
+  save_profiles( false ),
+  save_profile_with_actions( true ),
+  default_actions( false ),
   max_time( timespan_t::zero() ),
   expected_iteration_time( timespan_t::zero() ),
   vary_combat_length( 0.0 ),
   current_iteration( -1 ),
   iterations( 0 ),
-  canceled( false ),
   target_error( 0 ),
   target_error_role( ROLE_DPS ),
   current_error( 0 ),
   current_mean( 0 ),
   analyze_error_interval( 100 ),
   analyze_number( 0 ),
-  cleanup_threads( false ),
   control( nullptr ),
   parent( nullptr ),
-  initialized( false ),
   target( nullptr ),
   heal_target( nullptr ),
   target_list(),
@@ -1449,7 +1455,7 @@ sim_t::sim_t() :
   channel_lag( timespan_t::from_seconds( 0.250 ) ), channel_lag_stddev( timespan_t::zero() ),
   queue_gcd_reduction( timespan_t::from_seconds( 0.1 ) ),
   default_cooldown_tolerance( timespan_t::from_millis( 250 ) ),
-  strict_gcd_queue( 0 ),
+  strict_gcd_queue( false ),
   confidence( 0.95 ), confidence_estimator( 0.0 ),
   world_lag( timespan_t::from_seconds( 0.1 ) ), world_lag_stddev( timespan_t::min() ),
   travel_variance( 0 ), default_skill( 1.0 ), reaction_time( timespan_t::from_seconds( 0.5 ) ),
@@ -1460,33 +1466,31 @@ sim_t::sim_t() :
   current_slot( -1 ),
   optimal_raid( 0 ), log( 0 ),
   debug_each( 0 ),
-  fixed_time( true ),
-  save_profiles( false ),
-  save_profile_with_actions( true ),
-  default_actions( false ),
   normalized_stat( STAT_NONE ),
   default_region_str( "us" ),
   save_prefix_str( "save_" ),
-  save_talent_str( 0 ),
+  save_talent_str( false ),
   talent_input_format(talent_format::UNCHANGED ),
   stat_cache( 1 ),
   max_aoe_enemies( 20 ),
-  show_etmi( false ),
   tmi_window_global( 0 ),
   tmi_bin_size( 0.5 ),
-  requires_regen_event( false ), single_actor_batch( false ),
+  show_etmi( false ),
+  requires_regen_event( false ),
+  single_actor_batch( false ),
+  allow_experimental_specializations( false ),
   progressbar_type( 0 ),
   armory_retries( 3 ),
-  allow_experimental_specializations( false ),
   enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ),
-  target_adds( 0 ), desired_targets( 1 ), enable_taunts( false ),
-  use_item_verification( true ),
+  target_adds( 0 ), desired_targets( 1 ), 
   dbc(new dbc_t()),
   dbc_override( std::make_unique<dbc_override_t>() ),
-  challenge_mode( false ), timewalk( -1 ), scale_to_itemlevel( -1 ), scale_itemlevel_down_only( false ),
-  disable_set_bonuses( false ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
-  pvp_crit( false ),
+  timewalk( -1 ), scale_to_itemlevel( -1 ), challenge_mode( false ), scale_itemlevel_down_only( false ),
+  disable_set_bonuses( false ),
+  enable_taunts( false ),
+  use_item_verification( true ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
   pvp_rules(),
+  pvp_crit( false ),
   auto_attacks_always_land( false ),
   log_spell_id(),
   active_enemies( 0 ), active_allies( 0 ),
@@ -1546,7 +1550,8 @@ sim_t::sim_t() :
   profileset_output_data(),
   profileset_enabled( false ),
   profileset_work_threads( 0 ),
-  profileset_init_threads( 1 )
+  profileset_init_threads( 1 ),
+  profilesets(std::make_unique<profileset::profilesets_t>())
 {
   item_db_sources.assign( std::begin( default_item_db_sources ),
                           std::end( default_item_db_sources ) );
@@ -1714,7 +1719,7 @@ void sim_t::cancel()
 
   if ( ! parent )
   {
-    profilesets.cancel();
+    profilesets->cancel();
   }
 }
 
@@ -2773,7 +2778,7 @@ void sim_t::init()
   // exit in any case
   if ( active_player && active_player->report_information.save_str.empty() )
   {
-    profilesets.initialize( this );
+    profilesets->initialize( this );
   }
 
   initialized = true;
@@ -3827,6 +3832,8 @@ void sim_t::create_options()
   add_option( opt_string( "shadowlands.party_favor_type", shadowlands_opts.party_favor_type ) );
   add_option( opt_int( "shadowlands.battlefield_presence_enemies", shadowlands_opts.battlefield_presence_enemies, 0, 3 ) );
   add_option( opt_bool( "shadowlands.better_together_ally", shadowlands_opts.better_together_ally ) );
+  add_option( opt_timespan( "shadowlands.salvaged_fusion_amplifier_precast", shadowlands_opts.salvaged_fusion_amplifier_precast, 0_s, 30_s ) );
+  add_option( opt_float( "shadowlands.titanic_ocular_gland_worthy_chance", shadowlands_opts.titanic_ocular_gland_worthy_chance, 0.0, 1.0 ) );
 }
 
 // sim_t::parse_option ======================================================
@@ -4336,11 +4343,9 @@ void sim_t::activate_actors()
 
 bool sim_t::has_raid_event( util::string_view type ) const
 {
-  auto it = range::find_if( raid_events, [ &type ]( const std::unique_ptr<raid_event_t>& event ) {
+  return range::any_of( raid_events, [ &type ]( const std::unique_ptr<raid_event_t>& event ) {
       return util::str_compare_ci( type, event -> type );
   } );
-
-  return it != raid_events.end();
 }
 
 // Determine when the main thread must clean up child threads (i.e., delete them)

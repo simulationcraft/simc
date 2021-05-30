@@ -1854,9 +1854,9 @@ public:
       {
         double pct = mod_spell_effects_percent( mod, eff );
 
-        if ( eff.subtype() == A_ADD_FLAT_MODIFIER )
+        if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
           val += pct;
-        else if ( eff.subtype() == A_ADD_PCT_MODIFIER )
+        else if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
           val *= 1.0 + pct;
         else if ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE )
           val = pct;
@@ -4194,7 +4194,7 @@ struct tigers_fury_t : public cat_attack_t
 
     p()->buff.tigers_fury->trigger( duration );
 
-    if ( p()->legendary.eye_of_fearful_symmetry->ok() )
+    if ( !free_cast && p()->legendary.eye_of_fearful_symmetry->ok() )
       p()->buff.eye_of_fearful_symmetry->trigger();
   }
 };
@@ -6288,8 +6288,8 @@ struct starsurge_t : public druid_spell_t
     auto apl = player->precombat_action_list;
 
     // emulate performing check_form_restriction()
-    auto it = range::find_if( apl, []( action_t* a ) { return util::str_compare_ci( a->name(), "moonkin_form" ); } );
-    if ( it == apl.end() )
+    // TODO: Try to avoid string comparison during combat
+    if ( !range::any_of( apl, []( action_t* a ) { return util::str_compare_ci( a->name(), "moonkin_form" ); } ) )
       return false;
 
     // emulate performing resource_available( current_resource(), cost() )

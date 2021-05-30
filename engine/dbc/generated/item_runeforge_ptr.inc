@@ -1,5 +1,5 @@
-// Runeforge legendary bonuses, wow build 9.1.0.38709
-static const std::array<runeforge_legendary_entry_t, 720> __ptr_runeforge_legendary_data { {
+// Runeforge legendary bonuses, wow build 9.1.0.38802
+static const std::array<runeforge_legendary_entry_t, 723> __ptr_runeforge_legendary_data { {
   { 6823, 64, 327508, 0x000000c0, "Slick Ice" },
   { 6828, 64, 327284, 0x00110020, "Cold Front" },
   { 6829, 64, 327364, 0x00000402, "Freezing Winds" },
@@ -720,5 +720,8 @@ static const std::array<runeforge_legendary_entry_t, 720> __ptr_runeforge_legend
   { 7728, 256, 356395, 0x00000088, "Spheres' Harmony" },
   { 7728, 257, 356395, 0x00000088, "Spheres' Harmony" },
   { 7728, 258, 356395, 0x00000088, "Spheres' Harmony" },
+  { 7729, 256, 356390, 0x00000900, "Pallid Command" },
+  { 7729, 257, 356390, 0x00000900, "Pallid Command" },
+  { 7729, 258, 356390, 0x00000900, "Pallid Command" },
 } };
 

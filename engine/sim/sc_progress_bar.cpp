@@ -11,6 +11,8 @@
 #include "sim_control.hpp"
 #include "sim/plot.hpp"
 #include "sim/reforge_plot.hpp"
+#include "sim/work_queue.hpp"
+#include "sim/sc_profileset.hpp"
 #include "scale_factor_control.hpp"
 #include "gsl-lite/gsl-lite.hpp"
 
@@ -412,11 +414,11 @@ size_t progress_bar_t::compute_total_phases()
               n_scale_factor_phases() +
               n_plot_phases() +
               n_reforge_plot_phases() +
-              sim.profilesets.n_profilesets();
+              sim.profilesets->n_profilesets();
 
   // Once profilesets have all been constructed, cache the total work done since we can determine
   // the maximum number of phases then
-  if ( sim.profilesets.is_running() )
+  if ( sim.profilesets->is_running() )
   {
     total_work_ = work;
   }

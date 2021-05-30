@@ -186,14 +186,14 @@ namespace util
  */
 double composite_karazhan_empower_multiplier( const player_t* player )
 {
-  auto it = range::find_if( player -> items, []( const item_t& item ) {
+  auto has_item = range::any_of( player -> items, []( const item_t& item ) {
     return item.name_str ==  "robes_of_the_ancient_chronicle" ||
            item.name_str ==  "harness_of_smoldering_betrayal" ||
            item.name_str ==  "hauberk_of_warped_intuition"    ||
            item.name_str ==  "chestplate_of_impenetrable_darkness";
   } );
 
-  if ( it != player -> items.end() )
+  if ( has_item )
   {
     return 1.0 + player -> find_spell( 231626 ) -> effectN( 1 ).percent();
   }
