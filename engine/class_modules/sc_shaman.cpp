@@ -6803,7 +6803,7 @@ struct chain_harvest_t : public shaman_spell_t
     shaman_spell_t::impact( s );
     if ( p()->legendary.elemental_conduit->ok() )
     {
-      fs->set_target( execute_state->target );
+      fs->set_target( s->target );
       fs->execute();
     }
   }
