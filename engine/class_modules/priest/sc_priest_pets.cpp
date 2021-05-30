@@ -594,6 +594,12 @@ struct rattling_mage_unholy_bolt_t final : public priest_pet_spell_t
     // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/854
     affected_by_shadow_weaving = false;
     parse_options( options );
+
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/859
+    if ( p.o().bugs )
+    {
+      spell_power_mod.direct *= 2;
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
