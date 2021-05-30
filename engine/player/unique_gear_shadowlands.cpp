@@ -2018,9 +2018,9 @@ void tormentors_rack_fragment( special_effect_t& effect )
       base_td = e.driver()->effectN( 1 ).average( e.item );
     }
 
-    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t ) const override
+    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t duration ) const override
     {
-      return dot->remains();
+      return dot->time_to_next_tick() + duration;
     }
   };
 
