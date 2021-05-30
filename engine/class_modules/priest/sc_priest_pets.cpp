@@ -595,10 +595,12 @@ struct rattling_mage_unholy_bolt_t final : public priest_pet_spell_t
     affected_by_shadow_weaving = false;
     parse_options( options );
 
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/859
     if ( p.o().bugs )
     {
+      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/859
       spell_power_mod.direct *= 2;
+      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/860
+      base_execute_time *= 1.22;
     }
   }
 
