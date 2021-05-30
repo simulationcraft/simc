@@ -411,8 +411,11 @@ struct sim_t : private sc_thread_t
     // Battlefield Presence enemy count override
     // Defaults to -1 to have the sim constantly adjust the value based on number of enemies in the sim
     int battlefield_presence_enemies = -1;
+    /// Seconds before combat to apply the Shattered Psyche buff to the player.
+    timespan_t salvaged_fusion_amplifier_precast = 0_s;
     // Better Together Override
     // Defaults active
+    
     bool better_together_ally = true;
   } shadowlands_opts;
 

@@ -3832,6 +3832,7 @@ void sim_t::create_options()
   add_option( opt_string( "shadowlands.party_favor_type", shadowlands_opts.party_favor_type ) );
   add_option( opt_int( "shadowlands.battlefield_presence_enemies", shadowlands_opts.battlefield_presence_enemies, 0, 3 ) );
   add_option( opt_bool( "shadowlands.better_together_ally", shadowlands_opts.better_together_ally ) );
+  add_option( opt_timespan( "shadowlands.salvaged_fusion_amplifier_precast", shadowlands_opts.salvaged_fusion_amplifier_precast, 0_s, 30_s ) );
 }
 
 // sim_t::parse_option ======================================================
