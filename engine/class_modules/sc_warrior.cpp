@@ -1737,7 +1737,7 @@ struct mortal_strike_t : public warrior_attack_t
 
   double cost() const override
   {
-    if ( p()->buff.battlelord->check() )
+    if ( ( !from_mortal_combo ) && p()->buff.battlelord->check() )
     {
         return 15;
     }
@@ -1791,7 +1791,10 @@ struct mortal_strike_t : public warrior_attack_t
       }
     }
     p()->buff.deadly_calm->decrement();
-    p()->buff.battlelord->expire();
+      if ( !from_mortal_combo )
+      {
+        p()->buff.battlelord->expire();
+      }
     p()->buff.overpower->expire();
     p()->buff.executioners_precision->expire();
 
