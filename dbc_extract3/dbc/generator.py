@@ -1284,6 +1284,12 @@ class SpellDataGenerator(DataGenerator):
          329548,
          # 9.1 Soulbinds
          352881, # Bonded Hearts (night fae/niya)
+         # Miniscule Mailemental in an Envelope
+         352542,
+         # Tome of Monstrous Constructions
+         357163,
+         357168,
+         357169
         ),
 
         # Warrior:

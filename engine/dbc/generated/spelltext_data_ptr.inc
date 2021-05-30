@@ -1,5 +1,5 @@
-// Spell text, wow build 9.1.0.38783
-static const std::array<spelltext_data_t, 15464> __ptr_spelltext_data { {
+// Spell text, wow build 9.1.0.38802
+static const std::array<spelltext_data_t, 15466> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15449,7 +15449,9 @@ static const std::array<spelltext_data_t, 15464> __ptr_spelltext_data { {
   { 357075, "|CFF20ff20Your critical heals cause their target to absorb the next $s1 damage dealt to them within $356257d.|R", 0, 0 },
   { 357076, "|CFF20ff20Damaging a target increases your damage done to that target by ${$s1/100}.2% for $356329d, stacking up to $356329U times.|R", 0, 0 },
   { 357077, "|CFF20ff20Your helpful spells and abilities have a chance to grant your target an Unholy Aura, draining $s1 health from nearby enemies every $s2 sec for $356321d.|R", 0, 0 },
+  { 357163, "$@spelldesc353692", "Damage increased against the studied target.", 0 },
   { 357165, "@spelldesc356390", "Healing and damage is increased by $s1%.", 0 },
+  { 357168, "$@spelldesc353692", 0, 0 },
   { 357185, "$@spelldesc355319", "$?e1[Critical Strike]?e2[Haste]?e3[Mastery]?e4[Versatility][Highest stat] increased by $w1.", 0 },
   { 357347, "$?pc92426[|CFF88aaff Socket 2 more Blood Shards to gain $@spellname357347|R]?pc92425[|CFF88aaff Socket 1 more Blood Shard to gain $@spellname357347|R]?pc91768[|CFF20ff20 $@spelldesc355761|R][|CFF88aaff Socket 3 Blood Shards to gain $@spellname357347|R]", 0, 0 },
   { 357348, "$?pc92424[|CFF88aaff Socket 2 more Frost Shards to gain $@spellname357348|R]?pc92423[|CFF88aaff Socket 1 more Frost Shard to gain $@spellname357348|R]?pc91769[|CFF20ff20 $@spelldesc355724|R]\r\n[|CFF88aaff Socket 3 Frost Shards to gain $@spellname357348.|R]", 0, 0 },
@@ -15466,11 +15468,11 @@ static const std::array<spelltext_data_t, 15464> __ptr_spelltext_data { {
   { 357673, "$@spelldesc357672", "$pri increased by $w1.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.0.38783
+// spelltext hotfix entries, wow build 9.1.0.38802
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.1.0.38783
+// Spell description variables, wow build 9.1.0.38802
 static const std::array<spelldesc_vars_data_t, 300> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15774,7 +15776,7 @@ static const std::array<spelldesc_vars_data_t, 300> __ptr_spelldesc_vars_data { 
   {  354541, "$stacks=${2}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.0.38783
+// spelldesc_vars hotfix entries, wow build 9.1.0.38802
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
