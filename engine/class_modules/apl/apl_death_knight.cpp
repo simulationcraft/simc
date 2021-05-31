@@ -172,7 +172,7 @@ void frost( player_t* p )
   default_->add_action( "auto_attack" );
   default_->add_action( "variable,name=specified_trinket,value=(equipped.inscrutable_quantum_device&cooldown.inscrutable_quantum_device.ready)", "Prevent specified trinkets being used with automatic lines" );
   default_->add_action( "variable,name=st_planning,value=active_enemies=1&(raid_event.adds.in>15|!raid_event.adds.exists)" );
-  default_->add_action( "variable,name=adds_remain,value=active_enemies>=2&(!raid_event.adds.exists|raid_event.adds.exists&(raid_event.adds.remains>5|target.1.time_to_die>20))" );
+  default_->add_action( "variable,name=adds_remain,value=active_enemies>=2&(!raid_event.adds.exists|raid_event.adds.exists&(raid_event.adds.remains>5|target.1.time_to_die>10))" );
   default_->add_action( "remorseless_winter,if=conduit.everfrost&talent.gathering_storm&!talent.obliteration&cooldown.pillar_of_frost.remains", "Apply Frost Fever, maintain Icy Talons and keep Remorseless Winter rolling" );
   default_->add_action( "howling_blast,target_if=dot.frost_fever.refreshable&(talent.icecap|!buff.breath_of_sindragosa.up&talent.breath_of_sindragosa|talent.obliteration&cooldown.pillar_of_frost.remains&!buff.killing_machine.up)" );
   default_->add_action( "glacial_advance,if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&spell_targets.glacial_advance>=2&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>15)" );
@@ -184,7 +184,7 @@ void frost( player_t* p )
   default_->add_action( "call_action_list,name=cooldowns" );
   default_->add_action( "call_action_list,name=cold_heart,if=talent.cold_heart&(buff.cold_heart.stack>=10&(debuff.razorice.stack=5|!death_knight.runeforge.razorice)|fight_remains<=gcd)" );
   default_->add_action( "run_action_list,name=bos_ticking,if=buff.breath_of_sindragosa.up" );
-  default_->add_action( "run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa&cooldown.breath_of_sindragosa.remains<10&(variable.st_planning|cooldown.pillar_of_frost.remains<10&raid_event.adds.exists&raid_event.adds.in<10|!raid_event.adds.exists)" );
+  default_->add_action( "run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa&(cooldown.breath_of_sindragosa.remains<10)&(raid_event.adds.in>25|!raid_event.adds.exists|cooldown.pillar_of_frost.remains<10&raid_event.adds.exists&raid_event.adds.in<10)" );
   default_->add_action( "run_action_list,name=obliteration,if=buff.pillar_of_frost.up&talent.obliteration" );
   default_->add_action( "run_action_list,name=obliteration_pooling,if=talent.obliteration&cooldown.pillar_of_frost.remains<10&(variable.st_planning|raid_event.adds.exists&raid_event.adds.in<10|!raid_event.adds.exists)" );
   default_->add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
@@ -198,7 +198,7 @@ void frost( player_t* p )
   aoe->add_action( "frostscythe,if=buff.killing_machine.react&(!death_and_decay.ticking&covenant.night_fae|!covenant.night_fae)" );
   aoe->add_action( "glacial_advance,if=runic_power.deficit<(15+talent.runic_attenuation*3)" );
   aoe->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit<(15+talent.runic_attenuation*3)" );
-  aoe->add_action( "frostscythe,if=!death_and_decay.ticking&covenant.night_fae|!covenant.night_fae" );
+  aoe->add_action( "frostscythe,if=nd!death_a_decay.ticking&covenant.night_fae|!covenant.night_fae" );
   aoe->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>(25+talent.runic_attenuation*3)" );
   aoe->add_action( "glacial_advance" );
   aoe->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice" );
@@ -245,7 +245,7 @@ void frost( player_t* p )
   cooldowns->add_action( "frostwyrms_fury,if=talent.obliteration&buff.pillar_of_frost.up&((buff.pillar_of_frost.remains<gcd|buff.unholy_strength.up&buff.unholy_strength.remains<gcd)&(debuff.razorice.stack=5|!death_knight.runeforge.razorice))" );
   cooldowns->add_action( "hypothermic_presence,if=talent.breath_of_sindragosa&runic_power.deficit>40&rune<=3&(buff.breath_of_sindragosa.up|cooldown.breath_of_sindragosa.remains>40)|!talent.breath_of_sindragosa&runic_power.deficit>=25" );
   cooldowns->add_action( "raise_dead,if=buff.pillar_of_frost.up" );
-  cooldowns->add_action( "sacrificial_pact,if=active_enemies>=2&(pet.ghoul.remains<gcd|target.time_to_die<gcd)" );
+  cooldowns->add_action( "sacrificial_pact,if=active_enemies>=2&(fight_remains<3|!buff.breath_of_sindragosa.up&(pet.ghoul.remains<gcd|raid_event.adds.remains<3&raid_event.adds.in>pet.ghoul.remains))" );
   cooldowns->add_action( "death_and_decay,if=active_enemies>5|runeforge.phearomones" );
 
   covenants->add_action( "deaths_due,if=variable.st_planning|variable.adds_remain", "Covenant Abilities" );
