@@ -60,6 +60,7 @@ struct monk_action_t : public Base
   bool may_combo_strike;
   bool trigger_chiji;
   bool trigger_faeline_stomp;
+  bool trigger_bountiful_brew;
 
   // Affect flags for various dynamic effects
   struct
@@ -80,6 +81,7 @@ public:
       may_combo_strike( false ),
       trigger_chiji( false ),
       trigger_faeline_stomp( false ),
+      trigger_bountiful_brew( false ),
       affected_by()
   {
     ab::may_crit = true;
@@ -391,11 +393,13 @@ public:
       }
     }
 
-    // Only triggers from abilities. Use the May Combo Strike boolean for the time being until a
-    // better solution to indicate triggering abilities.
-    if ( p()->legendary.bountiful_brew->ok() && may_combo_strike && 
+    // Only triggers from abilities.
+    if ( p()->legendary.bountiful_brew->ok() && trigger_bountiful_brew &&
         p()->rppm.bountiful_brew->trigger() )
-      p()->active_actions.bountiful_brew->execute();
+      // Currently Bountiful Brew cannot be applied if Bonedust Brew is currently active
+      // This means that RPPM will have triggered but cannot be applied.
+      if ( !td( p()->target )->debuff.bonedust_brew->up() )
+        p()->active_actions.bountiful_brew->execute();
   }
 
   void impact( action_state_t* s ) override
@@ -1020,6 +1024,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     may_combo_strike = true;
     trigger_chiji    = true;
     trigger_faeline_stomp = true;
+    trigger_bountiful_brew = true;
     sef_ability      = SEF_TIGER_PALM;
 
     add_child( eye_of_the_tiger_damage );
@@ -1147,7 +1152,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     background = dual = true;
     may_crit          = true;
     trigger_chiji         = true;
-    trigger_faeline_stomp = true;
 
     if ( p->specialization() == MONK_WINDWALKER )
       ap_type         = attack_power_type::WEAPON_BOTH;
@@ -1245,6 +1249,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     may_combo_strike      = true;
     trigger_faeline_stomp = true;
+    trigger_bountiful_brew = true;
     sef_ability          = SEF_RISING_SUN_KICK;
     affected_by.serenity = true;
     ap_type              = attack_power_type::NONE;
@@ -1406,6 +1411,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     may_combo_strike = true;
     trigger_chiji         = true;
     trigger_faeline_stomp = true;
+    trigger_bountiful_brew = true;
 
     switch ( p->specialization() )
     {
@@ -1579,6 +1585,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     sef_ability      = SEF_RUSHING_JADE_WIND;
     may_combo_strike      = true;
     trigger_faeline_stomp = true;
+    trigger_bountiful_brew = true;
     gcd_type         = gcd_haste_type::NONE;
 
     // Set dot data to 0, since we handle everything through the buff.
@@ -1748,6 +1755,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     sef_ability      = SEF_SPINNING_CRANE_KICK;
     may_combo_strike      = true;
     trigger_faeline_stomp = true;
+    trigger_bountiful_brew = true;
 
     may_crit = may_miss = may_block = may_dodge = may_parry = false;
     tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
@@ -1913,6 +1921,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     sef_ability          = SEF_FISTS_OF_FURY;
     may_combo_strike      = true;
     trigger_faeline_stomp = true;
+    trigger_bountiful_brew = true;
     affected_by.serenity = true;
 
     channeled = tick_zero = true;
@@ -2041,6 +2050,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     channeled                         = false;
     may_combo_strike                  = true;
     trigger_faeline_stomp             = true;
+    trigger_bountiful_brew            = true;
 
     spell_power_mod.direct = 0.0;
 
@@ -2093,6 +2103,7 @@ struct fist_of_the_white_tiger_main_hand_t : public monk_melee_attack_t
     sef_ability = SEF_FIST_OF_THE_WHITE_TIGER;
     ww_mastery            = true;
     trigger_faeline_stomp = true;
+    trigger_bountiful_brew = true;
 
     may_dodge = may_parry = may_block = may_miss = true;
     dual                                         = true;
@@ -2112,6 +2123,7 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
     ww_mastery           = true;
     may_combo_strike      = true;
     trigger_faeline_stomp = true;
+    trigger_bountiful_brew = true;
     affected_by.serenity = false;
     cooldown->hasted     = false;
     ap_type              = attack_power_type::WEAPON_BOTH;
@@ -2278,6 +2290,7 @@ struct keg_smash_t : public monk_melee_attack_t
 
     aoe = -1;
     trigger_faeline_stomp = true;
+    trigger_bountiful_brew = true;
 
     attack_power_mod.direct = p.spec.keg_smash->effectN( 2 ).ap_coeff();
     radius                  = p.spec.keg_smash->effectN( 2 ).radius();
@@ -2370,6 +2383,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     may_crit = hasted_ticks = false;
     may_combo_strike        = true;
     trigger_faeline_stomp   = true;
+    trigger_bountiful_brew  = true;
     parse_options( options_str );
     cooldown->duration = data().cooldown();
 
@@ -2853,6 +2867,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
     sef_ability      = SEF_CRACKLING_JADE_LIGHTNING;
     may_combo_strike = true;
     trigger_faeline_stomp = true;
+    trigger_bountiful_brew = true;
 
     parse_options( options_str );
 
@@ -2960,6 +2975,7 @@ struct breath_of_fire_t : public monk_spell_t
 
     aoe                   = 1;
     trigger_faeline_stomp = true;
+    trigger_bountiful_brew = true;
 
     add_child( p.active_actions.breath_of_fire );
   }
@@ -4696,6 +4712,7 @@ struct chi_wave_t : public monk_spell_t
     sef_ability      = SEF_CHI_WAVE;
     may_combo_strike      = true;
     trigger_faeline_stomp = true;
+    trigger_bountiful_brew = true;
     parse_options( options_str );
     hasted_ticks = harmful = false;
     cooldown->hasted       = false;
@@ -4738,6 +4755,7 @@ struct chi_burst_heal_t : public monk_heal_t
   {
     background            = true;
     trigger_faeline_stomp = true;
+    trigger_bountiful_brew = true;
     target     = p();
     // If we are using the user option, each heal just heals 1 target, otherwise use the old SimC code
     aoe        = ( p()->user_options.chi_burst_healing_targets > 1 ? 1 : -1 );
@@ -4753,6 +4771,7 @@ struct chi_burst_damage_t : public monk_spell_t
     background = true;
     ww_mastery            = true;
     trigger_faeline_stomp = true;
+    trigger_bountiful_brew = true;
     aoe        = -1;
   }
 
@@ -4787,6 +4806,7 @@ struct chi_burst_t : public monk_spell_t
     parse_options( options_str );
     may_combo_strike      = true;
     trigger_faeline_stomp = true;
+    trigger_bountiful_brew = true;
     heal             = new chi_burst_heal_t( *player );
     heal->stats      = stats;
     damage           = new chi_burst_damage_t( *player );
