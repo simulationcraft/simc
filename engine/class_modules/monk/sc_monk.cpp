@@ -377,29 +377,6 @@ public:
     ab::execute();
 
     trigger_storm_earth_and_fire( this );
-
-    if ( p()->buff.faeline_stomp->up() && trigger_faeline_stomp &&
-         p()->rng().roll( p()->user_options.faeline_stomp_uptime ) )
-    {
-      double reset_value = p()->buff.faeline_stomp->value();
-
-      if ( p()->legendary.faeline_harmony->ok() )
-        reset_value *= 1 + p()->legendary.faeline_harmony->effectN( 2 ).percent(); 
-
-      if ( p()->rng().roll( reset_value ) )
-      {
-        p()->cooldown.faeline_stomp->reset( true, 1 );
-        p()->buff.faeline_stomp_reset->trigger();
-      }
-    }
-
-    // Only triggers from abilities.
-    if ( p()->legendary.bountiful_brew->ok() && trigger_bountiful_brew &&
-        p()->rppm.bountiful_brew->trigger() )
-      // Currently Bountiful Brew cannot be applied if Bonedust Brew is currently active
-      // This means that RPPM will have triggered but cannot be applied.
-      if ( !td( p()->target )->debuff.bonedust_brew->up() )
-        p()->active_actions.bountiful_brew->execute();
   }
 
   void impact( action_state_t* s ) override
@@ -426,6 +403,33 @@ public:
     }
 
     ab::impact( s );
+
+    if ( p()->buff.faeline_stomp->up() && trigger_faeline_stomp &&
+         p()->rng().roll( p()->user_options.faeline_stomp_uptime ) )
+    {
+      double reset_value = p()->buff.faeline_stomp->value();
+
+      if ( p()->legendary.faeline_harmony->ok() )
+        reset_value *= 1 + p()->legendary.faeline_harmony->effectN( 2 ).percent();
+
+      if ( p()->rng().roll( reset_value ) )
+      {
+        p()->cooldown.faeline_stomp->reset( true, 1 );
+        p()->buff.faeline_stomp_reset->trigger();
+      }
+    }
+
+    if ( p()->legendary.bountiful_brew->ok() && trigger_bountiful_brew && p()->cooldown.bountiful_brew->up() &&
+         p()->rppm.bountiful_brew->trigger() )
+    {
+      p()->cooldown.bonedust_brew->start( p()->legendary.bountiful_brew->internal_cooldown() );
+
+      // Currently Bountiful Brew cannot be applied if Bonedust Brew is currently active
+      // This means that RPPM will have triggered but cannot be applied.
+      if ( !td( p()->target )->debuff.bonedust_brew->up() )
+        p()->active_actions.bountiful_brew->execute();
+    }
+
 
     if ( p()->legendary.sinister_teachings->ok() )
     {
@@ -956,6 +960,8 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
   eye_of_the_tiger_heal_tick_t( monk_t& p, util::string_view name )
     : monk_heal_t( name, p, p.talent.eye_of_the_tiger->effectN( 1 ).trigger() )
   {
+    trigger_faeline_stomp  = true;
+    trigger_bountiful_brew = true;
     background   = true;
     hasted_ticks = false;
     may_crit = tick_may_crit = true;
@@ -982,6 +988,8 @@ struct eye_of_the_tiger_dmg_tick_t : public monk_spell_t
   eye_of_the_tiger_dmg_tick_t( monk_t* player, util::string_view name )
     : monk_spell_t( name, player, player->talent.eye_of_the_tiger->effectN( 1 ).trigger() )
   {
+    trigger_faeline_stomp  = true;
+    trigger_bountiful_brew = true;
     background   = true;
     hasted_ticks = false;
     may_crit = tick_may_crit = true;
@@ -5592,6 +5600,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
 
   // Legendary
   cooldown.charred_passions = get_cooldown( "charred_passions" );
+  cooldown.bountiful_brew     = get_cooldown( "bountiful_brew" );
   cooldown.sinister_teachings = get_cooldown( "sinister_teachings" );
 
   resource_regeneration = regen_type::DYNAMIC;

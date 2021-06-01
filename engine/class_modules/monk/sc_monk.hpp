@@ -525,6 +525,7 @@ public:
 
     // Legendary
     cooldown_t* charred_passions;
+    cooldown_t* bountiful_brew;
     cooldown_t* sinister_teachings;
   } cooldown;
 
