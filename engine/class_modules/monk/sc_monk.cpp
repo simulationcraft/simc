@@ -377,6 +377,21 @@ public:
     ab::execute();
 
     trigger_storm_earth_and_fire( this );
+
+    if ( p()->buff.faeline_stomp->up() && trigger_faeline_stomp &&
+         p()->rng().roll( p()->user_options.faeline_stomp_uptime ) )
+    {
+      double reset_value = p()->buff.faeline_stomp->value();
+
+      if ( p()->legendary.faeline_harmony->ok() )
+        reset_value *= 1 + p()->legendary.faeline_harmony->effectN( 2 ).percent();
+
+      if ( p()->rng().roll( reset_value ) )
+      {
+        p()->cooldown.faeline_stomp->reset( true, 1 );
+        p()->buff.faeline_stomp_reset->trigger();
+      }
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -403,21 +418,6 @@ public:
     }
 
     ab::impact( s );
-
-    if ( p()->buff.faeline_stomp->up() && trigger_faeline_stomp &&
-         p()->rng().roll( p()->user_options.faeline_stomp_uptime ) )
-    {
-      double reset_value = p()->buff.faeline_stomp->value();
-
-      if ( p()->legendary.faeline_harmony->ok() )
-        reset_value *= 1 + p()->legendary.faeline_harmony->effectN( 2 ).percent();
-
-      if ( p()->rng().roll( reset_value ) )
-      {
-        p()->cooldown.faeline_stomp->reset( true, 1 );
-        p()->buff.faeline_stomp_reset->trigger();
-      }
-    }
 
     if ( p()->legendary.bountiful_brew->ok() && trigger_bountiful_brew && p()->cooldown.bountiful_brew->up() &&
          p()->rppm.bountiful_brew->trigger() )
@@ -1156,6 +1156,8 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, p, p->spec.rising_sun_kick->effectN( 1 ).trigger() )
   {
     ww_mastery = true;
+    trigger_faeline_stomp  = true;
+    trigger_bountiful_brew = true;
 
     background = dual = true;
     may_crit          = true;
