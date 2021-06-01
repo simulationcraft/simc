@@ -960,7 +960,6 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
   eye_of_the_tiger_heal_tick_t( monk_t& p, util::string_view name )
     : monk_heal_t( name, p, p.talent.eye_of_the_tiger->effectN( 1 ).trigger() )
   {
-    trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
     background   = true;
     hasted_ticks = false;
@@ -988,7 +987,6 @@ struct eye_of_the_tiger_dmg_tick_t : public monk_spell_t
   eye_of_the_tiger_dmg_tick_t( monk_t* player, util::string_view name )
     : monk_spell_t( name, player, player->talent.eye_of_the_tiger->effectN( 1 ).trigger() )
   {
-    trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
     background   = true;
     hasted_ticks = false;
