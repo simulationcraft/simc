@@ -1548,8 +1548,11 @@ struct blackout_kick_t : public monk_melee_attack_t
         charred_passions->base_dd_max = s->result_amount * dmg_percent;
         charred_passions->execute();
 
-        if ( td( s->target )->dots.breath_of_fire->is_ticking() )
+        if ( td( s->target )->dots.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
+        {
           td( s->target )->dots.breath_of_fire->refresh_duration();
+          p()->cooldown.charred_passions->start( p()->find_spell( 338140 )->internal_cooldown() );
+        }
       }
     }
   }
@@ -5588,6 +5591,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   cooldown.fallen_order     = get_cooldown( "fallen_order" );
 
   // Legendary
+  cooldown.charred_passions = get_cooldown( "charred_passions" );
   cooldown.sinister_teachings = get_cooldown( "sinister_teachings" );
 
   resource_regeneration = regen_type::DYNAMIC;

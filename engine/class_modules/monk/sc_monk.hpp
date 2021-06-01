@@ -524,6 +524,7 @@ public:
     cooldown_t* fallen_order;
 
     // Legendary
+    cooldown_t* charred_passions;
     cooldown_t* sinister_teachings;
   } cooldown;
 
