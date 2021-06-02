@@ -7848,9 +7848,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
   {
     // Returns the value of the disable_aotd option
     if ( util::str_compare_ci( splits[ 1 ], "disable_aotd" ) && splits.size() == 2 )
-      return make_fn_expr( "disable_aotd_expression", [ this ]() {
-        return this -> options.disable_aotd;
-      } );
+      return expr_t::create_constant( "disable_aotd_expression", this -> options.disable_aotd );
 
     // Returns the number of targets currently affected by the festering wound debuff
     if ( util::str_compare_ci( splits[ 1 ], "fwounded_targets" ) && splits.size() == 2 )

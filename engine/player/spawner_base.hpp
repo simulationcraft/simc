@@ -53,7 +53,7 @@ namespace spawner
     virtual void merge(base_actor_spawner_t* other) = 0;
 
     // Expressions
-    virtual std::unique_ptr<expr_t> create_expression(util::span<const util::string_view> expr) = 0;
+    virtual std::unique_ptr<expr_t> create_expression(util::span<const util::string_view> expr, util::string_view full_expression_str) = 0;
 
     // Uptime
     virtual timespan_t iteration_uptime() const = 0;

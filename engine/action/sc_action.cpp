@@ -3441,6 +3441,16 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         }
       }
 
+      bool is_constant( double* result ) override
+      {
+        if ( !previously_used )
+        {
+          *result = 0;
+          return true;
+        }
+        return false;
+      }
+
       double evaluate() override
       {
         if ( !previously_used )
