@@ -6934,6 +6934,9 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( attr == ATTR_STAMINA )
   {
     cam *= 1.0 + spec.brewmaster_monk->effectN( 11 ).percent();
+
+    if ( dbc->ptr )
+      cam *= 1.0 + spec.brewmasters_balance->effectN( 3 ).percent();
   }
 
   return cam;
