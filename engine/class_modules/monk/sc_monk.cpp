@@ -6933,10 +6933,12 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( attr == ATTR_STAMINA )
   {
-    cam *= 1.0 + spec.brewmaster_monk->effectN( 11 ).percent();
-
+    // On PTR, Brewmaster Monk spec aura is still showing 30% but the values
+    // have not changed from PTR and live.
     if ( dbc->ptr )
       cam *= 1.0 + spec.brewmasters_balance->effectN( 3 ).percent();
+    else
+      cam *= 1.0 + spec.brewmaster_monk->effectN( 11 ).percent();
   }
 
   return cam;
