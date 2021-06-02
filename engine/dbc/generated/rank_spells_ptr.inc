@@ -1,5 +1,5 @@
-// Rank class spells, wow build 9.1.0.38802
-static const std::array<rank_class_spell_t, 336> __ptr_rank_spells_data { {
+// Rank class spells, wow build 9.1.0.38872
+static const std::array<rank_class_spell_t, 337> __ptr_rank_spells_data { {
   { 10, 269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9, 265, 231792,      0, "Agony"                             , "Rank 2" },
   {  6, 252, 316961,      0, "Apocalypse"                        , "Rank 2" },
@@ -288,6 +288,7 @@ static const std::array<rank_class_spell_t, 336> __ptr_rank_spells_data { {
   {  3, 254, 321018,      0, "Steady Shot"                       , "Rank 2" },
   { 10, 269, 231627,      0, "Storm, Earth, and Fire"            , "Rank 2" },
   {  7, 263, 319930,      0, "Stormbringer"                      , "Rank 2" },
+  {  9, 265, 334183,      0, "Summon Darkglare"                  , "Rank 2" },
   {  9, 266, 334585,      0, "Summon Demonic Tyrant"             , "Rank 2" },
   {  9, 267, 335175,      0, "Summon Infernal"                   , "Rank 2" },
   { 11, 102, 231050,      0, "Sunfire"                           , "Rank 2" },

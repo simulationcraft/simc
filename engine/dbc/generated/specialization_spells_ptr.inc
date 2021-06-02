@@ -1,4 +1,4 @@
-// Talent tree specialization abilities, wow build 9.1.0.38802
+// Talent tree specialization abilities, wow build 9.1.0.38872
 static const std::array<specialization_spell_entry_t, 928> __ptr_specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
@@ -611,7 +611,7 @@ static const std::array<specialization_spell_entry_t, 928> __ptr_specialization_
   {  9,  265, 316099,      0, "Unstable Affliction"               , 0 },
   {  9,  265, 317031,      0, "Corruption"                        , "Rank 2" },
   {  9,  265, 324536,      0, "Malefic Rapture"                   , 0 },
-  {  9,  265, 334183,      0, "Dark Caller"                       , 0 },
+  {  9,  265, 334183,      0, "Summon Darkglare"                  , "Rank 2" },
   {  9,  265, 334315,      0, "Unstable Affliction"               , "Rank 3" },
   {  9,  265, 334342,      0, "Corruption"                        , "Rank 3" },
   {  9,  266,  30146,      0, "Summon Felguard"                   , 0 },

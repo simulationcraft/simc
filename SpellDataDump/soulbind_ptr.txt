@@ -1050,13 +1050,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 #5 (id=876250)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 1185 (Label) | Target: Self (1)
-                   Affected Spells (Label): Forgeborne Reveries (326514)
+                   Affected Spells (Label): Forgeborne Reveries (326514), Soul Exhaustion (358164)
 #6 (id=876253)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 1185 (Label) | Target: Self (1)
-                   Affected Spells (Label): Forgeborne Reveries (326514)
+                   Affected Spells (Label): Forgeborne Reveries (326514), Soul Exhaustion (358164)
 Description      : Your $pri and Armor are increased by $<buff>% for each enchantment on your armor, up to $<max>%.
 
-Upon death your armor anchors your soul, allowing you to fight for an additional $327140d. During this time, your damage and healing done is reduced by $327140s7% and you cannot receive healing.
+Upon death your armor anchors your soul, allowing you to fight for an additional $327140d. During this time, your damage and healing done is reduced by $327140s7% and you cannot receive healing. This effect can only occur once every $358164d.
 Variables        : $buff=${$348272s1}
 $max=${3*$<buff>}
 
@@ -2083,7 +2083,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : While in Soulshape, you regenerate $342309s% of your maximum health every $342309t sec.
 
-Name             : Carver's Eye (id=350899) [Passive, Hidden] 
+Name             : Carver's Eye (id=350899) [Passive] 
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -2092,7 +2092,7 @@ Internal Cooldown: 0.7 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
-Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
+Attributes       : ......x. ........ .......x x..x.x..   .....x.. ..x..... ........ ....x... 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
@@ -2100,7 +2100,7 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ...x.... ........ ........ ........   
-                 : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+                 : Passive (6), Does not break stealth (37), Don't display in aura bar (60), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=880849)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2225,13 +2225,13 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=881163)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Fleshcraft covers you in 3 pustules per 1 sec channeled. Taking damage or being healed pops a pustule, dealing $<pointsA> Nature damage to nearby enemies and healing nearby allies for $<pointsB> split between them.
+Description      : Fleshcraft covers you in 3 pustules per 1 sec channeled. Taking damage or being healed pops a pustule, dealing $<pointsB> Nature damage to nearby enemies and healing nearby allies for $<pointsA> split between them.
 Variables        : $pointsA=${$cond($gt($SP,$AP),$SP*0.48,$AP*0.48)*(1+$@versadmg)}
 $pointsB=${$cond($gt($SP,$AP),$SP*0.72,$AP*0.72)*(1+$@versadmg)}
 
 Name             : Better Together (id=351146) [Passive, Hidden] 
 Covenant         : Kyrian
-School           : Physical
+School           : Arcane
 Spell Type       : None
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
@@ -2251,7 +2251,7 @@ Players may only be affected by one such effect.
 
 Name             : Path of the Devoted (id=351147) [Passive, Hidden] 
 Covenant         : Kyrian
-School           : Physical
+School           : Arcane
 Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : .....x.x .x...x.. .x...... ........ 
@@ -2274,7 +2274,7 @@ May only occur once per $352876d.
 
 Name             : Newfound Resolve (id=351149) [Passive, Hidden] 
 Covenant         : Kyrian
-School           : Physical
+School           : Arcane
 Spell Type       : None
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
@@ -2331,7 +2331,7 @@ Description      : Your Phial of Serenity reduces damage taken by $353192s1% for
 
 Name             : Light the Path (id=351491) [Passive, Hidden] 
 Covenant         : Kyrian
-School           : Physical
+School           : Arcane
 Spell Type       : None
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
@@ -2461,7 +2461,7 @@ Effects          :
                    Affected School(s): All
 #3 (id=883668)   : Dummy (3)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000
-Description      : While above $M3% health, $M1% of damage taken is delayed and spread out over $352562d.
+Description      : While above $M3% health, $M1% of damage taken is absorbed and spread out over $352562d.
 
 Name             : Kevin's Oozeling (id=352110) [Passive, Hidden] 
 Covenant         : Necrolord
@@ -2540,15 +2540,15 @@ Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
 Proc Chance      : 100%
-Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
-                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
+Attributes       : ......xx x....... .......x x..x.x..   .....x.. ........ ........ ........ 
+                 : x.x..... ......x. ...x.... ........   ........ .x...... ....x... ....x... 
+                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   
-                 : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+                 : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=882933)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2593,7 +2593,7 @@ Proc Chance      : 101%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x.x. 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ....x... ........ 
@@ -2606,7 +2606,7 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 23108 | Target: Self (1)
 #2 (id=883234)   : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Enemies within 8 yds are slowed by $354050s1%. If you fall below $s1% health, enemies within $354051A18 yds are rooted for $354051d sec. This can only occur once every $s2 sec.
+Description      : Enemies within 8 yds are slowed by $354050s1%. If you fall below $s1% health, enemies within $354051A18 yds are rooted for $354051d. This can only occur once every $s2 sec.
 
 Name             : Fatal Flaw (id=352373) [Passive, Hidden] 
 Covenant         : Venthyr
@@ -2614,7 +2614,7 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x.x. 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ....x... ........ 
@@ -2627,15 +2627,15 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=883246)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When the Haste effect of Euphoria ends, gain $354053d sec of either $354053s1% increased critical strike chance or Versatility, whichever you currently have more of.
+Description      : When the Haste effect of Euphoria ends, gain $354053d of either $354053s1% increased Critical Strike chance or Versatility, whichever you currently have more of.
 
 Name             : Sinful Preservation (id=352405) [Passive, Hidden] 
 Covenant         : Venthyr
-School           : Physical
+School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x.x. 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ....x... ........ 
@@ -2648,7 +2648,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=883304)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Health Potions and Healthstones grant you an absorb shield equal to $s1% of the amount healed.
+Description      : Health Potions and Healthstones grant you an absorb shield equal to $s1% of the amount healed for $352882d.
 
 Name             : Intimidation Tactics (id=352415) [Passive, Hidden] 
 Covenant         : Venthyr
@@ -2699,8 +2699,8 @@ Spell Type       : None
 Spell Level      : 60
 Internal Cooldown: 10 seconds
 Proc Chance      : 101%
-Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
-                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
+                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
@@ -2722,18 +2722,21 @@ Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
 Spell Level      : 60
+Proc Chance      : 101%
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
+                 : x.x..... ......x. ...x..x. ....x...   ........ ........ xx..x... ..x.x... 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   
-                 : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+                 : Passive (6), Hidden (7), Does not break stealth (37), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=883481)   : Apply Aura (6) | Trigger Spell Based on Health% (468)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 352857 | Target: Self (1)
+#1 (id=883481)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 352857 | Target: Self (1)
 #2 (id=884201)   : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When you fall below $s1% health, you regain ${$352857s1*$352857d}% of your health over $352857d and receive $352857s2% additional healing from other spells and abilities.
@@ -2757,7 +2760,7 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=883482)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Gaining a stack of Redirected Anima from Grove Invigoration heals up to 5 nearby allies for 2% of their health. If any of the affected allies are of another covenant, Redirected Anima's Mastery and maximum health effects are increased by $352881s1% for $352881d.
+Description      : Gaining a stack of Redirected Anima from Grove Invigoration heals up to 5 nearby allies for 2% of their health, up to a maximum of $352871s3 health. If any of the affected allies are of another covenant, Redirected Anima's Mastery and maximum health effects are increased by $352881s1% for $352881d.
 
 Name             : Waking Dreams (id=352779) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -2781,7 +2784,9 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=885276)   : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When you take damage below $s2% health, you gain a shield for $s1% of the damage amount, lasting $353477d.
+Description      : When you take damage below $s2% health, you gain a shield for $s1% of your maximum health for $353477d.
+
+This can only occur once every $358122d.
 
 Name             : Cunning Dreams (id=352782) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -2800,7 +2805,7 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=884060)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Entering Soulshape slows enemies near your starting point by $353472s1% for $353472d.
+Description      : Soulshape and Flicker slow enemies near your starting point by $353472s1% for $353472d.
 
 Name             : Dream Delver (id=352786) [Passive, Hidden] 
 Covenant         : Night Fae
