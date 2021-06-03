@@ -354,6 +354,7 @@ struct fae_guardians_t final : public priest_spell_t
 struct wrathful_faerie_t final : public priest_spell_t
 {
   double insanity_gain;
+  bool bwonsamdis_pact_wrathful;
 
   wrathful_faerie_t( priest_t& p )
     : priest_spell_t( "wrathful_faerie", p, p.find_spell( 342132 ) ),
@@ -364,6 +365,7 @@ struct wrathful_faerie_t final : public priest_spell_t
     energize_amount    = insanity_gain;
     background         = true;
     cooldown->duration = data().internal_cooldown();
+    bwonsamdis_pact_wrathful = util::str_compare_ci( priest().options.bwonsamdis_pact_mask_type, "wrathful" );
   }
 
   void adjust_energize_amount()
@@ -371,7 +373,7 @@ struct wrathful_faerie_t final : public priest_spell_t
     if ( !priest().legendary.bwonsamdis_pact->ok() )
       return;
 
-    if ( util::str_compare_ci( priest().options.bwonsamdis_pact_mask_type, "wrathful" ) )
+    if ( bwonsamdis_pact_wrathful )
     {
       energize_amount = insanity_gain * 2;
       sim->print_debug( "Bwonsamdi's Pact adjusts Wrathful Faerie insanity gain to {}", energize_amount );
