@@ -49,7 +49,7 @@ public:
 namespace runeforge
 {
 std::unique_ptr<expr_t> create_expression( const player_t* player,
-                                           util::span<const util::string_view> expr_str );
+                                           util::span<const util::string_view> expr_str, util::string_view full_expression_str );
 report::sc_html_stream& generate_report( const player_t& player, report::sc_html_stream& root );
 } // Namespace runeforge ends
 

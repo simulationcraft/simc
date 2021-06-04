@@ -9,6 +9,7 @@
 #include "action/variable.hpp"
 #include "player/sc_player.hpp"
 #include "sim/sc_sim.hpp"
+#include "util/util.hpp"
 
 #include <limits>
 
@@ -28,9 +29,6 @@ bool action_variable_t::is_constant( double* constant_value ) const
 
 void action_variable_t::optimize()
 {
-  // Disable optimization until problems are fixed.
-  // serge 2021-06-04
-  return;
   player_t* player = variable_actions.front()->player;
   auto iteration = player->sim->current_iteration;
   if ( iteration < 0 )
@@ -48,14 +46,20 @@ void action_variable_t::optimize()
     return;
   }
 
-  bool is_constant = true;
   for ( auto action : variable_actions )
   {
     variable_t* var_action = debug_cast<variable_t*>( action );
 
     var_action->optimize_expressions();
+  }
 
-    is_constant = var_action->is_constant();
+  bool is_constant = true;
+  double const_value;
+  for ( auto action : variable_actions )
+  {
+    variable_t* var_action = debug_cast<variable_t*>( action );
+
+    is_constant = var_action->is_constant(&const_value);
     if ( !is_constant )
     {
       break;
@@ -66,6 +70,7 @@ void action_variable_t::optimize()
   // whatever the value is in current_value_
   if ( is_constant )
   {
+    assert( const_value == current_value_ );
     player->sim->print_debug( "{} variable {} is constant, value={}", player->name(), name_, current_value_ );
     constant_value_ = current_value_;
     // Make default value also the constant value, so that debug output is sensible

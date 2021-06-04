@@ -95,7 +95,7 @@ const item_effect_t& item_runeforge_t::item_effect() const
 namespace runeforge
 {
 std::unique_ptr<expr_t> create_expression( const player_t* player,
-                                           util::span<const util::string_view> expr_str )
+                                           util::span<const util::string_view> expr_str, util::string_view full_expression_str )
 {
   if ( expr_str.size() < 2 || !util::str_compare_ci( expr_str.front(), "runeforge" ) )
   {
@@ -111,7 +111,7 @@ std::unique_ptr<expr_t> create_expression( const player_t* player,
 
   if ( expr_str.size() == 2 || ( expr_str.size() == 3 && util::str_compare_ci( expr_str[ 2 ], "equipped" ) ) )
   {
-    return expr_t::create_constant( "runeforge_equipped", runeforge->ok() );
+    return expr_t::create_constant( full_expression_str, runeforge->ok() );
   }
 
   throw std::invalid_argument(

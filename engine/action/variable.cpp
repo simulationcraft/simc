@@ -223,12 +223,11 @@ void variable_t::reset()
 // 3) The operation is reset/floor/ceil and all of the other actions manipulating the variable are
 //    constant
 
-bool variable_t::is_constant() const
+bool variable_t::is_constant(double* const_value) const
 {
-  double const_value = 0;
   // If the variable action is conditionally executed, and the conditional execution is not
   // constant, the variable cannot be constant.
-  if (if_expr && !if_expr->is_constant(&const_value))
+  if (if_expr && !if_expr->is_constant(const_value))
   {
     return false;
   }
@@ -238,17 +237,17 @@ bool variable_t::is_constant() const
   if (operation == OPERATION_RESET || operation == OPERATION_FLOOR ||
     operation == OPERATION_CEIL)
   {
-    return !range::any_of(var->variable_actions, [this](const action_t* action) {
-      return action != this && !debug_cast<const variable_t*>(action)->is_constant();
+    return !range::any_of(var->variable_actions, [this, &const_value](const action_t* action) {
+      return action != this && !debug_cast<const variable_t*>(action)->is_constant(const_value);
       });
   }
   else if (operation != OPERATION_SETIF)
   {
-    return value_expression ? value_expression->is_constant(&const_value) : true;
+    return value_expression ? value_expression->is_constant(const_value) : true;
   }
   else
   {
-    bool constant = condition_expression->is_constant(&const_value);
+    bool constant = condition_expression->is_constant(const_value);
     if (!constant)
     {
       return false;
@@ -256,13 +255,15 @@ bool variable_t::is_constant() const
 
     if (const_value != 0)
     {
-      return value_expression->is_constant(&const_value);
+      return value_expression->is_constant(const_value);
     }
     else
     {
-      return value_else_expression->is_constant(&const_value);
+      return value_else_expression->is_constant(const_value);
     }
   }
+
+  return false;
 }
 
 // Variable action expressions have to do an optimization pass before other actions, so that
