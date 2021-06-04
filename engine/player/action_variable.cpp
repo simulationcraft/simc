@@ -28,6 +28,9 @@ bool action_variable_t::is_constant( double* constant_value ) const
 
 void action_variable_t::optimize()
 {
+  // Disable optimization until problems are fixed.
+  // serge 2021-06-04
+  return;
   player_t* player = variable_actions.front()->player;
   auto iteration = player->sim->current_iteration;
   if ( iteration < 0 )
