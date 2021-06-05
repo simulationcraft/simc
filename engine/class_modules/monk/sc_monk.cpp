@@ -5418,7 +5418,7 @@ struct touch_of_death_ww_buff_t : public monk_buff_t<buff_t>
     set_tick_zero( true );
 
     set_max_stack( p.spec.touch_of_death_3_ww->effectN( 1 ).base_value() );
-    set_reverse_stack_count( p.spec.touch_of_death_3_ww->effectN( 1 ).base_value() );
+    set_reverse_stack_count( 1 );
 
     set_tick_callback( [ this, &p ]( buff_t*, int, timespan_t ) {
       decrement( 1, DEFAULT_VALUE() );
