@@ -7528,10 +7528,10 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_t
       double cap            = max_health() * spec.stagger->effectN( 4 ).percent();
       if ( amount_remains + stagger_dmg >= cap )
       {
-        double diff = amount_remains - cap;
-        s->result_amount += stagger_dmg - diff;
-        s->result_mitigated += stagger_dmg - diff;
-        stagger_dmg -= diff;
+        double diff = ( amount_remains + stagger_dmg ) - cap;
+        s->result_amount += std::fmax( stagger_dmg - diff, 0 );
+        s->result_mitigated += std::fmax(stagger_dmg - diff, 0 );
+        stagger_dmg = std::fmax(stagger_dmg - diff, 0 );
       }
       sample_datas.stagger_total_damage->add( stagger_dmg );
       residual_action::trigger( active_actions.stagger_self_damage, this, stagger_dmg );
