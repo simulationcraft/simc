@@ -19,7 +19,6 @@ GENERAL:
 - Change Eye of the Tiger from a dot to an interaction with a buff
 
 WINDWALKER:
-- Implement Touch of Death Rank 3
 - Add Cyclone Strike Counter as an expression
 
 MISTWEAVER:
@@ -2430,7 +2429,10 @@ struct touch_of_death_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( p()->specialization() == MONK_MISTWEAVER && p()->spec.touch_of_death_3_mw->ok() )
+    if ( p()->spec.touch_of_death_3_ww->ok() )
+      p()->buff.touch_of_death_ww->trigger();
+
+    if ( p()->spec.touch_of_death_3_mw->ok() )
       p()->buff.touch_of_death->trigger();
   }
 
@@ -5216,9 +5218,7 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
     set_partial_tick( true );
 
     if ( p.specialization() == MONK_BREWMASTER )
-      set_duration( s->duration() * ( 1 + p.spec.brewmaster_monk->effectN( 9 ).percent() ) );
-    else
-      set_duration( s->duration() );
+      set_duration_multiplier( 1 + p.spec.brewmaster_monk->effectN( 9 ).percent() );
 
     set_tick_callback( rjw_callback );
     set_tick_behavior( buff_tick_behavior::REFRESH );
@@ -5392,6 +5392,48 @@ struct purifying_buff_t : public monk_buff_t<buff_t>
     ignore_empty = true;
     values.clear();
     buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
+// ===============================================================================
+// Touch of Death Windwalker Buff
+// ===============================================================================
+// This buff is set up so that it provides the chi from 
+// Windwalker's Touch of Death Rank 2. In-game, applying Touch of Death will spawn
+// three chi orbs that the player can pick up whenever they do not have max
+// Chi. Given we want to provide the chi but apply it slowly if the player is at
+// max chi, then we need to set up so that it triggers on it's own.
+
+struct touch_of_death_ww_buff_t : public monk_buff_t<buff_t>
+{
+  touch_of_death_ww_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  {
+    set_can_cancel( false );
+    set_quiet( true );
+    set_reverse( true );
+    set_cooldown( timespan_t::zero() );
+
+    set_duration( timespan_t::from_minutes( 3 ) );
+    set_period( timespan_t::from_seconds( 1 ) );
+    set_tick_zero( true );
+
+    set_max_stack( p.spec.touch_of_death_3_ww->effectN( 1 ).base_value() );
+    set_reverse_stack_count( p.spec.touch_of_death_3_ww->effectN( 1 ).base_value() );
+
+    set_tick_callback( [ this, &p ]( buff_t*, int, timespan_t ) {
+      decrement( 1, DEFAULT_VALUE() );
+    } );
+  }
+
+  void decrement( int stacks, double value ) override
+  {
+    monk_t* p = debug_cast<monk_t*>( player );
+    if ( stacks > 0 && p->resources.current[ RESOURCE_CHI ] < p->resources.max[ RESOURCE_CHI ] )
+    {
+      buff_t::decrement( stacks, value );
+
+      p->resource_gain( RESOURCE_CHI, 1, p->gain.touch_of_death_ww );
+    }
   }
 };
 
@@ -6504,6 +6546,8 @@ void monk_t::create_buffs()
           ->set_can_cancel( false )  // Undocumented hotfix 28/09/2018 - SEF can no longer be canceled.
           ->set_cooldown( timespan_t::zero() );
 
+  buff.touch_of_death_ww = new buffs::touch_of_death_ww_buff_t( *this, "touch_of_death_ww", spell_data_t::nil() );
+
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", find_spell( 125174 ) );
 
   buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 166646 ) );
@@ -6597,6 +6641,7 @@ void monk_t::init_gains()
   gain.serenity                 = get_gain( "serenity" );
   gain.spirit_of_the_crane      = get_gain( "spirit_of_the_crane" );
   gain.tiger_palm               = get_gain( "tiger_palm" );
+  gain.touch_of_death_ww        = get_gain( "touch_of_death_ww" );
 
   // Azerite Traits
   gain.open_palm_strikes      = get_gain( "open_palm_strikes" );

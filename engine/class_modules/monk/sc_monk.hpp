@@ -230,6 +230,7 @@ public:
     buff_t* invoke_xuen;
     buff_t* storm_earth_and_fire;
     buff_t* serenity;
+    buff_t* touch_of_death_ww;
     buff_t* touch_of_karma;
     buff_t* windwalking_driver;
     buff_t* whirling_dragon_punch;
@@ -277,6 +278,7 @@ public:
     gain_t* serenity;
     gain_t* spirit_of_the_crane;
     gain_t* tiger_palm;
+    gain_t* touch_of_death_ww;
 
     // Azerite Traits
     gain_t* glory_of_the_dawn;
