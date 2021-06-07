@@ -7076,7 +7076,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
   }
   else if ( util::str_compare_ci(name_str, "priority_rotation") )
   {
-    return make_ref_expr( name_str, options.priority_rotation );
+    return expr_t::create_constant( name_str, options.priority_rotation );
   }
 
   // Split expressions
@@ -8094,7 +8094,8 @@ void rogue_t::create_buffs()
     ->set_default_value( legendary.concealed_blunderbuss->effectN( 2 ).base_value() );
 
   buffs.greenskins_wickers = make_buff( this, "greenskins_wickers", find_spell( 340573 ) )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
+    ->set_trigger_spell( legendary.greenskins_wickers );
 }
 
 // rogue_t::create_options ==================================================

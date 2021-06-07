@@ -197,7 +197,7 @@ public:
   void create_persistent_actors() override;
 
   /// Returns a pet-related expression
-  std::unique_ptr<expr_t> create_expression( util::span<const util::string_view> expr ) override;
+  std::unique_ptr<expr_t> create_expression( util::span<const util::string_view> expr, util::string_view full_expression_str ) override;
 
   /// Returns total uptime of the spawned pet type
   timespan_t iteration_uptime() const override;

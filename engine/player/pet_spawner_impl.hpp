@@ -574,7 +574,8 @@ void pet_spawner_t<T, O>::create_persistent_actors()
 }
 
 template <typename T, typename O>
-std::unique_ptr<expr_t> pet_spawner_t<T, O>::create_expression( util::span<const util::string_view> expr )
+std::unique_ptr<expr_t> pet_spawner_t<T, O>::create_expression( util::span<const util::string_view> expr,
+                                                                util::string_view full_expression_str )
 {
   if ( expr.size() == 0 )
   {
@@ -585,12 +586,12 @@ std::unique_ptr<expr_t> pet_spawner_t<T, O>::create_expression( util::span<const
 
   if ( util::str_compare_ci( expr[ 0 ], "active" ) )
   {
-    return make_fn_expr( "active", [ this ]() { return as<double>( n_active_pets() ); } );
+    return make_fn_expr( full_expression_str, [ this ]() { return as<double>( n_active_pets() ); } );
   }
   else if ( util::str_compare_ci( expr[ 0 ], "min_remains" ) ||
             util::str_compare_ci( expr[ 0 ], "remains" ) )
   {
-    return make_fn_expr( "remains", [ this, sim ]() {
+    return make_fn_expr( full_expression_str, [ this, sim ]() {
       auto pet = active_pet_min_remains();
       if ( pet == nullptr )
       {
@@ -604,7 +605,7 @@ std::unique_ptr<expr_t> pet_spawner_t<T, O>::create_expression( util::span<const
   }
   else if ( util::str_compare_ci( expr[ 0 ], "max_remains" ) )
   {
-    return make_fn_expr( "max_remains", [ this, sim ]() {
+    return make_fn_expr( full_expression_str, [ this, sim ]() {
       auto pet = active_pet_max_remains();
       if ( pet == nullptr )
       {

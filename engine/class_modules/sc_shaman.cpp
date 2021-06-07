@@ -8417,7 +8417,8 @@ void shaman_t::create_buffs()
                        ->set_default_value( find_spell( 263806 )->effectN( 1 ).percent() );
 
   buff.echoes_of_great_sundering = make_buff( this, "echoes_of_great_sundering", find_spell( 336217 ) )
-                                       ->set_default_value( find_spell( 336217 )->effectN( 2 ).percent() );
+                                       ->set_default_value( find_spell( 336217 )->effectN( 2 ).percent() )
+                                       ->set_trigger_spell( legendary.echoes_of_great_sundering );
 
   buff.chains_of_devastation_chain_heal = make_buff( this, "chains_of_devastation_chain_heal", find_spell( 336737 ) );
   buff.chains_of_devastation_chain_lightning =

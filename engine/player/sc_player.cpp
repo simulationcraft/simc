@@ -10435,7 +10435,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     // rest of the info
     else
     {
-      auto expr = spawner -> create_expression( util::make_span( splits ).subspan( 2 ) );
+      auto expr = spawner -> create_expression( util::make_span( splits ).subspan( 2 ), expression_str );
       if ( expr )
       {
         return expr;

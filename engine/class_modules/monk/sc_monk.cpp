@@ -5544,7 +5544,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
   // Covenant Abilities
   debuff.bonedust_brew = make_buff( *this, "bonedust_brew", p->covenant.necrolord )
                              ->set_cooldown( timespan_t::zero() )
-                             ->set_chance( 1.0 )
+                             ->set_chance( (p->covenant.necrolord -> ok() || p->legendary.bountiful_brew -> ok() ) ? 1 : 0 )
                              ->set_default_value_from_effect( 3 );
 
   debuff.faeline_stomp = make_buff( *this, "faeline_stomp_debuff", p->find_spell( 327257 ) );
@@ -6565,10 +6565,12 @@ void monk_t::create_buffs()
           ->set_duration( find_spell( 310454 )->duration() +
                           ( conduit.strike_with_clarity->ok() ? conduit.strike_with_clarity->effectN( 2 ).time_value()
                                                               : timespan_t::zero() ) )
-          ->add_invalidate( CACHE_MASTERY );
+          ->add_invalidate( CACHE_MASTERY )
+          ->set_trigger_spell( covenant.kyrian );
 
   buff.weapons_of_order_ww = make_buff( this, "weapons_of_order_ww", find_spell( 311054 ) )
-                                 ->set_default_value( find_spell( 311054 )->effectN( 1 ).base_value() );
+                                 ->set_default_value( find_spell( 311054 )->effectN( 1 ).base_value() )
+                                 ->set_chance( covenant.kyrian->ok() ? 1 : 0);
 
   buff.faeline_stomp = make_buff( this, "faeline_stomp", covenant.night_fae )->set_default_value_from_effect( 2 );
 

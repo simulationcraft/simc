@@ -581,7 +581,7 @@ namespace buffs {
 
   struct crusade_buff_t : public buff_t
   {
-    crusade_buff_t( player_t* p );
+    crusade_buff_t( paladin_t* p );
 
     double get_damage_mod() const
     {
