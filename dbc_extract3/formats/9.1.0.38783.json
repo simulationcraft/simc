@@ -900,7 +900,7 @@
       { "data_type": "i", "field": "id_player_cond" },
       { "data_type": "i", "field": "unk_8" },
       { "data_type": "i", "field": "id_item" },
-      { "data_type": "i", "field": "unk_9" },
+      { "data_type": "i", "field": "id_covenant", "ref": "Covenant" },
       { "data_type": "i", "field": "unk_10" }
     ]
   },
