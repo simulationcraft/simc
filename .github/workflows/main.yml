@@ -197,19 +197,6 @@ jobs:
           SIMC_ITERATIONS: 2
         run: tests/run.py ${{ matrix.spec }} -tests talent trinket covenant legendary soulbind --max-profiles-to-use 1
 
-  build-docker:
-    name: docker
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Build
-        run: docker build --no-cache --build-arg THREADS=2 --build-arg NONETWORKING=1 -t simulationcraft .
-
-      - name: Test
-        run: docker run simulationcraft ./simc spell_query=spell.name=frost_shock
-
-
   build-osx:
     name: macos-latest
     runs-on: macos-latest
