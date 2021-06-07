@@ -26,6 +26,7 @@ SIMC_ITERATIONS = int( os.environ.get('SIMC_ITERATIONS', '10') )
 SIMC_THREADS = int( os.environ.get('SIMC_THREADS', '2') )
 SIMC_FIGHT_STYLE = os.environ.get('SIMC_FIGHT_STYLE')
 SIMC_PROFILE_DIR = os.environ.get('SIMC_PROFILE_DIR', os.getcwd())
+SIMC_PTR = 1 if "PTR" in os.environ.get('SIMC_PTR', '0') or os.environ.get('SIMC_PTR', '0') == "1" else 0
 
 def find_profiles(klass):
     files = Path(SIMC_PROFILE_DIR).glob('*_{}*.simc'.format(klass))
@@ -38,6 +39,7 @@ class TestGroup(object):
         self.fight_style = kwargs.get('fight_style', SIMC_FIGHT_STYLE)
         self.iterations = kwargs.get('iterations', SIMC_ITERATIONS)
         self.threads = kwargs.get('threads', SIMC_THREADS)
+        self.ptr = kwargs.get('ptr', SIMC_PTR)
         self.tests = []
 
 class Test(object):
@@ -52,6 +54,7 @@ class Test(object):
         self._fight_style = kwargs.get('fight_style', group and group.fight_style or SIMC_FIGHT_STYLE)
         self._iterations = kwargs.get('iterations', group and group.iterations or SIMC_ITERATIONS)
         self._threads = kwargs.get('threads', group and group.threads or SIMC_THREADS)
+        self._ptr = kwargs.get('ptr', group and group.ptr or SIMC_PTR)
         self._args = kwargs.get('args', [])
 
     def args(self):
@@ -60,6 +63,7 @@ class Test(object):
             'threads={}'.format(self._threads),
             'cleanup_threads=1',
             'default_actions=1',
+            'ptr={}'.format(SIMC_PTR)
         ]
         if self._fight_style:
             args.append('fight_style={}'.format(self._fight_style))

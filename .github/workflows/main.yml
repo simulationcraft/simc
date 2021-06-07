@@ -153,7 +153,7 @@ jobs:
         run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null json3=/dev/null ${{ matrix.simc_flags }}
 
   simc-tests:
-    name: test-${{ matrix.tier }}-${{ matrix.spec }}
+    name: test-${{ matrix.tier }}-${{ matrix.spec }}${{ matrix.ptr }}
     runs-on: ubuntu-20.04
     needs: [ ubuntu-clang-10-build ]
 
@@ -175,6 +175,7 @@ jobs:
             Warlock_Affliction, Warlock_Demonology, Warlock_Destruction,
             Warrior_Arms, Warrior_Fury, Warrior_Protection,
           ]
+        ptr: ['', '-PTR']
 
     steps:
       - uses: actions/cache@v2
@@ -195,6 +196,7 @@ jobs:
           SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
           SIMC_THREADS: 2
           SIMC_ITERATIONS: 2
+          SIMC_PTR: ${{ matrix.ptr }}
         run: tests/run.py ${{ matrix.spec }} -tests talent trinket covenant legendary soulbind --max-profiles-to-use 1
 
   build-docker:
