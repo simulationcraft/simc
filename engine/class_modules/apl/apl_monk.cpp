@@ -349,7 +349,7 @@ void windwalker( player_t* p )
   // Snapshot stats
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  pre->add_action( "variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone" );
+  pre->add_action( "variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem" );
   pre->add_talent( p, "Chi Burst" );
   pre->add_talent( p, "Chi Wave", "if=!talent.energizing_elixir.enabled" );
 
@@ -480,7 +480,7 @@ void windwalker( player_t* p )
   else
   {
     cd_serenity->add_action( p, "Touch of Death", "if=fight_remains>(180-runeforge.fatal_touch*120)|fight_remains<10" );
-    cd_serenity->add_action( p, "Touch of Karma", "if=fight_remains>90|fight_remains<10" );
+    cd_serenity->add_action( p, "Touch of Karma", "if=fight_remains>90|fight_remains<16" );
   }
 
   // Serenity Covenant Abilities
@@ -493,11 +493,15 @@ void windwalker( player_t* p )
     if ( p->items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
       if ( p->items[ i ].name_str == "inscrutable_quantum_device" )
-        cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst" );
+        cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
       else if ( p->items[ i ].name_str == "wrathstone" )
-        cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst" );
+        cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
+            else if ( p->items[ i ].name_str == "overcharged_anima_battery" )
+        cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
+            else if ( p->items[ i ].name_str == "shadowgrasp_totem" )
+        cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight" );
       else if ( p->items[ i ].name_str == "gladiators_badge" )
-        cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst" );
+        cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
       else
         cd_serenity->add_action(
             "use_item,name=" + p->items[ i ].name_str +
@@ -513,7 +517,7 @@ void windwalker( player_t* p )
   cd_serenity->add_action( "bag_of_tricks" );
 
   // Storm, Earth and Fire Cooldowns
-  cd_sef->add_action( p, "Invoke Xuen, the White Tiger", "if=!variable.hold_xuen|fight_remains<25" );
+  cd_sef->add_action( p, "Invoke Xuen, the White Tiger", "if=!variable.hold_xuen&(cooldown.rising_sun_kick.remains<2|!covenant.kyrian)|fight_remains<25" );
 
   if ( monk->spec.invoke_xuen->ok() )
     cd_sef->add_action( p, "Touch of Death",
@@ -526,7 +530,7 @@ void windwalker( player_t* p )
 
   // Storm, Earth, and Fire Covenant Abilities
   cd_sef->add_action(
-      "weapons_of_order,if=(raid_event.adds.in>45|raid_event.adds.up)&cooldown.rising_sun_kick.remains<execute_time" );
+      "weapons_of_order,if=(raid_event.adds.in>45|raid_event.adds.up)&cooldown.rising_sun_kick.remains<execute_time&cooldown.invoke_xuen_the_white_tiger.remains>(20+20*runeforge.invokers_delight)|fight_remains<35" );
   cd_sef->add_action( "faeline_stomp,if=combo_strike&(raid_event.adds.in>10|raid_event.adds.up)" );
   cd_sef->add_action( "fallen_order,if=raid_event.adds.in>30|raid_event.adds.up" );
   cd_sef->add_action( "bonedust_brew,if=raid_event.adds.in>50|raid_event.adds.up,line_cd=60" );
@@ -551,22 +555,28 @@ void windwalker( player_t* p )
     {
       if ( p->items[ i ].name_str == "inscrutable_quantum_device" )
         cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str + 
-                            ",if=pet.xuen_the_white_tiger.active|fight_remains<20" );
+                            ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>180|fight_remains<20" );
       else if ( p->items[ i ].name_str == "wrathstone" )
         cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str +
-                            ",if=pet.xuen_the_white_tiger.active|fight_remains<20" );
+                            ",if=pet.xuen_the_white_tiger.active|fight_remains<20" );      
+      else if ( p->items[ i ].name_str == "shadowgrasp_totem" )
+        cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str +
+                            ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight" );
+      else if ( p->items[ i ].name_str == "overcharged_anima_battery" )
+        cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str +
+                            ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>90|fight_remains<20" );
       else if ( p->items[ i ].name_str == "gladiators_badge" )
         cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str +
-                            ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<15" );
+                            ",if=cooldown.invoke_xuen_the_white_tiger.remains>55|variable.hold_xuen|fight_remains<15" );
       else
         cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str +
-               ",if=!variable.xuen_on_use_trinket|cooldown.invoke_xuen_the_white_tiger.remains>20|variable.hold_xuen" );
+               ",if=!variable.xuen_on_use_trinket|cooldown.invoke_xuen_the_white_tiger.remains>20&pet.xuen_the_white_tiger.remains<20|variable.hold_xuen" );
     }
   }
 
   if ( monk->spec.invoke_xuen->ok() )
     cd_sef->add_action( p, "Touch of Karma",
-                        "if=fight_remains>159|pet.xuen_the_white_tiger.active|variable.hold_xuen" );
+                        "if=fight_remains>90|pet.xuen_the_white_tiger.active|variable.hold_xuen|fight_remains<16" );
   else
     cd_sef->add_action( p, "Touch of Karma", "if=fight_remains>159|variable.hold_xuen" );
 
@@ -611,9 +621,7 @@ void windwalker( player_t* p )
   serenity->add_action( p, "Spinning Crane Kick" );
 
   // Weapons of Order
-  weapons_of_order->add_action( "variable,name=blackout_kick_needed,op=set,value=buff.weapons_of_order_ww.remains&"
-      "(cooldown.rising_sun_kick.remains>buff.weapons_of_order_ww.remains&buff.weapons_of_order_ww.remains<2|"
-      "cooldown.rising_sun_kick.remains-buff.weapons_of_order_ww.remains>2&buff.weapons_of_order_ww.remains<4)" );
+  weapons_of_order->add_action( "variable,name=blackout_kick_needed,op=set,value=buff.weapons_of_order_ww.remains&(cooldown.rising_sun_kick.remains>buff.weapons_of_order_ww.remains&buff.weapons_of_order_ww.remains<2.1|cooldown.rising_sun_kick.remains-buff.weapons_of_order_ww.remains>1.9&buff.weapons_of_order_ww.remains<4.1|buff.bloodlust.up&buff.invokers_delight.up&buff.invokers_delight.remains<buff.weapons_of_order_ww.remains)" );
   weapons_of_order->add_action( "call_action_list,name=cd_sef,if=!talent.serenity" );
   weapons_of_order->add_action( "call_action_list,name=cd_serenity,if=talent.serenity" );
   weapons_of_order->add_talent( p, "Energizing Elixir", "if=chi.max-chi>=2&energy.time_to_max>3" );
@@ -626,7 +634,13 @@ void windwalker( player_t* p )
                                 "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&active_enemies<=2&variable.blackout_kick_needed" );
   weapons_of_order->add_action( p, "Spinning Crane Kick",
                                 "if=combo_strike&buff.dance_of_chiji.up" );
+  weapons_of_order->add_action( p, "Expel Harm",
+                                "if=chi=0&buff.weapons_of_order_ww.remains<4" );
+  weapons_of_order->add_talent( p, "Fist of the White Tiger",
+                                "target_if=min:debuff.mark_of_the_crane.remains,if=chi=0&buff.weapons_of_order_ww.remains<4" );
   weapons_of_order->add_talent( p, "Whirling Dragon Punch" );
+  weapons_of_order->add_action( p, "Tiger Palm",
+                                "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=chi=0&buff.weapons_of_order_ww.remains<4" );
   weapons_of_order->add_action( p, "Fists of Fury",
       "interrupt=1,if=buff.storm_earth_and_fire.up&raid_event.adds.in>cooldown.fists_of_fury.duration*0.6" );
   weapons_of_order->add_action( p, "Spinning Crane Kick", "if=buff.chi_energy.stack>30-5*active_enemies" );
@@ -652,7 +666,7 @@ void windwalker( player_t* p )
       p, "Spinning Crane Kick",
       "if=combo_strike&buff.dance_of_chiji.up&(raid_event.adds.in>buff.dance_of_chiji.remains-2|raid_event.adds.up)" );
   st->add_action( p, "Rising Sun Kick",
-                  "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.serenity.remains>1|!talent.serenity" );
+                  "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.serenity.remains>1|!talent.serenity&(cooldown.weapons_of_order.remains>4|!covenant.kyrian)" );
   st->add_action(
       p, "Fists of Fury",
       "if=(raid_event.adds.in>cooldown.fists_of_fury.duration*0.8|raid_event.adds.up)&(energy.time_to_max>execute_time-"
