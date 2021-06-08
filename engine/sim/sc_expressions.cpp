@@ -450,12 +450,10 @@ std::unique_ptr<expr_t> select_unary( bool analyze, util::string_view name, toke
 
 // Analyzing Binary Operators ===============================================
 
-class analyze_binary_base_t : public expr_t
+class analyze_binary_base_t : public binary_base_t
 {
 protected:
   token_e op;
-  std::unique_ptr<expr_t> left;
-  std::unique_ptr<expr_t> right;
   double result;
   double left_result, right_result;
   uint64_t left_true, right_true;
@@ -463,10 +461,8 @@ protected:
 
 public:
   analyze_binary_base_t( util::string_view n, token_e o, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
-    : expr_t( n, o ),
+    : binary_base_t( n, o, std::move(l), std::move(r) ),
       op(),
-      left( std::move(l) ),
-      right( std::move(r) ),
       result( 0 ),
       left_result( 0 ),
       right_result( 0 ),
@@ -662,14 +658,14 @@ public:
     if ( left_false < right_false )
     {
       auto& right_ = right->op_ == TOK_AND
-                           ? (right->is_analyze_expression() ? debug_cast<analyze_logical_and_t*>( right.get() )->left: debug_cast<logical_and_t*>( right.get() )->left)
+                           ? debug_cast<binary_base_t*>( right.get() )->left
                            : right;
       std::swap( left, right_ );
     }
     else if ( left->op_ == TOK_AND )
     {
       std::swap( left, right );
-      std::swap( left, right->is_analyze_expression() ? debug_cast<analyze_logical_and_t*>( right.get() )->left : debug_cast<logical_and_t*>( right.get() )->left );
+      std::swap( left, debug_cast<binary_base_t*>( right.get() )->left );
     }
     return select_binary( analyze_further, name(), TOK_AND, std::move(left), std::move(right) );
   }
@@ -772,13 +768,13 @@ public:
     if ( left_true < right_true )
     {
       std::swap( left, right->op_ == TOK_OR
-                           ? ( right->is_analyze_expression() ? debug_cast<analyze_logical_or_t*>( right.get() )->left : debug_cast<logical_or_t*>( right.get() )->left)
+                           ? debug_cast<binary_base_t*>( right.get() )->left
                            : right );
     }
     else if ( left->op_ == TOK_OR )
     {
       std::swap( left, right );
-      std::swap( left, right->is_analyze_expression() ? debug_cast<analyze_logical_or_t*>( right.get() )->left : debug_cast<logical_or_t*>( right.get() )->left );
+      std::swap( left, debug_cast<binary_base_t*>( right.get() )->left );
     }
     
     return select_binary( analyze_further, name(), TOK_OR, std::move(left), std::move(right) );
