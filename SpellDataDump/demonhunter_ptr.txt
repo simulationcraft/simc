@@ -894,7 +894,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
-Duration         : 5 seconds
+Duration         : 6 seconds
 Cooldown         : 180 seconds
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2269,9 +2269,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Don't display in aura bar (60)
 Effects          :
 #1 (id=302487)   : Apply Aura (6) | Modify Leech% (443)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=483201)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Metamorphosis (162264), Metamorphosis (191427)
                    Family Flags: 15
 Description      : Leech increased by $s1%.
@@ -2300,9 +2300,11 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Blur (198589), Blur (212800)
                    Family Flags: 26
+#4 (id=893917)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Blur now reduces damage taken by an additional ${$abs($m3)}%.
 
-Additionally, you automatically trigger Blur when you fall below $s1% health. This effect can only occur when Blur is not on cooldown.
+Additionally, you automatically trigger Blur with $s4% reduced cooldown and duration when you fall below $s1% health. This effect can only occur when Blur is not on cooldown.
 
 Name             : Desperate Instincts (id=205478) [Spell Family (107), Hidden] 
 Class            : Demon Hunter
@@ -3676,9 +3678,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Don't display in aura bar (60)
 Effects          :
 #1 (id=324562)   : Apply Aura (6) | Modify Leech% (443)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=706206)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Metamorphosis (187827)
                    Family Flags: 28
 Description      : Leech increased by $s1%.
@@ -7243,7 +7245,7 @@ GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Affecting spells : Demon Soul (163073 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Demon Soul (347765 effects: #1, #2)
 Family Flags     : 32, 70, 72
-Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
+Attributes       : ....x... ........ x....... ........   .......x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

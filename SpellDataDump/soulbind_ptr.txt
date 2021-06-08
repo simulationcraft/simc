@@ -1786,7 +1786,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=875213)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 5 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Damaging a new enemy grants you $333943m% Haste for $333943d, up to $333943u stacks.
+Description      : Damaging a new enemy grants you $333943s1% Haste for $333943d, up to $333943u stacks.
 
 Name             : Bron's Call to Action (id=333950) [Passive, Hidden] 
 Covenant         : Kyrian
@@ -2196,7 +2196,7 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ........ .....x.. ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ...x.... ........ ........ ........   
+                 : ..xx.... ........ ........ ........   
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=881162)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
@@ -2204,7 +2204,7 @@ Effects          :
 #2 (id=882425)   : Apply Aura (6) | Dummy (4)
                    Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : While above $s2% health, you gain a shield that absorbs $<shield> magic damage for $351921d. This effect may only occur once every $351922d.
-Variables        : $shield=${$MHP*$s1/100*(1+$@versadmg)}
+Variables        : $shield=${$MHP*$s1/100}
 
 Name             : Pustule Eruption (id=351094) [Passive, Hidden] 
 Covenant         : Necrolord
@@ -2226,7 +2226,7 @@ Effects          :
 #1 (id=881163)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Fleshcraft covers you in 3 pustules per 1 sec channeled. Taking damage or being healed pops a pustule, dealing $<pointsB> Nature damage to nearby enemies and healing nearby allies for $<pointsA> split between them.
-Variables        : $pointsA=${$cond($gt($SP,$AP),$SP*0.48,$AP*0.48)*(1+$@versadmg)}
+Variables        : $pointsA=${$cond($gt($SP,$AP),$SP*0.48,$AP*0.48)}
 $pointsB=${$cond($gt($SP,$AP),$SP*0.72,$AP*0.72)*(1+$@versadmg)}
 
 Name             : Better Together (id=351146) [Passive, Hidden] 
@@ -2353,7 +2353,7 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x.x. 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ....x... ........ 
@@ -2374,7 +2374,7 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x.x. 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ....x... ........ 
@@ -2395,7 +2395,7 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x.x. 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ....x... ........ 
@@ -2468,6 +2468,7 @@ Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
 Spell Level      : 60
+Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
@@ -2510,7 +2511,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Damaging or healing a target analyzes its merit over $352940d, increasing your damage or healing to it by $352939s1%, increasing by an additional $352939s1% every $352939t4 sec.
 
-Cannot start a new analysis until the previous one has finished.
+Cannot start a new analysis of each type until the previous one has finished.
 
 Name             : Reactive Retrofitting (id=352187) [Passive, Hidden] 
 Covenant         : Kyrian
@@ -2562,14 +2563,14 @@ $cd=$?a137005[${4}]?a212611[${4}]?a137009[${4}]?a137014[${4}]?a137018[${2}]?a137
 
 Name             : Regenerative Stone Skin (id=352365) [Passive, Hidden] 
 Covenant         : Venthyr
-School           : Physical
+School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Proc Chance      : 101%
 Proc Flags       : ........ ...x...x ........ .......x 
                  : Generic Heal Taken, Magic Heal Taken
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x.x. 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ....x... ........ 
@@ -2586,7 +2587,7 @@ Description      : Any overhealing done to you will heal for an additional $s1% 
 
 Name             : Nimble Steps (id=352366) [Passive, Hidden] 
 Covenant         : Venthyr
-School           : Physical
+School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Proc Chance      : 101%
@@ -2610,7 +2611,7 @@ Description      : Enemies within 8 yds are slowed by $354050s1%. If you fall be
 
 Name             : Fatal Flaw (id=352373) [Passive, Hidden] 
 Covenant         : Venthyr
-School           : Physical
+School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
@@ -2652,11 +2653,11 @@ Description      : Health Potions and Healthstones grant you an absorb shield eq
 
 Name             : Intimidation Tactics (id=352415) [Passive, Hidden] 
 Covenant         : Venthyr
-School           : Physical
+School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x.x. 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ....x... ........ 
@@ -2673,11 +2674,11 @@ Description      : While below $s1% health, Door of Shadows cools down $s2% fast
 
 Name             : Battlefield Presence (id=352417) [Passive, Hidden] 
 Covenant         : Venthyr
-School           : Physical
+School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x.x. 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ....x... ........ 
@@ -2736,7 +2737,7 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : Passive (6), Hidden (7), Does not break stealth (37), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=883481)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 352857 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Trigger Spell: 352857 | Target: Self (1)
 #2 (id=884201)   : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When you fall below $s1% health, you regain ${$352857s1*$352857d}% of your health over $352857d and receive $352857s2% additional healing from other spells and abilities.

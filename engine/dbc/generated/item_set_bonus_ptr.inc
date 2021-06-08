@@ -1,4 +1,4 @@
-// Set bonus data, wow build 9.1.0.38872
+// Set bonus data, wow build 9.1.0.38950
 static const std::array<item_set_bonus_t, 120> __ptr_set_bonus_data { {
   // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "March of the Legion"                       , "march_of_the_legion",      0,  1293,   19,   2,   1,   -1,  228445, { 134529, 134533,  0 } },

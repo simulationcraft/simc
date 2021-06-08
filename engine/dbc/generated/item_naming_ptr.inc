@@ -1,4 +1,4 @@
-// Item name descriptions, wow build 9.1.0.38872
+// Item name descriptions, wow build 9.1.0.38950
 static const std::array<item_name_description_t, 644> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
@@ -633,7 +633,6 @@ static const std::array<item_name_description_t, 644> __ptr_item_name_descriptio
   { 13877, "Pouch of Razor Fragments"                    },
   { 13878, "Call to Arms"                                },
   { 13879, "The Devouring Cold"                          },
-  { 13880, "Slayer of the Condemned"                     },
   { 13881, "Faeline Harmony"                             },
   { 13882, "Test 1 Override"                             },
   { 13883, "Test 2 Override"                             },
@@ -644,5 +643,6 @@ static const std::array<item_name_description_t, 644> __ptr_item_name_descriptio
   { 13888, "Pallid Command"                              },
   { 13889, "Elysian Might"                               },
   { 13890, "Divine Resonance"                            },
+  { 13891, "Priceless"                                   },
 } };
 

@@ -319,8 +319,8 @@ Duration         : Aura (infinite)
 Cooldown         : 2 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Proc Flags       : ...x.x.x .x..xx.. xx.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell, Generic Hostile Spell Taken, Magic Hostile Spell, Magic Hostile Spell Taken, Periodic Taken
 Affecting spells : Nightstalker (14062 effects: #1, #2), Subterfuge (108208 effect#1), Hit and Run (196922 effect#2), Acrobatic Strikes (196924 effect#2)
 Triggered by     : Subterfuge (108208)
 Family Flags     : 22
@@ -3032,7 +3032,7 @@ Family Flags     : 122
 Attributes       : .......x x....... ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ....x...   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ..x..... ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
@@ -8927,7 +8927,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1) -> Custom (18)
 #4 (id=826459)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
-Description      : Finishing move that launches explosive Black Powder at up to $s4 nearby targets dealing Physical damage.$?s319178[ Targets with your Find Weakness suffer an additional $319178s1% damage as Shadow.][]
+Description      : Finishing move that launches explosive Black Powder at up to $s4 nearby targets dealing Physical damage.$?s319178[ All nearby targets with your Find Weakness suffer an additional $319178s1% damage as Shadow.][]
 
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -10455,7 +10455,7 @@ Name             : Cloaked in Shadows (id=341529) [Spell Family (8), Passive, Hi
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
-Conduit Id       : 232 (values=10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24)
+Conduit Id       : 232 (values=15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11297,10 +11297,10 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 1889 | Target: Self (1)
                    Affected Spells (Category): Serrated Bone Spike (328547)
 #2 (id=887363)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547)
                    Family Flags: 115
-Description      : Serrated Bone Spike has $s1 additional charges and hits $s2 additional nearby enemies.
+Description      : Serrated Bone Spike has $s1 additional charges and launches $s2 additional bone spike at nearby enemies.
 
 Name             : Resounding Clarity (id=354837) [Spell Family (8), Passive, Hidden] 
 School           : Physical
@@ -11401,7 +11401,7 @@ Effects          :
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=889995)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Impending Catastrophe's final explosion damage is increased by $s1% plus $s2% for each enemy target hit on the way to its final target.
+Description      : Impending Catastrophe's damage over time is increased by $s1% plus $s2% for each enemy target hit on the way to its final target.
 
 Name             : Decaying Soul Satchel (id=356362) [Spell Family (8), Passive, Hidden] 
 School           : Physical
