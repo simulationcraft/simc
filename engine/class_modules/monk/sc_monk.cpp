@@ -3843,7 +3843,8 @@ struct bonedust_brew_damage_t : public monk_spell_t
   bonedust_brew_damage_t( monk_t& p ) : monk_spell_t( "bonedust_brew_dmg", &p, p.passives.bonedust_brew_dmg )
   {
     background = true;
-    may_crit   = false;
+    if ( !p.dbc->ptr )
+      may_crit   = false;
   }
 
   void execute() override
@@ -7836,7 +7837,7 @@ void monk_t::trigger_bonedust_brew( action_state_t* s )
 
       // Bone Marrow Hops DOES NOT work with SEF or pets
       // "This" is referring to the player and does not work with "guardians" which is what SEF and pets are registered as
-      if ( s->action->player == this && conduit.bone_marrow_hops->ok() )
+      if ( ( dbc->ptr || s->action->player == this ) && conduit.bone_marrow_hops->ok() )
         damage *= 1 + conduit.bone_marrow_hops.percent();
 
       active_actions.bonedust_brew_dmg->base_dd_min = damage;
