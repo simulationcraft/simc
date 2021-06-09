@@ -3843,8 +3843,6 @@ struct bonedust_brew_damage_t : public monk_spell_t
   bonedust_brew_damage_t( monk_t& p ) : monk_spell_t( "bonedust_brew_dmg", &p, p.passives.bonedust_brew_dmg )
   {
     background = true;
-    if ( !p.dbc->ptr )
-      may_crit   = false;
   }
 
   void execute() override
@@ -7166,6 +7164,9 @@ double monk_t::composite_player_target_pet_damage_multiplier( player_t* target, 
     else
         multiplier *= 1 + ( get_target_data( target )->debuff.weapons_of_order->stack() * find_spell( 312106 )->effectN( 2 ).percent() );
   }
+
+  if ( get_target_data( target )->debuff.fae_exposure->up() )
+    multiplier *= 1 + passives.fae_exposure_dmg->effectN( 1 ).percent();
 
   return multiplier;
 }
