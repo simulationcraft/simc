@@ -616,7 +616,7 @@ struct rattling_mage_unholy_bolt_t final : public priest_pet_spell_t
     }
     else
     {
-      spell_base_t::execute_time();
+      t = spell_base_t::execute_time();
     }
 
     return t;
