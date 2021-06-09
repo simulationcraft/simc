@@ -7166,7 +7166,12 @@ double monk_t::composite_player_target_pet_damage_multiplier( player_t* target, 
   }
 
   if ( get_target_data( target )->debuff.fae_exposure->up() )
-    multiplier *= 1 + passives.fae_exposure_dmg->effectN( 1 ).percent();
+  {
+    if ( guardian )
+      multiplier *= 1 + passives.fae_exposure_dmg->effectN( 3 ).percent();
+    else
+      multiplier *= 1 + passives.fae_exposure_dmg->effectN( 2 ).percent();
+  }
 
   return multiplier;
 }
