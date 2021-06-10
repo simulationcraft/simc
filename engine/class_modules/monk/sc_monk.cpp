@@ -6562,8 +6562,9 @@ void monk_t::create_buffs()
 
   // Covenant Abilities
   buff.bonedust_brew = make_buff( this, "bonedust_brew_buff", covenant.necrolord )
-                                  ->set_chance( 1 )
-                                  ->set_cooldown( timespan_t::zero() );
+                           ->set_cooldown( timespan_t::zero() )
+                           ->set_chance( ( covenant.necrolord->ok() || legendary.bountiful_brew->ok() ) ? 1 : 0 )
+                           ->set_default_value_from_effect( 3 );
   buff.bonedust_brew_hidden = make_buff( this, "bonedust_brew_hidden" )
                                   ->set_quiet( true )
                                   ->set_duration( timespan_t::from_seconds( 10 ) )
