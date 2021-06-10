@@ -236,6 +236,7 @@ public:
     buff_t* whirling_dragon_punch;
 
     // Covenant Abilities
+    buff_t* bonedust_brew;
     buff_t* bonedust_brew_hidden;
     buff_t* weapons_of_order;
     buff_t* weapons_of_order_ww;

@@ -429,7 +429,6 @@ public:
         p()->active_actions.bountiful_brew->execute();
     }
 
-
     if ( p()->legendary.sinister_teachings->ok() )
     {
       if ( s->result == RESULT_CRIT && p()->buff.fallen_order->up() && p()->cooldown.sinister_teachings->up() )
@@ -3797,6 +3796,15 @@ struct bountiful_brew_t : public monk_spell_t
   {
     p()->buff.bonedust_brew_hidden->trigger();
     monk_spell_t::execute();
+
+    p()->buff.bonedust_brew->trigger();
+
+    // Force trigger Lead by Example Buff
+    if ( p()->find_soulbind_spell( "lead_by_example" ) )
+    {
+      auto buff = buff_t::find( p()->buff_list, "lead_by_example" );
+      buff->trigger();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3824,6 +3832,8 @@ struct bonedust_brew_t : public monk_spell_t
   {
     p()->buff.bonedust_brew_hidden->trigger();
     monk_spell_t::execute();
+
+    p()->buff.bonedust_brew->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -5416,7 +5426,7 @@ struct touch_of_death_ww_buff_t : public monk_buff_t<buff_t>
     set_period( timespan_t::from_seconds( 1 ) );
     set_tick_zero( true );
 
-    set_max_stack( p.spec.touch_of_death_3_ww->effectN( 1 ).base_value() );
+    set_max_stack( (int)p.spec.touch_of_death_3_ww->effectN( 1 ).base_value() );
     set_reverse_stack_count( 1 );
   }
 
@@ -6551,6 +6561,9 @@ void monk_t::create_buffs()
                                    ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   // Covenant Abilities
+  buff.bonedust_brew = make_buff( this, "bonedust_brew_uptime", covenant.necrolord )
+                                  ->set_chance( 1 )
+                                  ->set_cooldown( timespan_t::zero() );
   buff.bonedust_brew_hidden = make_buff( this, "bonedust_brew_hidden" )
                                   ->set_quiet( true )
                                   ->set_duration( timespan_t::from_seconds( 10 ) )
