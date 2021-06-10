@@ -21,11 +21,11 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        cc: [gcc-9, gcc-6]
+        cc: [gcc-9, gcc-7]
         include:
-          - cc: gcc-6
-            cxx: g++-6
-            packages: gcc-6 g++-6
+          - cc: gcc-7
+            cxx: g++-7
+            packages: gcc-7 g++-7
           - cc: gcc-9
             cxx: g++-9
             packages: gcc-9 g++-9
