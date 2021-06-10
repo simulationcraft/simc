@@ -961,6 +961,7 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
     trigger_bountiful_brew = true;
     background   = true;
     hasted_ticks = false;
+    dot_behavior           = dot_behavior_e::DOT_REFRESH;
     may_crit = tick_may_crit = true;
     target                   = player;
   }
@@ -987,7 +988,8 @@ struct eye_of_the_tiger_dmg_tick_t : public monk_spell_t
   {
     trigger_bountiful_brew = true;
     background   = true;
-    hasted_ticks = false;
+    hasted_ticks           = false;
+    dot_behavior           = dot_behavior_e::DOT_REFRESH;
     may_crit = tick_may_crit = true;
     aoe                      = 1;
     attack_power_mod.direct  = 0;
@@ -1070,8 +1072,18 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( p()->talent.eye_of_the_tiger->ok() )
     {
-      eye_of_the_tiger_damage->execute();
+      // Need to remove any Eye of the Tiger on targets that are not the current target
+      // Only the damage dot needs to be removed. The healing buff gets pandemic refreshed
+      for ( auto non_sleeping_target : p()->sim->target_non_sleeping_list )
+      {
+        if ( target == non_sleeping_target )
+          continue;
+
+        td( non_sleeping_target )->dots.eye_of_the_tiger_damage->cancel();
+      }
+
       eye_of_the_tiger_heal->execute();
+      eye_of_the_tiger_damage->execute();
     }
 
     switch ( p()->specialization() )
