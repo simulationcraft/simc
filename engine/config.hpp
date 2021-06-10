@@ -58,25 +58,22 @@
 // ==========================================================================
 // Compiler Minimal Limits
 // ==========================================================================
-#if defined( SC_VS ) && SC_VS < 1910
-#  error "Visual Studio 2015 (14.0) or older not supported"
-#endif
 
-// Last updated 2021-06: Support gcc5 / clang 3.5 which have (full) C++14 support
-// Full C++17 support should probably require gcc 7 / clang 5 / VS 19.14 (Visual Studio 2017 version 15.7)
+
+// Last updated 2021-06: Support gcc7 / clang 5 / MSVS 19.14 which have (~full) C++17 support
 // Ubuntu LTS EOL is +5 years, Debian has ~+3year EOL, +5 years with separate LTS support
-// Debian 8 (Jessie) (Release 2015-04): gcc 4.9 and clang3.5
-// Ubuntu 16.04: gcc 5.3, clang3.8
-// Debian 9 (Stretch) (Release 2017-06): gcc 6.3 clang 3.8
 // Ubuntu 18.04: gcc 7.3 clang 6.0
 // Debian 10 (Buster) (Release 2019-07): gcc 8.3 clang 7
 // Ubuntu 20.04: gcc 9.3 clang 10
 // Debian 11 (Bullseye) (Planned Release 2021): gcc 10.2 clang 11
-#if defined( SC_CLANG ) && SC_CLANG < 30500
-#  error "clang++ below version 3.5 not supported"
+#if defined( SC_CLANG ) && SC_CLANG < 50000
+#  error "clang++ below version 5 not supported"
 #endif
-#if defined( SC_GCC ) && SC_GCC < 50000
-#  error "g++ below version 5 not supported"
+#if defined( SC_GCC ) && SC_GCC < 70000
+#  error "g++ below version 7 not supported"
+#endif
+#if defined( SC_VS ) && SC_VS < 1914
+#  error "Visual Studio 2017 below version 15.7 not supported"
 #endif
 
 
