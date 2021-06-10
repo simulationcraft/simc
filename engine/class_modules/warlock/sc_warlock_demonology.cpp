@@ -1166,28 +1166,31 @@ void warlock_t::create_apl_demonology()
   action_priority_list_t* fill    	    = get_action_priority_list( "fillers" );
 
   def->add_action("call_action_list,name=trinkets");
-  def->add_action("call_action_list,name=covenant_ability,if=soulbind.grove_invigoration|soulbind.field_of_blossoms|soulbind.combat_meditation");
+  def->add_action("doom,if=refreshable");
+  def->add_action("call_action_list,name=covenant_ability,if=soulbind.grove_invigoration|soulbind.field_of_blossoms|soulbind.combat_meditation|covenant.necrolord");
   def->add_action("call_action_list,name=tyrant_setup");
   def->add_action("call_action_list,name=potion");
   def->add_action("call_action_list,name=during_tyrant,if=pet.demonic_tyrant.active");
   def->add_action("demonic_strength,if=!runeforge.wilfreds_sigil_of_superior_summoning&cooldown.summon_demonic_tyrant.remains_expected>9");
   def->add_action("call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected>20-5*!runeforge.wilfreds_sigil_of_superior_summoning");
-  def->add_action("doom,if=refreshable");
   def->add_action("power_siphon,if=buff.wild_imps.stack>1&buff.demonic_core.stack<3");
-  def->add_action("bilescourge_bombers");
-  def->add_action("implosion,if=active_enemies>1&!talent.sacrificed_souls.enabled&buff.wild_imps.stack>=6&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5");
-  def->add_action("implosion,if=active_enemies>2&buff.wild_imps.stack>=6&buff.tyrant.down&!runeforge.implosive_potential&(!talent.from_the_shadows.enabled|buff.from_the_shadows.up)");
-  def->add_action("implosion,if=active_enemies>2&buff.wild_imps.stack>=6&buff.implosive_potential.remains<2&runeforge.implosive_potential&(!talent.demonic_consumption.enabled|cooldown.summon_demonic_tyrant.remains_expected>5)");
-  def->add_action("implosion,if=buff.wild_imps.stack>=12&talent.soul_conduit.enabled&talent.from_the_shadows.enabled&runeforge.implosive_potential&buff.tyrant.down");
+  def->add_action("bilescourge_bombers,if=buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5");
+  def->add_action("implosion,if=active_enemies>1+(1*talent.sacrificed_souls.enabled)&buff.wild_imps.stack>=6&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5");
+  def->add_action("implosion,if=active_enemies>2&buff.wild_imps.stack>=6&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5&!runeforge.implosive_potential&(!talent.from_the_shadows.enabled|buff.from_the_shadows.up)");
+  def->add_action("implosion,if=active_enemies>2&buff.wild_imps.stack>=6&buff.implosive_potential.remains<2&runeforge.implosive_potential&(!talent.demonic_consumption.enabled|(buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5))");
+  def->add_action("implosion,if=buff.wild_imps.stack>=12&talent.soul_conduit.enabled&talent.from_the_shadows.enabled&runeforge.implosive_potential&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5");
   def->add_action("call_action_list,name=near_end");
   def->add_action("call_action_list,name=fillers");
 
   cov->add_action("soul_rot,if=soulbind.grove_invigoration&(cooldown.summon_demonic_tyrant.remains_expected<20|cooldown.summon_demonic_tyrant.remains_expected>30)");
   cov->add_action("soul_rot,if=soulbind.field_of_blossoms&pet.demonic_tyrant.active");
   cov->add_action("soul_rot,if=soulbind.wild_hunt_tactics");
+  //TODO: check when emeni's magnificent skin is fixed in simc
+  //actions.covenant_ability+=/fleshcraft,if=soulbind.lead_by_example&cooldown.summon_demonic_tyrant.remains_expected<20
+  //actions.covenant_ability+=/cancel_action,if=action.fleshcraft.channeling
   cov->add_action("decimating_bolt,if=soulbind.lead_by_example&pet.demonic_tyrant.active&soul_shard<2");
   cov->add_action("decimating_bolt,if=soulbind.lead_by_example&cooldown.summon_demonic_tyrant.remains_expected>40");
-  cov->add_action("decimating_bolt,if=!soulbind.lead_by_example&!pet.demonic_tyrant.active&!cooldown.summon_demonic_tyrant.up");
+  cov->add_action("decimating_bolt,if=!soulbind.lead_by_example&!pet.demonic_tyrant.active");
   cov->add_action("scouring_tithe,if=soulbind.combat_meditation&pet.demonic_tyrant.active");
   cov->add_action("scouring_tithe,if=!soulbind.combat_meditation");
   cov->add_action("impending_catastrophe,if=pet.demonic_tyrant.active&soul_shard=0");
@@ -1222,6 +1225,7 @@ void warlock_t::create_apl_demonology()
   trinks->add_action("use_item,slot=trinket2,if=trinket.2.has_use_buff&pet.demonic_tyrant.active");
   trinks->add_action("call_action_list,name=pure_damage_trinks,if=time>variable.first_tyrant_time");
 
+  //all are 5y per sec, Ordnance has a 12 seconds delay and is therefor skipped for the first tyrant to line up better with the rest.
   five_y->add_action("use_item,name=soulletting_ruby,if=cooldown.summon_demonic_tyrant.remains_expected<target.distance%5&time>variable.first_tyrant_time-(target.distance%5)");
   five_y->add_action("use_item,name=sunblood_amethyst,if=cooldown.summon_demonic_tyrant.remains_expected<target.distance%5&time>variable.first_tyrant_time-(target.distance%5)");
   five_y->add_action("use_item,name=empyreal_ordnance,if=cooldown.summon_demonic_tyrant.remains_expected<(target.distance%5)+12&cooldown.summon_demonic_tyrant.remains_expected>(((target.distance%5)+12)-15)&time>variable.first_tyrant_time-((target.distance%5)+12)");
@@ -1244,12 +1248,16 @@ void warlock_t::create_apl_demonology()
   fill->add_action("hand_of_guldan,if=soul_shard>=1&cooldown.summon_demonic_tyrant.remains_expected<gcd&time>variable.first_tyrant_time-gcd");
   fill->add_action("call_action_list,name=covenant_ability,if=!covenant.venthyr");
   fill->add_action("soul_strike,if=!talent.sacrificed_souls.enabled");
+  //NOTE: tested these values. upper bound for holding demonic core stacks doesnt change with haste, but the lower bound does.
   fill->add_action("demonbolt,if=buff.demonic_core.react&soul_shard<4&cooldown.summon_demonic_tyrant.remains_expected>20");
   fill->add_action("demonbolt,if=buff.demonic_core.react&soul_shard<4&cooldown.summon_demonic_tyrant.remains_expected<10+((gcd-1)*8)");
-  fill->add_action("demonbolt,if=buff.demonic_core.react&soul_shard<4&buff.demonic_core.stack>2");
+  fill->add_action("demonbolt,if=buff.demonic_core.react&soul_shard<4&(buff.demonic_core.stack>2|talent.sacrificed_souls.enabled)");
+  fill->add_action("demonbolt,if=buff.demonic_core.react&soul_shard<4&active_enemies>1");
   fill->add_action("soul_strike");
   fill->add_action("call_action_list,name=covenant_ability");
   fill->add_action("hand_of_guldan,if=soul_shard>=3&cooldown.summon_demonic_tyrant.remains_expected>25&(talent.demonic_calling.enabled|cooldown.call_dreadstalkers.remains>((2-(soul_shard-3))*1.33+1)*gcd)");
+  fill->add_action("doom,cycle_targets=1,if=refreshable&time>variable.first_tyrant_time");
   fill->add_action("shadow_bolt");
+
 }
 }  // namespace warlock
