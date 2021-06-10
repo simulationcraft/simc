@@ -5079,10 +5079,14 @@ struct harmonic_echo_t final : public mage_spell_t
   {
     mage_spell_t::init();
 
-    // TODO: Harmonic Echo currently ignores all damage taken multipliers, which
-    // is almost certainly wrong. Once that's fixed, it should only ignore positive
-    // damage taken multipliers.
     snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    // Ignore Positive Damage Taken Modifiers (321)
+    return std::min( mage_spell_t::composite_target_multiplier( target ), 1.0 );
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
