@@ -414,7 +414,7 @@ void windwalker( player_t* p )
   // AoE
   aoe->add_talent( p, "Whirling Dragon Punch" );
   aoe->add_talent( p, "Energizing Elixir", "if=chi.max-chi>=2&energy.time_to_max>2|chi.max-chi>=4" );
-  aoe->add_action( p, "Spinning Crane Kick", "if=combo_strike&(buff.dance_of_chiji.up|debuff.bonedust_brew.up)" );
+  aoe->add_action( p, "Spinning Crane Kick", "if=combo_strike&(buff.dance_of_chiji.up|debuff.bonedust_brew_debuff.up)" );
   aoe->add_action( p, "Fists of Fury", "if=energy.time_to_max>execute_time|chi.max-chi<=1" );
   aoe->add_action( p, "Rising Sun Kick",
       "target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch&cooldown.rising_sun_kick."
@@ -614,7 +614,7 @@ void windwalker( player_t* p )
   serenity->add_action( p, "Blackout Kick",
                         "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.weapons_of_order.up&cooldown.rising_sun_kick.remains>2" );
   serenity->add_action( p, "Fists of Fury", "interrupt_if=!cooldown.rising_sun_kick.up" );
-  serenity->add_action( p, "Spinning Crane Kick", "if=combo_strike&debuff.bonedust_brew.up" );
+  serenity->add_action( p, "Spinning Crane Kick", "if=combo_strike&debuff.bonedust_brew_debuff.up" );
   serenity->add_talent( p, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi<3" );
   serenity->add_action( p, "Blackout Kick",
                         "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike|!talent.hit_combo" );
