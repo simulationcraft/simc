@@ -421,7 +421,7 @@ public:
     if ( p()->legendary.bountiful_brew->ok() && trigger_bountiful_brew && p()->cooldown.bountiful_brew->up() &&
          p()->rppm.bountiful_brew->trigger() )
     {
-      p()->cooldown.bonedust_brew->start( p()->legendary.bountiful_brew->internal_cooldown() );
+      p()->cooldown.bountiful_brew->start( p()->legendary.bountiful_brew->internal_cooldown() );
 
       // Currently Bountiful Brew cannot be applied if Bonedust Brew is currently active
       // This means that RPPM will have triggered but cannot be applied.
