@@ -967,8 +967,8 @@ public:
 
   storm_earth_and_fire_pet_t( util::string_view name, monk_t* owner, bool dual_wield, weapon_e weapon_type )
     : monk_pet_t( owner, name, PET_NONE, true, true ),
-      attacks( SEF_ATTACK_MAX ),
-      spells( SEF_SPELL_MAX - SEF_SPELL_MIN ),
+      attacks( (int)sef_ability_e::SEF_ATTACK_MAX ),
+      spells( (int)sef_ability_e::SEF_SPELL_MAX - (int)sef_ability_e::SEF_SPELL_MIN ),
       sticky_target( false ),
       active_actions(),
       buff()
@@ -1012,18 +1012,18 @@ public:
   {
     monk_pet_t::init_spells();
 
-    attacks.at( SEF_TIGER_PALM )                 = new sef_tiger_palm_t( this );
-    attacks.at( SEF_BLACKOUT_KICK )              = new sef_blackout_kick_t( this );
-    attacks.at( SEF_RISING_SUN_KICK )            = new sef_rising_sun_kick_t( this );
-    attacks.at( SEF_FISTS_OF_FURY )              = new sef_fists_of_fury_t( this );
-    attacks.at( SEF_SPINNING_CRANE_KICK )        = new sef_spinning_crane_kick_t( this );
-    attacks.at( SEF_RUSHING_JADE_WIND )          = new sef_rushing_jade_wind_t( this );
-    attacks.at( SEF_WHIRLING_DRAGON_PUNCH )      = new sef_whirling_dragon_punch_t( this );
-    attacks.at( SEF_FIST_OF_THE_WHITE_TIGER )    = new sef_fist_of_the_white_tiger_t( this );
-    attacks.at( SEF_FIST_OF_THE_WHITE_TIGER_OH ) = new sef_fist_of_the_white_tiger_oh_t( this );
+    attacks.at( (int)sef_ability_e::SEF_TIGER_PALM ) = new sef_tiger_palm_t( this );
+    attacks.at( (int)sef_ability_e::SEF_BLACKOUT_KICK ) = new sef_blackout_kick_t( this );
+    attacks.at( (int)sef_ability_e::SEF_RISING_SUN_KICK ) = new sef_rising_sun_kick_t( this );
+    attacks.at( (int)sef_ability_e::SEF_FISTS_OF_FURY )   = new sef_fists_of_fury_t( this );
+    attacks.at( (int)sef_ability_e::SEF_SPINNING_CRANE_KICK ) = new sef_spinning_crane_kick_t( this );
+    attacks.at( (int)sef_ability_e::SEF_RUSHING_JADE_WIND )   = new sef_rushing_jade_wind_t( this );
+    attacks.at( (int)sef_ability_e::SEF_WHIRLING_DRAGON_PUNCH ) = new sef_whirling_dragon_punch_t( this );
+    attacks.at( (int)sef_ability_e::SEF_FIST_OF_THE_WHITE_TIGER ) = new sef_fist_of_the_white_tiger_t( this );
+    attacks.at( (int)sef_ability_e::SEF_FIST_OF_THE_WHITE_TIGER_OH ) = new sef_fist_of_the_white_tiger_oh_t( this );
 
-    spells.at( sef_spell_index( SEF_CHI_WAVE ) )                 = new sef_chi_wave_t( this );
-    spells.at( sef_spell_index( SEF_CRACKLING_JADE_LIGHTNING ) ) = new sef_crackling_jade_lightning_t( this );
+    spells.at( sef_spell_index( (int)sef_ability_e::SEF_CHI_WAVE ) ) = new sef_chi_wave_t( this );
+    spells.at( sef_spell_index( (int)sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING ) ) = new sef_crackling_jade_lightning_t( this );
   }
 
   void init_action_list() override
@@ -1089,9 +1089,9 @@ public:
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
   {
-    if ( ability >= SEF_SPELL_MIN )
+    if ( (int)ability >= (int)sef_ability_e::SEF_SPELL_MIN )
     {
-      auto spell_index = sef_spell_index( ability );
+      auto spell_index = sef_spell_index( (int)ability );
       assert( spells[ spell_index ] );
 
       spells[ spell_index ]->source_action = source_action;
@@ -1099,9 +1099,9 @@ public:
     }
     else
     {
-      assert( attacks[ ability ] );
-      attacks[ ability ]->source_action = source_action;
-      attacks[ ability ]->execute();
+      assert( attacks[ (int)ability ] );
+      attacks[ (int)ability ]->source_action = source_action;
+      attacks[ (int)ability ]->execute();
     }
   }
 };
@@ -1966,10 +1966,12 @@ void monk_t::create_pets()
 */
   if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
   {
-    pets.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", this, true, WEAPON_SWORD );
+    pets.sef[ (int)sef_pet_e::SEF_FIRE ] =
+        new pets::storm_earth_and_fire_pet_t( "fire_spirit", this, true, WEAPON_SWORD );
     // The player BECOMES the Storm Spirit
     // SEF EARTH was changed from 2-handed user to dual welding in Legion
-    pets.sef[ SEF_EARTH ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", this, true, WEAPON_MACE );
+    pets.sef[ (int)sef_pet_e::SEF_EARTH ] =
+        new pets::storm_earth_and_fire_pet_t( "earth_spirit", this, true, WEAPON_MACE );
   }
 }
 
@@ -1980,7 +1982,7 @@ void monk_t::trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_
     return;
   }
 
-  if ( sef_ability == SEF_NONE )
+  if ( sef_ability == sef_ability_e::SEF_NONE )
   {
     return;
   }
@@ -1990,12 +1992,13 @@ void monk_t::trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_
     return;
   }
 
-  pets.sef[ SEF_EARTH ]->trigger_attack( sef_ability, a );
-  pets.sef[ SEF_FIRE ]->trigger_attack( sef_ability, a );
+  pets.sef[ (int)sef_pet_e::SEF_EARTH ]->trigger_attack( sef_ability, a );
+  pets.sef[ (int)sef_pet_e::SEF_FIRE ]->trigger_attack( sef_ability, a );
   // Trigger pet retargeting if sticky target is not defined, and the Monk used one of the Cyclone
   // Strike triggering abilities
-  if ( !pets.sef[ SEF_EARTH ]->sticky_target &&
-       ( sef_ability == SEF_TIGER_PALM || sef_ability == SEF_BLACKOUT_KICK || sef_ability == SEF_RISING_SUN_KICK ) )
+  if ( !pets.sef[ (int)sef_pet_e::SEF_EARTH ]->sticky_target &&
+       ( sef_ability == sef_ability_e::SEF_TIGER_PALM || sef_ability == sef_ability_e::SEF_BLACKOUT_KICK ||
+         sef_ability == sef_ability_e::SEF_RISING_SUN_KICK ) )
   {
     retarget_storm_earth_and_fire_pets();
   }
@@ -2003,31 +2006,32 @@ void monk_t::trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_
 
 void monk_t::storm_earth_and_fire_fixate( player_t* target )
 {
-  sim->print_debug( "{} storm_earth_and_fire sticky target {} to {} (old={})", *this, *pets.sef[ SEF_EARTH ], *target,
-                    *pets.sef[ SEF_EARTH ]->target );
+  sim->print_debug( "{} storm_earth_and_fire sticky target {} to {} (old={})", *this,
+                    *pets.sef[ (int)sef_pet_e::SEF_EARTH ], *target, *pets.sef[ (int)sef_pet_e::SEF_EARTH ]->target );
 
-  pets.sef[ SEF_EARTH ]->target        = target;
-  pets.sef[ SEF_EARTH ]->sticky_target = true;
+  pets.sef[ (int)sef_pet_e::SEF_EARTH ]->target = target;
+  pets.sef[ (int)sef_pet_e::SEF_EARTH ]->sticky_target = true;
 
-  sim->print_debug( "{} storm_earth_and_fire sticky target {} to {} (old={})", *this, *pets.sef[ SEF_FIRE ], *target,
-                    *pets.sef[ SEF_FIRE ]->target );
+  sim->print_debug( "{} storm_earth_and_fire sticky target {} to {} (old={})", *this,
+                    *pets.sef[ (int)sef_pet_e::SEF_FIRE ], *target, *pets.sef[ (int)sef_pet_e::SEF_FIRE ]->target );
 
-  pets.sef[ SEF_FIRE ]->target        = target;
-  pets.sef[ SEF_FIRE ]->sticky_target = true;
+  pets.sef[ (int)sef_pet_e::SEF_FIRE ]->target = target;
+  pets.sef[ (int)sef_pet_e::SEF_FIRE ]->sticky_target = true;
 }
 
 bool monk_t::storm_earth_and_fire_fixate_ready( player_t* target )
 {
   if ( buff.storm_earth_and_fire->check() )
   {
-    if ( pets.sef[ SEF_EARTH ]->sticky_target || pets.sef[ SEF_FIRE ]->sticky_target )
+    if ( pets.sef[ (int)sef_pet_e::SEF_EARTH ]->sticky_target || pets.sef[ (int)sef_pet_e::SEF_FIRE ]->sticky_target )
     {
-      if ( pets.sef[ SEF_EARTH ]->target != target )
+      if ( pets.sef[ (int)sef_pet_e::SEF_EARTH ]->target != target )
         return true;
-      else if ( pets.sef[ SEF_FIRE ]->target != target )
+      else if ( pets.sef[ (int)sef_pet_e::SEF_FIRE ]->target != target )
         return true;
     }
-    else if ( !pets.sef[ SEF_EARTH ]->sticky_target || !pets.sef[ SEF_FIRE ]->sticky_target )
+    else if ( !pets.sef[ (int)sef_pet_e::SEF_EARTH ]->sticky_target ||
+              !pets.sef[ (int)sef_pet_e::SEF_FIRE ]->sticky_target )
       return true;
   }
   return false;
@@ -2049,23 +2053,23 @@ void monk_t::summon_storm_earth_and_fire( timespan_t duration )
     pet->summon( duration );
   };
 
-  summon_sef_pet( pets.sef[ SEF_EARTH ] );
-  summon_sef_pet( pets.sef[ SEF_FIRE ] );
+  summon_sef_pet( pets.sef[ (int)sef_pet_e::SEF_EARTH ] );
+  summon_sef_pet( pets.sef[ (int)sef_pet_e::SEF_FIRE ] );
 }
 
 // monk_t::retarget_storm_earth_and_fire_pets =======================================
 
 void monk_t::retarget_storm_earth_and_fire_pets() const
 {
-  if ( pets.sef[ SEF_EARTH ]->sticky_target )
+  if ( pets.sef[ (int)sef_pet_e::SEF_EARTH ]->sticky_target )
   {
     return;
   }
 
   auto targets   = create_storm_earth_and_fire_target_list();
   auto n_targets = targets.size();
-  retarget_storm_earth_and_fire( pets.sef[ SEF_EARTH ], targets, n_targets );
-  retarget_storm_earth_and_fire( pets.sef[ SEF_FIRE ], targets, n_targets );
+  retarget_storm_earth_and_fire( pets.sef[ (int)sef_pet_e::SEF_EARTH ], targets, n_targets );
+  retarget_storm_earth_and_fire( pets.sef[ (int)sef_pet_e::SEF_FIRE ], targets, n_targets );
 }
 
 // Callback to retarget Storm Earth and Fire pets when new target appear, or old targets depsawn
@@ -2103,14 +2107,14 @@ void sef_despawn_cb_t::operator()( player_t* )
 
 void monk_t::trigger_storm_earth_and_fire_bok_proc( sef_pet_e sef_pet )
 {
-  pets.sef[ sef_pet ]->buff.bok_proc_sef->trigger();
+  pets.sef[ (int)sef_pet ]->buff.bok_proc_sef->trigger();
 }
 
 player_t* monk_t::storm_earth_and_fire_fixate_target( sef_pet_e sef_pet )
 {
-  if ( pets.sef[ sef_pet ]->sticky_target )
+  if ( pets.sef[ (int)sef_pet ]->sticky_target )
   {
-    return pets.sef[ sef_pet ]->target;
+    return pets.sef[ (int)sef_pet ]->target;
   }
 
   return nullptr;

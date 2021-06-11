@@ -75,7 +75,7 @@ public:
 
   monk_action_t( util::string_view n, monk_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
-      sef_ability( SEF_NONE ),
+      sef_ability( sef_ability_e::SEF_NONE ),
       ww_mastery( false ),
       may_combo_strike( false ),
       trigger_chiji( false ),
@@ -713,7 +713,7 @@ struct storm_earth_and_fire_t : public monk_spell_t
     // triggering it on the same sticky target
     if ( p()->buff.storm_earth_and_fire->check() )
     {
-      auto fixate_target = p()->storm_earth_and_fire_fixate_target( SEF_EARTH );
+      auto fixate_target = p()->storm_earth_and_fire_fixate_target( sef_pet_e::SEF_EARTH );
       if ( fixate_target && candidate_target == fixate_target )
       {
         return false;
@@ -1031,7 +1031,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     trigger_chiji    = true;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
-    sef_ability      = SEF_TIGER_PALM;
+    sef_ability            = sef_ability_e::SEF_TIGER_PALM;
 
     add_child( eye_of_the_tiger_damage );
     add_child( eye_of_the_tiger_heal );
@@ -1102,8 +1102,8 @@ struct tiger_palm_t : public monk_melee_attack_t
 
           if ( p()->buff.storm_earth_and_fire->up() )
           {
-            p()->trigger_storm_earth_and_fire_bok_proc( SEF_FIRE );
-            p()->trigger_storm_earth_and_fire_bok_proc( SEF_EARTH );
+            p()->trigger_storm_earth_and_fire_bok_proc( sef_pet_e::SEF_FIRE );
+            p()->trigger_storm_earth_and_fire_bok_proc( sef_pet_e::SEF_EARTH );
           }
         }
         break;
@@ -1268,7 +1268,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     may_combo_strike      = true;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
-    sef_ability          = SEF_RISING_SUN_KICK;
+    sef_ability            = sef_ability_e::SEF_RISING_SUN_KICK;
     affected_by.serenity = true;
     ap_type              = attack_power_type::NONE;
 
@@ -1426,7 +1426,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     ww_mastery = true;
 
     parse_options( options_str );
-    sef_ability      = SEF_BLACKOUT_KICK;
+    sef_ability            = sef_ability_e::SEF_BLACKOUT_KICK;
     may_combo_strike = true;
     trigger_chiji         = true;
     trigger_faeline_stomp = true;
@@ -1592,7 +1592,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     : monk_melee_attack_t( "rushing_jade_wind", p, p->talent.rushing_jade_wind )
   {
     parse_options( options_str );
-    sef_ability      = SEF_RUSHING_JADE_WIND;
+    sef_ability            = sef_ability_e::SEF_RUSHING_JADE_WIND;
     may_combo_strike      = true;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
@@ -1762,7 +1762,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    sef_ability      = SEF_SPINNING_CRANE_KICK;
+    sef_ability            = sef_ability_e::SEF_SPINNING_CRANE_KICK;
     may_combo_strike      = true;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
@@ -1928,7 +1928,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    sef_ability          = SEF_FISTS_OF_FURY;
+    sef_ability            = sef_ability_e::SEF_FISTS_OF_FURY;
     may_combo_strike      = true;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
@@ -2053,7 +2053,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
   whirling_dragon_punch_t( monk_t* p, util::string_view options_str )
     : monk_melee_attack_t( "whirling_dragon_punch", p, p->talent.whirling_dragon_punch )
   {
-    sef_ability = SEF_WHIRLING_DRAGON_PUNCH;
+    sef_ability = sef_ability_e::SEF_WHIRLING_DRAGON_PUNCH;
 
     parse_options( options_str );
     interrupt_auto_attack             = false;
@@ -2110,7 +2110,7 @@ struct fist_of_the_white_tiger_main_hand_t : public monk_melee_attack_t
   fist_of_the_white_tiger_main_hand_t( monk_t* p, const char* name, const spell_data_t* s )
     : monk_melee_attack_t( name, p, s )
   {
-    sef_ability = SEF_FIST_OF_THE_WHITE_TIGER;
+    sef_ability            = sef_ability_e::SEF_FIST_OF_THE_WHITE_TIGER;
     ww_mastery            = true;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
@@ -2129,7 +2129,7 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
     : monk_melee_attack_t( "fist_of_the_white_tiger_offhand", p, p->talent.fist_of_the_white_tiger ),
       mh_attack( nullptr )
   {
-    sef_ability          = SEF_FIST_OF_THE_WHITE_TIGER_OH;
+    sef_ability            = sef_ability_e::SEF_FIST_OF_THE_WHITE_TIGER_OH;
     ww_mastery           = true;
     may_combo_strike      = true;
     trigger_faeline_stomp = true;
@@ -2877,7 +2877,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
   crackling_jade_lightning_t( monk_t& p, util::string_view options_str )
     : monk_spell_t( "crackling_jade_lightning", &p, p.spec.crackling_jade_lightning )
   {
-    sef_ability      = SEF_CRACKLING_JADE_LIGHTNING;
+    sef_ability            = sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING;
     may_combo_strike = true;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
@@ -4727,7 +4727,7 @@ struct chi_wave_t : public monk_spell_t
       damage( new chi_wave_dmg_tick_t( player, "chi_wave_damage" ) ),
       dmg( true )
   {
-    sef_ability      = SEF_CHI_WAVE;
+    sef_ability            = sef_ability_e::SEF_CHI_WAVE;
     may_combo_strike      = true;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
@@ -7259,22 +7259,22 @@ resource_e monk_t::primary_resource() const
 
 role_e monk_t::primary_role() const
 {
-  if ( base_t::primary_role() == ROLE_DPS )
+  if ( base_t::primary_role() == role_e::ROLE_DPS )
     return ROLE_HYBRID;
 
-  if ( base_t::primary_role() == ROLE_TANK )
+  if ( base_t::primary_role() == role_e::ROLE_TANK )
     return ROLE_TANK;
 
-  if ( base_t::primary_role() == ROLE_HEAL )
+  if ( base_t::primary_role() == role_e::ROLE_HEAL )
     return ROLE_HYBRID;  // To prevent spawning healing_target, as there is no support for healing.
 
-  if ( specialization() == MONK_BREWMASTER )
+  if ( specialization() == specialization_e::MONK_BREWMASTER )
     return ROLE_TANK;
 
-  if ( specialization() == MONK_MISTWEAVER )
+  if ( specialization() == specialization_e::MONK_MISTWEAVER )
     return ROLE_ATTACK;  // To prevent spawning healing_target, as there is no support for healing.
 
-  if ( specialization() == MONK_WINDWALKER )
+  if ( specialization() == specialization_e::MONK_WINDWALKER )
     return ROLE_DPS;
 
   return ROLE_HYBRID;
