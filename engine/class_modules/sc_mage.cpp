@@ -972,9 +972,6 @@ struct touch_of_the_magi_t final : public buff_t
 
     explosion->set_target( player );
     double damage_fraction = p->spec.touch_of_the_magi->effectN( 1 ).percent();
-    // TODO: Higher ranks of this spell use floating point values in the spell data.
-    // Verify whether we need a floor operation here to trim those values down to integers,
-    // which sometimes happens when Blizzard uses floating point numbers like this.
     damage_fraction += p->conduits.magis_brand.percent();
     explosion->base_dd_min = explosion->base_dd_max = damage_fraction * current_value;
     explosion->execute();
@@ -1534,8 +1531,6 @@ public:
 
     if ( auto td = find_td( target ) )
     {
-      // TODO: Confirm how Radiant Spark is supposed to interact with Ignite.
-      // Right now in beta, the damage multiplier gets factored out when triggering Ignite.
       if ( affected_by.radiant_spark )
         m *= 1.0 + td->debuffs.radiant_spark_vulnerability->check_stack_value();
     }
@@ -3637,8 +3632,6 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     t *= 1.0 + p()->buffs.slick_ice->check_stack_value();
 
-    // TODO: This probably isn't intended since it breaks the spec even
-    // at fairly mild haste levels.
     t = std::max( t, min_gcd );
 
     return t;
