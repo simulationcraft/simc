@@ -118,7 +118,7 @@ public:
   // Active
   action_t* windwalking_aura;
 
-  struct
+  struct sample_data_t
   {
     sc_timeline_t stagger_effective_damage_timeline;
     sc_timeline_t stagger_damage_pct_timeline;

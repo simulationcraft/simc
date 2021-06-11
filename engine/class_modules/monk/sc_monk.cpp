@@ -802,7 +802,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   {
     if ( affected_by.serenity )
     {
-      auto cooldowns = p()->serenity_cooldowns;
+      std::vector<cooldown_t*> cooldowns = p()->serenity_cooldowns;
       if ( std::find( cooldowns.begin(), cooldowns.end(), cooldown ) == cooldowns.end() )
         p()->serenity_cooldowns.push_back( cooldown );
     }
@@ -5584,7 +5584,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
 
 monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   : player_t( sim, MONK, name, r ),
-    sample_datas(),
+    sample_datas( sample_data_t() ),
     active_actions(),
     spiritual_focus_count( 0 ),
     gift_of_the_ox_proc_chance(),
@@ -5601,7 +5601,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
     conduit(),
     legendary(),
     pets( this ),
-    user_options(),
+    user_options( options_t() ),
     light_stagger_threshold( 0 ),
     moderate_stagger_threshold( 0.01666 ),  // Moderate transfers at 33.3% Stagger; 1.67% every 1/2 sec
     heavy_stagger_threshold( 0.03333 )      // Heavy transfers at 66.6% Stagger; 3.34% every 1/2 sec
@@ -5892,7 +5892,7 @@ player_t* monk_t::next_mark_of_the_crane_target( action_state_t* state )
 
 int monk_t::mark_of_the_crane_counter()
 {
-  auto targets                  = sim->target_non_sleeping_list.data();
+  std::vector<player_t*> targets = sim->target_non_sleeping_list.data();
   int mark_of_the_crane_counter = 0;
 
   if ( specialization() == MONK_WINDWALKER )
@@ -6734,7 +6734,7 @@ double monk_t::matching_gear_multiplier( attribute_e attr ) const
 std::vector<player_t*> monk_t::create_storm_earth_and_fire_target_list() const
 {
   // Make a copy of the non sleeping target list
-  auto l = sim->target_non_sleeping_list.data();
+  std::vector<player_t*> l = sim->target_non_sleeping_list.data();
 
   // Sort the list by selecting non-cyclone striked targets first, followed by ascending order of
   // the debuff remaining duration
