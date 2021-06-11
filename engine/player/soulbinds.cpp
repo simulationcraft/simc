@@ -553,6 +553,9 @@ void thrill_seeker( special_effect_t& effect )
   if ( unique_gear::create_fallback_buffs( effect, { "thrill_seeker", "euphoria" } ) )
     return;
 
+  // Chooses from crit and vers, choosing crit if both are the same
+  static constexpr std::array<stat_e, 2> ratings_fatal_flaw = { STAT_CRIT_RATING, STAT_VERSATILITY_RATING };
+
   auto counter_buff = buff_t::find( effect.player, "thrill_seeker" );
   if ( !counter_buff )
   {
@@ -572,25 +575,15 @@ void thrill_seeker( special_effect_t& effect )
     void expire_override( int s, timespan_t d ) override
     {
       buff_t::expire_override( s, d );
+      if ( !player->buffs.fatal_flaw_crit || !player->buffs.fatal_flaw_vers )
+        return;
 
-      auto crit = player->cache.spell_crit_chance();
-      auto vers = player->cache.damage_versatility();
+      stat_e higher_stat = util::highest_stat( player, ratings_fatal_flaw );
 
-      // TODO: implement what happens if vers = crit
-      if ( crit > vers )
-      {
-        if ( player->buffs.fatal_flaw_crit )
-        {
+      if ( higher_stat == STAT_CRIT_RATING )
           player->buffs.fatal_flaw_crit->trigger();
-        }
-      }
-      else if ( vers > crit )
-      {
-        if ( player->buffs.fatal_flaw_vers )
-        {
+      else
           player->buffs.fatal_flaw_vers->trigger();
-        }
-      }
     }
   };
 

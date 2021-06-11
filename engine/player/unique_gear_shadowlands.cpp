@@ -2230,7 +2230,8 @@ void titanic_ocular_gland( special_effect_t& effect )
     {
       if ( ( *worthy_buffs )[ stat ]->check() )
       {
-        // The Worthy buff will update to a different stat if that stat becomes higher.
+        // The Worthy buff will update to a different stat if that stat becomes higher. 
+        // TODO: The buff only changes if the other stat is actually higher, otherwise the previous highest stat is used.
         if ( max_stat != stat || !worthy )
         {
           ( *worthy_buffs )[ stat ]->expire();
