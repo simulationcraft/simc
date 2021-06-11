@@ -1420,7 +1420,8 @@ struct blackout_kick_t : public monk_melee_attack_t
     : monk_melee_attack_t(
           "blackout_kick", p,
           ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) ),
-      charred_passions( new charred_passions_t( p ) )
+      charred_passions( new charred_passions_t( p ) ),
+      bok_totm_proc( new blackout_kick_totm_proc( p ) )
   {
     ww_mastery = true;
 
@@ -1431,25 +1432,13 @@ struct blackout_kick_t : public monk_melee_attack_t
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
 
-    switch ( p->specialization() )
+    if ( p->specialization() == MONK_WINDWALKER )
     {
-      case MONK_MISTWEAVER:
-      {
-        bok_totm_proc = new blackout_kick_totm_proc( p );
-        break;
-      }
-      case MONK_WINDWALKER:
-      {
-        if ( p->spec.blackout_kick_2 )
-          // Saved as -1
-          base_costs[ RESOURCE_CHI ] +=
-              p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 2
+      if ( p->spec.blackout_kick_2 )
+        // Saved as -1
+        base_costs[ RESOURCE_CHI ] += p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 2
 
-        ap_type = attack_power_type::WEAPON_BOTH;
-        break;
-      }
-      default:
-        break;
+      ap_type = attack_power_type::WEAPON_BOTH;
     }
   }
 
@@ -3101,10 +3090,10 @@ struct fortifying_brew_t : public monk_spell_t
   fortifying_ingredients_t* fortifying_ingredients;
 
   fortifying_brew_t( monk_t& p, util::string_view options_str )
-    : monk_spell_t(
-          "fortifying_brew", &p,
+    : monk_spell_t( "fortifying_brew", &p,
           ( p.specialization() == MONK_BREWMASTER ? p.spec.fortifying_brew_brm : p.spec.fortifying_brew_mw_ww ) ),
-      fortifying_ingredients( new fortifying_ingredients_t( p ) )
+      fortifying_ingredients( new fortifying_ingredients_t( p ) ),
+      delivery( new special_delivery_t( p ) )
   {
     parse_options( options_str );
 
@@ -3115,9 +3104,6 @@ struct fortifying_brew_t : public monk_spell_t
 
     if ( p.spec.fortifying_brew_2_ww )
       cooldown->duration += p.spec.fortifying_brew_2_ww->effectN( 1 ).time_value();
-
-    if ( p.talent.special_delivery->ok() )
-      delivery = new special_delivery_t( p );
   }
 
   void execute() override
@@ -3431,7 +3417,8 @@ struct purifying_brew_t : public monk_spell_t
   special_delivery_t* delivery;
 
   purifying_brew_t( monk_t& p, util::string_view options_str )
-    : monk_spell_t( "purifying_brew", &p, p.spec.purifying_brew )
+    : monk_spell_t( "purifying_brew", &p, p.spec.purifying_brew ),
+      delivery( new special_delivery_t( p ) )
   {
     parse_options( options_str );
 
@@ -3441,9 +3428,6 @@ struct purifying_brew_t : public monk_spell_t
 
     if ( p.talent.light_brewing->ok() )
       cooldown->duration *= 1 + p.talent.light_brewing->effectN( 2 ).percent();  // -20
-
-    if ( p.talent.special_delivery->ok() )
-      delivery = new special_delivery_t( p );
   }
 
   bool ready() override
@@ -5002,16 +4986,14 @@ struct celestial_brew_t : public monk_absorb_t
   special_delivery_t* delivery;
 
   celestial_brew_t( monk_t& p, util::string_view options_str )
-    : monk_absorb_t( "celestial_brew", p, p.spec.celestial_brew )
+    : monk_absorb_t( "celestial_brew", p, p.spec.celestial_brew ), 
+      delivery( new special_delivery_t( p ) )
   {
     parse_options( options_str );
     harmful = may_crit = false;
 
     if ( p.talent.light_brewing->ok() )
       cooldown->duration *= 1 + p.talent.light_brewing->effectN( 2 ).percent();  // -20
-
-    if ( p.talent.special_delivery->ok() )
-      delivery = new special_delivery_t( p );
   }
 
   double action_multiplier() const override
@@ -5602,6 +5584,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
 
 monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   : player_t( sim, MONK, name, r ),
+    sample_datas(),
     active_actions(),
     spiritual_focus_count( 0 ),
     gift_of_the_ox_proc_chance(),
