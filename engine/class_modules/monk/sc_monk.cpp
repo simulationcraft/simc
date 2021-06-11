@@ -5438,7 +5438,7 @@ struct touch_of_death_ww_buff_t : public monk_buff_t<buff_t>
     set_period( timespan_t::from_seconds( 1 ) );
     set_tick_zero( true );
 
-    set_max_stack( (int)p.spec.touch_of_death_3_ww->effectN( 1 ).base_value() );
+    set_max_stack( (int)p.find_spell( 325215 )->effectN( 1 ).base_value() );
     set_reverse_stack_count( 1 );
   }
 
