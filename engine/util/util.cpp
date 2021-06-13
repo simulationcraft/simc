@@ -18,7 +18,7 @@
 #include <stdexcept>
 #include <string>
 
-#if (defined( SC_CLANG ) && SC_CLANG < 70000 || defined( SC_GCC ) && SC_GCC < 70000)
+#if (defined( SC_CLANG ) && SC_CLANG < 70000 || defined( SC_GCC ) && SC_GCC < 80000)
 #define NO_CHARCONV_SUPPORT 1
 #else
 #define NO_CHARCONV_SUPPORT 0
