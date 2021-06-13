@@ -1054,7 +1054,8 @@ void warlock_t::apl_precombat()
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    precombat->add_action("fleshcraft");
+    //TODO: uncomment when the 5% health buff from emeni works and dungeon slice is fixed
+    //precombat->add_action("fleshcraft");
     precombat->add_action("demonbolt,if=buff.demonic_core.stack=0");
     precombat->add_action("shadow_bolt,if=buff.demonic_core.stack>0");
     //tested different values, even with gfg/vf its better to summon tyrant sooner in the opener
