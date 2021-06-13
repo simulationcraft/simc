@@ -1775,13 +1775,17 @@ struct trial_of_doubt_t : public buff_t
     : buff_t( p, "trial_of_doubt", p->find_spell( 358404 ) ),
       automatic_delay( true ),
       // Newfound Resolve cannot be gained for 2 seconds after the Area Trigger spawns.
-      min_delay( timespan_t::from_seconds( p->find_spell( 352918 )->missile_speed() ) + 2_s ),
-      // The values of 1 and 30 below are not present in the game data.
-      shuffled_rng( p->get_shuffled_rng( "newfound_resolve", 1, 30 ) )
+      min_delay( timespan_t::from_seconds( p->find_spell( 352918 )->missile_speed() ) + 2_s )
     {
+      // The values of 1 and 30 below are not present in the game data.
+      int success_entries = 1;
+      shuffled_rng = p->get_shuffled_rng( "newfound_resolve", success_entries, 30 );
       // In simc, we model failing to face the Area Trigger by not triggering the debuff at all.
       set_chance( sim->shadowlands_opts.newfound_resolve_success_chance );
-      set_max_stack( 99 );
+      // This only needs enough stacks to cover any possible overlap based on the
+      // shuffled rng parameters. Using double the number of success entries here
+      // requires that the total number of entries is sufficiently large.
+      set_max_stack( 2 * success_entries );
       set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
       set_can_cancel( false );
     }
@@ -1795,10 +1799,22 @@ struct trial_of_doubt_t : public buff_t
       {
         duration = sim->shadowlands_opts.newfound_resolve_default_delay;
         duration = rng().gauss( duration, duration * sim->shadowlands_opts.newfound_resolve_delay_relstddev );
+        // You cannot face your Doubt until min_delay has passed.
+        // With automatic_delay, ensure the duration is long enough.
         duration = std::max( min_delay, std::min( duration, buff_duration() ) );
       }
 
       return buff_t::trigger( stacks, value, chance, duration );
+    }
+
+    bool ready() const
+    {
+      if ( current_stack <= 0 || expiration.empty() )
+        return false;
+
+      // You cannot face your Doubt until min_delay has passed.
+      // Check that the buff has been active for long enough.
+      return buff_duration() + sim->current_time() - expiration.front()->occurs() >= min_delay;
     }
 };
 
@@ -1817,7 +1833,7 @@ struct newfound_resolve_t : public action_t
 
   void init_finished() override
   {
-    trial_of_doubt = debug_cast<trial_of_doubt_t*>( buff_t::find( player, "trial_of_doubt" ) );
+    trial_of_doubt = dynamic_cast<trial_of_doubt_t*>( buff_t::find( player, "trial_of_doubt" ) );
     // If this action is present in the APL, automatic delay for this Soulbind is disabled.
     if ( trial_of_doubt )
       trial_of_doubt->automatic_delay = false;
@@ -1835,7 +1851,7 @@ struct newfound_resolve_t : public action_t
 
   bool ready() override
   {
-    if ( !trial_of_doubt || !trial_of_doubt->check() )
+    if ( !trial_of_doubt || !trial_of_doubt->ready() )
       return false;
 
     return action_t::ready();
