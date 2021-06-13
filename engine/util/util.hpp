@@ -179,10 +179,14 @@ std::string to_string( const T& t );
 std::string to_string( double f );
 std::string to_string( double f, int precision );
 
+unsigned to_unsigned( const std::string& str );
 unsigned to_unsigned( util::string_view str );
-uint64_t to_unsigned64( util::string_view str );
+
+
+unsigned to_unsigned_ignore_error( const std::string& str, unsigned on_error_value );
 unsigned to_unsigned_ignore_error( util::string_view str, unsigned on_error_value );
 
+int to_int( const std::string& str );
 int to_int( util::string_view str );
 
 double to_double( const std::string& str );

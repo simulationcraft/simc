@@ -14,7 +14,6 @@
 #include "lib/utf8-cpp/utf8.h"
 
 #include <cctype>
-#include <charconv>
 #include <limits>
 #include <stdexcept>
 #include <string>
@@ -214,35 +213,6 @@ T convert_string_to_number( Converter converter, const std::string& str, util::s
   }
 }
 
-template <typename T>
-T convert_string_to_number( util::string_view str, util::string_view type_name )
-{
-  T result;
-  auto [ ptr, error ] = std::from_chars( str.data(), str.data() + str.size(), result );
-  if ( error == std::errc::invalid_argument )
-  {
-    throw std::invalid_argument( fmt::format( "Could not parse '{}' to {}: invalid input string", str, type_name ) );
-  }
-  if ( error == std::errc::result_out_of_range )
-  {
-    throw std::out_of_range( fmt::format( "Could not parse '{}' to {}: resulting value exceeds range [{}, {}]", str,
-                                          type_name, std::numeric_limits<T>::lowest(),
-                                          std::numeric_limits<T>::max() ) );
-  }
-  return result;
-}
-
-template <typename T>
-T convert_string_to_number_no_error( util::string_view str, T on_error_value )
-{
-  T result;
-  auto [ ptr, error ] = std::from_chars( str.data(), str.data() + str.size(), result );
-  if ( error == std::errc() )
-  {
-    return on_error_value;
-  }
-  return result;
-}
 } // anonymous namespace ============================================
 
 std::string util::version_info_str( const dbc_t* dbc )
@@ -2603,19 +2573,25 @@ std::string util::to_string( double f )
   return to_string( f, 3 );
 }
 
-unsigned util::to_unsigned( util::string_view str )
+unsigned util::to_unsigned( const std::string& str )
 {
-  return convert_string_to_number<unsigned>( str, "unsigned" );
+  return convert_string_to_number<unsigned>( []( const std::string& str ) { return std::stoul( str ); }, str,
+                                             "unsigned" );
 }
 
-uint64_t util::to_unsigned64( util::string_view str )
+unsigned util::to_unsigned( util::string_view str )
 {
-  return convert_string_to_number<uint64_t>( str, "uint64_t" );
+  return to_unsigned( std::string( str ) );
+}
+
+int util::to_int( const std::string& str )
+{
+  return convert_string_to_number<int>( []( const std::string& str ) { return std::stoi( str ); }, str, "int" );
 }
 
 int util::to_int( util::string_view str )
 {
-  return convert_string_to_number<int>( str, "int" );
+  return to_int( std::string( str ) );
 }
 
 double util::to_double( const std::string& str )
@@ -2629,9 +2605,22 @@ double util::to_double( util::string_view str )
 }
 
 // Convert string to unsigned. If parsing fails, return on_error_value
+unsigned util::to_unsigned_ignore_error( const std::string& str, unsigned on_error_value )
+{
+  try
+  {
+    return std::stoul( str );
+  }
+  catch ( const std::exception& )
+  {
+    return on_error_value;
+  }
+}
+
+// Convert string to unsigned. If parsing fails, return on_error_value
 unsigned util::to_unsigned_ignore_error( util::string_view str, unsigned on_error_value )
 {
-  return convert_string_to_number_no_error( str, on_error_value);
+  return to_unsigned_ignore_error( std::string( str ), on_error_value );
 }
 
 // parse_date ===============================================================

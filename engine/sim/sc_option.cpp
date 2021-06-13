@@ -122,7 +122,7 @@ struct converter_uint64_t
 {
   static uint64_t convert( util::string_view v )
   {
-    return util::to_unsigned64( v );
+    return std::stoull( std::string( v ) );
   }
 };
 
