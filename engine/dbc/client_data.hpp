@@ -27,7 +27,7 @@ const T& find( unsigned key, bool ptr, Proj proj )
   const auto __data = T::data( ptr );
 
   auto it = range::lower_bound( __data, key, {}, proj );
-  if ( it != __data.cend() && range::invoke( proj, *it ) == key )
+  if ( it != __data.cend() && std::invoke( proj, *it ) == key )
   {
     return *it;
   }
@@ -53,9 +53,9 @@ template <typename T, size_t N, typename U, size_t M, typename Proj>
 const T& find_indexed( unsigned key, util::span<const T, N> data, util::span<const U, M> index, Proj proj )
 {
   auto it = range::lower_bound( index, key, {}, [ data, &proj ]( auto index ) {
-      return range::invoke( proj, data[ index ] );
+      return std::invoke( proj, data[ index ] );
     } );
-  if ( it != index.end() && range::invoke( proj, data[ *it ] ) == key )
+  if ( it != index.end() && std::invoke( proj, data[ *it ] ) == key )
     return data[ *it ];
   return T::nil();
 }

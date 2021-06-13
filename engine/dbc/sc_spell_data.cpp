@@ -70,7 +70,7 @@ struct mem_fn_t {
 
   template <typename... Args>
   decltype(auto) operator()( Args&&... args ) const {
-    return range::invoke( Pm, std::forward<Args>(args)... );
+    return std::invoke( Pm, std::forward<Args>(args)... );
   }
 };
 
