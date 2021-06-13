@@ -14,11 +14,19 @@
 #include "lib/utf8-cpp/utf8.h"
 
 #include <cctype>
-#include <charconv>
 #include <limits>
 #include <stdexcept>
 #include <string>
 
+#if (defined( SC_CLANG ) && SC_CLANG < 70000 || defined( SC_GCC ) && SC_GCC < 70000)
+#define NO_CHARCONV_SUPPORT 1
+#else
+#define NO_CHARCONV_SUPPORT 0
+#endif
+
+#if NO_CHARCONV_SUPPORT == 0
+#include <charconv>
+#endif
 namespace { // anonymous namespace ==========================================
 
 struct spec_map_t
@@ -214,6 +222,7 @@ T convert_string_to_number( Converter converter, const std::string& str, util::s
   }
 }
 
+#if NO_CHARCONV_SUPPORT == 0
 template <typename T>
 T convert_string_to_number( util::string_view str, util::string_view type_name )
 {
@@ -243,6 +252,7 @@ T convert_string_to_number_no_error( util::string_view str, T on_error_value )
   }
   return result;
 }
+#endif
 } // anonymous namespace ============================================
 
 std::string util::version_info_str( const dbc_t* dbc )
@@ -2603,19 +2613,88 @@ std::string util::to_string( double f )
   return to_string( f, 3 );
 }
 
+unsigned util::to_unsigned( const std::string& str )
+{
+#if NO_CHARCONV_SUPPORT == 1
+  return convert_string_to_number<unsigned>( []( const std::string& str ) { return std::stoul( str ); }, str,
+                                             "unsigned" );
+#else
+  return to_unsigned( util::string_view( str ) );
+#endif
+}
+
 unsigned util::to_unsigned( util::string_view str )
 {
+#if NO_CHARCONV_SUPPORT == 1
+  return to_unsigned( std::string( str ) );
+#else
   return convert_string_to_number<unsigned>( str, "unsigned" );
+#endif
+}
+
+uint64_t util::to_unsigned64( const std::string& str )
+{
+#if NO_CHARCONV_SUPPORT == 1
+  return convert_string_to_number<unsigned>( []( const std::string& str ) { return std::stoull( str ); }, str,
+                                             "unsigned" );
+#else
+  return to_unsigned64( util::string_view( str ) );
+#endif
 }
 
 uint64_t util::to_unsigned64( util::string_view str )
 {
+#if NO_CHARCONV_SUPPORT == 1
+  return to_unsigned64( std::string( str ) );
+#else
   return convert_string_to_number<uint64_t>( str, "uint64_t" );
+#endif
+}
+
+int util::to_int( const std::string& str )
+{
+#if NO_CHARCONV_SUPPORT == 1
+  return convert_string_to_number<int>( []( const std::string& str ) { return std::stoi( str ); }, str,
+                                             "int" );
+#else
+  return to_int( util::string_view( str ) );
+#endif
 }
 
 int util::to_int( util::string_view str )
 {
+#if NO_CHARCONV_SUPPORT == 1
+  return to_int( std::string( str ) );
+#else
   return convert_string_to_number<int>( str, "int" );
+#endif
+}
+
+// Convert string to unsigned. If parsing fails, return on_error_value
+unsigned util::to_unsigned_ignore_error( const std::string& str, unsigned on_error_value )
+{
+#if NO_CHARCONV_SUPPORT == 1
+  try
+  {
+    return std::stoul( str );
+  }
+  catch ( const std::exception& )
+  {
+    return on_error_value;
+  }
+#else
+  return to_unsigned_ignore_error( util::string_view(str), on_error_value);
+#endif
+}
+
+// Convert string to unsigned. If parsing fails, return on_error_value
+unsigned util::to_unsigned_ignore_error( util::string_view str, unsigned on_error_value )
+{
+#if NO_CHARCONV_SUPPORT == 1
+  return to_unsigned_ignore_error( std::string(str), on_error_value);
+#else
+  return convert_string_to_number_no_error<unsigned>( str, on_error_value );
+#endif
 }
 
 double util::to_double( const std::string& str )
@@ -2626,12 +2705,6 @@ double util::to_double( const std::string& str )
 double util::to_double( util::string_view str )
 {
   return to_double( std::string( str ) );
-}
-
-// Convert string to unsigned. If parsing fails, return on_error_value
-unsigned util::to_unsigned_ignore_error( util::string_view str, unsigned on_error_value )
-{
-  return convert_string_to_number_no_error( str, on_error_value);
 }
 
 // parse_date ===============================================================
