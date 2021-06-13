@@ -8736,20 +8736,21 @@ void shaman_t::init_action_list_elemental()
   action_priority_list_t* precombat     = get_action_priority_list( "precombat" );
   action_priority_list_t* def           = get_action_priority_list( "default" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
-  precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled" );
-  precombat->add_talent( this, "Stormkeeper",
-                         "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
-                         "Use Stormkeeper precombat unless some adds will spawn soon." );
-  precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
-  precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
 
-  precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  precombat->add_action( "potion" );
 
   if ( options.rotation == ROTATION_STANDARD ) {
+	precombat->add_action( "flask" );
+	precombat->add_action( "food" );
+	precombat->add_action( "augmentation" );
+	precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled" );
+	precombat->add_talent( this, "Stormkeeper",
+							"if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
+							"Use Stormkeeper precombat unless some adds will spawn soon." );
+	precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
+	precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
+	
+	precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+	precombat->add_action( "potion" );
     action_priority_list_t* single_target = get_action_priority_list( "single_target" );
     action_priority_list_t* aoe           = get_action_priority_list( "aoe" );
     action_priority_list_t* se_single_target = get_action_priority_list( "se_single_target" );
@@ -8924,6 +8925,19 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
     single_target->add_action( this, "Frost Shock", "moving=1" );
   } else if (options.rotation == ROTATION_SIMPLE) {
+	precombat->add_action( "flask" );
+	precombat->add_action( "food" );
+	precombat->add_action( "augmentation" );
+	precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled" );
+	precombat->add_talent( this, "Stormkeeper",
+							"if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
+							"Use Stormkeeper precombat unless some adds will spawn soon." );
+	precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
+	precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
+	
+	precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+	precombat->add_action( "potion" );
+	
     action_priority_list_t* single_target = get_action_priority_list( "single_target" );
     action_priority_list_t* aoe           = get_action_priority_list( "aoe" );
 
@@ -9104,6 +9118,9 @@ void shaman_t::init_action_list_elemental()
                                "if=talent.echoing_shock.enabled&cooldown.lava_burst.remains<=gcd" );
     single_target->add_action( this, "Lava Burst", "if=talent.echoing_shock.enabled&buff.echoing_shock.up" );
     single_target->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
+	single_target->add_action(
+        this, "Earthquake",
+        "if=buff.echoes_of_great_sundering.up&talent.master_of_the_elements.enabled&buff.master_of_the_elements.up");
     single_target->add_action( this, "Lightning Bolt",
                                "if=buff.stormkeeper.up&buff.master_of_the_elements.up&maelstrom<60" );
     single_target->add_action(
