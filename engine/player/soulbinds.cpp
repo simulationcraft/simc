@@ -1845,6 +1845,11 @@ void register_special_effects()
   unique_gear::register_special_effect( 344091, soulbinds::deepening_bond );  // Kyrian Rank 3
 }
 
+action_t* create_action( player_t* player, util::string_view name, const std::string& options )
+{
+  return nullptr;
+}
+
 void initialize_soulbinds( player_t* player )
 {
   if ( !player->covenant )
