@@ -237,7 +237,7 @@ T convert_string_to_number_no_error( util::string_view str, T on_error_value )
 {
   T result;
   auto [ ptr, error ] = std::from_chars( str.data(), str.data() + str.size(), result );
-  if ( error == std::errc() )
+  if ( error != std::errc{} )
   {
     return on_error_value;
   }
