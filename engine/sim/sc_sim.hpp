@@ -422,7 +422,7 @@ struct sim_t : private sc_thread_t
     double newfound_resolve_success_chance = 1.0;
     /// Sets the default delay that the player waits before facing their Doubt.
     /// This is disabled if the APL creates the "newfound_resolve" action.
-    timespan_t newfound_resolve_default_delay = 4_ms;
+    timespan_t newfound_resolve_default_delay = 4_s;
     double newfound_resolve_delay_relstddev = 0.2;
   } shadowlands_opts;
 
