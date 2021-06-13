@@ -24,6 +24,12 @@
 #define NO_CHARCONV_SUPPORT 0
 #endif
 
+#if (defined( SC_CLANG ) || defined( SC_GCC ) || defined( SC_VS ) && SC_VS < 1924)
+#define FLOAT_CHARCONV_SUPPORT 0
+#else
+#define FLOAT_CHARCONV_SUPPORT 1
+#endif
+
 #if NO_CHARCONV_SUPPORT == 0
 #include <charconv>
 #endif
@@ -2699,12 +2705,20 @@ unsigned util::to_unsigned_ignore_error( util::string_view str, unsigned on_erro
 
 double util::to_double( const std::string& str )
 {
+#if FLOAT_CHARCONV_SUPPORT == 1
+  return to_double( util::string_view( str ) );
+#else
   return convert_string_to_number<double>( []( const std::string& str ) { return std::stod( str ); }, str, "double" );
+#endif
 }
 
 double util::to_double( util::string_view str )
 {
+#if FLOAT_CHARCONV_SUPPORT == 1
+  return convert_string_to_number<double>( str, "double" );
+#else
   return to_double( std::string( str ) );
+#endif
 }
 
 // parse_date ===============================================================
