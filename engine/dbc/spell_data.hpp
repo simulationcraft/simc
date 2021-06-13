@@ -788,7 +788,7 @@ struct spell_data_nil_t : public spell_data_t {
     _name = "nil";
   };
 };
-static constexpr const spell_data_nil_t& spell_data_nil_v = meta::static_const_t<spell_data_nil_t>::value;
+inline constexpr spell_data_nil_t spell_data_nil_v {};
 inline const spell_data_t* spell_data_t::nil() { return &spell_data_nil_v; }
 
 // Empty spell data container, which is used to return a "not found" state
@@ -797,7 +797,7 @@ struct spell_data_not_found_t : public spell_data_t {
     _name = "not_found";
   };
 };
-static constexpr const spell_data_not_found_t& spell_data_not_found_v = meta::static_const_t<spell_data_not_found_t>::value;
+inline constexpr spell_data_not_found_t spell_data_not_found_v {};
 inline const spell_data_t* spell_data_t::not_found() { return &spell_data_not_found_v; }
 
 // ==========================================================================
@@ -809,7 +809,7 @@ struct spelleffect_data_nil_t : public spelleffect_data_t {
     _spell = _trigger_spell = &spell_data_not_found_v;
   }
 };
-static constexpr const spelleffect_data_t& spelleffect_data_nil_v = meta::static_const_t<spelleffect_data_nil_t>::value;
+inline constexpr spelleffect_data_nil_t spelleffect_data_nil_v {};
 inline const spelleffect_data_t& spelleffect_data_t::nil() { return spelleffect_data_nil_v; }
 
 #endif // SC_DBC_SPELL_DATA_HPP
