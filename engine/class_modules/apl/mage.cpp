@@ -60,8 +60,8 @@ void arcane( player_t* p )
   precombat->add_action( "arcane_familiar" );
   precombat->add_action( "conjure_mana_gem" );
   precombat->add_action( "variable,name=evo_pct,op=reset,default=15" );
-  precombat->add_action( "variable,name=prepull_evo,default=-1,op=set,if=variable.prepull_evo=-1,value=1*(runeforge.siphon_storm&active_enemies>1+1*!covenant.necrolord)" );
-  precombat->add_action( "variable,name=have_opened,op=set,value=0+1*(active_enemies>2|variable.prepull_evo=1)" );
+  precombat->add_action( "variable,name=prepull_evo,default=-1,op=set,if=variable.prepull_evo=-1,value=1*(runeforge.siphon_storm&(covenant.venthyr|covenant.necrolord|conduit.arcane_prodigy))" );
+  precombat->add_action( "variable,name=have_opened,op=set,value=0+(1*active_enemies>2)" );
   precombat->add_action( "variable,name=final_burn,op=set,value=0" );
   precombat->add_action( "variable,name=harmony_stack_time,op=reset,default=9" );
   precombat->add_action( "variable,name=rs_max_delay_for_totm,op=reset,default=5" );
@@ -73,7 +73,7 @@ void arcane( player_t* p )
   precombat->add_action( "variable,name=ap_max_delay_for_totm,default=-1,op=set,if=variable.ap_max_delay_for_totm=-1,value=10+(20*conduit.arcane_prodigy)" );
   precombat->add_action( "variable,name=ap_max_delay_for_mot,op=reset,default=20" );
   precombat->add_action( "variable,name=rop_max_delay_for_totm,default=-1,op=set,if=variable.rop_max_delay_for_totm=-1,value=20-(5*conduit.arcane_prodigy)" );
-  precombat->add_action( "variable,name=totm_max_delay_for_ap,default=-1,op=set,if=variable.totm_max_delay_for_ap=-1,value=5+10*(covenant.night_fae|(conduit.arcane_prodigy&active_enemies<3))+15*(covenant.kyrian&runeforge.arcane_infinity&active_enemies>2)" );
+  precombat->add_action( "variable,name=totm_max_delay_for_ap,default=-1,op=set,if=variable.totm_max_delay_for_ap=-1,value=5+20*(covenant.night_fae|(conduit.arcane_prodigy&active_enemies<3))+15*(covenant.kyrian&runeforge.arcane_infinity&active_enemies>2)" );
   precombat->add_action( "variable,name=totm_max_delay_for_rop,default=-1,op=set,if=variable.totm_max_delay_for_rop=-1,value=20-(8*conduit.arcane_prodigy)" );
   precombat->add_action( "variable,name=barrage_mana_pct,default=-1,op=set,if=variable.barrage_mana_pct=-1,value=((80-(20*covenant.night_fae)+(15*covenant.kyrian))-(mastery_value*100))" );
   precombat->add_action( "variable,name=ap_minimum_mana_pct,op=reset,default=15" );
@@ -123,6 +123,7 @@ void arcane( player_t* p )
   calculations->add_action( "variable,name=time_until_ap,op=set,if=conduit.arcane_prodigy,value=variable.estimated_ap_cooldown" );
   calculations->add_action( "variable,name=time_until_ap,op=set,if=!conduit.arcane_prodigy,value=cooldown.arcane_power.remains" );
   calculations->add_action( "variable,name=time_until_ap,op=max,value=cooldown.touch_of_the_magi.remains,if=(cooldown.touch_of_the_magi.remains-variable.time_until_ap)<20", "We'll delay AP up to 20sec for TotM" );
+  calculations->add_action( "variable,name=time_until_ap,op=max,value=trinket.soulletting_ruby.cooldown.remains,if=conduit.arcane_prodigy&conduit.arcane_prodigy.rank<5&equipped.soulletting_ruby&covenant.kyrian&runeforge.arcane_infinity", "Since Ruby is such a powerful trinket for Kyrian, we'll stick to the two minute cycle until we get a high enough rank of prodigy" );
   calculations->add_action( "variable,name=holding_totm,op=set,value=cooldown.touch_of_the_magi.ready&variable.time_until_ap<20", "We'll delay TotM up to 20sec for AP" );
   calculations->add_action( "variable,name=just_used_spark,op=set,value=(prev_gcd.1.radiant_spark|prev_gcd.2.radiant_spark|prev_gcd.3.radiant_spark)&debuff.radiant_spark_vulnerability.down", "Radiant Spark does not immediately put up the vulnerability debuff so it can be difficult to discern that we're at the zeroth vulnerability stack" );
   calculations->add_action( "variable,name=outside_of_cooldowns,op=set,value=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down&!variable.just_used_spark&debuff.radiant_spark_vulnerability.down" );
@@ -149,17 +150,17 @@ void arcane( player_t* p )
   opener->add_action( "evocation,if=buff.rune_of_power.down&buff.arcane_power.down,interrupt_if=mana.pct>=85,interrupt_immediate=1" );
   opener->add_action( "arcane_barrage" );
 
-  fishing_opener->add_action( "evocation,if=(runeforge.siphon_storm|runeforge.temporal_warp)&(buff.rune_of_power.down|prev_gcd.1.arcane_barrage)&cooldown.rune_of_power.remains", "When running either the SS or TW legendaries, we want to Evo before the TotM/AP window. Use it as soon as RoP has finished our we've spent our charges" );
+  fishing_opener->add_action( "evocation,if=(runeforge.temporal_warp|(runeforge.siphon_storm&!variable.prepull_evo=1))&(buff.rune_of_power.down|prev_gcd.1.arcane_barrage)&cooldown.rune_of_power.remains", "When running either the SS or TW legendaries, we want to Evo before the TotM/AP window. Use it as soon as RoP has finished our we've spent our charges" );
   fishing_opener->add_action( "evocation,if=talent.rune_of_power&cooldown.rune_of_power.remains&cooldown.arcane_power.remains&buff.arcane_power.down&buff.rune_of_power.down&prev_gcd.1.arcane_barrage", "If we've finished our cooldown windows and spent our charges, prioritize Evo over everything else" );
   fishing_opener->add_action( "fire_blast,if=runeforge.disciplinary_command&buff.disciplinary_command_frost.up" );
   fishing_opener->add_action( "frost_nova,if=runeforge.grisly_icicle&mana.pct>95" );
   fishing_opener->add_action( "arcane_missiles,if=runeforge.arcane_infinity&buff.arcane_harmony.stack<buff.arcane_harmony.max_stack&((buff.arcane_power.down&cooldown.arcane_power.ready)|debuff.touch_of_the_magi.up),chain=1" );
-  fishing_opener->add_action( "deathborne,if=!runeforge.siphon_storm&!runeforge.temporal_warp" );
-  fishing_opener->add_action( "arcane_orb,if=cooldown.rune_of_power.ready" );
+  fishing_opener->add_action( "arcane_orb,if=cooldown.rune_of_power.ready", "actions.fishing_opener+=/rune_of_power,if=runeforge.siphon_storm" );
   fishing_opener->add_action( "arcane_blast,if=cooldown.rune_of_power.ready&buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
+  fishing_opener->add_action( "deathborne,if=!runeforge.temporal_warp|conduit.gift_of_the_lich" );
   fishing_opener->add_action( "rune_of_power" );
   fishing_opener->add_action( "arcane_missiles,if=buff.clearcasting.react&buff.clearcasting.stack=buff.clearcasting.max_stack&covenant.venthyr&cooldown.mirrors_of_torment.ready&!variable.empowered_barrage&cooldown.arcane_power.ready", "If we're at max stacks of CC and we haven't used MoT yet, use a stack to prevent munching unless running the Harmony legendary" );
-  fishing_opener->add_action( "potion,if=!(runeforge.siphon_storm|runeforge.temporal_warp)", "Normally we pair potion use with AP, but it will last long enough for both the RoP and AP windows unless running the SS or TW legendaries" );
+  fishing_opener->add_action( "potion,if=!runeforge.temporal_warp&(!runeforge.siphon_storm|variable.prepull_evo=1)", "Normally we pair potion use with AP, but it will last long enough for both the RoP and AP windows unless running the SS or TW legendaries" );
   fishing_opener->add_action( "deathborne,if=buff.rune_of_power.down|prev_gcd.1.arcane_barrage" );
   fishing_opener->add_action( "radiant_spark,if=buff.rune_of_power.down|prev_gcd.1.arcane_barrage" );
   fishing_opener->add_action( "mirrors_of_torment,if=buff.rune_of_power.remains<6" );
@@ -170,7 +171,7 @@ void arcane( player_t* p )
   fishing_opener->add_action( "presence_of_mind,if=!talent.arcane_echo&debuff.touch_of_the_magi.up&debuff.touch_of_the_magi.remains<=(action.arcane_blast.execute_time*buff.presence_of_mind.max_stack)", "Use PoM to squeeze an extra Arcane Blast during the TotM/AP window unless running Arcane Echo. If Arcane Echo is talented, we can't use PoM within the TotM/AP window unless we interrupt the AM channel, so we'll save it." );
   fishing_opener->add_action( "presence_of_mind,if=buff.arcane_power.up&buff.rune_of_power.remains<=(action.arcane_blast.execute_time*buff.presence_of_mind.max_stack)", "If PoM hasn't been used during the TotM window, we'll use it to squeeze an extra Arcane Blast in the RoP/AP window." );
   fishing_opener->add_action( "arcane_blast,if=dot.radiant_spark.remains>5|debuff.radiant_spark_vulnerability.stack>0" );
-  fishing_opener->add_action( "arcane_barrage,if=cooldown.arcane_power.ready&mana.pct<(40+(10*covenant.kyrian))&buff.arcane_charge.stack=buff.arcane_charge.max_stack&!runeforge.siphon_storm&!runeforge.temporal_warp&!runeforge.arcane_infinity", "We want to make sure we have enough mana for the entire AP window, even if there's still time remaining on RoP. It's only better to burn to zero and Evo if running the SS or TW legendaries." );
+  fishing_opener->add_action( "arcane_barrage,if=cooldown.arcane_power.ready&mana.pct<(40+(10*covenant.kyrian))&buff.arcane_charge.stack=buff.arcane_charge.max_stack&(!runeforge.siphon_storm|variable.prepull_evo=1)&!runeforge.temporal_warp&!runeforge.arcane_infinity", "We want to make sure we have enough mana for the entire AP window, even if there's still time remaining on RoP. It's only better to burn to zero and Evo if running the SS or TW legendaries." );
   fishing_opener->add_action( "arcane_barrage,if=buff.arcane_power.up&buff.arcane_power.remains<=gcd&cooldown.evocation.remains", "Barrage should not be used at the end of AP if Evocation is ready as dropping charges will make it take longer to burn through remaining mana" );
   fishing_opener->add_action( "arcane_barrage,if=buff.rune_of_power.up&buff.arcane_power.down&buff.rune_of_power.remains<=gcd&!runeforge.arcane_infinity", "Barrage should always be the last cast in the RoP window as TotM will restore the charges spent" );
   fishing_opener->add_action( "arcane_missiles,if=debuff.touch_of_the_magi.up&talent.arcane_echo&(buff.deathborne.down|active_enemies=1)&debuff.touch_of_the_magi.remains>action.arcane_missiles.execute_time,chain=1,early_chain_if=buff.clearcasting_channel.down&(buff.arcane_power.up|(!talent.overpowered&(buff.rune_of_power.up|cooldown.evocation.ready)))" );
@@ -274,18 +275,18 @@ void arcane( player_t* p )
   aoe->add_action( "evocation,interrupt_if=mana.pct>=85,interrupt_immediate=1" );
 
   harmony->add_action( "cancel_action,if=action.evocation.channeling&mana.pct>=95" );
-  harmony->add_action( "evocation,if=mana.pct<=30&variable.outside_of_cooldowns&((talent.rune_of_power&cooldown.rune_of_power.remains<10)|(cooldown.touch_of_the_magi.remains<10&conduit.arcane_prodigy))", "If low on mana and cooldowns are coming up, go ahead and evo" );
+  harmony->add_action( "evocation,if=mana.pct<=30&variable.outside_of_cooldowns&(talent.rune_of_power&cooldown.rune_of_power.remains<10)", "If low on mana and cooldowns are coming up, go ahead and evo" );
   harmony->add_action( "arcane_missiles,if=(variable.stack_harmony|time<10)&buff.arcane_harmony.stack<buff.arcane_harmony.max_stack,chain=1" );
   harmony->add_action( "arcane_missiles,if=equipped.empyreal_ordnance&time<30&cooldown.empyreal_ordnance.remains>168", "When using Empyreal Ordnance, cast a few extra missiles while waiting for the buff at the start of the fight" );
-  harmony->add_action( "radiant_spark,if=variable.empowered_barrage&cooldown.touch_of_the_magi.remains<=execute_time&cooldown.arcane_power.remains<=(execute_time*2)" );
-  harmony->add_action( "touch_of_the_magi,if=variable.just_used_spark&cooldown.arcane_power.remains<=execute_time" );
+  harmony->add_action( "radiant_spark,if=variable.empowered_barrage&cooldown.touch_of_the_magi.remains<=execute_time&cooldown.arcane_power.remains<=(execute_time*2)&(!equipped.soulletting_ruby|conduit.arcane_prodigy.rank>=5|trinket.soulletting_ruby.cooldown.remains<=(execute_time*2))" );
+  harmony->add_action( "touch_of_the_magi,if=variable.just_used_spark&cooldown.arcane_power.remains<=execute_time&(!equipped.soulletting_ruby|conduit.arcane_prodigy.rank>=5|trinket.soulletting_ruby.cooldown.remains<=execute_time)" );
   harmony->add_action( "arcane_power,if=prev_gcd.1.touch_of_the_magi" );
   harmony->add_action( "rune_of_power,if=variable.empowered_barrage&cooldown.radiant_spark.remains<=execute_time&variable.time_until_ap>=20" );
   harmony->add_action( "radiant_spark,if=variable.empowered_barrage&prev_gcd.1.rune_of_power" );
   harmony->add_action( "touch_of_the_magi,if=variable.just_used_spark&!variable.holding_totm" );
   harmony->add_action( "rune_of_power,if=buff.arcane_power.down&(variable.time_until_ap>30|cooldown.radiant_spark.remains>12)" );
   harmony->add_action( "radiant_spark,if=variable.empowered_barrage&(buff.arcane_charge.stack>=2|cooldown.arcane_orb.ready)&(!talent.rune_of_power|cooldown.rune_of_power.remains>5)&variable.estimated_ap_cooldown>=30" );
-  harmony->add_action( "touch_of_the_magi,if=variable.time_until_ap<50&variable.time_until_ap>30", "When running prodigy, use totm by itself in order to align it with ap" );
+  harmony->add_action( "touch_of_the_magi,if=variable.time_until_ap<50&variable.time_until_ap>30&(!equipped.soulletting_ruby|conduit.arcane_prodigy.rank>=5)", "When running prodigy, use totm by itself in order to align it with ap" );
   harmony->add_action( "arcane_orb,if=variable.just_used_spark&buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
   harmony->add_action( "arcane_barrage,if=debuff.radiant_spark_vulnerability.stack=debuff.radiant_spark_vulnerability.max_stack" );
   harmony->add_action( "arcane_blast,if=variable.just_used_spark|(debuff.radiant_spark_vulnerability.up&debuff.radiant_spark_vulnerability.stack<debuff.radiant_spark_vulnerability.max_stack)" );
@@ -298,7 +299,7 @@ void arcane( player_t* p )
   harmony->add_action( "evocation,if=mana.pct<15" );
   harmony->add_action( "arcane_blast,if=buff.arcane_charge.stack&buff.arcane_charge.stack<buff.arcane_charge.max_stack", "Only use blast to build charges if we already have some from orb" );
   harmony->add_action( "arcane_missiles,if=!(variable.time_until_ap<=10&mana.pct<30),chain=1,interrupt=1,interrupt_global=1", "Fill with am unless ap is coming up and we're low on mana" );
-  harmony->add_action( "fire_blast", "Profiles with low master, high haste, or both may not have enough mana to support how mana intensive radiant spark can be, so we'll use fire blast and frostbolt when low on mana" );
+  harmony->add_action( "fire_blast", "Profiles with low mastery, high haste, or both may not have enough mana to support how mana intensive radiant spark can be, so we'll use fire blast and frostbolt when low on mana" );
   harmony->add_action( "frostbolt" );
 }
 //arcane_apl_end
