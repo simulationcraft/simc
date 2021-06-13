@@ -21,9 +21,7 @@ namespace priestspace
  */
 struct priest_t;
 
-namespace actions
-{
-namespace spells
+namespace actions::spells
 {
 struct ascended_blast_heal_t;
 struct mind_sear_tick_t;
@@ -35,8 +33,7 @@ struct wrathful_faerie_fermata_t;
 struct psychic_link_t;
 struct eternal_call_to_the_void_t;
 struct unholy_transfusion_healing_t;
-}  // namespace spells
-}  // namespace actions
+}  // namespace actions::spells
 
 /**
  * Priest target data
