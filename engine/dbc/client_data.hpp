@@ -17,9 +17,8 @@
 namespace dbc
 {
 
-// TODO C++17: replace with inline constexpr
 template <typename T>
-constexpr const T& nil = meta::static_const_t<T>::value;
+inline constexpr T nil = T{};
 
 template <typename T, typename Proj>
 const T& find( unsigned key, bool ptr, Proj proj )
