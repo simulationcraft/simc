@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.38950
-static const std::array<spelltext_data_t, 15492> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15495> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14816,6 +14816,7 @@ static const std::array<spelltext_data_t, 15492> __ptr_spelltext_data { {
   { 343395, "$@spelldesc343393", 0, 0 },
   { 343396, "$@spelldesc343393", "Intellect increased by $w1.", 0 },
   { 343399, "Increase your armor by $s1 and regenerate $343401s1 health every $t3 sec for $d, but you are slowed by $s2%.", "Armor increased by $w1, regenerating $343401s1 health every $t3 sec, but you are slowed by $s2% for the duration.", 0 },
+  { 343411, "Unleash the little Bonestorm spinning across the ground. ", 0, 0 },
   { 343441, "Eat me! Results are unpredictable. Only usable in the Shadowlands.", 0, 0 },
   { 343527, "A hammer slowly falls from the sky upon the target. After $d, they suffer ${$s1*$<mult>} Holy damage, plus $s2% of damage taken from your abilities in that time.", "Sentenced to suffer $w1 Holy damage.", 0 },
   { 343539, "$@spelldesc343250", 0, 0 },
@@ -15198,6 +15199,7 @@ static const std::array<spelltext_data_t, 15492> __ptr_spelltext_data { {
   { 352882, "$@spelldesc352405", "Absorbs $w1 damage.", 0 },
   { 352916, "$spelldesc351149", 0, 0 },
   { 352917, "$@spelldesc351149", "$w1% increased $pri and Stamina.", 0 },
+  { 352918, "$@spelldesc351149", "Cannot benefit from Newfound Resolve.", 0 },
   { 352939, "$@spelldesc352186", "Damage taken from $@auracaster increased by $w1%.", 0 },
   { 352940, "$@spelldesc352186", 0, 0 },
   { 352981, "$@spelldesc351491", "Critical strike chance increased by $w1%.", 0 },
@@ -15480,6 +15482,7 @@ static const std::array<spelltext_data_t, 15492> __ptr_spelltext_data { {
   { 358111, "Pour a cup of very fancy tea for yourself or another party member.", "Enjoying a taste of the Ember Ward.", 0 },
   { 358164, "@$spelldesc326514", "Cannot benefit from Forgeborne Reveries' death effects.", 0 },
   { 358284, "Add the Tormented affix to a Mythic Keystone.", 0, 0 },
+  { 358404, "$@spelldesc351149", "Your Doubt has manifested. Face it to gain Newfound Resolve.", 0 },
   { 358498, "Extract an embedded Shard of Domination from one of your socketed items.", 0, 0 },
   { 358562, "When attacking an enemy, Jaithys has a low chance to guide your blade towards a weak spot, dealing $s1 additional Physical damage.", 0, 0 },
   { 358564, "$@spelldesc358562", 0, 0 },
