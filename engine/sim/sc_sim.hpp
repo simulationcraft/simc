@@ -418,6 +418,12 @@ struct sim_t : private sc_thread_t
     bool better_together_ally = true;
     /// Fraction of the time that the player is above the health threshold for Titanic Ocular Gland.
     double titanic_ocular_gland_worthy_chance = 1.0;
+    /// Sets the chance that the player successfully faces their Doubt to get the Newfound Resolve buff.
+    double newfound_resolve_success_chance = 1.0;
+    /// Sets the default delay that the player waits before facing their Doubt.
+    /// This is disabled if the APL creates the "newfound_resolve" action.
+    timespan_t newfound_resolve_default_delay = 4_ms;
+    double newfound_resolve_delay_relstddev = 0.2;
   } shadowlands_opts;
 
   // Auras and De-Buffs
