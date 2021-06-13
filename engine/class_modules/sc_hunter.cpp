@@ -6741,8 +6741,8 @@ std::string hunter_t::create_profile( save_e stype )
 
   const options_t defaults{};
   auto print_option = [&] ( auto ref, util::string_view name ) {
-    if ( range::invoke( ref, options ) != range::invoke( ref, defaults ) )
-      fmt::format_to( std::back_inserter( profile_str ), "{}={}\n", name, range::invoke( ref, options ) );
+    if ( std::invoke( ref, options ) != std::invoke( ref, defaults ) )
+      fmt::format_to( std::back_inserter( profile_str ), "{}={}\n", name, std::invoke( ref, options ) );
   };
 
   print_option( &options_t::summon_pet_str, "summon_pet" );

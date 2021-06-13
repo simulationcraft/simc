@@ -217,22 +217,6 @@ struct identity {
   using is_transparent = std::true_type;
 };
 
-// Bare-bones std::invoke ===================================================
-
-template <typename Fn, typename... Args,
-        std::enable_if_t<std::is_member_pointer<std::decay_t<Fn>>{}, int> = 0 >
-decltype(auto) invoke(Fn&& fn, Args&&... args)
-{
-  return std::mem_fn(fn)(std::forward<Args>(args)...);
-}
-
-template <typename Fn, typename... Args,
-         std::enable_if_t<!std::is_member_pointer<std::decay_t<Fn>>{}, int> = 0>
-decltype(auto) invoke(Fn&& fn, Args&&... args)
-{
-  return std::forward<Fn>(fn)(std::forward<Args>(args)...);
-}
-
 // Range-based generic algorithms ===========================================
 
 template <typename Range, typename Out>
@@ -284,7 +268,7 @@ template <typename Range, typename T, typename Proj>
 inline T accumulate_proj( Range& r, const T& init, Proj proj )
 {
   const auto op = [&proj]( const T& current, auto&& v ) {
-    return range::invoke( proj, std::forward<decltype(v)>( v ) ) + current;
+    return std::invoke( proj, std::forward<decltype(v)>( v ) ) + current;
   };
   return std::accumulate( range::begin( r ), range::end( r ), init, op );
 }
@@ -318,7 +302,7 @@ template <typename Range, typename T, typename Proj>
 inline iterator_t<Range> find( Range& r, T const& value, Proj proj )
 {
   const auto pred = [&value, &proj]( auto&& v ) {
-    return range::invoke( proj, std::forward<decltype(v)>( v ) ) == value;
+    return std::invoke( proj, std::forward<decltype(v)>( v ) ) == value;
   };
   return std::find_if( range::begin( r ), range::end( r ), pred );
 }
@@ -479,7 +463,7 @@ template <typename Range, typename T, typename Compare = std::less<>, typename P
 iterator_t<Range> lower_bound( Range& r, const T& value, Compare comp = Compare{}, Proj proj = Proj{} )
 {
   const auto pred = [&value, &proj, &comp]( auto&& v ) {
-    return range::invoke( comp, range::invoke( proj, std::forward<decltype(v)>( v ) ), value );
+    return std::invoke( comp, std::invoke( proj, std::forward<decltype(v)>( v ) ), value );
   };
   return std::partition_point( range::begin( r ), range::end( r ), pred );
 }
@@ -488,7 +472,7 @@ template <typename Range, typename T, typename Compare = std::less<>, typename P
 iterator_t<Range> upper_bound( Range& r, const T& value, Compare comp = Compare{}, Proj proj = Proj{} )
 {
   const auto pred = [&value, &proj, &comp]( auto&& v ) {
-    return !range::invoke( comp, value, range::invoke( proj, std::forward<decltype(v)>( v ) ) );
+    return !std::invoke( comp, value, std::invoke( proj, std::forward<decltype(v)>( v ) ) );
   };
   return std::partition_point( range::begin( r ), range::end( r ), pred );
 }
@@ -507,7 +491,7 @@ template <typename Range, typename Pred, typename Proj = identity>
 iterator_t<Range> partition( Range& r, Pred pred_, Proj proj = Proj{} )
 {
   auto pred = [&pred_, &proj]( auto&& v ) -> bool {
-    return range::invoke( pred_, range::invoke( proj, std::forward<decltype(v)>( v ) ) );
+    return std::invoke( pred_, std::invoke( proj, std::forward<decltype(v)>( v ) ) );
   };
   return std::partition( range::begin( r ), range::end( r ), pred );
 }
