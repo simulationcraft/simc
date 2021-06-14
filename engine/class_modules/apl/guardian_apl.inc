@@ -41,7 +41,7 @@ bear->add_action( "moonfire,if=((buff.galactic_guardian.up)&active_enemies<2)|((
 bear->add_action( "moonfire,if=(dot.moonfire.remains<=3&(buff.galactic_guardian.up)&active_enemies>5&target.time_to_die>12)" );
 bear->add_action( "moonfire,if=(refreshable&active_enemies<2&target.time_to_die>12)|(!dot.moonfire.ticking&active_enemies>1&target.time_to_die>12)" );
 bear->add_action( "swipe,if=buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&active_enemies>=4" );
-bear->add_action( "maul,if=buff.incarnation.up&active_enemies<2" );
+bear->add_action( "maul,if=buff.incarnation.up&active_enemies<2|buff.berserk_bear.up&active_enemies<2" );
 bear->add_action( "maul,if=(buff.savage_combatant.stack>=1)&(buff.tooth_and_claw.up)&buff.incarnation.up&active_enemies=2" );
 bear->add_action( "mangle,if=buff.incarnation.up&active_enemies<=3" );
 bear->add_action( "maul,if=(((buff.tooth_and_claw.stack>=2)|(buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5)|(buff.savage_combatant.stack>=3))&active_enemies<3)" );
