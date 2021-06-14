@@ -337,7 +337,6 @@ SOURCES += engine/util/git_info.cpp
 SOURCES += engine/util/io.cpp
 SOURCES += engine/util/rng.cpp
 SOURCES += engine/util/sample_data.cpp
-SOURCES += engine/util/string_view.cpp
 SOURCES += engine/util/timeline.cpp
 SOURCES += engine/util/timespan.cpp
 SOURCES += engine/util/util.cpp

@@ -716,7 +716,7 @@ bool parse_fight_style( sim_t*             sim,
       value, fmt::join( FIGHT_STYLES, ", " ) ) );
   }
 
-  sim->fight_style = to_string( *it );
+  sim->fight_style = *it;
 
   return true;
 }

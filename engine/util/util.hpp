@@ -240,7 +240,7 @@ std::string util::to_string( const T& t )
 template <typename T>
 std::string util::string_join( const T& container, util::string_view delim )
 {
-  return fmt::format( "{}", fmt::join( container, to_string_view( delim ) ) );
+  return fmt::format( "{}", fmt::join( container, delim ) );
 }
 
 // fmtlib formatters for enums

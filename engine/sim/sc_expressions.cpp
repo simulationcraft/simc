@@ -39,7 +39,7 @@ struct lexer_t
 
   bool match( char c )
   {
-    if ( starts_with( input.substr( current_len ), c ) ) {
+    if ( util::starts_with( input.substr( current_len ), c ) ) {
       current_len++;
       return true;
     }

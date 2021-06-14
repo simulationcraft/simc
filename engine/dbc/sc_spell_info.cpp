@@ -1158,7 +1158,7 @@ std::string mechanic_str( unsigned mechanic ) {
   auto it = _mechanic_strings.find( mechanic );
   if ( it != _mechanic_strings.end() )
   {
-    return to_string( it -> second );
+    return std::string( it -> second );
   }
   return fmt::format( "Unknown({})", mechanic );
 }
@@ -1728,7 +1728,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   std::string spell_type_str = "Unknown(" + util::to_string( spell->dmg_class() ) + ")";
   if ( spell->dmg_class() < _spell_type_map.size() )
   {
-    spell_type_str = to_string( _spell_type_map[ spell->dmg_class() ] );
+    spell_type_str = _spell_type_map[ spell->dmg_class() ];
   }
   s << "Spell Type       : " << spell_type_str << std::endl;
 
@@ -2524,7 +2524,7 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
         {
           xml_node_t* race_node = node -> add_child( "race" );
           race_node -> add_parm( "id", i );
-          race_node -> add_parm( "name", to_string( it -> second ) );
+          race_node -> add_parm( "name", it -> second );
         }
       }
     }
