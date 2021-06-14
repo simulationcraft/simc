@@ -10,6 +10,8 @@
 
 #include "report/reports.hpp"
 
+#include <memory>
+
 struct spell_data_t;
 struct item_t;
 struct expr_t;

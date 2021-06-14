@@ -6,9 +6,10 @@
 #ifndef SAMPLE_DATA_HPP
 #define SAMPLE_DATA_HPP
 
+#include <iosfwd>
 #include <limits>
 #include <numeric>
-#include <iosfwd>
+#include <string>
 #include <vector>
 
 #include "util/generic.hpp"
