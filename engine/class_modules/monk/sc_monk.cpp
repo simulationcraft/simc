@@ -47,7 +47,7 @@ namespace monk
 namespace actions
 {
 // ==========================================================================
-// Monk Abilities
+// Monk Actions
 // ==========================================================================
 // Template for common monk action code. See priest_action_t.
 
@@ -782,7 +782,7 @@ struct storm_earth_and_fire_fixate_t : public monk_spell_t
   }
 };
 
-}  // namespace pet_summon
+} // end namespace monk::actions::pet_summon
 
 namespace attacks
 {
@@ -2730,7 +2730,7 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
     td( state->target )->debuff.flying_serpent_kick->trigger();
   }
 };
-}  // namespace attacks
+} // end namespace monk::actions::attacks
 
 namespace spells
 {
@@ -2986,7 +2986,7 @@ struct breath_of_fire_t : public monk_spell_t
     parse_options( options_str );
     gcd_type = gcd_haste_type::NONE;
 
-    aoe                   = 1;
+    aoe                   = -1;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
 
@@ -3702,10 +3702,10 @@ struct yulon_spell_t : public monk_spell_t
 
   bool ready() override
   {
-    if ( !p()->talent.invoke_chi_ji->ok() )
-      return monk_spell_t::ready();
+    if ( p()->talent.invoke_chi_ji->ok() )
+      return false;
 
-    return false;
+    return monk_spell_t::ready();
   }
 
   void execute() override
@@ -4162,7 +4162,7 @@ struct fallen_order_t : public monk_spell_t
     make_event<fallen_order_event_t>( *sim, p(), std::move(fallen_monks), p()->covenant.venthyr->effectN( 1 ).period() * 3 );
   }
 };
-}  // namespace spells
+} // end namespace monk::actions::spells
 
 namespace heals
 {
@@ -4949,8 +4949,7 @@ struct evasive_stride_t : public monk_heal_t
     target     = player;
   }
 };
-
-}  // end namespace heals
+} // end namespace monk::actions::heals
 
 namespace absorbs
 {
@@ -5051,7 +5050,7 @@ struct life_cocoon_t : public monk_absorb_t
     stats->add_result( 0.0, s->result_amount, result_amount_type::ABSORB, s->result, s->block_result, s->target );
   }
 };
-}  // end namespace absorbs
+}  // end namespace monk::actions::absorbs
 
 using namespace pets;
 using namespace pet_summon;
@@ -5059,14 +5058,14 @@ using namespace attacks;
 using namespace spells;
 using namespace heals;
 using namespace absorbs;
-}  // namespace actions
+} // end namespace monk::actions
 
+namespace buffs
+{
 // ==========================================================================
 // Monk Buffs
 // ==========================================================================
 
-namespace buffs
-{
 template <typename buff_t>
 struct monk_buff_t : public buff_t
 {
@@ -5477,7 +5476,7 @@ struct stagger_buff_t : public monk_buff_t<buff_t>
   }
 };
 
-}  // namespace buffs
+} // namespace monk::buffs
 
 namespace items
 {
@@ -5500,9 +5499,9 @@ void do_trinket_init( monk_t* player, specialization_e spec, const special_effec
 void init()
 {
 }
-}  // namespace items
+} // end namespace monk::items
 
-}  // namespace monk
+} // end namespace monk
 
 namespace monk
 {
@@ -6778,6 +6777,8 @@ std::vector<player_t*> monk_t::create_storm_earth_and_fire_target_list() const
 
   return l;
 }
+
+// monk_t::bonedust_brew_assessor ===========================================
 
 void monk_t::bonedust_brew_assessor( action_state_t* s )
 {
@@ -8177,7 +8178,7 @@ struct monk_module_t : public module_t
   }
 };
 
-}  // namespace monk
+} // end namespace monk
 
 const module_t* module_t::monk()
 {
