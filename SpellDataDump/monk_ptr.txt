@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -4093,7 +4093,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : Aura (infinite)
-Stacks           : 3 maximum
+Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : March of the Legion (212132 effect#1)
 Family Flags     : 120
