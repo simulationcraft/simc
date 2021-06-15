@@ -16,7 +16,6 @@
 TODO:
 
 GENERAL:
-- Change Eye of the Tiger from a dot to an interaction with a buff
 
 WINDWALKER:
 - Add Cyclone Strike Counter as an expression
@@ -27,7 +26,6 @@ MISTWEAVER:
 - Not Modeled:
 
 BREWMASTER:
-- Breath of Fire is not AoE's on the initial hit. It is only hitting the initial target
 */
 #include "sc_monk.hpp"
 
