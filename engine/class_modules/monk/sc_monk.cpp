@@ -3747,21 +3747,20 @@ struct weapons_of_order_t : public monk_spell_t
       switch ( p()->specialization() )
       {
         case MONK_BREWMASTER:
-          p()->pets.niuzao.spawn( p()->legendary.call_to_arms->effectN( 1 ).time_value(), 1 );
+          p()->pets.niuzao.spawn( p()->passives.call_to_arms_invoke_niuzao->duration(), 1 );
           break;
         case MONK_MISTWEAVER:
         {
           if ( p()->talent.invoke_chi_ji->ok() )
-            p()->pets.chiji.spawn( p()->legendary.call_to_arms->effectN( 1 ).time_value(), 1 );
+            p()->pets.chiji.spawn( p()->passives.call_to_arms_invoke_chiji->duration(), 1 );
           else
-            p()->pets.yulon.spawn( p()->legendary.call_to_arms->effectN( 1 ).time_value(), 1 );
+            p()->pets.yulon.spawn( p()->passives.call_to_arms_invoke_yulon->duration(), 1 );
           break;
         }
         case MONK_WINDWALKER:
         {
-          timespan_t duration = p()->legendary.call_to_arms->effectN( 1 ).time_value();
-          p()->pets.xuen.spawn( duration, 1 );
-          p()->buff.invoke_xuen->trigger( duration );
+          p()->pets.xuen.spawn( p()->passives.call_to_arms_invoke_xuen->duration(), 1 );
+          p()->buff.invoke_xuen_call_to_arms->trigger();
           break;
         }
         default:
@@ -6260,11 +6259,15 @@ void monk_t::init_spells()
   passives.evasive_stride         = find_spell( 343764 );
 
   // Shadowland Legendary
-  passives.chi_explosion        = find_spell( 337342 );
-  passives.fae_exposure_dmg     = find_spell( 356773 );
-  passives.fae_exposure_heal    = find_spell( 356774 );
-  passives.shaohaos_might       = find_spell( 337570 );
-  passives.charred_passions_dmg = find_spell( 338141 );
+  passives.chi_explosion              = find_spell( 337342 );
+  passives.fae_exposure_dmg           = find_spell( 356773 );
+  passives.fae_exposure_heal          = find_spell( 356774 );
+  passives.shaohaos_might             = find_spell( 337570 );
+  passives.charred_passions_dmg       = find_spell( 338141 );
+  passives.call_to_arms_invoke_xuen   = find_spell( 358518 );
+  passives.call_to_arms_invoke_niuzao = find_spell( 358520 );
+  passives.call_to_arms_invoke_yulon  = find_spell( 358521 );
+  passives.call_to_arms_invoke_chiji  = find_spell( 358522 );
 
   // Mastery spells =========================================
   mastery.combo_strikes   = find_mastery_spell( MONK_WINDWALKER );
@@ -6617,6 +6620,9 @@ void monk_t::create_buffs()
       make_buff( this, "the_emperors_capacitor", find_spell( 337291 ) )->set_default_value_from_effect( 1 );
 
   // Covenants
+  buff.invoke_xuen_call_to_arms =
+      new buffs::invoke_xuen_the_white_tiger_buff_t( *this, "invoke_xuen_call_to_arms", passives.call_to_arms_invoke_xuen );
+
   buff.fae_exposure =
       make_buff( this, "fae_exposure_heal", passives.fae_exposure_heal )->set_default_value_from_effect( 1 );
 }

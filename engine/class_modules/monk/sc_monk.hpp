@@ -256,6 +256,7 @@ public:
     buff_t* mighty_pour;
     buff_t* pressure_point;
     buff_t* the_emperors_capacitor;
+    buff_t* invoke_xuen_call_to_arms;
   } buff;
 
 public:
@@ -610,6 +611,10 @@ public:
     const spell_data_t* fae_exposure_heal;
     const spell_data_t* shaohaos_might;
     const spell_data_t* charred_passions_dmg;
+    const spell_data_t* call_to_arms_invoke_xuen;
+    const spell_data_t* call_to_arms_invoke_niuzao;
+    const spell_data_t* call_to_arms_invoke_yulon;
+    const spell_data_t* call_to_arms_invoke_chiji;
   } passives;
 
   // RPPM objects
