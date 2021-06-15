@@ -1751,6 +1751,11 @@ class SpellDataGenerator(DataGenerator):
           ( 347688, 1 ), # Charred Passions
           ( 356773, 0 ), # Fae Exposure Damage Debuff
           ( 356774, 0 ), # Fae Exposure Heal Buff
+          ( 358518, 3 ), # Call to Arms Invoke Xuen Duration
+          ( 358520, 1 ), # Call to Arms Invoke Niuzao Duration
+          ( 358521, 2 ), # Call to Arms Invoke Yu'lon Duration
+          ( 358522, 2 ), # Call to Arms Invoke Chi-Ji Duration
+          ()
         ),
 
         # Druid:
