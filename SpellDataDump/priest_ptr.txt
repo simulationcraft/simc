@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -9832,7 +9832,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.53300 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=832087)   : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.44300 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#3 (id=832088)   : Dummy (3)
+#3 (id=832088)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=832089)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -11601,10 +11601,7 @@ Name             : Pallid Command (id=356390) [Spell Family (6), Passive, Hidden
 Class            : Priest
 School           : Shadow
 Spell Type       : None
-Internal Cooldown: 15 seconds
 Proc Chance      : 101%
-Proc Flags       : ........ ......x. x....... ........ 
-                 : Magic Heal, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11782,51 +11779,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 180127 | Misc Value 2: 0x145e | Target: Unknown(72)
 #2 (id=893295)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Casting Unholy Nova summons a Cackling Chemist that gains $357165s1% additional damage and healing each time an enemy affected by Unholy Transfusion is damaged by an ally, up to ${$357165U*$357165s1}%.
+Description      : Casting Unholy Nova summons a Brooding Cleric that gains $357165s1% additional damage and healing each time an enemy affected by Unholy Transfusion is damaged by an ally, up to ${$357165U*$357165s1}%.
 
-The Cackling Chemist serves you for $d, damaging an enemy for $356633s1 Shadow damage and healing an ally for $356638s1.
+The Brooding Cleric serves you for $d, healing an ally for $357769s1.
 Tooltip          : Accompanied by a Cackling Chemist.
-
-Name             : Throw Viscous Concoction (id=356633) 
-Class            : Priest
-School           : Shadow
-Spell Type       : Magic
-Spell Level      : 1
-Range            : 45 yards
-Cast Time        : 1.5 seconds
-Velocity         : 20 yards/sec
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   
-Effects          :
-#1 (id=890605)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Hurls a bubbling concoction at the target, dealing $s1 Shadow damage.
-
-Name             : Throw Healthy Dosage (id=356638) 
-Class            : Priest
-School           : Shadowstorm
-Spell Type       : Ranged
-Range            : 45 yards
-Cast Time        : 1.5 seconds
-Velocity         : 20 yards/sec
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   
-Effects          :
-#1 (id=890611)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Description      : A bubbling concoction that heals $s1 upon impact.
 
 Name             : Bwonsamdi's Pact (id=356959) [Spell Family (6), Hidden] 
 School           : Nature
@@ -11897,7 +11853,7 @@ Effects          :
 #2 (id=891533)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Unknown(25)
                    Affected School(s): All
-Description      : @spelldesc356390
+Description      : $@spelldesc356390
 Tooltip          : Healing and damage is increased by $s1%.
 
 Name             : Stitch Wounds (id=357769) 

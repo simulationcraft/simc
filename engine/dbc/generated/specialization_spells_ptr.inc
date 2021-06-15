@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 9.1.0.38950
-static const std::array<specialization_spell_entry_t, 928> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 9.1.0.39015
+static const std::array<specialization_spell_entry_t, 929> __ptr_specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -148,6 +148,7 @@ static const std::array<specialization_spell_entry_t, 928> __ptr_specialization_
   {  2,   66, 342348,      0, "Crusader Strike"                   , "Rank 2" },
   {  2,   66, 344172,      0, "Consecration"                      , "Rank 2" },
   {  2,   66, 353367,      0, "Aegis of Light"                    , 0 },
+  {  2,   66, 358934,      0, "Aegis of Light"                    , "Rank 2" },
   {  2,   70,  53385,      0, "Divine Storm"                      , 0 },
   {  2,   70,  85256,      0, "Templar's Verdict"                 , 0 },
   {  2,   70,  86539,      0, "Plate Specialization"              , 0 },

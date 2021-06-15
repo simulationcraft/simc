@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -548,7 +548,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1298)     : Health Leech (9)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.07500 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.07500 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Drains $s1 health from all nearby enemies.
 
 |cFF777777(Right-Click to toggle)|r
@@ -2775,7 +2775,7 @@ Attributes       : ........ ........ x....... ...x....   .....x.. ........ .....
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ....xx.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ..x..... ........ 
+                 : ........ ........ ........ ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
                  : Does not break stealth (37)
@@ -5968,7 +5968,7 @@ Description      : Command your Felguard to strike into the soul of its enemy, d
 |cFFFFFFFFGenerates 1 Soul Shard.|r][]
 Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
 $demoPassive=$?s137044[${1+0.01*$137044m3}][${1}]
-$damage=${1*($SP*1)*$<demoMastery>*$<demoPassive>*(1+$@versadmg)}
+$damage=${.575*($SP*1)*$<demoMastery>*$<demoPassive>*(1+$@versadmg)}
 
 Name             : Dreadlash (id=264078) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
@@ -11543,14 +11543,14 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=892781)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When you take any damage, heal for ${$m1/10}.2% of your maximum health. This can only occur once every $357946d.
+Description      : When you take any damage, heal for |cFFFFFFFF${$m1/10}.2%|r of your maximum health. This can only occur once every $357946d.
 
 Name             : Adaptive Armor Fragment (id=357902) [Spell Family (5), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 101%
-Conduit Id       : 284 (values=60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200)
+Conduit Id       : 284 (values=2, 2.1, 2.4, 2.6, 2.8, 3, 3.2, 3.4, 3.6, 3.8, 4, 4.2, 4.4, 4.6, 4.8)
 Proc Flags       : ........ ...x...x ........ .......x 
                  : Generic Heal Taken, Magic Heal Taken
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -11565,6 +11565,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=892804)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When you are healed by another player, increase your $pri by $s1 for $357972d. This can only occur once every $357973d.
+Description      : When you are healed by another player, increase your $pri by |cFFFFFFFF${$s1}.1%|r for $357972d. This can only occur once every $357973d.
 
 

@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -1794,8 +1794,10 @@ Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
 Spell Level      : 60
-Internal Cooldown: 0.01 seconds
+Internal Cooldown: 0.05 seconds
 Proc Chance      : 101%
+Proc Flags       : ....x... x.x.x.x. x....... ........ 
+                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
@@ -2515,7 +2517,7 @@ Cannot start a new analysis of each type until the previous one has finished.
 
 Name             : Reactive Retrofitting (id=352187) [Passive, Hidden] 
 Covenant         : Kyrian
-School           : Physical
+School           : Arcane
 Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
@@ -2761,7 +2763,7 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=883482)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Gaining a stack of Redirected Anima from Grove Invigoration heals up to 5 nearby allies for 2% of their health, up to a maximum of $352871s3 health. If any of the affected allies are of another covenant, Redirected Anima's Mastery and maximum health effects are increased by $352881s1% for $352881d.
+Description      : Gaining a stack of Redirected Anima from Grove Invigoration heals up to $352871I nearby allies for $352871s1% of their health, up to a maximum of $352871s3 health. If any of the affected allies are of another covenant, Redirected Anima's Mastery and maximum health effects are increased by $352881s1% for $352881d.
 
 Name             : Waking Dreams (id=352779) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -2813,7 +2815,7 @@ Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
 Spell Level      : 60
-Internal Cooldown: 0.8 seconds
+Internal Cooldown: 0.75 seconds
 Proc Chance      : 101%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
@@ -2822,7 +2824,7 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
