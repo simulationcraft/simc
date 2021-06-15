@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.39015
-static const std::array<spelltext_data_t, 15489> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15494> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -13396,6 +13396,7 @@ static const std::array<spelltext_data_t, 15489> __ptr_spelltext_data { {
   { 325203, "Deals up to $o1 Shadow damage based on number of targets over $d. Allies who damage this target are healed for ${$325118s1*$<mult>}.", "Suffering $w1 damage every $t1 sec. When damaged, the attacker is healed for $325118m1.", "Necrolord" },
   { 325208, "Cooldown reduced by ${$s1/-60000} min.", 0, "Rank 2" },
   { 325209, "$@spelldesc343655", "Heals $w1 every $t1 sec.\r\nHealing received from the Monk increased by $m3%.", 0 },
+  { 325212, "Yu'lon dashes to three allies, healing them for $s2.", 0, 0 },
   { 325214, "Expel Harm can be cast during Soothing Mist, and additionally heals the Soothing Mist target.", 0, "Rank 3" },
   { 325215, "Touch of Death spawns $s1 Chi Spheres, granting 1 Chi when you walk through them.", 0, "Rank 3" },
   { 325216, "Hurl a brew created from the bones of your enemies at the ground, coating all targets struck for $d.  Your abilities have a $h% chance to affect the target a second time at $s1% effectiveness as Shadow damage or healing.\r\n\r\n$?s137024[Gust of Mists heals targets with your Bonedust Brew active for an additional $328748s1.]?s137023[Tiger Palm and Keg Smash reduces the cooldown of your brews by an additional $s3 sec when striking enemies with your Bonedust Brew active.]?s137025[Spinning Crane Kick refunds 1 Chi when striking enemies with your Bonedust Brew active.][]", "The Monk's abilities have a $h% chance to affect the target a second time at $s1% effectiveness as Shadow damage or healing.", "Necrolord" },
@@ -15473,6 +15474,10 @@ static const std::array<spelltext_data_t, 15489> __ptr_spelltext_data { {
   { 358284, "Add the Tormented affix to a Mythic Keystone.", 0, 0 },
   { 358404, "$@spelldesc351149", "Your Doubt has manifested. Face it to gain Newfound Resolve.", 0 },
   { 358498, "Extract an embedded Shard of Domination from one of your socketed items.", 0, 0 },
+  { 358518, "Summons an effigy of Xuen, the White Tiger for $d. Xuen attacks your primary target, and strikes 3 enemies within $123996A1 yards every $123999t1 sec with Tiger Lightning for $123996s1 Nature damage.", 0, 0 },
+  { 358520, "Summons an effigy of Niuzao, the Black Ox for $d. Niuzao attacks your primary target, and frequently Stomps, damaging all nearby enemies$?s322740[ for $227291s1 plus $322740s1% of Stagger damage recently purified.][.]\r\n\r\nWhile active, $s2% of damage delayed by Stagger is instead Staggered by Niuzao.", "Niuzao is staggering $s2% of the Monk's Stagger damage.", 0 },
+  { 358521, "Summons an effigy of Yu'lon, the Jade Serpent for $d. Yu'lon heals nearby allies with Celestial Breath for $325212s2.", 0, 0 },
+  { 358522, "Summon an effigy of Chi-Ji that kicks up a Gust of Mist when you Blackout Kick, Rising Sun Kick, or Spinning Crane Kick, healing up to $343818s3 allies for $343819s1, and reducing the cost and cast time of your next Enveloping Mist by $343820s1%, stacking.\r\n\r\nChi-Ji's presence makes you immune to movement impairing effects.\r\n", 0, 0 },
   { 358562, "When attacking an enemy, Jaithys has a low chance to guide your blade towards a weak spot, dealing $s1 additional Physical damage.", 0, 0 },
   { 358564, "$@spelldesc358562", 0, 0 },
   { 358565, "When attacking an enemy, Jaithys has a chance to guide your blade towards a weak spot, dealing $s1 additional Physical damage.", 0, 0 },
