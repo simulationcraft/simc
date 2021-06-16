@@ -389,6 +389,7 @@ public:
 
     //Covenant Legendaries
     buff_t* splintered_elemental_rod;
+    buff_t* seeds_of_rampant_growth;
 
     // Legendaries
     buff_t* chains_of_devastation_chain_heal;
@@ -6674,6 +6675,8 @@ struct fae_transfusion_tick_t : public shaman_spell_t
       {
         p()->cooldown.feral_spirits->adjust( -1.0 * seeds_effect->effectN( 3 ).time_value() );
       }
+      // shared effect
+      p()->buff.seeds_of_rampant_growth->increment();
     }
   }
 };
@@ -8375,6 +8378,13 @@ void shaman_t::create_buffs()
                                    ->set_default_value_from_effect_type( A_HASTE_ALL )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
+  if ( legendary.seeds_of_rampant_growth->ok() )
+  {
+    buff.seeds_of_rampant_growth = make_buff( this, "seeds_of_rampant_growth", find_spell( 358945 ) )
+                                    ->set_default_value_from_effect_type(A_MOD_ALL_CRIT_CHANCE)
+                                    ->set_pct_buff_type(STAT_PCT_BUFF_CRIT);
+  }
+
   //
   // Elemental
   //
