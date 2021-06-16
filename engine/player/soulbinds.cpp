@@ -19,6 +19,18 @@
 
 #include "simulationcraft.hpp"
 
+/*
+* Currently Missing Soulbinds:
+* Kyrian:
+* - Kleia's Valiant Strikes
+* - Kleia's Light the Path
+* Necrolord:
+* - Maerileth's Kevin's Oozeling
+* - Emeni's Pustule Eruption
+* Night Fae:
+* - Korayn's Wild Hunt Strategem
+*/
+
 namespace covenant
 {
 namespace soulbinds
