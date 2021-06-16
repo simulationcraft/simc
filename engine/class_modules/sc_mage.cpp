@@ -4072,7 +4072,6 @@ struct ice_lance_t final : public frost_mage_spell_t
     if ( !primary )
       record_shatter_source( s, cleave_source );
 
-    // TODO: Determine how it is verified that Blizzard is actively "hitting" the target to increase this chance.
     if ( glacial_fragments )
     {
       double chance = p()->ground_aoe_expiration[ AOE_BLIZZARD ] > sim->current_time()
@@ -4518,7 +4517,6 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
         ignites.push_back( t->get_dot( "ignite", player ) );
 
       // Sort candidate Ignites by descending bank size.
-      // TODO: Double check what targets the Ignite spread prioritizes.
       std::stable_sort( ignites.begin(), ignites.end(), [] ( dot_t* a, dot_t* b )
       { return ignite_bank( a ) > ignite_bank( b ); } );
 
@@ -4556,7 +4554,6 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
   {
     fire_mage_spell_t::impact( s );
 
-    // TODO: Verify what happens when Phoenix Flames hits an immune target.
     if ( result_is_hit( s->result ) && s->chain_target == 0 )
     {
       // Delay sperading Ignite by double the delay of Ignite's residual action
