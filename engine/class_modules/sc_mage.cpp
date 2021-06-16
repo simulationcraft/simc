@@ -4628,9 +4628,7 @@ struct pyroblast_t final : public hot_streak_spell_t
 
   void execute() override
   {
-    // TODO: Check whether Sun King's Blessing activates when
-    // an instant cast Pyroblast without Hot Streak is used
-    if ( time_to_execute > 0_ms && p()->buffs.sun_kings_blessing_ready->check() )
+    if ( !last_hot_streak && p()->buffs.sun_kings_blessing_ready->check() )
     {
       p()->buffs.sun_kings_blessing_ready->expire();
       p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->runeforge.sun_kings_blessing->effectN( 2 ).time_value() );
