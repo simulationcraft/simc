@@ -1774,8 +1774,19 @@ public:
       cooldown->duration = timespan_t::from_seconds( 9 );
       cooldown->hasted   = false;
       trigger_gcd        = timespan_t::from_seconds( 2 );
+      aoe                = -1;
 
       add_child( dot_action );
+    }
+
+    double composite_aoe_multiplier( const action_state_t* state ) const override
+    {
+      double cam = pet_spell_t::composite_aoe_multiplier( state );
+
+      if ( state->target != target )
+        return cam / std::sqrt( state->n_targets );
+
+      return cam;
     }
 
     void impact( action_state_t* s ) override
