@@ -2083,9 +2083,14 @@ struct hot_streak_spell_t : public fire_mage_spell_t
     return debug_cast<const hot_streak_state_t*>( s )->hot_streak ? 2.0 : 1.0;
   }
 
+  void schedule_execute( action_state_t* s ) override
+  {
+    fire_mage_spell_t::schedule_execute( s );
+    last_hot_streak = p()->buffs.hot_streak->up();
+  }
+
   void execute() override
   {
-    last_hot_streak = p()->buffs.hot_streak->up() && time_to_execute == 0_ms;
     fire_mage_spell_t::execute();
 
     if ( last_hot_streak )
