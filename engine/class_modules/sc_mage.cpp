@@ -1035,22 +1035,16 @@ struct expanded_potential_buff_t : public buff_t
 
   void decrement( int stacks, double value ) override
   {
-    // Sinful Delight only triggers when Clearcasting is consumed.
     if ( check() )
+    {
       mage->trigger_sinful_delight( MAGE_ARCANE );
+      mage->trigger_sinful_delight( MAGE_FROST );
+    }
 
     if ( check() && mage->buffs.expanded_potential->check() )
       mage->buffs.expanded_potential->expire();
     else
       buff_t::decrement( stacks, value );
-  }
-
-  void refresh( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::refresh( stacks, value, duration );
-
-    // Sinful Delight triggers when Brain Freeze refreshes.
-    mage->trigger_sinful_delight( MAGE_FROST );
   }
 };
 
@@ -6185,9 +6179,7 @@ void mage_t::create_buffs()
 
 
   // Frost
-  buffs.brain_freeze     = make_buff<buffs::expanded_potential_buff_t>( this, "brain_freeze", find_spell( 190446 ) )
-                             ->set_stack_change_callback( [ this ] ( buff_t*, int old, int new_ )
-                               { if ( old > new_ ) trigger_sinful_delight( MAGE_FROST ); } );
+  buffs.brain_freeze     = make_buff<buffs::expanded_potential_buff_t>( this, "brain_freeze", find_spell( 190446 ) );
   buffs.fingers_of_frost = make_buff( this, "fingers_of_frost", find_spell( 44544 ) );
   buffs.icicles          = make_buff( this, "icicles", find_spell( 205473 ) );
   buffs.icy_veins        = make_buff<buffs::icy_veins_t>( this );
