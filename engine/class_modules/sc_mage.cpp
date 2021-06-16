@@ -1021,10 +1021,6 @@ struct combustion_t final : public buff_t
   }
 };
 
-// TODO: Verify what happens when Expanded Potential is triggered and
-// consumed at the same time, e.g., what happens when casting Fireball
-// into Pyroblast with Hot Streak when Expanded Potential is up, but
-// the Fireball also triggers a new instance of Expanded Potential?
 struct expanded_potential_buff_t : public buff_t
 {
   mage_t* mage;
@@ -2503,10 +2499,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     if ( p()->buffs.presence_of_mind->up() )
       p()->buffs.presence_of_mind->decrement();
 
-    // There is a delay where it is possible to cast a spell that would
-    // consume Expanded Potential immediately after Expanded Potential
-    // is triggered, which will prevent it from being consumed.
-    p()->trigger_delayed_buff( p()->buffs.expanded_potential );
+    p()->buffs.expanded_potential->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -3368,11 +3361,7 @@ struct fireball_t final : public fire_mage_spell_t
   void execute() override
   {
     fire_mage_spell_t::execute();
-
-    // There is a delay where it is possible to cast a spell that would
-    // consume Expanded Potential immediately after Expanded Potential
-    // is triggered, which will prevent it from being consumed.
-    p()->trigger_delayed_buff( p()->buffs.expanded_potential );
+    p()->buffs.expanded_potential->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -3659,7 +3648,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     p()->trigger_fof( ft_multiplier * p()->spec.fingers_of_frost->effectN( 1 ).percent(), proc_fof );
     p()->trigger_brain_freeze( ft_multiplier * p()->spec.brain_freeze->effectN( 1 ).percent(), proc_brain_freeze );
 
-    p()->trigger_delayed_buff( p()->buffs.expanded_potential );
+    p()->buffs.expanded_potential->trigger();
 
     if ( p()->buffs.icy_veins->check() )
       p()->buffs.slick_ice->trigger();
@@ -6258,6 +6247,7 @@ void mage_t::create_buffs()
                                         ->set_quiet( true )
                                         ->set_chance( runeforge.disciplinary_command.ok() );
   buffs.expanded_potential          = make_buff( this, "expanded_potential", find_spell( 327495 ) )
+                                        ->set_activated( false )
                                         ->set_trigger_spell( runeforge.expanded_potential );
   buffs.heart_of_the_fae            = make_buff( this, "heart_of_the_fae", find_spell( 356881 ) )
                                         ->set_default_value_from_effect( 1 )
