@@ -6846,6 +6846,16 @@ struct chain_harvest_t : public shaman_spell_t
 // Vesper Totem - Kyrian Covenant
 // ==========================================================================
 
+struct raging_vesper_vortex_t : public shaman_spell_t
+{
+  raging_vesper_vortex_t( shaman_t* player )
+    : shaman_spell_t( "raging_vesper_vortex", player, player->find_spell( 356790 ) )
+  {
+    aoe        = -1;
+    ground_aoe = background = true;
+  }
+};
+
 struct vesper_totem_damage_t : public shaman_spell_t
 {
   // Cache closest target so we don't need to compute it for all hit targets
@@ -6920,13 +6930,16 @@ struct vesper_totem_damage_t : public shaman_spell_t
 struct vesper_totem_t : public shaman_spell_t
 {
   vesper_totem_damage_t* damage;
+  raging_vesper_vortex_t* legendary_damage;
 
   vesper_totem_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "vesper_totem", player, player->covenant.kyrian ),
-    damage( new vesper_totem_damage_t( player ) )
+    damage( new vesper_totem_damage_t( player ) ),
+    legendary_damage( new raging_vesper_vortex_t(player) )
   {
     parse_options( options_str );
     add_child( damage );
+    add_child( legendary_damage );
   }
 
   void execute() override
@@ -6954,6 +6967,10 @@ struct vesper_totem_t : public shaman_spell_t
                   break;
                 case ground_aoe_params_t::state_type::EVENT_STOPPED:
                   this->p()->buff.vesper_totem->expire();
+                  if ( this->p()->legendary.raging_vesper_vortex->ok() )
+                  {
+                    legendary_damage->execute();
+                  }
                   break;
                 default:
                   break;
