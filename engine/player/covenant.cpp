@@ -141,6 +141,11 @@ bool covenant_state_t::parse_covenant( sim_t*             sim,
     m_covenant = static_cast<covenant_e>( covenant_id );
   }
 
+  // Renown spells cannot be properly found without a Covenant. If there are
+  // no spells found yet, try to find them here in case renown is already set.
+  if ( m_renown.empty() )
+    set_renown_level( m_renown_level );
+
   return true;
 }
 
