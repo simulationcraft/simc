@@ -4897,10 +4897,13 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     // 2020-08-23: Seems to only affect main hand death strike, not OH hit, not DRW's spell
     // No spelldata either, just "increase damage based on target's missing health"
-    // Testing shows a linear 1% damage increase for every 1% missing health
+    // Update 2021-06-16 Changed from 1% to 1.25% damage increase
+    // Testing shows a linear 1.25% damage increase for every 1% missing health, up to 100% damage increase
     if ( p() -> runeforge.rune_of_sanguination )
     {
-      m *= 1.0 + 1.0 - target -> resources.pct( RESOURCE_HEALTH );
+      auto buff_amount = (1.0 - target -> resources.pct( RESOURCE_HEALTH ) ) * 1.25;
+      buff_amount = std::min( buff_amount, 1.0 );  // Max 100% bonus damage
+      m *= 1.0 + buff_amount;
     }
 
     return m;
