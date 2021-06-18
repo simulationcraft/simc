@@ -424,6 +424,7 @@ struct sim_t : private sc_thread_t
     /// This is disabled if the APL creates the "newfound_resolve" action.
     timespan_t newfound_resolve_default_delay = 4_s;
     double newfound_resolve_delay_relstddev = 0.2;
+    bool enable_rune_words = true;
   } shadowlands_opts;
 
   // Auras and De-Buffs

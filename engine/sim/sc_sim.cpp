@@ -3837,6 +3837,7 @@ void sim_t::create_options()
   add_option( opt_float( "shadowlands.newfound_resolve_success_chance", shadowlands_opts.newfound_resolve_success_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "shadowlands.newfound_resolve_default_delay", shadowlands_opts.newfound_resolve_default_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "shadowlands.newfound_resolve_delay_relstddev", shadowlands_opts.newfound_resolve_delay_relstddev, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_bool( "shadowlands.enable_rune_words", shadowlands_opts.enable_rune_words ) );
 }
 
 // sim_t::parse_option ======================================================

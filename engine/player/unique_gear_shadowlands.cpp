@@ -2444,6 +2444,13 @@ void vitality_sacrifice( special_effect_t& /* effect */ )
 // Helper function to determine whether a Rune Word is active.
 bool rune_word_active( special_effect_t& effect, spell_label label )
 {
+  if ( !effect.player->sim->shadowlands_opts.enable_rune_words )
+  {
+    effect.player->sim->print_debug( "{}: rune word {} from item {} is inactive by global override",
+      effect.player->name(), effect.driver()->name_cstr(), effect.item->name() );
+    return false;
+  }
+
   unsigned equipped_shards = 0;
   for ( const auto& item : effect.player->items )
   {
@@ -2488,7 +2495,7 @@ bool rune_word_active( special_effect_t& effect, spell_label label )
 
   bool active = equipped_shards >= 3;
   effect.player->sim->print_debug( "{}: rune word {} from item {} is {} with {}/3 shards of domination equipped",
-      effect.player->name(), effect.driver()->name_cstr(), effect.item->name(), active ? "active" : "inactive", equipped_shards );
+    effect.player->name(), effect.driver()->name_cstr(), effect.item->name(), active ? "active" : "inactive", equipped_shards );
 
   return active;
 }
