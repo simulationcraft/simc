@@ -179,7 +179,10 @@ SPELL_NAME_BLACKLIST = [
 SPELL_LABEL_BLACKLIST = [ ]
 
 SPELL_LABEL_WHITELIST = [
-  976 # Covenant abilities
+  976, # Covenant abilities
+  1305, # Shards of Domination (Blood)
+  1306, # Shards of Domination (Frost)
+  1307, # Shards of Domination (Unholy)
 ]
 
 ACTIVE_SPELL_WHITELIST = [
