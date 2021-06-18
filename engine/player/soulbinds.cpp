@@ -1314,7 +1314,7 @@ void effusive_anima_accelerator( special_effect_t& effect )
       for ( auto a : player->action_list )
       {
         auto rank_str = player->dbc->spell_text( a->data().id() ).rank();
-        if ( rank_str && a->data().affected_by_label( 976 ) && util::str_compare_ci( rank_str, "Kyrian" ) )
+        if ( rank_str && a->data().affected_by_label( LABEL_COVENANT ) && util::str_compare_ci( rank_str, "Kyrian" ) )
         {
           if ( !range::contains( affected_cooldowns, a->cooldown ) )
           {
