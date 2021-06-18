@@ -1622,48 +1622,58 @@ void bloodspattered_scale( special_effect_t& effect )
  */
 void shadowgrasp_totem( special_effect_t& effect )
 {
-  struct shadowgrasp_totem_damage_t : public generic_proc_t
+  struct shadowgrasp_totem_damage_t : public spell_t
   {
-    action_t* parent;
-
-    shadowgrasp_totem_damage_t( const special_effect_t& effect ) :
-      generic_proc_t( effect, "shadowgrasp_totem", 331537 ), parent( nullptr )
+    shadowgrasp_totem_damage_t( pet_t* p, const special_effect_t& effect ) :
+      spell_t( "shadowgrasp_totem", p, p->owner->find_spell( 331537 ) )
     {
       dot_duration = 0_s;
-      base_dd_min = base_dd_max = player->find_spell( 329878 )->effectN( 1 ).average( effect.item );
+      base_dd_min = base_dd_max = p->owner->find_spell( 329878 )->effectN( 1 ).average( effect.item );
     }
+  };
 
-    void init_finished() override
+  struct shadowgrasp_totem_pet_t : public pet_t
+  {
+    const special_effect_t& effect;
+
+    shadowgrasp_totem_damage_t* damage;
+
+    shadowgrasp_totem_pet_t( const special_effect_t& e ) :
+      pet_t( e.player->sim, e.player, "shadowgrasp_totem", true, true),
+      effect( e )
+    {}
+
+    void init_spells() override
     {
-      generic_proc_t::init_finished();
-      parent = player->find_action( "use_item_shadowgrasp_totem" );
-    }
+      pet_t::init_spells();
 
-    // Doesn't appear to benefit from player target multipliers due to being a pet
-    // Bypass the player->composite_player_target_multiplier() call in action_t::composite_target_multiplier()
-    // We can't disable STATE_TGT_MUL_TA | STATE_TGT_MUL_DA since it benefits from Chaos Brand
-    // TODO: This should probably be fixed in some better way by changing the damage source
-    //       Pet damage modifiers appear to work on this totem, for example BM Hunter Mastery
-    double composite_target_multiplier( player_t* ) const override
-    { return composite_target_damage_vulnerability( target ); }
+      damage = new shadowgrasp_totem_damage_t ( this, effect );
+    }
   };
 
   struct shadowgrasp_totem_buff_t : public buff_t
   {
-    event_t* retarget_event;
-    shadowgrasp_totem_damage_t* action;
+    spawner::pet_spawner_t<shadowgrasp_totem_pet_t> spawner;
     cooldown_t* item_cd;
     timespan_t cd_adjust;
+    timespan_t last_retarget;
 
     shadowgrasp_totem_buff_t( const special_effect_t& effect ) :
       buff_t( effect.player, "shadowgrasp_totem", effect.player->find_spell( 331537 ) ),
-      retarget_event( nullptr ), action( new shadowgrasp_totem_damage_t( effect ) )
+      spawner( "shadowgrasp_totem", effect.player, [ &effect ]( player_t* )
+        { return new shadowgrasp_totem_pet_t( effect ); } )
     {
+      spawner.set_default_duration( effect.player->find_spell( 331537 )->duration() );
+
       // Periodic trigger in spell 331532 itself is hasted, which appears to control the tick rate
       set_tick_time_behavior( buff_tick_time_behavior::HASTED );
       set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-        action->set_target( action->parent->target );
-        action->execute();
+        auto pet = spawner.pet();
+        if ( !pet )
+          return;
+
+        pet->damage->set_target( player->target );
+        pet->damage->execute();
       } );
 
       item_cd = effect.player->get_cooldown( effect.cooldown_name() );
@@ -1681,45 +1691,50 @@ void shadowgrasp_totem( special_effect_t& effect )
     {
       buff_t::reset();
 
-      retarget_event = nullptr;
+      last_retarget = 0_s;
     }
 
     void trigger_target_death( const player_t* actor )
     {
-      if ( !check() || !actor->is_enemy() || action->parent->target != actor )
+      auto pet = spawner.pet();
+      if ( !pet || !actor->is_enemy() )
       {
         return;
       }
 
-      item_cd->adjust( cd_adjust );
 
-      if ( !retarget_event && sim->shadowlands_opts.retarget_shadowgrasp_totem > 0_s )
+      if ( pet->target != actor )
       {
-        retarget_event = make_event( sim, sim->shadowlands_opts.retarget_shadowgrasp_totem, [ this ]() {
-          retarget_event = nullptr;
-
-          // Retarget parent action to emulate player "retargeting" during Shadowgrasp
-          // Totem duration to grab more 15 second cooldown reductions
-          {
-            auto new_target = action->parent->select_target_if_target();
-            if ( new_target )
-            {
-              sim->print_debug( "{} action {} retargeting to a new target: {}",
-                                source->name(), action->parent->name(), new_target->name() );
-              action->parent->set_target( new_target );
-            }
-          }
-        } );
+        auto retarget_time = sim->shadowlands_opts.retarget_shadowgrasp_totem;
+        if ( retarget_time == 0_s || sim->current_time() - last_retarget < retarget_time )
+          return;
+        //  Emulate player "retargeting" during Shadowgrasp Totem duration to grab more
+        //  15 second cooldown reductions.
+        //  Don't actually change the taret of the ability, as it will always hit whatever the
+        //  player is hitting.
+        last_retarget = sim->current_time();
       }
+
+      item_cd->adjust( cd_adjust );
     }
   };
 
-  auto buff = buff_t::find( effect.player, "shadowgrasp_totem" );
-  if ( !buff )
+  struct shadowgrasp_totem_t : proc_spell_t
   {
-    buff = make_buff<shadowgrasp_totem_buff_t>( effect );
-    effect.custom_buff = buff;
-  }
+    shadowgrasp_totem_buff_t* buff;
+    shadowgrasp_totem_t( const special_effect_t& e ) :
+      proc_spell_t( "shadowgrasp_totem", e.player, e.player->find_spell( 331523 ) ),
+      buff( new shadowgrasp_totem_buff_t( e ) )
+    {}
+
+    void execute() override
+    {
+      buff->spawner.spawn();
+      buff->trigger();;
+    }
+  };
+
+  effect.execute_action = create_proc_action<shadowgrasp_totem_t>( "shadowgrasp_totem", effect );
 }
 
 // TODO: Implement healing?
