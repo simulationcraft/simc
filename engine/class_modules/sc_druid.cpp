@@ -2035,7 +2035,12 @@ public:
     using S = const spell_data_t*;
     using C = const conduit_data_t&;
 
-    if ( !p()->dbc->ptr )
+    if ( p()->dbc->ptr )
+    {
+      parse_buff_effects( p()->buff.ravenous_frenzy );
+      parse_buff_effects( p()->buff.sinful_hysteria );
+    }
+    else
       parse_buff_effects<C>( p()->buff.ravenous_frenzy, p()->conduit.endless_thirst );
 
     parse_buff_effects( p()->buff.heart_of_the_wild );
