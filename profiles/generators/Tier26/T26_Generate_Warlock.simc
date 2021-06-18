@@ -30,7 +30,7 @@ save=T26_Warlock_Affliction.simc
 
 warlock="T26_Warlock_Demonology"
 level=60
-race=troll
+race=orc
 spec=demonology
 role=spell
 position=ranged_back
