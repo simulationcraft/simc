@@ -1202,6 +1202,7 @@ void brons_call_to_action( special_effect_t& effect )
 
     bron_pet_t( player_t* owner ) : pet_t( owner->sim, owner, "bron" )
     {
+      npc_id                      = 171396;
       main_hand_weapon.type       = WEAPON_BEAST;
       main_hand_weapon.swing_time = 2.0_s;
       owner_coeff.sp_from_sp      = 2.0;
