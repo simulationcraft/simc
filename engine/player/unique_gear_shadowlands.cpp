@@ -2440,6 +2440,134 @@ void vitality_sacrifice( special_effect_t& /* effect */ )
 {
 
 }
+
+// Helper function to determine whether a Rune Word is active.
+bool rune_word_active( special_effect_t& effect, spell_label label )
+{
+  unsigned equipped_shards = 0;
+  for ( const auto& item : effect.player->items )
+  {
+    // We cannot just check special effects because some of the Shard of Domination effects
+    // are simple stat bonuses and a special effect with a spell ID will not be created.
+    for ( auto gem_id : item.parsed.gem_id )
+    {
+      if ( gem_id == 0 )
+        continue;
+
+      const auto& gem = item.player->dbc->item( gem_id );
+      if ( gem.id == 0 )
+        throw std::invalid_argument( fmt::format( "No gem data for id {}.", gem_id ) );
+
+      const gem_property_data_t& gem_prop = item.player->dbc->gem_property( gem.gem_properties );
+      if ( !gem_prop.id )
+        continue;
+
+      if ( gem_prop.color != SOCKET_COLOR_SHARD_OF_DOMINATION )
+        continue;
+
+      const item_enchantment_data_t& enchant_data = item.player->dbc->item_enchantment( gem_prop.enchant_id );
+      for ( size_t i = 0; i < range::size( enchant_data.ench_prop ); i++ )
+      {
+        switch ( enchant_data.ench_type[ i ] )
+        {
+          case ITEM_ENCHANTMENT_COMBAT_SPELL:
+          case ITEM_ENCHANTMENT_EQUIP_SPELL:
+          case ITEM_ENCHANTMENT_USE_SPELL:
+          {
+            auto spell = item.player->find_spell( enchant_data.ench_prop[ i ] );
+            if ( spell->affected_by_label( label ) )
+              equipped_shards++;
+            break;
+          }
+          default:
+            break;
+        }
+      }
+    }
+  }
+
+  bool active = equipped_shards >= 3;
+  effect.player->sim->print_debug( "{}: rune word {} from item {} is {} with {}/3 shards of domination equipped",
+      effect.player->name(), effect.driver()->name_cstr(), effect.item->name(), active ? "active" : "inactive", equipped_shards );
+
+  return active;
+}
+
+/**Blood Link
+ * id=357347 equip special effect
+ * id=355761 driver and coefficient
+ * id=355767 damage
+ * id=355768 heal self
+ * id=355769 heal other
+ * id=355804 debuff
+ */
+void blood_link( special_effect_t& effect )
+{
+  if ( !rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_BLOOD ) )
+    return;
+
+  struct blood_link_damage_t : proc_spell_t
+  {
+    blood_link_damage_t( const special_effect_t& e )
+      : proc_spell_t( "blood_link", e.player, e.player->find_spell( 355767 ) )
+    {
+      base_dd_min = e.driver()->effectN( 2 ).min( e.player );
+      base_dd_max = e.driver()->effectN( 2 ).max( e.player );
+    }
+  };
+
+  // Note, this DoT does not actually do any damage. This is effectively just a debuff,
+  // except that it refreshses based on remaining time to tick like a DoT does.
+  struct blood_link_dot_t : proc_spell_t
+  {
+    player_t* last_target;
+
+    blood_link_dot_t( const special_effect_t& e )
+      : proc_spell_t( "blood_link_dot", e.player, e.player->find_spell( 355804 ) ), last_target()
+    {}
+
+    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t duration ) const override
+    {
+      return dot->time_to_next_tick() + duration;
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      if ( hit_any_target )
+      {
+        if ( last_target && last_target != target )
+          get_dot( last_target )->cancel();
+
+        last_target = target;
+      }
+    }
+  };
+
+  blood_link_dot_t* dot_action = debug_cast<blood_link_dot_t*>( create_proc_action<blood_link_dot_t>( "blood_link", effect ) );
+  effect.spell_id = 355761;
+  auto buff = buff_t::find( effect.player, "blood_link" );
+  if ( !buff )
+  {
+    auto tick_action = create_proc_action<blood_link_damage_t>( "blood_link_tick", effect );
+    buff = make_buff( effect.player, "blood_link", effect.driver() )
+             ->set_quiet( true )
+             ->set_can_cancel( false )
+             ->set_tick_callback( [ tick_action, dot_action ] ( buff_t* b, int, timespan_t )
+               {
+                  if ( dot_action->get_dot( dot_action->last_target )->is_ticking() )
+                  {
+                    tick_action->set_target( dot_action->last_target );
+                    tick_action->execute();
+                  }
+               } );
+  }
+
+  effect.execute_action = dot_action;
+  new dbc_proc_callback_t( effect.player, effect );
+  effect.player->register_combat_begin( [ buff ]( player_t* ){ buff->trigger(); } );
+}
 }  // namespace items
 
 void register_hotfixes()
@@ -2532,6 +2660,9 @@ void register_special_effects()
     unique_gear::register_special_effect( 339348, items::sephuzs_proclamation );
     unique_gear::register_special_effect( 339058, items::third_eye_of_the_jailer );
     unique_gear::register_special_effect( 338743, items::vitality_sacrifice );
+
+    // 9.1 Shards of Domination
+    unique_gear::register_special_effect( 357347, items::blood_link ); // Rune Word: Blood
 
     // Disabled effects
     unique_gear::register_special_effect( 329028, items::DISABLED_EFFECT ); // Light-Infused Armor shield
