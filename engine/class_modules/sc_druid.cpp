@@ -1826,7 +1826,7 @@ public:
   double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t& e )
   {
     // HOTFIX HACK to reflect server-side scripting
-    if ( c == p()->conduit.endless_thirst )
+    if ( !p()->dbc->ptr && c == p()->conduit.endless_thirst )
       return c.percent() / 10.0;
 
     return c.percent();
@@ -2035,8 +2035,9 @@ public:
     using S = const spell_data_t*;
     using C = const conduit_data_t&;
 
-    parse_buff_effects<C>( p()->buff.ravenous_frenzy, p()->conduit.endless_thirst );
-    parse_buff_effects<C>( p()->buff.sinful_hysteria, p()->conduit.endless_thirst );  // endless thirst interaction NYI in-game
+    if ( !p()->dbc->ptr )
+      parse_buff_effects<C>( p()->buff.ravenous_frenzy, p()->conduit.endless_thirst );
+
     parse_buff_effects( p()->buff.heart_of_the_wild );
     parse_buff_effects<C>( p()->buff.convoke_the_spirits, p()->conduit.conflux_of_elements );
 
@@ -8452,7 +8453,7 @@ void druid_t::create_buffs()
   if ( conduit.endless_thirst->ok() )
     buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
 
-  buff.sinful_hysteria = make_buff( this, "sinful_hysteria", find_spell( 355315 ) )
+  buff.sinful_hysteria = make_buff( this, "ravenous_frenzy_sinful_hysteria", find_spell( 355315 ) )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -9228,6 +9229,12 @@ double druid_t::composite_melee_crit_chance() const
 
   crit += spec.critical_strikes->effectN( 1 ).percent();
 
+  if ( dbc->ptr )
+  {
+    crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
+    crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
+  }
+
   return crit;
 }
 
@@ -9238,6 +9245,12 @@ double druid_t::composite_spell_crit_chance() const
   double crit = player_t::composite_spell_crit_chance();
 
   crit += spec.critical_strikes->effectN( 1 ).percent();
+
+  if ( dbc->ptr )
+  {
+    crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
+    crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
+  }
 
   return crit;
 }
