@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -7624,7 +7624,7 @@ Name             : Fel Rush (desc=Rank 2) (id=320416) [Spell Family (107), Passi
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
-Spell Level      : 28
+Spell Level      : 24
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7844,7 +7844,7 @@ Name             : Infernal Strike (desc=Rank 2) (id=320791) [Spell Family (107)
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
-Spell Level      : 28
+Spell Level      : 24
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
