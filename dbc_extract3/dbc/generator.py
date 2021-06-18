@@ -1289,6 +1289,8 @@ class SpellDataGenerator(DataGenerator):
          352542,
          # Tome of Monstrous Constructions
          357163, 357168, 357169,
+         # Blood Link (Shard of Domination Rune Word)
+         355761, 355767, 355768, 355769, 355804,
         ),
 
         # Warrior:
