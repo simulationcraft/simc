@@ -94,7 +94,7 @@ actions.cds+=/symbols_of_death,if=variable.snd_condition&(talent.enveloping_shad
 actions.cds+=/marked_for_death,line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)
 # If no adds will die within the next 30s, use MfD on boss without any CP.
 actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend
-actions.cds+=/shadow_blades,if=variable.snd_condition&combo_points.deficit>=2
+actions.cds+=/shadow_blades,if=variable.snd_condition&combo_points.deficit>=2&(cooldown.symbols_of_death.remains<1|buff.symbols_of_death.up|fight_remains<=20)
 actions.cds+=/echoing_reprimand,if=variable.snd_condition&combo_points.deficit>=2&(variable.use_priority_rotation|spell_targets.shuriken_storm<=4)
 # With SF, if not already done, use Tornado with SoD up.
 actions.cds+=/shuriken_tornado,if=talent.shadow_focus.enabled&variable.snd_condition&buff.symbols_of_death.up
