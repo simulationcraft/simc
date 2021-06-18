@@ -858,8 +858,8 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     }
 
     // Increases just physical damage
-    if ( p()->buff.touch_of_death->up() )
-      am *= 1 + p()->buff.touch_of_death->value();
+    if ( p()->buff.touch_of_death_mw->up() )
+      am *= 1 + p()->buff.touch_of_death_mw->value();
 
     return am;
   }
@@ -2431,7 +2431,7 @@ struct touch_of_death_t : public monk_melee_attack_t
       p()->buff.touch_of_death_ww->trigger();
 
     if ( p()->spec.touch_of_death_3_mw->ok() )
-      p()->buff.touch_of_death->trigger();
+      p()->buff.touch_of_death_mw->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -6494,9 +6494,9 @@ void monk_t::create_buffs()
       make_buff( this, "thunder_focus_tea", spec.thunder_focus_tea )
           ->modify_max_stack( (int)( talent.focused_thunder ? talent.focused_thunder->effectN( 1 ).base_value() : 0 ) );
 
-  buff.touch_of_death = make_buff( this, "touch_of_death", find_spell( 344361 ) )
-                            ->set_default_value_from_effect( 1 )
-                            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.touch_of_death_mw = make_buff( this, "touch_of_death_mw", find_spell( 344361 ) )
+                               ->set_default_value_from_effect( 1 )
+                               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.uplifting_trance = make_buff( this, "uplifting_trance", find_spell( 197916 ) )
                               ->set_chance( spec.renewing_mist->effectN( 2 ).percent() )

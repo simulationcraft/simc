@@ -213,7 +213,7 @@ public:
     buff_t* mana_tea;
     buff_t* refreshing_jade_wind;
     buff_t* teachings_of_the_monastery;
-    buff_t* touch_of_death;
+    buff_t* touch_of_death_mw;
     buff_t* thunder_focus_tea;
     buff_t* uplifting_trance;
 
