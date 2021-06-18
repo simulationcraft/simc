@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.39015
-static const std::array<spelltext_data_t, 15494> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15499> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15324,8 +15324,13 @@ static const std::array<spelltext_data_t, 15494> __ptr_spelltext_data { {
   { 355757, "|CFF20ff20Your Speed is increased by $s1|R", 0, 0 },
   { 355759, 0, "Marked by $@auracaster's Relic of the Frozen Wastes.", 0 },
   { 355760, "Unleash the Minigrue, who will destroy some nearby toys.", 0, 0 },
+  { 355761, "While inside the Maw or Torghast, damaging an enemy establishes a Blood Link.\r\n\r\nBlood Link pulses every $t1 sec, dealing $s2 Shadow damage and healing you for $s3% of damage dealt. If your Blood Link would overheal you, it instead heals a nearby ally. Limit 1.", "While inside the Maw or Torghast, damaging an enemy establishes a Blood Link.\r\n\r\nBlood Link pulses every $t1 sec, dealing $s2 Shadow damage and healing you for $s3% of damage dealt. If your Blood Link would overheal you, it instead heals a nearby ally. Limit 1.", 0 },
   { 355766, "|CFF20ff20Your helpful spells and abilities have a chance to grant your target an Unholy Aura, draining $s1 health from nearby enemies every $s2 sec for $356321d.|R", 0, 0 },
+  { 355767, "$@spelldesc355761", 0, 0 },
+  { 355768, "$@spelldesc355761", 0, 0 },
+  { 355769, "$@spelldesc355761", 0, 0 },
   { 355794, "$@spelldesc355313", "$?e2[Critical Strike]?e3[Haste]?e4[Mastery]?e5[Versatility][Highest secondary stat] increased by $w2.", 0 },
+  { 355804, "$@spelldesc355761", "Suffering $w1 Shadow damage every $t1 sec.", 0 },
   { 355886, "Sinful Brand deals $s1% increased damage and $?c1[Eye Beam][Fel Devastation] damage increases the duration of Sinful Brand by ${$s2/1000}.1 sec.", 0, 0 },
   { 355890, "The Hunt engulfs you with Immolation Aura upon reaching your target and you gain $355892s1% Agility for $355892d for each enemy hit.", 0, 0 },
   { 355892, "$@spelldesc355890", "Agility increased by $s1%.", 0 },
