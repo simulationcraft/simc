@@ -1073,22 +1073,14 @@ void brons_call_to_action( special_effect_t& effect )
       {
         parse_options( options_str );
 
-        interrupt_auto_attack  = false;
-        spell_power_mod.direct = 0.55;  // Not in spell data
-      }
-    };
-
-    struct bron_smash_damage_t : public spell_t
-    {
-      bron_smash_damage_t( pet_t* p ) : spell_t( "smash", p, p->find_spell( 341165 ) )
-      {
-        background              = true;
-        spell_power_mod.direct  = 0.25;  // Not in spell data
-        attack_power_mod.direct = 0.25;  // Not in spell data
-        aoe                     = -1;
-        radius                  = data().effectN( 1 ).radius_max();
+        interrupt_auto_attack   = false;
+        spell_power_mod.direct  = 0.55;  // Not in spell data
+        attack_power_mod.direct = 0.55;  // Not in spell data
       }
 
+      // cannon = 0.55 * max(0.5 * player's ap, 2 * player's sp)
+      // Since AP conversion is set to 0.5; and SP conversion is set to 2
+      // Just need to 1x Bron's AP, and 1x Bron's SP
       double attack_direct_power_coefficient( const action_state_t* s ) const override
       {
         auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
@@ -1104,6 +1096,43 @@ void brons_call_to_action( special_effect_t& effect )
       {
         auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
         auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+
+        if ( ap > sp )
+          return 0;
+
+        return spell_t::spell_direct_power_coefficient( s );
+      }
+    };
+
+    struct bron_smash_damage_t : public spell_t
+    {
+      bron_smash_damage_t( pet_t* p ) : spell_t( "smash", p, p->find_spell( 341165 ) )
+      {
+        background              = true;
+        spell_power_mod.direct  = 0.5;  // Not in spell data
+        attack_power_mod.direct = 0.5;  // Not in spell data
+        aoe                     = -1;
+        radius                  = data().effectN( 1 ).radius_max();
+      }
+
+      // smash = 0.5 * max(0.5 * ap, 0.5 * spp)
+      // Since AP conversion is set to 0.5; and SP conversion is set to 2
+      // Just need to 1x Bron's AP, and 0.25x Bron's SP
+      double attack_direct_power_coefficient( const action_state_t* s ) const override
+      {
+        auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+        auto sp = 0.25 * composite_spell_power() * player->composite_spell_power_multiplier();
+
+        if ( ap <= sp )
+          return 0;
+
+        return spell_t::attack_direct_power_coefficient( s );
+      }
+
+      double spell_direct_power_coefficient( const action_state_t* s ) const override
+      {
+        auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+        auto sp = 0.25 * composite_spell_power() * player->composite_spell_power_multiplier();
 
         if ( ap > sp )
           return 0;
@@ -1149,7 +1178,6 @@ void brons_call_to_action( special_effect_t& effect )
 
         school            = SCHOOL_PHYSICAL;
         weapon            = &p->main_hand_weapon;
-        weapon_multiplier = 0.25;
         base_execute_time = weapon->swing_time;
       }
     };
@@ -1205,7 +1233,7 @@ void brons_call_to_action( special_effect_t& effect )
       npc_id                      = 171396;
       main_hand_weapon.type       = WEAPON_BEAST;
       main_hand_weapon.swing_time = 2.0_s;
-      owner_coeff.sp_from_sp      = 2.0;
+      owner_coeff.sp_from_sp      = 0.5;
       owner_coeff.ap_from_ap      = 2.0;
     }
 
