@@ -1233,8 +1233,8 @@ void brons_call_to_action( special_effect_t& effect )
       npc_id                      = 171396;
       main_hand_weapon.type       = WEAPON_BEAST;
       main_hand_weapon.swing_time = 2.0_s;
-      owner_coeff.sp_from_sp      = 0.5;
-      owner_coeff.ap_from_ap      = 2.0;
+      owner_coeff.sp_from_sp      = 2.0;
+      owner_coeff.ap_from_ap      = 0.5;
     }
 
     void init_action_list() override
