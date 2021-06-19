@@ -30,30 +30,30 @@ save=T26_Warlock_Affliction.simc
 
 warlock="T26_Warlock_Demonology"
 level=60
-race=troll
+race=orc
 spec=demonology
 role=spell
 position=ranged_back
-talents=3303032
+talents=3103032
 covenant=night_fae
 soulbind=niya,grove_invigoration/borne_of_blood:7/niyas_tools_burrs
 renown=40
 
-head=confidants_favored_cap,id=183021,bonus_id=7187/1498/6935,gem_id=173128
-neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173128
-shoulders=grimveiled_spaulders,id=173247,bonus_id=6647/6649/6758/7035/1532
+head=cowl_of_the_devoted_general,id=178860,bonus_id=6536/1540/6646/6935,gem_id=173128
+neck=sin_stained_pendant,id=178827,bonus_id=6536/1540/6646/6935,gem_id=173128
+shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_stats
-wrists=grim_pursuants_maille,id=182996,bonus_id=7187/1498/6935,gem_id=173128,enchant=eternal_intellect
-hands=impossibly_oversized_mitts,id=183022,bonus_id=7187/1498
-waist=shadewarped_sash,id=183004,bonus_id=7187/1498/6935,gem_id=173128
-legs=courtiers_costume_trousers,id=183011,bonus_id=7187/1498
-feet=slippers_of_the_forgotten_heretic,id=182979,bonus_id=7187/1498
-finger1=hyperlight_band,id=183038,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=most_regal_signet_of_sire_denathrius,id=183036/6935,gem_id=173128,bonus_id=7187/1498,enchant=tenet_of_haste
-trinket1=soul_igniter,id=184019,bonus_id=7187/1498
+wrist=deathshackle_wristwraps,id=178704,bonus_id=6536/1540/6646/6935,gem_id=173128,enchant=eternal_intellect
+hands=mitts_of_flawless_duplication,id=178930,bonus_id=6536/1540/6646
+waist=sash_of_exquisite_acquisitions,id=179343,bonus_id=6536/1540/6646/6935,gem_id=173128
+legs=muehzalas_hexthread_sarong,id=179351,bonus_id=6536/1540/6646
+feet=slippers_of_leavened_station,id=178831,bonus_id=6536/1540/6646
+finger1=shadowghast_ring,id=178926,bonus_id=6648/6649/6758/7025/1532/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+trinket1=soulletting_ruby,id=178809,bonus_id=6536/1540/6646
 trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498
-main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinful_revelation
+main_hand=spire_of_the_long_dark,id=180002,bonus_id=7187/1531,enchant=celestial_guidance
 
 save=T26_Warlock_Demonology.simc
 
