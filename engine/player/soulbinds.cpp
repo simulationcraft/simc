@@ -1751,12 +1751,6 @@ void mnemonic_equipment( special_effect_t& effect )
         dbc_proc_callback_t::execute( a, s );
         auto amount = s->result_amount * dmg_repeat_pct;
 
-        // In game this has been bugged, instead of rolling the damage over it overrides it
-        // Simulating this bug by simply expiring the dot before we trigger a new one
-        if ( a->player->bugs )
-        {
-          mnemonic_residual_action->get_dot( s->target )->cancel();
-        }
         residual_action::trigger( mnemonic_residual_action, s->target, amount );
       }
     }
