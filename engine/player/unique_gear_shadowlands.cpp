@@ -2495,7 +2495,7 @@ bool rune_word_active( special_effect_t& effect, spell_label label )
 
   bool active = equipped_shards >= 3;
   effect.player->sim->print_debug( "{}: rune word {} from item {} is {} with {}/3 shards of domination equipped",
-    effect.player->name(), effect.driver()->name_cstr(), effect.item->name(), active ? "active" : "inactive", equipped_shards );
+    effect.player->name(), util::tokenize_fn( effect.driver()->name_cstr() ), effect.item->name(), active ? "active" : "inactive", equipped_shards );
 
   return active;
 }
@@ -2515,8 +2515,8 @@ void blood_link( special_effect_t& effect )
 
   struct blood_link_damage_t : proc_spell_t
   {
-    blood_link_damage_t( const special_effect_t& e )
-      : proc_spell_t( "blood_link", e.player, e.player->find_spell( 355767 ) )
+    blood_link_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "blood_link", e.player, e.player->find_spell( 355767 ) )
     {
       base_dd_min = e.driver()->effectN( 2 ).min( e.player );
       base_dd_max = e.driver()->effectN( 2 ).max( e.player );
@@ -2561,7 +2561,7 @@ void blood_link( special_effect_t& effect )
     buff = make_buff( effect.player, "blood_link", effect.driver() )
              ->set_quiet( true )
              ->set_can_cancel( false )
-             ->set_tick_callback( [ tick_action, dot_action ] ( buff_t* b, int, timespan_t )
+             ->set_tick_callback( [ tick_action, dot_action ] ( buff_t*, int, timespan_t )
                {
                   if ( dot_action->get_dot( dot_action->last_target )->is_ticking() )
                   {
@@ -2573,7 +2573,13 @@ void blood_link( special_effect_t& effect )
 
   effect.execute_action = dot_action;
   new dbc_proc_callback_t( effect.player, effect );
-  effect.player->register_combat_begin( [ buff ]( player_t* ){ buff->trigger(); } );
+  effect.player->register_combat_begin( [ buff ]( player_t* p )
+  {
+    timespan_t first_tick = p->rng().real() * buff->tick_time();
+    buff->set_period( first_tick );
+    buff->trigger();
+    buff->set_period( timespan_t::min() );
+  } );
 }
 }  // namespace items
 
