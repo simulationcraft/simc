@@ -2648,7 +2648,6 @@ void winds_of_winter( special_effect_t& effect )
   auto buff = buff_t::find( effect.player, "winds_of_winter" );
   if ( !buff )
   {
-
     buff = make_buff( effect.player, "winds_of_winter", effect.driver() )
              ->set_quiet( true )
              ->set_can_cancel( false );
@@ -2664,6 +2663,92 @@ void winds_of_winter( special_effect_t& effect )
   } );
 }
 
+/**Chaos Bane
+ * id=357349 equip special effect
+ * id=355829 driver with RPPM and buff trigger
+ * id=356042 Soul Fragment buff
+ * id=356043 Chaos Bane buff
+ * id=356046 damage
+ */
+void chaos_bane( special_effect_t& effect )
+{
+  if ( !rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_UNHOLY ) )
+    return;
+
+  struct chaos_bane_t : proc_spell_t
+  {
+    buff_t* buff;
+    chaos_bane_t( const special_effect_t& e, buff_t* b ) :
+      proc_spell_t( "chaos_bane", e.player, e.player->find_spell( 356046 ) ),
+      buff( b )
+    {
+      split_aoe_damage = true;
+    }
+
+    void execute() override
+    {
+      buff->trigger();
+
+      proc_spell_t::execute();
+    }
+  };
+
+  struct chaos_bane_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* chaos_bane;
+    cooldown_t* cd;
+
+    chaos_bane_cb_t( const special_effect_t& e, buff_t* b, cooldown_t* cd ) :
+      dbc_proc_callback_t( e.player, e ),
+      chaos_bane( b ),
+      cd( cd )
+    {}
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( chaos_bane->check() || cd->down() )
+        return;
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
+  };
+
+  // It seems that a Soul Fragment cannot trigger for 5 seconds after Chaos Bane expires.
+  // TODO: Collect more data to verify that this cooldown exists and lasts for 5 seconds.
+  cooldown_t* cd = effect.player->get_cooldown( "chaos_bane_proc_cooldown" );
+  cd->duration = 5_s;
+  auto buff = buff_t::find( effect.player, "chaos_bane" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "chaos_bane", effect.player->find_spell( 356043 ) )
+             ->set_can_cancel( false )
+             ->set_stack_change_callback( [ cd ]( buff_t* b, int, int cur )
+               { if ( cur == 0 ) cd->start(); } );
+  }
+
+  auto proc = create_proc_action<chaos_bane_t>( "chaos_bane", effect, buff );
+  effect.custom_buff = buff_t::find( effect.player, "soul_fragment" );
+  if ( !effect.custom_buff )
+  {
+    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "soul_fragment", effect.player->find_spell( 356042 ) )
+                           ->set_can_cancel( false )
+                           ->set_stack_change_callback( [ proc ]( buff_t* b, int, int cur )
+                             {
+                               if ( cur == b->max_stack() )
+                               {
+                                 proc->set_target( b->player->target );
+                                 proc->execute();
+                                 make_event( b->sim, [ b ] { b->expire(); } );
+                               }
+                             } );
+  }
+
+  // TODO: In game, this seems to be proccing much more than expected than from
+  // the 8 RPPM in the spell data. Additional data ie needed to verify the RPPM.
+  effect.spell_id = 355829;
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+  new chaos_bane_cb_t( effect, buff, cd );
+}
 }  // namespace items
 
 void register_hotfixes()
@@ -2760,6 +2845,7 @@ void register_special_effects()
     // 9.1 Shards of Domination
     unique_gear::register_special_effect( 357347, items::blood_link ); // Rune Word: Blood
     unique_gear::register_special_effect( 357348, items::winds_of_winter ); // Rune Word: Frost
+    unique_gear::register_special_effect( 357349, items::chaos_bane ); // Rune Word: Unholy
 
     // Disabled effects
     unique_gear::register_special_effect( 329028, items::DISABLED_EFFECT ); // Light-Infused Armor shield
