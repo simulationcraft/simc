@@ -216,7 +216,11 @@ struct impending_catastrophe_t : public warlock_spell_t
     {
       double m = warlock_spell_t::composite_ta_multiplier( s );
 
-      return m *= 1.0 + legendary_bonus_1 + legendary_bonus_2 * impact_count;
+      //PTR 2021-06-19 Legendary is currently multiplying these bonuses together, though the tooltip implies they should add
+      if ( p()->bugs )
+        return m *= ( 1.0 + legendary_bonus_1 ) * ( 1.0 + legendary_bonus_2 * impact_count );
+      else
+        return m *= 1.0 + legendary_bonus_1 + legendary_bonus_2 * impact_count;
     }
   };
 
