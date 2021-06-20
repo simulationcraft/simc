@@ -2978,7 +2978,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
 // Wailing Arrow =====================================================================
 
-//TODO 20/06/2021 Verify that the explosion also hits the main target
+//TODO 20/06/2021 Verify that the explosion also hits the main target and verify interactions with Wild Spirits
 struct wailing_arrow_t: public hunter_ranged_attack_t 
 {
 
@@ -3002,6 +3002,7 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
         radius = 8; 
         attack_power_mod.direct = data().effectN( 2 ).ap_coeff(); 
         dual = true;
+        triggers_wild_spirits = false;
       }
   };
 
