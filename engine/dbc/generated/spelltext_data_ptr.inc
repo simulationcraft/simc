@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.39069
-static const std::array<spelltext_data_t, 15501> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15504> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15315,7 +15315,10 @@ static const std::array<spelltext_data_t, 15501> __ptr_spelltext_data { {
   { 355596, "$@spelldesc355589", "Silenced.", 0 },
   { 355605, "$@spelldesc355333", 0, 0 },
   { 355721, "|CFF20ff20Your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R", 0, 0 },
+  { 355724, "While inside the Maw or Torghast, each time you deal a critical strike, the Winds accumulate $s2% of that effect, up to a cap of $s1 per critical strike. \r\n\r\nEvery $t3 sec, the Winds unleash, dealing Frost damage equal to the total accumulation and and surrounding you in the Winds for $355735d, absorbing $s4% of damage dealt by the Winds.", "While inside the Maw or Torghast, each time you deal a critical strike, the Winds accumulate $s2% of that effect, up to a cap of $s1 per critical strike. \r\n\r\nEvery $t3 sec, the Winds unleash, dealing Frost damage equal to the total accumulation and and surrounding you in the Winds for $355735d, absorbing $s4% of damage dealt by the Winds.", 0 },
   { 355731, "|CFF20ff20Incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R", 0, 0 },
+  { 355733, "Deals $s1 Frost Damage.", 0, 0 },
+  { 355735, "$@spelldesc355724", "Absorb $w1 damage.", 0 },
   { 355739, "|CFF20ff20Your Leech is increased by $s1.|R", 0, 0 },
   { 355741, "|CFF20ff20Your damage is increased by ${$s1/100}.2% for $356364d after attacking an enemy you have not yet damaged.|R", 0, 0 },
   { 355743, "|CFF20ff20Gain $s1 Absorb every $t1 sec, up to a cap of $s2.|R", 0, 0 },
