@@ -1178,6 +1178,7 @@ void brons_call_to_action( special_effect_t& effect )
 
         school            = SCHOOL_PHYSICAL;
         weapon            = &p->main_hand_weapon;
+        weapon_multiplier = 1.0;
         base_execute_time = weapon->swing_time;
       }
     };
