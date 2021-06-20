@@ -1198,21 +1198,15 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    switch ( p()->specialization() )
+    if ( p()->specialization() == MONK_MISTWEAVER )
     {
-      case MONK_MISTWEAVER:
+      if ( p()->buff.thunder_focus_tea->up() )
       {
-        if ( p()->buff.thunder_focus_tea->up() )
-        {
-          if ( p()->spec.thunder_focus_tea_2->ok() )
-            p()->cooldown.rising_sun_kick->adjust( p()->spec.thunder_focus_tea_2->effectN( 1 ).time_value(), true );
+        if ( p()->spec.thunder_focus_tea_2->ok() )
+          p()->cooldown.rising_sun_kick->adjust( p()->spec.thunder_focus_tea_2->effectN( 1 ).time_value(), true );
 
-          p()->buff.thunder_focus_tea->decrement();
-          break;
-        }
+        p()->buff.thunder_focus_tea->decrement();
       }
-      default:
-        break;
     }
   }
 
