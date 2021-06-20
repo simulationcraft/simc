@@ -1564,6 +1564,7 @@ class SpellDataGenerator(DataGenerator):
           ( 327164, 0 ),                                # Primordial Wave buff
           ( 336732, 0 ), ( 336733, 0 ),                 # Legendary: Elemental Equilibrium school buffs
 	  ( 336737, 0 ),                                # Runeforged Legendary: Chains of Devastation
+          ( 354648, 0 ),                                # Runeforged Legendary: Splintered Elements
         ),
 
         # Mage:
