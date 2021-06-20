@@ -49,6 +49,7 @@
 
 #include "player/azerite_data.hpp"
 #include "player/consumable.hpp"
+#include "player/covenant.hpp"
 #include "player/sample_data_helper.hpp"
 #include "player/gear_stats.hpp"
 #include "player/sc_actor_pair.hpp"
@@ -76,6 +77,7 @@
 #include "player/ground_aoe.hpp"
 #include "player/spawner_base.hpp"
 #include "player/instant_absorb.hpp"
+#include "player/runeforge_data.hpp"
 
 #include "report/reports.hpp"
 #include "report/decorators.hpp"
@@ -96,6 +98,7 @@
 #include "sim/shuffled_rng.hpp"
 #include "sim/sc_cooldown.hpp"
 #include "sim/gain.hpp"
+#include "sim/cooldown_waste_data.hpp"
 
 #include "util/generic.hpp" // Generic programming tools
 #include "util/sample_data.hpp"

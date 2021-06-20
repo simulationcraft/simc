@@ -157,9 +157,8 @@ void cooldown_t::adjust_recharge_multiplier()
 
   if ( sim.debug )
   {
-    sim.out_debug.printf( "%s dynamic cooldown %s adjusted: new_ready=%.3f old_ready=%.3f old_mul=%f new_mul=%f",
-        action -> player -> name(), name(), ready.total_seconds(), old_ready.total_seconds(),
-        old_multiplier, recharge_multiplier );
+    sim.out_debug.print( "{} dynamic cooldown {} adjusted: new_ready={} old_ready={} old_mul={} new_mul={}",
+        *(action -> player), name(), ready, old_ready, old_multiplier, recharge_multiplier );
   }
 }
 
@@ -190,9 +189,8 @@ void cooldown_t::adjust_base_duration()
 
   if ( sim.debug )
   {
-    sim.out_debug.printf( "%s dynamic cooldown %s adjusted: new_ready=%.3f old_ready=%.3f old_dur=%.3f new_dur=%.3f",
-      action->player->name(), name(), ready.total_seconds(), old_ready.total_seconds(),
-      old_duration.total_seconds(), base_duration.total_seconds() );
+    sim.out_debug.print( "{} dynamic cooldown {} adjusted: new_ready={} old_ready={} old_dur={} new_dur={}",
+      *(action->player), name(), ready, old_ready, old_duration, base_duration );
   }
 }
 
@@ -508,10 +506,10 @@ timespan_t cooldown_t::cooldown_duration( const cooldown_t* cd )
 std::unique_ptr<expr_t> cooldown_t::create_expression( util::string_view name_str )
 {
   if ( name_str == "remains" )
-    return make_mem_fn_expr( name_str, *this, &cooldown_t::remains );
+    return make_mem_fn_expr( "cooldown_remains", *this, &cooldown_t::remains );
   else if ( name_str == "base_duration" )
   {
-    return make_fn_expr( name_str, [ this ]
+    return make_fn_expr( "cooldown_base_duration", [ this ]
     {
       if ( ongoing() )
         return base_duration.total_seconds();
@@ -523,13 +521,13 @@ std::unique_ptr<expr_t> cooldown_t::create_expression( util::string_view name_st
   }
   else if ( name_str == "duration" )
   {
-    return make_fn_expr( name_str, [ this ]
+    return make_fn_expr( "cooldown_duration", [ this ]
     {
       return cooldown_duration( this );
     } );
   }
   else if ( name_str == "up" || name_str == "ready" )
-    return make_mem_fn_expr( name_str, *this, &cooldown_t::up );
+    return make_mem_fn_expr( "cooldown_up", *this, &cooldown_t::up );
   else if ( name_str == "charges" )
   {
     return make_fn_expr( name_str, [ this ]
@@ -545,10 +543,10 @@ std::unique_ptr<expr_t> cooldown_t::create_expression( util::string_view name_st
     } );
   }
   else if ( name_str == "charges_fractional" )
-    return make_mem_fn_expr( name_str, *this, &cooldown_t::charges_fractional );
+    return make_mem_fn_expr( "cooldown_charges_fractional", *this, &cooldown_t::charges_fractional );
   else if ( name_str == "recharge_time" )
   {
-    return make_fn_expr( name_str, [ this ]
+    return make_fn_expr( "cooldown_recharge_time", [ this ]
     {
       if ( charges <= 1 )
         return remains().total_seconds();
@@ -560,7 +558,7 @@ std::unique_ptr<expr_t> cooldown_t::create_expression( util::string_view name_st
   }
   else if ( name_str == "full_recharge_time" )
   {
-    return make_fn_expr( name_str, [ this ]
+    return make_fn_expr( "cooldown_full_recharge_time", [ this ]
     {
       if ( charges <= 1 )
       {
@@ -576,13 +574,13 @@ std::unique_ptr<expr_t> cooldown_t::create_expression( util::string_view name_st
     } );
   }
   else if ( name_str == "max_charges" )
-    return make_ref_expr( name_str, charges );
+    return make_ref_expr( "cooldown_max_charges", charges );
 
   // For cooldowns that can be reduced through various means, _guess and _expected will return an approximate
   // duration based on a comparison between time since last start and the current remaining cooldown
   else if ( name_str == "remains_guess" || name_str == "remains_expected" )
   {
-    return make_fn_expr( name_str, [ this ]
+    return make_fn_expr( "cooldown_remains_guess", [ this ]
     {
       if ( remains() == duration )
         return duration;
@@ -597,7 +595,7 @@ std::unique_ptr<expr_t> cooldown_t::create_expression( util::string_view name_st
 
   else if ( name_str == "duration_guess" || name_str == "duration_expected" )
   {
-    return make_fn_expr( name_str, [ this ]
+    return make_fn_expr( "cooldown_duration_guess", [ this ]
     {
       if ( last_charged == 0_ms || remains() == duration )
         return duration;
@@ -681,6 +679,94 @@ bool cooldown_t::is_ready() const
   // Cooldown is not up, and is action-bound (essentially foreground action), check if it's within
   // the player's (or default) cooldown tolerance for queueing.
   return queueable() <= sim.current_time();
+}
+
+void cooldown_t::set_max_charges( int new_max_charges )
+{
+  assert( new_max_charges > 0 && "Cooldown charges must be greater than 0" );
+
+  int charges_max = charges;
+
+  // Charges are not being changed, just end.
+  if ( charges_max == new_max_charges )
+    return;
+
+  sim.print_debug( "{} adjusts {} max charges from {} to {}", *player, *this, charges_max,
+                             new_max_charges );
+  /**
+   * If the cooldown ongoing we can assume that the action isn't a nullptr as otherwise the action would not be ongoing.
+   * If it has no action we cannot call cooldown->start which means we cannot set fractional charges.
+   * However, a cooldown is not ongoing at maximum charges. if we have maximum charges then the number of charges will
+   * only ever change equal to the change in maximum charges. This means we'll never need to use cooldown->start to
+   * handle the case where cooldown is not ongoing and cooldown->reset is satisfactory.
+   */
+  if ( !ongoing() )
+  {
+    // Change charges to new max
+    charges = new_max_charges;
+    // Call reset, which will set current charges to new max and make relevant event calls
+    reset( false, -1 );
+  }
+  else
+  {
+    action_t* cooldown_action = action;
+    double charges_fractional = this->charges_fractional();
+
+    if ( new_max_charges < charges_max )
+    {
+      /**
+       * If our new max charges is less than current max charges, we have lost maximum charges.
+       * If we have lost maximum charges, we'll also lose current charges for charges lost but we'll keep current
+       * cooldown progress.
+       **/
+      int charges_lost   = charges_max - new_max_charges;
+      charges_fractional = charges_fractional >= charges_lost ? charges_fractional - charges_lost
+                                                              : charges_fractional - floor( charges_fractional );
+    }
+    else
+    {
+      /**
+       * Otherwise, we have gained maximum charges.
+       * Gaining maximum charges will give us those charges.
+       **/
+      int charges_gained = new_max_charges - charges_max;
+      charges_fractional += charges_gained;
+    }
+
+    // Set new maximum charges then reset to stop all events.
+    charges = new_max_charges;
+    reset( false, -1 );
+
+    /**
+     * This loop is used to remove all of the charges and start the cooldown recovery event properly.
+     * It does it by repetitively calling cooldown->start which will remove a current charge and restart the event
+     * timers.
+     */
+    for ( int i = 0; i < charges; i++ )
+      start( cooldown_action );
+
+    /**
+     * Use adjust to go from 0 charges and 0 cooldown progress to the previously calculated charges we should have after
+     * changing max charges by making the cooldown advance in time by the multiple of the cooldown.
+     */
+    adjust( -charges_fractional * cooldown_t::cooldown_duration( this ) );
+  }
+
+  // If the player is queueing an action that uses this cooldown, cancel it.
+  if ( player && player->queueing && player->queueing->cooldown == this )
+  {
+    event_t::cancel( player->queueing->queue_event );
+    player->queueing = nullptr;
+    if ( !player->executing && !player->channeling && !player->readying )
+      player->schedule_ready();
+  }
+}
+
+void cooldown_t::adjust_max_charges( int charge_change )
+{
+  auto new_charges = charges + charge_change;
+  assert( new_charges > 0 && "Adjusting cooldown charges results in 0 new charges." );
+  set_max_charges( new_charges );
 }
 
 void format_to( const cooldown_t& cooldown, fmt::format_context::iterator out )

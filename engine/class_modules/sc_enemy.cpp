@@ -1105,8 +1105,9 @@ struct tank_dummy_enemy_t : public enemy_t
         Castle Nathria Normal: 2662.5 (ExpectedStatModID: 177; ArmorConstMod: 1.065)
         Castle Nathria Heroic: 2845.0 (ExpectedStatModID: 178; ArmorConstMod: 1.138)
         Castle Nathria Mythic: 3050.0‬ (ExpectedStatModID: 179; ArmorConstMod: 1.220)
-        Tazavesh M+ Dungeon: 3050 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
-        Sanctum of Domination LFR: 2662.5 (ExpectedStatModID: 177; ArmorConstMod: 1.065)
+        Level 60 M0/M+ Season 2: 2785.0 (ExpectedStatModID: 192; ArmorConstMod: 1.114)
+        Tazavesh Mega Dungeon: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
+        Sanctum of Domination LFR: 2845.0 (ExpectedStatModID: 178; ArmorConstMod: 1.138)
         Sanctum of Domination Nomral: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
         Sanctum of Domination Heroic: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
         Sanctum of Domination Mythic: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
@@ -1116,7 +1117,7 @@ struct tank_dummy_enemy_t : public enemy_t
       switch ( tank_dummy_enum )
       {
         case tank_dummy_e::DUNGEON:
-          base.armor_coeff = k_value * (dbc->ptr ? 1.220 : 0.982);  // M0/M+
+          base.armor_coeff = k_value * (dbc->ptr ? 1.114 : 0.982);  // M0/M+
           sim->print_debug( "{} Dungeon base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::RAID:
@@ -1751,33 +1752,6 @@ void enemy_t::demise()
   player_t::demise();
 }
 
-/* Report Extension Class
- * Here you can define class specific report extensions/overrides
- */
-class enemy_report_t : public player_report_extension_t
-{
-public:
-  enemy_report_t( enemy_t& player ) : p( player )
-  {
-    (void)p;
-  }
-
-  void html_customsection( report::sc_html_stream& /* os*/ ) override
-  {
-    /*// Custom Class Section
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
-        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
-
-    os << p.name();
-
-    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
-  }
-
-private:
-  enemy_t& p;
-};
-
 // ENEMY MODULE INTERFACE ===================================================
 
 struct enemy_module_t : public module_t
@@ -1788,9 +1762,7 @@ struct enemy_module_t : public module_t
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e /* r = RACE_NONE */ ) const override
   {
-    auto p              = new enemy_t( sim, name );
-    p->report_extension = std::unique_ptr<player_report_extension_t>( new enemy_report_t( *p ) );
-    return p;
+    return new enemy_t( sim, name );
   }
   bool valid() const override
   {

@@ -10,6 +10,7 @@
 #include "dbc/item_database.hpp"
 #include "dbc/spell_data.hpp"
 #include "player/expansion_effects.hpp"
+#include "player/covenant.hpp"
 #include "player/sc_player.hpp"
 #include "player/stats.hpp"
 #include "player/target_specific.hpp"
@@ -33,11 +34,9 @@ struct buff_expr_t : public expr_t
   action_t* action;
   buff_t* static_buff;
   target_specific_t<buff_t> specific_buff;
-  double default_value;
 
-  buff_expr_t( util::string_view n, util::string_view bn, action_t* a, buff_t* b, double default_ = 0 )
-    : expr_t( n ), buff_name( bn ), action( a ), static_buff( b ), specific_buff( false ),
-      default_value( default_ )
+  buff_expr_t( util::string_view n, util::string_view bn, action_t* a, buff_t* b )
+    : expr_t( get_full_expression_name( n, bn ) ), buff_name( bn ), action( a ), static_buff( b ), specific_buff( false )
   { }
 
   virtual buff_t* create() const
@@ -63,6 +62,18 @@ struct buff_expr_t : public expr_t
     return buff;
   }
 
+#if !defined( NDEBUG )
+  static std::string get_full_expression_name( util::string_view expr, util::string_view buff_name )
+  {
+    return fmt::format( "{}_{}", buff_name, expr );
+  }
+#else
+  static util::string_view get_full_expression_name( util::string_view expr, util::string_view /* buff_name */ )
+  {
+    return expr;
+  }
+#endif
+
   buff_t* buff() const
   {
     if ( static_buff )
@@ -79,7 +90,7 @@ struct buff_expr_t : public expr_t
   {
     bool constant = buff()->s_data != spell_data_t::nil() && !buff()->s_data->ok();
 
-    *v = default_value;
+    *v = evaluate();
 
     return constant;
   }
@@ -91,13 +102,42 @@ struct fn_buff_expr_t final : public buff_expr_t
   Fn fn;
 
   template <typename T = Fn>
-  fn_buff_expr_t( util::string_view n, util::string_view bn, action_t* a, buff_t* b, T&& fn, double default_ )
-    : buff_expr_t( n, bn, a, b, default_ ), fn( std::forward<T>( fn ) )
+  fn_buff_expr_t( util::string_view n, util::string_view bn, action_t* a, buff_t* b, T&& fn )
+    : buff_expr_t( n, bn, a, b ), fn( std::forward<T>( fn ) )
   { }
 
   double evaluate() override
   {
     return coerce( fn( buff() ) );
+  }
+};
+
+template <typename Fn, typename K>
+struct fn_const_buff_expr_t final : public buff_expr_t
+{
+  Fn fn;
+  K is_const_fn;
+
+  template <typename T = Fn, typename U = K>
+  fn_const_buff_expr_t( util::string_view n, util::string_view bn, action_t* a, buff_t* b, T&& fn, U&& is_const_fn )
+    : buff_expr_t( n, bn, a, b ), fn( std::forward<T>( fn ) ), is_const_fn( std::forward<U>( is_const_fn ) )
+  { }
+
+  double evaluate() override
+  {
+    return coerce( fn( buff() ) );
+  }
+  
+  bool is_constant( double* v ) override
+  {
+    bool constant = is_const_fn( buff() );
+
+    if ( constant )
+    {
+      *v = evaluate();
+    }
+
+    return constant;
   }
 };
 
@@ -307,10 +347,16 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
     return nullptr;
   }
 
-  auto make_buff_expr = [buff_name, action, static_buff]( util::string_view n, auto&& fn, double default_ = 0.0 ) {
+  auto make_buff_expr = [buff_name, action, static_buff]( util::string_view n, auto&& fn ) {
     using Fn = decltype(fn);
     return std::make_unique<fn_buff_expr_t<std::decay_t<Fn>>>(
-            n, buff_name, action, static_buff, std::forward<Fn>( fn ), default_ );
+            n, buff_name, action, static_buff, std::forward<Fn>( fn ) );
+  };  
+  auto make_const_buff_expr = [buff_name, action, static_buff]( util::string_view n, auto&& fn, auto&& is_const_fn ) {
+    using Fn = decltype(fn);
+    using Fn_const = decltype(is_const_fn);
+    return std::make_unique<fn_const_buff_expr_t<std::decay_t<Fn>, std::decay_t<Fn_const>>>(
+            n, buff_name, action, static_buff, std::forward<Fn>( fn ), std::forward<Fn_const>( is_const_fn ) );
   };
 
   if ( type == "duration" )
@@ -322,9 +368,12 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
   }
   else if ( type == "remains" )
   {
-    return make_buff_expr( "buff_remains",
+    return make_const_buff_expr( "buff_remains",
       []( buff_t* buff ) {
         return buff->remains();
+      },
+      []( buff_t* buff ) {
+        return buff->default_chance == 0;
       } );
   }
   else if ( type == "cooldown_remains" )
@@ -336,30 +385,43 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
   }
   else if ( type == "up" )
   {
-    return make_buff_expr( "buff_up",
+    return make_const_buff_expr( "buff_up",
       []( buff_t* buff ) {
         return buff->check() > 0;
+      },
+      []( buff_t* buff ) {
+        assert( buff->check() == 0 || buff->default_chance != 0);
+        return buff->default_chance == 0;
       } );
   }
   else if ( type == "down" )
   {
-    return make_buff_expr( "buff_down",
+    return make_const_buff_expr( "buff_down",
       []( buff_t* buff ) {
         return buff->check() <= 0;
-      }, 1.0 );
+      },
+      []( buff_t* buff ) {
+        return buff->default_chance == 0;
+      } );
   }
   else if ( type == "stack" )
   {
-    return make_buff_expr( "buff_stack",
+    return make_const_buff_expr( "buff_stack",
       []( buff_t* buff ) {
         return buff->check();
+      },
+      []( buff_t* buff ) {
+        return buff->default_chance == 0;
       } );
   }
   else if ( type == "stack_pct" )
   {
-    return make_buff_expr( "buff_stack_pct",
+    return make_const_buff_expr( "buff_stack_pct",
       []( buff_t* buff ) {
         return 100.0 * buff->check() / buff->max_stack();
+      },
+      []( buff_t* buff ) {
+        return buff->default_chance == 0;
       } );
   }
   else if ( type == "max_stack" )
@@ -367,20 +429,23 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
     return make_buff_expr( "buff_max_stack",
       []( buff_t* buff ) {
         return buff->max_stack();
-      }, 1.0 );
+      } );
   }
   else if ( type == "value" )
   {
     return make_buff_expr( "buff_value",
       []( buff_t* buff ) {
-        return buff->value();
+        return buff->current_value;
       } );
   }
   else if ( type == "stack_value" )
   {
-    return make_buff_expr( "buff_stack_value",
+    return make_const_buff_expr( "buff_stack_value",
       []( buff_t* buff ) {
         return buff->stack_value();
+      },
+      []( buff_t* buff ) {
+        return buff->default_chance == 0;
       } );
   }
   else if ( type == "react" )
@@ -402,6 +467,18 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
 
       double evaluate() override
       { return buff()->stack_react(); }
+      
+      bool is_constant( double* v ) override
+      {
+        bool constant = buff()->default_chance == 0;
+
+        if ( constant )
+        {
+          *v = evaluate();
+        }
+
+        return constant;
+      }
     };
 
     return std::make_unique<react_expr_t>( buff_name, action, static_buff );
@@ -426,6 +503,18 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
 
       double evaluate() override
       { return 100.0 * buff()->stack_react() / buff()->max_stack(); }
+      
+      bool is_constant( double* v ) override
+      {
+        bool constant = buff()->default_chance == 0;
+
+        if ( constant )
+        {
+          *v = evaluate();
+        }
+
+        return constant;
+      }
     };
 
     return std::make_unique<react_pct_expr_t>( buff_name, action, static_buff );
@@ -441,16 +530,22 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
   }
   else if ( type == "last_trigger" )
   {
-    return make_buff_expr( "buff_last_trigger",
+    return make_const_buff_expr( "buff_last_trigger",
       []( buff_t* buff ) {
         return buff->last_trigger_time();
+      },
+      []( buff_t* buff ) {
+        return buff->default_chance == 0;
       } );
   }
   else if ( type == "last_expire" )
   {
-    return make_buff_expr( "buff_last_expire",
+    return make_const_buff_expr( "buff_last_expire",
       []( buff_t* buff ) {
         return buff->last_expire_time();
+      },
+      []( buff_t* buff ) {
+        return buff->default_chance == 0;
       } );
   }
 
@@ -504,7 +599,6 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     activated( true ),
     reactable( false ),
     reverse(),
-    constant_behavior( buff_constant_behavior::DEFAULT ),
     constant(),
     quiet(),
     overridden(),
@@ -517,6 +611,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     buff_duration_multiplier( 1.0 ),
     default_chance( 1.0 ),
     manual_chance( -1.0 ),
+    constant_behavior( buff_constant_behavior::DEFAULT ),
     current_tick( 0 ),
     buff_period( timespan_t::min() ),
     tick_time_behavior( buff_tick_time_behavior::UNHASTED ),
@@ -1924,7 +2019,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
 
   if ( value == DEFAULT_VALUE() )
     value = default_value;
-
+  
 #ifndef NDEBUG
   if ( stack_behavior != buff_stack_behavior::ASYNCHRONOUS && current_stack != 0 )
   {
@@ -2107,6 +2202,8 @@ void buff_t::bump( int stacks, double value )
 {
   if ( _max_stack == 0 )
     return;
+
+  assert( default_chance != 0 && "Buff started with default chance being zero.");
 
   if ( value == DEFAULT_VALUE() )
     value = default_value;
@@ -2533,7 +2630,7 @@ static buff_t* find_potion_buff( util::span<buff_t* const> buffs, player_t* sour
       continue;
     }
 
-    const auto& item = dbc::find_consumable( ITEM_SUBCLASS_POTION, maybe_ptr( b->player->dbc->ptr ),
+    const auto& item = dbc::find_consumable( ITEM_SUBCLASS_POTION, b->player->is_ptr(),
                                              potion_spell_filter{ b->data().id(), *b->player->dbc } );
     if ( item.id != 0 )
     {

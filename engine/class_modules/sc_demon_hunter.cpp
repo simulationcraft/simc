@@ -2365,7 +2365,7 @@ struct collective_anguish_t : public demon_hunter_spell_t
       : demon_hunter_spell_t( name, p, s )
     {
       // TOCHECK: Currently does not use split damage on beta but probably will at some point
-      background = dual = true;
+      dual = true;
       aoe = -1;
     }
 
@@ -2382,13 +2382,13 @@ struct collective_anguish_t : public demon_hunter_spell_t
   collective_anguish_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
     : demon_hunter_spell_t( name, p, s )
   {
-    may_miss = false;
-    background = dual = hasted_ticks = tick_on_application = true;
+    may_miss = channeled = false;
+    dual = true;
 
     if( p->specialization() == DEMON_HUNTER_HAVOC )
       tick_action = p->get_background_action<collective_anguish_tick_t>( "collective_anguish_tick", data().effectN( 1 ).trigger() );
     else // Trigger data not set up correctly for Vengeance
-      tick_action = p->get_background_action<collective_anguish_tick_t>( "collective_anguish_tick", p->find_spell( 333389 ) );
+      tick_action = p->get_background_action<collective_anguish_tick_t>( "collective_anguish_tick", p->find_spell( 346505 ) );
   }
 
   // Behaves as a channeled spell, although we can't set channeled = true since it is background
@@ -5399,7 +5399,7 @@ void demon_hunter_t::init_spells()
 
   if ( legendary.collective_anguish.ok() )
   {
-    const spell_data_t* driver = ( specialization() == DEMON_HUNTER_HAVOC ) ? find_spell( 333105 ) : find_spell( 333386 );
+    const spell_data_t* driver = ( specialization() == DEMON_HUNTER_HAVOC ) ? find_spell( 346502 ) : find_spell( 346504 );
     active.collective_anguish = get_background_action<collective_anguish_t>( "collective_anguish", driver );
   }
 

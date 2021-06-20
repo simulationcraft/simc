@@ -351,6 +351,11 @@ public:
     spell_data_ptr_t latent_poison_injectors;
     spell_data_ptr_t rylakstalkers_strikes;
     spell_data_ptr_t wildfire_cluster;
+    // Covenant
+    spell_data_ptr_t elder_antlers;
+    spell_data_ptr_t pouch_of_razor_fragments;
+    spell_data_ptr_t pact_of_the_soulstalkers;
+    spell_data_ptr_t bag_of_munitions; //NYI
   } legendary;
 
   // Buffs
@@ -395,6 +400,7 @@ public:
     buff_t* flamewakers_cobra_sting;
     buff_t* nesingwarys_apparatus;
     buff_t* secrets_of_the_vigil;
+    buff_t* pact_of_the_soulstalkers;
 
     // Conduits
     buff_t* brutal_projectiles;
@@ -422,6 +428,7 @@ public:
     cooldown_t* kill_shot;
     cooldown_t* rapid_fire;
     cooldown_t* trueshot;
+    cooldown_t* wailing_arrow;
     cooldown_t* wildfire_bomb;
   } cooldowns;
 
@@ -533,6 +540,9 @@ public:
     spell_data_ptr_t kill_command;
     spell_data_ptr_t kill_shot;
 
+    //Sylvanas bow
+    spell_data_ptr_t wailing_arrow;
+
     // Beast Mastery
     spell_data_ptr_t aspect_of_the_wild;
     spell_data_ptr_t barbed_shot;
@@ -569,6 +579,7 @@ public:
   struct {
     action_t* master_marksman = nullptr;
     action_t* wild_spirits = nullptr;
+    action_t* razor_fragments = nullptr;
     // Semi-random actions, needed *ONLY* for properly attributing focus gains
     action_t* aspect_of_the_wild = nullptr;
     action_t* barbed_shot = nullptr;
@@ -610,6 +621,7 @@ public:
     cooldowns.rapid_fire          = get_cooldown( "rapid_fire" );
     cooldowns.trueshot            = get_cooldown( "trueshot" );
     cooldowns.wildfire_bomb       = get_cooldown( "wildfire_bomb" );
+    cooldowns.wailing_arrow       = get_cooldown( "wailing_arrow" );
 
     base_gcd = 1.5_s;
 
@@ -645,7 +657,7 @@ public:
   double    composite_player_target_crit_chance( player_t* target ) const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
-  double    composite_player_pet_damage_multiplier( const action_state_t* ) const override;
+  double    composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
   double    composite_leech() const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    passive_movement_modifier() const override;
@@ -848,7 +860,7 @@ public:
     ab::impact( s );
 
     if ( triggers_wild_spirits )
-      p() -> trigger_wild_spirits( s );
+      p()->trigger_wild_spirits( s );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1028,6 +1040,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 {
   bool breaks_steady_focus = true;
   maybe_bool triggers_master_marksman;
+  maybe_bool trigger_razor_fragments;
 
   hunter_ranged_attack_t( util::string_view n, hunter_t* p,
                           const spell_data_t* s = spell_data_t::nil() ):
@@ -2297,6 +2310,20 @@ void hunter_t::trigger_wild_spirits( const action_state_t* s )
 
   actions.wild_spirits -> set_target( s -> target );
   actions.wild_spirits -> execute();
+
+  if ( !legendary.elder_antlers.ok() ) 
+    return;
+  
+  if ( actions.wild_spirits -> num_targets_hit < legendary.elder_antlers -> effectN( 2 ).base_value() && rng().roll( legendary.elder_antlers -> effectN( 1 ).percent() ) )
+  {
+    if ( sim->debug )
+    {
+      sim->print_debug( "Elder Antlers procs _wild_spirits from {} on {}",
+                        s -> action -> name(), s -> target -> name() );
+    }
+    actions.wild_spirits -> execute();
+  }
+
 }
 
 void hunter_t::trigger_birds_of_prey( player_t* t )
@@ -2644,7 +2671,12 @@ struct resonating_arrow_t : hunter_spell_t
     {
       hunter_spell_t::execute();
 
-      p() -> buffs.resonating_arrow -> trigger();
+      p()->buffs.resonating_arrow->trigger();
+      if ( p()->legendary.pact_of_the_soulstalkers.ok() )
+      {
+        p()->buffs.pact_of_the_soulstalkers->trigger();
+      }
+
     }
   };
 
@@ -2847,7 +2879,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
   }
 };
 
-// Kill Shot ! =======================================================================
+// Kill Shot =========================================================================
 
 struct kill_shot_t : hunter_ranged_attack_t
 {
@@ -2865,6 +2897,13 @@ struct kill_shot_t : hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     p() -> buffs.flayers_mark -> up(); // benefit tracking
+    if ( p()->legendary.pouch_of_razor_fragments.ok() && p()->buffs.flayers_mark->up() )
+    {
+      trigger_razor_fragments = true; // Schedule Razor Fragments Dot
+    }
+    else
+      trigger_razor_fragments = false;
+
     p() -> buffs.flayers_mark -> decrement();
     p() -> buffs.empowered_release -> decrement();
   }
@@ -2872,6 +2911,15 @@ struct kill_shot_t : hunter_ranged_attack_t
   void impact( action_state_t* s ) override
   {
     hunter_ranged_attack_t::impact( s );
+    if ( trigger_razor_fragments )
+    {
+      double amount = s->result_amount * p()->legendary.pouch_of_razor_fragments->effectN( 1 ).percent(); // TODO: Implement AoE
+      if ( amount > 0 )
+      {
+        residual_action::trigger( p()->actions.razor_fragments, s->target, amount );
+        sim->print_debug( "Razor Fragments applied DOT for {} total damage ", amount );
+      }
+    }
 
     if ( result_is_hit( s -> result ) )
       p() -> buffs.dead_eye -> trigger();
@@ -2927,6 +2975,63 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     p() -> buffs.precise_shots -> decrement();
   }
 };
+
+// Wailing Arrow =====================================================================
+
+//TODO 20/06/2021 Verify that the explosion also hits the main target and verify interactions with Wild Spirits
+struct wailing_arrow_t: public hunter_ranged_attack_t 
+{
+
+  struct damage_main_t final : public hunter_ranged_attack_t 
+  {
+    damage_main_t( util::string_view n, hunter_t* p ): 
+      hunter_ranged_attack_t( n, p, p -> find_spell( 354831 ) )
+    {
+      aoe = 0;
+      attack_power_mod.direct = data().effectN( 1 ).ap_coeff(); 
+      dual = true;
+    }
+  };
+
+  struct damage_explosion_t final : public hunter_ranged_attack_t 
+  {
+    damage_explosion_t( util::string_view n, hunter_t* p ): 
+      hunter_ranged_attack_t( n, p, p -> find_spell( 354831 ) )
+      {
+        aoe = -1;
+        radius = 8; 
+        attack_power_mod.direct = data().effectN( 2 ).ap_coeff(); 
+        dual = true;
+        triggers_wild_spirits = false;
+      }
+  };
+
+  damage_main_t* damage_main = nullptr;
+  damage_explosion_t* damage_aoe = nullptr;
+
+  wailing_arrow_t( hunter_t* p, util::string_view options_str ): 
+    hunter_ranged_attack_t( "wailing_arrow", p, p -> specs.wailing_arrow )
+    {      
+      parse_options( options_str );
+      
+      damage_main = p -> get_background_action<damage_main_t>( "wailing_arrow_main" ); 
+      damage_aoe = p -> get_background_action<damage_explosion_t>( "wailing_arrow_aoe" ); 
+      add_child( damage_main ); 
+      add_child( damage_aoe ); 
+    }
+
+    void execute() override
+    {
+      hunter_ranged_attack_t::execute(); 
+
+      damage_main -> set_target( target ); 
+      damage_main -> execute();
+      damage_aoe -> set_target( target ); 
+      damage_aoe -> execute();
+    }
+};
+
+
 
 //==============================
 // Beast Mastery attacks
@@ -4290,6 +4395,25 @@ struct chakrams_t : public hunter_ranged_attack_t
   }
 };
 
+struct razor_fragments_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
+{
+  razor_fragments_t( hunter_t* p ) : residual_periodic_action_t( "razor_fragments", p, p->find_spell( 356620 ) )
+  {
+    aoe    = as<int>(p -> find_spell(356620) -> max_targets());
+    radius = 8; // TODO: Test Radius
+    triggers_wild_spirits = false;
+    may_miss = may_crit = false;
+  }
+
+  void init() override
+  {
+    residual_periodic_action_t::init();
+
+    snapshot_flags |= STATE_TGT_MUL_TA;
+    update_flags |= STATE_TGT_MUL_TA;
+  }
+};
+
 } // end attacks
 
 // ==========================================================================
@@ -5503,6 +5627,7 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "tar_trap"              ) return new               tar_trap_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
   if ( name == "volley"                ) return new                 volley_t( this, options_str );
+  if ( name == "wailing_arrow"         ) return new          wailing_arrow_t( this, options_str );
   if ( name == "wild_spirits"          ) return new           wild_spirits_t( this, options_str );
   if ( name == "wildfire_bomb"         ) return new          wildfire_bomb_t( this, options_str );
 
@@ -5668,6 +5793,9 @@ void hunter_t::init_spells()
   specs.kill_command         = find_class_spell( "Kill Command" );
   specs.kill_shot            = find_class_spell( "Kill Shot" );
 
+  //Rae'shalare, Death's Whisper spell
+  specs.wailing_arrow        = find_item_by_name( "raeshalare_deaths_whisper" ) ? find_spell( 355589 ) : spell_data_t::not_found(); 
+
   // Beast Mastery
   specs.aspect_of_the_wild   = find_specialization_spell( "Aspect of the Wild" );
   specs.barbed_shot          = find_specialization_spell( "Barbed Shot" );
@@ -5744,6 +5872,11 @@ void hunter_t::init_spells()
   legendary.latent_poison_injectors  = find_runeforge_legendary( "Latent Poison Injectors" );
   legendary.rylakstalkers_strikes    = find_runeforge_legendary( "Rylakstalker's Confounding Strikes" );
   legendary.wildfire_cluster         = find_runeforge_legendary( "Wildfire Cluster" );
+
+  legendary.elder_antlers            = find_runeforge_legendary( "Fragments of the Elder Antlers" );
+  legendary.bag_of_munitions         = find_runeforge_legendary( "Bag of Munitions" );
+  legendary.pact_of_the_soulstalkers = find_runeforge_legendary( "Pact of the Soulstalkers" );
+  legendary.pouch_of_razor_fragments = find_runeforge_legendary( "Pouch of Razor Fragments" );
 }
 
 // hunter_t::init_base ======================================================
@@ -5782,6 +5915,8 @@ void hunter_t::create_actions()
 
   if ( talents.master_marksman.ok() )
     actions.master_marksman = new attacks::master_marksman_t( this );
+  if ( legendary.pouch_of_razor_fragments.ok() )
+    actions.razor_fragments = new attacks::razor_fragments_t( this );
 }
 
 void hunter_t::create_buffs()
@@ -6011,10 +6146,10 @@ void hunter_t::create_buffs()
       -> set_activated( true );
 
   buffs.wild_spirits =
-      make_buff( this, "wild_spirits", covenants.wild_spirits -> effectN( 1 ).trigger() )
-        -> set_default_value( find_spell( 328275 ) -> effectN( 2 ).percent() )
-        -> set_activated( true )
-        -> apply_affecting_conduit( conduits.spirit_attunement );
+    make_buff( this, "wild_spirits", covenants.wild_spirits -> effectN( 1 ).trigger() )
+      -> set_default_value( find_spell( 328275 ) -> effectN( 2 ).percent() )
+      -> set_activated( true )
+      -> apply_affecting_conduit( conduits.spirit_attunement );
 
   // Legendaries
 
@@ -6042,6 +6177,12 @@ void hunter_t::create_buffs()
     make_buff( this, "secrets_of_the_unblinking_vigil", legendary.secrets_of_the_vigil -> effectN( 1 ).trigger() )
       -> set_default_value_from_effect( 1 )
       -> set_trigger_spell( legendary.secrets_of_the_vigil );
+
+  buffs.pact_of_the_soulstalkers =
+    make_buff( this, "pact_of_the_soulstalkers", find_spell( 356263 ) )
+      -> set_default_value_from_effect( 1 )
+      -> set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+      -> set_trigger_spell( legendary.pact_of_the_soulstalkers );
 }
 
 // hunter_t::init_gains =====================================================
@@ -6318,9 +6459,9 @@ double hunter_t::composite_player_target_multiplier( player_t* target, school_e 
 
 // hunter_t::composite_player_pet_damage_multiplier ======================
 
-double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s ) const
+double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
-  double m = player_t::composite_player_pet_damage_multiplier( s );
+  double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
   m *= 1 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
   m *= 1 + specs.survival_hunter -> effectN( 3 ).percent();
@@ -6580,8 +6721,12 @@ struct hunter_module_t: public module_t
   {
   }
 
-  void init( player_t* ) const override
+  void init( player_t* p ) const override
   {
+    p -> buffs.pact_of_the_soulstalkers =
+      make_buff( p, "pact_of_the_soulstalkers_external", p -> find_spell( 356263 ) )
+        -> set_default_value_from_effect( 1 )
+        -> set_pct_buff_type( STAT_PCT_BUFF_CRIT );
   }
 
   void register_hotfixes() const override

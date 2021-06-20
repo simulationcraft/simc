@@ -9,6 +9,7 @@
 #include "action/variable.hpp"
 #include "player/sc_player.hpp"
 #include "sim/sc_sim.hpp"
+#include "util/util.hpp"
 
 #include <limits>
 
@@ -29,24 +30,36 @@ bool action_variable_t::is_constant( double* constant_value ) const
 void action_variable_t::optimize()
 {
   player_t* player = variable_actions.front()->player;
-  if ( !player->sim->optimize_expressions )
+  auto iteration = player->sim->current_iteration;
+  if ( iteration < 0 )
+  {
+    return;
+  }
+  if ( player->sim->optimize_expressions - 1 - iteration < 0 )
   {
     return;
   }
 
-  if ( player->nth_iteration() != 1 )
+  // Do nothing if the variable is already constant
+  if (constant_value_ != std::numeric_limits<double>::lowest())
   {
     return;
   }
 
-  bool is_constant = true;
   for ( auto action : variable_actions )
   {
     variable_t* var_action = debug_cast<variable_t*>( action );
 
     var_action->optimize_expressions();
+  }
 
-    is_constant = var_action->is_constant();
+  bool is_constant = true;
+  double const_value;
+  for ( auto action : variable_actions )
+  {
+    variable_t* var_action = debug_cast<variable_t*>( action );
+
+    is_constant = var_action->is_constant(&const_value);
     if ( !is_constant )
     {
       break;

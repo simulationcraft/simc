@@ -133,6 +133,7 @@ report/reports.hpp
 report/sc_highchart.hpp
 sc_enums.hpp
 sim/benefit.hpp
+sim/cooldown_waste_data.hpp
 sim/event.hpp
 sim/event_manager.hpp
 sim/gain.hpp
@@ -153,6 +154,7 @@ sim/shuffled_rng.hpp
 sim/sim_control.hpp
 sim/sim_ostream.hpp
 sim/uptime.hpp
+sim/work_queue.hpp
 simulationcraft.hpp
 util/allocator.hpp
 util/cache.hpp
@@ -306,6 +308,7 @@ report/sc_highchart.cpp
 report/sc_report_html_player.cpp
 report/sc_report_html_sim.cpp
 report/sc_report_text.cpp
+sim/cooldown_waste_data.cpp
 sim/event_manager.cpp
 sim/proc.cpp
 sim/real_ppm.cpp

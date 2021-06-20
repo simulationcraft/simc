@@ -139,6 +139,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\report\sc_highchart.hpp" />
 		<ClInclude Include="..\engine\sc_enums.hpp" />
 		<ClInclude Include="..\engine\sim\benefit.hpp" />
+		<ClInclude Include="..\engine\sim\cooldown_waste_data.hpp" />
 		<ClInclude Include="..\engine\sim\event.hpp" />
 		<ClInclude Include="..\engine\sim\event_manager.hpp" />
 		<ClInclude Include="..\engine\sim\gain.hpp" />
@@ -159,6 +160,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\sim\sim_control.hpp" />
 		<ClInclude Include="..\engine\sim\sim_ostream.hpp" />
 		<ClInclude Include="..\engine\sim\uptime.hpp" />
+		<ClInclude Include="..\engine\sim\work_queue.hpp" />
 		<ClInclude Include="..\engine\simulationcraft.hpp" />
 		<ClInclude Include="..\engine\util\allocator.hpp" />
 		<ClInclude Include="..\engine\util\cache.hpp" />
@@ -312,6 +314,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\report\sc_report_html_player.cpp" />
 		<ClCompile Include="..\engine\report\sc_report_html_sim.cpp" />
 		<ClCompile Include="..\engine\report\sc_report_text.cpp" />
+		<ClCompile Include="..\engine\sim\cooldown_waste_data.cpp" />
 		<ClCompile Include="..\engine\sim\event_manager.cpp" />
 		<ClCompile Include="..\engine\sim\proc.cpp" />
 		<ClCompile Include="..\engine\sim\real_ppm.cpp" />

@@ -1826,12 +1826,8 @@ public:
   double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t& e )
   {
     // HOTFIX HACK to reflect server-side scripting
-    if ( c == p()->conduit.endless_thirst )
+    if ( !p()->dbc->ptr && c == p()->conduit.endless_thirst )
       return c.percent() / 10.0;
-
-    // HOTFIX HACK to reflect bug where conflux of elements rank only applies to direct damage and not to dots
-    if ( p()->bugs && c == p()->conduit.conflux_of_elements && e.id() == 841848 )
-      return e.percent();
 
     return c.percent();
   }
@@ -1854,9 +1850,9 @@ public:
       {
         double pct = mod_spell_effects_percent( mod, eff );
 
-        if ( eff.subtype() == A_ADD_FLAT_MODIFIER )
+        if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
           val += pct;
-        else if ( eff.subtype() == A_ADD_PCT_MODIFIER )
+        else if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
           val *= 1.0 + pct;
         else if ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE )
           val = pct;
@@ -2039,8 +2035,14 @@ public:
     using S = const spell_data_t*;
     using C = const conduit_data_t&;
 
-    parse_buff_effects<C>( p()->buff.ravenous_frenzy, p()->conduit.endless_thirst );
-    parse_buff_effects<C>( p()->buff.sinful_hysteria, p()->conduit.endless_thirst );  // endless thirst interaction NYI in-game
+    if ( p()->dbc->ptr )
+    {
+      parse_buff_effects( p()->buff.ravenous_frenzy );
+      parse_buff_effects( p()->buff.sinful_hysteria );
+    }
+    else
+      parse_buff_effects<C>( p()->buff.ravenous_frenzy, p()->conduit.endless_thirst );
+
     parse_buff_effects( p()->buff.heart_of_the_wild );
     parse_buff_effects<C>( p()->buff.convoke_the_spirits, p()->conduit.conflux_of_elements );
 
@@ -4194,7 +4196,7 @@ struct tigers_fury_t : public cat_attack_t
 
     p()->buff.tigers_fury->trigger( duration );
 
-    if ( p()->legendary.eye_of_fearful_symmetry->ok() )
+    if ( !free_cast && p()->legendary.eye_of_fearful_symmetry->ok() )
       p()->buff.eye_of_fearful_symmetry->trigger();
   }
 };
@@ -6288,8 +6290,8 @@ struct starsurge_t : public druid_spell_t
     auto apl = player->precombat_action_list;
 
     // emulate performing check_form_restriction()
-    auto it = range::find_if( apl, []( action_t* a ) { return util::str_compare_ci( a->name(), "moonkin_form" ); } );
-    if ( it == apl.end() )
+    // TODO: Try to avoid string comparison during combat
+    if ( !range::any_of( apl, []( action_t* a ) { return util::str_compare_ci( a->name(), "moonkin_form" ); } ) )
       return false;
 
     // emulate performing resource_available( current_resource(), cost() )
@@ -8213,11 +8215,13 @@ void druid_t::create_buffs()
   // Default value is ONLY used for APL expression, so set via base_value() and not percent()
   buff.balance_of_all_things_arcane = make_buff( this, "balance_of_all_things_arcane", find_spell( 339946 ) )
     ->set_default_value_from_effect( 1, 1.0 )
-    ->set_reverse( true );
+    ->set_reverse( true )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION);
 
   buff.balance_of_all_things_nature = make_buff( this, "balance_of_all_things_nature", find_spell( 339943 ) )
     ->set_default_value_from_effect( 1, 1.0 )
-    ->set_reverse( true );
+    ->set_reverse( true )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buff.celestial_alignment =
       make_buff<celestial_alignment_buff_t>( *this, "celestial_alignment", spec.celestial_alignment );
@@ -8454,7 +8458,7 @@ void druid_t::create_buffs()
   if ( conduit.endless_thirst->ok() )
     buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
 
-  buff.sinful_hysteria = make_buff( this, "sinful_hysteria", find_spell( 355315 ) )
+  buff.sinful_hysteria = make_buff( this, "ravenous_frenzy_sinful_hysteria", find_spell( 355315 ) )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -9230,6 +9234,12 @@ double druid_t::composite_melee_crit_chance() const
 
   crit += spec.critical_strikes->effectN( 1 ).percent();
 
+  if ( dbc->ptr )
+  {
+    crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
+    crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
+  }
+
   return crit;
 }
 
@@ -9240,6 +9250,12 @@ double druid_t::composite_spell_crit_chance() const
   double crit = player_t::composite_spell_crit_chance();
 
   crit += spec.critical_strikes->effectN( 1 ).percent();
+
+  if ( dbc->ptr )
+  {
+    crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
+    crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
+  }
 
   return crit;
 }
@@ -10079,7 +10095,7 @@ const spell_data_t* druid_t::find_affinity_spell( const std::string& name ) cons
   }
 
   spec_spell =
-      find_spell( dbc->specialization_ability_id( get_affinity_spec(), util::inverse_tokenize( name ).c_str() ) );
+      find_spell( dbc->specialization_ability_id( get_affinity_spec(), util::inverse_tokenize( name ) ) );
 
   if ( spec_spell->found() )
     return spec_spell;

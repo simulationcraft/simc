@@ -87,7 +87,7 @@ public:
   int ticks_left() const { return as<int>( std::ceil( ticks_left_fractional() ) ); }
   double ticks_left_fractional() const;
   int num_ticks() const;
-  const char* name() const { return name_str.c_str(); }
+  const std::string& name() const { return name_str; }
   bool is_ticking() const { return ticking; }
   timespan_t get_extra_time() const { return extra_time; }
   double get_tick_factor() const;

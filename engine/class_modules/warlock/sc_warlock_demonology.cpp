@@ -72,9 +72,9 @@ public:
 
     auto td = this->td( t );
 
-    if (td->debuffs_from_the_shadows->check() && data().affected_by( td->debuffs_from_the_shadows->data().effectN( 1 ) ) )
+    if ( td->debuffs_from_the_shadows->check() && data().affected_by( td->debuffs_from_the_shadows->data().effectN( 1 ) ) )
     {
-      m *= 1.0 + td->debuffs_from_the_shadows->data().effectN(1).percent();
+      m *= 1.0 + td->debuffs_from_the_shadows->check_value();
     }
 
     return m;
@@ -291,6 +291,9 @@ struct demonbolt_t : public demonology_spell_t
       p()->buffs.demonic_calling->trigger();
 
     p()->buffs.decimating_bolt->decrement();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+      p()->buffs.shard_of_annihilation->decrement();
   }
 
   double action_multiplier() const override
@@ -310,6 +313,29 @@ struct demonbolt_t : public demonology_spell_t
     m *= 1.0 + p()->buffs.balespiders_burning_core->check_stack_value();
 
     m *= 1 + p()->buffs.decimating_bolt->check_value();
+
+    return m;
+  }
+
+  double composite_crit_chance_multiplier() const override
+  {
+    double m = demonology_spell_t::composite_crit_chance_multiplier();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+    {
+      //PTR 2021-06-19: "Critical Strike chance increased by 100%" appears to be guaranteeing crits
+      m += p()->buffs.shard_of_annihilation->data().effectN( 5 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = demonology_spell_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+      m += p()->buffs.shard_of_annihilation->data().effectN( 6 ).percent();
 
     return m;
   }
@@ -438,8 +464,6 @@ struct implosion_t : public demonology_spell_t
   {
     parse_options( options_str );
     add_child( explosion );
-    // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
-    travel_speed = 65;
   }
 
   bool ready() override
@@ -455,12 +479,13 @@ struct implosion_t : public demonology_spell_t
 
   void execute() override
   {
-    demonology_spell_t::execute();
-
     p()->buffs.implosive_potential->expire();
     p()->buffs.implosive_potential_small->expire();
 
     auto imps_consumed = p()->warlock_pet_list.wild_imps.n_active_pets();
+
+    // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
+    timespan_t imp_travel_time = this->calc_imp_travel_time(65);
 
     int launch_counter = 0;
     for ( auto imp : p()->warlock_pet_list.wild_imps )
@@ -478,7 +503,7 @@ struct implosion_t : public demonology_spell_t
         // 2020-12-04: Implosion may have been made quicker in Shadowlands, too fast to easily discern with combat log
         // Going to set the interval to 10 ms, which should keep all but the most extreme imp counts from bleeding into the next GCD
         // TODO: There's an awkward possibility of Implosion seeming "ready" after casting it if all the imps have not imploded yet. Find a workaround
-        make_event( sim, 10_ms * launch_counter + this->travel_time(), [ ex, tar, imp ] {
+        make_event( sim, 10_ms * launch_counter + imp_travel_time, [ ex, tar, imp ] {
           if ( imp && !imp->is_sleeping() )
           {
             ex->casts_left = ( imp->resources.current[ RESOURCE_ENERGY ] / 20 );
@@ -496,6 +521,32 @@ struct implosion_t : public demonology_spell_t
       p()->buffs.implosive_potential->trigger( imps_consumed );
     else if ( p()->legendary.implosive_potential.ok() )
       p()->buffs.implosive_potential_small->trigger( imps_consumed );
+
+    demonology_spell_t::execute();
+  }
+
+  // A shortened version of action_t::travel_time() for use in calculating the time until the imp is dismissed.
+  // Note that imps explode at the bottom of the target, so no height component is accounted for.
+  timespan_t calc_imp_travel_time( double speed )
+  {
+    double t = 0;
+
+    if ( speed > 0 )
+    {
+      double distance = player->get_player_distance( *target );
+
+      if ( distance > 0 )
+        t += distance / speed;
+    }
+
+    double v = sim->travel_variance;
+
+    if ( v )
+      t = rng().gauss( t, v );
+
+    t = std::max( t, min_travel_time );
+
+    return timespan_t::from_seconds( t );
   }
 };
 

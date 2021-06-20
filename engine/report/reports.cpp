@@ -41,7 +41,7 @@ void print_profiles(sim_t* sim)
       io::cfile file(p->report_information.save_gear_str, "w");
       if (!file)
       {
-        sim->errorf("Unable to save gear profile %s for player %s\n", p->report_information.save_gear_str.c_str(),
+        sim->error("Unable to save gear profile {} for player {}s\n", p->report_information.save_gear_str,
           p->name());
       }
       else
@@ -87,7 +87,7 @@ void print_profiles(sim_t* sim)
     {
       file_name = sim->save_prefix_str;
       file_name += p->name_str;
-      if (sim->save_talent_str != 0)
+      if (sim->save_talent_str)
       {
         file_name += "_";
         file_name += p->primary_tree_name();
@@ -148,7 +148,7 @@ void print_profiles(sim_t* sim)
             p->name(), p->primary_tree_name(), util::role_type_string(p->primary_role()),
             sim->save_prefix_str.c_str(), p->name());
 
-          if (sim->save_talent_str != 0)
+          if (sim->save_talent_str)
             fprintf(file, "-%s", p->primary_tree_name());
 
           fprintf(file, "%s.simc\n\n", sim->save_suffix_str.c_str());

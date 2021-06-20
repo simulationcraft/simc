@@ -436,6 +436,7 @@ enum item_socket_color
   SOCKET_COLOR_RED_PUNCHCARD        = 131072,
   SOCKET_COLOR_YELLOW_PUNCHCARD     = 262144,
   SOCKET_COLOR_BLUE_PUNCHCARD       = 524288,
+  SOCKET_COLOR_SHARD_OF_DOMINATION  = 1048576,
   SOCKET_COLOR_MAX,
   SOCKET_COLOR_RELIC                = SOCKET_COLOR_IRON | SOCKET_COLOR_BLOOD  | SOCKET_COLOR_SHADOW |
                                       SOCKET_COLOR_FEL  | SOCKET_COLOR_ARCANE | SOCKET_COLOR_FROST |
@@ -1185,8 +1186,8 @@ enum effect_subtype_t : unsigned {
     A_377 = 377,
     A_378 = 378,
     A_MOD_MANA_REGEN_PCT = 379,
-    A_380 = 380,
-    A_381 = 381,
+    A_MOD_DAMAGE_FROM_CASTER_GUARDIAN = 380,
+    A_MOD_DAMAGE_FROM_CASTER_PET = 381,
     A_382 = 382,
     A_IGNORE_SPELL_COOLDOWN = 383,
     A_385 = 385,
@@ -1265,6 +1266,7 @@ enum spell_attribute : unsigned
   SX_NO_STEALTH_BREAK         = 37u,
   SX_CHANNELED_2              = 38u,
   SX_MELEE_COMBAT_START       = 41u,
+  SX_NO_THREAT                = 42u,
   SX_DONT_DISPLAY_IN_AURA_BAR = 60u,
   SX_CANNOT_CRIT              = 93u,
   SX_FOOD_AURA                = 95u,
@@ -1284,6 +1286,15 @@ enum spell_attribute : unsigned
   SX_DURATION_HASTED          = 273u,
   SX_FIXED_TRAVEL_TIME        = 292u,
   SX_SCALE_ILEVEL             = 354u,
+};
+
+
+enum spell_label : unsigned
+{
+  LABEL_COVENANT                   = 976u,
+  LABEL_SHARD_OF_DOMINATION_BLOOD  = 1305u,
+  LABEL_SHARD_OF_DOMINATION_FROST  = 1306u,
+  LABEL_SHARD_OF_DOMINATION_UNHOLY = 1307u,
 };
 
 #endif

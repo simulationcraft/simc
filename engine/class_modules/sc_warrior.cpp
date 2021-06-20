@@ -146,6 +146,7 @@ public:
     buff_t* conquerors_banner;
     buff_t* conquerors_frenzy;
     buff_t* conquerors_mastery;
+    buff_t* elysian_might;
     // Conduits
     buff_t* ashen_juggernaut;
     buff_t* merciless_bonegrinder;
@@ -485,6 +486,7 @@ public:
     item_runeforge_t seismic_reverberation;
     item_runeforge_t signet_of_tormented_kings;
     // Covenant
+    item_runeforge_t elysian_might;
     item_runeforge_t glory;
     item_runeforge_t natures_fury;
     item_runeforge_t sinful_surge;
@@ -1737,7 +1739,7 @@ struct mortal_strike_t : public warrior_attack_t
 
   double cost() const override
   {
-    if ( p()->buff.battlelord->check() )
+    if ( ( !from_mortal_combo ) && p()->buff.battlelord->check() )
     {
         return 15;
     }
@@ -1791,7 +1793,10 @@ struct mortal_strike_t : public warrior_attack_t
       }
     }
     p()->buff.deadly_calm->decrement();
-    p()->buff.battlelord->expire();
+      if ( !from_mortal_combo )
+      {
+        p()->buff.battlelord->expire();
+      }
     p()->buff.overpower->expire();
     p()->buff.executioners_precision->expire();
 
@@ -4350,7 +4355,7 @@ struct shield_slam_t : public warrior_attack_t
   {
     double da = warrior_attack_t::bonus_da( state );
 
-    da += p() -> buff.brace_for_impact -> stack() * p()->azerite.brace_for_impact.value(2);
+    da += p() -> buff.brace_for_impact -> check() * p()->azerite.brace_for_impact.value(2);
 
     return da;
   }
@@ -5371,9 +5376,14 @@ struct spear_of_bastion_attack_t : public warrior_attack_t
   spear_of_bastion_attack_t( warrior_t* p ) : warrior_attack_t( "spear_of_bastion_attack", p, p->find_spell( 307871 ) )
   {
     background = tick_may_crit = true;
-    hasted_ticks               = false;
+    hasted_ticks               = true;
     aoe        = -1;
     dual       = true;
+//dot_duration += timespan_t::from_millis( p -> find_spell( 357996 ) -> effectN( 1 ).base_value() );
+    if ( p->legendary.elysian_might->ok() )
+    {
+      dot_duration += timespan_t::from_millis( p -> find_spell( 357996 ) -> effectN( 1 ).base_value() );
+    }
   }
 };
 
@@ -5395,6 +5405,16 @@ struct spear_of_bastion_t : public warrior_attack_t
       }
     energize_type     = action_energize::ON_CAST;
     energize_resource = RESOURCE_RAGE;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    if ( p()->legendary.elysian_might->ok() )
+      {
+        p()->buff.elysian_might->trigger();
+      }
   }
 };
 
@@ -6411,6 +6431,7 @@ void warrior_t::init_spells()
   active.charge           = nullptr;
 
   // Runeforged Legendary Items
+  legendary.elysian_might             = find_runeforge_legendary( "Elysian Might" );
   legendary.glory                     = find_runeforge_legendary( "Glory" );
   legendary.leaper                    = find_runeforge_legendary( "Leaper" );
   legendary.misshapen_mirror          = find_runeforge_legendary( "Misshapen Mirror" );
@@ -7415,6 +7436,9 @@ void warrior_t::create_buffs()
 
   buff.conquerors_mastery = make_buff<stat_buff_t>( this, "conquerors_mastery", find_spell( 325862 ) );
 
+  buff.elysian_might = make_buff( this, "elysian_might", find_spell( 311193 ) )
+                        ->set_default_value( find_spell( 311193 )->effectN( 1 ).percent() );
+
   // Conduits===============================================================================================================
 
   buff.ashen_juggernaut = make_buff( this, "ashen_juggernaut", conduit.ashen_juggernaut->effectN( 1 ).trigger() )
@@ -7992,9 +8016,9 @@ double warrior_t::composite_block_reduction( action_state_t* s ) const
 {
   double br = player_t::composite_block_reduction( s );
 
-  if ( buff.brace_for_impact -> up() )
+  if ( buff.brace_for_impact -> check() )
   {
-    br += buff.brace_for_impact -> stack_value();
+    br += buff.brace_for_impact -> check_stack_value();
   }
 
   if ( azerite.iron_fortress.enabled() )
@@ -8108,6 +8132,8 @@ double warrior_t::composite_melee_crit_rating() const
 double warrior_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
 {
   double cdm = player_t::composite_player_critical_damage_multiplier( s );
+
+  cdm *= 1.0 + buff.elysian_might->check_value();
 
   return cdm;
 }

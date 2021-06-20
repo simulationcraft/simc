@@ -13,7 +13,7 @@
 
 #include "util/timespan.hpp"
 #include "sc_enums.hpp"
-#include "dbc/dbc.hpp"
+#include "dbc/data_enums.hh"
 #include "player/sc_actor_pair.hpp"
 #include "util/sample_data.hpp"
 #include "util/span.hpp"
@@ -25,6 +25,7 @@
 struct buff_t;
 class conduit_data_t;
 struct stat_buff_t;
+struct spelleffect_data_t;
 struct absorb_buff_t;
 struct cost_reduction_buff_t;
 struct actor_pair_t;
@@ -396,7 +397,7 @@ struct stat_buff_t : public buff_t
 
   stat_buff_t* add_stat( stat_e s, double a, const std::function<bool(const stat_buff_t&)>& c = std::function<bool(const stat_buff_t&)>() );
 
-  stat_buff_t(actor_pair_t q, util::string_view name);
+  stat_buff_t( actor_pair_t q, util::string_view name );
   stat_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const item_t* item = nullptr );
 };
 

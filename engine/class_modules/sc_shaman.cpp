@@ -387,6 +387,10 @@ public:
     buff_t* primordial_wave;
     buff_t* vesper_totem;
 
+    //Covenant Legendaries
+    buff_t* splintered_elemental_rod;
+    buff_t* seeds_of_rampant_growth;
+
     // Legendaries
     buff_t* chains_of_devastation_chain_heal;
     buff_t* chains_of_devastation_chain_lightning;
@@ -494,7 +498,7 @@ public:
     conduit_data_t essential_extraction;  // Night Fae
     conduit_data_t lavish_harvest;        // Venthyr
     conduit_data_t tumbling_waves;        // Necrolord
-    conduit_data_t elysian_dirge;
+    conduit_data_t elysian_dirge;         // Kyrian
 
     // Elemental
     conduit_data_t call_of_flame;
@@ -517,6 +521,12 @@ public:
     item_runeforge_t chains_of_devastation;
     item_runeforge_t deeptremor_stone;
     item_runeforge_t deeply_rooted_elements;
+
+    //Covenant
+    item_runeforge_t splintered_elements;
+    item_runeforge_t seeds_of_rampant_growth;
+    item_runeforge_t elemental_conduit;
+    item_runeforge_t raging_vesper_vortex;
 
     // Elemental
     item_runeforge_t skybreakers_fiery_demise;
@@ -691,6 +701,7 @@ public:
     const spell_data_t* feral_spirit;
     const spell_data_t* fire_elemental;
     const spell_data_t* storm_elemental;
+    const spell_data_t* splintered_elemental_rod;
     const spell_data_t* flametongue_weapon;
     const spell_data_t* maelstrom;
     const spell_data_t* windfury_weapon;
@@ -839,7 +850,7 @@ public:
   double composite_spell_power_multiplier() const override;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
-  double composite_player_pet_damage_multiplier( const action_state_t* state ) const override;
+  double composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const override;
   double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const;
   double matching_gear_multiplier( attribute_e attr ) const override;
   action_t* create_action( util::string_view name, const std::string& options ) override;
@@ -1638,7 +1649,7 @@ public:
     }
 
     return std::min(
-          as<unsigned>( p()->buff.maelstrom_weapon->stack() ),
+          as<unsigned>( p()->buff.maelstrom_weapon->check() ),
           p()->spell.maelstrom_weapon->max_stacks() );
   }
 
@@ -1712,6 +1723,7 @@ public:
     }
 
     auto stacks = maelstrom_weapon_stacks();
+    auto cast_time = execute_time();
     if ( stacks && consume_maelstrom_weapon() )
     {
       p()->buff.maelstrom_weapon->decrement( stacks );
@@ -1737,9 +1749,8 @@ public:
       trigger_echoing_shock( execute_state->target );
     }
 
-    // Apparently spells that benefit from Maelstrom Weapon always
-    // reset the main-hand swing timers. Presume this is a bug for now.
-    if ( affected_by_maelstrom_weapon && p()->bugs )
+    // Main hand swing timer resets if the MW-affected spell is not instant cast
+    if ( affected_by_maelstrom_weapon && cast_time > 0_ms )
     {
       if ( p()->main_hand_attack && p()->main_hand_attack->execute_event )
       {
@@ -4761,6 +4772,11 @@ struct lava_burst_t : public shaman_spell_t
       p()->action.lava_burst_pw->set_target( execute_state->target );
       if ( !p()->action.lava_burst_pw->target_list().empty() )
       {
+        if ( p() ->legendary.splintered_elements->ok())
+        {
+          auto count_duplicates = p()->action.lava_burst_pw->target_list().size();
+          p()->buff.splintered_elemental_rod->trigger( 1, count_duplicates * p()->spell.splintered_elemental_rod->effectN(1).percent() );
+        }
         p()->action.lava_burst_pw->schedule_execute();
       }
     }
@@ -4966,6 +4982,12 @@ struct lightning_bolt_t : public shaman_spell_t
       p()->action.lightning_bolt_pw->set_target( target );
       if ( !p()->action.lightning_bolt_pw->target_list().empty() )
       {
+        if ( p()->legendary.splintered_elements->ok() )
+        {
+          auto count_duplicates = p()->action.lightning_bolt_pw->target_list().size();
+          p()->buff.splintered_elemental_rod->trigger(
+              1, count_duplicates * p()->spell.splintered_elemental_rod->effectN( 1 ).percent() );
+        }
         p()->action.lightning_bolt_pw->execute();
       }
       p()->buff.primordial_wave->expire();
@@ -6178,6 +6200,19 @@ struct windfury_totem_t : public shaman_spell_t
     if ( !sim->overrides.windfury_totem || p()->legendary.doom_winds.ok() )
     {
       wft_buff->set_duration( data().duration() );
+
+      // Need to also create the effect since the core sim won't do it when
+      // sim->overrides.windfury_totem is not set
+      if ( !sim->overrides.windfury_totem )
+      {
+        special_effect_t effect( player );
+
+        unique_gear::initialize_special_effect( effect, 327942 );
+        if ( !effect.custom_init_object.empty() )
+        {
+          player->special_effects.push_back( new special_effect_t( effect ) );
+        }
+      }
     }
 
     // Set the proc-chance of the Windfury Totem buff unconditionally to 1.0 so it will
@@ -6601,8 +6636,11 @@ struct thundercharge_t : public shaman_spell_t
 
 struct fae_transfusion_tick_t : public shaman_spell_t
 {
+  const spell_data_t* seeds_effect;
+
   fae_transfusion_tick_t( const std::string& n, shaman_t* player )
-    : shaman_spell_t( n, player, player->find_spell( 328928 ) )
+    : shaman_spell_t( n, player, player->find_spell( 328928 ) ), 
+      seeds_effect( player->find_spell( 356218 ) )
   {
     affected_by_master_of_the_elements = true;
 
@@ -6621,6 +6659,25 @@ struct fae_transfusion_tick_t : public shaman_spell_t
   result_amount_type amount_type( const action_state_t*, bool ) const override
   {
     return result_amount_type::DMG_DIRECT;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+    if ( p()->legendary.seeds_of_rampant_growth->ok() )
+    {
+      if ( p()->specialization() == SHAMAN_ELEMENTAL )
+      {
+        p()->cooldown.fire_elemental->adjust( -1.0 * seeds_effect->effectN( 2 ).time_value() );
+        p()->cooldown.storm_elemental->adjust( -1.0 * seeds_effect->effectN( 2 ).time_value() );
+      }
+      if ( p()->specialization() == SHAMAN_ENHANCEMENT )
+      {
+        p()->cooldown.feral_spirits->adjust( -1.0 * seeds_effect->effectN( 3 ).time_value() );
+      }
+      // shared effect
+      p()->buff.seeds_of_rampant_growth->increment();
+    }
   }
 };
 
@@ -6719,9 +6776,10 @@ struct primordial_wave_t : public shaman_spell_t
 struct chain_harvest_t : public shaman_spell_t
 {
   int critical_hits = 0;
-
+  flame_shock_t* fs;
   chain_harvest_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "chain_harvest", player, player->covenant.venthyr )
+    shaman_spell_t( "chain_harvest", player, player->covenant.venthyr ),
+      fs(new flame_shock_t(player, ""))
   {
     parse_options( options_str );
     aoe = 5;
@@ -6730,6 +6788,9 @@ struct chain_harvest_t : public shaman_spell_t
     base_multiplier *= 1.0 + player->spec.elemental_shaman->effectN( 7 ).percent();
 
     base_crit += p()->conduit.lavish_harvest.percent();
+    fs->background = true;
+    fs->cooldown   = player->get_cooldown( "flame_shock_chain_harvest" );
+    fs->base_costs[ RESOURCE_MANA ] = 0;
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -6740,6 +6801,16 @@ struct chain_harvest_t : public shaman_spell_t
     }
 
     shaman_spell_t::schedule_travel( s );
+  }
+
+  void impact(action_state_t* s ) override
+  {
+    shaman_spell_t::impact( s );
+    if ( p()->legendary.elemental_conduit->ok() )
+    {
+      fs->set_target( s->target );
+      fs->execute();
+    }
   }
 
   void update_ready( timespan_t ) override
@@ -6774,6 +6845,16 @@ struct chain_harvest_t : public shaman_spell_t
 // ==========================================================================
 // Vesper Totem - Kyrian Covenant
 // ==========================================================================
+
+struct raging_vesper_vortex_t : public shaman_spell_t
+{
+  raging_vesper_vortex_t( shaman_t* player )
+    : shaman_spell_t( "raging_vesper_vortex", player, player->find_spell( 356790 ) )
+  {
+    aoe        = -1;
+    ground_aoe = background = true;
+  }
+};
 
 struct vesper_totem_damage_t : public shaman_spell_t
 {
@@ -6849,13 +6930,16 @@ struct vesper_totem_damage_t : public shaman_spell_t
 struct vesper_totem_t : public shaman_spell_t
 {
   vesper_totem_damage_t* damage;
+  raging_vesper_vortex_t* legendary_damage;
 
   vesper_totem_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "vesper_totem", player, player->covenant.kyrian ),
-    damage( new vesper_totem_damage_t( player ) )
+    damage( new vesper_totem_damage_t( player ) ),
+    legendary_damage( new raging_vesper_vortex_t(player) )
   {
     parse_options( options_str );
     add_child( damage );
+    add_child( legendary_damage );
   }
 
   void execute() override
@@ -6883,6 +6967,10 @@ struct vesper_totem_t : public shaman_spell_t
                   break;
                 case ground_aoe_params_t::state_type::EVENT_STOPPED:
                   this->p()->buff.vesper_totem->expire();
+                  if ( this->p()->legendary.raging_vesper_vortex->ok() )
+                  {
+                    legendary_damage->execute();
+                  }
                   break;
                 default:
                   break;
@@ -7485,6 +7573,7 @@ void shaman_t::copy_from( player_t* source )
 
   shaman_t* p  = debug_cast<shaman_t*>( source );
   raptor_glyph = p->raptor_glyph;
+  options.rotation = p->options.rotation;
 }
 
 // shaman_t::init_spells ====================================================
@@ -7620,6 +7709,12 @@ void shaman_t::init_spells()
   legendary.deeptremor_stone       = find_runeforge_legendary( "Deeptremor Stone" );
   legendary.deeply_rooted_elements = find_runeforge_legendary( "Deeply Rooted Elements" );
 
+  // Covenant Legendaries
+  legendary.splintered_elements = find_runeforge_legendary( "Splintered Elements" );
+  legendary.raging_vesper_vortex = find_runeforge_legendary( "Raging Vesper Vortex" );
+  legendary.seeds_of_rampant_growth = find_runeforge_legendary( "Seeds of Rampant Growth" );
+  legendary.elemental_conduit      = find_runeforge_legendary( "Elemental Conduit" );
+
   // Elemental Legendaries
   legendary.skybreakers_fiery_demise     = find_runeforge_legendary( "Skybreaker's Fiery Demise" );
   legendary.elemental_equilibrium        = find_runeforge_legendary( "Elemental Equilibrium" );
@@ -7643,7 +7738,8 @@ void shaman_t::init_spells()
   spell.storm_elemental    = find_spell( 157299 );
   spell.flametongue_weapon = find_spell( 318038 );
   spell.maelstrom          = find_spell( 343725 );
-  spell.windfury_weapon    = find_spell( 319773 );
+  spell.windfury_weapon          = find_spell( 319773 );
+  spell.splintered_elemental_rod = find_spell( 333339 );
 
   player_t::init_spells();
 }
@@ -8292,6 +8388,19 @@ void shaman_t::create_buffs()
                               event_t::cancel( vesper_totem );
                             }
                           } );
+  // Covenant Legendaries
+  if ( legendary.splintered_elements->ok() )
+  {
+    buff.splintered_elemental_rod = make_buff( this, "splintered_elemental_rod", find_spell( 333340 ) )
+                                   ->set_default_value_from_effect_type( A_HASTE_ALL )
+                                   ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  }
+  if ( legendary.seeds_of_rampant_growth->ok() )
+  {
+    buff.seeds_of_rampant_growth = make_buff( this, "seeds_of_rampant_growth", find_spell( 358945 ) )
+                                    ->set_default_value_from_effect_type(A_MOD_ALL_CRIT_CHANCE)
+                                    ->set_pct_buff_type(STAT_PCT_BUFF_CRIT);
+  }
 
   //
   // Elemental
@@ -8335,7 +8444,8 @@ void shaman_t::create_buffs()
                        ->set_default_value( find_spell( 263806 )->effectN( 1 ).percent() );
 
   buff.echoes_of_great_sundering = make_buff( this, "echoes_of_great_sundering", find_spell( 336217 ) )
-                                       ->set_default_value( find_spell( 336217 )->effectN( 2 ).percent() );
+                                       ->set_default_value( find_spell( 336217 )->effectN( 2 ).percent() )
+                                       ->set_trigger_spell( legendary.echoes_of_great_sundering );
 
   buff.chains_of_devastation_chain_heal = make_buff( this, "chains_of_devastation_chain_heal", find_spell( 336737 ) );
   buff.chains_of_devastation_chain_lightning =
@@ -8653,20 +8763,21 @@ void shaman_t::init_action_list_elemental()
   action_priority_list_t* precombat     = get_action_priority_list( "precombat" );
   action_priority_list_t* def           = get_action_priority_list( "default" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
-  precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled" );
-  precombat->add_talent( this, "Stormkeeper",
-                         "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
-                         "Use Stormkeeper precombat unless some adds will spawn soon." );
-  precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
-  precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
 
-  precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  precombat->add_action( "potion" );
 
   if ( options.rotation == ROTATION_STANDARD ) {
+    precombat->add_action( "flask" );
+    precombat->add_action( "food" );
+    precombat->add_action( "augmentation" );
+    precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled" );
+    precombat->add_talent( this, "Stormkeeper",
+							"if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
+							"Use Stormkeeper precombat unless some adds will spawn soon." );
+    precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
+    precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
+	
+    precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+    precombat->add_action( "potion" );
     action_priority_list_t* single_target = get_action_priority_list( "single_target" );
     action_priority_list_t* aoe           = get_action_priority_list( "aoe" );
     action_priority_list_t* se_single_target = get_action_priority_list( "se_single_target" );
@@ -8841,6 +8952,19 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
     single_target->add_action( this, "Frost Shock", "moving=1" );
   } else if (options.rotation == ROTATION_SIMPLE) {
+    precombat->add_action( "flask" );
+    precombat->add_action( "food" );
+    precombat->add_action( "augmentation" );
+    precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled" );
+    precombat->add_talent( this, "Stormkeeper",
+							"if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
+							"Use Stormkeeper precombat unless some adds will spawn soon." );
+    precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
+    precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
+	
+    precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+    precombat->add_action( "potion" );
+	
     action_priority_list_t* single_target = get_action_priority_list( "single_target" );
     action_priority_list_t* aoe           = get_action_priority_list( "aoe" );
 
@@ -8975,18 +9099,14 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action( this, "Earthquake",
                      "if=spell_targets.chain_lightning>=2&!runeforge.echoes_of_great_sundering.equipped&(talent.master_"
                      "of_the_elements.enabled&maelstrom>=50&!buff.master_of_the_elements.up)" );
-    aoe->add_action( this, "Lava Burst", "target_if=dot.flame_shock.remains",
-                     "if=buff.lava_surge.up&buff.primordial_wave.up" );
-    aoe->add_action( this, "Lava Burst", "target_if=dot.flame_shock.remains",
-                     "if=spell_targets.chain_lightning<4&runeforge.skybreakers_fiery_demise.equipped&buff.lava_surge."
+    aoe->add_action( this, "Lava Burst", "target_if=dot.flame_shock.remains,if=buff.lava_surge.up&buff.primordial_wave.up" );
+    aoe->add_action( this, "Lava Burst", "target_if=dot.flame_shock.remains,if=spell_targets.chain_lightning<4&runeforge.skybreakers_fiery_demise.equipped&buff.lava_surge."
                      "up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&maelstrom>=50" );
-    aoe->add_action( this, "Lava Burst", "target_if=dot.flame_shock.remains",
-                     "if=(spell_targets.chain_lightning<4&runeforge.skybreakers_fiery_demise.equipped&talent.master_of_"
+    aoe->add_action( this, "Lava Burst", "target_if=dot.flame_shock.remains,if=(spell_targets.chain_lightning<4&runeforge.skybreakers_fiery_demise.equipped&talent.master_of_"
                      "the_elements.enabled)|(talent.master_of_the_elements.enabled&maelstrom>=50&!buff.master_of_the_"
                      "elements.up&(!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_sundering.up)&!"
                      "runeforge.skybreakers_fiery_demise.equipped)" );
-    aoe->add_action( this, "Lava Burst", "target_if=dot.flame_shock.remains",
-                     "if=spell_targets.chain_lightning=4&runeforge.skybreakers_fiery_demise.equipped&buff.lava_surge."
+    aoe->add_action( this, "Lava Burst", "target_if=dot.flame_shock.remains,if=spell_targets.chain_lightning=4&runeforge.skybreakers_fiery_demise.equipped&buff.lava_surge."
                      "up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&maelstrom>=50" );
     aoe->add_action( this, "Earthquake", "if=spell_targets.chain_lightning>=2" );
     aoe->add_action( this, "Chain Lightning", "if=buff.stormkeeper.remains<3*gcd*buff.stormkeeper.stack" );
@@ -9025,6 +9145,9 @@ void shaman_t::init_action_list_elemental()
                                "if=talent.echoing_shock.enabled&cooldown.lava_burst.remains<=gcd" );
     single_target->add_action( this, "Lava Burst", "if=talent.echoing_shock.enabled&buff.echoing_shock.up" );
     single_target->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
+    single_target->add_action(
+        this, "Earthquake",
+        "if=buff.echoes_of_great_sundering.up&talent.master_of_the_elements.enabled&buff.master_of_the_elements.up");
     single_target->add_action( this, "Lightning Bolt",
                                "if=buff.stormkeeper.up&buff.master_of_the_elements.up&maelstrom<60" );
     single_target->add_action(
@@ -9617,9 +9740,9 @@ double shaman_t::composite_player_target_multiplier( player_t* target, school_e 
 
 // shaman_t::composite_player_pet_damage_multiplier =========================
 
-double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s ) const
+double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
-  double m = player_t::composite_player_pet_damage_multiplier( s );
+  double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
   // Elemental
   m *= 1.0 + spec.elemental_shaman->effectN( 3 ).percent();

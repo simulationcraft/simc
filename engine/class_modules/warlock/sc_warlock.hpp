@@ -8,6 +8,16 @@ namespace warlock
 {
 struct warlock_t;
 
+//Used for version checking in code (e.g. PTR vs Live)
+enum version_check_e
+{
+  VERSION_PTR,
+  VERSION_9_1_0,
+  VERSION_9_0_5,
+  VERSION_9_0_0,
+  VERSION_ANY
+};
+
 template <typename Action, typename Actor, typename... Args>
 action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
 {
@@ -38,7 +48,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_vile_taint;
 
   propagate_const<buff_t*> debuffs_haunt;
-  propagate_const<buff_t*> debuffs_shadow_embrace; //TODO: 9.1 PTR - Modify SE behavior (see UA)
+  propagate_const<buff_t*> debuffs_shadow_embrace; //9.1 PTR - Same behavior as 9.0 but enabled by talent
 
   // Destro
   propagate_const<dot_t*> dots_immolate;
@@ -70,6 +80,8 @@ struct warlock_td_t : public actor_target_data_t
   }
 
   void target_demise();
+
+  int count_affliction_dots();
 };
 
 struct warlock_t : public player_t
@@ -169,7 +181,8 @@ public:
     const spell_data_t* vile_taint;
 
     // tier 45
-    const spell_data_t* dark_caller;
+    const spell_data_t* shadow_embrace; //9.1 PTR - Replaces Dark Caller
+    const spell_data_t* dark_caller; //9.1 PTR - Removed as talent
     const spell_data_t* haunt;
     // grimoire of sacrifice
 
@@ -213,7 +226,7 @@ public:
     // tier 25
     const spell_data_t* reverse_entropy; //Note: talent spell (not the buff spell) contains RPPM data
     const spell_data_t* internal_combustion;
-    const spell_data_t* shadowburn; //TODO: Replace instances of hardcoding
+    const spell_data_t* shadowburn;
 
     // tier 35
     const spell_data_t* inferno; //TODO: Confirm interaction between Inferno and Rank 2 Rain of Fire, as well as if soul shard generation is per-target hit
@@ -253,6 +266,11 @@ public:
     item_runeforge_t embers_of_the_diabolic_raiment;
     item_runeforge_t madness_of_the_azjaqir;
     item_runeforge_t odr_shawl_of_the_ymirjar;
+    // Covenant
+    item_runeforge_t languishing_soul_detritus;
+    item_runeforge_t shard_of_annihilation;
+    item_runeforge_t decaying_soul_satchel;
+    item_runeforge_t contained_perpetual_explosion;
   } legendary;
 
   struct conduit_t
@@ -264,10 +282,11 @@ public:
     conduit_data_t fatal_decimation;      // Necrolord
     conduit_data_t soul_tithe;            // Kyrian
     // Affliction
-    conduit_data_t cold_embrace;
+    conduit_data_t cold_embrace; //9.1 PTR - Removed
     conduit_data_t corrupting_leer;
     conduit_data_t focused_malignancy;
     conduit_data_t rolling_agony;
+    conduit_data_t withering_bolt; //9.1 PTR - New, replaces Cold Embrace
     // Demonology
     conduit_data_t borne_of_blood;
     conduit_data_t carnivorous_stalkers;
@@ -307,6 +326,7 @@ public:
     propagate_const<cooldown_t*> demonic_tyrant;
     propagate_const<cooldown_t*> scouring_tithe;
     propagate_const<cooldown_t*> infernal;
+    propagate_const<cooldown_t*> shadowburn;
   } cooldowns;
 
   //TODO: this struct is supposedly for passives per the comment here, but that is potentially outdated. Consider refactoring and reorganizing ALL of this.
@@ -316,6 +336,7 @@ public:
   {
     // All Specs
     const spell_data_t* nethermancy; //The probably actual spell controlling armor type bonus. NOTE: Level req is missing, this matches in game behavior.
+    const spell_data_t* demonic_embrace; //Warlock stamina passive
     //TODO: Corruption is now class-wide
     //TODO: Ritual of Doom?
 
@@ -329,6 +350,7 @@ public:
     const spell_data_t* unstable_affliction;  //This is the primary active ability
     const spell_data_t* unstable_affliction_2; //Rank 2 passive (soul shard on death)
     const spell_data_t* unstable_affliction_3; //Rank 3 passive (increased duration)
+    const spell_data_t* dark_caller; //9.1 PTR - Now a passive learned at level 58
 
     // Demonology only
     const spell_data_t* demonology; //Spec aura
@@ -398,6 +420,10 @@ public:
     propagate_const<buff_t*> implosive_potential_small;
     propagate_const<buff_t*> dread_calling;
     propagate_const<buff_t*> demonic_synergy;
+    propagate_const<buff_t*> languishing_soul_detritus;
+    propagate_const<buff_t*> shard_of_annihilation;
+    propagate_const<buff_t*> decaying_soul_satchel_haste; //These are one unified buff in-game but splitting them in simc to make it easier to apply stat pcts
+    propagate_const<buff_t*> decaying_soul_satchel_crit;
   } buffs;
 
   //TODO: Determine if any gains are not currently being tracked
@@ -461,6 +487,7 @@ public:
   int initial_soul_shards;
   std::string default_pet;
   shuffled_rng_t* rain_of_chaos_rng;
+  const spell_data_t* version_9_1_0_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 
@@ -482,6 +509,7 @@ public:
   int imps_spawned_during( timespan_t period );
   void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
   void malignancy_reduction_helper();
+  bool min_version_check( version_check_e version ) const;
   action_t* create_action( util::string_view name, const std::string& options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = "" ) override;
   void create_pets() override;
@@ -499,7 +527,8 @@ public:
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
-  double composite_player_pet_damage_multiplier( const action_state_t* ) const override;
+  double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
+  double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
   double composite_rating_multiplier( rating_e rating ) const override;
   void invalidate_cache( cache_e ) override;
   double composite_spell_crit_chance() const override;
@@ -508,6 +537,7 @@ public:
   double composite_melee_crit_chance() const override;
   double composite_mastery() const override;
   double resource_regen_per_second( resource_e ) const override;
+  double composite_attribute_multiplier( attribute_e attr ) const override;
   void combat_begin() override;
   void init_assessors() override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
@@ -1036,4 +1066,6 @@ protected:
   }
 };
 }  // namespace buffs
+
+
 }  // namespace warlock

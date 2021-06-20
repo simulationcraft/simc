@@ -103,7 +103,7 @@ public:
   void reset();
   void analyze();
   void merge( const stats_t& other );
-  const char* name() const { return name_str.c_str(); }
+  const std::string& name() const { return name_str; }
 
   bool has_direct_amount_results() const;
   bool has_tick_amount_results() const;

@@ -235,7 +235,7 @@ public:
   }
 
   constexpr operator view_type() const {
-    return view_type(*this);
+    return view_type(*static_cast<const base*>(this));
   }
 };
 
@@ -281,7 +281,7 @@ public:
   }
 
   constexpr operator view_type() const {
-    return view_type(*this);
+    return view_type(*static_cast<const base*>(this));
   }
 };
 

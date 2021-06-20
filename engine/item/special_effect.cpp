@@ -9,7 +9,6 @@
 #include "action/spell.hpp"
 #include "action/heal.hpp"
 #include "buff/sc_buff.hpp"
-#include "dbc/dbc.hpp"
 #include "dbc/item_database.hpp"
 #include "item.hpp"
 #include "player/sc_player.hpp"

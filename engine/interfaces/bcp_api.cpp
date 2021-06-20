@@ -109,7 +109,7 @@ std::vector<std::string> token_paths()
     {
       std::string home_path = std::string( home_drive ) + std::string( home_path_ansi ) + "/simc-apitoken";
 #ifdef SC_WINDOWS
-      home_path = io::ansi_to_utf8( home_path.c_str() );
+      home_path = io::ansi_to_utf8( home_path );
 #endif
       paths.push_back( home_path );
     }
@@ -306,7 +306,7 @@ void download( sim_t*               sim,
     }
   }
 
-  d.Parse<0>( result.c_str() );
+  d.Parse<0>( result );
 
   // Corrupt data
   if ( !result.empty() && d.HasParseError() )
@@ -362,7 +362,7 @@ void parse_file( sim_t* sim, const std::string& path, rapidjson::Document& d )
   ifs.open( path );
   result.assign( std::istreambuf_iterator<char>( ifs ), std::istreambuf_iterator<char>() );
 
-  d.Parse<0>( result.c_str() );
+  d.Parse<0>( result );
 
   // Corrupt data
   if ( ! result.empty() && d.HasParseError() )

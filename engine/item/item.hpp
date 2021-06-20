@@ -101,8 +101,6 @@ struct item_t
     ~parsed_input_t();
   } parsed;
 
-  std::shared_ptr<xml_node_t> xml;
-
   std::string name_str;
   std::string icon_str;
 
@@ -144,7 +142,7 @@ struct item_t
 
   item_t() : sim( nullptr ), player( nullptr ), slot( SLOT_INVALID ), parent_slot( SLOT_INVALID ),
     unique( false ), unique_addon( false ), is_ptr( false ),
-    parsed(), xml(), option_initial_cd(0)
+    parsed(), option_initial_cd(0)
   { }
 
   item_t( player_t*, util::string_view options_str );

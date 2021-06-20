@@ -63,17 +63,17 @@ void create_persistent_actors( player_t& player )
 
 void base_actor_spawner_t::register_object()
 {
-  auto it = range::find_if( m_owner->spawners, [this]( const base_actor_spawner_t* obj ) {
+  auto already_exists = range::any_of( m_owner->spawners, [this]( const base_actor_spawner_t* obj ) {
     return util::str_compare_ci( obj->name(), name() );
   } );
 
-  if ( it == m_owner->spawners.end() )
+  if ( !already_exists )
   {
     m_owner->spawners.push_back( this );
   }
   else
   {
-    m_owner->sim->errorf( "%s attempting to create duplicate pet spawner object %s", m_owner->name(), name().c_str() );
+    m_owner->sim->error( "{} attempting to create duplicate pet spawner object {}", *m_owner, name() );
   }
 }
 

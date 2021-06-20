@@ -71,7 +71,7 @@ effect_callbacks_t::~effect_callbacks_t()
 
 bool effect_callbacks_t::has_callback( const std::function<bool( const action_callback_t* )> cmp ) const
 {
-  return range::find_if( all_callbacks, cmp ) != all_callbacks.end();
+  return range::any_of( all_callbacks, cmp );
 }
 
 void effect_callbacks_t::register_callback(unsigned proc_flags,

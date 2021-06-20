@@ -10,6 +10,7 @@
 #include "sim/scale_factor_control.hpp"
 #include "sim/iteration_data_entry.hpp"
 #include "sim/plot.hpp"
+#include "sim/sc_profileset.hpp"
 #include "fmt/chrono.h"
 
 #include <iomanip>
@@ -489,7 +490,7 @@ void gain_name_length( const std::vector<gain_t*>& gain_list, size_t& max_length
     {
       if ( g->actual[ r ] > 0 || g->overflow[ r ] > 0 )
       {
-        auto length = std::strlen( g->name() );
+        auto length = g->name().length();
         if ( length > max_length )
           max_length = length;
       }
@@ -1261,7 +1262,7 @@ void print_text_report( std::ostream& os, sim_t* sim, bool detail )
     print_player_sequence( os, sim, sim->targets_by_name, detail );
   }
 
-  sim -> profilesets.output_text( *sim, os );
+  sim -> profilesets->output_text( *sim, os );
 
   sim_summary_performance( os, sim );
 
@@ -1292,8 +1293,8 @@ void print_text( sim_t* sim, bool detail )
     file.open( sim->output_file_str, io::ofstream::app);
     if ( !file.is_open() )
     {
-      sim->errorf( "Failed to open text output file '%s'.\nUsing stdout.",
-                   sim->output_file_str.c_str() );
+      sim->error( "Failed to open text output file '{}'.\nUsing stdout.",
+                   sim->output_file_str );
     }
     else
     {

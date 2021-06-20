@@ -8,6 +8,7 @@
 #include "config.hpp"
 #include "sc_enums.hpp"
 #include "util/string_view.hpp"
+#include "util/generic.hpp"
 
 #include <array>
 #include <string>
@@ -37,5 +38,5 @@ public:
     for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
     { actual[ i ] /= iterations; overflow[ i ] /= iterations; count[ i ] /= iterations; }
   }
-  const char* name() const { return name_str.c_str(); }
+  const std::string& name() const { return name_str; }
 };

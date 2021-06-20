@@ -106,7 +106,7 @@ struct shadow_bolt_t : public affliction_spell_t
   void impact( action_state_t* s ) override
   {
     affliction_spell_t::impact( s );
-    if ( result_is_hit( s->result ) )
+    if ( result_is_hit( s->result ) && ( !p()->min_version_check( VERSION_9_1_0 ) || p()->talents.shadow_embrace->ok() ) )
     {
       // Add passive check
       td( s->target )->debuffs_shadow_embrace->trigger();
@@ -120,8 +120,42 @@ struct shadow_bolt_t : public affliction_spell_t
     if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
       m *= 1.0 + p()->buffs.nightfall->default_value;
 
-    m *= 1 + p()->buffs.decimating_bolt->check_value();
-    m *= 1 + p()->buffs.malefic_wrath->check_stack_value();
+    m *= 1.0 + p()->buffs.decimating_bolt->check_value();
+    m *= 1.0 + p()->buffs.malefic_wrath->check_stack_value();
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = affliction_spell_t::composite_target_multiplier( t );
+
+    //Withering Bolt does 2x% more per DoT on the target for Shadow Bolt
+    //TODO: Check what happens if a DoT falls off mid-cast and mid-flight
+    m *= 1.0 + p()->conduit.withering_bolt.percent() * 2.0 * p()->get_target_data( t )->count_affliction_dots();
+
+    return m;
+  }
+
+  double composite_crit_chance_multiplier() const override
+  {
+    double m = affliction_spell_t::composite_crit_chance_multiplier();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+    {
+      //PTR 2021-06-19: "Critical Strike chance increased by 100%" appears to be guaranteeing crits
+      m += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = affliction_spell_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+      m += p()->buffs.shard_of_annihilation->data().effectN( 2 ).percent();
 
     return m;
   }
@@ -138,6 +172,9 @@ struct shadow_bolt_t : public affliction_spell_t
       p()->buffs.nightfall->decrement();
 
     p()->buffs.decimating_bolt->decrement();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+      p()->buffs.shard_of_annihilation->decrement();
   }
 };
 
@@ -358,7 +395,10 @@ struct summon_darkglare_t : public affliction_spell_t
     parse_options( options_str );
     harmful = may_crit = may_miss = false;
 
-    cooldown->duration += timespan_t::from_millis( p->talents.dark_caller->effectN( 1 ).base_value() );
+    if ( !p->min_version_check( VERSION_9_1_0 ) )
+      cooldown->duration += timespan_t::from_millis( p->talents.dark_caller->effectN( 1 ).base_value() );
+    else if ( p->spec.dark_caller->ok() )
+      cooldown->duration += timespan_t::from_millis( p->spec.dark_caller->effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -510,49 +550,15 @@ struct malefic_rapture_t : public affliction_spell_t
         callbacks = false; //TOCHECK: Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
       }
 
-      double get_dots_ticking(player_t *target) const
-      {
-        double mult = 0.0;
-        auto td = this->td( target );
-
-        if ( td->dots_agony->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_corruption->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_unstable_affliction->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_vile_taint->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_phantom_singularity->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_soul_rot->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_siphon_life->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_scouring_tithe->is_ticking() )
-          mult += 1.0;
-
-        if ( td->dots_impending_catastrophe->is_ticking() )
-          mult += 1.0;
-
-        return mult;
-      }
-
       double composite_da_multiplier( const action_state_t* s ) const override
       {
         double m = affliction_spell_t::composite_da_multiplier( s );
-        m *= get_dots_ticking( s->target );
+
+        m *= p()->get_target_data( s->target )->count_affliction_dots();
 
         if ( td( s->target )->dots_unstable_affliction->is_ticking() )
         {
-          m *= 1 + p()->conduit.focused_malignancy.percent();
+          m *= 1.0 + p()->conduit.focused_malignancy.percent();
         }
 
         return m;
@@ -566,7 +572,7 @@ struct malefic_rapture_t : public affliction_spell_t
           p()->procs.malefic_wrath->occur();
         }
 
-        int d = as<int>( get_dots_ticking( target ) );
+        int d = p()->get_target_data( target )->count_affliction_dots();
         if ( d > 0 )
         {
           for ( int i = p()->procs.malefic_rapture.size(); i < d; i++ )
@@ -611,15 +617,19 @@ struct drain_soul_t : public affliction_spell_t
   {
     dot_t* dot = get_dot( target );
     if ( dot->is_ticking() )
+    {
       p()->buffs.decimating_bolt->decrement();
 
+      if ( p()->legendary.shard_of_annihilation.ok() )
+        p()->buffs.shard_of_annihilation->decrement( 3 );
+    }
     affliction_spell_t::execute();
   }
 
   void tick( dot_t* d ) override
   {
     affliction_spell_t::tick( d );
-    if ( result_is_hit( d->state->result ) )
+    if ( result_is_hit( d->state->result ) && ( !p()->min_version_check( VERSION_9_1_0 ) || p()->talents.shadow_embrace->ok() ) )
     {
       // TODO - Add passive check
       td( d->target )->debuffs_shadow_embrace->trigger();
@@ -633,8 +643,35 @@ struct drain_soul_t : public affliction_spell_t
     if ( t->health_percentage() < p()->talents.drain_soul->effectN( 3 ).base_value() )
       m *= 1.0 + p()->talents.drain_soul->effectN( 2 ).percent();
 
-    m *= 1 + p()->buffs.decimating_bolt->check_value();
+    m *= 1.0 + p()->buffs.decimating_bolt->check_value();
     m *= 1.0 + p()->buffs.malefic_wrath->check_stack_value();
+
+    //Withering Bolt does x% more damage per DoT on the target
+    //TODO: Check what happens if a DoT falls off mid-channel
+    m *= 1.0 + p()->conduit.withering_bolt.percent() * p()->get_target_data( t )->count_affliction_dots();
+
+    return m;
+  }
+
+  double composite_crit_chance_multiplier() const override
+  {
+    double m = affliction_spell_t::composite_crit_chance_multiplier();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+    {
+      //PTR 2021-06-19: "Critical Strike chance increased by 100%" appears to be guaranteeing crits
+      m += p()->buffs.shard_of_annihilation->data().effectN( 3 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = affliction_spell_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+      m += p()->buffs.shard_of_annihilation->data().effectN( 4 ).percent();
 
     return m;
   }
@@ -642,7 +679,11 @@ struct drain_soul_t : public affliction_spell_t
   void last_tick( dot_t* d ) override
   {
     affliction_spell_t::last_tick( d );
+
     p()->buffs.decimating_bolt->decrement();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+      p()->buffs.shard_of_annihilation->decrement( 3 );
   }
 
 };
@@ -663,7 +704,8 @@ struct haunt_t : public affliction_spell_t
       td( s->target )->debuffs_haunt->trigger();
     }
 
-    td( s->target )->debuffs_shadow_embrace->trigger();
+    if ( !p()->min_version_check( VERSION_9_1_0 ) )
+      td( s->target )->debuffs_shadow_embrace->trigger();
   }
 };
 
@@ -800,7 +842,8 @@ void warlock_t::create_buffs_affliction()
                         ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() )
                         ->set_trigger_spell( talents.nightfall );
   buffs.inevitable_demise = make_buff( this, "inevitable_demise", find_spell( 334320 ) )
-                                ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() );
+                                ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() )
+                                ->set_trigger_spell( talents.inevitable_demise );
 
   buffs.malefic_wrath = make_buff( this, "malefic_wrath", find_spell( 337125 ) )->set_default_value_from_effect( 1 );
 }
@@ -821,6 +864,7 @@ void warlock_t::init_spells_affliction()
   spec.corruption_3        = find_specialization_spell( "Corruption", "Rank 3" );
   spec.unstable_affliction_2 = find_specialization_spell( "Unstable Affliction", "Rank 2" );
   spec.unstable_affliction_3 = find_specialization_spell( "Unstable Affliction", "Rank 3" );
+  spec.dark_caller         = find_specialization_spell( "Dark Caller" ); //9.1 PTR - Now a passive learned at level 58
 
   // Talents
   talents.nightfall           = find_talent_spell( "Nightfall" );
@@ -833,7 +877,8 @@ void warlock_t::init_spells_affliction()
   talents.sow_the_seeds       = find_talent_spell( "Sow the Seeds" );
   talents.phantom_singularity = find_talent_spell( "Phantom Singularity" );
   talents.vile_taint          = find_talent_spell( "Vile Taint" );
-  talents.dark_caller         = find_talent_spell( "Dark Caller" );
+  talents.dark_caller         = find_talent_spell( "Dark Caller" ); //9.1 PTR - Removed as talent
+  talents.shadow_embrace      = find_talent_spell( "Shadow Embrace" ); //9.1 PTR - Replaces Dark Caller
   talents.creeping_death      = find_talent_spell( "Creeping Death" );
   talents.dark_soul_misery    = find_talent_spell( "Dark Soul: Misery" );
 
@@ -843,10 +888,11 @@ void warlock_t::init_spells_affliction()
   //Wrath of Consumption and Sacrolash's Dark Strike are implemented in main module
 
   // Conduits
-  conduit.cold_embrace       = find_conduit_spell( "Cold Embrace" );
+  conduit.cold_embrace       = find_conduit_spell( "Cold Embrace" ); //9.1 PTR - Removed
   conduit.corrupting_leer    = find_conduit_spell( "Corrupting Leer" );
   conduit.focused_malignancy = find_conduit_spell( "Focused Malignancy" );
   conduit.rolling_agony      = find_conduit_spell( "Rolling Agony" );
+  conduit.withering_bolt     = find_conduit_spell( "Withering Bolt" ); //9.1 PTR - New, replaces Cold Embrace
 }
 
 void warlock_t::init_gains_affliction()
@@ -943,8 +989,9 @@ void warlock_t::create_apl_affliction()
 
   def->add_action( "call_action_list,name=se,if=debuff.shadow_embrace.stack<(2-action.shadow_bolt.in_flight)|debuff.shadow_embrace.remains<3", "Refresh Shadow Embrace before spending shards on Malefic Rapture" );
 
-  def->add_action( "malefic_rapture,if=dot.vile_taint.ticking|dot.impending_catastrophe_dot.ticking|dot.soul_rot.ticking", "Use Malefic Rapture when major dots are up, or if there will be significant time until the next Phantom Singularity" );
-  def->add_action( "malefic_rapture,if=talent.phantom_singularity&(dot.phantom_singularity.ticking|cooldown.phantom_singularity.remains>25|time_to_die<cooldown.phantom_singularity.remains)" );
+  def->add_action( "malefic_rapture,if=(dot.vile_taint.ticking|dot.impending_catastrophe_dot.ticking|dot.soul_rot.ticking)&(!runeforge.malefic_wrath|buff.malefic_wrath.stack<3|soul_shard>1)", "Use Malefic Rapture when major dots are up, or if there will be significant time until the next Phantom Singularity. If utilizing Malefic Wrath, hold a shard to refresh the buff" );
+  def->add_action( "malefic_rapture,if=runeforge.malefic_wrath&cooldown.soul_rot.remains>20&buff.malefic_wrath.remains<4", "Use Malefic Rapture to maintain the malefic wrath buff until shards need to be generated for the next burst window (20 seconds is more than sufficient to generate 3 shards)" );
+  def->add_action( "malefic_rapture,if=talent.phantom_singularity&(dot.phantom_singularity.ticking|cooldown.phantom_singularity.remains>25|time_to_die<cooldown.phantom_singularity.remains)&(!runeforge.malefic_wrath|buff.malefic_wrath.stack<3|soul_shard>1)" );
   def->add_action( "malefic_rapture,if=talent.sow_the_seeds" );
 
   def->add_action( "drain_life,if=buff.inevitable_demise.stack>40|buff.inevitable_demise.up&time_to_die<4", "Drain Life is only a DPS gain with Inevitable Demise near max stacks. If fight is about to end do not miss spending the stacks" );

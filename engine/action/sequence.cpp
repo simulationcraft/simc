@@ -237,11 +237,11 @@ bool strict_sequence_t::ready()
     return true;
   }
   else
-  {
-    auto it = range::find_if( sub_actions, []( action_t* a ) {
+  { 
+    // Ready if at least one action is usable
+    return range::any_of( sub_actions, []( action_t* a ) {
         return ! a -> background && a -> ready();
     } );
-    return it != sub_actions.end(); // Ready if at least one action is usable
   }
 }
 
@@ -259,8 +259,8 @@ void strict_sequence_t::schedule_execute( action_state_t* state )
   if ( ! allow_skip )
   {
     if ( sim -> log )
-      sim -> out_log.printf( "Player %s executes strict_sequence '%s' action #%d \"%s\"",
-                     player -> name(), seq_name_str.c_str(), current_action, sub_actions[ current_action ] -> name() );
+      sim -> out_log.print( "{} executes strict_sequence '{}' action #{} \"{}\"",
+                     *player, seq_name_str, current_action, sub_actions[ current_action ] -> name() );
 
     // Sanity check the strict sequence, so that it does not get stuck
     // mid-sequence. People are expected to write strict_sequences that cannot
@@ -269,8 +269,8 @@ void strict_sequence_t::schedule_execute( action_state_t* state )
     if ( ! sub_actions[ current_action ] -> ready() )
     {
       if ( sim -> debug )
-        sim -> out_debug.printf( "Player %s strict_sequence '%s' action #%d \"%s\" is no longer ready, aborting sequence",
-          player -> name(), seq_name_str.c_str(), current_action, sub_actions[ current_action ] -> name() );
+        sim -> out_debug.print( "{} strict_sequence '{}' action #{} \"{}\" is no longer ready, aborting sequence",
+          *player, seq_name_str, current_action, sub_actions[ current_action ] -> name() );
       cancel();
       return;
     }
@@ -287,17 +287,16 @@ void strict_sequence_t::schedule_execute( action_state_t* state )
     {
       if ( sim -> debug )
       {
-        sim -> out_debug.printf( "Player %s strict_sequence '%s' action #%d \"%s\" is not ready, skipping... ",
-          player -> name(), seq_name_str.c_str(), current_action, sub_actions[ current_action ] -> name() );
+        sim -> out_debug.print( "{} strict_sequence '{}' action #{} \"{}\" is not ready, skipping... ",
+          *player, seq_name_str, current_action, sub_actions[ current_action ] -> name() );
       }
       current_action++;
     }
 
     if ( current_action < sub_actions.size() )
     {
-      if ( sim -> log )
-        sim -> out_log.printf( "Player %s executes strict_sequence '%s' action #%d \"%s\"",
-                       player -> name(), seq_name_str.c_str(), current_action, sub_actions[ current_action ] -> name() );
+      sim -> print_log( "{} executes strict_sequence '{}' action #{} \"{}\"",
+                       *player, seq_name_str, current_action, sub_actions[ current_action ] -> name() );
 
       player -> sequence_add( sub_actions[ current_action ], sub_actions[ current_action ] -> target, sim -> current_time() );
       sub_actions[ current_action++ ] -> queue_execute( execute_type::FOREGROUND );
@@ -308,11 +307,8 @@ void strict_sequence_t::schedule_execute( action_state_t* state )
   // Strict sequence is over, normal APL commences on the next ready event
   if ( current_action == sub_actions.size() )
   {
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf( "Player %s strict_sequence '%s' end reached, strict sequence over",
-        player -> name(), seq_name_str.c_str() );
-    }
+    sim -> print_debug( "{} strict_sequence '{}' end reached, strict sequence over",
+        *player, seq_name_str );
     player -> strict_sequence = nullptr;
     current_action = 0;
 

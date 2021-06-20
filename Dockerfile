@@ -3,9 +3,8 @@
 #
 #   Available build-arg:
 #     - THREADS=[int] Default 1, provide a value for -j
-#     - NONETWORKING=[0|1] Default 0, 0 - armory can be used if an api-key is provided, 1 - no import capabilities
-#     - APIKEY=[str] Default '' (empty)
-#
+#     - APIKEY=[str] Default '' (empty) SC_DEFAULT_APIKEY used for authentication with blizzard api (armory)
+##
 #   Example usage:
 #   - creating the image (note the dot!)
 #   docker build --build-arg THREADS=2 --build-arg NONETWORKING=1 -t simulationcraft .
@@ -26,28 +25,35 @@
 FROM alpine:latest AS build
 
 ARG THREADS=1
-ARG NONETWORKING=0
 ARG APIKEY=''
 
 COPY . /app/SimulationCraft/
 
-# install SimulationCraft
+# install Dependencies
 RUN apk --no-cache add --virtual build_dependencies \
-    curl-dev \
-    g++ \
-    git \
-    libcurl \
-    make && \
-    if [ $NONETWORKING -eq 0 ] ; then \
-        echo "Building networking version" && \
+            compiler-rt-static \
+            curl-dev \
+            clang-dev \
+            llvm \
+            g++ \
+            make \
+            git
 
-        make -C /app/SimulationCraft/engine release -j $THREADS LTO=1 OPTS+="-Os -mtune=generic" SC_DEFAULT_APIKEY=${APIKEY} ;  \
-    else \
-        echo "Building no-networking version" && \
-        make -C /app/SimulationCraft/engine release -j $THREADS LTO=1 SC_NO_NETWORKING=1 OPTS+="-Os -mtune=generic" SC_DEFAULT_APIKEY=${APIKEY} ; \
+# Build
+RUN clang++ -v && make -C /app/SimulationCraft/engine release CXX=clang++ -j $THREADS THIN_LTO=1 LLVM_PGO_GENERATE=1 OPTS+="-Os -mtune=generic" SC_DEFAULT_APIKEY={$APIKEY}
 
-    fi && \
-    apk del build_dependencies
+
+# Collect profile guided instrumentation data
+RUN cd /app/SimulationCraft/engine && LLVM_PROFILE_FILE="code-%p.profraw" ./simc T26_Raid.simc single_actor_batch=1 iterations=100
+
+# Merge profile guided data
+RUN cd /app/SimulationCraft/engine && llvm-profdata merge -output=code.profdata code-*.profraw
+
+# Clean & rebuild with collected profile guided data.
+RUN make -C /app/SimulationCraft/engine clean && make -C /app/SimulationCraft/engine release CXX=clang++ -j $THREADS THIN_LTO=1 LLVM_PGO_USE=./code.profdata OPTS+="-Os -mtune=generic" SC_DEFAULT_APIKEY={$APIKEY}
+
+# Cleanup dependencies
+RUN apk del build_dependencies
 
 # disable ptr to reduce build size
 # sed -i '' -e 's/#define SC_USE_PTR 1/#define SC_USE_PTR 0/g' engine/dbc.hpp
@@ -55,20 +61,10 @@ RUN apk --no-cache add --virtual build_dependencies \
 # fresh image to reduce size
 FROM alpine:latest
 
-ARG NONETWORKING=0
-
-RUN if [ $NONETWORKING -eq 0 ] ; then \
-        echo "Preparing for networking" && \
-        apk --no-cache add --virtual build_dependencies \
+RUN apk --no-cache add --virtual build_dependencies \
         libcurl \
         libgcc \
-        libstdc++ ; \
-    else \
-        echo "Preparing for no-networking" && \
-        apk --no-cache add --virtual build_dependencies \
-        libgcc \
-        libstdc++ ; \
-    fi
+        libstdc++
 
 # get compiled simc and profiles
 COPY --from=build /app/SimulationCraft/engine/simc /app/SimulationCraft/

@@ -6,11 +6,15 @@
 namespace paladin {
 
 namespace buffs {
-  crusade_buff_t::crusade_buff_t( player_t* p ) :
+  crusade_buff_t::crusade_buff_t( paladin_t* p ) :
       buff_t( p, "crusade", p -> find_spell( 231895 ) ),
       damage_modifier( 0.0 ),
       haste_bonus( 0.0 )
   {
+    if ( !p->talents.crusade->ok() )
+    {
+      set_chance( 0 );
+    }
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
     // TODO(mserrano): fix this when Blizzard turns the spelldata back to sane
     //  values
@@ -827,7 +831,8 @@ void paladin_t::create_buffs_retribution()
   // Azerite
   buffs.empyrean_power_azerite = make_buff( this, "empyrean_power_azerite", find_spell( 286393 ) )
                        -> set_default_value( azerite.empyrean_power.value() );
-  buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 326733 ) );
+  buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 326733 ) )
+                          ->set_trigger_spell(talents.empyrean_power);
   buffs.relentless_inquisitor_azerite = make_buff<stat_buff_t>(this, "relentless_inquisitor_azerite", find_spell( 279204 ) )
                               -> add_stat( STAT_HASTE_RATING, azerite.relentless_inquisitor.value() );
 

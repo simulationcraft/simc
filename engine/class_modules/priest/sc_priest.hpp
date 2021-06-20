@@ -21,22 +21,11 @@ namespace priestspace
  */
 struct priest_t;
 
-namespace actions
-{
-namespace spells
+namespace actions::spells
 {
 struct ascended_blast_heal_t;
 struct mind_sear_tick_t;
 struct shadowy_apparition_spell_t;
-struct angelic_feather_t;
-struct divine_star_t;
-struct apotheosis_t;
-struct halo_t;
-struct levitate_t;
-struct smite_t;
-struct summon_pet_t;
-struct summon_shadowfiend_t;
-struct summon_mindbender_t;
 struct ascended_eruption_t;
 struct ascended_eruption_heal_t;
 struct wrathful_faerie_t;
@@ -44,18 +33,7 @@ struct wrathful_faerie_fermata_t;
 struct psychic_link_t;
 struct eternal_call_to_the_void_t;
 struct unholy_transfusion_healing_t;
-}  // namespace spells
-namespace heals
-{
-struct power_word_shield_t;
-}  // namespace heals
-}  // namespace actions
-
-namespace buffs
-{
-struct dispersion_t;
-struct benevolent_faerie_t;
-}  // namespace buffs
+}  // namespace actions::spells
 
 /**
  * Priest target data
@@ -122,7 +100,7 @@ public:
     propagate_const<buff_t*> apotheosis;
 
     // Shadow
-    propagate_const<buffs::dispersion_t*> dispersion;
+    propagate_const<buff_t*> dispersion;
     propagate_const<buff_t*> shadowform;
     propagate_const<buff_t*> shadowform_state;  // Dummy buff to track whether player entered Shadowform initially
     propagate_const<buff_t*> surrender_to_madness;
@@ -140,6 +118,8 @@ public:
     propagate_const<buff_t*> the_penitent_one;
     propagate_const<buff_t*> sephuzs_proclamation;
     propagate_const<buff_t*> talbadars_stratagem;
+    propagate_const<buff_t*> shadow_word_manipulation;
+    propagate_const<buff_t*> rigor_mortis;
 
     // Conduits
     propagate_const<buff_t*> mind_devourer;
@@ -343,7 +323,6 @@ public:
     propagate_const<actions::spells::ascended_eruption_t*> ascended_eruption;
     propagate_const<actions::spells::ascended_eruption_heal_t*> ascended_eruption_heal;
     propagate_const<actions::spells::eternal_call_to_the_void_t*> eternal_call_to_the_void;
-    propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
     propagate_const<actions::spells::psychic_link_t*> psychic_link;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<actions::spells::unholy_transfusion_healing_t*> unholy_transfusion_healing;
@@ -363,6 +342,8 @@ public:
     propagate_const<pet_t*> mindbender;
     spawner::pet_spawner_t<pet_t, priest_t> void_tendril;
     spawner::pet_spawner_t<pet_t, priest_t> void_lasher;
+    spawner::pet_spawner_t<pet_t, priest_t> rattling_mage;
+    spawner::pet_spawner_t<pet_t, priest_t> cackling_chemist;
 
     priest_pets_t( priest_t& p );
   } pets;
@@ -395,6 +376,23 @@ public:
 
     // The amount of allies to assume for Cauterizing Shadows healing
     int cauterizing_shadows_allies = 3;
+
+    // Bwonsamdi's Pact Option
+    // Options: "benevolent" or "wrathful"
+    std::string bwonsamdis_pact_mask_type = "benevolent";
+
+    // Shadow Word: Manipulation expire time
+    // Accepts a range of the amount of time left on Mindgames when the shield expires
+    // Min: 0, Max: 8, Default: 7
+    // Shattered Perception Conduit increase is handled outside of this
+    int shadow_word_manipulation_seconds_remaining = 7;
+
+    // Pallid Command Allies
+    // Sets number of allies to use as an artificial modifier for Rigor Mortis stacks
+    // For each damage ability the priest will do it will add the amount of stacks equal
+    // to the number of allies
+    // TODO: tune this around raid testing
+    int pallid_command_allies = 5;
   } options;
 
   // Legendaries
@@ -407,6 +405,8 @@ public:
     item_runeforge_t twins_of_the_sun_priestess;
     item_runeforge_t bwonsamdis_pact;
     item_runeforge_t shadow_word_manipulation;
+    item_runeforge_t spheres_harmony;
+    item_runeforge_t pallid_command;
     // Holy
     item_runeforge_t divine_image;          // NYI
     item_runeforge_t harmonious_apparatus;  // NYI
@@ -487,7 +487,7 @@ public:
   double composite_melee_haste() const override;
   double composite_spell_haste() const override;
   double composite_spell_crit_chance() const override;
-  double composite_player_pet_damage_multiplier( const action_state_t* ) const override;
+  double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
   double composite_player_absorb_multiplier( const action_state_t* s ) const override;
   double composite_player_heal_multiplier( const action_state_t* s ) const override;
   double composite_player_target_multiplier( player_t* t, school_e school ) const override;
@@ -879,10 +879,18 @@ struct priest_spell_t : public priest_action_t<spell_t>
           }
         }
 
-        // Unholy Transfusion leech healing
         if ( td && td->dots.unholy_transfusion->is_ticking() )
         {
           priest().trigger_unholy_transfusion_healing();
+
+          if ( priest().legendary.pallid_command->ok() && s->result_type == result_amount_type::DMG_DIRECT )
+          {
+            // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/856
+            if ( priest().options.pallid_command_allies > 0 )
+            {
+              priest().buffs.rigor_mortis->trigger( priest().options.pallid_command_allies );
+            }
+          }
         }
       }
     }
@@ -1030,189 +1038,6 @@ protected:
     return *debug_cast<priest_t*>( Base::source );
   }
 };
-
-struct dispersion_t final : public priest_buff_t<buff_t>
-{
-  // TODO: hook up rank2 to movement speed
-  const spell_data_t* rank2;
-
-  dispersion_t( priest_t& p );
-};
-
-struct benevolent_faerie_t final : public buff_t
-{
-  std::vector<action_t*> affected_actions;
-  bool affected_actions_initialized;
-
-  benevolent_faerie_t( player_t* p );
-};
-
 }  // namespace buffs
-
-namespace items
-{
-void init();
-}  // namespace items
-
-/**
- * Report Extension Class
- * Here you can define class specific report extensions/overrides
- */
-struct priest_report_t final : public player_report_extension_t
-{
-public:
-  priest_report_t( priest_t& player ) : p( player )
-  {
-  }
-
-  void html_customsection( report::sc_html_stream& /* os*/ ) override
-  {
-    (void)p;
-    /*// Custom Class Section
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-    << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
-    << "\t\t\t\t\t<div class=\"toggle-content\">\n";
-
-    os << p.name();
-
-    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
-  }
-
-private:
-  priest_t& p;
-};
-
-struct priest_module_t final : public module_t
-{
-  priest_module_t() : module_t( PRIEST )
-  {
-  }
-
-  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
-  {
-    auto p              = new priest_t( sim, name, r );
-    p->report_extension = std::unique_ptr<player_report_extension_t>( new priest_report_t( *p ) );
-    return p;
-  }
-  bool valid() const override
-  {
-    return true;
-  }
-  void init( player_t* p ) const override
-  {
-    p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
-    p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
-                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
-    p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p );
-  }
-  void static_init() const override
-  {
-    items::init();
-  }
-  void register_hotfixes() const override
-  {
-  }
-  void combat_begin( sim_t* ) const override
-  {
-  }
-  void combat_end( sim_t* ) const override
-  {
-  }
-};
-
-/**
- * Adjust maximum charges for a cooldown
- * Takes the cooldown and new maximum charge count
- * Function depends on the internal working of cooldown_t::reset
- */
-inline void set_cooldown_max_charges( cooldown_t* cooldown, int new_max_charges )
-{
-  assert( new_max_charges > 0 && "Cooldown charges must be greater than 0" );
-  assert( cooldown && "Cooldown must not be null" );
-
-  int charges_max = cooldown->charges;
-
-  // Charges are not being changed, just end.
-  if ( charges_max == new_max_charges )
-    return;
-
-  cooldown->sim.print_debug( "{} adjusts {} max charges from {} to {}", *cooldown->player, *cooldown, charges_max,
-                             new_max_charges );
-  /**
-   * If the cooldown ongoing we can assume that the action isn't a nullptr as otherwise the action would not be ongoing.
-   * If it has no action we cannot call cooldown->start which means we cannot set fractional charges.
-   * However, a cooldown is not ongoing at maximum charges. if we have maximum charges then the number of charges will
-   * only ever change equal to the change in maximum charges. This means we'll never need to use cooldown->start to
-   * handle the case where cooldown is not ongoing and cooldown->reset is satisfactory.
-   */
-  if ( !cooldown->ongoing() )
-  {
-    // Change charges to new max
-    cooldown->charges = new_max_charges;
-    // Call reset, which will set current charges to new max and make relevant event calls
-    cooldown->reset( false, -1 );
-  }
-  else
-  {
-    action_t* cooldown_action = cooldown->action;
-    double charges_fractional = cooldown->charges_fractional();
-
-    if ( new_max_charges < charges_max )
-    {
-      /**
-       * If our new max charges is less than current max charges, we have lost maximum charges.
-       * If we have lost maximum charges, we'll also lose current charges for charges lost but we'll keep current
-       * cooldown progress.
-       **/
-      int charges_lost   = charges_max - new_max_charges;
-      charges_fractional = charges_fractional >= charges_lost ? charges_fractional - charges_lost
-                                                              : charges_fractional - floor( charges_fractional );
-    }
-    else
-    {
-      /**
-       * Otherwise, we have gained maximum charges.
-       * Gaining maximum charges will give us those charges.
-       **/
-      int charges_gained = new_max_charges - charges_max;
-      charges_fractional += charges_gained;
-    }
-
-    // Set new maximum charges then reset to stop all events.
-    cooldown->charges = new_max_charges;
-    cooldown->reset( false, -1 );
-
-    /**
-     * This loop is used to remove all of the charges and start the cooldown recovery event properly.
-     * It does it by repetitively calling cooldown->start which will remove a current charge and restart the event
-     * timers.
-     */
-    for ( int i = 0; i < cooldown->charges; i++ )
-      cooldown->start( cooldown_action );
-
-    /**
-     * Use adjust to go from 0 charges and 0 cooldown progress to the previously calculated charges we should have after
-     * changing max charges by making the cooldown advance in time by the multiple of the cooldown.
-     */
-    cooldown->adjust( -charges_fractional * cooldown_t::cooldown_duration( cooldown ) );
-  }
-
-  // If the player is queueing an action, cancel it.
-  if ( cooldown->player && cooldown->player->queueing )
-  {
-    event_t::cancel( cooldown->player->queueing->queue_event );
-    cooldown->player->queueing = nullptr;
-    if ( !cooldown->player->executing && !cooldown->player->channeling && !cooldown->player->readying )
-      cooldown->player->schedule_ready();
-  }
-}
-
-inline void adjust_cooldown_max_charges( cooldown_t* cooldown, int charge_change )
-{
-  auto new_charges = cooldown->charges + charge_change;
-  assert( new_charges > 0 && "Adjusting cooldown charges results in 0 new charges." );
-  set_cooldown_max_charges( cooldown, new_charges );
-}
 
 }  // namespace priestspace

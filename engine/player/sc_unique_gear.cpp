@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "sc_enums.hpp"
+#include "sim/sc_expressions.hpp"
 #include "unique_gear.hpp"
 
 #include "unique_gear_shadowlands.hpp"
@@ -11,6 +12,7 @@
 #include "simulationcraft.hpp"
 #include "dbc/racial_spells.hpp"
 #include <cctype>
+#include <memory>
 
 using namespace unique_gear;
 
@@ -1098,7 +1100,7 @@ void item::spark_of_zandalar( special_effect_t& effect )
     {
       sparks -> trigger();
 
-      if ( sparks -> stack() == sparks -> max_stack() )
+      if ( sparks -> check() == sparks -> max_stack() )
       {
         sparks -> expire();
         proc_buff -> trigger();
@@ -3555,9 +3557,15 @@ void generic::windfury_totem( special_effect_t& effect )
     return;
   }
 
-  // Apply rank 2 automatically
-  effect.proc_chance_ = effect.driver()->proc_chance() +
-    effect.player->find_spell( 343211 )->effectN( 1 ).percent();
+  effect.proc_chance_ = effect.driver()->proc_chance();
+
+  // Apply rank 2 automatically, except that currently (2021-05-24) the implementation is
+  // bugged in-game, and only the Enhancement Shaman who cast the totem gets the buff.
+  // Model this by giving the buff only to Enhancement Shamans.
+  if ( !effect.player->bugs || effect.player->specialization() == SHAMAN_ENHANCEMENT )
+  {
+    effect.proc_chance_ += effect.player->find_spell( 343211 )->effectN( 1 ).percent();
+  }
 
   auto proc = new wft_proc_callback_t( effect );
 
@@ -3612,11 +3620,9 @@ bool buff_has_stat( const buff_t* buff, stat_e stat )
   //       Just filter tertiaries for now since they are present on some DPS trinket use effects
   if ( stat == STAT_ANY_DPS )
   {
-    auto it = range::find_if( stat_buff->stats, []( auto elem ) {
+    return range::any_of( stat_buff->stats, []( auto elem ) {
       return elem.stat != STAT_LEECH_RATING && elem.stat != STAT_SPEED_RATING && elem.stat != STAT_AVOIDANCE_RATING;
     } );
-
-    return it != stat_buff->stats.end();
   }
 
   for ( auto & elem : stat_buff->stats )
@@ -3877,8 +3883,8 @@ struct item_effect_base_expr_t : public expr_t
 {
   std::vector<const special_effect_t*> effects;
 
-  item_effect_base_expr_t( player_t& player, const std::vector<slot_e>& slots ) :
-    expr_t( "item_effect_base_expr" )
+  item_effect_base_expr_t( player_t& player, const std::vector<slot_e>& slots, util::string_view full_expression ) :
+    expr_t( full_expression )
   {
     const special_effect_t* e = nullptr;
 
@@ -3901,8 +3907,8 @@ struct item_effect_expr_t : public item_effect_base_expr_t
 {
   std::vector<std::unique_ptr<expr_t>> exprs;
 
-  item_effect_expr_t( player_t& player, const std::vector<slot_e>& slots ) :
-    item_effect_base_expr_t( player, slots )
+  item_effect_expr_t( player_t& player, const std::vector<slot_e>& slots, util::string_view full_expression ) :
+    item_effect_base_expr_t( player, slots, full_expression )
   { }
 
   // Evaluates automatically to the maximum value out of all expressions, may
@@ -3920,6 +3926,16 @@ struct item_effect_expr_t : public item_effect_base_expr_t
 
     return result;
   }
+  
+  bool is_constant( double* value ) override
+  {
+    if (exprs.empty())
+    {
+      *value = 0;
+      return true;
+    }
+    return false;
+  }
 };
 
 // Buff based item expressions, creates buff expressions for the items from
@@ -3927,7 +3943,7 @@ struct item_effect_expr_t : public item_effect_base_expr_t
 struct item_buff_expr_t : public item_effect_expr_t
 {
   item_buff_expr_t( player_t& player, const std::vector<slot_e>& slots, stat_e s, bool stacking, util::string_view expr_str ) :
-    item_effect_expr_t( player, slots )
+    item_effect_expr_t( player, slots, expr_str )
   {
     for (auto e : effects)
     {
@@ -3945,8 +3961,8 @@ struct item_buff_exists_expr_t : public item_effect_expr_t
 {
   double v;
 
-  item_buff_exists_expr_t( player_t& player, const std::vector<slot_e>& slots, stat_e s ) :
-    item_effect_expr_t( player, slots ), v( 0 )
+  item_buff_exists_expr_t( player_t& player, const std::vector<slot_e>& slots, stat_e s, util::string_view full_expression ) :
+    item_effect_expr_t( player, slots, full_expression ), v( 0 )
   {
     for (auto e : effects)
     {
@@ -3959,6 +3975,12 @@ struct item_buff_exists_expr_t : public item_effect_expr_t
     }
   }
 
+  bool is_constant( double* value) override
+  {
+    *value = v;
+    return true;
+  }
+
   double evaluate() override
   { return v; }
 };
@@ -3967,8 +3989,8 @@ struct item_buff_exists_expr_t : public item_effect_expr_t
 // from user input
 struct item_cooldown_expr_t : public item_effect_expr_t
 {
-  item_cooldown_expr_t( player_t& player, const std::vector<slot_e>& slots, util::string_view expr ) :
-    item_effect_expr_t( player, slots )
+  item_cooldown_expr_t( player_t& player, const std::vector<slot_e>& slots, util::string_view expr, util::string_view full_expression ) :
+    item_effect_expr_t( player, slots, full_expression )
   {
     for (auto e : effects)
     {
@@ -3984,8 +4006,8 @@ struct item_cooldown_expr_t : public item_effect_expr_t
 
 struct item_ready_expr_t : public item_effect_base_expr_t
 {
-  item_ready_expr_t( player_t& player, const std::vector<slot_e>& slots ) :
-    item_effect_base_expr_t( player, slots )
+  item_ready_expr_t( player_t& player, const std::vector<slot_e>& slots, util::string_view full_expression ) :
+    item_effect_base_expr_t( player, slots, full_expression )
   {
   }
 
@@ -4009,6 +4031,16 @@ struct item_ready_expr_t : public item_effect_base_expr_t
 
     return 1;
   }
+    
+  bool is_constant( double* value ) override
+  {
+    if (effects.empty())
+    {
+      *value = 1;
+      return true;
+    }
+    return false;
+  }
 };
 
 struct item_is_expr_t : public expr_t
@@ -4025,6 +4057,12 @@ struct item_is_expr_t : public expr_t
     }
   }
 
+  bool is_constant( double* value) override
+  {
+    *value = is;
+    return true;
+  }
+
   double evaluate() override
   {
     return is;
@@ -4035,8 +4073,8 @@ struct item_cooldown_exists_expr_t : public item_effect_expr_t
 {
   double v;
 
-  item_cooldown_exists_expr_t( player_t& player, const std::vector<slot_e>& slots ) :
-    item_effect_expr_t( player, slots ), v( 0 )
+  item_cooldown_exists_expr_t( player_t& player, const std::vector<slot_e>& slots, util::string_view full_expression ) :
+    item_effect_expr_t( player, slots, full_expression ), v( 0 )
   {
     for (auto e : effects)
     {
@@ -4046,6 +4084,12 @@ struct item_cooldown_exists_expr_t : public item_effect_expr_t
         break;
       }
     }
+  }
+
+  bool is_constant( double* value) override
+  {
+    *value = v;
+    return true;
   }
 
   double evaluate() override
@@ -4058,8 +4102,8 @@ struct item_has_use_buff_expr_t : public item_effect_expr_t
   bool has_use;
   bool has_buff;
 
-  item_has_use_buff_expr_t( player_t& player, const std::vector<slot_e>& slots )
-    : item_effect_expr_t( player, slots ), v( 0 ), has_use( false ), has_buff(false)
+  item_has_use_buff_expr_t( player_t& player, const std::vector<slot_e>& slots, util::string_view full_expression )
+    : item_effect_expr_t( player, slots, full_expression ), v( 0 ), has_use( false ), has_buff(false)
   {
 
     for ( auto e : effects )
@@ -4125,6 +4169,12 @@ struct item_has_use_buff_expr_t : public item_effect_expr_t
 
     if ( has_use && has_buff )
       v = 1;
+  }
+
+  bool is_constant( double* value) override
+  {
+    *value = v;
+    return true;
   }
 
   double evaluate() override
@@ -4226,10 +4276,14 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
   }
 
   if ( util::str_compare_ci( splits[ ptype_idx ], "is" ) )
+  {
     return std::make_unique<item_is_expr_t>( player, slots, splits[ expr_idx - 1 ] );
+  }
 
   if ( util::str_compare_ci( splits[ ptype_idx ], "has_use_buff" ) )
-    return std::make_unique<item_has_use_buff_expr_t>( player, slots );
+  {
+    return std::make_unique<item_has_use_buff_expr_t>( player, slots, name_str );
+  }
 
   if ( util::str_prefix_ci( splits[ ptype_idx ], "has_" ) )
     pexprtype = PROC_EXISTS;
@@ -4278,22 +4332,22 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
   }
   else if ( pexprtype == PROC_ENABLED && ptype == PROC_COOLDOWN && splits.size() >= 3 )
   {
-    return std::make_unique<item_cooldown_expr_t>( player, slots, splits[ expr_idx ] );
+    return std::make_unique<item_cooldown_expr_t>( player, slots, splits[ expr_idx ], name_str );
   }
   else if ( pexprtype == PROC_EXISTS )
   {
     if ( ptype != PROC_COOLDOWN )
     {
-      return std::make_unique<item_buff_exists_expr_t>( player, slots, stat );
+      return std::make_unique<item_buff_exists_expr_t>( player, slots, stat, name_str );
     }
     else
     {
-      return std::make_unique<item_cooldown_exists_expr_t>( player, slots );
+      return std::make_unique<item_cooldown_exists_expr_t>( player, slots, name_str );
     }
   }
   else if ( pexprtype == PROC_READY )
   {
-    return std::make_unique<item_ready_expr_t>( player, slots );
+    return std::make_unique<item_ready_expr_t>( player, slots, name_str );
   }
 
   throw std::invalid_argument(fmt::format("Unsupported unique gear expression '{}'.", splits.back()));

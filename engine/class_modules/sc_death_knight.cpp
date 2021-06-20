@@ -1055,7 +1055,7 @@ public:
   double    composite_melee_expertise( const weapon_t* ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    composite_player_multiplier( school_e school ) const override;
-  double    composite_player_pet_damage_multiplier( const action_state_t* /* state */ ) const override;
+  double    composite_player_pet_damage_multiplier( const action_state_t* /* state */, bool /* guardian */ ) const override;
   double    composite_crit_avoidance() const override;
   void      combat_begin() override;
   void      activate() override;
@@ -1204,7 +1204,7 @@ static void log_rune_status( const death_knight_t* p )
 {
   if ( ! p -> sim -> debug ) return;
   std::string rune_string = p -> _runes.string_representation();
-  p -> sim -> print_debug( "{} runes: {}", p -> name(), rune_string.c_str() );
+  p -> sim -> print_debug( "{} runes: {}", p -> name(), rune_string );
 }
 
 inline runes_t::runes_t( death_knight_t* p ) : dk( p ),
@@ -3536,7 +3536,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::impact( state );
     const death_knight_td_t* td = find_td( state -> target );
     assert( td && "apocalypse impacting without any target data" ); // td should should exist because the debuff is a condition of target_ready()
-    auto n_wounds = std::min( as<int>( data().effectN( 2 ).base_value() ), td -> debuff.festering_wound -> stack() );
+    auto n_wounds = std::min( as<int>( data().effectN( 2 ).base_value() ), td -> debuff.festering_wound -> check() );
 
     p() -> burst_festering_wound( state -> target, n_wounds );
     p() -> pets.apoc_ghouls.spawn( summon_duration, n_wounds );
@@ -4031,7 +4031,7 @@ struct cold_heart_damage_t : public death_knight_spell_t
   {
     double m = death_knight_spell_t::action_multiplier();
 
-    m *= p() -> buffs.cold_heart -> stack();
+    m *= p() -> buffs.cold_heart -> check();
 
     return m;
   }
@@ -4427,7 +4427,7 @@ struct relish_in_blood_t : public death_knight_heal_t
   {
     double m = death_knight_heal_t::action_multiplier();
 
-    m *= p() -> buffs.bone_shield -> stack();
+    m *= p() -> buffs.bone_shield -> check();
 
     return m;
   }
@@ -4897,10 +4897,13 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     // 2020-08-23: Seems to only affect main hand death strike, not OH hit, not DRW's spell
     // No spelldata either, just "increase damage based on target's missing health"
-    // Testing shows a linear 1% damage increase for every 1% missing health
+    // Update 2021-06-16 Changed from 1% to 1.25% damage increase
+    // Testing shows a linear 1.25% damage increase for every 1% missing health, up to 100% damage increase
     if ( p() -> runeforge.rune_of_sanguination )
     {
-      m *= 1.0 + 1.0 - target -> resources.pct( RESOURCE_HEALTH );
+      auto buff_amount = (1.0 - target -> resources.pct( RESOURCE_HEALTH ) ) * 1.25;
+      buff_amount = std::min( buff_amount, 1.0 );  // Max 100% bonus damage
+      m *= 1.0 + buff_amount;
     }
 
     return m;
@@ -6484,7 +6487,7 @@ struct tombstone_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    int charges = std::min( p() -> buffs.bone_shield -> stack(), as<int>( data().effectN( 5 ).base_value() ) );
+    int charges = std::min( p() -> buffs.bone_shield -> check(), as<int>( data().effectN( 5 ).base_value() ) );
 
     double power = charges * data().effectN( 3 ).base_value();
     double shield = charges * data().effectN( 4 ).percent();
@@ -7780,61 +7783,41 @@ std::unique_ptr<expr_t> death_knight_t::create_runeforge_expression( util::strin
 {
   // Razorice, looks for the damage procs related to MH and OH
   if ( util::str_compare_ci( runeforge_name, "razorice" ) )
-    return make_fn_expr( "razorice_runforge_expression", [ this ]() {
-      return runeforge.rune_of_razorice_mh || runeforge.rune_of_razorice_oh;
-    } );
+    return expr_t::create_constant( "razorice_runforge_expression", runeforge.rune_of_razorice_mh || runeforge.rune_of_razorice_oh );
 
   // Razorice MH and OH expressions (this can matter for razorice application)
   if ( util::str_compare_ci( runeforge_name, "razorice_mh" ) )
-    return make_fn_expr( "razorice_mh_runforge_expression", [ this ]() {
-      return runeforge.rune_of_razorice_mh;
-    } );
+    return expr_t::create_constant( "razorice_mh_runforge_expression", runeforge.rune_of_razorice_mh );
   if ( util::str_compare_ci( runeforge_name, "razorice_oh" ) )
-    return make_fn_expr( "razorice_oh_runforge_expression", [ this ]() {
-      return runeforge.rune_of_razorice_oh;
-    } );
+    return expr_t::create_constant( "razorice_oh_runforge_expression", runeforge.rune_of_razorice_oh );
 
   // Fallen Crusader, looks for the unholy strength healing action
   if ( util::str_compare_ci( runeforge_name, "fallen_crusader" ) )
-    return make_fn_expr( "fallen_crusader_runforge_expression", [ this ]() {
-      return runeforge.rune_of_the_fallen_crusader;
-    } );
+    return expr_t::create_constant( "fallen_crusader_runforge_expression", runeforge.rune_of_the_fallen_crusader );
 
   // Stoneskin Gargoyle
   if ( util::str_compare_ci( runeforge_name, "stoneskin_gargoyle" ) )
-    return make_fn_expr( "stoneskin_gargoyle_runforge_expression", [ this ]() {
-      return runeforge.rune_of_the_stoneskin_gargoyle;
-    } );
+    return expr_t::create_constant( "stoneskin_gargoyle_runforge_expression", runeforge.rune_of_the_stoneskin_gargoyle );
 
   // Apocalypse
   if ( util::str_compare_ci( runeforge_name, "apocalypse" ) )
-    return make_fn_expr( "apocalypse_runforge_expression", [ this ]() {
-      return runeforge.rune_of_apocalypse;
-    } );
+    return expr_t::create_constant( "apocalypse_runforge_expression", runeforge.rune_of_apocalypse);
 
   // Hysteria
   if ( util::str_compare_ci( runeforge_name, "hysteria" ) )
-    return make_fn_expr( "hysteria_runeforge_expression", [ this ]() {
-      return runeforge.rune_of_hysteria;
-    } );
+    return expr_t::create_constant( "hysteria_runeforge_expression", runeforge.rune_of_hysteria  );
 
   // Sanguination
   if ( util::str_compare_ci( runeforge_name, "sanguination" ) )
-    return make_fn_expr( "sanguination_runeforge_expression", [ this ]() {
-      return runeforge.rune_of_sanguination;
-    } );
+    return expr_t::create_constant( "sanguination_runeforge_expression", runeforge.rune_of_sanguination );
 
   // Spellwarding
   if ( util::str_compare_ci( runeforge_name, "spellwarding" ) )
-    return make_fn_expr( "spellwarding_runeforge_expression", [ this ]() {
-      return runeforge.rune_of_spellwarding != 0;
-    } );
+    return expr_t::create_constant( "spellwarding_runeforge_expression", runeforge.rune_of_spellwarding != 0 );
 
   // Unending Thirst, effect NYI
   if ( util::str_compare_ci( runeforge_name, "unending_thirst" ) )
-    return make_fn_expr( "unending_thirst_runeforge_expression", [ this ]() {
-      return runeforge.rune_of_unending_thirst;
-    } );
+    return expr_t::create_constant( "unending_thirst_runeforge_expression", runeforge.rune_of_unending_thirst );
 
   // Only throw an error with death_knight.runeforge expressions
   // runeforge.x already spits out a warning for relevant runeforges and has to send a runeforge legendary if needed
@@ -7868,9 +7851,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
   {
     // Returns the value of the disable_aotd option
     if ( util::str_compare_ci( splits[ 1 ], "disable_aotd" ) && splits.size() == 2 )
-      return make_fn_expr( "disable_aotd_expression", [ this ]() {
-        return this -> options.disable_aotd;
-      } );
+      return expr_t::create_constant( "disable_aotd_expression", this -> options.disable_aotd );
 
     // Returns the number of targets currently affected by the festering wound debuff
     if ( util::str_compare_ci( splits[ 1 ], "fwounded_targets" ) && splits.size() == 2 )
@@ -9042,9 +9023,9 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double death_knight_t::composite_player_pet_damage_multiplier( const action_state_t* state ) const
+double death_knight_t::composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const
 {
-  double m = player_t::composite_player_pet_damage_multiplier( state );
+  double m = player_t::composite_player_pet_damage_multiplier( state, guardian );
 
   if ( mastery.dreadblade -> ok() )
   {

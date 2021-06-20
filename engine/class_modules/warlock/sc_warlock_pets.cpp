@@ -169,6 +169,27 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
+double warlock_pet_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  double m = pet_t::composite_player_target_multiplier( target, school );
+
+  if ( !o()->min_version_check( VERSION_9_1_0 ) )
+    return m;
+
+  if ( o()->specialization() == WARLOCK_DEMONOLOGY && school == SCHOOL_SHADOWFLAME &&
+       o()->talents.from_the_shadows->ok() )
+  {
+    auto td = o()->get_target_data( target );
+
+    //TOCHECK: There is no "affected by" information for pets. Presumably matching school should be a sufficient check.
+    //If there's a non-warlock guardian in game that benefits from this... well, good luck with that.
+    if ( td->debuffs_from_the_shadows->check() )
+      m *= 1.0 + td->debuffs_from_the_shadows->check_value();
+  }
+
+  return m;
+}
+
 warlock_pet_td_t::warlock_pet_td_t( player_t* target, warlock_pet_t& p ) :
   actor_target_data_t( target, &p ), pet( p )
 {
@@ -632,8 +653,8 @@ void felguard_pet_t::queue_ds_felstorm()
   }
 }
 
-grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner, const std::string& name )
-  : warlock_pet_t( owner, name, PET_SERVICE_FELGUARD, true ),
+grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner )
+  : warlock_pet_t( owner, "grimoire_felguard", PET_SERVICE_FELGUARD, true ),
     felstorm_spell( find_spell( 89751 ) ),
     min_energy_threshold( felstorm_spell->cost( POWER_ENERGY ) ),
     max_energy_threshold( 100 )

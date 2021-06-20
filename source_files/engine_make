@@ -132,6 +132,7 @@ SRC += \
     report$(PATHSEP)sc_report_html_player.cpp \
     report$(PATHSEP)sc_report_html_sim.cpp \
     report$(PATHSEP)sc_report_text.cpp \
+    sim$(PATHSEP)cooldown_waste_data.cpp \
     sim$(PATHSEP)event_manager.cpp \
     sim$(PATHSEP)proc.cpp \
     sim$(PATHSEP)real_ppm.cpp \

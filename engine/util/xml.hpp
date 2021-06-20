@@ -86,17 +86,17 @@ struct xml_parm_t
   std::string name_str;
   std::string value_str;
   xml_parm_t( const std::string& n, const std::string& v ) : name_str( n ), value_str( v ) {}
-  const char* name() { return name_str.c_str(); }
+  const std::string& name() { return name_str; }
 };
 
 struct xml_node_t
 {
   std::string name_str;
-  std::vector<std::shared_ptr<xml_node_t> > children;
+  std::vector<std::unique_ptr<xml_node_t> > children;
   std::vector<xml_parm_t> parameters;
   xml_node_t() {}
   xml_node_t( const std::string& n ) : name_str( n ) {}
-  const char* name() { return name_str.c_str(); }
+  const std::string& name() { return name_str; }
   xml_node_t* get_child( const std::string& name );
   xml_node_t* get_node ( const std::string& path );
   xml_node_t* get_node ( const std::string& path, const std::string& parm_name, const std::string& parm_value );
@@ -108,7 +108,7 @@ struct xml_node_t
   bool get_value( double&      value, const std::string& path = std::string() );
   xml_parm_t* get_parm( const std::string& parm_name );
 
-  std::shared_ptr<xml_node_t> create_node     ( const std::string& input, std::string::size_type& index );
+  std::unique_ptr<xml_node_t> create_node     ( const std::string& input, std::string::size_type& index );
   void         create_children ( const std::string& input, std::string::size_type& index );
   void        create_parameter( const std::string& input, std::string::size_type& index );
 
@@ -120,7 +120,7 @@ struct xml_node_t
   void print_xml( FILE* f = stdout, int spacing = 0 );
   static std::shared_ptr<xml_node_t> get( const std::string& url, cache::behavior_e cache_behavior,
                                           const std::string& confirmation = std::string() );
-  static std::shared_ptr<xml_node_t> create( const std::string& input );
+  static std::unique_ptr<xml_node_t> create( const std::string& input );
 
   xml_node_t* add_child( const std::string& name );
   template <typename T>

@@ -169,14 +169,14 @@ Variables        : $dmg=${$5374s2+$27576s2*0.5}
 Name             : Garrote - Silence (id=1330) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Spell Type       : None
+Spell Type       : Melee
 Spell Level      : 19
 Range            : 50000 yards
 Duration         : 3 seconds
 Mechanic         : Silence
 Affecting spells : Iron Wire (196861 effect#1)
 Family Flags     : 61
-Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
+Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -184,6 +184,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ..x..... ........ ........ 
                  : ........ ........ ........ ........   
+                 : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=450)      : Apply Aura (6) | Silence (27)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Mechanic: Silence | Target: Enemy (6)
@@ -318,8 +319,8 @@ Duration         : Aura (infinite)
 Cooldown         : 2 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Proc Flags       : ...x.x.x .x..xx.. xx.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell, Generic Hostile Spell Taken, Magic Hostile Spell, Magic Hostile Spell Taken, Periodic Taken
 Affecting spells : Nightstalker (14062 effects: #1, #2), Subterfuge (108208 effect#1), Hit and Run (196922 effect#2), Acrobatic Strikes (196924 effect#2)
 Triggered by     : Subterfuge (108208)
 Family Flags     : 22
@@ -805,7 +806,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Moonkin Form (24858 effects: #9, #10), Eclipse (Solar) (48517 effects: #1, #2, #3, #4, #5, #6), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Balance Druid (137013 effects: #1, #2), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Dawning Sun (276154 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1), Sinful Hysteria (355315 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Eclipse (Solar) (48517 effects: #1, #2, #3, #4, #5, #6), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Balance Druid (137013 effects: #1, #2), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Dawning Sun (276154 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1), Ravenous Frenzy (355315 effects: #1, #4)
 Family Flags     : 0, 18
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -959,7 +960,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #4 (id=872827)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Enemy (6)
-Description      : Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, dispelling all enrage effects.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]
+Description      : Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]
 $?s319032[
 Your Nature damage done against the target is increased by $319504s1%][] $?a354124[and healing received reduced by $354124S1% ][]for $319504d.
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
@@ -1248,7 +1249,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=6402)     : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 18 | Target: Self (1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Numbing Poison (5760), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crippling Poison (115196), Slaughter Poison (323660)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Numbing Poison (5760), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crippling Poison (115196), Slaughter Poison (323660), Numbing Poison (359078)
                    Family Flags: 14, 16, 28, 83
 #2 (id=806019)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -33 | Scaled Value: -33 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
@@ -2197,11 +2198,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68022)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Deadly Poison (113780), Crippling Poison (115196), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581), Slaughter Poison (323660), Dreadblades (343142)
+                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Deadly Poison (113780), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581), Slaughter Poison (323660), Dreadblades (343142), Numbing Poison (359078)
                    Family Flags: 8, 14, 16, 20, 28, 35, 36, 81, 86, 95, 97, 119
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crippling Poison (115196), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Double Dose (273009), Nothing Personal (286581), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Dreadblades (343142)
+                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Double Dose (273009), Nothing Personal (286581), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Dreadblades (343142), Numbing Poison (359078)
                    Family Flags: 8, 14, 16, 20, 28, 36, 81, 95, 97, 115, 119
 Description      : Increases the damage done by your poisons $?s319473[and bleeds ][]by ${$s1}.1%.
 
@@ -2447,7 +2448,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Always hits (114)
 Effects          :
 #1 (id=94449)    : Apply Aura (6) | Ignore Armor% (345)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.66667 | Target: Enemy (6)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc91023
 Tooltip          : $w1% of armor is ignored by the attacking Rogue.
 
@@ -2586,7 +2587,7 @@ Name             : Leeching Poison (id=108211) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Duration         : 3600 seconds
+Duration         : Aura (infinite)
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Affecting spells : Improved Poisons (14117 effect#2), Envenom (32645 effect#2), Stealth (115191 effect#4), Master Poisoner (196864 effect#3)
 Family Flags     : 64, 73
@@ -2594,7 +2595,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ........ .x...
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
@@ -2602,7 +2603,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ........ .x...
 Effects          :
 #1 (id=119252)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Coats your weapons with a Poison that lasts for $d, granting you $s1% Leech.
+Description      : Coats your weapons with a Poison, granting you $s1% Leech.
 Tooltip          : Leech increased by $s1%.
 
 Name             : Dirty Tricks (desc=Passive Talent) (id=108216) [Spell Family (8), Passive] 
@@ -2833,12 +2834,12 @@ Tooltip          : Temporarily concealed in the shadows.
 Name             : Crippling Poison (id=115196) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
-Spell Type       : Magic
+Spell Type       : Melee
 Range            : 100 yards
 Duration         : 5 seconds
 Mechanic         : Snare
-Affecting spells : Improved Poisons (14117 effect#1), Mastery: Potent Assassin (76803 effects: #1, #2), Master Poisoner (196864 effect#3)
-Family Flags     : 14, 51
+Affecting spells : Improved Poisons (14117 effect#1), Master Poisoner (196864 effects: #1, #3, #4)
+Family Flags     : 51, 83
 Attributes       : ........ ........ ........ ........   ...x...x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   ........ ........ ........ ......x. 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
@@ -2851,7 +2852,7 @@ Effects          :
 #1 (id=128900)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : An intense application of Crippling Poison reduces the target's movement speed by $s1% for $d.
-Tooltip          : Movement slowed by $s1%.
+Tooltip          : Movement speed slowed by $s1%.
 
 Name             : Shroud of Concealment (id=115834) [Spell Family (8)] 
 Class            : Rogue
@@ -3031,7 +3032,7 @@ Family Flags     : 122
 Attributes       : .......x x....... ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ....x...   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ..x..... ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
@@ -3721,7 +3722,7 @@ Attributes       : ....x... ........ x.x..... .......x   ........ .x...... .....
                  : Cannot cancel aura (31), Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=283619)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45279 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45279 | PvP Coefficient: 1.20000 | Target: Enemy (6)
 #2 (id=283620)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #3 (id=283621)   : Dummy (3)
@@ -4183,7 +4184,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289047)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Numbing Poison (5760), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Slaughter Poison (323660)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Numbing Poison (5760), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crippling Poison (115196), Slaughter Poison (323660)
                    Family Flags: 16, 28, 83
 #2 (id=289048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
@@ -4191,11 +4192,11 @@ Effects          :
                    Family Flags: 16
 #3 (id=289049)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Crippling Poison (3408), Crippling Poison (3409), Numbing Poison (5760), Leeching Poison (108211), Crippling Poison (115196)
+                   Affected Spells: Crippling Poison (3408), Crippling Poison (3409), Numbing Poison (5760), Leeching Poison (108211), Crippling Poison (115196), Numbing Poison (359078)
                    Family Flags: 14, 73, 83
 #4 (id=289050)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Numbing Poison (5760), Wound Poison (8679), Wound Poison (8680)
+                   Affected Spells: Numbing Poison (5760), Wound Poison (8679), Wound Poison (8680), Crippling Poison (115196)
                    Family Flags: 28, 83
 Description      : Increases the damage done by your weapon poisons by $s1% and their non-damaging effects by $s3%.
 
@@ -4531,7 +4532,7 @@ Attributes       : ....x... ........ x.x..... .......x   ........ .x...... .....
                  : Cannot cancel aura (31), Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=290715)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45279 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45279 | PvP Coefficient: 1.20000 | Target: Enemy (6)
 Description      : $@spelldesc193315
 
 Name             : Shuriken Storm (id=197835) [Spell Family (8)] 
@@ -5049,7 +5050,7 @@ Effects          :
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316)
                    Family Flags: 54
 #3 (id=466120)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66667 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=479903)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=479904)   : Energize Power (30)
@@ -5199,7 +5200,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=355887)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.75000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Between the Eyes (199804), Between the Eyes (315341)
                    Family Flags: 111
 Description      : Critical strikes with Between the Eyes deal four times normal damage.
@@ -8874,7 +8875,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=805249)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Shiv now also increases your Nature damage done against the target by $319033s1% for $319033d.
+Description      : Shiv now also increases your Nature damage done against the target by $319504s1% for $319504d.
 
 Name             : Wound Poison (desc=Rank 2) (id=319066) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
@@ -8926,7 +8927,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1) -> Custom (18)
 #4 (id=826459)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
-Description      : Finishing move that launches explosive Black Powder at up to $s4 nearby targets dealing Physical damage.$?s319178[ Targets with your Find Weakness suffer an additional $319178s1% damage as Shadow.][]
+Description      : Finishing move that launches explosive Black Powder at up to $s4 nearby targets dealing Physical damage.$?s319178[ All nearby targets with your Find Weakness suffer an additional $319178s1% damage as Shadow.][]
 
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -9020,7 +9021,7 @@ Effects          :
 #2 (id=886415)   : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
 Description      : $@spelldesc245388
-Tooltip          : $w1% increased Nature damage taken from $@auracaster.$?a354124[ Healing received reduced by $w2%.][]
+Tooltip          : $w1% increased Nature damage taken from $@auracaster.$?${$W2<0}[ Healing received reduced by $w2%.][]
 
 Name             : Grappling Hook (desc=Rank 2) (id=319600) [Spell Family (8), Passive] 
 Class            : Outlaw Rogue
@@ -9137,6 +9138,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Cooldown         : 45 seconds
+Labels           : 976
 Affecting spells : Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Shadow Blades (121471 effect#3), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #3, #4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Symbols of Death (227151 effect#1), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Reverberation (341264 effect#1), Deathly Shadows (350964 effects: #1, #2)
 Family Flags     : 54, 82
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -9252,6 +9254,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 12 seconds
 Cooldown         : 90 seconds
+Labels           : 976
 Internal Cooldown: 0.1 seconds
 Stacks           : 30 maximum
 Proc Chance      : 100%
@@ -9320,11 +9323,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ..x..... ........ ......x. 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ....xx.. ......x. ........   ........ ........ ........ ........ 
+                 : ........ .x..xx.. ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Requires main-hand weapon (106)
+                 : Requires main-hand weapon (106), Periodic effect can crit (265)
 Effects          :
 #1 (id=813416)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Enemy (6)
@@ -9435,6 +9438,7 @@ GCD              : 1 seconds
 Duration         : 10 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 90 seconds
+Labels           : 976
 Affecting spells : Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
 Family Flags     : 54, 118
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -9504,6 +9508,7 @@ Duration         : Aura (infinite)
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Charges          : 3 (30 seconds cooldown)
 Category         : 1889: Deathspike (354731 effect#1)
+Labels           : 976
 Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deathspike (354731 effect#2)
 Family Flags     : 54, 115
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...xx... 
@@ -9524,7 +9529,7 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=821132)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Embed a bone spike in the target, dealing $s1 damage and $324073s1 Bleed damage every $324073t1 sec until they die or leave combat. 
+Description      : Embed a bone spike in the target, dealing $s1 Physical damage and $324073s1 Bleed damage every $324073t1 sec until they die or leave combat. 
 
 Refunds a charge when target dies.
 
@@ -9641,7 +9646,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=839722)   : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.60000 | Target: Self (1)
-Description      : While Stealth is active and for ${$s1}.1 sec after breaking Stealth, your Critical Strike chance is increased by $340094s1%.
+Description      : While Stealth is active and for $?a134735[${$s1*.6}.1][$s1] sec after breaking Stealth, your Critical Strike chance is increased by $340094s1%.
 
 Name             : Tiny Toxic Blade (id=340078) [Spell Family (8), Passive] 
 School           : Physical
@@ -10002,7 +10007,7 @@ Duration         : 6 seconds
 Mechanic         : Bleed
 Attributes       : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ x....... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
@@ -10063,7 +10068,7 @@ Name             : Shallow Insight (id=340582)
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Duration         : 10 seconds
+Duration         : 12 seconds
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10103,7 +10108,7 @@ Name             : Deep Insight (id=340584) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Duration         : 10 seconds
+Duration         : 12 seconds
 Proc Chance      : 100%
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10450,7 +10455,7 @@ Name             : Cloaked in Shadows (id=341529) [Spell Family (8), Passive, Hi
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
-Conduit Id       : 232 (values=10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24)
+Conduit Id       : 232 (values=15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10916,7 +10921,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.95000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=844733)   : Apply Aura (6) | Proc Trigger Spell (42): Dreadblades
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Trigger Spell: 343143 | Target: Self (1)
-Description      : Strike at an enemy, dealing $s1 Physical damage and empowering your weapons for $d, causing your Sinister Strike,$?s196937[ Ghostly Strike,][]$?s328305[ Sepsis,][]$?s323654[ Slaughter,][]$?s323547[ Echoing Reprimand,][]$?s328547[ Serrated Bone Spike,][] Ambush, and Pistol Shot to fill your combo points, but your finishing moves consume $343145s1% of your current health.
+Description      : Strike at an enemy, dealing $s1 Physical damage and empowering your weapons for $d, causing your Sinister Strike,$?s196937[ Ghostly Strike,][]$?s328305[ Sepsis,][]$?s323547[ Echoing Reprimand,][]$?s328547[ Serrated Bone Spike,][] Ambush, and Pistol Shot to fill your combo points, but your finishing moves consume $343145s1% of your current health.
 Tooltip          : Sinister Strike, $?s196937[Ghostly Strike, ][]Ambush, and Pistol Shot will refill all of your combo points when used.
 
 Name             : Dreadblades (id=343143) [Spell Family (8)] 
@@ -11075,6 +11080,7 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 48
 Duration         : 12 seconds
+Labels           : 976
 Stacks           : 30 maximum
 Proc Chance      : 101%
 Family Flags     : 76
@@ -11088,6 +11094,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=871535)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=894305)   : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc323654
 Tooltip          : Haste increased by ${$s1/10}.1%.
@@ -11210,7 +11218,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=886894)   : Apply Aura (6) | Dummy (4)
                    Base Value: 8000 | Scaled Value: 8000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your ability used from Stealth while Sepsis is active grants you one of Shadow Blades, Adrenaline Rush, or applies Vendetta to your current target for ${$s1/1000} sec.
+Description      : Your stealth ability used while Sepsis is active grants you one of Shadow Blades, Adrenaline Rush, or applies Vendetta to your current target for ${$s1/1000} sec.
 
 Name             : Crimson Vial (id=354494) [Spell Family (8)] 
 Class            : Rogue
@@ -11291,10 +11299,10 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 1889 | Target: Self (1)
                    Affected Spells (Category): Serrated Bone Spike (328547)
 #2 (id=887363)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547)
                    Family Flags: 115
-Description      : Serrated Bone Spike has $s1 additional charges and hits $s2 additional nearby enemies.
+Description      : Serrated Bone Spike has $s1 additional charges and launches $s2 additional bone spike at nearby enemies.
 
 Name             : Resounding Clarity (id=354837) [Spell Family (8), Passive, Hidden] 
 School           : Physical
@@ -11339,5 +11347,125 @@ Description      : $@spelldesc323547
 Tooltip          : Rogue's fifth combo point is Animacharged. 
 
 Damaging finishing moves using exactly 5 combo points deal damage as if 7 combo points are consumed.
+
+Name             : Seeds of Rampant Growth (id=356218) [Spell Family (8), Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6)
+Effects          :
+#1 (id=889931)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=889932)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=889933)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 7000 | Scaled Value: 7000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Each pulse of Fae Transfusion's damage effect reduces the cooldown of $?a137039[Healing Tide Totem]?a137040[Fire Elemental][Feral Spirit] by $?a137039[${$m1/1000}.1 sec]?a137040[${$m2/1000}.1 sec][${$m3/1000}.1 sec] and increases your critical strike chance by $358945s1% for $358945d.
+
+Name             : Languishing Soul Detritus (id=356254) [Spell Family (8), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=889987)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : When Scouring Tithe generates Soul Shards, gain $356255s1% increased movement speed and $356255s2% increased critical strike chance for $356255d.
+
+Name             : Contained Perpetual Explosion (id=356259) [Spell Family (8), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=889994)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=889995)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Impending Catastrophe's damage over time is increased by $s1% plus $s2% for each enemy target hit on the way to its final target.
+
+Name             : Decaying Soul Satchel (id=356362) [Spell Family (8), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=890183)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=890184)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Each target affected by Soul Rot increases your haste and critical strike chance by $356369s1% for $356369d.
+
+Name             : Fragments of the Elder Antlers (id=356375) [Spell Family (8), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=890210)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=890211)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : When Wild Spirits hits fewer than $328757I targets, there is a $s1% chance to cause Wild Spirits damage a second time.
+
+Name             : Numbing Poison (id=359078) [Spell Family (8)] 
+Class            : Rogue
+School           : Nature
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 5 seconds
+Mechanic         : Snare
+Affecting spells : Improved Poisons (14117 effect#1), Mastery: Potent Assassin (76803 effects: #1, #2), Master Poisoner (196864 effect#3)
+Family Flags     : 14, 51
+Attributes       : ........ ........ ........ ........   ...x...x ........ .x...... ........ 
+                 : ..x..... ........ ........ x.......   ........ ........ ........ ......x. 
+                 : ........ ...x.... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=894884)   : Apply Aura (6) | Modify Casting Speed (216)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#2 (id=894885)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : An intense application of Numbing Poison reduces the target's casting speed by $s1% for $d.
+Tooltip          : Casting slowed by $s1%.
 
 
