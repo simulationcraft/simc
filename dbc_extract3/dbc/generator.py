@@ -1293,6 +1293,8 @@ class SpellDataGenerator(DataGenerator):
          355761, 355767, 355768, 355769, 355804,
          # Winds of Winter (Shard of Domination Rune Word)
          355724, 355733, 355735,
+         # Chaos Bane (Shard of Domination Rune Word)
+         355829, 356042, 356043, 356046,
         ),
 
         # Warrior:
