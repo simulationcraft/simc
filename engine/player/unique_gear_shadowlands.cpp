@@ -2581,6 +2581,89 @@ void blood_link( special_effect_t& effect )
     buff->set_period( timespan_t::min() );
   } );
 }
+
+/**Winds of Winter
+ * id=357348 equip special effect
+ * id=355724 driver and damage cap coefficient
+ * id=355733 damage
+ * id=355735 absorb (NYI)
+ */
+void winds_of_winter( special_effect_t& effect )
+{
+  if ( !rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_FROST ) )
+    return;
+
+  struct winds_of_winter_damage_t : proc_spell_t
+  {
+    winds_of_winter_damage_t( const special_effect_t& e )
+      : proc_spell_t( "winds_of_winter", e.player, e.player->find_spell( 355733 ) )
+    {
+      base_dd_min = base_dd_max = 1.0; // Ensure that the correct snapshot flags are set.
+    }
+  };
+
+  struct winds_of_winter_cb_t : public dbc_proc_callback_t
+  {
+    double accumulated_damage;
+    double damage_cap;
+    double damage_fraction;
+    action_t* damage;
+    buff_t* buff;
+    player_t* target;
+
+    winds_of_winter_cb_t( const special_effect_t& e, action_t* a, buff_t* b ) :
+      dbc_proc_callback_t( e.player, e ),
+      accumulated_damage(),
+      damage_cap( e.driver()->effectN( 1 ).average( e.player ) ),
+      damage_fraction( e.driver()->effectN( 2 ).percent() ),
+      damage( a ),
+      buff( b ),
+      target()
+    {
+      buff->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
+      {
+        if ( !target || target->is_sleeping() || accumulated_damage == 0 )
+          return;
+
+        damage->base_dd_min = damage->base_dd_max = accumulated_damage;
+        accumulated_damage = 0;
+        damage->set_target( target );
+        damage->execute();
+      } );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      if ( s->target->is_sleeping() )
+        return;
+
+      accumulated_damage += std::min( damage_cap, s->result_amount * damage_fraction );
+      target = s->target; // Winds of Winter hits the last target you accumulated damage from.
+    }
+  };
+
+  effect.spell_id = 355724;
+  effect.proc_flags2_ = PF2_CRIT;
+  auto damage = create_proc_action<winds_of_winter_damage_t>( "winds_of_winter", effect );
+  auto buff = buff_t::find( effect.player, "winds_of_winter" );
+  if ( !buff )
+  {
+
+    buff = make_buff( effect.player, "winds_of_winter", effect.driver() )
+             ->set_quiet( true )
+             ->set_can_cancel( false );
+  }
+
+  new winds_of_winter_cb_t( effect, damage, buff );
+  effect.player->register_combat_begin( [ buff ]( player_t* p )
+  {
+    timespan_t first_tick = p->rng().real() * buff->tick_time();
+    buff->set_period( first_tick );
+    buff->trigger();
+    buff->set_period( timespan_t::min() );
+  } );
+}
+
 }  // namespace items
 
 void register_hotfixes()
@@ -2676,6 +2759,7 @@ void register_special_effects()
 
     // 9.1 Shards of Domination
     unique_gear::register_special_effect( 357347, items::blood_link ); // Rune Word: Blood
+    unique_gear::register_special_effect( 357348, items::winds_of_winter ); // Rune Word: Frost
 
     // Disabled effects
     unique_gear::register_special_effect( 329028, items::DISABLED_EFFECT ); // Light-Infused Armor shield
