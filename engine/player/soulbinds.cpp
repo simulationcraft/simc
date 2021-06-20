@@ -1312,7 +1312,8 @@ void brons_call_to_action( special_effect_t& effect )
 
   effect.custom_buff = buff_t::find( effect.player, "brons_call_to_action" );
   if ( !effect.custom_buff )
-    effect.custom_buff = make_buff( effect.player, "brons_call_to_action", effect.player->find_spell( 332514 ) );
+    effect.custom_buff = make_buff( effect.player, "brons_call_to_action", effect.player->find_spell( 332514 ) )
+                           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   new brons_call_to_action_cb_t( effect );
 }
