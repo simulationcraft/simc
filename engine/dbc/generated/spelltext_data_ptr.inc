@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.39069
-static const std::array<spelltext_data_t, 15504> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15508> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15334,6 +15334,7 @@ static const std::array<spelltext_data_t, 15504> __ptr_spelltext_data { {
   { 355769, "$@spelldesc355761", 0, 0 },
   { 355794, "$@spelldesc355313", "$?e2[Critical Strike]?e3[Haste]?e4[Mastery]?e5[Versatility][Highest secondary stat] increased by $w2.", 0 },
   { 355804, "$@spelldesc355761", "Suffering $w1 Shadow damage every $t1 sec.", 0 },
+  { 355829, "While inside the Maw or Torghast, your spells and abilities have a chance to drain a Soul Fragment from your target, granting you $356042s1 Primary stat for $356042d and stacking up to $356042u times.\r\n\r\nWhen you reach $356042u stacks, unleash Chaos Bane, dealing $356046s1 Shadow damage split between nearby enemies and granting you $356043s3 Primary stat for $356043d.", "While inside the Maw or Torghast, your spells and abilities have a chance to drain a Soul Fragment from your target, granting you $356042s1 Primary stat for $356042d and stacking up to $356042u times.\r\n\r\nWhen you reach $356042u stacks, unleash Chaos Bane, dealing $356046s1 Shadow damage split between nearby enemies and granting you $356043s3 Primary stat for $356043d.", 0 },
   { 355886, "Sinful Brand deals $s1% increased damage and $?c1[Eye Beam][Fel Devastation] damage increases the duration of Sinful Brand by ${$s2/1000}.1 sec.", 0, 0 },
   { 355890, "The Hunt engulfs you with Immolation Aura upon reaching your target and you gain $355892s1% Agility for $355892d for each enemy hit.", 0, 0 },
   { 355892, "$@spelldesc355890", "Agility increased by $s1%.", 0 },
@@ -15343,6 +15344,9 @@ static const std::array<spelltext_data_t, 15504> __ptr_spelltext_data { {
   { 355953, 0, "Your very own burden to bare.", 0 },
   { 355996, "When Fodder to the Flame's demon explodes it inflicts Fiery Brand to $s2 nearby enemies for $s2 sec. Additionally Shattered Soul's duration is increased by ${$s1/1000} sec.", 0, 0 },
   { 356029, "Your damaging spells have a chance to increase your Critical Strike by $353492s1 for $d, stacking up to $u times.", "Critical Strike increased by $w1.", 0 },
+  { 356042, "$@spelldesc355829", "Increases $pri by $w1.", 0 },
+  { 356043, "$@spelldesc355829", "Increases $pri  by $w1.", 0 },
+  { 356046, "$@spelldesc355829", 0, 0 },
   { 356070, "$@spelldesc355893", 0, 0 },
   { 356134, "$@spelldesc355304", "Spectral eyes watch over your actions.", 0 },
   { 356181, "$@spelldesc355324", "Experiencing the agonizing torment of $@auracaster's Rack Fragment, suffering ${$355324s1*($d/$t1+1)} damage over $d.", 0 },
