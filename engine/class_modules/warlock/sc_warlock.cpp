@@ -169,71 +169,89 @@ struct drain_life_t : public warlock_spell_t
   }
 };  
 
-//Not implemented: Impending Catastrophe applies a random curse in addition to the DoT
-struct impending_catastrophe_dot_t : public warlock_spell_t
-{
-  impending_catastrophe_dot_t( warlock_t* p )
-    : warlock_spell_t( "impending_catastrophe_dot", p, p->find_spell( 322170 ) )
-  {
-    background = true;
-    may_miss   = false;
-    dual       = true;
-  }
-  
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-   if ( s->chain_target == 0 )
-     return dot_duration * ( 1.0 + p()->conduit.catastrophic_origin.percent() );
-
-   return dot_duration;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->mastery_spells.chaotic_energies->ok() )
-    {
-      double destro_mastery_value = p()->cache.mastery_value() / 2.0;
-      double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
-
-      m *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
-    }
-
-    return m;
-  }
-};
-
-struct impending_catastrophe_impact_t : public warlock_spell_t
-{
-  impending_catastrophe_impact_t( warlock_t* p )
-    : warlock_spell_t( "impending_catastrophe_impact", p, p->find_spell( 322167 ) )
-  {
-    background = true;
-    may_miss   = false;
-    dual       = true;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->mastery_spells.chaotic_energies->ok() )
-    {
-      double destro_mastery_value = p()->cache.mastery_value() / 2.0;
-      double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
-
-      m *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
-    }
-
-    return m;
-  }
-};
-
 struct impending_catastrophe_t : public warlock_spell_t
 {
-  action_t* impending_catastrophe_impact;
-  action_t* impending_catastrophe_dot;
+  //Not implemented: Impending Catastrophe applies a random curse in addition to the DoT
+  struct impending_catastrophe_dot_t : public warlock_spell_t
+  {
+    int impact_count; //Used to store target count for Contained Perpetual Explosion
+    double legendary_bonus_1; //base bonus % increase
+    double legendary_bonus_2; //additional % increase per extra target hit
+
+    impending_catastrophe_dot_t( warlock_t* p )
+      : warlock_spell_t( "impending_catastrophe_dot", p, p->find_spell( 322170 ) )
+    {
+      background = true;
+      may_miss   = false;
+      dual       = true;
+      impact_count = 0;
+      legendary_bonus_1 = p->legendary.contained_perpetual_explosion.ok() ? p->legendary.contained_perpetual_explosion->effectN( 1 ).percent() : 0.0;
+      legendary_bonus_2 = p->legendary.contained_perpetual_explosion.ok() ? p->legendary.contained_perpetual_explosion->effectN( 2 ).percent() : 0.0;
+    }
+  
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    {
+     if ( s->chain_target == 0 )
+       return dot_duration * ( 1.0 + p()->conduit.catastrophic_origin.percent() );
+
+     return dot_duration;
+    }
+
+    double action_multiplier() const override
+    {
+      double m = warlock_spell_t::action_multiplier();
+
+      if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->mastery_spells.chaotic_energies->ok() )
+      {
+        double destro_mastery_value = p()->cache.mastery_value() / 2.0;
+        double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
+
+        m *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
+      }
+
+      return m;
+    }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_ta_multiplier( s );
+
+      //PTR 2021-06-19 Legendary is currently multiplying these bonuses together, though the tooltip implies they should add
+      if ( p()->bugs )
+        return m *= ( 1.0 + legendary_bonus_1 ) * ( 1.0 + legendary_bonus_2 * impact_count );
+      else
+        return m *= 1.0 + legendary_bonus_1 + legendary_bonus_2 * impact_count;
+    }
+  };
+
+  struct impending_catastrophe_impact_t : public warlock_spell_t
+  {
+    impending_catastrophe_impact_t( warlock_t* p )
+      : warlock_spell_t( "impending_catastrophe_impact", p, p->find_spell( 322167 ) )
+    {
+      background = true;
+      may_miss   = false;
+      dual       = true;
+    }
+
+    double action_multiplier() const override
+    {
+      double m = warlock_spell_t::action_multiplier();
+
+      if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->mastery_spells.chaotic_energies->ok() )
+      {
+        double destro_mastery_value = p()->cache.mastery_value() / 2.0;
+        double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
+
+        m *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
+      }
+
+      return m;
+    }
+  };
+
+  impending_catastrophe_impact_t* impending_catastrophe_impact;
+  impending_catastrophe_dot_t* impending_catastrophe_dot;
 
   impending_catastrophe_t( warlock_t* p, util::string_view options_str ) : 
     warlock_spell_t( "impending_catastrophe", p, p->covenant.impending_catastrophe ),
@@ -258,6 +276,16 @@ struct impending_catastrophe_t : public warlock_spell_t
 
     impending_catastrophe_impact->set_target( s->target );
     impending_catastrophe_impact->execute();
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    if ( p()->legendary.contained_perpetual_explosion.ok() )
+    {
+      impending_catastrophe_dot->impact_count = std::max( num_targets_hit - 1, 0 ); //Primary target is not counted
+    }
   }
 };
 
