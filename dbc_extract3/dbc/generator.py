@@ -1291,6 +1291,8 @@ class SpellDataGenerator(DataGenerator):
          357163, 357168, 357169,
          # Blood Link (Shard of Domination Rune Word)
          355761, 355767, 355768, 355769, 355804,
+         # Winds of Winter (Shard of Domination Rune Word)
+         355724, 355733, 355735,
         ),
 
         # Warrior:
