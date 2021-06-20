@@ -1109,13 +1109,13 @@ void brons_call_to_action( special_effect_t& effect )
       bron_smash_damage_t( pet_t* p ) : spell_t( "smash", p, p->find_spell( 341165 ) )
       {
         background              = true;
-        spell_power_mod.direct  = 0.5;  // Not in spell data
-        attack_power_mod.direct = 0.5;  // Not in spell data
+        spell_power_mod.direct  = 1.0;  // Not in spell data
+        attack_power_mod.direct = 1.0;  // Not in spell data
         aoe                     = -1;
         radius                  = data().effectN( 1 ).radius_max();
       }
 
-      // smash = 0.5 * max(0.5 * ap, 0.5 * spp)
+      // smash = 1.0 * max(0.5 * player's ap, 0.5 * player's sp)
       // Since AP conversion is set to 0.5; and SP conversion is set to 2
       // Just need to 1x Bron's AP, and 0.25x Bron's SP
       double attack_direct_power_coefficient( const action_state_t* s ) const override
