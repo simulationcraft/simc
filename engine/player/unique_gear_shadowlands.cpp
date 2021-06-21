@@ -2749,6 +2749,39 @@ void chaos_bane( special_effect_t& effect )
   effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
   new chaos_bane_cb_t( effect, buff, cd );
 }
+
+/**Shard of Dyz
+ * id=355755 driver Rank 1
+ * id=357037 driver Rank 2 (Ominous)
+ * id=357055 driver Rank 3 (Desolate)
+ * id=357065 driver Rank 4 (Foreboding)
+ * id=357076 driver Rank 5 (Portentous)
+ * id=356329 Scouring Touch debuff
+ */
+void shard_of_dyz( special_effect_t& effect )
+{
+  struct shard_of_dyz_cb_t : public dbc_proc_callback_t
+  {
+    double debuff_value;
+
+    shard_of_dyz_cb_t( const special_effect_t& e ) :
+      dbc_proc_callback_t( e.player, e ),
+      debuff_value( 0.0001 * e.driver()->effectN( 1 ).average( e.player) )
+    {}
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      auto td = a->player->get_target_data( s->target );
+      td->debuff.scouring_touch->set_default_value( debuff_value );
+      td->debuff.scouring_touch->trigger();
+    }
+  };
+
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+  new shard_of_dyz_cb_t( effect );
+}
 }  // namespace items
 
 void register_hotfixes()
@@ -2846,6 +2879,11 @@ void register_special_effects()
     unique_gear::register_special_effect( 357347, items::blood_link ); // Rune Word: Blood
     unique_gear::register_special_effect( 357348, items::winds_of_winter ); // Rune Word: Frost
     unique_gear::register_special_effect( 357349, items::chaos_bane ); // Rune Word: Unholy
+    unique_gear::register_special_effect( 355755, items::shard_of_dyz );
+    unique_gear::register_special_effect( 357037, items::shard_of_dyz );
+    unique_gear::register_special_effect( 357055, items::shard_of_dyz );
+    unique_gear::register_special_effect( 357065, items::shard_of_dyz );
+    unique_gear::register_special_effect( 357076, items::shard_of_dyz );
 
     // Disabled effects
     unique_gear::register_special_effect( 329028, items::DISABLED_EFFECT ); // Light-Infused Armor shield
@@ -2896,6 +2934,23 @@ void register_target_data_initializers( sim_t& sim )
     }
     else
       td->debuff.shattered_psyche = make_buff( *td, "shattered_psyche_debuff" )->set_quiet( true );
+  } );
+
+  // Shard of Dyz (Scouring Touch debuff)
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 355755 )
+      || unique_gear::find_special_effect( td->source, 357037 )
+      || unique_gear::find_special_effect( td->source, 357055 )
+      || unique_gear::find_special_effect( td->source, 357065 )
+      || unique_gear::find_special_effect( td->source, 357076 ) )
+    {
+      assert( !td->debuff.scouring_touch );
+
+      td->debuff.scouring_touch = make_buff( *td, "scouring_touch", td->source->find_spell( 356329 ) );
+      td->debuff.scouring_touch->reset();
+    }
+    else
+      td->debuff.scouring_touch = make_buff( *td, "scouring_touch" )->set_quiet( true );
   } );
 }
 
