@@ -1356,6 +1356,8 @@ class SpellDataGenerator(DataGenerator):
             ( 328123, 0 ),          # Blessing of Summer damage spell
             ( 340203, 0 ),          # Hallowed Discernment damage
             ( 340214, 0 ),          # Hallowed Discernment heal
+            ( 355567, 0 ),          # Equinox
+            ( 355455, 0 ),          # Divine Resonance
         ),
 
         # Hunter:

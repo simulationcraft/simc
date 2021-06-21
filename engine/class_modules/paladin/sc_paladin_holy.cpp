@@ -317,8 +317,8 @@ struct holy_shock_t : public paladin_spell_t
       heal->set_target( target );
       heal->execute();
     }
-    // The reason the subspell is allowed to execute first is so we can consume judgment correctly. 
-    // If this is first then a dummy holy shock is fired off that consumes the judgment debuff 
+    // The reason the subspell is allowed to execute first is so we can consume judgment correctly.
+    // If this is first then a dummy holy shock is fired off that consumes the judgment debuff
     // meaning when we attempt to do damage judgment will not be factored in even when it should be.
     // because of dumb blizz spelldata that makes every holy shock spell affected by judgment,
     // instead of just affecting the damaging holy shock spell.
@@ -342,6 +342,12 @@ struct judgment_holy_t : public judgment_t
 {
   judgment_holy_t( paladin_t* p, util::string_view options_str ) : judgment_t( p, options_str )
   {
+    base_multiplier *= 1.0 + p->spec.holy_paladin->effectN( 11 ).percent();
+  }
+
+  judgment_holy_t( paladin_t* p ) : judgment_t( p )
+  {
+    background = true;
     base_multiplier *= 1.0 + p->spec.holy_paladin->effectN( 11 ).percent();
   }
 
@@ -512,6 +518,7 @@ void paladin_t::create_holy_actions()
   if ( specialization() == PALADIN_HOLY )
   {
     active.divine_toll = new holy_shock_t( this );
+    active.judgment = new judgment_holy_t( this );
   }
 }
 
