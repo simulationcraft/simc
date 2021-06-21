@@ -7828,7 +7828,7 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t* s )
   {
     // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself (335913)
     // Touch of Karma (id = 124280) does not contribute to Empowered Tiger Lightning
-    if ( buff.invoke_xuen->check() && s->result_amount > 0 && s->action->id != 335913 && s->action->id != 124280 )
+    if ( ( buff.invoke_xuen->check() || buff.invoke_xuen_call_to_arms ) && s->result_amount > 0 && s->action->id != 335913 && s->action->id != 124280 )
     {
       auto td = get_target_data( s->target );
 
