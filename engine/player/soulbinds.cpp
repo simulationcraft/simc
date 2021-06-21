@@ -1423,8 +1423,6 @@ void soulglow_spectrometer( special_effect_t& effect )
 
       auto td = a->player->get_target_data( s->target );
       td->debuff.soulglow_spectrometer->trigger();
-
-      deactivate();
     }
 
     void reset() override
@@ -1435,22 +1433,7 @@ void soulglow_spectrometer( special_effect_t& effect )
     }
   };
 
-  auto cb = new soulglow_spectrometer_cb_t( effect );
-  auto p  = effect.player;
-
-  range::for_each( p->sim->actor_list, [ p, cb ]( player_t* t ) {
-    if ( !t->is_enemy() )
-      return;
-
-    t->register_on_demise_callback( p, [ p, cb ]( player_t* t ) {
-      if ( p->sim->event_mgr.canceled )
-        return;
-
-      auto td = p->find_target_data( t );
-      if ( td && td->debuff.soulglow_spectrometer->check() )
-        cb->activate();
-    } );
-  } );
+  new soulglow_spectrometer_cb_t( effect );
 }
 
 // 323491: humanoid (mastery rating)
@@ -2222,15 +2205,17 @@ void register_target_data_initializers( sim_t* sim )
             return static_cast<dbc_proc_callback_t*>( t )->effect.spell_id == data->id();
           } );
 
+      // When an enemy dies or the debuff expires allow the user to proc the debuff again on the next target
       td->debuff.soulglow_spectrometer =
           make_buff( *td, "soulglow_spectrometer", td->source->find_spell( 352939 ) )
               ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
+              ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
               ->set_stack_change_callback( [ soulglow_spectrometer_cb_it ]( buff_t*, int old, int cur ) {
                 auto soulglow_cb = *soulglow_spectrometer_cb_it;
                 if ( old == 0 )
-                  soulglow_cb->activate();
-                else if ( cur == 0 )
                   soulglow_cb->deactivate();
+                else if ( cur == 0 )
+                  soulglow_cb->activate();
               } );
       td->debuff.soulglow_spectrometer->reset();
     }
