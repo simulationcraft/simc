@@ -1207,7 +1207,6 @@ void warlock_t::create_apl_demonology()
   action_priority_list_t* tyrant		= get_action_priority_list( "tyrant_setup" );
   action_priority_list_t* wilf   		= get_action_priority_list( "wilfreds_setup" );
   action_priority_list_t* no_wilf    	= get_action_priority_list( "no_wilfreds_setup" );
-  action_priority_list_t* pot    		= get_action_priority_list( "potion" );
   action_priority_list_t* ogcd    		= get_action_priority_list( "ogcd" );
   action_priority_list_t* trinks    	= get_action_priority_list( "trinkets" );
   action_priority_list_t* five_y    	= get_action_priority_list( "5y_per_sec_trinkets" );
@@ -1219,7 +1218,7 @@ void warlock_t::create_apl_demonology()
   def->add_action("doom,if=refreshable");
   def->add_action("call_action_list,name=covenant_ability,if=soulbind.grove_invigoration|soulbind.field_of_blossoms|soulbind.combat_meditation|covenant.necrolord");
   def->add_action("call_action_list,name=tyrant_setup");
-  def->add_action("call_action_list,name=potion");
+  def->add_action("potion,if=(cooldown.summon_demonic_tyrant.remains_expected<10&time>variable.first_tyrant_time-10|soulbind.refined_palate&cooldown.summon_demonic_tyrant.remains_expected<38)");
   def->add_action("call_action_list,name=ogcd,if=pet.demonic_tyrant.active");
   def->add_action("demonic_strength,if=(!runeforge.wilfreds_sigil_of_superior_summoning&cooldown.summon_demonic_tyrant.remains_expected>9)|pet.demonic_tyrant.remains<6*gcd.max");
   def->add_action("call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected>20-5*!runeforge.wilfreds_sigil_of_superior_summoning");
@@ -1276,9 +1275,6 @@ void warlock_t::create_apl_demonology()
   no_wilf->add_action("summon_vilefiend,if=talent.summon_vilefiend.enabled&((cooldown.summon_demonic_tyrant.remains_expected<15-(action.summon_demonic_tyrant.execute_time)&(cooldown.call_dreadstalkers.remains<15-(action.summon_demonic_tyrant.execute_time+action.summon_vilefiend.execute_time)|pet.dreadstalker.remains>cooldown.summon_demonic_tyrant.remains_expected+action.summon_demonic_tyrant.execute_time))|cooldown.summon_demonic_tyrant.remains_expected>40)");
   no_wilf->add_action("call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected<12-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&time>variable.first_tyrant_time-12");
   no_wilf->add_action("summon_demonic_tyrant,if=time>variable.first_tyrant_time&(pet.dreadstalker.active&pet.dreadstalker.remains>action.summon_demonic_tyrant.execute_time)&(!talent.summon_vilefiend.enabled|pet.vilefiend.active)&(soul_shard=0|(pet.dreadstalker.active&pet.dreadstalker.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(pet.vilefiend.active&pet.vilefiend.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(buff.grimoire_felguard.up&buff.grimoire_felguard.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time))");
-
-  pot->add_action("potion,if=cooldown.summon_demonic_tyrant.remains_expected<10&time>variable.first_tyrant_time-10");
-  pot->add_action("potion,if=cooldown.summon_demonic_tyrant.remains_expected<38&soulbind.refined_palate");
 
   ogcd->add_action("berserking");
   ogcd->add_action("blood_fury");
