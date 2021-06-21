@@ -409,6 +409,9 @@ struct axe_toss_t : public warlock_pet_spell_t
     : warlock_pet_spell_t( "Axe Toss", p, p->find_spell( 89766 ) )
   {
     parse_options( options_str );
+
+    may_miss = may_block = may_dodge = may_parry = false;
+    ignore_false_positive = is_interrupt = true;
   }
 };
 

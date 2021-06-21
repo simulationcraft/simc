@@ -487,6 +487,70 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
     }
   }
 };
+
+//Catchall action to trigger pet interrupt abilities via main APL.
+//Using this should ensure that interrupt callback effects (Sephuz etc) proc correctly for the warlock.
+struct interrupt_t : public spell_t
+{
+  interrupt_t( util::string_view n, warlock_t* p, util::string_view options_str ) :
+    spell_t( n, p )
+  {
+    parse_options( options_str );
+    callbacks = true;
+    dual = true;
+    may_miss = may_block = may_crit = false;
+    ignore_false_positive = is_interrupt = true;
+    trigger_gcd = 0_ms;
+  }
+
+  void execute() override
+  {
+    warlock_t* w = debug_cast<warlock_t*>( player );
+
+    auto pet = w->warlock_pet_list.active;
+
+    switch( pet->pet_type )
+    {
+      case PET_FELGUARD:
+      case PET_FELHUNTER:
+        pet->special_action->set_target( target );
+        pet->special_action->execute();
+        break;
+      default:
+        break;
+    }
+  }
+
+  bool ready() override
+  {
+    warlock_t* w = debug_cast<warlock_t*>( player );
+
+    if ( !w->warlock_pet_list.active || w->warlock_pet_list.active->is_sleeping() )
+      return false;
+
+    auto pet = w->warlock_pet_list.active;
+
+    switch( pet->pet_type )
+    {
+      case PET_FELGUARD:
+      case PET_FELHUNTER:
+        if ( !pet->special_action || !pet->special_action->cooldown->up() || !pet->special_action->ready() )
+          return false;
+
+        return spell_t::ready();
+      default:
+        return false;
+    }
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( !candidate_target->debuffs.casting || !candidate_target->debuffs.casting->check() )
+      return false;
+
+    return spell_t::target_ready( candidate_target );
+  }
+};
 }  // namespace actions
 
 warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
@@ -958,6 +1022,8 @@ action_t* warlock_t::create_action( util::string_view action_name, const std::st
     return new impending_catastrophe_t( this, options_str );
   if ( action_name == "soul_rot" )
     return new soul_rot_t( this, options_str );
+  if ( action_name == "interrupt" )
+    return new interrupt_t( action_name, this, options_str );
 
   if ( specialization() == WARLOCK_AFFLICTION )
   {
