@@ -1987,6 +1987,18 @@ void newfound_resolve( special_effect_t& effect )
   } );
 }
 
+void hold_your_ground( special_effect_t& effect )
+{
+}
+
+void emenis_magnificent_skin( special_effect_t& effect )
+{
+}
+
+void waking_bone_breastplate( special_effect_t& effect )
+{
+}
+
 // Passive which increases Stamina based on Renown level
 void deepening_bond( special_effect_t& effect )
 {
@@ -2041,6 +2053,7 @@ void register_special_effects()
   register_soulbind_special_effect( 319973, soulbinds::built_for_war );  // Draven
   register_soulbind_special_effect( 332753, soulbinds::superior_tactics );
   register_soulbind_special_effect( 352417, soulbinds::battlefield_presence );
+  register_soulbind_special_effect( 332754, soulbinds::hold_your_ground );
   // Kyrian
   register_soulbind_special_effect( 328257, soulbinds::let_go_of_the_past );  // Pelagos
   register_soulbind_special_effect( 328266, soulbinds::combat_meditation );
@@ -2057,10 +2070,12 @@ void register_special_effects()
   register_soulbind_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
   register_soulbind_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
   register_soulbind_special_effect( 342156, soulbinds::lead_by_example, true );
+  register_soulbind_special_effect( 323921, soulbinds::emenis_magnificent_skin );
   register_soulbind_special_effect( 326514, soulbinds::forgeborne_reveries );  // Heirmir
   register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone, true );
   register_soulbind_special_effect( 350899, soulbinds::carvers_eye );
+  register_soulbind_special_effect( 350935, soulbinds::waking_bone_breastplate );
   register_soulbind_special_effect( 350936, soulbinds::mnemonic_equipment );
   // Covenant Renown Stamina Passives
   unique_gear::register_special_effect( 344052, soulbinds::deepening_bond );  // Night Fae Rank 1
