@@ -7365,6 +7365,13 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
       active_spells.bursting_sores -> execute();
     }
   }
+
+  // Currently on PTR on mob death you only get the benefit of a single stack, even though you really should be getting for each stack
+  if ( dbc -> ptr && conduits.convocation_of_the_dead.ok() )
+  {
+    cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
+      conduits.convocation_of_the_dead.value() / 10 ) );
+  }
 }
 
 void death_knight_t::trigger_virulent_plague_death( player_t* target )
