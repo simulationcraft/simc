@@ -497,7 +497,7 @@ struct interrupt_t : public spell_t
   {
     parse_options( options_str );
     callbacks = true;
-    dual = true;
+    dual = usable_while_casting = true;
     may_miss = may_block = may_crit = false;
     ignore_false_positive = is_interrupt = true;
     trigger_gcd = 0_ms;
