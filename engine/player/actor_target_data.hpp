@@ -53,6 +53,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* dream_delver;                // nightfae/dreamweaver/dream delver debuff
     buff_t* carvers_eye_debuff;          // necrolord/bonesmith/carver's eye debuff for cd tracking
     buff_t* scouring_touch;              // shard of domination
+    buff_t* soulglow_spectrometer;       // kyrian/mikanikos soulglow spectrometer debuff
   } debuff;
 
   struct atd_dot_t
