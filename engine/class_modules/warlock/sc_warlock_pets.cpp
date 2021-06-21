@@ -232,6 +232,18 @@ struct shadow_bite_t : public warlock_pet_melee_attack_t
   }
 };
 
+struct spell_lock_t : public warlock_pet_spell_t
+{
+  spell_lock_t( warlock_pet_t* p, const std::string& options_str )
+    : warlock_pet_spell_t( "Spell Lock", p, p->find_spell( 19647 ) )
+  {
+    parse_options(options_str);
+
+    may_miss = may_block = may_dodge = may_parry = false;
+    ignore_false_positive = is_interrupt = true;
+  }
+};
+
 felhunter_pet_t::felhunter_pet_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_FELHUNTER, name != "felhunter" )
 {
@@ -249,12 +261,15 @@ void felhunter_pet_t::init_base_stats()
   owner_coeff.sp_from_sp *= 1.15;
 
   melee_attack = new warlock_pet_melee_t( this );
+  special_action = new spell_lock_t( this, "" );
 }
 
 action_t* felhunter_pet_t::create_action( util::string_view name, const std::string& options_str )
 {
   if ( name == "shadow_bite" )
     return new shadow_bite_t( this );
+  if ( name == "spell_lock" )
+    return new spell_lock_t( this, options_str );
   return warlock_pet_t::create_action( name, options_str );
 }
 
