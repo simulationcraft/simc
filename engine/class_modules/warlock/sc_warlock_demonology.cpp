@@ -1233,20 +1233,18 @@ void warlock_t::create_apl_demonology()
   def->add_action( "summon_demonic_tyrant,if=time_to_die<15" );
   def->add_action( "call_action_list,name=fillers" );
   def->add_action( "hand_of_guldan,if=soul_shard=5" );
-  def->add_action( "hand_of_guldan,if=soul_shard>=3&(pet.dreadstalker.active|pet.demonic_tyrant.active)" );
+  def->add_action( "hand_of_guldan,if=soul_shard>=3&(pet.dreadstalker.active|pet.demonic_tyrant.active)", "If Dreadstalkers are already active, no need to save shards" );
   def->add_action( "hand_of_guldan,if=soul_shard>=1&buff.nether_portal.up&cooldown.call_dreadstalkers.remains>2*gcd.max" );
   def->add_action( "hand_of_guldan,if=soul_shard>=1&cooldown.summon_demonic_tyrant.remains_expected<gcd.max&time>variable.first_tyrant_time-gcd.max" );
   def->add_action( "call_action_list,name=covenant_ability,if=!covenant.venthyr" );
-  def->add_action( "soul_strike,if=!talent.sacrificed_souls.enabled" );
-  //NOTE: tested these values. upper bound for holding demonic core stacks doesnt change with haste, but the lower bound does.
-  def->add_action( "demonbolt,if=buff.demonic_core.react&soul_shard<4&cooldown.summon_demonic_tyrant.remains_expected>20" );
-  def->add_action( "demonbolt,if=buff.demonic_core.react&soul_shard<4&cooldown.summon_demonic_tyrant.remains_expected<12" );
+  def->add_action( "soul_strike,if=!talent.sacrificed_souls.enabled", "Without Sacrificed Souls, Soul Strike is stronger than Demonbolt, so it has a higher priority" );
+  def->add_action( "demonbolt,if=buff.demonic_core.react&soul_shard<4&cooldown.summon_demonic_tyrant.remains_expected>20", "Spend Demonic Cores for Soul Shards until Tyrant cooldown is close to ready" );
+  def->add_action( "demonbolt,if=buff.demonic_core.react&soul_shard<4&cooldown.summon_demonic_tyrant.remains_expected<12", "During Tyrant setup, spend Demonic Cores for Soul Shards" );
   def->add_action( "demonbolt,if=buff.demonic_core.react&soul_shard<4&(buff.demonic_core.stack>2|talent.sacrificed_souls.enabled)" );
   def->add_action( "demonbolt,if=buff.demonic_core.react&soul_shard<4&active_enemies>1" );
   def->add_action( "soul_strike" );
   def->add_action( "call_action_list,name=covenant_ability" );
-  //the expression at the end here is the time needed to get back to 5 shards after casting the current hog and cast another hog
-  def->add_action( "hand_of_guldan,if=soul_shard>=3&cooldown.summon_demonic_tyrant.remains_expected>25&(talent.demonic_calling.enabled|cooldown.call_dreadstalkers.remains>((5-soul_shard)*action.shadow_bolt.execute_time)+action.hand_of_guldan.execute_time)" );
+  def->add_action( "hand_of_guldan,if=soul_shard>=3&cooldown.summon_demonic_tyrant.remains_expected>25&(talent.demonic_calling.enabled|cooldown.call_dreadstalkers.remains>((5-soul_shard)*action.shadow_bolt.execute_time)+action.hand_of_guldan.execute_time)", "If you can get back to 5 Soul Shards before Dreadstalkers cooldown is ready, it's okay to spend them now" );
   def->add_action( "doom,cycle_targets=1,if=refreshable&time>variable.first_tyrant_time" );
   def->add_action( "shadow_bolt" );
 
@@ -1282,16 +1280,15 @@ void warlock_t::create_apl_demonology()
   ogcd->add_action( "use_items" );
 
   trinks->add_action( "call_action_list,name=hp_trinks,if=talent.demonic_consumption.enabled&cooldown.summon_demonic_tyrant.remains_expected<20" );
-  trinks->add_action( "call_action_list,name=5y_per_sec_trinkets" );
+  trinks->add_action( "call_action_list,name=5y_per_sec_trinkets", "Effects that travel slowly to target require additional, separate handling" );
   trinks->add_action( "use_item,name=overflowing_anima_cage,if=pet.demonic_tyrant.active" );
   trinks->add_action( "use_item,slot=trinket1,if=trinket.1.has_use_buff&pet.demonic_tyrant.active" );
   trinks->add_action( "use_item,slot=trinket2,if=trinket.2.has_use_buff&pet.demonic_tyrant.active" );
   trinks->add_action( "call_action_list,name=pure_damage_trinks,if=time>variable.first_tyrant_time" );
 
-  //all are 5y per sec, Ordnance has a 12 seconds delay and is therefor skipped for the first tyrant to line up better with the rest.
   five_y->add_action( "use_item,name=soulletting_ruby,if=cooldown.summon_demonic_tyrant.remains_expected<target.distance%5&time>variable.first_tyrant_time-(target.distance%5)" );
   five_y->add_action( "use_item,name=sunblood_amethyst,if=cooldown.summon_demonic_tyrant.remains_expected<target.distance%5&time>variable.first_tyrant_time-(target.distance%5)" );
-  five_y->add_action( "use_item,name=empyreal_ordnance,if=cooldown.summon_demonic_tyrant.remains_expected<(target.distance%5)+12&cooldown.summon_demonic_tyrant.remains_expected>(((target.distance%5)+12)-15)&time>variable.first_tyrant_time-((target.distance%5)+12)" );
+  five_y->add_action( "use_item,name=empyreal_ordnance,if=cooldown.summon_demonic_tyrant.remains_expected<(target.distance%5)+12&cooldown.summon_demonic_tyrant.remains_expected>(((target.distance%5)+12)-15)&time>variable.first_tyrant_time-((target.distance%5)+12)", "Ordnance has a 12 second delay and is therefore skipped for first Tyrant to line up with the rest" );
 
   hp->add_action( "use_item,name=sinful_gladiators_emblem" );
   hp->add_action( "use_item,name=sinful_aspirants_emblem" );
