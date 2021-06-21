@@ -79,12 +79,13 @@ void arcane( player_t* p )
   precombat->add_action( "variable,name=ap_minimum_mana_pct,op=reset,default=15" );
   precombat->add_action( "variable,name=totm_max_charges,op=reset,default=2" );
   precombat->add_action( "variable,name=aoe_totm_max_charges,op=reset,default=2" );
-  precombat->add_action( "variable,name=fishing_opener,default=-1,op=set,if=variable.fishing_opener=-1,value=1*(equipped.empyreal_ordnance|(talent.rune_of_power&(talent.arcane_echo|!covenant.kyrian)&(!covenant.necrolord|active_enemies=1|runeforge.siphon_storm)))" );
+  precombat->add_action( "variable,name=fishing_opener,default=-1,op=set,if=variable.fishing_opener=-1,value=1*(equipped.empyreal_ordnance|(talent.rune_of_power&(talent.arcane_echo|!covenant.kyrian)&(!covenant.necrolord|active_enemies=1|runeforge.siphon_storm)&!covenant.venthyr))" );
   precombat->add_action( "variable,name=ap_on_use,op=set,value=equipped.macabre_sheet_music|equipped.gladiators_badge|equipped.gladiators_medallion|equipped.darkmoon_deck_putrescence|equipped.inscrutable_quantum_device|equipped.soulletting_ruby|equipped.sunblood_amethyst|equipped.wakeners_frond|equipped.flame_of_battle" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "mirror_image" );
   precombat->add_action( "frostbolt,if=!variable.prepull_evo=1&runeforge.disciplinary_command" );
-  precombat->add_action( "arcane_blast,if=!variable.prepull_evo=1&!runeforge.disciplinary_command" );
+  precombat->add_action( "arcane_blast,if=!variable.prepull_evo=1&!runeforge.disciplinary_command&(!covenant.venthyr|variable.fishing_opener)" );
+  precombat->add_action( "mirrors_of_torment,if=!variable.prepull_evo=1&!runeforge.disciplinary_command&covenant.venthyr&!variable.fishing_opener" );
   precombat->add_action( "evocation,if=variable.prepull_evo=1" );
 
   default_->add_action( "counterspell" );
@@ -105,6 +106,7 @@ void arcane( player_t* p )
   default_->add_action( "use_item,name=glyph_of_assimilation,if=cooldown.arcane_power.remains>=20|!variable.ap_on_use=1|(time=0&variable.fishing_opener=1&runeforge.siphon_storm)" );
   default_->add_action( "use_item,name=macabre_sheet_music,if=cooldown.arcane_power.remains<=5&(!variable.fishing_opener=1|time>30)" );
   default_->add_action( "use_item,name=macabre_sheet_music,if=cooldown.arcane_power.remains<=5&variable.fishing_opener=1&buff.rune_of_power.up&buff.rune_of_power.remains<=(10-5*runeforge.siphon_storm)&time<30" );
+  default_->add_action( "newfound_resolve,use_while_casting=1,if=buff.arcane_power.up|debuff.touch_of_the_magi.up|dot.radiant_spark.ticking" );
   default_->add_action( "call_action_list,name=calculations" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>2" );
   default_->add_action( "call_action_list,name=harmony,if=covenant.kyrian&runeforge.arcane_infinity" );
@@ -133,18 +135,21 @@ void arcane( player_t* p )
   opener->add_action( "frost_nova,if=runeforge.grisly_icicle&mana.pct>95" );
   opener->add_action( "deathborne" );
   opener->add_action( "radiant_spark,if=mana.pct>40" );
-  opener->add_action( "shifting_power,if=buff.arcane_power.down&cooldown.arcane_power.remains" );
   opener->add_action( "mirrors_of_torment" );
+  opener->add_action( "shifting_power,if=buff.arcane_power.down&cooldown.arcane_power.remains" );
+  opener->add_action( "arcane_orb,if=cooldown.arcane_power.ready&buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
+  opener->add_action( "arcane_blast,if=covenant.venthyr&cooldown.mirrors_of_torment.remains>84" );
   opener->add_action( "touch_of_the_magi" );
   opener->add_action( "arcane_power" );
-  opener->add_action( "rune_of_power,if=buff.rune_of_power.down" );
+  opener->add_action( "rune_of_power,if=buff.arcane_power.down" );
   opener->add_action( "presence_of_mind,if=!talent.arcane_echo&debuff.touch_of_the_magi.up&debuff.touch_of_the_magi.remains<=(action.arcane_blast.execute_time*buff.presence_of_mind.max_stack)", "Use PoM to squeeze an extra Arcane Blast during the TotM/AP window unless running Arcane Echo. If Arcane Echo is talented, we can't use PoM within the TotM/AP window unless we interrupt the AM channel, so we'll save it." );
   opener->add_action( "presence_of_mind,if=buff.arcane_power.up&buff.rune_of_power.remains<=(action.arcane_blast.execute_time*buff.presence_of_mind.max_stack)", "If PoM hasn't been used during the TotM window, we'll use it to squeeze an extra Arcane Blast in the RoP/AP window." );
   opener->add_action( "arcane_blast,if=dot.radiant_spark.remains>5|debuff.radiant_spark_vulnerability.stack>0" );
   opener->add_action( "arcane_barrage,if=buff.arcane_power.up&buff.arcane_power.remains<gcd&runeforge.arcane_infinity", "Always Barrage at the end of AP when running the Arcane Harmony legendary" );
   opener->add_action( "arcane_barrage,if=buff.rune_of_power.up&buff.arcane_power.down&buff.rune_of_power.remains<=gcd&runeforge.arcane_infinity", "Always Barrage at the end of the RoP window when running the Arcane Harmony legendary" );
   opener->add_action( "arcane_missiles,if=debuff.touch_of_the_magi.up&talent.arcane_echo&(buff.deathborne.down|active_enemies=1)&debuff.touch_of_the_magi.remains>action.arcane_missiles.execute_time,chain=1,early_chain_if=buff.clearcasting_channel.down&(buff.arcane_power.up|(!talent.overpowered&(buff.rune_of_power.up|cooldown.evocation.ready)))" );
-  opener->add_action( "arcane_missiles,if=buff.clearcasting.react,chain=1" );
+  opener->add_action( "arcane_missiles,if=buff.clearcasting.stack=buff.clearcasting.max_stack&covenant.venthyr" );
+  opener->add_action( "arcane_missiles,if=buff.clearcasting.react&cooldown.arcane_power.remains&(buff.rune_of_power.up|buff.arcane_power.up),chain=1" );
   opener->add_action( "arcane_orb,if=buff.arcane_charge.stack<=variable.totm_max_charges" );
   opener->add_action( "arcane_blast,if=buff.rune_of_power.up|mana.pct>15" );
   opener->add_action( "evocation,if=buff.rune_of_power.down&buff.arcane_power.down,interrupt_if=mana.pct>=85,interrupt_immediate=1" );
@@ -155,7 +160,8 @@ void arcane( player_t* p )
   fishing_opener->add_action( "fire_blast,if=runeforge.disciplinary_command&buff.disciplinary_command_frost.up" );
   fishing_opener->add_action( "frost_nova,if=runeforge.grisly_icicle&mana.pct>95" );
   fishing_opener->add_action( "arcane_missiles,if=runeforge.arcane_infinity&buff.arcane_harmony.stack<buff.arcane_harmony.max_stack&((buff.arcane_power.down&cooldown.arcane_power.ready)|debuff.touch_of_the_magi.up),chain=1" );
-  fishing_opener->add_action( "arcane_orb,if=cooldown.rune_of_power.ready", "actions.fishing_opener+=/rune_of_power,if=runeforge.siphon_storm" );
+  fishing_opener->add_action( "rune_of_power,if=runeforge.siphon_storm" );
+  fishing_opener->add_action( "arcane_orb,if=cooldown.rune_of_power.ready" );
   fishing_opener->add_action( "arcane_blast,if=cooldown.rune_of_power.ready&buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
   fishing_opener->add_action( "deathborne,if=!runeforge.temporal_warp|conduit.gift_of_the_lich" );
   fishing_opener->add_action( "rune_of_power" );
@@ -163,7 +169,7 @@ void arcane( player_t* p )
   fishing_opener->add_action( "potion,if=!runeforge.temporal_warp&(!runeforge.siphon_storm|variable.prepull_evo=1)", "Normally we pair potion use with AP, but it will last long enough for both the RoP and AP windows unless running the SS or TW legendaries" );
   fishing_opener->add_action( "deathborne,if=buff.rune_of_power.down|prev_gcd.1.arcane_barrage" );
   fishing_opener->add_action( "radiant_spark,if=buff.rune_of_power.down|prev_gcd.1.arcane_barrage" );
-  fishing_opener->add_action( "mirrors_of_torment,if=buff.rune_of_power.remains<6" );
+  fishing_opener->add_action( "mirrors_of_torment,if=buff.rune_of_power.remains<(6+2*runeforge.siphon_storm)" );
   fishing_opener->add_action( "arcane_power,if=variable.empowered_barrage&buff.rune_of_power.up&(mana.pct<(25+(10*covenant.kyrian))|buff.clearcasting.stack=buff.clearcasting.max_stack)", "When running the Harmony legendary, use AP before TotM to dump a fully stacked bararge" );
   fishing_opener->add_action( "arcane_barrage,if=variable.empowered_barrage&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.arcane_power.up" );
   fishing_opener->add_action( "touch_of_the_magi,if=buff.rune_of_power.down|prev_gcd.1.arcane_barrage|prev_gcd.1.radiant_spark|prev_gcd.1.deathborne" );
@@ -221,7 +227,8 @@ void arcane( player_t* p )
   rotation->add_action( "arcane_orb,if=buff.arcane_charge.stack<=variable.totm_max_charges" );
   rotation->add_action( "supernova,if=variable.outside_of_cooldowns&mana.pct<=95" );
   rotation->add_action( "arcane_blast,if=buff.rule_of_threes.up&buff.arcane_charge.stack>3" );
-  rotation->add_action( "arcane_barrage,if=variable.outside_of_cooldowns&mana.pct<=variable.barrage_mana_pct&buff.arcane_charge.stack=buff.arcane_charge.max_stack&cooldown.evocation.remains", "Dump charges if we fall below the conserve mana threshold and evocation is still on cooldown" );
+  rotation->add_action( "arcane_barrage,if=!runeforge.siphon_storm&variable.outside_of_cooldowns&buff.arcane_charge.stack=buff.arcane_charge.max_stack&talent.arcane_orb&cooldown.arcane_orb.remains<=gcd&mana.pct<=90&cooldown.evocation.remains", "Dump charges if we fall below the conserve mana threshold and evocation is still on cooldown" );
+  rotation->add_action( "arcane_barrage,if=runeforge.siphon_storm&variable.outside_of_cooldowns&buff.arcane_charge.stack=buff.arcane_charge.max_stack&talent.arcane_orb&cooldown.arcane_orb.remains<=gcd&mana.pct<=90&cooldown.evocation.remains<30" );
   rotation->add_action( "arcane_barrage,if=variable.outside_of_cooldowns&buff.arcane_charge.stack=buff.arcane_charge.max_stack&talent.arcane_orb&cooldown.arcane_orb.remains<=gcd&mana.pct<=90&cooldown.evocation.remains", "Dump charges if orb is ready" );
   rotation->add_action( "arcane_barrage,if=buff.arcane_power.up&buff.arcane_power.remains<=gcd&buff.arcane_charge.stack=buff.arcane_charge.max_stack&(cooldown.evocation.remains|runeforge.arcane_infinity)", "Arcane Barrage should generally be the last cast of the AP window" );
   rotation->add_action( "arcane_barrage,if=buff.rune_of_power.up&buff.arcane_power.down&buff.rune_of_power.remains<=gcd&buff.arcane_charge.stack=buff.arcane_charge.max_stack&(cooldown.evocation.remains|runeforge.arcane_infinity)", "Arcane Barrage should generally be the last cast of the RoP window" );
