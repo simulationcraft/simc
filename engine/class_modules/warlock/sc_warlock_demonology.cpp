@@ -1217,6 +1217,7 @@ void warlock_t::create_apl_demonology()
   action_priority_list_t* fill    	    = get_action_priority_list( "fillers" );
 
   def->add_action("call_action_list,name=trinkets");
+  def->add_action("interrupt,if=target.debuff.casting.react");
   def->add_action("doom,if=refreshable");
   def->add_action("call_action_list,name=covenant_ability,if=soulbind.grove_invigoration|soulbind.field_of_blossoms|soulbind.combat_meditation|covenant.necrolord");
   def->add_action("call_action_list,name=tyrant_setup");
