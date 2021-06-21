@@ -1240,7 +1240,7 @@ void warlock_t::create_apl_demonology()
   def->add_action("soul_strike,if=!talent.sacrificed_souls.enabled");
   //NOTE: tested these values. upper bound for holding demonic core stacks doesnt change with haste, but the lower bound does.
   def->add_action("demonbolt,if=buff.demonic_core.react&soul_shard<4&cooldown.summon_demonic_tyrant.remains_expected>20");
-  def->add_action("demonbolt,if=buff.demonic_core.react&soul_shard<4&cooldown.summon_demonic_tyrant.remains_expected<10+((gcd.max-1)*8)");
+  def->add_action("demonbolt,if=buff.demonic_core.react&soul_shard<4&cooldown.summon_demonic_tyrant.remains_expected<12");
   def->add_action("demonbolt,if=buff.demonic_core.react&soul_shard<4&(buff.demonic_core.stack>2|talent.sacrificed_souls.enabled)");
   def->add_action("demonbolt,if=buff.demonic_core.react&soul_shard<4&active_enemies>1");
   def->add_action("soul_strike");
