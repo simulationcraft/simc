@@ -1231,7 +1231,6 @@ void warlock_t::create_apl_demonology()
   def->add_action( "grimoire_felguard,if=time_to_die<30" );
   def->add_action( "summon_vilefiend,if=time_to_die<28" );
   def->add_action( "summon_demonic_tyrant,if=time_to_die<15" );
-  def->add_action( "call_action_list,name=fillers" );
   def->add_action( "hand_of_guldan,if=soul_shard=5" );
   def->add_action( "hand_of_guldan,if=soul_shard>=3&(pet.dreadstalker.active|pet.demonic_tyrant.active)", "If Dreadstalkers are already active, no need to save shards" );
   def->add_action( "hand_of_guldan,if=soul_shard>=1&buff.nether_portal.up&cooldown.call_dreadstalkers.remains>2*gcd.max" );
