@@ -519,6 +519,8 @@ struct interrupt_t : public spell_t
       default:
         break;
     }
+
+    spell_t::execute();
   }
 
   bool ready() override
