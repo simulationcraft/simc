@@ -1074,8 +1074,8 @@ void brons_call_to_action( special_effect_t& effect )
         parse_options( options_str );
 
         interrupt_auto_attack   = false;
-        spell_power_mod.direct  = 0.55;  // Not in spell data
         attack_power_mod.direct = 0.55;  // Not in spell data
+        spell_power_mod.direct  = 0.55;  // Not in spell data
       }
 
       // cannon = 0.55 * max(0.5 * player's ap, 2 * player's sp)
@@ -1109,8 +1109,8 @@ void brons_call_to_action( special_effect_t& effect )
       bron_smash_damage_t( pet_t* p ) : spell_t( "smash", p, p->find_spell( 341165 ) )
       {
         background              = true;
-        spell_power_mod.direct  = 1.0;  // Not in spell data
-        attack_power_mod.direct = 1.0;  // Not in spell data
+        attack_power_mod.direct = 1.0;   // Not in spell data
+        spell_power_mod.direct  = 0.25;  // Not in spell data
         aoe                     = -1;
         radius                  = data().effectN( 1 ).radius_max();
       }
@@ -1158,8 +1158,34 @@ void brons_call_to_action( special_effect_t& effect )
       {
         parse_options( options_str );
 
-        interrupt_auto_attack  = false;
-        spell_power_mod.direct = 0.575;  // Not in spell data
+        interrupt_auto_attack   = false;
+        attack_power_mod.direct = 2.3;    // Not in spell data
+        spell_power_mod.direct  = 0.575;  // Not in spell data
+      }
+
+      // vitalizing bolt = max(1.15 * player's ap, 1.15 * player's sp)
+      // Since AP conversion is set to 0.5; and SP conversion is set to 2
+      // Just need to 2.3x Bron's AP, and 0.575x Bron's SP
+      double attack_direct_power_coefficient( const action_state_t* s ) const override
+      {
+        auto ap = 2.3 * composite_attack_power() * player->composite_attack_power_multiplier();
+        auto sp = 0.575 * composite_spell_power() * player->composite_spell_power_multiplier();
+
+        if ( ap <= sp )
+          return 0;
+
+        return heal_t::attack_direct_power_coefficient( s );
+      }
+
+      double spell_direct_power_coefficient( const action_state_t* s ) const override
+      {
+        auto ap = 2.3 * composite_attack_power() * player->composite_attack_power_multiplier();
+        auto sp = 0.575 * composite_spell_power() * player->composite_spell_power_multiplier();
+
+        if ( ap > sp )
+          return 0;
+
+        return heal_t::spell_direct_power_coefficient( s );
       }
 
       void execute() override
