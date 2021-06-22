@@ -1987,8 +1987,19 @@ void newfound_resolve( special_effect_t& effect )
   } );
 }
 
+//TODO: Model losing/gaining buff based on movement state
 void hold_your_ground( special_effect_t& effect )
 {
+  if ( !effect.player->buffs.hold_your_ground )
+    effect.player->buffs.hold_your_ground = 
+        make_buff( effect.player, "hold_your_ground", effect.player->find_spell( 333089 ) )
+            ->set_pct_buff_type( STAT_PCT_BUFF_STAMINA )
+            ->set_default_value_from_effect( 1 )
+            ->set_stack_change_callback( [ effect ]( buff_t*, int /* old */, int /* cur */ ) {
+                effect.player->recalculate_resource_max( RESOURCE_HEALTH );
+            } );;
+
+  effect.player->register_combat_begin( effect.player->buffs.hold_your_ground );
 }
 
 void emenis_magnificent_skin( special_effect_t& effect )
