@@ -152,7 +152,6 @@ void marksmanship( player_t* p )
   cds -> add_action( "ancestral_call,if=buff.trueshot.up|target.time_to_die<16" );
   cds -> add_action( "fireblood,if=buff.trueshot.up|target.time_to_die<9" );
   cds -> add_action( "lights_judgment,if=buff.trueshot.down" );
-  cds -> add_action( "bag_of_tricks,if=buff.trueshot.down" );
   cds -> add_action( "potion,if=buff.trueshot.up&buff.bloodlust.up|buff.trueshot.up&target.health.pct<20|target.time_to_die<26" );
 
   st -> add_action( "steady_shot,if=talent.steady_focus&(prev_gcd.1.steady_shot&buff.steady_focus.remains<5|buff.steady_focus.down)" );
@@ -176,6 +175,7 @@ void marksmanship( player_t* p )
   st -> add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration" );
   st -> add_action( "barrage,if=active_enemies>1" );
   st -> add_action( "rapid_fire,if=(cooldown.resonating_arrow.remains>10&runeforge.surging_shots|!covenant.kyrian|talent.lethal_shots)&focus+cast_regen<focus.max&(buff.double_tap.down|talent.streamline)" );
+  st -> add_action( "bag_of_tricks,if=buff.trueshot.down" );
   st -> add_action( "steady_shot" );
 
   trickshots -> add_action( "steady_shot,if=talent.steady_focus&in_flight&buff.steady_focus.remains<5" );
@@ -199,6 +199,7 @@ void marksmanship( player_t* p )
   trickshots -> add_action( "flayed_shot" );
   trickshots -> add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable" );
   trickshots -> add_action( "multishot,if=focus>cost+action.aimed_shot.cost" );
+  trickshots -> add_action( "bag_of_tricks,if=buff.trueshot.down" );
   trickshots -> add_action( "steady_shot" );
 }
 
