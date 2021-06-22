@@ -238,8 +238,8 @@ void survival( player_t* p )
   cds -> add_action( "aspect_of_the_eagle,if=target.distance>=6" );
   
   nta -> add_action( "steel_trap" );
-  nta -> add_action( "freezing_trap,if=!buff.wild_spirits.remains|buff.wild_spirits.remains&cooldown.kill_command.remains&focus<action.mongoose_bite.cost" );
-  nta -> add_action( "tar_trap,if=!buff.wild_spirits.remains|buff.wild_spirits.remains&cooldown.kill_command.remains&focus<action.mongoose_bite.cost" );
+  nta -> add_action( "freezing_trap,if=!buff.wild_spirits.remains|buff.wild_spirits.remains&cooldown.kill_command.remains" );
+  nta -> add_action( "tar_trap,if=!buff.wild_spirits.remains|buff.wild_spirits.remains&cooldown.kill_command.remains" );
 
   default_ -> add_action( "auto_attack" );
   default_ -> add_action( "use_items" );
@@ -281,7 +281,7 @@ void survival( player_t* p )
   bop -> add_action( "wildfire_bomb,if=focus+cast_regen<focus.max&!ticking&full_recharge_time<gcd" );
   bop -> add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
   bop -> add_action( "flayed_shot" );
-  bop -> add_action( "call_action_list,name=nta,if=runeforge.nessingwarys_trapping_apparatus.equipped&focus<action.mongoose_bite.cost" ); 
+  bop -> add_action( "call_action_list,name=nta,if=runeforge.nessingwarys_trapping_apparatus.equipped&(focus<action.mongoose_bite.cost|focus<action.raptor_strike.cost)" ); 
   bop -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
   bop -> add_action( "raptor_strike,target_if=max:debuff.latent_poison_injection.stack,if=buff.coordinated_assault.up&buff.coordinated_assault.remains<1.5*gcd" );
   bop -> add_action( "mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if=buff.coordinated_assault.up&buff.coordinated_assault.remains<1.5*gcd" );
