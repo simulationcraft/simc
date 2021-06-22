@@ -7030,7 +7030,7 @@ double monk_t::composite_melee_attack_power_by_type( attack_power_type type ) co
 double monk_t::composite_spell_power( school_e school ) const
 {
   if ( base.spell_power_per_attack_power > 0 )
-    return composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
+    return base.spell_power_per_attack_power * composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
            composite_attack_power_multiplier();
 
   return player_t::composite_spell_power( school );
