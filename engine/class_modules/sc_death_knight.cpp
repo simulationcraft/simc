@@ -7366,7 +7366,7 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
     }
   }
 
-  // Currently on PTR on mob death you only get the benefit of a single stack, even though you really should be getting for each stack
+  // 2021-Jun-21 Currently on PTR on mob death you only get the benefit of a single stack, even though you really should be getting for each stack
   if ( dbc -> ptr && conduits.convocation_of_the_dead.ok() )
   {
     cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
