@@ -297,7 +297,10 @@ void grove_invigoration( special_effect_t& effect )
     buff = make_buff<stat_buff_t>( effect.player, "redirected_anima", effect.player->find_spell( 342814 ) )
                ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                ->set_default_value_from_effect( 1 )  // default value is used to hold the hp %
-               ->set_stack_change_callback( [ effect ]( buff_t*, int /* old */, int /* cur */ ) {
+               ->set_stack_change_callback( [ effect ]( buff_t* b, int old , int cur ) {
+                 effect.player->resources.initial_multiplier[ RESOURCE_HEALTH ] *=
+                   ( 1.0 + cur * b->default_value ) / ( 1.0 + old * b->default_value );
+
                  effect.player->recalculate_resource_max( RESOURCE_HEALTH );
                } );
   }
@@ -2008,7 +2011,9 @@ void emenis_magnificent_skin( special_effect_t& effect )
     effect.player->buffs.emenis_magnificent_skin =
         make_buff( effect.player, "emenis_magnificent_skin", effect.player->find_spell( 328210 ) )
             ->set_default_value_from_effect( 1, 0.01 )
-            ->set_stack_change_callback( [ effect ]( buff_t*, int /* old */, int /* cur */ ) {
+            ->set_stack_change_callback( [ effect ]( buff_t* b, int old, int cur ) {
+                effect.player->resources.initial_multiplier[ RESOURCE_HEALTH ] *=
+                  ( 1.0 + cur * b->default_value ) / ( 1.0 + old * b->default_value );
                 effect.player->recalculate_resource_max( RESOURCE_HEALTH );
             } );
 }
@@ -2022,7 +2027,9 @@ void waking_bone_breastplate( special_effect_t& effect )
         make_buff( effect.player, "waking_bone_breastplate", effect.driver() )
             ->set_duration( 0_ms )
             ->set_default_value( 0.05 )
-            ->set_stack_change_callback( [ effect ]( buff_t*, int /* old */, int /* cur */ ) {
+            ->set_stack_change_callback( [ effect ]( buff_t* b, int old, int cur ) {
+                effect.player->resources.initial_multiplier[ RESOURCE_HEALTH ] *=
+                  ( 1.0 + cur * b->default_value ) / ( 1.0 + old * b->default_value );
                 effect.player->recalculate_resource_max( RESOURCE_HEALTH );
             }  );
 
