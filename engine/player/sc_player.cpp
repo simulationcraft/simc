@@ -6012,11 +6012,17 @@ void player_t::recalculate_resource_max( resource_e resource_type, gain_t* sourc
         resources.max[ resource_type ] *= 1.0 + buffs.redirected_anima->check_stack_value();
       }
 
-      //Necrolord (Emeni) Soulbind (increased max health buff from channeling Fleshcraft)
+      // Necrolord (Emeni) Soulbind (increased max health buff from channeling Fleshcraft)
 
       if ( buffs.emenis_magnificent_skin && buffs.emenis_magnificent_skin->up() )
       {
         resources.max[ resource_type ] *= 1.0 + buffs.emenis_magnificent_skin->check_value();
+      }
+
+      // Necrolord (Heirmir) Soulbind (increased max health buff if 3+ enemies nearby)
+      if ( buffs.waking_bone_breastplate && buffs.waking_bone_breastplate->up() )
+      {
+        resources.max[ resource_type ] *= 1.0 + buffs.waking_bone_breastplate->check_value();
       }
 
       // Make sure the player starts combat with full health

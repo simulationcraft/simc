@@ -2013,8 +2013,22 @@ void emenis_magnificent_skin( special_effect_t& effect )
             } );
 }
 
+//TODO: Add support for dynamically changing enemy count
+//Note: HP% and target count values are hardcoded in tooltip
 void waking_bone_breastplate( special_effect_t& effect )
 {
+  if ( !effect.player->buffs.waking_bone_breastplate )
+    effect.player->buffs.waking_bone_breastplate = 
+        make_buff( effect.player, "waking_bone_breastplate", effect.driver() )
+            ->set_duration( 0_ms )
+            ->set_default_value( 0.05 )
+            ->set_stack_change_callback( [ effect ]( buff_t*, int /* old */, int /* cur */ ) {
+                effect.player->recalculate_resource_max( RESOURCE_HEALTH );
+            }  );
+
+  effect.player->register_combat_begin( []( player_t* p ) {
+    if ( p->sim->active_enemies >= 3 ) { p->buffs.waking_bone_breastplate->trigger(); }
+    } );
 }
 
 // Passive which increases Stamina based on Renown level
