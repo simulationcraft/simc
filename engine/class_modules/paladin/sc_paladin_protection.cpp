@@ -404,6 +404,15 @@ struct judgment_prot_t : public judgment_t
     cooldown -> charges += as<int>( p -> talents.crusaders_judgment -> effectN( 1 ).base_value() );
   }
 
+  judgment_prot_t( paladin_t* p ) :
+    judgment_t( p ),
+    judge_holy_power( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) ),
+    sw_holy_power( as<int>( p -> talents.prot_sanctified_wrath -> effectN( 2 ).base_value() ) )
+  {
+    // this is for divine resonance
+    background = true;
+  }
+
   // Special things that happen when Judgment damages target
   void impact( action_state_t* s ) override
   {
@@ -749,6 +758,9 @@ void paladin_t::create_prot_actions()
 {
   active.divine_toll = new avengers_shield_dt_t( this );
   active.necrolord_shield_of_the_righteous = new shield_of_the_righteous_t( this );
+
+  if ( specialization() == PALADIN_PROTECTION )
+    active.judgment = new judgment_prot_t( this );
 }
 
 action_t* paladin_t::create_action_protection( util::string_view name, const std::string& options_str )

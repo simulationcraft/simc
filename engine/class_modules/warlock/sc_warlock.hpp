@@ -421,7 +421,7 @@ public:
     propagate_const<buff_t*> dread_calling;
     propagate_const<buff_t*> demonic_synergy;
     propagate_const<buff_t*> languishing_soul_detritus;
-    propagate_const<buff_t*> shard_of_annihilation; //TODO: 2021-05-28 PTR has a bug where it is not benefiting the last cast of spells (Drain Soul ticks work normally)
+    propagate_const<buff_t*> shard_of_annihilation;
     propagate_const<buff_t*> decaying_soul_satchel_haste; //These are one unified buff in-game but splitting them in simc to make it easier to apply stat pcts
     propagate_const<buff_t*> decaying_soul_satchel_crit;
   } buffs;

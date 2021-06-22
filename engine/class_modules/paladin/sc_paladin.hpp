@@ -80,6 +80,8 @@ public:
 
     // Conduit stuff
     action_t* virtuous_command;
+
+    action_t* judgment;
   } active;
 
   // Buffs
@@ -145,6 +147,8 @@ public:
     buff_t* final_verdict;
     buff_t* virtuous_command;
     buff_t* reign_of_ancient_kings;
+    buff_t* equinox;
+    buff_t* divine_resonance;
   } buffs;
 
   // Gains
@@ -421,6 +425,11 @@ public:
     item_runeforge_t relentless_inquisitor;
     item_runeforge_t tempest_of_the_lightbringer;
     item_runeforge_t reign_of_endless_kings;
+
+    item_runeforge_t seasons_of_plenty;
+    item_runeforge_t radiant_embers;
+    item_runeforge_t duty_bound_gavel;
+    item_runeforge_t divine_resonance;
   } legendary;
 
   // Paladin options
@@ -686,7 +695,7 @@ public:
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, p, s ),
     track_cd_waste( s -> cooldown() > 0_ms || s -> charge_cooldown() > 0_ms ),
-    cd_waste( nullptr ), 
+    cd_waste( nullptr ),
     affected_by( affected_by_t() ),
     hasted_cd( false ), hasted_gcd( false )
   {

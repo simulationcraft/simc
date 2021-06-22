@@ -408,8 +408,8 @@ struct incinerate_fnb_t : public destruction_spell_t
 
     if ( p()->legendary.shard_of_annihilation.ok() )
     {
-      //PTR 2020-05-28: "Critical Strike chance increased by 100%" was not producing guaranteed crits, assuming multiplicative
-      m *= 1.0 + p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
+      //PTR 2021-06-19: "Critical Strike chance increased by 100%" appears to be guaranteeing crits
+      m += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
     }
 
     return m;
@@ -534,8 +534,8 @@ struct incinerate_t : public destruction_spell_t
 
     if ( p()->legendary.shard_of_annihilation.ok() )
     {
-      //PTR 2020-05-28: "Critical Strike chance increased by 100%" was not producing guaranteed crits, assuming multiplicative
-      m *= 1.0 + p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
+      //PTR 2021-06-19: "Critical Strike chance increased by 100%" appears to be guaranteeing crits
+      m += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
     }
 
     return m;

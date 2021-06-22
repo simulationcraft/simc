@@ -1198,21 +1198,15 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    switch ( p()->specialization() )
+    if ( p()->specialization() == MONK_MISTWEAVER )
     {
-      case MONK_MISTWEAVER:
+      if ( p()->buff.thunder_focus_tea->up() )
       {
-        if ( p()->buff.thunder_focus_tea->up() )
-        {
-          if ( p()->spec.thunder_focus_tea_2->ok() )
-            p()->cooldown.rising_sun_kick->adjust( p()->spec.thunder_focus_tea_2->effectN( 1 ).time_value(), true );
+        if ( p()->spec.thunder_focus_tea_2->ok() )
+          p()->cooldown.rising_sun_kick->adjust( p()->spec.thunder_focus_tea_2->effectN( 1 ).time_value(), true );
 
-          p()->buff.thunder_focus_tea->decrement();
-          break;
-        }
+        p()->buff.thunder_focus_tea->decrement();
       }
-      default:
-        break;
     }
   }
 
@@ -7834,7 +7828,7 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t* s )
   {
     // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself (335913)
     // Touch of Karma (id = 124280) does not contribute to Empowered Tiger Lightning
-    if ( buff.invoke_xuen->check() && s->result_amount > 0 && s->action->id != 335913 && s->action->id != 124280 )
+    if ( ( buff.invoke_xuen->check() || buff.invoke_xuen_call_to_arms->check() ) && s->result_amount > 0 && s->action->id != 335913 && s->action->id != 124280 )
     {
       auto td = get_target_data( s->target );
 

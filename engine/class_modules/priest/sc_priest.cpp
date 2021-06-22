@@ -559,7 +559,7 @@ struct unholy_nova_t final : public priest_spell_t
       child_unholy_nova_healing->execute();
     }
 
-    if ( priest().legendary.pallid_command->ok() )
+    if ( priest().legendary.pallid_command->ok() && !s->chain_target)
     {
       if ( priest().specialization() == PRIEST_SHADOW )
       {

@@ -153,6 +153,10 @@ constexpr double m_pi = 3.14159265358979323846;
 
 #define RAPIDJSON_HAS_STDSTRING 1
 
+#if defined(_MSC_VER) && defined(_M_ARM64)
+#    define RAPIDJSON_ENDIAN RAPIDJSON_LITTLEENDIAN
+#endif
+
 #ifndef SC_USE_PTR
 #define SC_USE_PTR 1
 #endif

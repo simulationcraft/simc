@@ -143,8 +143,8 @@ struct shadow_bolt_t : public affliction_spell_t
 
     if ( p()->legendary.shard_of_annihilation.ok() )
     {
-      //PTR 2020-05-28: "Critical Strike chance increased by 100%" was not producing guaranteed crits, assuming multiplicative
-      m *= 1.0 + p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
+      //PTR 2021-06-19: "Critical Strike chance increased by 100%" appears to be guaranteeing crits
+      m += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
     }
 
     return m;
@@ -659,8 +659,8 @@ struct drain_soul_t : public affliction_spell_t
 
     if ( p()->legendary.shard_of_annihilation.ok() )
     {
-      //PTR 2020-05-28: "Critical Strike chance increased by 100%" was not producing guaranteed crits, assuming multiplicative
-      m *= 1.0 + p()->buffs.shard_of_annihilation->data().effectN( 3 ).percent();
+      //PTR 2021-06-19: "Critical Strike chance increased by 100%" appears to be guaranteeing crits
+      m += p()->buffs.shard_of_annihilation->data().effectN( 3 ).percent();
     }
 
     return m;
@@ -987,11 +987,14 @@ void warlock_t::create_apl_affliction()
 
   def->add_action( "call_action_list,name=item", "Catch-all item usage for anything not specified elsewhere" );
 
-  def->add_action( "call_action_list,name=se,if=debuff.shadow_embrace.stack<(2-action.shadow_bolt.in_flight)|debuff.shadow_embrace.remains<3", "Refresh Shadow Embrace before spending shards on Malefic Rapture" );
+  if ( min_version_check( VERSION_9_1_0 ) )
+    def->add_action( "call_action_list,name=se,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<(2-action.shadow_bolt.in_flight)|debuff.shadow_embrace.remains<3)" );
+  else
+    def->add_action( "call_action_list,name=se,if=debuff.shadow_embrace.stack<(2-action.shadow_bolt.in_flight)|debuff.shadow_embrace.remains<3", "Refresh Shadow Embrace before spending shards on Malefic Rapture" );
 
   def->add_action( "malefic_rapture,if=(dot.vile_taint.ticking|dot.impending_catastrophe_dot.ticking|dot.soul_rot.ticking)&(!runeforge.malefic_wrath|buff.malefic_wrath.stack<3|soul_shard>1)", "Use Malefic Rapture when major dots are up, or if there will be significant time until the next Phantom Singularity. If utilizing Malefic Wrath, hold a shard to refresh the buff" );
   def->add_action( "malefic_rapture,if=runeforge.malefic_wrath&cooldown.soul_rot.remains>20&buff.malefic_wrath.remains<4", "Use Malefic Rapture to maintain the malefic wrath buff until shards need to be generated for the next burst window (20 seconds is more than sufficient to generate 3 shards)" );
-  def->add_action( "malefic_rapture,if=talent.phantom_singularity&(dot.phantom_singularity.ticking|cooldown.phantom_singularity.remains>25|time_to_die<cooldown.phantom_singularity.remains)&(!runeforge.malefic_wrath|buff.malefic_wrath.stack<3|soul_shard>1)" );
+  def->add_action( "malefic_rapture,if=talent.phantom_singularity&(dot.phantom_singularity.ticking|cooldown.phantom_singularity.remains>25|time_to_die<cooldown.phantom_singularity.remains)&(!runeforge.malefic_wrath|buff.malefic_wrath.stack<3|soul_shard>1)", "Use Malefic Rapture on Phantom Singularity casts, making sure to save a shard to stack Malefic Wrath if using it" );
   def->add_action( "malefic_rapture,if=talent.sow_the_seeds" );
 
   def->add_action( "drain_life,if=buff.inevitable_demise.stack>40|buff.inevitable_demise.up&time_to_die<4", "Drain Life is only a DPS gain with Inevitable Demise near max stacks. If fight is about to end do not miss spending the stacks" );

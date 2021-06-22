@@ -323,8 +323,8 @@ struct demonbolt_t : public demonology_spell_t
 
     if ( p()->legendary.shard_of_annihilation.ok() )
     {
-      //PTR 2020-05-28: "Critical Strike chance increased by 100%" was not producing guaranteed crits, assuming multiplicative
-      m *= 1.0 + p()->buffs.shard_of_annihilation->data().effectN( 5 ).percent();
+      //PTR 2021-06-19: "Critical Strike chance increased by 100%" appears to be guaranteeing crits
+      m += p()->buffs.shard_of_annihilation->data().effectN( 5 ).percent();
     }
 
     return m;
@@ -1207,109 +1207,94 @@ void warlock_t::create_apl_demonology()
   action_priority_list_t* tyrant		= get_action_priority_list( "tyrant_setup" );
   action_priority_list_t* wilf   		= get_action_priority_list( "wilfreds_setup" );
   action_priority_list_t* no_wilf    	= get_action_priority_list( "no_wilfreds_setup" );
-  action_priority_list_t* pot    		= get_action_priority_list( "potion" );
-  action_priority_list_t* dur    		= get_action_priority_list( "during_tyrant" );
+  action_priority_list_t* ogcd    		= get_action_priority_list( "ogcd" );
   action_priority_list_t* trinks    	= get_action_priority_list( "trinkets" );
   action_priority_list_t* five_y    	= get_action_priority_list( "5y_per_sec_trinkets" );
   action_priority_list_t* hp    		= get_action_priority_list( "hp_trinks" );
   action_priority_list_t* dmg    		= get_action_priority_list( "pure_damage_trinks" );
-  action_priority_list_t* end    		= get_action_priority_list( "near_end" );
-  action_priority_list_t* fill    	    = get_action_priority_list( "fillers" );
 
-  def->add_action("call_action_list,name=trinkets");
-  def->add_action("doom,if=refreshable");
-  def->add_action("call_action_list,name=covenant_ability,if=soulbind.grove_invigoration|soulbind.field_of_blossoms|soulbind.combat_meditation|covenant.necrolord");
-  def->add_action("call_action_list,name=tyrant_setup");
-  def->add_action("call_action_list,name=potion");
-  def->add_action("call_action_list,name=during_tyrant,if=pet.demonic_tyrant.active");
-  def->add_action("demonic_strength,if=!runeforge.wilfreds_sigil_of_superior_summoning&cooldown.summon_demonic_tyrant.remains_expected>9");
-  def->add_action("call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected>20-5*!runeforge.wilfreds_sigil_of_superior_summoning");
-  def->add_action("power_siphon,if=buff.wild_imps.stack>1&buff.demonic_core.stack<3");
-  def->add_action("bilescourge_bombers,if=buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5");
-  def->add_action("implosion,if=active_enemies>1+(1*talent.sacrificed_souls.enabled)&buff.wild_imps.stack>=6&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5");
-  def->add_action("implosion,if=active_enemies>2&buff.wild_imps.stack>=6&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5&!runeforge.implosive_potential&(!talent.from_the_shadows.enabled|buff.from_the_shadows.up)");
-  def->add_action("implosion,if=active_enemies>2&buff.wild_imps.stack>=6&buff.implosive_potential.remains<2&runeforge.implosive_potential&(!talent.demonic_consumption.enabled|(buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5))");
-  def->add_action("implosion,if=buff.wild_imps.stack>=12&talent.soul_conduit.enabled&talent.from_the_shadows.enabled&runeforge.implosive_potential&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5");
-  def->add_action("call_action_list,name=near_end");
-  def->add_action("call_action_list,name=fillers");
+  def->add_action( "call_action_list,name=trinkets" );
+  def->add_action( "interrupt,if=target.debuff.casting.react" );
+  def->add_action( "doom,if=refreshable" );
+  def->add_action( "call_action_list,name=covenant_ability,if=soulbind.grove_invigoration|soulbind.field_of_blossoms|soulbind.combat_meditation|covenant.necrolord" );
+  def->add_action( "call_action_list,name=tyrant_setup" );
+  def->add_action( "potion,if=(cooldown.summon_demonic_tyrant.remains_expected<10&time>variable.first_tyrant_time-10|soulbind.refined_palate&cooldown.summon_demonic_tyrant.remains_expected<38)" );
+  def->add_action( "call_action_list,name=ogcd,if=pet.demonic_tyrant.active" );
+  def->add_action( "demonic_strength,if=(!runeforge.wilfreds_sigil_of_superior_summoning&cooldown.summon_demonic_tyrant.remains_expected>9)|pet.demonic_tyrant.remains<6*gcd.max" );
+  def->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected>20-5*!runeforge.wilfreds_sigil_of_superior_summoning" );
+  def->add_action( "power_siphon,if=buff.wild_imps.stack>1&buff.demonic_core.stack<3" );
+  def->add_action( "bilescourge_bombers,if=buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5" );
+  def->add_action( "implosion,if=active_enemies>1+(1*talent.sacrificed_souls.enabled)&buff.wild_imps.stack>=6&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5" );
+  def->add_action( "implosion,if=active_enemies>2&buff.wild_imps.stack>=6&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5&!runeforge.implosive_potential&(!talent.from_the_shadows.enabled|buff.from_the_shadows.up)" );
+  def->add_action( "implosion,if=active_enemies>2&buff.wild_imps.stack>=6&buff.implosive_potential.remains<2&runeforge.implosive_potential&(!talent.demonic_consumption.enabled|(buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5))" );
+  def->add_action( "implosion,if=buff.wild_imps.stack>=12&talent.soul_conduit.enabled&talent.from_the_shadows.enabled&runeforge.implosive_potential&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5" );
+  def->add_action( "grimoire_felguard,if=time_to_die<30" );
+  def->add_action( "summon_vilefiend,if=time_to_die<28" );
+  def->add_action( "summon_demonic_tyrant,if=time_to_die<15" );
+  def->add_action( "hand_of_guldan,if=soul_shard=5" );
+  def->add_action( "hand_of_guldan,if=soul_shard>=3&(pet.dreadstalker.active|pet.demonic_tyrant.active)", "If Dreadstalkers are already active, no need to save shards" );
+  def->add_action( "hand_of_guldan,if=soul_shard>=1&buff.nether_portal.up&cooldown.call_dreadstalkers.remains>2*gcd.max" );
+  def->add_action( "hand_of_guldan,if=soul_shard>=1&cooldown.summon_demonic_tyrant.remains_expected<gcd.max&time>variable.first_tyrant_time-gcd.max" );
+  def->add_action( "call_action_list,name=covenant_ability,if=!covenant.venthyr" );
+  def->add_action( "soul_strike,if=!talent.sacrificed_souls.enabled", "Without Sacrificed Souls, Soul Strike is stronger than Demonbolt, so it has a higher priority" );
+  def->add_action( "demonbolt,if=buff.demonic_core.react&soul_shard<4&cooldown.summon_demonic_tyrant.remains_expected>20", "Spend Demonic Cores for Soul Shards until Tyrant cooldown is close to ready" );
+  def->add_action( "demonbolt,if=buff.demonic_core.react&soul_shard<4&cooldown.summon_demonic_tyrant.remains_expected<12", "During Tyrant setup, spend Demonic Cores for Soul Shards" );
+  def->add_action( "demonbolt,if=buff.demonic_core.react&soul_shard<4&(buff.demonic_core.stack>2|talent.sacrificed_souls.enabled)" );
+  def->add_action( "demonbolt,if=buff.demonic_core.react&soul_shard<4&active_enemies>1" );
+  def->add_action( "soul_strike" );
+  def->add_action( "call_action_list,name=covenant_ability" );
+  def->add_action( "hand_of_guldan,if=soul_shard>=3&cooldown.summon_demonic_tyrant.remains_expected>25&(talent.demonic_calling.enabled|cooldown.call_dreadstalkers.remains>((5-soul_shard)*action.shadow_bolt.execute_time)+action.hand_of_guldan.execute_time)", "If you can get back to 5 Soul Shards before Dreadstalkers cooldown is ready, it's okay to spend them now" );
+  def->add_action( "doom,cycle_targets=1,if=refreshable&time>variable.first_tyrant_time" );
+  def->add_action( "shadow_bolt" );
 
-  cov->add_action("soul_rot,if=soulbind.grove_invigoration&(cooldown.summon_demonic_tyrant.remains_expected<20|cooldown.summon_demonic_tyrant.remains_expected>30)");
-  cov->add_action("soul_rot,if=soulbind.field_of_blossoms&pet.demonic_tyrant.active");
-  cov->add_action("soul_rot,if=soulbind.wild_hunt_tactics");
+  cov->add_action( "soul_rot,if=soulbind.grove_invigoration&(cooldown.summon_demonic_tyrant.remains_expected<20|cooldown.summon_demonic_tyrant.remains_expected>30)" );
+  cov->add_action( "soul_rot,if=soulbind.field_of_blossoms&pet.demonic_tyrant.active" );
+  cov->add_action( "soul_rot,if=soulbind.wild_hunt_tactics" );
   //TODO: check when emeni's magnificent skin is fixed in simc
   //cov->add_action("fleshcraft,if=soulbind.lead_by_example&cooldown.summon_demonic_tyrant.remains_expected<20");
   //cov->add_action("cancel_action,if=action.fleshcraft.channeling");
-  cov->add_action("decimating_bolt,if=soulbind.lead_by_example&pet.demonic_tyrant.active&soul_shard<2");
-  cov->add_action("decimating_bolt,if=soulbind.lead_by_example&cooldown.summon_demonic_tyrant.remains_expected>40");
-  cov->add_action("decimating_bolt,if=!soulbind.lead_by_example&!pet.demonic_tyrant.active");
-  cov->add_action("scouring_tithe,if=soulbind.combat_meditation&pet.demonic_tyrant.active");
-  cov->add_action("scouring_tithe,if=!soulbind.combat_meditation");
-  cov->add_action("impending_catastrophe,if=pet.demonic_tyrant.active&soul_shard=0");
+  cov->add_action( "decimating_bolt,if=soulbind.lead_by_example&(pet.demonic_tyrant.active&soul_shard<2|cooldown.summon_demonic_tyrant.remains_expected>40)" );
+  cov->add_action( "decimating_bolt,if=!soulbind.lead_by_example&!pet.demonic_tyrant.active" );
+  cov->add_action( "scouring_tithe,if=soulbind.combat_meditation&pet.demonic_tyrant.active" );
+  cov->add_action( "scouring_tithe,if=!soulbind.combat_meditation" );
+  cov->add_action( "impending_catastrophe,if=pet.demonic_tyrant.active&soul_shard=0" );
 
-  tyrant->add_action("nether_portal,if=cooldown.summon_demonic_tyrant.remains_expected<15");
-  tyrant->add_action("call_action_list,name=wilfreds_setup,if=runeforge.wilfreds_sigil_of_superior_summoning");
-  tyrant->add_action("call_action_list,name=no_wilfreds_setup,if=!runeforge.wilfreds_sigil_of_superior_summoning");
+  tyrant->add_action( "nether_portal,if=cooldown.summon_demonic_tyrant.remains_expected<15" );
+  tyrant->add_action( "call_action_list,name=wilfreds_setup,if=runeforge.wilfreds_sigil_of_superior_summoning" );
+  tyrant->add_action( "call_action_list,name=no_wilfreds_setup,if=!runeforge.wilfreds_sigil_of_superior_summoning" );
 
-  wilf->add_action("grimoire_felguard,if=talent.grimoire_felguard.enabled&cooldown.summon_demonic_tyrant.remains_expected<17-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)");
-  wilf->add_action("summon_vilefiend,if=talent.summon_vilefiend.enabled&cooldown.summon_demonic_tyrant.remains_expected<15-(action.summon_demonic_tyrant.execute_time)&(!talent.grimoire_felguard.enabled|time>variable.first_tyrant_time-(15+action.summon_demonic_tyrant.execute_time))");
-  wilf->add_action("call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected<12-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&time>variable.first_tyrant_time-12");
-  wilf->add_action("summon_demonic_tyrant,if=time>variable.first_tyrant_time&(pet.dreadstalker.active&pet.dreadstalker.remains>action.summon_demonic_tyrant.execute_time)&(!talent.summon_vilefiend.enabled|pet.vilefiend.active)&(soul_shard=0|(pet.dreadstalker.active&pet.dreadstalker.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(pet.vilefiend.active&pet.vilefiend.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(buff.grimoire_felguard.up&buff.grimoire_felguard.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time))");
+  wilf->add_action( "grimoire_felguard,if=talent.grimoire_felguard.enabled&cooldown.summon_demonic_tyrant.remains_expected<17-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)" );
+  wilf->add_action( "summon_vilefiend,if=talent.summon_vilefiend.enabled&cooldown.summon_demonic_tyrant.remains_expected<15-(action.summon_demonic_tyrant.execute_time)&(!talent.grimoire_felguard.enabled|time>variable.first_tyrant_time-(15+action.summon_demonic_tyrant.execute_time))" );
+  wilf->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected<12-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&time>variable.first_tyrant_time-12" );
+  wilf->add_action( "summon_demonic_tyrant,if=time>variable.first_tyrant_time&(pet.dreadstalker.active&pet.dreadstalker.remains>action.summon_demonic_tyrant.execute_time)&(!talent.summon_vilefiend.enabled|pet.vilefiend.active)&(soul_shard=0|(pet.dreadstalker.active&pet.dreadstalker.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(pet.vilefiend.active&pet.vilefiend.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(buff.grimoire_felguard.up&buff.grimoire_felguard.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time))" );
 
-  no_wilf->add_action("grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains_expected<17-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&(cooldown.call_dreadstalkers.remains<17-(action.summon_demonic_tyrant.execute_time+action.summon_vilefiend.execute_time+action.shadow_bolt.execute_time)|pet.dreadstalker.remains>cooldown.summon_demonic_tyrant.remains_expected+action.summon_demonic_tyrant.execute_time)");
-  no_wilf->add_action("summon_vilefiend,if=talent.summon_vilefiend.enabled&((cooldown.summon_demonic_tyrant.remains_expected<15-(action.summon_demonic_tyrant.execute_time)&(cooldown.call_dreadstalkers.remains<15-(action.summon_demonic_tyrant.execute_time+action.summon_vilefiend.execute_time)|pet.dreadstalker.remains>cooldown.summon_demonic_tyrant.remains_expected+action.summon_demonic_tyrant.execute_time))|cooldown.summon_demonic_tyrant.remains_expected>40)");
-  no_wilf->add_action("call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected<12-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&time>variable.first_tyrant_time-12");
-  no_wilf->add_action("summon_demonic_tyrant,if=time>variable.first_tyrant_time&(pet.dreadstalker.active&pet.dreadstalker.remains>action.summon_demonic_tyrant.execute_time)&(!talent.summon_vilefiend.enabled|pet.vilefiend.active)&(soul_shard=0|(pet.dreadstalker.active&pet.dreadstalker.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(pet.vilefiend.active&pet.vilefiend.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(buff.grimoire_felguard.up&buff.grimoire_felguard.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time))");
+  no_wilf->add_action( "grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains_expected<17-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&(cooldown.call_dreadstalkers.remains<17-(action.summon_demonic_tyrant.execute_time+action.summon_vilefiend.execute_time+action.shadow_bolt.execute_time)|pet.dreadstalker.remains>cooldown.summon_demonic_tyrant.remains_expected+action.summon_demonic_tyrant.execute_time)" );
+  no_wilf->add_action( "summon_vilefiend,if=talent.summon_vilefiend.enabled&((cooldown.summon_demonic_tyrant.remains_expected<15-(action.summon_demonic_tyrant.execute_time)&(cooldown.call_dreadstalkers.remains<15-(action.summon_demonic_tyrant.execute_time+action.summon_vilefiend.execute_time)|pet.dreadstalker.remains>cooldown.summon_demonic_tyrant.remains_expected+action.summon_demonic_tyrant.execute_time))|cooldown.summon_demonic_tyrant.remains_expected>40)" );
+  no_wilf->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected<12-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&time>variable.first_tyrant_time-12" );
+  no_wilf->add_action( "summon_demonic_tyrant,if=time>variable.first_tyrant_time&(pet.dreadstalker.active&pet.dreadstalker.remains>action.summon_demonic_tyrant.execute_time)&(!talent.summon_vilefiend.enabled|pet.vilefiend.active)&(soul_shard=0|(pet.dreadstalker.active&pet.dreadstalker.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(pet.vilefiend.active&pet.vilefiend.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(buff.grimoire_felguard.up&buff.grimoire_felguard.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time))" );
 
-  pot->add_action("potion,if=cooldown.summon_demonic_tyrant.remains_expected<10&time>variable.first_tyrant_time-10");
-  pot->add_action("potion,if=cooldown.summon_demonic_tyrant.remains_expected<38&soulbind.refined_palate");
+  ogcd->add_action( "berserking" );
+  ogcd->add_action( "blood_fury" );
+  ogcd->add_action( "fireblood" );
+  ogcd->add_action( "use_items" );
 
-  dur->add_action("berserking");
-  dur->add_action("blood_fury");
-  dur->add_action("fireblood");
-  dur->add_action("use_items");
-  dur->add_action("demonic_strength,if=pet.demonic_tyrant.remains<6*gcd.max");
+  trinks->add_action( "call_action_list,name=hp_trinks,if=talent.demonic_consumption.enabled&cooldown.summon_demonic_tyrant.remains_expected<20" );
+  trinks->add_action( "call_action_list,name=5y_per_sec_trinkets", "Effects that travel slowly to target require additional, separate handling" );
+  trinks->add_action( "use_item,name=overflowing_anima_cage,if=pet.demonic_tyrant.active" );
+  trinks->add_action( "use_item,slot=trinket1,if=trinket.1.has_use_buff&pet.demonic_tyrant.active" );
+  trinks->add_action( "use_item,slot=trinket2,if=trinket.2.has_use_buff&pet.demonic_tyrant.active" );
+  trinks->add_action( "call_action_list,name=pure_damage_trinks,if=time>variable.first_tyrant_time" );
 
-  trinks->add_action("call_action_list,name=hp_trinks,if=talent.demonic_consumption.enabled&cooldown.summon_demonic_tyrant.remains_expected<20");
-  trinks->add_action("call_action_list,name=5y_per_sec_trinkets");
-  trinks->add_action("use_item,name=overflowing_anima_cage,if=pet.demonic_tyrant.active");
-  trinks->add_action("use_item,slot=trinket1,if=trinket.1.has_use_buff&pet.demonic_tyrant.active");
-  trinks->add_action("use_item,slot=trinket2,if=trinket.2.has_use_buff&pet.demonic_tyrant.active");
-  trinks->add_action("call_action_list,name=pure_damage_trinks,if=time>variable.first_tyrant_time");
+  five_y->add_action( "use_item,name=soulletting_ruby,if=cooldown.summon_demonic_tyrant.remains_expected<target.distance%5&time>variable.first_tyrant_time-(target.distance%5)" );
+  five_y->add_action( "use_item,name=sunblood_amethyst,if=cooldown.summon_demonic_tyrant.remains_expected<target.distance%5&time>variable.first_tyrant_time-(target.distance%5)" );
+  five_y->add_action( "use_item,name=empyreal_ordnance,if=cooldown.summon_demonic_tyrant.remains_expected<(target.distance%5)+12&cooldown.summon_demonic_tyrant.remains_expected>(((target.distance%5)+12)-15)&time>variable.first_tyrant_time-((target.distance%5)+12)", "Ordnance has a 12 second delay and is therefore skipped for first Tyrant to line up with the rest" );
 
-  //all are 5y per sec, Ordnance has a 12 seconds delay and is therefor skipped for the first tyrant to line up better with the rest.
-  five_y->add_action("use_item,name=soulletting_ruby,if=cooldown.summon_demonic_tyrant.remains_expected<target.distance%5&time>variable.first_tyrant_time-(target.distance%5)");
-  five_y->add_action("use_item,name=sunblood_amethyst,if=cooldown.summon_demonic_tyrant.remains_expected<target.distance%5&time>variable.first_tyrant_time-(target.distance%5)");
-  five_y->add_action("use_item,name=empyreal_ordnance,if=cooldown.summon_demonic_tyrant.remains_expected<(target.distance%5)+12&cooldown.summon_demonic_tyrant.remains_expected>(((target.distance%5)+12)-15)&time>variable.first_tyrant_time-((target.distance%5)+12)");
+  hp->add_action( "use_item,name=sinful_gladiators_emblem" );
+  hp->add_action( "use_item,name=sinful_aspirants_emblem" );
 
-  hp->add_action("use_item,name=sinful_gladiators_emblem");
-  hp->add_action("use_item,name=sinful_aspirants_emblem");
-
-  dmg->add_action("use_item,name=dreadfire_vessel");
-  dmg->add_action("use_item,name=soul_igniter");
-  dmg->add_action("use_item,name=glyph_of_assimilation,if=active_enemies=1");
-  dmg->add_action("use_item,name=darkmoon_deck_putrescence");
-
-  end->add_action("grimoire_felguard,if=time_to_die<30");
-  end->add_action("summon_vilefiend,if=time_to_die<28");
-  end->add_action("summon_demonic_tyrant,if=time_to_die<15");
-
-  fill->add_action("hand_of_guldan,if=soul_shard=5");
-  fill->add_action("hand_of_guldan,if=soul_shard>=3&(pet.dreadstalker.active|pet.demonic_tyrant.active)");
-  fill->add_action("hand_of_guldan,if=soul_shard>=1&buff.nether_portal.up&cooldown.call_dreadstalkers.remains>2*gcd.max");
-  fill->add_action("hand_of_guldan,if=soul_shard>=1&cooldown.summon_demonic_tyrant.remains_expected<gcd.max&time>variable.first_tyrant_time-gcd.max");
-  fill->add_action("call_action_list,name=covenant_ability,if=!covenant.venthyr");
-  fill->add_action("soul_strike,if=!talent.sacrificed_souls.enabled");
-  //NOTE: tested these values. upper bound for holding demonic core stacks doesnt change with haste, but the lower bound does.
-  fill->add_action("demonbolt,if=buff.demonic_core.react&soul_shard<4&cooldown.summon_demonic_tyrant.remains_expected>20");
-  fill->add_action("demonbolt,if=buff.demonic_core.react&soul_shard<4&cooldown.summon_demonic_tyrant.remains_expected<10+((gcd.max-1)*8)");
-  fill->add_action("demonbolt,if=buff.demonic_core.react&soul_shard<4&(buff.demonic_core.stack>2|talent.sacrificed_souls.enabled)");
-  fill->add_action("demonbolt,if=buff.demonic_core.react&soul_shard<4&active_enemies>1");
-  fill->add_action("soul_strike");
-  fill->add_action("call_action_list,name=covenant_ability");
-  //the expression at the end here is the time needed to get back to 5 shards after casting the current hog and cast another hog
-  fill->add_action("hand_of_guldan,if=soul_shard>=3&cooldown.summon_demonic_tyrant.remains_expected>25&(talent.demonic_calling.enabled|cooldown.call_dreadstalkers.remains>((5-soul_shard)*action.shadow_bolt.execute_time)+action.hand_of_guldan.execute_time)");
-  fill->add_action("doom,cycle_targets=1,if=refreshable&time>variable.first_tyrant_time");
-  fill->add_action("shadow_bolt");
-
+  dmg->add_action( "use_item,name=dreadfire_vessel" );
+  dmg->add_action( "use_item,name=soul_igniter" );
+  dmg->add_action( "use_item,name=glyph_of_assimilation,if=active_enemies=1" );
+  dmg->add_action( "use_item,name=darkmoon_deck_putrescence" );
 }
 }  // namespace warlock

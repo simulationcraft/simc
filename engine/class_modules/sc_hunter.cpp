@@ -428,6 +428,7 @@ public:
     cooldown_t* kill_shot;
     cooldown_t* rapid_fire;
     cooldown_t* trueshot;
+    cooldown_t* wailing_arrow;
     cooldown_t* wildfire_bomb;
   } cooldowns;
 
@@ -539,6 +540,9 @@ public:
     spell_data_ptr_t kill_command;
     spell_data_ptr_t kill_shot;
 
+    //Sylvanas bow
+    spell_data_ptr_t wailing_arrow;
+
     // Beast Mastery
     spell_data_ptr_t aspect_of_the_wild;
     spell_data_ptr_t barbed_shot;
@@ -575,10 +579,10 @@ public:
   struct {
     action_t* master_marksman = nullptr;
     action_t* wild_spirits = nullptr;
+    action_t* razor_fragments = nullptr;
     // Semi-random actions, needed *ONLY* for properly attributing focus gains
     action_t* aspect_of_the_wild = nullptr;
     action_t* barbed_shot = nullptr;
-    action_t* razor_fragments = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -617,6 +621,7 @@ public:
     cooldowns.rapid_fire          = get_cooldown( "rapid_fire" );
     cooldowns.trueshot            = get_cooldown( "trueshot" );
     cooldowns.wildfire_bomb       = get_cooldown( "wildfire_bomb" );
+    cooldowns.wailing_arrow       = get_cooldown( "wailing_arrow" );
 
     base_gcd = 1.5_s;
 
@@ -2874,7 +2879,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
   }
 };
 
-// Kill Shot ! =======================================================================
+// Kill Shot =========================================================================
 
 struct kill_shot_t : hunter_ranged_attack_t
 {
@@ -2970,6 +2975,63 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     p() -> buffs.precise_shots -> decrement();
   }
 };
+
+// Wailing Arrow =====================================================================
+
+//TODO 20/06/2021 Verify that the explosion also hits the main target and verify interactions with Wild Spirits
+struct wailing_arrow_t: public hunter_ranged_attack_t 
+{
+
+  struct damage_main_t final : public hunter_ranged_attack_t 
+  {
+    damage_main_t( util::string_view n, hunter_t* p ): 
+      hunter_ranged_attack_t( n, p, p -> find_spell( 354831 ) )
+    {
+      aoe = 0;
+      attack_power_mod.direct = data().effectN( 1 ).ap_coeff(); 
+      dual = true;
+    }
+  };
+
+  struct damage_explosion_t final : public hunter_ranged_attack_t 
+  {
+    damage_explosion_t( util::string_view n, hunter_t* p ): 
+      hunter_ranged_attack_t( n, p, p -> find_spell( 354831 ) )
+      {
+        aoe = -1;
+        radius = 8; 
+        attack_power_mod.direct = data().effectN( 2 ).ap_coeff(); 
+        dual = true;
+        triggers_wild_spirits = false;
+      }
+  };
+
+  damage_main_t* damage_main = nullptr;
+  damage_explosion_t* damage_aoe = nullptr;
+
+  wailing_arrow_t( hunter_t* p, util::string_view options_str ): 
+    hunter_ranged_attack_t( "wailing_arrow", p, p -> specs.wailing_arrow )
+    {      
+      parse_options( options_str );
+      
+      damage_main = p -> get_background_action<damage_main_t>( "wailing_arrow_main" ); 
+      damage_aoe = p -> get_background_action<damage_explosion_t>( "wailing_arrow_aoe" ); 
+      add_child( damage_main ); 
+      add_child( damage_aoe ); 
+    }
+
+    void execute() override
+    {
+      hunter_ranged_attack_t::execute(); 
+
+      damage_main -> set_target( target ); 
+      damage_main -> execute();
+      damage_aoe -> set_target( target ); 
+      damage_aoe -> execute();
+    }
+};
+
+
 
 //==============================
 // Beast Mastery attacks
@@ -5565,6 +5627,7 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "tar_trap"              ) return new               tar_trap_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
   if ( name == "volley"                ) return new                 volley_t( this, options_str );
+  if ( name == "wailing_arrow"         ) return new          wailing_arrow_t( this, options_str );
   if ( name == "wild_spirits"          ) return new           wild_spirits_t( this, options_str );
   if ( name == "wildfire_bomb"         ) return new          wildfire_bomb_t( this, options_str );
 
@@ -5729,6 +5792,9 @@ void hunter_t::init_spells()
 
   specs.kill_command         = find_class_spell( "Kill Command" );
   specs.kill_shot            = find_class_spell( "Kill Shot" );
+
+  //Rae'shalare, Death's Whisper spell
+  specs.wailing_arrow        = find_item_by_name( "raeshalare_deaths_whisper" ) ? find_spell( 355589 ) : spell_data_t::not_found(); 
 
   // Beast Mastery
   specs.aspect_of_the_wild   = find_specialization_spell( "Aspect of the Wild" );
