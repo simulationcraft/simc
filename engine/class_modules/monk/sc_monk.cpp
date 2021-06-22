@@ -7153,9 +7153,9 @@ double monk_t::composite_player_pet_damage_multiplier( const action_state_t* sta
   double multiplier = player_t::composite_player_pet_damage_multiplier( state, guardian );
 
   if ( buff.hit_combo->up() )
-  {
     multiplier *= 1 + buff.hit_combo->stack() * passives.hit_combo->effectN( 4 ).percent();
-  }
+
+  multiplier *= 1 + spec.brewmaster_monk->effectN( 3 ).percent();
 
   return multiplier;
 }
