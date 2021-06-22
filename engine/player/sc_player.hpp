@@ -522,6 +522,7 @@ struct player_t : public actor_t
     buff_t* battlefield_presence; // venthyr/draven - damage increase buff based on number of enemies
     buff_t* fatal_flaw_crit; // venthyr/nadjia - buff applied after euphoria expires if you have more crit than vers
     buff_t* fatal_flaw_vers; // venthyr/nadjia - buff applied after euphoria expires if you have more vers than crit
+    buff_t* emenis_magnificent_skin; //necrolord/emeni - buff applied when using fleshcraft that increases max health
 
     // 9.0 Runecarves
     buff_t* norgannons_sagacity_stacks;  // stacks on every cast

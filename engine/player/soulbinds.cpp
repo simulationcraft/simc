@@ -1993,6 +1993,13 @@ void hold_your_ground( special_effect_t& effect )
 
 void emenis_magnificent_skin( special_effect_t& effect )
 {
+  if ( !effect.player->buffs.emenis_magnificent_skin )
+    effect.player->buffs.emenis_magnificent_skin =
+        make_buff( effect.player, "emenis_magnificent_skin", effect.player->find_spell( 328210 ) )
+            ->set_default_value_from_effect( 1, 0.01 )
+            ->set_stack_change_callback( [ effect ]( buff_t*, int /* old */, int /* cur */ ) {
+                effect.player->recalculate_resource_max( RESOURCE_HEALTH );
+            } );
 }
 
 void waking_bone_breastplate( special_effect_t& effect )
