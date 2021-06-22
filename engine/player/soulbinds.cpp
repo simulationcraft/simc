@@ -1987,6 +1987,50 @@ void newfound_resolve( special_effect_t& effect )
   } );
 }
 
+//TODO: Model losing/gaining buff based on movement state
+void hold_your_ground( special_effect_t& effect )
+{
+  if ( !effect.player->buffs.hold_your_ground )
+    effect.player->buffs.hold_your_ground = 
+        make_buff( effect.player, "hold_your_ground", effect.player->find_spell( 333089 ) )
+            ->set_pct_buff_type( STAT_PCT_BUFF_STAMINA )
+            ->set_default_value_from_effect( 1 )
+            ->set_stack_change_callback( [ effect ]( buff_t*, int /* old */, int /* cur */ ) {
+                effect.player->recalculate_resource_max( RESOURCE_HEALTH );
+            } );;
+
+  effect.player->register_combat_begin( effect.player->buffs.hold_your_ground );
+}
+
+void emenis_magnificent_skin( special_effect_t& effect )
+{
+  if ( !effect.player->buffs.emenis_magnificent_skin )
+    effect.player->buffs.emenis_magnificent_skin =
+        make_buff( effect.player, "emenis_magnificent_skin", effect.player->find_spell( 328210 ) )
+            ->set_default_value_from_effect( 1, 0.01 )
+            ->set_stack_change_callback( [ effect ]( buff_t*, int /* old */, int /* cur */ ) {
+                effect.player->recalculate_resource_max( RESOURCE_HEALTH );
+            } );
+}
+
+//TODO: Add support for dynamically changing enemy count
+//Note: HP% and target count values are hardcoded in tooltip
+void waking_bone_breastplate( special_effect_t& effect )
+{
+  if ( !effect.player->buffs.waking_bone_breastplate )
+    effect.player->buffs.waking_bone_breastplate = 
+        make_buff( effect.player, "waking_bone_breastplate", effect.driver() )
+            ->set_duration( 0_ms )
+            ->set_default_value( 0.05 )
+            ->set_stack_change_callback( [ effect ]( buff_t*, int /* old */, int /* cur */ ) {
+                effect.player->recalculate_resource_max( RESOURCE_HEALTH );
+            }  );
+
+  effect.player->register_combat_begin( []( player_t* p ) {
+    if ( p->sim->active_enemies >= 3 ) { p->buffs.waking_bone_breastplate->trigger(); }
+    } );
+}
+
 // Passive which increases Stamina based on Renown level
 void deepening_bond( special_effect_t& effect )
 {
@@ -2041,6 +2085,7 @@ void register_special_effects()
   register_soulbind_special_effect( 319973, soulbinds::built_for_war );  // Draven
   register_soulbind_special_effect( 332753, soulbinds::superior_tactics );
   register_soulbind_special_effect( 352417, soulbinds::battlefield_presence );
+  register_soulbind_special_effect( 332754, soulbinds::hold_your_ground );
   // Kyrian
   register_soulbind_special_effect( 328257, soulbinds::let_go_of_the_past );  // Pelagos
   register_soulbind_special_effect( 328266, soulbinds::combat_meditation );
@@ -2057,10 +2102,12 @@ void register_special_effects()
   register_soulbind_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
   register_soulbind_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
   register_soulbind_special_effect( 342156, soulbinds::lead_by_example, true );
+  register_soulbind_special_effect( 323921, soulbinds::emenis_magnificent_skin );
   register_soulbind_special_effect( 326514, soulbinds::forgeborne_reveries );  // Heirmir
   register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone, true );
   register_soulbind_special_effect( 350899, soulbinds::carvers_eye );
+  register_soulbind_special_effect( 350935, soulbinds::waking_bone_breastplate );
   register_soulbind_special_effect( 350936, soulbinds::mnemonic_equipment );
   // Covenant Renown Stamina Passives
   unique_gear::register_special_effect( 344052, soulbinds::deepening_bond );  // Night Fae Rank 1
