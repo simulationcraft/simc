@@ -533,6 +533,9 @@ struct player_t : public actor_t
 
     // 9.1 Legendary Party Buffs
     buff_t* pact_of_the_soulstalkers; // Kyrian Hunter Legendary
+
+    // 9.1 Shards of Domination
+    buff_t* coldhearted; // Shard of Cor
   } buffs;
 
   struct debuffs_t
