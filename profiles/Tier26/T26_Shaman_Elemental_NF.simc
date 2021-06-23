@@ -41,9 +41,9 @@ actions=spiritwalkers_grace,moving=1,if=movement.distance>6
 actions+=/wind_shear
 actions+=/potion
 actions+=/use_items
-actions+=/flame_shock,if=(!talent.elemental_blast.enabled)&!ticking&!pet.storm_elemental.active&(spell_targets.chain_lightning<4|talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped)
+actions+=/flame_shock,if=(!talent.elemental_blast.enabled)&!ticking&!pet.storm_elemental.active&(spell_targets.chain_lightning<3|talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped)
 actions+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up&(!pet.storm_elemental.active|spell_targets.chain_lightning<3&buff.wind_gust.stack<20|soulbind.lead_by_example.enabled)&(spell_targets.chain_lightning<5|talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped|soulbind.lead_by_example.enabled)
-actions+=/flame_shock,if=!ticking&(!pet.storm_elemental.active|spell_targets.chain_lightning<3&buff.wind_gust.stack<20)&(spell_targets.chain_lightning<4|talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped)
+actions+=/flame_shock,if=!ticking&(!pet.storm_elemental.active|spell_targets.chain_lightning<3&buff.wind_gust.stack<20)&(spell_targets.chain_lightning<3|talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped)
 actions+=/fire_elemental
 actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
 # if=!talent.ascendance.enabled|buff.ascendance.up
@@ -61,14 +61,14 @@ actions.aoe=storm_elemental
 actions.aoe+=/earthquake,if=buff.echoing_shock.up
 actions.aoe+=/chain_harvest
 actions.aoe+=/stormkeeper,if=talent.stormkeeper.enabled
-actions.aoe+=/flame_shock,if=(active_dot.flame_shock<2&active_enemies<=3&!pet.storm_elemental.active|active_dot.flame_shock<1&active_enemies>=4&!pet.storm_elemental.active&talent.master_of_the_elements.enabled)|(runeforge.skybreakers_fiery_demise.equipped&!pet.storm_elemental.active),target_if=refreshable
-actions.aoe+=/flame_shock,if=!active_dot.flame_shock&!pet.storm_elemental.active&(spell_targets.chain_lightning<4|talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped)
+actions.aoe+=/flame_shock,if=(active_dot.flame_shock<2&active_enemies<=3&cooldown.primordial_wave.remains<16&covenant.necrolord&!pet.storm_elemental.active|active_dot.flame_shock<1&active_enemies>=4&!pet.storm_elemental.active&talent.master_of_the_elements.enabled)|(runeforge.skybreakers_fiery_demise.equipped&!pet.storm_elemental.active),target_if=refreshable
+actions.aoe+=/flame_shock,if=!active_dot.flame_shock&!pet.storm_elemental.active&(talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped)
 actions.aoe+=/echoing_shock,if=talent.echoing_shock.enabled&maelstrom>=60&(runeforge.echoes_of_great_sundering.equipped&buff.echoes_of_great_sundering.up|!runeforge.echoes_of_great_sundering.equipped)
 actions.aoe+=/ascendance,if=talent.ascendance.enabled&(!pet.storm_elemental.active)&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)
 actions.aoe+=/liquid_magma_totem,if=talent.liquid_magma_totem.enabled
 actions.aoe+=/chain_lightning,if=spell_targets.chain_lightning<4&buff.master_of_the_elements.up&maelstrom<50
 actions.aoe+=/earth_shock,if=runeforge.echoes_of_great_sundering.equipped&!buff.echoes_of_great_sundering.up
-actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=spell_targets.chain_lightning<4&(!pet.storm_elemental.active)&(buff.lava_surge.up&!buff.master_of_the_elements.up)
+actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=spell_targets.chain_lightning<4&(!pet.storm_elemental.active)&(buff.lava_surge.up&!buff.master_of_the_elements.up&talent.master_of_the_elements.enabled)
 actions.aoe+=/earthquake,if=spell_targets.chain_lightning>=2&!runeforge.echoes_of_great_sundering.equipped&(talent.master_of_the_elements.enabled&maelstrom>=50&!buff.master_of_the_elements.up)
 actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up&buff.primordial_wave.up
 actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=spell_targets.chain_lightning<4&runeforge.skybreakers_fiery_demise.equipped&buff.lava_surge.up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&maelstrom>=50
