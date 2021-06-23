@@ -280,8 +280,8 @@ void survival( player_t* p )
   st -> add_action( "wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50" );
 
   bop -> add_action( "serpent_sting,target_if=min:remains,if=buff.vipers_venom.remains&(buff.vipers_venom.remains<gcd|refreshable)" );
+  bop -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&buff.nesingwarys_trapping_apparatus.up|focus+cast_regen<focus.max+10&buff.nesingwarys_trapping_apparatus.up&buff.nesingwarys_trapping_apparatus.remains<gcd" );
   bop -> add_action( "kill_shot" );
-  bop -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&buff.nesingwarys_trapping_apparatus.up" );
   bop -> add_action( "wildfire_bomb,if=focus+cast_regen<focus.max&!ticking&full_recharge_time<gcd" );
   bop -> add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
   bop -> add_action( "flayed_shot" );
