@@ -216,10 +216,20 @@ void survival( player_t* p )
   precombat -> add_action( "flask" );
   precombat -> add_action( "augmentation" );
   precombat -> add_action( "food" );
+  precombat -> add_action( "variable,name=mb_rs_cost,op=set,if=talent.mongoose_bite,value=action.mongoose_bite.cost" );
+  precombat -> add_action( "variable,name=mb_rs_cost,op=set,if=!talent.mongoose_bite,value=action.raptor_strike.cost" );
   precombat -> add_action( "summon_pet" );
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat -> add_action( "tar_trap,if=runeforge.soulforge_embers" );
   precombat -> add_action( "steel_trap,precast_time=20" );
+
+  default_ -> add_action( "auto_attack" );
+  default_ -> add_action( "use_items" );
+  default_ -> add_action( "call_action_list,name=cds" );
+  default_ -> add_action( "call_action_list,name=bop,if=active_enemies<3&talent.birds_of_prey.enabled" );
+  default_ -> add_action( "call_action_list,name=st,if=active_enemies<3&!talent.birds_of_prey.enabled" );
+  default_ -> add_action( "call_action_list,name=cleave,if=active_enemies>2" );
+  default_ -> add_action( "arcane_torrent" );
 
   cds -> add_action( "harpoon,if=talent.terms_of_engagement.enabled&focus<focus.max" );
   cds -> add_action( "use_item,name=dreadfire_vessel,if=covenant.kyrian&cooldown.resonating_arrow.remains>10|!covenant.kyrian" );
@@ -233,22 +243,15 @@ void survival( player_t* p )
   cds -> add_action( "potion,if=target.time_to_die<60|buff.coordinated_assault.up" );
   cds -> add_action( "tar_trap,if=focus+cast_regen<focus.max&runeforge.soulforge_embers.equipped&tar_trap.remains<gcd&cooldown.flare.remains<gcd&(active_enemies>1|active_enemies=1&time_to_die>5*gcd)" );
   cds -> add_action( "flare,if=focus+cast_regen<focus.max&tar_trap.up&runeforge.soulforge_embers.equipped&time_to_die>4*gcd" );
-  cds -> add_action( "kill_shot,if=active_enemies=1&target.time_to_die<focus%(action.mongoose_bite.cost-cast_regen)*gcd" );
-  cds -> add_action( "mongoose_bite,if=active_enemies=1&target.time_to_die<focus%(action.mongoose_bite.cost-cast_regen)*gcd" );
-  cds -> add_action( "raptor_strike,if=active_enemies=1&target.time_to_die<focus%(action.mongoose_bite.cost-cast_regen)*gcd" );
+  cds -> add_action( "kill_shot,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
+  cds -> add_action( "mongoose_bite,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
+  cds -> add_action( "raptor_strike,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
   cds -> add_action( "aspect_of_the_eagle,if=target.distance>=6" );
   
   nta -> add_action( "steel_trap" );
   nta -> add_action( "freezing_trap,if=!buff.wild_spirits.remains|buff.wild_spirits.remains&cooldown.kill_command.remains" );
   nta -> add_action( "tar_trap,if=!buff.wild_spirits.remains|buff.wild_spirits.remains&cooldown.kill_command.remains" );
 
-  default_ -> add_action( "auto_attack" );
-  default_ -> add_action( "use_items" );
-  default_ -> add_action( "call_action_list,name=cds" );
-  default_ -> add_action( "call_action_list,name=bop,if=active_enemies<3&talent.birds_of_prey.enabled" );
-  default_ -> add_action( "call_action_list,name=st,if=active_enemies<3&!talent.birds_of_prey.enabled" );
-  default_ -> add_action( "call_action_list,name=cleave,if=active_enemies>2" );
-  default_ -> add_action( "arcane_torrent" );
 
   st -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
   st -> add_action( "serpent_sting,target_if=min:remains,if=!dot.serpent_sting.ticking&target.time_to_die>7|buff.vipers_venom.up&buff.vipers_venom.remains<gcd" );
@@ -263,12 +266,12 @@ void survival( player_t* p )
   st -> add_action( "carve,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped" );
   st -> add_action( "butchery,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped&cooldown.wildfire_bomb.full_recharge_time>spell_targets&(charges_fractional>2.5|dot.shrapnel_bomb.ticking)" );
   st -> add_action( "steel_trap,if=focus+cast_regen<focus.max" );
-  st -> add_action( "mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if=talent.alpha_predator.enabled&(buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(action.mongoose_bite.cost-cast_regen)*gcd&!buff.wild_spirits.remains|buff.mongoose_fury.remains&next_wi_bomb.pheromone)" );
+  st -> add_action( "mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if=talent.alpha_predator.enabled&(buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd&!buff.wild_spirits.remains|buff.mongoose_fury.remains&next_wi_bomb.pheromone)" );
   st -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max" );
   st -> add_action( "raptor_strike,target_if=max:debuff.latent_poison_injection.stack,if=buff.tip_of_the_spear.stack=3|dot.shrapnel_bomb.ticking" );
   st -> add_action( "mongoose_bite,if=dot.shrapnel_bomb.ticking" );
   st -> add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>7|buff.vipers_venom.up" );
-  st -> add_action( "wildfire_bomb,if=next_wi_bomb.shrapnel&focus>action.mongoose_bite.cost*2&dot.serpent_sting.remains>5*gcd" );
+  st -> add_action( "wildfire_bomb,if=next_wi_bomb.shrapnel&focus>variable.mb_rs_cost*2&dot.serpent_sting.remains>5*gcd" );
   st -> add_action( "chakrams" );
   st -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
   st -> add_action( "wildfire_bomb,if=runeforge.rylakstalkers_confounding_strikes.equipped" );
@@ -282,16 +285,15 @@ void survival( player_t* p )
   bop -> add_action( "wildfire_bomb,if=focus+cast_regen<focus.max&!ticking&full_recharge_time<gcd" );
   bop -> add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
   bop -> add_action( "flayed_shot" );
-  bop -> add_action( "call_action_list,name=nta,if=runeforge.nessingwarys_trapping_apparatus.equipped&(focus<action.mongoose_bite.cost|focus<action.raptor_strike.cost)" ); 
+  bop -> add_action( "call_action_list,name=nta,if=runeforge.nessingwarys_trapping_apparatus.equipped&focus<variable.mb_rs_cost" ); 
   bop -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
   bop -> add_action( "raptor_strike,target_if=max:debuff.latent_poison_injection.stack,if=buff.coordinated_assault.up&buff.coordinated_assault.remains<1.5*gcd" );
   bop -> add_action( "mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if=buff.coordinated_assault.up&buff.coordinated_assault.remains<1.5*gcd" );
   bop -> add_action( "a_murder_of_crows" );
   bop -> add_action( "raptor_strike,target_if=max:debuff.latent_poison_injection.stack,if=buff.tip_of_the_spear.stack=3" );
   bop -> add_action( "wildfire_bomb,if=focus+cast_regen<focus.max&!ticking&(full_recharge_time<gcd|!dot.wildfire_bomb.ticking&buff.mongoose_fury.remains>full_recharge_time-1*gcd|!dot.wildfire_bomb.ticking&!buff.mongoose_fury.remains)|time_to_die<18&!dot.wildfire_bomb.ticking" );
-  bop -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(!runeforge.nessingwarys_trapping_apparatus|focus<action.mongoose_bite.cost|focus<action.raptor_strike.cost)" , "If you don't have Nessingwary's Trapping Apparatus, simply cast Kill Command if you won't overcap on Focus from doing so. If you do have Nessingwary's Trapping Apparatus you should cast Kill Command if your focus is below the cost of Mongoose Bite or Raptor Strike" ); 
-  bop -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=talent.mongoose_bite&focus+cast_regen<focus.max&runeforge.nessingwarys_trapping_apparatus&cooldown.freezing_trap.remains>(focus%(action.mongoose_bite.cost-cast_regen)*gcd)&cooldown.tar_trap.remains>(focus%(action.mongoose_bite.cost-cast_regen)*gcd)&(!talent.steel_trap|talent.steel_trap&cooldown.steel_trap.remains>(focus%(action.mongoose_bite.cost-cast_regen)*gcd))", "With Nessingwary's Trapping Apparatus only Kill Command if your traps are on cooldown, otherwise stop using Kill Command if your current focus amount is enough to sustain the amount of time left for any of your traps to come off cooldown" );
-  bop -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=!talent.mongoose_bite&focus+cast_regen<focus.max&runeforge.nessingwarys_trapping_apparatus&cooldown.freezing_trap.remains>(focus%(action.raptor_strike.cost-cast_regen)*gcd)&cooldown.tar_trap.remains>(focus%(action.raptor_strike.cost-cast_regen)*gcd)&(!talent.steel_trap|talent.steel_trap&cooldown.steel_trap.remains>(focus%(action.raptor_strike.cost-cast_regen)*gcd))" );
+  bop -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(!runeforge.nessingwarys_trapping_apparatus|focus<variable.mb_rs_cost)" , "If you don't have Nessingwary's Trapping Apparatus, simply cast Kill Command if you won't overcap on Focus from doing so. If you do have Nessingwary's Trapping Apparatus you should cast Kill Command if your focus is below the cost of Mongoose Bite or Raptor Strike" ); 
+  bop -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&runeforge.nessingwarys_trapping_apparatus&cooldown.freezing_trap.remains>(focus%(variable.mb_rs_cost-cast_regen)*gcd)&cooldown.tar_trap.remains>(focus%(variable.mb_rs_cost-cast_regen)*gcd)&(!talent.steel_trap|talent.steel_trap&cooldown.steel_trap.remains>(focus%(variable.mb_rs_cost-cast_regen)*gcd))", "With Nessingwary's Trapping Apparatus only Kill Command if your traps are on cooldown, otherwise stop using Kill Command if your current focus amount is enough to sustain the amount of time left for any of your traps to come off cooldown" );
   bop -> add_action( "steel_trap,if=focus+cast_regen<focus.max" );
   bop -> add_action( "serpent_sting,target_if=min:remains,if=dot.serpent_sting.refreshable&!buff.coordinated_assault.up" );
   bop -> add_action( "resonating_arrow" );
