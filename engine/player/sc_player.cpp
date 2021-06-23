@@ -4008,6 +4008,9 @@ double player_t::composite_player_multiplier( school_e school ) const
   if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
     m *= 1.0 + buffs.battlefield_presence->check_stack_value();
 
+  if ( buffs.coldhearted && buffs.coldhearted->check() )
+    m *= 1.0 + buffs.coldhearted->check_value();
+
   return m;
 }
 

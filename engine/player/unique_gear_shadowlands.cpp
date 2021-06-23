@@ -2782,6 +2782,55 @@ void shard_of_dyz( special_effect_t& effect )
   effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
   new shard_of_dyz_cb_t( effect );
 }
+
+/**Shard of Cor
+ * id=355741 driver Rank 1
+ * id=357034 driver Rank 2 (Ominous)
+ * id=357052 driver Rank 3 (Desolate)
+ * id=357062 driver Rank 4 (Foreboding)
+ * id=357073 driver Rank 5 (Portentous)
+ * id=356364 Coldhearted buff
+ */
+void shard_of_cor( special_effect_t& effect )
+{
+  struct shard_of_cor_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<int> target_list;
+
+    shard_of_cor_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        target_list()
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( range::contains( target_list, s->target->actor_spawn_index ) )
+        return;
+
+      dbc_proc_callback_t::execute( a, s );
+      target_list.push_back( s->target->actor_spawn_index );
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      target_list.clear();
+    }
+  };
+
+  buff_t* buff = buff_t::find( effect.player, "coldhearted" );
+  if ( !buff )
+  {
+    buff = make_buff<damage_buff_t>( effect.player, "coldhearted", effect.player->find_spell( 356364 ) )
+               ->set_default_value( 0.0001 * effect.driver()->effectN( 1 ).average( effect.player ), 1 )
+               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+
+  effect.custom_buff = effect.player->buffs.coldhearted = buff;
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+  new shard_of_cor_cb_t( effect );
+}
 }  // namespace items
 
 void register_hotfixes()
@@ -2879,11 +2928,18 @@ void register_special_effects()
     unique_gear::register_special_effect( 357347, items::blood_link ); // Rune Word: Blood
     unique_gear::register_special_effect( 357348, items::winds_of_winter ); // Rune Word: Frost
     unique_gear::register_special_effect( 357349, items::chaos_bane ); // Rune Word: Unholy
+
     unique_gear::register_special_effect( 355755, items::shard_of_dyz );
     unique_gear::register_special_effect( 357037, items::shard_of_dyz );
     unique_gear::register_special_effect( 357055, items::shard_of_dyz );
     unique_gear::register_special_effect( 357065, items::shard_of_dyz );
     unique_gear::register_special_effect( 357076, items::shard_of_dyz );
+
+    unique_gear::register_special_effect( 355741, items::shard_of_cor );
+    unique_gear::register_special_effect( 357034, items::shard_of_cor );
+    unique_gear::register_special_effect( 357052, items::shard_of_cor );
+    unique_gear::register_special_effect( 357062, items::shard_of_cor );
+    unique_gear::register_special_effect( 357073, items::shard_of_cor );
 
     // Disabled effects
     unique_gear::register_special_effect( 329028, items::DISABLED_EFFECT ); // Light-Infused Armor shield
