@@ -216,8 +216,7 @@ void survival( player_t* p )
   precombat -> add_action( "flask" );
   precombat -> add_action( "augmentation" );
   precombat -> add_action( "food" );
-  precombat -> add_action( "variable,name=mb_rs_cost,op=set,if=talent.mongoose_bite,value=action.mongoose_bite.cost" );
-  precombat -> add_action( "variable,name=mb_rs_cost,op=set,if=!talent.mongoose_bite,value=action.raptor_strike.cost" );
+  precombat -> add_action( "variable,name=mb_rs_cost,op=setif,value=action.mongoose_bite.cost,value_else=action.raptor_strike.cost,condition=talent.mongoose_bite" );
   precombat -> add_action( "summon_pet" );
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat -> add_action( "tar_trap,if=runeforge.soulforge_embers" );
