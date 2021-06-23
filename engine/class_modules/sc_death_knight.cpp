@@ -5659,6 +5659,27 @@ struct hypothermic_presence_t : public death_knight_spell_t
   }
 };
 
+// Insatiable Hunger Legendary ================================================
+struct insatiable_hunger_damage_t : public death_knight_spell_t
+{
+  double insatiable_hunger_rp_multiplier;
+  insatiable_hunger_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "insatiable_hunger_damage", p, p -> find_spell( 353720 ) ),
+    insatiable_hunger_rp_multiplier ( p -> find_spell( 353729 ) -> effectN( 1 ).percent() )
+  {
+    background = true;
+  }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double cam = death_knight_spell_t::composite_aoe_multiplier( state );
+
+    cam += 1.0 + ( p() -> buffs.swarming_mist->current_value * insatiable_hunger_rp_multiplier );
+
+    return cam;
+  }
+};
+
 // Marrowrend ===============================================================
 
 struct marrowrend_t : public death_knight_melee_attack_t
@@ -6444,10 +6465,14 @@ struct swarming_mist_damage_t : public death_knight_spell_t
 struct swarming_mist_buff_t : public buff_t
 {
   swarming_mist_damage_t* damage; // (AOE) damage that ticks every second
+  insatiable_hunger_damage_t* insatiable_damage; // Insatiable Hunger legendary damage
+  double insatiable_hunger_rp_spent; // Track how much RP was spent during swarming mist
 
   swarming_mist_buff_t( death_knight_t* p ) :
     buff_t( p, "swarming_mist", p -> covenant.swarming_mist ),
-    damage( new swarming_mist_damage_t( p ) )
+    damage( new swarming_mist_damage_t( p ) ),
+    insatiable_damage( new insatiable_hunger_damage_t( p ) ),
+    insatiable_hunger_rp_spent( 0 )
   {
     cooldown -> duration = 0_ms; // Controlled by the action
     set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
@@ -6457,6 +6482,16 @@ struct swarming_mist_buff_t : public buff_t
     set_partial_tick( true );
 
     add_invalidate( CACHE_DODGE );
+  }
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+    death_knight_t* p = debug_cast< death_knight_t* >( player );
+    if ( p -> legendary.insatiable_hunger.ok() )
+    {
+      insatiable_damage -> execute();
+      insatiable_hunger_rp_spent = 0;
+    }
   }
 };
 
@@ -7269,6 +7304,13 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // RE is using the ability's base cost for its proc chance calculation, just like Runic Corruption
     trigger_runic_empowerment( base_rp_cost );
     trigger_runic_corruption( procs.rp_runic_corruption, base_rp_cost );
+
+    if ( legendary.insatiable_hunger.ok() && buffs.swarming_mist -> check() )
+    {
+      auto cur_rp_spent = debug_cast<swarming_mist_buff_t*>(buffs.swarming_mist) -> insatiable_hunger_rp_spent;
+      sim -> print_debug ( "Insatiable hunger RP stored increased from {} to {} by {} from {}", cur_rp_spent, (cur_rp_spent + base_rp_cost), base_rp_cost, action->name_str );
+      debug_cast<swarming_mist_buff_t*>(buffs.swarming_mist) -> insatiable_hunger_rp_spent += base_rp_cost;
+    }
 
     if ( talent.summon_gargoyle -> ok() && pets.gargoyle )
     {
