@@ -8760,13 +8760,12 @@ void shaman_t::init_action_list_elemental()
   action_priority_list_t* precombat     = get_action_priority_list( "precombat" );
   action_priority_list_t* def           = get_action_priority_list( "default" );
 
+  action_priority_list_t* single_target    = get_action_priority_list( "single_target" );
+  action_priority_list_t* aoe              = get_action_priority_list( "aoe" );
 
   if ( options.rotation == ROTATION_STANDARD )
   {
-    action_priority_list_t* single_target    = get_action_priority_list( "single_target" );
-    action_priority_list_t* aoe              = get_action_priority_list( "aoe" );
     action_priority_list_t* se_single_target = get_action_priority_list( "se_single_target" );
-
     precombat->add_action( "flask" );
     precombat->add_action( "food" );
     precombat->add_action( "augmentation" );
@@ -9017,9 +9016,6 @@ void shaman_t::init_action_list_elemental()
 	
     precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
     precombat->add_action( "potion" );
-	
-    action_priority_list_t* single_target = get_action_priority_list( "single_target" );
-    action_priority_list_t* aoe           = get_action_priority_list( "aoe" );
 
     // "Default" APL controlling logic flow to specialized sub-APLs
     def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
