@@ -2495,7 +2495,7 @@ bool rune_word_active( special_effect_t& effect, spell_label label )
 
   bool active = equipped_shards >= 3;
   effect.player->sim->print_debug( "{}: rune word {} from item {} is {} with {}/3 shards of domination equipped",
-    effect.player->name(), effect.driver()->name_cstr(), effect.item->name(), active ? "active" : "inactive", equipped_shards );
+    effect.player->name(), util::tokenize_fn( effect.driver()->name_cstr() ), effect.item->name(), active ? "active" : "inactive", equipped_shards );
 
   return active;
 }
@@ -2515,8 +2515,8 @@ void blood_link( special_effect_t& effect )
 
   struct blood_link_damage_t : proc_spell_t
   {
-    blood_link_damage_t( const special_effect_t& e )
-      : proc_spell_t( "blood_link", e.player, e.player->find_spell( 355767 ) )
+    blood_link_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "blood_link", e.player, e.player->find_spell( 355767 ) )
     {
       base_dd_min = e.driver()->effectN( 2 ).min( e.player );
       base_dd_max = e.driver()->effectN( 2 ).max( e.player );
@@ -2561,7 +2561,7 @@ void blood_link( special_effect_t& effect )
     buff = make_buff( effect.player, "blood_link", effect.driver() )
              ->set_quiet( true )
              ->set_can_cancel( false )
-             ->set_tick_callback( [ tick_action, dot_action ] ( buff_t* b, int, timespan_t )
+             ->set_tick_callback( [ tick_action, dot_action ] ( buff_t*, int, timespan_t )
                {
                   if ( dot_action->get_dot( dot_action->last_target )->is_ticking() )
                   {
@@ -2573,7 +2573,214 @@ void blood_link( special_effect_t& effect )
 
   effect.execute_action = dot_action;
   new dbc_proc_callback_t( effect.player, effect );
-  effect.player->register_combat_begin( [ buff ]( player_t* ){ buff->trigger(); } );
+  effect.player->register_combat_begin( [ buff ]( player_t* p )
+  {
+    timespan_t first_tick = p->rng().real() * buff->tick_time();
+    buff->set_period( first_tick );
+    buff->trigger();
+    buff->set_period( timespan_t::min() );
+  } );
+}
+
+/**Winds of Winter
+ * id=357348 equip special effect
+ * id=355724 driver and damage cap coefficient
+ * id=355733 damage
+ * id=355735 absorb (NYI)
+ */
+void winds_of_winter( special_effect_t& effect )
+{
+  if ( !rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_FROST ) )
+    return;
+
+  struct winds_of_winter_damage_t : proc_spell_t
+  {
+    winds_of_winter_damage_t( const special_effect_t& e )
+      : proc_spell_t( "winds_of_winter", e.player, e.player->find_spell( 355733 ) )
+    {
+      base_dd_min = base_dd_max = 1.0; // Ensure that the correct snapshot flags are set.
+    }
+  };
+
+  struct winds_of_winter_cb_t : public dbc_proc_callback_t
+  {
+    double accumulated_damage;
+    double damage_cap;
+    double damage_fraction;
+    action_t* damage;
+    buff_t* buff;
+    player_t* target;
+
+    winds_of_winter_cb_t( const special_effect_t& e, action_t* a, buff_t* b ) :
+      dbc_proc_callback_t( e.player, e ),
+      accumulated_damage(),
+      damage_cap( e.driver()->effectN( 1 ).average( e.player ) ),
+      damage_fraction( e.driver()->effectN( 2 ).percent() ),
+      damage( a ),
+      buff( b ),
+      target()
+    {
+      buff->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
+      {
+        if ( !target || target->is_sleeping() || accumulated_damage == 0 )
+          return;
+
+        damage->base_dd_min = damage->base_dd_max = accumulated_damage;
+        accumulated_damage = 0;
+        damage->set_target( target );
+        damage->execute();
+      } );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      if ( s->target->is_sleeping() )
+        return;
+
+      accumulated_damage += std::min( damage_cap, s->result_amount * damage_fraction );
+      target = s->target; // Winds of Winter hits the last target you accumulated damage from.
+    }
+  };
+
+  effect.spell_id = 355724;
+  effect.proc_flags2_ = PF2_CRIT;
+  auto damage = create_proc_action<winds_of_winter_damage_t>( "winds_of_winter", effect );
+  auto buff = buff_t::find( effect.player, "winds_of_winter" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "winds_of_winter", effect.driver() )
+             ->set_quiet( true )
+             ->set_can_cancel( false );
+  }
+
+  new winds_of_winter_cb_t( effect, damage, buff );
+  effect.player->register_combat_begin( [ buff ]( player_t* p )
+  {
+    timespan_t first_tick = p->rng().real() * buff->tick_time();
+    buff->set_period( first_tick );
+    buff->trigger();
+    buff->set_period( timespan_t::min() );
+  } );
+}
+
+/**Chaos Bane
+ * id=357349 equip special effect
+ * id=355829 driver with RPPM and buff trigger
+ * id=356042 Soul Fragment buff
+ * id=356043 Chaos Bane buff
+ * id=356046 damage
+ */
+void chaos_bane( special_effect_t& effect )
+{
+  if ( !rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_UNHOLY ) )
+    return;
+
+  struct chaos_bane_t : proc_spell_t
+  {
+    buff_t* buff;
+    chaos_bane_t( const special_effect_t& e, buff_t* b ) :
+      proc_spell_t( "chaos_bane", e.player, e.player->find_spell( 356046 ) ),
+      buff( b )
+    {
+      split_aoe_damage = true;
+    }
+
+    void execute() override
+    {
+      buff->trigger();
+
+      proc_spell_t::execute();
+    }
+  };
+
+  struct chaos_bane_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* chaos_bane;
+    cooldown_t* cd;
+
+    chaos_bane_cb_t( const special_effect_t& e, buff_t* b, cooldown_t* cd ) :
+      dbc_proc_callback_t( e.player, e ),
+      chaos_bane( b ),
+      cd( cd )
+    {}
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( chaos_bane->check() || cd->down() )
+        return;
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
+  };
+
+  // It seems that a Soul Fragment cannot trigger for 5 seconds after Chaos Bane expires.
+  // TODO: Collect more data to verify that this cooldown exists and lasts for 5 seconds.
+  cooldown_t* cd = effect.player->get_cooldown( "chaos_bane_proc_cooldown" );
+  cd->duration = 5_s;
+  auto buff = buff_t::find( effect.player, "chaos_bane" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "chaos_bane", effect.player->find_spell( 356043 ) )
+             ->set_can_cancel( false )
+             ->set_stack_change_callback( [ cd ]( buff_t* b, int, int cur )
+               { if ( cur == 0 ) cd->start(); } );
+  }
+
+  auto proc = create_proc_action<chaos_bane_t>( "chaos_bane", effect, buff );
+  effect.custom_buff = buff_t::find( effect.player, "soul_fragment" );
+  if ( !effect.custom_buff )
+  {
+    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "soul_fragment", effect.player->find_spell( 356042 ) )
+                           ->set_can_cancel( false )
+                           ->set_stack_change_callback( [ proc ]( buff_t* b, int, int cur )
+                             {
+                               if ( cur == b->max_stack() )
+                               {
+                                 proc->set_target( b->player->target );
+                                 proc->execute();
+                                 make_event( b->sim, [ b ] { b->expire(); } );
+                               }
+                             } );
+  }
+
+  // TODO: In game, this seems to be proccing much more than expected than from
+  // the 8 RPPM in the spell data. Additional data ie needed to verify the RPPM.
+  effect.spell_id = 355829;
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+  new chaos_bane_cb_t( effect, buff, cd );
+}
+
+/**Shard of Dyz
+ * id=355755 driver Rank 1
+ * id=357037 driver Rank 2 (Ominous)
+ * id=357055 driver Rank 3 (Desolate)
+ * id=357065 driver Rank 4 (Foreboding)
+ * id=357076 driver Rank 5 (Portentous)
+ * id=356329 Scouring Touch debuff
+ */
+void shard_of_dyz( special_effect_t& effect )
+{
+  struct shard_of_dyz_cb_t : public dbc_proc_callback_t
+  {
+    double debuff_value;
+
+    shard_of_dyz_cb_t( const special_effect_t& e ) :
+      dbc_proc_callback_t( e.player, e ),
+      debuff_value( 0.0001 * e.driver()->effectN( 1 ).average( e.player) )
+    {}
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      auto td = a->player->get_target_data( s->target );
+      td->debuff.scouring_touch->set_default_value( debuff_value );
+      td->debuff.scouring_touch->trigger();
+    }
+  };
+
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+  new shard_of_dyz_cb_t( effect );
 }
 }  // namespace items
 
@@ -2670,6 +2877,13 @@ void register_special_effects()
 
     // 9.1 Shards of Domination
     unique_gear::register_special_effect( 357347, items::blood_link ); // Rune Word: Blood
+    unique_gear::register_special_effect( 357348, items::winds_of_winter ); // Rune Word: Frost
+    unique_gear::register_special_effect( 357349, items::chaos_bane ); // Rune Word: Unholy
+    unique_gear::register_special_effect( 355755, items::shard_of_dyz );
+    unique_gear::register_special_effect( 357037, items::shard_of_dyz );
+    unique_gear::register_special_effect( 357055, items::shard_of_dyz );
+    unique_gear::register_special_effect( 357065, items::shard_of_dyz );
+    unique_gear::register_special_effect( 357076, items::shard_of_dyz );
 
     // Disabled effects
     unique_gear::register_special_effect( 329028, items::DISABLED_EFFECT ); // Light-Infused Armor shield
@@ -2720,6 +2934,23 @@ void register_target_data_initializers( sim_t& sim )
     }
     else
       td->debuff.shattered_psyche = make_buff( *td, "shattered_psyche_debuff" )->set_quiet( true );
+  } );
+
+  // Shard of Dyz (Scouring Touch debuff)
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 355755 )
+      || unique_gear::find_special_effect( td->source, 357037 )
+      || unique_gear::find_special_effect( td->source, 357055 )
+      || unique_gear::find_special_effect( td->source, 357065 )
+      || unique_gear::find_special_effect( td->source, 357076 ) )
+    {
+      assert( !td->debuff.scouring_touch );
+
+      td->debuff.scouring_touch = make_buff( *td, "scouring_touch", td->source->find_spell( 356329 ) );
+      td->debuff.scouring_touch->reset();
+    }
+    else
+      td->debuff.scouring_touch = make_buff( *td, "scouring_touch" )->set_quiet( true );
   } );
 }
 

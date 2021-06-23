@@ -1,5 +1,5 @@
-// Spell text, wow build 9.1.0.39015
-static const std::array<spelltext_data_t, 15499> __ptr_spelltext_data { {
+// Spell text, wow build 9.1.0.39069
+static const std::array<spelltext_data_t, 15509> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -193,7 +193,7 @@ static const std::array<spelltext_data_t, 15499> __ptr_spelltext_data { {
   {   5760, "Coats a weapon with poison that lasts for 1 hour.\r\nEach strike has a $5761h% chance of poisoning the enemy, increasing their casting time by $5760s1% (25% on player targets) for $5760d.", "Casting speed slowed by $s1%.", 0 },
   {   5761, "Coats your weapons with a Non-Lethal Poison that lasts for $d.  Each strike has a $5761h% chance of poisoning the enemy, clouding their mind and slowing their attack and casting speed by $5760s1% for $5760d.", "Each strike has a chance of poisoning the enemy, slowing their attack and spellcasting by $5760s1% for $5760d.", 0 },
   {   5782, "Strikes fear in the enemy, disorienting for $118699d. Damage may cancel the effect. Limit 1.", "Disoriented.", 0 },
-  {   5938, "Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, dispelling all enrage effects.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]\r\n$?s319032[\r\nYour Nature damage done against the target is increased by $319504s1%][] $?a354124[and healing received reduced by $354124S1% ][]for $319504d.\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
+  {   5938, "Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]\r\n$?s319032[\r\nYour Nature damage done against the target is increased by $319504s1%][] $?a354124[and healing received reduced by $354124S1% ][]for $319504d.\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {   6196, "Changes your viewpoint to the targeted location for $d.", "Cannot move while using Far Sight.", 0 },
   {   6197, "Changes your viewpoint to the targeted location for $d. Only usable outdoors.", "Vision is enhanced.", 0 },
   {   6201, "Creates a Healthstone that can be consumed to restore $6262s1% health.", 0, 0 },
@@ -3557,7 +3557,7 @@ static const std::array<spelltext_data_t, 15499> __ptr_spelltext_data { {
   { 115181, "Breathe fire on targets in front of you, causing $s1 Fire damage.\r\n\r\nTargets affected by Keg Smash will also burn, taking $123725o1 Fire damage and dealing $123725s2% reduced damage to you for $123725d.", 0, 0 },
   { 115191, "Conceals you in the shadows until cancelled, allowing you to stalk enemies without being seen. $?s14062[Movement speed while stealthed is increased by $s3%. ]?s13975[Movement speed while stealthed is increased by $s3%. ][]$?s31223[Attacks from Stealth and for $31223s1 sec after deal $31665s1% more damage.][]", "Stealthed.", 0 },
   { 115192, "$@spelldesc108208", "Temporarily concealed in the shadows.", 0 },
-  { 115196, "An intense application of Crippling Poison reduces the target's movement speed by $s1% for $d.", "Movement slowed by $s1%.", 0 },
+  { 115196, "An intense application of Crippling Poison reduces the target's movement speed by $s1% for $d.", "Movement speed slowed by $s1%.", 0 },
   { 115203, "Turns your skin to stone for $120954d, increasing your current and maximum health by $<health>%$?s322960[, increasing the effectiveness of Stagger by $s1%,][] and reducing all damage you take by $<damage>%.", 0, 0 },
   { 115288, "Chug an Energizing Elixir, granting $s2 Chi and generating ${$s1/5*5} Energy over $d.", "Generating ${$w1/5} extra Energy per sec.", 0 },
   { 115308, "A swig of strong brew allows you to Stagger substantially more damage for $215479d. \r\n\r\nShares charges with Purifying Brew.", 0, 0 },
@@ -13590,7 +13590,7 @@ static const std::array<spelltext_data_t, 15499> __ptr_spelltext_data { {
   { 328273, "Increase your Leech by $s1, but reduces your Stamina by $s2.", "Increase your Leech by $w1, but reduces your Stamina by $w2.", 0 },
   { 328275, "$@spelldesc328231", "Damage taken from the hunter increased by $s2%.", "Night Fae" },
   { 328278, " ", 0, "Night Fae" },
-  { 328281, "Bless an ally for $d. Their attacks deal $<points> Frost damage and reduce enemies' movement speed by $328506s4% and attack speed by $328506s3%, stacking $328506u times.\r\n\r\n|cFFFFFFFFBlessing of the Seasons:|r Turns to Spring after use.", "Attacks deal $<points> Frost damage and reduce enemies' movement speed by $328506s4% and attack speed by $328506s3%, stacking $328506u times.", "Night Fae" },
+  { 328281, "Bless an ally for $d. Their attacks deal ${$<points>*$s5} Frost damage and reduce enemies' movement speed by $328506s4% and attack speed by $328506s3%, stacking $328506u times.\r\n\r\n|cFFFFFFFFBlessing of the Seasons:|r Turns to Spring after use.", "Attacks deal ${$<points>*$w5} Frost damage and reduce enemies' movement speed by $328506s4% and attack speed by $328506s3%, stacking $328506u times.", "Night Fae" },
   { 328282, "Bless an ally for $d, increasing their healing done by $s1% and healing received by $s2%.\r\n\r\n|cFFFFFFFFBlessing of the Seasons:|r Turns to Summer after use.", "Healing done increased by $w1% and healing received increased by $w2%.", "Night Fae" },
   { 328283, "Heals the target for $o1 over $d.", "Healing for $w1 every $t1 sec.", 0 },
   { 328296, "$@spelldesc325216", 0, 0 },
@@ -15136,7 +15136,7 @@ static const std::array<spelltext_data_t, 15499> __ptr_spelltext_data { {
   { 351687, "$@spelldesc350936", "Suffering $w1 Shadow damage every $t sec.", 0 },
   { 351747, "When Soothing Shade activates, Tubbins and Gubbins each offer you a cup of tea, healing you for ${$MHP*$m1/100} health every $353334t1 sec and reducing damage taken by $353334s2% while standing in the shaded area.", 0, 0 },
   { 351748, "While you are Well Fed, gain $353365s1 Speed and $353365s2 Avoidance.", 0, 0 },
-  { 351750, "Once per day you can speak with Theotar in Sinfall to obtain The Mad Duke's Tea, which increase your $pri by $353266s1%, or your Haste by $354016s1%, or your Critical Strike chance by $354017s1%, or your Versatility by $354018s1% for $353266d.", 0, 0 },
+  { 351750, "Speak with Theotar in Sinfall to obtain The Mad Duke's Tea.\r\n\r\nDrinking The Mad Duke's Tea increases your Haste, Versatility, Critical Strike Chance, or $pri for $354018d.\r\n\r\nYou can only have the effects of one of The Mad Duke's Tea at a time.", 0, 0 },
   { 351867, "Giant spikes emerge from your armor dealing $s1 Physical damage split between enemies within $a1 yds and continue to deal $351872s1 Physcial damage to attackers that hit you until they deal $351872s2 total damage.", 0, 0 },
   { 351872, "$@spelldesc351867", "Attackers take $w1 damage each time they attack you. The spikes will break after $d or once $w2 damage is dealt.", 0 },
   { 351914, "$@spelldesc351089", "Movement speed increased by $w%.", 0 },
@@ -15271,6 +15271,7 @@ static const std::array<spelltext_data_t, 15499> __ptr_spelltext_data { {
   { 354541, "Owlkin Frenzy can stack up to $<stacks> times and reduces the cast time of your next Cyclone or Entangling Roots by $s1%.", 0, "PvP Talent" },
   { 354583, "Recall brighter times in Oribos, before the Maw grew in power. Lasts $d.", "Recalling brighter times in Oribos.", "Passive" },
   { 354647, "Each additional $?a137039[Healing Wave]?a137040[Lava Burst][Lightning Bolt] generated by Primordial Wave increases your Haste by $s1% for $333340d.", 0, 0 },
+  { 354648, "$@spelldesc354647", "Haste increased by $w1%.", 0 },
   { 354703, "Flagellation now also increases your Versatility by $323654s5%. Each combo point spent while Flagellation is active decreases it's cooldown by ${$s1/1000} sec. ", 0, 0 },
   { 354731, "Serrated Bone Spike has $s1 additional charges and launches $s2 additional bone spike at nearby enemies.", 0, 0 },
   { 354759, "Enjoy a tasty treat.", "In a good mood!", 0 },
@@ -15309,13 +15310,16 @@ static const std::array<spelltext_data_t, 15499> __ptr_spelltext_data { {
   { 355441, "$@spelldesc355428", 0, 0 },
   { 355447, "Ashen Hallow's duration is increased by $s1%. Leaving the hallowed area will end the effect and its cooldown will be reduced by up to $s2%, proportional to its remaining duration.", 0, 0 },
   { 355455, "$@spelldesc355098", "Casting $?c2[Avenger's Shield]?c1[Holy Shock][Judgement] every $t1 sec for $s2 sec.", 0 },
-  { 355567, "$@spelldesc355100", "The effectiveness of $?a328620[Blessing of Summer]?a328622[Blessing of Autumn]?a328281[Blessing of Winter][Blessing of Spring] is increased by $s1%.", 0 },
+  { 355567, "$@spelldesc355100", "The effectiveness of $?$W3=328620[Blessing of Summer]?$W3=328622[Blessing of Autumn]?$W3=328281[Blessing of Winter][Blessing of Spring] is increased by $s1%.", 0 },
   { 355582, "Give your battle pet the power of the Val'kyr, allowing them to fly alongside you.", "Odyn gives you wings!", 0 },
   { 355589, "Fire an enchanted arrow, dealing $354831s1 Shadow damage to your target and an additional $354831s2 Shadow damage to all enemies within $354831A2 yds of your target. Targets struck by a Wailing Arrow are silenced for $355596d.", 0, 0 },
   { 355596, "$@spelldesc355589", "Silenced.", 0 },
   { 355605, "$@spelldesc355333", 0, 0 },
   { 355721, "|CFF20ff20Your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R", 0, 0 },
+  { 355724, "While inside the Maw or Torghast, each time you deal a critical strike, the Winds accumulate $s2% of that effect, up to a cap of $s1 per critical strike. \r\n\r\nEvery $t3 sec, the Winds unleash, dealing Frost damage equal to the total accumulation and and surrounding you in the Winds for $355735d, absorbing $s4% of damage dealt by the Winds.", "While inside the Maw or Torghast, each time you deal a critical strike, the Winds accumulate $s2% of that effect, up to a cap of $s1 per critical strike. \r\n\r\nEvery $t3 sec, the Winds unleash, dealing Frost damage equal to the total accumulation and and surrounding you in the Winds for $355735d, absorbing $s4% of damage dealt by the Winds.", 0 },
   { 355731, "|CFF20ff20Incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R", 0, 0 },
+  { 355733, "Deals $s1 Frost Damage.", 0, 0 },
+  { 355735, "$@spelldesc355724", "Absorb $w1 damage.", 0 },
   { 355739, "|CFF20ff20Your Leech is increased by $s1.|R", 0, 0 },
   { 355741, "|CFF20ff20Your damage is increased by ${$s1/100}.2% for $356364d after attacking an enemy you have not yet damaged.|R", 0, 0 },
   { 355743, "|CFF20ff20Gain $s1 Absorb every $t1 sec, up to a cap of $s2.|R", 0, 0 },
@@ -15331,6 +15335,7 @@ static const std::array<spelltext_data_t, 15499> __ptr_spelltext_data { {
   { 355769, "$@spelldesc355761", 0, 0 },
   { 355794, "$@spelldesc355313", "$?e2[Critical Strike]?e3[Haste]?e4[Mastery]?e5[Versatility][Highest secondary stat] increased by $w2.", 0 },
   { 355804, "$@spelldesc355761", "Suffering $w1 Shadow damage every $t1 sec.", 0 },
+  { 355829, "While inside the Maw or Torghast, your spells and abilities have a chance to drain a Soul Fragment from your target, granting you $356042s1 Primary stat for $356042d and stacking up to $356042u times.\r\n\r\nWhen you reach $356042u stacks, unleash Chaos Bane, dealing $356046s1 Shadow damage split between nearby enemies and granting you $356043s3 Primary stat for $356043d.", "While inside the Maw or Torghast, your spells and abilities have a chance to drain a Soul Fragment from your target, granting you $356042s1 Primary stat for $356042d and stacking up to $356042u times.\r\n\r\nWhen you reach $356042u stacks, unleash Chaos Bane, dealing $356046s1 Shadow damage split between nearby enemies and granting you $356043s3 Primary stat for $356043d.", 0 },
   { 355886, "Sinful Brand deals $s1% increased damage and $?c1[Eye Beam][Fel Devastation] damage increases the duration of Sinful Brand by ${$s2/1000}.1 sec.", 0, 0 },
   { 355890, "The Hunt engulfs you with Immolation Aura upon reaching your target and you gain $355892s1% Agility for $355892d for each enemy hit.", 0, 0 },
   { 355892, "$@spelldesc355890", "Agility increased by $s1%.", 0 },
@@ -15340,6 +15345,9 @@ static const std::array<spelltext_data_t, 15499> __ptr_spelltext_data { {
   { 355953, 0, "Your very own burden to bare.", 0 },
   { 355996, "When Fodder to the Flame's demon explodes it inflicts Fiery Brand to $s2 nearby enemies for $s2 sec. Additionally Shattered Soul's duration is increased by ${$s1/1000} sec.", 0, 0 },
   { 356029, "Your damaging spells have a chance to increase your Critical Strike by $353492s1 for $d, stacking up to $u times.", "Critical Strike increased by $w1.", 0 },
+  { 356042, "$@spelldesc355829", "Increases $pri by $w1.", 0 },
+  { 356043, "$@spelldesc355829", "Increases $pri  by $w1.", 0 },
+  { 356046, "$@spelldesc355829", 0, 0 },
   { 356070, "$@spelldesc355893", 0, 0 },
   { 356134, "$@spelldesc355304", "Spectral eyes watch over your actions.", 0 },
   { 356181, "$@spelldesc355324", "Experiencing the agonizing torment of $@auracaster's Rack Fragment, suffering ${$355324s1*($d/$t1+1)} damage over $d.", 0 },
@@ -15462,7 +15470,7 @@ static const std::array<spelltext_data_t, 15499> __ptr_spelltext_data { {
   { 357564, "$@spelldesc354115\r\n", "$?e1[Your Mastery is increased by $w2.]?e2[Your Haste is increased by $w3%.]?e3[Your Critical Strike is increased by $w4%.][Your Versatility is increased by $w5%.]", 0 },
   { 357581, 0, "The text detailing your demise can't be rewritten just yet.", 0 },
   { 357585, "Consume a lesser weapon, destroying it utterly to feed the power of Jaithys.\r\n\r\n", 0, 0 },
-  { 357588, "While you are behind your enemies, their movement is impaired, or they are suffering from loss-of-control effects, your attacks have a high chance to cause them to bleed for $s1 Physical damage over $353466d.", 0, 0 },
+  { 357588, "While you are behind your enemies, their movement is impaired, or they are suffering from loss-of-control effects, your attacks have a high chance to cause them to bleed for ${$s1*($353466d/$353466t1+1)} Physical damage over $353466d.", 0, 0 },
   { 357595, "Your attacks apply Banshee's Blight, giving your finishing moves a $s2% chance per combo point spent to deal $s1 Shadow damage. Banshee's Blight stacks up to $358090u times as the target becomes more injured.", "Damaging finishing moves have a chance to deal $s1 Shadow damage per stack.", 0 },
   { 357672, "Your abilities have a chance to increase your $pri by $s1 for $357673d.", 0, 0 },
   { 357673, "$@spelldesc357672", "$pri increased by $w1.", 0 },
@@ -15499,13 +15507,15 @@ static const std::array<spelltext_data_t, 15499> __ptr_spelltext_data { {
   { 358945, "$@spelldesc356218", "Critical strike chance increased by $s1%.", 0 },
   { 358958, "Improve Rae'shalare, Death's Whisper to item level $s3.", 0, 0 },
   { 358959, "Improve Rae'shalare, Death's Whisper to item level $s3.", 0, 0 },
+  { 359040, "Consume The Mad Duke's Tea, increasing your $pri, Haste, Critical Strike chance, or Versatility for $354018d.\r\n\r\nYou can only have the effect of one of The Mad Duke's Tea active at a time.", 0, 0 },
+  { 359078, "An intense application of Numbing Poison reduces the target's casting speed by $s1% for $d.", "Casting slowed by $s1%.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.0.39015
+// spelltext hotfix entries, wow build 9.1.0.39069
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.1.0.39015
+// Spell description variables, wow build 9.1.0.39069
 static const std::array<spelldesc_vars_data_t, 301> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15682,7 +15692,7 @@ static const std::array<spelldesc_vars_data_t, 301> __ptr_spelldesc_vars_data { 
   {  264057, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$demoPassive=$?s137044[${1+0.01*$137044m3}][${1}]\r\n$damage=${.575*($SP*1)*$<demoMastery>*$<demoPassive>*(1+$@versadmg)}" },
   {  265931, "$mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]" },
   {  267997, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]" },
-  {  269120, "$points=${$s2/100*$max($AP,$SP)*(1+$@versadmg)}" },
+  {  269120, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  269751, "$petDamage=${$ap*($s1/100)*(1+$@versadmg)}\r\n$hunterDamage=${$269752s1}\r\n$damage=${$<petDamage>+$<hunterDamage>}" },
   {  272721, "$duration=${$272723d+(($w2-1)*$272718s~2/1000)}" },
   {  272983, "$duration=${10}" },
@@ -15730,7 +15740,7 @@ static const std::array<spelldesc_vars_data_t, 301> __ptr_spelldesc_vars_data { 
   {  303474, "$transfer=${$303448s1*(1+$303463s1/100)*(1+$@versadmg)}" },
   {  303476, "$transfer=${$303448s1*(1+$303463s1/100)*(1+$@versadmg)}" },
   {  307865, "$cap=${5}" },
-  {  309621, "$points=${$s2/100*$max($AP,$SP)*(1+$@versadmg)}" },
+  {  309621, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  312411, "$damage=${$cond($gt($SP,$AP),$SP*1.8,$AP*1.8)*$pctD*(1+$@versadmg)}\r\n$healing=${$cond($gt($SP,$AP),$SP*2.7,$AP*2.7)*$pctD*(1+$@versadmg)}" },
   {  313216, "$absorb=${$mhp*$s2/100} " },
   {  315341, "$CAP=${($AP+$OAP)*2/3}\r\n$damage=${$m1*$<CAP>/$AP}" },
@@ -15738,15 +15748,15 @@ static const std::array<spelldesc_vars_data_t, 301> __ptr_spelldesc_vars_data { 
   {  317349, "$damage=${2.0*$317483s1}\r\n$absorb=${(($317320s3/100)*$AP)*2.0*(1+$@versadmg)}" },
   {  317485, "$damage=${2.0*$317483s1}\r\n$absorb=${(($317320s3/100)*$AP)*2.0*(1+$@versadmg)}" },
   {  318038, "$coeff=${0.0264}" },
-  {  318187, "$points=${$s2/100*$max($AP,$SP)*(1+$@versadmg)}" },
-  {  318211, "$points=${$s2/100*$max($AP,$SP)*(1+$@versadmg)}" },
-  {  318216, "$points=${$s2/100*$max($AP,$SP)*(1+$@versadmg)}" },
-  {  318274, "$points=${$s2/100*$max($AP,$SP)*(1+$@versadmg)}" },
-  {  318481, "$points=${$s2/100*$max($AP,$SP)*(1+$@versadmg)}" },
-  {  318482, "$points=${$s2/100*$max($AP,$SP)*(1+$@versadmg)}" },
-  {  318483, "$points=${$s2/100*$max($AP,$SP)*(1+$@versadmg)}" },
-  {  318487, "$points=${$s2/100*$max($AP,$SP)*(1+$@versadmg)}" },
-  {  318488, "$points=${$s2/100*$max($AP,$SP)*(1+$@versadmg)}" },
+  {  318187, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
+  {  318211, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
+  {  318216, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
+  {  318274, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
+  {  318481, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
+  {  318482, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
+  {  318483, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
+  {  318487, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
+  {  318488, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  319191, "$mod=$?a137005[${0.25}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${0.75}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}][${1}]" },
   {  319217, "$points=${$cond($gt($SP,$AP),$SP*10,$AP*10)*(1)}" },
   {  319778, "$coeff=${0.0264}" },
@@ -15762,8 +15772,8 @@ static const std::array<spelldesc_vars_data_t, 301> __ptr_spelldesc_vars_data { 
   {  322729, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  323673, "$damage=${($SPS*$s2/100)*(1+$@versadmg)*$m3/100}\r\n$healing=${($SPS*$s5/100)*(1+$@versadmg)*$m3/100}" },
   {  324143, "$rage=$?c1[${4}]?c2[${6}][${4}]" },
-  {  324184, "$points=${$s2/100*$max($AP,$SP)*(1+$@versadmg)}" },
-  {  324202, "$points=${$s2/100*$max($AP,$SP)*(1+$@versadmg)}" },
+  {  324184, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
+  {  324202, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  324536, "$affMastery=$?s77215[${1+0.01*$77215m1}][${1}]\r\n$damage=${$bc1*($SP)*$<affMastery>*(1+$@versadmg)}" },
   {  324631, "$cdr=${$350228s1/1000}" },
   {  325203, "$mult=$?s337979[${$337979m1/100+1}][${1}]" },
@@ -15772,7 +15782,7 @@ static const std::array<spelldesc_vars_data_t, 301> __ptr_spelldesc_vars_data { 
   {  326504, "$points=${$cond($gt($SP,$AP),$SP*0.03,$AP*0.03)*(1+$@versadmg)}" },
   {  326514, "$buff=${$348272s1}\r\n$max=${3*$<buff>}" },
   {  328266, "$mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${1}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]\r\n$modb=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${1}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]" },
-  {  328281, "$points=${$s2/100*$max($AP,$SP)*(1+$@versadmg)}" },
+  {  328281, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  330325, "$damage=${2.0*$317483s1}\r\n$absorb=${(($317320s3/100)*$AP)*2.0*(1+$@versadmg)}" },
   {  330334, "$damage=${2.0*$317483s1}\r\n$absorb=${(($317320s3/100)*$AP)*2.0*(1+$@versadmg)}" },
   {  330901, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
@@ -15810,7 +15820,7 @@ static const std::array<spelldesc_vars_data_t, 301> __ptr_spelldesc_vars_data { 
   {  358164, "$buff=${$348272s1}\r\n$max=${3*$<buff>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.0.39015
+// spelldesc_vars hotfix entries, wow build 9.1.0.39069
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

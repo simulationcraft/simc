@@ -607,7 +607,7 @@ struct judgment_ret_t : public judgment_t
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
   {}
 
-  judgment_ret_t( paladin_t* p ) :
+  judgment_ret_t( paladin_t* p, bool is_divine_toll = true ) :
     judgment_t( p ),
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
   {
@@ -616,7 +616,8 @@ struct judgment_ret_t : public judgment_t
 
     // according to skeletor this is given the bonus of 326011
     // TODO(mserrano) - fix this once spell data has been re-extracted
-    base_multiplier *= 1.0 + p -> find_spell( 326011 ) -> effectN( 1 ).percent();
+    if ( is_divine_toll )
+      base_multiplier *= 1.0 + p -> find_spell( 326011 ) -> effectN( 1 ).percent();
   }
 
   void execute() override
@@ -791,6 +792,7 @@ void paladin_t::create_ret_actions()
   if ( specialization() == PALADIN_RETRIBUTION )
   {
     active.divine_toll = new judgment_ret_t( this );
+    active.judgment = new judgment_ret_t( this, false );
   }
 }
 

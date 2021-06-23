@@ -559,7 +559,7 @@ struct unholy_nova_t final : public priest_spell_t
       child_unholy_nova_healing->execute();
     }
 
-    if ( priest().legendary.pallid_command->ok() )
+    if ( priest().legendary.pallid_command->ok() && !s->chain_target)
     {
       if ( priest().specialization() == PRIEST_SHADOW )
       {
@@ -1292,18 +1292,8 @@ private:
     if ( priest != nullptr && priest->legendary.bwonsamdis_pact->ok() &&
          util::str_compare_ci( priest->options.bwonsamdis_pact_mask_type, "benevolent" ) )
     {
-      // Math is done in the wrong place
-      // (100% base + 100% increase) * 2 = 400% --- should be 100% base + (100% increase * 2) = 300%
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/852
-      if ( priest->bugs )
-      {
-        modifier = ( modifier + default_value ) * 2;
-      }
-      else
-      {
-        modifier += ( default_value * 2 );
-      }
-
+      modifier += ( default_value * 2 );
+      
       sim->print_debug( "Bwonsamdi's Pact Modifier set to {}", modifier );
     }
     else

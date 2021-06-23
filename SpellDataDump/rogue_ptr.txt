@@ -960,7 +960,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #4 (id=872827)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Enemy (6)
-Description      : Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, dispelling all enrage effects.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]
+Description      : Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]
 $?s319032[
 Your Nature damage done against the target is increased by $319504s1%][] $?a354124[and healing received reduced by $354124S1% ][]for $319504d.
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
@@ -1249,7 +1249,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=6402)     : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 18 | Target: Self (1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Numbing Poison (5760), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crippling Poison (115196), Slaughter Poison (323660)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Numbing Poison (5760), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crippling Poison (115196), Slaughter Poison (323660), Numbing Poison (359078)
                    Family Flags: 14, 16, 28, 83
 #2 (id=806019)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -33 | Scaled Value: -33 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
@@ -2198,11 +2198,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68022)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Deadly Poison (113780), Crippling Poison (115196), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581), Slaughter Poison (323660), Dreadblades (343142)
+                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Deadly Poison (113780), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581), Slaughter Poison (323660), Dreadblades (343142), Numbing Poison (359078)
                    Family Flags: 8, 14, 16, 20, 28, 35, 36, 81, 86, 95, 97, 119
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crippling Poison (115196), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Double Dose (273009), Nothing Personal (286581), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Dreadblades (343142)
+                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Double Dose (273009), Nothing Personal (286581), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Dreadblades (343142), Numbing Poison (359078)
                    Family Flags: 8, 14, 16, 20, 28, 36, 81, 95, 97, 115, 119
 Description      : Increases the damage done by your poisons $?s319473[and bleeds ][]by ${$s1}.1%.
 
@@ -2448,7 +2448,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Always hits (114)
 Effects          :
 #1 (id=94449)    : Apply Aura (6) | Ignore Armor% (345)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.66667 | Target: Enemy (6)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc91023
 Tooltip          : $w1% of armor is ignored by the attacking Rogue.
 
@@ -2834,12 +2834,12 @@ Tooltip          : Temporarily concealed in the shadows.
 Name             : Crippling Poison (id=115196) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
-Spell Type       : Magic
+Spell Type       : Melee
 Range            : 100 yards
 Duration         : 5 seconds
 Mechanic         : Snare
-Affecting spells : Improved Poisons (14117 effect#1), Mastery: Potent Assassin (76803 effects: #1, #2), Master Poisoner (196864 effect#3)
-Family Flags     : 14, 51
+Affecting spells : Improved Poisons (14117 effect#1), Master Poisoner (196864 effects: #1, #3, #4)
+Family Flags     : 51, 83
 Attributes       : ........ ........ ........ ........   ...x...x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   ........ ........ ........ ......x. 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
@@ -2852,7 +2852,7 @@ Effects          :
 #1 (id=128900)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : An intense application of Crippling Poison reduces the target's movement speed by $s1% for $d.
-Tooltip          : Movement slowed by $s1%.
+Tooltip          : Movement speed slowed by $s1%.
 
 Name             : Shroud of Concealment (id=115834) [Spell Family (8)] 
 Class            : Rogue
@@ -3722,7 +3722,7 @@ Attributes       : ....x... ........ x.x..... .......x   ........ .x...... .....
                  : Cannot cancel aura (31), Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=283619)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45279 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45279 | PvP Coefficient: 1.20000 | Target: Enemy (6)
 #2 (id=283620)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #3 (id=283621)   : Dummy (3)
@@ -4184,7 +4184,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289047)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Numbing Poison (5760), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Slaughter Poison (323660)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Numbing Poison (5760), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crippling Poison (115196), Slaughter Poison (323660)
                    Family Flags: 16, 28, 83
 #2 (id=289048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
@@ -4192,11 +4192,11 @@ Effects          :
                    Family Flags: 16
 #3 (id=289049)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Crippling Poison (3408), Crippling Poison (3409), Numbing Poison (5760), Leeching Poison (108211), Crippling Poison (115196)
+                   Affected Spells: Crippling Poison (3408), Crippling Poison (3409), Numbing Poison (5760), Leeching Poison (108211), Crippling Poison (115196), Numbing Poison (359078)
                    Family Flags: 14, 73, 83
 #4 (id=289050)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Numbing Poison (5760), Wound Poison (8679), Wound Poison (8680)
+                   Affected Spells: Numbing Poison (5760), Wound Poison (8679), Wound Poison (8680), Crippling Poison (115196)
                    Family Flags: 28, 83
 Description      : Increases the damage done by your weapon poisons by $s1% and their non-damaging effects by $s3%.
 
@@ -4532,7 +4532,7 @@ Attributes       : ....x... ........ x.x..... .......x   ........ .x...... .....
                  : Cannot cancel aura (31), Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=290715)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45279 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45279 | PvP Coefficient: 1.20000 | Target: Enemy (6)
 Description      : $@spelldesc193315
 
 Name             : Shuriken Storm (id=197835) [Spell Family (8)] 
@@ -5050,7 +5050,7 @@ Effects          :
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316)
                    Family Flags: 54
 #3 (id=466120)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66667 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=479903)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=479904)   : Energize Power (30)
@@ -5200,7 +5200,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=355887)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.75000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Between the Eyes (199804), Between the Eyes (315341)
                    Family Flags: 111
 Description      : Critical strikes with Between the Eyes deal four times normal damage.
@@ -10068,7 +10068,7 @@ Name             : Shallow Insight (id=340582)
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Duration         : 10 seconds
+Duration         : 12 seconds
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10108,7 +10108,7 @@ Name             : Deep Insight (id=340584) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Duration         : 10 seconds
+Duration         : 12 seconds
 Proc Chance      : 100%
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11442,5 +11442,30 @@ Effects          :
 #2 (id=890211)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When Wild Spirits hits fewer than $328757I targets, there is a $s1% chance to cause Wild Spirits damage a second time.
+
+Name             : Numbing Poison (id=359078) [Spell Family (8)] 
+Class            : Rogue
+School           : Nature
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 5 seconds
+Mechanic         : Snare
+Affecting spells : Improved Poisons (14117 effect#1), Mastery: Potent Assassin (76803 effects: #1, #2), Master Poisoner (196864 effect#3)
+Family Flags     : 14, 51
+Attributes       : ........ ........ ........ ........   ...x...x ........ .x...... ........ 
+                 : ..x..... ........ ........ x.......   ........ ........ ........ ......x. 
+                 : ........ ...x.... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=894884)   : Apply Aura (6) | Modify Casting Speed (216)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#2 (id=894885)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : An intense application of Numbing Poison reduces the target's casting speed by $s1% for $d.
+Tooltip          : Casting slowed by $s1%.
 
 

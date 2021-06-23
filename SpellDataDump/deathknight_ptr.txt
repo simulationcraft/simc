@@ -1123,9 +1123,9 @@ Effects          :
 #1 (id=42113)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.46426 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=42114)    : Dummy (3)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.50000 | Target: Enemy (6)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.75000 | Target: Enemy (6)
 #3 (id=287354)   : Dummy (3)
-                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 0.50000 | Target: Enemy (6)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 0.75000 | Target: Enemy (6)
 #4 (id=331353)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Focuses dark power into a strike$?s137006[ with both weapons, that deals a total of ${$s1+$66188s1}][ that deals $s1] Physical damage and heals you for $s2% of all damage taken in the last $s4 sec, minimum ${$s3}.1% of maximum health.
@@ -1335,7 +1335,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=43590)    : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.66667 | Misc Value 2: 0x1 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
 #2 (id=43591)    : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1887 | Target: Self (1)
 #3 (id=337680)   : Apply Aura (6) | Modify Damage Done% (79)
@@ -5618,7 +5618,7 @@ Effects          :
 #1 (id=215544)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
 #2 (id=215545)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50300 | PvP Coefficient: 0.50000 | Radius: 12 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50300 | PvP Coefficient: 0.66667 | Radius: 12 yards | Target: Cone Front (104)
 Description      : $@spelldesc152279
 
 Name             : Defile (id=156000) [Spell Family (15)] 

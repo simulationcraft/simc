@@ -1149,13 +1149,15 @@ struct vanquishers_hammer_t : public paladin_melee_attack_t
     }
     if ( p->conduit.righteous_might->ok() )
       r_m_heal = new righteous_might_t( p );
+    if ( p->legendary.duty_bound_gavel->ok() )
+      cooldown -> charges += as<int>( p->legendary.duty_bound_gavel->effectN( 1 ).base_value() );
   }
 
   void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
 
-    p()->buffs.vanquishers_hammer->trigger();
+    p()->buffs.vanquishers_hammer->trigger( 1 + ( p()->legendary.duty_bound_gavel->ok() ) );
 
     if ( p()->conduit.righteous_might->ok() )
     {
@@ -1192,6 +1194,7 @@ struct divine_toll_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
     if ( p()->conduit.ringing_clarity->ok() )
+    {
       for ( int hits = 0; hits < p()->conduit.ringing_clarity->effectN( 2 ).base_value(); hits++ )
       {
         if ( rng().roll( p()->conduit.ringing_clarity.percent() ) )
@@ -1204,6 +1207,12 @@ struct divine_toll_t : public paladin_spell_t
           } );
         }
       }
+    }
+
+    if ( p()->legendary.divine_resonance->ok() )
+    {
+      p()->buffs.divine_resonance->trigger();
+    }
   }
 };
 
@@ -1334,8 +1343,13 @@ struct ashen_hallow_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
+    auto duration = data().duration();
+    if ( p()->legendary.radiant_embers->ok() )
+    {
+      duration *= 1.0 + p()->legendary.radiant_embers->effectN( 1 ).percent();
+    }
     ground_aoe_params_t hallow_params = ground_aoe_params_t()
-                                            .duration( data().duration() )
+                                            .duration( duration )
                                             .pulse_time( data().effectN( 2 ).period() )
                                             .hasted( ground_aoe_params_t::SPELL_HASTE )
                                             .x( execute_state->target->x_position )
@@ -1464,6 +1478,22 @@ public:
 
     return ab::spell_direct_power_coefficient( s );
   }
+
+  double action_multiplier() const override
+  {
+    double am = ab::action_multiplier();
+
+    if ( ab::player->type == PALADIN )
+    {
+      paladin_t* pal = debug_cast<paladin_t*>( ab::player );
+      if ( pal->buffs.equinox->up() )
+      {
+        am *= 1.0 + pal->buffs.equinox->data().effectN( 2 ).percent();
+      }
+    }
+
+    return am;
+  }
 };
 
 struct blessing_of_winter_t : public paladin_spell_t
@@ -1512,6 +1542,13 @@ struct blessing_of_the_seasons_t : public paladin_spell_t
     paladin_spell_t::execute();
     p()->active.seasons[ p()->next_season ]->execute();
     p()->next_season = season( ( p()->next_season + 1 ) % NUM_SEASONS );
+
+    if ( p()->legendary.seasons_of_plenty->ok() )
+    {
+      make_event( *sim, 10_s, [ this ]() {
+        p()->buffs.equinox->trigger();
+      } );
+    }
   }
 };
 
@@ -1695,7 +1732,14 @@ struct blessing_of_autumn_t : public buff_t
         affected_actions_initialized = true;
       }
 
-      double recharge_rate_multiplier = 1.0 / ( 1 + b->default_value );
+      paladin_t* pal = debug_cast<paladin_t*>( source );
+      double recharge_val = b->default_value;
+      if ( pal->buffs.equinox->up() )
+      {
+        recharge_val *= 1.0 + pal->buffs.equinox->data().effectN( 2 ).percent();
+      }
+
+      double recharge_rate_multiplier = 1.0 / ( 1 + recharge_val );
       for ( auto a : affected_actions )
       {
         if ( new_ == 1 )
@@ -2136,9 +2180,16 @@ void paladin_t::create_buffs()
   buffs.virtuous_command =
       make_buff( this, "virtuous_command", find_spell( 339664 ) )
           ->set_refresh_behavior( buff_refresh_behavior::DISABLED );  // doesn't refresh on reapplication
+  buffs.divine_resonance = make_buff( this, "divine_resonance", find_spell( 355455 ) )
+          ->set_tick_callback( [ this ]( buff_t* /* b */, int /* stacks */, timespan_t /* tick_time */ ) {
+            this->active.judgment->set_target( this->target );
+            this->active.judgment->schedule_execute();
+          } );
+  buffs.equinox = make_buff( this, "equinox", find_spell( 355567 ) );
 
   // Covenants
-  buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )->set_cooldown( 0_ms );
+  buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )->set_cooldown( 0_ms )
+    ->modify_max_stack( legendary.duty_bound_gavel->ok() ? as<int>(legendary.duty_bound_gavel->effectN( 2 ).base_value()) : 0 );
 }
 
 // paladin_t::default_potion ================================================
@@ -2351,6 +2402,10 @@ void paladin_t::init_spells()
   legendary.relentless_inquisitor         = find_runeforge_legendary( "Relentless Inquisitor" );
   legendary.tempest_of_the_lightbringer   = find_runeforge_legendary( "Tempest of the Lightbringer" );
   legendary.reign_of_endless_kings        = find_runeforge_legendary( "Reign of Endless Kings" );
+  legendary.seasons_of_plenty             = find_runeforge_legendary( "Seasons of Plenty" );
+  legendary.radiant_embers                = find_runeforge_legendary( "Radiant Embers" );
+  legendary.duty_bound_gavel              = find_runeforge_legendary( "Duty-Bound Gavel" );
+  legendary.divine_resonance              = find_runeforge_legendary( "Divine Resonance" );
 
   // Covenants
   covenant.kyrian    = find_covenant_spell( "Divine Toll" );
@@ -3320,6 +3375,7 @@ struct paladin_module_t : public module_t
         make_buff( p, "blessing_of_summer", p->find_spell( 328620 ) )->set_chance( 1.0 )->set_cooldown( 0_ms );
     p->buffs.blessing_of_autumn = make_buff<buffs::blessing_of_autumn_t>( p );
     p->buffs.blessing_of_winter = make_buff( p, "blessing_of_winter", p->find_spell( 328281 ) )->set_cooldown( 0_ms );
+    // TODO: make equinox also double this
     p->buffs.blessing_of_spring = make_buff( p, "blessing_of_spring", p->find_spell( 328282 ) )
                                       ->set_cooldown( 0_ms )
                                       ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
@@ -3346,10 +3402,21 @@ struct paladin_module_t : public module_t
       // TODO: Ensure there is no incorrect looping that can happen with other similar effects.
       p->assessor_out_damage.add(
           assessor::CALLBACKS, [ p, summer_proc, summer_data ]( result_amount_type, action_state_t* s ) {
+            if ( !(p->buffs.blessing_of_summer->up()) )
+              return assessor::CONTINUE;
+
+            double proc_chance = summer_data->proc_chance();
+            paladin_t* pal = debug_cast<paladin_t*>(p->buffs.blessing_of_summer->source);
+            bool has_equinox = pal->buffs.equinox->up();
+            if ( has_equinox )
+              proc_chance *= 1.0 + pal->buffs.equinox->data().effectN( 1 ).percent();
+
             if ( s->action != summer_proc && s->result_total > 0.0 && p->buffs.blessing_of_summer->up() &&
-                 summer_data->proc_flags() & ( 1 << s->proc_type() ) && p->rng().roll( summer_data->proc_chance() ) )
+                 summer_data->proc_flags() & ( 1 << s->proc_type() ) && p->rng().roll( proc_chance ) )
             {
               double da = s->result_amount * summer_data->effectN( 1 ).percent();
+              if ( has_equinox )
+                da *= 1.0 + pal->buffs.equinox->data().effectN( 2 ).percent();
               make_event( p->sim, [ t = s->target, summer_proc, da ] {
                 summer_proc->set_target( t );
                 summer_proc->base_dd_min = summer_proc->base_dd_max = da;

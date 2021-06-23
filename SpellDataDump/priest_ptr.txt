@@ -7683,7 +7683,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=737897)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.66667 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your damage is increased by up to $s1%, diminishing for each ally affected by your Atonement.
 
 Name             : Sins of the Many (id=280398) [Spell Family (6)] 

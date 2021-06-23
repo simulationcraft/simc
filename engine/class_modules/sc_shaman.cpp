@@ -387,7 +387,7 @@ public:
     buff_t* vesper_totem;
 
     //Covenant Legendaries
-    buff_t* splintered_elemental_rod;
+    buff_t* splintered_elements;
     buff_t* seeds_of_rampant_growth;
 
     // Legendaries
@@ -700,7 +700,7 @@ public:
     const spell_data_t* feral_spirit;
     const spell_data_t* fire_elemental;
     const spell_data_t* storm_elemental;
-    const spell_data_t* splintered_elemental_rod;
+    const spell_data_t* splintered_elements;
     const spell_data_t* flametongue_weapon;
     const spell_data_t* maelstrom;
     const spell_data_t* windfury_weapon;
@@ -4774,7 +4774,7 @@ struct lava_burst_t : public shaman_spell_t
         if ( p() ->legendary.splintered_elements->ok())
         {
           auto count_duplicates = p()->action.lava_burst_pw->target_list().size();
-          p()->buff.splintered_elemental_rod->trigger( 1, count_duplicates * p()->spell.splintered_elemental_rod->effectN(1).percent() );
+          p()->buff.splintered_elements->trigger( 1, count_duplicates * p()->spell.splintered_elements->effectN(1).percent() );
         }
         p()->action.lava_burst_pw->schedule_execute();
       }
@@ -4984,8 +4984,8 @@ struct lightning_bolt_t : public shaman_spell_t
         if ( p()->legendary.splintered_elements->ok() )
         {
           auto count_duplicates = p()->action.lightning_bolt_pw->target_list().size();
-          p()->buff.splintered_elemental_rod->trigger(
-              1, count_duplicates * p()->spell.splintered_elemental_rod->effectN( 1 ).percent() );
+          p()->buff.splintered_elements->trigger(
+              1, count_duplicates * p()->spell.splintered_elements->effectN( 1 ).percent() );
         }
         p()->action.lightning_bolt_pw->execute();
       }
@@ -7736,7 +7736,7 @@ void shaman_t::init_spells()
   spell.flametongue_weapon = find_spell( 318038 );
   spell.maelstrom          = find_spell( 343725 );
   spell.windfury_weapon          = find_spell( 319773 );
-  spell.splintered_elemental_rod = find_spell( 333339 );
+  spell.splintered_elements = find_spell( 354647 );
 
   player_t::init_spells();
 }
@@ -8388,7 +8388,7 @@ void shaman_t::create_buffs()
   // Covenant Legendaries
   if ( legendary.splintered_elements->ok() )
   {
-    buff.splintered_elemental_rod = make_buff( this, "splintered_elemental_rod", find_spell( 333340 ) )
+    buff.splintered_elements = make_buff( this, "splintered_elements", find_spell( 354648 ) )
                                    ->set_default_value_from_effect_type( A_HASTE_ALL )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }

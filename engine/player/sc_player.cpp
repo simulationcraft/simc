@@ -4046,6 +4046,8 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     m *= 1.0 + td->debuff.plagueys_preemptive_strike->check_value();
     m *= 1.0 + td->debuff.sinful_revelation->check_value();
     m *= 1.0 + td->debuff.dream_delver->check_stack_value();
+    m *= 1.0 + td->debuff.scouring_touch->check_stack_value();
+    m *= 1.0 + td->debuff.soulglow_spectrometer->check_stack_value();
   }
 
   return m;
@@ -6003,12 +6005,6 @@ void player_t::recalculate_resource_max( resource_e resource_type, gain_t* sourc
     {
       // Calculate & set maximum health
       resources.max[ resource_type ] += floor( stamina() ) * current.health_per_stamina;
-
-      // Redirected Anima also affects temporary bonus health
-      if ( buffs.redirected_anima && buffs.redirected_anima->up() )
-      {
-        resources.max[ resource_type ] *= 1.0 + buffs.redirected_anima->check_stack_value();
-      }
 
       // Make sure the player starts combat with full health
       if ( !in_combat )
