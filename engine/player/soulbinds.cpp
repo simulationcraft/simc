@@ -1086,8 +1086,10 @@ void brons_call_to_action( special_effect_t& effect )
       // Just need to 1x Bron's AP, and 1x Bron's SP
       double attack_direct_power_coefficient( const action_state_t* s ) const override
       {
-        auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
-        auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+        auto ap = spell_t::attack_direct_power_coefficient( s ) * composite_attack_power() *
+                  player->composite_attack_power_multiplier();
+        auto sp = spell_t::spell_direct_power_coefficient( s ) * composite_spell_power() *
+                  player->composite_spell_power_multiplier();
 
         if ( ap <= sp )
           return 0;
@@ -1097,8 +1099,10 @@ void brons_call_to_action( special_effect_t& effect )
 
       double spell_direct_power_coefficient( const action_state_t* s ) const override
       {
-        auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
-        auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+        auto ap = spell_t::attack_direct_power_coefficient( s ) * composite_attack_power() *
+                  player->composite_attack_power_multiplier();
+        auto sp = spell_t::spell_direct_power_coefficient( s ) * composite_spell_power() *
+                  player->composite_spell_power_multiplier();
 
         if ( ap > sp )
           return 0;
@@ -1123,8 +1127,10 @@ void brons_call_to_action( special_effect_t& effect )
       // Just need to 1x Bron's AP, and 0.25x Bron's SP
       double attack_direct_power_coefficient( const action_state_t* s ) const override
       {
-        auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
-        auto sp = 0.25 * composite_spell_power() * player->composite_spell_power_multiplier();
+        auto ap = spell_t::attack_direct_power_coefficient( s ) * composite_attack_power() *
+                  player->composite_attack_power_multiplier();
+        auto sp = spell_t::spell_direct_power_coefficient( s ) * composite_spell_power() *
+                  player->composite_spell_power_multiplier();
 
         if ( ap <= sp )
           return 0;
@@ -1134,8 +1140,10 @@ void brons_call_to_action( special_effect_t& effect )
 
       double spell_direct_power_coefficient( const action_state_t* s ) const override
       {
-        auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
-        auto sp = 0.25 * composite_spell_power() * player->composite_spell_power_multiplier();
+        auto ap = spell_t::attack_direct_power_coefficient( s ) * composite_attack_power() *
+                  player->composite_attack_power_multiplier();
+        auto sp = spell_t::spell_direct_power_coefficient( s ) * composite_spell_power() *
+                  player->composite_spell_power_multiplier();
 
         if ( ap > sp )
           return 0;
@@ -1171,8 +1179,10 @@ void brons_call_to_action( special_effect_t& effect )
       // Just need to 2.3x Bron's AP, and 0.575x Bron's SP
       double attack_direct_power_coefficient( const action_state_t* s ) const override
       {
-        auto ap = 2.3 * composite_attack_power() * player->composite_attack_power_multiplier();
-        auto sp = 0.575 * composite_spell_power() * player->composite_spell_power_multiplier();
+        auto ap = heal_t::attack_direct_power_coefficient( s ) * composite_attack_power() *
+                  player->composite_attack_power_multiplier();
+        auto sp = heal_t::spell_direct_power_coefficient( s ) * composite_spell_power() *
+                  player->composite_spell_power_multiplier();
 
         if ( ap <= sp )
           return 0;
@@ -1182,8 +1192,10 @@ void brons_call_to_action( special_effect_t& effect )
 
       double spell_direct_power_coefficient( const action_state_t* s ) const override
       {
-        auto ap = 2.3 * composite_attack_power() * player->composite_attack_power_multiplier();
-        auto sp = 0.575 * composite_spell_power() * player->composite_spell_power_multiplier();
+        auto ap = heal_t::attack_direct_power_coefficient( s ) * composite_attack_power() *
+                  player->composite_attack_power_multiplier();
+        auto sp = heal_t::spell_direct_power_coefficient( s ) * composite_spell_power() *
+                  player->composite_spell_power_multiplier();
 
         if ( ap > sp )
           return 0;
