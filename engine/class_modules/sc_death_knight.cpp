@@ -2912,11 +2912,11 @@ struct death_knight_action_t : public Base
     return base_gcd;
   }
 
-  void execute() override
+  void impact( action_state_t * state ) override
   {
-    action_base_t::execute();
+    action_base_t::impact( state );
     // If we spend a rune, we have a chance to spread the dot
-    dot_t* source_dot = get_td( action_t::target ) -> dot.shackle_the_unworthy;
+    dot_t* source_dot = get_td( state -> target ) -> dot.shackle_the_unworthy;
     if ( p() -> covenant.shackle_the_unworthy -> ok() && this->triggers_shackle_the_unworthy &&
          source_dot -> is_ticking() && p() -> cooldown.shackle_the_unworthy_icd -> is_ready() &&
         p() -> rng().roll( p() -> covenant.shackle_the_unworthy -> effectN( 5 ).percent() ) )
@@ -2929,7 +2929,7 @@ struct death_knight_action_t : public Base
         }
 
         action_t::sim -> print_log("{} spreads shackle the unworthy with {} from {} to {} (remains={} )",
-                *action_t::player, *this, *action_t::target, *destination, source_dot->remains() );
+                *action_t::player, *this, state -> target->name(), *destination, source_dot->remains() );
 
         source_dot->copy(destination, DOT_COPY_CLONE);
         p() -> cooldown.shackle_the_unworthy_icd -> start();
