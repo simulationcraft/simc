@@ -1179,40 +1179,40 @@ struct holy_power_consumer_t : public Base
       }
     }
 
-    // 2021-06-22 Royal Decree is always consumed first
-    if ( is_wog && p -> buffs.royal_decree -> check() )
+    if ( is_wog && p -> buffs.shining_light_free -> check() )
     {
-      p -> buffs.royal_decree -> expire();
       should_continue = false;
+      if ( p -> buffs.royal_decree -> check() )
+      {
+        // Outlier (2021-06-22). If RD, SL, DP and 2 stacks of MJ are all up, then
+        // SL and RD both get consumed at the same time.
+        if ( p -> bugs && p -> buffs.the_magistrates_judgment -> stack() > 1
+          && p -> buffs.divine_purpose -> check())
+        {
+          p -> buffs.shining_light_free -> expire();
+        }
+      }
+      else
+      {
+        // Shining Light is now consumed before Divine Purpose 2020-11-01
+        p -> buffs.shining_light_free -> expire();        
+      }
     }
 
     // For prot (2021-06-22). Magistrate's does not get consumed when DP or SL
     // are up, but does with RD.
     // For ret (2020-10-29), Magistrate's does not get consumed with DP or EP up but does
     // with FoJ.
-    if ( this -> affected_by.the_magistrates_judgment && !p -> buffs.divine_purpose -> check() )
+    if ( should_continue && this -> affected_by.the_magistrates_judgment
+        && !p -> buffs.divine_purpose -> check() )
     {
-      if ( should_continue || ( p -> specialization() == PALADIN_PROTECTION && is_wog
-        && ! p -> buffs.shining_light_free -> check() ))
-      {
-        p -> buffs.the_magistrates_judgment -> decrement( 1 );
-      }
+      p -> buffs.the_magistrates_judgment -> decrement( 1 );
     }
 
-    // Outlier (2021-06-22). If RD, SL, DP and 2 stacks of MJ are all up, then
-    // SL and RD both get consumed at the same time. This section comes after the
-    // MJ section so we've already lost 1 of the 2 stacks.
-    if ( p -> bugs && is_wog && p -> buffs.shining_light_free -> check() &&
-        p -> buffs.the_magistrates_judgment -> check() && p -> buffs.divine_purpose -> check() )
+    // 2021-06-22 Royal Decree is always consumed first
+    if ( is_wog && p -> buffs.royal_decree -> check() )
     {
-      p -> buffs.shining_light_free -> expire();
-      should_continue = false;
-    }
-
-    if ( should_continue && is_wog && p -> buffs.shining_light_free -> check() )
-    {
-      // Shining Light is now consumed before Divine Purpose 2020-11-01
-      p -> buffs.shining_light_free -> expire();
+      p -> buffs.royal_decree -> expire();
       should_continue = false;
     }
 
