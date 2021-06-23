@@ -26,8 +26,7 @@ temporary_enchant=main_hand:shadowcore_oil
 actions.precombat=flask
 actions.precombat+=/augmentation
 actions.precombat+=/food
-actions.precombat+=/variable,name=mb_rs_cost,op=set,if=talent.mongoose_bite,value=action.mongoose_bite.cost
-actions.precombat+=/variable,name=mb_rs_cost,op=set,if=!talent.mongoose_bite,value=action.raptor_strike.cost
+actions.precombat+=/variable,name=mb_rs_cost,op=setif,value=action.mongoose_bite.cost,value_else=action.raptor_strike.cost,condition=talent.mongoose_bite
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -44,8 +43,8 @@ actions+=/call_action_list,name=cleave,if=active_enemies>2
 actions+=/arcane_torrent
 
 actions.bop=serpent_sting,target_if=min:remains,if=buff.vipers_venom.remains&(buff.vipers_venom.remains<gcd|refreshable)
+actions.bop+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&buff.nesingwarys_trapping_apparatus.up|focus+cast_regen<focus.max+10&buff.nesingwarys_trapping_apparatus.up&buff.nesingwarys_trapping_apparatus.remains<gcd
 actions.bop+=/kill_shot
-actions.bop+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&buff.nesingwarys_trapping_apparatus.up
 actions.bop+=/wildfire_bomb,if=focus+cast_regen<focus.max&!ticking&full_recharge_time<gcd
 actions.bop+=/flanking_strike,if=focus+cast_regen<focus.max
 actions.bop+=/flayed_shot
