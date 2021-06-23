@@ -1295,6 +1295,8 @@ class SpellDataGenerator(DataGenerator):
          355724, 355733, 355735,
          # Chaos Bane (Shard of Domination Rune Word)
          355829, 356042, 356043, 356046,
+         # Banshee's Blight (Sylvanas Dagger) damage spell
+         358126,
         ),
 
         # Warrior:
