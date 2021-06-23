@@ -2822,7 +2822,7 @@ void shard_of_cor( special_effect_t& effect )
   buff_t* buff = buff_t::find( effect.player, "coldhearted" );
   if ( !buff )
   {
-    buff = make_buff<damage_buff_t>( effect.player, "coldhearted", effect.player->find_spell( 356364 ) )
+    buff = make_buff( effect.player, "coldhearted", effect.player->find_spell( 356364 ) )
                ->set_default_value( 0.0001 * effect.driver()->effectN( 1 ).average( effect.player ), 1 )
                ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
