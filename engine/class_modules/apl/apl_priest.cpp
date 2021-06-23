@@ -149,12 +149,12 @@ void shadow( player_t* p )
 
   // CDs
   cds->add_action( p, "Power Infusion",
-                   "if=priest.self_power_infusion&(buff.voidform.up|!soulbind.combat_meditation.enabled&cooldown.void_"
+                   "if=priest.self_power_infusion&(buff.voidform.up|!covenant.kyrian&cooldown.void_"
                    "eruption.remains>=10|fight_remains<cooldown.void_eruption.remains)&(fight_remains>=cooldown.void_"
                    "eruption.remains+15&cooldown.void_eruption.remains<=gcd*4|fight_remains>cooldown.power_infusion."
                    "duration|fight_remains<cooldown.void_eruption.remains+15|covenant.kyrian|buff.bloodlust.up)",
                    "Use Power Infusion with Voidform. Hold for Voidform comes off cooldown in the next 10 seconds "
-                   "otherwise use on cd unless the Pelagos Trait Combat Meditation is talented, or if there will not "
+                   "otherwise use on cd unless the player is part of the kyrian covenant, or if there will not "
                    "be another Void Eruption this fight. Attempt to sync the last power infusion of the fight to void "
                    "eruption for non Kyrians." );
   cds->add_action( p, "Silence",
