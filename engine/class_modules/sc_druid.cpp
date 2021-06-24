@@ -3518,7 +3518,7 @@ struct ferocious_bite_t : public cat_attack_t
       excess_energy( 0 ),
       max_excess_energy( 0 ),
       max_energy( false ),
-      max_sabertooth_refresh( p->spec.rip->duration() * p->resources.max[ RESOURCE_COMBO_POINT ] * 1.3 )
+      max_sabertooth_refresh( p->spec.rip->duration() * (p->resources.base[ RESOURCE_COMBO_POINT ] + 1) * 1.3 )
   {
     add_option( opt_bool( "max_energy", max_energy ) );
     parse_options( options_str );
