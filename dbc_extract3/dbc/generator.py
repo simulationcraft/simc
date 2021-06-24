@@ -1253,6 +1253,7 @@ class SpellDataGenerator(DataGenerator):
          344087, 344089, 344091, # Kyrian Stamina Passives
          354054, 354053, # Fatal Flaw vers/crit buffs (venthyr/nadjia)
          351687, # Necrolord Bonesmith Heirmir Mnemonic Equipmen debuff
+         352520, # Marileth's Kevin's Ooozeling Kevin's Wrath damage spell
          # Cabalists Hymnal
          344820,
          # Empyreal Ordnance
