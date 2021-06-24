@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.39136
-static const std::array<spelltext_data_t, 15511> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15512> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15174,6 +15174,7 @@ static const std::array<spelltext_data_t, 15511> __ptr_spelltext_data { {
   { 352501, "When you critically strike, you gain $352865s1% movement speed for $352865d.\r\n\r\nMay only occur once every $proccooldown sec.", 0, 0 },
   { 352502, "When you fall below $s1% health, you regain ${$352857s1*$352857d}% of your health over $352857d and receive $352857s2% additional healing from other spells and abilities.\r\n\r\nMay only occur once every $s2 sec.", 0, 0 },
   { 352503, "Gaining a stack of Redirected Anima from Grove Invigoration heals up to $352871I nearby allies for $352871s1% of their health, up to a maximum of $352871s3 health. If any of the affected allies are of another covenant, Redirected Anima's Mastery and maximum health effects are increased by $352881s1% for $352881d.", 0, 0 },
+  { 352520, "$@spelldesc352110", 0, 0 },
   { 352528, "$@spelldesc352110", "Damage taken from $@auracaster increased by $s1%.", 0 },
   { 352561, "$@spelldesc352109", "Damage is being delayed every $t1 sec.", 0 },
   { 352562, "$@spelldesc352109", "$w1 damage is being delayed every $352561t1 sec.\r\n\r\nUndulation Remaining: $w2", 0 },
