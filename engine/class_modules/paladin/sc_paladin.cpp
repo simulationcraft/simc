@@ -2238,8 +2238,16 @@ void paladin_t::create_buffs()
           ->set_refresh_behavior( buff_refresh_behavior::DISABLED );  // doesn't refresh on reapplication
   buffs.divine_resonance = make_buff( this, "divine_resonance", find_spell( 355455 ) )
           ->set_tick_callback( [ this ]( buff_t* /* b */, int /* stacks */, timespan_t /* tick_time */ ) {
-            this->active.judgment->set_target( this->target );
-            this->active.judgment->schedule_execute();
+            if ( specialization() == PALADIN_RETRIBUTION )
+            {
+              this->active.judgment->set_target( this->target );
+              this->active.judgment->schedule_execute();
+            }
+            else if ( specialization() == PALADIN_PROTECTION )
+            {
+              this->active.divine_toll->set_target( this->target );
+              this->active.divine_toll->schedule_execute();
+            }
           } );
   buffs.equinox = make_buff( this, "equinox", find_spell( 355567 ) );
 
