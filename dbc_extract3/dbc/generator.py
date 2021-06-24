@@ -1286,6 +1286,7 @@ class SpellDataGenerator(DataGenerator):
          # 9.1 Soulbinds
          352881, # Bonded Hearts (night fae/niya)
          352918, 358404, # Newfound Resolve (kyrian/pelagos)
+         352086, 352095, # Pustule Eruption (Necrolord/Emeni)
          # Miniscule Mailemental in an Envelope
          352542,
          # Tome of Monstrous Constructions
