@@ -3,30 +3,31 @@ CLASSES=(warrior hunter monk paladin rogue shaman mage warlock druid deathknight
 
 # get directory of this script
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PTR="ptr=1"
 
 cd $DIR/..
 
 for CLASS in "${CLASSES[@]}"
 do
   echo "Processing $CLASS"
-  FILE=SpellDataDump/$CLASS.txt
+  FILE="SpellDataDump/${CLASS}_ptr.txt"
   echo $FILE
-  ./engine/simc spell_query="spell.class=$CLASS" > $FILE.unix
+  ./engine/simc $PTR spell_query="spell.class=$CLASS" > $FILE.unix
 
   # convert unix line endings to windows since that's been the standard
   sed 's/$'"/`echo \\\r`/" $FILE.unix > $FILE
   rm $FILE.unix
 done
 
-FILE=SpellDataDump/allspells.txt
-./engine/simc spell_query="spell" > $FILE.unix
+FILE=SpellDataDump/allspells_ptr.txt
+./engine/simc $PTR spell_query="spell" > $FILE.unix
 
 # convert unix line endings to windows since that's been the standard
 sed 's/$'"/`echo \\\r`/" $FILE.unix > $FILE
 rm $FILE.unix
 
-FILE=SpellDataDump/soulbind.txt
-./engine/simc spell_query="soulbind_spell" > $FILE.unix
+FILE=SpellDataDump/soulbind_ptr.txt
+./engine/simc $PTR spell_query="soulbind_spell" > $FILE.unix
 
 # convert unix line endings to windows since that's been the standard
 sed 's/$'"/`echo \\\r`/" $FILE.unix > $FILE

@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.39136
-static const std::array<spelltext_data_t, 15510> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15511> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15377,6 +15377,7 @@ static const std::array<spelltext_data_t, 15510> __ptr_spelltext_data { {
   { 356362, "Each target affected by Soul Rot increases your haste and critical strike chance by $356369s1% for $356369d.", 0, 0 },
   { 356364, "$@spelldesc355741", "Damage done increased by $w1%.", 0 },
   { 356369, "$@spelldesc352362", "Haste increased by $s1%.\r\nCritical strike chance increased by $s2%.", 0 },
+  { 356372, "$@spelldesc355721", "Taking $w1% more damage from $@auracaster.", 0 },
   { 356375, "When Wild Spirits hits fewer than $328757I targets, there is a $s1% chance to cause Wild Spirits damage a second time.", 0, 0 },
   { 356390, "$?c1[$@spelldesc356467]?c3[$@spelldesc356418][$@spelldesc356466]", 0, 0 },
   { 356391, "Enter a pact with the Death Loa, calling forth a haunted mask that lingers on a target until Fae Guardians ends.\r\n\r\n|CFFffffffHaunted Mask:|r Copies the benefit of the current faerie on its target. Follows your Direct Mask.", 0, 0 },

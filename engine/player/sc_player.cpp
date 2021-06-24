@@ -4049,8 +4049,9 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     m *= 1.0 + td->debuff.plagueys_preemptive_strike->check_value();
     m *= 1.0 + td->debuff.sinful_revelation->check_value();
     m *= 1.0 + td->debuff.dream_delver->check_stack_value();
-    m *= 1.0 + td->debuff.scouring_touch->check_stack_value();
     m *= 1.0 + td->debuff.soulglow_spectrometer->check_stack_value();
+    m *= 1.0 + td->debuff.scouring_touch->check_stack_value();
+    m *= 1.0 + td->debuff.exsanguinated->check_value();
   }
 
   return m;
