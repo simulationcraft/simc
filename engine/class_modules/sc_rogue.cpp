@@ -4125,9 +4125,9 @@ struct shiv_t : public rogue_attack_t
     }
   }
 
-  // 1/23/2021 - Does not appear to proc Combat Potency despite being an OH attack
+  // 06/24/2021 - Now procs combat potency according to 9.1 Patch Notes
   bool procs_combat_potency() const override
-  { return false; }
+  { return true; }
 
   bool procs_blade_flurry() const override
   { return true; }
