@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/bin/sh
 CLASSES=(warrior hunter monk paladin rogue shaman mage warlock druid deathknight priest demonhunter)
 
 # get directory of this script
