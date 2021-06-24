@@ -210,6 +210,7 @@ public:
     cooldown_t* hammer_of_wrath;
 
     cooldown_t* blessing_of_the_seasons;
+    cooldown_t* ashen_hallow; // Radiant Embers Legendary
   } cooldowns;
 
   // Passives
@@ -525,6 +526,7 @@ public:
 
   ground_aoe_event_t* active_consecration;
   ground_aoe_event_t* active_hallow;
+  ground_aoe_event_t* active_h_hallow;
   buff_t* active_aura;
 
   std::string default_potion() const override;

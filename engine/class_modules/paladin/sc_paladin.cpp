@@ -33,6 +33,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
 {
   active_consecration = nullptr;
   active_hallow       = nullptr;
+  active_h_hallow     = nullptr;
   active_aura         = nullptr;
 
   cooldowns.avenging_wrath               = get_cooldown( "avenging_wrath" );
@@ -56,6 +57,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.hammer_of_wrath  = get_cooldown( "hammer_of_wrath" );
 
   cooldowns.blessing_of_the_seasons = get_cooldown( "blessing_of_the_seasons" );
+  cooldowns.ashen_hallow = get_cooldown( "ashen_hallow" );
 
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
@@ -363,7 +365,7 @@ struct consecration_t : public paladin_spell_t
                             break;
                           case ground_aoe_params_t::EVENT_DESTRUCTED:
                             p()->active_consecration = nullptr;
-                            break;
+                            break;                          
                           default:
                             break;
                         }
@@ -1331,6 +1333,8 @@ struct ashen_hallow_t : public paladin_spell_t
     hd_damage   = new hallowed_discernment_tick_t( p );
     damage_tick = new ashen_hallow_tick_t( p, hd_damage );
     heal_tick   = new ashen_hallow_heal_tick_t( p );
+    cooldown    = p -> cooldowns.ashen_hallow;
+    cooldown -> duration = p -> covenant.venthyr->cooldown();
 
     add_child( damage_tick );
     if ( p->conduit.hallowed_discernment->ok() )
@@ -1366,14 +1370,63 @@ struct ashen_hallow_t : public paladin_spell_t
                   p()->active_hallow = event;
                   break;
                 case ground_aoe_params_t::EVENT_DESTRUCTED:
-                  p()->active_hallow = nullptr;
+                  p() -> active_hallow = nullptr;
                   break;
                 default:
                   break;
               }
             } ) );
 
-    make_event<ground_aoe_event_t>( *sim, p(), hallow_params.action( heal_tick ).target( p() ) );
+    make_event<ground_aoe_event_t>( *sim, p(),
+        hallow_params.action( heal_tick )
+        .target( p() )
+        .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+              switch ( type )
+              {
+                case ground_aoe_params_t::EVENT_CREATED:
+                  p()->active_h_hallow = event;
+                  break;
+                case ground_aoe_params_t::EVENT_DESTRUCTED:
+                  p() -> active_h_hallow = nullptr;
+                  break;
+                default:
+                  break;
+              }
+            } ) );
+  }
+};
+
+struct cancel_ashen_hallow_t : public action_t
+{
+  cancel_ashen_hallow_t( paladin_t* p, util::string_view options_str ) :
+    action_t( ACTION_OTHER, "cancel_ashen_hallow", p )
+  { 
+    parse_options( options_str );
+    trigger_gcd = timespan_t::zero();
+  }
+
+  bool ready() override
+  {
+    paladin_t* p = static_cast<paladin_t*>( action_t::player );
+    if ( p -> active_hallow != nullptr && p -> legendary.radiant_embers->ok() )
+      return action_t::ready();
+    return false;
+  }
+
+  void execute() override
+  {
+    paladin_t* p = static_cast<paladin_t*>( action_t::player );
+      // CDR = % remaining duration/base duration * 50% * base cooldown
+      double ah_reduction = p -> active_hallow -> remaining_time().total_seconds();
+      ah_reduction /= p -> active_hallow -> params -> duration_.total_seconds();
+      ah_reduction *= 1.0 - p -> legendary.radiant_embers -> effectN( 2 ).percent();
+      ah_reduction *= p -> cooldowns.ashen_hallow -> base_duration.total_seconds();
+
+      p -> cooldowns.ashen_hallow -> adjust( timespan_t::from_seconds( - ah_reduction ) );
+
+      event_t::cancel( p->active_hallow );
+      event_t::cancel( p->active_h_hallow );
+
   }
 };
 
@@ -1919,6 +1972,8 @@ action_t* paladin_t::create_action( util::string_view name, const std::string& o
     return new blessing_of_the_seasons_t( this, options_str );
   if ( name == "word_of_glory" )
     return new word_of_glory_t( this, options_str );
+  if ( name == "cancel_ashen_hallow" )
+    return new cancel_ashen_hallow_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -2055,6 +2110,7 @@ void paladin_t::reset()
 
   active_consecration = nullptr;
   active_hallow       = nullptr;
+  active_h_hallow     = nullptr;
   active_aura         = nullptr;
 
   next_season = SUMMER;
