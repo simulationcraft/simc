@@ -3540,8 +3540,8 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       assert( eff.type() == E_TRIGGER_SPELL );
       background = dual = true;
 
-      // Disable refunds on secondary procs such as Relentless Onslaught
-      may_refund = ( weapon == &( p->off_hand_weapon ) ) && !a->from_onslaught;
+      // 06/22/21 -- It once again appears that Onslaught procs can proc refunds
+      may_refund = ( weapon == &( p->off_hand_weapon ) );
       if ( may_refund )
       {
         refund_proc_chance = p->spec.chaos_strike_refund->proc_chance();
@@ -3575,6 +3575,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       demon_hunter_attack_t::execute();
 
       // Technically this appears to have a 0.5s ICD, but this is handled elsewhere
+      // 06/22/2021 -- It once again appears that Onslaught procs can proc refunds, as the procs are now 600ms apart
       if ( may_refund && p()->rng().roll( this->get_refund_proc_chance() ) )
       {
         p()->resource_gain( RESOURCE_FURY, p()->spec.chaos_strike_fury->effectN( 1 ).resource( RESOURCE_FURY ), parent->gain );
@@ -3591,8 +3592,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     {
       demon_hunter_attack_t::impact( s );
 
-      // 02/09/2021 -- Confirmed that due to timing changes, Onslaught can't proc refunds
-      if ( result_is_hit( s->result ) && may_refund && p()->conduit.relentless_onslaught->ok() )
+      if ( p()->conduit.relentless_onslaught->ok() && result_is_hit( s->result ) && may_refund && !parent->from_onslaught )
       {
         if ( p()->rng().roll( p()->conduit.relentless_onslaught.percent() ) )
         {
