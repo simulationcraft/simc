@@ -2845,10 +2845,12 @@ void shard_of_bek( special_effect_t& effect )
   struct shard_of_bek_cb_t : public dbc_proc_callback_t
   {
     double debuff_value;
+    double health_pct_threshold;
 
     shard_of_bek_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
-      debuff_value( 0.0001 * e.driver()->effectN( 1 ).average( e.player ) )
+        debuff_value( 0.0001 * e.driver()->effectN( 1 ).average( e.player ) ),
+        health_pct_threshold( e.driver()->effectN( 2 ).base_value() )
     {
     }
 
@@ -2857,7 +2859,7 @@ void shard_of_bek( special_effect_t& effect )
       dbc_proc_callback_t::execute( a, s );
 
       auto health_diff = a->player->health_percentage() - s->target->health_percentage();
-      if ( health_diff > 50 )
+      if ( health_diff > health_pct_threshold )
       {
         auto td = a->player->get_target_data( s->target );
         td->debuff.exsanguinated->set_default_value( debuff_value );
