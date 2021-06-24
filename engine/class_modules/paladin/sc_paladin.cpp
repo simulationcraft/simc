@@ -3208,6 +3208,33 @@ std::unique_ptr<expr_t> paladin_t::create_consecration_expression( util::string_
   return nullptr;
 }
 
+std::unique_ptr<expr_t> paladin_t::create_ashen_hallow_expression( util::string_view expr_str )
+{
+  auto expr = util::string_split<util::string_view>( expr_str, "." );
+  if ( expr.size() != 2 )
+  {
+    return nullptr;
+  }
+
+  if ( !util::str_compare_ci( expr[ 0U ], "ashen_hallow" ) )
+  {
+    return nullptr;
+  }
+
+  if ( util::str_compare_ci( expr[ 1U ], "ticking" ) || util::str_compare_ci( expr[ 1U ], "up" ) )
+  {
+    return make_fn_expr( "ashen_hallow_ticking", [ this ]() { return active_hallow == nullptr ? 0 : 1; } );
+  }
+  else if ( util::str_compare_ci( expr[ 1U ], "remains" ) )
+  {
+    return make_fn_expr( "ashen_hallow_remains", [ this ]() {
+      return active_hallow == nullptr ? 0 : active_hallow->remaining_time().total_seconds();
+    } );
+  }
+
+  return nullptr;
+}
+
 std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str )
 {
   struct paladin_expr_t : public expr_t
@@ -3290,10 +3317,13 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
   }
 
   auto cons_expr = create_consecration_expression( name_str );
+  auto ah_expr = create_ashen_hallow_expression( name_str );
   if ( cons_expr )
   {
     return cons_expr;
   }
+  if ( ah_expr )
+    return ah_expr;
 
   return player_t::create_expression( name_str );
 }
