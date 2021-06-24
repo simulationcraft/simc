@@ -4125,9 +4125,10 @@ struct shiv_t : public rogue_attack_t
     }
   }
 
-  // 1/23/2021 - Does not appear to proc Combat Potency despite being an OH attack
+  // 01/23/2021 -- Does not appear to proc Combat Potency despite being an OH attack
+  // 06/24/2021 -- Claimed fixed in the final 9.1 patch notes
   bool procs_combat_potency() const override
-  { return false; }
+  { return false || p()->dbc->ptr; }
 
   bool procs_blade_flurry() const override
   { return true; }
@@ -8084,13 +8085,15 @@ void rogue_t::create_buffs()
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
       buffs.guile_charm_insight_2->expire();
       legendary.guile_charm_counter = 0;
-      if ( bugs && new_ == 0 )
+      // 06/24/2021 -- This is fixed as of the final 9.1 PTR build, to be stripped out next week
+      if ( bugs && !dbc->ptr && new_ == 0 )
       {
         buffs.guile_charm_insight_3_hidden->trigger();
       }
     } );
   // 04/16/2021 -- Due to the hidden 340580 buff, the effective duration of the final buff is 15s
-  if ( bugs )
+  // 06/24/2021 -- This is fixed as of the final 9.1 PTR build, to be stripped out next week
+  if ( bugs && !dbc->ptr )
   {
     buffs.guile_charm_insight_3_hidden = make_buff( this, "deep_insight_hidden", find_spell( 340584 ) )
       ->set_default_value_from_effect( 1 ) // Bonus Damage%
