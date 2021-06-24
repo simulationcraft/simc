@@ -2831,6 +2831,45 @@ void shard_of_cor( special_effect_t& effect )
   effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
   new shard_of_cor_cb_t( effect );
 }
+
+/**Shard of Bek
+ * id=355721 driver Rank 1
+ * id=357031 driver Rank 2 (Ominous)
+ * id=357049 driver Rank 3 (Desolate)
+ * id=357058 driver Rank 4 (Foreboding)
+ * id=357069 driver Rank 5 (Portentous)
+ * id=356372 Exsanguinated debuff
+ */
+void shard_of_bek( special_effect_t& effect )
+{
+  struct shard_of_bek_cb_t : public dbc_proc_callback_t
+  {
+    double debuff_value;
+
+    shard_of_bek_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+      debuff_value( 0.0001 * e.driver()->effectN( 1 ).average( e.player ) )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      auto health_diff = a->player->health_percentage() - s->target->health_percentage();
+      if ( health_diff > 50 )
+      {
+        auto td = a->player->get_target_data( s->target );
+        td->debuff.exsanguinated->set_default_value( debuff_value );
+        td->debuff.exsanguinated->trigger();
+      }
+    }
+  };
+
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+  new shard_of_bek_cb_t( effect );
+}
+
 }  // namespace items
 
 void register_hotfixes()
@@ -2941,6 +2980,12 @@ void register_special_effects()
     unique_gear::register_special_effect( 357062, items::shard_of_cor );
     unique_gear::register_special_effect( 357073, items::shard_of_cor );
 
+    unique_gear::register_special_effect( 355721, items::shard_of_bek );
+    unique_gear::register_special_effect( 357031, items::shard_of_bek );
+    unique_gear::register_special_effect( 357049, items::shard_of_bek );
+    unique_gear::register_special_effect( 357058, items::shard_of_bek );
+    unique_gear::register_special_effect( 357069, items::shard_of_bek );
+
     // Disabled effects
     unique_gear::register_special_effect( 329028, items::DISABLED_EFFECT ); // Light-Infused Armor shield
     unique_gear::register_special_effect( 333885, items::DISABLED_EFFECT ); // Darkmoon Deck: Putrescence shuffler
@@ -3007,6 +3052,23 @@ void register_target_data_initializers( sim_t& sim )
     }
     else
       td->debuff.scouring_touch = make_buff( *td, "scouring_touch" )->set_quiet( true );
+  } );
+
+  // Shard of Bek (Exsanguinated debuff)
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 355721 )
+      || unique_gear::find_special_effect( td->source, 357031 )
+      || unique_gear::find_special_effect( td->source, 357049 )
+      || unique_gear::find_special_effect( td->source, 357058 )
+      || unique_gear::find_special_effect( td->source, 357069 ) )
+    {
+      assert( !td->debuff.exsanguinated );
+
+      td->debuff.exsanguinated = make_buff( *td, "exsanguinated", td->source->find_spell( 356372 ) );
+      td->debuff.exsanguinated->reset();
+    }
+    else
+      td->debuff.exsanguinated = make_buff( *td, "exsanguinated" )->set_quiet( true );
   } );
 }
 
