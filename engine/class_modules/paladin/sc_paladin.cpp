@@ -886,7 +886,7 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
 
     if ( p()->specialization() == PALADIN_PROTECTION && p()->buffs.vanquishers_hammer->up() )
     {
-      p()->buffs.vanquishers_hammer->expire();
+      p()->buffs.vanquishers_hammer->decrement( 1 );
       p()->active.necrolord_shield_of_the_righteous->execute();
     }
 
@@ -1159,7 +1159,7 @@ struct vanquishers_hammer_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( s );
 
-    p()->buffs.vanquishers_hammer->trigger( 1 + ( p()->legendary.duty_bound_gavel->ok() ) );
+    p()->buffs.vanquishers_hammer->trigger( 1 + p()->legendary.duty_bound_gavel->ok() * as<int>( p() -> legendary.duty_bound_gavel -> effectN( 1 ).base_value() ) );
 
     if ( p()->conduit.righteous_might->ok() )
     {
