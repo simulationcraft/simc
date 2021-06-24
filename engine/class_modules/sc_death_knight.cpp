@@ -9135,7 +9135,8 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.frenzied_monstrosity->data().effectN( 2 ).percent();
   }
 
-  if ( buffs.final_sentence->up() )
+  if ( buffs.final_sentence->up() &&
+        ( dbc::is_school( school, SCHOOL_PHYSICAL ) || dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) ) )
   {
     m *= 1.0 + buffs.final_sentence->stack_value();
   }
