@@ -105,7 +105,7 @@ neck=passablyforged_credentials,id=185954,bonus_id=1550/7187,gem_id=173128
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
 back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6648/1557
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_stats
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173128/187319,enchant=40runspeed
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173128/187319
 hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498/6935,gem_id=187320,enchant=eternal_strength
 waist=fused_bone_greatbelt,id=178734,bonus_id=6536/1566/6646/6935,gem_id=173128
 legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6536/1566/6646
