@@ -1,5 +1,5 @@
 #include "simulationcraft.hpp"
-#include "class_modules/apl/hunter.hpp"
+#include "class_modules/apl/apl_hunter.hpp"
 
 namespace hunter_apl {
 
@@ -37,6 +37,7 @@ std::string temporary_enchant( const player_t* p )
          "disabled";
 }
 
+//beast_mastery_apl_start
 void beast_mastery( player_t* p )
 {
   action_priority_list_t* default_  = p -> get_action_priority_list( "default" );
@@ -120,7 +121,9 @@ void beast_mastery( player_t* p )
   st -> add_action( "freezing_trap,if=runeforge.nessingwarys_trapping_apparatus" );
   st -> add_action( "arcane_torrent,if=(focus+focus.regen+15)<focus.max");
 }
+//beast_mastery_apl_end
 
+//marksmanship_apl_start
 void marksmanship( player_t* p )
 {
   action_priority_list_t* default_   = p -> get_action_priority_list( "default" );
@@ -202,7 +205,9 @@ void marksmanship( player_t* p )
   trickshots -> add_action( "bag_of_tricks,if=buff.trueshot.down" );
   trickshots -> add_action( "steady_shot" );
 }
+//marksmanship_apl_end
 
+//survival_apl_start
 void survival( player_t* p )
 {
   action_priority_list_t* default_  = p -> get_action_priority_list( "default" );
@@ -330,5 +335,6 @@ void survival( player_t* p )
   cleave -> add_action( "mongoose_bite,target_if=max:debuff.latent_poison_injection.stack" );
   cleave -> add_action( "raptor_strike,target_if=max:debuff.latent_poison_injection.stack" );
 }
+//survival_apl_end
 
 } // namespace hunter_apl

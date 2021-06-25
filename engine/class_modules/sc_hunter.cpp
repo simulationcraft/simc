@@ -8,7 +8,7 @@
 #include "simulationcraft.hpp"
 #include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
-#include "class_modules/apl/hunter.hpp"
+#include "class_modules/apl/apl_hunter.hpp"
 
 namespace
 { // UNNAMED NAMESPACE
