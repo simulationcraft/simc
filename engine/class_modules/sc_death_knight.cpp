@@ -454,6 +454,7 @@ public:
   // Counters
   unsigned int km_proc_attempts; // critical auto attacks since the last KM proc
   unsigned int festering_wounds_target_count; // cached value of the current number of enemies affected by FW
+  double insatiable_hunger_spent_rp_accumulator; // Counts how much RP you spend during swarming mist, used for insatiable hunger explosion
 
   stats_t* antimagic_shell;
 
@@ -1006,6 +1007,7 @@ public:
     runeforge_expression_warning( false ),
     km_proc_attempts( 0 ),
     festering_wounds_target_count( 0 ),
+    insatiable_hunger_spent_rp_accumulator( 0 ),
     antimagic_shell( nullptr ),
     buffs(),
     runeforge(),
@@ -5680,7 +5682,7 @@ struct insatiable_hunger_damage_t : public death_knight_spell_t
   {
     double cam = death_knight_spell_t::composite_aoe_multiplier( state );
 
-    cam += 1.0 + ( p() -> buffs.swarming_mist->current_value * insatiable_hunger_rp_multiplier );
+    cam += 1.0 + ( p() -> insatiable_hunger_spent_rp_accumulator * insatiable_hunger_rp_multiplier );
 
     return cam;
   }
@@ -6472,13 +6474,11 @@ struct swarming_mist_buff_t : public buff_t
 {
   swarming_mist_damage_t* damage; // (AOE) damage that ticks every second
   insatiable_hunger_damage_t* insatiable_damage; // Insatiable Hunger legendary damage
-  double insatiable_hunger_rp_spent; // Track how much RP was spent during swarming mist
 
   swarming_mist_buff_t( death_knight_t* p ) :
     buff_t( p, "swarming_mist", p -> covenant.swarming_mist ),
     damage( new swarming_mist_damage_t( p ) ),
-    insatiable_damage( new insatiable_hunger_damage_t( p ) ),
-    insatiable_hunger_rp_spent( 0 )
+    insatiable_damage( new insatiable_hunger_damage_t( p ) )
   {
     cooldown -> duration = 0_ms; // Controlled by the action
     set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
@@ -6496,7 +6496,6 @@ struct swarming_mist_buff_t : public buff_t
     if ( p -> legendary.insatiable_hunger.ok() )
     {
       insatiable_damage -> execute();
-      insatiable_hunger_rp_spent = 0;
     }
   }
 };
@@ -6524,6 +6523,7 @@ struct swarming_mist_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.swarming_mist -> trigger();
+    p() -> insatiable_hunger_spent_rp_accumulator = 0;  // Reset everytime we cast swarming mist to start counting again
   }
 };
 
@@ -7313,9 +7313,8 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
     if ( legendary.insatiable_hunger.ok() && buffs.swarming_mist -> check() )
     {
-      auto cur_rp_spent = debug_cast<swarming_mist_buff_t*>(buffs.swarming_mist) -> insatiable_hunger_rp_spent;
-      sim -> print_debug ( "Insatiable hunger RP stored increased from {} to {} by {} from {}", cur_rp_spent, (cur_rp_spent + base_rp_cost), base_rp_cost, action->name_str );
-      debug_cast<swarming_mist_buff_t*>(buffs.swarming_mist) -> insatiable_hunger_rp_spent += base_rp_cost;
+      sim -> print_debug ( "Insatiable hunger RP stored increased from {} to {} by {} from {}", insatiable_hunger_spent_rp_accumulator, (insatiable_hunger_spent_rp_accumulator + base_rp_cost), base_rp_cost, action->name_str );
+      insatiable_hunger_spent_rp_accumulator += base_rp_cost;
     }
 
     if ( talent.summon_gargoyle -> ok() && pets.gargoyle )
@@ -8862,6 +8861,7 @@ void death_knight_t::reset()
   _runes.reset();
   active_dnd = nullptr;
   km_proc_attempts = 0;
+  insatiable_hunger_spent_rp_accumulator = 0;
 }
 
 // death_knight_t::assess_heal ==============================================
