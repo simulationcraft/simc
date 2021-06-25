@@ -4052,6 +4052,7 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     m *= 1.0 + td->debuff.soulglow_spectrometer->check_stack_value();
     m *= 1.0 + td->debuff.scouring_touch->check_stack_value();
     m *= 1.0 + td->debuff.exsanguinated->check_value();
+    m *= 1.0 + td->debuff.kevins_wrath->check_value();
   }
 
   return m;
