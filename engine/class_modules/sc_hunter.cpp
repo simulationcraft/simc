@@ -2987,9 +2987,11 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
     damage_main_t( util::string_view n, hunter_t* p ): 
       hunter_ranged_attack_t( n, p, p -> find_spell( 354831 ) )
     {
+      background = true;
       aoe = 0;
-      attack_power_mod.direct = data().effectN( 1 ).ap_coeff(); 
+      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
       dual = true;
+      triggers_wild_spirits = false;
     }
   };
 
@@ -2998,11 +3000,19 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
     damage_explosion_t( util::string_view n, hunter_t* p ): 
       hunter_ranged_attack_t( n, p, p -> find_spell( 354831 ) )
       {
+        background = true;
         aoe = -1;
-        radius = 8; 
-        attack_power_mod.direct = data().effectN( 2 ).ap_coeff(); 
+        radius = 8;
+        attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
         dual = true;
         triggers_wild_spirits = false;
+      }
+
+      size_t available_targets( std::vector<player_t*>& tl ) const override
+      {
+        hunter_ranged_attack_t::available_targets( tl );
+        tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+        return tl.size();
       }
   };
 
@@ -3016,22 +3026,23 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
       
       damage_main = p -> get_background_action<damage_main_t>( "wailing_arrow_main" ); 
       damage_aoe = p -> get_background_action<damage_explosion_t>( "wailing_arrow_aoe" ); 
-      add_child( damage_main ); 
-      add_child( damage_aoe ); 
+      add_child( damage_main );
+      add_child( damage_aoe );
     }
 
-    void execute() override
+    void impact( action_state_t* s ) override
     {
-      hunter_ranged_attack_t::execute(); 
+      hunter_ranged_attack_t::impact( s );
 
-      damage_main -> set_target( target ); 
-      damage_main -> execute();
-      damage_aoe -> set_target( target ); 
-      damage_aoe -> execute();
+      damage_main->set_target( target );
+      damage_main->execute();
+      damage_aoe->set_target( target );
+      damage_aoe->execute();
     }
+
+    result_e calculate_result( action_state_t* ) const override { return RESULT_NONE; }
+    double calculate_direct_amount( action_state_t* ) const override { return 0.0; }
 };
-
-
 
 //==============================
 // Beast Mastery attacks
@@ -6731,6 +6742,17 @@ struct hunter_module_t: public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Hunter", "2021-06-24", "PTR Wailing Arrow direct damage buff", 887529 )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 2.775 )
+        .verification_value( 1.85 );
+
+    hotfix::register_effect( "Hunter", "2021-06-24", "PTR Wailing Arrow splash damage buff", 887530 )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1.125 )
+        .verification_value( 0.75 );
   }
 
   void combat_begin( sim_t* ) const override {}
