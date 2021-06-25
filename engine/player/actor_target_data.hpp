@@ -55,6 +55,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* soulglow_spectrometer;       // kyrian/mikanikos soulglow spectrometer debuff
     buff_t* scouring_touch;              // Shard of Dyz
     buff_t* exsanguinated;               // Shard of Bek
+    buff_t* kevins_wrath;                // Marileth Kevin's Oozeling Kevin's Wrath debuff
   } debuff;
 
   struct atd_dot_t
