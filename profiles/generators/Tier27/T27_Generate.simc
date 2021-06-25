@@ -3,8 +3,8 @@
 # RULES IN PROGRESS
 # * Raid gear is permitted up to the Mythic item level cap (252/259). ["bonus_id=" for weapons, "bonus_id=" for the rest]
 # * Mythic+ gear is permitted up to the Mythic+ item level cap (252). ["bonus_id="]
-# * Honor PvP gear is permitted up to the item level cap (197). ["bonus_id=6794/1511"]
-# * Conquest PvP gear is not permitted for the moment since acquisition is unknown.
+# * Honor PvP gear is permitted up to the item level cap (216). ["bonus_id="]
+# * Conquest PvP gear is permitted up to the item level cap (249)
 # * Crafted gear is permitted, must be BoE and without profession requirements.
 # * World Bosses gear is permitted.
 # * World Drop gear is permitted.
