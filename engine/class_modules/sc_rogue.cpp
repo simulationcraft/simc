@@ -4125,7 +4125,7 @@ struct shiv_t : public rogue_attack_t
     }
   }
 
-  // 06/24/2021 - Now procs combat potency according to 9.1 Patch Notes
+  // 2021-06-24 - Now procs combat potency according to 9.1 Patch Notes
   bool procs_combat_potency() const override
   { return true; }
 
