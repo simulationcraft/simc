@@ -1626,18 +1626,22 @@ void kevins_oozeling( special_effect_t& effect )
       {
         spell_t::execute();
 
-        auto td = player->find_target_data( target );
+        auto td = debug_cast<pet_t*>( player )->owner->get_target_data( target );
         td->debuff.kevins_wrath->trigger();
       }
     };
     kevins_oozeling_pet_t( player_t* owner ) : pet_t( owner->sim, owner, "kevins_oozeling" )
     {
       npc_id = 178601;
+      owner_coeff.sp_from_sp = 2.0;
+      // TODO: figure out what this is
+      // owner_coeff.ap_from_ap = 0.0;
     }
 
     void init_action_list() override
     {
-      action_list_str = "kevins_wrath";
+      // TODO: figure out why cycle_targets doesn't work
+      action_list_str = "kevins_wrath,cycle_targets=1";
 
       pet_t::init_action_list();
     }
@@ -1659,7 +1663,7 @@ void kevins_oozeling( special_effect_t& effect )
         if ( !t->is_enemy() )
           return;
 
-        auto td = owner->find_target_data( t );
+        auto td = owner->get_target_data( t );
         if ( td->debuff.kevins_wrath->check() )
           td->debuff.kevins_wrath->expire();
       } );
@@ -2378,13 +2382,21 @@ void register_target_data_initializers( sim_t* sim )
 
   // Kevin's Wrath
   sim->register_target_data_initializer( []( actor_target_data_t* td ) {
-    auto kevins_wrath = td->source->find_soulbind_spell( "Kevin's Wrath" );
+    auto kevins_wrath = td->source->find_soulbind_spell( "Kevin's Oozeling" );
     if ( kevins_wrath->ok() )
     {
       assert( !td->debuff.kevins_wrath );
+      timespan_t duration = td->source->find_spell( 352528 )->duration();
+
+      // BUG: this is lasting forever on PTR
+      if ( td->source->bugs )
+      {
+        duration = timespan_t::zero();
+      }
 
       td->debuff.kevins_wrath = make_buff( *td, "kevins_wrath", td->source->find_spell( 352528 ) )
-                                    ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
+                                    ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
+                                    ->set_duration( duration );
       td->debuff.kevins_wrath->reset();
     }
     else
