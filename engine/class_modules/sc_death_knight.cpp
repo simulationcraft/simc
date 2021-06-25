@@ -2064,8 +2064,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     m *= 1.0 + frenzied_monstrosity -> value();
 
-    // only buff pets, not guardians.  As only unholy ghouls are pets, use rank 2 of raise_dead to gatekeep
-    if ( dk() -> spec.raise_dead_2->ok() && dk() -> buffs.final_sentence->up() )
+    if ( dk() -> buffs.final_sentence->up() )
     {
       m *= 1.0 + dk() -> buffs.final_sentence->stack_value();
     }
