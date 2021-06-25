@@ -1,5 +1,5 @@
-// Spell text, wow build 9.1.0.39136
-static const std::array<spelltext_data_t, 15512> __ptr_spelltext_data { {
+// Spell text, wow build 9.1.0.39172
+static const std::array<spelltext_data_t, 15514> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15148,7 +15148,9 @@ static const std::array<spelltext_data_t, 15512> __ptr_spelltext_data { {
   { 351986, "Your attacks and abilities have a chance to grant you $s1 primary stat for $351987d.", 0, 0 },
   { 351987, 0, "Your $?$w1!=0[Agility]?$w2!=0[Intellect]?$w3!=0[Strength][highest primary stat] is increased by $w4.", 0 },
   { 352081, "Your attacks and abilities have a chance to grant you $s1 primary stat for $351987d.", 0, 0 },
+  { 352086, "$@spelldesc351094", "Damaging nearby enemies and healing nearby allies when taking damage or receiving healing.", 0 },
   { 352091, 0, "Your $?$w1!=0[Agility]?$w2!=0[Intellect]?$w3!=0[Strength][highest primary stat] is increased by $w4.", 0 },
+  { 352095, "$@spelldesc351094", 0, 0 },
   { 352108, "When struck by a snare, you drop a puddle that lasts for $352427d. Enemies that step in the puddle are slowed by $352448m1% for $352448d.\r\n\r\nMay only occur once every $proccooldown sec.", 0, 0 },
   { 352109, "While above $M3% health, $M1% of damage taken is absorbed and spread out over $352562d.", 0, 0 },
   { 352110, "$?a137005[Abomination Limb]?a212611[Fodder to the Flame]?a137009[Adaptive Swarm]?a137014[Death Chakram]?a137018[Deathborne]?a137022[Bonedust Brew]?a137026[Vanquisher's Hammer]?a137030[Unholy Nova]?a137034[Serrated Bone Spike]?a137038[Primordial Wave]?a137042[Decimating Bolt]?a137047[Conqueror's Banner][Activating your Necrolord class ability] summons Kevin's Oozeling to fight alongside you for ${$s2*$<mod>}.1 sec. His attacks cause your enemies to take $352528s1% additional damage from you and he periodically grants your allies an absorb shield that absorbs $<shield> damage.", 0, 0 },
@@ -15514,12 +15516,12 @@ static const std::array<spelltext_data_t, 15512> __ptr_spelltext_data { {
   { 359078, "An intense application of Numbing Poison reduces the target's casting speed by $s1% for $d.", "Casting slowed by $s1%.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.0.39136
+// spelltext hotfix entries, wow build 9.1.0.39172
 static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
   {    5938,  0, "Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]\r\n$?s319032[\r\nYour Nature damage done against the target is increased by $319504s1%][] $?a354124[and healing received reduced by $354124S1% ][]for $319504d.\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", "Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]$?s319032[\r\n\r\nYour Nature damage done against the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $354124S1% for $319504d.][]\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r" },
 } };
 
-// Spell description variables, wow build 9.1.0.39136
+// Spell description variables, wow build 9.1.0.39172
 static const std::array<spelldesc_vars_data_t, 301> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15824,7 +15826,7 @@ static const std::array<spelldesc_vars_data_t, 301> __ptr_spelldesc_vars_data { 
   {  358164, "$buff=${$348272s1}\r\n$max=${3*$<buff>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.0.39136
+// spelldesc_vars hotfix entries, wow build 9.1.0.39172
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
