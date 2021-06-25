@@ -39,22 +39,22 @@ covenant=kyrian
 soulbind=pelagos,combat_meditation/accelerated_cold:11/everfrost:11/unleashed_frenzy:11/better_together/newfound_resolve
 renown=40
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173128/187312
-neck=passablyforged_credentials,id=185954,bonus_id=1550/7187,gem_id=173128
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173130/187312
+neck=interplanar_keystone,id=186379,bonus_id=6807/1498,gem_id=173130
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
 back=cloak_of_scarred_honor,id=186289,bonus_id=1498/6808
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_stats
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173128/187319
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173130/187319
 hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498/6935,gem_id=187320,enchant=eternal_strength
-waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6536/1566/6646/6935,gem_id=173127
+waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6536/1566/6646/6935,gem_id=173130
 legs=gormshell_greaves,id=178701,bonus_id=6536/1566/6646
 feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
-finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
-finger2=shadowghast_ring,id=178926,bonus_id=6647/6648/6758/6944/1557,gem_id=173127,enchant=tenet_of_critical_strike
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_mastery
+finger2=shadowghast_ring,id=178926,bonus_id=6647/6648/6758/6944/1557,gem_id=173130,enchant=tenet_of_mastery
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
 trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
-main_hand=the_devouring_cold,id=187056,bonus_id=1498/6807,enchant=rune_of_the_fallen_crusader
-off_hand=the_devouring_cold,id=187056,bonus_id=1498/6807,enchant=rune_of_razorice
+main_hand=the_devouring_cold,id=187056,bonus_id=1498/6807,enchant=rune_of_razorice
+off_hand=the_devouring_cold,id=187056,bonus_id=1498/6807,enchant=rune_of_the_fallen_crusader
 
 save=T27_Death_Knight_Frost.simc
 
@@ -100,18 +100,18 @@ covenant=necrolord
 soulbind=heirmir,forgeborne_reveries/eternal_hunger:11/convocation_of_the_dead:11/heirmirs_arsenal_marrowed_gemstone/carvers_eye/mnemonic_equipment
 renown=40
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173128/187312
-neck=passablyforged_credentials,id=185954,bonus_id=1550/7187,gem_id=173128
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173130/187312
+neck=interplanar_keystone,id=186379,bonus_id=6807/1498,gem_id=173130
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
 back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6648/1557
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_stats
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173128/187319
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173130/187319
 hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498/6935,gem_id=187320,enchant=eternal_strength
-waist=fused_bone_greatbelt,id=178734,bonus_id=6536/1566/6646/6935,gem_id=173128
-legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6536/1566/6646
+waist=fused_bone_greatbelt,id=178734,bonus_id=6536/1566/6646/6935,gem_id=173130
+legs=gormshell_greaves,id=178701,bonus_id=6536/1566/6646
 feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
-finger1=signet_of_the_false_accuser,id=178824,bonus_id=6536/1566/6646/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+finger1=signet_of_the_false_accuser,id=178824,bonus_id=6536/1566/6646/6935,gem_id=173127,enchant=tenet_of_mastery
+finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_mastery
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
 trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
 main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/6652/7733/7734/7735,enchant=rune_of_the_fallen_crusader
