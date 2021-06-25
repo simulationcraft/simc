@@ -2949,6 +2949,7 @@ struct death_knight_action_t : public Base
         if ( p() -> legendary.final_sentence.ok() )
         {
           p() -> buffs.final_sentence -> trigger();
+          p() -> replenish_rune( as<unsigned int>( p() -> find_spell( 353823 ) -> effectN( 1 ).resource( RESOURCE_RUNE ) ), p() -> gains.final_sentence );
         }
         p() -> cooldown.shackle_the_unworthy_icd -> start();
         // after we successfully spread to one target, return.
@@ -8689,12 +8690,7 @@ void death_knight_t::create_buffs()
   buffs.final_sentence = make_buff( this, "final_sentence", find_spell( 353823 ) )
     -> set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
     -> set_schools_from_effect( 2 )
-    -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    -> set_stack_change_callback( [ this ]( buff_t*, int old_stacks, int new_stacks)
-          {
-            if ( new_stacks > old_stacks )
-              replenish_rune( as<unsigned int>( find_spell( 353823 ) -> effectN( 1 ).resource( RESOURCE_RUNE ) ), gains.final_sentence );
-          });
+    -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Covenants
   buffs.deaths_due = make_buff( this, "deaths_due", find_spell( 324165 ) )
