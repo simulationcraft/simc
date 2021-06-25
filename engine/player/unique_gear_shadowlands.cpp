@@ -2284,6 +2284,58 @@ void titanic_ocular_gland( special_effect_t& effect )
   } );
 }
 
+/**Ebonsoul Vise
+ * id=355327 damage debuff
+ * id=357785 crit pickup buff
+ */
+void ebonsoul_vise( special_effect_t& effect )
+{
+  struct ebonsoul_vise_t : public proc_spell_t
+  {
+    double max_duration_bonus;
+
+    ebonsoul_vise_t( const special_effect_t& e )
+      : proc_spell_t( "ebonsoul_vise", e.player, e.driver(), e.item ),
+        max_duration_bonus( e.driver()->effectN( 3 ).percent() )
+    {
+      base_td = e.driver()->effectN( 1 ).average( e.item );
+    }
+
+    timespan_t composite_dot_duration( const action_state_t* state ) const override
+    {
+      auto target      = state->target;
+      double bonus_mul = 1.0 - ( target->is_active() ? target->health_percentage() * 0.01 : 0.0 );
+
+      timespan_t new_duration = dot_duration * ( 1 + max_duration_bonus * bonus_mul );
+
+      return new_duration;
+    }
+  };
+
+  player_t* player = effect.player;
+  buff_t* buff     = make_buff<stat_buff_t>( player, "shredded_soul_ebonsoul_vise", player->find_spell( 357785 ) )
+                     ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
+
+  range::for_each( player->sim->actor_list, [ player, buff ]( player_t* target ) {
+    if ( !target->is_enemy() )
+      return;
+
+    target->register_on_demise_callback( player, [ player, buff ]( player_t* target ) {
+      if ( player->sim->event_mgr.canceled )
+        return;
+
+      dot_t* dot     = target->get_dot( "ebonsoul_vise", player );
+      bool picked_up = player->rng().roll( player->sim->shadowlands_opts.shredded_soul_pickup_chance );
+
+      // TODO: handle potential movement required to pick up the soul
+      if ( dot->remains() > 0_ms && picked_up )
+        buff->trigger();
+    } );
+  } );
+
+  effect.execute_action = create_proc_action<ebonsoul_vise_t>( "ebonsoul_vise", effect );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -2952,6 +3004,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 355297, items::old_warriors_soul );
     unique_gear::register_special_effect( 355333, items::salvaged_fusion_amplifier );
     unique_gear::register_special_effect( 355313, items::titanic_ocular_gland );
+    unique_gear::register_special_effect( 355327, items::ebonsoul_vise );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );

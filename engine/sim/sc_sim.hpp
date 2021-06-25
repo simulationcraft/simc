@@ -427,6 +427,8 @@ struct sim_t : private sc_thread_t
     bool enable_rune_words = true;
     /// Seconds between damage/healing triggers for the Pustule Eruption soulbind, has a minimum 1s ICD
     timespan_t pustule_eruption_interval = 1_s;
+    /// Chance that the player will pickup Shredded Soul orb left by Ebonsoul Vise
+    double shredded_soul_pickup_chance = 1.0;
   } shadowlands_opts;
 
   // Auras and De-Buffs
