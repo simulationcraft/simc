@@ -1308,15 +1308,6 @@ public:
     owner_coeff.ap_from_ap      = 1;
   }
 
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double cpm = pet_t::composite_player_multiplier( school );
-
-    cpm *= 1 + o()->spec.brewmaster_monk->effectN( 3 ).percent();
-
-    return cpm;
-  }
-
   void init_action_list() override
   {
     action_list_str = "auto_attack";

@@ -725,6 +725,8 @@ covenant_ability_cast_cb_t* get_covenant_callback( player_t* p )
 
 struct fleshcraft_t : public spell_t
 {
+  bool magnificent_skin_active;
+
   fleshcraft_t( player_t* p, util::string_view opt )
     : spell_t( "fleshcraft", p, p->find_covenant_spell( "Fleshcraft" ) )
   {
@@ -734,7 +736,22 @@ struct fleshcraft_t : public spell_t
     parse_options( opt );
   }
 
+  void init_finished() override
+  {
+    spell_t::init_finished();
+
+    magnificent_skin_active = !( player->find_soulbind_spell( "Emeni's Magnificent Skin" ) == spell_data_t::not_found() );
+  }
+
   double composite_haste() const override { return 1.0; }
+
+  void execute() override
+  {
+    spell_t::execute();
+
+    if ( magnificent_skin_active )
+      player->buffs.emenis_magnificent_skin->trigger();
+  }
 };
 
 action_t* create_action( player_t* player, util::string_view name, const std::string& options )

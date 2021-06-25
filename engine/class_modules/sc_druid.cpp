@@ -747,10 +747,10 @@ public:
     item_runeforge_t lycaras_fleeting_glimpse;  // 7110
 
     // Covenant
-    item_runeforge_t kindred_affinity;
-    item_runeforge_t unbridled_swarm;  // 7472
-    item_runeforge_t celestial_spirits;
-    item_runeforge_t sinful_hysteria;  // 7474
+    item_runeforge_t kindred_affinity;   // 7477
+    item_runeforge_t unbridled_swarm;    // 7472
+    item_runeforge_t celestial_spirits;  // 7571
+    item_runeforge_t sinful_hysteria;    // 7474
 
     // Balance
     item_runeforge_t oneths_clear_vision;        // 7087
@@ -1562,35 +1562,16 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
 };
 
 // Kindred Affinity =========================================================
-struct kindred_affinity_buff_t : public druid_buff_t<buff_t>
+// Note the base is stat_buff_t to allow for easier handling of the Kyrian case, which gives 100 mastery rating instead
+// of stat %
+struct kindred_affinity_buff_t : public druid_buff_t<stat_buff_t>
 {
-  kindred_affinity_buff_t( druid_t& p ) : base_t( p, "kindred_affinity", _get_spell_data( &p ) )
+  kindred_affinity_buff_t( druid_t& p ) : druid_buff_t<stat_buff_t>( p, "kindred_affinity", p.find_spell( 357564 ) )
   {
     if ( !p.legendary.kindred_affinity->ok() )
       return;
 
     set_max_stack( 2 );  // artificially allow second stack to simulate doubling during kindred empowerment
-
-    switch ( _get_cov( &p ) )
-    {
-      case covenant_e::KYRIAN:
-        set_default_value_from_effect_type( A_MOD_MASTERY_PCT );
-        set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
-        break;
-      case covenant_e::NECROLORD:
-        set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
-        set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
-        break;
-      case covenant_e::NIGHT_FAE:
-        set_default_value_from_effect_type( A_HASTE_ALL );
-        set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-        break;
-      case covenant_e::VENTHYR:
-        set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
-        set_pct_buff_type( STAT_PCT_BUFF_CRIT );
-        break;
-      default: break;
-    }
 
     p.buff.kindred_empowerment_energize->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
       if ( new_ )
@@ -1598,47 +1579,41 @@ struct kindred_affinity_buff_t : public druid_buff_t<buff_t>
       else
         decrement();
     } );
-  }
 
-  covenant_e _get_cov( druid_t* p )
-  {
-    if ( util::str_compare_ci( p->kindred_affinity_covenant, "kyrian" ) ||
-         util::str_compare_ci( p->kindred_affinity_covenant, "mastery" ) )
+    if ( util::str_compare_ci( p.kindred_affinity_covenant, "kyrian" ) ||
+         util::str_compare_ci( p.kindred_affinity_covenant, "mastery" ) )
     {
-      return covenant_e::KYRIAN;
-    }
-    else if ( util::str_compare_ci( p->kindred_affinity_covenant, "necrolord" ) ||
-              util::str_compare_ci( p->kindred_affinity_covenant, "versatility" ) )
-    {
-      return covenant_e::NECROLORD;
-    }
-    else if ( util::str_compare_ci( p->kindred_affinity_covenant, "night_fae" ) ||
-              util::str_compare_ci( p->kindred_affinity_covenant, "haste" ) )
-    {
-      return covenant_e::NIGHT_FAE;
-    }
-    else if ( util::str_compare_ci( p->kindred_affinity_covenant, "venthyr" ) ||
-              util::str_compare_ci( p->kindred_affinity_covenant, "crit" ) )
-    {
-      return covenant_e::VENTHYR;
+      // Kyrian uses modify_rating(189) subtype for mastery rating, which is automatically parsed in stat_buff_t ctor,
+      // so we don't need to process further.
+      return;
     }
 
-    throw std::invalid_argument(
-        "Invalid option for druid.kindred_affinity_covenent. Valid options are 'kyrian' 'necrolord' 'night_fae' "
-        "'venthyr' 'mastery' 'haste' 'versatility' 'crit'" );
+    // Clear the mastery rating effect for Kyrian that is automatically parsed from spell data
+    stats.clear();
 
-    return covenant_e::INVALID;
-  }
-
-  const spell_data_t* _get_spell_data( druid_t* p )
-  {
-    switch ( _get_cov( p ) )
+    if ( util::str_compare_ci( p.kindred_affinity_covenant, "necrolord" ) ||
+         util::str_compare_ci( p.kindred_affinity_covenant, "versatility" ) )
     {
-      case covenant_e::KYRIAN: return p->find_spell( 354805 );
-      case covenant_e::NECROLORD: return p->find_spell( 354802 );
-      case covenant_e::NIGHT_FAE: return p->find_spell( 354815 );
-      case covenant_e::VENTHYR: return p->find_spell( 354345 );
-      default: return spell_data_t::not_found();
+      set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
+      set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+    }
+    else if ( util::str_compare_ci( p.kindred_affinity_covenant, "night_fae" ) ||
+              util::str_compare_ci( p.kindred_affinity_covenant, "haste" ) )
+    {
+      set_default_value_from_effect_type( A_HASTE_ALL );
+      set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    }
+    else if ( util::str_compare_ci( p.kindred_affinity_covenant, "venthyr" ) ||
+              util::str_compare_ci( p.kindred_affinity_covenant, "crit" ) )
+    {
+      set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
+      set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+    }
+    else
+    {
+      throw std::invalid_argument(
+          "Invalid option for druid.kindred_affinity_covenent. Valid options are 'kyrian' 'necrolord' 'night_fae' "
+          "'venthyr' 'mastery' 'haste' 'versatility' 'crit'" );
     }
   }
 };
@@ -3543,7 +3518,7 @@ struct ferocious_bite_t : public cat_attack_t
       excess_energy( 0 ),
       max_excess_energy( 0 ),
       max_energy( false ),
-      max_sabertooth_refresh( p->spec.rip->duration() * p->resources.max[ RESOURCE_COMBO_POINT ] * 1.3 )
+      max_sabertooth_refresh( p->spec.rip->duration() * (p->resources.base[ RESOURCE_COMBO_POINT ] + 1) * 1.3 )
   {
     add_option( opt_bool( "max_energy", max_energy ) );
     parse_options( options_str );

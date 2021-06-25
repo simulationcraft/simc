@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -2444,12 +2444,12 @@ Description      : When struck by a snare, you drop a puddle that lasts for $352
 May only occur once every $proccooldown sec.
 
 Name             : Undulating Maneuvers (id=352109) [Passive, Hidden] 
+Hotfixed         : Category (47 -> 0), Spell Type (0 -> 2)
 Covenant         : Necrolord
 School           : Shadow
-Spell Type       : None
+Spell Type       : Melee
 Spell Level      : 60
 GCD              : 1 seconds
-Category         : 47
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 

@@ -1513,7 +1513,7 @@ sim_t::sim_t() :
   merge_time(), init_time(), analyze_time(),
   report_iteration_data( 0.025 ), min_report_iteration_data( -1 ),
   report_progress( 1 ),
-  bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 0 ) ),
+  bloodlust_percent( 0 ), bloodlust_time( timespan_t::from_seconds( 0 ) ),
   // Report
   report_precision(2), report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
   report_rng( 0 ), hosted_html( 0 ),

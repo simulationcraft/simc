@@ -1253,6 +1253,7 @@ class SpellDataGenerator(DataGenerator):
          344087, 344089, 344091, # Kyrian Stamina Passives
          354054, 354053, # Fatal Flaw vers/crit buffs (venthyr/nadjia)
          351687, # Necrolord Bonesmith Heirmir Mnemonic Equipmen debuff
+         352520, # Marileth's Kevin's Ooozeling Kevin's Wrath damage spell
          # Cabalists Hymnal
          344820,
          # Empyreal Ordnance
@@ -1285,6 +1286,7 @@ class SpellDataGenerator(DataGenerator):
          # 9.1 Soulbinds
          352881, # Bonded Hearts (night fae/niya)
          352918, 358404, # Newfound Resolve (kyrian/pelagos)
+         352086, 352095, # Pustule Eruption (Necrolord/Emeni)
          # Miniscule Mailemental in an Envelope
          352542,
          # Tome of Monstrous Constructions
@@ -1295,6 +1297,10 @@ class SpellDataGenerator(DataGenerator):
          355724, 355733, 355735,
          # Chaos Bane (Shard of Domination Rune Word)
          355829, 356042, 356043, 356046,
+         # Banshee's Blight (Sylvanas Dagger) damage spell
+         358126,
+         # Exsanguinated (Shard of Bek)
+         356372
         ),
 
         # Warrior:
