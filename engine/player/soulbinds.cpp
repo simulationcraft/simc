@@ -1634,14 +1634,13 @@ void kevins_oozeling( special_effect_t& effect )
     {
       npc_id = 178601;
       owner_coeff.sp_from_sp = 2.0;
-      // TODO: figure out what this is
-      // owner_coeff.ap_from_ap = 0.0;
+      owner_coeff.ap_from_ap = 1.0;
     }
 
     void init_action_list() override
     {
-      // TODO: figure out why cycle_targets doesn't work
-      action_list_str = "kevins_wrath,cycle_targets=1";
+      // TODO: alter this in some way to mimic the target swapping it does in game
+      action_list_str = "kevins_wrath";
 
       pet_t::init_action_list();
     }
