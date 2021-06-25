@@ -17,7 +17,7 @@ cd ..\
 :: "%~dp0simc.exe" DS_Generate.simc
 :: cd ..\
 :: TierXX profiles generation
-for %%g in (26) do (
+for %%g in (26 27) do (
   cd Tier%%g
   echo Running T%%g_Generate.simc in %cd%
   "%~dp0simc.exe" T%%g_Generate.simc
