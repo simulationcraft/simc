@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.39172
-static const std::array<spelltext_data_t, 15514> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15515> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15480,6 +15480,7 @@ static const std::array<spelltext_data_t, 15514> __ptr_spelltext_data { {
   { 357673, "$@spelldesc357672", "$pri increased by $w1.", 0 },
   { 357769, "Magically imbues the target's flesh with stitches, healing them for $s1.", 0, 0 },
   { 357773, "Answer the Call, joining the ranks of the Val'kyr. Your secondary stats are increased by $s1 for $d.", "All secondary stats increased by $w1.", 0 },
+  { 357785, "$@spelldesc355324", "Relishing in the shredded remains of your foe's soul, granting $w1 Critical Strike.", 0 },
   { 357888, "When you take any damage, heal for |cFFFFFFFF${$m1/10}.2%|r of your maximum health. This can only occur once every $357946d.", 0, 0 },
   { 357902, "When you are healed by another player, increase your $pri by |cFFFFFFFF${$s1}.1%|r for $357972d. This can only occur once every $357973d.", 0, 0 },
   { 357946, "$@spelldesc357888", 0, 0 },
