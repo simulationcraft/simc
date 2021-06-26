@@ -760,7 +760,15 @@ struct fleshcraft_t : public spell_t
     spell_t::execute();
 
     if ( magnificent_skin_active )
+    {
       player->buffs.emenis_magnificent_skin->trigger();
+    }
+
+    // Ensure we get the full 9 stack if we are using this precombat without the channel
+    if ( is_precombat && pustule_eruption_active && player->buffs.trembling_pustules )
+    {
+      player->buffs.trembling_pustules->trigger( 9 );
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -770,12 +778,18 @@ struct fleshcraft_t : public spell_t
     if ( pustule_eruption_active && player->buffs.trembling_pustules )
     {
       // Hardcoded at 3 stacks per 1s of channeling in tooltip, granted at the end of the channel
-      // This doesn't appear to be partial, and is only in increments of 3
-      // For precombat, specify the full 9 stacks as precombat DoTs are reduced by 1 tick legnth
-      int num_stacks = is_precombat ? 9 : 3 * floor( ( base_tick_time * d->current_tick ) / 1_s );
+      // This doesn't appear to always be partial, and is only in increments of 3
+      // However, sometimes it is in increments of +3 stacks every 1s (even) tick, need to check more with logs
+      int num_stacks = 3 * floor( ( base_tick_time * d->current_tick ) / 1_s );
       if ( num_stacks > 0 )
         player->buffs.trembling_pustules->trigger( num_stacks );
     }
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    // Channeling and pre-combat don't play nicely together, so need to work around this to get the buffs
+    return is_precombat ? timespan_t::zero() : spell_t::composite_dot_duration( s );
   }
 };
 
