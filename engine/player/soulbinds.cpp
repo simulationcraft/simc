@@ -2162,9 +2162,6 @@ void pustule_eruption( special_effect_t& effect )
   action_t* heal = effect.player->find_action( "pustule_eruption_heal" );
   if ( !heal )
     heal = new pustule_eruption_heal_t( effect.player );
-  
-  if ( unique_gear::create_fallback_buffs( effect, { "pustule_eruption" } ) )
-    return;
 
   if ( !effect.player->buffs.trembling_pustules )
   {
@@ -2275,7 +2272,7 @@ void register_special_effects()
   register_soulbind_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
   register_soulbind_special_effect( 342156, soulbinds::lead_by_example, true );
   register_soulbind_special_effect( 323921, soulbinds::emenis_magnificent_skin );
-  register_soulbind_special_effect( 351094, soulbinds::pustule_eruption, true );
+  register_soulbind_special_effect( 351094, soulbinds::pustule_eruption );
   register_soulbind_special_effect( 326514, soulbinds::forgeborne_reveries );  // Heirmir
   register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone, true );
