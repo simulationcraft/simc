@@ -1,10 +1,10 @@
 # T27
 # Tier 27 Sanctum of Domination
 # RULES IN PROGRESS
-# * Raid gear is permitted up to the Mythic item level cap (252/259). ["bonus_id=" for weapons, "bonus_id=" for the rest]
-# * Mythic+ gear is permitted up to the Mythic+ item level cap (252). ["bonus_id="]
-# * Honor PvP gear is permitted up to the item level cap (197). ["bonus_id=6794/1511"]
-# * Conquest PvP gear is not permitted for the moment since acquisition is unknown.
+# * Raid gear is permitted up to the Mythic item level cap (252/259). ["bonus_id=7187/1498"]
+# * Mythic+ gear is permitted up to the Mythic+ item level cap (252). ["bonus_id=6536/1566/6646"]
+# * Honor PvP gear is permitted up to the item level cap (216). ["bonus_id=1530"]
+# * Conquest PvP gear is permitted up to the item level cap (249). ["bonus_id=7706/1498"]
 # * Crafted gear is permitted, must be BoE and without profession requirements.
 # * World Bosses gear is permitted.
 # * World Drop gear is permitted.
@@ -13,7 +13,7 @@
 # * No Tertiary Stats.
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game).
 # * Renown is considered to be >= 80, so every row from each soulbind tree is unlocked.
-# * Conduits rank is limited to 11 (item level 252).
+# * Conduits rank is limited to 9 (item level 252).
 # * One Rank 6 (item level 260) Legendary should be used. [Bonus ids can be taken from https://www.wowhead.com/legendary-calc]
 # * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats.
 # * Must use gem ids (ex: ",gem_id=173127") instead of hardcoded stats.

@@ -25,7 +25,6 @@
 * - Kleia's Valiant Strikes
 * - Kleia's Light the Path
 * Necrolord:
-* - Maerileth's Kevin's Oozeling
 * - Emeni's Pustule Eruption
 * Night Fae:
 * - Korayn's Wild Hunt Strategem
@@ -76,6 +75,28 @@ struct covenant_cb_action_t : public covenant_cb_base_t
 
     action->set_target( t );
     action->schedule_execute();
+  }
+};
+
+struct covenant_cb_pet_t : public covenant_cb_base_t
+{
+  pet_t* pet;
+  timespan_t duration;
+
+  covenant_cb_pet_t( pet_t* p, timespan_t d ) : covenant_cb_pet_t( p, true, false, d )
+  {
+  }
+
+  covenant_cb_pet_t( pet_t* p, bool on_class = true, bool on_base = false,
+                     timespan_t d = timespan_t::from_seconds( 0 ) )
+    : covenant_cb_base_t( on_class, on_base ), pet( p ), duration( d )
+  {
+  }
+
+  void trigger( action_t*, action_state_t* ) override
+  {
+    if ( pet->is_sleeping() )
+      pet->summon( duration );
   }
 };
 
@@ -1589,6 +1610,74 @@ void plagueys_preemptive_strike( special_effect_t& effect )
   new plagueys_preemptive_strike_cb_t( effect );
 }
 
+// TODO: add healing absorb
+void kevins_oozeling( special_effect_t& effect )
+{
+  struct kevins_oozeling_pet_t : public pet_t
+  {
+    struct kevins_wrath_t : public spell_t
+    {
+      kevins_wrath_t( pet_t* p, const std::string& options_str ) : spell_t( "kevins_wrath", p, p->find_spell( 352520 ) )
+      {
+        parse_options( options_str );
+      }
+
+      void execute() override
+      {
+        spell_t::execute();
+
+        auto td = debug_cast<pet_t*>( player )->owner->get_target_data( target );
+        td->debuff.kevins_wrath->trigger();
+      }
+    };
+    kevins_oozeling_pet_t( player_t* owner ) : pet_t( owner->sim, owner, "kevins_oozeling" )
+    {
+      npc_id = 178601;
+      owner_coeff.sp_from_sp = 2.0;
+      owner_coeff.ap_from_ap = 1.0;
+    }
+
+    void init_action_list() override
+    {
+      // TODO: alter this in some way to mimic the target swapping it does in game
+      action_list_str = "kevins_wrath";
+
+      pet_t::init_action_list();
+    }
+
+    action_t* create_action( util::string_view name, const std::string& options_str ) override
+    {
+      if ( name == "kevins_wrath" )
+        return new kevins_wrath_t( this, options_str );
+
+      return pet_t::create_action( name, options_str );
+    }
+
+    void demise() override
+    {
+      pet_t::demise();
+
+      // When the pet expires any debuffs it put out are expired as well
+      range::for_each( owner->sim->actor_list, [ this ]( player_t* t ) {
+        if ( !t->is_enemy() )
+          return;
+
+        auto td = owner->get_target_data( t );
+        if ( td->debuff.kevins_wrath->check() )
+          td->debuff.kevins_wrath->expire();
+      } );
+    }
+  };
+
+  pet_t* kevin = effect.player->find_pet( "kevins_oozeling" );
+  if ( !kevin )
+    kevin = new kevins_oozeling_pet_t( effect.player );
+
+  timespan_t duration = timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() );
+
+  add_covenant_cast_callback<covenant_cb_pet_t>( effect.player, kevin, duration );
+}
+
 void gnashing_chompers( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "gnashing_chompers" );
@@ -2119,6 +2208,7 @@ void register_special_effects()
   // Necrolord
   register_soulbind_special_effect( 323074, soulbinds::volatile_solvent );  // Marileth
   register_soulbind_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
+  register_soulbind_special_effect( 352110, soulbinds::kevins_oozeling );
   register_soulbind_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
   register_soulbind_special_effect( 342156, soulbinds::lead_by_example, true );
   register_soulbind_special_effect( 323921, soulbinds::emenis_magnificent_skin );
@@ -2287,6 +2377,29 @@ void register_target_data_initializers( sim_t* sim )
     }
     else
       td->debuff.soulglow_spectrometer = make_buff( *td, "soulglow_spectrometer" )->set_quiet( true );
+  } );
+
+  // Kevin's Wrath
+  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
+    auto kevins_wrath = td->source->find_soulbind_spell( "Kevin's Oozeling" );
+    if ( kevins_wrath->ok() )
+    {
+      assert( !td->debuff.kevins_wrath );
+      timespan_t duration = td->source->find_spell( 352528 )->duration();
+
+      // BUG: this is lasting forever on PTR
+      if ( td->source->bugs )
+      {
+        duration = timespan_t::zero();
+      }
+
+      td->debuff.kevins_wrath = make_buff( *td, "kevins_wrath", td->source->find_spell( 352528 ) )
+                                    ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
+                                    ->set_duration( duration );
+      td->debuff.kevins_wrath->reset();
+    }
+    else
+      td->debuff.kevins_wrath = make_buff( *td, "kevins_wrath" )->set_quiet( true );
   } );
 }
 
