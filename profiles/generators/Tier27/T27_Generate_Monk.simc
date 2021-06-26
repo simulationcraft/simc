@@ -42,9 +42,9 @@ soulbind=forgelite_prime_mikanikos:18,brons_call_to_action/inner_fury:9/forgelit
 head=cap_of_writhing_malevolence,id=186292,bonus_id=7187/1498,gem_id=187318
 neck=weathered_talisman_of_the_shadowmoon,id=186378,bonus_id=7187/1498/6935,gem_id=173129
 shoulders=smugglers_plundered_pauldrons,id=186298,bonus_id=7187/1498,gem_id=187315
-back=grimveiled_cape,id=173242,bonus_id=7082/1559/6650/6647
-chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498,gem_id=187312,enchant=soul_vitality
-wrists=clasps_of_the_unfortunate_troubadour,id=186297,bonus_id=7187/1498/6935,enchant=eternal_skirmish
+back=grimveiled_cape,id=173242,bonus_id=7082/1559/6650/6647,enchant=soul_vitality
+chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498,gem_id=187312,enchant=eternal_skirmish
+wrists=clasps_of_the_unfortunate_troubadour,id=186297,bonus_id=7187/1498/6935
 hands=hangmans_knotbinders,id=186333,bonus_id=7187/1498,gem_id=187313
 waist=girdle_of_shattered_dreams,id=178805,bonus_id=6536/1566/6646/6935,gem_id=173129
 legs=elite_aranakk_breeches,id=186331,bonus_id=7187/1498
