@@ -2284,6 +2284,58 @@ void titanic_ocular_gland( special_effect_t& effect )
   } );
 }
 
+/**Ebonsoul Vise
+ * id=355327 damage debuff
+ * id=357785 crit pickup buff
+ */
+void ebonsoul_vise( special_effect_t& effect )
+{
+  struct ebonsoul_vise_t : public proc_spell_t
+  {
+    double max_duration_bonus;
+
+    ebonsoul_vise_t( const special_effect_t& e )
+      : proc_spell_t( "ebonsoul_vise", e.player, e.driver(), e.item ),
+        max_duration_bonus( e.driver()->effectN( 3 ).percent() )
+    {
+      base_td = e.driver()->effectN( 1 ).average( e.item );
+    }
+
+    timespan_t composite_dot_duration( const action_state_t* state ) const override
+    {
+      auto target      = state->target;
+      double bonus_mul = 1.0 - ( target->is_active() ? target->health_percentage() * 0.01 : 0.0 );
+
+      timespan_t new_duration = dot_duration * ( 1 + max_duration_bonus * bonus_mul );
+
+      return new_duration;
+    }
+  };
+
+  player_t* player = effect.player;
+  buff_t* buff     = make_buff<stat_buff_t>( player, "shredded_soul_ebonsoul_vise", player->find_spell( 357785 ) )
+                     ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
+
+  range::for_each( player->sim->actor_list, [ player, buff ]( player_t* target ) {
+    if ( !target->is_enemy() )
+      return;
+
+    target->register_on_demise_callback( player, [ player, buff ]( player_t* target ) {
+      if ( player->sim->event_mgr.canceled )
+        return;
+
+      dot_t* dot     = target->get_dot( "ebonsoul_vise", player );
+      bool picked_up = player->rng().roll( player->sim->shadowlands_opts.shredded_soul_pickup_chance );
+
+      // TODO: handle potential movement required to pick up the soul
+      if ( dot->remains() > 0_ms && picked_up )
+        buff->trigger();
+    } );
+  } );
+
+  effect.execute_action = create_proc_action<ebonsoul_vise_t>( "ebonsoul_vise", effect );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -2782,6 +2834,96 @@ void shard_of_dyz( special_effect_t& effect )
   effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
   new shard_of_dyz_cb_t( effect );
 }
+
+/**Shard of Cor
+ * id=355741 driver Rank 1
+ * id=357034 driver Rank 2 (Ominous)
+ * id=357052 driver Rank 3 (Desolate)
+ * id=357062 driver Rank 4 (Foreboding)
+ * id=357073 driver Rank 5 (Portentous)
+ * id=356364 Coldhearted buff
+ */
+void shard_of_cor( special_effect_t& effect )
+{
+  struct shard_of_cor_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<int> target_list;
+
+    shard_of_cor_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        target_list()
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( range::contains( target_list, s->target->actor_spawn_index ) )
+        return;
+
+      dbc_proc_callback_t::execute( a, s );
+      target_list.push_back( s->target->actor_spawn_index );
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      target_list.clear();
+    }
+  };
+
+  buff_t* buff = buff_t::find( effect.player, "coldhearted" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "coldhearted", effect.player->find_spell( 356364 ) )
+               ->set_default_value( 0.0001 * effect.driver()->effectN( 1 ).average( effect.player ), 1 )
+               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+
+  effect.custom_buff = effect.player->buffs.coldhearted = buff;
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+  new shard_of_cor_cb_t( effect );
+}
+
+/**Shard of Bek
+ * id=355721 driver Rank 1
+ * id=357031 driver Rank 2 (Ominous)
+ * id=357049 driver Rank 3 (Desolate)
+ * id=357058 driver Rank 4 (Foreboding)
+ * id=357069 driver Rank 5 (Portentous)
+ * id=356372 Exsanguinated debuff
+ */
+void shard_of_bek( special_effect_t& effect )
+{
+  struct shard_of_bek_cb_t : public dbc_proc_callback_t
+  {
+    double debuff_value;
+    double health_pct_threshold;
+
+    shard_of_bek_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        debuff_value( 0.0001 * e.driver()->effectN( 1 ).average( e.player ) ),
+        health_pct_threshold( e.driver()->effectN( 2 ).base_value() )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      auto health_diff = a->player->health_percentage() - s->target->health_percentage();
+      if ( health_diff > health_pct_threshold )
+      {
+        auto td = a->player->get_target_data( s->target );
+        td->debuff.exsanguinated->set_default_value( debuff_value );
+        td->debuff.exsanguinated->trigger();
+      }
+    }
+  };
+
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+  new shard_of_bek_cb_t( effect );
+}
+
 }  // namespace items
 
 void register_hotfixes()
@@ -2862,6 +3004,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 355297, items::old_warriors_soul );
     unique_gear::register_special_effect( 355333, items::salvaged_fusion_amplifier );
     unique_gear::register_special_effect( 355313, items::titanic_ocular_gland );
+    unique_gear::register_special_effect( 355327, items::ebonsoul_vise );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
@@ -2879,11 +3022,24 @@ void register_special_effects()
     unique_gear::register_special_effect( 357347, items::blood_link ); // Rune Word: Blood
     unique_gear::register_special_effect( 357348, items::winds_of_winter ); // Rune Word: Frost
     unique_gear::register_special_effect( 357349, items::chaos_bane ); // Rune Word: Unholy
+
     unique_gear::register_special_effect( 355755, items::shard_of_dyz );
     unique_gear::register_special_effect( 357037, items::shard_of_dyz );
     unique_gear::register_special_effect( 357055, items::shard_of_dyz );
     unique_gear::register_special_effect( 357065, items::shard_of_dyz );
     unique_gear::register_special_effect( 357076, items::shard_of_dyz );
+
+    unique_gear::register_special_effect( 355741, items::shard_of_cor );
+    unique_gear::register_special_effect( 357034, items::shard_of_cor );
+    unique_gear::register_special_effect( 357052, items::shard_of_cor );
+    unique_gear::register_special_effect( 357062, items::shard_of_cor );
+    unique_gear::register_special_effect( 357073, items::shard_of_cor );
+
+    unique_gear::register_special_effect( 355721, items::shard_of_bek );
+    unique_gear::register_special_effect( 357031, items::shard_of_bek );
+    unique_gear::register_special_effect( 357049, items::shard_of_bek );
+    unique_gear::register_special_effect( 357058, items::shard_of_bek );
+    unique_gear::register_special_effect( 357069, items::shard_of_bek );
 
     // Disabled effects
     unique_gear::register_special_effect( 329028, items::DISABLED_EFFECT ); // Light-Infused Armor shield
@@ -2951,6 +3107,23 @@ void register_target_data_initializers( sim_t& sim )
     }
     else
       td->debuff.scouring_touch = make_buff( *td, "scouring_touch" )->set_quiet( true );
+  } );
+
+  // Shard of Bek (Exsanguinated debuff)
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 355721 )
+      || unique_gear::find_special_effect( td->source, 357031 )
+      || unique_gear::find_special_effect( td->source, 357049 )
+      || unique_gear::find_special_effect( td->source, 357058 )
+      || unique_gear::find_special_effect( td->source, 357069 ) )
+    {
+      assert( !td->debuff.exsanguinated );
+
+      td->debuff.exsanguinated = make_buff( *td, "exsanguinated", td->source->find_spell( 356372 ) );
+      td->debuff.exsanguinated->reset();
+    }
+    else
+      td->debuff.exsanguinated = make_buff( *td, "exsanguinated" )->set_quiet( true );
   } );
 }
 

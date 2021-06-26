@@ -571,6 +571,17 @@ void paladin_t::target_mitigation( school_e school,
   // Passive sources (Sanctuary)
   s -> result_amount *= 1.0 + passives.sanctuary -> effectN( 1 ).percent();
 
+  if ( dbc -> ptr )
+  {
+    if ( passives.aegis_of_light_2 -> ok() )
+      s -> result_amount *= 1.0 + passives.aegis_of_light_2 -> effectN( 1 ).percent();
+  }
+  else
+  {
+    if ( passives.aegis_of_light -> ok() )
+      s -> result_amount *= 1.0 + passives.aegis_of_light -> effectN( 1 ).percent();
+  }
+
   if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
     sim -> print_debug( "Damage to {} after passive mitigation is {}", s -> target -> name(), s -> result_amount );
 
@@ -878,6 +889,10 @@ void paladin_t::init_spells_protection()
   passives.grand_crusader      = find_specialization_spell( "Grand Crusader" );
   passives.riposte             = find_specialization_spell( "Riposte" );
   passives.sanctuary           = find_specialization_spell( "Sanctuary" );
+  
+  passives.aegis_of_light      = find_specialization_spell( "Aegis of Light" );
+  if ( dbc -> ptr )
+    passives.aegis_of_light_2    = find_rank_spell( "Aegis of Light", "Rank 2" );
 
   // Azerite traits
   azerite.inspiring_vanguard = find_azerite_spell( "Inspiring Vanguard" );

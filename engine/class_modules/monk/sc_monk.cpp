@@ -7223,7 +7223,13 @@ void monk_t::invalidate_cache( cache_e c )
 
   switch ( c )
   {
+    case CACHE_ATTACK_POWER:
+    case CACHE_AGILITY:
+      if ( specialization() == MONK_BREWMASTER || specialization()  == MONK_WINDWALKER )
+        player_t::invalidate_cache( CACHE_SPELL_POWER );
+      break;
     case CACHE_SPELL_POWER:
+    case CACHE_INTELLECT:
       if ( specialization() == MONK_MISTWEAVER )
         player_t::invalidate_cache( CACHE_ATTACK_POWER );
       break;
@@ -7234,6 +7240,12 @@ void monk_t::invalidate_cache( cache_e c )
     case CACHE_MASTERY:
       if ( specialization() == MONK_WINDWALKER )
         player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      else if ( specialization()  == MONK_BREWMASTER )
+      {
+        player_t::invalidate_cache( CACHE_ATTACK_POWER );
+        player_t::invalidate_cache( CACHE_SPELL_POWER );
+        player_t::invalidate_cache( CACHE_DODGE );
+      }
       break;
     default:
       break;

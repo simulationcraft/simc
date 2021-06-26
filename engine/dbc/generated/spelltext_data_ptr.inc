@@ -1,5 +1,5 @@
-// Spell text, wow build 9.1.0.39069
-static const std::array<spelltext_data_t, 15509> __ptr_spelltext_data { {
+// Spell text, wow build 9.1.0.39172
+static const std::array<spelltext_data_t, 15515> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -193,7 +193,7 @@ static const std::array<spelltext_data_t, 15509> __ptr_spelltext_data { {
   {   5760, "Coats a weapon with poison that lasts for 1 hour.\r\nEach strike has a $5761h% chance of poisoning the enemy, increasing their casting time by $5760s1% (25% on player targets) for $5760d.", "Casting speed slowed by $s1%.", 0 },
   {   5761, "Coats your weapons with a Non-Lethal Poison that lasts for $d.  Each strike has a $5761h% chance of poisoning the enemy, clouding their mind and slowing their attack and casting speed by $5760s1% for $5760d.", "Each strike has a chance of poisoning the enemy, slowing their attack and spellcasting by $5760s1% for $5760d.", 0 },
   {   5782, "Strikes fear in the enemy, disorienting for $118699d. Damage may cancel the effect. Limit 1.", "Disoriented.", 0 },
-  {   5938, "Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]\r\n$?s319032[\r\nYour Nature damage done against the target is increased by $319504s1%][] $?a354124[and healing received reduced by $354124S1% ][]for $319504d.\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
+  {   5938, "Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]$?s319032[\r\n\r\nYour Nature damage done against the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $354124S1% for $319504d.][]\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {   6196, "Changes your viewpoint to the targeted location for $d.", "Cannot move while using Far Sight.", 0 },
   {   6197, "Changes your viewpoint to the targeted location for $d. Only usable outdoors.", "Vision is enhanced.", 0 },
   {   6201, "Creates a Healthstone that can be consumed to restore $6262s1% health.", 0, 0 },
@@ -15148,7 +15148,9 @@ static const std::array<spelltext_data_t, 15509> __ptr_spelltext_data { {
   { 351986, "Your attacks and abilities have a chance to grant you $s1 primary stat for $351987d.", 0, 0 },
   { 351987, 0, "Your $?$w1!=0[Agility]?$w2!=0[Intellect]?$w3!=0[Strength][highest primary stat] is increased by $w4.", 0 },
   { 352081, "Your attacks and abilities have a chance to grant you $s1 primary stat for $351987d.", 0, 0 },
+  { 352086, "$@spelldesc351094", "Damaging nearby enemies and healing nearby allies when taking damage or receiving healing.", 0 },
   { 352091, 0, "Your $?$w1!=0[Agility]?$w2!=0[Intellect]?$w3!=0[Strength][highest primary stat] is increased by $w4.", 0 },
+  { 352095, "$@spelldesc351094", 0, 0 },
   { 352108, "When struck by a snare, you drop a puddle that lasts for $352427d. Enemies that step in the puddle are slowed by $352448m1% for $352448d.\r\n\r\nMay only occur once every $proccooldown sec.", 0, 0 },
   { 352109, "While above $M3% health, $M1% of damage taken is absorbed and spread out over $352562d.", 0, 0 },
   { 352110, "$?a137005[Abomination Limb]?a212611[Fodder to the Flame]?a137009[Adaptive Swarm]?a137014[Death Chakram]?a137018[Deathborne]?a137022[Bonedust Brew]?a137026[Vanquisher's Hammer]?a137030[Unholy Nova]?a137034[Serrated Bone Spike]?a137038[Primordial Wave]?a137042[Decimating Bolt]?a137047[Conqueror's Banner][Activating your Necrolord class ability] summons Kevin's Oozeling to fight alongside you for ${$s2*$<mod>}.1 sec. His attacks cause your enemies to take $352528s1% additional damage from you and he periodically grants your allies an absorb shield that absorbs $<shield> damage.", 0, 0 },
@@ -15174,6 +15176,7 @@ static const std::array<spelltext_data_t, 15509> __ptr_spelltext_data { {
   { 352501, "When you critically strike, you gain $352865s1% movement speed for $352865d.\r\n\r\nMay only occur once every $proccooldown sec.", 0, 0 },
   { 352502, "When you fall below $s1% health, you regain ${$352857s1*$352857d}% of your health over $352857d and receive $352857s2% additional healing from other spells and abilities.\r\n\r\nMay only occur once every $s2 sec.", 0, 0 },
   { 352503, "Gaining a stack of Redirected Anima from Grove Invigoration heals up to $352871I nearby allies for $352871s1% of their health, up to a maximum of $352871s3 health. If any of the affected allies are of another covenant, Redirected Anima's Mastery and maximum health effects are increased by $352881s1% for $352881d.", 0, 0 },
+  { 352520, "$@spelldesc352110", 0, 0 },
   { 352528, "$@spelldesc352110", "Damage taken from $@auracaster increased by $s1%.", 0 },
   { 352561, "$@spelldesc352109", "Damage is being delayed every $t1 sec.", 0 },
   { 352562, "$@spelldesc352109", "$w1 damage is being delayed every $352561t1 sec.\r\n\r\nUndulation Remaining: $w2", 0 },
@@ -15377,6 +15380,7 @@ static const std::array<spelltext_data_t, 15509> __ptr_spelltext_data { {
   { 356362, "Each target affected by Soul Rot increases your haste and critical strike chance by $356369s1% for $356369d.", 0, 0 },
   { 356364, "$@spelldesc355741", "Damage done increased by $w1%.", 0 },
   { 356369, "$@spelldesc352362", "Haste increased by $s1%.\r\nCritical strike chance increased by $s2%.", 0 },
+  { 356372, "$@spelldesc355721", "Taking $w1% more damage from $@auracaster.", 0 },
   { 356375, "When Wild Spirits hits fewer than $328757I targets, there is a $s1% chance to cause Wild Spirits damage a second time.", 0, 0 },
   { 356390, "$?c1[$@spelldesc356467]?c3[$@spelldesc356418][$@spelldesc356466]", 0, 0 },
   { 356391, "Enter a pact with the Death Loa, calling forth a haunted mask that lingers on a target until Fae Guardians ends.\r\n\r\n|CFFffffffHaunted Mask:|r Copies the benefit of the current faerie on its target. Follows your Direct Mask.", 0, 0 },
@@ -15476,6 +15480,7 @@ static const std::array<spelltext_data_t, 15509> __ptr_spelltext_data { {
   { 357673, "$@spelldesc357672", "$pri increased by $w1.", 0 },
   { 357769, "Magically imbues the target's flesh with stitches, healing them for $s1.", 0, 0 },
   { 357773, "Answer the Call, joining the ranks of the Val'kyr. Your secondary stats are increased by $s1 for $d.", "All secondary stats increased by $w1.", 0 },
+  { 357785, "$@spelldesc355324", "Relishing in the shredded remains of your foe's soul, granting $w1 Critical Strike.", 0 },
   { 357888, "When you take any damage, heal for |cFFFFFFFF${$m1/10}.2%|r of your maximum health. This can only occur once every $357946d.", 0, 0 },
   { 357902, "When you are healed by another player, increase your $pri by |cFFFFFFFF${$s1}.1%|r for $357972d. This can only occur once every $357973d.", 0, 0 },
   { 357946, "$@spelldesc357888", 0, 0 },
@@ -15483,6 +15488,7 @@ static const std::array<spelltext_data_t, 15509> __ptr_spelltext_data { {
   { 357996, "Spear of Bastion's duration is increased by ${$s1/1000} sec. While you remain within Spear of Bastion's area your critical strike damage is increased by $311193s1%.", 0, 0 },
   { 358090, "$@spelldesc357595", "Damaging finishing moves have a chance to deal $w1 Shadow damage per stack.", 0 },
   { 358111, "Pour a cup of very fancy tea for yourself or another party member.", "Enjoying a taste of the Ember Ward.", 0 },
+  { 358126, "$@spelldesc357595", 0, 0 },
   { 358164, "$@spelldesc326514", "Cannot benefit from Forgeborne Reveries' death effects.", 0 },
   { 358284, "Add the Tormented affix to a Mythic Keystone.", 0, 0 },
   { 358404, "$@spelldesc351149", "Your Doubt has manifested. Face it to gain Newfound Resolve.", 0 },
@@ -15511,11 +15517,12 @@ static const std::array<spelltext_data_t, 15509> __ptr_spelltext_data { {
   { 359078, "An intense application of Numbing Poison reduces the target's casting speed by $s1% for $d.", "Casting slowed by $s1%.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.0.39069
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 9.1.0.39172
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {    5938,  0, "Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]\r\n$?s319032[\r\nYour Nature damage done against the target is increased by $319504s1%][] $?a354124[and healing received reduced by $354124S1% ][]for $319504d.\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", "Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]$?s319032[\r\n\r\nYour Nature damage done against the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $354124S1% for $319504d.][]\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r" },
 } };
 
-// Spell description variables, wow build 9.1.0.39069
+// Spell description variables, wow build 9.1.0.39172
 static const std::array<spelldesc_vars_data_t, 301> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15820,7 +15827,7 @@ static const std::array<spelldesc_vars_data_t, 301> __ptr_spelldesc_vars_data { 
   {  358164, "$buff=${$348272s1}\r\n$max=${3*$<buff>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.0.39069
+// spelldesc_vars hotfix entries, wow build 9.1.0.39172
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

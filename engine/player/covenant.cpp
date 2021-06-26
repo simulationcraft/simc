@@ -4,6 +4,7 @@
 // ==========================================================================
 #include "covenant.hpp"
 
+#include "action/dot.hpp"
 #include "action/spell.hpp"
 #include "buff/sc_buff.hpp"
 #include "dbc/covenant_data.hpp"
@@ -726,12 +727,13 @@ covenant_ability_cast_cb_t* get_covenant_callback( player_t* p )
 struct fleshcraft_t : public spell_t
 {
   bool magnificent_skin_active;
+  bool pustule_eruption_active;
 
   fleshcraft_t( player_t* p, util::string_view opt )
     : spell_t( "fleshcraft", p, p->find_covenant_spell( "Fleshcraft" ) )
   {
     harmful = may_crit = may_miss = false;
-    channeled = true;
+    channeled = interrupt_auto_attack = true;
 
     parse_options( opt );
   }
@@ -740,7 +742,15 @@ struct fleshcraft_t : public spell_t
   {
     spell_t::init_finished();
 
-    magnificent_skin_active = !( player->find_soulbind_spell( "Emeni's Magnificent Skin" ) == spell_data_t::not_found() );
+    magnificent_skin_active = player->find_soulbind_spell( "Emeni's Magnificent Skin" )->ok();
+
+    pustule_eruption_active = player->find_soulbind_spell( "Pustule Eruption" )->ok();
+    if ( pustule_eruption_active )
+    {
+      action_t* pustule_eruption_damage = player->find_action( "pustule_eruption" );
+      if( pustule_eruption_damage )
+        add_child( pustule_eruption_damage );
+    }
   }
 
   double composite_haste() const override { return 1.0; }
@@ -750,7 +760,36 @@ struct fleshcraft_t : public spell_t
     spell_t::execute();
 
     if ( magnificent_skin_active )
+    {
       player->buffs.emenis_magnificent_skin->trigger();
+    }
+
+    // Ensure we get the full 9 stack if we are using this precombat without the channel
+    if ( is_precombat && pustule_eruption_active && player->buffs.trembling_pustules )
+    {
+      player->buffs.trembling_pustules->trigger( 9 );
+    }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    spell_t::last_tick( d );
+
+    if ( pustule_eruption_active && player->buffs.trembling_pustules )
+    {
+      // Hardcoded at 3 stacks per 1s of channeling in tooltip, granted at the end of the channel
+      // This doesn't appear to always be partial, and is only in increments of 3
+      // However, sometimes it is in increments of +3 stacks every 1s (even) tick, need to check more with logs
+      int num_stacks = 3 * floor( ( base_tick_time * d->current_tick ) / 1_s );
+      if ( num_stacks > 0 )
+        player->buffs.trembling_pustules->trigger( num_stacks );
+    }
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    // Channeling and pre-combat don't play nicely together, so need to work around this to get the buffs
+    return is_precombat ? timespan_t::zero() : spell_t::composite_dot_duration( s );
   }
 };
 

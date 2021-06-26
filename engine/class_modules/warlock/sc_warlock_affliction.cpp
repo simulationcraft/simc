@@ -397,8 +397,8 @@ struct summon_darkglare_t : public affliction_spell_t
 
     if ( !p->min_version_check( VERSION_9_1_0 ) )
       cooldown->duration += timespan_t::from_millis( p->talents.dark_caller->effectN( 1 ).base_value() );
-    else if ( p->spec.dark_caller->ok() )
-      cooldown->duration += timespan_t::from_millis( p->spec.dark_caller->effectN( 1 ).base_value() );
+    else if ( p->spec.summon_darkglare_2->ok() )
+      cooldown->duration += timespan_t::from_millis( p->spec.summon_darkglare_2->effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -864,7 +864,7 @@ void warlock_t::init_spells_affliction()
   spec.corruption_3        = find_specialization_spell( "Corruption", "Rank 3" );
   spec.unstable_affliction_2 = find_specialization_spell( "Unstable Affliction", "Rank 2" );
   spec.unstable_affliction_3 = find_specialization_spell( "Unstable Affliction", "Rank 3" );
-  spec.dark_caller         = find_specialization_spell( "Dark Caller" ); //9.1 PTR - Now a passive learned at level 58
+  spec.summon_darkglare_2         = find_specialization_spell( "Summon Darkglare", "Rank 2" ); //9.1 PTR - Now a passive learned at level 58
 
   // Talents
   talents.nightfall           = find_talent_spell( "Nightfall" );
