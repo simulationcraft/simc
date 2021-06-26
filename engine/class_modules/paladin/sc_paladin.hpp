@@ -1201,10 +1201,11 @@ struct holy_power_consumer_t : public Base
 
     // For prot (2021-06-22). Magistrate's does not get consumed when DP or SL
     // are up, but does with RD.
+    // (2021-06-26) Vanquisher's hammer's auto-sotr does not interact with magistrate's judgment
     // For ret (2020-10-29), Magistrate's does not get consumed with DP or EP up but does
     // with FoJ.
     if ( should_continue && this -> affected_by.the_magistrates_judgment
-        && !p -> buffs.divine_purpose -> check() )
+        && !p -> buffs.divine_purpose -> check() && !ab::background )
     {
       p -> buffs.the_magistrates_judgment -> decrement( 1 );
     }
