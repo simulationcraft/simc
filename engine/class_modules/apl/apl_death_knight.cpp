@@ -259,7 +259,7 @@ void frost( player_t* p )
   covenants->add_action( "abomination_limb,if=variable.adds_remain" );
   covenants->add_action( "shackle_the_unworthy,if=cooldown.pillar_of_frost.remains<3&variable.st_planning" );
   covenants->add_action( "shackle_the_unworthy,if=variable.adds_remain" );
-  covenants->add_action( "fleshcraft,if=soulbind.pustule_eruption&!buff.pillar_of_frost.up&cooldown.pillar_of_frost.remains>3" );
+  covenants->add_action( "fleshcraft,if=soulbind.pustule_eruption&!buff.pillar_of_frost.up" );
 
   obliteration->add_action( "remorseless_winter,if=active_enemies>=3&(talent.gathering_storm|conduit.everfrost|runeforge.biting_cold)", "Obliteration rotation" );
   obliteration->add_action( "howling_blast,target_if=!dot.frost_fever.ticking&!buff.killing_machine.up&rune>=3" );
