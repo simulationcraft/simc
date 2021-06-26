@@ -800,6 +800,7 @@ public:
     const spell_data_t* deaths_due; // spell.deaths_due and spell.dnd_buff contain the data affecting
     const spell_data_t* dnd_buff; // obliterate aoe increase while in death's due (nf covenant ability)
     const spell_data_t* exacting_preparation; // For Nadjia soulbind
+    const spell_data_t* final_sentence; // For kyrian legendary rune gain and buff
     const spell_data_t* razorice_debuff;
 
     // Diseases (because they're not stored in spec data, unlike frost fever's rp gen...)
@@ -2950,7 +2951,7 @@ struct death_knight_action_t : public Base
         if ( p() -> legendary.final_sentence.ok() )
         {
           p() -> buffs.final_sentence -> trigger();
-          p() -> replenish_rune( as<unsigned int>( p() -> find_spell( 353823 ) -> effectN( 1 ).resource( RESOURCE_RUNE ) ), p() -> gains.final_sentence );
+          p() -> replenish_rune( as<unsigned int>( p() -> spell.final_sentence -> effectN( 1 ).resource( RESOURCE_RUNE ) ), p() -> gains.final_sentence );
         }
         p() -> cooldown.shackle_the_unworthy_icd -> start();
         // after we successfully spread to one target, return.
@@ -8314,6 +8315,7 @@ void death_knight_t::init_spells()
   // Shared
   spell.dnd_buff        = find_spell( 188290 );
   spell.exacting_preparation = find_soulbind_spell( "Exacting Preparation" );
+  spell.final_sentence = find_spell( 353823 );
   spell.razorice_debuff = find_spell( 51714 );
   spell.deaths_due      = find_spell( 315442 );
 
@@ -8688,7 +8690,7 @@ void death_knight_t::create_buffs()
     -> add_invalidate( CACHE_ATTACK_SPEED )
     -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buffs.final_sentence = make_buff( this, "final_sentence", find_spell( 353823 ) )
+  buffs.final_sentence = make_buff( this, "final_sentence", spell.final_sentence )
     -> set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
     -> set_schools_from_effect( 2 )
     -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
