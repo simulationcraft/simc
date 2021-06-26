@@ -59,6 +59,37 @@ off_hand=the_devouring_cold,id=187056,bonus_id=1498/6807,enchant=rune_of_the_fal
 save=T27_Death_Knight_Frost.simc
 
 
+deathknight="T27_Death_Knight_Frost_Breath"
+level=60
+race=blood_elf
+spec=frost
+role=attack
+position=back
+talents=3101013
+covenant=kyrian
+soulbind=pelagos,combat_meditation/accelerated_cold:11/everfrost:11/unleashed_frenzy:11/better_together/newfound_resolve
+renown=40
+
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173130/187312
+neck=trailspinner_pendant,id=178707,bonus_id=6536/1566/6646/6935,gem_id=173127
+shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
+back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6536/1566/6646,enchant=soul_vitality
+chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187319,enchant=eternal_stats
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173127/187320
+hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498,gem_id=187318,enchant=eternal_strength
+waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6536/1566/6646/6935,gem_id=173127
+legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6536/1566/6646
+feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=shadowghast_ring,id=178926,bonus_id=6647/6648/6758/6944/1557/6935,gem_id=173127,enchant=tenet_of_critical_strike
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
+trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
+main_hand=the_devouring_cold,id=187056,bonus_id=1498/6807,enchant=rune_of_razorice
+off_hand=the_devouring_cold,id=187056,bonus_id=1498/6807,enchant=rune_of_the_fallen_crusader
+
+save="T27_Death_Knight_Frost_Breath"
+
+
 deathknight="T27_Death_Knight_Frost_2H"
 level=60
 race=blood_elf
@@ -67,7 +98,7 @@ role=attack
 position=back
 talents=3231212
 covenant=kyrian
-soulbind=pelagos,combat_meditation/accelerated_cold:7/everfrost:7
+soulbind=pelagos,combat_meditation/accelerated_cold:11/everfrost:11/unleashed_frenzy:11/better_together/newfound_resolve
 renown=40
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173127
