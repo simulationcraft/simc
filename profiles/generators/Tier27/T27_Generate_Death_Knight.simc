@@ -143,7 +143,7 @@ waist=fused_bone_greatbelt,id=178734,bonus_id=6536/1566/6646/6935,gem_id=173128
 legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6536/1566/6646
 feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
 finger1=signet_of_the_false_accuser,id=178824,bonus_id=6536/1566/6646/6935,gem_id=173127,enchant=tenet_of_mastery
-finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant-tenet_of_haste
+finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_haste
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
 trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
 main_hand=jaithys_the_prison_blade,id=187542,bonus_id=7187/1498,enchant=rune_of_the_fallen_crusader
