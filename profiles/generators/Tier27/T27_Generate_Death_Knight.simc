@@ -66,8 +66,8 @@ spec=frost
 role=attack
 position=back
 talents=3101013
-covenant=kyrian
-soulbind=pelagos,combat_meditation/accelerated_cold:9/everfrost:9/unleashed_frenzy:9/better_together/newfound_resolve
+covenant=necrolord
+soulbind=emeni,lead_by_example/accelerated_cold:9/everfrost:9/unleashed_frenzy:9/pustule_eruption
 renown=40
 
 head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173130/187312
