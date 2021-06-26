@@ -24,8 +24,6 @@
 * Kyrian:
 * - Kleia's Valiant Strikes
 * - Kleia's Light the Path
-* Necrolord:
-* - Emeni's Pustule Eruption
 * Night Fae:
 * - Korayn's Wild Hunt Strategem
 */
@@ -2119,6 +2117,68 @@ void emenis_magnificent_skin( special_effect_t& effect )
             } );
 }
 
+/**Pustule Eruption
+ * id=351094 Primary Soulbind spell, contains coefficients and stack logic in description
+ * id=352095 Merged AoE damage and healing spell, no coefficient in spell data
+ * id=352086 Stacking buff with the damage/heal proc trigger, 1s ICD
+ * Proc triggers from damage/healing taken, including overhealing. Doesn't trigger from absorbed damage.
+ */
+void pustule_eruption( special_effect_t& effect )
+{
+  struct pustule_eruption_heal_t : public heal_t
+  {
+    pustule_eruption_heal_t( player_t* p )
+      : heal_t( "pustule_eruption_heal", p, p->find_spell( 352095 ) )
+    {
+      split_aoe_damage = true;
+      spell_power_mod.direct = 0.48; // Hardcoded in tooltip
+    }
+
+    double composite_spell_power() const override
+    {
+      return std::max( heal_t::composite_spell_power(), heal_t::composite_attack_power() );
+    }
+  };
+
+  struct pustule_eruption_damage_t : public unique_gear::proc_spell_t
+  {
+    pustule_eruption_damage_t( player_t* p )
+      : proc_spell_t( "pustule_eruption", p, p->find_spell( 352095 ) )
+    {
+      split_aoe_damage = true;
+      spell_power_mod.direct = 0.72; // Hardcoded in tooltip
+    }
+
+    double composite_spell_power() const override
+    {
+      return std::max( proc_spell_t::composite_spell_power(), proc_spell_t::composite_attack_power() );
+    }
+  };
+  
+  action_t* damage = effect.player->find_action( "pustule_eruption" );
+  if ( !damage )
+    damage = new pustule_eruption_damage_t( effect.player );
+
+  action_t* heal = effect.player->find_action( "pustule_eruption_heal" );
+  if ( !heal )
+    heal = new pustule_eruption_heal_t( effect.player );
+
+  if ( !effect.player->buffs.trembling_pustules )
+  {
+    effect.player->buffs.trembling_pustules =
+      make_buff( effect.player, "trembling_pustules", effect.player->find_spell( 352086 ) )
+      ->set_period( effect.player->sim->shadowlands_opts.pustule_eruption_interval )
+      ->set_reverse( true )
+      ->set_tick_callback( [ damage, heal ]( buff_t* b, int, timespan_t )
+      {
+        damage->set_target( damage->player->target );
+        damage->execute();
+        heal->set_target( heal->player );
+        heal->execute();
+      } );
+  }
+}
+
 //TODO: Add support for dynamically changing enemy count
 //Note: HP% and target count values are hardcoded in tooltip
 void waking_bone_breastplate( special_effect_t& effect )
@@ -2212,6 +2272,7 @@ void register_special_effects()
   register_soulbind_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
   register_soulbind_special_effect( 342156, soulbinds::lead_by_example, true );
   register_soulbind_special_effect( 323921, soulbinds::emenis_magnificent_skin );
+  register_soulbind_special_effect( 351094, soulbinds::pustule_eruption );
   register_soulbind_special_effect( 326514, soulbinds::forgeborne_reveries );  // Heirmir
   register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone, true );
