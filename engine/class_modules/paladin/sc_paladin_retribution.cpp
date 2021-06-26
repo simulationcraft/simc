@@ -793,6 +793,7 @@ void paladin_t::create_ret_actions()
   {
     active.divine_toll = new judgment_ret_t( this );
     active.judgment = new judgment_ret_t( this, false );
+    active.divine_resonance = new judgment_ret_t( this, false );
   }
 }
 

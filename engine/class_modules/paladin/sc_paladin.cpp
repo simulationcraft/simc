@@ -1179,6 +1179,7 @@ struct divine_toll_t : public paladin_spell_t
     aoe = as<int>( data().effectN( 1 ).base_value() );
 
     add_child( p->active.divine_toll );
+    add_child( p->active.divine_resonance );
   }
 
   void impact( action_state_t* s ) override
@@ -2238,16 +2239,8 @@ void paladin_t::create_buffs()
           ->set_refresh_behavior( buff_refresh_behavior::DISABLED );  // doesn't refresh on reapplication
   buffs.divine_resonance = make_buff( this, "divine_resonance", find_spell( 355455 ) )
           ->set_tick_callback( [ this ]( buff_t* /* b */, int /* stacks */, timespan_t /* tick_time */ ) {
-            if ( specialization() == PALADIN_RETRIBUTION )
-            {
-              this->active.judgment->set_target( this->target );
-              this->active.judgment->schedule_execute();
-            }
-            else if ( specialization() == PALADIN_PROTECTION )
-            {
-              this->active.divine_toll->set_target( this->target );
-              this->active.divine_toll->schedule_execute();
-            }
+              this->active.divine_resonance->set_target( this->target );
+              this->active.divine_resonance->schedule_execute();
           } );
   buffs.equinox = make_buff( this, "equinox", find_spell( 355567 ) );
 

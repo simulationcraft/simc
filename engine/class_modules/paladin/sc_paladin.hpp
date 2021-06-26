@@ -77,6 +77,7 @@ public:
     action_t* necrolord_shield_of_the_righteous;
     action_t* divine_toll;
     action_t* seasons[NUM_SEASONS];
+    action_t* divine_resonance;
 
     // Conduit stuff
     action_t* virtuous_command;
