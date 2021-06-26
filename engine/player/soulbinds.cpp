@@ -80,14 +80,16 @@ struct covenant_cb_pet_t : public covenant_cb_base_t
 {
   pet_t* pet;
   timespan_t duration;
+  bool extend_duration;
 
-  covenant_cb_pet_t( pet_t* p, timespan_t d ) : covenant_cb_pet_t( p, true, false, d )
+  covenant_cb_pet_t( pet_t* p, timespan_t d, bool extend_duration = false )
+    : covenant_cb_pet_t( p, true, false, d, extend_duration )
   {
   }
 
   covenant_cb_pet_t( pet_t* p, bool on_class = true, bool on_base = false,
-                     timespan_t d = timespan_t::from_seconds( 0 ) )
-    : covenant_cb_base_t( on_class, on_base ), pet( p ), duration( d )
+                     timespan_t d = timespan_t::from_seconds( 0 ), bool extend_duration = false )
+    : covenant_cb_base_t( on_class, on_base ), pet( p ), duration( d ), extend_duration( extend_duration )
   {
   }
 
@@ -95,6 +97,8 @@ struct covenant_cb_pet_t : public covenant_cb_base_t
   {
     if ( pet->is_sleeping() )
       pet->summon( duration );
+    else if ( extend_duration )
+      pet->adjust_duration( duration );
   }
 };
 
@@ -1673,7 +1677,8 @@ void kevins_oozeling( special_effect_t& effect )
 
   timespan_t duration = timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() );
 
-  add_covenant_cast_callback<covenant_cb_pet_t>( effect.player, kevin, duration );
+  // Pet duration is extended by subsequent casts, such as Serrated Bone Spike for Rogues
+  add_covenant_cast_callback<covenant_cb_pet_t>( effect.player, kevin, duration, true );
 }
 
 void gnashing_chompers( special_effect_t& effect )
