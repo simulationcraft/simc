@@ -523,6 +523,7 @@ struct player_t : public actor_t
     buff_t* fatal_flaw_crit; // venthyr/nadjia - buff applied after euphoria expires if you have more crit than vers
     buff_t* fatal_flaw_vers; // venthyr/nadjia - buff applied after euphoria expires if you have more vers than crit
     buff_t* emenis_magnificent_skin; //necrolord/emeni - buff applied when using fleshcraft that increases max health
+    buff_t* trembling_pustules; //necrolord/emeni - buff applied when using fleshcraft that increases procs Pustule Eruption damage
     buff_t* hold_your_ground; //venthyr/draven - stamina % buff when standing still
     buff_t* waking_bone_breastplate; //necrolord/heirmir - max health % buff when near 3 or more enemies
 

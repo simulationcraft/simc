@@ -425,6 +425,8 @@ struct sim_t : private sc_thread_t
     timespan_t newfound_resolve_default_delay = 4_s;
     double newfound_resolve_delay_relstddev = 0.2;
     bool enable_rune_words = true;
+    /// Seconds between damage/healing triggers for the Pustule Eruption soulbind, has a minimum 1s ICD
+    timespan_t pustule_eruption_interval = 1_s;
   } shadowlands_opts;
 
   // Auras and De-Buffs
