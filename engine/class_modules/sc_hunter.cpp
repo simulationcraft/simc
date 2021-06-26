@@ -8,7 +8,8 @@
 #include "simulationcraft.hpp"
 #include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
-#include "class_modules/apl/hunter.hpp"
+#include "class_modules/apl/apl_hunter.hpp"
+#include "dbc/covenant_data.hpp"
 
 namespace
 { // UNNAMED NAMESPACE
@@ -1016,10 +1017,10 @@ public:
     }
   }
 
-  bool trigger_buff( buff_t *const buff, timespan_t precast_time ) const
+  bool trigger_buff( buff_t *const buff, timespan_t precast_time, timespan_t duration = timespan_t::min() ) const
   {
     const bool in_combat = ab::player -> in_combat;
-    const bool triggered = buff -> trigger();
+    const bool triggered = buff -> trigger(duration);
     if ( triggered && ab::is_precombat && !in_combat && precast_time > 0_ms )
     {
       buff -> extend_duration( ab::player, -std::min( precast_time, buff -> buff_duration() ) );
@@ -2987,9 +2988,11 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
     damage_main_t( util::string_view n, hunter_t* p ): 
       hunter_ranged_attack_t( n, p, p -> find_spell( 354831 ) )
     {
+      background = true;
       aoe = 0;
-      attack_power_mod.direct = data().effectN( 1 ).ap_coeff(); 
+      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
       dual = true;
+      triggers_wild_spirits = false;
     }
   };
 
@@ -2998,11 +3001,19 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
     damage_explosion_t( util::string_view n, hunter_t* p ): 
       hunter_ranged_attack_t( n, p, p -> find_spell( 354831 ) )
       {
+        background = true;
         aoe = -1;
-        radius = 8; 
-        attack_power_mod.direct = data().effectN( 2 ).ap_coeff(); 
+        radius = 8;
+        attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
         dual = true;
         triggers_wild_spirits = false;
+      }
+
+      size_t available_targets( std::vector<player_t*>& tl ) const override
+      {
+        hunter_ranged_attack_t::available_targets( tl );
+        tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+        return tl.size();
       }
   };
 
@@ -3016,22 +3027,23 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
       
       damage_main = p -> get_background_action<damage_main_t>( "wailing_arrow_main" ); 
       damage_aoe = p -> get_background_action<damage_explosion_t>( "wailing_arrow_aoe" ); 
-      add_child( damage_main ); 
-      add_child( damage_aoe ); 
+      add_child( damage_main );
+      add_child( damage_aoe );
     }
 
-    void execute() override
+    void impact( action_state_t* s ) override
     {
-      hunter_ranged_attack_t::execute(); 
+      hunter_ranged_attack_t::impact( s );
 
-      damage_main -> set_target( target ); 
-      damage_main -> execute();
-      damage_aoe -> set_target( target ); 
-      damage_aoe -> execute();
+      damage_main->set_target( target );
+      damage_main->execute();
+      damage_aoe->set_target( target );
+      damage_aoe->execute();
     }
+
+    result_e calculate_result( action_state_t* ) const override { return RESULT_NONE; }
+    double calculate_direct_amount( action_state_t* ) const override { return 0.0; }
 };
-
-
 
 //==============================
 // Beast Mastery attacks
@@ -5033,24 +5045,52 @@ struct bloodshed_t : hunter_spell_t
 struct trueshot_t: public hunter_spell_t
 {
   timespan_t precast_time = 0_ms;
+  bool precast_etf_equip = false;
+  unsigned precast_ssf_rank = 0;
+  timespan_t precast_duration = 0_ms;
 
   trueshot_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "trueshot", p, p -> specs.trueshot )
   {
     add_option( opt_timespan( "precast_time", precast_time ) );
+    add_option( opt_bool( "precast_etf_equip", precast_etf_equip ) );
+    add_option( opt_uint( "precast_ssf_rank", precast_ssf_rank, 0, 15 ) );
     parse_options( options_str );
 
     harmful = false;
 
     precast_time = clamp( precast_time, 0_ms, data().duration() );
+
+    timespan_t base = p->buffs.trueshot->base_buff_duration;
+    double mod = p->buffs.trueshot->buff_duration_multiplier;
+
+    if ( !p->legendary.eagletalons_true_focus->ok() && precast_etf_equip )
+      base += p->find_spell( 336849 )->effectN( 2 ).time_value();
+
+    if ( !p->conduits.sharpshooters_focus->ok() && precast_ssf_rank > 0 )
+      mod *= ( 1 + conduit_rank_entry_t::find( 188, precast_ssf_rank - 1U, player->dbc->ptr ).value / 100.0 );
+
+    precast_duration = base * mod;
+    sim->print_debug( "{} precast Trueshot will be {} seconds", *p, precast_duration );
   }
 
   void execute() override
   {
     hunter_spell_t::execute();
 
-    trigger_buff( p() -> buffs.trueshot, precast_time );
+    timespan_t duration;
+    if ( is_precombat )
+    {
+      duration = precast_duration;
+      if ( precast_etf_equip )
+        p()->buffs.eagletalons_true_focus->trigger();
+    }
+    else
+    {
+      duration = p()->buffs.trueshot->buff_duration();
+    }
 
+    trigger_buff( p()->buffs.trueshot, precast_time, duration );
     adjust_precast_cooldown( precast_time );
   }
 };
@@ -6056,9 +6096,9 @@ void hunter_t::create_buffs()
           cooldowns.aimed_shot -> adjust_recharge_multiplier();
           cooldowns.rapid_fire -> adjust_recharge_multiplier();
           if ( cur == 0 )
-            buffs.eagletalons_true_focus -> expire();
-          else if ( old == 0 )
-            buffs.eagletalons_true_focus -> trigger();
+            buffs.eagletalons_true_focus->expire();
+          else if ( old == 0 && legendary.eagletalons_true_focus->ok() )
+            buffs.eagletalons_true_focus->trigger();
         } )
       -> apply_affecting_aura( legendary.eagletalons_true_focus )
       -> apply_affecting_conduit( conduits.sharpshooters_focus );
@@ -6159,9 +6199,9 @@ void hunter_t::create_buffs()
       -> set_trigger_spell( legendary.butchers_bone_fragments );
 
   buffs.eagletalons_true_focus =
-    make_buff( this, "eagletalons_true_focus", legendary.eagletalons_true_focus -> effectN( 1 ).trigger() )
+    make_buff( this, "eagletalons_true_focus", find_spell( 336851 ) )
       -> set_default_value_from_effect( 1 )
-      -> set_trigger_spell( legendary.eagletalons_true_focus );
+      -> set_trigger_spell( find_spell( 336849 ) );
 
   buffs.flamewakers_cobra_sting =
     make_buff( this, "flamewakers_cobra_sting", legendary.flamewakers_cobra_sting -> effectN( 1 ).trigger() )
@@ -6731,6 +6771,17 @@ struct hunter_module_t: public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Hunter", "2021-06-24", "PTR Wailing Arrow direct damage buff", 887529 )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 2.775 )
+        .verification_value( 1.85 );
+
+    hotfix::register_effect( "Hunter", "2021-06-24", "PTR Wailing Arrow splash damage buff", 887530 )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1.125 )
+        .verification_value( 0.75 );
   }
 
   void combat_begin( sim_t* ) const override {}

@@ -40,7 +40,7 @@ actions+=/call_action_list,name=covenant_ability,if=soulbind.grove_invigoration|
 actions+=/call_action_list,name=tyrant_setup
 actions+=/potion,if=(cooldown.summon_demonic_tyrant.remains_expected<10&time>variable.first_tyrant_time-10|soulbind.refined_palate&cooldown.summon_demonic_tyrant.remains_expected<38)
 actions+=/call_action_list,name=ogcd,if=pet.demonic_tyrant.active
-actions+=/demonic_strength,if=(!runeforge.wilfreds_sigil_of_superior_summoning&cooldown.summon_demonic_tyrant.remains_expected>9)|pet.demonic_tyrant.remains<6*gcd.max
+actions+=/demonic_strength,if=(!runeforge.wilfreds_sigil_of_superior_summoning&cooldown.summon_demonic_tyrant.remains_expected>9)|(pet.demonic_tyrant.active&pet.demonic_tyrant.remains<6*gcd.max)
 actions+=/call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected>20-5*!runeforge.wilfreds_sigil_of_superior_summoning
 actions+=/power_siphon,if=buff.wild_imps.stack>1&buff.demonic_core.stack<3
 actions+=/bilescourge_bombers,if=buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5
@@ -89,11 +89,6 @@ actions.covenant_ability+=/impending_catastrophe,if=pet.demonic_tyrant.active&so
 actions.hp_trinks=use_item,name=sinful_gladiators_emblem
 actions.hp_trinks+=/use_item,name=sinful_aspirants_emblem
 
-actions.no_wilfreds_setup=grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains_expected<17-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&(cooldown.call_dreadstalkers.remains<17-(action.summon_demonic_tyrant.execute_time+action.summon_vilefiend.execute_time+action.shadow_bolt.execute_time)|pet.dreadstalker.remains>cooldown.summon_demonic_tyrant.remains_expected+action.summon_demonic_tyrant.execute_time)
-actions.no_wilfreds_setup+=/summon_vilefiend,if=talent.summon_vilefiend.enabled&((cooldown.summon_demonic_tyrant.remains_expected<15-(action.summon_demonic_tyrant.execute_time)&(cooldown.call_dreadstalkers.remains<15-(action.summon_demonic_tyrant.execute_time+action.summon_vilefiend.execute_time)|pet.dreadstalker.remains>cooldown.summon_demonic_tyrant.remains_expected+action.summon_demonic_tyrant.execute_time))|cooldown.summon_demonic_tyrant.remains_expected>40)
-actions.no_wilfreds_setup+=/call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected<12-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&time>variable.first_tyrant_time-12
-actions.no_wilfreds_setup+=/summon_demonic_tyrant,if=time>variable.first_tyrant_time&(pet.dreadstalker.active&pet.dreadstalker.remains>action.summon_demonic_tyrant.execute_time)&(!talent.summon_vilefiend.enabled|pet.vilefiend.active)&(soul_shard=0|(pet.dreadstalker.active&pet.dreadstalker.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(pet.vilefiend.active&pet.vilefiend.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(buff.grimoire_felguard.up&buff.grimoire_felguard.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time))
-
 actions.ogcd=berserking
 actions.ogcd+=/blood_fury
 actions.ogcd+=/fireblood
@@ -113,13 +108,10 @@ actions.trinkets+=/use_item,slot=trinket2,if=trinket.2.has_use_buff&pet.demonic_
 actions.trinkets+=/call_action_list,name=pure_damage_trinks,if=time>variable.first_tyrant_time
 
 actions.tyrant_setup=nether_portal,if=cooldown.summon_demonic_tyrant.remains_expected<15
-actions.tyrant_setup+=/call_action_list,name=wilfreds_setup,if=runeforge.wilfreds_sigil_of_superior_summoning
-actions.tyrant_setup+=/call_action_list,name=no_wilfreds_setup,if=!runeforge.wilfreds_sigil_of_superior_summoning
-
-actions.wilfreds_setup=grimoire_felguard,if=talent.grimoire_felguard.enabled&cooldown.summon_demonic_tyrant.remains_expected<17-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)
-actions.wilfreds_setup+=/summon_vilefiend,if=talent.summon_vilefiend.enabled&cooldown.summon_demonic_tyrant.remains_expected<15-(action.summon_demonic_tyrant.execute_time)&(!talent.grimoire_felguard.enabled|time>variable.first_tyrant_time-(15+action.summon_demonic_tyrant.execute_time))
-actions.wilfreds_setup+=/call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected<12-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&time>variable.first_tyrant_time-12
-actions.wilfreds_setup+=/summon_demonic_tyrant,if=time>variable.first_tyrant_time&(pet.dreadstalker.active&pet.dreadstalker.remains>action.summon_demonic_tyrant.execute_time)&(!talent.summon_vilefiend.enabled|pet.vilefiend.active)&(soul_shard=0|(pet.dreadstalker.active&pet.dreadstalker.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(pet.vilefiend.active&pet.vilefiend.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(buff.grimoire_felguard.up&buff.grimoire_felguard.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time))
+actions.tyrant_setup+=/grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains_expected<17-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&(cooldown.call_dreadstalkers.remains<17-(action.summon_demonic_tyrant.execute_time+action.summon_vilefiend.execute_time+action.shadow_bolt.execute_time)|pet.dreadstalker.remains>cooldown.summon_demonic_tyrant.remains_expected+action.summon_demonic_tyrant.execute_time)
+actions.tyrant_setup+=/summon_vilefiend,if=(cooldown.summon_demonic_tyrant.remains_expected<15-(action.summon_demonic_tyrant.execute_time)&(cooldown.call_dreadstalkers.remains<15-(action.summon_demonic_tyrant.execute_time+action.summon_vilefiend.execute_time)|pet.dreadstalker.remains>cooldown.summon_demonic_tyrant.remains_expected+action.summon_demonic_tyrant.execute_time))|(!runeforge.wilfreds_sigil_of_superior_summoning&cooldown.summon_demonic_tyrant.remains_expected>40)
+actions.tyrant_setup+=/call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected<12-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&time>variable.first_tyrant_time-12
+actions.tyrant_setup+=/summon_demonic_tyrant,if=time>variable.first_tyrant_time&(pet.dreadstalker.active&pet.dreadstalker.remains>action.summon_demonic_tyrant.execute_time)&(!talent.summon_vilefiend.enabled|pet.vilefiend.active)&(soul_shard=0|(pet.dreadstalker.active&pet.dreadstalker.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(pet.vilefiend.active&pet.vilefiend.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(buff.grimoire_felguard.up&buff.grimoire_felguard.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time))
 
 head=cowl_of_the_devoted_general,id=178860,bonus_id=6536/1540/6646/6935,gem_id=173128
 neck=sin_stained_pendant,id=178827,bonus_id=6536/1540/6646/6935,gem_id=173128

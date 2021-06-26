@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134, git build shadowlands ca50d78d, no-networking)
 
 Name             : Haste (id=65) 
 Class            : Paladin
@@ -10920,6 +10920,29 @@ Armor increased by $s2%.
 
 All damage taken reduced by $s3%.
 
+Name             : Divine Resonance (id=355098) [Passive, Hidden] 
+Class            : Paladin
+School           : Arcane
+Spell Type       : None
+Range            : 30 yards
+Internal Cooldown: 3 seconds
+Proc Chance      : 101%
+Proc Flags       : ........ ..x.x.x. x.x..x.. ........ 
+                 : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=887940)   : Apply Aura (6) | Proc Trigger Spell (42): Divine Resonance
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 355455 | Target: Self (1)
+Description      : After casting Divine Toll, you instantly cast $?c2[Avenger's Shield]?c1[Holy Shock][Judgement] every $355455t1 sec. This effect lasts $355455s2 sec.
+
 Name             : Duty-Bound Gavel (id=355099) [Spell Family (10), Passive, Hidden] 
 School           : Shadow
 Spell Type       : None
@@ -10947,6 +10970,7 @@ Effects          :
 Description      : Vanquisher's Hammer gains $s1 additional charge. An additional cast of $?c3[Templar's Verdict]?c1[Word of Glory][Word of Glory] will automatically trigger $?c3[Divine Storm]?c1[Light of Dawn][Shield of the Righteous].
 
 Name             : Seasons of Plenty (id=355100) [Spell Family (10), Passive, Hidden] 
+Class            : Paladin
 School           : Nature
 Spell Type       : None
 Proc Chance      : 101%
@@ -10988,6 +11012,82 @@ Effects          :
 #2 (id=889678)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Ashen Hallow's duration is increased by $s1%. Leaving the hallowed area will end the effect and its cooldown will be reduced by up to $s2%, proportional to its remaining duration.
+
+Name             : Divine Resonance (id=355455) 
+Class            : Paladin
+School           : Arcane
+Spell Type       : None
+Range            : 30 yards
+Duration         : 30 seconds
+Triggered by     : Divine Resonance (355098)
+Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=888579)   : Apply Aura (6) | Periodic Trigger Spell (23): Divine Resonance every 5 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 356890 | Target: Self (1)
+#2 (id=893778)   : Dummy (3)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
+Description      : $@spelldesc355098
+Tooltip          : Casting $?c2[Avenger's Shield]?c1[Holy Shock][Judgement] every $t1 sec for $s2 sec.
+
+Name             : Equinox (id=355567) [Spell Family (10)] 
+Class            : Paladin
+School           : Nature
+Spell Type       : None
+Range            : 50000 yards
+Max Targets      : 5
+Duration         : 10 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=888768)   : Apply Aura (6) | Add Percent Modifier (108): Spell Proc Chance (18)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 18 | Target: Unknown(25)
+                   Affected Spells: Blessing of Winter (328281), Blessing of Spring (328282), Blessing of Summer (328620), Blessing of Autumn (328622)
+                   Family Flags: 114
+#2 (id=888769)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Unknown(25)
+                   Affected Spells: Blessing of Winter (328281), Blessing of Spring (328282), Blessing of Summer (328620), Blessing of Autumn (328622)
+                   Family Flags: 114
+#3 (id=894809)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+Description      : $@spelldesc355100
+Tooltip          : The effectiveness of $?$W3=328620[Blessing of Summer]?$W3=328622[Blessing of Autumn]?$W3=328281[Blessing of Winter][Blessing of Spring] is increased by $s1%.
+
+Name             : Divine Resonance (id=356890) 
+Class            : Paladin
+School           : Arcane
+Spell Type       : None
+Range            : 30 yards
+Triggered by     : Divine Resonance (355455)
+Attributes       : ....x... ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Requires line of sight (186)
+Effects          :
+#1 (id=891034)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+#2 (id=891960)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 30 yards | Target: Custom (18) -> AOE friendly (31)
+#3 (id=892088)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 30 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+Description      : $@spelldesc355098
 
 Name             : Aegis of Light (desc=Rank 2) (id=358934) [Spell Family (10), Passive] 
 Class            : Protection Paladin

@@ -224,6 +224,9 @@ public:
     const spell_data_t* riposte;
     const spell_data_t* sanctuary;
 
+    const spell_data_t* aegis_of_light;
+    const spell_data_t* aegis_of_light_2;
+
     const spell_data_t* boundless_conviction;
 
     const spell_data_t* art_of_war;
@@ -366,7 +369,6 @@ public:
     // Shared
     azerite_power_t avengers_might;
     azerite_power_t grace_of_the_justicar; // Healing, NYI
-    azerite_power_t indomitable_justice;
 
     // Holy
 
@@ -438,7 +440,6 @@ public:
     double proc_chance_ret_memory_of_lucid_dreams = 0.15;
     double proc_chance_prot_memory_of_lucid_dreams = 0.15;
     bool fake_sov = true;
-    int indomitable_justice_pct = 0;
   } options;
   player_t* beacon_target;
 
@@ -1271,11 +1272,9 @@ struct holy_power_consumer_t : public Base
 
 struct judgment_t : public paladin_melee_attack_t
 {
-  int indomitable_justice_pct;
   judgment_t( paladin_t* p, util::string_view options_str );
   judgment_t( paladin_t* p );
 
-  virtual double bonus_da( const action_state_t* s ) const override;
   proc_types proc_type() const override;
   void impact( action_state_t* s ) override;
   void execute() override;
