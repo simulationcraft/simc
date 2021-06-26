@@ -6379,9 +6379,16 @@ double rogue_t::composite_damage_versatility() const
 {
   double cdv = player_t::composite_damage_versatility();
 
-  if ( legendary.obedience->ok() && buffs.flagellation->check() )
+  if ( legendary.obedience->ok() )
   {
-    cdv += buffs.flagellation->check_stack_value();
+    if ( buffs.flagellation->check() )
+    {
+      cdv += buffs.flagellation->check_stack_value();
+    }
+    if ( buffs.flagellation_persist->check() )
+    {
+      cdv += buffs.flagellation_persist->check_stack_value();
+    }
   }
 
   return cdv;
@@ -7991,10 +7998,10 @@ void rogue_t::create_buffs()
   buffs.flagellation_persist = make_buff( this, "flagellation_persist", covenant.flagellation_buff )
     ->add_invalidate( CACHE_HASTE );
   
-  // 04/22/2021 -- TOCHECK: Currently doesn't appear to be present on the persist buff, probably unintentional
   if ( legendary.obedience->ok() )
   {
     buffs.flagellation->add_invalidate( CACHE_VERSATILITY );
+    buffs.flagellation_persist->add_invalidate( CACHE_VERSATILITY );
   }
 
   buffs.echoing_reprimand.clear();
