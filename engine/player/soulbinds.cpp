@@ -2163,7 +2163,7 @@ void pustule_eruption( special_effect_t& effect )
   if ( !heal )
     heal = new pustule_eruption_heal_t( effect.player );
   
-  if ( unique_gear::create_fallback_buffs( effect, { "trembling_pustules" } ) )
+  if ( unique_gear::create_fallback_buffs( effect, { "pustule_eruption" } ) )
     return;
 
   if ( !effect.player->buffs.trembling_pustules )
