@@ -1200,6 +1200,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     procs(),
     uptimes(),
     racials(),
+    conduits(),
     passive_values(),
     active_during_iteration( false ),
     _mastery( &spelleffect_data_t::nil() ),
@@ -2350,6 +2351,7 @@ void player_t::init_spells()
 {
   sim->print_debug( "Initializing spells for {}.", *this );
 
+  // Racials
   racials.quickness             = find_racial_spell( "Quickness" );
   racials.command               = find_racial_spell( "Command" );
   racials.arcane_acuity         = find_racial_spell( "Arcane Acuity" );
@@ -2366,6 +2368,9 @@ void player_t::init_spells()
   racials.magical_affinity      = find_racial_spell( "Magical Affinity" );
   racials.mountaineer           = find_racial_spell( "Mountaineer" );
   racials.brush_it_off          = find_racial_spell( "Brush It Off" );
+
+  // Conduits
+  conduits.adaptive_armor_fragment = find_conduit_spell( "Adaptive Armor Fragment" );
 
   if ( !is_enemy() )
   {
@@ -3258,6 +3263,9 @@ void player_t::create_buffs()
       // Runecarves
       buffs.norgannons_sagacity_stacks = make_buff( this, "norgannons_sagacity_stacks", find_spell( 339443 ) );
       buffs.norgannons_sagacity = make_buff( this, "norgannons_sagacity", find_spell( 339445 ) );
+
+      // Conduits
+      buffs.adaptive_armor_fragment = make_buff( this, "adaptive_armor_fragment", find_spell( 357972 ) );
     }
   }
   // .. for enemies

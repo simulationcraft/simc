@@ -26,6 +26,7 @@
 #include <map>
 #include <set>
 #include <unordered_map>
+#include "player/covenant.hpp"
 
 struct absorb_buff_t;
 struct action_t;
@@ -537,6 +538,9 @@ struct player_t : public actor_t
 
     // 9.1 Shards of Domination
     buff_t* coldhearted; // Shard of Cor
+
+    // Conduits
+    buff_t* adaptive_armor_fragment;
   } buffs;
 
   struct debuffs_t
@@ -632,6 +636,12 @@ struct player_t : public actor_t
     double amplification_1;
     double amplification_2;
   } passive_values;
+
+  // Conduits
+  struct
+  {
+    conduit_data_t adaptive_armor_fragment;
+  } conduits;
 
   bool active_during_iteration;
   const spelleffect_data_t* _mastery; // = find_mastery_spell( specialization() ) -> effectN( 1 );
