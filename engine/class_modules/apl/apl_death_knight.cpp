@@ -266,7 +266,7 @@ void frost( player_t* p )
   obliteration->add_action( "frostscythe,if=buff.killing_machine.react&spell_targets.frostscythe>=2&(buff.deaths_due.stack=4|!death_and_decay.ticking|!covenant.night_fae)" );
   obliteration->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react|!buff.rime.up&spell_targets.howling_blast>=3" );
   obliteration->add_action( "glacial_advance,if=spell_targets.glacial_advance>=2&(runic_power.deficit<10|rune.time_to_2>gcd)|(debuff.razorice.stack<5|debuff.razorice.remains<15)" );
-  obliteration->add_action( "frost_strike,if=conduit.eradicating_blow&buff.eradicating_blow.stack=2&active_enemies=1" );
+  obliteration->add_action( "frost_strike,if=active_enemies=1&(conduit.eradicating_blow&buff.eradicating_blow.stack=2|conduit.unleashed_frenzy&buff.unleashed_frenzy.remains<gcd)" );
   obliteration->add_action( "howling_blast,if=buff.rime.up&spell_targets.howling_blast>=2" );
   obliteration->add_action( "glacial_advance,if=spell_targets.glacial_advance>=2" );
   obliteration->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!talent.avalanche&!buff.killing_machine.up|talent.avalanche&!buff.rime.up|buff.rime.up&rune.time_to_2>=gcd" );
@@ -284,7 +284,7 @@ void frost( player_t* p )
   standard->add_action( "remorseless_winter,if=talent.gathering_storm|conduit.everfrost|runeforge.biting_cold", "Standard single-target rotation" );
   standard->add_action( "glacial_advance,if=!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<7)" );
   standard->add_action( "frost_strike,if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm" );
-  standard->add_action( "frost_strike,if=conduit.eradicating_blow&buff.eradicating_blow.stack=2|conduit.unleashed_frenzy&buff.unleashed_frenzy.remains<3&buff.unleashed_frenzy.up" );
+  standard->add_action( "frost_strike,if=conduit.eradicating_blow&buff.eradicating_blow.stack=2|conduit.unleashed_frenzy&buff.unleashed_frenzy.remains<3" );
   standard->add_action( "howling_blast,if=buff.rime.up" );
   standard->add_action( "obliterate,if=!buff.frozen_pulse.up&talent.frozen_pulse|buff.killing_machine.react|death_and_decay.ticking&covenant.night_fae&buff.deaths_due.stack<4|rune.time_to_4<=gcd" );
   standard->add_action( "frost_strike,if=runic_power.deficit<(15+talent.runic_attenuation*3)" );
