@@ -2505,17 +2505,17 @@ void init_jaithys_the_prison_blade( special_effect_t& effect, int proc_id, int s
 
 void jaithys_the_prison_blade_1( special_effect_t& effect )
 {
-  init_jaithys_the_prison_blade( effect, 358564, 358562, 4 );
+  init_jaithys_the_prison_blade( effect, 358564, 358562, 1 );
 }
 
 void jaithys_the_prison_blade_2( special_effect_t& effect )
 {
-  init_jaithys_the_prison_blade( effect, 358566, 358565, 4 );
+  init_jaithys_the_prison_blade( effect, 358566, 358565, 2 );
 }
 
 void jaithys_the_prison_blade_3( special_effect_t& effect )
 {
-  init_jaithys_the_prison_blade( effect, 358568, 358567, 4 );
+  init_jaithys_the_prison_blade( effect, 358568, 358567, 3 );
 }
     
 void jaithys_the_prison_blade_4( special_effect_t& effect )
