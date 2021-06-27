@@ -2364,174 +2364,58 @@ void poxstorm( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// id=358562 rank 1 proc & damage
-// id=358564 rank 1 tooltip & school
+void init_jaithys_the_prison_blade( special_effect_t& effect, int proc_id, int spell_id, int rank )
+{
+  // When same item levels are dual-wielded, Jaithys currently combines damage and str buff
+  // Dev confirmed this is a bug and all procs should be independent
+  action_t* harsh_tutelage_damage = create_proc_action<generic_proc_t>(  
+      "harsh_tutelage", effect, "harsh_tutelage" + std::to_string( rank ), proc_id );
+
+  harsh_tutelage_damage->base_dd_min = effect.player->find_spell( spell_id )->effectN( 1 ).average( effect.item );
+  harsh_tutelage_damage->base_dd_max = effect.player->find_spell( spell_id )->effectN( 1 ).average( effect.item );
+
+  effect.execute_action = harsh_tutelage_damage;
+
+  // rank 2+ has a str buff
+  if ( rank > 2 )
+  {
+    buff_t* buff = buff_t::find( effect.player, "harsh_tutelage" + std::to_string( rank ) );
+    if ( !buff )
+    {
+      buff =
+          make_buff<stat_buff_t>( effect.player, "harsh_tutelage" + std::to_string( rank ),
+                                  effect.player->find_spell( proc_id ) )
+              ->add_stat( STAT_STRENGTH, effect.player->find_spell( spell_id )->effectN( 2 ).average( effect.item ) );
+    }
+    effect.custom_buff = buff;
+  }
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void jaithys_the_prison_blade_1( special_effect_t& effect )
 {
-  // When same item levels are dual-wielded, Jaithys currently combines damage and str buff
-  // Dev confirmed this is a bug and all procs should be independent
-  struct harsh_tutelage_t : public proc_spell_t
-  {
-    harsh_tutelage_t( const special_effect_t& effect )
-      : proc_spell_t( "harsh_tutelage", effect.player, effect.trigger(), effect.item )
-  {
-  }
-  };
-  action_t* harsh_tutelage_damage = create_proc_action<generic_proc_t>( "harsh_tutelage", effect, "harsh_tutelage", 358564 );
-
-  harsh_tutelage_damage->base_dd_min = effect.player->find_spell( 358562 )->effectN( 1 ).average( effect.item );
-  harsh_tutelage_damage->base_dd_max = effect.player->find_spell( 358562 )->effectN( 1 ).average( effect.item );
-
-
-  effect.execute_action = harsh_tutelage_damage;
-
-  new dbc_proc_callback_t( effect.player, effect );
-
+  init_jaithys_the_prison_blade( effect, 358564, 358562, 4 );
 }
 
-// id=358565 rank 2 proc & damage
-// id=358566 rank 2 tooltip & school
 void jaithys_the_prison_blade_2( special_effect_t& effect )
 {
-  // When same item levels are dual-wielded, Jaithys currently combines damage and str buff
-  // Dev confirmed this is a bug and all procs should be independent
-  struct harsh_tutelage_t : public proc_spell_t
-  {
-    harsh_tutelage_t( const special_effect_t& effect )
-      : proc_spell_t( "harsh_tutelage", effect.player, effect.trigger(), effect.item )
-  {
-  }
-  };
-  action_t* harsh_tutelage_damage = create_proc_action<generic_proc_t>( "harsh_tutelage", effect, "harsh_tutelage", 358566 );
-
-  harsh_tutelage_damage->base_dd_min = effect.player->find_spell( 358565 )->effectN( 1 ).average( effect.item );
-  harsh_tutelage_damage->base_dd_max = effect.player->find_spell( 358565 )->effectN( 1 ).average( effect.item );
-
-
-  effect.execute_action = harsh_tutelage_damage;
-
-  buff_t* buff = buff_t::find( effect.player, "harsh_tutelage" );
-  if ( !buff )
-  {
-    buff = make_buff<stat_buff_t>( effect.player, "harsh_tutelage", effect.player->find_spell( 358572 ) )
-      //->add_stat( STAT_STRENGTH, effect.driver()->effectN( 1 ).average( effect.item ) );
-      ->add_stat( STAT_STRENGTH, effect.player->find_spell( 358571 )->effectN( 2 ).average( effect.item ) );
-
-    effect.custom_buff = buff;
-
-    new harsh_tutelage_t( effect );
-  }
-
-  new dbc_proc_callback_t( effect.player, effect );
-
+  init_jaithys_the_prison_blade( effect, 358566, 358565, 4 );
 }
 
-// id=358567 rank 3 proc/damage/stat value
-// id=358568 rank 3 tooltip/school/duration
 void jaithys_the_prison_blade_3( special_effect_t& effect )
 {
-  // When same item levels are dual-wielded, Jaithys currently combines damage and str buff
-  // Dev confirmed this is a bug and all procs should be independent
-  struct harsh_tutelage_t : public proc_spell_t
-  {
-    harsh_tutelage_t( const special_effect_t& effect )
-      : proc_spell_t( "harsh_tutelage", effect.player, effect.trigger(), effect.item )
-  {
-  }
-  };
-  action_t* harsh_tutelage_damage = create_proc_action<generic_proc_t>( "harsh_tutelage", effect, "harsh_tutelage", 358568 );
-
-  harsh_tutelage_damage->base_dd_min = effect.player->find_spell( 358567 )->effectN( 1 ).average( effect.item );
-  harsh_tutelage_damage->base_dd_max = effect.player->find_spell( 358567 )->effectN( 1 ).average( effect.item );
-
-
-  effect.execute_action = harsh_tutelage_damage;
-
-  buff_t* buff = buff_t::find( effect.player, "harsh_tutelage" );
-  if ( !buff )
-  {
-    buff = make_buff<stat_buff_t>( effect.player, "harsh_tutelage", effect.player->find_spell( 358568 ) )
-      ->add_stat( STAT_STRENGTH, effect.player->find_spell( 358567 )->effectN( 2 ).average( effect.item ) );
-
-    effect.custom_buff = buff;
-
-    new harsh_tutelage_t( effect );
-  }
-
-  new dbc_proc_callback_t( effect.player, effect );
-
+  init_jaithys_the_prison_blade( effect, 358568, 358567, 4 );
 }
-
-// id=358569 rank 4 proc/damage/stat value
-// id=358570 rank 4 tooltip/school/duration
+    
 void jaithys_the_prison_blade_4( special_effect_t& effect )
 {
-  // When same item levels are dual-wielded, Jaithys currently combines damage and str buff
-  // Dev confirmed this is a bug and all procs should be independent
-  struct harsh_tutelage_t : public proc_spell_t
-  {
-    harsh_tutelage_t( const special_effect_t& effect )
-      : proc_spell_t( "harsh_tutelage", effect.player, effect.trigger(), effect.item )
-  {
-  }
-  };
-  action_t* harsh_tutelage_damage = create_proc_action<generic_proc_t>( "harsh_tutelage", effect, "harsh_tutelage", 358570 );
-
-  harsh_tutelage_damage->base_dd_min = effect.player->find_spell( 358569 )->effectN( 1 ).average( effect.item );
-  harsh_tutelage_damage->base_dd_max = effect.player->find_spell( 358569 )->effectN( 1 ).average( effect.item );
-
-
-  effect.execute_action = harsh_tutelage_damage;
-
-  buff_t* buff = buff_t::find( effect.player, "harsh_tutelage" );
-  if ( !buff )
-  {
-    buff = make_buff<stat_buff_t>( effect.player, "harsh_tutelage", effect.player->find_spell( 358570 ) )
-      ->add_stat( STAT_STRENGTH, effect.player->find_spell( 358569 )->effectN( 2 ).average( effect.item ) );
-
-    effect.custom_buff = buff;
-
-    new harsh_tutelage_t( effect );
-  }
-
-  new dbc_proc_callback_t( effect.player, effect );
-
+  init_jaithys_the_prison_blade( effect, 358570, 358569, 4 );
 }
 
-// id=358571 rank 5 proc/damage/stat value
-// id=358572 rank 5 tooltip/school/duration
 void jaithys_the_prison_blade_5( special_effect_t& effect )
 {
-  // When same item levels are dual-wielded, Jaithys currently combines damage and str buff
-  // Dev confirmed this is a bug and all procs should be independent
-  struct harsh_tutelage_t : public proc_spell_t
-  {
-    harsh_tutelage_t( const special_effect_t& effect )
-      : proc_spell_t( "harsh_tutelage", effect.player, effect.trigger(), effect.item )
-  {
-  }
-  };
-  action_t* harsh_tutelage_damage = create_proc_action<generic_proc_t>( "harsh_tutelage", effect, "harsh_tutelage", 358572 );
-
-  harsh_tutelage_damage->base_dd_min = effect.player->find_spell( 358571 )->effectN( 1 ).average( effect.item );
-  harsh_tutelage_damage->base_dd_max = effect.player->find_spell( 358571 )->effectN( 1 ).average( effect.item );
-
-
-  effect.execute_action = harsh_tutelage_damage;
-
-  buff_t* buff = buff_t::find( effect.player, "harsh_tutelage" );
-  if ( !buff )
-  {
-    buff = make_buff<stat_buff_t>( effect.player, "harsh_tutelage", effect.player->find_spell( 358572 ) )
-      ->add_stat( STAT_STRENGTH, effect.player->find_spell( 358571 )->effectN( 2 ).average( effect.item ) );
-
-    effect.custom_buff = buff;
-
-    new harsh_tutelage_t( effect );
-  }
-
-  new dbc_proc_callback_t( effect.player, effect );
-
+  init_jaithys_the_prison_blade( effect, 358572, 358571, 5 );
 }
 
 // Runecarves
