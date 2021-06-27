@@ -2490,7 +2490,7 @@ void initialize_soulbinds( player_t* player )
                  ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
     }
     player->register_combat_begin(
-        [ buff ]( player_t* p ) { make_repeating_event( *p->sim, 2.0_s, [ buff ]() { buff->trigger(); } ); } );
+        [ buff ]( player_t* p ) { make_repeating_event( *p->sim, 2.0_s, [ buff ] { buff->trigger(); } ); } );
   }
 }
 
