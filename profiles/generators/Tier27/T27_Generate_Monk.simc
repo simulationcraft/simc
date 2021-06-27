@@ -38,6 +38,7 @@ position=back
 talents=1020012
 covenant=kyrian
 soulbind=forgelite_prime_mikanikos:18,brons_call_to_action/inner_fury:9:1/forgelite_filter/tumbling_technique:9:1/regenerating_materials/harm_denial:9:1/coordinated_offensive:9:1/soulsteel_clamps/strike_with_clarity:9:1/soulglow_spectrometer/fortifying_ingredients:9:1/effusive_anima_accelerator
+renown=80
 
 head=cap_of_writhing_malevolence,id=186292,bonus_id=7187/1498,gem_id=187318
 neck=weathered_talisman_of_the_shadowmoon,id=186378,bonus_id=7187/1498/6935,gem_id=173129
@@ -68,6 +69,7 @@ save=T27_Monk_Windwalker.simc
 #talents=1020012
 #covenant=night_fae
 #soulbind=niya:1,grove_invigoration/inner_fury:9:1/run_without_tiring/tumbling_technique:9:1/natures_splendor/harm_denial:9:1/coordinated_offensive:9:1/niyas_tools_poison/xuens_bond:9:1/survivors_rally/swift_transference:9:1/bonded_hearts
+#renown=80
 
 #head=cap_of_writhing_malevolence,id=186292,bonus_id=7187/1498,gem_id=187318
 #neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173129
@@ -98,6 +100,7 @@ position=back
 talents=1020012
 covenant=necrolord
 soulbind=emeni:5,lead_by_example/coordinated_offensive:9:1/emenis_magnificent_skin/tumbling_technique:9:1/harm_denial:9:1/xuens_bond:9:1/gristled_toes/bone_marrow_hops:9:1/pustule_eruption
+renown=80
 
 head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187318
 neck=azurevenom_choker,id=180115,bonus_id=6536/1566/6646/6935,gem_id=173129

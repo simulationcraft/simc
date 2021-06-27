@@ -8,6 +8,7 @@ position=back
 talents=1020012
 covenant=necrolord
 soulbind=emeni:5,lead_by_example/coordinated_offensive:9:1/emenis_magnificent_skin/tumbling_technique:9:1/harm_denial:9:1/xuens_bond:9:1/gristled_toes/bone_marrow_hops:9:1/pustule_eruption
+renown=80
 
 # Default consumables
 potion=potion_of_spectral_agility
@@ -70,7 +71,7 @@ actions.cd_sef+=/touch_of_death,if=fight_remains>(180-runeforge.fatal_touch*120)
 actions.cd_sef+=/weapons_of_order,if=(raid_event.adds.in>45|raid_event.adds.up)&cooldown.rising_sun_kick.remains<execute_time&cooldown.invoke_xuen_the_white_tiger.remains>(20+20*runeforge.invokers_delight)|fight_remains<35
 actions.cd_sef+=/faeline_stomp,if=combo_strike&(raid_event.adds.in>10|raid_event.adds.up)
 actions.cd_sef+=/fallen_order,if=raid_event.adds.in>30|raid_event.adds.up
-actions.cd_sef+=/bonedust_brew,if=!debuff.bonedust_brew_debuff.up&(chi>=2&fight_remains>60&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>10)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|variable.hold_xuen)|(chi>=2&fight_remains<=60&(pet.xuen_the_White_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>fight_remains|buff.storm_earth_and_fire.up))|fight_remains<15)
+actions.cd_sef+=/bonedust_brew,if=chi>=2&fight_remains>60&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>10)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|variable.hold_xuen)|(chi>=2&fight_remains<=60&(pet.xuen_the_White_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>fight_remains|buff.storm_earth_and_fire.up))|fight_remains<15
 actions.cd_sef+=/storm_earth_and_fire_fixate,if=conduit.coordinated_offensive.enabled
 actions.cd_sef+=/storm_earth_and_fire,if=cooldown.storm_earth_and_fire.charges=2|fight_remains<20|(raid_event.adds.remains>15|(!covenant.kyrian&!covenant.necrolord)&((raid_event.adds.in>cooldown.storm_earth_and_fire.full_recharge_time|!raid_event.adds.exists)&(cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time|variable.hold_xuen))&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12)
 actions.cd_sef+=/storm_earth_and_fire,if=covenant.kyrian&(buff.weapons_of_order.up|(fight_remains<cooldown.weapons_of_order.remains|cooldown.weapons_of_order.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12)
@@ -82,6 +83,7 @@ actions.cd_sef+=/lights_judgment
 actions.cd_sef+=/fireblood,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<10
 actions.cd_sef+=/ancestral_call,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20
 actions.cd_sef+=/bag_of_tricks,if=buff.storm_earth_and_fire.down
+actions.cd_sef+=/fleshcraft,if=buff.storm_earth_and_fire.down&!debuff.bonedust_brew_debuff.up
 
 actions.cd_serenity=variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|pet.xuen_the_white_tiger.active&cooldown.serenity.remains>30|fight_remains<20
 actions.cd_serenity+=/invoke_xuen_the_white_tiger,if=!variable.hold_xuen|fight_remains<25
@@ -99,6 +101,7 @@ actions.cd_serenity+=/fallen_order
 actions.cd_serenity+=/bonedust_brew,if=fight_remains<15|(chi>=2&(fight_remains>60&((cooldown.serenity.remains>10|buff.serenity.up|cooldown.serenity.up)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|variable.hold_xuen)))|(fight_remains<=60&(pet.xuen_the_White_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)))
 actions.cd_serenity+=/serenity,if=cooldown.rising_sun_kick.remains<2|fight_remains<15
 actions.cd_serenity+=/bag_of_tricks
+actions.cd_serenity+=/fleshcraft,if=buff.storm_earth_and_fire.down&!debuff.bonedust_brew_debuff.up
 
 actions.opener=fist_of_the_white_tiger,target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3
 actions.opener+=/expel_harm,if=talent.chi_burst.enabled&chi.max-chi>=3
