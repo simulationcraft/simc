@@ -2473,6 +2473,40 @@ void initialize_soulbinds( player_t* player )
 
     player->special_effects.push_back( new special_effect_t( effect ) );
   }
+
+  // Conduits
+  struct adaptive_armor_fragment_buff_t : public buff_t
+  {
+    timespan_t cooldown_duration;
+    conduit_data_t adaptive_armor_fragment_conduit;
+
+    adaptive_armor_fragment_buff_t( player_t* p )
+      : buff_t( p, "adaptive_armor_fragment", p->find_spell( 357972 ) ),
+        cooldown_duration( p->find_spell( 357973 )->duration() ),
+        adaptive_armor_fragment_conduit( player->find_conduit_spell( "Adaptive Armor Fragment" ) )
+    {
+      set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
+      set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+      set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
+      
+      if ( adaptive_armor_fragment_conduit->ok() )
+        set_default_value( adaptive_armor_fragment_conduit.value() );
+    }
+
+    void expire_override( int s, timespan_t d ) override
+    {
+      buff_t::expire_override( s, d );
+
+      make_event( *sim, ( cooldown_duration - buff_duration() ), [ this ]() { trigger(); } );
+    }
+  };
+
+  auto buff = buff_t::find( player, "adaptive_armor_fragment" );
+  if ( !buff )
+    buff = make_buff<adaptive_armor_fragment_buff_t>( player );
+
+  if ( player->find_conduit_spell( "Adaptive Armor Fragment" )->ok() )
+    player->register_combat_begin( buff );
 }
 
 void register_target_data_initializers( sim_t* sim )
