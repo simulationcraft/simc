@@ -6,7 +6,7 @@ role=tank
 position=front
 talents=2231133
 covenant=kyrian
-soulbind=forgelite_prime_mikanikos,brons_call_to_action/withering_plague:9/spirit_drain:9/meat_shield:9/lingering_plague:9/proliferation:9/soulglow_spectrometer/condensed_anima_sphere:9/effusive_anima_accelerator
+soulbind=forgelite_prime_mikanikos,brons_call_to_action/withering_plague:9[:1]/spirit_drain:9[:1]/meat_shield:9[:1]/lingering_plague:9[:1]/proliferation:9[:1]/soulglow_spectrometer/condensed_anima_sphere:9[:1]/effusive_anima_accelerator
 renown=80
 
 head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173129/187319
@@ -36,7 +36,7 @@ role=attack
 position=back
 talents=3201012
 covenant=kyrian
-soulbind=pelagos,combat_meditation/accelerated_cold:9/everfrost:9/unleashed_frenzy:9/better_together/newfound_resolve
+soulbind=pelagos,combat_meditation/accelerated_cold:9[:1]/everfrost:9[:1]/unleashed_frenzy:9[:1]/better_together/newfound_resolve
 renown=80
 
 head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173129/187312
@@ -67,7 +67,7 @@ role=attack
 position=back
 talents=3101013
 covenant=necrolord
-soulbind=emeni,lead_by_example/accelerated_cold:9/everfrost:9/unleashed_frenzy:9/pustule_eruption
+soulbind=emeni,lead_by_example/accelerated_cold:9[:1]/everfrost:9[:1]/unleashed_frenzy:9[:1]/pustule_eruption
 renown=80
 
 head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173130/187312
@@ -98,7 +98,7 @@ role=attack
 position=back
 talents=3201012
 covenant=kyrian
-soulbind=pelagos,combat_meditation/accelerated_cold:9/everfrost:9/unleashed_frenzy:9/better_together/newfound_resolve
+soulbind=pelagos,combat_meditation/accelerated_cold:9[:1]/everfrost:9[:1]/unleashed_frenzy:9[:1]/better_together/newfound_resolve
 renown=80
 
 head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173129/187312
@@ -128,7 +128,7 @@ role=attack
 position=back
 talents=2303021
 covenant=necrolord
-soulbind=heirmir,forgeborne_reveries/eternal_hunger:9/convocation_of_the_dead:9/heirmirs_arsenal_marrowed_gemstone/carvers_eye/mnemonic_equipment
+soulbind=heirmir,forgeborne_reveries/eternal_hunger:9[:1]/convocation_of_the_dead:9[:1]/heirmirs_arsenal_marrowed_gemstone/carvers_eye/mnemonic_equipment
 renown=80
 
 head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173129/187312
