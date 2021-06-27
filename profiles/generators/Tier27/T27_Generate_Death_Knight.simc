@@ -87,7 +87,7 @@ trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
 main_hand=the_devouring_cold,id=187056,bonus_id=1498/6807,enchant=rune_of_razorice
 off_hand=the_devouring_cold,id=187056,bonus_id=1498/6807,enchant=rune_of_the_fallen_crusader
 
-save="T27_Death_Knight_Frost_Breath"
+save="T27_Death_Knight_Frost_Breath.simc"
 
 
 deathknight="T27_Death_Knight_Frost_2H"

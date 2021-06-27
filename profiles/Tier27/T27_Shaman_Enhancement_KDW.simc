@@ -1,4 +1,4 @@
-shaman="T27_Shaman_Enhancement_VDW"
+shaman="T27_Shaman_Enhancement_KDW"
 source=default
 spec=enhancement
 level=60
@@ -6,8 +6,8 @@ race=troll
 role=attack
 position=back
 talents=2111133
-covenant=venthyr
-soulbind=nadjia_the_mistblade,thrill_seeker/unruly_winds:9:1/dauntless_duelist/focused_lightning:9:1/fatal_flaw
+covenant=kyrian
+soulbind=forgelite_prime_mikanikos,brons_call_to_action/unruly_winds:9:1/elysian_dirge:9:1/focused_lightning:9:1/soulglow_spectrometer/effusive_anima_accelerator
 renown=80
 
 # Default consumables

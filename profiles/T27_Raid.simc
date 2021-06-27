@@ -3,7 +3,7 @@ default_actions=1
 
 T27_Death_Knight_Blood.simc
 T27_Death_Knight_Frost.simc
-# T27_Death_Knight_Frost_Breath.simc
+T27_Death_Knight_Frost_Breath.simc
 T27_Death_Knight_Frost_2H.simc
 T27_Death_Knight_Unholy.simc
 
@@ -26,7 +26,8 @@ T27_Death_Knight_Unholy.simc
 # T27_Mage_Arcane.simc
 
 # T27_Monk_Brewmaster.simc
-# T27_Monk_Windwalker.simc
+T27_Monk_Windwalker.simc
+T27_Monk_Windwalker_Necrolord.simc
 # T27_Monk_Windwalker_Serenity.simc
 
 # T27_Paladin_Protection.simc
@@ -44,8 +45,9 @@ T27_Priest_Shadow_Venthyr.simc
 # T27_Rogue_Subtlety.simc
 
 # T27_Shaman_Elemental.simc
-# T27_Shaman_Enhancement.simc
-# T27_Shaman_Enhancement_VDW.simc
+T27_Shaman_Enhancement.simc
+T27_Shaman_Enhancement_KDW.simc
+T27_Shaman_Enhancement_VDW.simc
 
 # T27_Warlock_Affliction.simc
 # T27_Warlock_Demonology.simc
