@@ -21,9 +21,6 @@
 
 /*
 * Currently Missing Soulbinds:
-* Kyrian:
-* - Kleia's Valiant Strikes
-* - Kleia's Light the Path
 * Night Fae:
 * - Korayn's Wild Hunt Strategem
 */
@@ -993,6 +990,107 @@ void better_together( special_effect_t& effect )
   } );
 }
 
+/**Valiant Strikes
+ * id=329791 driver
+ * id=330943 "Valiant Strikes" stacking buff
+ * id=348236 "Dormant Valor" lockout debuff
+ * The actual healing is not implemented.
+ */
+struct valiant_strikes_t : public buff_t
+{
+  buff_t* dormant_valor;
+  buff_t* light_the_path;
+
+  valiant_strikes_t( player_t* p ) :
+    buff_t( p, "valiant_strikes", p->find_spell( 330943 ) ),
+    dormant_valor(),
+    light_the_path()
+  {
+    set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+    set_default_value( 0 );
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  }
+
+  void trigger_heal()
+  {
+    if ( !check() )
+      return;
+
+    if ( dormant_valor )
+      dormant_valor->trigger();
+
+    if ( light_the_path )
+      light_the_path->trigger();
+
+    expire();
+  }
+};
+
+void valiant_strikes( special_effect_t& effect )
+{
+  struct valiant_strikes_event_t final : public event_t
+  {
+    timespan_t delta_time;
+    valiant_strikes_t* valiant_strikes;
+
+    valiant_strikes_event_t( valiant_strikes_t* v, timespan_t t = 0_ms ) :
+      event_t( *v->sim, t ),
+      valiant_strikes( v ),
+      delta_time( t )
+    {}
+
+    const char* name() const override
+    { return "valiant_strikes_event"; }
+
+    void execute() override
+    {
+      if ( delta_time > 0_ms )
+        valiant_strikes->trigger_heal();
+
+      double rate = sim().shadowlands_opts.valiant_strikes_heal_rate;
+      if ( rate > 0 )
+      {
+        // Model the time between events with a Poisson process.
+        timespan_t t = timespan_t::from_minutes( rng().exponential( 1 / rate ) );
+        make_event<valiant_strikes_event_t>( sim(), valiant_strikes, t );
+      }
+    }
+  };
+
+  struct valiant_strikes_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* dormant_valor;
+
+    valiant_strikes_cb_t( const special_effect_t& e, buff_t* b ) :
+      dbc_proc_callback_t( e.player, e ), dormant_valor( b )
+    {}
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( dormant_valor->check() )
+        return;
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
+  };
+
+  valiant_strikes_t* valiant_strikes = debug_cast<valiant_strikes_t*>( buff_t::find( effect.player, "valiant_strikes" ) );
+  if ( !valiant_strikes )
+    valiant_strikes = make_buff<valiant_strikes_t>( effect.player );
+
+  auto dormant_valor = buff_t::find( effect.player, "dormant_valor" );
+  if ( !dormant_valor )
+    dormant_valor = make_buff( effect.player, "dormant_valor", effect.player->find_spell( 348236 ) )
+                      ->set_can_cancel( false );
+
+  valiant_strikes->dormant_valor = dormant_valor;
+  effect.custom_buff = valiant_strikes;
+  new valiant_strikes_cb_t( effect, dormant_valor );
+
+  effect.player->register_combat_begin( [ valiant_strikes ]( player_t* p )
+    { make_event<valiant_strikes_event_t>( *valiant_strikes->sim, valiant_strikes ); } );
+}
+
 void pointed_courage( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "pointed_courage" );
@@ -1044,6 +1142,28 @@ void spear_of_the_archon( special_effect_t& effect )
   }
 
   new spear_of_the_archon_cb_t( effect );
+}
+
+/**Light the Path
+ * id=351491 passive aura
+ * id=352981 buff
+ */
+void light_the_path( special_effect_t& effect )
+{
+  auto light_the_path = buff_t::find( effect.player, "light_the_path" );
+  if ( !light_the_path )
+  {
+    light_the_path = make_buff( effect.player, "light_the_path", effect.player->find_spell( 352981 ) )
+                       ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+                       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+  }
+
+  valiant_strikes_t* valiant_strikes = debug_cast<valiant_strikes_t*>( buff_t::find( effect.player, "valiant_strikes" ) );
+  if ( !valiant_strikes )
+    valiant_strikes = make_buff<valiant_strikes_t>( effect.player );
+
+  valiant_strikes->set_default_value( 0.0001 * effect.driver()->effectN( 1 ).base_value() );
+  valiant_strikes->light_the_path = light_the_path;
 }
 
 void hammer_of_genesis( special_effect_t& effect )
@@ -2264,8 +2384,10 @@ void register_special_effects()
   register_soulbind_special_effect( 328266, soulbinds::combat_meditation );
   register_soulbind_special_effect( 351146, soulbinds::better_together );
   register_soulbind_special_effect( 351149, soulbinds::newfound_resolve, true );
-  register_soulbind_special_effect( 329778, soulbinds::pointed_courage );  // Kleia
+  register_soulbind_special_effect( 329791, soulbinds::valiant_strikes );  // Kleia
+  register_soulbind_special_effect( 329778, soulbinds::pointed_courage );
   register_soulbind_special_effect( 351488, soulbinds::spear_of_the_archon );
+  register_soulbind_special_effect( 351491, soulbinds::light_the_path );
   register_soulbind_special_effect( 333935, soulbinds::hammer_of_genesis );  // Mikanikos
   register_soulbind_special_effect( 333950, soulbinds::brons_call_to_action, true );
   register_soulbind_special_effect( 352188, soulbinds::effusive_anima_accelerator );
