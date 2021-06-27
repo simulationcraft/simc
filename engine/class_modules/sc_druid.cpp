@@ -3565,7 +3565,11 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( result_is_hit( s->result ) && p()->talent.sabertooth->ok() )
     {
-      auto ext = timespan_t::from_seconds( p()->talent.sabertooth->effectN( 2 ).base_value() * combo_points );
+      int sabertooth_combo_points = combo_points;
+      if ( p()->buff.apex_predators_craving->check() || free_cast )
+        sabertooth_combo_points = p()->resources.max[ RESOURCE_COMBO_POINT ];
+
+      auto ext = timespan_t::from_seconds( p()->talent.sabertooth->effectN( 2 ).base_value() * sabertooth_combo_points );
 
       td( s->target )->dots.rip->adjust_duration( ext, max_sabertooth_refresh, 0 );
     }
