@@ -2587,6 +2587,26 @@ void jaithys_the_prison_blade_5( special_effect_t& effect )
   init_jaithys_the_prison_blade( effect, 358572, 358571, 5 );
 }
 
+// Armor
+
+/**Passably-Forged Credentials
+ * id=352081 driver
+ * id=352091 buff
+ */
+void passablyforged_credentials( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "passable_credentials" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "passable_credentials", effect.trigger() )
+             ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), effect.driver()->effectN( 1 ).average( effect.item ) );
+  }
+
+  effect.custom_buff = buff;
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -3239,6 +3259,9 @@ void register_special_effects()
     unique_gear::register_special_effect( 358567, items::jaithys_the_prison_blade_3 );
     unique_gear::register_special_effect( 358569, items::jaithys_the_prison_blade_4 );
     unique_gear::register_special_effect( 358571, items::jaithys_the_prison_blade_5 );
+
+    // Armor
+    unique_gear::register_special_effect( 352081, items::passablyforged_credentials );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
