@@ -2336,6 +2336,116 @@ void ebonsoul_vise( special_effect_t& effect )
   effect.execute_action = create_proc_action<ebonsoul_vise_t>( "ebonsoul_vise", effect );
 }
 
+/**Relic of the Frozen Wastes
+  (355301) Relic of the Frozen Wastes (equip):
+    chance to deal damage (effect 1) and apply debuff Frozen Heart (355759)
+  (355303) Frostlord's Call (use):
+    (355912, damage from equip effect 2) deals physical damage to target
+    (357409, damage from equip effect 3) deals frost damage to all targets between the player and target inclusive with Frozen Heart debuff
+ */
+void relic_of_the_frozen_wastes_use( special_effect_t& effect )
+{
+  struct frost_tinged_carapace_spikes_t : public generic_proc_t
+  {
+    struct frost_tinged_carapace_spikes_t( const special_effect_t& effect, const spell_data_t* equip )
+      : generic_proc_t( effect, "frosttinged_carapace_spikes", effect.player->find_spell( 357409 ) )
+    {
+      background = dual = true;
+      callbacks = false;
+      aoe = -1;
+      base_dd_max = base_dd_min = equip->effectN( 3 ).average( effect.item );
+    }
+
+    void execute() override
+    {
+      target_cache.is_valid = false;
+
+      generic_proc_t::execute();
+    }
+
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      tl.clear();
+
+      for ( size_t i = 0, actors = sim->target_non_sleeping_list.size(); i < actors; i++ )
+      {
+        player_t* t = sim->target_non_sleeping_list[ i ];
+        if ( t->is_enemy() && player->get_target_data( t )->debuff.frozen_heart->up() )
+          tl.push_back( t );
+      }
+
+      return tl.size();
+    }
+  };
+
+  struct nerubian_ambush_t : public generic_proc_t
+  {
+    action_t* splash;
+
+    struct nerubian_ambush_t( const special_effect_t& effect, const spell_data_t* equip ) :
+      generic_proc_t( effect, "nerubian_ambush", effect.player->find_spell(355912) )
+    {
+      background = dual = true;
+      callbacks = false;
+      base_dd_max = base_dd_min = equip->effectN( 2 ).average( effect.item );
+    }
+  };
+
+  struct frostlords_call_t : public generic_proc_t
+  {
+    action_t* ambush;
+    action_t* spikes;
+
+    struct frostlords_call_t( const special_effect_t& effect, const spell_data_t* equip )
+      : generic_proc_t( effect, "frostlords_call", effect.driver() ),
+        ambush( create_proc_action<nerubian_ambush_t>( "nerubian_ambush", effect, equip ) ),
+        spikes( create_proc_action<frost_tinged_carapace_spikes_t>( "frosttinged_carapace_spikes", effect, equip ) )
+    {
+      callbacks = false;
+      travel_speed = 20;
+
+      add_child( ambush );
+      add_child( spikes );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+
+      ambush->set_target( s->target );
+      ambush->execute();
+
+      spikes->set_target( s->target );
+      spikes->execute();
+    }
+  };
+
+  const spell_data_t* equip = effect.player->find_spell( 355301 );
+  effect.execute_action = create_proc_action<frostlords_call_t>( "frostlords_call", effect, equip );
+}
+
+void relic_of_the_frozen_wastes_equip( special_effect_t& effect )
+{
+  struct frozen_heart_t : generic_proc_t
+  {
+    frozen_heart_t( const special_effect_t& effect ) : generic_proc_t( effect, "frozen_heart", effect.trigger() )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+
+      actor_target_data_t* td = player->get_target_data( target );
+      td->debuff.frozen_heart->trigger();
+    }
+  };
+
+  effect.execute_action = create_proc_action<frozen_heart_t>( "frozen_heart", effect );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -3175,6 +3285,8 @@ void register_special_effects()
     unique_gear::register_special_effect( 355333, items::salvaged_fusion_amplifier );
     unique_gear::register_special_effect( 355313, items::titanic_ocular_gland );
     unique_gear::register_special_effect( 355327, items::ebonsoul_vise );
+    unique_gear::register_special_effect( 355301, items::relic_of_the_frozen_wastes_equip );
+    unique_gear::register_special_effect( 355303, items::relic_of_the_frozen_wastes_use );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
@@ -3265,6 +3377,19 @@ void register_target_data_initializers( sim_t& sim )
     }
     else
       td->debuff.shattered_psyche = make_buff( *td, "shattered_psyche_debuff" )->set_quiet( true );
+  } );
+
+  // Relic of the Frozen Wastes
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 355301 ) )
+    {
+      assert( !td->debuff.frozen_heart );
+
+      td->debuff.frozen_heart = make_buff<buff_t>( *td, "frozen_heart", td->source->find_spell( 355759 ) );
+      td->debuff.frozen_heart->reset();
+    }
+    else
+      td->debuff.frozen_heart = make_buff( *td, "frozen_heart" )->set_quiet( true );
   } );
 
   // Shard of Dyz (Scouring Touch debuff)

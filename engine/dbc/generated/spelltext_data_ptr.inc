@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.39172
-static const std::array<spelltext_data_t, 15515> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15517> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15344,6 +15344,7 @@ static const std::array<spelltext_data_t, 15515> __ptr_spelltext_data { {
   { 355892, "$@spelldesc355890", "Agility increased by $s1%.", 0 },
   { 355893, "Elysian Decree shatters $s1 additional Lesser Soul Fragments and grants you Blind Faith for $355894d. For each Lesser Soul Fragment you consume while Blind Faith is active you gain $s2% Mastery and $356070s1 Fury.", 0, 0 },
   { 355894, "$@spelldesc355893", "Mastery increased by $w1%.", 0 },
+  { 355912, "$@spelldesc355303", 0, 0 },
   { 355951, "$@spelldesc355313", "$?e2[Critical Strike]?e3[Haste]?e4[Mastery]?e5[Versatility][Highest secondary stat] decreased by $w2.", 0 },
   { 355953, 0, "Your very own burden to bare.", 0 },
   { 355996, "When Fodder to the Flame's demon explodes it inflicts Fiery Brand to $s2 nearby enemies for $s2 sec. Additionally Shattered Soul's duration is increased by ${$s1/1000} sec.", 0, 0 },
@@ -15468,6 +15469,7 @@ static const std::array<spelltext_data_t, 15515> __ptr_spelltext_data { {
   { 357349, "$?pc92422[|CFF808080Bonus: Socket 2 more Unholy Shards to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]?pc92421[|CFF808080Bonus: Socket 1 more Unholy Shard to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]?pc91770[|CFF20ff20Bonus: Socket 3 Unholy Shards to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R][|CFF808080Bonus: Socket 3 Unholy Shards to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]", 0, 0 },
   { 357363, "Enter your own personal cage.", "A cage just for you.", 0 },
   { 357381, "Enter the Jailer's Deluxe cell.", "The Jailer's finest accommodations just for you.", 0 },
+  { 357409, "$@spelldesc355303", 0, 0 },
   { 357419, "The radius of Darkness is increased by $s1 yds, and its duration by ${$s2/1000} sec.", 0, "PvP Talent" },
   { 357459, "Summons a miniature shadow realm.", "You have created a miniature shadow realm.", 0 },
   { 357558, "If a target dies while affected by the Ebonsoul Vise, it leaves a Shredded Soul behind which you can collect to gain $355327s2 Critical Strike for $356281d.", 0, 0 },
