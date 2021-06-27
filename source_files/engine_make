@@ -20,7 +20,7 @@ SRC += \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_death_knight.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_monk.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_priest.cpp \
-    class_modules$(PATHSEP)apl$(PATHSEP)hunter.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)apl_hunter.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)mage.cpp \
     class_modules$(PATHSEP)monk$(PATHSEP)sc_monk.cpp \
     class_modules$(PATHSEP)monk$(PATHSEP)sc_monk_pets.cpp \

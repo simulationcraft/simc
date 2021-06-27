@@ -4609,6 +4609,11 @@ struct expel_harm_t : public monk_heal_t
     if ( p()->buff.combo_strikes->up() )
       result *= 1 + p()->cache.mastery_value();
 
+    // Currently there is a bug that when using Harm Denial, the damage is increased
+    // by 210% of the heal instead of 10% (or 2100% of the intended damage)
+    if ( p()->bugs && p()->conduit.harm_denial->ok() )
+      result *= 21;
+
     if ( p()->buff.gift_of_the_ox->up() && p()->spec.expel_harm_2_brm->ok() )
     {
       double goto_heal = p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff();
@@ -5642,7 +5647,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
   }
   user_options.initial_chi              = 1;
-  user_options.expel_harm_effectiveness = 1.0;
+  user_options.expel_harm_effectiveness = 0.25;
   user_options.faeline_stomp_uptime     = 1.0;
   user_options.chi_burst_healing_targets = 1;
 }
@@ -7009,10 +7014,41 @@ double monk_t::composite_melee_expertise( const weapon_t* weapon ) const
 
 double monk_t::composite_melee_attack_power() const
 {
-  if ( specialization() == MONK_MISTWEAVER )
-    return composite_spell_power( SCHOOL_MAX );
+  if ( base.attack_power_per_spell_power > 0 )
+    return base.attack_power_per_spell_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
 
   return player_t::composite_melee_attack_power();
+}
+
+// monk_t::composite_melee_attack_power_by_type ==================================
+
+double monk_t::composite_melee_attack_power_by_type( attack_power_type type ) const
+{
+  if ( base.attack_power_per_spell_power > 0 )
+    return base.attack_power_per_spell_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
+
+  return player_t::composite_melee_attack_power_by_type( type );
+}
+
+// monk_t::composite_spell_power ==============================================
+
+double monk_t::composite_spell_power( school_e school ) const
+{
+  if ( base.spell_power_per_attack_power > 0 )
+    return base.spell_power_per_attack_power * composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
+           composite_attack_power_multiplier();
+
+  return player_t::composite_spell_power( school );
+}
+
+// monk_t::composite_spell_power_multiplier ================================
+
+double monk_t::composite_spell_power_multiplier() const
+{
+  if ( specialization() == MONK_BREWMASTER || specialization() == MONK_WINDWALKER )
+    return 1.0;
+
+  return player_t::composite_spell_power_multiplier();
 }
 
 // monk_t::composite_attack_power_multiplier() ==========================
@@ -7153,9 +7189,9 @@ double monk_t::composite_player_pet_damage_multiplier( const action_state_t* sta
   double multiplier = player_t::composite_player_pet_damage_multiplier( state, guardian );
 
   if ( buff.hit_combo->up() )
-  {
     multiplier *= 1 + buff.hit_combo->stack() * passives.hit_combo->effectN( 4 ).percent();
-  }
+
+  multiplier *= 1 + spec.brewmaster_monk->effectN( 3 ).percent();
 
   return multiplier;
 }
@@ -7192,7 +7228,13 @@ void monk_t::invalidate_cache( cache_e c )
 
   switch ( c )
   {
+    case CACHE_ATTACK_POWER:
+    case CACHE_AGILITY:
+      if ( specialization() == MONK_BREWMASTER || specialization()  == MONK_WINDWALKER )
+        player_t::invalidate_cache( CACHE_SPELL_POWER );
+      break;
     case CACHE_SPELL_POWER:
+    case CACHE_INTELLECT:
       if ( specialization() == MONK_MISTWEAVER )
         player_t::invalidate_cache( CACHE_ATTACK_POWER );
       break;
@@ -7203,6 +7245,12 @@ void monk_t::invalidate_cache( cache_e c )
     case CACHE_MASTERY:
       if ( specialization() == MONK_WINDWALKER )
         player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      else if ( specialization()  == MONK_BREWMASTER )
+      {
+        player_t::invalidate_cache( CACHE_ATTACK_POWER );
+        player_t::invalidate_cache( CACHE_SPELL_POWER );
+        player_t::invalidate_cache( CACHE_DODGE );
+      }
       break;
     default:
       break;
@@ -7215,21 +7263,17 @@ void monk_t::create_options()
 {
   base_t::create_options();
 
-  //add_option( opt_deprecated( "initial_chi", "monk.initial_chi" ) );
-  //add_option( opt_deprecated( "memory_of_lucid_dreams_proc_chance", "monk.memory_of_lucid_dreams_proc_chance" ) );
-  //add_option( opt_deprecated( "expel_harm_effectiveness", "monk.expel_harm_effectiveness" ) );
-  //add_option( opt_deprecated( "faeline_stomp_uptime", "monk.faeline_stomp_uptime" ) );
-  //add_option( opt_deprecated( "chi_burst_healing_targets", "monk.chi_burst_healing_targets" ) );
+  // TODO: Remove in 9.2
+  add_option( opt_deprecated( "initial_chi", "monk.initial_chi" ) );
+  add_option( opt_deprecated( "memory_of_lucid_dreams_proc_chance", "monk.memory_of_lucid_dreams_proc_chance" ) );
+  add_option( opt_deprecated( "expel_harm_effectiveness", "monk.expel_harm_effectiveness" ) );
+  add_option( opt_deprecated( "faeline_stomp_uptime", "monk.faeline_stomp_uptime" ) );
+  add_option( opt_deprecated( "chi_burst_healing_targets", "monk.chi_burst_healing_targets" ) );
 
-  add_option( opt_int( "initial_chi", user_options.initial_chi, 0, 6 ) );
   add_option( opt_int( "monk.initial_chi", user_options.initial_chi, 0, 6 ) );
-  add_option( opt_float( "memory_of_lucid_dreams_proc_chance", user_options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
   add_option( opt_float( "monk.memory_of_lucid_dreams_proc_chance", user_options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "expel_harm_effectiveness", user_options.expel_harm_effectiveness, 0.0, 1.0 ) );
   add_option( opt_float( "monk.expel_harm_effectiveness", user_options.expel_harm_effectiveness, 0.0, 1.0 ) );
-  add_option( opt_float( "faeline_stomp_uptime", user_options.faeline_stomp_uptime, 0.0, 1.0 ) );
   add_option( opt_float( "monk.faeline_stomp_uptime", user_options.faeline_stomp_uptime, 0.0, 1.0 ) );
-  add_option( opt_int( "chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
   add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
 }
 
@@ -7828,7 +7872,7 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t* s )
   {
     // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself (335913)
     // Touch of Karma (id = 124280) does not contribute to Empowered Tiger Lightning
-    if ( buff.invoke_xuen->check() && s->result_amount > 0 && s->action->id != 335913 && s->action->id != 124280 )
+    if ( ( buff.invoke_xuen->check() || buff.invoke_xuen_call_to_arms->check() ) && s->result_amount > 0 && s->action->id != 335913 && s->action->id != 124280 )
     {
       auto td = get_target_data( s->target );
 

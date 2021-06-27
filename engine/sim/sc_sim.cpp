@@ -1513,7 +1513,7 @@ sim_t::sim_t() :
   merge_time(), init_time(), analyze_time(),
   report_iteration_data( 0.025 ), min_report_iteration_data( -1 ),
   report_progress( 1 ),
-  bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 0 ) ),
+  bloodlust_percent( 0 ), bloodlust_time( timespan_t::from_seconds( 0 ) ),
   // Report
   report_precision(2), report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
   report_rng( 0 ), hosted_html( 0 ),
@@ -3838,6 +3838,9 @@ void sim_t::create_options()
   add_option( opt_timespan( "shadowlands.newfound_resolve_default_delay", shadowlands_opts.newfound_resolve_default_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "shadowlands.newfound_resolve_delay_relstddev", shadowlands_opts.newfound_resolve_delay_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_bool( "shadowlands.enable_rune_words", shadowlands_opts.enable_rune_words ) );
+  add_option( opt_timespan( "shadowlands.pustule_eruption_interval", shadowlands_opts.pustule_eruption_interval, 1_s, timespan_t::max() ) );
+  add_option( opt_float( "shadowlands.shredded_soul_pickup_chance", shadowlands_opts.shredded_soul_pickup_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "shadowlands.valiant_strikes_heal_rate", shadowlands_opts.valiant_strikes_heal_rate, 0.0, std::numeric_limits<double>::max() ) );
 }
 
 // sim_t::parse_option ======================================================

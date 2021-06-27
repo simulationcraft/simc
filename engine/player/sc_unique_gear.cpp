@@ -3557,14 +3557,21 @@ void generic::windfury_totem( special_effect_t& effect )
     return;
   }
 
-  effect.proc_chance_ = effect.driver()->proc_chance();
-
-  // Apply rank 2 automatically, except that currently (2021-05-24) the implementation is
-  // bugged in-game, and only the Enhancement Shaman who cast the totem gets the buff.
-  // Model this by giving the buff only to Enhancement Shamans.
-  if ( !effect.player->bugs || effect.player->specialization() == SHAMAN_ENHANCEMENT )
+  if ( effect.player->dbc->ptr )
   {
-    effect.proc_chance_ += effect.player->find_spell( 343211 )->effectN( 1 ).percent();
+    effect.proc_chance_ = effect.driver()->proc_chance();
+  }
+  else
+  {
+    effect.proc_chance_ = effect.driver()->proc_chance();
+
+    // Apply rank 2 automatically, except that currently (2021-05-24) the implementation is
+    // bugged in-game, and only the Enhancement Shaman who cast the totem gets the buff.
+    // Model this by giving the buff only to Enhancement Shamans.
+    if ( !effect.player->bugs || effect.player->specialization() == SHAMAN_ENHANCEMENT )
+    {
+      effect.proc_chance_ += effect.player->find_spell( 343211 )->effectN( 1 ).percent();
+    }
   }
 
   auto proc = new wft_proc_callback_t( effect );

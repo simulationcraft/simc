@@ -974,21 +974,6 @@ void judgment_t::do_ctor_common( paladin_t* p )
   weapon_multiplier = 0.0;
   may_block = may_parry = may_dodge = false;
 
-  // Handle indomitable justice option
-  if ( p->azerite.indomitable_justice.enabled() )
-  {
-    // If using the default setting, set to 80% hp for protection, 100% hp for other specs
-    if ( p->options.indomitable_justice_pct == 0 )
-    {
-      indomitable_justice_pct = p->specialization() == PALADIN_PROTECTION ? 80 : 100;
-    }
-    // Else, clamp the value between -1 ("real" usage) and 100
-    else
-    {
-      indomitable_justice_pct = clamp<int>( p->options.indomitable_justice_pct, -1, 100 );
-    }
-  }
-
   // rank 2 multiplier
   if ( p->spells.judgment_2->ok() )
   {
@@ -1007,29 +992,6 @@ judgment_t::judgment_t( paladin_t* p )
   : paladin_melee_attack_t( "divine_toll_judgment", p, p->find_class_spell( "Judgment" ) )
 {
   do_ctor_common( p );
-}
-
-double judgment_t::bonus_da( const action_state_t* s ) const
-{
-  double da = paladin_melee_attack_t::bonus_da( s );
-  if ( p()->azerite.indomitable_justice.ok() )
-  {
-    double player_percent = indomitable_justice_pct < 0 ? p()->health_percentage() : indomitable_justice_pct;
-    double target_percent = s->target->health_percentage();
-
-    if ( player_percent > target_percent )
-    {
-      double ij_bonus = p()->azerite.indomitable_justice.value();
-
-      ij_bonus *= ( player_percent - target_percent ) / 100.0;
-
-      // Protection has a 50% damage reduction to IJ
-      ij_bonus *= 1.0 + p()->spec.protection_paladin->effectN( 15 ).percent();
-
-      da += ij_bonus;
-    }
-  }
-  return da;
 }
 
 proc_types judgment_t::proc_type() const
@@ -2441,7 +2403,6 @@ void paladin_t::init_spells()
   // Shared Azerite traits
   azerite.avengers_might        = find_azerite_spell( "Avenger's Might" );
   azerite.grace_of_the_justicar = find_azerite_spell( "Grace of the Justicar" );
-  azerite.indomitable_justice   = find_azerite_spell( "Indomitable Justice" );
 
   // Essences
   azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
@@ -2605,7 +2566,15 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
   // Protection gets increased stamina
   if ( attr == ATTR_STAMINA )
   {
-    m *= 1.0 + spec.protection_paladin->effectN( 3 ).percent();
+    if ( dbc -> ptr )
+    {
+      if ( passives.aegis_of_light -> ok() )
+        m *= 1.0 + passives.aegis_of_light -> effectN( 1 ).percent();
+    }
+    else
+    {
+      m *= 1.0 + spec.protection_paladin->effectN( 3 ).percent();
+    }    
     if ( buffs.redoubt->up() )
       m *= 1.0 + buffs.redoubt->stack_value();
   }
@@ -2685,7 +2654,15 @@ double paladin_t::composite_base_armor_multiplier() const
   double a = player_t::composite_base_armor_multiplier();
   if ( specialization() != PALADIN_PROTECTION )
     return a;
-  a *= 1.0 + spec.protection_paladin->effectN( 4 ).percent();
+  if ( dbc -> ptr )
+  {
+    if ( passives.aegis_of_light -> ok() )
+      a *= 1.0 + passives.aegis_of_light -> effectN( 2 ).percent();
+  }
+  else
+  {
+    a *= 1.0 + spec.protection_paladin->effectN( 4 ).percent();
+  }
   return a;
 }
 
@@ -2768,8 +2745,11 @@ double paladin_t::composite_spell_power( school_e school ) const
   switch ( specialization() )
   {
     case PALADIN_PROTECTION:
-      sp = spec.protection_paladin->effectN( 9 ).percent() *
-           composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
+      if ( dbc -> ptr )
+        sp = spec.protection_paladin->effectN( 7 ).percent();
+      else
+        sp = spec.protection_paladin->effectN( 9 ).percent();
+      sp *= composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
            composite_attack_power_multiplier();
       break;
     case PALADIN_RETRIBUTION:
@@ -2866,8 +2846,10 @@ double paladin_t::composite_block_reduction( action_state_t* s ) const
 double paladin_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
-
-  c += spec.protection_paladin->effectN( 10 ).percent();
+  if ( dbc -> ptr )
+    c += spec.protection_paladin->effectN( 8 ).percent();
+  else
+    c += spec.protection_paladin->effectN( 10 ).percent();
 
   return c;
 }
@@ -3109,7 +3091,6 @@ void paladin_t::create_options()
 {
   // TODO: figure out a better solution for this.
   add_option( opt_bool( "paladin_fake_sov", options.fake_sov ) );
-  add_option( opt_int( "indomitable_justice_pct", options.indomitable_justice_pct ) );
   add_option(
       opt_float( "proc_chance_ret_memory_of_lucid_dreams", options.proc_chance_ret_memory_of_lucid_dreams, 0.0, 1.0 ) );
   add_option( opt_float( "proc_chance_prot_memory_of_lucid_dreams", options.proc_chance_prot_memory_of_lucid_dreams,

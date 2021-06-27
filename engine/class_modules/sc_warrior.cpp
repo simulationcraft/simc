@@ -58,7 +58,7 @@ T_CONTAINER* get_data_entry( const std::string& name, std::vector<T_DATA*>& entr
 struct warrior_t : public player_t
 {
 public:
-  event_t *heroic_charge, *rampage_driver;
+  event_t *rampage_driver;
   std::vector<attack_t*> rampage_attacks;
   bool non_dps_mechanics, warrior_fixed_time;
   int into_the_fray_friends;
@@ -80,7 +80,6 @@ public:
     action_t* signet_bladestorm_f;
     action_t* signet_ravager;
     action_t* signet_recklessness;
-    action_t* charge;
     action_t* iron_fortress; // Prot azerite trait
     action_t* bastion_of_might_ip; // 0 rage IP from Bastion of Might azerite trait
   } active;
@@ -176,7 +175,6 @@ public:
     cooldown_t* bladestorm;
     cooldown_t* bloodthirst;
     cooldown_t* bloodbath;
-    cooldown_t* charge;
     cooldown_t* colossus_smash;
     cooldown_t* deadly_calm;
     cooldown_t* demoralizing_shout;
@@ -455,7 +453,6 @@ public:
     const spell_data_t* prydaz_xavarics_magnum_opus;
     const spell_data_t* najentuss_vertebrae;
     const spell_data_t* ayalas_stone_heart;
-    const spell_data_t* weight_of_the_earth;
     const spell_data_t* raging_fury;
     const spell_data_t* the_great_storms_eye;
     const spell_data_t* the_wall;
@@ -471,7 +468,6 @@ public:
         prydaz_xavarics_magnum_opus( spell_data_t::not_found() ),
         najentuss_vertebrae( spell_data_t::not_found() ),
         ayalas_stone_heart( spell_data_t::not_found() ),
-        weight_of_the_earth( spell_data_t::not_found() ),
         raging_fury( spell_data_t::not_found() ),
         the_great_storms_eye( spell_data_t::not_found() ),
         the_wall( spell_data_t::not_found() ),
@@ -590,7 +586,6 @@ public:
 
   warrior_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF )
     : player_t( sim, WARRIOR, name, r ),
-      heroic_charge( nullptr ),
       rampage_driver( nullptr ),
       rampage_attacks( 0 ),
       active(),
@@ -2354,73 +2349,90 @@ struct onslaught_t : public warrior_attack_t
 
 struct charge_t : public warrior_attack_t
 {
-  const spell_data_t* charge_damage;
+  // Split the damage, resource gen and other triggered effects from the movement part of Charge
+  struct charge_impact_t : public warrior_attack_t
+  {
+    const spell_data_t* damage_spell;
+
+    charge_impact_t( warrior_t* p ) :
+      warrior_attack_t( "charge_impact", p, p -> spell.charge ),
+      damage_spell( p->find_spell( 126664 ) )
+    {
+      background = true;
+
+      energize_amount += p->spell.charge_rank_2->effectN( 1 ).base_value() / 10.0;
+      energize_resource       = RESOURCE_RAGE;
+      energize_type           = action_energize::ON_CAST;
+      attack_power_mod.direct = damage_spell->effectN( 1 ).ap_coeff();
+
+      //Reprisal extra rage gain for Charge
+      if ( p->legendary.reprisal->ok() )
+      {
+        energize_amount +=  p->find_spell( 335734 )->effectN( 1 ).resource( RESOURCE_RAGE );
+      }
+    }
+
+    void execute() override
+    {
+      warrior_attack_t::execute();
+
+      if ( p()->legendary.reprisal->ok() )
+      {
+        if ( p()->buff.shield_block->check() )
+        {
+          // Even though it isn't mentionned anywhere in spelldata, reprisal only triggers shield block for 4s
+          p()->buff.shield_block->extend_duration( p(), 4_s );
+        }
+        else
+          p()->buff.shield_block->trigger( 4_s );
+
+        p()->buff.revenge->trigger();
+      }
+    }
+  };
+
   bool first_charge;
   double movement_speed_increase, min_range;
   charge_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "charge", p, p->spell.charge ),
-      charge_damage( p->find_spell( 126664 ) ),
       first_charge( true ),
       movement_speed_increase( 5.0 ),
       min_range( data().min_range() )
   {
     parse_options( options_str );
-    ignore_false_positive   = true;
     movement_directionality = movement_direction_type::OMNI;
-    energize_amount += p->spell.charge_rank_2->effectN( 1 ).base_value() / 10.0;
-    energize_resource       = RESOURCE_RAGE;
-    energize_type           = action_energize::ON_CAST;
-    attack_power_mod.direct = charge_damage->effectN( 1 ).ap_coeff();
-   //Reprisal extra rage gain for Charge
-    if ( p->legendary.reprisal->ok() )
-    {
-      energize_amount +=  p->find_spell( 335734 )->effectN( 1 ).resource( RESOURCE_RAGE );
-    }
+
+    impact_action = new charge_impact_t( p );
+
+    // Rage gen is handled in the impact action
+    energize_amount = 0;
+    energize_resource = RESOURCE_NONE;
 
     if ( p->talents.double_time->ok() )
     {
       cooldown->charges += as<int>( p->talents.double_time->effectN( 1 ).base_value() );
       cooldown->duration += p->talents.double_time->effectN( 2 ).time_value();
     }
-    p->cooldown.charge = cooldown;
-    p->active.charge   = this;
+  }
+
+  timespan_t calc_charge_time( double distance )
+  {
+    return timespan_t::from_seconds( distance /
+      ( p()->base_movement_speed * ( 1 + p()->passive_movement_modifier() + movement_speed_increase ) ) );
   }
 
   void execute() override
   {
     if ( p()->current.distance_to_move > 5 )
     {
-      p()->buff.charge_movement->trigger(
-          1, movement_speed_increase, 1,
-          timespan_t::from_seconds(
-              p()->current.distance_to_move /
-              ( p()->base_movement_speed * ( 1 + p()->passive_movement_modifier() + movement_speed_increase ) ) ) );
+      p()->buff.charge_movement->trigger( 1, movement_speed_increase, 1, calc_charge_time( p()->current.distance_to_move ) );
       p()->current.moving_away = 0;
     }
 
     warrior_attack_t::execute();
 
-    if ( p()->legendary.reprisal->ok() )
-    {
-      if ( p()->buff.shield_block->check() )
-      // Even though it isn't mentionned anywhere in spelldata, reprisal only triggers shield block for 4s
-      {
-        p()->buff.shield_block->extend_duration( p(), 4_s );
-      }
-      else
-      {
-        p()->buff.shield_block->trigger( 4_s );
-      }
-      p()->buff.revenge->trigger();
-    }
-
-
     p()->buff.furious_charge->trigger();
 
-    if ( p()->legendary.sephuzs_secret != spell_data_t::not_found() && execute_state->target->type == ENEMY_ADD )
-    {
-      p()->buff.sephuzs_secret->trigger();
-    }
     if ( first_charge )
     {
       first_charge = !first_charge;
@@ -2997,11 +3009,9 @@ struct heroic_throw_t : public warrior_attack_t
 struct heroic_leap_t : public warrior_attack_t
 {
   const spell_data_t* heroic_leap_damage;
-  bool weight_of_the_earth;
   heroic_leap_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "heroic_leap", p, p->spell.heroic_leap ),
-      heroic_leap_damage( p->find_spell( 52174 ) ),
-      weight_of_the_earth( false )
+      heroic_leap_damage( p->find_spell( 52174 ) )
   {
     parse_options( options_str );
     ignore_false_positive = true;
@@ -3017,6 +3027,7 @@ struct heroic_leap_t : public warrior_attack_t
     cooldown->duration += p->talents.bounding_stride->effectN( 1 ).time_value();
   }
 
+  // TOCHECK: Shouldn't this scale with distance to travel?
   timespan_t travel_time() const override
   {
     return timespan_t::from_seconds( 0.5 );
@@ -3031,19 +3042,6 @@ struct heroic_leap_t : public warrior_attack_t
                      ( p()->base_movement_speed * ( 1 + p()->passive_movement_modifier() ) ) /
                      travel_time().total_seconds();
       p()->buff.heroic_leap_movement->trigger( 1, speed, 1, travel_time() );
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    if ( p()->current.distance_to_move <= radius && p()->current.moving_away <= radius &&
-         ( p()->heroic_charge != nullptr || weight_of_the_earth ) )
-    {
-      warrior_attack_t::impact( s );
-      if ( weight_of_the_earth && p()->specialization() == WARRIOR_ARMS )
-      {
-        td( s->target )->debuffs_colossus_smash->trigger();
-      }
     }
   }
 
@@ -3186,130 +3184,60 @@ struct iron_fortress_t : public warrior_attack_t
 
 // Heroic Charge ============================================================
 
-struct heroic_charge_movement_ticker_t : public event_t
-{
-  timespan_t duration;
-  warrior_t* warrior;
-
-  heroic_charge_movement_ticker_t( sim_t&, warrior_t* p, timespan_t d = timespan_t::zero() )
-    : event_t( *p ), warrior( p )
-  {
-    if ( d > timespan_t::zero() )
-    {
-      duration = d;
-    }
-    else
-    {
-      duration = next_execute();
-    }
-
-    if ( sim().debug )
-      sim().out_debug.printf( "New movement event" );
-
-    schedule( duration );
-  }
-
-  timespan_t next_execute() const
-  {
-    timespan_t min_time       = timespan_t::max();
-    bool any_movement         = false;
-    timespan_t time_to_finish = warrior->time_to_move();
-    if ( time_to_finish != timespan_t::zero() )
-    {
-      any_movement = true;
-
-      if ( time_to_finish < min_time )
-      {
-        min_time = time_to_finish;
-      }
-    }
-
-    if ( min_time >
-         timespan_t::from_seconds( 0.05 ) )  // Update a little more than usual, since we're moving a lot faster.
-    {
-      min_time = timespan_t::from_seconds( 0.05 );
-    }
-
-    if ( !any_movement )
-    {
-      return timespan_t::zero();
-    }
-    else
-    {
-      return min_time;
-    }
-  }
-
-  void execute() override
-  {
-    if ( warrior->time_to_move() > timespan_t::zero() )
-    {
-      warrior->update_movement( duration );
-    }
-
-    timespan_t next = next_execute();
-    if ( next > timespan_t::zero() )
-    {
-      warrior->heroic_charge = make_event<heroic_charge_movement_ticker_t>( sim(), sim(), warrior, next );
-    }
-    else
-    {
-      warrior->heroic_charge = nullptr;
-      warrior->buff.heroic_leap_movement->expire();
-    }
-  }
-};
-
 struct heroic_charge_t : public warrior_attack_t
 {
-  heroic_leap_t* leap;
-  bool disable_leap;
-  heroic_charge_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "heroic_charge", p, spell_data_t::nil() ), leap( nullptr ), disable_leap( false )
+  //TODO: do actual movement for distance targeting sims
+  warrior_attack_t* heroic_leap;
+  charge_t* charge;
+  int heroic_leap_distance;
+
+  heroic_charge_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "heroic_charge", p, spell_data_t::nil() ),
+    heroic_leap( new heroic_leap_t( p, "" ) ),
+    charge( new charge_t( p, "" ) ),
+    heroic_leap_distance( 10 )
   {
-    add_option( opt_bool( "disable_heroic_leap", disable_leap ) );
+    // The user can set the distance that they want to travel with heroic leap before charging if they want
+    add_option( opt_int( "distance", heroic_leap_distance ) );
     parse_options( options_str );
 
-    leap                  = new heroic_leap_t( p, "" );
-    trigger_gcd           = timespan_t::zero();
-    ignore_false_positive = true;
-    callbacks = may_crit = may_hit = false;
-    p->active.charge->use_off_gcd  = true;
+    if ( heroic_leap_distance > heroic_leap -> data().max_range() ||
+         heroic_leap_distance < heroic_leap -> data().min_range() )
+    {
+      sim -> error( "{} has an invalid heroic leap distance of {}, defaulting to 10", p -> name(), heroic_leap_distance );
+      heroic_leap_distance = 10;
+    }
+    callbacks = false;
+  }
+
+  timespan_t execute_time() const override
+  {
+    // Execute time is equal to the sum of heroic leap's travel time (a fixed 0.5s atm)
+    // and charge's time to travel based on heroic leap's distance travelled
+    return heroic_leap -> travel_time() + charge -> calc_charge_time( heroic_leap_distance );
   }
 
   void execute() override
   {
     warrior_attack_t::execute();
 
-    if ( !disable_leap && p()->cooldown.heroic_leap->up() )
-    {  // We are moving 10 yards, and heroic leap always executes in 0.5 seconds.
-      // Do some hacky math to ensure it will only take 0.5 seconds, since it will certainly
-      // be the highest temporary movement speed buff.
-      double speed;
-      speed = 10 / ( p()->base_movement_speed * ( 1 + p()->passive_movement_modifier() ) ) / 0.5;
-      p()->buff.heroic_leap_movement->trigger( 1, speed, 1, timespan_t::from_millis( 500 ) );
-      leap->execute();
-      p()->trigger_movement(
-          10.0, movement_direction_type::AWAY );  // Leap 10 yards out, because it's impossible to precisely land 8 yards away.
-      p()->heroic_charge = make_event<heroic_charge_movement_ticker_t>( *sim, *sim, p() );
-    }
-    else
-    {
-      p()->trigger_movement( 9.0, movement_direction_type::AWAY );
-      p()->heroic_charge = make_event<heroic_charge_movement_ticker_t>( *sim, *sim, p() );
-    }
+    // At the end of the execution, start cooldowns, adjusted for execute time
+    heroic_leap -> cooldown -> start( heroic_leap -> cooldown_duration() - execute_time() );
+    charge -> cooldown -> start( charge -> cooldown_duration() - charge -> calc_charge_time( heroic_leap_distance ) );
+
+    // Execute charge damage and whatever else it's supposed to proc
+    charge -> impact_action -> execute();
   }
 
   bool ready() override
   {
-    if ( p()->cooldown.charge->up() && !p()->buffs.movement->check() && p()->heroic_charge == nullptr )
-    {
-      return warrior_attack_t::ready();
-    }
-    else
+    // TODO: Enable heroic leaping mid-movement while making sure it doesn't break anything
+    if ( ! heroic_leap -> cooldown -> is_ready() || ! charge -> cooldown -> is_ready() ||
+         p()->buffs.movement->check() || p() -> buff.heroic_leap_movement -> check() || p() -> buff.charge_movement -> check() )
     {
       return false;
     }
+    return warrior_attack_t::ready();
   }
 };
 
@@ -3698,8 +3626,6 @@ struct overpower_t : public warrior_attack_t
       dreadnaught = new dreadnaught_t( p );
       add_child( dreadnaught );
     }
-    p->cooldown.charge = cooldown;
-    p->active.charge   = this;
 
     if ( p->azerite.seismic_wave.ok() )
     {
@@ -4971,7 +4897,7 @@ struct ancient_aftershock_pulse_t : public warrior_attack_t
 
 struct natures_fury_dot_t : public warrior_attack_t
 {
-  natures_fury_dot_t( warrior_t* p ) : warrior_attack_t( "natures_fury", p, p->find_spell( 354163 ) ) 
+  natures_fury_dot_t( warrior_t* p ) : warrior_attack_t( "natures_fury", p, p->find_spell( 354163 ) )
   {
     //background = tick_may_crit = true;
     //hasted_ticks               = false;
@@ -6428,7 +6354,6 @@ void warrior_t::init_spells()
   //active.ancient_aftershock_pulse = nullptr;
   active.deep_wounds_ARMS = nullptr;
   active.deep_wounds_PROT = nullptr;
-  active.charge           = nullptr;
 
   // Runeforged Legendary Items
   legendary.elysian_might             = find_runeforge_legendary( "Elysian Might" );
@@ -6531,7 +6456,6 @@ void warrior_t::init_spells()
   cooldown.bloodthirst    = get_cooldown( "bloodthirst" );
   cooldown.bloodbath      = get_cooldown( "bloodbath" );
 
-  cooldown.charge                           = get_cooldown( "charge" );
   cooldown.colossus_smash                   = get_cooldown( "colossus_smash" );
   cooldown.condemn                          = get_cooldown( "condemn" );
   cooldown.conquerors_banner                = get_cooldown( "conquerors_banner" );
@@ -6916,6 +6840,7 @@ void warrior_t::apl_prot()
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( this, "Charge", "if=time=0" );
+  default_list -> add_action( "heroic_charge", "if=runeforge.reprisal" );
   default_list -> add_action( "use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -6925,6 +6850,7 @@ void warrior_t::apl_prot()
   default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>20&!covenant.venthyr,line_cd=15","Prioritize Execute over Ignore Pain as a rage dump below 20%" );
   default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>20&target.health.pct<80&covenant.venthyr,line_cd=15","Venthyr Condemn has 2 execute windows, 20% and 80%" );
   default_list -> add_action( this, "heroic_charge,if=rage<60&buff.revenge.down&runeforge.reprisal","Uses Charge when Reprisal is equiped for the benefits");
+  default_list -> add_action( "conquerors_banner", "if=runeforge.glory");
   default_list -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
   default_list -> add_action( this, "Avatar" );
   default_list -> add_action( "ancient_aftershock");
@@ -7822,7 +7748,6 @@ void warrior_t::reset()
 {
   player_t::reset();
 
-  heroic_charge  = nullptr;
   rampage_driver = nullptr;
   legendary.glory_counter  = 0;
 }
@@ -7839,10 +7764,7 @@ void warrior_t::interrupt()
   buff.heroic_leap_movement->expire();
   buff.intervene_movement->expire();
   buff.intercept_movement->expire();
-  if ( heroic_charge )
-  {
-    event_t::cancel( heroic_charge );
-  }
+
   player_t::interrupt();
 }
 
@@ -7857,12 +7779,7 @@ void warrior_t::trigger_movement( double distance, movement_direction_type direc
   {
     into_the_fray_callback_t( this );
   }
-  if ( heroic_charge )
-  {
-    event_t::cancel( heroic_charge );  // Cancel heroic leap if it's running to make sure nothing weird happens when
-                                       // movement from another source is attempted.
-    player_t::trigger_movement( distance, direction );
-  }
+
   else
   {
     player_t::trigger_movement( distance, direction );
@@ -8623,19 +8540,6 @@ struct raging_fury2_t : public unique_gear::scoped_action_callback_t<intercept_t
   }
 };
 
-struct weight_of_the_earth_t : public unique_gear::scoped_action_callback_t<heroic_leap_t>
-{
-  weight_of_the_earth_t() : super( WARRIOR, "heroic_leap" )
-  {
-  }
-
-  void manipulate( heroic_leap_t* action, const special_effect_t& e ) override
-  {
-    action->radius *= 1.0 + e.driver()->effectN( 1 ).percent();
-    action->weight_of_the_earth = true;
-  }
-};
-
 struct ayalas_stone_heart_t : public unique_gear::class_buff_cb_t<warrior_t>
 {
   ayalas_stone_heart_t() : super( WARRIOR, "stone_heart" )
@@ -8783,7 +8687,6 @@ void init()
   unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t(), true );  // Not finished
   unique_gear::register_special_effect( 215096, najentuss_vertebrae_t() );
   unique_gear::register_special_effect( 207767, ayalas_stone_heart_t(), true );
-  unique_gear::register_special_effect( 208177, weight_of_the_earth_t() );
   unique_gear::register_special_effect( 222266, raging_fury_t() );
   unique_gear::register_special_effect( 222266, raging_fury2_t() );
   unique_gear::register_special_effect( 208051, sephuzs_secret_t() );

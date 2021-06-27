@@ -226,6 +226,9 @@ public:
     const spell_data_t* riposte;
     const spell_data_t* sanctuary;
 
+    const spell_data_t* aegis_of_light;
+    const spell_data_t* aegis_of_light_2;
+
     const spell_data_t* boundless_conviction;
 
     const spell_data_t* art_of_war;
@@ -368,7 +371,6 @@ public:
     // Shared
     azerite_power_t avengers_might;
     azerite_power_t grace_of_the_justicar; // Healing, NYI
-    azerite_power_t indomitable_justice;
 
     // Holy
 
@@ -440,7 +442,6 @@ public:
     double proc_chance_ret_memory_of_lucid_dreams = 0.15;
     double proc_chance_prot_memory_of_lucid_dreams = 0.15;
     bool fake_sov = true;
-    int indomitable_justice_pct = 0;
   } options;
   player_t* beacon_target;
 
@@ -1118,12 +1119,7 @@ struct holy_power_consumer_t : public Base
     // as of 11/8, according to Skeletor, crusade and RI trigger at full value now
     int num_stacks = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
 
-    // Royal Decree doesn't proc RP 2020-11-01
-    if ( is_wog && p -> buffs.royal_decree -> up() &&
-        !p -> buffs.divine_purpose -> up() && !p -> buffs.shining_light_free -> up() )
-      num_stacks = as<int>( hp_used );
-
-    // as of 2020-11-08 magistrate's causes *extra* stacks?
+    // as of 2021-06-22 magistrate's causes *extra* stacks?
     // fixed at least for ret as of 9.0.5
     if ( p -> bugs && p -> buffs.the_magistrates_judgment -> up() )
     {
@@ -1137,20 +1133,15 @@ struct holy_power_consumer_t : public Base
       p -> buffs.relentless_inquisitor_azerite -> trigger( num_stacks );
 
     if ( p -> legendary.relentless_inquisitor -> ok() )
-    {
       p -> buffs.relentless_inquisitor -> trigger();
-      // 2020-12-06 Shining Light and Divine Purpose proc 2 stacks of Relentless Inquisitor
-      if ( p -> bugs && ( p -> buffs.divine_purpose -> up() || ( is_wog && p -> buffs.shining_light_free -> up() )))
-        p -> buffs.relentless_inquisitor -> trigger();
-    }
 
     if ( p -> buffs.crusade -> check() )
     {
       p -> buffs.crusade -> trigger( num_stacks );
     }
 
-    // Free sotr from vanq does not proc RP 2020-09-10
-    if ( p -> talents.righteous_protector -> ok() && !ab::background )
+    // Free sotr from vanq does not proc RP unless DP is active
+    if ( p -> talents.righteous_protector -> ok() && ( !ab::background || p -> buffs.divine_purpose -> check() ) )
     {
       timespan_t reduction = timespan_t::from_seconds(
         // Why is this in deciseconds?
@@ -1193,29 +1184,47 @@ struct holy_power_consumer_t : public Base
       }
     }
 
-    // 2020-11-01 Royal Decree always expires, even when other holy power reductions are up
-    if ( is_wog && p -> buffs.royal_decree -> up() )
-      p -> buffs.royal_decree -> expire();
+    if ( is_wog && p -> buffs.shining_light_free -> check() )
+    {
+      should_continue = false;
+      if ( p -> buffs.royal_decree -> check() )
+      {
+        // Outlier (2021-06-22). If RD, SL, DP and 2 stacks of MJ are all up, then
+        // SL and RD both get consumed at the same time.
+        if ( p -> bugs && p -> buffs.the_magistrates_judgment -> stack() > 1
+          && p -> buffs.divine_purpose -> check())
+        {
+          p -> buffs.shining_light_free -> expire();
+        }
+      }
+      else
+      {
+        // Shining Light is now consumed before Divine Purpose 2020-11-01
+        p -> buffs.shining_light_free -> expire();        
+      }
+    }
 
-    // For prot (2020-11-01). Magistrate's does not get consumed when DP is up.
+    // For prot (2021-06-22). Magistrate's does not get consumed when DP or SL
+    // are up, but does with RD.
+    // (2021-06-26) Vanquisher's hammer's auto-sotr does not interact with magistrate's judgment
     // For ret (2020-10-29), Magistrate's does not get consumed with DP or EP up but does
     // with FoJ.
-    if ( this -> affected_by.the_magistrates_judgment && !p -> buffs.divine_purpose -> up() && should_continue )
+    if ( should_continue && this -> affected_by.the_magistrates_judgment
+        && !p -> buffs.divine_purpose -> check() && !ab::background )
+    {
       p -> buffs.the_magistrates_judgment -> decrement( 1 );
+    }
 
-    if ( is_wog && p -> buffs.shining_light_free -> up() )
+    // 2021-06-22 Royal Decree is always consumed first
+    if ( is_wog && p -> buffs.royal_decree -> check() )
     {
-      // Shining Light is now consumed before Divine Purpose 2020-11-01
-      p -> buffs.shining_light_free -> expire();
+      p -> buffs.royal_decree -> expire();
       should_continue = false;
     }
-    else if ( p -> bugs && p -> specialization() == PALADIN_PROTECTION &&
-      ( ab::background || ( is_wog && p -> buffs.vanquishers_hammer -> up () ) ) )
-    {
-      // Vanquisher's Hammer's auto-sotr is not consuming divine purpose.
-      // Vanquisher's Hammer's wog is not consuming divine purpose for some reason.
+
+    // as of 2021-06-22 Vanquisher's Hammer's auto-sotr does consume divine purpose
+    if ( ! p -> bugs && p -> specialization() == PALADIN_PROTECTION && ab::background )
       should_continue = false;
-    }
 
     // We should only have should_continue false in the event that we're a divine storm
     // assert-check here for safety
@@ -1275,11 +1284,9 @@ struct holy_power_consumer_t : public Base
 
 struct judgment_t : public paladin_melee_attack_t
 {
-  int indomitable_justice_pct;
   judgment_t( paladin_t* p, util::string_view options_str );
   judgment_t( paladin_t* p );
 
-  virtual double bonus_da( const action_state_t* s ) const override;
   proc_types proc_type() const override;
   void impact( action_state_t* s ) override;
   void execute() override;

@@ -21,6 +21,7 @@
 #include "sim/sc_sim.hpp"
 
 #include <type_traits>
+#include <utility>
 
 namespace unique_gear
 {
@@ -579,7 +580,7 @@ action_t* create_proc_action( util::string_view name, const special_effect_t& ef
 
   if ( a == nullptr )
   {
-    a = new CLASS( effect, args... );
+    a = new CLASS( effect, std::forward<ARGS>( args )... );
   }
 
   return a;
@@ -594,7 +595,7 @@ BUFF* create_buff( player_t* p, util::string_view name, ARGS&&... args )
     return debug_cast<BUFF*>( b );
   }
 
-  return make_buff<BUFF>( p, name, args... );
+  return make_buff<BUFF>( p, name, std::forward<ARGS>( args )... );
 }
 
 } // unique_gear

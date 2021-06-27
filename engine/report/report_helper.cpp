@@ -353,10 +353,12 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
   unsigned int max_ilevel_allowed = 0;
   unsigned int legendary_ilevel   = 0;
   int max_gems                    = 0;
+  int max_domination_gems         = 0;
   unsigned int max_conduit_rank   = 0;
   int max_legendary_items         = 1;
   int equipped_legendaries        = 0; // counter
   int equipped_gems               = 0; // counter
+  int domination_gems             = 0; // counter
 
   if ( p.report_information.save_str.find( "PR" ) != std::string::npos )
   {
@@ -380,6 +382,15 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     legendary_ilevel   = 235;
     max_gems           = 6;
     max_conduit_rank   = 7;
+  }
+  else if ( p.report_information.save_str.find( "T27" ) != std::string::npos )
+  {
+    tier_name           = "T27";
+    max_ilevel_allowed  = 259;
+    legendary_ilevel    = 262;
+    max_gems            = 6;
+    max_domination_gems = 5;
+    max_conduit_rank    = 11;
   }
   else
   {
@@ -437,13 +448,18 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
                    util::slot_type_string( slot ), item.item_level(), tier_name, max_ilevel_allowed );
     }
 
-    // Update equipped gems count
+    // Update equipped gems and domination gems count
     // TODO: check gem count per item?
     for ( size_t jj = 0; jj < item.parsed.gem_id.size(); ++jj )
     {
-      if ( item.parsed.gem_id[ jj ] > 0 )
+      const auto& gem                     = item.player->dbc->item( item.parsed.gem_id[ jj ] );
+      const gem_property_data_t& gem_prop = item.player->dbc->gem_property( gem.gem_properties );
+      if ( gem.id > 0 )
       {
-        equipped_gems++;
+        if ( gem_prop.id && gem_prop.color == SOCKET_COLOR_SHARD_OF_DOMINATION )
+          domination_gems++;
+        else
+          equipped_gems++;
       }
     }
 
