@@ -1334,8 +1334,6 @@ struct ashen_hallow_t : public paladin_spell_t
     hd_damage   = new hallowed_discernment_tick_t( p );
     damage_tick = new ashen_hallow_tick_t( p, hd_damage );
     heal_tick   = new ashen_hallow_heal_tick_t( p );
-    cooldown    = p -> cooldowns.ashen_hallow;
-    cooldown -> duration = p -> covenant.venthyr->cooldown();
 
     add_child( damage_tick );
     if ( p->conduit.hallowed_discernment->ok() )
