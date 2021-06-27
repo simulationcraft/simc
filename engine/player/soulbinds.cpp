@@ -2474,7 +2474,7 @@ void initialize_soulbinds( player_t* player )
     player->special_effects.push_back( new special_effect_t( effect ) );
   }
 
-  // Conduits
+  // Adaptive Armor Fragment Shared Conduit
   struct adaptive_armor_fragment_buff_t : public buff_t
   {
     timespan_t cooldown_duration;
@@ -2488,15 +2488,17 @@ void initialize_soulbinds( player_t* player )
       set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
       set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
       set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
-      
+
       if ( adaptive_armor_fragment_conduit->ok() )
-        set_default_value( adaptive_armor_fragment_conduit.value() );
+        set_default_value( adaptive_armor_fragment_conduit.percent() );
     }
 
+    // Schedule the next buff after it expires
     void expire_override( int s, timespan_t d ) override
     {
       buff_t::expire_override( s, d );
 
+      // TODO: use some option to control uptime rather than just let it proc on CD
       make_event( *sim, ( cooldown_duration - buff_duration() ), [ this ]() { trigger(); } );
     }
   };
