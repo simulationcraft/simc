@@ -173,9 +173,6 @@ void brewmaster( player_t* p )
   action_priority_list_t* def             = p->get_action_priority_list( "default" );
   def->add_action( "auto_attack" );
   def->add_action( p, "Spear Hand Strike", "if=target.debuff.casting.react" );
-  def->add_action( p, "Gift of the Ox", "if=health<health.max*0.65" );
-  def->add_talent( p, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
-  def->add_action( p, "Fortifying Brew", "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)" );
 
   for ( size_t i = 0; i < p->items.size(); i++ )
   {
@@ -185,6 +182,10 @@ void brewmaster( player_t* p )
       def->add_action( "use_item,name=" + p->items[ i ].name_str );
     }
   }
+
+  def->add_action( p, "Gift of the Ox", "if=health<health.max*0.65" );
+  def->add_talent( p, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
+  def->add_action( p, "Fortifying Brew", "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)" );
 
   def->add_action( "potion" );
 
@@ -215,6 +216,8 @@ void brewmaster( player_t* p )
       p, "Black Ox Brew",
       "if=(energy+(energy.regen*cooldown.keg_smash.remains))<40&buff.blackout_combo.down&cooldown.keg_smash.up" );
 
+  def->add_action( "fleshcraft,if=cooldown.bonedust_brew.remains<4&soulbind.lead_by_example.enabled" );
+
   def->add_action(
       p, "Keg Smash", "if=spell_targets>=2",
       "Offensively, the APL prioritizes KS on cleave, BoS else, with energy spenders and cds sorted below" );
@@ -226,8 +229,7 @@ void brewmaster( player_t* p )
 
   // Celestial Brew
   def->add_action( p, "Celestial Brew",
-                   "if=buff.blackout_combo.down&incoming_damage_1999ms>(health.max*0.1+stagger.last_tick_damage_4)&"
-                   "buff.elusive_brawler.stack<2",
+                   "if=buff.blackout_combo.down&incoming_damage_1999ms>(health.max*0.1+stagger.last_tick_damage_4)&buff.elusive_brawler.stack<2",
                    "Celestial Brew priority whenever it took significant damage (adjust the health.max coefficient "
                    "according to intensity of damage taken), and to dump excess charges before BoB." );
 
@@ -238,23 +240,21 @@ void brewmaster( player_t* p )
   def->add_action( p, "Keg Smash" );
 
   // Covenant Faeline Stomp
+  def->add_talent( p, "Chi Burst", "if=cooldown.faeline_stomp.remains>2&spell_targets>=2" );
   def->add_action( "faeline_stomp" );
 
   def->add_action( p, "Expel Harm", "if=buff.gift_of_the_ox.stack>=3" );
   def->add_action( p, "Touch of Death" );
   def->add_talent( p, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   def->add_action( p, "Spinning Crane Kick", "if=buff.charred_passions.up" );
-  def->add_action(
-      p, "Breath of Fire",
+  def->add_action( p, "Breath of Fire",
       "if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&dot.breath_of_fire_dot.refreshable))" );
   def->add_talent( p, "Chi Burst" );
   def->add_talent( p, "Chi Wave" );
   def->add_action( p, "Spinning Crane Kick",
-                   "if=active_enemies>=3&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash."
-                   "remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)" );
+      "if=active_enemies>=3&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)" );
   def->add_action( p, "Tiger Palm",
-                   "if=!talent.blackout_combo&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash."
-                   "remains+gcd)))>=65" );
+       "if=!talent.blackout_combo&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
@@ -263,8 +263,6 @@ void brewmaster( player_t* p )
   }
 
   def->add_talent( p, "Rushing Jade Wind" );
-
-  //  def->add_action( p, "Expel Harm", "if=buff.gift_of_the_ox.stack>4" );
 }
 
 void mistweaver( player_t* p )
@@ -501,7 +499,8 @@ void windwalker( player_t* p )
 
   cd_serenity->add_talent( p, "Serenity", "if=cooldown.rising_sun_kick.remains<2|fight_remains<15" );
   cd_serenity->add_action( "bag_of_tricks" );
-  cd_serenity->add_action( "fleshcraft,if=buff.serenity.down&!debuff.bonedust_brew_debuff.up" );
+  if ( p->dbc->ptr )
+    cd_serenity->add_action( "fleshcraft,if=soulbind.pustule_eruption&buff.serenity.down&debuff.bonedust_brew_debuff.down" );
 
   // Storm, Earth and Fire Cooldowns
   cd_sef->add_action( p, "Invoke Xuen, the White Tiger", "if=!variable.hold_xuen&(cooldown.rising_sun_kick.remains<2|!covenant.kyrian)&(!covenant.necrolord|cooldown.bonedust_brew.remains<2)|fight_remains<25" );
@@ -584,7 +583,8 @@ void windwalker( player_t* p )
         cd_sef->add_action( racial_actions[ i ] );
     }
   }
-  cd_sef->add_action( "fleshcraft,if=buff.storm_earth_and_fire.down&!debuff.bonedust_brew_debuff.up" );
+  if ( p->dbc->ptr )
+    cd_sef->add_action( "fleshcraft,if=soulbind.pustule_eruption&buff.storm_earth_and_fire.down&debuff.bonedust_brew_debuff.down" );
 
   // Serenity
   serenity->add_action( p, "Fists of Fury", "if=buff.serenity.remains<1" );

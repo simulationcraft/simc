@@ -429,6 +429,8 @@ struct sim_t : private sc_thread_t
     timespan_t pustule_eruption_interval = 1_s;
     /// Chance that the player will pickup Shredded Soul orb left by Ebonsoul Vise
     double shredded_soul_pickup_chance = 1.0;
+    /// Sets the average number of times per minute that the Valiant Strikes soulbind will attempt to heal a player.
+    double valiant_strikes_heal_rate = 1.0;
   } shadowlands_opts;
 
   // Auras and De-Buffs

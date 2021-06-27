@@ -2336,6 +2336,65 @@ void ebonsoul_vise( special_effect_t& effect )
   effect.execute_action = create_proc_action<ebonsoul_vise_t>( "ebonsoul_vise", effect );
 }
 
+/**Shadowed Orb of Torment
+ * id=355321 driver
+ * id=356326 mastery buff
+ * id=356334 mastery buff value
+ */
+void shadowed_orb_of_torment( special_effect_t& effect )
+{
+  struct tormented_insight_channel_t : public proc_spell_t
+  {
+    buff_t* buff;
+
+    tormented_insight_channel_t( const special_effect_t& e, buff_t* b )
+      : proc_spell_t( "tormented_insight", e.player, e.driver(), e.item ), buff( b )
+    {
+      // Override this so it doesn't trigger self-harm portion of the trinket
+      base_td      = 0;
+      channeled    = true;
+      hasted_ticks = harmful = false;
+    }
+
+    timespan_t tick_time( const action_state_t* ) const override
+    {
+      return base_tick_time;
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      event_t::cancel( player->readying );
+      player->reset_auto_attacks( data().duration() );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+      timespan_t duration = d->current_tick * buff->buff_duration();
+
+      buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+      proc_spell_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+      {
+        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+      }
+    }
+  };
+
+  buff_t* buff = buff_t::find( effect.player, "tormented_insight" );
+  if ( !buff )
+  {
+    double val = effect.player->find_spell( 356334 )->effectN( 1 ).average( effect.item );
+    buff       = make_buff<stat_buff_t>( effect.player, "tormented_insight", effect.player->find_spell( 356326 ) )
+               ->add_stat( STAT_MASTERY_RATING, val );
+  }
+
+  effect.execute_action = new tormented_insight_channel_t( effect, buff );
+}
+
 /**Relic of the Frozen Wastes
   (355301) Relic of the Frozen Wastes (equip):
     chance to deal damage (effect 1) and apply debuff Frozen Heart (355759)
@@ -2347,7 +2406,7 @@ void relic_of_the_frozen_wastes_use( special_effect_t& effect )
 {
   struct frost_tinged_carapace_spikes_t : public generic_proc_t
   {
-    struct frost_tinged_carapace_spikes_t( const special_effect_t& effect, const spell_data_t* equip )
+    frost_tinged_carapace_spikes_t( const special_effect_t& effect, const spell_data_t* equip )
       : generic_proc_t( effect, "frosttinged_carapace_spikes", effect.player->find_spell( 357409 ) )
     {
       background = dual = true;
@@ -2382,7 +2441,7 @@ void relic_of_the_frozen_wastes_use( special_effect_t& effect )
   {
     action_t* splash;
 
-    struct nerubian_ambush_t( const special_effect_t& effect, const spell_data_t* equip ) :
+    nerubian_ambush_t( const special_effect_t& effect, const spell_data_t* equip ) :
       generic_proc_t( effect, "nerubian_ambush", effect.player->find_spell(355912) )
     {
       background = dual = true;
@@ -2396,7 +2455,7 @@ void relic_of_the_frozen_wastes_use( special_effect_t& effect )
     action_t* ambush;
     action_t* spikes;
 
-    struct frostlords_call_t( const special_effect_t& effect, const spell_data_t* equip )
+    frostlords_call_t( const special_effect_t& effect, const spell_data_t* equip )
       : generic_proc_t( effect, "frostlords_call", effect.driver() ),
         ambush( create_proc_action<nerubian_ambush_t>( "nerubian_ambush", effect, equip ) ),
         spikes( create_proc_action<frost_tinged_carapace_spikes_t>( "frosttinged_carapace_spikes", effect, equip ) )
@@ -2474,174 +2533,78 @@ void poxstorm( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// id=358562 rank 1 proc & damage
-// id=358564 rank 1 tooltip & school
+void init_jaithys_the_prison_blade( special_effect_t& effect, int proc_id, int spell_id, int rank )
+{
+  // When same item levels are dual-wielded, Jaithys currently combines damage and str buff
+  // Dev confirmed this is a bug and all procs should be independent
+  action_t* harsh_tutelage_damage = create_proc_action<generic_proc_t>(  
+      "harsh_tutelage", effect, "harsh_tutelage" + std::to_string( rank ), proc_id );
+
+  harsh_tutelage_damage->base_dd_min = effect.player->find_spell( spell_id )->effectN( 1 ).average( effect.item );
+  harsh_tutelage_damage->base_dd_max = effect.player->find_spell( spell_id )->effectN( 1 ).average( effect.item );
+
+  effect.execute_action = harsh_tutelage_damage;
+
+  // rank 2+ has a str buff
+  if ( rank > 2 )
+  {
+    buff_t* buff = buff_t::find( effect.player, "harsh_tutelage" + std::to_string( rank ) );
+    if ( !buff )
+    {
+      buff =
+          make_buff<stat_buff_t>( effect.player, "harsh_tutelage" + std::to_string( rank ),
+                                  effect.player->find_spell( proc_id ) )
+              ->add_stat( STAT_STRENGTH, effect.player->find_spell( spell_id )->effectN( 2 ).average( effect.item ) );
+    }
+    effect.custom_buff = buff;
+  }
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void jaithys_the_prison_blade_1( special_effect_t& effect )
 {
-  // When same item levels are dual-wielded, Jaithys currently combines damage and str buff
-  // Dev confirmed this is a bug and all procs should be independent
-  struct harsh_tutelage_t : public proc_spell_t
-  {
-    harsh_tutelage_t( const special_effect_t& effect )
-      : proc_spell_t( "harsh_tutelage", effect.player, effect.trigger(), effect.item )
-  {
-  }
-  };
-  action_t* harsh_tutelage_damage = create_proc_action<generic_proc_t>( "harsh_tutelage", effect, "harsh_tutelage", 358564 );
-
-  harsh_tutelage_damage->base_dd_min = effect.player->find_spell( 358562 )->effectN( 1 ).average( effect.item );
-  harsh_tutelage_damage->base_dd_max = effect.player->find_spell( 358562 )->effectN( 1 ).average( effect.item );
-
-
-  effect.execute_action = harsh_tutelage_damage;
-
-  new dbc_proc_callback_t( effect.player, effect );
-
+  init_jaithys_the_prison_blade( effect, 358564, 358562, 1 );
 }
 
-// id=358565 rank 2 proc & damage
-// id=358566 rank 2 tooltip & school
 void jaithys_the_prison_blade_2( special_effect_t& effect )
 {
-  // When same item levels are dual-wielded, Jaithys currently combines damage and str buff
-  // Dev confirmed this is a bug and all procs should be independent
-  struct harsh_tutelage_t : public proc_spell_t
-  {
-    harsh_tutelage_t( const special_effect_t& effect )
-      : proc_spell_t( "harsh_tutelage", effect.player, effect.trigger(), effect.item )
-  {
-  }
-  };
-  action_t* harsh_tutelage_damage = create_proc_action<generic_proc_t>( "harsh_tutelage", effect, "harsh_tutelage", 358566 );
-
-  harsh_tutelage_damage->base_dd_min = effect.player->find_spell( 358565 )->effectN( 1 ).average( effect.item );
-  harsh_tutelage_damage->base_dd_max = effect.player->find_spell( 358565 )->effectN( 1 ).average( effect.item );
-
-
-  effect.execute_action = harsh_tutelage_damage;
-
-  buff_t* buff = buff_t::find( effect.player, "harsh_tutelage" );
-  if ( !buff )
-  {
-    buff = make_buff<stat_buff_t>( effect.player, "harsh_tutelage", effect.player->find_spell( 358572 ) )
-      //->add_stat( STAT_STRENGTH, effect.driver()->effectN( 1 ).average( effect.item ) );
-      ->add_stat( STAT_STRENGTH, effect.player->find_spell( 358571 )->effectN( 2 ).average( effect.item ) );
-
-    effect.custom_buff = buff;
-
-    new harsh_tutelage_t( effect );
-  }
-
-  new dbc_proc_callback_t( effect.player, effect );
-
+  init_jaithys_the_prison_blade( effect, 358566, 358565, 2 );
 }
 
-// id=358567 rank 3 proc/damage/stat value
-// id=358568 rank 3 tooltip/school/duration
 void jaithys_the_prison_blade_3( special_effect_t& effect )
 {
-  // When same item levels are dual-wielded, Jaithys currently combines damage and str buff
-  // Dev confirmed this is a bug and all procs should be independent
-  struct harsh_tutelage_t : public proc_spell_t
-  {
-    harsh_tutelage_t( const special_effect_t& effect )
-      : proc_spell_t( "harsh_tutelage", effect.player, effect.trigger(), effect.item )
-  {
-  }
-  };
-  action_t* harsh_tutelage_damage = create_proc_action<generic_proc_t>( "harsh_tutelage", effect, "harsh_tutelage", 358568 );
-
-  harsh_tutelage_damage->base_dd_min = effect.player->find_spell( 358567 )->effectN( 1 ).average( effect.item );
-  harsh_tutelage_damage->base_dd_max = effect.player->find_spell( 358567 )->effectN( 1 ).average( effect.item );
-
-
-  effect.execute_action = harsh_tutelage_damage;
-
-  buff_t* buff = buff_t::find( effect.player, "harsh_tutelage" );
-  if ( !buff )
-  {
-    buff = make_buff<stat_buff_t>( effect.player, "harsh_tutelage", effect.player->find_spell( 358568 ) )
-      ->add_stat( STAT_STRENGTH, effect.player->find_spell( 358567 )->effectN( 2 ).average( effect.item ) );
-
-    effect.custom_buff = buff;
-
-    new harsh_tutelage_t( effect );
-  }
-
-  new dbc_proc_callback_t( effect.player, effect );
-
+  init_jaithys_the_prison_blade( effect, 358568, 358567, 3 );
 }
-
-// id=358569 rank 4 proc/damage/stat value
-// id=358570 rank 4 tooltip/school/duration
+    
 void jaithys_the_prison_blade_4( special_effect_t& effect )
 {
-  // When same item levels are dual-wielded, Jaithys currently combines damage and str buff
-  // Dev confirmed this is a bug and all procs should be independent
-  struct harsh_tutelage_t : public proc_spell_t
-  {
-    harsh_tutelage_t( const special_effect_t& effect )
-      : proc_spell_t( "harsh_tutelage", effect.player, effect.trigger(), effect.item )
-  {
-  }
-  };
-  action_t* harsh_tutelage_damage = create_proc_action<generic_proc_t>( "harsh_tutelage", effect, "harsh_tutelage", 358570 );
-
-  harsh_tutelage_damage->base_dd_min = effect.player->find_spell( 358569 )->effectN( 1 ).average( effect.item );
-  harsh_tutelage_damage->base_dd_max = effect.player->find_spell( 358569 )->effectN( 1 ).average( effect.item );
-
-
-  effect.execute_action = harsh_tutelage_damage;
-
-  buff_t* buff = buff_t::find( effect.player, "harsh_tutelage" );
-  if ( !buff )
-  {
-    buff = make_buff<stat_buff_t>( effect.player, "harsh_tutelage", effect.player->find_spell( 358570 ) )
-      ->add_stat( STAT_STRENGTH, effect.player->find_spell( 358569 )->effectN( 2 ).average( effect.item ) );
-
-    effect.custom_buff = buff;
-
-    new harsh_tutelage_t( effect );
-  }
-
-  new dbc_proc_callback_t( effect.player, effect );
-
+  init_jaithys_the_prison_blade( effect, 358570, 358569, 4 );
 }
 
-// id=358571 rank 5 proc/damage/stat value
-// id=358572 rank 5 tooltip/school/duration
 void jaithys_the_prison_blade_5( special_effect_t& effect )
 {
-  // When same item levels are dual-wielded, Jaithys currently combines damage and str buff
-  // Dev confirmed this is a bug and all procs should be independent
-  struct harsh_tutelage_t : public proc_spell_t
-  {
-    harsh_tutelage_t( const special_effect_t& effect )
-      : proc_spell_t( "harsh_tutelage", effect.player, effect.trigger(), effect.item )
-  {
-  }
-  };
-  action_t* harsh_tutelage_damage = create_proc_action<generic_proc_t>( "harsh_tutelage", effect, "harsh_tutelage", 358572 );
+  init_jaithys_the_prison_blade( effect, 358572, 358571, 5 );
+}
 
-  harsh_tutelage_damage->base_dd_min = effect.player->find_spell( 358571 )->effectN( 1 ).average( effect.item );
-  harsh_tutelage_damage->base_dd_max = effect.player->find_spell( 358571 )->effectN( 1 ).average( effect.item );
+// Armor
 
-
-  effect.execute_action = harsh_tutelage_damage;
-
-  buff_t* buff = buff_t::find( effect.player, "harsh_tutelage" );
+/**Passably-Forged Credentials
+ * id=352081 driver
+ * id=352091 buff
+ */
+void passablyforged_credentials( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "passable_credentials" );
   if ( !buff )
   {
-    buff = make_buff<stat_buff_t>( effect.player, "harsh_tutelage", effect.player->find_spell( 358572 ) )
-      ->add_stat( STAT_STRENGTH, effect.player->find_spell( 358571 )->effectN( 2 ).average( effect.item ) );
-
-    effect.custom_buff = buff;
-
-    new harsh_tutelage_t( effect );
+    buff = make_buff<stat_buff_t>( effect.player, "passable_credentials", effect.trigger() )
+             ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), effect.driver()->effectN( 1 ).average( effect.item ) );
   }
 
+  effect.custom_buff = buff;
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
   new dbc_proc_callback_t( effect.player, effect );
-
 }
 
 // Runecarves
@@ -3028,34 +2991,26 @@ void chaos_bane( special_effect_t& effect )
   struct chaos_bane_cb_t : public dbc_proc_callback_t
   {
     buff_t* chaos_bane;
-    cooldown_t* cd;
 
-    chaos_bane_cb_t( const special_effect_t& e, buff_t* b, cooldown_t* cd ) :
+    chaos_bane_cb_t( const special_effect_t& e, buff_t* b ) :
       dbc_proc_callback_t( e.player, e ),
-      chaos_bane( b ),
-      cd( cd )
+      chaos_bane( b )
     {}
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( chaos_bane->check() || cd->down() )
+      if ( chaos_bane->check() )
         return;
 
       dbc_proc_callback_t::trigger( a, s );
     }
   };
 
-  // It seems that a Soul Fragment cannot trigger for 5 seconds after Chaos Bane expires.
-  // TODO: Collect more data to verify that this cooldown exists and lasts for 5 seconds.
-  cooldown_t* cd = effect.player->get_cooldown( "chaos_bane_proc_cooldown" );
-  cd->duration = 5_s;
   auto buff = buff_t::find( effect.player, "chaos_bane" );
   if ( !buff )
   {
     buff = make_buff<stat_buff_t>( effect.player, "chaos_bane", effect.player->find_spell( 356043 ) )
-             ->set_can_cancel( false )
-             ->set_stack_change_callback( [ cd ]( buff_t* b, int, int cur )
-               { if ( cur == 0 ) cd->start(); } );
+             ->set_can_cancel( false );
   }
 
   auto proc = create_proc_action<chaos_bane_t>( "chaos_bane", effect, buff );
@@ -3079,7 +3034,7 @@ void chaos_bane( special_effect_t& effect )
   // the 8 RPPM in the spell data. Additional data ie needed to verify the RPPM.
   effect.spell_id = 355829;
   effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
-  new chaos_bane_cb_t( effect, buff, cd );
+  new chaos_bane_cb_t( effect, buff );
 }
 
 /**Shard of Dyz
@@ -3287,6 +3242,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 355327, items::ebonsoul_vise );
     unique_gear::register_special_effect( 355301, items::relic_of_the_frozen_wastes_equip );
     unique_gear::register_special_effect( 355303, items::relic_of_the_frozen_wastes_use );
+    unique_gear::register_special_effect( 355321, items::shadowed_orb_of_torment );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
@@ -3295,6 +3251,9 @@ void register_special_effects()
     unique_gear::register_special_effect( 358567, items::jaithys_the_prison_blade_3 );
     unique_gear::register_special_effect( 358569, items::jaithys_the_prison_blade_4 );
     unique_gear::register_special_effect( 358571, items::jaithys_the_prison_blade_5 );
+
+    // Armor
+    unique_gear::register_special_effect( 352081, items::passablyforged_credentials );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
