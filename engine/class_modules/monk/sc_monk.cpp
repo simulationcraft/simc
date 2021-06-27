@@ -5647,7 +5647,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
   }
   user_options.initial_chi              = 1;
-  user_options.expel_harm_effectiveness = 1.0;
+  user_options.expel_harm_effectiveness = 0.25;
   user_options.faeline_stomp_uptime     = 1.0;
   user_options.chi_burst_healing_targets = 1;
 }
