@@ -3574,12 +3574,12 @@ struct ferocious_bite_t : public cat_attack_t
   void ApexPredatorResource()
   {
     if ( p()->spec.predatory_swiftness->ok() )
-      p()->buff.predatory_swiftness->trigger( 1, 1, 5 * 0.20 );
+      p()->buff.predatory_swiftness->trigger( 1, 1, 1 );
 
     if ( p()->talent.soul_of_the_forest_cat->ok() && p()->specialization() == DRUID_FERAL )
     {
       p()->resource_gain( RESOURCE_ENERGY,
-                          p()->resources.current[ RESOURCE_COMBO_POINT ] * p()->talent.soul_of_the_forest_cat->effectN( 1 ).resource( RESOURCE_ENERGY ),
+                          5 * p()->talent.soul_of_the_forest_cat->effectN( 1 ).resource( RESOURCE_ENERGY ),
                           p()->gain.soul_of_the_forest );
     }
 
