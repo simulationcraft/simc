@@ -4609,17 +4609,17 @@ struct expel_harm_t : public monk_heal_t
     if ( p()->buff.combo_strikes->up() )
       result *= 1 + p()->cache.mastery_value();
 
+    // Currently there is a bug that when using Harm Denial, the damage is increased
+    // by 210% of the heal instead of 10% (or 2100% of the intended damage)
+    if ( p()->bugs && p()->conduit.harm_denial->ok() )
+      result *= 21;
+
     if ( p()->buff.gift_of_the_ox->up() && p()->spec.expel_harm_2_brm->ok() )
     {
       double goto_heal = p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff();
       goto_heal *= p()->buff.gift_of_the_ox->check();
       result += goto_heal;
     }
-
-    // Currently there is a bug that when using Harm Denial, the damage is increased
-    // by 210% of the heal instead of 10% (or 2100% of the intended damage)
-    if ( p()->bugs && p()->conduit.harm_denial->ok() )
-      result *= 21;
 
     dmg->base_dd_min = result;
     dmg->base_dd_max = result;
