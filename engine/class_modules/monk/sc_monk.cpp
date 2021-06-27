@@ -4549,6 +4549,18 @@ struct expel_harm_dmg_t : public monk_spell_t
     background = true;
     may_crit   = false;
   }
+
+  // Currently there is a bug that when using Harm Denial, the damage is increased
+  // by 210% of the heal instead of 10% (or 2100% of the intended damage)
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    if ( p()->bugs && p()->conduit.harm_denial->ok() )
+      am *= 21;
+
+    return am;
+  }
 };
 
 struct expel_harm_t : public monk_heal_t
