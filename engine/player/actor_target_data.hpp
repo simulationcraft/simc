@@ -52,8 +52,11 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* shattered_psyche;            // memory of past sins
     buff_t* dream_delver;                // nightfae/dreamweaver/dream delver debuff
     buff_t* carvers_eye_debuff;          // necrolord/bonesmith/carver's eye debuff for cd tracking
-    buff_t* scouring_touch;              // shard of domination
     buff_t* soulglow_spectrometer;       // kyrian/mikanikos soulglow spectrometer debuff
+    buff_t* scouring_touch;              // Shard of Dyz
+    buff_t* exsanguinated;               // Shard of Bek
+    buff_t* kevins_wrath;                // Marileth Kevin's Oozeling Kevin's Wrath debuff
+    buff_t* frozen_heart;                // Relic of the Frozen Wastes debuff
   } debuff;
 
   struct atd_dot_t

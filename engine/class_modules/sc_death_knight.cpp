@@ -1648,7 +1648,7 @@ struct death_knight_pet_t : public pet_t
 
     // 2020-11-14: Phearomones is double dipping for pets as they're affected by both the aura
     // and the player's own haste buff, inherited by the pet
-    if ( dk() -> legendary.phearomones -> ok() && dk() -> bugs )
+    if ( dk() -> legendary.phearomones -> ok() && dk() -> bugs && !dk() -> dbc -> ptr )
     {
       haste *= 1.0 / ( 1.0 + dk() -> buffs.death_turf -> check_value() );
     }
@@ -1662,7 +1662,7 @@ struct death_knight_pet_t : public pet_t
 
     // 2020-11-14: Phearomones is double dipping for pets as they're affected by both the aura
     // and the player's own haste buff, inherited by the pet
-    if ( dk() -> legendary.phearomones -> ok() && dk() -> bugs )
+    if ( dk() -> legendary.phearomones -> ok() && dk() -> bugs && !dk() -> dbc -> ptr )
     {
       haste *= 1.0 / ( 1.0 + dk() -> buffs.death_turf -> check_value() );
     }

@@ -1,0 +1,100 @@
+demonhunter="T27_Demon_Hunter_Vengeance"
+source=default
+spec=vengeance
+level=60
+race=night_elf
+timeofday=night
+role=tank
+position=front
+talents=1233321
+covenant=kyrian
+soulbind=pelagos,combat_meditation/repeat_decree:7/growing_inferno:7
+renown=40
+
+# Default consumables
+potion=phantom_fire
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled
+temporary_enchant=main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/variable,name=brand_build,value=talent.agonizing_flames.enabled&talent.burning_alive.enabled&talent.charred_flesh.enabled
+actions+=/disrupt
+actions+=/consume_magic
+actions+=/throw_glaive,if=buff.fel_bombardment.stack=5&(buff.immolation_aura.up|!buff.metamorphosis.up)
+actions+=/call_action_list,name=brand,if=variable.brand_build
+actions+=/call_action_list,name=defensives
+actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=normal
+
+# Fiery Brand Rotation
+actions.brand=fiery_brand
+actions.brand+=/immolation_aura,if=dot.fiery_brand.ticking
+
+actions.cooldowns=potion
+# Default fallback for usable items.
+actions.cooldowns+=/use_items
+actions.cooldowns+=/sinful_brand,if=!dot.sinful_brand.ticking
+actions.cooldowns+=/the_hunt
+actions.cooldowns+=/elysian_decree
+
+# Defensives
+actions.defensives=demon_spikes
+actions.defensives+=/metamorphosis,if=!buff.metamorphosis.up&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)|target.time_to_die<15
+actions.defensives+=/fiery_brand
+
+# Normal Rotation
+actions.normal=infernal_strike
+actions.normal+=/bulk_extraction
+actions.normal+=/spirit_bomb,if=((buff.metamorphosis.up&talent.fracture.enabled&soul_fragments>=3)|soul_fragments>=4)
+actions.normal+=/fel_devastation
+actions.normal+=/soul_cleave,if=((talent.spirit_bomb.enabled&soul_fragments=0)|!talent.spirit_bomb.enabled)&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|cooldown.fel_devastation.remains>target.time_to_die|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50))))
+actions.normal+=/immolation_aura,if=((variable.brand_build&cooldown.fiery_brand.remains>10)|!variable.brand_build)&fury<=90
+actions.normal+=/felblade,if=fury<=60
+actions.normal+=/fracture,if=((talent.spirit_bomb.enabled&soul_fragments<=3)|(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&fury<=55)|(buff.metamorphosis.down&fury<=70))))
+actions.normal+=/sigil_of_flame,if=!(covenant.kyrian.enabled&runeforge.razelikhs_defilement)
+actions.normal+=/shear
+actions.normal+=/throw_glaive
+
+head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173128
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173128
+shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
+back=mantle_of_manifest_sins,id=183033,bonus_id=7187/1498
+chest=miasmalacquered_jerkin,id=183009,bonus_id=7187/1498,enchant=eternal_skirmish
+wrists=barkweave_wristwraps,id=182978,bonus_id=7187/1498/6935,gem_id=173128
+hands=gloves_of_obscure_rituals,id=178757,bonus_id=6536/1540/6646
+waist=girdle_of_shattered_dreams,id=178805,bonus_id=6536/1540/6646/6935,gem_id=173128
+legs=umbrahide_leggings,id=172318,bonus_id=6649/6650/6758/7046/1532
+feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
+finger1=entwined_gorger_tendril,id=178848,bonus_id=6536/1540/6646/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
+main_hand=claws_of_the_stone_generals,id=182416,bonus_id=7187/1531,enchant=celestial_guidance
+off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=3535/4786/1540,enchant=celestial_guidance
+
+# Gear Summary
+# gear_ilvl=228.75
+# gear_agility=874
+# gear_stamina=1518
+# gear_attack_power=40
+# gear_crit_rating=586
+# gear_haste_rating=720
+# gear_mastery_rating=150
+# gear_versatility_rating=501
+# gear_armor=607

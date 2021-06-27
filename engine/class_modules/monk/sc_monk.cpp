@@ -7009,10 +7009,41 @@ double monk_t::composite_melee_expertise( const weapon_t* weapon ) const
 
 double monk_t::composite_melee_attack_power() const
 {
-  if ( specialization() == MONK_MISTWEAVER )
-    return composite_spell_power( SCHOOL_MAX );
+  if ( base.attack_power_per_spell_power > 0 )
+    return base.attack_power_per_spell_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
 
   return player_t::composite_melee_attack_power();
+}
+
+// monk_t::composite_melee_attack_power_by_type ==================================
+
+double monk_t::composite_melee_attack_power_by_type( attack_power_type type ) const
+{
+  if ( base.attack_power_per_spell_power > 0 )
+    return base.attack_power_per_spell_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
+
+  return player_t::composite_melee_attack_power_by_type( type );
+}
+
+// monk_t::composite_spell_power ==============================================
+
+double monk_t::composite_spell_power( school_e school ) const
+{
+  if ( base.spell_power_per_attack_power > 0 )
+    return base.spell_power_per_attack_power * composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
+           composite_attack_power_multiplier();
+
+  return player_t::composite_spell_power( school );
+}
+
+// monk_t::composite_spell_power_multiplier ================================
+
+double monk_t::composite_spell_power_multiplier() const
+{
+  if ( specialization() == MONK_BREWMASTER || specialization() == MONK_WINDWALKER )
+    return 1.0;
+
+  return player_t::composite_spell_power_multiplier();
 }
 
 // monk_t::composite_attack_power_multiplier() ==========================
@@ -7153,9 +7184,9 @@ double monk_t::composite_player_pet_damage_multiplier( const action_state_t* sta
   double multiplier = player_t::composite_player_pet_damage_multiplier( state, guardian );
 
   if ( buff.hit_combo->up() )
-  {
     multiplier *= 1 + buff.hit_combo->stack() * passives.hit_combo->effectN( 4 ).percent();
-  }
+
+  multiplier *= 1 + spec.brewmaster_monk->effectN( 3 ).percent();
 
   return multiplier;
 }
@@ -7192,7 +7223,13 @@ void monk_t::invalidate_cache( cache_e c )
 
   switch ( c )
   {
+    case CACHE_ATTACK_POWER:
+    case CACHE_AGILITY:
+      if ( specialization() == MONK_BREWMASTER || specialization()  == MONK_WINDWALKER )
+        player_t::invalidate_cache( CACHE_SPELL_POWER );
+      break;
     case CACHE_SPELL_POWER:
+    case CACHE_INTELLECT:
       if ( specialization() == MONK_MISTWEAVER )
         player_t::invalidate_cache( CACHE_ATTACK_POWER );
       break;
@@ -7203,6 +7240,12 @@ void monk_t::invalidate_cache( cache_e c )
     case CACHE_MASTERY:
       if ( specialization() == MONK_WINDWALKER )
         player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      else if ( specialization()  == MONK_BREWMASTER )
+      {
+        player_t::invalidate_cache( CACHE_ATTACK_POWER );
+        player_t::invalidate_cache( CACHE_SPELL_POWER );
+        player_t::invalidate_cache( CACHE_DODGE );
+      }
       break;
     default:
       break;
@@ -7215,21 +7258,17 @@ void monk_t::create_options()
 {
   base_t::create_options();
 
-  //add_option( opt_deprecated( "initial_chi", "monk.initial_chi" ) );
-  //add_option( opt_deprecated( "memory_of_lucid_dreams_proc_chance", "monk.memory_of_lucid_dreams_proc_chance" ) );
-  //add_option( opt_deprecated( "expel_harm_effectiveness", "monk.expel_harm_effectiveness" ) );
-  //add_option( opt_deprecated( "faeline_stomp_uptime", "monk.faeline_stomp_uptime" ) );
-  //add_option( opt_deprecated( "chi_burst_healing_targets", "monk.chi_burst_healing_targets" ) );
+  // TODO: Remove in 9.2
+  add_option( opt_deprecated( "initial_chi", "monk.initial_chi" ) );
+  add_option( opt_deprecated( "memory_of_lucid_dreams_proc_chance", "monk.memory_of_lucid_dreams_proc_chance" ) );
+  add_option( opt_deprecated( "expel_harm_effectiveness", "monk.expel_harm_effectiveness" ) );
+  add_option( opt_deprecated( "faeline_stomp_uptime", "monk.faeline_stomp_uptime" ) );
+  add_option( opt_deprecated( "chi_burst_healing_targets", "monk.chi_burst_healing_targets" ) );
 
-  add_option( opt_int( "initial_chi", user_options.initial_chi, 0, 6 ) );
   add_option( opt_int( "monk.initial_chi", user_options.initial_chi, 0, 6 ) );
-  add_option( opt_float( "memory_of_lucid_dreams_proc_chance", user_options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
   add_option( opt_float( "monk.memory_of_lucid_dreams_proc_chance", user_options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "expel_harm_effectiveness", user_options.expel_harm_effectiveness, 0.0, 1.0 ) );
   add_option( opt_float( "monk.expel_harm_effectiveness", user_options.expel_harm_effectiveness, 0.0, 1.0 ) );
-  add_option( opt_float( "faeline_stomp_uptime", user_options.faeline_stomp_uptime, 0.0, 1.0 ) );
   add_option( opt_float( "monk.faeline_stomp_uptime", user_options.faeline_stomp_uptime, 0.0, 1.0 ) );
-  add_option( opt_int( "chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
   add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
 }
 

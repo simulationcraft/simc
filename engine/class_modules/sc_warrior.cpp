@@ -6840,6 +6840,7 @@ void warrior_t::apl_prot()
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( this, "Charge", "if=time=0" );
+  default_list -> add_action( "heroic_charge", "if=runeforge.reprisal" );
   default_list -> add_action( "use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -6849,6 +6850,7 @@ void warrior_t::apl_prot()
   default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>20&!covenant.venthyr,line_cd=15","Prioritize Execute over Ignore Pain as a rage dump below 20%" );
   default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>20&target.health.pct<80&covenant.venthyr,line_cd=15","Venthyr Condemn has 2 execute windows, 20% and 80%" );
   default_list -> add_action( this, "heroic_charge,if=rage<60&buff.revenge.down&runeforge.reprisal","Uses Charge when Reprisal is equiped for the benefits");
+  default_list -> add_action( "conquerors_banner", "if=runeforge.glory");
   default_list -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
   default_list -> add_action( this, "Avatar" );
   default_list -> add_action( "ancient_aftershock");
