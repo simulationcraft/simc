@@ -385,8 +385,8 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
   {
     tier_name          = "T27";
     max_ilevel_allowed = 259;
-    legendary_ilevel   = 260;
-    max_gems           = 6;
+    legendary_ilevel   = 262;
+    max_gems           = 11; // TODO handle dom sockets specifically to do 6 (reg) + 5 (dom)
     max_conduit_rank   = 11;
   }
   else
