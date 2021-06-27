@@ -5750,17 +5750,24 @@ void mage_t::create_actions()
 
 void mage_t::create_options()
 {
+  // TODO: Remove these in 9.2
+  add_option( opt_deprecated( "frozen_duration", "mage.frozen_duration" ) );
+  add_option( opt_deprecated( "scorch_delay", "mage.scorch_delay" ) );
+  add_option( opt_deprecated( "mirrors_of_torment_interval", "mage.mirrors_of_torment_interval" ) );
+  add_option( opt_deprecated( "arcane_missiles_chain_delay", "mage.arcane_missiles_chain_delay" ) );
+  add_option( opt_deprecated( "arcane_missiles_chain_relstddev", "mage.arcane_missiles_chain_relstddev" ) );
+
   add_option( opt_float( "mage.firestarter_duration_multiplier", options.firestarter_duration_multiplier ) );
   add_option( opt_float( "mage.searing_touch_duration_multiplier", options.searing_touch_duration_multiplier ) );
-  add_option( opt_timespan( "frozen_duration", options.frozen_duration ) );
-  add_option( opt_timespan( "scorch_delay", options.scorch_delay ) );
+  add_option( opt_timespan( "mage.frozen_duration", options.frozen_duration ) );
+  add_option( opt_timespan( "mage.scorch_delay", options.scorch_delay ) );
   add_option( opt_timespan( "mage.focus_magic_interval", options.focus_magic_interval, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "mage.focus_magic_relstddev", options.focus_magic_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_float( "mage.focus_magic_crit_chance", options.focus_magic_crit_chance, 0.0, 1.0 ) );
   add_option( opt_bool( "mage.focus_magic_trade", options.focus_magic_trade ) );
-  add_option( opt_timespan( "mirrors_of_torment_interval", options.mirrors_of_torment_interval, 1_ms, timespan_t::max() ) );
-  add_option( opt_timespan( "arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
-  add_option( opt_float( "arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_timespan( "mage.mirrors_of_torment_interval", options.mirrors_of_torment_interval, 1_ms, timespan_t::max() ) );
+  add_option( opt_timespan( "mage.arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
+  add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_bool( "mage.prepull_dc", options.prepull_dc ) );
 
   player_t::create_options();

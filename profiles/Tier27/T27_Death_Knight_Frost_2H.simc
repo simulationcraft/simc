@@ -2,13 +2,13 @@ deathknight="T27_Death_Knight_Frost_2H"
 source=default
 spec=frost
 level=60
-race=blood_elf
+race=orc
 role=attack
 position=back
-talents=3231212
+talents=3201012
 covenant=kyrian
-soulbind=pelagos,combat_meditation/accelerated_cold:7/everfrost:7
-renown=40
+soulbind=pelagos,combat_meditation/accelerated_cold:9:1/everfrost:9:1/unleashed_frenzy:9:1/better_together/newfound_resolve
+renown=80
 
 # Default consumables
 potion=potion_of_spectral_strength
@@ -192,29 +192,29 @@ actions.trinkets+=/use_item,slot=trinket2,if=!variable.specified_trinket&buff.pi
 actions.trinkets+=/use_item,slot=trinket1,if=!trinket.1.has_use_buff&(trinket.2.cooldown.remains|!trinket.2.has_use_buff)|cooldown.pillar_of_frost.remains>20
 actions.trinkets+=/use_item,slot=trinket2,if=!trinket.2.has_use_buff&(trinket.1.cooldown.remains|!trinket.1.has_use_buff)|cooldown.pillar_of_frost.remains>20
 
-head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173127
-neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
-shoulders=shadowghast_pauldrons,id=171417,bonus_id=6716/6944/6647/6648/1532
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498,enchant=soul_vitality
-chest=breastplate_of_cautious_calculation,id=182987,bonus_id=7187/1498,enchant=eternal_stats
-wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498,gem_id=173127
-hands=colossal_plate_gauntlets,id=182984,bonus_id=7187/1498,enchant=eternal_strength
-waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498,gem_id=173127
-legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
-feet=dynamo_doomstompers,id=179338,bonus_id=6536/1540/6646
-finger1=arachnid_cipher_ring,id=178933,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_critical_strike
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1540/6646
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=ossified_greataxe,id=184263,bonus_id=7187/1531,enchant=rune_of_razorice
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173129/187312
+neck=periapt_of_pristine_preservation,id=186291,bonus_id=7187/1498/6935,gem_id=173129
+shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
+back=dealer_xyexas_cape,id=179349,bonus_id=6536/1566/6646,enchant=soul_vitality
+chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187319,enchant=eternal_stats
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173129/187320
+hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498,gem_id=187318,enchant=eternal_strength
+waist=girdle_of_the_soulflayer,id=179326,bonus_id=6536/1566/6646/6935,gem_id=173127
+legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6536/1566/6646
+feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_versatility
+finger2=shadowghast_ring,id=178926,bonus_id=6647/6648/6758/6944/1559/6935,gem_id=173127,enchant=tenet_of_versatility
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
+trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
+main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/6652/7733/7734/7735,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=229.40
-# gear_strength=890
-# gear_stamina=1560
+# gear_ilvl=255.93
+# gear_strength=1120
+# gear_stamina=2134
 # gear_attack_power=20
-# gear_crit_rating=541
-# gear_haste_rating=644
-# gear_mastery_rating=618
-# gear_versatility_rating=158
-# gear_armor=1302
+# gear_crit_rating=688
+# gear_haste_rating=460
+# gear_mastery_rating=814
+# gear_versatility_rating=291
+# gear_armor=1524

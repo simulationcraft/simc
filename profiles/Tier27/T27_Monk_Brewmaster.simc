@@ -37,10 +37,10 @@ actions.precombat+=/chi_wave
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/spear_hand_strike,if=target.debuff.casting.react
+actions+=/use_item,name=dreadfire_vessel
 actions+=/gift_of_the_ox,if=health<health.max*0.65
 actions+=/dampen_harm,if=incoming_damage_1500ms&buff.fortifying_brew.down
 actions+=/fortifying_brew,if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)
-actions+=/use_item,name=dreadfire_vessel
 actions+=/potion
 actions+=/blood_fury
 actions+=/berserking
@@ -62,6 +62,7 @@ actions+=/purifying_brew,if=cooldown.purifying_brew.charges_fractional>=1.8&(coo
 # Black Ox Brew is currently used to either replenish brews based on less than half a brew charge available, or low energy to enable Keg Smash
 actions+=/black_ox_brew,if=cooldown.purifying_brew.charges_fractional<0.5
 actions+=/black_ox_brew,if=(energy+(energy.regen*cooldown.keg_smash.remains))<40&buff.blackout_combo.down&cooldown.keg_smash.up
+actions+=/fleshcraft,if=cooldown.bonedust_brew.remains<4&soulbind.lead_by_example.enabled
 # Offensively, the APL prioritizes KS on cleave, BoS else, with energy spenders and cds sorted below
 actions+=/keg_smash,if=spell_targets>=2
 actions+=/faeline_stomp,if=spell_targets>=2
@@ -73,6 +74,7 @@ actions+=/tiger_palm,if=talent.rushing_jade_wind.enabled&buff.blackout_combo.up&
 actions+=/breath_of_fire,if=buff.charred_passions.down&runeforge.charred_passions.equipped
 actions+=/blackout_kick
 actions+=/keg_smash
+actions+=/chi_burst,if=cooldown.faeline_stomp.remains>2&spell_targets>=2
 actions+=/faeline_stomp
 actions+=/expel_harm,if=buff.gift_of_the_ox.stack>=3
 actions+=/touch_of_death

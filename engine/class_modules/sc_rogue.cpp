@@ -6379,9 +6379,16 @@ double rogue_t::composite_damage_versatility() const
 {
   double cdv = player_t::composite_damage_versatility();
 
-  if ( legendary.obedience->ok() && buffs.flagellation->check() )
+  if ( legendary.obedience->ok() )
   {
-    cdv += buffs.flagellation->check_stack_value();
+    if ( buffs.flagellation->check() )
+    {
+      cdv += buffs.flagellation->check_stack_value();
+    }
+    if ( buffs.flagellation_persist->check() )
+    {
+      cdv += buffs.flagellation_persist->check_stack_value();
+    }
   }
 
   return cdv;
@@ -6584,6 +6591,10 @@ void rogue_t::init_action_list()
   if ( specialization() == ROGUE_OUTLAW )
     precombat->add_talent( this, "Marked for Death", "precombat_seconds=10,if=raid_event.adds.in>25" );
 
+  // Pre-Combat Fleshcraft for Pustule Eruption
+  if ( dbc->ptr )
+    precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption" );
+
   // Make restealth first action in the default list.
   def->add_action( this, "Stealth", "", "Restealth if possible (no vulnerable enemies in combat)" );
   def->add_action( this, "Kick", "", "Interrupt on cooldown to allow simming interactions with that" );
@@ -6615,6 +6626,8 @@ void rogue_t::init_action_list()
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds->add_talent( this, "Marked for Death", "line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit*1.5|combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
     cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP." );
+    if ( dbc->ptr )
+      cds->add_action( "fleshcraft,if=soulbind.pustule_eruption&!stealthed.all&!debuff.vendetta.up&master_assassin_remains=0&(energy.time_to_max_combined>2|!debuff.shiv.up)", "Fleshcraft for Pustule Eruption if not stealthed or in a cooldown cycle" );
     cds->add_action( "flagellation,if=!stealthed.rogue&(cooldown.vendetta.remains<3&effective_combo_points>=4&target.time_to_die>10|debuff.vendetta.up|fight_remains<24)", "Sync Flagellation with Vendetta as long as we won't lose a cast over the fight duration" );
     cds->add_action( "flagellation,if=!stealthed.rogue&effective_combo_points>=4&(floor((fight_remains-24)%cooldown)>floor((fight_remains-24-cooldown.vendetta.remains*variable.vendetta_cdr)%cooldown))" );
     cds->add_action( "sepsis,if=!stealthed.rogue&(cooldown.vendetta.remains<1&target.time_to_die>10|debuff.vendetta.up|fight_remains<10)", "Sync Sepsis with Vendetta as long as we won't lose a cast over the fight duration, but prefer targets that will live at least 10s" );
@@ -6717,6 +6730,8 @@ void rogue_t::init_action_list()
     cds->add_action( "variable,name=vanish_ma_condition,if=runeforge.mark_of_the_master_assassin&talent.marked_for_death.enabled,value=variable.finish_condition" );
     cds->add_action( this, "Vanish", "if=variable.vanish_ma_condition&master_assassin_remains=0&variable.blade_flurry_sync" );
     cds->add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up" );
+    if ( dbc->ptr )
+      cds->add_action( "fleshcraft,if=soulbind.pustule_eruption&!stealthed.all&(!buff.blade_flurry.up|spell_targets.blade_flurry<2)&(!buff.adrenaline_rush.up|energy.time_to_max>2)", "Fleshcraft for Pustule Eruption if not stealthed and not with Blade Flurry" );
     cds->add_action( "flagellation,if=!stealthed.all&(variable.finish_condition|target.time_to_die<13)" );
     cds->add_talent( this, "Dreadblades", "if=!stealthed.all&combo_points<=2&(!covenant.venthyr|debuff.flagellation.up)" );
     cds->add_action( this, "Roll the Bones", "if=master_assassin_remains=0&buff.dreadblades.down&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)" );
@@ -7991,10 +8006,10 @@ void rogue_t::create_buffs()
   buffs.flagellation_persist = make_buff( this, "flagellation_persist", covenant.flagellation_buff )
     ->add_invalidate( CACHE_HASTE );
   
-  // 04/22/2021 -- TOCHECK: Currently doesn't appear to be present on the persist buff, probably unintentional
   if ( legendary.obedience->ok() )
   {
     buffs.flagellation->add_invalidate( CACHE_VERSATILITY );
+    buffs.flagellation_persist->add_invalidate( CACHE_VERSATILITY );
   }
 
   buffs.echoing_reprimand.clear();

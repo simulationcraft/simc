@@ -1300,7 +1300,11 @@ class SpellDataGenerator(DataGenerator):
          # Banshee's Blight (Sylvanas Dagger) damage spell
          358126,
          # Exsanguinated (Shard of Bek)
-         356372
+         356372,
+         # Shredded Soul (Ebonsoul Vise)
+         357785,
+         # Nerubian Ambush, Frost-Tinged Carapace Spikes (Relic of the Frozen Wastes)
+         355912, 357409
         ),
 
         # Warrior:
