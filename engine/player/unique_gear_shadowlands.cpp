@@ -2347,7 +2347,7 @@ void relic_of_the_frozen_wastes_use( special_effect_t& effect )
 {
   struct frost_tinged_carapace_spikes_t : public generic_proc_t
   {
-    struct frost_tinged_carapace_spikes_t( const special_effect_t& effect, const spell_data_t* equip )
+    frost_tinged_carapace_spikes_t( const special_effect_t& effect, const spell_data_t* equip )
       : generic_proc_t( effect, "frosttinged_carapace_spikes", effect.player->find_spell( 357409 ) )
     {
       background = dual = true;
@@ -2382,7 +2382,7 @@ void relic_of_the_frozen_wastes_use( special_effect_t& effect )
   {
     action_t* splash;
 
-    struct nerubian_ambush_t( const special_effect_t& effect, const spell_data_t* equip ) :
+    nerubian_ambush_t( const special_effect_t& effect, const spell_data_t* equip ) :
       generic_proc_t( effect, "nerubian_ambush", effect.player->find_spell(355912) )
     {
       background = dual = true;
@@ -2396,7 +2396,7 @@ void relic_of_the_frozen_wastes_use( special_effect_t& effect )
     action_t* ambush;
     action_t* spikes;
 
-    struct frostlords_call_t( const special_effect_t& effect, const spell_data_t* equip )
+    frostlords_call_t( const special_effect_t& effect, const spell_data_t* equip )
       : generic_proc_t( effect, "frostlords_call", effect.driver() ),
         ambush( create_proc_action<nerubian_ambush_t>( "nerubian_ambush", effect, equip ) ),
         spikes( create_proc_action<frost_tinged_carapace_spikes_t>( "frosttinged_carapace_spikes", effect, equip ) )
