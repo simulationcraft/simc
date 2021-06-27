@@ -1085,6 +1085,7 @@ void valiant_strikes( special_effect_t& effect )
 
   valiant_strikes->dormant_valor = dormant_valor;
   effect.custom_buff = valiant_strikes;
+  effect.proc_flags2_ = PF2_CRIT;
   new valiant_strikes_cb_t( effect, dormant_valor );
 
   effect.player->register_combat_begin( [ valiant_strikes ]( player_t* p )
