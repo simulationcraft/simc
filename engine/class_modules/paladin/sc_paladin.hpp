@@ -527,8 +527,8 @@ public:
   std::unique_ptr<expr_t> create_ashen_hallow_expression( util::string_view expr_str );
 
   ground_aoe_event_t* active_consecration;
-  ground_aoe_event_t* active_hallow;
-  ground_aoe_event_t* active_h_hallow;
+  ground_aoe_event_t* active_damaging_hallow;
+  ground_aoe_event_t* active_healing_hallow;
   buff_t* active_aura;
 
   std::string default_potion() const override;

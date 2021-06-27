@@ -32,8 +32,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     next_season( SUMMER )
 {
   active_consecration = nullptr;
-  active_hallow       = nullptr;
-  active_h_hallow     = nullptr;
+  active_damaging_hallow       = nullptr;
+  active_healing_hallow     = nullptr;
   active_aura         = nullptr;
 
   cooldowns.avenging_wrath               = get_cooldown( "avenging_wrath" );
@@ -1358,6 +1358,10 @@ struct ashen_hallow_t : public paladin_spell_t
                                             .x( execute_state->target->x_position )
                                             .y( execute_state->target->y_position );
 
+    // In game it's just an ability that both heals and damages naturally. Here
+    // I made 2 hallows and stacked them on top of each other: one for healing
+    // and one for damage.
+
     make_event<ground_aoe_event_t>(
         *sim, p(),
         hallow_params.action( damage_tick )
@@ -1366,10 +1370,10 @@ struct ashen_hallow_t : public paladin_spell_t
               switch ( type )
               {
                 case ground_aoe_params_t::EVENT_CREATED:
-                  p()->active_hallow = event;
+                  p()->active_damaging_hallow = event;
                   break;
                 case ground_aoe_params_t::EVENT_DESTRUCTED:
-                  p() -> active_hallow = nullptr;
+                  p() -> active_damaging_hallow = nullptr;
                   break;
                 default:
                   break;
@@ -1383,10 +1387,10 @@ struct ashen_hallow_t : public paladin_spell_t
               switch ( type )
               {
                 case ground_aoe_params_t::EVENT_CREATED:
-                  p()->active_h_hallow = event;
+                  p()->active_healing_hallow = event;
                   break;
                 case ground_aoe_params_t::EVENT_DESTRUCTED:
-                  p() -> active_h_hallow = nullptr;
+                  p() -> active_healing_hallow = nullptr;
                   break;
                 default:
                   break;
@@ -1407,7 +1411,7 @@ struct cancel_ashen_hallow_t : public action_t
   bool ready() override
   {
     paladin_t* p = static_cast<paladin_t*>( action_t::player );
-    if ( p -> active_hallow != nullptr && p -> legendary.radiant_embers->ok() )
+    if ( p -> active_damaging_hallow != nullptr && p -> legendary.radiant_embers->ok() )
       return action_t::ready();
     return false;
   }
@@ -1416,15 +1420,15 @@ struct cancel_ashen_hallow_t : public action_t
   {
     paladin_t* p = static_cast<paladin_t*>( action_t::player );
       // CDR = % remaining duration/base duration * 50% * base cooldown
-      double ah_reduction = p -> active_hallow -> remaining_time().total_seconds();
-      ah_reduction /= p -> active_hallow -> params -> duration_.total_seconds();
+      double ah_reduction = p -> active_damaging_hallow -> remaining_time().total_seconds();
+      ah_reduction /= p -> active_damaging_hallow -> params -> duration_.total_seconds();
       ah_reduction *= 1.0 - p -> legendary.radiant_embers -> effectN( 2 ).percent();
       ah_reduction *= p -> cooldowns.ashen_hallow -> base_duration.total_seconds();
 
       p -> cooldowns.ashen_hallow -> adjust( timespan_t::from_seconds( - ah_reduction ) );
 
-      event_t::cancel( p->active_hallow );
-      event_t::cancel( p->active_h_hallow );
+      event_t::cancel( p->active_damaging_hallow );
+      event_t::cancel( p->active_healing_hallow );
 
   }
 };
@@ -2108,8 +2112,8 @@ void paladin_t::reset()
   player_t::reset();
 
   active_consecration = nullptr;
-  active_hallow       = nullptr;
-  active_h_hallow     = nullptr;
+  active_damaging_hallow       = nullptr;
+  active_healing_hallow     = nullptr;
   active_aura         = nullptr;
 
   next_season = SUMMER;
@@ -3148,14 +3152,14 @@ bool paladin_t::standing_in_hallow() const
 {
   if ( !sim->distance_targeting_enabled )
   {
-    return active_hallow != nullptr;
+    return active_damaging_hallow != nullptr;
   }
 
   // new
-  if ( active_hallow != nullptr )
+  if ( active_damaging_hallow != nullptr )
   {
     // calculate current distance to each consecration
-    ground_aoe_event_t* hallow_to_test = active_hallow;
+    ground_aoe_event_t* hallow_to_test = active_damaging_hallow;
 
     double distance = get_position_distance( hallow_to_test->params->x(), hallow_to_test->params->y() );
 
@@ -3222,12 +3226,12 @@ std::unique_ptr<expr_t> paladin_t::create_ashen_hallow_expression( util::string_
 
   if ( util::str_compare_ci( expr[ 1U ], "ticking" ) || util::str_compare_ci( expr[ 1U ], "up" ) )
   {
-    return make_fn_expr( "ashen_hallow_ticking", [ this ]() { return active_hallow == nullptr ? 0 : 1; } );
+    return make_fn_expr( "ashen_hallow_ticking", [ this ]() { return active_damaging_hallow == nullptr ? 0 : 1; } );
   }
   else if ( util::str_compare_ci( expr[ 1U ], "remains" ) )
   {
     return make_fn_expr( "ashen_hallow_remains", [ this ]() {
-      return active_hallow == nullptr ? 0 : active_hallow->remaining_time().total_seconds();
+      return active_damaging_hallow == nullptr ? 0 : active_damaging_hallow->remaining_time().total_seconds();
     } );
   }
 
