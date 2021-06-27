@@ -2587,6 +2587,29 @@ void jaithys_the_prison_blade_5( special_effect_t& effect )
   init_jaithys_the_prison_blade( effect, 358572, 358571, 5 );
 }
 
+// TODO: Add proc restrictions to match the weapons or expansion options.
+void cruciform_veinripper(special_effect_t& effect)
+{
+
+  struct sadistic_glee_t : public proc_spell_t
+  {
+    sadistic_glee_t(const special_effect_t& e)
+      : proc_spell_t("sadistic_glee", e.player, e.player->find_spell(353466), e.item)
+    {
+      base_td = e.driver()->effectN(1).average(e.item);
+    }
+
+    // TODO: Confirm Dot Refresh Behaviour
+    timespan_t calculate_dot_refresh_duration(const dot_t* dot, timespan_t duration) const override
+    {
+      return dot->time_to_next_tick() + duration;
+    }
+  };
+
+  effect.execute_action = new sadistic_glee_t( effect );
+  new dbc_proc_callback_t(effect.player, effect);
+}
+
 // Armor
 
 /**Passably-Forged Credentials
@@ -3251,6 +3274,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 358567, items::jaithys_the_prison_blade_3 );
     unique_gear::register_special_effect( 358569, items::jaithys_the_prison_blade_4 );
     unique_gear::register_special_effect( 358571, items::jaithys_the_prison_blade_5 );
+    unique_gear::register_special_effect( 357588, items::cruciform_veinripper);
 
     // Armor
     unique_gear::register_special_effect( 352081, items::passablyforged_credentials );
