@@ -2593,10 +2593,18 @@ void cruciform_veinripper(special_effect_t& effect)
 
   struct sadistic_glee_t : public proc_spell_t
   {
+    double scaled_dmg;
+
     sadistic_glee_t(const special_effect_t& e)
-      : proc_spell_t("sadistic_glee", e.player, e.player->find_spell(353466), e.item)
+      : proc_spell_t("sadistic_glee", e.player, e.player->find_spell(353466), e.item),
+        scaled_dmg(e.driver()->effectN(1).average(e.item))
     {
-      base_td = e.driver()->effectN(1).average(e.item);
+      base_td = scaled_dmg;
+    }
+
+    double base_ta(const action_state_t* /* s */) const override
+    {
+      return scaled_dmg;
     }
 
     // TODO: Confirm Dot Refresh Behaviour
@@ -2606,9 +2614,18 @@ void cruciform_veinripper(special_effect_t& effect)
     }
   };
 
-  effect.execute_action = new sadistic_glee_t( effect );
+  auto sadistic_glee = static_cast<sadistic_glee_t*>(effect.player->find_action("sadistic_glee"));
+
+  if (!sadistic_glee)
+    effect.execute_action = create_proc_action<sadistic_glee_t>("sadistic_glee", effect);
+  else
+    sadistic_glee->scaled_dmg += effect.driver()->effectN(1).average(effect.item);
+
+  effect.spell_id = 357588;
+
   new dbc_proc_callback_t(effect.player, effect);
 }
+
 
 // Armor
 
