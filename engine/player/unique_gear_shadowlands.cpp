@@ -2991,34 +2991,26 @@ void chaos_bane( special_effect_t& effect )
   struct chaos_bane_cb_t : public dbc_proc_callback_t
   {
     buff_t* chaos_bane;
-    cooldown_t* cd;
 
-    chaos_bane_cb_t( const special_effect_t& e, buff_t* b, cooldown_t* cd ) :
+    chaos_bane_cb_t( const special_effect_t& e, buff_t* b ) :
       dbc_proc_callback_t( e.player, e ),
-      chaos_bane( b ),
-      cd( cd )
+      chaos_bane( b )
     {}
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( chaos_bane->check() || cd->down() )
+      if ( chaos_bane->check() )
         return;
 
       dbc_proc_callback_t::trigger( a, s );
     }
   };
 
-  // It seems that a Soul Fragment cannot trigger for 5 seconds after Chaos Bane expires.
-  // TODO: Collect more data to verify that this cooldown exists and lasts for 5 seconds.
-  cooldown_t* cd = effect.player->get_cooldown( "chaos_bane_proc_cooldown" );
-  cd->duration = 5_s;
   auto buff = buff_t::find( effect.player, "chaos_bane" );
   if ( !buff )
   {
     buff = make_buff<stat_buff_t>( effect.player, "chaos_bane", effect.player->find_spell( 356043 ) )
-             ->set_can_cancel( false )
-             ->set_stack_change_callback( [ cd ]( buff_t* b, int, int cur )
-               { if ( cur == 0 ) cd->start(); } );
+             ->set_can_cancel( false );
   }
 
   auto proc = create_proc_action<chaos_bane_t>( "chaos_bane", effect, buff );
@@ -3042,7 +3034,7 @@ void chaos_bane( special_effect_t& effect )
   // the 8 RPPM in the spell data. Additional data ie needed to verify the RPPM.
   effect.spell_id = 355829;
   effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
-  new chaos_bane_cb_t( effect, buff, cd );
+  new chaos_bane_cb_t( effect, buff );
 }
 
 /**Shard of Dyz
