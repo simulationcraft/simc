@@ -2336,6 +2336,65 @@ void ebonsoul_vise( special_effect_t& effect )
   effect.execute_action = create_proc_action<ebonsoul_vise_t>( "ebonsoul_vise", effect );
 }
 
+/**Shadowed Orb of Torment
+ * id=355321 driver
+ * id=356326 mastery buff
+ * id=356334 mastery buff value
+ */
+void shadowed_orb_of_torment( special_effect_t& effect )
+{
+  struct tormented_insight_channel_t : public proc_spell_t
+  {
+    buff_t* buff;
+
+    tormented_insight_channel_t( const special_effect_t& e, buff_t* b )
+      : proc_spell_t( "tormented_insight", e.player, e.driver(), e.item ), buff( b )
+    {
+      // Override this so it doesn't trigger self-harm portion of the trinket
+      base_td      = 0;
+      channeled    = true;
+      hasted_ticks = harmful = false;
+    }
+
+    timespan_t tick_time( const action_state_t* ) const override
+    {
+      return base_tick_time;
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      event_t::cancel( player->readying );
+      player->reset_auto_attacks( data().duration() );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+      timespan_t duration = d->current_tick * buff->buff_duration();
+
+      buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+      proc_spell_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+      {
+        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+      }
+    }
+  };
+
+  buff_t* buff = buff_t::find( effect.player, "tormented_insight" );
+  if ( !buff )
+  {
+    double val = effect.player->find_spell( 356334 )->effectN( 1 ).average( effect.item );
+    buff       = make_buff<stat_buff_t>( effect.player, "tormented_insight", effect.player->find_spell( 356326 ) )
+               ->add_stat( STAT_MASTERY_RATING, val );
+  }
+
+  effect.execute_action = new tormented_insight_channel_t( effect, buff );
+}
+
 /**Relic of the Frozen Wastes
   (355301) Relic of the Frozen Wastes (equip):
     chance to deal damage (effect 1) and apply debuff Frozen Heart (355759)
@@ -3171,6 +3230,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 355327, items::ebonsoul_vise );
     unique_gear::register_special_effect( 355301, items::relic_of_the_frozen_wastes_equip );
     unique_gear::register_special_effect( 355303, items::relic_of_the_frozen_wastes_use );
+    unique_gear::register_special_effect( 355321, items::shadowed_orb_of_torment );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
