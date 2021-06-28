@@ -2473,6 +2473,25 @@ void initialize_soulbinds( player_t* player )
 
     player->special_effects.push_back( new special_effect_t( effect ) );
   }
+
+  // 357972 buff
+  // 357973 cooldown
+  conduit_data_t adaptive_armor_fragment_conduit = player->find_conduit_spell( "Adaptive Armor Fragment" );
+  if ( adaptive_armor_fragment_conduit->ok() )
+  {
+    auto buff = buff_t::find( player, "adaptive_armor_fragment" );
+    if ( !buff )
+    {
+      buff = make_buff( player, "adaptive_armor_fragment", player->find_spell( 357972 ) )
+                 ->set_default_value( adaptive_armor_fragment_conduit.percent() )
+                 ->set_cooldown( player->find_spell( 357973 )->duration() )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
+    }
+    player->register_combat_begin(
+        [ buff ]( player_t* p ) { make_repeating_event( *p->sim, 2.0_s, [ buff ] { buff->trigger(); } ); } );
+  }
 }
 
 void register_target_data_initializers( sim_t* sim )
