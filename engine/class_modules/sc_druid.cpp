@@ -5351,7 +5351,8 @@ struct moon_proxy_t : public druid_spell_t
   action_t* half_moon;
   action_t* full_moon;
 
-  moon_proxy_t( druid_t* p, util::string_view opt ) : druid_spell_t( "moons", p, spell_data_t::nil(), opt )
+  moon_proxy_t( druid_t* p, util::string_view opt )
+    : druid_spell_t( "moons", p, p->talent.new_moon->ok() ? spell_data_t::nil() : spell_data_t::not_found(), opt )
   {
     new_moon = new new_moon_t( p, opt );
     half_moon = new half_moon_t( p, opt );
