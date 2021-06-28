@@ -4598,21 +4598,36 @@ struct expel_harm_t : public monk_heal_t
   {
     monk_heal_t::impact( s );
 
+    double health_difference = p()->resources.max[ RESOURCE_HEALTH ] - std::max( p()->resources.current[ RESOURCE_HEALTH ], 0.0 );
+
     double result = s->result_total;
 
-    result *= p()->spec.expel_harm->effectN( 2 ).percent();
-
-    // Defaults to 1 but if someone wants to adjust the amount of damage
-    result *= p()->user_options.expel_harm_effectiveness;
+    // Harm Denial only increases the healing, not the damage
+    if ( p()->conduit.harm_denial->ok() )
+      result /= 1 + p()->conduit.harm_denial.percent();
 
     // Have to manually set the combo strike mastery multiplier
     if ( p()->buff.combo_strikes->up() )
       result *= 1 + p()->cache.mastery_value();
 
-    // Currently there is a bug that when using Harm Denial, the damage is increased
-    // by 210% of the heal instead of 10% (or 2100% of the intended damage)
-    if ( p()->bugs && p()->conduit.harm_denial->ok() )
-      result *= 21;
+    // Windwalker health difference will almost always be zero. So using the Expel Harm Effectiveness
+    // option to simulate the amount of time that the results will use the full amount.
+    if ( health_difference >= result || rng().roll( p()->user_options.expel_harm_effectiveness ) )
+    {
+      // Currently there is a bug that when using Harm Denial, the damage is increased
+      // by 210% of the heal instead of 10% (or 2100% of the intended damage)
+      if ( p()->bugs && p()->conduit.harm_denial->ok() )
+        result *= 21;
+    }
+    else
+    {
+      double min_amount = 1 / p()->spec.expel_harm->effectN( 2 ).percent();
+      // Normally this would be using health_difference, but since Windwalkers will almost always be set
+      // to zero, we want to use a range of 10 and the result to simulate varying amounts of health.
+      result = std::max( rng().range( min_amount, result ), min_amount );
+    }
+
+    result *= p()->spec.expel_harm->effectN( 2 ).percent();
 
     if ( p()->buff.gift_of_the_ox->up() && p()->spec.expel_harm_2_brm->ok() )
     {
