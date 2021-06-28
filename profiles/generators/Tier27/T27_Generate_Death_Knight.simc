@@ -6,11 +6,11 @@ role=tank
 position=front
 talents=2231133
 covenant=kyrian
-soulbind=forgelite_prime_mikanikos,brons_call_to_action/withering_plague:9:1/spirit_drain:9:1/meat_shield:9:1/lingering_plague:9:1/proliferation:9:1/soulglow_spectrometer/condensed_anima_sphere:9:1/effusive_anima_accelerator
+soulbind=forgelite_prime_mikanikos,brons_call_to_action/withering_plague:9:1/spirit_drain:9:1/meat_shield:9:1/adaptive_armor_fragment:9:1/proliferation:9:1/soulglow_spectrometer/condensed_anima_sphere:9:1/effusive_anima_accelerator
 renown=80
 
 head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173129/187319
-neck=shadowghast_necklace,id=178927,bonus_id=6716/6953/6647/6650/1559
+neck=shadowghast_necklace,id=178927,bonus_id=6716/6953/6647/6650/1559,gem_id=173129
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187320
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6536/1566/6646,enchant=soul_vitality
 chest=cuirass_of_the_lonely_citadel,id=186312,bonus_id=7187/1498,gem_id=187318,enchant=eternal_stats
