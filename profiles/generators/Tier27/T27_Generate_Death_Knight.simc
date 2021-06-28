@@ -111,11 +111,11 @@ hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498,gem_id=187320,en
 waist=fused_bone_greatbelt,id=178734,bonus_id=6536/1566/6646/6935,gem_id=173130
 legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6536/1566/6646
 feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
-finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173130
-finger2=shadowghast_ring,id=178926,bonus_id=6647/6648/6758/6944/1559/6935,gem_id=173127
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_versatility
+finger2=shadowghast_ring,id=178926,bonus_id=6647/6648/6758/6944/1559/6935,gem_id=173127,enchant=tenet_of_versatility
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
 trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
-main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/7745/7746/7747,enchant=rune_of_razorice,enchant_id=3370
+main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/7745/7746/7747,enchant=rune_of_razorice
 
 save=T27_Death_Knight_Frost_2H.simc
 
