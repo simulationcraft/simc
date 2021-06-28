@@ -121,30 +121,30 @@ save=T27_Death_Knight_Frost_2H.simc
 
 
 deathknight="T27_Death_Knight_Unholy"
+spec=unholy
 level=60
 race=troll
-spec=unholy
 role=attack
 position=back
 talents=2303021
-covenant=necrolord
-soulbind=heirmir,forgeborne_reveries/eternal_hunger:9:1/convocation_of_the_dead:9:1/heirmirs_arsenal_marrowed_gemstone/carvers_eye/mnemonic_equipment
+covenant=kyrian
+soulbind=forgelite_prime_mikanikos:18,brons_call_to_action/eternal_hunger:9:1/convocation_of_the_dead:9:1/embrace_death:9:1/soulglow_spectrometer/effusive_anima_accelerator
 renown=80
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173129/187312
-neck=periapt_of_pristine_preservation,id=186291,bonus_id=7187/1498/6935,gem_id=173129
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173130/187312
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173130
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
 back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6648/1559,enchant=soul_vitality
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_stats
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173129/187319
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173130/187319
 hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
-waist=fused_bone_greatbelt,id=178734,bonus_id=6536/1566/6646/6935,gem_id=173128
-legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6536/1566/6646
+waist=binding_of_dark_destinies,id=186352,bonus_id=7187/1498/6935,gem_id=173130
+legs=agathas_gothic_greaves,id=186313,bonus_id=7187/1498
 feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
-finger1=signet_of_the_false_accuser,id=178824,bonus_id=6536/1566/6646/6935,gem_id=173127,enchant=tenet_of_mastery
-finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_haste
+finger1=signet_of_the_false_accuser,id=178824,bonus_id=6536/1566/6646/6935,gem_id=173127,enchant=tenet_of_versatility
+finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_mastery
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
 trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
-main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/6652/7733/7734/7735,enchant=rune_of_the_fallen_crusader
+main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/7745/7746/7747,enchant=rune_of_the_fallen_crusader
 
 save=T27_Death_Knight_Unholy.simc
