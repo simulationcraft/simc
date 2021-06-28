@@ -1588,7 +1588,10 @@ void soulglow_spectrometer( special_effect_t& effect )
       dbc_proc_callback_t::execute( a, s );
 
       auto td = a->player->get_target_data( s->target );
-      td->debuff.soulglow_spectrometer->trigger();
+
+      // Prevent two events coming in at the same time from triggering more than 1 stack
+      if ( !td->debuff.soulglow_spectrometer->check() )
+        td->debuff.soulglow_spectrometer->trigger();
     }
 
     void reset() override
