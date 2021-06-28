@@ -206,7 +206,7 @@ finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_i
 finger2=shadowghast_ring,id=178926,bonus_id=6647/6648/6758/6944/1559/6935,gem_id=173127,enchant=tenet_of_versatility
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
 trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
-main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/6652/7733/7734/7735,enchant=rune_of_the_fallen_crusader
+main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/6652/7733/7734/7735,enchant=rune_of_razorice
 
 # Gear Summary
 # gear_ilvl=255.93
