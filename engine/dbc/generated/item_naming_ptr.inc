@@ -1,4 +1,4 @@
-// Item name descriptions, wow build 9.1.0.39069
+// Item name descriptions, wow build 9.1.0.39172
 static const std::array<item_name_description_t, 644> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
@@ -603,7 +603,7 @@ static const std::array<item_name_description_t, 644> __ptr_item_name_descriptio
   { 13847, "Obedience"                                   },
   { 13848, "Deathspike"                                  },
   { 13849, "Death's Advance"                             },
-  { 13850, "Lost"                                        },
+  { 13850, "Korthia"                                     },
   { 13851, "Resounding Clarity"                          },
   { 13852, "Shard of Domination"                         },
   { 13853, "Radiant Embers"                              },

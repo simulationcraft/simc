@@ -21,12 +21,6 @@
 
 /*
 * Currently Missing Soulbinds:
-* Kyrian:
-* - Kleia's Valiant Strikes
-* - Kleia's Light the Path
-* Necrolord:
-* - Maerileth's Kevin's Oozeling
-* - Emeni's Pustule Eruption
 * Night Fae:
 * - Korayn's Wild Hunt Strategem
 */
@@ -76,6 +70,32 @@ struct covenant_cb_action_t : public covenant_cb_base_t
 
     action->set_target( t );
     action->schedule_execute();
+  }
+};
+
+struct covenant_cb_pet_t : public covenant_cb_base_t
+{
+  pet_t* pet;
+  timespan_t duration;
+  bool extend_duration;
+
+  covenant_cb_pet_t( pet_t* p, timespan_t d, bool extend_duration = false )
+    : covenant_cb_pet_t( p, true, false, d, extend_duration )
+  {
+  }
+
+  covenant_cb_pet_t( pet_t* p, bool on_class = true, bool on_base = false,
+                     timespan_t d = timespan_t::from_seconds( 0 ), bool extend_duration = false )
+    : covenant_cb_base_t( on_class, on_base ), pet( p ), duration( d ), extend_duration( extend_duration )
+  {
+  }
+
+  void trigger( action_t*, action_state_t* ) override
+  {
+    if ( pet->is_sleeping() )
+      pet->summon( duration );
+    else if ( extend_duration )
+      pet->adjust_duration( duration );
   }
 };
 
@@ -724,59 +744,66 @@ void party_favors( special_effect_t& effect )
   if ( util::str_compare_ci( opt_str, "none" ) )
     return;
 
-  buff_t* buff;
+  buff_t* haste_buff = buff_t::find( effect.player, "the_mad_dukes_tea_haste" );
+  if ( !haste_buff )
+  {
+    haste_buff = make_buff( effect.player, "the_mad_dukes_tea_haste", effect.player->find_spell( 354016 ) )
+      ->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  }
+
+  buff_t* crit_buff = buff_t::find( effect.player, "the_mad_dukes_tea_crit" );
+  if ( !crit_buff )
+  {
+    crit_buff = make_buff( effect.player, "the_mad_dukes_tea_crit", effect.player->find_spell( 354017 ) )
+      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+      ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
+  }
+
+  buff_t* primary_buff = buff_t::find( effect.player, "the_mad_dukes_tea_primary" );
+  if ( !primary_buff )
+  {
+    primary_buff = make_buff( effect.player, "the_mad_dukes_tea_primary", effect.player->find_spell( 353266 ) )
+      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+      ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+      ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
+  }
+
+  buff_t* vers_buff = buff_t::find( effect.player, "the_mad_dukes_tea_versatility" );
+  if ( !vers_buff )
+  {
+    vers_buff = make_buff( effect.player, "the_mad_dukes_tea_versatility", effect.player->find_spell( 354018 ) )
+      ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
+      ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
+  }
+
+  std::vector<buff_t*> buffs;
 
   // TODO: Figure out if you can have multiple buffs at a time
   if ( util::str_compare_ci( opt_str, "haste" ) )
   {
-    buff = buff_t::find( effect.player, "the_mad_dukes_tea_haste" );
-    if ( !buff )
-    {
-      buff = make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_haste", effect.player->find_spell( 354016 ) )
-                 ->set_default_value_from_effect_type( A_HASTE_ALL )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-    }
+    buffs = { haste_buff };
   }
   else if ( util::str_compare_ci( opt_str, "crit" ) )
   {
-    buff = buff_t::find( effect.player, "the_mad_dukes_tea_crit" );
-    if ( !buff )
-    {
-      buff = make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_crit", effect.player->find_spell( 354017 ) )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                 ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
-    }
+    buffs = { crit_buff };
   }
   else if ( util::str_compare_ci( opt_str, "primary" ) )
   {
-    buff = buff_t::find( effect.player, "the_mad_dukes_tea_primary" );
-    if ( !buff )
-    {
-      buff = make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_primary", effect.player->find_spell( 353266 ) )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-                 ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
-    }
+    buffs = { primary_buff };
   }
   else if ( util::str_compare_ci( opt_str, "versatility" ) )
   {
-    buff = buff_t::find( effect.player, "the_mad_dukes_tea_versatility" );
-    if ( !buff )
-    {
-      buff =
-          make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_versatility", effect.player->find_spell( 354018 ) )
-              ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-              ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
-    }
+    buffs = { vers_buff };
   }
-  else
+  else if ( util::str_compare_ci( opt_str, "random" ) )
   {
-    buff = nullptr;
+    buffs = { haste_buff, crit_buff, primary_buff, vers_buff };
   }
 
-  if ( buff )
-    effect.player->register_combat_begin( buff );
+  if ( buffs.size() > 0 )
+    effect.player->register_combat_begin( [ buffs ] ( player_t* p ) { buffs[ p->rng().range( buffs.size() ) ]->trigger(); } );
   else
     effect.player->sim->error( "Warning: Invalid type '{}' for Party Favors, ignoring.", opt_str );
 }
@@ -970,6 +997,108 @@ void better_together( special_effect_t& effect )
   } );
 }
 
+/**Valiant Strikes
+ * id=329791 driver
+ * id=330943 "Valiant Strikes" stacking buff
+ * id=348236 "Dormant Valor" lockout debuff
+ * The actual healing is not implemented.
+ */
+struct valiant_strikes_t : public buff_t
+{
+  buff_t* dormant_valor;
+  buff_t* light_the_path;
+
+  valiant_strikes_t( player_t* p ) :
+    buff_t( p, "valiant_strikes", p->find_spell( 330943 ) ),
+    dormant_valor(),
+    light_the_path()
+  {
+    set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+    set_default_value( 0 );
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  }
+
+  void trigger_heal()
+  {
+    if ( !check() )
+      return;
+
+    if ( dormant_valor )
+      dormant_valor->trigger();
+
+    if ( light_the_path )
+      light_the_path->trigger();
+
+    expire();
+  }
+};
+
+void valiant_strikes( special_effect_t& effect )
+{
+  struct valiant_strikes_event_t final : public event_t
+  {
+    timespan_t delta_time;
+    valiant_strikes_t* valiant_strikes;
+
+    valiant_strikes_event_t( valiant_strikes_t* v, timespan_t t = 0_ms ) :
+      event_t( *v->sim, t ),
+      valiant_strikes( v ),
+      delta_time( t )
+    {}
+
+    const char* name() const override
+    { return "valiant_strikes_event"; }
+
+    void execute() override
+    {
+      if ( delta_time > 0_ms )
+        valiant_strikes->trigger_heal();
+
+      double rate = sim().shadowlands_opts.valiant_strikes_heal_rate;
+      if ( rate > 0 )
+      {
+        // Model the time between events with a Poisson process.
+        timespan_t t = timespan_t::from_minutes( rng().exponential( 1 / rate ) );
+        make_event<valiant_strikes_event_t>( sim(), valiant_strikes, t );
+      }
+    }
+  };
+
+  struct valiant_strikes_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* dormant_valor;
+
+    valiant_strikes_cb_t( const special_effect_t& e, buff_t* b ) :
+      dbc_proc_callback_t( e.player, e ), dormant_valor( b )
+    {}
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( dormant_valor->check() )
+        return;
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
+  };
+
+  valiant_strikes_t* valiant_strikes = debug_cast<valiant_strikes_t*>( buff_t::find( effect.player, "valiant_strikes" ) );
+  if ( !valiant_strikes )
+    valiant_strikes = make_buff<valiant_strikes_t>( effect.player );
+
+  auto dormant_valor = buff_t::find( effect.player, "dormant_valor" );
+  if ( !dormant_valor )
+    dormant_valor = make_buff( effect.player, "dormant_valor", effect.player->find_spell( 348236 ) )
+                      ->set_can_cancel( false );
+
+  valiant_strikes->dormant_valor = dormant_valor;
+  effect.custom_buff = valiant_strikes;
+  effect.proc_flags2_ = PF2_CRIT;
+  new valiant_strikes_cb_t( effect, dormant_valor );
+
+  effect.player->register_combat_begin( [ valiant_strikes ]( player_t* p )
+    { make_event<valiant_strikes_event_t>( *valiant_strikes->sim, valiant_strikes ); } );
+}
+
 void pointed_courage( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "pointed_courage" );
@@ -1021,6 +1150,28 @@ void spear_of_the_archon( special_effect_t& effect )
   }
 
   new spear_of_the_archon_cb_t( effect );
+}
+
+/**Light the Path
+ * id=351491 passive aura
+ * id=352981 buff
+ */
+void light_the_path( special_effect_t& effect )
+{
+  auto light_the_path = buff_t::find( effect.player, "light_the_path" );
+  if ( !light_the_path )
+  {
+    light_the_path = make_buff( effect.player, "light_the_path", effect.player->find_spell( 352981 ) )
+                       ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+                       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+  }
+
+  valiant_strikes_t* valiant_strikes = debug_cast<valiant_strikes_t*>( buff_t::find( effect.player, "valiant_strikes" ) );
+  if ( !valiant_strikes )
+    valiant_strikes = make_buff<valiant_strikes_t>( effect.player );
+
+  valiant_strikes->set_default_value( 0.0001 * effect.driver()->effectN( 1 ).base_value() );
+  valiant_strikes->light_the_path = light_the_path;
 }
 
 void hammer_of_genesis( special_effect_t& effect )
@@ -1589,6 +1740,75 @@ void plagueys_preemptive_strike( special_effect_t& effect )
   new plagueys_preemptive_strike_cb_t( effect );
 }
 
+// TODO: add healing absorb
+void kevins_oozeling( special_effect_t& effect )
+{
+  struct kevins_oozeling_pet_t : public pet_t
+  {
+    struct kevins_wrath_t : public spell_t
+    {
+      kevins_wrath_t( pet_t* p, const std::string& options_str ) : spell_t( "kevins_wrath", p, p->find_spell( 352520 ) )
+      {
+        parse_options( options_str );
+      }
+
+      void execute() override
+      {
+        spell_t::execute();
+
+        auto td = debug_cast<pet_t*>( player )->owner->get_target_data( target );
+        td->debuff.kevins_wrath->trigger();
+      }
+    };
+    kevins_oozeling_pet_t( player_t* owner ) : pet_t( owner->sim, owner, "kevins_oozeling" )
+    {
+      npc_id = 178601;
+      owner_coeff.sp_from_sp = 2.0;
+      owner_coeff.ap_from_ap = 1.0;
+    }
+
+    void init_action_list() override
+    {
+      // TODO: alter this in some way to mimic the target swapping it does in game
+      action_list_str = "kevins_wrath";
+
+      pet_t::init_action_list();
+    }
+
+    action_t* create_action( util::string_view name, const std::string& options_str ) override
+    {
+      if ( name == "kevins_wrath" )
+        return new kevins_wrath_t( this, options_str );
+
+      return pet_t::create_action( name, options_str );
+    }
+
+    void demise() override
+    {
+      pet_t::demise();
+
+      // When the pet expires any debuffs it put out are expired as well
+      range::for_each( owner->sim->actor_list, [ this ]( player_t* t ) {
+        if ( !t->is_enemy() )
+          return;
+
+        auto td = owner->get_target_data( t );
+        if ( td->debuff.kevins_wrath->check() )
+          td->debuff.kevins_wrath->expire();
+      } );
+    }
+  };
+
+  pet_t* kevin = effect.player->find_pet( "kevins_oozeling" );
+  if ( !kevin )
+    kevin = new kevins_oozeling_pet_t( effect.player );
+
+  timespan_t duration = timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() );
+
+  // Pet duration is extended by subsequent casts, such as Serrated Bone Spike for Rogues
+  add_covenant_cast_callback<covenant_cb_pet_t>( effect.player, kevin, duration, true );
+}
+
 void gnashing_chompers( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "gnashing_chompers" );
@@ -2030,6 +2250,68 @@ void emenis_magnificent_skin( special_effect_t& effect )
             } );
 }
 
+/**Pustule Eruption
+ * id=351094 Primary Soulbind spell, contains coefficients and stack logic in description
+ * id=352095 Merged AoE damage and healing spell, no coefficient in spell data
+ * id=352086 Stacking buff with the damage/heal proc trigger, 1s ICD
+ * Proc triggers from damage/healing taken, including overhealing. Doesn't trigger from absorbed damage.
+ */
+void pustule_eruption( special_effect_t& effect )
+{
+  struct pustule_eruption_heal_t : public heal_t
+  {
+    pustule_eruption_heal_t( player_t* p )
+      : heal_t( "pustule_eruption_heal", p, p->find_spell( 352095 ) )
+    {
+      split_aoe_damage = true;
+      spell_power_mod.direct = 0.48; // Hardcoded in tooltip
+    }
+
+    double composite_spell_power() const override
+    {
+      return std::max( heal_t::composite_spell_power(), heal_t::composite_attack_power() );
+    }
+  };
+
+  struct pustule_eruption_damage_t : public unique_gear::proc_spell_t
+  {
+    pustule_eruption_damage_t( player_t* p )
+      : proc_spell_t( "pustule_eruption", p, p->find_spell( 352095 ) )
+    {
+      split_aoe_damage = true;
+      spell_power_mod.direct = 0.72; // Hardcoded in tooltip
+    }
+
+    double composite_spell_power() const override
+    {
+      return std::max( proc_spell_t::composite_spell_power(), proc_spell_t::composite_attack_power() );
+    }
+  };
+  
+  action_t* damage = effect.player->find_action( "pustule_eruption" );
+  if ( !damage )
+    damage = new pustule_eruption_damage_t( effect.player );
+
+  action_t* heal = effect.player->find_action( "pustule_eruption_heal" );
+  if ( !heal )
+    heal = new pustule_eruption_heal_t( effect.player );
+
+  if ( !effect.player->buffs.trembling_pustules )
+  {
+    effect.player->buffs.trembling_pustules =
+      make_buff( effect.player, "trembling_pustules", effect.player->find_spell( 352086 ) )
+      ->set_period( effect.player->sim->shadowlands_opts.pustule_eruption_interval )
+      ->set_reverse( true )
+      ->set_tick_callback( [ damage, heal ]( buff_t* b, int, timespan_t )
+      {
+        damage->set_target( damage->player->target );
+        damage->execute();
+        heal->set_target( heal->player );
+        heal->execute();
+      } );
+  }
+}
+
 //TODO: Add support for dynamically changing enemy count
 //Note: HP% and target count values are hardcoded in tooltip
 void waking_bone_breastplate( special_effect_t& effect )
@@ -2110,8 +2392,10 @@ void register_special_effects()
   register_soulbind_special_effect( 328266, soulbinds::combat_meditation );
   register_soulbind_special_effect( 351146, soulbinds::better_together );
   register_soulbind_special_effect( 351149, soulbinds::newfound_resolve, true );
-  register_soulbind_special_effect( 329778, soulbinds::pointed_courage );  // Kleia
+  register_soulbind_special_effect( 329791, soulbinds::valiant_strikes );  // Kleia
+  register_soulbind_special_effect( 329778, soulbinds::pointed_courage );
   register_soulbind_special_effect( 351488, soulbinds::spear_of_the_archon );
+  register_soulbind_special_effect( 351491, soulbinds::light_the_path );
   register_soulbind_special_effect( 333935, soulbinds::hammer_of_genesis );  // Mikanikos
   register_soulbind_special_effect( 333950, soulbinds::brons_call_to_action, true );
   register_soulbind_special_effect( 352188, soulbinds::effusive_anima_accelerator );
@@ -2119,9 +2403,11 @@ void register_special_effects()
   // Necrolord
   register_soulbind_special_effect( 323074, soulbinds::volatile_solvent );  // Marileth
   register_soulbind_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
+  register_soulbind_special_effect( 352110, soulbinds::kevins_oozeling );
   register_soulbind_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
   register_soulbind_special_effect( 342156, soulbinds::lead_by_example, true );
   register_soulbind_special_effect( 323921, soulbinds::emenis_magnificent_skin );
+  register_soulbind_special_effect( 351094, soulbinds::pustule_eruption );
   register_soulbind_special_effect( 326514, soulbinds::forgeborne_reveries );  // Heirmir
   register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone, true );
@@ -2193,6 +2479,25 @@ void initialize_soulbinds( player_t* player )
       continue;
 
     player->special_effects.push_back( new special_effect_t( effect ) );
+  }
+
+  // 357972 buff
+  // 357973 cooldown
+  conduit_data_t adaptive_armor_fragment_conduit = player->find_conduit_spell( "Adaptive Armor Fragment" );
+  if ( adaptive_armor_fragment_conduit->ok() )
+  {
+    auto buff = buff_t::find( player, "adaptive_armor_fragment" );
+    if ( !buff )
+    {
+      buff = make_buff( player, "adaptive_armor_fragment", player->find_spell( 357972 ) )
+                 ->set_default_value( adaptive_armor_fragment_conduit.percent() )
+                 ->set_cooldown( player->find_spell( 357973 )->duration() )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
+    }
+    player->register_combat_begin(
+        [ buff ]( player_t* p ) { make_repeating_event( *p->sim, 2.0_s, [ buff ] { buff->trigger(); } ); } );
   }
 }
 
@@ -2287,6 +2592,29 @@ void register_target_data_initializers( sim_t* sim )
     }
     else
       td->debuff.soulglow_spectrometer = make_buff( *td, "soulglow_spectrometer" )->set_quiet( true );
+  } );
+
+  // Kevin's Wrath
+  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
+    auto kevins_wrath = td->source->find_soulbind_spell( "Kevin's Oozeling" );
+    if ( kevins_wrath->ok() )
+    {
+      assert( !td->debuff.kevins_wrath );
+      timespan_t duration = td->source->find_spell( 352528 )->duration();
+
+      // BUG: this is lasting forever on PTR
+      if ( td->source->bugs )
+      {
+        duration = timespan_t::zero();
+      }
+
+      td->debuff.kevins_wrath = make_buff( *td, "kevins_wrath", td->source->find_spell( 352528 ) )
+                                    ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
+                                    ->set_duration( duration );
+      td->debuff.kevins_wrath->reset();
+    }
+    else
+      td->debuff.kevins_wrath = make_buff( *td, "kevins_wrath" )->set_quiet( true );
   } );
 }
 

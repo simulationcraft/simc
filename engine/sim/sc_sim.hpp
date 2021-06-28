@@ -377,7 +377,7 @@ struct sim_t : private sc_thread_t
     /// Type of corpse used for Volatile Solvent. Accepts corpse type string or buff string
     /// Corpse type: "humanoid", "beast", "dragonkin", "elemental", "giant"
     /// Buff type: "mastery", "primary", "crit", "magic", "physical"
-    std::string volatile_solvent_type = "none";
+    std::string volatile_solvent_type = "mastery";
     // Prevents Soul Ignite from being used a second time to trigger the
     // AoE early. This results in the highest possible damage and the
     // player can alternatively trigger it early by canceling the buff.
@@ -407,7 +407,7 @@ struct sim_t : private sc_thread_t
     double bonded_hearts_other_covenant_chance = 1.0;
     // Stat buff provided by Theotar's Party Favors soulbind (The Mad Duke's Tea buffs)
     // Buff Types: "primary", "haste", "crit", "versatility"
-    std::string party_favor_type = "none";
+    std::string party_favor_type = "random";
     // Battlefield Presence enemy count override
     // Defaults to -1 to have the sim constantly adjust the value based on number of enemies in the sim
     int battlefield_presence_enemies = -1;
@@ -425,6 +425,12 @@ struct sim_t : private sc_thread_t
     timespan_t newfound_resolve_default_delay = 4_s;
     double newfound_resolve_delay_relstddev = 0.2;
     bool enable_rune_words = true;
+    /// Seconds between damage/healing triggers for the Pustule Eruption soulbind, has a minimum 1s ICD
+    timespan_t pustule_eruption_interval = 1_s;
+    /// Chance that the player will pickup Shredded Soul orb left by Ebonsoul Vise
+    double shredded_soul_pickup_chance = 1.0;
+    /// Sets the average number of times per minute that the Valiant Strikes soulbind will attempt to heal a player.
+    double valiant_strikes_heal_rate = 1.0;
   } shadowlands_opts;
 
   // Auras and De-Buffs

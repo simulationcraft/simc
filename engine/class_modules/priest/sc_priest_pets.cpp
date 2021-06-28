@@ -596,32 +596,6 @@ struct rattling_mage_unholy_bolt_t final : public priest_pet_spell_t
     parse_options( options );
   }
 
-  timespan_t execute_time() const override
-  {
-    timespan_t t = base_execute_time;
-
-    if ( p().o().bugs )
-    {
-      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/860
-      // Casts have a baked in delay, setting non-hasted execute and adding a bit of extra time
-      // to account for this
-      t *= 1.084;
-      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/863
-      // There is no linear scaling of haste and cast time, it just doubles at 100% or more
-      double percent_haste = 1 / p().o().composite_spell_haste() - 1;
-      if ( percent_haste >= 1.0 )
-      {
-        t /= 2;
-      }
-    }
-    else
-    {
-      t = spell_base_t::execute_time();
-    }
-
-    return t;
-  }
-
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = priest_pet_spell_t::composite_da_multiplier( s );

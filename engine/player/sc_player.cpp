@@ -2350,6 +2350,7 @@ void player_t::init_spells()
 {
   sim->print_debug( "Initializing spells for {}.", *this );
 
+  // Racials
   racials.quickness             = find_racial_spell( "Quickness" );
   racials.command               = find_racial_spell( "Command" );
   racials.arcane_acuity         = find_racial_spell( "Arcane Acuity" );
@@ -4008,6 +4009,9 @@ double player_t::composite_player_multiplier( school_e school ) const
   if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
     m *= 1.0 + buffs.battlefield_presence->check_stack_value();
 
+  if ( buffs.coldhearted && buffs.coldhearted->check() )
+    m *= 1.0 + buffs.coldhearted->check_value();
+
   return m;
 }
 
@@ -4046,8 +4050,10 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     m *= 1.0 + td->debuff.plagueys_preemptive_strike->check_value();
     m *= 1.0 + td->debuff.sinful_revelation->check_value();
     m *= 1.0 + td->debuff.dream_delver->check_stack_value();
-    m *= 1.0 + td->debuff.scouring_touch->check_stack_value();
     m *= 1.0 + td->debuff.soulglow_spectrometer->check_stack_value();
+    m *= 1.0 + td->debuff.scouring_touch->check_stack_value();
+    m *= 1.0 + td->debuff.exsanguinated->check_value();
+    m *= 1.0 + td->debuff.kevins_wrath->check_value();
   }
 
   return m;
