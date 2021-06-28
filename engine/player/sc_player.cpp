@@ -2350,6 +2350,7 @@ void player_t::init_spells()
 {
   sim->print_debug( "Initializing spells for {}.", *this );
 
+  // Racials
   racials.quickness             = find_racial_spell( "Quickness" );
   racials.command               = find_racial_spell( "Command" );
   racials.arcane_acuity         = find_racial_spell( "Arcane Acuity" );
