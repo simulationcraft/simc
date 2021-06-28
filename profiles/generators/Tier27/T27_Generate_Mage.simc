@@ -66,7 +66,7 @@ role=spell
 position=ranged_back
 talents=2032021
 covenant=venthyr
-soulbind=nadjia_the_mistblade,dauntless_duelist/thrill_seeker/fatal_flaw/icy_propulsion:9:1/ice_bite:9:1
+soulbind=theotar_the_mad_duke,soothing_shade/party_favors/icy_propulsion:9:1/ice_bite:9:1/siphoned_malice:9:1
 renown=80
 
 head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=173128/187319
