@@ -1,5 +1,5 @@
-// Gem properties, wow build 9.0.5.38134
-static const std::array<gem_property_data_t, 1857> __gem_property_data { {
+// Gem properties, wow build 9.1.0.39172
+static const std::array<gem_property_data_t, 1930> __gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
   {    4,  2688, 0x00000004 }, // +$k1 Stamina
@@ -1857,5 +1857,78 @@ static const std::array<gem_property_data_t, 1857> __gem_property_data { {
   { 3823,  6238, 0x0000000e }, // +$k1 Haste
   { 3824,  6239, 0x0000000e }, // Speed increased by $325335s2 for each Shadowlands gem you have socketed.
   { 3825,  6240, 0x0000000e }, // Restores $325492s2 health every $325492t1 sec for each Shadowlands gem you have socketed.
+  { 3829,  6271, 0x00000020 }, // Your critical hits cause an additional $350511s1 Shadow damage over $350511d, stacking up to 3 times
+  { 3830,  6269, 0x00000020 }, // Taking Magic damage heals you for $350525S1
+  { 3831,  6270, 0x00000020 }, // Healing a target below 30% health increases your Int by $350530S1 for $350530D.
+  { 3832,  6272, 0x00000020 }, // Your helpful abilities send a Swarm of Locusts to protect your ally.
+  { 3833,  6273, 0x00000020 }, // Your Swarm of Locusts now chains to up to 3 additional allies.
+  { 3834,  6274, 0x00000020 }, // Swarm of Locusts casts automatically on a nearby ally every 60 seconds.
+  { 3835,  6275, 0x00000020 }, // Swarm of Locusts has a 25% chance to cast twice when it casts.
+  { 3836,  6276, 0x00000020 }, // When your allies with Swarm of Locusts are healed to full health, the Swarm damages a nearby enemy.
+  { 3837,  6277, 0x00000020 }, // Your melee attacks have a chance to drain a Soul Fragment from your target.
+  { 3838,  6278, 0x00000020 }, // Soul Fragments from Grim Harvest now stack up to 10 times.
+  { 3839,  6279, 0x00000020 }, // Reaching 10 stacks unleashes Chaos Bane, dealing Shadow damage and granting you additional power.
+  { 3840,  6280, 0x00000020 }, // Chaos Bane's damage is increased by 100%.
+  { 3841,  6281, 0x00000020 }, // Chaos Bane explodes again when it expires.
+  { 3842,  6282, 0x00000020 }, // Your Critical Hits have a chance to spill your enemy's blood on the ground, which you can absorb.
+  { 3843,  6283, 0x00000020 }, // Your healing from Blood Patches is increased by 50%.
+  { 3844,  6284, 0x00000020 }, // If 5 Blood Patches exist at once, they congeal into a Blood Beast.
+  { 3845,  6285, 0x00000020 }, // When you drop below 50% health, your blood spills into 3 Blood Patches.
+  { 3846,  6286, 0x00000020 }, // When your Blood Beast expires, heal for all their remaining health.
+  { 3847,  6300, 0x00100000 }, // |cff71d5ff|Hspell:30455|h[Ice Lance]|h|r
+  { 3848,  6289, 0x00100000 }, // $355752@spelldesc355721
+  { 3849,  6290, 0x00100000 }, // $355752@spelldesc355725
+  { 3850,  6291, 0x00100000 }, // $355752@spelldesc355731
+  { 3851,  6292, 0x00100000 }, // $355752@spelldesc355734
+  { 3852,  6293, 0x00100000 }, // $355752@spelldesc355739
+  { 3853,  6294, 0x00100000 }, // $355752@spelldesc355740
+  { 3854,  6295, 0x00100000 }, // $355752@spelldesc355741
+  { 3855,  6296, 0x00100000 }, // $355752@spelldesc355742
+  { 3856,  6297, 0x00100000 }, // $355752@spelldesc355743
+  { 3857,  6298, 0x00100000 }, // $355752@spelldesc355745
+  { 3858,  6301, 0x00100000 }, // $355752@spelldesc355748
+  { 3859,  6301, 0x00100000 }, // $355752@spelldesc355748
+  { 3860,  6302, 0x00100000 }, // $355752@spelldesc355755
+  { 3861,  6303, 0x00100000 }, // $355752@spelldesc355771
+  { 3862,  6304, 0x00100000 }, // $355752@spelldesc355757
+  { 3863,  6306, 0x00100000 }, // $355752@spelldesc355766
+  { 3864,  6306, 0x00100000 }, // $355752@spelldesc355766
+  { 3865,  6304, 0x00100000 }, // $355752@spelldesc355757
+  { 3867,  6308, 0x00100000 }, // $355752@spelldesc357040
+  { 3868,  6309, 0x00100000 }, // $355752@spelldesc357038
+  { 3869,  6310, 0x00100000 }, // $355752@spelldesc357037
+  { 3870,  6311, 0x00100000 }, // $355752@spelldesc357036
+  { 3871,  6312, 0x00100000 }, // $355752@spelldesc357035
+  { 3872,  6313, 0x00100000 }, // $355752@spelldesc357034
+  { 3873,  6314, 0x00100000 }, // $355752@spelldesc357033
+  { 3874,  6315, 0x00100000 }, // $355752@spelldesc357032
+  { 3875,  6316, 0x00100000 }, // $355752@spelldesc357031
+  { 3876,  6317, 0x00100000 }, // $355752@spelldesc357049
+  { 3877,  6318, 0x00100000 }, // $355752@spelldesc357050
+  { 3878,  6319, 0x00100000 }, // $spell@spelldesc357051
+  { 3879,  6320, 0x00100000 }, // $355752@spelldesc357052
+  { 3880,  6321, 0x00100000 }, // $355752@spelldesc357053
+  { 3881,  6322, 0x00100000 }, // $spell@spelldesc357054
+  { 3882,  6323, 0x00100000 }, // $355752@spelldesc357055
+  { 3883,  6324, 0x00100000 }, // $355752@spelldesc357056
+  { 3884,  6325, 0x00100000 }, // $spell@spelldesc357057
+  { 3885,  6326, 0x00100000 }, // $spell@spelldesc357067
+  { 3886,  6327, 0x00100000 }, // $355752@spelldesc357056
+  { 3887,  6328, 0x00100000 }, // $spell@spelldesc357065
+  { 3888,  6329, 0x00100000 }, // $355752@spelldesc357064
+  { 3889,  6330, 0x00100000 }, // $355752@spelldesc357063
+  { 3890,  6331, 0x00100000 }, // $355752@spelldesc357062
+  { 3891,  6332, 0x00100000 }, // $355752@spelldesc357061
+  { 3892,  6333, 0x00100000 }, // $spell@spelldesc357060
+  { 3893,  6334, 0x00100000 }, // $spell@spelldesc357058
+  { 3894,  6335, 0x00100000 }, // $spell@spelldesc357069
+  { 3895,  6336, 0x00100000 }, // $spell@spelldesc357071
+  { 3896,  6337, 0x00100000 }, // $spell@spelldesc357072
+  { 3897,  6338, 0x00100000 }, // $spell@spelldesc357073
+  { 3898,  6339, 0x00100000 }, // $spell@spelldesc357074
+  { 3899,  6340, 0x00100000 }, // $spell@spelldesc357075
+  { 3900,  6341, 0x00100000 }, // $spell@spelldesc357076
+  { 3901,  6342, 0x00100000 }, // $spell@spelldesc357068
+  { 3902,  6343, 0x00100000 }, // $spell@spelldesc357077
 } };
 
