@@ -2654,6 +2654,45 @@ void passablyforged_credentials( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+/**Dark Ranger's Quiver
+    353513 driver, damage on effect 1
+    353514 trigger buff
+    353515 cleave damage at 5 stacks on up to 5 targets
+ */
+void dark_rangers_quiver( special_effect_t& effect )
+{
+  if ( effect.player->type != HUNTER )
+    return;
+
+  struct withering_fire_t : public proc_spell_t
+  {
+    withering_fire_t( const special_effect_t& effect ) : proc_spell_t( "withering_fire", effect.player, effect.player->find_spell( 353515 ), effect.item )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+      aoe = 5;
+    }
+  };
+
+  auto cleave = create_proc_action<withering_fire_t>( "withering_fire", effect );
+  auto buff = buff_t::find( effect.player, "withering_fire" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "withering_fire", effect.trigger() );
+    buff->set_stack_change_callback( [ cleave ]( buff_t* buff, int, int cur ) {
+      if ( cur == buff->max_stack() )
+      {
+        cleave->set_target( buff->player->target );
+        cleave->execute();
+        make_event( buff->sim, [ buff ] { buff->expire(); } );
+      }
+    } );
+  }
+
+  effect.custom_buff = buff;
+  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -3302,6 +3341,7 @@ void register_special_effects()
 
     // Armor
     unique_gear::register_special_effect( 352081, items::passablyforged_credentials );
+    unique_gear::register_special_effect( 353513, items::dark_rangers_quiver );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
