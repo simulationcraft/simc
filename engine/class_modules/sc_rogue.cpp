@@ -6448,7 +6448,8 @@ double rogue_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.guile_charm_insight_1->value();
     m *= 1.0 + buffs.guile_charm_insight_2->value();
     m *= 1.0 + buffs.guile_charm_insight_3->value();
-    m *= 1.0 + buffs.guile_charm_insight_3_hidden->value();
+    if( !dbc->ptr )
+      m *= 1.0 + buffs.guile_charm_insight_3_hidden->value();
   }
 
   if ( legendary.celerity.ok() && buffs.adrenaline_rush->check() )
@@ -8085,7 +8086,7 @@ void rogue_t::create_buffs()
     ->set_default_value_from_effect( 1 ) // Bonus Damage%
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      if ( bugs && new_ == 1 )
+      if ( bugs && !dbc->ptr && new_ == 1 )
       {
         buffs.guile_charm_insight_3_hidden->expire();
       }
