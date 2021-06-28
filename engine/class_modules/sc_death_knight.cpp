@@ -1652,34 +1652,6 @@ struct death_knight_pet_t : public pet_t
     return m;
   }
 
-  double composite_melee_haste() const override
-  {
-    double haste = pet_t::composite_melee_haste();
-
-    // 2020-11-14: Phearomones is double dipping for pets as they're affected by both the aura
-    // and the player's own haste buff, inherited by the pet
-    if ( dk() -> legendary.phearomones -> ok() && dk() -> bugs && !dk() -> dbc -> ptr )
-    {
-      haste *= 1.0 / ( 1.0 + dk() -> buffs.death_turf -> check_value() );
-    }
-
-    return haste;
-  }
-
-  double composite_spell_haste() const override
-  {
-    double haste = pet_t::composite_spell_haste();
-
-    // 2020-11-14: Phearomones is double dipping for pets as they're affected by both the aura
-    // and the player's own haste buff, inherited by the pet
-    if ( dk() -> legendary.phearomones -> ok() && dk() -> bugs && !dk() -> dbc -> ptr )
-    {
-      haste *= 1.0 / ( 1.0 + dk() -> buffs.death_turf -> check_value() );
-    }
-
-    return haste;
-  }
-
   // Standard Death Knight pet actions
 
   struct auto_attack_t : public melee_attack_t
@@ -7435,7 +7407,7 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
   }
 
   // 2021-Jun-21 Currently on PTR on mob death you only get the benefit of a single stack, even though you really should be getting for each stack
-  if ( dbc -> ptr && conduits.convocation_of_the_dead.ok() )
+  if ( conduits.convocation_of_the_dead.ok() )
   {
     cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
       conduits.convocation_of_the_dead.value() / 10 ) );
