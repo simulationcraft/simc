@@ -7002,14 +7002,7 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
   double cam = player_t::composite_attribute_multiplier( attr );
 
   if ( attr == ATTR_STAMINA )
-  {
-    // On PTR, Brewmaster Monk spec aura is still showing 30% but the values
-    // have not changed from PTR and live.
-    if ( dbc->ptr )
-      cam *= 1.0 + spec.brewmasters_balance->effectN( 3 ).percent();
-    else
-      cam *= 1.0 + spec.brewmaster_monk->effectN( 11 ).percent();
-  }
+    cam *= 1.0 + spec.brewmasters_balance->effectN( 3 ).percent();
 
   return cam;
 }
@@ -7908,9 +7901,7 @@ void monk_t::trigger_bonedust_brew( action_state_t* s )
     {
       double damage = s->result_amount * covenant.necrolord->effectN( 1 ).percent();
 
-      // Bone Marrow Hops DOES NOT work with SEF or pets
-      // "This" is referring to the player and does not work with "guardians" which is what SEF and pets are registered as
-      if ( ( dbc->ptr || s->action->player == this ) && conduit.bone_marrow_hops->ok() )
+      if ( conduit.bone_marrow_hops->ok() )
         damage *= 1 + conduit.bone_marrow_hops.percent();
 
       active_actions.bonedust_brew_dmg->base_dd_min = damage;
