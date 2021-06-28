@@ -528,6 +528,7 @@ void frost( player_t* p )
   aoe->add_action( "wait,sec=0.1,if=runeforge.glacial_fragments&talent.splitting_ice" );
   aoe->add_action( "frostbolt" );
 
+  cds->add_action( "use_item,name=shadowed_orb_of_torment,if=buff.rune_of_power.down" );
   cds->add_action( "potion,if=prev_off_gcd.icy_veins|fight_remains<30" );
   cds->add_action( "deathborne" );
   cds->add_action( "mirrors_of_torment,if=active_enemies<3&(conduit.siphoned_malice|soulbind.wasteland_propriety)" );
@@ -562,7 +563,7 @@ void frost( player_t* p )
   st->add_action( "ebonbolt" );
   st->add_action( "radiant_spark,if=(!talent.glacial_spike|!conduit.ire_of_the_ascended)&(!runeforge.freezing_winds|active_enemies>=2)&buff.brain_freeze.react" );
   st->add_action( "mirrors_of_torment" );
-  st->add_action( "shifting_power,if=buff.rune_of_power.down&(soulbind.grove_invigoration|soulbind.field_of_blossoms|runeforge.freezing_winds&buff.freezing_winds.down|active_enemies>=2)" );
+  st->add_action( "shifting_power,if=buff.rune_of_power.down&(runeforge.heart_of_the_fae|soulbind.grove_invigoration|soulbind.field_of_blossoms|runeforge.freezing_winds&buff.freezing_winds.down|active_enemies>=2)" );
   st->add_action( "arcane_explosion,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down" );
   st->add_action( "fire_blast,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down" );
   st->add_action( "glacial_spike,if=buff.brain_freeze.react" );
