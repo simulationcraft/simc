@@ -2,13 +2,13 @@ mage="T27_Mage_Fire"
 source=default
 spec=fire
 level=60
-race=void_elf
+race=troll
 role=spell
 position=ranged_back
 talents=3031021
-covenant=night_fae
-soulbind=korayn,wild_hunt_tactics/infernal_cascade:7/discipline_of_the_grove:7
-renown=40
+covenant=venthyr
+soulbind=theotar_the_mad_duke:9,soothing_shade/infernal_cascade:9:1/controlled_destruction:9:1/siphoned_malice:9:1/party_favors
+renown=80
 
 # Default consumables
 potion=spectral_intellect
@@ -97,8 +97,8 @@ actions+=/use_items,if=variable.time_to_combustion>=variable.on_use_cutoff
 # Use Frost Nova to trigger Grisly Icicle.
 actions+=/frost_nova,if=runeforge.grisly_icicle&buff.combustion.down&(variable.time_to_combustion>cooldown|variable.time_to_combustion<variable.combustion_precast_time+execute_time)
 # Get the Disciplinary Command buff up, unless combustion is soon.
-actions+=/counterspell,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.remains<action.frostbolt.cast_time&buff.disciplinary_command_arcane.down&!buff.disciplinary_command.up&(variable.time_to_combustion+action.frostbolt.cast_time>cooldown.buff_disciplinary_command.duration|variable.time_to_combustion<5)
-actions+=/arcane_explosion,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.remains<execute_time+action.frostbolt.cast_time&buff.disciplinary_command_arcane.down&!buff.disciplinary_command.up&(variable.time_to_combustion+execute_time+action.frostbolt.cast_time>cooldown.buff_disciplinary_command.duration|variable.time_to_combustion<5&!talent.rune_of_power)
+actions+=/counterspell,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down&!buff.disciplinary_command.up&(variable.time_to_combustion+action.frostbolt.cast_time>cooldown.buff_disciplinary_command.duration|variable.time_to_combustion<5)
+actions+=/arcane_explosion,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.remains<execute_time&buff.disciplinary_command_arcane.down&!buff.disciplinary_command.up&(variable.time_to_combustion+execute_time+action.frostbolt.cast_time>cooldown.buff_disciplinary_command.duration|variable.time_to_combustion<5&!talent.rune_of_power)
 actions+=/frostbolt,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.remains<cast_time&buff.disciplinary_command_frost.down&!buff.disciplinary_command.up&(variable.time_to_combustion+cast_time>cooldown.buff_disciplinary_command.duration|variable.time_to_combustion<5)
 actions+=/frost_nova,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_frost.down&!buff.disciplinary_command.up&(variable.time_to_combustion>cooldown.buff_disciplinary_command.duration|variable.time_to_combustion<5)
 actions+=/call_action_list,name=combustion_phase,if=variable.time_to_combustion<=0|variable.time_to_combustion<variable.combustion_precast_time&cooldown.combustion.remains<variable.combustion_precast_time
@@ -241,28 +241,29 @@ actions.standard_rotation+=/arcane_explosion,if=active_enemies>=variable.arcane_
 actions.standard_rotation+=/flamestrike,if=active_enemies>=variable.hard_cast_flamestrike
 actions.standard_rotation+=/fireball
 
-head=depraved_physicians_mask,id=178759,bonus_id=1540/6646/6935,gem_id=173128
-neck=sinful_gladiators_necklace,id=175922,bonus_id=1498/6646/6935,gem_id=173128
-shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_insight
-wrists=deathshackle_wristwraps,id=178704,bonus_id=1540/6646/6935,gem_id=173128,enchant=eternal_intellect
-hands=tricksprite_gloves,id=178705,bonus_id=1540/6646
-waist=shadewarped_sash,id=183004,bonus_id=1498/6646/6935,gem_id=173128
-legs=muehzalas_hexthread_sarong,id=179351,bonus_id=1540/6646
-feet=stradamas_misplaced_slippers,id=178756,bonus_id=1540/6646
-finger1=shadowghast_ring,id=178926,bonus_id=1532/6832/6649/6650/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=soul_igniter,id=184019,bonus_id=1498/6646
-trinket2=dreadfire_vessel,id=184030,bonus_id=1498/6646
-main_hand=spire_of_the_long_dark,id=180002,bonus_id=7187/6652/1531/6646,enchant=sinful_revelation
+head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=173128/187319,enchant=40runspeed
+neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173128
+shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187320
+back=selfreplicating_tissue,id=186374,bonus_id=1498/7187
+chest=sacrificers_sacramental_cassock,id=186282,bonus_id=1498/7187,gem_id=187318,enchant=eternal_insight
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=173128/187315,enchant=eternal_intellect
+hands=grasps_of_the_clairvoyant_sage,id=186288,bonus_id=1498/7187
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=173128/187312
+legs=sorcerers_headlong_legwraps,id=186285,bonus_id=1498/7187
+feet=sandals_of_sacred_symmetry,id=186354,bonus_id=1498/7187
+finger1=shadowghast_ring,id=178926,bonus_id=1559/6832/6649/6650/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=1498/7187/6935,gem_id=173128,enchant=tenet_of_haste
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=1566/6536/6646
+trinket2=tome_of_monstrous_constructions,id=186422,bonus_id=1498/7187
+main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=229.40
-# gear_stamina=1524
-# gear_intellect=1172
-# gear_crit_rating=195
-# gear_haste_rating=1109
-# gear_mastery_rating=325
-# gear_versatility_rating=340
-# gear_armor=371
+# gear_ilvl=255.93
+# gear_stamina=2114
+# gear_intellect=1484
+# gear_crit_rating=426
+# gear_haste_rating=808
+# gear_mastery_rating=327
+# gear_versatility_rating=701
+# gear_speed_rating=40
+# gear_armor=435
