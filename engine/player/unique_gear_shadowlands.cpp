@@ -1641,7 +1641,9 @@ void shadowgrasp_totem( special_effect_t& effect )
     shadowgrasp_totem_pet_t( const special_effect_t& e ) :
       pet_t( e.player->sim, e.player, "shadowgrasp_totem", true, true),
       effect( e )
-    {}
+    {
+      npc_id = 170190;
+    }
 
     void init_spells() override
     {
@@ -1694,6 +1696,12 @@ void shadowgrasp_totem( special_effect_t& effect )
       last_retarget = 0_s;
     }
 
+    bool trigger( int stacks, double value, double chance, timespan_t duration) override
+    {
+      spawner.spawn();
+      return buff_t::trigger(stacks, value, chance, duration);
+    }
+
     void trigger_target_death( const player_t* actor )
     {
       auto pet = spawner.pet();
@@ -1710,7 +1718,7 @@ void shadowgrasp_totem( special_effect_t& effect )
           return;
         //  Emulate player "retargeting" during Shadowgrasp Totem duration to grab more
         //  15 second cooldown reductions.
-        //  Don't actually change the taret of the ability, as it will always hit whatever the
+        //  Don't actually change the target of the ability, as it will always hit whatever the
         //  player is hitting.
         last_retarget = sim->current_time();
       }
@@ -1719,22 +1727,11 @@ void shadowgrasp_totem( special_effect_t& effect )
     }
   };
 
-  struct shadowgrasp_totem_t : proc_spell_t
-  {
-    shadowgrasp_totem_buff_t* buff;
-    shadowgrasp_totem_t( const special_effect_t& e ) :
-      proc_spell_t( "shadowgrasp_totem", e.player, e.player->find_spell( 331523 ) ),
-      buff( new shadowgrasp_totem_buff_t( e ) )
-    {}
-
-    void execute() override
-    {
-      buff->spawner.spawn();
-      buff->trigger();;
-    }
-  };
-
-  effect.execute_action = create_proc_action<shadowgrasp_totem_t>( "shadowgrasp_totem", effect );
+  auto buff = buff_t::find( effect.player, "shadowgrasp_totem" );
+  if ( !buff ) {
+    buff = make_buff<shadowgrasp_totem_buff_t>( effect );
+    effect.custom_buff = buff;
+  }
 }
 
 // TODO: Implement healing?
