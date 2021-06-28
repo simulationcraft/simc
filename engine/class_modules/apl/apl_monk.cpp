@@ -499,8 +499,7 @@ void windwalker( player_t* p )
 
   cd_serenity->add_talent( p, "Serenity", "if=cooldown.rising_sun_kick.remains<2|fight_remains<15" );
   cd_serenity->add_action( "bag_of_tricks" );
-  if ( p->dbc->ptr )
-    cd_serenity->add_action( "fleshcraft,if=soulbind.pustule_eruption&buff.serenity.down&debuff.bonedust_brew_debuff.down" );
+  cd_serenity->add_action( "fleshcraft,if=soulbind.pustule_eruption&buff.serenity.down&debuff.bonedust_brew_debuff.down" );
 
   // Storm, Earth and Fire Cooldowns
   cd_sef->add_action( p, "Invoke Xuen, the White Tiger", "if=!variable.hold_xuen&(cooldown.rising_sun_kick.remains<2|!covenant.kyrian)&(!covenant.necrolord|cooldown.bonedust_brew.remains<2)|fight_remains<25" );
@@ -583,8 +582,8 @@ void windwalker( player_t* p )
         cd_sef->add_action( racial_actions[ i ] );
     }
   }
-  if ( p->dbc->ptr )
-    cd_sef->add_action( "fleshcraft,if=soulbind.pustule_eruption&buff.storm_earth_and_fire.down&debuff.bonedust_brew_debuff.down" );
+
+  cd_sef->add_action( "fleshcraft,if=soulbind.pustule_eruption&buff.storm_earth_and_fire.down&debuff.bonedust_brew_debuff.down" );
 
   // Serenity
   serenity->add_action( p, "Fists of Fury", "if=buff.serenity.remains<1" );

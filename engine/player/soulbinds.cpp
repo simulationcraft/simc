@@ -744,59 +744,66 @@ void party_favors( special_effect_t& effect )
   if ( util::str_compare_ci( opt_str, "none" ) )
     return;
 
-  buff_t* buff;
+  buff_t* haste_buff = buff_t::find( effect.player, "the_mad_dukes_tea_haste" );
+  if ( !haste_buff )
+  {
+    haste_buff = make_buff( effect.player, "the_mad_dukes_tea_haste", effect.player->find_spell( 354016 ) )
+      ->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  }
+
+  buff_t* crit_buff = buff_t::find( effect.player, "the_mad_dukes_tea_crit" );
+  if ( !crit_buff )
+  {
+    crit_buff = make_buff( effect.player, "the_mad_dukes_tea_crit", effect.player->find_spell( 354017 ) )
+      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+      ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
+  }
+
+  buff_t* primary_buff = buff_t::find( effect.player, "the_mad_dukes_tea_primary" );
+  if ( !primary_buff )
+  {
+    primary_buff = make_buff( effect.player, "the_mad_dukes_tea_primary", effect.player->find_spell( 353266 ) )
+      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+      ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+      ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
+  }
+
+  buff_t* vers_buff = buff_t::find( effect.player, "the_mad_dukes_tea_versatility" );
+  if ( !vers_buff )
+  {
+    vers_buff = make_buff( effect.player, "the_mad_dukes_tea_versatility", effect.player->find_spell( 354018 ) )
+      ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
+      ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
+  }
+
+  std::vector<buff_t*> buffs;
 
   // TODO: Figure out if you can have multiple buffs at a time
   if ( util::str_compare_ci( opt_str, "haste" ) )
   {
-    buff = buff_t::find( effect.player, "the_mad_dukes_tea_haste" );
-    if ( !buff )
-    {
-      buff = make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_haste", effect.player->find_spell( 354016 ) )
-                 ->set_default_value_from_effect_type( A_HASTE_ALL )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-    }
+    buffs = { haste_buff };
   }
   else if ( util::str_compare_ci( opt_str, "crit" ) )
   {
-    buff = buff_t::find( effect.player, "the_mad_dukes_tea_crit" );
-    if ( !buff )
-    {
-      buff = make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_crit", effect.player->find_spell( 354017 ) )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                 ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
-    }
+    buffs = { crit_buff };
   }
   else if ( util::str_compare_ci( opt_str, "primary" ) )
   {
-    buff = buff_t::find( effect.player, "the_mad_dukes_tea_primary" );
-    if ( !buff )
-    {
-      buff = make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_primary", effect.player->find_spell( 353266 ) )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-                 ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
-    }
+    buffs = { primary_buff };
   }
   else if ( util::str_compare_ci( opt_str, "versatility" ) )
   {
-    buff = buff_t::find( effect.player, "the_mad_dukes_tea_versatility" );
-    if ( !buff )
-    {
-      buff =
-          make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_versatility", effect.player->find_spell( 354018 ) )
-              ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-              ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
-    }
+    buffs = { vers_buff };
   }
-  else
+  else if ( util::str_compare_ci( opt_str, "random" ) )
   {
-    buff = nullptr;
+    buffs = { haste_buff, crit_buff, primary_buff, vers_buff };
   }
 
-  if ( buff )
-    effect.player->register_combat_begin( buff );
+  if ( buffs.size() > 0 )
+    effect.player->register_combat_begin( [ buffs ] ( player_t* p ) { buffs[ p->rng().range( buffs.size() ) ]->trigger(); } );
   else
     effect.player->sim->error( "Warning: Invalid type '{}' for Party Favors, ignoring.", opt_str );
 }
@@ -2472,6 +2479,25 @@ void initialize_soulbinds( player_t* player )
       continue;
 
     player->special_effects.push_back( new special_effect_t( effect ) );
+  }
+
+  // 357972 buff
+  // 357973 cooldown
+  conduit_data_t adaptive_armor_fragment_conduit = player->find_conduit_spell( "Adaptive Armor Fragment" );
+  if ( adaptive_armor_fragment_conduit->ok() )
+  {
+    auto buff = buff_t::find( player, "adaptive_armor_fragment" );
+    if ( !buff )
+    {
+      buff = make_buff( player, "adaptive_armor_fragment", player->find_spell( 357972 ) )
+                 ->set_default_value( adaptive_armor_fragment_conduit.percent() )
+                 ->set_cooldown( player->find_spell( 357973 )->duration() )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
+    }
+    player->register_combat_begin(
+        [ buff ]( player_t* p ) { make_repeating_event( *p->sim, 2.0_s, [ buff ] { buff->trigger(); } ); } );
   }
 }
 
