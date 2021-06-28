@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.39172
-static const std::array<spelltext_data_t, 15517> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15518> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15134,6 +15134,7 @@ static const std::array<spelltext_data_t, 15517> __ptr_spelltext_data { {
   { 351679, "$@spelldesc351682", "$@auradesc351682", 0 },
   { 351682, "Your melee attacks and abilities have a high chance to attach a Volatile Satchel onto your target. Upon reaching ${$u1+1} stacks, or when removed, the Volatile Satchel detonates and deals $351679s1 Fire damage.", "Upon reaching ${$u1+1} stacks or its removal, the Volatile Satchel detonates for $351679w1 Fire damage.", 0 },
   { 351687, "$@spelldesc350936", "Suffering $w1 Shadow damage every $t sec.", 0 },
+  { 351694, "$@spelldesc351682", "$@auradesc351682", 0 },
   { 351747, "When Soothing Shade activates, Tubbins and Gubbins each offer you a cup of tea, healing you for ${$MHP*$m1/100} health every $353334t1 sec and reducing damage taken by $353334s2% while standing in the shaded area.", 0, 0 },
   { 351748, "While you are Well Fed, gain $353365s1 Speed and $353365s2 Avoidance.", 0, 0 },
   { 351750, "Speak with Theotar in Sinfall to obtain The Mad Duke's Tea.\r\n\r\nDrinking The Mad Duke's Tea increases your Haste, Versatility, Critical Strike Chance, or $pri for $354018d.\r\n\r\nYou can only have the effects of one of The Mad Duke's Tea at a time.", 0, 0 },

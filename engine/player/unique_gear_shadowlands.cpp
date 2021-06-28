@@ -2505,6 +2505,53 @@ void relic_of_the_frozen_wastes_equip( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+/**Ticking Sack of Terror
+  (351679) driver, damage on effect 1
+  (351682) debuff
+  (351694) fire damage at 3 stacks
+ */
+void ticking_sack_of_terror( special_effect_t& effect )
+{
+  struct volatile_detonation_t : generic_proc_t
+  {
+    volatile_detonation_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "volatile_detonation", effect.player->find_spell( 351694 ) )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+    }
+  };
+
+  struct volatile_satchel_cb_t : dbc_proc_callback_t
+  {
+    action_t* damage;
+
+    volatile_satchel_cb_t( const special_effect_t& effect )
+      : dbc_proc_callback_t( effect.player, effect ),
+        damage( create_proc_action<volatile_detonation_t>( "volatile_detonation", effect ) )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      actor_target_data_t* td = a->player->get_target_data( s->target );
+      if ( td->debuff.volatile_satchel->at_max_stacks() )
+      {
+        td->debuff.volatile_satchel->expire();
+        damage->set_target( s->target );
+        damage->execute();
+      }
+      else
+      {
+        td->debuff.volatile_satchel->trigger();
+      }
+    }
+  };
+
+  new volatile_satchel_cb_t( effect );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -3243,6 +3290,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 355301, items::relic_of_the_frozen_wastes_equip );
     unique_gear::register_special_effect( 355303, items::relic_of_the_frozen_wastes_use );
     unique_gear::register_special_effect( 355321, items::shadowed_orb_of_torment );
+    unique_gear::register_special_effect( 351679, items::ticking_sack_of_terror );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
@@ -3349,6 +3397,19 @@ void register_target_data_initializers( sim_t& sim )
     }
     else
       td->debuff.frozen_heart = make_buff( *td, "frozen_heart" )->set_quiet( true );
+  } );
+
+  // Ticking Sack of Terror
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 351679 ) )
+    {
+      assert( !td->debuff.volatile_satchel );
+
+      td->debuff.volatile_satchel = make_buff<buff_t>( *td, "volatile_satchel", td->source->find_spell( 351682 ) );
+      td->debuff.volatile_satchel->reset();
+    }
+    else
+      td->debuff.volatile_satchel = make_buff( *td, "volatile_satchel" )->set_quiet( true );
   } );
 
   // Shard of Dyz (Scouring Touch debuff)
