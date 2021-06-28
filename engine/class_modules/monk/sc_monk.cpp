@@ -4624,7 +4624,7 @@ struct expel_harm_t : public monk_heal_t
       double min_amount = 1 / p()->spec.expel_harm->effectN( 2 ).percent();
       // Normally this would be using health_difference, but since Windwalkers will almost always be set
       // to zero, we want to use a range of 10 and the result to simulate varying amounts of health.
-      result = std::max( rng().range( min_amount, result ), min_amount );
+      result = rng().range( min_amount, result );
     }
 
     result *= p()->spec.expel_harm->effectN( 2 ).percent();
