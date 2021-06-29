@@ -387,8 +387,7 @@ void grove_invigoration( special_effect_t& effect )
       bonded_hearts->trigger();
   } );
 
-  effect.player->buffs.redirected_anima = redirected_anima;
-  effect.custom_buff                    = redirected_anima;
+  effect.custom_buff = redirected_anima;
 
   new dbc_proc_callback_t( effect.player, effect );
 
