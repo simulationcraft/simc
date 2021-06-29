@@ -1066,6 +1066,7 @@ void warlock_t::create_apl_affliction()
   delay->add_action( "use_item,name=empyreal_ordnance,if=(covenant.night_fae&cooldown.soul_rot.remains<20)|(covenant.venthyr&cooldown.impending_catastrophe.remains<20)|(covenant.necrolord|covenant.kyrian|covenant.none)" );
   delay->add_action( "use_item,name=sunblood_amethyst,if=(covenant.night_fae&cooldown.soul_rot.remains<6)|(covenant.venthyr&cooldown.impending_catastrophe.remains<6)|(covenant.necrolord|covenant.kyrian|covenant.none)" );
   delay->add_action( "use_item,name=soulletting_ruby,if=(covenant.night_fae&cooldown.soul_rot.remains<8)|(covenant.venthyr&cooldown.impending_catastrophe.remains<8)|(covenant.necrolord|covenant.kyrian|covenant.none)" );
+  delay->add_action( "use_item,name=name=shadowed_orb_of_torment,if=(covenant.night_fae&cooldown.soul_rot.remains<4)|(covenant.venthyr&cooldown.impending_catastrophe.remains<4)|(covenant.necrolord|covenant.kyrian|covenant.none)" );
 
   stat->add_action( "use_item,name=inscrutable_quantum_device" );
   stat->add_action( "use_item,name=instructors_divine_bell" );
@@ -1084,6 +1085,8 @@ void warlock_t::create_apl_affliction()
   dmg->add_action( "use_item,name=soul_igniter" );
   dmg->add_action( "use_item,name=dreadfire_vessel" );
   dmg->add_action( "use_item,name=glyph_of_assimilation" );
+  dmg->add_action( "use_item,name=unchained_gladiators_shackles" );
+  dmg->add_action( "use_item,name=ebonsoul_vice" );
 
   split->add_action( "variable,name=special_equipped,value=(((equipped.empyreal_ordnance^equipped.inscrutable_quantum_device)^equipped.soulletting_ruby)^equipped.sunblood_amethyst)" );
   split->add_action( "variable,name=trinket_one,value=(trinket.1.has_proc.any&trinket.1.has_cooldown)" );
