@@ -176,6 +176,10 @@ void shadow( player_t* p )
       "Use on CD but prioritise using Void Eruption first, if used inside of VF on ST use after a "
       "voidbolt for cooldown efficiency and for hungering void uptime if talented." );
   cds->add_call_action_list( trinkets );
+  cds->add_action(
+      "fleshcraft,if=soulbind.volatile_solvent&buff.volatile_solvent_humanoid.remains<10&!buff.voidform.up&!buff.power_"
+      "infusion.up",
+      "Use Fleshcraft outside of main cooldowns to maintain Volatile Solvent buff." );
 
   // APL to use when Boon of the Ascended is active
   boon->add_action( "ascended_blast,if=spell_targets.mind_sear<=3" );
