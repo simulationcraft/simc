@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.1.0.39185 Live (hotfix 2021-06-29/39185, git build shadowlands f3b2614a, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39226 Live (hotfix 2021-06-29/39226, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
