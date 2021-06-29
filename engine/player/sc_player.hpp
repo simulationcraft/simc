@@ -517,6 +517,7 @@ struct player_t : public actor_t
 
     // 9.0 Soulbinds
     buff_t* wild_hunt_tactics;  // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
+    buff_t* volatile_solvent_stats; // necrolord/marileth - humanoid (mastery) beast (primary) and dragonkin (crit) buffs
     buff_t* volatile_solvent_damage; // necrolord/marileth - elemental (magic) and giant (physical) % damage done buffs
     buff_t* redirected_anima; // night_fae/niya - mastery and max health % increase per stack
     buff_t* battlefield_presence; // venthyr/draven - damage increase buff based on number of enemies

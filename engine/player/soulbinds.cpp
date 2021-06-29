@@ -1666,6 +1666,7 @@ void volatile_solvent( special_effect_t& effect )
           buff =
               make_buff<stat_buff_t>( effect.player, "volatile_solvent_humanoid", effect.player->find_spell( 323491 ) );
         }
+        effect.player->buffs.volatile_solvent_stats = buff;
         break;
 
       case RACE_BEAST:
@@ -1678,6 +1679,7 @@ void volatile_solvent( special_effect_t& effect )
                      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
                      ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
         }
+        effect.player->buffs.volatile_solvent_stats = buff;
         break;
 
       case RACE_DRAGONKIN:
@@ -1688,6 +1690,7 @@ void volatile_solvent( special_effect_t& effect )
                      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
                      ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
         }
+        effect.player->buffs.volatile_solvent_stats = buff;
         break;
 
       case RACE_ELEMENTAL:
@@ -1719,6 +1722,7 @@ void volatile_solvent( special_effect_t& effect )
         break;
     }
 
+    // TODO: This can be removed when more modules have precombat Fleshcraft support
     if ( buff )
       effect.player->register_combat_begin( buff );
     else

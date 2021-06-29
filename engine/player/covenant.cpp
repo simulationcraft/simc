@@ -748,6 +748,7 @@ struct fleshcraft_t : public spell_t
 {
   bool magnificent_skin_active;
   bool pustule_eruption_active;
+  bool volatile_solvent_active;
 
   fleshcraft_t( player_t* p, util::string_view opt )
     : spell_t( "fleshcraft", p, p->find_covenant_spell( "Fleshcraft" ) )
@@ -763,6 +764,7 @@ struct fleshcraft_t : public spell_t
     spell_t::init_finished();
 
     magnificent_skin_active = player->find_soulbind_spell( "Emeni's Magnificent Skin" )->ok();
+    volatile_solvent_active = player->find_soulbind_spell( "Volatile Solvent" )->ok();
 
     pustule_eruption_active = player->find_soulbind_spell( "Pustule Eruption" )->ok();
     if ( pustule_eruption_active )
@@ -782,6 +784,16 @@ struct fleshcraft_t : public spell_t
     if ( magnificent_skin_active )
     {
       player->buffs.emenis_magnificent_skin->trigger();
+    }
+
+    // This triggers the full duration buff at the start of the cast, regardless of channel
+    if ( volatile_solvent_active )
+    {
+      if ( player->buffs.volatile_solvent_damage )
+        player->buffs.volatile_solvent_damage->trigger();
+
+      if( player->buffs.volatile_solvent_stats )
+        player->buffs.volatile_solvent_stats->trigger();
     }
 
     // Ensure we get the full 9 stack if we are using this precombat without the channel
