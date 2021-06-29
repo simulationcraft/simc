@@ -1268,7 +1268,7 @@ void warlock_t::create_apl_demonology()
   ogcd->add_action( "fireblood" );
   ogcd->add_action( "use_items" );
 
-  trinks->add_action( "actions.trinkets+=/use_item,name=shadowed_orb_of_torment,if=cooldown.summon_demonic_tyrant.remains_expected<15" );
+  trinks->add_action( "use_item,name=shadowed_orb_of_torment,if=cooldown.summon_demonic_tyrant.remains_expected<15" );
   trinks->add_action( "call_action_list,name=hp_trinks,if=talent.demonic_consumption.enabled&cooldown.summon_demonic_tyrant.remains_expected<20" );
   trinks->add_action( "call_action_list,name=5y_per_sec_trinkets", "Effects that travel slowly to target require additional, separate handling" );
   trinks->add_action( "use_item,name=overflowing_anima_cage,if=pet.demonic_tyrant.active" );
