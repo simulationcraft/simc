@@ -992,7 +992,7 @@ void warlock_t::create_apl_affliction()
   
   def->add_action( "malefic_rapture,if=(dot.vile_taint.ticking|dot.impending_catastrophe_dot.ticking|dot.soul_rot.ticking)&(!runeforge.malefic_wrath|buff.malefic_wrath.stack<3|soul_shard>1)", "Use Malefic Rapture when major dots are up, or if there will be significant time until the next Phantom Singularity. If utilizing Malefic Wrath, hold a shard to refresh the buff" );
   def->add_action( "malefic_rapture,if=runeforge.malefic_wrath&cooldown.soul_rot.remains>20&buff.malefic_wrath.remains<4", "Use Malefic Rapture to maintain the malefic wrath buff until shards need to be generated for the next burst window (20 seconds is more than sufficient to generate 3 shards)" );
-  def->add_action( "malefic_rapture,if=runeforge.malefic_wrath&(covenant.necrolord|covenant.kyrian)&buff.malefic_wrath.remains<4", "Maintain Malefic Wrath at all times for the necrolord covenant");
+  def->add_action( "malefic_rapture,if=runeforge.malefic_wrath&(covenant.necrolord|covenant.kyrian)&buff.malefic_wrath.remains<4", "Maintain Malefic Wrath at all times for the Necrolord or Kyrian covenant");
   def->add_action( "malefic_rapture,if=talent.phantom_singularity&(dot.phantom_singularity.ticking|cooldown.phantom_singularity.remains>25|time_to_die<cooldown.phantom_singularity.remains)&(!runeforge.malefic_wrath|buff.malefic_wrath.stack<3|soul_shard>1)", "Use Malefic Rapture on Phantom Singularity casts, making sure to save a shard to stack Malefic Wrath if using it" );
   def->add_action( "malefic_rapture,if=talent.sow_the_seeds" );
 
