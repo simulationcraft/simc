@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.39172
-static const std::array<spelltext_data_t, 15517> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15520> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15131,9 +15131,11 @@ static const std::array<spelltext_data_t, 15517> __ptr_spelltext_data { {
   { 351491, "Your Valiant Strikes grant ${$S1/100}.2% critical strike chance per stack. When your Valiant Strikes heals an ally, you each gain $352981s1% critical strike chance for $352981d.", 0, 0 },
   { 351527, "$@spelldesc351531", 0, 0 },
   { 351531, "Your damaging critical strikes grant you a stack of Preternatural Charge. When you reach $u stacks of Preternatural Charge, your next critical strike will consume all stacks to tear open a rift near your target, inflicting $s1 Arcane damage.", "Reaching $u stacks will cause your next critical strike to consume Preternatural Charge, dealing Arcane damage.", 0 },
+  { 351561, "$@spelldesc351531", 0, 0 },
   { 351679, "$@spelldesc351682", "$@auradesc351682", 0 },
   { 351682, "Your melee attacks and abilities have a high chance to attach a Volatile Satchel onto your target. Upon reaching ${$u1+1} stacks, or when removed, the Volatile Satchel detonates and deals $351679s1 Fire damage.", "Upon reaching ${$u1+1} stacks or its removal, the Volatile Satchel detonates for $351679w1 Fire damage.", 0 },
   { 351687, "$@spelldesc350936", "Suffering $w1 Shadow damage every $t sec.", 0 },
+  { 351694, "$@spelldesc351682", "$@auradesc351682", 0 },
   { 351747, "When Soothing Shade activates, Tubbins and Gubbins each offer you a cup of tea, healing you for ${$MHP*$m1/100} health every $353334t1 sec and reducing damage taken by $353334s2% while standing in the shaded area.", 0, 0 },
   { 351748, "While you are Well Fed, gain $353365s1 Speed and $353365s2 Avoidance.", 0, 0 },
   { 351750, "Speak with Theotar in Sinfall to obtain The Mad Duke's Tea.\r\n\r\nDrinking The Mad Duke's Tea increases your Haste, Versatility, Critical Strike Chance, or $pri for $354018d.\r\n\r\nYou can only have the effects of one of The Mad Duke's Tea at a time.", 0, 0 },
@@ -15226,6 +15228,7 @@ static const std::array<spelltext_data_t, 15517> __ptr_spelltext_data { {
   { 353511, "Gain the ability to fire a Wailing Arrow, which deals Shadow damage to your target and other nearby enemies and silences any creatures struck.", 0, 0 },
   { 353513, "Every $353514U shots, trigger Withering Fire, striking up to $s2 enemies in front of you for $s1 Shadow damage.", 0, 0 },
   { 353514, "$@spelldesc353513", "Building towards a volley of Withering Fire.", 0 },
+  { 353515, "$@spelldesc353513", "Building towards a volley of Withering Fire.", 0 },
   { 353546, "$@spelldesc353447", "Damage taken from $@auracaster increased by $s1%", 0 },
   { 353577, "Conqueror's Banner affects $s4 additional ally and every $?c1[$s1]?c2[$s1][$s2] Rage you spend while it is active increases the duration of your banner by ${$s3/1000}.1 sec.", 0, 0 },
   { 353692, "Study the tome, learning the weakness of your targeted enemy. Your damaging abilities have a very high chance to deal $357169s1 additional Shadow damage to your studied foe.\r\n\r\nStudying a new enemy removes the benefit of any prior studies.", 0, 0 },

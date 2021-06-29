@@ -1801,14 +1801,7 @@ public:
 
   double mod_spell_effects_percent( const spell_data_t*, const spelleffect_data_t& e ) { return e.percent(); }
 
-  double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t& e )
-  {
-    // HOTFIX HACK to reflect server-side scripting
-    if ( !p()->dbc->ptr && c == p()->conduit.endless_thirst )
-      return c.percent() / 10.0;
-
-    return c.percent();
-  }
+  double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t& e ) { return c.percent(); }
 
   template <typename T>
   void parse_spell_effects_mods( double& val, bool& mastery, const spell_data_t* base, size_t idx, T mod )
@@ -2013,15 +2006,9 @@ public:
     using S = const spell_data_t*;
     using C = const conduit_data_t&;
 
-    if ( p()->dbc->ptr )
-    {
-      parse_buff_effects( p()->buff.ravenous_frenzy );
-      parse_buff_effects( p()->buff.sinful_hysteria );
-    }
-    else
-      parse_buff_effects<C>( p()->buff.ravenous_frenzy, p()->conduit.endless_thirst );
-
     parse_buff_effects( p()->buff.heart_of_the_wild );
+    parse_buff_effects( p()->buff.ravenous_frenzy );
+    parse_buff_effects( p()->buff.sinful_hysteria );
     parse_buff_effects<C>( p()->buff.convoke_the_spirits, p()->conduit.conflux_of_elements );
 
     // Balance
@@ -5351,7 +5338,8 @@ struct moon_proxy_t : public druid_spell_t
   action_t* half_moon;
   action_t* full_moon;
 
-  moon_proxy_t( druid_t* p, util::string_view opt ) : druid_spell_t( "moons", p, spell_data_t::nil(), opt )
+  moon_proxy_t( druid_t* p, util::string_view opt )
+    : druid_spell_t( "moons", p, p->talent.new_moon->ok() ? spell_data_t::nil() : spell_data_t::not_found(), opt )
   {
     new_moon = new new_moon_t( p, opt );
     half_moon = new half_moon_t( p, opt );
@@ -6151,7 +6139,7 @@ struct starfall_t : public druid_spell_t
 
   bool ready() override
   {
-    if ( p()->dbc->ptr && p()->buff.oneths_free_starfall->check() && !cooldown->is_ready() )
+    if ( p()->buff.oneths_free_starfall->check() && !cooldown->is_ready() )
       cooldown = dummy_cd;
 
     return druid_spell_t::ready();
@@ -6159,7 +6147,7 @@ struct starfall_t : public druid_spell_t
 
   timespan_t cooldown_duration() const override
   {
-    return ( p()->dbc->ptr && free_cast ) ? 0_ms : druid_spell_t::cooldown_duration();
+    return ( free_cast ) ? 0_ms : druid_spell_t::cooldown_duration();
   }
 
   void execute() override
@@ -6200,8 +6188,7 @@ struct starfall_t : public druid_spell_t
 
     if ( p()->buff.oneths_free_starfall->check() )
     {
-      if ( p()->dbc->ptr )
-        cooldown = orig_cd;
+      cooldown = orig_cd;
 
       p()->buff.oneths_free_starfall->expire();
     }
@@ -6624,6 +6611,8 @@ struct convoke_the_spirits_t : public druid_spell_t
   unsigned main_count;
   unsigned filler_count;
   unsigned off_count;
+  bool celestial_spirits;
+
   // Multi-spec
   action_t* conv_wrath;
   action_t* conv_moonfire;
@@ -6652,6 +6641,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     main_count( 0 ),
     filler_count( 0 ),
     off_count( 0 ),
+    celestial_spirits( p->legendary.celestial_spirits->ok() ),
     conv_wrath( nullptr ),  // multi-spec
     conv_moonfire( nullptr ),
     conv_rake( nullptr ),
@@ -6801,12 +6791,14 @@ struct convoke_the_spirits_t : public druid_spell_t
   {
     main_count   = 0;
     offspec_list = { CAST_HEAL, CAST_HEAL, CAST_RAKE, CAST_WRATH };
-    chances      = { { CAST_THRASH_BEAR, 0.95 },
+    chances      = { { CAST_THRASH_BEAR, celestial_spirits ? 0.75 : 0.95 },
                      { CAST_IRONFUR, 1.0 },
                      { CAST_MANGLE, 1.0 }
                    };
-
-    cast_list.insert( cast_list.end(), static_cast<int>( rng().range( 5, 7 ) ), CAST_OFFSPEC );
+    // celestial spirits in bear form seems to result in avg 3 offspec.
+    cast_list.insert( cast_list.end(),
+                      static_cast<int>( rng().range( celestial_spirits ? 2 : 5, celestial_spirits ? 5 : 7 ) ),
+                      CAST_OFFSPEC );
 
     if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->celestial_spirits_exceptional_chance ) ) )
       cast_list.push_back( CAST_PULVERIZE );
@@ -6828,7 +6820,7 @@ struct convoke_the_spirits_t : public druid_spell_t
           mf_tl.push_back( t );
 
       if ( !mf_tl.empty() )
-        dist.emplace_back( std::make_pair( CAST_MOONFIRE, main_count ? 0.25 : 1.0 ) );
+        dist.emplace_back( std::make_pair( CAST_MOONFIRE, ( main_count ? 0.25 : 1.0 ) / ( celestial_spirits ? 2.0 : 1.0 ) ) );
 
       type_ = get_cast_from_dist( dist );
 
@@ -6865,13 +6857,16 @@ struct convoke_the_spirits_t : public druid_spell_t
                      { CAST_RAKE, 0.22 }
                    };
 
-    cast_list.insert( cast_list.end(), static_cast<size_t>( rng().range( 4, 9 ) ), CAST_OFFSPEC );
+    // with celestial spirits cat form convoke has ~3 offspec spells
+    cast_list.insert( cast_list.end(),
+                      static_cast<size_t>( rng().range( celestial_spirits ? 1 : 4, celestial_spirits ? 6 : 9 ) ),
+                      CAST_OFFSPEC );
 
     if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->celestial_spirits_exceptional_chance ) ) )
       cast_list.push_back( CAST_FERAL_FRENZY );
 
     cast_list.insert( cast_list.end(),
-                      _clamp_and_cast( rng().gauss( 4.2, 0.9360890055, true ), 0, max_ticks - cast_list.size() ),
+                      _clamp_and_cast( rng().gauss( celestial_spirits ? 1.8 : 4.2, celestial_spirits ? 0.661789 : 0.9360890055, true ), 0, max_ticks - cast_list.size() ),
                       CAST_MAIN );
   }
 
@@ -6905,7 +6900,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
   void _execute_moonkin()
   {
-    cast_list.insert( cast_list.end(), 5, CAST_HEAL );
+    cast_list.insert( cast_list.end(), 5 - ( celestial_spirits ? 2 : 0 ), CAST_HEAL );
     off_count    = 0;
     main_count   = 0;
     filler_count = 0;
@@ -6918,6 +6913,7 @@ struct convoke_the_spirits_t : public druid_spell_t
   {
     convoke_cast_e type_ = base_type;
     std::vector<std::pair<convoke_cast_e, double>> dist;
+    unsigned adjust = celestial_spirits ? 2 : 0;
 
     conv_tar = tl.at( rng().range( tl.size() ) );
 
@@ -6927,7 +6923,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
       if ( !p()->buff.starfall->check() )
       {
-        dist.emplace_back( std::make_pair( CAST_STARFALL, 3.0 ) );
+        dist.emplace_back( std::make_pair( CAST_STARFALL, 3 + ( adjust / 2 ) ) );
         add_more = false;
       }
 
@@ -6944,11 +6940,11 @@ struct convoke_the_spirits_t : public druid_spell_t
 
       if ( add_more )
       {
-        if ( filler_count < 3 )
+        if ( filler_count < ( 3 - adjust ) )
           dist.emplace_back( std::make_pair( CAST_WRATH, 5.0 ) );
-        else if ( filler_count < 4 )
+        else if ( filler_count < ( 4 - adjust ) )
           dist.emplace_back( std::make_pair( CAST_WRATH, 4.0 ) );
-        else if ( filler_count < 5 )
+        else if ( filler_count < ( 5 - adjust ) )
           dist.emplace_back( std::make_pair( CAST_WRATH, 1.0 ) );
       }
 
@@ -6961,18 +6957,18 @@ struct convoke_the_spirits_t : public druid_spell_t
       else if ( main_count < 6 )
         dist.emplace_back( std::make_pair( CAST_STARSURGE, 0.2 ) );
 
-      if ( filler_count < 4 )
+      if ( filler_count < ( 4 - adjust ) )
         dist.emplace_back( std::make_pair( CAST_WRATH, 4.0 ) );
-      else if ( filler_count < 5 )
+      else if ( filler_count < ( 5 - adjust ) )
         dist.emplace_back( std::make_pair( CAST_WRATH, 1.0 ) );
-      else if ( filler_count < 6 )
+      else if ( filler_count < ( 6 - adjust ) )
         dist.emplace_back( std::make_pair( CAST_WRATH, 0.5 ) );
-      else if ( filler_count < 7 )
+      else if ( filler_count < ( 7 - adjust ) )
         dist.emplace_back( std::make_pair( CAST_WRATH, 0.2 ) );
 
-      if ( off_count < 6 )
+      if ( off_count < ( 6 - adjust ) )
         dist.emplace_back( std::make_pair( CAST_HEAL, 0.75 ) );
-      else if ( off_count < 7 )
+      else if ( off_count < ( 7 - adjust ) )
         dist.emplace_back( std::make_pair( CAST_HEAL, 0.25 ) );
 
       type_ = get_cast_from_dist( dist );
@@ -8231,8 +8227,6 @@ void druid_t::create_buffs()
     ->set_period( 1_s )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
     ->set_tick_zero( true );
-  if ( !dbc->ptr )
-    buff.starfall->apply_affecting_aura( talent.stellar_drift );
 
   buff.starlord = make_buff( this, "starlord", find_spell( 279709 ) )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
@@ -9202,12 +9196,8 @@ double druid_t::composite_melee_crit_chance() const
   double crit = player_t::composite_melee_crit_chance();
 
   crit += spec.critical_strikes->effectN( 1 ).percent();
-
-  if ( dbc->ptr )
-  {
-    crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
-    crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
-  }
+  crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
+  crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
 
   return crit;
 }
@@ -9219,12 +9209,8 @@ double druid_t::composite_spell_crit_chance() const
   double crit = player_t::composite_spell_crit_chance();
 
   crit += spec.critical_strikes->effectN( 1 ).percent();
-
-  if ( dbc->ptr )
-  {
-    crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
-    crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
-  }
+  crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
+  crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
 
   return crit;
 }
@@ -10475,6 +10461,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( legendary.luffainfused_embrace );
   action.apply_affecting_aura( legendary.legacy_of_the_sleeper );
   action.apply_affecting_aura( legendary.circle_of_life_and_death );
+  action.apply_affecting_aura( legendary.celestial_spirits );
 
   // Conduits
   action.apply_affecting_conduit( conduit.tough_as_bark );

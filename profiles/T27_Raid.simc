@@ -22,7 +22,8 @@ T27_Death_Knight_Unholy.simc
 
 # T27_Mage_Fire.simc
 T27_Mage_Frost.simc
-# T27_Mage_Arcane.simc
+T27_Mage_Arcane.simc
+T27_Mage_Arcane_Kyrian.simc
 
 # T27_Monk_Brewmaster.simc
 T27_Monk_Windwalker.simc
