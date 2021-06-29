@@ -1959,10 +1959,6 @@ void soul_cage_fragment( special_effect_t& effect )
   }
 }
 
-void fine_razorwing_quill( special_effect_t& effect )
-{
-}
-
 void decanter_of_endless_howling( special_effect_t& effect )
 {
   effect.proc_flags2_ = PF2_CRIT;
@@ -3353,7 +3349,6 @@ void register_special_effects()
     unique_gear::register_special_effect( 357672, items::soul_cage_fragment );
     unique_gear::register_special_effect( 353692, items::tome_of_monstrous_constructions );
     unique_gear::register_special_effect( 352429, items::miniscule_mailemental_in_an_envelope );
-    unique_gear::register_special_effect( 355085, items::fine_razorwing_quill );
     unique_gear::register_special_effect( 355323, items::decanter_of_endless_howling );
     unique_gear::register_special_effect( 355324, items::tormentors_rack_fragment );
     unique_gear::register_special_effect( 355297, items::old_warriors_soul );
