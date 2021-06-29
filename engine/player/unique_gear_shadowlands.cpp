@@ -1959,8 +1959,28 @@ void soul_cage_fragment( special_effect_t& effect )
   }
 }
 
+/**Fine Razorwing Quill
+ * id=355085 driver
+ * id=355087 bleed debuff
+ */
 void fine_razorwing_quill( special_effect_t& effect )
 {
+  struct fine_razorwing_quill_cb_t : dbc_proc_callback_t
+  {
+    fine_razorwing_quill_cb_t( const special_effect_t& effect ) : dbc_proc_callback_t( effect.player, effect )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      actor_target_data_t* td = a->player->get_target_data( s->target );
+      td->debuff.piercing_quill->trigger();
+    }
+  };
+
+  new fine_razorwing_quill_cb_t( effect );
 }
 
 void decanter_of_endless_howling( special_effect_t& effect )
@@ -3485,6 +3505,19 @@ void register_target_data_initializers( sim_t& sim )
     }
     else
       td->debuff.volatile_satchel = make_buff( *td, "volatile_satchel" )->set_quiet( true );
+  } );
+
+  // Fine Razorwing Quill
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 355085 ) )
+    {
+      assert( !td->debuff.piercing_quill );
+
+      td->debuff.piercing_quill = make_buff<buff_t>( *td, "piercing_quill", td->source->find_spell( 355087 ) );
+      td->debuff.piercing_quill->reset();
+    }
+    else
+      td->debuff.piercing_quill = make_buff( *td, "piercing_quill" )->set_quiet( true );
   } );
 
   // Shard of Dyz (Scouring Touch debuff)
