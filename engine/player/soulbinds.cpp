@@ -1632,6 +1632,11 @@ void soulglow_spectrometer( special_effect_t& effect )
 // 323506: giant (physical damage)
 void volatile_solvent( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs(
+           effect, { "volatile_solvent_humanoid", "volatile_solvent_beast", "volatile_solvent_dragonkin",
+                     "volatile_solvent_elemental", "volatile_solvent_giant" } ) )
+    return;
+
   auto opt_str = effect.player->sim->shadowlands_opts.volatile_solvent_type;
   if ( util::str_compare_ci( opt_str, "none" ) )
     return;
@@ -2436,7 +2441,7 @@ void register_special_effects()
   register_soulbind_special_effect( 352188, soulbinds::effusive_anima_accelerator );
   register_soulbind_special_effect( 352186, soulbinds::soulglow_spectrometer );
   // Necrolord
-  register_soulbind_special_effect( 323074, soulbinds::volatile_solvent );  // Marileth
+  register_soulbind_special_effect( 323074, soulbinds::volatile_solvent, true );  // Marileth
   register_soulbind_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
   register_soulbind_special_effect( 352110, soulbinds::kevins_oozeling );
   register_soulbind_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
