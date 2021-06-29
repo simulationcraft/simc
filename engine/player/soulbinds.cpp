@@ -1228,8 +1228,8 @@ void brons_call_to_action( special_effect_t& effect )
         parse_options( options_str );
 
         interrupt_auto_attack   = false;
-        attack_power_mod.direct = 0.55;  // Not in spell data
-        spell_power_mod.direct  = 0.55;  // Not in spell data
+        attack_power_mod.direct = 0.605;  // Not in spell data
+        spell_power_mod.direct  = 0.605;  // Not in spell data
       }
 
       // cannon = 0.55 * max(0.5 * player's ap, 2 * player's sp)
@@ -1267,8 +1267,8 @@ void brons_call_to_action( special_effect_t& effect )
       bron_smash_damage_t( pet_t* p ) : spell_t( "smash", p, p->find_spell( 341165 ) )
       {
         background              = true;
-        attack_power_mod.direct = 1.0;   // Not in spell data
-        spell_power_mod.direct  = 0.25;  // Not in spell data
+        attack_power_mod.direct = 1.1;   // Not in spell data
+        spell_power_mod.direct  = 0.275;  // Not in spell data
         aoe                     = -1;
         radius                  = data().effectN( 1 ).radius_max();
       }
@@ -1478,8 +1478,17 @@ void brons_call_to_action( special_effect_t& effect )
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( a->background || a->trigger_gcd <= 0_ms || a->data().flags( spell_attribute::SX_NO_THREAT ) )
+//    if ( a->background || a->trigger_gcd <= 0_ms || a->data().flags( spell_attribute::SX_NO_THREAT ) )
+//      return;
+
+      if ( bron->is_active() )
         return;
+
+//      if ( s->cast_proc_type2() != PROC2_INVALID )
+//        return;
+
+//      if ( s->impact_proc_type2() != PROC2_INVALID )
+//        return;
 
       dbc_proc_callback_t::trigger( a, s );
     }
