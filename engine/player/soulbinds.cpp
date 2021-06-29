@@ -310,23 +310,85 @@ void grove_invigoration( special_effect_t& effect )
   if ( unique_gear::create_fallback_buffs( effect, { "redirected_anima" } ) )
     return;
 
-  auto buff = buff_t::find( effect.player, "redirected_anima" );
+  auto redirected_anima = buff_t::find( effect.player, "redirected_anima" );
 
-  if ( !buff )
+  if ( !redirected_anima )
   {
-    buff = make_buff<stat_buff_t>( effect.player, "redirected_anima", effect.player->find_spell( 342814 ) )
-               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-               ->set_default_value_from_effect( 1 )  // default value is used to hold the hp %
-               ->set_stack_change_callback( [ effect ]( buff_t* b, int old , int cur ) {
-                 effect.player->resources.initial_multiplier[ RESOURCE_HEALTH ] *=
-                   ( 1.0 + cur * b->default_value ) / ( 1.0 + old * b->default_value );
-
-                 effect.player->recalculate_resource_max( RESOURCE_HEALTH );
-               } );
+    redirected_anima = make_buff<stat_buff_t>( effect.player, "redirected_anima", effect.player->find_spell( 342814 ) )
+      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+      ->set_default_value_from_effect( 1 );  // default value is used to hold the hp %
   }
 
-  effect.player->buffs.redirected_anima = buff;
-  effect.custom_buff                    = buff;
+  buff_t* bonded_hearts;
+
+  if ( effect.player->find_soulbind_spell( "Bonded Hearts" )->ok() )
+  {
+    bonded_hearts = buff_t::find( effect.player, "bonded_hearts" );
+
+    if ( !bonded_hearts )
+    {
+      bonded_hearts = make_buff( effect.player, "bonded_hearts", effect.player->find_spell( 352881 ) )
+        ->add_invalidate( CACHE_MASTERY )
+        ->set_default_value_from_effect( 1 );
+
+      auto ra = debug_cast<stat_buff_t*>( redirected_anima );
+
+      bonded_hearts->set_stack_change_callback( [ ra ]( buff_t* b, int old_, int new_ ) {
+        auto mul = 1.0 + b->default_value;
+
+        // In stat_buff_t::bump, the stat value is applied AFTER buff_t::stack_change_callback is triggered, so the
+        // sequence will be:
+        //  1. redirected_anima is triggered
+        //  2. bonded_hearts is triggered via stack_change_callback on redirected_anima
+        //  3. the stat value of redirected_anima is applied
+        // This means that when bonded_hearts is triggered, the amount will be adjusted before the stat buff is applied,
+        // so we don't need to do any manual adjusting of the stat buff amount. But when bonded_hearts ends, we will
+        // need to manually recalculate and update the stat buff amount.
+        if ( new_ )
+        {
+          for ( auto& s : ra->stats )
+            s.amount *= mul;
+
+          ra->default_value *= mul;
+          b->player->resources.initial_multiplier[ RESOURCE_HEALTH ] *= mul;
+        }
+        else
+        {
+          for ( auto& s : ra->stats )
+          {
+            s.amount /= mul;
+
+            double delta = s.amount * ra->current_stack - s.current_value;
+
+            if ( delta > 0 )
+              b->player->stat_gain( s.stat, delta, ra->stat_gain, nullptr, ra->buff_duration() > 0_ms );
+            else if ( delta < 0 )
+              b->player->stat_loss( s.stat, std::fabs( delta ), ra->stat_gain, nullptr, ra->buff_duration() > 0_ms );
+
+            s.current_value += delta;
+          }
+
+          ra->default_value /= mul;
+          b->player->resources.initial_multiplier[ RESOURCE_HEALTH ] /= mul;
+        }
+
+        b->player->recalculate_resource_max( RESOURCE_HEALTH );
+      } );
+    }
+  }
+
+  redirected_anima->set_stack_change_callback( [ bonded_hearts ]( buff_t* b, int old, int cur ) {
+    b->player->resources.initial_multiplier[ RESOURCE_HEALTH ] *=
+        ( 1.0 + cur * b->default_value ) / ( 1.0 + old * b->default_value );
+
+    b->player->recalculate_resource_max( RESOURCE_HEALTH );
+
+    if ( bonded_hearts && cur > old && b->rng().roll( b->sim->shadowlands_opts.bonded_hearts_other_covenant_chance ) )
+      bonded_hearts->trigger();
+  } );
+
+  effect.player->buffs.redirected_anima = redirected_anima;
+  effect.custom_buff                    = redirected_anima;
 
   new dbc_proc_callback_t( effect.player, effect );
 
@@ -335,74 +397,16 @@ void grove_invigoration( special_effect_t& effect )
 
   int stacks = as<int>( effect.driver()->effectN( 3 ).base_value() * stack_mod );
 
-  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff, stacks );
+  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, redirected_anima, stacks );
+
 }
 
 void bonded_hearts( special_effect_t& effect )
 {
-  auto buff = buff_t::find( effect.player, "bonded_hearts" );
-  if ( !buff )
-  {
-    buff = make_buff( effect.player, "bonded_hearts", effect.player->find_spell( 352881 ) )
-               ->add_invalidate( CACHE_MASTERY )
-               ->set_default_value_from_effect( 1 );
-
-    buff->set_stack_change_callback( [ effect ]( buff_t* b, int, int new_ ) {
-      auto ra  = debug_cast<stat_buff_t*>( effect.player->buffs.redirected_anima );
-      auto mul = 1.0 + b->default_value;
-
-      // In stat_buff_t::bump, the stat value is applied AFTER buff_t::stack_change_callback is triggered, so the
-      // sequence will be:
-      //  1. redirected_anima is triggered
-      //  2. bonded_hearts is triggered via stack_change_callback on redirected_anima
-      //  3. the stat value of redirected_anima is applied
-      // This means that when bonded_hearts is triggered, the amount will be adjusted before the stat buff is applied,
-      // so we don't need to do any manual adjusting of the stat buff amount. But when bonded_hearts ends, we will
-      // need to manually recalculate and update the stat buff amount.
-      if ( new_ )
-      {
-        for ( auto& s : ra->stats )
-        {
-          s.amount *= mul;
-        }
-
-        ra->default_value *= mul;
-      }
-      else
-      {
-        for ( auto& s : ra->stats )
-        {
-          s.amount /= mul;
-
-          double delta = s.amount * ra->current_stack - s.current_value;
-
-          if ( delta > 0 )
-            b->player->stat_gain( s.stat, delta, ra->stat_gain, nullptr, ra->buff_duration() > 0_ms );
-          else if ( delta < 0 )
-            b->player->stat_loss( s.stat, std::fabs( delta ), ra->stat_gain, nullptr, ra->buff_duration() > 0_ms );
-
-          s.current_value += delta;
-        }
-
-        ra->default_value /= mul;
-      }
-
-      effect.player->recalculate_resource_max( RESOURCE_HEALTH );
-    } );
-  }
-
-  effect.player->register_on_arise_callback( effect.player, [ effect, buff ]() {
-    auto ra = effect.player->buffs.redirected_anima;
-    if ( ra )
-    {
-      ra->set_stack_change_callback( [ buff ]( buff_t*, int old_, int new_ ) {
-        if ( new_ > old_ && buff->rng().roll( buff->sim->shadowlands_opts.bonded_hearts_other_covenant_chance ) )
-          buff->trigger();
-
-        buff->player->recalculate_resource_max( RESOURCE_HEALTH );
-      } );
-    }
-  } );
+  // bonded hearts is handled within grove_invigoration, so add disables just in case actions/buffs are added to the
+  // driver data
+  effect.disable_action();
+  effect.disable_buff();
 }
 
 void field_of_blossoms( special_effect_t& effect )
