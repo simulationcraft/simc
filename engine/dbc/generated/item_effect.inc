@@ -1,4 +1,4 @@
-// Item effects, wow build 9.1.0.39172
+// Item effects, wow build 9.1.0.39226
 static const std::array<item_effect_t, 7654> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -7611,9 +7611,9 @@ static const std::array<item_effect_t, 7654> __item_effect_data { {
   { 139179, 357348, 186349,   0,   1,    0,      -1,      -1 }, // Winds of Winter
   { 139171, 357349, 186350,   0,   1,    0,      -1,      -1 }, // Chaos Bane
   { 139277, 358714, 186374,   0,   1,    0,      -1,      -1 }, // Self-Replication
-  { 139215, 357588, 186388,   0,   1,    0,      -1,      -1 }, // Sadistic Glee
+  { 139215, 359168, 186388,   0,   1,    0,      -1,      -1 }, // Sadistic Glee
   { 139214, 357595, 186398,   0,   1,    0,      -1,      -1 }, // Banshee's Blight
-  { 139300, 358135, 186398,   1,   1,    0,      -1,      -1 }, // Banshee's Blight
+  { 139300, 359180, 186398,   1,   1,    0,      -1,      -1 }, // Banshee's Blight
   { 139216, 357773, 186404,   0,   0,    0,      -1,      -1 }, // Burden of Divinity
   { 139288, 359003, 186404,   1,   1,    0,      -1,      -1 }, // Burden of Divinity
   { 139275, 358682, 186410,   0,   1,    0,      -1,      -1 }, // Jaithys, the Prison Blade

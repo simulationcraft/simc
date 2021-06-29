@@ -1309,6 +1309,8 @@ class SpellDataGenerator(DataGenerator):
          351694,
          # Withering Fire (Dark Ranger's Quiver)
          353515,
+         # Preternatural Charge (Yasahm the Riftbreaker)
+         351561,
         ),
 
         # Warrior:

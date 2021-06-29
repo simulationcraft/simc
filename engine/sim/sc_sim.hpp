@@ -360,7 +360,7 @@ struct sim_t : private sc_thread_t
     /// TODO: Set this to a reasonable value
     double combat_meditation_extend_chance = 1.0;
     /// Number of nearby allies & enemies for the pointed courage soulbind
-    unsigned pointed_courage_nearby = 5;
+    unsigned pointed_courage_nearby = 3;
     /// Number of nearby allies when you proc lead by example,
     /// the default value of -1 adjusts to 2 for ranged position and 4 for front/back position
     int lead_by_example_nearby = -1;

@@ -1801,14 +1801,7 @@ public:
 
   double mod_spell_effects_percent( const spell_data_t*, const spelleffect_data_t& e ) { return e.percent(); }
 
-  double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t& e )
-  {
-    // HOTFIX HACK to reflect server-side scripting
-    if ( !p()->dbc->ptr && c == p()->conduit.endless_thirst )
-      return c.percent() / 10.0;
-
-    return c.percent();
-  }
+  double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t& e ) { return c.percent(); }
 
   template <typename T>
   void parse_spell_effects_mods( double& val, bool& mastery, const spell_data_t* base, size_t idx, T mod )
@@ -2013,15 +2006,9 @@ public:
     using S = const spell_data_t*;
     using C = const conduit_data_t&;
 
-    if ( p()->dbc->ptr )
-    {
-      parse_buff_effects( p()->buff.ravenous_frenzy );
-      parse_buff_effects( p()->buff.sinful_hysteria );
-    }
-    else
-      parse_buff_effects<C>( p()->buff.ravenous_frenzy, p()->conduit.endless_thirst );
-
     parse_buff_effects( p()->buff.heart_of_the_wild );
+    parse_buff_effects( p()->buff.ravenous_frenzy );
+    parse_buff_effects( p()->buff.sinful_hysteria );
     parse_buff_effects<C>( p()->buff.convoke_the_spirits, p()->conduit.conflux_of_elements );
 
     // Balance
@@ -6152,7 +6139,7 @@ struct starfall_t : public druid_spell_t
 
   bool ready() override
   {
-    if ( p()->dbc->ptr && p()->buff.oneths_free_starfall->check() && !cooldown->is_ready() )
+    if ( p()->buff.oneths_free_starfall->check() && !cooldown->is_ready() )
       cooldown = dummy_cd;
 
     return druid_spell_t::ready();
@@ -6160,7 +6147,7 @@ struct starfall_t : public druid_spell_t
 
   timespan_t cooldown_duration() const override
   {
-    return ( p()->dbc->ptr && free_cast ) ? 0_ms : druid_spell_t::cooldown_duration();
+    return ( free_cast ) ? 0_ms : druid_spell_t::cooldown_duration();
   }
 
   void execute() override
@@ -6201,8 +6188,7 @@ struct starfall_t : public druid_spell_t
 
     if ( p()->buff.oneths_free_starfall->check() )
     {
-      if ( p()->dbc->ptr )
-        cooldown = orig_cd;
+      cooldown = orig_cd;
 
       p()->buff.oneths_free_starfall->expire();
     }
@@ -8241,8 +8227,6 @@ void druid_t::create_buffs()
     ->set_period( 1_s )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
     ->set_tick_zero( true );
-  if ( !dbc->ptr )
-    buff.starfall->apply_affecting_aura( talent.stellar_drift );
 
   buff.starlord = make_buff( this, "starlord", find_spell( 279709 ) )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
@@ -9212,12 +9196,8 @@ double druid_t::composite_melee_crit_chance() const
   double crit = player_t::composite_melee_crit_chance();
 
   crit += spec.critical_strikes->effectN( 1 ).percent();
-
-  if ( dbc->ptr )
-  {
-    crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
-    crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
-  }
+  crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
+  crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
 
   return crit;
 }
@@ -9229,12 +9209,8 @@ double druid_t::composite_spell_crit_chance() const
   double crit = player_t::composite_spell_crit_chance();
 
   crit += spec.critical_strikes->effectN( 1 ).percent();
-
-  if ( dbc->ptr )
-  {
-    crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
-    crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
-  }
+  crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
+  crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
 
   return crit;
 }
