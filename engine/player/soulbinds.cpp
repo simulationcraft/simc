@@ -319,7 +319,7 @@ void grove_invigoration( special_effect_t& effect )
       ->set_default_value_from_effect( 1 );  // default value is used to hold the hp %
   }
 
-  buff_t* bonded_hearts;
+  buff_t* bonded_hearts = nullptr;
 
   if ( effect.player->find_soulbind_spell( "Bonded Hearts" )->ok() )
   {
