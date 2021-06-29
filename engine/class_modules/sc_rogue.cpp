@@ -1360,7 +1360,13 @@ public:
   }
 
   virtual bool procs_poison() const
-  { return ab::weapon != nullptr; }
+  { return ab::weapon != nullptr && ab::has_amount_result(); }
+
+  // 06/29/2021 -- As of recent log analysis, a number of abilities that still proc non-lethal poisons no longer proc Deadly Poison
+  //               Primarily this appears to be things such as Rupture and Garrote primary casts, but also affects things like Shiv
+  //               These abilities still trigger Wound Poison as well, so this is not strictly about Lethal poisons
+  virtual bool procs_deadly_poison() const
+  { return procs_poison() && ( !( p()->bugs ) || ab::attack_power_mod.direct > 0 ); }
 
   // Generic rules for proccing Main Gauche, used by rogue_t::trigger_main_gauche()
   virtual bool procs_main_gauche() const
@@ -1741,8 +1747,15 @@ public:
 
     if ( ab::result_is_hit( state->result ) )
     {
-      if ( procs_poison() && p()->active.lethal_poison )
-        p()->active.lethal_poison->trigger( state );
+      if ( p()->active.lethal_poison )
+      {
+        // 06/29/2021 -- For reasons unknown, Deadly Poison has its own proc logic than Wound or Instant Poison
+        bool procs_lethal_poison = p()->active.lethal_poison->data().id() == p()->spec.deadly_poison->id() ?
+          procs_deadly_poison() : procs_poison();
+
+        if( procs_lethal_poison )
+          p()->active.lethal_poison->trigger( state );
+      }
 
       if ( procs_poison() && p()->active.nonlethal_poison )
         p()->active.nonlethal_poison->trigger( state );
@@ -2205,6 +2218,9 @@ struct melee_t : public rogue_attack_t
   bool procs_poison() const override
   { return true; }
 
+  bool procs_deadly_poison() const override
+  { return true; }
+
   bool procs_main_gauche() const override
   { return weapon->slot == SLOT_MAIN_HAND; }
 
@@ -2592,6 +2608,9 @@ struct crimson_tempest_t : public rogue_attack_t
   {
     return static_cast<double>( cast_state( s )->get_combo_points() ) + 1.0;
   }
+
+  bool procs_poison() const override
+  { return true; }
 };
 
 // Detection ================================================================
@@ -4124,13 +4143,15 @@ struct shiv_t : public rogue_attack_t
     }
   }
 
-  // 01/23/2021 -- Does not appear to proc Combat Potency despite being an OH attack
-  // 06/24/2021 -- Claimed fixed in the final 9.1 patch notes
   bool procs_combat_potency() const override
   { return true; }
 
   bool procs_blade_flurry() const override
   { return true; }
+
+  // 06/29/2021 -- Testing shows this does not proc Deadly Poison despite being direct
+  bool procs_deadly_poison() const override
+  { return false; }
 };
 
 // Vanish ===================================================================
@@ -4521,6 +4542,9 @@ struct serrated_bone_spike_t : public rogue_attack_t
         rogue_attack_t( name, p, p->find_spell( 341277 ) )
       {
       }
+
+      bool procs_poison() const override
+      { return false; }
     };
 
     sudden_fractures_t* sudden_fractures;
@@ -4633,6 +4657,10 @@ struct serrated_bone_spike_t : public rogue_attack_t
 
   bool procs_blade_flurry() const override
   { return true; }
+
+  // 06/29/2021 -- Testing shows this does not proc Deadly Poison despite being direct
+  bool procs_deadly_poison() const override
+  { return false; }
 };
 
 // ==========================================================================
