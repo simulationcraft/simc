@@ -1290,7 +1290,7 @@ void warlock_t::apl_precombat()
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "summon_pet" );
-  precombat->add_action( "use_item,name=tome_of_monstrous_constructions")
+  precombat->add_action( "use_item,name=tome_of_monstrous_constructions" );
   if ( specialization() != WARLOCK_DEMONOLOGY )
     precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
 
