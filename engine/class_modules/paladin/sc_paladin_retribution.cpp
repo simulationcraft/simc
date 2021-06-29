@@ -501,7 +501,7 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     if ( p() -> buffs.vanquishers_hammer -> up() )
     {
       p() -> active.necrolord_divine_storm -> schedule_execute();
-      p() -> buffs.vanquishers_hammer -> expire();
+      p() -> buffs.vanquishers_hammer -> decrement( 1 );
     }
 
     // TODO(mserrano): figure out the actionbar override thing instead of this hack.

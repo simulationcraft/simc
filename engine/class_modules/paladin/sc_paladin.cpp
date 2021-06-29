@@ -365,7 +365,7 @@ struct consecration_t : public paladin_spell_t
                             break;
                           case ground_aoe_params_t::EVENT_DESTRUCTED:
                             p()->active_consecration = nullptr;
-                            break;                          
+                            break;
                           default:
                             break;
                         }
@@ -1365,7 +1365,7 @@ struct cancel_ashen_hallow_t : public action_t
 {
   cancel_ashen_hallow_t( paladin_t* p, util::string_view options_str ) :
     action_t( ACTION_OTHER, "cancel_ashen_hallow", p )
-  { 
+  {
     parse_options( options_str );
     trigger_gcd = timespan_t::zero();
   }
@@ -2199,8 +2199,7 @@ void paladin_t::create_buffs()
                                        ->set_default_value( find_spell( 337682 )->effectN( 1 ).base_value() );
   buffs.final_verdict = make_buff( this, "final_verdict", find_spell( 337228 ) );
   buffs.virtuous_command =
-      make_buff( this, "virtuous_command", find_spell( 339664 ) )
-          ->set_refresh_behavior( buff_refresh_behavior::DISABLED );  // doesn't refresh on reapplication
+      make_buff( this, "virtuous_command", find_spell( 339664 ) );
   buffs.divine_resonance = make_buff( this, "divine_resonance", find_spell( 355455 ) )
           ->set_tick_callback( [ this ]( buff_t* /* b */, int /* stacks */, timespan_t /* tick_time */ ) {
               this->active.divine_resonance->set_target( this->target );
@@ -2574,7 +2573,7 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
     else
     {
       m *= 1.0 + spec.protection_paladin->effectN( 3 ).percent();
-    }    
+    }
     if ( buffs.redoubt->up() )
       m *= 1.0 + buffs.redoubt->stack_value();
   }
