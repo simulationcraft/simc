@@ -1638,6 +1638,17 @@ void volatile_solvent( special_effect_t& effect )
 
   auto splits = util::string_split<util::string_view>( opt_str, "/:" );
 
+  // Humanoid Buff is now always granted, regardless of what you absorb. This allows multiple buffs.
+  buff_t* humanoid_buff = buff_t::find( effect.player, "volatile_solvent_humanoid" );
+  if ( !humanoid_buff )
+  {
+    humanoid_buff =
+      make_buff<stat_buff_t>( effect.player, "volatile_solvent_humanoid", effect.player->find_spell( 323491 ) );
+  }
+  effect.player->buffs.volatile_solvent_humanoid = humanoid_buff;
+  // TODO: This can be removed when more modules have precombat Fleshcraft support
+  effect.player->register_combat_begin( humanoid_buff );
+
   for ( auto type_str : splits )
   {
     auto race_type = util::parse_race_type( type_str );
@@ -1655,17 +1666,11 @@ void volatile_solvent( special_effect_t& effect )
         race_type = RACE_GIANT;
     }
 
-    buff_t* buff;
-
+    buff_t* buff = nullptr;
     switch ( race_type )
     {
       case RACE_HUMANOID:
-        buff = buff_t::find( effect.player, "volatile_solvent_humanoid" );
-        if ( !buff )
-        {
-          buff =
-              make_buff<stat_buff_t>( effect.player, "volatile_solvent_humanoid", effect.player->find_spell( 323491 ) );
-        }
+        // No additional buff
         break;
 
       case RACE_BEAST:
@@ -1678,6 +1683,7 @@ void volatile_solvent( special_effect_t& effect )
                      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
                      ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
         }
+        effect.player->buffs.volatile_solvent_stats = buff;
         break;
 
       case RACE_DRAGONKIN:
@@ -1688,6 +1694,7 @@ void volatile_solvent( special_effect_t& effect )
                      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
                      ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
         }
+        effect.player->buffs.volatile_solvent_stats = buff;
         break;
 
       case RACE_ELEMENTAL:
@@ -1715,14 +1722,15 @@ void volatile_solvent( special_effect_t& effect )
         break;
 
       default:
-        buff = nullptr;
+        effect.player->sim->error( "Warning: Invalid type '{}' for Volatile Solvent, ignoring.", type_str );
         break;
     }
 
     if ( buff )
+    {
+      // TODO: This can be removed when more modules have precombat Fleshcraft support
       effect.player->register_combat_begin( buff );
-    else
-      effect.player->sim->error( "Warning: Invalid type '{}' for Volatile Solvent, ignoring.", type_str );
+    }
   }
 }
 
