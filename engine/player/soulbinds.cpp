@@ -2022,10 +2022,12 @@ void carvers_eye( special_effect_t& effect )
   struct carvers_eye_cb_t : public dbc_proc_callback_t
   {
     double hp_pct;
+    buff_t* buff;
 
     // Effect 1 and 3 both have the same value, but the tooltip uses effect 3
-    carvers_eye_cb_t( const special_effect_t& e )
-      : dbc_proc_callback_t( e.player, e ), hp_pct( e.driver()->effectN( 3 ).base_value() )
+    carvers_eye_cb_t( const special_effect_t& e, buff_t* b )
+      : dbc_proc_callback_t( e.player, e ), hp_pct( e.driver()->effectN( 3 ).base_value() ),
+      buff( b )
     {
     }
 
@@ -2036,8 +2038,8 @@ void carvers_eye( special_effect_t& effect )
       if ( s->target->health_percentage() > hp_pct && s->target != a->player &&
            !td->debuff.carvers_eye_debuff->check() )
       {
-        dbc_proc_callback_t::trigger( a, s );
         td->debuff.carvers_eye_debuff->trigger();
+        buff->trigger();
       }
     }
   };
@@ -2047,16 +2049,16 @@ void carvers_eye( special_effect_t& effect )
   effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
   effect.proc_chance_ = 1.0;
 
-  effect.custom_buff = buff_t::find( effect.player, "carvers_eye" );
+  auto buff = buff_t::find( effect.player, "carvers_eye" );
   if ( !effect.custom_buff )
   {
     auto val = effect.player->find_spell( 351414 )->effectN( 1 ).average( effect.player );
 
-    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "carvers_eye", effect.player->find_spell( 351414 ) )
+    buff = make_buff<stat_buff_t>( effect.player, "carvers_eye", effect.player->find_spell( 351414 ) )
                              ->add_stat( STAT_MASTERY_RATING, val );
   }
 
-  new carvers_eye_cb_t( effect );
+  new carvers_eye_cb_t( effect, buff );
 }
 
 struct mnemonic_residual_action_t : public residual_action::residual_periodic_action_t<spell_t>
