@@ -150,7 +150,7 @@ void marksmanship( player_t* p )
   precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption" );
   precombat->add_action( "tar_trap,if=runeforge.soulforge_embers" );
   precombat->add_action( "double_tap,precast_time=10,if=active_enemies>1|!covenant.kyrian&!talent.volley|variable.etf_precast" );
-  precombat->add_action( "variable,name=etf_precast,value=0" );
+  precombat->add_action( "variable,name=etf_precast,value=0", "Change to 1 to simulate ETF/SSF gearswap Trueshot precast." );
   precombat->add_action( "trueshot,precast_etf_equip=1,precast_ssf_rank=7,precast_time=2,if=variable.etf_precast" );
   precombat->add_action( "aimed_shot,if=active_enemies<3&(!covenant.kyrian&!talent.volley|active_enemies<2)&!variable.etf_precast" );
   precombat->add_action( "steady_shot,if=active_enemies>2|(covenant.kyrian|talent.volley)&active_enemies=2|variable.etf_precast" );
@@ -158,7 +158,7 @@ void marksmanship( player_t* p )
   default_->add_action( "auto_shot" );
   default_->add_action( "counter_shot,line_cd=30,if=runeforge.sephuzs_proclamation|soulbind.niyas_tools_poison|(conduit.reversal_of_fortune&!runeforge.sephuzs_proclamation)" );
   default_->add_action( "call_action_list,name=trinkets,if=covenant.kyrian&cooldown.trueshot.remains&cooldown.resonating_arrow.remains|!covenant.kyrian&cooldown.trueshot.remains" );
-  default_->add_action( "newfound_resolve,if=soulbind.newfound_resolve&(buff.resonating_arrow.up|cooldown.resonating_arrow.remains>10|target.time_to_die<16)" );
+  default_->add_action( "newfound_resolve,if=soulbind.newfound_resolve&(buff.resonating_arrow.up|cooldown.resonating_arrow.remains>10|target.time_to_die<16)", ""Delay facing your doubt until you have put Resonating Arrow down, or if the cooldown is too long to delay facing your Doubt. If none of these conditions are able to met within the 10 seconds leeway, the sim faces your Doubt automatically."" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=st,if=active_enemies<3" );
   default_->add_action( "call_action_list,name=trickshots,if=active_enemies>2" );
@@ -180,7 +180,7 @@ void marksmanship( player_t* p )
 
   st->add_action( "steady_shot,if=talent.steady_focus&(prev_gcd.1.steady_shot&buff.steady_focus.remains<5|buff.steady_focus.down)&(buff.resonating_arrow.down|!covenant.kyrian)" );
   st->add_action( "kill_shot" );
-  st->add_action( "double_tap,if=covenant.kyrian&(cooldown.resonating_arrow.remains<gcd)|!covenant.kyrian&!covenant.night_fae|covenant.night_fae&(cooldown.wild_spirits.remains<gcd|cooldown.wild_spirits.remains>36)|target.time_to_die<15" );
+  st->add_action( "double_tap,if=covenant.kyrian&(cooldown.resonating_arrow.remains<gcd)|!covenant.kyrian&!covenant.night_fae|covenant.night_fae&(cooldown.wild_spirits.remains<gcd|cooldown.wild_spirits.remains>30)|target.time_to_die<15" );
   st->add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers" );
   st->add_action( "tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
   st->add_action( "explosive_shot" );
@@ -191,7 +191,7 @@ void marksmanship( player_t* p )
   st->add_action( "wailing_arrow,if=cooldown.resonating_arrow.remains<gcd&(!talent.explosive_shot|buff.bloodlust.up)|!covenant.kyrian|cooldown.resonating_arrow.remains|target.time_to_die<5" );
   st->add_action( "resonating_arrow,if=buff.double_tap.up|!talent.double_tap|target.time_to_die<12" );
   st->add_action( "volley,if=buff.resonating_arrow.up|!covenant.kyrian&(buff.precise_shots.down|!talent.chimaera_shot|active_enemies<2)" );
-  st->add_action( "steady_shot,if=covenant.kyrian&focus+cast_regen<focus.max&((cooldown.resonating_arrow.remains<5&(!soulbind.effusive_anima_accelerator|!talent.double_tap))|talent.double_tap&cooldown.double_tap.remains<3)" );
+  st->add_action( "steady_shot,if=covenant.kyrian&focus+cast_regen<focus.max&((cooldown.resonating_arrow.remains<gcd*3&(!soulbind.effusive_anima_accelerator|!talent.double_tap))|talent.double_tap&cooldown.double_tap.remains<3)" );
   st->add_action( "trueshot,if=buff.precise_shots.down&(covenant.venthyr|covenant.necrolord|talent.calling_the_shots)|buff.resonating_arrow.up|buff.wild_spirits.up|buff.volley.up&active_enemies>1|target.time_to_die<25" );
   st->add_action( "rapid_fire,if=runeforge.surging_shots&talent.streamline&(cooldown.resonating_arrow.remains>10|!covenant.kyrian|!talent.double_tap|soulbind.effusive_anima_accelerator)" );
   st->add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2)|buff.trick_shots.remains>execute_time&active_enemies>1" );
@@ -206,7 +206,7 @@ void marksmanship( player_t* p )
   st->add_action( "steady_shot" );
 
   trickshots->add_action( "steady_shot,if=talent.steady_focus&in_flight&buff.steady_focus.remains<5" );
-  trickshots->add_action( "double_tap,if=covenant.kyrian&cooldown.resonating_arrow.remains<gcd|!covenant.kyrian&!covenant.night_fae|covenant.night_fae&(cooldown.wild_spirits.remains<gcd|cooldown.wild_spirits.remains>36)|target.time_to_die<10|cooldown.resonating_arrow.remains>10&active_enemies>3" );
+  trickshots->add_action( "double_tap,if=covenant.kyrian&cooldown.resonating_arrow.remains<gcd|!covenant.kyrian&!covenant.night_fae|covenant.night_fae&(cooldown.wild_spirits.remains<gcd|cooldown.wild_spirits.remains>30)|target.time_to_die<10|cooldown.resonating_arrow.remains>10&active_enemies>3" );
   trickshots->add_action( "tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
   trickshots->add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers" );
   trickshots->add_action( "explosive_shot" );
