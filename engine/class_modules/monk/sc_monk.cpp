@@ -260,8 +260,9 @@ public:
       if ( p()->buff.shuffle->up() )
       {
         timespan_t max_time   = p()->buff.shuffle->buff_duration();
-        timespan_t new_length = std::min( max_time, base_time + p()->buff.shuffle->remains() );
-        p()->buff.shuffle->refresh_duration( new_length );
+        timespan_t old_duration = p()->buff.shuffle->remains();
+        timespan_t new_length = std::min( max_time, base_time + old_duration);
+        p()->buff.shuffle->refresh( 1, buff_t::DEFAULT_VALUE(), new_length );
       }
       else
       {
