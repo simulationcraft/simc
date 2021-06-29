@@ -21,9 +21,6 @@
 
 /*
 * Currently Missing Soulbinds:
-* Kyrian:
-* - Kleia's Valiant Strikes
-* - Kleia's Light the Path
 * Night Fae:
 * - Korayn's Wild Hunt Strategem
 */
@@ -747,59 +744,66 @@ void party_favors( special_effect_t& effect )
   if ( util::str_compare_ci( opt_str, "none" ) )
     return;
 
-  buff_t* buff;
+  buff_t* haste_buff = buff_t::find( effect.player, "the_mad_dukes_tea_haste" );
+  if ( !haste_buff )
+  {
+    haste_buff = make_buff( effect.player, "the_mad_dukes_tea_haste", effect.player->find_spell( 354016 ) )
+      ->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  }
+
+  buff_t* crit_buff = buff_t::find( effect.player, "the_mad_dukes_tea_crit" );
+  if ( !crit_buff )
+  {
+    crit_buff = make_buff( effect.player, "the_mad_dukes_tea_crit", effect.player->find_spell( 354017 ) )
+      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+      ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
+  }
+
+  buff_t* primary_buff = buff_t::find( effect.player, "the_mad_dukes_tea_primary" );
+  if ( !primary_buff )
+  {
+    primary_buff = make_buff( effect.player, "the_mad_dukes_tea_primary", effect.player->find_spell( 353266 ) )
+      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+      ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+      ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
+  }
+
+  buff_t* vers_buff = buff_t::find( effect.player, "the_mad_dukes_tea_versatility" );
+  if ( !vers_buff )
+  {
+    vers_buff = make_buff( effect.player, "the_mad_dukes_tea_versatility", effect.player->find_spell( 354018 ) )
+      ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
+      ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
+  }
+
+  std::vector<buff_t*> buffs;
 
   // TODO: Figure out if you can have multiple buffs at a time
   if ( util::str_compare_ci( opt_str, "haste" ) )
   {
-    buff = buff_t::find( effect.player, "the_mad_dukes_tea_haste" );
-    if ( !buff )
-    {
-      buff = make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_haste", effect.player->find_spell( 354016 ) )
-                 ->set_default_value_from_effect_type( A_HASTE_ALL )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-    }
+    buffs = { haste_buff };
   }
   else if ( util::str_compare_ci( opt_str, "crit" ) )
   {
-    buff = buff_t::find( effect.player, "the_mad_dukes_tea_crit" );
-    if ( !buff )
-    {
-      buff = make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_crit", effect.player->find_spell( 354017 ) )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                 ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
-    }
+    buffs = { crit_buff };
   }
   else if ( util::str_compare_ci( opt_str, "primary" ) )
   {
-    buff = buff_t::find( effect.player, "the_mad_dukes_tea_primary" );
-    if ( !buff )
-    {
-      buff = make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_primary", effect.player->find_spell( 353266 ) )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-                 ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
-    }
+    buffs = { primary_buff };
   }
   else if ( util::str_compare_ci( opt_str, "versatility" ) )
   {
-    buff = buff_t::find( effect.player, "the_mad_dukes_tea_versatility" );
-    if ( !buff )
-    {
-      buff =
-          make_buff<stat_buff_t>( effect.player, "the_mad_dukes_tea_versatility", effect.player->find_spell( 354018 ) )
-              ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-              ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
-    }
+    buffs = { vers_buff };
   }
-  else
+  else if ( util::str_compare_ci( opt_str, "random" ) )
   {
-    buff = nullptr;
+    buffs = { haste_buff, crit_buff, primary_buff, vers_buff };
   }
 
-  if ( buff )
-    effect.player->register_combat_begin( buff );
+  if ( buffs.size() > 0 )
+    effect.player->register_combat_begin( [ buffs ] ( player_t* p ) { buffs[ p->rng().range( buffs.size() ) ]->trigger(); } );
   else
     effect.player->sim->error( "Warning: Invalid type '{}' for Party Favors, ignoring.", opt_str );
 }
@@ -993,6 +997,108 @@ void better_together( special_effect_t& effect )
   } );
 }
 
+/**Valiant Strikes
+ * id=329791 driver
+ * id=330943 "Valiant Strikes" stacking buff
+ * id=348236 "Dormant Valor" lockout debuff
+ * The actual healing is not implemented.
+ */
+struct valiant_strikes_t : public buff_t
+{
+  buff_t* dormant_valor;
+  buff_t* light_the_path;
+
+  valiant_strikes_t( player_t* p ) :
+    buff_t( p, "valiant_strikes", p->find_spell( 330943 ) ),
+    dormant_valor(),
+    light_the_path()
+  {
+    set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+    set_default_value( 0 );
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  }
+
+  void trigger_heal()
+  {
+    if ( !check() )
+      return;
+
+    if ( dormant_valor )
+      dormant_valor->trigger();
+
+    if ( light_the_path )
+      light_the_path->trigger();
+
+    expire();
+  }
+};
+
+void valiant_strikes( special_effect_t& effect )
+{
+  struct valiant_strikes_event_t final : public event_t
+  {
+    timespan_t delta_time;
+    valiant_strikes_t* valiant_strikes;
+
+    valiant_strikes_event_t( valiant_strikes_t* v, timespan_t t = 0_ms ) :
+      event_t( *v->sim, t ),
+      valiant_strikes( v ),
+      delta_time( t )
+    {}
+
+    const char* name() const override
+    { return "valiant_strikes_event"; }
+
+    void execute() override
+    {
+      if ( delta_time > 0_ms )
+        valiant_strikes->trigger_heal();
+
+      double rate = sim().shadowlands_opts.valiant_strikes_heal_rate;
+      if ( rate > 0 )
+      {
+        // Model the time between events with a Poisson process.
+        timespan_t t = timespan_t::from_minutes( rng().exponential( 1 / rate ) );
+        make_event<valiant_strikes_event_t>( sim(), valiant_strikes, t );
+      }
+    }
+  };
+
+  struct valiant_strikes_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* dormant_valor;
+
+    valiant_strikes_cb_t( const special_effect_t& e, buff_t* b ) :
+      dbc_proc_callback_t( e.player, e ), dormant_valor( b )
+    {}
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( dormant_valor->check() )
+        return;
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
+  };
+
+  valiant_strikes_t* valiant_strikes = debug_cast<valiant_strikes_t*>( buff_t::find( effect.player, "valiant_strikes" ) );
+  if ( !valiant_strikes )
+    valiant_strikes = make_buff<valiant_strikes_t>( effect.player );
+
+  auto dormant_valor = buff_t::find( effect.player, "dormant_valor" );
+  if ( !dormant_valor )
+    dormant_valor = make_buff( effect.player, "dormant_valor", effect.player->find_spell( 348236 ) )
+                      ->set_can_cancel( false );
+
+  valiant_strikes->dormant_valor = dormant_valor;
+  effect.custom_buff = valiant_strikes;
+  effect.proc_flags2_ = PF2_CRIT;
+  new valiant_strikes_cb_t( effect, dormant_valor );
+
+  effect.player->register_combat_begin( [ valiant_strikes ]( player_t* p )
+    { make_event<valiant_strikes_event_t>( *valiant_strikes->sim, valiant_strikes ); } );
+}
+
 void pointed_courage( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "pointed_courage" );
@@ -1044,6 +1150,28 @@ void spear_of_the_archon( special_effect_t& effect )
   }
 
   new spear_of_the_archon_cb_t( effect );
+}
+
+/**Light the Path
+ * id=351491 passive aura
+ * id=352981 buff
+ */
+void light_the_path( special_effect_t& effect )
+{
+  auto light_the_path = buff_t::find( effect.player, "light_the_path" );
+  if ( !light_the_path )
+  {
+    light_the_path = make_buff( effect.player, "light_the_path", effect.player->find_spell( 352981 ) )
+                       ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+                       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+  }
+
+  valiant_strikes_t* valiant_strikes = debug_cast<valiant_strikes_t*>( buff_t::find( effect.player, "valiant_strikes" ) );
+  if ( !valiant_strikes )
+    valiant_strikes = make_buff<valiant_strikes_t>( effect.player );
+
+  valiant_strikes->set_default_value( 0.0001 * effect.driver()->effectN( 1 ).base_value() );
+  valiant_strikes->light_the_path = light_the_path;
 }
 
 void hammer_of_genesis( special_effect_t& effect )
@@ -1100,8 +1228,8 @@ void brons_call_to_action( special_effect_t& effect )
         parse_options( options_str );
 
         interrupt_auto_attack   = false;
-        attack_power_mod.direct = 0.55;  // Not in spell data
-        spell_power_mod.direct  = 0.55;  // Not in spell data
+        attack_power_mod.direct = 0.605;  // Not in spell data
+        spell_power_mod.direct  = 0.605;  // Not in spell data
       }
 
       // cannon = 0.55 * max(0.5 * player's ap, 2 * player's sp)
@@ -1139,8 +1267,8 @@ void brons_call_to_action( special_effect_t& effect )
       bron_smash_damage_t( pet_t* p ) : spell_t( "smash", p, p->find_spell( 341165 ) )
       {
         background              = true;
-        attack_power_mod.direct = 1.0;   // Not in spell data
-        spell_power_mod.direct  = 0.25;  // Not in spell data
+        attack_power_mod.direct = 1.1;   // Not in spell data
+        spell_power_mod.direct  = 0.275;  // Not in spell data
         aoe                     = -1;
         radius                  = data().effectN( 1 ).radius_max();
       }
@@ -1350,7 +1478,29 @@ void brons_call_to_action( special_effect_t& effect )
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( a->background || a->trigger_gcd <= 0_ms || a->data().flags( spell_attribute::SX_NO_THREAT ) )
+      if ( bron->is_active() )
+        return;
+
+      // Only class spells can proc Bron's Call to Action.
+      // TODO: Is this an accurate way to detect this?
+      if ( !a->data().flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS ) )
+        return;
+
+      // Because this callback triggers on both cast and impact, spells are categorized into triggering on one of cast or impact.
+      // TODO: This isn't completely accurate, but seems to be relatively close. More classes/spells needs to be looked at.
+      bool action_triggers_on_impact = a->background || a->data().flags( spell_attribute::SX_ABILITY )
+        || range::any_of( a->data().effects(), [] ( const spelleffect_data_t& e ) { return e.type() == E_TRIGGER_MISSILE; } );
+
+      a->sim->print_debug( "'{}' attempts to trigger brons_call_to_action: action='{}', execute_proc_type2='{}', cast_proc_type2='{}', impact_proc_type2='{}', triggers_on='{}'",
+        a->player->name_str, a->name_str, util::proc_type2_string( s->execute_proc_type2() ), util::proc_type2_string( s->cast_proc_type2() ),
+        util::proc_type2_string( s->impact_proc_type2() ), action_triggers_on_impact ? "impact" : "cast" );
+
+      // If the spell triggers on cast and this is an impact trigger attempt, skip it.
+      if ( s->impact_proc_type2() != PROC2_INVALID && !action_triggers_on_impact )
+        return;
+
+      // If the spell triggers on impact and this is not an imapct trigger attempt, skip it.
+      if ( s->impact_proc_type2() == PROC2_INVALID && action_triggers_on_impact )
         return;
 
       dbc_proc_callback_t::trigger( a, s );
@@ -1370,9 +1520,7 @@ void brons_call_to_action( special_effect_t& effect )
     }
   };
 
-  // TODO: This technically uses proc flag 34 (Cast Successful), which currently isn't supported by simc.
-  effect.proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
-  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL | PF2_ALL_HIT;
 
   effect.custom_buff = buff_t::find( effect.player, "brons_call_to_action" );
   if ( !effect.custom_buff )
@@ -1460,7 +1608,10 @@ void soulglow_spectrometer( special_effect_t& effect )
       dbc_proc_callback_t::execute( a, s );
 
       auto td = a->player->get_target_data( s->target );
-      td->debuff.soulglow_spectrometer->trigger();
+
+      // Prevent two events coming in at the same time from triggering more than 1 stack
+      if ( !td->debuff.soulglow_spectrometer->check() )
+        td->debuff.soulglow_spectrometer->trigger();
     }
 
     void reset() override
@@ -1487,6 +1638,17 @@ void volatile_solvent( special_effect_t& effect )
 
   auto splits = util::string_split<util::string_view>( opt_str, "/:" );
 
+  // Humanoid Buff is now always granted, regardless of what you absorb. This allows multiple buffs.
+  buff_t* humanoid_buff = buff_t::find( effect.player, "volatile_solvent_humanoid" );
+  if ( !humanoid_buff )
+  {
+    humanoid_buff =
+      make_buff<stat_buff_t>( effect.player, "volatile_solvent_humanoid", effect.player->find_spell( 323491 ) );
+  }
+  effect.player->buffs.volatile_solvent_humanoid = humanoid_buff;
+  // TODO: This can be removed when more modules have precombat Fleshcraft support
+  effect.player->register_combat_begin( humanoid_buff );
+
   for ( auto type_str : splits )
   {
     auto race_type = util::parse_race_type( type_str );
@@ -1504,17 +1666,11 @@ void volatile_solvent( special_effect_t& effect )
         race_type = RACE_GIANT;
     }
 
-    buff_t* buff;
-
+    buff_t* buff = nullptr;
     switch ( race_type )
     {
       case RACE_HUMANOID:
-        buff = buff_t::find( effect.player, "volatile_solvent_humanoid" );
-        if ( !buff )
-        {
-          buff =
-              make_buff<stat_buff_t>( effect.player, "volatile_solvent_humanoid", effect.player->find_spell( 323491 ) );
-        }
+        // No additional buff
         break;
 
       case RACE_BEAST:
@@ -1527,6 +1683,7 @@ void volatile_solvent( special_effect_t& effect )
                      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
                      ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
         }
+        effect.player->buffs.volatile_solvent_stats = buff;
         break;
 
       case RACE_DRAGONKIN:
@@ -1537,6 +1694,7 @@ void volatile_solvent( special_effect_t& effect )
                      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
                      ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
         }
+        effect.player->buffs.volatile_solvent_stats = buff;
         break;
 
       case RACE_ELEMENTAL:
@@ -1564,14 +1722,15 @@ void volatile_solvent( special_effect_t& effect )
         break;
 
       default:
-        buff = nullptr;
+        effect.player->sim->error( "Warning: Invalid type '{}' for Volatile Solvent, ignoring.", type_str );
         break;
     }
 
     if ( buff )
+    {
+      // TODO: This can be removed when more modules have precombat Fleshcraft support
       effect.player->register_combat_begin( buff );
-    else
-      effect.player->sim->error( "Warning: Invalid type '{}' for Volatile Solvent, ignoring.", type_str );
+    }
   }
 }
 
@@ -2264,8 +2423,10 @@ void register_special_effects()
   register_soulbind_special_effect( 328266, soulbinds::combat_meditation );
   register_soulbind_special_effect( 351146, soulbinds::better_together );
   register_soulbind_special_effect( 351149, soulbinds::newfound_resolve, true );
-  register_soulbind_special_effect( 329778, soulbinds::pointed_courage );  // Kleia
+  register_soulbind_special_effect( 329791, soulbinds::valiant_strikes );  // Kleia
+  register_soulbind_special_effect( 329778, soulbinds::pointed_courage );
   register_soulbind_special_effect( 351488, soulbinds::spear_of_the_archon );
+  register_soulbind_special_effect( 351491, soulbinds::light_the_path );
   register_soulbind_special_effect( 333935, soulbinds::hammer_of_genesis );  // Mikanikos
   register_soulbind_special_effect( 333950, soulbinds::brons_call_to_action, true );
   register_soulbind_special_effect( 352188, soulbinds::effusive_anima_accelerator );
@@ -2349,6 +2510,25 @@ void initialize_soulbinds( player_t* player )
       continue;
 
     player->special_effects.push_back( new special_effect_t( effect ) );
+  }
+
+  // 357972 buff
+  // 357973 cooldown
+  conduit_data_t adaptive_armor_fragment_conduit = player->find_conduit_spell( "Adaptive Armor Fragment" );
+  if ( adaptive_armor_fragment_conduit->ok() )
+  {
+    auto buff = buff_t::find( player, "adaptive_armor_fragment" );
+    if ( !buff )
+    {
+      buff = make_buff( player, "adaptive_armor_fragment", player->find_spell( 357972 ) )
+                 ->set_default_value( adaptive_armor_fragment_conduit.percent() )
+                 ->set_cooldown( player->find_spell( 357973 )->duration() )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
+    }
+    player->register_combat_begin(
+        [ buff ]( player_t* p ) { make_repeating_event( *p->sim, 2.0_s, [ buff ] { buff->trigger(); } ); } );
   }
 }
 

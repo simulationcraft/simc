@@ -2,13 +2,13 @@ shaman="T27_Shaman_Enhancement"
 source=default
 spec=enhancement
 level=60
-race=orc
+race=troll
 role=attack
 position=back
 talents=3211131
 covenant=night_fae
-soulbind=niya,grove_invigoration/magma_fist:7/niyas_tools_burrs
-renown=40
+soulbind=niya,grove_invigoration/magma_fist:9:1/niyas_tools_burrs/essential_extraction:9:1/bonded_hearts
+renown=80
 
 # Default consumables
 potion=potion_of_spectral_agility
@@ -123,29 +123,30 @@ actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
 actions.single+=/earth_elemental
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
-head=helm_of_insatiable_appetite,id=183001,bonus_id=4800/4786/1498/6935,gem_id=173128
-neck=charm_of_eternal_winter,id=183040,bonus_id=4800/4786/1498/6935,gem_id=173128
-shoulders=boneshatter_pauldrons,id=172327,bonus_id=6716/6995/6649/6648/1532
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=4800/4786/1498
-chest=consumptive_chainmail_carapace,id=183000,bonus_id=4800/4786/1498,enchant=eternal_skirmish
-wrists=bangles_of_errant_pride,id=182977,bonus_id=4800/4786/1498/6935,gem_id=173128
-hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=4800/4786/1498
-waist=loadbearing_belt,id=183016,bonus_id=4800/4786/1498/6935,gem_id=173128
-legs=wind_dancers_legguards,id=178839,bonus_id=6536/1540/6646
-feet=boots_of_shuddering_matter,id=178796,bonus_id=6536/1540/6646,enchant=eternal_agility
-finger1=death_gods_signet,id=179355,bonus_id=6536/1540/6646,gem_id=173128,enchant=tenet_of_haste
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=4800/4786/1498/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1540/6646
-trinket2=dreadfire_vessel,id=184030,bonus_id=4800/4786/1498
-main_hand=jaws_of_the_hungerer,id=179579,bonus_id=7187/1531,enchant=sinful_revelation
-off_hand=jaws_of_the_hungerer,id=179579,bonus_id=7187/1531,enchant=celestial_guidance
+head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187073/173128
+neck=periapt_of_pristine_preservation,id=186291,bonus_id=7187/1498,gem_id=173128
+shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187076,enchant=27runspeed
+back=cloak_of_scarred_honor,id=186289,bonus_id=7187/1498
+chest=conjunctionforged_chainmail,id=186340,bonus_id=7187/1498,gem_id=187079,enchant=eternal_skirmish
+wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498,gem_id=173128
+hands=grasps_of_ancestral_whispers,id=186308,bonus_id=7187/1498
+waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187057/173128
+legs=hyperdense_greaves,id=186344,bonus_id=7187/1498
+feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187063,enchant=eternal_agility
+finger1=shadowghast_ring,id=178926,bonus_id=6716/6995/6649/6648/1559/1808,gem_id=173128,enchant=tenet_of_haste
+finger2=death_gods_signet,id=179355,bonus_id=6536/1566/6646,gem_id=173128,enchant=tenet_of_haste
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
+trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
+main_hand=dormazains_tenderizer,id=186387,bonus_id=7187/1498,enchant=sinful_revelation
+off_hand=dormazains_tenderizer,id=186387,bonus_id=7187/1498,enchant=celestial_guidance
 
 # Gear Summary
-# gear_ilvl=229.19
-# gear_agility=871
-# gear_stamina=1514
-# gear_crit_rating=191
-# gear_haste_rating=1017
-# gear_mastery_rating=496
-# gear_versatility_rating=253
-# gear_armor=873
+# gear_ilvl=253.94
+# gear_agility=1089
+# gear_stamina=2059
+# gear_crit_rating=277
+# gear_haste_rating=1024
+# gear_mastery_rating=697
+# gear_versatility_rating=234
+# gear_speed_rating=27
+# gear_armor=1022

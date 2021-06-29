@@ -1,4 +1,4 @@
-// 636 talents, wow build 9.0.5.38134
+// 636 talents, wow build 9.1.0.39185
 static std::array<talent_data_t, 636> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,  71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,  73,   1,   0,  275334,       0,  0 },
@@ -155,7 +155,7 @@ static std::array<talent_data_t, 636> __talent_data { {
   { "Soul of the Forest"                , 21709, 0x00, 0x0400, 104,   0,   4,  158477,       0,  0 },
   { "Soul of the Forest"                , 21710, 0x00, 0x0400, 105,   0,   4,  158478,       0,  0 },
   { "Brutal Slash"                      , 21711, 0x00, 0x0400, 103,   1,   5,  202028,  213764,  0 },
-  { "Twin Moons"                        , 21712, 0x00, 0x0400, 102,   1,   5,  279620,       0,  0 },
+  { "Stellar Drift"                     , 21712, 0x00, 0x0400, 102,   1,   5,  202354,       0,  0 },
   { "Survival of the Fittest"           , 21713, 0x00, 0x0400, 104,   1,   5,  203965,       0,  0 },
   { "Scent of Blood"                    , 21714, 0x00, 0x0400, 103,   0,   5,  285564,       0,  0 },
   { "Inner Peace"                       , 21716, 0x00, 0x0400, 105,   0,   5,  197073,       0,  0 },
@@ -383,7 +383,7 @@ static std::array<talent_data_t, 636> __talent_data { {
   { "Warrior of Elune"                  , 22386, 0x00, 0x0400, 102,   1,   0,  202425,       0,  0 },
   { "Force of Nature"                   , 22387, 0x00, 0x0400, 102,   2,   0,  205636,       0,  0 },
   { "Incarnation: Guardian of Ursoc"    , 22388, 0x00, 0x0400, 104,   2,   4,  102558,   50334,  0 },
-  { "Stellar Drift"                     , 22389, 0x00, 0x0400, 102,   0,   5,  202354,       0,  0 },
+  { "Twin Moons"                        , 22389, 0x00, 0x0400, 102,   0,   5,  279620,       0,  0 },
   { "Guardian of Elune"                 , 22390, 0x00, 0x0400, 104,   2,   5,  155578,       0,  0 },
   { "Warbreaker"                        , 22391, 0x00, 0x0001,  71,   1,   4,  262161,  167105,  0 },
   { "Collateral Damage"                 , 22392, 0x00, 0x0001,  71,   0,   4,  334779,       0,  0 },
@@ -583,7 +583,7 @@ static std::array<talent_data_t, 636> __talent_data { {
   { "Alacrity"                          , 23128, 0x00, 0x0008, 260,   1,   5,  193539,       0,  0 },
   { "Last Word"                         , 23137, 0x00, 0x0010, 258,   0,   3,  263716,       0,  0 },
   { "Demonic Strength"                  , 23138, 0x00, 0x0100, 266,   2,   0,  267171,       0,  0 },
-  { "Dark Caller"                       , 23139, 0x00, 0x0100, 265,   0,   5,  334183,       0,  0 },
+  { "Shadow Embrace"                    , 23139, 0x00, 0x0100, 265,   0,   5,   32388,       0,  0 },
   { "Inevitable Demise"                 , 23140, 0x00, 0x0100, 265,   1,   0,  334319,       0,  0 },
   { "Drain Soul"                        , 23141, 0x00, 0x0100, 265,   2,   0,  198590,     686,  0 },
   { "Cataclysm"                         , 23143, 0x00, 0x0100, 267,   2,   3,  152108,       0,  0 },
