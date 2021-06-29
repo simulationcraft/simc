@@ -751,3 +751,13 @@
 3755382, DBFilesClient\ItemBonusListGroup.db2
 3756368, DBFilesClient\GlobalGameContentTuning.db2
 3858895, DBFilesClient\SoulbindConduitRankProperties.db2
+4082839, DBFilesClient\GlobalPlayerConditionSet.db2
+4082838, DBFilesClient\GlobalPlayerCondition.db2
+4069554, DBFilesClient\SoulbindConduitEnhancedSocket.db2
+4067473, DBFilesClient\MythicPlusSeasonTrackedAffix.db2
+4065278, DBFilesClient\UiDungeonScoreRarity.db2
+3989479, DBFilesClient\SpellVisualKitPickerEntry.db2
+3989478, DBFilesClient\SpellVisualKitPicker.db2
+3989477, DBFilesClient\MountXSpellVisualKitPicker.db2
+3952714, DBFilesClient\ChrCustItemGeomodify.db2
+3946498, DBFilesClient\UiEventToast.db2

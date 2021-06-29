@@ -360,7 +360,7 @@ struct sim_t : private sc_thread_t
     /// TODO: Set this to a reasonable value
     double combat_meditation_extend_chance = 1.0;
     /// Number of nearby allies & enemies for the pointed courage soulbind
-    unsigned pointed_courage_nearby = 5;
+    unsigned pointed_courage_nearby = 3;
     /// Number of nearby allies when you proc lead by example,
     /// the default value of -1 adjusts to 2 for ranged position and 4 for front/back position
     int lead_by_example_nearby = -1;
@@ -407,7 +407,7 @@ struct sim_t : private sc_thread_t
     double bonded_hearts_other_covenant_chance = 1.0;
     // Stat buff provided by Theotar's Party Favors soulbind (The Mad Duke's Tea buffs)
     // Buff Types: "primary", "haste", "crit", "versatility"
-    std::string party_favor_type = "none";
+    std::string party_favor_type = "random";
     // Battlefield Presence enemy count override
     // Defaults to -1 to have the sim constantly adjust the value based on number of enemies in the sim
     int battlefield_presence_enemies = -1;
@@ -429,6 +429,8 @@ struct sim_t : private sc_thread_t
     timespan_t pustule_eruption_interval = 1_s;
     /// Chance that the player will pickup Shredded Soul orb left by Ebonsoul Vise
     double shredded_soul_pickup_chance = 1.0;
+    /// Sets the average number of times per minute that the Valiant Strikes soulbind will attempt to heal a player.
+    double valiant_strikes_heal_rate = 1.0;
   } shadowlands_opts;
 
   // Auras and De-Buffs

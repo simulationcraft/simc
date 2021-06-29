@@ -7,8 +7,8 @@ role=attack
 position=back
 talents=2303021
 covenant=necrolord
-soulbind=emeni,lead_by_example/eternal_hunger:7/convocation_of_the_dead:7
-renown=40
+soulbind=heirmir,forgeborne_reveries/eternal_hunger:9:1/convocation_of_the_dead:9:1/heirmirs_arsenal_marrowed_gemstone/carvers_eye/mnemonic_equipment
+renown=80
 
 # Default consumables
 potion=potion_of_spectral_strength
@@ -159,29 +159,30 @@ actions.trinkets+=/use_item,slot=trinket2,if=!variable.specified_trinket&((trink
 actions.trinkets+=/use_item,slot=trinket1,if=!trinket.1.has_use_buff&(trinket.2.cooldown.remains|!trinket.2.has_use_buff)
 actions.trinkets+=/use_item,slot=trinket2,if=!trinket.2.has_use_buff&(trinket.1.cooldown.remains|!trinket.1.has_use_buff)
 
-head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173130
-neck=sin_stained_pendant,id=178827,bonus_id=6536/1540/6646,gem_id=173130
-shoulders=vile_butchers_pauldrons,id=178749,bonus_id=6536/1540/6646
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=shadowghast_breastplate,id=171412,bonus_id=6716/6952/6649/6648/1532,enchant=eternal_stats
-wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498/6935,gem_id=173130
-hands=fogweaver_gauntlets,id=178706,bonus_id=6536/1540/6646,enchant=eternal_strength
-waist=stoic_guardsmans_belt,id=183025,bonus_id=7187/1498/6935,gem_id=173127
-legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
-feet=errant_crusaders_greaves,id=183027,bonus_id=7187/1498
-finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_critical_strike
-finger2=fleshfused_circle,id=178869,bonus_id=6536/1540/6646/6935,gem_id=173130,enchant=tenet_of_critical_strike
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1540/6646
-trinket2=stone_legion_heraldry,id=184027,bonus_id=7187/1498
-main_hand=nathrian_crusaders_bastard_sword,id=182389,bonus_id=7187/1531,enchant=rune_of_the_fallen_crusader
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173129/187312
+neck=periapt_of_pristine_preservation,id=186291,bonus_id=7187/1498/6935,gem_id=173129
+shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
+back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6648/1559,enchant=soul_vitality
+chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_stats
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173129/187319,enchant=40runspeed
+hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
+waist=fused_bone_greatbelt,id=178734,bonus_id=6536/1566/6646/6935,gem_id=173128
+legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6536/1566/6646
+feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
+finger1=signet_of_the_false_accuser,id=178824,bonus_id=6536/1566/6646/6935,gem_id=173127,enchant=tenet_of_mastery
+finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_haste
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
+trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
+main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/6652/7733/7734/7735,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=229.40
-# gear_strength=892
-# gear_stamina=1534
+# gear_ilvl=255.93
+# gear_strength=1126
+# gear_stamina=2134
 # gear_attack_power=20
-# gear_crit_rating=247
-# gear_haste_rating=743
-# gear_mastery_rating=810
-# gear_versatility_rating=163
-# gear_armor=1306
+# gear_crit_rating=494
+# gear_haste_rating=540
+# gear_mastery_rating=942
+# gear_versatility_rating=264
+# gear_speed_rating=40
+# gear_armor=1527

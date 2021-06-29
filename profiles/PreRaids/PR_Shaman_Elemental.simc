@@ -45,8 +45,7 @@ actions+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,
 actions+=/flame_shock,if=!ticking&(!pet.storm_elemental.active|spell_targets.chain_lightning<3&buff.wind_gust.stack<20)&(spell_targets.chain_lightning<3|talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped)
 actions+=/fire_elemental
 actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
-# if=!talent.ascendance.enabled|buff.ascendance.up
-actions+=/berserking
+actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up
 actions+=/fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
 actions+=/ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
 actions+=/bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up
