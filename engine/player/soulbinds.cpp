@@ -2038,13 +2038,29 @@ void carvers_eye( special_effect_t& effect )
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      // Can only proc on a target you haven't procced on for 10s
+      if ( cooldown->down() )
+      {
+        return;
+      }
+
+      // Don't proc on existing targets
+      //
+      // Note, in game it seems that the target being checked against in terms of the
+      // debuff is actually the actor's target, not the proccing action's target.
+      //
+      // Simulationcraft cant easily model that scenario currently, so we use the action's
+      // target here instead. This is probably how it is intended to work anyhow.
       auto td = a->player->get_target_data( s->target );
-      if ( s->target->health_percentage() > hp_pct && s->target != a->player &&
-           !td->debuff.carvers_eye_debuff->check() )
+      if ( td->debuff.carvers_eye_debuff->check() )
+      {
+        return;
+      }
+
+      if ( s->target->health_percentage() > hp_pct && s->target != a->player )
       {
         td->debuff.carvers_eye_debuff->trigger();
         buff->trigger();
+        cooldown->start();
       }
     }
   };
