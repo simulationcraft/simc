@@ -1,5 +1,5 @@
-// Spell text, wow build 9.1.0.39172
-static const std::array<spelltext_data_t, 15520> __spelltext_data { {
+// Spell text, wow build 9.1.0.39185
+static const std::array<spelltext_data_t, 15521> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -13268,7 +13268,7 @@ static const std::array<spelltext_data_t, 15520> __spelltext_data { {
   { 322763, "Balances your blunt weapon, increasing Attack Power by $ec1 for 1 hour.", 0, 0 },
   { 322835, "Metamorphosis increases your size, movement speed, and melee range by $326486s1%.", "Metamorphosis increases your size, movement speed, and melee range by $326486s1%.", 0 },
   { 322960, "Fortifying Brew increases Stagger effectiveness by $s1% while active.", 0, "Rank 2" },
-  { 323074, "Fleshcraft's passive effect consumes a corpse's essence completely, granting a benefit based on the creature's type.", 0, 0 },
+  { 323074, "Fleshcraft's passive effect consumes a corpse's essence completely, granting a benefit based on the creature's type. \r\n\r\nCasting Fleshcraft also consumes a small portion of your own essence, granting you the Humanoid benefit.", 0, 0 },
   { 323079, "Allows opening of locks that require up to $s2 skill, once every $s5 hours.\r\n\r\nEach $s4 sec spent channeling Fleshcraft reduces Kevin's Keyring's cooldown by $s3 min.", 0, 0 },
   { 323081, "Defeating enemies has a chance to deploy your Plagueborn Cleansing Slime, which improves the remaining durability on your armor.", 0, 0 },
   { 323089, "While standing still, you slowly build stacks of Bloop's Wanderlust. At $m2 stacks, your movement speed is increased by $323399m1% for $323399d.", 0, 0 },
@@ -13651,7 +13651,7 @@ static const std::array<spelltext_data_t, 15520> __spelltext_data { {
   { 329756, "$@spelldesc329737", 0, 0 },
   { 329776, "Phial of Serenity renders you immune to Curse, Disease, Poison, and Bleed effects for $330752d.", 0, 0 },
   { 329777, "Phial of Serenity heals you for $s1% additional health, but all of its healing is done over $330749d.", 0, 0 },
-  { 329778, "Chance to critical strike is increased by $330511s1% for every nearby enemy or ally, up to $330511u%.", 0, 0 },
+  { 329778, "Chance to critical strike is increased by $330511s1% for every nearby enemy or ally, up to ${$330511s1*$330511u}%.", 0, 0 },
   { 329779, "Your damaging spells and abilities have a chance to decrease your target's movement speed by $321759m% for $321759d.", 0, 0 },
   { 329781, "When receiving healing while above $s1% health or healing an ally that's above $s1% health, $s2% of the healing done is repeated on the target over $330859d.", 0, 0 },
   { 329784, "After $330921d out of combat, gain a shield for $330927s2% of your maximum health.", 0, 0 },
@@ -14703,7 +14703,7 @@ static const std::array<spelltext_data_t, 15520> __spelltext_data { {
   { 341741, "$@spelldesc339570", "Your Light of Dawn healing is increased by $w1%.", 0 },
   { 341750, "Roots an enemy for $d. Only usable outdoors in the Shadowlands.", "Rooted.", 0 },
   { 341804, "For every $s2 seconds that you do not cast $?c2[Flash Heal, the healing of your next Flash Heal][Shadow Mend, the healing of your next Shadow Mend] is increased by $341824s1%.  This effect can stack up to $341824u times.\r\n", 0, 0 },
-  { 341824, "$@spelldesc341804\r\n", "Increase the healing of your next $?c2[Flash Heal][Shadow Mend] by $s1%.", 0 },
+  { 341824, "$@spelldesc341804\r\n", "Increase the healing of your next $?c2[Flash Heal][Shadow Mend] by $w1%.", 0 },
   { 341997, "Your healing is increased by $s1% on targets with your Renew.", 0, 0 },
   { 342032, "Allows you to see what is hidden, but what's hidden will sometimes gaze back.", "Detecting stealthed creatures.", 0 },
   { 342049, "A two-headed shot that hits your primary target for $344120sw1 Nature damage and another nearby target for ${$344121sw1*($s1/100)} Frost damage.", 0, 0 },
@@ -15520,14 +15520,18 @@ static const std::array<spelltext_data_t, 15520> __spelltext_data { {
   { 358959, "Improve Rae'shalare, Death's Whisper to item level $s3.", 0, 0 },
   { 359040, "Consume The Mad Duke's Tea, increasing your $pri, Haste, Critical Strike chance, or Versatility for $354018d.\r\n\r\nYou can only have the effect of one of The Mad Duke's Tea active at a time.", 0, 0 },
   { 359078, "An intense application of Numbing Poison reduces the target's casting speed by $s1% for $d.", "Casting slowed by $s1%.", 0 },
+  { 359168, "While you are behind your enemies, their movement is impaired, or they are suffering from loss-of-control effects, your attacks have a high chance to cause them to bleed for ${$s1*($353466d/$353466t1+1)} Physical damage over $353466d.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.0.39172
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 9.1.0.39185
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
   {    5938,  0, "Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]\r\n$?s319032[\r\nYour Nature damage done against the target is increased by $319504s1%][] $?a354124[and healing received reduced by $354124S1% ][]for $319504d.\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", "Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]$?s319032[\r\n\r\nYour Nature damage done against the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $354124S1% for $319504d.][]\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r" },
+  {  323074,  0, "Fleshcraft's passive effect consumes a corpse's essence completely, granting a benefit based on the creature's type.", "Fleshcraft's passive effect consumes a corpse's essence completely, granting a benefit based on the creature's type. \r\n\r\nCasting Fleshcraft also consumes a small portion of your own essence, granting you the Humanoid benefit." },
+  {  329778,  0, "Chance to critical strike is increased by $330511s1% for every nearby enemy or ally, up to $330511u%.", "Chance to critical strike is increased by $330511s1% for every nearby enemy or ally, up to ${$330511s1*$330511u}%." },
+  {  341824,  1, "Increase the healing of your next $?c2[Flash Heal][Shadow Mend] by $s1%.", "Increase the healing of your next $?c2[Flash Heal][Shadow Mend] by $w1%." },
 } };
 
-// Spell description variables, wow build 9.1.0.39172
+// Spell description variables, wow build 9.1.0.39185
 static const std::array<spelldesc_vars_data_t, 301> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15774,7 +15778,7 @@ static const std::array<spelldesc_vars_data_t, 301> __spelldesc_vars_data { {
   {  319778, "$coeff=${0.0264}" },
   {  319978, "$absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}" },
   {  319983, "$mod=$?a137005[${1.0}]?a212611[${1.0}]?a137009[${3.0}]?a137014[${0.5}.1]?a137018[${1.5}.1]?a137022[${3.0}]?a137026[${4.0}]?a137030[${0.8}.2]?a137034[${1.5}]?a137038[${1.4}.1]?a137042[${1.0}]?a137047[${1.0}][${1.0}]" },
-  {  320659, "$points=${$cond($gt($SP,$AP),$SP*0.36,$AP*0.36)*(1+$@versadmg)}" },
+  {  320659, "$points=${$cond($gt($SP,$AP),$SP*0.3312,$AP*0.3312)*(1+$@versadmg)}" },
   {  320660, "$pointsA=${$cond($gt($SP,$AP),$SP*0.05,$AP*0.05)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}" },
   {  321012, "$absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}" },
   {  321530, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*(1+$@versadmg)*(1+($137015s1/100))}" },
@@ -15832,7 +15836,8 @@ static const std::array<spelldesc_vars_data_t, 301> __spelldesc_vars_data { {
   {  358164, "$buff=${$348272s1}\r\n$max=${3*$<buff>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.0.39172
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+// spelldesc_vars hotfix entries, wow build 9.1.0.39185
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
+  {  320659,  0, "$points=${$cond($gt($SP,$AP),$SP*0.36,$AP*0.36)*(1+$@versadmg)}", "$points=${$cond($gt($SP,$AP),$SP*0.3312,$AP*0.3312)*(1+$@versadmg)}" },
 } };
 
