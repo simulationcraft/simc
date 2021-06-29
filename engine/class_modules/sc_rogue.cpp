@@ -1750,7 +1750,8 @@ public:
       if ( p()->active.lethal_poison )
       {
         // 06/29/2021 -- For reasons unknown, Deadly Poison has its own proc logic than Wound or Instant Poison
-        bool procs_lethal_poison = p()->active.lethal_poison->data().id() == p()->spec.deadly_poison->id() ?
+        bool procs_lethal_poison = p()->specialization() == ROGUE_ASSASSINATION &&
+          p()->active.lethal_poison->data().id() == p()->spec.deadly_poison->id() ?
           procs_deadly_poison() : procs_poison();
 
         if( procs_lethal_poison )
