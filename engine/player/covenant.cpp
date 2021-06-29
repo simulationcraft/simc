@@ -789,6 +789,9 @@ struct fleshcraft_t : public spell_t
     // This triggers the full duration buff at the start of the cast, regardless of channel
     if ( volatile_solvent_active )
     {
+      if ( player->buffs.volatile_solvent_humanoid )
+        player->buffs.volatile_solvent_humanoid->trigger();
+
       if ( player->buffs.volatile_solvent_damage )
         player->buffs.volatile_solvent_damage->trigger();
 

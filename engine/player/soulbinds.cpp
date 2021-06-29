@@ -1655,18 +1655,20 @@ void volatile_solvent( special_effect_t& effect )
         race_type = RACE_GIANT;
     }
 
-    buff_t* buff;
+    // Humanoid Buff is now always granted, regardless of what you absorb. This allows multiple buffs.
+    buff_t* humanoid_buff = buff_t::find( effect.player, "volatile_solvent_humanoid" );
+    if ( !humanoid_buff )
+    {
+      humanoid_buff =
+        make_buff<stat_buff_t>( effect.player, "volatile_solvent_humanoid", effect.player->find_spell( 323491 ) );
+    }
+    effect.player->buffs.volatile_solvent_humanoid = humanoid_buff;
 
+    buff_t* buff;
     switch ( race_type )
     {
       case RACE_HUMANOID:
-        buff = buff_t::find( effect.player, "volatile_solvent_humanoid" );
-        if ( !buff )
-        {
-          buff =
-              make_buff<stat_buff_t>( effect.player, "volatile_solvent_humanoid", effect.player->find_spell( 323491 ) );
-        }
-        effect.player->buffs.volatile_solvent_stats = buff;
+        // No additional buff
         break;
 
       case RACE_BEAST:
@@ -1723,6 +1725,7 @@ void volatile_solvent( special_effect_t& effect )
     }
 
     // TODO: This can be removed when more modules have precombat Fleshcraft support
+    effect.player->register_combat_begin( humanoid_buff );
     if ( buff )
       effect.player->register_combat_begin( buff );
     else
