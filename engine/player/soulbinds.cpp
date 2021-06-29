@@ -1836,6 +1836,8 @@ void kevins_oozeling( special_effect_t& effect )
 
   timespan_t duration = timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() );
 
+  duration *= class_value_from_desc_vars( effect, "mod" );
+
   // Pet duration is extended by subsequent casts, such as Serrated Bone Spike for Rogues
   add_covenant_cast_callback<covenant_cb_pet_t>( effect.player, kevin, duration, true );
 }
