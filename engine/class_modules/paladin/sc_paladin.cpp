@@ -2609,15 +2609,9 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
   // Protection gets increased stamina
   if ( attr == ATTR_STAMINA )
   {
-    if ( dbc -> ptr )
-    {
-      if ( passives.aegis_of_light -> ok() )
-        m *= 1.0 + passives.aegis_of_light -> effectN( 1 ).percent();
-    }
-    else
-    {
-      m *= 1.0 + spec.protection_paladin->effectN( 3 ).percent();
-    }
+    if ( passives.aegis_of_light -> ok() )
+      m *= 1.0 + passives.aegis_of_light -> effectN( 1 ).percent();  
+
     if ( buffs.redoubt->up() )
       m *= 1.0 + buffs.redoubt->stack_value();
   }
@@ -2697,15 +2691,10 @@ double paladin_t::composite_base_armor_multiplier() const
   double a = player_t::composite_base_armor_multiplier();
   if ( specialization() != PALADIN_PROTECTION )
     return a;
-  if ( dbc -> ptr )
-  {
-    if ( passives.aegis_of_light -> ok() )
-      a *= 1.0 + passives.aegis_of_light -> effectN( 2 ).percent();
-  }
-  else
-  {
-    a *= 1.0 + spec.protection_paladin->effectN( 4 ).percent();
-  }
+
+  if ( passives.aegis_of_light -> ok() )
+    a *= 1.0 + passives.aegis_of_light -> effectN( 2 ).percent();
+
   return a;
 }
 
@@ -2788,10 +2777,7 @@ double paladin_t::composite_spell_power( school_e school ) const
   switch ( specialization() )
   {
     case PALADIN_PROTECTION:
-      if ( dbc -> ptr )
-        sp = spec.protection_paladin->effectN( 7 ).percent();
-      else
-        sp = spec.protection_paladin->effectN( 9 ).percent();
+      sp = spec.protection_paladin->effectN( 7 ).percent();
       sp *= composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
            composite_attack_power_multiplier();
       break;
@@ -2889,11 +2875,7 @@ double paladin_t::composite_block_reduction( action_state_t* s ) const
 double paladin_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
-  if ( dbc -> ptr )
-    c += spec.protection_paladin->effectN( 8 ).percent();
-  else
-    c += spec.protection_paladin->effectN( 10 ).percent();
-
+  c += spec.protection_paladin->effectN( 8 ).percent();
   return c;
 }
 
