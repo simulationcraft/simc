@@ -1724,14 +1724,15 @@ struct blessing_of_autumn_t : public buff_t
 {
   bool affected_actions_initialized;
   std::vector<action_t*> affected_actions;
+  double last_multiplier;
 
   blessing_of_autumn_t( player_t* p )
-    : buff_t( p, "blessing_of_autumn", p->find_spell( 328622 ) ), affected_actions_initialized( false )
+    : buff_t( p, "blessing_of_autumn", p->find_spell( 328622 ) ), affected_actions_initialized( false ), last_multiplier( 1.0 )
   {
     set_cooldown( 0_ms );
     set_default_value_from_effect( 1 );
 
-    set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+    set_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
       if ( !affected_actions_initialized )
       {
         int label = data().effectN( 1 ).misc_value1();
@@ -1750,26 +1751,52 @@ struct blessing_of_autumn_t : public buff_t
         affected_actions_initialized = true;
       }
 
-      paladin_t* pal = debug_cast<paladin_t*>( source );
-      double recharge_val = b->default_value;
-      if ( pal->buffs.equinox->up() )
-      {
-        recharge_val *= 1.0 + pal->buffs.equinox->data().effectN( 2 ).percent();
-      }
+      if ( new_ == 1 && old == 0 )
+        last_multiplier = 1.0;
 
-      double recharge_rate_multiplier = 1.0 / ( 1 + recharge_val );
+      update_cooldowns( b, new_ );
+    } );
+  }
+
+  void update_cooldowns( buff_t* b, int new_, bool is_equinox=false ) {
+    paladin_t* pal = debug_cast<paladin_t*>( source );
+
+    double recharge_rate_multiplier = 1.0 / ( 1 + b->default_value );
+    if ( is_equinox ) {
+      recharge_rate_multiplier = 1.0 / ( 1 + b->default_value * ( 1.0 + pal->buffs.equinox->data().effectN( 2 ).percent() ) );
+
+      if ( new_ == 1 )
+      {
+        for ( auto a : affected_actions )
+        {
+          a->base_recharge_multiplier /= last_multiplier;
+          a->base_recharge_multiplier *= recharge_rate_multiplier;
+          if ( a->cooldown->action == a )
+            a->cooldown->adjust_recharge_multiplier();
+          if ( a->internal_cooldown->action == a )
+            a->internal_cooldown->adjust_recharge_multiplier();
+        }
+
+        last_multiplier = recharge_rate_multiplier;
+      }
+    } else {
       for ( auto a : affected_actions )
       {
         if ( new_ == 1 )
           a->base_recharge_rate_multiplier *= recharge_rate_multiplier;
         else
-          a->base_recharge_rate_multiplier /= recharge_rate_multiplier;
+          a->base_recharge_rate_multiplier /= last_multiplier;
         if ( a->cooldown->action == a )
           a->cooldown->adjust_recharge_multiplier();
         if ( a->internal_cooldown->action == a )
           a->internal_cooldown->adjust_recharge_multiplier();
       }
-    } );
+
+      if ( new_ == 1 )
+        last_multiplier = recharge_rate_multiplier;
+      else
+        last_multiplier = 1.0;
+    }
   }
 };
 
@@ -2205,7 +2232,24 @@ void paladin_t::create_buffs()
               this->active.divine_resonance->set_target( this->target );
               this->active.divine_resonance->schedule_execute();
           } );
-  buffs.equinox = make_buff( this, "equinox", find_spell( 355567 ) );
+  buffs.equinox = make_buff( this, "equinox", find_spell( 355567 ) )
+          ->set_stack_change_callback( [ this ]( buff_t* b, int /* old */, int new_) {
+              // TODO: make this work on other players
+              if ( b->player != this )
+                return;
+              if ( new_ != 1 )
+                return;
+
+              buffs::blessing_of_autumn_t* blessing = debug_cast<buffs::blessing_of_autumn_t*>( b->player->buffs.blessing_of_autumn );
+
+              if ( blessing->check() ) {
+                blessing->update_cooldowns(
+                  blessing,
+                  blessing->stack(),
+                  true
+                );
+              }
+            } );
 
   // Covenants
   buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )->set_cooldown( 0_ms )
