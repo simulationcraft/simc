@@ -8564,7 +8564,7 @@ std::string druid_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case DRUID_BALANCE: return "main_hand:shadowcore_oil";
-    case DRUID_RESTORATION: return "main_hand:embalmers_oil";
+    case DRUID_RESTORATION: return "main_hand:shadowcore_oil";
     case DRUID_GUARDIAN: return "main_hand:shaded_sharpening_stone";
     case DRUID_FERAL: return "main_hand:shaded_sharpening_stone";
     default: return "disabled";
