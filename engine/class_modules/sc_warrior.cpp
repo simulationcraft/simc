@@ -6597,6 +6597,7 @@ void warrior_t::apl_fury()
   default_apl_dps_precombat();
   action_priority_list_t* default_list  = get_action_priority_list( "default" );
   action_priority_list_t* movement      = get_action_priority_list( "movement" );
+  action_priority_list_t* aoe           = get_action_priority_list( "aoe" );
   action_priority_list_t* single_target = get_action_priority_list( "single_target" );
 
   default_list->add_action( "auto_attack" );
@@ -6729,6 +6730,17 @@ void warrior_t::apl_fury()
   single_target->add_action( this, "Raging Blow" );
   single_target->add_action( this, spec.crushing_blow, "crushing_blow" );
   single_target->add_action( this, "Whirlwind" );
+
+  aoe->add_action( "cancel_buff,name=bladestorm,if=spell_targets.whirlwind>1&gcd.remains=0&soulbind.first_strike&buff.first_strike.remains&buff.enrage.remains<gcd" );
+  aoe->add_action( this, covenant.ancient_aftershock, "ancient_aftershock", "if=buff.enrage.up&cooldown.recklessness.remains>5&spell_targets.whirlwind>1" );
+  aoe->add_action( this, covenant.spear_of_bastion, "spear_of_bastion", "if=buff.enrage.up&rage<40&spell_targets.whirlwind>1" );
+  aoe->add_talent( this, "Bladestorm",  "if=buff.enrage.up&spell_targets.whirlwind>2" );
+  aoe->add_action( this, covenant.condemn, "condemn", "if=spell_targets.whirlwind>1&(buff.enrage.up|buff.recklessness.up&runeforge.sinful_surge)&variable.execute_phase" );
+  aoe->add_talent( this, "Siegebreaker",  "if=spell_targets.whirlwind>1" );
+  aoe->add_action( this, "Rampage",  "if=spell_targets.whirlwind>1" );
+  aoe->add_action( this, covenant.spear_of_bastion, "spear_of_bastion", "if=buff.enrage.up&cooldown.recklessness.remains>5&spell_targets.whirlwind>1" );
+  aoe->add_talent( this, "Bladestorm",  "if=buff.enrage.remains>gcd*2.5&spell_targets.whirlwind>1" );
+
 }
 
 // Arms Warrior Action Priority List ========================================
