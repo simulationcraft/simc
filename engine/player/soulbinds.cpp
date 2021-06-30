@@ -599,39 +599,48 @@ void thrill_seeker( special_effect_t& effect )
                        ->set_tick_behavior( buff_tick_behavior::NONE );
   }
 
-  struct euphoria_buff_t : public buff_t
+  auto euphoria_buff = buff_t::find( effect.player, "euphoria" );
+  if ( !euphoria_buff )
   {
-    euphoria_buff_t( player_t* p ) : buff_t( p, "euphoria", p->find_spell( 331937 ) )
+    euphoria_buff = make_buff( effect.player, "euphoria", effect.player->find_spell( 331937 ) )
+      ->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  }
+
+  counter_buff->set_stack_change_callback( [ euphoria_buff ]( buff_t* b, int, int ) {
+    if ( b->at_max_stacks() )
     {
-      set_default_value_from_effect_type( A_HASTE_ALL );
-      set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+      euphoria_buff->trigger();
+      make_event( b->sim, [ b ] { b->expire(); } );
+    }
+  } );
+
+  buff_t* fatal_flaw_crit = nullptr;
+  buff_t* fatal_flaw_vers = nullptr;
+
+  if ( effect.player->find_soulbind_spell( "Fatal Flaw" )->ok() )
+  {
+    fatal_flaw_crit = buff_t::find( effect.player, "fatal_flaw_crit" );
+    if ( !fatal_flaw_crit )
+    {
+      fatal_flaw_crit = make_buff( effect.player, "fatal_flaw_crit", effect.player->find_spell( 354053 ) )
+        ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
     }
 
-    void expire_override( int s, timespan_t d ) override
+    fatal_flaw_vers = buff_t::find( effect.player, "fatal_flaw_vers" );
+    if ( !fatal_flaw_vers )
     {
-      buff_t::expire_override( s, d );
-      if ( !player->buffs.fatal_flaw_crit || !player->buffs.fatal_flaw_vers )
-        return;
+      fatal_flaw_vers = make_buff( effect.player, "fatal_flaw_vers", effect.player->find_spell( 354054 ) )
+        ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
+        ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+    }
 
-      // Prefers crit at equal stats
-      if ( player->cache.spell_crit_chance() >= player->cache.damage_versatility() )
-        player->buffs.fatal_flaw_crit->trigger();
+    euphoria_buff->set_stack_change_callback( [ fatal_flaw_vers, fatal_flaw_crit ]( buff_t* b, int, int new_ ) {
+      if ( b->player->cache.spell_crit_chance() >= b->player->cache.damage_versatility() )
+        fatal_flaw_crit->trigger();
       else
-        player->buffs.fatal_flaw_vers->trigger();
-    }
-  };
-
-  auto buff = buff_t::find( effect.player, "euphoria" );
-  if ( !buff )
-  {
-    buff = make_buff<euphoria_buff_t>( effect.player );
-
-    counter_buff->set_stack_change_callback( [ buff ]( buff_t* b, int, int ) {
-      if ( b->at_max_stacks() )
-      {
-        buff->trigger();
-        b->expire();
-      }
+        fatal_flaw_vers->trigger();
     } );
   }
 
@@ -682,23 +691,11 @@ void thrill_seeker( special_effect_t& effect )
 // Versatility - 354054
 void fatal_flaw( special_effect_t& effect )
 {
-  auto crit_buff = buff_t::find( effect.player, "fatal_flaw_crit" );
-  auto vers_buff = buff_t::find( effect.player, "fatal_flaw_vers" );
-  if ( !crit_buff )
-  {
-    crit_buff = make_buff( effect.player, "fatal_flaw_crit", effect.player->find_spell( 354053 ) )
-                    ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-                    ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
-  }
-  if ( !vers_buff )
-  {
-    vers_buff = make_buff( effect.player, "fatal_flaw_vers", effect.player->find_spell( 354054 ) )
-                    ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
-                    ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
-  }
+  if ( unique_gear::create_fallback_buffs( effect, { "fatal_flaw_crit", "fatal_flaw_vers" } ) )
+    return;
 
-  effect.player->buffs.fatal_flaw_crit = crit_buff;
-  effect.player->buffs.fatal_flaw_vers = vers_buff;
+  effect.disable_action();
+  effect.disable_buff();
 }
 
 void soothing_shade( special_effect_t& effect )
@@ -2438,7 +2435,7 @@ void register_special_effects()
   // register_soulbind_special_effect( 331580, soulbinds::exacting_preparation );  // Nadjia
   register_soulbind_special_effect( 331584, soulbinds::dauntless_duelist );
   register_soulbind_special_effect( 331586, soulbinds::thrill_seeker, true );
-  register_soulbind_special_effect( 352373, soulbinds::fatal_flaw );
+  register_soulbind_special_effect( 352373, soulbinds::fatal_flaw, true );
   register_soulbind_special_effect( 336239, soulbinds::soothing_shade );  // Theotar
   register_soulbind_special_effect( 319983, soulbinds::wasteland_propriety );
   register_soulbind_special_effect( 351750, soulbinds::party_favors );
