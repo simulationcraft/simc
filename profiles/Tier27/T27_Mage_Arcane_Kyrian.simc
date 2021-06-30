@@ -7,7 +7,7 @@ role=spell
 position=ranged_back
 talents=1031021
 covenant=kyrian
-soulbind=pelagos,combat_meditation/magis_brand:9:1/ire_of_the_ascended:9:1/arcane_prodigy:9:1/better_together/newfound_resolve
+soulbind=forgelite_prime_mikanikos,brons_call_to_action/magis_brand:9:1/ire_of_the_ascended:9:1/arcane_prodigy:9:1/soulglow_spectrometer/effusive_anima_accelerator
 renown=80
 
 # Default consumables

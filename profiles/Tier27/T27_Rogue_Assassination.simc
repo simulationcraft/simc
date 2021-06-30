@@ -31,7 +31,7 @@ actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/marked_for_death,precombat_seconds=10,if=raid_event.adds.in>15
-actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption
+actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent
 actions.precombat+=/variable,name=vendetta_cdr,value=1-(runeforge.duskwalkers_patch*0.45)
 # The average CDR is 0.22 but due to the RNG nature of CP gen, 2x this value is optimal for syncing logic
 actions.precombat+=/variable,name=flagellation_cdr,value=1-(runeforge.obedience*0.44)
@@ -67,7 +67,7 @@ actions.cds=marked_for_death,line_cd=1.5,target_if=min:target.time_to_die,if=rai
 # If no adds will die within the next 30s, use MfD on boss without any CP.
 actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend
 # Fleshcraft for Pustule Eruption if not stealthed or in a cooldown cycle
-actions.cds+=/fleshcraft,if=soulbind.pustule_eruption&!stealthed.all&!debuff.vendetta.up&master_assassin_remains=0&(energy.time_to_max_combined>2|!debuff.shiv.up)
+actions.cds+=/fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)&!stealthed.all&!debuff.vendetta.up&master_assassin_remains=0&(energy.time_to_max_combined>2|!debuff.shiv.up)
 # Sync Flagellation with Vendetta as long as we won't lose a cast over the fight duration
 actions.cds+=/flagellation,if=!stealthed.rogue&(cooldown.vendetta.remains<3&effective_combo_points>=4&target.time_to_die>10|debuff.vendetta.up|fight_remains<24)
 actions.cds+=/flagellation,if=!stealthed.rogue&effective_combo_points>=4&(floor((fight_remains-24)%(cooldown*variable.flagellation_cdr))>floor((fight_remains-24-cooldown.vendetta.remains*variable.vendetta_cdr)%(cooldown*variable.flagellation_cdr)))
