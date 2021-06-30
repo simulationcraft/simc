@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39226 Live (hotfix 2021-06-29/39226, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39229 Live (hotfix 2021-06-30/39229, no-networking)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
