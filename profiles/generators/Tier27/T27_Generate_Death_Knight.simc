@@ -36,7 +36,7 @@ role=attack
 position=back
 talents=3201012
 covenant=kyrian
-soulbind=forgelite_prime_mikanikos:18,brons_call_to_action/accelerated_cold:9:1/everfrost:9:1/unleashed_frenzy:9:1/soulglow_spectrometer/effusive_anima_accelerator
+soulbind=pelagos,combat_meditation/accelerated_cold:9:1/everfrost:9:1/unleashed_frenzy:9:1/better_together/newfound_resolve
 renown=80
 
 head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173129/187312
@@ -66,8 +66,8 @@ spec=frost
 role=attack
 position=back
 talents=3101013
-covenant=kyrian
-soulbind=forgelite_prime_mikanikos:18,brons_call_to_action/accelerated_cold:9:1/everfrost:9:1/unleashed_frenzy:9:1/soulglow_spectrometer/effusive_anima_accelerator
+covenant=necrolord
+soulbind=emeni,lead_by_example/accelerated_cold:9:1/unleashed_frenzy:9:1/everfrost:9:1/pustule_eruption
 renown=80
 
 head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173130/187312
@@ -98,7 +98,7 @@ role=attack
 position=back
 talents=3201012
 covenant=kyrian
-soulbind=forgelite_prime_mikanikos:18,brons_call_to_action/accelerated_cold:9:1/everfrost:9:1/unleashed_frenzy:9:1/soulglow_spectrometer/effusive_anima_accelerator
+soulbind=pelagos,combat_meditation/accelerated_cold:9:1/everfrost:9:1/unleashed_frenzy:9:1/better_together/newfound_resolve
 renown=80
 
 head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173129/187312
