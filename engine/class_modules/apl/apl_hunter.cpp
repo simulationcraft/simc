@@ -252,6 +252,7 @@ void survival( player_t* p )
   precombat -> add_action( "variable,name=mb_rs_cost,op=setif,value=action.mongoose_bite.cost,value_else=action.raptor_strike.cost,condition=talent.mongoose_bite" );
   precombat -> add_action( "summon_pet" );
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat -> add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" );
   precombat -> add_action( "tar_trap,if=runeforge.soulforge_embers" );
   precombat -> add_action( "steel_trap,precast_time=20" );
 
@@ -274,6 +275,7 @@ void survival( player_t* p )
   cds -> add_action( "berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<13" );
   cds -> add_action( "muzzle" );
   cds -> add_action( "potion,if=target.time_to_die<60|buff.coordinated_assault.up" );
+  cds -> add_action( "fleshcraft,cancel_if=channeling&!soulbind.pustule_eruption,if=(focus<70|cooldown.coordinated_assault.remains<gcd)&(soulbind.pustule_eruption|soulbind.volatile_solvent)" );
   cds -> add_action( "tar_trap,if=focus+cast_regen<focus.max&runeforge.soulforge_embers.equipped&tar_trap.remains<gcd&cooldown.flare.remains<gcd&(active_enemies>1|active_enemies=1&time_to_die>5*gcd)" );
   cds -> add_action( "flare,if=focus+cast_regen<focus.max&tar_trap.up&runeforge.soulforge_embers.equipped&time_to_die>4*gcd" );
   cds -> add_action( "kill_shot,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
