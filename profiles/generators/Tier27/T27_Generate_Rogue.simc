@@ -6,7 +6,7 @@ role=attack
 position=back
 talents=3320021
 covenant=venthyr
-soulbind=nadjia_the_mistblade:8,thrill_seeker/lashing_scars:9:1/dauntless_duelist/wellplaced_steel:9:1/fatal_flaw
+soulbind=nadjia_the_mistblade,thrill_seeker/lashing_scars:9:1/dauntless_duelist/wellplaced_steel:9:1/fatal_flaw
 renown=80
 
 head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187312
@@ -68,7 +68,7 @@ role=attack
 position=back
 talents=1320031
 covenant=venthyr
-soulbind=nadjia_the_mistblade:8,thrill_seeker/lashing_scars:9:1/dauntless_duelist/deeper_daggers:9:1/fatal_flaw
+soulbind=nadjia_the_mistblade,thrill_seeker/lashing_scars:9:1/dauntless_duelist/deeper_daggers:9:1/fatal_flaw
 renown=80
 
 head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187312
