@@ -13,6 +13,7 @@
 #include "player/player_talent_points.hpp"
 #include "sc_highchart.hpp"
 #include "sim/scale_factor_control.hpp"
+#include "sim/sc_profileset.hpp"
 #include "util/util.hpp"
 
 namespace
@@ -1266,8 +1267,8 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       item_sim_desc += report_decorators::decorated_spell_data_item( *item.sim, spell, item );
     }
 
-    auto has_relics = range::find_if( item.parsed.gem_actual_ilevel, []( unsigned v ) { return v != 0; } );
-    if ( has_relics != item.parsed.gem_actual_ilevel.end() )
+    auto has_relics = range::any_of( item.parsed.gem_actual_ilevel, []( unsigned v ) { return v != 0; } );
+    if ( has_relics )
     {
       item_sim_desc += ", relics: { ";
       auto first = true;
@@ -3436,7 +3437,7 @@ void print_html_player_custom_section( report::sc_html_stream& os, const player_
 void print_html_player_description( report::sc_html_stream& os, const player_t& p )
 {
   const sim_t& sim = *p.sim;
-  bool one_player = sim.players_by_name.size() == 1 && !p.is_enemy() && sim.profilesets.n_profilesets() == 0;
+  bool one_player = sim.players_by_name.size() == 1 && !p.is_enemy() && sim.profilesets->n_profilesets() == 0;
 
   // Player Description
   os << "<div id=\"player" << p.index << "\" class=\"player section\">\n";
@@ -3524,16 +3525,16 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
     os << "<li><b>BETA activated</b></li>\n";
 #endif
   }
+  fmt::print( os, "<li><b>Race:</b> {}</li>\n", util::inverse_tokenize( p.race_str ) );
+
   const char* pt;
   if ( p.is_pet() )
+  {
     pt = util::pet_type_string( p.cast_pet()->pet_type );
+  }
   else
     pt = util::player_type_string( p.type );
-
-  os.printf( "<li><b>Race:</b> %s</li>\n"
-             "<li><b>Class:</b> %s</li>\n",
-             util::inverse_tokenize( p.race_str ).c_str(),
-             util::inverse_tokenize( pt ).c_str() );
+  fmt::print( os, "<li><b>Class:</b> {}</li>\n", util::inverse_tokenize( p.race_str ) );
 
   if ( p.specialization() != SPEC_NONE )
   {

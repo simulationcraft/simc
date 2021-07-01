@@ -270,9 +270,9 @@ bool in_player_scope( const option_tuple_t& opt )
     "armory", "local_json"
   } };
 
-  return range::find_if( player_scope_opts, [ &opt ]( util::string_view name ) {
+  return range::any_of( player_scope_opts, [ &opt ]( util::string_view name ) {
     return util::str_compare_ci( opt.name, name );
-  } ) != player_scope_opts.end();
+  } );
 }
 
 } // unnamed
@@ -677,7 +677,7 @@ bool profilesets_t::parse( sim_t* sim )
       return false;
     }
 
-    auto has_output_opts = range::find_if( profileset_opts, []( util::string_view opt ) {
+    auto has_output_opts = range::any_of( profileset_opts, []( util::string_view opt ) {
       auto name_end = opt.find( "=" );
       if ( name_end == std::string::npos )
       {
@@ -689,7 +689,7 @@ bool profilesets_t::parse( sim_t* sim )
       return util::str_compare_ci( name, "output" ) ||
              util::str_compare_ci( name, "html" ) ||
              util::str_compare_ci( name, "json2" );
-    } ) != profileset_opts.end();
+    } );
 
     // Test that profileset options are OK, up to the simulation initialization
     try
@@ -980,7 +980,7 @@ void profilesets_t::output_text( const sim_t& sim, std::ostream& out ) const
 
   range::for_each( results, [ &out ]( const profile_set_t* profileset ) {
       fmt::print( out, "    {:-10.3f} : {:s}\n",
-      profileset -> result().median(), profileset -> name().c_str() );
+      profileset -> result().median(), profileset -> name() );
   } );
 }
 

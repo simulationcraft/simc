@@ -659,6 +659,8 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 374, "Reduce Fall Damage%"                          },
   { 377, "Cast while Moving"                            },
   { 379, "Modify Mana Regen%"                           },
+  { 380, "Modify Damage Taken% from Caster Guardian"    },
+  { 381, "Modify Damage Taken% from Caster Pet"         },
   { 383, "Ignore Spell Cooldown"                        },
   { 404, "Override Attack Power per Spell Power%"       },
   { 405, "Modify Combat Rating Multiplier"              },
@@ -1526,8 +1528,10 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
         []( std::stringstream& s, const spelleffect_data_t* e ) {
           s << e -> spell() -> name_cstr() << " (" << e -> spell() -> id()
             << " effect#" << ( e -> index() + 1 ) << ")";
-        } ) << std::endl;
+        } );
     }
+
+    s << std::endl;
   }
 
   if ( spell -> category_cooldown() > timespan_t::zero() )

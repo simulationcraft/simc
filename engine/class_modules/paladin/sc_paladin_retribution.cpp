@@ -6,11 +6,15 @@
 namespace paladin {
 
 namespace buffs {
-  crusade_buff_t::crusade_buff_t( player_t* p ) :
+  crusade_buff_t::crusade_buff_t( paladin_t* p ) :
       buff_t( p, "crusade", p -> find_spell( 231895 ) ),
       damage_modifier( 0.0 ),
       haste_bonus( 0.0 )
   {
+    if ( !p->talents.crusade->ok() )
+    {
+      set_chance( 0 );
+    }
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
     // TODO(mserrano): fix this when Blizzard turns the spelldata back to sane
     //  values
@@ -497,7 +501,7 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     if ( p() -> buffs.vanquishers_hammer -> up() )
     {
       p() -> active.necrolord_divine_storm -> schedule_execute();
-      p() -> buffs.vanquishers_hammer -> expire();
+      p() -> buffs.vanquishers_hammer -> decrement( 1 );
     }
 
     // TODO(mserrano): figure out the actionbar override thing instead of this hack.
@@ -603,7 +607,7 @@ struct judgment_ret_t : public judgment_t
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
   {}
 
-  judgment_ret_t( paladin_t* p ) :
+  judgment_ret_t( paladin_t* p, bool is_divine_toll = true ) :
     judgment_t( p ),
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
   {
@@ -612,7 +616,8 @@ struct judgment_ret_t : public judgment_t
 
     // according to skeletor this is given the bonus of 326011
     // TODO(mserrano) - fix this once spell data has been re-extracted
-    base_multiplier *= 1.0 + p -> find_spell( 326011 ) -> effectN( 1 ).percent();
+    if ( is_divine_toll )
+      base_multiplier *= 1.0 + p -> find_spell( 326011 ) -> effectN( 1 ).percent();
   }
 
   void execute() override
@@ -787,6 +792,8 @@ void paladin_t::create_ret_actions()
   if ( specialization() == PALADIN_RETRIBUTION )
   {
     active.divine_toll = new judgment_ret_t( this );
+    active.judgment = new judgment_ret_t( this, false );
+    active.divine_resonance = new judgment_ret_t( this, false );
   }
 }
 
@@ -827,7 +834,8 @@ void paladin_t::create_buffs_retribution()
   // Azerite
   buffs.empyrean_power_azerite = make_buff( this, "empyrean_power_azerite", find_spell( 286393 ) )
                        -> set_default_value( azerite.empyrean_power.value() );
-  buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 326733 ) );
+  buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 326733 ) )
+                          ->set_trigger_spell(talents.empyrean_power);
   buffs.relentless_inquisitor_azerite = make_buff<stat_buff_t>(this, "relentless_inquisitor_azerite", find_spell( 279204 ) )
                               -> add_stat( STAT_HASTE_RATING, azerite.relentless_inquisitor.value() );
 

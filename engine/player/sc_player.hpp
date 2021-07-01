@@ -44,12 +44,13 @@ struct benefit_t;
 struct item_t;
 struct buff_t;
 struct cooldown_t;
+struct cooldown_waste_data_t;
 struct dot_t;
 struct event_t;
 struct expr_t;
 struct gain_t;
 struct instant_absorb_t;
-struct item_runeforge_t;
+class item_runeforge_t;
 struct sample_data_helper_t;
 struct option_t;
 struct pet_t;
@@ -336,6 +337,7 @@ struct player_t : public actor_t
   std::array< std::vector<plot_data_t>, STAT_MAX > dps_plot_data;
   std::vector<std::vector<plot_data_t> > reforge_plot_data;
   auto_dispose< std::vector<sample_data_helper_t*> > sample_data_list;
+  std::vector<std::unique_ptr<cooldown_waste_data_t>> cooldown_waste_data_list;
 
   // All Data collected during / end of combat
   player_collected_data_t collected_data;
@@ -515,16 +517,25 @@ struct player_t : public actor_t
 
     // 9.0 Soulbinds
     buff_t* wild_hunt_tactics;  // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
+    buff_t* volatile_solvent_humanoid; // necrolord/marileth - humanoid (mastery) buff
+    buff_t* volatile_solvent_stats; // necrolord/marileth - beast (primary) and dragonkin (crit) buffs
     buff_t* volatile_solvent_damage; // necrolord/marileth - elemental (magic) and giant (physical) % damage done buffs
-    buff_t* redirected_anima; // night_fae/niya - mastery and max health % increase per stack
     buff_t* battlefield_presence; // venthyr/draven - damage increase buff based on number of enemies
-    buff_t* fatal_flaw_crit; // venthyr/nadjia - buff applied after euphoria expires if you have more crit than vers
-    buff_t* fatal_flaw_vers; // venthyr/nadjia - buff applied after euphoria expires if you have more vers than crit
+    buff_t* emenis_magnificent_skin; //necrolord/emeni - buff applied when using fleshcraft that increases max health
+    buff_t* trembling_pustules; //necrolord/emeni - buff applied when using fleshcraft that increases procs Pustule Eruption damage
+    buff_t* hold_your_ground; //venthyr/draven - stamina % buff when standing still
+    buff_t* waking_bone_breastplate; //necrolord/heirmir - max health % buff when near 3 or more enemies
 
     // 9.0 Runecarves
     buff_t* norgannons_sagacity_stacks;  // stacks on every cast
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
     buff_t* echo_of_eonar;               // passive self buff
+
+    // 9.1 Legendary Party Buffs
+    buff_t* pact_of_the_soulstalkers; // Kyrian Hunter Legendary
+
+    // 9.1 Shards of Domination
+    buff_t* coldhearted; // Shard of Cor
   } buffs;
 
   struct debuffs_t
@@ -556,7 +567,9 @@ struct player_t : public actor_t
     std::vector<timespan_t> blessing_of_spring;
     std::vector<timespan_t> conquerors_banner;
     std::vector<timespan_t> rallying_cry;
+    std::vector<timespan_t> pact_of_the_soulstalkers;
   } external_buffs;
+
 
   struct gains_t
   {
@@ -810,6 +823,7 @@ public:
   sample_data_helper_t* get_sample_data( util::string_view name );
   action_priority_list_t* get_action_priority_list( util::string_view name, util::string_view comment = {} );
   int get_action_id( util::string_view name );
+  cooldown_waste_data_t* get_cooldown_waste_data( const cooldown_t* cd );
 
 
   // Virtual methods
@@ -941,7 +955,8 @@ public:
   virtual double composite_player_dh_multiplier( school_e ) const { return 1; }
   virtual double composite_player_th_multiplier( school_e ) const;
   virtual double composite_player_absorb_multiplier( const action_state_t* s ) const;
-  virtual double composite_player_pet_damage_multiplier( const action_state_t* ) const;
+  virtual double composite_player_pet_damage_multiplier( const action_state_t*, bool guardian ) const;
+  virtual double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const;
   virtual double composite_player_target_crit_chance( player_t* target ) const;
   virtual double composite_player_critical_damage_multiplier( const action_state_t* s ) const;
   virtual double composite_player_critical_healing_multiplier() const;
@@ -1215,4 +1230,7 @@ public:
   int nth_iteration() const;
 
   friend void format_to( const player_t&, fmt::format_context::iterator );
+
+  // Indicates whether the player uses PTR dbc data
+  bool is_ptr() const;
 };

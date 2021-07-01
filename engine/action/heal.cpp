@@ -7,7 +7,7 @@
 #include "dot.hpp"
 #include "sc_action_state.hpp"
 #include "action_callback.hpp"
-#include "dbc/dbc.hpp"
+#include "dbc/spell_data.hpp"
 #include "player/sc_player.hpp"
 #include "player/stats.hpp"
 #include "sim/sc_expressions.hpp"

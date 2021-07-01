@@ -105,7 +105,7 @@ void SC_ImportThread::run()
         return;
       }
       std::string buffer = player->create_profile();
-      profile            = QString::fromUtf8( buffer.c_str() );
+      profile            = QString::fromUtf8( buffer.data(), buffer.size() );
     }
   }
   catch ( const std::exception& e )

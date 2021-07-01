@@ -186,7 +186,6 @@ void priest_t::init_spells_holy()
 action_t* priest_t::create_action_holy( util::string_view name, util::string_view options_str )
 {
   using namespace actions::spells;
-  using namespace actions::heals;
 
   if ( name == "holy_fire" )
   {

@@ -662,7 +662,6 @@ const char* util::pet_type_string( pet_e type )
     case PET_DANCING_RUNE_WEAPON: return "dancing_rune_weapon";
     case PET_TREANTS:             return "treants";
     case PET_WATER_ELEMENTAL:     return "water_elemental";
-    case PET_SHADOWFIEND:         return "shadowfiend";
     case PET_SPIRIT_WOLF:         return "spirit_wolf";
     case PET_FIRE_ELEMENTAL:      return "fire_elemental";
     case PET_EARTH_ELEMENTAL:     return "earth_elemental";

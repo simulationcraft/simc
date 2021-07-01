@@ -72,8 +72,6 @@ public:
     double m = warlock_spell_t::composite_target_multiplier( t );
 
     auto td = this->td( t );
-    if ( td->debuffs_eradication->check() )
-      m *= 1.0 + td->debuffs_eradication->data().effectN( 1 ).percent();
 
     if ( td->debuffs_roaring_blaze->check() && data().affected_by( td->debuffs_roaring_blaze->data().effectN( 1 ) ) )
       m *= 1.0 + td->debuffs_roaring_blaze->data().effectN( 1 ).percent();
@@ -116,7 +114,7 @@ struct internal_combustion_t : public destruction_spell_t
   {
     destruction_spell_t::init();
 
-    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+    snapshot_flags &= STATE_NO_MULTIPLIER;
   }
 
   void execute() override
@@ -404,9 +402,26 @@ struct incinerate_fnb_t : public destruction_spell_t
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_fnb_crits );
   }
 
-  double composite_target_crit_chance( player_t* target ) const override
+  double composite_crit_chance_multiplier() const override
   {
-    double m = destruction_spell_t::composite_target_crit_chance( target );
+    double m = destruction_spell_t::composite_crit_chance_multiplier();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+    {
+      //PTR 2021-06-19: "Critical Strike chance increased by 100%" appears to be guaranteeing crits
+      m += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = destruction_spell_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+      m += p()->buffs.shard_of_annihilation->data().effectN( 2 ).percent();
+
     return m;
   }
 
@@ -499,6 +514,9 @@ struct incinerate_t : public destruction_spell_t
       fnb_action->execute();
     }
     p()->buffs.decimating_bolt->decrement();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+      p()->buffs.shard_of_annihilation->decrement();
   }
 
   void impact( action_state_t* s ) override
@@ -510,9 +528,16 @@ struct incinerate_t : public destruction_spell_t
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_crits );
   }
 
-  double composite_target_crit_chance( player_t* target ) const override
+  double composite_crit_chance_multiplier() const override
   {
-    double m = destruction_spell_t::composite_target_crit_chance( target );
+    double m = destruction_spell_t::composite_crit_chance_multiplier();
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+    {
+      //PTR 2021-06-19: "Critical Strike chance increased by 100%" appears to be guaranteeing crits
+      m += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
+    }
+
     return m;
   }
 

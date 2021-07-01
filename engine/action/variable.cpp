@@ -223,12 +223,11 @@ void variable_t::reset()
 // 3) The operation is reset/floor/ceil and all of the other actions manipulating the variable are
 //    constant
 
-bool variable_t::is_constant() const
+bool variable_t::is_constant(double* const_value) const
 {
-  double const_value = 0;
   // If the variable action is conditionally executed, and the conditional execution is not
   // constant, the variable cannot be constant.
-  if (if_expr && !if_expr->is_constant(&const_value))
+  if (if_expr && !if_expr->is_constant(const_value))
   {
     return false;
   }
@@ -238,19 +237,17 @@ bool variable_t::is_constant() const
   if (operation == OPERATION_RESET || operation == OPERATION_FLOOR ||
     operation == OPERATION_CEIL)
   {
-    auto it = range::find_if(var->variable_actions, [this](const action_t* action) {
-      return action != this && !debug_cast<const variable_t*>(action)->is_constant();
+    return !range::any_of(var->variable_actions, [this, &const_value](const action_t* action) {
+      return action != this && !debug_cast<const variable_t*>(action)->is_constant(const_value);
       });
-
-    return it == var->variable_actions.end();
   }
   else if (operation != OPERATION_SETIF)
   {
-    return value_expression ? value_expression->is_constant(&const_value) : true;
+    return value_expression ? value_expression->is_constant(const_value) : true;
   }
   else
   {
-    bool constant = condition_expression->is_constant(&const_value);
+    bool constant = condition_expression->is_constant(const_value);
     if (!constant)
     {
       return false;
@@ -258,13 +255,15 @@ bool variable_t::is_constant() const
 
     if (const_value != 0)
     {
-      return value_expression->is_constant(&const_value);
+      return value_expression->is_constant(const_value);
     }
     else
     {
-      return value_else_expression->is_constant(&const_value);
+      return value_else_expression->is_constant(const_value);
     }
   }
+
+  return false;
 }
 
 // Variable action expressions have to do an optimization pass before other actions, so that
@@ -272,10 +271,10 @@ bool variable_t::is_constant() const
 
 void variable_t::optimize_expressions()
 {
-  expr_t::optimize_expression(if_expr);
-  expr_t::optimize_expression(value_expression);
-  expr_t::optimize_expression(condition_expression);
-  expr_t::optimize_expression(value_else_expression);
+  expr_t::optimize_expression(if_expr, *sim);
+  expr_t::optimize_expression(value_expression, *sim);
+  expr_t::optimize_expression(condition_expression, *sim);
+  expr_t::optimize_expression(value_else_expression, *sim);
 }
 
 // Note note note, doesn't do anything that a real action does

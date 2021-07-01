@@ -119,6 +119,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebug-WebEngineInformation>true</GenerateDebug-WebEngineInformation>
@@ -152,6 +153,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BrowseInformation>false</BrowseInformation>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebug-WebEngineInformation>false</GenerateDebug-WebEngineInformation>
@@ -188,6 +190,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BrowseInformation>false</BrowseInformation>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebug-WebEngineInformation>false</GenerateDebug-WebEngineInformation>

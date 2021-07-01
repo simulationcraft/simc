@@ -169,6 +169,27 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
+double warlock_pet_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  double m = pet_t::composite_player_target_multiplier( target, school );
+
+  if ( !o()->min_version_check( VERSION_9_1_0 ) )
+    return m;
+
+  if ( o()->specialization() == WARLOCK_DEMONOLOGY && school == SCHOOL_SHADOWFLAME &&
+       o()->talents.from_the_shadows->ok() )
+  {
+    auto td = o()->get_target_data( target );
+
+    //TOCHECK: There is no "affected by" information for pets. Presumably matching school should be a sufficient check.
+    //If there's a non-warlock guardian in game that benefits from this... well, good luck with that.
+    if ( td->debuffs_from_the_shadows->check() )
+      m *= 1.0 + td->debuffs_from_the_shadows->check_value();
+  }
+
+  return m;
+}
+
 warlock_pet_td_t::warlock_pet_td_t( player_t* target, warlock_pet_t& p ) :
   actor_target_data_t( target, &p ), pet( p )
 {
@@ -211,6 +232,18 @@ struct shadow_bite_t : public warlock_pet_melee_attack_t
   }
 };
 
+struct spell_lock_t : public warlock_pet_spell_t
+{
+  spell_lock_t( warlock_pet_t* p, const std::string& options_str )
+    : warlock_pet_spell_t( "Spell Lock", p, p->find_spell( 19647 ) )
+  {
+    parse_options(options_str);
+
+    may_miss = may_block = may_dodge = may_parry = false;
+    ignore_false_positive = is_interrupt = true;
+  }
+};
+
 felhunter_pet_t::felhunter_pet_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_FELHUNTER, name != "felhunter" )
 {
@@ -228,12 +261,15 @@ void felhunter_pet_t::init_base_stats()
   owner_coeff.sp_from_sp *= 1.15;
 
   melee_attack = new warlock_pet_melee_t( this );
+  special_action = new spell_lock_t( this, "" );
 }
 
 action_t* felhunter_pet_t::create_action( util::string_view name, const std::string& options_str )
 {
   if ( name == "shadow_bite" )
     return new shadow_bite_t( this );
+  if ( name == "spell_lock" )
+    return new spell_lock_t( this, options_str );
   return warlock_pet_t::create_action( name, options_str );
 }
 
@@ -388,6 +424,9 @@ struct axe_toss_t : public warlock_pet_spell_t
     : warlock_pet_spell_t( "Axe Toss", p, p->find_spell( 89766 ) )
   {
     parse_options( options_str );
+
+    may_miss = may_block = may_dodge = may_parry = false;
+    ignore_false_positive = is_interrupt = true;
   }
 };
 
@@ -632,8 +671,8 @@ void felguard_pet_t::queue_ds_felstorm()
   }
 }
 
-grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner, const std::string& name )
-  : warlock_pet_t( owner, name, PET_SERVICE_FELGUARD, true ),
+grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner )
+  : warlock_pet_t( owner, "grimoire_felguard", PET_SERVICE_FELGUARD, true ),
     felstorm_spell( find_spell( 89751 ) ),
     min_energy_threshold( felstorm_spell->cost( POWER_ENERGY ) ),
     max_energy_threshold( 100 )

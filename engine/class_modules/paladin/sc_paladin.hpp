@@ -50,84 +50,9 @@ struct paladin_td_t : public actor_target_data_t
   paladin_td_t( player_t* target, paladin_t* paladin );
 };
 
-struct cooldown_waste_data_t : public noncopyable
-{
-  const cooldown_t* cd;
-  double buffer;
-
-  extended_sample_data_t normal;
-  extended_sample_data_t cumulative;
-
-  cooldown_waste_data_t( const cooldown_t* cooldown, bool simple = true ) :
-    cd( cooldown ), buffer( 0.0 ), normal( cd -> name_str + " waste", simple ),
-    cumulative( cd -> name_str + " cumulative waste", simple ) {}
-
-  virtual bool may_add( timespan_t cd_override = timespan_t::min() ) const
-  {
-    return ( cd -> duration > 0_ms || cd_override > 0_ms )
-        && ( ( cd -> charges == 1 && cd -> up() ) || ( cd -> charges >= 2 && cd -> current_charge == cd -> charges ) )
-        && ( cd -> last_charged > 0_ms && cd -> last_charged < cd -> sim.current_time() );
-  }
-
-  virtual double get_wasted_time()
-  {
-    return (cd -> sim.current_time() - cd -> last_charged).total_seconds();
-  }
-
-  void add( timespan_t cd_override = timespan_t::min(), timespan_t time_to_execute = 0_ms )
-  {
-    if ( may_add( cd_override ) )
-    {
-      double wasted = get_wasted_time();
-      if ( cd -> charges == 1 )
-      {
-        wasted -= time_to_execute.total_seconds();
-      }
-      normal.add( wasted );
-      buffer += wasted;
-    }
-  }
-
-  bool active() const
-  {
-    return normal.count() > 0 && cumulative.sum() > 0;
-  }
-
-  void merge( const cooldown_waste_data_t& other )
-  {
-    normal.merge( other.normal );
-    cumulative.merge( other.cumulative );
-  }
-
-  void analyze()
-  {
-    normal.analyze();
-    cumulative.analyze();
-  }
-
-  void datacollection_begin()
-  {
-    buffer = 0.0;
-  }
-
-  void datacollection_end()
-  {
-    if ( may_add() )
-      buffer += get_wasted_time();
-    cumulative.add( buffer );
-    buffer = 0.0;
-  }
-
-  virtual ~cooldown_waste_data_t() { }
-};
-
 struct paladin_t : public player_t
 {
 public:
-
-  // waste tracking
-  auto_dispose<std::vector<cooldown_waste_data_t*> > cooldown_waste_data_list;
-
   // Active spells
   struct active_spells_t
   {
@@ -152,9 +77,12 @@ public:
     action_t* necrolord_shield_of_the_righteous;
     action_t* divine_toll;
     action_t* seasons[NUM_SEASONS];
+    action_t* divine_resonance;
 
     // Conduit stuff
     action_t* virtuous_command;
+
+    action_t* judgment;
   } active;
 
   // Buffs
@@ -220,6 +148,8 @@ public:
     buff_t* final_verdict;
     buff_t* virtuous_command;
     buff_t* reign_of_ancient_kings;
+    buff_t* equinox;
+    buff_t* divine_resonance;
   } buffs;
 
   // Gains
@@ -281,6 +211,7 @@ public:
     cooldown_t* hammer_of_wrath;
 
     cooldown_t* blessing_of_the_seasons;
+    cooldown_t* ashen_hallow; // Radiant Embers Legendary
   } cooldowns;
 
   // Passives
@@ -294,6 +225,9 @@ public:
     const spell_data_t* grand_crusader;
     const spell_data_t* riposte;
     const spell_data_t* sanctuary;
+
+    const spell_data_t* aegis_of_light;
+    const spell_data_t* aegis_of_light_2;
 
     const spell_data_t* boundless_conviction;
 
@@ -437,7 +371,6 @@ public:
     // Shared
     azerite_power_t avengers_might;
     azerite_power_t grace_of_the_justicar; // Healing, NYI
-    azerite_power_t indomitable_justice;
 
     // Holy
 
@@ -496,6 +429,11 @@ public:
     item_runeforge_t relentless_inquisitor;
     item_runeforge_t tempest_of_the_lightbringer;
     item_runeforge_t reign_of_endless_kings;
+
+    item_runeforge_t seasons_of_plenty;
+    item_runeforge_t radiant_embers;
+    item_runeforge_t duty_bound_gavel;
+    item_runeforge_t divine_resonance;
   } legendary;
 
   // Paladin options
@@ -504,7 +442,6 @@ public:
     double proc_chance_ret_memory_of_lucid_dreams = 0.15;
     double proc_chance_prot_memory_of_lucid_dreams = 0.15;
     bool fake_sov = true;
-    int indomitable_justice_pct = 0;
   } options;
   player_t* beacon_target;
 
@@ -588,9 +525,11 @@ public:
   virtual void vision_of_perfection_proc() override;
 
   std::unique_ptr<expr_t> create_consecration_expression( util::string_view expr_str );
+  std::unique_ptr<expr_t> create_ashen_hallow_expression( util::string_view expr_str );
 
   ground_aoe_event_t* active_consecration;
-  ground_aoe_event_t* active_hallow;
+  ground_aoe_event_t* active_hallow_damaging;
+  ground_aoe_event_t* active_hallow_healing;
   buff_t* active_aura;
 
   std::string default_potion() const override;
@@ -626,28 +565,6 @@ public:
 
   virtual const paladin_td_t* find_target_data( const player_t* target ) const override;
   virtual paladin_td_t* get_target_data( player_t* target ) const override;
-
-  cooldown_waste_data_t* get_cooldown_waste_data( cooldown_t* cd, cooldown_waste_data_t *(*factory)(cooldown_t*) = nullptr )
-  {
-    for ( auto cdw : cooldown_waste_data_list )
-    {
-      if ( cdw -> cd -> name_str == cd -> name_str )
-        return cdw;
-    }
-
-    cooldown_waste_data_t* cdw = nullptr;
-    if ( factory == nullptr ) {
-      cdw = new cooldown_waste_data_t( cd );
-    } else {
-      cdw = factory( cd );
-    }
-    cooldown_waste_data_list.push_back( cdw );
-    return cdw;
-  }
-  virtual void merge( player_t& other ) override;
-  virtual void analyze( sim_t& s ) override;
-  virtual void datacollection_begin() override;
-  virtual void datacollection_end() override;
 };
 
 namespace buffs {
@@ -678,16 +595,16 @@ namespace buffs {
 
   struct crusade_buff_t : public buff_t
   {
-    crusade_buff_t( player_t* p );
+    crusade_buff_t( paladin_t* p );
 
-    double get_damage_mod()
+    double get_damage_mod() const
     {
-      return damage_modifier * ( this -> stack() );
+      return damage_modifier * ( this -> check() );
     }
 
-    double get_haste_bonus()
+    double get_haste_bonus() const
     {
-      return haste_bonus * ( this -> stack() );
+      return haste_bonus * ( this -> check() );
     }
     private:
     double damage_modifier;
@@ -766,7 +683,6 @@ public:
 
   bool track_cd_waste;
   cooldown_waste_data_t* cd_waste;
-  cooldown_waste_data_t* (*cd_waste_factory)(cooldown_t *);
 
   // Damage increase whitelists
   struct affected_by_t
@@ -784,7 +700,7 @@ public:
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, p, s ),
     track_cd_waste( s -> cooldown() > 0_ms || s -> charge_cooldown() > 0_ms ),
-    cd_waste( nullptr ), cd_waste_factory( nullptr ),
+    cd_waste( nullptr ),
     affected_by( affected_by_t() ),
     hasted_cd( false ), hasted_gcd( false )
   {
@@ -826,7 +742,7 @@ public:
 
     if ( track_cd_waste && ab::sim -> report_details != 0 )
     {
-      cd_waste = p() -> get_cooldown_waste_data( ab::cooldown, cd_waste_factory );
+      cd_waste = p() -> get_cooldown_waste_data( ab::cooldown );
     }
 
     if ( hasted_cd )
@@ -1203,12 +1119,7 @@ struct holy_power_consumer_t : public Base
     // as of 11/8, according to Skeletor, crusade and RI trigger at full value now
     int num_stacks = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
 
-    // Royal Decree doesn't proc RP 2020-11-01
-    if ( is_wog && p -> buffs.royal_decree -> up() &&
-        !p -> buffs.divine_purpose -> up() && !p -> buffs.shining_light_free -> up() )
-      num_stacks = as<int>( hp_used );
-
-    // as of 2020-11-08 magistrate's causes *extra* stacks?
+    // as of 2021-06-22 magistrate's causes *extra* stacks?
     // fixed at least for ret as of 9.0.5
     if ( p -> bugs && p -> buffs.the_magistrates_judgment -> up() )
     {
@@ -1222,20 +1133,15 @@ struct holy_power_consumer_t : public Base
       p -> buffs.relentless_inquisitor_azerite -> trigger( num_stacks );
 
     if ( p -> legendary.relentless_inquisitor -> ok() )
-    {
       p -> buffs.relentless_inquisitor -> trigger();
-      // 2020-12-06 Shining Light and Divine Purpose proc 2 stacks of Relentless Inquisitor
-      if ( p -> bugs && ( p -> buffs.divine_purpose -> up() || ( is_wog && p -> buffs.shining_light_free -> up() )))
-        p -> buffs.relentless_inquisitor -> trigger();
-    }
 
     if ( p -> buffs.crusade -> check() )
     {
       p -> buffs.crusade -> trigger( num_stacks );
     }
 
-    // Free sotr from vanq does not proc RP 2020-09-10
-    if ( p -> talents.righteous_protector -> ok() && !ab::background )
+    // Free sotr from vanq does not proc RP unless DP is active
+    if ( p -> talents.righteous_protector -> ok() && ( !ab::background || p -> buffs.divine_purpose -> check() ) )
     {
       timespan_t reduction = timespan_t::from_seconds(
         // Why is this in deciseconds?
@@ -1278,29 +1184,47 @@ struct holy_power_consumer_t : public Base
       }
     }
 
-    // 2020-11-01 Royal Decree always expires, even when other holy power reductions are up
-    if ( is_wog && p -> buffs.royal_decree -> up() )
-      p -> buffs.royal_decree -> expire();
+    if ( is_wog && p -> buffs.shining_light_free -> check() )
+    {
+      should_continue = false;
+      if ( p -> buffs.royal_decree -> check() )
+      {
+        // Outlier (2021-06-22). If RD, SL, DP and 2 stacks of MJ are all up, then
+        // SL and RD both get consumed at the same time.
+        if ( p -> bugs && p -> buffs.the_magistrates_judgment -> stack() > 1
+          && p -> buffs.divine_purpose -> check())
+        {
+          p -> buffs.shining_light_free -> expire();
+        }
+      }
+      else
+      {
+        // Shining Light is now consumed before Divine Purpose 2020-11-01
+        p -> buffs.shining_light_free -> expire();        
+      }
+    }
 
-    // For prot (2020-11-01). Magistrate's does not get consumed when DP is up.
+    // For prot (2021-06-22). Magistrate's does not get consumed when DP or SL
+    // are up, but does with RD.
+    // (2021-06-26) Vanquisher's hammer's auto-sotr does not interact with magistrate's judgment
     // For ret (2020-10-29), Magistrate's does not get consumed with DP or EP up but does
     // with FoJ.
-    if ( this -> affected_by.the_magistrates_judgment && !p -> buffs.divine_purpose -> up() && should_continue )
+    if ( should_continue && this -> affected_by.the_magistrates_judgment
+        && !p -> buffs.divine_purpose -> check() && !ab::background )
+    {
       p -> buffs.the_magistrates_judgment -> decrement( 1 );
+    }
 
-    if ( is_wog && p -> buffs.shining_light_free -> up() )
+    // 2021-06-22 Royal Decree is always consumed first
+    if ( is_wog && p -> buffs.royal_decree -> check() )
     {
-      // Shining Light is now consumed before Divine Purpose 2020-11-01
-      p -> buffs.shining_light_free -> expire();
+      p -> buffs.royal_decree -> expire();
       should_continue = false;
     }
-    else if ( p -> bugs && p -> specialization() == PALADIN_PROTECTION &&
-      ( ab::background || ( is_wog && p -> buffs.vanquishers_hammer -> up () ) ) )
-    {
-      // Vanquisher's Hammer's auto-sotr is not consuming divine purpose.
-      // Vanquisher's Hammer's wog is not consuming divine purpose for some reason.
+
+    // as of 2021-06-22 Vanquisher's Hammer's auto-sotr does consume divine purpose
+    if ( ! p -> bugs && p -> specialization() == PALADIN_PROTECTION && ab::background )
       should_continue = false;
-    }
 
     // We should only have should_continue false in the event that we're a divine storm
     // assert-check here for safety
@@ -1360,11 +1284,9 @@ struct holy_power_consumer_t : public Base
 
 struct judgment_t : public paladin_melee_attack_t
 {
-  int indomitable_justice_pct;
   judgment_t( paladin_t* p, util::string_view options_str );
   judgment_t( paladin_t* p );
 
-  virtual double bonus_da( const action_state_t* s ) const override;
   proc_types proc_type() const override;
   void impact( action_state_t* s ) override;
   void execute() override;

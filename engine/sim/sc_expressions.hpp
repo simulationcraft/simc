@@ -146,21 +146,18 @@ public:
   template<class T>
   static std::unique_ptr<expr_t> create_constant( util::string_view name, T value );
 
-  static void optimize_expression(std::unique_ptr<expr_t>& expression, int spacing = 0)
-  {
-    if (!expression)
-    {
-      return;
-    }
-    if (auto optimized = expression->build_optimized_expression(spacing))
-    {
-      expression.swap(optimized);
-    }
-  }
+  static void optimize_expression(std::unique_ptr<expr_t>& expression, bool analyze_further = false, int spacing = 0);
+
+  static void optimize_expression(std::unique_ptr<expr_t>& expression, sim_t& sim);
 
   virtual double evaluate() = 0;
 
   virtual bool is_constant( double* /*return_value*/ )
+  {
+    return false;
+  }
+
+  virtual bool is_analyze_expression()
   {
     return false;
   }
@@ -171,7 +168,7 @@ private:
   /* Attempts to create a optimized version of the expression.
   Should return null if no improved version can be built.
   */
-  virtual std::unique_ptr<expr_t> build_optimized_expression( int /* spacing */ )
+  virtual std::unique_ptr<expr_t> build_optimized_expression( bool /* analyze_further */, int /* spacing */ )
   {
     return {};
   }

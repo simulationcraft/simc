@@ -52,7 +52,7 @@ void SC_SampleProfilesTab::fillTree( QDir baseDir )
 {
   baseDir.setFilter( QDir::Dirs );
 
-  static const char* tierNames[] = { "T26", "T25", "PR", "DS" };
+  static const char* tierNames[] = { "T27", "T26", "T25", "PR", "DS" };
   static const int TIER_MAX      = 4;  // = range::size( tierNames );
 
   QTreeWidgetItem* playerItems[ PLAYER_MAX ];
@@ -120,7 +120,7 @@ void SC_SampleProfilesTab::fillTree( QDir baseDir )
           if ( !playerItems[ player ] )
           {
             QTreeWidgetItem* top = new QTreeWidgetItem(
-                QStringList( util::inverse_tokenize( util::player_type_string( player ) ).c_str() ) );
+                QStringList( QString::fromStdString(util::inverse_tokenize( util::player_type_string( player ) ) ) ) );
             playerItems[ player ] = top;
           }
 

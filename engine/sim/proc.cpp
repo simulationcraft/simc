@@ -59,9 +59,9 @@ void proc_t::datacollection_end()
   count.add( static_cast<double>( iteration_count ) );
 }
 
-const char* proc_t::name() const
+const std::string& proc_t::name() const
 {
-  return name_str.c_str();
+  return name_str;
 }
 
 proc_t* proc_t::collect_count( bool collect )

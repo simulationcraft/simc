@@ -1015,6 +1015,20 @@
       { "data_type": "I", "field": "proc_flags", "elements": 2 }
     ]
   },
+  "SpellAuraRestrictions": {
+    "parent": "SpellName",
+    "fields": [
+      { "data_type": "B", "field": "difficulty" },
+      { "data_type": "B", "field": "caster_aura_state" },
+      { "data_type": "B", "field": "target_aura_state" },
+      { "data_type": "B", "field": "exclude_caster_aura_state" },
+      { "data_type": "B", "field": "exclude_target_aura_state" },
+      { "data_type": "i", "field": "id_caster_aura", "ref": "SpellName" },
+      { "data_type": "i", "field": "id_target_aura", "ref": "SpellName" },
+      { "data_type": "i", "field": "id_exclude_caster_aura", "ref": "SpellName" },
+      { "data_type": "i", "field": "id_exclude_target_aura", "ref": "SpellName" }
+    ]
+  },
   "SpellCastTimes": {
     "fields": [
       { "data_type": "i", "field": "cast_time" },
@@ -1025,11 +1039,11 @@
     "fields": [
       { "data_type": "i", "field": "id_spell" },
       { "data_type": "b", "field": "facing_flags" },
-      { "data_type": "h", "field": "unk_2" },
-      { "data_type": "b", "field": "unk_6" },
-      { "data_type": "H", "field": "unk_3" },
-      { "data_type": "B", "field": "unk_8" },
-      { "data_type": "H", "field": "unk_4" }
+      { "data_type": "h", "field": "id_min_faction" },
+      { "data_type": "b", "field": "min_reputation" },
+      { "data_type": "H", "field": "id_required_area" },
+      { "data_type": "B", "field": "required_aura_vision" },
+      { "data_type": "H", "field": "required_spell_focus" }
     ]
   },
   "SpellCategories": {
@@ -1135,6 +1149,20 @@
       { "data_type": "B", "field": "item_class" },
       { "data_type": "I", "field": "mask_inv_type" },
       { "data_type": "I", "field": "mask_sub_class" }
+    ]
+  },
+  "SpellFocusObject": {
+    "fields": [
+      { "data_type": "S", "field": "name" }
+    ]
+  },
+  "SpellInterrupts": {
+    "parent": "SpellName",
+    "fields": [
+      { "data_type": "B", "field": "difficulty" },
+      { "data_type": "h", "field": "interrupt_flags" },
+      { "data_type": "i", "field": "aura_interrupt_flags", "elements": 2 },
+      { "data_type": "i", "field": "channel_interrupt_flags", "elements": 2 }
     ]
   },
   "SpellItemEnchantment": {

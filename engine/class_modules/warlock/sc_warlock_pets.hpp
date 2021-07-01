@@ -58,6 +58,7 @@ struct warlock_pet_t : public pet_t
   void create_buffs() override;
   void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false ) override;
   double composite_player_multiplier( school_e school ) const override;
+  double composite_player_target_multiplier( player_t* target, school_e school) const override;
   double resource_regen_per_second( resource_e ) const override;
 
   void create_buffs_pets(); //TODO: Remove or create empty function?
@@ -407,7 +408,7 @@ struct grimoire_felguard_pet_t : public warlock_pet_t
   double min_energy_threshold;
   double max_energy_threshold;
 
-  grimoire_felguard_pet_t( warlock_t* owner, const std::string& name = "grimoire_felguard" );
+  grimoire_felguard_pet_t( warlock_t* owner );
   void init_base_stats() override;
   action_t* create_action( util::string_view name, const std::string& options_str ) override;
   timespan_t available() const override;

@@ -1252,6 +1252,8 @@ class SpellDataGenerator(DataGenerator):
          344076, 344077, 344078, # Necrolord Stamina Passives
          344087, 344089, 344091, # Kyrian Stamina Passives
          354054, 354053, # Fatal Flaw vers/crit buffs (venthyr/nadjia)
+         351687, # Necrolord Bonesmith Heirmir Mnemonic Equipmen debuff
+         352520, # Marileth's Kevin's Ooozeling Kevin's Wrath damage spell
          # Cabalists Hymnal
          344820,
          # Empyreal Ordnance
@@ -1283,6 +1285,32 @@ class SpellDataGenerator(DataGenerator):
          329548,
          # 9.1 Soulbinds
          352881, # Bonded Hearts (night fae/niya)
+         352918, 358404, # Newfound Resolve (kyrian/pelagos)
+         352086, 352095, # Pustule Eruption (Necrolord/Emeni)
+         # Miniscule Mailemental in an Envelope
+         352542,
+         # Tome of Monstrous Constructions
+         357163, 357168, 357169,
+         # Blood Link (Shard of Domination Rune Word)
+         355761, 355767, 355768, 355769, 355804,
+         # Winds of Winter (Shard of Domination Rune Word)
+         355724, 355733, 355735,
+         # Chaos Bane (Shard of Domination Rune Word)
+         355829, 356042, 356043, 356046,
+         # Banshee's Blight (Sylvanas Dagger) damage spell
+         358126,
+         # Exsanguinated (Shard of Bek)
+         356372,
+         # Shredded Soul (Ebonsoul Vise)
+         357785,
+         # Nerubian Ambush, Frost-Tinged Carapace Spikes (Relic of the Frozen Wastes)
+         355912, 357409,
+         # Volatile Detonation (Ticking Sack of Terror)
+         351694,
+         # Withering Fire (Dark Ranger's Quiver)
+         353515,
+         # Preternatural Charge (Yasahm the Riftbreaker)
+         351561,
         ),
 
         # Warrior:
@@ -1344,6 +1372,8 @@ class SpellDataGenerator(DataGenerator):
             ( 328123, 0 ),          # Blessing of Summer damage spell
             ( 340203, 0 ),          # Hallowed Discernment damage
             ( 340214, 0 ),          # Hallowed Discernment heal
+            ( 355567, 0 ),          # Equinox
+            ( 355455, 0 ),          # Divine Resonance
         ),
 
         # Hunter:
@@ -1460,6 +1490,7 @@ class SpellDataGenerator(DataGenerator):
             ( 356390, 0 ),          # Pallid Command Necrolord Legendary Power (UNCONFIRMED)
             ( 356395, 0 ),          # Spheres' Harmony Kyrian Legendary Power (UNCONFIRMED)
             ( 356515, 0 ),          # Bwonsamdi's Pact buff from the Legendary Power
+            ( 357028, 0 ),          # Shadow Word: Manipulation Critical Strike Buff
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
@@ -1551,6 +1582,7 @@ class SpellDataGenerator(DataGenerator):
           ( 327164, 0 ),                                # Primordial Wave buff
           ( 336732, 0 ), ( 336733, 0 ),                 # Legendary: Elemental Equilibrium school buffs
 	  ( 336737, 0 ),                                # Runeforged Legendary: Chains of Devastation
+          ( 354648, 0 ),                                # Runeforged Legendary: Splintered Elements
         ),
 
         # Mage:
@@ -1742,6 +1774,12 @@ class SpellDataGenerator(DataGenerator):
           ( 337341, 3 ), # Keefer's Skyreach Exhaustion Debuff
           ( 347687, 1 ), # Charred Passions
           ( 347688, 1 ), # Charred Passions
+          ( 356773, 0 ), # Fae Exposure Damage Debuff
+          ( 356774, 0 ), # Fae Exposure Heal Buff
+          ( 358518, 3 ), # Call to Arms Invoke Xuen Duration
+          ( 358520, 1 ), # Call to Arms Invoke Niuzao Duration
+          ( 358521, 2 ), # Call to Arms Invoke Yu'lon Duration
+          ( 358522, 2 ), # Call to Arms Invoke Chi-Ji Duration
         ),
 
         # Druid:
@@ -1817,6 +1855,8 @@ class SpellDataGenerator(DataGenerator):
           ( 339229, 0 ), # Serrated Glaive conduit debuff
           ( 337849, 0 ), ( 345604, 0 ), ( 346664, 0 ), # Fel Bombardment legendary spells
           ( 347765, 0 ), # Fodder to the Flame Empowered Demon Soul buff
+          ( 355894, 0 ), ( 356070, 0 ), # Blind Faith legendary spells
+          ( 355892, 0 ), # Blazing Slaughter legendary buff
 
           # Havoc
           ( 236167, 1 ), # Felblade proc rate
@@ -2668,6 +2708,9 @@ class SpellDataGenerator(DataGenerator):
             # and produces a list of effect ids
             if len(effect_ids):
                 spelleffect_index[ id ] = [ effect_ids.get(i, 0) for i in range(max(effect_ids.keys()) + 1) ]
+
+        for label in constants.SPELL_LABEL_WHITELIST:
+            included_labels.add(label)
 
         labels = []
         for label in self.db('SpellLabel').values():

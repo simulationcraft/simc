@@ -1,5 +1,5 @@
-// Gem properties, wow build 9.1.0.38627
-static const std::array<gem_property_data_t, 1894> __ptr_gem_property_data { {
+// Gem properties, wow build 9.1.0.39172
+static const std::array<gem_property_data_t, 1930> __ptr_gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
   {    4,  2688, 0x00000004 }, // +$k1 Stamina
@@ -1894,5 +1894,41 @@ static const std::array<gem_property_data_t, 1894> __ptr_gem_property_data { {
   { 3863,  6306, 0x00100000 }, // $355752@spelldesc355766
   { 3864,  6306, 0x00100000 }, // $355752@spelldesc355766
   { 3865,  6304, 0x00100000 }, // $355752@spelldesc355757
+  { 3867,  6308, 0x00100000 }, // $355752@spelldesc357040
+  { 3868,  6309, 0x00100000 }, // $355752@spelldesc357038
+  { 3869,  6310, 0x00100000 }, // $355752@spelldesc357037
+  { 3870,  6311, 0x00100000 }, // $355752@spelldesc357036
+  { 3871,  6312, 0x00100000 }, // $355752@spelldesc357035
+  { 3872,  6313, 0x00100000 }, // $355752@spelldesc357034
+  { 3873,  6314, 0x00100000 }, // $355752@spelldesc357033
+  { 3874,  6315, 0x00100000 }, // $355752@spelldesc357032
+  { 3875,  6316, 0x00100000 }, // $355752@spelldesc357031
+  { 3876,  6317, 0x00100000 }, // $355752@spelldesc357049
+  { 3877,  6318, 0x00100000 }, // $355752@spelldesc357050
+  { 3878,  6319, 0x00100000 }, // $spell@spelldesc357051
+  { 3879,  6320, 0x00100000 }, // $355752@spelldesc357052
+  { 3880,  6321, 0x00100000 }, // $355752@spelldesc357053
+  { 3881,  6322, 0x00100000 }, // $spell@spelldesc357054
+  { 3882,  6323, 0x00100000 }, // $355752@spelldesc357055
+  { 3883,  6324, 0x00100000 }, // $355752@spelldesc357056
+  { 3884,  6325, 0x00100000 }, // $spell@spelldesc357057
+  { 3885,  6326, 0x00100000 }, // $spell@spelldesc357067
+  { 3886,  6327, 0x00100000 }, // $355752@spelldesc357056
+  { 3887,  6328, 0x00100000 }, // $spell@spelldesc357065
+  { 3888,  6329, 0x00100000 }, // $355752@spelldesc357064
+  { 3889,  6330, 0x00100000 }, // $355752@spelldesc357063
+  { 3890,  6331, 0x00100000 }, // $355752@spelldesc357062
+  { 3891,  6332, 0x00100000 }, // $355752@spelldesc357061
+  { 3892,  6333, 0x00100000 }, // $spell@spelldesc357060
+  { 3893,  6334, 0x00100000 }, // $spell@spelldesc357058
+  { 3894,  6335, 0x00100000 }, // $spell@spelldesc357069
+  { 3895,  6336, 0x00100000 }, // $spell@spelldesc357071
+  { 3896,  6337, 0x00100000 }, // $spell@spelldesc357072
+  { 3897,  6338, 0x00100000 }, // $spell@spelldesc357073
+  { 3898,  6339, 0x00100000 }, // $spell@spelldesc357074
+  { 3899,  6340, 0x00100000 }, // $spell@spelldesc357075
+  { 3900,  6341, 0x00100000 }, // $spell@spelldesc357076
+  { 3901,  6342, 0x00100000 }, // $spell@spelldesc357068
+  { 3902,  6343, 0x00100000 }, // $spell@spelldesc357077
 } };
 

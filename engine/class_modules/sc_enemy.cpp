@@ -1117,19 +1117,19 @@ struct tank_dummy_enemy_t : public enemy_t
       switch ( tank_dummy_enum )
       {
         case tank_dummy_e::DUNGEON:
-          base.armor_coeff = k_value * (dbc->ptr ? 1.114 : 0.982);  // M0/M+
+          base.armor_coeff = k_value * 1.114;  // M0/M+
           sim->print_debug( "{} Dungeon base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::RAID:
-          base.armor_coeff = k_value * (dbc->ptr ? 1.220 : 1.065);  // Normal Raid
+          base.armor_coeff = k_value * 1.220;  // Normal Raid
           sim->print_debug( "{} Normal Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::HEROIC:
-          base.armor_coeff = k_value * (dbc->ptr ? 1.313 : 1.138);  // Heroic Raid
+          base.armor_coeff = k_value * 1.313;  // Heroic Raid
           sim->print_debug( "{} Heroic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::MYTHIC:
-          base.armor_coeff = k_value * (dbc->ptr ? 1.418 : 1.220);  // Mythic Raid
+          base.armor_coeff = k_value * 1.418;  // Mythic Raid
           sim->print_debug( "{} Mythic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         default:
@@ -1334,14 +1334,14 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // Defaulted to 20-man damage
   // Damage is normally increased from 10-man to 30-man by an average of 10% for every 5 players added.
   // 10-man -> 20-man = 20% increase; 20-man -> 30-man = 20% increase
-  // Raid values using Sludgefist as a baseline
-  int aa_damage[ numTankDummies ]               = { 0, 6415, 11378, 29703, 40678, 66192 };     // Base auto attack damage
-  int dummy_strike_damage[ numTankDummies ]     = { 0, 19245, 34134, 89109, 122034, 198576 };  // Base melee nuke damage (currently set to 3x auto damage)
-  int background_spell_damage[ numTankDummies ] = { 0, 257, 455, 1188, 1627, 2648 };  // Base background dot damage (currently set to 0.04x auto damage)
+  // Raid values using Guardian of the First One as a baseline
+  int aa_damage[ numTankDummies ]               = { 0, 6415, 45797, 59896, 82447, 137275 };     // Base auto attack damage
+  int dummy_strike_damage[ numTankDummies ]     = { 0, 19245, 137386, 179690, 247341, 411825 };  // Base melee nuke damage (currently set to 3x auto damage)
+  int background_spell_damage[ numTankDummies ] = { 0, 257, 1831, 2396, 3298, 5491 };  // Base background dot damage (currently set to 0.04x auto damage)
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) +
-         ",range=" + util::to_string( floor( aa_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=1.5,aoe_tanks=1";
+         ",range=" + util::to_string( floor( aa_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=2,aoe_tanks=1";
   als += "/melee_nuke,damage=" + util::to_string( dummy_strike_damage[ tank_dummy_index ] ) +
          ",range=" + util::to_string( floor( dummy_strike_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=2,cooldown=25,aoe_tanks=1";
   als += "/spell_dot,damage=" + util::to_string( background_spell_damage[ tank_dummy_index ] ) +

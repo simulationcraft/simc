@@ -838,8 +838,8 @@ void action_t::parse_target_str()
       if ( p )
         target = p;
       else
-        sim->errorf( "%s %s: Unable to locate target for action '%s'.\n", player->name(), name(),
-                     signature_str.c_str() );
+        sim->error( "{} {}: Unable to locate target for action '{}'.\n", player->name(), name(),
+                     signature_str );
     }
   }
 }
@@ -1616,7 +1616,7 @@ void action_t::execute()
       // for aoe spells.
       else
       {
-        snapshot_internal( s, snapshot_flags & STATE_TARGET, pre_execute_state->result_type );
+        snapshot_internal( s, snapshot_flags & STATE_TARGET_MASK, pre_execute_state->result_type );
       }
       s->result       = calculate_result( s );
       s->block_result = calculate_block_result( s );
@@ -2391,7 +2391,7 @@ void action_t::init()
   if ( player->is_pet() && ( snapshot_flags & ( STATE_MUL_DA | STATE_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA |
                                                 STATE_MUL_PERSISTENT | STATE_VERSATILITY ) ) )
   {
-    snapshot_flags |= STATE_MUL_PET;
+    snapshot_flags |= STATE_MUL_PET | STATE_TGT_MUL_PET;
   }
 
   if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) )
@@ -2493,7 +2493,7 @@ void action_t::init()
 #endif
 
   consume_per_tick_ =
-      range::find_if( base_costs_per_tick, []( const double& d ) { return d != 0; } ) != base_costs_per_tick.end();
+      range::any_of( base_costs_per_tick, []( const double& d ) { return d != 0; } );
 
   // Setup default target in init
   default_target = target;
@@ -2649,33 +2649,30 @@ void action_t::reset()
   queue_event                  = nullptr;
   interrupt_immediate_occurred = false;
   travel_events.clear();
-  target = default_target;
+  target    = default_target;
   last_used = timespan_t::min();
 
   target_cache.is_valid = false;
 
-  if( player->nth_iteration() == 1 )
+  if ( if_expr )
   {
-    if ( if_expr )
+    expr_t::optimize_expression( if_expr, *sim );
+    if ( ( player->nth_iteration() - sim->optimize_expressions ) >= 0 && action_list && if_expr->always_false() )
     {
-      expr_t::optimize_expression(if_expr);
-      if ( sim->optimize_expressions && action_list && if_expr->always_false() )
+      std::vector<action_t*>::iterator i =
+          std::find( action_list->foreground_action_list.begin(), action_list->foreground_action_list.end(), this );
+      if ( i != action_list->foreground_action_list.end() )
       {
-        std::vector<action_t*>::iterator i =
-            std::find( action_list->foreground_action_list.begin(), action_list->foreground_action_list.end(), this );
-        if ( i != action_list->foreground_action_list.end() )
-        {
-          action_list->foreground_action_list.erase( i );
-        }
-
-        player->dynamic_target_action_list.erase( this );
+        action_list->foreground_action_list.erase( i );
       }
+
+      player->dynamic_target_action_list.erase( this );
     }
-      expr_t::optimize_expression(target_if_expr);
-      expr_t::optimize_expression(interrupt_if_expr);
-      expr_t::optimize_expression(early_chain_if_expr);
-      expr_t::optimize_expression(cancel_if_expr);
   }
+  expr_t::optimize_expression( target_if_expr, *sim );
+  expr_t::optimize_expression( interrupt_if_expr, *sim );
+  expr_t::optimize_expression( early_chain_if_expr, *sim );
+  expr_t::optimize_expression( cancel_if_expr, *sim );
 }
 
 void action_t::cancel()
@@ -3395,8 +3392,8 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
             }
             if ( !spell )
             {
-              original_spell.sim->errorf( "Warning: %s used invalid spell_targets action \"%s\"",
-                                          original_spell.player->name(), name_of_spell.c_str() );
+              original_spell.sim->error( "Warning: {} used invalid spell_targets action \"{}\"",
+                                          original_spell.player->name(), name_of_spell );
             }
             else
             {
@@ -3442,6 +3439,16 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
           a.sim->print_debug( "{} could not find action '{}' while setting up prev_gcd expression.", a.player->name(),
                               prev_action );
         }
+      }
+
+      bool is_constant( double* result ) override
+      {
+        if ( !previously_used )
+        {
+          *result = 0;
+          return true;
+        }
+        return false;
       }
 
       double evaluate() override
@@ -3783,13 +3790,16 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->persistent_multiplier = composite_persistent_multiplier( state );
 
   if ( flags & STATE_MUL_PET )
-    state->pet_multiplier = player->cast_pet()->owner->composite_player_pet_damage_multiplier( state );
+    state->pet_multiplier = player->cast_pet()->owner->composite_player_pet_damage_multiplier( state, player->type == PLAYER_GUARDIAN );
 
   if ( flags & STATE_TGT_MUL_DA )
     state->target_da_multiplier = composite_target_da_multiplier( state->target );
 
   if ( flags & STATE_TGT_MUL_TA )
     state->target_ta_multiplier = composite_target_ta_multiplier( state->target );
+
+  if ( flags & STATE_TGT_MUL_PET )
+    state->target_pet_multiplier = player->cast_pet()->owner->composite_player_target_pet_damage_multiplier( state->target, player->type == PLAYER_GUARDIAN );
 
   if ( flags & STATE_TGT_CRIT )
     state->target_crit_chance = composite_target_crit_chance( state->target ) * composite_crit_chance_multiplier();
@@ -4018,7 +4028,7 @@ call_action_list_t::call_action_list_t( player_t* player, util::string_view opti
 
   if ( !alist )
   {
-    sim->errorf( "Player %s uses call_action_list with unknown action list %s\n", player->name(), alist_name.c_str() );
+    sim->error( "{} uses call_action_list with unknown action list {}\n", *player, alist_name );
     sim->cancel();
   }
 }

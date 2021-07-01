@@ -37,7 +37,7 @@ struct variable_t : public action_t
   //    are both constant
   // 3) The operation is reset/floor/ceil and all of the other actions manipulating the variable are
   //    constant
-  bool is_constant() const;
+  bool is_constant(double* const_value) const;
 
   // Variable action expressions have to do an optimization pass before other actions, so that
   // actions with variable expressions can know if the associated variable is constant

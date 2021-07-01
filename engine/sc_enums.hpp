@@ -366,13 +366,6 @@ enum pet_e
   PET_WATER_ELEMENTAL,
   PET_MAGE,
 
-  PET_SHADOWFIEND,
-  PET_MINDBENDER,
-  PET_VOID_TENDRIL,
-  PET_VOID_LASHER,
-  PET_LIGHTWELL,
-  PET_PRIEST,
-
   PET_SPIRIT_WOLF,
   PET_FIRE_ELEMENTAL,
   PET_EARTH_ELEMENTAL,
@@ -1333,7 +1326,8 @@ enum snapshot_state_e
   STATE_TGT_ARMOR      = 0x040000,
 
   /// Multiplier from the owner to pet damage
-  STATE_MUL_PET        = 0x080000,
+  STATE_MUL_PET        = 0x100000,
+  STATE_TGT_MUL_PET    = 0x200000,
 
   // User-defined target-specific state flags
   STATE_TGT_USER_1     = 0x10000000,
@@ -1346,12 +1340,18 @@ enum snapshot_state_e
    * (and/or update_flags &= STATE_NO_MULTIPLIER if a dot). This disables all multipliers, including versatility, and
    * any/all persistent multipliers the action would use. */
   STATE_NO_MULTIPLIER = ~( STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA |
-                           STATE_MUL_PET | STATE_TGT_MUL_TA | STATE_TGT_ARMOR ),
+                           STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_MUL_PET | STATE_TGT_MUL_PET ),
 
   /// Target-specific state variables
   STATE_TARGET =
       ( STATE_TGT_CRIT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_TGT_MITG_DA | STATE_TGT_MITG_TA |
-        STATE_TGT_USER_1 | STATE_TGT_USER_2 | STATE_TGT_USER_3 | STATE_TGT_USER_4 )
+        STATE_TGT_USER_1 | STATE_TGT_USER_2 | STATE_TGT_USER_3 | STATE_TGT_USER_4 ),
+
+  /* STATE_TARGET is used with | or |=. STATE_TGT_MUL_PET cannot be added to non-pet spells without causing issues,
+   * but it is still needed when snapshotting AoE spells. STATE_TARGET_MASK includes these extra variables and should
+   * only be used with & or &=.
+   */
+  STATE_TARGET_MASK = STATE_TARGET | STATE_TGT_MUL_PET
 };
 
 enum ready_e

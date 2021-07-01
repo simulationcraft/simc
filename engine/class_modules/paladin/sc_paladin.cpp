@@ -32,7 +32,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     next_season( SUMMER )
 {
   active_consecration = nullptr;
-  active_hallow       = nullptr;
+  active_hallow_damaging       = nullptr;
+  active_hallow_healing     = nullptr;
   active_aura         = nullptr;
 
   cooldowns.avenging_wrath               = get_cooldown( "avenging_wrath" );
@@ -56,6 +57,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.hammer_of_wrath  = get_cooldown( "hammer_of_wrath" );
 
   cooldowns.blessing_of_the_seasons = get_cooldown( "blessing_of_the_seasons" );
+  cooldowns.ashen_hallow = get_cooldown( "ashen_hallow" );
 
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
@@ -884,7 +886,7 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
 
     if ( p()->specialization() == PALADIN_PROTECTION && p()->buffs.vanquishers_hammer->up() )
     {
-      p()->buffs.vanquishers_hammer->expire();
+      p()->buffs.vanquishers_hammer->decrement( 1 );
       p()->active.necrolord_shield_of_the_righteous->execute();
     }
 
@@ -972,21 +974,6 @@ void judgment_t::do_ctor_common( paladin_t* p )
   weapon_multiplier = 0.0;
   may_block = may_parry = may_dodge = false;
 
-  // Handle indomitable justice option
-  if ( p->azerite.indomitable_justice.enabled() )
-  {
-    // If using the default setting, set to 80% hp for protection, 100% hp for other specs
-    if ( p->options.indomitable_justice_pct == 0 )
-    {
-      indomitable_justice_pct = p->specialization() == PALADIN_PROTECTION ? 80 : 100;
-    }
-    // Else, clamp the value between -1 ("real" usage) and 100
-    else
-    {
-      indomitable_justice_pct = clamp<int>( p->options.indomitable_justice_pct, -1, 100 );
-    }
-  }
-
   // rank 2 multiplier
   if ( p->spells.judgment_2->ok() )
   {
@@ -1005,29 +992,6 @@ judgment_t::judgment_t( paladin_t* p )
   : paladin_melee_attack_t( "divine_toll_judgment", p, p->find_class_spell( "Judgment" ) )
 {
   do_ctor_common( p );
-}
-
-double judgment_t::bonus_da( const action_state_t* s ) const
-{
-  double da = paladin_melee_attack_t::bonus_da( s );
-  if ( p()->azerite.indomitable_justice.ok() )
-  {
-    double player_percent = indomitable_justice_pct < 0 ? p()->health_percentage() : indomitable_justice_pct;
-    double target_percent = s->target->health_percentage();
-
-    if ( player_percent > target_percent )
-    {
-      double ij_bonus = p()->azerite.indomitable_justice.value();
-
-      ij_bonus *= ( player_percent - target_percent ) / 100.0;
-
-      // Protection has a 50% damage reduction to IJ
-      ij_bonus *= 1.0 + p()->spec.protection_paladin->effectN( 15 ).percent();
-
-      da += ij_bonus;
-    }
-  }
-  return da;
 }
 
 proc_types judgment_t::proc_type() const
@@ -1149,13 +1113,15 @@ struct vanquishers_hammer_t : public paladin_melee_attack_t
     }
     if ( p->conduit.righteous_might->ok() )
       r_m_heal = new righteous_might_t( p );
+    if ( p->legendary.duty_bound_gavel->ok() )
+      cooldown -> charges += as<int>( p->legendary.duty_bound_gavel->effectN( 1 ).base_value() );
   }
 
   void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
 
-    p()->buffs.vanquishers_hammer->trigger();
+    p()->buffs.vanquishers_hammer->trigger( 1 + p()->legendary.duty_bound_gavel->ok() * as<int>( p() -> legendary.duty_bound_gavel -> effectN( 1 ).base_value() ) );
 
     if ( p()->conduit.righteous_might->ok() )
     {
@@ -1175,6 +1141,7 @@ struct divine_toll_t : public paladin_spell_t
     aoe = as<int>( data().effectN( 1 ).base_value() );
 
     add_child( p->active.divine_toll );
+    add_child( p->active.divine_resonance );
   }
 
   void impact( action_state_t* s ) override
@@ -1192,6 +1159,7 @@ struct divine_toll_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
     if ( p()->conduit.ringing_clarity->ok() )
+    {
       for ( int hits = 0; hits < p()->conduit.ringing_clarity->effectN( 2 ).base_value(); hits++ )
       {
         if ( rng().roll( p()->conduit.ringing_clarity.percent() ) )
@@ -1204,6 +1172,12 @@ struct divine_toll_t : public paladin_spell_t
           } );
         }
       }
+    }
+
+    if ( p()->legendary.divine_resonance->ok() )
+    {
+      p()->buffs.divine_resonance->trigger();
+    }
   }
 };
 
@@ -1334,12 +1308,21 @@ struct ashen_hallow_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
+    auto duration = data().duration();
+    if ( p()->legendary.radiant_embers->ok() )
+    {
+      duration *= 1.0 + p()->legendary.radiant_embers->effectN( 1 ).percent();
+    }
     ground_aoe_params_t hallow_params = ground_aoe_params_t()
-                                            .duration( data().duration() )
+                                            .duration( duration )
                                             .pulse_time( data().effectN( 2 ).period() )
                                             .hasted( ground_aoe_params_t::SPELL_HASTE )
                                             .x( execute_state->target->x_position )
                                             .y( execute_state->target->y_position );
+
+    // In game it's just an ability that both heals and damages naturally. Here
+    // I made 2 hallows and stacked them on top of each other: one for healing
+    // and one for damage.
 
     make_event<ground_aoe_event_t>(
         *sim, p(),
@@ -1349,17 +1332,66 @@ struct ashen_hallow_t : public paladin_spell_t
               switch ( type )
               {
                 case ground_aoe_params_t::EVENT_CREATED:
-                  p()->active_hallow = event;
+                  p()->active_hallow_damaging = event;
                   break;
                 case ground_aoe_params_t::EVENT_DESTRUCTED:
-                  p()->active_hallow = nullptr;
+                  p() -> active_hallow_damaging = nullptr;
                   break;
                 default:
                   break;
               }
             } ) );
 
-    make_event<ground_aoe_event_t>( *sim, p(), hallow_params.action( heal_tick ).target( p() ) );
+    make_event<ground_aoe_event_t>( *sim, p(),
+        hallow_params.action( heal_tick )
+        .target( p() )
+        .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+              switch ( type )
+              {
+                case ground_aoe_params_t::EVENT_CREATED:
+                  p()->active_hallow_healing = event;
+                  break;
+                case ground_aoe_params_t::EVENT_DESTRUCTED:
+                  p() -> active_hallow_healing = nullptr;
+                  break;
+                default:
+                  break;
+              }
+            } ) );
+  }
+};
+
+struct cancel_ashen_hallow_t : public action_t
+{
+  cancel_ashen_hallow_t( paladin_t* p, util::string_view options_str ) :
+    action_t( ACTION_OTHER, "cancel_ashen_hallow", p )
+  {
+    parse_options( options_str );
+    trigger_gcd = timespan_t::zero();
+  }
+
+  bool ready() override
+  {
+    paladin_t* p = static_cast<paladin_t*>( action_t::player );
+    if ( p -> active_hallow_damaging != nullptr && p -> legendary.radiant_embers->ok() )
+      return action_t::ready();
+    return false;
+  }
+
+  void execute() override
+  {
+    paladin_t* p = static_cast<paladin_t*>( action_t::player );
+      // CDR = % remaining duration/base duration * 50% * base cooldown
+      double ah_reduction = p -> active_hallow_damaging -> remaining_time().total_seconds();
+      ah_reduction /= p -> active_hallow_damaging -> params -> duration_.total_seconds();
+      ah_reduction *= 1.0 - p -> legendary.radiant_embers -> effectN( 2 ).percent();
+      ah_reduction *= p -> cooldowns.ashen_hallow -> base_duration.total_seconds();
+
+      p -> cooldowns.ashen_hallow -> adjust( timespan_t::from_seconds( - ah_reduction ) );
+
+      event_t::cancel( p->active_hallow_damaging );
+      event_t::cancel( p->active_hallow_healing );
+
   }
 };
 
@@ -1464,6 +1496,22 @@ public:
 
     return ab::spell_direct_power_coefficient( s );
   }
+
+  double action_multiplier() const override
+  {
+    double am = ab::action_multiplier();
+
+    if ( ab::player->type == PALADIN )
+    {
+      paladin_t* pal = debug_cast<paladin_t*>( ab::player );
+      if ( pal->buffs.equinox->up() )
+      {
+        am *= 1.0 + pal->buffs.equinox->data().effectN( 2 ).percent();
+      }
+    }
+
+    return am;
+  }
 };
 
 struct blessing_of_winter_t : public paladin_spell_t
@@ -1512,6 +1560,13 @@ struct blessing_of_the_seasons_t : public paladin_spell_t
     paladin_spell_t::execute();
     p()->active.seasons[ p()->next_season ]->execute();
     p()->next_season = season( ( p()->next_season + 1 ) % NUM_SEASONS );
+
+    if ( p()->legendary.seasons_of_plenty->ok() )
+    {
+      make_event( *sim, 10_s, [ this ]() {
+        p()->buffs.equinox->trigger();
+      } );
+    }
   }
 };
 
@@ -1669,14 +1724,15 @@ struct blessing_of_autumn_t : public buff_t
 {
   bool affected_actions_initialized;
   std::vector<action_t*> affected_actions;
+  double last_multiplier;
 
   blessing_of_autumn_t( player_t* p )
-    : buff_t( p, "blessing_of_autumn", p->find_spell( 328622 ) ), affected_actions_initialized( false )
+    : buff_t( p, "blessing_of_autumn", p->find_spell( 328622 ) ), affected_actions_initialized( false ), last_multiplier( 1.0 )
   {
     set_cooldown( 0_ms );
     set_default_value_from_effect( 1 );
 
-    set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+    set_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
       if ( !affected_actions_initialized )
       {
         int label = data().effectN( 1 ).misc_value1();
@@ -1695,19 +1751,52 @@ struct blessing_of_autumn_t : public buff_t
         affected_actions_initialized = true;
       }
 
-      double recharge_rate_multiplier = 1.0 / ( 1 + b->default_value );
+      if ( new_ == 1 && old == 0 )
+        last_multiplier = 1.0;
+
+      update_cooldowns( b, new_ );
+    } );
+  }
+
+  void update_cooldowns( buff_t* b, int new_, bool is_equinox=false ) {
+    paladin_t* pal = debug_cast<paladin_t*>( source );
+
+    double recharge_rate_multiplier = 1.0 / ( 1 + b->default_value );
+    if ( is_equinox ) {
+      recharge_rate_multiplier = 1.0 / ( 1 + b->default_value * ( 1.0 + pal->buffs.equinox->data().effectN( 2 ).percent() ) );
+
+      if ( new_ == 1 )
+      {
+        for ( auto a : affected_actions )
+        {
+          a->base_recharge_multiplier /= last_multiplier;
+          a->base_recharge_multiplier *= recharge_rate_multiplier;
+          if ( a->cooldown->action == a )
+            a->cooldown->adjust_recharge_multiplier();
+          if ( a->internal_cooldown->action == a )
+            a->internal_cooldown->adjust_recharge_multiplier();
+        }
+
+        last_multiplier = recharge_rate_multiplier;
+      }
+    } else {
       for ( auto a : affected_actions )
       {
         if ( new_ == 1 )
           a->base_recharge_rate_multiplier *= recharge_rate_multiplier;
         else
-          a->base_recharge_rate_multiplier /= recharge_rate_multiplier;
+          a->base_recharge_rate_multiplier /= last_multiplier;
         if ( a->cooldown->action == a )
           a->cooldown->adjust_recharge_multiplier();
         if ( a->internal_cooldown->action == a )
           a->internal_cooldown->adjust_recharge_multiplier();
       }
-    } );
+
+      if ( new_ == 1 )
+        last_multiplier = recharge_rate_multiplier;
+      else
+        last_multiplier = 1.0;
+    }
   }
 };
 
@@ -1875,6 +1964,8 @@ action_t* paladin_t::create_action( util::string_view name, const std::string& o
     return new blessing_of_the_seasons_t( this, options_str );
   if ( name == "word_of_glory" )
     return new word_of_glory_t( this, options_str );
+  if ( name == "cancel_ashen_hallow" )
+    return new cancel_ashen_hallow_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -2010,7 +2101,8 @@ void paladin_t::reset()
   player_t::reset();
 
   active_consecration = nullptr;
-  active_hallow       = nullptr;
+  active_hallow_damaging       = nullptr;
+  active_hallow_healing     = nullptr;
   active_aura         = nullptr;
 
   next_season = SUMMER;
@@ -2134,11 +2226,34 @@ void paladin_t::create_buffs()
                                        ->set_default_value( find_spell( 337682 )->effectN( 1 ).base_value() );
   buffs.final_verdict = make_buff( this, "final_verdict", find_spell( 337228 ) );
   buffs.virtuous_command =
-      make_buff( this, "virtuous_command", find_spell( 339664 ) )
-          ->set_refresh_behavior( buff_refresh_behavior::DISABLED );  // doesn't refresh on reapplication
+      make_buff( this, "virtuous_command", find_spell( 339664 ) );
+  buffs.divine_resonance = make_buff( this, "divine_resonance", find_spell( 355455 ) )
+          ->set_tick_callback( [ this ]( buff_t* /* b */, int /* stacks */, timespan_t /* tick_time */ ) {
+              this->active.divine_resonance->set_target( this->target );
+              this->active.divine_resonance->schedule_execute();
+          } );
+  buffs.equinox = make_buff( this, "equinox", find_spell( 355567 ) )
+          ->set_stack_change_callback( [ this ]( buff_t* b, int /* old */, int new_) {
+              // TODO: make this work on other players
+              if ( b->player != this )
+                return;
+              if ( new_ != 1 )
+                return;
+
+              buffs::blessing_of_autumn_t* blessing = debug_cast<buffs::blessing_of_autumn_t*>( b->player->buffs.blessing_of_autumn );
+
+              if ( blessing->check() ) {
+                blessing->update_cooldowns(
+                  blessing,
+                  blessing->stack(),
+                  true
+                );
+              }
+            } );
 
   // Covenants
-  buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )->set_cooldown( 0_ms );
+  buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )->set_cooldown( 0_ms )
+    ->modify_max_stack( legendary.duty_bound_gavel->ok() ? as<int>(legendary.duty_bound_gavel->effectN( 2 ).base_value()) : 0 );
 }
 
 // paladin_t::default_potion ================================================
@@ -2331,7 +2446,6 @@ void paladin_t::init_spells()
   // Shared Azerite traits
   azerite.avengers_might        = find_azerite_spell( "Avenger's Might" );
   azerite.grace_of_the_justicar = find_azerite_spell( "Grace of the Justicar" );
-  azerite.indomitable_justice   = find_azerite_spell( "Indomitable Justice" );
 
   // Essences
   azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
@@ -2351,6 +2465,10 @@ void paladin_t::init_spells()
   legendary.relentless_inquisitor         = find_runeforge_legendary( "Relentless Inquisitor" );
   legendary.tempest_of_the_lightbringer   = find_runeforge_legendary( "Tempest of the Lightbringer" );
   legendary.reign_of_endless_kings        = find_runeforge_legendary( "Reign of Endless Kings" );
+  legendary.seasons_of_plenty             = find_runeforge_legendary( "Seasons of Plenty" );
+  legendary.radiant_embers                = find_runeforge_legendary( "Radiant Embers" );
+  legendary.duty_bound_gavel              = find_runeforge_legendary( "Duty-Bound Gavel" );
+  legendary.divine_resonance              = find_runeforge_legendary( "Divine Resonance" );
 
   // Covenants
   covenant.kyrian    = find_covenant_spell( "Divine Toll" );
@@ -2491,7 +2609,9 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
   // Protection gets increased stamina
   if ( attr == ATTR_STAMINA )
   {
-    m *= 1.0 + spec.protection_paladin->effectN( 3 ).percent();
+    if ( passives.aegis_of_light -> ok() )
+      m *= 1.0 + passives.aegis_of_light -> effectN( 1 ).percent();  
+
     if ( buffs.redoubt->up() )
       m *= 1.0 + buffs.redoubt->stack_value();
   }
@@ -2571,7 +2691,10 @@ double paladin_t::composite_base_armor_multiplier() const
   double a = player_t::composite_base_armor_multiplier();
   if ( specialization() != PALADIN_PROTECTION )
     return a;
-  a *= 1.0 + spec.protection_paladin->effectN( 4 ).percent();
+
+  if ( passives.aegis_of_light -> ok() )
+    a *= 1.0 + passives.aegis_of_light -> effectN( 2 ).percent();
+
   return a;
 }
 
@@ -2654,8 +2777,8 @@ double paladin_t::composite_spell_power( school_e school ) const
   switch ( specialization() )
   {
     case PALADIN_PROTECTION:
-      sp = spec.protection_paladin->effectN( 9 ).percent() *
-           composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
+      sp = spec.protection_paladin->effectN( 7 ).percent();
+      sp *= composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
            composite_attack_power_multiplier();
       break;
     case PALADIN_RETRIBUTION:
@@ -2752,9 +2875,7 @@ double paladin_t::composite_block_reduction( action_state_t* s ) const
 double paladin_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
-
-  c += spec.protection_paladin->effectN( 10 ).percent();
-
+  c += spec.protection_paladin->effectN( 8 ).percent();
   return c;
 }
 
@@ -2995,7 +3116,6 @@ void paladin_t::create_options()
 {
   // TODO: figure out a better solution for this.
   add_option( opt_bool( "paladin_fake_sov", options.fake_sov ) );
-  add_option( opt_int( "indomitable_justice_pct", options.indomitable_justice_pct ) );
   add_option(
       opt_float( "proc_chance_ret_memory_of_lucid_dreams", options.proc_chance_ret_memory_of_lucid_dreams, 0.0, 1.0 ) );
   add_option( opt_float( "proc_chance_prot_memory_of_lucid_dreams", options.proc_chance_prot_memory_of_lucid_dreams,
@@ -3038,14 +3158,14 @@ bool paladin_t::standing_in_hallow() const
 {
   if ( !sim->distance_targeting_enabled )
   {
-    return active_hallow != nullptr;
+    return active_hallow_damaging != nullptr;
   }
 
   // new
-  if ( active_hallow != nullptr )
+  if ( active_hallow_damaging != nullptr )
   {
     // calculate current distance to each consecration
-    ground_aoe_event_t* hallow_to_test = active_hallow;
+    ground_aoe_event_t* hallow_to_test = active_hallow_damaging;
 
     double distance = get_position_distance( hallow_to_test->params->x(), hallow_to_test->params->y() );
 
@@ -3091,6 +3211,33 @@ std::unique_ptr<expr_t> paladin_t::create_consecration_expression( util::string_
   {
     return make_fn_expr( "consecration_remains", [ this ]() {
       return active_consecration == nullptr ? 0 : active_consecration->remaining_time().total_seconds();
+    } );
+  }
+
+  return nullptr;
+}
+
+std::unique_ptr<expr_t> paladin_t::create_ashen_hallow_expression( util::string_view expr_str )
+{
+  auto expr = util::string_split<util::string_view>( expr_str, "." );
+  if ( expr.size() != 2 )
+  {
+    return nullptr;
+  }
+
+  if ( !util::str_compare_ci( expr[ 0U ], "ashen_hallow" ) )
+  {
+    return nullptr;
+  }
+
+  if ( util::str_compare_ci( expr[ 1U ], "ticking" ) || util::str_compare_ci( expr[ 1U ], "up" ) )
+  {
+    return make_fn_expr( "ashen_hallow_ticking", [ this ]() { return active_hallow_damaging == nullptr ? 0 : 1; } );
+  }
+  else if ( util::str_compare_ci( expr[ 1U ], "remains" ) )
+  {
+    return make_fn_expr( "ashen_hallow_remains", [ this ]() {
+      return active_hallow_damaging == nullptr ? 0 : active_hallow_damaging->remaining_time().total_seconds();
     } );
   }
 
@@ -3179,51 +3326,15 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
   }
 
   auto cons_expr = create_consecration_expression( name_str );
+  auto ah_expr = create_ashen_hallow_expression( name_str );
   if ( cons_expr )
   {
     return cons_expr;
   }
+  if ( ah_expr )
+    return ah_expr;
 
   return player_t::create_expression( name_str );
-}
-
-void paladin_t::merge( player_t& other )
-{
-  player_t::merge( other );
-
-  const paladin_t& op = static_cast<paladin_t&>( other );
-
-  for ( size_t i = 0; i < cooldown_waste_data_list.size(); i++ )
-  {
-    cooldown_waste_data_list[ i ]->merge( *op.cooldown_waste_data_list[ i ] );
-  }
-}
-
-void paladin_t::analyze( sim_t& s )
-{
-  player_t::analyze( s );
-  for ( auto cdw : cooldown_waste_data_list )
-  {
-    cdw->analyze();
-  }
-}
-
-void paladin_t::datacollection_begin()
-{
-  player_t::datacollection_begin();
-  for ( auto cdw : cooldown_waste_data_list )
-  {
-    cdw->datacollection_begin();
-  }
-}
-
-void paladin_t::datacollection_end()
-{
-  player_t::datacollection_end();
-  for ( auto cdw : cooldown_waste_data_list )
-  {
-    cdw->datacollection_end();
-  }
 }
 
 void paladin_t::apply_affecting_auras( action_t& action )
@@ -3273,7 +3384,7 @@ public:
   void cdwaste_table_contents( report::sc_html_stream& os )
   {
     size_t row = 0;
-    for ( const cooldown_waste_data_t* data : p.cooldown_waste_data_list )
+    for ( const auto& data : p.cooldown_waste_data_list )
     {
       if ( !data->active() )
         continue;
@@ -3359,6 +3470,7 @@ struct paladin_module_t : public module_t
         make_buff( p, "blessing_of_summer", p->find_spell( 328620 ) )->set_chance( 1.0 )->set_cooldown( 0_ms );
     p->buffs.blessing_of_autumn = make_buff<buffs::blessing_of_autumn_t>( p );
     p->buffs.blessing_of_winter = make_buff( p, "blessing_of_winter", p->find_spell( 328281 ) )->set_cooldown( 0_ms );
+    // TODO: make equinox also double this
     p->buffs.blessing_of_spring = make_buff( p, "blessing_of_spring", p->find_spell( 328282 ) )
                                       ->set_cooldown( 0_ms )
                                       ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
@@ -3385,10 +3497,21 @@ struct paladin_module_t : public module_t
       // TODO: Ensure there is no incorrect looping that can happen with other similar effects.
       p->assessor_out_damage.add(
           assessor::CALLBACKS, [ p, summer_proc, summer_data ]( result_amount_type, action_state_t* s ) {
+            if ( !(p->buffs.blessing_of_summer->up()) )
+              return assessor::CONTINUE;
+
+            double proc_chance = summer_data->proc_chance();
+            paladin_t* pal = debug_cast<paladin_t*>(p->buffs.blessing_of_summer->source);
+            bool has_equinox = pal->buffs.equinox->up();
+            if ( has_equinox )
+              proc_chance *= 1.0 + pal->buffs.equinox->data().effectN( 1 ).percent();
+
             if ( s->action != summer_proc && s->result_total > 0.0 && p->buffs.blessing_of_summer->up() &&
-                 summer_data->proc_flags() & ( 1 << s->proc_type() ) && p->rng().roll( summer_data->proc_chance() ) )
+                 summer_data->proc_flags() & ( 1 << s->proc_type() ) && p->rng().roll( proc_chance ) )
             {
               double da = s->result_amount * summer_data->effectN( 1 ).percent();
+              if ( has_equinox )
+                da *= 1.0 + pal->buffs.equinox->data().effectN( 2 ).percent();
               make_event( p->sim, [ t = s->target, summer_proc, da ] {
                 summer_proc->set_target( t );
                 summer_proc->base_dd_min = summer_proc->base_dd_max = da;

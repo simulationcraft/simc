@@ -455,9 +455,9 @@ azerite_power_t azerite_state_t::get_power( unsigned id )
           }
         }
 
-        m_player -> sim -> out_debug.printf( "%s initializing overridden azerite power %s: "
-                                             "ilevels=%s",
-            m_player -> name(), power.name, s.str().c_str() );
+        m_player -> sim -> print_debug( "{} initializing overridden azerite power {}: "
+                                             "ilevels={}",
+            *m_player, power.name, s.str() );
       }
 
       return { m_player, &power, override_it -> second };
@@ -2429,7 +2429,7 @@ void azerite_globules( special_effect_t& effect )
       assert( debuff );
 
       debuff -> trigger();
-      if ( debuff -> stack() == debuff -> max_stack() )
+      if ( debuff -> check() == debuff -> max_stack() )
       {
         debuff -> expire();
         proc_action -> set_target( s -> target );
@@ -5707,7 +5707,7 @@ struct reaping_flames_t : public azerite_essence_major_t
 
     if ( damage_buff )
     {
-      am *= 1.0 + damage_buff->value();
+      am *= 1.0 + damage_buff->check_value();
     }
 
     return am;

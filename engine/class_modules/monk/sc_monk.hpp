@@ -25,14 +25,14 @@ struct storm_earth_and_fire_pet_t;
 
 struct monk_t;
 
-enum sef_pet_e
+enum class sef_pet_e
 {
   SEF_FIRE = 0,
   SEF_EARTH,
   SEF_PET_MAX
 };  // Player becomes storm spirit.
 
-enum sef_ability_e
+enum class sef_ability_e
 {
   SEF_NONE = -1,
   // Attacks begin here
@@ -60,9 +60,9 @@ enum sef_ability_e
   SEF_MAX
 };
 
-inline unsigned sef_spell_index( sef_ability_e x )
+inline int sef_spell_index( int x )
 {
-  return x - as<unsigned>( static_cast<int>( SEF_SPELL_MIN ) );
+  return x - static_cast<int>( sef_ability_e::SEF_SPELL_MIN );
 }
 
 struct monk_td_t : public actor_target_data_t
@@ -101,6 +101,7 @@ public:
     buff_t* weapons_of_order;
 
     // Shadowland Legendaries
+    buff_t* fae_exposure;
     buff_t* keefers_skyreach;
     buff_t* skyreach_exhaustion;
   } debuff;
@@ -117,7 +118,7 @@ public:
   // Active
   action_t* windwalking_aura;
 
-  struct
+  struct sample_data_t
   {
     sc_timeline_t stagger_effective_damage_timeline;
     sc_timeline_t stagger_damage_pct_timeline;
@@ -154,6 +155,9 @@ public:
     // Covenant
     action_t* bonedust_brew_dmg;
     action_t* bonedust_brew_heal;
+
+    // Legendary
+    action_t* bountiful_brew;
   } active_actions;
 
   std::vector<action_t*> combo_strike_actions;
@@ -209,7 +213,7 @@ public:
     buff_t* mana_tea;
     buff_t* refreshing_jade_wind;
     buff_t* teachings_of_the_monastery;
-    buff_t* touch_of_death;
+    buff_t* touch_of_death_mw;
     buff_t* thunder_focus_tea;
     buff_t* uplifting_trance;
 
@@ -226,17 +230,20 @@ public:
     buff_t* invoke_xuen;
     buff_t* storm_earth_and_fire;
     buff_t* serenity;
+    buff_t* touch_of_death_ww;
     buff_t* touch_of_karma;
     buff_t* windwalking_driver;
     buff_t* whirling_dragon_punch;
 
     // Covenant Abilities
+    buff_t* bonedust_brew;
     buff_t* bonedust_brew_hidden;
     buff_t* weapons_of_order;
     buff_t* weapons_of_order_ww;
     buff_t* faeline_stomp;
     buff_t* faeline_stomp_brm;
     buff_t* faeline_stomp_reset;
+    buff_t* fallen_order;
 
     // Covenant Conduits
     absorb_buff_t* fortifying_ingrediences;
@@ -244,10 +251,12 @@ public:
     // Shadowland Legendary
     buff_t* chi_energy;
     buff_t* charred_passions;
+    buff_t* fae_exposure;
     buff_t* invokers_delight;
     buff_t* mighty_pour;
     buff_t* pressure_point;
     buff_t* the_emperors_capacitor;
+    buff_t* invoke_xuen_call_to_arms;
   } buff;
 
 public:
@@ -271,6 +280,7 @@ public:
     gain_t* serenity;
     gain_t* spirit_of_the_crane;
     gain_t* tiger_palm;
+    gain_t* touch_of_death_ww;
 
     // Azerite Traits
     gain_t* glory_of_the_dawn;
@@ -445,6 +455,7 @@ public:
     const spell_data_t* renewing_mist;
     const spell_data_t* renewing_mist_2;
     const spell_data_t* revival;
+    const spell_data_t* revival_2;
     const spell_data_t* soothing_mist;
     const spell_data_t* teachings_of_the_monastery;
     const spell_data_t* thunder_focus_tea;
@@ -515,6 +526,11 @@ public:
     cooldown_t* bonedust_brew;
     cooldown_t* faeline_stomp;
     cooldown_t* fallen_order;
+
+    // Legendary
+    cooldown_t* charred_passions;
+    cooldown_t* bountiful_brew;
+    cooldown_t* sinister_teachings;
   } cooldown;
 
   struct passives_t
@@ -591,9 +607,22 @@ public:
 
     // Shadowland Legendary
     const spell_data_t* chi_explosion;
+    const spell_data_t* fae_exposure_dmg;
+    const spell_data_t* fae_exposure_heal;
     const spell_data_t* shaohaos_might;
     const spell_data_t* charred_passions_dmg;
+    const spell_data_t* call_to_arms_invoke_xuen;
+    const spell_data_t* call_to_arms_invoke_niuzao;
+    const spell_data_t* call_to_arms_invoke_yulon;
+    const spell_data_t* call_to_arms_invoke_chiji;
   } passives;
+
+  // RPPM objects
+  struct rppms_t
+  {
+    // Shadowland Legendary
+    real_ppm_t* bountiful_brew;
+  } rppm;
 
   // Covenant
   struct covenant_t
@@ -692,15 +721,21 @@ public:
     item_runeforge_t keefers_skyreach;         // 7068
     item_runeforge_t last_emperors_capacitor;  // 7069
     item_runeforge_t xuens_battlegear;         // 7070
+
+    // Covenant
+    item_runeforge_t bountiful_brew;       // 7707; Necrolord Covenant
+    item_runeforge_t call_to_arms;         // 7718; Bastion Covenant
+    item_runeforge_t faeline_harmony;      // 7721; Night Fae Covenant
+    item_runeforge_t sinister_teachings;   // 7726; Venthyr Covenant
   } legendary;
 
   struct pets_t
   {
-    std::array<pets::storm_earth_and_fire_pet_t*, SEF_PET_MAX> sef;
-    pet_t* xuen   = nullptr;
-    pet_t* niuzao = nullptr;
-    pet_t* yulon  = nullptr;
-    pet_t* chiji  = nullptr;
+    std::array<pets::storm_earth_and_fire_pet_t*, (int)sef_pet_e::SEF_PET_MAX> sef;
+    spawner::pet_spawner_t<pet_t, monk_t> xuen;
+    spawner::pet_spawner_t<pet_t, monk_t> niuzao;
+    spawner::pet_spawner_t<pet_t, monk_t> yulon;
+    spawner::pet_spawner_t<pet_t, monk_t> chiji;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_ww;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_mw;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_brm;
@@ -746,6 +781,9 @@ public:
   double composite_attribute_multiplier( attribute_e attr ) const override;
   double composite_melee_expertise( const weapon_t* weapon ) const override;
   double composite_melee_attack_power() const override;
+  double composite_melee_attack_power_by_type( attack_power_type type ) const override;
+  double composite_spell_power( school_e school ) const override;
+  double composite_spell_power_multiplier() const override;
   double composite_spell_haste() const override;
   double composite_melee_haste() const override;
   double composite_attack_power_multiplier() const override;
@@ -754,6 +792,11 @@ public:
   double composite_mastery_rating() const override;
   double composite_crit_avoidance() const override;
   double temporary_movement_modifier() const override;
+  double composite_player_dd_multiplier( school_e, const action_t* action ) const override;
+  double composite_player_td_multiplier( school_e, const action_t* action ) const override;
+  double composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double composite_player_pet_damage_multiplier( const action_state_t*, bool guardian ) const override;
+  double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
   void create_pets() override;
   void init_spells() override;
   void init_base_stats() override;
@@ -762,6 +805,7 @@ public:
   void init_gains() override;
   void init_procs() override;
   void init_assessors() override;
+  void init_rng() override;
   void reset() override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   void create_options() override;
@@ -827,7 +871,7 @@ public:
   void retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& targets, size_t n_targets ) const;
   void retarget_storm_earth_and_fire_pets() const;
 
-  void accumulate_gale_burst_damage( action_state_t* );
+  void bonedust_brew_assessor( action_state_t* );
   void trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_ability );
   void storm_earth_and_fire_fixate( player_t* target );
   bool storm_earth_and_fire_fixate_ready( player_t* target );

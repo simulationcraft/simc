@@ -26,6 +26,7 @@ private:
   double mind_blast_insanity;
   const spell_data_t* mind_flay_spell;
   const spell_data_t* mind_sear_spell;
+  const spell_data_t* void_torrent_spell;
   bool only_cwc;
 
 public:
@@ -34,6 +35,7 @@ public:
       mind_blast_insanity( priest().specs.shadow_priest->effectN( 12 ).resource( RESOURCE_INSANITY ) ),
       mind_flay_spell( p.specs.mind_flay ),
       mind_sear_spell( p.specs.mind_sear ),
+      void_torrent_spell( p.talents.void_torrent ),
       only_cwc( false )
   {
     add_option( opt_bool( "only_cwc", only_cwc ) );
@@ -76,8 +78,10 @@ public:
         return false;
       if ( player->channeling == nullptr )
         return false;
+      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/761
       if ( player->channeling->data().id() == mind_flay_spell->id() ||
-           player->channeling->data().id() == mind_sear_spell->id() )
+           player->channeling->data().id() == mind_sear_spell->id() ||
+           player->channeling->data().id() == void_torrent_spell->id() )
         return priest_spell_t::ready();
       return false;
     }
@@ -392,7 +396,6 @@ struct shadow_word_death_t final : public priest_spell_t
       double save_health_percentage = s->target->health_percentage();
 
       // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
-
       if ( !( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
       {
         // target is not killed
@@ -1616,13 +1619,13 @@ struct voidform_t final : public priest_buff_t<buff_t>
     set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
       if ( cur )
       {
-        adjust_cooldown_max_charges( priest().cooldowns.mind_blast, 1 );
+        priest().cooldowns.mind_blast->adjust_max_charges( 1 );
         priest().cooldowns.mind_blast->reset( true, -1 );
         priest().cooldowns.void_bolt->reset( true );
       }
       else
       {
-        adjust_cooldown_max_charges( priest().cooldowns.mind_blast, -1 );
+        priest().cooldowns.mind_blast->adjust_max_charges( -1 );
       }
     } );
   }
@@ -1688,9 +1691,8 @@ struct dark_thought_t final : public priest_buff_t<buff_t>
     this->reactable = true;
 
     // Create a stack change callback to adjust the number of mindblast charges.
-    set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
-      adjust_cooldown_max_charges( priest().cooldowns.mind_blast, cur - old );
-    } );
+    set_stack_change_callback(
+        [ this ]( buff_t*, int old, int cur ) { priest().cooldowns.mind_blast->adjust_max_charges( cur - old ); } );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override

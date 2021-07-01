@@ -9,9 +9,9 @@
 
 bool player_talent_points_t::validate( const spell_data_t* spell, int row, int col ) const
 {
-  return has_row_col( row, col ) || range::find_if( _validity_fns, [spell]( const validity_fn_t& fn ) {
+  return has_row_col( row, col ) || range::any_of( _validity_fns, [spell]( const validity_fn_t& fn ) {
                                       return fn( spell );
-                                    } ) != _validity_fns.end();
+                                    } );
 }
 
 void player_talent_points_t::clear()
