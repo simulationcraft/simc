@@ -1478,7 +1478,7 @@ void brons_call_to_action( special_effect_t& effect )
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( bron->is_active() )
+      if ( bron->is_active() || a->background )
         return;
 
       // Only class spells can proc Bron's Call to Action.
@@ -1488,7 +1488,7 @@ void brons_call_to_action( special_effect_t& effect )
 
       // Because this callback triggers on both cast and impact, spells are categorized into triggering on one of cast or impact.
       // TODO: This isn't completely accurate, but seems to be relatively close. More classes/spells needs to be looked at.
-      bool action_triggers_on_impact = a->background || a->data().flags( spell_attribute::SX_ABILITY )
+      bool action_triggers_on_impact = a->data().flags( spell_attribute::SX_ABILITY )
         || range::any_of( a->data().effects(), [] ( const spelleffect_data_t& e ) { return e.type() == E_TRIGGER_MISSILE; } );
 
       a->sim->print_debug( "'{}' attempts to trigger brons_call_to_action: action='{}', execute_proc_type2='{}', cast_proc_type2='{}', impact_proc_type2='{}', triggers_on='{}'",
