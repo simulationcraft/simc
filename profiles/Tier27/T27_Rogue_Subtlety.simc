@@ -1,14 +1,12 @@
 rogue="T27_Rogue_Subtlety"
-source=default
 spec=subtlety
 level=60
 race=mechagnome
 role=attack
 position=back
-professions=alchemy=16/engineering=50
 talents=1320031
 covenant=venthyr
-soulbind=nadjia_the_mistblade:8,331586/229:11:0/331576/331579/331584/245:11:0/352405/352373
+soulbind=nadjia_the_mistblade:8,331586/229:9:1/331576/331579/331584/245:9:1/352405/352373
 renown=80
 
 # Default consumables
@@ -168,22 +166,22 @@ actions.stealthed+=/gloomblade,if=buff.perforated_veins.stack>=5&conduit.perfora
 actions.stealthed+=/shadowstrike
 actions.stealthed+=/cheap_shot,if=!target.is_boss&combo_points.deficit>=1&buff.shot_in_the_dark.up&energy.time_to_40>gcd.max
 
-head=cowl_of_haunting_precognition,id=186330,bonus_id=6805,ilevel=252,gem_id=187312
-neck=azurevenom_choker,id=180115,bonus_id=3536/1498,ilevel=252,gem_id=173127
-shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=6805,ilevel=259,gem_id=187315
+head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187312
+neck=azurevenom_choker,id=180115,bonus_id=6536/1566/6646,gem_id=173127
+shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187315
 back=grimveiled_cape,id=173242,bonus_id=6716/7572/6647/6650/1559
-chest=witherheart_studded_breastplate,id=186334,bonus_id=6805,ilevel=259,gem_id=187319,enchant_id=6214
-wrists=risen_monstrosity_cuffs,id=178741,bonus_id=3536/1498,ilevel=252,gem_id=173127
-hands=loyal_kvaldirs_handwraps,id=186295,bonus_id=6805,ilevel=252,gem_id=187320
-waist=windrunners_baldric,id=186332,bonus_id=6805/1808,ilevel=259,gem_id=173127
-legs=elite_aranakk_breeches,id=186331,bonus_id=6805,ilevel=259
-feet=unstable_energizer_boots,id=186363,bonus_id=6805,ilevel=252,gem_id=187318,enchant_id=6211
-finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=6805,ilevel=259,gem_id=173127,enchant_id=6164
-finger2=ritual_commanders_ring,id=178781,bonus_id=3536/1498,ilevel=252,gem_id=173127,enchant_id=6164
-trinket1=shadowgrasp_totem,id=179356,bonus_id=3535/4786/1566
-trinket2=phial_of_putrefaction,id=178771,bonus_id=3535/4786/1566
-main_hand=edge_of_night,id=186398,bonus_id=6805,ilevel=259,enchant_id=6229
-off_hand=edge_of_night,id=186398,bonus_id=6805,ilevel=259,enchant_id=6228
+chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498,gem_id=187319,enchant=eternal_stats
+wrists=risen_monstrosity_cuffs,id=178741,bonus_id=6536/1566/6646,gem_id=173127
+hands=loyal_kvaldirs_handwraps,id=186295,bonus_id=6805/7187/1498,gem_id=187320
+waist=windrunners_baldric,id=186332,bonus_id=7187/1498,gem_id=173127
+legs=elite_aranakk_breeches,id=186331,bonus_id=6805/7187/1498
+feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187318,enchant=eternal_agility
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=ritual_commanders_ring,id=178781,bonus_id=6536/1566/6646,gem_id=173127,enchant=tenet_of_critical_strike
+trinket1=shadowgrasp_totem,id=179356,bonus_id=6536/1566/6646
+trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
+main_hand=edge_of_night,id=186398,bonus_id=7187/1498,enchant=celestial_guidance
+off_hand=edge_of_night,id=186398,bonus_id=7187/1498,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=255.69
