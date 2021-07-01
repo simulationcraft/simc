@@ -1274,7 +1274,7 @@ void warlock_t::create_apl_demonology()
   trinks->add_action( "use_item,name=overflowing_anima_cage,if=pet.demonic_tyrant.active" );
   trinks->add_action( "use_item,slot=trinket1,if=trinket.1.has_use_buff&pet.demonic_tyrant.active" );
   trinks->add_action( "use_item,slot=trinket2,if=trinket.2.has_use_buff&pet.demonic_tyrant.active" );
-  trinks->add_action( "call_action_list,name=pure_damage_trinks,if=time>variable.first_tyrant_time" );
+  trinks->add_action( "call_action_list,name=pure_damage_trinks,if=time>variable.first_tyrant_time&cooldown.summon_demonic_tyrant.remains_expected>20" );
 
   five_y->add_action( "use_item,name=soulletting_ruby,if=cooldown.summon_demonic_tyrant.remains_expected<target.distance%5&time>variable.first_tyrant_time-(target.distance%5)" );
   five_y->add_action( "use_item,name=sunblood_amethyst,if=cooldown.summon_demonic_tyrant.remains_expected<target.distance%5&time>variable.first_tyrant_time-(target.distance%5)" );
@@ -1287,5 +1287,6 @@ void warlock_t::create_apl_demonology()
   dmg->add_action( "use_item,name=soul_igniter" );
   dmg->add_action( "use_item,name=glyph_of_assimilation,if=active_enemies=1" );
   dmg->add_action( "use_item,name=darkmoon_deck_putrescence" );
+  dmg->add_action( "use_item,name=ebonsoul_vise" );
 }
 }  // namespace warlock
