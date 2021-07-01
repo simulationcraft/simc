@@ -1488,20 +1488,20 @@ void brons_call_to_action( special_effect_t& effect )
 
       // Because this callback triggers on both cast and impact, spells are categorized into triggering on one of cast or impact.
       // TODO: This isn't completely accurate, but seems to be relatively close. More classes/spells needs to be looked at.
-      bool action_triggers_on_impact = a->data().flags( spell_attribute::SX_ABILITY )
-        || range::any_of( a->data().effects(), [] ( const spelleffect_data_t& e ) { return e.type() == E_TRIGGER_MISSILE; } );
+//      bool action_triggers_on_impact = a->data().flags( spell_attribute::SX_ABILITY )
+//        || range::any_of( a->data().effects(), [] ( const spelleffect_data_t& e ) { return e.type() == E_TRIGGER_MISSILE; } );
 
-      a->sim->print_debug( "'{}' attempts to trigger brons_call_to_action: action='{}', execute_proc_type2='{}', cast_proc_type2='{}', impact_proc_type2='{}', triggers_on='{}'",
-        a->player->name_str, a->name_str, util::proc_type2_string( s->execute_proc_type2() ), util::proc_type2_string( s->cast_proc_type2() ),
-        util::proc_type2_string( s->impact_proc_type2() ), action_triggers_on_impact ? "impact" : "cast" );
+//      a->sim->print_debug( "'{}' attempts to trigger brons_call_to_action: action='{}', execute_proc_type2='{}', cast_proc_type2='{}', impact_proc_type2='{}', triggers_on='{}'",
+//        a->player->name_str, a->name_str, util::proc_type2_string( s->execute_proc_type2() ), util::proc_type2_string( s->cast_proc_type2() ),
+//        util::proc_type2_string( s->impact_proc_type2() ), action_triggers_on_impact ? "impact" : "cast" );
 
       // If the spell triggers on cast and this is an impact trigger attempt, skip it.
-      if ( s->impact_proc_type2() != PROC2_INVALID && !action_triggers_on_impact )
-        return;
+//      if ( s->impact_proc_type2() != PROC2_INVALID && !action_triggers_on_impact )
+//        return;
 
       // If the spell triggers on impact and this is not an imapct trigger attempt, skip it.
-      if ( s->impact_proc_type2() == PROC2_INVALID && action_triggers_on_impact )
-        return;
+//      if ( s->impact_proc_type2() == PROC2_INVALID && action_triggers_on_impact )
+//        return;
 
       dbc_proc_callback_t::trigger( a, s );
     }
@@ -1520,7 +1520,8 @@ void brons_call_to_action( special_effect_t& effect )
     }
   };
 
-  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL | PF2_ALL_HIT;
+//  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL | PF2_ALL_HIT;
+  effect.proc_flags2_ = PF2_CAST_DAMAGE | PF2_CAST_HEAL;
 
   effect.custom_buff = buff_t::find( effect.player, "brons_call_to_action" );
   if ( !effect.custom_buff )
