@@ -748,6 +748,7 @@ void party_favors( special_effect_t& effect )
   if ( !haste_buff )
   {
     haste_buff = make_buff( effect.player, "the_mad_dukes_tea_haste", effect.player->find_spell( 354016 ) )
+      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
       ->set_default_value_from_effect_type( A_HASTE_ALL )
       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
@@ -756,6 +757,7 @@ void party_favors( special_effect_t& effect )
   if ( !crit_buff )
   {
     crit_buff = make_buff( effect.player, "the_mad_dukes_tea_crit", effect.player->find_spell( 354017 ) )
+      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
       ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
   }
@@ -764,6 +766,7 @@ void party_favors( special_effect_t& effect )
   if ( !primary_buff )
   {
     primary_buff = make_buff( effect.player, "the_mad_dukes_tea_primary", effect.player->find_spell( 353266 ) )
+      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
       ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
       ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
       ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
@@ -774,6 +777,7 @@ void party_favors( special_effect_t& effect )
   if ( !vers_buff )
   {
     vers_buff = make_buff( effect.player, "the_mad_dukes_tea_versatility", effect.player->find_spell( 354018 ) )
+      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
       ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
       ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
   }
