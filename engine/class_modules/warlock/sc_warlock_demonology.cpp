@@ -1288,5 +1288,6 @@ void warlock_t::create_apl_demonology()
   dmg->add_action( "use_item,name=glyph_of_assimilation,if=active_enemies=1" );
   dmg->add_action( "use_item,name=darkmoon_deck_putrescence" );
   dmg->add_action( "use_item,name=ebonsoul_vise" );
+  dmg->add_action( "use_item,name=unchained_gladiators_shackles" );
 }
 }  // namespace warlock
