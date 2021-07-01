@@ -6806,6 +6806,7 @@ void warrior_t::apl_arms()
 //  default_list->add_action( "run_action_list,name=five_target,if=spell_targets.whirlwind>4" );
   default_list->add_action( "run_action_list,name=execute,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20|"
                             "(target.health.pct>80&covenant.venthyr)" );
+  default_list->add_action( "run_action_list,name=aoe" );
   default_list->add_action( "run_action_list,name=single_target" );
 
 
