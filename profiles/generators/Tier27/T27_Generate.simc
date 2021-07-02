@@ -6,6 +6,7 @@ ptr=1
 # * Mythic+ gear is permitted up to the Mythic+ item level cap (252). ["bonus_id=6536/1566/6646"]
 # * Honor PvP gear is permitted up to the item level cap (216). ["bonus_id=1530"]
 # * Conquest PvP gear is permitted up to the item level cap (249). ["bonus_id=7706/1498"]
+# * Korthia gear is permitted up to the item level cap of (233). ["bonus_id=7697/6652/1505/6646"]
 # * Crafted gear is permitted, must be BoE and without profession requirements.
 # * World Bosses gear is permitted.
 # * World Drop gear is permitted.
