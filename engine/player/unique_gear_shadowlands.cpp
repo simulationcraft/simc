@@ -12,7 +12,6 @@
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
 #include "buff/sc_buff.hpp"
-#include "sim/real_ppm.hpp"
 #include "action/dot.hpp"
 #include "item/item.hpp"
 
