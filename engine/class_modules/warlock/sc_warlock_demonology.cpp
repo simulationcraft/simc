@@ -1248,9 +1248,6 @@ void warlock_t::create_apl_demonology()
   cov->add_action( "soul_rot,if=soulbind.grove_invigoration&(cooldown.summon_demonic_tyrant.remains_expected<20|cooldown.summon_demonic_tyrant.remains_expected>30)" );
   cov->add_action( "soul_rot,if=soulbind.field_of_blossoms&pet.demonic_tyrant.active" );
   cov->add_action( "soul_rot,if=soulbind.wild_hunt_tactics" );
-  //TODO: check when emeni's magnificent skin is fixed in simc
-  //cov->add_action("fleshcraft,if=soulbind.lead_by_example&cooldown.summon_demonic_tyrant.remains_expected<20");
-  //cov->add_action("cancel_action,if=action.fleshcraft.channeling");
   cov->add_action( "decimating_bolt,if=soulbind.lead_by_example&(pet.demonic_tyrant.active&soul_shard<2|cooldown.summon_demonic_tyrant.remains_expected>40)" );
   cov->add_action( "decimating_bolt,if=!soulbind.lead_by_example&!pet.demonic_tyrant.active" );
   cov->add_action( "scouring_tithe,if=soulbind.combat_meditation&pet.demonic_tyrant.active" );
