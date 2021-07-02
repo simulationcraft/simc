@@ -3282,6 +3282,9 @@ struct evocation_t final : public arcane_mage_spell_t
 
     if ( siphon_storm_charges > 0 )
       p()->trigger_arcane_charge( siphon_storm_charges );
+
+    if ( is_precombat && execute_state )
+      cooldown->adjust( -composite_dot_duration( execute_state ) );
   }
 
   void tick( dot_t* d ) override
