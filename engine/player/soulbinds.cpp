@@ -333,7 +333,7 @@ void grove_invigoration( special_effect_t& effect )
 
       auto ra = debug_cast<stat_buff_t*>( redirected_anima );
 
-      bonded_hearts->set_stack_change_callback( [ ra ]( buff_t* b, int old_, int new_ ) {
+      bonded_hearts->set_stack_change_callback( [ ra ]( buff_t* b, int, int new_ ) {
         auto mul = 1.0 + b->default_value;
 
         // In stat_buff_t::bump, the stat value is applied AFTER buff_t::stack_change_callback is triggered, so the
@@ -349,8 +349,11 @@ void grove_invigoration( special_effect_t& effect )
           for ( auto& s : ra->stats )
             s.amount *= mul;
 
+          double old_value = ra->check_stack_value();
           ra->default_value *= mul;
-          b->player->resources.initial_multiplier[ RESOURCE_HEALTH ] *= mul;
+          ra->current_value *= mul;
+          double new_value = ra->check_stack_value();
+          b->player->resources.initial_multiplier[ RESOURCE_HEALTH ] *= ( 1.0 + new_value ) / ( 1.0 + old_value );
         }
         else
         {
@@ -368,8 +371,11 @@ void grove_invigoration( special_effect_t& effect )
             s.current_value += delta;
           }
 
+          double old_value = ra->check_stack_value();
           ra->default_value /= mul;
-          b->player->resources.initial_multiplier[ RESOURCE_HEALTH ] /= mul;
+          ra->current_value /= mul;
+          double new_value = ra->check_stack_value();
+          b->player->resources.initial_multiplier[ RESOURCE_HEALTH ] *= ( 1.0 + new_value ) / ( 1.0 + old_value );
         }
 
         b->player->recalculate_resource_max( RESOURCE_HEALTH );
@@ -397,7 +403,6 @@ void grove_invigoration( special_effect_t& effect )
   int stacks = as<int>( effect.driver()->effectN( 3 ).base_value() * stack_mod );
 
   add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, redirected_anima, stacks );
-
 }
 
 void bonded_hearts( special_effect_t& effect )
