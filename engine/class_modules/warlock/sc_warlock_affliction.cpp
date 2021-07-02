@@ -957,7 +957,8 @@ void warlock_t::create_apl_affliction()
 
   def->add_action( "phantom_singularity,if=covenant.night_fae&time>5&cooldown.soul_rot.remains<1&(trinket.empyreal_ordnance.cooldown.remains<162|!equipped.empyreal_ordnance)", "Sync Phantom Singularity with Venthyr/Night Fae covenant dot, otherwise use on cooldown. If Empyreal Ordnance buff is incoming, hold until it's ready (18 seconds after use)" );
   def->add_action( "phantom_singularity,if=covenant.venthyr&time>5&cooldown.impending_catastrophe.remains<1&(trinket.empyreal_ordnance.cooldown.remains<162|!equipped.empyreal_ordnance)" );
-  def->add_action( "phantom_singularity,if=(covenant.necrolord|covenant.kyrian|covenant.none)&(trinket.empyreal_ordnance.cooldown.remains<162|!equipped.empyreal_ordnance)" );
+  def->add_action( "phantom_singularity,if=covenant.necrolord&runeforge.malefic_wrath&time>5&cooldown.decimating_bolt.remains<3&(trinket.empyreal_ordnance.cooldown.remains<162|!equipped.empyreal_ordnance)", "Necrolord with Malefic Wrath casts phantom singularity in line with Decimating Bolt");
+  def->add_action( "phantom_singularity,if=(covenant.kyrian|covenant.none|(covenant.necrolord&!runeforge.malefic_wrath))&(trinket.empyreal_ordnance.cooldown.remains<162|!equipped.empyreal_ordnance)", "Other covenants (including non-MW Necro) cast PS on cooldown" );
   def->add_action( "phantom_singularity,if=time_to_die<16" );
 
   def->add_action( "call_action_list,name=covenant,if=dot.phantom_singularity.ticking&(covenant.night_fae|covenant.venthyr)", "If Phantom Singularity is ticking, it's time to use other major dots" );
@@ -987,13 +988,11 @@ void warlock_t::create_apl_affliction()
 
   def->add_action( "call_action_list,name=item", "Catch-all item usage for anything not specified elsewhere" );
 
-  if ( min_version_check( VERSION_9_1_0 ) )
-    def->add_action( "call_action_list,name=se,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<(2-action.shadow_bolt.in_flight)|debuff.shadow_embrace.remains<3)" );
-  else
-    def->add_action( "call_action_list,name=se,if=debuff.shadow_embrace.stack<(2-action.shadow_bolt.in_flight)|debuff.shadow_embrace.remains<3", "Refresh Shadow Embrace before spending shards on Malefic Rapture" );
-
+  def->add_action( "call_action_list,name=se,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<(2-action.shadow_bolt.in_flight)|debuff.shadow_embrace.remains<3)" );
+  
   def->add_action( "malefic_rapture,if=(dot.vile_taint.ticking|dot.impending_catastrophe_dot.ticking|dot.soul_rot.ticking)&(!runeforge.malefic_wrath|buff.malefic_wrath.stack<3|soul_shard>1)", "Use Malefic Rapture when major dots are up, or if there will be significant time until the next Phantom Singularity. If utilizing Malefic Wrath, hold a shard to refresh the buff" );
   def->add_action( "malefic_rapture,if=runeforge.malefic_wrath&cooldown.soul_rot.remains>20&buff.malefic_wrath.remains<4", "Use Malefic Rapture to maintain the malefic wrath buff until shards need to be generated for the next burst window (20 seconds is more than sufficient to generate 3 shards)" );
+  def->add_action( "malefic_rapture,if=runeforge.malefic_wrath&(covenant.necrolord|covenant.kyrian)&buff.malefic_wrath.remains<4", "Maintain Malefic Wrath at all times for the Necrolord or Kyrian covenant");
   def->add_action( "malefic_rapture,if=talent.phantom_singularity&(dot.phantom_singularity.ticking|cooldown.phantom_singularity.remains>25|time_to_die<cooldown.phantom_singularity.remains)&(!runeforge.malefic_wrath|buff.malefic_wrath.stack<3|soul_shard>1)", "Use Malefic Rapture on Phantom Singularity casts, making sure to save a shard to stack Malefic Wrath if using it" );
   def->add_action( "malefic_rapture,if=talent.sow_the_seeds" );
 
@@ -1067,6 +1066,7 @@ void warlock_t::create_apl_affliction()
   delay->add_action( "use_item,name=empyreal_ordnance,if=(covenant.night_fae&cooldown.soul_rot.remains<20)|(covenant.venthyr&cooldown.impending_catastrophe.remains<20)|(covenant.necrolord|covenant.kyrian|covenant.none)" );
   delay->add_action( "use_item,name=sunblood_amethyst,if=(covenant.night_fae&cooldown.soul_rot.remains<6)|(covenant.venthyr&cooldown.impending_catastrophe.remains<6)|(covenant.necrolord|covenant.kyrian|covenant.none)" );
   delay->add_action( "use_item,name=soulletting_ruby,if=(covenant.night_fae&cooldown.soul_rot.remains<8)|(covenant.venthyr&cooldown.impending_catastrophe.remains<8)|(covenant.necrolord|covenant.kyrian|covenant.none)" );
+  delay->add_action( "use_item,name=name=shadowed_orb_of_torment,if=(covenant.night_fae&cooldown.soul_rot.remains<4)|(covenant.venthyr&cooldown.impending_catastrophe.remains<4)|(covenant.necrolord|covenant.kyrian|covenant.none)" );
 
   stat->add_action( "use_item,name=inscrutable_quantum_device" );
   stat->add_action( "use_item,name=instructors_divine_bell" );
@@ -1085,6 +1085,8 @@ void warlock_t::create_apl_affliction()
   dmg->add_action( "use_item,name=soul_igniter" );
   dmg->add_action( "use_item,name=dreadfire_vessel" );
   dmg->add_action( "use_item,name=glyph_of_assimilation" );
+  dmg->add_action( "use_item,name=unchained_gladiators_shackles" );
+  dmg->add_action( "use_item,name=ebonsoul_vice" );
 
   split->add_action( "variable,name=special_equipped,value=(((equipped.empyreal_ordnance^equipped.inscrutable_quantum_device)^equipped.soulletting_ruby)^equipped.sunblood_amethyst)" );
   split->add_action( "variable,name=trinket_one,value=(trinket.1.has_proc.any&trinket.1.has_cooldown)" );
