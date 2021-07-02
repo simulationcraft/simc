@@ -56,7 +56,8 @@ actions+=/lights_judgment,if=buff.recklessness.down&debuff.siegebreaker.down
 actions+=/fireblood
 actions+=/ancestral_call
 actions+=/bag_of_tricks,if=buff.recklessness.down&debuff.siegebreaker.down&buff.enrage.up
-actions+=/run_action_list,name=single_target
+actions+=/call_action_list,name=aoe
+actions+=/call_action_list,name=single_target
 
 actions.aoe=cancel_buff,name=bladestorm,if=spell_targets.whirlwind>1&gcd.remains=0&soulbind.first_strike&buff.first_strike.remains&buff.enrage.remains<gcd
 actions.aoe+=/bladestorm,if=buff.enrage.up&spell_targets.whirlwind>2

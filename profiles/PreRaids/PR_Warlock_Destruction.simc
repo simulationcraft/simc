@@ -27,6 +27,8 @@ actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/summon_pet
+actions.precombat+=/use_item,name=tome_of_monstrous_constructions
+actions.precombat+=/use_item,name=soleahs_secret_technique
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions.precombat+=/snapshot_stats
 actions.precombat+=/soul_fire
