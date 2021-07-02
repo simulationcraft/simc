@@ -12,6 +12,7 @@
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
 #include "buff/sc_buff.hpp"
+#include "sim/real_ppm.hpp"
 #include "action/dot.hpp"
 #include "item/item.hpp"
 
@@ -2699,6 +2700,7 @@ void cruciform_veinripper(special_effect_t& effect)
     sadistic_glee->scaled_dmg += effect.driver()->effectN(1).average(effect.item);
 
   effect.spell_id = 357588;
+  effect.rppm_modifier_ = 0.55;
 
   new dbc_proc_callback_t(effect.player, effect);
 }
@@ -3408,7 +3410,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 358569, items::jaithys_the_prison_blade_4 );
     unique_gear::register_special_effect( 358571, items::jaithys_the_prison_blade_5 );
     unique_gear::register_special_effect( 351527, items::yasahm_the_riftbreaker );
-    unique_gear::register_special_effect( 357588, items::cruciform_veinripper);
+    unique_gear::register_special_effect( 359168, items::cruciform_veinripper);
 
     // Armor
     unique_gear::register_special_effect( 352081, items::passablyforged_credentials );
