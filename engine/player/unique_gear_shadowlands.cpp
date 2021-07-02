@@ -2699,7 +2699,7 @@ void cruciform_veinripper(special_effect_t& effect)
     sadistic_glee->scaled_dmg += effect.driver()->effectN(1).average(effect.item);
 
   effect.spell_id = 357588;
-  effect.rppm_modifier_ = 0.55;
+  effect.rppm_modifier_ = 0.5;
 
   new dbc_proc_callback_t(effect.player, effect);
 }
