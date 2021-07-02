@@ -5587,23 +5587,23 @@ bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type
 
 void mage_t::trigger_disciplinary_command( school_e school )
 {
-  if ( runeforge.disciplinary_command.ok() && !buffs.disciplinary_command->check() )
+  if ( !runeforge.disciplinary_command.ok() || buffs.disciplinary_command->cooldown->down() )
+    return;
+
+  // Only one school is triggered for Disciplinary Command if multiple are present.
+  // Schools are checked in order from the largest school mask to smallest.
+  if ( dbc::is_school( school, SCHOOL_ARCANE ) )
+    buffs.disciplinary_command_arcane->trigger();
+  else if ( dbc::is_school( school, SCHOOL_FROST ) )
+    buffs.disciplinary_command_frost->trigger();
+  else if ( dbc::is_school( school, SCHOOL_FIRE ) )
+    buffs.disciplinary_command_fire->trigger();
+  if ( buffs.disciplinary_command_arcane->check() && buffs.disciplinary_command_frost->check() && buffs.disciplinary_command_fire->check() )
   {
-    // Only one school is triggered for Disciplinary Command if multiple are present.
-    // Schools are checked in order from the largest school mask to smallest.
-    if ( dbc::is_school( school, SCHOOL_ARCANE ) )
-      buffs.disciplinary_command_arcane->trigger();
-    else if ( dbc::is_school( school, SCHOOL_FROST ) )
-      buffs.disciplinary_command_frost->trigger();
-    else if ( dbc::is_school( school, SCHOOL_FIRE ) )
-      buffs.disciplinary_command_fire->trigger();
-    if ( buffs.disciplinary_command_arcane->check() && buffs.disciplinary_command_frost->check() && buffs.disciplinary_command_fire->check() )
-    {
-      buffs.disciplinary_command->trigger();
-      buffs.disciplinary_command_arcane->expire();
-      buffs.disciplinary_command_frost->expire();
-      buffs.disciplinary_command_fire->expire();
-    }
+    buffs.disciplinary_command->trigger();
+    buffs.disciplinary_command_arcane->expire();
+    buffs.disciplinary_command_frost->expire();
+    buffs.disciplinary_command_fire->expire();
   }
 }
 

@@ -6771,17 +6771,6 @@ struct hunter_module_t: public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Hunter", "2021-06-24", "PTR Wailing Arrow direct damage buff", 887529 )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 2.775 )
-        .verification_value( 1.85 );
-
-    hotfix::register_effect( "Hunter", "2021-06-24", "PTR Wailing Arrow splash damage buff", 887530 )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 1.125 )
-        .verification_value( 0.75 );
   }
 
   void combat_begin( sim_t* ) const override {}

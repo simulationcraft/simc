@@ -2861,10 +2861,6 @@ stat_buff_t::stat_buff_t( actor_pair_t q, util::string_view name, const spell_da
     else if ( effect.subtype() == A_MOD_RATING )
     {
       std::vector<stat_e> k = util::translate_all_rating_mod( effect.misc_value1() );
-      if ( !player->dbc->ptr && item )
-      {
-        amount = item_database::apply_combat_rating_multiplier( *item, amount );
-      }
 
       for ( size_t j = 0; j < k.size(); j++ )
       {

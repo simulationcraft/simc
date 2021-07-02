@@ -30,31 +30,31 @@ save=T27_Paladin_Protection.simc
 
 
 paladin="T27_Paladin_Retribution"
+spec=retribution
 level=60
 race=dark_iron_dwarf
-spec=retribution
 role=attack
 position=back
-talents=3201303
+talents=3200303
 covenant=kyrian
-soulbind=pelagos,combat_meditation/ringing_clarity:7/templars_vindication:7
-renown=40
+soulbind=pelagos,combat_meditation/better_together/newfound_resolve/ringing_clarity:9:1/virtuous_command:9:1/templars_vindication:9:1
+renown=80
 
-head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=168636
-neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498/6935,gem_id=173128
-shoulders=pranksters_pauldrons,id=178697,bonus_id=6536/1540/6646
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=shadowghast_breastplate,id=171412,bonus_id=6648/6647/6758/7064/1532,enchant=eternal_skirmish
-wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498/6935,gem_id=173128
-hands=colossal_plate_gauntlets,id=182984,bonus_id=7187/1498,enchant=eternal_strength
-waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498/6935,gem_id=173128
-legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
-feet=errant_crusaders_greaves,id=183027,bonus_id=7187/1498
-finger1=signet_of_the_false_accuser,id=178824,bonus_id=6536/1540/6646/6935,gem_id=173128,enchant=tenet_of_versatility
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_versatility
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
-trinket2=sinful_gladiators_badge_of_ferocity,id=175921,bonus_id=1498/6646
-main_hand=guarding_cudgel_of_the_goliath,id=180312,bonus_id=7187/1531,enchant=sinful_revelation
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=187312/173129
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173129
+shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
+back=selfreplicating_tissue,id=186374,bonus_id=7187/1498
+chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_skirmish
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187320/173129
+hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187319,enchant=eternal_strength
+waist=shadowghast_waistguard,id=171418,bonus_id=6648/6647/6758/7679/1559/6935,gem_id=173129
+legs=agathas_gothic_greaves,id=186313,bonus_id=7187/1498
+feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
+finger2=oscillating_ouroboros,id=186376,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
+trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
+main_hand=jaithys_the_prison_blade,id=187542,bonus_id=7187/1498,enchant=sinful_revelation
 
 save=T27_Paladin_Retribution.simc
 

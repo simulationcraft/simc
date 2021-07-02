@@ -454,8 +454,6 @@ void darkmoon_deck_voracity( special_effect_t& effect )
 void stone_legion_heraldry( special_effect_t& effect )
 {
   double amount   = effect.driver()->effectN( 1 ).average( effect.item );
-  if ( ! effect.player -> dbc -> ptr )
-    amount = item_database::apply_combat_rating_multiplier( *effect.item, amount );
   unsigned allies = effect.player->sim->shadowlands_opts.stone_legionnaires_in_party;
   double mul      = 1.0 + effect.driver()->effectN( 2 ).percent() * allies;
 
@@ -1961,10 +1959,6 @@ void soul_cage_fragment( special_effect_t& effect )
   }
 }
 
-void fine_razorwing_quill( special_effect_t& effect )
-{
-}
-
 void decanter_of_endless_howling( special_effect_t& effect )
 {
   effect.proc_flags2_ = PF2_CRIT;
@@ -2505,6 +2499,53 @@ void relic_of_the_frozen_wastes_equip( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+/**Ticking Sack of Terror
+  (351679) driver, damage on effect 1
+  (351682) debuff
+  (351694) fire damage at 3 stacks
+ */
+void ticking_sack_of_terror( special_effect_t& effect )
+{
+  struct volatile_detonation_t : generic_proc_t
+  {
+    volatile_detonation_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "volatile_detonation", effect.player->find_spell( 351694 ) )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+    }
+  };
+
+  struct volatile_satchel_cb_t : dbc_proc_callback_t
+  {
+    action_t* damage;
+
+    volatile_satchel_cb_t( const special_effect_t& effect )
+      : dbc_proc_callback_t( effect.player, effect ),
+        damage( create_proc_action<volatile_detonation_t>( "volatile_detonation", effect ) )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      actor_target_data_t* td = a->player->get_target_data( s->target );
+      if ( td->debuff.volatile_satchel->at_max_stacks() )
+      {
+        td->debuff.volatile_satchel->expire();
+        damage->set_target( s->target );
+        damage->execute();
+      }
+      else
+      {
+        td->debuff.volatile_satchel->trigger();
+      }
+    }
+  };
+
+  new volatile_satchel_cb_t( effect );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -2587,6 +2628,42 @@ void jaithys_the_prison_blade_5( special_effect_t& effect )
   init_jaithys_the_prison_blade( effect, 358572, 358571, 5 );
 }
 
+/**Yasahm the Riftbreaker
+    351527 driver, proc on crit
+    351531 trigger buff, damage on effect 1
+    351561 damage proc on crit after 5th stack
+  */
+void yasahm_the_riftbreaker( special_effect_t& effect )
+{
+  struct preternatural_charge_t : public proc_spell_t
+  {
+    preternatural_charge_t( const special_effect_t& effect )
+      : proc_spell_t( "preternatural_charge", effect.player, effect.player->find_spell( 351561 ), effect.item )
+    {
+      base_dd_min = base_dd_max = effect.trigger()->effectN( 1 ).average( effect.item );
+    }
+  };
+
+  auto proc = create_proc_action<preternatural_charge_t>( "preternatural_charge", effect );
+  auto buff   = buff_t::find( effect.player, "preternatural_charge" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "preternatural_charge", effect.trigger() )->set_max_stack( effect.trigger()->max_stacks() + 1 );
+    buff->set_stack_change_callback( [ proc ]( buff_t* buff, int old, int cur ) {
+      if ( cur == buff->max_stack() )
+      {
+        proc->set_target( buff->player->target );
+        proc->execute();
+        make_event( buff->sim, [ buff ] { buff->expire(); } );
+      }
+    } );
+  }
+
+  effect.custom_buff  = buff;
+  effect.proc_flags2_ = PF2_CRIT;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // TODO: Add proc restrictions to match the weapons or expansion options.
 void cruciform_veinripper(special_effect_t& effect)
 {
@@ -2644,6 +2721,45 @@ void passablyforged_credentials( special_effect_t& effect )
 
   effect.custom_buff = buff;
   effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+/**Dark Ranger's Quiver
+    353513 driver, damage on effect 1
+    353514 trigger buff
+    353515 cleave damage at 5 stacks on up to 5 targets
+ */
+void dark_rangers_quiver( special_effect_t& effect )
+{
+  if ( effect.player->type != HUNTER )
+    return;
+
+  struct withering_fire_t : public proc_spell_t
+  {
+    withering_fire_t( const special_effect_t& effect ) : proc_spell_t( "withering_fire", effect.player, effect.player->find_spell( 353515 ), effect.item )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+      aoe = 5;
+    }
+  };
+
+  auto cleave = create_proc_action<withering_fire_t>( "withering_fire", effect );
+  auto buff = buff_t::find( effect.player, "withering_fire" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "withering_fire", effect.trigger() );
+    buff->set_stack_change_callback( [ cleave ]( buff_t* buff, int, int cur ) {
+      if ( cur == buff->max_stack() )
+      {
+        cleave->set_target( buff->player->target );
+        cleave->execute();
+        make_event( buff->sim, [ buff ] { buff->expire(); } );
+      }
+    } );
+  }
+
+  effect.custom_buff = buff;
+  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE;
   new dbc_proc_callback_t( effect.player, effect );
 }
 
@@ -3273,7 +3389,6 @@ void register_special_effects()
     unique_gear::register_special_effect( 357672, items::soul_cage_fragment );
     unique_gear::register_special_effect( 353692, items::tome_of_monstrous_constructions );
     unique_gear::register_special_effect( 352429, items::miniscule_mailemental_in_an_envelope );
-    unique_gear::register_special_effect( 355085, items::fine_razorwing_quill );
     unique_gear::register_special_effect( 355323, items::decanter_of_endless_howling );
     unique_gear::register_special_effect( 355324, items::tormentors_rack_fragment );
     unique_gear::register_special_effect( 355297, items::old_warriors_soul );
@@ -3283,6 +3398,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 355301, items::relic_of_the_frozen_wastes_equip );
     unique_gear::register_special_effect( 355303, items::relic_of_the_frozen_wastes_use );
     unique_gear::register_special_effect( 355321, items::shadowed_orb_of_torment );
+    unique_gear::register_special_effect( 351679, items::ticking_sack_of_terror );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
@@ -3291,10 +3407,12 @@ void register_special_effects()
     unique_gear::register_special_effect( 358567, items::jaithys_the_prison_blade_3 );
     unique_gear::register_special_effect( 358569, items::jaithys_the_prison_blade_4 );
     unique_gear::register_special_effect( 358571, items::jaithys_the_prison_blade_5 );
+    unique_gear::register_special_effect( 351527, items::yasahm_the_riftbreaker );
     unique_gear::register_special_effect( 357588, items::cruciform_veinripper);
 
     // Armor
     unique_gear::register_special_effect( 352081, items::passablyforged_credentials );
+    unique_gear::register_special_effect( 353513, items::dark_rangers_quiver );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
@@ -3390,6 +3508,19 @@ void register_target_data_initializers( sim_t& sim )
     }
     else
       td->debuff.frozen_heart = make_buff( *td, "frozen_heart" )->set_quiet( true );
+  } );
+
+  // Ticking Sack of Terror
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 351679 ) )
+    {
+      assert( !td->debuff.volatile_satchel );
+
+      td->debuff.volatile_satchel = make_buff<buff_t>( *td, "volatile_satchel", td->source->find_spell( 351682 ) );
+      td->debuff.volatile_satchel->reset();
+    }
+    else
+      td->debuff.volatile_satchel = make_buff( *td, "volatile_satchel" )->set_quiet( true );
   } );
 
   // Shard of Dyz (Scouring Touch debuff)

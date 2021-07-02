@@ -6597,16 +6597,20 @@ void warrior_t::apl_fury()
   default_apl_dps_precombat();
   action_priority_list_t* default_list  = get_action_priority_list( "default" );
   action_priority_list_t* movement      = get_action_priority_list( "movement" );
+  action_priority_list_t* aoe           = get_action_priority_list( "aoe" );
   action_priority_list_t* single_target = get_action_priority_list( "single_target" );
 
   default_list->add_action( "auto_attack" );
   default_list->add_action( this, "Charge" );
   default_list->add_action( "variable,name=execute_phase,value=talent.massacre&target.health.pct<35|target.health.pct<20|target.health.pct>80&covenant.venthyr" );
+  default_list->add_action( "variable,name=unique_legendaries,value=runeforge.signet_of_tormented_kings|runeforge.sinful_surge|runeforge.elysian_might" );
+
   default_list->add_action( "run_action_list,name=movement,if=movement.distance>5",
                             "This is mostly to prevent cooldowns from being accidentally used during movement." );
   default_list->add_action(
       this, "Heroic Leap",
       "if=(raid_event.movement.distance>25&raid_event.movement.in>45)" );
+
   default_list->add_action( "sequence,if=active_enemies=1&covenant.venthyr.enabled&runeforge.signet_of_tormented_kings.equipped,name=BT&Reck:bloodthirst:recklessness" );
   default_list->add_action( "sequence,if=active_enemies=1&!covenant.venthyr.enabled&runeforge.signet_of_tormented_kings.equipped,name=BT&Charge:bloodthirst:heroic_charge" );
 
@@ -6621,15 +6625,51 @@ void warrior_t::apl_fury()
 
   default_list->add_action( this, "Rampage", "if=cooldown.recklessness.remains<3&talent.reckless_abandon.enabled" );
 
-  default_list->add_action( this, "Recklessness", "if=!runeforge.signet_of_tormented_kings.equipped&gcd.remains=0&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)" );
-
+  default_list->add_action( this, "Recklessness", "if=runeforge.sinful_surge&gcd.remains=0&(variable.execute_phase|(target.time_to_pct_35>40&talent.anger_management|target.time_to_pct_35>70&!talent.anger_management))&(spell_targets.whirlwind=1|buff.meat_cleaver.up)" );
+  default_list->add_action( this, "Recklessness", "if=runeforge.elysian_might&gcd.remains=0&(cooldown.spear_of_bastion.remains<5|cooldown.spear_of_bastion.remains>20)&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)" );
+  default_list->add_action( this, "Recklessness", "if=!variable.unique_legendaries&gcd.remains=0&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)" );
   default_list->add_action( this, "Recklessness", "use_off_gcd=1,if=runeforge.signet_of_tormented_kings.equipped&gcd.remains&prev_gcd.1.rampage&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)" );
 
   default_list->add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1&!buff.meat_cleaver.up|raid_event.adds.in<gcd&!buff.meat_cleaver.up" );
 
   for ( size_t i = 0; i < items.size(); i++ )
   {
-    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( items[ i ].name_str == "inscrutable_quantum_device" )
+    {
+      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+                                ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<21|target.time_to_die>190|buff.bloodlust.up)" );
+    }
+    else if ( items[ i ].name_str == "wakeners_frond" )
+    {
+      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+                                ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<13|target.time_to_die>130)" );
+    }
+    else if ( items[ i ].name_str == "macabre_sheet_music" )
+    {
+      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+                                ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<25|target.time_to_die>110)" );
+    }
+    else if ( items[ i ].name_str == "overwhelming_power_crystal" )
+    {
+      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+                                ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<16|target.time_to_die>100)" );
+    }
+    else if ( items[ i ].name_str == "instructors_divine_bell" )
+    {
+      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+                                ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<10|target.time_to_die>95)" );
+    }
+    else if ( items[ i ].name_str == "flame_of_battle" )
+    {
+      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+                                ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<11|target.time_to_die>100)" );
+    }
+    else if ( items[ i ].name_str == "gladiators_badge" )
+    {
+      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+                                ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<11|target.time_to_die>65)" );
+    }
+    else if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
       if ( items[ i ].slot != SLOT_WAIST )
         default_list->add_action( "use_item,name=" + items[ i ].name_str );
@@ -6662,6 +6702,7 @@ void warrior_t::apl_fury()
     }
   }
 
+  default_list->add_action( "run_action_list,name=aoe" );
   default_list->add_action( "run_action_list,name=single_target" );
 
   movement->add_action( this, "Heroic Leap" );
@@ -6669,27 +6710,38 @@ void warrior_t::apl_fury()
   single_target->add_action( this, "Raging Blow", "if=runeforge.will_of_the_berserker.equipped&buff.will_of_the_berserker.remains<gcd" );
   single_target->add_action( this, spec.crushing_blow, "crushing_blow", "if=runeforge.will_of_the_berserker.equipped&buff.will_of_the_berserker.remains<gcd" );
   single_target->add_action( "cancel_buff,name=bladestorm,if=spell_targets.whirlwind=1&gcd.remains=0&(talent.massacre.enabled|covenant.venthyr.enabled)&variable.execute_phase&(rage>90|!cooldown.condemn.remains)" );
-  single_target->add_talent( this, "Bladestorm",  "if=buff.enrage.remains>gcd*2.5&spell_targets.whirlwind>1" );
-  single_target->add_action( this, covenant.condemn, "condemn", "if=buff.enrage.up&variable.execute_phase" );
+  single_target->add_action( this, covenant.condemn, "condemn", "if=(buff.enrage.up|buff.recklessness.up&runeforge.sinful_surge)&variable.execute_phase" );
   single_target->add_talent( this, "Siegebreaker", "if=spell_targets.whirlwind>1|raid_event.adds.in>15" );
   single_target->add_action( this, "Rampage", "if=buff.recklessness.up|(buff.enrage.remains<gcd|rage>90)|buff.frenzy.remains<1.5" );
   single_target->add_action( this, covenant.condemn, "condemn" );
-  single_target->add_action( this, covenant.ancient_aftershock, "ancient_aftershock", "if=buff.enrage.up&cooldown.recklessness.remains>5&(target.time_to_die>95|buff.recklessness.up|target.time_to_die<20)&(spell_targets.whirlwind>1|raid_event.adds.in>75)" );
-  single_target->add_action( this, covenant.spear_of_bastion, "spear_of_bastion", "if=buff.enrage.up&cooldown.recklessness.remains>5&(target.time_to_die>65|buff.recklessness.up|target.time_to_die<20)&(spell_targets.whirlwind>1|raid_event.adds.in>75)" );
+  single_target->add_action( this, covenant.ancient_aftershock, "ancient_aftershock", "if=buff.enrage.up&cooldown.recklessness.remains>5&(target.time_to_die>95|buff.recklessness.up|target.time_to_die<20)&raid_event.adds.in>75" );
   single_target->add_action( this, "Execute" );
-  single_target->add_talent( this, "Bladestorm",  "if=buff.enrage.up&(!buff.recklessness.remains|rage<50)&spell_targets.whirlwind=1&raid_event.adds.in>45" );
-  single_target->add_action( this, "Bloodthirst", "if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35&!talent.cruelty.enabled" );
+  single_target->add_action( this, covenant.spear_of_bastion, "spear_of_bastion", "if=runeforge.elysian_might&buff.enrage.up&cooldown.recklessness.remains>5&(buff.recklessness.up|target.time_to_die<20|debuff.siegebreaker.up|!talent.siegebreaker&target.time_to_die>68)&raid_event.adds.in>55" );
+  single_target->add_talent( this, "Bladestorm",  "if=buff.enrage.up&(!buff.recklessness.remains|rage<50)&(spell_targets.whirlwind=1&raid_event.adds.in>45|spell_targets.whirlwind=2)" );
+  single_target->add_action( this, covenant.spear_of_bastion, "spear_of_bastion", "if=buff.enrage.up&cooldown.recklessness.remains>5&(buff.recklessness.up|target.time_to_die<20|debuff.siegebreaker.up|!talent.siegebreaker&target.time_to_die>68)&raid_event.adds.in>55" );
+  single_target->add_action( this, "Bloodthirst", "if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35" );
   single_target->add_action( this, spec.bloodbath, "bloodbath", "if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35&!talent.cruelty.enabled" );
   single_target->add_talent( this, "Dragon Roar", "if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
-  single_target->add_action( this, "Whirlwind", "if=buff.merciless_bonegrinder.up&spell_targets.whirlwind>3" );
   single_target->add_talent( this, "Onslaught" );
+  single_target->add_action( this, "Whirlwind", "if=buff.merciless_bonegrinder.up&spell_targets.whirlwind>3" );
   single_target->add_action( this, "Raging Blow", "if=charges=2|buff.recklessness.up&variable.execute_phase&talent.massacre.enabled" );
-  single_target->add_action( this, spec.crushing_blow, "crushing_blow", "if=charges=2" );
+  single_target->add_action( this, spec.crushing_blow, "crushing_blow", "if=charges=2|buff.recklessness.up&variable.execute_phase&talent.massacre.enabled" );
   single_target->add_action( this, "Bloodthirst" );
   single_target->add_action( this, spec.bloodbath, "bloodbath" );
   single_target->add_action( this, "Raging Blow" );
   single_target->add_action( this, spec.crushing_blow, "crushing_blow" );
   single_target->add_action( this, "Whirlwind" );
+
+  aoe->add_action( "cancel_buff,name=bladestorm,if=spell_targets.whirlwind>1&gcd.remains=0&soulbind.first_strike&buff.first_strike.remains&buff.enrage.remains<gcd" );
+  aoe->add_action( this, covenant.ancient_aftershock, "ancient_aftershock", "if=buff.enrage.up&cooldown.recklessness.remains>5&spell_targets.whirlwind>1" );
+  aoe->add_action( this, covenant.spear_of_bastion, "spear_of_bastion", "if=buff.enrage.up&rage<40&spell_targets.whirlwind>1" );
+  aoe->add_talent( this, "Bladestorm",  "if=buff.enrage.up&spell_targets.whirlwind>2" );
+  aoe->add_action( this, covenant.condemn, "condemn", "if=spell_targets.whirlwind>1&(buff.enrage.up|buff.recklessness.up&runeforge.sinful_surge)&variable.execute_phase" );
+  aoe->add_talent( this, "Siegebreaker",  "if=spell_targets.whirlwind>1" );
+  aoe->add_action( this, "Rampage",  "if=spell_targets.whirlwind>1" );
+  aoe->add_action( this, covenant.spear_of_bastion, "spear_of_bastion", "if=buff.enrage.up&cooldown.recklessness.remains>5&spell_targets.whirlwind>1" );
+  aoe->add_talent( this, "Bladestorm",  "if=buff.enrage.remains>gcd*2.5&spell_targets.whirlwind>1" );
+
 }
 
 // Arms Warrior Action Priority List ========================================
@@ -6710,7 +6762,7 @@ void warrior_t::apl_arms()
 
   if ( sim->allow_potions && true_level >= 40 )
   {
-    default_list->add_action( "potion" );
+    default_list->add_action( "potion,if=gcd.remains=0&debuff.colossus_smash.remains>8|target.time_to_die<25" );
   }
 
   default_list->add_action( this, "Pummel", "if=target.debuff.casting.react" );
@@ -6760,22 +6812,24 @@ void warrior_t::apl_arms()
 
 
   execute->add_talent( this, "Deadly Calm" );
-//  execute->add_talent( this, "Rend", "if=remains<=duration*0.3" );
-  execute->add_action( "cancel_buff,name=bladestorm,if=spell_targets.whirlwind=1&gcd.remains=0&(rage>75|rage>50&buff.recklessness.up)" );
-  execute->add_talent( this, "Avatar", "if=cooldown.colossus_smash.remains<8&gcd.remains=0" );
-  execute->add_talent( this, "Skullsplitter", "if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)" );
-  execute->add_talent( this, "Ravager" );
   execute->add_action( this, covenant.conquerors_banner, "conquerors_banner" );
-  execute->add_talent( this, "Cleave", "if=spell_targets.whirlwind>1&dot.deep_wounds.remains<gcd" );
+  execute->add_action( "cancel_buff,name=bladestorm,if=spell_targets.whirlwind=1&gcd.remains=0&(rage>75|rage>50&buff.recklessness.up)" );
+  execute->add_talent( this, "Avatar", "if=gcd.remains=0|target.time_to_die<20" );
+  execute->add_action( this, covenant.condemn, "condemn", "if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd&conduit.ashen_juggernaut.rank>1" );
+  execute->add_action( this, "Execute", "if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd&conduit.ashen_juggernaut.rank>1" );
+  execute->add_talent( this, "Ravager" );
+  execute->add_talent( this, "Rend", "if=remains<=gcd&(!talent.warbreaker.enabled&cooldown.colossus_smash.remains<4|talent.warbreaker.enabled&cooldown.warbreaker.remains<4)&target.time_to_die>12" );
   execute->add_talent( this, "Warbreaker" );
   execute->add_action( this, "Colossus Smash" );
-  execute->add_action( this, covenant.condemn, "condemn", "if=debuff.colossus_smash.up|buff.sudden_death.react|rage>65" );
-  execute->add_action( this, "Overpower", "if=charges=2" );
-  execute->add_action( this, "Mortal Strike", "if=runeforge.enduring_blow|dot.deep_wounds.remains<=gcd|((debuff.exploiter.stack=2|buff.battlelord.up)&!covenant.venthyr)" );
-  execute->add_action( this, covenant.ancient_aftershock, "ancient_aftershock" );
+  execute->add_action( this, covenant.ancient_aftershock, "ancient_aftershock", ",if=debuff.colossus_smash.up" );
   execute->add_action( this, covenant.spear_of_bastion, "spear_of_bastion" );
-  execute->add_action( this, "Bladestorm", "if=buff.deadly_calm.down&rage<50" );
-  execute->add_talent( this, "Skullsplitter", "if=rage<40" );
+  execute->add_action( this, covenant.condemn, "condemn", "if=runeforge.signet_of_tormented_kings&(rage.deficit<25|debuff.colossus_smash.up&rage>40|buff.sudden_death.react|buff.deadly_calm.up)" );
+  execute->add_action( this, "Overpower", "if=charges=2" );
+  execute->add_talent( this, "Cleave", "if=spell_targets.whirlwind>1&dot.deep_wounds.remains<gcd" );
+  execute->add_action( this, "Mortal Strike", "if=dot.deep_wounds.remains<=gcd|runeforge.enduring_blow|buff.overpower.stack=2&debuff.exploiter.stack=2|buff.battlelord.up" );
+  execute->add_action( this, covenant.condemn, "condemn", "if=rage.deficit<25|buff.deadly_calm.up" );
+  execute->add_talent( this, "Skullsplitter", "if=rage<45" );
+  execute->add_action( this, "Bladestorm", "if=buff.deadly_calm.down&(rage<20|!runeforge.sinful_surge&rage<50)" );
   execute->add_action( this, "Overpower" );
   execute->add_action( this, covenant.condemn, "condemn" );
   execute->add_action( this, "Execute" );
@@ -6803,27 +6857,27 @@ void warrior_t::apl_arms()
 
 
 
-  single_target->add_action( this, covenant.conquerors_banner, "conquerors_banner", "if=target.time_to_die>120" );
-  single_target->add_talent( this, "Rend", "if=remains<=duration*0.3" );
-  single_target->add_talent( this, "Avatar", "if=cooldown.colossus_smash.remains<8&gcd.remains=0" );
-  single_target->add_talent( this, "Cleave", "if=spell_targets.whirlwind>1&dot.deep_wounds.remains<gcd" );
+  single_target->add_talent( this, "Rend", "if=remains<=gcd" );
+  single_target->add_action( this, covenant.conquerors_banner, "conquerors_banner", "if=target.time_to_die>140" );
+  single_target->add_talent( this, "Avatar", "if=gcd.remains=0" );
   single_target->add_talent( this, "Ravager" );
   single_target->add_talent( this, "Warbreaker" );
   single_target->add_action( this, "Colossus Smash" );
-  single_target->add_action( this, covenant.ancient_aftershock, "ancient_aftershock" );
+  single_target->add_action( this, covenant.ancient_aftershock, "ancient_aftershock", "if=debuff.colossus_smash.up" );
   single_target->add_action( this, covenant.spear_of_bastion, "spear_of_bastion" );
   single_target->add_action( this, "Overpower", "if=charges=2" );
-  single_target->add_action( this, "Mortal Strike", "if=runeforge.enduring_blow|buff.overpower.stack>=2|"
-                                   "(dot.deep_wounds.remains<=gcd&cooldown.colossus_smash.remains>gcd)" );
-  single_target->add_action( this, "Bladestorm", "if=buff.deadly_calm.down&(debuff.colossus_smash.up&rage<30|rage<50)" );
-  single_target->add_talent( this, "Deadly Calm" );
-  single_target->add_talent( this, "Skullsplitter", "if=rage<60&buff.deadly_calm.down" );
-  single_target->add_action( this, "Overpower" );
+  single_target->add_action( this, "Mortal Strike", "if=runeforge.enduring_blow|runeforge.battlelord|buff.overpower.stack>=2" );
   single_target->add_action( this, covenant.condemn, "condemn", "if=buff.sudden_death.react" );
   single_target->add_action( this, "Execute", "if=buff.sudden_death.react" );
+  single_target->add_talent( this, "Skullsplitter", "if=rage.deficit>45&buff.deadly_calm.down" );
+  single_target->add_action( this, "Bladestorm", "if=buff.deadly_calm.down&rage<30" );
+  single_target->add_talent( this, "Deadly Calm" );
+  single_target->add_action( this, "Overpower" );
   single_target->add_action( this, "Mortal Strike" );
-  single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled" );
-  single_target->add_action( this, "Slam", "if=!talent.fervor_of_battle.enabled&(rage>50|runeforge.signet_of_tormented_kings)" );
+  single_target->add_talent( this, "Rend", "if=remains<duration*0.3" );
+  single_target->add_talent( this, "Cleave", "if=spell_targets.whirlwind>1" );
+  single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled|spell_targets.whirlwind>4|spell_targets.whirlwind>2&buff.sweeping_strikes.down" );
+  single_target->add_action( this, "Slam", "if=!talent.fervor_of_battle.enabled&(rage>50|debuff.colossus_smash.up|!runeforge.enduring_blow)" );
 }
 
 // Protection Warrior Action Priority List ========================================
