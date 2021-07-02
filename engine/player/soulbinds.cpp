@@ -2487,15 +2487,23 @@ void register_special_effects()
   unique_gear::register_special_effect( 344052, soulbinds::deepening_bond );  // Night Fae Rank 1
   unique_gear::register_special_effect( 344053, soulbinds::deepening_bond );  // Night Fae Rank 2
   unique_gear::register_special_effect( 344057, soulbinds::deepening_bond );  // Night Fae Rank 3
+  unique_gear::register_special_effect( 353870, soulbinds::deepening_bond );  // Night Fae Rank 4
+  unique_gear::register_special_effect( 353886, soulbinds::deepening_bond );  // Night Fae Rank 5
   unique_gear::register_special_effect( 344068, soulbinds::deepening_bond );  // Venthyr Rank 1
   unique_gear::register_special_effect( 344069, soulbinds::deepening_bond );  // Venthyr Rank 2
   unique_gear::register_special_effect( 344070, soulbinds::deepening_bond );  // Venthyr Rank 3
+  unique_gear::register_special_effect( 354195, soulbinds::deepening_bond );  // Venthyr Rank 4
+  unique_gear::register_special_effect( 354204, soulbinds::deepening_bond );  // Venthyr Rank 5
   unique_gear::register_special_effect( 344076, soulbinds::deepening_bond );  // Necrolord Rank 1
   unique_gear::register_special_effect( 344077, soulbinds::deepening_bond );  // Necrolord Rank 2
   unique_gear::register_special_effect( 344078, soulbinds::deepening_bond );  // Necrolord Rank 3
+  unique_gear::register_special_effect( 354025, soulbinds::deepening_bond );  // Necrolord Rank 4
+  unique_gear::register_special_effect( 354129, soulbinds::deepening_bond );  // Necrolord Rank 5
   unique_gear::register_special_effect( 344087, soulbinds::deepening_bond );  // Kyrian Rank 1
   unique_gear::register_special_effect( 344089, soulbinds::deepening_bond );  // Kyrian Rank 2
   unique_gear::register_special_effect( 344091, soulbinds::deepening_bond );  // Kyrian Rank 3
+  unique_gear::register_special_effect( 354252, soulbinds::deepening_bond );  // Kyrian Rank 4
+  unique_gear::register_special_effect( 354257, soulbinds::deepening_bond );  // Kyrian Rank 5
 }
 
 action_t* create_action( player_t* player, util::string_view name, const std::string& options )
