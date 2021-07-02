@@ -38,7 +38,7 @@ talents=1010122
 renown=80
 
 covenant=night_fae
-soulbind=niya,grove_invigoration/dissonant_echoes:9:1/haunting_apparitions:9:1/rabid_shadows:9:1/niyas_tools_poison/bonded_hearts
+soulbind=dreamweaver,podtender/field_of_blossoms/dissonant_echoes:9:1/haunting_apparitions:9:1/rabid_shadows:9:1/dream_delver
 
 # 187318/187076/187079
 # 187312/187315
@@ -56,7 +56,7 @@ feet=sandals_of_sacred_symmetry,id=186354,bonus_id=7187/1498
 finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498,gem_id=173130,enchant=tenet_of_mastery
 finger2=death_gods_signet,id=179355,bonus_id=6536/1566/6646,gem_id=173130,enchant=tenet_of_mastery
 trinket1=soulletting_ruby,id=178809,bonus_id=6536/1566/6646
-trinket2=forbidden_necromantic_tome,id=186421,bonus_id=7187/1498
+trinket2=tome_of_insight,id=186156,bonus_id=7697/6652/1505/6646
 main_hand=maledict_opus,id=186406,bonus_id=7187/1498,enchant=sinful_revelation
 
 save=T27_Priest_Shadow.simc
@@ -86,7 +86,7 @@ feet=sandals_of_sacred_symmetry,id=186354,bonus_id=7187/1498
 finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498,gem_id=173130,enchant=tenet_of_mastery
 finger2=death_gods_signet,id=179355,bonus_id=6536/1566/6646,gem_id=173130,enchant=tenet_of_mastery
 trinket1=soulletting_ruby,id=178809,bonus_id=6536/1566/6646
-trinket2=forbidden_necromantic_tome,id=186421,bonus_id=7187/1498
+trinket2=tome_of_insight,id=186156,bonus_id=7697/6652/1505/6646
 main_hand=maledict_opus,id=186406,bonus_id=7187/1498,enchant=sinful_revelation
 
 save=T27_Priest_Shadow_Kyrian.simc
@@ -115,7 +115,7 @@ feet=grimveiled_sandals,id=173243,bonus_id=6648/6649/7729/1559
 finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498,gem_id=173130,enchant=tenet_of_mastery
 finger2=death_gods_signet,id=179355,bonus_id=6536/1566/6646,gem_id=173130,enchant=tenet_of_mastery
 trinket1=soulletting_ruby,id=178809,bonus_id=6536/1566/6646
-trinket2=forbidden_necromantic_tome,id=186421,bonus_id=7187/1498
+trinket2=tome_of_insight,id=186156,bonus_id=7697/6652/1505/6646
 main_hand=maledict_opus,id=186406,bonus_id=7187/1498,enchant=sinful_revelation
 
 save=T27_Priest_Shadow_Necrolord.simc
@@ -146,7 +146,7 @@ feet=sandals_of_sacred_symmetry,id=186354,bonus_id=7187/1498
 finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498,gem_id=173130,enchant=tenet_of_mastery
 finger2=death_gods_signet,id=179355,bonus_id=6536/1566/6646,gem_id=173130,enchant=tenet_of_mastery
 trinket1=soulletting_ruby,id=178809,bonus_id=6536/1566/6646
-trinket2=forbidden_necromantic_tome,id=186421,bonus_id=7187/1498
+trinket2=tome_of_insight,id=186156,bonus_id=7697/6652/1505/6646
 main_hand=maledict_opus,id=186406,bonus_id=7187/1498,enchant=sinful_revelation
 
 save=T27_Priest_Shadow_Venthyr.simc
