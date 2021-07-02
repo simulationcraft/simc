@@ -8934,6 +8934,8 @@ void shaman_t::init_action_list_elemental()
                                "if=runeforge.elemental_equilibrium.equipped&!buff.elemental_equilibrium_debuff.up&!"
                                "talent.elemental_blast.enabled&!talent.echoing_shock.enabled" );
     single_target->add_action( "chain_harvest" );
+    single_target->add_action( this, "Frost Shock",
+                               "if=talent.icefury.enabled&buff.icefury.up" );	
     single_target->add_talent( this, "Static Discharge", "if=talent.static_discharge.enabled" );
     single_target->add_action( this, "Earth Elemental",
                                "if=!talent.primal_elementalist.enabled|!pet.fire_elemental.active" );
@@ -9103,6 +9105,7 @@ void shaman_t::init_action_list_enhancement()
   precombat->add_action( this, "Lightning Shield" );
   precombat->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
   precombat->add_action( this, "Windfury Totem", "if=!runeforge.doom_winds.equipped" );
+  precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" ); 
 
   // Precombat potion
   precombat->add_action( "potion" );
@@ -9159,6 +9162,7 @@ void shaman_t::init_action_list_enhancement()
   single->add_action(this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack=10");
   single->add_action(this, "Stormstrike");
   single->add_talent(this, "Stormkeeper", "if=buff.maelstrom_weapon.stack>=5");
+  single->add_action("fleshcraft,interrupt=1,if=soulbind.volatile_solvent");
   single->add_action(this, "Lava Lash");
   single->add_action(this, "Crash Lightning");
   single->add_action(this, "Flame Shock", "target_if=refreshable");
@@ -9167,6 +9171,7 @@ void shaman_t::init_action_list_enhancement()
   single->add_talent(this, "Sundering", "if=raid_event.adds.in>=40");
   single->add_talent(this, "Fire Nova", "if=active_dot.flame_shock");
   single->add_action(this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack>=5");
+  single->add_action("fleshcraft,if=soulbind.pustule_eruption");
   single->add_action(this, "Earth Elemental");
   single->add_action(this, "Windfury Totem", "if=buff.windfury_totem.remains<30");
 
@@ -9193,6 +9198,7 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_action("windstrike");
   aoe->add_action(this, "Stormstrike");
   aoe->add_action(this, "Lava Lash");
+  aoe->add_action("fleshcraft,interrupt=1,if=soulbind.volatile_solvent");
   aoe->add_action(this, "Flame Shock", "target_if=refreshable,cycle_targets=1");
   aoe->add_action("fae_transfusion");
   aoe->add_action(this, "Frost Shock");

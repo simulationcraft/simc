@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 9.0.5.38134
-static const std::array<specialization_spell_entry_t, 927> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 9.1.0.39282
+static const std::array<specialization_spell_entry_t, 929> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -148,6 +148,7 @@ static const std::array<specialization_spell_entry_t, 927> __specialization_spel
   {  2,   66, 342348,      0, "Crusader Strike"                   , "Rank 2" },
   {  2,   66, 344172,      0, "Consecration"                      , "Rank 2" },
   {  2,   66, 353367,      0, "Aegis of Light"                    , 0 },
+  {  2,   66, 358934,      0, "Aegis of Light"                    , "Rank 2" },
   {  2,   70,  53385,      0, "Divine Storm"                      , 0 },
   {  2,   70,  85256,      0, "Templar's Verdict"                 , 0 },
   {  2,   70,  86539,      0, "Plate Specialization"              , 0 },
@@ -601,7 +602,6 @@ static const std::array<specialization_spell_entry_t, 927> __specialization_spel
   {  8,   64, 343183,      0, "Frost Nova"                        , "Rank 2" },
   {  9,  265,    980,      0, "Agony"                             , 0 },
   {  9,  265,  27243,      0, "Seed of Corruption"                , 0 },
-  {  9,  265,  32388,      0, "Shadow Embrace"                    , 0 },
   {  9,  265,  77215,      0, "Mastery: Potent Afflictions"       , 0 },
   {  9,  265, 137043,      0, "Affliction Warlock"                , 0 },
   {  9,  265, 162699,      0, "Stat Negation Aura - Intellect DPS", 0 },
@@ -612,6 +612,7 @@ static const std::array<specialization_spell_entry_t, 927> __specialization_spel
   {  9,  265, 316099,      0, "Unstable Affliction"               , 0 },
   {  9,  265, 317031,      0, "Corruption"                        , "Rank 2" },
   {  9,  265, 324536,      0, "Malefic Rapture"                   , 0 },
+  {  9,  265, 334183,      0, "Summon Darkglare"                  , "Rank 2" },
   {  9,  265, 334315,      0, "Unstable Affliction"               , "Rank 3" },
   {  9,  265, 334342,      0, "Corruption"                        , "Rank 3" },
   {  9,  266,  30146,      0, "Summon Felguard"                   , 0 },
@@ -708,6 +709,7 @@ static const std::array<specialization_spell_entry_t, 927> __specialization_spel
   { 10,  270, 343655,      0, "Enveloping Breath"                 , 0 },
   { 10,  270, 343744,      0, "Life Coccoon"                      , "Rank 2" },
   { 10,  270, 344360,      0, "Touch of Death"                    , "Rank 3" },
+  { 10,  270, 356722,      0, "Revival"                           , "Rank 2" },
   { 10,  269, 101545,      0, "Flying Serpent Kick"               , 0 },
   { 10,  269, 107428,      0, "Rising Sun Kick"                   , 0 },
   { 10,  269, 113656,      0, "Fists of Fury"                     , 0 },

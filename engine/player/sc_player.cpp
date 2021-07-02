@@ -6000,6 +6000,9 @@ bool player_t::resource_available( resource_e resource_type, double cost ) const
 
 void player_t::recalculate_resource_max( resource_e resource_type, gain_t* source )
 {
+  double old_amount = resources.current[ resource_type ];
+  double old_max    = resources.max[ resource_type ];
+
   resources.max[ resource_type ] = resources.base[ resource_type ];
   resources.max[ resource_type ] *= resources.base_multiplier[ resource_type ];
   resources.max[ resource_type ] += total_gear.resource[ resource_type ];
@@ -6030,6 +6033,10 @@ void player_t::recalculate_resource_max( resource_e resource_type, gain_t* sourc
     source->add( resource_type, 0, resources.current[ resource_type ] - resources.max[ resource_type ] );
   }
   resources.current[ resource_type ] = std::min( resources.current[ resource_type ], resources.max[ resource_type ] );
+
+  sim->print_debug( "Recalculated maximum {} for {}: old={:.2f}/{:.2f}, new={:.2f}/{:.2f}",
+                    util::resource_type_string( resource_type ), name(), old_amount, old_max,
+                    resources.current[ resource_type ], resources.max[ resource_type ] );
 }
 
 role_e player_t::primary_role() const

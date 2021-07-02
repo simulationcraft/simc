@@ -1066,6 +1066,7 @@ public:
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_pet_damage_multiplier( const action_state_t* /* state */, bool /* guardian */ ) const override;
+  double    composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
   double    composite_crit_avoidance() const override;
   void      combat_begin() override;
   void      activate() override;
@@ -1638,46 +1639,6 @@ struct death_knight_pet_t : public pet_t
     // 2021-01-29: The bdk aura is currently set to 0,
     // Keep an eye on this in case blizz changes the value as double dipping may happen (both ingame and here)
     dk() -> apply_affecting_auras( action );
-  }
-
-  double composite_player_target_multiplier( player_t* target, school_e school ) const override
-  {
-    double m = pet_t::composite_player_target_multiplier( target, school );
-
-    if ( auto td = dk() -> find_target_data( target ) )
-    {
-      m *= 1.0 + td -> debuff.unholy_blight -> stack_value();
-    }
-
-    return m;
-  }
-
-  double composite_melee_haste() const override
-  {
-    double haste = pet_t::composite_melee_haste();
-
-    // 2020-11-14: Phearomones is double dipping for pets as they're affected by both the aura
-    // and the player's own haste buff, inherited by the pet
-    if ( dk() -> legendary.phearomones -> ok() && dk() -> bugs && !dk() -> dbc -> ptr )
-    {
-      haste *= 1.0 / ( 1.0 + dk() -> buffs.death_turf -> check_value() );
-    }
-
-    return haste;
-  }
-
-  double composite_spell_haste() const override
-  {
-    double haste = pet_t::composite_spell_haste();
-
-    // 2020-11-14: Phearomones is double dipping for pets as they're affected by both the aura
-    // and the player's own haste buff, inherited by the pet
-    if ( dk() -> legendary.phearomones -> ok() && dk() -> bugs && !dk() -> dbc -> ptr )
-    {
-      haste *= 1.0 / ( 1.0 + dk() -> buffs.death_turf -> check_value() );
-    }
-
-    return haste;
   }
 
   // Standard Death Knight pet actions
@@ -2922,11 +2883,11 @@ struct death_knight_action_t : public Base
     return base_gcd;
   }
 
-  void execute() override
+  void impact( action_state_t * state ) override
   {
-    action_base_t::execute();
+    action_base_t::impact( state );
     // If we spend a rune, we have a chance to spread the dot
-    dot_t* source_dot = get_td( action_t::target ) -> dot.shackle_the_unworthy;
+    dot_t* source_dot = get_td( state -> target ) -> dot.shackle_the_unworthy;
     if ( p() -> covenant.shackle_the_unworthy -> ok() && this->triggers_shackle_the_unworthy &&
          source_dot -> is_ticking() && p() -> cooldown.shackle_the_unworthy_icd -> is_ready() &&
         p() -> rng().roll( p() -> covenant.shackle_the_unworthy -> effectN( 5 ).percent() ) )
@@ -2939,7 +2900,7 @@ struct death_knight_action_t : public Base
         }
 
         action_t::sim -> print_log("{} spreads shackle the unworthy with {} from {} to {} (remains={} )",
-                *action_t::player, *this, *action_t::target, *destination, source_dot->remains() );
+                *action_t::player, *this, state -> target->name(), *destination, source_dot->remains() );
 
         source_dot->copy(destination, DOT_COPY_CLONE);
         if ( p() -> legendary.final_sentence.ok() )
@@ -7435,7 +7396,7 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
   }
 
   // 2021-Jun-21 Currently on PTR on mob death you only get the benefit of a single stack, even though you really should be getting for each stack
-  if ( dbc -> ptr && conduits.convocation_of_the_dead.ok() )
+  if ( conduits.convocation_of_the_dead.ok() )
   {
     cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
       conduits.convocation_of_the_dead.value() / 10 ) );
@@ -9146,6 +9107,18 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
   m *= 1.0 + spec.blood_death_knight -> effectN( 14 ).percent();
   m *= 1.0 + spec.frost_death_knight -> effectN( 3 ).percent();
   m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
+
+  return m;
+}
+
+double death_knight_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
+{
+  double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
+
+  const death_knight_td_t* td = get_target_data( target );
+
+  if ( td )
+    m *= 1.0 + td -> debuff.unholy_blight -> stack_value();
 
   return m;
 }

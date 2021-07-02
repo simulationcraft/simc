@@ -1248,9 +1248,6 @@ void warlock_t::create_apl_demonology()
   cov->add_action( "soul_rot,if=soulbind.grove_invigoration&(cooldown.summon_demonic_tyrant.remains_expected<20|cooldown.summon_demonic_tyrant.remains_expected>30)" );
   cov->add_action( "soul_rot,if=soulbind.field_of_blossoms&pet.demonic_tyrant.active" );
   cov->add_action( "soul_rot,if=soulbind.wild_hunt_tactics" );
-  //TODO: check when emeni's magnificent skin is fixed in simc
-  //cov->add_action("fleshcraft,if=soulbind.lead_by_example&cooldown.summon_demonic_tyrant.remains_expected<20");
-  //cov->add_action("cancel_action,if=action.fleshcraft.channeling");
   cov->add_action( "decimating_bolt,if=soulbind.lead_by_example&(pet.demonic_tyrant.active&soul_shard<2|cooldown.summon_demonic_tyrant.remains_expected>40)" );
   cov->add_action( "decimating_bolt,if=!soulbind.lead_by_example&!pet.demonic_tyrant.active" );
   cov->add_action( "scouring_tithe,if=soulbind.combat_meditation&pet.demonic_tyrant.active" );
@@ -1268,12 +1265,13 @@ void warlock_t::create_apl_demonology()
   ogcd->add_action( "fireblood" );
   ogcd->add_action( "use_items" );
 
+  trinks->add_action( "use_item,name=shadowed_orb_of_torment,if=cooldown.summon_demonic_tyrant.remains_expected<15" );
   trinks->add_action( "call_action_list,name=hp_trinks,if=talent.demonic_consumption.enabled&cooldown.summon_demonic_tyrant.remains_expected<20" );
   trinks->add_action( "call_action_list,name=5y_per_sec_trinkets", "Effects that travel slowly to target require additional, separate handling" );
   trinks->add_action( "use_item,name=overflowing_anima_cage,if=pet.demonic_tyrant.active" );
   trinks->add_action( "use_item,slot=trinket1,if=trinket.1.has_use_buff&pet.demonic_tyrant.active" );
   trinks->add_action( "use_item,slot=trinket2,if=trinket.2.has_use_buff&pet.demonic_tyrant.active" );
-  trinks->add_action( "call_action_list,name=pure_damage_trinks,if=time>variable.first_tyrant_time" );
+  trinks->add_action( "call_action_list,name=pure_damage_trinks,if=time>variable.first_tyrant_time&cooldown.summon_demonic_tyrant.remains_expected>20" );
 
   five_y->add_action( "use_item,name=soulletting_ruby,if=cooldown.summon_demonic_tyrant.remains_expected<target.distance%5&time>variable.first_tyrant_time-(target.distance%5)" );
   five_y->add_action( "use_item,name=sunblood_amethyst,if=cooldown.summon_demonic_tyrant.remains_expected<target.distance%5&time>variable.first_tyrant_time-(target.distance%5)" );
@@ -1286,5 +1284,7 @@ void warlock_t::create_apl_demonology()
   dmg->add_action( "use_item,name=soul_igniter" );
   dmg->add_action( "use_item,name=glyph_of_assimilation,if=active_enemies=1" );
   dmg->add_action( "use_item,name=darkmoon_deck_putrescence" );
+  dmg->add_action( "use_item,name=ebonsoul_vise" );
+  dmg->add_action( "use_item,name=unchained_gladiators_shackles" );
 }
 }  // namespace warlock

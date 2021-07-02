@@ -27,7 +27,10 @@ actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/summon_pet
+actions.precombat+=/use_item,name=tome_of_monstrous_constructions
+actions.precombat+=/use_item,name=soleahs_secret_technique
 actions.precombat+=/snapshot_stats
+actions.precombat+=/fleshcraft
 actions.precombat+=/demonbolt
 actions.precombat+=/variable,name=first_tyrant_time,op=set,value=12
 
@@ -97,14 +100,17 @@ actions.pure_damage_trinks=use_item,name=dreadfire_vessel
 actions.pure_damage_trinks+=/use_item,name=soul_igniter
 actions.pure_damage_trinks+=/use_item,name=glyph_of_assimilation,if=active_enemies=1
 actions.pure_damage_trinks+=/use_item,name=darkmoon_deck_putrescence
+actions.pure_damage_trinks+=/use_item,name=ebonsoul_vise
+actions.pure_damage_trinks+=/use_item,name=unchained_gladiators_shackles
 
-actions.trinkets=call_action_list,name=hp_trinks,if=talent.demonic_consumption.enabled&cooldown.summon_demonic_tyrant.remains_expected<20
+actions.trinkets=use_item,name=shadowed_orb_of_torment,if=cooldown.summon_demonic_tyrant.remains_expected<15
+actions.trinkets+=/call_action_list,name=hp_trinks,if=talent.demonic_consumption.enabled&cooldown.summon_demonic_tyrant.remains_expected<20
 # Effects that travel slowly to target require additional, separate handling
 actions.trinkets+=/call_action_list,name=5y_per_sec_trinkets
 actions.trinkets+=/use_item,name=overflowing_anima_cage,if=pet.demonic_tyrant.active
 actions.trinkets+=/use_item,slot=trinket1,if=trinket.1.has_use_buff&pet.demonic_tyrant.active
 actions.trinkets+=/use_item,slot=trinket2,if=trinket.2.has_use_buff&pet.demonic_tyrant.active
-actions.trinkets+=/call_action_list,name=pure_damage_trinks,if=time>variable.first_tyrant_time
+actions.trinkets+=/call_action_list,name=pure_damage_trinks,if=time>variable.first_tyrant_time&cooldown.summon_demonic_tyrant.remains_expected>20
 
 actions.tyrant_setup=nether_portal,if=cooldown.summon_demonic_tyrant.remains_expected<15
 actions.tyrant_setup+=/grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains_expected<17-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&(cooldown.call_dreadstalkers.remains<17-(action.summon_demonic_tyrant.execute_time+action.summon_vilefiend.execute_time+action.shadow_bolt.execute_time)|pet.dreadstalker.remains>cooldown.summon_demonic_tyrant.remains_expected+action.summon_demonic_tyrant.execute_time)

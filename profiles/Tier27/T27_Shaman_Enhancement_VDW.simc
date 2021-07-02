@@ -32,6 +32,7 @@ actions.precombat+=/flametongue_weapon
 actions.precombat+=/lightning_shield
 actions.precombat+=/stormkeeper,if=talent.stormkeeper.enabled
 actions.precombat+=/windfury_totem,if=!runeforge.doom_winds.equipped
+actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent
 actions.precombat+=/potion
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -83,6 +84,7 @@ actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack=10
 actions.aoe+=/windstrike
 actions.aoe+=/stormstrike
 actions.aoe+=/lava_lash
+actions.aoe+=/fleshcraft,interrupt=1,if=soulbind.volatile_solvent
 actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1
 actions.aoe+=/fae_transfusion
 actions.aoe+=/frost_shock
@@ -112,6 +114,7 @@ actions.single+=/chain_harvest,if=buff.maelstrom_weapon.stack>=5&raid_event.adds
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack=10
 actions.single+=/stormstrike
 actions.single+=/stormkeeper,if=buff.maelstrom_weapon.stack>=5
+actions.single+=/fleshcraft,interrupt=1,if=soulbind.volatile_solvent
 actions.single+=/lava_lash
 actions.single+=/crash_lightning
 actions.single+=/flame_shock,target_if=refreshable
@@ -120,33 +123,34 @@ actions.single+=/ice_strike
 actions.single+=/sundering,if=raid_event.adds.in>=40
 actions.single+=/fire_nova,if=active_dot.flame_shock
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
+actions.single+=/fleshcraft,if=soulbind.pustule_eruption
 actions.single+=/earth_elemental
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
 head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187073/173128
-neck=weathered_talisman_of_the_shadowmoon,id=186378,bonus_id=7187/1498,gem_id=173128
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498,gem_id=173128
 shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187076,enchant=27runspeed
 back=grimveiled_cape,id=173242,bonus_id=6716/6993/6647/6649/1559
 chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,gem_id=187079,enchant=eternal_skirmish
 wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498,gem_id=173128
 hands=demigaunts_of_predestination,id=186345,bonus_id=7187/1498
 waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187057/173128
-legs=hyperdense_greaves,id=186344,bonus_id=7187/1498
+legs=aradnes_lancer_legguards,id=186307,bonus_id=7187/1498
 feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187063,enchant=eternal_agility
 finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
 trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
-main_hand=dormazains_tenderizer,id=186387,bonus_id=7187/1498,enchant=sinful_revelation
-off_hand=dormazains_tenderizer,id=186387,bonus_id=7187/1498,enchant=celestial_guidance
+main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=sinful_revelation
+off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
 
 # Gear Summary
-# gear_ilvl=254.38
+# gear_ilvl=254.81
 # gear_agility=1095
-# gear_stamina=2069
-# gear_crit_rating=667
-# gear_haste_rating=854
-# gear_mastery_rating=234
-# gear_versatility_rating=473
+# gear_stamina=2079
+# gear_crit_rating=471
+# gear_haste_rating=1051
+# gear_mastery_rating=133
+# gear_versatility_rating=423
 # gear_speed_rating=27
 # gear_armor=1025

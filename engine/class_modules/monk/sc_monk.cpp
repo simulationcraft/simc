@@ -260,8 +260,9 @@ public:
       if ( p()->buff.shuffle->up() )
       {
         timespan_t max_time   = p()->buff.shuffle->buff_duration();
-        timespan_t new_length = std::min( max_time, base_time + p()->buff.shuffle->remains() );
-        p()->buff.shuffle->refresh_duration( new_length );
+        timespan_t old_duration = p()->buff.shuffle->remains();
+        timespan_t new_length = std::min( max_time, base_time + old_duration);
+        p()->buff.shuffle->refresh( 1, buff_t::DEFAULT_VALUE(), new_length );
       }
       else
       {
@@ -4612,14 +4613,7 @@ struct expel_harm_t : public monk_heal_t
 
     // Windwalker health difference will almost always be zero. So using the Expel Harm Effectiveness
     // option to simulate the amount of time that the results will use the full amount.
-    if ( health_difference >= result || rng().roll( p()->user_options.expel_harm_effectiveness ) )
-    {
-      // Currently there is a bug that when using Harm Denial, the damage is increased
-      // by 210% of the heal instead of 10% (or 2100% of the intended damage)
-      if ( p()->bugs && p()->conduit.harm_denial->ok() )
-        result *= 21;
-    }
-    else
+    if ( health_difference < result || !rng().roll( p()->user_options.expel_harm_effectiveness ) )
     {
       double min_amount = 1 / p()->spec.expel_harm->effectN( 2 ).percent();
       // Normally this would be using health_difference, but since Windwalkers will almost always be set
@@ -7002,14 +6996,7 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
   double cam = player_t::composite_attribute_multiplier( attr );
 
   if ( attr == ATTR_STAMINA )
-  {
-    // On PTR, Brewmaster Monk spec aura is still showing 30% but the values
-    // have not changed from PTR and live.
-    if ( dbc->ptr )
-      cam *= 1.0 + spec.brewmasters_balance->effectN( 3 ).percent();
-    else
-      cam *= 1.0 + spec.brewmaster_monk->effectN( 11 ).percent();
-  }
+    cam *= 1.0 + spec.brewmasters_balance->effectN( 3 ).percent();
 
   return cam;
 }
@@ -7908,9 +7895,7 @@ void monk_t::trigger_bonedust_brew( action_state_t* s )
     {
       double damage = s->result_amount * covenant.necrolord->effectN( 1 ).percent();
 
-      // Bone Marrow Hops DOES NOT work with SEF or pets
-      // "This" is referring to the player and does not work with "guardians" which is what SEF and pets are registered as
-      if ( ( dbc->ptr || s->action->player == this ) && conduit.bone_marrow_hops->ok() )
+      if ( conduit.bone_marrow_hops->ok() )
         damage *= 1 + conduit.bone_marrow_hops.percent();
 
       active_actions.bonedust_brew_dmg->base_dd_min = damage;

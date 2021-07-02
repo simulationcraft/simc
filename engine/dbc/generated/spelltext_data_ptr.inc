@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.39172
-static const std::array<spelltext_data_t, 15519> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15520> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15131,6 +15131,7 @@ static const std::array<spelltext_data_t, 15519> __ptr_spelltext_data { {
   { 351491, "Your Valiant Strikes grant ${$S1/100}.2% critical strike chance per stack. When your Valiant Strikes heals an ally, you each gain $352981s1% critical strike chance for $352981d.", 0, 0 },
   { 351527, "$@spelldesc351531", 0, 0 },
   { 351531, "Your damaging critical strikes grant you a stack of Preternatural Charge. When you reach $u stacks of Preternatural Charge, your next critical strike will consume all stacks to tear open a rift near your target, inflicting $s1 Arcane damage.", "Reaching $u stacks will cause your next critical strike to consume Preternatural Charge, dealing Arcane damage.", 0 },
+  { 351561, "$@spelldesc351531", 0, 0 },
   { 351679, "$@spelldesc351682", "$@auradesc351682", 0 },
   { 351682, "Your melee attacks and abilities have a high chance to attach a Volatile Satchel onto your target. Upon reaching ${$u1+1} stacks, or when removed, the Volatile Satchel detonates and deals $351679s1 Fire damage.", "Upon reaching ${$u1+1} stacks or its removal, the Volatile Satchel detonates for $351679w1 Fire damage.", 0 },
   { 351687, "$@spelldesc350936", "Suffering $w1 Shadow damage every $t sec.", 0 },

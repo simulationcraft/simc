@@ -454,8 +454,6 @@ void darkmoon_deck_voracity( special_effect_t& effect )
 void stone_legion_heraldry( special_effect_t& effect )
 {
   double amount   = effect.driver()->effectN( 1 ).average( effect.item );
-  if ( ! effect.player -> dbc -> ptr )
-    amount = item_database::apply_combat_rating_multiplier( *effect.item, amount );
   unsigned allies = effect.player->sim->shadowlands_opts.stone_legionnaires_in_party;
   double mul      = 1.0 + effect.driver()->effectN( 2 ).percent() * allies;
 
@@ -1961,10 +1959,6 @@ void soul_cage_fragment( special_effect_t& effect )
   }
 }
 
-void fine_razorwing_quill( special_effect_t& effect )
-{
-}
-
 void decanter_of_endless_howling( special_effect_t& effect )
 {
   effect.proc_flags2_ = PF2_CRIT;
@@ -2634,6 +2628,83 @@ void jaithys_the_prison_blade_5( special_effect_t& effect )
   init_jaithys_the_prison_blade( effect, 358572, 358571, 5 );
 }
 
+/**Yasahm the Riftbreaker
+    351527 driver, proc on crit
+    351531 trigger buff, damage on effect 1
+    351561 damage proc on crit after 5th stack
+  */
+void yasahm_the_riftbreaker( special_effect_t& effect )
+{
+  struct preternatural_charge_t : public proc_spell_t
+  {
+    preternatural_charge_t( const special_effect_t& effect )
+      : proc_spell_t( "preternatural_charge", effect.player, effect.player->find_spell( 351561 ), effect.item )
+    {
+      base_dd_min = base_dd_max = effect.trigger()->effectN( 1 ).average( effect.item );
+    }
+  };
+
+  auto proc = create_proc_action<preternatural_charge_t>( "preternatural_charge", effect );
+  auto buff   = buff_t::find( effect.player, "preternatural_charge" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "preternatural_charge", effect.trigger() )->set_max_stack( effect.trigger()->max_stacks() + 1 );
+    buff->set_stack_change_callback( [ proc ]( buff_t* buff, int old, int cur ) {
+      if ( cur == buff->max_stack() )
+      {
+        proc->set_target( buff->player->target );
+        proc->execute();
+        make_event( buff->sim, [ buff ] { buff->expire(); } );
+      }
+    } );
+  }
+
+  effect.custom_buff  = buff;
+  effect.proc_flags2_ = PF2_CRIT;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// TODO: Add proc restrictions to match the weapons or expansion options.
+void cruciform_veinripper(special_effect_t& effect)
+{
+
+  struct sadistic_glee_t : public proc_spell_t
+  {
+    double scaled_dmg;
+
+    sadistic_glee_t(const special_effect_t& e)
+      : proc_spell_t("sadistic_glee", e.player, e.player->find_spell(353466), e.item),
+        scaled_dmg(e.driver()->effectN(1).average(e.item))
+    {
+      base_td = scaled_dmg;
+    }
+
+    double base_ta(const action_state_t* /* s */) const override
+    {
+      return scaled_dmg;
+    }
+
+    // TODO: Confirm Dot Refresh Behaviour
+    timespan_t calculate_dot_refresh_duration(const dot_t* dot, timespan_t duration) const override
+    {
+      return dot->time_to_next_tick() + duration;
+    }
+  };
+
+  auto sadistic_glee = static_cast<sadistic_glee_t*>(effect.player->find_action("sadistic_glee"));
+
+  if (!sadistic_glee)
+    effect.execute_action = create_proc_action<sadistic_glee_t>("sadistic_glee", effect);
+  else
+    sadistic_glee->scaled_dmg += effect.driver()->effectN(1).average(effect.item);
+
+  effect.spell_id = 357588;
+  effect.rppm_modifier_ = 0.5;
+
+  new dbc_proc_callback_t(effect.player, effect);
+}
+
+
 // Armor
 
 /**Passably-Forged Credentials
@@ -2677,7 +2748,7 @@ void dark_rangers_quiver( special_effect_t& effect )
   auto buff = buff_t::find( effect.player, "withering_fire" );
   if ( !buff )
   {
-    buff = make_buff<stat_buff_t>( effect.player, "withering_fire", effect.trigger() );
+    buff = make_buff( effect.player, "withering_fire", effect.trigger() );
     buff->set_stack_change_callback( [ cleave ]( buff_t* buff, int, int cur ) {
       if ( cur == buff->max_stack() )
       {
@@ -3319,7 +3390,6 @@ void register_special_effects()
     unique_gear::register_special_effect( 357672, items::soul_cage_fragment );
     unique_gear::register_special_effect( 353692, items::tome_of_monstrous_constructions );
     unique_gear::register_special_effect( 352429, items::miniscule_mailemental_in_an_envelope );
-    unique_gear::register_special_effect( 355085, items::fine_razorwing_quill );
     unique_gear::register_special_effect( 355323, items::decanter_of_endless_howling );
     unique_gear::register_special_effect( 355324, items::tormentors_rack_fragment );
     unique_gear::register_special_effect( 355297, items::old_warriors_soul );
@@ -3338,6 +3408,8 @@ void register_special_effects()
     unique_gear::register_special_effect( 358567, items::jaithys_the_prison_blade_3 );
     unique_gear::register_special_effect( 358569, items::jaithys_the_prison_blade_4 );
     unique_gear::register_special_effect( 358571, items::jaithys_the_prison_blade_5 );
+    unique_gear::register_special_effect( 351527, items::yasahm_the_riftbreaker );
+    unique_gear::register_special_effect( 359168, items::cruciform_veinripper);
 
     // Armor
     unique_gear::register_special_effect( 352081, items::passablyforged_credentials );
