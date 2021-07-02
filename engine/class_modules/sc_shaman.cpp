@@ -8934,6 +8934,8 @@ void shaman_t::init_action_list_elemental()
                                "if=runeforge.elemental_equilibrium.equipped&!buff.elemental_equilibrium_debuff.up&!"
                                "talent.elemental_blast.enabled&!talent.echoing_shock.enabled" );
     single_target->add_action( "chain_harvest" );
+    single_target->add_action( this, "Frost Shock",
+                               "if=talent.icefury.enabled&buff.icefury.up" );	
     single_target->add_talent( this, "Static Discharge", "if=talent.static_discharge.enabled" );
     single_target->add_action( this, "Earth Elemental",
                                "if=!talent.primal_elementalist.enabled|!pet.fire_elemental.active" );
