@@ -636,11 +636,14 @@ void thrill_seeker( special_effect_t& effect )
         ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
     }
 
-    euphoria_buff->set_stack_change_callback( [ fatal_flaw_vers, fatal_flaw_crit ]( buff_t* b, int, int new_ ) {
-      if ( b->player->cache.spell_crit_chance() >= b->player->cache.damage_versatility() )
-        fatal_flaw_crit->trigger();
-      else
-        fatal_flaw_vers->trigger();
+    euphoria_buff->set_stack_change_callback( [ fatal_flaw_vers, fatal_flaw_crit ]( buff_t* b, int old, int cur ) {
+      if ( cur < old )
+      {
+        if ( b->player->cache.spell_crit_chance() >= b->player->cache.damage_versatility() )
+          fatal_flaw_crit->trigger();
+        else
+          fatal_flaw_vers->trigger();
+      }
     } );
   }
 
