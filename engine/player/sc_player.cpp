@@ -2350,6 +2350,7 @@ void player_t::init_spells()
 {
   sim->print_debug( "Initializing spells for {}.", *this );
 
+  // Racials
   racials.quickness             = find_racial_spell( "Quickness" );
   racials.command               = find_racial_spell( "Command" );
   racials.arcane_acuity         = find_racial_spell( "Arcane Acuity" );
@@ -4008,6 +4009,9 @@ double player_t::composite_player_multiplier( school_e school ) const
   if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
     m *= 1.0 + buffs.battlefield_presence->check_stack_value();
 
+  if ( buffs.coldhearted && buffs.coldhearted->check() )
+    m *= 1.0 + buffs.coldhearted->check_value();
+
   return m;
 }
 
@@ -4046,8 +4050,10 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     m *= 1.0 + td->debuff.plagueys_preemptive_strike->check_value();
     m *= 1.0 + td->debuff.sinful_revelation->check_value();
     m *= 1.0 + td->debuff.dream_delver->check_stack_value();
-    m *= 1.0 + td->debuff.scouring_touch->check_stack_value();
     m *= 1.0 + td->debuff.soulglow_spectrometer->check_stack_value();
+    m *= 1.0 + td->debuff.scouring_touch->check_stack_value();
+    m *= 1.0 + td->debuff.exsanguinated->check_value();
+    m *= 1.0 + td->debuff.kevins_wrath->check_value();
   }
 
   return m;
@@ -5994,6 +6000,9 @@ bool player_t::resource_available( resource_e resource_type, double cost ) const
 
 void player_t::recalculate_resource_max( resource_e resource_type, gain_t* source )
 {
+  double old_amount = resources.current[ resource_type ];
+  double old_max    = resources.max[ resource_type ];
+
   resources.max[ resource_type ] = resources.base[ resource_type ];
   resources.max[ resource_type ] *= resources.base_multiplier[ resource_type ];
   resources.max[ resource_type ] += total_gear.resource[ resource_type ];
@@ -6005,12 +6014,6 @@ void player_t::recalculate_resource_max( resource_e resource_type, gain_t* sourc
     {
       // Calculate & set maximum health
       resources.max[ resource_type ] += floor( stamina() ) * current.health_per_stamina;
-
-      // Redirected Anima also affects temporary bonus health
-      if ( buffs.redirected_anima && buffs.redirected_anima->up() )
-      {
-        resources.max[ resource_type ] *= 1.0 + buffs.redirected_anima->check_stack_value();
-      }
 
       // Make sure the player starts combat with full health
       if ( !in_combat )
@@ -6030,6 +6033,10 @@ void player_t::recalculate_resource_max( resource_e resource_type, gain_t* sourc
     source->add( resource_type, 0, resources.current[ resource_type ] - resources.max[ resource_type ] );
   }
   resources.current[ resource_type ] = std::min( resources.current[ resource_type ], resources.max[ resource_type ] );
+
+  sim->print_debug( "Recalculated maximum {} for {}: old={:.2f}/{:.2f}, new={:.2f}/{:.2f}",
+                    util::resource_type_string( resource_type ), name(), old_amount, old_max,
+                    resources.current[ resource_type ], resources.max[ resource_type ] );
 }
 
 role_e player_t::primary_role() const

@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.38134 Live (hotfix 2021-05-02/38134)
+SimulationCraft 905-01 for World of Warcraft 9.1.0.39172 Live (hotfix 2021-06-28/39172, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2974,6 +2974,7 @@ Effects          :
 Description      : All Sigils activate ${$s1/-1000} second faster, and their cooldowns are reduced by $s2%.
 
 Name             : Darkness (id=209426) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -2982,7 +2983,7 @@ Duration         : 8 seconds
 Affecting spells : Demonic Wards (320381 effects: #1, #2), Demonic Wards (320382 effects: #1, #2), Demonic Wards (320383 effect#1), Viscous Ink (338682 effect#1)
 Family Flags     : 51, 63
 Attributes       : ........ x....... ........ .......x   .....x.. ..x..... ........ ........ 
-                 : ........ ........ ........ ..x.x...   ........ ........ xx...... ......x. 
+                 : ........ ........ ........ ..x.....   ........ ........ xx...... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4586,6 +4587,7 @@ Effects          :
 Description      : $@spelldesc258920
 
 Name             : Immolation Aura (id=258922) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
@@ -4593,7 +4595,7 @@ Affecting spells : Demon Soul (163073 effects: #1, #2), Agonizing Flames (207548
 Triggered by     : Immolation Aura (258920)
 Family Flags     : 11, 16, 61
 Attributes       : ....x... ........ ..x..... ........   ...x...x ........ ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

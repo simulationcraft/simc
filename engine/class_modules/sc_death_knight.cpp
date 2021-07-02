@@ -454,6 +454,7 @@ public:
   // Counters
   unsigned int km_proc_attempts; // critical auto attacks since the last KM proc
   unsigned int festering_wounds_target_count; // cached value of the current number of enemies affected by FW
+  double insatiable_hunger_spent_rp_accumulator; // Counts how much RP you spend during swarming mist, used for insatiable hunger explosion
 
   stats_t* antimagic_shell;
 
@@ -511,6 +512,7 @@ public:
     buff_t* crimson_rune_weapon;
     buff_t* death_turf; // Phearomones legendary
     buff_t* frenzied_monstrosity;
+    buff_t* final_sentence;
 
     // Covenants
     buff_t* abomination_limb; // Necrolord
@@ -583,7 +585,9 @@ public:
     gain_t* swarming_mist;
 
     // Legendary
+    gain_t* final_sentence;
     gain_t* gorefiends_domination;
+    gain_t* rampant_transference;
 
     // Blood
     gain_t* blood_tap;
@@ -796,6 +800,7 @@ public:
     const spell_data_t* deaths_due; // spell.deaths_due and spell.dnd_buff contain the data affecting
     const spell_data_t* dnd_buff; // obliterate aoe increase while in death's due (nf covenant ability)
     const spell_data_t* exacting_preparation; // For Nadjia soulbind
+    const spell_data_t* final_sentence; // For kyrian legendary rune gain and buff
     const spell_data_t* razorice_debuff;
 
     // Diseases (because they're not stored in spec data, unlike frost fever's rp gen...)
@@ -957,6 +962,10 @@ public:
     // Shared
     item_runeforge_t phearomones;                 // 6954
     item_runeforge_t superstrain;                 // 6953
+    item_runeforge_t insatiable_hunger;           // 7468
+    item_runeforge_t final_sentence;              // 7467
+    item_runeforge_t rampant_transference;        // 7466
+    item_runeforge_t abominations_frenzy;         // 7458
 
     // Blood
     item_runeforge_t bryndaors_might;             // 6940
@@ -999,6 +1008,7 @@ public:
     runeforge_expression_warning( false ),
     km_proc_attempts( 0 ),
     festering_wounds_target_count( 0 ),
+    insatiable_hunger_spent_rp_accumulator( 0 ),
     antimagic_shell( nullptr ),
     buffs(),
     runeforge(),
@@ -1056,6 +1066,7 @@ public:
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_pet_damage_multiplier( const action_state_t* /* state */, bool /* guardian */ ) const override;
+  double    composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
   double    composite_crit_avoidance() const override;
   void      combat_begin() override;
   void      activate() override;
@@ -1628,46 +1639,6 @@ struct death_knight_pet_t : public pet_t
     // 2021-01-29: The bdk aura is currently set to 0,
     // Keep an eye on this in case blizz changes the value as double dipping may happen (both ingame and here)
     dk() -> apply_affecting_auras( action );
-  }
-
-  double composite_player_target_multiplier( player_t* target, school_e school ) const override
-  {
-    double m = pet_t::composite_player_target_multiplier( target, school );
-
-    if ( auto td = dk() -> find_target_data( target ) )
-    {
-      m *= 1.0 + td -> debuff.unholy_blight -> stack_value();
-    }
-
-    return m;
-  }
-
-  double composite_melee_haste() const override
-  {
-    double haste = pet_t::composite_melee_haste();
-
-    // 2020-11-14: Phearomones is double dipping for pets as they're affected by both the aura
-    // and the player's own haste buff, inherited by the pet
-    if ( dk() -> legendary.phearomones -> ok() && dk() -> bugs )
-    {
-      haste *= 1.0 / ( 1.0 + dk() -> buffs.death_turf -> check_value() );
-    }
-
-    return haste;
-  }
-
-  double composite_spell_haste() const override
-  {
-    double haste = pet_t::composite_spell_haste();
-
-    // 2020-11-14: Phearomones is double dipping for pets as they're affected by both the aura
-    // and the player's own haste buff, inherited by the pet
-    if ( dk() -> legendary.phearomones -> ok() && dk() -> bugs )
-    {
-      haste *= 1.0 / ( 1.0 + dk() -> buffs.death_turf -> check_value() );
-    }
-
-    return haste;
   }
 
   // Standard Death Knight pet actions
@@ -2912,11 +2883,11 @@ struct death_knight_action_t : public Base
     return base_gcd;
   }
 
-  void execute() override
+  void impact( action_state_t * state ) override
   {
-    action_base_t::execute();
+    action_base_t::impact( state );
     // If we spend a rune, we have a chance to spread the dot
-    dot_t* source_dot = get_td( action_t::target ) -> dot.shackle_the_unworthy;
+    dot_t* source_dot = get_td( state -> target ) -> dot.shackle_the_unworthy;
     if ( p() -> covenant.shackle_the_unworthy -> ok() && this->triggers_shackle_the_unworthy &&
          source_dot -> is_ticking() && p() -> cooldown.shackle_the_unworthy_icd -> is_ready() &&
         p() -> rng().roll( p() -> covenant.shackle_the_unworthy -> effectN( 5 ).percent() ) )
@@ -2929,9 +2900,14 @@ struct death_knight_action_t : public Base
         }
 
         action_t::sim -> print_log("{} spreads shackle the unworthy with {} from {} to {} (remains={} )",
-                *action_t::player, *this, *action_t::target, *destination, source_dot->remains() );
+                *action_t::player, *this, state -> target->name(), *destination, source_dot->remains() );
 
         source_dot->copy(destination, DOT_COPY_CLONE);
+        if ( p() -> legendary.final_sentence.ok() )
+        {
+          p() -> buffs.final_sentence -> trigger();
+          p() -> replenish_rune( as<unsigned int>( p() -> spell.final_sentence -> effectN( 1 ).resource( RESOURCE_RUNE ) ), p() -> gains.final_sentence );
+        }
         p() -> cooldown.shackle_the_unworthy_icd -> start();
         // after we successfully spread to one target, return.
         return;
@@ -3447,18 +3423,22 @@ struct abomination_limb_damage_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
     // We proc this on cast, then every 6 seconds thereafter, on tick
+    // Every 4 seconds if we have abominations_frenzy legendary equipped
     if ( p() ->cooldown.abomination_limb -> is_ready() )
     {
       switch ( p() ->specialization() )
       {
         case DEATH_KNIGHT_BLOOD:
           p() -> buffs.bone_shield -> trigger( bone_shield_stack_gain );
+          sim -> print_debug( "{} triggers bone shield via abominations_limb", player -> name() );
           break;
         case DEATH_KNIGHT_FROST:
           p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+          sim -> print_debug( "{} triggers rime via abominations_limb", player -> name() );
           break;
         case DEATH_KNIGHT_UNHOLY:
           p() -> trigger_runic_corruption( p() -> procs.al_runic_corruption, 0, 1.0 );
+          sim -> print_debug( "{} triggers runic corruption via abominations_limb", player -> name() );
           break;
         default:
           break;
@@ -3482,6 +3462,10 @@ struct abomination_limb_buff_t : public buff_t
       damage -> execute();
     } );
     set_partial_tick( true );
+    if ( p -> legendary.abominations_frenzy.ok() )
+    {
+      apply_affecting_aura( p -> legendary.abominations_frenzy );
+    }
   }
 };
 
@@ -5643,6 +5627,27 @@ struct hypothermic_presence_t : public death_knight_spell_t
   }
 };
 
+// Insatiable Hunger Legendary ================================================
+struct insatiable_hunger_damage_t : public death_knight_spell_t
+{
+  double insatiable_hunger_rp_multiplier;
+  insatiable_hunger_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "insatiable_hunger_damage", p, p -> find_spell( 353720 ) ),
+    insatiable_hunger_rp_multiplier ( p -> find_spell( 353729 ) -> effectN( 1 ).percent() )
+  {
+    background = true;
+  }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double cam = death_knight_spell_t::composite_aoe_multiplier( state );
+
+    cam += 1.0 + ( p() -> insatiable_hunger_spent_rp_accumulator * insatiable_hunger_rp_multiplier );
+
+    return cam;
+  }
+};
+
 // Marrowrend ===============================================================
 
 struct marrowrend_t : public death_knight_melee_attack_t
@@ -6428,10 +6433,12 @@ struct swarming_mist_damage_t : public death_knight_spell_t
 struct swarming_mist_buff_t : public buff_t
 {
   swarming_mist_damage_t* damage; // (AOE) damage that ticks every second
+  insatiable_hunger_damage_t* insatiable_damage; // Insatiable Hunger legendary damage
 
   swarming_mist_buff_t( death_knight_t* p ) :
     buff_t( p, "swarming_mist", p -> covenant.swarming_mist ),
-    damage( new swarming_mist_damage_t( p ) )
+    damage( new swarming_mist_damage_t( p ) ),
+    insatiable_damage( new insatiable_hunger_damage_t( p ) )
   {
     cooldown -> duration = 0_ms; // Controlled by the action
     set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
@@ -6441,6 +6448,15 @@ struct swarming_mist_buff_t : public buff_t
     set_partial_tick( true );
 
     add_invalidate( CACHE_DODGE );
+  }
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+    death_knight_t* p = debug_cast< death_knight_t* >( player );
+    if ( p -> legendary.insatiable_hunger.ok() )
+    {
+      insatiable_damage -> execute();
+    }
   }
 };
 
@@ -6467,6 +6483,7 @@ struct swarming_mist_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.swarming_mist -> trigger();
+    p() -> insatiable_hunger_spent_rp_accumulator = 0;  // Reset everytime we cast swarming mist to start counting again
   }
 };
 
@@ -7188,6 +7205,12 @@ double death_knight_t::resource_gain( resource_e resource_type, double amount, g
     actual_amount += player_t::resource_gain( resource_type, bonus_rp, gains.rune_of_hysteria, action );
   }
 
+  if ( legendary.rampant_transference -> ok() && resource_type == RESOURCE_RUNIC_POWER && in_death_and_decay() )
+  {
+    double bonus_rp = amount * legendary.rampant_transference -> effectN( 3 ).percent();
+    actual_amount += player_t::resource_gain( resource_type, bonus_rp, gains.rampant_transference, action );
+  }
+
   return actual_amount;
 }
 
@@ -7247,6 +7270,12 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // RE is using the ability's base cost for its proc chance calculation, just like Runic Corruption
     trigger_runic_empowerment( base_rp_cost );
     trigger_runic_corruption( procs.rp_runic_corruption, base_rp_cost );
+
+    if ( legendary.insatiable_hunger.ok() && buffs.swarming_mist -> check() )
+    {
+      sim -> print_debug ( "Insatiable hunger RP stored increased from {} to {} by {} from {}", insatiable_hunger_spent_rp_accumulator, (insatiable_hunger_spent_rp_accumulator + base_rp_cost), base_rp_cost, action->name_str );
+      insatiable_hunger_spent_rp_accumulator += base_rp_cost;
+    }
 
     if ( talent.summon_gargoyle -> ok() && pets.gargoyle )
     {
@@ -7364,6 +7393,13 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
       active_spells.bursting_sores -> set_target( target );
       active_spells.bursting_sores -> execute();
     }
+  }
+
+  // 2021-Jun-21 Currently on PTR on mob death you only get the benefit of a single stack, even though you really should be getting for each stack
+  if ( conduits.convocation_of_the_dead.ok() )
+  {
+    cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
+      conduits.convocation_of_the_dead.value() / 10 ) );
   }
 }
 
@@ -8222,6 +8258,7 @@ void death_knight_t::init_spells()
   // Shared
   spell.dnd_buff        = find_spell( 188290 );
   spell.exacting_preparation = find_soulbind_spell( "Exacting Preparation" );
+  spell.final_sentence = find_spell( 353823 );
   spell.razorice_debuff = find_spell( 51714 );
   spell.deaths_due      = find_spell( 315442 );
 
@@ -8309,8 +8346,12 @@ void death_knight_t::init_spells()
   // Legendary Items
 
   // Shared
-  legendary.phearomones = find_runeforge_legendary( "Phearomones" );
-  legendary.superstrain = find_runeforge_legendary( "Superstrain" );
+  legendary.phearomones          = find_runeforge_legendary( "Phearomones" );
+  legendary.superstrain          = find_runeforge_legendary( "Superstrain" );
+  legendary.insatiable_hunger    = find_runeforge_legendary( "Insatiable Hunger" );
+  legendary.final_sentence       = find_runeforge_legendary( "Final Sentence" );
+  legendary.rampant_transference = find_runeforge_legendary( "Rampant Transference" );
+  legendary.abominations_frenzy  = find_runeforge_legendary( "Abomination's Frenzy" );
 
   // Blood
   legendary.bryndaors_might = find_runeforge_legendary( "Bryndaor's Might" );
@@ -8348,12 +8389,17 @@ void death_knight_t::init_spells()
   if ( talent.icecap )
     cooldown.icecap_icd -> duration = talent.icecap -> internal_cooldown();
   if ( covenant.abomination_limb )
+  {
     cooldown.abomination_limb -> duration = timespan_t::from_seconds( covenant.abomination_limb -> effectN ( 4 ).base_value() );
+    if ( legendary.abominations_frenzy.ok() )
+    {
+      cooldown.abomination_limb -> duration -= timespan_t::from_seconds( legendary.abominations_frenzy -> effectN ( 2 ).base_value() );
+    }
+  }
   if ( covenant.shackle_the_unworthy )
     cooldown.shackle_the_unworthy_icd -> duration = covenant.shackle_the_unworthy -> internal_cooldown();
   if ( legendary.koltiras_favor )
     cooldown.koltiras_favor_icd -> duration = legendary.koltiras_favor -> internal_cooldown();
-
 
 }
 
@@ -8582,14 +8628,21 @@ void death_knight_t::create_buffs()
       -> set_affects_regen( true )
       -> set_stack_change_callback( [ this ]( buff_t*, int, int )
            { _runes.update_coefficient(); } );
+
   buffs.frenzied_monstrosity = make_buff( this, "frenzied_monstrosity", find_spell ( 334896 ) )
     -> add_invalidate( CACHE_ATTACK_SPEED )
+    -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buffs.final_sentence = make_buff( this, "final_sentence", spell.final_sentence )
+    -> set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+    -> set_schools_from_effect( 2 )
     -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Covenants
   buffs.deaths_due = make_buff( this, "deaths_due", find_spell( 324165 ) )
       -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-      -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+      -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+      -> apply_affecting_aura( legendary.rampant_transference );
 
   buffs.death_turf = make_buff( this, "death_turf", find_spell ( 335180) )
     -> set_default_value_from_effect( 1 )
@@ -8643,8 +8696,10 @@ void death_knight_t::init_gains()
   gains.festering_wound                  = get_gain( "Festering Wound" );
 
   // Shadowlands / Covenants
-  gains.swarming_mist                    = get_gain( "Swarming Mist" );
+  gains.final_sentence                   = get_gain( "Final Sentence" );
   gains.gorefiends_domination            = get_gain( "Gorefiends Domination" );
+  gains.rampant_transference             = get_gain( "Rampant Transference" );
+  gains.swarming_mist                    = get_gain( "Swarming Mist" );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -8747,6 +8802,7 @@ void death_knight_t::reset()
   _runes.reset();
   active_dnd = nullptr;
   km_proc_attempts = 0;
+  insatiable_hunger_spent_rp_accumulator = 0;
 }
 
 // death_knight_t::assess_heal ==============================================
@@ -9020,6 +9076,12 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.frenzied_monstrosity->data().effectN( 2 ).percent();
   }
 
+  if ( buffs.final_sentence->up() &&
+        ( dbc::is_school( school, SCHOOL_PHYSICAL ) || dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) ) )
+  {
+    m *= 1.0 + buffs.final_sentence->stack_value();
+  }
+
   return m;
 }
 
@@ -9037,9 +9099,26 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
     m *= 1.0 + conduits.eternal_hunger.percent();
   }
 
+  if ( buffs.final_sentence->up() )
+  {
+    m *= 1.0 + buffs.final_sentence->stack_value();
+  }
+
   m *= 1.0 + spec.blood_death_knight -> effectN( 14 ).percent();
   m *= 1.0 + spec.frost_death_knight -> effectN( 3 ).percent();
   m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
+
+  return m;
+}
+
+double death_knight_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
+{
+  double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
+
+  const death_knight_td_t* td = get_target_data( target );
+
+  if ( td )
+    m *= 1.0 + td -> debuff.unholy_blight -> stack_value();
 
   return m;
 }

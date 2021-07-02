@@ -54,6 +54,7 @@ void shadow( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" );
   // Calculate these variables once to reduce sim time
   precombat->add_action( "shadowform,if=!buff.shadowform.up" );
   precombat->add_action( "arcane_torrent" );
@@ -78,28 +79,14 @@ void shadow( player_t* p )
   default_list->add_action(
       "variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>2+buff.voidform.up",
       "Start using Searing Nightmare at 3+ targets or 4+ if you are in Voidform" );
-
-  if ( p->is_ptr() )
-  {
-    default_list->add_action(
-        "variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&(!raid_event.adds.up|raid_event.adds."
-        "duration<"
-        "=10|raid_event.adds.remains>=10+5*(talent.hungering_void.enabled|covenant.kyrian))&((raid_event.adds.in>20|"
-        "spell_targets.void_eruption>=5)|talent.hungering_void.enabled|covenant.kyrian)&(!runeforge.spheres_harmony."
-        "equipped|(cooldown.power_infusion.remains<=gcd.max*3|buff.power_infusion.up|fight_remains<=25))",
-        "Cooldown Pool Variable, Used to pool before activating voidform. Currently used to control when to activate "
-        "voidform with incoming adds." );
-  }
-  else
-  {
-    default_list->add_action(
-        "variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&(!raid_event.adds.up|raid_event.adds."
-        "duration<"
-        "=10|raid_event.adds.remains>=10+5*(talent.hungering_void.enabled|covenant.kyrian))&((raid_event.adds.in>20|"
-        "spell_targets.void_eruption>=5)|talent.hungering_void.enabled|covenant.kyrian)",
-        "Cooldown Pool Variable, Used to pool before activating voidform. Currently used to control when to activate "
-        "voidform with incoming adds." );
-  }
+  default_list->add_action(
+      "variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&(!raid_event.adds.up|raid_event.adds."
+      "duration<"
+      "=10|raid_event.adds.remains>=10+5*(talent.hungering_void.enabled|covenant.kyrian))&((raid_event.adds.in>20|"
+      "spell_targets.void_eruption>=5)|talent.hungering_void.enabled|covenant.kyrian)&(!runeforge.spheres_harmony."
+      "equipped|(cooldown.power_infusion.remains<=gcd.max*3|buff.power_infusion.up|fight_remains<=25))",
+      "Cooldown Pool Variable, Used to pool before activating voidform. Currently used to control when to activate "
+      "voidform with incoming adds." );
 
   // Racials
   default_list->add_action( "fireblood,if=buff.voidform.up" );
@@ -149,12 +136,12 @@ void shadow( player_t* p )
 
   // CDs
   cds->add_action( p, "Power Infusion",
-                   "if=priest.self_power_infusion&(buff.voidform.up|!soulbind.combat_meditation.enabled&cooldown.void_"
+                   "if=priest.self_power_infusion&(buff.voidform.up|!covenant.kyrian&cooldown.void_"
                    "eruption.remains>=10|fight_remains<cooldown.void_eruption.remains)&(fight_remains>=cooldown.void_"
                    "eruption.remains+15&cooldown.void_eruption.remains<=gcd*4|fight_remains>cooldown.power_infusion."
                    "duration|fight_remains<cooldown.void_eruption.remains+15|covenant.kyrian|buff.bloodlust.up)",
                    "Use Power Infusion with Voidform. Hold for Voidform comes off cooldown in the next 10 seconds "
-                   "otherwise use on cd unless the Pelagos Trait Combat Meditation is talented, or if there will not "
+                   "otherwise use on cd unless the player is part of the kyrian covenant, or if there will not "
                    "be another Void Eruption this fight. Attempt to sync the last power infusion of the fight to void "
                    "eruption for non Kyrians." );
   cds->add_action( p, "Silence",
@@ -190,6 +177,8 @@ void shadow( player_t* p )
       "Use on CD but prioritise using Void Eruption first, if used inside of VF on ST use after a "
       "voidbolt for cooldown efficiency and for hungering void uptime if talented." );
   cds->add_call_action_list( trinkets );
+  cds->add_action( "fleshcraft,if=soulbind.volatile_solvent&!buff.voidform.up&!buff.power_infusion.up",
+                   "Use Fleshcraft outside of main cooldowns to maintain Volatile Solvent buff." );
 
   // APL to use when Boon of the Ascended is active
   boon->add_action( "ascended_blast,if=spell_targets.mind_sear<=3" );

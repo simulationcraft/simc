@@ -1,0 +1,118 @@
+paladin="T27_Paladin_Retribution"
+source=default
+spec=retribution
+level=60
+race=dark_iron_dwarf
+role=attack
+position=back
+talents=3200303
+covenant=kyrian
+soulbind=pelagos,combat_meditation/better_together/newfound_resolve/ringing_clarity:9:1/virtuous_command:9:1/templars_vindication:9:1
+renown=80
+
+# Default consumables
+potion=spectral_strength
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled
+temporary_enchant=main_hand:shaded_sharpening_stone
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/arcane_torrent,if=talent.final_reckoning.enabled&talent.seraphim.enabled
+actions.precombat+=/blessing_of_the_seasons
+actions.precombat+=/shield_of_vengeance
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/rebuke
+actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=generators
+
+actions.cooldowns=potion,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<25
+actions.cooldowns+=/lights_judgment,if=spell_targets.lights_judgment>=2|!raid_event.adds.exists|raid_event.adds.in>75|raid_event.adds.up
+actions.cooldowns+=/fireblood,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10
+actions.cooldowns+=/shield_of_vengeance,if=(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains<52)&fight_remains>15
+actions.cooldowns+=/blessing_of_the_seasons
+actions.cooldowns+=/use_item,name=inscrutable_quantum_device,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<30
+actions.cooldowns+=/use_item,name=overwhelming_power_crystal,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<15
+actions.cooldowns+=/use_item,name=darkmoon_deck_voracity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<20
+actions.cooldowns+=/use_item,name=macabre_sheet_music,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<20
+actions.cooldowns+=/use_item,name=dreadfire_vessel
+actions.cooldowns+=/use_item,name=skulkers_wing
+actions.cooldowns+=/use_item,name=grim_codex
+actions.cooldowns+=/use_item,name=memory_of_past_sins
+actions.cooldowns+=/use_item,name=spare_meat_hook
+actions.cooldowns+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45
+actions.cooldowns+=/use_item,name=sinful_aspirants_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45
+actions.cooldowns+=/avenging_wrath,if=(holy_power>=4&time<5|holy_power>=3&(time>5|runeforge.the_magistrates_judgment)|talent.holy_avenger.enabled&cooldown.holy_avenger.remains=0)&(!talent.seraphim.enabled|cooldown.seraphim.remains>0|talent.sanctified_wrath.enabled)
+actions.cooldowns+=/crusade,if=holy_power>=4&time<5|holy_power>=3&time>5|talent.holy_avenger.enabled&cooldown.holy_avenger.remains=0
+actions.cooldowns+=/ashen_hallow
+actions.cooldowns+=/holy_avenger,if=time_to_hpg=0&(buff.avenging_wrath.up|buff.crusade.up|buff.avenging_wrath.down&cooldown.avenging_wrath.remains>40|buff.crusade.down&cooldown.crusade.remains>40)
+actions.cooldowns+=/final_reckoning,if=(holy_power>=4&time<8|holy_power>=3&time>=8)&cooldown.avenging_wrath.remains>gcd&time_to_hpg=0&(!talent.seraphim.enabled|buff.seraphim.up)&(!raid_event.adds.exists|raid_event.adds.up|raid_event.adds.in>40)
+
+actions.finishers=variable,name=ds_castable,value=spell_targets.divine_storm=2&!(runeforge.final_verdict&talent.righteous_verdict.enabled&conduit.templars_vindication.enabled)|spell_targets.divine_storm>2|buff.empyrean_power.up&debuff.judgment.down&buff.divine_purpose.down
+actions.finishers+=/seraphim,if=(cooldown.avenging_wrath.remains>15|cooldown.crusade.remains>15|talent.final_reckoning.enabled)&(!talent.final_reckoning.enabled|cooldown.final_reckoning.remains<=gcd*3&(!raid_event.adds.exists|raid_event.adds.in>40|raid_event.adds.in<gcd|raid_event.adds.up))&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains<=gcd*3|talent.final_reckoning.enabled)&(!covenant.kyrian|cooldown.divine_toll.remains<9)|target.time_to_die<15&target.time_to_die>5
+actions.finishers+=/execution_sentence,if=(buff.crusade.down&cooldown.crusade.remains>10|buff.crusade.stack>=3|cooldown.avenging_wrath.remains>10)&(!talent.final_reckoning.enabled|cooldown.final_reckoning.remains>10)&target.time_to_die>8
+actions.finishers+=/divine_storm,if=variable.ds_castable&!buff.vanquishers_hammer.up&((!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd*6|cooldown.execution_sentence.remains>gcd*5&holy_power>=4|target.time_to_die<8|!talent.seraphim.enabled&cooldown.execution_sentence.remains>gcd*2)&(!talent.final_reckoning.enabled|cooldown.final_reckoning.remains>gcd*6|cooldown.final_reckoning.remains>gcd*5&holy_power>=4|!talent.seraphim.enabled&cooldown.final_reckoning.remains>gcd*2)&(!talent.seraphim.enabled|cooldown.seraphim.remains%gcd+holy_power>3|talent.final_reckoning.enabled|talent.execution_sentence.enabled|covenant.kyrian)|(talent.holy_avenger.enabled&cooldown.holy_avenger.remains<gcd*3|buff.holy_avenger.up|buff.crusade.up&buff.crusade.stack<10))
+actions.finishers+=/templars_verdict,if=(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd*6|cooldown.execution_sentence.remains>gcd*5&holy_power>=4|target.time_to_die<8|!talent.seraphim.enabled&cooldown.execution_sentence.remains>gcd*2)&(!talent.final_reckoning.enabled|cooldown.final_reckoning.remains>gcd*6|cooldown.final_reckoning.remains>gcd*5&holy_power>=4|!talent.seraphim.enabled&cooldown.final_reckoning.remains>gcd*2)&(!talent.seraphim.enabled|cooldown.seraphim.remains%gcd+holy_power>3|talent.final_reckoning.enabled|talent.execution_sentence.enabled|covenant.kyrian)|talent.holy_avenger.enabled&cooldown.holy_avenger.remains<gcd*3|buff.holy_avenger.up|buff.crusade.up&buff.crusade.stack<10
+
+actions.generators=call_action_list,name=finishers,if=holy_power=5|buff.holy_avenger.up|debuff.final_reckoning.up|debuff.execution_sentence.up
+actions.generators+=/vanquishers_hammer
+actions.generators+=/divine_toll,if=!debuff.judgment.up&(!talent.seraphim.enabled|buff.seraphim.up)&(!raid_event.adds.exists|raid_event.adds.in>30|raid_event.adds.up)&(holy_power<=2|holy_power<=4&(cooldown.blade_of_justice.remains>gcd*2|debuff.execution_sentence.up|debuff.final_reckoning.up))&(!talent.final_reckoning.enabled|cooldown.final_reckoning.remains>gcd*10)&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd*10|target.time_to_die<8)&(cooldown.avenging_wrath.remains|cooldown.crusade.remains)
+actions.generators+=/hammer_of_wrath,if=runeforge.the_mad_paragon|runeforge.vanguards_momentum&talent.execution_sentence.enabled|covenant.venthyr&cooldown.ashen_hallow.remains>210
+actions.generators+=/judgment,if=!debuff.judgment.up&buff.holy_avenger.up
+actions.generators+=/wake_of_ashes,if=(holy_power<=2&talent.execution_sentence.enabled&debuff.execution_sentence.remains>0&debuff.execution_sentence.remains<gcd*2)
+actions.generators+=/blade_of_justice,if=holy_power<=3&talent.blade_of_wrath.enabled&(talent.final_reckoning.enabled&debuff.final_reckoning.remains>gcd*2|talent.execution_sentence.enabled&!talent.final_reckoning.enabled&(debuff.execution_sentence.up|cooldown.execution_sentence.remains=0))
+actions.generators+=/judgment,if=!debuff.judgment.up&talent.seraphim.enabled&(holy_power>=1&runeforge.the_magistrates_judgment|holy_power>=2)
+actions.generators+=/wake_of_ashes,if=(holy_power=0|holy_power<=2&(cooldown.blade_of_justice.remains>gcd*2|debuff.execution_sentence.up|target.time_to_die<8|debuff.final_reckoning.up))&(!raid_event.adds.exists|raid_event.adds.in>20|raid_event.adds.up)&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>15|target.time_to_die<8)&(!talent.final_reckoning.enabled|cooldown.final_reckoning.remains>15|target.time_to_die<8)&(cooldown.avenging_wrath.remains|cooldown.crusade.remains)
+actions.generators+=/call_action_list,name=finishers,if=holy_power>=3&buff.crusade.up&buff.crusade.stack<10
+actions.generators+=/blade_of_justice,if=holy_power<=3&conduit.expurgation.enabled&!covenant.venthyr
+actions.generators+=/judgment,if=!debuff.judgment.up
+actions.generators+=/hammer_of_wrath
+actions.generators+=/blade_of_justice,if=holy_power<=3
+actions.generators+=/call_action_list,name=finishers,if=(target.health.pct<=20|buff.avenging_wrath.up|buff.crusade.up|buff.empyrean_power.up)
+actions.generators+=/crusader_strike,if=cooldown.crusader_strike.charges_fractional>=1.75&(holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2)
+actions.generators+=/consecration,if=!consecration.up&spell_targets.divine_storm>=2
+actions.generators+=/call_action_list,name=finishers
+actions.generators+=/consecration,if=!consecration.up
+actions.generators+=/crusader_strike
+actions.generators+=/arcane_torrent
+actions.generators+=/consecration
+
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=187312/173129
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173129
+shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
+back=selfreplicating_tissue,id=186374,bonus_id=7187/1498
+chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_skirmish
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187320/173129
+hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187319,enchant=eternal_strength
+waist=shadowghast_waistguard,id=171418,bonus_id=6648/6647/6758/7679/1559/6935,gem_id=173129
+legs=agathas_gothic_greaves,id=186313,bonus_id=7187/1498
+feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
+finger2=oscillating_ouroboros,id=186376,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
+trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
+main_hand=jaithys_the_prison_blade,id=187542,bonus_id=7187/1498,enchant=sinful_revelation
+
+# Gear Summary
+# gear_ilvl=256.40
+# gear_strength=1117
+# gear_stamina=2119
+# gear_attack_power=20
+# gear_crit_rating=496
+# gear_haste_rating=543
+# gear_mastery_rating=608
+# gear_versatility_rating=605
+# gear_armor=1534

@@ -4,6 +4,7 @@
 // ==========================================================================
 #include "covenant.hpp"
 
+#include "action/dot.hpp"
 #include "action/spell.hpp"
 #include "buff/sc_buff.hpp"
 #include "dbc/covenant_data.hpp"
@@ -151,7 +152,7 @@ bool covenant_state_t::parse_covenant( sim_t*             sim,
 
 // Parse soulbind= option into conduit_state_t and soulbind spell ids
 // Format:
-// soulbind_token = conduit_id:conduit_rank | soulbind_ability_id
+// soulbind_token = conduit_id:conduit_rank[:empowered] | soulbind_ability_id
 // soulbind = [soulbind_tree_id,]soulbind_token/soulbind_token/soulbind_token/...
 // Where:
 // soulbind_tree_id = numeric or tokenized soulbind tree identifier; unused by
@@ -184,9 +185,9 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
     if ( entry.find( ':' ) != util::string_view::npos )
     {
       auto _conduit_split = util::string_split<util::string_view>( entry, ":" );
-      if ( _conduit_split.size() != 2 )
+      if ( _conduit_split.size() != 2 && _conduit_split.size() != 3 )
       {
-        sim->error( "{} unknown conduit format {}, must be conduit_id:conduit_rank",
+        sim->error( "{} unknown conduit format {}, must be conduit_id:conduit_rank[:empowered]",
           m_player->name(), entry );
         return false;
       }
@@ -194,6 +195,10 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
       const conduit_entry_t* conduit_entry = nullptr;
       unsigned conduit_id = util::to_unsigned_ignore_error( _conduit_split[ 0 ], 0 );
       unsigned conduit_rank = util::to_unsigned( _conduit_split[ 1 ] );
+      // convenience tracking for error message purposes
+      // TODO: retain state in conduit_entry_t for html report differentiation of empowered vs non
+      bool conduit_empowered = false;
+
       if ( conduit_rank == 0 )
       {
         sim->error( "{} invalid conduit rank '{}', must be 1+",
@@ -219,12 +224,28 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
         return false;
       }
 
+      if ( _conduit_split.size() == 3 )
+      {
+        if ( _conduit_split[ 2 ] == "1" )
+        {
+          // empowered conduit simply get +2 to rank
+          conduit_rank += 2;
+          conduit_empowered = true;
+        }
+        else if ( _conduit_split[ 2 ] != "0" )
+        {
+          sim->error( "{} unknown conduit empowered flag {} for {} (id={}), must be '0' or '1'", m_player->name(),
+                      _conduit_split[ 2 ], conduit_entry->name, conduit_entry->id );
+          return false;
+        }
+      }
+
       const auto& conduit_rank_entry = conduit_rank_entry_t::find( conduit_entry->id,
           conduit_rank - 1U, m_player->dbc->ptr );
       if ( conduit_rank_entry.conduit_id == 0 )
       {
-        sim->error( "{} unknown conduit rank {} for {} (id={})",
-            m_player->name(), _conduit_split[ 1 ], conduit_entry->name, conduit_entry->id );
+        sim->error( "{} unknown conduit rank {}{} for {} (id={})", m_player->name(), _conduit_split[ 1 ],
+                    conduit_empowered ? " (empowered)" : "", conduit_entry->name, conduit_entry->id );
         return false;
       }
 
@@ -725,16 +746,86 @@ covenant_ability_cast_cb_t* get_covenant_callback( player_t* p )
 
 struct fleshcraft_t : public spell_t
 {
+  bool magnificent_skin_active;
+  bool pustule_eruption_active;
+  bool volatile_solvent_active;
+
   fleshcraft_t( player_t* p, util::string_view opt )
     : spell_t( "fleshcraft", p, p->find_covenant_spell( "Fleshcraft" ) )
   {
     harmful = may_crit = may_miss = false;
-    channeled = true;
+    channeled = interrupt_auto_attack = true;
 
     parse_options( opt );
   }
 
+  void init_finished() override
+  {
+    spell_t::init_finished();
+
+    magnificent_skin_active = player->find_soulbind_spell( "Emeni's Magnificent Skin" )->ok();
+    volatile_solvent_active = player->find_soulbind_spell( "Volatile Solvent" )->ok();
+
+    pustule_eruption_active = player->find_soulbind_spell( "Pustule Eruption" )->ok();
+    if ( pustule_eruption_active )
+    {
+      action_t* pustule_eruption_damage = player->find_action( "pustule_eruption" );
+      if( pustule_eruption_damage )
+        add_child( pustule_eruption_damage );
+    }
+  }
+
   double composite_haste() const override { return 1.0; }
+
+  void execute() override
+  {
+    spell_t::execute();
+
+    if ( magnificent_skin_active )
+    {
+      player->buffs.emenis_magnificent_skin->trigger();
+    }
+
+    // This triggers the full duration buff at the start of the cast, regardless of channel
+    if ( volatile_solvent_active )
+    {
+      if ( player->buffs.volatile_solvent_humanoid )
+        player->buffs.volatile_solvent_humanoid->trigger();
+
+      if ( player->buffs.volatile_solvent_damage )
+        player->buffs.volatile_solvent_damage->trigger();
+
+      if( player->buffs.volatile_solvent_stats )
+        player->buffs.volatile_solvent_stats->trigger();
+    }
+
+    // Ensure we get the full 9 stack if we are using this precombat without the channel
+    if ( is_precombat && pustule_eruption_active && player->buffs.trembling_pustules )
+    {
+      player->buffs.trembling_pustules->trigger( 9 );
+    }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    spell_t::last_tick( d );
+
+    if ( pustule_eruption_active && player->buffs.trembling_pustules )
+    {
+      // Hardcoded at 3 stacks per 1s of channeling in tooltip, granted at the end of the channel
+      // This doesn't appear to always be partial, and is only in increments of 3
+      // However, sometimes it is in increments of +3 stacks every 1s (even) tick, need to check more with logs
+      int num_stacks = 3 * floor( ( base_tick_time * d->current_tick ) / 1_s );
+      if ( num_stacks > 0 )
+        player->buffs.trembling_pustules->trigger( num_stacks );
+    }
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    // Channeling and pre-combat don't play nicely together, so need to work around this to get the buffs
+    return is_precombat ? timespan_t::zero() : spell_t::composite_dot_duration( s );
+  }
 };
 
 action_t* create_action( player_t* player, util::string_view name, const std::string& options )
