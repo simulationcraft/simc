@@ -2664,6 +2664,47 @@ void yasahm_the_riftbreaker( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// TODO: Add proc restrictions to match the weapons or expansion options.
+void cruciform_veinripper(special_effect_t& effect)
+{
+
+  struct sadistic_glee_t : public proc_spell_t
+  {
+    double scaled_dmg;
+
+    sadistic_glee_t(const special_effect_t& e)
+      : proc_spell_t("sadistic_glee", e.player, e.player->find_spell(353466), e.item),
+        scaled_dmg(e.driver()->effectN(1).average(e.item))
+    {
+      base_td = scaled_dmg;
+    }
+
+    double base_ta(const action_state_t* /* s */) const override
+    {
+      return scaled_dmg;
+    }
+
+    // TODO: Confirm Dot Refresh Behaviour
+    timespan_t calculate_dot_refresh_duration(const dot_t* dot, timespan_t duration) const override
+    {
+      return dot->time_to_next_tick() + duration;
+    }
+  };
+
+  auto sadistic_glee = static_cast<sadistic_glee_t*>(effect.player->find_action("sadistic_glee"));
+
+  if (!sadistic_glee)
+    effect.execute_action = create_proc_action<sadistic_glee_t>("sadistic_glee", effect);
+  else
+    sadistic_glee->scaled_dmg += effect.driver()->effectN(1).average(effect.item);
+
+  effect.spell_id = 357588;
+  effect.rppm_modifier_ = 0.5;
+
+  new dbc_proc_callback_t(effect.player, effect);
+}
+
+
 // Armor
 
 /**Passably-Forged Credentials
@@ -3368,6 +3409,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 358569, items::jaithys_the_prison_blade_4 );
     unique_gear::register_special_effect( 358571, items::jaithys_the_prison_blade_5 );
     unique_gear::register_special_effect( 351527, items::yasahm_the_riftbreaker );
+    unique_gear::register_special_effect( 359168, items::cruciform_veinripper);
 
     // Armor
     unique_gear::register_special_effect( 352081, items::passablyforged_credentials );
