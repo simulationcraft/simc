@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39229 Live (hotfix 2021-07-01/39229, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39282 Live (hotfix 2021-07-02/39282, no-networking)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
