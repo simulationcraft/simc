@@ -1279,8 +1279,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=48506)    : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
+#1 (id=48506)    : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
                    Base Value: 15 | Scaled Value: 5.795453 (coefficient=0.340909) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
+Hotfixed         : Unknown(28) (-7 -> -1)
 Description      : Increases your Versatility by $s1.
 
 Name             : Exhaustion (id=57723) 

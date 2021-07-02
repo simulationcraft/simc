@@ -15375,7 +15375,7 @@ static const std::array<spelltext_data_t, 15521> __spelltext_data { {
   { 356284, "Take on the appearance of an attendant of Korthia.", "Wearing the guise of a Korthian attendant.", 0 },
   { 356321, "$@spelldesc355766", "Draining $w1 health from nearby enemies every $t1 sec.", 0 },
   { 356326, "$@spelldesc355321", "Mastery increased by $w1.", 0 },
-  { 356329, "$@spelldesc355755", "Damage taken from $@auracaster increased by $w1.00%.", 0 },
+  { 356329, "$@spelldesc355755", "Damage taken from $@auracaster increased by ${$W1}.2%.", 0 },
   { 356342, "$@spelldesc356344", "Critical strike chance increased by $s1% and critical strike damage increased by $s2% for $?s137046[Incinerate]?s198590[Drain Soul]?a137044&!s137046[Demonbolt][Shadow Bolt].", 0 },
   { 356344, "Decimating Bolt also increases the critical strike chance by $356342s1% and critical strike damage by $356342s2% for $?s137046[Incinerate]?s198590[Drain Soul]?a137044&!s137046[Demonbolt][Shadow Bolt].", 0, 0 },
   { 356346, "Frozen in time for $d.", "Frozen in time for $d.", 0 },
@@ -15524,11 +15524,12 @@ static const std::array<spelltext_data_t, 15521> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.1.0.39282
-static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
   {    5938,  0, "Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]\r\n$?s319032[\r\nYour Nature damage done against the target is increased by $319504s1%][] $?a354124[and healing received reduced by $354124S1% ][]for $319504d.\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", "Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]$?s319032[\r\n\r\nYour Nature damage done against the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $354124S1% for $319504d.][]\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r" },
   {  323074,  0, "Fleshcraft's passive effect consumes a corpse's essence completely, granting a benefit based on the creature's type.", "Fleshcraft's passive effect consumes a corpse's essence completely, granting a benefit based on the creature's type. \r\n\r\nCasting Fleshcraft also consumes a small portion of your own essence, granting you the Humanoid benefit." },
   {  329778,  0, "Chance to critical strike is increased by $330511s1% for every nearby enemy or ally, up to $330511u%.", "Chance to critical strike is increased by $330511s1% for every nearby enemy or ally, up to ${$330511s1*$330511u}%." },
   {  341824,  1, "Increase the healing of your next $?c2[Flash Heal][Shadow Mend] by $s1%.", "Increase the healing of your next $?c2[Flash Heal][Shadow Mend] by $w1%." },
+  {  356329,  1, "Damage taken from $@auracaster increased by $w1.00%.", "Damage taken from $@auracaster increased by ${$W1}.2%." },
 } };
 
 // Spell description variables, wow build 9.1.0.39282
