@@ -80,7 +80,7 @@ legs=aradnes_lancer_legguards,id=186307,bonus_id=7187/1498
 feet=ragebound_leg_irons,id=186343,bonus_id=7187/1498,gem_id=187312,enchant=eternal_agility
 finger1=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=phial_of_putrefecation,id=178771,bonus_id=6536/1566/6646
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
 trinket2=infinitely_divisible_ooze,id=178769,bonus_id=6536/1566/6646
 main_hand=jotungeirr_destinys_call,id=186404,bonus_id=7187/1498,enchant=sinful_revelation
 
