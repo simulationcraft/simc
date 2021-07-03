@@ -33,7 +33,9 @@ std::string rune( const player_t* p )
 
 std::string temporary_enchant( const player_t* p )
 {
-  return ( p -> true_level >= 60 ) ? "main_hand:shadowcore_oil" :
+  std::string lvl60_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:shaded_sharpening_stone" : "main_hand:shadowcore_oil";
+
+  return ( p -> true_level >= 60 ) ? lvl60_temp_enchant :
          "disabled";
 }
 
