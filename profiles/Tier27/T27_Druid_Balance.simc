@@ -2,13 +2,13 @@ druid="T27_Druid_Balance"
 source=default
 spec=balance
 level=60
-race=highmountain_tauren
+race=troll
 role=spell
 position=ranged_back
-talents=3000231
-covenant=night_fae
-soulbind=niya,grove_invigoration/conflux_of_elements:7/niyas_tools_burrs
-renown=40
+talents=1000332
+covenant=venthyr
+soulbind=soothing_shade/party_favors/fury_of_the_skies:11/precise_alignment:11/endless_thirst:11
+renown=80
 
 # Default consumables
 potion=spectral_intellect
@@ -240,28 +240,29 @@ actions.st+=/wrath
 # Fallthru
 actions.st+=/run_action_list,name=fallthru
 
-head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173130
-neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498/6935,gem_id=173130
-shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=miasmalacquered_jerkin,id=183009,bonus_id=7187/1498,enchant=eternal_insight
-wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173130,enchant=eternal_intellect
-hands=bleakwing_assassins_grips,id=183007,bonus_id=7187/1498
-waist=heedless_pugilists_harness,id=183005,bonus_id=7187/1498/6935,gem_id=173130
-legs=umbrahide_leggings,id=172318,bonus_id=6648/6649/6758/7107/1532
-feet=enchanted_toetappers,id=183030,bonus_id=7187/1498
-finger1=hyperlight_band,id=183038,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_mastery
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_mastery
-trinket1=dreadfire_vessel,id=184030,bonus_id=7187/1498
-trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498
-main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinful_revelation
+head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187318
+neck=sin_stained_pendant,id=178827,ilevel=252,gem_id=173130
+shoulders=smugglers_plundered_pauldrons,id=186298,bonus_id=7187/1498,gem_id=187319,enchant=60runspeed
+back=dealer_xyexas_cape,id=179349,bonus_id=6536/1566/6646
+chest=mawsworn_eviscerators_cuirass,id=186296,bonus_id=7187/1498,gem_id=187320,enchant=eternal_stats
+wrists=fastened_venombarb_binds,id=178934,bonus_id=6536/1566/6646,gem_id=173130,enchant=eternal_intellect
+hands=hangmans_knotbinders,id=186333,bonus_id=7187/1498,gem_id=187312
+waist=umbrahide_waistguard,id=172320,bonus_id=7474/6716/7194/6648/6649/1559,gem_id=173130
+legs=elite_aranakk_breeches,id=186331,bonus_id=7187/1498
+feet=trenchant_warmonger_treads,id=186337,bonus_id=7187/1498,gem_id=187315
+finger1=death_gods_signet,id=179355,bonus_id=6536/1566/6646,gem_id=173130,enchant=tenet_of_mastery
+finger2=signet_of_the_false_accuser,id=178824,bonus_id=6536/1566/6646,gem_id=173130,enchant=tenet_of_mastery
+trinket1=titanic_ocular_gland,id=186423,bonus_id=7187/1498
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
+main_hand=maledict_opus,id=186406,bonus_id=7187/1498,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=229.87
-# gear_stamina=1531
-# gear_intellect=1184
-# gear_crit_rating=110
-# gear_haste_rating=662
-# gear_mastery_rating=646
-# gear_versatility_rating=543
-# gear_armor=609
+# gear_ilvl=253.60
+# gear_stamina=2061
+# gear_intellect=1487
+# gear_crit_rating=252
+# gear_haste_rating=671
+# gear_mastery_rating=857
+# gear_versatility_rating=425
+# gear_speed_rating=60
+# gear_armor=708
