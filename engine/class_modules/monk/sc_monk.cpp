@@ -1413,8 +1413,8 @@ struct blackout_kick_t : public monk_melee_attack_t
     : monk_melee_attack_t(
           "blackout_kick", p,
           ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) ),
-      charred_passions( new charred_passions_t( p ) ),
-      bok_totm_proc( new blackout_kick_totm_proc( p ) )
+      bok_totm_proc( new blackout_kick_totm_proc( p ) ),
+      charred_passions( new charred_passions_t( p ) )
   {
     ww_mastery = true;
 
@@ -3085,8 +3085,8 @@ struct fortifying_brew_t : public monk_spell_t
   fortifying_brew_t( monk_t& p, util::string_view options_str )
     : monk_spell_t( "fortifying_brew", &p,
           ( p.specialization() == MONK_BREWMASTER ? p.spec.fortifying_brew_brm : p.spec.fortifying_brew_mw_ww ) ),
-      fortifying_ingredients( new fortifying_ingredients_t( p ) ),
-      delivery( new special_delivery_t( p ) )
+      delivery( new special_delivery_t( p ) ),
+      fortifying_ingredients( new fortifying_ingredients_t( p ) )
   {
     parse_options( options_str );
 

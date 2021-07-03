@@ -8129,7 +8129,7 @@ void rogue_t::create_buffs()
   buffs.guile_charm_insight_1 = make_buff( this, "shallow_insight", find_spell( 340582 ) )
     ->set_default_value_from_effect( 1 ) // Bonus Damage%
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+    ->set_stack_change_callback( [ this ]( buff_t*, int, [[maybe_unused]] int new_ ) {
       legendary.guile_charm_counter = 0;
     } );
   buffs.guile_charm_insight_2 = make_buff( this, "moderate_insight", find_spell( 340583 ) )
@@ -8142,7 +8142,7 @@ void rogue_t::create_buffs()
   buffs.guile_charm_insight_3 = make_buff( this, "deep_insight", find_spell( 340584 ) )
     ->set_default_value_from_effect( 1 ) // Bonus Damage%
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+    ->set_stack_change_callback( [ this ]( buff_t*, int, [[maybe_unused]] int new_ ) {
       buffs.guile_charm_insight_2->expire();
       legendary.guile_charm_counter = 0;
     } );

@@ -1054,8 +1054,8 @@ void valiant_strikes( special_effect_t& effect )
 
     valiant_strikes_event_t( valiant_strikes_t* v, timespan_t t = 0_ms ) :
       event_t( *v->sim, t ),
-      valiant_strikes( v ),
-      delta_time( t )
+      delta_time( t ),
+      valiant_strikes( v )
     {}
 
     const char* name() const override
@@ -1107,7 +1107,7 @@ void valiant_strikes( special_effect_t& effect )
   effect.proc_flags2_ = PF2_CRIT;
   new valiant_strikes_cb_t( effect, dormant_valor );
 
-  effect.player->register_combat_begin( [ valiant_strikes ]( player_t* p )
+  effect.player->register_combat_begin( [ valiant_strikes ]( player_t* )
     { make_event<valiant_strikes_event_t>( *valiant_strikes->sim, valiant_strikes ); } );
 }
 
@@ -2371,7 +2371,7 @@ void pustule_eruption( special_effect_t& effect )
       make_buff( effect.player, "trembling_pustules", effect.player->find_spell( 352086 ) )
       ->set_period( effect.player->sim->shadowlands_opts.pustule_eruption_interval )
       ->set_reverse( true )
-      ->set_tick_callback( [ damage, heal ]( buff_t* b, int, timespan_t )
+      ->set_tick_callback( [ damage, heal ]( buff_t*, int, timespan_t )
       {
         damage->set_target( damage->player->target );
         damage->execute();

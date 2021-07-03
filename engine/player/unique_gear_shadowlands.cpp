@@ -2057,7 +2057,6 @@ void tormentors_rack_fragment( special_effect_t& effect )
 
 void old_warriors_soul( special_effect_t& effect )
 {
-  player_t* p = effect.player;
   auto buff   = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "undying_rage" ) );
   if ( !buff )
   {
@@ -2125,7 +2124,7 @@ void salvaged_fusion_amplifier( special_effect_t& effect)
   cb_driver->proc_flags2_ = PF2_CAST_DAMAGE;  // Only triggers from damaging casts
   effect.player->special_effects.push_back( cb_driver );
 
-  auto callback      = new salvaged_fusion_amplifier_cb_t( *cb_driver, damage, buff );
+  [[maybe_unused]] auto callback = new salvaged_fusion_amplifier_cb_t( *cb_driver, damage, buff );
 
   timespan_t precast = effect.player->sim->shadowlands_opts.salvaged_fusion_amplifier_precast;
   if ( precast > 0_s )
@@ -2649,7 +2648,7 @@ void yasahm_the_riftbreaker( special_effect_t& effect )
   if ( !buff )
   {
     buff = make_buff( effect.player, "preternatural_charge", effect.trigger() )->set_max_stack( effect.trigger()->max_stacks() + 1 );
-    buff->set_stack_change_callback( [ proc ]( buff_t* buff, int old, int cur ) {
+    buff->set_stack_change_callback( [ proc ]( buff_t* buff, [[maybe_unused]] int old, int cur ) {
       if ( cur == buff->max_stack() )
       {
         proc->set_target( buff->player->target );
