@@ -8802,8 +8802,13 @@ void shaman_t::init_action_list_elemental()
     def->add_action( "bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up" );
     def->add_action( "vesper_totem,if=covenant.kyrian" );
     def->add_action(
-        "fae_transfusion,if=covenant.night_fae&(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up)&"
+        "fae_transfusion,if=covenant.night_fae&!runeforge.seeds_of_rampant_growth.equipped&"
+        "(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up)&"
         "spell_targets.chain_lightning<3" );
+    def->add_action(
+        "fae_transfusion,if=covenant.night_fae&runeforge.seeds_of_rampant_growth.equipped&"
+        "(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up|spell_targets.chain_lightning>=3)&"
+        "(cooldown.fire_elemental.remains>20|cooldown.storm_elemental.remains>20)" );
     def->add_action(
         "run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)" );
     def->add_action( "run_action_list,name=single_target,if=!talent.storm_elemental.enabled&active_enemies<=2" );
