@@ -129,7 +129,7 @@ actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
 head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187073/173128
 neck=sin_stained_pendant,id=178827,bonus_id=6536/1566/6646,gem_id=173128
-shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187076,enchant=27runspeed
+shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187076,enchant=30runspeed
 back=cloak_of_scarred_honor,id=186289,bonus_id=7187/1498
 chest=conjunctionforged_chainmail,id=186340,bonus_id=7187/1498,gem_id=187079,enchant=eternal_skirmish
 wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498,gem_id=173128
@@ -152,5 +152,5 @@ off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_gui
 # gear_haste_rating=1133
 # gear_mastery_rating=536
 # gear_versatility_rating=234
-# gear_speed_rating=27
+# gear_speed_rating=30
 # gear_armor=1022

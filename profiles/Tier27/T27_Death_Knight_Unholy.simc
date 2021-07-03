@@ -166,7 +166,7 @@ neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173130
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
 back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6648/1559,enchant=soul_vitality
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_stats
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173130/187319,enchant=40runspeed
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173130/187319,enchant=60runspeed
 hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
 waist=binding_of_dark_destinies,id=186352,bonus_id=7187/1498/6935,gem_id=173130
 legs=agathas_gothic_greaves,id=186313,bonus_id=7187/1498
@@ -186,5 +186,5 @@ main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/7745/7746/7747,enchan
 # gear_haste_rating=552
 # gear_mastery_rating=823
 # gear_versatility_rating=238
-# gear_speed_rating=40
+# gear_speed_rating=60
 # gear_armor=1527

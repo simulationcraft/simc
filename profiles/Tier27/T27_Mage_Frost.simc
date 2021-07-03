@@ -97,7 +97,7 @@ actions.st+=/fire_blast,if=runeforge.disciplinary_command&cooldown.buff_discipli
 actions.st+=/glacial_spike,if=buff.brain_freeze.react
 actions.st+=/frostbolt
 
-head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=173128/187319,enchant=40runspeed
+head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=173128/187319,enchant=60runspeed
 neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173128
 shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187320
 back=drape_of_twisted_loyalties,id=180123,bonus_id=1566/6536/6646
@@ -121,5 +121,5 @@ main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=sinful_revelation
 # gear_haste_rating=901
 # gear_mastery_rating=204
 # gear_versatility_rating=394
-# gear_speed_rating=40
+# gear_speed_rating=60
 # gear_armor=439

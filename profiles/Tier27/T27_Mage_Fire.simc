@@ -248,7 +248,7 @@ actions.standard_rotation+=/arcane_explosion,if=active_enemies>=variable.arcane_
 actions.standard_rotation+=/flamestrike,if=active_enemies>=variable.hard_cast_flamestrike
 actions.standard_rotation+=/fireball
 
-head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=173128/187319,enchant=40runspeed
+head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=173128/187319,enchant=60runspeed
 neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173128
 shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187320
 back=selfreplicating_tissue,id=186374,bonus_id=1498/7187
@@ -272,5 +272,5 @@ main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=sinful_revelation
 # gear_haste_rating=808
 # gear_mastery_rating=327
 # gear_versatility_rating=701
-# gear_speed_rating=40
+# gear_speed_rating=60
 # gear_armor=435

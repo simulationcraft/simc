@@ -104,7 +104,7 @@ neck=weathered_talisman_of_the_shadowmoon,id=186378,bonus_id=7187/1498/6935,gem_
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
 back=cloak_of_scarred_honor,id=186289,bonus_id=7187/1498
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187312,enchant=eternal_skirmish
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173127/187319,enchant=40runspeed
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173127/187319,enchant=60runspeed
 hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
 waist=shadowghast_waistguard,id=171418,bonus_id=6647/6649/6758/6962/1559/6935,gem_id=173127
 legs=agathas_gothic_greaves,id=186313,bonus_id=7187/1498
@@ -124,5 +124,5 @@ main_hand=jaithys_the_prison_blade,id=186410,bonus_id=7187/1498/7747,enchant=sin
 # gear_haste_rating=465
 # gear_mastery_rating=521
 # gear_versatility_rating=234
-# gear_speed_rating=40
+# gear_speed_rating=60
 # gear_armor=1534
