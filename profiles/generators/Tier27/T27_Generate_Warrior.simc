@@ -53,8 +53,8 @@ finger1=signet_of_the_false_accuser,id=178824,bonus_id=6536/1566/6646/6935,gem_i
 finger2=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
 trinket1=old_warriors_soul,id=186438,bonus_id=7187/1498
 trinket2=titanic_ocular_gland,id=186423,bonus_id=7187/1498
-main_hand=jaithys_the_prison_blade,id=186410,bonus_id=7187/1498/7747,ilevel=259,enchant=celestial_guidance
-off_hand=jaithys_the_prison_blade,id=186410,bonus_id=7187/1498/7747,ilevel=259,enchant=sinful_revelation
+main_hand=jaithys_the_prison_blade,id=186410,bonus_id=7187/1498/7748,enchant=celestial_guidance
+off_hand=jaithys_the_prison_blade,id=186410,bonus_id=7745/7746/7747/7187/1498,enchant=sinful_revelation
 
 
 save=T27_Warrior_Fury.simc
