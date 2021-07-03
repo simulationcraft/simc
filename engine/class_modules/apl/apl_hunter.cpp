@@ -33,7 +33,9 @@ std::string rune( const player_t* p )
 
 std::string temporary_enchant( const player_t* p )
 {
-  return ( p -> true_level >= 60 ) ? "main_hand:shadowcore_oil" :
+  std::string lvl60_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:shaded_sharpening_stone" : "main_hand:shadowcore_oil";
+
+  return ( p -> true_level >= 60 ) ? lvl60_temp_enchant :
          "disabled";
 }
 
@@ -268,12 +270,13 @@ void survival( player_t* p )
 
   cds -> add_action( "harpoon,if=talent.terms_of_engagement.enabled&focus<focus.max" );
   cds -> add_action( "use_item,name=dreadfire_vessel,if=covenant.kyrian&cooldown.resonating_arrow.remains>10|!covenant.kyrian" );
-  cds -> add_action( "blood_fury,if=cooldown.coordinated_assault.remains>30" );
-  cds -> add_action( "ancestral_call,if=cooldown.coordinated_assault.remains>30" );
-  cds -> add_action( "fireblood,if=cooldown.coordinated_assault.remains>30" );
+  cds -> add_action( "use_item,name=jotungeirr_destinys_call,if=buff.coordinated_assault.up|time_to_die<31" );
+  cds -> add_action( "blood_fury,if=buff.coordinated_assault.up" );
+  cds -> add_action( "ancestral_call,if=buff.coordinated_assault.up" );
+  cds -> add_action( "fireblood,if=buff.coordinated_assault.up" );
   cds -> add_action( "lights_judgment" );
   cds -> add_action( "bag_of_tricks,if=cooldown.kill_command.full_recharge_time>gcd" );
-  cds -> add_action( "berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<13" );
+  cds -> add_action( "berserking,if=buff.coordinated_assault.up|time_to_die<13" );
   cds -> add_action( "muzzle" );
   cds -> add_action( "potion,if=target.time_to_die<60|buff.coordinated_assault.up" );
   cds -> add_action( "fleshcraft,cancel_if=channeling&!soulbind.pustule_eruption,if=(focus<70|cooldown.coordinated_assault.remains<gcd)&(soulbind.pustule_eruption|soulbind.volatile_solvent)" );
@@ -287,7 +290,6 @@ void survival( player_t* p )
   nta -> add_action( "steel_trap" );
   nta -> add_action( "freezing_trap,if=!buff.wild_spirits.remains|buff.wild_spirits.remains&cooldown.kill_command.remains" );
   nta -> add_action( "tar_trap,if=!buff.wild_spirits.remains|buff.wild_spirits.remains&cooldown.kill_command.remains" );
-
 
   st -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
   st -> add_action( "serpent_sting,target_if=min:remains,if=!dot.serpent_sting.ticking&target.time_to_die>7|buff.vipers_venom.up&buff.vipers_venom.remains<gcd" );

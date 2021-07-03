@@ -31,7 +31,7 @@ T27_Monk_Windwalker_Necrolord.simc
 # T27_Monk_Windwalker_Serenity.simc
 
 # T27_Paladin_Protection.simc
-# T27_Paladin_Retribution.simc
+T27_Paladin_Retribution.simc
 # T27_Paladin_Retribution_Venthyr.simc
 
 # T27_Priest_Discipline.simc
@@ -44,7 +44,7 @@ T27_Rogue_Assassination.simc
 T27_Rogue_Outlaw.simc
 T27_Rogue_Subtlety.simc
 
-# T27_Shaman_Elemental.simc
+T27_Shaman_Elemental.simc
 T27_Shaman_Enhancement.simc
 T27_Shaman_Enhancement_KDW.simc
 T27_Shaman_Enhancement_VDW.simc

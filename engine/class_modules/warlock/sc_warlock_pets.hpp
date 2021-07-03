@@ -449,6 +449,7 @@ struct vilefiend_t : public warlock_simple_pet_t
 
   vilefiend_t( warlock_t* owner );
   void init_base_stats() override;
+  void arise() override;
   action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 

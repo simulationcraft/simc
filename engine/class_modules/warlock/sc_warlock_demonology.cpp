@@ -844,12 +844,7 @@ struct summon_vilefiend_t : public demonology_spell_t
   {
     demonology_spell_t::execute();
     p()->buffs.vilefiend->trigger();
-
-    // Spawn a single vilefiend, and grab it's pointer so we can execute an instant bile split
-    // TODO: The bile split execution should move to the pet itself, instead of here
-    auto vilefiend = p()->warlock_pet_list.vilefiends.spawn( data().duration() ).front();
-    vilefiend->bile_spit->set_target( execute_state->target );
-    vilefiend->bile_spit->execute();
+    p()->warlock_pet_list.vilefiends.spawn( data().duration() );
   }
 };
 
@@ -1257,7 +1252,7 @@ void warlock_t::create_apl_demonology()
   tyrant->add_action( "nether_portal,if=cooldown.summon_demonic_tyrant.remains_expected<15" );
   tyrant->add_action( "grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains_expected<17-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&(cooldown.call_dreadstalkers.remains<17-(action.summon_demonic_tyrant.execute_time+action.summon_vilefiend.execute_time+action.shadow_bolt.execute_time)|pet.dreadstalker.remains>cooldown.summon_demonic_tyrant.remains_expected+action.summon_demonic_tyrant.execute_time)" );
   tyrant->add_action( "summon_vilefiend,if=(cooldown.summon_demonic_tyrant.remains_expected<15-(action.summon_demonic_tyrant.execute_time)&(cooldown.call_dreadstalkers.remains<15-(action.summon_demonic_tyrant.execute_time+action.summon_vilefiend.execute_time)|pet.dreadstalker.remains>cooldown.summon_demonic_tyrant.remains_expected+action.summon_demonic_tyrant.execute_time))|(!runeforge.wilfreds_sigil_of_superior_summoning&cooldown.summon_demonic_tyrant.remains_expected>40)" );
-  tyrant->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected<12-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&time>variable.first_tyrant_time-12" );
+  tyrant->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected<12-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&time>variable.first_tyrant_time-12-action.call_dreadstalkers.execute_time+action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time" );
   tyrant->add_action( "summon_demonic_tyrant,if=time>variable.first_tyrant_time&(pet.dreadstalker.active&pet.dreadstalker.remains>action.summon_demonic_tyrant.execute_time)&(!talent.summon_vilefiend.enabled|pet.vilefiend.active)&(soul_shard=0|(pet.dreadstalker.active&pet.dreadstalker.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(pet.vilefiend.active&pet.vilefiend.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(buff.grimoire_felguard.up&buff.grimoire_felguard.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time))" );
 
   ogcd->add_action( "berserking" );
