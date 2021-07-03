@@ -15,7 +15,7 @@ potion=spectral_agility
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
-temporary_enchant=main_hand:shadowcore_oil
+temporary_enchant=main_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -168,6 +168,7 @@ main_hand=rod_of_the_stone_sentinels,id=182393,bonus_id=7187/1531,enchant=sinful
 # gear_ilvl=229.40
 # gear_agility=877
 # gear_stamina=1514
+# gear_attack_power=20
 # gear_crit_rating=492
 # gear_haste_rating=896
 # gear_mastery_rating=169
