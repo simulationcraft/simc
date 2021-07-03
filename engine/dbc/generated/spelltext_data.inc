@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.39282
-static const std::array<spelltext_data_t, 15521> __spelltext_data { {
+static const std::array<spelltext_data_t, 15524> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -7449,6 +7449,7 @@ static const std::array<spelltext_data_t, 15521> __spelltext_data { {
   { 217878, "As long as it has not gone bad it restores $191876o1 health over $191876d.  Must remain seated while eating.", 0, 0 },
   { 217996, "Leech increased by $s1%.\r\n\r\nGain an additional $s2% Leech while Metamorphosis is active.", 0, 0 },
   { 218001, "$@spelldesc205273", 0, 0 },
+  { 218078, "Set the total pet maximum for your account to 1500. Usable once per account. Consumed on use.", 0, 0 },
   { 218164, "Removes all Poison and Disease effects from the target.", 0, 0 },
   { 218194, "Increase the health of your withered troops by 25%.\r\n\r\nThis effect is permanent and will take effect the next time you enter the Collapse scenario.", 0, 0 },
   { 218195, "One of the members of your withered army can wear the helm, causing it to become a powerful Withered Berserker.\r\n\r\nThis effect is permanent and will take effect the next time you enter the Collapse scenario.", 0, 0 },
@@ -9022,6 +9023,7 @@ static const std::array<spelltext_data_t, 15521> __spelltext_data { {
   { 254774, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254775, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254776, "Create a soulbound item appropriate for your Loot Specialization ($@lootspec).", 0, 0 },
+  { 254777, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254778, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254779, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254780, "Create a soulbound item appropriate for your Loot Specialization ($@lootspec).", 0, 0 },
@@ -11120,6 +11122,7 @@ static const std::array<spelltext_data_t, 15521> __spelltext_data { {
   { 286390, "Your attacks have a chance to make your next Divine Storm free and deal $s1 additional damage.", 0, 0 },
   { 286392, "$@spelldesc286390", 0, 0 },
   { 286393, "$@spelldesc286390", "Your next Divine Storm is free and deals $w1 additional damage.", 0 },
+  { 286438, "Set the total pet maximum for your account to $s1. Usable once per account. Consumed on use.", 0, 0 },
   { 286573, "Vendetta poisons the target, dealing ${$s1*10*$<assassinationMastery>} Nature damage over $286581d, and grants you $s2 energy over $286581d.", 0, 0 },
   { 286579, "$@spelldesc286573", 0, 0 },
   { 286581, "$@spelldesc286573", "Suffering $w1 Nature damage every $t1 sec.", 0 },
