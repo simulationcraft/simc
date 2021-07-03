@@ -1,4 +1,5 @@
 rogue="T27_Rogue_Subtlety"
+source=default
 spec=subtlety
 level=60
 race=mechagnome
@@ -6,7 +7,7 @@ role=attack
 position=back
 talents=1320031
 covenant=venthyr
-soulbind=nadjia_the_mistblade,331586/229:9:1/331576/331579/331584/245:9:1/352405/352373
+soulbind=nadjia_the_mistblade,thrill_seeker/lashing_scars:9:1/dauntless_duelist/deeper_daggers:9:1/fatal_flaw
 renown=80
 
 # Default consumables
@@ -185,12 +186,11 @@ off_hand=edge_of_night,id=186398,bonus_id=7187/1498,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=255.69
-# gear_agility=1111
+# gear_agility=1121
 # gear_stamina=2111
 # gear_attack_power=40
 # gear_crit_rating=1093
 # gear_haste_rating=355
 # gear_mastery_rating=50
 # gear_versatility_rating=564
-# gear_speed_rating=40
 # gear_armor=719

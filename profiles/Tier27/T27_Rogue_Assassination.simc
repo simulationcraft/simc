@@ -1,4 +1,5 @@
 rogue="T27_Rogue_Assassination"
+source=default
 spec=assassination
 level=60
 race=mechagnome
@@ -6,7 +7,7 @@ role=attack
 position=back
 talents=3320021
 covenant=venthyr
-soulbind=nadjia_the_mistblade,331586/229:11:0/331576/331579/331584/238:11:0/352405/352373
+soulbind=nadjia_the_mistblade,thrill_seeker/lashing_scars:9:1/dauntless_duelist/wellplaced_steel:9:1/fatal_flaw
 renown=80
 
 # Default consumables
@@ -182,12 +183,11 @@ off_hand=edge_of_night,id=186398,bonus_id=7187/1498,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=256.13
-# gear_agility=1111
+# gear_agility=1121
 # gear_stamina=2121
 # gear_attack_power=40
-# gear_crit_rating=951
-# gear_haste_rating=751
+# gear_crit_rating=935
+# gear_haste_rating=767
 # gear_mastery_rating=50
 # gear_versatility_rating=321
-# gear_speed_rating=40
 # gear_armor=719

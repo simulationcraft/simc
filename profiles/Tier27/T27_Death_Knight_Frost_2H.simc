@@ -199,7 +199,7 @@ neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173130
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
 back=blighted_margraves_cloak,id=178755,bonus_id=6536/1566/6646,enchant=soul_vitality
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_stats
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173130/187319,enchant=40runspeed
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173130/187319,enchant=60runspeed
 hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
 waist=fused_bone_greatbelt,id=178734,bonus_id=6536/1566/6646/6935,gem_id=173130
 legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6536/1566/6646
@@ -219,5 +219,5 @@ main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/7745/7746/7747,enchan
 # gear_haste_rating=460
 # gear_mastery_rating=702
 # gear_versatility_rating=284
-# gear_speed_rating=40
+# gear_speed_rating=60
 # gear_armor=1524

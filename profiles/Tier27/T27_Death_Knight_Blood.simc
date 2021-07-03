@@ -95,7 +95,7 @@ actions.standard+=/blood_boil,if=charges_fractional>=1.1
 actions.standard+=/heart_strike,if=(rune>1&(rune.time_to_3<gcd|buff.bone_shield.stack>7))
 actions.standard+=/arcane_torrent,if=runic_power.deficit>20
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173129/187319,enchant=40runspeed
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173129/187319,enchant=60runspeed
 neck=shadowghast_necklace,id=178927,bonus_id=6716/6953/6647/6650/1559,gem_id=173129
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187320
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6536/1566/6646,enchant=soul_vitality
@@ -119,5 +119,5 @@ main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/6652/7733/7734/7735,e
 # gear_haste_rating=727
 # gear_mastery_rating=184
 # gear_versatility_rating=499
-# gear_speed_rating=40
+# gear_speed_rating=60
 # gear_armor=1524

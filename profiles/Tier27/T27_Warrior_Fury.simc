@@ -94,7 +94,7 @@ neck=shadowghast_necklace,id=178927,bonus_id=6648/6649/6758/7470/1559/6935,gem_i
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
 back=selfreplicating_tissue,id=186374,bonus_id=7187/1498
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187312,enchant=eternal_skirmish
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173128/187319,enchant=40runspeed
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173128/187319,enchant=60runspeed
 hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
 waist=disintegrationproof_waistband,id=186317,bonus_id=7187/1498/6935,gem_id=173128
 legs=galvanized_oxxein_legguards,id=178800,bonus_id=6536/1566/6646
@@ -115,5 +115,5 @@ off_hand=jaithys_the_prison_blade,id=186410,bonus_id=7187/1498/7747,ilevel=259,e
 # gear_haste_rating=950
 # gear_mastery_rating=813
 # gear_versatility_rating=228
-# gear_speed_rating=40
+# gear_speed_rating=60
 # gear_armor=1524
