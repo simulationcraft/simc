@@ -844,12 +844,7 @@ struct summon_vilefiend_t : public demonology_spell_t
   {
     demonology_spell_t::execute();
     p()->buffs.vilefiend->trigger();
-
-    // Spawn a single vilefiend, and grab it's pointer so we can execute an instant bile split
-    // TODO: The bile split execution should move to the pet itself, instead of here
-    auto vilefiend = p()->warlock_pet_list.vilefiends.spawn( data().duration() ).front();
-    vilefiend->bile_spit->set_target( execute_state->target );
-    vilefiend->bile_spit->execute();
+    p()->warlock_pet_list.vilefiends.spawn( data().duration() );
   }
 };
 
