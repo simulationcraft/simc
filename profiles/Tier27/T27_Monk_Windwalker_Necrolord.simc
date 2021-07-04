@@ -180,13 +180,14 @@ legs=elite_aranakk_breeches,id=186331,bonus_id=7187/1498
 feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187314,enchant=eternal_agility
 finger1=ritual_commanders_ring,id=178781,bonus_id=6536/1566/6646/6935,gem_id=173129,enchant=tenet_of_versatility
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
 trinket2=shadowgrasp_totem,id=179356,bonus_id=6536/1566/6646
-main_hand=cruciform_veinripper,id=186388,ilevel=252,enchant=sinful_revelation
-off_hand=cruciform_veinripper,id=186388,ilevel=252,enchant=celestial_guidance
+main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=sinful_revelation
+off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
 
 # Gear Summary
-# gear_ilvl=254.53
-# gear_agility=1002
+# gear_ilvl=254.38
+# gear_agility=1100
 # gear_stamina=2109
 # gear_attack_power=40
 # gear_crit_rating=1054
