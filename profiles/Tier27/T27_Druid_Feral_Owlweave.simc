@@ -8,8 +8,8 @@ role=attack
 position=back
 talents=2313122
 covenant=night_fae
-soulbind=niya,grove_invigoration/taste_for_blood:7/born_of_the_wilds:7/niyas_tools_burrs
-renown=40
+soulbind=niya:1,322721/279:11:0/342270/260:11:0/271:11:0/265:11:0/320660/268:11:0/352501/256:11:0/352503
+renown=80
 
 # Default consumables
 potion=spectral_agility
@@ -39,7 +39,7 @@ actions.precombat+=/augmentation
 actions.precombat+=/snapshot_stats
 actions.precombat+=/variable,name=4cp_bite,value=0
 # Shred = 0, Non-snapshot Rake = 1, Snapshot Rake = 2, LI = 3, Swipe = 4
-actions.precombat+=/variable,name=filler,value=0
+actions.precombat+=/variable,name=filler,value=1
 actions.precombat+=/variable,name=rip_ticks,value=7
 actions.precombat+=/snapshot_stats
 actions.precombat+=/cat_form
@@ -58,31 +58,30 @@ actions+=/cycling_variable,name=shortest_ttd,op=min,value=target.time_to_die
 actions+=/run_action_list,name=stealth,if=buff.shadowmeld.up|buff.prowl.up
 actions+=/skull_bash
 actions+=/call_action_list,name=cooldown
-# Necrolord: Cast 3 or 4 combo point rips on single target outside of berserk or during berserk if feral frenzy is up.
-actions+=/rip,target_if=covenant.necrolord&spell_targets.thrash_cat=1&combo_points>2&refreshable&druid.rip.ticks_gained_on_refresh>variable.rip_ticks&(!buff.bs_inc.up|cooldown.bs_inc.up|(buff.bs_inc.up&cooldown.feral_frenzy.up))
+# Necrolord: Cast 3 or 4 combo point rips on single target outside of berserk or during berserk if feral frenzy is up OR apply a 5cp Rip when TF is up and will soon fall off.
+actions+=/rip,if=covenant.necrolord&(!talent.bloodtalons.enabled|buff.bloodtalons.up)&spell_targets.thrash_cat=1&(combo_points>2&refreshable&druid.rip.ticks_gained_on_refresh>variable.rip_ticks|combo_points=5&buff.tigers_fury.up&buff.tigers_fury.remains<3&druid.rip.ticks_gained_on_refresh>5)&(!buff.bs_inc.up|cooldown.bs_inc.up|(buff.bs_inc.up&cooldown.feral_frenzy.up))
 actions+=/run_action_list,name=finisher,if=combo_points>=(5-variable.4cp_bite)
 actions+=/primal_wrath,if=druid.primal_wrath.ticks_gained_on_refresh>=20&combo_points>=2,line_cd=5
 # Multi-gcd stealth
-actions+=/call_action_list,name=stealth,if=buff.bs_inc.up|buff.sudden_ambush.up
+actions+=/call_action_list,name=stealth,if=buff.bs_inc.up
 # The most expensive BT cycle (Thresh Shred Swipe cost 115 energy, make sure we can make that in 4 globals)
 actions+=/pool_resource,if=talent.bloodtalons.enabled&buff.bloodtalons.down&(energy+3.5*energy.regen+(40*buff.clearcasting.up))<(115-23*buff.incarnation_king_of_the_jungle.up)&active_bt_triggers=0
 actions+=/run_action_list,name=bloodtalons,if=talent.bloodtalons.enabled&buff.bloodtalons.down
 actions+=/ferocious_bite,target_if=max:target.time_to_die,if=buff.apex_predators_craving.up
 actions+=/pool_resource,for_next=1
-actions+=/rake,target_if=(refreshable|persistent_multiplier>dot.rake.pmultiplier)&druid.rake.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2
-actions+=/lunar_inspiration,target_if=refreshable&druid.lunar_inspiration.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2
+actions+=/rake,target_if=max:druid.rake.ticks_gained_on_refresh,if=(refreshable|persistent_multiplier>dot.rake.pmultiplier)&druid.rake.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2
+actions+=/lunar_inspiration,target_if=max:druid.lunar_inspiration.ticks_gained_on_refresh,if=(refreshable|persistent_multiplier>dot.lunar_inspiration.pmultiplier)&druid.lunar_inspiration.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2
 actions+=/pool_resource,for_next=1
-actions+=/thrash_cat,target_if=refreshable&druid.thrash_cat.ticks_gained_on_refresh>(4+spell_targets.thrash_cat*4)%(1+mastery_value)-conduit.taste_for_blood.enabled-covenant.necrolord
+actions+=/thrash_cat,target_if=refreshable&druid.thrash_cat.ticks_gained_on_refresh>(4+spell_targets.thrash_cat*4)%(1+mastery_value)-conduit.taste_for_blood.enabled-covenant.necrolord&(!buff.bs_inc.up|spell_targets.thrash_cat>1)
 actions+=/pool_resource,for_next=1
 actions+=/brutal_slash,if=(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time)&(spell_targets.brutal_slash*action.brutal_slash.damage%action.brutal_slash.cost)>(action.shred.damage%action.shred.cost)
 actions+=/swipe_cat,if=spell_targets.swipe_cat>1+buff.bs_inc.up*2
 actions+=/thrash_cat,if=spell_targets.thrash_cat>3
-actions+=/shred,if=buff.clearcasting.up
-actions+=/rake,target_if=buff.bs_inc.up&druid.rake.ticks_gained_on_refresh>2
+actions+=/shred,if=buff.clearcasting.up&(buff.sudden_ambush.down&buff.shadowmeld.down|buff.bs_inc.up)
 actions+=/call_action_list,name=filler
 
-actions.bloodtalons=rake,target_if=(!ticking|(refreshable&persistent_multiplier>dot.rake.pmultiplier)|(active_bt_triggers=2&persistent_multiplier>dot.rake.pmultiplier)|(active_bt_triggers=2&refreshable))&buff.bt_rake.down&druid.rake.ticks_gained_on_refresh>=2
-actions.bloodtalons+=/lunar_inspiration,target_if=refreshable&buff.bt_moonfire.down
+actions.bloodtalons=rake,target_if=max:druid.rake.ticks_gained_on_refresh,if=(!ticking|(1.2*persistent_multiplier>=dot.rake.pmultiplier)|(active_bt_triggers=2&refreshable))&buff.bt_rake.down
+actions.bloodtalons+=/lunar_inspiration,target_if=max:druid.lunar_inspiration.ticks_gained_on_refresh,if=refreshable&buff.bt_moonfire.down
 actions.bloodtalons+=/thrash_cat,target_if=refreshable&buff.bt_thrash.down&druid.thrash_cat.ticks_gained_on_refresh>(4+spell_targets.thrash_cat*4)%(1+mastery_value)-conduit.taste_for_blood.enabled
 actions.bloodtalons+=/brutal_slash,if=buff.bt_brutal_slash.down
 actions.bloodtalons+=/swipe_cat,if=buff.bt_swipe.down&spell_targets.swipe_cat>1
@@ -98,25 +97,28 @@ actions.cooldown+=/incarnation,if=combo_points>=3
 # Try and not waste TF energy, but also just use it for zerk and incarns
 actions.cooldown+=/tigers_fury,if=energy.deficit>40|buff.bs_inc.up|(talent.predator.enabled&variable.shortest_ttd<3)
 # Might be wrong to use Smeld on Rake in very very niche situations, but very rarely
-actions.cooldown+=/shadowmeld,if=buff.tigers_fury.up&buff.bs_inc.down&combo_points<4&dot.rake.pmultiplier<1.6&energy>40&druid.rake.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2&target.time_to_die>5
+actions.cooldown+=/shadowmeld,if=buff.tigers_fury.up&buff.bs_inc.down&combo_points<4&buff.sudden_ambush.down&dot.rake.pmultiplier<1.6&energy>40&druid.rake.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2&target.time_to_die>5
 actions.cooldown+=/berserking,if=buff.tigers_fury.up|buff.bs_inc.up
-actions.cooldown+=/potion,if=buff.bs_inc.up
+actions.cooldown+=/potion,if=buff.bs_inc.up|fight_remains<cooldown.bs_inc.remains|fight_remains<25
 actions.cooldown+=/ravenous_frenzy,if=buff.bs_inc.up|fight_remains<21
 # TODO: Check moonkin hotw and stuff like this, and maybe better combat remain resync
 actions.cooldown+=/convoke_the_spirits,if=(dot.rip.remains>4&combo_points<3&dot.rake.ticking&energy.deficit>=20)|fight_remains<5
 # Maybe there should be more conditions on the conduit
 actions.cooldown+=/kindred_spirits,if=buff.tigers_fury.up|(conduit.deep_allegiance.enabled)
+# Give priority to on-use weapon
+actions.cooldown+=/use_item,name=jotungeirr_destinys_call,if=equipped.jotungeirr_destinys_call
 actions.cooldown+=/use_items
 
-actions.filler=rake,target_if=variable.filler=1&dot.rake.pmultiplier<=persistent_multiplier
+actions.filler=rake,target_if=max:druid.rake.ticks_gained_on_refresh,if=variable.filler=1&dot.rake.pmultiplier<=1.2*persistent_multiplier
 actions.filler+=/rake,if=variable.filler=2
 actions.filler+=/lunar_inspiration,if=variable.filler=3
 actions.filler+=/swipe,if=variable.filler=4
-actions.filler+=/shred
+actions.filler+=/shred,if=buff.sudden_ambush.down
 
-actions.finisher=savage_roar,if=buff.savage_roar.remains<3
+actions.finisher=pool_resource,for_next=1
+actions.finisher+=/savage_roar,if=buff.savage_roar.remains<3
 actions.finisher+=/primal_wrath,if=(druid.primal_wrath.ticks_gained_on_refresh>3*(spell_targets.primal_wrath+1)&spell_targets.primal_wrath>1)|spell_targets.primal_wrath>(3+1*talent.sabertooth.enabled)
-actions.finisher+=/rip,target_if=refreshable&druid.rip.ticks_gained_on_refresh>variable.rip_ticks&((buff.tigers_fury.up|cooldown.tigers_fury.remains>5)&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&dot.rip.pmultiplier<=persistent_multiplier|!talent.sabertooth.enabled)
+actions.finisher+=/rip,target_if=refreshable&druid.rip.ticks_gained_on_refresh>variable.rip_ticks&((buff.tigers_fury.up|!ticking)&(buff.bloodtalons.up|!talent.bloodtalons.enabled)|!talent.sabertooth.enabled)&(spell_targets.primal_wrath=1|!talent.primal_wrath.enabled)&(active_dot.rip=0|ticking&active_dot.rip=1|!runeforge.draught_of_deep_focus|!talent.sabertooth.enabled)
 actions.finisher+=/savage_roar,if=buff.savage_roar.remains<(combo_points+1)*6*0.3
 actions.finisher+=/ferocious_bite,max_energy=1,target_if=max:time_to_die
 actions.finisher+=/ferocious_bite,target_if=max:time_to_die,if=buff.bs_inc.up&talent.soul_of_the_forest.enabled
@@ -125,40 +127,42 @@ actions.owlweave=starsurge,if=buff.heart_of_the_wild.up
 actions.owlweave+=/sunfire,line_cd=4*gcd
 actions.owlweave+=/moonfire,line_cd=4*gcd,if=buff.moonkin_form.up&(runeforge.cateye_curio|runeforge.draught_of_deep_focus)&spell_targets.thrash_cat<2&!talent.lunar_inspiration.enabled
 actions.owlweave+=/heart_of_the_wild,if=energy<30&dot.rip.remains>4.5&(cooldown.tigers_fury.remains>=6.5|runeforge.cateye_curio)&buff.clearcasting.stack<1&!buff.apex_predators_craving.up&!buff.bloodlust.up&!buff.bs_inc.up&(cooldown.convoke_the_spirits.remains>6.5|!covenant.night_fae)&(!covenant.necrolord|cooldown.adaptive_swarm.remains>=5|dot.adaptive_swarm_damage.remains>7)
-actions.owlweave+=/moonkin_form,if=energy<30&dot.rip.remains>4.5&(cooldown.tigers_fury.remains>=4.5|runeforge.cateye_curio)&buff.clearcasting.stack<1&!buff.apex_predators_craving.up&!buff.bloodlust.up&!buff.bs_inc.up&(cooldown.convoke_the_spirits.remains>6.5|!covenant.night_fae)&(!covenant.necrolord|cooldown.adaptive_swarm.remains>=5|dot.adaptive_swarm_damage.remains>7)
+actions.owlweave+=/moonkin_form,if=energy<30&dot.rip.remains>4.5&(cooldown.tigers_fury.remains>=4.5|runeforge.cateye_curio)&buff.clearcasting.stack<1&!buff.apex_predators_craving.up&!buff.bloodlust.up&(!buff.bs_inc.up|covenant.necrolord&talent.savage_roar.enabled&buff.bs_inc.remains>6)&(cooldown.convoke_the_spirits.remains>6.5|!covenant.night_fae)&(!covenant.necrolord|cooldown.adaptive_swarm.remains>=5|dot.adaptive_swarm_damage.remains>7)&target.time_to_die>7
 
 # Rake needs roughly 50% of its length at a minimum to surpass shreds dpe
 actions.stealth=pool_resource,for_next=1
-actions.stealth+=/rake,target_if=(dot.rake.pmultiplier<1.5|refreshable)&druid.rake.ticks_gained_on_refresh>2|buff.bs_inc.remains<1
+actions.stealth+=/rake,target_if=max:druid.rake.ticks_gained_on_refresh,if=(dot.rake.pmultiplier<1.5|refreshable)&druid.rake.ticks_gained_on_refresh>2|(persistent_multiplier>dot.rake.pmultiplier&buff.bs_inc.up&spell_targets.thrash_cat<3&covenant.necrolord)|buff.bs_inc.remains<1
 actions.stealth+=/lunar_inspiration,if=spell_targets.thrash_cat<3&refreshable&druid.lunar_inspiration.ticks_gained_on_refresh>5&(combo_points=4|dot.lunar_inspiration.remains<5|!dot.lunar_inspiration.ticking)
 # Brutal Slash is better than stealth Shred at 3 targets
 actions.stealth+=/brutal_slash,if=spell_targets.brutal_slash>2
 actions.stealth+=/pool_resource,for_next=1
 actions.stealth+=/shred,if=combo_points<4&spell_targets.thrash_cat<5
 
-head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173127
-neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
-shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=umbrahide_vest,id=172314,bonus_id=6647/6648/6758/7086/1532,enchant=eternal_skirmish
-wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173127
-hands=gloves_of_phantom_shadows,id=183026,bonus_id=7187/1498
-waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498/6935,gem_id=173127
-legs=chiropteran_leggings,id=182993,bonus_id=7187/1498
-feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
-finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1540/6646
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=nathrian_torchbearers_stave,id=182419,bonus_id=7187/1524,enchant=sinful_revelation
+head=cowl_of_haunting_precognition,id=186330,ilevel=252,gem_id=173127/187320
+neck=shadowghast_necklace,id=178927,bonus_id=7086/6647/6648/6758/1559,gem_id=173127
+shoulders=spaulders_of_the_crooked_confidant,id=186336,ilevel=259,gem_id=187319,enchant=60runspeed
+back=cloak_of_scarred_honor,id=186289,ilevel=252,enchant_id=6203
+chest=witherheart_studded_breastplate,id=186334,ilevel=259,gem_id=187318,enchant_id=6230
+wrists=bindings_of_the_subjugated,id=186362,ilevel=252,gem_id=173127,enchant_id=6222
+hands=loyal_kvaldirs_handwraps,id=186295,ilevel=252,gem_id=187315,enchant_id=6205
+waist=windrunners_baldric,id=186332,ilevel=259,gem_id=173127
+legs=scoundrels_harrowed_leggings,id=186359,ilevel=259
+feet=trenchant_warmonger_treads,id=186337,ilevel=252,gem_id=187312,enchant_id=6211
+finger1=tarnished_insignia_of_quelthalas,id=186377,ilevel=259,gem_id=173127,enchant_id=6164
+finger2=oscillating_ouroboros,id=186376,ilevel=252,gem_id=173127,enchant_id=6164
+trinket1=titanic_ocular_gland,id=186423,ilevel=252
+trinket2=phial_of_putrefaction,id=178771,ilevel=252
+main_hand=jotungeirr_destinys_call,id=186404,ilevel=252,enchant_id=6228
 
 # Gear Summary
-# gear_ilvl=228.93
-# gear_agility=874
-# gear_stamina=1518
+# gear_ilvl=255.00
+# gear_agility=1109
+# gear_stamina=2114
 # gear_attack_power=20
-# gear_crit_rating=612
-# gear_haste_rating=501
-# gear_mastery_rating=620
-# gear_versatility_rating=223
-# gear_armor=611
+# gear_crit_rating=1032
+# gear_haste_rating=218
+# gear_mastery_rating=481
+# gear_versatility_rating=358
+# gear_speed_rating=60
+# gear_avoidance_rating=30
+# gear_armor=716
