@@ -85,7 +85,8 @@ void arcane( player_t* p )
   precombat->add_action( "variable,name=ap_on_use,op=set,value=equipped.macabre_sheet_music|equipped.gladiators_badge|equipped.gladiators_medallion|equipped.darkmoon_deck_putrescence|equipped.inscrutable_quantum_device|equipped.soulletting_ruby|equipped.sunblood_amethyst|equipped.wakeners_frond|equipped.flame_of_battle" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "mirror_image" );
-  precombat->add_action( "rune_of_power,if=covenant.kyrian&runeforge.arcane_infinity&conduit.arcane_prodigy&variable.always_sync_cooldowns" );
+  precombat->add_action( "fleshcraft,if=soulbind.volatile_solvent|soulbind.pustule_eruption" );
+  precombat->add_action( "rune_of_power,if=covenant.kyrian&runeforge.arcane_infinity&conduit.arcane_prodigy&variable.always_sync_cooldowns&active_enemies<variable.aoe_target_count" );
   precombat->add_action( "frostbolt,if=!variable.prepull_evo=1&runeforge.disciplinary_command" );
   precombat->add_action( "arcane_blast,if=!variable.prepull_evo=1&!runeforge.disciplinary_command&(!covenant.venthyr|variable.fishing_opener)" );
   precombat->add_action( "mirrors_of_torment,if=!variable.prepull_evo=1&!runeforge.disciplinary_command&covenant.venthyr&!variable.fishing_opener" );
@@ -109,6 +110,7 @@ void arcane( player_t* p )
   default_->add_action( "use_item,name=glyph_of_assimilation,if=cooldown.arcane_power.remains>=20|!variable.ap_on_use=1|(time=0&variable.fishing_opener=1&runeforge.siphon_storm)" );
   default_->add_action( "use_item,name=macabre_sheet_music,if=cooldown.arcane_power.remains<=5&(!variable.fishing_opener=1|time>30)" );
   default_->add_action( "use_item,name=macabre_sheet_music,if=cooldown.arcane_power.remains<=5&variable.fishing_opener=1&buff.rune_of_power.up&buff.rune_of_power.remains<=(10-5*runeforge.siphon_storm)&time<30" );
+  default_->add_action( "use_item,name=shadowed_orb_of_torment,if=time=0|(variable.outside_of_cooldowns&(cooldown.arcane_power.remains<=2|fight_remains<cooldown.arcane_power.remains))" );
   default_->add_action( "newfound_resolve,use_while_casting=1,if=buff.arcane_power.up|debuff.touch_of_the_magi.up|dot.radiant_spark.ticking" );
   default_->add_action( "call_action_list,name=calculations" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=variable.aoe_target_count" );
@@ -122,7 +124,7 @@ void arcane( player_t* p )
   calculations->add_action( "variable,name=have_opened,op=set,value=1,if=variable.have_opened=0&prev_gcd.1.evocation&!(runeforge.siphon_storm|runeforge.temporal_warp)" );
   calculations->add_action( "variable,name=have_opened,op=set,value=1,if=variable.have_opened=0&buff.arcane_power.down&cooldown.arcane_power.remains&(runeforge.siphon_storm|runeforge.temporal_warp)" );
   calculations->add_action( "variable,name=final_burn,op=set,value=1,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&!buff.rule_of_threes.up&fight_remains<=((mana%action.arcane_blast.cost)*action.arcane_blast.execute_time)" );
-  calculations->add_action( "variable,name=empowered_barrage,op=set,value=buff.arcane_harmony.stack=buff.arcane_harmony.max_stack|(runeforge.arcane_bombardment&target.health.pct<35)", "Either a fully stacked harmony or in execute range with Bombardment" );
+  calculations->add_action( "variable,name=empowered_barrage,op=set,value=buff.arcane_harmony.stack>=15|(runeforge.arcane_bombardment&target.health.pct<35)", "Either a fully stacked harmony or in execute range with Bombardment" );
   calculations->add_action( "variable,name=last_ap_use,default=0,op=set,if=buff.arcane_power.up&(variable.last_ap_use=0|time>=variable.last_ap_use+15),value=time" );
   calculations->add_action( "variable,name=estimated_ap_cooldown,op=set,value=(cooldown.arcane_power.duration*(1-(0.03*conduit.arcane_prodigy.rank)))-(time-variable.last_ap_use)", "Arcane Prodigy gives a variable amount of cdr, but we'll use a flat estimation here. The simc provided remains_expected expression does not work well for prodigy due to the bursty nature of the cdr." );
   calculations->add_action( "variable,name=time_until_ap,op=set,if=conduit.arcane_prodigy,value=variable.estimated_ap_cooldown" );
@@ -197,6 +199,7 @@ void arcane( player_t* p )
   cooldowns->add_action( "fire_blast,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down&prev_gcd.1.frostbolt" );
   cooldowns->add_action( "mirrors_of_torment,if=cooldown.touch_of_the_magi.remains<variable.mot_preceed_totm_by|(variable.time_until_ap>variable.mot_max_delay_for_ap&cooldown.touch_of_the_magi.remains>variable.mot_max_delay_for_totm)", "Pair MoT with AP if it's coming up soon. If it will be used with TotM, cast it slightly before" );
   cooldowns->add_action( "mirrors_of_torment,if=cooldown.arcane_power.ready&(!talent.enlightened|(talent.enlightened&mana.pct>=70))&((cooldown.touch_of_the_magi.remains>variable.ap_max_delay_for_totm&buff.arcane_charge.stack=buff.arcane_charge.max_stack)|(cooldown.touch_of_the_magi.remains=0&buff.arcane_charge.stack=0))&buff.rune_of_power.down&mana.pct>=variable.ap_minimum_mana_pct" );
+  cooldowns->add_action( "fleshcraft,if=variable.outside_of_cooldowns&(soulbind.volatile_solvent|soulbind.pustule_eruption)" );
   cooldowns->add_action( "deathborne,if=cooldown.touch_of_the_magi.ready&buff.arcane_charge.stack<=variable.totm_max_charges&cooldown.arcane_power.remains<=gcd", "Always use deathborne with ap. If totm is ready as well, make sure to cast it before totm." );
   cooldowns->add_action( "deathborne,if=cooldown.arcane_power.ready&(!talent.enlightened|(talent.enlightened&mana.pct>=70))&((cooldown.touch_of_the_magi.remains>10&buff.arcane_charge.stack=buff.arcane_charge.max_stack)|(cooldown.touch_of_the_magi.ready&buff.arcane_charge.stack=0))&buff.rune_of_power.down&mana.pct>=variable.ap_minimum_mana_pct" );
   cooldowns->add_action( "radiant_spark,if=cooldown.touch_of_the_magi.remains>variable.rs_max_delay_for_totm&cooldown.arcane_power.remains>variable.rs_max_delay_for_ap&(talent.rune_of_power&(cooldown.rune_of_power.remains<execute_time|cooldown.rune_of_power.remains>variable.rs_max_delay_for_rop)|!talent.rune_of_power)&buff.arcane_charge.stack>2&debuff.touch_of_the_magi.down&buff.rune_of_power.down&buff.arcane_power.down", "Use spark if totm and ap are on cd and won't be up for longer than the max delay, making sure we have at least two arcane charges and that totm wasn't just used." );
@@ -300,7 +303,7 @@ void arcane( player_t* p )
   harmony->add_action( "arcane_orb,if=variable.just_used_spark&buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
   harmony->add_action( "arcane_barrage,if=debuff.radiant_spark_vulnerability.stack=debuff.radiant_spark_vulnerability.max_stack" );
   harmony->add_action( "arcane_blast,if=variable.just_used_spark|(debuff.radiant_spark_vulnerability.up&debuff.radiant_spark_vulnerability.stack<debuff.radiant_spark_vulnerability.max_stack)" );
-  harmony->add_action( "arcane_orb,if=buff.arcane_charge.stack<3&variable.time_until_ap>10", "Use orb on cd unless ap is coming up soon" );
+  harmony->add_action( "arcane_orb,if=buff.arcane_charge.stack<3&variable.time_until_ap>10&(cooldown.touch_of_the_magi.remains>5|!conduit.arcane_prodigy)", "Use orb on cd unless ap is coming up soon" );
   harmony->add_action( "arcane_missiles,if=buff.clearcasting.react&buff.arcane_power.up,chain=1" );
   harmony->add_action( "arcane_barrage,if=buff.rune_of_power.up&buff.rune_of_power.remains<=action.arcane_missiles.execute_time&buff.arcane_power.up&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.arcane_harmony.stack&buff.power_infusion.up&buff.bloodlust.up", "If we get power infusion during lust we'll have enough haste to get off a strong barrage during the rop/ap window" );
   harmony->add_action( "arcane_blast,if=buff.presence_of_mind.up&(buff.arcane_charge.stack<buff.arcane_charge.max_stack|!(buff.power_infusion.up&buff.bloodlust.up))", "If we get power infusion during lust we'll have enough haste to get off a strong barrage during the rop/ap window, so we'll only use enough blasts initially to get to four charges" );
