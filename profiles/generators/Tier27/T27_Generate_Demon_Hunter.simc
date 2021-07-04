@@ -7,25 +7,25 @@ role=attack
 position=back
 talents=3320221
 covenant=night_fae
-soulbind=niya,grove_invigoration/growing_inferno:7/niyas_tools_burrs/relentless_onslaught:7/bonded_hearts
+soulbind=niya,grove_invigoration/growing_inferno:9:1/niyas_tools_burrs/relentless_onslaught:9:1/bonded_hearts
 renown=80
 
 head=cap_of_writhing_malevolence,id=186292,bonus_id=7187/1498,gem_id=187073
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173129
 shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187079
 back=selfreplicating_tissue,id=186374,bonus_id=7187/1498
-chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498,gem_id=187076,enchant=eternal_stats,enchant_id=6230
+chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498,gem_id=187076,enchant=eternal_stats
 wrists=fatethreaded_bindings,id=186335,bonus_id=7187/1498/6935,gem_id=173129
 hands=loyal_kvaldirs_handwraps,id=186295,bonus_id=7187/1498,gem_id=187057
-waist=umbrahide_waistguard,id=172320,bonus_id=6649/6650/7050/1559
+waist=umbrahide_waistguard,id=172320,bonus_id=6649/6650/7050/1559/6935,gem_id=173129
 legs=elite_aranakk_breeches,id=186331,bonus_id=7187/1498
-feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187063,enchant=eternal_agility,enchant_id=6211
-finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173129,enchant_id=6170
-finger2=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173129,enchant_id=6170
+feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187063,enchant=eternal_agility
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
+finger2=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
 trinket1=relic_of_the_frozen_wastes,id=186437,bonus_id=7187/1498
-trinket2=phial_of_putrefaction,id=178771,ilevel=252
-main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance,enchant_id=6229
-off_hand=elethiumbladed_glaive,id=186381,bonus_id=7187/1498,enchant=sinful_revelation,enchant_id=6229
+trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
+main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
+off_hand=elethiumbladed_glaive,id=186381,bonus_id=7187/1498,enchant=sinful_revelation
 
 save=T27_Demon_Hunter_Havoc.simc
 
@@ -39,25 +39,25 @@ role=attack
 position=back
 talents=3320222
 covenant=night_fae
-soulbind=niya,grove_invigoration/growing_inferno:7/niyas_tools_burrs/relentless_onslaught:7/bonded_hearts
+soulbind=niya,grove_invigoration/growing_inferno:9:1/niyas_tools_burrs/relentless_onslaught:9:1/bonded_hearts
 renown=80
 
 head=cap_of_writhing_malevolence,id=186292,bonus_id=7187/1498,gem_id=187073
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173129
 shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187079
 back=selfreplicating_tissue,id=186374,bonus_id=7187/1498
-chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498,gem_id=187076,enchant=eternal_stats,enchant_id=6230
+chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498,gem_id=187076,enchant=eternal_stats
 wrists=fatethreaded_bindings,id=186335,bonus_id=7187/1498/6935,gem_id=173129
 hands=loyal_kvaldirs_handwraps,id=186295,bonus_id=7187/1498,gem_id=187057
-waist=umbrahide_waistguard,id=172320,bonus_id=6649/6650/7050/1559
+waist=umbrahide_waistguard,id=172320,bonus_id=6649/6650/7050/1559/6935,gem_id=173129
 legs=elite_aranakk_breeches,id=186331,bonus_id=7187/1498
-feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187063,enchant=eternal_agility,enchant_id=6211
-finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173129,enchant_id=6170
-finger2=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173129,enchant_id=6170
+feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187063,enchant=eternal_agility
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
+finger2=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
 trinket1=relic_of_the_frozen_wastes,id=186437,bonus_id=7187/1498
-trinket2=phial_of_putrefaction,id=178771,ilevel=252
-main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance,enchant_id=6229
-off_hand=elethiumbladed_glaive,id=186381,bonus_id=7187/1498,enchant=sinful_revelation,enchant_id=6229
+trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
+main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
+off_hand=elethiumbladed_glaive,id=186381,bonus_id=7187/1498,enchant=sinful_revelation
 
 save=T27_Demon_Hunter_Havoc_Momentum.simc
 
