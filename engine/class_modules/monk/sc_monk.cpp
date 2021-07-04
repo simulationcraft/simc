@@ -2144,7 +2144,7 @@ struct fist_of_the_white_tiger_main_hand_t : public monk_melee_attack_t
   {
     sef_ability            = sef_ability_e::SEF_FIST_OF_THE_WHITE_TIGER;
     ww_mastery             = true;
-    may_proc_bron          = true;
+    may_proc_bron          = false; // Only the first hit from FotWT triggers Bron
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
 
