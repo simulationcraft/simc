@@ -13,6 +13,7 @@
 #include "player/sc_player.hpp"
 #include "sc_action.hpp"
 #include "sc_action_state.hpp"
+#include "action_callback.hpp"
 #include "sim/event.hpp"
 #include "sim/real_ppm.hpp"
 #include "sim/sc_cooldown.hpp"
@@ -55,34 +56,56 @@ const item_t dbc_proc_callback_t::default_item_ = item_t();
 
 void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
 {
-  if ( cooldown && cooldown->down() )
-    return;
-
-  // Weapon-based proc triggering differs from "old" callbacks. When used
-  // (weapon_proc == true), dbc_proc_callback_t _REQUIRES_ that the action
-  // has the correct weapon specified. Old style procs allowed actions
-  // without any weapon to pass through.
-  if ( weapon && ( !a->weapon || ( a->weapon && a->weapon != weapon ) ) )
-    return;
-
-  // Don't allow procs to proc itself
-  if ( proc_action && state->action && state->action->internal_id == proc_action->internal_id )
+  // Fully overridden trigger condition check; if allowed, perform normal proc chance
+  // behavior.
+  if ( trigger_type == callback_trigger_fn_type::TRIGGER )
   {
-    return;
+    if ( !(*trigger_fn)( this, a, state ) )
+    {
+      return;
+    }
   }
-
-  if ( proc_action && proc_action->harmful )
+  else
   {
-    // Don't allow players to harm other players, and enemies harm other enemies
-    if ( state->action && state->action->player->is_enemy() == state->target->is_enemy() )
+    if ( cooldown && cooldown->down() )
+      return;
+
+    // Weapon-based proc triggering differs from "old" callbacks. When used
+    // (weapon_proc == true), dbc_proc_callback_t _REQUIRES_ that the action
+    // has the correct weapon specified. Old style procs allowed actions
+    // without any weapon to pass through.
+    if ( weapon && ( !a->weapon || ( a->weapon && a->weapon != weapon ) ) )
+      return;
+
+    // Don't allow procs to proc itself
+    if ( proc_action && state->action && state->action->internal_id == proc_action->internal_id )
+    {
+      return;
+    }
+
+    if ( proc_action && proc_action->harmful )
+    {
+      // Don't allow players to harm other players, and enemies harm other enemies
+      if ( state->action && state->action->player->is_enemy() == state->target->is_enemy() )
+      {
+        return;
+      }
+    }
+
+    // Additional trigger condition to check before performing proc chance process.
+    if ( trigger_type == callback_trigger_fn_type::CONDITION && !(*trigger_fn)( this, a, state ) )
     {
       return;
     }
   }
 
   bool triggered = roll( a );
+
   if ( listener->sim->debug )
-    listener->sim->print_debug( "{} attempts to proc {} on {}: {:d}", listener->name(), effect, a->name(), triggered );
+  {
+    listener->sim->print_debug( "{} attempts to proc {} on {}: {:d}", listener->name(),
+        effect, a->name(), triggered );
+  }
 
   if ( triggered )
   {
@@ -194,6 +217,13 @@ void dbc_proc_callback_t::initialize()
 
   // Register callback to new proc system
   listener->callbacks.register_callback( effect.proc_flags(), effect.proc_flags2(), this );
+
+  // Get custom trigger function if it exists
+  if ( effect.driver()->id() && trigger_type == callback_trigger_fn_type::NONE )
+  {
+    trigger_fn = listener->callbacks.callback_trigger_function( effect.driver()->id() );
+    trigger_type = listener->callbacks.callback_trigger_function_type( effect.driver()->id() );
+  }
 }
 
 // Determine target for the callback (action).

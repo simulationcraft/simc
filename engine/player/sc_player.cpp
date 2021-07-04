@@ -2034,6 +2034,10 @@ void player_t::init_special_effects()
   }
 }
 
+void player_t::init_special_effect( special_effect_t& /* effect */ )
+{
+}
+
 namespace
 {
 /**

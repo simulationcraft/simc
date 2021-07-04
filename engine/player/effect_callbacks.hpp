@@ -7,13 +7,15 @@
 
 #include "config.hpp"
 #include "dbc/data_enums.hh"
+#include "action/action_callback.hpp"
 
 #include <array>
 #include <string>
 #include <vector>
 #include <functional>
 
-struct action_callback_t;
+struct action_t;
+struct action_state_t;
 struct sim_t;
 
 // Player Callbacks
@@ -42,6 +44,11 @@ struct effect_callbacks_t
   void reset();
 
   void register_callback( unsigned proc_flags, unsigned proc_flags2, action_callback_t* cb );
+  /// Register a driver-specific custom trigger callback
+  void register_callback_trigger_function( unsigned driver_id, callback_trigger_fn_type t, const action_callback_t::callback_trigger_fn_t& fn );
+  /// Get a custom driver-specific trigger callback (if it has been registered)
+  action_callback_t::callback_trigger_fn_t* callback_trigger_function( unsigned driver_id ) const;
+  callback_trigger_fn_type callback_trigger_function_type( unsigned driver_id ) const;
 
   // Helper to get first instance of object T and return it, if not found, return nullptr
   template <typename T>
@@ -57,6 +64,12 @@ struct effect_callbacks_t
     }
     return nullptr;
   }
+
 private:
+  using callback_trigger_entry_t = std::tuple<unsigned, callback_trigger_fn_type, std::unique_ptr<action_callback_t::callback_trigger_fn_t>>;
+
+  /// A vector of (driver-id, callback-trigger-function) tuples
+  std::vector<callback_trigger_entry_t> trigger_fn;
+
   void add_proc_callback( proc_types type, unsigned flags, action_callback_t* cb );
 };
