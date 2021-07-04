@@ -111,12 +111,12 @@ wrists=fatethreaded_bindings,id=186335,bonus_id=7187/1498/6935,gem_id=173129
 hands=loyal_kvaldirs_handwraps,id=186295,bonus_id=7187/1498,gem_id=187313
 waist=girdle_of_shattered_dreams,id=178805,bonus_id=6536/1566/6646/6935,gem_id=173129
 legs=elite_aranakk_breeches,id=186331,bonus_id=7187/1498
-feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187314,enchant_id=6211
+feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187314,enchant=eternal_agility
 finger1=ritual_commanders_ring,id=178781,bonus_id=6536/1566/6646/6935,gem_id=173129,enchant=tenet_of_versatility
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
-trinket2=infinitely_divisible_ooze,id=178769,bonus_id=6536/1566/6646
-main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6536/1566/6646,enchant=sinful_revelation
-off_hand=bloodspiller,id=179328,bonus_id=6536/1566/6646,enchant=celestial_guidance
+rinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
+trinket2=shadowgrasp_totem,id=179356,bonus_id=6536/1566/6646
+main_hand=cruciform_veinripper,id=186388,ilevel=252,enchant=sinful_revelation
+off_hand=cruciform_veinripper,id=186388,ilevel=252,enchant=celestial_guidance
 
 save=T27_Monk_Windwalker_Necrolord.simc
