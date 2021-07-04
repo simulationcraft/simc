@@ -16,9 +16,11 @@
 TODO:
 
 GENERAL:
+- See other options of modeling Spinning Crane Kick
 
 WINDWALKER:
 - Add Cyclone Strike Counter as an expression
+- See about removing tick part of Crackling Tiger Lightning
 
 MISTWEAVER:
 - Essence Font - See if the implementation can be corrected to the intended design.
@@ -32,6 +34,8 @@ BREWMASTER:
 #include "class_modules/apl/apl_monk.hpp"
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
+#include "action/action_callback.hpp"
+#include "sc_enums.hpp"
 
 #include "simulationcraft.hpp"
 #include <deque>
@@ -59,6 +63,10 @@ struct monk_action_t : public Base
   bool trigger_faeline_stomp;
   bool trigger_bountiful_brew;
 
+  // Bron's Call to Arms trigger overrides
+  bool may_proc_bron;
+  proc_t* bron_proc;
+
   // Affect flags for various dynamic effects
   struct
   {
@@ -79,10 +87,18 @@ public:
       trigger_chiji( false ),
       trigger_faeline_stomp( false ),
       trigger_bountiful_brew( false ),
+      may_proc_bron( false ),
+      bron_proc( nullptr ),
       affected_by()
   {
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
+  }
+
+  std::string full_name() const
+  {
+    std::string n = ab::data().name_cstr();
+    return n.empty() ? ab::name_str : n;
   }
 
   monk_t* p()
@@ -141,6 +157,20 @@ public:
           break;
       }
     }
+
+    // If may_proc_bron is not overridden to trigger, check if it can trigger
+    if ( !may_proc_bron )
+      may_proc_bron = !this->background &&
+                    ( this->spell_power_mod.direct || this->spell_power_mod.tick || this->attack_power_mod.direct ||
+                      this->attack_power_mod.tick || this->base_dd_min || this->base_dd_max || this->base_td );
+  }
+
+  void init_finished() override
+  {
+    ab::init_finished();
+
+    if ( may_proc_bron )
+      bron_proc = p()->get_proc( std::string( "Bron's Call to Action: " ) + full_name() );
   }
 
   void reset_swing()
@@ -1258,8 +1288,9 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    may_combo_strike      = true;
-    trigger_faeline_stomp = true;
+    may_combo_strike       = true;
+    may_proc_bron          = true;
+    trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
     sef_ability            = sef_ability_e::SEF_RISING_SUN_KICK;
     affected_by.serenity = true;
@@ -1586,8 +1617,9 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   {
     parse_options( options_str );
     sef_ability            = sef_ability_e::SEF_RUSHING_JADE_WIND;
-    may_combo_strike      = true;
-    trigger_faeline_stomp = true;
+    may_combo_strike       = true;
+    may_proc_bron          = true;
+    trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
     gcd_type         = gcd_haste_type::NONE;
 
@@ -1756,8 +1788,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     parse_options( options_str );
 
     sef_ability            = sef_ability_e::SEF_SPINNING_CRANE_KICK;
-    may_combo_strike      = true;
-    trigger_faeline_stomp = true;
+    may_combo_strike       = true;
+    may_proc_bron          = true;
+    trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
 
     may_crit = may_miss = may_block = may_dodge = may_parry = false;
@@ -1922,10 +1955,15 @@ struct fists_of_fury_t : public monk_melee_attack_t
     parse_options( options_str );
 
     sef_ability            = sef_ability_e::SEF_FISTS_OF_FURY;
-    may_combo_strike      = true;
-    trigger_faeline_stomp = true;
+    may_combo_strike       = true;
+    // Fists of Fury SHOULD proc Bron's Call to Arms but it does not.
+    if ( p->bugs )
+      may_proc_bron = false;
+    else
+      may_proc_bron = true;
+    trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
-    affected_by.serenity = true;
+    affected_by.serenity   = true;
 
     channeled = tick_zero = true;
     interrupt_auto_attack = true;
@@ -2052,6 +2090,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     interrupt_auto_attack             = false;
     channeled                         = false;
     may_combo_strike                  = true;
+    may_proc_bron                     = true;
     trigger_faeline_stomp             = true;
     trigger_bountiful_brew            = true;
 
@@ -2104,8 +2143,9 @@ struct fist_of_the_white_tiger_main_hand_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, p, s )
   {
     sef_ability            = sef_ability_e::SEF_FIST_OF_THE_WHITE_TIGER;
-    ww_mastery            = true;
-    trigger_faeline_stomp = true;
+    ww_mastery             = true;
+    may_proc_bron          = true;
+    trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
 
     may_dodge = may_parry = may_block = may_miss = true;
@@ -2385,6 +2425,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     ww_mastery              = true;
     may_crit = hasted_ticks = false;
     may_combo_strike        = true;
+    may_proc_bron           = true;
     trigger_faeline_stomp   = true;
     trigger_bountiful_brew  = true;
     parse_options( options_str );
@@ -3583,6 +3624,7 @@ struct xuen_spell_t : public monk_spell_t
     parse_options( options_str );
 
     harmful = false;
+    may_proc_bron = true;
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -3628,6 +3670,7 @@ struct niuzao_spell_t : public monk_spell_t
     parse_options( options_str );
 
     harmful = false;
+    may_proc_bron = true;
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -3658,6 +3701,7 @@ struct chiji_spell_t : public monk_spell_t
     parse_options( options_str );
 
     harmful = false;
+    may_proc_bron = true;
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -3688,6 +3732,7 @@ struct yulon_spell_t : public monk_spell_t
     parse_options( options_str );
 
     harmful = false;
+    may_proc_bron = true;
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -4733,8 +4778,9 @@ struct chi_wave_t : public monk_spell_t
       dmg( true )
   {
     sef_ability            = sef_ability_e::SEF_CHI_WAVE;
-    may_combo_strike      = true;
-    trigger_faeline_stomp = true;
+    may_combo_strike       = true;
+    may_proc_bron          = true;
+    trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
     parse_options( options_str );
     hasted_ticks = harmful = false;
@@ -4827,8 +4873,9 @@ struct chi_burst_t : public monk_spell_t
     : monk_spell_t( "chi_burst", player, player->talent.chi_burst ), heal( nullptr )
   {
     parse_options( options_str );
-    may_combo_strike      = true;
-    trigger_faeline_stomp = true;
+    may_combo_strike       = true;
+    may_proc_bron          = true;
+    trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
     heal             = new chi_burst_heal_t( *player );
     heal->stats      = stats;
@@ -6702,6 +6749,88 @@ void monk_t::init_rng()
   player_t::init_rng();
   if ( legendary.bountiful_brew->ok() )
     rppm.bountiful_brew = get_rppm( "bountiful_brew", find_spell( 356592 ) );
+}
+
+// monk_t::init_special_effects ===========================================
+
+void monk_t::init_special_effects()
+{
+  player_t::init_special_effects();
+
+  // Custom trigger condition for Bron's Call to Arms. Completely overrides the trigger
+  // behavior of the generic proc to get control back to the Shaman class module in terms
+  // of what triggers it.
+  //
+  // 2021-07-04 Eligible spells that can proc Bron's Call to Arms:
+  // - Any foreground amount spell / attack
+  //
+  // Note, also has to handle the ICD and pet-related trigger conditions.
+  callbacks.register_callback_trigger_function( 333950, callback_trigger_fn_type::TRIGGER,
+      [ this ]( const action_callback_t* cb, action_t* a, action_state_t* ) {
+        auto proc = debug_cast<const dbc_proc_callback_t*>( cb );
+        if ( proc->cooldown->down() )
+          return false;
+
+       // Defer finding the bron pet until the first proc attempt
+      if ( !pets.bron )
+      {
+        pets.bron = find_pet( "bron" );
+        assert( pets.bron );
+      }
+
+      if ( pets.bron->is_active() )
+        return false;
+
+      if ( a->type == ACTION_ATTACK )
+      {
+        auto attack = dynamic_cast<monk::actions::monk_melee_attack_t*>( a );
+        if ( attack && attack->may_proc_bron )
+        {
+          attack->bron_proc->occur();
+          return true;
+        }
+      }
+      else if ( a->type == ACTION_HEAL )
+      {
+        auto heal = dynamic_cast<monk::actions::monk_heal_t*>( a );
+        if ( heal && heal->may_proc_bron )
+        {
+          heal->bron_proc->occur();
+          return true;
+        }
+      }
+      else if ( a->type == ACTION_SPELL )
+      {
+        auto spell = dynamic_cast<monk::actions::monk_spell_t*>( a );
+        if ( spell && spell->may_proc_bron )
+        {
+          spell->bron_proc->occur();
+          return true;
+        }
+      }
+
+      return false;
+  } );
+}
+
+// monk_t::init_special_effect ============================================
+
+void monk_t::init_special_effect( special_effect_t& effect )
+{
+  switch ( effect.driver()->id() )
+  {
+    // Bron's Call to Arms
+    //
+    // Monk module has custom triggering logic (defined above) so override the initial
+    // proc flags so we get wider trigger attempts than the core implementation. The
+    // overridden proc condition above will take care of filtering out actions that are
+    // not allowed to proc it.
+    case 333950:
+      effect.proc_flags2_ |= PF2_CAST;
+      break;
+    default:
+      break;
+  }
 }
 
 // monk_t::reset ============================================================
