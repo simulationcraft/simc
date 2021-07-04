@@ -1144,16 +1144,6 @@ struct hunter_pet_t: public pet_t
     pet_t::schedule_ready( delta_time, waiting );
   }
 
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = pet_t::composite_player_multiplier( school );
-
-    if ( o() -> mastery.master_of_beasts.ok() )
-      m *= 1 + owner -> cache.mastery_value();
-
-    return m;
-  }
-
   double composite_player_target_crit_chance( player_t* target ) const override
   {
     double crit = pet_t::composite_player_target_crit_chance( target );
@@ -1711,7 +1701,6 @@ struct spitting_cobra_t final : public hunter_pet_t
   {
     double m = owner -> composite_player_multiplier( school );
 
-    m *= 1 + owner -> cache.mastery_value();
     m *= 1 + active_damage_multiplier;
 
     return m;
@@ -6508,6 +6497,9 @@ double hunter_t::composite_player_target_multiplier( player_t* target, school_e 
 double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
+
+  if ( mastery.master_of_beasts->ok() )
+    m *= 1.0 + cache.mastery_value();
 
   m *= 1 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
   m *= 1 + specs.survival_hunter -> effectN( 3 ).percent();
