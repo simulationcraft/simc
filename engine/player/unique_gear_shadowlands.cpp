@@ -2727,7 +2727,7 @@ void passablyforged_credentials( special_effect_t& effect )
 /**Dark Ranger's Quiver
     353513 driver, damage on effect 1
     353514 trigger buff
-    353515 cleave damage at 5 stacks on up to 5 targets
+    353515 cleave damage at max stacks
  */
 void dark_rangers_quiver( special_effect_t& effect )
 {
@@ -2739,7 +2739,7 @@ void dark_rangers_quiver( special_effect_t& effect )
     withering_fire_t( const special_effect_t& effect ) : proc_spell_t( "withering_fire", effect.player, effect.player->find_spell( 353515 ), effect.item )
     {
       base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
-      aoe = 5;
+      aoe = data().max_targets();
     }
   };
 
