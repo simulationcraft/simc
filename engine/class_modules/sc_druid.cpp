@@ -8532,9 +8532,11 @@ std::string druid_t::default_potion() const
       else if ( true_level >= 40 ) return "superior_battle_potion_of_intellect";
       SC_FALLTHROUGH;
     case DRUID_FERAL:
-    case DRUID_GUARDIAN:
       if      ( true_level >= 60 ) return "spectral_agility";
       else if ( true_level >= 40 ) return "superior_battle_potion_of_agility";
+      SC_FALLTHROUGH;
+    case DRUID_GUARDIAN:
+      return "potion_of_phantom_fire"
       SC_FALLTHROUGH;
     default:
       return "disabled";
@@ -8565,7 +8567,7 @@ std::string druid_t::default_temporary_enchant() const
   {
     case DRUID_BALANCE: return "main_hand:shadowcore_oil";
     case DRUID_RESTORATION: return "main_hand:shadowcore_oil";
-    case DRUID_GUARDIAN: return "main_hand:shaded_sharpening_stone";
+    case DRUID_GUARDIAN: return "mmain_hand:shadowcore_oil";
     case DRUID_FERAL: return "main_hand:shaded_sharpening_stone";
     default: return "disabled";
   }
