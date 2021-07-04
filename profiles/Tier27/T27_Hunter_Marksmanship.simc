@@ -130,15 +130,15 @@ feet=ragebound_leg_irons,id=186343,bonus_id=7187/1498,gem_id=187314,enchant=eter
 finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_mastery
 finger2=shadowghast_ring,id=178926,bonus_id=7013/6647/6648/1559/6935,gem_id=173130,enchant=tenet_of_mastery
 trinket1=decanter_of_endless_howling,id=186429,bonus_id=7187/1498
-trinket2=relic_of_the_frozen_wastes,id=186437,bonus_id=7187/1498
-main_hand=raeshalare_deaths_whisper,id=186414,bonus_id=7187/1498,enchant=sinful_revelation
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
+main_hand=yasahm_the_riftbreaker,id=185783,bonus_id=6536/1566/6646,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=256.40
-# gear_agility=1009
-# gear_stamina=2107
-# gear_crit_rating=1125
-# gear_haste_rating=620
+# gear_ilvl=255.27
+# gear_agility=992
+# gear_stamina=2082
+# gear_crit_rating=1035
+# gear_haste_rating=640
 # gear_mastery_rating=444
-# gear_versatility_rating=185
+# gear_versatility_rating=247
 # gear_armor=1024
