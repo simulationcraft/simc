@@ -1206,6 +1206,7 @@ void warlock_t::create_apl_demonology()
   action_priority_list_t* hp    		= get_action_priority_list( "hp_trinks" );
   action_priority_list_t* dmg    		= get_action_priority_list( "pure_damage_trinks" );
 
+  def->add_action( "cancel_action,if=action.fleshcraft.channeling" );
   def->add_action( "call_action_list,name=trinkets" );
   def->add_action( "interrupt,if=target.debuff.casting.react" );
   def->add_action( "doom,if=refreshable" );
@@ -1245,6 +1246,7 @@ void warlock_t::create_apl_demonology()
   cov->add_action( "soul_rot,if=soulbind.wild_hunt_tactics" );
   cov->add_action( "decimating_bolt,if=soulbind.lead_by_example&(pet.demonic_tyrant.active&soul_shard<2|cooldown.summon_demonic_tyrant.remains_expected>40)" );
   cov->add_action( "decimating_bolt,if=!soulbind.lead_by_example&!pet.demonic_tyrant.active" );
+  cov->add_action( "fleshcraft,if=soulbind.kevins_oozeling&cooldown.summon_demonic_tyrant.remains_expected<20" );
   cov->add_action( "scouring_tithe,if=soulbind.combat_meditation&pet.demonic_tyrant.active" );
   cov->add_action( "scouring_tithe,if=!soulbind.combat_meditation" );
   cov->add_action( "impending_catastrophe,if=pet.demonic_tyrant.active&soul_shard=0" );
