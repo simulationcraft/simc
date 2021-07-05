@@ -3747,7 +3747,7 @@ struct rake_t : public cat_attack_t
   };
 
   action_t* bleed;
-  bool stealth_mul;
+  double stealth_mul;
 
   rake_t( druid_t* p, util::string_view opt ) : rake_t( p, p->find_affinity_spell( "Rake" ), opt ) {}
 
