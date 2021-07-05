@@ -1,4 +1,4 @@
-hunter="T27_Hunter_Marksmanship"
+hunter="T27_Hunter_Marksmanship_WA"
 source=default
 spec=marksmanship
 level=60
@@ -131,14 +131,14 @@ finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_i
 finger2=shadowghast_ring,id=178926,bonus_id=7013/6647/6648/1559/6935,gem_id=173130,enchant=tenet_of_mastery
 trinket1=decanter_of_endless_howling,id=186429,bonus_id=7187/1498
 trinket2=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
-main_hand=soulrent_outriders_recurve,id=186411,bonus_id=7187/1498,enchant=sinful_revelation
+main_hand=raeshalare_deaths_whisper,id=186414,bonus_id=7187/1498,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=255.00
-# gear_agility=995
-# gear_stamina=2090
-# gear_crit_rating=1035
-# gear_haste_rating=544
-# gear_mastery_rating=548
-# gear_versatility_rating=241
+# gear_ilvl=256.00
+# gear_agility=1002
+# gear_stamina=2107
+# gear_crit_rating=1125
+# gear_haste_rating=620
+# gear_mastery_rating=444
+# gear_versatility_rating=185
 # gear_armor=1024
