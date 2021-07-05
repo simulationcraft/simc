@@ -104,16 +104,17 @@ covenant=night_fae
 soulbind=niya:1,322721/279:11/342270/260:11/320668/271:11/254:11/320659/269:11/352502/259:11/352503
 renown=80
 
-head=cowl_of_haunting_precognition,id=186330,ilevel=252,gem_id=187319/173129,enchant=40runspeed
+
+head=cowl_of_haunting_precognition,id=186330,ilevel=252,gem_id=187312/173129,enchant=60runspeed
 neck=shadowghast_necklace,id=178927,bonus_id=7086/6647/6650/6758/1559,gem_id=173129
-shoulders=spaulders_of_the_crooked_confidant,id=186336,ilevel=259,gem_id=187320
+shoulders=spaulders_of_the_crooked_confidant,id=186336,ilevel=259,gem_id=187313
 back=selfreplicating_tissue,id=186374,ilevel=252,enchant_id=6203
-chest=witherheart_studded_breastplate,id=186334,ilevel=259,gem_id=187318,enchant_id=6230
+chest=witherheart_studded_breastplate,id=186334,ilevel=259,gem_id=187314,enchant_id=6230
 wrists=clasps_of_the_unfortunate_troubadour,id=186297,ilevel=252,gem_id=173129,enchant_id=6222
 hands=loyal_kvaldirs_handwraps,id=186295,ilevel=252,gem_id=187315,enchant_id=6205
 waist=windrunners_baldric,id=186332,ilevel=259,gem_id=173129
 legs=elite_aranakk_breeches,id=186331,ilevel=259
-feet=unstable_energizer_boots,id=186363,ilevel=252,gem_id=187312,enchant_id=6211
+feet=unstable_energizer_boots,id=186363,ilevel=252,gem_id=187318,enchant_id=6211
 finger1=tarnished_insignia_of_quelthalas,id=186377,ilevel=259,gem_id=173129,enchant_id=6164
 finger2=oscillating_ouroboros,id=186376,ilevel=252,gem_id=173129,enchant_id=6164
 trinket1=phial_of_putrefaction,id=178771,ilevel=252
