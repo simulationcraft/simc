@@ -656,7 +656,11 @@ void thrill_seeker( special_effect_t& effect )
 
   // You still gain stacks while euphoria is active
   effect.player->register_combat_begin( [ eff_data, counter_buff ]( player_t* p ) {
-    make_repeating_event( *p->sim, eff_data->period(), [ counter_buff ] { counter_buff->trigger(); } );
+    make_repeating_event( *p->sim, eff_data->period(), [ counter_buff ] {
+      // if there are no active targets, assume we are simulating 'out of combat' and thrill seeker stops gaining stacks
+      if ( !counter_buff->sim->target_non_sleeping_list.empty() )
+        counter_buff->trigger();
+    } );
   } );
 
   auto p                     = effect.player;
@@ -668,7 +672,7 @@ void thrill_seeker( special_effect_t& effect )
   // DungeonSlice: 1/4 = 0.25
   if ( killing_blow_chance < 0 )
   {
-    if ( effect.player->sim->fight_style == "DungeonSlice" )
+    if ( p->sim->fight_style == "DungeonSlice" )
     {
       number_of_players = 4;
     }
