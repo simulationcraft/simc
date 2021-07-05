@@ -260,7 +260,7 @@ void frost( player_t* p )
   covenants->add_action( "shackle_the_unworthy,if=cooldown.pillar_of_frost.remains<3&variable.st_planning" );
   covenants->add_action( "shackle_the_unworthy,if=variable.adds_remain" );
   covenants->add_action( "fleshcraft,if=!buff.pillar_of_frost.up&(soulbind.pustule_eruption|soulbind.volatile_solvent)" );
-  covenants->add_action( "fleshcraft,interrupt_if=buff.volitile_solvent.up" );
+  covenants->add_action( "fleshcraft,interrupt_if=buff.volatile_solvent.up" );
 
   obliteration->add_action( "remorseless_winter,if=active_enemies>=3&(talent.gathering_storm|conduit.everfrost|runeforge.biting_cold)", "Obliteration rotation" );
   obliteration->add_action( "howling_blast,target_if=!dot.frost_fever.ticking&!buff.killing_machine.up&rune>=3" );
@@ -403,7 +403,7 @@ void unholy( player_t* p )
   covenants->add_action( "shackle_the_unworthy,if=variable.st_planning&(cooldown.apocalypse.remains>10|!talent.army_of_the_damned&cooldown.dark_transformation.remains)|fight_remains<15" );
   covenants->add_action( "shackle_the_unworthy,if=variable.adds_remain&(death_and_decay.ticking|raid_event.adds.remains<=14)" );
   covenants->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" );
-  covenants->add_action( "fleshcraft,interrupt_if=buff.volitile_solvent.up" );
+  covenants->add_action( "fleshcraft,interrupt_if=buff.volatile_solvent.up" );
 
   generic->add_action( "death_coil,if=!variable.pooling_runic_power&(buff.sudden_doom.react|runic_power.deficit<=13)|pet.gargoyle.active&rune<=3|fight_remains<10&!debuff.festering_wound.up", "Single Target" );
   generic->add_action( "any_dnd,if=(talent.defile.enabled|covenant.night_fae|runeforge.phearomones)&(!variable.pooling_runes|fight_remains<5)" );
