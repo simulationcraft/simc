@@ -126,15 +126,15 @@ finger1=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173127
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
 trinket1=relic_of_the_frozen_wastes,id=186437,bonus_id=7187/1498
 trinket2=shadowgrasp_totem,id=179356,bonus_id=6536/1566/6646
-main_hand=yasahm_the_riftbreaker,id=185783,bonus_id=6536/1566/6646,enchant=optical_target_embiggener
+main_hand=directional_meltdown_projector,id=186413,bonus_id=7187/1498,enchant=optical_target_embiggener
 
 # Gear Summary
 # gear_ilvl=255.73
-# gear_agility=1107
-# gear_stamina=2093
+# gear_agility=1110
+# gear_stamina=2101
 # gear_crit_rating=950
-# gear_haste_rating=917
+# gear_haste_rating=915
 # gear_mastery_rating=128
-# gear_versatility_rating=247
+# gear_versatility_rating=251
 # gear_speed_rating=60
 # gear_armor=1034
