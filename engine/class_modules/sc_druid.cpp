@@ -3754,7 +3754,10 @@ struct rake_t : public cat_attack_t
   rake_t( druid_t* p, const spell_data_t* s, util::string_view opt )
     : cat_attack_t( "rake", p, s, opt ), stealth_mul( 0.0 )
   {
-    if ( p->find_rank_spell( "Rake", "Rank 2" )->ok() )
+    // if ( p->find_rank_spell( "Rake", "Rank 2" )->ok() )
+    // The stealth bonsu is always available to Rake, as you need to be a feral druid or have feral affinity to use
+    // rake, and in both cases you have access to Rank 2 Rake. The only restriction is the level requirement.
+    if ( p->find_spell( 231052 )->ok() )
       stealth_mul = data().effectN( 4 ).percent();
 
     bleed = p->get_secondary_action<rake_bleed_t>( "rake_bleed" );
