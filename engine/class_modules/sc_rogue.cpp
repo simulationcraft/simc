@@ -4585,6 +4585,10 @@ struct serrated_bone_spike_t : public rogue_attack_t
     //               This works on both the initial hit and also the DoT, until it is applied again
     bool snapshots_nightstalker() const override
     { return p()->bugs; }
+
+    // 07/05/2021 -- Confirmed as working in-game, although not on Sudden Fractures damage
+    bool procs_shadow_blades_damage() const override
+    { return true; }
   };
 
   int base_impact_cp;
@@ -4666,6 +4670,10 @@ struct serrated_bone_spike_t : public rogue_attack_t
   // 06/29/2021 -- Testing shows this does not proc Deadly Poison despite being direct
   bool procs_deadly_poison() const override
   { return false; }
+
+  // 07/05/2021 -- Confirmed as working in-game
+  bool procs_shadow_blades_damage() const override
+  { return true; }
 };
 
 // ==========================================================================
