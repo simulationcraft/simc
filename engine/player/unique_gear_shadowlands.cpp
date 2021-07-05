@@ -1730,8 +1730,8 @@ void shadowgrasp_totem( special_effect_t& effect )
   auto buff = buff_t::find( effect.player, "shadowgrasp_totem" );
   if ( !buff ) {
     buff = make_buff<shadowgrasp_totem_buff_t>( effect );
-    effect.custom_buff = buff;
   }
+  effect.custom_buff = buff;
 }
 
 // TODO: Implement healing?
