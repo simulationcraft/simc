@@ -8536,7 +8536,8 @@ std::string druid_t::default_potion() const
       else if ( true_level >= 40 ) return "superior_battle_potion_of_agility";
       SC_FALLTHROUGH;
     case DRUID_GUARDIAN:
-      return "phantom_fire";
+      if      ( true_level >= 60 ) return "phantom_fire";
+      else if ( true_level >= 40 ) return "superior_battle_potion_of_agility";
       SC_FALLTHROUGH;
     default:
       return "disabled";
