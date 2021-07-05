@@ -3238,19 +3238,6 @@ struct mutilate_t : public rogue_attack_t
       {
         dual = true;
       }
-
-      void init() override
-      {
-        residual_action::residual_periodic_action_t<spell_t>::init();
-
-        // 03/05/2021 -- Blizzard fixed the issue with armor, but it is still affected by damage taken debuffs
-        //               Bug, see https://github.com/SimCMinMax/WoW-BugTracker/issues/812
-        if ( player->bugs )
-        {
-          snapshot_flags |= STATE_TARGET;
-          update_flags |= STATE_TARGET;
-        }
-      }
     };
 
     doomblade_t* doomblade_dot;
