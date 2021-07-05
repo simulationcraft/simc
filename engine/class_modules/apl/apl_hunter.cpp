@@ -154,7 +154,7 @@ void marksmanship( player_t* p )
   precombat->add_action( "tar_trap,if=runeforge.soulforge_embers" );
   precombat->add_action( "double_tap,precast_time=10,if=active_enemies>1|!covenant.kyrian&!talent.volley|variable.etf_precast" );
   precombat->add_action( "variable,name=etf_precast,value=0", "Change to 1 to simulate ETF/SSF gearswap Trueshot precast." );
-  precombat->add_action( "trueshot,precast_etf_equip=1,precast_ssf_rank=7,precast_time=2,if=variable.etf_precast" );
+  precombat->add_action( "trueshot,precast_etf_equip=1,precast_time=2,if=variable.etf_precast" );
   precombat->add_action( "aimed_shot,if=active_enemies<3&(!covenant.kyrian&!talent.volley|active_enemies<2)&!variable.etf_precast" );
   precombat->add_action( "steady_shot,if=active_enemies>2|(covenant.kyrian|talent.volley)&active_enemies=2|variable.etf_precast" );
 
