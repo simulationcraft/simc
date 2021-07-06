@@ -138,7 +138,7 @@ actions.covenants+=/abomination_limb,if=cooldown.pillar_of_frost.remains<3&varia
 actions.covenants+=/abomination_limb,if=variable.adds_remain
 actions.covenants+=/shackle_the_unworthy,if=cooldown.pillar_of_frost.remains<3&variable.st_planning
 actions.covenants+=/shackle_the_unworthy,if=variable.adds_remain
-actions.covenants+=/fleshcraft,if=soulbind.pustule_eruption&!buff.pillar_of_frost.up
+actions.covenants+=/fleshcraft,if=!buff.pillar_of_frost.up&(soulbind.pustule_eruption|soulbind.volatile_solvent),interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent
 
 # Obliteration rotation
 actions.obliteration=remorseless_winter,if=active_enemies>=3&(talent.gathering_storm|conduit.everfrost|runeforge.biting_cold)
