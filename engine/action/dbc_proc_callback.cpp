@@ -233,6 +233,12 @@ void dbc_proc_callback_t::initialize()
     trigger_fn = listener->callbacks.callback_trigger_function( effect.driver()->id() );
     trigger_type = listener->callbacks.callback_trigger_function_type( effect.driver()->id() );
   }
+
+  // Get custom execute function if it exists
+  if ( effect.driver()->id() && execute_fn == nullptr )
+  {
+    execute_fn = listener->callbacks.callback_execute_function( effect.driver()->id() );
+  }
 }
 
 // Determine target for the callback (action).
