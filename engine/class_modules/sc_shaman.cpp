@@ -5981,6 +5981,13 @@ struct static_discharge_t : public shaman_spell_t
     dot_duration = 0_s;
   }
 
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    may_proc_bron = true;
+  }
+
   void execute() override
   {
     shaman_spell_t::execute();
@@ -8699,6 +8706,39 @@ void shaman_t::init_special_effects()
       }
 
       return false;
+  } );
+
+  // Implement special handling of the Bron's Call to Arms for a few Elemental spells that
+  // can potentially trigger multiple stacks.
+  auto bron_duration = find_spell( 333961 )->duration();
+  callbacks.register_callback_execute_function( 333950,
+      [this, bron_duration]( dbc_proc_callback_t* cb, action_t* a, action_state_t* ) {
+
+      // 2021-07-06: Self-cast Lava Burst and Icefury grant an additional stack, if the
+      // distance to target is far enough (travel time exceeds internal cooldown).
+      //
+      // Technically this stack should be granted on impact, but the end result on an
+      // Elemental shaman would be virtually identical.
+      if ( ( a->data().id() == 51505 || a->data().id() == 210714 ) &&
+           !a->background && a->travel_time() >= 50_ms )
+      {
+        debug_cast<shaman_spell_t*>( a )->bron_proc->occur();
+        cb->proc_buff->trigger();
+      }
+
+      if ( cb->proc_buff->at_max_stacks() )
+      {
+        cb->proc_buff->expire();
+
+        if ( pet.bron->is_sleeping() )
+        {
+          pet.bron->summon( bron_duration );
+        }
+      }
+      else
+      {
+        cb->proc_buff->trigger();
+      }
   } );
 }
 
