@@ -5034,6 +5034,20 @@ struct special_delivery_t : public monk_spell_t
 
 struct celestial_brew_t : public monk_absorb_t
 {
+  struct celestial_brew_t_state_t : public action_state_t
+  {
+    celestial_brew_t_state_t( action_t* a, player_t* target ) : action_state_t( a, target )
+    {
+    }
+
+    proc_types2 cast_proc_type2() const override
+    {
+      // Celestial Brew seems to trigger Bron's Call to Action (and possibly other
+      // effects that care about casts).
+      return PROC2_CAST;
+    }
+  };
+  
   special_delivery_t* delivery;
 
   celestial_brew_t( monk_t& p, util::string_view options_str )
@@ -5042,9 +5056,15 @@ struct celestial_brew_t : public monk_absorb_t
   {
     parse_options( options_str );
     harmful = may_crit = false;
+    callbacks          = true;
 
     if ( p.talent.light_brewing->ok() )
       cooldown->duration *= 1 + p.talent.light_brewing->effectN( 2 ).percent();  // -20
+  }
+
+  action_state_t* new_state() override
+  {
+    return new celestial_brew_t_state_t( this, player );
   }
 
   double action_multiplier() const override
@@ -6758,7 +6778,7 @@ void monk_t::init_special_effects()
   player_t::init_special_effects();
 
   // Custom trigger condition for Bron's Call to Arms. Completely overrides the trigger
-  // behavior of the generic proc to get control back to the Shaman class module in terms
+  // behavior of the generic proc to get control back to the Monk class module in terms
   // of what triggers it.
   //
   // 2021-07-04 Eligible spells that can proc Bron's Call to Arms:
@@ -6790,6 +6810,15 @@ void monk_t::init_special_effects()
           return true;
         }
       }
+      else if ( a->type == ACTION_SPELL )
+      {
+        auto spell = dynamic_cast<monk::actions::monk_spell_t*>( a );
+        if ( spell && spell->may_proc_bron )
+        {
+          spell->bron_proc->occur();
+          return true;
+        }
+      }
       else if ( a->type == ACTION_HEAL )
       {
         auto heal = dynamic_cast<monk::actions::monk_heal_t*>( a );
@@ -6805,15 +6834,6 @@ void monk_t::init_special_effects()
         if ( absorb && absorb->may_proc_bron )
         {
           absorb->bron_proc->occur();
-          return true;
-        }
-      }
-      else if ( a->type == ACTION_SPELL )
-      {
-        auto spell = dynamic_cast<monk::actions::monk_spell_t*>( a );
-        if ( spell && spell->may_proc_bron )
-        {
-          spell->bron_proc->occur();
           return true;
         }
       }
