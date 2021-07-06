@@ -8720,7 +8720,7 @@ void shaman_t::init_special_effects()
       // Technically this stack should be granted on impact, but the end result sould be
       // virtually identical.
       if ( ( a->data().id() == 51505 || a->data().id() == 210714 ) &&
-           !a->background && a->travel_time() >= 50_ms )
+           !a->background && a->travel_time() >= cb->cooldown->duration )
       {
         debug_cast<shaman_spell_t*>( a )->bron_proc->occur();
         cb->proc_buff->trigger();
