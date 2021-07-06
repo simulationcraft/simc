@@ -6,24 +6,25 @@ role=spell
 position=ranged_back
 talents=2301032
 covenant=night_fae
-soulbind=dreamweaver,call_of_flame:9:1/social_butterfly/field_of_blossoms/pyroclastic_shock:9:1/dream_delver
+soulbind=dreamweaver,call_of_flame:9:1/social_butterfly/field_of_blossoms/essential_extraction:9:1/dream_delver
 renown=80
 
-head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187073/173128
+head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187320/173128
 neck=azurevenom_choker,id=180115,bonus_id=3536/4786/1566,gem_id=173128
-shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187076
+shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187319
 back=grimveiled_cape,id=173242,bonus_id=6716/6992/6649/6650/1559
-chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,enchant=eternal_insight,gem_id=187079
+chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,enchant=eternal_insight,gem_id=187318
 wrists=bands_of_the_fallen_house,id=186365,enchant=eternal_intellect,bonus_id=7187/1498,gem_id=173128
 hands=grasps_of_ancestral_whispers,id=186308,bonus_id=7187/1498
-waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187057/173128
+waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187315/173128
 legs=aradnes_lancer_legguards,id=186307,bonus_id=7187/1498
-feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187063
+feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187312
 finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
 finger2=oscillating_ouroboros,id=186376,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
 trinket1=tome_of_monstrous_constructions,id=186422,bonus_id=7187/1498
 trinket2=forbidden_necromantic_tome,id=186421,bonus_id=7187/1498
 main_hand=maledict_opus,id=186406,bonus_id=7187/1498,enchant=sinful_revelation
+
 
 save=T27_Shaman_Elemental.simc
 
@@ -39,16 +40,16 @@ talents=2301032
 covenant=necrolord
 soulbind=plague_deviser_marileth,323074/100:9:1/323091/323079/104:9:1/323095/147:9:1/352108/352110
 
-head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187073/173128
+head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187320/173128
 neck=azurevenom_choker,id=180115,bonus_id=3536/4786/1566,gem_id=173128
-shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187076
+shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187319
 back=grimveiled_cape,id=173242,bonus_id=6716/6992/6649/6650/1559
-chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,enchant=eternal_insight,gem_id=187079
+chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,enchant=eternal_insight,gem_id=187318
 wrists=bands_of_the_fallen_house,id=186365,enchant=eternal_intellect,bonus_id=7187/1498,gem_id=173128
 hands=grasps_of_ancestral_whispers,id=186308,bonus_id=7187/1498
-waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187057/173128
+waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187315/173128
 legs=aradnes_lancer_legguards,id=186307,bonus_id=7187/1498
-feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187063
+feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187312
 finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
 finger2=oscillating_ouroboros,id=186376,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
 trinket1=tome_of_monstrous_constructions,id=186422,bonus_id=7187/1498
