@@ -603,6 +603,12 @@ public:
 
   void apply_affecting_auras( action_t& action ) override;
 
+
+  std::vector<player_t*> glimmer_targets;
+  void trigger_glimmer();
+  void apply_glimmer( player_t* target );
+
+
   void      create_buffs_retribution();
   void      init_rng_retribution();
   void      init_spells_retribution();

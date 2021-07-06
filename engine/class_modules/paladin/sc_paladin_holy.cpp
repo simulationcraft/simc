@@ -349,7 +349,7 @@ struct holy_shock_t : public paladin_spell_t
   {
     if ( p()->talents.glimmer_of_light->ok() )
     {
-      handle_glimmer();
+      p()->trigger_glimmer();
     }
     
     
@@ -368,7 +368,7 @@ struct holy_shock_t : public paladin_spell_t
         {
           td( target )->debuff.glimmer_of_light_damage->trigger();
         }
-        handle_glimmer_targets( target );
+        p()->apply_glimmer( target );
       }
     }
     else
@@ -406,35 +406,36 @@ struct holy_shock_t : public paladin_spell_t
 
     return rm;
   }
-
-  void handle_glimmer_targets(player_t* target)
-  {
-    // no matter what we do we check if it already exists and erase it if it does.
-    auto it = range::find( glimmer_targets, target );
-    if ( it != glimmer_targets.end() )
-    {
-      glimmer_targets.erase( it );
-    }
-    // You can only have 8 glimmers out at a time
-    if ( glimmer_targets.size() >= 7 )
-    {
-      glimmer_targets.erase( glimmer_targets.begin() );
-    }
-    glimmer_targets.push_back( target );
-  }
-
-  void handle_glimmer()
-  {
-    for ( player_t* t : glimmer_targets )
-    {
-      if ( td( t )->debuff.glimmer_of_light_damage->up() )
-      {
-        glimmer_damage->set_target( t );
-        glimmer_damage->execute();
-      }
-    }
-  }
 };
+
+void paladin_t::trigger_glimmer()
+{
+  glimmer_of_light_damage_t* glimmer_damage = new glimmer_of_light_damage_t( this );
+
+  for ( player_t* t : glimmer_targets )
+  {
+    if ( find_target_data( t )->debuff.glimmer_of_light_damage->up() )
+    {
+      glimmer_damage->set_target( t );
+      glimmer_damage->execute();
+    }
+  }
+}
+
+void paladin_t::apply_glimmer( player_t* target )
+{
+  auto it = range::find( glimmer_targets, target );
+  if ( it != glimmer_targets.end() )
+  {
+    glimmer_targets.erase( it );
+  }
+  // You can only have 8 glimmers out at a time
+  if ( glimmer_targets.size() >= 7 )
+  {
+    glimmer_targets.erase( glimmer_targets.begin() );
+  }
+  glimmer_targets.push_back( target );
+}
 
 // Judgment - Holy =================================================================
 

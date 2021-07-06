@@ -3234,6 +3234,8 @@ void paladin_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( passives.paladin );
 }
 
+
+
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
  */
