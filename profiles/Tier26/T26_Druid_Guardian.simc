@@ -12,11 +12,11 @@ soulbind=niya,grove_invigoration/savage_combatant:7/niyas_tools_burrs
 renown=40
 
 # Default consumables
-potion=spectral_agility
+potion=phantom_fire
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
-temporary_enchant=main_hand:shaded_sharpening_stone
+temporary_enchant=main_hand:shadowcore_oil
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -151,7 +151,6 @@ main_hand=nathrian_torchbearers_stave,id=182419,bonus_id=7187/1524,enchant=sinfu
 # gear_ilvl=229.40
 # gear_agility=879
 # gear_stamina=1518
-# gear_attack_power=20
 # gear_crit_rating=377
 # gear_haste_rating=738
 # gear_mastery_rating=473
