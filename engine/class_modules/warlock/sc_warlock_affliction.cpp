@@ -1002,6 +1002,7 @@ void warlock_t::create_apl_affliction()
   def->add_action( "unstable_affliction,if=refreshable" );
   def->add_action( "siphon_life,cycle_targets=1,target_if=refreshable" );
   def->add_action( "corruption,cycle_targets=1,if=active_enemies<4-(talent.sow_the_seeds|talent.siphon_life),target_if=refreshable" );
+  def->add_action( "fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_solvent_humanoid.up" );
   def->add_action( "drain_soul,interrupt=1" );
   def->add_action( "shadow_bolt" );
 

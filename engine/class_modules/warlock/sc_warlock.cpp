@@ -1296,13 +1296,13 @@ void warlock_t::apl_precombat()
     precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
 
   precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "fleshcraft" );
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    precombat->add_action("fleshcraft");
-    precombat->add_action("demonbolt");
+    precombat->add_action( "demonbolt" );
     //tested different values, even with gfg/vf its better to summon tyrant sooner in the opener
-    precombat->add_action("variable,name=first_tyrant_time,op=set,value=12");
+    precombat->add_action( "variable,name=first_tyrant_time,op=set,value=12" );
   }
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
