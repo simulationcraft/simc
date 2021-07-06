@@ -14,6 +14,7 @@
 #include "buff/sc_buff.hpp"
 #include "action/dot.hpp"
 #include "item/item.hpp"
+#include "class_modules/monk/sc_monk.hpp"
 
 #include "actor_target_data.hpp"
 #include "darkmoon_deck.hpp"
@@ -1648,6 +1649,23 @@ void shadowgrasp_totem( special_effect_t& effect )
       pet_t::init_spells();
 
       damage = new shadowgrasp_totem_damage_t ( this, effect );
+    }
+
+    void init_assessors()
+    {
+      pet_t::init_assessors();
+      auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ) {
+        if ( effect.player->specialization() == MONK_BREWMASTER || effect.player->specialization() == MONK_WINDWALKER ||
+             effect.player->specialization() == MONK_MISTWEAVER  )
+        {
+          monk::monk_t* monk_player = static_cast<monk::monk_t*>( owner );
+          if ( monk_player->get_target_data( s->target )->debuff.bonedust_brew->up() )
+            monk_player->bonedust_brew_assessor( s );
+        }
+        return assessor::CONTINUE;
+      };
+
+      assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
     }
   };
 
