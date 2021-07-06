@@ -1233,6 +1233,23 @@ void infinitely_divisible_ooze( special_effect_t& effect )
       resources.base[ RESOURCE_ENERGY ] = 100;
     }
 
+    void init_assessors()
+    {
+      pet_t::init_assessors();
+      auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ) {
+        if ( effect.player->specialization() == MONK_BREWMASTER || effect.player->specialization() == MONK_WINDWALKER ||
+             effect.player->specialization() == MONK_MISTWEAVER )
+        {
+          monk::monk_t* monk_player = static_cast<monk::monk_t*>( owner );
+          if ( monk_player->get_target_data( s->target )->debuff.bonedust_brew->up() )
+            monk_player->bonedust_brew_assessor( s );
+        }
+        return assessor::CONTINUE;
+      };
+
+      assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+    }
+
     resource_e primary_resource() const override
     {
       return RESOURCE_ENERGY;
