@@ -131,7 +131,7 @@ waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=173128
 legs=muehzalas_hexthread_sarong,id=179351,bonus_id=1566/6536/6646
 feet=sandals_of_sacred_symmetry,id=186354,bonus_id=1498/7187
 finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=1498/7187/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=shadowghast_ring,id=178926,bonus_id=7025/6649/6648,ilevel=262
+finger2=shadowghast_ring,id=178926,bonus_id=7025/6649/6648/1559,gem_id=173128,enchant=tenet_of_haste
 trinket1=soulletting_ruby,id=178809,bonus_id=1566/6536/6646
 trinket2=forbidden_necromantic_tome,id=186421,bonus_id=1498/7187
 main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=celestial_guidance
@@ -141,7 +141,7 @@ main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=celestial_guidance
 # gear_stamina=2114
 # gear_intellect=1501
 # gear_crit_rating=486
-# gear_haste_rating=790
+# gear_haste_rating=822
 # gear_mastery_rating=560
 # gear_versatility_rating=394
 # gear_armor=435
