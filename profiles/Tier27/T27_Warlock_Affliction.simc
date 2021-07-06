@@ -211,7 +211,7 @@ shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187315
 back=cloak_of_scarred_honor,id=186289,bonus_id=1498/7187
 chest=sacrificers_sacramental_cassock,id=186282,bonus_id=1498/7187,gem_id=187318,enchant=eternal_stats
 wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=173130/187319,enchant=eternal_intellect
-hands=grimveiled_mittens,id=173244,bonus_id=7031/6649/6648,ilevel=262
+hands=grimveiled_mittens,id=173244,bonus_id=7031/6649/6648/1559
 waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=173130/187320
 legs=purge_protocol_legwraps,id=180107,bonus_id=1566/6536/6646
 feet=sandals_of_sacred_symmetry,id=186354,bonus_id=1498/7187
