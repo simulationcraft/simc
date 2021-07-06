@@ -36,6 +36,8 @@ struct proc_event_t;
  */
 struct dbc_proc_callback_t : public action_callback_t
 {
+  using execute_fn_t = std::function<void(dbc_proc_callback_t*, action_t*, action_state_t*)>;
+
   static const item_t default_item_;
 
   const item_t& item;
@@ -54,6 +56,9 @@ struct dbc_proc_callback_t : public action_callback_t
 
   /// Expires proc_buff on max stack, automatically set if proc_buff max_stack > 1
   bool expire_on_max_stack;
+
+  /// Override execution behavior with a separate callback function
+  execute_fn_t* execute_fn;
 
   dbc_proc_callback_t(const item_t& i, const special_effect_t& e);
 

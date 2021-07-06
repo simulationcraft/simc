@@ -129,7 +129,8 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, const special_effect_
     proc_buff( nullptr ),
     proc_action( nullptr ),
     weapon( nullptr ),
-    expire_on_max_stack( false )
+    expire_on_max_stack( false ),
+    execute_fn( nullptr )
 {
   assert( e.proc_flags() != 0 );
 }
@@ -145,7 +146,8 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t* i, const special_effect_
     proc_buff( nullptr ),
     proc_action( nullptr ),
     weapon( nullptr ),
-    expire_on_max_stack( false )
+    expire_on_max_stack( false ),
+    execute_fn( nullptr )
 {
   assert( e.proc_flags() != 0 );
 }
@@ -161,7 +163,8 @@ dbc_proc_callback_t::dbc_proc_callback_t( player_t* p, const special_effect_t& e
     proc_buff( nullptr ),
     proc_action( nullptr ),
     weapon( nullptr ),
-    expire_on_max_stack( false )
+    expire_on_max_stack( false ),
+    execute_fn( nullptr )
 {
   assert( e.proc_flags() != 0 );
 }
@@ -290,27 +293,34 @@ bool dbc_proc_callback_t::roll( action_t* action )
  * we do it in a smarter way (better expression support?)
  */
 
-void dbc_proc_callback_t::execute( action_t*, action_state_t* state )
+void dbc_proc_callback_t::execute( action_t* action, action_state_t* state )
 {
   if ( state->target->is_sleeping() )
   {
     return;
   }
 
-  bool triggered = proc_buff == nullptr;
-  if ( proc_buff )
-    triggered = proc_buff->trigger();
-
-  if ( triggered && proc_action && ( !proc_buff || proc_buff->check() == proc_buff->max_stack() ) )
+  if ( execute_fn )
   {
-    proc_action->target = target( state );
-    proc_action->schedule_execute();
+    (*execute_fn)( this, action, state );
+  }
+  else
+  {
+    bool triggered = proc_buff == nullptr;
+    if ( proc_buff )
+      triggered = proc_buff->trigger();
 
-    // Decide whether to expire the buff even with 1 max stack
-    if ( expire_on_max_stack )
+    if ( triggered && proc_action && ( !proc_buff || proc_buff->check() == proc_buff->max_stack() ) )
     {
-      assert(proc_buff);
-      proc_buff->expire();
+      proc_action->target = target( state );
+      proc_action->schedule_execute();
+
+      // Decide whether to expire the buff even with 1 max stack
+      if ( expire_on_max_stack )
+      {
+        assert(proc_buff);
+        proc_buff->expire();
+      }
     }
   }
 }
