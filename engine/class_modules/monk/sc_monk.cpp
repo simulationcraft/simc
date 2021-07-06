@@ -5044,7 +5044,7 @@ struct celestial_brew_t : public monk_absorb_t
     {
       // Celestial Brew seems to trigger Bron's Call to Action (and possibly other
       // effects that care about casts).
-      return PROC2_CAST;
+      return PROC2_CAST_HEAL;
     }
   };
   
@@ -5056,6 +5056,7 @@ struct celestial_brew_t : public monk_absorb_t
   {
     parse_options( options_str );
     harmful = may_crit = false;
+    may_proc_bron      = true;
     callbacks          = true;
 
     if ( p.talent.light_brewing->ok() )
@@ -6786,7 +6787,8 @@ void monk_t::init_special_effects()
   //
   // Note, also has to handle the ICD and pet-related trigger conditions.
   callbacks.register_callback_trigger_function( 333950, callback_trigger_fn_type::TRIGGER,
-      [ this ]( const action_callback_t* cb, action_t* a, action_state_t* ) {
+      [ this ]( const action_callback_t* cb, action_t* a, action_state_t* )
+  {
         auto proc = debug_cast<const dbc_proc_callback_t*>( cb );
         if ( proc->cooldown->down() )
           return false;
@@ -6801,41 +6803,50 @@ void monk_t::init_special_effects()
       if ( pets.bron->is_active() )
         return false;
 
-      if ( a->type == ACTION_ATTACK )
+      switch( a->type )
       {
-        auto attack = dynamic_cast<monk::actions::monk_melee_attack_t*>( a );
-        if ( attack && attack->may_proc_bron )
+        case ACTION_ATTACK:
         {
-          attack->bron_proc->occur();
-          return true;
+          auto attack = dynamic_cast<monk::actions::monk_melee_attack_t*>( a );
+          if ( attack && attack->may_proc_bron )
+          {
+            attack->bron_proc->occur();
+            return true;
+          }
+          break;
         }
-      }
-      else if ( a->type == ACTION_SPELL )
-      {
-        auto spell = dynamic_cast<monk::actions::monk_spell_t*>( a );
-        if ( spell && spell->may_proc_bron )
+        case ACTION_SPELL:
         {
-          spell->bron_proc->occur();
-          return true;
+          auto spell = dynamic_cast<monk::actions::monk_spell_t*>( a );
+          if ( spell && spell->may_proc_bron )
+          {
+            spell->bron_proc->occur();
+            return true;
+          }
+          break;
         }
-      }
-      else if ( a->type == ACTION_HEAL )
-      {
-        auto heal = dynamic_cast<monk::actions::monk_heal_t*>( a );
-        if ( heal && heal->may_proc_bron )
+        case ACTION_HEAL:
         {
-          heal->bron_proc->occur();
-          return true;
+          auto heal = dynamic_cast<monk::actions::monk_heal_t*>( a );
+          if ( heal && heal->may_proc_bron )
+          {
+            heal->bron_proc->occur();
+            return true;
+          }
+          break;
         }
-      }
-      else if ( a->type == ACTION_ABSORB )
-      {
-        auto absorb = dynamic_cast<monk::actions::monk_absorb_t*>( a );
-        if ( absorb && absorb->may_proc_bron )
+        case ACTION_ABSORB:
         {
-          absorb->bron_proc->occur();
-          return true;
+          auto absorb = dynamic_cast<monk::actions::monk_absorb_t*>( a );
+          if ( absorb && absorb->may_proc_bron )
+          {
+            absorb->bron_proc->occur();
+            return true;
+          }
+          break;
         }
+        default:
+          break;
       }
 
       return false;
