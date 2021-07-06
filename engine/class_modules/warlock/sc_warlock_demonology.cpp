@@ -1206,7 +1206,6 @@ void warlock_t::create_apl_demonology()
   action_priority_list_t* hp    		= get_action_priority_list( "hp_trinks" );
   action_priority_list_t* dmg    		= get_action_priority_list( "pure_damage_trinks" );
 
-  def->add_action( "cancel_action,if=action.fleshcraft.channeling" );
   def->add_action( "call_action_list,name=trinkets" );
   def->add_action( "interrupt,if=target.debuff.casting.react" );
   def->add_action( "doom,if=refreshable" );
