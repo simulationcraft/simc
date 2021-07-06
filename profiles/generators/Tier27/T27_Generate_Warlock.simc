@@ -23,7 +23,7 @@ finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=1498/7187/6935,gem_i
 finger2=sworn_oath_of_the_nine,id=186290,bonus_id=1498/7187/6935,gem_id=173130,enchant=tenet_of_mastery
 trinket1=soulletting_ruby,id=178809,bonus_id=1566/6536/6646
 trinket2=forbidden_necromantic_tome,id=186421,bonus_id=1498/7187
-main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=celestial_guidancen
+main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=celestial_guidance
 
 save=T27_Warlock_Affliction.simc
 
