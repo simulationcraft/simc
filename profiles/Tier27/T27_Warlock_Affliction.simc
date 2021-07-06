@@ -32,6 +32,7 @@ actions.precombat+=/use_item,name=tome_of_monstrous_constructions
 actions.precombat+=/use_item,name=soleahs_secret_technique
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions.precombat+=/snapshot_stats
+actions.precombat+=/fleshcraft
 actions.precombat+=/seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>=3
 actions.precombat+=/haunt
 actions.precombat+=/unstable_affliction
@@ -110,6 +111,7 @@ actions+=/agony,cycle_targets=1,target_if=refreshable
 actions+=/unstable_affliction,if=refreshable
 actions+=/siphon_life,cycle_targets=1,target_if=refreshable
 actions+=/corruption,cycle_targets=1,if=active_enemies<4-(talent.sow_the_seeds|talent.siphon_life),target_if=refreshable
+actions+=/fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_solvent_humanoid.up
 actions+=/drain_soul,interrupt=1
 actions+=/shadow_bolt
 
