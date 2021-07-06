@@ -3966,6 +3966,9 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t*, 
 
   m *= 1.0 + racials.command->effectN( 1 ).percent();
 
+  if ( buffs.coldhearted && buffs.coldhearted->check() )
+    m *= 1.0 + buffs.coldhearted->check_value();
+
   // By default effect 1 is used for the player modifier, effect 2 is for the pet modifier
   if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
     m *=
