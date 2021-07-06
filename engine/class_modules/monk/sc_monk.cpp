@@ -6799,6 +6799,15 @@ void monk_t::init_special_effects()
           return true;
         }
       }
+      else if ( a->type == ACTION_ABSORB )
+      {
+        auto absorb = dynamic_cast<monk::actions::monk_absorb_t*>( a );
+        if ( absorb && absorb->may_proc_bron )
+        {
+          absorb->bron_proc->occur();
+          return true;
+        }
+      }
       else if ( a->type == ACTION_SPELL )
       {
         auto spell = dynamic_cast<monk::actions::monk_spell_t*>( a );
