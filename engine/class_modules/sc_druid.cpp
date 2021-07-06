@@ -1772,10 +1772,12 @@ public:
       free_cast = free_cast_e::NONE;
     }
     else
+    {
       ab::execute();
 
-    if ( !ab::background && ab::trigger_gcd > 0_ms && p()->buff.ravenous_frenzy->check() )
-      p()->buff.ravenous_frenzy->trigger();
+      if ( !ab::background && ab::trigger_gcd > 0_ms && p()->buff.ravenous_frenzy->check() )
+        p()->buff.ravenous_frenzy->trigger();
+    }
   }
 
   void schedule_travel( action_state_t* s ) override
