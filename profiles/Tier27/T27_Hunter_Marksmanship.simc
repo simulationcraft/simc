@@ -33,7 +33,7 @@ actions.precombat+=/tar_trap,if=runeforge.soulforge_embers
 actions.precombat+=/double_tap,precast_time=10,if=active_enemies>1|!covenant.kyrian&!talent.volley|variable.etf_precast
 # Change to 1 to simulate ETF/SSF gearswap Trueshot precast.
 actions.precombat+=/variable,name=etf_precast,value=0
-actions.precombat+=/trueshot,precast_etf_equip=1,precast_time=2,if=variable.etf_precast
+actions.precombat+=/trueshot,precast_etf_equip=1,precast_ssf_rank=7,precast_time=2,if=variable.etf_precast
 actions.precombat+=/aimed_shot,if=active_enemies<3&(!covenant.kyrian&!talent.volley|active_enemies<2)&!variable.etf_precast
 actions.precombat+=/steady_shot,if=active_enemies>2|(covenant.kyrian|talent.volley)&active_enemies=2|variable.etf_precast
 
@@ -47,12 +47,12 @@ actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=st,if=active_enemies<3
 actions+=/call_action_list,name=trickshots,if=active_enemies>2
 
-actions.cds=berserking,if=(buff.trueshot.up&buff.resonating_arrow.up&covenant.kyrian)|(buff.trueshot.up&buff.wild_spirits.up&covenant.night_fae)|(covenant.venthyr|covenant.necrolord)&buff.trueshot.up|target.time_to_die<13|(covenant.kyrian&buff.resonating_arrow.up&target.time_to_die<73)
+actions.cds=berserking,if=buff.trueshot.up|target.time_to_die<13
 actions.cds+=/blood_fury,if=buff.trueshot.up|cooldown.trueshot.remains>30|target.time_to_die<16
 actions.cds+=/ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|target.time_to_die<16
 actions.cds+=/fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|target.time_to_die<9
 actions.cds+=/lights_judgment,if=buff.trueshot.down
-actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|target.time_to_die<26|(covenant.kyrian&buff.resonating_arrow.up&target.time_to_die<72)
+actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|target.time_to_die<26
 
 actions.st=steady_shot,if=talent.steady_focus&(prev_gcd.1.steady_shot&buff.steady_focus.remains<5|buff.steady_focus.down)&(buff.resonating_arrow.down|!covenant.kyrian)
 actions.st+=/kill_shot
