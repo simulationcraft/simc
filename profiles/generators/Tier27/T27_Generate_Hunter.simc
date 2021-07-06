@@ -22,8 +22,9 @@ feet=ragebound_leg_irons,id=186343,bonus_id=7187/1498,gem_id=187312,enchant=eter
 finger1=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
 trinket1=relic_of_the_frozen_wastes,id=186437,bonus_id=7187/1498
-trinket2=decanter_of_endless_howling,id=186429,bonus_id=7187/1498
-main_hand=raeshalare_deaths_whisper,id=186414,bonus_id=7187/1498,enchant=optical_target_embiggener
+trinket2=shadowgrasp_totem,id=179356,bonus_id=6536/1566/6646
+main_hand=soulrent_outriders_recurve,id=186411,bonus_id=7187/1498,enchant=optical_target_embiggener
+
 
 save=T27_Hunter_Beast_Mastery.simc
 
@@ -50,9 +51,10 @@ legs=hyperdense_greaves,id=186344,bonus_id=7187/1498
 feet=ragebound_leg_irons,id=186343,bonus_id=7187/1498,gem_id=187314,enchant=eternal_agility
 finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_mastery
 finger2=shadowghast_ring,id=178926,bonus_id=7013/6647/6648/1559/6935,gem_id=173130,enchant=tenet_of_mastery
-trinket1=decanter_of_endless_howling,id=186429,bonus_id=7187/1498
-trinket2=relic_of_the_frozen_wastes,id=186437,bonus_id=7187/1498
-main_hand=raeshalare_deaths_whisper,id=186414,bonus_id=7187/1498,enchant=sinful_revelation
+trinket1=relic_of_the_frozen_wastes,id=186437,bonus_id=7187/1498
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
+main_hand=soulrent_outriders_recurve,id=186411,bonus_id=7187/1498,enchant=sinful_revelation
+
 
 save=T27_Hunter_Marksmanship.simc
 

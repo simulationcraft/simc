@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39282 Live (hotfix 2021-07-03/39282, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39291 Live (hotfix 2021-07-06/39291, git build shadowlands 23290fec, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -10265,6 +10265,9 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Expel Harm (322101)
                    Family Flags: 95
+#2 (id=895593)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value 2: 1341 (Label)
+Hotfixed         : NEW EFFECT
 Description      : Expel Harm's healing is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Inner Fury (id=336452) [Spell Family (53), Passive, Hidden] 

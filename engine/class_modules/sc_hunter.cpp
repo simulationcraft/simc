@@ -9,7 +9,6 @@
 #include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
 #include "class_modules/apl/apl_hunter.hpp"
-#include "dbc/covenant_data.hpp"
 
 namespace
 { // UNNAMED NAMESPACE
@@ -1144,16 +1143,6 @@ struct hunter_pet_t: public pet_t
     pet_t::schedule_ready( delta_time, waiting );
   }
 
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = pet_t::composite_player_multiplier( school );
-
-    if ( o() -> mastery.master_of_beasts.ok() )
-      m *= 1 + owner -> cache.mastery_value();
-
-    return m;
-  }
-
   double composite_player_target_crit_chance( player_t* target ) const override
   {
     double crit = pet_t::composite_player_target_crit_chance( target );
@@ -1711,7 +1700,6 @@ struct spitting_cobra_t final : public hunter_pet_t
   {
     double m = owner -> composite_player_multiplier( school );
 
-    m *= 1 + owner -> cache.mastery_value();
     m *= 1 + active_damage_multiplier;
 
     return m;
@@ -5054,7 +5042,6 @@ struct trueshot_t: public hunter_spell_t
 {
   timespan_t precast_time = 0_ms;
   bool precast_etf_equip = false;
-  unsigned precast_ssf_rank = 0;
   timespan_t precast_duration = 0_ms;
 
   trueshot_t( hunter_t* p, util::string_view options_str ):
@@ -5062,7 +5049,6 @@ struct trueshot_t: public hunter_spell_t
   {
     add_option( opt_timespan( "precast_time", precast_time ) );
     add_option( opt_bool( "precast_etf_equip", precast_etf_equip ) );
-    add_option( opt_uint( "precast_ssf_rank", precast_ssf_rank, 0, 15 ) );
     parse_options( options_str );
 
     harmful = false;
@@ -5074,9 +5060,6 @@ struct trueshot_t: public hunter_spell_t
 
     if ( !p->legendary.eagletalons_true_focus->ok() && precast_etf_equip )
       base += p->find_spell( 336849 )->effectN( 2 ).time_value();
-
-    if ( !p->conduits.sharpshooters_focus->ok() && precast_ssf_rank > 0 )
-      mod *= ( 1 + conduit_rank_entry_t::find( 188, precast_ssf_rank - 1U, player->dbc->ptr ).value / 100.0 );
 
     precast_duration = base * mod;
     sim->print_debug( "{} precast Trueshot will be {} seconds", *p, precast_duration );
@@ -6508,6 +6491,9 @@ double hunter_t::composite_player_target_multiplier( player_t* target, school_e 
 double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
+
+  if ( mastery.master_of_beasts->ok() )
+    m *= 1.0 + cache.mastery_value();
 
   m *= 1 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
   m *= 1 + specs.survival_hunter -> effectN( 3 ).percent();

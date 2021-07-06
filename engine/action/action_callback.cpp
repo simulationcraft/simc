@@ -7,13 +7,12 @@
 #include "sc_action.hpp"
 #include "player/sc_player.hpp"
 
-action_callback_t::action_callback_t(player_t* l, bool ap, bool asp) :
-  listener(l), active(true), allow_self_procs(asp), allow_procs(ap)
+action_callback_t::action_callback_t( player_t* l, bool ap, bool asp ) :
+  listener( l ), active( true ), allow_self_procs( asp ), allow_procs( ap )
 {
-  assert(l);
-  if (std::find(l->callbacks.all_callbacks.begin(), l->callbacks.all_callbacks.end(), this)
-    == l->callbacks.all_callbacks.end())
-    l->callbacks.all_callbacks.push_back(this);
+  assert( l );
+  if ( range::find( l->callbacks.all_callbacks, this ) == l->callbacks.all_callbacks.end() )
+    l->callbacks.all_callbacks.push_back( this );
 }
 
 void action_callback_t::trigger(const std::vector<action_callback_t*>& v, action_t* a, action_state_t* state )

@@ -8,6 +8,8 @@
 #include "config.hpp"
 #include "action_callback.hpp"
 
+#include <functional>
+
 struct action_state_t;
 struct buff_t;
 struct cooldown_t;
@@ -36,6 +38,29 @@ struct proc_event_t;
  */
 struct dbc_proc_callback_t : public action_callback_t
 {
+  // Additional trigger callbacks, currently used to control
+  // the triggering conditions of the proc.
+  enum class trigger_fn_type
+  {
+    /// Trigger uses normal processing
+    NONE,
+    /// Custom callback enforces an additional trigger check on the proc, but uses normal
+    /// proc chance and proc-related semantics.
+    CONDITION,
+    /// Custom callback trigger completely overrides the trigger attempt logic of the
+    /// callback. This includes all aspects of the trigger attempt, including e.g.,
+    /// (internal) cooldown checks.
+    ///
+    /// Proc chance (and probability distribution) is still driven by the characteristics
+    /// of proc itself.
+    ///
+    /// Note, the proc flags still control if the proc is even attempted to trigger.
+    TRIGGER
+  };
+
+  using execute_fn_t = std::function<void(const dbc_proc_callback_t*, action_t*, action_state_t*)>;
+  using trigger_fn_t = std::function<bool(const dbc_proc_callback_t*, action_t*, action_state_t*)>;
+
   static const item_t default_item_;
 
   const item_t& item;
@@ -54,6 +79,13 @@ struct dbc_proc_callback_t : public action_callback_t
 
   /// Expires proc_buff on max stack, automatically set if proc_buff max_stack > 1
   bool expire_on_max_stack;
+
+  /// Trigger condition override type
+  trigger_fn_type trigger_type;
+  /// Override proc trigger condition with a separate callback function
+  const trigger_fn_t* trigger_fn;
+  /// Override execution behavior with a separate callback function
+  execute_fn_t* execute_fn;
 
   dbc_proc_callback_t(const item_t& i, const special_effect_t& e);
 

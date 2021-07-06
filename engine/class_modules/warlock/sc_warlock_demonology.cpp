@@ -1220,7 +1220,7 @@ void warlock_t::create_apl_demonology()
   def->add_action( "bilescourge_bombers,if=buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5" );
   def->add_action( "implosion,if=active_enemies>1+(1*talent.sacrificed_souls.enabled)&buff.wild_imps.stack>=6&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5" );
   def->add_action( "implosion,if=active_enemies>2&buff.wild_imps.stack>=6&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5&!runeforge.implosive_potential&(!talent.from_the_shadows.enabled|buff.from_the_shadows.up)" );
-  def->add_action( "implosion,if=active_enemies>2&buff.wild_imps.stack>=6&buff.implosive_potential.remains<2&runeforge.implosive_potential&(!talent.demonic_consumption.enabled|(buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5))" );
+  def->add_action( "implosion,if=active_enemies>2&buff.wild_imps.stack>=6&buff.implosive_potential.remains<2&runeforge.implosive_potential" );
   def->add_action( "implosion,if=buff.wild_imps.stack>=12&talent.soul_conduit.enabled&talent.from_the_shadows.enabled&runeforge.implosive_potential&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains_expected>5" );
   def->add_action( "grimoire_felguard,if=time_to_die<30" );
   def->add_action( "summon_vilefiend,if=time_to_die<28" );
@@ -1246,7 +1246,7 @@ void warlock_t::create_apl_demonology()
   cov->add_action( "soul_rot,if=soulbind.wild_hunt_tactics" );
   cov->add_action( "decimating_bolt,if=(soulbind.lead_by_example|soulbind.kevins_oozeling)&(pet.demonic_tyrant.active&soul_shard<2|cooldown.summon_demonic_tyrant.remains_expected>40)" );
   cov->add_action( "decimating_bolt,if=(soulbind.forgeborne_reveries|(soulbind.volatile_solvent&!soulbind.kevins_oozeling))&!pet.demonic_tyrant.active" );
-  cov->add_action( "fleshcraft,if=soulbind.volatile_solvent" );
+  cov->add_action( "fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_solvent_humanoid.up" );
   cov->add_action( "scouring_tithe,if=soulbind.combat_meditation&pet.demonic_tyrant.active" );
   cov->add_action( "scouring_tithe,if=!soulbind.combat_meditation" );
   cov->add_action( "impending_catastrophe,if=pet.demonic_tyrant.active&soul_shard=0" );

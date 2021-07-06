@@ -33,7 +33,7 @@ actions.precombat+=/tar_trap,if=runeforge.soulforge_embers
 actions.precombat+=/double_tap,precast_time=10,if=active_enemies>1|!covenant.kyrian&!talent.volley|variable.etf_precast
 # Change to 1 to simulate ETF/SSF gearswap Trueshot precast.
 actions.precombat+=/variable,name=etf_precast,value=0
-actions.precombat+=/trueshot,precast_etf_equip=1,precast_ssf_rank=7,precast_time=2,if=variable.etf_precast
+actions.precombat+=/trueshot,precast_etf_equip=1,precast_time=2,if=variable.etf_precast
 actions.precombat+=/aimed_shot,if=active_enemies<3&(!covenant.kyrian&!talent.volley|active_enemies<2)&!variable.etf_precast
 actions.precombat+=/steady_shot,if=active_enemies>2|(covenant.kyrian|talent.volley)&active_enemies=2|variable.etf_precast
 
@@ -47,12 +47,12 @@ actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=st,if=active_enemies<3
 actions+=/call_action_list,name=trickshots,if=active_enemies>2
 
-actions.cds=berserking,if=buff.trueshot.up|target.time_to_die<13
+actions.cds=berserking,if=(buff.trueshot.up&buff.resonating_arrow.up&covenant.kyrian)|(buff.trueshot.up&buff.wild_spirits.up&covenant.night_fae)|(covenant.venthyr|covenant.necrolord)&buff.trueshot.up|target.time_to_die<13|(covenant.kyrian&buff.resonating_arrow.up&target.time_to_die<73)
 actions.cds+=/blood_fury,if=buff.trueshot.up|cooldown.trueshot.remains>30|target.time_to_die<16
 actions.cds+=/ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|target.time_to_die<16
 actions.cds+=/fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|target.time_to_die<9
 actions.cds+=/lights_judgment,if=buff.trueshot.down
-actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|target.time_to_die<26
+actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|target.time_to_die<26|(covenant.kyrian&buff.resonating_arrow.up&target.time_to_die<72)
 
 actions.st=steady_shot,if=talent.steady_focus&(prev_gcd.1.steady_shot&buff.steady_focus.remains<5|buff.steady_focus.down)&(buff.resonating_arrow.down|!covenant.kyrian)
 actions.st+=/kill_shot
@@ -129,16 +129,16 @@ legs=hyperdense_greaves,id=186344,bonus_id=7187/1498
 feet=ragebound_leg_irons,id=186343,bonus_id=7187/1498,gem_id=187314,enchant=eternal_agility
 finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_mastery
 finger2=shadowghast_ring,id=178926,bonus_id=7013/6647/6648/1559/6935,gem_id=173130,enchant=tenet_of_mastery
-trinket1=decanter_of_endless_howling,id=186429,bonus_id=7187/1498
-trinket2=relic_of_the_frozen_wastes,id=186437,bonus_id=7187/1498
-main_hand=raeshalare_deaths_whisper,id=186414,bonus_id=7187/1498,enchant=sinful_revelation
+trinket1=relic_of_the_frozen_wastes,id=186437,bonus_id=7187/1498
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
+main_hand=soulrent_outriders_recurve,id=186411,bonus_id=7187/1498,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=256.40
-# gear_agility=1009
-# gear_stamina=2107
-# gear_crit_rating=1125
-# gear_haste_rating=620
-# gear_mastery_rating=444
-# gear_versatility_rating=185
+# gear_ilvl=255.93
+# gear_agility=1100
+# gear_stamina=2090
+# gear_crit_rating=920
+# gear_haste_rating=544
+# gear_mastery_rating=548
+# gear_versatility_rating=241
 # gear_armor=1024

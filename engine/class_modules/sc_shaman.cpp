@@ -5,6 +5,7 @@
 
 #include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
+#include "action/action_callback.hpp"
 #include "sc_enums.hpp"
 
 #include "simulationcraft.hpp"
@@ -365,6 +366,8 @@ public:
     spawner::pet_spawner_t<pet_t, shaman_t> fire_wolves;
     spawner::pet_spawner_t<pet_t, shaman_t> frost_wolves;
     spawner::pet_spawner_t<pet_t, shaman_t> lightning_wolves;
+
+    pet_t* bron;
 
     pets_t( shaman_t* );
   } pet;
@@ -832,6 +835,7 @@ public:
 
   void init_rng() override;
   void init_special_effects() override;
+  void init_special_effect( special_effect_t& effect ) override;
 
   double resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
   void moving() override;
@@ -1057,6 +1061,9 @@ public:
 
   bool affected_by_molten_weapon;
 
+  bool may_proc_bron;
+  proc_t* bron_proc;
+
   shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
@@ -1068,7 +1075,8 @@ public:
       maelstrom_gain( 0 ),
       maelstrom_gain_coefficient( 1.0 ),
       enable_enh_mastery_scaling( false ),
-      affected_by_molten_weapon( false )
+      affected_by_molten_weapon( false ),
+      may_proc_bron( false ), bron_proc( nullptr )
   {
     ab::may_crit = true;
 
@@ -1157,6 +1165,11 @@ public:
     {
       ab::gcd_type = gcd_haste_type::ATTACK_HASTE;
     }
+
+    may_proc_bron = !this->background &&
+      ( this->spell_power_mod.direct || this->spell_power_mod.tick ||
+        this->attack_power_mod.direct || this->attack_power_mod.tick ||
+        this->base_dd_min || this->base_dd_max || this->base_td );
   }
 
   void init_finished() override
@@ -1166,6 +1179,11 @@ public:
     if ( this->cooldown->duration > timespan_t::zero() )
     {
       p()->ability_cooldowns.push_back( this->cooldown );
+    }
+
+    if ( may_proc_bron )
+    {
+      bron_proc = p()->get_proc( std::string( "Bron's Call to Action: " ) + full_name() );
     }
   }
 
@@ -1439,6 +1457,7 @@ public:
     }
 
     may_proc_lightning_shield = ab::weapon != nullptr;
+
   }
 
   void init_finished() override
@@ -3358,6 +3377,8 @@ struct stormstrike_base_t : public shaman_attack_t
   {
     shaman_attack_t::init();
     may_proc_flametongue = may_proc_windfury = may_proc_stormbringer = false;
+
+    may_proc_bron = true;
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -5826,6 +5847,8 @@ struct ascendance_t : public shaman_spell_t
         add_child( ascendance_damage );
       }
     }
+
+    may_proc_bron = true;
   }
 
   void execute() override
@@ -5956,6 +5979,13 @@ struct static_discharge_t : public shaman_spell_t
     affected_by_master_of_the_elements = false;
     base_tick_time = 0_s; // Ticking handled by the buff
     dot_duration = 0_s;
+  }
+
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    may_proc_bron = true;
   }
 
   void execute() override
@@ -8616,6 +8646,120 @@ void shaman_t::init_rng()
 void shaman_t::init_special_effects()
 {
   player_t::init_special_effects();
+
+  // Custom trigger condition for Bron's Call to Arms. Completely overrides the trigger
+  // behavior of the generic proc to get control back to the Shaman class module in terms
+  // of what triggers it.
+  //
+  // 2021-07-04 Eligible spells that can proc Bron's Call to Arms:
+  // - Any foreground amount spell / attack
+  // - Ascendance
+  // - Stormstrike/Windstrike "base" (or might be strike itself + icd handling)
+  //
+  // Note, also has to handle the ICD and pet-related trigger conditions.
+  callbacks.register_callback_trigger_function( 333950,
+      dbc_proc_callback_t::trigger_fn_type::TRIGGER,
+      [this]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* ) {
+      if ( cb->cooldown->down() )
+      {
+        return false;
+      }
+
+      // Defer finding the bron pet until the first proc attempt
+      if ( !pet.bron )
+      {
+        pet.bron = find_pet( "bron" );
+        assert( pet.bron );
+      }
+
+      if ( pet.bron->is_active() )
+      {
+        return false;
+      }
+
+      if ( a->type == ACTION_ATTACK )
+      {
+        auto attack = dynamic_cast<shaman_attack_t*>( a );
+        if ( attack && attack->may_proc_bron )
+        {
+          attack->bron_proc->occur();
+          return true;
+        }
+      }
+      else if ( a->type == ACTION_HEAL )
+      {
+        auto heal = dynamic_cast<shaman_heal_t*>( a );
+        if ( heal && heal->may_proc_bron )
+        {
+          heal->bron_proc->occur();
+          return true;
+        }
+      }
+      else if ( a->type == ACTION_SPELL )
+      {
+        auto spell = dynamic_cast<shaman_spell_t*>( a );
+        if ( spell && spell->may_proc_bron )
+        {
+          spell->bron_proc->occur();
+          return true;
+        }
+      }
+
+      return false;
+  } );
+
+  // Implement special handling of the Bron's Call to Arms for a few Elemental spells that
+  // can potentially trigger multiple stacks.
+  auto bron_duration = find_spell( 333961 )->duration();
+  callbacks.register_callback_execute_function( 333950,
+      [this, bron_duration]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* ) {
+
+      // 2021-07-06: Self-cast Lava Burst and Icefury grant an additional stack, if the
+      // distance to target is far enough (travel time exceeds internal cooldown).
+      //
+      // Technically this stack should be granted on impact, but the end result sould be
+      // virtually identical.
+      if ( ( a->data().id() == 51505 || a->data().id() == 210714 ) &&
+           !a->background && a->travel_time() >= 50_ms )
+      {
+        debug_cast<shaman_spell_t*>( a )->bron_proc->occur();
+        cb->proc_buff->trigger();
+      }
+
+      if ( cb->proc_buff->at_max_stacks() )
+      {
+        cb->proc_buff->expire();
+
+        if ( pet.bron->is_sleeping() )
+        {
+          pet.bron->summon( bron_duration );
+        }
+      }
+      else
+      {
+        cb->proc_buff->trigger();
+      }
+  } );
+}
+
+// shaman_t::init_special_effect ============================================
+
+void shaman_t::init_special_effect( special_effect_t& effect )
+{
+  switch ( effect.driver()->id() )
+  {
+    // Bron's Call to Arms
+    //
+    // Shaman module has custom triggering logic (defined above) so override the initial
+    // proc flags so we get wider trigger attempts than the core implementation. The
+    // overridden proc condition above will take care of filtering out actions that are
+    // not allowed to proc it.
+    case 333950:
+      effect.proc_flags2_ |= PF2_CAST;
+      break;
+    default:
+      break;
+  }
 }
 
 // shaman_t::generate_bloodlust_options =====================================
@@ -10165,7 +10309,10 @@ shaman_t::pets_t::pets_t( shaman_t* s )
     spirit_wolves( "spirit_wolf", s, []( shaman_t* s ) { return new pet::spirit_wolf_t( s ); } ),
     fire_wolves( "fiery_wolf", s, []( shaman_t* s ) { return new pet::fire_wolf_t( s ); } ),
     frost_wolves( "frost_wolf", s, []( shaman_t* s ) { return new pet::frost_wolf_t( s ); } ),
-    lightning_wolves( "lightning_wolf", s, []( shaman_t* s ) { return new pet::lightning_wolf_t( s ); } )
+    lightning_wolves( "lightning_wolf", s, []( shaman_t* s ) { return new pet::lightning_wolf_t( s ); } ),
+
+    /// Bron's Call to Arms trigger logic is completely overridden by the Shaman module
+    bron( nullptr )
 {
 }
 
