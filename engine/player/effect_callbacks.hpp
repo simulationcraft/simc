@@ -46,13 +46,13 @@ struct effect_callbacks_t
 
   void register_callback( unsigned proc_flags, unsigned proc_flags2, action_callback_t* cb );
   /// Register a driver-specific custom trigger callback
-  void register_callback_trigger_function( unsigned driver_id, callback_trigger_fn_type t, const action_callback_t::callback_trigger_fn_t& fn );
+  void register_callback_trigger_function( unsigned driver_id, dbc_proc_callback_t::trigger_fn_type t, const dbc_proc_callback_t::trigger_fn_t& fn );
   /// Register a driver-specific custom execute callback
   void register_callback_execute_function( unsigned driver_id, const dbc_proc_callback_t::execute_fn_t& fn );
   /// Get a custom driver-specific trigger callback (if it has been registered)
-  action_callback_t::callback_trigger_fn_t* callback_trigger_function( unsigned driver_id ) const;
+  dbc_proc_callback_t::trigger_fn_t* callback_trigger_function( unsigned driver_id ) const;
   /// Get the type of the custom driver-specific trigger callback
-  callback_trigger_fn_type callback_trigger_function_type( unsigned driver_id ) const;
+  dbc_proc_callback_t::trigger_fn_type callback_trigger_function_type( unsigned driver_id ) const;
   dbc_proc_callback_t::execute_fn_t* callback_execute_function( unsigned driver_id ) const;
 
   // Helper to get first instance of object T and return it, if not found, return nullptr
@@ -71,7 +71,7 @@ struct effect_callbacks_t
   }
 
 private:
-  using callback_trigger_entry_t = std::tuple<unsigned, callback_trigger_fn_type, std::unique_ptr<action_callback_t::callback_trigger_fn_t>>;
+  using callback_trigger_entry_t = std::tuple<unsigned, dbc_proc_callback_t::trigger_fn_type, std::unique_ptr<dbc_proc_callback_t::trigger_fn_t>>;
   using callback_execute_entry_t = std::tuple<unsigned, std::unique_ptr<dbc_proc_callback_t::execute_fn_t>>;
 
   /// A vector of (driver-id, callback-trigger-function) tuples

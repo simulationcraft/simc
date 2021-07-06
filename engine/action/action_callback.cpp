@@ -8,8 +8,7 @@
 #include "player/sc_player.hpp"
 
 action_callback_t::action_callback_t( player_t* l, bool ap, bool asp ) :
-  listener( l ), trigger_fn( nullptr ), trigger_type( callback_trigger_fn_type::NONE ),
-  active( true ), allow_self_procs( asp ), allow_procs( ap )
+  listener( l ), active( true ), allow_self_procs( asp ), allow_procs( ap )
 {
   assert( l );
   if ( range::find( l->callbacks.all_callbacks, this ) == l->callbacks.all_callbacks.end() )

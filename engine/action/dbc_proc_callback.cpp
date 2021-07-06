@@ -58,7 +58,7 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
 {
   // Fully overridden trigger condition check; if allowed, perform normal proc chance
   // behavior.
-  if ( trigger_type == callback_trigger_fn_type::TRIGGER )
+  if ( trigger_type == trigger_fn_type::TRIGGER )
   {
     if ( !(*trigger_fn)( this, a, state ) )
     {
@@ -93,7 +93,7 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
     }
 
     // Additional trigger condition to check before performing proc chance process.
-    if ( trigger_type == callback_trigger_fn_type::CONDITION && !(*trigger_fn)( this, a, state ) )
+    if ( trigger_type == trigger_fn_type::CONDITION && !(*trigger_fn)( this, a, state ) )
     {
       return;
     }
@@ -130,6 +130,8 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, const special_effect_
     proc_action( nullptr ),
     weapon( nullptr ),
     expire_on_max_stack( false ),
+    trigger_type( trigger_fn_type::NONE ),
+    trigger_fn( nullptr ),
     execute_fn( nullptr )
 {
   assert( e.proc_flags() != 0 );
@@ -147,6 +149,8 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t* i, const special_effect_
     proc_action( nullptr ),
     weapon( nullptr ),
     expire_on_max_stack( false ),
+    trigger_type( trigger_fn_type::NONE ),
+    trigger_fn( nullptr ),
     execute_fn( nullptr )
 {
   assert( e.proc_flags() != 0 );
@@ -164,6 +168,8 @@ dbc_proc_callback_t::dbc_proc_callback_t( player_t* p, const special_effect_t& e
     proc_action( nullptr ),
     weapon( nullptr ),
     expire_on_max_stack( false ),
+    trigger_type( trigger_fn_type::NONE ),
+    trigger_fn( nullptr ),
     execute_fn( nullptr )
 {
   assert( e.proc_flags() != 0 );
@@ -222,7 +228,7 @@ void dbc_proc_callback_t::initialize()
   listener->callbacks.register_callback( effect.proc_flags(), effect.proc_flags2(), this );
 
   // Get custom trigger function if it exists
-  if ( effect.driver()->id() && trigger_type == callback_trigger_fn_type::NONE )
+  if ( effect.driver()->id() && trigger_type == trigger_fn_type::NONE )
   {
     trigger_fn = listener->callbacks.callback_trigger_function( effect.driver()->id() );
     trigger_type = listener->callbacks.callback_trigger_function_type( effect.driver()->id() );

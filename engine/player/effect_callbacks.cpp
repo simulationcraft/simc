@@ -78,15 +78,15 @@ bool effect_callbacks_t::has_callback( const std::function<bool( const action_ca
 
 void effect_callbacks_t::register_callback_trigger_function(
     unsigned driver_id,
-    callback_trigger_fn_type t,
-    const action_callback_t::callback_trigger_fn_t& fn )
+    dbc_proc_callback_t::trigger_fn_type t,
+    const dbc_proc_callback_t::trigger_fn_t& fn )
 {
   if ( callback_trigger_function( driver_id ) )
   {
     return;
   }
 
-  trigger_fn.emplace_back( driver_id, t, std::make_unique<action_callback_t::callback_trigger_fn_t>( fn ) );
+  trigger_fn.emplace_back( driver_id, t, std::make_unique<dbc_proc_callback_t::trigger_fn_t>( fn ) );
 
   // Scan callbacks, looking for a suitable callback to attach the function to. This, in
   // addition with the dbc_proc_callback_t::initialize code should hopefully guarantee
@@ -98,7 +98,7 @@ void effect_callbacks_t::register_callback_trigger_function(
       return false;
     }
 
-    if ( cb->trigger_type == callback_trigger_fn_type::NONE &&
+    if ( dbc_proc->trigger_type == dbc_proc_callback_t::trigger_fn_type::NONE &&
          dbc_proc->effect.driver()->id() == driver_id )
     {
       return true;
@@ -109,8 +109,8 @@ void effect_callbacks_t::register_callback_trigger_function(
 
   if ( it != all_callbacks.end() )
   {
-    (*it)->trigger_type = std::get<1>( trigger_fn.back() );
-    (*it)->trigger_fn = std::get<2>( trigger_fn.back() ).get();
+    debug_cast<dbc_proc_callback_t*>( *it )->trigger_type = std::get<1>( trigger_fn.back() );
+    debug_cast<dbc_proc_callback_t*>( *it )->trigger_fn = std::get<2>( trigger_fn.back() ).get();
   }
 }
 
@@ -163,7 +163,7 @@ dbc_proc_callback_t::execute_fn_t* effect_callbacks_t::callback_execute_function
   return nullptr;
 }
 
-action_callback_t::callback_trigger_fn_t* effect_callbacks_t::callback_trigger_function( unsigned driver_id ) const
+dbc_proc_callback_t::trigger_fn_t* effect_callbacks_t::callback_trigger_function( unsigned driver_id ) const
 {
   auto it = range::find_if( trigger_fn, [driver_id]( const callback_trigger_entry_t& entry ) {
     return std::get<0>( entry ) == driver_id;
@@ -177,7 +177,7 @@ action_callback_t::callback_trigger_fn_t* effect_callbacks_t::callback_trigger_f
   return nullptr;
 }
 
-callback_trigger_fn_type effect_callbacks_t::callback_trigger_function_type( unsigned driver_id ) const
+dbc_proc_callback_t::trigger_fn_type effect_callbacks_t::callback_trigger_function_type( unsigned driver_id ) const
 {
   auto it = range::find_if( trigger_fn, [driver_id]( const callback_trigger_entry_t& entry ) {
     return std::get<0>( entry ) == driver_id;
@@ -188,7 +188,7 @@ callback_trigger_fn_type effect_callbacks_t::callback_trigger_function_type( uns
     return std::get<1>( *it );
   }
 
-  return callback_trigger_fn_type::NONE;
+  return dbc_proc_callback_t::trigger_fn_type::NONE;
 }
 
 void effect_callbacks_t::register_callback(unsigned proc_flags,

@@ -8657,10 +8657,10 @@ void shaman_t::init_special_effects()
   // - Stormstrike/Windstrike "base" (or might be strike itself + icd handling)
   //
   // Note, also has to handle the ICD and pet-related trigger conditions.
-  callbacks.register_callback_trigger_function( 333950, callback_trigger_fn_type::TRIGGER,
-      [this]( const action_callback_t* cb, action_t* a, action_state_t* ) {
-      auto proc = debug_cast<const dbc_proc_callback_t*>( cb );
-      if ( proc->cooldown->down() )
+  callbacks.register_callback_trigger_function( 333950,
+      dbc_proc_callback_t::trigger_fn_type::TRIGGER,
+      [this]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* ) {
+      if ( cb->cooldown->down() )
       {
         return false;
       }
@@ -8712,13 +8712,13 @@ void shaman_t::init_special_effects()
   // can potentially trigger multiple stacks.
   auto bron_duration = find_spell( 333961 )->duration();
   callbacks.register_callback_execute_function( 333950,
-      [this, bron_duration]( dbc_proc_callback_t* cb, action_t* a, action_state_t* ) {
+      [this, bron_duration]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* ) {
 
       // 2021-07-06: Self-cast Lava Burst and Icefury grant an additional stack, if the
       // distance to target is far enough (travel time exceeds internal cooldown).
       //
-      // Technically this stack should be granted on impact, but the end result on an
-      // Elemental shaman would be virtually identical.
+      // Technically this stack should be granted on impact, but the end result sould be
+      // virtually identical.
       if ( ( a->data().id() == 51505 || a->data().id() == 210714 ) &&
            !a->background && a->travel_time() >= 50_ms )
       {
