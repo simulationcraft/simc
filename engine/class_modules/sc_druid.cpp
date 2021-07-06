@@ -275,6 +275,7 @@ public:
   int initial_moon_stage;
   double eclipse_snapshot_period;  // how often to re-snapshot mastery onto eclipse
   bool affinity_resources;  // activate resources tied to affinities
+  double initial_pulsar_value;
 
   // APL options
   bool catweave_bear;
@@ -796,6 +797,7 @@ public:
       convoke_the_spirits_deck( 5 ),
       celestial_spirits_exceptional_chance( bugs ? 0.75 : 1.0 ),
       adaptive_swarm_jump_distance( 5.0 ),
+      initial_pulsar_value( 0.0 ),
       active( active_actions_t() ),
       force_of_nature(),
       caster_form_weapon(),
@@ -8222,7 +8224,8 @@ void druid_t::create_buffs()
   buff.owlkin_frenzy = make_buff( this, "owlkin_frenzy", spec.owlkin_frenzy )
     ->set_chance( find_rank_spell( "Moonkin Form", "Rank 2" )->effectN( 1 ).percent() );
 
-  buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 338825 ) );
+  buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 338825 )) 
+    ->set_default_value(initial_pulsar_value);
 
   buff.solstice = make_buff( this, "solstice", talent.solstice->effectN( 1 ).trigger() );
 
@@ -9744,6 +9747,7 @@ void druid_t::create_options()
   add_option( opt_int( "druid.convoke_the_spirits_deck", convoke_the_spirits_deck ) );
   add_option( opt_float( "druid.celestial_spirits_exceptional_chance", celestial_spirits_exceptional_chance ) );
   add_option( opt_float( "druid.adaptive_swarm_jump_distance", adaptive_swarm_jump_distance ) );
+  add_option( opt_float( "druid.initial_pulsar_value", initial_pulsar_value ) );
 }
 
 // druid_t::create_profile ==================================================
@@ -10356,7 +10360,8 @@ void druid_t::copy_from( player_t* source )
   celestial_spirits_exceptional_chance = p->celestial_spirits_exceptional_chance;
   adaptive_swarm_jump_distance         = p->adaptive_swarm_jump_distance;
   thorns_attack_period                 = p->thorns_attack_period;
-  thorns_hit_chance                    = p->thorns_hit_chance;
+  thorns_hit_chance                    = p->thorns_hit_chance; 
+  initial_pulsar_value                 = p->initial_pulsar_value;
 }
 
 void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
