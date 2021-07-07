@@ -56,40 +56,40 @@ finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_i
 trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
 trinket2=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
 main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=sinful_revelation
-off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6536/1566/6646,enchant=celestial_guidance
+off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
 
 save=T27_Monk_Windwalker.simc
 
 # Night Fae Windwalker
-#monk="T27_Monk_Windwalker_Night_Fae"
-#level=60
-#race=mechagnome
-#spec=windwalker
-#role=attack
-#position=back
-#talents=3020012
-#covenant=night_fae
-#soulbind=niya:1,grove_invigoration/inner_fury:9:1/run_without_tiring/tumbling_technique:9:1/natures_splendor/harm_denial:9:1/coordinated_offensive:9:1/niyas_tools_poison/xuens_bond:9:1/survivors_rally/swift_transference:9:1/bonded_hearts
-#renown=80
+monk="T27_Monk_Windwalker_Night_Fae"
+level=60
+race=mechagnome
+spec=windwalker
+role=attack
+position=back
+talents=3020012
+covenant=night_fae
+soulbind=niya:1,grove_invigoration/inner_fury:9:1/run_without_tiring/tumbling_technique:9:1/natures_splendor/harm_denial:9:1/coordinated_offensive:9:1/niyas_tools_poison/xuens_bond:9:1/survivors_rally/swift_transference:9:1/bonded_hearts
+renown=80
 
-#head=cap_of_writhing_malevolence,id=186292,bonus_id=7187/1498,gem_id=187318
-#neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173129
-#shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187315
-#back=selfreplicating_tissue,id=186374,bonus_id=7187/1498,enchant=soul_vitality
-#chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498,gem_id=187312,enchant=eternal_skirmish
-#wrists=fatethreaded_bindings,id=186335,bonus_id=7187/1498/6935,gem_id=173129
-#hands=hangmans_knotbinders,id=186333,bonus_id=7187/1498,gem_id=187313
-#waist=umbrahide_waistguard,id=172320,bonus_id=7721/1559/6650/6647/6935,gem_id=173129
-#legs=elite_aranakk_breeches,id=186331,bonus_id=7187/1498
-#feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187314,enchant=eternal_agility
-#finger1=ritual_commanders_ring,id=178781,bonus_id=6536/1566/6646/6935,gem_id=173129,enchant=tenet_of_versatility
-#finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
-#trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
-#trinket2=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
-#main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6536/1566/6646,enchant=sinful_revelation
-#off_hand=bloodspiller,id=179328,bonus_id=6536/1566/6646,enchant=celestial_guidance
+head=cap_of_writhing_malevolence,id=186292,bonus_id=7187/1498,gem_id=187318
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173129
+shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187315
+back=selfreplicating_tissue,id=186374,bonus_id=7187/1498,enchant=soul_vitality
+chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498,gem_id=187312,enchant=eternal_skirmish
+wrists=fatethreaded_bindings,id=186335,bonus_id=7187/1498/6935,gem_id=173129
+hands=hangmans_knotbinders,id=186333,bonus_id=7187/1498,gem_id=187313
+waist=umbrahide_waistguard,id=172320,bonus_id=7721/1559/6650/6647/6935,gem_id=173129
+legs=elite_aranakk_breeches,id=186331,bonus_id=7187/1498
+feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187314,enchant=eternal_agility
+finger1=ritual_commanders_ring,id=178781,bonus_id=6536/1566/6646/6935,gem_id=173129,enchant=tenet_of_versatility
+finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
+main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=sinful_revelation
+off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
 
-#save=T27_Monk_Windwalker_Night_Fae.simc
+save=T27_Monk_Windwalker_Night_Fae.simc
 
 # Necrolord Windwalker
 monk="T27_Monk_Windwalker_Necrolord"
