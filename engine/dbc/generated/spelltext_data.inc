@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.39318
-static const std::array<spelltext_data_t, 15524> __spelltext_data { {
+static const std::array<spelltext_data_t, 15527> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15480,7 +15480,10 @@ static const std::array<spelltext_data_t, 15524> __spelltext_data { {
   { 357459, "Summons a miniature shadow realm.", "You have created a miniature shadow realm.", 0 },
   { 357558, "If a target dies while affected by the Ebonsoul Vise, it leaves a Shredded Soul behind which you can collect to gain $355327s2 Critical Strike for $356281d.", 0, 0 },
   { 357564, "$@spelldesc354115\r\n", "$?e1[Your Mastery is increased by $w2.]?e2[Your Haste is increased by $w3%.]?e3[Your Critical Strike is increased by $w4%.][Your Versatility is increased by $w5%.]", 0 },
+  { 357575, "While above $s1% health, your Mastery or Critical Strike is increased by $357584s1. Your highest stat is always chosen.", "While above $s1% health, your Mastery or Critical Strike is increased by $357584s1. Your highest stat is always chosen.", 0 },
   { 357581, 0, "The text detailing your demise can't be rewritten just yet.", 0 },
+  { 357582, "$@spelldesc357575", "Mastery increased by $w1.", 0 },
+  { 357584, "$@spelldesc357575", "Critical Strike increased by $w1.", 0 },
   { 357585, "Consume a lesser weapon, destroying it utterly to feed the power of Jaithys.\r\n\r\n", 0, 0 },
   { 357588, "While you are behind your enemies, their movement is impaired, or they are suffering from loss-of-control effects, your attacks have a high chance to cause them to bleed for ${$s1*($353466d/$353466t1+1)} Physical damage over $353466d.", 0, 0 },
   { 357595, "Your attacks apply Banshee's Blight, giving your finishing moves a $s2% chance per combo point spent to deal $s1 Shadow damage. Banshee's Blight stacks up to $358090u times as the target becomes more injured.", "Damaging finishing moves have a chance to deal $s1 Shadow damage per stack.", 0 },
@@ -15527,12 +15530,16 @@ static const std::array<spelltext_data_t, 15524> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.1.0.39318
-static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 9> __spelltext_hotfix_data { {
   {    5938,  0, "Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]\r\n$?s319032[\r\nYour Nature damage done against the target is increased by $319504s1%][] $?a354124[and healing received reduced by $354124S1% ][]for $319504d.\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", "Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]$?s319032[\r\n\r\nYour Nature damage done against the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $354124S1% for $319504d.][]\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r" },
   {  323074,  0, "Fleshcraft's passive effect consumes a corpse's essence completely, granting a benefit based on the creature's type.", "Fleshcraft's passive effect consumes a corpse's essence completely, granting a benefit based on the creature's type. \r\n\r\nCasting Fleshcraft also consumes a small portion of your own essence, granting you the Humanoid benefit." },
   {  329778,  0, "Chance to critical strike is increased by $330511s1% for every nearby enemy or ally, up to $330511u%.", "Chance to critical strike is increased by $330511s1% for every nearby enemy or ally, up to ${$330511s1*$330511u}%." },
   {  341824,  1, "Increase the healing of your next $?c2[Flash Heal][Shadow Mend] by $s1%.", "Increase the healing of your next $?c2[Flash Heal][Shadow Mend] by $w1%." },
   {  356329,  1, "Damage taken from $@auracaster increased by $w1.00%.", "Damage taken from $@auracaster increased by ${$W1}.2%." },
+  {  357575,  0, "While above $s1% health, your Haste or Critical Strike is increased by $357584s1%. Your highest stat is always chosen.", "While above $s1% health, your Mastery or Critical Strike is increased by $357584s1. Your highest stat is always chosen." },
+  {  357575,  1, "While above $s1% health, your Haste or Critical Strike is increased by $357584s1%. Your highest stat is always chosen.", "While above $s1% health, your Mastery or Critical Strike is increased by $357584s1. Your highest stat is always chosen." },
+  {  357582,  1, "Haste increased by $s1%.", "Mastery increased by $w1." },
+  {  357584,  1, "Critical Strike increased by $s1%.", "Critical Strike increased by $w1." },
 } };
 
 // Spell description variables, wow build 9.1.0.39318
