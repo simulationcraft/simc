@@ -145,6 +145,6 @@ finger1=fleshfused_circle,id=178869,bonus_id=6536/1566/6646/6935,gem_id=173127,e
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_mastery
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
 trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
-main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/6652/7748,enchant=rune_of_the_fallen_crusader
+main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/6652/7745/7746/7747,enchant=rune_of_the_fallen_crusader
 
 save=T27_Death_Knight_Unholy.simc
