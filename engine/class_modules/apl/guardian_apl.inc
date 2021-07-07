@@ -11,15 +11,15 @@ action_priority_list_t* lycarao = get_action_priority_list( "lycarao" );
 precombat->add_action( "cat_form,if=(druid.catweave_bear)|(covenant.night_fae&talent.feral_affinity.enabled)" );
 precombat->add_action( "prowl,if=druid.catweave_bear" );
 precombat->add_action( "moonkin_form,if=(druid.owlweave_bear)|(covenant.night_fae&talent.balance_affinity.enabled)" );
-precombat->add_action( "bear_form,if=((!druid.owlweave_bear&!druid.catweave_bear)&(!covenant.night_fae))|((!druid.owlweave_bear&!druid.catweave_bear)&(covenant.night_fae&talent.restoration_affinity.enabled))" );
 precombat->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&(druid.catweave_bear|druid.owlweave_bear|talent.balance_affinity.enabled)" );
+precombat->add_action( "bear_form,if=((!druid.owlweave_bear&!druid.catweave_bear)&(!covenant.night_fae))|((!druid.owlweave_bear&!druid.catweave_bear)&(covenant.night_fae&talent.restoration_affinity.enabled)|covenant.venthyr)" );
 precombat->add_action( "wrath,if=druid.owlweave_bear&!covenant.night_fae" );
 precombat->add_action( "starfire,if=druid.owlweave_bear&covenant.night_fae" );
 precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption.enabled|soulbind.volatile_solvent.enabled,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent" );
 
 def->add_action( "auto_attack,if=!buff.prowl.up" );
-def->add_action( "use_item,name=jotungeirr_destinys_call,if=!buff.prowl.up&(buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.down|covenant.night_fae&cooldown.convoke_the_spirits.remains<=1)" );
-def->add_action( "use_items,if=!buff.prowl.up|!buff.prowl.up&equipped.jotungeirr_destinys_call&(cooldown.berserk_bear.remains>30|cooldown.incarnation_guardian_of_ursoc.remains>30|covenant.night_fae&cooldown.convoke_the_spirits.remains>30)" );
+def->add_action( "use_item,name=jotungeirr_destinys_call,if=!buff.prowl.up" );
+def->add_action( "use_items,if=!buff.prowl.up" );
 def->add_action( "potion,if=(((talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up)&(druid.catweave_bear|druid.owlweave_bear)&!buff.prowl.up)|((buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)&(!druid.catweave_bear&!druid.owlweave_bear)))" );
 def->add_action( "run_action_list,name=catweave,if=druid.catweave_bear&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&dot.moonfire.remains>=gcd+0.5&rage<40&buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&buff.galactic_guardian.down)|(buff.cat_form.up&energy>25)|(dot.rake.refreshable&dot.rip.refreshable)|(runeforge.oath_of_the_elder_druid.equipped&!buff.oath_of_the_elder_druid.up&(buff.cat_form.up&energy>20)&buff.heart_of_the_wild.remains<=10)|(covenant.kyrian&cooldown.empower_bond.remains<=1&active_enemies<2)|(buff.heart_of_the_wild.up&energy>90))","Catweaving action list will be ran if, mangle/thrash are on cd, rage is below 40, zerk and incarnation are down and Gualactic guardian buff is not active, or if, we're in catform and energy is above 25, Or if we have the Oath legendary equipped, the debuff linked to it is not up and energy is above 20,Or if we're kyrian and Empower bond cooldown is up and enemies are inferior to 2." );
 def->add_action( "run_action_list,name=owlweave,if=druid.owlweave_bear&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&rage<15&buff.incarnation.down&buff.berserk_bear.down&buff.galactic_guardian.down)|(buff.moonkin_form.up&dot.sunfire.refreshable)|(buff.moonkin_form.up&buff.heart_of_the_wild.up)|(runeforge.oath_of_the_elder_druid.equipped&!buff.oath_of_the_elder_druid.up)|(covenant.night_fae&cooldown.convoke_the_spirits.remains<=1)|(covenant.kyrian&cooldown.empower_bond.remains<=1&active_enemies<2))","Owlweaving action list will be ran if, mangle/thrash are on cd, rage is below 15, zerk and incarnation are down and Gualactic guardian buff is not active. Or if, we're in moonkin form and sunfire is refreshable, Or if we have the Oath legendary equipped, the debuff linked to it is not up.Or if we're kyrian and Empower bond cooldown is up and enemies are below 2, or if we're Night fae and Convoke cd is up." );
@@ -30,6 +30,7 @@ def->add_action( "run_action_list,name=cconvoke,if=((talent.feral_affinity.enabl
 def->add_action( "run_action_list,name=bear" );
 
 bear->add_action( "bear_form,if=!buff.bear_form.up" );
+bear->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&(talent.balance_affinity.enabled)&covenant.venthyr" );
 bear->add_action( "ravenous_frenzy" );
 bear->add_action( "convoke_the_spirits,if=!druid.catweave_bear&!druid.owlweave_bear" );
 bear->add_action( "berserk_bear,if=(buff.ravenous_frenzy.up|!covenant.venthyr)" );
