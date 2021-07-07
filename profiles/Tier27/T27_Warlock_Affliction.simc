@@ -7,8 +7,8 @@ role=spell
 position=ranged_back
 talents=3302023
 covenant=night_fae
-soulbind=niya,grove_invigoration/focused_malignancy:7/niyas_tools_burrs
-renown=40
+soulbind=dreamweaver,field_of_blossoms/dream_delver/focused_malignancy:11/withering_bolt:11/soul_eater:11
+renown=80
 
 # Default consumables
 potion=spectral_intellect
@@ -28,8 +28,11 @@ actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/summon_pet
+actions.precombat+=/use_item,name=tome_of_monstrous_constructions
+actions.precombat+=/use_item,name=soleahs_secret_technique
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions.precombat+=/snapshot_stats
+actions.precombat+=/fleshcraft
 actions.precombat+=/seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>=3
 actions.precombat+=/haunt
 actions.precombat+=/unstable_affliction
@@ -61,7 +64,10 @@ actions+=/dark_soul,if=!talent.phantom_singularity&(dot.soul_rot.ticking|dot.imp
 # Sync Phantom Singularity with Venthyr/Night Fae covenant dot, otherwise use on cooldown. If Empyreal Ordnance buff is incoming, hold until it's ready (18 seconds after use)
 actions+=/phantom_singularity,if=covenant.night_fae&time>5&cooldown.soul_rot.remains<1&(trinket.empyreal_ordnance.cooldown.remains<162|!equipped.empyreal_ordnance)
 actions+=/phantom_singularity,if=covenant.venthyr&time>5&cooldown.impending_catastrophe.remains<1&(trinket.empyreal_ordnance.cooldown.remains<162|!equipped.empyreal_ordnance)
-actions+=/phantom_singularity,if=(covenant.necrolord|covenant.kyrian|covenant.none)&(trinket.empyreal_ordnance.cooldown.remains<162|!equipped.empyreal_ordnance)
+# Necrolord with Malefic Wrath casts phantom singularity in line with Decimating Bolt
+actions+=/phantom_singularity,if=covenant.necrolord&runeforge.malefic_wrath&time>5&cooldown.decimating_bolt.remains<3&(trinket.empyreal_ordnance.cooldown.remains<162|!equipped.empyreal_ordnance)
+# Other covenants (including non-MW Necro) cast PS on cooldown
+actions+=/phantom_singularity,if=(covenant.kyrian|covenant.none|(covenant.necrolord&!runeforge.malefic_wrath))&(trinket.empyreal_ordnance.cooldown.remains<162|!equipped.empyreal_ordnance)
 actions+=/phantom_singularity,if=time_to_die<16
 # If Phantom Singularity is ticking, it's time to use other major dots
 actions+=/call_action_list,name=covenant,if=dot.phantom_singularity.ticking&(covenant.night_fae|covenant.venthyr)
@@ -93,6 +99,8 @@ actions+=/call_action_list,name=se,if=talent.shadow_embrace&(debuff.shadow_embra
 actions+=/malefic_rapture,if=(dot.vile_taint.ticking|dot.impending_catastrophe_dot.ticking|dot.soul_rot.ticking)&(!runeforge.malefic_wrath|buff.malefic_wrath.stack<3|soul_shard>1)
 # Use Malefic Rapture to maintain the malefic wrath buff until shards need to be generated for the next burst window (20 seconds is more than sufficient to generate 3 shards)
 actions+=/malefic_rapture,if=runeforge.malefic_wrath&cooldown.soul_rot.remains>20&buff.malefic_wrath.remains<4
+# Maintain Malefic Wrath at all times for the Necrolord or Kyrian covenant
+actions+=/malefic_rapture,if=runeforge.malefic_wrath&(covenant.necrolord|covenant.kyrian)&buff.malefic_wrath.remains<4
 # Use Malefic Rapture on Phantom Singularity casts, making sure to save a shard to stack Malefic Wrath if using it
 actions+=/malefic_rapture,if=talent.phantom_singularity&(dot.phantom_singularity.ticking|cooldown.phantom_singularity.remains>25|time_to_die<cooldown.phantom_singularity.remains)&(!runeforge.malefic_wrath|buff.malefic_wrath.stack<3|soul_shard>1)
 actions+=/malefic_rapture,if=talent.sow_the_seeds
@@ -103,6 +111,7 @@ actions+=/agony,cycle_targets=1,target_if=refreshable
 actions+=/unstable_affliction,if=refreshable
 actions+=/siphon_life,cycle_targets=1,target_if=refreshable
 actions+=/corruption,cycle_targets=1,if=active_enemies<4-(talent.sow_the_seeds|talent.siphon_life),target_if=refreshable
+actions+=/fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_solvent_humanoid.up
 actions+=/drain_soul,interrupt=1
 actions+=/shadow_bolt
 
@@ -134,6 +143,7 @@ actions.aoe+=/malefic_rapture,if=soul_shard>4
 actions.aoe+=/siphon_life,cycle_targets=1,if=active_dot.siphon_life<=3,target_if=!dot.siphon_life.ticking
 actions.aoe+=/call_action_list,name=covenant
 actions.aoe+=/drain_life,if=buff.inevitable_demise.stack>=50|buff.inevitable_demise.up&time_to_die<5|buff.inevitable_demise.stack>=35&dot.soul_rot.ticking
+actions.aoe+=/fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_solvent_humanoid.up
 actions.aoe+=/drain_soul,interrupt=1
 actions.aoe+=/shadow_bolt
 
@@ -147,6 +157,8 @@ actions.covenant+=/scouring_tithe
 actions.damage_trinkets=use_item,name=soul_igniter
 actions.damage_trinkets+=/use_item,name=dreadfire_vessel
 actions.damage_trinkets+=/use_item,name=glyph_of_assimilation
+actions.damage_trinkets+=/use_item,name=unchained_gladiators_shackles
+actions.damage_trinkets+=/use_item,name=ebonsoul_vice
 
 actions.darkglare_prep=vile_taint
 actions.darkglare_prep+=/dark_soul
@@ -160,6 +172,7 @@ actions.darkglare_prep+=/summon_darkglare
 actions.delayed_trinkets=use_item,name=empyreal_ordnance,if=(covenant.night_fae&cooldown.soul_rot.remains<20)|(covenant.venthyr&cooldown.impending_catastrophe.remains<20)|(covenant.necrolord|covenant.kyrian|covenant.none)
 actions.delayed_trinkets+=/use_item,name=sunblood_amethyst,if=(covenant.night_fae&cooldown.soul_rot.remains<6)|(covenant.venthyr&cooldown.impending_catastrophe.remains<6)|(covenant.necrolord|covenant.kyrian|covenant.none)
 actions.delayed_trinkets+=/use_item,name=soulletting_ruby,if=(covenant.night_fae&cooldown.soul_rot.remains<8)|(covenant.venthyr&cooldown.impending_catastrophe.remains<8)|(covenant.necrolord|covenant.kyrian|covenant.none)
+actions.delayed_trinkets+=/use_item,name=name=shadowed_orb_of_torment,if=(covenant.night_fae&cooldown.soul_rot.remains<4)|(covenant.venthyr&cooldown.impending_catastrophe.remains<4)|(covenant.necrolord|covenant.kyrian|covenant.none)
 
 actions.dot_prep=agony,if=dot.agony.remains<8&cooldown.summon_darkglare.remains>dot.agony.remains
 actions.dot_prep+=/siphon_life,if=dot.siphon_life.remains<8&cooldown.summon_darkglare.remains>dot.siphon_life.remains
@@ -192,29 +205,29 @@ actions.trinket_split_check+=/variable,name=trinket_two,value=(trinket.2.has_pro
 actions.trinket_split_check+=/variable,name=damage_trinket,value=(!(trinket.1.has_proc.any&trinket.1.has_cooldown))|(!(trinket.2.has_proc.any&trinket.2.has_cooldown))|equipped.glyph_of_assimilation
 actions.trinket_split_check+=/variable,name=trinket_split,value=(variable.trinket_one&variable.damage_trinket)|(variable.trinket_two&variable.damage_trinket)|(variable.trinket_one^variable.special_equipped)|(variable.trinket_two^variable.special_equipped)
 
-head=grimveiled_hood,id=173245,bonus_id=6648/6649/6758/7027/1532/6935,gem_id=173130
-neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173130
-shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_stats
-wrists=grim_pursuants_maille,id=182996,bonus_id=7187/1498/6935,gem_id=173130,enchant=eternal_intellect
-hands=impossibly_oversized_mitts,id=183022,bonus_id=7187/1498
-waist=shadewarped_sash,id=183004,bonus_id=7187/1498/6935,gem_id=173130
-legs=courtiers_costume_trousers,id=183011,bonus_id=7187/1498
-feet=slippers_of_the_forgotten_heretic,id=182979,bonus_id=7187/1498
-finger1=hyperlight_band,id=183038,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_mastery
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498,gem_id=173130,enchant=tenet_of_mastery
-trinket1=soul_igniter,id=184019,bonus_id=7187/1498
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinful_revelation
+head=hood_of_vengeful_possession,id=186287,bonus_id=1498/7187/6935,gem_id=173130/187312
+neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173130
+shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187315
+back=cloak_of_scarred_honor,id=186289,bonus_id=1498/7187
+chest=sacrificers_sacramental_cassock,id=186282,bonus_id=1498/7187,gem_id=187318,enchant=eternal_stats
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=173130/187319,enchant=eternal_intellect
+hands=grimveiled_mittens,id=173244,bonus_id=7031/6649/6648/1559
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=173130/187320
+legs=purge_protocol_legwraps,id=180107,bonus_id=1566/6536/6646
+feet=sandals_of_sacred_symmetry,id=186354,bonus_id=1498/7187
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=1498/7187/6935,gem_id=173130,enchant=tenet_of_mastery
+finger2=sworn_oath_of_the_nine,id=186290,bonus_id=1498/7187/6935,gem_id=173130,enchant=tenet_of_mastery
+trinket1=soulletting_ruby,id=178809,bonus_id=1566/6536/6646
+trinket2=forbidden_necromantic_tome,id=186421,bonus_id=1498/7187
+main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=celestial_guidance
 
 # Gear Summary
-# gear_ilvl=229.40
-# gear_stamina=1531
-# gear_intellect=1189
-# gear_crit_rating=263
-# gear_haste_rating=634
-# gear_mastery_rating=776
-# gear_versatility_rating=288
-# gear_armor=373
+# gear_ilvl=255.93
+# gear_stamina=2102
+# gear_intellect=1501
+# gear_crit_rating=541
+# gear_haste_rating=805
+# gear_mastery_rating=618
+# gear_versatility_rating=281
+# gear_armor=435
 default_pet=imp

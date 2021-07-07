@@ -6,9 +6,9 @@ race=orc
 role=attack
 position=ranged_back
 talents=2102013
-covenant=night_fae
-soulbind=niya,grove_invigoration/spirit_attunement:7/niyas_tools_burrs
-renown=40
+covenant=kyrian
+soulbind=forgelite_prime_mikanikos,brons_call_to_action/soulglow_spectrometer/effusive_anima_accelerator/enfeebled_mark:9:1/one_with_the_beast:9:1/bloodletting:9:1
+renown=80
 
 # Default consumables
 potion=spectral_agility
@@ -30,6 +30,7 @@ actions.precombat+=/food
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/fleshcraft
 actions.precombat+=/tar_trap,precast_time=1.5,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus
 actions.precombat+=/bestial_wrath,precast_time=1.5,if=!talent.scent_of_blood&!runeforge.soulforge_embers
 
@@ -38,9 +39,7 @@ actions=auto_shot
 actions+=/counter_shot,line_cd=30,if=runeforge.sephuzs_proclamation|soulbind.niyas_tools_poison|(conduit.reversal_of_fortune&!runeforge.sephuzs_proclamation)
 # Delay facing your doubt until you have put Resonating Arrow down, or if the cooldown is too long to delay facing your Doubt. If none of these conditions are able to met within the 10 seconds leeway, the sim faces your Doubt automatically.
 actions+=/newfound_resolve,if=soulbind.newfound_resolve&(buff.resonating_arrow.up|cooldown.resonating_arrow.remains>10|target.time_to_die<16)
-# If the trinket has a on-use buff, sync it with Aspect of the Wild. If two are competing for a Aspect of the Wild sync, use the stronger on-use effect. If an on-use buff is ready but another stronger on-use buff will also be ready by the time Aspect of the Wild comes back off cooldown, use it if the shared trinket cooldown won't interfere with the upcoming Aspect of the Wild sync. If an on-use buff could be used and still come back for a future Aspect of the Wild, use it. If a non-buff on-use is ready, use it if it won't interfere with potential on-use buffs trying to Aspect of the Wild sync or if the other trinket isn't an on-use, is a non-buff on-use with a longer cooldown, or isn't ready. If the fight is going to end before your next Aspect of the Wild, just start using trinkets to make sure they get used.
-actions+=/use_items,slots=trinket1,if=trinket.1.has_use_buff&(buff.aspect_of_the_wild.up&(!trinket.2.has_use_buff|trinket.2.cooldown.remains|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|buff.aspect_of_the_wild.down&(trinket.2.has_use_buff&trinket.2.cooldown.duration>=trinket.1.cooldown.duration&trinket.2.cooldown.remains-5<cooldown.aspect_of_the_wild.remains&cooldown.aspect_of_the_wild.remains>20|trinket.1.cooldown.duration-5<cooldown.aspect_of_the_wild.remains)|target.time_to_die<cooldown.aspect_of_the_wild.remains)|!trinket.1.has_use_buff&(trinket.2.has_use_buff&(buff.aspect_of_the_wild.down|trinket.2.cooldown.remains>5)&(cooldown.aspect_of_the_wild.remains>20|trinket.2.cooldown.remains-5>cooldown.aspect_of_the_wild.remains)|!trinket.2.has_use_buff&(!trinket.2.has_cooldown|trinket.2.cooldown.duration>=trinket.1.cooldown.duration|trinket.2.cooldown.remains))
-actions+=/use_items,slots=trinket2,if=trinket.2.has_use_buff&(buff.aspect_of_the_wild.up&(!trinket.1.has_use_buff|trinket.1.cooldown.remains|trinket.2.cooldown.duration>=trinket.1.cooldown.duration)|buff.aspect_of_the_wild.down&(trinket.1.has_use_buff&trinket.1.cooldown.duration>=trinket.2.cooldown.duration&trinket.1.cooldown.remains-5<cooldown.aspect_of_the_wild.remains&cooldown.aspect_of_the_wild.remains>20|trinket.2.cooldown.duration-5<cooldown.aspect_of_the_wild.remains)|target.time_to_die<cooldown.aspect_of_the_wild.remains)|!trinket.2.has_use_buff&(trinket.1.has_use_buff&(buff.aspect_of_the_wild.down|trinket.1.cooldown.remains>5)&(cooldown.aspect_of_the_wild.remains>20|trinket.1.cooldown.remains-5>cooldown.aspect_of_the_wild.remains)|!trinket.1.has_use_buff&(!trinket.1.has_cooldown|trinket.1.cooldown.duration>=trinket.2.cooldown.duration|trinket.1.cooldown.remains))
+actions+=/call_action_list,name=trinkets,if=covenant.kyrian&cooldown.aspect_of_the_wild.remains&cooldown.resonating_arrow.remains|!covenant.kyrian&cooldown.aspect_of_the_wild.remains
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=st,if=active_enemies<2
 actions+=/call_action_list,name=cleave,if=active_enemies>1
@@ -105,28 +104,37 @@ actions.st+=/tar_trap,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapp
 actions.st+=/freezing_trap,if=runeforge.nessingwarys_trapping_apparatus
 actions.st+=/arcane_torrent,if=(focus+focus.regen+15)<focus.max
 
-head=boneshatter_helm,id=172325,bonus_id=6647/6649/6758/7005/1532/1808,gem_id=173129
-neck=sinful_gladiators_pendant,id=178387,bonus_id=7229/1808/1498,gem_id=173129
-shoulders=pauldrons_of_fatal_finality,id=183003,bonus_id=7187/1498
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=consumptive_chainmail_carapace,id=183000,bonus_id=7187/1498,enchant=eternal_skirmish
-wrists=shackles_of_alluring_vitality,id=178846,bonus_id=6536/1540/6646/6935,gem_id=173129
-hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=7187/1498
-waist=loadbearing_belt,id=183016,bonus_id=7187/1498/6935,gem_id=173129
-legs=mementoladen_cuisses,id=182985,bonus_id=7187/1498
-feet=stoneclas_stompers,id=183006,bonus_id=7187/1498,enchant=eternal_agility
-finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1540/6646
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=dredfang_ironspitter,id=182398,bonus_id=7187/1531,enchant=optical_target_embiggener
+actions.trinkets=variable,name=sync_up,value=buff.resonating_arrow.up|buff.aspect_of_the_wild.up
+actions.trinkets+=/variable,name=strong_sync_up,value=covenant.kyrian&buff.resonating_arrow.up&buff.aspect_of_the_wild.up|!covenant.kyrian&buff.aspect_of_the_wild.up
+actions.trinkets+=/variable,name=strong_sync_remains,op=setif,condition=covenant.kyrian,value=cooldown.resonating_arrow.remains<?cooldown.aspect_of_the_wild.remains,value_else=cooldown.aspect_of_the_wild.remains,if=buff.aspect_of_the_wild.down
+actions.trinkets+=/variable,name=strong_sync_remains,op=setif,condition=covenant.kyrian,value=cooldown.resonating_arrow.remains,value_else=cooldown.aspect_of_the_wild.remains,if=buff.aspect_of_the_wild.up
+actions.trinkets+=/variable,name=sync_remains,op=setif,condition=covenant.kyrian,value=cooldown.resonating_arrow.remains>?cooldown.aspect_of_the_wild.remains,value_else=cooldown.aspect_of_the_wild.remains
+actions.trinkets+=/use_items,slots=trinket1,if=(trinket.1.has_use_buff|covenant.kyrian&trinket.1.has_cooldown)&(variable.strong_sync_up&(!covenant.kyrian&!trinket.2.has_use_buff|covenant.kyrian&!trinket.2.has_cooldown|trinket.2.cooldown.remains|trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|trinket.1.has_cooldown&!trinket.2.has_use_buff&trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|!variable.strong_sync_up&(!trinket.2.has_use_buff&(trinket.1.cooldown.duration-5<variable.sync_remains|variable.sync_remains>trinket.1.cooldown.duration%2)|trinket.2.has_use_buff&(trinket.1.has_use_buff&trinket.1.cooldown.duration>=trinket.2.cooldown.duration&(trinket.1.cooldown.duration-5<variable.sync_remains|variable.sync_remains>trinket.1.cooldown.duration%2)|(!trinket.1.has_use_buff|trinket.2.cooldown.duration>=trinket.1.cooldown.duration)&(trinket.2.cooldown.ready&trinket.2.cooldown.duration-5>variable.sync_remains&variable.sync_remains<trinket.2.cooldown.duration%2|!trinket.2.cooldown.ready&(trinket.2.cooldown.remains-5<variable.strong_sync_remains&variable.strong_sync_remains>20&(trinket.1.cooldown.duration-5<variable.sync_remains|trinket.2.cooldown.remains-5<variable.sync_remains&trinket.2.cooldown.duration-10+variable.sync_remains<variable.strong_sync_remains|variable.sync_remains>trinket.1.cooldown.duration%2|variable.sync_up)|trinket.2.cooldown.remains-5>variable.strong_sync_remains&(trinket.1.cooldown.duration-5<variable.strong_sync_remains|!trinket.1.has_use_buff&(variable.sync_remains>trinket.1.cooldown.duration%2|variable.sync_up))))))|target.time_to_die<variable.sync_remains)|!trinket.1.has_use_buff&!covenant.kyrian&(trinket.2.has_use_buff&((!variable.sync_up|trinket.2.cooldown.remains>5)&(variable.sync_remains>20|trinket.2.cooldown.remains-5>variable.sync_remains))|!trinket.2.has_use_buff&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|trinket.2.cooldown.duration>=trinket.1.cooldown.duration))
+actions.trinkets+=/use_items,slots=trinket2,if=(trinket.2.has_use_buff|covenant.kyrian&trinket.2.has_cooldown)&(variable.strong_sync_up&(!covenant.kyrian&!trinket.1.has_use_buff|covenant.kyrian&!trinket.1.has_cooldown|trinket.1.cooldown.remains|trinket.2.has_use_buff&(!trinket.1.has_use_buff|trinket.2.cooldown.duration>=trinket.1.cooldown.duration)|trinket.2.has_cooldown&!trinket.1.has_use_buff&trinket.2.cooldown.duration>=trinket.1.cooldown.duration)|!variable.strong_sync_up&(!trinket.1.has_use_buff&(trinket.2.cooldown.duration-5<variable.sync_remains|variable.sync_remains>trinket.2.cooldown.duration%2)|trinket.1.has_use_buff&(trinket.2.has_use_buff&trinket.2.cooldown.duration>=trinket.1.cooldown.duration&(trinket.2.cooldown.duration-5<variable.sync_remains|variable.sync_remains>trinket.2.cooldown.duration%2)|(!trinket.2.has_use_buff|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)&(trinket.1.cooldown.ready&trinket.1.cooldown.duration-5>variable.sync_remains&variable.sync_remains<trinket.1.cooldown.duration%2|!trinket.1.cooldown.ready&(trinket.1.cooldown.remains-5<variable.strong_sync_remains&variable.strong_sync_remains>20&(trinket.2.cooldown.duration-5<variable.sync_remains|trinket.1.cooldown.remains-5<variable.sync_remains&trinket.1.cooldown.duration-10+variable.sync_remains<variable.strong_sync_remains|variable.sync_remains>trinket.2.cooldown.duration%2|variable.sync_up)|trinket.1.cooldown.remains-5>variable.strong_sync_remains&(trinket.2.cooldown.duration-5<variable.strong_sync_remains|!trinket.2.has_use_buff&(variable.sync_remains>trinket.2.cooldown.duration%2|variable.sync_up))))))|target.time_to_die<variable.sync_remains)|!trinket.2.has_use_buff&!covenant.kyrian&(trinket.1.has_use_buff&((!variable.sync_up|trinket.1.cooldown.remains>5)&(variable.sync_remains>20|trinket.1.cooldown.remains-5>variable.sync_remains))|!trinket.1.has_use_buff&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|trinket.1.cooldown.duration>=trinket.2.cooldown.duration))
+
+head=shadowsteel_facecage,id=186341,bonus_id=7187/1498/6935,gem_id=173127/187319,enchant=60runspeed
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173127
+shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187320
+back=dark_rangers_quiver,id=186439,bonus_id=7187/1498
+chest=conjunctionforged_chainmail,id=186340,bonus_id=7187/1498,gem_id=187318,enchant=eternal_skirmish
+wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498/6935,gem_id=173127
+hands=demigaunts_of_predestination,id=186345,bonus_id=7187/1498
+waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498/6935,gem_id=173127/187315
+legs=boneshatter_greaves,id=172326,bonus_id=7010/6647/6649/1559
+feet=ragebound_leg_irons,id=186343,bonus_id=7187/1498,gem_id=187312,enchant=eternal_agility
+finger1=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+trinket1=relic_of_the_frozen_wastes,id=186437,bonus_id=7187/1498
+trinket2=shadowgrasp_totem,id=179356,bonus_id=6536/1566/6646
+main_hand=soulrent_outriders_recurve,id=186411,bonus_id=7187/1498,enchant=optical_target_embiggener
 
 # Gear Summary
-# gear_ilvl=229.40
-# gear_agility=878
-# gear_stamina=1528
-# gear_crit_rating=471
-# gear_haste_rating=747
-# gear_mastery_rating=157
-# gear_versatility_rating=584
-# gear_armor=878
+# gear_ilvl=255.93
+# gear_agility=1110
+# gear_stamina=2101
+# gear_crit_rating=950
+# gear_haste_rating=821
+# gear_mastery_rating=232
+# gear_versatility_rating=241
+# gear_speed_rating=60
+# gear_armor=1034

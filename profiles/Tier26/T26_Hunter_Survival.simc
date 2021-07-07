@@ -15,7 +15,7 @@ potion=spectral_agility
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
-temporary_enchant=main_hand:shadowcore_oil
+temporary_enchant=main_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -31,6 +31,7 @@ actions.precombat+=/variable,name=mb_rs_cost,op=setif,value=action.mongoose_bite
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/fleshcraft
 actions.precombat+=/tar_trap,if=runeforge.soulforge_embers
 actions.precombat+=/steel_trap,precast_time=20
 
@@ -74,14 +75,16 @@ actions.bop+=/serpent_sting,target_if=min:remains,if=buff.vipers_venom.up
 
 actions.cds=harpoon,if=talent.terms_of_engagement.enabled&focus<focus.max
 actions.cds+=/use_item,name=dreadfire_vessel,if=covenant.kyrian&cooldown.resonating_arrow.remains>10|!covenant.kyrian
-actions.cds+=/blood_fury,if=cooldown.coordinated_assault.remains>30
-actions.cds+=/ancestral_call,if=cooldown.coordinated_assault.remains>30
-actions.cds+=/fireblood,if=cooldown.coordinated_assault.remains>30
+actions.cds+=/use_item,name=jotungeirr_destinys_call,if=buff.coordinated_assault.up|time_to_die<31
+actions.cds+=/blood_fury,if=buff.coordinated_assault.up
+actions.cds+=/ancestral_call,if=buff.coordinated_assault.up
+actions.cds+=/fireblood,if=buff.coordinated_assault.up
 actions.cds+=/lights_judgment
 actions.cds+=/bag_of_tricks,if=cooldown.kill_command.full_recharge_time>gcd
-actions.cds+=/berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<13
+actions.cds+=/berserking,if=buff.coordinated_assault.up|time_to_die<13
 actions.cds+=/muzzle
 actions.cds+=/potion,if=target.time_to_die<60|buff.coordinated_assault.up
+actions.cds+=/fleshcraft,cancel_if=channeling&!soulbind.pustule_eruption,if=(focus<70|cooldown.coordinated_assault.remains<gcd)&(soulbind.pustule_eruption|soulbind.volatile_solvent)
 actions.cds+=/tar_trap,if=focus+cast_regen<focus.max&runeforge.soulforge_embers.equipped&tar_trap.remains<gcd&cooldown.flare.remains<gcd&(active_enemies>1|active_enemies=1&time_to_die>5*gcd)
 actions.cds+=/flare,if=focus+cast_regen<focus.max&tar_trap.up&runeforge.soulforge_embers.equipped&time_to_die>4*gcd
 actions.cds+=/kill_shot,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd
@@ -166,6 +169,7 @@ main_hand=rod_of_the_stone_sentinels,id=182393,bonus_id=7187/1531,enchant=sinful
 # gear_ilvl=229.40
 # gear_agility=877
 # gear_stamina=1514
+# gear_attack_power=20
 # gear_crit_rating=492
 # gear_haste_rating=896
 # gear_mastery_rating=169

@@ -2034,6 +2034,10 @@ void player_t::init_special_effects()
   }
 }
 
+void player_t::init_special_effect( special_effect_t& /* effect */ )
+{
+}
+
 namespace
 {
 /**
@@ -3961,6 +3965,9 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t*, 
   double m = 1.0;
 
   m *= 1.0 + racials.command->effectN( 1 ).percent();
+
+  if ( buffs.coldhearted && buffs.coldhearted->check() )
+    m *= 1.0 + buffs.coldhearted->check_value();
 
   // By default effect 1 is used for the player modifier, effect 2 is for the pet modifier
   if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
@@ -6000,6 +6007,9 @@ bool player_t::resource_available( resource_e resource_type, double cost ) const
 
 void player_t::recalculate_resource_max( resource_e resource_type, gain_t* source )
 {
+  double old_amount = resources.current[ resource_type ];
+  double old_max    = resources.max[ resource_type ];
+
   resources.max[ resource_type ] = resources.base[ resource_type ];
   resources.max[ resource_type ] *= resources.base_multiplier[ resource_type ];
   resources.max[ resource_type ] += total_gear.resource[ resource_type ];
@@ -6030,6 +6040,10 @@ void player_t::recalculate_resource_max( resource_e resource_type, gain_t* sourc
     source->add( resource_type, 0, resources.current[ resource_type ] - resources.max[ resource_type ] );
   }
   resources.current[ resource_type ] = std::min( resources.current[ resource_type ], resources.max[ resource_type ] );
+
+  sim->print_debug( "Recalculated maximum {} for {}: old={:.2f}/{:.2f}, new={:.2f}/{:.2f}",
+                    util::resource_type_string( resource_type ), name(), old_amount, old_max,
+                    resources.current[ resource_type ], resources.max[ resource_type ] );
 }
 
 role_e player_t::primary_role() const

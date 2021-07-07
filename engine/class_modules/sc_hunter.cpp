@@ -9,7 +9,6 @@
 #include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
 #include "class_modules/apl/apl_hunter.hpp"
-#include "dbc/covenant_data.hpp"
 
 namespace
 { // UNNAMED NAMESPACE
@@ -580,7 +579,6 @@ public:
   struct {
     action_t* master_marksman = nullptr;
     action_t* wild_spirits = nullptr;
-    action_t* razor_fragments = nullptr;
     // Semi-random actions, needed *ONLY* for properly attributing focus gains
     action_t* aspect_of_the_wild = nullptr;
     action_t* barbed_shot = nullptr;
@@ -1041,7 +1039,6 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 {
   bool breaks_steady_focus = true;
   maybe_bool triggers_master_marksman;
-  maybe_bool trigger_razor_fragments;
 
   hunter_ranged_attack_t( util::string_view n, hunter_t* p,
                           const spell_data_t* s = spell_data_t::nil() ):
@@ -1144,16 +1141,6 @@ struct hunter_pet_t: public pet_t
       main_hand_attack->schedule_execute();
 
     pet_t::schedule_ready( delta_time, waiting );
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = pet_t::composite_player_multiplier( school );
-
-    if ( o() -> mastery.master_of_beasts.ok() )
-      m *= 1 + owner -> cache.mastery_value();
-
-    return m;
   }
 
   double composite_player_target_crit_chance( player_t* target ) const override
@@ -1713,7 +1700,6 @@ struct spitting_cobra_t final : public hunter_pet_t
   {
     double m = owner -> composite_player_multiplier( school );
 
-    m *= 1 + owner -> cache.mastery_value();
     m *= 1 + active_damage_multiplier;
 
     return m;
@@ -2884,13 +2870,37 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
 struct kill_shot_t : hunter_ranged_attack_t
 {
+  struct razor_fragments_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
+  {
+    razor_fragments_t( util::string_view n, hunter_t* p )
+      : residual_periodic_action_t( n, p, p->find_spell( 356620 ) )
+    {
+    }
+
+    void init() override
+    {
+      residual_periodic_action_t::init();
+
+      snapshot_flags |= STATE_TGT_MUL_TA;
+      update_flags |= STATE_TGT_MUL_TA;
+    }
+  };
+
+  bool trigger_razor_fragments = false;
   double health_threshold_pct;
+  razor_fragments_t* bleed = nullptr;
 
   kill_shot_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "kill_shot", p, p -> specs.kill_shot ),
     health_threshold_pct( p -> specs.kill_shot -> effectN( 2 ).base_value() )
   {
     parse_options( options_str );
+
+    if ( p->legendary.pouch_of_razor_fragments.ok() )
+    {
+      bleed = p->get_background_action<razor_fragments_t>( "pouch_of_razor_fragments" );
+      add_child( bleed );
+    }
   }
 
   void execute() override
@@ -2912,13 +2922,18 @@ struct kill_shot_t : hunter_ranged_attack_t
   void impact( action_state_t* s ) override
   {
     hunter_ranged_attack_t::impact( s );
-    if ( trigger_razor_fragments )
+
+    if ( trigger_razor_fragments && bleed )
     {
-      double amount = s->result_amount * p()->legendary.pouch_of_razor_fragments->effectN( 1 ).percent(); // TODO: Implement AoE
+      double amount = s->result_amount * p()->legendary.pouch_of_razor_fragments->effectN( 1 ).percent();
       if ( amount > 0 )
       {
-        residual_action::trigger( p()->actions.razor_fragments, s->target, amount );
-        sim->print_debug( "Razor Fragments applied DOT for {} total damage ", amount );
+        std::vector<player_t*>& tl = target_list();
+        const int max_targets = as<int>( tl.size() );
+        int num_targets = std::min( max_targets, bleed->aoe );
+
+        for ( int t = 0; t < num_targets; t++ )
+          residual_action::trigger( bleed, tl[t], amount );
       }
     }
 
@@ -4407,25 +4422,6 @@ struct chakrams_t : public hunter_ranged_attack_t
   }
 };
 
-struct razor_fragments_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
-{
-  razor_fragments_t( hunter_t* p ) : residual_periodic_action_t( "razor_fragments", p, p->find_spell( 356620 ) )
-  {
-    aoe    = as<int>(p -> find_spell(356620) -> max_targets());
-    radius = 8; // TODO: Test Radius
-    triggers_wild_spirits = false;
-    may_miss = may_crit = false;
-  }
-
-  void init() override
-  {
-    residual_periodic_action_t::init();
-
-    snapshot_flags |= STATE_TGT_MUL_TA;
-    update_flags |= STATE_TGT_MUL_TA;
-  }
-};
-
 } // end attacks
 
 // ==========================================================================
@@ -5046,7 +5042,6 @@ struct trueshot_t: public hunter_spell_t
 {
   timespan_t precast_time = 0_ms;
   bool precast_etf_equip = false;
-  unsigned precast_ssf_rank = 0;
   timespan_t precast_duration = 0_ms;
 
   trueshot_t( hunter_t* p, util::string_view options_str ):
@@ -5054,7 +5049,6 @@ struct trueshot_t: public hunter_spell_t
   {
     add_option( opt_timespan( "precast_time", precast_time ) );
     add_option( opt_bool( "precast_etf_equip", precast_etf_equip ) );
-    add_option( opt_uint( "precast_ssf_rank", precast_ssf_rank, 0, 15 ) );
     parse_options( options_str );
 
     harmful = false;
@@ -5066,9 +5060,6 @@ struct trueshot_t: public hunter_spell_t
 
     if ( !p->legendary.eagletalons_true_focus->ok() && precast_etf_equip )
       base += p->find_spell( 336849 )->effectN( 2 ).time_value();
-
-    if ( !p->conduits.sharpshooters_focus->ok() && precast_ssf_rank > 0 )
-      mod *= ( 1 + conduit_rank_entry_t::find( 188, precast_ssf_rank - 1U, player->dbc->ptr ).value / 100.0 );
 
     precast_duration = base * mod;
     sim->print_debug( "{} precast Trueshot will be {} seconds", *p, precast_duration );
@@ -5955,8 +5946,6 @@ void hunter_t::create_actions()
 
   if ( talents.master_marksman.ok() )
     actions.master_marksman = new attacks::master_marksman_t( this );
-  if ( legendary.pouch_of_razor_fragments.ok() )
-    actions.razor_fragments = new attacks::razor_fragments_t( this );
 }
 
 void hunter_t::create_buffs()
@@ -6502,6 +6491,9 @@ double hunter_t::composite_player_target_multiplier( player_t* target, school_e 
 double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
+
+  if ( mastery.master_of_beasts->ok() )
+    m *= 1.0 + cache.mastery_value();
 
   m *= 1 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
   m *= 1 + specs.survival_hunter -> effectN( 3 ).percent();

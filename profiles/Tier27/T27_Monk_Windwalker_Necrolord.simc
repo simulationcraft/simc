@@ -76,6 +76,7 @@ actions.cd_sef+=/storm_earth_and_fire_fixate,if=conduit.coordinated_offensive.en
 actions.cd_sef+=/storm_earth_and_fire,if=cooldown.storm_earth_and_fire.charges=2|fight_remains<20|(raid_event.adds.remains>15|(!covenant.kyrian&!covenant.necrolord)&((raid_event.adds.in>cooldown.storm_earth_and_fire.full_recharge_time|!raid_event.adds.exists)&(cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time|variable.hold_xuen))&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12)
 actions.cd_sef+=/storm_earth_and_fire,if=covenant.kyrian&(buff.weapons_of_order.up|(fight_remains<cooldown.weapons_of_order.remains|cooldown.weapons_of_order.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12)
 actions.cd_sef+=/storm_earth_and_fire,if=covenant.necrolord&debuff.bonedust_brew_debuff.up&(pet.xuen_the_white_tiger.active|variable.hold_xuen|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time|cooldown.invoke_xuen_the_white_tiger.remains>30)
+actions.cd_sef+=/use_item,name=shadowgrasp_totem,if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight
 actions.cd_sef+=/touch_of_karma,if=fight_remains>90|pet.xuen_the_white_tiger.active|variable.hold_xuen|fight_remains<16
 actions.cd_sef+=/blood_fury,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20
 actions.cd_sef+=/berserking,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<15
@@ -96,6 +97,7 @@ actions.cd_serenity+=/bag_of_tricks,if=variable.serenity_burst
 actions.cd_serenity+=/touch_of_death,if=fight_remains>(180-runeforge.fatal_touch*120)|pet.xuen_the_white_tiger.active|fight_remains<10
 actions.cd_serenity+=/touch_of_karma,if=fight_remains>90|pet.xuen_the_white_tiger.active|fight_remains<10
 actions.cd_serenity+=/weapons_of_order,if=cooldown.rising_sun_kick.remains<execute_time
+actions.cd_serenity+=/use_item,name=shadowgrasp_totem,if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight
 actions.cd_serenity+=/faeline_stomp
 actions.cd_serenity+=/fallen_order
 actions.cd_serenity+=/bonedust_brew,if=fight_remains<15|(chi>=2&(fight_remains>60&((cooldown.serenity.remains>10|buff.serenity.up|cooldown.serenity.up)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|variable.hold_xuen)))|(fight_remains<=60&(pet.xuen_the_White_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)))
@@ -175,22 +177,21 @@ wrists=fatethreaded_bindings,id=186335,bonus_id=7187/1498/6935,gem_id=173129
 hands=loyal_kvaldirs_handwraps,id=186295,bonus_id=7187/1498,gem_id=187313
 waist=girdle_of_shattered_dreams,id=178805,bonus_id=6536/1566/6646/6935,gem_id=173129
 legs=elite_aranakk_breeches,id=186331,bonus_id=7187/1498
-feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187314,enchant_id=6211
+feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187314,enchant=eternal_agility
 finger1=ritual_commanders_ring,id=178781,bonus_id=6536/1566/6646/6935,gem_id=173129,enchant=tenet_of_versatility
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
 trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
-trinket2=infinitely_divisible_ooze,id=178769,bonus_id=6536/1566/6646
-main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6536/1566/6646,enchant=sinful_revelation
-off_hand=bloodspiller,id=179328,bonus_id=6536/1566/6646,enchant=celestial_guidance
+trinket2=shadowgrasp_totem,id=179356,bonus_id=6536/1566/6646
+main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=sinful_revelation
+off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
 
 # Gear Summary
 # gear_ilvl=254.38
 # gear_agility=1100
 # gear_stamina=2109
 # gear_attack_power=40
-# gear_crit_rating=1101
-# gear_haste_rating=294
-# gear_mastery_rating=82
-# gear_versatility_rating=742
-# gear_leech_rating=40
+# gear_crit_rating=1054
+# gear_haste_rating=245
+# gear_mastery_rating=50
+# gear_versatility_rating=709
 # gear_armor=716

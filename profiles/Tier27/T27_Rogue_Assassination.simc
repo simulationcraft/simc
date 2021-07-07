@@ -7,8 +7,8 @@ role=attack
 position=back
 talents=3320021
 covenant=venthyr
-soulbind=nadjia_the_mistblade,thrill_seeker/lashing_scars:7/dauntless_duelist
-renown=40
+soulbind=nadjia_the_mistblade,thrill_seeker/lashing_scars:9:1/dauntless_duelist/wellplaced_steel:9:1/fatal_flaw
+renown=80
 
 # Default consumables
 potion=phantom_fire
@@ -31,7 +31,7 @@ actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/marked_for_death,precombat_seconds=10,if=raid_event.adds.in>15
-actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption
+actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent
 actions.precombat+=/variable,name=vendetta_cdr,value=1-(runeforge.duskwalkers_patch*0.45)
 # The average CDR is 0.22 but due to the RNG nature of CP gen, 2x this value is optimal for syncing logic
 actions.precombat+=/variable,name=flagellation_cdr,value=1-(runeforge.obedience*0.44)
@@ -67,7 +67,7 @@ actions.cds=marked_for_death,line_cd=1.5,target_if=min:target.time_to_die,if=rai
 # If no adds will die within the next 30s, use MfD on boss without any CP.
 actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend
 # Fleshcraft for Pustule Eruption if not stealthed or in a cooldown cycle
-actions.cds+=/fleshcraft,if=soulbind.pustule_eruption&!stealthed.all&!debuff.vendetta.up&master_assassin_remains=0&(energy.time_to_max_combined>2|!debuff.shiv.up)
+actions.cds+=/fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)&!stealthed.all&!debuff.vendetta.up&master_assassin_remains=0&(energy.time_to_max_combined>2|!debuff.shiv.up)
 # Sync Flagellation with Vendetta as long as we won't lose a cast over the fight duration
 actions.cds+=/flagellation,if=!stealthed.rogue&(cooldown.vendetta.remains<3&effective_combo_points>=4&target.time_to_die>10|debuff.vendetta.up|fight_remains<24)
 actions.cds+=/flagellation,if=!stealthed.rogue&effective_combo_points>=4&(floor((fight_remains-24)%(cooldown*variable.flagellation_cdr))>floor((fight_remains-24-cooldown.vendetta.remains*variable.vendetta_cdr)%(cooldown*variable.flagellation_cdr)))
@@ -164,30 +164,30 @@ actions.vanish+=/vanish,if=talent.subterfuge.enabled&cooldown.garrote.up&(dot.ga
 # Vanish with Master Assasin: Rupture+Garrote not in refresh range, during Vendetta+Shiv. Sync with Sepsis final hit if possible.
 actions.vanish+=/vanish,if=(talent.master_assassin.enabled|runeforge.mark_of_the_master_assassin)&!dot.rupture.refreshable&dot.garrote.remains>3&debuff.vendetta.up&(debuff.shiv.up|debuff.vendetta.remains<4|dot.sepsis.ticking)&dot.sepsis.remains<3
 
-head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173127
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
-shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=corset_of_the_deft_duelist,id=182989,bonus_id=7187/1498,enchant=eternal_stats
-wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173127
-hands=umbrahide_gauntlets,id=172316,bonus_id=6647/6649/6758/7116/1532
-waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498/6935,gem_id=173127
-legs=fearless_challengers_leggings,id=178801,bonus_id=6536/1540/6646
-feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
-finger1=arachnid_cipher_ring,id=178933,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_versatility
-finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_versatility
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=celestial_guidance
-off_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=sinful_revelation
+head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187312
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498,gem_id=173128
+shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187315
+back=grimveiled_cape,id=173242,bonus_id=6716/7572/6647/6650/1559
+chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498,gem_id=187318,enchant=eternal_stats
+wrists=risen_monstrosity_cuffs,id=178741,bonus_id=6536/1566/6646,gem_id=173128
+hands=loyal_kvaldirs_handwraps,id=186295,bonus_id=7187/1498,gem_id=187320
+waist=windrunners_baldric,id=186332,bonus_id=7187/1498,gem_id=173128
+legs=elite_aranakk_breeches,id=186331,bonus_id=7187/1498
+feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187319,enchant=eternal_agility
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
+finger2=arachnid_cipher_ring,id=178933,bonus_id=6536/1566/6646,gem_id=173128,enchant=tenet_of_haste
+trinket1=shadowgrasp_totem,id=179356,bonus_id=6536/1566/6646
+trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
+main_hand=edge_of_night,id=186398,bonus_id=7187/1498,enchant=celestial_guidance
+off_hand=edge_of_night,id=186398,bonus_id=7187/1498,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=229.19
-# gear_agility=887
-# gear_stamina=1520
+# gear_ilvl=256.13
+# gear_agility=1121
+# gear_stamina=2121
 # gear_attack_power=40
-# gear_crit_rating=795
-# gear_haste_rating=664
-# gear_mastery_rating=122
-# gear_versatility_rating=368
-# gear_armor=608
+# gear_crit_rating=935
+# gear_haste_rating=767
+# gear_mastery_rating=50
+# gear_versatility_rating=321
+# gear_armor=719

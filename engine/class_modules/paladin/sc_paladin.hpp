@@ -1106,7 +1106,6 @@ struct holy_power_consumer_t : public Base
 
   void execute() override
   {
-    double hp_used = cost();
     //p variable just to make this look neater
     paladin_t* p = this -> p();
 

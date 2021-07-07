@@ -275,6 +275,7 @@ public:
   int initial_moon_stage;
   double eclipse_snapshot_period;  // how often to re-snapshot mastery onto eclipse
   bool affinity_resources;  // activate resources tied to affinities
+  double initial_pulsar_value;
 
   // APL options
   bool catweave_bear;
@@ -796,6 +797,7 @@ public:
       convoke_the_spirits_deck( 5 ),
       celestial_spirits_exceptional_chance( bugs ? 0.75 : 1.0 ),
       adaptive_swarm_jump_distance( 5.0 ),
+      initial_pulsar_value( 0.0 ),
       active( active_actions_t() ),
       force_of_nature(),
       caster_form_weapon(),
@@ -1770,10 +1772,12 @@ public:
       free_cast = free_cast_e::NONE;
     }
     else
+    {
       ab::execute();
 
-    if ( !ab::background && ab::trigger_gcd > 0_ms && p()->buff.ravenous_frenzy->check() )
-      p()->buff.ravenous_frenzy->trigger();
+      if ( !ab::background && ab::trigger_gcd > 0_ms && p()->buff.ravenous_frenzy->check() )
+        p()->buff.ravenous_frenzy->trigger();
+    }
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -3747,14 +3751,17 @@ struct rake_t : public cat_attack_t
   };
 
   action_t* bleed;
-  bool stealth_mul;
+  double stealth_mul;
 
   rake_t( druid_t* p, util::string_view opt ) : rake_t( p, p->find_affinity_spell( "Rake" ), opt ) {}
 
   rake_t( druid_t* p, const spell_data_t* s, util::string_view opt )
     : cat_attack_t( "rake", p, s, opt ), stealth_mul( 0.0 )
   {
-    if ( p->find_rank_spell( "Rake", "Rank 2" )->ok() )
+    // if ( p->find_rank_spell( "Rake", "Rank 2" )->ok() )
+    // The stealth bonsu is always available to Rake, as you need to be a feral druid or have feral affinity to use
+    // rake, and in both cases you have access to Rank 2 Rake. The only restriction is the level requirement.
+    if ( p->find_spell( 231052 )->ok() )
       stealth_mul = data().effectN( 4 ).percent();
 
     bleed = p->get_secondary_action<rake_bleed_t>( "rake_bleed" );
@@ -8219,7 +8226,8 @@ void druid_t::create_buffs()
   buff.owlkin_frenzy = make_buff( this, "owlkin_frenzy", spec.owlkin_frenzy )
     ->set_chance( find_rank_spell( "Moonkin Form", "Rank 2" )->effectN( 1 ).percent() );
 
-  buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 338825 ) );
+  buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 338825 )) 
+    ->set_default_value(initial_pulsar_value);
 
   buff.solstice = make_buff( this, "solstice", talent.solstice->effectN( 1 ).trigger() );
 
@@ -8532,8 +8540,11 @@ std::string druid_t::default_potion() const
       else if ( true_level >= 40 ) return "superior_battle_potion_of_intellect";
       SC_FALLTHROUGH;
     case DRUID_FERAL:
-    case DRUID_GUARDIAN:
       if      ( true_level >= 60 ) return "spectral_agility";
+      else if ( true_level >= 40 ) return "superior_battle_potion_of_agility";
+      SC_FALLTHROUGH;
+    case DRUID_GUARDIAN:
+      if      ( true_level >= 60 ) return "phantom_fire";
       else if ( true_level >= 40 ) return "superior_battle_potion_of_agility";
       SC_FALLTHROUGH;
     default:
@@ -8559,16 +8570,15 @@ std::string druid_t::default_rune() const
 
 std::string druid_t::default_temporary_enchant() const
 {
+  if ( true_level < 60 ) return "disabled";
+
   switch ( specialization() )
   {
-    case DRUID_BALANCE:
-    case DRUID_RESTORATION:
-    case DRUID_GUARDIAN:
-    case DRUID_FERAL:
-      if ( true_level >= 60 ) return "main_hand:shaded_sharpening_stone";
-      SC_FALLTHROUGH;
-    default:
-      return "disabled";
+    case DRUID_BALANCE: return "main_hand:shadowcore_oil";
+    case DRUID_RESTORATION: return "main_hand:shadowcore_oil";
+    case DRUID_GUARDIAN: return "main_hand:shadowcore_oil";
+    case DRUID_FERAL: return "main_hand:shaded_sharpening_stone";
+    default: return "disabled";
   }
 }
 
@@ -9739,6 +9749,7 @@ void druid_t::create_options()
   add_option( opt_int( "druid.convoke_the_spirits_deck", convoke_the_spirits_deck ) );
   add_option( opt_float( "druid.celestial_spirits_exceptional_chance", celestial_spirits_exceptional_chance ) );
   add_option( opt_float( "druid.adaptive_swarm_jump_distance", adaptive_swarm_jump_distance ) );
+  add_option( opt_float( "druid.initial_pulsar_value", initial_pulsar_value ) );
 }
 
 // druid_t::create_profile ==================================================
@@ -10351,7 +10362,8 @@ void druid_t::copy_from( player_t* source )
   celestial_spirits_exceptional_chance = p->celestial_spirits_exceptional_chance;
   adaptive_swarm_jump_distance         = p->adaptive_swarm_jump_distance;
   thorns_attack_period                 = p->thorns_attack_period;
-  thorns_hit_chance                    = p->thorns_hit_chance;
+  thorns_hit_chance                    = p->thorns_hit_chance; 
+  initial_pulsar_value                 = p->initial_pulsar_value;
 }
 
 void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const

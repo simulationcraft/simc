@@ -137,10 +137,10 @@ public:
     buff_t* marked_for_death;
     buff_t* numbing_poison;
     buff_t* prey_on_the_weak;
-    buff_t* rupture; // Hidden proxy for handling Scent of Blood azerite trait
     damage_buff_t* shiv;
     damage_buff_t* vendetta;
     buff_t* wound_poison;
+    buff_t* banshees_blight; // Slyvanas Dagger
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -215,6 +215,7 @@ public:
     actions::rogue_attack_t* triple_threat_mh = nullptr;
     actions::rogue_attack_t* triple_threat_oh = nullptr;
     actions::shadow_blades_attack_t* shadow_blades_attack = nullptr;
+    action_t* banshees_blight = nullptr; // Slyvanas Dagger
     struct
     {
       actions::rogue_attack_t* backstab = nullptr;
@@ -622,6 +623,9 @@ public:
     double dashing_scoundrel_gain = 0.0;
     double duskwalkers_patch_counter = 0.0;
     int guile_charm_counter = 0;
+
+    // Slyvanas Dagger
+    const spell_data_t* banshees_blight = nullptr;
   } legendary;
 
   // Procs
@@ -3234,19 +3238,6 @@ struct mutilate_t : public rogue_attack_t
       {
         dual = true;
       }
-
-      void init() override
-      {
-        residual_action::residual_periodic_action_t<spell_t>::init();
-
-        // 03/05/2021 -- Blizzard fixed the issue with armor, but it is still affected by damage taken debuffs
-        //               Bug, see https://github.com/SimCMinMax/WoW-BugTracker/issues/812
-        if ( player->bugs )
-        {
-          snapshot_flags |= STATE_TARGET;
-          update_flags |= STATE_TARGET;
-        }
-      }
     };
 
     doomblade_t* doomblade_dot;
@@ -4581,6 +4572,10 @@ struct serrated_bone_spike_t : public rogue_attack_t
     //               This works on both the initial hit and also the DoT, until it is applied again
     bool snapshots_nightstalker() const override
     { return p()->bugs; }
+
+    // 07/05/2021 -- Confirmed as working in-game, although not on Sudden Fractures damage
+    bool procs_shadow_blades_damage() const override
+    { return true; }
   };
 
   int base_impact_cp;
@@ -4662,6 +4657,10 @@ struct serrated_bone_spike_t : public rogue_attack_t
   // 06/29/2021 -- Testing shows this does not proc Deadly Poison despite being direct
   bool procs_deadly_poison() const override
   { return false; }
+
+  // 07/05/2021 -- Confirmed as working in-game
+  bool procs_shadow_blades_damage() const override
+  { return true; }
 };
 
 // ==========================================================================
@@ -6034,6 +6033,26 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
       animacharged_cp_proc->occur();
     }
   }
+
+  // Sylvanas Dagger
+  // This only appears to trigger from damaging finishers, as SnD does not do anything
+  if ( p()->legendary.banshees_blight && ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ) )
+  {
+    int stack_count = td( state->target )->debuffs.banshees_blight->check();
+    if ( stack_count > 0 && p()->rng().roll( max_spend * p()->legendary.banshees_blight->effectN( 2 ).percent() ) )
+    {
+      // Only executes on the "primary" target of AoE finishers
+      player_t* proc_target = state->target;
+      for ( int i = 0; i < stack_count; ++i )
+      {
+        make_event( *ab::sim, i * 150_ms, [ this, proc_target ]
+        {
+          p()->active.banshees_blight->set_target( proc_target );
+          p()->active.banshees_blight->execute();
+        } );
+      }
+    }
+  }
 }
 
 template <typename Base>
@@ -6242,6 +6261,12 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
       } )
       ->set_partial_tick( true );
   }
+
+  // Slyvanas Dagger
+  if ( source->legendary.banshees_blight )
+    debuffs.banshees_blight = make_buff( *this, "banshees_blight", source->find_spell( 358090 ) );
+  else
+    debuffs.banshees_blight = make_buff( *this, "banshees_blight" )->set_quiet( true );
 
   // Marked for Death Reset
   if ( source->talent.marked_for_death->ok() )
@@ -6833,18 +6858,18 @@ void rogue_t::init_action_list()
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds->add_action( this, "Shadow Dance", "use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "Use Dance off-gcd before the first Shuriken Storm from Tornado comes in." );
     cds->add_action( this, "Symbols of Death", "use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "(Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in." );
-    cds->add_action( "flagellation,if=variable.snd_condition&!stealthed.mantle&(!runeforge.obedience|cooldown.symbols_of_death.up&combo_points>=5)" );
+    cds->add_action( "flagellation,if=variable.snd_condition&!stealthed.mantle&(!runeforge.obedience|buff.symbols_of_death.up&combo_points>=5)" );
     cds->add_action( this, "Vanish", "if=(runeforge.mark_of_the_master_assassin&combo_points.deficit<=1-talent.deeper_strategem.enabled|runeforge.deathly_shadows&combo_points<1)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down" );
     cds->add_action( "pool_resource,for_next=1,if=talent.shuriken_tornado.enabled&!talent.shadow_focus.enabled", "Pool for Tornado pre-SoD with ShD ready when not running SF." );
-    cds->add_talent( this, "Shuriken Tornado", "if=energy>=60&variable.snd_condition&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1&(!runeforge.obedience|debuff.flagellation.up)&combo_points<=2", "Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally." );
+    cds->add_talent( this, "Shuriken Tornado", "if=energy>=60&variable.snd_condition&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1&(!runeforge.obedience|debuff.flagellation.up)&combo_points<=2&(!buff.premeditation.up|spell_targets.shuriken_storm>4)", "Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally." );
     cds->add_action( "serrated_bone_spike,cycle_targets=1,if=variable.snd_condition&!dot.serrated_bone_spike_dot.ticking&target.time_to_die>=21|fight_remains<=5&spell_targets.shuriken_storm<3" );
     cds->add_action( "sepsis,if=variable.snd_condition&combo_points.deficit>=1" );
-    cds->add_action( this, "Symbols of Death", "if=variable.snd_condition&(talent.enveloping_shadows.enabled|cooldown.shadow_dance.charges>=1)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)&(!runeforge.obedience|cooldown.flagellation.remains>20)", "Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus." );
+    cds->add_action( this, "Symbols of Death", "if=variable.snd_condition&(talent.enveloping_shadows.enabled|cooldown.shadow_dance.charges>=1)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)&(!runeforge.obedience|cooldown.flagellation.remains>10|cooldown.flagellation.up&combo_points>=5)", "Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus." );
     cds->add_talent( this, "Marked for Death", "line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP." );
     cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP." );
     cds->add_action( this, "Shadow Blades", "if=variable.snd_condition&combo_points.deficit>=2&(cooldown.symbols_of_death.remains<1|buff.symbols_of_death.up|fight_remains<=20)" );
     cds->add_action( "echoing_reprimand,if=variable.snd_condition&combo_points.deficit>=2&(variable.use_priority_rotation|spell_targets.shuriken_storm<=4|runeforge.resounding_clarity)" );
-    cds->add_talent( this, "Shuriken Tornado", "if=talent.shadow_focus.enabled&variable.snd_condition&buff.symbols_of_death.up&combo_points<=2", "With SF, if not already done, use Tornado with SoD up." );
+    cds->add_talent( this, "Shuriken Tornado", "if=talent.shadow_focus.enabled&variable.snd_condition&buff.symbols_of_death.up&combo_points<=2&(!buff.premeditation.up|spell_targets.shuriken_storm>4)", "With SF, if not already done, use Tornado with SoD up." );
     cds->add_action( this, "Shadow Dance", "if=!buff.shadow_dance.up&fight_remains<=8+talent.subterfuge.enabled" );
     cds->add_action( "fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)&energy.deficit>=30&!stealthed.all&buff.symbols_of_death.down" );
 
@@ -6902,7 +6927,7 @@ void rogue_t::init_action_list()
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
     build->add_action( this, "Shiv", "if=!talent.nightstalker.enabled&runeforge.tiny_toxic_blade&spell_targets.shuriken_storm<5" );
-    build->add_action( this, "Shuriken Storm", "if=spell_targets>=2&(cooldown.serrated_bone_spike.max_charges-charges_fractional>=0.25|spell_targets.shuriken_storm>4)" );
+    build->add_action( this, "Shuriken Storm", "if=spell_targets>=2&(!covenant.necrolord|cooldown.serrated_bone_spike.max_charges-charges_fractional>=0.25|spell_targets.shuriken_storm>4)" );
     build->add_action( "serrated_bone_spike,if=cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25|soulbind.lead_by_example.enabled&!buff.lead_by_example.up" );
     build->add_talent( this, "Gloomblade" );
     build->add_action( this, "Backstab" );
@@ -8099,7 +8124,7 @@ void rogue_t::create_buffs()
   buffs.guile_charm_insight_1 = make_buff( this, "shallow_insight", find_spell( 340582 ) )
     ->set_default_value_from_effect( 1 ) // Bonus Damage%
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+    ->set_stack_change_callback( [ this ]( buff_t*, int, [[maybe_unused]] int new_ ) {
       legendary.guile_charm_counter = 0;
     } );
   buffs.guile_charm_insight_2 = make_buff( this, "moderate_insight", find_spell( 340583 ) )
@@ -8112,7 +8137,7 @@ void rogue_t::create_buffs()
   buffs.guile_charm_insight_3 = make_buff( this, "deep_insight", find_spell( 340584 ) )
     ->set_default_value_from_effect( 1 ) // Bonus Damage%
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+    ->set_stack_change_callback( [ this ]( buff_t*, int, [[maybe_unused]] int new_ ) {
       buffs.guile_charm_insight_2->expire();
       legendary.guile_charm_counter = 0;
     } );
@@ -8356,6 +8381,87 @@ void rogue_t::init_items()
 }
 
 // rogue_t::init_special_effects ============================================
+
+// Sylvanas Dagger
+struct banshees_blight_t : public unique_gear::scoped_actor_callback_t<rogue_t>
+{
+  // Debuff trigger spell from the driver 357595
+  // This has a 0.5s ICD and triggers from both yellow and white direct attacks
+  // Triggers the debuff 358090 which applies stacks based on remaining health
+  // If the target heals for any reason, the stack does not regress (as seen on dummies)
+  struct banshees_blight_debuff_t : public unique_gear::proc_spell_t
+  {
+    rogue_t* rogue;
+
+    banshees_blight_debuff_t( const special_effect_t& e )
+      : proc_spell_t( "banshees_blight_debuff", e.player, e.driver(), e.item ),
+      rogue( debug_cast<rogue_t*>( e.player ) )
+    {
+      quiet = dual = true;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      rogue_td_t* td = rogue->get_target_data( s->target );
+      double health_percentage = s->target->health_percentage();
+      int current_stacks = td->debuffs.banshees_blight->check();
+      int desired_stacks = health_percentage < 25 ? 4 :
+                           health_percentage < 50 ? 3 :
+                           health_percentage < 75 ? 2 : 1;
+
+      if ( current_stacks < desired_stacks )
+      {
+        td->debuffs.banshees_blight->trigger( desired_stacks - current_stacks );
+      }
+    }
+  };
+
+  // Damage trigger spell from 358126
+  // Damage values are stored on both the item driver 357595 and hotfixed spell 359180
+  // This attack triggers multiple times based on target stack count, handled in spend_combo_points
+  // When dual-wielding, the item damage amounts from both weapons are added together
+  struct banshees_blight_damage_t : public unique_gear::proc_spell_t
+  {
+    double scaled_dmg;
+
+    banshees_blight_damage_t( const special_effect_t& e )
+      : proc_spell_t( "banshees_blight", e.player, e.player->find_spell( 358126 ), e.item ),
+      scaled_dmg( e.driver()->effectN( 1 ).average( e.item ) )
+    {
+      base_dd_min = base_dd_max = scaled_dmg;
+    }
+
+    double base_da_min( const action_state_t* ) const override
+    { return scaled_dmg; }
+
+    double base_da_max( const action_state_t* ) const override
+    { return scaled_dmg; }
+  };
+
+  banshees_blight_t() : super( ROGUE )
+  {}
+
+  void initialize( special_effect_t& e ) override
+  {
+    unique_gear::scoped_actor_callback_t<rogue_t>::initialize( e );
+
+    // Create callback action to proc debuff stacks on the target
+    e.execute_action = unique_gear::create_proc_action<banshees_blight_debuff_t>( "banshees_blight_debuff", e );
+    new dbc_proc_callback_t( e.player, e );
+  }
+
+  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
+  {
+    rogue->legendary.banshees_blight = e.driver();
+
+    // Create damage action triggered by actions::rogue_action_t<Base>::spend_combo_points
+    auto banshees_blight_damage = static_cast<banshees_blight_damage_t*>( e.player->find_action( "banshees_blight" ) );
+    if ( !banshees_blight_damage )
+      rogue->active.banshees_blight = unique_gear::create_proc_action<banshees_blight_damage_t>( "banshees_blight", e );
+    else
+      banshees_blight_damage->scaled_dmg += e.driver()->effectN( 1 ).average( e.item );
+  }
+};
 
 void rogue_t::init_special_effects()
 {
@@ -8728,6 +8834,7 @@ public:
 
   void static_init() const override
   {
+    unique_gear::register_special_effect( 357595, banshees_blight_t() ); // Sylvanas Dagger
   }
 
   void register_hotfixes() const override

@@ -5,59 +5,58 @@ spec=elemental
 role=spell
 position=ranged_back
 talents=2301032
-covenant=necrolord
-soulbind=bonesmith_heirmir,forgeborne_reveries/call_of_flame:7/heirmirs_arsenal_marrowed_gemstone
-renown=40
+covenant=night_fae
+soulbind=dreamweaver,call_of_flame:9:1/social_butterfly/field_of_blossoms/essential_extraction:9:1/dream_delver
+renown=80
 
-head=nathrian_usurpers_mask,id=178816,bonus_id=6536/1540/6646,gem_id=173129
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646,gem_id=173129
-shoulders=pauldrons_of_fatal_finality,id=183003,bonus_id=4800/4786/1498
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=4800/4786/1498
-chest=consumptive_chainmail_carapace,id=183000,bonus_id=4800/4786/1498,enchant=eternal_insight
-wrists=shackles_of_alluring_vitality,id=178846,bonus_id=6536/1540/6646,enchant=eternal_intellect,gem_id=173129
-hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=4800/4786/1498
-waist=loadbearing_belt,id=183016,bonus_id=4800/4786/1498,gem_id=173129
-legs=mementoladen_cuisses,id=182985,bonus_id=4800/4786/1498
-feet=boneshatter_treads,id=172323,bonus_id=6716/6992/6649/6650/1532
-finger1=ritual_commanders_ring,id=178781,bonus_id=6536/1540/6646,enchant=tenet_of_haste,gem_id=173129
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=4800/4786/1498,enchant=tenet_of_haste,gem_id=173129
-trinket1=glyph_of_assimilation,id=184021,bonus_id=4800/4786/1498
-trinket2=dreadfire_vessel,id=184030,bonus_id=4800/4786/1498
-main_hand=grasp_from_the_grave,id=184259,bonus_id=4800/4786/1531,enchant=sinful_revelation
-off_hand=burden_of_the_protectorate,id=184257,bonus_id=4800/4786/1531
+head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187320/173128
+neck=azurevenom_choker,id=180115,bonus_id=3536/4786/1566,gem_id=173128
+shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187319
+back=grimveiled_cape,id=173242,bonus_id=6716/6992/6649/6650/1559
+chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,enchant=eternal_insight,gem_id=187318
+wrists=bands_of_the_fallen_house,id=186365,enchant=eternal_intellect,bonus_id=7187/1498,gem_id=173128
+hands=grasps_of_ancestral_whispers,id=186308,bonus_id=7187/1498
+waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187315/173128
+legs=aradnes_lancer_legguards,id=186307,bonus_id=7187/1498
+feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187312
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
+finger2=oscillating_ouroboros,id=186376,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
+trinket1=tome_of_monstrous_constructions,id=186422,bonus_id=7187/1498
+trinket2=forbidden_necromantic_tome,id=186421,bonus_id=7187/1498
+main_hand=maledict_opus,id=186406,bonus_id=7187/1498,enchant=sinful_revelation
+
 
 save=T27_Shaman_Elemental.simc
 
-
-shaman="T27_Shaman_Elemental_NF"
+shaman=T27_Shaman_Elemental_NL
 level=60
 race=tauren
-spec=elemental
 role=spell
 position=ranged_back
+spec=elemental
+renown=80
 talents=2301032
-covenant=night_fae
-soulbind=niya,grove_invigoration/call_of_flame:7/niyas_tools_burrs
-renown=40
 
-head=nathrian_usurpers_mask,id=178816,bonus_id=6536/1540/6646,gem_id=173129
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646,gem_id=173129
-shoulders=pauldrons_of_fatal_finality,id=183003,bonus_id=4800/4786/1498
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=4800/4786/1498
-chest=consumptive_chainmail_carapace,id=183000,bonus_id=4800/4786/1498,enchant=eternal_insight
-wrists=shackles_of_alluring_vitality,id=178846,bonus_id=6536/1540/6646,enchant=eternal_intellect,gem_id=173129
-hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=4800/4786/1498
-waist=loadbearing_belt,id=183016,bonus_id=4800/4786/1498,gem_id=173129
-legs=mementoladen_cuisses,id=182985,bonus_id=4800/4786/1498
-feet=boneshatter_treads,id=172323,bonus_id=6716/6992/6649/6650/1532
-finger1=ritual_commanders_ring,id=178781,bonus_id=6536/1540/6646,enchant=tenet_of_haste,gem_id=173129
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=4800/4786/1498,enchant=tenet_of_haste,gem_id=173129
-trinket1=glyph_of_assimilation,id=184021,bonus_id=4800/4786/1498
-trinket2=dreadfire_vessel,id=184030,bonus_id=4800/4786/1498
-main_hand=grasp_from_the_grave,id=184259,bonus_id=4800/4786/1531,enchant=sinful_revelation
-off_hand=burden_of_the_protectorate,id=184257,bonus_id=4800/4786/1531
+covenant=necrolord
+soulbind=plague_deviser_marileth,323074/100:9:1/323091/323079/104:9:1/323095/147:9:1/352108/352110
 
-save=T27_Shaman_Elemental_NF.simc
+head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187320/173128
+neck=azurevenom_choker,id=180115,bonus_id=3536/4786/1566,gem_id=173128
+shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187319
+back=grimveiled_cape,id=173242,bonus_id=6716/6992/6649/6650/1559
+chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,enchant=eternal_insight,gem_id=187318
+wrists=bands_of_the_fallen_house,id=186365,enchant=eternal_intellect,bonus_id=7187/1498,gem_id=173128
+hands=grasps_of_ancestral_whispers,id=186308,bonus_id=7187/1498
+waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187315/173128
+legs=aradnes_lancer_legguards,id=186307,bonus_id=7187/1498
+feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187312
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
+finger2=oscillating_ouroboros,id=186376,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
+trinket1=tome_of_monstrous_constructions,id=186422,bonus_id=7187/1498
+trinket2=forbidden_necromantic_tome,id=186421,bonus_id=7187/1498
+main_hand=maledict_opus,id=186406,bonus_id=7187/1498,enchant=sinful_revelation
+
+save=T27_Shaman_Elemental_NL.simc
 
 
 shaman="T27_Shaman_Enhancement"
@@ -71,22 +70,22 @@ covenant=night_fae
 soulbind=niya,grove_invigoration/magma_fist:9:1/niyas_tools_burrs/essential_extraction:9:1/bonded_hearts
 renown=80
 
-head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187073/173128
-neck=periapt_of_pristine_preservation,id=186291,bonus_id=7187/1498,gem_id=173128
+head=crest_of_the_fallen,id=186304,bonus_id=7187/1498/6935,gem_id=187073/173128
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173128
 shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187076
 back=cloak_of_scarred_honor,id=186289,bonus_id=7187/1498
-chest=conjunctionforged_chainmail,id=186340,bonus_id=7187/1498,enchant=eternal_skirmish,gem_id=187079
-wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498,gem_id=173128
+chest=conjunctionforged_chainmail,id=186340,bonus_id=7187/1498,gem_id=187079,enchant=eternal_skirmish
+wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498/6935,gem_id=173128
 hands=grasps_of_ancestral_whispers,id=186308,bonus_id=7187/1498
-waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187057/173128
-legs=hyperdense_greaves,id=186344,bonus_id=7187/1498
-feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,enchant=eternal_agility,gem_id=187063
-finger1=shadowghast_ring,id=178926,bonus_id=6716/6995/6649/6648/1559/1808,gem_id=173128,enchant=tenet_of_haste
-finger2=death_gods_signet,id=179355,bonus_id=6536/1566/6646,gem_id=173128,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
+waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498/6935,gem_id=187057/173128
+legs=wind_dancers_legguards,id=178839,bonus_id=6536/1566/6646
+feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187063,enchant=eternal_agility
+finger1=shadowghast_ring,id=178926,bonus_id=6716/6995/6649/6648/1559/1808/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+trinket1=titanic_ocular_gland,id=186423,bonus_id=7187/1498
 trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
-main_hand=dormazains_tenderizer,id=186387,bonus_id=7187/1498,enchant=sinful_revelation
-off_hand=dormazains_tenderizer,id=186387,bonus_id=7187/1498,enchant=celestial_guidance
+main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=sinful_revelation
+off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
 
 save=T27_Shaman_Enhancement.simc
 
@@ -102,22 +101,22 @@ covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/unruly_winds:9:1/dauntless_duelist/focused_lightning:9:1/fatal_flaw
 renown=80
 
-head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187073/173128
-neck=weathered_talisman_of_the_shadowmoon,id=186378,bonus_id=7187/1498,gem_id=173128
+head=crest_of_the_fallen,id=186304,bonus_id=7187/1498/6935,gem_id=187073/173127
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173127
 shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187076
 back=grimveiled_cape,id=173242,bonus_id=6716/6993/6647/6649/1559
-chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,enchant=eternal_skirmish,gem_id=187079
-wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498,gem_id=173128
+chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,gem_id=187079,enchant=eternal_skirmish
+wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498/6935,gem_id=173127
 hands=demigaunts_of_predestination,id=186345,bonus_id=7187/1498
-waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187057/173128
-legs=hyperdense_greaves,id=186344,bonus_id=7187/1498
-feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,enchant=eternal_agility,gem_id=187063
-finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
-finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
+waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498/6935,gem_id=187057/173127
+legs=aradnes_lancer_legguards,id=186307,bonus_id=7187/1498
+feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187063,enchant=eternal_agility
+finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_versatility
+finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_versatility
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
 trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
-main_hand=dormazains_tenderizer,id=186387,bonus_id=7187/1498,enchant=sinful_revelation
-off_hand=dormazains_tenderizer,id=186387,bonus_id=7187/1498,enchant=celestial_guidance
+main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=sinful_revelation
+off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
 
 save=T27_Shaman_Enhancement_VDW.simc
 
@@ -133,22 +132,22 @@ covenant=kyrian
 soulbind=forgelite_prime_mikanikos,brons_call_to_action/unruly_winds:9:1/elysian_dirge:9:1/focused_lightning:9:1/soulglow_spectrometer/effusive_anima_accelerator
 renown=80
 
-head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187073/173128
-neck=weathered_talisman_of_the_shadowmoon,id=186378,bonus_id=7187/1498,gem_id=173128
+head=crest_of_the_fallen,id=186304,bonus_id=7187/1498/6935,gem_id=187073/173127
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173127
 shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187076
 back=grimveiled_cape,id=173242,bonus_id=6716/6993/6647/6649/1559
-chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,enchant=eternal_skirmish,gem_id=187079
-wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498,gem_id=173128
+chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,gem_id=187079,enchant=eternal_skirmish
+wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498/6935,gem_id=173127
 hands=demigaunts_of_predestination,id=186345,bonus_id=7187/1498
-waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187057/173128
-legs=hyperdense_greaves,id=186344,bonus_id=7187/1498
-feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,enchant=eternal_agility,gem_id=187063
-finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
-finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
+waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498/6935,gem_id=187057/173127
+legs=aradnes_lancer_legguards,id=186307,bonus_id=7187/1498
+feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187063,enchant=eternal_agility
+finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_versatility
+finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_versatility
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
 trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
-main_hand=dormazains_tenderizer,id=186387,bonus_id=7187/1498,enchant=sinful_revelation
-off_hand=dormazains_tenderizer,id=186387,bonus_id=7187/1498,enchant=celestial_guidance
+main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=sinful_revelation
+off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
 
 save=T27_Shaman_Enhancement_KDW.simc
 

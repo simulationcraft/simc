@@ -333,7 +333,7 @@ void grove_invigoration( special_effect_t& effect )
 
       auto ra = debug_cast<stat_buff_t*>( redirected_anima );
 
-      bonded_hearts->set_stack_change_callback( [ ra ]( buff_t* b, int old_, int new_ ) {
+      bonded_hearts->set_stack_change_callback( [ ra ]( buff_t* b, int, int new_ ) {
         auto mul = 1.0 + b->default_value;
 
         // In stat_buff_t::bump, the stat value is applied AFTER buff_t::stack_change_callback is triggered, so the
@@ -349,8 +349,11 @@ void grove_invigoration( special_effect_t& effect )
           for ( auto& s : ra->stats )
             s.amount *= mul;
 
+          double old_value = ra->check_stack_value();
           ra->default_value *= mul;
-          b->player->resources.initial_multiplier[ RESOURCE_HEALTH ] *= mul;
+          ra->current_value *= mul;
+          double new_value = ra->check_stack_value();
+          b->player->resources.initial_multiplier[ RESOURCE_HEALTH ] *= ( 1.0 + new_value ) / ( 1.0 + old_value );
         }
         else
         {
@@ -368,8 +371,11 @@ void grove_invigoration( special_effect_t& effect )
             s.current_value += delta;
           }
 
+          double old_value = ra->check_stack_value();
           ra->default_value /= mul;
-          b->player->resources.initial_multiplier[ RESOURCE_HEALTH ] /= mul;
+          ra->current_value /= mul;
+          double new_value = ra->check_stack_value();
+          b->player->resources.initial_multiplier[ RESOURCE_HEALTH ] *= ( 1.0 + new_value ) / ( 1.0 + old_value );
         }
 
         b->player->recalculate_resource_max( RESOURCE_HEALTH );
@@ -397,7 +403,6 @@ void grove_invigoration( special_effect_t& effect )
   int stacks = as<int>( effect.driver()->effectN( 3 ).base_value() * stack_mod );
 
   add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, redirected_anima, stacks );
-
 }
 
 void bonded_hearts( special_effect_t& effect )
@@ -636,11 +641,14 @@ void thrill_seeker( special_effect_t& effect )
         ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
     }
 
-    euphoria_buff->set_stack_change_callback( [ fatal_flaw_vers, fatal_flaw_crit ]( buff_t* b, int, int new_ ) {
-      if ( b->player->cache.spell_crit_chance() >= b->player->cache.damage_versatility() )
-        fatal_flaw_crit->trigger();
-      else
-        fatal_flaw_vers->trigger();
+    euphoria_buff->set_stack_change_callback( [ fatal_flaw_vers, fatal_flaw_crit ]( buff_t* b, int old, int cur ) {
+      if ( cur < old )
+      {
+        if ( b->player->cache.spell_crit_chance() >= b->player->cache.damage_versatility() )
+          fatal_flaw_crit->trigger();
+        else
+          fatal_flaw_vers->trigger();
+      }
     } );
   }
 
@@ -648,7 +656,11 @@ void thrill_seeker( special_effect_t& effect )
 
   // You still gain stacks while euphoria is active
   effect.player->register_combat_begin( [ eff_data, counter_buff ]( player_t* p ) {
-    make_repeating_event( *p->sim, eff_data->period(), [ counter_buff ] { counter_buff->trigger(); } );
+    make_repeating_event( *p->sim, eff_data->period(), [ counter_buff ] {
+      // if there are no active targets, assume we are simulating 'out of combat' and thrill seeker stops gaining stacks
+      if ( !counter_buff->sim->target_non_sleeping_list.empty() )
+        counter_buff->trigger();
+    } );
   } );
 
   auto p                     = effect.player;
@@ -660,7 +672,7 @@ void thrill_seeker( special_effect_t& effect )
   // DungeonSlice: 1/4 = 0.25
   if ( killing_blow_chance < 0 )
   {
-    if ( effect.player->sim->fight_style == "DungeonSlice" )
+    if ( p->sim->fight_style == "DungeonSlice" )
     {
       number_of_players = 4;
     }
@@ -748,6 +760,7 @@ void party_favors( special_effect_t& effect )
   if ( !haste_buff )
   {
     haste_buff = make_buff( effect.player, "the_mad_dukes_tea_haste", effect.player->find_spell( 354016 ) )
+      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
       ->set_default_value_from_effect_type( A_HASTE_ALL )
       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
@@ -756,6 +769,7 @@ void party_favors( special_effect_t& effect )
   if ( !crit_buff )
   {
     crit_buff = make_buff( effect.player, "the_mad_dukes_tea_crit", effect.player->find_spell( 354017 ) )
+      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
       ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
   }
@@ -764,6 +778,7 @@ void party_favors( special_effect_t& effect )
   if ( !primary_buff )
   {
     primary_buff = make_buff( effect.player, "the_mad_dukes_tea_primary", effect.player->find_spell( 353266 ) )
+      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
       ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
       ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
       ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
@@ -774,6 +789,7 @@ void party_favors( special_effect_t& effect )
   if ( !vers_buff )
   {
     vers_buff = make_buff( effect.player, "the_mad_dukes_tea_versatility", effect.player->find_spell( 354018 ) )
+      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
       ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
       ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
   }
@@ -1042,8 +1058,8 @@ void valiant_strikes( special_effect_t& effect )
 
     valiant_strikes_event_t( valiant_strikes_t* v, timespan_t t = 0_ms ) :
       event_t( *v->sim, t ),
-      valiant_strikes( v ),
-      delta_time( t )
+      delta_time( t ),
+      valiant_strikes( v )
     {}
 
     const char* name() const override
@@ -1095,7 +1111,7 @@ void valiant_strikes( special_effect_t& effect )
   effect.proc_flags2_ = PF2_CRIT;
   new valiant_strikes_cb_t( effect, dormant_valor );
 
-  effect.player->register_combat_begin( [ valiant_strikes ]( player_t* p )
+  effect.player->register_combat_begin( [ valiant_strikes ]( player_t* )
     { make_event<valiant_strikes_event_t>( *valiant_strikes->sim, valiant_strikes ); } );
 }
 
@@ -1478,7 +1494,7 @@ void brons_call_to_action( special_effect_t& effect )
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( bron->is_active() )
+      if ( bron->is_active() || a->background )
         return;
 
       // Only class spells can proc Bron's Call to Action.
@@ -1488,20 +1504,20 @@ void brons_call_to_action( special_effect_t& effect )
 
       // Because this callback triggers on both cast and impact, spells are categorized into triggering on one of cast or impact.
       // TODO: This isn't completely accurate, but seems to be relatively close. More classes/spells needs to be looked at.
-      bool action_triggers_on_impact = a->background || a->data().flags( spell_attribute::SX_ABILITY )
-        || range::any_of( a->data().effects(), [] ( const spelleffect_data_t& e ) { return e.type() == E_TRIGGER_MISSILE; } );
+//      bool action_triggers_on_impact = a->data().flags( spell_attribute::SX_ABILITY )
+//        || range::any_of( a->data().effects(), [] ( const spelleffect_data_t& e ) { return e.type() == E_TRIGGER_MISSILE; } );
 
-      a->sim->print_debug( "'{}' attempts to trigger brons_call_to_action: action='{}', execute_proc_type2='{}', cast_proc_type2='{}', impact_proc_type2='{}', triggers_on='{}'",
-        a->player->name_str, a->name_str, util::proc_type2_string( s->execute_proc_type2() ), util::proc_type2_string( s->cast_proc_type2() ),
-        util::proc_type2_string( s->impact_proc_type2() ), action_triggers_on_impact ? "impact" : "cast" );
+//      a->sim->print_debug( "'{}' attempts to trigger brons_call_to_action: action='{}', execute_proc_type2='{}', cast_proc_type2='{}', impact_proc_type2='{}', triggers_on='{}'",
+//        a->player->name_str, a->name_str, util::proc_type2_string( s->execute_proc_type2() ), util::proc_type2_string( s->cast_proc_type2() ),
+//        util::proc_type2_string( s->impact_proc_type2() ), action_triggers_on_impact ? "impact" : "cast" );
 
       // If the spell triggers on cast and this is an impact trigger attempt, skip it.
-      if ( s->impact_proc_type2() != PROC2_INVALID && !action_triggers_on_impact )
-        return;
+//      if ( s->impact_proc_type2() != PROC2_INVALID && !action_triggers_on_impact )
+//        return;
 
       // If the spell triggers on impact and this is not an imapct trigger attempt, skip it.
-      if ( s->impact_proc_type2() == PROC2_INVALID && action_triggers_on_impact )
-        return;
+//      if ( s->impact_proc_type2() == PROC2_INVALID && action_triggers_on_impact )
+//        return;
 
       dbc_proc_callback_t::trigger( a, s );
     }
@@ -1520,7 +1536,8 @@ void brons_call_to_action( special_effect_t& effect )
     }
   };
 
-  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL | PF2_ALL_HIT;
+//  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL | PF2_ALL_HIT;
+  effect.proc_flags2_ = PF2_CAST_DAMAGE | PF2_CAST_HEAL;
 
   effect.custom_buff = buff_t::find( effect.player, "brons_call_to_action" );
   if ( !effect.custom_buff )
@@ -2358,7 +2375,7 @@ void pustule_eruption( special_effect_t& effect )
       make_buff( effect.player, "trembling_pustules", effect.player->find_spell( 352086 ) )
       ->set_period( effect.player->sim->shadowlands_opts.pustule_eruption_interval )
       ->set_reverse( true )
-      ->set_tick_callback( [ damage, heal ]( buff_t* b, int, timespan_t )
+      ->set_tick_callback( [ damage, heal ]( buff_t*, int, timespan_t )
       {
         damage->set_target( damage->player->target );
         damage->execute();
@@ -2474,15 +2491,23 @@ void register_special_effects()
   unique_gear::register_special_effect( 344052, soulbinds::deepening_bond );  // Night Fae Rank 1
   unique_gear::register_special_effect( 344053, soulbinds::deepening_bond );  // Night Fae Rank 2
   unique_gear::register_special_effect( 344057, soulbinds::deepening_bond );  // Night Fae Rank 3
+  unique_gear::register_special_effect( 353870, soulbinds::deepening_bond );  // Night Fae Rank 4
+  unique_gear::register_special_effect( 353886, soulbinds::deepening_bond );  // Night Fae Rank 5
   unique_gear::register_special_effect( 344068, soulbinds::deepening_bond );  // Venthyr Rank 1
   unique_gear::register_special_effect( 344069, soulbinds::deepening_bond );  // Venthyr Rank 2
   unique_gear::register_special_effect( 344070, soulbinds::deepening_bond );  // Venthyr Rank 3
+  unique_gear::register_special_effect( 354195, soulbinds::deepening_bond );  // Venthyr Rank 4
+  unique_gear::register_special_effect( 354204, soulbinds::deepening_bond );  // Venthyr Rank 5
   unique_gear::register_special_effect( 344076, soulbinds::deepening_bond );  // Necrolord Rank 1
   unique_gear::register_special_effect( 344077, soulbinds::deepening_bond );  // Necrolord Rank 2
   unique_gear::register_special_effect( 344078, soulbinds::deepening_bond );  // Necrolord Rank 3
+  unique_gear::register_special_effect( 354025, soulbinds::deepening_bond );  // Necrolord Rank 4
+  unique_gear::register_special_effect( 354129, soulbinds::deepening_bond );  // Necrolord Rank 5
   unique_gear::register_special_effect( 344087, soulbinds::deepening_bond );  // Kyrian Rank 1
   unique_gear::register_special_effect( 344089, soulbinds::deepening_bond );  // Kyrian Rank 2
   unique_gear::register_special_effect( 344091, soulbinds::deepening_bond );  // Kyrian Rank 3
+  unique_gear::register_special_effect( 354252, soulbinds::deepening_bond );  // Kyrian Rank 4
+  unique_gear::register_special_effect( 354257, soulbinds::deepening_bond );  // Kyrian Rank 5
 }
 
 action_t* create_action( player_t* player, util::string_view name, const std::string& options )

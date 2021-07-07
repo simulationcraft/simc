@@ -7,8 +7,8 @@ role=attack
 position=back
 talents=1320031
 covenant=venthyr
-soulbind=nadjia_the_mistblade,thrill_seeker/lashing_scars:7/dauntless_duelist
-renown=40
+soulbind=nadjia_the_mistblade,thrill_seeker/lashing_scars:9:1/dauntless_duelist/deeper_daggers:9:1/fatal_flaw
+renown=80
 
 # Default consumables
 potion=phantom_fire
@@ -30,7 +30,7 @@ actions.precombat+=/augmentation
 actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption
+actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent
 actions.precombat+=/stealth
 actions.precombat+=/marked_for_death,precombat_seconds=15
 actions.precombat+=/slice_and_dice,precombat_seconds=1
@@ -72,7 +72,7 @@ actions+=/bag_of_tricks
 
 # Builders
 actions.build=shiv,if=!talent.nightstalker.enabled&runeforge.tiny_toxic_blade&spell_targets.shuriken_storm<5
-actions.build+=/shuriken_storm,if=spell_targets>=2&(cooldown.serrated_bone_spike.max_charges-charges_fractional>=0.25|spell_targets.shuriken_storm>4)
+actions.build+=/shuriken_storm,if=spell_targets>=2&(!covenant.necrolord|cooldown.serrated_bone_spike.max_charges-charges_fractional>=0.25|spell_targets.shuriken_storm>4)
 actions.build+=/serrated_bone_spike,if=cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25|soulbind.lead_by_example.enabled&!buff.lead_by_example.up
 actions.build+=/gloomblade
 actions.build+=/backstab
@@ -82,16 +82,16 @@ actions.build+=/backstab
 actions.cds=shadow_dance,use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5
 # (Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in.
 actions.cds+=/symbols_of_death,use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5
-actions.cds+=/flagellation,if=variable.snd_condition&!stealthed.mantle&(!runeforge.obedience|cooldown.symbols_of_death.up&combo_points>=5)
+actions.cds+=/flagellation,if=variable.snd_condition&!stealthed.mantle&(!runeforge.obedience|buff.symbols_of_death.up&combo_points>=5)
 actions.cds+=/vanish,if=(runeforge.mark_of_the_master_assassin&combo_points.deficit<=1-talent.deeper_strategem.enabled|runeforge.deathly_shadows&combo_points<1)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down
 # Pool for Tornado pre-SoD with ShD ready when not running SF.
 actions.cds+=/pool_resource,for_next=1,if=talent.shuriken_tornado.enabled&!talent.shadow_focus.enabled
 # Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally.
-actions.cds+=/shuriken_tornado,if=energy>=60&variable.snd_condition&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1&(!runeforge.obedience|debuff.flagellation.up)&combo_points<=2
+actions.cds+=/shuriken_tornado,if=energy>=60&variable.snd_condition&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1&(!runeforge.obedience|debuff.flagellation.up)&combo_points<=2&(!buff.premeditation.up|spell_targets.shuriken_storm>4)
 actions.cds+=/serrated_bone_spike,cycle_targets=1,if=variable.snd_condition&!dot.serrated_bone_spike_dot.ticking&target.time_to_die>=21|fight_remains<=5&spell_targets.shuriken_storm<3
 actions.cds+=/sepsis,if=variable.snd_condition&combo_points.deficit>=1
 # Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus.
-actions.cds+=/symbols_of_death,if=variable.snd_condition&(talent.enveloping_shadows.enabled|cooldown.shadow_dance.charges>=1)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)&(!runeforge.obedience|cooldown.flagellation.remains>20)
+actions.cds+=/symbols_of_death,if=variable.snd_condition&(talent.enveloping_shadows.enabled|cooldown.shadow_dance.charges>=1)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)&(!runeforge.obedience|cooldown.flagellation.remains>10|cooldown.flagellation.up&combo_points>=5)
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP.
 actions.cds+=/marked_for_death,line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)
 # If no adds will die within the next 30s, use MfD on boss without any CP.
@@ -99,8 +99,9 @@ actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration
 actions.cds+=/shadow_blades,if=variable.snd_condition&combo_points.deficit>=2&(cooldown.symbols_of_death.remains<1|buff.symbols_of_death.up|fight_remains<=20)
 actions.cds+=/echoing_reprimand,if=variable.snd_condition&combo_points.deficit>=2&(variable.use_priority_rotation|spell_targets.shuriken_storm<=4|runeforge.resounding_clarity)
 # With SF, if not already done, use Tornado with SoD up.
-actions.cds+=/shuriken_tornado,if=talent.shadow_focus.enabled&variable.snd_condition&buff.symbols_of_death.up&combo_points<=2
+actions.cds+=/shuriken_tornado,if=talent.shadow_focus.enabled&variable.snd_condition&buff.symbols_of_death.up&combo_points<=2&(!buff.premeditation.up|spell_targets.shuriken_storm>4)
 actions.cds+=/shadow_dance,if=!buff.shadow_dance.up&fight_remains<=8+talent.subterfuge.enabled
+actions.cds+=/fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)&energy.deficit>=30&!stealthed.all&buff.symbols_of_death.down
 actions.cds+=/potion,if=buff.bloodlust.react|fight_remains<30|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)
 actions.cds+=/blood_fury,if=buff.symbols_of_death.up
 actions.cds+=/berserking,if=buff.symbols_of_death.up
@@ -166,30 +167,30 @@ actions.stealthed+=/gloomblade,if=buff.perforated_veins.stack>=5&conduit.perfora
 actions.stealthed+=/shadowstrike
 actions.stealthed+=/cheap_shot,if=!target.is_boss&combo_points.deficit>=1&buff.shot_in_the_dark.up&energy.time_to_40>gcd.max
 
-head=umbrahide_helm,id=172317,bonus_id=6647/6650/6758/7124/1532/6935,gem_id=173127
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
-shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=corset_of_the_deft_duelist,id=182989,bonus_id=7187/1498,enchant=eternal_stats
-wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173127
-hands=bleakwing_assassins_grips,id=183007,bonus_id=7187/1498
-waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498/6935,gem_id=173127
-legs=fearless_challengers_leggings,id=178801,bonus_id=6536/1540/6646
-feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
-finger1=hyperlight_band,id=183038,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
-finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_critical_strike
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=celestial_guidance
-off_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=sinful_revelation
+head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187312
+neck=azurevenom_choker,id=180115,bonus_id=6536/1566/6646,gem_id=173127
+shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187315
+back=grimveiled_cape,id=173242,bonus_id=6716/7572/6647/6650/1559
+chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498,gem_id=187319,enchant=eternal_stats
+wrists=risen_monstrosity_cuffs,id=178741,bonus_id=6536/1566/6646,gem_id=173127
+hands=loyal_kvaldirs_handwraps,id=186295,bonus_id=6805/7187/1498,gem_id=187320
+waist=windrunners_baldric,id=186332,bonus_id=7187/1498,gem_id=173127
+legs=elite_aranakk_breeches,id=186331,bonus_id=6805/7187/1498
+feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187318,enchant=eternal_agility
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=ritual_commanders_ring,id=178781,bonus_id=6536/1566/6646,gem_id=173127,enchant=tenet_of_critical_strike
+trinket1=shadowgrasp_totem,id=179356,bonus_id=6536/1566/6646
+trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
+main_hand=edge_of_night,id=186398,bonus_id=7187/1498,enchant=celestial_guidance
+off_hand=edge_of_night,id=186398,bonus_id=7187/1498,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=228.75
-# gear_agility=883
-# gear_stamina=1511
+# gear_ilvl=255.69
+# gear_agility=1121
+# gear_stamina=2111
 # gear_attack_power=40
-# gear_crit_rating=700
-# gear_haste_rating=457
-# gear_mastery_rating=133
-# gear_versatility_rating=654
-# gear_armor=606
+# gear_crit_rating=1093
+# gear_haste_rating=355
+# gear_mastery_rating=50
+# gear_versatility_rating=564
+# gear_armor=719

@@ -6702,7 +6702,8 @@ void warrior_t::apl_fury()
     }
   }
 
-  default_list->add_action( "run_action_list,name=single_target" );
+  default_list->add_action( "call_action_list,name=aoe" );
+  default_list->add_action( "call_action_list,name=single_target" );
 
   movement->add_action( this, "Heroic Leap" );
 

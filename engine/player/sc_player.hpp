@@ -851,6 +851,14 @@ public:
   virtual void create_buffs();
   virtual void create_special_effects();
   virtual void init_special_effects();
+  /// Modify generic special effect initialization
+  ///
+  /// Intended to allow modifications to some aspects of the special effect (or buffs,
+  /// actions or callbacks it instantiates), including outright replacement.
+  ///
+  /// This method is called after generic special effect initialization occurs, but before
+  /// any proc objects (e.g., dbc_proc_callback_t-derived objects) are initialized.
+  virtual void init_special_effect( special_effect_t& effect );
   virtual void init_scaling();
   virtual void init_action_list() {}
   virtual void init_gains();
