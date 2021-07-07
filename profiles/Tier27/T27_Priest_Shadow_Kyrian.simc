@@ -161,13 +161,13 @@ feet=sandals_of_sacred_symmetry,id=186354,bonus_id=7187/1498
 finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498,gem_id=173130,enchant=tenet_of_mastery
 finger2=death_gods_signet,id=179355,bonus_id=6536/1566/6646,gem_id=173130,enchant=tenet_of_mastery
 trinket1=soulletting_ruby,id=178809,bonus_id=6536/1566/6646
-trinket2=tome_of_insight,id=186156,bonus_id=7697/6652/1505/6646
+trinket2=unbound_changeling,id=178708,bonus_id=6536/1566/6646
 main_hand=maledict_opus,id=186406,bonus_id=7187/1498,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=254.20
+# gear_ilvl=255.47
 # gear_stamina=2115
-# gear_intellect=1488
+# gear_intellect=1504
 # gear_crit_rating=236
 # gear_haste_rating=985
 # gear_mastery_rating=674
