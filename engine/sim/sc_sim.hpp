@@ -431,6 +431,9 @@ struct sim_t : private sc_thread_t
     double shredded_soul_pickup_chance = 1.0;
     /// Sets the average number of times per minute that the Valiant Strikes soulbind will attempt to heal a player.
     double valiant_strikes_heal_rate = 1.0;
+    /// Type stat gained from So'leah's Secret Technique
+    /// Buff type: "mastery", "haste", "crit", "versatility"
+    std::string soleahs_secret_technique_type = "haste";
   } shadowlands_opts;
 
   // Auras and De-Buffs

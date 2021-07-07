@@ -2592,6 +2592,73 @@ void ticking_sack_of_terror( special_effect_t& effect )
   new volatile_satchel_cb_t( effect );
 }
 
+// id=351927 hold stat amount
+// id=351952 buff
+// TODO: implement external buff to simulate being an ally
+void soleahs_secret_technique( special_effect_t& effect )
+{
+  // Assuming you don't actually use this trinket during combat but rather beforehand
+  effect.type = SPECIAL_EFFECT_EQUIP;
+
+  auto opt_str = effect.player->sim->shadowlands_opts.soleahs_secret_technique_type;
+  if ( util::str_compare_ci( opt_str, "none" ) )
+    return;
+
+  auto val = effect.player->find_spell( 351927 )->effectN( 1 ).average( effect.item );
+
+  buff_t* buff;
+
+  if ( util::str_compare_ci( opt_str, "haste" ) )
+  {
+    buff = buff_t::find( effect.player, "soleahs_secret_technique_haste" );
+    if ( !buff )
+    {
+      buff =
+          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_haste", effect.player->find_spell( 351952 ) )
+              ->add_stat( STAT_HASTE_RATING, val );
+    }
+  }
+  else if ( util::str_compare_ci( opt_str, "crit" ) )
+  {
+    buff = buff_t::find( effect.player, "soleahs_secret_technique_crit" );
+    if ( !buff )
+    {
+      buff =
+          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_crit", effect.player->find_spell( 351952 ) )
+              ->add_stat( STAT_CRIT_RATING, val );
+    }
+  }
+  else if ( util::str_compare_ci( opt_str, "versatility" ) )
+  {
+    buff = buff_t::find( effect.player, "soleahs_secret_technique_versatility" );
+    if ( !buff )
+    {
+      buff =
+          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_versatility", effect.player->find_spell( 351952 ) )
+              ->add_stat( STAT_VERSATILITY_RATING, val );
+    }
+  }
+  else if ( util::str_compare_ci( opt_str, "mastery" ) )
+  {
+    buff = buff_t::find( effect.player, "soleahs_secret_technique_mastery" );
+    if ( !buff )
+    {
+      buff =
+          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_mastery", effect.player->find_spell( 351952 ) )
+              ->add_stat( STAT_MASTERY_RATING, val );
+    }
+  }
+  else
+  {
+    buff = nullptr;
+  }
+
+  if ( buff )
+    effect.player->register_combat_begin( buff );
+  else
+    effect.player->sim->error( "Warning: Invalid type '{}' for So'leah's Secret Technique, ignoring.", opt_str );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -3446,6 +3513,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 355303, items::relic_of_the_frozen_wastes_use );
     unique_gear::register_special_effect( 355321, items::shadowed_orb_of_torment );
     unique_gear::register_special_effect( 351679, items::ticking_sack_of_terror );
+    unique_gear::register_special_effect( 351926, items::soleahs_secret_technique );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
