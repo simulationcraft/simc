@@ -6448,11 +6448,12 @@ double rogue_t::composite_damage_versatility() const
   {
     if ( buffs.flagellation->check() )
     {
-      cdv += buffs.flagellation->check_stack_value();
+      cdv += buffs.flagellation->check() * buffs.flagellation->data().effectN( 5 ).percent();
     }
     if ( buffs.flagellation_persist->check() )
     {
-      cdv += buffs.flagellation_persist->check_stack_value();
+      // Use the base buff effect since the persist default_value is passed from the base default_value
+      cdv += buffs.flagellation_persist->check() * buffs.flagellation->data().effectN( 5 ).percent();
     }
   }
 
@@ -8851,6 +8852,18 @@ public:
 
   void register_hotfixes() const override
   {
+    // Only need to change the base effect and not also 894305 since we re-use the base effect for the persist
+    hotfix::register_effect( "Rogue", "2021-07-08", "Obedience: Versatility granted reduced to 0.5% per stack of Flagellation (was 1% per stack).", 887338 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.5 )
+      .verification_value( 1 );
+
+    hotfix::register_effect( "Rogue", "2021-07-08", "Toxic Onslaught: Buff duration increased to 12 seconds (was 8 seconds).", 886894 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 12000 )
+      .verification_value( 8000 );
   }
 
   void init( player_t* ) const override {}
