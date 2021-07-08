@@ -962,9 +962,11 @@ struct secondary_action_trigger_t : public event_t
 // Rogue Action State
 // ==========================================================================
 
+template<typename T_ACTION>
 struct rogue_action_state_t : public action_state_t
 {
 private:
+  T_ACTION* action;
   int base_cp;
   int total_cp;
 
@@ -972,7 +974,9 @@ public:
   bool exsanguinated;
 
   rogue_action_state_t( action_t* action, player_t* target ) :
-    action_state_t( action, target ), base_cp( 0 ), total_cp( 0 ), exsanguinated( false )
+    action_state_t( action, target ),
+    action( dynamic_cast<T_ACTION*>( action ) ),
+    base_cp( 0 ), total_cp( 0 ), exsanguinated( false )
   {}
 
   void initialize() override
@@ -1010,6 +1014,16 @@ public:
       return base_cp;
 
     return total_cp;
+  }
+
+  proc_types2 cast_proc_type2() const override
+  {
+    if( action->secondary_trigger == TRIGGER_WEAPONMASTER )
+    {
+      return PROC2_CAST_DAMAGE;
+    }
+
+    return action_state_t::cast_proc_type2();
   }
 };
 
@@ -1206,11 +1220,11 @@ public:
 
   // Type Wrappers ============================================================
 
-  static const rogue_action_state_t* cast_state( const action_state_t* st )
-  { return debug_cast<const rogue_action_state_t*>( st ); }
+  static const rogue_action_state_t<base_t>* cast_state( const action_state_t* st )
+  { return debug_cast<const rogue_action_state_t<base_t>*>( st ); }
 
-  static rogue_action_state_t* cast_state( action_state_t* st )
-  { return debug_cast<rogue_action_state_t*>( st ); }
+  static rogue_action_state_t<base_t>* cast_state( action_state_t* st )
+  { return debug_cast<rogue_action_state_t<base_t>*>( st ); }
 
   rogue_t* p()
   { return debug_cast<rogue_t*>( ab::player ); }
@@ -1285,7 +1299,7 @@ public:
 
   action_state_t* new_state() override
   {
-    return new rogue_action_state_t( this, ab::target );
+    return new rogue_action_state_t<base_t>( this, ab::target );
   }
 
   void snapshot_internal( action_state_t* state, unsigned flags, result_amount_type rt ) override
@@ -2445,7 +2459,7 @@ struct between_the_eyes_t : public rogue_attack_t
     trigger_restless_blades( execute_state );
     trigger_grand_melee( execute_state );
 
-    const rogue_action_state_t* rs = cast_state( execute_state );
+    const auto rs = cast_state( execute_state );
     if ( result_is_hit( execute_state->result ) )
     {
       // There is nothing about the debuff duration in spell data, so we have to hardcode the 3s base.
@@ -2598,12 +2612,11 @@ struct crimson_tempest_t : public rogue_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    const rogue_action_state_t* state = cast_state( s );
-
-    timespan_t duration = data().duration() * ( 1 + state->get_combo_points() );
-    if ( state -> exsanguinated )
+    const auto rs = cast_state( s );
+    timespan_t duration = data().duration() * ( 1 + rs->get_combo_points() );
+    if ( rs->exsanguinated )
     {
-      duration *= 1.0 / ( 1.0 + p() -> talent.exsanguinate -> effectN( 1 ).percent() );
+      duration *= 1.0 / ( 1.0 + p()->talent.exsanguinate->effectN( 1 ).percent() );
     }
 
     return duration;
@@ -2875,9 +2888,9 @@ struct garrote_t : public rogue_attack_t
   {
     timespan_t duration = rogue_attack_t::composite_dot_duration( s );
 
-    if ( cast_state( s ) -> exsanguinated )
+    if ( cast_state( s )->exsanguinated )
     {
-      duration *= 1.0 / ( 1.0 + p() -> talent.exsanguinate -> effectN( 1 ).percent() );
+      duration *= 1.0 / ( 1.0 + p()->talent.exsanguinate->effectN( 1 ).percent() );
     }
 
     return duration;
@@ -3377,10 +3390,9 @@ struct rupture_t : public rogue_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    const rogue_action_state_t* state = cast_state( s );
-
-    timespan_t duration = data().duration() * ( 1 + state->get_combo_points() );
-    if ( state -> exsanguinated )
+    const auto rs = cast_state( s );
+    timespan_t duration = data().duration() * ( 1 + rs->get_combo_points() );
+    if ( rs->exsanguinated )
     {
       duration *= 1.0 / ( 1.0 + p() -> talent.exsanguinate -> effectN( 1 ).percent() );
     }
@@ -5680,8 +5692,8 @@ void actions::rogue_action_t<Base>::trigger_poison_bomb( const action_state_t* s
     return;
 
   // They put 25 as value in spell data and divide it by 10 later, it's due to the int restriction.
-  const actions::rogue_action_state_t* s = cast_state( state );
-  if ( p()->rng().roll( p()->talent.poison_bomb->effectN( 1 ).percent() / 10 * s->get_combo_points() ) )
+  const auto rs = cast_state( state );
+  if ( p()->rng().roll( p()->talent.poison_bomb->effectN( 1 ).percent() / 10 * rs->get_combo_points() ) )
   {
     make_event<ground_aoe_event_t>( *p()->sim, p(), ground_aoe_params_t()
       .target( state->target )
@@ -5857,7 +5869,7 @@ void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* 
   p()->sim->print_debug( "{} procs weaponmaster for {}", *p(), *this );
 
   // Direct damage re-computes on execute
-  action->trigger_secondary_action( state->target, cast_state( state )->get_combo_points() );
+  action->trigger_secondary_action( state->target, cast_state( state )->get_combo_points(), 100_ms );
 }
 
 template <typename Base>
@@ -6022,7 +6034,7 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   // Remove Echoing Reprimand Buffs
   if ( p()->covenant.echoing_reprimand->ok() && consumes_echoing_reprimand() )
   {
-    const rogue_action_state_t* rs = cast_state( state );
+    const auto rs = cast_state( state );
     int base_cp = rs->get_combo_points( true );
     if ( rs->get_combo_points() > base_cp )
     {
