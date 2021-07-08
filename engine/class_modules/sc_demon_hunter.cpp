@@ -6826,6 +6826,18 @@ public:
       .modifier( 2.75 )
       .verification_value( 2.3375 );
     */
+
+    hotfix::register_effect( "Demon Hunter", "2021-07-08", "Blazing Slaughter: Now grants 4% agility per target struck (was 3%).", 889349 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 4 )
+      .verification_value( 3 );
+
+    hotfix::register_effect( "Demon Hunter", "2021-07-08", "Agony Gaze: Extends the duration of Sinful Brand by 0.75 seconds (was 0.5 seconds).", 889342 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 750 )
+      .verification_value( 500 );
   }
 
   void combat_begin( sim_t* ) const override
