@@ -6969,9 +6969,7 @@ void monk_t::bonedust_brew_assessor( action_state_t* s )
 
   // Don't trigger from Bonedust Brew damage
   // Don't trigger from Bonedust Brew heal
-  // Don't trigger from Empowered Tiger Lightning
-  if ( s->result_amount <= 0 || s->action->id == 325217 
-      || s->action->id == 325218 || s->action->id == 335913 )
+  if ( s->result_amount <= 0 || s->action->id == 325217 || s->action->id == 325218 )
     return;
 
   trigger_bonedust_brew( s );
@@ -8044,9 +8042,16 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t* s )
 {
   if ( spec.invoke_xuen_2->ok() )
   {
+    if ( !s->action->harmful )
+      return;
+
     // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself (335913)
     // Touch of Karma (id = 124280) does not contribute to Empowered Tiger Lightning
-    if ( ( buff.invoke_xuen->check() || buff.invoke_xuen_call_to_arms->check() ) && s->result_amount > 0 && s->action->id != 335913 && s->action->id != 124280 )
+    // Bonedust Brew (id = 325217) does not contribute to Empowered Tiger Lightning
+    if ( s->result_amount <= 0 || s->action->id == 335913 || s->action->id == 124280 || s->action->id == 325217 )
+      return;
+
+    if ( buff.invoke_xuen->check() || buff.invoke_xuen_call_to_arms->check() )
     {
       auto td = get_target_data( s->target );
 
