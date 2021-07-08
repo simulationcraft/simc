@@ -1224,7 +1224,9 @@ void infinitely_divisible_ooze( special_effect_t& effect )
     frothing_pustule_pet_t( const special_effect_t& e ) :
       pet_t( e.player->sim, e.player, "frothing_pustule", true, true ),
       effect( e )
-    {}
+    {
+      npc_id = 175519;
+    }
 
     void init_base_stats() override
     {
@@ -1241,7 +1243,7 @@ void infinitely_divisible_ooze( special_effect_t& effect )
              effect.player->specialization() == MONK_MISTWEAVER )
         {
           monk::monk_t* monk_player = static_cast<monk::monk_t*>( owner );
-          if ( monk_player->get_target_data( s->target )->debuff.bonedust_brew->up() )
+          if ( !owner->bugs && monk_player->get_target_data( s->target )->debuff.bonedust_brew->up() )
             monk_player->bonedust_brew_assessor( s );
         }
         return assessor::CONTINUE;
@@ -1676,7 +1678,7 @@ void shadowgrasp_totem( special_effect_t& effect )
              effect.player->specialization() == MONK_MISTWEAVER  )
         {
           monk::monk_t* monk_player = static_cast<monk::monk_t*>( owner );
-          if ( monk_player->get_target_data( s->target )->debuff.bonedust_brew->up() )
+          if ( !owner->bugs && monk_player->get_target_data( s->target )->debuff.bonedust_brew->up() )
             monk_player->bonedust_brew_assessor( s );
         }
         return assessor::CONTINUE;

@@ -468,6 +468,9 @@ public:
     }
 
     p()->trigger_empowered_tiger_lightning( s );
+
+    if ( p()->bugs && td( s->target )->debuff.bonedust_brew->up() )
+      p()->bonedust_brew_assessor( s );
   }
 
   void trigger_storm_earth_and_fire( const action_t* a )
@@ -6755,7 +6758,7 @@ void monk_t::init_assessors()
   base_t::init_assessors();
 
   auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ) {
-    if ( get_target_data( s->target )->debuff.bonedust_brew->up() )
+    if ( !bugs && get_target_data( s->target )->debuff.bonedust_brew->up() )
         bonedust_brew_assessor( s );
     return assessor::CONTINUE;
   };
@@ -6966,7 +6969,9 @@ void monk_t::bonedust_brew_assessor( action_state_t* s )
 
   // Don't trigger from Bonedust Brew damage
   // Don't trigger from Bonedust Brew heal
-  if ( s->result_amount <= 0 || s->action->id == 325217 || s->action->id == 325218 )
+  // Don't trigger from Empowered Tiger Lightning
+  if ( s->result_amount <= 0 || s->action->id == 325217 
+      || s->action->id == 325218 || s->action->id == 335913 )
     return;
 
   trigger_bonedust_brew( s );
