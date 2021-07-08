@@ -1243,8 +1243,8 @@ void warlock_t::create_apl_demonology()
   cov->add_action( "soul_rot,if=soulbind.grove_invigoration&(cooldown.summon_demonic_tyrant.remains_expected<20|cooldown.summon_demonic_tyrant.remains_expected>30)" );
   cov->add_action( "soul_rot,if=soulbind.field_of_blossoms&pet.demonic_tyrant.active" );
   cov->add_action( "soul_rot,if=soulbind.wild_hunt_tactics" );
-  cov->add_action( "decimating_bolt,if=soulbind.lead_by_example&(pet.demonic_tyrant.active&soul_shard<2|cooldown.summon_demonic_tyrant.remains_expected>40)" );
-  cov->add_action( "decimating_bolt,if=!soulbind.lead_by_example&!pet.demonic_tyrant.active" );
+  cov->add_action( "decimating_bolt,if=(soulbind.lead_by_example|soulbind.kevins_oozeling)&(pet.demonic_tyrant.active&soul_shard<2|cooldown.summon_demonic_tyrant.remains_expected>40)" );
+  cov->add_action( "decimating_bolt,if=(soulbind.forgeborne_reveries|(soulbind.volatile_solvent&!soulbind.kevins_oozeling))&!pet.demonic_tyrant.active" );
   cov->add_action( "fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_solvent_humanoid.up" );
   cov->add_action( "scouring_tithe,if=soulbind.combat_meditation&pet.demonic_tyrant.active" );
   cov->add_action( "scouring_tithe,if=!soulbind.combat_meditation" );
