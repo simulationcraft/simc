@@ -2576,16 +2576,24 @@ void ticking_sack_of_terror( special_effect_t& effect )
       dbc_proc_callback_t::execute( a, s );
 
       actor_target_data_t* td = a->player->get_target_data( s->target );
+
+      // Damage is dealt when the debuff falls off *or* reaches max stacks, whichever comes first
+      // This needs to be handled via a stack_change_callback, but can't be set in register_target_data_initializer
+      if ( !td->debuff.volatile_satchel->stack_change_callback )
+      {
+        td->debuff.volatile_satchel->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
+          if ( new_ == 0 )
+          {
+            damage->set_target( b->player );
+            damage->execute();
+          }
+        } );
+      }
+
       if ( td->debuff.volatile_satchel->at_max_stacks() )
-      {
         td->debuff.volatile_satchel->expire();
-        damage->set_target( s->target );
-        damage->execute();
-      }
       else
-      {
         td->debuff.volatile_satchel->trigger();
-      }
     }
   };
 
