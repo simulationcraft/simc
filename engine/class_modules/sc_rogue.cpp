@@ -1697,13 +1697,10 @@ public:
       if ( p()->legendary.toxic_onslaught->ok() )
       {
         // 2021-04-22 - Appears to select randomly from the three cooldowns, not spec-specific
-        // TOCHECK: Currently on PTR does not extend but straight overrides the duration
+        // 2021-07-09: Extends duration now instead of overriding it in case of the existing cooldown proccing.
         const timespan_t trigger_duration = p()->legendary.toxic_onslaught->effectN( 1 ).time_value();
         std::vector<buff_t*> buffs = { p()->get_target_data( ab::target )->debuffs.vendetta, p()->buffs.adrenaline_rush, p()->buffs.shadow_blades };
-        if ( p()->bugs )
-          buffs[ p()->sim->rng().range( buffs.size() ) ]->trigger( trigger_duration );
-        else
-          buffs[ p()->sim->rng().range( buffs.size() ) ]->extend_duration_or_trigger( trigger_duration );
+        buffs[ p()->sim->rng().range( buffs.size() ) ]->extend_duration_or_trigger( trigger_duration );
       }
     }
 
