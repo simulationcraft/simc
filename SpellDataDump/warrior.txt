@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39318 Live (hotfix 2021-07-06/39318, git build shadowlands 73ed98fe71)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-08/39335, no-networking)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -1448,7 +1448,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=48506)    : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
                    Base Value: 15 | Scaled Value: 5.795453 (coefficient=0.340909) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
-Hotfixed         : Unknown(28) (-7 -> -1)
 Description      : Increases your Versatility by $s1.
 
 Name             : Heroic Throw (id=57755) [Spell Family (4)] 
@@ -9960,7 +9959,6 @@ $areaDmg=${4*$326062s1}
 $period=${3}
 
 Name             : Ancient Aftershock (id=326062) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Nature
 Spell Type       : Magic

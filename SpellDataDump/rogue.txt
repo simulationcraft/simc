@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39318 Live (hotfix 2021-07-06/39318, git build shadowlands 73ed98fe71)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-08/39335, no-networking)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -931,7 +931,6 @@ Description      : Coats your weapons with a Non-Lethal Poison that lasts for $d
 Tooltip          : Each strike has a chance of poisoning the enemy, slowing their attack and spellcasting by $5760s1% for $5760d.
 
 Name             : Shiv (id=5938) [Spell Family (8)] 
-Hotfixed         : Description
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -1913,7 +1912,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=48506)    : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
                    Base Value: 15 | Scaled Value: 5.795453 (coefficient=0.340909) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
-Hotfixed         : Unknown(28) (-7 -> -1)
 Description      : Increases your Versatility by $s1.
 
 Name             : Detection (id=56814) [Spell Family (8)] 
@@ -3765,12 +3763,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Shiv (5938), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Echoing Reprimand (354838)
                    Family Flags: 29, 82
-Hotfixed         : Affects Spells
 #4 (id=370530)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shiv (5938), Ambush (8676), Pistol Shot (185763), Sinister Strike (193315), Sinister Strike (197834), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Sinister Strike (341541), Echoing Reprimand (354838)
                    Family Flags: 9, 29, 82, 98, 101, 115, 118
-Hotfixed         : Affects Spells
 #5 (id=875455)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Serrated Bone Spike (324073), Serrated Bone Spike (324074), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547)

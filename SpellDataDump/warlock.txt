@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39318 Live (hotfix 2021-07-06/39318, git build shadowlands 73ed98fe71)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-08/39335, no-networking)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -1854,7 +1854,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=48506)    : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
                    Base Value: 15 | Scaled Value: 5.795453 (coefficient=0.340909) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
-Hotfixed         : Unknown(28) (-7 -> -1)
 Description      : Increases your Versatility by $s1.
 
 Name             : Glyph of Felguard (desc=Demonology) (id=56246) [Spell Family (5), Passive, Hidden] 
@@ -2161,7 +2160,6 @@ Description      : Your spells deal ${$s1/2}.1% increased damage, plus a random 
 You take ${$s2/3}.1% reduced damage, plus a random amount of up to ${$s2/3}.1% additional reduced damage.
 
 Name             : Havoc (id=80240) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Destruction Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -2217,7 +2215,6 @@ Effects          :
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage. Deals $s2% additional damage to targets below 20% health.
 
 Name             : Hand of Gul'dan (id=86040) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
@@ -4136,7 +4133,6 @@ Effects          :
 Description      : Demonic Empowerment also causes your next Shadow Bolt to be Instant.
 
 Name             : Implosion (id=196277) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Demonology Warlock
 School           : Shadowflame
 Spell Type       : Magic

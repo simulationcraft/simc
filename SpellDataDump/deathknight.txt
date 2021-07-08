@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39318 Live (hotfix 2021-07-06/39318, git build shadowlands 73ed98fe71)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-08/39335, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1710,7 +1710,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=48506)    : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
                    Base Value: 15 | Scaled Value: 5.795453 (coefficient=0.340909) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
-Hotfixed         : Unknown(28) (-7 -> -1)
 Description      : Increases your Versatility by $s1.
 
 Name             : Dark Command (id=56222) [Spell Family (15)] 
@@ -3765,12 +3764,10 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
-Hotfixed         : PvP Coefficient (0.45 -> 0)
 #5 (id=191157)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
-Hotfixed         : PvP Coefficient (0.45 -> 0)
 #6 (id=260767)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: 47 | Scaled Value: 47 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
@@ -5033,7 +5030,6 @@ Effects          :
                    Base Value: 13 | Scaled Value: 13 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
-Hotfixed         : PvP Coefficient (1 -> 0)
 #12 (id=875415)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Elemental Blast (117014)
@@ -5331,7 +5327,6 @@ Effects          :
                    Family Flags: 49
 
 Name             : Anti-Magic Zone (desc=PvP Talent) (id=145629) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
