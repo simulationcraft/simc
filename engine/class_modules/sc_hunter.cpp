@@ -2564,11 +2564,40 @@ struct single_target_event_t final : public event_t
   }
 };
 
+struct explosive_shot_munitions_t final : hunter_ranged_attack_t
+{
+  explosive_shot_munitions_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->find_spell( 212680 ) )
+  { }
+};
+
+struct explosive_shot_event_t final : public event_t
+{
+  explosive_shot_munitions_t& explosive;
+  player_t* target;
+
+  explosive_shot_event_t( explosive_shot_munitions_t& explosive, player_t* target, timespan_t t )
+    : event_t( *explosive.player->sim, t ), explosive( explosive ), target( target )
+  { }
+
+  const char* name() const override
+  {
+    return "Hunter-DeathChakram-Explosive";
+  }
+
+  void execute() override
+  {
+    explosive.set_target( target );
+    explosive.execute();
+  }
+};
+
 } // namespace death_chakram
 
 struct death_chakram_t : death_chakram::base_t
 {
   death_chakram::single_target_t* single_target;
+  death_chakram::explosive_shot_munitions_t* explosive = nullptr;
+  timespan_t explosive_delay = 0_ms;
 
   death_chakram_t( hunter_t* p, util::string_view options_str ):
     death_chakram::base_t( "death_chakram", p, p -> covenants.death_chakram ),
@@ -2578,6 +2607,13 @@ struct death_chakram_t : death_chakram::base_t
 
     radius = 8; // Tested on 2020-08-11
     aoe = data().effectN( 1 ).chain_target();
+
+    if ( p -> legendary.bag_of_munitions.ok() )
+    {
+      explosive = p->get_background_action<death_chakram::explosive_shot_munitions_t>( "explosive_shot_munitions" );
+      explosive_delay = p -> find_spell( 212431 ) -> duration();
+      add_child( explosive );
+    }
   }
 
   void init() override
@@ -2599,6 +2635,11 @@ struct death_chakram_t : death_chakram::base_t
     {
       // Hit only a single target, schedule the repeating single target hitter
       make_event<single_target_event_t>( *sim, *single_target, s -> target, ST_FIRST_HIT_DELAY );
+    }
+
+    if ( p()->legendary.bag_of_munitions.ok() && s->chain_target < p()->legendary.bag_of_munitions->effectN( 1 ).base_value() )
+    {
+      make_event<explosive_shot_event_t>( *sim, *explosive, s->target, explosive_delay );
     }
   }
 
