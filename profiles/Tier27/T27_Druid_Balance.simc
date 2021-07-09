@@ -54,7 +54,7 @@ actions+=/variable,name=is_cleave,value=spell_targets.starfire>1
 # Use Berserking with CA/Inc or after Convoke in CA/Inc
 actions+=/berserking,if=(!covenant.night_fae|!cooldown.convoke_the_spirits.up)&buff.ca_inc.remains>15&buff.ravenous_frenzy.remains<4&!covenant.venthyr|covenant.venthyr&buff.ca_inc.up&buff.ravenous_frenzy.up&(buff.ravenous_frenzy.remains<11-5*runeforge.sinful_hysteria|buff.ca_inc.remains<11|1%spell_haste<1.55)
 # Pot with a CA/Inc that isn't a Pulsar proc or when the fight is about to end
-actions+=/potion,if=buff.ca_inc.remains>15&(!runeforge.sinful_hysteria|buff.ravenous_frenzy.remains<17&buff.ravenous_frenzy.up)|fight_remains<25
+actions+=/potion,if=buff.ca_inc.remains>15&(!runeforge.sinful_hysteria|buff.ravenous_frenzy.remains<17-2*buff.bloodlust.up&buff.ravenous_frenzy.up)|fight_remains<25
 # Calculates whether using Convoke now will allow you to still cast the same amount of Convoke+CA/Inc casts
 actions+=/variable,name=convoke_desync,value=ceil((fight_remains-15-cooldown.ca_inc.remains)%180)=ceil((fight_remains-15-120-cooldown.convoke_the_spirits.remains)%180)&!raid_event.adds.exists|cooldown.ca_inc.remains>interpolated_fight_remains|cooldown.convoke_the_spirits.remains>interpolated_fight_remains-10|!covenant.night_fae
 # Used to delay the usage of CA/Inc when using double on use and prevent usage when an add event is about to die
