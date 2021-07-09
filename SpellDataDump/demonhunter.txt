@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-08/39335, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-09/39335, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -10015,7 +10015,7 @@ Effects          :
                    Affected Spells: Sinful Brand (317009)
                    Family Flags: 83
 #2 (id=889342)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 750 | Scaled Value: 750 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Sinful Brand deals $s1% increased damage and $?c1[Eye Beam][Fel Devastation] damage increases the duration of Sinful Brand by ${$s2/1000}.1 sec.
 
 Name             : Blazing Slaughter (id=355890) [Spell Family (107), Passive, Hidden] 
@@ -10055,7 +10055,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Cannot crit (93)
 Effects          :
 #1 (id=889349)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : $@spelldesc355890
 Tooltip          : Agility increased by $s1%.
 
