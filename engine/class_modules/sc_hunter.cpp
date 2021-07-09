@@ -6804,6 +6804,17 @@ struct hunter_module_t: public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Hunter", "2021-07-08", "Night Fae - Fragments of the Elder Antlers: Proc chance increased to 100% when fewer than 5 targets are hit.", 890210 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 100 )
+        .verification_value( 35 );
+
+    hotfix::register_effect( "Hunter", "2021-07-08", "Venthyr - Pouch of Razor Fragments: Bleed increased to 60% (was 35%), and radius increased to 12 yards (was 8 yards).", 890585 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 60 )
+        .verification_value( 35 );
   }
 
   void combat_begin( sim_t* ) const override {}
