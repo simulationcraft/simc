@@ -1307,6 +1307,8 @@ class SpellDataGenerator(DataGenerator):
          355912, 357409,
          # Volatile Detonation (Ticking Sack of Terror)
          351694,
+         # Reactive Defense Matrix (Trinket damage)
+         356857,
          # Withering Fire (Dark Ranger's Quiver)
          353515,
          # Preternatural Charge (Yasahm the Riftbreaker)
