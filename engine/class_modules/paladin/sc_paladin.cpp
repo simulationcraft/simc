@@ -1731,7 +1731,7 @@ struct blessing_of_autumn_t : public buff_t
     set_cooldown( 0_ms );
     set_default_value_from_effect( 1 );
 
-    set_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
+    set_stack_change_callback( [ this ]( buff_t* b, int /* old */, int new_ ) {
       if ( !affected_actions_initialized )
       {
         int label = data().effectN( 1 ).misc_value1();
@@ -1764,26 +1764,20 @@ struct blessing_of_autumn_t : public buff_t
     bool has_legendary = pal->legendary.seasons_of_plenty->ok();
 
     double recharge_rate_multiplier = 1.0 / ( 1 + b->default_value );
-    double equinox_recharge_rate_multiplier = 1.0;
-    if ( has_legendary )
+    if ( is_equinox )
     {
-      equinox_recharge_rate_multiplier = 1.0 / ( 1 + b->default_value * ( 1.0 + pal->buffs.equinox->data().effectN( 2 ).percent() ) );
+      assert( has_legendary );
+      recharge_rate_multiplier = 1.0 / ( 1 + b->default_value * ( 1.0 + pal->buffs.equinox->data().effectN( 2 ).percent() ) );
     }
     for ( auto a : affected_actions )
     {
       if ( new_ > 0 )
       {
-        if ( is_equinox )
-          a->base_recharge_rate_multiplier *= equinox_recharge_rate_multiplier;
-        else
-          a->base_recharge_rate_multiplier *= recharge_rate_multiplier;
+        a->base_recharge_rate_multiplier *= recharge_rate_multiplier;
       }
       else
       {
-        if ( is_equinox )
-          a->base_recharge_rate_multiplier /= equinox_recharge_rate_multiplier;
-        else
-          a->base_recharge_rate_multiplier /= recharge_rate_multiplier;
+        a->base_recharge_rate_multiplier /= recharge_rate_multiplier;
       }
       if ( a->cooldown->action == a )
         a->cooldown->adjust_recharge_multiplier();
@@ -2238,7 +2232,7 @@ void paladin_t::create_buffs()
               this->active.divine_resonance->schedule_execute();
           } );
   buffs.equinox = make_buff( this, "equinox", find_spell( 355567 ) )
-          ->set_stack_change_callback( [ this ]( buff_t* b, int old, int new_) {
+          ->set_stack_change_callback( [ this ]( buff_t* b, int /* old */, int new_) {
               // TODO: make this work on other players
               if ( b->player != this )
                 return;
@@ -2247,6 +2241,8 @@ void paladin_t::create_buffs()
 
               if ( blessing->check() )
               {
+                // we basically fake expire the previous stacks
+                // this helps avoid cumulative floating point errors vs doing the relative computation here
                 if ( new_ == 1 )
                 {
                   blessing->update_cooldowns(
