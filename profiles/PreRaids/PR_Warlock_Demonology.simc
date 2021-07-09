@@ -82,8 +82,8 @@ actions.5y_per_sec_trinkets+=/use_item,name=empyreal_ordnance,if=cooldown.summon
 actions.covenant_ability=soul_rot,if=soulbind.grove_invigoration&(cooldown.summon_demonic_tyrant.remains_expected<20|cooldown.summon_demonic_tyrant.remains_expected>30)
 actions.covenant_ability+=/soul_rot,if=soulbind.field_of_blossoms&pet.demonic_tyrant.active
 actions.covenant_ability+=/soul_rot,if=soulbind.wild_hunt_tactics
-actions.covenant_ability+=/decimating_bolt,if=soulbind.lead_by_example&(pet.demonic_tyrant.active&soul_shard<2|cooldown.summon_demonic_tyrant.remains_expected>40)
-actions.covenant_ability+=/decimating_bolt,if=!soulbind.lead_by_example&!pet.demonic_tyrant.active
+actions.covenant_ability+=/decimating_bolt,if=(soulbind.lead_by_example|soulbind.kevins_oozeling)&(pet.demonic_tyrant.active&soul_shard<2|cooldown.summon_demonic_tyrant.remains_expected>40)
+actions.covenant_ability+=/decimating_bolt,if=(soulbind.forgeborne_reveries|(soulbind.volatile_solvent&!soulbind.kevins_oozeling))&!pet.demonic_tyrant.active
 actions.covenant_ability+=/fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_solvent_humanoid.up
 actions.covenant_ability+=/scouring_tithe,if=soulbind.combat_meditation&pet.demonic_tyrant.active
 actions.covenant_ability+=/scouring_tithe,if=!soulbind.combat_meditation

@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39318 Live (hotfix 2021-07-06/39318, git build shadowlands 73ed98fe71)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-09/39335, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -175,7 +175,6 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=806786)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Period (3000 -> 2000)
 #2 (id=827727)   : Apply Aura (6) | Trigger Spell Based on Health% (468)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 332841 | Target: Self (1)
 Description      : While you are above $s1% health you gain $332842s1% $pri every $t1 sec, stacking up to $332842u times. If you fall below $s2% health, this effect is lost.
@@ -197,7 +196,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=806791)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 20), PvP Coefficient (1 -> 0.5)
 Description      : Door of Shadows grants you a shield that absorbs damage equal to $s1% of your maximum health. Lasts $321012d.
 Variables        : $absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}
 
@@ -275,7 +273,6 @@ Effects          :
 Description      : Soulshape's cooldown is reduced by ${$s3/-1000} sec, and defeating an enemy reduces Soulshape's cooldown by ${$321467s1/-1000} sec.
 
 Name             : Niya's Tools: Burrs (id=320659) [Passive, Hidden] 
-Hotfixed         : Variables
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -422,7 +419,6 @@ Tooltip          : $spelldesc322721
 Variables        : $mod=$?a137005[${0.25}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${0.75}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}][${1}]
 
 Name             : Volatile Solvent (id=323074) [Passive, Hidden] 
-Hotfixed         : Description
 Covenant         : Necrolord
 Covenant         : Necrolord
 School           : Shadow
@@ -1264,7 +1260,6 @@ Effects          :
 Description      : Phial of Serenity heals you for $s1% additional health, but all of its healing is done over $330749d.
 
 Name             : Pointed Courage (id=329778) [Passive, Hidden] 
-Hotfixed         : Description
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1508,19 +1503,14 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=825881)   : Apply Aura (6) | Modify Mechanic Duration% (234)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 26 | Target: Self (1)
-Hotfixed         : Base Value (-20 -> -15)
 #2 (id=826368)   : Apply Aura (6) | Modify Mechanic Duration% (234)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 27 | Target: Self (1)
-Hotfixed         : Base Value (-20 -> -15)
 #3 (id=826369)   : Apply Aura (6) | Modify Mechanic Duration% (234)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-Hotfixed         : Base Value (-20 -> -15)
 #4 (id=826370)   : Apply Aura (6) | Modify Mechanic Duration% (234)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-Hotfixed         : Base Value (-20 -> -15)
 #5 (id=826371)   : Apply Aura (6) | Modify Mechanic Duration% (234)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
-Hotfixed         : Base Value (-20 -> -15)
 Description      : The duration of incoming interrupt, snare, and root effects are reduced by $s1%.
 
 Name             : Dauntless Duelist (id=331584) [Passive, Hidden] 
@@ -2215,7 +2205,6 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=881162)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 16 | Scaled Value: 16 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 16), PvP Coefficient (1 -> 0.5)
 #2 (id=882425)   : Apply Aura (6) | Dummy (4)
                    Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : While above $s2% health, you gain a shield that absorbs $<shield> magic damage for $351921d. This effect may only occur once every $351922d.
@@ -2457,7 +2446,6 @@ Description      : When struck by a snare, you drop a puddle that lasts for $352
 May only occur once every $proccooldown sec.
 
 Name             : Undulating Maneuvers (id=352109) [Passive, Hidden] 
-Hotfixed         : Category (47 -> 0), Spell Type (0 -> 2)
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : Melee
@@ -2551,7 +2539,6 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=882932)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : Base Value (8 -> 6), PvP Coefficient (1 -> 0.5)
 Description      : After taking Physical or Magic damage, gain a shield that absorbs damage equal to $s1% of your maximum Health for $352789d.
 
 Each incoming damage type may trigger this effect once per $352791d.
@@ -2803,7 +2790,6 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=884057)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 20), PvP Coefficient (1 -> 0.5)
 #2 (id=885276)   : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When you take damage below $s2% health, you gain a shield for $s1% of your maximum health for $353477d.

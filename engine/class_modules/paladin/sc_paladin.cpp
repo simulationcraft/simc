@@ -1724,15 +1724,14 @@ struct blessing_of_autumn_t : public buff_t
 {
   bool affected_actions_initialized;
   std::vector<action_t*> affected_actions;
-  double last_multiplier;
 
   blessing_of_autumn_t( player_t* p )
-    : buff_t( p, "blessing_of_autumn", p->find_spell( 328622 ) ), affected_actions_initialized( false ), last_multiplier( 1.0 )
+    : buff_t( p, "blessing_of_autumn", p->find_spell( 328622 ) ), affected_actions_initialized( false )
   {
     set_cooldown( 0_ms );
     set_default_value_from_effect( 1 );
 
-    set_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
+    set_stack_change_callback( [ this ]( buff_t* b, int /* old */, int new_ ) {
       if ( !affected_actions_initialized )
       {
         int label = data().effectN( 1 ).misc_value1();
@@ -1751,52 +1750,52 @@ struct blessing_of_autumn_t : public buff_t
         affected_actions_initialized = true;
       }
 
-      if ( new_ == 1 && old == 0 )
-        last_multiplier = 1.0;
-
       update_cooldowns( b, new_ );
     } );
   }
 
   void update_cooldowns( buff_t* b, int new_, bool is_equinox=false ) {
+
+    assert( affected_actions_initialized );
+
+
     paladin_t* pal = debug_cast<paladin_t*>( source );
 
+    bool has_legendary = pal->legendary.seasons_of_plenty->ok();
+
     double recharge_rate_multiplier = 1.0 / ( 1 + b->default_value );
-    if ( is_equinox ) {
+    if ( is_equinox )
+    {
+      assert( has_legendary );
       recharge_rate_multiplier = 1.0 / ( 1 + b->default_value * ( 1.0 + pal->buffs.equinox->data().effectN( 2 ).percent() ) );
-
-      if ( new_ == 1 )
-      {
-        for ( auto a : affected_actions )
-        {
-          a->base_recharge_multiplier /= last_multiplier;
-          a->base_recharge_multiplier *= recharge_rate_multiplier;
-          if ( a->cooldown->action == a )
-            a->cooldown->adjust_recharge_multiplier();
-          if ( a->internal_cooldown->action == a )
-            a->internal_cooldown->adjust_recharge_multiplier();
-        }
-
-        last_multiplier = recharge_rate_multiplier;
-      }
-    } else {
-      for ( auto a : affected_actions )
-      {
-        if ( new_ == 1 )
-          a->base_recharge_rate_multiplier *= recharge_rate_multiplier;
-        else
-          a->base_recharge_rate_multiplier /= last_multiplier;
-        if ( a->cooldown->action == a )
-          a->cooldown->adjust_recharge_multiplier();
-        if ( a->internal_cooldown->action == a )
-          a->internal_cooldown->adjust_recharge_multiplier();
-      }
-
-      if ( new_ == 1 )
-        last_multiplier = recharge_rate_multiplier;
-      else
-        last_multiplier = 1.0;
     }
+    for ( auto a : affected_actions )
+    {
+      if ( new_ > 0 )
+      {
+        a->base_recharge_rate_multiplier *= recharge_rate_multiplier;
+      }
+      else
+      {
+        a->base_recharge_rate_multiplier /= recharge_rate_multiplier;
+      }
+      if ( a->cooldown->action == a )
+        a->cooldown->adjust_recharge_multiplier();
+      if ( a->internal_cooldown->action == a )
+        a->internal_cooldown->adjust_recharge_multiplier();
+    }
+  }
+
+  void expire( timespan_t delay ) override
+  {
+    if ( source )
+    {
+      paladin_t* pal = dynamic_cast<paladin_t*>( source );
+      if ( pal )
+        pal->buffs.equinox->expire( delay );
+    }
+
+    buff_t::expire( delay );
   }
 };
 
@@ -2237,17 +2236,39 @@ void paladin_t::create_buffs()
               // TODO: make this work on other players
               if ( b->player != this )
                 return;
-              if ( new_ != 1 )
-                return;
 
               buffs::blessing_of_autumn_t* blessing = debug_cast<buffs::blessing_of_autumn_t*>( b->player->buffs.blessing_of_autumn );
 
-              if ( blessing->check() ) {
-                blessing->update_cooldowns(
-                  blessing,
-                  blessing->stack(),
-                  true
-                );
+              if ( blessing->check() )
+              {
+                // we basically fake expire the previous stacks
+                // this helps avoid cumulative floating point errors vs doing the relative computation here
+                if ( new_ == 1 )
+                {
+                  blessing->update_cooldowns(
+                    blessing,
+                    0,
+                    false
+                  );
+                  blessing->update_cooldowns(
+                    blessing,
+                    blessing->stack(),
+                    true
+                  );
+                }
+                else
+                {
+                  blessing->update_cooldowns(
+                    blessing,
+                    0,
+                    true
+                  );
+                  blessing->update_cooldowns(
+                    blessing,
+                    blessing->stack(),
+                    false
+                  );
+                }
               }
             } );
 
@@ -2610,7 +2631,7 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( attr == ATTR_STAMINA )
   {
     if ( passives.aegis_of_light -> ok() )
-      m *= 1.0 + passives.aegis_of_light -> effectN( 1 ).percent();  
+      m *= 1.0 + passives.aegis_of_light -> effectN( 1 ).percent();
 
     if ( buffs.redoubt->up() )
       m *= 1.0 + buffs.redoubt->stack_value();

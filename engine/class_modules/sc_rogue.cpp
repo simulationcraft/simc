@@ -1697,13 +1697,10 @@ public:
       if ( p()->legendary.toxic_onslaught->ok() )
       {
         // 2021-04-22 - Appears to select randomly from the three cooldowns, not spec-specific
-        // TOCHECK: Currently on PTR does not extend but straight overrides the duration
+        // 2021-07-09: Extends duration now instead of overriding it in case of the existing cooldown proccing.
         const timespan_t trigger_duration = p()->legendary.toxic_onslaught->effectN( 1 ).time_value();
         std::vector<buff_t*> buffs = { p()->get_target_data( ab::target )->debuffs.vendetta, p()->buffs.adrenaline_rush, p()->buffs.shadow_blades };
-        if ( p()->bugs )
-          buffs[ p()->sim->rng().range( buffs.size() ) ]->trigger( trigger_duration );
-        else
-          buffs[ p()->sim->rng().range( buffs.size() ) ]->extend_duration_or_trigger( trigger_duration );
+        buffs[ p()->sim->rng().range( buffs.size() ) ]->extend_duration_or_trigger( trigger_duration );
       }
     }
 
@@ -6448,11 +6445,12 @@ double rogue_t::composite_damage_versatility() const
   {
     if ( buffs.flagellation->check() )
     {
-      cdv += buffs.flagellation->check_stack_value();
+      cdv += buffs.flagellation->check() * buffs.flagellation->data().effectN( 5 ).percent();
     }
     if ( buffs.flagellation_persist->check() )
     {
-      cdv += buffs.flagellation_persist->check_stack_value();
+      // Use the base buff effect since the persist default_value is passed from the base default_value
+      cdv += buffs.flagellation_persist->check() * buffs.flagellation->data().effectN( 5 ).percent();
     }
   }
 
@@ -6940,7 +6938,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
     build->add_action( this, "Shiv", "if=!talent.nightstalker.enabled&runeforge.tiny_toxic_blade&spell_targets.shuriken_storm<5" );
     build->add_action( this, "Shuriken Storm", "if=spell_targets>=2&(!covenant.necrolord|cooldown.serrated_bone_spike.max_charges-charges_fractional>=0.25|spell_targets.shuriken_storm>4)" );
-    build->add_action( "serrated_bone_spike,if=cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25|soulbind.lead_by_example.enabled&!buff.lead_by_example.up" );
+    build->add_action( "serrated_bone_spike,if=cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25|soulbind.lead_by_example.enabled&!buff.lead_by_example.up|soulbind.kevins_oozeling.enabled&!debuff.kevins_wrath.up" );
     build->add_talent( this, "Gloomblade" );
     build->add_action( this, "Backstab" );
   }
@@ -8851,6 +8849,18 @@ public:
 
   void register_hotfixes() const override
   {
+    // Only need to change the base effect and not also 894305 since we re-use the base effect for the persist
+    hotfix::register_effect( "Rogue", "2021-07-08", "Obedience: Versatility granted reduced to 0.5% per stack of Flagellation (was 1% per stack).", 887338 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.5 )
+      .verification_value( 1 );
+
+    hotfix::register_effect( "Rogue", "2021-07-08", "Toxic Onslaught: Buff duration increased to 12 seconds (was 8 seconds).", 886894 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 12000 )
+      .verification_value( 8000 );
   }
 
   void init( player_t* ) const override {}
