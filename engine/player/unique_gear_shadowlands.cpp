@@ -2341,6 +2341,10 @@ void ebonsoul_vise( special_effect_t& effect )
         max_duration_bonus( e.driver()->effectN( 3 ).percent() )
     {
       base_td = e.driver()->effectN( 1 ).average( e.item );
+      // TODO: Remove these when they go live on 7/13/2021
+      hasted_ticks        = 1;
+      tick_may_crit       = 1;
+      tick_on_application = 1;
     }
 
     timespan_t composite_dot_duration( const action_state_t* state ) const override
