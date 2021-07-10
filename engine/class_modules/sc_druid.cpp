@@ -795,7 +795,7 @@ public:
       kindred_affinity_covenant( "night_fae" ),
       convoke_the_spirits_ultimate( 0 ),
       convoke_the_spirits_deck( 5 ),
-      celestial_spirits_exceptional_chance( bugs ? 0.75 : 1.0 ),
+      celestial_spirits_exceptional_chance( 1.0 ),
       adaptive_swarm_jump_distance( 5.0 ),
       initial_pulsar_value( 0.0 ),
       active( active_actions_t() ),
@@ -6798,13 +6798,13 @@ struct convoke_the_spirits_t : public druid_spell_t
   {
     main_count   = 0;
     offspec_list = { CAST_HEAL, CAST_HEAL, CAST_RAKE, CAST_WRATH };
-    chances      = { { CAST_THRASH_BEAR, celestial_spirits ? 0.75 : 0.95 },
+    chances      = { { CAST_THRASH_BEAR, celestial_spirits ? 0.85 : 0.95 },
                      { CAST_IRONFUR, 1.0 },
                      { CAST_MANGLE, 1.0 }
                    };
-    // celestial spirits in bear form seems to result in avg 3 offspec.
+
     cast_list.insert( cast_list.end(),
-                      static_cast<int>( rng().range( celestial_spirits ? 2 : 5, celestial_spirits ? 5 : 7 ) ),
+                      static_cast<int>( rng().range( celestial_spirits ? 3.5 : 5, celestial_spirits ? 6 : 7 ) ),
                       CAST_OFFSPEC );
 
     if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->celestial_spirits_exceptional_chance ) ) )
@@ -6864,16 +6864,15 @@ struct convoke_the_spirits_t : public druid_spell_t
                      { CAST_RAKE, 0.22 }
                    };
 
-    // with celestial spirits cat form convoke has ~3 offspec spells
     cast_list.insert( cast_list.end(),
-                      static_cast<size_t>( rng().range( celestial_spirits ? 1 : 4, celestial_spirits ? 6 : 9 ) ),
+                      static_cast<size_t>( rng().range( celestial_spirits ? 2.5 : 4, celestial_spirits ? 7.5 : 9 ) ),
                       CAST_OFFSPEC );
 
     if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->celestial_spirits_exceptional_chance ) ) )
       cast_list.push_back( CAST_FERAL_FRENZY );
 
     cast_list.insert( cast_list.end(),
-                      _clamp_and_cast( rng().gauss( celestial_spirits ? 1.8 : 4.2, celestial_spirits ? 0.661789 : 0.9360890055, true ), 0, max_ticks - cast_list.size() ),
+                      _clamp_and_cast( rng().gauss( celestial_spirits ? 3 : 4.2, celestial_spirits ? 0.8 : 0.9360890055, true ), 0, max_ticks - cast_list.size() ),
                       CAST_MAIN );
   }
 
@@ -6907,7 +6906,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
   void _execute_moonkin()
   {
-    cast_list.insert( cast_list.end(), 5 - ( celestial_spirits ? 2 : 0 ), CAST_HEAL );
+    cast_list.insert( cast_list.end(), 5 - ( celestial_spirits ? 1 : 0 ), CAST_HEAL );
     off_count    = 0;
     main_count   = 0;
     filler_count = 0;
@@ -6920,7 +6919,7 @@ struct convoke_the_spirits_t : public druid_spell_t
   {
     convoke_cast_e type_ = base_type;
     std::vector<std::pair<convoke_cast_e, double>> dist;
-    unsigned adjust = celestial_spirits ? 2 : 0;
+    unsigned adjust = celestial_spirits ? 1 : 0;
 
     conv_tar = tl.at( rng().range( tl.size() ) );
 
@@ -6930,7 +6929,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
       if ( !p()->buff.starfall->check() )
       {
-        dist.emplace_back( std::make_pair( CAST_STARFALL, 3 + ( adjust / 2 ) ) );
+        dist.emplace_back( std::make_pair( CAST_STARFALL, 3 + adjust ) );
         add_more = false;
       }
 
@@ -7898,6 +7897,8 @@ void druid_t::init_spells()
   legendary.kindred_affinity          = find_runeforge_legendary( "Kindred Affinity" );
   legendary.unbridled_swarm           = find_runeforge_legendary( "Unbridled Swarm" );
   legendary.celestial_spirits         = find_runeforge_legendary( "Celestial Spirits" );
+  if ( legendary.celestial_spirits->ok() )
+    sim->error( "Celestial Spirits has not been well tested. These results may not be accurate." );
   legendary.sinful_hysteria           = find_runeforge_legendary( "Sinful Hysteria" );
 
   // Balance
@@ -10679,7 +10680,46 @@ struct druid_module_t : public module_t
       ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
   }
   void static_init() const override {}
-  void register_hotfixes() const override {}
+
+  void register_hotfixes() const override
+  {
+    hotfix::register_effect( "Druid", "2021-07-10", "Kindred Affinity hotfix Mastery", 892219 )
+      .field( "coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.578947 )
+      .verification_value( 1.052632 );
+
+    hotfix::register_effect( "Druid", "2021-07-10", "Kindred Affinity hotfix Haste", 892220 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 8 )
+      .verification_value( 5 );
+
+    hotfix::register_effect( "Druid", "2021-07-10", "Kindred Affinity hotfix Crit", 892221 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 8 )
+      .verification_value( 5 );
+
+    hotfix::register_effect( "Druid", "2021-07-10", "Kindred Affinity hotfix Vers", 892227 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 8 )
+      .verification_value( 5 );
+
+    hotfix::register_effect( "Druid", "2021-07-10", "Celestial Spirits hotfix Spell Count", 887116 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( -25 )
+      .verification_value( -50 );
+
+    hotfix::register_effect( "Druid", "2021-07-10", "Celestial Spirits hotfix Duration", 887117 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( -25 )
+      .verification_value( -50 );
+  }
+
   void combat_begin( sim_t* ) const override {}
   void combat_end( sim_t* ) const override {}
 };
