@@ -4,27 +4,37 @@ race=draenei
 spec=protection
 role=tank
 position=front
-talents=2200202
+talents=2200302
 covenant=venthyr
-soulbind=theotar,soothing_shade/punish_the_guilty:7/hallowed_discernment:7
-renown=40
+soulbind=Nadja_the_mistblade,thrill_seeker/punish_the_guilty:9:1/hallowed_discernment:9:1/dauntless_duelist/fatal_flaw
+renown=80
 
-head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173127
-neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498/6935,gem_id=173127
-shoulders=epaulettes_of_overwhelming_force,id=182994,bonus_id=7187/1498
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=breastplate_of_cautious_calculation,id=182987,bonus_id=7187/1498,enchant=eternal_skirmish
-wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498/6935,gem_id=173127
-hands=colossal_plate_gauntlets,id=182984,bonus_id=7187/1498,enchant=eternal_strength
-waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498/6935,gem_id=173127
-legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
-feet=shadowghast_sabatons,id=171413,bonus_id=6647/6649/6758/7054/1532
-finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_haste
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_haste
-trinket1=stone_legion_heraldry,id=184027,bonus_id=7187/1498
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=stoneborn_terrorblade,id=182395,bonus_id=4876/1531,enchant=lightless_force
-off_hand=stonewrought_gargoyles_barrier,id=182399,bonus_id=7187/1531
+head=Valorous_Visage_of_Krexus,id=186350,gem_id=187318/173128,bonus_id=7187/1498
+neck=Interplanar_Keystone,id=186379,bonus_id=7187/1498,gem_id=173128
+shoulder=Spires_of_Broken_Hope,id=186349,gem_id=187315,bonus_id=7187/1498
+back=Cloak_of_Scarred_Honor,id=186289,enchant_id=6208,bonus_id=7187/1498
+chest=Cuirass_of_the_Lonely_Citadel,id=186312,enchant_id=6214,gem_id=187312,bonus_id=7187/1498
+wrist=Vyrazs_Parade_Cuffs,id=186351,gem_id=187313/173128,bonus_id=7187/1498
+hands=Kyras_Unending_Protectors,id=186346,enchant_id=6210,gem_id=187314,bonus_id=7187/1498
+waist=Shadowghast_Waistguard,id=171418,bonus_id=6716/7054/6647/6649/1559
+legs=Fateforged_Legplates,id=186348,bonus_id=7187/1498
+feet=Greaves_of_Haunting_Ruination,id=186353,bonus_id=7187/1498
+finger1=Sworn_Oath_of_the_Nine,id=186290,enchant_id=6166,bonus_id=7187/1498,gem_id=173128
+finger2=Tarnished_Insignia_of_QuelThalas,id=186377,enchant_id=6166,bonus_id=7187/1498,gem_id=173128
+trinket1=Old_Warriors_Soul,id=186438,bonus_id=7187/1498
+trinket2=Titanic_Ocular_Gland,id=186423,bonus_id=7187/1498
+main_hand=The_Devouring_Cold,id=187056,enchant_id=6228,bonus_id=7187/1498
+off_hand=Guard_of_the_Sundered_Defender,id=186417,bonus_id=7187/1498
+
+#Optimal soulbinds for other covenants
+#covenant=kyrian
+#soulbind=forgelite_prime_mikanikos:18,333950/196:9:1/331609/195:9:1/331611/216:9:1/352186/352188
+
+#covenant=necrolord
+#soulbind=plague_deviser_marileth:4,323074/195:9:1/323091/196:9:1/323095/284:9:1/352110
+
+#covenant=night_fae
+#soulbind=dreamweaver:2,319217/196:9:1/319210/319191/195:9:1/352786
 
 save=T27_Paladin_Protection.simc
 
