@@ -38,7 +38,7 @@ renown=80
 talents=2301032
 
 covenant=necrolord
-soulbind=plague_deviser_marileth,323074/100:9:1/323091/323079/104:9:1/323095/147:9:1/352108/352110
+soulbind=plague_deviser_marileth,volatile_solvent/call_of_flame:9:1/pyroclastic_shock:9:1/tumbling_waves:9:1/kevins_oozeling
 
 head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187320/173128
 neck=azurevenom_choker,id=180115,bonus_id=3536/4786/1566,gem_id=173128
