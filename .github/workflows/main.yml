@@ -70,15 +70,15 @@ jobs:
         run: ${{ runner.workspace }}/b/ninja/simc spell_query=spell.name=auto_shot
 
 
-  ubuntu-clang-10-build:
-    name: ubuntu-clang-10-build
+  ubuntu-clang-build:
+    name: ubuntu-clang-build
     runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v2
 
       - uses: actions/cache@v2
-        env: { ccache-prefix: 'ubuntu-clang-10-ccache-${{ env.ccache-generation }}' }
+        env: { ccache-prefix: 'ubuntu-clang-12-ccache-${{ env.ccache-generation }}' }
         with:
           path: ${{ runner.workspace }}/.ccache
           key: ${{ env.ccache-prefix }}-${{ github.sha }}
@@ -94,7 +94,7 @@ jobs:
           UBSAN_STRIP_COUNT: "`echo \"${{ runner.workspace }}//\" | grep -o '/' - | wc -l`"
         run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
               -DCMAKE_BUILD_TYPE=Debug
-              -DCMAKE_CXX_COMPILER=clang++-10 -DCMAKE_C_COMPILER=clang-10
+              -DCMAKE_CXX_COMPILER=clang++-12 -DCMAKE_C_COMPILER=clang-12
               -DCMAKE_CXX_FLAGS="-Og -ffile-prefix-map=${{ runner.workspace }}/=/
                 -fno-omit-frame-pointer -fsanitize=address,undefined
                 -fsanitize-undefined-strip-path-components=$UBSAN_STRIP_COUNT"
@@ -117,13 +117,13 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-clang-10-for_run-${{ github.sha }}
+          key: ubuntu-clang-for_run-${{ github.sha }}
 
 
-  ubuntu-clang-10-run:
-    name: ubuntu-clang-10-${{ matrix.type }}
+  ubuntu-clang-run:
+    name: ubuntu-clang-${{ matrix.type }}
     runs-on: ubuntu-20.04
-    needs: [ ubuntu-clang-10-build ]
+    needs: [ ubuntu-clang-build ]
 
     strategy:
       fail-fast: false
@@ -145,7 +145,7 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-clang-10-for_run-${{ github.sha }}
+          key: ubuntu-clang-for_run-${{ github.sha }}
 
       - name: Run
         env:
@@ -155,7 +155,7 @@ jobs:
   simc-tests:
     name: test-${{ matrix.tier }}-${{ matrix.spec }}
     runs-on: ubuntu-20.04
-    needs: [ ubuntu-clang-10-build ]
+    needs: [ ubuntu-clang-build ]
 
     strategy:
       fail-fast: false
@@ -183,7 +183,7 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-clang-10-for_run-${{ github.sha }}
+          key: ubuntu-clang-for_run-${{ github.sha }}
 
       - name: Install Python dependencies
         run: pip3 install -r tests/requirements.txt
