@@ -931,7 +931,7 @@ void paladin_t::generate_action_prio_list_prot()
   precombat -> add_action( "potion" );
   precombat -> add_action( this, "Consecration" );
   precombat -> add_action( "lights_judgment" );
-  precombat -> add_action( "Ashen Hallow");
+  precombat -> add_action( "ashen_hallow");
 
   ///////////////////////
   // Action Priority List

@@ -32,7 +32,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/consecration
 actions.precombat+=/lights_judgment
-actions.precombat+=/Ashen Hallow
+actions.precombat+=/ashen_hallow
 
 # Executed every time the actor is available.
 actions=auto_attack
