@@ -795,7 +795,7 @@ public:
       kindred_affinity_covenant( "night_fae" ),
       convoke_the_spirits_ultimate( 0 ),
       convoke_the_spirits_deck( 5 ),
-      celestial_spirits_exceptional_chance( 1.0 ),
+      celestial_spirits_exceptional_chance( 0.85 ),
       adaptive_swarm_jump_distance( 5.0 ),
       initial_pulsar_value( 0.0 ),
       active( active_actions_t() ),
