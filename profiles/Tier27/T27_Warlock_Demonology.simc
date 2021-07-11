@@ -6,8 +6,8 @@ race=orc
 role=spell
 position=ranged_back
 talents=3103032
-covenant=night_fae
-soulbind=niya,grove_invigoration/niyas_tools_poison/bonded_hearts/borne_of_blood:11/carnivorous_stalkers:11/tyrants_soul:11
+covenant=necrolord
+soulbind=plague_deviser_marileth,volatile_solvent/borne_of_blood:11:0/tyrants_soul:11:0/carnivorous_stalkers:11:0/kevins_oozeling
 renown=80
 
 # Default consumables
@@ -123,26 +123,26 @@ actions.tyrant_setup+=/summon_demonic_tyrant,if=time>variable.first_tyrant_time&
 head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=173128/187312
 neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173128
 shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187315
-back=cloak_of_scarred_honor,id=186289,bonus_id=1498/7187
+back=dealer_xyexas_cape,id=179349,bonus_id=1566/6536/6646
 chest=sacrificers_sacramental_cassock,id=186282,bonus_id=1498/7187,gem_id=187318,enchant=eternal_stats
 wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=173128/187319,enchant=eternal_intellect
 hands=grasps_of_the_clairvoyant_sage,id=186288,bonus_id=1498/7187
 waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=173128/187320
-legs=muehzalas_hexthread_sarong,id=179351,bonus_id=1566/6536/6646
+legs=purge_protocol_legwraps,id=180107,bonus_id=1566/6536/6646
 feet=sandals_of_sacred_symmetry,id=186354,bonus_id=1498/7187
 finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=1498/7187/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=shadowghast_ring,id=178926,bonus_id=7025/6649/6648/1559,gem_id=173128,enchant=tenet_of_haste
 trinket1=soulletting_ruby,id=178809,bonus_id=1566/6536/6646
-trinket2=forbidden_necromantic_tome,id=186421,bonus_id=1498/7187
+trinket2=infinitely_divisible_ooze,id=178769,bonus_id=1566/6536/6646
 main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=celestial_guidance
 
 # Gear Summary
-# gear_ilvl=256.40
+# gear_ilvl=255.93
 # gear_stamina=2114
-# gear_intellect=1501
-# gear_crit_rating=486
-# gear_haste_rating=822
-# gear_mastery_rating=560
-# gear_versatility_rating=394
+# gear_intellect=1494
+# gear_crit_rating=426
+# gear_haste_rating=784
+# gear_mastery_rating=623
+# gear_versatility_rating=429
 # gear_armor=435
 default_pet=felguard

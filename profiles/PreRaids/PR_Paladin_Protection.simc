@@ -32,6 +32,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/consecration
 actions.precombat+=/lights_judgment
+actions.precombat+=/Ashen Hallow
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -45,7 +46,6 @@ actions.cooldowns+=/holy_avenger,if=buff.avenging_wrath.up|cooldown.avenging_wra
 actions.cooldowns+=/potion,if=buff.avenging_wrath.up
 actions.cooldowns+=/use_items,if=buff.seraphim.up|!talent.seraphim.enabled
 actions.cooldowns+=/moment_of_glory,if=prev_gcd.1.avengers_shield&cooldown.avengers_shield.remains
-actions.cooldowns+=/heart_essence
 
 actions.standard=shield_of_the_righteous,if=debuff.judgment.up
 actions.standard+=/shield_of_the_righteous,if=holy_power=5|buff.holy_avenger.up|holy_power=4&talent.sanctified_wrath.enabled&buff.avenging_wrath.up
