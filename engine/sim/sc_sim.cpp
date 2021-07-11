@@ -3844,6 +3844,7 @@ void sim_t::create_options()
   add_option( opt_float( "shadowlands.shredded_soul_pickup_chance", shadowlands_opts.shredded_soul_pickup_chance, 0.0, 1.0 ) );
   add_option( opt_float( "shadowlands.valiant_strikes_heal_rate", shadowlands_opts.valiant_strikes_heal_rate, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_string( "shadowlands.soleahs_secret_technique_type", shadowlands_opts.soleahs_secret_technique_type ) );
+  add_option( opt_timespan( "shadowlands.shadowed_orb_of_torment_precombat_channel", shadowlands_opts.shadowed_orb_of_torment_precombat_channel, 0_ms, 42_s ) );
 }
 
 // sim_t::parse_option ======================================================

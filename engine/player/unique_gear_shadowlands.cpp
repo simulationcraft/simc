@@ -2392,14 +2392,117 @@ void shadowed_orb_of_torment( special_effect_t& effect )
   struct tormented_insight_channel_t : public proc_spell_t
   {
     buff_t* buff;
+    action_t* use_action;  // if this exists, then we're prechanneling via the APL
 
     tormented_insight_channel_t( const special_effect_t& e, buff_t* b )
-      : proc_spell_t( "tormented_insight", e.player, e.driver(), e.item ), buff( b )
+      : proc_spell_t( "tormented_insight", e.player, e.driver(), e.item ), buff( b ), use_action( nullptr )
     {
       // Override this so it doesn't trigger self-harm portion of the trinket
       base_td      = 0;
+      effect       = &e;
       channeled    = true;
       hasted_ticks = harmful = false;
+
+      for ( auto a : player->action_list )
+      {
+        if ( a->action_list && a->action_list->name_str == "precombat" && a->name_str == "use_item_" + item->name_str )
+        {
+          a->harmful = harmful;  // pass down harmful to allow action_t::init() precombat check bypass
+          use_action = a;
+          use_action->base_execute_time = 2_s;
+          break;
+        }
+      }
+    }
+
+    void precombat_buff()
+    {
+      timespan_t time = sim->shadowlands_opts.shadowed_orb_of_torment_precombat_channel;
+
+      if ( time == 0_ms )  // No global override, check for an override from an APL variable
+      {
+        for ( auto v : player->variables )
+        {
+          if ( v->name_ == "shadowed_orb_of_torment_precombat_channel" )
+          {
+            time = timespan_t::from_seconds( v->value() );
+            break;
+          }
+        }
+      }
+
+      // shared cd (other trinkets & on-use items)
+      auto cdgrp = player->get_cooldown( effect->cooldown_group_name() );
+
+      if ( time == 0_ms )  // No hardcoded override, so dynamically calculate timing via the precombat APL
+      {
+        time     = 2_s;  // base 2s channel for full effect
+        auto apl = player->precombat_action_list;
+
+        auto it = range::find( apl, use_action );
+        if ( it == apl.end() )
+        {
+          sim->print_debug(
+              "WARNING: Precombat /use_item for Shadowed Orb of Torment exists but not found in precombat APL!" );
+          return;
+        }
+
+        cdgrp->start( 1_ms );  // tap the shared group cd so we can get accurate action_ready() checks
+
+        // add cast time or gcd for any following precombat action
+        std::for_each( it + 1, apl.end(), [ &time, this ]( action_t* a ) {
+          if ( a->action_ready() )
+          {
+            timespan_t delta =
+                std::max( std::max( a->base_execute_time, a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
+            sim->print_debug( "PRECOMBAT: Shadowed Orb of Torment prechannel timing pushed by {} for {}", delta,
+                              a->name() );
+            time += delta;
+
+            return a->harmful;  // stop processing after first valid harmful spell
+          }
+          return false;
+        } );
+      }
+
+      // how long you channel for (rounded down to seconds)
+      auto channel = std::min( 4_s, timespan_t::from_seconds( static_cast<int>( time.total_seconds() ) ) );
+      // total duration of the buff from channeling
+      auto total = buff->buff_duration() * ( channel.total_seconds() + 1 );
+      // actual duration of the buff you'll get in combat
+      auto actual = total + channel - time;
+      // cooldown on effect/trinket at start of combat
+      auto cd_dur = cooldown->duration - time;
+      // shared cooldown at start of combat
+      auto cdgrp_dur = std::max( 0_ms, effect->cooldown_group_duration() - time );
+
+      sim->print_debug(
+          "PRECOMBAT: Shadowed Orb of Torment started {}s before combat via {}, channeled for {}s, {}s in-combat buff",
+          time, use_action ? "APL" : "SHADOWLANDS_OPT", channel, actual );
+
+      buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, actual );
+
+      if ( use_action )  // from the apl, so cooldowns will be started by use_item_t. adjust. we are still in precombat.
+      {
+        make_event( *sim, [ this, time, cdgrp ] {  // make an event so we adjust after cooldowns are started
+          cooldown->adjust( -time );
+
+          if ( use_action )
+            use_action->cooldown->adjust( -time );
+
+          cdgrp->adjust( -time );
+        } );
+      }
+      else  // via bfa. option override, start cooldowns. we are in-combat.
+      {
+        cooldown->start( cd_dur );
+
+        if ( use_action )
+          use_action->cooldown->start( cd_dur );
+
+        if ( cdgrp_dur > 0_ms )
+          cdgrp->start( cdgrp_dur );
+      }
     }
 
     timespan_t tick_time( const action_state_t* ) const override
@@ -2407,12 +2510,30 @@ void shadowed_orb_of_torment( special_effect_t& effect )
       return base_tick_time;
     }
 
+    void trigger_dot( action_state_t* s ) override
+    {
+      if ( player->in_combat )  // only trigger channel 'dot' in combat
+      {
+        proc_spell_t::trigger_dot( s );
+      }
+    }
+
     void execute() override
     {
       proc_spell_t::execute();
 
-      event_t::cancel( player->readying );
-      player->reset_auto_attacks( data().duration() );
+      if ( player->in_combat )  // only channel in-combat
+      {
+        event_t::cancel( player->readying );
+        player->reset_auto_attacks( data().duration() );
+      }
+      else  // if precombat...
+      {
+        if ( use_action )  // ...and use_item exists in the precombat apl
+        {
+          precombat_buff();
+        }
+      }
     }
 
     void last_tick( dot_t* d ) override
@@ -2438,7 +2559,17 @@ void shadowed_orb_of_torment( special_effect_t& effect )
                ->add_stat( STAT_MASTERY_RATING, val );
   }
 
-  effect.execute_action = new tormented_insight_channel_t( effect, buff );
+  auto action           = new tormented_insight_channel_t( effect, buff );
+  effect.execute_action = action;
+
+  // pre-combat channeling hack via shadowlands options
+  if ( effect.player->sim->shadowlands_opts.shadowed_orb_of_torment_precombat_channel > 0_ms )  // option is set
+  {
+    effect.player->register_combat_begin( [ action ]( player_t* ) {
+      if ( !action->use_action )  // no use_item in precombat apl, so we apply the buff on combat start
+        action->precombat_buff();
+    } );
+  }
 }
 
 /**Relic of the Frozen Wastes

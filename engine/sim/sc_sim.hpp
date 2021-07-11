@@ -434,6 +434,8 @@ struct sim_t : private sc_thread_t
     /// Type stat gained from So'leah's Secret Technique
     /// Buff type: "mastery", "haste", "crit", "versatility"
     std::string soleahs_secret_technique_type = "haste";
+    /// How long before combat to start channeling Shadowed Orb of Torment
+    timespan_t shadowed_orb_of_torment_precombat_channel = 0_ms;
   } shadowlands_opts;
 
   // Auras and De-Buffs
