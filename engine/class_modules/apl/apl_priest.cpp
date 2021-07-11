@@ -55,10 +55,10 @@ void shadow( player_t* p )
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" );
-  // Calculate these variables once to reduce sim time
   precombat->add_action( "shadowform,if=!buff.shadowform.up" );
   precombat->add_action( "arcane_torrent" );
-  precombat->add_action( "use_item,name=azsharas_font_of_power" );
+  precombat->add_action( "use_item,name=shadowed_orb_of_torment" );
+  // Calculate these variables once to reduce sim time
   precombat->add_action( "variable,name=mind_sear_cutoff,op=set,value=2" );
   precombat->add_action( "vampiric_touch" );
 
