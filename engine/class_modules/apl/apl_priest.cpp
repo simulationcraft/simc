@@ -126,6 +126,9 @@ void shadow( player_t* p )
       "use_item,name=sinful_gladiators_badge_of_ferocity,if=cooldown.void_eruption.remains>=10",
       "Use Badge inside of VF for the first use or on CD after the first use. Short circuit if void eruption cooldown "
       "is 10s or more away." );
+  trinkets->add_action(
+      "use_item,name=shadowed_orb_of_torment,if=!buff.voidform.up|(prev_gcd.1.void_bolt)",
+      "Use Shadowed Orb of Torment when not in Voidform, or in between Void Bolt casts in Voidform." );
   trinkets->add_call_action_list(
       dmg_trinkets,
       "if=(!talent.hungering_void.enabled|debuff.hungering_void.up)&(buff.voidform.up|cooldown.void_eruption.remains>"
