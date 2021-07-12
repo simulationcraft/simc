@@ -4047,8 +4047,12 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     // This buff is never triggered so use default_value.
     if ( target->health_percentage() > health_threshold )
     {
+      // WHS is triggered when you cast something that gets the damage benefit from WHT
       if ( buffs.wild_hunt_strategem_tracking )
+      {
         buffs.wild_hunt_strategem_tracking->trigger();
+      }
+    
       m *= 1.0 + buffs.wild_hunt_tactics->default_value;
     }
   }
