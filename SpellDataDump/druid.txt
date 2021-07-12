@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-09/39335, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-12/39335, no-networking)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -14067,11 +14067,11 @@ Effects          :
                    Affected Spells: Convoke the Spirits (323764)
                    Family Flags: 16
 #2 (id=887116)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Convoke the Spirits (323764)
                    Family Flags: 16
 #3 (id=887117)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Convoke the Spirits (323764)
                    Family Flags: 16
 Description      : The cooldown and duration of Convoke the Spirits is reduced by $s2%. Convoke the Spirits has an increased chance to use an exceptional spell or ability.

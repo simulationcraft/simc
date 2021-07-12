@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.39335
-static const std::array<spelltext_data_t, 15527> __spelltext_data { {
+static const std::array<spelltext_data_t, 15528> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15422,6 +15422,7 @@ static const std::array<spelltext_data_t, 15527> __spelltext_data { {
   { 356791, "$@spelldesc324386", 0, "Kyrian" },
   { 356813, "$@spelldesc355329", "Reflecting the next $w1 damage.", 0 },
   { 356818, "Fallen Order summons $s1 additional $?$C1[Ox]?$C2[Crane][Tiger] adept for $s2 sec. While you have an active adept, your abilities that critically hit reduce the cooldown of Fallen Order by ${$s3/1000} sec.", 0, 0 },
+  { 356857, "$@spelldesc355329", 0, 0 },
   { 356877, "Shifting Power can be channeled while moving. Each enemy hit by Shifting Power grants you $356881s1% Critical Strike and Haste, up to ${$356881s1*$356881u}% for $356881d.", 0, 0 },
   { 356881, "$@spelldesc356877", "Haste and Critical Strike increased by $s1%.", 0 },
   { 356890, "$@spelldesc355098", 0, 0 },
