@@ -1235,7 +1235,7 @@ void infinitely_divisible_ooze( special_effect_t& effect )
       resources.base[ RESOURCE_ENERGY ] = 100;
     }
 
-    void init_assessors()
+    void init_assessors() override
     {
       pet_t::init_assessors();
       auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ) {
@@ -1670,7 +1670,7 @@ void shadowgrasp_totem( special_effect_t& effect )
       damage = new shadowgrasp_totem_damage_t ( this, effect );
     }
 
-    void init_assessors()
+    void init_assessors() override
     {
       pet_t::init_assessors();
       auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ) {
@@ -2125,7 +2125,8 @@ void salvaged_fusion_amplifier( special_effect_t& effect)
 {
   struct salvaged_fusion_amplifier_damage_t : public generic_proc_t
   {
-  salvaged_fusion_amplifier_damage_t( const special_effect_t& e ) : generic_proc_t( e, "fusion_amplification", 355605 )
+    salvaged_fusion_amplifier_damage_t( const special_effect_t& e ) :
+      generic_proc_t( e, "fusion_amplification", 355605 )
     {
       base_dd_min = e.driver() -> effectN( 1 ).average( e.item );
       base_dd_max = e.driver() -> effectN( 1 ).average( e.item );
@@ -2158,6 +2159,8 @@ void salvaged_fusion_amplifier( special_effect_t& effect)
   if ( !buff )
   {
     buff = make_buff( effect.player, "salvaged_fusion_amplifier", effect.driver() );
+    // The actual buff needs to always trigger
+    buff->set_chance( 1.0 );
   }
 
   action_t* damage = create_proc_action<salvaged_fusion_amplifier_damage_t>( "fusion_amplification", effect );
@@ -2714,7 +2717,7 @@ void ticking_sack_of_terror( special_effect_t& effect )
       // This needs to be handled via a stack_change_callback, but can't be set in register_target_data_initializer
       if ( !td->debuff.volatile_satchel->stack_change_callback )
       {
-        td->debuff.volatile_satchel->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
+        td->debuff.volatile_satchel->set_stack_change_callback( [ this ]( buff_t* b, int /* old_ */, int new_ ) {
           if ( new_ == 0 )
           {
             damage->set_target( b->player );
