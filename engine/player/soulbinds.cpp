@@ -19,12 +19,6 @@
 
 #include "simulationcraft.hpp"
 
-/*
-* Currently Missing Soulbinds:
-* Night Fae:
-* - Korayn's Wild Hunt Strategem
-*/
-
 namespace covenant
 {
 namespace soulbinds
@@ -544,6 +538,53 @@ void wild_hunt_tactics( special_effect_t& effect )
     effect.player->buffs.wild_hunt_tactics =
         make_buff( effect.player, "wild_hunt_tactics", effect.driver() )->set_default_value_from_effect( 1 );
 }
+
+// TODO: implement healing side
+// ID: 353286 - tracking buff to allow triggering of debuff
+// ID: 353254 - enemy damage taken debuff
+void wild_hunt_strategem( special_effect_t& effect )
+{
+  struct wild_hunt_strategem_cb_t : public dbc_proc_callback_t
+  {
+    double hp_pct_dmg;
+    buff_t* wild_hunt_strategem_tracking;
+
+    wild_hunt_strategem_cb_t( const special_effect_t& e, buff_t* b )
+      : dbc_proc_callback_t( e.player, e ),
+        hp_pct_dmg( e.driver()->effectN( 2 ).base_value() ),
+        wild_hunt_strategem_tracking( b )
+    {
+    }
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( !wild_hunt_strategem_tracking->check() )
+        return;
+
+      if ( s->target->health_percentage() < hp_pct_dmg && s->target != a->player )
+      {
+        auto td = a->player->get_target_data( s->target );
+        td->debuff.wild_hunt_strategem->trigger();
+        a->player->buffs.wild_hunt_strategem_tracking->expire();
+        dbc_proc_callback_t::trigger( a, s );
+      }
+    }
+  };
+
+  auto wild_hunt_strategem_tracking = buff_t::find( effect.player, "wild_hunt_strategem_tracking" );
+  if ( !wild_hunt_strategem_tracking )
+    wild_hunt_strategem_tracking =
+        make_buff( effect.player, "wild_hunt_strategem_tracking", effect.player->find_spell( 353286 ) );
+
+  if ( !effect.player->buffs.wild_hunt_strategem_tracking )
+    effect.player->buffs.wild_hunt_strategem_tracking = wild_hunt_strategem_tracking;
+
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+  effect.proc_chance_ = 1.0;
+
+  new wild_hunt_strategem_cb_t( effect, wild_hunt_strategem_tracking );
+}
+
 // Handled in unique_gear_shadowlands.cpp
 // void exacting_preparation( special_effect_t& effect ) {}
 
@@ -2448,6 +2489,7 @@ void register_special_effects()
   register_soulbind_special_effect( 352786, soulbinds::dream_delver );
   register_soulbind_special_effect( 325069, soulbinds::first_strike, true );  // Korayn
   register_soulbind_special_effect( 325066, soulbinds::wild_hunt_tactics );
+  register_soulbind_special_effect( 352805, soulbinds::wild_hunt_strategem );
   // Venthyr
   // register_soulbind_special_effect( 331580, soulbinds::exacting_preparation );  // Nadjia
   register_soulbind_special_effect( 331584, soulbinds::dauntless_duelist );
@@ -2696,6 +2738,20 @@ void register_target_data_initializers( sim_t* sim )
     }
     else
       td->debuff.kevins_wrath = make_buff( *td, "kevins_wrath" )->set_quiet( true );
+  } );
+
+  // Wild Hunt Strategem
+  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( td->source->find_soulbind_spell( "Wild Hunt Strategem" )->ok() )
+    {
+      assert( !td->debuff.wild_hunt_strategem );
+
+      td->debuff.wild_hunt_strategem = make_buff( *td, "wild_hunt_strategem", td->source->find_spell( 353254 ) )
+                                           ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
+      td->debuff.wild_hunt_strategem->reset();
+    }
+    else
+      td->debuff.wild_hunt_strategem = make_buff( *td, "wild_hunt_strategem" )->set_quiet( true );
   } );
 }
 

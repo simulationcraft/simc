@@ -4046,6 +4046,8 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     double health_threshold = 100.0 - ( 100.0 - buffs.wild_hunt_tactics->data().effectN( 5 ).base_value() ) * sim->shadowlands_opts.wild_hunt_tactics_duration_multiplier;
     // This buff is never triggered so use default_value.
     if ( target->health_percentage() > health_threshold )
+      if ( find_soulbind_spell( "Wild Hunt Strategem" )->ok() )
+        buffs.wild_hunt_strategem_tracking->trigger();
       m *= 1.0 + buffs.wild_hunt_tactics->default_value;
   }
 
@@ -4061,6 +4063,7 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     m *= 1.0 + td->debuff.scouring_touch->check_stack_value();
     m *= 1.0 + td->debuff.exsanguinated->check_value();
     m *= 1.0 + td->debuff.kevins_wrath->check_value();
+    m *= 1.0 + td->debuff.wild_hunt_strategem->check_value();
   }
 
   return m;

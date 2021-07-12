@@ -526,6 +526,9 @@ struct player_t : public actor_t
     buff_t* hold_your_ground; //venthyr/draven - stamina % buff when standing still
     buff_t* waking_bone_breastplate; //necrolord/heirmir - max health % buff when near 3 or more enemies
 
+    // 9.1 Soulbinds
+    buff_t* wild_hunt_strategem_tracking; //night_fae/korayn - tracking buff to allow procs of wild_hunt_strategem on enemy targets
+
     // 9.0 Runecarves
     buff_t* norgannons_sagacity_stacks;  // stacks on every cast
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving

@@ -58,6 +58,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* kevins_wrath;                // Marileth Kevin's Oozeling Kevin's Wrath debuff
     buff_t* frozen_heart;                // Relic of the Frozen Wastes debuff
     buff_t* volatile_satchel;            // Ticking Sack of Terror debuff
+    buff_t* wild_hunt_strategem;         // night_fae/korayn/ wild hunt strategem debuff
   } debuff;
 
   struct atd_dot_t
