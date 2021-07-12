@@ -139,8 +139,8 @@ actions.trinkets=use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remai
 actions.trinkets+=/use_item,name=inscrutable_quantum_device,if=buff.voidform.up&buff.power_infusion.up|fight_remains<=20|buff.power_infusion.up&cooldown.void_eruption.remains+15>fight_remains|buff.voidform.up&cooldown.power_infusion.remains+15>fight_remains|(cooldown.power_infusion.remains>=10&cooldown.void_eruption.remains>=10)&fight_remains>=190
 # Sync Sheet Music with Voidform
 actions.trinkets+=/use_item,name=macabre_sheet_music,if=cooldown.void_eruption.remains>10
-# Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target
-actions.trinkets+=/use_item,name=soulletting_ruby,if=buff.power_infusion.up|!priest.self_power_infusion,target_if=min:target.health.pct
+# Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target. When used with Shadowed Orb of Torment, just use on CD as much as possible.
+actions.trinkets+=/use_item,name=soulletting_ruby,if=buff.power_infusion.up|!priest.self_power_infusion|equipped.shadowed_orb_of_torment,target_if=min:target.health.pct
 # Use Badge inside of VF for the first use or on CD after the first use. Short circuit if void eruption cooldown is 10s or more away.
 actions.trinkets+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=cooldown.void_eruption.remains>=10
 # Use Shadowed Orb of Torment when not in Voidform, or in between Void Bolt casts in Voidform.

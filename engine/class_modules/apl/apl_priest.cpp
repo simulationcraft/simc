@@ -119,9 +119,10 @@ void shadow( player_t* p )
   trinkets->add_action( "use_item,name=macabre_sheet_music,if=cooldown.void_eruption.remains>10",
                         "Sync Sheet Music with Voidform" );
   trinkets->add_action(
-      "use_item,name=soulletting_ruby,if=buff.power_infusion.up|!priest.self_power_infusion,target_if=min:target."
-      "health.pct",
-      "Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target" );
+      "use_item,name=soulletting_ruby,if=buff.power_infusion.up|!priest.self_power_infusion|"
+      "equipped.shadowed_orb_of_torment,target_if=min:target.health.pct",
+      "Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target. When used with Shadowed Orb of "
+      "Torment, just use on CD as much as possible." );
   trinkets->add_action(
       "use_item,name=sinful_gladiators_badge_of_ferocity,if=cooldown.void_eruption.remains>=10",
       "Use Badge inside of VF for the first use or on CD after the first use. Short circuit if void eruption cooldown "
