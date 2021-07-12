@@ -8484,7 +8484,6 @@ void druid_t::create_actions()
   {
     active.brambles       = get_secondary_action<brambles_t>( "brambles" );
     active.brambles_pulse = get_secondary_action<brambles_pulse_t>( "brambles_pulse" );
-    active.brambles->stats->add_child( active.brambles_pulse->stats );
 
     instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
         talent.brambles->id(), instant_absorb_t( this, talent.brambles, "brambles_absorb", &brambles_handler ) ) );
