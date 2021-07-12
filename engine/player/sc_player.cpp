@@ -10309,6 +10309,18 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
       throw std::invalid_argument( fmt::format( "Unsupported bfa. option '{}'.", splits[ 1 ] ) );
     }
+
+    if ( splits[ 0 ] == "shadowlands" )
+    {
+      if ( splits[ 1 ] == "shadowed_orb_of_torment_precombat_channel" )
+      {
+        return make_fn_expr( expression_str, [this] {
+          return sim->shadowlands_opts.shadowed_orb_of_torment_precombat_channel.total_seconds();
+        } );
+      }
+
+      throw std::invalid_argument( fmt::format( "Unsupported shadowlands. option '{}'.", splits[ 1 ] ) );
+    }
   } // splits.size() == 2
 
 

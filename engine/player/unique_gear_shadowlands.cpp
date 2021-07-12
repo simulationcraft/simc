@@ -2462,9 +2462,9 @@ void shadowed_orb_of_torment( special_effect_t& effect )
       }
 
       // how long you channel for (rounded down to seconds)
-      auto channel = std::min( 4_s, timespan_t::from_seconds( static_cast<int>( time.total_seconds() ) ) );
-      // total duration of the buff from channeling
-      auto total = buff->buff_duration() * ( channel.total_seconds() + 1 );
+      auto channel = std::min( 2_s, timespan_t::from_seconds( static_cast<int>( time.total_seconds() ) ) );
+      // total duration of the buff from channeling. Base is 10s for each tick of the channel (2 ticks per second)
+      auto total = buff->buff_duration() * ( channel.total_seconds() * 2 );
       // actual duration of the buff you'll get in combat
       auto actual = total + channel - time;
       // cooldown on effect/trinket at start of combat
