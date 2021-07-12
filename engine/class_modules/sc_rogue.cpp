@@ -3874,8 +3874,9 @@ struct shuriken_storm_t: public rogue_attack_t
     }
   }
 
+  // 07/12/2021 -- Shuriken Tornado triggers the damage directly without a cast, so cast triggers don't happen
   bool procs_poison() const override
-  { return true; }
+  { return secondary_trigger != TRIGGER_SHURIKEN_TORNADO; }
 };
 
 // Shuriken Tornado =========================================================
