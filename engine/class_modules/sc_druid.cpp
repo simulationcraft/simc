@@ -10684,41 +10684,6 @@ struct druid_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Druid", "2021-07-10", "Kindred Affinity hotfix Mastery", 892219 )
-      .field( "coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.578947 )
-      .verification_value( 1.052632 );
-
-    hotfix::register_effect( "Druid", "2021-07-10", "Kindred Affinity hotfix Haste", 892220 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 8 )
-      .verification_value( 5 );
-
-    hotfix::register_effect( "Druid", "2021-07-10", "Kindred Affinity hotfix Crit", 892221 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 8 )
-      .verification_value( 5 );
-
-    hotfix::register_effect( "Druid", "2021-07-10", "Kindred Affinity hotfix Vers", 892227 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 8 )
-      .verification_value( 5 );
-
-    hotfix::register_effect( "Druid", "2021-07-10", "Celestial Spirits hotfix Spell Count", 887116 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( -25 )
-      .verification_value( -50 );
-
-    hotfix::register_effect( "Druid", "2021-07-10", "Celestial Spirits hotfix Duration", 887117 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( -25 )
-      .verification_value( -50 );
   }
 
   void combat_begin( sim_t* ) const override {}
