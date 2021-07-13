@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-12/39335, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-13/39335)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -12043,7 +12043,7 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
-Real PPM         : 1.25
+Real PPM         : 1.5
 Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -12189,7 +12189,8 @@ Effects          :
 #2 (id=890913)   : Dummy (3)
                    Base Value: 24 | Scaled Value: 24 | PvP Coefficient: 1.00000
 #3 (id=890914)   : Dummy (3)
-                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000
+                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000
+Hotfixed         : Base Value (3000 -> 5000)
 Description      : Fallen Order summons $s1 additional $?$C1[Ox]?$C2[Crane][Tiger] adept for $s2 sec. While you have an active adept, your abilities that critically hit reduce the cooldown of Fallen Order by ${$s3/1000} sec.
 
 Name             : Invoke Xuen, the White Tiger (id=358518) [Spell Family (53)] 

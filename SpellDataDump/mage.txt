@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-12/39335, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-13/39335)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -153,7 +153,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=91)       : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.65000 | PvP Coefficient: 1.15000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.78000 | PvP Coefficient: 1.15000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.65 -> 0.78)
 Description      : Throws a fiery ball that causes $s1 Fire damage.$?a157642[
 
 Each time your Fireball fails to critically strike a target, it gains a stacking $157644s1% increased critical strike chance. Effect ends when Fireball critically strikes.][]
@@ -523,7 +524,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=4785)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.36300 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.43120 | PvP Coefficient: 0.95238 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (1.363 -> 1.4312), PvP Coefficient (1 -> 0.952381)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].
 
 Name             : Ice Barrier (id=11426) [Spell Family (3)] 
@@ -2273,7 +2275,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=120062)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.79200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.91080 | PvP Coefficient: 0.86957 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.792 -> 0.9108), PvP Coefficient (1 -> 0.869565)
 Description      : Blasts the enemy for $s1 Fire damage. 
 
 |cFFFFFFFFFire:|r Castable while casting other spells.$?a231568[ Always deals a critical strike.][]
@@ -11605,7 +11608,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=886669)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (3000 -> 4000)
 #2 (id=886674)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45000 | Scaled Value: 45000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Consuming $?c1[Clearcast]?c2[a Fire Blast charge][Brain Freeze] reduces Mirrors of Torment's cooldown by ${$s1/1000} sec. If Mirrors of Torment is dispelled the cooldown is reduced by ${$s2/1000} sec.
@@ -11656,7 +11660,7 @@ Description      : Shifting Power can be channeled while moving. Each enemy hit 
 Name             : Heart of the Fae (id=356881) [Spell Family (3)] 
 School           : Physical
 Spell Type       : None
-Duration         : 10 seconds
+Duration         : 15 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Triggered by     : Heart of the Fae (356877)
