@@ -73,16 +73,18 @@ void beast_mastery( player_t* p )
   cds->add_action( "lights_judgment" );
   cds->add_action( "potion,if=buff.aspect_of_the_wild.up|target.time_to_die<26" );
 
-  cleave->add_action( "aspect_of_the_wild" );
-  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd" );
+  cleave->add_action( "aspect_of_the_wild,if=!raid_event.adds.exists|raid_event.adds.remains>=10" );
+  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd|buff.wild_spirits.up&charges_fractional>1.4&runeforge.fragments_of_the_elder_antlers" );
   cleave->add_action( "multishot,if=gcd-pet.main.buff.beast_cleave.remains>0.25" );
+  cleave->add_action( "kill_shot,if=runeforge.pouch_of_razor_fragments&buff.flayers_mark.up" );
+  cleave->add_action( "flayed_shot,if=runeforge.pouch_of_razor_fragments" );
   cleave->add_action( "tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
   cleave->add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers" );
   cleave->add_action( "death_chakram,if=focus+cast_regen<focus.max" );
-  cleave->add_action( "wild_spirits" );
+  cleave->add_action( "wild_spirits,if=!raid_event.adds.exists|raid_event.adds.remains>=10" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd&cooldown.bestial_wrath.remains|cooldown.bestial_wrath.remains<12+gcd&talent.scent_of_blood" );
-  cleave->add_action( "bestial_wrath" );
-  cleave->add_action( "resonating_arrow" );
+  cleave->add_action( "bestial_wrath,if=!raid_event.adds.exists|raid_event.adds.remains>=5" );
+  cleave->add_action( "resonating_arrow,if=!raid_event.adds.exists|raid_event.adds.remains>=5" );
   cleave->add_action( "stampede,if=buff.aspect_of_the_wild.up|target.time_to_die<15" );
   cleave->add_action( "wailing_arrow" );
   cleave->add_action( "flayed_shot" );
@@ -100,12 +102,12 @@ void beast_mastery( player_t* p )
   cleave->add_action( "freezing_trap,if=runeforge.nessingwarys_trapping_apparatus" );
   cleave->add_action( "arcane_torrent,if=(focus+focus.regen+30)<focus.max" );
 
-  st->add_action( "aspect_of_the_wild" );
-  st->add_action( "barbed_shot,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd" );
+  st->add_action( "aspect_of_the_wild,if=!raid_event.adds.exists|raid_event.adds.remains>19" );
+  st->add_action( "barbed_shot,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd|buff.wild_spirits.up&charges_fractional>1.4&runeforge.fragments_of_the_elder_antlers" );
   st->add_action( "tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
   st->add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers" );
   st->add_action( "bloodshed" );
-  st->add_action( "wild_spirits" );
+  st->add_action( "wild_spirits,if=!raid_event.adds.exists|raid_event.adds.remains>19" );
   st->add_action( "flayed_shot" );
   st->add_action( "kill_shot" );
   st->add_action( "wailing_arrow,if=cooldown.resonating_arrow.remains<gcd&(!talent.explosive_shot|buff.bloodlust.up)|!covenant.kyrian|cooldown.resonating_arrow.remains|target.time_to_die<5" );
@@ -113,8 +115,8 @@ void beast_mastery( player_t* p )
   st->add_action( "death_chakram,if=focus+cast_regen<focus.max" );
   st->add_action( "stampede,if=buff.aspect_of_the_wild.up|target.time_to_die<15" );
   st->add_action( "a_murder_of_crows" );
-  st->add_action( "resonating_arrow,if=buff.bestial_wrath.up|target.time_to_die<10" );
-  st->add_action( "bestial_wrath,if=cooldown.wild_spirits.remains>15|covenant.kyrian&(cooldown.resonating_arrow.remains<5|cooldown.resonating_arrow.remains>20)|target.time_to_die<15|(!covenant.night_fae&!covenant.kyrian)" );
+  st->add_action( "resonating_arrow,if=(buff.bestial_wrath.up|target.time_to_die<10)&(!raid_event.adds.exists|raid_event.adds.remains>19)" );
+  st->add_action( "bestial_wrath,if=(cooldown.wild_spirits.remains>15|covenant.kyrian&(cooldown.resonating_arrow.remains<5|cooldown.resonating_arrow.remains>20)|target.time_to_die<15|(!covenant.night_fae&!covenant.kyrian))&(!raid_event.adds.exists|raid_event.adds.remains>19)" );
   st->add_action( "chimaera_shot" );
   st->add_action( "kill_command" );
   st->add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
