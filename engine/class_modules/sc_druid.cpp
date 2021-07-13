@@ -4802,6 +4802,15 @@ struct rejuvenation_t : public druid_heal_t
   }
 };
 
+// Remove Corruption ========================================================
+
+struct remove_corruption_t : public druid_heal_t
+{
+  remove_corruption_t( druid_t* p, util::string_view options_str )
+    : druid_heal_t( "remove_corruption", p, p->find_class_spell( "Remove Corruption" ), options_str )
+  {}
+};
+
 // Renewal ==================================================================
 
 struct renewal_t : public druid_heal_t
@@ -7630,6 +7639,7 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
   if ( name == "stampeding_roar"        ) return new        stampeding_roar_t( this, options_str );
   if ( name == "tiger_dash"             ) return new             tiger_dash_t( this, options_str );
   if ( name == "wild_charge"            ) return new            wild_charge_t( this, options_str );
+  if ( name == "remove_corruption"      ) return new      remove_corruption_t( this, options_str );
 
   // Multispec
   if ( name == "berserk" )
