@@ -3828,6 +3828,16 @@ struct bountiful_brew_t : public monk_spell_t
     base_dd_max        = 0;
   }
 
+  // Need to disable multipliers in init() so that it doesn't double-dip on anything
+  void init() override
+  {
+    monk_spell_t::init();
+    // disable the snapshot_flags for all multipliers except for crit
+    snapshot_flags = update_flags = 0;
+    snapshot_flags |= STATE_CRIT;
+    snapshot_flags |= STATE_TGT_CRIT;
+  }
+
   void execute() override
   {
     p()->buff.bonedust_brew_hidden->trigger();
