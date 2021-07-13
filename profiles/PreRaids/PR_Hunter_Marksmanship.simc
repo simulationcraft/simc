@@ -55,19 +55,19 @@ actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20
 
 actions.st=steady_shot,if=talent.steady_focus&(prev_gcd.1.steady_shot&buff.steady_focus.remains<5|buff.steady_focus.down)&(buff.resonating_arrow.down|!covenant.kyrian)
 actions.st+=/kill_shot
-actions.st+=/double_tap,if=covenant.kyrian&(cooldown.resonating_arrow.remains<gcd)|!covenant.kyrian&!covenant.night_fae|covenant.night_fae&(cooldown.wild_spirits.remains<gcd|cooldown.wild_spirits.remains>30)|target.time_to_die<15
+actions.st+=/double_tap,if=(covenant.kyrian&(cooldown.resonating_arrow.remains<gcd)|!covenant.kyrian&!covenant.night_fae|covenant.night_fae&(cooldown.wild_spirits.remains<gcd|cooldown.wild_spirits.remains>30)|target.time_to_die<15)&(!raid_event.adds.exists|raid_event.adds.in>30|!covenant.kyrian)
 actions.st+=/flare,if=tar_trap.up&runeforge.soulforge_embers
 actions.st+=/tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd
 actions.st+=/explosive_shot
-actions.st+=/wild_spirits
+actions.st+=/wild_spirits,if=!raid_event.adds.exists|raid_event.adds.remains>=15
 actions.st+=/flayed_shot
 actions.st+=/death_chakram,if=focus+cast_regen<focus.max
 actions.st+=/a_murder_of_crows
 actions.st+=/wailing_arrow,if=cooldown.resonating_arrow.remains<gcd&(!talent.explosive_shot|buff.bloodlust.up)|!covenant.kyrian|cooldown.resonating_arrow.remains|target.time_to_die<5
-actions.st+=/resonating_arrow,if=buff.double_tap.up|!talent.double_tap|target.time_to_die<12
+actions.st+=/resonating_arrow,if=(buff.double_tap.up|!talent.double_tap|target.time_to_die<12)&(!raid_event.adds.exists|raid_event.adds.remains>9)
 actions.st+=/volley,if=buff.resonating_arrow.up|!covenant.kyrian&(buff.precise_shots.down|!talent.chimaera_shot|active_enemies<2)
 actions.st+=/steady_shot,if=covenant.kyrian&focus+cast_regen<focus.max&((cooldown.resonating_arrow.remains<gcd*3&(!soulbind.effusive_anima_accelerator|!talent.double_tap))|talent.double_tap&cooldown.double_tap.remains<3)
-actions.st+=/trueshot,if=buff.precise_shots.down&(covenant.venthyr|covenant.necrolord|talent.calling_the_shots)|buff.resonating_arrow.up|buff.wild_spirits.up|buff.volley.up&active_enemies>1|target.time_to_die<25
+actions.st+=/trueshot,if=buff.precise_shots.down&(covenant.venthyr|covenant.necrolord|talent.calling_the_shots)|buff.resonating_arrow.up|buff.wild_spirits.up|buff.volley.up&active_enemies>1|(target.time_to_die<25&!raid_event.adds.exists)
 actions.st+=/rapid_fire,if=runeforge.surging_shots&talent.streamline&(cooldown.resonating_arrow.remains>10|!covenant.kyrian|!talent.double_tap|soulbind.effusive_anima_accelerator)
 actions.st+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2)|buff.trick_shots.remains>execute_time&active_enemies>1
 actions.st+=/rapid_fire,if=(cooldown.resonating_arrow.remains>10|!covenant.kyrian|!talent.double_tap|soulbind.effusive_anima_accelerator)&focus+cast_regen<focus.max&(buff.double_tap.down|talent.streamline)
@@ -81,13 +81,15 @@ actions.st+=/fleshcraft,if=soulbind.pustule_eruption&buff.trueshot.down
 actions.st+=/steady_shot
 
 actions.trickshots=steady_shot,if=talent.steady_focus&in_flight&buff.steady_focus.remains<5
-actions.trickshots+=/double_tap,if=covenant.kyrian&cooldown.resonating_arrow.remains<gcd|!covenant.kyrian&!covenant.night_fae|covenant.night_fae&(cooldown.wild_spirits.remains<gcd|cooldown.wild_spirits.remains>30)|target.time_to_die<10|cooldown.resonating_arrow.remains>10&active_enemies>3
+actions.trickshots+=/kill_shot,if=runeforge.pouch_of_razor_fragments&buff.flayers_mark.up
+actions.trickshots+=/flayed_shot,if=runeforge.pouch_of_razor_fragments
+actions.trickshots+=/double_tap,if=(covenant.kyrian&cooldown.resonating_arrow.remains<gcd|!covenant.kyrian&!covenant.night_fae|covenant.night_fae&(cooldown.wild_spirits.remains<gcd|cooldown.wild_spirits.remains>30)|target.time_to_die<10|cooldown.resonating_arrow.remains>10&active_enemies>3)&(!raid_event.adds.exists|raid_event.adds.remains>10)
 actions.trickshots+=/tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd
 actions.trickshots+=/flare,if=tar_trap.up&runeforge.soulforge_embers
 actions.trickshots+=/explosive_shot
-actions.trickshots+=/wild_spirits
+actions.trickshots+=/wild_spirits,if=!raid_event.adds.exists|raid_event.adds.remains>=15
 actions.trickshots+=/wailing_arrow,if=cooldown.resonating_arrow.remains<gcd&(!talent.explosive_shot|buff.bloodlust.up)|!covenant.kyrian|cooldown.resonating_arrow.remains>10|target.time_to_die<5
-actions.trickshots+=/resonating_arrow,if=cooldown.volley.remains<gcd|!talent.volley|target.time_to_die<12
+actions.trickshots+=/resonating_arrow,if=(cooldown.volley.remains<gcd|!talent.volley|target.time_to_die<12)&(!raid_event.adds.exists|raid_event.adds.remains>=9)
 actions.trickshots+=/volley,if=buff.resonating_arrow.up|!covenant.kyrian
 actions.trickshots+=/barrage
 actions.trickshots+=/trueshot,if=buff.resonating_arrow.up|cooldown.resonating_arrow.remains>10|!covenant.kyrian|target.time_to_die<20
