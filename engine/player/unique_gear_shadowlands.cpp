@@ -3374,7 +3374,10 @@ void winds_of_winter( special_effect_t& effect )
 
 /**Chaos Bane
  * id=357349 equip special effect
- * id=355829 driver with RPPM and buff trigger
+ * id=355829 driver with RPPM and buff trigger & coefficients
+ *    effect#3 is soul fragment stat coefficient
+ *    effect#4 is chaos bane stat coefficient
+ *    effect#5 is chaso bane damage coefficient
  * id=356042 Soul Fragment buff
  * id=356043 Chaos Bane buff
  * id=356046 damage
@@ -3391,6 +3394,7 @@ void chaos_bane( special_effect_t& effect )
       proc_spell_t( "chaos_bane", e.player, e.player->find_spell( 356046 ) ),
       buff( b )
     {
+      base_dd_max = base_dd_min = e.driver()->effectN( 5 ).average( e.player );  // coeff in driver eff#5
       split_aoe_damage = true;
     }
 
@@ -3420,33 +3424,37 @@ void chaos_bane( special_effect_t& effect )
     }
   };
 
+  // driver with rppm is 355829. this spell also contains the various coefficients.
+  effect.spell_id = 355829;
+
   auto buff = buff_t::find( effect.player, "chaos_bane" );
   if ( !buff )
   {
     buff = make_buff<stat_buff_t>( effect.player, "chaos_bane", effect.player->find_spell( 356043 ) )
-             ->set_can_cancel( false );
+      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
+                  effect.driver()->effectN( 4 ).average( effect.player ) )  // coeff in driver eff#4
+      ->set_can_cancel( false );
   }
 
   auto proc = create_proc_action<chaos_bane_t>( "chaos_bane", effect, buff );
   effect.custom_buff = buff_t::find( effect.player, "soul_fragment" );
   if ( !effect.custom_buff )
   {
-    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "soul_fragment", effect.player->find_spell( 356042 ) )
-                           ->set_can_cancel( false )
-                           ->set_stack_change_callback( [ proc ]( buff_t* b, int, int cur )
-                             {
-                               if ( cur == b->max_stack() )
-                               {
-                                 proc->set_target( b->player->target );
-                                 proc->execute();
-                                 make_event( b->sim, [ b ] { b->expire(); } );
-                               }
-                             } );
+    effect.custom_buff =
+        make_buff<stat_buff_t>( effect.player, "soul_fragment", effect.player->find_spell( 356042 ) )
+          ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
+                      effect.driver()->effectN( 3 ).average( effect.player ) )  // coeff in driver eff#3
+          ->set_can_cancel( false )
+          ->set_stack_change_callback( [ proc ]( buff_t* b, int, int cur ) {
+            if ( cur == b->max_stack() )
+            {
+              proc->set_target( b->player->target );
+              proc->execute();
+              make_event( b->sim, [ b ] { b->expire(); } );
+            }
+          } );
   }
 
-  // TODO: In game, this seems to be proccing much more than expected than from
-  // the 8 RPPM in the spell data. Additional data ie needed to verify the RPPM.
-  effect.spell_id = 355829;
   effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
   new chaos_bane_cb_t( effect, buff );
 }
