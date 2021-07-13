@@ -164,7 +164,7 @@ legs=aradnes_lancer_legguards,id=186307,bonus_id=7187/1498
 feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187312
 finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
 finger2=oscillating_ouroboros,id=186376,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
-trinket1=tome_of_monstrous_constructions,id=186422,bonus_id=7187/1498
+trinket1=ebonsoul_vise,id=186431,bonus_id=7187/1498
 trinket2=forbidden_necromantic_tome,id=186421,bonus_id=7187/1498
 main_hand=maledict_opus,id=186406,bonus_id=7187/1498,enchant=sinful_revelation
 
