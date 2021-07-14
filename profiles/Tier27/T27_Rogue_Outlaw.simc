@@ -64,7 +64,7 @@ actions+=/bag_of_tricks
 actions.build=sepsis
 actions.build+=/ghostly_strike
 actions.build+=/shiv,if=runeforge.tiny_toxic_blade
-actions.build+=/echoing_reprimand
+actions.build+=/echoing_reprimand,if=!soulbind.effusive_anima_accelerator|variable.blade_flurry_sync
 # Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target
 actions.build+=/serrated_bone_spike,if=!dot.serrated_bone_spike_dot.ticking
 actions.build+=/serrated_bone_spike,target_if=min:target.time_to_die+(dot.serrated_bone_spike_dot.ticking*600),if=!dot.serrated_bone_spike_dot.ticking
