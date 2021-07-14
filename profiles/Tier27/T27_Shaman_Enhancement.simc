@@ -127,30 +127,30 @@ actions.single+=/fleshcraft,if=soulbind.pustule_eruption
 actions.single+=/earth_elemental
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
-head=crest_of_the_fallen,id=186304,bonus_id=7187/1498/6935,gem_id=187073/173128
+head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187073
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173128
 shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187076,enchant=30runspeed
-back=cloak_of_scarred_honor,id=186289,bonus_id=7187/1498
-chest=conjunctionforged_chainmail,id=186340,bonus_id=7187/1498,gem_id=187079,enchant=eternal_skirmish
+back=dealer_xyexas_cape,id=179349,bonus_id=6536/1566/6646
+chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,gem_id=187079,enchant=eternal_skirmish
 wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498/6935,gem_id=173128
-hands=grasps_of_ancestral_whispers,id=186308,bonus_id=7187/1498
-waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498/6935,gem_id=187057/173128
+hands=boneshatter_gauntlets,id=172324,bonus_id=6716/7708/6647/6649/1559
+waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187057
 legs=wind_dancers_legguards,id=178839,bonus_id=6536/1566/6646
 feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187063,enchant=eternal_agility
-finger1=shadowghast_ring,id=178926,bonus_id=6716/6995/6649/6648/1559/1808/6935,gem_id=173128,enchant=tenet_of_haste
+finger1=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=titanic_ocular_gland,id=186423,bonus_id=7187/1498
+trinket1=salvaged_fusion_amplifier,id=186432,bonus_id=7187/1498
 trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
 main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=sinful_revelation
 off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
 
 # Gear Summary
 # gear_ilvl=254.81
-# gear_agility=1089
-# gear_stamina=2079
-# gear_crit_rating=462
-# gear_haste_rating=962
-# gear_mastery_rating=388
-# gear_versatility_rating=280
+# gear_agility=1096
+# gear_stamina=2084
+# gear_crit_rating=421
+# gear_haste_rating=1021
+# gear_mastery_rating=187
+# gear_versatility_rating=420
 # gear_speed_rating=30
-# gear_armor=1022
+# gear_armor=1029
