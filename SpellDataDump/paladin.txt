@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-13/39335, git build shadowlands 919652f24f)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-14/39335, no-networking)
 
 Name             : Haste (id=65) 
 Class            : Paladin
@@ -11067,12 +11067,13 @@ Description      : $@spelldesc355100
 Tooltip          : The effectiveness of $?$W3=328620[Blessing of Summer]?$W3=328622[Blessing of Autumn]?$W3=328281[Blessing of Winter][Blessing of Spring] is increased by $s1%.
 
 Name             : Divine Resonance (id=356890) 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Arcane
 Spell Type       : None
 Range            : 30 yards
 Triggered by     : Divine Resonance (355455)
-Attributes       : ....x... ........ ........ ...x....   ........ ........ ........ ........ 
+Attributes       : ....x... ........ ........ ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11083,9 +11084,11 @@ Attributes       : ....x... ........ ........ ...x....   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=891034)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
-#2 (id=891960)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 30 yards | Target: Custom (18) -> AOE friendly (31)
+Hotfixed         : Target 1 (25 -> 18), Target 2 (0 -> 31)
+#2 (id=891960)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+Hotfixed         : Target 1 (18 -> 25), Target 2 (31 -> 0)
 #3 (id=892088)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 30 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc355098
