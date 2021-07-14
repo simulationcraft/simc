@@ -2173,7 +2173,7 @@ void salvaged_fusion_amplifier( special_effect_t& effect)
   cb_driver->spell_id     = 355333;
   cb_driver->cooldown_    = 0_s;
   cb_driver->proc_flags_  = effect.driver()->proc_flags();
-  cb_driver->proc_flags2_ = PF2_CAST_DAMAGE;  // Only triggers from damaging casts
+  cb_driver->proc_flags2_ = PF2_ALL_HIT; // As this triggers from white+yellow hits not just casts, use ALL_HIT
   effect.player->special_effects.push_back( cb_driver );
 
   [[maybe_unused]] auto callback = new salvaged_fusion_amplifier_cb_t( *cb_driver, damage, buff );
