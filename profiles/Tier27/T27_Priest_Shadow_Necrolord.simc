@@ -163,13 +163,13 @@ feet=grimveiled_sandals,id=173243,bonus_id=6648/6649/7729/1559
 finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498,gem_id=173130,enchant=tenet_of_mastery
 finger2=death_gods_signet,id=179355,bonus_id=6536/1566/6646,gem_id=173130,enchant=tenet_of_mastery
 trinket1=soulletting_ruby,id=178809,bonus_id=6536/1566/6646
-trinket2=unbound_changeling,id=178708,bonus_id=6536/1566/6646
+trinket2=forbidden_necromantic_tome,id=186421,bonus_id=7187/1498
 main_hand=maledict_opus,id=186406,bonus_id=7187/1498,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=255.47
+# gear_ilvl=255.93
 # gear_stamina=2109
-# gear_intellect=1501
+# gear_intellect=1508
 # gear_crit_rating=236
 # gear_haste_rating=1019
 # gear_mastery_rating=638
