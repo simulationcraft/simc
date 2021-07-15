@@ -2168,6 +2168,9 @@ void salvaged_fusion_amplifier( special_effect_t& effect)
   effect.custom_buff = buff;
   effect.disable_action();
 
+  // since the on-use effect doesn't use the rppm, set to 0 so trinket expressions correctly determine it has a cooldown
+  effect.ppm_ = 0;
+
   auto cb_driver          = new special_effect_t( effect.player );
   cb_driver->name_str     = "salvaged_fusion_amplifier_driver";
   cb_driver->spell_id     = 355333;
