@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-14/39335, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-15/39335, git build shadowlands 080ea59a2b)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -2088,11 +2088,11 @@ Effects          :
 Description      : While in Soulshape, you regenerate $342309s% of your maximum health every $342309t sec.
 
 Name             : Carver's Eye (id=350899) [Passive] 
+Hotfixed         : Internal Cooldown (700 -> 0)
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
 Spell Level      : 60
-Internal Cooldown: 0.7 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
