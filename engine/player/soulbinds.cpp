@@ -2096,11 +2096,6 @@ void carvers_eye( special_effect_t& effect )
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( cooldown->down() )
-      {
-        return;
-      }
-
       // Don't proc on existing targets
       //
       // Note, in game it seems that the target being checked against in terms of the
@@ -2118,7 +2113,6 @@ void carvers_eye( special_effect_t& effect )
       {
         td->debuff.carvers_eye_debuff->trigger();
         buff->trigger();
-        cooldown->start();
       }
     }
   };
