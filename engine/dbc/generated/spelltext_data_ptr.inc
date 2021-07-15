@@ -1,5 +1,5 @@
-// Spell text, wow build 9.1.0.39172
-static const std::array<spelltext_data_t, 15520> __ptr_spelltext_data { {
+// Spell text, wow build 9.1.0.39413
+static const std::array<spelltext_data_t, 15529> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -7449,6 +7449,7 @@ static const std::array<spelltext_data_t, 15520> __ptr_spelltext_data { {
   { 217878, "As long as it has not gone bad it restores $191876o1 health over $191876d.  Must remain seated while eating.", 0, 0 },
   { 217996, "Leech increased by $s1%.\r\n\r\nGain an additional $s2% Leech while Metamorphosis is active.", 0, 0 },
   { 218001, "$@spelldesc205273", 0, 0 },
+  { 218078, "Set the total pet maximum for your account to 1500. Usable once per account. Consumed on use.", 0, 0 },
   { 218164, "Removes all Poison and Disease effects from the target.", 0, 0 },
   { 218194, "Increase the health of your withered troops by 25%.\r\n\r\nThis effect is permanent and will take effect the next time you enter the Collapse scenario.", 0, 0 },
   { 218195, "One of the members of your withered army can wear the helm, causing it to become a powerful Withered Berserker.\r\n\r\nThis effect is permanent and will take effect the next time you enter the Collapse scenario.", 0, 0 },
@@ -9022,6 +9023,7 @@ static const std::array<spelltext_data_t, 15520> __ptr_spelltext_data { {
   { 254774, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254775, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254776, "Create a soulbound item appropriate for your Loot Specialization ($@lootspec).", 0, 0 },
+  { 254777, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254778, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254779, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 254780, "Create a soulbound item appropriate for your Loot Specialization ($@lootspec).", 0, 0 },
@@ -11120,6 +11122,7 @@ static const std::array<spelltext_data_t, 15520> __ptr_spelltext_data { {
   { 286390, "Your attacks have a chance to make your next Divine Storm free and deal $s1 additional damage.", 0, 0 },
   { 286392, "$@spelldesc286390", 0, 0 },
   { 286393, "$@spelldesc286390", "Your next Divine Storm is free and deals $w1 additional damage.", 0 },
+  { 286438, "Set the total pet maximum for your account to $s1. Usable once per account. Consumed on use.", 0, 0 },
   { 286573, "Vendetta poisons the target, dealing ${$s1*10*$<assassinationMastery>} Nature damage over $286581d, and grants you $s2 energy over $286581d.", 0, 0 },
   { 286579, "$@spelldesc286573", 0, 0 },
   { 286581, "$@spelldesc286573", "Suffering $w1 Nature damage every $t1 sec.", 0 },
@@ -13268,7 +13271,7 @@ static const std::array<spelltext_data_t, 15520> __ptr_spelltext_data { {
   { 322763, "Balances your blunt weapon, increasing Attack Power by $ec1 for 1 hour.", 0, 0 },
   { 322835, "Metamorphosis increases your size, movement speed, and melee range by $326486s1%.", "Metamorphosis increases your size, movement speed, and melee range by $326486s1%.", 0 },
   { 322960, "Fortifying Brew increases Stagger effectiveness by $s1% while active.", 0, "Rank 2" },
-  { 323074, "Fleshcraft's passive effect consumes a corpse's essence completely, granting a benefit based on the creature's type.", 0, 0 },
+  { 323074, "Fleshcraft's passive effect consumes a corpse's essence completely, granting a benefit based on the creature's type. \r\n\r\nCasting Fleshcraft also consumes a small portion of your own essence, granting you the Humanoid benefit.", 0, 0 },
   { 323079, "Allows opening of locks that require up to $s2 skill, once every $s5 hours.\r\n\r\nEach $s4 sec spent channeling Fleshcraft reduces Kevin's Keyring's cooldown by $s3 min.", 0, 0 },
   { 323081, "Defeating enemies has a chance to deploy your Plagueborn Cleansing Slime, which improves the remaining durability on your armor.", 0, 0 },
   { 323089, "While standing still, you slowly build stacks of Bloop's Wanderlust. At $m2 stacks, your movement speed is increased by $323399m1% for $323399d.", 0, 0 },
@@ -13651,7 +13654,7 @@ static const std::array<spelltext_data_t, 15520> __ptr_spelltext_data { {
   { 329756, "$@spelldesc329737", 0, 0 },
   { 329776, "Phial of Serenity renders you immune to Curse, Disease, Poison, and Bleed effects for $330752d.", 0, 0 },
   { 329777, "Phial of Serenity heals you for $s1% additional health, but all of its healing is done over $330749d.", 0, 0 },
-  { 329778, "Chance to critical strike is increased by $330511s1% for every nearby enemy or ally, up to $330511u%.", 0, 0 },
+  { 329778, "Chance to critical strike is increased by $330511s1% for every nearby enemy or ally, up to ${$330511s1*$330511u}%.", 0, 0 },
   { 329779, "Your damaging spells and abilities have a chance to decrease your target's movement speed by $321759m% for $321759d.", 0, 0 },
   { 329781, "When receiving healing while above $s1% health or healing an ally that's above $s1% health, $s2% of the healing done is repeated on the target over $330859d.", 0, 0 },
   { 329784, "After $330921d out of combat, gain a shield for $330927s2% of your maximum health.", 0, 0 },
@@ -14703,7 +14706,7 @@ static const std::array<spelltext_data_t, 15520> __ptr_spelltext_data { {
   { 341741, "$@spelldesc339570", "Your Light of Dawn healing is increased by $w1%.", 0 },
   { 341750, "Roots an enemy for $d. Only usable outdoors in the Shadowlands.", "Rooted.", 0 },
   { 341804, "For every $s2 seconds that you do not cast $?c2[Flash Heal, the healing of your next Flash Heal][Shadow Mend, the healing of your next Shadow Mend] is increased by $341824s1%.  This effect can stack up to $341824u times.\r\n", 0, 0 },
-  { 341824, "$@spelldesc341804\r\n", "Increase the healing of your next $?c2[Flash Heal][Shadow Mend] by $s1%.", 0 },
+  { 341824, "$@spelldesc341804\r\n", "Increase the healing of your next $?c2[Flash Heal][Shadow Mend] by $w1%.", 0 },
   { 341997, "Your healing is increased by $s1% on targets with your Renew.", 0, 0 },
   { 342032, "Allows you to see what is hidden, but what's hidden will sometimes gaze back.", "Detecting stealthed creatures.", 0 },
   { 342049, "A two-headed shot that hits your primary target for $344120sw1 Nature damage and another nearby target for ${$344121sw1*($s1/100)} Frost damage.", 0, 0 },
@@ -15255,7 +15258,7 @@ static const std::array<spelltext_data_t, 15520> __ptr_spelltext_data { {
   { 354054, "$@spelldesc352373", "Versatility increased by $s1%.", 0 },
   { 354109, "Each time Ravenous Frenzy is applied its duration is increased by 0.2 sec. Additionally, Ravenous Frenzy lingers and will not overcome you for $355315d after it ends.", 0, 0 },
   { 354115, "You and your Kindred Spirit each gain a bonus secondary stat based on their Covenant. This bonus is doubled while the bond is Empowered.\r\n\r\n|CFFffffffKyrian|r: Mastery increased by $357564s2.\r\n|CFFffffffNight Fae|r: Haste increased by $357564s3%.\r\n|CFFffffffVenthyr|r: Critical Strike chance increased by $357564s4%.\r\n|CFFffffffNecrolord|r: Versatility increased by $357564s5%.", 0, 0 },
-  { 354118, "The cooldown and duration of Convoke the Spirits is reduced by $s2%. Convoke the Spirits has an increased chance to use an exceptional spell or ability.", 0, 0 },
+  { 354118, "Convoke the Spirits' cooldown is reduced by ${($abs($s1)/120000)*100}% and its duration is reduced by $s2%. Convoke the Spirits has an increased chance to use an exceptional spell or ability.", 0, 0 },
   { 354123, "Adaptive Swarm has a $s1% chance to split into two Swarms each time it jumps.", "Adaptive Swarm has a $w1% chance to split into two Swarms each time it jumps.", 0 },
   { 354124, "Shiv also reduces the target's healing received by $S1% for $319504d.", 0, "PvP Talent" },
   { 354129, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
@@ -15278,7 +15281,7 @@ static const std::array<spelltext_data_t, 15520> __ptr_spelltext_data { {
   { 354583, "Recall brighter times in Oribos, before the Maw grew in power. Lasts $d.", "Recalling brighter times in Oribos.", "Passive" },
   { 354647, "Each additional $?a137039[Healing Wave]?a137040[Lava Burst][Lightning Bolt] generated by Primordial Wave increases your Haste by $s1% for $333340d.", 0, 0 },
   { 354648, "$@spelldesc354647", "Haste increased by $w1%.", 0 },
-  { 354703, "Flagellation now also increases your Versatility by $323654s5%. Each combo point spent while Flagellation is active decreases it's cooldown by ${$s1/1000} sec. ", 0, 0 },
+  { 354703, "Flagellation now also increases your Versatility by ${$323654s5/2}.1%. Each combo point spent while Flagellation is active decreases it's cooldown by ${$s1/1000} sec. ", 0, 0 },
   { 354731, "Serrated Bone Spike has $s1 additional charges and launches $s2 additional bone spike at nearby enemies.", 0, 0 },
   { 354759, "Enjoy a tasty treat.", "In a good mood!", 0 },
   { 354831, "$@spelldesc355589", "Silenced.", 0 },
@@ -15334,15 +15337,15 @@ static const std::array<spelltext_data_t, 15520> __ptr_spelltext_data { {
   { 355757, "|CFF20ff20Your Speed is increased by $s1|R", 0, 0 },
   { 355759, 0, "Marked by $@auracaster's Relic of the Frozen Wastes.", 0 },
   { 355760, "Unleash the Minigrue, who will destroy some nearby toys.", 0, 0 },
-  { 355761, "While inside the Maw or Torghast, damaging an enemy establishes a Blood Link.\r\n\r\nBlood Link pulses every $t1 sec, dealing $s2 Shadow damage and healing you for $s3% of damage dealt. If your Blood Link would overheal you, it instead heals a nearby ally. Limit 1.", "While inside the Maw or Torghast, damaging an enemy establishes a Blood Link.\r\n\r\nBlood Link pulses every $t1 sec, dealing $s2 Shadow damage and healing you for $s3% of damage dealt. If your Blood Link would overheal you, it instead heals a nearby ally. Limit 1.", 0 },
+  { 355761, "While inside the Maw or Torghast, damaging an enemy establishes a Blood Link.\r\n\r\nBlood Link pulses every $t1 sec, dealing $s2 Shadow damage and healing you for $s3% of damage dealt. If your Blood Link would overheal you, it instead heals a nearby ally. Limit 1.", "While inside the Maw or Torghast, damaging an enemy establishes a Blood Link.\r\n\r\nBlood Link pulses every $t1 sec, dealing $s2 Shadow damage and healing you for $s3% of damage dealt. If your Blood Link would overheal you, it instead heals a nearby ally. Limit 1.", "Rank 1" },
   { 355766, "|CFF20ff20Your helpful spells and abilities have a chance to grant your target an Unholy Aura, draining $s1 health from nearby enemies every $s2 sec for $356321d.|R", 0, 0 },
   { 355767, "$@spelldesc355761", 0, 0 },
   { 355768, "$@spelldesc355761", 0, 0 },
   { 355769, "$@spelldesc355761", 0, 0 },
   { 355794, "$@spelldesc355313", "$?e2[Critical Strike]?e3[Haste]?e4[Mastery]?e5[Versatility][Highest secondary stat] increased by $w2.", 0 },
   { 355804, "$@spelldesc355761", "Suffering $w1 Shadow damage every $t1 sec.", 0 },
-  { 355829, "While inside the Maw or Torghast, your spells and abilities have a chance to drain a Soul Fragment from your target, granting you $356042s1 Primary stat for $356042d and stacking up to $356042u times.\r\n\r\nWhen you reach $356042u stacks, unleash Chaos Bane, dealing $356046s1 Shadow damage split between nearby enemies and granting you $356043s3 Primary stat for $356043d.", "While inside the Maw or Torghast, your spells and abilities have a chance to drain a Soul Fragment from your target, granting you $356042s1 Primary stat for $356042d and stacking up to $356042u times.\r\n\r\nWhen you reach $356042u stacks, unleash Chaos Bane, dealing $356046s1 Shadow damage split between nearby enemies and granting you $356043s3 Primary stat for $356043d.", 0 },
-  { 355886, "Sinful Brand deals $s1% increased damage and $?c1[Eye Beam][Fel Devastation] damage increases the duration of Sinful Brand by ${$s2/1000}.1 sec.", 0, 0 },
+  { 355829, "While inside the Maw or Torghast, your spells and abilities have a chance to drain a Soul Fragment from your target, granting you $s3 Primary stat for $356042d and stacking up to $356042u times.\r\n\r\nWhen you reach $356042u stacks, unleash Chaos Bane, dealing $s5 Shadow damage split between nearby enemies and granting you $s4 Primary stat for $356043d.", "While inside the Maw or Torghast, your spells and abilities have a chance to drain a Soul Fragment from your target, granting you $s3 Primary stat for $356042d and stacking up to $356042u times.\r\n\r\nWhen you reach $356042u stacks, unleash Chaos Bane, dealing $s5 Shadow damage split between nearby enemies and granting you $s4 Primary stat for $356043d.", 0 },
+  { 355886, "Sinful Brand deals $s1% increased damage and $?c1[Eye Beam][Fel Devastation] damage increases the duration of Sinful Brand by ${$s2/1000}.2 sec.", 0, 0 },
   { 355890, "The Hunt engulfs you with Immolation Aura upon reaching your target and you gain $355892s1% Agility for $355892d for each enemy hit.", 0, 0 },
   { 355892, "$@spelldesc355890", "Agility increased by $s1%.", 0 },
   { 355893, "Elysian Decree shatters $s1 additional Lesser Soul Fragments and grants you Blind Faith for $355894d. For each Lesser Soul Fragment you consume while Blind Faith is active you gain $s2% Mastery and $356070s1 Fury.", 0, 0 },
@@ -15373,9 +15376,10 @@ static const std::array<spelltext_data_t, 15520> __ptr_spelltext_data { {
   { 356264, "Up to $s1 targets hit by your Death Chakram are also hit by Explosive Shot.", 0, 0 },
   { 356281, "$@spelldesc355324", "Relishing in the shredded remains of your foe's soul, granting $w1 Critical Strike.", 0 },
   { 356284, "Take on the appearance of an attendant of Korthia.", "Wearing the guise of a Korthian attendant.", 0 },
+  { 356320, "$@spelldesc355766", 0, 0 },
   { 356321, "$@spelldesc355766", "Draining $w1 health from nearby enemies every $t1 sec.", 0 },
   { 356326, "$@spelldesc355321", "Mastery increased by $w1.", 0 },
-  { 356329, "$@spelldesc355755", "Damage taken from $@auracaster increased by $w1.00%.", 0 },
+  { 356329, "$@spelldesc355755", "Damage taken from $@auracaster increased by ${$W1}.2%.", 0 },
   { 356342, "$@spelldesc356344", "Critical strike chance increased by $s1% and critical strike damage increased by $s2% for $?s137046[Incinerate]?s198590[Drain Soul]?a137044&!s137046[Demonbolt][Shadow Bolt].", 0 },
   { 356344, "Decimating Bolt also increases the critical strike chance by $356342s1% and critical strike damage by $356342s2% for $?s137046[Incinerate]?s198590[Drain Soul]?a137044&!s137046[Demonbolt][Shadow Bolt].", 0, 0 },
   { 356346, "Frozen in time for $d.", "Frozen in time for $d.", 0 },
@@ -15419,6 +15423,7 @@ static const std::array<spelltext_data_t, 15520> __ptr_spelltext_data { {
   { 356791, "$@spelldesc324386", 0, "Kyrian" },
   { 356813, "$@spelldesc355329", "Reflecting the next $w1 damage.", 0 },
   { 356818, "Fallen Order summons $s1 additional $?$C1[Ox]?$C2[Crane][Tiger] adept for $s2 sec. While you have an active adept, your abilities that critically hit reduce the cooldown of Fallen Order by ${$s3/1000} sec.", 0, 0 },
+  { 356857, "$@spelldesc355329", 0, 0 },
   { 356877, "Shifting Power can be channeled while moving. Each enemy hit by Shifting Power grants you $356881s1% Critical Strike and Haste, up to ${$356881s1*$356881u}% for $356881d.", 0, 0 },
   { 356881, "$@spelldesc356877", "Haste and Critical Strike increased by $s1%.", 0 },
   { 356890, "$@spelldesc355098", 0, 0 },
@@ -15467,9 +15472,9 @@ static const std::array<spelltext_data_t, 15520> __ptr_spelltext_data { {
   { 357165, "$@spelldesc356390", "Healing and damage is increased by $s1%.", 0 },
   { 357168, "$@spelldesc353692", 0, 0 },
   { 357185, "$@spelldesc355319", "$?e1[Critical Strike]?e2[Haste]?e3[Mastery]?e4[Versatility][Highest secondary stat] increased by $w1.", 0 },
-  { 357347, "$?pc92426[|CFF808080Bonus: Socket 2 more Blood Shards to gain Blood Link.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]?pc92425[|CFF808080Bonus: Socket 1 more Blood Shard to gain Blood Link\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]?pc91768[|CFF20ff20Bonus: Socket 3 Blood Shards to gain Blood Link\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R][|CFF808080Bonus: Socket 3 Blood Shards to gain Blood Link\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]", 0, 0 },
-  { 357348, "$?pc92424[|CFF808080Bonus: Socket 2 more Frost Shards to gain Winds of Winter\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]?pc92423[|CFF808080Bonus: Socket 1 more Frost Shard to gain Winds of Winter\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]?pc91769[|CFF20ff20Bonus: Socket 3 Frost Shards to gain Winds of Winter.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R][|CFF808080Bonus: Socket 3 Frost Shards to gain Winds of Winter.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]", 0, 0 },
-  { 357349, "$?pc92422[|CFF808080Bonus: Socket 2 more Unholy Shards to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]?pc92421[|CFF808080Bonus: Socket 1 more Unholy Shard to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]?pc91770[|CFF20ff20Bonus: Socket 3 Unholy Shards to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R][|CFF808080Bonus: Socket 3 Unholy Shards to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]", 0, 0 },
+  { 357347, "$?pc92426[|CFF808080Bonus: Socket 2 more Blood Shards to gain Blood Link.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]?pc92425[|CFF808080Bonus: Socket 1 more Blood Shard to gain Blood Link.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]?pc91768[|CFF20ff20Bonus: Socket 3 Blood Shards to gain Blood Link.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies. Increases in effectiveness with more powerful Blood Shards.|R][|CFF808080Bonus: Socket 3 Blood Shards to gain Blood Link.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]", 0, 0 },
+  { 357348, "$?pc92424[|CFF808080Bonus: Socket 2 more Frost Shards to gain Winds of Winter.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]?pc92423[|CFF808080Bonus: Socket 1 more Frost Shard to gain Winds of Winter.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]?pc91769[|CFF20ff20Bonus: Socket 3 Frost Shards to gain Winds of Winter.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes. Increases in effectiveness with more powerful Frost Shards.|R][|CFF808080Bonus: Socket 3 Frost Shards to gain Winds of Winter.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]", 0, 0 },
+  { 357349, "$?pc92422[|CFF808080Bonus: Socket 2 more Unholy Shards to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]?pc92421[|CFF808080Bonus: Socket 1 more Unholy Shard to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]?pc91770[|CFF20ff20Bonus: Socket 3 Unholy Shards to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them. Increases in effectiveness with more powerful Unholy Shards.|R][|CFF808080Bonus: Socket 3 Unholy Shards to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]", 0, 0 },
   { 357363, "Enter your own personal cage.", "A cage just for you.", 0 },
   { 357381, "Enter the Jailer's Deluxe cell.", "The Jailer's finest accommodations just for you.", 0 },
   { 357409, "$@spelldesc355303", 0, 0 },
@@ -15477,7 +15482,10 @@ static const std::array<spelltext_data_t, 15520> __ptr_spelltext_data { {
   { 357459, "Summons a miniature shadow realm.", "You have created a miniature shadow realm.", 0 },
   { 357558, "If a target dies while affected by the Ebonsoul Vise, it leaves a Shredded Soul behind which you can collect to gain $355327s2 Critical Strike for $356281d.", 0, 0 },
   { 357564, "$@spelldesc354115\r\n", "$?e1[Your Mastery is increased by $w2.]?e2[Your Haste is increased by $w3%.]?e3[Your Critical Strike is increased by $w4%.][Your Versatility is increased by $w5%.]", 0 },
+  { 357575, "While above $s1% health, your Mastery or Critical Strike is increased by $357584s1. Your highest stat is always chosen.", "While above $s1% health, your Mastery or Critical Strike is increased by $357584s1. Your highest stat is always chosen.", 0 },
   { 357581, 0, "The text detailing your demise can't be rewritten just yet.", 0 },
+  { 357582, "$@spelldesc357575", "Mastery increased by $w1.", 0 },
+  { 357584, "$@spelldesc357575", "Critical Strike increased by $w1.", 0 },
   { 357585, "Consume a lesser weapon, destroying it utterly to feed the power of Jaithys.\r\n\r\n", 0, 0 },
   { 357588, "While you are behind your enemies, their movement is impaired, or they are suffering from loss-of-control effects, your attacks have a high chance to cause them to bleed for ${$s1*($353466d/$353466t1+1)} Physical damage over $353466d.", 0, 0 },
   { 357595, "Your attacks apply Banshee's Blight, giving your finishing moves a $s2% chance per combo point spent to deal $s1 Shadow damage. Banshee's Blight stacks up to $358090u times as the target becomes more injured.", "Damaging finishing moves have a chance to deal $s1 Shadow damage per stack.", 0 },
@@ -15520,14 +15528,14 @@ static const std::array<spelltext_data_t, 15520> __ptr_spelltext_data { {
   { 358959, "Improve Rae'shalare, Death's Whisper to item level $s3.", 0, 0 },
   { 359040, "Consume The Mad Duke's Tea, increasing your $pri, Haste, Critical Strike chance, or Versatility for $354018d.\r\n\r\nYou can only have the effect of one of The Mad Duke's Tea active at a time.", 0, 0 },
   { 359078, "An intense application of Numbing Poison reduces the target's casting speed by $s1% for $d.", "Casting slowed by $s1%.", 0 },
+  { 359168, "While you are behind your enemies, their movement is impaired, or they are suffering from loss-of-control effects, your attacks have a high chance to cause them to bleed for ${$s1*($353466d/$353466t1+1)} Physical damage over $353466d.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.0.39172
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
-  {    5938,  0, "Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]\r\n$?s319032[\r\nYour Nature damage done against the target is increased by $319504s1%][] $?a354124[and healing received reduced by $354124S1% ][]for $319504d.\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", "Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]$?s319032[\r\n\r\nYour Nature damage done against the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $354124S1% for $319504d.][]\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r" },
+// spelltext hotfix entries, wow build 9.1.0.39413
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.1.0.39172
+// Spell description variables, wow build 9.1.0.39413
 static const std::array<spelldesc_vars_data_t, 301> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15774,7 +15782,7 @@ static const std::array<spelldesc_vars_data_t, 301> __ptr_spelldesc_vars_data { 
   {  319778, "$coeff=${0.0264}" },
   {  319978, "$absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}" },
   {  319983, "$mod=$?a137005[${1.0}]?a212611[${1.0}]?a137009[${3.0}]?a137014[${0.5}.1]?a137018[${1.5}.1]?a137022[${3.0}]?a137026[${4.0}]?a137030[${0.8}.2]?a137034[${1.5}]?a137038[${1.4}.1]?a137042[${1.0}]?a137047[${1.0}][${1.0}]" },
-  {  320659, "$points=${$cond($gt($SP,$AP),$SP*0.36,$AP*0.36)*(1+$@versadmg)}" },
+  {  320659, "$points=${$cond($gt($SP,$AP),$SP*0.3312,$AP*0.3312)*(1+$@versadmg)}" },
   {  320660, "$pointsA=${$cond($gt($SP,$AP),$SP*0.05,$AP*0.05)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}" },
   {  321012, "$absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}" },
   {  321530, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*(1+$@versadmg)*(1+($137015s1/100))}" },
@@ -15832,7 +15840,7 @@ static const std::array<spelldesc_vars_data_t, 301> __ptr_spelldesc_vars_data { 
   {  358164, "$buff=${$348272s1}\r\n$max=${3*$<buff>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.0.39172
+// spelldesc_vars hotfix entries, wow build 9.1.0.39413
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
