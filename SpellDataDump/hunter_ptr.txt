@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.1.0.39172 Live (hotfix 2021-06-28/39172, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-15/39335, no-networking)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -345,7 +345,7 @@ Effects          :
 #1 (id=800)      : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=101372)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10951 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.12600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Fires several missiles, hitting up to $I targets within $A2 yards of your current target for $s2 Physical damage$?s115939[ and triggering Beast Cleave][].$?s19434[
 
 |cFFFFFFFFGenerates $213363s1 Focus per target hit.|r][]
@@ -638,7 +638,7 @@ Attributes       : .x..x... ........ x....... ........   ........ ........ .....
                  : Ranged Ability (1)
 Effects          :
 #1 (id=10651)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.47800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.73000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=101526)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : A powerful aimed shot that deals $s1 Physical damage.
@@ -1071,7 +1071,7 @@ Effects          :
 #1 (id=23978)    : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=83780)    : Dummy (3)
-                   Base Value: 112 | Scaled Value: 112 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 129 | Scaled Value: 129 | PvP Coefficient: 0.86822 | Target: Self (1)
 Description      : Give the command to kill, causing your pet to savagely deal $<damage> Physical damage to the enemy.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $lowNerf=${0.5+$min($pl,20)*0.025}
@@ -1393,7 +1393,7 @@ Attributes       : .x..x... ........ x....... ........   ........ .x...... .....
                  : Ranged Ability (1)
 Effects          :
 #1 (id=45989)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.30000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=45990)    : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : You attempt to finish off a wounded target, dealing $s1 Physical damage. Only usable on enemies with less than $s2% health.
@@ -1513,7 +1513,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=48506)    : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
+#1 (id=48506)    : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
                    Base Value: 15 | Scaled Value: 5.795453 (coefficient=0.340909) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
 Description      : Increases your Versatility by $s1.
 
@@ -3627,7 +3627,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Ranged Ability (1)
 Effects          :
 #1 (id=269119)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.57000 | PvP Coefficient: 1.10000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.62700 | PvP Coefficient: 1.10000 | Target: Enemy (6)
 Description      : A quick shot that causes $sw2 Arcane damage.
 Variables        : $mult=${($max(0,$min($pl-10,10))*5+80)/130}
 
@@ -3847,7 +3847,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=271205)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.26500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=286017)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : A vicious slash dealing $s1 Physical damage.
@@ -4192,7 +4192,7 @@ Effects          :
 #1 (id=283801)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=283802)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.73700 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.84800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=481423)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 Description      : A quick shot causing ${$s2*$<mult>} Physical damage.
@@ -5089,7 +5089,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : Tick on application (169), Periodic effect can crit (265)
 Effects          :
 #1 (id=323302)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22700 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=323303)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Fire a shot that tears through your enemy, causing them to bleed for ${$s1*$s2} damage over $d.
@@ -5531,7 +5531,7 @@ Attributes       : .x...... ........ ........ ........   ........ ........ .....
                  : Ranged Ability (1), Not a proc (105)
 Effects          :
 #1 (id=479998)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.34580 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.38000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc257044
 
 Name             : Hunter's Mark (id=257284) [Spell Family (9)] 
@@ -5593,7 +5593,7 @@ Attributes       : .x..x... ........ x....... ........   ........ .x...... .....
                  : Ranged Ability (1)
 Effects          :
 #1 (id=480918)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.37500 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.41200 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Fires several missiles, hitting your current target and up to $I enemies within $A1 yards for $s1 Physical damage.
 
 Name             : Trick Shots (id=257621) [Spell Family (9), Passive] 
@@ -5775,7 +5775,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=483863)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.03500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.13900 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : A brutal attack that deals $s1 Physical damage and grants you Mongoose Fury.
 
 |cFFFFFFFFMongoose Fury|r
@@ -5939,9 +5939,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=484013)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20311 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22340 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=484014)   : Apply Aura (6) | Periodic Damage (3): nature every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23751 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26130 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Fire a poison-tipped arrow at an enemy, dealing $s1 Nature damage instantly and an additional $o2 damage over $d.
 Tooltip          : Suffering $w2 Nature damage every $t2 sec.$?a265428[ The Hunter's pet deals $w3% increased damage to you.][]
 
@@ -7486,7 +7486,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=709120)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.49500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc259495
 
 Name             : Wildfire Bomb (id=265163) [Spell Family (9)] 
@@ -7532,7 +7532,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=709186)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.26500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : A vicious slash dealing $s1 Physical damage.
 
 Name             : Mongoose Bite (id=265888) [Spell Family (9)] 
@@ -7558,7 +7558,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=710469)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.03500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.13900 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : A brutal attack that deals $sw1 Physical damage and grants you Mongoose Fury.
 
 |cFFFFFFFFMongoose Fury|r
@@ -8323,7 +8323,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Periodic effect can crit (265)
 Effects          :
 #1 (id=718207)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc259495
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 
@@ -8347,7 +8347,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... .....
                  : Cannot dodge/parry/block (21), Don't display in aura bar (60)
 Effects          :
 #1 (id=718226)   : Dummy (3)
-                   Base Value: 135 | Scaled Value: 135 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 149 | Scaled Value: 149 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : You and your pet leap to the target and strike it as one, dealing a total of $<damage> Physical damage.
 
 |cFFFFFFFFGenerates $269752s2 Focus for you and your pet.|r
@@ -8374,7 +8374,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=718232)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.35000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.49000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=718234)   : Energize Power (30)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: focus | Target: Self (1)
 Description      : $@spelldesc269751
@@ -8448,7 +8448,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=719192)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.49500 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc270323
 
 Name             : Pheromone Bomb (id=270332) [Spell Family (9)] 
@@ -8471,7 +8471,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Periodic effect can crit (265)
 Effects          :
 #1 (id=719195)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc270323
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 
@@ -8542,7 +8542,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=719203)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.49500 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc270335
 
 Name             : Shrapnel Bomb (id=270339) [Spell Family (9)] 
@@ -8568,7 +8568,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Periodic effect can crit (265)
 Effects          :
 #1 (id=719204)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=719205)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc270335
@@ -8597,7 +8597,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=719209)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05000 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05500 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc270335
 Tooltip          : Suffering $w1 Bleed damage every $t1 sec.
 
@@ -8716,7 +8716,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=721015)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.49500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc271045
 
 Name             : Volatile Bomb (id=271049) [Spell Family (9)] 
@@ -8738,7 +8738,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Periodic effect can crit (265)
 Effects          :
 #1 (id=721016)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc271045
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 
@@ -11101,7 +11101,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=808381)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=808382)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : You attempt to finish off a wounded target, dealing $s1 Physical damage. Only usable on enemies with less than $s2% health.
@@ -13328,7 +13328,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=890585)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Bonus Kill Shots from Flayed Shot cause $356620I targets within $356620A1 yds to bleed for $s1% of the damage dealt by Kill Shot over $356620d.
 
 
