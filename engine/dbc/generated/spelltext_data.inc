@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.39335
-static const std::array<spelltext_data_t, 15528> __spelltext_data { {
+static const std::array<spelltext_data_t, 15529> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15376,6 +15376,7 @@ static const std::array<spelltext_data_t, 15528> __spelltext_data { {
   { 356264, "Up to $s1 targets hit by your Death Chakram are also hit by Explosive Shot.", 0, 0 },
   { 356281, "$@spelldesc355324", "Relishing in the shredded remains of your foe's soul, granting $w1 Critical Strike.", 0 },
   { 356284, "Take on the appearance of an attendant of Korthia.", "Wearing the guise of a Korthian attendant.", 0 },
+  { 356320, "$@spelldesc355766", 0, 0 },
   { 356321, "$@spelldesc355766", "Draining $w1 health from nearby enemies every $t1 sec.", 0 },
   { 356326, "$@spelldesc355321", "Mastery increased by $w1.", 0 },
   { 356329, "$@spelldesc355755", "Damage taken from $@auracaster increased by ${$W1}.2%.", 0 },
