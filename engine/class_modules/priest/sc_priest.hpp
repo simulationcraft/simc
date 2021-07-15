@@ -391,8 +391,8 @@ public:
     // Sets number of allies to use as an artificial modifier for Rigor Mortis stacks
     // For each damage ability the priest will do it will add the amount of stacks equal
     // to the number of allies
-    // TODO: tune this around raid testing
-    int pallid_command_allies = 5;
+    // 20m raid this stacks in 1-2s
+    int pallid_command_allies = 50;
   } options;
 
   // Legendaries
