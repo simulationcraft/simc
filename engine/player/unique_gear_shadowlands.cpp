@@ -3374,11 +3374,10 @@ void winds_of_winter( special_effect_t& effect )
 
   struct winds_of_winter_damage_t : proc_spell_t
   {
-    winds_of_winter_damage_t( const special_effect_t& e, int rank )
+    winds_of_winter_damage_t( const special_effect_t& e )
       : proc_spell_t( "winds_of_winter", e.player, e.player->find_spell( 355733 ) )
     {
       base_dd_min = base_dd_max = 1.0; // Ensure that the correct snapshot flags are set.
-      base_dd_multiplier *= 1.0 + ( rank - 1 ) * 0.5;
     }
   };
 
@@ -3391,11 +3390,11 @@ void winds_of_winter( special_effect_t& effect )
     buff_t* buff;
     player_t* target;
 
-    winds_of_winter_cb_t( const special_effect_t& e, action_t* a, buff_t* b ) :
+    winds_of_winter_cb_t( const special_effect_t& e, action_t* a, buff_t* b, int rank ) :
       dbc_proc_callback_t( e.player, e ),
       accumulated_damage(),
-      damage_cap( e.driver()->effectN( 1 ).average( e.player ) ),
-      damage_fraction( e.driver()->effectN( 2 ).percent() ),
+      damage_cap( e.driver()->effectN( 1 ).average( e.player ) * ( 1.0 + ( rank - 1 ) * 0.5 ) ),
+      damage_fraction( e.driver()->effectN( 2 ).percent() * ( 1.0 + ( rank - 1 ) * 0.5 ) ),
       damage( a ),
       buff( b ),
       target()
@@ -3424,7 +3423,7 @@ void winds_of_winter( special_effect_t& effect )
 
   effect.spell_id = 355724;
   effect.proc_flags2_ = PF2_CRIT;
-  auto damage = create_proc_action<winds_of_winter_damage_t>( "winds_of_winter", effect, rank );
+  auto damage = create_proc_action<winds_of_winter_damage_t>( "winds_of_winter", effect );
   auto buff = buff_t::find( effect.player, "winds_of_winter" );
   if ( !buff )
   {
@@ -3433,7 +3432,7 @@ void winds_of_winter( special_effect_t& effect )
              ->set_can_cancel( false );
   }
 
-  new winds_of_winter_cb_t( effect, damage, buff );
+  new winds_of_winter_cb_t( effect, damage, buff, rank );
   effect.player->register_combat_begin( [ buff ]( player_t* p )
   {
     timespan_t first_tick = p->rng().real() * buff->tick_time();
