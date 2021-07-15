@@ -3657,6 +3657,47 @@ void shard_of_bek( special_effect_t& effect )
   new shard_of_bek_cb_t( effect );
 }
 
+/**Shard of Zed
+ * id=355766 driver Rank 1
+ * id=357040 driver Rank 2 (Ominous)
+ * id=357057 driver Rank 3 (Desolate)
+ * id=357067 driver Rank 4 (Foreboding)
+ * id=357077 driver Rank 5 (Portentous)
+ * id=356321 Unholy Aura buff with periodic dummy
+ * id=356320 Siphon Essence AoE leech spell
+ */
+void shard_of_zed( special_effect_t& effect )
+{
+  struct siphon_essence_t : proc_spell_t
+  {
+    siphon_essence_t( const special_effect_t& e ) :
+      proc_spell_t( "siphon_essence", e.player, e.player->find_spell( 356320 ) )
+    {
+      base_dd_max = base_dd_min = e.driver()->effectN( 1 ).average( e.player );
+    }
+  };
+
+  effect.custom_buff = buff_t::find( effect.player, "unholy_aura" );
+  if ( !effect.custom_buff )
+  {
+    auto tick_damage = create_proc_action<siphon_essence_t>( "siphon_essence", effect );
+    effect.custom_buff = make_buff( effect.player, "unholy_aura", effect.player->find_spell( 356321 ) )
+      ->set_tick_callback( [ tick_damage ]( buff_t* buff, int, timespan_t )
+        {
+          tick_damage->set_target( buff->player->target );
+          tick_damage->execute();
+        } );
+  }
+
+  // TODO: confirm proc flags
+  // 07/15/2021 - Logs seem somewhat inconclusive on this, perhaps it is delayed in triggering
+  effect.proc_flags_ = PF_ALL_HEAL | PF_PERIODIC;
+  effect.proc_flags2_ = PF2_LANDED | PF2_PERIODIC_HEAL;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+
 }  // namespace items
 
 void register_hotfixes()
@@ -3788,6 +3829,12 @@ void register_special_effects()
     unique_gear::register_special_effect( 357049, items::shard_of_bek );
     unique_gear::register_special_effect( 357058, items::shard_of_bek );
     unique_gear::register_special_effect( 357069, items::shard_of_bek );
+
+    unique_gear::register_special_effect( 355766, items::shard_of_zed );
+    unique_gear::register_special_effect( 357040, items::shard_of_zed );
+    unique_gear::register_special_effect( 357057, items::shard_of_zed );
+    unique_gear::register_special_effect( 357067, items::shard_of_zed );
+    unique_gear::register_special_effect( 357077, items::shard_of_zed );
 
     // Disabled effects
     unique_gear::register_special_effect( 329028, items::DISABLED_EFFECT ); // Light-Infused Armor shield
