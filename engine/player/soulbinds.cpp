@@ -2722,7 +2722,7 @@ void register_target_data_initializers( sim_t* sim )
         make_buff( *td, "soulglow_spectrometer", td->source->find_spell( 352939 ) )
         ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
         ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-        ->set_stack_change_callback( [ td, soulglow_spectrometer_damage_cb ]( buff_t*, int old, int cur ) {
+        ->set_stack_change_callback( [ soulglow_spectrometer_damage_cb ]( buff_t*, int old, int cur ) {
           if ( old == 0 )
             soulglow_spectrometer_damage_cb->deactivate();
           else if ( cur == 0 )
