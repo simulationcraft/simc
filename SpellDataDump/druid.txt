@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-15/39335, git build shadowlands 080ea59a2b)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39427 Live (hotfix 2021-07-16/39427, no-networking)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -11708,7 +11708,7 @@ Labels           : 976
 Stacks           : 99 maximum
 Proc Chance      : 101%
 Stance Mask      : 0x40000011
-Affecting spells : Restoration Druid (137012 effects: #10, #11), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Conflux of Elements (341446 effects: #1, #2), Celestial Spirits (354118 effects: #1, #2, #3)
+Affecting spells : Restoration Druid (137012 effects: #10, #11), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Conflux of Elements (341446 effects: #1, #2), Celestial Spirits (354118 effects: #2, #3, #4)
 Family Flags     : 16
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -14050,7 +14050,6 @@ Description      : You and your Kindred Spirit each gain a bonus secondary stat 
 |CFFffffffNecrolord|r: Versatility increased by $357564s5%.
 
 Name             : Celestial Spirits (id=354118) [Spell Family (7), Passive, Hidden] 
-Hotfixed         : Description
 School           : Nature
 Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -14063,20 +14062,22 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=886321)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -60000 | Scaled Value: -60000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Convoke the Spirits (323764)
-                   Family Flags: 16
+#1 (id=886321)   : Apply Aura (6) | Dummy (4)
+                   Base Value: -60000 | Scaled Value: -60000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Sub Type (107 -> 4), Misc Value (11 -> 0), Affects Spells
 #2 (id=887116)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Convoke the Spirits (323764)
                    Family Flags: 16
-Hotfixed         : Base Value (-50 -> -25)
 #3 (id=887117)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Convoke the Spirits (323764)
                    Family Flags: 16
-Hotfixed         : Base Value (-50 -> -25)
+#4 (id=896222)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Convoke the Spirits (323764)
+                   Family Flags: 16
+Hotfixed         : NEW EFFECT
 Description      : Convoke the Spirits' cooldown is reduced by ${($abs($s1)/120000)*100}% and its duration is reduced by $s2%. Convoke the Spirits has an increased chance to use an exceptional spell or ability.
 
 Name             : Owlkin Adept (desc=PvP Talent) (id=354541) [Spell Family (7), Passive, Hidden] 

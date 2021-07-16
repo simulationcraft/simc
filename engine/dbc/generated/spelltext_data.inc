@@ -1,5 +1,5 @@
-// Spell text, wow build 9.1.0.39335
-static const std::array<spelltext_data_t, 15529> __spelltext_data { {
+// Spell text, wow build 9.1.0.39427
+static const std::array<spelltext_data_t, 15531> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15207,6 +15207,7 @@ static const std::array<spelltext_data_t, 15529> __spelltext_data { {
   { 352916, "$@spelldesc351149", 0, 0 },
   { 352917, "$@spelldesc351149", "$w1% increased $pri and Stamina.", 0 },
   { 352918, "$@spelldesc351149", "Cannot benefit from Newfound Resolve.", 0 },
+  { 352938, "$@spelldesc352186", "Healing received from $@auracaster increased by $w1%.", 0 },
   { 352939, "$@spelldesc352186", "Damage taken from $@auracaster increased by $w1%.", 0 },
   { 352940, "$@spelldesc352186", 0, 0 },
   { 352981, "$@spelldesc351491", "Critical strike chance increased by $w1%.", 0 },
@@ -15504,6 +15505,7 @@ static const std::array<spelltext_data_t, 15529> __spelltext_data { {
   { 358126, "$@spelldesc357595", 0, 0 },
   { 358164, "$@spelldesc326514", "Cannot benefit from Forgeborne Reveries' death effects.", 0 },
   { 358284, "Add the Tormented affix to a Mythic Keystone.", 0, 0 },
+  { 358379, "$@spelldesc352186", 0, 0 },
   { 358404, "$@spelldesc351149", "Your Doubt has manifested. Face it to gain Newfound Resolve.", 0 },
   { 358498, "Extract an embedded Shard of Domination from one of your socketed items.", 0, 0 },
   { 358518, "Summons an effigy of Xuen, the White Tiger for $d. Xuen attacks your primary target, and strikes 3 enemies within $123996A1 yards every $123999t1 sec with Tiger Lightning for $123996s1 Nature damage.", 0, 0 },
@@ -15531,20 +15533,11 @@ static const std::array<spelltext_data_t, 15529> __spelltext_data { {
   { 359168, "While you are behind your enemies, their movement is impaired, or they are suffering from loss-of-control effects, your attacks have a high chance to cause them to bleed for ${$s1*($353466d/$353466t1+1)} Physical damage over $353466d.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.0.39335
-static constexpr std::array<hotfix::client_hotfix_entry_t, 9> __spelltext_hotfix_data { {
-  {  354118,  0, "The cooldown and duration of Convoke the Spirits is reduced by $s2%. Convoke the Spirits has an increased chance to use an exceptional spell or ability.", "Convoke the Spirits' cooldown is reduced by ${($abs($s1)/120000)*100}% and its duration is reduced by $s2%. Convoke the Spirits has an increased chance to use an exceptional spell or ability." },
-  {  354703,  0, "Flagellation now also increases your Versatility by $323654s5%. Each combo point spent while Flagellation is active decreases it's cooldown by ${$s1/1000} sec. ", "Flagellation now also increases your Versatility by ${$323654s5/2}.1%. Each combo point spent while Flagellation is active decreases it's cooldown by ${$s1/1000} sec. " },
-  {  355761,  2, nullptr, "Rank 1" },
-  {  355829,  0, "While inside the Maw or Torghast, your spells and abilities have a chance to drain a Soul Fragment from your target, granting you $356042s1 Primary stat for $356042d and stacking up to $356042u times.\r\n\r\nWhen you reach $356042u stacks, unleash Chaos Bane, dealing $356046s1 Shadow damage split between nearby enemies and granting you $356043s3 Primary stat for $356043d.", "While inside the Maw or Torghast, your spells and abilities have a chance to drain a Soul Fragment from your target, granting you $s3 Primary stat for $356042d and stacking up to $356042u times.\r\n\r\nWhen you reach $356042u stacks, unleash Chaos Bane, dealing $s5 Shadow damage split between nearby enemies and granting you $s4 Primary stat for $356043d." },
-  {  355829,  1, "While inside the Maw or Torghast, your spells and abilities have a chance to drain a Soul Fragment from your target, granting you $356042s1 Primary stat for $356042d and stacking up to $356042u times.\r\n\r\nWhen you reach $356042u stacks, unleash Chaos Bane, dealing $356046s1 Shadow damage split between nearby enemies and granting you $356043s3 Primary stat for $356043d.", "While inside the Maw or Torghast, your spells and abilities have a chance to drain a Soul Fragment from your target, granting you $s3 Primary stat for $356042d and stacking up to $356042u times.\r\n\r\nWhen you reach $356042u stacks, unleash Chaos Bane, dealing $s5 Shadow damage split between nearby enemies and granting you $s4 Primary stat for $356043d." },
-  {  355886,  0, "Sinful Brand deals $s1% increased damage and $?c1[Eye Beam][Fel Devastation] damage increases the duration of Sinful Brand by ${$s2/1000}.1 sec.", "Sinful Brand deals $s1% increased damage and $?c1[Eye Beam][Fel Devastation] damage increases the duration of Sinful Brand by ${$s2/1000}.2 sec." },
-  {  357347,  0, "$?pc92426[|CFF808080Bonus: Socket 2 more Blood Shards to gain Blood Link.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]?pc92425[|CFF808080Bonus: Socket 1 more Blood Shard to gain Blood Link\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]?pc91768[|CFF20ff20Bonus: Socket 3 Blood Shards to gain Blood Link\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R][|CFF808080Bonus: Socket 3 Blood Shards to gain Blood Link\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]", "$?pc92426[|CFF808080Bonus: Socket 2 more Blood Shards to gain Blood Link.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]?pc92425[|CFF808080Bonus: Socket 1 more Blood Shard to gain Blood Link.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]?pc91768[|CFF20ff20Bonus: Socket 3 Blood Shards to gain Blood Link.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies. Increases in effectiveness with more powerful Blood Shards.|R][|CFF808080Bonus: Socket 3 Blood Shards to gain Blood Link.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]" },
-  {  357348,  0, "$?pc92424[|CFF808080Bonus: Socket 2 more Frost Shards to gain Winds of Winter\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]?pc92423[|CFF808080Bonus: Socket 1 more Frost Shard to gain Winds of Winter\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]?pc91769[|CFF20ff20Bonus: Socket 3 Frost Shards to gain Winds of Winter.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R][|CFF808080Bonus: Socket 3 Frost Shards to gain Winds of Winter.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]", "$?pc92424[|CFF808080Bonus: Socket 2 more Frost Shards to gain Winds of Winter.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]?pc92423[|CFF808080Bonus: Socket 1 more Frost Shard to gain Winds of Winter.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]?pc91769[|CFF20ff20Bonus: Socket 3 Frost Shards to gain Winds of Winter.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes. Increases in effectiveness with more powerful Frost Shards.|R][|CFF808080Bonus: Socket 3 Frost Shards to gain Winds of Winter.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]" },
-  {  357349,  0, "$?pc92422[|CFF808080Bonus: Socket 2 more Unholy Shards to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]?pc92421[|CFF808080Bonus: Socket 1 more Unholy Shard to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]?pc91770[|CFF20ff20Bonus: Socket 3 Unholy Shards to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R][|CFF808080Bonus: Socket 3 Unholy Shards to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]", "$?pc92422[|CFF808080Bonus: Socket 2 more Unholy Shards to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]?pc92421[|CFF808080Bonus: Socket 1 more Unholy Shard to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]?pc91770[|CFF20ff20Bonus: Socket 3 Unholy Shards to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them. Increases in effectiveness with more powerful Unholy Shards.|R][|CFF808080Bonus: Socket 3 Unholy Shards to gain Chaos Bane.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]" },
+// spelltext hotfix entries, wow build 9.1.0.39427
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.1.0.39335
+// Spell description variables, wow build 9.1.0.39427
 static const std::array<spelldesc_vars_data_t, 301> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15849,7 +15842,7 @@ static const std::array<spelldesc_vars_data_t, 301> __spelldesc_vars_data { {
   {  358164, "$buff=${$348272s1}\r\n$max=${3*$<buff>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.0.39335
+// spelldesc_vars hotfix entries, wow build 9.1.0.39427
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
