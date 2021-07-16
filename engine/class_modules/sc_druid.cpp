@@ -8814,12 +8814,12 @@ void druid_t::init_uptimes()
   if ( talent.incarnation_moonkin->ok() )
   {
     uptime.primordial_arcanic_pulsar = get_uptime( "Incarnation (Pulsar)" );
-    uptime.combined_ca_inc = get_uptime( "Incarnation (Total)" );  //->collect_uptime()->collect_duration();
+    uptime.combined_ca_inc = get_uptime( "Incarnation (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
   }
   else
   {
     uptime.primordial_arcanic_pulsar = get_uptime( "Celestial Alignment (Pulsar)" );
-    uptime.combined_ca_inc = get_uptime( "Celestial Alignment (Total)" );  //->collect_uptime()->collect_duration();
+    uptime.combined_ca_inc = get_uptime( "Celestial Alignment (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
   }
 }
 
