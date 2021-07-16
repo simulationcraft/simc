@@ -195,7 +195,11 @@ void brewmaster( player_t* p )
       def->add_action( racial_actions[ i ] );
   }
 
-  def->add_action( p, monk->spec.invoke_niuzao, "invoke_niuzao_the_black_ox", "if=target.time_to_die>6&cooldown.purifying_brew.charges_fractional<2" );
+  def->add_action(
+      p, monk->spec.invoke_niuzao, "invoke_niuzao_the_black_ox",
+      "if=cooldown.purifying_brew.charges_fractional<2&(target.cooldown.pause_action.remains>=20|time<=10)",
+      "Cast Niuzao when we'll get at least 20 seconds of uptime. This is specific to the default enemy APL and will "
+      "need adjustments for other enemies." );
   def->add_action( p, "Touch of Death", "if=target.health.pct<=15" );
 
   // Covenant Abilities
@@ -204,7 +208,10 @@ void brewmaster( player_t* p )
   def->add_action( "bonedust_brew" );
 
   // Purifying Brew
-  def->add_action( p, "Purifying Brew", "if=stagger.amounttototalpct>=0.7&(cooldown.invoke_niuzao_the_black_ox.remains<5|buff.invoke_niuzao_the_black_ox.up)", "Cast PB during the Niuzao window, but only if recently hit." );
+  def->add_action( p, "Purifying Brew",
+                   "if=stagger.amounttototalpct>=0.7&(((target.cooldown.pause_action.remains>=20|time<=10)&cooldown."
+                   "invoke_niuzao_the_black_ox.remains<5)|buff.invoke_niuzao_the_black_ox.up)",
+                   "Cast PB during the Niuzao window, but only if recently hit." );
   def->add_action( p, "Purifying Brew", "if=buff.invoke_niuzao_the_black_ox.up&buff.invoke_niuzao_the_black_ox.remains<8", "Dump PB charges towards the end of Niuzao: anything is better than nothing." );
   def->add_action( p, "Purifying Brew", "if=cooldown.purifying_brew.charges_fractional>=1.8&(cooldown.invoke_niuzao_the_black_ox.remains>10|buff.invoke_niuzao_the_black_ox.up)", "Avoid capping charges, but pool charges shortly before Niuzao comes up and allow dumping to avoid capping during Niuzao." );
 
@@ -252,7 +259,10 @@ void brewmaster( player_t* p )
   def->add_talent( p, "Chi Burst" );
   def->add_talent( p, "Chi Wave" );
   def->add_action( p, "Spinning Crane Kick",
-      "if=active_enemies>=3&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)" );
+      "if=(active_enemies>=3|conduit.walk_with_the_ox.enabled)&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*("
+      "cooldown.keg_smash.remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)",
+      "Cast SCK if enough enemies are around, or if WWWTO is enabled. This is a slight defensive loss over using TP "
+      "but generally reduces sim variance more than anything else." );
   def->add_action( p, "Tiger Palm",
        "if=!talent.blackout_combo&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65" );
 
