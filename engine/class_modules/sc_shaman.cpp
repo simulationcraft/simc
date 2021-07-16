@@ -8409,6 +8409,7 @@ void shaman_t::create_buffs()
   buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
     ->set_trigger_spell( covenant.necrolord );
   buff.vesper_totem = make_buff( this, "vesper_totem", covenant.kyrian )
+                          ->set_cooldown( 0_s ) // Handled by the action
                           ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
                             if ( new_ == 0 )
                             {
