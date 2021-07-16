@@ -8809,7 +8809,7 @@ void druid_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  uptime.eclipse = get_uptime( "Eclipse" );
+  uptime.eclipse = get_uptime( "Eclipse" )->collect_uptime( *sim );
 
   if ( talent.incarnation_moonkin->ok() )
   {
