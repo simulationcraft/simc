@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-15/39335, git build shadowlands 080ea59a2b)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39427 Live (hotfix 2021-07-16/39427, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -9830,10 +9830,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=832086)   : Health Leech (9)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.49036 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.533 -> 0.49036)
 #2 (id=832087)   : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.40756 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.443 -> 0.40756)
 #3 (id=832088)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=832089)   : Dummy (3)
@@ -10768,7 +10766,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Void Bolt (205448), Void Bolt (343355)
                    Family Flags: 106
-Hotfixed         : Base Value (20 -> 15)
 Description      : Void Bolt deals $s2% more damage.
 While not in Void Form, dealing damage with Mind Flay has a |cFFFFFFFF${$s1}.1%|r chance to allow you to cast Void Bolt.
 While in Void Form, Void Bolt has a |cFFFFFFFF${$s1}.1%|r chance to reset the cooldown on Void Bolt.
@@ -11685,7 +11682,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=890239)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (2 -> 3)
 #2 (id=890448)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
 Description      : Boon of the Ascended's cooldown is reduced by $s1 seconds, up to $s2 sec, for each stack of Boon of the Ascended consumed by Ascended Eruption.
@@ -11831,7 +11827,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=891259)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (3 -> 5)
 Description      : $@spelldesc356392
 Tooltip          : Critical Strike is increased by $s1%.
 
