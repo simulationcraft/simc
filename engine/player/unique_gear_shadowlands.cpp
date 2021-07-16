@@ -2168,12 +2168,15 @@ void salvaged_fusion_amplifier( special_effect_t& effect)
   effect.custom_buff = buff;
   effect.disable_action();
 
+  // since the on-use effect doesn't use the rppm, set to 0 so trinket expressions correctly determine it has a cooldown
+  effect.ppm_ = 0;
+
   auto cb_driver          = new special_effect_t( effect.player );
   cb_driver->name_str     = "salvaged_fusion_amplifier_driver";
   cb_driver->spell_id     = 355333;
   cb_driver->cooldown_    = 0_s;
   cb_driver->proc_flags_  = effect.driver()->proc_flags();
-  cb_driver->proc_flags2_ = PF2_CAST_DAMAGE;  // Only triggers from damaging casts
+  cb_driver->proc_flags2_ = PF2_ALL_HIT; // As this triggers from white+yellow hits not just casts, use ALL_HIT
   effect.player->special_effects.push_back( cb_driver );
 
   [[maybe_unused]] auto callback = new salvaged_fusion_amplifier_cb_t( *cb_driver, damage, buff );
@@ -3150,17 +3153,71 @@ void vitality_sacrifice( special_effect_t& /* effect */ )
 
 }
 
-// Helper function to determine whether a Rune Word is active.
-bool rune_word_active( special_effect_t& effect, spell_label label )
+// Helper function to determine whether a Rune Word is active. Returns rank of the lowest shard if found.
+int rune_word_active( special_effect_t& effect, spell_label label )
 {
+  using id_rank_pair_t = std::pair<unsigned, unsigned>;
+  static constexpr id_rank_pair_t ranks[] = {
+    // Blood
+    { 187057, 1},  // Shard of Bek
+    { 187284, 2},
+    { 187293, 3},
+    { 187302, 4},
+    { 187312, 5},
+    { 187059, 1},  // Shard of Jas
+    { 187285, 2},
+    { 187294, 3},
+    { 187303, 4},
+    { 187313, 5},
+    { 187061, 1},  // Shard of Rev
+    { 187286, 2},
+    { 187295, 3},
+    { 187304, 4},
+    { 187314, 5},
+    // Frost
+    { 187063, 1},  // Shard of Cor
+    { 187287, 2},
+    { 187296, 3},
+    { 187305, 4},
+    { 187315, 5},
+    { 187065, 1},  // Shard of Kyr
+    { 187288, 2},
+    { 187297, 3},
+    { 187306, 4},
+    { 187316, 5},
+    { 187071, 1},  // Shard of Tel
+    { 187289, 2},
+    { 187298, 3},
+    { 187307, 4},
+    { 187317, 5},
+    // Unholy
+    { 187073, 1},  // Shard of Dyz
+    { 187290, 2},
+    { 187299, 3},
+    { 187308, 4},
+    { 187318, 5},
+    { 187076, 1},  // Shard of Oth
+    { 187291, 2},
+    { 187300, 3},
+    { 187309, 4},
+    { 187319, 5},
+    { 187079, 1},  // Shard of Zed
+    { 187292, 2},
+    { 187301, 3},
+    { 187310, 4},
+    { 187320, 5},
+  };
+
   if ( !effect.player->sim->shadowlands_opts.enable_rune_words )
   {
     effect.player->sim->print_debug( "{}: rune word {} from item {} is inactive by global override",
       effect.player->name(), effect.driver()->name_cstr(), effect.item->name() );
-    return false;
+    return 0;
   }
 
   unsigned equipped_shards = 0;
+  unsigned rank = 0;
+
   for ( const auto& item : effect.player->items )
   {
     // We cannot just check special effects because some of the Shard of Domination effects
@@ -3192,7 +3249,18 @@ bool rune_word_active( special_effect_t& effect, spell_label label )
           {
             auto spell = item.player->find_spell( enchant_data.ench_prop[ i ] );
             if ( spell->affected_by_label( label ) )
+            {
               equipped_shards++;
+
+              auto it = range::find( ranks, gem_id, &id_rank_pair_t::first );
+              if ( it != range::end( ranks ) )
+              {
+                if ( rank == 0 )
+                  rank = it->second;
+                else
+                  rank = std::min( rank, it->second );
+              }
+            }
             break;
           }
           default:
@@ -3202,9 +3270,11 @@ bool rune_word_active( special_effect_t& effect, spell_label label )
     }
   }
 
-  bool active = equipped_shards >= 3;
-  effect.player->sim->print_debug( "{}: rune word {} from item {} is {} with {}/3 shards of domination equipped",
-    effect.player->name(), util::tokenize_fn( effect.driver()->name_cstr() ), effect.item->name(), active ? "active" : "inactive", equipped_shards );
+  int active = equipped_shards >= 3 ? as<int>( rank ) : 0;
+  effect.player->sim->print_debug(
+      "{}: rune word {} from item {} is {} (rank {}) with {}/3 shards of domination equipped", effect.player->name(),
+      util::tokenize_fn( effect.driver()->name_cstr() ), effect.item->name(), active ? "active" : "inactive", rank,
+      equipped_shards );
 
   return active;
 }
@@ -3219,16 +3289,18 @@ bool rune_word_active( special_effect_t& effect, spell_label label )
  */
 void blood_link( special_effect_t& effect )
 {
-  if ( !rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_BLOOD ) )
+  auto rank = rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_BLOOD );
+  if ( rank == 0 )
     return;
 
   struct blood_link_damage_t : proc_spell_t
   {
-    blood_link_damage_t( const special_effect_t& e ) :
+    blood_link_damage_t( const special_effect_t& e, int rank ) :
       proc_spell_t( "blood_link", e.player, e.player->find_spell( 355767 ) )
     {
       base_dd_min = e.driver()->effectN( 2 ).min( e.player );
       base_dd_max = e.driver()->effectN( 2 ).max( e.player );
+      base_dd_multiplier *= 1.0 + ( rank - 1 ) * 0.5;
     }
   };
 
@@ -3266,7 +3338,7 @@ void blood_link( special_effect_t& effect )
   auto buff = buff_t::find( effect.player, "blood_link" );
   if ( !buff )
   {
-    auto tick_action = create_proc_action<blood_link_damage_t>( "blood_link_tick", effect );
+    auto tick_action = create_proc_action<blood_link_damage_t>( "blood_link_tick", effect, rank );
     buff = make_buff( effect.player, "blood_link", effect.driver() )
              ->set_quiet( true )
              ->set_can_cancel( false )
@@ -3299,7 +3371,8 @@ void blood_link( special_effect_t& effect )
  */
 void winds_of_winter( special_effect_t& effect )
 {
-  if ( !rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_FROST ) )
+  auto rank = rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_FROST );
+  if ( rank == 0 )
     return;
 
   struct winds_of_winter_damage_t : proc_spell_t
@@ -3320,11 +3393,11 @@ void winds_of_winter( special_effect_t& effect )
     buff_t* buff;
     player_t* target;
 
-    winds_of_winter_cb_t( const special_effect_t& e, action_t* a, buff_t* b ) :
+    winds_of_winter_cb_t( const special_effect_t& e, action_t* a, buff_t* b, int rank ) :
       dbc_proc_callback_t( e.player, e ),
       accumulated_damage(),
-      damage_cap( e.driver()->effectN( 1 ).average( e.player ) ),
-      damage_fraction( e.driver()->effectN( 2 ).percent() ),
+      damage_cap( e.driver()->effectN( 1 ).average( e.player ) * ( 1.0 + ( rank - 1 ) * 0.5 ) ),
+      damage_fraction( e.driver()->effectN( 2 ).percent() * ( 1.0 + ( rank - 1 ) * 0.5 ) ),
       damage( a ),
       buff( b ),
       target()
@@ -3362,7 +3435,7 @@ void winds_of_winter( special_effect_t& effect )
              ->set_can_cancel( false );
   }
 
-  new winds_of_winter_cb_t( effect, damage, buff );
+  new winds_of_winter_cb_t( effect, damage, buff, rank );
   effect.player->register_combat_begin( [ buff ]( player_t* p )
   {
     timespan_t first_tick = p->rng().real() * buff->tick_time();
@@ -3384,18 +3457,21 @@ void winds_of_winter( special_effect_t& effect )
  */
 void chaos_bane( special_effect_t& effect )
 {
-  if ( !rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_UNHOLY ) )
+  auto rank = rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_UNHOLY );
+  if ( rank == 0 )
     return;
 
   struct chaos_bane_t : proc_spell_t
   {
     buff_t* buff;
-    chaos_bane_t( const special_effect_t& e, buff_t* b ) :
+    chaos_bane_t( const special_effect_t& e, buff_t* b, int rank ) :
       proc_spell_t( "chaos_bane", e.player, e.player->find_spell( 356046 ) ),
       buff( b )
     {
-      base_dd_max = base_dd_min = e.driver()->effectN( 5 ).average( e.player );  // coeff in driver eff#5
+      // coeff in driver eff#5
+      base_dd_max = base_dd_min = e.driver()->effectN( 5 ).average( e.player );
       split_aoe_damage = true;
+      base_dd_multiplier *= 1.0 + ( rank - 1 ) * 0.5;
     }
 
     void execute() override
@@ -3431,19 +3507,21 @@ void chaos_bane( special_effect_t& effect )
   if ( !buff )
   {
     buff = make_buff<stat_buff_t>( effect.player, "chaos_bane", effect.player->find_spell( 356043 ) )
+      // coeff in driver eff#4
       ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
-                  effect.driver()->effectN( 4 ).average( effect.player ) )  // coeff in driver eff#4
+                  effect.driver()->effectN( 4 ).average( effect.player ) * ( 1.0 + ( rank - 1 ) * 0.5 ) )
       ->set_can_cancel( false );
   }
 
-  auto proc = create_proc_action<chaos_bane_t>( "chaos_bane", effect, buff );
+  auto proc = create_proc_action<chaos_bane_t>( "chaos_bane", effect, buff, rank );
   effect.custom_buff = buff_t::find( effect.player, "soul_fragment" );
   if ( !effect.custom_buff )
   {
     effect.custom_buff =
         make_buff<stat_buff_t>( effect.player, "soul_fragment", effect.player->find_spell( 356042 ) )
+          // coeff in driver eff#3
           ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
-                      effect.driver()->effectN( 3 ).average( effect.player ) )  // coeff in driver eff#3
+                      effect.driver()->effectN( 3 ).average( effect.player )  * ( 1.0 + ( rank - 1 ) * 0.5 ) )
           ->set_can_cancel( false )
           ->set_stack_change_callback( [ proc ]( buff_t* b, int, int cur ) {
             if ( cur == b->max_stack() )
@@ -3581,6 +3659,47 @@ void shard_of_bek( special_effect_t& effect )
   new shard_of_bek_cb_t( effect );
 }
 
+/**Shard of Zed
+ * id=355766 driver Rank 1
+ * id=357040 driver Rank 2 (Ominous)
+ * id=357057 driver Rank 3 (Desolate)
+ * id=357067 driver Rank 4 (Foreboding)
+ * id=357077 driver Rank 5 (Portentous)
+ * id=356321 Unholy Aura buff with periodic dummy
+ * id=356320 Siphon Essence AoE leech spell
+ */
+void shard_of_zed( special_effect_t& effect )
+{
+  struct siphon_essence_t : proc_spell_t
+  {
+    siphon_essence_t( const special_effect_t& e ) :
+      proc_spell_t( "siphon_essence", e.player, e.player->find_spell( 356320 ) )
+    {
+      base_dd_max = base_dd_min = e.driver()->effectN( 1 ).average( e.player );
+    }
+  };
+
+  effect.custom_buff = buff_t::find( effect.player, "unholy_aura" );
+  if ( !effect.custom_buff )
+  {
+    auto tick_damage = create_proc_action<siphon_essence_t>( "siphon_essence", effect );
+    effect.custom_buff = make_buff( effect.player, "unholy_aura", effect.player->find_spell( 356321 ) )
+      ->set_tick_callback( [ tick_damage ]( buff_t* buff, int, timespan_t )
+        {
+          tick_damage->set_target( buff->player->target );
+          tick_damage->execute();
+        } );
+  }
+
+  // TODO: confirm proc flags
+  // 07/15/2021 - Logs seem somewhat inconclusive on this, perhaps it is delayed in triggering
+  effect.proc_flags_ = PF_ALL_HEAL | PF_PERIODIC;
+  effect.proc_flags2_ = PF2_LANDED | PF2_PERIODIC_HEAL;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+
 }  // namespace items
 
 void register_hotfixes()
@@ -3712,6 +3831,12 @@ void register_special_effects()
     unique_gear::register_special_effect( 357049, items::shard_of_bek );
     unique_gear::register_special_effect( 357058, items::shard_of_bek );
     unique_gear::register_special_effect( 357069, items::shard_of_bek );
+
+    unique_gear::register_special_effect( 355766, items::shard_of_zed );
+    unique_gear::register_special_effect( 357040, items::shard_of_zed );
+    unique_gear::register_special_effect( 357057, items::shard_of_zed );
+    unique_gear::register_special_effect( 357067, items::shard_of_zed );
+    unique_gear::register_special_effect( 357077, items::shard_of_zed );
 
     // Disabled effects
     unique_gear::register_special_effect( 329028, items::DISABLED_EFFECT ); // Light-Infused Armor shield

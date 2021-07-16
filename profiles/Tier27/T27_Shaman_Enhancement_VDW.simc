@@ -127,16 +127,16 @@ actions.single+=/fleshcraft,if=soulbind.pustule_eruption
 actions.single+=/earth_elemental
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
-head=crest_of_the_fallen,id=186304,bonus_id=7187/1498/6935,gem_id=187073/173127
+head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187318
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173127
-shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187076,enchant=30runspeed
+shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187315
 back=grimveiled_cape,id=173242,bonus_id=6716/6993/6647/6649/1559
-chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,gem_id=187079,enchant=eternal_skirmish
+chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,gem_id=187312,enchant=eternal_skirmish
 wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498/6935,gem_id=173127
 hands=demigaunts_of_predestination,id=186345,bonus_id=7187/1498
-waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498/6935,gem_id=187057/173127
+waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187319,enchant=60runspeed
 legs=aradnes_lancer_legguards,id=186307,bonus_id=7187/1498
-feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187063,enchant=eternal_agility
+feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187320,enchant=eternal_agility
 finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_versatility
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_versatility
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
@@ -148,9 +148,9 @@ off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_gui
 # gear_ilvl=254.81
 # gear_agility=1095
 # gear_stamina=2079
-# gear_crit_rating=567
+# gear_crit_rating=535
 # gear_haste_rating=923
 # gear_mastery_rating=133
 # gear_versatility_rating=455
-# gear_speed_rating=30
+# gear_speed_rating=60
 # gear_armor=1025

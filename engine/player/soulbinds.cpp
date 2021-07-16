@@ -1653,11 +1653,18 @@ void effusive_anima_accelerator( special_effect_t& effect )
   add_covenant_cast_callback<covenant_cb_action_t>( effect.player, new effusive_anima_accelerator_t( effect ) );
 }
 
+// 352186: Driver
+// 352939: Damage taken debuff
+// 352938: Healing done buff
+// 352940, 358379: Hidden 15s placeholder buffs, probably to control refreshing mechanism
 void soulglow_spectrometer( special_effect_t& effect )
 {
   struct soulglow_spectrometer_cb_t : public dbc_proc_callback_t
   {
-    soulglow_spectrometer_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    buff_t* debuff;
+
+    soulglow_spectrometer_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), debuff( nullptr )
     {
     }
 
@@ -1665,11 +1672,16 @@ void soulglow_spectrometer( special_effect_t& effect )
     {
       dbc_proc_callback_t::execute( a, s );
 
-      auto td = a->player->get_target_data( s->target );
+      // Ignore the friendly case for now until the healing proc is implemented correctly
+      if ( !s->target->is_enemy() )
+        return;
 
-      // Prevent two events coming in at the same time from triggering more than 1 stack
-      if ( !td->debuff.soulglow_spectrometer->check() )
-        td->debuff.soulglow_spectrometer->trigger();
+      // If the buff is up on any other target, bail out. This is needed for AoE impact triggers
+      if ( debuff && debuff->check() )
+        return;
+
+      debuff = a->player->get_target_data( s->target )->debuff.soulglow_spectrometer;
+      debuff->trigger();
     }
 
     void reset() override
@@ -1679,6 +1691,11 @@ void soulglow_spectrometer( special_effect_t& effect )
       activate();
     }
   };
+
+  // Disable healing procs for now until the healing proc is implemented correctly
+  // Logs show damage+healing are distinct buffs, not exclusive. The player can have one of each up.
+  // TODO: Implement healing self-buff as it may be potentially relevant for tank specializations
+  effect.proc_flags_ = effect.proc_flags() & ~( PF_ALL_HEAL );
 
   new soulglow_spectrometer_cb_t( effect );
 }
@@ -2096,11 +2113,6 @@ void carvers_eye( special_effect_t& effect )
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( cooldown->down() )
-      {
-        return;
-      }
-
       // Don't proc on existing targets
       //
       // Note, in game it seems that the target being checked against in terms of the
@@ -2118,7 +2130,6 @@ void carvers_eye( special_effect_t& effect )
       {
         td->debuff.carvers_eye_debuff->trigger();
         buff->trigger();
-        cooldown->start();
       }
     }
   };
@@ -2690,31 +2701,39 @@ void register_target_data_initializers( sim_t* sim )
   sim->register_target_data_initializer( []( actor_target_data_t* td ) {
     auto data = td->source->find_soulbind_spell( "Soulglow Spectrometer" );
 
-    if ( data->ok() )
+    if ( !data->ok() )
+    {
+      td->debuff.soulglow_spectrometer = make_buff( *td, "soulglow_spectrometer" )->set_quiet( true );
+      return;
+    }
+
+    // Disable healing procs for now until the healing proc is implemented correctly
+    if ( td->target->is_enemy() )
     {
       assert( !td->debuff.soulglow_spectrometer );
 
-      auto soulglow_spectrometer_cb_it =
-          range::find_if( td->source->callbacks.all_callbacks, [ data ]( action_callback_t* t ) {
-            return static_cast<dbc_proc_callback_t*>( t )->effect.spell_id == data->id();
-          } );
+      auto soulglow_spectrometer_damage_cb =
+        *(range::find_if( td->source->callbacks.all_callbacks, [ data ]( action_callback_t* t ) {
+        return static_cast<dbc_proc_callback_t*>( t )->effect.spell_id == data->id();
+      } ));
 
       // When an enemy dies or the debuff expires allow the user to proc the debuff again on the next target
       td->debuff.soulglow_spectrometer =
-          make_buff( *td, "soulglow_spectrometer", td->source->find_spell( 352939 ) )
-              ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
-              ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-              ->set_stack_change_callback( [ soulglow_spectrometer_cb_it ]( buff_t*, int old, int cur ) {
-                auto soulglow_cb = *soulglow_spectrometer_cb_it;
-                if ( old == 0 )
-                  soulglow_cb->deactivate();
-                else if ( cur == 0 )
-                  soulglow_cb->activate();
-              } );
+        make_buff( *td, "soulglow_spectrometer", td->source->find_spell( 352939 ) )
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
+        ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+        ->set_stack_change_callback( [ soulglow_spectrometer_damage_cb ]( buff_t*, int old, int cur ) {
+          if ( old == 0 )
+            soulglow_spectrometer_damage_cb->deactivate();
+          else if ( cur == 0 )
+            soulglow_spectrometer_damage_cb->activate();
+      } );
       td->debuff.soulglow_spectrometer->reset();
     }
     else
+    {
       td->debuff.soulglow_spectrometer = make_buff( *td, "soulglow_spectrometer" )->set_quiet( true );
+    }
   } );
 
   // Kevin's Wrath

@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-14/39335, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39427 Live (hotfix 2021-07-16/39427, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -2092,7 +2092,6 @@ Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
 Spell Level      : 60
-Internal Cooldown: 0.7 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic

@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.1.0.39172 Live (hotfix 2021-06-28/39172, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-15/39335, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -325,7 +325,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=48506)    : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
+#1 (id=48506)    : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
                    Base Value: 15 | Scaled Value: 5.795453 (coefficient=0.340909) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
 Description      : Increases your Versatility by $s1.
 
@@ -5622,7 +5622,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ....x.x. 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=364982)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
+#1 (id=364982)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 9.535023 (coefficient=0.353149) | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Radius: 100 yards | Target: Unknown(118)
 Description      : $@spelldesc238095
 Tooltip          : Mastery increased by $w1.
@@ -5717,7 +5717,6 @@ Description      : $@spelldesc242580
 Tooltip          : Breath of Fire's cooldown has been reset.
 
 Name             : Fortifying Brew (id=243435) [Spell Family (53)] 
-Hotfixed         : Attributes
 Replaces         : Fortifying Brew (id=115203)
 Class            : Mistweaver Windwalker Monk
 School           : Physical
@@ -8867,7 +8866,6 @@ Effects          :
 Description      : $@spelldesc310454
 
 Name             : Weapons of Order (desc=Kyrian) (id=312106) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -9772,7 +9770,6 @@ Effects          :
 Description      : $@spelldesc325216
 
 Name             : Fallen Order (desc=Venthyr) (id=326860) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 Covenant         : Venthyr
 School           : Shadow
@@ -10225,7 +10222,6 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Empowered Tiger Lightning (id=335913) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -10263,6 +10259,8 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Expel Harm (322101)
                    Family Flags: 95
+#2 (id=895593)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value 2: 1341 (Label)
 Description      : Expel Harm's healing is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Inner Fury (id=336452) [Spell Family (53), Passive, Hidden] 
@@ -12045,7 +12043,7 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
-Real PPM         : 1.25
+Real PPM         : 1.5
 Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -12191,7 +12189,7 @@ Effects          :
 #2 (id=890913)   : Dummy (3)
                    Base Value: 24 | Scaled Value: 24 | PvP Coefficient: 1.00000
 #3 (id=890914)   : Dummy (3)
-                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000
+                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000
 Description      : Fallen Order summons $s1 additional $?$C1[Ox]?$C2[Crane][Tiger] adept for $s2 sec. While you have an active adept, your abilities that critically hit reduce the cooldown of Fallen Order by ${$s3/1000} sec.
 
 Name             : Invoke Xuen, the White Tiger (id=358518) [Spell Family (53)] 

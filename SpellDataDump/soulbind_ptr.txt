@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.1.0.39172 Live (hotfix 2021-06-28/39172, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39335 Live (hotfix 2021-07-15/39335, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -173,7 +173,7 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=806786)   : Apply Aura (6) | Periodic Dummy (226): every 3 seconds
+#1 (id=806786)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=827727)   : Apply Aura (6) | Trigger Spell Based on Health% (468)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 332841 | Target: Self (1)
@@ -195,7 +195,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=806791)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Door of Shadows grants you a shield that absorbs damage equal to $s1% of your maximum health. Lasts $321012d.
 Variables        : $absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}
 
@@ -294,7 +294,7 @@ Effects          :
 #1 (id=807854)   : Apply Aura (6) | Proc Trigger Spell (42): Spiked Burrs
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 321659 | Target: Self (1)
 Description      : Your damaging attacks and spells have a chance to toss Niya's Spiked Burrs under your target. The burrs latch onto the first enemy to cross them, reducing movement speed by $333526s1% and inflicting ${$<points>*$333526d} Nature damage over $333526d.
-Variables        : $points=${$cond($gt($SP,$AP),$SP*0.36,$AP*0.36)*(1+$@versadmg)}
+Variables        : $points=${$cond($gt($SP,$AP),$SP*0.3312,$AP*0.3312)*(1+$@versadmg)}
 
 Name             : Niya's Tools: Poison (id=320660) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -438,7 +438,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=833121)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Fleshcraft's passive effect consumes a corpse's essence completely, granting a benefit based on the creature's type.
+Description      : Fleshcraft's passive effect consumes a corpse's essence completely, granting a benefit based on the creature's type. 
+
+Casting Fleshcraft also consumes a small portion of your own essence, granting you the Humanoid benefit.
 
 Name             : Kevin's Keyring (id=323079) [Passive, Hidden] 
 Covenant         : Necrolord
@@ -1274,7 +1276,7 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=823160)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Chance to critical strike is increased by $330511s1% for every nearby enemy or ally, up to $330511u%.
+Description      : Chance to critical strike is increased by $330511s1% for every nearby enemy or ally, up to ${$330511s1*$330511u}%.
 
 Name             : Bearer's Pursuit (id=329779) [Passive, Hidden] 
 Covenant         : Kyrian
@@ -1500,15 +1502,15 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=825881)   : Apply Aura (6) | Modify Mechanic Duration% (234)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 26 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 26 | Target: Self (1)
 #2 (id=826368)   : Apply Aura (6) | Modify Mechanic Duration% (234)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 27 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 27 | Target: Self (1)
 #3 (id=826369)   : Apply Aura (6) | Modify Mechanic Duration% (234)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
 #4 (id=826370)   : Apply Aura (6) | Modify Mechanic Duration% (234)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
 #5 (id=826371)   : Apply Aura (6) | Modify Mechanic Duration% (234)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
 Description      : The duration of incoming interrupt, snare, and root effects are reduced by $s1%.
 
 Name             : Dauntless Duelist (id=331584) [Passive, Hidden] 
@@ -2086,11 +2088,11 @@ Effects          :
 Description      : While in Soulshape, you regenerate $342309s% of your maximum health every $342309t sec.
 
 Name             : Carver's Eye (id=350899) [Passive] 
+Hotfixed         : Internal Cooldown (700 -> 0)
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
 Spell Level      : 60
-Internal Cooldown: 0.7 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -2202,7 +2204,7 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=881162)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 16 | Scaled Value: 16 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=882425)   : Apply Aura (6) | Dummy (4)
                    Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : While above $s2% health, you gain a shield that absorbs $<shield> magic damage for $351921d. This effect may only occur once every $351922d.
@@ -2444,7 +2446,6 @@ Description      : When struck by a snare, you drop a puddle that lasts for $352
 May only occur once every $proccooldown sec.
 
 Name             : Undulating Maneuvers (id=352109) [Passive, Hidden] 
-Hotfixed         : Category (47 -> 0), Spell Type (0 -> 2)
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : Melee
@@ -2537,7 +2538,7 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=882932)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : After taking Physical or Magic damage, gain a shield that absorbs damage equal to $s1% of your maximum Health for $352789d.
 
 Each incoming damage type may trigger this effect once per $352791d.
@@ -2788,7 +2789,7 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=884057)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=885276)   : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When you take damage below $s2% health, you gain a shield for $s1% of your maximum health for $353477d.

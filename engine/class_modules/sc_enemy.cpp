@@ -1405,7 +1405,7 @@ void enemy_t::init_target()
 
 std::string enemy_t::generate_action_list()
 {
-  return generate_tank_action_list( tank_dummy_e::HEROIC );
+  return generate_tank_action_list( tank_dummy_e::MYTHIC );
 }
 
 void enemy_t::generate_heal_raid_event()
@@ -1423,18 +1423,20 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // Defaulted to 20-man damage
   // Damage is normally increased from 10-man to 30-man by an average of 10% for every 5 players added.
   // 10-man -> 20-man = 20% increase; 20-man -> 30-man = 20% increase
-  // Raid values using Guardian of the First One as a baseline
-  int aa_damage[ numTankDummies ]               = { 0, 6415, 45797, 59896, 82447, 137275 };     // Base auto attack damage
-  int dummy_strike_damage[ numTankDummies ]     = { 0, 19245, 137386, 179690, 247341, 411825 };  // Base melee nuke damage (currently set to 3x auto damage)
+  // Raid values using Soulrender Dormazain as a baseline
+  int aa_damage[ numTankDummies ]               = { 0, 6415, 12300, 24597, 43081, 73742 };     // Base auto attack damage
+  int dummy_strike_damage[ numTankDummies ]     = { 0, 11000, 21450, 42932, 68189, 123500 };  // Base melee nuke damage (currently set to Soulrender's Ruinblade) 
   int background_spell_damage[ numTankDummies ] = { 0, 257, 1831, 2396, 3298, 5491 };  // Base background dot damage (currently set to 0.04x auto damage)
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) +
-         ",range=" + util::to_string( floor( aa_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=2,aoe_tanks=1";
+         ",range=" + util::to_string( floor( aa_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=1.5,aoe_tanks=1";
   als += "/melee_nuke,damage=" + util::to_string( dummy_strike_damage[ tank_dummy_index ] ) +
-         ",range=" + util::to_string( floor( dummy_strike_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=2,cooldown=25,aoe_tanks=1";
+         ",range=" + util::to_string( floor( dummy_strike_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=2,cooldown=30,aoe_tanks=1";
   als += "/spell_dot,damage=" + util::to_string( background_spell_damage[ tank_dummy_index ] ) +
          ",range=" + util::to_string( floor( background_spell_damage[ tank_dummy_index ] * 0.1 ) ) + ",tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=60";
+  // pause periodically to mimic a tank swap
+  als += "/pause_action,duration=30,cooldown=30,if=time>=30";
 
   return als;
 }
