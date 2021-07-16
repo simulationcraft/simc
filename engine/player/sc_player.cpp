@@ -12892,20 +12892,24 @@ void player_t::delay_auto_attacks( timespan_t delay, proc_t* proc )
   if ( delay == timespan_t::zero() )
     return;
 
-  if ( proc && ( main_hand_attack || off_hand_attack ) )
-    proc->occur();
+  bool delayed = false;
 
   if ( main_hand_attack && main_hand_attack->execute_event )
   {
     sim->print_debug( "Delaying MH auto attack swing timer by {} to {}", delay, main_hand_attack->execute_event->remains() + delay );
     main_hand_attack->execute_event->reschedule( main_hand_attack->execute_event->remains() + delay );
+    delayed = true;
   }
 
   if ( off_hand_attack && off_hand_attack->execute_event )
   {
     sim->print_debug( "Delaying OH auto attack swing timer by {} to {}", delay, off_hand_attack->execute_event->remains() + delay );
     off_hand_attack->execute_event->reschedule( off_hand_attack->execute_event->remains() + delay );
+    delayed = true;
   }
+
+  if ( proc && delayed )
+    proc->occur();
 }
 
 /**
