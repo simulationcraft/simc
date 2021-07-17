@@ -920,6 +920,7 @@ struct pause_action_t : public action_t
     parse_options( options_str );
 
     // Set the cooldown and stats' name to the action's custom name
+    internal_id = p -> get_action_id( name_str );
     cooldown = p -> get_cooldown( name_str );
     cooldown -> duration = cooldown_duration;
     stats = p -> get_stats( name_str, this );
@@ -980,6 +981,7 @@ struct pause_action_t : public action_t
 
     action_t::update_ready( cd );
   }
+
 };
 
 action_t* enemy_create_action( player_t* p, util::string_view name, util::string_view options_str )
