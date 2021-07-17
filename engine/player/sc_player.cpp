@@ -10562,16 +10562,6 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     return expr;
   }
 
-  if ( splits.size() == 3 && splits[ 0 ] == "action" )
-  {
-    for ( size_t i = 0; i < action_list.size(); ++i )
-    {
-      action_t* action = action_list[ i ];
-      if ( action -> name_str == splits[ 1 ] )
-        return action->create_expression( splits[ 2 ] );
-    }
-  }
-
   return sim->create_expression( expression_str );
 }
 
