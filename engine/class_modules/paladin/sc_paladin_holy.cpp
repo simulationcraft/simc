@@ -629,6 +629,9 @@ void paladin_t::generate_action_prio_list_holy_dps()
 
   cds->add_action( "avenging_wrath" );
   cds->add_action( "ashen_hallow" );
+  cds->add_action( "blessing_of_the_seasons" );
+  cds->add_action( "vanquishers_hammer" );
+  cds->add_action( "divine_toll" );
   if ( sim->allow_potions )
   {
     cds->add_action( "potion,if=(buff.avenging_wrath.up)" );
