@@ -517,15 +517,17 @@ struct player_t : public actor_t
 
     // 9.0 Soulbinds
     buff_t* wild_hunt_tactics;  // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
+    buff_t* volatile_solvent_humanoid; // necrolord/marileth - humanoid (mastery) buff
+    buff_t* volatile_solvent_stats; // necrolord/marileth - beast (primary) and dragonkin (crit) buffs
     buff_t* volatile_solvent_damage; // necrolord/marileth - elemental (magic) and giant (physical) % damage done buffs
-    buff_t* redirected_anima; // night_fae/niya - mastery and max health % increase per stack
     buff_t* battlefield_presence; // venthyr/draven - damage increase buff based on number of enemies
-    buff_t* fatal_flaw_crit; // venthyr/nadjia - buff applied after euphoria expires if you have more crit than vers
-    buff_t* fatal_flaw_vers; // venthyr/nadjia - buff applied after euphoria expires if you have more vers than crit
     buff_t* emenis_magnificent_skin; //necrolord/emeni - buff applied when using fleshcraft that increases max health
     buff_t* trembling_pustules; //necrolord/emeni - buff applied when using fleshcraft that increases procs Pustule Eruption damage
     buff_t* hold_your_ground; //venthyr/draven - stamina % buff when standing still
     buff_t* waking_bone_breastplate; //necrolord/heirmir - max health % buff when near 3 or more enemies
+
+    // 9.1 Soulbinds
+    buff_t* wild_hunt_strategem_tracking; //night_fae/korayn - tracking buff to allow procs of wild_hunt_strategem on enemy targets
 
     // 9.0 Runecarves
     buff_t* norgannons_sagacity_stacks;  // stacks on every cast
@@ -852,6 +854,14 @@ public:
   virtual void create_buffs();
   virtual void create_special_effects();
   virtual void init_special_effects();
+  /// Modify generic special effect initialization
+  ///
+  /// Intended to allow modifications to some aspects of the special effect (or buffs,
+  /// actions or callbacks it instantiates), including outright replacement.
+  ///
+  /// This method is called after generic special effect initialization occurs, but before
+  /// any proc objects (e.g., dbc_proc_callback_t-derived objects) are initialized.
+  virtual void init_special_effect( special_effect_t& effect );
   virtual void init_scaling();
   virtual void init_action_list() {}
   virtual void init_gains();

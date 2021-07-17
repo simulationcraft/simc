@@ -38,8 +38,8 @@ struct ardent_defender_t : public paladin_spell_t
 
 struct avengers_shield_base_t : public paladin_spell_t
 {
-  avengers_shield_base_t( util::string_view n, paladin_t* p, const spell_data_t* s, util::string_view options_str ) :
-    paladin_spell_t( n, p, s )
+  avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str ) :
+    paladin_spell_t( n, p, p -> find_specialization_spell( "Avenger's Shield" ) )
   {
     parse_options( options_str );
     if ( ! p -> has_shield_equipped() )
@@ -94,16 +94,35 @@ struct avengers_shield_base_t : public paladin_spell_t
 struct avengers_shield_dt_t : public avengers_shield_base_t
 {
   avengers_shield_dt_t( paladin_t* p ) :
-    avengers_shield_base_t( "avengers_shield_divine_toll", p, p -> find_specialization_spell( "Avenger's Shield" ), "" )
+    avengers_shield_base_t( "avengers_shield_divine_toll", p, "" )
   {
     background = true;
+  }
+};
+
+struct avengers_shield_dr_t : public avengers_shield_base_t
+{
+  avengers_shield_dr_t( paladin_t* p ):
+    avengers_shield_base_t( "avengers_shield_divine_resonance", p, "" )
+  {
+    background = true;
+  }
+
+  double action_multiplier() const override
+  {
+    // 2021-06-26 Divine resonance damage is increased by Moment of Glory, but
+    // does not consume the buff.
+    double m = avengers_shield_base_t::action_multiplier();
+    if( p() -> bugs && p() -> buffs.moment_of_glory -> up() )
+      m *= 1.0 + p() -> buffs.moment_of_glory -> value();
+    return m;
   }
 };
 
 struct avengers_shield_t : public avengers_shield_base_t
 {
   avengers_shield_t( paladin_t* p, util::string_view options_str ) :
-    avengers_shield_base_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ), options_str )
+    avengers_shield_base_t( "avengers_shield", p, options_str )
   {
     cooldown = p -> cooldowns.avengers_shield;
   }
@@ -571,16 +590,8 @@ void paladin_t::target_mitigation( school_e school,
   // Passive sources (Sanctuary)
   s -> result_amount *= 1.0 + passives.sanctuary -> effectN( 1 ).percent();
 
-  if ( dbc -> ptr )
-  {
-    if ( passives.aegis_of_light_2 -> ok() )
-      s -> result_amount *= 1.0 + passives.aegis_of_light_2 -> effectN( 1 ).percent();
-  }
-  else
-  {
-    if ( passives.aegis_of_light -> ok() )
-      s -> result_amount *= 1.0 + passives.aegis_of_light -> effectN( 1 ).percent();
-  }
+  if ( passives.aegis_of_light_2 -> ok() )
+    s -> result_amount *= 1.0 + passives.aegis_of_light_2 -> effectN( 1 ).percent();
 
   if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
     sim -> print_debug( "Damage to {} after passive mitigation is {}", s -> target -> name(), s -> result_amount );
@@ -772,6 +783,7 @@ void paladin_t::create_prot_actions()
 
   if ( specialization() == PALADIN_PROTECTION )
     active.judgment = new judgment_prot_t( this );
+    active.divine_resonance = new avengers_shield_dr_t( this );
 }
 
 action_t* paladin_t::create_action_protection( util::string_view name, const std::string& options_str )
@@ -891,8 +903,7 @@ void paladin_t::init_spells_protection()
   passives.sanctuary           = find_specialization_spell( "Sanctuary" );
   
   passives.aegis_of_light      = find_specialization_spell( "Aegis of Light" );
-  if ( dbc -> ptr )
-    passives.aegis_of_light_2    = find_rank_spell( "Aegis of Light", "Rank 2" );
+  passives.aegis_of_light_2    = find_rank_spell( "Aegis of Light", "Rank 2" );
 
   // Azerite traits
   azerite.inspiring_vanguard = find_azerite_spell( "Inspiring Vanguard" );
@@ -920,6 +931,7 @@ void paladin_t::generate_action_prio_list_prot()
   precombat -> add_action( "potion" );
   precombat -> add_action( this, "Consecration" );
   precombat -> add_action( "lights_judgment" );
+  precombat -> add_action( "ashen_hallow");
 
   ///////////////////////
   // Action Priority List
@@ -941,7 +953,6 @@ void paladin_t::generate_action_prio_list_prot()
   cds -> add_action( "potion,if=buff.avenging_wrath.up" );
   cds -> add_action( "use_items,if=buff.seraphim.up|!talent.seraphim.enabled" );
   cds -> add_talent( this, "Moment of Glory", "if=prev_gcd.1.avengers_shield&cooldown.avengers_shield.remains" );
-  cds -> add_action( "heart_essence" );
 
   std -> add_action( this, "Shield of the Righteous" , "if=debuff.judgment.up" );
   std -> add_action( this, "Shield of the Righteous" , "if=holy_power=5|buff.holy_avenger.up|holy_power=4&talent.sanctified_wrath.enabled&buff.avenging_wrath.up" );

@@ -3282,6 +3282,9 @@ struct evocation_t final : public arcane_mage_spell_t
 
     if ( siphon_storm_charges > 0 )
       p()->trigger_arcane_charge( siphon_storm_charges );
+
+    if ( is_precombat && execute_state )
+      cooldown->adjust( -composite_dot_duration( execute_state ) );
   }
 
   void tick( dot_t* d ) override
@@ -5587,23 +5590,23 @@ bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type
 
 void mage_t::trigger_disciplinary_command( school_e school )
 {
-  if ( runeforge.disciplinary_command.ok() && !buffs.disciplinary_command->check() )
+  if ( !runeforge.disciplinary_command.ok() || buffs.disciplinary_command->cooldown->down() )
+    return;
+
+  // Only one school is triggered for Disciplinary Command if multiple are present.
+  // Schools are checked in order from the largest school mask to smallest.
+  if ( dbc::is_school( school, SCHOOL_ARCANE ) )
+    buffs.disciplinary_command_arcane->trigger();
+  else if ( dbc::is_school( school, SCHOOL_FROST ) )
+    buffs.disciplinary_command_frost->trigger();
+  else if ( dbc::is_school( school, SCHOOL_FIRE ) )
+    buffs.disciplinary_command_fire->trigger();
+  if ( buffs.disciplinary_command_arcane->check() && buffs.disciplinary_command_frost->check() && buffs.disciplinary_command_fire->check() )
   {
-    // Only one school is triggered for Disciplinary Command if multiple are present.
-    // Schools are checked in order from the largest school mask to smallest.
-    if ( dbc::is_school( school, SCHOOL_ARCANE ) )
-      buffs.disciplinary_command_arcane->trigger();
-    else if ( dbc::is_school( school, SCHOOL_FROST ) )
-      buffs.disciplinary_command_frost->trigger();
-    else if ( dbc::is_school( school, SCHOOL_FIRE ) )
-      buffs.disciplinary_command_fire->trigger();
-    if ( buffs.disciplinary_command_arcane->check() && buffs.disciplinary_command_frost->check() && buffs.disciplinary_command_fire->check() )
-    {
-      buffs.disciplinary_command->trigger();
-      buffs.disciplinary_command_arcane->expire();
-      buffs.disciplinary_command_frost->expire();
-      buffs.disciplinary_command_fire->expire();
-    }
+    buffs.disciplinary_command->trigger();
+    buffs.disciplinary_command_arcane->expire();
+    buffs.disciplinary_command_frost->expire();
+    buffs.disciplinary_command_fire->expire();
   }
 }
 
@@ -5750,17 +5753,24 @@ void mage_t::create_actions()
 
 void mage_t::create_options()
 {
+  // TODO: Remove these in 9.2
+  add_option( opt_deprecated( "frozen_duration", "mage.frozen_duration" ) );
+  add_option( opt_deprecated( "scorch_delay", "mage.scorch_delay" ) );
+  add_option( opt_deprecated( "mirrors_of_torment_interval", "mage.mirrors_of_torment_interval" ) );
+  add_option( opt_deprecated( "arcane_missiles_chain_delay", "mage.arcane_missiles_chain_delay" ) );
+  add_option( opt_deprecated( "arcane_missiles_chain_relstddev", "mage.arcane_missiles_chain_relstddev" ) );
+
   add_option( opt_float( "mage.firestarter_duration_multiplier", options.firestarter_duration_multiplier ) );
   add_option( opt_float( "mage.searing_touch_duration_multiplier", options.searing_touch_duration_multiplier ) );
-  add_option( opt_timespan( "frozen_duration", options.frozen_duration ) );
-  add_option( opt_timespan( "scorch_delay", options.scorch_delay ) );
+  add_option( opt_timespan( "mage.frozen_duration", options.frozen_duration ) );
+  add_option( opt_timespan( "mage.scorch_delay", options.scorch_delay ) );
   add_option( opt_timespan( "mage.focus_magic_interval", options.focus_magic_interval, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "mage.focus_magic_relstddev", options.focus_magic_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_float( "mage.focus_magic_crit_chance", options.focus_magic_crit_chance, 0.0, 1.0 ) );
   add_option( opt_bool( "mage.focus_magic_trade", options.focus_magic_trade ) );
-  add_option( opt_timespan( "mirrors_of_torment_interval", options.mirrors_of_torment_interval, 1_ms, timespan_t::max() ) );
-  add_option( opt_timespan( "arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
-  add_option( opt_float( "arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_timespan( "mage.mirrors_of_torment_interval", options.mirrors_of_torment_interval, 1_ms, timespan_t::max() ) );
+  add_option( opt_timespan( "mage.arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
+  add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_bool( "mage.prepull_dc", options.prepull_dc ) );
 
   player_t::create_options();

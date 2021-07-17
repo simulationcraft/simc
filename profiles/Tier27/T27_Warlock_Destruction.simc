@@ -5,10 +5,10 @@ level=60
 race=mechagnome
 role=spell
 position=ranged_back
-talents=3203012
-covenant=night_fae
-soulbind=niya,grove_invigoration/ashen_remains:7/niyas_tools_burrs
-renown=40
+talents=2103013
+covenant=necrolord
+soulbind=marileth,volatile_solvent/kevins_oozeling/ashen_remains:11/combusting_engine:11/fatal_decimation:11
+renown=80
 
 # Default consumables
 potion=spectral_intellect
@@ -28,13 +28,17 @@ actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/summon_pet
+actions.precombat+=/use_item,name=tome_of_monstrous_constructions
+actions.precombat+=/use_item,name=soleahs_secret_technique
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions.precombat+=/snapshot_stats
+actions.precombat+=/fleshcraft
 actions.precombat+=/soul_fire
 actions.precombat+=/incinerate,if=!talent.soul_fire.enabled
 
 # Executed every time the actor is available.
 actions=call_action_list,name=havoc,if=havoc_active&active_enemies>1&active_enemies<5-talent.inferno.enabled+(talent.inferno.enabled&talent.internal_combustion.enabled)
+actions+=/fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_solvent_humanoid.up
 actions+=/conflagrate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.remains<1.5
 actions+=/cataclysm,if=!(pet.infernal.active&dot.immolate.remains+1>pet.infernal.remains)|spell_targets.cataclysm>1
 actions+=/call_action_list,name=aoe,if=active_enemies>2
@@ -93,29 +97,29 @@ actions.havoc+=/chaos_bolt,if=cast_time<havoc_remains
 actions.havoc+=/shadowburn
 actions.havoc+=/incinerate,if=cast_time<havoc_remains
 
-head=grimveiled_hood,id=173245,bonus_id=6648/6649/6758/7027/1532/6935,gem_id=173128
-neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498/6935,gem_id=173128
-shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_stats
-wrists=grim_pursuants_maille,id=182996,bonus_id=7187/1498/6935,gem_id=173128,enchant=eternal_intellect
-hands=impossibly_oversized_mitts,id=183022,bonus_id=7187/1498
-waist=shadewarped_sash,id=183004,bonus_id=7187/1498/6935,gem_id=173128
-legs=leggings_of_lethal_reverberations,id=182981,bonus_id=7187/1498
-feet=slippers_of_the_forgotten_heretic,id=182979,bonus_id=7187/1498
-finger1=hyperlight_band,id=183038,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
-trinket1=macabre_sheet_music,id=184024,bonus_id=7187/1498
-trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498
-main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinful_revelation
+head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=173128/187312
+neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173128
+shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187315
+back=cloak_of_scarred_honor,id=186289,bonus_id=1498/7187
+chest=sacrificers_sacramental_cassock,id=186282,bonus_id=1498/7187,gem_id=187318,enchant=eternal_stats
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=173128/187319,enchant=eternal_intellect
+hands=grasps_of_the_clairvoyant_sage,id=186288,bonus_id=1498/7187
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=173128/187320
+legs=grimveiled_pants,id=173246,bonus_id=7038/6649/6648/1559
+feet=sandals_of_sacred_symmetry,id=186354,bonus_id=1498/7187
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=1498/7187/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=sworn_oath_of_the_nine,id=186290,bonus_id=1498/7187/6935,gem_id=173128,enchant=tenet_of_haste
+trinket1=forbidden_necromantic_tome,id=186421,bonus_id=1498/7187
+trinket2=titanic_ocular_gland,id=186423,bonus_id=1498/7187
+main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=celestial_guidance
 
 # Gear Summary
-# gear_ilvl=229.40
-# gear_stamina=1531
-# gear_intellect=1189
-# gear_crit_rating=211
-# gear_haste_rating=866
-# gear_mastery_rating=553
-# gear_versatility_rating=331
-# gear_armor=373
+# gear_ilvl=256.40
+# gear_stamina=2125
+# gear_intellect=1511
+# gear_crit_rating=486
+# gear_haste_rating=871
+# gear_mastery_rating=502
+# gear_versatility_rating=394
+# gear_armor=439
 default_pet=imp

@@ -55,9 +55,10 @@ actions.aoe+=/ice_lance,if=runeforge.glacial_fragments&talent.splitting_ice&trav
 actions.aoe+=/wait,sec=0.1,if=runeforge.glacial_fragments&talent.splitting_ice
 actions.aoe+=/frostbolt
 
-actions.cds=potion,if=prev_off_gcd.icy_veins|fight_remains<30
+actions.cds=use_item,name=shadowed_orb_of_torment,if=buff.rune_of_power.down
+actions.cds+=/potion,if=prev_off_gcd.icy_veins|fight_remains<30
 actions.cds+=/deathborne
-actions.cds+=/mirrors_of_torment,if=active_enemies<3&(conduit.siphoned_malice|soulbind.wasteland_propriety)
+actions.cds+=/mirrors_of_torment,if=active_enemies<3&(conduit.siphoned_malice|soulbind.wasteland_propriety)&buff.brain_freeze.react=0
 actions.cds+=/rune_of_power,if=cooldown.icy_veins.remains>12&buff.rune_of_power.down
 actions.cds+=/icy_veins,if=buff.rune_of_power.down&(buff.icy_veins.down|talent.rune_of_power)&(buff.slick_ice.down|active_enemies>=2)
 actions.cds+=/time_warp,if=runeforge.temporal_warp&buff.exhaustion.up&(prev_off_gcd.icy_veins|fight_remains<40)
@@ -89,7 +90,7 @@ actions.st+=/ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>trav
 actions.st+=/ebonbolt
 actions.st+=/radiant_spark,if=(!talent.glacial_spike|!conduit.ire_of_the_ascended)&(!runeforge.freezing_winds|active_enemies>=2)&buff.brain_freeze.react
 actions.st+=/mirrors_of_torment
-actions.st+=/shifting_power,if=buff.rune_of_power.down&(soulbind.grove_invigoration|soulbind.field_of_blossoms|runeforge.freezing_winds&buff.freezing_winds.down|active_enemies>=2)
+actions.st+=/shifting_power,if=buff.rune_of_power.down&(runeforge.heart_of_the_fae|soulbind.grove_invigoration|soulbind.field_of_blossoms|runeforge.freezing_winds&buff.freezing_winds.down|active_enemies>=2)
 actions.st+=/arcane_explosion,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down
 actions.st+=/fire_blast,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down
 actions.st+=/glacial_spike,if=buff.brain_freeze.react

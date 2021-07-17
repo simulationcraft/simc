@@ -6,9 +6,9 @@ race=mechagnome
 role=attack
 position=back
 talents=3030022
-covenant=night_fae
-soulbind=niya,grove_invigoration/count_the_odds:7/niyas_tools_burrs
-renown=40
+covenant=kyrian
+soulbind=forgelite_prime_mikanikos,brons_call_to_action/reverberation:9:1/soulglow_spectrometer/count_the_odds:9:1/sleight_of_hand:9:1/effusive_anima_accelerator
+renown=80
 
 # Default consumables
 potion=phantom_fire
@@ -31,7 +31,7 @@ actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/marked_for_death,precombat_seconds=10,if=raid_event.adds.in>25
-actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption
+actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent
 actions.precombat+=/roll_the_bones,precombat_seconds=2
 actions.precombat+=/slice_and_dice,precombat_seconds=1
 actions.precombat+=/stealth
@@ -64,8 +64,12 @@ actions+=/bag_of_tricks
 actions.build=sepsis
 actions.build+=/ghostly_strike
 actions.build+=/shiv,if=runeforge.tiny_toxic_blade
-actions.build+=/echoing_reprimand
-actions.build+=/serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5|cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25
+actions.build+=/echoing_reprimand,if=!soulbind.effusive_anima_accelerator|variable.blade_flurry_sync
+# Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target
+actions.build+=/serrated_bone_spike,if=!dot.serrated_bone_spike_dot.ticking
+actions.build+=/serrated_bone_spike,target_if=min:target.time_to_die+(dot.serrated_bone_spike_dot.ticking*600),if=!dot.serrated_bone_spike_dot.ticking
+# Attempt to use when it will cap combo points and SnD is down, otherwise keep from capping charges
+actions.build+=/serrated_bone_spike,if=fight_remains<=5|cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25|combo_points.deficit=cp_gain&!buff.skull_and_crossbones.up&energy.time_to_max>1
 # Use Pistol Shot with Opportunity if Combat Potency won't overcap energy, when it will exactly cap CP, or when using Quick Draw
 actions.build+=/pistol_shot,if=buff.opportunity.up&(energy.deficit>(energy.regen+10)|combo_points.deficit<=1+buff.broadside.up|talent.quick_draw.enabled)
 actions.build+=/pistol_shot,if=buff.opportunity.up&(buff.greenskins_wickers.up|buff.concealed_blunderbuss.up)
@@ -83,7 +87,7 @@ actions.cds+=/variable,name=vanish_ma_condition,if=runeforge.mark_of_the_master_
 actions.cds+=/vanish,if=variable.vanish_ma_condition&master_assassin_remains=0&variable.blade_flurry_sync
 actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up
 # Fleshcraft for Pustule Eruption if not stealthed and not with Blade Flurry
-actions.cds+=/fleshcraft,if=soulbind.pustule_eruption&!stealthed.all&(!buff.blade_flurry.up|spell_targets.blade_flurry<2)&(!buff.adrenaline_rush.up|energy.time_to_max>2)
+actions.cds+=/fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)&!stealthed.all&(!buff.blade_flurry.up|spell_targets.blade_flurry<2)&(!buff.adrenaline_rush.up|energy.time_to_max>2)
 actions.cds+=/flagellation,if=!stealthed.all&(variable.finish_condition|target.time_to_die<13)
 actions.cds+=/dreadblades,if=!stealthed.all&combo_points<=2&(!covenant.venthyr|debuff.flagellation.up)
 actions.cds+=/roll_the_bones,if=master_assassin_remains=0&buff.dreadblades.down&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)
@@ -116,30 +120,30 @@ actions.finish+=/dispatch
 actions.stealth=dispatch,if=variable.finish_condition
 actions.stealth+=/ambush
 
-head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173129
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173129
-shoulders=umbrahide_pauldrons,id=172319,bonus_id=6649/6650/6758/7121/1532
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=corset_of_the_deft_duelist,id=182989,bonus_id=7187/1498,enchant=eternal_stats
-wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173129
-hands=bleakwing_assassins_grips,id=183007,bonus_id=7187/1498
-waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498/6935,gem_id=173129
-legs=abyssal_disharmony_breeches,id=180108,bonus_id=6536/1540/6646
-feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
-finger1=hyperlight_band,id=183038,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
-finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=lost_soul_xiphos,id=175279,bonus_id=7187/1531,enchant=celestial_guidance
-off_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=sinful_revelation
+head=cap_of_writhing_malevolence,id=186292,bonus_id=7187/1498,gem_id=187312
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498,gem_id=173129
+shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187315
+back=cloak_of_scarred_honor,id=186289,bonus_id=7187/1498
+chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498,gem_id=187319,enchant=eternal_stats
+wrists=risen_monstrosity_cuffs,id=178741,bonus_id=6536/1566/6646,gem_id=173129
+hands=loyal_kvaldirs_handwraps,id=186295,bonus_id=6805/7187/1498,gem_id=187320
+waist=windrunners_baldric,id=186332,bonus_id=7187/1498,gem_id=173129
+legs=elite_aranakk_breeches,id=186331,bonus_id=6805/7187/1498
+feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187318,enchant=eternal_agility
+finger1=ritual_commanders_ring,id=178781,bonus_id=6536/1566/6646,gem_id=173129,enchant=tenet_of_versatility
+finger2=shadowghast_ring,id=178926,bonus_id=6716/7121/6647/6650/1808/1559,gem_id=173129,enchant=tenet_of_versatility
+trinket1=salvaged_fusion_amplifier,id=186432,bonus_id=7187/1498
+trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
+main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
+off_hand=edge_of_night,id=186398,bonus_id=7187/1498,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=228.75
-# gear_agility=883
-# gear_stamina=1510
+# gear_ilvl=255.25
+# gear_agility=1112
+# gear_stamina=2102
 # gear_attack_power=40
-# gear_crit_rating=410
-# gear_haste_rating=663
-# gear_mastery_rating=130
-# gear_versatility_rating=742
-# gear_armor=606
+# gear_crit_rating=702
+# gear_haste_rating=602
+# gear_mastery_rating=80
+# gear_versatility_rating=691
+# gear_armor=716

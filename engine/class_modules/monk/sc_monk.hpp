@@ -6,6 +6,8 @@
 #pragma once
 
 #include "player/pet_spawner.hpp"
+#include "action/action_callback.hpp"
+#include "sc_enums.hpp"
 
 #include "simulationcraft.hpp"
 
@@ -740,6 +742,8 @@ public:
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_mw;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_brm;
 
+    pet_t* bron;
+
     pets_t( monk_t* p );
   } pets;
 
@@ -806,6 +810,8 @@ public:
   void init_procs() override;
   void init_assessors() override;
   void init_rng() override;
+  void init_special_effects() override;
+  void init_special_effect( special_effect_t& effect ) override;
   void reset() override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   void create_options() override;

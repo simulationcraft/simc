@@ -38,10 +38,7 @@ talents=1010122
 renown=80
 
 covenant=night_fae
-soulbind=niya,grove_invigoration/dissonant_echoes:9:1/haunting_apparitions:9:1/rabid_shadows:9:1/niyas_tools_poison/bonded_hearts
-
-# 187318/187076/187079
-# 187312/187315
+soulbind=dreamweaver,podtender/field_of_blossoms/dissonant_echoes:9:1/haunting_apparitions:9:1/rabid_shadows:9:1/dream_delver
 
 head=veil_of_the_banshee_queen,id=186325,bonus_id=7187/1498,gem_id=173130/187318
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498,gem_id=173130
@@ -130,8 +127,6 @@ talents=1010122
 covenant=venthyr
 soulbind=theotar,soothing_shade/dissonant_echoes:9:1/haunting_apparitions:9:1/rabid_shadows:9:1/party_favors
 renown=80
-
-shadowlands.party_favor_type=haste
 
 head=veil_of_the_banshee_queen,id=186325,bonus_id=7187/1498,gem_id=173130/187318
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498,gem_id=173130

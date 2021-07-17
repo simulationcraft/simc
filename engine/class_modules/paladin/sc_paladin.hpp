@@ -77,6 +77,7 @@ public:
     action_t* necrolord_shield_of_the_righteous;
     action_t* divine_toll;
     action_t* seasons[NUM_SEASONS];
+    action_t* divine_resonance;
 
     // Conduit stuff
     action_t* virtuous_command;
@@ -210,6 +211,7 @@ public:
     cooldown_t* hammer_of_wrath;
 
     cooldown_t* blessing_of_the_seasons;
+    cooldown_t* ashen_hallow; // Radiant Embers Legendary
   } cooldowns;
 
   // Passives
@@ -523,9 +525,11 @@ public:
   virtual void vision_of_perfection_proc() override;
 
   std::unique_ptr<expr_t> create_consecration_expression( util::string_view expr_str );
+  std::unique_ptr<expr_t> create_ashen_hallow_expression( util::string_view expr_str );
 
   ground_aoe_event_t* active_consecration;
-  ground_aoe_event_t* active_hallow;
+  ground_aoe_event_t* active_hallow_damaging;
+  ground_aoe_event_t* active_hallow_healing;
   buff_t* active_aura;
 
   std::string default_potion() const override;
@@ -1102,7 +1106,6 @@ struct holy_power_consumer_t : public Base
 
   void execute() override
   {
-    double hp_used = cost();
     //p variable just to make this look neater
     paladin_t* p = this -> p();
 

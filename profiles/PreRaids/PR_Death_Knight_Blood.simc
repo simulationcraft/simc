@@ -28,6 +28,7 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/fleshcraft
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -69,6 +70,7 @@ actions.covenants+=/marrowrend,if=covenant.necrolord&buff.bone_shield.stack<=0
 actions.covenants+=/abomination_limb,if=!buff.dancing_rune_weapon.up
 # We just don't cast this during DRW
 actions.covenants+=/shackle_the_unworthy,if=cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up
+actions.covenants+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent
 
 # Use blood tap to prevent overcapping charges if we have space for a rune and a GCD to spare to burn it
 actions.standard=blood_tap,if=rune<=2&rune.time_to_4>gcd&charges_fractional>=1.8

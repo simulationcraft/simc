@@ -16,9 +16,11 @@
 TODO:
 
 GENERAL:
+- See other options of modeling Spinning Crane Kick
 
 WINDWALKER:
 - Add Cyclone Strike Counter as an expression
+- See about removing tick part of Crackling Tiger Lightning
 
 MISTWEAVER:
 - Essence Font - See if the implementation can be corrected to the intended design.
@@ -32,6 +34,8 @@ BREWMASTER:
 #include "class_modules/apl/apl_monk.hpp"
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
+#include "action/action_callback.hpp"
+#include "sc_enums.hpp"
 
 #include "simulationcraft.hpp"
 #include <deque>
@@ -59,6 +63,14 @@ struct monk_action_t : public Base
   bool trigger_faeline_stomp;
   bool trigger_bountiful_brew;
 
+  // Bron's Call to Arms trigger overrides
+  bool may_proc_bron;
+  proc_t* bron_proc;
+
+  // Shard of Zed
+  // Uses the exact same trigger conditions as Bron.
+  proc_t* shard_of_zed_proc;
+
   // Affect flags for various dynamic effects
   struct
   {
@@ -79,10 +91,19 @@ public:
       trigger_chiji( false ),
       trigger_faeline_stomp( false ),
       trigger_bountiful_brew( false ),
+      may_proc_bron( false ),
+      bron_proc( nullptr ),
+      shard_of_zed_proc( nullptr ),
       affected_by()
   {
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
+  }
+
+  std::string full_name() const
+  {
+    std::string n = ab::data().name_cstr();
+    return n.empty() ? ab::name_str : n;
   }
 
   monk_t* p()
@@ -140,6 +161,23 @@ public:
         default:
           break;
       }
+    }
+
+    // If may_proc_bron is not overridden to trigger, check if it can trigger
+    if ( !may_proc_bron )
+      may_proc_bron = !this->background &&
+                    ( this->spell_power_mod.direct || this->spell_power_mod.tick || this->attack_power_mod.direct ||
+                      this->attack_power_mod.tick || this->base_dd_min || this->base_dd_max || this->base_td );
+  }
+
+  void init_finished() override
+  {
+    ab::init_finished();
+
+    if ( may_proc_bron )
+    {
+      bron_proc = p()->get_proc( std::string( "Bron's Call to Action: " ) + full_name() );
+      shard_of_zed_proc  = p()->get_proc( std::string( "Shard of Zed: " ) + full_name() );
     }
   }
 
@@ -260,8 +298,9 @@ public:
       if ( p()->buff.shuffle->up() )
       {
         timespan_t max_time   = p()->buff.shuffle->buff_duration();
-        timespan_t new_length = std::min( max_time, base_time + p()->buff.shuffle->remains() );
-        p()->buff.shuffle->refresh_duration( new_length );
+        timespan_t old_duration = p()->buff.shuffle->remains();
+        timespan_t new_length = std::min( max_time, base_time + old_duration);
+        p()->buff.shuffle->refresh( 1, buff_t::DEFAULT_VALUE(), new_length );
       }
       else
       {
@@ -437,6 +476,9 @@ public:
     }
 
     p()->trigger_empowered_tiger_lightning( s );
+
+    if ( p()->bugs && td( s->target )->debuff.bonedust_brew->up() )
+      p()->bonedust_brew_assessor( s );
   }
 
   void trigger_storm_earth_and_fire( const action_t* a )
@@ -1257,8 +1299,9 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    may_combo_strike      = true;
-    trigger_faeline_stomp = true;
+    may_combo_strike       = true;
+    may_proc_bron          = true;
+    trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
     sef_ability            = sef_ability_e::SEF_RISING_SUN_KICK;
     affected_by.serenity = true;
@@ -1412,8 +1455,8 @@ struct blackout_kick_t : public monk_melee_attack_t
     : monk_melee_attack_t(
           "blackout_kick", p,
           ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) ),
-      charred_passions( new charred_passions_t( p ) ),
-      bok_totm_proc( new blackout_kick_totm_proc( p ) )
+      bok_totm_proc( new blackout_kick_totm_proc( p ) ),
+      charred_passions( new charred_passions_t( p ) )
   {
     ww_mastery = true;
 
@@ -1585,8 +1628,9 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   {
     parse_options( options_str );
     sef_ability            = sef_ability_e::SEF_RUSHING_JADE_WIND;
-    may_combo_strike      = true;
-    trigger_faeline_stomp = true;
+    may_combo_strike       = true;
+    may_proc_bron          = true;
+    trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
     gcd_type         = gcd_haste_type::NONE;
 
@@ -1755,8 +1799,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     parse_options( options_str );
 
     sef_ability            = sef_ability_e::SEF_SPINNING_CRANE_KICK;
-    may_combo_strike      = true;
-    trigger_faeline_stomp = true;
+    may_combo_strike       = true;
+    may_proc_bron          = true;
+    trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
 
     may_crit = may_miss = may_block = may_dodge = may_parry = false;
@@ -1921,10 +1966,15 @@ struct fists_of_fury_t : public monk_melee_attack_t
     parse_options( options_str );
 
     sef_ability            = sef_ability_e::SEF_FISTS_OF_FURY;
-    may_combo_strike      = true;
-    trigger_faeline_stomp = true;
+    may_combo_strike       = true;
+    // Fists of Fury SHOULD proc Bron's Call to Arms but it does not.
+    if ( p->bugs )
+      may_proc_bron = false;
+    else
+      may_proc_bron = true;
+    trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
-    affected_by.serenity = true;
+    affected_by.serenity   = true;
 
     channeled = tick_zero = true;
     interrupt_auto_attack = true;
@@ -2051,6 +2101,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     interrupt_auto_attack             = false;
     channeled                         = false;
     may_combo_strike                  = true;
+    may_proc_bron                     = true;
     trigger_faeline_stomp             = true;
     trigger_bountiful_brew            = true;
 
@@ -2103,8 +2154,9 @@ struct fist_of_the_white_tiger_main_hand_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, p, s )
   {
     sef_ability            = sef_ability_e::SEF_FIST_OF_THE_WHITE_TIGER;
-    ww_mastery            = true;
-    trigger_faeline_stomp = true;
+    ww_mastery             = true;
+    may_proc_bron          = false; // Only the first hit from FotWT triggers Bron
+    trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
 
     may_dodge = may_parry = may_block = may_miss = true;
@@ -2384,6 +2436,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     ww_mastery              = true;
     may_crit = hasted_ticks = false;
     may_combo_strike        = true;
+    may_proc_bron           = true;
     trigger_faeline_stomp   = true;
     trigger_bountiful_brew  = true;
     parse_options( options_str );
@@ -3084,8 +3137,8 @@ struct fortifying_brew_t : public monk_spell_t
   fortifying_brew_t( monk_t& p, util::string_view options_str )
     : monk_spell_t( "fortifying_brew", &p,
           ( p.specialization() == MONK_BREWMASTER ? p.spec.fortifying_brew_brm : p.spec.fortifying_brew_mw_ww ) ),
-      fortifying_ingredients( new fortifying_ingredients_t( p ) ),
-      delivery( new special_delivery_t( p ) )
+      delivery( new special_delivery_t( p ) ),
+      fortifying_ingredients( new fortifying_ingredients_t( p ) )
   {
     parse_options( options_str );
 
@@ -3582,6 +3635,7 @@ struct xuen_spell_t : public monk_spell_t
     parse_options( options_str );
 
     harmful = false;
+    may_proc_bron = true;
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -3627,6 +3681,7 @@ struct niuzao_spell_t : public monk_spell_t
     parse_options( options_str );
 
     harmful = false;
+    may_proc_bron = true;
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -3657,6 +3712,7 @@ struct chiji_spell_t : public monk_spell_t
     parse_options( options_str );
 
     harmful = false;
+    may_proc_bron = true;
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -3687,6 +3743,7 @@ struct yulon_spell_t : public monk_spell_t
     parse_options( options_str );
 
     harmful = false;
+    may_proc_bron = true;
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -3777,6 +3834,16 @@ struct bountiful_brew_t : public monk_spell_t
     aoe                = -1;
     base_dd_min        = 0;
     base_dd_max        = 0;
+  }
+
+  // Need to disable multipliers in init() so that it doesn't double-dip on anything
+  void init() override
+  {
+    monk_spell_t::init();
+    // disable the snapshot_flags for all multipliers except for crit
+    snapshot_flags = update_flags = 0;
+    snapshot_flags |= STATE_CRIT;
+    snapshot_flags |= STATE_TGT_CRIT;
   }
 
   void execute() override
@@ -4598,16 +4665,29 @@ struct expel_harm_t : public monk_heal_t
   {
     monk_heal_t::impact( s );
 
+    double health_difference = p()->resources.max[ RESOURCE_HEALTH ] - std::max( p()->resources.current[ RESOURCE_HEALTH ], 0.0 );
+
     double result = s->result_total;
 
-    result *= p()->spec.expel_harm->effectN( 2 ).percent();
-
-    // Defaults to 1 but if someone wants to adjust the amount of damage
-    result *= p()->user_options.expel_harm_effectiveness;
+    // Harm Denial only increases the healing, not the damage
+    if ( p()->conduit.harm_denial->ok() )
+      result /= 1 + p()->conduit.harm_denial.percent();
 
     // Have to manually set the combo strike mastery multiplier
     if ( p()->buff.combo_strikes->up() )
       result *= 1 + p()->cache.mastery_value();
+
+    // Windwalker health difference will almost always be zero. So using the Expel Harm Effectiveness
+    // option to simulate the amount of time that the results will use the full amount.
+    if ( health_difference < result || !rng().roll( p()->user_options.expel_harm_effectiveness ) )
+    {
+      double min_amount = 1 / p()->spec.expel_harm->effectN( 2 ).percent();
+      // Normally this would be using health_difference, but since Windwalkers will almost always be set
+      // to zero, we want to use a range of 10 and the result to simulate varying amounts of health.
+      result = rng().range( min_amount, result );
+    }
+
+    result *= p()->spec.expel_harm->effectN( 2 ).percent();
 
     if ( p()->buff.gift_of_the_ox->up() && p()->spec.expel_harm_2_brm->ok() )
     {
@@ -4719,8 +4799,9 @@ struct chi_wave_t : public monk_spell_t
       dmg( true )
   {
     sef_ability            = sef_ability_e::SEF_CHI_WAVE;
-    may_combo_strike      = true;
-    trigger_faeline_stomp = true;
+    may_combo_strike       = true;
+    may_proc_bron          = true;
+    trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
     parse_options( options_str );
     hasted_ticks = harmful = false;
@@ -4813,8 +4894,9 @@ struct chi_burst_t : public monk_spell_t
     : monk_spell_t( "chi_burst", player, player->talent.chi_burst ), heal( nullptr )
   {
     parse_options( options_str );
-    may_combo_strike      = true;
-    trigger_faeline_stomp = true;
+    may_combo_strike       = true;
+    may_proc_bron          = true;
+    trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
     heal             = new chi_burst_heal_t( *player );
     heal->stats      = stats;
@@ -4973,6 +5055,20 @@ struct special_delivery_t : public monk_spell_t
 
 struct celestial_brew_t : public monk_absorb_t
 {
+  struct celestial_brew_t_state_t : public action_state_t
+  {
+    celestial_brew_t_state_t( action_t* a, player_t* target ) : action_state_t( a, target )
+    {
+    }
+
+    proc_types2 cast_proc_type2() const override
+    {
+      // Celestial Brew seems to trigger Bron's Call to Action (and possibly other
+      // effects that care about casts).
+      return PROC2_CAST_HEAL;
+    }
+  };
+  
   special_delivery_t* delivery;
 
   celestial_brew_t( monk_t& p, util::string_view options_str )
@@ -4981,9 +5077,16 @@ struct celestial_brew_t : public monk_absorb_t
   {
     parse_options( options_str );
     harmful = may_crit = false;
+    may_proc_bron      = true;
+    callbacks          = true;
 
     if ( p.talent.light_brewing->ok() )
       cooldown->duration *= 1 + p.talent.light_brewing->effectN( 2 ).percent();  // -20
+  }
+
+  action_state_t* new_state() override
+  {
+    return new celestial_brew_t_state_t( this, player );
   }
 
   double action_multiplier() const override
@@ -5642,9 +5745,9 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
   }
   user_options.initial_chi              = 1;
-  user_options.expel_harm_effectiveness = 1.0;
+  user_options.expel_harm_effectiveness = 0.25;
   user_options.faeline_stomp_uptime     = 1.0;
-  user_options.chi_burst_healing_targets = 1;
+  user_options.chi_burst_healing_targets = 8;
 }
 
 // monk_t::create_action ====================================================
@@ -6673,7 +6776,7 @@ void monk_t::init_assessors()
   base_t::init_assessors();
 
   auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ) {
-    if ( get_target_data( s->target )->debuff.bonedust_brew->up() )
+    if ( !bugs && get_target_data( s->target )->debuff.bonedust_brew->up() )
         bonedust_brew_assessor( s );
     return assessor::CONTINUE;
   };
@@ -6688,6 +6791,171 @@ void monk_t::init_rng()
   player_t::init_rng();
   if ( legendary.bountiful_brew->ok() )
     rppm.bountiful_brew = get_rppm( "bountiful_brew", find_spell( 356592 ) );
+}
+
+// monk_t::init_special_effects ===========================================
+
+void monk_t::init_special_effects()
+{
+  player_t::init_special_effects();
+
+  // Custom trigger condition for Bron's Call to Arms. Completely overrides the trigger
+  // behavior of the generic proc to get control back to the Monk class module in terms
+  // of what triggers it.
+  //
+  // 2021-07-04 Eligible spells that can proc Bron's Call to Arms:
+  // - Any foreground amount spell / attack
+  //
+  // Note, also has to handle the ICD and pet-related trigger conditions.
+  callbacks.register_callback_trigger_function( 333950, dbc_proc_callback_t::trigger_fn_type::TRIGGER,
+      [ this ]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* ) {
+        if ( cb->cooldown->down() )
+          return false;
+
+       // Defer finding the bron pet until the first proc attempt
+      if ( !pets.bron )
+      {
+        pets.bron = find_pet( "bron" );
+        assert( pets.bron );
+      }
+
+      if ( pets.bron->is_active() )
+        return false;
+
+      switch( a->type )
+      {
+        case ACTION_ATTACK:
+        {
+          auto attack = dynamic_cast<monk::actions::monk_melee_attack_t*>( a );
+          if ( attack && attack->may_proc_bron )
+          {
+            attack->bron_proc->occur();
+            return true;
+          }
+          break;
+        }
+        case ACTION_SPELL:
+        {
+          auto spell = dynamic_cast<monk::actions::monk_spell_t*>( a );
+          if ( spell && spell->may_proc_bron )
+          {
+            spell->bron_proc->occur();
+            return true;
+          }
+          break;
+        }
+        case ACTION_HEAL:
+        {
+          auto heal = dynamic_cast<monk::actions::monk_heal_t*>( a );
+          if ( heal && heal->may_proc_bron )
+          {
+            heal->bron_proc->occur();
+            return true;
+          }
+          break;
+        }
+        case ACTION_ABSORB:
+        {
+          auto absorb = dynamic_cast<monk::actions::monk_absorb_t*>( a );
+          if ( absorb && absorb->may_proc_bron )
+          {
+            absorb->bron_proc->occur();
+            return true;
+          }
+          break;
+        }
+        default:
+          break;
+      }
+
+      return false;
+  } );
+
+  const dbc_proc_callback_t::trigger_fn_t& shard_of_zed = [ this ]( const dbc_proc_callback_t* cb, action_t* a,
+                                                                    action_state_t* ) {
+    if ( cb->cooldown->down() )
+      return false;
+
+    switch ( a->type )
+    {
+      case ACTION_ATTACK:
+      {
+        auto attack = dynamic_cast<monk::actions::monk_melee_attack_t*>( a );
+        if ( attack && attack->may_proc_bron )
+        {
+          attack->shard_of_zed_proc->occur();
+          return true;
+        }
+        break;
+      }
+      case ACTION_SPELL:
+      {
+        auto spell = dynamic_cast<monk::actions::monk_spell_t*>( a );
+        if ( spell && spell->may_proc_bron )
+        {
+          spell->shard_of_zed_proc->occur();
+          return true;
+        }
+        break;
+      }
+      case ACTION_HEAL:
+      {
+        auto heal = dynamic_cast<monk::actions::monk_heal_t*>( a );
+        if ( heal && heal->may_proc_bron )
+        {
+          heal->shard_of_zed_proc->occur();
+          return true;
+        }
+        break;
+      }
+      case ACTION_ABSORB:
+      {
+        auto absorb = dynamic_cast<monk::actions::monk_absorb_t*>( a );
+        if ( absorb && absorb->may_proc_bron )
+        {
+          absorb->shard_of_zed_proc->occur();
+          return true;
+        }
+        break;
+      }
+      default:
+        break;
+    }
+
+    return false;
+  };
+
+  callbacks.register_callback_trigger_function( 355766, dbc_proc_callback_t::trigger_fn_type::TRIGGER, shard_of_zed );
+  callbacks.register_callback_trigger_function( 357040, dbc_proc_callback_t::trigger_fn_type::TRIGGER, shard_of_zed );
+  callbacks.register_callback_trigger_function( 357057, dbc_proc_callback_t::trigger_fn_type::TRIGGER, shard_of_zed );
+  callbacks.register_callback_trigger_function( 357067, dbc_proc_callback_t::trigger_fn_type::TRIGGER, shard_of_zed );
+  callbacks.register_callback_trigger_function( 357077, dbc_proc_callback_t::trigger_fn_type::TRIGGER, shard_of_zed );
+}
+
+// monk_t::init_special_effect ============================================
+
+void monk_t::init_special_effect( special_effect_t& effect )
+{
+  switch ( effect.driver()->id() )
+  {
+    // Monk module has custom triggering logic (defined above) so override the initial
+    // proc flags so we get wider trigger attempts than the core implementation. The
+    // overridden proc condition above will take care of filtering out actions that are
+    // not allowed to proc it.
+    //
+    // Bron's Call to Arms
+    case 333950:
+    // Shard of Zed
+    case 355766:
+    case 357040:
+    case 357057:
+    case 357067:
+    case 357077:
+      effect.proc_flags2_ |= PF2_CAST;
+      break;
+    default:
+      break;
+  }
 }
 
 // monk_t::reset ============================================================
@@ -6982,14 +7250,7 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
   double cam = player_t::composite_attribute_multiplier( attr );
 
   if ( attr == ATTR_STAMINA )
-  {
-    // On PTR, Brewmaster Monk spec aura is still showing 30% but the values
-    // have not changed from PTR and live.
-    if ( dbc->ptr )
-      cam *= 1.0 + spec.brewmasters_balance->effectN( 3 ).percent();
-    else
-      cam *= 1.0 + spec.brewmaster_monk->effectN( 11 ).percent();
-  }
+    cam *= 1.0 + spec.brewmasters_balance->effectN( 3 ).percent();
 
   return cam;
 }
@@ -7258,21 +7519,17 @@ void monk_t::create_options()
 {
   base_t::create_options();
 
-  //add_option( opt_deprecated( "initial_chi", "monk.initial_chi" ) );
-  //add_option( opt_deprecated( "memory_of_lucid_dreams_proc_chance", "monk.memory_of_lucid_dreams_proc_chance" ) );
-  //add_option( opt_deprecated( "expel_harm_effectiveness", "monk.expel_harm_effectiveness" ) );
-  //add_option( opt_deprecated( "faeline_stomp_uptime", "monk.faeline_stomp_uptime" ) );
-  //add_option( opt_deprecated( "chi_burst_healing_targets", "monk.chi_burst_healing_targets" ) );
+  // TODO: Remove in 9.2
+  add_option( opt_deprecated( "initial_chi", "monk.initial_chi" ) );
+  add_option( opt_deprecated( "memory_of_lucid_dreams_proc_chance", "monk.memory_of_lucid_dreams_proc_chance" ) );
+  add_option( opt_deprecated( "expel_harm_effectiveness", "monk.expel_harm_effectiveness" ) );
+  add_option( opt_deprecated( "faeline_stomp_uptime", "monk.faeline_stomp_uptime" ) );
+  add_option( opt_deprecated( "chi_burst_healing_targets", "monk.chi_burst_healing_targets" ) );
 
-  add_option( opt_int( "initial_chi", user_options.initial_chi, 0, 6 ) );
   add_option( opt_int( "monk.initial_chi", user_options.initial_chi, 0, 6 ) );
-  add_option( opt_float( "memory_of_lucid_dreams_proc_chance", user_options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
   add_option( opt_float( "monk.memory_of_lucid_dreams_proc_chance", user_options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "expel_harm_effectiveness", user_options.expel_harm_effectiveness, 0.0, 1.0 ) );
   add_option( opt_float( "monk.expel_harm_effectiveness", user_options.expel_harm_effectiveness, 0.0, 1.0 ) );
-  add_option( opt_float( "faeline_stomp_uptime", user_options.faeline_stomp_uptime, 0.0, 1.0 ) );
   add_option( opt_float( "monk.faeline_stomp_uptime", user_options.faeline_stomp_uptime, 0.0, 1.0 ) );
-  add_option( opt_int( "chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
   add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
 }
 
@@ -7869,9 +8126,16 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t* s )
 {
   if ( spec.invoke_xuen_2->ok() )
   {
+    if ( !s->action->harmful )
+      return;
+
     // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself (335913)
     // Touch of Karma (id = 124280) does not contribute to Empowered Tiger Lightning
-    if ( ( buff.invoke_xuen->check() || buff.invoke_xuen_call_to_arms->check() ) && s->result_amount > 0 && s->action->id != 335913 && s->action->id != 124280 )
+    // Bonedust Brew (id = 325217) does not contribute to Empowered Tiger Lightning
+    if ( s->result_amount <= 0 || s->action->id == 335913 || s->action->id == 124280 || s->action->id == 325217 )
+      return;
+
+    if ( buff.invoke_xuen->check() || buff.invoke_xuen_call_to_arms->check() )
     {
       auto td = get_target_data( s->target );
 
@@ -7892,9 +8156,7 @@ void monk_t::trigger_bonedust_brew( action_state_t* s )
     {
       double damage = s->result_amount * covenant.necrolord->effectN( 1 ).percent();
 
-      // Bone Marrow Hops DOES NOT work with SEF or pets
-      // "This" is referring to the player and does not work with "guardians" which is what SEF and pets are registered as
-      if ( ( dbc->ptr || s->action->player == this ) && conduit.bone_marrow_hops->ok() )
+      if ( conduit.bone_marrow_hops->ok() )
         damage *= 1 + conduit.bone_marrow_hops.percent();
 
       active_actions.bonedust_brew_dmg->base_dd_min = damage;

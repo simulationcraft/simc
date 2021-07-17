@@ -29,9 +29,10 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent
 actions.precombat+=/shadowform,if=!buff.shadowform.up
 actions.precombat+=/arcane_torrent
-actions.precombat+=/use_item,name=azsharas_font_of_power
+actions.precombat+=/use_item,name=shadowed_orb_of_torment
 actions.precombat+=/variable,name=mind_sear_cutoff,op=set,value=2
 actions.precombat+=/vampiric_touch
 
@@ -67,6 +68,8 @@ actions.cds+=/unholy_nova,if=((!raid_event.adds.up&raid_event.adds.in>20)|raid_e
 # Use on CD but prioritise using Void Eruption first, if used inside of VF on ST use after a voidbolt for cooldown efficiency and for hungering void uptime if talented.
 actions.cds+=/boon_of_the_ascended,if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_nightmare.enabled|(buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled&(prev_gcd.1.void_bolt&(!equipped.empyreal_ordnance|!talent.hungering_void.enabled)|equipped.empyreal_ordnance&trinket.empyreal_ordnance.cooldown.remains<=162&debuff.hungering_void.up))|(buff.voidform.up&talent.searing_nightmare.enabled)
 actions.cds+=/call_action_list,name=trinkets
+# Use Fleshcraft outside of main cooldowns to maintain Volatile Solvent buff.
+actions.cds+=/fleshcraft,if=soulbind.volatile_solvent&!buff.voidform.up&!buff.power_infusion.up
 
 # Use Searing Nightmare if you will hit enough targets and Power Infusion and Voidform are not ready, or to refresh SW:P on two or more targets.
 actions.cwc=searing_nightmare,use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!variable.pool_for_cds)|(dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)
@@ -136,10 +139,12 @@ actions.trinkets=use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remai
 actions.trinkets+=/use_item,name=inscrutable_quantum_device,if=buff.voidform.up&buff.power_infusion.up|fight_remains<=20|buff.power_infusion.up&cooldown.void_eruption.remains+15>fight_remains|buff.voidform.up&cooldown.power_infusion.remains+15>fight_remains|(cooldown.power_infusion.remains>=10&cooldown.void_eruption.remains>=10)&fight_remains>=190
 # Sync Sheet Music with Voidform
 actions.trinkets+=/use_item,name=macabre_sheet_music,if=cooldown.void_eruption.remains>10
-# Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target
-actions.trinkets+=/use_item,name=soulletting_ruby,if=buff.power_infusion.up|!priest.self_power_infusion,target_if=min:target.health.pct
+# Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target. When used with Shadowed Orb of Torment, just use on CD as much as possible.
+actions.trinkets+=/use_item,name=soulletting_ruby,if=buff.power_infusion.up|!priest.self_power_infusion|equipped.shadowed_orb_of_torment,target_if=min:target.health.pct
 # Use Badge inside of VF for the first use or on CD after the first use. Short circuit if void eruption cooldown is 10s or more away.
 actions.trinkets+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=cooldown.void_eruption.remains>=10
+# Use Shadowed Orb of Torment when not in Voidform, or in between Void Bolt casts in Voidform.
+actions.trinkets+=/use_item,name=shadowed_orb_of_torment,if=!buff.voidform.up|(prev_gcd.1.void_bolt)
 # Use list of on-use damage trinkets only if Hungering Void Debuff is active, or you are not talented into it.
 actions.trinkets+=/call_action_list,name=dmg_trinkets,if=(!talent.hungering_void.enabled|debuff.hungering_void.up)&(buff.voidform.up|cooldown.void_eruption.remains>10)
 # Default fallback for usable items: Use on cooldown in order by trinket slot.
@@ -147,7 +152,7 @@ actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown
 
 head=veil_of_the_banshee_queen,id=186325,bonus_id=7187/1498,gem_id=173130/187318
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498,gem_id=173130
-shoulders=frame_of_the_false_margrave,id=186324,bonus_id=7187/1498,gem_id=187076,enchant=27runspeed
+shoulders=frame_of_the_false_margrave,id=186324,bonus_id=7187/1498,gem_id=187076,enchant=30runspeed
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6536/1566/6646
 chest=sacrificers_sacramental_cassock,id=186282,bonus_id=7187/1498,gem_id=187079,enchant=eternal_stats
 wrists=desecrators_keening_wristwraps,id=186321,bonus_id=7187/1498,gem_id=173130/187315,enchant=eternal_intellect
@@ -169,5 +174,5 @@ main_hand=maledict_opus,id=186406,bonus_id=7187/1498,enchant=sinful_revelation
 # gear_haste_rating=985
 # gear_mastery_rating=674
 # gear_versatility_rating=348
-# gear_speed_rating=27
+# gear_speed_rating=30
 # gear_armor=439

@@ -6,16 +6,16 @@ role=tank
 position=front
 talents=2231133
 covenant=kyrian
-soulbind=forgelite_prime_mikanikos,brons_call_to_action/withering_plague:9:1/spirit_drain:9:1/meat_shield:9:1/lingering_plague:9:1/proliferation:9:1/soulglow_spectrometer/condensed_anima_sphere:9:1/effusive_anima_accelerator
+soulbind=forgelite_prime_mikanikos,brons_call_to_action/withering_plague:9:1/spirit_drain:9:1/meat_shield:9:1/adaptive_armor_fragment:9:1/proliferation:9:1/soulglow_spectrometer/condensed_anima_sphere:9:1/effusive_anima_accelerator
 renown=80
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173129/187319
-neck=shadowghast_necklace,id=178927,bonus_id=6716/6953/6647/6650/1559
-shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187320
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173129/187312
+neck=shadowghast_necklace,id=178927,bonus_id=6716/6953/6647/6650/1559,gem_id=173129
+shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187313
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6536/1566/6646,enchant=soul_vitality
-chest=cuirass_of_the_lonely_citadel,id=186312,bonus_id=7187/1498,gem_id=187318,enchant=eternal_stats
+chest=cuirass_of_the_lonely_citadel,id=186312,bonus_id=7187/1498,gem_id=187314,enchant=eternal_stats
 wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173129/187315
-hands=guillotine_gauntlets,id=186369,bonus_id=7187/1498,gem_id=187312,enchant=eternal_strength
+hands=guillotine_gauntlets,id=186369,bonus_id=7187/1498,gem_id=187318,enchant=eternal_strength
 waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6536/1566/6646/6935,gem_id=173129
 legs=fateforged_legplates,id=186348,bonus_id=7187/1498
 feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
@@ -67,7 +67,7 @@ role=attack
 position=back
 talents=3101013
 covenant=necrolord
-soulbind=emeni,lead_by_example/accelerated_cold:9:1/everfrost:9:1/unleashed_frenzy:9:1/pustule_eruption
+soulbind=emeni,lead_by_example/accelerated_cold:9:1/unleashed_frenzy:9:1/everfrost:9:1/pustule_eruption
 renown=80
 
 head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173130/187312
@@ -102,49 +102,49 @@ soulbind=pelagos,combat_meditation/accelerated_cold:9:1/everfrost:9:1/unleashed_
 renown=80
 
 head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173129/187312
-neck=periapt_of_pristine_preservation,id=186291,bonus_id=7187/1498/6935,gem_id=173129
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173130
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
-back=dealer_xyexas_cape,id=179349,bonus_id=6536/1566/6646,enchant=soul_vitality
-chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187319,enchant=eternal_stats
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173129/187320
-hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498,gem_id=187318,enchant=eternal_strength
-waist=girdle_of_the_soulflayer,id=179326,bonus_id=6536/1566/6646/6935,gem_id=173127
+back=blighted_margraves_cloak,id=178755,bonus_id=6536/1566/6646,enchant=soul_vitality
+chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_stats
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173130/187319
+hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
+waist=fused_bone_greatbelt,id=178734,bonus_id=6536/1566/6646/6935,gem_id=173130
 legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6536/1566/6646
 feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
-finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_versatility
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_versatility
 finger2=shadowghast_ring,id=178926,bonus_id=6647/6648/6758/6944/1559/6935,gem_id=173127,enchant=tenet_of_versatility
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
 trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
-main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/6652/7733/7734/7735,enchant=rune_of_razorice
+main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/7745/7746/7747,enchant=rune_of_razorice
 
 save=T27_Death_Knight_Frost_2H.simc
 
 
 deathknight="T27_Death_Knight_Unholy"
+spec=unholy
 level=60
 race=troll
-spec=unholy
 role=attack
 position=back
 talents=2303021
 covenant=necrolord
-soulbind=heirmir,forgeborne_reveries/eternal_hunger:9:1/convocation_of_the_dead:9:1/heirmirs_arsenal_marrowed_gemstone/carvers_eye/mnemonic_equipment
+soulbind=plague_deviser_marileth,volatile_solvent/eternal_hunger:9:1/convocation_of_the_dead:9:1/adaptive_armor_fragment:9:1/kevins_oozeling
 renown=80
 
 head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173129/187312
-neck=periapt_of_pristine_preservation,id=186291,bonus_id=7187/1498/6935,gem_id=173129
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173128
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
 back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6648/1559,enchant=soul_vitality
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_stats
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173129/187319
-hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
-waist=fused_bone_greatbelt,id=178734,bonus_id=6536/1566/6646/6935,gem_id=173128
-legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6536/1566/6646
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173128/187319
+hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
+waist=fused_bone_greatbelt,id=178734,bonus_id=6536/1566/6646/6935,gem_id=173127
+legs=gormshell_greaves,id=178701,bonus_id=6536/1566/6646
 feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
-finger1=signet_of_the_false_accuser,id=178824,bonus_id=6536/1566/6646/6935,gem_id=173127,enchant=tenet_of_mastery
-finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_haste
+finger1=fleshfused_circle,id=178869,bonus_id=6536/1566/6646/6935,gem_id=173127,enchant=tenet_of_mastery
+finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_mastery
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
-trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
-main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/6652/7733/7734/7735,enchant=rune_of_the_fallen_crusader
+trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
+main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/6652/7745/7746/7747,enchant=rune_of_the_fallen_crusader
 
 save=T27_Death_Knight_Unholy.simc

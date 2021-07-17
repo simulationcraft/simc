@@ -7,7 +7,7 @@ role=attack
 position=back
 talents=2303021
 covenant=necrolord
-soulbind=heirmir,forgeborne_reveries/eternal_hunger:9:1/convocation_of_the_dead:9:1/heirmirs_arsenal_marrowed_gemstone/carvers_eye/mnemonic_equipment
+soulbind=plague_deviser_marileth,volatile_solvent/eternal_hunger:9:1/convocation_of_the_dead:9:1/adaptive_armor_fragment:9:1/kevins_oozeling
 renown=80
 
 # Default consumables
@@ -30,6 +30,7 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/raise_dead
+actions.precombat+=/fleshcraft
 actions.precombat+=/army_of_the_dead,precombat_time=3,if=!talent.summon_gargoyle
 # Evaluates a trinkets cooldown, divided by 45. This was chosen as unholy works on 45 second burst cycles, but has too many cdr effects to give a cooldown.x.duration divisor instead. If it's value has no remainder return 1, else return 0.5.
 actions.precombat+=/variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=trinket.1.has_use_buff&(trinket.1.cooldown.duration%%45=0)
@@ -116,10 +117,11 @@ actions.covenants=swarming_mist,if=variable.st_planning&runic_power.deficit>16&(
 # Set to use after apoc is on CD as to prevent overcapping RP while setting up CD's
 actions.covenants+=/swarming_mist,if=cooldown.apocalypse.remains&(active_enemies>=2&active_enemies<=5&runic_power.deficit>10+(active_enemies*6)&variable.adds_remain|active_enemies>5&runic_power.deficit>40)
 actions.covenants+=/abomination_limb,if=variable.st_planning&!soulbind.lead_by_example&(cooldown.apocalypse.remains|!talent.army_of_the_damned&cooldown.dark_transformation.remains)&rune.time_to_4>buff.runic_corruption.remains|fight_remains<21
-actions.covenants+=/abomination_limb,if=variable.st_planning&soulbind.lead_by_example&(dot.unholy_blight_dot.remains>11|!talent.unholy_blight&cooldown.dark_transformation.remains)
+actions.covenants+=/abomination_limb,if=variable.st_planning&(soulbind.lead_by_example|soulbind.kevins_oozeling)&(dot.unholy_blight_dot.remains>11|!talent.unholy_blight&cooldown.dark_transformation.remains)
 actions.covenants+=/abomination_limb,if=variable.adds_remain&rune.time_to_4>buff.runic_corruption.remains
 actions.covenants+=/shackle_the_unworthy,if=variable.st_planning&(cooldown.apocalypse.remains>10|!talent.army_of_the_damned&cooldown.dark_transformation.remains)|fight_remains<15
 actions.covenants+=/shackle_the_unworthy,if=variable.adds_remain&(death_and_decay.ticking|raid_event.adds.remains<=14)
+actions.covenants+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent
 
 # Single Target
 actions.generic=death_coil,if=!variable.pooling_runic_power&(buff.sudden_doom.react|runic_power.deficit<=13)|pet.gargoyle.active&rune<=3|fight_remains<10&!debuff.festering_wound.up
@@ -160,29 +162,29 @@ actions.trinkets+=/use_item,slot=trinket1,if=!trinket.1.has_use_buff&(trinket.2.
 actions.trinkets+=/use_item,slot=trinket2,if=!trinket.2.has_use_buff&(trinket.1.cooldown.remains|!trinket.1.has_use_buff)
 
 head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173129/187312
-neck=periapt_of_pristine_preservation,id=186291,bonus_id=7187/1498/6935,gem_id=173129
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173128
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
 back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6648/1559,enchant=soul_vitality
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_stats
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173129/187319,enchant=40runspeed
-hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
-waist=fused_bone_greatbelt,id=178734,bonus_id=6536/1566/6646/6935,gem_id=173128
-legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6536/1566/6646
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173128/187319,enchant=60runspeed
+hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
+waist=fused_bone_greatbelt,id=178734,bonus_id=6536/1566/6646/6935,gem_id=173127
+legs=gormshell_greaves,id=178701,bonus_id=6536/1566/6646
 feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
-finger1=signet_of_the_false_accuser,id=178824,bonus_id=6536/1566/6646/6935,gem_id=173127,enchant=tenet_of_mastery
-finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_haste
+finger1=fleshfused_circle,id=178869,bonus_id=6536/1566/6646/6935,gem_id=173127,enchant=tenet_of_mastery
+finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_mastery
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
-trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
-main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/6652/7733/7734/7735,enchant=rune_of_the_fallen_crusader
+trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
+main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/6652/7745/7746/7747,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=255.93
+# gear_ilvl=256.40
 # gear_strength=1126
-# gear_stamina=2134
+# gear_stamina=2144
 # gear_attack_power=20
-# gear_crit_rating=494
-# gear_haste_rating=540
-# gear_mastery_rating=942
-# gear_versatility_rating=264
-# gear_speed_rating=40
+# gear_crit_rating=556
+# gear_haste_rating=573
+# gear_mastery_rating=794
+# gear_versatility_rating=194
+# gear_speed_rating=60
 # gear_armor=1527

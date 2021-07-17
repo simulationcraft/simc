@@ -882,6 +882,108 @@ struct summon_add_t : public spell_t
   }
 };
 
+// Pause Action ===============================================================
+
+struct pause_action_t : public action_t
+{
+  timespan_t duration_stddev, duration_min, duration_max;
+  timespan_t cooldown_stddev, cooldown_min, cooldown_max;
+
+  pause_action_t( player_t* p, util::string_view options_str )
+    : action_t( ACTION_OTHER, "pause_action", p, spell_data_t::nil() ),
+      duration_stddev( 0_s ), duration_min( 0_s ), duration_max( 0_s ),
+      cooldown_stddev( 0_s ), cooldown_min( 0_s ), cooldown_max( 0_s )
+  {
+    // Dummy action to help model a boss attacking a different tank
+    // or just diverting their attention from auto attacking the player in general
+    // (targeting another player for an ability, dialogue/animations, etc.)
+    interrupt_auto_attack = special = true;
+
+
+    // Use the same duration and cooldown min/max/stddev system as raid events
+    add_option( opt_timespan( "duration", base_execute_time ) );
+    add_option( opt_timespan( "duration_stddev", duration_stddev ) );
+    add_option( opt_timespan( "duration_min", duration_min ) );
+    add_option( opt_timespan( "duration_max", duration_max ) );
+
+    timespan_t cooldown_duration;
+    add_option( opt_timespan( "cooldown", cooldown_duration ) );
+    add_option( opt_timespan( "cooldown_stddev", cooldown_stddev ) );
+    add_option( opt_timespan( "cooldown_min", cooldown_min ) );
+    add_option( opt_timespan( "cooldown_max", cooldown_max ) );
+
+    // By default, only interrupts auto attack without resetting the swing timer, but that can be changed
+    add_option( opt_bool( "reset_auto_attack", reset_auto_attack ) );
+    // Name option to specify multiple pause actions on the same enemy
+    add_option( opt_string( "name", name_str ) );
+
+    parse_options( options_str );
+
+    // Set the cooldown and stats' name to the action's custom name
+    internal_id = p -> get_action_id( name_str );
+    cooldown = p -> get_cooldown( name_str );
+    cooldown -> duration = cooldown_duration;
+    stats = p -> get_stats( name_str, this );
+
+    // Default duration and cooldown to 30s, and min/max to 0.5x and 1.5x.
+    // Some sanity checks as well
+
+    if ( base_execute_time <= 0_s )
+    {
+      sim->error( "Duration invalid or not set for action {}, setting to 30s", name() );
+    }
+    if ( duration_min <= 0_s )
+      duration_min = base_execute_time * 0.5;
+    if ( duration_max <= 0_s )
+      duration_max = base_execute_time * 1.5;
+    if ( base_execute_time <= duration_stddev )
+    {
+      sim->error( "Duration value for {} lower than standard deviation, setting stddev to 0", name() );
+      duration_stddev = 0_s;
+    }
+
+    if ( cooldown->duration <= 0_s )
+    {
+      sim->error( "Cooldown invalid or not set action {}, setting to 30s", name() );
+      cooldown->duration = 25_s;
+    }
+    if ( cooldown_min <= 0_s )
+      cooldown_min = cooldown->duration * 0.5;
+    if ( cooldown_max <= 0_s )
+      cooldown_max = cooldown->duration * 1.5;
+    if ( cooldown -> duration <= cooldown_stddev )
+    {
+      sim->error( "Cooldown value for {} lower than standard deviation, setting stddev to 0", name() );
+      cooldown_stddev = 0_s;
+    }
+  }
+
+  // Don't trigger an assert related to result
+  result_e calculate_result( action_state_t* ) const override
+  {
+    return RESULT_NONE;
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t duration = sim->rng().gauss( base_execute_time, duration_stddev );
+
+    duration = clamp( duration, duration_min, duration_max );
+
+    return duration;
+  }
+
+  void update_ready( timespan_t /* cd_duration */ ) override
+  {
+    timespan_t cd = sim->rng().gauss( cooldown -> duration, cooldown_stddev );
+
+    cd = clamp( cd, cooldown_min, cooldown_max );
+
+    action_t::update_ready( cd );
+  }
+
+};
+
 action_t* enemy_create_action( player_t* p, util::string_view name, util::string_view options_str )
 {
   if ( name == "auto_attack" )
@@ -898,6 +1000,8 @@ action_t* enemy_create_action( player_t* p, util::string_view name, util::string
     return new spell_aoe_t( p, options_str );
   if ( name == "summon_add" )
     return new summon_add_t( p, options_str );
+  if ( name == "pause_action" )
+    return new pause_action_t( p, options_str );
 
   return nullptr;
 }
@@ -1056,9 +1160,9 @@ struct tank_dummy_enemy_t : public enemy_t
     // Try parsing the name
     if ( tank_dummy_enum == tank_dummy_e::NONE )
       tank_dummy_enum = convert_tank_dummy_string( name_str );
-    // if we still have no clue, pit them against the default value (heroic)
+    // if we still have no clue, pit them against the default value (mythic)
     if ( tank_dummy_enum == tank_dummy_e::NONE )
-      tank_dummy_enum = tank_dummy_e::HEROIC;
+      tank_dummy_enum = tank_dummy_e::MYTHIC;
   }
 
   void init_base_stats() override
@@ -1117,19 +1221,19 @@ struct tank_dummy_enemy_t : public enemy_t
       switch ( tank_dummy_enum )
       {
         case tank_dummy_e::DUNGEON:
-          base.armor_coeff = k_value * (dbc->ptr ? 1.114 : 0.982);  // M0/M+
+          base.armor_coeff = k_value * 1.114;  // M0/M+
           sim->print_debug( "{} Dungeon base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::RAID:
-          base.armor_coeff = k_value * (dbc->ptr ? 1.220 : 1.065);  // Normal Raid
+          base.armor_coeff = k_value * 1.220;  // Normal Raid
           sim->print_debug( "{} Normal Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::HEROIC:
-          base.armor_coeff = k_value * (dbc->ptr ? 1.313 : 1.138);  // Heroic Raid
+          base.armor_coeff = k_value * 1.313;  // Heroic Raid
           sim->print_debug( "{} Heroic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::MYTHIC:
-          base.armor_coeff = k_value * (dbc->ptr ? 1.418 : 1.220);  // Mythic Raid
+          base.armor_coeff = k_value * 1.418;  // Mythic Raid
           sim->print_debug( "{} Mythic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         default:
@@ -1316,7 +1420,7 @@ void enemy_t::init_target()
 
 std::string enemy_t::generate_action_list()
 {
-  return generate_tank_action_list( tank_dummy_e::HEROIC );
+  return generate_tank_action_list( tank_dummy_e::MYTHIC );
 }
 
 void enemy_t::generate_heal_raid_event()
@@ -1334,19 +1438,20 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // Defaulted to 20-man damage
   // Damage is normally increased from 10-man to 30-man by an average of 10% for every 5 players added.
   // 10-man -> 20-man = 20% increase; 20-man -> 30-man = 20% increase
-  // Raid values using Sludgefist as a baseline
-  int aa_damage[ numTankDummies ]               = { 0, 6415, 11378, 29703, 40678, 66192 };     // Base auto attack damage
-  int dummy_strike_damage[ numTankDummies ]     = { 0, 19245, 34134, 89109, 122034, 198576 };  // Base melee nuke damage (currently set to 3x auto damage)
-  int background_spell_damage[ numTankDummies ] = { 0, 257, 455, 1188, 1627, 2648 };  // Base background dot damage (currently set to 0.04x auto damage)
+  // Raid values using Soulrender Dormazain as a baseline
+  int aa_damage[ numTankDummies ]               = { 0, 6415, 12300, 24597, 43081, 73742 };     // Base auto attack damage
+  int dummy_strike_damage[ numTankDummies ]     = { 0, 11000, 21450, 42932, 68189, 123500 };  // Base melee nuke damage (currently set to Soulrender's Ruinblade)
+  int background_spell_damage[ numTankDummies ] = { 0, 257, 1831, 2396, 3298, 5491 };  // Base background dot damage (currently set to 0.04x auto damage)
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) +
          ",range=" + util::to_string( floor( aa_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=1.5,aoe_tanks=1";
   als += "/melee_nuke,damage=" + util::to_string( dummy_strike_damage[ tank_dummy_index ] ) +
-         ",range=" + util::to_string( floor( dummy_strike_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=2,cooldown=25,aoe_tanks=1";
+         ",range=" + util::to_string( floor( dummy_strike_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=2,cooldown=30,aoe_tanks=1";
   als += "/spell_dot,damage=" + util::to_string( background_spell_damage[ tank_dummy_index ] ) +
          ",range=" + util::to_string( floor( background_spell_damage[ tank_dummy_index ] * 0.1 ) ) + ",tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=60";
-
+  // pause periodically to mimic a tank swap
+  // als += "/pause_action,duration=30,cooldown=30,if=time>=30";
   return als;
 }
 
@@ -1714,6 +1819,16 @@ std::unique_ptr<expr_t> enemy_t::create_expression( util::string_view expression
       };
 
       return std::make_unique<current_target_debuff_expr_t>( this, splits[ 2 ] );
+    }
+  }
+
+  if ( splits.size() == 3 && splits[ 0 ] == "action" )
+  {
+    for ( size_t i = 0; i < action_list.size(); ++i )
+    {
+      action_t* action = action_list[ i ];
+      if ( action -> name_str == splits[ 1 ] )
+        return action->create_expression( splits[ 2 ] );
     }
   }
 
