@@ -123,7 +123,7 @@ feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187312,enchant
 finger1=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
 trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
-trinket2=shadowgrasp_totem,id=179356,bonus_id=6536/1566/6646
+trinket2=salvaged_fusion_amplifier,id=186432,bonus_id=7187/1498
 main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
 off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=sinful_revelation
 
