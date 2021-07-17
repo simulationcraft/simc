@@ -4052,7 +4052,7 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
       {
         buffs.wild_hunt_strategem_tracking->trigger();
       }
-    
+
       m *= 1.0 + buffs.wild_hunt_tactics->default_value;
     }
   }
@@ -10560,6 +10560,16 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   if ( auto expr = runeforge::create_expression( this, splits, expression_str ) )
   {
     return expr;
+  }
+
+  if ( splits.size() == 3 && splits[ 0 ] == "action" )
+  {
+    for ( size_t i = 0; i < action_list.size(); ++i )
+    {
+      action_t* action = action_list[ i ];
+      if ( action -> name_str == splits[ 1 ] )
+        return action->create_expression( splits[ 2 ] );
+    }
   }
 
   return sim->create_expression( expression_str );
