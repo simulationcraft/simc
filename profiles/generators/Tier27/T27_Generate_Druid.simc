@@ -108,7 +108,7 @@ renown=80
 head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187312/173129
 neck=shadowghast_necklace,id=178927,bonus_id=7086/6647/6650/6758/1559,gem_id=173129
 shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187313
-back=selfreplicating_tissue,id=186374,bonus_id=7187/1498,enchant_id=soul_vitality
+back=selfreplicating_tissue,id=186374,bonus_id=7187/1498,enchant=soul_vitality
 chest=witherheart_studded_breastplate,id=186334,ilevel=259,gem_id=187314,enchant=eternal_skirmish
 wrists=clasps_of_the_unfortunate_troubadour,id=186297,bonus_id=7187/1498/6935,gem_id=173129
 hands=loyal_kvaldirs_handwraps,id=186295,bonus_id=7187/1498,gem_id=187315
@@ -154,4 +154,3 @@ trinket2=salvaged_fusion_amplifier,id=186432,bonus_id=4800/4786/1498
 main_hand=jotungeirr_destinys_call,id=186404,bonus_id=7187/1498,enchant=sinful_revelation
 
 save=T27_Druid_Guardian_Venthyr.simc
-
