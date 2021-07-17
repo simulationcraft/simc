@@ -220,7 +220,8 @@ struct holy_shock_damage_t : public paladin_spell_t
 {
   double crit_chance_boost;
 
-  holy_shock_damage_t( paladin_t* p ) : paladin_spell_t( "holy_shock_damage", p, p->find_spell( 25912 ) )
+  holy_shock_damage_t( paladin_t* p, util::string_view name ) :
+    paladin_spell_t( name, p, p->find_spell( 25912 ) )
   {
     background = may_crit = true;
     trigger_gcd           = 0_ms;
@@ -245,7 +246,8 @@ struct holy_shock_heal_t : public paladin_heal_t
 {
   double crit_chance_boost;
 
-  holy_shock_heal_t( paladin_t* p ) : paladin_heal_t( "holy_shock_heal", p, p->find_spell( 25914 ) )
+  holy_shock_heal_t( paladin_t* p, util::string_view name ) :
+    paladin_heal_t( name, p, p->find_spell( 25914 ) )
   {
     background  = true;
     trigger_gcd = 0_ms;
@@ -279,8 +281,8 @@ struct holy_shock_t : public paladin_spell_t
   holy_shock_heal_t* heal;
   bool dmg;
 
-  holy_shock_t( paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( "holy_shock", p, p->find_specialization_spell( 20473 ) ), dmg( false )
+  holy_shock_t( paladin_t* p, util::string_view options_str ) :
+    paladin_spell_t( "holy_shock", p, p->find_specialization_spell( 20473 ) ), dmg( false )
   {
     add_option( opt_bool( "damage", dmg ) );
     parse_options( options_str );
@@ -288,18 +290,21 @@ struct holy_shock_t : public paladin_spell_t
     cooldown = p->cooldowns.holy_shock;
 
     // create the damage and healing spell effects, designate them as children for reporting
-    damage = new holy_shock_damage_t( p );
+    damage = new holy_shock_damage_t( p, "holy_shock_damage" );
     add_child( damage );
-    heal = new holy_shock_heal_t( p );
+    heal = new holy_shock_heal_t( p, "holy_shock_heal" );
     add_child( heal );
   }
 
-  holy_shock_t( paladin_t* p ) : paladin_spell_t( "holy_shock", p, p->find_specialization_spell( 20473 ) ), dmg( false )
+  // Constructor for background holy shock (from divine toll/resonance)
+  holy_shock_t( paladin_t* p, bool dmg_ = false ) :
+    paladin_spell_t( "holy_shock_dt", p, p->find_specialization_spell( 20473 ) ),
+    dmg( dmg_ )
   {
     background = true;
-    damage     = new holy_shock_damage_t( p );
+    damage     = new holy_shock_damage_t( p, "holy_shock_dt_damage" );
     add_child( damage );
-    heal = new holy_shock_heal_t( p );
+    heal = new holy_shock_heal_t( p, "holy_shock_dt_heal" );
     add_child( heal );
   }
 
@@ -517,7 +522,8 @@ void paladin_t::create_holy_actions()
 
   if ( specialization() == PALADIN_HOLY )
   {
-    active.divine_toll = new holy_shock_t( this );
+    active.divine_toll = new holy_shock_t( this, true );
+    active.divine_resonance = new holy_shock_t( this, true );
     active.judgment = new judgment_holy_t( this );
   }
 }
