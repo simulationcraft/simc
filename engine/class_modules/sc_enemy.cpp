@@ -891,17 +891,14 @@ struct pause_action_t : public action_t
 
   pause_action_t( player_t* p, util::string_view options_str )
     : action_t( ACTION_OTHER, "pause_action", p, spell_data_t::nil() ),
-      duration_stddev( 0_s ),
-      duration_min( 0_s ),
-      duration_max( 0_s ),
-      cooldown_stddev( 0_s ),
-      cooldown_min( 0_s ),
-      cooldown_max( 0_s )
+      duration_stddev( 0_s ), duration_min( 0_s ), duration_max( 0_s ),
+      cooldown_stddev( 0_s ), cooldown_min( 0_s ), cooldown_max( 0_s )
   {
     // Dummy action to help model a boss attacking a different tank
     // or just diverting their attention from auto attacking the player in general
     // (targeting another player for an ability, dialogue/animations, etc.)
     interrupt_auto_attack = special = true;
+
 
     // Use the same duration and cooldown min/max/stddev system as raid events
     add_option( opt_timespan( "duration", base_execute_time ) );
@@ -909,27 +906,35 @@ struct pause_action_t : public action_t
     add_option( opt_timespan( "duration_min", duration_min ) );
     add_option( opt_timespan( "duration_max", duration_max ) );
 
-    add_option( opt_timespan( "cooldown", cooldown->duration ) );
+    timespan_t cooldown_duration;
+    add_option( opt_timespan( "cooldown", cooldown_duration ) );
     add_option( opt_timespan( "cooldown_stddev", cooldown_stddev ) );
     add_option( opt_timespan( "cooldown_min", cooldown_min ) );
     add_option( opt_timespan( "cooldown_max", cooldown_max ) );
 
-    // By default, only interrupts auto attack without resetting the timer, but that can be changed
+    // By default, only interrupts auto attack without resetting the swing timer, but that can be changed
     add_option( opt_bool( "reset_auto_attack", reset_auto_attack ) );
+    // Name option to specify multiple pause actions on the same enemy
+    add_option( opt_string( "name", name_str ) );
 
     parse_options( options_str );
 
+    // Set the cooldown and stats' name to the action's custom name
+    cooldown = p -> get_cooldown( name_str );
+    cooldown -> duration = cooldown_duration;
+    stats = p -> get_stats( name_str, this );
+
     // Default duration and cooldown to 30s, and min/max to 0.5x and 1.5x.
+    // Some sanity checks as well
 
     if ( base_execute_time <= 0_s )
     {
-      sim->error( "Duration invlid or not set for action {}, setting to 30s", name() );
+      sim->error( "Duration invalid or not set for action {}, setting to 30s", name() );
     }
     if ( duration_min <= 0_s )
       duration_min = base_execute_time * 0.5;
     if ( duration_max <= 0_s )
       duration_max = base_execute_time * 1.5;
-
     if ( base_execute_time <= duration_stddev )
     {
       sim->error( "Duration value for {} lower than standard deviation, setting stddev to 0", name() );
@@ -945,14 +950,14 @@ struct pause_action_t : public action_t
       cooldown_min = cooldown->duration * 0.5;
     if ( cooldown_max <= 0_s )
       cooldown_max = cooldown->duration * 1.5;
-
-    if ( cooldown->duration <= cooldown_stddev )
+    if ( cooldown -> duration <= cooldown_stddev )
     {
       sim->error( "Cooldown value for {} lower than standard deviation, setting stddev to 0", name() );
       cooldown_stddev = 0_s;
     }
   }
 
+  // Don't trigger an assert related to result
   result_e calculate_result( action_state_t* ) const override
   {
     return RESULT_NONE;
@@ -969,7 +974,7 @@ struct pause_action_t : public action_t
 
   void update_ready( timespan_t /* cd_duration */ ) override
   {
-    timespan_t cd = sim->rng().gauss( cooldown->duration, cooldown_stddev );
+    timespan_t cd = sim->rng().gauss( cooldown -> duration, cooldown_stddev );
 
     cd = clamp( cd, cooldown_min, cooldown_max );
 
@@ -1153,9 +1158,9 @@ struct tank_dummy_enemy_t : public enemy_t
     // Try parsing the name
     if ( tank_dummy_enum == tank_dummy_e::NONE )
       tank_dummy_enum = convert_tank_dummy_string( name_str );
-    // if we still have no clue, pit them against the default value (heroic)
+    // if we still have no clue, pit them against the default value (mythic)
     if ( tank_dummy_enum == tank_dummy_e::NONE )
-      tank_dummy_enum = tank_dummy_e::HEROIC;
+      tank_dummy_enum = tank_dummy_e::MYTHIC;
   }
 
   void init_base_stats() override
@@ -1433,7 +1438,7 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // 10-man -> 20-man = 20% increase; 20-man -> 30-man = 20% increase
   // Raid values using Soulrender Dormazain as a baseline
   int aa_damage[ numTankDummies ]               = { 0, 6415, 12300, 24597, 43081, 73742 };     // Base auto attack damage
-  int dummy_strike_damage[ numTankDummies ]     = { 0, 11000, 21450, 42932, 68189, 123500 };  // Base melee nuke damage (currently set to Soulrender's Ruinblade) 
+  int dummy_strike_damage[ numTankDummies ]     = { 0, 11000, 21450, 42932, 68189, 123500 };  // Base melee nuke damage (currently set to Soulrender's Ruinblade)
   int background_spell_damage[ numTankDummies ] = { 0, 257, 1831, 2396, 3298, 5491 };  // Base background dot damage (currently set to 0.04x auto damage)
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
