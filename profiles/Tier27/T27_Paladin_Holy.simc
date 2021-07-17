@@ -38,6 +38,9 @@ actions+=/call_action_list,name=priority
 
 actions.cooldowns=avenging_wrath
 actions.cooldowns+=/ashen_hallow
+actions.cooldowns+=/blessing_of_the_seasons
+actions.cooldowns+=/vanquishers_hammer
+actions.cooldowns+=/divine_toll
 actions.cooldowns+=/potion,if=(buff.avenging_wrath.up)
 actions.cooldowns+=/blood_fury,if=(buff.avenging_wrath.up)
 actions.cooldowns+=/berserking,if=(buff.avenging_wrath.up)
