@@ -54,10 +54,11 @@ void shadow( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  // Calculate these variables once to reduce sim time
+  precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" );
   precombat->add_action( "shadowform,if=!buff.shadowform.up" );
   precombat->add_action( "arcane_torrent" );
-  precombat->add_action( "use_item,name=azsharas_font_of_power" );
+  precombat->add_action( "use_item,name=shadowed_orb_of_torment" );
+  // Calculate these variables once to reduce sim time
   precombat->add_action( "variable,name=mind_sear_cutoff,op=set,value=2" );
   precombat->add_action( "vampiric_touch" );
 
@@ -78,28 +79,14 @@ void shadow( player_t* p )
   default_list->add_action(
       "variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>2+buff.voidform.up",
       "Start using Searing Nightmare at 3+ targets or 4+ if you are in Voidform" );
-
-  if ( p->is_ptr() )
-  {
-    default_list->add_action(
-        "variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&(!raid_event.adds.up|raid_event.adds."
-        "duration<"
-        "=10|raid_event.adds.remains>=10+5*(talent.hungering_void.enabled|covenant.kyrian))&((raid_event.adds.in>20|"
-        "spell_targets.void_eruption>=5)|talent.hungering_void.enabled|covenant.kyrian)&(!runeforge.spheres_harmony."
-        "equipped|(cooldown.power_infusion.remains<=gcd.max*3|buff.power_infusion.up|fight_remains<=25))",
-        "Cooldown Pool Variable, Used to pool before activating voidform. Currently used to control when to activate "
-        "voidform with incoming adds." );
-  }
-  else
-  {
-    default_list->add_action(
-        "variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&(!raid_event.adds.up|raid_event.adds."
-        "duration<"
-        "=10|raid_event.adds.remains>=10+5*(talent.hungering_void.enabled|covenant.kyrian))&((raid_event.adds.in>20|"
-        "spell_targets.void_eruption>=5)|talent.hungering_void.enabled|covenant.kyrian)",
-        "Cooldown Pool Variable, Used to pool before activating voidform. Currently used to control when to activate "
-        "voidform with incoming adds." );
-  }
+  default_list->add_action(
+      "variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&(!raid_event.adds.up|raid_event.adds."
+      "duration<"
+      "=10|raid_event.adds.remains>=10+5*(talent.hungering_void.enabled|covenant.kyrian))&((raid_event.adds.in>20|"
+      "spell_targets.void_eruption>=5)|talent.hungering_void.enabled|covenant.kyrian)&(!runeforge.spheres_harmony."
+      "equipped|(cooldown.power_infusion.remains<=gcd.max*3|buff.power_infusion.up|fight_remains<=25))",
+      "Cooldown Pool Variable, Used to pool before activating voidform. Currently used to control when to activate "
+      "voidform with incoming adds." );
 
   // Racials
   default_list->add_action( "fireblood,if=buff.voidform.up" );
@@ -132,13 +119,17 @@ void shadow( player_t* p )
   trinkets->add_action( "use_item,name=macabre_sheet_music,if=cooldown.void_eruption.remains>10",
                         "Sync Sheet Music with Voidform" );
   trinkets->add_action(
-      "use_item,name=soulletting_ruby,if=buff.power_infusion.up|!priest.self_power_infusion,target_if=min:target."
-      "health.pct",
-      "Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target" );
+      "use_item,name=soulletting_ruby,if=buff.power_infusion.up|!priest.self_power_infusion|"
+      "equipped.shadowed_orb_of_torment,target_if=min:target.health.pct",
+      "Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target. When used with Shadowed Orb of "
+      "Torment, just use on CD as much as possible." );
   trinkets->add_action(
       "use_item,name=sinful_gladiators_badge_of_ferocity,if=cooldown.void_eruption.remains>=10",
       "Use Badge inside of VF for the first use or on CD after the first use. Short circuit if void eruption cooldown "
       "is 10s or more away." );
+  trinkets->add_action(
+      "use_item,name=shadowed_orb_of_torment,if=!buff.voidform.up|(prev_gcd.1.void_bolt)",
+      "Use Shadowed Orb of Torment when not in Voidform, or in between Void Bolt casts in Voidform." );
   trinkets->add_call_action_list(
       dmg_trinkets,
       "if=(!talent.hungering_void.enabled|debuff.hungering_void.up)&(buff.voidform.up|cooldown.void_eruption.remains>"
@@ -190,6 +181,8 @@ void shadow( player_t* p )
       "Use on CD but prioritise using Void Eruption first, if used inside of VF on ST use after a "
       "voidbolt for cooldown efficiency and for hungering void uptime if talented." );
   cds->add_call_action_list( trinkets );
+  cds->add_action( "fleshcraft,if=soulbind.volatile_solvent&!buff.voidform.up&!buff.power_infusion.up",
+                   "Use Fleshcraft outside of main cooldowns to maintain Volatile Solvent buff." );
 
   // APL to use when Boon of the Ascended is active
   boon->add_action( "ascended_blast,if=spell_targets.mind_sear<=3" );

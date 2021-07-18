@@ -5,6 +5,9 @@
 
 #pragma once
 
+#include "dbc/data_enums.hh"
+#include "report/reports.hpp"
+
 struct sim_t;
 struct special_effect_t;
 
@@ -62,6 +65,12 @@ void norgannons_sagacity( special_effect_t& );
 void sephuzs_proclamation( special_effect_t& );
 void third_eye_of_the_jailer( special_effect_t& );
 void vitality_sacrifice( special_effect_t& );
+// Shards of Domination
+namespace shards_of_domination
+{
+  int rune_word_active( special_effect_t&, spell_label );
+  report::sc_html_stream& generate_report( const player_t&, report::sc_html_stream& );
+}
 }  // namespace items
 
 void register_hotfixes();

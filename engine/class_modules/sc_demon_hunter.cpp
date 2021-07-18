@@ -1955,6 +1955,8 @@ struct eye_beam_t : public demon_hunter_spell_t
 
     void impact( action_state_t* s ) override
     {
+      demon_hunter_spell_t::impact( s );
+
       if ( p()->legendary.agony_gaze->ok() )
       {
         const demon_hunter_td_t* td = p()->get_target_data( s->target );
@@ -2086,6 +2088,8 @@ struct fel_devastation_t : public demon_hunter_spell_t
 
     void impact( action_state_t* s ) override
     {
+      demon_hunter_spell_t::impact( s );
+
       if ( p()->legendary.agony_gaze->ok() )
       {
         const demon_hunter_td_t* td = p()->get_target_data( s->target );
@@ -3889,7 +3893,7 @@ struct demons_bite_t : public demon_hunter_attack_t
   void impact( action_state_t* s ) override
   {
     demon_hunter_attack_t::impact( s );
-    trigger_felblade(s);
+    trigger_felblade( s );
   }
 
   bool ready() override

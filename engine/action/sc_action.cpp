@@ -4850,8 +4850,13 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case P_TARGET:
-        aoe += as<int>( effect.base_value() );
-        sim->print_debug( "{} max target count modified by {}", *this, effect.base_value() );
+        assert( !( aoe == -1 || ( effect.base_value() < 0 && effect.base_value() > aoe ) ) );
+        // As the aoe value defaults to 0 for ST, increasing directly doesn't always result in the correct value
+        if ( aoe == 0 )
+          aoe = 1 + as<int>( effect.base_value() );
+        else
+          aoe += as<int>( effect.base_value() );
+        sim->print_debug( "{} max target count modified by {} to {}", *this, effect.base_value(), aoe );
         break;
 
       case P_GCD:

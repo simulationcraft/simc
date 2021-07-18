@@ -1287,6 +1287,7 @@ class SpellDataGenerator(DataGenerator):
          352881, # Bonded Hearts (night fae/niya)
          352918, 358404, # Newfound Resolve (kyrian/pelagos)
          352086, 352095, # Pustule Eruption (Necrolord/Emeni)
+         352938, 352940, 358379, # Soulglow Spectrometer (Kyrian/Mikanikos)
          # Miniscule Mailemental in an Envelope
          352542,
          # Tome of Monstrous Constructions
@@ -1300,7 +1301,23 @@ class SpellDataGenerator(DataGenerator):
          # Banshee's Blight (Sylvanas Dagger) damage spell
          358126,
          # Exsanguinated (Shard of Bek)
-         356372
+         356372,
+         # Siphon Essence (Shard of Zed)
+         356320,
+         # Shredded Soul (Ebonsoul Vise)
+         357785,
+         # Nerubian Ambush, Frost-Tinged Carapace Spikes (Relic of the Frozen Wastes)
+         355912, 357409,
+         # Volatile Detonation (Ticking Sack of Terror)
+         351694,
+         # Reactive Defense Matrix (Trinket damage)
+         356857,
+         # Withering Fire (Dark Ranger's Quiver)
+         353515,
+         # Preternatural Charge (Yasahm the Riftbreaker)
+         351561,
+         # Mythic Plus Season 2 Anima Powers
+         357575, 357582, 357584, # champion's brand
         ),
 
         # Warrior:

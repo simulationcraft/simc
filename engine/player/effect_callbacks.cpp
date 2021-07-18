@@ -5,7 +5,9 @@
 #include "effect_callbacks.hpp"
 
 #include "action/action_callback.hpp"
+#include "action/dbc_proc_callback.hpp"
 #include "player/sc_player.hpp"
+#include "item/special_effect.hpp"
 #include "sim/sc_sim.hpp"
 #include "util/generic.hpp"
 
@@ -72,6 +74,121 @@ effect_callbacks_t::~effect_callbacks_t()
 bool effect_callbacks_t::has_callback( const std::function<bool( const action_callback_t* )> cmp ) const
 {
   return range::any_of( all_callbacks, cmp );
+}
+
+void effect_callbacks_t::register_callback_trigger_function(
+    unsigned driver_id,
+    dbc_proc_callback_t::trigger_fn_type t,
+    const dbc_proc_callback_t::trigger_fn_t& fn )
+{
+  if ( callback_trigger_function( driver_id ) )
+  {
+    return;
+  }
+
+  trigger_fn.emplace_back( driver_id, t, std::make_unique<dbc_proc_callback_t::trigger_fn_t>( fn ) );
+
+  // Scan callbacks, looking for a suitable callback to attach the function to. This, in
+  // addition with the dbc_proc_callback_t::initialize code should hopefully guarantee
+  // that registering custom trigger functions is initialization order independent.
+  auto it = range::find_if( all_callbacks, [driver_id]( action_callback_t* cb ) {
+    auto dbc_proc = dynamic_cast<dbc_proc_callback_t*>( cb );
+    if ( !dbc_proc )
+    {
+      return false;
+    }
+
+    if ( dbc_proc->trigger_type == dbc_proc_callback_t::trigger_fn_type::NONE &&
+         dbc_proc->effect.driver()->id() == driver_id )
+    {
+      return true;
+    }
+
+    return false;
+  } );
+
+  if ( it != all_callbacks.end() )
+  {
+    debug_cast<dbc_proc_callback_t*>( *it )->trigger_type = std::get<1>( trigger_fn.back() );
+    debug_cast<dbc_proc_callback_t*>( *it )->trigger_fn = std::get<2>( trigger_fn.back() ).get();
+  }
+}
+
+void effect_callbacks_t::register_callback_execute_function(
+    unsigned driver_id,
+    const dbc_proc_callback_t::execute_fn_t& fn )
+{
+  if ( callback_execute_function( driver_id ) )
+  {
+    return;
+  }
+
+  execute_fn.emplace_back( driver_id, std::make_unique<dbc_proc_callback_t::execute_fn_t>( fn ) );
+
+  // Scan callbacks, looking for a suitable callback to attach the function to. This, in
+  // addition with the dbc_proc_callback_t::initialize code should hopefully guarantee
+  // that registering custom trigger functions is initialization order independent.
+  auto it = range::find_if( all_callbacks, [driver_id]( action_callback_t* cb ) {
+    auto dbc_proc = dynamic_cast<dbc_proc_callback_t*>( cb );
+    if ( !dbc_proc )
+    {
+      return false;
+    }
+
+    if ( dbc_proc->effect.driver()->id() == driver_id )
+    {
+      return true;
+    }
+
+    return false;
+  } );
+
+  if ( it != all_callbacks.end() )
+  {
+    debug_cast<dbc_proc_callback_t*>( (*it) )->execute_fn = std::get<1>( execute_fn.back() ).get();
+  }
+}
+
+dbc_proc_callback_t::execute_fn_t* effect_callbacks_t::callback_execute_function( unsigned driver_id ) const
+{
+  auto it = range::find_if( execute_fn, [driver_id]( const callback_execute_entry_t& entry ) {
+    return std::get<0>( entry ) == driver_id;
+  } );
+
+  if ( it != execute_fn.end() )
+  {
+    return std::get<1>( *it ).get();
+  }
+
+  return nullptr;
+}
+
+dbc_proc_callback_t::trigger_fn_t* effect_callbacks_t::callback_trigger_function( unsigned driver_id ) const
+{
+  auto it = range::find_if( trigger_fn, [driver_id]( const callback_trigger_entry_t& entry ) {
+    return std::get<0>( entry ) == driver_id;
+  } );
+
+  if ( it != trigger_fn.end() )
+  {
+    return std::get<2>( *it ).get();
+  }
+
+  return nullptr;
+}
+
+dbc_proc_callback_t::trigger_fn_type effect_callbacks_t::callback_trigger_function_type( unsigned driver_id ) const
+{
+  auto it = range::find_if( trigger_fn, [driver_id]( const callback_trigger_entry_t& entry ) {
+    return std::get<0>( entry ) == driver_id;
+  } );
+
+  if ( it != trigger_fn.end() )
+  {
+    return std::get<1>( *it );
+  }
+
+  return dbc_proc_callback_t::trigger_fn_type::NONE;
 }
 
 void effect_callbacks_t::register_callback(unsigned proc_flags,

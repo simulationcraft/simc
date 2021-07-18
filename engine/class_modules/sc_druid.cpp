@@ -250,7 +250,6 @@ public:
   eclipse_handler_t eclipse_handler;
   // counters for snapshot tracking
   std::vector<snapshot_counter_t*> counters;
-  bool convoke_ultimate_cast;  // check to see if ultimate was cast this iteration
 
   double expected_max_health;  // For Bristling Fur calculations.
 
@@ -276,6 +275,7 @@ public:
   int initial_moon_stage;
   double eclipse_snapshot_period;  // how often to re-snapshot mastery onto eclipse
   bool affinity_resources;  // activate resources tied to affinities
+  double initial_pulsar_value;
 
   // APL options
   bool catweave_bear;
@@ -289,6 +289,8 @@ public:
   double kindred_spirits_absorbed;
   std::string kindred_affinity_covenant;
   double convoke_the_spirits_ultimate;
+  int convoke_the_spirits_deck;
+  double celestial_spirits_exceptional_chance;
   double adaptive_swarm_jump_distance;
 
   struct active_actions_t
@@ -791,8 +793,11 @@ public:
       kindred_spirits_hide_partner( false ),
       kindred_spirits_absorbed( 0.2 ),
       kindred_affinity_covenant( "night_fae" ),
-      convoke_the_spirits_ultimate( 0.2 ),
+      convoke_the_spirits_ultimate( 0 ),
+      convoke_the_spirits_deck( 5 ),
+      celestial_spirits_exceptional_chance( 0.85 ),
       adaptive_swarm_jump_distance( 5.0 ),
+      initial_pulsar_value( 0.0 ),
       active( active_actions_t() ),
       force_of_nature(),
       caster_form_weapon(),
@@ -1767,10 +1772,12 @@ public:
       free_cast = free_cast_e::NONE;
     }
     else
+    {
       ab::execute();
 
-    if ( !ab::background && ab::trigger_gcd > 0_ms && p()->buff.ravenous_frenzy->check() )
-      p()->buff.ravenous_frenzy->trigger();
+      if ( !ab::background && ab::trigger_gcd > 0_ms && p()->buff.ravenous_frenzy->check() )
+        p()->buff.ravenous_frenzy->trigger();
+    }
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -1798,14 +1805,7 @@ public:
 
   double mod_spell_effects_percent( const spell_data_t*, const spelleffect_data_t& e ) { return e.percent(); }
 
-  double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t& e )
-  {
-    // HOTFIX HACK to reflect server-side scripting
-    if ( !p()->dbc->ptr && c == p()->conduit.endless_thirst )
-      return c.percent() / 10.0;
-
-    return c.percent();
-  }
+  double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t& e ) { return c.percent(); }
 
   template <typename T>
   void parse_spell_effects_mods( double& val, bool& mastery, const spell_data_t* base, size_t idx, T mod )
@@ -2010,15 +2010,9 @@ public:
     using S = const spell_data_t*;
     using C = const conduit_data_t&;
 
-    if ( p()->dbc->ptr )
-    {
-      parse_buff_effects( p()->buff.ravenous_frenzy );
-      parse_buff_effects( p()->buff.sinful_hysteria );
-    }
-    else
-      parse_buff_effects<C>( p()->buff.ravenous_frenzy, p()->conduit.endless_thirst );
-
     parse_buff_effects( p()->buff.heart_of_the_wild );
+    parse_buff_effects( p()->buff.ravenous_frenzy );
+    parse_buff_effects( p()->buff.sinful_hysteria );
     parse_buff_effects<C>( p()->buff.convoke_the_spirits, p()->conduit.conflux_of_elements );
 
     // Balance
@@ -3574,12 +3568,12 @@ struct ferocious_bite_t : public cat_attack_t
   void ApexPredatorResource()
   {
     if ( p()->spec.predatory_swiftness->ok() )
-      p()->buff.predatory_swiftness->trigger( 1, 1, 5 * 0.20 );
+      p()->buff.predatory_swiftness->trigger( 1, 1, 1 );
 
     if ( p()->talent.soul_of_the_forest_cat->ok() && p()->specialization() == DRUID_FERAL )
     {
       p()->resource_gain( RESOURCE_ENERGY,
-                          p()->resources.current[ RESOURCE_COMBO_POINT ] * p()->talent.soul_of_the_forest_cat->effectN( 1 ).resource( RESOURCE_ENERGY ),
+                          5 * p()->talent.soul_of_the_forest_cat->effectN( 1 ).resource( RESOURCE_ENERGY ),
                           p()->gain.soul_of_the_forest );
     }
 
@@ -3757,14 +3751,17 @@ struct rake_t : public cat_attack_t
   };
 
   action_t* bleed;
-  bool stealth_mul;
+  double stealth_mul;
 
   rake_t( druid_t* p, util::string_view opt ) : rake_t( p, p->find_affinity_spell( "Rake" ), opt ) {}
 
   rake_t( druid_t* p, const spell_data_t* s, util::string_view opt )
     : cat_attack_t( "rake", p, s, opt ), stealth_mul( 0.0 )
   {
-    if ( p->find_rank_spell( "Rake", "Rank 2" )->ok() )
+    // if ( p->find_rank_spell( "Rake", "Rank 2" )->ok() )
+    // The stealth bonsu is always available to Rake, as you need to be a feral druid or have feral affinity to use
+    // rake, and in both cases you have access to Rank 2 Rake. The only restriction is the level requirement.
+    if ( p->find_spell( 231052 )->ok() )
       stealth_mul = data().effectN( 4 ).percent();
 
     bleed = p->get_secondary_action<rake_bleed_t>( "rake_bleed" );
@@ -4805,6 +4802,15 @@ struct rejuvenation_t : public druid_heal_t
   }
 };
 
+// Remove Corruption ========================================================
+
+struct remove_corruption_t : public druid_heal_t
+{
+  remove_corruption_t( druid_t* p, util::string_view options_str )
+    : druid_heal_t( "remove_corruption", p, p->find_class_spell( "Remove Corruption" ), options_str )
+  {}
+};
+
 // Renewal ==================================================================
 
 struct renewal_t : public druid_heal_t
@@ -5348,7 +5354,8 @@ struct moon_proxy_t : public druid_spell_t
   action_t* half_moon;
   action_t* full_moon;
 
-  moon_proxy_t( druid_t* p, util::string_view opt ) : druid_spell_t( "moons", p, spell_data_t::nil(), opt )
+  moon_proxy_t( druid_t* p, util::string_view opt )
+    : druid_spell_t( "moons", p, p->talent.new_moon->ok() ? spell_data_t::nil() : spell_data_t::not_found(), opt )
   {
     new_moon = new new_moon_t( p, opt );
     half_moon = new half_moon_t( p, opt );
@@ -6148,7 +6155,7 @@ struct starfall_t : public druid_spell_t
 
   bool ready() override
   {
-    if ( p()->dbc->ptr && p()->buff.oneths_free_starfall->check() && !cooldown->is_ready() )
+    if ( p()->buff.oneths_free_starfall->check() && !cooldown->is_ready() )
       cooldown = dummy_cd;
 
     return druid_spell_t::ready();
@@ -6156,7 +6163,7 @@ struct starfall_t : public druid_spell_t
 
   timespan_t cooldown_duration() const override
   {
-    return ( p()->dbc->ptr && free_cast ) ? 0_ms : druid_spell_t::cooldown_duration();
+    return ( free_cast ) ? 0_ms : druid_spell_t::cooldown_duration();
   }
 
   void execute() override
@@ -6197,8 +6204,7 @@ struct starfall_t : public druid_spell_t
 
     if ( p()->buff.oneths_free_starfall->check() )
     {
-      if ( p()->dbc->ptr )
-        cooldown = orig_cd;
+      cooldown = orig_cd;
 
       p()->buff.oneths_free_starfall->expire();
     }
@@ -6621,6 +6627,8 @@ struct convoke_the_spirits_t : public druid_spell_t
   unsigned main_count;
   unsigned filler_count;
   unsigned off_count;
+  bool celestial_spirits;
+
   // Multi-spec
   action_t* conv_wrath;
   action_t* conv_moonfire;
@@ -6642,11 +6650,14 @@ struct convoke_the_spirits_t : public druid_spell_t
   action_t* conv_shred;
   action_t* conv_lunar_inspiration;
 
+  shuffled_rng_t* deck;
+
   convoke_the_spirits_t( druid_t* p, util::string_view options_str ) :
     druid_spell_t( "convoke_the_spirits", p, p->covenant.night_fae, options_str ),
     main_count( 0 ),
     filler_count( 0 ),
     off_count( 0 ),
+    celestial_spirits( p->legendary.celestial_spirits->ok() ),
     conv_wrath( nullptr ),  // multi-spec
     conv_moonfire( nullptr ),
     conv_rake( nullptr ),
@@ -6671,6 +6682,10 @@ struct convoke_the_spirits_t : public druid_spell_t
     may_miss = may_crit = false;
 
     max_ticks = as<int>( util::floor( dot_duration / base_tick_time ) );
+
+    // create deck for exceptional spell cast
+    deck = p->get_shuffled_rng( "convoke_the_spirits", 1,
+                                p->legendary.celestial_spirits->ok() ? 2 : p->convoke_the_spirits_deck );
 
     // Create actions used by all specs
     conv_wrath       = get_convoke_action<wrath_t>( "wrath", "" );
@@ -6732,20 +6747,14 @@ struct convoke_the_spirits_t : public druid_spell_t
           return conv_moonfire;
       case CAST_RAKE: return conv_rake;
       case CAST_THRASH_BEAR: return conv_thrash_bear;
-      case CAST_FULL_MOON:
-        p()->convoke_ultimate_cast = true;
-        return conv_full_moon;
+      case CAST_FULL_MOON: return conv_full_moon;
       case CAST_STARSURGE: return conv_starsurge;
       case CAST_STARFALL: return conv_starfall;
-      case CAST_PULVERIZE:
-        p()->convoke_ultimate_cast = true;
-        return conv_pulverize;
+      case CAST_PULVERIZE: return conv_pulverize;
       case CAST_IRONFUR: return conv_ironfur;
       case CAST_MANGLE: return conv_mangle;
       case CAST_TIGERS_FURY: return conv_tigers_fury;
-      case CAST_FERAL_FRENZY:
-        p()->convoke_ultimate_cast = true;
-        return conv_feral_frenzy;
+      case CAST_FERAL_FRENZY: return conv_feral_frenzy;
       case CAST_FEROCIOUS_BITE: return conv_ferocious_bite;
       case CAST_THRASH_CAT: return conv_thrash_cat;
       case CAST_SHRED: return conv_shred;
@@ -6798,14 +6807,16 @@ struct convoke_the_spirits_t : public druid_spell_t
   {
     main_count   = 0;
     offspec_list = { CAST_HEAL, CAST_HEAL, CAST_RAKE, CAST_WRATH };
-    chances      = { { CAST_THRASH_BEAR, 0.95 },
+    chances      = { { CAST_THRASH_BEAR, celestial_spirits ? 0.85 : 0.95 },
                      { CAST_IRONFUR, 1.0 },
                      { CAST_MANGLE, 1.0 }
                    };
 
-    cast_list.insert( cast_list.end(), static_cast<int>( rng().range( 5, 7 ) ), CAST_OFFSPEC );
+    cast_list.insert( cast_list.end(),
+                      static_cast<int>( rng().range( celestial_spirits ? 3.5 : 5, celestial_spirits ? 6 : 7 ) ),
+                      CAST_OFFSPEC );
 
-    if ( rng().roll( p()->convoke_the_spirits_ultimate ) && ( !p()->bugs || !p()->convoke_ultimate_cast ) )
+    if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->celestial_spirits_exceptional_chance ) ) )
       cast_list.push_back( CAST_PULVERIZE );
   }
 
@@ -6825,7 +6836,7 @@ struct convoke_the_spirits_t : public druid_spell_t
           mf_tl.push_back( t );
 
       if ( !mf_tl.empty() )
-        dist.emplace_back( std::make_pair( CAST_MOONFIRE, main_count ? 0.25 : 1.0 ) );
+        dist.emplace_back( std::make_pair( CAST_MOONFIRE, ( main_count ? 0.25 : 1.0 ) / ( celestial_spirits ? 2.0 : 1.0 ) ) );
 
       type_ = get_cast_from_dist( dist );
 
@@ -6862,13 +6873,15 @@ struct convoke_the_spirits_t : public druid_spell_t
                      { CAST_RAKE, 0.22 }
                    };
 
-    cast_list.insert( cast_list.end(), static_cast<size_t>( rng().range( 4, 9 ) ), CAST_OFFSPEC );
+    cast_list.insert( cast_list.end(),
+                      static_cast<size_t>( rng().range( celestial_spirits ? 2.5 : 4, celestial_spirits ? 7.5 : 9 ) ),
+                      CAST_OFFSPEC );
 
-    if ( rng().roll( p()->convoke_the_spirits_ultimate ) && ( !p()->bugs || !p()->convoke_ultimate_cast ) )
+    if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->celestial_spirits_exceptional_chance ) ) )
       cast_list.push_back( CAST_FERAL_FRENZY );
 
     cast_list.insert( cast_list.end(),
-                      _clamp_and_cast( rng().gauss( 4.2, 0.9360890055, true ), 0, max_ticks - cast_list.size() ),
+                      _clamp_and_cast( rng().gauss( celestial_spirits ? 3 : 4.2, celestial_spirits ? 0.8 : 0.9360890055, true ), 0, max_ticks - cast_list.size() ),
                       CAST_MAIN );
   }
 
@@ -6902,12 +6915,12 @@ struct convoke_the_spirits_t : public druid_spell_t
 
   void _execute_moonkin()
   {
-    cast_list.insert( cast_list.end(), 5, CAST_HEAL );
+    cast_list.insert( cast_list.end(), 5 - ( celestial_spirits ? 1 : 0 ), CAST_HEAL );
     off_count    = 0;
     main_count   = 0;
     filler_count = 0;
 
-    if ( rng().roll( p()->convoke_the_spirits_ultimate ) && ( !p()->bugs || !p()->convoke_ultimate_cast ) )
+    if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->celestial_spirits_exceptional_chance ) ) )
       cast_list.push_back( CAST_FULL_MOON );
   }
 
@@ -6915,6 +6928,7 @@ struct convoke_the_spirits_t : public druid_spell_t
   {
     convoke_cast_e type_ = base_type;
     std::vector<std::pair<convoke_cast_e, double>> dist;
+    unsigned adjust = celestial_spirits ? 1 : 0;
 
     conv_tar = tl.at( rng().range( tl.size() ) );
 
@@ -6924,7 +6938,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
       if ( !p()->buff.starfall->check() )
       {
-        dist.emplace_back( std::make_pair( CAST_STARFALL, 3.0 ) );
+        dist.emplace_back( std::make_pair( CAST_STARFALL, 3 + adjust ) );
         add_more = false;
       }
 
@@ -6941,11 +6955,11 @@ struct convoke_the_spirits_t : public druid_spell_t
 
       if ( add_more )
       {
-        if ( filler_count < 3 )
+        if ( filler_count < ( 3 - adjust ) )
           dist.emplace_back( std::make_pair( CAST_WRATH, 5.0 ) );
-        else if ( filler_count < 4 )
+        else if ( filler_count < ( 4 - adjust ) )
           dist.emplace_back( std::make_pair( CAST_WRATH, 4.0 ) );
-        else if ( filler_count < 5 )
+        else if ( filler_count < ( 5 - adjust ) )
           dist.emplace_back( std::make_pair( CAST_WRATH, 1.0 ) );
       }
 
@@ -6958,18 +6972,18 @@ struct convoke_the_spirits_t : public druid_spell_t
       else if ( main_count < 6 )
         dist.emplace_back( std::make_pair( CAST_STARSURGE, 0.2 ) );
 
-      if ( filler_count < 4 )
+      if ( filler_count < ( 4 - adjust ) )
         dist.emplace_back( std::make_pair( CAST_WRATH, 4.0 ) );
-      else if ( filler_count < 5 )
+      else if ( filler_count < ( 5 - adjust ) )
         dist.emplace_back( std::make_pair( CAST_WRATH, 1.0 ) );
-      else if ( filler_count < 6 )
+      else if ( filler_count < ( 6 - adjust ) )
         dist.emplace_back( std::make_pair( CAST_WRATH, 0.5 ) );
-      else if ( filler_count < 7 )
+      else if ( filler_count < ( 7 - adjust ) )
         dist.emplace_back( std::make_pair( CAST_WRATH, 0.2 ) );
 
-      if ( off_count < 6 )
+      if ( off_count < ( 6 - adjust ) )
         dist.emplace_back( std::make_pair( CAST_HEAL, 0.75 ) );
-      else if ( off_count < 7 )
+      else if ( off_count < ( 7 - adjust ) )
         dist.emplace_back( std::make_pair( CAST_HEAL, 0.25 ) );
 
       type_ = get_cast_from_dist( dist );
@@ -7564,14 +7578,6 @@ void druid_t::activate()
     } );
   }
 
-  if ( bugs && sim->ignore_invulnerable_targets && find_action( "convoke_the_spirits" ) != nullptr )
-  {
-    sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
-      if ( sim->target_non_sleeping_list.empty() )
-        convoke_ultimate_cast = false;
-    } );
-  }
-
   if ( sim->ignore_invulnerable_targets && legendary.lycaras_fleeting_glimpse->ok() )
   {
     sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
@@ -7633,6 +7639,7 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
   if ( name == "stampeding_roar"        ) return new        stampeding_roar_t( this, options_str );
   if ( name == "tiger_dash"             ) return new             tiger_dash_t( this, options_str );
   if ( name == "wild_charge"            ) return new            wild_charge_t( this, options_str );
+  if ( name == "remove_corruption"      ) return new      remove_corruption_t( this, options_str );
 
   // Multispec
   if ( name == "berserk" )
@@ -7900,6 +7907,8 @@ void druid_t::init_spells()
   legendary.kindred_affinity          = find_runeforge_legendary( "Kindred Affinity" );
   legendary.unbridled_swarm           = find_runeforge_legendary( "Unbridled Swarm" );
   legendary.celestial_spirits         = find_runeforge_legendary( "Celestial Spirits" );
+  if ( legendary.celestial_spirits->ok() )
+    sim->error( "Celestial Spirits has not been well tested. These results may not be accurate." );
   legendary.sinful_hysteria           = find_runeforge_legendary( "Sinful Hysteria" );
 
   // Balance
@@ -7972,7 +7981,8 @@ void druid_t::init_spells()
   spec.thrash_cat              = check_id( find_specialization_spell( "Thrash" )->ok(), 106830 );
   spec.berserk_cat             = find_specialization_spell( "Berserk" );
   spec.rake_dmg                = find_spell( 1822 )->effectN( 3 ).trigger();
-  spec.tigers_fury             = find_specialization_spell( "Tiger's Fury" );
+  // hardcode spell ID to allow tiger's fury buff for non-feral cat convoke
+  spec.tigers_fury             = check_id( specialization() == DRUID_FERAL || covenant.night_fae->ok(), 5217 );
   spec.savage_roar             = check_id( talent.savage_roar->ok(), 62071 );
   spec.bloodtalons             = check_id( talent.bloodtalons->ok(), 145152 );
 
@@ -8228,7 +8238,8 @@ void druid_t::create_buffs()
   buff.owlkin_frenzy = make_buff( this, "owlkin_frenzy", spec.owlkin_frenzy )
     ->set_chance( find_rank_spell( "Moonkin Form", "Rank 2" )->effectN( 1 ).percent() );
 
-  buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 338825 ) );
+  buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 338825 )) 
+    ->set_default_value(initial_pulsar_value);
 
   buff.solstice = make_buff( this, "solstice", talent.solstice->effectN( 1 ).trigger() );
 
@@ -8236,8 +8247,6 @@ void druid_t::create_buffs()
     ->set_period( 1_s )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
     ->set_tick_zero( true );
-  if ( !dbc->ptr )
-    buff.starfall->apply_affecting_aura( talent.stellar_drift );
 
   buff.starlord = make_buff( this, "starlord", find_spell( 279709 ) )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
@@ -8487,7 +8496,7 @@ void druid_t::create_actions()
     active.brambles_pulse = get_secondary_action<brambles_pulse_t>( "brambles_pulse" );
 
     instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
-        talent.brambles->id(), instant_absorb_t( this, talent.brambles, "brambles", &brambles_handler ) ) );
+        talent.brambles->id(), instant_absorb_t( this, talent.brambles, "brambles_absorb", &brambles_handler ) ) );
   }
 
   if ( legendary.the_natural_orders_will->ok() )
@@ -8543,8 +8552,11 @@ std::string druid_t::default_potion() const
       else if ( true_level >= 40 ) return "superior_battle_potion_of_intellect";
       SC_FALLTHROUGH;
     case DRUID_FERAL:
-    case DRUID_GUARDIAN:
       if      ( true_level >= 60 ) return "spectral_agility";
+      else if ( true_level >= 40 ) return "superior_battle_potion_of_agility";
+      SC_FALLTHROUGH;
+    case DRUID_GUARDIAN:
+      if      ( true_level >= 60 ) return "phantom_fire";
       else if ( true_level >= 40 ) return "superior_battle_potion_of_agility";
       SC_FALLTHROUGH;
     default:
@@ -8570,16 +8582,15 @@ std::string druid_t::default_rune() const
 
 std::string druid_t::default_temporary_enchant() const
 {
+  if ( true_level < 60 ) return "disabled";
+
   switch ( specialization() )
   {
-    case DRUID_BALANCE:
-    case DRUID_RESTORATION:
-    case DRUID_GUARDIAN:
-    case DRUID_FERAL:
-      if ( true_level >= 60 ) return "main_hand:shaded_sharpening_stone";
-      SC_FALLTHROUGH;
-    default:
-      return "disabled";
+    case DRUID_BALANCE: return "main_hand:shadowcore_oil";
+    case DRUID_RESTORATION: return "main_hand:shadowcore_oil";
+    case DRUID_GUARDIAN: return "main_hand:shadowcore_oil";
+    case DRUID_FERAL: return "main_hand:shaded_sharpening_stone";
+    default: return "disabled";
   }
 }
 
@@ -8798,17 +8809,17 @@ void druid_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  uptime.eclipse = get_uptime( "Eclipse" );
+  uptime.eclipse = get_uptime( "Eclipse" )->collect_uptime( *sim );
 
   if ( talent.incarnation_moonkin->ok() )
   {
     uptime.primordial_arcanic_pulsar = get_uptime( "Incarnation (Pulsar)" );
-    uptime.combined_ca_inc = get_uptime( "Incarnation (Total)" );  //->collect_uptime()->collect_duration();
+    uptime.combined_ca_inc = get_uptime( "Incarnation (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
   }
   else
   {
     uptime.primordial_arcanic_pulsar = get_uptime( "Celestial Alignment (Pulsar)" );
-    uptime.combined_ca_inc = get_uptime( "Celestial Alignment (Total)" );  //->collect_uptime()->collect_duration();
+    uptime.combined_ca_inc = get_uptime( "Celestial Alignment (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
   }
 }
 
@@ -8887,7 +8898,6 @@ void druid_t::reset()
   // Reset druid_t variables to their original state.
   form = NO_FORM;
   moon_stage = static_cast<moon_stage_e>( initial_moon_stage );
-  convoke_ultimate_cast = false;
   eclipse_handler.reset_stacks();
   eclipse_handler.reset_state();
 
@@ -9208,12 +9218,8 @@ double druid_t::composite_melee_crit_chance() const
   double crit = player_t::composite_melee_crit_chance();
 
   crit += spec.critical_strikes->effectN( 1 ).percent();
-
-  if ( dbc->ptr )
-  {
-    crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
-    crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
-  }
+  crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
+  crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
 
   return crit;
 }
@@ -9225,12 +9231,8 @@ double druid_t::composite_spell_crit_chance() const
   double crit = player_t::composite_spell_crit_chance();
 
   crit += spec.critical_strikes->effectN( 1 ).percent();
-
-  if ( dbc->ptr )
-  {
-    crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
-    crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
-  }
+  crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
+  crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
 
   return crit;
 }
@@ -9739,22 +9741,7 @@ void druid_t::create_options()
 {
   player_t::create_options();
 
-  add_option( opt_deprecated( "predator_rppm", "druid.predator_rppm" ) );
-  add_option( opt_deprecated( "initial_astral_power", "druid.initial_astral_power" ) );
-  add_option( opt_deprecated( "initial_moon_stage", "druid.initial_moon_stage" ) );
-  add_option( opt_deprecated( "eclipse_snapshot_period", "druid.eclipse_snapshot_period" ) );
-  add_option( opt_deprecated( "catweave_bear", "druid.catweave_bear" ) );
-  add_option( opt_deprecated( "owlweave_bear", "druid.owlweave_bear" ) );
-  add_option( opt_deprecated( "owlweave_cat", "druid.owlweave_cat" ) );
-  add_option( opt_deprecated( "no_cds", "druid.no_cds" ) );
-  add_option( opt_deprecated( "affinity_resources", "druid.affinity_resources" ) );
-  add_option( opt_deprecated( "thorns_attack_period", "druid.thorns_attack_period" ) );
-  add_option( opt_deprecated( "thorns_hit_chance", "druid.thorns_hit_chance" ) );
-  add_option( opt_deprecated( "kindred_spirits_partner_dps", "druid.kindred_spirits_partner_dps" ) );
-  add_option( opt_deprecated( "kindred_spirits_hide_partner", "druid.kindred_spirits_hide_partner" ) );
-  add_option( opt_deprecated( "kindred_spirits_absorbed", "druid.kindred_spirits_absorbed" ) );
-  add_option( opt_deprecated( "convoke_the_spirits_ultimate", "druid.convoke_the_spirits_ultimate" ) );
-  add_option( opt_deprecated( "adaptive_swarm_jump_distance", "druid.adaptive_swarm_jump_distance" ) );
+  add_option( opt_deprecated( "druid.convoke_the_spirits_ultimate", "druid.convoke_the_spirits_deck" ) );
 
   add_option( opt_float( "druid.predator_rppm", predator_rppm_rate ) );
   add_option( opt_float( "druid.initial_astral_power", initial_astral_power ) );
@@ -9771,8 +9758,10 @@ void druid_t::create_options()
   add_option( opt_bool( "druid.kindred_spirits_hide_partner", kindred_spirits_hide_partner ) );
   add_option( opt_float( "druid.kindred_spirits_absorbed", kindred_spirits_absorbed ) );
   add_option( opt_string( "druid.kindred_affinity_covenant", kindred_affinity_covenant ) );
-  add_option( opt_float( "druid.convoke_the_spirits_ultimate", convoke_the_spirits_ultimate ) );
+  add_option( opt_int( "druid.convoke_the_spirits_deck", convoke_the_spirits_deck ) );
+  add_option( opt_float( "druid.celestial_spirits_exceptional_chance", celestial_spirits_exceptional_chance ) );
   add_option( opt_float( "druid.adaptive_swarm_jump_distance", adaptive_swarm_jump_distance ) );
+  add_option( opt_float( "druid.initial_pulsar_value", initial_pulsar_value ) );
 }
 
 // druid_t::create_profile ==================================================
@@ -10368,23 +10357,25 @@ void druid_t::copy_from( player_t* source )
 
   druid_t* p = debug_cast<druid_t*>( source );
 
-  predator_rppm_rate           = p->predator_rppm_rate;
-  initial_astral_power         = p->initial_astral_power;
-  initial_moon_stage           = p->initial_moon_stage;
-  eclipse_snapshot_period      = p->eclipse_snapshot_period;
-  affinity_resources           = p->affinity_resources;
-  owlweave_bear                = p->owlweave_bear;
-  catweave_bear                = p->catweave_bear;
-  owlweave_cat                 = p->owlweave_cat;
-  no_cds                       = p->no_cds;
-  kindred_spirits_partner_dps  = p->kindred_spirits_partner_dps;
-  kindred_spirits_hide_partner = p->kindred_spirits_hide_partner;
-  kindred_spirits_absorbed     = p->kindred_spirits_absorbed;
-  kindred_affinity_covenant    = p->kindred_affinity_covenant;
-  convoke_the_spirits_ultimate = p->convoke_the_spirits_ultimate;
-  adaptive_swarm_jump_distance = p->adaptive_swarm_jump_distance;
-  thorns_attack_period         = p->thorns_attack_period;
-  thorns_hit_chance            = p->thorns_hit_chance;
+  predator_rppm_rate                   = p->predator_rppm_rate;
+  initial_astral_power                 = p->initial_astral_power;
+  initial_moon_stage                   = p->initial_moon_stage;
+  eclipse_snapshot_period              = p->eclipse_snapshot_period;
+  affinity_resources                   = p->affinity_resources;
+  owlweave_bear                        = p->owlweave_bear;
+  catweave_bear                        = p->catweave_bear;
+  owlweave_cat                         = p->owlweave_cat;
+  no_cds                               = p->no_cds;
+  kindred_spirits_partner_dps          = p->kindred_spirits_partner_dps;
+  kindred_spirits_hide_partner         = p->kindred_spirits_hide_partner;
+  kindred_spirits_absorbed             = p->kindred_spirits_absorbed;
+  kindred_affinity_covenant            = p->kindred_affinity_covenant;
+  convoke_the_spirits_deck             = p->convoke_the_spirits_deck;
+  celestial_spirits_exceptional_chance = p->celestial_spirits_exceptional_chance;
+  adaptive_swarm_jump_distance         = p->adaptive_swarm_jump_distance;
+  thorns_attack_period                 = p->thorns_attack_period;
+  thorns_hit_chance                    = p->thorns_hit_chance; 
+  initial_pulsar_value                 = p->initial_pulsar_value;
 }
 
 void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
@@ -10494,6 +10485,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( legendary.luffainfused_embrace );
   action.apply_affecting_aura( legendary.legacy_of_the_sleeper );
   action.apply_affecting_aura( legendary.circle_of_life_and_death );
+  action.apply_affecting_aura( legendary.celestial_spirits );
 
   // Conduits
   action.apply_affecting_conduit( conduit.tough_as_bark );
@@ -10699,7 +10691,11 @@ struct druid_module_t : public module_t
       ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
   }
   void static_init() const override {}
-  void register_hotfixes() const override {}
+
+  void register_hotfixes() const override
+  {
+  }
+
   void combat_begin( sim_t* ) const override {}
   void combat_end( sim_t* ) const override {}
 };
