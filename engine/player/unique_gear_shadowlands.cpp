@@ -21,6 +21,8 @@
 #include "unique_gear.hpp"
 #include "unique_gear_helper.hpp"
 
+#include "report/decorators.hpp"
+
 namespace unique_gear
 {
 namespace shadowlands
@@ -3153,8 +3155,7 @@ void vitality_sacrifice( special_effect_t& /* effect */ )
 
 }
 
-// Helper function to determine whether a Rune Word is active. Returns rank of the lowest shard if found.
-int rune_word_active( special_effect_t& effect, spell_label label )
+namespace shards_of_domination
 {
   using id_rank_pair_t = std::pair<unsigned, unsigned>;
   static constexpr id_rank_pair_t ranks[] = {
@@ -3208,6 +3209,9 @@ int rune_word_active( special_effect_t& effect, spell_label label )
     { 187320, 5},
   };
 
+// Helper function to determine whether a Rune Word is active. Returns rank of the lowest shard if found.
+int rune_word_active( special_effect_t& effect, spell_label label )
+{
   if ( !effect.player->sim->shadowlands_opts.enable_rune_words )
   {
     effect.player->sim->print_debug( "{}: rune word {} from item {} is inactive by global override",
@@ -3279,6 +3283,103 @@ int rune_word_active( special_effect_t& effect, spell_label label )
   return active;
 }
 
+report::sc_html_stream& generate_report( const player_t& player, report::sc_html_stream& root )
+{
+  std::string report_str;
+  struct shard_data
+  {
+    unsigned rank;
+    unsigned count;
+    spell_label type_label;
+    const spell_data_t* spell;
+
+    shard_data( spell_label type_label, const spell_data_t* spell ) :
+      rank( 0 ), count( 0 ), type_label( type_label ), spell( spell )
+    {}
+  };
+
+  shard_data shard_types[ 3 ] = { shard_data( LABEL_SHARD_OF_DOMINATION_BLOOD, player.find_spell( 357347 ) ),
+                                  shard_data( LABEL_SHARD_OF_DOMINATION_FROST, player.find_spell( 357348 ) ),
+                                  shard_data( LABEL_SHARD_OF_DOMINATION_UNHOLY, player.find_spell( 357349 ) ) };
+
+  // Domination Shards
+  for ( const auto& item : player.items )
+  {
+    for ( auto gem_id : item.parsed.gem_id )
+    {
+      if ( gem_id == 0 )
+        continue;
+
+      const auto& gem = item.player->dbc->item( gem_id );
+      if ( gem.id == 0 )
+        continue;
+
+      const gem_property_data_t& gem_prop = item.player->dbc->gem_property( gem.gem_properties );
+      if ( !gem_prop.id || gem_prop.color != SOCKET_COLOR_SHARD_OF_DOMINATION )
+        continue;
+
+      const item_enchantment_data_t& enchant_data = item.player->dbc->item_enchantment( gem_prop.enchant_id );
+      for ( size_t i = 0; i < range::size( enchant_data.ench_prop ); i++ )
+      {
+        switch ( enchant_data.ench_type[ i ] )
+        {
+          case ITEM_ENCHANTMENT_COMBAT_SPELL:
+          case ITEM_ENCHANTMENT_EQUIP_SPELL:
+          case ITEM_ENCHANTMENT_USE_SPELL:
+          {
+            unsigned rank = 0;
+            auto it = range::find( ranks, gem_id, &id_rank_pair_t::first );
+            if ( it != range::end( ranks ) )
+            {
+              rank = it->second;
+              auto spell = item.player->find_spell( enchant_data.ench_prop[ i ] );
+              
+              for ( auto& shard_type : shard_types )
+              {
+                if ( spell->affected_by_label( shard_type.type_label ) )
+                {
+                  shard_type.rank = shard_type.rank == 0 ? rank : std::min( rank, shard_type.rank );
+                  shard_type.count++;
+                }
+              }
+
+              report_str += fmt::format( "<li>{} ({})</li>\n", report_decorators::decorated_spell_data( *player.sim, spell ), rank );
+            }
+            break;
+          }
+          default:
+            break;
+        }
+      }
+    }
+  }
+
+  if ( !report_str.empty() )
+  {
+    root << "<tr class=\"left\"><th>Shards</th><td><ul class=\"float\">\n";
+    root << report_str;
+    root << "</ul></td></tr>\n";
+  }
+
+  // Rune Word Set Bonuses
+  if ( player.sim->shadowlands_opts.enable_rune_words )
+  {
+    for ( auto shard_type : shard_types )
+    {
+      if ( shard_type.count >= 3 && shard_type.spell->ok() )
+      {
+        root << "<tr class=\"left\"><th>Rune Word</th><td><ul class=\"float\">\n";
+        root << fmt::format( "<li>{} ({})</li>\n", report_decorators::decorated_spell_data( *player.sim, shard_type.spell ), shard_type.rank );
+        root << "</ul></td></tr>\n";
+        break;
+      }
+    }
+  }
+
+  return root;
+}
+}
+
 /**Blood Link
  * id=357347 equip special effect
  * id=355761 driver and coefficient
@@ -3289,7 +3390,7 @@ int rune_word_active( special_effect_t& effect, spell_label label )
  */
 void blood_link( special_effect_t& effect )
 {
-  auto rank = rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_BLOOD );
+  auto rank = shards_of_domination::rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_BLOOD );
   if ( rank == 0 )
     return;
 
@@ -3371,7 +3472,7 @@ void blood_link( special_effect_t& effect )
  */
 void winds_of_winter( special_effect_t& effect )
 {
-  auto rank = rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_FROST );
+  auto rank = shards_of_domination::rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_FROST );
   if ( rank == 0 )
     return;
 
@@ -3457,7 +3558,7 @@ void winds_of_winter( special_effect_t& effect )
  */
 void chaos_bane( special_effect_t& effect )
 {
-  auto rank = rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_UNHOLY );
+  auto rank = shards_of_domination::rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_UNHOLY );
   if ( rank == 0 )
     return;
 
