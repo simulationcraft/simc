@@ -419,8 +419,8 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
   {
     item_t& item = p.items[ slot ];
 
-    // Legendary items
-    if ( item.parsed.data.quality == ITEM_QUALITY_LEGENDARY )
+    // Shadowlands legendary item count, ignore Sylvanas bow
+    if ( item.parsed.data.quality == ITEM_QUALITY_LEGENDARY && item.parsed.data.id != 186414 )
     {
       equipped_legendaries++;
       if ( item.item_level() != legendary_ilevel )
