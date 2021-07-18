@@ -966,7 +966,7 @@ void warlock_t::create_apl_affliction()
   def->add_action( "agony,cycle_targets=1,target_if=dot.agony.remains<4" );
   def->add_action( "haunt" );
 
-  def->add_action( "seed_of_corruption,if=active_enemies>2&talent.sow_the_seeds&!dot.seed_of_corruption.ticking&!in_flight", "Sow the Seeds on 3 targets if it isn't currently in flight or on the target. With Siphon Life it's also better to use Seed over manually applying 3 Corruptions." );
+  def->add_action( "seed_of_corruption,if=active_enemies>1&talent.sow_the_seeds&!dot.seed_of_corruption.ticking&!in_flight", "Sow the Seeds on 2+ targets if it isn't currently in flight or on the target. With Siphon Life it's also better to use Seed over manually applying 3 Corruptions." );
   def->add_action( "seed_of_corruption,if=active_enemies>2&talent.siphon_life&!dot.seed_of_corruption.ticking&!in_flight&dot.corruption.remains<4" );
 
   def->add_action( "vile_taint,if=(soul_shard>1|active_enemies>2)&cooldown.summon_darkglare.remains>12" );
