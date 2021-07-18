@@ -143,6 +143,8 @@ public:
     buff_t* banshees_blight; // Slyvanas Dagger
   } debuffs;
 
+  bool is_deathspiked;
+
   rogue_td_t( player_t* target, rogue_t* source );
 
   timespan_t lethal_poison_remains() const
@@ -186,6 +188,11 @@ public:
   {
     return dots.garrote->is_ticking() || dots.rupture->is_ticking() ||
       dots.crimson_tempest->is_ticking() || dots.internal_bleeding->is_ticking();
+  }
+
+  void set_is_deathspiked( bool is_deathspiked = true )
+  {
+    this->is_deathspiked = is_deathspiked;
   }
 };
 
@@ -652,6 +659,7 @@ public:
     proc_t* serrated_bone_spike_refund;
     proc_t* serrated_bone_spike_waste;
     proc_t* serrated_bone_spike_waste_partial;
+    proc_t* serrated_bone_spike_waste_deathspike;
 
     // Conduits
     proc_t* count_the_odds;
@@ -4555,11 +4563,10 @@ struct serrated_bone_spike_t : public rogue_attack_t
       rogue_attack_t( name, p, p->covenant.serrated_bone_spike->effectN( 2 ).trigger() ),
       sudden_fractures( nullptr )
     {
-      // 02/13/2021 - Logs show that the SBS DoT is affected by Zoldyck
-      affected_by.zoldyck_insignia = true;
+      aoe = 0; // Technically affected by Deathspike, but interferes with our triggering logic
+      hasted_ticks = true; // 2021-03-12 - Bone spike dot is hasted, despite not being flagged as such
+      affected_by.zoldyck_insignia = true; // 02/13/2021 - Logs show that the SBS DoT is affected by Zoldyck
       dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 2 );
-      // 2021-03-12 - Bone spike dot is hasted, despite not being flagged as such
-      hasted_ticks = true;
 
       if ( p->conduit.sudden_fractures.ok() )
       {
@@ -4641,12 +4648,19 @@ struct serrated_bone_spike_t : public rogue_attack_t
     // Race condition on when the spikes are counted. We just make it 50% chance.
     bool count_after = p()->bugs ? rng().roll( 0.5 ) : true;
 
-    if ( !td( target )->dots.serrated_bone_spike->is_ticking() )
+    auto tdata = td( state->target );
+    if ( !tdata->dots.serrated_bone_spike->is_ticking() )
     {
-      serrated_bone_spike_dot->set_target( target );
+      serrated_bone_spike_dot->set_target( state->target );
       serrated_bone_spike_dot->execute();
-      if (count_after)
+      if ( count_after )
         active_dots += 1;
+
+      // 07/17/2021 -- Testing currently shows that initially-cleaved DoTs do not behave normally
+      if ( p()->bugs )
+      {
+        tdata->set_is_deathspiked( state->chain_target > 0 );
+      }
     }
 
     trigger_combo_point_gain( base_impact_cp + active_dots, p()->gains.serrated_bone_spike );
@@ -6226,7 +6240,8 @@ void actions::rogue_action_t<Base>::trigger_count_the_odds( const action_state_t
 rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   actor_target_data_t( target, source ),
   dots( dots_t() ),
-  debuffs( debuffs_t() )
+  debuffs( debuffs_t() ),
+  is_deathspiked( false )
 {
   dots.deadly_poison        = target->get_dot( "deadly_poison_dot", source );
   dots.garrote              = target->get_dot( "garrote", source );
@@ -6309,15 +6324,23 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
       if ( dots.serrated_bone_spike->is_ticking() )
       {
-        double refund_max = source->cooldowns.serrated_bone_spike->charges - source->cooldowns.serrated_bone_spike->charges_fractional();
-        if ( refund_max > 1 )
-          source->procs.serrated_bone_spike_refund->occur();
-        else if( refund_max <= 0 )
-          source->procs.serrated_bone_spike_waste->occur();
+        // 07/17/2021 -- Deathspike-cleaved DoTs currently do not appear to correctly refund charges
+        if ( source->bugs && this->is_deathspiked )
+        {
+          source->procs.serrated_bone_spike_waste_deathspike->occur();
+        }
         else
-          source->procs.serrated_bone_spike_waste_partial->occur();
+        {
+          double refund_max = source->cooldowns.serrated_bone_spike->charges - source->cooldowns.serrated_bone_spike->charges_fractional();
+          if ( refund_max > 1 )
+            source->procs.serrated_bone_spike_refund->occur();
+          else if ( refund_max <= 0 )
+            source->procs.serrated_bone_spike_waste->occur();
+          else
+            source->procs.serrated_bone_spike_waste_partial->occur();
 
-        source->cooldowns.serrated_bone_spike->reset( false, 1 );
+          source->cooldowns.serrated_bone_spike->reset( false, 1 );
+        }
       }
     } );
   }
@@ -7807,9 +7830,10 @@ void rogue_t::init_procs()
 
   procs.flagellation_cp_spend = get_proc( "CP Spent During Flagellation" );
 
-  procs.serrated_bone_spike_refund        = get_proc( "Serrated Bone Spike Refund" );
-  procs.serrated_bone_spike_waste         = get_proc( "Serrated Bone Spike Refund Wasted" );
-  procs.serrated_bone_spike_waste_partial = get_proc( "Serrated Bone Spike Refund Wasted (Partial)" );
+  procs.serrated_bone_spike_refund            = get_proc( "Serrated Bone Spike Refund" );
+  procs.serrated_bone_spike_waste             = get_proc( "Serrated Bone Spike Refund Wasted" );
+  procs.serrated_bone_spike_waste_partial     = get_proc( "Serrated Bone Spike Refund Wasted (Partial)" );
+  procs.serrated_bone_spike_waste_deathspike  = get_proc( "Serrated Bone Spike Refund Wasted (Deathspike Bug)" );
 
   procs.count_the_odds      = get_proc( "Count the Odds"               );
 
