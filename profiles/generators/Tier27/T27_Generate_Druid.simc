@@ -101,7 +101,7 @@ role=tank
 position=front
 talents=1013221
 covenant=night_fae
-soulbind=niya:1,322721/279:11/342270/260:11/320668/271:11/254:11/320659/269:11/352502/259:11/352503
+soulbind=niya,grove_invigoration/conflux_of_elements:9:1/born_of_the_wilds:9:1/wellhoned_instincts:9:1/tough_as_bark:9:1/niyas_tools_burrs/unchecked_aggression:9:1/front_of_the_pack:9:1/bonded_hearts
 renown=80
 
 
@@ -109,7 +109,7 @@ head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187312/17
 neck=shadowghast_necklace,id=178927,bonus_id=7086/6647/6650/6758/1559,gem_id=173129
 shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187313
 back=selfreplicating_tissue,id=186374,bonus_id=7187/1498,enchant=soul_vitality
-chest=witherheart_studded_breastplate,id=186334,ilevel=259,gem_id=187314,enchant=eternal_skirmish
+chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498,gem_id=187314,enchant=eternal_skirmish
 wrists=clasps_of_the_unfortunate_troubadour,id=186297,bonus_id=7187/1498/6935,gem_id=173129
 hands=loyal_kvaldirs_handwraps,id=186295,bonus_id=7187/1498,gem_id=187315
 waist=windrunners_baldric,id=186332,bonus_id=7187/1498/6935,gem_id=173129

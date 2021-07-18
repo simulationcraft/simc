@@ -137,31 +137,28 @@ actions.owlweave+=/convoke_the_spirits,if=(buff.eclipse_lunar.up|buff.eclipse_so
 actions.owlweave+=/starfire,if=(eclipse.in_lunar|eclipse.solar_next)|(eclipse.in_lunar&buff.starsurge_empowerment_lunar.up)
 actions.owlweave+=/wrath
 
-head=cap_of_writhing_malevolence,id=186292,bonus_id=4800/4786/1498,gem_id=187312/173129,enchant=60runspeed
-neck=interplanar_keystone,id=186379,ilevel=259,gem_id=173129
-shoulders=spaulders_of_the_crooked_confidant,id=186336,ilevel=259,gem_id=187313
-back=selfreplicating_tissue,id=186374,ilevel=252,enchant_id=6203
-chest=witherheart_studded_breastplate,id=186334,bonus_id=4800/4786/1498,gem_id=187314,enchant_id=6230
-wrists=fatethreaded_bindings,id=186335,bonus_id=4800/4786/1498,gem_id=173129,enchant_id=6222
-hands=hangmans_knotbinders,id=186333,bonus_id=4800/4786/1498,gem_id=187315,enchant_id=6205
+head=cap_of_writhing_malevolence,id=186292,bonus_id=4800/4786/1498,gem_id=187312/173129
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173129
+shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187317
+back=selfreplicating_tissue,id=186374,bonus_id=7187/1498,enchant=soul_vitality
+chest=witherheart_studded_breastplate,id=186334,bonus_id=4800/4786/1498,gem_id=187316,enchant=eternal_skirmish
+wrists=fatethreaded_bindings,id=186335,bonus_id=4800/4786/1498,gem_id=173129
+hands=hangmans_knotbinders,id=186333,bonus_id=4800/4786/1498,gem_id=187315
 waist=umbrahide_waistguard,id=172320,bonus_id=7474/6647/6650/6758/1559,gem_id=173129
-legs=elite_aranakk_breeches,id=186331,ilevel=259
-feet=unstable_energizer_boots,id=186363,ilevel=252,gem_id=187318,enchant_id=6211
-finger1=tarnished_insignia_of_quelthalas,id=186377,ilevel=259,gem_id=173129,enchant_id=6164
-finger2=miniature_breaking_wheel,id=186375,bonus_id=4800/4786/1498,gem_id=173129,enchant_id=6164
-trinket1=phial_of_putrefaction,id=178771,ilevel=252
+legs=elite_aranakk_breeches,id=186331,bonus_id=7187/1498
+feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187318,enchant=eternal_agility
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_critical_strike
+finger2=miniature_breaking_wheel,id=186375,bonus_id=4800/4786/1498,gem_id=173129,enchant=tenet_of_critical_strike
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
 trinket2=salvaged_fusion_amplifier,id=186432,bonus_id=4800/4786/1498
-main_hand=jotungeirr_destinys_call,id=186404,ilevel=252,enchant_id=6228
+main_hand=jotungeirr_destinys_call,id=186404,bonus_id=7187/1498,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=255.00
-# gear_agility=1111
-# gear_stamina=2115
+# gear_agility=1101
+# gear_stamina=2125
 # gear_crit_rating=708
 # gear_haste_rating=711
 # gear_mastery_rating=89
 # gear_versatility_rating=578
-# gear_leech_rating=60
-# gear_speed_rating=60
-# gear_avoidance_rating=30
 # gear_armor=717

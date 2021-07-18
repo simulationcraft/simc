@@ -12,18 +12,18 @@ renown=80
 head=Valorous_Visage_of_Krexus,id=186350,gem_id=187318/173128,bonus_id=7187/1498
 neck=Interplanar_Keystone,id=186379,bonus_id=7187/1498,gem_id=173128
 shoulder=Spires_of_Broken_Hope,id=186349,gem_id=187315,bonus_id=7187/1498
-back=Cloak_of_Scarred_Honor,id=186289,enchant_id=6208,bonus_id=7187/1498
-chest=Cuirass_of_the_Lonely_Citadel,id=186312,enchant_id=6214,gem_id=187312,bonus_id=7187/1498
+back=Cloak_of_Scarred_Honor,id=186289,enchant=soul_vitality,bonus_id=7187/1498
+chest=Cuirass_of_the_Lonely_Citadel,id=186312,enchant=eternal_stats,gem_id=187312,bonus_id=7187/1498
 wrist=Vyrazs_Parade_Cuffs,id=186351,gem_id=187313/173128,bonus_id=7187/1498
-hands=Kyras_Unending_Protectors,id=186346,enchant_id=6210,gem_id=187314,bonus_id=7187/1498
+hands=Kyras_Unending_Protectors,id=186346,enchant=eternal_strength,gem_id=187314,bonus_id=7187/1498
 waist=Shadowghast_Waistguard,id=171418,bonus_id=6716/7054/6647/6649/1559
 legs=Fateforged_Legplates,id=186348,bonus_id=7187/1498
-feet=Greaves_of_Haunting_Ruination,id=186353,bonus_id=7187/1498
-finger1=Sworn_Oath_of_the_Nine,id=186290,enchant_id=6166,bonus_id=7187/1498,gem_id=173128
-finger2=Tarnished_Insignia_of_QuelThalas,id=186377,enchant_id=6166,bonus_id=7187/1498,gem_id=173128
+feet=Greaves_of_Haunting_Ruination,id=186353,bonus_id=7187/1498,gem_id=173128
+finger1=Sworn_Oath_of_the_Nine,id=186290,enchant=tenet_of_haste,bonus_id=7187/1498,gem_id=173128
+finger2=Tarnished_Insignia_of_QuelThalas,id=186377,enchant=tenet_of_haste,bonus_id=7187/1498,gem_id=173128
 trinket1=Old_Warriors_Soul,id=186438,bonus_id=7187/1498
 trinket2=Titanic_Ocular_Gland,id=186423,bonus_id=7187/1498
-main_hand=The_Devouring_Cold,id=187056,enchant_id=6228,bonus_id=7187/1498
+main_hand=The_Devouring_Cold,id=187056,enchant=sinful_revelation,bonus_id=7187/1498
 off_hand=Guard_of_the_Sundered_Defender,id=186417,bonus_id=7187/1498
 
 #Optimal soulbinds for other covenants
