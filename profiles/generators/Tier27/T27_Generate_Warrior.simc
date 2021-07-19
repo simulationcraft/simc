@@ -68,7 +68,7 @@ role=tank
 position=front
 talents=3120011
 covenant=night_fae
-soulbind=322721/342270/320687/320659/352502/352503/ashen_juggernaut:9:1/unnerving_focus:9:1/destructive_reverberations:9:1
+soulbind=grove_invigoration/niyas_tools_burrs/bonded_hearts/ashen_juggernaut:9:1/unnerving_focus:9:1/destructive_reverberations:9:1
 renown=80
 
 head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498,gem_id=187318/173128
