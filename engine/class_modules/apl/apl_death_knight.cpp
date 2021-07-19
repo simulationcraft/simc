@@ -179,7 +179,7 @@ void frost( player_t* p )
   default_->add_action( "remorseless_winter,if=conduit.everfrost&talent.gathering_storm&!talent.obliteration&cooldown.pillar_of_frost.remains", "Apply Frost Fever, maintain Icy Talons and keep Remorseless Winter rolling" );
   default_->add_action( "howling_blast,target_if=dot.frost_fever.refreshable&(talent.icecap|!buff.breath_of_sindragosa.up&talent.breath_of_sindragosa|talent.obliteration&cooldown.pillar_of_frost.remains&!buff.killing_machine.up)" );
   default_->add_action( "glacial_advance,if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&spell_targets.glacial_advance>=2&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>15)" );
-  default_->add_action( "frost_strike,if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>10)" );
+  default_->add_action( "frost_strike,if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&(!talent.breath_of_sindragosa|!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>10)" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
   default_->add_action( "call_action_list,name=covenants", "Choose Action list to run" );
   default_->add_action( "call_action_list,name=racials" );
@@ -257,8 +257,7 @@ void frost( player_t* p )
   covenants->add_action( "swarming_mist,if=talent.breath_of_sindragosa&(buff.breath_of_sindragosa.up&(variable.st_planning&runic_power.deficit>40|variable.adds_remain&runic_power.deficit>60|variable.adds_remain&raid_event.adds.remains<9)|!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains)" );
   covenants->add_action( "abomination_limb,if=cooldown.pillar_of_frost.remains<3&variable.st_planning&(talent.breath_of_sindragosa&runic_power.deficit<60&cooldown.breath_of_sindragosa.remains<2|!talent.breath_of_sindragosa)" );
   covenants->add_action( "abomination_limb,if=variable.adds_remain" );
-  covenants->add_action( "shackle_the_unworthy,if=variable.st_planning&!talent.icecap&cooldown.pillar_of_frost.remains<3" );
-  covenants->add_action( "shackle_the_unworthy,if=variable.st_planning&talent.icecap" );
+  covenants->add_action( "shackle_the_unworthy,if=variable.st_planning&(cooldown.pillar_of_frost.remains<3|talent.icecap)" );
   covenants->add_action( "shackle_the_unworthy,if=variable.adds_remain" );
   covenants->add_action( "fleshcraft,if=!buff.pillar_of_frost.up&(soulbind.pustule_eruption|soulbind.volatile_solvent),interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent" );
 
@@ -289,7 +288,7 @@ void frost( player_t* p )
   standard->add_action( "glacial_advance,if=!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<7)" );
   standard->add_action( "frost_strike,if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm" );
   standard->add_action( "howling_blast,if=buff.rime.up" );
-  standard->add_action( "obliterate,if=!buff.frozen_pulse.up&talent.frozen_pulse|buff.killing_machine.react|death_and_decay.ticking&covenant.night_fae&buff.deaths_due.stack<4|rune.time_to_4<=gcd" );
+  standard->add_action( "obliterate,if=!buff.frozen_pulse.up&talent.frozen_pulse|death_and_decay.ticking&covenant.night_fae&buff.deaths_due.stack<4|rune.time_to_4<=gcd" );
   standard->add_action( "frost_strike,if=runic_power.deficit<(15+talent.runic_attenuation*3)" );
   standard->add_action( "obliterate,if=runic_power.deficit>(25+talent.runic_attenuation*3)" );
   standard->add_action( "frost_strike" );
