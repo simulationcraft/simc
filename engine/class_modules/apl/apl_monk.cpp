@@ -223,7 +223,7 @@ void brewmaster( player_t* p )
       p, "Black Ox Brew",
       "if=(energy+(energy.regen*cooldown.keg_smash.remains))<40&buff.blackout_combo.down&cooldown.keg_smash.up" );
 
-  def->add_action( "fleshcraft,if=cooldown.bonedust_brew.remains<4&soulbind.lead_by_example.enabled" );
+  def->add_action( "fleshcraft,if=cooldown.bonedust_brew.remains<4&soulbind.pustule_eruption.enabled" );
 
   def->add_action(
       p, "Keg Smash", "if=spell_targets>=2",
@@ -270,6 +270,8 @@ void brewmaster( player_t* p )
     if ( racial_actions[ i ] == "arcane_torrent" )
       def->add_action( racial_actions[ i ] + ",if=energy<31" );
   }
+
+  def->add_action("fleshcraft,if=soulbind.volatile_solvent.enabled");
 
   def->add_talent( p, "Rushing Jade Wind" );
 }
