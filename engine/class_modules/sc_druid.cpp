@@ -276,6 +276,7 @@ public:
   double eclipse_snapshot_period;  // how often to re-snapshot mastery onto eclipse
   bool affinity_resources;  // activate resources tied to affinities
   double initial_pulsar_value;
+  bool raid_combat;
 
   // APL options
   bool catweave_bear;
@@ -798,6 +799,7 @@ public:
       celestial_spirits_exceptional_chance( 0.85 ),
       adaptive_swarm_jump_distance( 5.0 ),
       initial_pulsar_value( 0.0 ),
+      raid_combat( true ),
       active( active_actions_t() ),
       force_of_nature(),
       caster_form_weapon(),
@@ -9003,13 +9005,15 @@ void druid_t::combat_begin()
 
   if ( spec.astral_power->ok() )
   {
-    double cap = talent.natures_balance->ok() ? 50.0 : 20.0;
-    double curr = resources.current[ RESOURCE_ASTRAL_POWER ];
+    if ( raid_combat ) {
+      double cap = talent.natures_balance->ok() ? 50.0 : 20.0;
+      double curr = resources.current[RESOURCE_ASTRAL_POWER];
 
-    resources.current [ RESOURCE_ASTRAL_POWER] = std::min( cap, curr );
+      resources.current[RESOURCE_ASTRAL_POWER] = std::min( cap, curr );
+      if ( curr > cap )
+        sim->print_debug( "Astral Power capped at combat start to {} (was {})", cap, curr );
+    }
 
-    if ( curr > cap )
-      sim->print_debug( "Astral Power capped at combat start to {} (was {})", cap, curr );
   }
 
   // Legendary-related buffs & events
@@ -9762,6 +9766,7 @@ void druid_t::create_options()
   add_option( opt_float( "druid.celestial_spirits_exceptional_chance", celestial_spirits_exceptional_chance ) );
   add_option( opt_float( "druid.adaptive_swarm_jump_distance", adaptive_swarm_jump_distance ) );
   add_option( opt_float( "druid.initial_pulsar_value", initial_pulsar_value ) );
+  add_option( opt_bool( "druid.raid_combat", raid_combat ) );
 }
 
 // druid_t::create_profile ==================================================
@@ -10376,6 +10381,7 @@ void druid_t::copy_from( player_t* source )
   thorns_attack_period                 = p->thorns_attack_period;
   thorns_hit_chance                    = p->thorns_hit_chance; 
   initial_pulsar_value                 = p->initial_pulsar_value;
+  raid_combat                          = p->raid_combat;
 }
 
 void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
