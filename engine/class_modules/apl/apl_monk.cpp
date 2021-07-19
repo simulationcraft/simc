@@ -197,7 +197,7 @@ void brewmaster( player_t* p )
 
   def->add_action(
       p, monk->spec.invoke_niuzao, "invoke_niuzao_the_black_ox",
-      "if=cooldown.purifying_brew.charges_fractional<2&(target.cooldown.pause_action.remains>=20|time<=10)",
+      "if=buff.recent_purifies.value>=health.max*0.05&(target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)",
       "Cast Niuzao when we'll get at least 20 seconds of uptime. This is specific to the default enemy APL and will "
       "need adjustments for other enemies." );
   def->add_action( p, "Touch of Death", "if=target.health.pct<=15" );
@@ -209,7 +209,7 @@ void brewmaster( player_t* p )
 
   // Purifying Brew
   def->add_action( p, "Purifying Brew",
-                   "if=stagger.amounttototalpct>=0.7&(((target.cooldown.pause_action.remains>=20|time<=10)&cooldown."
+                   "if=stagger.amounttototalpct>=0.7&(((target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)&cooldown."
                    "invoke_niuzao_the_black_ox.remains<5)|buff.invoke_niuzao_the_black_ox.up)",
                    "Cast PB during the Niuzao window, but only if recently hit." );
   def->add_action( p, "Purifying Brew", "if=buff.invoke_niuzao_the_black_ox.up&buff.invoke_niuzao_the_black_ox.remains<8", "Dump PB charges towards the end of Niuzao: anything is better than nothing." );
