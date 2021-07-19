@@ -250,7 +250,6 @@ void brewmaster( player_t* p )
   def->add_talent( p, "Chi Burst", "if=cooldown.faeline_stomp.remains>2&spell_targets>=2" );
   def->add_action( "faeline_stomp" );
 
-  def->add_action( p, "Expel Harm", "if=buff.gift_of_the_ox.stack>=3" );
   def->add_action( p, "Touch of Death" );
   def->add_talent( p, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   def->add_action( p, "Spinning Crane Kick", "if=buff.charred_passions.up" );
@@ -259,7 +258,7 @@ void brewmaster( player_t* p )
   def->add_talent( p, "Chi Burst" );
   def->add_talent( p, "Chi Wave" );
   def->add_action( p, "Spinning Crane Kick",
-      "if=(active_enemies>=3|conduit.walk_with_the_ox.enabled)&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*("
+      "if=!runeforge.shaohaos_might.equipped&(active_enemies>=3|conduit.walk_with_the_ox.enabled)&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*("
       "cooldown.keg_smash.remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)",
       "Cast SCK if enough enemies are around, or if WWWTO is enabled. This is a slight defensive loss over using TP "
       "but generally reduces sim variance more than anything else." );
