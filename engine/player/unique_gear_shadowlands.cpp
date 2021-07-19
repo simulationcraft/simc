@@ -2060,6 +2060,8 @@ void tormentors_rack_fragment( special_effect_t& effect )
     excruciating_twinge_t( const special_effect_t& e )
       : proc_spell_t( "excruciating_twinge", e.player, e.player->find_spell( 356181 ), e.item )
     {
+      // 07/19/2021 -- Logs show that this was hotfixed to hit again on refresh, but not in spell data
+      tick_zero = true;
       base_td = e.driver()->effectN( 1 ).average( e.item );
     }
 
