@@ -128,7 +128,7 @@ role=attack
 position=back
 talents=2201011
 covenant=kyrian
-soulbind=brons_call_to_action/everfrost:9:1/unleashed_frenzy:9:1/accelerated_cold:9:1/soulglow_spectrometer/effusive_anima_accelerator
+soulbind=forgelite_prime_mikanikos,brons_call_to_action/everfrost:9:1/unleashed_frenzy:9:1/accelerated_cold:9:1/soulglow_spectrometer/effusive_anima_accelerator
 
 head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173127/187312
 neck=interplanar_keystone,id=186379,bonus_id=6807/1498/6935,gem_id=173127
