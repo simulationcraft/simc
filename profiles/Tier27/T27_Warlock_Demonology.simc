@@ -7,7 +7,7 @@ role=spell
 position=ranged_back
 talents=3103032
 covenant=necrolord
-soulbind=plague_deviser_marileth,volatile_solvent/borne_of_blood:11:0/tyrants_soul:11:0/carnivorous_stalkers:11:0/kevins_oozeling
+soulbind=plague_deviser_marileth,volatile_solvent/borne_of_blood:11/tyrants_soul:11/carnivorous_stalkers:11/kevins_oozeling
 renown=80
 
 # Default consumables

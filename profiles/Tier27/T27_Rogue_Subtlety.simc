@@ -179,7 +179,7 @@ legs=elite_aranakk_breeches,id=186331,bonus_id=6805/7187/1498
 feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187318,enchant=eternal_agility
 finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498,gem_id=173127,enchant=tenet_of_critical_strike
 finger2=ritual_commanders_ring,id=178781,bonus_id=6536/1566/6646,gem_id=173127,enchant=tenet_of_critical_strike
-trinket1=shadowgrasp_totem,id=179356,bonus_id=6536/1566/6646
+trinket1=salvaged_fusion_amplifier,id=186432,bonus_id=7187/1498
 trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
 main_hand=edge_of_night,id=186398,bonus_id=7187/1498,enchant=celestial_guidance
 off_hand=edge_of_night,id=186398,bonus_id=7187/1498,enchant=sinful_revelation

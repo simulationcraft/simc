@@ -7,7 +7,7 @@ role=attack
 position=back
 talents=1212231
 covenant=venthyr
-soulbind=theotar_the_mad_duke:9,336239/159:7/336147/215:7/336184/133:7/163:7/319983
+soulbind=theotar_the_mad_duke:9,soothing_shade/lights_barding:7/leisurely_gait/hallowed_discernment:7/exquisite_ingredients/shielding_words:7/echoing_blessings:7/wasteland_propriety
 renown=40
 
 # Default consumables

@@ -7,7 +7,7 @@ role=spell
 position=ranged_back
 talents=1000332
 covenant=venthyr
-soulbind=soothing_shade/party_favors/fury_of_the_skies:11/precise_alignment:11/endless_thirst:11
+soulbind=,soothing_shade/party_favors/fury_of_the_skies:11/precise_alignment:11/endless_thirst:11
 renown=80
 
 # Default consumables

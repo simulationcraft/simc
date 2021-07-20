@@ -7,7 +7,7 @@ role=tank
 position=front
 talents=3120011
 covenant=night_fae
-soulbind=grove_invigoration/niyas_tools_burrs/bonded_hearts/ashen_juggernaut:9:1/unnerving_focus:9:1/destructive_reverberations:9:1
+soulbind=,grove_invigoration/niyas_tools_burrs/bonded_hearts/ashen_juggernaut:9:1/unnerving_focus:9:1/destructive_reverberations:9:1
 renown=80
 
 # Default consumables
