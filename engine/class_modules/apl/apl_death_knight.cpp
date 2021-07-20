@@ -203,9 +203,9 @@ void frost( player_t* p )
   aoe->add_action( "obliterate,if=death_and_decay.ticking&covenant.night_fae&buff.deaths_due.stack<4" );
   aoe->add_action( "frostscythe,if=buff.killing_machine.react&(!death_and_decay.ticking&covenant.night_fae|!covenant.night_fae)" );
   aoe->add_action( "glacial_advance,if=runic_power.deficit<(15+talent.runic_attenuation*3)" );
-  aoe->add_action( "frost_strike,target_if=max:variable.razorice_aoe,if=runic_power.deficit<(15+talent.runic_attenuation*3)" );
+  aoe->add_action( "frost_strike,target_if=max:variable.razorice_aoe,if=runic_power.deficit<(15+talent.runic_attenuation*5)" );
   aoe->add_action( "frostscythe,if=!death_and_decay.ticking&covenant.night_fae|!covenant.night_fae" );
-  aoe->add_action( "obliterate,target_if=max:variable.razorice_aoe,if=runic_power.deficit>(25+talent.runic_attenuation*3)" );
+  aoe->add_action( "obliterate,target_if=max:variable.razorice_aoe,if=runic_power.deficit>(25+talent.runic_attenuation*5)" );
   aoe->add_action( "glacial_advance" );
   aoe->add_action( "frost_strike,target_if=max:variable.razorice_aoe" );
   aoe->add_action( "horn_of_winter" );
@@ -221,7 +221,7 @@ void frost( player_t* p )
   bos_pooling->add_action( "glacial_advance,if=cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40&spell_targets.glacial_advance>=2" );
   bos_pooling->add_action( "frost_strike,target_if=max:variable.razorice_aoe,if=cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40" );
 
-  bos_ticking->add_action( "obliterate,target_if=max:variable.razorice_aoe,if=runic_power.deficit>=(45+talent.runic_attenuation*3)", "Breath of Sindragosa Active Rotation" );
+  bos_ticking->add_action( "obliterate,target_if=max:variable.razorice_aoe,if=runic_power.deficit>=(45+talent.runic_attenuation*5)", "Breath of Sindragosa Active Rotation" );
   bos_ticking->add_action( "remorseless_winter,if=talent.gathering_storm|conduit.everfrost|runeforge.biting_cold|active_enemies>=2|runic_power<32" );
   bos_ticking->add_action( "death_and_decay,if=runic_power<32" );
   bos_ticking->add_action( "howling_blast,if=variable.rotfc_rime&(runic_power.deficit<55|rune.time_to_3<=gcd|runeforge.rage_of_the_frozen_champion|spell_targets.howling_blast>=2)|runic_power<32" );
@@ -292,8 +292,8 @@ void frost( player_t* p )
   standard->add_action( "frost_strike,if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm" );
   standard->add_action( "howling_blast,if=variable.rotfc_rime" );
   standard->add_action( "obliterate,if=!buff.frozen_pulse.up&talent.frozen_pulse|death_and_decay.ticking&covenant.night_fae&buff.deaths_due.stack<4|rune.time_to_4<=gcd" );
-  standard->add_action( "frost_strike,if=runic_power.deficit<(15+talent.runic_attenuation*3)" );
-  standard->add_action( "obliterate,if=runic_power.deficit>(25+talent.runic_attenuation*3)" );
+  standard->add_action( "frost_strike,if=runic_power.deficit<(15+talent.runic_attenuation*5)" );
+  standard->add_action( "obliterate,if=runic_power.deficit>(25+talent.runic_attenuation*5)" );
   standard->add_action( "frost_strike" );
   standard->add_action( "horn_of_winter" );
   standard->add_action( "arcane_torrent" );
