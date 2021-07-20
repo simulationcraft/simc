@@ -8,7 +8,7 @@ role=tank
 position=front
 talents=1013322
 covenant=venthyr
-soulbind=,soothing_shade/party_favors/savage_combatant:11/unchecked_aggression:11/endless_thirst:11/born_of_the_wilds:11/tough_as_bark:11
+soulbind=soothing_shade/party_favors/savage_combatant:11/unchecked_aggression:11/endless_thirst:11/born_of_the_wilds:11/tough_as_bark:11
 
 # Default consumables
 potion=phantom_fire

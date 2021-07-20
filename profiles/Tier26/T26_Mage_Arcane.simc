@@ -7,7 +7,7 @@ role=spell
 position=ranged_back
 talents=1031021
 covenant=kyrian
-soulbind=,combat_meditation/ire_of_the_ascended:7/magis_brand:7
+soulbind=combat_meditation/ire_of_the_ascended:7/magis_brand:7
 renown=40
 
 # Default consumables
