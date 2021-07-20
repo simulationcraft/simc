@@ -1511,7 +1511,7 @@ public:
     // Registered Damage Buffs
     for ( auto damage_buff : direct_damage_buffs )
       m *= damage_buff->stack_value_direct();
-
+    
     // Mastery
     if ( affected_by.mastery_executioner.direct || affected_by.mastery_potent_assassin.direct )
     {
@@ -3759,6 +3759,7 @@ struct black_powder_t: public rogue_attack_t
       rogue_attack_t( name, p, p->find_spell( 319190 ) ),
       last_cp( 1 )
     {
+      callbacks = false; // 07/19/2021 -- Does not appear to trigger normal procs
       aoe = -1; // Yup, this is uncapped.
     }
 
@@ -5257,6 +5258,7 @@ struct shuriken_tornado_t : public buff_t
     set_period( timespan_t::from_seconds( 1.0 ) ); // Not explicitly in spell data
 
     shuriken_storm_action = r->get_secondary_trigger_action<actions::shuriken_storm_t>( TRIGGER_SHURIKEN_TORNADO, "shuriken_storm_tornado" );
+    shuriken_storm_action->callbacks = false; // 07/19/2021 -- Damage triggered directly, doesn't appear to proc anything
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       shuriken_storm_action->trigger_secondary_action( rogue->target );
     } );
