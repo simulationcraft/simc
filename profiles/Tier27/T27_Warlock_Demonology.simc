@@ -123,7 +123,7 @@ actions.tyrant_setup+=/summon_demonic_tyrant,if=time>variable.first_tyrant_time&
 head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=173128/187312
 neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173128
 shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187315
-back=dealer_xyexas_cape,id=179349,bonus_id=1566/6536/6646
+back=dealer_xyexas_cape,id=179349,bonus_id=1566/6536/6646,enchant=soul_vitality
 chest=sacrificers_sacramental_cassock,id=186282,bonus_id=1498/7187,gem_id=187318,enchant=eternal_stats
 wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=173128/187319,enchant=eternal_intellect
 hands=grasps_of_the_clairvoyant_sage,id=186288,bonus_id=1498/7187
@@ -138,7 +138,7 @@ main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=celestial_guidance
 
 # Gear Summary
 # gear_ilvl=255.93
-# gear_stamina=2114
+# gear_stamina=2144
 # gear_intellect=1494
 # gear_crit_rating=426
 # gear_haste_rating=784

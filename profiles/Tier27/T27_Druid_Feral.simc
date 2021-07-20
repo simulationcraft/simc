@@ -41,7 +41,7 @@ actions.precombat+=/variable,name=4cp_bite,value=0
 # Shred = 0, Non-snapshot Rake = 1, Snapshot Rake = 2, LI = 3, Swipe = 4
 actions.precombat+=/variable,name=filler,value=1
 actions.precombat+=/variable,name=rip_ticks,value=7
-actions.precombat+=/snapshot_stats
+actions.precombat+=/fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)
 actions.precombat+=/cat_form
 actions.precombat+=/prowl
 
@@ -57,9 +57,10 @@ actions+=/cycling_variable,name=shortest_ttd,op=min,value=target.time_to_die
 # One shot stealth
 actions+=/run_action_list,name=stealth,if=buff.shadowmeld.up|buff.prowl.up
 actions+=/skull_bash
+actions+=/call_action_list,name=setup,if=!dot.rip.ticking
 actions+=/call_action_list,name=cooldown
 # Necrolord: Cast 3 or 4 combo point rips on single target outside of berserk or during berserk if feral frenzy is up OR apply a 5cp Rip when TF is up and will soon fall off.
-actions+=/rip,if=covenant.necrolord&(!talent.bloodtalons.enabled|buff.bloodtalons.up)&spell_targets.thrash_cat=1&(combo_points>2&refreshable&druid.rip.ticks_gained_on_refresh>variable.rip_ticks|combo_points=5&buff.tigers_fury.up&buff.tigers_fury.remains<3&druid.rip.ticks_gained_on_refresh>5)&(!buff.bs_inc.up|cooldown.bs_inc.up|(buff.bs_inc.up&cooldown.feral_frenzy.up))
+actions+=/rip,if=covenant.necrolord&(!talent.bloodtalons.enabled|buff.bloodtalons.up)&spell_targets.thrash_cat=1&(combo_points>2&refreshable&druid.rip.ticks_gained_on_refresh>variable.rip_ticks&(!buff.bs_inc.up|cooldown.bs_inc.up|(buff.bs_inc.up&cooldown.feral_frenzy.up))|combo_points=5&buff.tigers_fury.up&buff.tigers_fury.remains<4&druid.rip.ticks_gained_on_refresh>5)
 actions+=/run_action_list,name=finisher,if=combo_points>=(5-variable.4cp_bite)
 actions+=/primal_wrath,if=druid.primal_wrath.ticks_gained_on_refresh>=20&combo_points>=2,line_cd=5
 # Multi-gcd stealth
@@ -90,7 +91,10 @@ actions.bloodtalons+=/swipe_cat,if=buff.bt_swipe.down
 actions.bloodtalons+=/thrash_cat,if=buff.bt_thrash.down
 
 actions.cooldown=adaptive_swarm,target_if=((!dot.adaptive_swarm_damage.ticking|dot.adaptive_swarm_damage.remains<2)&(dot.adaptive_swarm_damage.stack<3|!dot.adaptive_swarm_heal.stack>1)&!action.adaptive_swarm_heal.in_flight&!action.adaptive_swarm_damage.in_flight&!action.adaptive_swarm.in_flight)&target.time_to_die>5|active_enemies>2&!dot.adaptive_swarm_damage.ticking&energy<35&target.time_to_die>5
-actions.cooldown+=/feral_frenzy,target_if=max:target.time_to_die,if=combo_points<3&target.time_to_die>7&!cooldown.tigers_fury.up|fight_remains<8&fight_remains>2
+actions.cooldown+=/fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)
+# Cast Tiger's Fury before (or immediatly after) casting Feral Frenzy if Berserk is on cooldown
+actions.cooldown+=/tigers_fury,sync=feral_frenzy,if=cooldown.bs_inc.up
+actions.cooldown+=/feral_frenzy,target_if=max:target.time_to_die,if=combo_points<3&target.time_to_die>7&(buff.savage_roar.up|!talent.savage_roar.enabled)&(!cooldown.tigers_fury.up|cooldown.bs_inc.up)|fight_remains<8&fight_remains>2
 # TODO: Need to sync with with ravenous frenzy when we run frenzyband, or atleast check if its worth it
 actions.cooldown+=/berserk,if=combo_points>=3
 actions.cooldown+=/incarnation,if=combo_points>=3
@@ -102,7 +106,7 @@ actions.cooldown+=/berserking,if=buff.tigers_fury.up|buff.bs_inc.up
 actions.cooldown+=/potion,if=buff.bs_inc.up|fight_remains<cooldown.bs_inc.remains|fight_remains<25
 actions.cooldown+=/ravenous_frenzy,if=buff.bs_inc.up|fight_remains<21
 # TODO: Check moonkin hotw and stuff like this, and maybe better combat remain resync
-actions.cooldown+=/convoke_the_spirits,if=(dot.rip.remains>4&combo_points<3&dot.rake.ticking&energy.deficit>=20)|fight_remains<5
+actions.cooldown+=/convoke_the_spirits,if=(dot.rip.remains>4&combo_points<5&(dot.rake.ticking|spell_targets.thrash_cat>1)&energy.deficit>=20)|fight_remains<5
 # Maybe there should be more conditions on the conduit
 actions.cooldown+=/kindred_spirits,if=buff.tigers_fury.up|(conduit.deep_allegiance.enabled)
 # Give priority to on-use weapon
@@ -121,13 +125,21 @@ actions.finisher+=/primal_wrath,if=(druid.primal_wrath.ticks_gained_on_refresh>3
 actions.finisher+=/rip,target_if=refreshable&druid.rip.ticks_gained_on_refresh>variable.rip_ticks&((buff.tigers_fury.up|!ticking)&(buff.bloodtalons.up|!talent.bloodtalons.enabled)|!talent.sabertooth.enabled)&(spell_targets.primal_wrath=1|!talent.primal_wrath.enabled)&(active_dot.rip=0|ticking&active_dot.rip=1|!runeforge.draught_of_deep_focus|!talent.sabertooth.enabled)
 actions.finisher+=/savage_roar,if=buff.savage_roar.remains<(combo_points+1)*6*0.3
 actions.finisher+=/ferocious_bite,max_energy=1,target_if=max:time_to_die
-actions.finisher+=/ferocious_bite,target_if=max:time_to_die,if=buff.bs_inc.up&talent.soul_of_the_forest.enabled
+actions.finisher+=/ferocious_bite,target_if=max:time_to_die,if=buff.bs_inc.up&talent.soul_of_the_forest.enabled|cooldown.convoke_the_spirits.remains<1&covenant.night_fae
 
 actions.owlweave=starsurge,if=buff.heart_of_the_wild.up
 actions.owlweave+=/sunfire,line_cd=4*gcd
-actions.owlweave+=/moonfire,line_cd=4*gcd,if=buff.moonkin_form.up&(runeforge.cateye_curio|runeforge.draught_of_deep_focus)&spell_targets.thrash_cat<2&!talent.lunar_inspiration.enabled
+actions.owlweave+=/moonfire,line_cd=4*gcd,if=buff.moonkin_form.up&spell_targets.thrash_cat<2&!talent.lunar_inspiration.enabled
 actions.owlweave+=/heart_of_the_wild,if=energy<30&dot.rip.remains>4.5&(cooldown.tigers_fury.remains>=6.5|runeforge.cateye_curio)&buff.clearcasting.stack<1&!buff.apex_predators_craving.up&!buff.bloodlust.up&!buff.bs_inc.up&(cooldown.convoke_the_spirits.remains>6.5|!covenant.night_fae)&(!covenant.necrolord|cooldown.adaptive_swarm.remains>=5|dot.adaptive_swarm_damage.remains>7)
 actions.owlweave+=/moonkin_form,if=energy<30&dot.rip.remains>4.5&(cooldown.tigers_fury.remains>=4.5|runeforge.cateye_curio)&buff.clearcasting.stack<1&!buff.apex_predators_craving.up&!buff.bloodlust.up&(!buff.bs_inc.up|covenant.necrolord&talent.savage_roar.enabled&buff.bs_inc.remains>6)&(cooldown.convoke_the_spirits.remains>6.5|!covenant.night_fae)&(!covenant.necrolord|cooldown.adaptive_swarm.remains>=5|dot.adaptive_swarm_damage.remains>7)&target.time_to_die>7
+
+actions.setup=lunar_inspiration,if=covenant.necrolord&spell_targets.thrash_cat<4&combo_points<5&!ticking&!buff.bs_inc.up
+actions.setup+=/pool_resource,for_next=1
+actions.setup+=/savage_roar,if=talent.feral_frenzy.enabled&cooldown.feral_frenzy.up&!buff.savage_roar.up&combo_points>1&dot.rake.ticking&(dot.lunar_inspiration.ticking|!talent.lunar_inspiration.enabled)
+actions.setup+=/pool_resource,if=talent.bloodtalons.enabled&buff.bloodtalons.down&(energy+3.5*energy.regen+(40*buff.clearcasting.up))<(115-23*buff.incarnation_king_of_the_jungle.up)&active_bt_triggers=0
+actions.setup+=/call_action_list,name=bloodtalons,if=talent.bloodtalons.enabled&buff.bloodtalons.down&(combo_points<5|spell_targets.thrash_cat=1)
+actions.setup+=/call_action_list,name=cooldown
+actions.setup+=/call_action_list,name=finisher,if=combo_points>3&(buff.bloodtalons.up|!talent.bloodtalons.enabled)
 
 # Rake needs roughly 50% of its length at a minimum to surpass shreds dpe
 actions.stealth=pool_resource,for_next=1
