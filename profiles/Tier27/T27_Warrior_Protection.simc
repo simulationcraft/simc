@@ -76,12 +76,12 @@ actions.generic+=/thunder_clap
 actions.generic+=/revenge
 actions.generic+=/devastate
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498,gem_id=173128
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498,gem_id=187318
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498,gem_id=173128
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
 back=cloak_of_scarred_honor,id=186289,bonus_id=7187/1498,enchant=soul_vitality
 chest=cuirass_of_the_lonely_citadel,id=186312,bonus_id=7187/1498,gem_id=187312,enchant=eternal_stats
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498,gem_id=173128
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498,gem_id=187313
 hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187314,enchant=eternal_strength
 waist=disintegrationproof_waistband,id=186317,bonus_id=7187/1498
 legs=shadowghast_greaves,id=171416,bonus_id=6716/6969/6647/6649/1559
@@ -99,7 +99,7 @@ off_hand=guard_of_the_sundered_defender,id=186417,bonus_id=7187/1498
 # gear_stamina=2155
 # gear_intellect=170
 # gear_crit_rating=606
-# gear_haste_rating=898
+# gear_haste_rating=866
 # gear_mastery_rating=417
 # gear_versatility_rating=319
 # gear_armor=2336
