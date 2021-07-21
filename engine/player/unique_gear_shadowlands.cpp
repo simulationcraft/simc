@@ -2810,6 +2810,41 @@ void soleahs_secret_technique( special_effect_t& effect )
     effect.player->sim->error( "Warning: Invalid type '{}' for So'leah's Secret Technique, ignoring.", opt_str );
 }
 
+
+// id=356813 buff
+// id=355329 proc/reflect amount
+// TODO: store damage value in buff and expunge from that rather than dealing the full amount on a proc
+// TODO: implement the 20% health proc
+void reactive_defense_matrix( special_effect_t& effect )
+{
+  struct reactive_defense_matrix_t : generic_proc_t
+  {
+    reactive_defense_matrix_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "reactive_defense_matrix", effect.trigger() )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+      may_crit                  = 0;
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+
+      player->buffs.reactive_defense_matrix->expire();
+    }
+  };
+
+  buff_t* buff = buff_t::find( effect.player, "reactive_defense_matrix" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "reactive_defense_matrix", effect.player->find_spell( 356813 ) );
+  }
+
+  effect.custom_buff = effect.player->buffs.reactive_defense_matrix = buff;
+  effect.execute_action = create_proc_action<reactive_defense_matrix_t>( "reactive_defense_matrix", effect );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -3888,6 +3923,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 355321, items::shadowed_orb_of_torment );
     unique_gear::register_special_effect( 351679, items::ticking_sack_of_terror );
     unique_gear::register_special_effect( 351926, items::soleahs_secret_technique );
+    unique_gear::register_special_effect( 355329, items::reactive_defense_matrix );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
