@@ -415,6 +415,15 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
       SLOT_TRINKET_2,
   };
 
+  const slot_e SLOT_GEMS[] = {
+    SLOT_HEAD,
+    SLOT_NECK,
+    SLOT_WRISTS,
+    SLOT_WAIST,
+    SLOT_FINGER_1,
+    SLOT_FINGER_2,
+  };
+
   for ( auto& slot : SLOT_OUT_ORDER )
   {
     item_t& item = p.items[ slot ];
@@ -457,9 +466,24 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
       if ( gem.id > 0 )
       {
         if ( gem_prop.id && gem_prop.color == SOCKET_COLOR_SHARD_OF_DOMINATION )
+        {
           domination_gems++;
+
+          // For the sake of profile auditing, also count dom gems as normal gems if its in a normal gem slot piece
+          // since you can only have one or the other
+          for ( auto& slot : SLOT_GEMS )
+          {
+            if ( item.slot == slot )
+            {
+              equipped_gems++;
+              break;
+            }
+          }
+        }
         else
+        {
           equipped_gems++;
+        }
       }
     }
 
