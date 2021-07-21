@@ -97,14 +97,14 @@ actions.st+=/fire_blast,if=runeforge.disciplinary_command&cooldown.buff_discipli
 actions.st+=/glacial_spike,if=buff.brain_freeze.react
 actions.st+=/frostbolt
 
-head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=173128/187319,enchant=60runspeed
+head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=187319,enchant=60runspeed
 neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173128
 shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187320
 back=drape_of_twisted_loyalties,id=180123,bonus_id=1566/6536/6646
 chest=sacrificers_sacramental_cassock,id=186282,bonus_id=1498/7187,gem_id=187318,enchant=eternal_insight
-wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=173128/187315,enchant=eternal_intellect
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=187315,enchant=eternal_intellect
 hands=stonefiend_shapers_mitts,id=178833,bonus_id=1566/6536/6646
-waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=173128/187312
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=187312
 legs=grimveiled_pants,id=173246,bonus_id=1559/6823/6647/6649
 feet=phantasmaforged_striders,id=186281,bonus_id=1498/7187
 finger1=miniature_breaking_wheel,id=186375,bonus_id=1498/7187/6935,gem_id=173128,enchant=tenet_of_haste
@@ -118,7 +118,7 @@ main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=sinful_revelation
 # gear_stamina=2125
 # gear_intellect=1501
 # gear_crit_rating=754
-# gear_haste_rating=901
+# gear_haste_rating=853
 # gear_mastery_rating=204
 # gear_versatility_rating=394
 # gear_speed_rating=60

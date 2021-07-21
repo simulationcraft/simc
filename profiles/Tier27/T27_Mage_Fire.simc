@@ -248,14 +248,14 @@ actions.standard_rotation+=/arcane_explosion,if=active_enemies>=variable.arcane_
 actions.standard_rotation+=/flamestrike,if=active_enemies>=variable.hard_cast_flamestrike
 actions.standard_rotation+=/fireball
 
-head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=173128/187319,enchant=60runspeed
+head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=187319,enchant=60runspeed
 neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173128
 shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187320
 back=selfreplicating_tissue,id=186374,bonus_id=1498/7187
 chest=sacrificers_sacramental_cassock,id=186282,bonus_id=1498/7187,gem_id=187318,enchant=eternal_insight
-wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=173128/187315,enchant=eternal_intellect
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=187315,enchant=eternal_intellect
 hands=grasps_of_the_clairvoyant_sage,id=186288,bonus_id=1498/7187
-waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=173128/187312
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=187312
 legs=sorcerers_headlong_legwraps,id=186285,bonus_id=1498/7187
 feet=sandals_of_sacred_symmetry,id=186354,bonus_id=1498/7187
 finger1=shadowghast_ring,id=178926,bonus_id=1559/6832/6649/6650/6935,gem_id=173128,enchant=tenet_of_haste
@@ -269,7 +269,7 @@ main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=sinful_revelation
 # gear_stamina=2114
 # gear_intellect=1484
 # gear_crit_rating=426
-# gear_haste_rating=808
+# gear_haste_rating=760
 # gear_mastery_rating=327
 # gear_versatility_rating=701
 # gear_speed_rating=60

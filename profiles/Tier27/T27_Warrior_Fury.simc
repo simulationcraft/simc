@@ -89,16 +89,16 @@ actions.single_target+=/raging_blow
 actions.single_target+=/crushing_blow
 actions.single_target+=/whirlwind
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173128/187318
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=187318
 neck=shadowghast_necklace,id=178927,bonus_id=6648/6649/6758/7470/1559/6935,gem_id=173128
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
 back=selfreplicating_tissue,id=186374,bonus_id=7187/1498
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187312,enchant=eternal_skirmish
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173128/187319,enchant=60runspeed
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187319,enchant=60runspeed
 hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
 waist=disintegrationproof_waistband,id=186317,bonus_id=7187/1498/6935,gem_id=173128
 legs=galvanized_oxxein_legguards,id=178800,bonus_id=6536/1566/6646
-feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498,enchant_id=6207
+feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498,enchant=soul_treads
 finger1=signet_of_the_false_accuser,id=178824,bonus_id=6536/1566/6646/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
 trinket1=old_warriors_soul,id=186438,bonus_id=7187/1498
@@ -112,7 +112,7 @@ off_hand=jaithys_the_prison_blade,id=186410,bonus_id=7745/7746/7747/7187/1498,en
 # gear_stamina=2316
 # gear_attack_power=40
 # gear_crit_rating=96
-# gear_haste_rating=972
+# gear_haste_rating=940
 # gear_mastery_rating=813
 # gear_versatility_rating=228
 # gear_speed_rating=60

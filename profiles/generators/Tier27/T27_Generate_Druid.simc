@@ -11,7 +11,7 @@ renown=80
 talents=1000332
 
 head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187318
-neck=sin_stained_pendant,id=178827,ilevel=252,gem_id=173130
+neck=sin_stained_pendant,id=178827,bonus_id=6536/1566/6646,gem_id=173130
 shoulders=smugglers_plundered_pauldrons,id=186298,bonus_id=7187/1498,gem_id=187319
 back=dealer_xyexas_cape,id=179349,bonus_id=6536/1566/6646
 chest=mawsworn_eviscerators_cuirass,id=186296,bonus_id=7187/1498,enchant=eternal_stats,gem_id=187320
@@ -42,7 +42,7 @@ soulbind=niya:1,322721/279:11:0/342270/260:11:0/271:11:0/265:11:0/320660/268:11:
 renown=80
 druid.owlweave_cat=1
 
-head="cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=173127/187320"
+head="cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187320"
 neck=",id=178927,bonus_id=7086/6647/6648/6758/1559,gem_id=173127"
 shoulder="spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187319"
 back="cloak_of_scarred_honor,id=186289,bonus_id=1498/6807"
@@ -73,7 +73,7 @@ soulbind=niya:1,322721/279:11:0/342270/260:11:0/271:11:0/265:11:0/320660/268:11:
 renown=80
 druid.owlweave_cat=0
 
-head="cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=173127/187320"
+head="cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187320"
 neck=",id=178927,bonus_id=7086/6647/6648/6758/1559,gem_id=173127"
 shoulder="spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187319"
 back="cloak_of_scarred_honor,id=186289,bonus_id=1498/6807"
@@ -105,7 +105,7 @@ soulbind=niya,grove_invigoration/conflux_of_elements:9:1/born_of_the_wilds:9:1/w
 renown=80
 
 
-head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187312/173129
+head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187312
 neck=shadowghast_necklace,id=178927,bonus_id=7086/6647/6650/6758/1559,gem_id=173129
 shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187313
 back=selfreplicating_tissue,id=186374,bonus_id=7187/1498,enchant=soul_vitality
@@ -137,7 +137,7 @@ soulbind=soothing_shade/party_favors/savage_combatant:11/unchecked_aggression:11
 
 
 
-head=cap_of_writhing_malevolence,id=186292,bonus_id=4800/4786/1498,gem_id=187312/173129
+head=cap_of_writhing_malevolence,id=186292,bonus_id=4800/4786/1498,gem_id=187312
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173129
 shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187317
 back=selfreplicating_tissue,id=186374,bonus_id=7187/1498,enchant=soul_vitality

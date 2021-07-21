@@ -150,7 +150,7 @@ actions.stealth+=/brutal_slash,if=spell_targets.brutal_slash>2
 actions.stealth+=/pool_resource,for_next=1
 actions.stealth+=/shred,if=combo_points<4&spell_targets.thrash_cat<5
 
-head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=173127/187320
+head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187320
 neck=shadowghast_necklace,id=178927,bonus_id=7086/6647/6648/6758/1559,gem_id=173127
 shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187319,enchant=60runspeed
 back=cloak_of_scarred_honor,id=186289,bonus_id=1498/6807
@@ -171,7 +171,7 @@ main_hand=jotungeirr_destinys_call,id=186404,bonus_id=7187/1498,enchant=sinful_r
 # gear_agility=1109
 # gear_stamina=2094
 # gear_attack_power=20
-# gear_crit_rating=973
+# gear_crit_rating=957
 # gear_haste_rating=218
 # gear_mastery_rating=430
 # gear_versatility_rating=467

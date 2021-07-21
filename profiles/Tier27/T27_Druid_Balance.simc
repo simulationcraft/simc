@@ -250,7 +250,7 @@ actions.st+=/wrath
 actions.st+=/run_action_list,name=fallthru
 
 head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187318
-neck=sin_stained_pendant,id=178827,ilevel=252,gem_id=173130
+neck=sin_stained_pendant,id=178827,bonus_id=6536/1566/6646,gem_id=173130
 shoulders=smugglers_plundered_pauldrons,id=186298,bonus_id=7187/1498,gem_id=187319,enchant=60runspeed
 back=dealer_xyexas_cape,id=179349,bonus_id=6536/1566/6646
 chest=mawsworn_eviscerators_cuirass,id=186296,bonus_id=7187/1498,gem_id=187320,enchant=eternal_stats

@@ -9,12 +9,12 @@ covenant=venthyr
 soulbind=Nadja_the_mistblade,thrill_seeker/punish_the_guilty:9:1/hallowed_discernment:9:1/dauntless_duelist/fatal_flaw
 renown=80
 
-head=Valorous_Visage_of_Krexus,id=186350,gem_id=187318/173128,bonus_id=7187/1498
+head=Valorous_Visage_of_Krexus,id=186350,gem_id=187318,bonus_id=7187/1498
 neck=Interplanar_Keystone,id=186379,bonus_id=7187/1498,gem_id=173128
 shoulder=Spires_of_Broken_Hope,id=186349,gem_id=187315,bonus_id=7187/1498
 back=Cloak_of_Scarred_Honor,id=186289,enchant=soul_vitality,bonus_id=7187/1498
 chest=Cuirass_of_the_Lonely_Citadel,id=186312,enchant=eternal_stats,gem_id=187312,bonus_id=7187/1498
-wrist=Vyrazs_Parade_Cuffs,id=186351,gem_id=187313/173128,bonus_id=7187/1498
+wrist=Vyrazs_Parade_Cuffs,id=186351,gem_id=187313,bonus_id=7187/1498
 hands=Kyras_Unending_Protectors,id=186346,enchant=eternal_strength,gem_id=187314,bonus_id=7187/1498
 waist=Shadowghast_Waistguard,id=171418,bonus_id=6716/7054/6647/6649/1559
 legs=Fateforged_Legplates,id=186348,bonus_id=7187/1498
@@ -50,12 +50,12 @@ covenant=kyrian
 soulbind=pelagos,combat_meditation/better_together/newfound_resolve/ringing_clarity:9:1/virtuous_command:9:1/expurgation:9:1
 renown=80
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=187312/173127
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=187312
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173127
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
 back=selfreplicating_tissue,id=186374,bonus_id=7187/1498
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_skirmish
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187320/173127
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187320
 hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187319,enchant=eternal_strength
 waist=shadowghast_waistguard,id=171418,bonus_id=6648/6647/6758/7679/1559/6935,gem_id=173127
 legs=fateforged_legplates,id=186348,bonus_id=7187/1498

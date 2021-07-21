@@ -93,12 +93,12 @@ actions.generators+=/crusader_strike
 actions.generators+=/arcane_torrent
 actions.generators+=/consecration
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=187312/173127
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=187312
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173127
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
 back=selfreplicating_tissue,id=186374,bonus_id=7187/1498
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_skirmish
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187320/173127
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187320
 hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187319,enchant=eternal_strength
 waist=shadowghast_waistguard,id=171418,bonus_id=6648/6647/6758/7679/1559/6935,gem_id=173127
 legs=fateforged_legplates,id=186348,bonus_id=7187/1498
@@ -114,7 +114,7 @@ main_hand=jaithys_the_prison_blade,id=186410,bonus_id=7187/7748/1498,enchant=sin
 # gear_strength=1019
 # gear_stamina=2119
 # gear_attack_power=20
-# gear_crit_rating=731
+# gear_crit_rating=699
 # gear_haste_rating=543
 # gear_mastery_rating=501
 # gear_versatility_rating=424

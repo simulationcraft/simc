@@ -70,7 +70,7 @@ actions.normal+=/sigil_of_flame,if=!(covenant.kyrian.enabled&runeforge.razelikhs
 actions.normal+=/shear
 actions.normal+=/throw_glaive
 
-head=cap_of_writhing_malevolence,id=186292,bonus_id=4800/4786/1498,gem_id=173128/187312
+head=cap_of_writhing_malevolence,id=186292,bonus_id=4800/4786/1498,gem_id=187312
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173129
 shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498/6935,gem_id=187315
 back=selfreplicating_tissue,id=186374,bonus_id=4800/4786/1498,enchant=soul_vitality
@@ -93,7 +93,7 @@ off_hand=cruciform_veinripper,id=186388,bonus_id=4800/4786/1498,enchant=lightles
 # gear_stamina=2133
 # gear_attack_power=40
 # gear_crit_rating=675
-# gear_haste_rating=848
+# gear_haste_rating=832
 # gear_mastery_rating=50
 # gear_versatility_rating=515
 # gear_leech_rating=60

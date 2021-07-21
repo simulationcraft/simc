@@ -152,14 +152,14 @@ actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 actions.single_target+=/frost_shock,moving=1
 actions.single_target+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack
 
-head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187320/173128
+head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187320
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498,gem_id=173128
 shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187319,enchant=60runspeed
 back=grimveiled_cape,id=173242,bonus_id=6716/6992/6649/6650/1559
 chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,gem_id=187318,enchant=eternal_insight
 wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498,gem_id=173128,enchant=eternal_intellect
 hands=absonant_constructs_handguards,id=180105,bonus_id=3536/4786/1566
-waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187315/173128
+waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187315
 legs=aradnes_lancer_legguards,id=186307,bonus_id=7187/1498
 feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187312
 finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
@@ -173,7 +173,7 @@ main_hand=maledict_opus,id=186406,bonus_id=7187/1498,enchant=sinful_revelation
 # gear_stamina=2097
 # gear_intellect=1490
 # gear_crit_rating=432
-# gear_haste_rating=900
+# gear_haste_rating=868
 # gear_mastery_rating=214
 # gear_versatility_rating=699
 # gear_speed_rating=60

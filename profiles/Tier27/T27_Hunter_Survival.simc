@@ -149,14 +149,14 @@ actions.st+=/mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if
 actions.st+=/raptor_strike,target_if=max:debuff.latent_poison_injection.stack
 actions.st+=/wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50
 
-head=shadowsteel_facecage,id=186341,bonus_id=7187/1498/6935,gem_id=173128/187320
+head=shadowsteel_facecage,id=186341,bonus_id=7187/1498/6935,gem_id=187320
 neck=shadowghast_necklace,id=178927,bonus_id=6647/6649/7004/1559/6935,gem_id=173128
 shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187319,enchant=60runspeed
 back=dark_rangers_quiver,id=186439,bonus_id=7187/1498
 chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,gem_id=187318,enchant=eternal_skirmish
 wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498/6935,gem_id=173128
 hands=grasps_of_ancestral_whispers,id=186308,bonus_id=7187/1498
-waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498/6935,gem_id=173128/187315
+waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498/6935,gem_id=187315
 legs=aradnes_lancer_legguards,id=186307,bonus_id=7187/1498
 feet=ragebound_leg_irons,id=186343,bonus_id=7187/1498,gem_id=187312,enchant=eternal_agility
 finger1=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
@@ -171,7 +171,7 @@ main_hand=jotungeirr_destinys_call,id=186404,bonus_id=7187/1498,enchant=sinful_r
 # gear_stamina=2080
 # gear_attack_power=20
 # gear_crit_rating=661
-# gear_haste_rating=1057
+# gear_haste_rating=1025
 # gear_mastery_rating=113
 # gear_versatility_rating=252
 # gear_speed_rating=60
