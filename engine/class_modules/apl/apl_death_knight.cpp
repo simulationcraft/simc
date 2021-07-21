@@ -231,7 +231,7 @@ void frost( player_t* p )
   bos_ticking->add_action( "howling_blast,if=variable.rotfc_rime" );
   bos_ticking->add_action( "arcane_torrent,if=runic_power.deficit>50" );
 
-  cold_heart->add_action( "chains_of_ice,if=fight_remains<gcd", "Cold Heart Conditions" );
+  cold_heart->add_action( "chains_of_ice,if=fight_remains<gcd&(rune<2|!buff.killing_machine.up&(!main_hand.2h&buff.cold_heart.stack>=4*(1+runeforge.koltiras_favor)|main_hand.2h&buff.cold_heart.stack>8*(1+runeforge.koltiras_favor))|buff.killing_machine.up&(!main_hand.2h&buff.cold_heart.stack>8*(1+runeforge.koltiras_favor)|main_hand.2h&buff.cold_heart.stack>10*(1+runeforge.koltiras_favor)))", "Cold Heart Conditions" );
   cold_heart->add_action( "chains_of_ice,if=!talent.obliteration&buff.pillar_of_frost.up&buff.cold_heart.stack>=10&buff.pillar_of_frost.remains<gcd*(1+cooldown.frostwyrms_fury.ready)", "Use during Pillar with Icecap/Breath" );
   cold_heart->add_action( "chains_of_ice,if=!talent.obliteration&death_knight.runeforge.fallen_crusader&!buff.pillar_of_frost.up&cooldown.pillar_of_frost.remains>15&(buff.cold_heart.stack>=10&buff.unholy_strength.up|buff.cold_heart.stack>=13)", "Outside of Pillar useage with Icecap/Breath" );
   cold_heart->add_action( "chains_of_ice,if=!talent.obliteration&!death_knight.runeforge.fallen_crusader&buff.cold_heart.stack>=10&!buff.pillar_of_frost.up&cooldown.pillar_of_frost.remains>20" );
