@@ -108,7 +108,7 @@ wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187319,encha
 hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
 waist=shadowghast_waistguard,id=171418,bonus_id=6647/6649/6758/6962/1559/6935,gem_id=173127
 legs=agathas_gothic_greaves,id=186313,bonus_id=7187/1498
-feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498,enchant=soul_treads
+feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
 finger1=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
 trinket1=old_warriors_soul,id=186438,bonus_id=7187/1498

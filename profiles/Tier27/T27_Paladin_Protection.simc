@@ -78,7 +78,7 @@ wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498,gem_id=187313
 hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187314,enchant=eternal_strength
 waist=shadowghast_waistguard,id=171418,bonus_id=6716/7054/6647/6649/1559
 legs=fateforged_legplates,id=186348,bonus_id=7187/1498
-feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498,gem_id=173128
+feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
 finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
 trinket1=old_warriors_soul,id=186438,bonus_id=7187/1498
@@ -91,7 +91,7 @@ off_hand=guard_of_the_sundered_defender,id=186417,bonus_id=7187/1498
 # gear_strength=1126
 # gear_stamina=2149
 # gear_crit_rating=635
-# gear_haste_rating=924
+# gear_haste_rating=908
 # gear_mastery_rating=417
 # gear_versatility_rating=246
 # gear_armor=2331

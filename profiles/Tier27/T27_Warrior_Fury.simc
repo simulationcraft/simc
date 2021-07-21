@@ -98,7 +98,7 @@ wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187319,encha
 hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
 waist=disintegrationproof_waistband,id=186317,bonus_id=7187/1498/6935,gem_id=173128
 legs=galvanized_oxxein_legguards,id=178800,bonus_id=6536/1566/6646
-feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498,enchant=soul_treads
+feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
 finger1=signet_of_the_false_accuser,id=178824,bonus_id=6536/1566/6646/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
 trinket1=old_warriors_soul,id=186438,bonus_id=7187/1498
