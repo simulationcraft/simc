@@ -152,9 +152,9 @@ actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown
 
 head=veil_of_the_banshee_queen,id=186325,bonus_id=7187/1498,gem_id=187318
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498,gem_id=173130
-shoulders=frame_of_the_false_margrave,id=186324,bonus_id=7187/1498,gem_id=187076,enchant=30runspeed
+shoulders=frame_of_the_false_margrave,id=186324,bonus_id=7187/1498,gem_id=187319,enchant=60runspeed
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6536/1566/6646
-chest=sacrificers_sacramental_cassock,id=186282,bonus_id=7187/1498,gem_id=187079,enchant=eternal_stats
+chest=sacrificers_sacramental_cassock,id=186282,bonus_id=7187/1498,gem_id=187320,enchant=eternal_stats
 wrists=desecrators_keening_wristwraps,id=186321,bonus_id=7187/1498,gem_id=187315,enchant=eternal_intellect
 hands=grimveiled_mittens,id=173244,bonus_id=6648/6649/6982/1559
 waist=sash_of_duplicitous_magics,id=186322,bonus_id=7187/1498,gem_id=187312
@@ -174,5 +174,5 @@ main_hand=maledict_opus,id=186406,bonus_id=7187/1498,enchant=sinful_revelation
 # gear_haste_rating=980
 # gear_mastery_rating=629
 # gear_versatility_rating=348
-# gear_speed_rating=30
+# gear_speed_rating=60
 # gear_armor=438
