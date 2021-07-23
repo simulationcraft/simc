@@ -166,6 +166,8 @@ void brewmaster( player_t* p )
 
   pre->add_action( "potion" );
 
+  pre->add_action( "fleshcraft" );
+
   pre->add_talent( p, "Chi Burst" );
   pre->add_talent( p, "Chi Wave" );
 
@@ -189,10 +191,19 @@ void brewmaster( player_t* p )
 
   def->add_action( "potion" );
 
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
+    def->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str );
+
+  for ( size_t i = 0; i < p->items.size(); i++ )
   {
-    if ( racial_actions[ i ] != "arcane_torrent" )
-      def->add_action( racial_actions[ i ] );
+    std::string name_str;
+    if ( p->items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+    {
+      if ( p->items[ i ].name_str == "jotungeirr_destinys_call" )
+        continue;
+      else
+        def->add_action( "use_item,name=" + p->items[ i ].name_str );
+    }
   }
 
   def->add_action(
@@ -293,6 +304,10 @@ void mistweaver( player_t* p )
 
   pre->add_action( "potion" );
 
+  pre->add_action( "fleshcraft" );
+  if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
+    pre->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str );
+
   pre->add_talent( p, "Chi Burst" );
   pre->add_talent( p, "Chi Wave" );
 
@@ -318,14 +333,31 @@ void mistweaver( player_t* p )
 
   def->add_action( "potion" );
 
-  def->add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
-  def->add_action( "call_action_list,name=st,if=active_enemies<3" );
-
   // Covenant Abilities
   def->add_action( "weapons_of_order" );
   def->add_action( "faeline_stomp" );
   def->add_action( "fallen_order" );
   def->add_action( "bonedust_brew" );
+
+  if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
+    def->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str );
+
+  for ( size_t i = 0; i < p->items.size(); i++ )
+  {
+    std::string name_str;
+    if ( p->items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+    {
+      if ( p->items[ i ].name_str == "jotungeirr_destinys_call" )
+        continue;
+      else
+        def->add_action( "use_item,name=" + p->items[ i ].name_str );
+    }
+  }
+
+  def->add_action( "fleshcraft,if=soulbind.lead_by_example.enabled" );
+
+  def->add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
+  def->add_action( "call_action_list,name=st,if=active_enemies<3" );
 
   st->add_action( p, "Thunder Focus Tea" );
   st->add_action( p, "Rising Sun Kick" );
@@ -358,6 +390,9 @@ void windwalker( player_t* p )
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   pre->add_action( "variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem" );
+  pre->add_action( "fleshcraft" );
+  if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
+    pre->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
   pre->add_talent( p, "Chi Burst" );
   pre->add_talent( p, "Chi Wave", "if=!talent.energizing_elixir.enabled" );
 
@@ -480,6 +515,9 @@ void windwalker( player_t* p )
   cd_serenity->add_action( "weapons_of_order,if=cooldown.rising_sun_kick.remains<execute_time" );
 
   // Serenity On-use items
+  if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
+    cd_serenity->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
+
   for ( size_t i = 0; i < p->items.size(); i++ )
   {
     std::string name_str;
@@ -489,12 +527,14 @@ void windwalker( player_t* p )
         cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
       else if ( p->items[ i ].name_str == "wrathstone" )
         cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
-            else if ( p->items[ i ].name_str == "overcharged_anima_battery" )
+      else if ( p->items[ i ].name_str == "overcharged_anima_battery" )
         cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
-            else if ( p->items[ i ].name_str == "shadowgrasp_totem" )
+      else if ( p->items[ i ].name_str == "shadowgrasp_totem" )
         cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight" );
       else if ( p->items[ i ].name_str == "gladiators_badge" )
         cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
+      else if ( p->items[ i ].name_str == "jotungeirr_destinys_call" )
+        continue;
       else
         cd_serenity->add_action(
             "use_item,name=" + p->items[ i ].name_str +
@@ -538,6 +578,9 @@ void windwalker( player_t* p )
       "if=covenant.necrolord&debuff.bonedust_brew_debuff.up&(pet.xuen_the_white_tiger.active|variable.hold_xuen|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time|cooldown.invoke_xuen_the_white_tiger.remains>30)" );
 
   // Storm, Earth, and Fire on-use trinkets
+  if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
+    cd_sef->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
+
   for ( size_t i = 0; i < p->items.size(); i++ )
   {
     if ( p->items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
@@ -557,6 +600,8 @@ void windwalker( player_t* p )
       else if ( p->items[ i ].name_str == "gladiators_badge" )
         cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str +
                             ",if=cooldown.invoke_xuen_the_white_tiger.remains>55|variable.hold_xuen|fight_remains<15" );
+      else if ( p->items[ i ].name_str == "jotungeirr_destinys_call" )
+        continue;
       else
         cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str +
                ",if=!variable.xuen_on_use_trinket|cooldown.invoke_xuen_the_white_tiger.remains>20&pet.xuen_the_white_tiger.remains<20|variable.hold_xuen" );
