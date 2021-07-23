@@ -168,6 +168,9 @@ void brewmaster( player_t* p )
 
   pre->add_action( "fleshcraft" );
 
+  if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
+    pre->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str );
+
   pre->add_talent( p, "Chi Burst" );
   pre->add_talent( p, "Chi Wave" );
 
@@ -175,21 +178,6 @@ void brewmaster( player_t* p )
   action_priority_list_t* def             = p->get_action_priority_list( "default" );
   def->add_action( "auto_attack" );
   def->add_action( p, "Spear Hand Strike", "if=target.debuff.casting.react" );
-
-  for ( size_t i = 0; i < p->items.size(); i++ )
-  {
-    std::string name_str;
-    if ( p->items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-    {
-      def->add_action( "use_item,name=" + p->items[ i ].name_str );
-    }
-  }
-
-  def->add_action( p, "Gift of the Ox", "if=health<health.max*0.65" );
-  def->add_talent( p, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
-  def->add_action( p, "Fortifying Brew", "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)" );
-
-  def->add_action( "potion" );
 
   if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
     def->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str );
@@ -204,6 +192,18 @@ void brewmaster( player_t* p )
       else
         def->add_action( "use_item,name=" + p->items[ i ].name_str );
     }
+  }
+
+  def->add_action( p, "Gift of the Ox", "if=health<health.max*0.65" );
+  def->add_talent( p, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
+  def->add_action( p, "Fortifying Brew", "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)" );
+
+  def->add_action( "potion" );
+
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  {
+    if ( racial_actions[ i ] != "arcane_torrent" )
+      def->add_action( racial_actions[ i ] );
   }
 
   def->add_action(
@@ -305,6 +305,7 @@ void mistweaver( player_t* p )
   pre->add_action( "potion" );
 
   pre->add_action( "fleshcraft" );
+
   if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
     pre->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str );
 
@@ -318,26 +319,6 @@ void mistweaver( player_t* p )
 
   def->add_action( "auto_attack" );
   int num_items = (int)p->items.size();
-  for ( int i = 0; i < num_items; i++ )
-  {
-    if ( p->items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      def->add_action( "use_item,name=" + p->items[ i ].name_str );
-  }
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
-  {
-    if ( racial_actions[ i ] == "arcane_torrent" )
-      def->add_action( racial_actions[ i ] + ",if=chi.max-chi>=1&target.time_to_die<18" );
-    else
-      def->add_action( racial_actions[ i ] + ",if=target.time_to_die<18" );
-  }
-
-  def->add_action( "potion" );
-
-  // Covenant Abilities
-  def->add_action( "weapons_of_order" );
-  def->add_action( "faeline_stomp" );
-  def->add_action( "fallen_order" );
-  def->add_action( "bonedust_brew" );
 
   if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
     def->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str );
@@ -353,6 +334,19 @@ void mistweaver( player_t* p )
         def->add_action( "use_item,name=" + p->items[ i ].name_str );
     }
   }
+
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  {
+    def->add_action( racial_actions[ i ] + ",if=target.time_to_die<18" );
+  }
+
+  def->add_action( "potion" );
+
+  // Covenant Abilities
+  def->add_action( "weapons_of_order" );
+  def->add_action( "faeline_stomp" );
+  def->add_action( "fallen_order" );
+  def->add_action( "bonedust_brew" );
 
   def->add_action( "fleshcraft,if=soulbind.lead_by_example.enabled" );
 

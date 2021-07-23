@@ -42,6 +42,12 @@ actions+=/gift_of_the_ox,if=health<health.max*0.65
 actions+=/dampen_harm,if=incoming_damage_1500ms&buff.fortifying_brew.down
 actions+=/fortifying_brew,if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)
 actions+=/potion
+actions+=/blood_fury
+actions+=/berserking
+actions+=/lights_judgment
+actions+=/fireblood
+actions+=/ancestral_call
+actions+=/bag_of_tricks
 # Cast Niuzao when we'll get at least 20 seconds of uptime. This is specific to the default enemy APL and will need adjustments for other enemies.
 actions+=/invoke_niuzao_the_black_ox,if=cooldown.purifying_brew.charges_fractional<2&(target.cooldown.pause_action.remains>=20|time<=10)
 actions+=/touch_of_death,if=target.health.pct<=15
