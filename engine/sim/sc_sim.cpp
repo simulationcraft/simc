@@ -2322,16 +2322,18 @@ void sim_t::init_fight_style()
   }
   else if ( util::str_compare_ci( fight_style, "DungeonSlice" ) )
   { //Based on the Hero Dungeon setup
-    max_time                       = timespan_t::from_seconds( 360.0 );
+    max_time                           = timespan_t::from_seconds( 360.0 );
     //Disables all raidbuffs, except those provided by scrolls or the character itself.
-    optimal_raid                   = 0;
-    overrides.arcane_intellect     = 1;
-    overrides.battle_shout         = 1;
-    overrides.power_word_fortitude = 1;
-    overrides.bloodlust            = 1;
-    overrides.windfury_totem       = 0;
+    optimal_raid                       = 0;
+    overrides.arcane_intellect         = 1;
+    overrides.battle_shout             = 1;
+    overrides.power_word_fortitude     = 1;
+    overrides.bloodlust                = 1;
+    overrides.windfury_totem           = 0;
 
-    ignore_invulnerable_targets = true;
+    shadowlands_opts.enable_rune_words = false;
+
+    ignore_invulnerable_targets        = true;
 
     raid_events_str +=
         "/invulnerable,cooldown=500,duration=500,retarget=1"
