@@ -1318,6 +1318,8 @@ class SpellDataGenerator(DataGenerator):
          351561,
          # Mythic Plus Season 2 Anima Powers
          357575, 357582, 357584, # champion's brand
+         # Codex of the First Technique's damage spell
+         351450,
         ),
 
         # Warrior:
