@@ -3504,9 +3504,16 @@ void generic::windfury_totem( special_effect_t& effect )
 {
   struct wft_proc_callback_t : public dbc_proc_callback_t
   {
+    proc_t* proc;
+
     wft_proc_callback_t( const special_effect_t& effect ) :
-      dbc_proc_callback_t( effect.player, effect )
-    { }
+      dbc_proc_callback_t( effect.player, effect ), proc( nullptr )
+    { 
+      if ( effect.player->main_hand_attack && effect.player->main_hand_attack->weapon->group() != WEAPON_RANGED )
+      {
+        proc = effect.player->get_proc( "windfury_totem_extra_attack" );
+      }
+    }
 
     void trigger( action_t* a, action_state_t* s ) override
     {
@@ -3537,10 +3544,10 @@ void generic::windfury_totem( special_effect_t& effect )
       auto atk = listener->main_hand_attack;
       auto old_target = atk->target;
 
-      if ( listener->sim->debug )
+      listener->sim->print_log( "{} windfury_totem repeats {}", *listener, *atk );
+      if ( proc )
       {
-        listener->sim->print_debug( "{} windfury_totem repeats {}",
-          listener->name(), atk->name() );
+        proc->occur();
       }
 
       atk->repeating = false;
