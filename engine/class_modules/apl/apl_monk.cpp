@@ -168,9 +168,6 @@ void brewmaster( player_t* p )
 
   pre->add_action( "fleshcraft" );
 
-  if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
-    pre->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str );
-
   pre->add_talent( p, "Chi Burst" );
   pre->add_talent( p, "Chi Wave" );
 
@@ -306,9 +303,6 @@ void mistweaver( player_t* p )
 
   pre->add_action( "fleshcraft" );
 
-  if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
-    pre->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str );
-
   pre->add_talent( p, "Chi Burst" );
   pre->add_talent( p, "Chi Wave" );
 
@@ -385,8 +379,6 @@ void windwalker( player_t* p )
 
   pre->add_action( "variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem" );
   pre->add_action( "fleshcraft" );
-  if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
-    pre->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
   pre->add_talent( p, "Chi Burst" );
   pre->add_talent( p, "Chi Wave", "if=!talent.energizing_elixir.enabled" );
 
