@@ -205,7 +205,7 @@ void brewmaster( player_t* p )
 
   def->add_action(
       p, monk->spec.invoke_niuzao, "invoke_niuzao_the_black_ox",
-      "if=cooldown.purifying_brew.charges_fractional<2&(target.cooldown.pause_action.remains>=20|time<=10)",
+      "if=buff.recent_purifies.value>=health.max*0.05&(target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)",
       "Cast Niuzao when we'll get at least 20 seconds of uptime. This is specific to the default enemy APL and will "
       "need adjustments for other enemies." );
   def->add_action( p, "Touch of Death", "if=target.health.pct<=15" );
@@ -217,7 +217,7 @@ void brewmaster( player_t* p )
 
   // Purifying Brew
   def->add_action( p, "Purifying Brew",
-                   "if=stagger.amounttototalpct>=0.7&(((target.cooldown.pause_action.remains>=20|time<=10)&cooldown."
+                   "if=stagger.amounttototalpct>=0.7&(((target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)&cooldown."
                    "invoke_niuzao_the_black_ox.remains<5)|buff.invoke_niuzao_the_black_ox.up)",
                    "Cast PB during the Niuzao window, but only if recently hit." );
   def->add_action( p, "Purifying Brew", "if=buff.invoke_niuzao_the_black_ox.up&buff.invoke_niuzao_the_black_ox.remains<8", "Dump PB charges towards the end of Niuzao: anything is better than nothing." );
@@ -231,7 +231,7 @@ void brewmaster( player_t* p )
       p, "Black Ox Brew",
       "if=(energy+(energy.regen*cooldown.keg_smash.remains))<40&buff.blackout_combo.down&cooldown.keg_smash.up" );
 
-  def->add_action( "fleshcraft,if=cooldown.bonedust_brew.remains<4&soulbind.lead_by_example.enabled" );
+  def->add_action( "fleshcraft,if=cooldown.bonedust_brew.remains<4&soulbind.pustule_eruption.enabled" );
 
   def->add_action(
       p, "Keg Smash", "if=spell_targets>=2",
@@ -258,7 +258,6 @@ void brewmaster( player_t* p )
   def->add_talent( p, "Chi Burst", "if=cooldown.faeline_stomp.remains>2&spell_targets>=2" );
   def->add_action( "faeline_stomp" );
 
-  def->add_action( p, "Expel Harm", "if=buff.gift_of_the_ox.stack>=3" );
   def->add_action( p, "Touch of Death" );
   def->add_talent( p, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   def->add_action( p, "Spinning Crane Kick", "if=buff.charred_passions.up" );
@@ -267,7 +266,7 @@ void brewmaster( player_t* p )
   def->add_talent( p, "Chi Burst" );
   def->add_talent( p, "Chi Wave" );
   def->add_action( p, "Spinning Crane Kick",
-      "if=(active_enemies>=3|conduit.walk_with_the_ox.enabled)&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*("
+      "if=!runeforge.shaohaos_might.equipped&(active_enemies>=3|conduit.walk_with_the_ox.enabled)&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*("
       "cooldown.keg_smash.remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)",
       "Cast SCK if enough enemies are around, or if WWWTO is enabled. This is a slight defensive loss over using TP "
       "but generally reduces sim variance more than anything else." );
@@ -279,6 +278,8 @@ void brewmaster( player_t* p )
     if ( racial_actions[ i ] == "arcane_torrent" )
       def->add_action( racial_actions[ i ] + ",if=energy<31" );
   }
+
+  def->add_action("fleshcraft,if=soulbind.volatile_solvent.enabled");
 
   def->add_talent( p, "Rushing Jade Wind" );
 }
