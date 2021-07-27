@@ -1,5 +1,5 @@
-// Spell text, wow build 9.1.0.39427
-static const std::array<spelltext_data_t, 15531> __spelltext_data { {
+// Spell text, wow build 9.1.0.39497
+static const std::array<spelltext_data_t, 15528> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -12366,9 +12366,6 @@ static const std::array<spelltext_data_t, 15531> __spelltext_data { {
   { 304544, "Combine $s2 Aqueous Reliquary to create the |cFFE6CC80$?l2 [Animated Elemental Heart]?l0 [Hardened Azerite Formation] [Vitality Redistribution Lattice]|r, which can be used to infuse your Heart of Azeroth with $?l2[Condensed Life-Force]?l0[Azeroth's Undying Gift][Vitality Conduit]. Item created is based on your current loot specialization.", 0, 0 },
   { 304545, "$?l0[$@spelldesc304615]?l1[$@spelldesc304609]?l2[$@spelldesc304616][]", 0, 0 },
   { 304550, "Place a seashell on the ground. Interacting with the memento fills you with memories of adventures in Nazjatar with your allies.", "Inspired by your allies in Nazjatar!", 0 },
-  { 304603, 0, "Holding a cursed object.\r\nPeriodically subjected to curses.", 0 },
-  { 304605, 0, "Holding a cursed object.\r\nPeriodically subjected to curses.", 0 },
-  { 304606, 0, "Holding a cursed object.\r\nPeriodically subjected to curses.", 0 },
   { 304609, "$?(q56957)[Aqueous Reliquaries can not create any additional essence items for your current Loot Specialization.]?((q56950)&!(q56945)&!(q56957))[$@spelldesc302496]?((q56950)&(q56945)&!(q56957))[$@spelldesc304540]?((q56946)&!(q56944))[$@spelldesc304541]?((q56946)&(q56944))[$@spelldesc304542]?(q56943)&(!(q56946))[$@spelldesc304544]?(!(q56946)&!(q56943))[$@spelldesc304543][]", 0, 0 },
   { 304615, "$?(q56958)[Aqueous Reliquaries can not create any additional essence items for your current Loot Specialization.]?((q56951)&!(q56945)&!(q56958))[$@spelldesc302496]?((q56951)&(q56945)&!(q56958))[$@spelldesc304540]?((q56948)&!(q56944))[$@spelldesc304541]?((q56948)&(q56944))[$@spelldesc304542]?((q56943)&!(q56948))[$@spelldesc304544]?(!(q56948)&!(q56943))[$@spelldesc304543][]", 0, 0 },
   { 304616, "$?(q56956)[Aqueous Reliquaries can not create any additional essence items for your current Loot Specialization.]?((q56949)&!(q56945)&!(q56956))[$@spelldesc302496]?((q56949)&(q56945)&!(q56956))[$@spelldesc304540]?((q56947)&!(q56944))[$@spelldesc304541]?((q56947)&(q56944))[$@spelldesc304542]?((q56943)&!(q56947))[$@spelldesc304544]?(!(q56947)&!(q56943))[$@spelldesc304543][]", 0, 0 },
@@ -15533,11 +15530,11 @@ static const std::array<spelltext_data_t, 15531> __spelltext_data { {
   { 359168, "While you are behind your enemies, their movement is impaired, or they are suffering from loss-of-control effects, your attacks have a high chance to cause them to bleed for ${$s1*($353466d/$353466t1+1)} Physical damage over $353466d.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.0.39427
+// spelltext hotfix entries, wow build 9.1.0.39497
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.1.0.39427
+// Spell description variables, wow build 9.1.0.39497
 static const std::array<spelldesc_vars_data_t, 301> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15842,7 +15839,7 @@ static const std::array<spelldesc_vars_data_t, 301> __spelldesc_vars_data { {
   {  358164, "$buff=${$348272s1}\r\n$max=${3*$<buff>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.0.39427
+// spelldesc_vars hotfix entries, wow build 9.1.0.39497
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
