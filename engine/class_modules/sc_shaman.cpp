@@ -4285,6 +4285,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   {
     maelstrom_gain         = player->spell.maelstrom->effectN( 4 ).resource( RESOURCE_MAELSTROM );
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+    travel_speed = player->find_spell( 77451 )->missile_speed();
   }
 
   static lava_burst_state_t* cast_state( action_state_t* s )
