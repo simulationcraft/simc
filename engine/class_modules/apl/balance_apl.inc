@@ -8,7 +8,7 @@ action_priority_list_t* fallthru = get_action_priority_list( "fallthru" );
 precombat->add_action( "variable,name=on_use_trinket,value=0","The variable is set to 0 with no stat on use trinkets, 1 when the first one is on use, 2 if the second is and 3 if both are" );
 precombat->add_action( "variable,name=on_use_trinket,op=add,value=trinket.1.has_proc.any&trinket.1.cooldown.duration" );
 precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.2.has_proc.any&trinket.2.cooldown.duration)*2" );
-precombat->add_action( "variable,name=on_use_trinket,op=set,value=(equipped.inscrutable_quantum_device|equipped.empyreal_ordnance|equipped.soulletting_ruby)*4","These trinkets are not autmatically detected as on use stat trinkets. Set variable to 4 as they also need special handling." );
+precombat->add_action( "variable,name=on_use_trinket,op=add,value=(equipped.inscrutable_quantum_device|equipped.empyreal_ordnance|equipped.soulletting_ruby)*4","These trinkets are not autmatically detected as on use stat trinkets. Add 4 to signal that special handling is active." );
 precombat->add_action( "moonkin_form" );
 precombat->add_action( "wrath","Precast 2 Wrath and a Starsurge on ST with Night Fae and BoAT or Starfire otherwise" );
 precombat->add_action( "wrath" );
