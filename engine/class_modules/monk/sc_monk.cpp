@@ -4891,18 +4891,23 @@ struct chi_burst_t : public monk_spell_t
   chi_burst_heal_t* heal;
   chi_burst_damage_t* damage;
   chi_burst_t( monk_t* player, util::string_view options_str )
-    : monk_spell_t( "chi_burst", player, player->talent.chi_burst ), heal( nullptr )
+    : monk_spell_t( "chi_burst", player, player->talent.chi_burst ), 
+      heal( new chi_burst_heal_t( *player ) ),
+      damage( new chi_burst_damage_t( *player ) )
   {
     parse_options( options_str );
     may_combo_strike       = true;
     may_proc_bron          = true;
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
-    heal             = new chi_burst_heal_t( *player );
-    heal->stats      = stats;
-    damage           = new chi_burst_damage_t( *player );
-    damage->stats    = stats;
+
+    add_child( damage );
+    add_child( heal );
+
     cooldown->hasted = false;
+
+    attack_power_mod.direct = 0;
+    weapon_power_mod        = 0;
 
     interrupt_auto_attack = false;
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
