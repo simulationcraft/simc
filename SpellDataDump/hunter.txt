@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39497 Live (hotfix 2021-07-27/39497, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39584 Live (hotfix 2021-07-29/39584)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -1239,6 +1239,7 @@ Spell Level      : 14
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
+Mechanic         : Snare
 Affecting spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
