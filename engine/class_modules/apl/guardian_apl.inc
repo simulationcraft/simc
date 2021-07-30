@@ -9,9 +9,9 @@ action_priority_list_t* oconvoke = get_action_priority_list( "oconvoke" );
 action_priority_list_t* lycarao = get_action_priority_list( "lycarao" );
 
 precombat->add_action( "cat_form,if=(druid.catweave_bear)|(covenant.night_fae&talent.feral_affinity.enabled)" );
-precombat->add_action( "prowl,if=druid.catweave_bear" );
 precombat->add_action( "moonkin_form,if=(druid.owlweave_bear)|(covenant.night_fae&talent.balance_affinity.enabled)" );
 precombat->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&(druid.catweave_bear|druid.owlweave_bear|talent.balance_affinity.enabled)" );
+precombat->add_action( "prowl,if=druid.catweave_bear" );
 precombat->add_action( "bear_form,if=((!druid.owlweave_bear&!druid.catweave_bear)&(!covenant.night_fae))|((!druid.owlweave_bear&!druid.catweave_bear)&(covenant.night_fae&talent.restoration_affinity.enabled)|covenant.venthyr)" );
 precombat->add_action( "wrath,if=druid.owlweave_bear&!covenant.night_fae" );
 precombat->add_action( "starfire,if=druid.owlweave_bear&covenant.night_fae" );
