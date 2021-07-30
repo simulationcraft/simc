@@ -1,6 +1,7 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39584 Live (hotfix 2021-07-29/39584)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39584 Live (hotfix 2021-07-30/39584, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
+Hotfixed         : Variables
 Covenant         : Night Fae
 School           : Physical
 Spell Type       : None
@@ -19,7 +20,7 @@ Effects          :
 #1 (id=805487)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $?a137005[Death's Due]?a212611[The Hunt]?a137009[Convoke the Spirits]?a137014[Wild Spirits]?a137018[Shifting Power]?a137022[Faeline Stomp]?a137026[Blessing of Seasons]?a137030[Fae Guardians]?a137034[Sepsis]?a137038[Fae Transfusion]?a137042[Soul Rot]?a137047[Ancient Aftershock][Activating your Night Fae class ability] puts flowers at your feet for ${$342761d*$<mod>}.1 sec that increase your Haste by $342774s1% while you stand with them.
-Variables        : $mod=$?a137005[${0.25}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${0.75}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}][${1}]
+Variables        : $mod=$?a137005[${0.25}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${1}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}][${1}]
 
 Name             : Social Butterfly (id=319210) [Passive, Hidden] 
 Covenant         : Night Fae
