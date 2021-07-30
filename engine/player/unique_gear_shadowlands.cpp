@@ -3595,6 +3595,10 @@ void winds_of_winter( special_effect_t& effect )
  */
 void chaos_bane( special_effect_t& effect )
 {
+
+  if ( unique_gear::create_fallback_buffs( effect, { "chaos_bane" } ) )
+	  return;
+
   auto rank = shards_of_domination::rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_UNHOLY );
   if ( rank == 0 )
     return;
@@ -3951,7 +3955,7 @@ void register_special_effects()
     // 9.1 Shards of Domination
     unique_gear::register_special_effect( 357347, items::blood_link ); // Rune Word: Blood
     unique_gear::register_special_effect( 357348, items::winds_of_winter ); // Rune Word: Frost
-    unique_gear::register_special_effect( 357349, items::chaos_bane ); // Rune Word: Unholy
+    unique_gear::register_special_effect( 357349, items::chaos_bane, true ); // Rune Word: Unholy
 
     unique_gear::register_special_effect( 355755, items::shard_of_dyz );
     unique_gear::register_special_effect( 357037, items::shard_of_dyz );
