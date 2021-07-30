@@ -55,7 +55,7 @@ trinket1=soulletting_ruby,id=178809,bonus_id=1566/6536/6646
 trinket2=infinitely_divisible_ooze,id=178769,bonus_id=1566/6536/6646
 main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=celestial_guidance
 
-save=T27_Warlock_Demonology.simc
+save=T27_Warlock_Demonology_Necrolord.simc
 
 warlock="T27_Warlock_Demonology"
 level=60
