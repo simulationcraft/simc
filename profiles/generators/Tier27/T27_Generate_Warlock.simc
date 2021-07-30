@@ -9,14 +9,14 @@ covenant=night_fae
 soulbind=dreamweaver,field_of_blossoms/dream_delver/focused_malignancy:11/withering_bolt:11/soul_eater:11
 renown=80
 
-head=hood_of_vengeful_possession,id=186287,bonus_id=1498/7187/6935,gem_id=173130/187312
+head=hood_of_vengeful_possession,id=186287,bonus_id=1498/7187/6935,gem_id=187312
 neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173130
 shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187315
 back=cloak_of_scarred_honor,id=186289,bonus_id=1498/7187
 chest=sacrificers_sacramental_cassock,id=186282,bonus_id=1498/7187,gem_id=187318,enchant=eternal_stats
-wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=173130/187319,enchant=eternal_intellect
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=187319,enchant=eternal_intellect
 hands=grimveiled_mittens,id=173244,bonus_id=7031/6649/6648/1559
-waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=173130/187320
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=187320
 legs=purge_protocol_legwraps,id=180107,bonus_id=1566/6536/6646
 feet=sandals_of_sacred_symmetry,id=186354,bonus_id=1498/7187
 finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=1498/7187/6935,gem_id=173130,enchant=tenet_of_mastery
@@ -39,14 +39,14 @@ covenant=necrolord
 soulbind=plague_deviser_marileth,volatile_solvent/borne_of_blood:11:0/tyrants_soul:11:0/carnivorous_stalkers:11:0/kevins_oozeling
 renown=80
 
-head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=173128/187312
+head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=187312
 neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173128
 shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187315
 back=dealer_xyexas_cape,id=179349,bonus_id=1566/6536/6646,enchant=soul_vitality
 chest=sacrificers_sacramental_cassock,id=186282,bonus_id=1498/7187,gem_id=187318,enchant=eternal_stats
-wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=173128/187319,enchant=eternal_intellect
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=187319,enchant=eternal_intellect
 hands=grasps_of_the_clairvoyant_sage,id=186288,bonus_id=1498/7187
-waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=173128/187320
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=187320
 legs=purge_protocol_legwraps,id=180107,bonus_id=1566/6536/6646
 feet=sandals_of_sacred_symmetry,id=186354,bonus_id=1498/7187
 finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=1498/7187/6935,gem_id=173128,enchant=tenet_of_haste
@@ -69,14 +69,14 @@ covenant=necrolord
 soulbind=marileth,volatile_solvent/kevins_oozeling/ashen_remains:11/combusting_engine:11/fatal_decimation:11
 renown=80
 
-head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=173128/187312
+head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=187312
 neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173128
 shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187315
 back=cloak_of_scarred_honor,id=186289,bonus_id=1498/7187
 chest=sacrificers_sacramental_cassock,id=186282,bonus_id=1498/7187,gem_id=187318,enchant=eternal_stats
-wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=173128/187319,enchant=eternal_intellect
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=187319,enchant=eternal_intellect
 hands=grasps_of_the_clairvoyant_sage,id=186288,bonus_id=1498/7187
-waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=173128/187320
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=187320
 legs=grimveiled_pants,id=173246,bonus_id=7038/6649/6648/1559
 feet=sandals_of_sacred_symmetry,id=186354,bonus_id=1498/7187
 finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=1498/7187/6935,gem_id=173128,enchant=tenet_of_haste

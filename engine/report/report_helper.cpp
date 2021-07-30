@@ -352,13 +352,9 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
   std::string tier_name;
   unsigned int max_ilevel_allowed = 0;
   unsigned int legendary_ilevel   = 0;
-  int max_gems                    = 0;
-  int max_domination_gems         = 0;
   unsigned int max_conduit_rank   = 0;
   int max_legendary_items         = 1;
   int equipped_legendaries        = 0; // counter
-  int equipped_gems               = 0; // counter
-  int domination_gems             = 0; // counter
 
   if ( p.report_information.save_str.find( "PR" ) != std::string::npos )
   {
@@ -380,7 +376,6 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     tier_name          = "T26";
     max_ilevel_allowed = 233;
     legendary_ilevel   = 235;
-    max_gems           = 6;
     max_conduit_rank   = 7;
   }
   else if ( p.report_information.save_str.find( "T27" ) != std::string::npos )
@@ -388,8 +383,6 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     tier_name           = "T27";
     max_ilevel_allowed  = 259;
     legendary_ilevel    = 262;
-    max_gems            = 6;
-    max_domination_gems = 5;
     max_conduit_rank    = 11;
   }
   else
@@ -413,6 +406,49 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
       SLOT_FINGER_2,
       SLOT_TRINKET_1,
       SLOT_TRINKET_2,
+  };
+
+  const slot_e SLOT_GEMS[] = {
+    SLOT_HEAD,
+    SLOT_NECK,
+    SLOT_WRISTS,
+    SLOT_WAIST,
+    SLOT_FINGER_1,
+    SLOT_FINGER_2,
+  };
+
+  // Domination socket slot list per armor type, based on wowhead's article:
+  // https://www.wowhead.com/guides/shards-of-domination-overview-effects-sockets-rune-word-set-bonuses#domination-sockets
+  const slot_e SLOT_DOMINATION_CLOTH[] = {
+    SLOT_HEAD,
+    SLOT_SHOULDERS,
+    SLOT_CHEST,
+    SLOT_WAIST,
+    SLOT_WRISTS,
+  };
+
+  const slot_e SLOT_DOMINATION_LEATHER[] = {
+    SLOT_HEAD,
+    SLOT_SHOULDERS,
+    SLOT_CHEST,
+    SLOT_HANDS,
+    SLOT_FEET,
+  };
+
+  const slot_e SLOT_DOMINATION_MAIL[] = {
+    SLOT_HEAD,
+    SLOT_SHOULDERS,
+    SLOT_CHEST,
+    SLOT_WAIST,
+    SLOT_FEET,
+  };
+
+  const slot_e SLOT_DOMINATION_PLATE[] = {
+    SLOT_HEAD,
+    SLOT_SHOULDERS,
+    SLOT_CHEST,
+    SLOT_WRISTS,
+    SLOT_HANDS,
   };
 
   for ( auto& slot : SLOT_OUT_ORDER )
@@ -448,19 +484,88 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
                    util::slot_type_string( slot ), item.item_level(), tier_name, max_ilevel_allowed );
     }
 
-    // Update equipped gems and domination gems count
-    // TODO: check gem count per item?
+    // Check gems and domination gems sockets
+    int gem_count = 0;
+    bool has_dom_gem = false;
+
     for ( size_t jj = 0; jj < item.parsed.gem_id.size(); ++jj )
     {
       const auto& gem                     = item.player->dbc->item( item.parsed.gem_id[ jj ] );
       const gem_property_data_t& gem_prop = item.player->dbc->gem_property( gem.gem_properties );
       if ( gem.id > 0 )
       {
+        gem_count++;
         if ( gem_prop.id && gem_prop.color == SOCKET_COLOR_SHARD_OF_DOMINATION )
-          domination_gems++;
-        else
-          equipped_gems++;
+        {
+          has_dom_gem = true;
+        }
       }
+    }
+
+    // Check gem count and gem slot usage
+    // Blacklist items here if blizzard adds relevant multi-socket items once more
+    if ( gem_count > 1 )
+      sim.error( "Player {} has {} with {} gems slotted. Only one gem per item is allowed.\n",
+                 p.name(), util::slot_type_string( slot ), gem_count );
+
+    // Prismatic sockets can only proc (or be added) on head, neck, wrists, belt and rings
+    if ( gem_count && !has_dom_gem )
+    {
+      bool valid_gem_slot = false;
+      for ( auto& gem_slot : SLOT_GEMS )
+      {
+        if ( item.slot == gem_slot )
+        {
+          valid_gem_slot = true;
+          break;
+        }
+      }
+      if ( !valid_gem_slot )
+        sim.error( "Player {} has prismatic socket on {}, prismatic sockets are only valid on head, neck, wrists, belts and rings.\n",
+                    p.name(), util::slot_type_string( slot ) );
+    }
+
+    // Check domination sockets slots based on their armor class
+    // TODO: check if the item actually comes from sanctum of domination?
+    if ( gem_count && has_dom_gem )
+    {
+      bool valid_dom_slot = false;
+      auto domination_slot_list = SLOT_DOMINATION_CLOTH;
+
+      switch( item.parsed.data.item_subclass )
+      {
+        case ITEM_SUBCLASS_ARMOR_CLOTH:
+          domination_slot_list = SLOT_DOMINATION_CLOTH;
+          break;
+        case ITEM_SUBCLASS_ARMOR_LEATHER:
+          domination_slot_list = SLOT_DOMINATION_LEATHER;
+          break;
+        case ITEM_SUBCLASS_ARMOR_MAIL:
+          domination_slot_list = SLOT_DOMINATION_MAIL;
+          break;
+        case ITEM_SUBCLASS_ARMOR_PLATE:
+          domination_slot_list = SLOT_DOMINATION_PLATE;
+          break;
+        default:
+          domination_slot_list = nullptr;
+          break;
+      }
+
+      if ( domination_slot_list )
+      {
+        // 5 slots for each armor
+        for ( auto dom_slot = 0; dom_slot < 5; dom_slot++ )
+        {
+          if ( item.slot == domination_slot_list[ dom_slot ] )
+          {
+            valid_dom_slot = true;
+            break;
+          }
+        }
+      }
+      if ( !valid_dom_slot )
+        sim.error( "Player {} has invalid domination socket on {}, ensure that domination sockets are only on valid slots, depending on armor class.\n",
+                  p.name(), util::slot_type_string( slot ) );
     }
 
     // Check if an unique equipped item is equipped multiple times
@@ -523,13 +628,6 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     // Check if the item is using gems=
     if ( !item.option_gems_str.empty() )
       sim.errorf( "Player %s has %s with gems=, use gem_id= instead.\n", p.name(), util::slot_type_string( slot ) );
-  }
-
-  // Ensures that the player [have enough / doesn't have too many] gems equipped
-  if ( equipped_gems != max_gems )
-  {
-    sim.error( "Player {} has {} gems equipped, gems count for {} should be {}.\n",
-                p.name(), equipped_gems, tier_name, max_gems );
   }
 
   // Ensures that the player doesn't have too many legendary items equipped

@@ -150,14 +150,14 @@ actions.trinkets+=/call_action_list,name=dmg_trinkets,if=(!talent.hungering_void
 # Default fallback for usable items: Use on cooldown in order by trinket slot.
 actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10
 
-head=veil_of_the_banshee_queen,id=186325,bonus_id=7187/1498,gem_id=173130/187318
+head=veil_of_the_banshee_queen,id=186325,bonus_id=7187/1498,gem_id=187318
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498,gem_id=173130
-shoulders=frame_of_the_false_margrave,id=186324,bonus_id=7187/1498,gem_id=187076,enchant=30runspeed
+shoulders=frame_of_the_false_margrave,id=186324,bonus_id=7187/1498,gem_id=187319,enchant=60runspeed
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6536/1566/6646
-chest=sacrificers_sacramental_cassock,id=186282,bonus_id=7187/1498,gem_id=187079,enchant=eternal_stats
-wrists=desecrators_keening_wristwraps,id=186321,bonus_id=7187/1498,gem_id=173130/187315,enchant=eternal_intellect
+chest=sacrificers_sacramental_cassock,id=186282,bonus_id=7187/1498,gem_id=187320,enchant=eternal_stats
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=7187/1498,gem_id=187315,enchant=eternal_intellect
 hands=grasps_of_the_clairvoyant_sage,id=186288,bonus_id=7187/1498
-waist=sash_of_duplicitous_magics,id=186322,bonus_id=7187/1498,gem_id=173130/187312
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=7187/1498,gem_id=187312
 legs=muehzalas_hexthread_sarong,id=179351,bonus_id=6536/1566/6646
 feet=grimveiled_sandals,id=173243,bonus_id=6648/6649/7729/1559
 finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498,gem_id=173130,enchant=tenet_of_mastery
@@ -172,7 +172,7 @@ main_hand=maledict_opus,id=186406,bonus_id=7187/1498,enchant=sinful_revelation
 # gear_intellect=1508
 # gear_crit_rating=236
 # gear_haste_rating=1019
-# gear_mastery_rating=638
+# gear_mastery_rating=590
 # gear_versatility_rating=348
-# gear_speed_rating=30
+# gear_speed_rating=60
 # gear_armor=438

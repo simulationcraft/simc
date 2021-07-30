@@ -11127,6 +11127,7 @@ void player_t::copy_from( player_t* source )
   race            = source->race;
   role            = source->role;
   _spec           = source->_spec;
+  base.distance   = source->base.distance;
   position_str    = source->position_str;
   professions_str = source->professions_str;
   source->recreate_talent_str(talent_format::UNCHANGED );

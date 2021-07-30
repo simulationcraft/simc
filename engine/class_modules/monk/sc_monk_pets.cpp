@@ -1179,7 +1179,7 @@ private:
   };
 
 public:
-  xuen_pet_t( monk_t* owner ) : monk_pet_t( owner, "xuen_the_white_tiger", PET_XUEN, true, true )
+  xuen_pet_t( monk_t* owner ) : monk_pet_t( owner, "xuen_the_white_tiger", PET_XUEN, false, true )
   {
     npc_id                      = 63508;
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -1297,7 +1297,7 @@ private:
   };
 
 public:
-  niuzao_pet_t( monk_t* owner ) : monk_pet_t( owner, "niuzao_the_black_ox", PET_NIUZAO, true, true )
+  niuzao_pet_t( monk_t* owner ) : monk_pet_t( owner, "niuzao_the_black_ox", PET_NIUZAO, false, true )
   {
     npc_id                      = 73967;
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -1353,7 +1353,7 @@ private:
   };
 
 public:
-  chiji_pet_t( monk_t* owner ) : monk_pet_t( owner, "chiji_the_red_crane", PET_CHIJI, true, true )
+  chiji_pet_t( monk_t* owner ) : monk_pet_t( owner, "chiji_the_red_crane", PET_CHIJI, false, true )
   {
     npc_id                      = 166949;
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -1386,7 +1386,7 @@ public:
 struct yulon_pet_t : public monk_pet_t
 {
 public:
-  yulon_pet_t( monk_t* owner ) : monk_pet_t( owner, "yulon_the_jade_serpent", PET_YULON, true, true )
+  yulon_pet_t( monk_t* owner ) : monk_pet_t( owner, "yulon_the_jade_serpent", PET_YULON, false, true )
   {
     npc_id                      = 165374;
     main_hand_weapon.type       = WEAPON_BEAST;

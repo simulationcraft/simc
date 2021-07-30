@@ -31,6 +31,7 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
+actions.precombat+=/fleshcraft
 actions.precombat+=/chi_burst
 actions.precombat+=/chi_wave
 
@@ -49,13 +50,13 @@ actions+=/fireblood
 actions+=/ancestral_call
 actions+=/bag_of_tricks
 # Cast Niuzao when we'll get at least 20 seconds of uptime. This is specific to the default enemy APL and will need adjustments for other enemies.
-actions+=/invoke_niuzao_the_black_ox,if=cooldown.purifying_brew.charges_fractional<2&(target.cooldown.pause_action.remains>=20|time<=10)
+actions+=/invoke_niuzao_the_black_ox,if=buff.recent_purifies.value>=health.max*0.05&(target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)
 actions+=/touch_of_death,if=target.health.pct<=15
 actions+=/weapons_of_order
 actions+=/fallen_order
 actions+=/bonedust_brew
 # Cast PB during the Niuzao window, but only if recently hit.
-actions+=/purifying_brew,if=stagger.amounttototalpct>=0.7&(((target.cooldown.pause_action.remains>=20|time<=10)&cooldown.invoke_niuzao_the_black_ox.remains<5)|buff.invoke_niuzao_the_black_ox.up)
+actions+=/purifying_brew,if=stagger.amounttototalpct>=0.7&(((target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)&cooldown.invoke_niuzao_the_black_ox.remains<5)|buff.invoke_niuzao_the_black_ox.up)
 # Dump PB charges towards the end of Niuzao: anything is better than nothing.
 actions+=/purifying_brew,if=buff.invoke_niuzao_the_black_ox.up&buff.invoke_niuzao_the_black_ox.remains<8
 # Avoid capping charges, but pool charges shortly before Niuzao comes up and allow dumping to avoid capping during Niuzao.
@@ -63,7 +64,7 @@ actions+=/purifying_brew,if=cooldown.purifying_brew.charges_fractional>=1.8&(coo
 # Black Ox Brew is currently used to either replenish brews based on less than half a brew charge available, or low energy to enable Keg Smash
 actions+=/black_ox_brew,if=cooldown.purifying_brew.charges_fractional<0.5
 actions+=/black_ox_brew,if=(energy+(energy.regen*cooldown.keg_smash.remains))<40&buff.blackout_combo.down&cooldown.keg_smash.up
-actions+=/fleshcraft,if=cooldown.bonedust_brew.remains<4&soulbind.lead_by_example.enabled
+actions+=/fleshcraft,if=cooldown.bonedust_brew.remains<4&soulbind.pustule_eruption.enabled
 # Offensively, the APL prioritizes KS on cleave, BoS else, with energy spenders and cds sorted below
 actions+=/keg_smash,if=spell_targets>=2
 actions+=/faeline_stomp,if=spell_targets>=2
@@ -77,7 +78,6 @@ actions+=/blackout_kick
 actions+=/keg_smash
 actions+=/chi_burst,if=cooldown.faeline_stomp.remains>2&spell_targets>=2
 actions+=/faeline_stomp
-actions+=/expel_harm,if=buff.gift_of_the_ox.stack>=3
 actions+=/touch_of_death
 actions+=/rushing_jade_wind,if=buff.rushing_jade_wind.down
 actions+=/spinning_crane_kick,if=buff.charred_passions.up
@@ -85,9 +85,10 @@ actions+=/breath_of_fire,if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.
 actions+=/chi_burst
 actions+=/chi_wave
 # Cast SCK if enough enemies are around, or if WWWTO is enabled. This is a slight defensive loss over using TP but generally reduces sim variance more than anything else.
-actions+=/spinning_crane_kick,if=(active_enemies>=3|conduit.walk_with_the_ox.enabled)&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)
+actions+=/spinning_crane_kick,if=!runeforge.shaohaos_might.equipped&(active_enemies>=3|conduit.walk_with_the_ox.enabled)&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)
 actions+=/tiger_palm,if=!talent.blackout_combo&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65
 actions+=/arcane_torrent,if=energy<31
+actions+=/fleshcraft,if=soulbind.volatile_solvent.enabled
 actions+=/rushing_jade_wind
 
 head=hood_of_refracted_shadows,id=178817,bonus_id=6536/1540/6646/6935,gem_id=173127

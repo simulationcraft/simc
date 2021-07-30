@@ -137,7 +137,7 @@ actions.owlweave+=/convoke_the_spirits,if=(buff.eclipse_lunar.up|buff.eclipse_so
 actions.owlweave+=/starfire,if=(eclipse.in_lunar|eclipse.solar_next)|(eclipse.in_lunar&buff.starsurge_empowerment_lunar.up)
 actions.owlweave+=/wrath
 
-head=cap_of_writhing_malevolence,id=186292,bonus_id=4800/4786/1498,gem_id=187312/173129
+head=cap_of_writhing_malevolence,id=186292,bonus_id=4800/4786/1498,gem_id=187312
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173129
 shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187317
 back=selfreplicating_tissue,id=186374,bonus_id=7187/1498,enchant=soul_vitality
@@ -160,5 +160,5 @@ main_hand=jotungeirr_destinys_call,id=186404,bonus_id=7187/1498,enchant=sinful_r
 # gear_crit_rating=708
 # gear_haste_rating=711
 # gear_mastery_rating=89
-# gear_versatility_rating=578
+# gear_versatility_rating=562
 # gear_armor=717

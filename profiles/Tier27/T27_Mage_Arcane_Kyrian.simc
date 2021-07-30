@@ -350,14 +350,14 @@ actions.rotation+=/arcane_blast
 actions.rotation+=/evocation,if=variable.outside_of_cooldowns
 actions.rotation+=/arcane_barrage
 
-head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=173129/187319,enchant=60runspeed
+head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=187319,enchant=60runspeed
 neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173129
 shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187320
 back=dealer_xyexas_cape,id=179349,bonus_id=1566/6536/6646
 chest=diviners_draped_finery,id=186320,bonus_id=1498/7187,gem_id=187318,enchant=eternal_insight
-wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=173129/187315,enchant=eternal_intellect
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=187315,enchant=eternal_intellect
 hands=grimveiled_mittens,id=173244,bonus_id=6716/6926/6647/6648/1559
-waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=173128/187312
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=187312
 legs=sorcerers_headlong_legwraps,id=186285,bonus_id=1498/7187
 feet=sandals_of_sacred_symmetry,id=186354,bonus_id=1498/7187
 finger1=oscillating_ouroboros,id=186376,bonus_id=1498/7187/6935,gem_id=173128,enchant=tenet_of_haste
@@ -371,8 +371,8 @@ main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=sinful_revelation
 # gear_stamina=2119
 # gear_intellect=1498
 # gear_crit_rating=551
-# gear_haste_rating=391
+# gear_haste_rating=375
 # gear_mastery_rating=535
-# gear_versatility_rating=774
+# gear_versatility_rating=742
 # gear_speed_rating=60
 # gear_armor=438

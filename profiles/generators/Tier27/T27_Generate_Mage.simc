@@ -9,14 +9,14 @@ covenant=venthyr
 soulbind=theotar_the_mad_duke,soothing_shade/arcane_prodigy:9:1/magis_brand:9:1/siphoned_malice:9:1/party_favors
 renown=80
 
-head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=173130/187319
+head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=187319
 neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173130
 shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187320
 back=cloak_of_scarred_honor,id=186289,bonus_id=1498/7187
 chest=diviners_draped_finery,id=186320,bonus_id=1498/7187,gem_id=187318,enchant=eternal_insight
-wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=173130/187315,enchant=eternal_intellect
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=187315,enchant=eternal_intellect
 hands=soulcasters_woven_grips,id=186358,bonus_id=1498/7187
-waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=173130/187312
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=187312
 legs=grimveiled_pants,id=173246,bonus_id=6716/6928/6647/6648/1559
 feet=sandals_of_sacred_symmetry,id=186354,bonus_id=1498/7187
 finger1=entwined_gorger_tendril,id=178848,bonus_id=1566/6536/6646/6935,gem_id=173130,enchant=tenet_of_critical_strike
@@ -38,14 +38,14 @@ covenant=kyrian
 soulbind=pelagos,combat_meditation/magis_brand:9:1/ire_of_the_ascended:9:1/arcane_prodigy:9:1/better_together/newfound_resolve
 renown=80
 
-head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=173129/187319
+head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=187319
 neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173129
 shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187320
 back=dealer_xyexas_cape,id=179349,bonus_id=1566/6536/6646
 chest=diviners_draped_finery,id=186320,bonus_id=1498/7187,gem_id=187318,enchant=eternal_insight
-wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=173129/187315,enchant=eternal_intellect
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=187315,enchant=eternal_intellect
 hands=grimveiled_mittens,id=173244,bonus_id=6716/6926/6647/6648/1559
-waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=173128/187312
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=187312
 legs=sorcerers_headlong_legwraps,id=186285,bonus_id=1498/7187
 feet=sandals_of_sacred_symmetry,id=186354,bonus_id=1498/7187
 finger1=oscillating_ouroboros,id=186376,bonus_id=1498/7187/6935,gem_id=173128,enchant=tenet_of_haste
@@ -67,14 +67,14 @@ covenant=venthyr
 soulbind=theotar_the_mad_duke:9,soothing_shade/infernal_cascade:9:1/controlled_destruction:9:1/siphoned_malice:9:1/party_favors
 renown=80
 
-head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=173128/187319
+head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=187319
 neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173128
 shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187320
 back=selfreplicating_tissue,id=186374,bonus_id=1498/7187
 chest=sacrificers_sacramental_cassock,id=186282,bonus_id=1498/7187,gem_id=187318,enchant=eternal_insight
-wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=173128/187315,enchant=eternal_intellect
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=187315,enchant=eternal_intellect
 hands=grasps_of_the_clairvoyant_sage,id=186288,bonus_id=1498/7187
-waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=173128/187312
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=187312
 legs=sorcerers_headlong_legwraps,id=186285,bonus_id=1498/7187
 feet=sandals_of_sacred_symmetry,id=186354,bonus_id=1498/7187
 finger1=shadowghast_ring,id=178926,bonus_id=1559/6832/6649/6650/6935,gem_id=173128,enchant=tenet_of_haste
@@ -97,14 +97,14 @@ covenant=venthyr
 soulbind=theotar_the_mad_duke,soothing_shade/party_favors/icy_propulsion:9:1/ice_bite:9:1/siphoned_malice:9:1
 renown=80
 
-head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=173128/187319
+head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=187319
 neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173128
 shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187320
 back=drape_of_twisted_loyalties,id=180123,bonus_id=1566/6536/6646
 chest=sacrificers_sacramental_cassock,id=186282,bonus_id=1498/7187,gem_id=187318,enchant=eternal_insight
-wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=173128/187315,enchant=eternal_intellect
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=187315,enchant=eternal_intellect
 hands=stonefiend_shapers_mitts,id=178833,bonus_id=1566/6536/6646
-waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=173128/187312
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=187312
 legs=grimveiled_pants,id=173246,bonus_id=1559/6823/6647/6649
 feet=phantasmaforged_striders,id=186281,bonus_id=1498/7187
 finger1=miniature_breaking_wheel,id=186375,bonus_id=1498/7187/6935,gem_id=173128,enchant=tenet_of_haste

@@ -161,12 +161,12 @@ actions.trinkets+=/use_item,slot=trinket2,if=!variable.specified_trinket&((trink
 actions.trinkets+=/use_item,slot=trinket1,if=!trinket.1.has_use_buff&(trinket.2.cooldown.remains|!trinket.2.has_use_buff)
 actions.trinkets+=/use_item,slot=trinket2,if=!trinket.2.has_use_buff&(trinket.1.cooldown.remains|!trinket.1.has_use_buff)
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173129/187312
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=187312
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173128
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
 back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6648/1559,enchant=soul_vitality
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_stats
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173128/187319,enchant=60runspeed
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187319,enchant=60runspeed
 hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
 waist=fused_bone_greatbelt,id=178734,bonus_id=6536/1566/6646/6935,gem_id=173127
 legs=gormshell_greaves,id=178701,bonus_id=6536/1566/6646
@@ -183,8 +183,8 @@ main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/6652/7745/7746/7747,e
 # gear_stamina=2144
 # gear_attack_power=20
 # gear_crit_rating=556
-# gear_haste_rating=573
+# gear_haste_rating=557
 # gear_mastery_rating=794
-# gear_versatility_rating=194
+# gear_versatility_rating=178
 # gear_speed_rating=60
 # gear_armor=1527

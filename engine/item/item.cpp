@@ -844,6 +844,11 @@ void item_t::parse_options()
     try
     {
       auto split = util::string_split( option_crafted_stat_str, "/" );
+      if ( split.size() > 2 )
+      {
+        throw std::invalid_argument( "Maximum of two crafted stats can exist on an item." );
+      }
+
       for ( auto& stat_str : split )
       {
         int item_mod = ITEM_MOD_NONE;
@@ -1532,9 +1537,14 @@ void item_t::decode_stats()
   // Apply crafted stats modifiers before applying stats. Crafted modifiers are applied
   // directly to the "base stats" of the item, replacing the item_mod_type in question
   // with an actual stat item_mod_type.
-  range::for_each( parsed.crafted_stat_mod, [ this ]( int crafted_mod ) {
-    auto it = range::find_if( parsed.data.stat_type_e, []( int item_mod ) {
-      return item_database::is_crafted_item_mod( item_mod );
+  //
+  // Note that the stats are applied in the placeholder stat order. This is important
+  // since the missives system allows overriding of the "crafted stat system" through item
+  // bonuses.
+  auto crafted_stat_id = ITEM_MOD_BONUS_STAT_1;
+  range::for_each( parsed.crafted_stat_mod, [ this, &crafted_stat_id ]( int crafted_mod ) {
+    auto it = range::find_if( parsed.data.stat_type_e, [crafted_stat_id]( int item_mod ) {
+      return item_mod == crafted_stat_id;
     } );
 
     if ( it != parsed.data.stat_type_e.end() )
@@ -1545,6 +1555,8 @@ void item_t::decode_stats()
           std::distance( parsed.data.stat_type_e.begin(), it ) );
       (*it) = crafted_mod;
     }
+
+    crafted_stat_id++;
   } );
 
   for ( size_t i = 0; i < parsed.data.stat_type_e.size(); i++ )

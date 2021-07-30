@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39427 Live (hotfix 2021-07-16/39427, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39584 Live (hotfix 2021-07-30/39584, no-networking)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -14064,7 +14064,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=886321)   : Apply Aura (6) | Dummy (4)
                    Base Value: -60000 | Scaled Value: -60000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (107 -> 4), Misc Value (11 -> 0), Affects Spells
 #2 (id=887116)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Convoke the Spirits (323764)
@@ -14077,7 +14076,6 @@ Hotfixed         : Sub Type (107 -> 4), Misc Value (11 -> 0), Affects Spells
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Convoke the Spirits (323764)
                    Family Flags: 16
-Hotfixed         : NEW EFFECT
 Description      : Convoke the Spirits' cooldown is reduced by ${($abs($s1)/120000)*100}% and its duration is reduced by $s2%. Convoke the Spirits has an increased chance to use an exceptional spell or ability.
 
 Name             : Owlkin Adept (desc=PvP Talent) (id=354541) [Spell Family (7), Passive, Hidden] 

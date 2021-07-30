@@ -4280,11 +4280,12 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   }
 
   lava_burst_overload_t( shaman_t* player, lava_burst_type type, shaman_spell_t* parent_, const std::string& suffix )
-    : elemental_overload_spell_t( player, action_name( suffix ), player->find_spell( 77451 ), parent_ ),
+    : elemental_overload_spell_t( player, action_name( suffix ), player->find_spell( 285466 ), parent_ ),
       impact_flags(), type(type), wlr_buffed_impact( false )
   {
     maelstrom_gain         = player->spell.maelstrom->effectN( 4 ).resource( RESOURCE_MAELSTROM );
-    spell_power_mod.direct = player->find_spell( 285466 )->effectN( 1 ).sp_coeff();
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+    travel_speed = player->find_spell( 77451 )->missile_speed();
   }
 
   static lava_burst_state_t* cast_state( action_state_t* s )

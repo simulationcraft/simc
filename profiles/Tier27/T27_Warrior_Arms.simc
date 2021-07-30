@@ -99,16 +99,16 @@ actions.single_target+=/cleave,if=spell_targets.whirlwind>1
 actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled|spell_targets.whirlwind>4|spell_targets.whirlwind>2&buff.sweeping_strikes.down
 actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled&(rage>50|debuff.colossus_smash.up|!runeforge.enduring_blow)
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=173130/187318
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=187318
 neck=weathered_talisman_of_the_shadowmoon,id=186378,bonus_id=7187/1498/6935,gem_id=173127
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
 back=cloak_of_scarred_honor,id=186289,bonus_id=7187/1498
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187312,enchant=eternal_skirmish
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=173127/187319,enchant=60runspeed
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187319,enchant=60runspeed
 hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
 waist=shadowghast_waistguard,id=171418,bonus_id=6647/6649/6758/6962/1559/6935,gem_id=173127
 legs=agathas_gothic_greaves,id=186313,bonus_id=7187/1498
-feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498,enchant_id=6207
+feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
 finger1=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
 trinket1=old_warriors_soul,id=186438,bonus_id=7187/1498
@@ -120,9 +120,9 @@ main_hand=jaithys_the_prison_blade,id=186410,bonus_id=7187/1498/7747,enchant=sin
 # gear_strength=1117
 # gear_stamina=2109
 # gear_attack_power=20
-# gear_crit_rating=854
+# gear_crit_rating=838
 # gear_haste_rating=465
-# gear_mastery_rating=521
+# gear_mastery_rating=505
 # gear_versatility_rating=234
 # gear_speed_rating=60
 # gear_armor=1534

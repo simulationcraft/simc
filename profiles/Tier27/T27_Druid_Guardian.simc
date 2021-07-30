@@ -138,7 +138,7 @@ actions.owlweave+=/convoke_the_spirits,if=(buff.eclipse_lunar.up|buff.eclipse_so
 actions.owlweave+=/starfire,if=(eclipse.in_lunar|eclipse.solar_next)|(eclipse.in_lunar&buff.starsurge_empowerment_lunar.up)
 actions.owlweave+=/wrath
 
-head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187312/173129
+head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187312
 neck=shadowghast_necklace,id=178927,bonus_id=7086/6647/6650/6758/1559,gem_id=173129
 shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187313
 back=selfreplicating_tissue,id=186374,bonus_id=7187/1498,enchant=soul_vitality
@@ -161,5 +161,5 @@ main_hand=jotungeirr_destinys_call,id=186404,bonus_id=7187/1498,enchant=sinful_r
 # gear_crit_rating=894
 # gear_haste_rating=324
 # gear_mastery_rating=116
-# gear_versatility_rating=755
+# gear_versatility_rating=739
 # gear_armor=716
