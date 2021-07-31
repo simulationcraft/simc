@@ -436,7 +436,7 @@ struct sim_t : private sc_thread_t
     std::string soleahs_secret_technique_type = "haste";
     /// How long before combat to start channeling Shadowed Orb of Torment
     timespan_t shadowed_orb_of_torment_precombat_channel = 0_ms;
-    /// How many pustules to generate during pre-combat, as healing before the pull will remove normally remove a few
+    /// How many pustules to generate during pre-combat, as events before the pull will normally remove a few
     unsigned int precombat_pustules = 9;
   } shadowlands_opts;
 
