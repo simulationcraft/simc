@@ -802,7 +802,7 @@ struct fleshcraft_t : public spell_t
     // Ensure we get the full 9 stack if we are using this precombat without the channel
     if ( is_precombat && pustule_eruption_active && player->buffs.trembling_pustules )
     {
-      player->buffs.trembling_pustules->trigger( 9 );
+      player->buffs.trembling_pustules->trigger( sim->shadowlands_opts.precombat_pustules );
     }
   }
 
