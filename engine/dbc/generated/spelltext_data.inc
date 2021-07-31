@@ -1,4 +1,4 @@
-// Spell text, wow build 9.1.0.39584
+// Spell text, wow build 9.1.0.39617
 static const std::array<spelltext_data_t, 15528> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -15530,11 +15530,11 @@ static const std::array<spelltext_data_t, 15528> __spelltext_data { {
   { 359168, "While you are behind your enemies, their movement is impaired, or they are suffering from loss-of-control effects, your attacks have a high chance to cause them to bleed for ${$s1*($353466d/$353466t1+1)} Physical damage over $353466d.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.0.39584
+// spelltext hotfix entries, wow build 9.1.0.39617
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.1.0.39584
+// Spell description variables, wow build 9.1.0.39617
 static const std::array<spelldesc_vars_data_t, 301> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15839,8 +15839,7 @@ static const std::array<spelldesc_vars_data_t, 301> __spelldesc_vars_data { {
   {  358164, "$buff=${$348272s1}\r\n$max=${3*$<buff>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.0.39584
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
-  {  319191,  0, "$mod=$?a137005[${0.25}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${0.75}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}][${1}]", "$mod=$?a137005[${0.25}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${1}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}][${1}]" },
+// spelldesc_vars hotfix entries, wow build 9.1.0.39617
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
