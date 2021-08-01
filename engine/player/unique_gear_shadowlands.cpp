@@ -3599,6 +3599,14 @@ void chaos_bane( special_effect_t& effect )
   if ( unique_gear::create_fallback_buffs( effect, { "chaos_bane" } ) )
 	  return;
 
+  // If we are running with rune words disbaled, we need to still create the fallback buff for apl use
+  if ( effect.player->sim->shadowlands_opts.enable_rune_words == 0 )
+  {
+    if ( !buff_t::find( effect.player, "chaos_bane" ) )
+      make_buff( effect.player, "chaos_bane" )->set_chance( 0.0 );
+    return;
+  }
+
   auto rank = shards_of_domination::rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_UNHOLY );
   if ( rank == 0 )
     return;
