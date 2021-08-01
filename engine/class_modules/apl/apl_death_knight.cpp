@@ -235,12 +235,12 @@ void frost( player_t* p )
 
   cold_heart->add_action( "chains_of_ice,if=fight_remains<gcd&(rune<2|!buff.killing_machine.up&(!main_hand.2h&buff.cold_heart.stack>=4+runeforge.koltiras_favor|main_hand.2h&buff.cold_heart.stack>8+runeforge.koltiras_favor)|buff.killing_machine.up&(!main_hand.2h&buff.cold_heart.stack>8+runeforge.koltiras_favor|main_hand.2h&buff.cold_heart.stack>10+runeforge.koltiras_favor))", "Cold Heart Conditions" );
   cold_heart->add_action( "chains_of_ice,if=!talent.obliteration&buff.pillar_of_frost.up&buff.cold_heart.stack>=10&buff.pillar_of_frost.remains<gcd*(1+cooldown.frostwyrms_fury.ready)", "Use during Pillar with Icecap/Breath" );
-  cold_heart->add_action( "chains_of_ice,if=!talent.obliteration&death_knight.runeforge.fallen_crusader&!buff.pillar_of_frost.up&cooldown.pillar_of_frost.remains>15&(buff.cold_heart.stack>=10&buff.unholy_strength.up|buff.cold_heart.stack>=13)", "Outside of Pillar useage with Icecap/Breath" );
+  cold_heart->add_action( "chains_of_ice,if=!talent.obliteration&death_knight.runeforge.fallen_crusader&!buff.pillar_of_frost.up&cooldown.pillar_of_frost.remains>15&(buff.cold_heart.stack>=10&(buff.unholy_strength.up|buff.chaos_bane.up)|buff.cold_heart.stack>=13)", "Outside of Pillar useage with Icecap/Breath" );
   cold_heart->add_action( "chains_of_ice,if=!talent.obliteration&!death_knight.runeforge.fallen_crusader&buff.cold_heart.stack>=10&!buff.pillar_of_frost.up&cooldown.pillar_of_frost.remains>20" );
-  cold_heart->add_action( "chains_of_ice,if=talent.obliteration&!buff.pillar_of_frost.up&(buff.cold_heart.stack>=14&buff.unholy_strength.up|buff.cold_heart.stack>=19|cooldown.pillar_of_frost.remains<3&buff.cold_heart.stack>=14)", "Prevent Cold Heart overcapping during pillar" );
+  cold_heart->add_action( "chains_of_ice,if=talent.obliteration&!buff.pillar_of_frost.up&(buff.cold_heart.stack>=14&(buff.unholy_strength.up|buff.chaos_bane.up)|buff.cold_heart.stack>=19|cooldown.pillar_of_frost.remains<3&buff.cold_heart.stack>=14)", "Prevent Cold Heart overcapping during pillar" );
 
   cooldowns->add_action( "potion,if=buff.pillar_of_frost.up", "Potion" );
-  cooldowns->add_action( "empower_rune_weapon,if=talent.obliteration&rune<6&(variable.st_planning|variable.adds_remain)&(cooldown.pillar_of_frost.remains<5|buff.pillar_of_frost.up)|fight_remains<20", "Cooldowns" );
+  cooldowns->add_action( "empower_rune_weapon,if=talent.obliteration&rune<6&(variable.st_planning|variable.adds_remain)&(cooldown.pillar_of_frost.remains<5&(cooldown.fleshcraft.remains>5&soulbind.pustule_eruption|!soulbind.pustule_eruption)|buff.pillar_of_frost.up)|fight_remains<20", "Cooldowns" );
   cooldowns->add_action( "empower_rune_weapon,if=talent.breath_of_sindragosa&runic_power.deficit>30&rune.time_to_5>gcd&(buff.breath_of_sindragosa.up|fight_remains<20)" );
   cooldowns->add_action( "empower_rune_weapon,if=talent.icecap" );
   cooldowns->add_action( "pillar_of_frost,if=talent.breath_of_sindragosa&(variable.st_planning|variable.adds_remain)&(cooldown.breath_of_sindragosa.remains|cooldown.breath_of_sindragosa.ready&runic_power.deficit<50)" );
@@ -251,7 +251,7 @@ void frost( player_t* p )
   cooldowns->add_action( "frostwyrms_fury,if=active_enemies>=2&(buff.pillar_of_frost.up|raid_event.adds.in>cooldown.pillar_of_frost.remains)&(buff.pillar_of_frost.remains<gcd|raid_event.adds.remains<gcd)" );
   cooldowns->add_action( "frostwyrms_fury,if=talent.obliteration&buff.pillar_of_frost.up&((buff.pillar_of_frost.remains<gcd|buff.unholy_strength.up&buff.unholy_strength.remains<gcd)&(debuff.razorice.stack=5|!death_knight.runeforge.razorice))" );
   cooldowns->add_action( "hypothermic_presence,if=talent.breath_of_sindragosa&runic_power.deficit>40&rune<=3&(buff.breath_of_sindragosa.up|cooldown.breath_of_sindragosa.remains>40)|!talent.breath_of_sindragosa&runic_power.deficit>=25" );
-  cooldowns->add_action( "raise_dead,if=buff.pillar_of_frost.up" );
+  cooldowns->add_action( "raise_dead,if=cooldown.pillar_of_frost.remians<=5" );
   cooldowns->add_action( "sacrificial_pact,if=active_enemies>=2&(fight_remains<3|!buff.breath_of_sindragosa.up&(pet.ghoul.remains<gcd|raid_event.adds.remains<3&raid_event.adds.in>pet.ghoul.remains))" );
   cooldowns->add_action( "death_and_decay,if=active_enemies>5|runeforge.phearomones" );
 
