@@ -473,9 +473,6 @@ struct unholy_transfusion_healing_t final : public priest_heal_t
     background = true;
     harmful    = false;
 
-    // TODO: Confirm if this leech healing can proc trinkets/etc
-    callbacks = false;
-
     if ( priest().conduits.festering_transfusion->ok() )
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.festering_transfusion.percent() );
