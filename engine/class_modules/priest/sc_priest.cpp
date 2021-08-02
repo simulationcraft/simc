@@ -740,9 +740,6 @@ struct ascended_nova_heal_t final : public priest_heal_t
   {
     background = true;
     aoe        = as<int>( data().effectN( 2 ).base_value() );
-
-    // TODO: Confirm if this healing can proc trinkets/etc
-    callbacks = false;
   }
 };
 
@@ -810,9 +807,6 @@ struct ascended_blast_heal_t final : public priest_heal_t
   {
     background = true;
     may_crit   = false;
-
-    // TODO: Confirm if this healing can proc trinkets/etc
-    callbacks = false;
   }
 
   void trigger( double original_amount )
@@ -879,9 +873,6 @@ struct ascended_eruption_heal_t final : public priest_heal_t
   {
     aoe        = -1;
     background = true;
-
-    // TODO: Confirm if this healing can proc trinkets/etc
-    callbacks = false;
   }
 
   void trigger_eruption( int stacks )
