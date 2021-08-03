@@ -3419,7 +3419,11 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
 
 /**Blood Link
  * id=357347 equip special effect
- * id=355761 driver and coefficient
+ * id=355761 rank 1 driver and coefficient
+ * id=359395 rank 2 driver
+ * id=359420 rank 3 driver
+ * id=359421 rank 4 driver
+ * id=359422 rank 5 driver
  * id=355767 damage
  * id=355768 heal self
  * id=355769 heal other
@@ -3433,12 +3437,11 @@ void blood_link( special_effect_t& effect )
 
   struct blood_link_damage_t : proc_spell_t
   {
-    blood_link_damage_t( const special_effect_t& e, int rank ) :
-      proc_spell_t( "blood_link", e.player, e.player->find_spell( 355767 ) )
+    blood_link_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "blood_link", e.player, e.driver() )
     {
       base_dd_min = e.driver()->effectN( 2 ).min( e.player );
       base_dd_max = e.driver()->effectN( 2 ).max( e.player );
-      base_dd_multiplier *= 1.0 + ( rank - 1 ) * 0.5;
     }
   };
 
@@ -3472,11 +3475,20 @@ void blood_link( special_effect_t& effect )
   };
 
   blood_link_dot_t* dot_action = debug_cast<blood_link_dot_t*>( create_proc_action<blood_link_dot_t>( "blood_link", effect ) );
-  effect.spell_id = 355761;
+
+  switch ( rank )
+  {
+    default: effect.spell_id = 355761; break;
+    case 2:  effect.spell_id = 359395; break;
+    case 3:  effect.spell_id = 359420; break;
+    case 4:  effect.spell_id = 359421; break;
+    case 5:  effect.spell_id = 359422; break;
+  }
+
   auto buff = buff_t::find( effect.player, "blood_link" );
   if ( !buff )
   {
-    auto tick_action = create_proc_action<blood_link_damage_t>( "blood_link_tick", effect, rank );
+    auto tick_action = create_proc_action<blood_link_damage_t>( "blood_link_tick", effect );
     buff = make_buff( effect.player, "blood_link", effect.driver() )
              ->set_quiet( true )
              ->set_can_cancel( false )
@@ -3503,7 +3515,11 @@ void blood_link( special_effect_t& effect )
 
 /**Winds of Winter
  * id=357348 equip special effect
- * id=355724 driver and damage cap coefficient
+ * id=355724 rank 1 driver and damage cap coefficient
+ * id=359387 rank 2 driver
+ * id=359423 rank 3 driver
+ * id=359424 rank 4 driver
+ * id=359425 rank 5 driver
  * id=355733 damage
  * id=355735 absorb (NYI)
  */
@@ -3531,11 +3547,11 @@ void winds_of_winter( special_effect_t& effect )
     buff_t* buff;
     player_t* target;
 
-    winds_of_winter_cb_t( const special_effect_t& e, action_t* a, buff_t* b, int rank ) :
+    winds_of_winter_cb_t( const special_effect_t& e, action_t* a, buff_t* b ) :
       dbc_proc_callback_t( e.player, e ),
       accumulated_damage(),
-      damage_cap( e.driver()->effectN( 1 ).average( e.player ) * ( 1.0 + ( rank - 1 ) * 0.5 ) ),
-      damage_fraction( e.driver()->effectN( 2 ).percent() * ( 1.0 + ( rank - 1 ) * 0.5 ) ),
+      damage_cap( e.driver()->effectN( 1 ).average( e.player ) ),
+      damage_fraction( e.driver()->effectN( 2 ).percent() ),
       damage( a ),
       buff( b ),
       target()
@@ -3562,7 +3578,15 @@ void winds_of_winter( special_effect_t& effect )
     }
   };
 
-  effect.spell_id = 355724;
+  switch ( rank )
+  {
+    default: effect.spell_id = 355724; break;
+    case 2:  effect.spell_id = 359387; break;
+    case 3:  effect.spell_id = 359423; break;
+    case 4:  effect.spell_id = 359424; break;
+    case 5:  effect.spell_id = 359425; break;
+  }
+
   effect.proc_flags2_ = PF2_CRIT;
   auto damage = create_proc_action<winds_of_winter_damage_t>( "winds_of_winter", effect );
   auto buff = buff_t::find( effect.player, "winds_of_winter" );
@@ -3573,7 +3597,7 @@ void winds_of_winter( special_effect_t& effect )
              ->set_can_cancel( false );
   }
 
-  new winds_of_winter_cb_t( effect, damage, buff, rank );
+  new winds_of_winter_cb_t( effect, damage, buff );
   effect.player->register_combat_begin( [ buff ]( player_t* p )
   {
     timespan_t first_tick = p->rng().real() * buff->tick_time();
@@ -3585,10 +3609,14 @@ void winds_of_winter( special_effect_t& effect )
 
 /**Chaos Bane
  * id=357349 equip special effect
- * id=355829 driver with RPPM and buff trigger & coefficients
+ * id=355829 rank 1 driver with RPPM and buff trigger & coefficients
  *    effect#3 is soul fragment stat coefficient
  *    effect#4 is chaos bane stat coefficient
- *    effect#5 is chaso bane damage coefficient
+ *    effect#5 is chaos bane damage coefficient
+ * id=359396 rank 2 driver
+ * id=359435 rank 3 driver
+ * id=359436 rank 4 driver
+ * id=359437 rank 5 driver
  * id=356042 Soul Fragment buff
  * id=356043 Chaos Bane buff
  * id=356046 damage
@@ -3613,14 +3641,13 @@ void chaos_bane( special_effect_t& effect )
   struct chaos_bane_t : proc_spell_t
   {
     buff_t* buff;
-    chaos_bane_t( const special_effect_t& e, buff_t* b, int rank ) :
-      proc_spell_t( "chaos_bane", e.player, e.player->find_spell( 356046 ) ),
+    chaos_bane_t( const special_effect_t& e, buff_t* b ) :
+      proc_spell_t( "chaos_bane", e.player, e.driver() ),
       buff( b )
     {
       // coeff in driver eff#5
       base_dd_max = base_dd_min = e.driver()->effectN( 5 ).average( e.player );
       split_aoe_damage = true;
-      base_dd_multiplier *= 1.0 + ( rank - 1 ) * 0.5;
     }
 
     void execute() override
@@ -3649,8 +3676,14 @@ void chaos_bane( special_effect_t& effect )
     }
   };
 
-  // driver with rppm is 355829. this spell also contains the various coefficients.
-  effect.spell_id = 355829;
+  switch ( rank )
+  {
+    default: effect.spell_id = 355829; break;
+    case 2:  effect.spell_id = 359396; break;
+    case 3:  effect.spell_id = 359435; break;
+    case 4:  effect.spell_id = 359436; break;
+    case 5:  effect.spell_id = 359437; break;
+  }
 
   auto buff = buff_t::find( effect.player, "chaos_bane" );
   if ( !buff )
@@ -3658,11 +3691,11 @@ void chaos_bane( special_effect_t& effect )
     buff = make_buff<stat_buff_t>( effect.player, "chaos_bane", effect.player->find_spell( 356043 ) )
       // coeff in driver eff#4
       ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
-                  effect.driver()->effectN( 4 ).average( effect.player ) * ( 1.0 + ( rank - 1 ) * 0.5 ) )
+                  effect.driver()->effectN( 4 ).average( effect.player ) )
       ->set_can_cancel( false );
   }
 
-  auto proc = create_proc_action<chaos_bane_t>( "chaos_bane", effect, buff, rank );
+  auto proc = create_proc_action<chaos_bane_t>( "chaos_bane", effect, buff );
   effect.custom_buff = buff_t::find( effect.player, "soul_fragment" );
   if ( !effect.custom_buff )
   {
@@ -3670,7 +3703,7 @@ void chaos_bane( special_effect_t& effect )
         make_buff<stat_buff_t>( effect.player, "soul_fragment", effect.player->find_spell( 356042 ) )
           // coeff in driver eff#3
           ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
-                      effect.driver()->effectN( 3 ).average( effect.player )  * ( 1.0 + ( rank - 1 ) * 0.5 ) )
+                      effect.driver()->effectN( 3 ).average( effect.player ) )
           ->set_can_cancel( false )
           ->set_stack_change_callback( [ proc ]( buff_t* b, int, int cur ) {
             if ( cur == b->max_stack() )
