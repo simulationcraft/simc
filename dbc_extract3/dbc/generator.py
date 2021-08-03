@@ -1293,11 +1293,11 @@ class SpellDataGenerator(DataGenerator):
          # Tome of Monstrous Constructions
          357163, 357168, 357169,
          # Blood Link (Shard of Domination Rune Word)
-         355761, 355767, 355768, 355769, 355804,
+         355761, 359395, 359420, 359421, 359422, 355767, 355768, 355769, 355804,
          # Winds of Winter (Shard of Domination Rune Word)
-         355724, 355733, 355735,
+         355724, 359387, 359423, 359424, 359425, 355733, 355735,
          # Chaos Bane (Shard of Domination Rune Word)
-         355829, 356042, 356043, 356046,
+         355829, 359396, 359435, 359436, 359437, 356042, 356043, 356046,
          # Banshee's Blight (Sylvanas Dagger) damage spell
          358126,
          # Exsanguinated (Shard of Bek)
