@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39617 Live (hotfix 2021-07-31/39617, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39617 Live (hotfix 2021-08-03/39617, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -10587,7 +10587,7 @@ Name             : Courageous Ascension (id=337966) [Spell Family (6), Passive, 
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
-Conduit Id       : 87 (values=25, 27.5, 30, 32.5, 35, 37.5, 40, 42.5, 45, 38, 50, 52.5, 55, 57.5, 60)
+Conduit Id       : 87 (values=25, 27.5, 30, 32.5, 35, 37.5, 40, 42.5, 45, 47.5, 50, 52.5, 55, 57.5, 60)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
