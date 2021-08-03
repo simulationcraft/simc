@@ -3438,7 +3438,7 @@ void blood_link( special_effect_t& effect )
   struct blood_link_damage_t : proc_spell_t
   {
     blood_link_damage_t( const special_effect_t& e ) :
-      proc_spell_t( "blood_link", e.player, e.driver() )
+      proc_spell_t( "blood_link", e.player, e.player->find_spell( 355767 ) )
     {
       base_dd_min = e.driver()->effectN( 2 ).min( e.player );
       base_dd_max = e.driver()->effectN( 2 ).max( e.player );
@@ -3642,7 +3642,7 @@ void chaos_bane( special_effect_t& effect )
   {
     buff_t* buff;
     chaos_bane_t( const special_effect_t& e, buff_t* b ) :
-      proc_spell_t( "chaos_bane", e.player, e.driver() ),
+      proc_spell_t( "chaos_bane", e.player, e.player->find_spell( 356046 ) ),
       buff( b )
     {
       // coeff in driver eff#5
