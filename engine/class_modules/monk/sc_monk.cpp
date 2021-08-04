@@ -6675,6 +6675,7 @@ void monk_t::create_buffs()
           ->set_duration( find_spell( 310454 )->duration() +
                           ( conduit.strike_with_clarity->ok() ? conduit.strike_with_clarity->effectN( 2 ).time_value()
                                                               : timespan_t::zero() ) )
+          ->set_cooldown( timespan_t::zero() )
           ->add_invalidate( CACHE_MASTERY )
           ->set_trigger_spell( covenant.kyrian );
 
