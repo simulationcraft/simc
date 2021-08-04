@@ -6683,14 +6683,18 @@ void monk_t::create_buffs()
                                  ->set_default_value( find_spell( 311054 )->effectN( 1 ).base_value() )
                                  ->set_chance( covenant.kyrian->ok() ? 1 : 0);
 
-  buff.faeline_stomp = make_buff( this, "faeline_stomp", covenant.night_fae )->set_default_value_from_effect( 2 );
+  buff.faeline_stomp = make_buff( this, "faeline_stomp", find_spell( 327104 ) )
+                           ->set_default_value_from_effect( 2 )
+                           ->set_trigger_spell( covenant.night_fae );
 
   buff.faeline_stomp_brm =
       make_buff( this, "faeline_stomp_brm", passives.faeline_stomp_brm )->set_default_value_from_effect( 1 );
 
   buff.faeline_stomp_reset = make_buff( this, "faeline_stomp_reset", find_spell( 327276 ) );
 
-  buff.fallen_order = make_buff( this, "fallen_order", find_spell( 326860 ) );
+  buff.fallen_order = make_buff( this, "fallen_order", find_spell( 326860 ) )
+                          ->set_cooldown( timespan_t::zero() )
+                          ->set_trigger_spell( covenant.venthyr );
 
   // Covenant Conduits
   buff.fortifying_ingrediences = make_buff<absorb_buff_t>( this, "fortifying_ingredients", find_spell( 336874 ) );
