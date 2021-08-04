@@ -2255,6 +2255,7 @@ void titanic_ocular_gland( special_effect_t& effect )
     {
       buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 355794 ), effect.item )
                ->add_stat( stat, amount )
+               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                ->set_can_cancel( false );
     }
     ( *worthy_buffs )[ stat ] = buff;
@@ -2265,6 +2266,7 @@ void titanic_ocular_gland( special_effect_t& effect )
     {
       buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 355951 ), effect.item )
                ->add_stat( stat, -amount )
+               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                ->set_can_cancel( false );
     }
     ( *unworthy_buffs )[ stat ] = buff;
