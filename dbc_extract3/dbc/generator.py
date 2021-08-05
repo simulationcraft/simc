@@ -1242,6 +1242,8 @@ class SpellDataGenerator(DataGenerator):
          343395, 343396,
          # Inscrutable Quantum Device Trinket
          330363, 330364, 330366, 330367, 330368, 330372, 330373, 330376, 330380,
+         # Grim Codex Trinket
+         345864,
          # Soulbinds
          321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
