@@ -646,7 +646,7 @@ void paladin_t::generate_action_prio_list_holy_dps()
   cds->add_action( "berserking,if=(buff.avenging_wrath.up)" );
   cds->add_action( "holy_avenger,if=(buff.avenging_wrath.up)" );
   cds->add_action( "use_items,if=(buff.avenging_wrath.up)" );
-  cds->add_action( "seraphim,if=(buff.avenging_wrath.up)" );
+  cds->add_action( "seraphim" );
 
   priority->add_action( this, "Shield of the Righteous" );
   priority->add_action( this, "Hammer of Wrath" );
