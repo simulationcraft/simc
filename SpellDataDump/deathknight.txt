@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39617 Live (hotfix 2021-08-03/39617)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39653 Live (hotfix 2021-08-05/39653, git build shadowlands 080ea59a2b)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -10127,13 +10127,14 @@ Description      : Increases the range of Death Grip by $s1 yds.
 Killing an enemy that yields experience or honor resets the cooldown of Death Grip.
 
 Name             : Army of the Damned (id=276837) [Spell Family (15), Passive] 
+Hotfixed         : Proc Flags (65536 -> 81920)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
-Proc Flags       : ........ ........ x....... ........ 
-                 : Magic Hostile Spell
+Proc Flags       : ........ ......x. x....... ........ 
+                 : Magic Heal, Magic Hostile Spell
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
