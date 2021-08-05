@@ -1516,27 +1516,42 @@ void phial_of_putrefaction( special_effect_t& effect )
   }
 }
 
+/**Shadowgrasp Totem
+ * id=345739 driver and primary shadow damage hit
+ * id=345877 dummy spell with damage values for both primary and secondary impacts
+ * id=345963 AoE dummy spell with radius
+ * id=345864 AoE damage spell
+ */
 void grim_codex( special_effect_t& effect )
 {
+  struct grim_codex_aoe_t : public proc_spell_t
+  {
+    grim_codex_aoe_t( const special_effect_t& e ) :
+      proc_spell_t( "whisper_of_death", e.player, e.player->find_spell( 345864 ), e.item )
+    {
+      aoe = -1;
+      radius = player->find_spell( 345963 )->effectN( 1 ).radius_max();
+      base_dd_min = base_dd_max = player->find_spell( 345877 )->effectN( 2 ).average( e.item );
+    }
+
+    // AoE does not hit the primary target
+    size_t available_targets( std::vector< player_t* >& tl ) const override
+    {
+      proc_spell_t::available_targets( tl );
+      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) { return t == this->target; } ), tl.end() );
+      return tl.size();
+    }
+  };
+
   struct grim_codex_t : public proc_spell_t
   {
-    double dmg_primary = 0.0;
-    double dmg_secondary = 0.0;
-
     grim_codex_t( const special_effect_t& e ) :
       proc_spell_t( "spectral_scythe", e.player, e.driver(), e.item )
     {
-      aoe = -1;
-
-      dmg_primary = player->find_spell( 345877 )->effectN( 1 ).average( e.item );
-      dmg_secondary = player->find_spell( 345877 )->effectN( 2 ).average( e.item );
+      base_dd_min = base_dd_max = player->find_spell( 345877 )->effectN( 1 ).average( e.item );
+      impact_action = create_proc_action<grim_codex_aoe_t>( "whisper_of_death", e );
+      add_child( impact_action );
     }
-
-    double base_da_min( const action_state_t* s ) const override
-    { return s->chain_target == 0 ? dmg_primary : dmg_secondary; }
-
-    double base_da_max( const action_state_t* s ) const override
-    { return s->chain_target == 0 ? dmg_primary : dmg_secondary; }
   };
 
   effect.execute_action = create_proc_action<grim_codex_t>( "grim_codex", effect );
