@@ -348,12 +348,12 @@ void survival( player_t* p )
   cleave -> add_action( "serpent_sting,target_if=min:remains,if=talent.hydras_bite.enabled&buff.vipers_venom.remains&buff.vipers_venom.remains<gcd" );
   cleave -> add_action( "wild_spirits" );
   cleave -> add_action( "resonating_arrow" );
+  cleave -> add_action( "coordinated_assault" );
   cleave -> add_action( "wildfire_bomb,if=full_recharge_time<gcd" );
   cleave -> add_action( "chakrams" );
   cleave -> add_action( "butchery,if=dot.shrapnel_bomb.ticking&(dot.internal_bleeding.stack<2|dot.shrapnel_bomb.remains<gcd)" );
   cleave -> add_action( "carve,if=dot.shrapnel_bomb.ticking" );
   cleave -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
-  cleave -> add_action( "coordinated_assault" );
   cleave -> add_action( "butchery,if=charges_fractional>2.5&cooldown.wildfire_bomb.full_recharge_time>spell_targets%2" );
   cleave -> add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
   cleave -> add_action( "carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_targets%2&talent.alpha_predator.enabled" );
