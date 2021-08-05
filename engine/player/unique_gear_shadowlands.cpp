@@ -1516,7 +1516,7 @@ void phial_of_putrefaction( special_effect_t& effect )
   }
 }
 
-/**Shadowgrasp Totem
+/** Grim Codex
  * id=345739 driver and primary shadow damage hit
  * id=345877 dummy spell with damage values for both primary and secondary impacts
  * id=345963 AoE dummy spell with radius
