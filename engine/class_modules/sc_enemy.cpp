@@ -1451,7 +1451,7 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   als += "/spell_dot,damage=" + util::to_string( background_spell_damage[ tank_dummy_index ] ) +
          ",range=" + util::to_string( floor( background_spell_damage[ tank_dummy_index ] * 0.1 ) ) + ",tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=60";
   // pause periodically to mimic a tank swap
-  // als += "/pause_action,duration=30,cooldown=30,if=time>=30";
+  als += "/pause_action,duration=30,cooldown=30,if=time>=30";
   return als;
 }
 
