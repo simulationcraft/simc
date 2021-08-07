@@ -3234,6 +3234,8 @@ void item::warlords_unseeing_eye( special_effect_t& effect )
   effect.player -> absorb_priority.push_back( 184762 );
 }
 
+// Normally this would be parsed automatically, however since we already use soul_fragment for
+// other buffs we need to specifically define this so they don't trigger each other
 void item::necromantic_focus( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "soul_fragment_trinket" );
@@ -3244,7 +3246,7 @@ void item::necromantic_focus( special_effect_t& effect )
   }
 
   effect.proc_flags_  = PF_PERIODIC;
-  effect.proc_flags2_ = PF2_PERIODIC_DAMAGE;
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
   effect.custom_buff  = buff;
 
   new dbc_proc_callback_t( effect.player, effect );
