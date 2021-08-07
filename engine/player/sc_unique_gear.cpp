@@ -108,6 +108,9 @@ namespace item
   void gronntooth_war_horn( special_effect_t& );
   void orb_of_voidsight( special_effect_t& );
   void infallible_tracking_charm( special_effect_t& );
+
+  /* Timewalking Trinkets */
+  void necromantic_focus( special_effect_t& );
 }
 
 namespace gem
@@ -3231,6 +3234,22 @@ void item::warlords_unseeing_eye( special_effect_t& effect )
   effect.player -> absorb_priority.push_back( 184762 );
 }
 
+void item::necromantic_focus( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "soul_fragment_trinket" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "soul_fragment_trinket", effect.trigger() )
+               ->add_stat( STAT_MASTERY_RATING, effect.trigger()->effectN( 1 ).average( effect.item ) );
+  }
+
+  effect.proc_flags_  = PF_PERIODIC;
+  effect.proc_flags2_ = PF2_PERIODIC_DAMAGE;
+  effect.custom_buff  = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 struct touch_of_the_grave_t : public spell_t
 {
   touch_of_the_grave_t( player_t* p, const spell_data_t* spell ) :
@@ -4677,6 +4696,9 @@ void unique_gear::register_special_effects()
   /* Mists of Pandaria: Darkmoon Faire */
   register_special_effect( 128990, "ProcOn/Hit"                         ); /* Relic of Yu'lon */
   register_special_effect( 128445, "ProcOn/Crit"                        ); /* Relic of Xuen (agi) */
+
+  /* Timewalking */
+  register_special_effect( 96963, item::necromantic_focus               ); // Firelands Timewalking Trinket
 
   /**
    * Enchants
