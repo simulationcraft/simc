@@ -438,6 +438,8 @@ struct sim_t : private sc_thread_t
     timespan_t shadowed_orb_of_torment_precombat_channel = 0_ms;
     /// How many pustules to generate during pre-combat, as events before the pull will normally remove a few
     unsigned int precombat_pustules = 9;
+    /// Percentage of default duration for Field of Blossoms.
+    double field_of_blossoms_duration_multiplier = 1.0;
   } shadowlands_opts;
 
   // Auras and De-Buffs

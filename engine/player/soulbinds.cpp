@@ -425,7 +425,7 @@ void field_of_blossoms( special_effect_t& effect )
         make_buff( effect.player, "field_of_blossoms", effect.player->find_spell( 342774 ) )
             // the stat buff id=342774 has 15s duration, but the ground effect spell id=342761 only has a 10s duration
             ->set_duration( effect.player->find_spell( 342761 )->duration() )
-            ->set_duration_multiplier( duration_mod )
+            ->set_duration_multiplier( duration_mod * effect.player->sim->shadowlands_opts.field_of_blossoms_duration_multiplier )
             ->set_default_value_from_effect_type( A_HASTE_ALL )
             ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
