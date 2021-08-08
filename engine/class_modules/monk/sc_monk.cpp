@@ -2490,8 +2490,8 @@ struct touch_of_death_t : public monk_melee_attack_t
     if ( target->true_level > p()->true_level )
       amount *= p()->spec.touch_of_death->effectN( 3 ).percent();  // 35% HP
 
-    amount *= 1 + p()->cache.damage_versatility();
-
+    // Damage is only affected by Windwalker's Mastery
+    // Versatility does not affect the damage of Touch of Death.
     if ( p()->buff.combo_strikes->up() )
       amount *= 1 + p()->cache.mastery_value();
 
