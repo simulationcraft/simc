@@ -3593,6 +3593,12 @@ void winds_of_winter( special_effect_t& effect )
       accumulated_damage += std::min( damage_cap, s->result_amount * damage_fraction );
       target = s->target; // Winds of Winter hits the last target you accumulated damage from.
     }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      accumulated_damage = 0.0;
+    }
   };
 
   switch ( rank )
