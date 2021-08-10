@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39653 Live (hotfix 2021-08-05/39653, git build shadowlands 080ea59a2b)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39653 Live (hotfix 2021-08-10/39653, no-networking)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)

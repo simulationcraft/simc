@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39653 Live (hotfix 2021-08-05/39653, git build shadowlands 080ea59a2b)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39653 Live (hotfix 2021-08-10/39653, no-networking)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -55,7 +55,8 @@ Effects          :
 #2 (id=198373)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=830260)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.13800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.13800 | PvP Coefficient: 1.15000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.15)
 Description      : Corrupts the target, causing$?s334342[ $s3 Shadow damage and an additional][] $146739o1 Shadow damage over $146739d.
 
 Name             : Immolate (id=348) [Spell Family (5)] 
@@ -381,7 +382,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01340 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01340 | PvP Coefficient: 1.15000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.15)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Inflicts increasing agony on the target, causing up to ${$s1*$d/$t1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -1976,7 +1978,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=57197)    : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.15000 | PvP Coefficient: 1.15000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.15)
 Description      : Siphons the target's life essence, dealing $o1 Shadow damage over $d and healing you for ${$e1*100}% of the damage done.
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec and siphoning life to the casting Warlock.
 
@@ -3591,7 +3594,8 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Not a proc (105), Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=198369)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13000 | PvP Coefficient: 1.15000 | Target: Unknown(25)
+Hotfixed         : PvP Coefficient (1 -> 1.15)
 Description      : $@spelldesc172
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
