@@ -1967,11 +1967,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     sef_ability            = sef_ability_e::SEF_FISTS_OF_FURY;
     may_combo_strike       = true;
-    // Fists of Fury SHOULD proc Bron's Call to Arms but it does not.
-    if ( p->bugs )
-      may_proc_bron = false;
-    else
-      may_proc_bron = true;
+    may_proc_bron          = true;
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
     affected_by.serenity   = true;
@@ -7428,9 +7424,7 @@ double monk_t::composite_player_td_multiplier( school_e school, const action_t* 
   double multiplier = player_t::composite_player_td_multiplier(school, action);
 
   if ( buff.hit_combo->up() && action->data().affected_by( passives.hit_combo->effectN( 2 ) ) )
-  {
     multiplier *= 1 + buff.hit_combo->stack() * passives.hit_combo->effectN( 2 ).percent();
-  }
 
   return multiplier;
 }
