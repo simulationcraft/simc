@@ -177,7 +177,7 @@ void arcane( player_t* p )
   fishing_opener->add_action( "mirrors_of_torment,if=buff.rune_of_power.remains<(6+2*runeforge.siphon_storm)" );
   fishing_opener->add_action( "arcane_power,if=variable.empowered_barrage&buff.rune_of_power.up&(mana.pct<(25+(10*covenant.kyrian))|buff.clearcasting.stack=buff.clearcasting.max_stack)", "When running the Harmony legendary, use AP before TotM to dump a fully stacked bararge" );
   fishing_opener->add_action( "arcane_barrage,if=variable.empowered_barrage&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.arcane_power.up" );
-  fishing_opener->add_action( "touch_of_the_magi,if=buff.rune_of_power.down|prev_gcd.1.arcane_barrage|prev_gcd.1.radiant_spark|prev_gcd.1.deathborne" );
+  fishing_opener->add_action( "touch_of_the_magi,if=buff.rune_of_power.down|prev_gcd.1.arcane_barrage|prev_gcd.1.radiant_spark|(prev_gcd.1.deathborne&!runeforge.siphon_storm)" );
   fishing_opener->add_action( "arcane_power,if=prev_gcd.1.touch_of_the_magi" );
   fishing_opener->add_action( "presence_of_mind,if=!talent.arcane_echo&debuff.touch_of_the_magi.up&debuff.touch_of_the_magi.remains<=(action.arcane_blast.execute_time*buff.presence_of_mind.max_stack)", "Use PoM to squeeze an extra Arcane Blast during the TotM/AP window unless running Arcane Echo. If Arcane Echo is talented, we can't use PoM within the TotM/AP window unless we interrupt the AM channel, so we'll save it." );
   fishing_opener->add_action( "presence_of_mind,if=buff.arcane_power.up&buff.rune_of_power.remains<=(action.arcane_blast.execute_time*buff.presence_of_mind.max_stack)", "If PoM hasn't been used during the TotM window, we'll use it to squeeze an extra Arcane Blast in the RoP/AP window." );
