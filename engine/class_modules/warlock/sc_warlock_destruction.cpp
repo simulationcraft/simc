@@ -1188,6 +1188,7 @@ void warlock_t::create_apl_destruction()
   cds->add_action( "berserking,if=pet.infernal.active" );
   cds->add_action( "blood_fury,if=pet.infernal.active" );
   cds->add_action( "fireblood,if=pet.infernal.active" );
+  cds->add_action( "use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|target.time_to_die<42" );
   cds->add_action( "use_items,if=pet.infernal.active|target.time_to_die<20" );
 
   havoc->add_action( "conflagrate,if=buff.backdraft.down&soul_shard>=1&soul_shard<=4" );
