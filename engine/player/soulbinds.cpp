@@ -2126,7 +2126,7 @@ void carvers_eye( special_effect_t& effect )
         return;
       }
 
-      if ( s->target->health_percentage() > hp_pct && s->target != a->player )
+      if ( s->target->health_percentage() > hp_pct )
       {
         td->debuff.carvers_eye_debuff->trigger();
         buff->trigger();

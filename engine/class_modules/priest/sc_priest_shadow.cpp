@@ -311,16 +311,49 @@ struct painbreaker_psalm_t final : public priest_spell_t
   }
 };
 
+struct shadow_word_death_self_damage_t final : public priest_spell_t
+{
+  shadow_word_death_self_damage_t( priest_t& p )
+    : priest_spell_t( "shadow_word_death_self_damage", p, p.specs.shadow_word_death_self_damage )
+  {
+    background = true;
+    may_crit   = false;
+    may_miss   = false;
+    target     = player;
+  }
+
+  void trigger( double original_amount )
+  {
+    base_td = original_amount;
+    execute();
+  }
+
+  void init() override
+  {
+    base_t::init();
+
+    // We don't want this counted towards our dps
+    stats->type = stats_e::STATS_NEUTRAL;
+  }
+
+  proc_types proc_type() const override
+  {
+    return PROC1_ANY_DAMAGE_TAKEN;
+  }
+};
+
 struct shadow_word_death_t final : public priest_spell_t
 {
   double execute_percent;
   double execute_modifier;
   double insanity_per_dot;
+  propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
 
   shadow_word_death_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_word_death", p, p.specs.shadow_word_death ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() ),
+      shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       insanity_per_dot( p.specs.painbreaker_psalm_insanity->effectN( 2 ).base_value() /
                         10 )  // Spell Data stores this as 100 not 1000 or 10
   {
@@ -399,7 +432,7 @@ struct shadow_word_death_t final : public priest_spell_t
       if ( !( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
       {
         // target is not killed
-        inflict_self_damage( s->result_amount );
+        shadow_word_death_self_damage->trigger( s->result_amount );
       }
 
       if ( priest().talents.death_and_madness->ok() )
@@ -408,12 +441,6 @@ struct shadow_word_death_t final : public priest_spell_t
         td.buffs.death_and_madness_debuff->trigger();
       }
     }
-  }
-
-  void inflict_self_damage( double damage_inflicted_to_target )
-  {
-    priest().resource_loss( RESOURCE_HEALTH, damage_inflicted_to_target, priest().gains.shadow_word_death_self_damage,
-                            this );
   }
 };
 

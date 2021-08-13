@@ -360,11 +360,11 @@ struct wrathful_faerie_t final : public priest_spell_t
     : priest_spell_t( "wrathful_faerie", p, p.find_spell( 342132 ) ),
       insanity_gain( p.find_spell( 327703 )->effectN( 2 ).resource( RESOURCE_INSANITY ) )
   {
-    energize_type      = action_energize::ON_HIT;
-    energize_resource  = RESOURCE_INSANITY;
-    energize_amount    = insanity_gain;
-    background         = true;
-    cooldown->duration = data().internal_cooldown();
+    energize_type            = action_energize::ON_HIT;
+    energize_resource        = RESOURCE_INSANITY;
+    energize_amount          = insanity_gain;
+    background               = true;
+    cooldown->duration       = data().internal_cooldown();
     bwonsamdis_pact_wrathful = util::str_compare_ci( priest().options.bwonsamdis_pact_mask_type, "wrathful" );
   }
 
@@ -556,7 +556,7 @@ struct unholy_nova_t final : public priest_spell_t
       child_unholy_nova_healing->execute();
     }
 
-    if ( priest().legendary.pallid_command->ok() && !s->chain_target)
+    if ( priest().legendary.pallid_command->ok() && !s->chain_target )
     {
       if ( priest().specialization() == PRIEST_SHADOW )
       {
@@ -1281,7 +1281,7 @@ private:
          util::str_compare_ci( priest->options.bwonsamdis_pact_mask_type, "benevolent" ) )
     {
       modifier += ( default_value * 2 );
-      
+
       sim->print_debug( "Bwonsamdi's Pact Modifier set to {}", modifier );
     }
     else
@@ -1426,7 +1426,6 @@ void priest_t::create_gains()
   gains.mindbender                    = get_gain( "Mana Gained from Mindbender" );
   gains.painbreaker_psalm             = get_gain( "Insanity Gained from Painbreaker Psalm" );
   gains.power_word_solace             = get_gain( "Mana Gained from Power Word: Solace" );
-  gains.shadow_word_death_self_damage = get_gain( "Shadow Word: Death self inflicted damage" );
 }
 
 /** Construct priest procs */
@@ -1832,10 +1831,11 @@ void priest_t::init_spells()
   init_spells_holy();
 
   // Generic Spells
-  specs.mind_blast         = find_class_spell( "Mind Blast" );
-  specs.mind_sear          = find_class_spell( "Mind Sear" );
-  specs.mind_sear_insanity = find_spell( 208232 );  // Insanity is stored here, not in any spell triggers
-  specs.shadow_word_death  = find_class_spell( "Shadow Word: Death" );
+  specs.mind_blast                    = find_class_spell( "Mind Blast" );
+  specs.mind_sear                     = find_class_spell( "Mind Sear" );
+  specs.mind_sear_insanity            = find_spell( 208232 );  // Insanity is stored here, not in any spell triggers
+  specs.shadow_word_death             = find_class_spell( "Shadow Word: Death" );
+  specs.shadow_word_death_self_damage = find_spell( 32409 );
 
   // Class passives
   specs.priest            = dbc::get_class_passive( *this, SPEC_NONE );

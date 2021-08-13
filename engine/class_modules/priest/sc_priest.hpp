@@ -202,6 +202,7 @@ public:
     const spell_data_t* mind_sear_insanity;
     const spell_data_t* priest;  // General priest data
     const spell_data_t* shadow_word_death;
+    const spell_data_t* shadow_word_death_self_damage;
 
     // Discipline
     const spell_data_t* discipline_priest;       // General discipline data
@@ -287,7 +288,6 @@ public:
     propagate_const<gain_t*> painbreaker_psalm;
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> power_word_solace;
-    propagate_const<gain_t*> shadow_word_death_self_damage;
   } gains;
 
   // Benefits
