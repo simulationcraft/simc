@@ -185,7 +185,8 @@ void shadow( player_t* p )
   // APL to use when Boon of the Ascended is active
   boon->add_action( "ascended_blast,if=spell_targets.mind_sear<=3" );
   boon->add_action(
-      "ascended_nova,if=spell_targets.ascended_nova>1&spell_targets.mind_sear>1+talent.searing_nightmare.enabled" );
+      "ascended_nova,if=spell_targets.ascended_nova>1&spell_targets.mind_sear>1&!talent.searing_nightmare.enabled",
+      "Only use Ascended Nova when not talented into Searing Nightmare on 2+ targets." );
 
   // Cast While Casting actions. Set at higher priority to short circuit interrupt conditions on Mind Sear/Flay
   cwc->add_talent( p, "Searing Nightmare",
