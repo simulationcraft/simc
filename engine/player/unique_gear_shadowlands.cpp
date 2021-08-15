@@ -3017,6 +3017,16 @@ void cruciform_veinripper(special_effect_t& effect)
   effect.spell_id = 357588;
   effect.rppm_modifier_ = 0.5;
 
+
+  /* override proc rate for tanks (40% of regular proc rate unless option is
+     set), and allow override via expansion option */
+  auto proc_option = effect.player->sim->shadowlands_opts.cruciform_veinripper_proc_rate;
+  if (proc_option == 0.0 && effect.player->position() == POSITION_FRONT) {
+    effect.ppm_ = -effect.driver()->_rppm * 0.4;
+  } else if(proc_option > 0.0) {
+    effect.ppm_ = -effect.driver()->_rppm * proc_option;
+  }
+
   new dbc_proc_callback_t(effect.player, effect);
 }
 
