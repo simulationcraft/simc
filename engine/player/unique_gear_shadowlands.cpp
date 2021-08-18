@@ -3564,6 +3564,12 @@ void winds_of_winter( special_effect_t& effect )
     {
       base_dd_min = base_dd_max = 1.0; // Ensure that the correct snapshot flags are set.
     }
+
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      // Ignore Positive Damage Taken Modifiers (321)
+      return std::min( proc_spell_t::composite_target_multiplier( target ), 1.0 );
+    }
   };
 
   struct winds_of_winter_cb_t : public dbc_proc_callback_t
