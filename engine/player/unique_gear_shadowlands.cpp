@@ -1450,6 +1450,11 @@ void inscrutable_quantum_device ( special_effect_t& effect )
   effect.stat = STAT_ALL;
 }
 
+/** Phial of Putrefaction
+ * id=345465 driver with periodic 5s application of the player proc buff
+ * id=345464 10s player buff with proc trigger
+ * id=345466 Stacking DoT damage spell
+ */
 void phial_of_putrefaction( special_effect_t& effect )
 {
   struct liquefying_ooze_t : public proc_spell_t
@@ -1460,6 +1465,7 @@ void phial_of_putrefaction( special_effect_t& effect )
       base_td = e.driver()->effectN( 1 ).average( e.item );
     }
 
+    // DoT does not refresh duration
     timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t ) const override
     { return dot->remains(); }
   };
@@ -1471,10 +1477,12 @@ void phial_of_putrefaction( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* s ) override
     {
-      auto d = proc_action->get_dot( s->target );
+      // Only allow one proc on simultaneous hits
+      if ( !proc_buff->check() )
+        return;
 
-      // Phial only procs when at max stacks, otherwise the buff just lingers on the
-      // character, waiting for the dot to fall off
+      // Targets at max stacks do not 'eat' proc attempts or consume the player buff
+      auto d = proc_action->get_dot( s->target );
       if ( !d->is_ticking() || !d->at_max_stacks() )
       {
         proc_buff->expire();
@@ -1487,31 +1495,30 @@ void phial_of_putrefaction( special_effect_t& effect )
   auto putrefaction_buff = buff_t::find( effect.player, "phial_of_putrefaction" );
   if ( !putrefaction_buff )
   {
-    putrefaction_buff = make_buff( effect.player, "phial_of_putrefaction",
-        effect.player->find_spell( 345464 ) )
-      ->set_duration( timespan_t::zero() );
+    auto proc_spell = effect.player->find_spell( 345464 );
+    putrefaction_buff = make_buff( effect.player, "phial_of_putrefaction", proc_spell );
 
     special_effect_t* putrefaction_proc = new special_effect_t( effect.player );
+    putrefaction_proc->proc_flags_ = proc_spell->proc_flags();
+    putrefaction_proc->proc_flags2_ = PF2_ALL_HIT;
     putrefaction_proc->spell_id = 345464;
-    putrefaction_proc->cooldown_ = 1_ms; // Proc only once per time unit
     putrefaction_proc->custom_buff = putrefaction_buff;
-    putrefaction_proc->execute_action = create_proc_action<liquefying_ooze_t>(
-        "liquefying_ooze", effect );
+    putrefaction_proc->execute_action = create_proc_action<liquefying_ooze_t>( "liquefying_ooze", effect );
 
     effect.player->special_effects.push_back( putrefaction_proc );
 
     auto proc_object = new phial_of_putrefaction_proc_t( putrefaction_proc );
     proc_object->deactivate();
 
-    putrefaction_buff->set_stack_change_callback( [proc_object]( buff_t*, int, int new_ ) {
+    putrefaction_buff->set_stack_change_callback( [ proc_object ]( buff_t*, int, int new_ ) {
       if ( new_ == 1 ) { proc_object->activate(); }
       else { proc_object->deactivate(); }
     } );
 
-    effect.player->register_combat_begin( [&effect, putrefaction_buff]( player_t* ) {
+    effect.player->register_combat_begin( [ &effect, putrefaction_buff ]( player_t* ) {
       putrefaction_buff->trigger();
       make_repeating_event( putrefaction_buff->source->sim, effect.driver()->effectN( 1 ).period(),
-          [putrefaction_buff]() { putrefaction_buff->trigger(); } );
+                            [ putrefaction_buff ]() { putrefaction_buff->trigger(); } );
     } );
   }
 }
