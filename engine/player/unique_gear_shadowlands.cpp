@@ -3600,7 +3600,11 @@ void winds_of_winter( special_effect_t& effect )
       buff->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
       {
         if ( !target || target->is_sleeping() || accumulated_damage == 0 )
+        {
+          // If there is no valid target on a tick, the absorb triggers and damage is lost
+          accumulated_damage = 0;
           return;
+        }
 
         damage->base_dd_min = damage->base_dd_max = accumulated_damage;
         accumulated_damage = 0;
