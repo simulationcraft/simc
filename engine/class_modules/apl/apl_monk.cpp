@@ -266,7 +266,7 @@ void brewmaster( player_t* p )
   def->add_talent( p, "Chi Burst" );
   def->add_talent( p, "Chi Wave" );
   def->add_action( p, "Spinning Crane Kick",
-      "if=!runeforge.shaohaos_might.equipped&(active_enemies>=3|conduit.walk_with_the_ox.enabled)&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*("
+      "if=!runeforge.shaohaos_might.equipped&active_enemies>=3&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*("
       "cooldown.keg_smash.remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)",
       "Cast SCK if enough enemies are around, or if WWWTO is enabled. This is a slight defensive loss over using TP "
       "but generally reduces sim variance more than anything else." );
