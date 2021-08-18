@@ -3015,6 +3015,7 @@ void cruciform_veinripper(special_effect_t& effect)
     sadistic_glee->scaled_dmg += effect.driver()->effectN(1).average(effect.item);
 
   effect.spell_id = 357588;
+  /* apparently due to proc rate being lower than reported in spell data (?) - emallson */
   effect.rppm_modifier_ = 0.5;
 
 
@@ -3022,9 +3023,9 @@ void cruciform_veinripper(special_effect_t& effect)
      set), and allow override via expansion option */
   auto proc_option = effect.player->sim->shadowlands_opts.cruciform_veinripper_proc_rate;
   if (proc_option == 0.0 && effect.player->position() == POSITION_FRONT) {
-    effect.ppm_ = -effect.driver()->_rppm * 0.4;
+    effect.rppm_modifier_ *= 0.4;
   } else if(proc_option > 0.0) {
-    effect.ppm_ = -effect.driver()->_rppm * proc_option;
+    effect.rppm_modifier_ *= proc_option;
   }
 
   new dbc_proc_callback_t(effect.player, effect);
