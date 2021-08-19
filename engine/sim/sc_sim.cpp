@@ -109,7 +109,7 @@ bool parse_debug_seed( sim_t* sim, util::string_view, util::string_view value )
   for ( const auto& seed_str : split )
   {
 
-    uint64_t seed = std::stoll( seed_str );
+    uint64_t seed = std::stoull( seed_str );
     sim -> debug_seed.push_back( seed );
   }
 
