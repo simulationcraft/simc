@@ -1535,7 +1535,7 @@ void brons_call_to_action( special_effect_t& effect )
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( bron->is_active() )
+      if ( bron->is_active() || a->background )
         return;
 
       dbc_proc_callback_t::trigger( a, s );
