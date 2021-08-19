@@ -2091,6 +2091,12 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
   void execute() override
   {
+    if ( !last_hot_streak && p()->buffs.sun_kings_blessing_ready->check() )
+    {
+      p()->buffs.sun_kings_blessing_ready->expire();
+      p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->runeforge.sun_kings_blessing->effectN( 2 ).time_value() );
+    }
+
     fire_mage_spell_t::execute();
 
     if ( last_hot_streak )
@@ -2098,7 +2104,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       p()->buffs.hot_streak->decrement();
       p()->buffs.pyroclasm->trigger();
 
-      trigger_legendary_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready, p()->bugs ? 0 : 1 );
+      trigger_legendary_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready, 1 );
 
       if ( rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
       {
@@ -4633,12 +4639,6 @@ struct pyroblast_t final : public hot_streak_spell_t
 
   void execute() override
   {
-    if ( !last_hot_streak && p()->buffs.sun_kings_blessing_ready->check() )
-    {
-      p()->buffs.sun_kings_blessing_ready->expire();
-      p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->runeforge.sun_kings_blessing->effectN( 2 ).time_value() );
-    }
-
     hot_streak_spell_t::execute();
 
     if ( time_to_execute > 0_ms )
