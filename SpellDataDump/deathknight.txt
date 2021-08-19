@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39653 Live (hotfix 2021-08-13/39653, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39804 Live (hotfix 2021-08-19/39804, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1581,7 +1581,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=46012)    : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.666667 -> 1)
 #2 (id=46013)    : Direct Heal% (136)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Affixes your rune weapon with a rune that has a chance to heal you for $53365s2% and increase total Strength by $53365s1% for $53365d.
@@ -10201,7 +10200,6 @@ Description      : Increases the range of Death Grip by $s1 yds.
 Killing an enemy that yields experience or honor resets the cooldown of Death Grip.
 
 Name             : Army of the Damned (id=276837) [Spell Family (15), Passive] 
-Hotfixed         : Proc Flags (65536 -> 81920)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -12432,7 +12430,7 @@ GCD              : 1.5 seconds
 Duration         : 14 seconds
 Cooldown         : 60 seconds
 Labels           : 831: Proliferation (338664 effect#1), Proliferation (338664 effect#2)
-976
+, 976
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x01000000

@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39653 Live (hotfix 2021-08-13/39653, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39804 Live (hotfix 2021-08-19/39804, no-networking)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -56,7 +56,6 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=830260)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.13800 | PvP Coefficient: 1.15000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.15)
 Description      : Corrupts the target, causing$?s334342[ $s3 Shadow damage and an additional][] $146739o1 Shadow damage over $146739d.
 
 Name             : Immolate (id=348) [Spell Family (5)] 
@@ -390,7 +389,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01340 | PvP Coefficient: 1.15000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.15)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Inflicts increasing agony on the target, causing up to ${$s1*$d/$t1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -1931,7 +1929,7 @@ Name             : Kilrogg's Cunning (id=58081) [Spell Family (5), Passive, Hidd
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
-Conduit Id       : 221 (values=50, 55, 60, 65, 70, 150, 80, 85, 90, 95, 100, 105, 110, 115, 120)
+Conduit Id       : 221 (values=50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2012,7 +2010,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=57197)    : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.15000 | PvP Coefficient: 1.15000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.15)
 Description      : Siphons the target's life essence, dealing $o1 Shadow damage over $d and healing you for ${$e1*100}% of the damage done.
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec and siphoning life to the casting Warlock.
 
@@ -3645,7 +3642,6 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=198369)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13000 | PvP Coefficient: 1.15000 | Target: Unknown(25)
-Hotfixed         : PvP Coefficient (1 -> 1.15)
 Description      : $@spelldesc172
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -11137,7 +11133,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 60
 Labels           : 1067: Resolute Barrier (339272 effect#1)
-Conduit Id       : 171 (values=30, 33, 36, 39, 42, 45, 48, 51, 46, 57, 60, 63, 66, 69, 72)
+Conduit Id       : 171 (values=30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11659,6 +11655,25 @@ Effects          :
 #1 (id=890151)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Decimating Bolt also increases the critical strike chance by $356342s1% and critical strike damage by $356342s2% for $?s137046[Incinerate]?s198590[Drain Soul]?a137044&!s137046[Demonbolt][Shadow Bolt].
+
+Name             : Decaying Soul Satchel (id=356362) [Spell Family (5), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=890183)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=890184)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Each target affected by Soul Rot increases your haste and critical strike chance by $356369s1% for $356369d.
 
 Name             : Condensed Anima Sphere (id=357888) [Spell Family (5), Passive, Hidden] 
 School           : Physical

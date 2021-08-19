@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39653 Live (hotfix 2021-08-13/39653, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39804 Live (hotfix 2021-08-19/39804, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -982,7 +982,6 @@ Damage increased by $s3% to targets below $s2% health.$?c3[][]$?s81749[
 Does not trigger Atonement.][]
 
 Name             : Shadow Word: Death (id=32409) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -4719,7 +4718,6 @@ Effects          :
 Description      : Cleanses the target with fire, causing $s1 Fire damage and an additional $204213o1 Fire damage over $204213d. Spreads to an additional nearby enemy when you cast Penance on the target.
 
 Name             : Purge the Wicked (id=204213) [Spell Family (6)] 
-Hotfixed         : Affecting Spells
 Class            : Priest
 School           : Fire
 Spell Type       : Magic

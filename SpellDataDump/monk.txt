@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39653 Live (hotfix 2021-08-13/39653, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39804 Live (hotfix 2021-08-19/39804, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2117,7 +2117,6 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ........ .....
 Effects          :
 #1 (id=138091)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.22500 | PvP Coefficient: 1.10000 | Target: Friend (21)
-Hotfixed         : PvP Coefficient (1 -> 1.1)
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.
 
