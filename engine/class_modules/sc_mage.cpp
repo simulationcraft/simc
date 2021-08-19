@@ -4928,6 +4928,10 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
     if ( result_is_hit( s->result ) )
       get_td( s->target )->debuffs.touch_of_the_magi->trigger();
   }
+
+  // Touch of the Magi will trigger procs that occur only from casting damaging spells.
+  bool has_amount_result() const override
+  { return true; }
 };
 
 struct touch_of_the_magi_explosion_t final : public arcane_mage_spell_t
