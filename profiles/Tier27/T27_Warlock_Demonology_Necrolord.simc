@@ -1,4 +1,4 @@
-warlock="T27_Warlock_Demonology"
+warlock="T27_Warlock_Demonology_Necrolord"
 source=default
 spec=demonology
 level=60
@@ -6,8 +6,8 @@ race=orc
 role=spell
 position=ranged_back
 talents=3103032
-covenant=night_fae
-soulbind=dreamweaver:2,borne_of_blood:11:0/carnivorous_stalkers:11:0/field_of_blossoms/tyrants_soul:11:0/dream_delver
+covenant=necrolord
+soulbind=plague_deviser_marileth,volatile_solvent/borne_of_blood:11:0/tyrants_soul:11:0/carnivorous_stalkers:11:0/kevins_oozeling
 renown=80
 
 # Default consumables
@@ -123,7 +123,7 @@ actions.tyrant_setup+=/summon_demonic_tyrant,if=time>variable.first_tyrant_time&
 head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187,gem_id=187312
 neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173128
 shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187315
-back=dealer_xyexas_cape,id=179349,bonus_id=1566/6536/6646,enchant=soul_vitality
+back=selfreplicating_tissue,id=186374,bonus_id=1498/7187,enchant=soul_vitality
 chest=sacrificers_sacramental_cassock,id=186282,bonus_id=1498/7187,gem_id=187318,enchant=eternal_stats
 wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187,gem_id=187319,enchant=eternal_intellect
 hands=gloves_of_forsaken_purpose,id=186326,bonus_id=1498/7187
@@ -141,8 +141,8 @@ main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=celestial_guidance
 # gear_stamina=2144
 # gear_intellect=1494
 # gear_crit_rating=426
-# gear_haste_rating=696
-# gear_mastery_rating=627
-# gear_versatility_rating=465
+# gear_haste_rating=722
+# gear_mastery_rating=572
+# gear_versatility_rating=494
 # gear_armor=435
 default_pet=felguard

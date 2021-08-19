@@ -30,9 +30,9 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/cat_form,if=(druid.catweave_bear)|(covenant.night_fae&talent.feral_affinity.enabled)
-actions.precombat+=/prowl,if=druid.catweave_bear
 actions.precombat+=/moonkin_form,if=(druid.owlweave_bear)|(covenant.night_fae&talent.balance_affinity.enabled)
 actions.precombat+=/heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&(druid.catweave_bear|druid.owlweave_bear|talent.balance_affinity.enabled)
+actions.precombat+=/prowl,if=druid.catweave_bear
 actions.precombat+=/bear_form,if=((!druid.owlweave_bear&!druid.catweave_bear)&(!covenant.night_fae))|((!druid.owlweave_bear&!druid.catweave_bear)&(covenant.night_fae&talent.restoration_affinity.enabled)|covenant.venthyr)
 actions.precombat+=/wrath,if=druid.owlweave_bear&!covenant.night_fae
 actions.precombat+=/starfire,if=druid.owlweave_bear&covenant.night_fae

@@ -46,7 +46,7 @@ actions.cooldowns+=/blood_fury,if=(buff.avenging_wrath.up)
 actions.cooldowns+=/berserking,if=(buff.avenging_wrath.up)
 actions.cooldowns+=/holy_avenger,if=(buff.avenging_wrath.up)
 actions.cooldowns+=/use_items,if=(buff.avenging_wrath.up)
-actions.cooldowns+=/seraphim,if=(buff.avenging_wrath.up)
+actions.cooldowns+=/seraphim
 
 actions.priority=shield_of_the_righteous
 actions.priority+=/hammer_of_wrath

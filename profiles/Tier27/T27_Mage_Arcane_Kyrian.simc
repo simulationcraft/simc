@@ -211,7 +211,7 @@ actions.fishing_opener+=/mirrors_of_torment,if=buff.rune_of_power.remains<(6+2*r
 # When running the Harmony legendary, use AP before TotM to dump a fully stacked bararge
 actions.fishing_opener+=/arcane_power,if=variable.empowered_barrage&buff.rune_of_power.up&(mana.pct<(25+(10*covenant.kyrian))|buff.clearcasting.stack=buff.clearcasting.max_stack)
 actions.fishing_opener+=/arcane_barrage,if=variable.empowered_barrage&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.arcane_power.up
-actions.fishing_opener+=/touch_of_the_magi,if=buff.rune_of_power.down|prev_gcd.1.arcane_barrage|prev_gcd.1.radiant_spark|prev_gcd.1.deathborne
+actions.fishing_opener+=/touch_of_the_magi,if=buff.rune_of_power.down|prev_gcd.1.arcane_barrage|prev_gcd.1.radiant_spark|(prev_gcd.1.deathborne&!runeforge.siphon_storm)
 actions.fishing_opener+=/arcane_power,if=prev_gcd.1.touch_of_the_magi
 # Use PoM to squeeze an extra Arcane Blast during the TotM/AP window unless running Arcane Echo. If Arcane Echo is talented, we can't use PoM within the TotM/AP window unless we interrupt the AM channel, so we'll save it.
 actions.fishing_opener+=/presence_of_mind,if=!talent.arcane_echo&debuff.touch_of_the_magi.up&debuff.touch_of_the_magi.remains<=(action.arcane_blast.execute_time*buff.presence_of_mind.max_stack)

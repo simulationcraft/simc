@@ -2,10 +2,10 @@ mage="T27_Mage_Fire"
 source=default
 spec=fire
 level=60
-race=troll
+race=orc
 role=spell
 position=ranged_back
-talents=3031021
+talents=3031022
 covenant=venthyr
 soulbind=theotar_the_mad_duke:9,soothing_shade/infernal_cascade:9:1/controlled_destruction:9:1/siphoned_malice:9:1/party_favors
 renown=80
@@ -33,17 +33,17 @@ actions.precombat+=/variable,name=disable_combustion,op=reset
 # APL Variable Option: This variable specifies whether Combustion should be used during Firestarter.
 actions.precombat+=/variable,name=firestarter_combustion,default=-1,value=1*!talent.pyroclasm,if=variable.firestarter_combustion<0
 # APL Variable Option: This variable specifies the number of targets at which Hot Streak Flamestrikes outside of Combustion should be used.
-actions.precombat+=/variable,name=hot_streak_flamestrike,if=variable.hot_streak_flamestrike=0,value=2*talent.flame_patch+3*!talent.flame_patch
+actions.precombat+=/variable,name=hot_streak_flamestrike,if=variable.hot_streak_flamestrike=0,value=2*talent.flame_patch+4*!talent.flame_patch
 # APL Variable Option: This variable specifies the number of targets at which Hard Cast Flamestrikes outside of Combustion should be used as filler.
-actions.precombat+=/variable,name=hard_cast_flamestrike,if=variable.hard_cast_flamestrike=0,value=2*talent.flame_patch+3*!talent.flame_patch
+actions.precombat+=/variable,name=hard_cast_flamestrike,if=variable.hard_cast_flamestrike=0,value=3*talent.flame_patch+6*!talent.flame_patch
 # APL Variable Option: This variable specifies the number of targets at which Hot Streak Flamestrikes are used during Combustion.
 actions.precombat+=/variable,name=combustion_flamestrike,if=variable.combustion_flamestrike=0,value=3*talent.flame_patch+6*!talent.flame_patch
 # APL Variable Option: This variable specifies the number of targets at which Arcane Explosion outside of Combustion should be used.
 actions.precombat+=/variable,name=arcane_explosion,if=variable.arcane_explosion=0,value=99*talent.flame_patch+2*!talent.flame_patch
 # APL Variable Option: This variable specifies the percentage of mana below which Arcane Explosion will not be used.
 actions.precombat+=/variable,name=arcane_explosion_mana,default=40,op=reset
-# APL Variable Option: The number of targets Shifting Power should be used on during Combustion.
-actions.precombat+=/variable,name=combustion_shifting_power,default=2,op=reset
+# APL Variable Option: The number of targets at which Shifting Power can used during Combustion.
+actions.precombat+=/variable,name=combustion_shifting_power,if=variable.combustion_shifting_power=0,value=1*talent.pyroclasm*runeforge.sun_kings_blessing+3*(!runeforge.sun_kings_blessing|!talent.pyroclasm)
 # APL Variable Option: The time remaining on a cast when Combustion can be used in seconds.
 actions.precombat+=/variable,name=combustion_cast_remains,default=0.7,op=reset
 # APL Variable Option: This variable specifies the number of seconds of Fire Blast that should be pooled past the default amount.
@@ -67,12 +67,13 @@ actions.precombat+=/pyroblast
 
 # Executed every time the actor is available.
 actions=counterspell,if=!runeforge.disciplinary_command
+actions+=/newfound_resolve,use_while_casting=1,if=(buff.combustion.up|buff.sun_kings_blessing_ready.react)&buff.newfound_resolve.down
 # The combustion_timing action list schedules when Combustion will be used and stores the result in variable.time_to_combustion.
 actions+=/call_action_list,name=combustion_timing,if=!variable.disable_combustion
 # Variable that estimates whether Shifting Power will be used before Combustion is ready.
-actions+=/variable,name=shifting_power_before_combustion,value=(active_enemies<variable.combustion_shifting_power|active_enemies<variable.combustion_flamestrike|variable.time_to_combustion-action.shifting_power.full_reduction>cooldown.shifting_power.duration)&variable.time_to_combustion-cooldown.shifting_power.remains>action.shifting_power.full_reduction&(cooldown.rune_of_power.remains-cooldown.shifting_power.remains>5|!talent.rune_of_power)
+actions+=/variable,name=shifting_power_before_combustion,value=variable.time_to_combustion-cooldown.shifting_power.remains>action.shifting_power.full_reduction&(cooldown.rune_of_power.remains-cooldown.shifting_power.remains>5|!talent.rune_of_power)
 actions+=/shifting_power,if=buff.combustion.down&action.fire_blast.charges<=1&!(buff.infernal_cascade.up&buff.hot_streak.react)&variable.shifting_power_before_combustion
-actions+=/radiant_spark,if=buff.combustion.down&(variable.time_to_combustion<variable.combustion_precast_time+execute_time|variable.time_to_combustion>cooldown-10)
+actions+=/radiant_spark,if=buff.combustion.down&(variable.time_to_combustion>cooldown-5)
 actions+=/deathborne,if=buff.combustion.down&buff.rune_of_power.down&variable.time_to_combustion<variable.combustion_precast_time+execute_time+(buff.deathborne.duration-buff.combustion.duration)*runeforge.deaths_fathom
 actions+=/mirrors_of_torment,if=variable.time_to_combustion<variable.combustion_precast_time+execute_time&buff.combustion.down
 # For Venthyr, use a Fire Blast charge during Mirrors of Torment cast to avoid capping charges.
@@ -153,10 +154,13 @@ actions.combustion_phase+=/variable,use_off_gcd=1,use_while_casting=1,name=expec
 actions.combustion_phase+=/variable,use_off_gcd=1,use_while_casting=1,name=needed_fire_blasts,value=ceil(variable.extended_combustion_remains%(buff.infernal_cascade.duration-gcd.max)),if=conduit.infernal_cascade
 actions.combustion_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=conduit.infernal_cascade&charges>=1&(variable.expected_fire_blasts>=variable.needed_fire_blasts|variable.extended_combustion_remains<=buff.infernal_cascade.duration|buff.infernal_cascade.stack<2|buff.infernal_cascade.remains<gcd.max|cooldown.shifting_power.ready&active_enemies>=variable.combustion_shifting_power&covenant.night_fae)&buff.combustion.up&(!buff.firestorm.react|buff.infernal_cascade.remains<0.5)&!buff.hot_streak.react&hot_streak_spells_in_flight+buff.heating_up.react<2
 actions.combustion_phase+=/call_action_list,name=active_talents
-actions.combustion_phase+=/combustion,use_off_gcd=1,use_while_casting=1,if=buff.combustion.down&variable.time_to_combustion<=0&(!runeforge.disciplinary_command|buff.disciplinary_command.up|buff.disciplinary_command_frost.up&talent.rune_of_power&cooldown.buff_disciplinary_command.ready)&(!runeforge.grisly_icicle|debuff.grisly_icicle.up)&(!covenant.necrolord|cooldown.deathborne.remains|buff.deathborne.up)&(!covenant.venthyr|cooldown.mirrors_of_torment.remains)&(action.meteor.in_flight&action.meteor.in_flight_remains<=variable.combustion_cast_remains|action.scorch.executing&action.scorch.execute_remains<variable.combustion_cast_remains|action.fireball.executing&action.fireball.execute_remains<variable.combustion_cast_remains|action.pyroblast.executing&action.pyroblast.execute_remains<variable.combustion_cast_remains|action.flamestrike.executing&action.flamestrike.execute_remains<variable.combustion_cast_remains)
+actions.combustion_phase+=/combustion,use_off_gcd=1,use_while_casting=1,if=hot_streak_spells_in_flight=0&buff.combustion.down&variable.time_to_combustion<=0&(!runeforge.disciplinary_command|buff.disciplinary_command.up|buff.disciplinary_command_frost.up&talent.rune_of_power&cooldown.buff_disciplinary_command.ready)&(!runeforge.grisly_icicle|debuff.grisly_icicle.up)&(!covenant.necrolord|cooldown.deathborne.remains|buff.deathborne.up)&(!covenant.venthyr|cooldown.mirrors_of_torment.remains)&(action.meteor.in_flight&action.meteor.in_flight_remains<=variable.combustion_cast_remains|action.scorch.executing&action.scorch.execute_remains<variable.combustion_cast_remains|action.fireball.executing&action.fireball.execute_remains<variable.combustion_cast_remains|action.pyroblast.executing&action.pyroblast.execute_remains<variable.combustion_cast_remains|action.flamestrike.executing&action.flamestrike.execute_remains<variable.combustion_cast_remains)
 # Other cooldowns that should be used with Combustion should only be used with an actual Combustion cast and not with a Sun King's Blessing proc.
 actions.combustion_phase+=/call_action_list,name=combustion_cooldowns,if=buff.combustion.remains>8|cooldown.combustion.remains<5
 actions.combustion_phase+=/flamestrike,if=(buff.hot_streak.react&active_enemies>=variable.combustion_flamestrike)|(buff.firestorm.react&active_enemies>=variable.combustion_flamestrike-runeforge.firestorm)
+actions.combustion_phase+=/radiant_spark,if=buff.combustion.up,if=prev_gcd.1.pyroblast
+actions.combustion_phase+=/rune_of_power,if=buff.sun_kings_blessing_ready.up&!buff.hot_streak.react&buff.rune_of_power.remains<action.pyroblast.cast_time&buff.sun_kings_blessing_ready.remains>action.pyroblast.cast_time+execute_time
+actions.combustion_phase+=/flamestrike,if=active_enemies>=variable.combustion_flamestrike&buff.sun_kings_blessing_ready.up&buff.sun_kings_blessing_ready.remains>cast_time
 actions.combustion_phase+=/pyroblast,if=buff.sun_kings_blessing_ready.up&buff.sun_kings_blessing_ready.remains>cast_time
 actions.combustion_phase+=/pyroblast,if=buff.firestorm.react
 actions.combustion_phase+=/pyroblast,if=buff.pyroclasm.react&buff.pyroclasm.remains>cast_time&(buff.combustion.remains>cast_time|buff.combustion.down)&active_enemies<variable.combustion_flamestrike
@@ -209,6 +213,7 @@ actions.combustion_timing+=/variable,use_off_gcd=1,use_while_casting=1,name=time
 
 actions.rop_phase=flamestrike,if=active_enemies>=variable.hot_streak_flamestrike&(buff.hot_streak.react|buff.firestorm.react)
 actions.rop_phase+=/fireball,if=buff.deathborne.up&runeforge.deaths_fathom&variable.time_to_combustion<buff.deathborne.remains&active_enemies>=2
+actions.rop_phase+=/flamestrike,if=active_enemies>=variable.hard_cast_flamestrike&buff.sun_kings_blessing_ready.up&buff.sun_kings_blessing_ready.remains>cast_time
 actions.rop_phase+=/pyroblast,if=buff.sun_kings_blessing_ready.up&buff.sun_kings_blessing_ready.remains>cast_time
 actions.rop_phase+=/pyroblast,if=buff.firestorm.react
 actions.rop_phase+=/pyroblast,if=buff.hot_streak.react
@@ -233,6 +238,7 @@ actions.standard_rotation+=/pyroblast,if=buff.firestorm.react
 actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&buff.hot_streak.remains<action.fireball.execute_time
 actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&(prev_gcd.1.fireball|firestarter.active|action.pyroblast.in_flight)
 # Try to get SKB procs inside RoP phases or Combustion phases when possible.
+actions.standard_rotation+=/flamestrike,if=active_enemies>=variable.hard_cast_flamestrike&buff.sun_kings_blessing_ready.up&(cooldown.rune_of_power.remains+action.rune_of_power.execute_time+cast_time>buff.sun_kings_blessing_ready.remains|!talent.rune_of_power)&variable.time_to_combustion+cast_time>buff.sun_kings_blessing_ready.remains
 actions.standard_rotation+=/pyroblast,if=buff.sun_kings_blessing_ready.up&(cooldown.rune_of_power.remains+action.rune_of_power.execute_time+cast_time>buff.sun_kings_blessing_ready.remains|!talent.rune_of_power)&variable.time_to_combustion+cast_time>buff.sun_kings_blessing_ready.remains
 actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&searing_touch.active
 actions.standard_rotation+=/pyroblast,if=buff.pyroclasm.react&cast_time<buff.pyroclasm.remains
@@ -248,29 +254,29 @@ actions.standard_rotation+=/arcane_explosion,if=active_enemies>=variable.arcane_
 actions.standard_rotation+=/flamestrike,if=active_enemies>=variable.hard_cast_flamestrike
 actions.standard_rotation+=/fireball
 
-head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=187319,enchant=60runspeed
+head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187,gem_id=187319,enchant=60runspeed
 neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173128
 shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187320
 back=selfreplicating_tissue,id=186374,bonus_id=1498/7187
 chest=sacrificers_sacramental_cassock,id=186282,bonus_id=1498/7187,gem_id=187318,enchant=eternal_insight
-wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=187315,enchant=eternal_intellect
-hands=grasps_of_the_clairvoyant_sage,id=186288,bonus_id=1498/7187
-waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=187312
-legs=sorcerers_headlong_legwraps,id=186285,bonus_id=1498/7187
-feet=sandals_of_sacred_symmetry,id=186354,bonus_id=1498/7187
-finger1=shadowghast_ring,id=178926,bonus_id=1559/6832/6649/6650/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=1498/7187/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=1566/6536/6646
-trinket2=tome_of_monstrous_constructions,id=186422,bonus_id=1498/7187
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187,gem_id=187315,enchant=eternal_intellect
+hands=grimveiled_mittens,id=173244,bonus_id=1559/6934/6649/6650
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187,gem_id=187312
+legs=muehzalas_hexthread_sarong,id=179351,bonus_id=1566/6536/6646
+feet=tormented_shadowcleft_boots,id=186319,bonus_id=1498/7187
+finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=1566/6536/6646/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=sworn_oath_of_the_nine,id=186290,bonus_id=1498/7187/6935,gem_id=173128,enchant=tenet_of_haste
+trinket1=shadowed_orb_of_torment,id=186428,bonus_id=1498/7187
+trinket2=forbidden_necromantic_tome,id=186421,bonus_id=1498/7187
 main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=255.93
-# gear_stamina=2114
-# gear_intellect=1484
-# gear_crit_rating=426
-# gear_haste_rating=760
-# gear_mastery_rating=327
-# gear_versatility_rating=701
+# gear_stamina=2109
+# gear_intellect=1498
+# gear_crit_rating=204
+# gear_haste_rating=1009
+# gear_mastery_rating=331
+# gear_versatility_rating=649
 # gear_speed_rating=60
-# gear_armor=435
+# gear_armor=438
