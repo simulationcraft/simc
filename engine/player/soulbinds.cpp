@@ -1535,30 +1535,8 @@ void brons_call_to_action( special_effect_t& effect )
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( bron->is_active() || a->background )
+      if ( bron->is_active() )
         return;
-
-      // Only class spells can proc Bron's Call to Action.
-      // TODO: Is this an accurate way to detect this?
-      if ( !a->data().flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS ) )
-        return;
-
-      // Because this callback triggers on both cast and impact, spells are categorized into triggering on one of cast or impact.
-      // TODO: This isn't completely accurate, but seems to be relatively close. More classes/spells needs to be looked at.
-//      bool action_triggers_on_impact = a->data().flags( spell_attribute::SX_ABILITY )
-//        || range::any_of( a->data().effects(), [] ( const spelleffect_data_t& e ) { return e.type() == E_TRIGGER_MISSILE; } );
-
-//      a->sim->print_debug( "'{}' attempts to trigger brons_call_to_action: action='{}', execute_proc_type2='{}', cast_proc_type2='{}', impact_proc_type2='{}', triggers_on='{}'",
-//        a->player->name_str, a->name_str, util::proc_type2_string( s->execute_proc_type2() ), util::proc_type2_string( s->cast_proc_type2() ),
-//        util::proc_type2_string( s->impact_proc_type2() ), action_triggers_on_impact ? "impact" : "cast" );
-
-      // If the spell triggers on cast and this is an impact trigger attempt, skip it.
-//      if ( s->impact_proc_type2() != PROC2_INVALID && !action_triggers_on_impact )
-//        return;
-
-      // If the spell triggers on impact and this is not an imapct trigger attempt, skip it.
-//      if ( s->impact_proc_type2() == PROC2_INVALID && action_triggers_on_impact )
-//        return;
 
       dbc_proc_callback_t::trigger( a, s );
     }
@@ -1577,7 +1555,10 @@ void brons_call_to_action( special_effect_t& effect )
     }
   };
 
-//  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL | PF2_ALL_HIT;
+  // TODO: This technically uses proc flag 34 (Cast Successful), which currently isn't supported by simc.
+  // For now, model this by allowing PF flags for any action and use PF2 flags to only trigger from casts
+  // that can produce a nonzero result.
+  effect.proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL | PF_PERIODIC;
   effect.proc_flags2_ = PF2_CAST_DAMAGE | PF2_CAST_HEAL;
 
   effect.custom_buff = buff_t::find( effect.player, "brons_call_to_action" );
