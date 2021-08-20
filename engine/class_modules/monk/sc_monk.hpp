@@ -744,6 +744,7 @@ public:
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_ww;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_mw;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_brm;
+    spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_xuen;
 
     pet_t* bron;
 

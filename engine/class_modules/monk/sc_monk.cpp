@@ -3821,7 +3821,7 @@ struct weapons_of_order_t : public monk_spell_t
         }
         case MONK_WINDWALKER:
         {
-          p()->pets.xuen.spawn( p()->passives.call_to_arms_invoke_xuen->duration(), 1 );
+          p()->pets.call_to_arms_xuen.spawn( p()->passives.call_to_arms_invoke_xuen->duration(), 1 );
           p()->buff.invoke_xuen_call_to_arms->trigger();
           break;
         }
