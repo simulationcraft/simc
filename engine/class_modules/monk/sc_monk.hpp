@@ -103,6 +103,7 @@ public:
     buff_t* weapons_of_order;
 
     // Shadowland Legendaries
+    buff_t* call_to_arms_empowered_tiger_lightning;
     buff_t* fae_exposure;
     buff_t* keefers_skyreach;
     buff_t* skyreach_exhaustion;
@@ -160,6 +161,7 @@ public:
 
     // Legendary
     action_t* bountiful_brew;
+    action_t* call_to_arms_empowered_tiger_lightning;
   } active_actions;
 
   std::vector<action_t*> combo_strike_actions;
@@ -617,6 +619,7 @@ public:
     const spell_data_t* call_to_arms_invoke_niuzao;
     const spell_data_t* call_to_arms_invoke_yulon;
     const spell_data_t* call_to_arms_invoke_chiji;
+    const spell_data_t* call_to_arms_empowered_tiger_lightning;
   } passives;
 
   // RPPM objects
@@ -861,7 +864,7 @@ public:
   void trigger_bonedust_brew( const action_state_t* );
   void trigger_keefers_skyreach( action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
-  void trigger_empowered_tiger_lightning( action_state_t* );
+  void trigger_empowered_tiger_lightning( action_state_t*, bool trigger_call_to_action );
   void trigger_bonedust_brew( action_state_t* );
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();

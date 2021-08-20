@@ -399,7 +399,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       auto owner = this->o();
 
-      owner->trigger_empowered_tiger_lightning( s );
+      owner->trigger_empowered_tiger_lightning( s, false );
 
       super_t::impact( s );
     }
@@ -1120,7 +1120,7 @@ private:
 
     void impact( action_state_t* s ) override
     {
-      o()->trigger_empowered_tiger_lightning( s );
+      o()->trigger_empowered_tiger_lightning( s, false );
 
       pet_melee_attack_t::impact( s );
     }
@@ -1138,7 +1138,7 @@ private:
     void impact( action_state_t* s ) override
     {
       auto owner = o();
-      owner->trigger_empowered_tiger_lightning( s );
+      owner->trigger_empowered_tiger_lightning( s, false );
 
       pet_spell_t::impact( s );
     }
@@ -1411,13 +1411,6 @@ private:
       // TODO: check why this is here
       base_hit -= 0.19;
     }
-
-    void impact( action_state_t* s ) override
-    {
-      //o()->trigger_empowered_tiger_lightning( s );
-
-      pet_melee_t::impact( s );
-    }
   };
 
   struct auto_attack_t : public pet_auto_attack_t
@@ -1499,13 +1492,6 @@ public:
 
       return cam;
     }
-
-    void impact( action_state_t* s ) override
-    {
-      //o()->trigger_empowered_tiger_lightning( s );
-
-      pet_melee_attack_t::impact( s );
-    }
   };
 
   struct fallen_monk_fists_of_fury_t : public pet_melee_attack_t
@@ -1562,13 +1548,6 @@ public:
     {
       return 0;
     }
-
-    void impact( action_state_t* s ) override
-    {
-      //o()->trigger_empowered_tiger_lightning( s );
-
-      pet_melee_attack_t::impact( s );
-    }
   };
 
   void init_action_list() override
@@ -1607,13 +1586,6 @@ private:
   {
     melee_t( util::string_view n, fallen_monk_brm_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      //o()->trigger_empowered_tiger_lightning( s );
-
-      pet_melee_t::impact( s );
     }
   };
 
@@ -1716,8 +1688,6 @@ public:
 
     void impact( action_state_t* s ) override
     {
-      //o()->trigger_empowered_tiger_lightning( s );
-
       pet_melee_attack_t::impact( s );
 
       o()->get_target_data( s->target )->debuff.fallen_monk_keg_smash->trigger();
@@ -1746,13 +1716,6 @@ public:
           return cam / std::sqrt( state->n_targets );
 
         return cam;
-      }
-
-      void impact( action_state_t* s ) override
-      {
-        //o()->trigger_empowered_tiger_lightning( s );
-
-        pet_spell_t::impact( s );
       }
     };
 

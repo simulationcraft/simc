@@ -63,7 +63,7 @@ struct monk_action_t : public Base
   bool trigger_faeline_stomp;
   bool trigger_bountiful_brew;
 
-  // Bron's Call to Arms trigger overrides
+  // Bron's Call to Action trigger overrides
   bool may_proc_bron;
   proc_t* bron_proc;
 
@@ -475,7 +475,7 @@ public:
       }
     }
 
-    p()->trigger_empowered_tiger_lightning( s );
+    p()->trigger_empowered_tiger_lightning( s, true );
 
     if ( p()->bugs && td( s->target )->debuff.bonedust_brew->up() )
       p()->bonedust_brew_assessor( s );
@@ -3665,6 +3665,21 @@ struct empowered_tiger_lightning_t : public monk_spell_t
   }
 };
 
+struct call_to_arms_empowered_tiger_lightning_t : public monk_spell_t
+{
+  call_to_arms_empowered_tiger_lightning_t( monk_t& p )
+    : monk_spell_t( "empowered_tiger_lightning_call_to_arms", &p, p.passives.call_to_arms_empowered_tiger_lightning )
+  {
+    background = true;
+    may_crit   = false;
+  }
+
+  bool ready() override
+  {
+    return p()->legendary.call_to_arms->ok();
+  }
+};
+
 // ==========================================================================
 // Invoke Niuzao, the Black Ox
 // ==========================================================================
@@ -5404,11 +5419,54 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<buff_t>
   invoke_xuen_the_white_tiger_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     set_cooldown( timespan_t::zero() );
-    set_refresh_behavior( buff_refresh_behavior::DURATION );
+    set_duration( p.spec.invoke_xuen->duration() );
 
     set_period( p.spec.invoke_xuen->effectN( 2 ).period() );
 
     set_tick_callback( invoke_xuen_callback );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
+// ===============================================================================
+// Call To Arm Invoke Xuen Buff
+// ===============================================================================
+struct call_to_arms_xuen_buff_t : public monk_buff_t<buff_t>
+{
+  static void call_to_arm_callback( buff_t* b, int, timespan_t )
+  {
+    monk_t* p                                   = debug_cast<monk_t*>( b->player );
+    double empowered_tiger_lightning_multiplier = p->spec.invoke_xuen_2->effectN( 2 ).percent();
+
+    for ( auto target : p->sim->target_non_sleeping_list )
+    {
+      if ( p->get_target_data( target )->debuff.empowered_tiger_lightning->up() )
+      {
+        double value = p->get_target_data( target )->debuff.empowered_tiger_lightning->value();
+        p->get_target_data( target )->debuff.empowered_tiger_lightning->current_value = 0;
+        if ( value > 0 )
+        {
+          p->active_actions.call_to_arms_empowered_tiger_lightning->set_target( target );
+          p->active_actions.call_to_arms_empowered_tiger_lightning->base_dd_min = value * empowered_tiger_lightning_multiplier;
+          p->active_actions.call_to_arms_empowered_tiger_lightning->base_dd_max = value * empowered_tiger_lightning_multiplier;
+          p->active_actions.call_to_arms_empowered_tiger_lightning->execute();
+        }
+      }
+    }
+  }
+
+  call_to_arms_xuen_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  {
+    set_cooldown( timespan_t::zero() );
+    set_duration( p.passives.call_to_arms_invoke_xuen->duration() );
+
+    set_period( p.spec.invoke_xuen->effectN( 2 ).period() );
+
+    set_tick_callback( call_to_arm_callback );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -5653,6 +5711,12 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
       make_buff( *this, "weapons_of_order_debuff", p->find_spell( 312106 ) )->set_default_value_from_effect( 1 );
 
   // Shadowland Legendary
+  debuff.call_to_arms_empowered_tiger_lightning = make_buff( *this, "empowered_tiger_lightning_call_to_arms", spell_data_t::nil() )
+                                         ->set_quiet( true )
+                                         ->set_cooldown( timespan_t::zero() )
+                                         ->set_refresh_behavior( buff_refresh_behavior::NONE )
+                                         ->set_max_stack( 1 )
+                                         ->set_default_value( 0 );
   debuff.fae_exposure = make_buff( *this, "fae_exposure_damage", p->passives.fae_exposure_dmg )
                             ->set_default_value_from_effect( 1 )
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -6366,6 +6430,7 @@ void monk_t::init_spells()
   passives.call_to_arms_invoke_niuzao = find_spell( 358520 );
   passives.call_to_arms_invoke_yulon  = find_spell( 358521 );
   passives.call_to_arms_invoke_chiji  = find_spell( 358522 );
+  passives.call_to_arms_empowered_tiger_lightning = find_spell( 360829 );
 
   // Mastery spells =========================================
   mastery.combo_strikes   = find_mastery_spell( MONK_WINDWALKER );
@@ -6403,6 +6468,7 @@ void monk_t::init_spells()
 
   // Legendary
   active_actions.bountiful_brew = new actions::spells::bountiful_brew_t( *this );
+  active_actions.call_to_arms_empowered_tiger_lightning = new actions::call_to_arms_empowered_tiger_lightning_t( *this );
 }
 
 // monk_t::init_base ========================================================
@@ -6724,7 +6790,7 @@ void monk_t::create_buffs()
 
   // Covenants
   buff.invoke_xuen_call_to_arms =
-      new buffs::invoke_xuen_the_white_tiger_buff_t( *this, "invoke_xuen_call_to_arms", passives.call_to_arms_invoke_xuen );
+      new buffs::call_to_arms_xuen_buff_t( *this, "invoke_xuen_call_to_arms", passives.call_to_arms_invoke_xuen );
 
   buff.fae_exposure =
       make_buff( this, "fae_exposure_heal", passives.fae_exposure_heal )->set_default_value_from_effect( 1 );
@@ -6805,11 +6871,11 @@ void monk_t::init_special_effects()
 {
   player_t::init_special_effects();
 
-  // Custom trigger condition for Bron's Call to Arms. Completely overrides the trigger
+  // Custom trigger condition for Bron's Call to Action. Completely overrides the trigger
   // behavior of the generic proc to get control back to the Monk class module in terms
   // of what triggers it.
   //
-  // 2021-07-04 Eligible spells that can proc Bron's Call to Arms:
+  // 2021-07-04 Eligible spells that can proc Bron's Call to Action:
   // - Any foreground amount spell / attack
   //
   // Note, also has to handle the ICD and pet-related trigger conditions.
@@ -6949,7 +7015,7 @@ void monk_t::init_special_effect( special_effect_t& effect )
     // overridden proc condition above will take care of filtering out actions that are
     // not allowed to proc it.
     //
-    // Bron's Call to Arms
+    // Bron's Call to Action
     case 333950:
     // Shard of Zed
     case 355766:
@@ -8126,20 +8192,23 @@ double monk_t::calculate_last_stagger_tick_damage( int n ) const
   return amount;
 }
 
-void monk_t::trigger_empowered_tiger_lightning( action_state_t* s )
+void monk_t::trigger_empowered_tiger_lightning( action_state_t* s, bool trigger_call_to_action )
 {
   if ( spec.invoke_xuen_2->ok() )
   {
     if ( !s->action->harmful )
       return;
 
-    // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself (335913)
     // Touch of Karma (id = 124280) does not contribute to Empowered Tiger Lightning
     // Bonedust Brew (id = 325217) does not contribute to Empowered Tiger Lightning
-    if ( s->result_amount <= 0 || s->action->id == 335913 || s->action->id == 124280 || s->action->id == 325217 )
+    if ( s->result_amount <= 0 || s->action->id == 124280 || s->action->id == 325217 )
       return;
 
-    if ( buff.invoke_xuen->check() || buff.invoke_xuen_call_to_arms->check() )
+    // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself (335913 & 360829)
+    if ( s->action->id == 335913 || s->action->id == 360829 )
+      return;
+
+    if ( buff.invoke_xuen->check() )
     {
       auto td = get_target_data( s->target );
 
@@ -8148,6 +8217,18 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t* s )
       auto new_value = previous_value + s->result_amount;
 
       td->debuff.empowered_tiger_lightning->trigger( -1, new_value, -1, buff.invoke_xuen->remains() );
+    }
+
+    if ( buff.invoke_xuen_call_to_arms->check() && trigger_call_to_action )
+    {
+      auto td = get_target_data( s->target );
+
+      auto previous_value = td->debuff.call_to_arms_empowered_tiger_lightning->check()
+                                ? td->debuff.call_to_arms_empowered_tiger_lightning->current_value
+                                : 0;
+      auto new_value = previous_value + s->result_amount;
+
+      td->debuff.call_to_arms_empowered_tiger_lightning->trigger( -1, new_value, -1, buff.invoke_xuen->remains() );
     }
   }
 }
