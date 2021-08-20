@@ -6251,6 +6251,11 @@ struct starsurge_t : public druid_spell_t
 
       form_mask = MOONKIN_FORM;           // not in spell data for affinity version (id=197626)
       base_costs[ RESOURCE_MANA ] = 0.0;  // so we don't need to enable mana regen
+      may_autounshift = false;
+    }
+    else
+    {
+      form_mask |= NO_FORM; // spec version can be cast with no form despite spell data form mask
     }
   }
 
