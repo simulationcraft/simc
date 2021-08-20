@@ -3651,10 +3651,7 @@ void winds_of_winter( special_effect_t& effect )
   new winds_of_winter_cb_t( effect, damage, buff );
   effect.player->register_combat_begin( [ buff ]( player_t* p )
   {
-    timespan_t first_tick = p->rng().real() * buff->tick_time();
-    buff->set_period( first_tick );
     buff->trigger();
-    buff->set_period( timespan_t::min() );
   } );
 }
 
