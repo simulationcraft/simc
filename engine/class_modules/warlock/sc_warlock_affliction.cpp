@@ -1051,7 +1051,7 @@ void warlock_t::create_apl_affliction()
   aoe->add_action( "drain_soul,interrupt=1" );
   aoe->add_action( "shadow_bolt" );
 
-  cov->add_action( "impending_catastrophe,if=!talent.phantom_singularity&(cooldown.summon_darkglare.remains<10|cooldown.summon_darkglare.remains>50&cooldown.summon_darkglare.remains>25&conduit.corrupting_leer)" );
+  cov->add_action( "impending_catastrophe,if=!talent.phantom_singularity&(cooldown.summon_darkglare.remains<10|cooldown.summon_darkglare.remains>50|cooldown.summon_darkglare.remains>25&conduit.corrupting_leer)" );
   cov->add_action( "impending_catastrophe,if=talent.phantom_singularity&dot.phantom_singularity.ticking" );
   cov->add_action( "decimating_bolt,if=cooldown.summon_darkglare.remains>5&(debuff.haunt.remains>4|!talent.haunt)" );
   cov->add_action( "soul_rot,if=!talent.phantom_singularity&(cooldown.summon_darkglare.remains<5|cooldown.summon_darkglare.remains>50|cooldown.summon_darkglare.remains>25&conduit.corrupting_leer)" );

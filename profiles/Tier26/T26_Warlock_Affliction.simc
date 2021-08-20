@@ -147,7 +147,7 @@ actions.aoe+=/fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_so
 actions.aoe+=/drain_soul,interrupt=1
 actions.aoe+=/shadow_bolt
 
-actions.covenant=impending_catastrophe,if=!talent.phantom_singularity&(cooldown.summon_darkglare.remains<10|cooldown.summon_darkglare.remains>50&cooldown.summon_darkglare.remains>25&conduit.corrupting_leer)
+actions.covenant=impending_catastrophe,if=!talent.phantom_singularity&(cooldown.summon_darkglare.remains<10|cooldown.summon_darkglare.remains>50|cooldown.summon_darkglare.remains>25&conduit.corrupting_leer)
 actions.covenant+=/impending_catastrophe,if=talent.phantom_singularity&dot.phantom_singularity.ticking
 actions.covenant+=/decimating_bolt,if=cooldown.summon_darkglare.remains>5&(debuff.haunt.remains>4|!talent.haunt)
 actions.covenant+=/soul_rot,if=!talent.phantom_singularity&(cooldown.summon_darkglare.remains<5|cooldown.summon_darkglare.remains>50|cooldown.summon_darkglare.remains>25&conduit.corrupting_leer)
