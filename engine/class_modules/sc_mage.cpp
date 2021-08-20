@@ -1663,10 +1663,7 @@ public:
         auto spark_debuff = td->debuffs.radiant_spark_vulnerability;
 
         // Handle Harmonic Echo before changing the stack number
-        // TODO: Currently only triggers 3 times, on stacks 1, 2 and 3.
-        if ( p()->runeforge.harmonic_echo.ok()
-          && spark_debuff->check() > 0
-          && spark_debuff->check() < spark_debuff->max_stack() )
+        if ( p()->runeforge.harmonic_echo.ok() && spark_debuff->check() )
         {
           auto echo = p()->action.harmonic_echo;
           echo->base_dd_min = echo->base_dd_max = p()->runeforge.harmonic_echo->effectN( 1 ).percent() * s->result_total;
