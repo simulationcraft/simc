@@ -8194,7 +8194,7 @@ double monk_t::calculate_last_stagger_tick_damage( int n ) const
   return amount;
 }
 
-void monk_t::trigger_empowered_tiger_lightning( action_state_t* s, bool trigger_invoke_xuen, bool trigger_call_to_action )
+void monk_t::trigger_empowered_tiger_lightning( action_state_t* s, bool trigger_invoke_xuen, bool trigger_call_to_arms )
 {
   if ( spec.invoke_xuen_2->ok() )
   {
@@ -8224,7 +8224,7 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t* s, bool trigger_
       td->debuff.empowered_tiger_lightning->trigger( -1, new_value, -1, buff.invoke_xuen->remains() );
     }
 
-    if ( buff.invoke_xuen_call_to_arms->check() && trigger_call_to_action )
+    if ( buff.invoke_xuen_call_to_arms->check() && trigger_call_to_arms )
     {
       auto td = get_target_data( s->target );
 
