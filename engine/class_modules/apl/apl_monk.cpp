@@ -536,7 +536,7 @@ void windwalker( player_t* p )
 
   cd_serenity->add_talent( p, "Serenity", "if=cooldown.rising_sun_kick.remains<2|fight_remains<15" );
   cd_serenity->add_action( "bag_of_tricks" );
-  cd_serenity->add_action( "fleshcraft,interrupt_immediate=1,interrupt_if=soulbind.volatile_solvent,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)&buff.serenity.down&debuff.bonedust_brew_debuff.down" );
+  cd_serenity->add_action( "Fleshcraft", "if=soulbind.pustule_eruption&buff.serenity.down&debuff.bonedust_brew_debuff.down" );
  
   // Storm, Earth and Fire Cooldowns
   cd_sef->add_action( p, "Invoke Xuen, the White Tiger", "if=!variable.hold_xuen&(cooldown.rising_sun_kick.remains<2|!covenant.kyrian)&(!covenant.necrolord|cooldown.bonedust_brew.remains<2)&(!soulbind.volatile_solvent|buff.volatile_solvent_humanoid.remains>20)|fight_remains<25" );
@@ -625,7 +625,7 @@ void windwalker( player_t* p )
     }
   }
 
-  cd_sef->add_action( "fleshcraft,interrupt_immediate=1,interrupt_if=soulbind.volatile_solvent,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)&buff.serenity.down&debuff.bonedust_brew_debuff.down" );
+  cd_sef->add_action( "Fleshcraft", "if=soulbind.pustule_eruption&buff.serenity.down&debuff.bonedust_brew_debuff.down" );
  
   
   // Serenity
@@ -686,6 +686,7 @@ void windwalker( player_t* p )
       "if=chi.max-chi>=2&energy.time_to_max>3|chi.max-chi>=4&(energy.time_to_max>2|!prev_gcd.1.tiger_palm)" );
   st->add_action( p, "Spinning Crane Kick",
       "if=combo_strike&buff.dance_of_chiji.up&(raid_event.adds.in>buff.dance_of_chiji.remains-2|raid_event.adds.up)" );
+  st->add_action( p, "Fleshcraft", "interrupt_immediate=1,interrupt_if=buff.volatile_solvent_humanoid.up|energy.time_to_max<3|cooldown.rising_sun_kick.remains<2|cooldown.fists_of_fury.remains<2,if=soulbind.volatile_solvent&buff.storm_earth_and_fire.down&debuff.bonedust_brew_debuff.down" );
   st->add_action( p, "Rising Sun Kick",
                   "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.serenity.remains>1|!talent.serenity&(cooldown.weapons_of_order.remains>4|!covenant.kyrian)" );
   st->add_action( p, "Fists of Fury",
