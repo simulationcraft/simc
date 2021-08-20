@@ -399,7 +399,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       auto owner = this->o();
 
-      owner->trigger_empowered_tiger_lightning( s, false );
+      owner->trigger_empowered_tiger_lightning( s, true, false );
 
       super_t::impact( s );
     }
@@ -1120,7 +1120,7 @@ private:
 
     void impact( action_state_t* s ) override
     {
-      o()->trigger_empowered_tiger_lightning( s, false );
+      o()->trigger_empowered_tiger_lightning( s, true, false );
 
       pet_melee_attack_t::impact( s );
     }
@@ -1138,7 +1138,7 @@ private:
     void impact( action_state_t* s ) override
     {
       auto owner = o();
-      owner->trigger_empowered_tiger_lightning( s, false );
+      owner->trigger_empowered_tiger_lightning( s, true, false );
 
       pet_spell_t::impact( s );
     }
@@ -1235,7 +1235,7 @@ private:
 
     void impact( action_state_t* s ) override
     {
-      o()->trigger_empowered_tiger_lightning( s, true );
+      o()->trigger_empowered_tiger_lightning( s, false, true );
 
       pet_melee_attack_t::impact( s );
     }
@@ -1253,7 +1253,7 @@ private:
     void impact( action_state_t* s ) override
     {
       auto owner = o();
-      owner->trigger_empowered_tiger_lightning( s, true );
+      owner->trigger_empowered_tiger_lightning( s, false, true );
 
       pet_spell_t::impact( s );
     }
@@ -1268,13 +1268,12 @@ private:
 
       // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen
       // summon duration, for example)
-      dot_duration        = p->o()->spec.invoke_xuen->duration();
+      dot_duration        = p->o()->passives.call_to_arms_invoke_xuen->duration();
       hasted_ticks        = true;
       may_miss            = false;
       dynamic_tick_action = true;
-      base_tick_time =
-          p->o()->passives.crackling_tiger_lightning_driver->effectN( 1 ).period();  // trigger a tick every second
-      cooldown->duration      = p->o()->spec.invoke_xuen->duration();                // we're done after 24 seconds
+      base_tick_time = p->o()->passives.crackling_tiger_lightning_driver->effectN( 1 ).period();  // trigger a tick every second
+      cooldown->duration      = p->o()->passives.call_to_arms_invoke_xuen->duration();   // we're done after 12 seconds
       attack_power_mod.direct = 0.0;
       attack_power_mod.tick   = 0.0;
 

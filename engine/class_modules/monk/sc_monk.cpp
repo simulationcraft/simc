@@ -475,7 +475,7 @@ public:
       }
     }
 
-    p()->trigger_empowered_tiger_lightning( s, true );
+    p()->trigger_empowered_tiger_lightning( s, true, true );
 
     if ( p()->bugs && td( s->target )->debuff.bonedust_brew->up() )
       p()->bonedust_brew_assessor( s );
@@ -3657,6 +3657,7 @@ struct empowered_tiger_lightning_t : public monk_spell_t
   {
     background = true;
     may_crit   = false;
+    may_miss   = true;
   }
 
   bool ready() override
@@ -3672,6 +3673,7 @@ struct call_to_arms_empowered_tiger_lightning_t : public monk_spell_t
   {
     background = true;
     may_crit   = false;
+    may_miss   = true;
   }
 
   bool ready() override
@@ -8192,7 +8194,7 @@ double monk_t::calculate_last_stagger_tick_damage( int n ) const
   return amount;
 }
 
-void monk_t::trigger_empowered_tiger_lightning( action_state_t* s, bool trigger_call_to_action )
+void monk_t::trigger_empowered_tiger_lightning( action_state_t* s, bool trigger_invoke_xuen, bool trigger_call_to_action )
 {
   if ( spec.invoke_xuen_2->ok() )
   {
@@ -8208,7 +8210,7 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t* s, bool trigger_
     if ( s->action->id == 335913 || s->action->id == 360829 )
       return;
 
-    if ( buff.invoke_xuen->check() )
+    if ( buff.invoke_xuen->check() && trigger_invoke_xuen )
     {
       auto td = get_target_data( s->target );
 
@@ -8228,7 +8230,7 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t* s, bool trigger_
                                 : 0;
       auto new_value = previous_value + s->result_amount;
 
-      td->debuff.call_to_arms_empowered_tiger_lightning->trigger( -1, new_value, -1, buff.invoke_xuen->remains() );
+      td->debuff.call_to_arms_empowered_tiger_lightning->trigger( -1, new_value, -1, buff.invoke_xuen_call_to_arms->remains() );
     }
   }
 }

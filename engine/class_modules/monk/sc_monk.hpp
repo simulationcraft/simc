@@ -865,7 +865,7 @@ public:
   void trigger_bonedust_brew( const action_state_t* );
   void trigger_keefers_skyreach( action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
-  void trigger_empowered_tiger_lightning( action_state_t*, bool trigger_call_to_action );
+  void trigger_empowered_tiger_lightning( action_state_t*, bool trigger_invoke_xuen, bool trigger_call_to_action );
   void trigger_bonedust_brew( action_state_t* );
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
