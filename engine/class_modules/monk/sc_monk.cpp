@@ -8214,28 +8214,30 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t* s, bool trigger_
     {
       auto td = get_target_data( s->target );
 
-      double new_value = s->result_amount;
       if ( td->debuff.empowered_tiger_lightning->check() )
       {
-        new_value += td->debuff.empowered_tiger_lightning->current_value;
-        td->debuff.empowered_tiger_lightning->expire();
+        td->debuff.empowered_tiger_lightning->current_value += s->result_amount;
       }
-
-      td->debuff.empowered_tiger_lightning->trigger( -1, new_value, -1, buff.invoke_xuen->remains() );
+      else
+      {
+        td->debuff.empowered_tiger_lightning->trigger( -1, s->result_amount, -1,
+            buff.invoke_xuen->remains() );
+      }
     }
 
     if ( buff.invoke_xuen_call_to_arms->check() && trigger_call_to_arms )
     {
       auto td = get_target_data( s->target );
 
-      double new_value = s->result_amount;
       if ( td->debuff.call_to_arms_empowered_tiger_lightning->check() )
       {
-        new_value += td->debuff.call_to_arms_empowered_tiger_lightning->current_value;
-        td->debuff.call_to_arms_empowered_tiger_lightning->expire();
+        td->debuff.call_to_arms_empowered_tiger_lightning->current_value += s->result_amount;
       }
-
-      td->debuff.call_to_arms_empowered_tiger_lightning->trigger( -1, new_value, -1, buff.invoke_xuen_call_to_arms->remains() );
+      else
+      {
+        td->debuff.call_to_arms_empowered_tiger_lightning->trigger( -1, s->result_amount, -1,
+            buff.invoke_xuen_call_to_arms->remains() );
+      }
     }
   }
 }
