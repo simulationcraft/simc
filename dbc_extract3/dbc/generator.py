@@ -1792,6 +1792,7 @@ class SpellDataGenerator(DataGenerator):
           ( 358520, 1 ), # Call to Arms Invoke Niuzao Duration
           ( 358521, 2 ), # Call to Arms Invoke Yu'lon Duration
           ( 358522, 2 ), # Call to Arms Invoke Chi-Ji Duration
+          ( 360829, 3 ), # Call to Arms Empowered Tiger Lightning
         ),
 
         # Druid:
