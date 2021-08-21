@@ -428,6 +428,7 @@ public:
     timespan_t arcane_missiles_chain_delay = 200_ms;
     double arcane_missiles_chain_relstddev = 0.1;
     bool prepull_dc = false;
+    int prepull_harmony_stacks = 0;
   } options;
 
   // Pets
@@ -5773,6 +5774,7 @@ void mage_t::create_options()
   add_option( opt_timespan( "mage.arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_bool( "mage.prepull_dc", options.prepull_dc ) );
+  add_option( opt_int( "mage.prepull_harmony_stacks", options.prepull_harmony_stacks ) );
 
   player_t::create_options();
 }
@@ -6663,6 +6665,11 @@ void mage_t::arise()
   if ( runeforge.disciplinary_command->ok() && options.prepull_dc )
   {
     buffs.disciplinary_command->trigger();
+  }
+
+  if ( runeforge.arcane_harmony->ok() && options.prepull_harmony_stacks > 0 )
+  {
+    buffs.arcane_harmony->trigger( options.prepull_harmony_stacks );
   }
 }
 
