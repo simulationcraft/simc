@@ -3495,9 +3495,15 @@ struct feral_frenzy_driver_t : public cat_attack_t
   {
     auto f = get_state_free_cast( d->state );
     if ( f )
+    {
       stats = get_free_cast_stats( f );
+      tick_action->stats = stats;
+    }
     else
+    {
       stats = orig_stats;
+      tick_action->stats = stats;
+    }
 
     cat_attack_t::tick( d );
   }
