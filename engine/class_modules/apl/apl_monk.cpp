@@ -313,8 +313,7 @@ void mistweaver( player_t* p )
   action_priority_list_t* aoe             = p->get_action_priority_list( "aoe" );
 
   def->add_action( "auto_attack" );
-  int num_items = (int)p->items.size();
-
+  
   if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
     def->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str );
 
