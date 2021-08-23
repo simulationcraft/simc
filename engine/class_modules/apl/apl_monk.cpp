@@ -624,7 +624,7 @@ void windwalker( player_t* p )
     }
   }
 
-  cd_sef->add_action( "fleshcraft,if=soulbind.pustule_eruption&buff.serenity.down&debuff.bonedust_brew_debuff.down" );
+  cd_sef->add_action( "fleshcraft,if=soulbind.pustule_eruption&debuff.bonedust_brew_debuff.down" );
  
   
   // Serenity
