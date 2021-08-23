@@ -488,13 +488,13 @@ void windwalker( player_t* p )
   if ( monk->spec.invoke_xuen->ok() )
   {
     cd_serenity->add_action( p, "Touch of Death",
-        "if=fight_remains>(180-runeforge.fatal_touch*120)|pet.xuen_the_white_tiger.active|fight_remains<10" );
+        "if=fight_remains>(180-runeforge.fatal_touch*120)|pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10" );
     cd_serenity->add_action( p, "Touch of Karma",
                              "if=fight_remains>90|pet.xuen_the_white_tiger.active|fight_remains<10" );
   }
   else
   {
-    cd_serenity->add_action( p, "Touch of Death", "if=fight_remains>(180-runeforge.fatal_touch*120)|fight_remains<10" );
+    cd_serenity->add_action( p, "Touch of Death", "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.bonedust_brew.up|fight_remains<10" );
     cd_serenity->add_action( p, "Touch of Karma", "if=fight_remains>90|fight_remains<16" );
   }
 
@@ -543,11 +543,11 @@ void windwalker( player_t* p )
 
   if ( monk->spec.invoke_xuen->ok() )
     cd_sef->add_action( p, "Touch of Death",
-                        "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active|fight_remains<10" );
+                        "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10" );
   else
     cd_sef->add_action(
         p, "Touch of Death",
-        "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down|fight_remains<10" );
+        "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down&(!covenant.necrolord|buff.bonedust_brew.up)|fight_remains<10" );
 
   // Storm, Earth, and Fire Covenant Abilities
   cd_sef->add_action(
