@@ -192,7 +192,7 @@ void marksmanship( player_t* p )
   st->add_action( "trueshot,if=buff.precise_shots.down&(covenant.venthyr|covenant.necrolord|talent.calling_the_shots)|buff.resonating_arrow.up|buff.wild_spirits.up|buff.volley.up&active_enemies>1|fight_remains<25" );
   st->add_action( "rapid_fire,if=runeforge.surging_shots&talent.streamline&(cooldown.resonating_arrow.remains>10|!covenant.kyrian|!talent.double_tap|soulbind.effusive_anima_accelerator)" );
   st->add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2)|buff.trick_shots.remains>execute_time&active_enemies>1" );
-  st->add_action( "rapid_fire,if=(cooldown.resonating_arrow.remains>10|!covenant.kyrian|!talent.double_tap|soulbind.effusive_anima_accelerator)&focus+cast_regen<focus.max&(buff.double_tap.down|talent.streamline)" );
+  st->add_action( "rapid_fire,if=(cooldown.resonating_arrow.remains>10|!covenant.kyrian|!talent.double_tap|soulbind.effusive_anima_accelerator)&focus+cast_regen<focus.max&(buff.double_tap.down&buff.eagletalons_true_focus.down|talent.streamline)" );
   st->add_action( "chimaera_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
   st->add_action( "arcane_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
   st->add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration" );
@@ -264,6 +264,7 @@ void survival( player_t* p )
   precombat -> add_action( "steel_trap,precast_time=20" );
 
   default_ -> add_action( "auto_attack" );
+  default_ -> add_action( "use_item,name=jotungeirr_destinys_call,if=buff.coordinated_assault.up|time_to_die<30" );
   default_ -> add_action( "use_items" );
   default_ -> add_action( "newfound_resolve,if=soulbind.newfound_resolve&(buff.resonating_arrow.up|cooldown.resonating_arrow.remains>10|target.time_to_die<16)", "Delay facing your doubt until you have put Resonating Arrow down, or if the cooldown is too long to delay facing your Doubt. If none of these conditions are able to met within the 10 seconds leeway, the sim faces your Doubt automatically." ); 
   default_ -> add_action( "call_action_list,name=cds" );
@@ -273,8 +274,6 @@ void survival( player_t* p )
   default_ -> add_action( "arcane_torrent" );
 
   cds -> add_action( "harpoon,if=talent.terms_of_engagement.enabled&focus<focus.max" );
-  cds -> add_action( "use_item,name=dreadfire_vessel,if=covenant.kyrian&cooldown.resonating_arrow.remains>10|!covenant.kyrian" );
-  cds -> add_action( "use_item,name=jotungeirr_destinys_call,if=buff.coordinated_assault.up|time_to_die<31" );
   cds -> add_action( "blood_fury,if=buff.coordinated_assault.up" );
   cds -> add_action( "ancestral_call,if=buff.coordinated_assault.up" );
   cds -> add_action( "fireblood,if=buff.coordinated_assault.up" );
@@ -349,12 +348,12 @@ void survival( player_t* p )
   cleave -> add_action( "serpent_sting,target_if=min:remains,if=talent.hydras_bite.enabled&buff.vipers_venom.remains&buff.vipers_venom.remains<gcd" );
   cleave -> add_action( "wild_spirits" );
   cleave -> add_action( "resonating_arrow" );
+  cleave -> add_action( "coordinated_assault" );
   cleave -> add_action( "wildfire_bomb,if=full_recharge_time<gcd" );
   cleave -> add_action( "chakrams" );
   cleave -> add_action( "butchery,if=dot.shrapnel_bomb.ticking&(dot.internal_bleeding.stack<2|dot.shrapnel_bomb.remains<gcd)" );
   cleave -> add_action( "carve,if=dot.shrapnel_bomb.ticking" );
   cleave -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
-  cleave -> add_action( "coordinated_assault" );
   cleave -> add_action( "butchery,if=charges_fractional>2.5&cooldown.wildfire_bomb.full_recharge_time>spell_targets%2" );
   cleave -> add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
   cleave -> add_action( "carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_targets%2&talent.alpha_predator.enabled" );

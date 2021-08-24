@@ -399,7 +399,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       auto owner = this->o();
 
-      owner->trigger_empowered_tiger_lightning( s );
+      owner->trigger_empowered_tiger_lightning( s, true, false );
 
       super_t::impact( s );
     }
@@ -1120,7 +1120,7 @@ private:
 
     void impact( action_state_t* s ) override
     {
-      o()->trigger_empowered_tiger_lightning( s );
+      o()->trigger_empowered_tiger_lightning( s, true, false );
 
       pet_melee_attack_t::impact( s );
     }
@@ -1138,7 +1138,7 @@ private:
     void impact( action_state_t* s ) override
     {
       auto owner = o();
-      owner->trigger_empowered_tiger_lightning( s );
+      owner->trigger_empowered_tiger_lightning( s, true, false );
 
       pet_spell_t::impact( s );
     }
@@ -1215,6 +1215,121 @@ public:
 
     if ( name == "auto_attack" )
       return new auto_attack_t( this, options_str );
+
+    return pet_t::create_action( name, options_str );
+  }
+};
+
+// ==========================================================================
+// Call to Arms Xuen Pet
+// ==========================================================================
+struct call_to_arms_xuen_pet_t : public monk_pet_t
+{
+private:
+  struct call_to_arms_melee_t : public pet_melee_t
+  {
+    call_to_arms_melee_t( util::string_view n, call_to_arms_xuen_pet_t* player, weapon_t* weapon )
+      : pet_melee_t( n, player, weapon )
+    {
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      o()->trigger_empowered_tiger_lightning( s, false, true );
+
+      pet_melee_attack_t::impact( s );
+    }
+  };
+
+  struct crackling_tiger_lightning_tick_call_to_arms_t : public pet_spell_t
+  {
+    crackling_tiger_lightning_tick_call_to_arms_t( call_to_arms_xuen_pet_t* p )
+      : pet_spell_t( "crackling_tiger_lightning_tick_call_to_arms", p, p->o()->passives.crackling_tiger_lightning )
+    {
+      dual = direct_tick = background = may_crit = true;
+      merge_report                               = false;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      auto owner = o();
+      owner->trigger_empowered_tiger_lightning( s, false, true );
+
+      pet_spell_t::impact( s );
+    }
+  };
+
+  struct call_to_arms_crackling_tiger_lightning_t : public pet_spell_t
+  {
+    call_to_arms_crackling_tiger_lightning_t( call_to_arms_xuen_pet_t* p, util::string_view options_str )
+      : pet_spell_t( "crackling_tiger_lightning_call_to_arms", p, p->o()->passives.crackling_tiger_lightning )
+    {
+      parse_options( options_str );
+
+      // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen
+      // summon duration, for example)
+      dot_duration        = p->o()->passives.call_to_arms_invoke_xuen->duration();
+      hasted_ticks        = true;
+      may_miss            = false;
+      dynamic_tick_action = true;
+      base_tick_time = p->o()->passives.crackling_tiger_lightning_driver->effectN( 1 ).period();  // trigger a tick every second
+      cooldown->duration      = p->o()->passives.call_to_arms_invoke_xuen->duration();   // we're done after 12 seconds
+      attack_power_mod.direct = 0.0;
+      attack_power_mod.tick   = 0.0;
+
+      tick_action = new crackling_tiger_lightning_tick_call_to_arms_t( p );
+    }
+  };
+
+  struct call_to_arms_auto_attack_t : public pet_auto_attack_t
+  {
+    call_to_arms_auto_attack_t( call_to_arms_xuen_pet_t* player, util::string_view options_str )
+      : pet_auto_attack_t( player )
+    {
+      parse_options( options_str );
+
+      player->main_hand_attack = new call_to_arms_melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
+      player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
+    }
+  };
+
+public:
+  call_to_arms_xuen_pet_t( monk_t* owner ) : monk_pet_t( owner, "call_to_arms_xuen_the_white_tiger", PET_XUEN, false, true )
+  {
+    npc_id                      = 180741;
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
+    owner_coeff.ap_from_ap      = 1.00;
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double cpm = owner->cache.player_multiplier( school );
+
+    if ( o()->conduit.xuens_bond->ok() )
+      cpm *= 1 + o()->conduit.xuens_bond.percent();
+
+    return cpm;
+  }
+
+  void init_action_list() override
+  {
+    action_list_str = "auto_attack";
+    action_list_str += "/crackling_tiger_lightning_call_to_arms";
+
+    pet_t::init_action_list();
+  }
+
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  {
+    if ( name == "crackling_tiger_lightning_call_to_arms" )
+      return new call_to_arms_crackling_tiger_lightning_t( this, options_str );
+
+    if ( name == "auto_attack" )
+      return new call_to_arms_auto_attack_t( this, options_str );
 
     return pet_t::create_action( name, options_str );
   }
@@ -1411,13 +1526,6 @@ private:
       // TODO: check why this is here
       base_hit -= 0.19;
     }
-
-    void impact( action_state_t* s ) override
-    {
-      //o()->trigger_empowered_tiger_lightning( s );
-
-      pet_melee_t::impact( s );
-    }
   };
 
   struct auto_attack_t : public pet_auto_attack_t
@@ -1499,13 +1607,6 @@ public:
 
       return cam;
     }
-
-    void impact( action_state_t* s ) override
-    {
-      //o()->trigger_empowered_tiger_lightning( s );
-
-      pet_melee_attack_t::impact( s );
-    }
   };
 
   struct fallen_monk_fists_of_fury_t : public pet_melee_attack_t
@@ -1562,13 +1663,6 @@ public:
     {
       return 0;
     }
-
-    void impact( action_state_t* s ) override
-    {
-      //o()->trigger_empowered_tiger_lightning( s );
-
-      pet_melee_attack_t::impact( s );
-    }
   };
 
   void init_action_list() override
@@ -1607,13 +1701,6 @@ private:
   {
     melee_t( util::string_view n, fallen_monk_brm_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      //o()->trigger_empowered_tiger_lightning( s );
-
-      pet_melee_t::impact( s );
     }
   };
 
@@ -1716,8 +1803,6 @@ public:
 
     void impact( action_state_t* s ) override
     {
-      //o()->trigger_empowered_tiger_lightning( s );
-
       pet_melee_attack_t::impact( s );
 
       o()->get_target_data( s->target )->debuff.fallen_monk_keg_smash->trigger();
@@ -1746,13 +1831,6 @@ public:
           return cam / std::sqrt( state->n_targets );
 
         return cam;
-      }
-
-      void impact( action_state_t* s ) override
-      {
-        //o()->trigger_empowered_tiger_lightning( s );
-
-        pet_spell_t::impact( s );
       }
     };
 
@@ -1936,6 +2014,7 @@ monk_t::pets_t::pets_t( monk_t* p )
     fallen_monk_ww( "fallen_monk_windwalker", p, []( monk_t* p ) { return new pets::fallen_monk_ww_pet_t( p ); } ),
     fallen_monk_mw( "fallen_monk_mistweaver", p, []( monk_t* p ) { return new pets::fallen_monk_mw_pet_t( p ); } ),
     fallen_monk_brm( "fallen_monk_brewmaster", p, []( monk_t* p ) { return new pets::fallen_monk_brm_pet_t( p ); } ),
+    call_to_arms_xuen( "call_to_arms_xuen", p, []( monk_t* p ) { return new pets::call_to_arms_xuen_pet_t( p ); } ),
 
     bron( nullptr )
 {

@@ -266,7 +266,7 @@ void brewmaster( player_t* p )
   def->add_talent( p, "Chi Burst" );
   def->add_talent( p, "Chi Wave" );
   def->add_action( p, "Spinning Crane Kick",
-      "if=!runeforge.shaohaos_might.equipped&(active_enemies>=3|conduit.walk_with_the_ox.enabled)&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*("
+      "if=!runeforge.shaohaos_might.equipped&active_enemies>=3&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*("
       "cooldown.keg_smash.remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)",
       "Cast SCK if enough enemies are around, or if WWWTO is enabled. This is a slight defensive loss over using TP "
       "but generally reduces sim variance more than anything else." );
@@ -313,8 +313,7 @@ void mistweaver( player_t* p )
   action_priority_list_t* aoe             = p->get_action_priority_list( "aoe" );
 
   def->add_action( "auto_attack" );
-  int num_items = (int)p->items.size();
-
+  
   if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
     def->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str );
 
@@ -488,13 +487,13 @@ void windwalker( player_t* p )
   if ( monk->spec.invoke_xuen->ok() )
   {
     cd_serenity->add_action( p, "Touch of Death",
-        "if=fight_remains>(180-runeforge.fatal_touch*120)|pet.xuen_the_white_tiger.active|fight_remains<10" );
+        "if=fight_remains>(180-runeforge.fatal_touch*120)|pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10" );
     cd_serenity->add_action( p, "Touch of Karma",
                              "if=fight_remains>90|pet.xuen_the_white_tiger.active|fight_remains<10" );
   }
   else
   {
-    cd_serenity->add_action( p, "Touch of Death", "if=fight_remains>(180-runeforge.fatal_touch*120)|fight_remains<10" );
+    cd_serenity->add_action( p, "Touch of Death", "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.bonedust_brew.up|fight_remains<10" );
     cd_serenity->add_action( p, "Touch of Karma", "if=fight_remains>90|fight_remains<16" );
   }
 
@@ -537,17 +536,17 @@ void windwalker( player_t* p )
   cd_serenity->add_talent( p, "Serenity", "if=cooldown.rising_sun_kick.remains<2|fight_remains<15" );
   cd_serenity->add_action( "bag_of_tricks" );
   cd_serenity->add_action( "fleshcraft,if=soulbind.pustule_eruption&buff.serenity.down&debuff.bonedust_brew_debuff.down" );
-
+ 
   // Storm, Earth and Fire Cooldowns
   cd_sef->add_action( p, "Invoke Xuen, the White Tiger", "if=!variable.hold_xuen&(cooldown.rising_sun_kick.remains<2|!covenant.kyrian)&(!covenant.necrolord|cooldown.bonedust_brew.remains<2)|fight_remains<25" );
 
   if ( monk->spec.invoke_xuen->ok() )
     cd_sef->add_action( p, "Touch of Death",
-                        "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active|fight_remains<10" );
+                        "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10" );
   else
     cd_sef->add_action(
         p, "Touch of Death",
-        "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down|fight_remains<10" );
+        "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down&(!covenant.necrolord|buff.bonedust_brew.up)|fight_remains<10" );
 
   // Storm, Earth, and Fire Covenant Abilities
   cd_sef->add_action(
@@ -625,8 +624,9 @@ void windwalker( player_t* p )
     }
   }
 
-  cd_sef->add_action( "fleshcraft,if=soulbind.pustule_eruption&buff.storm_earth_and_fire.down&debuff.bonedust_brew_debuff.down" );
-
+  cd_sef->add_action( "fleshcraft,if=soulbind.pustule_eruption&debuff.bonedust_brew_debuff.down" );
+ 
+  
   // Serenity
   serenity->add_action( p, "Fists of Fury", "if=buff.serenity.remains<1" );
   serenity->add_action( p, "Spinning Crane Kick",
@@ -685,6 +685,7 @@ void windwalker( player_t* p )
       "if=chi.max-chi>=2&energy.time_to_max>3|chi.max-chi>=4&(energy.time_to_max>2|!prev_gcd.1.tiger_palm)" );
   st->add_action( p, "Spinning Crane Kick",
       "if=combo_strike&buff.dance_of_chiji.up&(raid_event.adds.in>buff.dance_of_chiji.remains-2|raid_event.adds.up)" );
+  st->add_action( p, "fleshcraft,interrupt_immediate=1,interrupt_if=buff.volatile_solvent_humanoid.up|energy.time_to_max<3|cooldown.rising_sun_kick.remains<2|cooldown.fists_of_fury.remains<2,if=soulbind.volatile_solvent&buff.storm_earth_and_fire.down&debuff.bonedust_brew_debuff.down" );
   st->add_action( p, "Rising Sun Kick",
                   "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.serenity.remains>1|!talent.serenity&(cooldown.weapons_of_order.remains>4|!covenant.kyrian)" );
   st->add_action( p, "Fists of Fury",

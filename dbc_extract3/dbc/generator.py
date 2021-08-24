@@ -1242,6 +1242,8 @@ class SpellDataGenerator(DataGenerator):
          343395, 343396,
          # Inscrutable Quantum Device Trinket
          330363, 330364, 330366, 330367, 330368, 330372, 330373, 330376, 330380,
+         # Grim Codex Trinket
+         345864,
          # Soulbinds
          321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
@@ -1293,11 +1295,11 @@ class SpellDataGenerator(DataGenerator):
          # Tome of Monstrous Constructions
          357163, 357168, 357169,
          # Blood Link (Shard of Domination Rune Word)
-         355761, 355767, 355768, 355769, 355804,
+         355761, 359395, 359420, 359421, 359422, 355767, 355768, 355769, 355804,
          # Winds of Winter (Shard of Domination Rune Word)
-         355724, 355733, 355735,
+         355724, 359387, 359423, 359424, 359425, 355733, 355735,
          # Chaos Bane (Shard of Domination Rune Word)
-         355829, 356042, 356043, 356046,
+         355829, 359396, 359435, 359436, 359437, 356042, 356043, 356046,
          # Banshee's Blight (Sylvanas Dagger) damage spell
          358126,
          # Exsanguinated (Shard of Bek)
@@ -1500,6 +1502,7 @@ class SpellDataGenerator(DataGenerator):
             ( 356395, 0 ),          # Spheres' Harmony Kyrian Legendary Power (UNCONFIRMED)
             ( 356515, 0 ),          # Bwonsamdi's Pact buff from the Legendary Power
             ( 357028, 0 ),          # Shadow Word: Manipulation Critical Strike Buff
+            (  32409, 0 ),          # Shadow Word: Death self-damage id
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
@@ -1789,6 +1792,7 @@ class SpellDataGenerator(DataGenerator):
           ( 358520, 1 ), # Call to Arms Invoke Niuzao Duration
           ( 358521, 2 ), # Call to Arms Invoke Yu'lon Duration
           ( 358522, 2 ), # Call to Arms Invoke Chi-Ji Duration
+          ( 360829, 3 ), # Call to Arms Empowered Tiger Lightning
         ),
 
         # Druid:

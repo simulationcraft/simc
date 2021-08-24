@@ -109,7 +109,7 @@ bool parse_debug_seed( sim_t* sim, util::string_view, util::string_view value )
   for ( const auto& seed_str : split )
   {
 
-    uint64_t seed = std::stoll( seed_str );
+    uint64_t seed = std::stoull( seed_str );
     sim -> debug_seed.push_back( seed );
   }
 
@@ -3848,6 +3848,8 @@ void sim_t::create_options()
   add_option( opt_string( "shadowlands.soleahs_secret_technique_type", shadowlands_opts.soleahs_secret_technique_type ) );
   add_option( opt_timespan( "shadowlands.shadowed_orb_of_torment_precombat_channel", shadowlands_opts.shadowed_orb_of_torment_precombat_channel, 0_ms, 42_s ) );
   add_option( opt_uint( "shadowlands.precombat_pustules", shadowlands_opts.precombat_pustules, 1, 9 ) );
+  add_option( opt_float( "shadowlands.field_of_blossoms_duration_multiplier", shadowlands_opts.field_of_blossoms_duration_multiplier, 0.0, 1.0 ) );
+  add_option( opt_float( "shadowlands.cruciform_veinripper_proc_rate", shadowlands_opts.cruciform_veinripper_proc_rate, 0.0, 1.0) );
 }
 
 // sim_t::parse_option ======================================================

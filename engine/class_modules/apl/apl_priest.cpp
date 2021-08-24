@@ -80,11 +80,11 @@ void shadow( player_t* p )
       "variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>2+buff.voidform.up",
       "Start using Searing Nightmare at 3+ targets or 4+ if you are in Voidform" );
   default_list->add_action(
-      "variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&(!raid_event.adds.up|raid_event.adds."
-      "duration<"
+      "variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&(!raid_event.adds.up|raid_event.adds.duration<"
       "=10|raid_event.adds.remains>=10+5*(talent.hungering_void.enabled|covenant.kyrian))&((raid_event.adds.in>20|"
       "spell_targets.void_eruption>=5)|talent.hungering_void.enabled|covenant.kyrian)&(!runeforge.spheres_harmony."
-      "equipped|(cooldown.power_infusion.remains<=gcd.max*3|buff.power_infusion.up|fight_remains<=25))",
+      "equipped&(!covenant.necrolord|((fight_remains+time)>=330&time<=200|(fight_remains+time)<=250&(fight_remains+"
+      "time)>=200))|cooldown.power_infusion.remains<=gcd.max*3|buff.power_infusion.up|fight_remains<=25)",
       "Cooldown Pool Variable, Used to pool before activating voidform. Currently used to control when to activate "
       "voidform with incoming adds." );
 
@@ -140,7 +140,7 @@ void shadow( player_t* p )
 
   // CDs
   cds->add_action( p, "Power Infusion",
-                   "if=priest.self_power_infusion&(buff.voidform.up|!covenant.kyrian&cooldown.void_"
+                   "if=priest.self_power_infusion&(buff.voidform.up|!covenant.kyrian&!covenant.necrolord&cooldown.void_"
                    "eruption.remains>=10|fight_remains<cooldown.void_eruption.remains)&(fight_remains>=cooldown.void_"
                    "eruption.remains+15&cooldown.void_eruption.remains<=gcd*4|fight_remains>cooldown.power_infusion."
                    "duration|fight_remains<cooldown.void_eruption.remains+15|covenant.kyrian|buff.bloodlust.up)",
@@ -168,9 +168,8 @@ void shadow( player_t* p )
       "cast time finishes. Stop using at 5+ targets with Searing Nightmare." );
   cds->add_action(
       "unholy_nova,if=((!raid_event.adds.up&raid_event.adds.in>20)|raid_event.adds.remains>=15|raid_event.adds."
-      "duration<"
-      "15)&(buff.power_infusion.up|cooldown.power_infusion.remains>=10|!priest.self_power_infusion)&(!talent.hungering_"
-      "void.enabled|debuff.hungering_void.up|!buff.voidform.up)",
+      "duration<15)&(!talent.hungering_void.enabled|debuff.hungering_void.up|(cooldown.void_eruption.remains>10|!"
+      "variable.pool_for_cds)&!buff.voidform.up)",
       "Use Unholy Nova on CD, holding briefly to wait for power infusion or add spawns." );
   cds->add_action(
       "boon_of_the_ascended,if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_"
@@ -181,13 +180,12 @@ void shadow( player_t* p )
       "Use on CD but prioritise using Void Eruption first, if used inside of VF on ST use after a "
       "voidbolt for cooldown efficiency and for hungering void uptime if talented." );
   cds->add_call_action_list( trinkets );
-  cds->add_action( "fleshcraft,if=soulbind.volatile_solvent&!buff.voidform.up&!buff.power_infusion.up",
-                   "Use Fleshcraft outside of main cooldowns to maintain Volatile Solvent buff." );
 
   // APL to use when Boon of the Ascended is active
   boon->add_action( "ascended_blast,if=spell_targets.mind_sear<=3" );
   boon->add_action(
-      "ascended_nova,if=spell_targets.ascended_nova>1&spell_targets.mind_sear>1+talent.searing_nightmare.enabled" );
+      "ascended_nova,if=spell_targets.ascended_nova>1&spell_targets.mind_sear>1&!talent.searing_nightmare.enabled",
+      "Only use Ascended Nova when not talented into Searing Nightmare on 2+ targets." );
 
   // Cast While Casting actions. Set at higher priority to short circuit interrupt conditions on Mind Sear/Flay
   cwc->add_talent( p, "Searing Nightmare",
@@ -208,7 +206,8 @@ void shadow( player_t* p )
       p, "Void Eruption",
       "if=variable.pool_for_cds&(insanity>=40|pet.fiend.active&runeforge.shadowflame_prism.equipped&!cooldown.mind_"
       "blast.up&!cooldown.shadow_word_death.up)&(insanity<=85|talent.searing_nightmare.enabled&variable.searing_"
-      "nightmare_cutoff)&!cooldown.fiend.up&(!cooldown.mind_blast.up|spell_targets.mind_sear>2)",
+      "nightmare_cutoff)&!cooldown.fiend.up&(!cooldown.mind_blast.up|spell_targets.mind_sear>2)&(!soulbind.volatile_"
+      "solvent|buff.volatile_solvent_humanoid.up)",
       "Use Void Eruption on cooldown pooling at least 40 insanity but not if you will overcap insanity "
       "in VF. Make sure shadowfiend/mindbender and Mind Blast is on cooldown before VE. Ignore pooling restrictions if "
       "using Shadowflame Prism and Bender is out." );
@@ -308,8 +307,14 @@ void shadow( player_t* p )
       "Keep SW:P up on as many targets as possible, except when fighting 3 or more stacked mobs with Psychic Link." );
   main->add_action( p, "Mind Sear",
                     "target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,"
-                    "interrupt_if=ticks>=2" );
-  main->add_action( p, "Mind Flay", "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.up" );
+                    "interrupt_if=ticks>=2,if=!soulbind.volatile_solvent|!cooldown.fleshcraft.up" );
+  main->add_action( p, "Mind Flay",
+                    "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(!buff.dark_thought.up|cooldown.void_bolt.up),"
+                    "if=!soulbind.volatile_solvent|!cooldown.fleshcraft.up" );
+  main->add_action(
+      "fleshcraft,if=soulbind.volatile_solvent&!buff.voidform.up&!buff.power_infusion.up,interrupt_immediate=1,"
+      "interrupt_if=ticks>=1",
+      "Use Fleshcraft outside of main cooldowns to maintain Volatile Solvent buff." );
   main->add_action( p, "Shadow Word: Death", "", "Use SW:D as last resort if on the move" );
   main->add_action( p, "Shadow Word: Pain", "", "Use SW:P as last resort if on the move and SW:D is on CD" );
 }

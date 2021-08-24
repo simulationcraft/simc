@@ -1046,7 +1046,7 @@
   "SoulbindConduitEnhancedSocket": {
     "fields": [
       { "data_type": "i", "field": "id_garr_talent", "ref": "GarrTalent" },
-      { "data_type": "i", "field": "id_player_cond" }
+      { "data_type": "i", "field": "id_player_cond", "ref": "PlayerCondition" }
     ]
   },
   "SoulbindConduitItem": {

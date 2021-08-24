@@ -6,8 +6,8 @@ race=orc
 role=spell
 position=ranged_back
 talents=3103032
-covenant=necrolord
-soulbind=plague_deviser_marileth,volatile_solvent/borne_of_blood:11:0/tyrants_soul:11:0/carnivorous_stalkers:11:0/kevins_oozeling
+covenant=night_fae
+soulbind=dreamweaver:2,borne_of_blood:11:0/carnivorous_stalkers:11:0/field_of_blossoms/tyrants_soul:11:0/dream_delver
 renown=80
 
 # Default consumables
@@ -83,7 +83,7 @@ actions.5y_per_sec_trinkets+=/use_item,name=empyreal_ordnance,if=cooldown.summon
 actions.covenant_ability=soul_rot,if=soulbind.grove_invigoration&(cooldown.summon_demonic_tyrant.remains_expected<20|cooldown.summon_demonic_tyrant.remains_expected>30)
 actions.covenant_ability+=/soul_rot,if=soulbind.field_of_blossoms&pet.demonic_tyrant.active
 actions.covenant_ability+=/soul_rot,if=soulbind.wild_hunt_tactics
-actions.covenant_ability+=/decimating_bolt,if=(soulbind.lead_by_example|soulbind.kevins_oozeling)&(pet.demonic_tyrant.active&soul_shard<2|cooldown.summon_demonic_tyrant.remains_expected>40)
+actions.covenant_ability+=/decimating_bolt,if=(soulbind.lead_by_example|soulbind.kevins_oozeling)&(pet.demonic_tyrant.active&soul_shard<2|!pet.demonic_tyrant.active&cooldown.summon_demonic_tyrant.remains_expected>40)
 actions.covenant_ability+=/decimating_bolt,if=(soulbind.forgeborne_reveries|(soulbind.volatile_solvent&!soulbind.kevins_oozeling))&!pet.demonic_tyrant.active
 actions.covenant_ability+=/fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_solvent_humanoid.up
 actions.covenant_ability+=/scouring_tithe,if=soulbind.combat_meditation&pet.demonic_tyrant.active
@@ -105,7 +105,7 @@ actions.pure_damage_trinks+=/use_item,name=darkmoon_deck_putrescence
 actions.pure_damage_trinks+=/use_item,name=ebonsoul_vise
 actions.pure_damage_trinks+=/use_item,name=unchained_gladiators_shackles
 
-actions.trinkets=use_item,name=shadowed_orb_of_torment,if=cooldown.summon_demonic_tyrant.remains_expected<15
+actions.trinkets=use_item,name=shadowed_orb_of_torment,if=cooldown.summon_demonic_tyrant.remains_expected<22
 actions.trinkets+=/call_action_list,name=hp_trinks,if=talent.demonic_consumption.enabled&cooldown.summon_demonic_tyrant.remains_expected<20
 # Effects that travel slowly to target require additional, separate handling
 actions.trinkets+=/call_action_list,name=5y_per_sec_trinkets
@@ -120,15 +120,15 @@ actions.tyrant_setup+=/summon_vilefiend,if=(cooldown.summon_demonic_tyrant.remai
 actions.tyrant_setup+=/call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected<12-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&time>variable.first_tyrant_time-12-action.call_dreadstalkers.execute_time+action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time
 actions.tyrant_setup+=/summon_demonic_tyrant,if=time>variable.first_tyrant_time&(pet.dreadstalker.active&pet.dreadstalker.remains>action.summon_demonic_tyrant.execute_time)&(!talent.summon_vilefiend.enabled|pet.vilefiend.active)&(soul_shard=0|(pet.dreadstalker.active&pet.dreadstalker.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(pet.vilefiend.active&pet.vilefiend.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(buff.grimoire_felguard.up&buff.grimoire_felguard.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time))
 
-head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187/6935,gem_id=187312
+head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187,gem_id=187312
 neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173128
 shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187315
 back=dealer_xyexas_cape,id=179349,bonus_id=1566/6536/6646,enchant=soul_vitality
 chest=sacrificers_sacramental_cassock,id=186282,bonus_id=1498/7187,gem_id=187318,enchant=eternal_stats
-wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187/6935,gem_id=187319,enchant=eternal_intellect
-hands=grasps_of_the_clairvoyant_sage,id=186288,bonus_id=1498/7187
-waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187/6935,gem_id=187320
-legs=purge_protocol_legwraps,id=180107,bonus_id=1566/6536/6646
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187,gem_id=187319,enchant=eternal_intellect
+hands=gloves_of_forsaken_purpose,id=186326,bonus_id=1498/7187
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187,gem_id=187320
+legs=muehzalas_hexthread_sarong,id=179351,bonus_id=1566/6536/6646
 feet=sandals_of_sacred_symmetry,id=186354,bonus_id=1498/7187
 finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=1498/7187/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=shadowghast_ring,id=178926,bonus_id=7025/6649/6648/1559,gem_id=173128,enchant=tenet_of_haste
@@ -141,8 +141,8 @@ main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=celestial_guidance
 # gear_stamina=2144
 # gear_intellect=1494
 # gear_crit_rating=426
-# gear_haste_rating=736
-# gear_mastery_rating=623
-# gear_versatility_rating=429
+# gear_haste_rating=696
+# gear_mastery_rating=627
+# gear_versatility_rating=465
 # gear_armor=435
 default_pet=felguard

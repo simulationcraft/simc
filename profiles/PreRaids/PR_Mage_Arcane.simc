@@ -82,6 +82,8 @@ actions+=/use_item,name=glyph_of_assimilation,if=cooldown.arcane_power.remains>=
 actions+=/use_item,name=macabre_sheet_music,if=cooldown.arcane_power.remains<=5&(!variable.fishing_opener=1|time>30)
 actions+=/use_item,name=macabre_sheet_music,if=cooldown.arcane_power.remains<=5&variable.fishing_opener=1&buff.rune_of_power.up&buff.rune_of_power.remains<=(10-5*runeforge.siphon_storm)&time<30
 actions+=/use_item,name=shadowed_orb_of_torment,if=time=0|(variable.outside_of_cooldowns&((covenant.kyrian&cooldown.radiant_spark.remains<=2&cooldown.arcane_power.remains<=5&cooldown.touch_of_the_magi.remains<=5)|cooldown.arcane_power.remains<=2|fight_remains<cooldown.arcane_power.remains))
+# 5.6 is the speed of the Soulletting Ruby projectile
+actions+=/use_item,name=soulletting_ruby,if=(variable.time_until_ap+(action.radiant_spark.execute_time*covenant.kyrian)+(action.deathborne.execute_time*covenant.necrolord)+action.touch_of_the_magi.execute_time<target.distance%5.6)&(variable.have_opened|(covenant.kyrian&runeforge.arcane_infinity))&target.distance>25
 actions+=/newfound_resolve,use_while_casting=1,if=buff.arcane_power.up|debuff.touch_of_the_magi.up|dot.radiant_spark.ticking
 actions+=/call_action_list,name=calculations
 actions+=/call_action_list,name=aoe,if=active_enemies>=variable.aoe_target_count
@@ -98,6 +100,7 @@ actions.aoe+=/frost_nova,if=runeforge.grisly_icicle&cooldown.arcane_power.remain
 actions.aoe+=/frost_nova,if=runeforge.grisly_icicle&cooldown.arcane_power.remains=0&(((cooldown.touch_of_the_magi.remains>variable.ap_max_delay_for_totm&buff.arcane_charge.stack=buff.arcane_charge.max_stack)|(cooldown.touch_of_the_magi.remains=0&buff.arcane_charge.stack<=variable.aoe_totm_max_charges))&buff.rune_of_power.down)
 actions.aoe+=/arcane_missiles,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_harmony.stack<15&cooldown.radiant_spark.remains<=variable.harmony_stack_time+execute_time&cooldown.touch_of_the_magi.remains<=variable.harmony_stack_time+execute_time+action.radiant_spark.execute_time&cooldown.arcane_power.remains<=variable.harmony_stack_time+execute_time+action.radiant_spark.execute_time+action.touch_of_the_magi.execute_time,chain=1
 actions.aoe+=/arcane_blast,if=covenant.venthyr&talent.arcane_echo&time<10&cooldown.mirrors_of_torment.remains&buff.clearcasting.stack<3
+actions.aoe+=/use_item,name=soulletting_ruby,if=runeforge.siphon_storm&prev_gcd.1.evocation
 actions.aoe+=/touch_of_the_magi,if=runeforge.siphon_storm&prev_gcd.1.evocation
 actions.aoe+=/arcane_power,if=runeforge.siphon_storm&(prev_gcd.1.evocation|prev_gcd.1.touch_of_the_magi)
 actions.aoe+=/mirrors_of_torment,if=cooldown.arcane_power.remains<=8&cooldown.touch_of_the_magi.remains<=8&(buff.arcane_charge.stack<=variable.aoe_totm_max_charges&((talent.rune_of_power&cooldown.rune_of_power.remains<=gcd&cooldown.arcane_power.remains>5)|(!talent.rune_of_power&cooldown.arcane_power.remains>5)|cooldown.arcane_power.remains<=gcd))
@@ -107,6 +110,7 @@ actions.aoe+=/evocation,if=time>30&runeforge.siphon_storm&cooldown.arcane_power.
 actions.aoe+=/radiant_spark,if=cooldown.touch_of_the_magi.remains<execute_time&((talent.rune_of_power&cooldown.rune_of_power.remains<=gcd&cooldown.arcane_power.remains>variable.totm_max_delay_for_ap)|(!talent.rune_of_power&cooldown.arcane_power.remains>variable.totm_max_delay_for_ap)|cooldown.arcane_power.remains<=gcd)
 actions.aoe+=/radiant_spark,if=cooldown.arcane_power.remains<execute_time&(((cooldown.touch_of_the_magi.remains>variable.ap_max_delay_for_totm&buff.arcane_charge.stack=buff.arcane_charge.max_stack)|(cooldown.touch_of_the_magi.remains=0&buff.arcane_charge.stack<=variable.aoe_totm_max_charges))&buff.rune_of_power.down)
 actions.aoe+=/deathborne,if=cooldown.arcane_power.remains=0&(((cooldown.touch_of_the_magi.remains>variable.ap_max_delay_for_totm&buff.arcane_charge.stack=buff.arcane_charge.max_stack)|(cooldown.touch_of_the_magi.remains=0&buff.arcane_charge.stack<=variable.aoe_totm_max_charges))&buff.rune_of_power.down)
+actions.aoe+=/use_item,name=soulletting_ruby,if=(buff.arcane_charge.stack<=variable.aoe_totm_max_charges|prev_gcd.1.radiant_spark)&((talent.rune_of_power&cooldown.rune_of_power.remains<=gcd&cooldown.arcane_power.remains>variable.totm_max_delay_for_ap)|(!talent.rune_of_power&cooldown.arcane_power.remains>variable.totm_max_delay_for_ap)|cooldown.arcane_power.remains<=gcd)
 actions.aoe+=/touch_of_the_magi,if=(buff.arcane_charge.stack<=variable.aoe_totm_max_charges|prev_gcd.1.radiant_spark)&((talent.rune_of_power&cooldown.rune_of_power.remains<=gcd&cooldown.arcane_power.remains>variable.totm_max_delay_for_ap)|(!talent.rune_of_power&cooldown.arcane_power.remains>variable.totm_max_delay_for_ap)|cooldown.arcane_power.remains<=gcd)
 actions.aoe+=/arcane_power,if=((cooldown.touch_of_the_magi.remains>variable.ap_max_delay_for_totm&buff.arcane_charge.stack=buff.arcane_charge.max_stack)|(cooldown.touch_of_the_magi.remains=0&buff.arcane_charge.stack<=variable.aoe_totm_max_charges))&buff.rune_of_power.down
 actions.aoe+=/rune_of_power,if=buff.rune_of_power.down&((cooldown.touch_of_the_magi.remains>20&buff.arcane_charge.stack=buff.arcane_charge.max_stack)|(cooldown.touch_of_the_magi.remains=0&buff.arcane_charge.stack<=variable.aoe_totm_max_charges))&(cooldown.arcane_power.remains>12|debuff.touch_of_the_magi.up)
@@ -170,6 +174,7 @@ actions.cooldowns+=/radiant_spark,if=cooldown.touch_of_the_magi.remains>variable
 # Use spark with ap when possible. If totm is ready as well, make sure to cast it before totm.
 actions.cooldowns+=/radiant_spark,if=cooldown.touch_of_the_magi.remains<execute_time&buff.arcane_charge.stack<=variable.totm_max_charges&cooldown.arcane_power.remains<(execute_time+action.touch_of_the_magi.execute_time)
 actions.cooldowns+=/radiant_spark,if=cooldown.arcane_power.remains<execute_time&((!talent.enlightened|(talent.enlightened&mana.pct>=70))&((cooldown.touch_of_the_magi.remains>variable.ap_max_delay_for_totm&buff.arcane_charge.stack=buff.arcane_charge.max_stack)|(cooldown.touch_of_the_magi.remains=0&buff.arcane_charge.stack=0))&buff.rune_of_power.down&mana.pct>=variable.ap_minimum_mana_pct)
+actions.cooldowns+=/use_item,name=soulletting_ruby,if=(!runeforge.siphon_storm|buff.siphon_storm.up)&buff.arcane_charge.stack<=variable.totm_max_charges&cooldown.arcane_power.remains<=execute_time&mana.pct>variable.ap_minimum_mana_pct&buff.rune_of_power.down
 # Use totm with ap if it's within the max delay. If not, use with rop if the talent is taken, and it's within the max delay.
 actions.cooldowns+=/touch_of_the_magi,if=(!runeforge.siphon_storm|buff.siphon_storm.up)&buff.arcane_charge.stack<=variable.totm_max_charges&cooldown.arcane_power.remains<=execute_time&mana.pct>variable.ap_minimum_mana_pct&buff.rune_of_power.down
 actions.cooldowns+=/touch_of_the_magi,if=buff.arcane_charge.stack<=variable.totm_max_charges&talent.rune_of_power&cooldown.rune_of_power.remains<=execute_time&variable.time_until_ap>variable.totm_max_delay_for_ap
@@ -207,10 +212,11 @@ actions.fishing_opener+=/potion,if=!runeforge.temporal_warp&(!runeforge.siphon_s
 actions.fishing_opener+=/deathborne,if=buff.rune_of_power.down|prev_gcd.1.arcane_barrage
 actions.fishing_opener+=/radiant_spark,if=buff.rune_of_power.down|prev_gcd.1.arcane_barrage
 actions.fishing_opener+=/mirrors_of_torment,if=buff.rune_of_power.remains<(6+2*runeforge.siphon_storm)
-# When running the Harmony legendary, use AP before TotM to dump a fully stacked bararge
+# When running the Harmony legendary, use AP before TotM to dump a fully stacked barrage
 actions.fishing_opener+=/arcane_power,if=variable.empowered_barrage&buff.rune_of_power.up&(mana.pct<(25+(10*covenant.kyrian))|buff.clearcasting.stack=buff.clearcasting.max_stack)
 actions.fishing_opener+=/arcane_barrage,if=variable.empowered_barrage&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.arcane_power.up
-actions.fishing_opener+=/touch_of_the_magi,if=buff.rune_of_power.down|prev_gcd.1.arcane_barrage|prev_gcd.1.radiant_spark|prev_gcd.1.deathborne
+actions.fishing_opener+=/use_item,name=soulletting_ruby,if=buff.rune_of_power.down|prev_gcd.1.arcane_barrage|prev_gcd.1.radiant_spark|(prev_gcd.1.deathborne&!runeforge.siphon_storm)
+actions.fishing_opener+=/touch_of_the_magi,if=buff.rune_of_power.down|prev_gcd.1.arcane_barrage|prev_gcd.1.radiant_spark|(prev_gcd.1.deathborne&!runeforge.siphon_storm)
 actions.fishing_opener+=/arcane_power,if=prev_gcd.1.touch_of_the_magi
 # Use PoM to squeeze an extra Arcane Blast during the TotM/AP window unless running Arcane Echo. If Arcane Echo is talented, we can't use PoM within the TotM/AP window unless we interrupt the AM channel, so we'll save it.
 actions.fishing_opener+=/presence_of_mind,if=!talent.arcane_echo&debuff.touch_of_the_magi.up&debuff.touch_of_the_magi.remains<=(action.arcane_blast.execute_time*buff.presence_of_mind.max_stack)
@@ -240,6 +246,7 @@ actions.harmony+=/evocation,if=mana.pct<=30&variable.outside_of_cooldowns&(talen
 actions.harmony+=/arcane_missiles,if=(variable.stack_harmony|time<10)&buff.arcane_harmony.stack<16,chain=1
 # When using Empyreal Ordnance, cast a few extra missiles while waiting for the buff at the start of the fight
 actions.harmony+=/arcane_missiles,if=equipped.empyreal_ordnance&time<30&cooldown.empyreal_ordnance.remains>168
+actions.harmony+=/use_item,name=soulletting_ruby,if=variable.empowered_barrage&cooldown.touch_of_the_magi.remains<=execute_time&cooldown.arcane_power.remains<=(execute_time*2)&(!equipped.soulletting_ruby|conduit.arcane_prodigy.rank>=5|trinket.soulletting_ruby.cooldown.remains<=(execute_time*2))
 actions.harmony+=/radiant_spark,if=variable.empowered_barrage&cooldown.touch_of_the_magi.remains<=execute_time&cooldown.arcane_power.remains<=(execute_time*2)&(!equipped.soulletting_ruby|conduit.arcane_prodigy.rank>=5|trinket.soulletting_ruby.cooldown.remains<=(execute_time*2))
 actions.harmony+=/touch_of_the_magi,if=variable.just_used_spark&cooldown.arcane_power.remains<=execute_time&(!equipped.soulletting_ruby|conduit.arcane_prodigy.rank>=5|trinket.soulletting_ruby.cooldown.remains<=execute_time)
 actions.harmony+=/arcane_power,if=prev_gcd.1.touch_of_the_magi
@@ -282,6 +289,7 @@ actions.harmony+=/frostbolt
 
 actions.opener=fire_blast,if=runeforge.disciplinary_command&buff.disciplinary_command_frost.up
 actions.opener+=/frost_nova,if=runeforge.grisly_icicle&mana.pct>95
+actions.opener+=/use_item,name=soulletting_ruby
 actions.opener+=/deathborne
 actions.opener+=/radiant_spark,if=mana.pct>40
 actions.opener+=/mirrors_of_torment

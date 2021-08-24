@@ -36,6 +36,7 @@ actions.precombat+=/steel_trap,precast_time=20
 
 # Executed every time the actor is available.
 actions=auto_attack
+actions+=/use_item,name=jotungeirr_destinys_call,if=buff.coordinated_assault.up|time_to_die<30
 actions+=/use_items
 # Delay facing your doubt until you have put Resonating Arrow down, or if the cooldown is too long to delay facing your Doubt. If none of these conditions are able to met within the 10 seconds leeway, the sim faces your Doubt automatically.
 actions+=/newfound_resolve,if=soulbind.newfound_resolve&(buff.resonating_arrow.up|cooldown.resonating_arrow.remains>10|target.time_to_die<16)
@@ -73,8 +74,6 @@ actions.bop+=/wildfire_bomb,if=dot.wildfire_bomb.refreshable
 actions.bop+=/serpent_sting,target_if=min:remains,if=buff.vipers_venom.up
 
 actions.cds=harpoon,if=talent.terms_of_engagement.enabled&focus<focus.max
-actions.cds+=/use_item,name=dreadfire_vessel,if=covenant.kyrian&cooldown.resonating_arrow.remains>10|!covenant.kyrian
-actions.cds+=/use_item,name=jotungeirr_destinys_call,if=buff.coordinated_assault.up|time_to_die<31
 actions.cds+=/blood_fury,if=buff.coordinated_assault.up
 actions.cds+=/ancestral_call,if=buff.coordinated_assault.up
 actions.cds+=/fireblood,if=buff.coordinated_assault.up
@@ -94,12 +93,12 @@ actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 actions.cleave=serpent_sting,target_if=min:remains,if=talent.hydras_bite.enabled&buff.vipers_venom.remains&buff.vipers_venom.remains<gcd
 actions.cleave+=/wild_spirits
 actions.cleave+=/resonating_arrow
+actions.cleave+=/coordinated_assault
 actions.cleave+=/wildfire_bomb,if=full_recharge_time<gcd
 actions.cleave+=/chakrams
 actions.cleave+=/butchery,if=dot.shrapnel_bomb.ticking&(dot.internal_bleeding.stack<2|dot.shrapnel_bomb.remains<gcd)
 actions.cleave+=/carve,if=dot.shrapnel_bomb.ticking
 actions.cleave+=/death_chakram,if=focus+cast_regen<focus.max
-actions.cleave+=/coordinated_assault
 actions.cleave+=/butchery,if=charges_fractional>2.5&cooldown.wildfire_bomb.full_recharge_time>spell_targets%2
 actions.cleave+=/flanking_strike,if=focus+cast_regen<focus.max
 actions.cleave+=/carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_targets%2&talent.alpha_predator.enabled

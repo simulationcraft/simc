@@ -4383,7 +4383,7 @@ rng::rng_t& action_t::rng() const
  * actor-selected candidate target to the current target. Event contains the retarget event type, context contains the
  * (optional) actor that triggered the event.
  */
-void action_t::acquire_target( retarget_source /* event */, player_t* /* context */, player_t* candidate_target )
+void action_t::acquire_target( retarget_source event, player_t* /* context */, player_t* candidate_target )
 {
   // Reset target cache every time target acquisition occurs for AOE spells
   if ( n_targets() != 0 )
@@ -4411,8 +4411,10 @@ void action_t::acquire_target( retarget_source /* event */, player_t* /* context
     return;
   }
 
-  // Don't swap targets if the action's current target is still alive
-  if ( target && !target->is_sleeping() && !target->debuffs.invulnerable->check() )
+  // Don't swap targets if the action's current target is still alive, except in cases
+  // where the actor has risen (been summoned, start of iteration etc).
+  if ( event != retarget_source::SELF_ARISE &&
+       target && !target->is_sleeping() && !target->debuffs.invulnerable->check() )
   {
     return;
   }

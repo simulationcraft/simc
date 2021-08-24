@@ -288,6 +288,7 @@ public:
   double kindred_spirits_partner_dps;
   bool kindred_spirits_hide_partner;
   double kindred_spirits_absorbed;
+  bool lone_empowerment;
   std::string kindred_affinity_covenant;
   double convoke_the_spirits_ultimate;
   int convoke_the_spirits_deck;
@@ -357,6 +358,7 @@ public:
     // Covenants
     buff_t* kindred_empowerment;
     buff_t* kindred_empowerment_energize;
+    buff_t* lone_empowerment;
     buff_t* kindred_affinity;
     buff_t* ravenous_frenzy;
     buff_t* sinful_hysteria;
@@ -793,6 +795,7 @@ public:
       kindred_spirits_partner_dps( 1.0 ),
       kindred_spirits_hide_partner( false ),
       kindred_spirits_absorbed( 0.2 ),
+      lone_empowerment( false ),
       kindred_affinity_covenant( "night_fae" ),
       convoke_the_spirits_ultimate( 0 ),
       convoke_the_spirits_deck( 5 ),
@@ -2016,6 +2019,7 @@ public:
     parse_buff_effects( p()->buff.ravenous_frenzy );
     parse_buff_effects( p()->buff.sinful_hysteria );
     parse_buff_effects<C>( p()->buff.convoke_the_spirits, p()->conduit.conflux_of_elements );
+    parse_buff_effects( p()->buff.lone_empowerment );
 
     // Balance
     parse_buff_effects( p()->buff.moonkin_form );
@@ -3491,9 +3495,15 @@ struct feral_frenzy_driver_t : public cat_attack_t
   {
     auto f = get_state_free_cast( d->state );
     if ( f )
+    {
       stats = get_free_cast_stats( f );
+      tick_action->stats = stats;
+    }
     else
+    {
       stats = orig_stats;
+      tick_action->stats = stats;
+    }
 
     cat_attack_t::tick( d );
   }
@@ -6247,6 +6257,11 @@ struct starsurge_t : public druid_spell_t
 
       form_mask = MOONKIN_FORM;           // not in spell data for affinity version (id=197626)
       base_costs[ RESOURCE_MANA ] = 0.0;  // so we don't need to enable mana regen
+      may_autounshift = false;
+    }
+    else
+    {
+      form_mask |= NO_FORM; // spec version can be cast with no form despite spell data form mask
     }
   }
 
@@ -6591,7 +6606,23 @@ struct kindred_spirits_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p()->buff.kindred_empowerment_energize->trigger();
+    if ( p()->lone_empowerment )
+    {
+      switch ( p()->specialization() )
+      {
+        case DRUID_BALANCE:
+        case DRUID_FERAL:
+          p()->buff.lone_empowerment->trigger();
+          break;
+        default:
+          sim->error( "Lone empowerment is only supported for DPS specializations." );
+          break;
+      }
+    }
+    else
+    {
+      p()->buff.kindred_empowerment_energize->trigger();
+    }
   }
 };
 
@@ -8426,6 +8457,9 @@ void druid_t::create_buffs()
   buff.kindred_empowerment_energize =
       make_buff( this, "kindred_empowerment_energize", covenant.kindred_empowerment_energize );
 
+  buff.lone_empowerment = make_buff( this, "lone_empowerment", find_spell( 338142 ) )
+    ->set_cooldown( 0_ms );
+
   buff.kindred_affinity = make_buff<kindred_affinity_buff_t>( *this );
 
   buff.convoke_the_spirits = make_buff( this, "convoke_the_spirits", covenant.night_fae )
@@ -9761,6 +9795,7 @@ void druid_t::create_options()
   add_option( opt_float( "druid.kindred_spirits_partner_dps", kindred_spirits_partner_dps ) );
   add_option( opt_bool( "druid.kindred_spirits_hide_partner", kindred_spirits_hide_partner ) );
   add_option( opt_float( "druid.kindred_spirits_absorbed", kindred_spirits_absorbed ) );
+  add_option( opt_bool( "druid.lone_empowerment", lone_empowerment ) );
   add_option( opt_string( "druid.kindred_affinity_covenant", kindred_affinity_covenant ) );
   add_option( opt_int( "druid.convoke_the_spirits_deck", convoke_the_spirits_deck ) );
   add_option( opt_float( "druid.celestial_spirits_exceptional_chance", celestial_spirits_exceptional_chance ) );
@@ -10374,6 +10409,7 @@ void druid_t::copy_from( player_t* source )
   kindred_spirits_partner_dps          = p->kindred_spirits_partner_dps;
   kindred_spirits_hide_partner         = p->kindred_spirits_hide_partner;
   kindred_spirits_absorbed             = p->kindred_spirits_absorbed;
+  lone_empowerment                     = p->lone_empowerment;
   kindred_affinity_covenant            = p->kindred_affinity_covenant;
   convoke_the_spirits_deck             = p->convoke_the_spirits_deck;
   celestial_spirits_exceptional_chance = p->celestial_spirits_exceptional_chance;

@@ -7,7 +7,7 @@ role=dps
 position=back
 talents=1020012
 covenant=kyrian
-soulbind=forgelite_prime_mikanikos:18,brons_call_to_action/adaptive_armor_fragment:9:1/forgelite_filter/regenerating_materials/harm_denial:9:1/coordinated_offensive:9:1/soulsteel_clamps/strike_with_clarity:9:1/soulglow_spectrometer/effusive_anima_accelerator
+soulbind=forgelite_prime_mikanikos:18,brons_call_to_action/xuens_bond:9:1/forgelite_filter/regenerating_materials/harm_denial:9:1/coordinated_offensive:9:1/soulsteel_clamps/strike_with_clarity:9:1/soulglow_spectrometer/effusive_anima_accelerator
 renown=80
 
 # Default consumables
@@ -68,7 +68,7 @@ actions.aoe+=/flying_serpent_kick,if=buff.bok_proc.down,interrupt=1
 actions.aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|talent.hit_combo&prev_gcd.1.tiger_palm&chi=2&cooldown.fists_of_fury.remains<3|chi.max-chi<=1&prev_gcd.1.spinning_crane_kick&energy.time_to_max<3)
 
 actions.cd_sef=invoke_xuen_the_white_tiger,if=!variable.hold_xuen&(cooldown.rising_sun_kick.remains<2|!covenant.kyrian)&(!covenant.necrolord|cooldown.bonedust_brew.remains<2)|fight_remains<25
-actions.cd_sef+=/touch_of_death,if=fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active|fight_remains<10
+actions.cd_sef+=/touch_of_death,if=fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10
 actions.cd_sef+=/weapons_of_order,if=(raid_event.adds.in>45|raid_event.adds.up)&cooldown.rising_sun_kick.remains<execute_time&cooldown.invoke_xuen_the_white_tiger.remains>(20+20*runeforge.invokers_delight)|fight_remains<35
 actions.cd_sef+=/faeline_stomp,if=combo_strike&(raid_event.adds.in>10|raid_event.adds.up)
 actions.cd_sef+=/fallen_order,if=raid_event.adds.in>30|raid_event.adds.up
@@ -85,7 +85,7 @@ actions.cd_sef+=/lights_judgment
 actions.cd_sef+=/fireblood,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<10
 actions.cd_sef+=/ancestral_call,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20
 actions.cd_sef+=/bag_of_tricks,if=buff.storm_earth_and_fire.down
-actions.cd_sef+=/fleshcraft,if=soulbind.pustule_eruption&buff.storm_earth_and_fire.down&debuff.bonedust_brew_debuff.down
+actions.cd_sef+=/fleshcraft,if=soulbind.pustule_eruption&debuff.bonedust_brew_debuff.down
 
 actions.cd_serenity=variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|pet.xuen_the_white_tiger.active&cooldown.serenity.remains>30|fight_remains<20
 actions.cd_serenity+=/invoke_xuen_the_white_tiger,if=!variable.hold_xuen|fight_remains<25
@@ -95,7 +95,7 @@ actions.cd_serenity+=/lights_judgment
 actions.cd_serenity+=/fireblood,if=variable.serenity_burst
 actions.cd_serenity+=/ancestral_call,if=variable.serenity_burst
 actions.cd_serenity+=/bag_of_tricks,if=variable.serenity_burst
-actions.cd_serenity+=/touch_of_death,if=fight_remains>(180-runeforge.fatal_touch*120)|pet.xuen_the_white_tiger.active|fight_remains<10
+actions.cd_serenity+=/touch_of_death,if=fight_remains>(180-runeforge.fatal_touch*120)|pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10
 actions.cd_serenity+=/touch_of_karma,if=fight_remains>90|pet.xuen_the_white_tiger.active|fight_remains<10
 actions.cd_serenity+=/weapons_of_order,if=cooldown.rising_sun_kick.remains<execute_time
 actions.cd_serenity+=/use_item,name=inscrutable_quantum_device,if=variable.serenity_burst|fight_remains<20

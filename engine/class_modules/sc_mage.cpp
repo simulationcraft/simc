@@ -428,6 +428,7 @@ public:
     timespan_t arcane_missiles_chain_delay = 200_ms;
     double arcane_missiles_chain_relstddev = 0.1;
     bool prepull_dc = false;
+    int prepull_harmony_stacks = 0;
   } options;
 
   // Pets
@@ -1663,10 +1664,7 @@ public:
         auto spark_debuff = td->debuffs.radiant_spark_vulnerability;
 
         // Handle Harmonic Echo before changing the stack number
-        // TODO: Currently only triggers 3 times, on stacks 1, 2 and 3.
-        if ( p()->runeforge.harmonic_echo.ok()
-          && spark_debuff->check() > 0
-          && spark_debuff->check() < spark_debuff->max_stack() )
+        if ( p()->runeforge.harmonic_echo.ok() && spark_debuff->check() )
         {
           auto echo = p()->action.harmonic_echo;
           echo->base_dd_min = echo->base_dd_max = p()->runeforge.harmonic_echo->effectN( 1 ).percent() * s->result_total;
@@ -2091,6 +2089,12 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
   void execute() override
   {
+    if ( !last_hot_streak && p()->buffs.sun_kings_blessing_ready->check() )
+    {
+      p()->buffs.sun_kings_blessing_ready->expire();
+      p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->runeforge.sun_kings_blessing->effectN( 2 ).time_value() );
+    }
+
     fire_mage_spell_t::execute();
 
     if ( last_hot_streak )
@@ -2098,7 +2102,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       p()->buffs.hot_streak->decrement();
       p()->buffs.pyroclasm->trigger();
 
-      trigger_legendary_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready, p()->bugs ? 0 : 1 );
+      trigger_legendary_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready, 1 );
 
       if ( rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
       {
@@ -4633,12 +4637,6 @@ struct pyroblast_t final : public hot_streak_spell_t
 
   void execute() override
   {
-    if ( !last_hot_streak && p()->buffs.sun_kings_blessing_ready->check() )
-    {
-      p()->buffs.sun_kings_blessing_ready->expire();
-      p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->runeforge.sun_kings_blessing->effectN( 2 ).time_value() );
-    }
-
     hot_streak_spell_t::execute();
 
     if ( time_to_execute > 0_ms )
@@ -4928,6 +4926,10 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
     if ( result_is_hit( s->result ) )
       get_td( s->target )->debuffs.touch_of_the_magi->trigger();
   }
+
+  // Touch of the Magi will trigger procs that occur only from casting damaging spells.
+  bool has_amount_result() const override
+  { return true; }
 };
 
 struct touch_of_the_magi_explosion_t final : public arcane_mage_spell_t
@@ -5772,6 +5774,7 @@ void mage_t::create_options()
   add_option( opt_timespan( "mage.arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_bool( "mage.prepull_dc", options.prepull_dc ) );
+  add_option( opt_int( "mage.prepull_harmony_stacks", options.prepull_harmony_stacks ) );
 
   player_t::create_options();
 }
@@ -6662,6 +6665,11 @@ void mage_t::arise()
   if ( runeforge.disciplinary_command->ok() && options.prepull_dc )
   {
     buffs.disciplinary_command->trigger();
+  }
+
+  if ( runeforge.arcane_harmony->ok() && options.prepull_harmony_stacks > 0 )
+  {
+    buffs.arcane_harmony->trigger( options.prepull_harmony_stacks );
   }
 }
 

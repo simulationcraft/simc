@@ -425,7 +425,7 @@ void field_of_blossoms( special_effect_t& effect )
         make_buff( effect.player, "field_of_blossoms", effect.player->find_spell( 342774 ) )
             // the stat buff id=342774 has 15s duration, but the ground effect spell id=342761 only has a 10s duration
             ->set_duration( effect.player->find_spell( 342761 )->duration() )
-            ->set_duration_multiplier( duration_mod )
+            ->set_duration_multiplier( duration_mod * effect.player->sim->shadowlands_opts.field_of_blossoms_duration_multiplier )
             ->set_default_value_from_effect_type( A_HASTE_ALL )
             ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
@@ -1538,28 +1538,6 @@ void brons_call_to_action( special_effect_t& effect )
       if ( bron->is_active() || a->background )
         return;
 
-      // Only class spells can proc Bron's Call to Action.
-      // TODO: Is this an accurate way to detect this?
-      if ( !a->data().flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS ) )
-        return;
-
-      // Because this callback triggers on both cast and impact, spells are categorized into triggering on one of cast or impact.
-      // TODO: This isn't completely accurate, but seems to be relatively close. More classes/spells needs to be looked at.
-//      bool action_triggers_on_impact = a->data().flags( spell_attribute::SX_ABILITY )
-//        || range::any_of( a->data().effects(), [] ( const spelleffect_data_t& e ) { return e.type() == E_TRIGGER_MISSILE; } );
-
-//      a->sim->print_debug( "'{}' attempts to trigger brons_call_to_action: action='{}', execute_proc_type2='{}', cast_proc_type2='{}', impact_proc_type2='{}', triggers_on='{}'",
-//        a->player->name_str, a->name_str, util::proc_type2_string( s->execute_proc_type2() ), util::proc_type2_string( s->cast_proc_type2() ),
-//        util::proc_type2_string( s->impact_proc_type2() ), action_triggers_on_impact ? "impact" : "cast" );
-
-      // If the spell triggers on cast and this is an impact trigger attempt, skip it.
-//      if ( s->impact_proc_type2() != PROC2_INVALID && !action_triggers_on_impact )
-//        return;
-
-      // If the spell triggers on impact and this is not an imapct trigger attempt, skip it.
-//      if ( s->impact_proc_type2() == PROC2_INVALID && action_triggers_on_impact )
-//        return;
-
       dbc_proc_callback_t::trigger( a, s );
     }
 
@@ -1577,7 +1555,10 @@ void brons_call_to_action( special_effect_t& effect )
     }
   };
 
-//  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL | PF2_ALL_HIT;
+  // TODO: This technically uses proc flag 34 (Cast Successful), which currently isn't supported by simc.
+  // For now, model this by allowing PF flags for any action and use PF2 flags to only trigger from casts
+  // that can produce a nonzero result.
+  effect.proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL | PF_PERIODIC;
   effect.proc_flags2_ = PF2_CAST_DAMAGE | PF2_CAST_HEAL;
 
   effect.custom_buff = buff_t::find( effect.player, "brons_call_to_action" );
@@ -2126,7 +2107,7 @@ void carvers_eye( special_effect_t& effect )
         return;
       }
 
-      if ( s->target->health_percentage() > hp_pct && s->target != a->player )
+      if ( s->target->health_percentage() > hp_pct )
       {
         td->debuff.carvers_eye_debuff->trigger();
         buff->trigger();
