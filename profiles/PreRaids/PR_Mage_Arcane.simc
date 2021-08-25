@@ -246,9 +246,9 @@ actions.harmony+=/evocation,if=mana.pct<=30&variable.outside_of_cooldowns&(talen
 actions.harmony+=/arcane_missiles,if=(variable.stack_harmony|time<10)&buff.arcane_harmony.stack<16,chain=1
 # When using Empyreal Ordnance, cast a few extra missiles while waiting for the buff at the start of the fight
 actions.harmony+=/arcane_missiles,if=equipped.empyreal_ordnance&time<30&cooldown.empyreal_ordnance.remains>168
-actions.harmony+=/use_item,name=soulletting_ruby,if=variable.empowered_barrage&cooldown.touch_of_the_magi.remains<=execute_time&cooldown.arcane_power.remains<=(execute_time*2)&(!equipped.soulletting_ruby|conduit.arcane_prodigy.rank>=5|trinket.soulletting_ruby.cooldown.remains<=(execute_time*2))
-actions.harmony+=/radiant_spark,if=variable.empowered_barrage&cooldown.touch_of_the_magi.remains<=execute_time&cooldown.arcane_power.remains<=(execute_time*2)&(!equipped.soulletting_ruby|conduit.arcane_prodigy.rank>=5|trinket.soulletting_ruby.cooldown.remains<=(execute_time*2))
-actions.harmony+=/touch_of_the_magi,if=variable.just_used_spark&cooldown.arcane_power.remains<=execute_time&(!equipped.soulletting_ruby|conduit.arcane_prodigy.rank>=5|trinket.soulletting_ruby.cooldown.remains<=execute_time)
+actions.harmony+=/use_item,name=soulletting_ruby,if=variable.empowered_barrage&cooldown.touch_of_the_magi.remains<=execute_time&cooldown.arcane_power.remains<=(execute_time*2)
+actions.harmony+=/radiant_spark,if=variable.empowered_barrage&cooldown.touch_of_the_magi.remains<=execute_time&cooldown.arcane_power.remains<=(execute_time*2)&(!equipped.soulletting_ruby|conduit.arcane_prodigy.rank>=5|trinket.soulletting_ruby.cooldown.remains>110)
+actions.harmony+=/touch_of_the_magi,if=variable.just_used_spark&cooldown.arcane_power.remains<=execute_time&(!equipped.soulletting_ruby|conduit.arcane_prodigy.rank>=5|trinket.soulletting_ruby.cooldown.remains>110)
 actions.harmony+=/arcane_power,if=prev_gcd.1.touch_of_the_magi
 actions.harmony+=/rune_of_power,if=variable.empowered_barrage&cooldown.radiant_spark.remains<=execute_time&variable.time_until_ap>=20&(!conduit.arcane_prodigy|!variable.always_sync_cooldowns|cooldown.touch_of_the_magi.remains<=(execute_time*2))
 actions.harmony+=/radiant_spark,if=variable.empowered_barrage&prev_gcd.1.rune_of_power
