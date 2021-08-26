@@ -3405,7 +3405,7 @@ struct feral_frenzy_driver_t : public cat_attack_t
       background = dual = true;
       is_direct_damage  = false;
       direct_bleed      = false;
-      dot_max_stack     = as<int>( p->talent.feral_frenzy->effectN( 2 ).base_value() );
+      dot_max_stack     = as<int>( p->find_spell( 274837 )->effectN( 2 ).base_value() );
       // dot_behavior = DOT_CLIP;
     }
 
