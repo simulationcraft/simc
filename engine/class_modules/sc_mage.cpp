@@ -3619,8 +3619,8 @@ struct frostbolt_t final : public frost_mage_spell_t
     // Because of the additional procs gained from the bad luck protection
     // system, the base proc chances are reduced so that the overall average
     // is not significantly changed by the system.
-    fof_chance -= 0.005;
-    bf_chance -= 0.01;
+    fof_chance = std::max( 0.0, fof_chance - 0.005 );
+    bf_chance = std::max( 0.0, bf_chance - 0.01 );
 
     if ( p->spec.icicles->ok() )
       add_child( p->action.icicle.frostbolt );
@@ -3672,6 +3672,15 @@ struct frostbolt_t final : public frost_mage_spell_t
     bool fof_triggered = p()->trigger_fof( fof_chance, proc_fof );
     bool bf_triggered = p()->trigger_brain_freeze( bf_chance, proc_brain_freeze );
 
+    p()->buffs.expanded_potential->trigger();
+
+    if ( p()->buffs.icy_veins->check() )
+      p()->buffs.slick_ice->trigger();
+
+    // Frostbolt only has BLP for Frost Mages.
+    if ( p()->specialization() != MAGE_FROST )
+      return;
+
     if ( !bf_triggered && !fof_triggered )
     {
       p()->state.frostbolt_counter++;
@@ -3696,11 +3705,6 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     if ( fof_triggered || bf_triggered )
       p()->state.frostbolt_counter = 0;
-
-    p()->buffs.expanded_potential->trigger();
-
-    if ( p()->buffs.icy_veins->check() )
-      p()->buffs.slick_ice->trigger();
   }
 
   void impact( action_state_t* s ) override
