@@ -1179,6 +1179,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     matching_gear( false ),
     karazhan_trinkets_paired( false ),
     item_cooldown( new cooldown_t("item_cd", *this) ),
+    default_item_group_cooldown( 20_s ),
     legendary_tank_cloak_cd( nullptr ),
     warlords_unseeing_eye( 0.0 ),
     warlords_unseeing_eye_stats(),
@@ -8237,13 +8238,7 @@ struct use_item_t : public action_t
       else
       {
         cooldown_group = player->item_cooldown.get();
-        // Presumes on-use items will always have static durations. Considering the client data
-        // system hardcodes the cooldown group durations in the DBC files, this is a reasonably safe
-        // bet for now.
-        if ( buff )
-        {
-          cooldown_group_duration = buff->buff_duration();
-        }
+        cooldown_group_duration = player->default_item_group_cooldown;
       }
     }
 
@@ -11359,6 +11354,7 @@ void player_t::create_options()
   add_option( opt_timespan( "reaction_time_max", reaction_max ) );
   add_option( opt_bool( "stat_cache", cache.active ) );
   add_option( opt_bool( "karazhan_trinkets_paired", karazhan_trinkets_paired ) );
+  add_option( opt_timespan( "default_item_group_cooldown", default_item_group_cooldown, 0_ms, timespan_t::max() ) );
 
   // Permanent External Buffs
   add_option( opt_bool( "external_buffs.focus_magic", external_buffs.focus_magic ) );

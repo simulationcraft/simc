@@ -373,6 +373,7 @@ struct player_t : public actor_t
   bool matching_gear;
   bool karazhan_trinkets_paired;
   std::unique_ptr<cooldown_t> item_cooldown;
+  timespan_t default_item_group_cooldown;
   cooldown_t* legendary_tank_cloak_cd; // non-Null if item available
 
 
