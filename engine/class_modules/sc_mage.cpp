@@ -3605,22 +3605,24 @@ struct frostbolt_t final : public frost_mage_spell_t
   double bf_chance;
 
   frostbolt_t( util::string_view n, mage_t* p, util::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->find_class_spell( "Frostbolt" ) )
+    frost_mage_spell_t( n, p, p->find_class_spell( "Frostbolt" ) ),
+    fof_chance(),
+    bf_chance()
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
     triggers.bone_chilling = calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = affected_by.deathborne_cleave = true;
     base_multiplier *= 1.0 + p->spec.frostbolt_2->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
-    double ft_multiplier = 1.0 + p->talents.frozen_touch->effectN( 1 ).percent();
-    fof_chance = ft_multiplier * p->spec.fingers_of_frost->effectN( 1 ).percent();
-    bf_chance = ft_multiplier * p->spec.brain_freeze->effectN( 1 ).percent();
 
+    double ft_multiplier = 1.0 + p->talents.frozen_touch->effectN( 1 ).percent();
     // Because of the additional procs gained from the bad luck protection
     // system, the base proc chances are reduced so that the overall average
     // is not significantly changed by the system.
-    fof_chance = std::max( 0.0, fof_chance - 0.005 );
-    bf_chance = std::max( 0.0, bf_chance - 0.01 );
+    if ( p->spec.fingers_of_frost->ok() )
+      fof_chance = ft_multiplier * p->spec.fingers_of_frost->effectN( 1 ).percent() - 0.005;
+    if ( p->spec.brain_freeze->ok() )
+      bf_chance = ft_multiplier * p->spec.brain_freeze->effectN( 1 ).percent() - 0.01;
 
     if ( p->spec.icicles->ok() )
       add_child( p->action.icicle.frostbolt );
@@ -3669,16 +3671,36 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     p()->trigger_icicle_gain( target, p()->action.icicle.frostbolt );
 
-    bool fof_triggered = p()->trigger_fof( fof_chance, proc_fof );
-    bool bf_triggered = p()->trigger_brain_freeze( bf_chance, proc_brain_freeze );
+    handle_procs();
 
     p()->buffs.expanded_potential->trigger();
 
     if ( p()->buffs.icy_veins->check() )
       p()->buffs.slick_ice->trigger();
+  }
 
-    // Frostbolt only has BLP for Frost Mages.
+  void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      consume_cold_front( s->target );
+      trigger_cold_front();
+      trigger_deaths_fathom();
+    }
+  }
+
+  void handle_procs()
+  {
     if ( p()->specialization() != MAGE_FROST )
+      return;
+
+    bool fof_triggered = p()->trigger_fof( fof_chance, proc_fof );
+    bool bf_triggered = p()->trigger_brain_freeze( bf_chance, proc_brain_freeze );
+
+    // TODO: How does the BLP work for low level mages?
+    if ( fof_chance == 0.0 || bf_chance == 0.0 )
       return;
 
     if ( !bf_triggered && !fof_triggered )
@@ -3705,18 +3727,6 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     if ( fof_triggered || bf_triggered )
       p()->state.frostbolt_counter = 0;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    frost_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-    {
-      consume_cold_front( s->target );
-      trigger_cold_front();
-      trigger_deaths_fathom();
-    }
   }
 };
 
