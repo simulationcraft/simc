@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39804 Live (hotfix 2021-08-19/39804, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39804 Live (hotfix 2021-08-27/39804, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -2468,14 +2468,15 @@ Effects          :
 Description      : While above $M3% health, $M1% of damage taken is absorbed and spread out over $352562d.
 
 Name             : Kevin's Oozeling (id=352110) [Passive, Hidden] 
+Hotfixed         : Internal Cooldown (0 -> 1000)
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
 Spell Level      : 60
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
-Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
-                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
+Proc Flags       : ....x... x.x.x.x. x....... ........ 
+                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

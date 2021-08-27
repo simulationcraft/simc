@@ -1,5 +1,5 @@
 // Spell text, wow build 9.1.0.39804
-static const std::array<spelltext_data_t, 15541> __spelltext_data { {
+static const std::array<spelltext_data_t, 15547> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15487,11 +15487,17 @@ static const std::array<spelltext_data_t, 15541> __spelltext_data { {
   { 357585, "Consume a lesser weapon, destroying it utterly to feed the power of Jaithys.\r\n\r\n", 0, 0 },
   { 357588, "While you are behind your enemies, their movement is impaired, or they are suffering from loss-of-control effects, your attacks have a high chance to cause them to bleed for ${$s1*($353466d/$353466t1+1)} Physical damage over $353466d.", 0, 0 },
   { 357595, "Your attacks apply Banshee's Blight, giving your finishing moves a $s2% chance per combo point spent to deal $s1 Shadow damage. Banshee's Blight stacks up to $358090u times as the target becomes more injured.", "Damaging finishing moves have a chance to deal $s1 Shadow damage per stack.", 0 },
+  { 357609, "$@spelldesc357610", "$@spelldesc357610", 0 },
+  { 357610, "Damaging a target has a high chance to consume the target with creeping decay, dealing ${$<points>*$d/$t1} Physical damage over $d, and reducing healing and absorption received by $s3%, stacking up to $U times.\r\n", "$w1 Physical damage inflicted every $t1 sec.\r\n$s3% reduced healing and absorption effects.", 0 },
   { 357672, "Your abilities have a chance to increase your $pri by $s1 for $357673d.", 0, 0 },
   { 357673, "$@spelldesc357672", "$pri increased by $w1.", 0 },
+  { 357706, "$@spelldesc357708", "$@spelldesc357708", 0 },
+  { 357708, "Damaging a target has a chance to create a gout of flame beneath the target that erupts after 2.5 sec, dealing ${$<points>} Fire damage to all enemies within $357708a1 yards, and knocking them upward.", 0, 0 },
   { 357769, "Magically imbues the target's flesh with stitches, healing them for $s1.", 0, 0 },
   { 357773, "Answer the Call, joining the ranks of the Val'kyr. Your secondary stats are increased by $s1 for $d.", "All secondary stats increased by $w1.", 0 },
   { 357785, "$@spelldesc355324", "Relishing in the shredded remains of your foe's soul, granting $w1 Critical Strike.", 0 },
+  { 357864, "$@spelldesc357866", "$@spellaura357866", 0 },
+  { 357866, "Damaging a target below $357864s1% health has a high chance to hurl a $@spellname357866 at the target dealing ${$<points>} Physical damage.", "Damaging a target below $357864s1% health has a high chance to hurl a $@spellname357866 at the target dealing ${$<points>} Physical damage.", 0 },
   { 357888, "When you take any damage, heal for |cFFFFFFFF${$m1/10}.2%|r of your maximum health. This can only occur once every $357946d.", 0, 0 },
   { 357902, "When you are healed by another player, increase your $pri by |cFFFFFFFF${$s1}.1%|r for $357972d. This can only occur once every $357973d.", 0, 0 },
   { 357946, "$@spelldesc357888", 0, 0 },
@@ -15550,7 +15556,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix
 } };
 
 // Spell description variables, wow build 9.1.0.39804
-static const std::array<spelldesc_vars_data_t, 301> __spelldesc_vars_data { {
+static const std::array<spelldesc_vars_data_t, 304> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -15851,6 +15857,9 @@ static const std::array<spelldesc_vars_data_t, 301> __spelldesc_vars_data { {
   {  352110, "$shield=${$max($SP,$AP)*.1*(1+$@versadmg)}\r\n$mod=$?a137005[${2}]?a212611[${2}]?a137009[${.4}.1]?a137014[${.75}.1]?a137018[${3}]?a137022[${1}]?a137026[${.5}]?a137030[${1.0}]?a137034[${.5}]?a137038[${.75}.1]?a137042[${.75}.1]?a137047[${2}][${1.0}]" },
   {  352188, "$mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${0.5}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${0.4}]?a137047[${1}][${1}]\r\n$points=${$353248s2/100*$max($AP,$SP)*(1+$@versadmg)}\r\n$final=${$<mod>*$<points>*($353248d/$353248t1+1)}\r\n$cd=$?a137005[${4}]?a212611[${4}]?a137009[${4}]?a137014[${4}]?a137018[${2}]?a137022[${8}]?a137026[${4}]?a137030[${12}]?a137034[${3}]?a137038[${4}]?a137042[${3}]?a137047[${4}][${4}]" },
   {  354541, "$stacks=${2}" },
+  {  357610, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
+  {  357708, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
+  {  357866, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  358164, "$buff=${$348272s1}\r\n$max=${3*$<buff>}" },
 } };
 

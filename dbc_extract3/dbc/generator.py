@@ -1320,6 +1320,9 @@ class SpellDataGenerator(DataGenerator):
          351561,
          # Mythic Plus Season 2 Anima Powers
          357575, 357582, 357584, # champion's brand
+         357609, # dagger of necrotic wounding
+         357864, # raging battle-axe
+         357706, # volcanic plume
          # Codex of the First Technique's damage spell
          351450,
         ),

@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39804 Live (hotfix 2021-08-19/39804, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39804 Live (hotfix 2021-08-27/39804, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -12281,6 +12281,9 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 12 seconds
 Cooldown         : 120 seconds
+Proc Chance      : 101%
+Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
+                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ....x... 
                  : ........ ........ .x...... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12380,5 +12383,26 @@ Description      : Summon an effigy of Chi-Ji that kicks up a Gust of Mist when 
 
 Chi-Ji's presence makes you immune to movement impairing effects.
 
+
+Name             : Empowered Tiger Lightning (id=360829) [Spell Family (53)] 
+Hotfixed         : NEW SPELL
+Class            : Monk
+School           : Nature
+Spell Type       : Magic
+Range            : 100 yards
+Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ x....... ........ .....x..   ........ ........ .......x .....x.. 
+                 : ........ ..x..... ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Can't Crit (93), Ignore Damage Taken Modifiers (136), Aura Bounce Fails Spell (157), No Partial Resists (183), Aura Unique Per Caster (189), No Aura Log (202), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=898194)   : School Damage (2): nature
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+Hotfixed         : NEW EFFECT
+Description      : $@spelldesc323999
 
 

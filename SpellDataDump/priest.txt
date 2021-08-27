@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39804 Live (hotfix 2021-08-19/39804, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39804 Live (hotfix 2021-08-27/39804, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
