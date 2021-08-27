@@ -551,6 +551,7 @@ public:
     double from_the_ashes_mastery;
     timespan_t last_enlightened_update;
     player_t* last_bomb_target;
+    int frostbolt_counter;
   } state;
 
   struct expression_support_t
@@ -785,8 +786,8 @@ public:
   void      update_from_the_ashes();
   action_t* get_icicle();
   bool      trigger_delayed_buff( buff_t* buff, double chance = -1.0, timespan_t delay = 0.15_s );
-  void      trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0.15_s );
-  void      trigger_fof( double chance, proc_t* source, int stacks = 1 );
+  bool      trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0.15_s );
+  bool      trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void      trigger_icicle( player_t* icicle_target, bool chain = false );
   void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
@@ -3600,6 +3601,9 @@ struct flurry_t final : public frost_mage_spell_t
 
 struct frostbolt_t final : public frost_mage_spell_t
 {
+  double fof_chance;
+  double bf_chance;
+
   frostbolt_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     frost_mage_spell_t( n, p, p->find_class_spell( "Frostbolt" ) )
   {
@@ -3608,6 +3612,15 @@ struct frostbolt_t final : public frost_mage_spell_t
     triggers.bone_chilling = calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = affected_by.deathborne_cleave = true;
     base_multiplier *= 1.0 + p->spec.frostbolt_2->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
+    double ft_multiplier = 1.0 + p->talents.frozen_touch->effectN( 1 ).percent();
+    fof_chance = ft_multiplier * p->spec.fingers_of_frost->effectN( 1 ).percent();
+    bf_chance = ft_multiplier * p->spec.brain_freeze->effectN( 1 ).percent();
+
+    // Because of the additional procs gained from the bad luck protection
+    // system, the base proc chances are reduced so that the overall average
+    // is not significantly changed by the system.
+    fof_chance -= 0.005;
+    bf_chance -= 0.01;
 
     if ( p->spec.icicles->ok() )
       add_child( p->action.icicle.frostbolt );
@@ -3656,9 +3669,33 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     p()->trigger_icicle_gain( target, p()->action.icicle.frostbolt );
 
-    double ft_multiplier = 1.0 + p()->talents.frozen_touch->effectN( 1 ).percent();
-    p()->trigger_fof( ft_multiplier * p()->spec.fingers_of_frost->effectN( 1 ).percent(), proc_fof );
-    p()->trigger_brain_freeze( ft_multiplier * p()->spec.brain_freeze->effectN( 1 ).percent(), proc_brain_freeze );
+    bool fof_triggered = p()->trigger_fof( fof_chance, proc_fof );
+    bool bf_triggered = p()->trigger_brain_freeze( bf_chance, proc_brain_freeze );
+
+    if ( !bf_triggered && !fof_triggered )
+    {
+      p()->state.frostbolt_counter++;
+      // On the 6th consecutive Frostbolt where no Fingers of Frost or Brain Freeze
+      // proc has occurred, there is an extra 25% chance to gain a Brain Freeze proc.
+      if ( p()->state.frostbolt_counter == 6 )
+        bf_triggered = p()->trigger_brain_freeze( 0.25, proc_brain_freeze );
+      // On the 7th consecutive Frostbolt where no Fingers of Frost or Brain Freeze
+      // proc has occurred, a proc will occur. The chances that this proc will be a
+      // Fingers of Frost or a Brain Freeze are equal.
+      else if ( p()->state.frostbolt_counter >= 7 )
+      {
+        // Try to trigger the Fingers of Frost proc with a 50% chance, because if it
+        // is triggered with a 100% chance then the actor will not have to react to it.
+        // Brain Freeze does not have this feature, so triggering it below with a 100%
+        // chance is not a problem.
+        fof_triggered = p()->trigger_fof( 0.5, proc_fof );
+        if ( !fof_triggered )
+          bf_triggered = p()->trigger_brain_freeze( 1.0, proc_brain_freeze );
+      }
+    }
+
+    if ( fof_triggered || bf_triggered )
+      p()->state.frostbolt_counter = 0;
 
     p()->buffs.expanded_potential->trigger();
 
@@ -7066,7 +7103,7 @@ bool mage_t::trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay
   return success;
 }
 
-void mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t delay )
+bool mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t delay )
 {
   assert( source );
 
@@ -7076,9 +7113,11 @@ void mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t del
     source->occur();
     procs.brain_freeze->occur();
   }
+
+  return success;
 }
 
-void mage_t::trigger_fof( double chance, proc_t* source, int stacks )
+bool mage_t::trigger_fof( double chance, proc_t* source, int stacks )
 {
   assert( source );
 
@@ -7094,6 +7133,8 @@ void mage_t::trigger_fof( double chance, proc_t* source, int stacks )
       procs.fingers_of_frost->occur();
     }
   }
+
+  return success;
 }
 
 void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
