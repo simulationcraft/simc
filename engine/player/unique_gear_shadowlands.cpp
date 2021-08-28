@@ -3229,7 +3229,7 @@ void vitality_sacrifice( special_effect_t& /* effect */ )
 
 namespace shards_of_domination
 {
-  using id_rank_pair_t = std::pair<unsigned, unsigned>;
+  using id_rank_pair_t = std::pair<int, unsigned>;
   static constexpr id_rank_pair_t ranks[] = {
     // Blood
     { 187057, 1},  // Shard of Bek
@@ -3539,7 +3539,7 @@ void blood_link( special_effect_t& effect )
 
   effect.execute_action = dot_action;
   new dbc_proc_callback_t( effect.player, effect );
-  effect.player->register_combat_begin( [ buff ]( player_t* p )
+  effect.player->register_combat_begin( [ buff ]( player_t* /* p */ )
   {
     buff->trigger();
   } );
@@ -3906,11 +3906,11 @@ void shard_of_zed( special_effect_t& effect )
     }
   };
 
-  effect.custom_buff = buff_t::find( effect.player, "unholy_aura" );
-  if ( !effect.custom_buff )
+  auto buff = buff_t::find( effect.player, "unholy_aura" );
+  if ( !buff )
   {
     auto tick_damage = create_proc_action<siphon_essence_t>( "siphon_essence", effect );
-    effect.custom_buff = make_buff( effect.player, "unholy_aura", effect.player->find_spell( 356321 ) )
+    buff = make_buff( effect.player, "unholy_aura", effect.player->find_spell( 356321 ) )
       ->set_tick_callback( [ tick_damage ]( buff_t* buff, int, timespan_t )
         {
           tick_damage->set_target( buff->player->target );
@@ -3918,12 +3918,54 @@ void shard_of_zed( special_effect_t& effect )
         } );
   }
 
+  struct unholy_aura_event_t : public event_t
+  {
+    buff_t* unholy_aura;
+    const spell_data_t* driver;
+
+    unholy_aura_event_t( buff_t* aura_, const spell_data_t* driver_, timespan_t interval_ ) :
+      event_t( *aura_->source, interval_ ), unholy_aura( aura_ ), driver( driver_ )
+    { }
+
+    const char* name() const override
+    { return "unholy_aura_driver"; }
+
+    void execute() override
+    {
+      bool has_eligible_targets = range::count_if( sim().target_non_sleeping_list,
+          []( player_t* enemy ) {
+        return !enemy->debuffs.invulnerable || enemy->debuffs.invulnerable->check() == 0;
+      } ) != 0;
+
+      if ( has_eligible_targets )
+      {
+        unholy_aura->trigger();
+      }
+
+      // If no eligible targets are found, try to look for one soon after. This is
+      // intended to roughly model situations such as dungeonslice, where the iteration
+      // may have periods of time where only the invulnerable base target is available.
+      make_event<unholy_aura_event_t>( sim(), unholy_aura, driver,
+          has_eligible_targets ? driver->internal_cooldown() : 1_s );
+    }
+  };
+
+  // We don't need to create a special effect out of this
+  effect.type = SPECIAL_EFFECT_NONE;
+
+  // Trigger unholy aura early on in the fight for the first time
+  effect.player->register_combat_begin( [ buff, &effect ]( player_t*  p ) {
+      make_event<unholy_aura_event_t>( *p->sim, buff, effect.driver(), 1_s );
+  } );
+
+  /*
   // TODO: confirm proc flags
   // 07/15/2021 - Logs seem somewhat inconclusive on this, perhaps it is delayed in triggering
   effect.proc_flags_ = PF_ALL_HEAL | PF_PERIODIC;
   effect.proc_flags2_ = PF2_LANDED | PF2_PERIODIC_HEAL;
 
   new dbc_proc_callback_t( effect.player, effect );
+  */
 }
 
 
