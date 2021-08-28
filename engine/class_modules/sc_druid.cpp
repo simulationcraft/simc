@@ -4056,11 +4056,18 @@ struct shred_t : public cat_attack_t
   shred_t( druid_t* p, util::string_view options_str )
     : cat_attack_t( "shred", p, p->find_class_spell( "Shred" ), options_str ), stealth_mul( 0.0 ), stealth_cp( 0.0 )
   {
-    if ( p->find_rank_spell( "Shred", "Rank 2" )->ok() )
-      bleed_mul = data().effectN( 4 ).percent();
-
-    if ( p->find_rank_spell( "Shred", "Rank 3" )->ok() )
+    // Stealth multiplier (from Rank 2) and bleed multplier (from Rank 3) are granted by feral affinity.
+    if ( p->find_rank_spell( "Shred", "Rank 2" )->ok() ||
+         ( p->talent.feral_affinity->ok() && p->find_spell( 231057 )->ok() ) )
+    {
       stealth_mul = data().effectN( 3 ).percent();
+    }
+
+    if ( p->find_rank_spell( "Shred", "Rank 3" )->ok() ||
+         ( p->talent.feral_affinity->ok() && p->find_spell( 231063 )->ok() ) )
+    {
+      bleed_mul = data().effectN( 4 ).percent();
+    }
 
     stealth_cp = p->find_rank_spell( "Shred", "Rank 4" )->effectN( 1 ).base_value();
   }
