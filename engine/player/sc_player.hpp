@@ -537,6 +537,7 @@ struct player_t : public actor_t
 
     // 9.1 Legendary Party Buffs
     buff_t* pact_of_the_soulstalkers; // Kyrian Hunter Legendary
+    buff_t* kindred_affinity;         // Kyrian Druid Legendary
 
     // 9.1 Shards of Domination
     buff_t* coldhearted; // Shard of Cor
@@ -575,6 +576,7 @@ struct player_t : public actor_t
     std::vector<timespan_t> conquerors_banner;
     std::vector<timespan_t> rallying_cry;
     std::vector<timespan_t> pact_of_the_soulstalkers;
+    std::vector<timespan_t> kindred_affinity;
   } external_buffs;
 
 

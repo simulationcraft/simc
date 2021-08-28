@@ -4686,6 +4686,18 @@ void player_t::combat_begin()
   add_timed_buff_triggers( external_buffs.rallying_cry, buffs.rallying_cry );
   add_timed_buff_triggers( external_buffs.pact_of_the_soulstalkers, buffs.pact_of_the_soulstalkers );
 
+  if ( buffs.kindred_affinity && !external_buffs.kindred_affinity.empty() )
+  {
+    // this is a persistent buff with no proc chance, so trigger() will return false
+    buffs.kindred_affinity->increment();
+
+    for ( auto t : external_buffs.kindred_affinity )
+    {
+      make_event( *sim, t, [ this ] { buffs.kindred_affinity->increment(); } );
+      make_event( *sim, t + 10_s, [ this ] { buffs.kindred_affinity->decrement(); } );
+    }
+  }
+
   if ( buffs.windfury_totem )
   {
     buffs.windfury_totem->trigger();
@@ -11386,6 +11398,7 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.conquerors_banner", external_buffs.conquerors_banner ) );
   add_option( opt_external_buff_times( "external_buffs.rallying_cry", external_buffs.rallying_cry ) );
   add_option( opt_external_buff_times( "external_buffs.pact_of_the_soulstalkers", external_buffs.pact_of_the_soulstalkers ) ); // 9.1 Kyrian Hunter Legendary
+  add_option( opt_external_buff_times( "external_buffs.kindred_affinity", external_buffs.kindred_affinity ) ) ;
 
   // Azerite options
   if ( ! is_enemy() && ! is_pet() )

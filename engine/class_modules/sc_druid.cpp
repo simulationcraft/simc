@@ -1574,50 +1574,74 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
 // Kindred Affinity =========================================================
 // Note the base is stat_buff_t to allow for easier handling of the Kyrian case, which gives 100 mastery rating instead
 // of stat %
-struct kindred_affinity_buff_t : public druid_buff_t<stat_buff_t>
+struct kindred_affinity_base_t : public stat_buff_t
 {
-  kindred_affinity_buff_t( druid_t& p ) : druid_buff_t<stat_buff_t>( p, "kindred_affinity", p.find_spell( 357564 ) )
+  kindred_affinity_base_t( player_t* p, util::string_view n ) : stat_buff_t( p, n, p->find_spell( 357564 ) )
   {
-    if ( !p.legendary.kindred_affinity->ok() )
-      return;
-
     set_max_stack( 2 );  // artificially allow second stack to simulate doubling during kindred empowerment
+  }
 
-    p.buff.kindred_empowerment_energize->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      if ( new_ )
-        increment();
-      else
-        decrement();
-    } );
-
-    if ( util::str_compare_ci( p.kindred_affinity_covenant, "kyrian" ) ||
-         util::str_compare_ci( p.kindred_affinity_covenant, "mastery" ) )
+  void init_cov( covenant_e cov )
+  {
+    if ( cov == covenant_e::KYRIAN )
     {
       // Kyrian uses modify_rating(189) subtype for mastery rating, which is automatically parsed in stat_buff_t ctor,
       // so we don't need to process further.
       return;
     }
 
-    // Clear the mastery rating effect for Kyrian that is automatically parsed from spell data
     stats.clear();
 
-    if ( util::str_compare_ci( p.kindred_affinity_covenant, "necrolord" ) ||
-         util::str_compare_ci( p.kindred_affinity_covenant, "versatility" ) )
+    if ( cov == covenant_e::NECROLORD )
     {
       set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
       set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
     }
-    else if ( util::str_compare_ci( p.kindred_affinity_covenant, "night_fae" ) ||
-              util::str_compare_ci( p.kindred_affinity_covenant, "haste" ) )
+    else if ( cov == covenant_e::NIGHT_FAE )
     {
       set_default_value_from_effect_type( A_HASTE_ALL );
       set_pct_buff_type( STAT_PCT_BUFF_HASTE );
     }
-    else if ( util::str_compare_ci( p.kindred_affinity_covenant, "venthyr" ) ||
-              util::str_compare_ci( p.kindred_affinity_covenant, "crit" ) )
+    else if ( cov == covenant_e::VENTHYR )
     {
       set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
       set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+    }
+    else
+    {
+      sim->error( "invalid bonded covenant for Kindred Affinity" );
+    }
+  }
+};
+
+struct kindred_affinity_buff_t : public kindred_affinity_base_t
+{
+  kindred_affinity_buff_t( druid_t& p ) : kindred_affinity_base_t( &p, "kindred_affinity" )
+  {
+    if ( !p.legendary.kindred_affinity->ok() )
+      return;
+
+    covenant_e cov;
+
+    if ( util::str_compare_ci( p.kindred_affinity_covenant, "kyrian" ) ||
+         util::str_compare_ci( p.kindred_affinity_covenant, "mastery" ) )
+    {
+      cov = covenant_e::KYRIAN;
+    }
+    else if ( util::str_compare_ci( p.kindred_affinity_covenant, "necrolord" ) ||
+              util::str_compare_ci( p.kindred_affinity_covenant, "versatility" ) )
+    {
+      cov = covenant_e::NECROLORD;
+    }
+    else if ( util::str_compare_ci( p.kindred_affinity_covenant, "night_fae" ) ||
+              util::str_compare_ci( p.kindred_affinity_covenant, "haste" ) )
+    {
+      cov = covenant_e::NIGHT_FAE;
+    }
+    else if ( util::str_compare_ci( p.kindred_affinity_covenant, "venthyr" ) ||
+              util::str_compare_ci( p.kindred_affinity_covenant, "crit" ) )
+    {
+      cov = covenant_e::VENTHYR;
     }
     else
     {
@@ -1625,8 +1649,27 @@ struct kindred_affinity_buff_t : public druid_buff_t<stat_buff_t>
           "Invalid option for druid.kindred_affinity_covenent. Valid options are 'kyrian' 'necrolord' 'night_fae' "
           "'venthyr' 'mastery' 'haste' 'versatility' 'crit'" );
     }
+
+    init_cov( cov );
+
+    p.buff.kindred_empowerment_energize->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        increment();
+      else
+        decrement();
+    } );
   }
 };
+
+struct kindred_affinity_external_buff_t : public kindred_affinity_base_t
+{
+  kindred_affinity_external_buff_t( player_t* p ) : kindred_affinity_base_t( p, "kindred_affinity_external" )
+  {
+    if ( p->covenant )
+      init_cov( p->covenant->type() );
+  }
+};
+
 }  // end namespace buffs
 
 struct buff_effect_t
@@ -10740,12 +10783,16 @@ struct druid_module_t : public module_t
     return p;
   }
   bool valid() const override { return true; }
+
   void init( player_t* p ) const override
   {
     p->buffs.stampeding_roar = make_buff( p, "stampeding_roar", p->find_spell( 77764 ) )
       ->set_cooldown( 0_ms )
       ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
+
+    p->buffs.kindred_affinity = make_buff<buffs::kindred_affinity_external_buff_t>( p );
   }
+
   void static_init() const override {}
 
   void register_hotfixes() const override
