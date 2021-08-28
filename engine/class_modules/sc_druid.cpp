@@ -1672,6 +1672,7 @@ public:
 
   bool triggers_galactic_guardian;
   bool is_auto_attack;
+  bool break_stealth;
 
   // !!! WARNING: free_cast is CLEARED from the action and set on the state upon execute() !!!
   // !!! You MUST use get_state_free_cast( state ) to get the value from the STATE, not the action !!!
@@ -1695,6 +1696,7 @@ public:
       autoshift( 0 ),
       triggers_galactic_guardian( true ),
       is_auto_attack( false ),
+      break_stealth( !ab::data().flags( spell_attribute::SX_NO_STEALTH_BREAK ) ),
       free_cast( free_cast_e::NONE ),
       free_cast_stats(),
       orig_stats( ab::stats ),
@@ -1782,6 +1784,12 @@ public:
 
       if ( !ab::background && ab::trigger_gcd > 0_ms && p()->buff.ravenous_frenzy->check() )
         p()->buff.ravenous_frenzy->trigger();
+    }
+
+    if ( break_stealth )
+    {
+      p()->buff.prowl->expire();
+      p()->buffs.shadowmeld->expire();
     }
   }
 
@@ -3180,9 +3188,6 @@ public:
 
     if ( harmful )
     {
-      p()->buff.prowl->expire();
-      p()->buffs.shadowmeld->expire();
-
       // Track benefit of damage buffs
       p()->buff.tigers_fury->up();
       p()->buff.savage_roar->up();
@@ -5925,10 +5930,9 @@ struct prowl_t : public druid_spell_t
   {
     autoshift = form_mask = CAT_FORM;
 
-    trigger_gcd           = timespan_t::zero();
-    use_off_gcd           = true;
-    harmful               = false;
-    ignore_false_positive = true;
+    trigger_gcd = 0_ms;
+    use_off_gcd = ignore_false_positive = true;
+    harmful = break_stealth = false;
   }
 
   void execute() override
