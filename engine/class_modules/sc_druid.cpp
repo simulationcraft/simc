@@ -8096,12 +8096,15 @@ void druid_t::init_base_stats()
   resources.active_resource[ RESOURCE_RAGE ]         = specialization() == DRUID_GUARDIAN ||
                                                      ( talent.guardian_affinity->ok() && affinity_resources );
   resources.active_resource[ RESOURCE_MANA ]         = specialization() == DRUID_RESTORATION ||
-                                                     ( talent.balance_affinity->ok() && ( affinity_resources || owlweave_bear ) ) ||
+                                                       owlweave_bear || owlweave_cat ||
+                                                     ( talent.balance_affinity->ok() && affinity_resources ) ||
                                                      ( talent.restoration_affinity->ok() && affinity_resources );
   resources.active_resource[ RESOURCE_COMBO_POINT ]  = specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION ||
-                                                     ( talent.feral_affinity->ok() && ( affinity_resources || catweave_bear ) );
+                                                       catweave_bear ||
+                                                     ( talent.feral_affinity->ok() && affinity_resources );
   resources.active_resource[ RESOURCE_ENERGY ]       = specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION ||
-                                                     ( talent.feral_affinity->ok() && ( affinity_resources || catweave_bear ) );
+                                                       catweave_bear ||
+                                                     ( talent.feral_affinity->ok() && affinity_resources || catweave_bear );
   resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
 
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
