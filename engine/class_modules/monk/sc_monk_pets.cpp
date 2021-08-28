@@ -1296,7 +1296,7 @@ private:
 public:
   call_to_arms_xuen_pet_t( monk_t* owner ) : monk_pet_t( owner, "call_to_arms_xuen_the_white_tiger", PET_XUEN, false, true )
   {
-    npc_id                      = 180741;
+    npc_id                      = o()->passives.call_to_arms_invoke_xuen->effectN( 1 ).misc_value1();
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );

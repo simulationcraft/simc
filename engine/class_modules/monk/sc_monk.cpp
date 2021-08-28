@@ -67,10 +67,6 @@ struct monk_action_t : public Base
   bool may_proc_bron;
   proc_t* bron_proc;
 
-  // Shard of Zed
-  // Uses the exact same trigger conditions as Bron.
-  proc_t* shard_of_zed_proc;
-
   // Affect flags for various dynamic effects
   struct
   {
@@ -93,7 +89,6 @@ public:
       trigger_bountiful_brew( false ),
       may_proc_bron( false ),
       bron_proc( nullptr ),
-      shard_of_zed_proc( nullptr ),
       affected_by()
   {
     ab::may_crit = true;
@@ -177,7 +172,6 @@ public:
     if ( may_proc_bron )
     {
       bron_proc = p()->get_proc( std::string( "Bron's Call to Action: " ) + full_name() );
-      shard_of_zed_proc  = p()->get_proc( std::string( "Shard of Zed: " ) + full_name() );
     }
   }
 
@@ -6944,66 +6938,6 @@ void monk_t::init_special_effects()
 
       return false;
   } );
-
-  const dbc_proc_callback_t::trigger_fn_t& shard_of_zed = [ this ]( const dbc_proc_callback_t* cb, action_t* a,
-                                                                    action_state_t* ) {
-    if ( cb->cooldown->down() )
-      return false;
-
-    switch ( a->type )
-    {
-      case ACTION_ATTACK:
-      {
-        auto attack = dynamic_cast<monk::actions::monk_melee_attack_t*>( a );
-        if ( attack && attack->may_proc_bron )
-        {
-          attack->shard_of_zed_proc->occur();
-          return true;
-        }
-        break;
-      }
-      case ACTION_SPELL:
-      {
-        auto spell = dynamic_cast<monk::actions::monk_spell_t*>( a );
-        if ( spell && spell->may_proc_bron )
-        {
-          spell->shard_of_zed_proc->occur();
-          return true;
-        }
-        break;
-      }
-      case ACTION_HEAL:
-      {
-        auto heal = dynamic_cast<monk::actions::monk_heal_t*>( a );
-        if ( heal && heal->may_proc_bron )
-        {
-          heal->shard_of_zed_proc->occur();
-          return true;
-        }
-        break;
-      }
-      case ACTION_ABSORB:
-      {
-        auto absorb = dynamic_cast<monk::actions::monk_absorb_t*>( a );
-        if ( absorb && absorb->may_proc_bron )
-        {
-          absorb->shard_of_zed_proc->occur();
-          return true;
-        }
-        break;
-      }
-      default:
-        break;
-    }
-
-    return false;
-  };
-
-  callbacks.register_callback_trigger_function( 355766, dbc_proc_callback_t::trigger_fn_type::TRIGGER, shard_of_zed );
-  callbacks.register_callback_trigger_function( 357040, dbc_proc_callback_t::trigger_fn_type::TRIGGER, shard_of_zed );
-  callbacks.register_callback_trigger_function( 357057, dbc_proc_callback_t::trigger_fn_type::TRIGGER, shard_of_zed );
-  callbacks.register_callback_trigger_function( 357067, dbc_proc_callback_t::trigger_fn_type::TRIGGER, shard_of_zed );
-  callbacks.register_callback_trigger_function( 357077, dbc_proc_callback_t::trigger_fn_type::TRIGGER, shard_of_zed );
 }
 
 // monk_t::init_special_effect ============================================
@@ -7019,12 +6953,6 @@ void monk_t::init_special_effect( special_effect_t& effect )
     //
     // Bron's Call to Action
     case 333950:
-    // Shard of Zed
-    case 355766:
-    case 357040:
-    case 357057:
-    case 357067:
-    case 357077:
       effect.proc_flags2_ |= PF2_CAST;
       break;
     default:
