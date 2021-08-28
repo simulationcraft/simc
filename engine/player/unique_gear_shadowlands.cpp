@@ -3488,7 +3488,11 @@ void blood_link( special_effect_t& effect )
 
     blood_link_dot_t( const special_effect_t& e )
       : proc_spell_t( "blood_link_dot", e.player, e.player->find_spell( 355804 ) ), last_target()
-    {}
+    {
+      // spell data has physical school, which causes this dummy holder dot to be counted as a bleed.
+      // overwrite as shadow to match the damage spell.
+      school = school_e::SCHOOL_SHADOW;
+    }
 
     timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t duration ) const override
     {
