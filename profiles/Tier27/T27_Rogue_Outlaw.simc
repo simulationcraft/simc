@@ -124,9 +124,9 @@ head=cap_of_writhing_malevolence,id=186292,bonus_id=7187/1498,gem_id=187312
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498,gem_id=173129
 shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187315
 back=cloak_of_scarred_honor,id=186289,bonus_id=7187/1498
-chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498,gem_id=187319,enchant=eternal_stats
+chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498,gem_id=187317,enchant=eternal_stats
 wrists=risen_monstrosity_cuffs,id=178741,bonus_id=6536/1566/6646,gem_id=173129
-hands=loyal_kvaldirs_handwraps,id=186295,bonus_id=6805/7187/1498,gem_id=187320
+hands=loyal_kvaldirs_handwraps,id=186295,bonus_id=6805/7187/1498,gem_id=187316
 waist=windrunners_baldric,id=186332,bonus_id=7187/1498,gem_id=173129
 legs=elite_aranakk_breeches,id=186331,bonus_id=6805/7187/1498
 feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187318,enchant=eternal_agility
