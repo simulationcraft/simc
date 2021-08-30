@@ -1309,6 +1309,7 @@ void warlock_t::apl_precombat()
   {
     precombat->add_talent( this, "Soul Fire" );
     precombat->add_action( "incinerate,if=!talent.soul_fire.enabled" );
+    precombat->add_action( "use_item,name=shadowed_orb_of_torment" );
   }
   if ( specialization() == WARLOCK_AFFLICTION )
   {
