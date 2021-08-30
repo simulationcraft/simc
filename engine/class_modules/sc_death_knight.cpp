@@ -5569,6 +5569,26 @@ struct howling_blast_t : public death_knight_spell_t
     return death_knight_spell_t::cost();
   }
 
+  void schedule_execute( action_state_t* state )
+  {
+    // If we have rime, and no runes left, and rime is expiring on the same ms timestamp as we would howling blast,
+    // do not queue howling blast.  This avoids a crash/assert where the buff would get removed during the actions
+    // executing, before howling blast goes off.  However, if we do have runes left, we will allow howling blast to
+    // get fired off, to more accurately reflect what a player would do
+    if ( p() -> buffs.rime -> check() && p() -> _runes.runes_full() == 0 && p() -> buffs.rime -> remains() == 0_ms )
+    {
+      sim->print_debug( "{} action={} attempted to schedule howling blast on the same tick rime expires {}",
+        *player, *this, *target );
+
+      if ( state )
+      {
+        action_state_t::release( state );
+      }
+      return;
+    }
+    death_knight_spell_t::schedule_execute( state );
+  }
+
   void execute() override
   {
     death_knight_spell_t::execute();
