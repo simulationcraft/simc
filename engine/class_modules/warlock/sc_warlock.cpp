@@ -1302,7 +1302,7 @@ void warlock_t::apl_precombat()
   {
     precombat->add_action( "demonbolt" );
     //tested different values, even with gfg/vf its better to summon tyrant sooner in the opener
-    precombat->add_action( "variable,name=first_tyrant_time,op=set,value=12" );
+    precombat->add_action( "variable,name=first_tyrant_time,op=set,value=10" );
   }
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
