@@ -1202,6 +1202,7 @@ void warlock_t::create_options_demonology()
 void warlock_t::create_apl_demonology()
 {
   action_priority_list_t* def    		= get_action_priority_list( "default" );
+  action_priority_list_t* open    		= get_action_priority_list( "opener" );
   action_priority_list_t* cov   		= get_action_priority_list( "covenant_ability" );
   action_priority_list_t* tyrant		= get_action_priority_list( "tyrant_setup" );
   action_priority_list_t* ogcd    		= get_action_priority_list( "ogcd" );
@@ -1211,6 +1212,7 @@ void warlock_t::create_apl_demonology()
   action_priority_list_t* dmg    		= get_action_priority_list( "pure_damage_trinks" );
 
   def->add_action( "call_action_list,name=trinkets" );
+  def->add_action( "call_action_list,name=opener,if=time<variable.first_tyrant_time" );
   def->add_action( "interrupt,if=target.debuff.casting.react" );
   def->add_action( "doom,if=refreshable" );
   def->add_action( "call_action_list,name=covenant_ability,if=soulbind.grove_invigoration|soulbind.field_of_blossoms|soulbind.combat_meditation|covenant.necrolord" );
@@ -1244,6 +1246,12 @@ void warlock_t::create_apl_demonology()
   def->add_action( "doom,cycle_targets=1,if=refreshable&time>variable.first_tyrant_time" );
   def->add_action( "shadow_bolt" );
 
+  open->add_action( "soul_rot,if=soulbind.grove_invigoration" );
+  open->add_action( "grimoire_felguard" );
+  open->add_action( "summon_vilefiend" );
+  open->add_action( "shadow_bolt,if=soul_shard<5&cooldown.call_dreadstalkers.up" );
+  open->add_action( "call_dreadstalkers" );
+
   cov->add_action( "soul_rot,if=soulbind.grove_invigoration&(cooldown.summon_demonic_tyrant.remains_expected<20|cooldown.summon_demonic_tyrant.remains_expected>30)" );
   cov->add_action( "soul_rot,if=soulbind.field_of_blossoms&pet.demonic_tyrant.active" );
   cov->add_action( "soul_rot,if=soulbind.wild_hunt_tactics" );
@@ -1257,7 +1265,7 @@ void warlock_t::create_apl_demonology()
   tyrant->add_action( "nether_portal,if=cooldown.summon_demonic_tyrant.remains_expected<15" );
   tyrant->add_action( "grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains_expected<17-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&(cooldown.call_dreadstalkers.remains<17-(action.summon_demonic_tyrant.execute_time+action.summon_vilefiend.execute_time+action.shadow_bolt.execute_time)|pet.dreadstalker.remains>cooldown.summon_demonic_tyrant.remains_expected+action.summon_demonic_tyrant.execute_time)" );
   tyrant->add_action( "summon_vilefiend,if=(cooldown.summon_demonic_tyrant.remains_expected<15-(action.summon_demonic_tyrant.execute_time)&(cooldown.call_dreadstalkers.remains<15-(action.summon_demonic_tyrant.execute_time+action.summon_vilefiend.execute_time)|pet.dreadstalker.remains>cooldown.summon_demonic_tyrant.remains_expected+action.summon_demonic_tyrant.execute_time))|(!runeforge.wilfreds_sigil_of_superior_summoning&cooldown.summon_demonic_tyrant.remains_expected>40)" );
-  tyrant->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected<12-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&time>variable.first_tyrant_time-12-action.call_dreadstalkers.execute_time+action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time" );
+  tyrant->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected<12-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)" );
   tyrant->add_action( "summon_demonic_tyrant,if=time>variable.first_tyrant_time&(pet.dreadstalker.active&pet.dreadstalker.remains>action.summon_demonic_tyrant.execute_time)&(!talent.summon_vilefiend.enabled|pet.vilefiend.active)&(soul_shard=0|(pet.dreadstalker.active&pet.dreadstalker.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(pet.vilefiend.active&pet.vilefiend.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(buff.grimoire_felguard.up&buff.grimoire_felguard.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time))" );
 
   ogcd->add_action( "berserking" );
