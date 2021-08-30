@@ -1743,7 +1743,7 @@ public:
     }
 
     // Trigger the 1ms delayed breaking of all stealth buffs
-    if ( ab::harmful && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD ) )
+    if ( p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD ) && !ab::data().flags( spell_attribute::SX_NO_STEALTH_BREAK ) )
     {
       p()->break_stealth();
     }
@@ -2412,13 +2412,14 @@ struct backstab_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
+    // 08/30/2021 -- Logs appear to show updated behavior of PV and The Rotten benefitting WM procs
     if ( p()->buffs.the_rotten->up() )
     {
       trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->check_value() ), p()->gains.the_rotten );
-      p()->buffs.the_rotten->expire();
+      p()->buffs.the_rotten->expire( 1_ms );
     }
 
-    p()->buffs.perforated_veins->expire();
+    p()->buffs.perforated_veins->expire( 1_ms );
   }
 
   void impact( action_state_t* state ) override
@@ -2645,7 +2646,7 @@ struct detection_t : public rogue_spell_t
     rogue_spell_t( name, p, p -> find_class_spell( "Detection" ), options_str )
   {
     gcd_type = gcd_haste_type::ATTACK_HASTE;
-    min_gcd = timespan_t::from_millis(750); // Force 750ms min gcd because rogue player base has a 1s min.
+    min_gcd = 750_ms; // Force 750ms min gcd because rogue player base has a 1s min.
   }
 };
 
@@ -2975,13 +2976,14 @@ struct gloomblade_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
+    // 08/30/2021 -- Logs appear to show updated behavior of PV and The Rotten benefitting WM procs
     if ( p()->buffs.the_rotten->up() )
     {
       trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->check_value() ), p()->gains.the_rotten );
-      p()->buffs.the_rotten->expire();
+      p()->buffs.the_rotten->expire( 1_ms );
     }
 
-    p()->buffs.perforated_veins->expire();
+    p()->buffs.perforated_veins->expire( 1_ms );
   }
 
   void impact( action_state_t* state ) override
@@ -3698,12 +3700,17 @@ struct shadowstrike_t : public rogue_attack_t
       p()->buffs.premeditation->expire();
     }
 
-    p()->buffs.perforated_veins->trigger();
+    // Only primary casts trigger Perforated Veins, not Weaponmaster or Akaari procs
+    if ( !is_secondary_action() )
+    {
+      p()->buffs.perforated_veins->trigger();
+    }
 
+    // 08/30/2021 -- Logs appear to show updated behavior of PV and The Rotten benefitting WM procs
     if ( p()->buffs.the_rotten->up() )
     {
       trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->check_value() ), p()->gains.the_rotten );
-      p()->buffs.the_rotten->expire();
+      p()->buffs.the_rotten->expire( 1_ms );
     }
   }
 
@@ -5881,10 +5888,10 @@ void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* 
   p()->procs.weaponmaster->occur();
   p()->cooldowns.weaponmaster->start( p()->talent.weaponmaster->internal_cooldown() );
 
-  p()->sim->print_debug( "{} procs weaponmaster for {}", *p(), *this );
+  p()->sim->print_log( "{} procs weaponmaster for {}", *p(), *this );
 
   // Direct damage re-computes on execute
-  action->trigger_secondary_action( state->target, cast_state( state )->get_combo_points(), 100_ms );
+  action->trigger_secondary_action( state->target, cast_state( state )->get_combo_points() );
 }
 
 template <typename Base>
@@ -8595,17 +8602,17 @@ void rogue_t::break_stealth()
   // Expiry delayed by 1ms in order to have it processed on the next tick. This seems to be what the server does.
   if ( player_t::buffs.shadowmeld->check() )
   {
-    player_t::buffs.shadowmeld->expire( timespan_t::from_millis( 1 ) );
+    player_t::buffs.shadowmeld->expire( 1_ms );
   }
 
   if ( buffs.stealth->check() )
   {
-    buffs.stealth->expire( timespan_t::from_millis( 1 ) );
+    buffs.stealth->expire( 1_ms );
   }
 
   if ( buffs.vanish->check() )
   {
-    buffs.vanish->expire( timespan_t::from_millis( 1 ) );
+    buffs.vanish->expire( 1_ms );
   }
 }
 
