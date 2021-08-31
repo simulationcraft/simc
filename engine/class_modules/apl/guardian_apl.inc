@@ -67,14 +67,13 @@ catweave->add_action( "cat_form,if=!buff.cat_form.up" );
 catweave->add_action( "rake,if=buff.prowl.up" );
 catweave->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up" );
 catweave->add_action( "empower_bond,if=druid.catweave_bear" );
-catweave->add_action( "rake,if=dot.rake.refreshable&combo_points<4" );
+catweave->add_action( "rake,if=dot.rake.refreshable|energy<45" );
 catweave->add_action( "rip,if=dot.rip.refreshable&combo_points>=1" );
 catweave->add_action( "convoke_the_spirits,if=druid.catweave_bear" );
 catweave->add_action( "ferocious_bite,if=combo_points>=4&energy>50" );
 catweave->add_action( "adaptive_swarm,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)" );
 catweave->add_action( "fleshcraft,if=soulbind.pustule_eruption.enabled&energy<35|soulbind.volatile_solvent.enabled,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent&energy<35" );
-catweave->add_action( "swipe,if=!runeforge.draught_of_deep_focus&!covenant.venthyr|(!runeforge.draught_of_deep_focus&!buff.heart_of_the_wild.up)" );
-catweave->add_action( "rake" );
+catweave->add_action( "swipe" );
 
 cconvoke->add_action( "cat_form" );
 cconvoke->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up" );
