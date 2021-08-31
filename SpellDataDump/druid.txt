@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39804 Live (hotfix 2021-08-27/39804, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.39804 Live (hotfix 2021-08-31/39804, no-networking)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
