@@ -3470,6 +3470,10 @@ void blood_link( special_effect_t& effect )
   if ( rank == 0 )
     return;
 
+  auto buff = buff_t::find( effect.player, "blood_link" );
+  if ( buff )
+    return;
+
   struct blood_link_damage_t : proc_spell_t
   {
     blood_link_damage_t( const special_effect_t& e ) :
@@ -3513,8 +3517,6 @@ void blood_link( special_effect_t& effect )
     }
   };
 
-  blood_link_dot_t* dot_action = debug_cast<blood_link_dot_t*>( create_proc_action<blood_link_dot_t>( "blood_link", effect ) );
-
   switch ( rank )
   {
     default: effect.spell_id = 355761; break;
@@ -3524,22 +3526,20 @@ void blood_link( special_effect_t& effect )
     case 5:  effect.spell_id = 359422; break;
   }
 
-  auto buff = buff_t::find( effect.player, "blood_link" );
-  if ( !buff )
-  {
-    auto tick_action = create_proc_action<blood_link_damage_t>( "blood_link_tick", effect );
-    buff = make_buff( effect.player, "blood_link", effect.driver() )
-             ->set_quiet( true )
-             ->set_can_cancel( false )
-             ->set_tick_callback( [ tick_action, dot_action ] ( buff_t*, int, timespan_t )
-               {
-                  if ( dot_action->get_dot( dot_action->last_target )->is_ticking() )
-                  {
-                    tick_action->set_target( dot_action->last_target );
-                    tick_action->execute();
-                  }
-               } );
-  }
+  blood_link_dot_t* dot_action = debug_cast<blood_link_dot_t*>( create_proc_action<blood_link_dot_t>( "blood_link_dot", effect ) );
+
+  auto tick_action = create_proc_action<blood_link_damage_t>( "blood_link", effect );
+  buff = make_buff( effect.player, "blood_link", effect.driver() )
+           ->set_quiet( true )
+           ->set_can_cancel( false )
+           ->set_tick_callback( [ tick_action, dot_action ] ( buff_t*, int, timespan_t )
+             {
+                if ( dot_action->get_dot( dot_action->last_target )->is_ticking() )
+                {
+                  tick_action->set_target( dot_action->last_target );
+                  tick_action->execute();
+                }
+             } );
 
   effect.execute_action = dot_action;
   new dbc_proc_callback_t( effect.player, effect );
@@ -3563,6 +3563,10 @@ void winds_of_winter( special_effect_t& effect )
 {
   auto rank = shards_of_domination::rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_FROST );
   if ( rank == 0 )
+    return;
+
+  auto buff = buff_t::find( effect.player, "winds_of_winter" );
+  if ( buff )
     return;
 
   struct winds_of_winter_damage_t : proc_spell_t
@@ -3641,13 +3645,10 @@ void winds_of_winter( special_effect_t& effect )
 
   effect.proc_flags2_ = PF2_CRIT;
   auto damage = create_proc_action<winds_of_winter_damage_t>( "winds_of_winter", effect );
-  auto buff = buff_t::find( effect.player, "winds_of_winter" );
-  if ( !buff )
-  {
-    buff = make_buff( effect.player, "winds_of_winter", effect.driver() )
-             ->set_quiet( true )
-             ->set_can_cancel( false );
-  }
+
+  buff = make_buff( effect.player, "winds_of_winter", effect.driver() )
+           ->set_quiet( true )
+           ->set_can_cancel( false );
 
   new winds_of_winter_cb_t( effect, damage, buff );
   effect.player->register_combat_begin( [ buff ]( player_t* p )
@@ -3678,10 +3679,14 @@ void chaos_bane( special_effect_t& effect )
 
   auto rank = shards_of_domination::rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_UNHOLY );
 
+  auto buff = buff_t::find( effect.player, "chaos_bane" );
+  if ( buff )
+    return;
+
   // If we are running with rune words disbaled, we need to still create the fallback buff for apl use
   if ( effect.player->sim->shadowlands_opts.enable_rune_words == 0 || rank == 0 )
   {
-    if ( !buff_t::find( effect.player, "chaos_bane" ) )
+    if ( !buff )
       make_buff( effect.player, "chaos_bane" )->set_chance( 0.0 );
 
     return;
@@ -3734,15 +3739,11 @@ void chaos_bane( special_effect_t& effect )
     case 5:  effect.spell_id = 359437; break;
   }
 
-  auto buff = buff_t::find( effect.player, "chaos_bane" );
-  if ( !buff )
-  {
-    buff = make_buff<stat_buff_t>( effect.player, "chaos_bane", effect.player->find_spell( 356043 ) )
-      // coeff in driver eff#4
-      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
-                  effect.driver()->effectN( 4 ).average( effect.player ) )
-      ->set_can_cancel( false );
-  }
+  buff = make_buff<stat_buff_t>( effect.player, "chaos_bane", effect.player->find_spell( 356043 ) )
+    // coeff in driver eff#4
+    ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
+                effect.driver()->effectN( 4 ).average( effect.player ) )
+    ->set_can_cancel( false );
 
   auto proc = create_proc_action<chaos_bane_t>( "chaos_bane", effect, buff );
   effect.custom_buff = buff_t::find( effect.player, "soul_fragment" );
