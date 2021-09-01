@@ -2008,14 +2008,30 @@ void murmurs_in_the_dark( special_effect_t& effect )
 // id=353492 driver
 void forbidden_necromantic_tome( special_effect_t& effect )  // NYI: Battle Rezz Ghoul
 {
-  auto buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "forbidden_knowledge" ) );
+
+  struct forbidden_necromantic_tome_callback_t : public dbc_proc_callback_t
+  {
+    using dbc_proc_callback_t::dbc_proc_callback_t;
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      if ( proc_buff->check() == proc_buff->max_stack() )
+        return;
+
+      proc_buff->trigger();
+    }
+  };
+
+  auto buff = debug_cast< stat_buff_t* >( buff_t::find( effect.player, "forbidden_knowledge" ) );
+
   if ( !buff )
   {
     buff = make_buff<stat_buff_t>( effect.player, "forbidden_knowledge", effect.player -> find_spell( 356029 ))
            ->add_stat( STAT_CRIT_RATING, effect.driver() ->effectN( 1 ).average( effect.item ) );
+
     
     effect.custom_buff = buff;
-    new dbc_proc_callback_t( effect.player, effect );
+    new forbidden_necromantic_tome_callback_t( effect.player, effect );
   }
 }
 
