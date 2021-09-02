@@ -1,4 +1,4 @@
-// Runeforge legendary bonuses, wow build 9.1.0.39413
+// Runeforge legendary bonuses, wow build 9.1.5.39977
 static const std::array<runeforge_legendary_entry_t, 726> __ptr_runeforge_legendary_data { {
   { 6823, 64, 327508, 0x000000c0, "Slick Ice" },
   { 6828, 64, 327284, 0x00110020, "Cold Front" },
@@ -41,7 +41,7 @@ static const std::array<runeforge_legendary_entry_t, 726> __ptr_runeforge_legend
   { 6948, 252, 334724, 0x00000140, "Grip of the Everlasting" },
   { 6949, 252, 334836, 0x000000c0, "Reanimated Shambler" },
   { 6950, 252, 334888, 0x00010080, "Frenzied Monstrosity" },
-  { 6951, 252, 334898, 0x00000402, "Death's Certainty" },
+  { 6951, 252, 334898, 0x00000406, "Death's Certainty" },
   { 6952, 252, 334949, 0x00010020, "Deadliest Coil" },
   { 6953, 250, 334974, 0x00000024, "Superstrain" },
   { 6953, 251, 334974, 0x00000024, "Superstrain" },
