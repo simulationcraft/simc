@@ -1665,8 +1665,7 @@ struct kindred_affinity_external_buff_t : public kindred_affinity_base_t
 {
   kindred_affinity_external_buff_t( player_t* p ) : kindred_affinity_base_t( p, "kindred_affinity_external" )
   {
-    if ( p->covenant )
-      init_cov( p->covenant->type() );
+    init_cov( p->covenant->type() );
   }
 };
 
@@ -10790,7 +10789,8 @@ struct druid_module_t : public module_t
       ->set_cooldown( 0_ms )
       ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
 
-    p->buffs.kindred_affinity = make_buff<buffs::kindred_affinity_external_buff_t>( p );
+    if ( p->covenant && p->covenant->enabled() )
+      p->buffs.kindred_affinity = make_buff<buffs::kindred_affinity_external_buff_t>( p );
   }
 
   void static_init() const override {}
