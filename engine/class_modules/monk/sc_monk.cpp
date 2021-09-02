@@ -2355,12 +2355,13 @@ struct keg_smash_t : public monk_melee_attack_t
   {
     double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
 
-    if ( state->n_targets > p()->spec.keg_smash->effectN( 7 ).base_value() )
+    auto target_cap = p()->spec.keg_smash->effectN( 7 ).base_value();
+    if ( state->n_targets > target_cap )
       // this is the closest we can come up without Blizzard flat out giving us the function
       // Primary takes the 100% damage
       // Secondary targets get reduced damage
       if ( state->target != target )
-        cam *= std::sqrt( 5 / state->n_targets );
+        cam *= std::sqrt( target_cap / state->n_targets );
 
     return cam;
   }
