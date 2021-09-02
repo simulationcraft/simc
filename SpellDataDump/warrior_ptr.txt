@@ -10866,7 +10866,7 @@ Name             : Merciless Bonegrinder (id=335260) [Spell Family (4), Passive,
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
-Conduit Id       : 14 (values=50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120)
+Conduit Id       : 14 (values=100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11304,7 +11304,7 @@ Spell Type       : None
 Spell Level      : 60
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
-Conduit Id       : 52 (values=160, 176, 192, 208, 224, 240, 256, 272, 288, 304, 320, 336, 352, 368, 384)
+Conduit Id       : 52 (values=240, 264, 288, 312, 336, 360, 384, 408, 432, 456, 480, 504, 528, 552, 576)
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -11389,7 +11389,7 @@ Name             : Harrowing Punishment (id=339370) [Spell Family (4), Passive, 
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
-Conduit Id       : 165 (values=1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9)
+Conduit Id       : 165 (values=2.25, 2.4, 2.55, 2.7, 2.85, 3, 3.15, 3.3, 3.45, 3.6, 3.75, 3.9, 4.05, 4.2, 4.35)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11809,8 +11809,8 @@ Effects          :
 #2 (id=886345)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=886346)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Condemn extends the duration of $?c1[Colossus Smash by ${$s1/1000}.1 sec]?c2[Recklessness by ${$s2/1000}.1 sec][Last Stand by ${$s3/1000} sec].
+                   Base Value: 2500 | Scaled Value: 2500 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Condemn extends the duration of $?c1[Colossus Smash by ${$s1/1000}.1 sec]?c2[Recklessness by ${$s2/1000}.1 sec][Avatar by ${$s3/1000} sec].
 
 
 Name             : Nature's Fury (id=354161) [Spell Family (4), Passive] 

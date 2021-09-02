@@ -807,10 +807,10 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ....x... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ ..x..... ........ 
+                 : ........ .....x.. ........ ....x...   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), No Threat (42), Absorb Cannot Be Ignore (214), Do Not Count For PvP Scoreboard (252), Aura Points On Client (268), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Allow Class Ability Procs (416)
+                 : Is Ability (4), No Threat (42), Absorb Cannot Be Ignore (214), Do Not Count For PvP Scoreboard (252), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21513)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
@@ -840,10 +840,10 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=21556)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3454,10 +3454,10 @@ Attributes       : ........ ...x.... x.x..... .......x   ........ ........ .....
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Fail on all targets immune (85), Aura Never Bounces (148), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Fail on all targets immune (85), Aura Never Bounces (148), Ignore Healing Modifiers (219), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=267680)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
@@ -9176,7 +9176,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 329720 | Target: Self (1)
 #5 (id=894823)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Unknown(25)
-Description      : Bless an ally for $d. Their attacks deal ${$<points>*$s5} Frost damage and reduce enemies' movement speed by $328506s4% and attack speed by $328506s3%, stacking $328506u times.
+Description      : Bless an ally for $d. Their spells and abilities deal ${$<points>*$s5} Frost damage and reduce enemies' movement speed by $328506s4% and attack speed by $328506s3%, stacking $328506u times.
 
 |cFFFFFFFFBlessing of the Seasons:|r Turns to Spring after use.
 Tooltip          : Attacks deal ${$<points>*$w5} Frost damage and reduce enemies' movement speed by $328506s4% and attack speed by $328506s3%, stacking $328506u times.
@@ -9208,9 +9208,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Aura Points On Client (268), Not In Spellbook Until Learned (269), Newest Exclusive Complete (362)
 Effects          :
 #1 (id=820438)   : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
 #2 (id=821028)   : Apply Aura (6) | Modify Healing Recevied% (118)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
 #3 (id=823067)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Friend (21)
 #4 (id=834166)   : Cancel Aura (164)
@@ -9245,11 +9245,11 @@ Effects          :
 #1 (id=821066)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=821067)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000
 #3 (id=835104)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=840462)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc328281
 Tooltip          : Attack speed reduced by $w3%.
 Movement speed reduced by $w4%.
@@ -10531,7 +10531,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 101%
-Conduit Id       : 213 (values=20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48)
+Conduit Id       : 213 (values=100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240)
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10549,8 +10549,8 @@ Effects          :
                    Affected Spells: Vanquisher's Hammer (328204)
                    Family Flags: 123
 #2 (id=839927)   : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Vanquisher's Hammer deals |cFFFFFFFF$s1%|r increased damage, and heals you for the damage done.
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Vanquisher's Hammer deals |cFFFFFFFF$s1%|r increased damage, and heals you for $s2% of the damage done.
 
 Name             : Righteous Might (id=340193) [Spell Family (10)] 
 Class            : Paladin
@@ -11005,9 +11005,9 @@ Effects          :
                    Affected School(s): All
 Description      : Stamina increased by $s1%.
 
-Armor increased by $s2%.
+Armor increased by $s2%.$?a358934[
 
-All damage taken reduced by $s3%.
+All damage taken reduced by $s3%.][]
 
 Name             : Divine Resonance (id=355098) [Passive, Hidden] 
 Class            : Paladin
