@@ -270,6 +270,7 @@ struct hunter_td_t: public actor_target_data_t
   struct debuffs_t
   {
     buff_t* latent_poison_injection;
+    buff_t* death_chakram;
   } debuffs;
 
   struct dots_t
@@ -1158,6 +1159,15 @@ struct hunter_pet_t: public pet_t
     double m = pet_t::composite_player_target_multiplier( target, school );
 
     m *= 1 + o() -> buffs.wild_spirits -> check_value();
+
+    if ( is_ptr() )
+    {
+      auto td = o()->get_target_data( target );
+      if ( td->debuffs.death_chakram->has_common_school( school ) )
+      {
+        m *= 1 + td->debuffs.death_chakram->value();
+      }
+    }
 
     return m;
   }
@@ -2535,6 +2545,17 @@ struct single_target_t final : base_t
     set_target( target_ );
     execute();
   }
+
+  void impact( action_state_t* s ) override
+  {
+    base_t::impact( s );
+
+    // Each bounce refreshes the debuff
+    if ( p()->is_ptr() )
+    {
+      td( s->target )->debuffs.death_chakram->trigger();
+    }
+  }
 };
 
 struct single_target_event_t final : public event_t
@@ -2642,6 +2663,12 @@ struct death_chakram_t : death_chakram::base_t
     {
       make_event<explosive_shot_event_t>( *sim, *explosive, s->target, explosive_delay );
     }
+
+    // Even when chained, only the first hit applies the debuff
+    if ( p()->is_ptr() && s->chain_target == 0 )
+    {
+      td( s->target )->debuffs.death_chakram->trigger();
+    }
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -2670,6 +2697,17 @@ struct flayed_shot_t : hunter_ranged_attack_t
     hunter_ranged_attack_t( "flayed_shot", p, p -> covenants.flayed_shot )
   {
     parse_options( options_str );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    if ( p()->is_ptr() && p()->buffs.flayers_mark->trigger() )
+    {
+      p()->cooldowns.kill_shot->reset( true );
+      p()->buffs.empowered_release->trigger();
+    }
   }
 
   void tick( dot_t* d ) override
@@ -5555,6 +5593,13 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
     make_buff( *this, "latent_poison_injection", p -> legendary.latent_poison_injectors -> effectN( 1 ).trigger() )
       -> set_trigger_spell( p -> legendary.latent_poison_injectors );
 
+  if ( p->is_ptr() )
+  {
+    debuffs.death_chakram = make_buff( *this, "death_chakram", p->covenants.death_chakram )
+      ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
+      ->set_cooldown( 0_s );
+  }
+
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
   dots.pheromone_bomb = target -> get_dot( "pheromone_bomb", p );
@@ -6526,6 +6571,15 @@ double hunter_t::composite_player_target_multiplier( player_t* target, school_e 
 
   if ( conduits.enfeebled_mark.ok() && buffs.resonating_arrow -> check() )
     d *= 1 + conduits.enfeebled_mark.percent();
+
+  if ( is_ptr() )
+  {
+    auto td = get_target_data( target );
+    if ( td->debuffs.death_chakram->has_common_school( school ) )
+    {
+      d *= 1 + td->debuffs.death_chakram->value();
+    }
+  }
 
   return d;
 }
