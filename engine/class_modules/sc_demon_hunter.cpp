@@ -2770,14 +2770,13 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
       select_mode( SOUL_FRAGMENT_SELECT_OLDEST ),
       type( soul_fragment::ANY )
   {
-    std::string type_str;
-    std::string mode_str;
-    add_option( opt_string( "type", type_str ) );
+    std::string mode_str, type_str;
     add_option( opt_string( "mode", mode_str ) );
+    add_option( opt_string( "type", type_str ) );
+
     parse_options( options_str );
-    
     parse_mode( mode_str );
-    parse_type( mode_str );
+    parse_type( type_str );
 
     trigger_gcd = timespan_t::zero();
     // use_off_gcd = true;
@@ -2787,8 +2786,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
   void parse_mode( const std::string& value )
   {
-    if ( value == "close" || value == "near" || value == "closest" ||
-         value == "nearest" )
+    if ( value == "close" || value == "near" || value == "closest" || value == "nearest" )
     {
       select_mode = SOUL_FRAGMENT_SELECT_NEAREST;
     }
@@ -2840,67 +2838,69 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
   {
     // Fragments have a 6 yard trigger radius
     double dtm = std::max( 0.0, frag->get_distance( p() ) - 6.0 );
-
-    return timespan_t::from_seconds( dtm / p()->cache.run_speed() );
+    timespan_t mt = timespan_t::from_seconds( dtm / p()->cache.run_speed() );
+    return mt;
   }
 
   soul_fragment_t* select_fragment()
   {
+    soul_fragment_t* candidate = nullptr;
+    timespan_t candidate_value;
+
     switch ( select_mode )
     {
       case SOUL_FRAGMENT_SELECT_NEAREST:
-      {
-        double dist                = std::numeric_limits<double>::max();
-        soul_fragment_t* candidate = nullptr;
-
-        for ( it = p()->soul_fragments.begin(); it != p()->soul_fragments.end(); it++ )
+        candidate_value = timespan_t::max();
+        for ( auto frag : p()->soul_fragments )
         {
-          soul_fragment_t* frag = *it;
-
-          if ( frag->is_type( type ) && frag->active() &&
-               frag->remains() < calculate_movement_time( frag ) )
+          timespan_t movement_time = calculate_movement_time( frag );
+          if ( frag->is_type( type ) && frag->active() && frag->remains() > movement_time )
           {
-            double this_distance = frag->get_distance( p() );
-
-            if ( this_distance < dist )
+            if ( movement_time < candidate_value )
             {
-              dist = this_distance;
+              candidate_value = movement_time;
               candidate = frag;
             }
           }
         }
 
-        return candidate;
-      }
-      break;
+        break;
       case SOUL_FRAGMENT_SELECT_NEWEST:
-        for ( it = p()->soul_fragments.end(); it != p()->soul_fragments.begin(); it-- )
+        candidate_value = timespan_t::min();
+        for ( auto frag : p()->soul_fragments )
         {
-          soul_fragment_t* frag = *it;
-
-          if ( frag->is_type( type ) &&
-               frag->remains() > calculate_movement_time( frag ) )
+          timespan_t remains = frag->remains();
+          if ( frag->is_type( type ) && frag->active() && remains > calculate_movement_time( frag ) )
           {
-            return frag;
+            if ( remains > candidate_value )
+            {
+              candidate_value = remains;
+              candidate = frag;
+            }
           }
         }
+
         break;
       case SOUL_FRAGMENT_SELECT_OLDEST:
       default:
-        for ( it = p()->soul_fragments.begin(); it != p()->soul_fragments.end(); it++ )
+        candidate_value = timespan_t::max();
+        for ( auto frag : p()->soul_fragments )
         {
-          soul_fragment_t* frag = *it;
-
-          if ( frag->is_type( type ) &&
-               frag->remains() > calculate_movement_time( frag ) )
+          timespan_t remains = frag->remains();
+          if ( frag->is_type( type ) && frag->active() && remains > calculate_movement_time( frag ) )
           {
-            return frag;
+            if ( remains < candidate_value )
+            {
+              candidate_value = remains;
+              candidate = frag;
+            }
           }
         }
+
         break;
     }
 
-    return nullptr;
+    return candidate;
   }
 
   void execute() override
@@ -4960,7 +4960,11 @@ void demon_hunter_t::create_buffs()
   buff.blind_faith = make_buff<buff_t>( this, "blind_faith", blind_faith_buff )
     ->set_default_value( legendary.blind_faith->effectN( 2 ).base_value() ) // Mastery buffs are in raw % not decimal
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+    ->set_max_stack( 99 ); // Not actually a stacking buff, handled via scripting magic
+  if ( is_ptr() )
+    buff.blind_faith->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+  else
+    buff.blind_faith->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
 
   const spell_data_t* blazing_slaughter_buff = legendary.blazing_slaughter->ok() ? find_spell( 355892 ) : spell_data_t::not_found();
   buff.blazing_slaughter = make_buff<buff_t>( this, "blazing_slaughter", blazing_slaughter_buff )
@@ -5723,7 +5727,7 @@ void demon_hunter_t::apl_havoc()
   apl_default->add_action( this, "Disrupt" );
   apl_default->add_action( "call_action_list,name=cooldown,if=gcd.remains=0" );
   apl_default->add_action( "pick_up_fragment,type=demon,if=demon_soul_fragments>0" );
-  apl_default->add_action( "pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=35" );
+  apl_default->add_action( "pick_up_fragment,mode=nearest,if=(talent.demonic_appetite.enabled&fury.deficit>=35|runeforge.blind_faith&buff.blind_faith.up)&(!cooldown.eye_beam.ready|fury<30)" );
   apl_default->add_action( this, "Throw Glaive", "if=buff.fel_bombardment.stack=5&(buff.immolation_aura.up|!buff.metamorphosis.up)" );
   apl_default->add_action( "run_action_list,name=demonic,if=talent.demonic.enabled" );
   apl_default->add_action( "run_action_list,name=normal" );
