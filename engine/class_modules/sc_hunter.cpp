@@ -658,6 +658,7 @@ public:
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
+  double    composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
   double    composite_leech() const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    passive_movement_modifier() const override;
@@ -1152,24 +1153,6 @@ struct hunter_pet_t: public pet_t
     crit += o()->buffs.resonating_arrow->check_value();
 
     return crit;
-  }
-
-  double composite_player_target_multiplier( player_t* target, school_e school ) const override
-  {
-    double m = pet_t::composite_player_target_multiplier( target, school );
-
-    m *= 1 + o() -> buffs.wild_spirits -> check_value();
-
-    if ( is_ptr() )
-    {
-      auto td = o()->get_target_data( target );
-      if ( td->debuffs.death_chakram->has_common_school( school ) )
-      {
-        m *= 1 + td->debuffs.death_chakram->value();
-      }
-    }
-
-    return m;
   }
 
   void apply_affecting_auras( action_t& action ) override
@@ -6600,6 +6583,22 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1 + talents.animal_companion -> effectN( 2 ).percent();
 
   m *= 1 + buffs.strength_of_the_pack -> check_value();
+
+  return m;
+}
+
+// hunter_t::composite_player_target_pet_damage_multiplier ======================
+
+double hunter_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
+{
+  double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
+
+  m *= 1 + buffs.wild_spirits->check_value();
+
+  if ( is_ptr() )
+  {
+    m *= 1 + get_target_data( target )->debuffs.death_chakram->value();
+  }
 
   return m;
 }
