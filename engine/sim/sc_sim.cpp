@@ -3282,7 +3282,7 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
 
   if ( util::str_compare_ci( name_str, "active_enemies" ) )
   {
-    if ( target_list.size() == 1U && !has_raid_event( "adds" ) )
+    if ( target_list.size() == 1U && !has_raid_event( "adds" ) && !has_raid_event( "pull" ) )
     {
       return expr_t::create_constant( name_str, 1.0 );
     }

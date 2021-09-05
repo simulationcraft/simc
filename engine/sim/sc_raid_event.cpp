@@ -10,6 +10,7 @@
 #include "dbc/dbc.hpp"
 #include "player/pet.hpp"
 #include "player/sc_player.hpp"
+#include "player/player_demise_event.hpp"
 #include "raid_event.hpp"
 #include "sim/event.hpp"
 #include "sim/sc_expressions.hpp"
@@ -344,6 +345,237 @@ struct adds_event_t final : public raid_event_t
     {
       adds[ i ]->dismiss();
     }
+  }
+};
+
+struct pull_event_t final : raid_event_t
+{
+  struct mob_t : public pet_t
+  {
+    double health;
+
+    mob_t( sim_t* s, player_t* o, util::string_view n, double health, pet_e pt = PET_ENEMY )
+      : pet_t( s, o, n, pt ), health( health )
+    {
+    }
+
+    const char* name() const override
+    {
+      return name_str.c_str();
+    }
+
+    void init_resources( bool force ) override
+    {
+      resources.base[ RESOURCE_HEALTH ] = health;
+      resources.infinite_resource[ RESOURCE_HEALTH ] = false;
+
+      base_t::init_resources( force );
+    }
+
+    resource_e primary_resource() const override
+    {
+      return RESOURCE_HEALTH;
+    }
+  };
+
+  player_t* master;
+  std::string enemies_str;
+  std::vector<pet_t*> adds;
+  timespan_t delay;
+  int pull;
+  bool bloodlust;
+  bool spawned;
+
+  pull_event_t( sim_t* s, util::string_view options_str )
+    : raid_event_t( s, "pull" ),
+      enemies_str(),
+      delay( 0_s ),
+      pull( 0 ),
+      spawned( false )
+  {
+    add_option( opt_string( "enemies", enemies_str ) );
+    add_option( opt_timespan( "delay", delay ) );
+    add_option( opt_int( "pull", pull ) );
+    add_option( opt_bool( "bloodlust", bloodlust ) );
+
+    parse_options( options_str );
+
+    if ( pull == 1 )
+      first = 0_s;
+    else
+      first = timespan_t::max();
+
+    cooldown = sim->max_time;
+
+    master = sim->target_list.data().front();
+    if ( !master )
+    {
+      throw std::invalid_argument( fmt::format( "{} no enemy available in the sim.", *this ) );
+    }
+
+    if ( enemies_str.empty() )
+    {
+      throw std::invalid_argument( fmt::format( "{} no enemies string.", *this ) );
+    }
+    else
+    {
+      auto enemy_splits = util::string_split<util::string_view>( enemies_str, "|" );
+      if ( enemy_splits.empty() )
+      {
+        throw std::invalid_argument( fmt::format( "{} at least one enmy is required.", *this ) );
+      }
+      else
+      {
+        for ( const util::string_view enemy_str : util::string_split<util::string_view>( enemies_str, "|" ) )
+        {
+          auto splits = util::string_split<util::string_view>( enemy_str, ":" );
+          if ( splits.size() < 2 )
+          {
+            throw std::invalid_argument( fmt::format( "{} bad enemy string '{}'.", *this, enemy_str ) );
+          }
+          else
+          {
+            double health = util::to_double( splits[ 1 ] );
+
+            std::string name = "Pull ";
+            name += util::to_string( pull );
+            name += " ";
+            name += util::to_string( splits[ 0 ] );
+
+            pet_t* p = new mob_t( sim, master, name, health, PET_ENEMY );
+
+            p->register_on_demise_callback( p, [ this ]( player_t* ) {
+              // don't schedule another pull until all adds from this one are dead
+              for ( auto add : adds )
+              {
+                if ( add->is_active() )
+                  return;
+              }
+
+              // find the next pull and spawn it
+              if ( auto next = next_pull() )
+              {
+                make_event( *sim, next->delay, [ next ] { next->spawn_pull(); } );
+                return;
+              }
+
+              // if no suitable pull is found, end the iteration
+              make_event<player_demise_event_t>( *sim, *master );
+            } );
+            adds.emplace_back( p );
+          }
+        }
+      }
+    }
+  }
+
+  void regenerate_cache()
+  {
+    for ( auto p : affected_players )
+    {
+      for ( size_t i = 0, end = p->action_list.size(); i < end; i++ )
+        p->action_list[ i ]->target_cache.is_valid = false;
+    }
+  }
+
+  void _start() override
+  {
+    make_event( *sim, delay, [ this ] { spawn_pull(); } );
+  }
+
+  void _finish() override
+  {
+  }
+
+  bool active()
+  {
+    for ( auto add : adds )
+    {
+      if ( add->arise_time >= 0_s && add->is_active() )
+        return true;
+    }
+    return false;
+  }
+
+  double time_to_die()
+  {
+    double pull_dtps = 0;
+    double pull_hp = 0;
+
+    for ( pet_t* add : adds )
+    {
+      if ( !add->is_active() )
+        pull_dtps += add->iteration_dmg_taken / add->iteration_fight_length.total_seconds();
+      else
+        pull_dtps += add->iteration_dmg_taken / ( sim->current_time() - add->arise_time ).total_seconds();
+
+      pull_hp += add->resources.current[ RESOURCE_HEALTH ];
+    }
+
+    return pull_hp / pull_dtps;
+  }
+
+  pull_event_t* next_pull()
+  {
+    for ( auto& raid_event : sim->raid_events )
+    {
+      if ( util::str_prefix_ci( raid_event->type, "pull" ) )
+      {
+        auto adds_event = dynamic_cast<pull_event_t*>( raid_event.get() );
+        if ( adds_event && adds_event->pull == pull + 1 )
+        {
+          return adds_event;
+        }
+      }
+    }
+    return nullptr;
+  }
+
+  void spawn_pull()
+  {
+    if ( spawned )
+      return;
+    else
+      spawned = true;
+
+    if ( bloodlust )
+    {
+      if ( !sim->single_actor_batch )
+      {
+        for ( size_t i = 0; i < sim->player_non_sleeping_list.size(); ++i )
+        {
+          player_t* p = sim->player_non_sleeping_list[ i ];
+          if ( p->is_pet() )
+            continue;
+
+          p->buffs.bloodlust->trigger();
+        }
+      }
+      else
+      {
+        auto p = sim->player_no_pet_list[ sim->current_index ];
+        if ( p )
+        {
+          p->buffs.bloodlust->trigger();
+        }
+      }
+    }
+
+    for ( pet_t* add : adds )
+    {
+      add->summon();
+    }
+
+    sim->print_debug( "Spawned Pull {}: {} mobs", pull, adds.size() );
+
+    regenerate_cache();
+  }
+
+  void reset() override
+  {
+    raid_event_t::reset();
+
+    spawned = false;
   }
 };
 
@@ -1587,6 +1819,8 @@ std::unique_ptr<raid_event_t> raid_event_t::create( sim_t* sim, util::string_vie
 {
   if ( name == "adds" )
     return std::unique_ptr<raid_event_t>( new adds_event_t( sim, options_str ) );
+  if ( name == "pull" )
+    return std::unique_ptr<raid_event_t>( new pull_event_t( sim, options_str ) );
   if ( name == "move_enemy" )
     return std::unique_ptr<raid_event_t>( new move_enemy_t( sim, options_str ) );
   if ( name == "casting" )
@@ -1742,6 +1976,55 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
     assert(is_constant);
     *is_constant = true;
     return 1.0;
+  }
+
+  // special handling for pull events since they're not time based events
+  if ( util::str_compare_ci( type_or_name, "pull" ) )
+  {
+    if ( filter == "remains" )
+    {
+      for ( auto event : matching_events )
+      {
+        pull_event_t* pull = dynamic_cast<pull_event_t*>( event );
+        if ( pull && pull->active() )
+        {
+          return pull->time_to_die();
+        }
+      }
+      return 0.0;
+    }
+
+    if ( filter == "in" )
+    {
+      for ( auto event : matching_events )
+      {
+        pull_event_t* pull = dynamic_cast<pull_event_t*>( event );
+        if ( pull && pull->active() )
+        {
+          auto next = pull->next_pull();
+          if (next)
+            return pull->time_to_die() + next->delay.total_seconds();
+        }
+        return timespan_t::max().total_seconds();
+      }
+    }
+
+    if ( filter == "count" )
+    {
+      for ( auto event : matching_events )
+      {
+        pull_event_t* pull = dynamic_cast<pull_event_t*>( event );
+        if ( pull && pull->active() )
+        {
+          auto next = pull->next_pull();
+          if ( next )
+            return next->adds.size();
+        }
+      }
+      return 0.0;
+    }
+
+    throw std::invalid_argument( fmt::format( "Invalid filter expression '{}' for pull raid event.", filter ) );
   }
 
   if ( filter == "remains" )
