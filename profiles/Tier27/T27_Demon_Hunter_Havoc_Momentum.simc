@@ -53,7 +53,7 @@ actions+=/variable,name=waiting_for_momentum,value=talent.momentum.enabled&!buff
 actions+=/disrupt
 actions+=/call_action_list,name=cooldown,if=gcd.remains=0
 actions+=/pick_up_fragment,type=demon,if=demon_soul_fragments>0
-actions+=/pick_up_fragment,if=fury.deficit>=35
+actions+=/pick_up_fragment,mode=nearest,if=(talent.demonic_appetite.enabled&fury.deficit>=35|runeforge.blind_faith&buff.blind_faith.up)&(!cooldown.eye_beam.ready|fury<30)
 actions+=/throw_glaive,if=buff.fel_bombardment.stack=5&(buff.immolation_aura.up|!buff.metamorphosis.up)
 actions+=/run_action_list,name=demonic,if=talent.demonic.enabled
 actions+=/run_action_list,name=normal

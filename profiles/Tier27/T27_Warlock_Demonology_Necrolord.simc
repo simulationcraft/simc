@@ -32,11 +32,13 @@ actions.precombat+=/use_item,name=tome_of_monstrous_constructions
 actions.precombat+=/use_item,name=soleahs_secret_technique
 actions.precombat+=/snapshot_stats
 actions.precombat+=/fleshcraft
+actions.precombat+=/variable,name=first_tyrant_time,op=set,value=10
+actions.precombat+=/use_item,name=shadowed_orb_of_torment
 actions.precombat+=/demonbolt
-actions.precombat+=/variable,name=first_tyrant_time,op=set,value=12
 
 # Executed every time the actor is available.
 actions=call_action_list,name=trinkets
+actions+=/call_action_list,name=opener,if=time<variable.first_tyrant_time
 actions+=/interrupt,if=target.debuff.casting.react
 actions+=/doom,if=refreshable
 actions+=/call_action_list,name=covenant_ability,if=soulbind.grove_invigoration|soulbind.field_of_blossoms|soulbind.combat_meditation|covenant.necrolord
@@ -82,7 +84,7 @@ actions.5y_per_sec_trinkets+=/use_item,name=empyreal_ordnance,if=cooldown.summon
 
 actions.covenant_ability=soul_rot,if=soulbind.grove_invigoration&(cooldown.summon_demonic_tyrant.remains_expected<20|cooldown.summon_demonic_tyrant.remains_expected>30)
 actions.covenant_ability+=/soul_rot,if=soulbind.field_of_blossoms&pet.demonic_tyrant.active
-actions.covenant_ability+=/soul_rot,if=soulbind.wild_hunt_tactics
+actions.covenant_ability+=/soul_rot,if=soulbind.wild_hunt_tactics&!pet.demonic_tyrant.active&cooldown.summon_demonic_tyrant.remains_expected>18
 actions.covenant_ability+=/decimating_bolt,if=(soulbind.lead_by_example|soulbind.kevins_oozeling)&(pet.demonic_tyrant.active&soul_shard<2|!pet.demonic_tyrant.active&cooldown.summon_demonic_tyrant.remains_expected>40)
 actions.covenant_ability+=/decimating_bolt,if=(soulbind.forgeborne_reveries|(soulbind.volatile_solvent&!soulbind.kevins_oozeling))&!pet.demonic_tyrant.active
 actions.covenant_ability+=/fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_solvent_humanoid.up
@@ -97,6 +99,12 @@ actions.ogcd=berserking
 actions.ogcd+=/blood_fury
 actions.ogcd+=/fireblood
 actions.ogcd+=/use_items
+
+actions.opener=soul_rot,if=soulbind.grove_invigoration
+actions.opener+=/grimoire_felguard
+actions.opener+=/summon_vilefiend
+actions.opener+=/shadow_bolt,if=soul_shard<5&cooldown.call_dreadstalkers.up
+actions.opener+=/call_dreadstalkers
 
 actions.pure_damage_trinks=use_item,name=dreadfire_vessel
 actions.pure_damage_trinks+=/use_item,name=soul_igniter
@@ -117,7 +125,7 @@ actions.trinkets+=/call_action_list,name=pure_damage_trinks,if=time>variable.fir
 actions.tyrant_setup=nether_portal,if=cooldown.summon_demonic_tyrant.remains_expected<15
 actions.tyrant_setup+=/grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains_expected<17-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&(cooldown.call_dreadstalkers.remains<17-(action.summon_demonic_tyrant.execute_time+action.summon_vilefiend.execute_time+action.shadow_bolt.execute_time)|pet.dreadstalker.remains>cooldown.summon_demonic_tyrant.remains_expected+action.summon_demonic_tyrant.execute_time)
 actions.tyrant_setup+=/summon_vilefiend,if=(cooldown.summon_demonic_tyrant.remains_expected<15-(action.summon_demonic_tyrant.execute_time)&(cooldown.call_dreadstalkers.remains<15-(action.summon_demonic_tyrant.execute_time+action.summon_vilefiend.execute_time)|pet.dreadstalker.remains>cooldown.summon_demonic_tyrant.remains_expected+action.summon_demonic_tyrant.execute_time))|(!runeforge.wilfreds_sigil_of_superior_summoning&cooldown.summon_demonic_tyrant.remains_expected>40)
-actions.tyrant_setup+=/call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected<12-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)&time>variable.first_tyrant_time-12-action.call_dreadstalkers.execute_time+action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time
+actions.tyrant_setup+=/call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected<12-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)
 actions.tyrant_setup+=/summon_demonic_tyrant,if=time>variable.first_tyrant_time&(pet.dreadstalker.active&pet.dreadstalker.remains>action.summon_demonic_tyrant.execute_time)&(!talent.summon_vilefiend.enabled|pet.vilefiend.active)&(soul_shard=0|(pet.dreadstalker.active&pet.dreadstalker.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(pet.vilefiend.active&pet.vilefiend.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(buff.grimoire_felguard.up&buff.grimoire_felguard.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time))
 
 head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187,gem_id=187312
@@ -132,7 +140,7 @@ legs=muehzalas_hexthread_sarong,id=179351,bonus_id=1566/6536/6646
 feet=sandals_of_sacred_symmetry,id=186354,bonus_id=1498/7187
 finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=1498/7187/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=shadowghast_ring,id=178926,bonus_id=7025/6649/6648/1559,gem_id=173128,enchant=tenet_of_haste
-trinket1=soulletting_ruby,id=178809,bonus_id=1566/6536/6646
+trinket1=shadowed_orb_of_torment,id=186428,bonus_id=1498/7187
 trinket2=infinitely_divisible_ooze,id=178769,bonus_id=1566/6536/6646
 main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=celestial_guidance
 
