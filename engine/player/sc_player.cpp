@@ -7494,9 +7494,6 @@ struct arcane_torrent_t : public racial_spell_t
       case MONK_BREWMASTER:
         gain_energy = data().effectN( 4 ).base_value();
         break;
-      case PALADIN_HOLY:
-        gain_pct = data().effectN( 3 ).percent();
-        break;
       default:
         break;
     }
