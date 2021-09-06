@@ -4471,8 +4471,6 @@ void item::natures_call( special_effect_t& effect )
 
 // Moonlit Prism ============================================================
 // TOCHECK: Proc mechanics
-// TODO: Fix double stack on first hit?
-
 void item::moonlit_prism( special_effect_t& effect )
 {
   // Create stack gain driver
@@ -4497,6 +4495,7 @@ void item::moonlit_prism( special_effect_t& effect )
                              {
                                assert( !callback->active );
                                callback->activate();
+                               callback->cooldown->start();
                              }
                              else if ( new_ == 0 )
                                callback->deactivate();
