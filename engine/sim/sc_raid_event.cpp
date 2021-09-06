@@ -11,6 +11,7 @@
 #include "player/pet.hpp"
 #include "player/sc_player.hpp"
 #include "player/player_demise_event.hpp"
+#include "player/pet_spawner.hpp"
 #include "raid_event.hpp"
 #include "sim/event.hpp"
 #include "sim/sc_expressions.hpp"
@@ -352,23 +353,20 @@ struct pull_event_t final : raid_event_t
 {
   struct mob_t : public pet_t
   {
-    double health;
+    pull_event_t* pull_event;
 
-    mob_t( sim_t* s, player_t* o, util::string_view n, double health, pet_e pt = PET_ENEMY )
-      : pet_t( s, o, n, pt ), health( health )
+    mob_t( player_t* o, util::string_view n = "Mob", pet_e pt = PET_ENEMY ) : pet_t( o->sim, o, n, PET_ENEMY )
     {
-    }
-
-    const char* name() const override
-    {
-      return name_str.c_str();
+      register_on_demise_callback( this, [ this ]( player_t* ) {
+        if ( pull_event )
+        {
+          pull_event->on_demise();
+        }
+      } );
     }
 
     void init_resources( bool force ) override
     {
-      resources.base[ RESOURCE_HEALTH ] = health;
-      resources.infinite_resource[ RESOURCE_HEALTH ] = false;
-
       base_t::init_resources( force );
     }
 
@@ -380,12 +378,13 @@ struct pull_event_t final : raid_event_t
 
   player_t* master;
   std::string enemies_str;
-  std::vector<pet_t*> adds;
+  std::vector<double> adds_health;
   timespan_t delay;
   int pull;
   bool bloodlust;
   bool spawned;
   event_t* spawn_event;
+  spawner::pet_spawner_t<mob_t, player_t>* adds_spawner;
 
   pull_event_t( sim_t* s, util::string_view options_str )
     : raid_event_t( s, "pull" ),
@@ -415,6 +414,15 @@ struct pull_event_t final : raid_event_t
       throw std::invalid_argument( fmt::format( "{} no enemy available in the sim.", *this ) );
     }
 
+    std::string spawner_name = master->name();
+    spawner_name += "_pull_spawner";
+    adds_spawner = dynamic_cast<spawner::pet_spawner_t<mob_t, player_t>*>( master->find_spawner( spawner_name ) );
+
+    if ( !adds_spawner )
+    {
+      adds_spawner = new spawner::pet_spawner_t<mob_t, player_t>( spawner_name, master );
+    }
+
     if ( enemies_str.empty() )
     {
       throw std::invalid_argument( fmt::format( "{} no enemies string.", *this ) );
@@ -437,38 +445,31 @@ struct pull_event_t final : raid_event_t
           }
           else
           {
-            double health = util::to_double( splits[ 1 ] );
-
-            std::string name = "Pull ";
-            name += util::to_string( pull );
-            name += " ";
-            name += util::to_string( splits[ 0 ] );
-
-            pet_t* p = new mob_t( sim, master, name, health, PET_ENEMY );
-
-            p->register_on_demise_callback( p, [ this ]( player_t* ) {
-              // don't schedule another pull until all adds from this one are dead
-              for ( auto add : adds )
-              {
-                if ( add->is_active() )
-                  return;
-              }
-
-              // find the next pull and spawn it
-              if ( auto next = next_pull() )
-              {
-                make_event( *sim, next->delay, [ next ] { next->spawn_pull(); } );
-                return;
-              }
-
-              // if no suitable pull is found, end the iteration
-              make_event<player_demise_event_t>( *sim, *master );
-            } );
-            adds.emplace_back( p );
+            adds_health.emplace_back( util::to_double( splits[ 1 ] ) );
           }
         }
       }
     }
+  }
+
+  void on_demise()
+  {
+    // don't schedule another pull until all adds from this one are dead
+    for ( auto add : adds_spawner->active_pets() )
+    {
+      if ( add->is_active() )
+        return;
+    }
+
+    // find the next pull and spawn it
+    if ( auto next = next_pull() )
+    {
+      make_event( *sim, next->delay, [ next ] { next->spawn_pull(); } );
+      return;
+    }
+
+    // if no suitable pull is found, end the iteration
+    make_event<player_demise_event_t>( *sim, *master );
   }
 
   void regenerate_cache()
@@ -493,7 +494,7 @@ struct pull_event_t final : raid_event_t
   {
     if ( spawned )
     {
-      for ( auto add : adds )
+      for ( auto add : adds_spawner->active_pets() )
       {
         if ( add->is_active() )
           return true;
@@ -513,13 +514,9 @@ struct pull_event_t final : raid_event_t
     double pull_dtps = 0;
     double pull_hp = 0;
 
-    for ( pet_t* add : adds )
+    for ( pet_t* add : adds_spawner->active_pets() )
     {
-      if ( !add->is_active() )
-        pull_dtps += add->iteration_dmg_taken / add->iteration_fight_length.total_seconds();
-      else
-        pull_dtps += add->iteration_dmg_taken / ( sim->current_time() - add->arise_time ).total_seconds();
-
+      pull_dtps += ( add->resources.initial[ RESOURCE_HEALTH ] - add->resources.current[ RESOURCE_HEALTH ] ) / ( sim->current_time() - add->arise_time ).total_seconds();
       pull_hp += add->resources.current[ RESOURCE_HEALTH ];
     }
 
@@ -570,11 +567,15 @@ struct pull_event_t final : raid_event_t
           p->buffs.bloodlust->trigger();
         }
       }
-    }
+    }    
 
-    for ( pet_t* add : adds )
+    auto adds = adds_spawner->spawn( adds_health.size() );
+    for ( int i = 0; i < adds.size(); i++ )
     {
-      add->summon();
+      adds[ i ]->resources.base[ RESOURCE_HEALTH ] = adds_health[ i ];
+      adds[ i ]->resources.infinite_resource[ RESOURCE_HEALTH ] = false;
+      adds[ i ]->init_resources( true );
+      adds[ i ]->pull_event = this;
     }
 
     sim->print_debug( "Spawned Pull {}: {} mobs", pull, adds.size() );
@@ -2046,7 +2047,7 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
     if ( filter == "count" )
     {
       if ( next_pull )
-        return next_pull->adds.size();
+        return next_pull->adds_health.size();
       else
         return 0.0;
     }
