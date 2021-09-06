@@ -3284,6 +3284,8 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
     cooldown_t* j_cd;
     cooldown_t* how_cd;
     cooldown_t* wake_cd;
+    cooldown_t* hs_cd;
+    cooldown_t* at_cd;
 
     time_to_hpg_expr_t( util::string_view n, paladin_t& p )
       : paladin_expr_t( n, p ),
@@ -3291,15 +3293,17 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
         boj_cd( p.get_cooldown( "blade_of_justice" ) ),
         j_cd( p.get_cooldown( "judgment" ) ),
         how_cd( p.get_cooldown( "hammer_of_wrath" ) ),
-        wake_cd( p.get_cooldown( "wake_of_ashes" ) )
+        wake_cd( p.get_cooldown( "wake_of_ashes" ) ),
+        hs_cd( p.get_cooldown( "holy_shock" ) ),
+        at_cd( p.get_cooldown( "arcane_torrent" ) )
     {
     }
 
     double evaluate() override
     {
-      if ( paladin.specialization() != PALADIN_RETRIBUTION )
+      if ( paladin.specialization() == PALADIN_PROTECTION )
       {
-        paladin.sim->errorf( "\"time_to_hpg\" only supported for Retribution" );
+        paladin.sim->errorf( "\"time_to_hpg\" not supported for Protection" );
         return 0;
       }
       timespan_t gcd_ready = paladin.gcd_ready - paladin.sim->current_time();
@@ -3307,15 +3311,39 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
 
       timespan_t shortest_hpg_time = cs_cd->remains();
 
-      if ( boj_cd->remains() < shortest_hpg_time )
-        shortest_hpg_time = boj_cd->remains();
+      // Blood Elf
+      if ( paladin.race == RACE_BLOOD_ELF )
+      {
+        if ( at_cd->remains() < shortest_hpg_time )
+          shortest_hpg_time = at_cd->remains();
+      }
 
+      // Retribution
+      if ( paladin.specialization() == PALADIN_RETRIBUTION )
+      {
+        if ( boj_cd->remains() < shortest_hpg_time )
+          shortest_hpg_time = boj_cd->remains();
+
+        if ( wake_cd->remains() < shortest_hpg_time )
+          shortest_hpg_time = wake_cd->remains();
+
+        if ( j_cd->remains() < shortest_hpg_time )
+          shortest_hpg_time = j_cd->remains();
+      }
+
+      // Holy
+      if ( paladin.specialization() == PALADIN_HOLY )
+      {
+        if ( hs_cd->remains() < shortest_hpg_time )
+          shortest_hpg_time = hs_cd->remains();
+      }
+
+      // TODO: Protection
+
+      // Shared
       // TODO: check every target rather than just the paladin's main target
       if ( paladin.get_how_availability( paladin.target ) && how_cd->remains() < shortest_hpg_time )
         shortest_hpg_time = how_cd->remains();
-
-      if ( wake_cd->remains() < shortest_hpg_time )
-        shortest_hpg_time = wake_cd->remains();
 
       if ( gcd_ready > shortest_hpg_time )
         return gcd_ready.total_seconds();
