@@ -700,9 +700,9 @@ bool parse_fight_style( sim_t*             sim,
                         util::string_view /*name*/,
                         util::string_view value )
 {
-  static constexpr std::array<util::string_view, 10> FIGHT_STYLES { {
+  static constexpr std::array<util::string_view, 11> FIGHT_STYLES { {
     "Patchwerk", "Ultraxion", "CleaveAdd", "HelterSkelter", "LightMovement", "HeavyMovement",
-    "HecticAddCleave", "Beastlord", "CastingPatchwerk", "DungeonSlice"
+    "HecticAddCleave", "Beastlord", "CastingPatchwerk", "DungeonSlice", "DungeonRoute"
   } };
 
   auto it = range::find_if( FIGHT_STYLES, [ &value ]( util::string_view n ) {
@@ -2341,6 +2341,14 @@ void sim_t::init_fight_style()
         "/adds,name=SmallAdd,count=5,count_range=1,first=140,cooldown=45,duration=15,duration_stddev=2"
         "/adds,name=BigAdd,count=2,count_range=1,first=160,cooldown=50,duration=30,duration_stddev=2";
   }
+  else if( util::str_compare_ci( fight_style, "DungeonRoute" ) )
+  { // To be used in conjunction with "pull" raid events for a simulated dungeon run.
+    desired_targets = 1;
+    fixed_time = 0;
+    ignore_invulnerable_targets = true;
+    shadowlands_opts.enable_rune_words = false;
+    overrides.bloodlust = 0; // Bloodlust is handled by an option on each pull raid event
+  }
   else
   {
     fight_style = "Patchwerk";
@@ -3282,7 +3290,7 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
 
   if ( util::str_compare_ci( name_str, "active_enemies" ) )
   {
-    if ( target_list.size() == 1U && !has_raid_event( "adds" ) )
+    if ( target_list.size() == 1U && !has_raid_event( "adds" ) && !has_raid_event( "pull" ) )
     {
       return expr_t::create_constant( name_str, 1.0 );
     }
