@@ -385,13 +385,15 @@ struct pull_event_t final : raid_event_t
   int pull;
   bool bloodlust;
   bool spawned;
+  event_t* spawn_event;
 
   pull_event_t( sim_t* s, util::string_view options_str )
     : raid_event_t( s, "pull" ),
       enemies_str(),
       delay( 0_s ),
       pull( 0 ),
-      spawned( false )
+      spawned( false ),
+      spawn_event( nullptr )
   {
     add_option( opt_string( "enemies", enemies_str ) );
     add_option( opt_timespan( "delay", delay ) );
@@ -489,11 +491,20 @@ struct pull_event_t final : raid_event_t
 
   bool active()
   {
-    for ( auto add : adds )
+    if ( spawned )
     {
-      if ( add->arise_time >= 0_s && add->is_active() )
+      for ( auto add : adds )
+      {
+        if ( add->is_active() )
+          return true;
+      }
+    }
+    else
+    {
+      if ( spawn_event && spawn_event->remains() >= 0_s )
         return true;
     }
+
     return false;
   }
 
@@ -519,12 +530,12 @@ struct pull_event_t final : raid_event_t
   {
     for ( auto& raid_event : sim->raid_events )
     {
-      if ( util::str_prefix_ci( raid_event->type, "pull" ) )
+      if ( raid_event->type == "pull" )
       {
-        auto adds_event = dynamic_cast<pull_event_t*>( raid_event.get() );
-        if ( adds_event && adds_event->pull == pull + 1 )
+        auto pull_event = dynamic_cast<pull_event_t*>( raid_event.get() );
+        if ( pull_event && pull_event->pull == pull + 1 )
         {
-          return adds_event;
+          return pull_event;
         }
       }
     }
@@ -1889,6 +1900,14 @@ void raid_event_t::init( sim_t* sim )
       {
         throw std::invalid_argument( "Cooldown lower than cooldown standard deviation." );
       }
+      if ( sim->fight_style != "DungeonRoute" && raid_event->type == "pull" )
+      {
+        throw std::invalid_argument( "DungeonRoute fight style is required for pull events." );
+      }
+      if ( sim->fight_style == "DungeonRoute" && raid_event->type == "adds" )
+      {
+        throw std::invalid_argument( "DungeonRoute fight style is only compatible with pull events." );
+      }
 
       sim->print_debug( "Successfully created '{}'.", *( raid_event.get() ) );
       sim->raid_events.push_back( std::move( raid_event ) );
@@ -1897,6 +1916,16 @@ void raid_event_t::init( sim_t* sim )
     {
       std::throw_with_nested( std::invalid_argument( fmt::format( "Error creating raid event from '{}'", split ) ) );
     }
+  }
+
+  if ( sim->fight_style == "DungeonRoute" )
+  {
+    for ( const auto& raid_event : sim->raid_events )
+    {
+      if ( raid_event->type == "pull" )
+        return;
+    }
+    throw std::invalid_argument( "DungeonRoute fight style requires at least one pull event." );
   }
 }
 
@@ -1949,6 +1978,93 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
   // filter the list for raid events that match the type requested
   std::vector<raid_event_t*> matching_events;
 
+  // special handling for "pull" events since they're not time based events
+  // "adds" and "pull" event types are mutually exclusive within a sim
+  // handled via the same apl expression syntax as adds
+  if ( util::str_compare_ci( type_or_name, "adds" ) && s->fight_style == "DungeonRoute" )
+  {
+    pull_event_t* current_pull = nullptr;
+    for ( const auto& raid_event : s->raid_events )
+    {
+      if ( util::str_prefix_ci( raid_event->type, "pull" ) )
+      {
+        pull_event_t* pull_event = dynamic_cast<pull_event_t*>( raid_event.get() );
+        matching_events.push_back( pull_event );
+
+        if ( !current_pull && pull_event->first == 0_s )
+          current_pull = pull_event;
+
+        if ( pull_event->active() )
+          current_pull = pull_event;
+      }
+    }
+
+    if ( matching_events.empty() )
+    {
+      assert( is_constant );
+      *is_constant = true;
+      if ( filter == "in" || filter == "cooldown" )
+        return timespan_t::max().total_seconds();
+      else if ( !test_filter )  // When evaluating filter expr validity, let this one continue through
+      {
+        return 0.0;
+      }
+    }
+    else if ( filter == "exists" || filter == "up" )
+    {
+      assert( is_constant );
+      *is_constant = true;
+      return 1.0;
+    }
+
+    if ( filter == "remains" )
+    {
+      if ( current_pull->spawned && current_pull->active() )
+        return current_pull->time_to_die();
+      else
+        return 0.0;
+    }
+
+    // the following expressions should refer to the next pull
+    pull_event_t* next_pull = current_pull->next_pull();
+    if ( !next_pull )
+      return 0.0;
+
+    if ( filter == "in" )
+    {
+      if ( !next_pull )
+        return timespan_t::max().total_seconds();
+      else
+      {
+        if ( current_pull->spawned )
+          return current_pull->time_to_die() + next_pull->delay.total_seconds();
+        else
+          return s->max_time.total_seconds() / matching_events.size();
+      }
+    }
+
+    if ( filter == "count" )
+    {
+      if ( next_pull )
+        return next_pull->adds.size();
+      else
+        return 0.0;
+    }
+
+    if ( filter == "duration" )
+      return s->max_time.total_seconds() / matching_events.size();
+
+    if ( filter == "distance" || filter == "max_distance" || filter == "min_distance" )
+    {
+      return 0.0;
+    }
+
+    if ( filter == "cooldown" )
+      return timespan_t::max().total_seconds();
+
+    throw std::invalid_argument( fmt::format( "Invalid filter expression '{}' for pull raid event.", filter ) );
+  }
+
   // Add all raid event which match type or name
   for ( const auto& raid_event : s->raid_events )
   {
@@ -1976,55 +2092,6 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
     assert(is_constant);
     *is_constant = true;
     return 1.0;
-  }
-
-  // special handling for pull events since they're not time based events
-  if ( util::str_compare_ci( type_or_name, "pull" ) )
-  {
-    if ( filter == "remains" )
-    {
-      for ( auto event : matching_events )
-      {
-        pull_event_t* pull = dynamic_cast<pull_event_t*>( event );
-        if ( pull && pull->active() )
-        {
-          return pull->time_to_die();
-        }
-      }
-      return 0.0;
-    }
-
-    if ( filter == "in" )
-    {
-      for ( auto event : matching_events )
-      {
-        pull_event_t* pull = dynamic_cast<pull_event_t*>( event );
-        if ( pull && pull->active() )
-        {
-          auto next = pull->next_pull();
-          if (next)
-            return pull->time_to_die() + next->delay.total_seconds();
-        }
-        return timespan_t::max().total_seconds();
-      }
-    }
-
-    if ( filter == "count" )
-    {
-      for ( auto event : matching_events )
-      {
-        pull_event_t* pull = dynamic_cast<pull_event_t*>( event );
-        if ( pull && pull->active() )
-        {
-          auto next = pull->next_pull();
-          if ( next )
-            return next->adds.size();
-        }
-      }
-      return 0.0;
-    }
-
-    throw std::invalid_argument( fmt::format( "Invalid filter expression '{}' for pull raid event.", filter ) );
   }
 
   if ( filter == "remains" )
