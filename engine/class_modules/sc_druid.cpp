@@ -8133,20 +8133,21 @@ void druid_t::init_base_stats()
                                       legendary.cateye_curio->effectN( 2 ).base_value();
 
   // only activate other resources if you have the affinity and affinity_resources = true
-  resources.active_resource[ RESOURCE_HEALTH ]       = specialization() == DRUID_GUARDIAN ||
-                                                     ( talent.guardian_affinity->ok() && affinity_resources );
-  resources.active_resource[ RESOURCE_RAGE ]         = specialization() == DRUID_GUARDIAN ||
-                                                     ( talent.guardian_affinity->ok() && affinity_resources );
-  resources.active_resource[ RESOURCE_MANA ]         = specialization() == DRUID_RESTORATION ||
-                                                       owlweave_bear || owlweave_cat ||
-                                                     ( talent.balance_affinity->ok() && affinity_resources ) ||
-                                                     ( talent.restoration_affinity->ok() && affinity_resources );
-  resources.active_resource[ RESOURCE_COMBO_POINT ]  = specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION ||
-                                                       catweave_bear ||
-                                                     ( talent.feral_affinity->ok() && affinity_resources );
-  resources.active_resource[ RESOURCE_ENERGY ]       = specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION ||
-                                                       catweave_bear ||
-                                                     ( talent.feral_affinity->ok() && affinity_resources || catweave_bear );
+  resources.active_resource[ RESOURCE_HEALTH ]       = specialization() == DRUID_GUARDIAN
+                                                    || ( talent.guardian_affinity->ok() && affinity_resources );
+  resources.active_resource[ RESOURCE_RAGE ]         = specialization() == DRUID_GUARDIAN
+                                                    || ( talent.guardian_affinity->ok() && affinity_resources );
+  resources.active_resource[ RESOURCE_MANA ]         = specialization() == DRUID_RESTORATION
+                                                    || ( specialization() == DRUID_GUARDIAN && owlweave_bear )
+                                                    || ( specialization() == DRUID_FERAL && owlweave_cat )
+                                                    || ( talent.balance_affinity->ok() && affinity_resources )
+                                                    || ( talent.restoration_affinity->ok() && affinity_resources );
+  resources.active_resource[ RESOURCE_COMBO_POINT ]  = specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION
+                                                    || ( specialization() == DRUID_GUARDIAN && catweave_bear )
+                                                    || ( talent.feral_affinity->ok() && affinity_resources );
+  resources.active_resource[ RESOURCE_ENERGY ]       = specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION
+                                                    || ( specialization() == DRUID_GUARDIAN && catweave_bear )
+                                                    || ( talent.feral_affinity->ok() && affinity_resources );
   resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
 
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
