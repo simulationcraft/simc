@@ -89,8 +89,8 @@ wrists=airborne_abductors_vambraces,id=186316,bonus_id=7187/1498,gem_id=187318,e
 hands=guillotine_gauntlets,id=186369,bonus_id=7187/1498,gem_id=187315
 waist=shadowghast_waistguard,id=171418,bonus_id=6649/6650/7054/7451/1559,gem_id=173129
 legs=halkiass_towering_pillars,id=178818,bonus_id=6536/1566/6646
-feet=dynamo_doomstompers,id=179338,bonus_id=6536/1566/6646
-finger1=sworn_oath_of_the_nine,id=186290,bonus_id=1498/7187/6935,gem_id=173129,enchant=tenet_of_versatility
+feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
+finger1=ritual_commanders_ring,id=178781,bonus_id=6536/1566/6646,gem_id=173129,enchant=tenet_of_versatility
 finger2=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
 trinket1=titanic_ocular_gland,id=186423,bonus_id=7187/1498
 trinket2=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
