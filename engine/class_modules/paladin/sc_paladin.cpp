@@ -2285,7 +2285,7 @@ std::string paladin_t::default_potion() const
 
   std::string protection_pot = ( true_level > 50 ) ? "phantom_fire" : "disabled";
 
-  std::string holy_dps_pot = ( true_level > 50 ) ? "phantom_fire" : "disabled";
+  std::string holy_dps_pot = ( true_level > 50 ) ? "spectral_intellect" : "disabled";
 
   std::string holy_pot = ( true_level > 50 ) ? "spectral_intellect" : "disabled";
 

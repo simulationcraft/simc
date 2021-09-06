@@ -633,8 +633,8 @@ void paladin_t::generate_action_prio_list_holy_dps()
   def->add_action( "call_action_list,name=cooldowns" );
   def->add_action( "call_action_list,name=priority" );
 
-  cds->add_action( "avenging_wrath" );
   cds->add_action( "ashen_hallow" );
+  cds->add_action( "avenging_wrath" );
   cds->add_action( "blessing_of_the_seasons" );
   cds->add_action( "vanquishers_hammer" );
   cds->add_action( "divine_toll" );
@@ -648,15 +648,35 @@ void paladin_t::generate_action_prio_list_holy_dps()
   cds->add_action( "use_items,if=(buff.avenging_wrath.up)" );
   cds->add_action( "seraphim" );
 
-  priority->add_action( this, "Shield of the Righteous" );
+  priority->add_action( "restore_mana,if=mana<10000", "Assume infinite mana." );
+  priority->add_action( this, "Shield of the Righteous",
+                        "if=buff.avenging_wrath.up|buff.holy_avenger.up|!talent.awakening.enabled",
+                        "High priority SoR action with AW or HA active or when not talented into Awakening" );
+  priority->add_action( this, "Hammer of Wrath", "if=holy_power<5&spell_targets.consecration=2",
+                        "Use Hammer of Wrath when fighting 2 melee targets and you are not capped on Holy Power." );
+  priority->add_action( "lights_hammer,if=spell_targets.lights_hammer>=2",
+                        "High priority Light's Hammer action when fighting 2 or more melee targets." );
+  priority->add_action( "consecration,if=spell_targets.consecration>=2&!consecration.up",
+                        "High priority Consecration refresh when fighting 2 or more targets." );
+  priority->add_action(
+      "light_of_dawn,if=talent.awakening.enabled&spell_targets.consecration<=5&(holy_power>=5|(buff.holy_avenger.up&"
+      "holy_power>=3))",
+      "When talented into Awakening use Light of Dawn when fighting 5 or less targets and you are capped on Holy Power "
+      "or Holy Avenger is active and you have 3 or more Holy Power." );
+  priority->add_action( this, "Shield of the Righteous", "if=spell_targets.consecration>5" );
   priority->add_action( this, "Hammer of Wrath" );
-  priority->add_action( "holy_shock,damage=1" );
   priority->add_action( "judgment" );
-  priority->add_action( "crusader_strike" );
+  priority->add_action( "lights_hammer" );
+  priority->add_action( "consecration,if=!consecration.up", "Refresh Consecration if it is not currently active." );
+  priority->add_action( "holy_shock,damage=1" );
+  priority->add_action( "crusader_strike,if=cooldown.crusader_strike.charges=2",
+                        "Higher priority Crusader Strike action when you are capped on charges" );
   priority->add_action( "holy_prism,target=self,if=active_enemies>=2" );
   priority->add_action( "holy_prism" );
+  priority->add_action( "arcane_torrent" );
+  priority->add_action( "light_of_dawn,if=talent.awakening.enabled&spell_targets.consecration<=5" );
+  priority->add_action( "crusader_strike" );
   priority->add_action( "consecration" );
-  priority->add_action( "light_of_dawn" );
 }
 
 void paladin_t::generate_action_prio_list_holy()
