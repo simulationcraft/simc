@@ -7486,11 +7486,6 @@ struct arcane_torrent_t : public racial_spell_t
       case MONK_MISTWEAVER:
         gain_pct = data().effectN( 3 ).percent();
         break;
-      case MONK_WINDWALKER:
-      {
-        parse_effect_data( data().effectN( 2 ) );  // Chi
-        break;
-      }
       case MONK_BREWMASTER:
         gain_energy = data().effectN( 4 ).base_value();
         break;
