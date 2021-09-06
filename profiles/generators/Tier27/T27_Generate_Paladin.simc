@@ -77,7 +77,7 @@ role=attack
 position=back
 talents=1212331
 covenant=venthyr
-soulbind=general_draven:3,340159/141:9:1/319982/193:9:1/332755/133:9:1/159:9:1/319973/215:9:1/352415/283:9:1/352417
+soulbind=general_draven:3,340159/141:9:1/319982/284:9:1/332755/133:9:1/159:9:1/319973/215:9:1/352415/283:9:1/352417
 renown=80
 
 head=dark_tormentors_gaze,id=186315,bonus_id=7187/1498,gem_id=187312
@@ -90,8 +90,8 @@ hands=guillotine_gauntlets,id=186369,bonus_id=7187/1498,gem_id=187315
 waist=shadowghast_waistguard,id=171418,bonus_id=6649/6650/7054/7451/1559,gem_id=173129
 legs=halkiass_towering_pillars,id=178818,bonus_id=6536/1566/6646
 feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
-finger1=ritual_commanders_ring,id=178781,bonus_id=6536/1566/6646,gem_id=173129,enchant=tenet_of_versatility
-finger2=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
+finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=1566/6536/6646,gem_id=173129,enchant=tenet_of_versatility
+finger2=entwined_gorger_tendril,id=178848,bonus_id=1566/6536/6646,gem_id=173129,enchant=tenet_of_haste
 trinket1=titanic_ocular_gland,id=186423,bonus_id=7187/1498
 trinket2=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
 main_hand=amarths_spellblade,id=178737,bonus_id=6536/1566/6646,enchant=celestial_guidance
