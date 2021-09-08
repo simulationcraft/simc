@@ -670,7 +670,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 700 | Trigger Spell: 200685 | Target: Self (1)
 #6 (id=293660)   : Apply Aura (6) | Unknown(483)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
-Description      : Strike $?a206416[your primary target for $<firstbloodDmg> Physical damage and ][]$199552s1 nearby enemies for $<baseDmg> Physical damage$?s320398[, and increase your chance to dodge by $193311s1% for $193311d.][.]
+Description      : Strike $?a206416[your primary target for $<firstbloodDmg> Physical damage and ][]all nearby enemies for $<baseDmg> Physical damage$?s320398[, and increase your chance to dodge by $193311s1% for $193311d.][. Deals reduced damage beyond $199552s1 targets.]
 Tooltip          : Dodge chance increased by $s2%.
 Variables        : $baseDmg=${3*$199552sw2+$200685sw2} 
 $firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100}
@@ -4005,7 +4005,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=808444)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Viciously strike $228478s2 enemies in front of you for $228478s1 Physical damage and heal yourself for $s4.
+Description      : Viciously strike all enemies in front of you for $228478s1 Physical damage and heal yourself for $s4. Deals reduced damage beyond $228478s2 targets.
 
 Consumes up to $s3 Soul Fragments within $s1 yds$?s321021[ and heals you for an additional $s5 for each Soul Fragment consumed][].
 Variables        : $cleaveDamage=${2.0*$228478sw1}
@@ -4155,7 +4155,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=707097)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Consume up to $s2 Soul Fragments within $s1 yds and then explode, afflicting nearby enemies with Frailty for $247456d and damaging them for $247455s1 Fire per fragment.
+Description      : Consume up to $s2 Soul Fragments within $s1 yds and then explode, afflicting nearby enemies with Frailty for $247456d and damaging them for $247455s1 Fire per fragment. Deals reduced damage beyond $s2 targets.
 
 You heal for $247456s1% of all damage you deal to enemies with Frailty.
 
@@ -4673,7 +4673,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 258926 | Target: Self (1)
 #2 (id=483179)   : Apply Aura (6) | Levitate (106)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Unleash a torrent of Fel energy over $d, inflicting ${(($d/$t1)+1)*$258926s1} Chaos damage to $258926s2 enemies within $258926A1 yds.
+Description      : Unleash a torrent of Fel energy over $d, inflicting ${(($d/$t1)+1)*$258926s1} Chaos damage to all enemies within $258926A1 yds. Deals reduced damage beyond $258926s2 targets.
 Tooltip          : Unleashing Fel.
 
 Name             : Fel Barrage (id=258926) [Spell Family (107)] 
@@ -4698,7 +4698,7 @@ Effects          :
 #1 (id=483180)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24200 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=819793)   : Dummy (3)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc258925
 
 Name             : Haste (id=261582) [Passive] 
