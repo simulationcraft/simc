@@ -3591,7 +3591,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Trigger Spell: 269005 | Target: Enemy (6)
 #2 (id=713318)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-Description      : Channel the energy of the storms at your target, causing $269005s1 Nature damage to up to $269005I enemies within $269005A1 yards every $t1 sec.
+#3 (id=899571)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Description      : Channel the energy of the storms at your target, causing $269005s1 Nature damage to all enemies within $269005A1 yards every $t1 sec. Deals reduced damage beyond $s3 targets.
 
 The damage of this ability increases by $s2% every time it deals damage.
 Tooltip          : Suffering $<damage> Nature damage every $t1 sec.
@@ -7754,7 +7756,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
-Max Targets      : 6
 Triggered by     : Eye of the Storm (157375)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -2314,7 +2314,7 @@ Effects          :
                    Family Flags: 34
 #4 (id=169566)   : Apply Aura (6) | Unknown(371)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : The Felguard recklessly swings its weapon, striking up to $89753s3 nearby targets within $89753A1 yards for $<damage> Physical damage every $t1 sec for $89751d. The Felguard cannot take any other action during Felstorm.
+Description      : The Felguard recklessly swings its weapon, striking all nearby enemies within $89753A1 yards for $<damage> Physical damage every $t1 sec for $89751d. The Felguard cannot take any other action during Felstorm. Deals reduced damage beyond $89753s3 targets.
 Tooltip          : Striking for $<damage> Physical damage every $t1 sec. Unable to use other abilities.
 Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
 $damage=${0.33*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}
@@ -2340,7 +2340,7 @@ Effects          :
 #2 (id=92652)    : None (0)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 #3 (id=818685)   : Dummy (3)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : $@spelldesc89751
 
 Name             : Axe Toss (desc=Special Ability) (id=89766) [Spell Family (57)] 
@@ -6857,7 +6857,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Cooldown         : 180 seconds
+Cooldown         : 150 seconds
 Family Flags     : 80
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

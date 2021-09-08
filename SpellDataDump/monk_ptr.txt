@@ -736,7 +736,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20750 | PvP Coefficient: 1.00000
 #6 (id=480070)   : Dummy (3)
                    Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Pummels all targets in front of you, dealing ${5*$s5} Physical damage over $113656d to your primary target and ${5*$s5*$s6/100} damage over $113656d to up to $s1 other targets. Can be channeled while moving.
+Description      : Pummels all targets in front of you, dealing ${5*$s5} Physical damage over $113656d to your primary target and ${5*$s5*$s6/100} damage over $113656d to all other enemies. Deals reduced damage beyond $s1 targets. Can be channeled while moving.
 Tooltip          : $w3 damage every $t3 sec. $?s125671[Parrying all attacks.][]
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
@@ -1781,10 +1781,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Extra Initial Period (169), Spell Haste Affects Periodic (173), Haste Affects Duration (273), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=132057)   : Apply Aura (6) | Periodic Trigger Spell (23): Rushing Jade Wind every 0.75 seconds
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Trigger Spell: 148187 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 148187 | Target: Self (1)
 #2 (id=359689)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
-Description      : Summons a whirling tornado around you, causing ${(1+$d/$t1)*$148187s1} Physical damage over $d to up to $s1 enemies within $107270A1 yards.
+Description      : Summons a whirling tornado around you, causing ${(1+$d/$t1)*$148187s1} Physical damage over $d to all enemies within $107270A1 yards. Deals reduced damage beyond $s1 targets.
 Tooltip          : Dealing physical damage to nearby enemies every $116847t1 sec.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
@@ -1836,7 +1836,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
-Max Targets      : 6
 Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effects: #1, #2), Inner Fury (336452 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Triggered by     : Fists of Fury (113656), Fists of Fury (330898)
 Family Flags     : 20, 103
