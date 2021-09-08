@@ -1606,12 +1606,26 @@ struct rjw_tick_action_t : public monk_melee_attack_t
     ww_mastery = true;
 
     dual = background = true;
-    aoe               = (int)p->talent.rushing_jade_wind->effectN( 1 ).base_value();
+    if ( !p->dbc->ptr )
+      aoe               = (int)p->talent.rushing_jade_wind->effectN( 1 ).base_value();
     radius            = data->effectN( 1 ).radius();
 
     // Reset some variables to ensure proper execution
     dot_duration       = timespan_t::zero();
     cooldown->duration = timespan_t::zero();
+  }
+
+  // For more than 5 targets damage is based on a Sqrt(5/x)
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
+
+    auto target_cap = p()->talent.rushing_jade_wind->effectN( 1 ).base_value();
+
+    if ( p()->dbc->ptr && state->n_targets > target_cap )
+      cam *= std::sqrt( target_cap / state->n_targets );
+
+    return cam;
   }
 };
 
@@ -1913,7 +1927,8 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, p, p->passives.fists_of_fury_tick )
   {
     background = true;
-    aoe        = 1 + (int)p->spec.fists_of_fury->effectN( 1 ).base_value();
+    if ( !p->dbc->ptr )
+      aoe        = 1 + (int)p->spec.fists_of_fury->effectN( 1 ).base_value();
     ww_mastery = true;
 
     attack_power_mod.direct    = p->spec.fists_of_fury->effectN( 5 ).ap_coeff();
@@ -1927,8 +1942,14 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
   {
     double cam = melee_attack_t::composite_aoe_multiplier( state );
 
-    if ( state->target != target )
-      cam *= p()->spec.fists_of_fury->effectN( 6 ).percent();
+    auto target_cap = p()->spec.fists_of_fury->effectN( 6 ).percent();
+
+    if ( p()->dbc->ptr && state->n_targets > target_cap )
+      // this is the closest we can come up without Blizzard flat out giving us the function
+      // Primary takes the 100% damage
+      // Secondary targets get reduced damage
+      if ( state->target != target )
+        cam *= std::sqrt( target_cap / state->n_targets );
 
     return cam;
   }
