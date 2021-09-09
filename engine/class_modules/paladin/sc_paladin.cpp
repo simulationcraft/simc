@@ -1208,23 +1208,13 @@ struct ashen_hallow_tick_t : public paladin_spell_t
     : paladin_spell_t( "ashen_hallow_tick", p, p->find_spell( 317221 ) ), hd_damage_tick( hallowed_discernment )
   {
     aoe         = -1;
+    reduced_aoe_damage = 5;
+    full_damage_targets = 0;
     dual        = true;
     direct_tick = true;
     background  = true;
     may_crit    = true;
     ground_aoe  = true;
-  }
-
-  double composite_aoe_multiplier( const action_state_t* state ) const override
-  {
-    double cam = paladin_spell_t::composite_aoe_multiplier( state );
-
-    // Formula courtesy of Mythie. This expression fits experimental data but has not been confirmed.
-    if ( state->n_targets <= 5 )
-      return cam;
-    else
-      return cam * std::sqrt( 5.0 / state->n_targets );
-    // Post 20 is managed by action_t::calculate_direct_amount
   }
 
   void execute() override
