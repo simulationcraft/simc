@@ -1921,6 +1921,9 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     background = true;
     if ( !p->dbc->ptr )
       aoe        = 1 + (int)p->spec.fists_of_fury->effectN( 1 ).base_value();
+    else
+      reduced_aoe_damage = as<unsigned>( p->spec.fists_of_fury->effectN( 1 ).base_value() );
+
     ww_mastery = true;
 
     attack_power_mod.direct    = p->spec.fists_of_fury->effectN( 5 ).ap_coeff();
@@ -1935,14 +1938,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     double cam = melee_attack_t::composite_aoe_multiplier( state );
 
     if ( state->target != target )
-    {
       cam *= p()->spec.fists_of_fury->effectN( 6 ).percent();
-
-      auto target_cap = p()->spec.fists_of_fury->effectN( 1 ).base_value();
-
-      if ( p()->dbc->ptr && state->n_targets > target_cap )
-        cam *= std::sqrt( target_cap / state->n_targets );
-    }
 
     return cam;
   }
