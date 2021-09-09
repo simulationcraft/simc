@@ -755,6 +755,8 @@ struct ascended_nova_t final : public priest_spell_t
   {
     parse_options( options_str );
     aoe                        = -1;
+    reduced_aoe_damage         = 1;
+    full_damage_targets        = 0;
     radius                     = data().effectN( 1 ).radius_max();
     affected_by_shadow_weaving = true;
 
@@ -781,13 +783,6 @@ struct ascended_nova_t final : public priest_spell_t
     }
 
     return priest_spell_t::ready();
-  }
-
-  double composite_aoe_multiplier( const action_state_t* state ) const override
-  {
-    double cam = priest_spell_t::composite_aoe_multiplier( state );
-
-    return cam / std::sqrt( state->n_targets );
   }
 
   void execute() override
