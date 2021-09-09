@@ -665,7 +665,14 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_fists_of_fury_tick_t( storm_earth_and_fire_pet_t* p )
       : sef_tick_action_t( "fists_of_fury_tick", p, p->o()->passives.fists_of_fury_tick )
     {
-      aoe = 1 + as<int>( p->o()->spec.fists_of_fury->effectN( 1 ).base_value() );
+      if ( p->dbc->ptr )
+        aoe = 1 + as<int>( p->o()->spec.fists_of_fury->effectN( 1 ).base_value() );
+      else
+      {
+        aoe                 = -1;
+        reduced_aoe_damage  = p->o()->spec.fists_of_fury->effectN( 1 ).base_value();
+        full_damage_targets = 1;
+      }
     }
   };
 
@@ -758,7 +765,13 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_rushing_jade_wind_tick_t( storm_earth_and_fire_pet_t* p )
       : sef_tick_action_t( "rushing_jade_wind_tick", p, p->o()->talent.rushing_jade_wind->effectN( 1 ).trigger() )
     {
-      aoe = -1;
+      if ( !p->dbc->ptr )
+        aoe = (int)p->o()->talent.rushing_jade_wind->effectN( 1 ).base_value();
+      else
+      {
+        aoe                = -1;
+        reduced_aoe_damage = p->o()->talent.rushing_jade_wind->effectN( 1 ).base_value();
+      }
     }
   };
 
