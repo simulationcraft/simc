@@ -1283,7 +1283,7 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
 
   // New Shadowlands AoE damage reduction based on total target count
   if ( state->chain_target >= full_damage_targets && state->action->reduced_aoe_damage > 0 )
-    amount *= std::sqrt( state->action->reduced_aoe_damage / state->n_targets );
+    amount *= std::sqrt( state->action->reduced_aoe_damage / static_cast<double>( state->n_targets ) );
 
   amount *= composite_aoe_multiplier( state );
 
