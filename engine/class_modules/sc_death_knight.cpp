@@ -3852,7 +3852,8 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
   {
     aoe = -1;
     background = true;
-    reduced_aoe_damage = 1;
+    reduced_aoe_damage = 1.0;
+    full_damage_targets = 1;
 
     ap_type = attack_power_type::WEAPON_BOTH;
 
@@ -5516,7 +5517,8 @@ struct howling_blast_t : public death_knight_spell_t
     triggers_shackle_the_unworthy = true;
 
     aoe = -1;
-    reduced_aoe_damage = 1;
+    reduced_aoe_damage = 1.0;
+    full_damage_targets = 1;
 
     impact_action = get_action<frost_fever_t>( "frost_fever", p );
 
@@ -6416,8 +6418,7 @@ struct swarming_mist_damage_t : public death_knight_spell_t
   {
     background = true;
     aoe = -1;
-    reduced_aoe_damage = 5;
-    full_damage_targets = 0;
+    reduced_aoe_damage = p -> covenant.swarming_mist -> effectN( 5 ).base_value();
     base_multiplier *= 1.0 + p -> conduits.impenetrable_gloom.percent();
     swarming_mist_energize_amount = as<int>( p -> covenant.swarming_mist->ok() ? p -> find_spell( 312546 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) : 0 );
   }

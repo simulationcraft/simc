@@ -1762,7 +1762,8 @@ public:
       parse_options( options_str );
 
       aoe                     = -1;
-      reduced_aoe_damage      = as<unsigned>( o()->spec.keg_smash->effectN( 7 ).base_value() );
+      reduced_aoe_damage      = o()->spec.keg_smash->effectN( 7 ).base_value();
+      full_damage_targets     = 1;
       attack_power_mod.direct = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).ap_coeff();
       radius                  = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).radius();
 
@@ -1806,7 +1807,8 @@ public:
         merge_report  = false;
         tick_may_crit = may_crit = true;
         hasted_ticks             = false;
-        reduced_aoe_damage = 1;
+        reduced_aoe_damage = 1.0;
+        full_damage_targets = 1;
       }
     };
 
@@ -1820,7 +1822,8 @@ public:
       cooldown->hasted   = false;
       trigger_gcd        = timespan_t::from_seconds( 2 );
       aoe                = -1;
-      reduced_aoe_damage = 1;
+      reduced_aoe_damage = 1.0;
+      full_damage_targets = 1;
 
       add_child( dot_action );
     }

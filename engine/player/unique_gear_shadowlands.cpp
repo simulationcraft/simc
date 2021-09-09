@@ -241,8 +241,7 @@ void potion_of_empowered_exorcisms( special_effect_t& effect )
         radius *= 1.0 + e.driver()->effectN( 2 ).percent();
       }
 
-      reduced_aoe_damage = 1;
-      full_damage_targets = 0;
+      reduced_aoe_damage = 1.0;
     }
   };
 

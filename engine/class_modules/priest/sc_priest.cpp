@@ -755,8 +755,7 @@ struct ascended_nova_t final : public priest_spell_t
   {
     parse_options( options_str );
     aoe                        = -1;
-    reduced_aoe_damage         = 1;
-    full_damage_targets        = 0;
+    reduced_aoe_damage         = 1.0;
     radius                     = data().effectN( 1 ).radius_max();
     affected_by_shadow_weaving = true;
 

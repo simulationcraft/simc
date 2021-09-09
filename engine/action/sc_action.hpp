@@ -206,10 +206,9 @@ public:
 
   /// Reduce damage to targets when total targets is greater than value
   /// Formula used is <damage per target> = sqrt( reduced_aoe_damage / <number of targets> )
-  unsigned reduced_aoe_damage;
+  double reduced_aoe_damage;
 
   /// If reduced_aoe_damage > 0, the number of target(s) that will take full unreduced damage
-  /// Default value is 1
   int full_damage_targets;
 
   /**
