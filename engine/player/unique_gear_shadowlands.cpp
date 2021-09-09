@@ -240,13 +240,9 @@ void potion_of_empowered_exorcisms( special_effect_t& effect )
         base_multiplier *= 1.0 + e.driver()->effectN( 2 ).percent();
         radius *= 1.0 + e.driver()->effectN( 2 ).percent();
       }
-    }
 
-    // manually adjust for aoe reduction here instead of via action_t::reduced_aoe_damage as all targets receive reduced
-    // damage, including the primary
-    double composite_aoe_multiplier( const action_state_t* s ) const override
-    {
-      return proc_spell_t::composite_aoe_multiplier( s ) / std::sqrt( s->n_targets );
+      reduced_aoe_damage = 1;
+      full_damage_targets = 0;
     }
   };
 
