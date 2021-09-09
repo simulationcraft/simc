@@ -204,8 +204,13 @@ public:
   /// Split damage evenly between targets
   bool split_aoe_damage;
 
-  /// Reduce damage to secondary targets based on total target count
-  bool reduced_aoe_damage;
+  /// Reduce damage to targets when total targets is greater than value
+  /// Formula used is <damage per target> = sqrt( reduced_aoe_damage / <number of targets> )
+  unsigned reduced_aoe_damage;
+
+  /// If reduced_aoe_damage > 0, the number of target(s) that will take full unreduced damage
+  /// Default value is 1
+  unsigned full_damage_targets;
 
   /**
    * @brief Normalize weapon speed for weapon damage calculations

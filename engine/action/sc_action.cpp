@@ -337,6 +337,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     consume_per_tick_(),
     split_aoe_damage(),
     reduced_aoe_damage(),
+    full_damage_targets( 1 ),
     normalize_weapon_speed(),
     ground_aoe(),
     round_base_dmg( true ),
@@ -1281,12 +1282,13 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
     amount /= state->n_targets;
 
   // New Shadowlands AoE damage reduction based on total target count
-  if ( state->chain_target > 0 && state->action->reduced_aoe_damage )
-    amount /= std::sqrt( state->n_targets );
+  if ( state->chain_target > ( full_damage_targets - 1 ) && state->action->reduced_aoe_damage > 0 )
+    amount *= std::sqrt( state->action->reduced_aoe_damage / state->n_targets );
 
   amount *= composite_aoe_multiplier( state );
 
   // Spell goes over the maximum number of AOE targets - ignore for enemies
+  // TODO: determine interaction with new sqrt reduction. currently bugged on ptr as of build 9.1.5.40078 
   if ( !state->action->split_aoe_damage && !state->action->reduced_aoe_damage &&
        state->n_targets > static_cast<size_t>( sim->max_aoe_enemies ) && !state->action->player->is_enemy() )
     amount *= sim->max_aoe_enemies / static_cast<double>( state->n_targets );
