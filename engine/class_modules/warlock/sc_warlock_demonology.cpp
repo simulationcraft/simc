@@ -435,7 +435,7 @@ struct implosion_t : public demonology_spell_t
       dual               = true;
       background         = true;
       callbacks          = false;
-      reduced_aoe_damage = false;
+      reduced_aoe_damage = 1;
     }
 
     double composite_target_multiplier( player_t* t ) const override
