@@ -210,7 +210,7 @@ public:
 
   /// If reduced_aoe_damage > 0, the number of target(s) that will take full unreduced damage
   /// Default value is 1
-  unsigned full_damage_targets;
+  int full_damage_targets;
 
   /**
    * @brief Normalize weapon speed for weapon damage calculations
