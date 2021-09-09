@@ -1942,14 +1942,15 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
   {
     double cam = melee_attack_t::composite_aoe_multiplier( state );
 
-    auto target_cap = p()->spec.fists_of_fury->effectN( 6 ).percent();
+    if ( state->target != target )
+    {
+      cam *= p()->spec.fists_of_fury->effectN( 6 ).percent();
 
-    if ( p()->dbc->ptr && state->n_targets > target_cap )
-      // this is the closest we can come up without Blizzard flat out giving us the function
-      // Primary takes the 100% damage
-      // Secondary targets get reduced damage
-      if ( state->target != target )
+      auto target_cap = p()->spec.fists_of_fury->effectN( 1 ).base_value();
+
+      if ( p()->dbc->ptr && state->n_targets > target_cap )
         cam *= std::sqrt( target_cap / state->n_targets );
+    }
 
     return cam;
   }
