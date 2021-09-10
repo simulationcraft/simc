@@ -815,7 +815,7 @@ struct fleshcraft_t : public spell_t
       // Hardcoded at 3 stacks per 1s of channeling in tooltip, granted at the end of the channel
       // This doesn't appear to always be partial, and is only in increments of 3
       // However, sometimes it is in increments of +3 stacks every 1s (even) tick, need to check more with logs
-      int num_stacks = 3 * floor( ( base_tick_time * d->current_tick ) / 1_s );
+      int num_stacks = 3 * as<int>( floor( ( base_tick_time * d->current_tick ) / 1_s ) );
       if ( num_stacks > 0 )
         player->buffs.trembling_pustules->trigger( num_stacks );
     }

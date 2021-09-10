@@ -884,7 +884,7 @@ void item_t::parse_options()
         }
       }
     }
-    catch ( const std::exception& e )
+    catch ( const std::exception& )
     {
       std::throw_with_nested( std::runtime_error( "Crafted Stats" ) );
     }

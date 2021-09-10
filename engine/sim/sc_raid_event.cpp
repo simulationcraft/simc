@@ -355,7 +355,7 @@ struct pull_event_t final : raid_event_t
   {
     pull_event_t* pull_event;
 
-    mob_t( player_t* o, util::string_view n = "Mob", pet_e pt = PET_ENEMY ) : pet_t( o->sim, o, n, PET_ENEMY )
+    mob_t( player_t* o, util::string_view n = "Mob", pet_e pt = PET_ENEMY ) : pet_t( o->sim, o, n, pt )
     {
       register_on_demise_callback( this, [ this ]( player_t* ) {
         if ( pull_event )
@@ -569,8 +569,8 @@ struct pull_event_t final : raid_event_t
       }
     }    
 
-    auto adds = adds_spawner->spawn( adds_health.size() );
-    for ( int i = 0; i < adds.size(); i++ )
+    auto adds = adds_spawner->spawn( as<unsigned>( adds_health.size() ) );
+    for ( size_t i = 0; i < adds.size(); i++ )
     {
       adds[ i ]->resources.base[ RESOURCE_HEALTH ] = adds_health[ i ];
       adds[ i ]->resources.infinite_resource[ RESOURCE_HEALTH ] = false;
@@ -2047,7 +2047,7 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
     if ( filter == "count" )
     {
       if ( next_pull )
-        return next_pull->adds_health.size();
+        return as<double>( next_pull->adds_health.size() );
       else
         return 0.0;
     }

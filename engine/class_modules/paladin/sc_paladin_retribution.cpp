@@ -351,9 +351,9 @@ struct echoed_spell_event_t : public event_t
   paladin_melee_attack_t* echo;
   paladin_t* paladin;
   player_t* target;
-  float amount;
+  double amount;
 
-  echoed_spell_event_t( paladin_t* p, player_t* tgt, paladin_melee_attack_t* spell, timespan_t delay, float amt = 0 ) :
+  echoed_spell_event_t( paladin_t* p, player_t* tgt, paladin_melee_attack_t* spell, timespan_t delay, double amt = 0 ) :
     event_t( *p, delay ), echo( spell ), paladin( p ), target( tgt ), amount( amt )
   {
   }

@@ -2008,9 +2008,9 @@ void forbidden_necromantic_tome( special_effect_t& effect )  // NYI: Battle Rezz
   {
     using dbc_proc_callback_t::dbc_proc_callback_t;
 
-    void execute( action_t*, action_state_t* state ) override
+    void execute( action_t*, action_state_t* ) override
     {
-      if ( proc_buff->check() == proc_buff->max_stack() )
+      if ( proc_buff->at_max_stacks() )
         return;
 
       proc_buff->trigger();
@@ -3662,7 +3662,7 @@ void winds_of_winter( special_effect_t& effect )
            ->set_can_cancel( false );
 
   new winds_of_winter_cb_t( effect, damage, buff );
-  effect.player->register_combat_begin( [ buff ]( player_t* p )
+  effect.player->register_combat_begin( [ buff ]( player_t* )
   {
     buff->trigger();
   } );
