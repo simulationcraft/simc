@@ -665,7 +665,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_fists_of_fury_tick_t( storm_earth_and_fire_pet_t* p )
       : sef_tick_action_t( "fists_of_fury_tick", p, p->o()->passives.fists_of_fury_tick )
     {
-      if ( p->dbc->ptr )
+      if ( !p->dbc->ptr )
         aoe = 1 + as<int>( p->o()->spec.fists_of_fury->effectN( 1 ).base_value() );
       else
       {
