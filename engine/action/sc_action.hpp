@@ -205,11 +205,11 @@ public:
   bool split_aoe_damage;
 
   /// Reduce damage to targets when total targets is greater than value
-  /// Formula used is <damage per target> = sqrt( reduced_aoe_damage / <number of targets> )
-  double reduced_aoe_damage;
+  /// Formula used is <damage per target> = sqrt( reduced_aoe_targets / <number of targets> )
+  double reduced_aoe_targets;
 
-  /// If reduced_aoe_damage > 0, the number of target(s) that will take full unreduced damage
-  int full_damage_targets;
+  /// If reduced_aoe_targets > 0, the number of target(s) that will take full unreduced amount
+  int full_amount_targets;
 
   /**
    * @brief Normalize weapon speed for weapon damage calculations

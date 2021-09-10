@@ -2486,8 +2486,8 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     cost_reductions = { p->buffs.rule_of_threes };
     triggers.radiant_spark = true;
     affected_by.deathborne_cleave = true;
-    reduced_aoe_damage = 1.0;
-    full_damage_targets = 1;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
   }
 
   double cost() const override
@@ -4175,8 +4175,8 @@ struct ice_nova_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    reduced_aoe_damage = 1.0;
-    full_damage_targets = 1;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
     consumes_winters_chill = triggers.radiant_spark = true;
   }
 
@@ -4314,8 +4314,8 @@ struct living_bomb_explosion_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( 44461 ) )
   {
     aoe = -1;
-    reduced_aoe_damage = 1.0;
-    full_damage_targets = 1;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
     background = true;
     affected_by.radiant_spark = false;
   }
@@ -4553,8 +4553,8 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( 257542 ) )
   {
     aoe = -1;
-    reduced_aoe_damage = 1.0;
-    full_damage_targets = 1;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
     background = true;
     callbacks = false;
     triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
@@ -5000,8 +5000,8 @@ struct touch_of_the_magi_explosion_t final : public arcane_mage_spell_t
     may_miss = may_crit = callbacks = false;
     affected_by.radiant_spark = false;
     aoe = -1;
-    reduced_aoe_damage = 1.0;
-    full_damage_targets = 1;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
     base_dd_min = base_dd_max = 1.0;
   }
 

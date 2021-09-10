@@ -1942,8 +1942,8 @@ struct eye_beam_t : public demon_hunter_spell_t
     {
       background = dual = true;
       aoe = -1;
-      reduced_aoe_damage = 1.0;
-      full_damage_targets = 1;
+      reduced_aoe_targets = 1.0;
+      full_amount_targets = 1;
     }
 
     double composite_target_multiplier( player_t* target ) const override
@@ -3093,7 +3093,7 @@ struct fodder_to_the_flame_cb_t : public dbc_proc_callback_t
     {
       background = true;
       aoe = -1;
-      reduced_aoe_damage = p->find_spell( 350570 )->effectN( 1 ).base_value();
+      reduced_aoe_targets = p->find_spell( 350570 )->effectN( 1 ).base_value();
 
       if ( p->legendary.demonic_oath->ok() )
       {

@@ -5231,8 +5231,8 @@ struct fury_of_elune_t : public druid_spell_t
     {
       background = dual = ground_aoe = true;
       aoe = -1;
-      reduced_aoe_damage = 1.0;
-      full_damage_targets = 1;
+      reduced_aoe_targets = 1.0;
+      full_amount_targets = 1;
     }
   };
 
@@ -5404,8 +5404,8 @@ struct full_moon_t : public moon_base_t
   full_moon_t( druid_t* p, const spell_data_t* s, util::string_view opt ) : moon_base_t( "full_moon", p, s, opt )
   {
     aoe = -1;
-    reduced_aoe_damage = 1.0;
-    full_damage_targets = 1;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
     stage = moon_stage_e::FULL_MOON;
 
     update_eclipse = true;

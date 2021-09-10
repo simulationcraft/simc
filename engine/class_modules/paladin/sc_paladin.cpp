@@ -1208,7 +1208,7 @@ struct ashen_hallow_tick_t : public paladin_spell_t
     : paladin_spell_t( "ashen_hallow_tick", p, p->find_spell( 317221 ) ), hd_damage_tick( hallowed_discernment )
   {
     aoe         = -1;
-    reduced_aoe_damage = p->covenant.venthyr->effectN( 1 ).base_value();
+    reduced_aoe_targets = p->covenant.venthyr->effectN( 1 ).base_value();
     dual        = true;
     direct_tick = true;
     background  = true;

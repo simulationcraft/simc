@@ -755,7 +755,7 @@ struct ascended_nova_t final : public priest_spell_t
   {
     parse_options( options_str );
     aoe                        = -1;
-    reduced_aoe_damage         = 1.0;
+    reduced_aoe_targets         = 1.0;
     radius                     = data().effectN( 1 ).radius_max();
     affected_by_shadow_weaving = true;
 
@@ -866,7 +866,7 @@ struct ascended_eruption_heal_t final : public priest_heal_t
                         p.conduits.courageous_ascension->effectN( 2 ).percent() )
   {
     aoe                = -1;
-    reduced_aoe_damage = 1.0;
+    reduced_aoe_targets = 1.0;
     background         = true;
   }
 
@@ -899,7 +899,7 @@ struct ascended_eruption_t final : public priest_spell_t
                         p.conduits.courageous_ascension->effectN( 2 ).percent() )
   {
     aoe                = -1;
-    reduced_aoe_damage = 1.0;
+    reduced_aoe_targets = 1.0;
     background         = true;
     radius             = data().effectN( 1 ).radius_max();
     // By default the spell tries to use the healing SP Coeff

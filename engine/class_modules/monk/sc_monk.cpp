@@ -1611,7 +1611,7 @@ struct rjw_tick_action_t : public monk_melee_attack_t
     else
     {
       aoe                = -1;
-      reduced_aoe_damage = p->talent.rushing_jade_wind->effectN( 1 ).base_value();
+      reduced_aoe_targets = p->talent.rushing_jade_wind->effectN( 1 ).base_value();
     }
     radius            = data->effectN( 1 ).radius();
 
@@ -1924,8 +1924,8 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     else
     {
       aoe                 = -1;
-      reduced_aoe_damage = p->spec.fists_of_fury->effectN( 1 ).base_value();
-      full_damage_targets = 1;
+      reduced_aoe_targets = p->spec.fists_of_fury->effectN( 1 ).base_value();
+      full_amount_targets = 1;
     }
 
     ww_mastery = true;
@@ -2347,8 +2347,8 @@ struct keg_smash_t : public monk_melee_attack_t
     parse_options( options_str );
 
     aoe = -1;
-    reduced_aoe_damage  = p.spec.keg_smash->effectN( 7 ).base_value();
-    full_damage_targets = 1;
+    reduced_aoe_targets  = p.spec.keg_smash->effectN( 7 ).base_value();
+    full_amount_targets = 1;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
 
@@ -3011,8 +3011,8 @@ struct breath_of_fire_dot_t : public monk_spell_t
     background    = true;
     tick_may_crit = may_crit = true;
     hasted_ticks             = false;
-    reduced_aoe_damage       = 1.0;
-    full_damage_targets      = 1;
+    reduced_aoe_targets       = 1.0;
+    full_amount_targets      = 1;
   }
 };
 
@@ -3025,8 +3025,8 @@ struct breath_of_fire_t : public monk_spell_t
     gcd_type = gcd_haste_type::NONE;
 
     aoe                   = -1;
-    reduced_aoe_damage  = 1.0;
-    full_damage_targets = 1;
+    reduced_aoe_targets  = 1.0;
+    full_amount_targets = 1;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
 
