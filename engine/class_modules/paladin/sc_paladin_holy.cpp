@@ -648,7 +648,6 @@ void paladin_t::generate_action_prio_list_holy_dps()
   cds->add_action( "use_items,if=(buff.avenging_wrath.up)" );
   cds->add_action( "seraphim" );
 
-  priority->add_action( "restore_mana,if=mana<10000", "Assume infinite mana." );
   priority->add_action( this, "Shield of the Righteous",
                         "if=buff.avenging_wrath.up|buff.holy_avenger.up|!talent.awakening.enabled",
                         "High priority SoR action with AW or HA active or when not talented into Awakening" );

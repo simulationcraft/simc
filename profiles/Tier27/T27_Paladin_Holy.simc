@@ -48,10 +48,8 @@ actions.cooldowns+=/holy_avenger,if=(buff.avenging_wrath.up)
 actions.cooldowns+=/use_items,if=(buff.avenging_wrath.up)
 actions.cooldowns+=/seraphim
 
-# Assume infinite mana.
-actions.priority=restore_mana,if=mana<10000
 # High priority SoR action with AW or HA active or when not talented into Awakening
-actions.priority+=/shield_of_the_righteous,if=buff.avenging_wrath.up|buff.holy_avenger.up|!talent.awakening.enabled
+actions.priority=shield_of_the_righteous,if=buff.avenging_wrath.up|buff.holy_avenger.up|!talent.awakening.enabled
 # Use Hammer of Wrath when fighting 2 melee targets and you are not capped on Holy Power.
 actions.priority+=/hammer_of_wrath,if=holy_power<5&spell_targets.consecration=2
 # High priority Light's Hammer action when fighting 2 or more melee targets.
