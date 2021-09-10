@@ -1607,25 +1607,17 @@ struct rjw_tick_action_t : public monk_melee_attack_t
 
     dual = background = true;
     if ( !p->dbc->ptr )
-      aoe               = (int)p->talent.rushing_jade_wind->effectN( 1 ).base_value();
+      aoe = (int)p->talent.rushing_jade_wind->effectN( 1 ).base_value();
+    else
+    {
+      aoe                = -1;
+      reduced_aoe_targets = p->talent.rushing_jade_wind->effectN( 1 ).base_value();
+    }
     radius            = data->effectN( 1 ).radius();
 
     // Reset some variables to ensure proper execution
     dot_duration       = timespan_t::zero();
     cooldown->duration = timespan_t::zero();
-  }
-
-  // For more than 5 targets damage is based on a Sqrt(5/x)
-  double composite_aoe_multiplier( const action_state_t* state ) const override
-  {
-    double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
-
-    auto target_cap = p()->talent.rushing_jade_wind->effectN( 1 ).base_value();
-
-    if ( p()->dbc->ptr && state->n_targets > target_cap )
-      cam *= std::sqrt( target_cap / state->n_targets );
-
-    return cam;
   }
 };
 
@@ -1928,7 +1920,14 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
   {
     background = true;
     if ( !p->dbc->ptr )
-      aoe        = 1 + (int)p->spec.fists_of_fury->effectN( 1 ).base_value();
+      aoe = 1 + (int)p->spec.fists_of_fury->effectN( 1 ).base_value();
+    else
+    {
+      aoe                 = -1;
+      reduced_aoe_targets = p->spec.fists_of_fury->effectN( 1 ).base_value();
+      full_amount_targets = 1;
+    }
+
     ww_mastery = true;
 
     attack_power_mod.direct    = p->spec.fists_of_fury->effectN( 5 ).ap_coeff();
@@ -1943,14 +1942,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     double cam = melee_attack_t::composite_aoe_multiplier( state );
 
     if ( state->target != target )
-    {
       cam *= p()->spec.fists_of_fury->effectN( 6 ).percent();
-
-      auto target_cap = p()->spec.fists_of_fury->effectN( 1 ).base_value();
-
-      if ( p()->dbc->ptr && state->n_targets > target_cap )
-        cam *= std::sqrt( target_cap / state->n_targets );
-    }
 
     return cam;
   }
@@ -2355,6 +2347,8 @@ struct keg_smash_t : public monk_melee_attack_t
     parse_options( options_str );
 
     aoe = -1;
+    reduced_aoe_targets  = p.spec.keg_smash->effectN( 7 ).base_value();
+    full_amount_targets = 1;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
 
@@ -2370,22 +2364,6 @@ struct keg_smash_t : public monk_melee_attack_t
     // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
     // Forcing the trigger GCD to 1 second.
     trigger_gcd = timespan_t::from_seconds( 1 );
-  }
-
-  // For more than 5 targets damage is based on a Sqrt(5/x)
-  double composite_aoe_multiplier( const action_state_t* state ) const override
-  {
-    double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
-
-    auto target_cap = p()->spec.keg_smash->effectN( 7 ).base_value();
-    if ( state->n_targets > target_cap )
-      // this is the closest we can come up without Blizzard flat out giving us the function
-      // Primary takes the 100% damage
-      // Secondary targets get reduced damage
-      if ( state->target != target )
-        cam *= std::sqrt( target_cap / state->n_targets );
-
-    return cam;
   }
 
   double action_multiplier() const override
@@ -3033,6 +3011,8 @@ struct breath_of_fire_dot_t : public monk_spell_t
     background    = true;
     tick_may_crit = may_crit = true;
     hasted_ticks             = false;
+    reduced_aoe_targets       = 1.0;
+    full_amount_targets      = 1;
   }
 };
 
@@ -3045,6 +3025,8 @@ struct breath_of_fire_t : public monk_spell_t
     gcd_type = gcd_haste_type::NONE;
 
     aoe                   = -1;
+    reduced_aoe_targets  = 1.0;
+    full_amount_targets = 1;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
 
@@ -3064,17 +3046,6 @@ struct breath_of_fire_t : public monk_spell_t
     }
 
     monk_spell_t::update_ready( cd );
-  }
-
-  // Initial damage does Square Root damage
-  double composite_aoe_multiplier( const action_state_t* state ) const override
-  {
-    double cam = monk_spell_t::composite_aoe_multiplier( state );
-
-    if ( state->target != target )
-      return cam / std::sqrt( state->n_targets );
-
-    return cam;
   }
 
   void execute() override

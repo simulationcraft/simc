@@ -3852,7 +3852,8 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
   {
     aoe = -1;
     background = true;
-    reduced_aoe_damage = true;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
 
     ap_type = attack_power_type::WEAPON_BOTH;
 
@@ -5516,7 +5517,8 @@ struct howling_blast_t : public death_knight_spell_t
     triggers_shackle_the_unworthy = true;
 
     aoe = -1;
-    reduced_aoe_damage = true;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
 
     impact_action = get_action<frost_fever_t>( "frost_fever", p );
 
@@ -6416,6 +6418,7 @@ struct swarming_mist_damage_t : public death_knight_spell_t
   {
     background = true;
     aoe = -1;
+    reduced_aoe_targets = p -> covenant.swarming_mist -> effectN( 5 ).base_value();
     base_multiplier *= 1.0 + p -> conduits.impenetrable_gloom.percent();
     swarming_mist_energize_amount = as<int>( p -> covenant.swarming_mist->ok() ? p -> find_spell( 312546 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) : 0 );
   }
@@ -6424,17 +6427,6 @@ struct swarming_mist_damage_t : public death_knight_spell_t
   {
     swarming_mist_energize_tick = 0;
     death_knight_spell_t::execute();
-  }
-
-  double composite_aoe_multiplier( const action_state_t* state ) const override
-  {
-    double cam = death_knight_spell_t::composite_aoe_multiplier( state );
-
-    if ( state->n_targets > p() -> covenant.swarming_mist ->effectN( 5 ).base_value() )
-        // When we cross over 5 targets, sqrt on all targets kicks in
-        cam *= std::sqrt( 5.0 / state->n_targets );
-
-    return cam;
   }
 
   void impact( action_state_t* s ) override

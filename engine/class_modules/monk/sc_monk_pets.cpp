@@ -665,7 +665,14 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_fists_of_fury_tick_t( storm_earth_and_fire_pet_t* p )
       : sef_tick_action_t( "fists_of_fury_tick", p, p->o()->passives.fists_of_fury_tick )
     {
-      aoe = 1 + as<int>( p->o()->spec.fists_of_fury->effectN( 1 ).base_value() );
+      if ( !p->dbc->ptr )
+        aoe = 1 + as<int>( p->o()->spec.fists_of_fury->effectN( 1 ).base_value() );
+      else
+      {
+        aoe                 = -1;
+        reduced_aoe_targets  = p->o()->spec.fists_of_fury->effectN( 1 ).base_value();
+        full_amount_targets = 1;
+      }
     }
   };
 
@@ -758,7 +765,13 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_rushing_jade_wind_tick_t( storm_earth_and_fire_pet_t* p )
       : sef_tick_action_t( "rushing_jade_wind_tick", p, p->o()->talent.rushing_jade_wind->effectN( 1 ).trigger() )
     {
-      aoe = -1;
+      if ( !p->dbc->ptr )
+        aoe = (int)p->o()->talent.rushing_jade_wind->effectN( 1 ).base_value();
+      else
+      {
+        aoe                = -1;
+        reduced_aoe_targets = p->o()->talent.rushing_jade_wind->effectN( 1 ).base_value();
+      }
     }
   };
 
@@ -1762,27 +1775,14 @@ public:
       parse_options( options_str );
 
       aoe                     = -1;
+      reduced_aoe_targets      = o()->spec.keg_smash->effectN( 7 ).base_value();
+      full_amount_targets     = 1;
       attack_power_mod.direct = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).ap_coeff();
       radius                  = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).radius();
 
       cooldown->hasted        = false;
 
       trigger_gcd = timespan_t::from_seconds( 1.5 );
-    }
-
-    // For more than 5 targets damage is based on a Sqrt(5/x)
-    double composite_aoe_multiplier( const action_state_t* state ) const override
-    {
-      double cam = pet_melee_attack_t::composite_aoe_multiplier( state );
-
-      if ( state->n_targets > o()->spec.keg_smash->effectN( 7 ).base_value() )
-        // this is the closest we can come up without Blizzard flat out giving us the function
-        // Primary takes the 100% damage
-        // Secondary targets get reduced damage
-        if ( state->target != target )
-          cam *= std::sqrt( 5 / state->n_targets );
-
-      return cam;
     }
 
     double action_multiplier() const override
@@ -1820,17 +1820,8 @@ public:
         merge_report  = false;
         tick_may_crit = may_crit = true;
         hasted_ticks             = false;
-      }
-
-      // Initial damage does Square Root damage
-      double composite_aoe_multiplier( const action_state_t* state ) const override
-      {
-        double cam = pet_spell_t::composite_aoe_multiplier( state );
-
-        if ( state->target != target )
-          return cam / std::sqrt( state->n_targets );
-
-        return cam;
+        reduced_aoe_targets = 1.0;
+        full_amount_targets = 1;
       }
     };
 
@@ -1844,18 +1835,10 @@ public:
       cooldown->hasted   = false;
       trigger_gcd        = timespan_t::from_seconds( 2 );
       aoe                = -1;
+      reduced_aoe_targets = 1.0;
+      full_amount_targets = 1;
 
       add_child( dot_action );
-    }
-
-    double composite_aoe_multiplier( const action_state_t* state ) const override
-    {
-      double cam = pet_spell_t::composite_aoe_multiplier( state );
-
-      if ( state->target != target )
-        return cam / std::sqrt( state->n_targets );
-
-      return cam;
     }
 
     void impact( action_state_t* s ) override

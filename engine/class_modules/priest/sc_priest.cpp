@@ -755,6 +755,7 @@ struct ascended_nova_t final : public priest_spell_t
   {
     parse_options( options_str );
     aoe                        = -1;
+    reduced_aoe_targets         = 1.0;
     radius                     = data().effectN( 1 ).radius_max();
     affected_by_shadow_weaving = true;
 
@@ -781,13 +782,6 @@ struct ascended_nova_t final : public priest_spell_t
     }
 
     return priest_spell_t::ready();
-  }
-
-  double composite_aoe_multiplier( const action_state_t* state ) const override
-  {
-    double cam = priest_spell_t::composite_aoe_multiplier( state );
-
-    return cam / std::sqrt( state->n_targets );
   }
 
   void execute() override
@@ -871,8 +865,9 @@ struct ascended_eruption_heal_t final : public priest_heal_t
       base_da_increase( p.covenant.boon_of_the_ascended->effectN( 5 ).percent() +
                         p.conduits.courageous_ascension->effectN( 2 ).percent() )
   {
-    aoe        = -1;
-    background = true;
+    aoe                = -1;
+    reduced_aoe_targets = 1.0;
+    background         = true;
   }
 
   void trigger_eruption( int stacks )
@@ -891,16 +886,6 @@ struct ascended_eruption_heal_t final : public priest_heal_t
 
     return m;
   }
-
-  double composite_aoe_multiplier( const action_state_t* state ) const override
-  {
-    double cam  = priest_heal_t::composite_aoe_multiplier( state );
-    int targets = state->n_targets;
-    sim->print_debug( "{} {} sets damage multiplier as if it hit an additional {} targets.", *player, *this,
-                      priest().options.ascended_eruption_additional_targets );
-    targets += priest().options.ascended_eruption_additional_targets;
-    return cam / std::sqrt( targets );
-  }
 };
 
 struct ascended_eruption_t final : public priest_spell_t
@@ -913,9 +898,10 @@ struct ascended_eruption_t final : public priest_spell_t
       base_da_increase( p.covenant.boon_of_the_ascended->effectN( 5 ).percent() +
                         p.conduits.courageous_ascension->effectN( 2 ).percent() )
   {
-    aoe        = -1;
-    background = true;
-    radius     = data().effectN( 1 ).radius_max();
+    aoe                = -1;
+    reduced_aoe_targets = 1.0;
+    background         = true;
+    radius             = data().effectN( 1 ).radius_max();
     // By default the spell tries to use the healing SP Coeff
     spell_power_mod.direct     = data().effectN( 1 ).sp_coeff();
     affected_by_shadow_weaving = true;
@@ -936,16 +922,6 @@ struct ascended_eruption_t final : public priest_spell_t
     m *= 1 + base_da_increase * trigger_stacks;
 
     return m;
-  }
-
-  double composite_aoe_multiplier( const action_state_t* state ) const override
-  {
-    double cam  = priest_spell_t::composite_aoe_multiplier( state );
-    int targets = state->n_targets;
-    sim->print_debug( "{} {} sets damage multiplier as if it hit an additional {} targets.", *player, *this,
-                      priest().options.ascended_eruption_additional_targets );
-    targets += priest().options.ascended_eruption_additional_targets;
-    return cam / std::sqrt( targets );
   }
 };
 
@@ -2108,8 +2084,6 @@ void priest_t::create_options()
   add_option( opt_deprecated( "priest_mindgames_damage_reversal", "priest.mindgames_damage_reversal" ) );
   add_option( opt_deprecated( "priest_self_power_infusion", "priest.self_power_infusion" ) );
   add_option( opt_deprecated( "priest_self_benevolent_faerie", "priest.self_benevolent_faerie" ) );
-  add_option(
-      opt_deprecated( "priest_ascended_eruption_additional_targets", "priest.ascended_eruption_additional_targets" ) );
   add_option( opt_deprecated( "priest_cauterizing_shadows_allies", "priest.cauterizing_shadows_allies" ) );
 
   add_option( opt_bool( "priest.autounshift", options.autoUnshift ) );
@@ -2120,7 +2094,6 @@ void priest_t::create_options()
   add_option( opt_bool( "priest.mindgames_damage_reversal", options.mindgames_damage_reversal ) );
   add_option( opt_bool( "priest.self_power_infusion", options.self_power_infusion ) );
   add_option( opt_bool( "priest.self_benevolent_faerie", options.self_benevolent_faerie ) );
-  add_option( opt_int( "priest.ascended_eruption_additional_targets", options.ascended_eruption_additional_targets ) );
   add_option( opt_int( "priest.cauterizing_shadows_allies", options.cauterizing_shadows_allies ) );
   add_option( opt_string( "priest.bwonsamdis_pact_mask_type", options.bwonsamdis_pact_mask_type ) );
   add_option( opt_int( "priest.shadow_word_manipulation_seconds_remaining",

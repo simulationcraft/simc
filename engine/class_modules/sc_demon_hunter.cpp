@@ -1940,8 +1940,10 @@ struct eye_beam_t : public demon_hunter_spell_t
     eye_beam_tick_t( util::string_view name, demon_hunter_t* p )
       : demon_hunter_spell_t( name, p, p->find_spell( 198030 ) )
     {
-      background = dual = reduced_aoe_damage = true;
+      background = dual = true;
       aoe = -1;
+      reduced_aoe_targets = 1.0;
+      full_amount_targets = 1;
     }
 
     double composite_target_multiplier( player_t* target ) const override
@@ -3083,34 +3085,21 @@ struct fodder_to_the_flame_cb_t : public dbc_proc_callback_t
 {
   struct fodder_to_the_flame_damage_t : public demon_hunter_spell_t
   {
-    double target_soft_cap;
     fiery_brand_t* demonic_oath_brand;
 
     fodder_to_the_flame_damage_t( util::string_view name, demon_hunter_t* p )
       : demon_hunter_spell_t( name, p, p->find_spell( 350631 ) ),
-      target_soft_cap( p->find_spell( 350570 )->effectN( 1 ).base_value() ),
       demonic_oath_brand( nullptr )
     {
       background = true;
       aoe = -1;
+      reduced_aoe_targets = p->find_spell( 350570 )->effectN( 1 ).base_value();
 
       if ( p->legendary.demonic_oath->ok() )
       {
         demonic_oath_brand = p->get_background_action<fiery_brand_t>( "fiery_brand_demonic_oath", "", true );
         add_child( demonic_oath_brand );
       }
-    }
-
-    double composite_aoe_multiplier( const action_state_t* state ) const override
-    {
-      double cam = demon_hunter_spell_t::composite_aoe_multiplier( state );
-
-      if ( state->n_targets > target_soft_cap )
-      {
-        cam *= std::sqrt( target_soft_cap / state->n_targets );
-      }
-
-      return cam;
     }
 
     void execute() override

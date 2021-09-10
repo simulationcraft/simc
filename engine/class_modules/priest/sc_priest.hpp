@@ -370,10 +370,6 @@ public:
     // Fae Blessings CDR can be given to another player, but you can still get the insanity gen
     bool self_benevolent_faerie = true;
 
-    // Add "bugged" targets to Ascended Eruption for the SQRT calculation
-    // Setting to 0 turns off the bug
-    int ascended_eruption_additional_targets = 0;
-
     // The amount of allies to assume for Cauterizing Shadows healing
     int cauterizing_shadows_allies = 3;
 
