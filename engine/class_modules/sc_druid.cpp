@@ -3380,7 +3380,13 @@ struct brutal_slash_t : public cat_attack_t
   brutal_slash_t( druid_t* p, util::string_view options_str )
     : cat_attack_t( "brutal_slash", p, p->talent.brutal_slash, options_str )
   {
-    aoe = as<int>( data().effectN( 3 ).base_value() );
+    if ( p->is_ptr() )
+    {
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 3 ).base_value();
+    }
+    else
+      aoe = as<int>( data().effectN( 3 ).base_value() );
   }
 
   double cost() const override
@@ -3618,7 +3624,7 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( result_is_hit( s->result ) && p()->talent.sabertooth->ok() )
     {
-      int sabertooth_combo_points = combo_points;
+      auto sabertooth_combo_points = combo_points;
       if ( p()->buff.apex_predators_craving->check() || free_cast )
         sabertooth_combo_points = p()->resources.max[ RESOURCE_COMBO_POINT ];
 
@@ -4179,10 +4185,16 @@ struct swipe_cat_t : public cat_attack_t
   swipe_cat_t( druid_t* player, util::string_view options_str )
     : cat_attack_t( "swipe_cat", player, player->spec.swipe_cat, options_str )
   {
-    aoe = as<int>( data().effectN( 4 ).base_value() );
+    if ( player->is_ptr() )
+    {
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 4 ).base_value();
+    }
+    else
+      aoe = as<int>( data().effectN( 4 ).base_value() );
 
     if ( player->find_rank_spell( "Swipe", "Rank 2" )->ok() )
-      bleed_mul = player->spec.swipe_cat->effectN( 2 ).percent();
+      bleed_mul = data().effectN( 2 ).percent();
   }
 
   double cost() const override
@@ -4533,7 +4545,14 @@ struct swipe_bear_t : public bear_attack_t
     : bear_attack_t( "swipe_bear", p, p->spec.swipe_bear, options_str )
   {
     // target hit data stored in spec.swipe_cat
-    aoe  = as<int>( p->spec.swipe_cat->effectN( 4 ).base_value() );
+    if ( p->is_ptr() )
+    {
+      aoe = -1;
+      reduced_aoe_targets = p->spec.swipe_cat->effectN( 4 ).base_value();
+    }
+    else
+      aoe  = as<int>( p->spec.swipe_cat->effectN( 4 ).base_value() );
+
     proc_gore = true;
   }
 };
