@@ -788,6 +788,8 @@ public:
       initial_moon_stage( NEW_MOON ),
       eclipse_snapshot_period( 3.0 ),
       affinity_resources( false ),
+      initial_pulsar_value( 0.0 ),
+      raid_combat( true ),
       catweave_bear( false ),
       owlweave_bear( false ),
       owlweave_cat( true ),
@@ -801,8 +803,6 @@ public:
       convoke_the_spirits_deck( 5 ),
       celestial_spirits_exceptional_chance( 0.85 ),
       adaptive_swarm_jump_distance( 5.0 ),
-      initial_pulsar_value( 0.0 ),
-      raid_combat( true ),
       active( active_actions_t() ),
       force_of_nature(),
       caster_form_weapon(),
@@ -1860,7 +1860,7 @@ public:
 
   double mod_spell_effects_percent( const spell_data_t*, const spelleffect_data_t& e ) { return e.percent(); }
 
-  double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t& e ) { return c.percent(); }
+  double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t& ) { return c.percent(); }
 
   template <typename T>
   void parse_spell_effects_mods( double& val, bool& mastery, const spell_data_t* base, size_t idx, T mod )
