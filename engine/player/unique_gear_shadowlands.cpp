@@ -915,11 +915,6 @@ void bottled_flayedwing_toxin( special_effect_t& effect )
       // Tick damage value lives in a different spell for some reason
       base_td = e.player->find_spell( 345547 )->effectN( 1 ).average( e.item );
     }
-
-    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t duration ) const override
-    {
-      return dot->time_to_next_tick() + duration;
-    }
   };
 
   auto secondary      = new special_effect_t( effect.item );
@@ -951,13 +946,9 @@ void empyreal_ordnance( special_effect_t& effect )
       proc_spell_t( "empyreal_ordnance_bolt", e.player, e.player->find_spell( 345540 ) ),
       buff( b )
     {
+      dot_behavior = dot_behavior_e::DOT_CLIP;
       base_td = e.player->find_spell( 345542 )->effectN( 1 ).average( e.item );
       buff_travel_speed = e.player->find_spell( 345544 )->missile_speed();
-    }
-
-    timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t duration ) const override
-    {
-      return duration;
     }
 
     void last_tick( dot_t* d ) override
@@ -1457,12 +1448,9 @@ void phial_of_putrefaction( special_effect_t& effect )
     liquefying_ooze_t( const special_effect_t& e ) :
       proc_spell_t( "liquefying_ooze", e.player, e.player->find_spell( 345466 ), e.item )
     {
+      dot_behavior = dot_behavior_e::DOT_NONE; // DoT does not refresh duration
       base_td = e.driver()->effectN( 1 ).average( e.item );
     }
-
-    // DoT does not refresh duration
-    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t ) const override
-    { return dot->remains(); }
   };
 
   struct phial_of_putrefaction_proc_t : public dbc_proc_callback_t
@@ -2096,11 +2084,6 @@ void tormentors_rack_fragment( special_effect_t& effect )
       // 07/19/2021 -- Logs show that this was hotfixed to hit again on refresh, but not in spell data
       tick_zero = true;
       base_td = e.driver()->effectN( 1 ).average( e.item );
-    }
-
-    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t duration ) const override
-    {
-      return dot->time_to_next_tick() + duration;
     }
   };
 
@@ -2894,11 +2877,6 @@ void poxstorm( special_effect_t& effect )
       : proc_spell_t( "bubbling_pox", effect.player, effect.trigger(), effect.item )
     {
     }
-
-    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t duration ) const override
-    {
-      return dot->time_to_next_tick() + duration;
-    }
   };
 
   // Note, no create_proc_action here, since there is the possibility of dual-wielding them and
@@ -3016,12 +2994,6 @@ void cruciform_veinripper(special_effect_t& effect)
     double base_ta(const action_state_t* /* s */) const override
     {
       return scaled_dmg;
-    }
-
-    // TODO: Confirm Dot Refresh Behaviour
-    timespan_t calculate_dot_refresh_duration(const dot_t* dot, timespan_t duration) const override
-    {
-      return dot->time_to_next_tick() + duration;
     }
   };
 
@@ -3507,11 +3479,6 @@ void blood_link( special_effect_t& effect )
       // spell data has physical school, which causes this dummy holder dot to be counted as a bleed.
       // overwrite as shadow to match the damage spell.
       school = school_e::SCHOOL_SHADOW;
-    }
-
-    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t duration ) const override
-    {
-      return dot->time_to_next_tick() + duration;
     }
 
     void execute() override

@@ -995,7 +995,6 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
     trigger_bountiful_brew = true;
     background   = true;
     hasted_ticks = false;
-    dot_behavior           = dot_behavior_e::DOT_REFRESH;
     may_crit = tick_may_crit = true;
     target                   = player;
   }
@@ -1023,7 +1022,6 @@ struct eye_of_the_tiger_dmg_tick_t : public monk_spell_t
     trigger_bountiful_brew = true;
     background   = true;
     hasted_ticks           = false;
-    dot_behavior           = dot_behavior_e::DOT_REFRESH;
     may_crit = tick_may_crit = true;
     aoe                      = 1;
     attack_power_mod.direct  = 0;
@@ -1808,7 +1806,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
 
     spell_power_mod.direct = 0.0;
-    dot_behavior           = dot_behavior_e::DOT_REFRESH;  // Spell uses Pandemic Mechanics.
 
     tick_action =
         new sck_tick_action_t( "spinning_crane_kick_tick", p, p->spec.spinning_crane_kick->effectN( 1 ).trigger() );

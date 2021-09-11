@@ -404,8 +404,10 @@ enum stats_e
 enum dot_behavior_e
 {
   DOT_CLIP,
-  DOT_REFRESH,
-  DOT_EXTEND
+  DOT_EXTEND,
+  DOT_REFRESH_DURATION, // Duration + Current Tick
+  DOT_REFRESH_PANDEMIC, // Duration + Current Duration up to 1.3x
+  DOT_NONE              // Does not refresh
 };
 
 enum dot_copy_e

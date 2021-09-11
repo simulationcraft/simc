@@ -63,21 +63,13 @@ namespace residual_action
       ab::may_crit = false;
       ab::attack_power_mod.tick = 0;
       ab::spell_power_mod.tick = 0;
-      ab::dot_behavior = DOT_REFRESH;
+      ab::dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
       ab::callbacks = false;
     }
 
     virtual action_state_t* new_state() override
     {
       return new residual_periodic_state_t(this, ab::target);
-    }
-
-    // Residual periodic actions will not be extendeed by the pandemic mechanism,
-    // thus the new maximum length of the dot is the ongoing tick plus the
-    // duration of the dot.
-    virtual timespan_t calculate_dot_refresh_duration(const dot_t* dot, timespan_t triggered_duration) const override
-    {
-      return dot->time_to_next_tick() + triggered_duration;
     }
 
     virtual void impact(action_state_t* s) override
