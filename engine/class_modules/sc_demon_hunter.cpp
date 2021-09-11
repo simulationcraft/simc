@@ -26,7 +26,6 @@ namespace
   * Implement Vengeance Legendaries
 
   Vengeance:
-  * Add AoE component to Sinful Brand Meta
   * Add Revel in Pain passive
   ** Ruinous Bulwark Absorb
 
@@ -2650,16 +2649,26 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
 struct metamorphosis_t : public demon_hunter_spell_t
 {
+  struct sinful_brand_meta_t : public demon_hunter_spell_t
+  {
+    sinful_brand_meta_t( util::string_view name, demon_hunter_t* p )
+      : demon_hunter_spell_t( name, p, p->covenant.sinful_brand )
+    {
+      background = dual = true;
+      aoe = -1;
+      radius = 8; // TOCHECK: Test actual application radius, not in spell data
+    }
+
+    dot_t* get_dot( player_t* t ) override
+    {
+      if ( !t ) t = target;
+      if ( !t ) return nullptr;
+      return td( t )->dots.sinful_brand;
+    }
+  };
+
   struct metamorphosis_impact_t : public demon_hunter_spell_t
   {
-    struct sinful_brand_meta_t : public demon_hunter_spell_t
-    {
-      sinful_brand_meta_t( util::string_view name, demon_hunter_t* p )
-        : demon_hunter_spell_t( name, p, p->covenant.sinful_brand )
-      {
-      }
-    };
-
     metamorphosis_impact_t( util::string_view name, demon_hunter_t* p )
       : demon_hunter_spell_t( name, p, p->find_spell( 200166 ) )
     {
@@ -2668,7 +2677,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
 
       if ( p->covenant.sinful_brand->ok() )
       {
-        impact_action = p->get_background_action<sinful_brand_meta_t>( "sinful_brand" );
+        execute_action = p->get_background_action<sinful_brand_meta_t>( "sinful_brand_meta" );
       }
     }
   };
@@ -2688,6 +2697,13 @@ struct metamorphosis_t : public demon_hunter_spell_t
 
       impact_action = p->get_background_action<metamorphosis_impact_t>( "metamorphosis_impact" );
       // Don't assign the stats here because we don't want Meta to show up in the DPET chart
+    }
+    else // DEMON_HUNTER_VENGEANCE
+    {
+      if ( p->covenant.sinful_brand->ok() )
+      {
+        execute_action = p->get_background_action<sinful_brand_meta_t>( "sinful_brand_meta" );
+      }
     }
   }
 
@@ -3172,6 +3188,12 @@ struct sinful_brand_t: public demon_hunter_spell_t
   sinful_brand_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "sinful_brand", p, p->covenant.sinful_brand, options_str )
   {
+  }
+
+  void init() override
+  {
+    demon_hunter_spell_t::init();
+    add_child( p()->find_action( "sinful_brand_meta" ) );
   }
 };
 
