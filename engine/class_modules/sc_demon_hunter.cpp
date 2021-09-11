@@ -3193,7 +3193,9 @@ struct sinful_brand_t: public demon_hunter_spell_t
   void init() override
   {
     demon_hunter_spell_t::init();
-    add_child( p()->find_action( "sinful_brand_meta" ) );
+    action_t* sinful_brand_meta = p()->find_action( "sinful_brand_meta" );
+    if ( sinful_brand_meta )
+      add_child( sinful_brand_meta );
   }
 };
 
