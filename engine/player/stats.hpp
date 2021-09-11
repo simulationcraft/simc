@@ -104,6 +104,7 @@ public:
   void analyze();
   void merge( const stats_t& other );
   const std::string& name() const { return name_str; }
+  unsigned mask() const { return 1 << type; }
 
   bool has_direct_amount_results() const;
   bool has_tick_amount_results() const;

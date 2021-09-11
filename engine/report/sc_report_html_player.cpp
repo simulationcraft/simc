@@ -61,7 +61,7 @@ bool player_has_tick_results( const player_t& p, unsigned stats_mask )
 {
   for ( const auto& stat : p.stats_list )
   {
-    if ( !( stats_mask & ( 1 << stat->type ) ) )
+    if ( !( stats_mask & stat->mask() ) )
       continue;
 
     if ( stat->num_tick_results.count() > 0 )
@@ -81,7 +81,7 @@ bool player_has_avoidance( const player_t& p, unsigned stats_mask )
 {
   for ( const auto& stat : p.stats_list )
   {
-    if ( !( stats_mask & ( 1 << stat->type ) ) )
+    if ( !( stats_mask & stat->mask() ) )
       continue;
 
     if ( has_avoidance( stat->direct_results ) )
@@ -104,7 +104,7 @@ bool player_has_block( const player_t& p, unsigned stats_mask )
 {
   for ( const auto& stat : p.stats_list )
   {
-    if ( !( stats_mask & ( 1 << stat->type ) ) )
+    if ( !( stats_mask & stat->mask() ) )
       continue;
 
     if ( has_block( stat->direct_results ) )
@@ -124,7 +124,7 @@ bool player_has_glance( const player_t& p, unsigned stats_mask )
 {
   for ( const auto& stat : p.stats_list )
   {
-    if ( !( stats_mask & ( 1 << stat->type ) ) )
+    if ( !( stats_mask & stat->mask() ) )
       continue;
 
     if ( has_glance( stat -> direct_results ) )
@@ -512,7 +512,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                              const player_t* actor = nullptr, int indentation = 0 )
 {
   const player_t& p = *s.player->get_owner_or_self();
-  bool hasparent = s.parent && s.parent->player == actor;
+  bool hasparent = s.parent && s.parent->player == actor && ( s.mask() & s.parent->mask() );
   std::string row_class;
   std::string rowspan;
 
@@ -544,7 +544,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
   // DPS and DPS %
   // Skip for abilities that do no damage
-  if ( s.compound_amount > 0 || ( s.parent && s.parent->compound_amount > 0 ) )
+  if ( s.compound_amount > 0 || ( hasparent && s.parent->compound_amount > 0 ) )
   {
     std::string compound_aps;
     std::string compound_aps_pct;
@@ -3939,7 +3939,7 @@ bool is_output_stat( unsigned mask, bool child, const stats_t& s )
   if ( s.quiet )
     return false;
 
-  if ( !( ( 1 << s.type ) & mask ) )
+  if ( !( s.mask() & mask ) )
     return false;
 
   if ( s.num_executes.mean() <= 0.001 && s.compound_amount == 0 &&
