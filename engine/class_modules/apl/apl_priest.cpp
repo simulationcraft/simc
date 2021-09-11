@@ -235,11 +235,12 @@ void shadow( player_t* p )
       "if=insanity<=85&talent.hungering_void.enabled&talent.searing_nightmare.enabled&spell_targets.mind_sear<=6|(("
       "talent.hungering_void.enabled&!talent.searing_nightmare.enabled)|spell_targets.mind_sear=1)",
       "Use Void Bolt at higher priority with Hungering Void up to 4 targets, or other talents on ST." );
-  main->add_action( p, "Devouring Plague",
-                    "if=(refreshable|insanity>75)&(!variable.pool_for_cds|insanity>=85)&(!talent.searing_nightmare."
-                    "enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))",
-                    "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is "
-                    "talented and will hit enough targets." );
+  main->add_action(
+      p, "Devouring Plague",
+      "if=(refreshable|insanity>75|cooldown.void_torrent.remains<=3*gcd)&(!variable.pool_for_cds|insanity>=85)&(!"
+      "talent.searing_nightmare.enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))",
+      "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is "
+      "talented and will hit enough targets." );
   main->add_action( p, "Void Bolt",
                     "if=spell_targets.mind_sear<(4+conduit.dissonant_echoes.enabled)&insanity<=85&talent.searing_"
                     "nightmare.enabled|!talent.searing_nightmare.enabled",
