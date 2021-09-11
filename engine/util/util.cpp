@@ -365,10 +365,12 @@ const char* util::dot_behavior_type_string( dot_behavior_e t )
 {
   switch ( t )
   {
-    case DOT_REFRESH: return "DOT_REFRESH";
-    case DOT_CLIP:    return "DOT_CLIP";
-    case DOT_EXTEND:  return "DOT_EXTEND";
-    default:          return "unknown";
+    case DOT_CLIP:              return "DOT_CLIP";
+    case DOT_EXTEND:            return "DOT_EXTEND";
+    case DOT_REFRESH_DURATION:  return "DOT_REFRESH_DURATION";
+    case DOT_REFRESH_PANDEMIC:  return "DOT_REFRESH_PANDEMIC";
+    case DOT_NONE:              return "DOT_NONE";
+    default:                    return "unknown";
   }
 }
 
