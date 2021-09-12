@@ -2369,6 +2369,11 @@ void titanic_ocular_gland( special_effect_t& effect )
       make_repeating_event( p->sim, period, update_buffs );
     } );
   } );
+
+  // right-rotate to place update_buff at the front of all combat_begin callbacks, to replicate in-game behavior where
+  // the worthy buff is already present on the player before entering combat.
+  auto vec = &effect.player->combat_begin_functions;
+  std::rotate( vec->rbegin(), vec->rbegin() + 1, vec->rend() );
 }
 
 /**Ebonsoul Vise
