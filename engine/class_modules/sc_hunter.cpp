@@ -1916,6 +1916,12 @@ struct beast_cleave_attack_t: public hunter_pet_action_t<hunter_main_pet_base_t,
     base_dd_min = base_dd_max = 0;
     spell_power_mod.direct = attack_power_mod.direct = 0;
     weapon_multiplier = 0;
+
+    if ( p->is_ptr() )
+    {
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 2 ).base_value();
+    }
   }
 
   void init() override
@@ -2867,6 +2873,12 @@ struct barrage_t: public hunter_spell_t
     {
       radius = 0; //Barrage attacks all targets in front of the hunter, so setting radius to 0 will prevent distance targeting from using a 40 yard radius around the target.
       // Todo: Add in support to only hit targets in the frontal cone.
+
+      if ( p->is_ptr() )
+      {
+        aoe = -1;
+        reduced_aoe_targets = data().effectN( 1 ).base_value();
+      }
     }
 
     void impact( action_state_t* s ) override
@@ -2909,6 +2921,12 @@ struct multi_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "multishot", p, p -> find_class_spell( "Multi-Shot" ) )
   {
     parse_options( options_str );
+
+    if ( p->is_ptr() )
+    {
+      aoe = -1;
+      reduced_aoe_targets = p->find_spell( 2643 )->effectN( 1 ).base_value();
+    }
   }
 
   void execute() override
@@ -3902,6 +3920,12 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     triggers_wild_spirits = false;
 
     tick_action = p -> get_background_action<damage_t>( "explosive_shot_aoe" );
+
+    if ( p->is_ptr() )
+    {
+      tick_action->aoe = -1;
+      tick_action->reduced_aoe_targets = data().effectN( 2 ).base_value();
+    }
   }
 };
 
@@ -4186,6 +4210,7 @@ struct flanking_strike_t: hunter_melee_attack_t
 struct carve_base_t: public hunter_melee_attack_t
 {
   timespan_t wildfire_bomb_reduction;
+  timespan_t wildfire_bomb_reduction_cap;
   internal_bleeding_t internal_bleeding;
 
   carve_base_t( util::string_view n, hunter_t* p, const spell_data_t* s,
@@ -4200,7 +4225,7 @@ struct carve_base_t: public hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    const auto reduction = wildfire_bomb_reduction * num_targets_hit;
+    timespan_t reduction = std::min( wildfire_bomb_reduction * num_targets_hit, wildfire_bomb_reduction_cap );
     p() -> cooldowns.wildfire_bomb -> adjust( -reduction, true );
 
     p() -> buffs.butchers_bone_fragments -> up(); // benefit tracking
@@ -4239,6 +4264,13 @@ struct carve_t: public carve_base_t
 
     if ( p -> talents.butchery.ok() )
       background = true;
+
+    if ( p->is_ptr() )
+    {
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 3 ).base_value();
+    }
+    wildfire_bomb_reduction_cap = timespan_t::from_seconds( data().effectN( 3 ).base_value() );
   }
 };
 
@@ -4251,6 +4283,13 @@ struct butchery_t: public carve_base_t
                   p -> talents.butchery -> effectN( 2 ).time_value() )
   {
     parse_options( options_str );
+
+    if ( p->is_ptr() )
+    {
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 3 ).base_value();
+    }
+    wildfire_bomb_reduction_cap = timespan_t::from_seconds( data().effectN( 3 ).base_value() );
   }
 };
 
