@@ -3238,7 +3238,7 @@ class SetBonusListGenerator(DataGenerator):
     # NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
     # ====================================================================
     # The ordering of this array _MUST_ match the ordering of
-    # "set_bonus_type_e" enumeration in simulationcraft.hpp or very bad
+    # "set_bonus_type_e" enumeration in sc_enum.hpp or very bad
     # things will happen.
     # ====================================================================
     # NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
@@ -3298,6 +3298,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'titanic_empowerment',
             'bonuses': [ 1452 ],
             'tier'   : 24
+        },
+        {
+            'name'   : 'hack_and_gore',
+            'bonuses': [ 1457 ],
+            'tier'   : 26
         }
     ]
 

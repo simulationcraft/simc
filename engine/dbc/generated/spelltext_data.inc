@@ -1,5 +1,5 @@
-// Spell text, wow build 9.1.0.39804
-static const std::array<spelltext_data_t, 15547> __spelltext_data { {
+// Spell text, wow build 9.1.0.40120
+static const std::array<spelltext_data_t, 15550> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14282,6 +14282,9 @@ static const std::array<spelltext_data_t, 15547> __spelltext_data { {
   { 337852, "$@spelldesc337850", "Reign of Ancient Kings has ended and will not activate.", 0 },
   { 337884, "Heart Strike deals |cFFFFFFFF${$s1}.1%|r increased damage to enemies infected by Blood Plague.", 0, 0 },
   { 337891, "The damage or healing of your first bolt of Penance is increased by |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
+  { 337892, "Your abilities have a high chance to cause your target to bleed for $o1 Physical damage over $d.\r\n\r\nKilling a target under the effect of Gore increases your movement speed by $337894s1% for $337894d1.", "Bleeding for $w1 Physical damage every $t1 sec.", 0 },
+  { 337893, "$@spelldesc337892", 0, 0 },
+  { 337894, "Movement speed increased by $s1% for $d.", "Movement speed increased by $s1%.", 0 },
   { 337914, "Prayer of Mending does |cFFFFFFFF${$s1}.1%|r increased healing to the initial target.", 0, 0 },
   { 337934, "Obliterate increases the damage of your next Frost Strike by |cFFFFFFFF${$s1}.1%|r, stacks up to $337936u times.", 0, 0 },
   { 337936, "$@spelldesc337934", "Frost Strike damage increased by $w1%.", 0 },
@@ -15549,13 +15552,11 @@ static const std::array<spelltext_data_t, 15547> __spelltext_data { {
   { 360829, "$@spelldesc323999", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.0.39804
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
-  {  356248,  0, "Discover an upgrade to a random Conduit from among your lowest item level Conduits, up to item level 252.", "Discover an upgrade to a random Conduit from among your lowest item level Conduits for your current specialization, up to item level 252." },
-  {  356593,  0, "Discover an upgrade to a random Conduit from among your lowest item level Conduits, up to item level 226.", "Discover an upgrade to a random Conduit from among your lowest item level Conduits for your current specialization, up to item level 226." },
+// spelltext hotfix entries, wow build 9.1.0.40120
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.1.0.39804
+// Spell description variables, wow build 9.1.0.40120
 static const std::array<spelldesc_vars_data_t, 304> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15863,7 +15864,7 @@ static const std::array<spelldesc_vars_data_t, 304> __spelldesc_vars_data { {
   {  358164, "$buff=${$348272s1}\r\n$max=${3*$<buff>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.0.39804
+// spelldesc_vars hotfix entries, wow build 9.1.0.40120
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

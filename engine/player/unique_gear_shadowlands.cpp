@@ -3983,9 +3983,31 @@ void shard_of_zed( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
   */
 }
-
-
 }  // namespace items
+
+namespace set_bonus
+{
+// TODO:
+// 1) confirm that ilevel is averaged
+// 2) confirm damage formula
+// 3) if formula is correct investigate if the 10% extra damage can be found in spell data
+void hack_and_gore( special_effect_t& effect )
+{
+  auto hack = effect.player->find_item_by_id( 184194 );
+  auto gore = effect.player->find_item_by_id( 184195 );
+
+  if ( !hack || !gore )
+    return;
+
+  int ilevel = ( hack->item_level() + gore->item_level() ) / 2;
+
+  effect.execute_action = create_proc_action<proc_spell_t>( "gore", effect );
+  effect.execute_action->base_td = effect.trigger()->effectN( 1 ).base_value() * ilevel;
+  effect.execute_action->base_td_multiplier = 1.1;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+}
 
 void register_hotfixes()
 {
@@ -4011,6 +4033,9 @@ void register_special_effects()
     // Scopes
     unique_gear::register_special_effect( 321532, "329666trigger" ); // Infra-green Reflex Sight
     unique_gear::register_special_effect( 321533, "330038trigger" ); // Optical Target Embiggener
+
+    // Set Bonus
+    unique_gear::register_special_effect( 337893, set_bonus::hack_and_gore );
 
     // Trinkets
     unique_gear::register_special_effect( 347047, items::darkmoon_deck_putrescence );
