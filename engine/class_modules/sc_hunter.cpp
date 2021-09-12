@@ -4770,9 +4770,28 @@ struct flare_t : hunter_spell_t
     soulforge_embers_t( util::string_view n, hunter_t* p )
       : hunter_spell_t( n, p, p -> find_spell( 336746 ) )
     {
-      aoe = as<int>( p -> legendary.soulforge_embers -> effectN( 1 ).base_value() );
+      if ( p->is_ptr() )
+      {
+        aoe = -1;
+        reduced_aoe_targets = p->legendary.soulforge_embers->effectN( 1 ).base_value();
+      }
+      else
+      {
+        aoe = as<int>( p->legendary.soulforge_embers->effectN( 1 ).base_value() );
+      }
+
       radius = p -> find_class_spell( "Tar Trap" ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
       triggers_wild_spirits = false;
+    }
+
+    double calculate_tick_amount( action_state_t* state, double mult ) const override
+    {
+      if ( p()->is_ptr() && as<double>( state->n_targets ) > state->action->reduced_aoe_targets )
+      {
+        mult *= std::sqrt( reduced_aoe_targets / state->n_targets );
+      }
+
+      return hunter_spell_t::calculate_tick_amount( state, mult );
     }
   };
 
