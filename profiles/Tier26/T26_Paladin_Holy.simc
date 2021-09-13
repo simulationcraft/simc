@@ -11,7 +11,7 @@ soulbind=theotar_the_mad_duke:9,336239/159:7/336147/215:7/336184/133:7/163:7/319
 renown=40
 
 # Default consumables
-potion=phantom_fire
+potion=spectral_intellect
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
@@ -36,8 +36,8 @@ actions=auto_attack
 actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=priority
 
-actions.cooldowns=avenging_wrath
-actions.cooldowns+=/ashen_hallow
+actions.cooldowns=ashen_hallow
+actions.cooldowns+=/avenging_wrath
 actions.cooldowns+=/blessing_of_the_seasons
 actions.cooldowns+=/vanquishers_hammer
 actions.cooldowns+=/divine_toll
@@ -48,15 +48,31 @@ actions.cooldowns+=/holy_avenger,if=(buff.avenging_wrath.up)
 actions.cooldowns+=/use_items,if=(buff.avenging_wrath.up)
 actions.cooldowns+=/seraphim
 
-actions.priority=shield_of_the_righteous
+# High priority SoR action with AW or HA active or when not talented into Awakening
+actions.priority=shield_of_the_righteous,if=buff.avenging_wrath.up|buff.holy_avenger.up|!talent.awakening.enabled
+# Use Hammer of Wrath when fighting 2 melee targets and you are not capped on Holy Power.
+actions.priority+=/hammer_of_wrath,if=holy_power<5&spell_targets.consecration=2
+# High priority Light's Hammer action when fighting 2 or more melee targets.
+actions.priority+=/lights_hammer,if=spell_targets.lights_hammer>=2
+# High priority Consecration refresh when fighting 2 or more targets.
+actions.priority+=/consecration,if=spell_targets.consecration>=2&!consecration.up
+# When talented into Awakening use Light of Dawn when fighting 5 or less targets and you are capped on Holy Power or Holy Avenger is active and you have 3 or more Holy Power.
+actions.priority+=/light_of_dawn,if=talent.awakening.enabled&spell_targets.consecration<=5&(holy_power>=5|(buff.holy_avenger.up&holy_power>=3))
+actions.priority+=/shield_of_the_righteous,if=spell_targets.consecration>5
 actions.priority+=/hammer_of_wrath
-actions.priority+=/holy_shock,damage=1
 actions.priority+=/judgment
-actions.priority+=/crusader_strike
+actions.priority+=/lights_hammer
+# Refresh Consecration if it is not currently active.
+actions.priority+=/consecration,if=!consecration.up
+actions.priority+=/holy_shock,damage=1
+# Higher priority Crusader Strike action when you are capped on charges
+actions.priority+=/crusader_strike,if=cooldown.crusader_strike.charges=2
 actions.priority+=/holy_prism,target=self,if=active_enemies>=2
 actions.priority+=/holy_prism
+actions.priority+=/arcane_torrent
+actions.priority+=/light_of_dawn,if=talent.awakening.enabled&spell_targets.consecration<=5
+actions.priority+=/crusader_strike
 actions.priority+=/consecration
-actions.priority+=/light_of_dawn
 
 head=plague_handlers_greathelm,id=178773,bonus_id=6536/1540/6646/6935,gem_id=173127
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
