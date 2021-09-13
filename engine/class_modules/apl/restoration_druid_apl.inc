@@ -21,8 +21,8 @@ def->add_action( "moonfire,target_if=refreshable" );
 def->add_action( "wrath" );
 def->add_action( "moonfire" );
 
-cat->add_action( "heart_of_the_wild,if=(cooldown.convoke_the_spirits.remains<30|!covenant.night_fae)&!buff.heart_of_the_wild.up" );
 cat->add_action( "rake,if=buff.shadowmeld.up|buff.prowl.up" );
+cat->add_action( "heart_of_the_wild,if=(cooldown.convoke_the_spirits.remains<30|!covenant.night_fae)&!buff.heart_of_the_wild.up" );
 cat->add_action( "auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up" );
 cat->add_action( "adaptive_swarm,target_if=!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>5|dot.adaptive_swarm_heal.stack=1)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<3&dot.adaptive_swarm_damage.ticking" );
 cat->add_action( "ravenous_frenzy,if=(buff.heart_of_the_wild.up|cooldown.heart_of_the_wild.remains>60|!talent.heart_of_the_wild.enabled)" );
