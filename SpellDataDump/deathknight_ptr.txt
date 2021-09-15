@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39804 Live (hotfix 2021-08-31/39804, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.40120 Live (hotfix 2021-09-11/40120, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -5705,7 +5705,7 @@ Effects          :
 #1 (id=217505)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.42400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=818180)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Unknown(87)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Unknown(87)
 Description      : $@spelldesc152277
 
 Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
@@ -6197,7 +6197,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Trigger Spell: 196528 | Target: Self (1)
 #4 (id=753734)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : A whirl of bone and gore batters all nearby enemies, dealing $196528s1 Shadow damage every $t3 sec, and healing you for $196545s1% of your maximum health every time it deals damage (up to ${$s1*$s4}%). Lasts $t3 sec per $s3 Runic Power spent. Deals reduced damage beyond $s4 targets.
+Description      : A whirl of bone and gore batters all nearby enemies, dealing $196528s1 Shadow damage every $t3 sec, and healing you for $196545s1% of your maximum health every time it deals damage (up to ${$s1*$s4}%). Lasts $t3 sec per $s3 Runic Power spent. Deals reduced damage beyond $196528s2 targets.
 Tooltip          : Dealing $196528s1 Shadow damage to nearby enemies every $t3 sec, and healing for $196545s1% of maximum health for each target hit (up to ${$s1*$s4}%).
 
 Name             : Icy Talons (id=194878) [Spell Family (15), Passive] 
@@ -7548,7 +7548,7 @@ Effects          :
 #2 (id=338561)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=818620)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : $@spelldesc207264
 
 Name             : Ebon Fever (id=207269) [Spell Family (15), Passive] 
@@ -10008,7 +10008,7 @@ Effects          :
 #2 (id=727527)   : Trigger Spell (64): Consumption
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 274893 | Target: Self (1)
 #3 (id=818609)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : Strikes all enemies in front of you with a hungering attack that deals $sw1 Physical damage and heals you for ${$e1*100}% of that damage. Deals reduced damage beyond $s3 targets.
 
 Name             : Festermight (id=274373) [Spell Family (15)] 
@@ -14036,7 +14036,7 @@ Effects          :
 #1 (id=819176)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=819634)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc327574
 
 Name             : Essence of Ardenweald (desc=Night Fae) (id=331117) [Spell Family (15), Hidden] 
@@ -15308,7 +15308,7 @@ Effects          :
                    Affected Spells (Label): Abomination Limb (315443)
 #2 (id=885306)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
-Description      : Abomination Limb's duration is increased by ${$s1/1000} sec and the frequency it grants $?a137008[Bone Shield][]$?a137006[Rime][]$?a137007[Runic Corruption][] is increased by $s2 sec. Additionally enemies pulled by Abomination Limb take $353546s1% increased damage from you for $353546d.
+Description      : Abomination Limb's duration is increased by ${$s1/1000} sec and the frequency it grants $?a137008[Bone Shield][]$?a137006[Rime][]$?a137007[Runic Corruption][] is increased by $s2 sec. The first time an enemy is damaged by Abomination Limb they take $353546s1% increased damage from you for $353546d.
 
 Name             : Abomination's Frenzy (id=353546) 
 Class            : Death Knight

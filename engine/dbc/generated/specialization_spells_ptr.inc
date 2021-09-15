@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 9.1.5.40078
-static const std::array<specialization_spell_entry_t, 929> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 9.1.5.40196
+static const std::array<specialization_spell_entry_t, 930> __ptr_specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -744,6 +744,7 @@ static const std::array<specialization_spell_entry_t, 929> __ptr_specialization_
   { 10,  269, 343731,      0, "Disable"                           , "Rank 2" },
   { 10,  269, 344487,      0, "Flying Serpent Kick"               , "Rank 2" },
   { 10,  269, 346104,      0, "Windwalker Monk Two-Hand Adjustment", 0 },
+  { 10, 1450, 362170,      0, "Initial Monk"                      , 0 },
   { 11,  102,   2782,      0, "Remove Corruption"                 , 0 },
   { 11,  102,  24858,      0, "Moonkin Form"                      , 0 },
   { 11,  102,  29166,      0, "Innervate"                         , 0 },
