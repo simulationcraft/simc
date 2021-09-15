@@ -1182,13 +1182,13 @@ void warlock_t::create_apl_destruction()
   aoe->add_action( "impending_catastrophe,if=!(talent.fire_and_brimstone.enabled|talent.inferno.enabled)" );
   aoe->add_action( "incinerate" );
 
+  cds->add_action( "use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|target.time_to_die<42" );
   cds->add_action( "summon_infernal" );
   cds->add_action( "dark_soul_instability" );
   cds->add_action( "potion,if=pet.infernal.active" );
   cds->add_action( "berserking,if=pet.infernal.active" );
   cds->add_action( "blood_fury,if=pet.infernal.active" );
   cds->add_action( "fireblood,if=pet.infernal.active" );
-  cds->add_action( "use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|target.time_to_die<42" );
   cds->add_action( "use_items,if=pet.infernal.active|target.time_to_die<20" );
 
   havoc->add_action( "conflagrate,if=buff.backdraft.down&soul_shard>=1&soul_shard<=4" );
