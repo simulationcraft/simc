@@ -3931,11 +3931,16 @@ void shard_of_zed( special_effect_t& effect )
   if ( !buff )
   {
     auto tick_damage = create_proc_action<siphon_essence_t>( "siphon_essence", effect );
+    auto range = tick_damage->data().effectN( 1 ).radius_max();
+
     buff = make_buff( effect.player, "unholy_aura", effect.player->find_spell( 356321 ) )
-      ->set_tick_callback( [ tick_damage ]( buff_t* buff, int, timespan_t )
+      ->set_tick_callback( [ tick_damage, range ]( buff_t* buff, int, timespan_t )
         {
-          tick_damage->set_target( buff->player->target );
-          tick_damage->execute();
+          if ( buff->player->get_player_distance( *buff->player->target ) <= range )
+          {
+            tick_damage->set_target( buff->player->target );
+            tick_damage->execute();
+          }
         } );
   }
 
