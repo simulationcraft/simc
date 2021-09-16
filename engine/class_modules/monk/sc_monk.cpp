@@ -1606,13 +1606,13 @@ struct rjw_tick_action_t : public monk_melee_attack_t
     ww_mastery = true;
 
     dual = background = true;
-    if ( !p->dbc->ptr )
-      aoe = (int)p->talent.rushing_jade_wind->effectN( 1 ).base_value();
-    else
+    if ( p->is_ptr() )
     {
-      aoe                = -1;
+      aoe                 = -1;
       reduced_aoe_targets = p->talent.rushing_jade_wind->effectN( 1 ).base_value();
     }
+    else
+      aoe = (int)p->talent.rushing_jade_wind->effectN( 1 ).base_value();
     radius            = data->effectN( 1 ).radius();
 
     // Reset some variables to ensure proper execution
@@ -1696,7 +1696,13 @@ struct sck_tick_action_t : public monk_melee_attack_t
     trigger_chiji = true;
 
     dual = background = true;
-    aoe               = (int)p->spec.spinning_crane_kick->effectN( 1 ).base_value();
+    if ( p->is_ptr() )
+    {
+      aoe = -1;
+      reduced_aoe_targets = p->spec.spinning_crane_kick->effectN( 1 ).base_value();
+    }
+    else
+      aoe               = (int)p->spec.spinning_crane_kick->effectN( 1 ).base_value();
     radius            = data->effectN( 1 ).radius();
 
     if ( p->specialization() == MONK_WINDWALKER )
@@ -1727,7 +1733,8 @@ struct sck_tick_action_t : public monk_melee_attack_t
           mark_of_the_crane_counter++;
       }
     }
-    return mark_of_the_crane_counter;
+
+    return std::min( (int)p()->passives.cyclone_strikes->max_stacks(), mark_of_the_crane_counter );
   }
 
   double action_multiplier() const override
@@ -1919,15 +1926,14 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, p, p->passives.fists_of_fury_tick )
   {
     background = true;
-    if ( !p->dbc->ptr )
-      aoe = 1 + (int)p->spec.fists_of_fury->effectN( 1 ).base_value();
-    else
+    if ( p->is_ptr() )
     {
       aoe                 = -1;
       reduced_aoe_targets = p->spec.fists_of_fury->effectN( 1 ).base_value();
       full_amount_targets = 1;
     }
-
+    else
+      aoe = 1 + (int)p->spec.fists_of_fury->effectN( 1 ).base_value();
     ww_mastery = true;
 
     attack_power_mod.direct    = p->spec.fists_of_fury->effectN( 5 ).ap_coeff();
