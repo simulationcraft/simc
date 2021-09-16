@@ -2439,6 +2439,7 @@ namespace death_chakram
  *
  * The spell consists of at least 3 spells:
  *   325028 - main spell, does all damage on multiple targets
+ *   361756 - values the main spell tooltip points to
  *   325037 - additional periodic damage done on single target
  *   325553 - energize (amount is in 325028)
  *
@@ -2619,6 +2620,15 @@ struct death_chakram_t : death_chakram::base_t
     radius = 8; // Tested on 2020-08-11
     aoe = data().effectN( 1 ).chain_target();
 
+    if ( p->is_ptr() )
+    {
+      may_crit = single_target->may_crit;
+      base_dd_min = single_target->base_dd_min;
+      base_dd_max = single_target->base_dd_max;
+      attack_power_mod.direct = single_target->attack_power_mod.direct;
+      school = single_target->school;
+    }
+
     if ( p -> legendary.bag_of_munitions.ok() )
     {
       explosive = p->get_background_action<death_chakram::explosive_shot_munitions_t>( "explosive_shot_munitions" );
@@ -2653,8 +2663,7 @@ struct death_chakram_t : death_chakram::base_t
       make_event<explosive_shot_event_t>( *sim, *explosive, s->target, explosive_delay );
     }
 
-    // Even when chained, only the first hit applies the debuff
-    if ( p()->is_ptr() && s->chain_target == 0 )
+    if ( p()->is_ptr() )
     {
       td( s->target )->debuffs.death_chakram->trigger();
     }
@@ -5636,7 +5645,7 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
 
   if ( p->is_ptr() )
   {
-    debuffs.death_chakram = make_buff( *this, "death_chakram", p->covenants.death_chakram )
+    debuffs.death_chakram = make_buff( *this, "death_chakram", p->find_spell( 325037 ) )
       ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
       ->set_cooldown( 0_s );
   }
