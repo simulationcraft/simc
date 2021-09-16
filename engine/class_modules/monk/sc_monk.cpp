@@ -1746,7 +1746,8 @@ struct sck_tick_action_t : public monk_melee_attack_t
     if ( p()->conduit.calculated_strikes->ok() )
       motc_multiplier += p()->conduit.calculated_strikes.percent();
 
-    am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
+    if ( p()->spec.spinning_crane_kick_2_ww->ok() )
+      am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
 
     if ( p()->buff.dance_of_chiji_hidden->up() )
       am *= 1 + p()->talent.dance_of_chiji->effectN( 1 ).percent();
