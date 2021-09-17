@@ -130,6 +130,19 @@ struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
     }
   }
 
+  double action_multiplier() const override
+  {
+    double am = pet_action_base_t::action_multiplier();
+
+    if ( o()->buff.serenity->up() )
+    {
+      if ( data().affected_by( o()->talent.serenity->effectN( 2 ) ) )
+        am *= 1 + o()->talent.serenity->effectN( 2 ).percent();
+    }
+
+    return am;
+  }
+
   // Physical tick_action abilities need amount_type() override, so the
   // tick_action multistrikes are properly physically mitigated.
   result_amount_type amount_type( const action_state_t* state, bool periodic ) const override
@@ -160,19 +173,6 @@ struct pet_melee_t : pet_melee_attack_t
     special           = false;
 
     // TODO: check if there should be a dual wield hit malus here.
-  }
-
-  double action_multiplier() const override
-  {
-    double am = base_t::action_multiplier();
-
-    if ( o()->buff.serenity->up() )
-    {
-      if ( base_t::data().affected_by( o()->talent.serenity->effectN( 2 ) ) )
-        am *= 1 + o()->talent.serenity->effectN( 2 ).percent();
-    }
-
-    return am;
   }
 
   void execute() override
