@@ -168,8 +168,8 @@ void shadow( player_t* p )
       "cast time finishes. Stop using at 5+ targets with Searing Nightmare." );
   cds->add_action(
       "unholy_nova,if=((!raid_event.adds.up&raid_event.adds.in>20)|raid_event.adds.remains>=15|raid_event.adds."
-      "duration<15)&(!talent.hungering_void.enabled|debuff.hungering_void.up|(cooldown.void_eruption.remains>10|!"
-      "variable.pool_for_cds)&!buff.voidform.up)",
+      "duration<15)&(!talent.hungering_void.enabled|debuff.hungering_void.up&buff.voidform.up|(cooldown.void_eruption."
+      "remains>10|!variable.pool_for_cds)&!buff.voidform.up)",
       "Use Unholy Nova on CD, holding briefly to wait for power infusion or add spawns." );
   cds->add_action(
       "boon_of_the_ascended,if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_"
