@@ -206,11 +206,12 @@ void shadow( player_t* p )
       p, "Void Eruption",
       "if=variable.pool_for_cds&(insanity>=40|pet.fiend.active&runeforge.shadowflame_prism.equipped&!cooldown.mind_"
       "blast.up&!cooldown.shadow_word_death.up)&(insanity<=85|talent.searing_nightmare.enabled&variable.searing_"
-      "nightmare_cutoff)&!cooldown.fiend.up&(!cooldown.mind_blast.up|spell_targets.mind_sear>2)&(!soulbind.volatile_"
-      "solvent|buff.volatile_solvent_humanoid.up)",
+      "nightmare_cutoff)&!cooldown.fiend.up&(!cooldown.mind_blast.up|spell_targets.mind_sear>2|!runeforge.shadowflame_"
+      "prism.equipped&!runeforge.talbadars_stratagem.equipped)&(!soulbind.volatile_solvent|buff.volatile_solvent_"
+      "humanoid.up)",
       "Use Void Eruption on cooldown pooling at least 40 insanity but not if you will overcap insanity "
-      "in VF. Make sure shadowfiend/mindbender and Mind Blast is on cooldown before VE. Ignore pooling restrictions if "
-      "using Shadowflame Prism and Bender is out." );
+      "in VF. Make sure shadowfiend/mindbender and Mind Blast is on cooldown before VE if Talbadars or Shadowflame is "
+      "equipped. Ignore pooling restrictions if using Shadowflame Prism and Bender is out." );
   main->add_action(
       p, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up&spell_targets.mind_sear<4",
       "Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active when fighting 1-3 targets." );
