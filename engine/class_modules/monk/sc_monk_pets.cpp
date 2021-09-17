@@ -1629,7 +1629,11 @@ public:
     {
       parse_options( options_str );
 
-      channeled = tick_zero = true;
+      if ( p->o()->bugs )
+        tick_zero = false;
+      else
+        tick_zero = true;
+      channeled = true;
       interrupt_auto_attack = true;
       harmful               = false;
 
