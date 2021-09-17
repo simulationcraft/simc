@@ -276,14 +276,15 @@ void shadow( player_t* p )
   main->add_action(
       p, "Mind Sear",
       "target_if=spell_targets.mind_sear>variable.mind_sear_cutoff&buff.dark_thought.up,chain=1,interrupt_immediate=1,"
-      "interrupt_if=ticks>=2",
+      "interrupt_if=ticks>=4",
       "Use Mind Sear to consume Dark Thoughts procs on AOE. TODO Confirm is this is a higher priority than redotting "
       "on AOE unless dark thoughts is about to time out" );
-  main->add_action( p, "Mind Flay",
-                    "if=buff.dark_thought.up&variable.dots_up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&"
-                    "cooldown.void_bolt.up",
-                    "Use Mind Flay to consume Dark Thoughts procs on ST. TODO Confirm if this is a higher priority "
-                    "than redotting unless dark thoughts is about to time out" );
+  main->add_action(
+      p, "Mind Flay",
+      "if=buff.dark_thought.up&variable.dots_up&!buff.voidform.up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=4&!"
+      "buff.dark_thought.up",
+      "Use Mind Flay to consume Dark Thoughts procs on ST outside of VF. TODO Confirm if this is a higher priority "
+      "than redotting unless dark thoughts is about to time out" );
   main->add_action(
       p, "Mind Blast",
       "if=variable.dots_up&raid_event.movement.in>cast_time+0.5&spell_targets.mind_sear<(4+2*talent.misery.enabled+"
