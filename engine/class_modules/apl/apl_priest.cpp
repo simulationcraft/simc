@@ -80,11 +80,9 @@ void shadow( player_t* p )
       "variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>2+buff.voidform.up",
       "Start using Searing Nightmare at 3+ targets or 4+ if you are in Voidform" );
   default_list->add_action(
-      "variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&(!raid_event.adds.up|raid_event.adds.duration<"
-      "=10|raid_event.adds.remains>=10+5*(talent.hungering_void.enabled|covenant.kyrian))&((raid_event.adds.in>20|"
-      "spell_targets.void_eruption>=5)|talent.hungering_void.enabled|covenant.kyrian)&(!runeforge.spheres_harmony."
-      "equipped&(!covenant.necrolord|((fight_remains+time)>=330&time<=200|(fight_remains+time)<=250&(fight_remains+"
-      "time)>=200))|cooldown.power_infusion.remains<=gcd.max*3|buff.power_infusion.up|fight_remains<=25)",
+      "variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&(!runeforge.spheres_harmony.equipped&(!"
+      "covenant.necrolord|((fight_remains+time)>=330&time<=200|(fight_remains+time)<=250&(fight_remains+time)>=200))|"
+      "cooldown.power_infusion.remains<=gcd.max*3|buff.power_infusion.up|fight_remains<=25)",
       "Cooldown Pool Variable, Used to pool before activating voidform. Currently used to control when to activate "
       "voidform with incoming adds." );
 
@@ -167,9 +165,8 @@ void shadow( player_t* p )
       "Use Mindgames when all 3 DoTs are up, or you are in Voidform. Ensure Hungering Void will still be up when the "
       "cast time finishes. Stop using at 5+ targets with Searing Nightmare." );
   cds->add_action(
-      "unholy_nova,if=((!raid_event.adds.up&raid_event.adds.in>20)|raid_event.adds.remains>=15|raid_event.adds."
-      "duration<15)&(!talent.hungering_void.enabled|debuff.hungering_void.up&buff.voidform.up|(cooldown.void_eruption."
-      "remains>10|!variable.pool_for_cds)&!buff.voidform.up)",
+      "unholy_nova,if=!talent.hungering_void.enabled&variable.dots_up|debuff.hungering_void.up&buff.voidform.up|("
+      "cooldown.void_eruption.remains>10|!variable.pool_for_cds)&!buff.voidform.up",
       "Use Unholy Nova on CD, holding briefly to wait for power infusion or add spawns." );
   cds->add_action(
       "boon_of_the_ascended,if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_"
