@@ -1217,8 +1217,8 @@ void warlock_t::create_apl_demonology()
   def->add_action( "interrupt,if=target.debuff.casting.react" );
   def->add_action( "doom,if=refreshable" );
   def->add_action( "call_action_list,name=covenant_ability,if=soulbind.grove_invigoration|soulbind.field_of_blossoms|soulbind.combat_meditation|covenant.necrolord" );
+  def->add_action( "potion,if=(cooldown.summon_demonic_tyrant.remains_expected=0&time>variable.first_tyrant_time|soulbind.refined_palate&cooldown.summon_demonic_tyrant.remains_expected<38)" );
   def->add_action( "call_action_list,name=tyrant_setup" );
-  def->add_action( "potion,if=(cooldown.summon_demonic_tyrant.remains_expected<10&time>variable.first_tyrant_time-10|soulbind.refined_palate&cooldown.summon_demonic_tyrant.remains_expected<38)" );
   def->add_action( "call_action_list,name=ogcd,if=pet.demonic_tyrant.active" );
   def->add_action( "demonic_strength,if=(!runeforge.wilfreds_sigil_of_superior_summoning&cooldown.summon_demonic_tyrant.remains_expected>9)|(pet.demonic_tyrant.active&pet.demonic_tyrant.remains<6*gcd.max)" );
   def->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected>20-5*!runeforge.wilfreds_sigil_of_superior_summoning" );
