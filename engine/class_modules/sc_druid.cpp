@@ -2248,7 +2248,7 @@ public:
       if ( may_autounshift && ( form_mask & NO_FORM ) == NO_FORM )
         p()->shapeshift( NO_FORM );
       else if ( autoshift )
-        p()->shapeshift( (form_e)autoshift );
+        p()->shapeshift( as<form_e>( autoshift ) );
       else
         assert( false && "Action executed in wrong form with no valid form to shift to!" );
     }
@@ -3354,6 +3354,7 @@ struct berserk_cat_t : public cat_attack_t
     : cat_attack_t( "berserk_cat", player, player->spec.berserk_cat, options_str )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
+    form_mask = autoshift = CAT_FORM;
   }
 
   void execute() override
@@ -3361,7 +3362,6 @@ struct berserk_cat_t : public cat_attack_t
     cat_attack_t::execute();
 
     p()->buff.berserk_cat->trigger();
-    p()->shapeshift( CAT_FORM );
   }
 
   bool ready() override
@@ -4375,6 +4375,7 @@ struct berserk_bear_t : public bear_attack_t
     : bear_attack_t( "berserk_bear", p, p->find_specialization_spell( "berserk" ), o )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
+    form_mask = autoshift = BEAR_FORM;
   }
 
   void execute() override
@@ -4382,7 +4383,6 @@ struct berserk_bear_t : public bear_attack_t
     bear_attack_t::execute();
 
     p()->buff.berserk_bear->trigger();
-    p()->shapeshift( BEAR_FORM );
   }
 
   bool ready() override
