@@ -30,7 +30,7 @@ actions.precombat+=/augmentation
 actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/marked_for_death,precombat_seconds=10,if=raid_event.adds.in>15
+actions.precombat+=/marked_for_death,precombat_seconds=10,if=!covenant.venthyr&raid_event.adds.in>15
 actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent
 actions.precombat+=/variable,name=vendetta_cdr,value=1-(runeforge.duskwalkers_patch*0.45)
 # The average CDR is 0.22 but due to the RNG nature of CP gen, 2x this value is optimal for syncing logic
@@ -63,9 +63,9 @@ actions+=/bag_of_tricks
 
 # Cooldowns
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP.
-actions.cds=marked_for_death,line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit*1.5|combo_points.deficit>=cp_max_spend)
-# If no adds will die within the next 30s, use MfD on boss without any CP.
-actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend
+actions.cds=marked_for_death,line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(!variable.single_target|target.time_to_die<30)&(target.time_to_die<combo_points.deficit*1.5|combo_points.deficit>=cp_max_spend)
+# If no adds will die within the next 30s, use MfD for max CP. Attempt to sync with Flagellation if possible.
+actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend&!cooldown.shiv.ready&(!covenant.venthyr|debuff.flagellation.up|cooldown.flagellation.remains>15)
 # Sync Vendetta window with Nightstalker+Exsanguinate if applicable
 actions.cds+=/variable,name=vendetta_nightstalker_condition,value=!talent.nightstalker.enabled|!talent.exsanguinate.enabled|cooldown.exsanguinate.remains<5-2*talent.deeper_stratagem.enabled
 # Wait on Vendetta for Garrote with MA, unless we are at max CP for Flagellation
