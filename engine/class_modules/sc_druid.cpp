@@ -5681,7 +5681,6 @@ struct swipe_proxy_t : public druid_spell_t
 struct incarnation_t : public druid_spell_t
 {
   buff_t* spec_buff;
-  form_e form;
 
   incarnation_t( druid_t* p, util::string_view options_str ) :
     druid_spell_t( "incarnation", p,
@@ -5689,21 +5688,21 @@ struct incarnation_t : public druid_spell_t
       p->specialization() == DRUID_FERAL ? p->talent.incarnation_cat :
       p->specialization() == DRUID_GUARDIAN ? p->talent.incarnation_bear :
       p->specialization() == DRUID_RESTORATION ? p->talent.incarnation_tree :
-      spell_data_t::nil(), options_str ), form( NO_FORM )
+      spell_data_t::nil(), options_str )
   {
     switch ( p->specialization() )
     {
       case DRUID_BALANCE:
         spec_buff = p->buff.incarnation_moonkin;
-        form = MOONKIN_FORM;
+        autoshift = form_mask = MOONKIN_FORM;
         break;
       case DRUID_FERAL:
         spec_buff = p->buff.incarnation_cat;
-        form = CAT_FORM;
+        autoshift = form_mask = CAT_FORM;
         break;
       case DRUID_GUARDIAN:
         spec_buff = p->buff.incarnation_bear;
-        form = BEAR_FORM;
+        autoshift = form_mask = BEAR_FORM;
         break;
       case DRUID_RESTORATION:
         spec_buff = p->buff.incarnation_tree;
@@ -5720,7 +5719,6 @@ struct incarnation_t : public druid_spell_t
     druid_spell_t::execute();
 
     spec_buff->trigger();
-    p()->shapeshift( form );
 
     if ( p()->buff.incarnation_moonkin->check() )
     {
