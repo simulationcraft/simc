@@ -2248,7 +2248,7 @@ public:
       if ( may_autounshift && ( form_mask & NO_FORM ) == NO_FORM )
         p()->shapeshift( NO_FORM );
       else if ( autoshift )
-        p()->shapeshift( as<form_e>( autoshift ) );
+        p()->shapeshift( static_cast<form_e>( autoshift ) );
       else
         assert( false && "Action executed in wrong form with no valid form to shift to!" );
     }
