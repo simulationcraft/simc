@@ -2683,7 +2683,7 @@ Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Duration         : 3.2 seconds
+Duration         : 2.15 seconds
 Cooldown         : 40 seconds
 Category         : 1366
 Category Cooldown: 40 seconds
@@ -2741,7 +2741,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Do Not Report Spell Failure (71), Allow While Invisible (78), Do Not Display Range (126), Not On AOE Immune (127), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Treat as Area Effect (175), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=140516)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.44000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.15000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc120517
 
 Name             : Halo (id=120696) [Spell Family (6)] 
@@ -4880,10 +4880,10 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : ........ ...x.... ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ .....x.x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ..x..... ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Require All Targets (58), Cannot cast on tapped (70), Allow While Not Shapeshifted (caster form) (83), No Partial Immunity (139), Aura Bounce Fails Spell (157), Show Mechanic as Combat Text (213), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+                 : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Require All Targets (58), Cannot cast on tapped (70), Allow While Not Shapeshifted (caster form) (83), No Partial Immunity (139), Aura Bounce Fails Spell (157), Show Mechanic as Combat Text (213), Taps immediately (215), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #2 (id=327739)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)

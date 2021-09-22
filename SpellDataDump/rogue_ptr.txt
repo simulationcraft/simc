@@ -288,7 +288,7 @@ Proc Chance      : 100%
 Mechanic         : Incapacitate
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Dirty Tricks (108216 effect#1), Broadside (193356 effect#2), Acrobatic Strikes (196924 effect#1)
+Affecting spells : Dirty Tricks (108216 effect#1), Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Acrobatic Strikes (196924 effect#1)
 Family Flags     : 3
 Attributes       : ....x... ...x.... x.x.x... ........   ........ ........ ..x..... ..xx.... 
                  : ........ ........ ........ ........   .x.x.... ..x..... ........ ..x..... 
@@ -1015,7 +1015,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Stance Mask      : 0x20000000
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Blindside (121153 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Shadow Dance (185422 effect#5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Sepsis (347037 effect#1), Deathly Shadows (350964 effects: #1, #2)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Blindside (121153 effects: #1, #2), Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Shadow Dance (185422 effect#5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Sepsis (347037 effect#1), Deathly Shadows (350964 effects: #1, #2)
 Family Flags     : 9, 54
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
@@ -3005,8 +3005,8 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Self (1)
 #2 (id=150619)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Cheap Shot (1833), Shuriken Toss (114014), Prey on the Weak (131511), Shadowstrike (185438), Poisoned Knife (185565), Gloomblade (200758), Prey on the Weak (255909), Flagellation (323654), Shadowstrike (345121)
-                   Family Flags: 10, 19, 75, 104, 109, 124
+                   Affected Spells: Gouge (1776), Cheap Shot (1833), Ambush (8676), Quaking Palm (107079), Shuriken Toss (114014), Prey on the Weak (131511), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Sinister Strike (197834), Gloomblade (200758), Prey on the Weak (255909), Flagellation (323654), Sinister Strike (341541), Shadowstrike (345121)
+                   Family Flags: 3, 9, 10, 19, 75, 98, 101, 104, 109, 124
 #3 (id=150620)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Backstab (53), Shiv (5938), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Echoing Reprimand (354838)
@@ -3649,7 +3649,7 @@ Spell Level      : 12
 Range            : 20 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Opportunity (195627 effects: #1, #2, #3), Blunderbuss (202848 effect#1), Greenskin's Waterlogged Wristcuffs (209423 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shot in the Dark (257506 effect#1), Deadshot (272940 effect#1), Master Assassin's Mark (340094 effect#1), Greenskin's Wickers (340573 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Opportunity (195627 effects: #1, #2, #3), Blunderbuss (202848 effect#1), Greenskin's Waterlogged Wristcuffs (209423 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shot in the Dark (257506 effect#1), Deadshot (272940 effect#1), Master Assassin's Mark (340094 effect#1), Greenskin's Wickers (340573 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
 Family Flags     : 54, 101
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3727,7 +3727,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Skull and Crossbones (199603 effect#1), Weaponmaster (200733 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Snake Eyes (275863 effect#1), Keep Your Wits About You (288988 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Skull and Crossbones (199603 effect#1), Weaponmaster (200733 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Snake Eyes (275863 effect#1), Keep Your Wits About You (288988 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
 Family Flags     : 54, 98
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -4540,7 +4540,7 @@ Spell Level      : 10
 Range            : 100 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Skull and Crossbones (199603 effect#1), Weaponmaster (200733 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Snake Eyes (275863 effect#1), Keep Your Wits About You (288979 effect#2), Keep Your Wits About You (288988 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Skull and Crossbones (199603 effect#1), Weaponmaster (200733 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Snake Eyes (275863 effect#1), Keep Your Wits About You (288979 effect#2), Keep Your Wits About You (288988 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
 Family Flags     : 23, 54, 98
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
@@ -10726,7 +10726,7 @@ Spell Level      : 10
 Range            : 100 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Skull and Crossbones (199603 effect#1), Weaponmaster (200733 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Snake Eyes (275863 effect#1), Keep Your Wits About You (288979 effect#2), Keep Your Wits About You (288988 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Skull and Crossbones (199603 effect#1), Weaponmaster (200733 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Snake Eyes (275863 effect#1), Keep Your Wits About You (288979 effect#2), Keep Your Wits About You (288988 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
 Family Flags     : 23, 54, 98
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
@@ -11272,8 +11272,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=886894)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 12000 | Scaled Value: 12000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your stealth ability used while Sepsis is active grants you one of Shadow Blades, Adrenaline Rush, or applies Vendetta to your current target for ${$s1/1000} sec.
+                   Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : When Sepsis expires on your target $?c1[you gain Adrenaline Rush and Shadow Blades][]$?c2[you gain Adrenaline Rush and apply Vendetta to your current target][]$?c3[you gain Adrenaline Rush and apply Vendetta to your current target][] for ${$s1/1000} sec.
 
 Name             : Crimson Vial (id=354494) [Spell Family (8)] 
 Class            : Rogue

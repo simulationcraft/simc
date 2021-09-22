@@ -9617,7 +9617,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=815341)   : Apply Aura (6) | Proc Trigger Spell (42): Dance of Chi-Ji
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Trigger Spell: 325202 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.75000 | Trigger Spell: 325202 | Target: Self (1)
 Description      : Spending Chi has a chance to make your next Spinning Crane Kick free and deal an additional $s1% damage.
 
 Name             : Dance of Chi-Ji (id=325202) [Spell Family (53)] 
