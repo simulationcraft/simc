@@ -11,7 +11,7 @@ soulbind=theotar_the_mad_duke,soothing_shade/lashing_scars:9:1/deeper_daggers:9:
 renown=80
 
 # Default consumables
-potion=phantom_fire
+potion=potion_of_spectral_agility
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
