@@ -15,7 +15,7 @@ potion=phantom_fire
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
-temporary_enchant=main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone
+temporary_enchant=main_hand:shaded_sharpening_stone/off_hand:shadowcore_oil
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
