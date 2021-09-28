@@ -212,6 +212,9 @@ struct mind_sear_t final : public priest_spell_t
     radius = data().effectN( 1 ).trigger()->effectN( 2 ).radius();  // need to set radius in here so that the APL
                                                                     // functions correctly
 
+    if (priest().specialization() == PRIEST_SHADOW)
+      base_costs_per_tick[RESOURCE_MANA] = 0.0;
+
     tick_action = new mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
   }
 };
