@@ -3134,7 +3134,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), First Blood (206416 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#5), Demon Soul (347765 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), First Blood (206416 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#5), Dancing with Fate (339228 effect#1), Demon Soul (347765 effects: #1, #2)
 Triggered by     : Death Sweep (210152)
 Family Flags     : 16, 37, 38, 42
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -8942,8 +8942,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838409)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Blade Dance (200685)
-                   Family Flags: 12
+                   Affected Spells: Blade Dance (200685), Death Sweep (210155)
+                   Family Flags: 12, 38
 Description      : The final slash of Blade Dance deals an additional |cFFFFFFFF${$s1}.1%|r damage.
 
 Name             : Exposed Wound (id=339229) [Spell Family (107)] 
@@ -9994,7 +9994,7 @@ Effects          :
 Description      : $@spelldesc208195
 Tooltip          : Dealing $w1% increased damage.
 
-Name             : Fodder to the Flame (desc=Necrolord) (id=350570) [Passive] 
+Name             : Fodder to the Flame (desc=Necrolord) (id=350570) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 Covenant         : Necrolord
 School           : Shadow

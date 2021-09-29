@@ -1,4 +1,4 @@
-// Item effects, wow build 9.1.5.40290
+// Item effects, wow build 9.1.5.40383
 static const std::array<item_effect_t, 7709> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -1298,7 +1298,7 @@ static const std::array<item_effect_t, 7709> __ptr_item_effect_data { {
   {   5154,  33400,  27828,   1,   0, 1141,  120000,   20000 }, // Accelerated Mending
   {   5162, 144310,  27880,   1,   1,    0,      -1,      -1 }, // Seal of the Crusader Judgment Increase
   {   5163,  33479,  27891,   0,   0,    0,  120000,       0 }, // Adamantine Shell
-  {   5164,  15603,  27896,   0,   1,    0,      -1,      -1 }, // Healer Trinket
+  {   5164,  15603,  27896,   0,   1,    0,      -1,      -1 }, // Alembic of Infernal Power
   {   5165,  33486,  27900,   0,   0,    0,  300000,       0 }, // Heart's Mystique
   {   5166,  33489,  27901,   0,   2,    0,      -1,      -1 }, // Blinding Speed
   {   5167,  33510,  27920,   1,   1,    0,      -1,      -1 }, // Health Restore
@@ -1338,8 +1338,8 @@ static const std::array<item_effect_t, 7709> __ptr_item_effect_data { {
   {   5240, 358833,  28311,   0,   1,    0,      -1,      -1 }, // Razdunk's Big Red Button
   { 139283, 358831,  28311,   1,   2,    0,      -1,      -1 }, // Drain Life
   {   5241,  28539,  28335,   1,   1,    0,      -1,      -1 }, // Multi-Shot Damage Increase
-  {   5246,  34199,  28367,   0,   2,    0,      -1,      -1 }, // Armor Buff
-  {  26689,  38334,  28370,   0,   1,    0,      -1,      -1 }, // Proc Mana Regen
+  {   5246,  34199,  28367,   0,   2,    0,      -1,      -1 }, // Forlorn Protection
+  {  26689,  38334,  28370,   0,   1,    0,      -1,      -1 }, // Bangle of Endless Blessings
   {  26690,  34210,  28370,   1,   0,    0,  120000,      -1 }, // Endless Blessings
   {   5251,  34320,  28418,   0,   1,    0,      -1,      -1 }, // Call of the Nexus
   {   5254,  34514,  28428,   0,   1,    0,      -1,      -1 }, // Fear Resistance 5
@@ -2459,8 +2459,8 @@ static const std::array<item_effect_t, 7709> __ptr_item_effect_data { {
   {  12084,  92175,  56280,   0,   1,    0,      -1,      -1 }, // Hardened Shell
   {  12085,  91340,  56285,   0,   0, 1141,   90000,   15000 }, // Typhoon
   {  12086,  91136,  56290,   0,   0, 1141,  120000,   20000 }, // Leviathan
-  {  12087,  92088,  56295,   0,   1,    0,      -1,      -1 }, // Item - Proc Crit Rating
-  {  12088,  90888,  56320,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste Rating
+  {  12087,  92088,  56295,   0,   1,    0,      -1,      -1 }, // Grace of the Herald
+  {  12088,  90888,  56320,   0,   1,    0,      -1,      -1 }, // Witching Hourglass
   {  12089,  92093,  56328,   0,   1,    0,      -1,      -1 }, // Final Key
   {  12090,  90899,  56339,   0,   1,    0,      -1,      -1 }, // Tendrils of Darkness
   {  12091,  91352,  56345,   0,   0, 1141,   90000,   15000 }, // Polarization
@@ -7695,20 +7695,20 @@ static const std::array<item_effect_t, 7709> __ptr_item_effect_data { {
   { 139489, 360593, 187900,   0,   0,    0,      -1,      -1 }, // Zandalar and Kul Tiras Scouting Map
   { 139658, 361724, 188164,   1,   0,    0,      -1,      -1 }, // Wild Mushroom
   { 139676, 361952, 188198,   0,   0,    0,      -1,      -1 }, // 1000 Anima
-  { 139711,  31794, 188282,   1,   0,    0,  180000,      -1 }, // Focused Mind
-  { 139712,  34106, 188309,   0,   0, 1141,  120000,   20000 }, // Unyielding Courage
+  { 139711,  31794, 188282,   1,   0,    0,      -1,      -1 }, // Focused Mind
+  { 139712,  34106, 188309,   0,   0,    0,      -1,      -1 }, // Unyielding Courage
   { 139713,  35126, 188313,   1,   1,    0,      -1,      -1 }, // Silence Resistance 20%
   { 139714,  39228, 188352,   0,   0,    0,  120000,      -1 }, // Argussian Compass
-  { 139715,  15603, 188359,   0,   1,    0,      -1,      -1 }, // Healer Trinket
-  { 139716, 358833, 188372,   0,   1,    0,      -1,      -1 }, // Razdunk's Big Red Button
-  { 139717, 358831, 188372,   1,   2,    0,      -1,      -1 }, // Drain Life
-  { 139718,  34199, 188395,   0,   2,    0,      -1,      -1 }, // Armor Buff
-  { 139719,  38334, 188396,   0,   1,    0,      -1,      -1 }, // Proc Mana Regen
-  { 139720,  34210, 188396,   1,   0,    0,  120000,      -1 }, // Endless Blessings
+  { 139715,  15603, 188359,   0,   1,    0,      -1,      -1 }, // Alembic of Infernal Power
+  { 139732, 362867, 188369,   0,   1,    0,      -1,      -1 }, // Mystic Sheen
+  { 139716, 362629, 188372,   0,   1,    0,      -1,      -1 }, // Revenger
+  { 139718, 362616, 188395,   0,   1,    0,      -1,      -1 }, // Greatsword of Forlorn Visions
+  { 139719,  38334, 188396,   0,   1,    0,      -1,      -1 }, // Bangle of Endless Blessings
+  { 139720,  34210, 188396,   1,   0,    0,      -1,      -1 }, // Endless Blessings
   { 139721,  60221, 188415,   0,   1,    0,      -1,      -1 }, // Essence of Gossamer
   { 139722,  71404, 188478,   0,   1,    0,      -1,      -1 }, // Item - Icecrown Dungeon Melee Trinket
-  { 139723,  92088, 188490,   0,   1,    0,      -1,      -1 }, // Item - Proc Crit Rating
-  { 139724,  90888, 188514,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste Rating
+  { 139723,  92088, 188490,   0,   1,    0,      -1,      -1 }, // Grace of the Herald
+  { 139724,  90888, 188514,   0,   1,    0,      -1,      -1 }, // Witching Hourglass
 } };
 
 static const std::array<uint16_t, 7709> __ptr_item_effect_id_index { {
@@ -8674,7 +8674,7 @@ static const std::array<uint16_t, 7709> __ptr_item_effect_id_index { {
    7624,  7630,  7631,  7637,  7638,  7590,  7596,  7633,
    7629,  7620,  7614,  7609,  7605,  7591,  7636,  7625,
    7621,  7615,  7612,  7601,  7597,  7693,  7694,  7695,
-   7696,  7697,  7698,  7699,  7700,  7701,  7702,  7703,
-   7704,  7705,  7706,  7707,  7708,
+   7696,  7697,  7698,  7699,  7701,  7702,  7703,  7704,
+   7705,  7706,  7707,  7708,  7700,
 } };
 

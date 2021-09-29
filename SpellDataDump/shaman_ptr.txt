@@ -10886,7 +10886,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 328933 | Target: Self (1)
 #4 (id=871384)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Transfer the life force of up to $328928I enemies in the targeted area, dealing ${$328928s1*$d/$t2} Nature damage evenly split to each enemy target over $d. $?a137041[
+Description      : Transfer the life force of up to $328928I enemies in the targeted area, dealing ${($328928s1*$d/$t2) + $328928s1} Nature damage evenly split to each enemy target over $d. $?a137041[
 
 Fully channeling Fae Transfusion generates $s4 $Lstack:stacks; of Maelstrom Weapon.][]
 

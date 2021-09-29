@@ -1096,7 +1096,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=128879)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.38400 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
-Description      : Breathe fire on targets in front of you, causing $s1 Fire damage.
+Description      : Breathe fire on targets in front of you, causing $s1 Fire damage. Deals reduced damage to secondary targets.
 
 Targets affected by Keg Smash will also burn, taking $123725o1 Fire damage and dealing $123725s2% reduced damage to you for $123725d.
 
@@ -2651,12 +2651,13 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Do Not Reset Combat Timers (81), Always Hit (114), Delay Combat Timer During Cast (211), Bypass Visibility Check (320), Allow Defense While Casting (337), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=156697)   : Unknown(179)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1316 | Target: Custom (18)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 1316 | Target: Custom (18)
 #2 (id=201318)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1315 | Target: Custom (18)
 #3 (id=739870)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Hurls a torrent of Chi energy up to 40 yds forward, dealing $148135s1 Nature damage to all enemies, and $130654s1 healing to the Monk and all allies in its path.$?c1[
+Description      : Hurls a torrent of Chi energy up to 40 yds forward, dealing $148135s1 Nature damage to all enemies, and $130654s1 healing to the Monk and all allies in its path. Healing reduced beyond $s1 targets.
+$?c1[
 
 Casting Chi Burst does not prevent avoiding attacks.][]$?c3[
 
@@ -9803,6 +9804,8 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 48
 Range            : 50000 yards
+Affecting spells : Keefer's Skyreach (344021 effect#1)
+Family Flags     : 82
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -11773,7 +11776,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=868060)   : Apply Aura (6) | Modify Crit Chance% from Caster's Spells (308)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Ancient Teachings of the Monastery (126890), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Bonedust Brew (325216), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Bonedust Brew (325216), Bonedust Brew (325217), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 82, 103
 #2 (id=884941)   : Apply Aura (6) | Modify Crit Chance% from Caster's Pets (339)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Enemy (6)

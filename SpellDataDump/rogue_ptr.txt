@@ -847,8 +847,8 @@ Attributes       : ....x... ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=1892)     : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Increases your dodge chance by ${$s1/2}% for $d.
-Tooltip          : Dodge chance increased by ${$w1/2}%.
+Description      : Increases your dodge chance by ${$s1/2}% for $d.$?a344363[ Dodging an attack while Evasion is active will trigger Mastery: Main Gauche.][]
+Tooltip          : Dodge chance increased by ${$w1/2}%.$?a344363[ Dodging an attack while Evasion is active will trigger Mastery: Main Gauche.][]
 
 Name             : Mutilate (id=5374) [Spell Family (8)] 
 Class            : Rogue
@@ -5126,8 +5126,8 @@ Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=341220)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Backstab (53), Shiv (5938), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Flagellation (323654), Shadowstrike (345121), Echoing Reprimand (354838)
-                   Family Flags: 2, 29, 75, 82, 104, 109, 124, 127
+                   Affected Spells: Backstab (53), Shiv (5938), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Shadowstrike (345121), Echoing Reprimand (354838)
+                   Family Flags: 2, 29, 75, 82, 104, 109, 127
 Description      : $@spelldesc212283
 Tooltip          : Your next combo point generator will critically strike.
 
@@ -9300,7 +9300,7 @@ Stacks           : 30 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Symbols of Death (227151 effect#1), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lashing Scars (341310 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lashing Scars (341310 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2)
 Family Flags     : 54, 124
 Attributes       : ....x... ........ x.x..x.. .......x   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   .......x ........ ........ ...x.... 
@@ -10803,7 +10803,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=842018)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Ambush$?s323654[, Slaughter,][] and Dispatch have a |cFFFFFFFF${$s1}.1%|r chance to grant you a Roll the Bones combat enhancement buff you do not already have for $s2 sec.
+Description      : Ambush and Dispatch have a |cFFFFFFFF${$s1}.1%|r chance to grant you a Roll the Bones combat enhancement buff you do not already have for $s2 sec.
 
 Duration and chance tripled while Stealthed.
 
@@ -11066,8 +11066,8 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 58
 Proc Chance      : 100%
-Proc Flags       : ...x.x.. ........ ........ ........ 
-                 : White Melee Taken, Yellow Melee Taken
+Proc Flags       : ...x.x.x .x...... ........ ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

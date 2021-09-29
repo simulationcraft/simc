@@ -7501,7 +7501,7 @@ Spell Level      : 26
 Duration         : 40 seconds
 Cooldown         : 360 seconds
 Affecting spells : Aspect of the Beast (191384 effects: #1, #2)
-Family Flags     : 60
+Family Flags     : 45, 60
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ..xx.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ x....... ........ ........ 
@@ -11650,7 +11650,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
 #4 (id=815070)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
-Description      : Throw a deadly chakram at your current target that will rapidly deal $325037s1 Shadow damage $x times, bouncing to other targets if they are nearby. Enemies struck by your Death Chakram take $361756s1% more Physical damage from you and your pet for $d.
+Description      : Throw a deadly chakram at your current target that will rapidly deal $325037s1 Shadow damage $x times, bouncing to other targets if they are nearby. Enemies struck by Death Chakram take $361756s1% more Physical damage from you and your pet for $361756d.
 
 Each time the chakram deals damage, its damage is increased by $s3% and you generate $s4 Focus.
 
@@ -12653,7 +12653,7 @@ Effects          :
 #1 (id=839483)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc339924
-Tooltip          : Your next Rapid Fire deals ${$339924w1}.1% increased damage per shot.
+Tooltip          : Your next Rapid Fire deals ${$339924W1}.1% increased damage per shot.
 
 Name             : Brutal Projectiles (id=339929) [Spell Family (9)] 
 Class            : Hunter
@@ -12679,7 +12679,7 @@ Effects          :
                    Family Flags: 3
 Description      : $@spelldesc339924
 
-Tooltip          : Your next Rapid Fire deals ${$339924w1}.1% increased damage per shot.
+Tooltip          : Your next Rapid Fire deals ${$339924W1}.1% increased damage per shot.
 
 Name             : Deadly Chain (id=339973) [Spell Family (9), Passive, Hidden] 
 School           : Physical

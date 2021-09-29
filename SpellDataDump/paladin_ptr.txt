@@ -9113,7 +9113,7 @@ Effects          :
 Description      : Throws a hammer at your target dealing $s1 Shadow damage, and empowering your next $?c3[Templar's Verdict to automatically trigger Divine Storm]?c1[Word of Glory to automatically trigger Light of Dawn][Word of Glory to automatically trigger Shield of the Righteous] with $s2% increased effectiveness.
 
 |cFFFFFFFFGenerates $s3 Holy Power.
-Tooltip          : Your next $?c3[Templar's Verdict automatically triggers Divine Storm]?c1[Word of Glory automatically triggers Light of Dawn][Word of Glory automatically triggers Shield of the Righteous] with $w2% increased effectiveness.
+Tooltip          : Your next $?c3[Templar's Verdict automatically triggers Divine Storm]?c1[Word of Glory automatically triggers Light of Dawn][Word of Glory automatically triggers Shield of the Righteous] with $s2% increased effectiveness.
 
 Name             : Blessing of the Seasons (desc=Night Fae) (id=328278) [Spell Family (10), Hidden] 
 Class            : Paladin
