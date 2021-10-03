@@ -1306,6 +1306,8 @@ class SpellDataGenerator(DataGenerator):
          356372,
          # Siphon Essence (Shard of Zed)
          356320,
+         # Accretion (Shard of Kyr)
+         356305,
          # Shredded Soul (Ebonsoul Vise)
          357785,
          # Nerubian Ambush, Frost-Tinged Carapace Spikes (Relic of the Frozen Wastes)
