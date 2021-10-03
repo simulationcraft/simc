@@ -1686,7 +1686,7 @@ void infernal_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  melee_attack = new infernal_melee_t( this, 1.0 );
+  melee_attack = new infernal_melee_t( this, 2.0 );
 }
 
 void infernal_t::create_buffs()
