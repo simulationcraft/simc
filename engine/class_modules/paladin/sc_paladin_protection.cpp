@@ -783,7 +783,8 @@ void paladin_t::create_prot_actions()
 
   if ( specialization() == PALADIN_PROTECTION )
     active.judgment = new judgment_prot_t( this );
-    active.divine_resonance = new avengers_shield_dr_t( this );
+
+  active.divine_resonance = new avengers_shield_dr_t( this );
 }
 
 action_t* paladin_t::create_action_protection( util::string_view name, const std::string& options_str )

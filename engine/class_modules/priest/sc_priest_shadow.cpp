@@ -356,9 +356,9 @@ struct shadow_word_death_t final : public priest_spell_t
     : priest_spell_t( "shadow_word_death", p, p.specs.shadow_word_death ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() ),
-      shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       insanity_per_dot( p.specs.painbreaker_psalm_insanity->effectN( 2 ).base_value() /
-                        10 )  // Spell Data stores this as 100 not 1000 or 10
+                        10 ),  // Spell Data stores this as 100 not 1000 or 10
+      shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) )
   {
     parse_options( options_str );
 

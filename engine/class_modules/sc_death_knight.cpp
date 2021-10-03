@@ -5571,7 +5571,7 @@ struct howling_blast_t : public death_knight_spell_t
     return death_knight_spell_t::cost();
   }
 
-  void schedule_execute( action_state_t* state )
+  void schedule_execute( action_state_t* state ) override
   {
     // If we have rime, and no runes left, and rime is expiring on the same ms timestamp as we would howling blast,
     // do not queue howling blast.  This avoids a crash/assert where the buff would get removed during the actions
