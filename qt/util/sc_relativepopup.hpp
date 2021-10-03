@@ -190,7 +190,7 @@ private:
     // If multiple screens, this could be annoying as the popup can be viewed on a 2nd screen
     if ( QGuiApplication::screens().count() == 1 )
     {
-      widgetRect = parent_->screen()->geometry().intersected( widgetRect );
+      widgetRect = QGuiApplication::screens().first()->geometry().intersected( widgetRect );
     }
     setGeometry( widgetRect );
   }

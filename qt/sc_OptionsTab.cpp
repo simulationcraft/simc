@@ -858,8 +858,12 @@ void SC_OptionsTab::decodeOptions()
   load_scaling_groups( settings, "scaling_buttons", scalingButtonGroup );
   load_scaling_groups( settings, "plots_buttons", plotsButtonGroup );
   load_scaling_groups( settings, "reforgeplots_buttons", reforgeplotsButtonGroup );
-
-  QStringList item_db_order = settings.value( "item_db_order" ).toString().split( "/", Qt::SkipEmptyParts );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  auto split_behavior = QString::SkipEmptyParts;
+#else
+  auto split_behavior = Qt::SkipEmptyParts;
+#endif
+  QStringList item_db_order = settings.value( "item_db_order" ).toString().split( "/", split_behavior );
   if ( !item_db_order.empty() )
   {
     for ( int i = 0; i < item_db_order.size(); ++i )
