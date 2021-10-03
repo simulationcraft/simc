@@ -86,6 +86,9 @@ public:
   // Buffs
   struct
   {
+    // Generic
+    propagate_const<buff_t*> desperate_prayer;
+
     // Talents
     propagate_const<buff_t*> twist_of_fate;
 

@@ -755,7 +755,7 @@ struct ascended_nova_t final : public priest_spell_t
   {
     parse_options( options_str );
     aoe                        = -1;
-    reduced_aoe_targets         = 1.0;
+    reduced_aoe_targets        = 1.0;
     radius                     = data().effectN( 1 ).radius_max();
     affected_by_shadow_weaving = true;
 
@@ -865,9 +865,9 @@ struct ascended_eruption_heal_t final : public priest_heal_t
       base_da_increase( p.covenant.boon_of_the_ascended->effectN( 5 ).percent() +
                         p.conduits.courageous_ascension->effectN( 2 ).percent() )
   {
-    aoe                = -1;
+    aoe                 = -1;
     reduced_aoe_targets = 1.0;
-    background         = true;
+    background          = true;
   }
 
   void trigger_eruption( int stacks )
@@ -898,10 +898,10 @@ struct ascended_eruption_t final : public priest_spell_t
       base_da_increase( p.covenant.boon_of_the_ascended->effectN( 5 ).percent() +
                         p.conduits.courageous_ascension->effectN( 2 ).percent() )
   {
-    aoe                = -1;
+    aoe                 = -1;
     reduced_aoe_targets = 1.0;
-    background         = true;
-    radius             = data().effectN( 1 ).radius_max();
+    background          = true;
+    radius              = data().effectN( 1 ).radius_max();
     // By default the spell tries to use the healing SP Coeff
     spell_power_mod.direct     = data().effectN( 1 ).sp_coeff();
     affected_by_shadow_weaving = true;
@@ -1004,9 +1004,9 @@ struct summon_mindbender_t final : public summon_pet_t
   }
 };
 
-/**
- * Discipline and shadow heal
- */
+// ==========================================================================
+// Shadow Mend (Discipline and Shadow)
+// ==========================================================================
 struct shadow_mend_t final : public priest_heal_t
 {
   shadow_mend_t( priest_t& p, util::string_view options_str )
@@ -1023,6 +1023,33 @@ struct shadow_mend_t final : public priest_heal_t
 
 namespace heals
 {
+// ==========================================================================
+// Desperate Prayer
+// ==========================================================================
+struct desperate_prayer_t final : public priest_heal_t
+{
+  desperate_prayer_t( priest_t& p, util::string_view options_str )
+    : priest_heal_t( "desperate_prayer", p, p.find_class_spell( "Desperate Prayer" ) )
+  {
+    parse_options( options_str );
+    harmful = false;
+
+    // does not seem to proc anyting other than heal specific actions
+    callbacks = false;
+
+    // This is parsed as a HoT, disabling that manually
+    base_td_multiplier = 0.0;
+    dot_duration       = timespan_t::from_seconds( 0 );
+  }
+
+  void execute() override
+  {
+    priest().buffs.desperate_prayer->trigger();
+
+    priest_heal_t::execute();
+  }
+};
+
 // ==========================================================================
 // Power Word: Shield
 // ==========================================================================
@@ -1056,6 +1083,53 @@ struct power_word_shield_t final : public priest_absorb_t
 
 namespace buffs
 {
+// ==========================================================================
+// Desperate Prayer - Health Increase buff
+// ==========================================================================
+struct desperate_prayer_t final : public priest_buff_t<buff_t>
+{
+  double health_change;
+
+  desperate_prayer_t( priest_t& p )
+    : base_t( p, "desperate_prayer", p.find_class_spell( "Desperate Prayer" ) ),
+      health_change( data().effectN( 1 ).percent() )
+  {
+    // Cooldown handled by the action
+    cooldown->duration = 0_ms;
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::start( stacks, value, duration );
+
+    double old_health     = player->resources.current[ RESOURCE_HEALTH ];
+    double old_max_health = player->resources.max[ RESOURCE_HEALTH ];
+
+    player->resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + health_change;
+    player->recalculate_resource_max( RESOURCE_HEALTH );
+    player->resources.current[ RESOURCE_HEALTH ] *=
+        1.0 + health_change;  // Update health after the maximum is increased
+
+    sim->print_debug( "{} gains desperate_prayer: health pct change {}%, current health: {} -> {}, max: {} -> {}",
+                      player->name(), health_change * 100.0, old_health, player->resources.current[ RESOURCE_HEALTH ],
+                      old_max_health, player->resources.max[ RESOURCE_HEALTH ] );
+  }
+
+  void expire_override( int, timespan_t ) override
+  {
+    double old_health     = player->resources.current[ RESOURCE_HEALTH ];
+    double old_max_health = player->resources.max[ RESOURCE_HEALTH ];
+
+    player->resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + health_change;
+    player->resources.current[ RESOURCE_HEALTH ] /= 1.0 + health_change;  // Update health before the maximum is reduced
+    player->recalculate_resource_max( RESOURCE_HEALTH );
+
+    sim->print_debug( "{} loses desperate_prayer: health pct change {}%, current health: {} -> {}, max: {} -> {}",
+                      player->name(), health_change * 100.0, old_health, player->resources.current[ RESOURCE_HEALTH ],
+                      old_max_health, player->resources.max[ RESOURCE_HEALTH ] );
+  }
+};
+
 // ==========================================================================
 // Fae Guardians - Night Fae Covenant
 // ==========================================================================
@@ -1673,6 +1747,10 @@ action_t* priest_t::create_action( util::string_view name, const std::string& op
   {
     return new shadow_mend_t( *this, options_str );
   }
+  if ( name == "desperate_prayer" )
+  {
+    return new desperate_prayer_t( *this, options_str );
+  }
   if ( name == "power_infusion" )
   {
     return new power_infusion_t( *this, options_str, "power_infusion" );
@@ -1876,6 +1954,9 @@ void priest_t::init_spells()
 void priest_t::create_buffs()
 {
   base_t::create_buffs();
+
+  // Generic buffs
+  buffs.desperate_prayer = make_buff<buffs::desperate_prayer_t>( *this );
 
   // Shared talent buffs
   buffs.twist_of_fate = make_buff( this, "twist_of_fate", talents.twist_of_fate->effectN( 1 ).trigger() )
