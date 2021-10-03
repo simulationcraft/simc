@@ -23,7 +23,6 @@ void parse_additional_args( SC_MainWindow& w, QStringList args )
       if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
       {
         QTextStream ts( &file );
-        ts.setCodec( "UTF-8" );
         ts.setAutoDetectUnicode( true );
         w.simulateTab->add_Text( ts.readAll(), args[ i ] );
         file.close();
@@ -125,7 +124,7 @@ int main( int argc, char* argv[] )
   a.installTranslator( &myappTranslator );
 
   QString iconlocation =
-      QStandardPaths::locate( QStandardPaths::DataLocation, QString( "icon" ), QStandardPaths::LocateDirectory );
+      QStandardPaths::locate( QStandardPaths::AppDataLocation, QString( "icon" ), QStandardPaths::LocateDirectory );
   QDir::addSearchPath( "icon", iconlocation );
 
   SC_MainWindow w;

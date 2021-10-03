@@ -186,11 +186,12 @@ private:
         break;
     }
 
-    QDesktopWidget desktopWidget;
     // If user only has one screen, ensure the popup doesn't go off screen
     // If multiple screens, this could be annoying as the popup can be viewed on a 2nd screen
-    if ( desktopWidget.screenCount() == 1 )
-      widgetRect = desktopWidget.screenGeometry( parent_ ).intersected( widgetRect );
+    if ( QGuiApplication::screens().count() == 1 )
+    {
+      widgetRect = parent_->screen()->geometry().intersected( widgetRect );
+    }
     setGeometry( widgetRect );
   }
 public slots:
@@ -207,7 +208,7 @@ public slots:
         {
           // Hide children that are Popups
           // If we hide all children, floating widgets will be empty when they are shown again
-          QRegExp matchAll( ".*" );
+          auto matchAll = QRegularExpression(QRegularExpression::wildcardToRegularExpression(".*"));
           QList<QWidget*> children = findChildren<QWidget*>( matchAll );
 
           for ( QList<QWidget*>::iterator it = children.begin(); it != children.end(); ++it )
@@ -248,7 +249,11 @@ protected:
     }
     calculateGeometry();
   }
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   void enterEvent( QEvent* /* event */ ) override
+#else
+  void enterEvent( QEnterEvent* /* event */ ) override
+#endif
   {
     if ( underMouse() )
     {

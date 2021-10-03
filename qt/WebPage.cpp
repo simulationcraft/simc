@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "WebPage.hpp"
+#include <QDesktopServices>
 
 SC_WebPage::SC_WebPage( QObject* parent ) : SC_WebEnginePage( parent )
 {

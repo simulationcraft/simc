@@ -3,7 +3,7 @@ include(../simulationcraft.pri)
 TEMPLATE    = app
 TARGET      = SimulationCraft
 CONFIG     += link_prl
-QT         += network widgets webengine webenginewidgets
+QT         += network widgets
 LIBS       += -L../lib -lsimcengine
 INCLUDEPATH += ../qt
 MOC_DIR     = moc
@@ -14,6 +14,14 @@ TRANSLATIONS = \
   ../locale/sc_cn.ts \
   ../locale/sc_it.ts \
   ../locale/sc_ko.ts
+
+lessThan( QT_MAJOR_VERSION, 6 ) {
+QT +=  webengine webenginewidgets
+}
+
+greaterThan( QT_MAJOR_VERSION, 5 ) {
+QT +=  webenginecore webenginewidgets
+}
 
 # Linux puts binaries to a different place (see simulationcraft.pri)
 win32|macx {

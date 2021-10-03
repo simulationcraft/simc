@@ -81,7 +81,7 @@ void SC_ComboBoxIntegerValidator::stripNonNumbersAndAdjustCursorPos( QString& in
   if ( cursorPos > 0 )
   {
     // move the cursor to the left by how many characters to the left gets removed
-    QString charactersLeftOfCursor = input.leftRef( cursorPos ).toString();
+    QString charactersLeftOfCursor = input.left( cursorPos );
     int characterCountLeftOfCursor = charactersLeftOfCursor.length();
     // count how many characters are removed left of cursor
     charactersLeftOfCursor                = charactersLeftOfCursor.remove( nonIntegerRegExp );
