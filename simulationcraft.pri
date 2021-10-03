@@ -32,6 +32,10 @@ CONFIG(release, debug|release) {
   DEFINES += NDEBUG
 }
 
+win32 {
+  LIBS += shell32.lib
+}
+
 CONFIG(openssl) {
   DEFINES       += SC_USE_OPENSSL
 

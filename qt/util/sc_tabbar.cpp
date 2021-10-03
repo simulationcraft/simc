@@ -155,7 +155,11 @@ void SC_TabBar::leaveEvent( QEvent* e )
   QTabBar::leaveEvent( e );
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 void SC_TabBar::enterEvent( QEvent* e )
+#else
+void SC_TabBar::enterEvent( QEnterEvent* e )
+#endif
 {
   startHoverTimer( tabAt( QCursor::pos() ) );
 

@@ -142,5 +142,8 @@ env/
 # Visual Studio CMake settings
 CMakeSettings.json
 
+# Cmake user file from QtCreator
+CMakeLists.txt.user
+
 UpgradeLog.htm
 libsimcengine.prl

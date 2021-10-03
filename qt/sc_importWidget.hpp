@@ -15,7 +15,6 @@ struct IUnknown;
 #include <QDebug>
 #include <QFile>
 #include <QMap>
-#include <QRegExpValidator>
 #include <QSettings>
 #include <QStandardItemModel>
 #include <QVector>

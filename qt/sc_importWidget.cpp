@@ -105,12 +105,13 @@ void BattleNetImportWidget::parseRealmListFile( QFile& file )
     realmList.push_back( std::make_pair( obj[ "name" ].toString(), obj[ "slug" ].toString() ) );
   }
 
-  QRegExp region( "([A-Za-z]+).json$" );
+  QRegularExpression region( "([A-Za-z]+).json$" );
   QString region_str;
 
-  if ( region.indexIn( file.fileName() ) >= 0 )
+  auto region_match = region.match( file.fileName() );
+  if ( region_match.hasMatch() )
   {
-    region_str = region.cap( 1 ).toUpper();
+    region_str = region_match.captured( 1 ).toUpper();
   }
 
   if ( region_str.size() > 0 )

@@ -27,6 +27,7 @@
 #include "util/sc_mainwindowcommandline.hpp"
 
 #include <QString>
+#include <QWebEngineHistory>
 #include <sstream>
 #include <string>
 
@@ -545,17 +546,12 @@ void SC_MainWindow::deleteSim( std::shared_ptr<sim_t>& sim, SC_TextEdit* append_
       std::list<QString> directoriesWithPermissionIssues;
       std::list<QString> filesWithPermissionIssues;
       std::list<QString> filesThatAreDirectories;
-      std::string windowsPermissionRecommendation;
+      std::string windowsPermissionRecommendation =
+              "Try running the program with administrative privileges by right clicking and selecting \"Run as "
+              "administrator\"\n Or even installing the program to a different directory may help resolve these "
+              "permission issues.";
       std::string suggestions;
-#ifdef SC_WINDOWS
-      if ( QSysInfo::WindowsVersion >= QSysInfo::WV_VISTA )
-      {
-        windowsPermissionRecommendation =
-            "Try running the program with administrative privileges by right clicking and selecting \"Run as "
-            "administrator\"\n Or even installing the program to a different directory may help resolve these "
-            "permission issues.";
-      }
-#endif
+
       for ( std::list<std::string>::iterator it = files.begin(); it != files.end(); ++it )
       {
         if ( !( *it ).empty() )

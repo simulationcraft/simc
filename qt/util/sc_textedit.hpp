@@ -57,5 +57,5 @@ public slots:
 
 private:
   void initSearchBox();
-  void findSomeText( const QString& text, QTextDocument::FindFlags options = 0, int position = -1 );
+  void findSomeText( const QString& text, QTextDocument::FindFlags options = QTextDocument::FindFlags(), int position = -1 );
 };
