@@ -125,6 +125,7 @@ public:
     propagate_const<buff_t*> rigor_mortis;
 
     // Conduits
+    propagate_const<buff_t*> translucent_image;
     propagate_const<buff_t*> mind_devourer;
     propagate_const<buff_t*> dissonant_echoes;
 
@@ -424,6 +425,7 @@ public:
   {
     // Generic Priest
     conduit_data_t power_unto_others;
+    conduit_data_t translucent_image;
     // Holy
     conduit_data_t holy_oration;  // NYI
     // Discipline
