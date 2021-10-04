@@ -4684,3 +4684,127 @@ static const std::array<renown_reward_entry_t, 20> __renown_reward_ability_data 
   { 4,  59, 354129, "Deepening Bond"                     }, // Necrolord
 } };
 
+// Enhanced conduit renown levels, wow build 9.1.0.40120
+static const std::array<enhanced_conduit_entry_t, 120> __enhanced_conduit_data { {
+  {  1,  1, 0,  63 }, // Niya
+  {  1,  1, 2,  63 }, // Niya
+  {  1,  3, 1,  66 }, // Niya
+  {  1,  5, 1,  68 }, // Niya
+  {  1,  6, 0,  72 }, // Niya
+  {  1,  6, 1,  72 }, // Niya
+  {  1,  6, 2,  72 }, // Niya
+  {  1,  8, 1,  73 }, // Niya
+  {  1, 10, 0,  78 }, // Niya
+  {  1, 10, 2,  78 }, // Niya
+  {  2,  1, 0,  61 }, // Dreamweaver
+  {  2,  1, 2,  61 }, // Dreamweaver
+  {  2,  2, 1,  64 }, // Dreamweaver
+  {  2,  4, 0,  67 }, // Dreamweaver
+  {  2,  4, 1,  67 }, // Dreamweaver
+  {  2,  4, 2,  67 }, // Dreamweaver
+  {  2,  5, 1,  70 }, // Dreamweaver
+  {  2,  8, 1,  75 }, // Dreamweaver
+  {  2, 10, 0,  79 }, // Dreamweaver
+  {  2, 10, 2,  79 }, // Dreamweaver
+  {  3,  1, 0,  62 }, // General Draven
+  {  3,  1, 2,  62 }, // General Draven
+  {  3,  3, 1,  65 }, // General Draven
+  {  3,  5, 1,  69 }, // General Draven
+  {  3,  6, 0,  71 }, // General Draven
+  {  3,  6, 1,  71 }, // General Draven
+  {  3,  6, 2,  71 }, // General Draven
+  {  3,  8, 1,  74 }, // General Draven
+  {  3, 10, 0,  77 }, // General Draven
+  {  3, 10, 2,  77 }, // General Draven
+  {  4,  1, 0,  63 }, // Plague Deviser Marileth
+  {  4,  1, 1,  63 }, // Plague Deviser Marileth
+  {  4,  1, 2,  63 }, // Plague Deviser Marileth
+  {  4,  3, 1,  66 }, // Plague Deviser Marileth
+  {  4,  5, 1,  68 }, // Plague Deviser Marileth
+  {  4,  6, 0,  72 }, // Plague Deviser Marileth
+  {  4,  6, 2,  72 }, // Plague Deviser Marileth
+  {  4,  8, 1,  73 }, // Plague Deviser Marileth
+  {  4, 10, 0,  78 }, // Plague Deviser Marileth
+  {  4, 10, 2,  78 }, // Plague Deviser Marileth
+  {  5,  1, 0,  61 }, // Emeni
+  {  5,  1, 2,  61 }, // Emeni
+  {  5,  3, 1,  64 }, // Emeni
+  {  5,  5, 1,  67 }, // Emeni
+  {  5,  6, 0,  70 }, // Emeni
+  {  5,  6, 1,  70 }, // Emeni
+  {  5,  6, 2,  70 }, // Emeni
+  {  5,  8, 1,  75 }, // Emeni
+  {  5, 10, 0,  79 }, // Emeni
+  {  5, 10, 2,  79 }, // Emeni
+  {  6,  1, 0,  62 }, // Korayn
+  {  6,  1, 2,  62 }, // Korayn
+  {  6,  3, 1,  65 }, // Korayn
+  {  6,  5, 1,  69 }, // Korayn
+  {  6,  6, 0,  71 }, // Korayn
+  {  6,  6, 1,  71 }, // Korayn
+  {  6,  6, 2,  71 }, // Korayn
+  {  6,  8, 1,  74 }, // Korayn
+  {  6, 10, 0,  77 }, // Korayn
+  {  6, 10, 2,  77 }, // Korayn
+  {  7,  1, 0,  63 }, // Pelagos
+  {  7,  1, 1,  63 }, // Pelagos
+  {  7,  1, 2,  63 }, // Pelagos
+  {  7,  3, 1,  66 }, // Pelagos
+  {  7,  5, 1,  68 }, // Pelagos
+  {  7,  6, 0,  72 }, // Pelagos
+  {  7,  6, 2,  72 }, // Pelagos
+  {  7,  8, 1,  73 }, // Pelagos
+  {  7, 10, 0,  78 }, // Pelagos
+  {  7, 10, 2,  78 }, // Pelagos
+  {  8,  1, 0,  63 }, // Nadjia the Mistblade
+  {  8,  1, 2,  63 }, // Nadjia the Mistblade
+  {  8,  3, 1,  66 }, // Nadjia the Mistblade
+  {  8,  5, 1,  68 }, // Nadjia the Mistblade
+  {  8,  6, 0,  72 }, // Nadjia the Mistblade
+  {  8,  6, 1,  72 }, // Nadjia the Mistblade
+  {  8,  6, 2,  72 }, // Nadjia the Mistblade
+  {  8,  8, 1,  73 }, // Nadjia the Mistblade
+  {  8, 10, 0,  78 }, // Nadjia the Mistblade
+  {  8, 10, 2,  78 }, // Nadjia the Mistblade
+  {  9,  1, 0,  61 }, // Theotar the Mad Duke
+  {  9,  1, 2,  61 }, // Theotar the Mad Duke
+  {  9,  3, 1,  64 }, // Theotar the Mad Duke
+  {  9,  5, 1,  67 }, // Theotar the Mad Duke
+  {  9,  6, 0,  70 }, // Theotar the Mad Duke
+  {  9,  6, 1,  70 }, // Theotar the Mad Duke
+  {  9,  6, 2,  70 }, // Theotar the Mad Duke
+  {  9,  8, 1,  75 }, // Theotar the Mad Duke
+  {  9, 10, 0,  79 }, // Theotar the Mad Duke
+  {  9, 10, 2,  79 }, // Theotar the Mad Duke
+  { 10,  1, 0,  62 }, // Bonesmith Heirmir
+  { 10,  1, 2,  62 }, // Bonesmith Heirmir
+  { 10,  3, 1,  65 }, // Bonesmith Heirmir
+  { 10,  5, 1,  69 }, // Bonesmith Heirmir
+  { 10,  6, 0,  71 }, // Bonesmith Heirmir
+  { 10,  6, 1,  71 }, // Bonesmith Heirmir
+  { 10,  6, 2,  71 }, // Bonesmith Heirmir
+  { 10,  8, 1,  74 }, // Bonesmith Heirmir
+  { 10, 10, 0,  77 }, // Bonesmith Heirmir
+  { 10, 10, 2,  77 }, // Bonesmith Heirmir
+  { 13,  1, 0,  61 }, // Kleia
+  { 13,  1, 2,  61 }, // Kleia
+  { 13,  3, 1,  64 }, // Kleia
+  { 13,  5, 1,  67 }, // Kleia
+  { 13,  6, 0,  70 }, // Kleia
+  { 13,  6, 1,  70 }, // Kleia
+  { 13,  6, 2,  70 }, // Kleia
+  { 13,  8, 1,  75 }, // Kleia
+  { 13, 10, 0,  79 }, // Kleia
+  { 13, 10, 2,  79 }, // Kleia
+  { 18,  1, 0,  62 }, // Forgelite Prime Mikanikos
+  { 18,  1, 2,  62 }, // Forgelite Prime Mikanikos
+  { 18,  3, 1,  65 }, // Forgelite Prime Mikanikos
+  { 18,  5, 1,  69 }, // Forgelite Prime Mikanikos
+  { 18,  6, 0,  71 }, // Forgelite Prime Mikanikos
+  { 18,  6, 1,  71 }, // Forgelite Prime Mikanikos
+  { 18,  6, 2,  71 }, // Forgelite Prime Mikanikos
+  { 18,  8, 1,  74 }, // Forgelite Prime Mikanikos
+  { 18, 10, 0,  77 }, // Forgelite Prime Mikanikos
+  { 18, 10, 2,  77 }, // Forgelite Prime Mikanikos
+} };
+
