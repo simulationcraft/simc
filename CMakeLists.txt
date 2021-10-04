@@ -39,9 +39,7 @@ if (BUILD_GUI)
 endif()
 
 # enable warnings
-if (MSVC)
-    target_compile_options(engine PUBLIC /W4)
-else()
+if (NOT MSVC)
     target_compile_options(engine PUBLIC -Wall -Wextra)
 endif()
 
