@@ -1054,7 +1054,8 @@ struct desperate_prayer_t final : public priest_heal_t
     : priest_heal_t( "desperate_prayer", p, p.find_class_spell( "Desperate Prayer" ) )
   {
     parse_options( options_str );
-    harmful = false;
+    harmful  = false;
+    may_crit = false;
 
     // does not seem to proc anyting other than heal specific actions
     callbacks = false;
