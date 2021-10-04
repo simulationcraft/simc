@@ -4193,3 +4193,42 @@ class TemporaryEnchantItemGenerator(DataGenerator):
             self.output_record(fields)
 
         self.output_footer()
+
+class SoulbindConduitEnhancedSocketGenerator(DataGenerator):
+    def generate(self, data=None):
+        data = self.db('SoulbindConduitEnhancedSocket').values()
+
+        self.output_header(
+                header = 'Enhanced conduit renown levels',
+                type = 'enhanced_conduit_entry_t',
+                array = 'enhanced_conduit',
+                length = len(data))
+
+        soulbind_lookup = {}
+        soulbind_names = {}
+        for soulbind in self.db('Soulbind').values():
+            soulbind_lookup[soulbind.id_garr_talent_tree] = soulbind
+            soulbind_names[soulbind.id] = soulbind.name
+
+        field_data = []
+        for entry in data:
+            slot = entry.ref('id_garr_talent')
+            soulbind = soulbind_lookup[slot.id_garr_talent_tree]
+            player_cond = entry.ref('id_player_cond')
+            for i in range(1, 5):
+                # We are only interested in Renown currency requirements.
+                if getattr(player_cond, 'id_currency_{}'.format(i)) == 1822:
+                    # Add 1 to convert from currency count to renown level
+                    renown = getattr(player_cond, 'currency_count_{}'.format(i)) + 1
+                    fields = ['{:2d}'.format(soulbind.id)]
+                    fields += slot.field('tier', 'ui_order')
+                    fields.append('{:3d}'.format(renown))
+                    fields += soulbind.field('name')
+                    field_data.append(fields)
+                    break
+
+        field_data.sort(key = lambda f: [int(v) for v in f[:-1]])
+        for f in field_data:
+            self.output_record(f[:-1], comment = f[-1].strip('"'))
+
+        self.output_footer()

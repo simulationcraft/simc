@@ -325,6 +325,20 @@ void covenant_state_t::set_renown_level( unsigned renown_level )
     m_renown.push_back( spell.second );
 }
 
+bool covenant_state_t::is_conduit_socket_empowered( unsigned soulbind_id, unsigned tier, unsigned ui_order )
+{
+  for ( auto& entry : enhanced_conduit_entry_t::find_by_soulbind_id( soulbind_id, m_player->dbc->ptr ) )
+  {
+    if ( tier < entry.tier )
+      break;
+
+    if ( tier == entry.tier and ui_order == entry.ui_order )
+      return renown() >= entry.renown_level;
+  }
+
+  return false;
+}
+
 const spell_data_t* covenant_state_t::get_covenant_ability( util::string_view name ) const
 {
   if ( !enabled() )
@@ -907,8 +921,14 @@ bool parse_blizzard_covenant_information( player_t*               player,
           continue;
         }
 
-        player->covenant->add_conduit( conduit[ "socket" ][ "conduit" ][ "id" ].GetUint(),
-            conduit[ "socket" ][ "rank" ].GetUint() - 1 );
+        unsigned conduit_rank = conduit[ "socket" ][ "rank" ].GetUint() - 1;
+        unsigned tier = entry[ "tier" ].GetUint();
+        unsigned order = entry[ "display_order" ].GetUint();
+        // TODO: retain state in conduit_entry_t for html report differentiation of empowered vs non
+        if ( player->covenant->is_conduit_socket_empowered( soulbind_id, tier, order ) )
+          conduit_rank += 2;
+
+        player->covenant->add_conduit( conduit[ "socket" ][ "conduit" ][ "id" ].GetUint(), conduit_rank );
       }
     }
 

@@ -96,6 +96,22 @@ struct renown_reward_entry_t
   static util::span<const renown_reward_entry_t> data( bool ptr );
 };
 
+struct enhanced_conduit_entry_t
+{
+  unsigned soulbind_id;
+  unsigned tier;
+  unsigned ui_order;
+  unsigned renown_level;
+
+  static util::span<const enhanced_conduit_entry_t> find_by_soulbind_id( unsigned soulbind_id, bool ptr )
+  { return dbc::find_many<enhanced_conduit_entry_t>( soulbind_id, ptr, {}, &enhanced_conduit_entry_t::soulbind_id ); }
+
+  static const enhanced_conduit_entry_t& nil()
+  { return dbc::nil<enhanced_conduit_entry_t>; }
+
+  static util::span<const enhanced_conduit_entry_t> data( bool ptr );
+};
+
 #endif /* COVENANT_DATA_HPP */
 
 
