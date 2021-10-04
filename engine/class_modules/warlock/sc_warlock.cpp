@@ -307,7 +307,7 @@ struct scouring_tithe_t : public warlock_spell_t
       p()->cooldowns.scouring_tithe->reset( true );
     }
   }
-
+  
   double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();

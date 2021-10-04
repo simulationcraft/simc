@@ -190,8 +190,6 @@ struct agony_t : public affliction_spell_t
 
     dot_max_stack = as<int>( data().max_stacks() + p->spec.agony_2->effectN( 1 ).base_value() );
     dot_duration += p->conduit.rolling_agony.time_value();
-
-    base_td = 1.0;
   }
 
   void last_tick( dot_t* d ) override
@@ -212,6 +210,7 @@ struct agony_t : public affliction_spell_t
     affliction_spell_t::init();
   }
 
+  //TODO - Agony gains a stack when executed on a target that already has Agony
   void execute() override
   {
     affliction_spell_t::execute();
@@ -288,15 +287,16 @@ struct corruption_t : public affliction_spell_t
     // 172 does not have spell duration any more.
     // were still lazy though so we aren't making a seperate spell for this.
     dot_duration               = otherSP->duration();
-    // TOCHECK see if we can redo corruption in a way that spec aura applies to corruption naturally in init.
-    base_multiplier *= 1.0 + p->spec.affliction->effectN( 2 ).percent();
+    
+    // 2021-10-03 : Corruption's direct damage does not appear to be included in spec aura, only tick damage
+    base_td_multiplier *= 1.0 + p->spec.affliction->effectN(2).percent();
 
     if ( p->talents.absolute_corruption->ok() )
     {
       dot_duration = sim->expected_iteration_time > 0_ms
                          ? 2 * sim->expected_iteration_time
                          : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length );  // "infinite" duration
-      base_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent();
+      base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent(); // 2021-10-03: Only tick damage is affected
     }
 
     if ( p->spec.corruption_2->ok())
