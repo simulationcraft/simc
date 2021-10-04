@@ -210,6 +210,7 @@ struct agony_t : public affliction_spell_t
     affliction_spell_t::init();
   }
 
+  //TODO - Agony gains a stack when executed on a target that already has Agony
   void execute() override
   {
     affliction_spell_t::execute();
