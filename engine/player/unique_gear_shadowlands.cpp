@@ -3993,6 +3993,44 @@ void shard_of_zed( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
   */
 }
+
+/**Shard of Kyr
+ * id=355743 driver Rank 1
+ * id=357035 driver Rank 2 (Ominous)
+ * id=357053 driver Rank 3 (Desolate)
+ * id=357063 driver Rank 4 (Foreboding)
+ * id=357074 driver Rank 5 (Portentous)
+ * id=356305 Accretion buff
+ */
+void shard_of_kyr( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "accretion" );
+  if ( !buff )
+  {
+    auto per_five_amount = effect.driver()->effectN( 1 ).average( effect.player );
+    auto max_amount      = effect.driver()->effectN( 2 ).average( effect.player );
+
+    buff = make_buff<absorb_buff_t>( effect.player, "accretion", effect.player->find_spell( 356305 ) )
+               ->set_default_value( per_five_amount );
+
+    effect.custom_buff = buff;
+    effect.player->register_combat_begin( [ &effect, buff, per_five_amount, max_amount ]( player_t* ) {
+      buff->trigger();
+      make_repeating_event( buff->source->sim, effect.driver()->effectN( 1 ).period(),
+                            [ buff, per_five_amount, max_amount ]() {
+                              if ( buff->check() )
+                              {
+                                auto new_value = buff->check_value() + per_five_amount;
+                                buff->trigger( 1, std::min( new_value, max_amount ) );
+                              }
+                              else
+                              {
+                                buff->trigger();
+                              }
+                            } );
+    } );
+  }
+}
 }  // namespace items
 
 namespace set_bonus
@@ -4158,6 +4196,12 @@ void register_special_effects()
     unique_gear::register_special_effect( 357057, items::shard_of_zed );
     unique_gear::register_special_effect( 357067, items::shard_of_zed );
     unique_gear::register_special_effect( 357077, items::shard_of_zed );
+
+    unique_gear::register_special_effect( 355743, items::shard_of_kyr );
+    unique_gear::register_special_effect( 357035, items::shard_of_kyr );
+    unique_gear::register_special_effect( 357053, items::shard_of_kyr );
+    unique_gear::register_special_effect( 357063, items::shard_of_kyr );
+    unique_gear::register_special_effect( 357074, items::shard_of_kyr );
 
     // Disabled effects
     unique_gear::register_special_effect( 329028, items::DISABLED_EFFECT ); // Light-Infused Armor shield
