@@ -1,4 +1,4 @@
-SimulationCraft 905-01 for World of Warcraft 9.0.5.37844 Live (hotfix 2021-03-08/37844, git build shadowlands 2bf2959832)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.40120 Live (hotfix 2021-10-03/40120)
 
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
@@ -4138,7 +4138,7 @@ bonus_id={ 7182 }, ilevel={ 151 @plvl 0 - 151 @plvl 0 }
 bonus_id={ 7183 }, ilevel={ 200 @plvl 0 - 200 @plvl 0 }
 bonus_id={ 7184 }, quality={ legendary }, effects={ Escape from Reality (id=343250, index=0, type=equip) }
 bonus_id={ 7185 }, ilevel={ 168 @plvl 0 - 168 @plvl 0 }
-bonus_id={ 7191 }, quality={ rare }, ilevel={ 3 @plvl 1 - 158 @plvl 60 }
+bonus_id={ 7191 }, desc={ Timewarped }, quality={ rare }, ilevel={ 3 @plvl 1 - 158 @plvl 60 }
 bonus_id={ 7192 }, quality={ rare }, ilevel={ 75 @plvl 45 - 138 @plvl 70 }
 bonus_id={ 7202 }, desc={ Heroic }, quality={ epic }, ilevel={ 33 @plvl 1 - 33 @plvl 200 }
 bonus_id={ 7215 }, quality={ epic }, ilevel={ 226 @plvl 50 - 226 @plvl 60 }
@@ -4160,3 +4160,82 @@ bonus_id={ 7245 }, quality={ epic }
 bonus_id={ 7246 }, quality={ legendary }
 bonus_id={ 7247 }, desc={ Timewarped }, ilevel={ 5 @plvl 1 - 138 @plvl 60 }
 bonus_id={ 7250 }, quality={ epic }, ilevel={ 233 @plvl 50 - 233 @plvl 60 }
+bonus_id={ 7357 }, effects={ Unknown Effect (id=138395) }
+bonus_id={ 7452 }, ilevel={ 160 @plvl 1 - 160 @plvl 70 }
+bonus_id={ 7453 }, ilevel={ 163 @plvl 1 - 163 @plvl 70 }
+bonus_id={ 7458 }, quality={ legendary }, effects={ Abomination's Frenzy (id=353447, index=0, type=equip) }
+bonus_id={ 7461 }, ilevel={ 230 @plvl 0 - 230 @plvl 0 }
+bonus_id={ 7464 }, desc={ Timewarped }, quality={ rare }, ilevel={ 3 @plvl 1 - 184 @plvl 60 }
+bonus_id={ 7465 }, desc={ Timewarped }, ilevel={ 5 @plvl 1 - 164 @plvl 60 }
+bonus_id={ 7466 }, quality={ legendary }, effects={ Rampant Transference (id=353882, index=0, type=equip) }
+bonus_id={ 7467 }, quality={ legendary }, effects={ Final Sentence (id=353822, index=0, type=equip) }
+bonus_id={ 7468 }, quality={ legendary }, effects={ Insatiable Hunger (id=353699, index=0, type=equip) }
+bonus_id={ 7469 }, quality={ legendary }, effects={ Glory (id=353577, index=0, type=equip) }
+bonus_id={ 7470 }, quality={ legendary }, effects={ Sinful Surge (id=354131, index=0, type=equip) }
+bonus_id={ 7471 }, quality={ legendary }, effects={ Nature's Fury (id=354161, index=0, type=equip) }
+bonus_id={ 7472 }, quality={ legendary }, effects={ Unbridled Swarm (id=354123, index=0, type=equip) }
+bonus_id={ 7473 }, quality={ legendary }, effects={ Harmonic Echo (id=354186, index=0, type=equip) }
+bonus_id={ 7474 }, quality={ legendary }, effects={ Sinful Hysteria (id=354109, index=0, type=equip) }
+bonus_id={ 7475 }, quality={ legendary }, effects={ Death's Fathom (id=354294, index=0, type=equip) }
+bonus_id={ 7476 }, quality={ legendary }, effects={ Sinful Delight (id=354333, index=0, type=equip) }
+bonus_id={ 7477 }, quality={ legendary }, effects={ Kindred Affinity (id=354115, index=0, type=equip) }
+bonus_id={ 7478 }, quality={ legendary }, effects={ Toxic Onslaught (id=354473, index=0, type=equip) }
+bonus_id={ 7570 }, quality={ legendary }, effects={ Splintered Elements (id=354647, index=0, type=equip) }
+bonus_id={ 7571 }, quality={ legendary }, effects={ Celestial Spirits (id=354118, index=0, type=equip) }
+bonus_id={ 7572 }, quality={ legendary }, effects={ Obedience (id=354703, index=0, type=equip) }
+bonus_id={ 7573 }, quality={ legendary }, effects={ Deathspike (id=354731, index=0, type=equip) }
+bonus_id={ 7576 }, socket={ 1 }
+bonus_id={ 7577 }, quality={ legendary }, effects={ Resounding Clarity (id=354837, index=0, type=equip) }
+bonus_id={ 7679 }, quality={ legendary }, effects={ Divine Resonance (id=355098, index=0, type=equip) }
+bonus_id={ 7680 }, quality={ legendary }, effects={ Duty-Bound Gavel (id=355099, index=0, type=equip) }
+bonus_id={ 7681 }, quality={ legendary }, effects={ Agony Gaze (id=355886, index=0, type=equip) }
+bonus_id={ 7698 }, quality={ legendary }, effects={ Blazing Slaughter (id=355890, index=0, type=equip) }
+bonus_id={ 7699 }, quality={ legendary }, effects={ Blind Faith (id=355893, index=0, type=equip) }
+bonus_id={ 7700 }, quality={ legendary }, effects={ Demonic Oath (id=355996, index=0, type=equip) }
+bonus_id={ 7701 }, quality={ legendary }, effects={ Radiant Embers (id=355447, index=0, type=equip) }
+bonus_id={ 7702 }, quality={ legendary }, effects={ Seasons of Plenty (id=355100, index=0, type=equip) }
+bonus_id={ 7703 }, quality={ legendary }, effects={ Bwonsamdi's Pact (id=356391, index=0, type=equip) }
+bonus_id={ 7704 }, quality={ legendary }, effects={ Shadow Word: Manipulation (id=356392, index=0, type=equip) }
+bonus_id={ 7705 }, effects={ Mawsworn Shackles (id=355441, index=0, type=use) }
+bonus_id={ 7706 }, effects={ Shackles of Malediction (id=356566, index=0, type=use), Shackles of Malediction (id=356565, index=0, type=equip) }
+bonus_id={ 7707 }, quality={ legendary }, effects={ Bountiful Brew (id=356592, index=0, type=equip) }
+bonus_id={ 7708 }, quality={ legendary }, effects={ Seeds of Rampant Growth (id=356218, index=0, type=equip) }
+bonus_id={ 7709 }, quality={ legendary }, effects={ Elemental Conduit (id=356250, index=0, type=equip) }
+bonus_id={ 7710 }, quality={ legendary }, effects={ Languishing Soul Detritus (id=356254, index=0, type=equip) }
+bonus_id={ 7711 }, quality={ legendary }, effects={ Shard of Annihilation (id=356344, index=0, type=equip) }
+bonus_id={ 7712 }, quality={ legendary }, effects={ Decaying Soul Satchel (id=356362, index=0, type=equip) }
+bonus_id={ 7713 }, quality={ legendary }, effects={ Contained Perpetual Explosion (id=356259, index=0, type=equip) }
+bonus_id={ 7714 }, quality={ legendary }, effects={ Pact of the Soulstalkers (id=356262, index=0, type=equip) }
+bonus_id={ 7715 }, quality={ legendary }, effects={ Bag of Munitions (id=356264, index=0, type=equip) }
+bonus_id={ 7716 }, quality={ legendary }, effects={ Fragments of the Elder Antlers (id=356375, index=0, type=equip) }
+bonus_id={ 7717 }, quality={ legendary }, effects={ Pouch of Razor Fragments (id=356618, index=0, type=equip) }
+bonus_id={ 7718 }, quality={ legendary }, effects={ Call to Arms (id=356684, index=0, type=equip) }
+bonus_id={ 7719 }, effects={ Adjust Weapon (id=356750, index=0, type=use) }
+bonus_id={ 7720 }, effects={ Adjust Weapon (id=356750, index=0, type=use) }
+bonus_id={ 7721 }, quality={ legendary }, effects={ Faeline Harmony (id=356705, index=0, type=equip) }
+bonus_id={ 7722 }, quality={ legendary }, effects={ Raging Vesper Vortex (id=356789, index=0, type=equip) }
+bonus_id={ 7723 }, effects={ Adjust Weapon (id=356750, index=0, type=use) }
+bonus_id={ 7724 }, effects={ Adjust Weapon (id=356750, index=0, type=use) }
+bonus_id={ 7725 }, effects={ Adjust Weapon (id=356750, index=0, type=use) }
+bonus_id={ 7726 }, quality={ legendary }, effects={ Sinister Teachings (id=356818, index=0, type=equip) }
+bonus_id={ 7727 }, quality={ legendary }, effects={ Heart of the Fae (id=356877, index=0, type=equip) }
+bonus_id={ 7728 }, quality={ legendary }, effects={ Spheres' Harmony (id=356395, index=0, type=equip) }
+bonus_id={ 7729 }, quality={ legendary }, effects={ Pallid Command (id=356390, index=0, type=equip) }
+bonus_id={ 7730 }, quality={ legendary }, effects={ Elysian Might (id=357996, index=0, type=equip) }
+bonus_id={ 7733 }, stats={ 100% Crit [0.2300] }
+bonus_id={ 7734 }, stats={ 100% Haste [0.4700] }
+bonus_id={ 7735 }, effects={ Render Tribute (id=357585, index=2, type=use) }
+bonus_id={ 7736 }, stats={ 100% Crit [0.1840] }
+bonus_id={ 7737 }, stats={ 100% Haste [0.3760] }
+bonus_id={ 7738 }, effects={ Render Tribute (id=357585, index=2, type=use), Harsh Tutelage (id=358562, index=2, type=equip) }
+bonus_id={ 7739 }, stats={ 100% Crit [0.1380] }
+bonus_id={ 7740 }, stats={ 100% Haste [0.2820] }
+bonus_id={ 7741 }, effects={ Render Tribute (id=357585, index=2, type=use), Harsh Tutelage (id=358565, index=2, type=equip) }
+bonus_id={ 7742 }, stats={ 100% Crit [0.0920] }
+bonus_id={ 7743 }, stats={ 100% Haste [0.1880] }
+bonus_id={ 7744 }, effects={ Render Tribute (id=357585, index=2, type=use), Harsh Tutelage (id=358567, index=2, type=equip) }
+bonus_id={ 7745 }, stats={ 100% Crit [0.0460] }
+bonus_id={ 7746 }, stats={ 100% Haste [0.0940] }
+bonus_id={ 7747 }, effects={ Render Tribute (id=357585, index=2, type=use), Harsh Tutelage (id=358569, index=2, type=equip) }
+bonus_id={ 7748 }, effects={ Harsh Tutelage (id=358571, index=2, type=equip) }
+bonus_id={ 7883 }, ilevel={ 5 @plvl 1 - 220 @plvl 60 }
