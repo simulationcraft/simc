@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39804 Live (hotfix 2021-08-31/39804, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.40120 Live (hotfix 2021-10-04/40120, git build shadowlands 07116848, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -9348,6 +9348,7 @@ Variables        : $damage=${($SPS*$s2/100)*(1+$@versadmg)*$m3/100}
 $healing=${($SPS*$s5/100)*(1+$@versadmg)*$m3/100}
 
 Name             : Mindgames (id=323701) [Spell Family (6), Hidden] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -9356,14 +9357,14 @@ Range            : 100 yards
 Duration         : 6 seconds
 Triggered by     : Mindgames (323673)
 Attributes       : .......x ........ ........ ........   ........ ..x..... ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ xx..x... ......x. 
+                 : ..x..... ........ ........ ........   ........ ........ xx..x... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), No Aura Icon (60), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Do Not Display Range (126), Not In Spellbook (143), Not In Spellbook Until Learned (269)
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Do Not Display Range (126), Not In Spellbook (143), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=812814)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xfffffff6 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE Custom (8)

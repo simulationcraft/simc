@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39804 Live (hotfix 2021-08-31/39804, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.40120 Live (hotfix 2021-10-04/40120, git build shadowlands 07116848, no-networking)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -7495,6 +7495,7 @@ Description      : You and your pet gain $s1% Leech.
 Tooltip          : Leech increased by $w2%.
 
 Name             : Primal Rage (desc=Ferocity Ability) (id=264667) [Spell Family (9)] 
+Hotfixed         : Affecting Spells
 Class            : Ferocity Hunter Pet
 School           : Fire
 Spell Type       : None
@@ -7502,7 +7503,7 @@ Spell Level      : 26
 Duration         : 40 seconds
 Cooldown         : 360 seconds
 Affecting spells : Aspect of the Beast (191384 effects: #1, #2)
-Family Flags     : 60
+Family Flags     : 45, 60
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ..xx.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ x....... ........ ........ 
