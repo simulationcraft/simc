@@ -4016,9 +4016,9 @@ void shard_of_kyr( special_effect_t& effect )
     effect.custom_buff = buff;
     effect.player->register_combat_begin( [ &effect, buff, per_five_amount, max_amount ]( player_t* ) {
       buff->trigger();
-      make_repeating_event( buff->source->sim, effect.player->find_spell( 356305 )->effectN( 1 ).period(),
+      make_repeating_event( buff->source->sim, effect.driver()->effectN( 1 ).period(),
                             [ buff, per_five_amount, max_amount ]() {
-                              if ( buff->up() )
+                              if ( buff->check() )
                               {
                                 auto new_value = buff->check_value() + per_five_amount;
                                 buff->trigger( 1, std::min( new_value, max_amount ) );
