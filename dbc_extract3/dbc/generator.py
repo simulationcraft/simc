@@ -4205,10 +4205,8 @@ class SoulbindConduitEnhancedSocketGenerator(DataGenerator):
                 length = len(data))
 
         soulbind_lookup = {}
-        soulbind_names = {}
         for soulbind in self.db('Soulbind').values():
             soulbind_lookup[soulbind.id_garr_talent_tree] = soulbind
-            soulbind_names[soulbind.id] = soulbind.name
 
         field_data = []
         for entry in data:
