@@ -1019,6 +1019,28 @@ struct shadow_mend_t final : public priest_heal_t
   }
 };
 
+// ==========================================================================
+// Fade
+// ==========================================================================
+struct fade_t final : public priest_spell_t
+{
+  fade_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "fade", p, p.find_class_spell( "Fade" ) )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    if ( priest().conduits.translucent_image->ok() )
+    {
+      priest().buffs.translucent_image->trigger();
+    }
+
+    priest_spell_t::execute();
+  }
+};
+
 }  // namespace spells
 
 namespace heals
@@ -1743,6 +1765,10 @@ action_t* priest_t::create_action( util::string_view name, const std::string& op
       return new summon_shadowfiend_t( *this, options_str );
     }
   }
+  if ( name == "fade" )
+  {
+    return new fade_t( *this, options_str );
+  }
   if ( name == "shadow_mend" )
   {
     return new shadow_mend_t( *this, options_str );
@@ -1927,6 +1953,7 @@ void priest_t::init_spells()
 
   // Generic Conduits
   conduits.power_unto_others = find_conduit_spell( "Power Unto Others" );
+  conduits.translucent_image = find_conduit_spell( "Translucent Image" );
   // Shadow Conduits
   conduits.dissonant_echoes     = find_conduit_spell( "Dissonant Echoes" );
   conduits.haunting_apparitions = find_conduit_spell( "Haunting Apparitions" );
@@ -1977,6 +2004,10 @@ void priest_t::create_buffs()
   // Covenant Buffs
   buffs.fae_guardians        = make_buff<buffs::fae_guardians_t>( *this );
   buffs.boon_of_the_ascended = make_buff<buffs::boon_of_the_ascended_t>( *this );
+
+  // Conduit Buffs
+  buffs.translucent_image = make_buff( this, "translucent_image", find_spell( 337661 ) )
+                                ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   create_buffs_shadow();
   create_buffs_discipline();
@@ -2149,7 +2180,12 @@ void priest_t::target_mitigation( school_e school, result_amount_type dt, action
 
   if ( buffs.dispersion->check() )
   {
-    s->result_amount *= 1.0 + ( buffs.dispersion->data().effectN( 1 ).percent() );
+    s->result_amount *= 1.0 + buffs.dispersion->data().effectN( 1 ).percent();
+  }
+
+  if ( buffs.translucent_image->up() )
+  {
+    s->result_amount *= 1.0 + buffs.translucent_image->data().effectN( 1 ).percent();
   }
 }
 
