@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.40120 Live (hotfix 2021-10-03/40120)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.40120 Live (hotfix 2021-10-03/40120, no-networking)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -2327,7 +2327,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Unknown(87)
 #2 (id=323958)   : Summon (28)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 53006 | Misc Value 2: 0xd47 | Target: Unknown(87)
-Description      : Summons a totem at the target location for $d, which reduces damage taken by all party and raid members within $98007a1 yards by $98007s1%. Every $98017t1 sec the health of all affected players is redistributed, such that all players are at the same percentage of maximum health.
+Description      : Summons a totem at the target location for $d, which reduces damage taken by all party and raid members within $98007a1 yards by $98007s1%. Immediately and every $98017t1 sec, the health of all affected players is redistributed evenly.
 
 Name             : Spirit Link (id=98017) [Spell Family (11), Hidden] 
 Class            : Shaman
