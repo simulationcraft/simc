@@ -1774,7 +1774,7 @@ class SpellDataGenerator(DataGenerator):
           ( 346602, 0 ), # Venthyr Fallen Monk Tiger Palm
           ( 345714, 0 ), # Venthyr Fallen Monk Fists of Fury damage
           ( 347826, 0 ), # Venthyr Fallen Monk Spec Duration
-          ( 373041, 0 ), # Venthyr Fallen Monk Fallen Brew
+          ( 363041, 0 ), # Venthyr Fallen Monk Fallen Brew
 
           # Conduits
           ( 336874, 0 ), # Fortifying Ingredients
