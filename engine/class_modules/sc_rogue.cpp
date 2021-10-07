@@ -789,6 +789,7 @@ public:
 
   // On-death trigger for Venomous Wounds energy replenish
   void trigger_venomous_wounds_death( player_t* );
+  void trigger_toxic_onslaught( player_t* );
 
   double consume_cp_max() const
   { return COMBO_POINT_MAX + as<double>( talent.deeper_stratagem -> effectN( 1 ).base_value() ); }
@@ -1702,14 +1703,8 @@ public:
     if ( affected_by.sepsis && p()->buffs.sepsis->check() && !p()->stealthed( STEALTH_ALL & ~STEALTH_SEPSIS ) )
     {
       p()->buffs.sepsis->decrement();
-      if ( p()->legendary.toxic_onslaught->ok() )
-      {
-        // 2021-04-22 - Appears to select randomly from the three cooldowns, not spec-specific
-        // 2021-07-09: Extends duration now instead of overriding it in case of the existing cooldown proccing.
-        const timespan_t trigger_duration = p()->legendary.toxic_onslaught->effectN( 1 ).time_value();
-        std::vector<buff_t*> buffs = { p()->get_target_data( ab::target )->debuffs.vendetta, p()->buffs.adrenaline_rush, p()->buffs.shadow_blades };
-        buffs[ p()->sim->rng().range( buffs.size() ) ]->extend_duration_or_trigger( trigger_duration );
-      }
+      if ( !p()->dbc->ptr )
+        p()->trigger_toxic_onslaught( ab::target );
     }
 
     ab::execute();
@@ -2831,6 +2826,8 @@ struct fan_of_knives_t: public rogue_attack_t
     energize_type     = action_energize::ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount   = data().effectN( 2 ).base_value();
+    // 2021-10-07 - Not in the whitelist but confirmed as working as of 9.1.5 PTR
+    affected_by.shadow_blades_cp = p->dbc->ptr;
   }
 
   double action_multiplier() const override
@@ -2850,8 +2847,9 @@ struct fan_of_knives_t: public rogue_attack_t
   { return true; }
 
   // 04/22/2021 -- TOCHECK: Testing with the NF legendary shows this doesn't work
+  // 2021-10-07 - Works as of 9.1.5 PTR
   bool procs_shadow_blades_damage() const override
-  { return false; }
+  { return p()->dbc->ptr; }
 };
 
 // Feint ====================================================================
@@ -3295,6 +3293,10 @@ struct mutilate_t : public rogue_attack_t
 
       return m;
     }
+
+    // 2021-10-07 - Works as of 9.1.5 PTR
+    bool procs_shadow_blades_damage() const override
+    { return p()->dbc->ptr; }
   };
 
   mutilate_strike_t* mh_strike;
@@ -4226,6 +4228,10 @@ struct vendetta_t : public rogue_spell_t
     td->debuffs.vendetta->expire();
     td->debuffs.vendetta->trigger();
 
+    // As of 2021-10-07 9.1.5 PTR, using it seems to trigger the energy buff but Toxic Onslaught does not.
+    // If this is fixed, remove this and uncomment the corresponding block in the debuff again.
+    p()->buffs.vendetta->trigger();
+
     if ( precombat_seconds > 0_s && !p()->in_combat )
     {
       p()->cooldowns.vendetta->adjust( -precombat_seconds, false );
@@ -4542,6 +4548,8 @@ struct sepsis_t : public rogue_attack_t
     sepsis_expire_damage->set_target( d->target );
     sepsis_expire_damage->execute();
     p()->buffs.sepsis->trigger();
+    if ( p()->dbc->ptr )
+      p()->trigger_toxic_onslaught( d->target );
   }
 
   bool snapshots_nightstalker() const override
@@ -5365,14 +5373,18 @@ struct vendetta_debuff_t : public damage_buff_t
     set_cooldown( timespan_t::zero() );
   }
 
-  void start( int stacks, double value, timespan_t duration ) override
+  /*void start(int stacks, double value, timespan_t duration) override
   {
     damage_buff_t::start( stacks, value, duration );
 
     // 3/25/2020 - The base 3s duration regen buff does not re-apply on refreshes
+    // The above was determine in times of Vision of Perfection.
+    // As of 2021-10-07 9.1.5 PTR, it appears the only way to get the energy buff is to use the ability as Assa rogue.
+    // Commented out for future reference or in case this is fixed for the Toxic Onslaught legendary.
+    // Until then, trigger is moved to the action execute().
     rogue_t* rogue = debug_cast<rogue_t*>( source );
     rogue->buffs.vendetta->trigger();
-  }
+  }*/
 };
 
 struct roll_the_bones_t : public buff_t
@@ -5623,6 +5635,42 @@ void rogue_t::trigger_venomous_wounds_death( player_t* target )
 
   resource_gain( RESOURCE_ENERGY, full_ticks_remaining * replenish, gains.venomous_wounds_death,
                  td->dots.rupture->current_action );
+}
+
+void rogue_t::trigger_toxic_onslaught( player_t* target )
+{
+  if ( !legendary.toxic_onslaught->ok() )
+    return;
+
+  if ( !dbc->ptr )
+  {
+    // 2021-04-22 - Appears to select randomly from the three cooldowns, not spec-specific
+    // 2021-07-09: Extends duration now instead of overriding it in case of the existing cooldown proccing.
+    const timespan_t trigger_duration = legendary.toxic_onslaught->effectN( 1 ).time_value();
+    std::vector<buff_t*> pbuffs = { get_target_data( target )->debuffs.vendetta, buffs.adrenaline_rush, buffs.shadow_blades };
+    pbuffs[ sim->rng().range( pbuffs.size() ) ]->extend_duration_or_trigger( trigger_duration );
+  }
+  else
+  {
+    // As of 9.1.5 we proc the two major cooldowns that are not part of our own spec.
+    const timespan_t trigger_duration = legendary.toxic_onslaught->effectN( 1 ).time_value();
+
+    if ( specialization() == ROGUE_ASSASSINATION )
+    {
+      buffs.adrenaline_rush->extend_duration_or_trigger( trigger_duration );
+      buffs.shadow_blades->extend_duration_or_trigger( trigger_duration );
+    }
+    else if ( specialization() == ROGUE_OUTLAW )
+    {
+      get_target_data( target )->debuffs.vendetta->extend_duration_or_trigger( trigger_duration );
+      buffs.shadow_blades->extend_duration_or_trigger( trigger_duration );
+    }
+    else if ( specialization() == ROGUE_SUBTLETY )
+    {
+      get_target_data( target )->debuffs.vendetta->extend_duration_or_trigger( trigger_duration );
+      buffs.adrenaline_rush->extend_duration_or_trigger( trigger_duration );
+    }
+  }
 }
 
 template <typename Base>
@@ -6321,9 +6369,13 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   // Sepsis Cooldown Reduction
   if ( source->covenant.sepsis->ok() )
   {
-    target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
+    target->register_on_demise_callback( source, [ this, source ]( player_t* target ) {
       if ( dots.sepsis->is_ticking() )
+      {
         source->cooldowns.sepsis->adjust( -timespan_t::from_seconds( source->covenant.sepsis->effectN( 3 ).base_value() ) );
+        if ( source->dbc->ptr )
+          source->trigger_toxic_onslaught( target );
+      }
     } );
   }
 
