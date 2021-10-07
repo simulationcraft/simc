@@ -137,7 +137,7 @@ wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187,gem_id=187319
 hands=gory_surgeons_gloves,id=178748,bonus_id=1566/6536/6646
 waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187,gem_id=187320
 legs=muehzalas_hexthread_sarong,id=179351,bonus_id=1566/6536/6646
-feet=phantasma_forged_striders,id=186281,bonus_id=1498/7187
+feet=phantasmaforged_striders,id=186281,bonus_id=1498/7187
 finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=1498/7187/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=shadowghast_ring,id=178926,bonus_id=7025/6649/6648/1559,gem_id=173128,enchant=tenet_of_haste
 trinket1=shadowed_orb_of_torment,id=186428,bonus_id=1498/7187
