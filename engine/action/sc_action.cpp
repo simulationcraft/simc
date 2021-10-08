@@ -3413,7 +3413,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     }
     else
     {
-      if ( sim->target_list.size() == 1U && !sim->has_raid_event( "adds" ) )
+      if ( sim->target_list.size() == 1U && !sim->has_raid_event( "adds" ) && !sim->has_raid_event( "pull" ) )
       {
         return expr_t::create_constant( "spell_targets", 1.0 );
       }
