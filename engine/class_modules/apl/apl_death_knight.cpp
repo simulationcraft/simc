@@ -298,12 +298,10 @@ void frost( player_t* p )
   standard->add_action( "howling_blast,if=variable.rotfc_rime&buff.rime.remains<3" );
   standard->add_action( "frost_strike,if=variable.frost_strike_conduits" );
   standard->add_action( "glacial_advance,if=!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<7)" );
-  standard->add_action( "obliterate,if=rune.time_to_4<=gcd&(cooldown.remorseless_winter.remians<3&talent.gathering_storm|!talent.gathering_storm)" );
   standard->add_action( "frost_strike,if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm" );
   standard->add_action( "howling_blast,if=variable.rotfc_rime" );
-  standard->add_action( "obliterate,if=!buff.frozen_pulse.up&talent.frozen_pulse|variable.deaths_due_active&buff.deaths_due.stack<4" );
   standard->add_action( "frost_strike,if=runic_power.deficit<(15+talent.runic_attenuation*5)" );
-  standard->add_action( "obliterate,if=runic_power.deficit>(25+talent.runic_attenuation*5)" );
+  standard->add_action( "obliterate,if=!buff.frozen_pulse.up&talent.frozen_pulse|variable.deaths_due_active&buff.deaths_due.stack<4|talent.gathering_storm&buff.remorseless_winter.up|runic_power.deficit>(25+talent.runic_attenuation*5)" );
   standard->add_action( "frost_strike" );
   standard->add_action( "horn_of_winter" );
   standard->add_action( "arcane_torrent" );
