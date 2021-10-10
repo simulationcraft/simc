@@ -29,7 +29,7 @@ void sim_ostream_t::print_simulation_time()
 void sim_ostream_t::vprintf( fmt::string_view format, fmt::printf_args args )
 {
   print_simulation_time();
-  fmt::vfprintf( *_raw.get_stream(), to_string_view( format ), args );
+  *this << fmt::vsprintf( format, args );
   *_raw.get_stream() << '\n';
 }
 
