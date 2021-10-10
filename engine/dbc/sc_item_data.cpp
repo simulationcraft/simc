@@ -1273,10 +1273,10 @@ static std::string get_bonus_mod_stat( util::span<const item_bonus_entry_t> entr
 
     if ( b.size() > 0 )
     {
-      fmt::format_to( b, ", " );
+      fmt::format_to( std::back_inserter( b ), ", " );
     }
 
-    fmt::format_to( b, "{} ({})",
+    fmt::format_to( std::back_inserter( b ), "{} ({})",
         util::stat_type_abbrev( util::translate_item_mod( entries[ i ].value_1 ) ),
         entries[ i ].value_2 );
 
@@ -1407,7 +1407,7 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
       fields.emplace_back( fmt::format( "mod_to_stat={{ {} }}", item_mod_stat ) );
     }
 
-    fmt::format_to( s, "{}\n", fmt::join( fields, ", " ) );
+    fmt::format_to( std::back_inserter(s), "{}\n", fmt::join( fields, ", " ) );
   }
 
   return to_string( s );

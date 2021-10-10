@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "lib/fmt/printf.h"
+#include "lib/fmt/ostream.h"
 #include "util/chrono.hpp"
 
 #include <iosfwd>

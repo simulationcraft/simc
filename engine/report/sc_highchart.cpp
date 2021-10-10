@@ -50,7 +50,7 @@ bool sc_json_writer_t<Stream>::Double(double d)
 {
   this->Prefix(rapidjson::kNumberType);
   fmt::memory_buffer buffer;
-  fmt::format_to(buffer, "{:.{}f}", d, sim.report_precision);
+  fmt::format_to(std::back_inserter(buffer), "{:.{}f}", d, sim.report_precision);
   for (unsigned i = 0; i < buffer.size(); ++i)
   {
     this->os_->Put(buffer.data()[i]);

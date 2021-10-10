@@ -110,7 +110,7 @@ namespace {
 
     if (!prefix.empty())
     {
-      fmt::format_to(buf, "({})&#160;", prefix);
+      fmt::format_to(std::back_inserter(buf), "({})&#160;", prefix);
     }
 
     // Generate base url
@@ -118,17 +118,17 @@ namespace {
 
     // Append url params, if any
     if (!data.params.empty())
-      fmt::format_to(buf, "?{}", fmt::join(data.params, "&"));
+      fmt::format_to(std::back_inserter(buf), "?{}", fmt::join(data.params, "&"));
 
     // Close the tag and insert the "name"
-    fmt::format_to(buf, "\">{}{}</a>",
+    fmt::format_to(std::back_inserter(buf), "\">{}{}</a>",
                   data.url_name_prefix(),
                   url_name);
 
     // Add suffix if present
     if (!suffix.empty())
     {
-      fmt::format_to(buf, "&#160;({})", suffix);
+      fmt::format_to(std::back_inserter(buf), "&#160;({})", suffix);
     }
 
     return to_string(buf);
@@ -152,7 +152,7 @@ namespace {
 
     void base_url(fmt::memory_buffer& buf) const override
     {
-      fmt::format_to(buf, "<a href=\"https://{}.wowhead.com/spell={}",
+      fmt::format_to(std::back_inserter(buf), "<a href=\"https://{}.wowhead.com/spell={}",
                      report_decorators::decoration_domain(*this->m_obj->sim),
                      this->m_obj->data_reporting().id());
     }
@@ -197,7 +197,7 @@ namespace {
 
     void base_url(fmt::memory_buffer& buf) const override
     {
-      fmt::format_to(buf, "<a href=\"https://{}.wowhead.com/spell={}",
+      fmt::format_to(std::back_inserter(buf), "<a href=\"https://{}.wowhead.com/spell={}",
                      report_decorators::decoration_domain(*m_sim), m_spell->id());
     }
 
@@ -270,7 +270,7 @@ namespace {
 
     void base_url(fmt::memory_buffer& buf) const override
     {
-      fmt::format_to(buf, "<a style=\"color:{};\" href=\"https://{}.wowhead.com/item={}",
+      fmt::format_to(std::back_inserter(buf), "<a style=\"color:{};\" href=\"https://{}.wowhead.com/item={}",
                      item_quality_color(*m_item),
                      report_decorators::decoration_domain(*m_item->sim),
                      m_item->parsed.data.id);
@@ -338,7 +338,7 @@ namespace {
 
     void base_url(fmt::memory_buffer& buf) const override
     {
-      fmt::format_to(buf, "<a href=\"https://{}.wowhead.com/npc={}",
+      fmt::format_to(std::back_inserter(buf), "<a href=\"https://{}.wowhead.com/npc={}",
                      report_decorators::decoration_domain(*m_sim), m_npc_id);
     }
 
@@ -425,13 +425,13 @@ namespace report_decorators {
     }
 
     fmt::memory_buffer buf;
-    fmt::format_to(buf, "<a style=\"color:{};\" href=\"https://{}.wowhead.com/item={}",
+    fmt::format_to(std::back_inserter(buf), "<a style=\"color:{};\" href=\"https://{}.wowhead.com/item={}",
                    item_quality_color(*item), decoration_domain(*item->sim), item->parsed.data.id);
     if (!params.empty())
     {
-      fmt::format_to(buf, "?{}", fmt::join(params, "&"));
+      fmt::format_to(std::back_inserter(buf), "?{}", fmt::join(params, "&"));
     }
-    fmt::format_to(buf, "\">{}</a>", util::encode_html(item->full_name()));
+    fmt::format_to(std::back_inserter(buf), "\">{}</a>", util::encode_html(item->full_name()));
 
     return to_string(buf);
   }
