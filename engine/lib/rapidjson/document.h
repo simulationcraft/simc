@@ -1920,6 +1920,8 @@ public:
     template<typename T>
     ValueType& Set(const T& data, AllocatorType& allocator) { return internal::TypeHelper<ValueType, T>::Set(*this, data, allocator); }
 
+    GenericValue& SetRawOutput(bool state) { state ? data_.f.flags |= kRawOutputStrFlag : data_.f.flags &= ~kRawOutputStrFlag; return *this; }
+
     //@}
 
     //! Generate events of this value to a Handler.
@@ -1957,7 +1959,7 @@ public:
             return handler.EndArray(data_.a.size);
     
         case kStringType:
-            return handler.String(GetString(), GetStringLength(), (data_.f.flags & kCopyFlag) != 0);
+            return handler.String(GetString(), GetStringLength(), (data_.f.flags & kCopyFlag) != 0, (data_.f.flags & kRawOutputStrFlag) != 0);
     
         default:
             RAPIDJSON_ASSERT(GetType() == kNumberType);
@@ -1984,6 +1986,7 @@ private:
         kStringFlag     = 0x0400,
         kCopyFlag       = 0x0800,
         kInlineStrFlag  = 0x1000,
+        kRawOutputStrFlag = 0x8000,
 
         // Initial flags of different types.
         kNullFlag = kNullType,

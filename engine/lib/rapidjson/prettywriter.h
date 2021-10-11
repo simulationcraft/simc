@@ -107,11 +107,11 @@ public:
         return Base::EndValue(Base::WriteString(str, length));
     }
 
-    bool String(const Ch* str, SizeType length, bool copy = false) {
+    bool String(const Ch* str, SizeType length, bool copy = false, bool raw = false) {
         RAPIDJSON_ASSERT(str != 0);
         (void)copy;
         PrettyPrefix(kStringType);
-        return Base::EndValue(Base::WriteString(str, length));
+        return Base::EndValue(Base::WriteString(str, length, raw));
     }
 
 #if RAPIDJSON_HAS_STDSTRING
