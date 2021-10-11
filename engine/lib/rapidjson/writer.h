@@ -200,11 +200,11 @@ public:
         return EndValue(WriteString(str, length));
     }
 
-    bool String(const Ch* str, SizeType length, bool copy = false) {
+    bool String(const Ch* str, SizeType length, bool copy = false, bool raw = false) {
         RAPIDJSON_ASSERT(str != 0);
         (void)copy;
         Prefix(kStringType);
-        return EndValue(WriteString(str, length));
+        return EndValue(WriteString(str, length, raw));
     }
 
 #if RAPIDJSON_HAS_STDSTRING
@@ -374,7 +374,7 @@ protected:
         return true;
     }
 
-    bool WriteString(const Ch* str, SizeType length)  {
+    bool WriteString(const Ch* str, SizeType length, bool raw)  {
         static const typename OutputStream::Ch hexDigits[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
         static const char escape[256] = {
 #define Z16 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -393,7 +393,10 @@ protected:
         else
             PutReserve(*os_, 2 + length * 12);  // "\uxxxx\uyyyy..."
 
-        PutUnsafe(*os_, '\"');
+        if (!raw)
+        {
+            PutUnsafe(*os_, '\"');
+        }
         GenericStringStream<SourceEncoding> is(str);
         while (ScanWriteUnescapedString(is, length)) {
             const Ch c = is.Peek();
@@ -444,7 +447,10 @@ protected:
                 Transcoder<SourceEncoding, TargetEncoding>::TranscodeUnsafe(is, *os_))))
                 return false;
         }
-        PutUnsafe(*os_, '\"');
+        if (!raw)
+        {
+            PutUnsafe(*os_, '\"');
+        }
         return true;
     }
 
