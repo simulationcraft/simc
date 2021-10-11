@@ -1,6 +1,6 @@
 // Tencent is pleased to support the open source community by making RapidJSON available.
 // 
-// Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip. All rights reserved.
+// Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
 //
 // Licensed under the MIT License (the "License"); you may not use this file except
 // in compliance with the License. You may obtain a copy of the License at
@@ -101,7 +101,7 @@ public:
     void ShrinkToFit() { 
         if (Empty()) {
             // If the stack is empty, completely deallocate the memory.
-            Allocator::Free(stack_);
+            Allocator::Free(stack_); // NOLINT (+clang-analyzer-unix.Malloc)
             stack_ = 0;
             stackTop_ = 0;
             stackEnd_ = 0;
@@ -127,6 +127,7 @@ public:
 
     template<typename T>
     RAPIDJSON_FORCEINLINE T* PushUnsafe(size_t count = 1) {
+        RAPIDJSON_ASSERT(stackTop_);
         RAPIDJSON_ASSERT(static_cast<std::ptrdiff_t>(sizeof(T) * count) <= (stackEnd_ - stackTop_));
         T* ret = reinterpret_cast<T*>(stackTop_);
         stackTop_ += sizeof(T) * count;
@@ -184,7 +185,7 @@ private:
         size_t newCapacity;
         if (stack_ == 0) {
             if (!allocator_)
-                ownAllocator_ = allocator_ = RAPIDJSON_NEW(Allocator());
+                ownAllocator_ = allocator_ = RAPIDJSON_NEW(Allocator)();
             newCapacity = initialCapacity_;
         } else {
             newCapacity = GetCapacity();
