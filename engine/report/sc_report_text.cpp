@@ -991,8 +991,7 @@ void print_reference_dps( std::ostream& os, sim_t& sim )
 
   if ( !ref_p )
   {
-    sim.error(fmt::format("Unable to locate reference player: {}.",
-                 sim.reference_player_str) );
+    sim.error("Unable to locate reference player: {}.", sim.reference_player_str);
     return;
   }
 

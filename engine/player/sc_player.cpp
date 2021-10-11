@@ -873,7 +873,7 @@ bool parse_source( sim_t* sim, util::string_view, util::string_view value )
 
 bool parse_set_bonus( sim_t* sim, util::string_view, util::string_view value )
 {
-  static const char* error_str = "{} invalid 'set_bonus' option value '{}' given, available options: {}";
+  static constexpr const char* error_str = "{} invalid 'set_bonus' option value '{}' given, available options: {}";
 
   player_t* p = sim->active_player;
 
