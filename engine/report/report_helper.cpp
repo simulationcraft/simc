@@ -14,6 +14,8 @@
 #include "player/sc_player.hpp"
 #include "player/covenant.hpp"
 #include "report/gear_weights.hpp"
+#include "report/charts.hpp"
+#include "report/sc_highchart.hpp"
 #include "sim/sc_sim.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "util/xml.hpp"

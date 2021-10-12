@@ -7,6 +7,8 @@
 #include "player/covenant.hpp"
 #include "util/util.hpp"
 #include "class_modules/apl/mage.hpp"
+#include "report/charts.hpp"
+#include "report/sc_highchart.hpp"
 
 namespace {
 

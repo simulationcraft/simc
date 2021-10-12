@@ -7,6 +7,9 @@
 
 #include "interfaces/sc_js.hpp"
 
+#include <string>
+#include <vector>
+
 struct sim_t;
 struct stats_t;
 struct player_t;
