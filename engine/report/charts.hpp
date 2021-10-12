@@ -6,13 +6,25 @@
 #pragma once
 
 #include "config.hpp"
-#include "sc_highchart.hpp"
+
 #include "sc_enums.hpp"
-#include <vector>
+
 #include <string>
+#include <vector>
 
 struct player_t;
 struct sim_t;
+struct stats_t;
+struct sc_timeline_t;
+
+namespace highchart
+{
+struct chart_t;
+struct bar_chart_t;
+struct histogram_chart_t;
+struct pie_chart_t;
+struct time_series_t;
+}  // namespace highchart
 
 namespace chart
 {

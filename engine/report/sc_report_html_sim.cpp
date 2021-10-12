@@ -7,6 +7,8 @@
 #include "reports.hpp"
 #include "report/report_helper.hpp"
 #include "report/report_timer.hpp"
+#include "report/charts.hpp"
+#include "report/sc_highchart.hpp"
 #include "data/report_data.inc"
 #include "interfaces/sc_js.hpp"
 #include "util/git_info.hpp"

@@ -11,6 +11,7 @@
 #include "reports.hpp"
 #include "report/report_helper.hpp"
 #include "report/decorators.hpp"
+#include "report/charts.hpp"
 #include "player/player_talent_points.hpp"
 #include "sc_highchart.hpp"
 #include "sim/scale_factor_control.hpp"

@@ -10,7 +10,6 @@
 
 #include "reports.hpp"
 #include "sc_enums.hpp"
-#include "sc_highchart.hpp"
 #include "util/chrono.hpp"
 #include "util/util.hpp"
 
@@ -27,9 +26,6 @@ struct spell_data_t;
 class extended_sample_data_t;
 struct player_processed_report_information_t;
 struct sim_report_information_t;
-
-
-#include "charts.hpp"
 
 // Report helpers
 namespace report_helper

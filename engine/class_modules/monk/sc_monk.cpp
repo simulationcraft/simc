@@ -36,6 +36,8 @@ BREWMASTER:
 #include "player/pet_spawner.hpp"
 #include "action/action_callback.hpp"
 #include "sc_enums.hpp"
+#include "report/sc_highchart.hpp"
+#include "report/charts.hpp"
 
 #include "simulationcraft.hpp"
 #include <deque>

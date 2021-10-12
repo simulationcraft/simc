@@ -83,7 +83,6 @@
 #include "report/decorators.hpp"
 #include "report/color.hpp"
 #include "report/report_helper.hpp"
-#include "report/sc_highchart.hpp"
 
 #include "sim/sc_option.hpp"
 #include "sim/raid_event.hpp"
