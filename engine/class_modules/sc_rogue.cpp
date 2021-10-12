@@ -12,10 +12,7 @@ namespace { // UNNAMED NAMESPACE
 // Forward Declarations
 class rogue_t;
 
-enum
-{
-  COMBO_POINT_MAX = 5
-};
+constexpr double COMBO_POINT_MAX = 5;
 
 enum secondary_trigger_e
 {

@@ -8,6 +8,8 @@
 #include "config.hpp"
 #include "sc_action.hpp"
 
+constexpr double WEAPON_POWER_COEFFICIENT = 6; // WDPS -> Attack Power Coefficient used for BfA Attack Power calculations
+
 struct attack_t : public action_t
 {
   double base_attack_expertise;

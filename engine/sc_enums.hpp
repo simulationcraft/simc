@@ -72,8 +72,6 @@ enum
   ITEM_TRINKET_BURST_CATEGORY = 1141, /// Trinket On-Use effect default category (for shared CD)
   MAX_GEM_SLOTS = 4, /// Global maximum number of gem slots in any specific item
 
-  WEAPON_POWER_COEFFICIENT = 6, // WDPS -> Attack Power Coefficient used for BfA Attack Power calculations
-
   MAX_AZERITE_LEVEL = 300, // Maximum Azerite level (for Heart of Azeroth) at the start of Battle for Azeroth
 
   MAX_AZERITE_ESSENCE_RANK = 4u, // Maximum Azerite Essence power rank for patch BfA 8.2.0
