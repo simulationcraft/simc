@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.40120 Live (hotfix 2021-10-03/40120, git build shadowlands 64f1f876, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.40120 Live (hotfix 2021-10-03/40120, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -703,8 +703,6 @@ Effects          :
 #5 (id=305109)   : Apply Aura (6) | Unknown(312)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 499 | Target: Self (1)
 #6 (id=320783)   : Unknown(167)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#7 (id=889549)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Allows you to see enemies and treasures through physical barriers, as well as enemies that are stealthed and invisible. Lasts $d.
 
@@ -1510,10 +1508,10 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ......x. ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Always Show Ground Texture (190), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+                 : Is Ability (4), Not Shapeshifted (16), Always Show Ground Texture (190), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=297905)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6351 | Target: Unknown(125)

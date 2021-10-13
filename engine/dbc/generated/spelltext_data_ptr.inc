@@ -1,4 +1,4 @@
-// Spell text, wow build 9.1.5.40496
+// Spell text, wow build 9.1.5.40622
 static const std::array<spelltext_data_t, 15589> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -609,7 +609,7 @@ static const std::array<spelltext_data_t, 15589> __ptr_spelltext_data { {
   {  19434, "A powerful aimed shot that deals $s1 Physical damage.", 0, 0 },
   {  19483, "Burns nearby enemies for $20153s1 fire damage every $t1 sec.", "Burns nearby enemies for fire damage every $t1 sec.", 0 },
   {  19505, "Purges $19505s1 beneficial magic $19505leffect:effects; from an enemy. If an effect is devoured, the $?s219450[Observer][Felhunter]$?s56249[ and Warlock][] will be healed for $19658m1 and gain 60 Fel Energy.\r\n", 0, "Special Ability" },
-  {  19574, "Sends you and your pet into a rage, instantly dealing $<damage> Physical damage to its target, and increasing all damage you both deal by $s1% for $d. $?s231548&s217200[\r\n\r\nBestial Wrath's remaining cooldown is reduced by $s3 sec each time you use Barbed Shot.][]", "Damage dealt increased by $w1%.", 0 },
+  {  19574, "Sends you and your pet into a rage, instantly dealing $<damage> Physical damage to its target, and increasing all damage you both deal by $s1% for $d. Removes Fear and Horrify effects from your pet. $?s231548&s217200[\r\n\r\nBestial Wrath's remaining cooldown is reduced by $s3 sec each time you use Barbed Shot.][]", "Damage dealt increased by $w1%.", 0 },
   {  19577, "Commands your pet to intimidate the target, stunning it for $24394d.", "Stuns the target for $24394d.", 0 },
   {  19581, 0, "Max Health increased by $s1%.", 0 },
   {  19638, "Increases all resistances by $s1 for $d.", 0, 0 },
@@ -15129,7 +15129,7 @@ static const std::array<spelltext_data_t, 15589> __ptr_spelltext_data { {
   { 351211, "$@spelldesc351243", 0, 0 },
   { 351243, "Become enraged after being disarmed, increasing your size by $s1% and auto attack damage by $s2%.", "Auto attack damage increased by $w2%.\r\nSize increased by $w1%.", 0 },
   { 351308, "$@spelldesc351316", 0, 0 },
-  { 351316, "Taking damage grants you a chance to unleash the First Technique for $d, reflecting $s2% of incoming damage, up to a maximum of $s1 damage absorbed per blow.", 0, 0 },
+  { 351316, "Taking damage grants you a chance to unleash the First Technique for $d, reflecting $s2% of incoming damage, up to a maximum of ${$s1*$@versadmg} damage absorbed per blow.", 0, 0 },
   { 351414, "$@spelldesc350899", "Mastery increased by $w1.", 0 },
   { 351488, "Movement speed increased by $352719s1% while out of combat. Gain $352720s1% critical strike chance for $352720d after damaging an enemy above $s1% health.", 0, 0 },
   { 351489, "Your Phial of Serenity reduces damage taken by $353192s1% for $353192d and its effects are also granted to your lowest-health ally.", 0, 0 },
@@ -15330,7 +15330,7 @@ static const std::array<spelltext_data_t, 15589> __ptr_spelltext_data { {
   { 355596, "$@spelldesc355589", "Silenced.", 0 },
   { 355605, "$@spelldesc355333", 0, 0 },
   { 355721, "|CFF20ff20Your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R", 0, 0 },
-  { 355724, "While inside the Maw or Torghast, each time you deal a critical strike, the Winds accumulate $s2% of that effect, up to a cap of $s1 per critical strike. \r\n\r\nEvery $t3 sec, the Winds unleash, dealing Frost damage equal to the total accumulation and and surrounding you in the Winds for $355735d, absorbing $s4% of damage dealt by the Winds.", "While inside the Maw or Torghast, each time you deal a critical strike, the Winds accumulate $s2% of that effect, up to a cap of $s1 per critical strike. \r\n\r\nEvery $t3 sec, the Winds unleash, dealing Frost damage equal to the total accumulation and and surrounding you in the Winds for $355735d, absorbing $s4% of damage dealt by the Winds.", 0 },
+  { 355724, "While inside the Maw or Torghast, each time you deal a critical strike, the Winds accumulate $s2% of that effect, up to a cap of $s1 per critical strike. \r\n\r\nEvery $t3 sec, the Winds unleash, dealing Frost damage equal to the total accumulation and surrounding you in the Winds for $355735d, absorbing $s4% of damage dealt by the Winds.", "While inside the Maw or Torghast, each time you deal a critical strike, the Winds accumulate $s2% of that effect, up to a cap of $s1 per critical strike. \r\n\r\nEvery $t3 sec, the Winds unleash, dealing Frost damage equal to the total accumulation and surrounding you in the Winds for $355735d, absorbing $s4% of damage dealt by the Winds.", 0 },
   { 355731, "|CFF20ff20Incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R", 0, 0 },
   { 355733, "Deals $s1 Frost Damage.", 0, 0 },
   { 355735, "$@spelldesc355724", "Absorb $w1 damage.", 0 },
@@ -15479,7 +15479,7 @@ static const std::array<spelltext_data_t, 15589> __ptr_spelltext_data { {
   { 357185, "$@spelldesc355319", "$?e1[Critical Strike]?e2[Haste]?e3[Mastery]?e4[Versatility][Highest secondary stat] increased by $w1.", 0 },
   { 357347, "$?pc92426[|CFF808080Bonus: Socket 2 more Blood Shards to gain Blood Link while in the Maw.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]?pc92425[|CFF808080Bonus: Socket 1 more Blood Shard to gain Blood Link while in the Maw.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]?pc91768[|CFF20ff20Bonus: Socket 3 Blood Shards to gain Blood Link while in the Maw.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies. Increases in effectiveness with more powerful Blood Shards.|R][|CFF808080Bonus: Socket 3 Blood Shards to gain Blood Link while in the Maw.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]", 0, 0 },
   { 357348, "$?pc92424[|CFF808080Bonus: Socket 2 more Frost Shards to gain Winds of Winter while in the Maw.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]?pc92423[|CFF808080Bonus: Socket 1 more Frost Shard to gain Winds of Winter while in the Maw.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]?pc91769[|CFF20ff20Bonus: Socket 3 Frost Shards to gain Winds of Winter while in the Maw.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes. Increases in effectiveness with more powerful Frost Shards.|R][|CFF808080Bonus: Socket 3 Frost Shards to gain Winds of Winter while in the Maw.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]", 0, 0 },
-  { 357349, "$?pc92422[|CFF808080Bonus: Socket 2 more Unholy Shards to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]?pc92421[|CFF808080Bonus: Socket 1 more Unholy Shard to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]?pc91770[|CFF20ff20Bonus: Socket 3 Unholy Shards to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them. Increases in effectiveness with more powerful Unholy Shards.|R][|CFF808080Bonus: Socket 3 Unholy Shards to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]", 0, 0 },
+  { 357349, "$?pc92422[|CFF808080Bonus: Socket 2 more Unholy Shards to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies, increasing your primary stat and dealing Shadow damage to them.|R]?pc92421[|CFF808080Bonus: Socket 1 more Unholy Shard to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]?pc91770[|CFF20ff20Bonus: Socket 3 Unholy Shards to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them. Increases in effectiveness with more powerful Unholy Shards.|R][|CFF808080Bonus: Socket 3 Unholy Shards to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies, increasing your primary stat and dealing Shadow damage to them.|R]", 0, 0 },
   { 357363, "Enter your own personal cage.", "A cage just for you.", 0 },
   { 357381, "Enter the Jailer's Deluxe cell.", "The Jailer's finest accommodations just for you.", 0 },
   { 357409, "$@spelldesc355303", 0, 0 },
@@ -15591,11 +15591,11 @@ static const std::array<spelltext_data_t, 15589> __ptr_spelltext_data { {
   { 363041, "A swig of strong brew that coalesces purified chi escaping your body into a celestial guard, absorbing $<absorb> damage.", "Absorbs $w1 damage.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.5.40496
+// spelltext hotfix entries, wow build 9.1.5.40622
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.1.5.40496
+// Spell description variables, wow build 9.1.5.40622
 static const std::array<spelldesc_vars_data_t, 305> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15904,7 +15904,7 @@ static const std::array<spelldesc_vars_data_t, 305> __ptr_spelldesc_vars_data { 
   {  363041, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.5.40496
+// spelldesc_vars hotfix entries, wow build 9.1.5.40622
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
