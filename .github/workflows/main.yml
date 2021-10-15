@@ -217,26 +217,32 @@ jobs:
         vs: [2017, 2019]
         include:
           - vs: 2017
-            platform: x64
-            configuration: Debug-WebEngine
-            projectFile: vs/simc_vs2017.vcxproj
-            executable: vs\x64\Debug-WebEngine\simc.exe
-            runSmokeTest: false
+            arch: x64
+            toolset: 14.1
           - vs: 2019
-            platform: x64
-            configuration: Debug-NoNetworking
-            projectFile: vs/simc_vs2019.vcxproj
-            executable: vs\simc.exe
-            runSmokeTest: true
+            arch: x64
+            toolset: 14.XX
 
     steps:
       - uses: actions/checkout@v2
 
-      - uses: microsoft/setup-msbuild@v1.0.2
+       # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
+      - uses: lukka/get-cmake@lates
+      
+      # On Windows runners, let's ensure to have the Developer Command Prompt environment setup correctly. As used here the Developer Command Prompt created is targeting x64 and using the default the Windows SDK.
+      - uses: ilammy/msvc-dev-cmd@v1       
+        with:
+          arch: ${{ matrix.arch }}
+          toolset: ${{ matrix.toolset }}
 
+      - name: Install dependencies and generate project files
+       run: |
+          cmake -B "${{ env.CMAKE_BUILD_DIR }}" -GNinja -DBUILD_GUI=OFF -DCMAKE_BUILD_TYPE=Debug
+      
       - name: Build
-        run: MSBuild.exe /maxcpucount /p:Configuration="${{ matrix.configuration }}" /p:Platform=${{ matrix.platform }} ${{ matrix.projectFile }}
+        run: |
+          cmake --build "${{ env.CMAKE_BUILD_DIR }}"
 
       - name: Smoke Test
         if: ${{ matrix.runSmokeTest }}
-        run: ${{ matrix.executable }} $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
+        run: ${{ env.CMAKE_BUILD_DIR }}/simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
