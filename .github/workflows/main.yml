@@ -235,8 +235,8 @@ jobs:
           arch: ${{ matrix.arch }}
           toolset: ${{ matrix.toolset }}
 
-      - name: Install dependencies and generate project files
-       run: |
+      - name: Generate project files
+        run: |
           cmake -B "${{ env.CMAKE_BUILD_DIR }}" -GNinja -DBUILD_GUI=OFF -DCMAKE_BUILD_TYPE=Debug
       
       - name: Build
