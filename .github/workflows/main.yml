@@ -221,7 +221,7 @@ jobs:
             toolset: 14.1
           - vs: 2019
             arch: x64
-            toolset: 14.XX
+            toolset: ''
 
     steps:
       - uses: actions/checkout@v2
