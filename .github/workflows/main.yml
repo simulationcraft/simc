@@ -223,6 +223,9 @@ jobs:
             arch: x64
             toolset: ''
 
+    env:
+       CMAKE_BUILD_DIR: ${{ github.workspace }}/builddir/
+       
     steps:
       - uses: actions/checkout@v2
 
