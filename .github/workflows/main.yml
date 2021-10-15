@@ -210,18 +210,15 @@ jobs:
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
 
   windows-VS:
-    name: windows-VS-${{ matrix.vs }}
+    name: windows-VS-${{ matrix.vs }}-${{ matrix.arch }}
     runs-on: windows-latest
     strategy:
       matrix:
-        vs: [2017, 2019]
+        vs: [2019]
+        arch: [x64, amd64_arm64]
         include:
-          - vs: 2017
-            arch: x64
-            toolset: 14.1
-          - vs: 2019
-            arch: x64
-            toolset: ''
+          - arch: x64
+            runSmokeTest: true
 
     env:
        CMAKE_BUILD_DIR: ${{ github.workspace }}/builddir/
@@ -236,7 +233,6 @@ jobs:
       - uses: ilammy/msvc-dev-cmd@v1       
         with:
           arch: ${{ matrix.arch }}
-          toolset: ${{ matrix.toolset }}
 
       - name: Generate project files
         run: |
