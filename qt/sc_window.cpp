@@ -57,26 +57,20 @@ struct HtmlOutputFunctor
 
 QStringList SC_PATHS::getDataPaths()
 {
-#if defined( Q_OS_WIN )
-  return QStringList( QCoreApplication::applicationDirPath() );
-#elif defined( Q_OS_MAC )
+#if defined( Q_OS_MAC )
   return QStringList( QCoreApplication::applicationDirPath() + "/../Resources" );
 #else
-#if !defined( SC_TO_INSTALL )
-  return QStringList( QCoreApplication::applicationDirPath() );
-#else
   QStringList shared_paths;
-  QStringList appdatalocation = QStandardPaths::standardLocations( QStandardPaths::DataLocation );
-  for ( int i = 0; i < appdatalocation.size(); ++i )
+  shared_paths.append( QCoreApplication::applicationDirPath() );
+  for( const auto& location : QStandardPaths::standardLocations( QStandardPaths::AppDataLocation ))
   {
-    QDir dir( appdatalocation[ i ] );
+    QDir dir( location );
     if ( dir.exists() )
     {
       shared_paths.append( dir.path() );
     }
   }
   return shared_paths;
-#endif
 #endif
 }
 

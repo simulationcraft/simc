@@ -31,10 +31,6 @@ win32|macx {
 CONFIG(release, debug|release): LIBS += -L../lib/release -lsimcengine
 CONFIG(debug, debug|release): LIBS += -L../lib/debug -lsimcengine
 
-CONFIG(to_install) {
-  DEFINES += SC_TO_INSTALL
-}
-
 Resources.files = ../qt/Welcome.html ../qt/Welcome.png ../qt/Error.html
 Localization.files = $$files(../locale/*.qm)
 Profiles.files = $$files(../profiles/*, recursive=true)

@@ -26,3 +26,16 @@ include(../source_files/cmake_gui.txt)
 add_executable(SimulationCraft ${source_files})
 target_include_directories(SimulationCraft PUBLIC ../engine/)
 target_link_libraries(SimulationCraft engine Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::WebEngineCore Qt${QT_VERSION_MAJOR}::WebEngineWidgets)
+
+install(TARGETS SimulationCraft DESTINATION ${SIMC_INSTALL_BIN})
+install(FILES 
+${CMAKE_CURRENT_SOURCE_DIR}/Error.html
+${CMAKE_CURRENT_SOURCE_DIR}/Welcome.html
+${CMAKE_CURRENT_SOURCE_DIR}/Welcome.png
+DESTINATION ${SIMC_INSTALL_SHARED})
+install(FILES 
+${CMAKE_CURRENT_SOURCE_DIR}/../locale/sc_de.qm
+${CMAKE_CURRENT_SOURCE_DIR}/../locale/sc_cn.qm
+${CMAKE_CURRENT_SOURCE_DIR}/../locale/sc_it.qm
+${CMAKE_CURRENT_SOURCE_DIR}/../locale/sc_ko.qm
+DESTINATION ${SIMC_INSTALL_SHARED}/locale)

@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "sc_option.hpp"
+#include "config.hpp"
 
 #include <iostream>
 
@@ -823,6 +824,13 @@ void option_db_t::parse_args( util::span<const std::string> args )
 option_db_t::option_db_t()
 {
   std::vector<std::string> paths = { "..", "./profiles", "../profiles", SC_SHARED_DATA };
+
+#if defined(SC_LINUX)
+  paths.emplace_back("~/.local/share/SimulationCraft/SimulationCraft/profiles");
+  paths.emplace_back("/usr/local/share/SimulationCraft/SimulationCraft/profiles");
+  paths.emplace_back("/usr/share/SimulationCraft/SimulationCraft/profiles");
+  paths.emplace_back("./share/SimulationCraft/SimulationCraft/profiles");
+#endif
 
   // This makes baby pandas cry a bit less, but still makes them weep.
 
