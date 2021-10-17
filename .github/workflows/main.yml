@@ -51,6 +51,7 @@ jobs:
               -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }}
               -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld"
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+              -DCMAKE_C_COMPILER_WORKS=TRUE
 
       - name: Build
         env:
