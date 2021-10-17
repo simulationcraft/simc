@@ -115,7 +115,7 @@ struct cooldown_t
   void set_max_charges( int new_max_charges );
   void adjust_max_charges( int charge_change );
 
-  friend void format_to( const cooldown_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const cooldown_t&, fmt::format_context::iterator );
 
 private:
   void adjust_remaining_duration( double delta ); // Modify the remaining duration of an ongoing cooldown.

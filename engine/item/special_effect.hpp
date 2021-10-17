@@ -156,5 +156,5 @@ struct special_effect_t
   timespan_t duration() const;
   timespan_t tick_time() const;
 
-  friend void format_to( const special_effect_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const special_effect_t&, fmt::format_context::iterator );
 };

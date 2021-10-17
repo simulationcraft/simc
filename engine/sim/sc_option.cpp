@@ -574,7 +574,7 @@ opts::parse_status option_t::parse( sim_t* sim, util::string_view name, util::st
   }
 }
 
-void format_to( const option_t& option, fmt::format_context::iterator out )
+void sc_format_to( const option_t& option, fmt::format_context::iterator out )
 {
   option.do_format_to( out );
 }

@@ -97,7 +97,7 @@ void rating_t::init(dbc_t& dbc, int level)
   }
 }
 
-void format_to( const rating_t& r, fmt::format_context::iterator out )
+void sc_format_to( const rating_t& r, fmt::format_context::iterator out )
 {
   for (rating_e i = static_cast<rating_e>(0); i < RATING_MAX; ++i)
     fmt::format_to( out, "{}{}={}", i ? " " : "", cache_from_rating(i), r.get(i) ); // hacky

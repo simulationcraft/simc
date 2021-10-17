@@ -438,7 +438,7 @@ void pet_t::acquire_target( retarget_source event, player_t* context )
   }
 }
 
-void format_to( const pet_t& pet, fmt::format_context::iterator out )
+void sc_format_to( const pet_t& pet, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "Pet '{}'", pet.full_name_str );
 }

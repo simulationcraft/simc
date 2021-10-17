@@ -1349,7 +1349,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   range::fill( attribute_multiplier, 1.0 );
 }
 
-void format_to( const player_t::base_initial_current_t& s, fmt::format_context::iterator out )
+void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "{}", s.stats );
   fmt::format_to( out, " spell_power_per_intellect={}", s.spell_power_per_intellect );
@@ -13176,7 +13176,7 @@ void player_t::init_distance_targeting()
   }
 }
 
-void format_to( const player_t& player, fmt::format_context::iterator out )
+void sc_format_to( const player_t& player, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "Player '{}'", player.name() );
 }

@@ -2803,7 +2803,7 @@ void buff_t::update_stack_uptime_array( timespan_t current_time, int old_stacks 
   uptime_array.add( end_time, end_partial.total_seconds() * mul );
 }
 
-void format_to( const buff_t& buff, fmt::format_context::iterator out )
+void sc_format_to( const buff_t& buff, fmt::format_context::iterator out )
 {
   if ( buff.sim->log_spell_id )
   {

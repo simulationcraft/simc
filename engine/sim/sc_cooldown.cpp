@@ -769,7 +769,7 @@ void cooldown_t::adjust_max_charges( int charge_change )
   set_max_charges( new_charges );
 }
 
-void format_to( const cooldown_t& cooldown, fmt::format_context::iterator out )
+void sc_format_to( const cooldown_t& cooldown, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "Cooldown {}", cooldown.name_str );
 }

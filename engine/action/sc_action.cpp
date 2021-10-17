@@ -4497,7 +4497,7 @@ double action_t::last_tick_factor(const dot_t* /* d */, timespan_t time_to_tick,
   return std::min(1.0, duration / time_to_tick);
 }
 
-void format_to( const action_t& action, fmt::format_context::iterator out )
+void sc_format_to( const action_t& action, fmt::format_context::iterator out )
 {
   if ( action.sim->log_spell_id )
   {

@@ -221,7 +221,7 @@ struct player_t : public actor_t
     double spell_power_multiplier, attack_power_multiplier, base_armor_multiplier, armor_multiplier;
     position_e position;
 
-    friend void format_to( const base_initial_current_t&, fmt::format_context::iterator );
+    friend void sc_format_to( const base_initial_current_t&, fmt::format_context::iterator );
   }
   base, // Base values, from some database or overridden by user
   initial, // Base + Passive + Gear (overridden or items) + Player Enchants + Global Enchants
@@ -1246,7 +1246,7 @@ public:
   spawner::base_actor_spawner_t* find_spawner( util::string_view id ) const;
   int nth_iteration() const;
 
-  friend void format_to( const player_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const player_t&, fmt::format_context::iterator );
 
   // Indicates whether the player uses PTR dbc data
   bool is_ptr() const;

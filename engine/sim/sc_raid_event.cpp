@@ -2197,7 +2197,7 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
   ;
 }
 
-void format_to( const raid_event_t& raid_event, fmt::format_context::iterator out )
+void sc_format_to( const raid_event_t& raid_event, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "Raid event (type={} name={})", raid_event.type, raid_event.name );
 }

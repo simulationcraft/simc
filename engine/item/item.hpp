@@ -217,5 +217,5 @@ struct item_t
   const special_effect_t* special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE ) const;
   const special_effect_t* special_effect_with_name( util::string_view name, special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE ) const;
 
-  friend void format_to( const item_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const item_t&, fmt::format_context::iterator );
 };

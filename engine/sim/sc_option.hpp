@@ -46,7 +46,7 @@ public:
   util::string_view name() const
   { return _name; }
   
-  friend void format_to( const option_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const option_t&, fmt::format_context::iterator );
 protected:
   virtual opts::parse_status do_parse( sim_t*, util::string_view name, util::string_view value ) const = 0;
   virtual void do_format_to( fmt::format_context::iterator ) const = 0;
@@ -67,9 +67,9 @@ parse_status parse( sim_t*, util::span<const std::unique_ptr<option_t>>, util::s
 void parse( sim_t*, util::string_view context, util::span<const std::unique_ptr<option_t>>, util::string_view options_str, const parse_status_fn_t& fn = nullptr );
 }
 
-inline void format_to( const std::unique_ptr<option_t>& option, fmt::format_context::iterator out )
+inline void sc_format_to( const std::unique_ptr<option_t>& option, fmt::format_context::iterator out )
 { 
-  format_to(*option, out);
+  sc_format_to(*option, out);
 }
 
 std::unique_ptr<option_t> opt_string( util::string_view n, std::string& v );
