@@ -6,7 +6,7 @@ if(POLICY CMP0069)
     cmake_policy(SET CMP0069 NEW)
 endif()
 
-project(simc)
+project(simc LANGUAGES CXX)
 
 # switch on/off different build targets
 option(BUILD_GUI "Build the Qt gui along with cli binary" ON)
