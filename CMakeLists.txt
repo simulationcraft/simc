@@ -1,5 +1,5 @@
 # Projects Settings   
-cmake_minimum_required (VERSION 3.12)
+cmake_minimum_required (VERSION 3.1)
 
 # allow enabling lto from the command line
 if(POLICY CMP0069)
