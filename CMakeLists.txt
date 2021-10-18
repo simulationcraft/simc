@@ -1,16 +1,15 @@
 # Projects Settings   
-cmake_minimum_required (VERSION 3.1)
+cmake_minimum_required (VERSION 3.10...3.21)
 
 # allow enabling lto from the command line
 if(POLICY CMP0069)
     cmake_policy(SET CMP0069 NEW)
 endif()
 
-project(simc)
+project(simc LANGUAGES CXX)
 
 # switch on/off different build targets
 option(BUILD_GUI "Build the Qt gui along with cli binary" ON)
-option(SC_TO_INSTALL "Enable Linux install mode" OFF)
 
 # disable various features that may be anvailable or unneeded
 option(SC_NO_THREADING "Disable all dependencies on pthreads" OFF)
@@ -32,6 +31,15 @@ endif()
 # output a compile_commands.json used for editor tooling
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Install paths
+if (UNIX)
+    set(SIMC_INSTALL_BIN "bin")
+    set(SIMC_INSTALL_SHARED "share/SimulationCraft/SimulationCraft")
+else() # Otherwise, install everything into a flat directory
+    set(SIMC_INSTALL_BIN ".")
+    set(SIMC_INSTALL_SHARED ".")
+endif()
+
 # link in all activated targets
 add_subdirectory(engine)
 if (BUILD_GUI)
@@ -43,14 +51,24 @@ if (NOT MSVC)
     target_compile_options(engine PUBLIC -Wall -Wextra)
 endif()
 
-# enable SC_TO_INSTALL mode
-if (SC_TO_INSTALL)
-    target_compile_definitions(engine PUBLIC SC_TO_INSTALL)
-endif()
 
 # 'simc' command line interface target
 include(source_files/cmake_engine_main.txt)
 string(REGEX REPLACE "([^;]+)" "engine/\\1" source_files "${source_files}")
 add_executable(simc ${source_files})
 target_link_libraries(simc engine)
-
+install(TARGETS simc DESTINATION ${SIMC_INSTALL_BIN})
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/profiles/ DESTINATION ${SIMC_INSTALL_SHARED}/profiles
+    FILES_MATCHING PATTERN "*.simc" )
+install(FILES 
+${CMAKE_CURRENT_SOURCE_DIR}/README.md
+${CMAKE_CURRENT_SOURCE_DIR}/CONTRIBUTING.md
+${CMAKE_CURRENT_SOURCE_DIR}/COPYING
+${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
+${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.BOOST
+${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.BSD
+${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.BSD2
+${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.LGPL
+${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.MIT
+${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.UNLICENSE
+DESTINATION ${SIMC_INSTALL_SHARED})
