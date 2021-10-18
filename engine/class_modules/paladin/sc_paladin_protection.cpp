@@ -612,8 +612,7 @@ void paladin_t::target_mitigation( school_e school,
 
   if ( buffs.ardent_defender -> up() )
   {
-    s -> result_amount *= 1.0 + buffs.ardent_defender -> data().effectN( 1 ).percent()
-      + legendary.the_ardent_protectors_sanctum -> effectN( 1 ).percent();
+    s -> result_amount *= 1.0 + buffs.ardent_defender -> data().effectN( 1 ).percent();
   }
 
   if ( buffs.blessing_of_dusk -> up() )
