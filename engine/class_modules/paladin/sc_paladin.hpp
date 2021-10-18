@@ -1128,6 +1128,15 @@ struct holy_power_consumer_t : public Base
         num_stacks += 1;
     }
 
+    // 2021-08-10 The Word of Glory that procs Vanquisher's Hammer does not proc
+    // RP when DP is up
+    if ( p -> bugs && p -> specialization() == PALADIN_PROTECTION &&
+      p -> buffs.vanquishers_hammer -> up() && p -> buffs.divine_purpose -> up() &&
+      !( p -> buffs.royal_decree -> up() || p -> buffs.shining_light_free -> up() ) )
+    {
+      num_stacks = 0;
+    }
+
     if ( p -> azerite.relentless_inquisitor.ok() )
       p -> buffs.relentless_inquisitor_azerite -> trigger( num_stacks );
 
@@ -1139,8 +1148,8 @@ struct holy_power_consumer_t : public Base
       p -> buffs.crusade -> trigger( num_stacks );
     }
 
-    // Free sotr from vanq does not proc RP unless DP is active
-    if ( p -> talents.righteous_protector -> ok() && ( !ab::background || p -> buffs.divine_purpose -> check() ) )
+    // 2021-08-10 Free sotr from vanq does not proc RP
+    if ( p -> talents.righteous_protector -> ok() && !ab::background )
     {
       timespan_t reduction = timespan_t::from_seconds(
         // Why is this in deciseconds?
@@ -1221,8 +1230,12 @@ struct holy_power_consumer_t : public Base
       should_continue = false;
     }
 
-    // as of 2021-06-22 Vanquisher's Hammer's auto-sotr does consume divine purpose
-    if ( ! p -> bugs && p -> specialization() == PALADIN_PROTECTION && ab::background )
+    // 2021-08-10 Vanquisher's Hammer's auto-sotr does not consume divine purpose    
+    if ( p -> specialization() == PALADIN_PROTECTION && ab::background )
+      should_continue = false;
+    // 2021-08-10 The word of glory used to trigger vanquisher's hammer again
+    // does not consume divine purpose
+    if ( p -> specialization() == PALADIN_PROTECTION && p -> bugs && is_wog && p -> buffs.vanquishers_hammer -> up() )
       should_continue = false;
 
     // We should only have should_continue false in the event that we're a divine storm
