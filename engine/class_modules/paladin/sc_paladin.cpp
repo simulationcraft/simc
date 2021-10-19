@@ -3539,8 +3539,8 @@ struct paladin_module_t : public module_t
               return assessor::CONTINUE;
 
             double proc_chance = summer_data->proc_chance();
-            paladin_t* pal = debug_cast<paladin_t*>(p->buffs.blessing_of_summer->source);
-            bool has_equinox = pal->buffs.equinox->up();
+            paladin_t* pal = dynamic_cast<paladin_t*>(p->buffs.blessing_of_summer->source);
+            bool has_equinox = pal && pal->buffs.equinox->up();
             if ( has_equinox )
               proc_chance *= 1.0 + pal->buffs.equinox->data().effectN( 1 ).percent();
 
