@@ -1,5 +1,5 @@
-// Spell text, wow build 9.1.5.40622
-static const std::array<spelltext_data_t, 15589> __ptr_spelltext_data { {
+// Spell text, wow build 9.1.5.40696
+static const std::array<spelltext_data_t, 15590> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15267,7 +15267,7 @@ static const std::array<spelltext_data_t, 15589> __ptr_spelltext_data { {
   { 354123, "Adaptive Swarm has a $s1% chance to split into two Swarms each time it jumps.", "Adaptive Swarm has a $w1% chance to split into two Swarms each time it jumps.", 0 },
   { 354124, "Shiv also reduces the target's healing received by $S1% for $319504d.", 0, "PvP Talent" },
   { 354129, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
-  { 354131, "Condemn extends the duration of $?c1[Colossus Smash by ${$s1/1000}.1 sec]?c2[Recklessness by ${$s2/1000}.1 sec][Avatar by ${$s3/1000} sec].\r\n", 0, 0 },
+  { 354131, "Condemn extends the duration of $?c1[Colossus Smash by ${$s1/1000}.1 sec]?c2[Recklessness by ${$s2/1000}.1 sec][Avatar by ${$s3/1000}.1 sec].\r\n", 0, 0 },
   { 354161, "Ancient Aftershock's duration is increased by ${$s1/1000} sec and enemies hit take ${$354163s1o*3} Nature damage over $354163d, stacking $354163u times.", 0, 0 },
   { 354163, "$@spelldesc354161", "Taking $w1 Nature damage every $t1 sec.", 0 },
   { 354186, "Damage dealt to enemies affected by Radiant Spark's vulnerability echo to $354189i nearby enemies for $s1% of the damage dealt.", 0, 0 },
@@ -15479,7 +15479,7 @@ static const std::array<spelltext_data_t, 15589> __ptr_spelltext_data { {
   { 357185, "$@spelldesc355319", "$?e1[Critical Strike]?e2[Haste]?e3[Mastery]?e4[Versatility][Highest secondary stat] increased by $w1.", 0 },
   { 357347, "$?pc92426[|CFF808080Bonus: Socket 2 more Blood Shards to gain Blood Link while in the Maw.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]?pc92425[|CFF808080Bonus: Socket 1 more Blood Shard to gain Blood Link while in the Maw.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]?pc91768[|CFF20ff20Bonus: Socket 3 Blood Shards to gain Blood Link while in the Maw.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies. Increases in effectiveness with more powerful Blood Shards.|R][|CFF808080Bonus: Socket 3 Blood Shards to gain Blood Link while in the Maw.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]", 0, 0 },
   { 357348, "$?pc92424[|CFF808080Bonus: Socket 2 more Frost Shards to gain Winds of Winter while in the Maw.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]?pc92423[|CFF808080Bonus: Socket 1 more Frost Shard to gain Winds of Winter while in the Maw.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]?pc91769[|CFF20ff20Bonus: Socket 3 Frost Shards to gain Winds of Winter while in the Maw.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes. Increases in effectiveness with more powerful Frost Shards.|R][|CFF808080Bonus: Socket 3 Frost Shards to gain Winds of Winter while in the Maw.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]", 0, 0 },
-  { 357349, "$?pc92422[|CFF808080Bonus: Socket 2 more Unholy Shards to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies, increasing your primary stat and dealing Shadow damage to them.|R]?pc92421[|CFF808080Bonus: Socket 1 more Unholy Shard to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them.|R]?pc91770[|CFF20ff20Bonus: Socket 3 Unholy Shards to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies you damage, increasing your primary stat and dealing Shadow damage to them. Increases in effectiveness with more powerful Unholy Shards.|R][|CFF808080Bonus: Socket 3 Unholy Shards to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies, increasing your primary stat and dealing Shadow damage to them.|R]", 0, 0 },
+  { 357349, "$?pc92422[|CFF808080Bonus: Socket 2 more Unholy Shards to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies, increasing your primary stat and dealing Shadow damage to them.|R]?pc92421[|CFF808080Bonus: Socket 1 more Unholy Shard to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies, increasing your primary stat and dealing Shadow damage to them.|R]?pc91770[|CFF20ff20Bonus: Socket 3 Unholy Shards to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies, increasing your primary stat and dealing Shadow damage to them. Increases in effectiveness with more powerful Unholy Shards.|R][|CFF808080Bonus: Socket 3 Unholy Shards to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies, increasing your primary stat and dealing Shadow damage to them.|R]", 0, 0 },
   { 357363, "Enter your own personal cage.", "A cage just for you.", 0 },
   { 357381, "Enter the Jailer's Deluxe cell.", "The Jailer's finest accommodations just for you.", 0 },
   { 357409, "$@spelldesc355303", 0, 0 },
@@ -15588,14 +15588,15 @@ static const std::array<spelltext_data_t, 15589> __ptr_spelltext_data { {
   { 362620, "Increases Agility by $235007s1 for $d.", "Increases Agility by $235007s1.", 0 },
   { 362628, "Steals $s1 life from target enemy.", 0, 0 },
   { 362629, "Your attacks have a chance to steal $362628s1 life from the enemy.", 0, 0 },
+  { 362986, "Open your Companions page and select a companion to raise their level to $s1.", 0, 0 },
   { 363041, "A swig of strong brew that coalesces purified chi escaping your body into a celestial guard, absorbing $<absorb> damage.", "Absorbs $w1 damage.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.5.40622
+// spelltext hotfix entries, wow build 9.1.5.40696
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.1.5.40622
+// Spell description variables, wow build 9.1.5.40696
 static const std::array<spelldesc_vars_data_t, 305> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15904,7 +15905,7 @@ static const std::array<spelldesc_vars_data_t, 305> __ptr_spelldesc_vars_data { 
   {  363041, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.5.40622
+// spelldesc_vars hotfix entries, wow build 9.1.5.40696
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

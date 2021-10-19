@@ -11809,7 +11809,7 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=886346)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2500 | Scaled Value: 2500 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Condemn extends the duration of $?c1[Colossus Smash by ${$s1/1000}.1 sec]?c2[Recklessness by ${$s2/1000}.1 sec][Avatar by ${$s3/1000} sec].
+Description      : Condemn extends the duration of $?c1[Colossus Smash by ${$s1/1000}.1 sec]?c2[Recklessness by ${$s2/1000}.1 sec][Avatar by ${$s3/1000}.1 sec].
 
 
 Name             : Nature's Fury (id=354161) [Spell Family (4), Passive] 
