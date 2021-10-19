@@ -1012,7 +1012,7 @@ public:
     return( r == BLOCK_RESULT_BLOCKED || r == BLOCK_RESULT_CRIT_BLOCKED );
   }
 
-  friend void format_to( const action_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const action_t&, fmt::format_context::iterator );
 };
 
 struct call_action_list_t : public action_t

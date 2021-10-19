@@ -96,7 +96,7 @@ struct event_t : private noncopyable
   }
   static void cancel( event_t*& e );
 
-  friend void format_to( const event_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const event_t&, fmt::format_context::iterator );
 
 protected:
   template <typename Event, typename... Args>

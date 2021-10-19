@@ -642,12 +642,12 @@ struct sim_t : private sc_thread_t
    * Create error using fmt libraries python-like formatting syntax.
    */
   template <typename... Args>
-  void error( util::string_view format, Args&&... args )
+  void error( fmt::format_string<Args...> format, Args&&... args )
   {
     if ( thread_index != 0 )
       return;
 
-    set_error( fmt::format( format, std::forward<Args>(args)... ) );
+    set_error( fmt::vformat( format, fmt::make_format_args( std::forward<Args>(args)... ) ) );
   }
 
   void abort();
@@ -692,12 +692,12 @@ struct sim_t : private sc_thread_t
    * Print using fmt libraries python-like formatting syntax.
    */
   template <typename... Args>
-  void print_debug( util::string_view format, Args&& ... args )
+  void print_debug( fmt::format_string<Args...> format, Args&& ... args )
   {
     if ( ! debug )
       return;
 
-    out_debug.print( format, std::forward<Args>(args)... );
+    out_debug.vprint( format, fmt::make_format_args( std::forward<Args>(args)... ) );
   }
 
   /**
@@ -707,12 +707,12 @@ struct sim_t : private sc_thread_t
    * Print using fmt libraries python-like formatting syntax.
    */
   template <typename... Args>
-  void print_log( util::string_view format, Args&& ... args )
+  void print_log( fmt::format_string<Args...> format, Args&& ... args )
   {
     if ( ! log )
       return;
 
-    out_log.print( format, std::forward<Args>(args)... );
+    out_log.vprint( format, fmt::make_format_args( std::forward<Args>(args)... ) );
   }
 
 private:

@@ -367,7 +367,7 @@ std::string item_t::socket_bonus_stats_str() const
   return str;
 }
 
-void format_to( const item_t& item, fmt::format_context::iterator out )
+void sc_format_to( const item_t& item, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "name={} id={}", item.name_str, item.parsed.data.id );
   if ( item.slot != SLOT_INVALID )

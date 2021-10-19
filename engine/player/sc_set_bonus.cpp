@@ -250,7 +250,7 @@ std::string set_bonus_t::to_string() const
 }
 
 
-void format_to( const set_bonus_t& sb, fmt::format_context::iterator out )
+void sc_format_to( const set_bonus_t& sb, fmt::format_context::iterator out )
 {
   int i = 0;
   for ( size_t idx = 0; idx < sb.set_bonus_spec_data.size(); idx++ )

@@ -137,5 +137,5 @@ struct gear_stats_t
   double get_stat( stat_e stat ) const;
   static double stat_mod( stat_e stat );
 
-  friend void format_to( const gear_stats_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const gear_stats_t&, fmt::format_context::iterator );
 };

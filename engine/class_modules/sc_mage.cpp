@@ -7450,7 +7450,7 @@ public:
       if ( !data->active() )
         continue;
 
-      auto nonzero = [] ( const char* fmt, double d ) { return d != 0.0 ? fmt::format( fmt, d ) : ""; };
+      auto nonzero = [] ( const char* fmt, double d ) { return d != 0.0 ? fmt::format( fmt::runtime(fmt), d ) : ""; };
       auto cells = [ &, total = data->count_total() ] ( double mean, bool util = false )
       {
         std::string format_str = "<td class=\"right\">{}</td><td class=\"right\">{}</td>";

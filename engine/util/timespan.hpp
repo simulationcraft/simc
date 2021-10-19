@@ -219,7 +219,7 @@ namespace simc
       return timespan_t( std::numeric_limits<time_t>::min() );
     }
 
-    friend void format_to( timespan_t, fmt::format_context::iterator );
+    friend void sc_format_to( timespan_t, fmt::format_context::iterator );
   };
 
 } // namespace simc

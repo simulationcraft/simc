@@ -857,7 +857,7 @@ std::string special_effect_t::name() const
   return n;
 }
 
-void format_to( const special_effect_t& se, fmt::format_context::iterator out )
+void sc_format_to( const special_effect_t& se, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "{}", se.name() );
   fmt::format_to( out, " type={}", se.type );

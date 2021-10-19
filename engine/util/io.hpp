@@ -70,7 +70,7 @@ public:
   template <typename... Args>
   ofstream& printf( util::string_view format, Args&& ... args )
   {
-    fmt::fprintf( *this, format, std::forward<Args>(args)... );
+    *this << fmt::sprintf(format, std::forward<Args>(args)...);
 
     return *this;
   }

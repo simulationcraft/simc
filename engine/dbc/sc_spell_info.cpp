@@ -132,24 +132,24 @@ void print_hotfixes( fmt::memory_buffer& buf,
   for ( const auto& hotfix : hotfixes )
   {
     if ( buf.size() > 0 )
-      fmt::format_to( buf, ", " );
+      fmt::format_to( std::back_inserter(buf), ", " );
 
     auto entry = map.find( hotfix.field_id );
     if ( entry == map.end() )
-      fmt::format_to( buf, "Unknown({})", hotfix.field_id );
+      fmt::format_to( std::back_inserter(buf), "Unknown({})", hotfix.field_id );
     else
-      fmt::format_to( buf, "{}", entry -> second );
+      fmt::format_to( std::back_inserter(buf), "{}", entry -> second );
 
     switch ( hotfix.field_type )
     {
       case hotfix::UINT:
-        fmt::format_to( buf, " ({} -> {})", hotfix.orig_value.u, hotfix.hotfixed_value.u );
+        fmt::format_to( std::back_inserter(buf), " ({} -> {})", hotfix.orig_value.u, hotfix.hotfixed_value.u );
         break;
       case hotfix::INT:
-        fmt::format_to( buf, " ({} -> {})", hotfix.orig_value.i, hotfix.hotfixed_value.i );
+        fmt::format_to( std::back_inserter(buf), " ({} -> {})", hotfix.orig_value.i, hotfix.hotfixed_value.i );
         break;
       case hotfix::FLOAT:
-        fmt::format_to( buf, " ({} -> {})", hotfix.orig_value.f, hotfix.hotfixed_value.f );
+        fmt::format_to( std::back_inserter(buf), " ({} -> {})", hotfix.orig_value.f, hotfix.hotfixed_value.f );
         break;
       // Don't print out the changed string for now, seems pointless
       case hotfix::STRING:
@@ -2123,10 +2123,10 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
           return fmt::format( "{} ({} effect#{})", spell->name_cstr(), spell->id(), effects.front()->index() + 1 );
 
         fmt::memory_buffer s;
-        fmt::format_to( s, "{} ({} effects: ", spell->name_cstr(), spell->id() );
+        fmt::format_to( std::back_inserter(s), "{} ({} effects: ", spell->name_cstr(), spell->id() );
         for ( size_t i = 0; i < effects.size(); i++ )
-          fmt::format_to( s, "{}#{}", i == 0 ? "" : ", ", effects[ i ]->index() + 1 );
-        fmt::format_to( s, ")" );
+          fmt::format_to( std::back_inserter(s), "{}#{}", i == 0 ? "" : ", ", effects[ i ]->index() + 1 );
+        fmt::format_to( std::back_inserter(s), ")" );
         return to_string( s );
       };
 

@@ -35,5 +35,5 @@ struct rating_t
 
   void init(dbc_t& dbc, int level);
 
-  friend void format_to( const rating_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const rating_t&, fmt::format_context::iterator );
 };

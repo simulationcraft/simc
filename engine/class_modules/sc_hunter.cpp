@@ -43,12 +43,12 @@ static void print_affected_by( const action_t* a, const spelleffect_data_t& effe
   const spell_data_t& spell = *effect.spell();
   const auto& spell_text = a->player->dbc->spell_text( spell.id() );
 
-  fmt::format_to( out, "{} {} is affected by {}", *a->player, *a, spell.name_cstr() );
+  fmt::format_to( std::back_inserter(out), "{} {} is affected by {}", *a->player, *a, spell.name_cstr() );
   if ( spell_text.rank() )
-    fmt::format_to( out, " (desc={})", spell_text.rank() );
-  fmt::format_to( out, " (id={}) effect#{}", spell.id(), effect.spell_effect_num() + 1 );
+    fmt::format_to( std::back_inserter(out), " (desc={})", spell_text.rank() );
+  fmt::format_to( std::back_inserter(out), " (id={}) effect#{}", spell.id(), effect.spell_effect_num() + 1 );
   if ( !label.empty() )
-    fmt::format_to( out, ": {}", label );
+    fmt::format_to( std::back_inserter(out), ": {}", label );
 
   a -> sim -> print_debug( "{}", util::string_view( out.data(), out.size() ) );
 }
