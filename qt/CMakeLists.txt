@@ -3,7 +3,7 @@
 # qt5 detection
 # brew does not link qt5 into PATH. Therefore we need to import it
 if(APPLE)
-list(APPEND CMAKE_PREFIX_PATH /usr/local/opt/qt5)
+  list(APPEND CMAKE_PREFIX_PATH /usr/local/opt/qt5)
 endif()
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core REQUIRED)
@@ -23,7 +23,11 @@ FILE(COPY ../qt/Error.html DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
 # gui executeable
 include(../source_files/cmake_gui.txt)
+if (WIN32)
+  list(APPEND source_files ../simcqt.rc)
+endif()
 add_executable(SimulationCraft WIN32 ${source_files})
+
 target_include_directories(SimulationCraft PUBLIC ../engine/)
 target_link_libraries(SimulationCraft engine Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::WebEngineCore Qt${QT_VERSION_MAJOR}::WebEngineWidgets)
 
