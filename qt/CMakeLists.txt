@@ -11,6 +11,7 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Gui REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS WebEngineCore REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS WebEngineWidgets REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS LinguistTools)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
@@ -20,6 +21,11 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 FILE(COPY ../qt/Welcome.png DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 FILE(COPY ../qt/Welcome.html DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 FILE(COPY ../qt/Error.html DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+FILE(COPY ../locale/sc_de.qm DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
+FILE(COPY ../locale/sc_cn.qm DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
+FILE(COPY ../locale/sc_it.qm DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
+FILE(COPY ../locale/sc_ko.qm DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
+
 
 # gui executeable
 include(../source_files/cmake_gui.txt)
@@ -30,6 +36,15 @@ add_executable(SimulationCraft WIN32 ${source_files})
 
 target_include_directories(SimulationCraft PUBLIC ../engine/)
 target_link_libraries(SimulationCraft engine Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::WebEngineCore Qt${QT_VERSION_MAJOR}::WebEngineWidgets)
+
+#translations
+qt_add_lupdate(SimulationCraft TS_FILES 
+  ../locale/sc_de.ts ../locale/sc_cn.ts ../locale/sc_it.ts ../locale/sc_ko.ts)
+set_source_files_properties(../locale/sc_de.ts ../locale/sc_cn.ts ../locale/sc_it.ts ../locale/sc_ko.ts
+  PROPERTIES OUTPUT_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/../locale")
+qt_add_lrelease(SimulationCraft TS_FILES 
+  ../locale/sc_de.ts ../locale/sc_cn.ts ../locale/sc_it.ts ../locale/sc_ko.ts
+  )
 
 install(TARGETS SimulationCraft DESTINATION ${SIMC_INSTALL_BIN})
 install(FILES 

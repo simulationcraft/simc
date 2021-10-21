@@ -29,47 +29,47 @@
         <translation>가져오기</translation>
     </message>
     <message>
-        <location filename="../qt/sc_importWidget.cpp" line="217"/>
+        <location filename="../qt/sc_importWidget.cpp" line="213"/>
         <source>US</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qt/sc_importWidget.cpp" line="218"/>
+        <location filename="../qt/sc_importWidget.cpp" line="214"/>
         <source>EU</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qt/sc_importWidget.cpp" line="219"/>
+        <location filename="../qt/sc_importWidget.cpp" line="215"/>
         <source>KR</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qt/sc_importWidget.cpp" line="220"/>
+        <location filename="../qt/sc_importWidget.cpp" line="216"/>
         <source>TW</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qt/sc_importWidget.cpp" line="225"/>
+        <location filename="../qt/sc_importWidget.cpp" line="221"/>
         <source>Active</source>
         <translation>활성화</translation>
     </message>
     <message>
-        <location filename="../qt/sc_importWidget.cpp" line="226"/>
+        <location filename="../qt/sc_importWidget.cpp" line="222"/>
         <source>First</source>
         <translation>첫번째</translation>
     </message>
     <message>
-        <location filename="../qt/sc_importWidget.cpp" line="227"/>
+        <location filename="../qt/sc_importWidget.cpp" line="223"/>
         <source>Second</source>
         <translation>두번째</translation>
     </message>
     <message>
-        <location filename="../qt/sc_importWidget.cpp" line="228"/>
+        <location filename="../qt/sc_importWidget.cpp" line="224"/>
         <source>Third</source>
         <translation>세번째</translation>
     </message>
     <message>
-        <location filename="../qt/sc_importWidget.cpp" line="229"/>
+        <location filename="../qt/sc_importWidget.cpp" line="225"/>
         <source>Fourth</source>
         <translation>네번째</translation>
     </message>
@@ -246,17 +246,17 @@
 <context>
     <name>SC_MainWindow</name>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="330"/>
+        <location filename="../qt/MainWindow.cpp" line="324"/>
         <source>Welcome</source>
         <translation>환영합니다</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="336"/>
+        <location filename="../qt/MainWindow.cpp" line="330"/>
         <source>Options</source>
         <translation>옵션</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="348"/>
+        <location filename="../qt/MainWindow.cpp" line="342"/>
         <source>Import</source>
         <translation>가져오기</translation>
     </message>
@@ -273,7 +273,7 @@
         <translation type="vanished">历史</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="362"/>
+        <location filename="../qt/MainWindow.cpp" line="356"/>
         <source>Recently Closed</source>
         <translation>최근에 닫음</translation>
     </message>
@@ -316,12 +316,12 @@ The more people help improve BiS profiles, the better will they reach their goal
 参与改进BiS档案的人越多，它们距离其代表DPS极限的初衷就越接近。</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="99"/>
+        <location filename="../qt/MainWindow.cpp" line="101"/>
         <source>We have reset your configuration settings due to major changes to the GUI</source>
         <translation>GUI의 주요 변경점들로 인해 설정을 초기화했습니다</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="132"/>
+        <location filename="../qt/MainWindow.cpp" line="134"/>
         <source>Simulate!</source>
         <translation>시뮬레이션!</translation>
     </message>
@@ -330,70 +330,70 @@ The more people help improve BiS profiles, the better will they reach their goal
         <translation type="vanished">自动化</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="358"/>
+        <location filename="../qt/MainWindow.cpp" line="352"/>
         <source>Sample Profiles</source>
         <translation>샘플 프로필</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="353"/>
+        <location filename="../qt/MainWindow.cpp" line="347"/>
         <source>Simc Addon</source>
         <translation>Simc 애드온</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="98"/>
+        <location filename="../qt/MainWindow.cpp" line="100"/>
         <source>GUI settings reset</source>
         <translation>GUI 설정 초기화</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="140"/>
+        <location filename="../qt/MainWindow.cpp" line="142"/>
         <source>I understand</source>
         <translation>동의합니다</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="141"/>
+        <location filename="../qt/MainWindow.cpp" line="143"/>
         <source>Armory API key is now deprecated</source>
         <translation>전투정보실 API key는 더 이상 사용되지 않습니다</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="143"/>
+        <location filename="../qt/MainWindow.cpp" line="145"/>
         <source>&lt;p&gt;On January 6th 2019, Blizzard is shutting down the old armory API endpoints (see &lt;a target=&quot;_blank&quot; href=&quot;https://dev.battle.net/docs&quot;&gt;here&lt;/a&gt; and &lt;a target=&quot;_blank&quot; href=&quot;https://us.battle.net/forums/en/bnet/topic/20769317376&quot;&gt;here&lt;/a&gt;). You are seeing this notification because you have a custom Armory API key defined in the Simulationcraft GUI options. To continue using the armory import feature, your Armory API key must be updated.&lt;/p&gt;&lt;p&gt;There are brief instructions below on how to create new credentials for Simulationcraft to continue using the armory import feature. Note that if you are also using &lt;b&gt;apikey.txt&lt;/b&gt; or &lt;b&gt;simc_apikey&lt;/b&gt;, you can choose to not update the GUI options, and rather add the client credentials to that file. More information can be found &lt;a target=&quot;_blank&quot; href=&quot;https://github.com/simulationcraft/simc/wiki/BattleArmoryAPI&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Go to &lt;a target=&quot;_blank&quot; href=&quot;https://develop.battle.net&quot;&gt;https://develop.battle.net&lt;/a&gt;&lt;/li&gt;&lt;li&gt;Log in with your Battle.net account. Note that you need two-factor authentication enabled.&lt;/li&gt;&lt;li&gt;Select &quot;API ACCESS&quot; (at top left), and then create a new client&lt;/li&gt;&lt;li&gt;Select a unique name and click create, leave Redirect URIs empty&lt;/li&gt;&lt;li&gt;Under Simulationcraft GUI options, add the client id and secret&lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;p&gt; 2019 년 1 월 6 일, 블리자드는 이전 버전의 Armory API 서비스를 종료합니다 (&lt;a target=&quot;_blank&quot; href=&quot;https://dev.battle.net/docs&quot;&gt; 여기 &lt;/a&gt; 및 &lt;a target = &quot;_ blank&quot;href = &quot;https://us.battle.net/forums/en/bnet/topic/20769317376&quot;&gt; 여기 &lt;/a&gt;). Simulationcraft GUI 옵션에 사용자 지정 Armory API 키를 등록했기 때문에 이 알림이 표시됩니다. Armory 불러오기 기능을 계속 사용하려면 Armory API 키를 업데이트해야합니다. &lt;/ p&gt; &lt;p&gt; Armory 가져 오기 기능을 계속 사용하기 위해 Simulationcraft에 대한 새 자격 증명을 만드는 방법에 대한 간단한 지침이 아래에 있습니다. &lt;b&gt; apikey.txt &lt;/ b&gt; 또는 &lt;b&gt; simc_apikey &lt;/ b&gt;도 사용하는 경우 GUI 옵션을 업데이트하지 않고 해당 파일에 클라이언트 자격 증명을 추가하도록 선택할 수 있습니다. 자세한 정보는 &lt;a target=&quot;_blank&quot; href=&quot;https://github.com/simulationcraft/simc/wiki/BattleArmoryAPI&quot;&gt; 여기 &lt;/a&gt;에서 찾을 수 있습니다. &lt;/ p&gt; &lt;ul&gt; &lt;li&gt; 이동 &lt;a target=&quot;_blank&quot; href=&quot;https://develop.battle.net&quot;&gt; https://develop.battle.net &lt;/a&gt; &lt;/ li&gt; &lt;li&gt; Battle.net 계정으로 로그인합니다. 이중 인증을 활성화해야합니다. &lt;/ li&gt; &lt;li&gt; &quot;API ACCESS&quot;(왼쪽 상단)를 선택한 다음 새 클라이언트를 생성합니다. &lt;/ li&gt; &lt;li&gt; 고유 한 이름을 선택하고 생성을 클릭하고 나가기를 클릭합니다. 리디렉션 URI가 비어 있음 &lt;/ li&gt; &lt;li&gt; Simulationcraft GUI 옵션 아래에서 클라이언트 ID와 암호를 추가합니다. &lt;/ li&gt; &lt;/ ul&gt;</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="351"/>
+        <location filename="../qt/MainWindow.cpp" line="345"/>
         <source>Battle.net</source>
         <translation>Battle.net</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="380"/>
+        <location filename="../qt/MainWindow.cpp" line="374"/>
         <source>Custom Profile</source>
         <translation>커스텀 프로필</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="381"/>
+        <location filename="../qt/MainWindow.cpp" line="375"/>
         <source>Character Data</source>
         <translation>캐릭터 데이터</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="393"/>
+        <location filename="../qt/MainWindow.cpp" line="387"/>
         <source>Gear</source>
         <comment>createCustomTab</comment>
         <translation>장비</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="395"/>
+        <location filename="../qt/MainWindow.cpp" line="389"/>
         <source>Customize Gear Setup</source>
         <comment>createCustomTab</comment>
         <translation>장비 설정 커스터마이즈</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="399"/>
+        <location filename="../qt/MainWindow.cpp" line="393"/>
         <source>Customize Talents</source>
         <comment>createCustomTab</comment>
         <translation>특성 커스터마이즈</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="938"/>
+        <location filename="../qt/MainWindow.cpp" line="927"/>
         <source>If you think this is a bug, please open a ticket, copying the detailed text below.&lt;br&gt;It contains all the input options of the last simulation and helps us reproduce the issue.&lt;br&gt;</source>
         <translation>버그라고 생각된다면, 티켓을 열어 아래의 텍스트를 복사하세요.&lt;br&gt;마지막 시뮬레이션의 모든 입력 옵션이 포함되어있으며, 문제를 재현하는데 도움이 됩니다.&lt;br&gt;</translation>
     </message>
@@ -403,14 +403,14 @@ The more people help improve BiS profiles, the better will they reach their goal
         <translation type="vanished">自定义雕文</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="418"/>
+        <location filename="../qt/MainWindow.cpp" line="412"/>
         <source>Look here for error messages and simple text-only reporting.
 </source>
         <translation>여기에서 오류 메시지 및 간단한 텍스트 리포팅을 찾으세요.
 </translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="440"/>
+        <location filename="../qt/MainWindow.cpp" line="434"/>
         <source>Spell Query</source>
         <translation>주문 쿼리</translation>
     </message>
@@ -419,22 +419,22 @@ The more people help improve BiS profiles, the better will they reach their goal
         <translation type="vanished">纸娃娃</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="931"/>
+        <location filename="../qt/MainWindow.cpp" line="920"/>
         <source>SimulationCraft encountered an error!</source>
         <translation>SimulationCraft 에서 오류가 발생했습니다!</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="1226"/>
+        <location filename="../qt/MainWindow.cpp" line="1215"/>
         <source>SimC Addon Import</source>
         <translation>SimC 애드온에서 가져온 값</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="1363"/>
+        <location filename="../qt/MainWindow.cpp" line="1352"/>
         <source>Close permanently</source>
         <translation>영구적으로 닫기</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="1393"/>
+        <location filename="../qt/MainWindow.cpp" line="1382"/>
         <source>Unable to import profile </source>
         <translation>프로필을 불러오는데 실패했습니다 </translation>
     </message>
@@ -444,7 +444,7 @@ The more people help improve BiS profiles, the better will they reach their goal
         <translation type="vanished">自定义配装构建</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="397"/>
+        <location filename="../qt/MainWindow.cpp" line="391"/>
         <source>Talents</source>
         <comment>createCustomTab</comment>
         <translation>특성</translation>
@@ -465,27 +465,27 @@ The more people help improve BiS profiles, the better will they reach their goal
         <translation type="vanished">自定义雕文</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="405"/>
+        <location filename="../qt/MainWindow.cpp" line="399"/>
         <source>Simulate</source>
         <translation>시뮬레이션</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="411"/>
+        <location filename="../qt/MainWindow.cpp" line="405"/>
         <source>Overrides</source>
         <translation>오버라이드</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="419"/>
+        <location filename="../qt/MainWindow.cpp" line="413"/>
         <source>Log</source>
         <translation>로그</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="426"/>
+        <location filename="../qt/MainWindow.cpp" line="420"/>
         <source>Help</source>
         <translation>도움말</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="434"/>
+        <location filename="../qt/MainWindow.cpp" line="428"/>
         <source>Results</source>
         <translation>보고서</translation>
     </message>
@@ -494,18 +494,17 @@ The more people help improve BiS profiles, the better will they reach their goal
         <translation type="vanished">网站</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="672"/>
-        <location filename="../qt/MainWindow.cpp" line="686"/>
+        <location filename="../qt/MainWindow.cpp" line="675"/>
         <source>Importing</source>
         <translation>가져오는중</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="754"/>
+        <location filename="../qt/MainWindow.cpp" line="743"/>
         <source>Import Failed</source>
         <translation>가져오기 실패</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="755"/>
+        <location filename="../qt/MainWindow.cpp" line="744"/>
         <source># Unable to generate profile from: </source>
         <translation># 다음 링크에서 프로필을 생성할 수 없습니다： </translation>
     </message>
@@ -514,7 +513,7 @@ The more people help improve BiS profiles, the better will they reach their goal
         <translation type="vanished">纸娃娃角色</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="896"/>
+        <location filename="../qt/MainWindow.cpp" line="885"/>
         <source>Finished!</source>
         <translation>완료!</translation>
     </message>
@@ -527,31 +526,31 @@ The more people help improve BiS profiles, the better will they reach their goal
         <translation type="vanished">结果 %1</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="1021"/>
-        <location filename="../qt/MainWindow.cpp" line="1037"/>
-        <location filename="../qt/MainWindow.cpp" line="1052"/>
+        <location filename="../qt/MainWindow.cpp" line="1010"/>
+        <location filename="../qt/MainWindow.cpp" line="1026"/>
+        <location filename="../qt/MainWindow.cpp" line="1041"/>
         <source>Error opening %1. %2</source>
         <translation>열기 실패 %1. %2</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="1042"/>
+        <location filename="../qt/MainWindow.cpp" line="1031"/>
         <source>plot data</source>
         <translation>플롯 데이터</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="1091"/>
+        <location filename="../qt/MainWindow.cpp" line="1080"/>
         <source>Log saved to: %1
 </source>
         <translation>로그가 다음에 저장되었습니다：%1
 </translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="1361"/>
+        <location filename="../qt/MainWindow.cpp" line="1350"/>
         <source>Close Result Tab</source>
         <translation>결과 창 닫기</translation>
     </message>
     <message>
-        <location filename="../qt/MainWindow.cpp" line="1361"/>
+        <location filename="../qt/MainWindow.cpp" line="1350"/>
         <source>Do you really want to close this result?</source>
         <translation>결과 창을 닫을까요?</translation>
     </message>
@@ -563,27 +562,27 @@ The more people help improve BiS profiles, the better will they reach their goal
 <context>
     <name>SC_MainWindowCommandLine</name>
     <message>
-        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="204"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="206"/>
         <source>Simulate!</source>
         <translation>시뮬레이션!</translation>
     </message>
     <message>
-        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="205"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="207"/>
         <source>Pause!</source>
         <translation>일시정지!</translation>
     </message>
     <message>
-        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="206"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="208"/>
         <source>Resume!</source>
         <translation>재개!</translation>
     </message>
     <message>
-        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="207"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="209"/>
         <source>Queue!</source>
         <translation>대기열!</translation>
     </message>
     <message>
-        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="208"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="210"/>
         <source>Click to queue a simulation to run after the current one</source>
         <translation>현재 시뮬레이션 이후에 실행할 시뮬레이션을 대기열에 넣으려면 클릭하세요</translation>
     </message>
@@ -592,54 +591,54 @@ The more people help improve BiS profiles, the better will they reach their goal
         <translation type="vanished">取消！</translation>
     </message>
     <message>
-        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="209"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="211"/>
         <source>Cancel!</source>
         <translation>취소!</translation>
     </message>
     <message>
-        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="210"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="212"/>
         <source>Cancel All!</source>
         <translation>전체 취소!</translation>
     </message>
     <message>
-        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="211"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="213"/>
         <source>Cancel ALL simulations, including what is queued</source>
         <translation>대기열을 포함한 모든 시뮬레이션 취소</translation>
     </message>
     <message>
-        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="212"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="214"/>
         <source>Save!</source>
         <translation>저장!</translation>
     </message>
     <message>
-        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="213"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="215"/>
         <source>Import!</source>
         <translation>가져오기!</translation>
     </message>
     <message>
-        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="214"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="216"/>
         <source>Query!</source>
         <translation>쿼리!</translation>
     </message>
     <message>
-        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="215"/>
-        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="483"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="217"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="485"/>
         <source>&lt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="216"/>
-        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="484"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="218"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="486"/>
         <source>&gt;</source>
         <translation>&gt;</translation>
     </message>
     <message>
-        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="217"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="219"/>
         <source>Backwards</source>
         <translation>뒤</translation>
     </message>
     <message>
-        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="218"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="220"/>
         <source>Forwards</source>
         <translation>앞</translation>
     </message>
@@ -647,24 +646,24 @@ The more people help improve BiS profiles, the better will they reach their goal
 <context>
     <name>SC_OptionsTab</name>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="315"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="318"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="320"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="308"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="311"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="313"/>
         <source>Version</source>
         <translation>버전</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="326"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="319"/>
         <source>Iterations</source>
         <translation>반복</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="401"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="394"/>
         <source>World Lag</source>
         <translation>서버 렉</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="331"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="324"/>
         <source>Length (sec)</source>
         <translation>길이 (초)</translation>
     </message>
@@ -673,27 +672,27 @@ The more people help improve BiS profiles, the better will they reach their goal
         <translation type="vanished">时长浮动范围</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="337"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="330"/>
         <source>Fight Style</source>
         <translation>전투 스타일</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="369"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="362"/>
         <source>Target Level</source>
         <translation>타겟 레벨</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="374"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="367"/>
         <source>Target Race</source>
         <translation>타겟 종족</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="365"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="358"/>
         <source>Num Enemies</source>
         <translation>적의 숫자</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="341"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="334"/>
         <source>Challenge Mode</source>
         <translation>도전 모드</translation>
     </message>
@@ -702,42 +701,42 @@ The more people help improve BiS profiles, the better will they reach their goal
         <translation type="vanished">玩家水平</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="395"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="388"/>
         <source>Threads</source>
         <translation>스레드</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="310"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="303"/>
         <source>Armory Region</source>
         <translation>전투정보실 지역</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="312"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="305"/>
         <source>Armory Spec</source>
         <translation>전투정보실 스펙</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="343"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="336"/>
         <source>Default Role</source>
         <translation>기본 역할</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="381"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="374"/>
         <source>TMI Standard Boss</source>
         <translation>TMI 스탠다드 보스</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="383"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="376"/>
         <source>TMI Window (sec)</source>
         <translation>TMI 윈도우 (초)</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="385"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="378"/>
         <source>Show ETMI</source>
         <translation>ETMI 표시</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="358"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="351"/>
         <source>Basic Options</source>
         <translation>기본 옵션</translation>
     </message>
@@ -746,12 +745,12 @@ The more people help improve BiS profiles, the better will they reach their goal
         <translation type="vanished">光环延迟</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="403"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="396"/>
         <source>Generate Debug</source>
         <translation>디버그 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="405"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="398"/>
         <source>Report Pets Separately</source>
         <translation>소환수 리포트 분리</translation>
     </message>
@@ -760,58 +759,58 @@ The more people help improve BiS profiles, the better will they reach their goal
         <translation type="vanished">报告格式</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="406"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="399"/>
         <source>Statistics Level</source>
         <translation>통계 레벨</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="408"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="401"/>
         <source>Deterministic RNG</source>
         <translation>고정 RNG 시드</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="349"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1610"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="342"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1609"/>
         <source>Reset all Settings</source>
         <translation>모든 설정 초기화</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="324"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="317"/>
         <source>Target Error</source>
         <translation>타겟 에러</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="335"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="328"/>
         <source>Vary Length %</source>
         <translation>길이 변경 %</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="345"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="338"/>
         <source>GUI Localization</source>
         <translation>GUI 현지화</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="353"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="346"/>
         <source>Can also be used to fix corrupt settings that are crashing the simulator.</source>
         <translation>시뮬레이터를 충돌시키는 잘못된 설정을 수정하는데도 사용할 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="371"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="364"/>
         <source>PVP Crit Damage Reduction</source>
         <translation>PvP 크리티걸 데미지 감소</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="377"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="370"/>
         <source>Target Type</source>
         <translation>타겟 종류</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="379"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="372"/>
         <source>Tank Dummy</source>
         <translation>탱크 더미</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="388"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="381"/>
         <source>Target and Tanking Options</source>
         <translation>타겟 및 탱킹 옵션</translation>
     </message>
@@ -820,7 +819,7 @@ The more people help improve BiS profiles, the better will they reach their goal
         <translation type="vanished">线程优先级</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="410"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="403"/>
         <source>Auto-Save Reports</source>
         <translation>리포트 자동 저장</translation>
     </message>
@@ -833,22 +832,22 @@ The more people help improve BiS profiles, the better will they reach their goal
         <translation type="vanished">英雄榜API密钥</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="434"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="427"/>
         <source>Advanced Options</source>
         <translation>고급 옵션</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="448"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="441"/>
         <source>Globals</source>
         <translation>글로벌</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="458"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="451"/>
         <source>Toggle All Buffs</source>
         <translation>모든 버프 토글</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="458"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="451"/>
         <source>Toggle all buffs on/off</source>
         <translation>모든 버프 on/off 토글</translation>
     </message>
@@ -901,8 +900,8 @@ The more people help improve BiS profiles, the better will they reach their goal
         <translation type="vanished">+精通等级</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="591"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="704"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="586"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="699"/>
         <source>Stamina</source>
         <translation>체력</translation>
     </message>
@@ -927,12 +926,12 @@ The more people help improve BiS profiles, the better will they reach their goal
         <translation type="vanished">+3% 全能</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="459"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="452"/>
         <source>Bloodlust</source>
         <translation>피의 욕망</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="459"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="452"/>
         <source>Ancient Hysteria
 Bloodlust
 Heroism
@@ -943,128 +942,133 @@ Time Warp</source>
 시간 왜곡</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="461"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="454"/>
         <source>Arcane Intellect</source>
         <translation>신비한 지능</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="463"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="456"/>
         <source>Power Word: Fortitude</source>
         <translation>신의 권능: 인내</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="465"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="458"/>
         <source>Battle Shout</source>
         <translation>전투의 외침</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="468"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="459"/>
+        <source>Windfury Totem</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_OptionsTab.cpp" line="463"/>
         <source>Buffs</source>
         <translation>버프</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="476"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="471"/>
         <source>Toggle All Debuffs</source>
         <translation>모든 디버프 토글</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="476"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="471"/>
         <source>Toggle all debuffs on/off</source>
         <translation>모든 디버프 on/off 토글</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="478"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="473"/>
         <source>Bleeding</source>
         <translation>출혈</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="478"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="473"/>
         <source>Rip
 Rupture</source>
         <translation>도려내기 (드루이드)
 파열 (도적)</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="479"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="474"/>
         <source>Mortal Wounds</source>
         <translation>죽음의 상처</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="479"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="474"/>
         <source>Healing Debuff</source>
         <translation>힐링 디버프</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="481"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="476"/>
         <source>Chaos Brand</source>
         <translation>혼돈의 낙인</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="481"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="476"/>
         <source>Chaos Brand
 Magic damage debuff</source>
         <translation>혼돈의 낙인（마법 피해）</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="483"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="478"/>
         <source>Mystic Touch</source>
         <translation>신비한 손길</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="483"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="478"/>
         <source>Mystic Touch
 Physical damage debuff</source>
         <translation>신비한 손길
 물리 데미지 디버프</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="487"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="482"/>
         <source>Debuffs</source>
         <translation>디버프</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="502"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="497"/>
         <source>Buffs / Debuffs</source>
         <translation>버프 / 디버프</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="512"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="526"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="507"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="521"/>
         <source>Enable Scaling</source>
         <translation>스케일링 활성화</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="519"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="514"/>
         <source>This button enables/disables scale factor calculations, allowing you to toggle scaling while keeping a particular set of stats selected.</source>
         <translation>이 버튼은 배율 계산을 활성화 / 비활성화하여 선택한 특정 통계 세트를 유지하면서 배율을 전환할 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="527"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="522"/>
         <source>Enable Scaling. This box MUST be checked to enable scaling calculations.</source>
         <translation>스케일링 활성화. 스케일링을 활성화 하기 위하여 무조건 체크해야 합니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="534"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="529"/>
         <source>Scaling Options</source>
         <translation>스케일링 옵션</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="542"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="537"/>
         <source>Center Scale Delta</source>
         <translation>센터 스케일 델타</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="546"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="541"/>
         <source>Scale Over</source>
         <translation>스케일 오버</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="554"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="549"/>
         <source>Stats to scale</source>
         <translation>통계를 스케일로</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="560"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="555"/>
         <source>This button toggles scaling for all stats except Latency.
 Note that additional simulations will only be run for RELEVANT stats.
 In other words, Agility and Intellect would be skipped for a Warrior even if they are checked.</source>
@@ -1073,60 +1077,60 @@ In other words, Agility and Intellect would be skipped for a Warrior even if the
 예를 들어 전사에 대해 계산할때는 민첩성과 지능을 선택하더라도 무시됩니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="565"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="560"/>
         <source>Toggle All Character Stats</source>
         <translation>모든 캐릭터 통계 토글</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="565"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="560"/>
         <source>Toggles all stats except Latency.</source>
         <translation>지연을 제외한 모든 속성을 토글.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="572"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="567"/>
         <source>Calculate scale factors for:</source>
         <translation>다음 스케일 팩터 계산：</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="587"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="700"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="582"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="695"/>
         <source>Strength</source>
         <translation>힘</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="587"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="582"/>
         <source>Calculate scale factors for Strength</source>
         <translation>힘 스케일 팩터 계산</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="589"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="702"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="584"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="697"/>
         <source>Agility</source>
         <translation>민첩</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="589"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="584"/>
         <source>Calculate scale factors for Agility</source>
         <translation>민첩 스케일 팩터 계산</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="591"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="586"/>
         <source>Calculate scale factors for Stamina</source>
         <translation>체력 스케일 팩터 계산</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="593"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="706"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="588"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="701"/>
         <source>Intellect</source>
         <translation>지능</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="593"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="588"/>
         <source>Calculate scale factors for Intellect</source>
         <translation>지능 스케일 팩터 계산</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="708"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="703"/>
         <source>Spirit</source>
         <translation>정신력</translation>
     </message>
@@ -1135,74 +1139,74 @@ In other words, Agility and Intellect would be skipped for a Warrior even if the
         <translation type="vanished">计算精神的权值</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="595"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="710"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="590"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="705"/>
         <source>Spell Power</source>
         <translation>주문력</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="595"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="590"/>
         <source>Calculate scale factors for Spell Power</source>
         <translation>주문력 스케일 팩터 계산</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="597"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="712"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="592"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="707"/>
         <source>Attack Power</source>
         <translation>공격력</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="597"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="592"/>
         <source>Calculate scale factors for Attack Power</source>
         <translation>공격력 스케일 팩터 계산</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="600"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="714"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="595"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="709"/>
         <source>Crit Rating</source>
         <translation>치명타율</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="600"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="595"/>
         <source>Calculate scale factors for Crit Rating</source>
         <translation>치명타 및 극대화 스케일 팩터 계산</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="602"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="716"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="597"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="711"/>
         <source>Haste Rating</source>
         <translation>가속</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="602"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="597"/>
         <source>Calculate scale factors for Haste Rating</source>
         <translation>가속 스케일 팩터 계산</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="604"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="718"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="599"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="713"/>
         <source>Mastery Rating</source>
         <translation>특화</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="604"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="599"/>
         <source>Calculate scale factors for Mastery Rating</source>
         <translation>특화 스케일 팩터 계산</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1037"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1036"/>
         <source>In PVP, critical strikes deal 150% damage instead of 200%.
 Enabling this option will set target level to max player level.</source>
         <translation>PvP전투에서 치명타 피해가 200%에서 150%로 감소합니다.
 이 옵션을 활성화하면, 적 레벨이 가장 높은 플레이어 레벨로 설정됩니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1057"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1056"/>
         <source>Check Simulationcraft updates on startup.</source>
         <translation>Simulationcraft의 업데이트를 시작시 확인합니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1102"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1101"/>
         <source>Deterministic Random Number Generator creates all random numbers with a given, constant seed.
 This allows for replicating a specific simulation result.</source>
         <translation>결정론적 난수 생성기는 주어진 시드로 모든 난수를 생성합니다.
@@ -1222,56 +1226,56 @@ This allows for replicating a specific simulation result.</source>
         <translation type="vanished">计算溅射等级的权值</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="606"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="720"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="601"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="715"/>
         <source>Versatility Rating</source>
         <translation>유연도</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="606"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="601"/>
         <source>Calculate scale factors for Versatility Rating</source>
         <translation>유연성 스케일 팩터 계산</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="608"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="722"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="603"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="717"/>
         <source>Weapon DPS</source>
         <translation>주무기 DPS</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="608"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="603"/>
         <source>Calculate scale factors for Weapon DPS</source>
         <translation>무기 DPS 스케일 팩터 계산</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="610"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="605"/>
         <source>Off-hand Weapon DPS</source>
         <translation>보조장비 및 방패 DPS</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="610"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="605"/>
         <source>Calculate scale factors for Off-hand Weapon DPS</source>
         <translation>보조장비 및 방패 DPS 스케일 팩터 계산</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="612"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="726"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="607"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="721"/>
         <source>Armor</source>
         <translation>방어도</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="612"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="607"/>
         <source>Calculate scale factors for Armor</source>
         <translation>방어도 스케일 팩터 계산</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="614"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="728"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="609"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="723"/>
         <source>Bonus Armor</source>
         <translation>추가 방어도</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="614"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="609"/>
         <source>Calculate scale factors for Bonus Armor</source>
         <translation>추가 방어도 스케일 팩터 계산</translation>
     </message>
@@ -1284,94 +1288,94 @@ This allows for replicating a specific simulation result.</source>
         <translation type="vanished">计算躲闪的权重 (第三属性)</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="618"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="732"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="613"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="727"/>
         <source>Leech (tertiary)</source>
         <translation>흡혈</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="618"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="613"/>
         <source>Calculate scale factors for Leech (tertiary stat)</source>
         <translation>생명력 흡수 스케일 팩터 계산</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="620"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="734"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="615"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="729"/>
         <source>Movement Speed (tertiary)</source>
         <translation>이동 속도</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="621"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="616"/>
         <source>Calculate scale factors for Movement Speed (tertiary stat)</source>
         <translation>이동 속도 스케일 팩터 계산</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="623"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="618"/>
         <source>Latency</source>
         <translation>레이턴시</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="623"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="618"/>
         <source>Calculate scale factors for Latency</source>
         <translation>지연 시간 스케일 팩터 계산</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="634"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="629"/>
         <source>Scaling</source>
         <translation>스케일링</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="644"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="639"/>
         <source>Enable Scaling Plots</source>
         <translation>스케일링 플롯 활성화</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="651"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="646"/>
         <source>This button enables/disables scaling plots, allowing you to toggle calculation of scaling plots while keeping a particular set of stats selected.</source>
         <translation>이 버튼은 스케일링 플롯을 활성화 / 비활성화하여 특정 통계 세트를 선택한 상태로 유지하면서 스케일링 플롯 계산을 전환할 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="658"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="653"/>
         <source>Enable Plots</source>
         <translation>플롯 활성화</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="659"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="654"/>
         <source>Enable scaling plots. This box MUST be checked to generate scaling plots.</source>
         <translation>스케일링 플롯 활성화. 스케일링 플롯을 생성하기 위해 무조건 체크해야 합니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="666"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="661"/>
         <source>Scaling Plot Options</source>
         <translation>스케일링 플롯 옵션</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="674"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="669"/>
         <source>Number of Plot Points</source>
         <translation>플롯 포인트 수</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="678"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="673"/>
         <source>Plot Step Amount</source>
         <translation>플롯 스텝의 양</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="681"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="676"/>
         <source>Plot Target Error</source>
         <translation>플롯 타겟 에러</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="684"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="679"/>
         <source>Plot Iterations</source>
         <translation>플롯 반복횟수</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="691"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="686"/>
         <source>Stats to plot</source>
         <translation>통계를 플롯으로</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="697"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="692"/>
         <source>Check the box for each stat you would like to show on the scaling plots.
 
 Plot scaling for:</source>
@@ -1380,52 +1384,52 @@ Plot scaling for:</source>
 속성：</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="700"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="695"/>
         <source>Generate Scaling curve for Strength</source>
         <translation>힘 스케일 플롯 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="702"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="697"/>
         <source>Generate Scaling curve for Agility</source>
         <translation>민첩성 스케일 플롯 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="704"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="699"/>
         <source>Generate Scaling curve for Stamina</source>
         <translation>체력 스케일 플롯 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="706"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="701"/>
         <source>Generate Scaling curve for Intellect</source>
         <translation>지능 스케일 플롯 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="708"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="703"/>
         <source>Generate Scaling curve for Spirit</source>
         <translation>정신력 스케일 플롯 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="710"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="705"/>
         <source>Generate Scaling curve for Spell Power</source>
         <translation>주문력 스케일 플롯 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="712"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="707"/>
         <source>Generate Scaling curve for Attack Power</source>
         <translation>공격력 스케일 플롯 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="714"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="709"/>
         <source>Generate Scaling curve for Crit Rating</source>
         <translation>치명타 및 극대화 스케일 플롯 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="716"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="711"/>
         <source>Generate Scaling curve for Haste Rating</source>
         <translation>가속 스케일 플롯 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="718"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="713"/>
         <source>Generate Scaling curve for Mastery Rating</source>
         <translation>특화 스케일 플롯 생성</translation>
     </message>
@@ -1434,82 +1438,82 @@ Plot scaling for:</source>
         <translation type="vanished">生成溅射的收益曲线</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="720"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="715"/>
         <source>Generate Scaling curve for Versatility Rating</source>
         <translation>유연성 스케일 플롯 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="722"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="717"/>
         <source>Generate Scaling curve for Weapon DPS</source>
         <translation>무기 DPS 스케일 플롯 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="724"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="719"/>
         <source>Weapon OH DPS</source>
         <translation>보조장비 및 방패 DPS</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="724"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="719"/>
         <source>Generate Scaling curve for Weapon OH DPS</source>
         <translation>보조장비/방패 DPS 스케일 플롯 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="726"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="721"/>
         <source>Generate Scaling curve for Armor</source>
         <translation>방어도 스케일 플롯 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="728"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="723"/>
         <source>Generate Scaling curve for Bonus Armor</source>
         <translation>추가 방어도 스케일 플롯 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="732"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="727"/>
         <source>Generate Scaling curve for Leech (tertiary stat)</source>
         <translation>생명력 흡수 스케일 플롯 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="735"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="730"/>
         <source>Generate Scaling curve for Movement Speed (tertiary stat)</source>
         <translation>이동속도 스케일 플롯 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="772"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="767"/>
         <source>Plot Reforge Options for Spirit</source>
         <translation>정신력 플롯 리포지 옵션</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="772"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="767"/>
         <source>Generate reforge plot data for Spirit</source>
         <translation>정신력 플롯 데이터 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="774"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="769"/>
         <source>Plot Reforge Options for Crit Rating</source>
         <translation>치명타 및 극대화 플롯 리포지 옵션</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="775"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="770"/>
         <source>Generate reforge plot data for Crit Rating</source>
         <translation>치명타 및 극대화 플롯 데이터 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="776"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="771"/>
         <source>Plot Reforge Options for Haste Rating</source>
         <translation>가속 플롯 리포지 옵션</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="777"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="772"/>
         <source>Generate reforge plot data for Haste Rating</source>
         <translation>가속 플롯 데이터 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="778"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="773"/>
         <source>Plot Reforge Options for Mastery Rating</source>
         <translation>민첩성 플롯 리포지 옵션</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="779"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="774"/>
         <source>Generate reforge plot data for Mastery Rating</source>
         <translation>특화 플롯 데이터 생성</translation>
     </message>
@@ -1522,68 +1526,68 @@ Plot scaling for:</source>
         <translation type="vanished">生成溅射等级的重铸图像数据</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="780"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="775"/>
         <source>Plot Reforge Options for Versatility Rating</source>
         <translation>유연성 플롯 리포지 옵션</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="781"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="776"/>
         <source>Generate reforge plot data for Versatility Rating</source>
         <translation>유연성 플롯 데이터 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="783"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="778"/>
         <source>Plot Reforge Options for Bonus Armor Rating</source>
         <translation>추가 방어도 플롯 리포지 옵션</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="784"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="779"/>
         <source>Generate reforge plot data for Bonus Armor</source>
         <translation>추가 방어도 플롯 데이터 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="789"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="784"/>
         <source>Plot Reforge Options for Strength</source>
         <translation>힘 플롯 리포지 옵션</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="789"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="795"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="784"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="790"/>
         <source>Generate reforge plot data for Intellect</source>
         <translation>지능 플롯 데이터 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="791"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="786"/>
         <source>Plot Reforge Options for Agility</source>
         <translation>민첩성 플롯 리포지 옵션</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="791"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="786"/>
         <source>Generate reforge plot data for Agility</source>
         <translation>민첩성 플롯 데이터 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="793"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="788"/>
         <source>Plot Reforge Options for Stamina</source>
         <translation>체력 플롯 리포지 옵션</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="793"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="788"/>
         <source>Generate reforge plot data for Stamina</source>
         <translation>체력 플롯 데이터 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="795"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="790"/>
         <source>Plot Reforge Options for Intellect</source>
         <translation>지능 플롯 리포지 옵션</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="965"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="964"/>
         <source>Live:  Use mechanics on Live servers. ( WoW Build %1 )</source>
         <translation>라이브: 본서버의 기능들을 사용합니다 ( WoW Build %1 )</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="974"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="973"/>
         <source>This options sets a target error threshold and
 runs iterations until that threshold is reached.
 </source>
@@ -1592,15 +1596,15 @@ runs iterations until that threshold is reached.
 </translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="976"/>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1129"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="975"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1128"/>
         <source>N/A:  Do not use this feature.
 </source>
         <translation>N/A：이 기능을 사용하지 마시오.
 </translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="977"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="976"/>
         <source>Auto: use sim defaults based on other options
      (0.2%, 0.05% for scale factors).
 </source>
@@ -1609,22 +1613,22 @@ runs iterations until that threshold is reached.
 </translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="978"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="977"/>
         <source>X%:   Run until DPS error is less than X%.</source>
         <translation>X%：DPS 오류가 X% 보다 낮을 때까지 반복합니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="979"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="978"/>
         <source>%1:    Fast and Rough</source>
         <translation>%1：빠르고 부정확함</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="980"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="979"/>
         <source>%1:   Sufficient for DPS Analysis</source>
         <translation>%1：DPS 분석에 충분함</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1015"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1014"/>
         <source>Beastlord:
     Random Movement, Advanced Positioning,
     Frequent Single and Wave Add Spawns</source>
@@ -1633,7 +1637,7 @@ runs iterations until that threshold is reached.
     단일 및 여러 쫄들을 자주 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1019"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1018"/>
         <source>CastingPatchwerk: Tank-n-Spank
     Boss considered always casting
     (to test interrupt procs on cooldown)</source>
@@ -1641,7 +1645,7 @@ runs iterations until that threshold is reached.
 패치워크에 차단을 고려해야하는 모델입니다</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1023"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1022"/>
         <source>DungeonSlice:
     Multi-segment simulation meant to
     approximate M+ dungeon and boss pulls</source>
@@ -1649,7 +1653,7 @@ runs iterations until that threshold is reached.
 쐐기돌 던전을 시뮬레이션하는데 적합합니다</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1030"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1029"/>
         <source>Enables/Disables the challenge mode setting, downscaling items to level 630.</source>
         <translation>챌린지 모드 활성화/비활성화. 아이템 레벨을 630까지 다운스케일링합니다.</translation>
     </message>
@@ -1658,34 +1662,34 @@ runs iterations until that threshold is reached.
         <translation type="vanished">为HTML报告选择图表渲染库（Google需要科学上网）。</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1048"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1047"/>
         <source>This will allow automatic saving of html reports to the simc folder.</source>
         <translation>Html 보고서를 simc 폴더에 자동으로 저장합니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1053"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1052"/>
         <source>Controls which Talent specification is used when importing profiles from the Armory.</source>
         <translation>전투정보실 프로필에 있는 특성을 사용합니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1055"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1054"/>
         <source>Controls the GUI display language.</source>
         <translation>GUI 디스플레이 언어를 선택합니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1063"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1062"/>
         <source>Choose the type of target. Some choices can be refined further by the next two drop-down boxes</source>
         <translation>대상 유형을 선택하십시오. 일부 옵션은 아래에서 추가로 선택살 수 있습니다</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1066"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1065"/>
         <source>If &quot;Tank Dummy&quot; is chosen above, this drop-down selects the type of tank dummy used.
 Leaving at *None* will default back to a Fluffy Pillow.</source>
         <translation>&quot;Tank Dummy&quot;를 선택한 경우, 여기서 Tank Dummy의 유형을 선택하십시오.
 *None*를 고르면, Fluffy Pillow를 기본적으로 선택합니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1070"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1069"/>
         <source>If &quot;TMI Standard Boss&quot; is chosen in &quot;Target Type&quot;, this box selects the TMI standard.
 TMI Standard Bosses provide damage output similar to bosses in the appropriate tier.
 Leaving at *None* will default back to a Fluffy Pillow.</source>
@@ -1694,7 +1698,7 @@ TMI 표준 보스는 적절한 티어의 보스와 유사한 피해를 제공합
 *None*를 선택하면, Fluffy Pillow를 선택하게 됩니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1075"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1074"/>
         <source>Specify window duration for calculating TMI. Default is 6 sec.
 Reducing this increases the metric&apos;s sensitivity to shorter damage spikes.
 Set to 0 if you want to vary on a per-player basis in the Simulate tab using &quot;tmi_window=#&quot;.</source>
@@ -1714,12 +1718,12 @@ This allows to better observe marginal changes which aren&apos;t influenced by r
 这样方便观察那些不受RNG影响的边界变化，也用于在不降低统计噪音的情况下检查其他影响</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1112"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1111"/>
         <source>    &apos;Australia&apos; : %1ms</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1115"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1114"/>
         <source>Controls the simulations that the tool compares to determine stat weights.
 If set to No, it will sim once at profile stats and again with +2X of each selected stat.
 If set to Yes, it will sim once at profile-X and once at profile+X.</source>
@@ -1728,7 +1732,7 @@ No로 설정하면, 현재 속성을 사용하여 1회 시뮬레이션 한 후 +
 Yes로 설정하면, -X 및 +X를 각각 사용하여 선택한 속성에 대해 한 번 시뮬레이션 합니다。</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1119"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1118"/>
         <source>Choose the stat over which you&apos;re primarily interested in scaling.
 This is the metric that will be displayed on the Scale Factors plot.
 Note that the sim will still generate and display scale factors for all other metrics in tabular form.</source>
@@ -1737,7 +1741,7 @@ Note that the sim will still generate and display scale factors for all other me
 시뮬레이션은 모든 속성에 대해 표준화되지 않은 가중치를 표기합니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1133"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1132"/>
         <source>Number of iterations for each plot point.
 Iter/10 and Iter/100 scale with the number of
 iterations selected on the general options tab.</source>
@@ -1746,124 +1750,124 @@ Iter/10 혹은 Iter/100을 지정하면
 전역 설정의 반복 횟수를 기반으로 계산됩니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1274"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1273"/>
         <source>Report File Name</source>
         <translation>리포트 파일 이름</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1275"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1274"/>
         <source>What would you like to name the report files?</source>
         <translation>리포트 파일의 이름을 어떻게 할까요?</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="747"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="742"/>
         <source>Plots</source>
         <translation>플롯</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="280"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="208"/>
         <source>Local Item Database</source>
         <translation>로컬 아이템 데이터베이스</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="280"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="208"/>
         <source>Use Simulationcraft item database</source>
         <translation>Simulationcraft 아이템 데이터베이스 사용</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="281"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="209"/>
         <source>Blizzard API</source>
         <translation>블리자드 API</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="282"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="210"/>
         <source>Remote Blizzard Community Platform API source</source>
         <translation>리모트 블리자드 커뮤니티 플랫폼 API 소스</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="283"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="211"/>
         <source>Wowhead.com</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="283"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="211"/>
         <source>Remote Wowhead.com item data source</source>
         <translation>리모트 Wowhead.com 아이템 데이터 소스</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="285"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="213"/>
         <source>Wowhead.com (PTR)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="286"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="214"/>
         <source>Remote Wowhead.com PTR item data source</source>
         <translation>리모트 Wowhead.com PTR 아이템 데이터 소스</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="289"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="217"/>
         <source>Wowhead.com (Beta)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="290"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="218"/>
         <source>Remote Wowhead.com Beta item data source</source>
         <translation>리모트 Wowhead.com 베타 아이템 데이터 소스</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="347"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="340"/>
         <source>Update Check</source>
         <translation>업데이트 확인</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="398"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="391"/>
         <source>Process Priority</source>
         <translation>프로세스 우선 순위</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="413"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="406"/>
         <source>Change default location for reports.</source>
         <translation>보고서의 기본 위치를 변경합니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="423"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="416"/>
         <source>Armory API Client Id</source>
         <translation>전투정보실 API 클라이언트 Id</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="424"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="417"/>
         <source>Armory API Client Secret</source>
         <translation>전투정보실 API 클라이언트 Secret</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="758"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="753"/>
         <source>Reforge Amount</source>
         <translation>리포지 양</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="761"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="756"/>
         <source>Step Amount</source>
         <translation>단계 합</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="763"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="758"/>
         <source>A maximum of three stats may be ran at once.
 </source>
         <translation>한 버에 세가지 스탯만 계산할 수 있습니다.
 </translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="769"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="764"/>
         <source>Secondary Stats</source>
         <translation>강화 수치</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="786"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="781"/>
         <source>Primary Stats</source>
         <translation>주 능력치</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="804"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="799"/>
         <source>Reforge Plots</source>
         <translation>리포지 플롯</translation>
     </message>
@@ -1884,22 +1888,22 @@ SimC计算权值的公式是
         <translation type="vanished">Live：使用正式服务器上的机制（%1）</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="967"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="966"/>
         <source>Beta:  Use mechanics on Beta servers. ( WoW Build %1 )</source>
         <translation>Beta：베타 서버의 기능을 사용합니다（%1）</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="968"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="967"/>
         <source>Both: Create Evil Twin with Beta mechanics</source>
         <translation>Both：공식 서버와 베타 서버의 시뮬레이션을 동시에 진행합니다</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="970"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="969"/>
         <source>PTR:  Use mechanics on PTR servers. ( WoW Build %1 )</source>
         <translation>PTR：PTR 서버의 기능들을 사용합니다 (%1)</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="971"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="970"/>
         <source>Both: Create Evil Twin with PTR mechanics</source>
         <translation>Both：공식 서버와 PTR 서버의 시뮬레이션을 동시에 진행합니다</translation>
     </message>
@@ -1912,17 +1916,17 @@ SimC计算权值的公式是
         <translation type="vanished">%1：粗略的DPS分析</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="981"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="980"/>
         <source>%1: Recommended for Scale Factor Generation</source>
         <translation>%1：스케일 팩터 생성에 권장됨</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="982"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="981"/>
         <source>%1: Use if %2 isn&apos;t enough for Scale Factors</source>
         <translation>%1: 만약 %2가 스케일 팩터에 충분하지 않다면 사용하세요</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="983"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="982"/>
         <source>%1: If you&apos;re patient</source>
         <translation>%1：오래 걸리지만 정확함</translation>
     </message>
@@ -1931,26 +1935,26 @@ SimC计算权值的公式是
         <translation type="vanished">想要自定义时长，在覆盖中使用“max_time=秒”</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="986"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="985"/>
         <source>Varying the fight length over a given spectrum improves
 the analysis of trinkets and abilities with long cooldowns.</source>
         <translation>특정 범위 내에서 시간을 변경하면 신뢰도를 높일 수 있습니다.
 특히 쿨타임이 긴 스킬과 장신구에 적합합니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="989"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="988"/>
         <source>Patchwerk: Tank-n-Spank</source>
         <translation>Patchwerk：탱킹 및 점사</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="990"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="989"/>
         <source>HecticAddCleave:
     Heavy Movement, Frequent Add Spawns</source>
         <translation>HecticAddCleave：
     많이 움직이고, 쫄을 자주 생성</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="993"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="992"/>
         <source>HelterSkelter:
     Movement, Stuns, Interrupts,
     Target-Switching (every 2min)</source>
@@ -1958,14 +1962,14 @@ the analysis of trinkets and abilities with long cooldowns.</source>
     움직임, 스턴, 차단, 2분마다 타겟 스위칭</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="997"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="996"/>
         <source>Ultraxion:
     Periodic Stuns, Raid Damage</source>
         <translation>Ultraxion：
     주기적인 스턴, 보스가 암흑 피해를 입힙니다</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1000"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="999"/>
         <source>LightMovement:
     %1s Movement, %2s CD,
     %3% into the fight until %4% before the end</source>
@@ -1973,7 +1977,7 @@ the analysis of trinkets and abilities with long cooldowns.</source>
     %3%부터 %4%까지, %2초마다 %1초 실행</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1008"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1007"/>
         <source>HeavyMovement:
     %1s Movement, %2s CD,
     beginning %3s into the fight</source>
@@ -1981,7 +1985,7 @@ the analysis of trinkets and abilities with long cooldowns.</source>
     %3초부터 시작하여，%2초마다%1초 실행</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1027"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1026"/>
         <source>Race of the target and any adds.</source>
         <translation>타겟과 쫄들의 종족.</translation>
     </message>
@@ -1992,12 +1996,12 @@ Stats won&apos;t be exact, but very close.</source>
 属性可能不精确，但会十分接近。</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1032"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1031"/>
         <source>Number of enemies.</source>
         <translation>적의 숫자.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1034"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1033"/>
         <source>Level of the target and any adds.</source>
         <translation>모든 몹과 쫄의 레벨.</translation>
     </message>
@@ -2016,21 +2020,21 @@ Enabling this option will set target level to max player level.</source>
         <translation type="vanished">Fire-is-Hot：经常过早补DoT，还搞不清优先级。</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1041"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1040"/>
         <source>Match the number of CPUs for optimal performance.
 Most modern desktops have at least two CPU cores.</source>
         <translation>최적의 성능을 위해 CPU 코어 수를 정하세요.
 대부분의 최신 데스크탑에는 최소 2개의 코어가 있습니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1044"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1043"/>
         <source>This can allow for a more responsive computer while simulations are running.
 When set to &apos;Lowest&apos;, it will be possible to use your computer as normal while SimC runs in the background.</source>
         <translation>이 옵션은 시뮬레이션중 컴퓨터의 성능에 영향을 끼칩니다.
 최저 옵션을 설정하면, 컴퓨터를 정상적으로 사용하고 SimC를 백그라운드에서 실행할 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1050"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1049"/>
         <source>United States, Europe, Taiwan, China, Korea</source>
         <translation>미국, 유럽, 대만, 중국, 한국</translation>
     </message>
@@ -2039,7 +2043,7 @@ When set to &apos;Lowest&apos;, it will be possible to use your computer as norm
         <translation type="vanished">决定导入英雄榜上的哪一个专精。</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1060"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1059"/>
         <source>Specify the character role during import to ensure correct action priority list.</source>
         <translation>불러온 우선 순위 목록이 올바른지 확인하기 위해 캐릭터를 지정하세요.</translation>
     </message>
@@ -2057,7 +2061,7 @@ Set to 0 if you want to vary on a per-player basis in the Simulate tab using &qu
 如果你想用“tmi_window=#”分别设置每名角色的窗口长度，此处设0。</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1080"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1079"/>
         <source>Controls when ETMI is displayed in the HTML report.
 TMI only includes damage taken and self-healing/absorbs, and treats overhealing as effective healing.
 ETMI includes all sources of healing and absorption, and ignores overhealing.</source>
@@ -2066,7 +2070,7 @@ TMI는 받는 피해/흡수와 과다 치유를 효과적인 치유로 취급합
 ETMI는 모든 치유와 피해 흡수를 살펴보고, 과다 치유를 무시합니다。</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1084"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1083"/>
         <source>Specify if pets get reported separately in detail.</source>
         <translation>리포트에서 소환수 데이터를 별도로 구분할지 지정합니다.</translation>
     </message>
@@ -2075,34 +2079,34 @@ ETMI는 모든 치유와 피해 흡수를 살펴보고, 과다 치유를 무시�
         <translation type="vanished">指定报告的格式。</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1087"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1086"/>
         <source>Determines how much detailed statistical information besides count &amp; mean will be collected during simulation.
  Higher Statistics Level require more memory.</source>
         <translation>시뮬레이션 중에 수집되는 통계적인 정보의 양을 결정합니다
 통계 수준이 높을수록 더 많은 메모리가 필요합니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1090"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1089"/>
         <source> Level %1: Only Simulation Length data is collected.</source>
         <translation> 레벨 %1：시뮬레이션 길이 데이터만 수집됩니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1091"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1090"/>
         <source> Level %1: DPS/HPS data is collected. *default*</source>
         <translation> 레벨%1：DPS/HPS 데이터가 수집됩니다. *디폴트*</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1092"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1091"/>
         <source> Level %1: Player Fight Length, Death Time, DPS(e), HPS(e), DTPS, HTPS, DMG, HEAL data is collected.</source>
         <translation> 레벨 %1：플레이어 전투 길이, 죽음 횟수, DPS(e), HPS(e), DTPS, HTPS, DMG, HEAL 데이터가 수집됩니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1094"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1093"/>
         <source> Level %1: Ability Amount and  portion APS is collected.</source>
         <translation> 레벨%1：초당 스킬 시전 수와 일부 작업을 수집합니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1097"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1096"/>
         <source>When a log is generated, only one iteration is used.
 Gory details are very gory.  No documentation will be forthcoming.
 Due to the forced single iteration, no scale factor calculation.</source>
@@ -2118,7 +2122,7 @@ This allows to better observe marginal changes which aren&apos;t influenced by r
 这样方便观察那些不受RNG影响的边界变化，也用于在不降低统计噪音的情况下检查其他影响。</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1105"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1104"/>
         <source>World Lag is the equivalent of the &apos;world lag&apos; shown in the WoW Client.
 It is currently used to extend the cooldown duration of user executable abilities  that have a cooldown.
 Each setting adds an amount of &apos;lag&apos; with a default standard deviation of 10%:</source>
@@ -2127,22 +2131,22 @@ Each setting adds an amount of &apos;lag&apos; with a default standard deviation
 이러한 옵션은 모두 표준 분포를 10% 증가시킵니다:</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1109"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1108"/>
         <source>    &apos;Super Low&apos; : %1ms</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1110"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1109"/>
         <source>    &apos;Low&apos;   : %1ms</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1110"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1109"/>
         <source>    &apos;Medium&apos;: %1ms</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1111"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1110"/>
         <source>    &apos;High&apos;  : %1ms</source>
         <translation></translation>
     </message>
@@ -2156,33 +2160,33 @@ Each setting adds an amount of &apos;lag&apos; with a default standard deviation
 这些选项都增加了10%的标准分布。</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1123"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1122"/>
         <source>The number of points that will appear on the graph</source>
         <translation>그래프에 표시될 점의 숫자</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1124"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1123"/>
         <source>The delta between two points of the graph.
 The deltas on the horizontal axis will be within the [-points * steps / 2 ; +points * steps / 2] interval</source>
         <translation>그래프에서 인접한 두 점간의 차입니다.
 가로축의 차는  [-points * steps / 2 ; +points * steps / 2] 에 위치합니다</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1129"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1128"/>
         <source>Target error for plots.
 </source>
         <translation>플롯 타겟 에러입니다.
 </translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1130"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1129"/>
         <source>Auto: Use simulation defaults (0.5%).
 </source>
         <translation>자동：시뮬레이션 디폴트값 사용 (0.5%)。
 </translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1131"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1130"/>
         <source>X%:   Each plot point will sim until less than X% DPS error is reached.</source>
         <translation>X%：각 샘플 포인트는 DPS 오류가 X% 미만이 될 때까지 반복을 계속 시뮬레이션합니다.</translation>
     </message>
@@ -2192,24 +2196,24 @@ The deltas on the horizontal axis will be within the [-points * steps / 2 ; +poi
         <translation type="vanished">收益曲线中每个取样点的迭代次数。</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1137"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1136"/>
         <source>The maximum amount to reforge per stat.</source>
         <translation>각 통계당 최대 리포지 양입니다.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1139"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1138"/>
         <source>The stat difference between two points.
 It&apos;s NOT the number of steps: a lower value will generate more points!</source>
         <translation>두 점의 통계 차이입니다.
 이것은 단계의 수가 아닙니다. 값이 낮을수록 더 많은 점이 생성됩니다!</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1506"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1505"/>
         <source>Item Source Order</source>
         <translation>아이템 소스 순서</translation>
     </message>
     <message>
-        <location filename="../qt/sc_OptionsTab.cpp" line="1611"/>
+        <location filename="../qt/sc_OptionsTab.cpp" line="1610"/>
         <source>Do you really want to reset all Settings to default?</source>
         <translation>모든 설정값을 초기화할까요?</translation>
     </message>
@@ -2217,7 +2221,7 @@ It&apos;s NOT the number of steps: a lower value will generate more points!</sou
 <context>
     <name>SC_OverridesTab</name>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="396"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="390"/>
         <source># User-specified persistent global and player parameters will be set here.
 </source>
         <translation># 여기에 작성된 전역 및 역할 옵션은 이전 설정을 덮어쓰기 할 수 있습니다.
@@ -2227,12 +2231,12 @@ It&apos;s NOT the number of steps: a lower value will generate more points!</sou
 <context>
     <name>SC_QueueListView</name>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="185"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="178"/>
         <source>test</source>
         <translation>테스트</translation>
     </message>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="212"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="205"/>
         <source>Remove</source>
         <translation>삭제</translation>
     </message>
@@ -2240,18 +2244,18 @@ It&apos;s NOT the number of steps: a lower value will generate more points!</sou
 <context>
     <name>SC_RecentlyClosedTabWidget</name>
     <message>
-        <location filename="../qt/util/sc_recentlyclosed.cpp" line="311"/>
-        <location filename="../qt/util/sc_recentlyclosed.cpp" line="333"/>
+        <location filename="../qt/util/sc_recentlyclosed.cpp" line="313"/>
+        <location filename="../qt/util/sc_recentlyclosed.cpp" line="335"/>
         <source>&amp;Clear History</source>
         <translation>기록 지우기(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../qt/util/sc_recentlyclosed.cpp" line="324"/>
+        <location filename="../qt/util/sc_recentlyclosed.cpp" line="326"/>
         <source>&amp;Restore All</source>
         <translation>전부 복구(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qt/util/sc_recentlyclosed.cpp" line="328"/>
+        <location filename="../qt/util/sc_recentlyclosed.cpp" line="330"/>
         <source>&amp;Delete</source>
         <translation>삭제(&amp;D)</translation>
     </message>
@@ -2269,12 +2273,12 @@ It&apos;s NOT the number of steps: a lower value will generate more points!</sou
 <context>
     <name>SC_ResultTab</name>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="321"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="314"/>
         <source>Close Results Tab</source>
         <translation>결과창 닫기</translation>
     </message>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="321"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="314"/>
         <source>Do you really want to close these results?</source>
         <translation>이 결과들을 모두 닫을까요?</translation>
     </message>
@@ -2377,8 +2381,8 @@ BiS 파일 개선에 참여하는 사람이 많을수록, 실제 BiS에 가까�
         <translation type="vanished">模拟配置错误：</translation>
     </message>
     <message>
-        <location filename="../qt/sc_SimulationThread.cpp" line="88"/>
-        <location filename="../qt/sc_SimulationThread.cpp" line="102"/>
+        <location filename="../qt/sc_SimulationThread.cpp" line="90"/>
+        <location filename="../qt/sc_SimulationThread.cpp" line="104"/>
         <source>Simulation runtime error</source>
         <translation>模拟时发生运行时错误</translation>
     </message>
@@ -2386,22 +2390,22 @@ BiS 파일 개선에 참여하는 사람이 많을수록, 실제 BiS에 가까�
 <context>
     <name>SC_SingleResultTab</name>
     <message>
-        <location filename="../qt/sc_window.cpp" line="189"/>
+        <location filename="../qt/sc_window.cpp" line="182"/>
         <source>Save results</source>
         <translation>모든 결과 저장</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="212"/>
+        <location filename="../qt/sc_window.cpp" line="205"/>
         <source>Save Result</source>
         <translation>결과 저장</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="212"/>
+        <location filename="../qt/sc_window.cpp" line="205"/>
         <source>Result saved to %1</source>
         <translation>결과가 %1 에 저장되었습니다</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="214"/>
+        <location filename="../qt/sc_window.cpp" line="207"/>
         <source>Results saved to: %1
 </source>
         <translation>모든 결과들이 %1 에 저장되었습니다
@@ -2539,12 +2543,12 @@ BiS 파일 개선에 참여하는 사람이 많을수록, 실제 BiS에 가까�
         <translation>모두 닫기</translation>
     </message>
     <message>
-        <location filename="../qt/util/sc_tabbar.cpp" line="233"/>
+        <location filename="../qt/util/sc_tabbar.cpp" line="237"/>
         <source>Modify Tab Title</source>
         <translation>탭 이름 수정하기</translation>
     </message>
     <message>
-        <location filename="../qt/util/sc_tabbar.cpp" line="233"/>
+        <location filename="../qt/util/sc_tabbar.cpp" line="237"/>
         <source>New Tab Title:</source>
         <translation>새 탭 이름:</translation>
     </message>
@@ -2552,7 +2556,7 @@ BiS 파일 개선에 참여하는 사람이 많을수록, 실제 BiS에 가까�
 <context>
     <name>SC_TabWidgetCloseAll</name>
     <message>
-        <location filename="../qt/util/sc_recentlyclosed.cpp" line="49"/>
+        <location filename="../qt/util/sc_recentlyclosed.cpp" line="51"/>
         <source>Close All Tabs</source>
         <translation>모든 탭 닫기</translation>
     </message>
@@ -2579,29 +2583,24 @@ BiS 파일 개선에 참여하는 사람이 많을수록, 실제 BiS에 가까�
 <context>
     <name>UpdateCheckWidget</name>
     <message>
-        <location filename="../qt/sc_UpdateCheck.cpp" line="98"/>
         <source>A new version of Simulationcraft has been released</source>
-        <translation>Simulationcraft의 새 버전이 나왔습니다</translation>
+        <translation type="vanished">Simulationcraft의 새 버전이 나왔습니다</translation>
     </message>
     <message>
-        <location filename="../qt/sc_UpdateCheck.cpp" line="99"/>
         <source>Your current version is</source>
-        <translation>당신의 현재 버전은</translation>
+        <translation type="vanished">당신의 현재 버전은</translation>
     </message>
     <message>
-        <location filename="../qt/sc_UpdateCheck.cpp" line="100"/>
         <source>The new version is</source>
-        <translation>새 버전은</translation>
+        <translation type="vanished">새 버전은</translation>
     </message>
     <message>
-        <location filename="../qt/sc_UpdateCheck.cpp" line="101"/>
         <source>You can download the new release from </source>
-        <translation>다음 링크에서 새로운 버전을 받을 수 있습니다 </translation>
+        <translation type="vanished">다음 링크에서 새로운 버전을 받을 수 있습니다 </translation>
     </message>
     <message>
-        <location filename="../qt/sc_UpdateCheck.cpp" line="104"/>
         <source>Release notes</source>
-        <translation>릴리즈 노트</translation>
+        <translation type="vanished">릴리즈 노트</translation>
     </message>
 </context>
 </TS>
