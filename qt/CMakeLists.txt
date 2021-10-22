@@ -38,13 +38,15 @@ target_include_directories(SimulationCraft PUBLIC ../engine/)
 target_link_libraries(SimulationCraft engine Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::WebEngineCore Qt${QT_VERSION_MAJOR}::WebEngineWidgets)
 
 #translations
-qt_add_lupdate(SimulationCraft TS_FILES 
-  ../locale/sc_de.ts ../locale/sc_cn.ts ../locale/sc_it.ts ../locale/sc_ko.ts)
-set_source_files_properties(../locale/sc_de.ts ../locale/sc_cn.ts ../locale/sc_it.ts ../locale/sc_ko.ts
-  PROPERTIES OUTPUT_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/../locale")
-qt_add_lrelease(SimulationCraft TS_FILES 
-  ../locale/sc_de.ts ../locale/sc_cn.ts ../locale/sc_it.ts ../locale/sc_ko.ts
-  )
+if (${QT_VERSION_MAJOR} EQUAL 6)
+  qt_add_lupdate(SimulationCraft TS_FILES 
+    ../locale/sc_de.ts ../locale/sc_cn.ts ../locale/sc_it.ts ../locale/sc_ko.ts)
+  set_source_files_properties(../locale/sc_de.ts ../locale/sc_cn.ts ../locale/sc_it.ts ../locale/sc_ko.ts
+    PROPERTIES OUTPUT_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/../locale")
+  qt_add_lrelease(SimulationCraft TS_FILES 
+    ../locale/sc_de.ts ../locale/sc_cn.ts ../locale/sc_it.ts ../locale/sc_ko.ts
+    )
+endif()
 
 install(TARGETS SimulationCraft DESTINATION ${SIMC_INSTALL_BIN})
 install(FILES 
