@@ -6062,6 +6062,7 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   if ( !ab::hit_any_target )
     return;
 
+  const auto rs = cast_state( state );
   double max_spend = std::min( p()->resources.current[ RESOURCE_COMBO_POINT ], p()->consume_cp_max() );
   ab::stats->consume_resource( RESOURCE_COMBO_POINT, max_spend );
   p()->resource_loss( RESOURCE_COMBO_POINT, max_spend );
@@ -6101,7 +6102,6 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   // Remove Echoing Reprimand Buffs
   if ( p()->covenant.echoing_reprimand->ok() && consumes_echoing_reprimand() )
   {
-    const auto rs = cast_state( state );
     int base_cp = rs->get_combo_points( true );
     if ( rs->get_combo_points() > base_cp )
     {
@@ -6117,11 +6117,11 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   // This only appears to trigger from damaging finishers, as SnD does not do anything
   if ( p()->legendary.banshees_blight && ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ) )
   {
-    int stack_count = td( state->target )->debuffs.banshees_blight->check();
-    if ( stack_count > 0 && p()->rng().roll( max_spend * p()->legendary.banshees_blight->effectN( 2 ).percent() ) )
+    int stack_count = td( rs->target )->debuffs.banshees_blight->check();
+    if ( stack_count > 0 && p()->rng().roll( rs->get_combo_points() * p()->legendary.banshees_blight->effectN( 2 ).percent() ) )
     {
       // Only executes on the "primary" target of AoE finishers
-      player_t* proc_target = state->target;
+      player_t* proc_target = rs->target;
       for ( int i = 0; i < stack_count; ++i )
       {
         make_event( *ab::sim, i * 150_ms, [ this, proc_target ]
