@@ -1,4 +1,4 @@
-// Spell text, wow build 9.1.5.40696
+// Spell text, wow build 9.1.5.40738
 static const std::array<spelltext_data_t, 15590> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -14452,7 +14452,7 @@ static const std::array<spelltext_data_t, 15590> __ptr_spelltext_data { {
   { 339445, "$@spelldesc339340", "You're able to cast while moving.", 0 },
   { 339455, "Agony and Unstable Affliction damage have a |cFFFFFFFF${$s1}.1%|r chance to reduce the cooldown of Summon Darkglare by $<cdr> sec.", 0, 0 },
   { 339459, "When Feign Death ends, you take |cFFFFFFFF${-$s1}.1%|r reduced damage for $339461d.", 0, 0 },
-  { 339461, "$@spelldesc339459", "Damage taken reduced by ${$w1}.1%.", 0 },
+  { 339461, "$@spelldesc339459", "Damage taken reduced by ${$W1*-1}.1%.", 0 },
   { 339463, "$@spelldesc339348", "All secondary stats increased by $w1.", 0 },
   { 339481, "The duration of Agony is increased by |cFFFFFFFF${$s1/1000}.1 sec|r.", 0, 0 },
   { 339495, "Successfully interrupting an enemy with $?s147362[Counter Shot][Muzzle] grants |cFFFFFFFF${$s1}|r Focus.", 0, 0 },
@@ -15592,11 +15592,11 @@ static const std::array<spelltext_data_t, 15590> __ptr_spelltext_data { {
   { 363041, "A swig of strong brew that coalesces purified chi escaping your body into a celestial guard, absorbing $<absorb> damage.", "Absorbs $w1 damage.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.5.40696
+// spelltext hotfix entries, wow build 9.1.5.40738
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.1.5.40696
+// Spell description variables, wow build 9.1.5.40738
 static const std::array<spelldesc_vars_data_t, 305> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15905,7 +15905,7 @@ static const std::array<spelldesc_vars_data_t, 305> __ptr_spelldesc_vars_data { 
   {  363041, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.5.40696
+// spelldesc_vars hotfix entries, wow build 9.1.5.40738
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
