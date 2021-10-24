@@ -215,6 +215,7 @@ public:
 
     movement_buff_t* fel_rush_move;
     movement_buff_t* vengeful_retreat_move;
+    movement_buff_t* metamorphosis_move;
 
     // Vengeance
     buff_t* demon_spikes;
@@ -787,7 +788,8 @@ bool movement_buff_t::trigger( int s, double v, double c, timespan_t d )
   assert( buff_duration() > timespan_t::zero() );
 
   // Check if we're already moving away from the target, if so we will now be moving towards it
-  if ( dh->current.distance_to_move || dh->buff.out_of_range->check() || dh->buff.vengeful_retreat_move->check() )
+  if ( dh->current.distance_to_move || dh->buff.out_of_range->check() ||
+       dh->buff.vengeful_retreat_move->check() || dh->buff.metamorphosis_move->check() )
   {
     dh->set_out_of_range(timespan_t::zero());
     yards_from_melee = 0.0;
@@ -2695,9 +2697,15 @@ struct metamorphosis_t : public demon_hunter_spell_t
     }
   };
 
+  double landing_distance;
+
   metamorphosis_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "metamorphosis", p, p->spec.metamorphosis, options_str )
+    : demon_hunter_spell_t( "metamorphosis", p, p->spec.metamorphosis ),
+    landing_distance( 0.0 )
   {
+    add_option( opt_float( "landing_distance", landing_distance, 0.0, 40.0 ) );
+    parse_options( options_str );
+
     may_miss = false;
     dot_duration = timespan_t::zero();
 
@@ -2708,7 +2716,13 @@ struct metamorphosis_t : public demon_hunter_spell_t
       min_gcd                 = timespan_t::from_seconds( 1.0 );  // Cannot use skills during travel time
       travel_speed            = 1.0;                              // Allows use in the precombat list
 
-      impact_action = p->get_background_action<metamorphosis_impact_t>( "metamorphosis_impact" );
+      // If we are landing outside of the impact radius, we don't need to assign the impact spell
+      p->buff.metamorphosis_move->distance_moved = landing_distance;
+      if ( landing_distance < 8.0 )
+      {
+        impact_action = p->get_background_action<metamorphosis_impact_t>( "metamorphosis_impact" );
+      }
+      
       // Don't assign the stats here because we don't want Meta to show up in the DPET chart
     }
     else // DEMON_HUNTER_VENGEANCE
@@ -2733,7 +2747,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
 
-    if (p()->specialization() == DEMON_HUNTER_HAVOC)
+    if ( p()->specialization() == DEMON_HUNTER_HAVOC )
     {
       // Buff is gained at the start of the leap.
       p()->buff.metamorphosis->extend_duration_or_trigger();
@@ -2742,6 +2756,12 @@ struct metamorphosis_t : public demon_hunter_spell_t
       {
         p()->cooldown.eye_beam->reset( false );
         p()->cooldown.blade_dance->reset( false );
+      }
+
+      // If we are landing outside of point-blank range, trigger the movement buff
+      if ( landing_distance > 0.0 )
+      {
+        p()->buff.metamorphosis_move->trigger();
       }
     }
     else // DEMON_HUNTER_VENGEANCE
@@ -4968,6 +4988,11 @@ void demon_hunter_t::create_buffs()
     ->set_chance( 1.0 )
     ->set_duration( spec.vengeful_retreat->duration() );
 
+  buff.metamorphosis_move = new movement_buff_t( this, "metamorphosis_movement", spell_data_t::nil() );
+  buff.metamorphosis_move
+    ->set_chance( 1.0 )
+    ->set_duration( 1_s );
+
   // Vengeance ==============================================================
 
   buff.demon_spikes = new buffs::demon_spikes_t(this);
@@ -6493,6 +6518,7 @@ void demon_hunter_t::set_out_of_range( timespan_t duration )
     buff.out_of_range->expire();
     buff.fel_rush_move->expire();
     buff.vengeful_retreat_move->expire();
+    buff.metamorphosis_move->expire();
     event_t::cancel( exit_melee_event );
   }
   else
