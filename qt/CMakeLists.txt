@@ -11,7 +11,7 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Gui REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS WebEngineCore REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS WebEngineWidgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS LinguistTools)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS LinguistTools QUIET)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
@@ -38,7 +38,7 @@ target_include_directories(SimulationCraft PUBLIC ../engine/)
 target_link_libraries(SimulationCraft engine Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::WebEngineCore Qt${QT_VERSION_MAJOR}::WebEngineWidgets)
 
 #translations
-if (${QT_VERSION_MAJOR} EQUAL 6)
+if (Qt${QT_VERSION_MAJOR}LinguistTools_FOUND AND ${QT_VERSION_MAJOR} EQUAL 6)
   qt_add_lupdate(SimulationCraft TS_FILES 
     ../locale/sc_de.ts ../locale/sc_cn.ts ../locale/sc_it.ts ../locale/sc_ko.ts)
   set_source_files_properties(../locale/sc_de.ts ../locale/sc_cn.ts ../locale/sc_it.ts ../locale/sc_ko.ts
