@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.40120 Live (hotfix 2021-10-03/40120)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725, git build shadowlands a09e628b, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -9348,7 +9348,6 @@ Variables        : $damage=${($SPS*$s2/100)*(1+$@versadmg)*$m3/100}
 $healing=${($SPS*$s5/100)*(1+$@versadmg)*$m3/100}
 
 Name             : Mindgames (id=323701) [Spell Family (6), Hidden] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : None
