@@ -1,4 +1,4 @@
-// Spell text, wow build 9.1.5.40738
+// Spell text, wow build 9.1.5.40772
 static const std::array<spelltext_data_t, 15590> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -7946,7 +7946,7 @@ static const std::array<spelltext_data_t, 15590> __ptr_spelltext_data { {
   { 228449, "$@spelldesc228448", "Versatility increased by $s1.", 0 },
   { 228450, "Increases your maximum $?a137005[Runic Power]?a212611[Fury and Pain]?a137009[Mana, Rage, and Energy]?a137014[Focus]?a137022[Mana and Energy]?a137026|a137018|a137042[Mana]?a137030[Mana and Insanity]?a137034[Energy]?a137038[Mana and Maelstrom]?a137047[Rage][resource] by $s1%.", 0, 0 },
   { 228461, "Have a nibble, increasing your healing and magic damage done by $s1% for $d.", "Healing and magic damage done increased by $s1%.", 0 },
-  { 228462, "Increases your autoattack damage by $s1%.", 0, 0 },
+  { 228462, "Increases your autoattack damage by $s1.", 0, 0 },
   { 228463, "Increases your movement speed while dead by $228464s1%.", 0, 0 },
   { 228464, "$@spelldesc228463", "$s1% increased movement speed while dead.", 0 },
   { 228477, "Viciously strike all enemies in front of you for $228478s1 Physical damage and heal yourself for $s4. Deals reduced damage beyond $228478s2 targets.\r\n\r\nConsumes up to $s3 Soul Fragments within $s1 yds$?s321021[ and heals you for an additional $s5 for each Soul Fragment consumed][].", 0, 0 },
@@ -15592,11 +15592,11 @@ static const std::array<spelltext_data_t, 15590> __ptr_spelltext_data { {
   { 363041, "A swig of strong brew that coalesces purified chi escaping your body into a celestial guard, absorbing $<absorb> damage.", "Absorbs $w1 damage.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.5.40738
+// spelltext hotfix entries, wow build 9.1.5.40772
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.1.5.40738
+// Spell description variables, wow build 9.1.5.40772
 static const std::array<spelldesc_vars_data_t, 305> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15905,7 +15905,7 @@ static const std::array<spelldesc_vars_data_t, 305> __ptr_spelldesc_vars_data { 
   {  363041, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.5.40738
+// spelldesc_vars hotfix entries, wow build 9.1.5.40772
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

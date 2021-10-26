@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.40120 Live (hotfix 2021-10-03/40120, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725, no-networking)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -13500,7 +13500,6 @@ Effects          :
 Description      : Clearcast Regrowths heal for an additional |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Floral Recycling (id=340621) [Spell Family (7), Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -13517,7 +13516,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=840656)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Misc Value: 12 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Swiftmend's healing is increased by |cFFFFFFFF$s1%|r of the consumed heal over time effect.
 
 Name             : Taste for Blood (id=340682) [Spell Family (7), Passive, Hidden] 
