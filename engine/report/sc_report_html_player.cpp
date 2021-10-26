@@ -13,6 +13,7 @@
 #include "report/decorators.hpp"
 #include "report/charts.hpp"
 #include "player/player_talent_points.hpp"
+#include "player/scaling_metric_data.hpp"
 #include "sc_highchart.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/sc_profileset.hpp"

@@ -8,6 +8,7 @@
 #include "unique_gear.hpp"
 
 #include "unique_gear_shadowlands.hpp"
+#include "player/scaling_metric_data.hpp"
 #include "player/soulbinds.hpp"
 #include "simulationcraft.hpp"
 #include "dbc/racial_spells.hpp"

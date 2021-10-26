@@ -13,15 +13,11 @@
 #include "rating.hpp"
 #include "weapon.hpp"
 #include "effect_callbacks.hpp"
-#include "util/plot_data.hpp"
 #include "player_collected_data.hpp"
 #include "player_processed_report_information.hpp"
 #include "player_stat_cache.hpp"
-#include "scaling_metric_data.hpp"
 #include "util/cache.hpp"
-#include "dbc/item_database.hpp"
 #include "dbc/specialization.hpp"
-#include "util/util.hpp"
 #include "assessor.hpp"
 #include <map>
 #include <set>
@@ -57,8 +53,10 @@ struct pet_t;
 struct player_description_t;
 struct player_report_extension_t;
 struct player_scaling_t;
+struct plot_data_t;
 struct proc_t;
 struct real_ppm_t;
+struct scaling_metric_data_t;
 struct set_bonus_t;
 class shuffled_rng_t;
 struct special_effect_t;
@@ -747,8 +745,7 @@ public:
   const char* primary_tree_name() const;
   timespan_t total_reaction_time();
   double avg_item_level() const;
-  double get_attribute( attribute_e a ) const
-  { return util::floor( composite_attribute( a ) * composite_attribute_multiplier( a ) ); }
+  double get_attribute( attribute_e a ) const;
   double strength() const
   { return get_attribute( ATTR_STRENGTH ); }
   double agility() const
@@ -901,23 +898,7 @@ public:
 
   virtual double resource_regen_per_second( resource_e ) const;
 
-  double apply_combat_rating_dr( rating_e rating, double value ) const
-  {
-    switch ( rating )
-    {
-      case RATING_LEECH:
-      case RATING_SPEED:
-      case RATING_AVOIDANCE:
-        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_TERTIARY_CR_CURVE, value * 100.0 ) / 100.0;
-      case RATING_MASTERY:
-        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_SECONDARY_CR_CURVE, value );
-      case RATING_MITIGATION_VERSATILITY:
-        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_VERS_MITIG_CR_CURVE, value * 100.0 ) / 100.0;
-      default:
-        // Note, curve uses %-based values, not values divided by 100
-        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_SECONDARY_CR_CURVE, value * 100.0 ) / 100.0;
-    }
-  }
+  double apply_combat_rating_dr( rating_e rating, double value ) const;
 
   virtual double composite_melee_haste() const;
   virtual double composite_melee_speed() const;
@@ -1137,7 +1118,7 @@ public:
 
   virtual void analyze( sim_t& );
 
-  scaling_metric_data_t scaling_for_metric( scale_metric_e metric ) const;
+  scaling_metric_data_t scaling_for_metric( enum scale_metric_e metric ) const;
 
   virtual action_t* create_proc_action( util::string_view /* name */, const special_effect_t& /* effect */ )
   { return nullptr; }

@@ -21,6 +21,7 @@
 #include "dbc/active_spells.hpp"
 #include "dbc/azerite.hpp"
 #include "dbc/dbc.hpp"
+#include "dbc/item_database.hpp"
 #include "dbc/item_set_bonus.hpp"
 #include "dbc/rank_spells.hpp"
 #include "dbc/specialization_spell.hpp"
@@ -39,6 +40,7 @@
 #include "player/player_event.hpp"
 #include "player/player_scaling.hpp"
 #include "player/sample_data_helper.hpp"
+#include "player/scaling_metric_data.hpp"
 #include "player/set_bonus.hpp"
 #include "player/soulbinds.hpp"
 #include "player/spawner_base.hpp"
@@ -57,6 +59,7 @@
 #include "sim/shuffled_rng.hpp"
 #include "sim/cooldown_waste_data.hpp"
 #include "util/io.hpp"
+#include "util/plot_data.hpp"
 #include "util/rng.hpp"
 #include "util/util.hpp"
 
@@ -3366,6 +3369,24 @@ double player_t::resource_regen_per_second( resource_e r ) const
   }
 
   return reg;
+}
+
+double player_t::apply_combat_rating_dr( rating_e rating, double value ) const
+{
+  switch ( rating )
+  {
+    case RATING_LEECH:
+    case RATING_SPEED:
+    case RATING_AVOIDANCE:
+      return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_TERTIARY_CR_CURVE, value * 100.0 ) / 100.0;
+    case RATING_MASTERY:
+      return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_SECONDARY_CR_CURVE, value );
+    case RATING_MITIGATION_VERSATILITY:
+      return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_VERS_MITIG_CR_CURVE, value * 100.0 ) / 100.0;
+    default:
+      // Note, curve uses %-based values, not values divided by 100
+      return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_SECONDARY_CR_CURVE, value * 100.0 ) / 100.0;
+  }
 }
 
 double player_t::composite_melee_haste() const
@@ -9369,6 +9390,11 @@ double player_t::avg_item_level() const
     avg_ilvl /= num_ilvl_items;
 
   return avg_ilvl;
+}
+
+double player_t::get_attribute( attribute_e a ) const
+{
+  return util::floor( composite_attribute( a ) * composite_attribute_multiplier( a ) );
 }
 
 void player_t::create_talents_armory()
