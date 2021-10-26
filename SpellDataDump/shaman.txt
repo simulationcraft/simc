@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725, git build shadowlands a09e628b, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -3116,7 +3116,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 
 Name             : Restoration Shaman (id=137039) [Spell Family (11), Passive, Hidden] 
-Class            : Restoration Death Knight, Shaman
+Class            : Restoration Shaman
 School           : Physical
 Spell Type       : None
 Labels           : 1182: Resurgence (16196 effect#2), Resurgence (16196 effect#3)
@@ -3172,7 +3172,7 @@ Effects          :
 Description      : Restoration Shaman core passive
 
 Name             : Elemental Shaman (id=137040) [Spell Family (11), Passive, Hidden] 
-Class            : Elemental Death Knight, Shaman
+Class            : Elemental Shaman
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3213,7 +3213,7 @@ Effects          :
 Description      : Elemental Shaman baseline passive
 
 Name             : Enhancement Shaman (id=137041) [Spell Family (11), Passive, Hidden] 
-Class            : Enhancement Death Knight, Shaman
+Class            : Enhancement Shaman
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3488,7 +3488,7 @@ Effects          :
 Description      : Every ${$c*$s1} mana you spend brings a High Tide, making your next $288675n Chain Heals heal for an additional $288675s1% and not reduce with each jump.
 
 Name             : Storm Elemental (id=157299) [Spell Family (11)] 
-Class            : Death Knight, Shaman
+Class            : Shaman
 School           : Fire
 Spell Type       : None
 Spell Level      : 1
@@ -4587,7 +4587,7 @@ Description      : Crash Lightning also electrifies the ground, leaving an elect
 
 Name             : Storm Elemental (id=192249) [Spell Family (11)] 
 Replaces         : Fire Elemental (id=198067)
-Class            : Death Knight, Shaman
+Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
@@ -7086,7 +7086,7 @@ Description      : Increases the critical strike chance of Crash Lightning by $s
 Tooltip          : Increases the critical strike chance of Crash Lightning by $s1 and increases the radius of Crash Lightning by $s2.
 
 Name             : Wind Gust (id=263806) [Spell Family (11)] 
-Class            : Death Knight, Shaman
+Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 1

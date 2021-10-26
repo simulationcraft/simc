@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725, git build shadowlands a09e628b, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -3477,7 +3477,7 @@ Effects          :
                    Affected Spells (Category): Shadowburn (17877)
 
 Name             : Affliction Warlock (id=137043) [Spell Family (5), Passive, Hidden] 
-Class            : Affliction Death Knight, Warlock
+Class            : Affliction Warlock
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3523,7 +3523,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Demonology Warlock (id=137044) [Spell Family (5), Passive, Hidden] 
-Class            : Demonology Death Knight, Warlock
+Class            : Demonology Warlock
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3578,7 +3578,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Destruction Warlock (id=137046) [Spell Family (5), Passive, Hidden] 
-Class            : Destruction Death Knight, Warlock
+Class            : Destruction Warlock
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 

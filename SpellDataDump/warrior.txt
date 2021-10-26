@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725, git build shadowlands a09e628b, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -2860,7 +2860,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Protection Warrior (id=137048) [Spell Family (4), Passive, Hidden] 
-Class            : Protection Warrior, Death Knight
+Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2917,7 +2917,7 @@ Effects          :
                    Affected Spells (Label): Condemn (317320)
 
 Name             : Arms Warrior (id=137049) [Spell Family (4), Passive, Hidden] 
-Class            : Arms Warrior, Death Knight
+Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
@@ -2969,7 +2969,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Fury Warrior (id=137050) [Spell Family (4), Passive, Hidden] 
-Class            : Fury Warrior, Death Knight
+Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3096,7 +3096,7 @@ Description      : $@spelldesc146974
 
 Name             : Ravager (id=152277) [Spell Family (4)] 
 Replaces         : Bladestorm (id=227847)
-Class            : Warrior, Death Knight
+Class            : Warrior
 School           : Physical
 Spell Type       : None
 Range            : 40 yards
@@ -3175,7 +3175,7 @@ Effects          :
 Description      : Maximum rage increased by $s1%.
 
 Name             : Ravager (id=156287) [Spell Family (4)] 
-Class            : Warrior, Death Knight
+Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
@@ -5389,7 +5389,7 @@ Description      : $@spelldesc242301
 Tooltip          : Damage and healing done by your next Bloodthirst increased by $s1%.
 
 Name             : Ravager (id=248439) [Spell Family (4)] 
-Class            : Warrior, Death Knight
+Class            : Warrior
 School           : Physical
 Spell Type       : None
 Affecting spells : Recklessness (1719 effect#5), Unnerving Focus (337155 effect#2)

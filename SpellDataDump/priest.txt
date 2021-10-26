@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725, git build shadowlands a09e628b, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -2834,7 +2834,7 @@ Description      : $@spelldesc110744
 
 Name             : Mindbender (id=123040) [Spell Family (6)] 
 Replaces         : Shadowfiend (id=34433)
-Class            : Priest, Death Knight
+Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
@@ -2864,7 +2864,7 @@ Effects          :
 Description      : Summons a Mindbender to attack the target for $d. You regenerate ${$123051m1/100}.1% of maximum mana each time the Mindbender attacks.
 
 Name             : Mana Leech (id=123051) 
-Class            : Priest, Death Knight
+Class            : Priest
 School           : Shadow
 Spell Type       : None
 Spell Level      : 1
@@ -3123,7 +3123,7 @@ Effects          :
                    Affected Spells (Category): Shadow Word: Death (32379)
 
 Name             : Holy Priest (id=137031) [Spell Family (6), Passive, Hidden] 
-Class            : Holy Priest, Death Knight
+Class            : Holy Priest
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3169,7 +3169,7 @@ Effects          :
 Description      : Holy Priest core passive
 
 Name             : Discipline Priest (id=137032) [Spell Family (6), Passive, Hidden] 
-Class            : Discipline Priest, Death Knight
+Class            : Discipline Priest
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3236,7 +3236,7 @@ Effects          :
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
-Class            : Shadow Priest, Death Knight
+Class            : Shadow Priest
 Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
@@ -4466,7 +4466,7 @@ Effects          :
 Description      : Reduces the cooldown of Vampiric Embrace by ${$m1/-1000} sec and increases its healing done by $s2%.
 
 Name             : Power Leech (id=200010) 
-Class            : Priest, Death Knight
+Class            : Priest
 School           : Shadow
 Spell Type       : None
 Spell Level      : 1
@@ -4509,7 +4509,7 @@ Description      : When you cast Heal or Flash Heal, $s1% of the healing is repl
 
 Name             : Mindbender (id=200174) [Spell Family (6)] 
 Replaces         : Shadowfiend (id=34433)
-Class            : Priest, Death Knight
+Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1

@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725, git build shadowlands a09e628b, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -2812,7 +2812,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 
 Name             : Fire Mage (id=137019) [Spell Family (3), Passive, Hidden] 
-Class            : Fire Death Knight, Mage
+Class            : Fire Mage
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2865,7 +2865,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Frost Mage (id=137020) [Spell Family (3), Passive, Hidden] 
-Class            : Frost Death Knight, Mage
+Class            : Frost Mage
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2918,7 +2918,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Arcane Mage (id=137021) [Spell Family (3), Passive, Hidden] 
-Class            : Arcane Death Knight, Mage
+Class            : Arcane Mage
 School           : Physical
 Spell Type       : None
 Spell Level      : 10 (max 30)

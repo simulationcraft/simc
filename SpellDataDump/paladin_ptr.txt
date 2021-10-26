@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725)
 
 Name             : Haste (id=65) 
 Class            : Paladin
@@ -2632,7 +2632,7 @@ Effects          :
                    Family Flags: 92
 
 Name             : Retribution Paladin (id=137027) [Spell Family (10), Passive, Hidden] 
-Class            : Retribution Paladin, Death Knight
+Class            : Retribution Paladin
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2701,7 +2701,7 @@ Effects          :
                    Family Flags: 78
 
 Name             : Protection Paladin (id=137028) [Spell Family (10), Passive, Hidden] 
-Class            : Protection Paladin, Death Knight
+Class            : Protection Paladin
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2761,7 +2761,7 @@ Effects          :
                    Affected Spells (Label): Indomitable Justice (275496)
 
 Name             : Holy Paladin (id=137029) [Spell Family (10), Passive, Hidden] 
-Class            : Holy Paladin, Death Knight
+Class            : Holy Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
@@ -4232,7 +4232,7 @@ Description      : $@spelldesc205273
 Tooltip          : Stunned.
 
 Name             : Chain of Thrayn (id=206338) [Spell Family (10), Passive] 
-Class            : Paladin, Death Knight
+Class            : Paladin
 School           : Physical
 Spell Type       : None
 Req. Max Level   : 49
@@ -4507,7 +4507,7 @@ Damage is increased by $s2% when used against a stunned target.
 
 Name             : Avenging Crusader (id=216331) [Spell Family (10)] 
 Replaces         : Avenging Wrath (id=31884)
-Class            : Paladin, Death Knight
+Class            : Paladin
 School           : Holy
 Spell Type       : None
 Resource         : 50% Base Mana (0) (id=191685)
@@ -4958,7 +4958,7 @@ Description      : Art of War resets the cooldown of Blade of Justice $s1% more 
 
 Name             : Crusade (id=231895) [Spell Family (10)] 
 Replaces         : Avenging Wrath (id=31884)
-Class            : Paladin, Death Knight
+Class            : Paladin
 School           : Holy
 Spell Type       : None
 Duration         : 25 seconds
@@ -7722,7 +7722,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to leak Azerite on the ground around you. Standing in the Azerite increases your primary stat by $s1 for $281516d.
 
 Name             : Chain of Thrayn (id=281573) [Spell Family (10), Hidden] 
-Class            : Paladin, Death Knight
+Class            : Paladin
 School           : Physical
 Spell Type       : None
 Req. Max Level   : 49

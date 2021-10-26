@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725, git build shadowlands a09e628b, no-networking)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -3194,7 +3194,7 @@ Description      : Leap forward $s2 yards.
 
 Name             : Incarnation: King of the Jungle (desc=Talent, Shapeshift) (id=102543) [Spell Family (7)] 
 Replaces         : Berserk (id=106951)
-Class            : Death Knight, Druid
+Class            : Druid
 School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
@@ -3236,7 +3236,7 @@ Finishing moves have a $w1% chance per combo point spent to refund $343216s1 com
 Energy costs reduced by $w2%.
 
 Name             : Prowl (id=102547) [Spell Family (7)] 
-Class            : Death Knight, Druid
+Class            : Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
@@ -3346,7 +3346,7 @@ Immune to effects that cause loss of control of your character.][]
 
 Name             : Incarnation: Chosen of Elune (desc=Talent, Shapeshift) (id=102560) [Spell Family (7)] 
 Replaces         : Celestial Alignment (id=194223)
-Class            : Death Knight, Druid
+Class            : Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
@@ -3571,7 +3571,7 @@ Description      : Shift into Bear Form and let loose a wild roar, increasing th
 Tooltip          : Movement speed increased by $s1%.
 
 Name             : Berserk (id=106951) [Spell Family (7)] 
-Class            : Feral Death Knight, Druid
+Class            : Feral Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 34
@@ -4328,7 +4328,7 @@ Effects          :
                    Base Value: 220 | Scaled Value: 220 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Guardian Druid (id=137010) [Spell Family (7), Passive, Hidden] 
-Class            : Guardian Death Knight, Druid
+Class            : Guardian Druid
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -4377,7 +4377,7 @@ Effects          :
                    Family Flags: 91
 
 Name             : Feral Druid (id=137011) [Spell Family (7), Passive, Hidden] 
-Class            : Feral Death Knight, Druid
+Class            : Feral Druid
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -4424,7 +4424,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 
 Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hidden] 
-Class            : Restoration Death Knight, Druid
+Class            : Restoration Druid
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -4478,7 +4478,7 @@ Effects          :
 Description      : Restoration Druid core passive
 
 Name             : Balance Druid (id=137013) [Spell Family (7), Passive, Hidden] 
-Class            : Balance Death Knight, Druid
+Class            : Balance Druid
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -8262,7 +8262,7 @@ Effects          :
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 Name             : Jungle Stalker (desc=Talent, Shapeshift) (id=252071) [Spell Family (7)] 
-Class            : Death Knight, Druid
+Class            : Druid
 School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
@@ -13906,7 +13906,7 @@ Effects          :
 Description      : The cooldown of Mighty Bash, Mass Entanglement, and Heart of the Wild are reduced by |cFFFFFFFF${-$s1}.1%|r.
 
 Name             : Berserk (id=343216) [Spell Family (7)] 
-Class            : Death Knight, Druid
+Class            : Druid
 School           : Physical
 Spell Type       : None
 Stance Mask      : 0x00000001
