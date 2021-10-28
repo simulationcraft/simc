@@ -350,6 +350,7 @@ void survival( player_t* p )
   cleave -> add_action( "resonating_arrow" );
   cleave -> add_action( "coordinated_assault" );
   cleave -> add_action( "wildfire_bomb,if=full_recharge_time<gcd" );
+  cleave -> add_action( "call_action_list,name=nta,if=runeforge.nessingwarys_trapping_apparatus.equipped&focus<variable.mb_rs_cost" ); 
   cleave -> add_action( "chakrams" );
   cleave -> add_action( "butchery,if=dot.shrapnel_bomb.ticking&(dot.internal_bleeding.stack<2|dot.shrapnel_bomb.remains<gcd)" );
   cleave -> add_action( "carve,if=dot.shrapnel_bomb.ticking" );
@@ -364,7 +365,7 @@ void survival( player_t* p )
   cleave -> add_action( "kill_shot" );
   cleave -> add_action( "flayed_shot" );
   cleave -> add_action( "a_murder_of_crows" );
-  cleave -> add_action( "steel_trap" );
+  cleave -> add_action( "steel_trap,if=focus+cast_regen<focus.max" );
   cleave -> add_action( "serpent_sting,target_if=min:remains,if=refreshable&talent.hydras_bite.enabled&target.time_to_die>8" );
   cleave -> add_action( "carve" );
   cleave -> add_action( "kill_command,target_if=focus+cast_regen<focus.max&(runeforge.nessingwarys_trapping_apparatus.equipped&cooldown.freezing_trap.remains&cooldown.tar_trap.remains|!runeforge.nessingwarys_trapping_apparatus.equipped)" );
