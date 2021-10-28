@@ -4168,7 +4168,8 @@ struct fallen_order_t : public monk_spell_t
 
     // Monks alternate summoning primary spec and non-primary spec
     // 8 summons in total (4 primary and a mix of 4 non-primary)
-    // for non-primary, there is a 50% chance one or the other non-primary is summoned
+    // for non-primary, there is a 50% chance one or the other non-primary is summoned [TODO: Remove line come 9.1.5]
+    // for non-primary, each non-primary is summoned twice
     for ( int i = 0; i < 8; i++ )
     {
       switch ( spec )
@@ -4177,6 +4178,13 @@ struct fallen_order_t : public monk_spell_t
         {
           if ( i % 2 )
             fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, primary_duration ) );
+          else if ( p()->is_ptr() )
+          {
+            if ( i % 3 )
+              fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, summon_duration ) );
+            else
+              fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, summon_duration ) );
+          }
           else if ( rng().roll( 0.5 ) )
             fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, summon_duration ) );
           else
@@ -4187,6 +4195,13 @@ struct fallen_order_t : public monk_spell_t
         {
           if ( i % 2 )
             fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, primary_duration ) );
+          else if ( p()->is_ptr() )
+          {
+            if ( i % 3 )
+              fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, summon_duration ) );
+            else
+              fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, summon_duration ) );
+          }
           else if ( rng().roll( 0.5 ) )
             fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, summon_duration ) );
           else
@@ -4197,6 +4212,13 @@ struct fallen_order_t : public monk_spell_t
         {
           if ( i % 2 )
             fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, primary_duration ) );
+          else if ( p()->is_ptr() )
+          {
+            if ( i % 3 )
+              fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, summon_duration ) );
+            else
+              fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, summon_duration ) );
+          }
           else if ( rng().roll( 0.5 ) )
             fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, summon_duration ) );
           else
