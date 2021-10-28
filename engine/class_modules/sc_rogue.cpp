@@ -434,6 +434,7 @@ public:
 
     // Subtlety
     const spell_data_t* backstab_2;
+    const spell_data_t* black_powder;
     const spell_data_t* deepening_shadows;
     const spell_data_t* find_weakness;
     const spell_data_t* relentless_strikes;
@@ -2605,7 +2606,15 @@ struct crimson_tempest_t : public rogue_attack_t
   crimson_tempest_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_attack_t( name, p, p -> talent.crimson_tempest, options_str )
   {
-    aoe = as<int>( data().effectN( 3 ).base_value() );
+    if ( p->is_ptr() )
+    {
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 3 ).base_value();
+    }
+    else
+    {
+      aoe = as<int>( data().effectN( 3 ).base_value() );
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -2819,12 +2828,21 @@ struct fan_of_knives_t: public rogue_attack_t
   fan_of_knives_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
     rogue_attack_t( name, p, p -> find_specialization_spell( "Fan of Knives" ), options_str )
   {
-    aoe = as<int>( data().effectN( 3 ).base_value() );
     energize_type     = action_energize::ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount   = data().effectN( 2 ).base_value();
     // 2021-10-07 - Not in the whitelist but confirmed as working as of 9.1.5 PTR
     affected_by.shadow_blades_cp = p->dbc->ptr;
+
+    if ( p->is_ptr() )
+    {
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 3 ).base_value();
+    }
+    else
+    {
+      aoe = as<int>( data().effectN( 3 ).base_value() );
+    }
   }
 
   double action_multiplier() const override
@@ -3476,6 +3494,11 @@ struct secret_technique_t : public rogue_attack_t
     secret_technique_attack_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
       rogue_attack_t( name, p, s )
     {
+      if ( p->is_ptr() )
+      {
+        aoe = -1;
+        reduced_aoe_targets = p->talent.secret_technique->effectN( 6 ).base_value();
+      }
     }
 
     double combo_point_da_multiplier( const action_state_t* state ) const override
@@ -3498,7 +3521,7 @@ struct secret_technique_t : public rogue_attack_t
   secret_technique_attack_t* clone_attack;
 
   secret_technique_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
-    rogue_attack_t( name, p, p -> talent.secret_technique, options_str )
+    rogue_attack_t( name, p, p->talent.secret_technique, options_str )
   {
     may_miss = false;
 
@@ -3767,6 +3790,10 @@ struct black_powder_t: public rogue_attack_t
     {
       callbacks = false; // 07/19/2021 -- Does not appear to trigger normal procs
       aoe = -1; // Yup, this is uncapped.
+      if ( p->is_ptr() )
+      {
+        reduced_aoe_targets = p->spec.black_powder->effectN( 4 ).base_value();
+      }
     }
 
     void reset() override
@@ -3806,9 +3833,15 @@ struct black_powder_t: public rogue_attack_t
   black_powder_bonus_t* bonus_attack;
 
   black_powder_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
-    rogue_attack_t( name, p, p -> find_specialization_spell( "Black Powder" ), options_str ),
+    rogue_attack_t( name, p, p->spec.black_powder, options_str ),
     bonus_attack( nullptr )
   {
+    if ( p->is_ptr() )
+    {
+      aoe = -1;
+      reduced_aoe_targets = p->spec.black_powder->effectN( 4 ).base_value();
+    }
+
     if ( p->find_rank_spell( "Black Powder", "Rank 2" )->ok() )
     {
       bonus_attack = p->get_background_action<black_powder_bonus_t>( "black_powder_bonus" );
@@ -3876,6 +3909,12 @@ struct shuriken_storm_t: public rogue_attack_t
     ap_type = attack_power_type::WEAPON_BOTH;
     // 04/22/2021 - Not in the whitelist but confirmed as working in-game
     affected_by.shadow_blades_cp = true;
+
+    if ( p->is_ptr() )
+    {
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 4 ).base_value();
+    }
   }
 
   void impact(action_state_t* state) override
@@ -7593,6 +7632,7 @@ void rogue_t::init_spells()
 
   // Subtlety
   spec.backstab_2           = find_rank_spell( "Backstab", "Rank 2" );
+  spec.black_powder         = find_specialization_spell( "Black Powder" );
   spec.deepening_shadows    = find_specialization_spell( "Deepening Shadows" );
   spec.find_weakness        = find_specialization_spell( "Find Weakness" );
   spec.relentless_strikes   = find_specialization_spell( "Relentless Strikes" );
