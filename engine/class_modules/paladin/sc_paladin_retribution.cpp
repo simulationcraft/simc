@@ -798,7 +798,8 @@ void paladin_t::create_ret_actions()
   }
 
   active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
-  active.necrolord_divine_storm = new divine_storm_t( this, true, 1.0 );
+  double necrolord_mult = 1.0 + covenant.necrolord -> effectN( 2 ).percent();
+  active.necrolord_divine_storm = new divine_storm_t( this, true, necrolord_mult );
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
