@@ -1204,7 +1204,8 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 
   debuff.abominations_frenzy_per_mob_icd = make_buff( *this, "abominations_frenzy_per_mob_icd", p -> legendary.abominations_frenzy )
                                             -> set_duration( p -> legendary.abominations_frenzy -> internal_cooldown() )
-                                            -> set_cooldown( 0_ms );
+                                            -> set_cooldown( 0_ms )
+                                            -> set_quiet( true );
 }
 
 // ==========================================================================
