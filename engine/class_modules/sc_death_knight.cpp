@@ -435,6 +435,10 @@ struct death_knight_td_t : public actor_target_data_t {
     // Soulbinds
     buff_t* debilitating_malady;
     buff_t* everfrost;
+
+    // Legendary
+    buff_t* abominations_frenzy;
+    buff_t* abominations_frenzy_per_mob_icd;
   } debuff;
 
   death_knight_td_t( player_t* target, death_knight_t* p );
@@ -1190,11 +1194,17 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   // Conduits
   debuff.debilitating_malady = make_buff( *this, "debilitating_malady", p -> find_spell( 338523 ) )
                               -> set_default_value( p -> conduits.debilitating_malady.percent() );
-  // Runeforge Legendary
+
   debuff.everfrost = make_buff( *this, "everfrost", p -> find_spell( 337989 ) )
                     -> set_default_value( p -> conduits.everfrost.percent() );
 
+  // Legendary
+  debuff.abominations_frenzy = make_buff( *this, "abominations_frenzy", p -> find_spell( 353546 ) )
+                            ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
 
+  debuff.abominations_frenzy_per_mob_icd = make_buff( *this, "abominations_frenzy_per_mob_icd", p -> legendary.abominations_frenzy )
+                                            -> set_duration( p -> legendary.abominations_frenzy -> internal_cooldown() )
+                                            -> set_cooldown( 0_ms );
 }
 
 // ==========================================================================
@@ -3456,6 +3466,22 @@ struct abomination_limb_damage_t : public death_knight_spell_t
       }
       p() -> cooldown.abomination_limb -> start();
     }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+    if( p() -> dbc -> ptr )
+      if ( p() -> legendary.abominations_frenzy.ok() )
+      {
+        auto td = get_td( state -> target );
+        // Only proc abom frenzy debuff if abom frenzy icd tracking debuff is down
+        if ( ! td -> debuff.abominations_frenzy_per_mob_icd -> up() )
+        {
+          td -> debuff.abominations_frenzy -> trigger();
+          td -> debuff.abominations_frenzy_per_mob_icd -> trigger();
+        }
+      }
   }
 };
 
@@ -9110,6 +9136,11 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
   if ( td && runeforge.rune_of_apocalypse )
   {
     m *= 1.0 + td -> debuff.apocalypse_war -> stack_value();
+  }
+
+  if( td && td -> debuff.abominations_frenzy -> up() )
+  {
+    m *= 1.0 + td -> debuff.abominations_frenzy -> value();
   }
 
   return m;
