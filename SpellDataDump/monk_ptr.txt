@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2071,21 +2071,21 @@ Description      : Clears $s1% of your damage delayed with Stagger.$?s322510[
 Increases the absorption of your next Celestial Brew by up to $322510s1%, based on your current level of Stagger][]
 
 Name             : Renewing Mist (id=119607) [Spell Family (53)] 
+Hotfixed         : Learn Level (1 -> 0), Max Spell Level (1 -> 0), Attributes, Required Level (1 -> 0)
 Class            : Monk
 School           : Nature
-Spell Type       : Magic
-Spell Level      : 1 (max 1)
+Spell Type       : None
 Range            : 50000 yards
 Family Flags     : 61
 Attributes       : ........ ........ x....... ...x....   .....x.. ..x..... ........ ........ 
-                 : ..x..... ........ ...x.... ....x...   ........ ........ ........ ..x...x. 
+                 : ..x..... ........ .x.x.... ....x...   ........ ........ ........ ..x...x. 
                  : ........ ........ ...xx... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ......x. 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Can Proc From Procs (122), Do Not Display Range (126), Allow Proc While Sitting (147), Aura Never Bounces (148), Vehicle Immunity Category (218), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Can Proc From Procs (122), Do Not Display Range (126), Allow Proc While Sitting (147), Aura Never Bounces (148), Vehicle Immunity Category (218), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=137980)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Friend (21)
@@ -2094,25 +2094,23 @@ Effects          :
 Description      : $@spelldesc115151
 
 Name             : Renewing Mist (id=119611) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 20 seconds
-Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting spells : Thunder Focus Tea (116680 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Shelter of Rin (281301 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 23, 48
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ..x..... x....... .x...... ........   ........ .x...... ........ ..x...x. 
                  : ........ .......x ........ ........   ........ .....x.. ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : ........ .x..x... ........ x.......   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x...x... ........ ....x... ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Not a Proc (105), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416), Periodic Script Runs Late (420), Periodic Refresh Extends Duration (436)
+                 : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Not a Proc (105), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Spell Haste Affects Periodic (173), Doesn't Reset Swing Timer if Instant (217), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416), Periodic Script Runs Late (420), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=138091)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.22500 | PvP Coefficient: 1.10000 | Target: Friend (21)
@@ -4291,6 +4289,7 @@ Description      : $@spelldesc191837
 Tooltip          : Restoring $w2 health every $t2 sec.
 
 Name             : Gust of Mists (id=191894) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -4299,14 +4298,14 @@ Range            : 100 yards
 Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 110
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ .x...... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Display Range (126), Allow Class Ability Procs (416)
+                 : Do Not Reset Combat Timers (81), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=281510)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.00100 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -4548,7 +4547,8 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=288833)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.32760 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.65520 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+Hotfixed         : AP Coefficient (0.3276 -> 0.6552)
 #2 (id=288837)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Snare | Target: Unknown(87) -> AOE enemy (instant) (16)
 #3 (id=335941)   : Apply Aura (6) | Dummy (4)
@@ -9817,7 +9817,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Ignore Line of Sight (66), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=815370)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 0.66667 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.666667)
 Description      : $@spelldesc325216
 
 Name             : Bonedust Brew (id=325218) [Spell Family (53)] 
