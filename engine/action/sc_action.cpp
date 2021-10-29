@@ -1282,19 +1282,26 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
     amount /= state->n_targets;
 
   // New Shadowlands AoE damage reduction based on total target count
-  if ( state->chain_target >= full_amount_targets && state->action->reduced_aoe_targets > 0.0 &&
+  // The square root factor reaches its minimum when the number of targets is equal
+  // to sim->max_aoe_enemies (usually 20), after that it remains constant.
+  if ( state->chain_target >= state->action->full_amount_targets &&
+       state->action->reduced_aoe_targets > 0.0 &&
        as<double>( state->n_targets ) > state->action->reduced_aoe_targets )
   {
-    amount *= std::sqrt( state->action->reduced_aoe_targets / state->n_targets );
+    amount *= std::sqrt( state->action->reduced_aoe_targets / std::min<int>( sim->max_aoe_enemies, state->n_targets ) );
   }
 
   amount *= composite_aoe_multiplier( state );
 
   // Spell goes over the maximum number of AOE targets - ignore for enemies
-  // TODO: determine interaction with new sqrt reduction. currently bugged on ptr as of build 9.1.5.40078 
-  if ( !state->action->split_aoe_damage && state->action->reduced_aoe_targets != 0.0 &&
-       state->n_targets > static_cast<size_t>( sim->max_aoe_enemies ) && !state->action->player->is_enemy() )
+  // Note that this split damage factor DOES affect spells that are supposed
+  // to do full damage to the main target.
+  if ( !state->action->split_aoe_damage &&
+       state->n_targets > static_cast<size_t>( sim->max_aoe_enemies ) &&
+       !state->action->player->is_enemy() )
+  {
     amount *= sim->max_aoe_enemies / static_cast<double>( state->n_targets );
+  }
 
   // Record initial amount to state
   state->result_raw = amount;
