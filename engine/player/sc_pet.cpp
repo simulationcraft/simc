@@ -234,6 +234,7 @@ void pet_t::demise()
   // Reset cooldowns of dynamic pets, so that eg. reused pet spawner pets get summoned with all their cooldowns reset.
   if ( dynamic )
   {
+    sim->print_debug( "{} resetting all cooldowns", *this );
     for ( auto* cooldown : cooldown_list )
     {
       cooldown->reset( false );
