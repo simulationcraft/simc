@@ -475,7 +475,7 @@ std::string covenant_state_t::covenant_option_str() const
     return {};
   }
 
-  return fmt::format( "covenant={}", m_covenant );
+  return fmt::format( "covenant={}", util::covenant_type_string( m_covenant ) );
 }
 
 std::unique_ptr<expr_t> covenant_state_t::create_expression(
