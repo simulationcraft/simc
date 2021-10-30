@@ -403,8 +403,8 @@ enum stats_e
 
 enum dot_behavior_e
 {
-  DOT_CLIP,
-  DOT_EXTEND,
+  DOT_CLIP,             // DoT is restarted from scratch with Duration
+  DOT_EXTEND,           // DoT is extended indefinitely by Duration
   DOT_REFRESH_DURATION, // Duration + Current Tick
   DOT_REFRESH_PANDEMIC, // Duration + Current Duration up to 1.3x
   DOT_NONE              // Does not refresh
