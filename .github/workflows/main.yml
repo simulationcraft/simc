@@ -77,6 +77,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev
+
       # Configure so we get build-commands.json
       - name: Configure
         run: cmake -H. -B'${{ runner.workspace }}/build' -DBUILD_GUI=OFF
