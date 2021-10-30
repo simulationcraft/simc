@@ -70,6 +70,23 @@ jobs:
         run: ${{ runner.workspace }}/b/ninja/simc spell_query=spell.name=auto_shot
 
 
+  clang-tidy:
+    name: ubuntu-clang-tidy
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # Configure so we get build-commands.json
+      - name: Configure
+        run: cmake -H. -B'${{ runner.workspace }}/build' -GNinja -DBUILD_GUI=OFF
+              -DCMAKE_BUILD_TYPE=Debug
+              -DCMAKE_CXX_COMPILER=clang++-12 -DCMAKE_C_COMPILER=clang-12
+
+      - name: Clang-tidy
+        run: |
+          run-clang-tidy-12 -j 0 -p ${{ runner.workspace }}/build engine/**/*.cpp
+
   ubuntu-clang-build:
     name: ubuntu-clang-build
     runs-on: ubuntu-20.04
