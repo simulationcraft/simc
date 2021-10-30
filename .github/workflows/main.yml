@@ -79,7 +79,7 @@ jobs:
 
       # Configure so we get build-commands.json
       - name: Configure
-        run: cmake -H. -B'${{ runner.workspace }}/build' -GNinja -DBUILD_GUI=OFF
+        run: cmake -H. -B'${{ runner.workspace }}/build' -DBUILD_GUI=OFF
               -DCMAKE_BUILD_TYPE=Debug
               -DCMAKE_CXX_COMPILER=clang++-12 -DCMAKE_C_COMPILER=clang-12
 
