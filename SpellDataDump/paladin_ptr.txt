@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725)
+SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725, no-networking)
 
 Name             : Haste (id=65) 
 Class            : Paladin

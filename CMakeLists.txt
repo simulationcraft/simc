@@ -28,6 +28,11 @@ if(${CMAKE_GENERATOR} STREQUAL "Ninja")
     endif()
 endif()
 
+# Default Blizzard Community Platform API key
+if (DEFINED SC_DEFAULT_APIKEY)
+    add_compile_options(-DSC_DEFAULT_APIKEY="${SC_DEFAULT_APIKEY}")
+endif()
+
 # output a compile_commands.json used for editor tooling
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
