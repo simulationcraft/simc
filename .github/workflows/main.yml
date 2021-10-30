@@ -80,7 +80,7 @@ jobs:
       - name: Install deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev
+          sudo apt-get install -y libcurl4-openssl-dev clang-tidy-12
 
       # Configure so we get build-commands.json
       - name: Configure
