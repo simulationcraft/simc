@@ -90,7 +90,12 @@ jobs:
 
       - name: Clang-tidy
         run: |
-          run-clang-tidy-12 -j 0 -p ${{ runner.workspace }}/build engine/**/*.cpp
+          run-clang-tidy-12 -j 0 -export-fixes clang-fixes.yaml -p ${{ runner.workspace }}/build engine/**/*.cpp
+
+      - name: Process clang-tidy warnings
+        uses: asarium/clang-tidy-action@v1
+        with:
+          fixesFile: clang-fixes.yaml
 
   ubuntu-clang-build:
     name: ubuntu-clang-build
