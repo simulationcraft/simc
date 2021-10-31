@@ -8786,10 +8786,11 @@ void druid_t::init_scaling()
   scaling->disable( STAT_STRENGTH );
 
   // workaround for resto dps scaling
-  if ( specialization() == DRUID_RESTORATION && role == ROLE_ATTACK )
+  if ( specialization() == DRUID_RESTORATION )
   {
     scaling->disable( STAT_AGILITY );
     scaling->disable( STAT_MASTERY_RATING );
+    scaling->disable( STAT_WEAPON_DPS );
     scaling->enable( STAT_INTELLECT );
   }
 
