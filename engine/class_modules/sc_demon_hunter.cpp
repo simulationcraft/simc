@@ -1986,8 +1986,11 @@ struct eye_beam_t : public demon_hunter_spell_t
     ability_lag         = p->world_lag;
     ability_lag_stddev  = p->world_lag_stddev;
 
-    tick_damage = p->get_background_action<eye_beam_tick_t>( "eye_beam_tick" );
-    add_child( tick_damage );
+    // Temporarily remove to investigate some potential issues
+    // tick_damage = p->get_background_action<eye_beam_tick_t>( "eye_beam_tick" );
+    // add_child( tick_damage );
+    
+    tick_action = p->get_background_action<eye_beam_tick_t>( "eye_beam_tick" );
 
     if ( p->active.collective_anguish )
     {
@@ -1998,7 +2001,8 @@ struct eye_beam_t : public demon_hunter_spell_t
   void tick( dot_t* d ) override
   {
     demon_hunter_spell_t::tick( d );
-    make_event<delayed_execute_event_t>( *p()->sim, p(), tick_damage, d->target, trigger_delay );
+    // Temporarily remove to investigate some potential issues
+    // make_event<delayed_execute_event_t>( *p()->sim, p(), tick_damage, d->target, trigger_delay );
   }
 
   void last_tick( dot_t* d ) override
@@ -2011,9 +2015,10 @@ struct eye_beam_t : public demon_hunter_spell_t
 
   void execute() override
   {
+    // Temporarily remove to investigate some potential issues
     // Eye Beam is applied via a player aura and experiences aura delay in applying damage tick events
     // Not a perfect implementation, but closer than the instant execution in current sims
-    trigger_delay = 2 * rng().gauss( p()->sim->default_aura_delay, p()->sim->default_aura_delay_stddev );
+    // trigger_delay = 2 * rng().gauss( p()->sim->default_aura_delay, p()->sim->default_aura_delay_stddev );
 
     // Trigger Meta before the execute so that the channel duration is affected by Meta haste
     p()->trigger_demonic();
