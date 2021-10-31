@@ -4006,6 +4006,8 @@ timespan_t action_t::calculate_dot_refresh_duration( const dot_t* dot, timespan_
       return dot->time_to_next_tick() + triggered_duration;
     case dot_behavior_e::DOT_EXTEND:
       return dot->remains() + triggered_duration;
+    case dot_behavior_e::DOT_NONE:
+      return dot->remains();
     case dot_behavior_e::DOT_CLIP:
     default:
       return triggered_duration;
@@ -4022,6 +4024,7 @@ bool action_t::dot_refreshable( const dot_t* dot, timespan_t triggered_duration 
       return dot->ticks_left() <= 1;
     case dot_behavior_e::DOT_EXTEND:
       return true;
+    case dot_behavior_e::DOT_NONE:
     case dot_behavior_e::DOT_CLIP:
     default:
       return false;
