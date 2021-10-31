@@ -6429,6 +6429,7 @@ void monk_t::init_spells()
   passives.fallen_monk_breath_of_fire           = find_spell( 330907 );
   passives.fallen_monk_clash                    = find_spell( 330909 );
   passives.fallen_monk_enveloping_mist          = find_spell( 344008 );
+  passives.fallen_monk_fallen_brew              = find_spell( 363041 );
   passives.fallen_monk_fists_of_fury            = find_spell( 330898 );
   passives.fallen_monk_fists_of_fury_tick       = find_spell( 345714 );
   passives.fallen_monk_keg_smash                = find_spell( 330911 );

@@ -596,6 +596,7 @@ public:
     const spell_data_t* fallen_monk_breath_of_fire;
     const spell_data_t* fallen_monk_clash;
     const spell_data_t* fallen_monk_enveloping_mist;
+    const spell_data_t* fallen_monk_fallen_brew;
     const spell_data_t* fallen_monk_fists_of_fury;
     const spell_data_t* fallen_monk_fists_of_fury_tick;
     const spell_data_t* fallen_monk_keg_smash;

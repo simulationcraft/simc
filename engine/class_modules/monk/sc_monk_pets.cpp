@@ -248,6 +248,18 @@ struct pet_heal_t : public pet_action_base_t<heal_t>
 };
 
 // ==========================================================================
+// Base Monk Absorb Spell
+// ==========================================================================
+
+struct pet_absorb_t : public pet_action_base_t<absorb_t>
+{
+  pet_absorb_t( util::string_view n, monk_pet_t* p, const spell_data_t* data = spell_data_t::nil() )
+    : base_t( n, p, data )
+  {
+  }
+};
+
+// ==========================================================================
 // Storm Earth and Fire (SEF)
 // ==========================================================================
 
@@ -1627,7 +1639,8 @@ public:
       pet_melee_attack_t::impact( s );
 
       if ( o()->is_ptr() )
-        o()->trigger_mark_of_the_crane( s );
+        if ( o()->specialization() == MONK_WINDWALKER )
+          o()->trigger_mark_of_the_crane( s );
     }
   };
 
@@ -1702,7 +1715,8 @@ public:
       pet_melee_attack_t::impact( s );
 
       if ( o()->is_ptr() )
-        o()->trigger_mark_of_the_crane( s );
+        if ( o()->specialization() == MONK_WINDWALKER )
+          o()->trigger_mark_of_the_crane( s );
     }
   };
 
@@ -1766,7 +1780,9 @@ public:
     {
       pet_melee_attack_t::impact( s );
 
-      o()->trigger_mark_of_the_crane( s );
+      if ( o()->is_ptr() )
+        if ( o()->specialization() == MONK_WINDWALKER )
+          o()->trigger_mark_of_the_crane( s );
     }
   };
 
@@ -2004,10 +2020,31 @@ public:
     }
   };
 
+  struct fallen_monk_fallen_brew_t : public pet_absorb_t
+  {
+    fallen_monk_fallen_brew_t( fallen_monk_brm_pet_t* p, util::string_view options_str )
+      : pet_absorb_t( "fallen_brew_fo", p, p->o()->passives.fallen_monk_fallen_brew )
+    {
+      parse_options( options_str );
+      gcd_type = gcd_haste_type::NONE;
+
+      // Attack Power is hard coded at 6 * Attack Power
+      // Variables        : $absorb=${($AP*6)*(1+$@versadmg)}
+      attack_power_mod.direct = 6;
+
+      target = p->o();
+
+      cooldown->duration = timespan_t::from_seconds( 9 );
+      trigger_gcd        = timespan_t::from_seconds( 2 );
+    }
+  };
+
   void init_action_list() override
   {
     action_list_str = "auto_attack";
     action_list_str += "/clash";
+    if ( owner->is_ptr() )
+      action_list_str += "/fallen_brew";
     action_list_str += "/keg_smash";
     // Only cast Breath of Fire for Brewmaster specialization
     if ( o()->specialization() == MONK_BREWMASTER )
@@ -2029,6 +2066,9 @@ public:
 
     if ( name == "breath_of_fire" )
       return new fallen_monk_breath_of_fire_t( this, options_str );
+
+    if ( name == "fallen_brew" )
+      return new fallen_monk_fallen_brew_t( this, options_str );
 
     return monk_pet_t::create_action( name, options_str );
   }
