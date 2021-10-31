@@ -51,7 +51,7 @@ actions+=/variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury
 actions+=/variable,name=pooling_for_eye_beam,value=talent.demonic.enabled&!talent.blind_fury.enabled&cooldown.eye_beam.remains<(gcd.max*2)&fury.deficit>20
 actions+=/variable,name=waiting_for_momentum,value=talent.momentum.enabled&!buff.momentum.up
 # With Agony Gaze, attempt to sync Eye Beam and cooldown usage for maximum duration
-actions+=/variable,name=waiting_for_agony_gaze,if=runeforge.agony_gaze.equipped,value=!dot.sinful_brand.ticking&cooldown.sinful_brand.remains<gcd*4
+actions+=/variable,name=waiting_for_agony_gaze,if=runeforge.agony_gaze,value=!dot.sinful_brand.ticking&cooldown.sinful_brand.remains<gcd*4
 actions+=/disrupt
 actions+=/call_action_list,name=cooldown,if=gcd.remains=0
 actions+=/pick_up_fragment,type=demon,if=demon_soul_fragments>0
@@ -61,8 +61,8 @@ actions+=/run_action_list,name=demonic,if=talent.demonic.enabled
 actions+=/run_action_list,name=normal
 
 # If Venthyr and Sinful Brand duration is over 8 seconds with 1T, purposfully whiff Metamorphosis impact to not refresh with a lower duration DoT
-actions.cooldown=metamorphosis,landing_distance=10,if=!talent.demonic.enabled&covenant.venthyr.enabled&runeforge.agony_gaze.equipped&dot.sinful_brand.remains>8&spell_targets.metamorphosis_impact<2&(cooldown.eye_beam.remains>20|fight_remains<25)
-actions.cooldown+=/metamorphosis,landing_distance=10,if=talent.demonic.enabled&covenant.venthyr.enabled&runeforge.agony_gaze.equipped&dot.sinful_brand.remains>8&spell_targets.metamorphosis_impact<2&(cooldown.eye_beam.remains>20&!variable.blade_dance|cooldown.blade_dance.remains>gcd.max|fight_remains<25)
+actions.cooldown=metamorphosis,landing_distance=10,if=!talent.demonic.enabled&covenant.venthyr.enabled&runeforge.agony_gaze&dot.sinful_brand.remains>8&spell_targets.metamorphosis_impact<2&(cooldown.eye_beam.remains>20|fight_remains<25)
+actions.cooldown+=/metamorphosis,landing_distance=10,if=talent.demonic.enabled&covenant.venthyr.enabled&runeforge.agony_gaze&dot.sinful_brand.remains>8&spell_targets.metamorphosis_impact<2&(cooldown.eye_beam.remains>20&!variable.blade_dance|cooldown.blade_dance.remains>gcd.max|fight_remains<25)
 # Cast Metamorphosis if we will get a full Eye Beam refresh and won't overwrite Sinful Brand duration or if the encounter is almost over
 actions.cooldown+=/metamorphosis,if=!talent.demonic.enabled&(cooldown.eye_beam.remains>20&(!covenant.venthyr.enabled|dot.sinful_brand.remains<=8)|fight_remains<25)
 actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&(cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max)|fight_remains<25)&(!covenant.venthyr.enabled|dot.sinful_brand.remains<=8)
@@ -70,7 +70,7 @@ actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|fight_remains<60
 # Default use item logic
 actions.cooldown+=/use_items,slots=trinket1,if=variable.trinket_sync_slot=1&(buff.metamorphosis.up|(!talent.demonic.enabled&cooldown.metamorphosis.remains>(fight_remains>?trinket.1.cooldown.duration%2))|fight_remains<=20)|(variable.trinket_sync_slot=2&!trinket.2.cooldown.ready)|!variable.trinket_sync_slot
 actions.cooldown+=/use_items,slots=trinket2,if=variable.trinket_sync_slot=2&(buff.metamorphosis.up|(!talent.demonic.enabled&cooldown.metamorphosis.remains>(fight_remains>?trinket.2.cooldown.duration%2))|fight_remains<=20)|(variable.trinket_sync_slot=1&!trinket.1.cooldown.ready)|!variable.trinket_sync_slot
-actions.cooldown+=/sinful_brand,if=!dot.sinful_brand.ticking&(!runeforge.agony_gaze.equipped|cooldown.eye_beam.remains<=gcd*2)
+actions.cooldown+=/sinful_brand,if=!dot.sinful_brand.ticking&(!runeforge.agony_gaze|(cooldown.eye_beam.remains<=gcd&fury>=30|cooldown.metamorphosis.ready))
 actions.cooldown+=/the_hunt,if=!talent.demonic.enabled&!variable.waiting_for_momentum&!variable.pooling_for_meta|buff.furious_gaze.up
 actions.cooldown+=/elysian_decree,if=(active_enemies>desired_targets|raid_event.adds.in>30)
 

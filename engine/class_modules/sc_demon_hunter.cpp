@@ -1960,6 +1960,7 @@ struct eye_beam_t : public demon_hunter_spell_t
     {
       demon_hunter_spell_t::impact( s );
 
+      // Agony Gaze Legendary
       if ( p()->legendary.agony_gaze->ok() )
       {
         const demon_hunter_td_t* td = p()->get_target_data( s->target );
@@ -1970,6 +1971,9 @@ struct eye_beam_t : public demon_hunter_spell_t
       }
     }
   };
+
+  eye_beam_tick_t* tick_damage;
+  timespan_t trigger_delay;
 
   eye_beam_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "eye_beam", p, p->spec.eye_beam, options_str )
@@ -1982,12 +1986,19 @@ struct eye_beam_t : public demon_hunter_spell_t
     ability_lag         = p->world_lag;
     ability_lag_stddev  = p->world_lag_stddev;
 
-    tick_action = p->get_background_action<eye_beam_tick_t>( "eye_beam_tick" );
+    tick_damage = p->get_background_action<eye_beam_tick_t>( "eye_beam_tick" );
+    add_child( tick_damage );
 
     if ( p->active.collective_anguish )
     {
       add_child( p->active.collective_anguish );
     }
+  }
+
+  void tick( dot_t* d ) override
+  {
+    demon_hunter_spell_t::tick( d );
+    make_event<delayed_execute_event_t>( *p()->sim, p(), tick_damage, d->target, trigger_delay );
   }
 
   void last_tick( dot_t* d ) override
@@ -2000,6 +2011,10 @@ struct eye_beam_t : public demon_hunter_spell_t
 
   void execute() override
   {
+    // Eye Beam is applied via a player aura and experiences aura delay in applying damage tick events
+    // Not a perfect implementation, but closer than the instant execution in current sims
+    trigger_delay = 2 * rng().gauss( p()->sim->default_aura_delay, p()->sim->default_aura_delay_stddev );
+
     // Trigger Meta before the execute so that the channel duration is affected by Meta haste
     p()->trigger_demonic();
 
@@ -2025,7 +2040,6 @@ struct eye_beam_t : public demon_hunter_spell_t
     {
       cooldown->reset( true );
       p()->proc.darkglare_boon_resets->occur();
-      // 02/18/2021 -- Added in PTR build
       if ( p()->spec.darkglare_boon_refund->ok() )
       {
         p()->resource_gain( RESOURCE_FURY, p()->spec.darkglare_boon_refund->effectN( 1 ).resource( RESOURCE_FURY ),
@@ -5799,7 +5813,7 @@ void demon_hunter_t::apl_havoc()
   apl_default->add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)" );
   apl_default->add_action( "variable,name=pooling_for_eye_beam,value=talent.demonic.enabled&!talent.blind_fury.enabled&cooldown.eye_beam.remains<(gcd.max*2)&fury.deficit>20" );
   apl_default->add_action( "variable,name=waiting_for_momentum,value=talent.momentum.enabled&!buff.momentum.up" );
-  apl_default->add_action( "variable,name=waiting_for_agony_gaze,if=runeforge.agony_gaze.equipped,value=!dot.sinful_brand.ticking&cooldown.sinful_brand.remains<gcd*4", "With Agony Gaze, attempt to sync Eye Beam and cooldown usage for maximum duration" );
+  apl_default->add_action( "variable,name=waiting_for_agony_gaze,if=runeforge.agony_gaze,value=!dot.sinful_brand.ticking&cooldown.sinful_brand.remains<gcd*4", "With Agony Gaze, attempt to sync Eye Beam and cooldown usage for maximum duration" );
   apl_default->add_action( this, "Disrupt" );
   apl_default->add_action( "call_action_list,name=cooldown,if=gcd.remains=0" );
   apl_default->add_action( "pick_up_fragment,type=demon,if=demon_soul_fragments>0" );
@@ -5809,13 +5823,13 @@ void demon_hunter_t::apl_havoc()
   apl_default->add_action( "run_action_list,name=normal" );
 
   action_priority_list_t* apl_cooldown = get_action_priority_list( "cooldown" );
-  apl_cooldown->add_action( this, "Metamorphosis", "landing_distance=10,if=!talent.demonic.enabled&covenant.venthyr.enabled&runeforge.agony_gaze.equipped&dot.sinful_brand.remains>8&spell_targets.metamorphosis_impact<2&(cooldown.eye_beam.remains>20|fight_remains<25)", "If Venthyr and Sinful Brand duration is over 8 seconds with 1T, purposfully whiff Metamorphosis impact to not refresh with a lower duration DoT"  );
-  apl_cooldown->add_action( this, "Metamorphosis", "landing_distance=10,if=talent.demonic.enabled&covenant.venthyr.enabled&runeforge.agony_gaze.equipped&dot.sinful_brand.remains>8&spell_targets.metamorphosis_impact<2&(cooldown.eye_beam.remains>20&!variable.blade_dance|cooldown.blade_dance.remains>gcd.max|fight_remains<25)" );
+  apl_cooldown->add_action( this, "Metamorphosis", "landing_distance=10,if=!talent.demonic.enabled&covenant.venthyr.enabled&runeforge.agony_gaze&dot.sinful_brand.remains>8&spell_targets.metamorphosis_impact<2&(cooldown.eye_beam.remains>20|fight_remains<25)", "If Venthyr and Sinful Brand duration is over 8 seconds with 1T, purposfully whiff Metamorphosis impact to not refresh with a lower duration DoT"  );
+  apl_cooldown->add_action( this, "Metamorphosis", "landing_distance=10,if=talent.demonic.enabled&covenant.venthyr.enabled&runeforge.agony_gaze&dot.sinful_brand.remains>8&spell_targets.metamorphosis_impact<2&(cooldown.eye_beam.remains>20&!variable.blade_dance|cooldown.blade_dance.remains>gcd.max|fight_remains<25)" );
   apl_cooldown->add_action( this, "Metamorphosis", "if=!talent.demonic.enabled&(cooldown.eye_beam.remains>20&(!covenant.venthyr.enabled|dot.sinful_brand.remains<=8)|fight_remains<25)", "Cast Metamorphosis if we will get a full Eye Beam refresh and won't overwrite Sinful Brand duration or if the encounter is almost over" );
   apl_cooldown->add_action( this, "Metamorphosis", "if=talent.demonic.enabled&(cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max)|fight_remains<25)&(!covenant.venthyr.enabled|dot.sinful_brand.remains<=8)" );
   apl_cooldown->add_action( "potion,if=buff.metamorphosis.remains>25|fight_remains<60" );
   add_havoc_use_items( this, apl_cooldown );
-  apl_cooldown->add_action( "sinful_brand,if=!dot.sinful_brand.ticking&(!runeforge.agony_gaze.equipped|cooldown.eye_beam.remains<=gcd*2)" );
+  apl_cooldown->add_action( "sinful_brand,if=!dot.sinful_brand.ticking&(!runeforge.agony_gaze|(cooldown.eye_beam.remains<=gcd&fury>=30|cooldown.metamorphosis.ready))" );
   apl_cooldown->add_action( "the_hunt,if=!talent.demonic.enabled&!variable.waiting_for_momentum&!variable.pooling_for_meta|buff.furious_gaze.up" );
   apl_cooldown->add_action( "elysian_decree,if=(active_enemies>desired_targets|raid_event.adds.in>30)" );
 
