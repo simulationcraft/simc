@@ -50,7 +50,7 @@ actions+=/variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury
 actions+=/variable,name=pooling_for_eye_beam,value=talent.demonic.enabled&!talent.blind_fury.enabled&cooldown.eye_beam.remains<(gcd.max*2)&fury.deficit>20
 actions+=/variable,name=waiting_for_momentum,value=talent.momentum.enabled&!buff.momentum.up
 # With Agony Gaze, attempt to sync Eye Beam and cooldown usage for maximum duration
-actions+=/variable,name=waiting_for_agony_gaze,if=runeforge.agony_gaze,value=!dot.sinful_brand.ticking&cooldown.sinful_brand.remains<gcd*4
+actions+=/variable,name=waiting_for_agony_gaze,if=runeforge.agony_gaze,value=!dot.sinful_brand.ticking&cooldown.sinful_brand.remains<gcd.max*4
 actions+=/disrupt
 actions+=/call_action_list,name=cooldown,if=gcd.remains=0
 actions+=/pick_up_fragment,type=demon,if=demon_soul_fragments>0

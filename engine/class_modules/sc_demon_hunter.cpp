@@ -1970,6 +1970,13 @@ struct eye_beam_t : public demon_hunter_spell_t
         }
       }
     }
+
+    timespan_t execute_time() const override
+    {
+      // Eye Beam is applied via a player aura and experiences aura delay in applying damage tick events
+      // Not a perfect implementation, but closer than the instant execution in current sims
+      return rng().gauss( p()->sim->default_aura_delay, p()->sim->default_aura_delay_stddev );
+    }
   };
 
   eye_beam_tick_t* tick_damage;
@@ -1980,29 +1987,19 @@ struct eye_beam_t : public demon_hunter_spell_t
   {
     may_miss = false;
     channeled = true;
+    tick_on_application = false;
 
     // 6/6/2020 - Override the lag handling for Eye Beam so that it doesn't use channeled ready behavior
     //            In-game tests have shown it is possible to cast after faster than the 250ms channel_lag using a nochannel macro
     ability_lag         = p->world_lag;
     ability_lag_stddev  = p->world_lag_stddev;
 
-    // Temporarily remove to investigate some potential issues
-    // tick_damage = p->get_background_action<eye_beam_tick_t>( "eye_beam_tick" );
-    // add_child( tick_damage );
-    
     tick_action = p->get_background_action<eye_beam_tick_t>( "eye_beam_tick" );
 
     if ( p->active.collective_anguish )
     {
       add_child( p->active.collective_anguish );
     }
-  }
-
-  void tick( dot_t* d ) override
-  {
-    demon_hunter_spell_t::tick( d );
-    // Temporarily remove to investigate some potential issues
-    // make_event<delayed_execute_event_t>( *p()->sim, p(), tick_damage, d->target, trigger_delay );
   }
 
   void last_tick( dot_t* d ) override
@@ -2015,11 +2012,6 @@ struct eye_beam_t : public demon_hunter_spell_t
 
   void execute() override
   {
-    // Temporarily remove to investigate some potential issues
-    // Eye Beam is applied via a player aura and experiences aura delay in applying damage tick events
-    // Not a perfect implementation, but closer than the instant execution in current sims
-    // trigger_delay = 2 * rng().gauss( p()->sim->default_aura_delay, p()->sim->default_aura_delay_stddev );
-
     // Trigger Meta before the execute so that the channel duration is affected by Meta haste
     p()->trigger_demonic();
 
@@ -2736,7 +2728,6 @@ struct metamorphosis_t : public demon_hunter_spell_t
       travel_speed            = 1.0;                              // Allows use in the precombat list
 
       // If we are landing outside of the impact radius, we don't need to assign the impact spell
-      p->buff.metamorphosis_move->distance_moved = landing_distance;
       if ( landing_distance < 8.0 )
       {
         impact_action = p->get_background_action<metamorphosis_impact_t>( "metamorphosis_impact" );
@@ -2780,6 +2771,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
       // If we are landing outside of point-blank range, trigger the movement buff
       if ( landing_distance > 0.0 )
       {
+        p()->buff.metamorphosis_move->distance_moved = landing_distance;
         p()->buff.metamorphosis_move->trigger();
       }
     }
@@ -5818,7 +5810,7 @@ void demon_hunter_t::apl_havoc()
   apl_default->add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)" );
   apl_default->add_action( "variable,name=pooling_for_eye_beam,value=talent.demonic.enabled&!talent.blind_fury.enabled&cooldown.eye_beam.remains<(gcd.max*2)&fury.deficit>20" );
   apl_default->add_action( "variable,name=waiting_for_momentum,value=talent.momentum.enabled&!buff.momentum.up" );
-  apl_default->add_action( "variable,name=waiting_for_agony_gaze,if=runeforge.agony_gaze,value=!dot.sinful_brand.ticking&cooldown.sinful_brand.remains<gcd*4", "With Agony Gaze, attempt to sync Eye Beam and cooldown usage for maximum duration" );
+  apl_default->add_action( "variable,name=waiting_for_agony_gaze,if=runeforge.agony_gaze,value=!dot.sinful_brand.ticking&cooldown.sinful_brand.remains<gcd.max*4", "With Agony Gaze, attempt to sync Eye Beam and cooldown usage for maximum duration" );
   apl_default->add_action( this, "Disrupt" );
   apl_default->add_action( "call_action_list,name=cooldown,if=gcd.remains=0" );
   apl_default->add_action( "pick_up_fragment,type=demon,if=demon_soul_fragments>0" );
