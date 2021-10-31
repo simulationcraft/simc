@@ -6571,6 +6571,8 @@ void monk_t::init_scaling()
     scaling->disable( STAT_AGILITY );
     scaling->disable( STAT_MASTERY_RATING );
     scaling->disable( STAT_ATTACK_POWER );
+    scaling->disable( STAT_WEAPON_DPS );
+    scaling->enable( STAT_INTELLECT );
     scaling->enable( STAT_SPIRIT );
   }
   scaling->disable( STAT_STRENGTH );
