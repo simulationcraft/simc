@@ -347,7 +347,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     hit_any_target(),
     ground_aoe_duration( timespan_t::zero() ),
     ap_type( attack_power_type::NONE ),
-    dot_behavior( DOT_REFRESH ),
+    dot_behavior( DOT_REFRESH_DURATION ),
     ability_lag(),
     ability_lag_stddev(),
     min_gcd(),
@@ -581,6 +581,9 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   ignores_armor       = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
   may_miss            = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
   may_dodge = may_parry = may_block = !spell_data.flags( spell_attribute::SX_NO_D_P_B );
+  
+  if ( spell_data.flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
+    dot_behavior = dot_behavior_e::DOT_REFRESH_PANDEMIC;
 
   if ( spell_data.flags( spell_attribute::SX_FIXED_TRAVEL_TIME ) )
     travel_delay += spell_data.missile_speed();
@@ -4002,14 +4005,37 @@ void action_t::do_teleport( action_state_t* state )
  */
 timespan_t action_t::calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const
 {
-  // WoD Pandemic
-  // New WoD Formula: Get no malus during the last 30% of the dot.
-  return std::min( triggered_duration * 0.3, dot->remains() ) + triggered_duration;
+  switch ( dot_behavior )
+  {
+    case dot_behavior_e::DOT_REFRESH_PANDEMIC:
+      return std::min( triggered_duration * 0.3, dot->remains() ) + triggered_duration;
+    case dot_behavior_e::DOT_REFRESH_DURATION:
+      return dot->time_to_next_tick() + triggered_duration;
+    case dot_behavior_e::DOT_EXTEND:
+      return dot->remains() + triggered_duration;
+    case dot_behavior_e::DOT_NONE:
+      return dot->remains();
+    case dot_behavior_e::DOT_CLIP:
+    default:
+      return triggered_duration;
+  }
 }
 
 bool action_t::dot_refreshable( const dot_t* dot, timespan_t triggered_duration ) const
 {
-  return dot->remains() <= triggered_duration * 0.3;
+  switch ( dot_behavior )
+  {
+    case dot_behavior_e::DOT_REFRESH_PANDEMIC:
+      return dot->remains() <= triggered_duration * 0.3;
+    case dot_behavior_e::DOT_REFRESH_DURATION:
+      return dot->ticks_left() <= 1;
+    case dot_behavior_e::DOT_EXTEND:
+      return true;
+    case dot_behavior_e::DOT_NONE:
+    case dot_behavior_e::DOT_CLIP:
+    default:
+      return false;
+  }
 }
 
 call_action_list_t::call_action_list_t( player_t* player, util::string_view options_str )

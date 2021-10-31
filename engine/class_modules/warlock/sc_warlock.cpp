@@ -26,7 +26,6 @@ struct drain_life_t : public warlock_spell_t
       dual = true;
       background = true;
       may_crit = false;
-      dot_behavior = DOT_REFRESH;
 
       // SL - Legendary
       dot_duration *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();

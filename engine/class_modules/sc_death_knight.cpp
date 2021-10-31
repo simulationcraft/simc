@@ -6541,12 +6541,6 @@ struct unholy_blight_dot_t : public death_knight_spell_t
     impact_action = get_action<virulent_plague_t>( "virulent_plague", p );
   }
 
-  timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t triggered_duration ) const override
-  {
-    // No longer pandemics
-    return triggered_duration;
-  }
-
   void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );

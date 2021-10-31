@@ -1789,7 +1789,6 @@ public:
       tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
 
       spell_power_mod.direct = 0.0;
-      dot_behavior           = dot_behavior_e::DOT_REFRESH;  // Spell uses Pandemic Mechanics.
 
       tick_action = new fallen_monk_spinning_crane_kick_tick_t( p );
 

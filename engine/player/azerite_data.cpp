@@ -2686,11 +2686,7 @@ void dagger_in_the_back( special_effect_t& effect )
     {
       base_td = power.value( 1 );
       tick_may_crit = true;
-    }
-
-    timespan_t calculate_dot_refresh_duration(const dot_t*  /* dot */, timespan_t triggered_duration ) const override
-    {
-      return triggered_duration;
+      dot_behavior = dot_behavior_e::DOT_CLIP;
     }
 
     // XXX: simply apply twice here for the "from the back" case
@@ -4006,6 +4002,7 @@ void the_crucible_of_flame( special_effect_t& effect )
     ancient_flame_t( const special_effect_t& effect, const std::string& name, const azerite_essence_t& essence ) :
       proc_spell_t( name, effect.player, effect.player->find_spell( 295367 ), essence.item() )
     {
+      dot_behavior = dot_behavior_e::DOT_CLIP;
       base_td = item_database::apply_combat_rating_multiplier( effect.player,
         combat_rating_multiplier_type::CR_MULTIPLIER_JEWLERY,
         essence.item()->item_level(),
@@ -4013,10 +4010,6 @@ void the_crucible_of_flame( special_effect_t& effect )
 
       base_td_multiplier *= 1 + essence.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
     }
-
-    // Refresh to 10 seconds
-    timespan_t calculate_dot_refresh_duration( const dot_t* /* dot */, timespan_t triggered_duration ) const override
-    { return triggered_duration; }
   };
 
   auto action = unique_gear::create_proc_action<ancient_flame_t>( "ancient_flame", effect,
@@ -4072,10 +4065,6 @@ struct concentrated_flame_t : public azerite_essence_major_t
 
     void set_damage( double value )
     { base_td = value * multiplier / ( dot_duration / base_tick_time ); }
-
-    // Max duration + ongoing tick
-    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-    { return triggered_duration + dot->tick_event->remains(); }
   };
 
   unsigned stack;
