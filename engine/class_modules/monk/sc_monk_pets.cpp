@@ -1543,6 +1543,7 @@ private:
 
   struct auto_attack_t : public pet_auto_attack_t
   {
+
     auto_attack_t( fallen_monk_ww_pet_t* player, util::string_view options_str ) : pet_auto_attack_t( player )
     {
       parse_options( options_str );
@@ -1620,6 +1621,14 @@ public:
 
       return cam;
     }
+
+    void impact( action_state_t* s ) override
+    {
+      pet_melee_attack_t::impact( s );
+
+      if ( o()->is_ptr() )
+        o()->trigger_mark_of_the_crane( s );
+    }
   };
 
   struct fallen_monk_fists_of_fury_t : public pet_melee_attack_t
@@ -1687,7 +1696,115 @@ public:
     {
       return 0;
     }
+
+    void impact( action_state_t* s ) override
+    {
+      pet_melee_attack_t::impact( s );
+
+      if ( o()->is_ptr() )
+        o()->trigger_mark_of_the_crane( s );
+    }
   };
+
+  struct fallen_monk_spinning_crane_kick_tick_t : public pet_melee_attack_t
+  {
+    fallen_monk_spinning_crane_kick_tick_t( fallen_monk_ww_pet_t* p )
+      : pet_melee_attack_t( "spinning_crane_kick_fo_tick", p, p->o()->passives.fallen_monk_spinning_crane_kick_tick )
+    {
+      dual = background = true;
+      aoe                 = -1;
+      reduced_aoe_targets = p->o()->spec.spinning_crane_kick->effectN( 1 ).base_value();
+
+      // Reset some variables to ensure proper execution
+      dot_duration                  = timespan_t::zero();
+      school                        = SCHOOL_PHYSICAL;
+      cooldown->duration            = timespan_t::zero();
+      base_costs[ RESOURCE_ENERGY ] = 0;
+    }
+
+    double cost() const override
+    {
+      return 0;
+    }
+
+    int mark_of_the_crane_counter() const
+    {
+      std::vector<player_t*> targets = target_list();
+      int mark_of_the_crane_counter  = 0;
+
+      if ( p()->specialization() == MONK_WINDWALKER )
+      {
+        for ( player_t* target : targets )
+        {
+          if ( o()->get_target_data( target )->debuff.mark_of_the_crane->up() )
+            mark_of_the_crane_counter++;
+        }
+      }
+
+      return std::min( (int)p()->o()->passives.cyclone_strikes->max_stacks(), mark_of_the_crane_counter );
+    }
+
+    double action_multiplier() const override
+    {
+      double am = pet_melee_attack_t::action_multiplier();
+/* 
+      double motc_multiplier = p()->o()->passives.cyclone_strikes->effectN( 1 ).percent();
+
+      if ( p()->o()->conduit.calculated_strikes->ok() )
+        motc_multiplier += p()->o()->conduit.calculated_strikes.percent();
+
+      if ( p()->o()->spec.spinning_crane_kick_2_ww->ok() )
+        am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
+
+      if ( p()->o()->buff.dance_of_chiji_hidden->up() )
+        am *= 1 + p()->o()->talent.dance_of_chiji->effectN( 1 ).percent();
+*/
+      return am;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      pet_melee_attack_t::impact( s );
+
+      o()->trigger_mark_of_the_crane( s );
+    }
+  };
+
+  struct fallen_monk_spinning_crane_kick_t : public pet_melee_attack_t
+  {
+    fallen_monk_spinning_crane_kick_t( fallen_monk_ww_pet_t* p, util::string_view options_str )
+      : pet_melee_attack_t( "spinning_crane_kick_fo", p, p->o()->passives.fallen_monk_spinning_crane_kick )
+    {
+      parse_options( options_str );
+
+      may_crit = may_miss = may_block = may_dodge = may_parry = false;
+      tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
+
+      spell_power_mod.direct = 0.0;
+      dot_behavior           = dot_behavior_e::DOT_REFRESH;  // Spell uses Pandemic Mechanics.
+
+      tick_action = new fallen_monk_spinning_crane_kick_tick_t( p );
+
+      // We only want the monk to cast Spinning Crane Kick 2 times during the duration.
+      // Increase the cooldown for non-windwalkers so that it only casts 2 times.
+      if ( o()->specialization() == MONK_WINDWALKER )
+        cooldown->duration = timespan_t::from_seconds( 3.6 );
+      else
+        cooldown->duration = timespan_t::from_seconds( 3 );
+    }
+
+    // N full ticks, but never additional ones.
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    {
+      return dot_duration * ( tick_time( s ) / base_tick_time );
+    }
+
+    double cost() const override
+    {
+      return 0;
+    }
+  };
+
 
   void init_action_list() override
   {
@@ -1695,6 +1812,12 @@ public:
     // Only cast Fists of Fury for Windwalker specialization
     if ( owner->specialization() == MONK_WINDWALKER )
       action_list_str += "/fists_of_fury";
+    if ( owner->is_ptr() )
+    {
+      action_list_str += "/spinning_crane_kick,if=active_enemies>1";
+      action_list_str += "/tiger_palm,if=active_enemies=1";
+    }
+    else
     action_list_str += "/tiger_palm";
 
     monk_pet_t::init_action_list();
@@ -1710,6 +1833,9 @@ public:
 
     if ( name == "tiger_palm" )
       return new fallen_monk_tiger_palm_t( this, options_str );
+
+    if ( name == "spinning_crane_kick" )
+      return new fallen_monk_spinning_crane_kick_t( this, options_str );
 
     return monk_pet_t::create_action( name, options_str );
   }
