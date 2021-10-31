@@ -1667,14 +1667,6 @@ public:
       base_tick_time = dot_duration / 4;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
-      // Due to the fact that pet spawners do not reset cooldowns on despawn need to make sure
-      // that the spell is cast 4 times in a 24 second duration
-      // so setting the cooldown to 8 seconds
-      cooldown->duration = p->o()->passives.fallen_monk_spec_duration->duration();
-      // If the legendary is active, we need to make sure this is cast 5 times in 24 seconds
-      // so setting the cooldown to 7 seconds
-      if ( p->o()->legendary.sinister_teachings->ok() )
-        cooldown->duration -= timespan_t::from_seconds( 1 );
       cooldown->hasted   = false;
 
       tick_action = new fallen_monk_fists_of_fury_tick_t( p );

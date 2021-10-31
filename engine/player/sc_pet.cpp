@@ -8,6 +8,7 @@
 #include "action/sc_action.hpp"
 #include "action/sc_action_state.hpp"
 #include "buff/sc_buff.hpp"
+#include "sim/sc_cooldown.hpp"
 #include "dbc/dbc.hpp"
 #include "player/actor_target_data.hpp"
 #include "player/spawner_base.hpp"
@@ -224,6 +225,21 @@ void pet_t::dismiss( bool expired )
   duration = timespan_t::zero();
 
   demise();
+}
+
+void pet_t::demise()
+{
+  player_t::demise();
+
+  // Reset cooldowns of dynamic pets, so that eg. reused pet spawner pets get summoned with all their cooldowns reset.
+  if ( dynamic )
+  {
+    sim->print_debug( "{} resetting all cooldowns", *this );
+    for ( auto* cooldown : cooldown_list )
+    {
+      cooldown->reset( false );
+    }
+  }
 }
 
 /**
