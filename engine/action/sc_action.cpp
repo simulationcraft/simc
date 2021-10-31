@@ -4010,7 +4010,7 @@ timespan_t action_t::calculate_dot_refresh_duration( const dot_t* dot, timespan_
     case dot_behavior_e::DOT_REFRESH_PANDEMIC:
       return std::min( triggered_duration * 0.3, dot->remains() ) + triggered_duration;
     case dot_behavior_e::DOT_REFRESH_DURATION:
-      return dot->time_to_next_tick() + triggered_duration;
+      return dot->time_to_next_full_tick() + triggered_duration;
     case dot_behavior_e::DOT_EXTEND:
       return dot->remains() + triggered_duration;
     case dot_behavior_e::DOT_NONE:
