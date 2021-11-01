@@ -10582,6 +10582,11 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     return covenant->create_expression( splits );
   }
 
+  if ( splits[ 0 ] == "rune_word" )
+  {
+    return unique_gear::create_expression( *this, expression_str );
+  }
+
   if ( auto expr = runeforge::create_expression( this, splits, expression_str ) )
   {
     return expr;

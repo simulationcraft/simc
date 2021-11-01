@@ -3270,19 +3270,18 @@ namespace shards_of_domination
   };
 
 // Helper function to determine whether a Rune Word is active. Returns rank of the lowest shard if found.
-int rune_word_active( special_effect_t& effect, spell_label label )
+int rune_word_active( const player_t* player, const spell_data_t* driver, spell_label label )
 {
-  if ( !effect.player->sim->shadowlands_opts.enable_rune_words )
+  if ( !player->sim->shadowlands_opts.enable_rune_words )
   {
-    effect.player->sim->print_debug( "{}: rune word {} from item {} is inactive by global override",
-      effect.player->name(), effect.driver()->name_cstr(), effect.item->name() );
+    player->sim->print_debug( "{}: rune word {} is inactive by global override", player->name(), driver->name_cstr() );
     return 0;
   }
 
   unsigned equipped_shards = 0;
   unsigned rank = 0;
 
-  for ( const auto& item : effect.player->items )
+  for ( const auto& item : player->items )
   {
     // We cannot just check special effects because some of the Shard of Domination effects
     // are simple stat bonuses and a special effect with a spell ID will not be created.
@@ -3335,9 +3334,9 @@ int rune_word_active( special_effect_t& effect, spell_label label )
   }
 
   int active = equipped_shards >= 3 ? as<int>( rank ) : 0;
-  effect.player->sim->print_debug(
-      "{}: rune word {} from item {} is {} (rank {}) with {}/3 shards of domination equipped", effect.player->name(),
-      util::tokenize_fn( effect.driver()->name_cstr() ), effect.item->name(), active ? "active" : "inactive", rank,
+  player->sim->print_debug(
+      "{}: rune word {} is {} (rank {}) with {}/3 shards of domination equipped", player->name(),
+      util::tokenize_fn( driver->name_cstr() ), active ? "active" : "inactive", rank,
       equipped_shards );
 
   return active;
@@ -3438,6 +3437,45 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
 
   return root;
 }
+
+std::unique_ptr<expr_t> create_expression( const player_t& player, util::string_view name_str )
+{
+  auto splits = util::string_split<util::string_view>( name_str, "." );
+  
+  if ( splits.size() < 2 )
+  {
+    return nullptr;
+  }
+
+  int rank = 0;
+  if ( splits[ 1 ] == "blood" || splits[ 1 ] == "blood_link" )
+  {
+    rank = rune_word_active( &player, player.find_spell( 357347 ), LABEL_SHARD_OF_DOMINATION_BLOOD );
+  }
+  else if ( splits[ 1 ] == "frost" || splits[ 1 ] == "winds_of_winter" )
+  {
+    rank = rune_word_active( &player, player.find_spell( 357348 ), LABEL_SHARD_OF_DOMINATION_FROST );
+  }
+  else if ( splits[ 1 ] == "unholy" || splits[ 1 ] == "chaos_bane" )
+  {
+    rank = rune_word_active( &player, player.find_spell( 357349 ), LABEL_SHARD_OF_DOMINATION_UNHOLY );
+  }
+  else
+  {
+    throw std::invalid_argument( fmt::format( "Invalid Rune Word type {}", splits[ 1 ] ) );
+  }
+
+  if ( splits.size() == 2 || splits[ 2 ] == "enabled" )
+  {
+    return expr_t::create_constant( name_str, rank > 0 );
+  }
+  else if ( splits.size() == 3 && splits[ 3 ] == "rank" )
+  {
+    return expr_t::create_constant( name_str, rank );
+  }
+
+  return nullptr;
+}
 }
 
 /**Blood Link
@@ -3454,7 +3492,7 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
  */
 void blood_link( special_effect_t& effect )
 {
-  auto rank = shards_of_domination::rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_BLOOD );
+  auto rank = shards_of_domination::rune_word_active( effect.player, effect.driver(), LABEL_SHARD_OF_DOMINATION_BLOOD );
   if ( rank == 0 )
     return;
 
@@ -3544,7 +3582,7 @@ void blood_link( special_effect_t& effect )
  */
 void winds_of_winter( special_effect_t& effect )
 {
-  auto rank = shards_of_domination::rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_FROST );
+  auto rank = shards_of_domination::rune_word_active( effect.player, effect.driver(), LABEL_SHARD_OF_DOMINATION_FROST );
   if ( rank == 0 )
     return;
 
@@ -3660,7 +3698,7 @@ void chaos_bane( special_effect_t& effect )
   if ( unique_gear::create_fallback_buffs( effect, { "chaos_bane" } ) )
 	  return;
 
-  auto rank = shards_of_domination::rune_word_active( effect, LABEL_SHARD_OF_DOMINATION_UNHOLY );
+  auto rank = shards_of_domination::rune_word_active( effect.player, effect.driver(), LABEL_SHARD_OF_DOMINATION_UNHOLY );
 
   auto buff = buff_t::find( effect.player, "chaos_bane" );
   if ( buff )
