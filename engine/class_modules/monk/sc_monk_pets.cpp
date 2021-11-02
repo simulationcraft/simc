@@ -116,8 +116,10 @@ struct pet_action_base_t : public BASE
 
 struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
 {
+  bool trigger_mystic_touch;
+
   pet_melee_attack_t( util::string_view n, monk_pet_t* p, const spell_data_t* data = spell_data_t::nil() )
-    : base_t( n, p, data )
+    : base_t( n, p, data ), trigger_mystic_touch( false )
   {
     base_t::apply_affecting_aura( p->o()->passives.aura_monk );
     base_t::apply_affecting_aura( p->o()->spec.windwalker_monk );
@@ -155,6 +157,14 @@ struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
     {
       return base_t::amount_type( state, periodic );
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    pet_melee_attack_t::impact( s );
+
+    if ( trigger_mystic_touch )
+      s->target->debuffs.mystic_touch->trigger();
   }
 };
 
@@ -220,6 +230,45 @@ struct pet_auto_attack_t : public melee_attack_t
     if ( player->is_moving() )
       return false;
     return ( player->main_hand_attack->execute_event == nullptr );
+  }
+};
+
+struct venthyr_pet_auto_attack_t : public melee_attack_t
+{
+  venthyr_pet_auto_attack_t( monk_pet_t* player ) : melee_attack_t( "auto_attack", player )
+  {
+    assert( player->main_hand_weapon.type != WEAPON_NONE );
+    player->main_hand_attack = nullptr;
+    trigger_gcd              = 0_ms;
+  }
+
+  void init() override
+  {
+    melee_attack_t::init();
+
+    assert( player->main_hand_attack && "Pet auto attack created without main hand attack" );
+  }
+
+  void execute() override
+  {
+    player->main_hand_attack->schedule_execute();
+
+    if ( player->off_hand_attack )
+      player->off_hand_attack->schedule_execute();
+  }
+
+  bool ready() override
+  {
+    if ( player->is_moving() )
+      return false;
+    return ( player->main_hand_attack->execute_event == nullptr );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    melee_attack_t::impact( s );
+
+    s->target->debuffs.mystic_touch->trigger();
   }
 };
 
@@ -1550,13 +1599,14 @@ private:
     {
       // TODO: check why this is here
       base_hit -= 0.19;
+      trigger_mystic_touch = true;
     }
   };
 
-  struct auto_attack_t : public pet_auto_attack_t
+  struct auto_attack_t : public venthyr_pet_auto_attack_t
   {
 
-    auto_attack_t( fallen_monk_ww_pet_t* player, util::string_view options_str ) : pet_auto_attack_t( player )
+    auto_attack_t( fallen_monk_ww_pet_t* player, util::string_view options_str ) : venthyr_pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
@@ -1622,6 +1672,7 @@ public:
       ap_type                 = attack_power_type::WEAPON_BOTH;
       dot_duration            = timespan_t::zero();
       trigger_gcd             = timespan_t::zero();
+      trigger_mystic_touch    = true;
     }
 
     double composite_aoe_multiplier( const action_state_t* state ) const override
@@ -1638,9 +1689,7 @@ public:
     {
       pet_melee_attack_t::impact( s );
 
-      if ( o()->is_ptr() )
-        if ( o()->specialization() == MONK_WINDWALKER )
-          o()->trigger_mark_of_the_crane( s );
+      s->target->debuffs.mystic_touch->trigger();
     }
   };
 
@@ -1687,6 +1736,8 @@ public:
 
       may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
+      trigger_mystic_touch = true;
+
       // We only want the monk to cast Tiger Palm 2 times during the duration.
       // Increase the cooldown for non-windwalkers so that it only casts 2 times.
       if ( o()->specialization() == MONK_WINDWALKER )
@@ -1720,6 +1771,7 @@ public:
       dual = background = true;
       aoe                 = -1;
       reduced_aoe_targets = p->o()->spec.spinning_crane_kick->effectN( 1 ).base_value();
+      trigger_mystic_touch = true;
 
       // Reset some variables to ensure proper execution
       dot_duration                  = timespan_t::zero();
@@ -1766,15 +1818,6 @@ public:
         am *= 1 + p()->o()->talent.dance_of_chiji->effectN( 1 ).percent();
 */
       return am;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      pet_melee_attack_t::impact( s );
-
-      if ( o()->is_ptr() )
-        if ( o()->specialization() == MONK_WINDWALKER )
-          o()->trigger_mark_of_the_crane( s );
     }
   };
 
@@ -1861,9 +1904,9 @@ private:
     }
   };
 
-  struct auto_attack_t : public pet_auto_attack_t
+  struct auto_attack_t : public venthyr_pet_auto_attack_t
   {
-    auto_attack_t( fallen_monk_brm_pet_t* player, util::string_view options_str ) : pet_auto_attack_t( player )
+    auto_attack_t( fallen_monk_brm_pet_t* player, util::string_view options_str ) : venthyr_pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
@@ -1918,8 +1961,9 @@ public:
     {
       parse_options( options_str );
 
+      trigger_mystic_touch    = true;
       aoe                     = -1;
-      reduced_aoe_targets      = o()->spec.keg_smash->effectN( 7 ).base_value();
+      reduced_aoe_targets     = o()->spec.keg_smash->effectN( 7 ).base_value();
       full_amount_targets     = 1;
       attack_power_mod.direct = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).ap_coeff();
       radius                  = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).radius();
