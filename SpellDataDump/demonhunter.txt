@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725)
+SimulationCraft 910-01 for World of Warcraft 9.1.5.40871 Live (hotfix 2021-11-02/40871, git build shadowlands 3f806319, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -670,7 +670,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 700 | Trigger Spell: 200685 | Target: Self (1)
 #6 (id=293660)   : Apply Aura (6) | Unknown(483)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
-Description      : Strike $?a206416[your primary target for $<firstbloodDmg> Physical damage and ][]$199552s1 nearby enemies for $<baseDmg> Physical damage$?s320398[, and increase your chance to dodge by $193311s1% for $193311d.][.]
+Description      : Strike $?a206416[your primary target for $<firstbloodDmg> Physical damage and ][]all nearby enemies for $<baseDmg> Physical damage$?s320398[, and increase your chance to dodge by $193311s1% for $193311d.][. Deals reduced damage beyond $199552s1 targets.]
 Tooltip          : Dodge chance increased by $s2%.
 Variables        : $baseDmg=${3*$199552sw2+$200685sw2} 
 $firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100}
@@ -703,8 +703,6 @@ Effects          :
 #5 (id=305109)   : Apply Aura (6) | Unknown(312)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 499 | Target: Self (1)
 #6 (id=320783)   : Unknown(167)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#7 (id=889549)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Allows you to see enemies and treasures through physical barriers, as well as enemies that are stealthed and invisible. Lasts $d.
 
@@ -2549,10 +2547,10 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ......x. ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Always Show Ground Texture (190), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
+                 : Is Ability (4), Not Shapeshifted (16), Always Show Ground Texture (190), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=307122)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6031 | Target: Unknown(125)
@@ -3134,7 +3132,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), First Blood (206416 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#5), Demon Soul (347765 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), First Blood (206416 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#5), Dancing with Fate (339228 effect#1), Demon Soul (347765 effects: #1, #2)
 Triggered by     : Death Sweep (210152)
 Family Flags     : 16, 37, 38, 42
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -4005,7 +4003,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=808444)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Viciously strike $228478s2 enemies in front of you for $228478s1 Physical damage and heal yourself for $s4.
+Description      : Viciously strike all enemies in front of you for $228478s1 Physical damage and heal yourself for $s4. Deals reduced damage beyond $228478s2 targets.
 
 Consumes up to $s3 Soul Fragments within $s1 yds$?s321021[ and heals you for an additional $s5 for each Soul Fragment consumed][].
 Variables        : $cleaveDamage=${2.0*$228478sw1}
@@ -4155,7 +4153,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=707097)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Consume up to $s2 Soul Fragments within $s1 yds and then explode, afflicting nearby enemies with Frailty for $247456d and damaging them for $247455s1 Fire per fragment.
+Description      : Consume up to $s2 Soul Fragments within $s1 yds and then explode, afflicting nearby enemies with Frailty for $247456d and damaging them for $247455s1 Fire per fragment. Deals reduced damage beyond $s2 targets.
 
 You heal for $247456s1% of all damage you deal to enemies with Frailty.
 
@@ -4673,7 +4671,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 258926 | Target: Self (1)
 #2 (id=483179)   : Apply Aura (6) | Levitate (106)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Unleash a torrent of Fel energy over $d, inflicting ${(($d/$t1)+1)*$258926s1} Chaos damage to $258926s2 enemies within $258926A1 yds.
+Description      : Unleash a torrent of Fel energy over $d, inflicting ${(($d/$t1)+1)*$258926s1} Chaos damage to all enemies within $258926A1 yds. Deals reduced damage beyond $258926s2 targets.
 Tooltip          : Unleashing Fel.
 
 Name             : Fel Barrage (id=258926) [Spell Family (107)] 
@@ -7159,7 +7157,7 @@ Spell Level      : 48
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Cooldown         : 60 seconds
+Cooldown         : 45 seconds
 Labels           : 976
 Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Chaos Blades (247938 effects: #2, #3), Increased Scrutiny (340028 effect#1), Demon Soul (347765 effects: #1, #2), Agony Gaze (355886 effect#1)
 Family Flags     : 16, 32, 70, 83
@@ -8929,7 +8927,7 @@ Name             : Dancing with Fate (id=339228) [Spell Family (107), Passive, H
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
-Conduit Id       : 151 (values=10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24)
+Conduit Id       : 151 (values=40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8942,8 +8940,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838409)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Blade Dance (200685)
-                   Family Flags: 12
+                   Affected Spells: Blade Dance (200685), Death Sweep (210155)
+                   Family Flags: 12, 38
 Description      : The final slash of Blade Dance deals an additional |cFFFFFFFF${$s1}.1%|r damage.
 
 Name             : Exposed Wound (id=339229) [Spell Family (107)] 
@@ -9261,14 +9259,15 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=844163)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 21832 | Target: Unknown(62)
-Description      : Launch two demonic glaives in a whirlwind of energy, causing ${14*$342857s1} Chaos damage over $d to $342857i nearby enemies.
+#2 (id=900270)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Description      : Launch two demonic glaives in a whirlwind of energy, causing ${14*$342857s1} Chaos damage over $d to all nearby enemies. Deals reduced damage beyond $s2 targets.
 
 Name             : Glaive Tempest (id=342857) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 100 yards
-Max Targets      : 5
 Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2)
 Family Flags     : 16, 43
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -9993,7 +9992,7 @@ Effects          :
 Description      : $@spelldesc208195
 Tooltip          : Dealing $w1% increased damage.
 
-Name             : Fodder to the Flame (desc=Necrolord) (id=350570) [Passive] 
+Name             : Fodder to the Flame (desc=Necrolord) (id=350570) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 Covenant         : Necrolord
 School           : Shadow
@@ -10145,7 +10144,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=889354)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Elysian Decree shatters $s1 additional Lesser Soul Fragments and grants you Blind Faith for $355894d. For each Lesser Soul Fragment you consume while Blind Faith is active you gain $s2% Mastery and $356070s1 Fury.
+Description      : Elysian Decree shatters $s1 additional Lesser Soul Fragments and grants you Blind Faith for $355894d. For each Lesser Soul Fragment you consume while Blind Faith is active you gain $s2% Versatility and $356070s1 Fury.
 
 Name             : Blind Faith (id=355894) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -10165,10 +10164,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Can't Crit (93), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=889352)   : Apply Aura (6) | Modify Mastery% (318)
+#1 (id=889352)   : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc355893
-Tooltip          : Mastery increased by $w1%.
+Tooltip          : Versatility increased by $w1%.
 
 Name             : Demonic Oath (id=355996) [Spell Family (107), Passive, Hidden] 
 School           : Physical
