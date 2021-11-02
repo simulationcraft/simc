@@ -183,6 +183,7 @@ struct impending_catastrophe_t : public warlock_spell_t
       background = true;
       may_miss   = false;
       dual       = true;
+      tick_zero = true;
       impact_count = 0;
       legendary_bonus_1 = p->legendary.contained_perpetual_explosion.ok() ? p->legendary.contained_perpetual_explosion->effectN( 1 ).percent() : 0.0;
       legendary_bonus_2 = p->legendary.contained_perpetual_explosion.ok() ? p->legendary.contained_perpetual_explosion->effectN( 2 ).percent() : 0.0;
@@ -290,11 +291,15 @@ struct impending_catastrophe_t : public warlock_spell_t
 
 struct scouring_tithe_t : public warlock_spell_t
 {
+  double LSD_alt_value; //Secondary buff value for Languishing Soul Detritus legendary
+
   scouring_tithe_t( warlock_t* p, util::string_view options_str )
     : warlock_spell_t( "scouring_tithe", p, p->covenant.scouring_tithe ) 
   {
     parse_options( options_str );
     can_havoc = true;
+
+    LSD_alt_value = p->find_spell( 360953 )->effectN( 2 ).percent();
   }
 
   void last_tick( dot_t* d ) override
@@ -304,6 +309,8 @@ struct scouring_tithe_t : public warlock_spell_t
     if ( !d->target->is_sleeping() )
     {
       p()->cooldowns.scouring_tithe->reset( true );
+      if ( p()->legendary.languishing_soul_detritus.ok() )
+        p()->buffs.languishing_soul_detritus->trigger( 1, LSD_alt_value );
     }
   }
   
