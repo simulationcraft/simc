@@ -183,6 +183,7 @@ struct impending_catastrophe_t : public warlock_spell_t
       background = true;
       may_miss   = false;
       dual       = true;
+      tick_zero = true;
       impact_count = 0;
       legendary_bonus_1 = p->legendary.contained_perpetual_explosion.ok() ? p->legendary.contained_perpetual_explosion->effectN( 1 ).percent() : 0.0;
       legendary_bonus_2 = p->legendary.contained_perpetual_explosion.ok() ? p->legendary.contained_perpetual_explosion->effectN( 2 ).percent() : 0.0;
