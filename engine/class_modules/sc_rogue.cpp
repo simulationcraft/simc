@@ -2606,15 +2606,8 @@ struct crimson_tempest_t : public rogue_attack_t
   crimson_tempest_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_attack_t( name, p, p -> talent.crimson_tempest, options_str )
   {
-    if ( p->is_ptr() )
-    {
-      aoe = -1;
-      reduced_aoe_targets = data().effectN( 3 ).base_value();
-    }
-    else
-    {
-      aoe = as<int>( data().effectN( 3 ).base_value() );
-    }
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 3 ).base_value();
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -2834,15 +2827,8 @@ struct fan_of_knives_t: public rogue_attack_t
     // 2021-10-07 - Not in the whitelist but confirmed as working as of 9.1.5 PTR
     affected_by.shadow_blades_cp = p->dbc->ptr;
 
-    if ( p->is_ptr() )
-    {
-      aoe = -1;
-      reduced_aoe_targets = data().effectN( 3 ).base_value();
-    }
-    else
-    {
-      aoe = as<int>( data().effectN( 3 ).base_value() );
-    }
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 3 ).base_value();
   }
 
   double action_multiplier() const override
@@ -3494,11 +3480,8 @@ struct secret_technique_t : public rogue_attack_t
     secret_technique_attack_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
       rogue_attack_t( name, p, s )
     {
-      if ( p->is_ptr() )
-      {
-        aoe = -1;
-        reduced_aoe_targets = p->talent.secret_technique->effectN( 6 ).base_value();
-      }
+      aoe = -1;
+      reduced_aoe_targets = p->talent.secret_technique->effectN( 6 ).base_value();
     }
 
     double combo_point_da_multiplier( const action_state_t* state ) const override
@@ -3789,11 +3772,8 @@ struct black_powder_t: public rogue_attack_t
       last_cp( 1 )
     {
       callbacks = false; // 07/19/2021 -- Does not appear to trigger normal procs
-      aoe = -1; // Yup, this is uncapped.
-      if ( p->is_ptr() )
-      {
-        reduced_aoe_targets = p->spec.black_powder->effectN( 4 ).base_value();
-      }
+      aoe = -1;
+      reduced_aoe_targets = p->spec.black_powder->effectN( 4 ).base_value();
     }
 
     void reset() override
@@ -3836,11 +3816,8 @@ struct black_powder_t: public rogue_attack_t
     rogue_attack_t( name, p, p->spec.black_powder, options_str ),
     bonus_attack( nullptr )
   {
-    if ( p->is_ptr() )
-    {
-      aoe = -1;
-      reduced_aoe_targets = p->spec.black_powder->effectN( 4 ).base_value();
-    }
+    aoe = -1;
+    reduced_aoe_targets = p->spec.black_powder->effectN( 4 ).base_value();
 
     if ( p->find_rank_spell( "Black Powder", "Rank 2" )->ok() )
     {
@@ -3910,11 +3887,8 @@ struct shuriken_storm_t: public rogue_attack_t
     // 04/22/2021 - Not in the whitelist but confirmed as working in-game
     affected_by.shadow_blades_cp = true;
 
-    if ( p->is_ptr() )
-    {
-      aoe = -1;
-      reduced_aoe_targets = data().effectN( 4 ).base_value();
-    }
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 4 ).base_value();
   }
 
   void impact(action_state_t* state) override
