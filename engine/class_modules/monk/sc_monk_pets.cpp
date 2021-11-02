@@ -1938,8 +1938,6 @@ public:
       radius                  = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).radius();
 
       cooldown->hasted        = false;
-
-      trigger_gcd = timespan_t::from_seconds( 1.5 );
     }
 
     double action_multiplier() const override
@@ -2019,7 +2017,6 @@ public:
       parse_options( options_str );
       gcd_type = gcd_haste_type::NONE;
 
-      cooldown->duration = timespan_t::from_seconds( 9 );
       trigger_gcd        = timespan_t::from_seconds( 2 );
     }
   };
@@ -2038,7 +2035,6 @@ public:
 
       target = p->o();
 
-      cooldown->duration = timespan_t::from_seconds( 9 );
       trigger_gcd        = timespan_t::from_seconds( 2 );
     }
   };
