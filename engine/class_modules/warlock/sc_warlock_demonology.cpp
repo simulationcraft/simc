@@ -1248,6 +1248,7 @@ void warlock_t::create_apl_demonology()
   def->add_action( "shadow_bolt" );
 
   open->add_action( "soul_rot,if=soulbind.grove_invigoration" );
+  open->add_action( "nether_portal" );
   open->add_action( "grimoire_felguard" );
   open->add_action( "summon_vilefiend" );
   open->add_action( "shadow_bolt,if=soul_shard<5&cooldown.call_dreadstalkers.up" );
