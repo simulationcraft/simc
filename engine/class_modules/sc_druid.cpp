@@ -3380,13 +3380,8 @@ struct brutal_slash_t : public cat_attack_t
   brutal_slash_t( druid_t* p, util::string_view options_str )
     : cat_attack_t( "brutal_slash", p, p->talent.brutal_slash, options_str )
   {
-    if ( p->is_ptr() )
-    {
-      aoe = -1;
-      reduced_aoe_targets = data().effectN( 3 ).base_value();
-    }
-    else
-      aoe = as<int>( data().effectN( 3 ).base_value() );
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 3 ).base_value();
   }
 
   double cost() const override
@@ -4182,18 +4177,13 @@ struct shred_t : public cat_attack_t
 
 struct swipe_cat_t : public cat_attack_t
 {
-  swipe_cat_t( druid_t* player, util::string_view options_str )
-    : cat_attack_t( "swipe_cat", player, player->spec.swipe_cat, options_str )
+  swipe_cat_t( druid_t* p, util::string_view options_str )
+    : cat_attack_t( "swipe_cat", p, p->spec.swipe_cat, options_str )
   {
-    if ( player->is_ptr() )
-    {
-      aoe = -1;
-      reduced_aoe_targets = data().effectN( 4 ).base_value();
-    }
-    else
-      aoe = as<int>( data().effectN( 4 ).base_value() );
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 4 ).base_value();
 
-    if ( player->find_rank_spell( "Swipe", "Rank 2" )->ok() )
+    if ( p->find_rank_spell( "Swipe", "Rank 2" )->ok() )
       bleed_mul = data().effectN( 2 ).percent();
   }
 
@@ -4545,14 +4535,8 @@ struct swipe_bear_t : public bear_attack_t
     : bear_attack_t( "swipe_bear", p, p->spec.swipe_bear, options_str )
   {
     // target hit data stored in spec.swipe_cat
-    if ( p->is_ptr() )
-    {
-      aoe = -1;
-      reduced_aoe_targets = p->spec.swipe_cat->effectN( 4 ).base_value();
-    }
-    else
-      aoe  = as<int>( p->spec.swipe_cat->effectN( 4 ).base_value() );
-
+    aoe = -1;
+    reduced_aoe_targets = p->spec.swipe_cat->effectN( 4 ).base_value();
     proc_gore = true;
   }
 };

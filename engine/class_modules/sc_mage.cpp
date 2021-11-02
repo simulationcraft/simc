@@ -3766,16 +3766,8 @@ struct frozen_orb_bolt_t final : public frost_mage_spell_t
   frozen_orb_bolt_t( util::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 84721 ) )
   {
-    if ( p->is_ptr() ) // TODO: PTR
-    {
-      aoe = -1;
-      reduced_aoe_targets = data().effectN( 2 ).base_value();
-    }
-    else
-    {
-      aoe = as<int>( data().effectN( 2 ).base_value() );
-    }
-
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
     base_multiplier *= 1.0 + p->conduits.unrelenting_cold.percent();
     background = triggers.bone_chilling = true;
   }
@@ -3974,12 +3966,8 @@ struct glacial_fragments_t final : public frost_mage_spell_t
   glacial_fragments_t( util::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 327498 ) )
   {
-    if ( p->is_ptr() ) // TODO: PTR
-    {
-      aoe = -1;
-      reduced_aoe_targets = p->runeforge.glacial_fragments->effectN( 3 ).base_value();
-    }
-
+    aoe = -1;
+    reduced_aoe_targets = p->runeforge.glacial_fragments->effectN( 3 ).base_value();
     background = true;
     affected_by.shatter = triggers.icy_propulsion = false;
   }
@@ -5036,16 +5024,8 @@ struct arcane_echo_t final : public arcane_mage_spell_t
   arcane_echo_t( util::string_view n, mage_t* p ) :
     arcane_mage_spell_t( n, p, p->find_spell( 342232 ) )
   {
-    if ( p->is_ptr() ) // TODO: PTR
-    {
-      aoe = -1;
-      reduced_aoe_targets = p->talents.arcane_echo->effectN( 1 ).base_value();
-    }
-    else
-    {
-      aoe = as<int>( p->talents.arcane_echo->effectN( 1 ).base_value() );
-    }
-
+    aoe = -1;
+    reduced_aoe_targets = p->talents.arcane_echo->effectN( 1 ).base_value();
     background = true;
     callbacks = affected_by.radiant_spark = false;
   }

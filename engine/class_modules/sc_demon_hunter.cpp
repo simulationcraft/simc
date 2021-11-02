@@ -2063,15 +2063,8 @@ struct fel_barrage_t : public demon_hunter_spell_t
       : demon_hunter_spell_t( name, p, p->talent.fel_barrage->effectN( 1 ).trigger() )
     {
       background = dual = true;
-      if ( p->is_ptr() )
-      {
-        aoe = -1;
-        reduced_aoe_targets = as<int>( data().effectN( 2 ).base_value() );
-      }
-      else
-      {
-        aoe = as<int>( data().effectN( 2 ).base_value() );
-      }
+      aoe = -1;
+      reduced_aoe_targets = as<int>( data().effectN( 2 ).base_value() );
     }
   };
 
@@ -2359,11 +2352,8 @@ struct glaive_tempest_t : public demon_hunter_spell_t
       : demon_hunter_attack_t( name, p, p->find_spell( 342857 ) )
     {
       background = dual = ground_aoe = true;
-      if ( p->is_ptr() )
-      {
-        aoe = -1;
-        reduced_aoe_targets = p->talent.glaive_tempest->effectN( 2 ).base_value();
-      }
+      aoe = -1;
+      reduced_aoe_targets = p->talent.glaive_tempest->effectN( 2 ).base_value();
     }
   };
 
@@ -3010,10 +3000,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     {
       background = dual = true;
       aoe = -1;
-      if ( p->is_ptr() )
-      {
-        reduced_aoe_targets = p->talent.spirit_bomb->effectN( 2 ).base_value();
-      }
+      reduced_aoe_targets = p->talent.spirit_bomb->effectN( 2 ).base_value();
     }
 
     void impact(action_state_t* s) override
@@ -3084,10 +3071,7 @@ struct elysian_decree_t : public demon_hunter_spell_t
     elysian_decree_sigil_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, timespan_t delay )
       : demon_hunter_sigil_t( name, p, s, delay )
     {
-      if ( p->is_ptr() )
-      {
-        reduced_aoe_targets = p->covenant.elysian_decree->effectN( 1 ).base_value();
-      }
+      reduced_aoe_targets = p->covenant.elysian_decree->effectN( 1 ).base_value();
     }
 
     void execute() override
@@ -3515,15 +3499,8 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       last_attack( false )
     {
       background = dual = true;
-      if ( p->is_ptr() )
-      {
-        aoe = -1;
-        reduced_aoe_targets = p->find_spell( 199552 )->effectN( 1 ).base_value();
-      }
-      else
-      {
-        aoe = as<int>( p->find_spell( 199552 )->effectN( 1 ).base_value() );
-      }
+      aoe = -1;
+      reduced_aoe_targets = p->find_spell( 199552 )->effectN( 1 ).base_value();
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -4275,15 +4252,8 @@ struct soul_cleave_t : public demon_hunter_attack_t
       : demon_hunter_attack_t( name, p, s )
     {
       dual = true;
-      if ( p->is_ptr() )
-      {
-        aoe = -1;
-        reduced_aoe_targets = data().effectN( 2 ).base_value();
-      }
-      else
-      {
-        aoe = as<int>( data().effectN( 2 ).base_value() );
-      }
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 2 ).base_value();
     }
 
     double action_multiplier() const override
@@ -5046,11 +5016,8 @@ void demon_hunter_t::create_buffs()
   buff.blind_faith = make_buff<buff_t>( this, "blind_faith", blind_faith_buff )
     ->set_default_value( legendary.blind_faith->effectN( 2 ).base_value() ) // Mastery buffs are in raw % not decimal
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-    ->set_max_stack( 99 ); // Not actually a stacking buff, handled via scripting magic
-  if ( is_ptr() )
-    buff.blind_faith->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
-  else
-    buff.blind_faith->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+    ->set_max_stack( 99 ) // Not actually a stacking buff, handled via scripting magic
+    ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
 
   const spell_data_t* blazing_slaughter_buff = legendary.blazing_slaughter->ok() ? find_spell( 355892 ) : spell_data_t::not_found();
   buff.blazing_slaughter = make_buff<buff_t>( this, "blazing_slaughter", blazing_slaughter_buff )
