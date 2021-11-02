@@ -4113,8 +4113,11 @@ struct fallen_order_t : public monk_spell_t
       switch ( fallen_monk_pair.first )
       {
         case MONK_WINDWALKER:
+        {
           p->pets.fallen_monk_ww.spawn( fallen_monk_pair.second, 1 );
+          p->buff.windwalking_venthyr->trigger();
           break;
+        }
         case MONK_BREWMASTER:
           p->pets.fallen_monk_brm.spawn( fallen_monk_pair.second, 1 );
           break;
@@ -6411,6 +6414,7 @@ void monk_t::init_spells()
   passives.fallen_monk_spinning_crane_kick      = find_spell( 330901 );
   passives.fallen_monk_spinning_crane_kick_tick = find_spell( 330903 );
   passives.fallen_monk_tiger_palm               = find_spell( 346602 );
+  passives.fallen_monk_windwalking              = find_spell( 364944 );
 
   // Conduits
   passives.fortifying_ingredients = find_spell( 336874 );
@@ -6755,6 +6759,8 @@ void monk_t::create_buffs()
   buff.fallen_order = make_buff( this, "fallen_order", find_spell( 326860 ) )
                           ->set_cooldown( timespan_t::zero() )
                           ->set_trigger_spell( covenant.venthyr );
+  buff.windwalking_venthyr =
+      make_buff( this, "windwalking_venthyr", passives.fallen_monk_windwalking )->set_default_value_from_effect( 1 );
 
   // Covenant Conduits
   buff.fortifying_ingrediences = make_buff<absorb_buff_t>( this, "fortifying_ingredients", find_spell( 336874 ) );

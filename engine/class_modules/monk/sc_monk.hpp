@@ -248,6 +248,7 @@ public:
     buff_t* faeline_stomp_brm;
     buff_t* faeline_stomp_reset;
     buff_t* fallen_order;
+    buff_t* windwalking_venthyr;
 
     // Covenant Conduits
     absorb_buff_t* fortifying_ingrediences;
@@ -605,6 +606,7 @@ public:
     const spell_data_t* fallen_monk_spinning_crane_kick;
     const spell_data_t* fallen_monk_spinning_crane_kick_tick;
     const spell_data_t* fallen_monk_tiger_palm;
+    const spell_data_t* fallen_monk_windwalking;
 
     // Conduits
     const spell_data_t* fortifying_ingredients;
