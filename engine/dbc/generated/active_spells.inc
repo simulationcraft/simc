@@ -1,5 +1,5 @@
-// Active class spells, wow build 9.1.0.40725
-static const std::array<active_class_spell_t, 611> __active_spells_data { {
+// Active class spells, wow build 9.1.5.40871
+static const std::array<active_class_spell_t, 612> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1161,      0, "Challenging Shout"                  },
@@ -79,6 +79,7 @@ static const std::array<active_class_spell_t, 611> __active_spells_data { {
   {  2,    0, 270564,      0, "Summon Dawnforge Ram"               },
   {  2,    0, 290608,      0, "Crusader's Direhorn"                },
   {  2,    0, 317920,      0, "Concentration Aura"                 },
+  {  2,    0, 363613,      0, "Summon Lightforged Ruinstrider"     },
   {  2,   65,    498,      0, "Divine Protection"                  },
   {  2,   65,   4987,      0, "Cleanse"                            },
   {  2,   65,  20473,      0, "Holy Shock"                         },
@@ -613,7 +614,7 @@ static const std::array<active_class_spell_t, 611> __active_spells_data { {
   { 12,  581, 228477, 344862, "Soul Cleave"                        },
 } };
 
-// Pet active spells, wow build 9.1.0.40725
+// Pet active spells, wow build 9.1.5.40871
 static const std::array<active_pet_spell_t, 133> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

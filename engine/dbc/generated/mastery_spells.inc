@@ -1,4 +1,4 @@
-// Mastery abilities, wow build 9.1.0.40725
+// Mastery abilities, wow build 9.1.5.40871
 static const std::array<mastery_spell_entry_t, 36> __mastery_spell_data { {
   {   62, 190740 }, // Mastery: Savant (Arcane Mage)
   {   63,  12846 }, // Mastery: Ignite (Fire Mage)
