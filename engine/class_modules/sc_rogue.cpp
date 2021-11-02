@@ -1701,8 +1701,6 @@ public:
     if ( affected_by.sepsis && p()->buffs.sepsis->check() && !p()->stealthed( STEALTH_ALL & ~STEALTH_SEPSIS ) )
     {
       p()->buffs.sepsis->decrement();
-      if ( !p()->dbc->ptr )
-        p()->trigger_toxic_onslaught( ab::target );
     }
 
     ab::execute();
@@ -2825,7 +2823,7 @@ struct fan_of_knives_t: public rogue_attack_t
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount   = data().effectN( 2 ).base_value();
     // 2021-10-07 - Not in the whitelist but confirmed as working as of 9.1.5 PTR
-    affected_by.shadow_blades_cp = p->dbc->ptr;
+    affected_by.shadow_blades_cp = true;
 
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
@@ -2850,7 +2848,7 @@ struct fan_of_knives_t: public rogue_attack_t
   // 04/22/2021 -- TOCHECK: Testing with the NF legendary shows this doesn't work
   // 2021-10-07 - Works as of 9.1.5 PTR
   bool procs_shadow_blades_damage() const override
-  { return p()->dbc->ptr; }
+  { return true; }
 };
 
 // Feint ====================================================================
@@ -3297,7 +3295,7 @@ struct mutilate_t : public rogue_attack_t
 
     // 2021-10-07 - Works as of 9.1.5 PTR
     bool procs_shadow_blades_damage() const override
-    { return p()->dbc->ptr; }
+    { return true; }
   };
 
   mutilate_strike_t* mh_strike;
@@ -4558,8 +4556,7 @@ struct sepsis_t : public rogue_attack_t
     sepsis_expire_damage->set_target( d->target );
     sepsis_expire_damage->execute();
     p()->buffs.sepsis->trigger();
-    if ( p()->dbc->ptr )
-      p()->trigger_toxic_onslaught( d->target );
+    p()->trigger_toxic_onslaught( d->target );
   }
 
   bool snapshots_nightstalker() const override
@@ -5652,34 +5649,23 @@ void rogue_t::trigger_toxic_onslaught( player_t* target )
   if ( !legendary.toxic_onslaught->ok() )
     return;
 
-  if ( !dbc->ptr )
-  {
-    // 2021-04-22 - Appears to select randomly from the three cooldowns, not spec-specific
-    // 2021-07-09: Extends duration now instead of overriding it in case of the existing cooldown proccing.
-    const timespan_t trigger_duration = legendary.toxic_onslaught->effectN( 1 ).time_value();
-    std::vector<buff_t*> pbuffs = { get_target_data( target )->debuffs.vendetta, buffs.adrenaline_rush, buffs.shadow_blades };
-    pbuffs[ sim->rng().range( pbuffs.size() ) ]->extend_duration_or_trigger( trigger_duration );
-  }
-  else
-  {
-    // As of 9.1.5 we proc the two major cooldowns that are not part of our own spec.
-    const timespan_t trigger_duration = legendary.toxic_onslaught->effectN( 1 ).time_value();
+  // As of 9.1.5 we proc the two major cooldowns that are not part of our own spec.
+  const timespan_t trigger_duration = legendary.toxic_onslaught->effectN( 1 ).time_value();
 
-    if ( specialization() == ROGUE_ASSASSINATION )
-    {
-      buffs.adrenaline_rush->extend_duration_or_trigger( trigger_duration );
-      buffs.shadow_blades->extend_duration_or_trigger( trigger_duration );
-    }
-    else if ( specialization() == ROGUE_OUTLAW )
-    {
-      get_target_data( target )->debuffs.vendetta->extend_duration_or_trigger( trigger_duration );
-      buffs.shadow_blades->extend_duration_or_trigger( trigger_duration );
-    }
-    else if ( specialization() == ROGUE_SUBTLETY )
-    {
-      get_target_data( target )->debuffs.vendetta->extend_duration_or_trigger( trigger_duration );
-      buffs.adrenaline_rush->extend_duration_or_trigger( trigger_duration );
-    }
+  if ( specialization() == ROGUE_ASSASSINATION )
+  {
+    buffs.adrenaline_rush->extend_duration_or_trigger( trigger_duration );
+    buffs.shadow_blades->extend_duration_or_trigger( trigger_duration );
+  }
+  else if ( specialization() == ROGUE_OUTLAW )
+  {
+    get_target_data( target )->debuffs.vendetta->extend_duration_or_trigger( trigger_duration );
+    buffs.shadow_blades->extend_duration_or_trigger( trigger_duration );
+  }
+  else if ( specialization() == ROGUE_SUBTLETY )
+  {
+    get_target_data( target )->debuffs.vendetta->extend_duration_or_trigger( trigger_duration );
+    buffs.adrenaline_rush->extend_duration_or_trigger( trigger_duration );
   }
 }
 
@@ -6383,8 +6369,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
       if ( dots.sepsis->is_ticking() )
       {
         source->cooldowns.sepsis->adjust( -timespan_t::from_seconds( source->covenant.sepsis->effectN( 3 ).base_value() ) );
-        if ( source->dbc->ptr )
-          source->trigger_toxic_onslaught( target );
+        source->trigger_toxic_onslaught( target );
       }
     } );
   }
