@@ -116,7 +116,7 @@ struct pet_action_base_t : public BASE
 
 struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
 {
-  bool trigger_mystic_touch;
+  bool trigger_mystic_touch; // Some pets can trigger Mystic Touch debuff from attacks
 
   pet_melee_attack_t( util::string_view n, monk_pet_t* p, const spell_data_t* data = spell_data_t::nil() )
     : base_t( n, p, data ), trigger_mystic_touch( false )
@@ -203,39 +203,10 @@ struct pet_melee_t : pet_melee_attack_t
 
 struct pet_auto_attack_t : public melee_attack_t
 {
-  pet_auto_attack_t( monk_pet_t* player ) : melee_attack_t( "auto_attack", player )
-  {
-    assert( player->main_hand_weapon.type != WEAPON_NONE );
-    player->main_hand_attack = nullptr;
-    trigger_gcd              = 0_ms;
-  }
+  bool trigger_mystic_touch; // Some pets can trigger Mystic Touch debuff from attacks
 
-  void init() override
-  {
-    melee_attack_t::init();
-
-    assert( player->main_hand_attack && "Pet auto attack created without main hand attack" );
-  }
-
-  void execute() override
-  {
-    player->main_hand_attack->schedule_execute();
-
-    if ( player->off_hand_attack )
-      player->off_hand_attack->schedule_execute();
-  }
-
-  bool ready() override
-  {
-    if ( player->is_moving() )
-      return false;
-    return ( player->main_hand_attack->execute_event == nullptr );
-  }
-};
-
-struct venthyr_pet_auto_attack_t : public melee_attack_t
-{
-  venthyr_pet_auto_attack_t( monk_pet_t* player ) : melee_attack_t( "auto_attack", player )
+  pet_auto_attack_t( monk_pet_t* player ) : melee_attack_t( "auto_attack", player ), 
+      trigger_mystic_touch( false )
   {
     assert( player->main_hand_weapon.type != WEAPON_NONE );
     player->main_hand_attack = nullptr;
@@ -268,7 +239,8 @@ struct venthyr_pet_auto_attack_t : public melee_attack_t
   {
     melee_attack_t::impact( s );
 
-    s->target->debuffs.mystic_touch->trigger();
+    if ( trigger_mystic_touch )
+      s->target->debuffs.mystic_touch->trigger();
   }
 };
 
@@ -1593,12 +1565,13 @@ private:
     }
   };
 
-  struct auto_attack_t : public venthyr_pet_auto_attack_t
+  struct auto_attack_t : public pet_auto_attack_t
   {
 
-    auto_attack_t( fallen_monk_ww_pet_t* player, util::string_view options_str ) : venthyr_pet_auto_attack_t( player )
+    auto_attack_t( fallen_monk_ww_pet_t* player, util::string_view options_str ) : pet_auto_attack_t( player )
     {
       parse_options( options_str );
+      trigger_mystic_touch = true;
 
       player->main_hand_attack = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
@@ -1894,11 +1867,12 @@ private:
     }
   };
 
-  struct auto_attack_t : public venthyr_pet_auto_attack_t
+  struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( fallen_monk_brm_pet_t* player, util::string_view options_str ) : venthyr_pet_auto_attack_t( player )
+    auto_attack_t( fallen_monk_brm_pet_t* player, util::string_view options_str ) : pet_auto_attack_t( player )
     {
       parse_options( options_str );
+      trigger_mystic_touch = true;
 
       player->main_hand_attack = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
