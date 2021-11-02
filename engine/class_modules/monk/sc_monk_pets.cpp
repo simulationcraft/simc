@@ -1730,7 +1730,8 @@ public:
     fallen_monk_spinning_crane_kick_tick_t( fallen_monk_ww_pet_t* p )
       : pet_melee_attack_t( "spinning_crane_kick_fo_tick", p, p->o()->passives.fallen_monk_spinning_crane_kick_tick )
     {
-      dual = background = true;
+      dual = background    = true;
+      merge_report         = false;
       aoe                 = -1;
       reduced_aoe_targets = p->o()->spec.spinning_crane_kick->effectN( 1 ).base_value();
       trigger_mystic_touch = true;
@@ -1790,10 +1791,14 @@ public:
     {
       parse_options( options_str );
 
-      may_crit = may_miss = may_block = may_dodge = may_parry = false;
+      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = harmful = false;
       tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
 
-      spell_power_mod.direct = 0.0;
+      spell_power_mod.direct  = 0.0;
+      spell_power_mod.tick    = 0.0;
+      attack_power_mod.direct = 0.0;
+      attack_power_mod.tick   = 0.0;
+      weapon_power_mod        = 0.0;
 
       tick_action = new fallen_monk_spinning_crane_kick_tick_t( p );
 
