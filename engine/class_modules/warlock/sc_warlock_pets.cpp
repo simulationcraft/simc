@@ -491,7 +491,7 @@ struct demonic_strength_t : public warlock_pet_melee_attack_t
     channeled    = true;
 
     dynamic_tick_action = true;
-    tick_action         = new felstorm_tick_t( p, p->find_spell( 89751) );
+    tick_action         = new felstorm_tick_t( p, p->find_spell( 89753 ) );
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
