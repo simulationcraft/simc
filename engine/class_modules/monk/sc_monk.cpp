@@ -1607,13 +1607,8 @@ struct rjw_tick_action_t : public monk_melee_attack_t
     ww_mastery = true;
 
     dual = background = true;
-    if ( p->is_ptr() )
-    {
-      aoe                 = -1;
-      reduced_aoe_targets = p->talent.rushing_jade_wind->effectN( 1 ).base_value();
-    }
-    else
-      aoe = (int)p->talent.rushing_jade_wind->effectN( 1 ).base_value();
+    aoe                 = -1;
+    reduced_aoe_targets = p->talent.rushing_jade_wind->effectN( 1 ).base_value();
     radius            = data->effectN( 1 ).radius();
 
     // Reset some variables to ensure proper execution
@@ -1697,13 +1692,8 @@ struct sck_tick_action_t : public monk_melee_attack_t
     trigger_chiji = true;
 
     dual = background = true;
-    if ( p->is_ptr() )
-    {
-      aoe = -1;
-      reduced_aoe_targets = p->spec.spinning_crane_kick->effectN( 1 ).base_value();
-    }
-    else
-      aoe               = (int)p->spec.spinning_crane_kick->effectN( 1 ).base_value();
+    aoe = -1;
+    reduced_aoe_targets = p->spec.spinning_crane_kick->effectN( 1 ).base_value();
     radius            = data->effectN( 1 ).radius();
 
     if ( p->specialization() == MONK_WINDWALKER )
@@ -1927,14 +1917,9 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, p, p->passives.fists_of_fury_tick )
   {
     background = true;
-    if ( p->is_ptr() )
-    {
-      aoe                 = -1;
-      reduced_aoe_targets = p->spec.fists_of_fury->effectN( 1 ).base_value();
-      full_amount_targets = 1;
-    }
-    else
-      aoe = 1 + (int)p->spec.fists_of_fury->effectN( 1 ).base_value();
+    aoe                 = -1;
+    reduced_aoe_targets = p->spec.fists_of_fury->effectN( 1 ).base_value();
+    full_amount_targets = 1;
     ww_mastery = true;
 
     attack_power_mod.direct    = p->spec.fists_of_fury->effectN( 5 ).ap_coeff();
@@ -4165,7 +4150,6 @@ struct fallen_order_t : public monk_spell_t
 
     // Monks alternate summoning primary spec and non-primary spec
     // 8 summons in total (4 primary and a mix of 4 non-primary)
-    // for non-primary, there is a 50% chance one or the other non-primary is summoned [TODO: Remove line come 9.1.5]
     // for non-primary, each non-primary is summoned twice
     for ( int i = 0; i < 8; i++ )
     {
@@ -4175,31 +4159,17 @@ struct fallen_order_t : public monk_spell_t
         {
           if ( i % 2 )
             fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, primary_duration ) );
-          else if ( p()->is_ptr() )
-          {
-            if ( i % 3 )
+          else if ( i % 3 )
               fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, summon_duration ) );
-            else
-              fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, summon_duration ) );
-          }
-          else if ( rng().roll( 0.5 ) )
-            fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, summon_duration ) );
           else
-            fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, summon_duration ) );
+              fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, summon_duration ) );
           break;
         }
         case MONK_BREWMASTER:
         {
           if ( i % 2 )
             fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, primary_duration ) );
-          else if ( p()->is_ptr() )
-          {
-            if ( i % 3 )
-              fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, summon_duration ) );
-            else
-              fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, summon_duration ) );
-          }
-          else if ( rng().roll( 0.5 ) )
+          else if ( i % 3 )
             fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, summon_duration ) );
           else
             fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, summon_duration ) );
@@ -4209,14 +4179,7 @@ struct fallen_order_t : public monk_spell_t
         {
           if ( i % 2 )
             fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, primary_duration ) );
-          else if ( p()->is_ptr() )
-          {
-            if ( i % 3 )
-              fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, summon_duration ) );
-            else
-              fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, summon_duration ) );
-          }
-          else if ( rng().roll( 0.5 ) )
+          else if ( i % 3 )
             fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, summon_duration ) );
           else
             fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, summon_duration ) );

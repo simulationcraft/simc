@@ -726,14 +726,9 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_fists_of_fury_tick_t( storm_earth_and_fire_pet_t* p )
       : sef_tick_action_t( "fists_of_fury_tick", p, p->o()->passives.fists_of_fury_tick )
     {
-      if ( p->is_ptr() )
-      {
-        aoe                 = -1;
-        reduced_aoe_targets = p->o()->spec.fists_of_fury->effectN( 1 ).base_value();
-        full_amount_targets = 1;
-      }
-      else
-        aoe = 1 + as<int>( p->o()->spec.fists_of_fury->effectN( 1 ).base_value() );
+      aoe                 = -1;
+      reduced_aoe_targets = p->o()->spec.fists_of_fury->effectN( 1 ).base_value();
+      full_amount_targets = 1;
     }
   };
 
@@ -826,13 +821,8 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_rushing_jade_wind_tick_t( storm_earth_and_fire_pet_t* p )
       : sef_tick_action_t( "rushing_jade_wind_tick", p, p->o()->talent.rushing_jade_wind->effectN( 1 ).trigger() )
     {
-      if ( p->is_ptr() )
-      {
-        aoe                 = -1;
-        reduced_aoe_targets = p->o()->talent.rushing_jade_wind->effectN( 1 ).base_value();
-      }
-      else
-        aoe = (int)p->o()->talent.rushing_jade_wind->effectN( 1 ).base_value();
+      aoe                 = -1;
+      reduced_aoe_targets = p->o()->talent.rushing_jade_wind->effectN( 1 ).base_value();
     }
   };
 
@@ -1757,9 +1747,8 @@ public:
     {
       pet_melee_attack_t::impact( s );
 
-      if ( o()->is_ptr() )
-        if ( o()->specialization() == MONK_WINDWALKER )
-          o()->trigger_mark_of_the_crane( s );
+      if ( o()->specialization() == MONK_WINDWALKER )
+        o()->trigger_mark_of_the_crane( s );
     }
   };
 
@@ -1853,6 +1842,11 @@ public:
     {
       return 0;
     }
+
+    double action_multiplier() const override
+    {
+      return 0;
+    }
   };
 
 
@@ -1862,12 +1856,8 @@ public:
     // Only cast Fists of Fury for Windwalker specialization
     if ( owner->specialization() == MONK_WINDWALKER )
       action_list_str += "/fists_of_fury";
-    if ( owner->is_ptr() )
-    {
-      action_list_str += "/spinning_crane_kick,if=active_enemies>1";
-      action_list_str += "/tiger_palm,if=active_enemies=1";
-    }
-    else
+    action_list_str += "/spinning_crane_kick,if=active_enemies>1";
+    action_list_str += "/tiger_palm,if=active_enemies=1";
     action_list_str += "/tiger_palm";
 
     monk_pet_t::init_action_list();
@@ -2078,8 +2068,7 @@ public:
   {
     action_list_str = "auto_attack";
     action_list_str += "/clash";
-    if ( owner->is_ptr() )
-      action_list_str += "/fallen_brew";
+    action_list_str += "/fallen_brew";
     action_list_str += "/keg_smash";
     // Only cast Breath of Fire for Brewmaster specialization
     if ( o()->specialization() == MONK_BREWMASTER )
