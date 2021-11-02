@@ -1910,12 +1910,9 @@ struct beast_cleave_attack_t: public hunter_pet_action_t<hunter_main_pet_base_t,
     base_dd_min = base_dd_max = 0;
     spell_power_mod.direct = attack_power_mod.direct = 0;
     weapon_multiplier = 0;
-
-    if ( p->is_ptr() )
-    {
-      aoe = -1;
-      reduced_aoe_targets = data().effectN( 2 ).base_value();
-    }
+    
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
   }
 
   void init() override
@@ -2490,11 +2487,8 @@ struct barrage_t: public hunter_spell_t
       radius = 0; //Barrage attacks all targets in front of the hunter, so setting radius to 0 will prevent distance targeting from using a 40 yard radius around the target.
       // Todo: Add in support to only hit targets in the frontal cone.
 
-      if ( p->is_ptr() )
-      {
-        aoe = -1;
-        reduced_aoe_targets = data().effectN( 1 ).base_value();
-      }
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 1 ).base_value();
     }
 
     void impact( action_state_t* s ) override
@@ -2538,11 +2532,8 @@ struct multi_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    if ( p->is_ptr() )
-    {
-      aoe = -1;
-      reduced_aoe_targets = p->find_spell( 2643 )->effectN( 1 ).base_value();
-    }
+    aoe = -1;
+    reduced_aoe_targets = p->find_spell( 2643 )->effectN( 1 ).base_value();
   }
 
   void execute() override
@@ -2783,11 +2774,8 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 
     tick_action = p->get_background_action<damage_t>( "explosive_shot_aoe" );
 
-    if ( p->is_ptr() )
-    {
-      tick_action->aoe                 = -1;
-      tick_action->reduced_aoe_targets = data().effectN( 2 ).base_value();
-    }
+    tick_action->aoe                 = -1;
+    tick_action->reduced_aoe_targets = data().effectN( 2 ).base_value();
   }
 
   timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
@@ -2909,10 +2897,7 @@ struct single_target_t final : base_t
     base_t::impact( s );
 
     // Each bounce refreshes the debuff
-    if ( p()->is_ptr() )
-    {
-      td( s->target )->debuffs.death_chakram->trigger();
-    }
+    td( s->target )->debuffs.death_chakram->trigger();
   }
 };
 
@@ -2978,14 +2963,11 @@ struct death_chakram_t : death_chakram::base_t
     radius = 8; // Tested on 2020-08-11
     aoe = data().effectN( 1 ).chain_target();
 
-    if ( p->is_ptr() )
-    {
-      may_crit = single_target->may_crit;
-      base_dd_min = single_target->base_dd_min;
-      base_dd_max = single_target->base_dd_max;
-      attack_power_mod.direct = single_target->attack_power_mod.direct;
-      school = single_target->school;
-    }
+    may_crit = single_target->may_crit;
+    base_dd_min = single_target->base_dd_min;
+    base_dd_max = single_target->base_dd_max;
+    attack_power_mod.direct = single_target->attack_power_mod.direct;
+    school = single_target->school;
 
     if ( p -> legendary.bag_of_munitions.ok() )
       explosive = p->get_background_action<death_chakram::explosive_shot_munitions_t>( "explosive_shot_munitions" );
@@ -3018,10 +3000,7 @@ struct death_chakram_t : death_chakram::base_t
       explosive->execute();
     }
 
-    if ( p()->is_ptr() )
-    {
-      td( s->target )->debuffs.death_chakram->trigger();
-    }
+    td( s->target )->debuffs.death_chakram->trigger();
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -3056,7 +3035,7 @@ struct flayed_shot_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( p()->is_ptr() && p()->buffs.flayers_mark->trigger() )
+    if ( p()->buffs.flayers_mark->trigger() )
     {
       p()->cooldowns.kill_shot->reset( true );
       p()->buffs.empowered_release->trigger();
@@ -4256,11 +4235,9 @@ struct carve_t: public carve_base_t
     if ( p -> talents.butchery.ok() )
       background = true;
 
-    if ( p->is_ptr() )
-    {
-      aoe = -1;
-      reduced_aoe_targets = data().effectN( 3 ).base_value();
-    }
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 3 ).base_value();
+
     wildfire_bomb_reduction_cap = timespan_t::from_seconds( data().effectN( 3 ).base_value() );
   }
 };
@@ -4275,11 +4252,9 @@ struct butchery_t: public carve_base_t
   {
     parse_options( options_str );
 
-    if ( p->is_ptr() )
-    {
-      aoe = -1;
-      reduced_aoe_targets = data().effectN( 3 ).base_value();
-    }
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 3 ).base_value();
+
     wildfire_bomb_reduction_cap = timespan_t::from_seconds( data().effectN( 3 ).base_value() );
   }
 };
@@ -4761,15 +4736,8 @@ struct flare_t : hunter_spell_t
     soulforge_embers_t( util::string_view n, hunter_t* p )
       : hunter_spell_t( n, p, p -> find_spell( 336746 ) )
     {
-      if ( p->is_ptr() )
-      {
-        aoe = -1;
-        reduced_aoe_targets = p->legendary.soulforge_embers->effectN( 1 ).base_value();
-      }
-      else
-      {
-        aoe = as<int>( p->legendary.soulforge_embers->effectN( 1 ).base_value() );
-      }
+      aoe = -1;
+      reduced_aoe_targets = p->legendary.soulforge_embers->effectN( 1 ).base_value();
 
       radius = p -> find_class_spell( "Tar Trap" ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
       triggers_wild_spirits = false;
@@ -4777,7 +4745,7 @@ struct flare_t : hunter_spell_t
 
     double calculate_tick_amount( action_state_t* state, double mult ) const override
     {
-      if ( p()->is_ptr() && as<double>( state->n_targets ) > state->action->reduced_aoe_targets )
+      if ( as<double>( state->n_targets ) > state->action->reduced_aoe_targets )
       {
         mult *= std::sqrt( reduced_aoe_targets / state->n_targets );
       }
@@ -5619,12 +5587,9 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
     make_buff( *this, "latent_poison_injection", p -> legendary.latent_poison_injectors -> effectN( 1 ).trigger() )
       -> set_trigger_spell( p -> legendary.latent_poison_injectors );
 
-  if ( p->is_ptr() )
-  {
-    debuffs.death_chakram = make_buff( *this, "death_chakram", p->find_spell( 325037 ) )
-      ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
-      ->set_cooldown( 0_s );
-  }
+  debuffs.death_chakram = make_buff( *this, "death_chakram", p->find_spell( 325037 ) )
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
+    ->set_cooldown( 0_s );
 
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
@@ -6598,13 +6563,10 @@ double hunter_t::composite_player_target_multiplier( player_t* target, school_e 
   if ( conduits.enfeebled_mark.ok() && buffs.resonating_arrow -> check() )
     d *= 1 + conduits.enfeebled_mark.percent();
 
-  if ( is_ptr() )
+  auto td = get_target_data( target );
+  if ( td->debuffs.death_chakram->has_common_school( school ) )
   {
-    auto td = get_target_data( target );
-    if ( td->debuffs.death_chakram->has_common_school( school ) )
-    {
-      d *= 1 + td->debuffs.death_chakram->value();
-    }
+    d *= 1 + td->debuffs.death_chakram->value();
   }
 
   return d;
@@ -6638,10 +6600,7 @@ double hunter_t::composite_player_target_pet_damage_multiplier( player_t* target
 
   m *= 1 + buffs.wild_spirits->check_value();
 
-  if ( is_ptr() )
-  {
-    m *= 1 + get_target_data( target )->debuffs.death_chakram->value();
-  }
+  m *= 1 + get_target_data( target )->debuffs.death_chakram->value();
 
   return m;
 }
