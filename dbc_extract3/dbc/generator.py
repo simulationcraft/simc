@@ -1775,7 +1775,7 @@ class SpellDataGenerator(DataGenerator):
           ( 345714, 0 ), # Venthyr Fallen Monk Fists of Fury damage
           ( 347826, 0 ), # Venthyr Fallen Monk Spec Duration
           ( 363041, 0 ), # Venthyr Fallen Monk Fallen Brew
-          ( 364944, 0 ), # Venthyr Fallen Monk Movement Speed
+          ( 364944, 0 ), # Venthyr Fallen Monk Windwalking
 
           # Conduits
           ( 336874, 0 ), # Fortifying Ingredients
