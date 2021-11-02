@@ -101,6 +101,7 @@ actions.ogcd+=/fireblood
 actions.ogcd+=/use_items
 
 actions.opener=soul_rot,if=soulbind.grove_invigoration
+actions.opener+=/nether_portal
 actions.opener+=/grimoire_felguard
 actions.opener+=/summon_vilefiend
 actions.opener+=/shadow_bolt,if=soul_shard<5&cooldown.call_dreadstalkers.up
