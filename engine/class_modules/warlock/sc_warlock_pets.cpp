@@ -432,10 +432,11 @@ struct axe_toss_t : public warlock_pet_spell_t
 
 struct felstorm_tick_t : public warlock_pet_melee_attack_t
 {
-  felstorm_tick_t( warlock_pet_t* p, const spell_data_t& s )
-    : warlock_pet_melee_attack_t( "felstorm_tick", p, s.effectN( 1 ).trigger() )
+  felstorm_tick_t( warlock_pet_t* p, const spell_data_t *s )
+    : warlock_pet_melee_attack_t( "felstorm_tick", p, s )
   {
-    aoe        = as<int>( data().effectN( 3 ).base_value() );
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 3 ).base_value();
     background = true;
     weapon     = &( p->main_hand_weapon );
   }
@@ -466,7 +467,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     channeled    = true;
 
     dynamic_tick_action = true;
-    tick_action         = new felstorm_tick_t( p, data() );
+    tick_action         = new felstorm_tick_t( p, p->find_spell( 89753 ));
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -490,7 +491,7 @@ struct demonic_strength_t : public warlock_pet_melee_attack_t
     channeled    = true;
 
     dynamic_tick_action = true;
-    tick_action         = new felstorm_tick_t( p, data() );
+    tick_action         = new felstorm_tick_t( p, p->find_spell( 89751) );
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
