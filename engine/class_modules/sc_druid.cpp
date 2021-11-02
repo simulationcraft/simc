@@ -7232,12 +7232,15 @@ struct adaptive_swarm_t : public druid_spell_t
   {
     adaptive_swarm_base_t* other;
     bool heal;
+    double tf_mul;
 
     adaptive_swarm_base_t( druid_t* p, util::string_view n, const spell_data_t* sd )
       : druid_spell_t( n, p, sd ), other( nullptr )
     {
       dual = background = true;
       dot_behavior      = dot_behavior_e::DOT_CLIP;
+
+      tf_mul = p->query_aura_effect( p->spec.tigers_fury, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE, sd )->percent();
     }
 
     action_state_t* new_state() override { return new adaptive_swarm_state_t( this, target ); }
@@ -7305,6 +7308,16 @@ struct adaptive_swarm_t : public druid_spell_t
       else if ( !tl_4.empty() ) tar = tl_4.at( rng().range( tl_4.size() ) );
 
       return tar;
+    }
+
+    double composite_persistent_multiplier( const action_state_t* s ) const override
+    {
+      double pm = druid_spell_t::composite_persistent_multiplier( s );
+
+      if ( !debug_cast<const adaptive_swarm_state_t*>( s )->jump && p()->buff.tigers_fury->check() )
+        pm *= 1.0 + tf_mul;
+
+      return pm;
     }
 
     void impact( action_state_t* s ) override
