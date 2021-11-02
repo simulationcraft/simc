@@ -161,7 +161,7 @@ struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
 
   void impact( action_state_t* s ) override
   {
-    pet_melee_attack_t::impact( s );
+    base_t::impact( s );
 
     if ( trigger_mystic_touch )
       s->target->debuffs.mystic_touch->trigger();
