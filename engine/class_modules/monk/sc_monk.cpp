@@ -4842,6 +4842,19 @@ struct chi_burst_heal_t : public monk_heal_t
     target     = p();
     // If we are using the user option, each heal just heals 1 target, otherwise use the old SimC code
     aoe        = ( p()->user_options.chi_burst_healing_targets > 1 ? 1 : -1 );
+    reduced_aoe_targets = ( p()->user_options.chi_burst_healing_targets > 1 ? 0.0 : p()->talent.chi_burst->effectN( 1 ).base_value() );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    // If we are using the Chi Burst Healing Target option we need to simulate the reduced healing beyond 6 targets
+    double soft_cap = p()->talent.chi_burst->effectN( 1 ).base_value();
+    if ( p()->user_options.chi_burst_healing_targets > soft_cap )
+      am *= std::sqrt( soft_cap / p()->user_options.chi_burst_healing_targets );
+
+    return am;
   }
 };
 
