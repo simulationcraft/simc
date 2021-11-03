@@ -415,6 +415,9 @@ void field_of_blossoms( special_effect_t& effect )
   if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
     return;
 
+  if ( effect.player->sim->shadowlands_opts.field_of_blossoms_duration_multiplier == 0.0 )
+    return;
+
   auto buff = buff_t::find( effect.player, "field_of_blossoms" );
   if ( !buff )
   {
