@@ -1182,9 +1182,7 @@ struct void_bolt_t final : public priest_spell_t
       priest().buffs.dissonant_echoes->expire();
     }
 
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/678
-    // Dissonant Echoes proc is on the ghost impact, not on execute
-    if ( !priest().bugs && priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
+    if ( priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
     {
       if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
       {
@@ -1214,17 +1212,6 @@ struct void_bolt_t final : public priest_spell_t
     {
       void_bolt_extension->target = s->target;
       void_bolt_extension->schedule_execute();
-    }
-
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/678
-    // Dissonant Echoes proc is on the ghost impact, not on execute
-    if ( priest().bugs && priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
-    {
-      if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
-      {
-        priest().cooldowns.void_bolt->reset( true );
-        priest().procs.dissonant_echoes->occur();
-      }
     }
 
     if ( priest().talents.hungering_void->ok() )
