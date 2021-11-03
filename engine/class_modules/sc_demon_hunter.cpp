@@ -5014,7 +5014,7 @@ void demon_hunter_t::create_buffs()
 
   const spell_data_t* blind_faith_buff = legendary.blind_faith->ok() ? find_spell( 355894 ) : spell_data_t::not_found();
   buff.blind_faith = make_buff<buff_t>( this, "blind_faith", blind_faith_buff )
-    ->set_default_value( legendary.blind_faith->effectN( 2 ).base_value() ) // Mastery buffs are in raw % not decimal
+    ->set_default_value( legendary.blind_faith->effectN( 2 ).percent() )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_max_stack( 99 ) // Not actually a stacking buff, handled via scripting magic
     ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
