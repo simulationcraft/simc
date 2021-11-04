@@ -2364,19 +2364,6 @@ public:
     }
   }
 
-  timespan_t gcd() const override
-  {
-    timespan_t g = ab::gcd();
-
-    if ( g == timespan_t::zero() )
-      return g;
-
-    if ( g < ab::min_gcd )
-      return ab::min_gcd;
-    else
-      return g;
-  }
-
   double composite_target_armor( player_t* t ) const override
   {
     if ( direct_bleed )
@@ -2435,21 +2422,6 @@ public:
   druid_spell_base_t( util::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ), reset_melee_swing( true )
   {}
-
-  timespan_t gcd() const override
-  {
-    timespan_t g = ab::trigger_gcd;
-
-    if ( g == timespan_t::zero() )
-      return g;
-
-    g *= ab::composite_haste();
-
-    if ( g < ab::min_gcd )
-      return ab::min_gcd;
-    else
-      return g;
-  }
 
   void execute() override
   {
