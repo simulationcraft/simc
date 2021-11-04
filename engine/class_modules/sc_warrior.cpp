@@ -4692,7 +4692,7 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    const int num_available_targets = as<int>( target_list().size() );
+    const int num_available_targets = std::min( 5, as<int>( target_list().size() ));  // Capped to 5 targets 
 
     p()->resource_gain( RESOURCE_RAGE, ( base_rage_gain + additional_rage_gain_per_target * num_available_targets ),
                         p()->gain.whirlwind );
