@@ -1839,7 +1839,8 @@ struct bladestorm_tick_t : public warrior_attack_t
 
   {
     dual = true;
-    aoe  = -1;
+    aoe = -1;
+    reduced_aoe_targets = 8.0;
     background = true;
     if ( p->specialization() == WARRIOR_ARMS )
     {
@@ -2511,7 +2512,8 @@ struct cleave_t : public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( player->main_hand_weapon );
-    aoe    = -1;
+    aoe = -1;
+    reduced_aoe_targets = 5.0;
   }
 
   double action_multiplier() const override
@@ -3589,7 +3591,8 @@ struct seismic_wave_t : warrior_attack_t
   seismic_wave_t( warrior_t* p )
     : warrior_attack_t( "seismic_wave", p, p->find_spell( 278497 ) )
   {
-    aoe         = -1;
+    aoe = -1;
+    reduced_aoe_targets = 5.0;
     background  = true;
     base_dd_min = base_dd_max = p->azerite.seismic_wave.value( 1 );
   }
@@ -3600,7 +3603,8 @@ struct dreadnaught_t : warrior_attack_t
   dreadnaught_t( warrior_t* p )
     : warrior_attack_t( "dreadnaught", p, p->find_spell( 315961 ) )
   {
-    aoe         = -1;
+    aoe = -1;
+    reduced_aoe_targets = 5.0;
     background  = true;
     //base_dd_min = base_dd_max = p->azerite.seismic_wave.value( 1 );
   }
@@ -3972,7 +3976,8 @@ struct ravager_tick_t : public warrior_attack_t
   ravager_tick_t( warrior_t* p, const std::string& name )
     : warrior_attack_t( name, p, p->find_spell( 156287 ) ), rage_from_ravager( 0.0 )
   {
-    aoe           = -1;
+    aoe = -1;
+    reduced_aoe_targets = 8.0;
     impact_action = p->active.deep_wounds_ARMS;
     dual = ground_aoe = true;
     if ( p->specialization() == WARRIOR_PROTECTION )
@@ -4561,6 +4566,8 @@ struct whirlwind_off_hand_t : public warrior_attack_t
   {
     background = true;
     aoe = -1;
+    reduced_aoe_targets = 5.0;
+
 
     base_multiplier *= 1.0 + p->talents.meat_cleaver->effectN( 1 ).percent();
   }
@@ -4583,6 +4590,7 @@ struct fury_whirlwind_mh_t : public warrior_attack_t
   {
     background = true;
     aoe = -1;
+    reduced_aoe_targets = 5.0;
 
     base_multiplier *= 1.0 + p->talents.meat_cleaver->effectN(1).percent();
   }
@@ -4708,6 +4716,7 @@ struct arms_whirlwind_mh_t : public warrior_attack_t
   arms_whirlwind_mh_t( warrior_t* p, const spell_data_t* whirlwind ) : warrior_attack_t( "whirlwind_mh", p, whirlwind )
   {
     aoe = -1;
+    reduced_aoe_targets = 5.0;
     background = true;
   }
 
@@ -4736,6 +4745,7 @@ struct first_arms_whirlwind_mh_t : public warrior_attack_t
   {
     background = true;
     aoe = -1;
+    reduced_aoe_targets = 5.0;
   }
 
   double action_multiplier() const override
@@ -5304,7 +5314,8 @@ struct spear_of_bastion_attack_t : public warrior_attack_t
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
-    aoe        = -1;
+    aoe = -1;
+    reduced_aoe_targets = 5.0;
     dual       = true;
 //dot_duration += timespan_t::from_millis( p -> find_spell( 357996 ) -> effectN( 1 ).base_value() );
     if ( p->legendary.elysian_might->ok() )
