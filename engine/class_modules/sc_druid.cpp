@@ -4776,6 +4776,8 @@ struct natures_guardian_t : public druid_heal_t
 
 struct regrowth_t : public druid_heal_t
 {
+  timespan_t gcd_add;
+
   regrowth_t( druid_t* p, util::string_view options_str )
     : druid_heal_t( "regrowth", p, p->find_class_spell( "Regrowth" ), options_str )
   {
@@ -4790,6 +4792,8 @@ struct regrowth_t : public druid_heal_t
       target          = sim->target;
       base_multiplier = 0;
     }
+
+    gcd_add = p->query_aura_effect( p->spec.cat_form, A_ADD_FLAT_MODIFIER, P_GCD, s_data )->time_value();
   }
 
   timespan_t gcd() const override
@@ -4797,7 +4801,7 @@ struct regrowth_t : public druid_heal_t
     timespan_t g = druid_heal_t::gcd();
 
     if ( p()->buff.cat_form->check() )
-      g -= p()->query_aura_effect( p()->spec.cat_form, A_ADD_FLAT_MODIFIER, P_GCD, s_data )->time_value();
+      g += gcd_add;
 
     return g;
   }
@@ -5238,15 +5242,18 @@ struct fury_of_elune_t : public druid_spell_t
 
 struct dash_t : public druid_spell_t
 {
-  dash_t( druid_t* player, util::string_view options_str )
-    : druid_spell_t( "dash", player,
-                     player->talent.tiger_dash->ok() ? player->talent.tiger_dash : player->find_class_spell( "Dash" ),
+  double gcd_mul;
+
+  dash_t( druid_t* p, util::string_view options_str )
+    : druid_spell_t( "dash", p, p->talent.tiger_dash->ok() ? p->talent.tiger_dash : p->find_class_spell( "Dash" ),
                      options_str )
   {
     autoshift = form_mask = CAT_FORM;
 
     harmful = may_crit = may_miss = false;
     ignore_false_positive         = true;
+
+    gcd_mul = p->query_aura_effect( &p->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, s_data )->percent();
   }
 
   timespan_t gcd() const override
@@ -5254,7 +5261,7 @@ struct dash_t : public druid_spell_t
     timespan_t g = druid_spell_t::gcd();
 
     if ( p()->buff.cat_form->check() )
-      g *= 1.0 + p()->query_aura_effect( &p()->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, s_data )->percent();
+      g *= 1.0 + gcd_mul;
 
     return g;
   }
@@ -5274,13 +5281,17 @@ struct dash_t : public druid_spell_t
 
 struct tiger_dash_t : public druid_spell_t
 {
-  tiger_dash_t( druid_t* player, util::string_view options_str )
-    : druid_spell_t( "tiger_dash", player, player->talent.tiger_dash, options_str )
+  double gcd_mul;
+
+  tiger_dash_t( druid_t* p, util::string_view options_str )
+    : druid_spell_t( "tiger_dash", p, p->talent.tiger_dash, options_str )
   {
     autoshift = form_mask = CAT_FORM;
 
     harmful = may_crit = may_miss = false;
     ignore_false_positive         = true;
+
+    gcd_mul = p->query_aura_effect( &p->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, s_data )->percent();
   }
 
   timespan_t gcd() const override
@@ -5288,7 +5299,7 @@ struct tiger_dash_t : public druid_spell_t
     timespan_t g = druid_spell_t::gcd();
 
     if ( p()->buff.cat_form->check() )
-      g *= 1.0 + p()->query_aura_effect( &p()->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, s_data )->percent();
+      g *= 1.0 + gcd_mul;
 
     return g;
   }
@@ -5722,6 +5733,8 @@ struct heart_of_the_wild_t : public druid_spell_t
 // Entangling Roots =========================================================
 struct entangling_roots_t : public druid_spell_t
 {
+  timespan_t gcd_add;
+
   entangling_roots_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "entangling_roots", p, p->spec.entangling_roots, options_str )
   {
@@ -5729,6 +5742,18 @@ struct entangling_roots_t : public druid_spell_t
     harmful   = false;
     // workaround so that we do not need to enable mana regen
     base_costs[ RESOURCE_MANA ] = 0.0;
+
+    gcd_add = p->query_aura_effect( p->spec.cat_form, A_ADD_FLAT_MODIFIER, P_GCD, s_data )->time_value();
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t g = druid_spell_t::gcd();
+
+    if ( p()->buff.cat_form->check() )
+      g += gcd_add;
+
+    return g;
   }
 
   bool check_form_restriction() override
