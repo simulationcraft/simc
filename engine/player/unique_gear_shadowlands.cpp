@@ -1990,9 +1990,10 @@ void murmurs_in_the_dark( special_effect_t& effect )
 // id=336222 melee damage spell?
 void dueling_form( special_effect_t& effect )
 {
-  struct dueling_form_t : public generic_proc_t
+  struct dueling_form_t : public proc_spell_t
   {
-    dueling_form_t( const special_effect_t& e ) : generic_proc_t( e, "dueling_form", 336236 )
+    dueling_form_t( const special_effect_t& e )
+      : proc_spell_t( "dueling_form", e.player, e.player->find_spell( 336236 ) )
     {
       base_dd_min = e.driver()->effectN( 1 ).min( e.item );
       base_dd_max = e.driver()->effectN( 1 ).max( e.item );
