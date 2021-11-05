@@ -946,9 +946,13 @@ void empyreal_ordnance( special_effect_t& effect )
       proc_spell_t( "empyreal_ordnance_bolt", e.player, e.player->find_spell( 345540 ) ),
       buff( b )
     {
-      dot_behavior = dot_behavior_e::DOT_CLIP;
       base_td = e.player->find_spell( 345542 )->effectN( 1 ).average( e.item );
       buff_travel_speed = e.player->find_spell( 345544 )->missile_speed();
+    }
+
+    timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t duration ) const override
+    {
+      return duration;
     }
 
     void last_tick( dot_t* d ) override
