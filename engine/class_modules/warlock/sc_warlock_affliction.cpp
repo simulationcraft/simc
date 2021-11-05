@@ -566,12 +566,6 @@ struct malefic_rapture_t : public affliction_spell_t
 
       void execute() override
       {
-        if ( p()->legendary.malefic_wrath->ok() )
-        {
-          p()->buffs.malefic_wrath->trigger();
-          p()->procs.malefic_wrath->occur();
-        }
-
         int d = p()->get_target_data( target )->count_affliction_dots();
         if ( d > 0 )
         {
@@ -597,6 +591,17 @@ struct malefic_rapture_t : public affliction_spell_t
       impact_action = damage_instance;
       add_child( impact_action );
 
+    }
+
+    void execute() override
+    {
+      affliction_spell_t::execute();
+
+      if (p()->legendary.malefic_wrath->ok())
+      {
+        p()->buffs.malefic_wrath->trigger();
+        p()->procs.malefic_wrath->occur();
+      }
     }
 };
 
