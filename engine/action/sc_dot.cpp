@@ -776,7 +776,7 @@ void dot_t::schedule_tick()
 
   if ( current_action->channeled )
   {
-    if ( current_action->cancel_if_expr && current_action->cancel_if_expr->success() )
+    if ( current_tick > 0 && current_action->cancel_if_expr && current_action->cancel_if_expr->success() )
     {
       if ( sim.debug )
       {
