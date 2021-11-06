@@ -1993,14 +1993,14 @@ void dueling_form( special_effect_t& effect )
   struct dueling_form_t : public proc_spell_t
   {
     dueling_form_t( const special_effect_t& e )
-      : proc_spell_t( "dueling_form", e.player, e.player->find_spell( 336236 ) )
+      : proc_spell_t( "duelists_shot", e.player, e.player->find_spell( 336234 ) )
     {
       base_dd_min = e.driver()->effectN( 1 ).min( e.item );
       base_dd_max = e.driver()->effectN( 1 ).max( e.item );
     }
   };
 
-  effect.execute_action = create_proc_action<dueling_form_t>( "dueling_form", effect );
+  effect.execute_action = create_proc_action<dueling_form_t>( "duelists_shot", effect );
   new dbc_proc_callback_t( effect.player, effect );
 }
 

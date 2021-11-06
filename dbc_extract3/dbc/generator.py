@@ -1310,8 +1310,8 @@ class SpellDataGenerator(DataGenerator):
          356305,
          # Shredded Soul (Ebonsoul Vise)
          357785,
-         # Dueling Form (Master Duelist's Chit)
-         336236,
+         # Duelist's Shot (Master Duelist's Chit)
+         336234,
          # Nerubian Ambush, Frost-Tinged Carapace Spikes (Relic of the Frozen Wastes)
          355912, 357409,
          # Volatile Detonation (Ticking Sack of Terror)
