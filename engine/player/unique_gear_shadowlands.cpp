@@ -4156,7 +4156,6 @@ void register_special_effects()
     unique_gear::register_special_effect( 339343, items::murmurs_in_the_dark );
     unique_gear::register_special_effect( 336219, items::dueling_form );
 
-
     // 9.1 Trinkets
     unique_gear::register_special_effect( 353492, items::forbidden_necromantic_tome );
     unique_gear::register_special_effect( 357672, items::soul_cage_fragment );

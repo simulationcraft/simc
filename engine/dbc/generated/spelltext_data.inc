@@ -1,5 +1,5 @@
-// Spell text, wow build 9.1.5.40906
-static const std::array<spelltext_data_t, 15591> __spelltext_data { {
+// Spell text, wow build 9.1.5.40944
+static const std::array<spelltext_data_t, 15592> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14030,6 +14030,7 @@ static const std::array<spelltext_data_t, 15591> __spelltext_data { {
   { 336216, "$@spelldesc336214", 0, 0 },
   { 336217, "$@spelldesc336215", "Your next Earthquake will deal $s2% additional damage.", 0 },
   { 336219, "Your attacks have a chance to deal $s1 additional physical damage. ", "Your attacks have a chance to deal $s1 additional physical damage.", 0 },
+  { 336234, "$@spelldesc336219", "$@auradesc336219", 0 },
   { 336239, "Your spells and abilities have a chance to call Tubbins and Gubbins to your side for $336808d, parasol in hand. Standing in the shaded area grants you $336885s1 Mastery.", 0, 0 },
   { 336243, "The effects of combat potions last $s1% to $s2% longer.", 0, 0 },
   { 336245, "Grant a shield that absorbs $<points> damage to allies who aid you with healing or beneficial magic effects. You will only shield each ally once every $337471d.", 0, 0 },
@@ -15593,11 +15594,11 @@ static const std::array<spelltext_data_t, 15591> __spelltext_data { {
   { 364944, 0, "Movement speed increased by $s1%.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.5.40906
+// spelltext hotfix entries, wow build 9.1.5.40944
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.1.5.40906
+// Spell description variables, wow build 9.1.5.40944
 static const std::array<spelldesc_vars_data_t, 305> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15906,7 +15907,7 @@ static const std::array<spelldesc_vars_data_t, 305> __spelldesc_vars_data { {
   {  363041, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.5.40906
+// spelldesc_vars hotfix entries, wow build 9.1.5.40944
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
