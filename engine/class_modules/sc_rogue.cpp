@@ -294,6 +294,7 @@ public:
     buff_t* shot_in_the_dark;
     buff_t* master_of_shadows;
     buff_t* secret_technique; // Only to simplify APL tracking
+    buff_t* shadow_techniques; // Internal tracking buff
     buff_t* shuriken_tornado;
 
     // Legendary
@@ -792,10 +793,25 @@ public:
   double consume_cp_max() const
   { return COMBO_POINT_MAX + as<double>( talent.deeper_stratagem -> effectN( 1 ).base_value() ); }
 
-  // Current number of effective combo points, considering Echoing Reprimand
-  double current_effective_cp( bool use_echoing_reprimand = true ) const
+  double current_cp( bool react = false ) const
   {
-    double current_cp = resources.current[ RESOURCE_COMBO_POINT ];
+    if ( react )
+    {
+      // If we need to react to Shadow Techniques, check to see if the tracking buff is in the react state
+      if ( buffs.shadow_techniques->check() && !buffs.shadow_techniques->stack_react() )
+      {
+        // Previous CP value is cached in the buff value in trigger_shadow_techniques()
+        return buffs.shadow_techniques->check_value();
+      }
+    }
+
+    return resources.current[ RESOURCE_COMBO_POINT ];
+  }
+
+  // Current number of effective combo points, considering Echoing Reprimand
+  double current_effective_cp( bool use_echoing_reprimand = true, bool react = false ) const
+  {
+    double current_cp = this->current_cp( react );
 
     if ( use_echoing_reprimand && current_cp > 0 )
     {
@@ -1321,7 +1337,7 @@ public:
 
   void snapshot_state( action_state_t* state, result_amount_type rt ) override
   {
-    int consume_cp = as<int>( std::min( p()->resources.current[ RESOURCE_COMBO_POINT ], p()->consume_cp_max() ) );
+    int consume_cp = as<int>( std::min( p()->current_cp(), p()->consume_cp_max() ) );
     int effective_cp = consume_cp;
 
     // Apply and Snapshot Echoing Reprimand Buffs
@@ -1715,6 +1731,8 @@ public:
 
       if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
       {
+        p()->buffs.shadow_techniques->cancel(); // Remove tracking mechanism after CP builders
+
         if ( affected_by.shadow_blades_cp && p()->buffs.shadow_blades->up() )
         {
           trigger_combo_point_gain( as<int>( p()->buffs.shadow_blades->data().effectN( 2 ).base_value() ), p()->gains.shadow_blades );
@@ -1783,7 +1801,7 @@ public:
       return false;
 
     if ( ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 &&
-      ab::player->resources.current[ RESOURCE_COMBO_POINT ] < ab::base_costs[ RESOURCE_COMBO_POINT ] )
+      p()->current_cp() < ab::base_costs[ RESOURCE_COMBO_POINT ] )
       return false;
 
     if ( requires_stealth() && !p()->stealthed() )
@@ -3457,7 +3475,7 @@ struct rupture_t : public rogue_attack_t
 
         double evaluate() override
         {
-          double duration = base_duration * ( 1.0 + std::min( cp_max_spend, rupture->p()->resources.current[ RESOURCE_COMBO_POINT ] ) );
+          double duration = base_duration * ( 1.0 + std::min( cp_max_spend, rupture->p()->current_cp() ) );
           return std::min( duration * 1.3, duration + rupture->td( rupture->target )->dots.rupture->remains().total_seconds() );
         }
       };
@@ -5216,6 +5234,12 @@ struct vanish_t : public stealth_like_buff_t<buff_t>
         r->cooldowns.marked_for_death, r->cooldowns.riposte, r->cooldowns.roll_the_bones, r->cooldowns.secret_technique,
         r->cooldowns.sepsis, r->cooldowns.serrated_bone_spike, r->cooldowns.shadow_blades, r->cooldowns.shadow_dance,
         r->cooldowns.shiv, r->cooldowns.sprint, r->cooldowns.symbols_of_death, r->cooldowns.vendetta };
+
+      // 11/06/2021 -- CDR is applied twice to Dreadblades: https://github.com/SimCMinMax/WoW-BugTracker/issues/821
+      if ( r->bugs )
+      {
+        shadowdust_cooldowns.push_back( r->cooldowns.dreadblades );
+      }
     }
   }
 
@@ -5911,8 +5935,12 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
   const unsigned shadow_techniques_lower = 3;
   if ( ++p()->shadow_techniques >= shadow_techniques_upper || ( p()->shadow_techniques == shadow_techniques_lower && p()->rng().roll( 0.5 ) ) )
   {
+    // SimC-side tracking buffs for reaction delay
+    p()->buffs.shadow_techniques->set_default_value( p()->current_cp() );
+    p()->buffs.shadow_techniques->trigger();
+
     p()->sim->print_debug( "{} trigger_shadow_techniques proc'd at {}, resetting counter to 0", *p(), p()->shadow_techniques );
-    p()->shadow_techniques = 0;
+    p()->shadow_techniques = 0;  
     p()->resource_gain( RESOURCE_ENERGY, p()->spec.shadow_techniques_effect->effectN( 2 ).base_value(), p()->gains.shadow_techniques, state->action );
     trigger_combo_point_gain( as<int>( p()->spec.shadow_techniques_effect->effectN( 1 ).base_value() ), p()->gains.shadow_techniques );
     if ( p()->conduit.stiletto_staccato.ok() )
@@ -6062,12 +6090,13 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     return;
 
   const auto rs = cast_state( state );
-  double max_spend = std::min( p()->resources.current[ RESOURCE_COMBO_POINT ], p()->consume_cp_max() );
+  double max_spend = std::min( p()->current_cp(), p()->consume_cp_max() );
   ab::stats->consume_resource( RESOURCE_COMBO_POINT, max_spend );
   p()->resource_loss( RESOURCE_COMBO_POINT, max_spend );
+  p()->buffs.shadow_techniques->cancel(); // Remove tracking mechanism after CP spend
 
   p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), max_spend, util::resource_type_string( RESOURCE_COMBO_POINT ),
-                                                        *this, p()->resources.current[ RESOURCE_COMBO_POINT ] );
+                                                        *this, p()->current_cp() );
 
   if ( ab::name_str != "secret_technique" )
   {
@@ -7100,37 +7129,27 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
 {
   auto split = util::string_split<util::string_view>( name_str, "." );
 
-  if ( name_str == "combo_points" )
+  if ( split[0] == "combo_points" )
   {
-    return make_ref_expr( name_str, resources.current[ RESOURCE_COMBO_POINT ] );
+    if ( split.size() == 1 )
+    {
+      return make_fn_expr( name_str, [ this ] { return this->current_cp( true ); } );
+    }
+
+    if(split.size() == 2 && split[1] == "deficit" )
+    {
+      return make_fn_expr( name_str, [ this ] { 
+        return resources.max[ RESOURCE_COMBO_POINT ] - this->current_cp( true ); } );
+    }
   }
   else if ( name_str == "effective_combo_points" )
   {
-    return make_fn_expr( name_str, [ this ]() { return current_effective_cp(); } );
+    return make_fn_expr( name_str, [ this ]() { return current_effective_cp( true, true ); } );
   }
   else if ( util::str_compare_ci( name_str, "cp_max_spend" ) )
   {
     return make_mem_fn_expr( name_str, *this, &rogue_t::consume_cp_max );
   }
-  /* Commenting this out because it does not work as "intended" anymore but we also don't really need it atm.
-  * Problem with this implementation is that it returns the first CP match in the list and does not catch any match with the
-  * Resounding Clarity legendary when checked in the APL. effective_combo_points is the much better tool for the job.
-  * Feel free to remove later on but keeping it around as a reference.
-  else if (util::str_compare_ci(name_str, "animacharged_cp"))
-  {
-    if(!covenant.echoing_reprimand->ok() )
-      return make_mem_fn_expr( name_str, *this, &rogue_t::consume_cp_max );
-
-    return make_fn_expr( name_str, [ this ]() {
-      for ( auto buff : buffs.echoing_reprimand )
-      {
-        if ( buff->check() )
-          return buff->check_value();
-      }
-
-      return consume_cp_max();
-    } );
-  }*/
   else if ( util::str_compare_ci( name_str, "master_assassin_remains" ) && !legendary.master_assassins_mark->ok() )
   {
     return make_fn_expr( name_str, [ this ]() {
@@ -8120,6 +8139,11 @@ void rogue_t::create_buffs()
     } );
 
   buffs.premeditation = make_buff( this, "premeditation", find_spell( 343173 ) );
+
+  buffs.shadow_techniques = make_buff( this, "shadow_techniques", find_spell( 196912 ) )
+    ->set_quiet( true )
+    ->set_duration( 1_s );
+  buffs.shadow_techniques->reactable = true;
 
   buffs.shot_in_the_dark = make_buff( this, "shot_in_the_dark", find_spell( 257506 ) );
 
