@@ -392,17 +392,6 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
         am *= 1.0 + p() -> buffs.righteous_verdict -> data().effectN( 1 ).percent();
       return am;
     }
-
-    void execute() override
-    {
-      paladin_melee_attack_t::execute();
-
-      if ( p() -> buffs.vanquishers_hammer -> up() )
-      {
-        p() -> active.necrolord_divine_storm -> schedule_execute();
-        p() -> buffs.vanquishers_hammer -> decrement( 1 );
-      }
-    }
   };
 
   // Templar's Verdict damage is stored in a different spell
