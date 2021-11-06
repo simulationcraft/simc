@@ -1988,6 +1988,25 @@ void murmurs_in_the_dark( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// id=336219 driver
+// id=336236 unknown use, triggered by driver
+// id=336234 damage spell
+// id=336222 melee damage spell?
+void dueling_form( special_effect_t& effect )
+{
+  struct dueling_form_t : public proc_spell_t
+  {
+    dueling_form_t( const special_effect_t& e )
+      : proc_spell_t( "duelists_shot", e.player, e.player->find_spell( 336234 ) )
+    {
+      base_dd_min = e.driver()->effectN( 1 ).min( e.item );
+      base_dd_max = e.driver()->effectN( 1 ).max( e.item );
+    }
+  };
+
+  effect.execute_action = create_proc_action<dueling_form_t>( "duelists_shot", effect );
+  new dbc_proc_callback_t( effect.player, effect );
+}
 
 // 9.1 Trinkets
 
@@ -4135,6 +4154,8 @@ void register_special_effects()
     unique_gear::register_special_effect( 336182, items::tablet_of_despair );
     unique_gear::register_special_effect( 329536, items::rotbriar_sprout );
     unique_gear::register_special_effect( 339343, items::murmurs_in_the_dark );
+    unique_gear::register_special_effect( 336219, items::dueling_form );
+
 
     // 9.1 Trinkets
     unique_gear::register_special_effect( 353492, items::forbidden_necromantic_tome );
