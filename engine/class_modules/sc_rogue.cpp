@@ -201,7 +201,7 @@ class rogue_t : public player_t
 {
 public:
   // Shadow techniques swing counter;
-  unsigned shadow_techniques;
+  unsigned shadow_techniques_counter;
 
   // Active
   struct
@@ -680,7 +680,7 @@ public:
 
   rogue_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
-    shadow_techniques( 0 ),
+    shadow_techniques_counter( 0 ),
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
     restealth_allowed( false ),
     buffs( buffs_t() ),
@@ -4937,7 +4937,7 @@ std::unique_ptr<expr_t> actions::rogue_action_t<Base>::create_expression( util::
   }
   else if ( name_str == "effective_combo_points" )
   {
-    return make_fn_expr( name_str, [ this ]() { return p()->current_effective_cp( consumes_echoing_reprimand() ); } );
+    return make_fn_expr( name_str, [ this ]() { return p()->current_effective_cp( consumes_echoing_reprimand(), true ); } );
   }
 
   return ab::create_expression( name_str );
@@ -5928,19 +5928,19 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
   if ( !p()->spec.shadow_techniques->ok() || !ab::result_is_hit( state->result ) )
     return;
 
-  p()->sim->print_debug( "{} trigger_shadow_techniques increment from {} to {}", *p(), p()->shadow_techniques, p()->shadow_techniques + 1 );
+  p()->sim->print_debug( "{} trigger_shadow_techniques increment from {} to {}", *p(), p()->shadow_techniques_counter, p()->shadow_techniques_counter + 1 );
 
   // 04/22/2021 -- Initial 9.1.0 testing appears to show the threshold is reduced to 4/3
   const unsigned shadow_techniques_upper = 4;
   const unsigned shadow_techniques_lower = 3;
-  if ( ++p()->shadow_techniques >= shadow_techniques_upper || ( p()->shadow_techniques == shadow_techniques_lower && p()->rng().roll( 0.5 ) ) )
+  if ( ++p()->shadow_techniques_counter >= shadow_techniques_upper || ( p()->shadow_techniques_counter == shadow_techniques_lower && p()->rng().roll( 0.5 ) ) )
   {
     // SimC-side tracking buffs for reaction delay
     p()->buffs.shadow_techniques->set_default_value( p()->current_cp() );
     p()->buffs.shadow_techniques->trigger();
 
-    p()->sim->print_debug( "{} trigger_shadow_techniques proc'd at {}, resetting counter to 0", *p(), p()->shadow_techniques );
-    p()->shadow_techniques = 0;  
+    p()->sim->print_debug( "{} trigger_shadow_techniques proc'd at {}, resetting counter to 0", *p(), p()->shadow_techniques_counter );
+    p()->shadow_techniques_counter = 0;
     p()->resource_gain( RESOURCE_ENERGY, p()->spec.shadow_techniques_effect->effectN( 2 ).base_value(), p()->gains.shadow_techniques, state->action );
     trigger_combo_point_gain( as<int>( p()->spec.shadow_techniques_effect->effectN( 1 ).base_value() ), p()->gains.shadow_techniques );
     if ( p()->conduit.stiletto_staccato.ok() )
@@ -6959,6 +6959,8 @@ void rogue_t::init_action_list()
 
     // Main Rotation
     def->add_action( "variable,name=snd_condition,value=buff.slice_and_dice.up|spell_targets.shuriken_storm>=6", "Used to determine whether cooldowns wait for SnD based on targets." );
+    def->add_action( "variable,name=effective_combo_points,value=effective_combo_points", "Account for ShT reaction time by ignoring low-CP animacharged matches in the 0.5s preceeding a potential ShT proc" );
+    def->add_action( "variable,name=effective_combo_points,if=covenant.kyrian&effective_combo_points>combo_points&combo_points.deficit>2&time_to_sht.4.plus<0.5&!(combo_points=2&buff.echoing_reprimand_3.up|combo_points=3&buff.echoing_reprimand_4.up|combo_points=4&buff.echoing_reprimand_5.up),value=combo_points" );
     def->add_action( "call_action_list,name=cds", "Check CDs at first" );
     def->add_action( "run_action_list,name=stealthed,if=stealthed.all", "Run fully switches to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)." );
     def->add_action( this, "Slice and Dice", "if=spell_targets.shuriken_storm<6&fight_remains>6&buff.slice_and_dice.remains<gcd.max&combo_points>=4-(time<10)*2", "Apply Slice and Dice at 2+ CP during the first 10 seconds, after that 4+ CP if it expires within the next GCD or is not up" );
@@ -6966,9 +6968,9 @@ void rogue_t::init_action_list()
     def->add_action( "call_action_list,name=stealth_cds,if=variable.use_priority_rotation", "Priority Rotation? Let's give a crap about energy for the stealth CDs (builder still respect it). Yup, it can be that simple." );
     def->add_action( "variable,name=stealth_threshold,value=25+talent.vigor.enabled*20+talent.master_of_shadows.enabled*20+talent.shadow_focus.enabled*25+talent.alacrity.enabled*20+25*(spell_targets.shuriken_storm>=4)", "Used to define when to use stealth CDs or builders" );
     def->add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold", "Consider using a Stealth CD when reaching the energy threshold" );
-    def->add_action( "call_action_list,name=finish,if=effective_combo_points>=cp_max_spend" );
-    def->add_action( "call_action_list,name=finish,if=combo_points.deficit<=1|fight_remains<=1&effective_combo_points>=3|buff.symbols_of_death_autocrit.up&effective_combo_points>=4", "Finish at 4+ without DS or with SoD crit buff, 5+ with DS (outside stealth)" );
-    def->add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&effective_combo_points>=4", "With DS also finish at 4+ against 4 targets (outside stealth)" );
+    def->add_action( "call_action_list,name=finish,if=variable.effective_combo_points>=cp_max_spend" );
+    def->add_action( "call_action_list,name=finish,if=combo_points.deficit<=1|fight_remains<=1&variable.effective_combo_points>=3|buff.symbols_of_death_autocrit.up&variable.effective_combo_points>=4", "Finish at 4+ without DS or with SoD crit buff, 5+ with DS (outside stealth)" );
+    def->add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&variable.effective_combo_points>=4", "With DS also finish at 4+ against 4 targets (outside stealth)" );
     def->add_action( "call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold", "Use a builder when reaching the energy threshold" );
     def->add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen", "Lowest priority in all of the APL because it causes a GCD" );
     def->add_action( "arcane_pulse" );
@@ -7018,9 +7020,9 @@ void rogue_t::init_action_list()
     // Stealthed Rotation
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
     stealthed->add_action( this, "Shadowstrike", "if=(buff.stealth.up|buff.vanish.up)&(spell_targets.shuriken_storm<4|variable.use_priority_rotation)&master_assassin_remains=0", "If Stealth/vanish are up, use Shadowstrike to benefit from the passive bonus and Find Weakness, even if we are at max CP (unless using Master Assassin)" );
-    stealthed->add_action( "call_action_list,name=finish,if=effective_combo_points>=cp_max_spend" );
+    stealthed->add_action( "call_action_list,name=finish,if=variable.effective_combo_points>=cp_max_spend" );
     stealthed->add_action( "call_action_list,name=finish,if=buff.shuriken_tornado.up&combo_points.deficit<=2", "Finish at 3+ CP without DS / 4+ with DS with Shuriken Tornado buff up to avoid some CP waste situations." );
-    stealthed->add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&effective_combo_points>=4", "Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)" );
+    stealthed->add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&variable.effective_combo_points>=4", "Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)" );
     stealthed->add_action( "call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)", "Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish" );
     stealthed->add_action( this, "Shadowstrike", "if=stealthed.sepsis&spell_targets.shuriken_storm<4" );
     stealthed->add_action( this, "Shiv", "if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade&spell_targets.shuriken_storm<5" );
@@ -7374,16 +7376,36 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     }
   }
   // time_to_sht.(1|2|3|4|5)
+  // time_to_sht.(1|2|3|4|5).plus
   // x: returns time until we will do the xth attack since last ShT proc.
-  if ( split.size() == 2 && util::str_compare_ci( split[ 0 ], "time_to_sht" ) )
+  // plus: denotes to return the timer for the next swing if we are past that counter
+  if ( split[ 0 ] == "time_to_sht" )
   {
-    return make_fn_expr( split[ 0 ], [ this, split ]() {
+    unsigned attack_x = split.size() > 1 ? util::to_unsigned( split[ 1 ] ) : 4;
+    bool plus = split.size() > 2 ? split[ 2 ] == "plus" : false;
+    
+    return make_fn_expr( split[ 0 ], [ this, attack_x, plus ]() {
       timespan_t return_value = timespan_t::from_seconds( 0.0 );
-      unsigned attack_x = util::to_unsigned( split[ 1 ] );
-      if ( main_hand_attack && attack_x > shadow_techniques && attack_x <= 5 )
+
+      // If we are testing against a high-probability attack count, and we are still reacting, use the reaction time
+      if ( attack_x >= 4 && buffs.shadow_techniques->check() && !buffs.shadow_techniques->stack_react() )
       {
-        unsigned remaining_aa = attack_x - shadow_techniques;
-        sim->print_debug( "{} time_to_sht: attack_x = {}, remaining_aa = {}", *this, attack_x, remaining_aa );
+        return_value = buffs.shadow_techniques->stack_react_time[ 1 ] - sim->current_time();
+        sim->print_debug( "{} time_to_sht: proc recently occurred and we are still reacting", *this );
+      }
+      else if ( main_hand_attack && ( attack_x > shadow_techniques_counter || plus ) && attack_x <= 5 )
+      {
+        unsigned remaining_aa;
+        if ( attack_x <= shadow_techniques_counter && plus )
+        {
+          remaining_aa = 1;
+          sim->print_debug( "{} time_to_sht: attack_x = {}+, count at {}, returning next", *this, attack_x, shadow_techniques_counter );
+        }
+        else
+        {
+          remaining_aa = attack_x - shadow_techniques_counter;
+          sim->print_debug( "{} time_to_sht: attack_x = {}, remaining_aa = {}", *this, attack_x, remaining_aa );
+        }
         
         timespan_t mh_swing_time = main_hand_attack->execute_time();
         timespan_t mh_next_swing = timespan_t::from_seconds( 0.0 );
@@ -7427,7 +7449,10 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
             attacks.push_back( oh_next_swing + i * oh_swing_time );
         }
         range::sort( attacks );
-        return_value = attacks.at( remaining_aa - 1 );
+
+        // Add player reaction time to the predicted value as players still need to react to the swing and proc
+        timespan_t total_reaction_time = ( this ? ( this->total_reaction_time() ) : sim->reaction_time );
+        return_value = attacks.at( remaining_aa - 1 ) + total_reaction_time;
       }
       else if ( main_hand_attack == nullptr )
       {
@@ -7442,7 +7467,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
       else
       {
         return_value = timespan_t::from_seconds( 0.0 );
-        sim->print_debug( "{} time_to_sht: attack_x value {} is not greater than shadow techniques count {}", *this, attack_x, shadow_techniques );
+        sim->print_debug( "{} time_to_sht: attack_x value {} is not greater than shadow techniques count {}", *this, attack_x, shadow_techniques_counter );
       }
       sim->print_debug( "{} time_to_sht: return value is: {}", *this, return_value );
       return return_value;
@@ -8623,9 +8648,9 @@ void rogue_t::reset()
   player_t::reset();
 
   if( options.initial_shadow_techniques >= 0 )
-    shadow_techniques = options.initial_shadow_techniques;
+    shadow_techniques_counter = options.initial_shadow_techniques;
   else
-    shadow_techniques = rng().range( 0, 5 );
+    shadow_techniques_counter = rng().range( 0, 5 );
 
   restealth_allowed = false;
 
