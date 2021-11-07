@@ -2718,7 +2718,7 @@ struct execute_arms_t : public warrior_attack_t
 
   double tactician_cost() const override
   {
-    double c = max_rage;
+    double c;
 
     if ( !p()->buff.deadly_calm->check() && !p()->buff.sudden_death->check() )
     {
@@ -5006,7 +5006,7 @@ struct condemn_arms_t : public warrior_attack_t
 
   double tactician_cost() const override
   {
-    double c = max_rage;
+    double c;
 
     if ( !p()->buff.ayalas_stone_heart->check() && !p()->buff.deadly_calm->check() && !p()->buff.sudden_death->check() )
     {

@@ -532,7 +532,7 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     if ( gem_count && has_dom_gem )
     {
       bool valid_dom_slot = false;
-      auto domination_slot_list = SLOT_DOMINATION_CLOTH;
+      const slot_e* domination_slot_list = nullptr;
 
       switch( item.parsed.data.item_subclass )
       {

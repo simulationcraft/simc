@@ -2020,13 +2020,16 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
 
     if ( filter == "remains" )
     {
-      if ( current_pull->spawned && current_pull->active() )
+      if ( current_pull && current_pull->spawned && current_pull->active() )
         return current_pull->time_to_die();
       else
         return 0.0;
     }
 
     // the following expressions should refer to the next pull
+    if ( !current_pull )
+      return 0.0;
+
     pull_event_t* next_pull = current_pull->next_pull();
     if ( !next_pull )
       return 0.0;
