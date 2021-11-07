@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <util/span.hpp>
+
 #include <cassert>
 #include <cstddef>
 #include <memory>
@@ -63,10 +65,10 @@ public:
   }
 
   template <typename T>
-  T* create_n(size_t n, const T& value = {}) {
+  util::span<T> create_n(size_t n, const T& value = {}) {
     T* p = reinterpret_cast<T*>(allocate<T>(n));
     std::uninitialized_fill_n(p, n, value);
-    return p;
+    return {p, n};
   }
 
 private:

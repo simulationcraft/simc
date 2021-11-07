@@ -5609,10 +5609,8 @@ struct flame_shock_t : public shaman_spell_t
   {
     shaman_spell_t::tick( d );
 
-    double proc_chance = p()->spec.lava_surge->proc_chance();
-
-    // proc chance suddenly bacame 100% and the actual chance became effectN 1
-    proc_chance = p()->spec.lava_surge->effectN( 1 ).percent();
+    // proc chance suddenly became 100% and the actual chance became effectN 1
+    double proc_chance = p()->spec.lava_surge->effectN( 1 ).percent();
 
     if ( p()->spec.restoration_shaman->ok() )
     {
