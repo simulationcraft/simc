@@ -43,6 +43,9 @@ actions=stealth
 actions+=/kick
 # Used to determine whether cooldowns wait for SnD based on targets.
 actions+=/variable,name=snd_condition,value=buff.slice_and_dice.up|spell_targets.shuriken_storm>=6
+# Account for ShT reaction time by ignoring low-CP animacharged matches in the 0.5s preceeding a potential ShT proc
+actions+=/variable,name=effective_combo_points,value=effective_combo_points
+actions+=/variable,name=effective_combo_points,if=covenant.kyrian&effective_combo_points>combo_points&combo_points.deficit>2&time_to_sht.4.plus<0.5&!(combo_points=2&buff.echoing_reprimand_3.up|combo_points=3&buff.echoing_reprimand_4.up|combo_points=4&buff.echoing_reprimand_5.up),value=combo_points
 # Check CDs at first
 actions+=/call_action_list,name=cds
 # Run fully switches to the Stealthed Rotation (by doing so, it forces pooling if nothing is available).
@@ -57,11 +60,11 @@ actions+=/call_action_list,name=stealth_cds,if=variable.use_priority_rotation
 actions+=/variable,name=stealth_threshold,value=25+talent.vigor.enabled*20+talent.master_of_shadows.enabled*20+talent.shadow_focus.enabled*25+talent.alacrity.enabled*20+25*(spell_targets.shuriken_storm>=4)
 # Consider using a Stealth CD when reaching the energy threshold
 actions+=/call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold
-actions+=/call_action_list,name=finish,if=effective_combo_points>=cp_max_spend
+actions+=/call_action_list,name=finish,if=variable.effective_combo_points>=cp_max_spend
 # Finish at 4+ without DS or with SoD crit buff, 5+ with DS (outside stealth)
-actions+=/call_action_list,name=finish,if=combo_points.deficit<=1|fight_remains<=1&effective_combo_points>=3|buff.symbols_of_death_autocrit.up&effective_combo_points>=4
+actions+=/call_action_list,name=finish,if=combo_points.deficit<=1|fight_remains<=1&variable.effective_combo_points>=3|buff.symbols_of_death_autocrit.up&variable.effective_combo_points>=4
 # With DS also finish at 4+ against 4 targets (outside stealth)
-actions+=/call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&effective_combo_points>=4
+actions+=/call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&variable.effective_combo_points>=4
 # Use a builder when reaching the energy threshold
 actions+=/call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold
 # Lowest priority in all of the APL because it causes a GCD
@@ -147,11 +150,11 @@ actions.stealth_cds+=/shadow_dance,if=variable.shd_combo_points&fight_remains<co
 # Stealthed Rotation
 # If Stealth/vanish are up, use Shadowstrike to benefit from the passive bonus and Find Weakness, even if we are at max CP (unless using Master Assassin)
 actions.stealthed=shadowstrike,if=(buff.stealth.up|buff.vanish.up)&(spell_targets.shuriken_storm<4|variable.use_priority_rotation)&master_assassin_remains=0
-actions.stealthed+=/call_action_list,name=finish,if=effective_combo_points>=cp_max_spend
+actions.stealthed+=/call_action_list,name=finish,if=variable.effective_combo_points>=cp_max_spend
 # Finish at 3+ CP without DS / 4+ with DS with Shuriken Tornado buff up to avoid some CP waste situations.
 actions.stealthed+=/call_action_list,name=finish,if=buff.shuriken_tornado.up&combo_points.deficit<=2
 # Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)
-actions.stealthed+=/call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&effective_combo_points>=4
+actions.stealthed+=/call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&variable.effective_combo_points>=4
 # Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish
 actions.stealthed+=/call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)
 actions.stealthed+=/shadowstrike,if=stealthed.sepsis&spell_targets.shuriken_storm<4
