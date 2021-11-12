@@ -29,12 +29,9 @@ actions.precombat+=/food
 actions.precombat+=/snapshot_stats
 actions.precombat+=/fleshcraft
 actions.precombat+=/tar_trap,if=runeforge.soulforge_embers
-# Change to 1 to simulate ETF/SSF gearswap Trueshot precast.
-actions.precombat+=/variable,name=etf_precast,value=0
-actions.precombat+=/double_tap,precast_time=10,if=active_enemies>1|!covenant.kyrian&!talent.volley|variable.etf_precast
-actions.precombat+=/trueshot,precast_etf_equip=1,precast_time=2,if=variable.etf_precast
-actions.precombat+=/aimed_shot,if=active_enemies<3&(!covenant.kyrian&!talent.volley|active_enemies<2)&!variable.etf_precast
-actions.precombat+=/steady_shot,if=active_enemies>2|(covenant.kyrian|talent.volley)&active_enemies=2|variable.etf_precast
+actions.precombat+=/double_tap,precast_time=10,if=active_enemies>1|!covenant.kyrian&!talent.volley
+actions.precombat+=/aimed_shot,if=active_enemies<3&(!covenant.kyrian&!talent.volley|active_enemies<2)
+actions.precombat+=/steady_shot,if=active_enemies>2|(covenant.kyrian|talent.volley)&active_enemies=2
 
 # Executed every time the actor is available.
 actions=auto_shot
