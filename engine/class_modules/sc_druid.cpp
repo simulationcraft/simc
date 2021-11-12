@@ -505,6 +505,9 @@ public:
   // Procs
   struct procs_t
   {
+    // Balance
+    proc_t* pulsar;
+
     // Feral & Resto
     proc_t* clearcasting;
     proc_t* clearcasting_wasted;
@@ -2533,6 +2536,8 @@ public:
               p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
 
           proc_buff->extend_duration_or_trigger( pulsar_dur, p() );
+
+          p()->proc.pulsar->occur();
 
           p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
           make_event( *sim, pulsar_dur, [ this ]() {
@@ -8901,6 +8906,9 @@ void druid_t::init_gains()
 void druid_t::init_procs()
 {
   player_t::init_procs();
+
+  // Balance
+  proc.pulsar = get_proc( "Pulsar" )->collect_interval();
 
   // Feral
   proc.predator              = get_proc( "predator" );
