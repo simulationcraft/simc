@@ -98,7 +98,7 @@ public:
   void last_tick();
   bool channel_interrupt();
 
-  friend void format_to( const dot_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const dot_t&, fmt::format_context::iterator );
 
   void reschedule_tick();
 private:

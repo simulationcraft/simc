@@ -13,7 +13,7 @@ struct IUnknown;
 #endif
 
 #include <QDebug>
-#include <QtWidgets/QShortcut>
+#include <QShortcut>
 #include <QtWidgets/QtWidgets>
 
 class SC_MainWindow;

@@ -113,13 +113,23 @@ class XFTHParser(DBCParserBase):
         return True
 
     def parse_blocks(self):
-        entry_unpacker = struct.Struct('<4sIIIIB3s')
+        # For some reason, 9.1.0 builds do not use the version 8 format.
+        if self.version < 8 or self.options.build.patch_level() == dbc.WowVersion(9, 1, 0, 0).patch_level():
+            entry_unpacker = struct.Struct('<4sIIIIB3s')
+        else:
+            entry_unpacker = struct.Struct('<4sIIIIIB3s')
 
         n_entries = 0
         all_entries = []
         while self.parse_offset < len(self.data):
-            magic, unk_2, sig, record_id, length, state, pad = \
-                    entry_unpacker.unpack_from(self.data, self.parse_offset)
+            # For some reason, 9.1.0 builds do not use the version 8 format.
+            if self.version < 8 or self.options.build.patch_level() == dbc.WowVersion(9, 1, 0, 0).patch_level():
+                magic, unk_2, sig, record_id, length, state, pad = \
+                        entry_unpacker.unpack_from(self.data, self.parse_offset)
+                unk_3 = None
+            else:
+                magic, unk_2, unk_3, sig, record_id, length, state, pad = \
+                        entry_unpacker.unpack_from(self.data, self.parse_offset)
 
             if magic != b'XFTH':
                 logging.error('Invalid hotfix magic %s', magic.decode('utf-8'))
@@ -130,6 +140,7 @@ class XFTHParser(DBCParserBase):
             entry = {
                 'record_id': record_id,
                 'unk_2': unk_2,
+                'unk_3': unk_3,
                 'state': state,
                 'length': length,
                 'offset': self.parse_offset,

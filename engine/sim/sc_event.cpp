@@ -90,7 +90,7 @@ void event_t::cancel( event_t*& e )
   e           = nullptr;
 }
 
-void format_to( const event_t& e, fmt::format_context::iterator out )
+void sc_format_to( const event_t& e, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "{}(#{})", e.name(), e.id );
 }

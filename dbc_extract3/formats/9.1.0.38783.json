@@ -317,7 +317,7 @@
       { "data_type": "S", "field": "desc"  },
       { "data_type": "i", "field": "id"    },
       { "data_type": "i", "field": "id_garr_talent_tree", "ref": "GarrTalentTree" },
-      { "data_type": "b", "field": "tier"  },
+      { "data_type": "b", "field": "tier", "formats": { "cpp": "%2u" } },
       { "data_type": "b", "field": "ui_order" },
       { "data_type": "i", "field": "id_icon_file_data" },
       { "data_type": "I", "field": "unk_2" },
@@ -1046,7 +1046,7 @@
   "SoulbindConduitEnhancedSocket": {
     "fields": [
       { "data_type": "i", "field": "id_garr_talent", "ref": "GarrTalent" },
-      { "data_type": "i", "field": "id_player_cond" }
+      { "data_type": "i", "field": "id_player_cond", "ref": "PlayerCondition" }
     ]
   },
   "SoulbindConduitItem": {

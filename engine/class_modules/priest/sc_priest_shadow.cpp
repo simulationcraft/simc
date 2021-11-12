@@ -212,6 +212,9 @@ struct mind_sear_t final : public priest_spell_t
     radius = data().effectN( 1 ).trigger()->effectN( 2 ).radius();  // need to set radius in here so that the APL
                                                                     // functions correctly
 
+    if (priest().specialization() == PRIEST_SHADOW)
+      base_costs_per_tick[RESOURCE_MANA] = 0.0;
+
     tick_action = new mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
   }
 };
@@ -311,18 +314,51 @@ struct painbreaker_psalm_t final : public priest_spell_t
   }
 };
 
+struct shadow_word_death_self_damage_t final : public priest_spell_t
+{
+  shadow_word_death_self_damage_t( priest_t& p )
+    : priest_spell_t( "shadow_word_death_self_damage", p, p.specs.shadow_word_death_self_damage )
+  {
+    background = true;
+    may_crit   = false;
+    may_miss   = false;
+    target     = player;
+  }
+
+  void trigger( double original_amount )
+  {
+    base_td = original_amount;
+    execute();
+  }
+
+  void init() override
+  {
+    base_t::init();
+
+    // We don't want this counted towards our dps
+    stats->type = stats_e::STATS_NEUTRAL;
+  }
+
+  proc_types proc_type() const override
+  {
+    return PROC1_ANY_DAMAGE_TAKEN;
+  }
+};
+
 struct shadow_word_death_t final : public priest_spell_t
 {
   double execute_percent;
   double execute_modifier;
   double insanity_per_dot;
+  propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
 
   shadow_word_death_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_word_death", p, p.specs.shadow_word_death ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() ),
       insanity_per_dot( p.specs.painbreaker_psalm_insanity->effectN( 2 ).base_value() /
-                        10 )  // Spell Data stores this as 100 not 1000 or 10
+                        10 ),  // Spell Data stores this as 100 not 1000 or 10
+      shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) )
   {
     parse_options( options_str );
 
@@ -399,7 +435,7 @@ struct shadow_word_death_t final : public priest_spell_t
       if ( !( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
       {
         // target is not killed
-        inflict_self_damage( s->result_amount );
+        shadow_word_death_self_damage->trigger( s->result_amount );
       }
 
       if ( priest().talents.death_and_madness->ok() )
@@ -408,12 +444,6 @@ struct shadow_word_death_t final : public priest_spell_t
         td.buffs.death_and_madness_debuff->trigger();
       }
     }
-  }
-
-  void inflict_self_damage( double damage_inflicted_to_target )
-  {
-    priest().resource_loss( RESOURCE_HEALTH, damage_inflicted_to_target, priest().gains.shadow_word_death_self_damage,
-                            this );
   }
 };
 
@@ -769,9 +799,6 @@ struct vampiric_touch_t final : public priest_spell_t
       // Turn off all damage parts of the spell
       spell_power_mod.direct = spell_power_mod.tick = base_td_multiplier = 0;
       dot_duration                                                       = timespan_t::from_seconds( 0 );
-
-      // TODO: Confirm if this healing can proc trinkets/etc
-      callbacks = false;
     }
 
     void trigger( double original_amount )
@@ -924,9 +951,6 @@ struct devouring_plague_t final : public priest_spell_t
       // Turn off all damage parts of the spell
       spell_power_mod.direct = spell_power_mod.tick = base_td_multiplier = 0;
       dot_duration                                                       = timespan_t::from_seconds( 0 );
-
-      // TODO: Confirm if this healing can proc trinkets/etc
-      callbacks = false;
     }
 
     void trigger( double original_amount )
@@ -1158,9 +1182,7 @@ struct void_bolt_t final : public priest_spell_t
       priest().buffs.dissonant_echoes->expire();
     }
 
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/678
-    // Dissonant Echoes proc is on the ghost impact, not on execute
-    if ( !priest().bugs && priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
+    if ( priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
     {
       if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
       {
@@ -1190,17 +1212,6 @@ struct void_bolt_t final : public priest_spell_t
     {
       void_bolt_extension->target = s->target;
       void_bolt_extension->schedule_execute();
-    }
-
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/678
-    // Dissonant Echoes proc is on the ghost impact, not on execute
-    if ( priest().bugs && priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
-    {
-      if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
-      {
-        priest().cooldowns.void_bolt->reset( true );
-        priest().procs.dissonant_echoes->occur();
-      }
     }
 
     if ( priest().talents.hungering_void->ok() )

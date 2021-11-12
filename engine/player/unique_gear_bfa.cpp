@@ -1114,11 +1114,6 @@ void items::merekthas_fang( special_effect_t& effect )
       tick_may_crit = hasted_ticks = true;
       dot_max_stack = data().max_stacks();
     }
-
-    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-    {
-      return dot->time_to_next_tick() + triggered_duration;
-    }
   };
 
   struct noxious_venom_gland_aoe_driver_t : public spell_t
@@ -3458,11 +3453,6 @@ void items::shiver_venom_relic_equip( special_effect_t& effect )
     {
       if ( onuse )
         add_child( onuse );
-    }
-
-    timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t t ) const override
-    {
-      return t;  // dot doesn't pandemic
     }
   };
 

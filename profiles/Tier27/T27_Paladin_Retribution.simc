@@ -7,7 +7,7 @@ role=attack
 position=back
 talents=3200303
 covenant=kyrian
-soulbind=pelagos,combat_meditation/better_together/newfound_resolve/ringing_clarity:9:1/virtuous_command:9:1/templars_vindication:9:1
+soulbind=pelagos,combat_meditation/better_together/newfound_resolve/ringing_clarity:9:1/virtuous_command:9:1/expurgation:9:1
 renown=80
 
 # Default consumables
@@ -53,6 +53,9 @@ actions.cooldowns+=/use_item,name=skulkers_wing
 actions.cooldowns+=/use_item,name=grim_codex
 actions.cooldowns+=/use_item,name=memory_of_past_sins
 actions.cooldowns+=/use_item,name=spare_meat_hook
+actions.cooldowns+=/use_item,name=salvaged_fusion_amplifier
+actions.cooldowns+=/use_item,name=unchained_gladiators_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45
+actions.cooldowns+=/use_item,name=unchained_aspirants_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45
 actions.cooldowns+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45
 actions.cooldowns+=/use_item,name=sinful_aspirants_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45
 actions.cooldowns+=/avenging_wrath,if=(holy_power>=4&time<5|holy_power>=3&(time>5|runeforge.the_magistrates_judgment)|talent.holy_avenger.enabled&cooldown.holy_avenger.remains=0)&(!talent.seraphim.enabled|cooldown.seraphim.remains>0|talent.sanctified_wrath.enabled)
@@ -90,29 +93,29 @@ actions.generators+=/crusader_strike
 actions.generators+=/arcane_torrent
 actions.generators+=/consecration
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=187312/173129
-neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173129
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=187312
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173127
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
 back=selfreplicating_tissue,id=186374,bonus_id=7187/1498
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_skirmish
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187320/173129
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187320
 hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187319,enchant=eternal_strength
-waist=shadowghast_waistguard,id=171418,bonus_id=6648/6647/6758/7679/1559/6935,gem_id=173129
-legs=agathas_gothic_greaves,id=186313,bonus_id=7187/1498
+waist=shadowghast_waistguard,id=171418,bonus_id=6648/6647/6758/7679/1559/6935,gem_id=173127
+legs=fateforged_legplates,id=186348,bonus_id=7187/1498
 feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
-finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
-finger2=oscillating_ouroboros,id=186376,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=oscillating_ouroboros,id=186376,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+trinket1=unchained_gladiators_badge_of_ferocity,id=185197,bonus_id=7322/1518
 trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
-main_hand=jaithys_the_prison_blade,id=187542,bonus_id=7187/1498,enchant=sinful_revelation
+main_hand=jaithys_the_prison_blade,id=186410,bonus_id=7187/7748/1498,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=256.40
-# gear_strength=1117
+# gear_ilvl=256.00
+# gear_strength=1019
 # gear_stamina=2119
 # gear_attack_power=20
-# gear_crit_rating=496
+# gear_crit_rating=699
 # gear_haste_rating=543
-# gear_mastery_rating=608
-# gear_versatility_rating=605
+# gear_mastery_rating=501
+# gear_versatility_rating=424
 # gear_armor=1534

@@ -1,1 +1,1 @@
-HeaderFilterRegex: '*/lib/*'
+HeaderFilterRegex: '\.hpp'

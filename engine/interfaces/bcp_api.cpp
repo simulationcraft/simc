@@ -148,11 +148,11 @@ void authorize( sim_t* sim, const std::string& region )
     std::string oauth_endpoint;
     if ( util::str_compare_ci( region, "eu" ) || util::str_compare_ci( region, "us" ) )
     {
-      oauth_endpoint = fmt::format( GLOBAL_OAUTH_ENDPOINT_URI, region );
+      oauth_endpoint = fmt::format( fmt::runtime(GLOBAL_OAUTH_ENDPOINT_URI), region );
     }
     else if ( util::str_compare_ci( region, "kr" ) || util::str_compare_ci( region, "tw" ) )
     {
-      oauth_endpoint = fmt::format( GLOBAL_OAUTH_ENDPOINT_URI, "apac" );
+      oauth_endpoint = fmt::format( fmt::runtime(GLOBAL_OAUTH_ENDPOINT_URI), "apac" );
     }
     else if ( util::str_compare_ci( region, "cn" ) )
     {
@@ -341,11 +341,11 @@ void download_item( sim_t* sim,
 
   if ( !util::str_compare_ci( region, "cn" ) )
   {
-    url = fmt::format( GLOBAL_ITEM_ENDPOINT_URI, region, item_id, LOCALES[ region ][ 0 ] );
+    url = fmt::format( fmt::runtime(GLOBAL_ITEM_ENDPOINT_URI), region, item_id, LOCALES[ region ][ 0 ] );
   }
   else
   {
-    url = fmt::format( CHINA_ITEM_ENDPOINT_URI, item_id );
+    url = fmt::format( fmt::runtime(CHINA_ITEM_ENDPOINT_URI), item_id );
   }
 
   download( sim, d, region, url, caching );
@@ -1077,11 +1077,11 @@ void download_roster( rapidjson::Document& d,
   std::string url;
   if ( !util::str_compare_ci( region, "cn" ) )
   {
-    url = fmt::format( GLOBAL_GUILD_ENDPOINT_URI, region, server, name, LOCALES[ region ][ 0 ] );
+    url = fmt::format( fmt::runtime(GLOBAL_GUILD_ENDPOINT_URI), region, server, name, LOCALES[ region ][ 0 ] );
   }
   else
   {
-    url = fmt::format( CHINA_GUILD_ENDPOINT_URI, server, name );
+    url = fmt::format( fmt::runtime(CHINA_GUILD_ENDPOINT_URI), server, name );
   }
 
   download( sim, d, region, url, caching );
@@ -1162,13 +1162,13 @@ player_t* bcp_api::download_player( sim_t* sim, const std::string& region, const
 
   if (!util::str_compare_ci(region, "cn"))
   {
-    player.url = fmt::format(GLOBAL_PLAYER_ENDPOINT_URI, region, normalized_server, normalized_name, region, LOCALES[region][0]);
-    player.origin = fmt::format(GLOBAL_ORIGIN_URI, LOCALES[region][1], normalized_server, normalized_name);
+    player.url = fmt::format(fmt::runtime(GLOBAL_PLAYER_ENDPOINT_URI), region, normalized_server, normalized_name, region, LOCALES[region][0]);
+    player.origin = fmt::format(fmt::runtime(GLOBAL_ORIGIN_URI), LOCALES[region][1], normalized_server, normalized_name);
   }
   else
   {
-    player.url = fmt::format(CHINA_PLAYER_ENDPOINT_URI, normalized_server, normalized_name);
-    player.origin = fmt::format(CHINA_ORIGIN_URI, normalized_server, normalized_name);
+    player.url = fmt::format(fmt::runtime(CHINA_PLAYER_ENDPOINT_URI), normalized_server, normalized_name);
+    player.origin = fmt::format(fmt::runtime(CHINA_ORIGIN_URI), normalized_server, normalized_name);
   }
 
 #ifdef SC_DEFAULT_APIKEY

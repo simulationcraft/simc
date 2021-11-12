@@ -1242,6 +1242,8 @@ class SpellDataGenerator(DataGenerator):
          343395, 343396,
          # Inscrutable Quantum Device Trinket
          330363, 330364, 330366, 330367, 330368, 330372, 330373, 330376, 330380,
+         # Grim Codex Trinket
+         345864,
          # Soulbinds
          321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
@@ -1287,30 +1289,46 @@ class SpellDataGenerator(DataGenerator):
          352881, # Bonded Hearts (night fae/niya)
          352918, 358404, # Newfound Resolve (kyrian/pelagos)
          352086, 352095, # Pustule Eruption (Necrolord/Emeni)
+         352938, 352940, 358379, # Soulglow Spectrometer (Kyrian/Mikanikos)
          # Miniscule Mailemental in an Envelope
          352542,
          # Tome of Monstrous Constructions
          357163, 357168, 357169,
          # Blood Link (Shard of Domination Rune Word)
-         355761, 355767, 355768, 355769, 355804,
+         355761, 359395, 359420, 359421, 359422, 355767, 355768, 355769, 355804,
          # Winds of Winter (Shard of Domination Rune Word)
-         355724, 355733, 355735,
+         355724, 359387, 359423, 359424, 359425, 355733, 355735,
          # Chaos Bane (Shard of Domination Rune Word)
-         355829, 356042, 356043, 356046,
+         355829, 359396, 359435, 359436, 359437, 356042, 356043, 356046,
          # Banshee's Blight (Sylvanas Dagger) damage spell
          358126,
          # Exsanguinated (Shard of Bek)
          356372,
+         # Siphon Essence (Shard of Zed)
+         356320,
+         # Accretion (Shard of Kyr)
+         356305,
          # Shredded Soul (Ebonsoul Vise)
          357785,
+         # Duelist's Shot (Master Duelist's Chit)
+         336234,
          # Nerubian Ambush, Frost-Tinged Carapace Spikes (Relic of the Frozen Wastes)
          355912, 357409,
          # Volatile Detonation (Ticking Sack of Terror)
          351694,
+         # Reactive Defense Matrix (Trinket damage)
+         356857,
          # Withering Fire (Dark Ranger's Quiver)
          353515,
          # Preternatural Charge (Yasahm the Riftbreaker)
          351561,
+         # Mythic Plus Season 2 Anima Powers
+         357575, 357582, 357584, # champion's brand
+         357609, # dagger of necrotic wounding
+         357864, # raging battle-axe
+         357706, # volcanic plume
+         # Codex of the First Technique's damage spell
+         351450,
         ),
 
         # Warrior:
@@ -1491,6 +1509,7 @@ class SpellDataGenerator(DataGenerator):
             ( 356395, 0 ),          # Spheres' Harmony Kyrian Legendary Power (UNCONFIRMED)
             ( 356515, 0 ),          # Bwonsamdi's Pact buff from the Legendary Power
             ( 357028, 0 ),          # Shadow Word: Manipulation Critical Strike Buff
+            (  32409, 0 ),          # Shadow Word: Death self-damage id
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
@@ -1757,6 +1776,8 @@ class SpellDataGenerator(DataGenerator):
           ( 346602, 0 ), # Venthyr Fallen Monk Tiger Palm
           ( 345714, 0 ), # Venthyr Fallen Monk Fists of Fury damage
           ( 347826, 0 ), # Venthyr Fallen Monk Spec Duration
+          ( 363041, 0 ), # Venthyr Fallen Monk Fallen Brew
+          ( 364944, 0 ), # Venthyr Fallen Monk Windwalking
 
           # Conduits
           ( 336874, 0 ), # Fortifying Ingredients
@@ -1780,6 +1801,7 @@ class SpellDataGenerator(DataGenerator):
           ( 358520, 1 ), # Call to Arms Invoke Niuzao Duration
           ( 358521, 2 ), # Call to Arms Invoke Yu'lon Duration
           ( 358522, 2 ), # Call to Arms Invoke Chi-Ji Duration
+          ( 360829, 3 ), # Call to Arms Empowered Tiger Lightning
         ),
 
         # Druid:
@@ -2217,6 +2239,10 @@ class SpellDataGenerator(DataGenerator):
 
         if state and not self.spell_state(spell, enabled_effects):
             return None
+
+        if spell.id in constants.IGNORE_CLASS_AND_RACE_MASKS:
+            mask_class = 0
+            mask_race = 0
 
         filter_list[spell.id] = { 'mask_class': mask_class, 'mask_race': mask_race, 'effect_list': enabled_effects }
 
@@ -3222,7 +3248,7 @@ class SetBonusListGenerator(DataGenerator):
     # NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
     # ====================================================================
     # The ordering of this array _MUST_ match the ordering of
-    # "set_bonus_type_e" enumeration in simulationcraft.hpp or very bad
+    # "set_bonus_type_e" enumeration in sc_enum.hpp or very bad
     # things will happen.
     # ====================================================================
     # NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
@@ -3282,6 +3308,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'titanic_empowerment',
             'bonuses': [ 1452 ],
             'tier'   : 24
+        },
+        {
+            'name'   : 'hack_and_gore',
+            'bonuses': [ 1457 ],
+            'tier'   : 26
         }
     ]
 
@@ -4168,5 +4199,42 @@ class TemporaryEnchantItemGenerator(DataGenerator):
             fields += spell.field('id')
             fields += ['{:30s}'.format('"{}"'.format(util.tokenize(item.name)))]
             self.output_record(fields)
+
+        self.output_footer()
+
+class SoulbindConduitEnhancedSocketGenerator(DataGenerator):
+    def generate(self, data=None):
+        data = self.db('SoulbindConduitEnhancedSocket').values()
+
+        self.output_header(
+                header = 'Enhanced conduit renown levels',
+                type = 'enhanced_conduit_entry_t',
+                array = 'enhanced_conduit',
+                length = len(data))
+
+        soulbind_lookup = {}
+        for soulbind in self.db('Soulbind').values():
+            soulbind_lookup[soulbind.id_garr_talent_tree] = soulbind
+
+        field_data = []
+        for entry in data:
+            slot = entry.ref('id_garr_talent')
+            soulbind = soulbind_lookup[slot.id_garr_talent_tree]
+            player_cond = entry.ref('id_player_cond')
+            for i in range(1, 5):
+                # We are only interested in Renown currency requirements.
+                if getattr(player_cond, 'id_currency_{}'.format(i)) == 1822:
+                    # Add 1 to convert from currency count to renown level
+                    renown = getattr(player_cond, 'currency_count_{}'.format(i)) + 1
+                    fields = ['{:2d}'.format(soulbind.id)]
+                    fields += slot.field('tier', 'ui_order')
+                    fields.append('{:3d}'.format(renown))
+                    fields += soulbind.field('name')
+                    field_data.append(fields)
+                    break
+
+        field_data.sort(key = lambda f: [int(v) for v in f[:-1]])
+        for f in field_data:
+            self.output_record(f[:-1], comment = f[-1].strip('"'))
 
         self.output_footer()

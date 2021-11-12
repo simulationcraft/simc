@@ -204,8 +204,12 @@ public:
   /// Split damage evenly between targets
   bool split_aoe_damage;
 
-  /// Reduce damage to secondary targets based on total target count
-  bool reduced_aoe_damage;
+  /// Reduce damage to targets when total targets is greater than value
+  /// Formula used is <damage per target> = sqrt( reduced_aoe_targets / <number of targets> )
+  double reduced_aoe_targets;
+
+  /// If reduced_aoe_targets > 0, the number of target(s) that will take full unreduced amount
+  int full_amount_targets;
 
   /**
    * @brief Normalize weapon speed for weapon damage calculations
@@ -238,7 +242,7 @@ public:
   /**
    * @brief Behavior of dot.
    *
-   * Acceptable inputs are DOT_CLIP, DOT_REFRESH, and DOT_EXTEND.
+   * Acceptable inputs are DOT_CLIP, DOT_EXTEND, DOT_REFRESH_PANDEMIC, DOT_REFRESH_DURATION, or DOT_NONE.
    */
   dot_behavior_e dot_behavior;
 
@@ -875,8 +879,7 @@ public:
   virtual double composite_teleport_distance( const action_state_t* ) const
   { return base_teleport_distance; }
 
-  virtual timespan_t calculate_dot_refresh_duration(const dot_t*,
-      timespan_t triggered_duration) const;
+  virtual timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t triggered_duration ) const;
 
   // Helper for dot refresh expression, overridable on action level
   virtual bool dot_refreshable( const dot_t* dot, timespan_t triggered_duration ) const;
@@ -1008,7 +1011,7 @@ public:
     return( r == BLOCK_RESULT_BLOCKED || r == BLOCK_RESULT_CRIT_BLOCKED );
   }
 
-  friend void format_to( const action_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const action_t&, fmt::format_context::iterator );
 };
 
 struct call_action_list_t : public action_t

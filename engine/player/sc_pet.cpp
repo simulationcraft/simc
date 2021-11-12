@@ -8,6 +8,7 @@
 #include "action/sc_action.hpp"
 #include "action/sc_action_state.hpp"
 #include "buff/sc_buff.hpp"
+#include "sim/sc_cooldown.hpp"
 #include "dbc/dbc.hpp"
 #include "player/actor_target_data.hpp"
 #include "player/spawner_base.hpp"
@@ -129,7 +130,11 @@ double pet_t::composite_player_target_multiplier( player_t* target, school_e sch
     m *= 1 + td->debuff.adversary->check_value();
     m *= 1 + td->debuff.plagueys_preemptive_strike->check_value();
     m *= 1 + td->debuff.soulglow_spectrometer->check_stack_value();
+    m *= 1.0 + td->debuff.scouring_touch->check_stack_value();
+    m *= 1.0 + td->debuff.exsanguinated->check_value();
     m *= 1.0 + td->debuff.kevins_wrath->check_value();
+    m *= 1.0 + td->debuff.wild_hunt_strategem->check_value();
+    m *= 1.0 + td->debuff.dream_delver->check_stack_value();
   }
 
   return m;
@@ -220,6 +225,21 @@ void pet_t::dismiss( bool expired )
   duration = timespan_t::zero();
 
   demise();
+}
+
+void pet_t::demise()
+{
+  player_t::demise();
+
+  // Reset cooldowns of dynamic pets, so that eg. reused pet spawner pets get summoned with all their cooldowns reset.
+  if ( dynamic )
+  {
+    sim->print_debug( "{} resetting all cooldowns", *this );
+    for ( auto* cooldown : cooldown_list )
+    {
+      cooldown->reset( false );
+    }
+  }
 }
 
 /**
@@ -434,7 +454,7 @@ void pet_t::acquire_target( retarget_source event, player_t* context )
   }
 }
 
-void format_to( const pet_t& pet, fmt::format_context::iterator out )
+void sc_format_to( const pet_t& pet, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "Pet '{}'", pet.full_name_str );
 }

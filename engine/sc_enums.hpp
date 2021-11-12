@@ -72,8 +72,6 @@ enum
   ITEM_TRINKET_BURST_CATEGORY = 1141, /// Trinket On-Use effect default category (for shared CD)
   MAX_GEM_SLOTS = 4, /// Global maximum number of gem slots in any specific item
 
-  WEAPON_POWER_COEFFICIENT = 6, // WDPS -> Attack Power Coefficient used for BfA Attack Power calculations
-
   MAX_AZERITE_LEVEL = 300, // Maximum Azerite level (for Heart of Azeroth) at the start of Battle for Azeroth
 
   MAX_AZERITE_ESSENCE_RANK = 4u, // Maximum Azerite Essence power rank for patch BfA 8.2.0
@@ -403,9 +401,11 @@ enum stats_e
 
 enum dot_behavior_e
 {
-  DOT_CLIP,
-  DOT_REFRESH,
-  DOT_EXTEND
+  DOT_CLIP,             // DoT is restarted from scratch with Duration
+  DOT_EXTEND,           // DoT is extended indefinitely by Duration
+  DOT_REFRESH_DURATION, // Duration + Current Tick
+  DOT_REFRESH_PANDEMIC, // Duration + Current Duration up to 1.3x
+  DOT_NONE              // Does not refresh
 };
 
 enum dot_copy_e
@@ -831,7 +831,7 @@ enum set_bonus_type_e
   T23_GIFT_OF_THE_LOA,
   T23_KEEPSAKES,
   T23_TITANIC_EMPOWERMENT,
-
+  T26_HACK_AND_GORE,
   SET_BONUS_MAX
 };
 

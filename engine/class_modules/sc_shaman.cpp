@@ -5,6 +5,7 @@
 
 #include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
+#include "action/action_callback.hpp"
 #include "sc_enums.hpp"
 
 #include "simulationcraft.hpp"
@@ -365,6 +366,8 @@ public:
     spawner::pet_spawner_t<pet_t, shaman_t> fire_wolves;
     spawner::pet_spawner_t<pet_t, shaman_t> frost_wolves;
     spawner::pet_spawner_t<pet_t, shaman_t> lightning_wolves;
+
+    pet_t* bron;
 
     pets_t( shaman_t* );
   } pet;
@@ -832,6 +835,7 @@ public:
 
   void init_rng() override;
   void init_special_effects() override;
+  void init_special_effect( special_effect_t& effect ) override;
 
   double resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
   void moving() override;
@@ -1057,6 +1061,9 @@ public:
 
   bool affected_by_molten_weapon;
 
+  bool may_proc_bron;
+  proc_t* bron_proc;
+
   shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
@@ -1068,7 +1075,8 @@ public:
       maelstrom_gain( 0 ),
       maelstrom_gain_coefficient( 1.0 ),
       enable_enh_mastery_scaling( false ),
-      affected_by_molten_weapon( false )
+      affected_by_molten_weapon( false ),
+      may_proc_bron( false ), bron_proc( nullptr )
   {
     ab::may_crit = true;
 
@@ -1157,6 +1165,11 @@ public:
     {
       ab::gcd_type = gcd_haste_type::ATTACK_HASTE;
     }
+
+    may_proc_bron = !this->background &&
+      ( this->spell_power_mod.direct || this->spell_power_mod.tick ||
+        this->attack_power_mod.direct || this->attack_power_mod.tick ||
+        this->base_dd_min || this->base_dd_max || this->base_td );
   }
 
   void init_finished() override
@@ -1166,6 +1179,11 @@ public:
     if ( this->cooldown->duration > timespan_t::zero() )
     {
       p()->ability_cooldowns.push_back( this->cooldown );
+    }
+
+    if ( may_proc_bron )
+    {
+      bron_proc = p()->get_proc( std::string( "Bron's Call to Action: " ) + full_name() );
     }
   }
 
@@ -1439,6 +1457,7 @@ public:
     }
 
     may_proc_lightning_shield = ab::weapon != nullptr;
+
   }
 
   void init_finished() override
@@ -3358,6 +3377,8 @@ struct stormstrike_base_t : public shaman_attack_t
   {
     shaman_attack_t::init();
     may_proc_flametongue = may_proc_windfury = may_proc_stormbringer = false;
+
+    may_proc_bron = true;
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -3693,7 +3714,8 @@ struct crash_lightning_t : public shaman_attack_t
     parse_options( options_str );
 
     aoe     = -1;
-    reduced_aoe_damage = true;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
     weapon  = &( p()->main_hand_weapon );
     ap_type = attack_power_type::WEAPON_BOTH;
   }
@@ -3763,6 +3785,13 @@ struct earth_elemental_t : public shaman_spell_t
     harmful = may_crit = false;
     cooldown->duration =
         player->find_spell( 198103 )->cooldown();  // earth ele cd and durations are on different spells.. go figure.
+  }
+
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    may_proc_bron = true;
   }
 
   void execute() override
@@ -4259,11 +4288,12 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   }
 
   lava_burst_overload_t( shaman_t* player, lava_burst_type type, shaman_spell_t* parent_, const std::string& suffix )
-    : elemental_overload_spell_t( player, action_name( suffix ), player->find_spell( 77451 ), parent_ ),
+    : elemental_overload_spell_t( player, action_name( suffix ), player->find_spell( 285466 ), parent_ ),
       impact_flags(), type(type), wlr_buffed_impact( false )
   {
     maelstrom_gain         = player->spell.maelstrom->effectN( 4 ).resource( RESOURCE_MAELSTROM );
-    spell_power_mod.direct = player->find_spell( 285466 )->effectN( 1 ).sp_coeff();
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+    travel_speed = player->find_spell( 77451 )->missile_speed();
   }
 
   static lava_burst_state_t* cast_state( action_state_t* s )
@@ -5158,6 +5188,13 @@ struct feral_spirit_spell_t : public shaman_spell_t
     cooldown->duration += player->talent.elemental_spirits->effectN( 1 ).time_value();
   }
 
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    may_proc_bron = true;
+  }
+
   void execute() override
   {
     shaman_spell_t::execute();
@@ -5572,10 +5609,8 @@ struct flame_shock_t : public shaman_spell_t
   {
     shaman_spell_t::tick( d );
 
-    double proc_chance = p()->spec.lava_surge->proc_chance();
-
-    // proc chance suddenly bacame 100% and the actual chance became effectN 1
-    proc_chance = p()->spec.lava_surge->effectN( 1 ).percent();
+    // proc chance suddenly became 100% and the actual chance became effectN 1
+    double proc_chance = p()->spec.lava_surge->effectN( 1 ).percent();
 
     if ( p()->spec.restoration_shaman->ok() )
     {
@@ -5826,6 +5861,8 @@ struct ascendance_t : public shaman_spell_t
         add_child( ascendance_damage );
       }
     }
+
+    may_proc_bron = true;
   }
 
   void execute() override
@@ -5956,6 +5993,13 @@ struct static_discharge_t : public shaman_spell_t
     affected_by_master_of_the_elements = false;
     base_tick_time = 0_s; // Ticking handled by the buff
     dot_duration = 0_s;
+  }
+
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    may_proc_bron = true;
   }
 
   void execute() override
@@ -8379,6 +8423,7 @@ void shaman_t::create_buffs()
   buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
     ->set_trigger_spell( covenant.necrolord );
   buff.vesper_totem = make_buff( this, "vesper_totem", covenant.kyrian )
+                          ->set_cooldown( 0_s ) // Handled by the action
                           ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
                             if ( new_ == 0 )
                             {
@@ -8616,6 +8661,87 @@ void shaman_t::init_rng()
 void shaman_t::init_special_effects()
 {
   player_t::init_special_effects();
+
+  // Custom trigger condition for Bron's Call to Arms. Completely overrides the trigger
+  // behavior of the generic proc to get control back to the Shaman class module in terms
+  // of what triggers it.
+  //
+  // 2021-07-04 Eligible spells that can proc Bron's Call to Arms:
+  // - Any foreground amount spell / attack
+  // - Ascendance
+  // - Stormstrike/Windstrike "base" (or might be strike itself + icd handling)
+  //
+  // Note, also has to handle the ICD and pet-related trigger conditions.
+  callbacks.register_callback_trigger_function( 333950,
+      dbc_proc_callback_t::trigger_fn_type::TRIGGER,
+      [this]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* ) {
+      if ( cb->cooldown->down() )
+      {
+        return false;
+      }
+
+      // Defer finding the bron pet until the first proc attempt
+      if ( !pet.bron )
+      {
+        pet.bron = find_pet( "bron" );
+        assert( pet.bron );
+      }
+
+      if ( pet.bron->is_active() )
+      {
+        return false;
+      }
+
+      if ( a->type == ACTION_ATTACK )
+      {
+        auto attack = dynamic_cast<shaman_attack_t*>( a );
+        if ( attack && attack->may_proc_bron )
+        {
+          attack->bron_proc->occur();
+          return true;
+        }
+      }
+      else if ( a->type == ACTION_HEAL )
+      {
+        auto heal = dynamic_cast<shaman_heal_t*>( a );
+        if ( heal && heal->may_proc_bron )
+        {
+          heal->bron_proc->occur();
+          return true;
+        }
+      }
+      else if ( a->type == ACTION_SPELL )
+      {
+        auto spell = dynamic_cast<shaman_spell_t*>( a );
+        if ( spell && spell->may_proc_bron )
+        {
+          spell->bron_proc->occur();
+          return true;
+        }
+      }
+
+      return false;
+  } );
+}
+
+// shaman_t::init_special_effect ============================================
+
+void shaman_t::init_special_effect( special_effect_t& effect )
+{
+  switch ( effect.driver()->id() )
+  {
+    // Bron's Call to Arms
+    //
+    // Shaman module has custom triggering logic (defined above) so override the initial
+    // proc flags so we get wider trigger attempts than the core implementation. The
+    // overridden proc condition above will take care of filtering out actions that are
+    // not allowed to proc it.
+    case 333950:
+      effect.proc_flags2_ |= PF2_CAST;
+      break;
+    default:
+      break;
+  }
 }
 
 // shaman_t::generate_bloodlust_options =====================================
@@ -8779,6 +8905,7 @@ void shaman_t::init_action_list_elemental()
                            "if=!talent.elemental_blast.enabled&spell_targets.chain_lightning<3|buff.stormkeeper.up" );
     precombat->add_action( this, "Chain Lightning",
                            "if=!talent.elemental_blast.enabled&spell_targets.chain_lightning>=3&!buff.stormkeeper.up" );
+    precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" ); 
     precombat->add_action( "snapshot_stats" );
     precombat->add_action( "potion" );
 
@@ -8802,8 +8929,13 @@ void shaman_t::init_action_list_elemental()
     def->add_action( "bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up" );
     def->add_action( "vesper_totem,if=covenant.kyrian" );
     def->add_action(
-        "fae_transfusion,if=covenant.night_fae&(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up)&"
+        "fae_transfusion,if=covenant.night_fae&!runeforge.seeds_of_rampant_growth.equipped&"
+        "(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up)&"
         "spell_targets.chain_lightning<3" );
+    def->add_action(
+        "fae_transfusion,if=covenant.night_fae&runeforge.seeds_of_rampant_growth.equipped&"
+        "(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up|spell_targets.chain_lightning>=3)&"
+        "(cooldown.fire_elemental.remains>20|cooldown.storm_elemental.remains>20)" );
     def->add_action(
         "run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)" );
     def->add_action( "run_action_list,name=single_target,if=!talent.storm_elemental.enabled&active_enemies<=2" );
@@ -8934,6 +9066,9 @@ void shaman_t::init_action_list_elemental()
                                "if=runeforge.elemental_equilibrium.equipped&!buff.elemental_equilibrium_debuff.up&!"
                                "talent.elemental_blast.enabled&!talent.echoing_shock.enabled" );
     single_target->add_action( "chain_harvest" );
+    single_target->add_action( this, "Frost Shock",
+                               "if=talent.icefury.enabled&buff.icefury.up" );	
+    single_target->add_action( "fleshcraft,interrupt=1,if=soulbind.volatile_solvent" );
     single_target->add_talent( this, "Static Discharge", "if=talent.static_discharge.enabled" );
     single_target->add_action( this, "Earth Elemental",
                                "if=!talent.primal_elementalist.enabled|!pet.fire_elemental.active" );
@@ -8986,6 +9121,7 @@ void shaman_t::init_action_list_elemental()
     se_single_target->add_action( this, "Lava Burst", "if=cooldown_react&charges>talent.echo_of_the_elements.enabled" );
     se_single_target->add_action( this, "Frost Shock", "if=talent.icefury.enabled&buff.icefury.up" );
     se_single_target->add_action( "chain_harvest" );
+    se_single_target->add_action( "fleshcraft,interrupt=1,if=soulbind.volatile_solvent" );
     se_single_target->add_talent( this, "Static Discharge", "if=talent.static_discharge.enabled" );
     se_single_target->add_action(
         this, "Earth Elemental",
@@ -9103,6 +9239,7 @@ void shaman_t::init_action_list_enhancement()
   precombat->add_action( this, "Lightning Shield" );
   precombat->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
   precombat->add_action( this, "Windfury Totem", "if=!runeforge.doom_winds.equipped" );
+  precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" ); 
 
   // Precombat potion
   precombat->add_action( "potion" );
@@ -9152,13 +9289,14 @@ void shaman_t::init_action_list_enhancement()
   single->add_action("vesper_totem");
   single->add_action(this, "Frost Shock", "if=buff.hailstorm.up");
   single->add_talent(this, "Earthen Spike");
-  single->add_action("fae_transfusion");
+  single->add_action("fae_transfusion,if=!runeforge.seeds_of_rampant_growth.equipped|cooldown.feral_spirit.remains>15");
   single->add_action(this, "Chain Lightning", "if=buff.stormkeeper.up");
   single->add_talent(this, "Elemental Blast", "if=buff.maelstrom_weapon.stack>=5");
   single->add_action("chain_harvest,if=buff.maelstrom_weapon.stack>=5&raid_event.adds.in>=90");
   single->add_action(this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack=10");
   single->add_action(this, "Stormstrike");
   single->add_talent(this, "Stormkeeper", "if=buff.maelstrom_weapon.stack>=5");
+  single->add_action("fleshcraft,interrupt=1,if=soulbind.volatile_solvent");
   single->add_action(this, "Lava Lash");
   single->add_action(this, "Crash Lightning");
   single->add_action(this, "Flame Shock", "target_if=refreshable");
@@ -9167,6 +9305,7 @@ void shaman_t::init_action_list_enhancement()
   single->add_talent(this, "Sundering", "if=raid_event.adds.in>=40");
   single->add_talent(this, "Fire Nova", "if=active_dot.flame_shock");
   single->add_action(this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack>=5");
+  single->add_action("fleshcraft,if=soulbind.pustule_eruption");
   single->add_action(this, "Earth Elemental");
   single->add_action(this, "Windfury Totem", "if=buff.windfury_totem.remains<30");
 
@@ -9193,6 +9332,7 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_action("windstrike");
   aoe->add_action(this, "Stormstrike");
   aoe->add_action(this, "Lava Lash");
+  aoe->add_action("fleshcraft,interrupt=1,if=soulbind.volatile_solvent");
   aoe->add_action(this, "Flame Shock", "target_if=refreshable,cycle_targets=1");
   aoe->add_action("fae_transfusion");
   aoe->add_action(this, "Frost Shock");
@@ -10154,7 +10294,10 @@ shaman_t::pets_t::pets_t( shaman_t* s )
     spirit_wolves( "spirit_wolf", s, []( shaman_t* s ) { return new pet::spirit_wolf_t( s ); } ),
     fire_wolves( "fiery_wolf", s, []( shaman_t* s ) { return new pet::fire_wolf_t( s ); } ),
     frost_wolves( "frost_wolf", s, []( shaman_t* s ) { return new pet::frost_wolf_t( s ); } ),
-    lightning_wolves( "lightning_wolf", s, []( shaman_t* s ) { return new pet::lightning_wolf_t( s ); } )
+    lightning_wolves( "lightning_wolf", s, []( shaman_t* s ) { return new pet::lightning_wolf_t( s ); } ),
+
+    /// Bron's Call to Arms trigger logic is completely overridden by the Shaman module
+    bron( nullptr )
 {
 }
 

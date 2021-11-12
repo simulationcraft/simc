@@ -364,7 +364,7 @@ public:
   virtual buff_t* apply_affecting_conduit( const conduit_data_t& conduit, int effect_num = 1 );
   virtual buff_t* apply_affecting_conduit_effect( const conduit_data_t& conduit, size_t effect_num );
 
-  friend void format_to( const buff_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const buff_t&, fmt::format_context::iterator );
 private:
   void update_trigger_calculations();
   void adjust_haste();

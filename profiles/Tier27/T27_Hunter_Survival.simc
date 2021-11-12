@@ -2,20 +2,20 @@ hunter="T27_Hunter_Survival"
 source=default
 spec=survival
 level=60
-race=mechagnome
+race=troll
 role=attack
 position=back
-talents=3101012
-covenant=night_fae
-soulbind=niya,grove_invigoration/strength_of_the_pack:7/niyas_tools_burrs
-renown=40
+talents=1102021
+covenant=kyrian
+soulbind=forgelite_prime_mikanikos,brons_call_to_action/soulglow_spectrometer/effusive_anima_accelerator/enfeebled_mark:9:1/stinging_strike:9:1/deadly_tandem:9:1
+renown=80
 
 # Default consumables
 potion=spectral_agility
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
-temporary_enchant=main_hand:shadowcore_oil
+temporary_enchant=main_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -31,11 +31,13 @@ actions.precombat+=/variable,name=mb_rs_cost,op=setif,value=action.mongoose_bite
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/fleshcraft
 actions.precombat+=/tar_trap,if=runeforge.soulforge_embers
 actions.precombat+=/steel_trap,precast_time=20
 
 # Executed every time the actor is available.
 actions=auto_attack
+actions+=/use_item,name=jotungeirr_destinys_call,if=buff.coordinated_assault.up|time_to_die<30
 actions+=/use_items
 # Delay facing your doubt until you have put Resonating Arrow down, or if the cooldown is too long to delay facing your Doubt. If none of these conditions are able to met within the 10 seconds leeway, the sim faces your Doubt automatically.
 actions+=/newfound_resolve,if=soulbind.newfound_resolve&(buff.resonating_arrow.up|cooldown.resonating_arrow.remains>10|target.time_to_die<16)
@@ -73,15 +75,15 @@ actions.bop+=/wildfire_bomb,if=dot.wildfire_bomb.refreshable
 actions.bop+=/serpent_sting,target_if=min:remains,if=buff.vipers_venom.up
 
 actions.cds=harpoon,if=talent.terms_of_engagement.enabled&focus<focus.max
-actions.cds+=/use_item,name=dreadfire_vessel,if=covenant.kyrian&cooldown.resonating_arrow.remains>10|!covenant.kyrian
-actions.cds+=/blood_fury,if=cooldown.coordinated_assault.remains>30
-actions.cds+=/ancestral_call,if=cooldown.coordinated_assault.remains>30
-actions.cds+=/fireblood,if=cooldown.coordinated_assault.remains>30
+actions.cds+=/blood_fury,if=buff.coordinated_assault.up
+actions.cds+=/ancestral_call,if=buff.coordinated_assault.up
+actions.cds+=/fireblood,if=buff.coordinated_assault.up
 actions.cds+=/lights_judgment
 actions.cds+=/bag_of_tricks,if=cooldown.kill_command.full_recharge_time>gcd
-actions.cds+=/berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<13
+actions.cds+=/berserking,if=buff.coordinated_assault.up|time_to_die<13
 actions.cds+=/muzzle
 actions.cds+=/potion,if=target.time_to_die<60|buff.coordinated_assault.up
+actions.cds+=/fleshcraft,cancel_if=channeling&!soulbind.pustule_eruption,if=(focus<70|cooldown.coordinated_assault.remains<gcd)&(soulbind.pustule_eruption|soulbind.volatile_solvent)
 actions.cds+=/tar_trap,if=focus+cast_regen<focus.max&runeforge.soulforge_embers.equipped&tar_trap.remains<gcd&cooldown.flare.remains<gcd&(active_enemies>1|active_enemies=1&time_to_die>5*gcd)
 actions.cds+=/flare,if=focus+cast_regen<focus.max&tar_trap.up&runeforge.soulforge_embers.equipped&time_to_die>4*gcd
 actions.cds+=/kill_shot,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd
@@ -92,12 +94,13 @@ actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 actions.cleave=serpent_sting,target_if=min:remains,if=talent.hydras_bite.enabled&buff.vipers_venom.remains&buff.vipers_venom.remains<gcd
 actions.cleave+=/wild_spirits
 actions.cleave+=/resonating_arrow
+actions.cleave+=/coordinated_assault
 actions.cleave+=/wildfire_bomb,if=full_recharge_time<gcd
+actions.cleave+=/call_action_list,name=nta,if=runeforge.nessingwarys_trapping_apparatus.equipped&focus<variable.mb_rs_cost
 actions.cleave+=/chakrams
 actions.cleave+=/butchery,if=dot.shrapnel_bomb.ticking&(dot.internal_bleeding.stack<2|dot.shrapnel_bomb.remains<gcd)
 actions.cleave+=/carve,if=dot.shrapnel_bomb.ticking
 actions.cleave+=/death_chakram,if=focus+cast_regen<focus.max
-actions.cleave+=/coordinated_assault
 actions.cleave+=/butchery,if=charges_fractional>2.5&cooldown.wildfire_bomb.full_recharge_time>spell_targets%2
 actions.cleave+=/flanking_strike,if=focus+cast_regen<focus.max
 actions.cleave+=/carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_targets%2&talent.alpha_predator.enabled
@@ -108,7 +111,7 @@ actions.cleave+=/carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_target
 actions.cleave+=/kill_shot
 actions.cleave+=/flayed_shot
 actions.cleave+=/a_murder_of_crows
-actions.cleave+=/steel_trap
+actions.cleave+=/steel_trap,if=focus+cast_regen<focus.max
 actions.cleave+=/serpent_sting,target_if=min:remains,if=refreshable&talent.hydras_bite.enabled&target.time_to_die>8
 actions.cleave+=/carve
 actions.cleave+=/kill_command,target_if=focus+cast_regen<focus.max&(runeforge.nessingwarys_trapping_apparatus.equipped&cooldown.freezing_trap.remains&cooldown.tar_trap.remains|!runeforge.nessingwarys_trapping_apparatus.equipped)
@@ -146,28 +149,30 @@ actions.st+=/mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if
 actions.st+=/raptor_strike,target_if=max:debuff.latent_poison_injection.stack
 actions.st+=/wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50
 
-head=helm_of_insatiable_appetite,id=183001,bonus_id=7187/1498/6935,gem_id=173127
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
-shoulders=boneshatter_pauldrons,id=172327,bonus_id=6647/6649/6758/7005/1532
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=consumptive_chainmail_carapace,id=183000,bonus_id=7187/1498,enchant=eternal_skirmish
-wrists=fallen_paragons_armguards,id=180114,bonus_id=6536/1540/6646/6935,gem_id=173127
-hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=7187/1498
-waist=loadbearing_belt,id=183016,bonus_id=7187/1498/6935,gem_id=173127
-legs=mementoladen_cuisses,id=182985,bonus_id=7187/1498
-feet=stoneclas_stompers,id=183006,bonus_id=7187/1498,enchant=eternal_agility
-finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_haste
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_haste
-trinket1=stone_legion_heraldry,id=184027,bonus_id=7187/1498
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=rod_of_the_stone_sentinels,id=182393,bonus_id=7187/1531,enchant=sinful_revelation
+head=shadowsteel_facecage,id=186341,bonus_id=7187/1498/6935,gem_id=187320
+neck=shadowghast_necklace,id=178927,bonus_id=6647/6649/7004/1559/6935,gem_id=173128
+shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187319,enchant=60runspeed
+back=dark_rangers_quiver,id=186439,bonus_id=7187/1498
+chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,gem_id=187318,enchant=eternal_skirmish
+wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498/6935,gem_id=173128
+hands=grasps_of_ancestral_whispers,id=186308,bonus_id=7187/1498
+waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498/6935,gem_id=187315
+legs=aradnes_lancer_legguards,id=186307,bonus_id=7187/1498
+feet=ragebound_leg_irons,id=186343,bonus_id=7187/1498,gem_id=187312,enchant=eternal_agility
+finger1=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
+trinket2=infinitely_divisible_ooze,id=178769,bonus_id=6536/1566/6646
+main_hand=jotungeirr_destinys_call,id=186404,bonus_id=7187/1498,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=229.40
-# gear_agility=877
-# gear_stamina=1514
-# gear_crit_rating=492
-# gear_haste_rating=896
-# gear_mastery_rating=169
-# gear_versatility_rating=400
-# gear_armor=873
+# gear_ilvl=255.00
+# gear_agility=1093
+# gear_stamina=2080
+# gear_attack_power=20
+# gear_crit_rating=661
+# gear_haste_rating=1025
+# gear_mastery_rating=113
+# gear_versatility_rating=252
+# gear_speed_rating=60
+# gear_armor=1024

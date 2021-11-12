@@ -1140,6 +1140,7 @@ void warlock_t::create_apl_destruction()
   action_priority_list_t* havoc = get_action_priority_list( "havoc" );
 
   def->add_action( "call_action_list,name=havoc,if=havoc_active&active_enemies>1&active_enemies<5-talent.inferno.enabled+(talent.inferno.enabled&talent.internal_combustion.enabled)" );
+  def->add_action( "fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_solvent_humanoid.up" );
   def->add_action( "conflagrate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.remains<1.5" );
   def->add_action( "cataclysm,if=!(pet.infernal.active&dot.immolate.remains+1>pet.infernal.remains)|spell_targets.cataclysm>1" );
   def->add_action( "call_action_list,name=aoe,if=active_enemies>2" );
@@ -1181,6 +1182,7 @@ void warlock_t::create_apl_destruction()
   aoe->add_action( "impending_catastrophe,if=!(talent.fire_and_brimstone.enabled|talent.inferno.enabled)" );
   aoe->add_action( "incinerate" );
 
+  cds->add_action( "use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|target.time_to_die<42" );
   cds->add_action( "summon_infernal" );
   cds->add_action( "dark_soul_instability" );
   cds->add_action( "potion,if=pet.infernal.active" );

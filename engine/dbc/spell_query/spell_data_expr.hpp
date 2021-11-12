@@ -103,16 +103,16 @@ struct spell_data_expr_t
     return name_str;
   }
 
-  virtual std::vector<uint32_t> operator|( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator&( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator-( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator|( const spell_data_expr_t& /* other */ ) const { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator&( const spell_data_expr_t& /* other */ ) const { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator-( const spell_data_expr_t& /* other */ ) const { return std::vector<uint32_t>(); }
 
-  virtual std::vector<uint32_t> operator<( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator>( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator<=( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator>=( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator==( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator!=( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator<( const spell_data_expr_t& /* other */ ) const { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator>( const spell_data_expr_t& /* other */ ) const { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator<=( const spell_data_expr_t& /* other */ ) const { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator>=( const spell_data_expr_t& /* other */ ) const { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator==( const spell_data_expr_t& /* other */ ) const { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator!=( const spell_data_expr_t& /* other */ ) const { return std::vector<uint32_t>(); }
 
   virtual std::vector<uint32_t> in( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
   virtual std::vector<uint32_t> not_in( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }

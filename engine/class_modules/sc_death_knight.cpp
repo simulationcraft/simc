@@ -435,6 +435,10 @@ struct death_knight_td_t : public actor_target_data_t {
     // Soulbinds
     buff_t* debilitating_malady;
     buff_t* everfrost;
+
+    // Legendary
+    buff_t* abominations_frenzy;
+    buff_t* abominations_frenzy_per_mob_icd;
   } debuff;
 
   death_knight_td_t( player_t* target, death_knight_t* p );
@@ -1066,6 +1070,7 @@ public:
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_pet_damage_multiplier( const action_state_t* /* state */, bool /* guardian */ ) const override;
+  double    composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
   double    composite_crit_avoidance() const override;
   void      combat_begin() override;
   void      activate() override;
@@ -1189,11 +1194,18 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   // Conduits
   debuff.debilitating_malady = make_buff( *this, "debilitating_malady", p -> find_spell( 338523 ) )
                               -> set_default_value( p -> conduits.debilitating_malady.percent() );
-  // Runeforge Legendary
+
   debuff.everfrost = make_buff( *this, "everfrost", p -> find_spell( 337989 ) )
                     -> set_default_value( p -> conduits.everfrost.percent() );
 
+  // Legendary
+  debuff.abominations_frenzy = make_buff( *this, "abominations_frenzy", p -> find_spell( 353546 ) )
+                            ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
 
+  debuff.abominations_frenzy_per_mob_icd = make_buff( *this, "abominations_frenzy_per_mob_icd", p -> legendary.abominations_frenzy )
+                                            -> set_duration( p -> legendary.abominations_frenzy -> internal_cooldown() )
+                                            -> set_cooldown( 0_ms )
+                                            -> set_quiet( true );
 }
 
 // ==========================================================================
@@ -1638,18 +1650,6 @@ struct death_knight_pet_t : public pet_t
     // 2021-01-29: The bdk aura is currently set to 0,
     // Keep an eye on this in case blizz changes the value as double dipping may happen (both ingame and here)
     dk() -> apply_affecting_auras( action );
-  }
-
-  double composite_player_target_multiplier( player_t* target, school_e school ) const override
-  {
-    double m = pet_t::composite_player_target_multiplier( target, school );
-
-    if ( auto td = dk() -> find_target_data( target ) )
-    {
-      m *= 1.0 + td -> debuff.unholy_blight -> stack_value();
-    }
-
-    return m;
   }
 
   // Standard Death Knight pet actions
@@ -2656,7 +2656,10 @@ struct reanimated_shambler_pet_t : public death_knight_pet_t
   {
     necroblast_t( reanimated_shambler_pet_t* p ) :
       pet_spell_t( p, "necroblast", p -> find_spell( 334851 ) )
-    { }
+    {
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 2 ).base_value();
+    }
 
     void execute() override
     {
@@ -3428,6 +3431,8 @@ struct abomination_limb_damage_t : public death_knight_spell_t
     background = true;
     base_multiplier *= 1.0 + p -> conduits.brutal_grasp.percent();
     bone_shield_stack_gain = as<int>(p -> covenant.abomination_limb -> effectN( 3 ).base_value());
+    aoe = -1;
+    reduced_aoe_targets = p -> covenant.abomination_limb -> effectN( 5 ).base_value();
   }
 
   void execute() override
@@ -3455,6 +3460,21 @@ struct abomination_limb_damage_t : public death_knight_spell_t
           break;
       }
       p() -> cooldown.abomination_limb -> start();
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+    if ( p() -> legendary.abominations_frenzy.ok() )
+    {
+      auto td = get_td( state -> target );
+      // Only proc abom frenzy debuff if abom frenzy icd tracking debuff is down
+      if ( ! td -> debuff.abominations_frenzy_per_mob_icd -> up() )
+      {
+        td -> debuff.abominations_frenzy -> trigger();
+        td -> debuff.abominations_frenzy_per_mob_icd -> trigger();
+      }
     }
   }
 };
@@ -3815,7 +3835,8 @@ struct bonestorm_damage_t : public death_knight_spell_t
     heal( get_action<bonestorm_heal_t>( "bonestorm_heal", p ) ), heal_count( 0 )
   {
     background = true;
-    aoe = as<int>( data().effectN( 2 ).base_value() );
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
   }
 
   void execute() override
@@ -3863,7 +3884,8 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
   {
     aoe = -1;
     background = true;
-    reduced_aoe_damage = true;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
 
     ap_type = attack_power_type::WEAPON_BOTH;
 
@@ -4066,7 +4088,8 @@ struct consumption_t : public death_knight_melee_attack_t
     // TODO: Healing from damage done
 
     parse_options( options_str );
-    aoe = as<int>( data().effectN( 3 ).base_value() );
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 3 ).base_value();
   }
 };
 
@@ -5103,8 +5126,8 @@ struct bursting_sores_t : public death_knight_spell_t
     death_knight_spell_t( "bursting_sores", p, p -> find_spell( 207267 ) )
   {
     background = true;
-    // Value is 9, -1 is hardcoded in tooltip. Probably because it counts the initial target of the wound burst
-    aoe = as<int> ( data().effectN( 3 ).base_value() - 1 );
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 3 ).base_value();
   }
 
   // Bursting sores have a slight delay ingame, but nothing really significant
@@ -5199,7 +5222,8 @@ struct frostscythe_t : public death_knight_melee_attack_t
     inexorable_assault = get_action<inexorable_assault_damage_t>( "inexorable_assault", p );
 
     weapon = &( player -> main_hand_weapon );
-    aoe = as<int>( data().effectN( 5 ).base_value() );
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 5 ).base_value();
     triggers_shackle_the_unworthy = triggers_icecap = true;
     // Crit multipier handled in death_knight_t::apply_affecting_aura()
   }
@@ -5527,7 +5551,8 @@ struct howling_blast_t : public death_knight_spell_t
     triggers_shackle_the_unworthy = true;
 
     aoe = -1;
-    reduced_aoe_damage = true;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
 
     impact_action = get_action<frost_fever_t>( "frost_fever", p );
 
@@ -5578,6 +5603,26 @@ struct howling_blast_t : public death_knight_spell_t
     }
 
     return death_knight_spell_t::cost();
+  }
+
+  void schedule_execute( action_state_t* state ) override
+  {
+    // If we have rime, and no runes left, and rime is expiring on the same ms timestamp as we would howling blast,
+    // do not queue howling blast.  This avoids a crash/assert where the buff would get removed during the actions
+    // executing, before howling blast goes off.  However, if we do have runes left, we will allow howling blast to
+    // get fired off, to more accurately reflect what a player would do
+    if ( p() -> buffs.rime -> check() && p() -> _runes.runes_full() == 0 && p() -> buffs.rime -> remains() == 0_ms )
+    {
+      sim->print_debug( "{} action={} attempted to schedule howling blast on the same tick rime expires {}",
+        *player, *this, *target );
+
+      if ( state )
+      {
+        action_state_t::release( state );
+      }
+      return;
+    }
+    death_knight_spell_t::schedule_execute( state );
   }
 
   void execute() override
@@ -6202,7 +6247,8 @@ struct sacrificial_pact_damage_t : public death_knight_spell_t
     death_knight_spell_t( name, p, p -> find_spell( 327611 ) )
   {
     background = true;
-    aoe = as<int>( data().effectN( 2 ).base_value() );
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
   }
 };
 
@@ -6407,6 +6453,7 @@ struct swarming_mist_damage_t : public death_knight_spell_t
   {
     background = true;
     aoe = -1;
+    reduced_aoe_targets = p -> covenant.swarming_mist -> effectN( 5 ).base_value();
     base_multiplier *= 1.0 + p -> conduits.impenetrable_gloom.percent();
     swarming_mist_energize_amount = as<int>( p -> covenant.swarming_mist->ok() ? p -> find_spell( 312546 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) : 0 );
   }
@@ -6415,17 +6462,6 @@ struct swarming_mist_damage_t : public death_knight_spell_t
   {
     swarming_mist_energize_tick = 0;
     death_knight_spell_t::execute();
-  }
-
-  double composite_aoe_multiplier( const action_state_t* state ) const override
-  {
-    double cam = death_knight_spell_t::composite_aoe_multiplier( state );
-
-    if ( state->n_targets > p() -> covenant.swarming_mist ->effectN( 5 ).base_value() )
-        // When we cross over 5 targets, sqrt on all targets kicks in
-        cam *= std::sqrt( 5.0 / state->n_targets );
-
-    return cam;
   }
 
   void impact( action_state_t* s ) override
@@ -6538,12 +6574,6 @@ struct unholy_blight_dot_t : public death_knight_spell_t
     may_miss = may_crit = hasted_ticks = false;
     aoe = -1;
     impact_action = get_action<virulent_plague_t>( "virulent_plague", p );
-  }
-
-  timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t triggered_duration ) const override
-  {
-    // No longer pandemics
-    return triggered_duration;
   }
 
   void impact( action_state_t* state ) override
@@ -9075,6 +9105,11 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
     m *= 1.0 + td -> debuff.apocalypse_war -> stack_value();
   }
 
+  if( td && td -> debuff.abominations_frenzy -> up() )
+  {
+    m *= 1.0 + td -> debuff.abominations_frenzy -> value();
+  }
+
   return m;
 }
 
@@ -9118,6 +9153,18 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
   m *= 1.0 + spec.blood_death_knight -> effectN( 14 ).percent();
   m *= 1.0 + spec.frost_death_knight -> effectN( 3 ).percent();
   m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
+
+  return m;
+}
+
+double death_knight_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
+{
+  double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
+
+  const death_knight_td_t* td = get_target_data( target );
+
+  if ( td )
+    m *= 1.0 + td -> debuff.unholy_blight -> stack_value();
 
   return m;
 }

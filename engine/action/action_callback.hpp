@@ -15,6 +15,7 @@ struct player_t;
 
 struct action_callback_t : private noncopyable
 {
+
   player_t* listener;
   bool active;
   bool allow_self_procs;

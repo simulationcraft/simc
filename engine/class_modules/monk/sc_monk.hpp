@@ -6,6 +6,8 @@
 #pragma once
 
 #include "player/pet_spawner.hpp"
+#include "action/action_callback.hpp"
+#include "sc_enums.hpp"
 
 #include "simulationcraft.hpp"
 
@@ -101,6 +103,7 @@ public:
     buff_t* weapons_of_order;
 
     // Shadowland Legendaries
+    buff_t* call_to_arms_empowered_tiger_lightning;
     buff_t* fae_exposure;
     buff_t* keefers_skyreach;
     buff_t* skyreach_exhaustion;
@@ -158,6 +161,7 @@ public:
 
     // Legendary
     action_t* bountiful_brew;
+    action_t* call_to_arms_empowered_tiger_lightning;
   } active_actions;
 
   std::vector<action_t*> combo_strike_actions;
@@ -244,6 +248,7 @@ public:
     buff_t* faeline_stomp_brm;
     buff_t* faeline_stomp_reset;
     buff_t* fallen_order;
+    buff_t* windwalking_venthyr;
 
     // Covenant Conduits
     absorb_buff_t* fortifying_ingrediences;
@@ -592,6 +597,7 @@ public:
     const spell_data_t* fallen_monk_breath_of_fire;
     const spell_data_t* fallen_monk_clash;
     const spell_data_t* fallen_monk_enveloping_mist;
+    const spell_data_t* fallen_monk_fallen_brew;
     const spell_data_t* fallen_monk_fists_of_fury;
     const spell_data_t* fallen_monk_fists_of_fury_tick;
     const spell_data_t* fallen_monk_keg_smash;
@@ -600,6 +606,7 @@ public:
     const spell_data_t* fallen_monk_spinning_crane_kick;
     const spell_data_t* fallen_monk_spinning_crane_kick_tick;
     const spell_data_t* fallen_monk_tiger_palm;
+    const spell_data_t* fallen_monk_windwalking;
 
     // Conduits
     const spell_data_t* fortifying_ingredients;
@@ -615,6 +622,7 @@ public:
     const spell_data_t* call_to_arms_invoke_niuzao;
     const spell_data_t* call_to_arms_invoke_yulon;
     const spell_data_t* call_to_arms_invoke_chiji;
+    const spell_data_t* call_to_arms_empowered_tiger_lightning;
   } passives;
 
   // RPPM objects
@@ -739,6 +747,9 @@ public:
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_ww;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_mw;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_brm;
+    spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_xuen;
+
+    pet_t* bron;
 
     pets_t( monk_t* p );
   } pets;
@@ -806,6 +817,8 @@ public:
   void init_procs() override;
   void init_assessors() override;
   void init_rng() override;
+  void init_special_effects() override;
+  void init_special_effect( special_effect_t& effect ) override;
   void reset() override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   void create_options() override;
@@ -855,7 +868,7 @@ public:
   void trigger_bonedust_brew( const action_state_t* );
   void trigger_keefers_skyreach( action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
-  void trigger_empowered_tiger_lightning( action_state_t* );
+  void trigger_empowered_tiger_lightning( action_state_t*, bool trigger_invoke_xuen, bool trigger_call_to_arms );
   void trigger_bonedust_brew( action_state_t* );
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();

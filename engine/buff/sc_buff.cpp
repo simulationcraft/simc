@@ -2803,7 +2803,7 @@ void buff_t::update_stack_uptime_array( timespan_t current_time, int old_stacks 
   uptime_array.add( end_time, end_partial.total_seconds() * mul );
 }
 
-void format_to( const buff_t& buff, fmt::format_context::iterator out )
+void sc_format_to( const buff_t& buff, fmt::format_context::iterator out )
 {
   if ( buff.sim->log_spell_id )
   {
@@ -2861,10 +2861,6 @@ stat_buff_t::stat_buff_t( actor_pair_t q, util::string_view name, const spell_da
     else if ( effect.subtype() == A_MOD_RATING )
     {
       std::vector<stat_e> k = util::translate_all_rating_mod( effect.misc_value1() );
-      if ( !player->dbc->ptr && item )
-      {
-        amount = item_database::apply_combat_rating_multiplier( *item, amount );
-      }
 
       for ( size_t j = 0; j < k.size(); j++ )
       {

@@ -109,7 +109,7 @@ bool parse_debug_seed( sim_t* sim, util::string_view, util::string_view value )
   for ( const auto& seed_str : split )
   {
 
-    uint64_t seed = std::stoll( seed_str );
+    uint64_t seed = std::stoull( seed_str );
     sim -> debug_seed.push_back( seed );
   }
 
@@ -700,9 +700,9 @@ bool parse_fight_style( sim_t*             sim,
                         util::string_view /*name*/,
                         util::string_view value )
 {
-  static constexpr std::array<util::string_view, 10> FIGHT_STYLES { {
+  static constexpr std::array<util::string_view, 11> FIGHT_STYLES { {
     "Patchwerk", "Ultraxion", "CleaveAdd", "HelterSkelter", "LightMovement", "HeavyMovement",
-    "HecticAddCleave", "Beastlord", "CastingPatchwerk", "DungeonSlice"
+    "HecticAddCleave", "Beastlord", "CastingPatchwerk", "DungeonSlice", "DungeonRoute"
   } };
 
   auto it = range::find_if( FIGHT_STYLES, [ &value ]( util::string_view n ) {
@@ -1541,6 +1541,7 @@ sim_t::sim_t() :
   pause_mutex( nullptr ),
   paused( false ),
   chart_show_relative_difference( false ),
+  relative_difference_from_max( false ),
   relative_difference_base(),
   chart_boxplot_percentile( .25 ),
   display_hotfixes( false ),
@@ -2321,22 +2322,32 @@ void sim_t::init_fight_style()
   }
   else if ( util::str_compare_ci( fight_style, "DungeonSlice" ) )
   { //Based on the Hero Dungeon setup
-    max_time                       = timespan_t::from_seconds( 360.0 );
+    max_time                           = timespan_t::from_seconds( 360.0 );
     //Disables all raidbuffs, except those provided by scrolls or the character itself.
-    optimal_raid                   = 0;
-    overrides.arcane_intellect     = 1;
-    overrides.battle_shout         = 1;
-    overrides.power_word_fortitude = 1;
-    overrides.bloodlust            = 1;
-    overrides.windfury_totem       = 0;
+    optimal_raid                       = 0;
+    overrides.arcane_intellect         = 1;
+    overrides.battle_shout             = 1;
+    overrides.power_word_fortitude     = 1;
+    overrides.bloodlust                = 1;
+    overrides.windfury_totem           = 0;
 
-    ignore_invulnerable_targets = true;
+    shadowlands_opts.enable_rune_words = false;
+
+    ignore_invulnerable_targets        = true;
 
     raid_events_str +=
         "/invulnerable,cooldown=500,duration=500,retarget=1"
         "/adds,name=Boss,count=1,cooldown=500,duration=135,type=add_boss,duration_stddev=1"
         "/adds,name=SmallAdd,count=5,count_range=1,first=140,cooldown=45,duration=15,duration_stddev=2"
         "/adds,name=BigAdd,count=2,count_range=1,first=160,cooldown=50,duration=30,duration_stddev=2";
+  }
+  else if( util::str_compare_ci( fight_style, "DungeonRoute" ) )
+  { // To be used in conjunction with "pull" raid events for a simulated dungeon run.
+    desired_targets = 1;
+    fixed_time = 0;
+    ignore_invulnerable_targets = true;
+    shadowlands_opts.enable_rune_words = false;
+    overrides.bloodlust = 0; // Bloodlust is handled by an option on each pull raid event
   }
   else
   {
@@ -3279,7 +3290,7 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
 
   if ( util::str_compare_ci( name_str, "active_enemies" ) )
   {
-    if ( target_list.size() == 1U && !has_raid_event( "adds" ) )
+    if ( target_list.size() == 1U && !has_raid_event( "adds" ) && !has_raid_event( "pull" ) )
     {
       return expr_t::create_constant( name_str, 1.0 );
     }
@@ -3641,6 +3652,7 @@ void sim_t::create_options()
   // Charts
   add_option( opt_bool( "chart_show_relative_difference", chart_show_relative_difference ) );
   add_option( opt_string( "relative_difference_base", relative_difference_base ) );
+  add_option( opt_bool( "relative_difference_from_max", relative_difference_from_max ) );
   add_option( opt_float( "chart_boxplot_percentile", chart_boxplot_percentile ) );
   // Hotfix
   add_option( opt_bool( "show_hotfixes", display_hotfixes ) );
@@ -3832,7 +3844,7 @@ void sim_t::create_options()
   add_option( opt_string( "shadowlands.party_favor_type", shadowlands_opts.party_favor_type ) );
   add_option( opt_int( "shadowlands.battlefield_presence_enemies", shadowlands_opts.battlefield_presence_enemies, 0, 3 ) );
   add_option( opt_bool( "shadowlands.better_together_ally", shadowlands_opts.better_together_ally ) );
-  add_option( opt_timespan( "shadowlands.salvaged_fusion_amplifier_precast", shadowlands_opts.salvaged_fusion_amplifier_precast, 0_s, 30_s ) );
+  add_option( opt_timespan( "shadowlands.salvaged_fusion_amplifier_precast", shadowlands_opts.salvaged_fusion_amplifier_precast, 0_s, 20_s ) );
   add_option( opt_float( "shadowlands.titanic_ocular_gland_worthy_chance", shadowlands_opts.titanic_ocular_gland_worthy_chance, 0.0, 1.0 ) );
   add_option( opt_float( "shadowlands.newfound_resolve_success_chance", shadowlands_opts.newfound_resolve_success_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "shadowlands.newfound_resolve_default_delay", shadowlands_opts.newfound_resolve_default_delay, 0_ms, timespan_t::max() ) );
@@ -3841,6 +3853,11 @@ void sim_t::create_options()
   add_option( opt_timespan( "shadowlands.pustule_eruption_interval", shadowlands_opts.pustule_eruption_interval, 1_s, timespan_t::max() ) );
   add_option( opt_float( "shadowlands.shredded_soul_pickup_chance", shadowlands_opts.shredded_soul_pickup_chance, 0.0, 1.0 ) );
   add_option( opt_float( "shadowlands.valiant_strikes_heal_rate", shadowlands_opts.valiant_strikes_heal_rate, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_string( "shadowlands.soleahs_secret_technique_type", shadowlands_opts.soleahs_secret_technique_type ) );
+  add_option( opt_timespan( "shadowlands.shadowed_orb_of_torment_precombat_channel", shadowlands_opts.shadowed_orb_of_torment_precombat_channel, 0_ms, 42_s ) );
+  add_option( opt_uint( "shadowlands.precombat_pustules", shadowlands_opts.precombat_pustules, 1, 9 ) );
+  add_option( opt_float( "shadowlands.field_of_blossoms_duration_multiplier", shadowlands_opts.field_of_blossoms_duration_multiplier, 0.0, 1.0 ) );
+  add_option( opt_float( "shadowlands.cruciform_veinripper_proc_rate", shadowlands_opts.cruciform_veinripper_proc_rate, 0.0, 1.0) );
 }
 
 // sim_t::parse_option ======================================================

@@ -32,6 +32,7 @@ actions.precombat+=/flametongue_weapon
 actions.precombat+=/lightning_shield
 actions.precombat+=/stormkeeper,if=talent.stormkeeper.enabled
 actions.precombat+=/windfury_totem,if=!runeforge.doom_winds.equipped
+actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent
 actions.precombat+=/potion
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -83,6 +84,7 @@ actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack=10
 actions.aoe+=/windstrike
 actions.aoe+=/stormstrike
 actions.aoe+=/lava_lash
+actions.aoe+=/fleshcraft,interrupt=1,if=soulbind.volatile_solvent
 actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1
 actions.aoe+=/fae_transfusion
 actions.aoe+=/frost_shock
@@ -105,13 +107,14 @@ actions.single+=/flame_shock,if=!ticking
 actions.single+=/vesper_totem
 actions.single+=/frost_shock,if=buff.hailstorm.up
 actions.single+=/earthen_spike
-actions.single+=/fae_transfusion
+actions.single+=/fae_transfusion,if=!runeforge.seeds_of_rampant_growth.equipped|cooldown.feral_spirit.remains>15
 actions.single+=/chain_lightning,if=buff.stormkeeper.up
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5
 actions.single+=/chain_harvest,if=buff.maelstrom_weapon.stack>=5&raid_event.adds.in>=90
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack=10
 actions.single+=/stormstrike
 actions.single+=/stormkeeper,if=buff.maelstrom_weapon.stack>=5
+actions.single+=/fleshcraft,interrupt=1,if=soulbind.volatile_solvent
 actions.single+=/lava_lash
 actions.single+=/crash_lightning
 actions.single+=/flame_shock,target_if=refreshable
@@ -120,6 +123,7 @@ actions.single+=/ice_strike
 actions.single+=/sundering,if=raid_event.adds.in>=40
 actions.single+=/fire_nova,if=active_dot.flame_shock
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
+actions.single+=/fleshcraft,if=soulbind.pustule_eruption
 actions.single+=/earth_elemental
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 

@@ -70,15 +70,15 @@ jobs:
         run: ${{ runner.workspace }}/b/ninja/simc spell_query=spell.name=auto_shot
 
 
-  ubuntu-clang-10-build:
-    name: ubuntu-clang-10-build
+  ubuntu-clang-build:
+    name: ubuntu-clang-build
     runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v2
 
       - uses: actions/cache@v2
-        env: { ccache-prefix: 'ubuntu-clang-10-ccache-${{ env.ccache-generation }}' }
+        env: { ccache-prefix: 'ubuntu-clang-12-ccache-${{ env.ccache-generation }}' }
         with:
           path: ${{ runner.workspace }}/.ccache
           key: ${{ env.ccache-prefix }}-${{ github.sha }}
@@ -94,7 +94,7 @@ jobs:
           UBSAN_STRIP_COUNT: "`echo \"${{ runner.workspace }}//\" | grep -o '/' - | wc -l`"
         run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
               -DCMAKE_BUILD_TYPE=Debug
-              -DCMAKE_CXX_COMPILER=clang++-10 -DCMAKE_C_COMPILER=clang-10
+              -DCMAKE_CXX_COMPILER=clang++-12 -DCMAKE_C_COMPILER=clang-12
               -DCMAKE_CXX_FLAGS="-Og -ffile-prefix-map=${{ runner.workspace }}/=/
                 -fno-omit-frame-pointer -fsanitize=address,undefined
                 -fsanitize-undefined-strip-path-components=$UBSAN_STRIP_COUNT"
@@ -117,13 +117,13 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-clang-10-for_run-${{ github.sha }}
+          key: ubuntu-clang-for_run-${{ github.sha }}
 
 
-  ubuntu-clang-10-run:
-    name: ubuntu-clang-10-${{ matrix.type }}
+  ubuntu-clang-run:
+    name: ubuntu-clang-${{ matrix.type }}
     runs-on: ubuntu-20.04
-    needs: [ ubuntu-clang-10-build ]
+    needs: [ ubuntu-clang-build ]
 
     strategy:
       fail-fast: false
@@ -145,7 +145,7 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-clang-10-for_run-${{ github.sha }}
+          key: ubuntu-clang-for_run-${{ github.sha }}
 
       - name: Run
         env:
@@ -155,12 +155,12 @@ jobs:
   simc-tests:
     name: test-${{ matrix.tier }}-${{ matrix.spec }}
     runs-on: ubuntu-20.04
-    needs: [ ubuntu-clang-10-build ]
+    needs: [ ubuntu-clang-build ]
 
     strategy:
       fail-fast: false
       matrix:
-        tier: [ PreRaids ]
+        tier: [ Tier27 ]
         spec: [
             Death_Knight_Blood, Death_Knight_Frost, Death_Knight_Unholy,
             Demon_Hunter_Havoc, Demon_Hunter_Vengeance,
@@ -183,7 +183,7 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-clang-10-for_run-${{ github.sha }}
+          key: ubuntu-clang-for_run-${{ github.sha }}
 
       - name: Install Python dependencies
         run: pip3 install -r tests/requirements.txt
@@ -210,33 +210,38 @@ jobs:
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
 
   windows-VS:
-    name: windows-VS-${{ matrix.vs }}
+    name: windows-VS-${{ matrix.vs }}-${{ matrix.arch }}
     runs-on: windows-latest
     strategy:
       matrix:
-        vs: [2017, 2019]
+        vs: [2019]
+        arch: [x64, amd64_arm64]
         include:
-          - vs: 2017
-            platform: x64
-            configuration: Debug-WebEngine
-            projectFile: vs/simc_vs2017.vcxproj
-            executable: vs\x64\Debug-WebEngine\simc.exe
-            runSmokeTest: false
-          - vs: 2019
-            platform: x64
-            configuration: Debug-NoNetworking
-            projectFile: vs/simc_vs2019.vcxproj
-            executable: vs\simc.exe
+          - arch: x64
             runSmokeTest: true
 
+    env:
+       CMAKE_BUILD_DIR: ${{ github.workspace }}/builddir/
+       
     steps:
       - uses: actions/checkout@v2
 
-      - uses: microsoft/setup-msbuild@v1.0.2
+       # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
+      - uses: lukka/get-cmake@latest
+      
+      # On Windows runners, let's ensure to have the Developer Command Prompt environment setup correctly. As used here the Developer Command Prompt created is targeting x64 and using the default the Windows SDK.
+      - uses: ilammy/msvc-dev-cmd@v1       
+        with:
+          arch: ${{ matrix.arch }}
 
+      - name: Generate project files
+        run: |
+          cmake -B "${{ env.CMAKE_BUILD_DIR }}" -GNinja -DBUILD_GUI=OFF -DCMAKE_BUILD_TYPE=Debug
+      
       - name: Build
-        run: MSBuild.exe /maxcpucount /p:Configuration="${{ matrix.configuration }}" /p:Platform=${{ matrix.platform }} ${{ matrix.projectFile }}
+        run: |
+          cmake --build "${{ env.CMAKE_BUILD_DIR }}"
 
       - name: Smoke Test
         if: ${{ matrix.runSmokeTest }}
-        run: ${{ matrix.executable }} $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
+        run: ${{ env.CMAKE_BUILD_DIR }}/simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1

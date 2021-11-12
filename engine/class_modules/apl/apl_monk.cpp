@@ -166,6 +166,8 @@ void brewmaster( player_t* p )
 
   pre->add_action( "potion" );
 
+  pre->add_action( "fleshcraft" );
+
   pre->add_talent( p, "Chi Burst" );
   pre->add_talent( p, "Chi Wave" );
 
@@ -174,12 +176,18 @@ void brewmaster( player_t* p )
   def->add_action( "auto_attack" );
   def->add_action( p, "Spear Hand Strike", "if=target.debuff.casting.react" );
 
+  if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
+    def->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str );
+
   for ( size_t i = 0; i < p->items.size(); i++ )
   {
     std::string name_str;
     if ( p->items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
-      def->add_action( "use_item,name=" + p->items[ i ].name_str );
+      if ( p->items[ i ].name_str == "jotungeirr_destinys_call" )
+        continue;
+      else
+        def->add_action( "use_item,name=" + p->items[ i ].name_str );
     }
   }
 
@@ -195,7 +203,11 @@ void brewmaster( player_t* p )
       def->add_action( racial_actions[ i ] );
   }
 
-  def->add_action( p, monk->spec.invoke_niuzao, "invoke_niuzao_the_black_ox", "if=target.time_to_die>6&cooldown.purifying_brew.charges_fractional<2" );
+  def->add_action(
+      p, monk->spec.invoke_niuzao, "invoke_niuzao_the_black_ox",
+      "if=buff.recent_purifies.value>=health.max*0.05&(target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)",
+      "Cast Niuzao when we'll get at least 20 seconds of uptime. This is specific to the default enemy APL and will "
+      "need adjustments for other enemies." );
   def->add_action( p, "Touch of Death", "if=target.health.pct<=15" );
 
   // Covenant Abilities
@@ -204,7 +216,10 @@ void brewmaster( player_t* p )
   def->add_action( "bonedust_brew" );
 
   // Purifying Brew
-  def->add_action( p, "Purifying Brew", "if=stagger.amounttototalpct>=0.7&(cooldown.invoke_niuzao_the_black_ox.remains<5|buff.invoke_niuzao_the_black_ox.up)", "Cast PB during the Niuzao window, but only if recently hit." );
+  def->add_action( p, "Purifying Brew",
+                   "if=stagger.amounttototalpct>=0.7&(((target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)&cooldown."
+                   "invoke_niuzao_the_black_ox.remains<5)|buff.invoke_niuzao_the_black_ox.up)",
+                   "Cast PB during the Niuzao window, but only if recently hit." );
   def->add_action( p, "Purifying Brew", "if=buff.invoke_niuzao_the_black_ox.up&buff.invoke_niuzao_the_black_ox.remains<8", "Dump PB charges towards the end of Niuzao: anything is better than nothing." );
   def->add_action( p, "Purifying Brew", "if=cooldown.purifying_brew.charges_fractional>=1.8&(cooldown.invoke_niuzao_the_black_ox.remains>10|buff.invoke_niuzao_the_black_ox.up)", "Avoid capping charges, but pool charges shortly before Niuzao comes up and allow dumping to avoid capping during Niuzao." );
 
@@ -216,7 +231,7 @@ void brewmaster( player_t* p )
       p, "Black Ox Brew",
       "if=(energy+(energy.regen*cooldown.keg_smash.remains))<40&buff.blackout_combo.down&cooldown.keg_smash.up" );
 
-  def->add_action( "fleshcraft,if=cooldown.bonedust_brew.remains<4&soulbind.lead_by_example.enabled" );
+  def->add_action( "fleshcraft,if=cooldown.bonedust_brew.remains<4&soulbind.pustule_eruption.enabled" );
 
   def->add_action(
       p, "Keg Smash", "if=spell_targets>=2",
@@ -243,7 +258,6 @@ void brewmaster( player_t* p )
   def->add_talent( p, "Chi Burst", "if=cooldown.faeline_stomp.remains>2&spell_targets>=2" );
   def->add_action( "faeline_stomp" );
 
-  def->add_action( p, "Expel Harm", "if=buff.gift_of_the_ox.stack>=3" );
   def->add_action( p, "Touch of Death" );
   def->add_talent( p, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   def->add_action( p, "Spinning Crane Kick", "if=buff.charred_passions.up" );
@@ -252,7 +266,10 @@ void brewmaster( player_t* p )
   def->add_talent( p, "Chi Burst" );
   def->add_talent( p, "Chi Wave" );
   def->add_action( p, "Spinning Crane Kick",
-      "if=active_enemies>=3&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)" );
+      "if=!runeforge.shaohaos_might.equipped&active_enemies>=3&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*("
+      "cooldown.keg_smash.remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)",
+      "Cast SCK if enough enemies are around, or if WWWTO is enabled. This is a slight defensive loss over using TP "
+      "but generally reduces sim variance more than anything else." );
   def->add_action( p, "Tiger Palm",
        "if=!talent.blackout_combo&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65" );
 
@@ -261,6 +278,8 @@ void brewmaster( player_t* p )
     if ( racial_actions[ i ] == "arcane_torrent" )
       def->add_action( racial_actions[ i ] + ",if=energy<31" );
   }
+
+  def->add_action("fleshcraft,if=soulbind.volatile_solvent.enabled");
 
   def->add_talent( p, "Rushing Jade Wind" );
 }
@@ -283,6 +302,8 @@ void mistweaver( player_t* p )
 
   pre->add_action( "potion" );
 
+  pre->add_action( "fleshcraft" );
+
   pre->add_talent( p, "Chi Burst" );
   pre->add_talent( p, "Chi Wave" );
 
@@ -292,30 +313,39 @@ void mistweaver( player_t* p )
   action_priority_list_t* aoe             = p->get_action_priority_list( "aoe" );
 
   def->add_action( "auto_attack" );
-  int num_items = (int)p->items.size();
-  for ( int i = 0; i < num_items; i++ )
+  
+  if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
+    def->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str );
+
+  for ( size_t i = 0; i < p->items.size(); i++ )
   {
-    if ( p->items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      def->add_action( "use_item,name=" + p->items[ i ].name_str );
+    std::string name_str;
+    if ( p->items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+    {
+      if ( p->items[ i ].name_str == "jotungeirr_destinys_call" )
+        continue;
+      else
+        def->add_action( "use_item,name=" + p->items[ i ].name_str );
+    }
   }
+
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
-    if ( racial_actions[ i ] == "arcane_torrent" )
-      def->add_action( racial_actions[ i ] + ",if=chi.max-chi>=1&target.time_to_die<18" );
-    else
-      def->add_action( racial_actions[ i ] + ",if=target.time_to_die<18" );
+    def->add_action( racial_actions[ i ] + ",if=target.time_to_die<18" );
   }
 
   def->add_action( "potion" );
-
-  def->add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
-  def->add_action( "call_action_list,name=st,if=active_enemies<3" );
 
   // Covenant Abilities
   def->add_action( "weapons_of_order" );
   def->add_action( "faeline_stomp" );
   def->add_action( "fallen_order" );
   def->add_action( "bonedust_brew" );
+
+  def->add_action( "fleshcraft,if=soulbind.lead_by_example.enabled" );
+
+  def->add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
+  def->add_action( "call_action_list,name=st,if=active_enemies<3" );
 
   st->add_action( p, "Thunder Focus Tea" );
   st->add_action( p, "Rising Sun Kick" );
@@ -348,6 +378,7 @@ void windwalker( player_t* p )
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   pre->add_action( "variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem" );
+  pre->add_action( "fleshcraft" );
   pre->add_talent( p, "Chi Burst" );
   pre->add_talent( p, "Chi Wave", "if=!talent.energizing_elixir.enabled" );
 
@@ -456,13 +487,13 @@ void windwalker( player_t* p )
   if ( monk->spec.invoke_xuen->ok() )
   {
     cd_serenity->add_action( p, "Touch of Death",
-        "if=fight_remains>(180-runeforge.fatal_touch*120)|pet.xuen_the_white_tiger.active|fight_remains<10" );
+        "if=fight_remains>(180-runeforge.fatal_touch*120)|pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10" );
     cd_serenity->add_action( p, "Touch of Karma",
                              "if=fight_remains>90|pet.xuen_the_white_tiger.active|fight_remains<10" );
   }
   else
   {
-    cd_serenity->add_action( p, "Touch of Death", "if=fight_remains>(180-runeforge.fatal_touch*120)|fight_remains<10" );
+    cd_serenity->add_action( p, "Touch of Death", "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.bonedust_brew.up|fight_remains<10" );
     cd_serenity->add_action( p, "Touch of Karma", "if=fight_remains>90|fight_remains<16" );
   }
 
@@ -470,6 +501,9 @@ void windwalker( player_t* p )
   cd_serenity->add_action( "weapons_of_order,if=cooldown.rising_sun_kick.remains<execute_time" );
 
   // Serenity On-use items
+  if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
+    cd_serenity->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
+
   for ( size_t i = 0; i < p->items.size(); i++ )
   {
     std::string name_str;
@@ -479,12 +513,14 @@ void windwalker( player_t* p )
         cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
       else if ( p->items[ i ].name_str == "wrathstone" )
         cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
-            else if ( p->items[ i ].name_str == "overcharged_anima_battery" )
+      else if ( p->items[ i ].name_str == "overcharged_anima_battery" )
         cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
-            else if ( p->items[ i ].name_str == "shadowgrasp_totem" )
+      else if ( p->items[ i ].name_str == "shadowgrasp_totem" )
         cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight" );
       else if ( p->items[ i ].name_str == "gladiators_badge" )
         cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
+      else if ( p->items[ i ].name_str == "jotungeirr_destinys_call" )
+        continue;
       else
         cd_serenity->add_action(
             "use_item,name=" + p->items[ i ].name_str +
@@ -500,17 +536,17 @@ void windwalker( player_t* p )
   cd_serenity->add_talent( p, "Serenity", "if=cooldown.rising_sun_kick.remains<2|fight_remains<15" );
   cd_serenity->add_action( "bag_of_tricks" );
   cd_serenity->add_action( "fleshcraft,if=soulbind.pustule_eruption&buff.serenity.down&debuff.bonedust_brew_debuff.down" );
-
+ 
   // Storm, Earth and Fire Cooldowns
   cd_sef->add_action( p, "Invoke Xuen, the White Tiger", "if=!variable.hold_xuen&(cooldown.rising_sun_kick.remains<2|!covenant.kyrian)&(!covenant.necrolord|cooldown.bonedust_brew.remains<2)|fight_remains<25" );
 
   if ( monk->spec.invoke_xuen->ok() )
     cd_sef->add_action( p, "Touch of Death",
-                        "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active|fight_remains<10" );
+                        "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10" );
   else
     cd_sef->add_action(
         p, "Touch of Death",
-        "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down|fight_remains<10" );
+        "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down&(!covenant.necrolord|buff.bonedust_brew.up)|fight_remains<10" );
 
   // Storm, Earth, and Fire Covenant Abilities
   cd_sef->add_action(
@@ -528,6 +564,9 @@ void windwalker( player_t* p )
       "if=covenant.necrolord&debuff.bonedust_brew_debuff.up&(pet.xuen_the_white_tiger.active|variable.hold_xuen|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time|cooldown.invoke_xuen_the_white_tiger.remains>30)" );
 
   // Storm, Earth, and Fire on-use trinkets
+  if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
+    cd_sef->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str + ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>180|fight_remains<20" );
+
   for ( size_t i = 0; i < p->items.size(); i++ )
   {
     if ( p->items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
@@ -547,6 +586,8 @@ void windwalker( player_t* p )
       else if ( p->items[ i ].name_str == "gladiators_badge" )
         cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str +
                             ",if=cooldown.invoke_xuen_the_white_tiger.remains>55|variable.hold_xuen|fight_remains<15" );
+      else if ( p->items[ i ].name_str == "jotungeirr_destinys_call" )
+        continue;
       else
         cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str +
                ",if=!variable.xuen_on_use_trinket|cooldown.invoke_xuen_the_white_tiger.remains>20&pet.xuen_the_white_tiger.remains<20|variable.hold_xuen" );
@@ -583,8 +624,9 @@ void windwalker( player_t* p )
     }
   }
 
-  cd_sef->add_action( "fleshcraft,if=soulbind.pustule_eruption&buff.storm_earth_and_fire.down&debuff.bonedust_brew_debuff.down" );
-
+  cd_sef->add_action( "fleshcraft,if=soulbind.pustule_eruption&debuff.bonedust_brew_debuff.down" );
+ 
+  
   // Serenity
   serenity->add_action( p, "Fists of Fury", "if=buff.serenity.remains<1" );
   serenity->add_action( p, "Spinning Crane Kick",
@@ -643,6 +685,7 @@ void windwalker( player_t* p )
       "if=chi.max-chi>=2&energy.time_to_max>3|chi.max-chi>=4&(energy.time_to_max>2|!prev_gcd.1.tiger_palm)" );
   st->add_action( p, "Spinning Crane Kick",
       "if=combo_strike&buff.dance_of_chiji.up&(raid_event.adds.in>buff.dance_of_chiji.remains-2|raid_event.adds.up)" );
+  st->add_action( p, "fleshcraft,interrupt_immediate=1,interrupt_if=buff.volatile_solvent_humanoid.up|energy.time_to_max<3|cooldown.rising_sun_kick.remains<2|cooldown.fists_of_fury.remains<2,if=soulbind.volatile_solvent&buff.storm_earth_and_fire.down&debuff.bonedust_brew_debuff.down" );
   st->add_action( p, "Rising Sun Kick",
                   "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.serenity.remains>1|!talent.serenity&(cooldown.weapons_of_order.remains>4|!covenant.kyrian)" );
   st->add_action( p, "Fists of Fury",

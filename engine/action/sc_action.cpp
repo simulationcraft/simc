@@ -336,7 +336,8 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     hasted_ticks(),
     consume_per_tick_(),
     split_aoe_damage(),
-    reduced_aoe_damage(),
+    reduced_aoe_targets( 0.0 ),
+    full_amount_targets( 0 ),
     normalize_weapon_speed(),
     ground_aoe(),
     round_base_dmg( true ),
@@ -346,7 +347,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     hit_any_target(),
     ground_aoe_duration( timespan_t::zero() ),
     ap_type( attack_power_type::NONE ),
-    dot_behavior( DOT_REFRESH ),
+    dot_behavior( DOT_REFRESH_DURATION ),
     ability_lag(),
     ability_lag_stddev(),
     min_gcd(),
@@ -580,6 +581,9 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   ignores_armor       = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
   may_miss            = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
   may_dodge = may_parry = may_block = !spell_data.flags( spell_attribute::SX_NO_D_P_B );
+  
+  if ( spell_data.flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
+    dot_behavior = dot_behavior_e::DOT_REFRESH_PANDEMIC;
 
   if ( spell_data.flags( spell_attribute::SX_FIXED_TRAVEL_TIME ) )
     travel_delay += spell_data.missile_speed();
@@ -1281,15 +1285,26 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
     amount /= state->n_targets;
 
   // New Shadowlands AoE damage reduction based on total target count
-  if ( state->chain_target > 0 && state->action->reduced_aoe_damage )
-    amount /= std::sqrt( state->n_targets );
+  // The square root factor reaches its minimum when the number of targets is equal
+  // to sim->max_aoe_enemies (usually 20), after that it remains constant.
+  if ( state->chain_target >= state->action->full_amount_targets &&
+       state->action->reduced_aoe_targets > 0.0 &&
+       as<double>( state->n_targets ) > state->action->reduced_aoe_targets )
+  {
+    amount *= std::sqrt( state->action->reduced_aoe_targets / std::min<int>( sim->max_aoe_enemies, state->n_targets ) );
+  }
 
   amount *= composite_aoe_multiplier( state );
 
   // Spell goes over the maximum number of AOE targets - ignore for enemies
-  if ( !state->action->split_aoe_damage && !state->action->reduced_aoe_damage &&
-       state->n_targets > static_cast<size_t>( sim->max_aoe_enemies ) && !state->action->player->is_enemy() )
+  // Note that this split damage factor DOES affect spells that are supposed
+  // to do full damage to the main target.
+  if ( !state->action->split_aoe_damage &&
+       state->n_targets > static_cast<size_t>( sim->max_aoe_enemies ) &&
+       !state->action->player->is_enemy() )
+  {
     amount *= sim->max_aoe_enemies / static_cast<double>( state->n_targets );
+  }
 
   // Record initial amount to state
   state->result_raw = amount;
@@ -3408,7 +3423,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     }
     else
     {
-      if ( sim->target_list.size() == 1U && !sim->has_raid_event( "adds" ) )
+      if ( sim->target_list.size() == 1U && !sim->has_raid_event( "adds" ) && !sim->has_raid_event( "pull" ) )
       {
         return expr_t::create_constant( "spell_targets", 1.0 );
       }
@@ -3990,14 +4005,37 @@ void action_t::do_teleport( action_state_t* state )
  */
 timespan_t action_t::calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const
 {
-  // WoD Pandemic
-  // New WoD Formula: Get no malus during the last 30% of the dot.
-  return std::min( triggered_duration * 0.3, dot->remains() ) + triggered_duration;
+  switch ( dot_behavior )
+  {
+    case dot_behavior_e::DOT_REFRESH_PANDEMIC:
+      return std::min( triggered_duration * 0.3, dot->remains() ) + triggered_duration;
+    case dot_behavior_e::DOT_REFRESH_DURATION:
+      return dot->time_to_next_full_tick() + triggered_duration;
+    case dot_behavior_e::DOT_EXTEND:
+      return dot->remains() + triggered_duration;
+    case dot_behavior_e::DOT_NONE:
+      return dot->remains();
+    case dot_behavior_e::DOT_CLIP:
+    default:
+      return triggered_duration;
+  }
 }
 
 bool action_t::dot_refreshable( const dot_t* dot, timespan_t triggered_duration ) const
 {
-  return dot->remains() <= triggered_duration * 0.3;
+  switch ( dot_behavior )
+  {
+    case dot_behavior_e::DOT_REFRESH_PANDEMIC:
+      return dot->remains() <= triggered_duration * 0.3;
+    case dot_behavior_e::DOT_REFRESH_DURATION:
+      return dot->ticks_left() <= 1;
+    case dot_behavior_e::DOT_EXTEND:
+      return true;
+    case dot_behavior_e::DOT_NONE:
+    case dot_behavior_e::DOT_CLIP:
+    default:
+      return false;
+  }
 }
 
 call_action_list_t::call_action_list_t( player_t* player, util::string_view options_str )
@@ -4383,7 +4421,7 @@ rng::rng_t& action_t::rng() const
  * actor-selected candidate target to the current target. Event contains the retarget event type, context contains the
  * (optional) actor that triggered the event.
  */
-void action_t::acquire_target( retarget_source /* event */, player_t* /* context */, player_t* candidate_target )
+void action_t::acquire_target( retarget_source event, player_t* /* context */, player_t* candidate_target )
 {
   // Reset target cache every time target acquisition occurs for AOE spells
   if ( n_targets() != 0 )
@@ -4411,8 +4449,10 @@ void action_t::acquire_target( retarget_source /* event */, player_t* /* context
     return;
   }
 
-  // Don't swap targets if the action's current target is still alive
-  if ( target && !target->is_sleeping() && !target->debuffs.invulnerable->check() )
+  // Don't swap targets if the action's current target is still alive, except in cases
+  // where the actor has risen (been summoned, start of iteration etc).
+  if ( event != retarget_source::SELF_ARISE &&
+       target && !target->is_sleeping() && !target->debuffs.invulnerable->check() )
   {
     return;
   }
@@ -4490,7 +4530,7 @@ double action_t::last_tick_factor(const dot_t* /* d */, timespan_t time_to_tick,
   return std::min(1.0, duration / time_to_tick);
 }
 
-void format_to( const action_t& action, fmt::format_context::iterator out )
+void sc_format_to( const action_t& action, fmt::format_context::iterator out )
 {
   if ( action.sim->log_spell_id )
   {
@@ -4850,8 +4890,13 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case P_TARGET:
-        aoe += as<int>( effect.base_value() );
-        sim->print_debug( "{} max target count modified by {}", *this, effect.base_value() );
+        assert( !( aoe == -1 || ( effect.base_value() < 0 && effect.base_value() > aoe ) ) );
+        // As the aoe value defaults to 0 for ST, increasing directly doesn't always result in the correct value
+        if ( aoe == 0 )
+          aoe = 1 + as<int>( effect.base_value() );
+        else
+          aoe += as<int>( effect.base_value() );
+        sim->print_debug( "{} max target count modified by {} to {}", *this, effect.base_value(), aoe );
         break;
 
       case P_GCD:

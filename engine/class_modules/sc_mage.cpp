@@ -7,6 +7,8 @@
 #include "player/covenant.hpp"
 #include "util/util.hpp"
 #include "class_modules/apl/mage.hpp"
+#include "report/charts.hpp"
+#include "report/sc_highchart.hpp"
 
 namespace {
 
@@ -428,6 +430,7 @@ public:
     timespan_t arcane_missiles_chain_delay = 200_ms;
     double arcane_missiles_chain_relstddev = 0.1;
     bool prepull_dc = false;
+    int prepull_harmony_stacks = 0;
   } options;
 
   // Pets
@@ -550,6 +553,7 @@ public:
     double from_the_ashes_mastery;
     timespan_t last_enlightened_update;
     player_t* last_bomb_target;
+    int frostbolt_counter;
   } state;
 
   struct expression_support_t
@@ -784,8 +788,8 @@ public:
   void      update_from_the_ashes();
   action_t* get_icicle();
   bool      trigger_delayed_buff( buff_t* buff, double chance = -1.0, timespan_t delay = 0.15_s );
-  void      trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0.15_s );
-  void      trigger_fof( double chance, proc_t* source, int stacks = 1 );
+  bool      trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0.15_s );
+  bool      trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void      trigger_icicle( player_t* icicle_target, bool chain = false );
   void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
@@ -1663,10 +1667,7 @@ public:
         auto spark_debuff = td->debuffs.radiant_spark_vulnerability;
 
         // Handle Harmonic Echo before changing the stack number
-        // TODO: Currently only triggers 3 times, on stacks 1, 2 and 3.
-        if ( p()->runeforge.harmonic_echo.ok()
-          && spark_debuff->check() > 0
-          && spark_debuff->check() < spark_debuff->max_stack() )
+        if ( p()->runeforge.harmonic_echo.ok() && spark_debuff->check() )
         {
           auto echo = p()->action.harmonic_echo;
           echo->base_dd_min = echo->base_dd_max = p()->runeforge.harmonic_echo->effectN( 1 ).percent() * s->result_total;
@@ -2091,6 +2092,12 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
   void execute() override
   {
+    if ( !last_hot_streak && p()->buffs.sun_kings_blessing_ready->check() )
+    {
+      p()->buffs.sun_kings_blessing_ready->expire();
+      p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->runeforge.sun_kings_blessing->effectN( 2 ).time_value() );
+    }
+
     fire_mage_spell_t::execute();
 
     if ( last_hot_streak )
@@ -2098,7 +2105,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       p()->buffs.hot_streak->decrement();
       p()->buffs.pyroclasm->trigger();
 
-      trigger_legendary_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready, p()->bugs ? 0 : 1 );
+      trigger_legendary_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready, 1 );
 
       if ( rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
       {
@@ -2479,8 +2486,10 @@ struct arcane_blast_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     cost_reductions = { p->buffs.rule_of_threes };
-    reduced_aoe_damage = triggers.radiant_spark = true;
+    triggers.radiant_spark = true;
     affected_by.deathborne_cleave = true;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
   }
 
   double cost() const override
@@ -2742,11 +2751,6 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
       full_duration *= 1.0 + cc_duration_reduction;
 
     return full_duration;
-  }
-
-  timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
-  {
-    return duration + d->time_to_next_full_tick();
   }
 
   timespan_t tick_time( const action_state_t* s ) const override
@@ -3282,6 +3286,9 @@ struct evocation_t final : public arcane_mage_spell_t
 
     if ( siphon_storm_charges > 0 )
       p()->trigger_arcane_charge( siphon_storm_charges );
+
+    if ( is_precombat && execute_state )
+      cooldown->adjust( -composite_dot_duration( execute_state ) );
   }
 
   void tick( dot_t* d ) override
@@ -3593,14 +3600,28 @@ struct flurry_t final : public frost_mage_spell_t
 
 struct frostbolt_t final : public frost_mage_spell_t
 {
+  double fof_chance;
+  double bf_chance;
+
   frostbolt_t( util::string_view n, mage_t* p, util::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->find_class_spell( "Frostbolt" ) )
+    frost_mage_spell_t( n, p, p->find_class_spell( "Frostbolt" ) ),
+    fof_chance(),
+    bf_chance()
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
     triggers.bone_chilling = calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = affected_by.deathborne_cleave = true;
     base_multiplier *= 1.0 + p->spec.frostbolt_2->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
+
+    double ft_multiplier = 1.0 + p->talents.frozen_touch->effectN( 1 ).percent();
+    // Because of the additional procs gained from the bad luck protection
+    // system, the base proc chances are reduced so that the overall average
+    // is not significantly changed by the system.
+    if ( p->spec.fingers_of_frost->ok() )
+      fof_chance = ft_multiplier * p->spec.fingers_of_frost->effectN( 1 ).percent() - 0.005;
+    if ( p->spec.brain_freeze->ok() )
+      bf_chance = ft_multiplier * p->spec.brain_freeze->effectN( 1 ).percent() - 0.01;
 
     if ( p->spec.icicles->ok() )
       add_child( p->action.icicle.frostbolt );
@@ -3649,9 +3670,7 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     p()->trigger_icicle_gain( target, p()->action.icicle.frostbolt );
 
-    double ft_multiplier = 1.0 + p()->talents.frozen_touch->effectN( 1 ).percent();
-    p()->trigger_fof( ft_multiplier * p()->spec.fingers_of_frost->effectN( 1 ).percent(), proc_fof );
-    p()->trigger_brain_freeze( ft_multiplier * p()->spec.brain_freeze->effectN( 1 ).percent(), proc_brain_freeze );
+    handle_procs();
 
     p()->buffs.expanded_potential->trigger();
 
@@ -3669,6 +3688,44 @@ struct frostbolt_t final : public frost_mage_spell_t
       trigger_cold_front();
       trigger_deaths_fathom();
     }
+  }
+
+  void handle_procs()
+  {
+    if ( p()->specialization() != MAGE_FROST )
+      return;
+
+    bool fof_triggered = p()->trigger_fof( fof_chance, proc_fof );
+    bool bf_triggered = p()->trigger_brain_freeze( bf_chance, proc_brain_freeze );
+
+    // TODO: How does the BLP work for low level mages?
+    if ( fof_chance == 0.0 || bf_chance == 0.0 )
+      return;
+
+    if ( !bf_triggered && !fof_triggered )
+    {
+      p()->state.frostbolt_counter++;
+      // On the 6th consecutive Frostbolt where no Fingers of Frost or Brain Freeze
+      // proc has occurred, there is an extra 25% chance to gain a Brain Freeze proc.
+      if ( p()->state.frostbolt_counter == 6 )
+        bf_triggered = p()->trigger_brain_freeze( 0.25, proc_brain_freeze );
+      // On the 7th consecutive Frostbolt where no Fingers of Frost or Brain Freeze
+      // proc has occurred, a proc will occur. The chances that this proc will be a
+      // Fingers of Frost or a Brain Freeze are equal.
+      else if ( p()->state.frostbolt_counter >= 7 )
+      {
+        // Try to trigger the Fingers of Frost proc with a 50% chance, because if it
+        // is triggered with a 100% chance then the actor will not have to react to it.
+        // Brain Freeze does not have this feature, so triggering it below with a 100%
+        // chance is not a problem.
+        fof_triggered = p()->trigger_fof( 0.5, proc_fof );
+        if ( !fof_triggered )
+          bf_triggered = p()->trigger_brain_freeze( 1.0, proc_brain_freeze );
+      }
+    }
+
+    if ( fof_triggered || bf_triggered )
+      p()->state.frostbolt_counter = 0;
   }
 };
 
@@ -3709,7 +3766,8 @@ struct frozen_orb_bolt_t final : public frost_mage_spell_t
   frozen_orb_bolt_t( util::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 84721 ) )
   {
-    aoe = as<int>( data().effectN( 2 ).base_value() );
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
     base_multiplier *= 1.0 + p->conduits.unrelenting_cold.percent();
     background = triggers.bone_chilling = true;
   }
@@ -3908,6 +3966,8 @@ struct glacial_fragments_t final : public frost_mage_spell_t
   glacial_fragments_t( util::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 327498 ) )
   {
+    aoe = -1;
+    reduced_aoe_targets = p->runeforge.glacial_fragments->effectN( 3 ).base_value();
     background = true;
     affected_by.shatter = triggers.icy_propulsion = false;
   }
@@ -4115,7 +4175,9 @@ struct ice_nova_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    consumes_winters_chill = triggers.radiant_spark = reduced_aoe_damage = true;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
+    consumes_winters_chill = triggers.radiant_spark = true;
   }
 
   void impact( action_state_t* s ) override
@@ -4252,7 +4314,9 @@ struct living_bomb_explosion_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( 44461 ) )
   {
     aoe = -1;
-    background = reduced_aoe_damage = true;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
+    background = true;
     affected_by.radiant_spark = false;
   }
 };
@@ -4489,7 +4553,9 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( 257542 ) )
   {
     aoe = -1;
-    background = reduced_aoe_damage = true;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
+    background = true;
     callbacks = false;
     triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
     triggers.ignite = triggers.radiant_spark = true;
@@ -4594,11 +4660,6 @@ struct pyroblast_dot_t final : public fire_mage_spell_t
     cooldown->duration = 0_ms;
     affected_by.radiant_spark = false;
   }
-
-  timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
-  {
-    return duration + d->time_to_next_full_tick();
-  }
 };
 
 struct pyroblast_t final : public hot_streak_spell_t
@@ -4630,12 +4691,6 @@ struct pyroblast_t final : public hot_streak_spell_t
 
   void execute() override
   {
-    if ( !last_hot_streak && p()->buffs.sun_kings_blessing_ready->check() )
-    {
-      p()->buffs.sun_kings_blessing_ready->expire();
-      p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->runeforge.sun_kings_blessing->effectN( 2 ).time_value() );
-    }
-
     hot_streak_spell_t::execute();
 
     if ( time_to_execute > 0_ms )
@@ -4925,6 +4980,10 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
     if ( result_is_hit( s->result ) )
       get_td( s->target )->debuffs.touch_of_the_magi->trigger();
   }
+
+  // Touch of the Magi will trigger procs that occur only from casting damaging spells.
+  bool has_amount_result() const override
+  { return true; }
 };
 
 struct touch_of_the_magi_explosion_t final : public arcane_mage_spell_t
@@ -4932,10 +4991,12 @@ struct touch_of_the_magi_explosion_t final : public arcane_mage_spell_t
   touch_of_the_magi_explosion_t( util::string_view n, mage_t* p ) :
     arcane_mage_spell_t( n, p, p->find_spell( 210833 ) )
   {
-    background = reduced_aoe_damage = true;
+    background = true;
     may_miss = may_crit = callbacks = false;
     affected_by.radiant_spark = false;
     aoe = -1;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
     base_dd_min = base_dd_max = 1.0;
   }
 
@@ -4963,9 +5024,10 @@ struct arcane_echo_t final : public arcane_mage_spell_t
   arcane_echo_t( util::string_view n, mage_t* p ) :
     arcane_mage_spell_t( n, p, p->find_spell( 342232 ) )
   {
+    aoe = -1;
+    reduced_aoe_targets = p->talents.arcane_echo->effectN( 1 ).base_value();
     background = true;
     callbacks = affected_by.radiant_spark = false;
-    aoe = as<int>( p->talents.arcane_echo->effectN( 1 ).base_value() );
   }
 };
 
@@ -5105,11 +5167,6 @@ struct radiant_spark_t final : public mage_spell_t
 
     if ( auto td = find_td( d->target ) )
       td->debuffs.radiant_spark_vulnerability->expire();
-  }
-
-  timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
-  {
-    return duration + d->time_to_next_full_tick();
   }
 };
 
@@ -5769,6 +5826,7 @@ void mage_t::create_options()
   add_option( opt_timespan( "mage.arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_bool( "mage.prepull_dc", options.prepull_dc ) );
+  add_option( opt_int( "mage.prepull_harmony_stacks", options.prepull_harmony_stacks ) );
 
   player_t::create_options();
 }
@@ -6660,6 +6718,11 @@ void mage_t::arise()
   {
     buffs.disciplinary_command->trigger();
   }
+
+  if ( runeforge.arcane_harmony->ok() && options.prepull_harmony_stacks > 0 )
+  {
+    buffs.arcane_harmony->trigger( options.prepull_harmony_stacks );
+  }
 }
 
 void mage_t::combat_begin()
@@ -7055,7 +7118,7 @@ bool mage_t::trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay
   return success;
 }
 
-void mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t delay )
+bool mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t delay )
 {
   assert( source );
 
@@ -7065,9 +7128,11 @@ void mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t del
     source->occur();
     procs.brain_freeze->occur();
   }
+
+  return success;
 }
 
-void mage_t::trigger_fof( double chance, proc_t* source, int stacks )
+bool mage_t::trigger_fof( double chance, proc_t* source, int stacks )
 {
   assert( source );
 
@@ -7083,6 +7148,8 @@ void mage_t::trigger_fof( double chance, proc_t* source, int stacks )
       procs.fingers_of_frost->occur();
     }
   }
+
+  return success;
 }
 
 void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
@@ -7348,7 +7415,7 @@ public:
       if ( !data->active() )
         continue;
 
-      auto nonzero = [] ( const char* fmt, double d ) { return d != 0.0 ? fmt::format( fmt, d ) : ""; };
+      auto nonzero = [] ( const char* fmt, double d ) { return d != 0.0 ? fmt::format( fmt::runtime(fmt), d ) : ""; };
       auto cells = [ &, total = data->count_total() ] ( double mean, bool util = false )
       {
         std::string format_str = "<td class=\"right\">{}</td><td class=\"right\">{}</td>";

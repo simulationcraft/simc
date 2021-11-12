@@ -2,14 +2,13 @@ demonhunter="T27_Demon_Hunter_Vengeance"
 source=default
 spec=vengeance
 level=60
-race=night_elf
-timeofday=night
+race=blood_elf
 role=tank
 position=front
-talents=1233321
+talents=2323221
 covenant=kyrian
-soulbind=pelagos,combat_meditation/repeat_decree:7/growing_inferno:7
-renown=40
+soulbind=forgelite_prime_mikanikos,brons_call_to_action/growing_inferno:9:1/repeat_decree:9:1/adaptive_armor_fragment:9:1/soulglow_spectrometer/effusive_anima_accelerator
+renown=80
 
 # Default consumables
 potion=phantom_fire
@@ -71,30 +70,31 @@ actions.normal+=/sigil_of_flame,if=!(covenant.kyrian.enabled&runeforge.razelikhs
 actions.normal+=/shear
 actions.normal+=/throw_glaive
 
-head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173128
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173128
-shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
-back=mantle_of_manifest_sins,id=183033,bonus_id=7187/1498
-chest=miasmalacquered_jerkin,id=183009,bonus_id=7187/1498,enchant=eternal_skirmish
-wrists=barkweave_wristwraps,id=182978,bonus_id=7187/1498/6935,gem_id=173128
-hands=gloves_of_obscure_rituals,id=178757,bonus_id=6536/1540/6646
-waist=girdle_of_shattered_dreams,id=178805,bonus_id=6536/1540/6646/6935,gem_id=173128
-legs=umbrahide_leggings,id=172318,bonus_id=6649/6650/6758/7046/1532
-feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
-finger1=entwined_gorger_tendril,id=178848,bonus_id=6536/1540/6646/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=claws_of_the_stone_generals,id=182416,bonus_id=7187/1531,enchant=celestial_guidance
-off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=3535/4786/1540,enchant=celestial_guidance
+head=cap_of_writhing_malevolence,id=186292,bonus_id=4800/4786/1498,gem_id=187312
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173129
+shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498/6935,gem_id=187315
+back=selfreplicating_tissue,id=186374,bonus_id=4800/4786/1498,enchant=soul_vitality
+chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498/6935,gem_id=187318,enchant=eternal_stats
+wrists=umbrahide_armguards,id=172321,bonus_id=7048/6647/6650/6758/1559,gem_id=173128
+hands=loyal_kvaldirs_handwraps,id=186295,bonus_id=4800/4786/1498,gem_id=187314,enchant=60leech
+waist=windrunners_baldric,id=186332,bonus_id=7187/1498/6935,gem_id=173128
+legs=elite_aranakk_breeches,id=186331,bonus_id=7187/1498/6935
+feet=unstable_energizer_boots,id=186363,bonus_id=4800/4786/1498,gem_id=187313,enchant=eternal_agility
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=stitchfleshs_misplaced_signet,id=178736,bonus_id=6536/1566/6646,gem_id=173128,enchant=tenet_of_haste
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
+trinket2=relic_of_the_frozen_wastes,id=186437,bonus_id=7187/1498/6935
+main_hand=cruciform_veinripper,id=186388,bonus_id=4800/4786/1498,enchant=sinful_revelation
+off_hand=cruciform_veinripper,id=186388,bonus_id=4800/4786/1498,enchant=lightless_force
 
 # Gear Summary
-# gear_ilvl=228.75
-# gear_agility=874
-# gear_stamina=1518
+# gear_ilvl=255.69
+# gear_agility=1122
+# gear_stamina=2133
 # gear_attack_power=40
-# gear_crit_rating=586
-# gear_haste_rating=720
-# gear_mastery_rating=150
-# gear_versatility_rating=501
-# gear_armor=607
+# gear_crit_rating=675
+# gear_haste_rating=832
+# gear_mastery_rating=50
+# gear_versatility_rating=515
+# gear_leech_rating=60
+# gear_armor=720

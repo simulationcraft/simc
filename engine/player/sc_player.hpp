@@ -13,15 +13,11 @@
 #include "rating.hpp"
 #include "weapon.hpp"
 #include "effect_callbacks.hpp"
-#include "util/plot_data.hpp"
 #include "player_collected_data.hpp"
 #include "player_processed_report_information.hpp"
 #include "player_stat_cache.hpp"
-#include "scaling_metric_data.hpp"
 #include "util/cache.hpp"
-#include "dbc/item_database.hpp"
 #include "dbc/specialization.hpp"
-#include "util/util.hpp"
 #include "assessor.hpp"
 #include <map>
 #include <set>
@@ -57,8 +53,10 @@ struct pet_t;
 struct player_description_t;
 struct player_report_extension_t;
 struct player_scaling_t;
+struct plot_data_t;
 struct proc_t;
 struct real_ppm_t;
+struct scaling_metric_data_t;
 struct set_bonus_t;
 class shuffled_rng_t;
 struct special_effect_t;
@@ -221,7 +219,7 @@ struct player_t : public actor_t
     double spell_power_multiplier, attack_power_multiplier, base_armor_multiplier, armor_multiplier;
     position_e position;
 
-    friend void format_to( const base_initial_current_t&, fmt::format_context::iterator );
+    friend void sc_format_to( const base_initial_current_t&, fmt::format_context::iterator );
   }
   base, // Base values, from some database or overridden by user
   initial, // Base + Passive + Gear (overridden or items) + Player Enchants + Global Enchants
@@ -373,6 +371,7 @@ struct player_t : public actor_t
   bool matching_gear;
   bool karazhan_trinkets_paired;
   std::unique_ptr<cooldown_t> item_cooldown;
+  timespan_t default_item_group_cooldown;
   cooldown_t* legendary_tank_cloak_cd; // non-Null if item available
 
 
@@ -520,14 +519,14 @@ struct player_t : public actor_t
     buff_t* volatile_solvent_humanoid; // necrolord/marileth - humanoid (mastery) buff
     buff_t* volatile_solvent_stats; // necrolord/marileth - beast (primary) and dragonkin (crit) buffs
     buff_t* volatile_solvent_damage; // necrolord/marileth - elemental (magic) and giant (physical) % damage done buffs
-    buff_t* redirected_anima; // night_fae/niya - mastery and max health % increase per stack
     buff_t* battlefield_presence; // venthyr/draven - damage increase buff based on number of enemies
-    buff_t* fatal_flaw_crit; // venthyr/nadjia - buff applied after euphoria expires if you have more crit than vers
-    buff_t* fatal_flaw_vers; // venthyr/nadjia - buff applied after euphoria expires if you have more vers than crit
     buff_t* emenis_magnificent_skin; //necrolord/emeni - buff applied when using fleshcraft that increases max health
     buff_t* trembling_pustules; //necrolord/emeni - buff applied when using fleshcraft that increases procs Pustule Eruption damage
     buff_t* hold_your_ground; //venthyr/draven - stamina % buff when standing still
     buff_t* waking_bone_breastplate; //necrolord/heirmir - max health % buff when near 3 or more enemies
+
+    // 9.1 Soulbinds
+    buff_t* wild_hunt_strategem_tracking; //night_fae/korayn - tracking buff to allow procs of wild_hunt_strategem on enemy targets
 
     // 9.0 Runecarves
     buff_t* norgannons_sagacity_stacks;  // stacks on every cast
@@ -536,9 +535,13 @@ struct player_t : public actor_t
 
     // 9.1 Legendary Party Buffs
     buff_t* pact_of_the_soulstalkers; // Kyrian Hunter Legendary
+    buff_t* kindred_affinity;         // Kyrian Druid Legendary
 
     // 9.1 Shards of Domination
     buff_t* coldhearted; // Shard of Cor
+
+    // 9.1 Trinkets
+    buff_t* reactive_defense_matrix;
   } buffs;
 
   struct debuffs_t
@@ -571,6 +574,7 @@ struct player_t : public actor_t
     std::vector<timespan_t> conquerors_banner;
     std::vector<timespan_t> rallying_cry;
     std::vector<timespan_t> pact_of_the_soulstalkers;
+    std::vector<timespan_t> kindred_affinity;
   } external_buffs;
 
 
@@ -741,8 +745,7 @@ public:
   const char* primary_tree_name() const;
   timespan_t total_reaction_time();
   double avg_item_level() const;
-  double get_attribute( attribute_e a ) const
-  { return util::floor( composite_attribute( a ) * composite_attribute_multiplier( a ) ); }
+  double get_attribute( attribute_e a ) const;
   double strength() const
   { return get_attribute( ATTR_STRENGTH ); }
   double agility() const
@@ -854,6 +857,14 @@ public:
   virtual void create_buffs();
   virtual void create_special_effects();
   virtual void init_special_effects();
+  /// Modify generic special effect initialization
+  ///
+  /// Intended to allow modifications to some aspects of the special effect (or buffs,
+  /// actions or callbacks it instantiates), including outright replacement.
+  ///
+  /// This method is called after generic special effect initialization occurs, but before
+  /// any proc objects (e.g., dbc_proc_callback_t-derived objects) are initialized.
+  virtual void init_special_effect( special_effect_t& effect );
   virtual void init_scaling();
   virtual void init_action_list() {}
   virtual void init_gains();
@@ -887,23 +898,7 @@ public:
 
   virtual double resource_regen_per_second( resource_e ) const;
 
-  double apply_combat_rating_dr( rating_e rating, double value ) const
-  {
-    switch ( rating )
-    {
-      case RATING_LEECH:
-      case RATING_SPEED:
-      case RATING_AVOIDANCE:
-        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_TERTIARY_CR_CURVE, value * 100.0 ) / 100.0;
-      case RATING_MASTERY:
-        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_SECONDARY_CR_CURVE, value );
-      case RATING_MITIGATION_VERSATILITY:
-        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_VERS_MITIG_CR_CURVE, value * 100.0 ) / 100.0;
-      default:
-        // Note, curve uses %-based values, not values divided by 100
-        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_SECONDARY_CR_CURVE, value * 100.0 ) / 100.0;
-    }
-  }
+  double apply_combat_rating_dr( rating_e rating, double value ) const;
 
   virtual double composite_melee_haste() const;
   virtual double composite_melee_speed() const;
@@ -1123,7 +1118,7 @@ public:
 
   virtual void analyze( sim_t& );
 
-  scaling_metric_data_t scaling_for_metric( scale_metric_e metric ) const;
+  scaling_metric_data_t scaling_for_metric( enum scale_metric_e metric ) const;
 
   virtual action_t* create_proc_action( util::string_view /* name */, const special_effect_t& /* effect */ )
   { return nullptr; }
@@ -1232,7 +1227,7 @@ public:
   spawner::base_actor_spawner_t* find_spawner( util::string_view id ) const;
   int nth_iteration() const;
 
-  friend void format_to( const player_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const player_t&, fmt::format_context::iterator );
 
   // Indicates whether the player uses PTR dbc data
   bool is_ptr() const;

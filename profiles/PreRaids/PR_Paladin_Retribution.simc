@@ -52,6 +52,9 @@ actions.cooldowns+=/use_item,name=skulkers_wing
 actions.cooldowns+=/use_item,name=grim_codex
 actions.cooldowns+=/use_item,name=memory_of_past_sins
 actions.cooldowns+=/use_item,name=spare_meat_hook
+actions.cooldowns+=/use_item,name=salvaged_fusion_amplifier
+actions.cooldowns+=/use_item,name=unchained_gladiators_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45
+actions.cooldowns+=/use_item,name=unchained_aspirants_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45
 actions.cooldowns+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45
 actions.cooldowns+=/use_item,name=sinful_aspirants_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45
 actions.cooldowns+=/avenging_wrath,if=(holy_power>=4&time<5|holy_power>=3&(time>5|runeforge.the_magistrates_judgment)|talent.holy_avenger.enabled&cooldown.holy_avenger.remains=0)&(!talent.seraphim.enabled|cooldown.seraphim.remains>0|talent.sanctified_wrath.enabled)

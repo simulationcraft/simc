@@ -8,6 +8,7 @@
 #include "dbc/dbc.hpp"
 #include "player/sc_player.hpp"
 #include "player/player_scaling.hpp"
+#include "player/scaling_metric_data.hpp"
 #include "player/stats.hpp"
 #include "report/reports.hpp"
 #include "util/util.hpp"

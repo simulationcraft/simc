@@ -9,7 +9,6 @@
 #include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
 #include "class_modules/apl/apl_hunter.hpp"
-#include "dbc/covenant_data.hpp"
 
 namespace
 { // UNNAMED NAMESPACE
@@ -44,12 +43,12 @@ static void print_affected_by( const action_t* a, const spelleffect_data_t& effe
   const spell_data_t& spell = *effect.spell();
   const auto& spell_text = a->player->dbc->spell_text( spell.id() );
 
-  fmt::format_to( out, "{} {} is affected by {}", *a->player, *a, spell.name_cstr() );
+  fmt::format_to( std::back_inserter(out), "{} {} is affected by {}", *a->player, *a, spell.name_cstr() );
   if ( spell_text.rank() )
-    fmt::format_to( out, " (desc={})", spell_text.rank() );
-  fmt::format_to( out, " (id={}) effect#{}", spell.id(), effect.spell_effect_num() + 1 );
+    fmt::format_to( std::back_inserter(out), " (desc={})", spell_text.rank() );
+  fmt::format_to( std::back_inserter(out), " (id={}) effect#{}", spell.id(), effect.spell_effect_num() + 1 );
   if ( !label.empty() )
-    fmt::format_to( out, ": {}", label );
+    fmt::format_to( std::back_inserter(out), ": {}", label );
 
   a -> sim -> print_debug( "{}", util::string_view( out.data(), out.size() ) );
 }
@@ -271,6 +270,7 @@ struct hunter_td_t: public actor_target_data_t
   struct debuffs_t
   {
     buff_t* latent_poison_injection;
+    buff_t* death_chakram;
   } debuffs;
 
   struct dots_t
@@ -580,7 +580,6 @@ public:
   struct {
     action_t* master_marksman = nullptr;
     action_t* wild_spirits = nullptr;
-    action_t* razor_fragments = nullptr;
     // Semi-random actions, needed *ONLY* for properly attributing focus gains
     action_t* aspect_of_the_wild = nullptr;
     action_t* barbed_shot = nullptr;
@@ -659,12 +658,14 @@ public:
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
+  double    composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
   double    composite_leech() const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    passive_movement_modifier() const override;
   void      invalidate_cache( cache_e ) override;
   void      regen( timespan_t periodicity ) override;
   double    resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
+  void      reset_auto_attacks( timespan_t delay, proc_t* proc ) override;
   void      create_options() override;
   std::unique_ptr<expr_t> create_expression( util::string_view expression_str ) override;
   std::unique_ptr<expr_t> create_action_expression( action_t&, util::string_view expression_str ) override;
@@ -1041,7 +1042,6 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 {
   bool breaks_steady_focus = true;
   maybe_bool triggers_master_marksman;
-  maybe_bool trigger_razor_fragments;
 
   hunter_ranged_attack_t( util::string_view n, hunter_t* p,
                           const spell_data_t* s = spell_data_t::nil() ):
@@ -1146,16 +1146,6 @@ struct hunter_pet_t: public pet_t
     pet_t::schedule_ready( delta_time, waiting );
   }
 
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = pet_t::composite_player_multiplier( school );
-
-    if ( o() -> mastery.master_of_beasts.ok() )
-      m *= 1 + owner -> cache.mastery_value();
-
-    return m;
-  }
-
   double composite_player_target_crit_chance( player_t* target ) const override
   {
     double crit = pet_t::composite_player_target_crit_chance( target );
@@ -1163,15 +1153,6 @@ struct hunter_pet_t: public pet_t
     crit += o()->buffs.resonating_arrow->check_value();
 
     return crit;
-  }
-
-  double composite_player_target_multiplier( player_t* target, school_e school ) const override
-  {
-    double m = pet_t::composite_player_target_multiplier( target, school );
-
-    m *= 1 + o() -> buffs.wild_spirits -> check_value();
-
-    return m;
   }
 
   void apply_affecting_auras( action_t& action ) override
@@ -1713,7 +1694,6 @@ struct spitting_cobra_t final : public hunter_pet_t
   {
     double m = owner -> composite_player_multiplier( school );
 
-    m *= 1 + owner -> cache.mastery_value();
     m *= 1 + active_damage_multiplier;
 
     return m;
@@ -1912,12 +1892,6 @@ struct kill_command_sv_t: public kill_command_base_t
 
     o() -> trigger_bloodseeker_update();
   }
-
-  // does not pandemic
-  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-  {
-    return dot -> time_to_next_tick() + triggered_duration;
-  }
 };
 
 // Beast Cleave ==============================================================
@@ -1936,6 +1910,9 @@ struct beast_cleave_attack_t: public hunter_pet_action_t<hunter_main_pet_base_t,
     base_dd_min = base_dd_max = 0;
     spell_power_mod.direct = attack_power_mod.direct = 0;
     weapon_multiplier = 0;
+    
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
   }
 
   void init() override
@@ -2443,315 +2420,6 @@ public:
 };
 
 // ==========================================================================
-// Covenant Abilities
-// ==========================================================================
-
-namespace death_chakram
-{
-/**
- * A whole namespace for a single spell...
- *
- * The spell consists of at least 3 spells:
- *   325028 - main spell, does all damage on multiple targets
- *   325037 - additional periodic damage done on single target
- *   325553 - energize (amount is in 325028)
- *
- * The behavior is different when it hits multiple or only a single target.
- *
- * Observations when it hits multiple targets:
- *   - only 325028 is in play
- *   - damage events after the initial travel time are not instant
- *   - all energizes happen on cast (7 total 325553 energize events)
- *   - the spell can "bounce" to dead targets
- *
- * Observations when there is a single target involved:
- *   - 325028 is only the initial hit
- *   - 325037 starts hitting ~850ms after the initial hit, doing 6 hits total
- *     every ~630ms [*]
- *   - only 1 325553 energize happens on cast, all others happen when 325037
- *     hit (sometimes with a slight desync)
- *
- * [*] period data for 325037 hitting the main target:
- *        Min    Max  Median    Avg  Stddev
- *       0.59  0.711   0.631  0.635  0.0242
- *
- * 2020.08.11 Additional tests performed by Ghosteld, Putro, Tirrill & Laquan:
- *   https://www.warcraftlogs.com/reports/F9ZKyQf7LWxD4vqJ
- * Observations:
- *   - aoe reach is 8 yards
- *   - bringing targets in / out of range does not affect the outcome (it will
- *     "hit" corpses if the target was alive on cast)
- *   - animation is completely decoupled from damage events (matters only for
- *     the multi-target case)
- *   - damage calculation is dynamic only for 325037 (single-target case), on
- *     multi-target the damage is snapshot on cast (like a regular aoe)
- *   - target list building has a bunch of range-related quirks
- *
- * Current theory is:
- * The spell builds the full target list on cast.
- * If there are at least 2 available targets it builds "some" path between them
- * to get 7 "bounces" total. After that it works almost exactly like a typical
- * aoe spell. The only quirk is that all 7 hits don't always happen at the same
- * time, but there is no sane pattern to the delays (there are 3 mostly discrete
- * delays though: 0, 100 & 200 ms).
- * If there is only 1 available target, it hits it as usual, once, and schedules
- * 6 hits of 325037.
- *
- * Somewhat simplified (in multi-target) modeling of the theory for now:
- *  - in single-target case - let the main spell hit as usual (once), then
- *    schedule 1 "secondary" hit after the initial delay which schedules
- *    another 5 repeating hits
- *  - in multi-target case - just model at as a simple "instant" chained aoe
- */
-
-static constexpr timespan_t ST_FIRST_HIT_DELAY = 850_ms;
-static constexpr timespan_t ST_HIT_DELAY = 630_ms;
-
-struct base_t : hunter_ranged_attack_t
-{
-  base_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
-    hunter_ranged_attack_t( n, p, s )
-  {
-    chain_multiplier = p -> covenants.death_chakram -> effectN( 1 ).chain_multiplier();
-
-    energize_type = action_energize::PER_HIT;
-    energize_resource = RESOURCE_FOCUS;
-    energize_amount = p -> covenants.death_chakram -> effectN( 4 ).base_value() +
-                      p -> conduits.necrotic_barrage -> effectN( 2 ).base_value();
-  }
-};
-
-struct single_target_t final : base_t
-{
-  int hit_number = 0;
-  int max_hit_number;
-
-  single_target_t( util::string_view n, hunter_t* p ):
-    base_t( n, p, p -> find_spell( 325037 ) ),
-    max_hit_number( p -> covenants.death_chakram -> effectN( 1 ).chain_target() )
-  {
-    dual = true;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = base_t::action_ta_multiplier();
-
-    am *= std::pow( chain_multiplier, hit_number );
-
-    return am;
-  }
-
-  void trigger( player_t* target_, int hit_number_ )
-  {
-    hit_number = hit_number_;
-    set_target( target_ );
-    execute();
-  }
-};
-
-struct single_target_event_t final : public event_t
-{
-  single_target_t& action;
-  player_t* target;
-  int hit_number;
-
-  single_target_event_t( single_target_t& action, player_t* target, timespan_t t, int n = 1 ) :
-    event_t( *action.player -> sim , t ), action( action ), target( target ), hit_number ( n )
-  { }
-
-  const char* name() const override
-  { return "Hunter-DeathChakram-SingleTarget"; }
-
-  void execute() override
-  {
-    if ( target -> is_sleeping() )
-      return;
-
-    action.trigger( target, hit_number );
-
-    hit_number += 1;
-    if ( hit_number == action.max_hit_number )
-      return;
-
-    make_event<single_target_event_t>( sim(), action, target, ST_HIT_DELAY, hit_number );
-  }
-};
-
-} // namespace death_chakram
-
-struct death_chakram_t : death_chakram::base_t
-{
-  death_chakram::single_target_t* single_target;
-
-  death_chakram_t( hunter_t* p, util::string_view options_str ):
-    death_chakram::base_t( "death_chakram", p, p -> covenants.death_chakram ),
-    single_target( p -> get_background_action<death_chakram::single_target_t>( "death_chakram_st" ) )
-  {
-    parse_options( options_str );
-
-    radius = 8; // Tested on 2020-08-11
-    aoe = data().effectN( 1 ).chain_target();
-  }
-
-  void init() override
-  {
-    base_t::init();
-
-    single_target -> gain  = gain;
-    single_target -> stats = stats;
-    stats -> action_list.push_back( single_target );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    using namespace death_chakram;
-
-    base_t::impact( s );
-
-    if ( s -> n_targets == 1 )
-    {
-      // Hit only a single target, schedule the repeating single target hitter
-      make_event<single_target_event_t>( *sim, *single_target, s -> target, ST_FIRST_HIT_DELAY );
-    }
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    size_t tl_size = base_t::available_targets( tl );
-
-    // If we have more than 1 target, simply repeat current targets until the
-    // target cap. This won't work with distance_targeting_enabled, the list
-    // would have to be rebuilt in check_distance_targeting() with range checks.
-    if ( tl_size > 1 && tl_size < as<size_t>( aoe ) )
-    {
-      tl.resize( as<size_t>( aoe ) );
-      do {
-        std::copy_n( tl.begin(), std::min( tl_size, tl.size() - tl_size ), tl.begin() + tl_size );
-        tl_size += tl_size;
-      } while ( tl_size < tl.size() );
-    }
-
-    return tl.size();
-  }
-};
-
-struct flayed_shot_t : hunter_ranged_attack_t
-{
-  flayed_shot_t( hunter_t* p, util::string_view options_str ):
-    hunter_ranged_attack_t( "flayed_shot", p, p -> covenants.flayed_shot )
-  {
-    parse_options( options_str );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    hunter_ranged_attack_t::tick( d );
-
-    if ( p() -> buffs.flayers_mark -> trigger() )
-    {
-      p() -> cooldowns.kill_shot -> reset( true );
-      p() -> buffs.empowered_release -> trigger();
-    }
-  }
-};
-
-struct resonating_arrow_t : hunter_spell_t
-{
-  struct damage_t final : hunter_spell_t
-  {
-    damage_t( util::string_view n, hunter_t* p ):
-      hunter_spell_t( n, p, p -> covenants.resonating_arrow -> effectN( 1 ).trigger() )
-    {
-      dual = true;
-      aoe = -1;
-      triggers_master_marksman = false;
-    }
-
-    void execute() override
-    {
-      hunter_spell_t::execute();
-
-      p()->buffs.resonating_arrow->trigger();
-      if ( p()->legendary.pact_of_the_soulstalkers.ok() )
-      {
-        p()->buffs.pact_of_the_soulstalkers->trigger();
-      }
-
-    }
-  };
-
-  resonating_arrow_t( hunter_t* p, util::string_view options_str ):
-    hunter_spell_t( "resonating_arrow", p, p -> covenants.resonating_arrow )
-  {
-    parse_options( options_str );
-
-    impact_action = p -> get_background_action<damage_t>( "resonating_arrow_damage" );
-    impact_action -> stats = stats;
-    stats -> action_list.push_back( impact_action );
-  }
-
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( data().missile_speed() );
-  }
-};
-
-struct wild_spirits_t : hunter_spell_t
-{
-  struct damage_t final : hunter_spell_t
-  {
-    damage_t( util::string_view n, hunter_t* p ):
-      hunter_spell_t( n, p, p -> covenants.wild_spirits -> effectN( 1 ).trigger() )
-    {
-      dual = true;
-      aoe = -1;
-      triggers_wild_spirits = false;
-      triggers_master_marksman = false;
-    }
-
-    void execute() override
-    {
-      hunter_spell_t::execute();
-
-      p() -> buffs.wild_spirits -> trigger();
-    }
-  };
-
-  struct proc_t final : hunter_spell_t
-  {
-    proc_t( util::string_view n, hunter_t* p ):
-      hunter_spell_t( n, p, p -> find_spell( 328757 ) )
-    {
-      proc = true;
-      callbacks = false;
-      triggers_master_marksman = false;
-
-      // 2020-12-07 hotfix:
-      //     Damage of Wild Spirits has been increased by 25% for Marksmanship Hunters.
-      // A random multiplier out of nowhere not present in the spell data
-      if ( p -> specialization() == HUNTER_MARKSMANSHIP )
-        base_multiplier *= 1.25;
-    }
-  };
-
-  wild_spirits_t( hunter_t* p, util::string_view options_str ):
-    hunter_spell_t( "wild_spirits", p, p -> covenants.wild_spirits )
-  {
-    parse_options( options_str );
-
-    triggers_wild_spirits = false;
-
-    impact_action = p -> get_background_action<damage_t>( "wild_spirits_damage" );
-    impact_action -> stats = stats;
-    stats -> action_list.push_back( impact_action );
-
-    p -> actions.wild_spirits = p -> get_background_action<proc_t>( "wild_spirits_proc" );
-    add_child( p -> actions.wild_spirits );
-  }
-};
-
-// ==========================================================================
 // Hunter Attacks
 // ==========================================================================
 
@@ -2818,6 +2486,9 @@ struct barrage_t: public hunter_spell_t
     {
       radius = 0; //Barrage attacks all targets in front of the hunter, so setting radius to 0 will prevent distance targeting from using a 40 yard radius around the target.
       // Todo: Add in support to only hit targets in the frontal cone.
+
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 1 ).base_value();
     }
 
     void impact( action_state_t* s ) override
@@ -2860,6 +2531,9 @@ struct multi_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "multishot", p, p -> find_class_spell( "Multi-Shot" ) )
   {
     parse_options( options_str );
+
+    aoe = -1;
+    reduced_aoe_targets = p->find_spell( 2643 )->effectN( 1 ).base_value();
   }
 
   void execute() override
@@ -2884,13 +2558,37 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
 struct kill_shot_t : hunter_ranged_attack_t
 {
+  struct razor_fragments_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
+  {
+    razor_fragments_t( util::string_view n, hunter_t* p )
+      : residual_periodic_action_t( n, p, p->find_spell( 356620 ) )
+    {
+    }
+
+    void init() override
+    {
+      residual_periodic_action_t::init();
+
+      snapshot_flags |= STATE_TGT_MUL_TA;
+      update_flags |= STATE_TGT_MUL_TA;
+    }
+  };
+
+  bool trigger_razor_fragments = false;
   double health_threshold_pct;
+  razor_fragments_t* bleed = nullptr;
 
   kill_shot_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "kill_shot", p, p -> specs.kill_shot ),
     health_threshold_pct( p -> specs.kill_shot -> effectN( 2 ).base_value() )
   {
     parse_options( options_str );
+
+    if ( p->legendary.pouch_of_razor_fragments.ok() )
+    {
+      bleed = p->get_background_action<razor_fragments_t>( "pouch_of_razor_fragments" );
+      add_child( bleed );
+    }
   }
 
   void execute() override
@@ -2912,13 +2610,18 @@ struct kill_shot_t : hunter_ranged_attack_t
   void impact( action_state_t* s ) override
   {
     hunter_ranged_attack_t::impact( s );
-    if ( trigger_razor_fragments )
+
+    if ( trigger_razor_fragments && bleed )
     {
-      double amount = s->result_amount * p()->legendary.pouch_of_razor_fragments->effectN( 1 ).percent(); // TODO: Implement AoE
+      double amount = s->result_amount * p()->legendary.pouch_of_razor_fragments->effectN( 1 ).percent();
       if ( amount > 0 )
       {
-        residual_action::trigger( p()->actions.razor_fragments, s->target, amount );
-        sim->print_debug( "Razor Fragments applied DOT for {} total damage ", amount );
+        std::vector<player_t*>& tl = target_list();
+        const int max_targets = as<int>( tl.size() );
+        int num_targets = std::min( max_targets, bleed->aoe );
+
+        for ( int t = 0; t < num_targets; t++ )
+          residual_action::trigger( bleed, tl[t], amount );
       }
     }
 
@@ -3043,6 +2746,407 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
 
     result_e calculate_result( action_state_t* ) const override { return RESULT_NONE; }
     double calculate_direct_amount( action_state_t* ) const override { return 0.0; }
+};
+
+// Explosive Shot  ====================================================================
+
+struct explosive_shot_t : public hunter_ranged_attack_t
+{
+  struct damage_t final : hunter_ranged_attack_t
+  {
+    damage_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->find_spell( 212680 ) )
+    {
+      background = true;
+      dual       = true;
+    }
+  };
+
+  explosive_shot_t( hunter_t* p, util::string_view options_str )
+    : hunter_ranged_attack_t( "explosive_shot", p, p->find_spell( 212431 ) )
+  {
+    parse_options( options_str );
+
+    if ( !p->talents.explosive_shot->ok() )
+      background = true;
+
+    may_miss = may_crit   = false;
+    triggers_wild_spirits = false;
+
+    tick_action = p->get_background_action<damage_t>( "explosive_shot_aoe" );
+
+    tick_action->aoe                 = -1;
+    tick_action->reduced_aoe_targets = data().effectN( 2 ).base_value();
+  }
+
+  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  {
+    return dot->time_to_next_tick() + triggered_duration;
+  }
+};
+
+// ==========================================================================
+// Covenant Abilities
+// ==========================================================================
+
+namespace death_chakram
+{
+/**
+ * A whole namespace for a single spell...
+ *
+ * The spell consists of at least 3 spells:
+ *   325028 - main spell, does all damage on multiple targets
+ *   361756 - values the main spell tooltip points to
+ *   325037 - additional periodic damage done on single target
+ *   325553 - energize (amount is in 325028)
+ *
+ * The behavior is different when it hits multiple or only a single target.
+ *
+ * Observations when it hits multiple targets:
+ *   - only 325028 is in play
+ *   - damage events after the initial travel time are not instant
+ *   - all energizes happen on cast (7 total 325553 energize events)
+ *   - the spell can "bounce" to dead targets
+ *
+ * Observations when there is a single target involved:
+ *   - 325028 is only the initial hit
+ *   - 325037 starts hitting ~850ms after the initial hit, doing 6 hits total
+ *     every ~630ms [*]
+ *   - only 1 325553 energize happens on cast, all others happen when 325037
+ *     hit (sometimes with a slight desync)
+ *
+ * [*] period data for 325037 hitting the main target:
+ *        Min    Max  Median    Avg  Stddev
+ *       0.59  0.711   0.631  0.635  0.0242
+ *
+ * 2020.08.11 Additional tests performed by Ghosteld, Putro, Tirrill & Laquan:
+ *   https://www.warcraftlogs.com/reports/F9ZKyQf7LWxD4vqJ
+ * Observations:
+ *   - aoe reach is 8 yards
+ *   - bringing targets in / out of range does not affect the outcome (it will
+ *     "hit" corpses if the target was alive on cast)
+ *   - animation is completely decoupled from damage events (matters only for
+ *     the multi-target case)
+ *   - damage calculation is dynamic only for 325037 (single-target case), on
+ *     multi-target the damage is snapshot on cast (like a regular aoe)
+ *   - target list building has a bunch of range-related quirks
+ *
+ * Current theory is:
+ * The spell builds the full target list on cast.
+ * If there are at least 2 available targets it builds "some" path between them
+ * to get 7 "bounces" total. After that it works almost exactly like a typical
+ * aoe spell. The only quirk is that all 7 hits don't always happen at the same
+ * time, but there is no sane pattern to the delays (there are 3 mostly discrete
+ * delays though: 0, 100 & 200 ms).
+ * If there is only 1 available target, it hits it as usual, once, and schedules
+ * 6 hits of 325037.
+ *
+ * Somewhat simplified (in multi-target) modeling of the theory for now:
+ *  - in single-target case - let the main spell hit as usual (once), then
+ *    schedule 1 "secondary" hit after the initial delay which schedules
+ *    another 5 repeating hits
+ *  - in multi-target case - just model at as a simple "instant" chained aoe
+ */
+
+static constexpr timespan_t ST_FIRST_HIT_DELAY = 850_ms;
+static constexpr timespan_t ST_HIT_DELAY = 630_ms;
+
+struct base_t : hunter_ranged_attack_t
+{
+  base_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
+    hunter_ranged_attack_t( n, p, s )
+  {
+    chain_multiplier = p -> covenants.death_chakram -> effectN( 1 ).chain_multiplier();
+
+    energize_type = action_energize::PER_HIT;
+    energize_resource = RESOURCE_FOCUS;
+    energize_amount = p -> covenants.death_chakram -> effectN( 4 ).base_value() +
+                      p -> conduits.necrotic_barrage -> effectN( 2 ).base_value();
+  }
+};
+
+struct single_target_t final : base_t
+{
+  int hit_number = 0;
+  int max_hit_number;
+
+  single_target_t( util::string_view n, hunter_t* p ):
+    base_t( n, p, p -> find_spell( 325037 ) ),
+    max_hit_number( p -> covenants.death_chakram -> effectN( 1 ).chain_target() )
+  {
+    dual = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = base_t::action_ta_multiplier();
+
+    am *= std::pow( chain_multiplier, hit_number );
+
+    return am;
+  }
+
+  void trigger( player_t* target_, int hit_number_ )
+  {
+    hit_number = hit_number_;
+    set_target( target_ );
+    execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    base_t::impact( s );
+
+    // Each bounce refreshes the debuff
+    td( s->target )->debuffs.death_chakram->trigger();
+  }
+};
+
+struct single_target_event_t final : public event_t
+{
+  single_target_t& action;
+  player_t* target;
+  int hit_number;
+
+  single_target_event_t( single_target_t& action, player_t* target, timespan_t t, int n = 1 ) :
+    event_t( *action.player -> sim , t ), action( action ), target( target ), hit_number ( n )
+  { }
+
+  const char* name() const override
+  { return "Hunter-DeathChakram-SingleTarget"; }
+
+  void execute() override
+  {
+    if ( target -> is_sleeping() )
+      return;
+
+    action.trigger( target, hit_number );
+
+    hit_number += 1;
+    if ( hit_number == action.max_hit_number )
+      return;
+
+    make_event<single_target_event_t>( sim(), action, target, ST_HIT_DELAY, hit_number );
+  }
+};
+
+struct explosive_shot_munitions_t : explosive_shot_t
+{
+  explosive_shot_munitions_t( util::string_view n, hunter_t* p ) : explosive_shot_t( p, "" )
+  { 
+    background = dual = true;
+  }
+
+  timespan_t travel_time() const override
+  {
+    return 0_s;
+  }
+
+  double cost() const override
+  {
+    return 0.0;
+  }
+};
+
+} // namespace death_chakram
+
+struct death_chakram_t : death_chakram::base_t
+{
+  death_chakram::single_target_t* single_target;
+  death_chakram::explosive_shot_munitions_t* explosive = nullptr;
+
+  death_chakram_t( hunter_t* p, util::string_view options_str ):
+    death_chakram::base_t( "death_chakram", p, p -> covenants.death_chakram ),
+    single_target( p -> get_background_action<death_chakram::single_target_t>( "death_chakram_st" ) )
+  {
+    parse_options( options_str );
+
+    radius = 8; // Tested on 2020-08-11
+    aoe = data().effectN( 1 ).chain_target();
+
+    may_crit = single_target->may_crit;
+    base_dd_min = single_target->base_dd_min;
+    base_dd_max = single_target->base_dd_max;
+    attack_power_mod.direct = single_target->attack_power_mod.direct;
+    school = single_target->school;
+
+    if ( p -> legendary.bag_of_munitions.ok() )
+      explosive = p->get_background_action<death_chakram::explosive_shot_munitions_t>( "explosive_shot_munitions" );
+  }
+
+  void init() override
+  {
+    base_t::init();
+
+    single_target -> gain  = gain;
+    single_target -> stats = stats;
+    stats -> action_list.push_back( single_target );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    using namespace death_chakram;
+
+    base_t::impact( s );
+
+    if ( s -> n_targets == 1 )
+    {
+      // Hit only a single target, schedule the repeating single target hitter
+      make_event<single_target_event_t>( *sim, *single_target, s -> target, ST_FIRST_HIT_DELAY );
+    }
+
+    if ( p()->legendary.bag_of_munitions.ok() && s->chain_target < p()->legendary.bag_of_munitions->effectN( 1 ).base_value() )
+    {
+      explosive->set_target( s->target );
+      explosive->execute();
+    }
+
+    td( s->target )->debuffs.death_chakram->trigger();
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    size_t tl_size = base_t::available_targets( tl );
+
+    // If we have more than 1 target, simply repeat current targets until the
+    // target cap. This won't work with distance_targeting_enabled, the list
+    // would have to be rebuilt in check_distance_targeting() with range checks.
+    if ( tl_size > 1 && tl_size < as<size_t>( aoe ) )
+    {
+      tl.resize( as<size_t>( aoe ) );
+      do {
+        std::copy_n( tl.begin(), std::min( tl_size, tl.size() - tl_size ), tl.begin() + tl_size );
+        tl_size += tl_size;
+      } while ( tl_size < tl.size() );
+    }
+
+    return tl.size();
+  }
+};
+
+struct flayed_shot_t : hunter_ranged_attack_t
+{
+  flayed_shot_t( hunter_t* p, util::string_view options_str ):
+    hunter_ranged_attack_t( "flayed_shot", p, p -> covenants.flayed_shot )
+  {
+    parse_options( options_str );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    if ( p()->buffs.flayers_mark->trigger() )
+    {
+      p()->cooldowns.kill_shot->reset( true );
+      p()->buffs.empowered_release->trigger();
+    }
+  }
+
+  void tick( dot_t* d ) override
+  {
+    hunter_ranged_attack_t::tick( d );
+
+    if ( p() -> buffs.flayers_mark -> trigger() )
+    {
+      p() -> cooldowns.kill_shot -> reset( true );
+      p() -> buffs.empowered_release -> trigger();
+    }
+  }
+};
+
+struct resonating_arrow_t : hunter_spell_t
+{
+  struct damage_t final : hunter_spell_t
+  {
+    damage_t( util::string_view n, hunter_t* p ):
+      hunter_spell_t( n, p, p -> covenants.resonating_arrow -> effectN( 1 ).trigger() )
+    {
+      dual = true;
+      aoe = -1;
+      triggers_master_marksman = false;
+    }
+
+    void execute() override
+    {
+      hunter_spell_t::execute();
+
+      p()->buffs.resonating_arrow->trigger();
+      if ( p()->legendary.pact_of_the_soulstalkers.ok() )
+      {
+        p()->buffs.pact_of_the_soulstalkers->trigger();
+      }
+
+    }
+  };
+
+  resonating_arrow_t( hunter_t* p, util::string_view options_str ):
+    hunter_spell_t( "resonating_arrow", p, p -> covenants.resonating_arrow )
+  {
+    parse_options( options_str );
+
+    impact_action = p -> get_background_action<damage_t>( "resonating_arrow_damage" );
+    impact_action -> stats = stats;
+    stats -> action_list.push_back( impact_action );
+  }
+
+  timespan_t travel_time() const override
+  {
+    return timespan_t::from_seconds( data().missile_speed() );
+  }
+};
+
+struct wild_spirits_t : hunter_spell_t
+{
+  struct damage_t final : hunter_spell_t
+  {
+    damage_t( util::string_view n, hunter_t* p ):
+      hunter_spell_t( n, p, p -> covenants.wild_spirits -> effectN( 1 ).trigger() )
+    {
+      dual = true;
+      aoe = -1;
+      triggers_wild_spirits = false;
+      triggers_master_marksman = false;
+    }
+
+    void execute() override
+    {
+      hunter_spell_t::execute();
+
+      p() -> buffs.wild_spirits -> trigger();
+    }
+  };
+
+  struct proc_t final : hunter_spell_t
+  {
+    proc_t( util::string_view n, hunter_t* p ):
+      hunter_spell_t( n, p, p -> find_spell( 328757 ) )
+    {
+      proc = true;
+      callbacks = false;
+      triggers_master_marksman = false;
+
+      // 2020-12-07 hotfix:
+      //     Damage of Wild Spirits has been increased by 25% for Marksmanship Hunters.
+      // A random multiplier out of nowhere not present in the spell data
+      if ( p -> specialization() == HUNTER_MARKSMANSHIP )
+        base_multiplier *= 1.25;
+    }
+  };
+
+  wild_spirits_t( hunter_t* p, util::string_view options_str ):
+    hunter_spell_t( "wild_spirits", p, p -> covenants.wild_spirits )
+  {
+    parse_options( options_str );
+
+    triggers_wild_spirits = false;
+
+    impact_action = p -> get_background_action<damage_t>( "wild_spirits_damage" );
+    impact_action -> stats = stats;
+    stats -> action_list.push_back( impact_action );
+
+    p -> actions.wild_spirits = p -> get_background_action<proc_t>( "wild_spirits_proc" );
+    add_child( p -> actions.wild_spirits );
+  }
 };
 
 //==============================
@@ -3183,12 +3287,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
       pet -> buffs.frenzy -> trigger();
     }
-  }
-
-  // does not pandemic
-  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-  {
-    return dot -> time_to_next_tick() + triggered_duration;
   }
 };
 
@@ -3801,32 +3899,6 @@ struct rapid_fire_t: public hunter_spell_t
   }
 };
 
-// Explosive Shot  ====================================================================
-
-struct explosive_shot_t: public hunter_ranged_attack_t
-{
-  struct damage_t final : hunter_ranged_attack_t
-  {
-    damage_t( util::string_view n, hunter_t* p ):
-      hunter_ranged_attack_t( n, p, p -> find_spell( 212680 ) )
-    {
-      background = true;
-      dual = true;
-    }
-  };
-
-  explosive_shot_t( hunter_t* p, util::string_view options_str ):
-    hunter_ranged_attack_t( "explosive_shot", p, p -> talents.explosive_shot )
-  {
-    parse_options( options_str );
-
-    may_miss = may_crit = false;
-    triggers_wild_spirits = false;
-
-    tick_action = p -> get_background_action<damage_t>( "explosive_shot_aoe" );
-  }
-};
-
 // Serpent Sting (Marksmanship) ==============================================
 
 struct serpent_sting_mm_t: public hunter_ranged_attack_t
@@ -4108,6 +4180,7 @@ struct flanking_strike_t: hunter_melee_attack_t
 struct carve_base_t: public hunter_melee_attack_t
 {
   timespan_t wildfire_bomb_reduction;
+  timespan_t wildfire_bomb_reduction_cap;
   internal_bleeding_t internal_bleeding;
 
   carve_base_t( util::string_view n, hunter_t* p, const spell_data_t* s,
@@ -4122,7 +4195,7 @@ struct carve_base_t: public hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    const auto reduction = wildfire_bomb_reduction * num_targets_hit;
+    timespan_t reduction = std::min( wildfire_bomb_reduction * num_targets_hit, wildfire_bomb_reduction_cap );
     p() -> cooldowns.wildfire_bomb -> adjust( -reduction, true );
 
     p() -> buffs.butchers_bone_fragments -> up(); // benefit tracking
@@ -4161,6 +4234,11 @@ struct carve_t: public carve_base_t
 
     if ( p -> talents.butchery.ok() )
       background = true;
+
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 3 ).base_value();
+
+    wildfire_bomb_reduction_cap = timespan_t::from_seconds( data().effectN( 3 ).base_value() );
   }
 };
 
@@ -4173,6 +4251,11 @@ struct butchery_t: public carve_base_t
                   p -> talents.butchery -> effectN( 2 ).time_value() )
   {
     parse_options( options_str );
+
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 3 ).base_value();
+
+    wildfire_bomb_reduction_cap = timespan_t::from_seconds( data().effectN( 3 ).base_value() );
   }
 };
 
@@ -4404,25 +4487,6 @@ struct chakrams_t : public hunter_ranged_attack_t
     damage -> set_target( target );
     damage -> execute();
     damage -> execute(); // to simulate the 'return' & hitting the main target twice
-  }
-};
-
-struct razor_fragments_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
-{
-  razor_fragments_t( hunter_t* p ) : residual_periodic_action_t( "razor_fragments", p, p->find_spell( 356620 ) )
-  {
-    aoe    = as<int>(p -> find_spell(356620) -> max_targets());
-    radius = 8; // TODO: Test Radius
-    triggers_wild_spirits = false;
-    may_miss = may_crit = false;
-  }
-
-  void init() override
-  {
-    residual_periodic_action_t::init();
-
-    snapshot_flags |= STATE_TGT_MUL_TA;
-    update_flags |= STATE_TGT_MUL_TA;
   }
 };
 
@@ -4672,9 +4736,21 @@ struct flare_t : hunter_spell_t
     soulforge_embers_t( util::string_view n, hunter_t* p )
       : hunter_spell_t( n, p, p -> find_spell( 336746 ) )
     {
-      aoe = as<int>( p -> legendary.soulforge_embers -> effectN( 1 ).base_value() );
+      aoe = -1;
+      reduced_aoe_targets = p->legendary.soulforge_embers->effectN( 1 ).base_value();
+
       radius = p -> find_class_spell( "Tar Trap" ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
       triggers_wild_spirits = false;
+    }
+
+    double calculate_tick_amount( action_state_t* state, double mult ) const override
+    {
+      if ( as<double>( state->n_targets ) > state->action->reduced_aoe_targets )
+      {
+        mult *= std::sqrt( reduced_aoe_targets / state->n_targets );
+      }
+
+      return hunter_spell_t::calculate_tick_amount( state, mult );
     }
   };
 
@@ -5046,7 +5122,6 @@ struct trueshot_t: public hunter_spell_t
 {
   timespan_t precast_time = 0_ms;
   bool precast_etf_equip = false;
-  unsigned precast_ssf_rank = 0;
   timespan_t precast_duration = 0_ms;
 
   trueshot_t( hunter_t* p, util::string_view options_str ):
@@ -5054,7 +5129,6 @@ struct trueshot_t: public hunter_spell_t
   {
     add_option( opt_timespan( "precast_time", precast_time ) );
     add_option( opt_bool( "precast_etf_equip", precast_etf_equip ) );
-    add_option( opt_uint( "precast_ssf_rank", precast_ssf_rank, 0, 15 ) );
     parse_options( options_str );
 
     harmful = false;
@@ -5066,9 +5140,6 @@ struct trueshot_t: public hunter_spell_t
 
     if ( !p->legendary.eagletalons_true_focus->ok() && precast_etf_equip )
       base += p->find_spell( 336849 )->effectN( 2 ).time_value();
-
-    if ( !p->conduits.sharpshooters_focus->ok() && precast_ssf_rank > 0 )
-      mod *= ( 1 + conduit_rank_entry_t::find( 188, precast_ssf_rank - 1U, player->dbc->ptr ).value / 100.0 );
 
     precast_duration = base * mod;
     sim->print_debug( "{} precast Trueshot will be {} seconds", *p, precast_duration );
@@ -5177,6 +5248,8 @@ struct volley_t : hunter_spell_t
         .pulse_time( data().effectN( 2 ).period() )
         .action( damage )
       );
+
+    p() -> player_t::reset_auto_attacks( data().duration(), player->procs.reset_aa_channel );
   }
 };
 
@@ -5251,12 +5324,6 @@ struct wildfire_bomb_t: public hunter_spell_t
       {
         dual = true;
         triggers_wild_spirits = false;
-      }
-
-      // does not pandemic
-      timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-      {
-        return dot -> time_to_next_tick() + triggered_duration;
       }
     };
     dot_action_t* dot_action;
@@ -5519,6 +5586,10 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   debuffs.latent_poison_injection =
     make_buff( *this, "latent_poison_injection", p -> legendary.latent_poison_injectors -> effectN( 1 ).trigger() )
       -> set_trigger_spell( p -> legendary.latent_poison_injectors );
+
+  debuffs.death_chakram = make_buff( *this, "death_chakram", p->find_spell( 325037 ) )
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
+    ->set_cooldown( 0_s );
 
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
@@ -5955,8 +6026,6 @@ void hunter_t::create_actions()
 
   if ( talents.master_marksman.ok() )
     actions.master_marksman = new attacks::master_marksman_t( this );
-  if ( legendary.pouch_of_razor_fragments.ok() )
-    actions.razor_fragments = new attacks::razor_fragments_t( this );
 }
 
 void hunter_t::create_buffs()
@@ -6494,6 +6563,12 @@ double hunter_t::composite_player_target_multiplier( player_t* target, school_e 
   if ( conduits.enfeebled_mark.ok() && buffs.resonating_arrow -> check() )
     d *= 1 + conduits.enfeebled_mark.percent();
 
+  auto td = get_target_data( target );
+  if ( td->debuffs.death_chakram->has_common_school( school ) )
+  {
+    d *= 1 + td->debuffs.death_chakram->value();
+  }
+
   return d;
 }
 
@@ -6503,6 +6578,9 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
+  if ( mastery.master_of_beasts->ok() )
+    m *= 1.0 + cache.mastery_value();
+
   m *= 1 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
   m *= 1 + specs.survival_hunter -> effectN( 3 ).percent();
   m *= 1 + specs.marksmanship_hunter -> effectN( 3 ).percent();
@@ -6510,6 +6588,19 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1 + talents.animal_companion -> effectN( 2 ).percent();
 
   m *= 1 + buffs.strength_of_the_pack -> check_value();
+
+  return m;
+}
+
+// hunter_t::composite_player_target_pet_damage_multiplier ======================
+
+double hunter_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
+{
+  double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
+
+  m *= 1 + buffs.wild_spirits->check_value();
+
+  m *= 1 + get_target_data( target )->debuffs.death_chakram->value();
 
   return m;
 }
@@ -6615,6 +6706,15 @@ double hunter_t::resource_gain( resource_e type, double amount, gain_t* g, actio
   }
 
   return actual_amount;
+}
+
+void hunter_t::reset_auto_attacks( timespan_t delay, proc_t* proc )
+{
+  // Keep auto shot suppressed while volley is "channeled"
+  if ( !buffs.volley->check() || delay > buffs.volley->remains() )
+  {
+    player_t::reset_auto_attacks( delay, proc );
+  }
 }
 
 // hunter_t::matching_gear_multiplier =======================================

@@ -15,7 +15,7 @@ class SC_ComboBoxIntegerValidator : public QValidator
   int upperBoundInclusive;
   int lowerBoundDigitCount;
   int upperBoundDigitCount;
-  QRegExp nonIntegerRegExp;
+  QRegularExpression nonIntegerRegExp;
   QComboBox* comboBox;
 
 public:

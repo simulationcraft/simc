@@ -776,7 +776,7 @@ void dot_t::schedule_tick()
 
   if ( current_action->channeled )
   {
-    if ( current_action->cancel_if_expr && current_action->cancel_if_expr->success() )
+    if ( current_tick > 0 && current_action->cancel_if_expr && current_action->cancel_if_expr->success() )
     {
       if ( sim.debug )
       {
@@ -1078,7 +1078,7 @@ void dot_t::dot_end_event_t::execute()
   dot->last_tick();
 }
 
-void format_to( const dot_t& dot, fmt::format_context::iterator out )
+void sc_format_to( const dot_t& dot, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "Dot {}", dot.name_str );
 }

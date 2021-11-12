@@ -21,6 +21,7 @@
 #include "dbc/active_spells.hpp"
 #include "dbc/azerite.hpp"
 #include "dbc/dbc.hpp"
+#include "dbc/item_database.hpp"
 #include "dbc/item_set_bonus.hpp"
 #include "dbc/rank_spells.hpp"
 #include "dbc/specialization_spell.hpp"
@@ -39,6 +40,7 @@
 #include "player/player_event.hpp"
 #include "player/player_scaling.hpp"
 #include "player/sample_data_helper.hpp"
+#include "player/scaling_metric_data.hpp"
 #include "player/set_bonus.hpp"
 #include "player/soulbinds.hpp"
 #include "player/spawner_base.hpp"
@@ -57,6 +59,7 @@
 #include "sim/shuffled_rng.hpp"
 #include "sim/cooldown_waste_data.hpp"
 #include "util/io.hpp"
+#include "util/plot_data.hpp"
 #include "util/rng.hpp"
 #include "util/util.hpp"
 
@@ -873,7 +876,7 @@ bool parse_source( sim_t* sim, util::string_view, util::string_view value )
 
 bool parse_set_bonus( sim_t* sim, util::string_view, util::string_view value )
 {
-  static const char* error_str = "{} invalid 'set_bonus' option value '{}' given, available options: {}";
+  static constexpr const char* error_str = "{} invalid 'set_bonus' option value '{}' given, available options: {}";
 
   player_t* p = sim->active_player;
 
@@ -1179,6 +1182,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     matching_gear( false ),
     karazhan_trinkets_paired( false ),
     item_cooldown( new cooldown_t("item_cd", *this) ),
+    default_item_group_cooldown( 20_s ),
     legendary_tank_cloak_cd( nullptr ),
     warlords_unseeing_eye( 0.0 ),
     warlords_unseeing_eye_stats(),
@@ -1348,7 +1352,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   range::fill( attribute_multiplier, 1.0 );
 }
 
-void format_to( const player_t::base_initial_current_t& s, fmt::format_context::iterator out )
+void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "{}", s.stats );
   fmt::format_to( out, " spell_power_per_intellect={}", s.spell_power_per_intellect );
@@ -2032,6 +2036,10 @@ void player_t::init_special_effects()
   {
     elem->initialize();
   }
+}
+
+void player_t::init_special_effect( special_effect_t& /* effect */ )
+{
 }
 
 namespace
@@ -3363,6 +3371,24 @@ double player_t::resource_regen_per_second( resource_e r ) const
   return reg;
 }
 
+double player_t::apply_combat_rating_dr( rating_e rating, double value ) const
+{
+  switch ( rating )
+  {
+    case RATING_LEECH:
+    case RATING_SPEED:
+    case RATING_AVOIDANCE:
+      return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_TERTIARY_CR_CURVE, value * 100.0 ) / 100.0;
+    case RATING_MASTERY:
+      return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_SECONDARY_CR_CURVE, value );
+    case RATING_MITIGATION_VERSATILITY:
+      return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_VERS_MITIG_CR_CURVE, value * 100.0 ) / 100.0;
+    default:
+      // Note, curve uses %-based values, not values divided by 100
+      return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_SECONDARY_CR_CURVE, value * 100.0 ) / 100.0;
+  }
+}
+
 double player_t::composite_melee_haste() const
 {
   double h;
@@ -3962,6 +3988,9 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t*, 
 
   m *= 1.0 + racials.command->effectN( 1 ).percent();
 
+  if ( buffs.coldhearted && buffs.coldhearted->check() )
+    m *= 1.0 + buffs.coldhearted->check_value();
+
   // By default effect 1 is used for the player modifier, effect 2 is for the pet modifier
   if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
     m *=
@@ -4039,7 +4068,15 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     double health_threshold = 100.0 - ( 100.0 - buffs.wild_hunt_tactics->data().effectN( 5 ).base_value() ) * sim->shadowlands_opts.wild_hunt_tactics_duration_multiplier;
     // This buff is never triggered so use default_value.
     if ( target->health_percentage() > health_threshold )
+    {
+      // WHS is triggered when you cast something that gets the damage benefit from WHT
+      if ( buffs.wild_hunt_strategem_tracking )
+      {
+        buffs.wild_hunt_strategem_tracking->trigger();
+      }
+
       m *= 1.0 + buffs.wild_hunt_tactics->default_value;
+    }
   }
 
   auto td = find_target_data( target );
@@ -4054,6 +4091,7 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     m *= 1.0 + td->debuff.scouring_touch->check_stack_value();
     m *= 1.0 + td->debuff.exsanguinated->check_value();
     m *= 1.0 + td->debuff.kevins_wrath->check_value();
+    m *= 1.0 + td->debuff.wild_hunt_strategem->check_value();
   }
 
   return m;
@@ -4668,6 +4706,18 @@ void player_t::combat_begin()
   add_timed_buff_triggers( external_buffs.conquerors_banner, buffs.conquerors_banner );
   add_timed_buff_triggers( external_buffs.rallying_cry, buffs.rallying_cry );
   add_timed_buff_triggers( external_buffs.pact_of_the_soulstalkers, buffs.pact_of_the_soulstalkers );
+
+  if ( buffs.kindred_affinity && !external_buffs.kindred_affinity.empty() )
+  {
+    // this is a persistent buff with no proc chance, so trigger() will return false
+    buffs.kindred_affinity->increment();
+
+    for ( auto t : external_buffs.kindred_affinity )
+    {
+      make_event( *sim, t, [ this ] { buffs.kindred_affinity->increment(); } );
+      make_event( *sim, t + 10_s, [ this ] { buffs.kindred_affinity->decrement(); } );
+    }
+  }
 
   if ( buffs.windfury_totem )
   {
@@ -6000,6 +6050,9 @@ bool player_t::resource_available( resource_e resource_type, double cost ) const
 
 void player_t::recalculate_resource_max( resource_e resource_type, gain_t* source )
 {
+  double old_amount = resources.current[ resource_type ];
+  double old_max    = resources.max[ resource_type ];
+
   resources.max[ resource_type ] = resources.base[ resource_type ];
   resources.max[ resource_type ] *= resources.base_multiplier[ resource_type ];
   resources.max[ resource_type ] += total_gear.resource[ resource_type ];
@@ -6030,6 +6083,10 @@ void player_t::recalculate_resource_max( resource_e resource_type, gain_t* sourc
     source->add( resource_type, 0, resources.current[ resource_type ] - resources.max[ resource_type ] );
   }
   resources.current[ resource_type ] = std::min( resources.current[ resource_type ], resources.max[ resource_type ] );
+
+  sim->print_debug( "Recalculated maximum {} for {}: old={:.2f}/{:.2f}, new={:.2f}/{:.2f}",
+                    util::resource_type_string( resource_type ), name(), old_amount, old_max,
+                    resources.current[ resource_type ], resources.max[ resource_type ] );
 }
 
 role_e player_t::primary_role() const
@@ -7450,16 +7507,8 @@ struct arcane_torrent_t : public racial_spell_t
       case MONK_MISTWEAVER:
         gain_pct = data().effectN( 3 ).percent();
         break;
-      case MONK_WINDWALKER:
-      {
-        parse_effect_data( data().effectN( 2 ) );  // Chi
-        break;
-      }
       case MONK_BREWMASTER:
         gain_energy = data().effectN( 4 ).base_value();
-        break;
-      case PALADIN_HOLY:
-        gain_pct = data().effectN( 3 ).percent();
         break;
       default:
         break;
@@ -8214,13 +8263,7 @@ struct use_item_t : public action_t
       else
       {
         cooldown_group = player->item_cooldown.get();
-        // Presumes on-use items will always have static durations. Considering the client data
-        // system hardcodes the cooldown group durations in the DBC files, this is a reasonably safe
-        // bet for now.
-        if ( buff )
-        {
-          cooldown_group_duration = buff->buff_duration();
-        }
+        cooldown_group_duration = player->default_item_group_cooldown;
       }
     }
 
@@ -9349,6 +9392,11 @@ double player_t::avg_item_level() const
   return avg_ilvl;
 }
 
+double player_t::get_attribute( attribute_e a ) const
+{
+  return util::floor( composite_attribute( a ) * composite_attribute_multiplier( a ) );
+}
+
 void player_t::create_talents_armory()
 {
   if ( is_enemy() )
@@ -10295,6 +10343,18 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
       throw std::invalid_argument( fmt::format( "Unsupported bfa. option '{}'.", splits[ 1 ] ) );
     }
+
+    if ( splits[ 0 ] == "shadowlands" )
+    {
+      if ( splits[ 1 ] == "shadowed_orb_of_torment_precombat_channel" )
+      {
+        return make_fn_expr( expression_str, [this] {
+          return sim->shadowlands_opts.shadowed_orb_of_torment_precombat_channel.total_seconds();
+        } );
+      }
+
+      throw std::invalid_argument( fmt::format( "Unsupported shadowlands. option '{}'.", splits[ 1 ] ) );
+    }
   } // splits.size() == 2
 
 
@@ -10520,6 +10580,11 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   if ( splits[ 0 ] == "soulbind" || splits[ 0 ] == "conduit" || splits[ 0 ] == "covenant" )
   {
     return covenant->create_expression( splits );
+  }
+
+  if ( splits[ 0 ] == "rune_word" )
+  {
+    return unique_gear::create_expression( *this, expression_str );
   }
 
   if ( auto expr = runeforge::create_expression( this, splits, expression_str ) )
@@ -11092,6 +11157,7 @@ void player_t::copy_from( player_t* source )
   race            = source->race;
   role            = source->role;
   _spec           = source->_spec;
+  base.distance   = source->base.distance;
   position_str    = source->position_str;
   professions_str = source->professions_str;
   source->recreate_talent_str(talent_format::UNCHANGED );
@@ -11323,6 +11389,7 @@ void player_t::create_options()
   add_option( opt_timespan( "reaction_time_max", reaction_max ) );
   add_option( opt_bool( "stat_cache", cache.active ) );
   add_option( opt_bool( "karazhan_trinkets_paired", karazhan_trinkets_paired ) );
+  add_option( opt_timespan( "default_item_group_cooldown", default_item_group_cooldown, 0_ms, timespan_t::max() ) );
 
   // Permanent External Buffs
   add_option( opt_bool( "external_buffs.focus_magic", external_buffs.focus_magic ) );
@@ -11354,6 +11421,7 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.conquerors_banner", external_buffs.conquerors_banner ) );
   add_option( opt_external_buff_times( "external_buffs.rallying_cry", external_buffs.rallying_cry ) );
   add_option( opt_external_buff_times( "external_buffs.pact_of_the_soulstalkers", external_buffs.pact_of_the_soulstalkers ) ); // 9.1 Kyrian Hunter Legendary
+  add_option( opt_external_buff_times( "external_buffs.kindred_affinity", external_buffs.kindred_affinity ) ) ;
 
   // Azerite options
   if ( ! is_enemy() && ! is_pet() )
@@ -12857,20 +12925,24 @@ void player_t::delay_auto_attacks( timespan_t delay, proc_t* proc )
   if ( delay == timespan_t::zero() )
     return;
 
-  if ( proc && ( main_hand_attack || off_hand_attack ) )
-    proc->occur();
+  bool delayed = false;
 
   if ( main_hand_attack && main_hand_attack->execute_event )
   {
     sim->print_debug( "Delaying MH auto attack swing timer by {} to {}", delay, main_hand_attack->execute_event->remains() + delay );
     main_hand_attack->execute_event->reschedule( main_hand_attack->execute_event->remains() + delay );
+    delayed = true;
   }
 
   if ( off_hand_attack && off_hand_attack->execute_event )
   {
     sim->print_debug( "Delaying OH auto attack swing timer by {} to {}", delay, off_hand_attack->execute_event->remains() + delay );
     off_hand_attack->execute_event->reschedule( off_hand_attack->execute_event->remains() + delay );
+    delayed = true;
   }
+
+  if ( proc && delayed )
+    proc->occur();
 }
 
 /**
@@ -13135,7 +13207,7 @@ void player_t::init_distance_targeting()
   }
 }
 
-void format_to( const player_t& player, fmt::format_context::iterator out )
+void sc_format_to( const player_t& player, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "Player '{}'", player.name() );
 }

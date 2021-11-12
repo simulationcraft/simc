@@ -11,12 +11,14 @@
 #include "player/pet.hpp"
 #include "player/player_scaling.hpp"
 #include "player/sc_player.hpp"
+#include "player/scaling_metric_data.hpp"
 #include "player/stats.hpp"
 #include "report/color.hpp"
 #include "report/decorators.hpp"
 #include "sc_highchart.hpp"
 #include "sim/reforge_plot.hpp"
 #include "sim/sc_sim.hpp"
+#include "util/plot_data.hpp"
 #include "util/sample_data.hpp"
 #include "util/util.hpp"
 
@@ -1057,7 +1059,10 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
     }
     if ( base_value == 0.0 )
     {
-      base_value = get_data_value( player_list.back()->collected_data, chart_metric, vm );
+      if ( s.relative_difference_from_max )
+        base_value = get_data_value( player_list.front()->collected_data, chart_metric, vm );
+      else
+        base_value = get_data_value( player_list.back()->collected_data, chart_metric, vm );
     }
 
     bool candlebars = false;

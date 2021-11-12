@@ -274,7 +274,7 @@ void SC_MainWindowCommandLine::initDefaultStates()
     // cancel => text_cancel_all
     for ( widgets_e widget = BUTTON_MAIN; widget < WIDGET_COUNT; widget++ )
     {
-      if ( getText( SIMULATING_MULTIPLE, tab, widget ) == text_cancel )
+      if ( getText( SIMULATING_MULTIPLE, tab, widget ) == &text_cancel )
       {
         setText( SIMULATING_MULTIPLE, tab, widget, &text_cancel_all, &text_cancel_all_tooltip );
         setText( SIMULATING_MULTIPLE_PAUSED, tab, widget, &text_cancel_all, &text_cancel_all_tooltip );
@@ -532,7 +532,7 @@ bool SC_MainWindowCommandLine::tryToHideWidget( QString* text, QWidget* widget )
   // if the widget has the special text to hide it, then hide it; else show
   if ( text != nullptr )
   {
-    if ( text == text_hide_widget )
+    if ( text == &text_hide_widget )
     {
       widget->hide();
       return true;
@@ -550,17 +550,17 @@ void SC_MainWindowCommandLine::emitSignal( QString* text )
   // emit the proper signal for the given button text
   if ( text != nullptr )
   {
-    if ( text == text_pause )
+    if ( text == &text_pause )
       emit( pauseClicked() );
-    else if ( text == text_resume )
+    else if ( text == &text_resume )
       emit( resumeClicked() );
-    else if ( text == text_simulate )
+    else if ( text == &text_simulate )
     {
       {
         emit( simulateClicked() );
       }
     }
-    else if ( text == text_cancel )
+    else if ( text == &text_cancel )
     {
       switch ( current_tab )
       {
@@ -572,24 +572,24 @@ void SC_MainWindowCommandLine::emitSignal( QString* text )
           break;
       }
     }
-    else if ( text == text_cancel_all )
+    else if ( text == &text_cancel_all )
     {
       emit( cancelImportClicked() );
       emit( cancelAllSimulationClicked() );
     }
-    else if ( text == text_import )
+    else if ( text == &text_import )
     {
       emit( importClicked() );
     }
-    else if ( text == text_queue )
+    else if ( text == &text_queue )
     {
       emit( queueClicked() );
     }
-    else if ( text == text_spellquery )
+    else if ( text == &text_spellquery )
     {
       emit( queryClicked() );
     }
-    else if ( text == text_save )
+    else if ( text == &text_save )
     {
       switch ( current_tab )
       {

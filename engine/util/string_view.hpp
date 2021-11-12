@@ -332,6 +332,11 @@ struct formatter<util::string_view> : public formatter<string_view> {
     return formatter<string_view>::format(to_string_view(str), ctx);
   }
 };
+
+// Creates a runtime format string.
+inline auto runtime(util::string_view s) -> basic_runtime<char_t<fmt::string_view>> {
+  return {{to_string_view( s )}};
+}
 } // namespace fmt
 
 #endif // SC_UTIL_STRING_VIEW_HPP_INCLUDED

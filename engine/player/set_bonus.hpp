@@ -75,5 +75,5 @@ struct set_bonus_t
   std::string to_profile_string(const std::string & = "\n") const;
   std::string generate_set_bonus_options() const;
 
-  friend void format_to( const set_bonus_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const set_bonus_t&, fmt::format_context::iterator );
 };

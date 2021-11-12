@@ -383,6 +383,7 @@ public:
 
 class SC_OverridesTab : public SC_TextEdit
 {
+  Q_OBJECT
 public:
   SC_OverridesTab( QWidget* parent ) : SC_TextEdit( parent )
   {

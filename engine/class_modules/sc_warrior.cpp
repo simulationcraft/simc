@@ -1839,7 +1839,8 @@ struct bladestorm_tick_t : public warrior_attack_t
 
   {
     dual = true;
-    aoe  = -1;
+    aoe = -1;
+    reduced_aoe_targets = 8.0;
     background = true;
     if ( p->specialization() == WARRIOR_ARMS )
     {
@@ -2511,7 +2512,8 @@ struct cleave_t : public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( player->main_hand_weapon );
-    aoe    = -1;
+    aoe = -1;
+    reduced_aoe_targets = 5.0;
   }
 
   double action_multiplier() const override
@@ -2663,7 +2665,8 @@ struct dragon_roar_t : public warrior_attack_t
     crit_bonus_multiplier *= 1.0 + p->spell.warrior_aura->effectN( 6 ).percent();
     parse_options( options_str );
     aoe       = -1;
-    reduced_aoe_damage = true;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
     may_dodge = may_parry = may_block = false;
   }
 };
@@ -2715,7 +2718,7 @@ struct execute_arms_t : public warrior_attack_t
 
   double tactician_cost() const override
   {
-    double c = max_rage;
+    double c;
 
     if ( !p()->buff.deadly_calm->check() && !p()->buff.sudden_death->check() )
     {
@@ -3588,7 +3591,8 @@ struct seismic_wave_t : warrior_attack_t
   seismic_wave_t( warrior_t* p )
     : warrior_attack_t( "seismic_wave", p, p->find_spell( 278497 ) )
   {
-    aoe         = -1;
+    aoe = -1;
+    reduced_aoe_targets = 5.0;
     background  = true;
     base_dd_min = base_dd_max = p->azerite.seismic_wave.value( 1 );
   }
@@ -3599,7 +3603,8 @@ struct dreadnaught_t : warrior_attack_t
   dreadnaught_t( warrior_t* p )
     : warrior_attack_t( "dreadnaught", p, p->find_spell( 315961 ) )
   {
-    aoe         = -1;
+    aoe = -1;
+    reduced_aoe_targets = 5.0;
     background  = true;
     //base_dd_min = base_dd_max = p->azerite.seismic_wave.value( 1 );
   }
@@ -3971,7 +3976,8 @@ struct ravager_tick_t : public warrior_attack_t
   ravager_tick_t( warrior_t* p, const std::string& name )
     : warrior_attack_t( name, p, p->find_spell( 156287 ) ), rage_from_ravager( 0.0 )
   {
-    aoe           = -1;
+    aoe = -1;
+    reduced_aoe_targets = 8.0;
     impact_action = p->active.deep_wounds_ARMS;
     dual = ground_aoe = true;
     if ( p->specialization() == WARRIOR_PROTECTION )
@@ -4560,6 +4566,8 @@ struct whirlwind_off_hand_t : public warrior_attack_t
   {
     background = true;
     aoe = -1;
+    reduced_aoe_targets = 5.0;
+
 
     base_multiplier *= 1.0 + p->talents.meat_cleaver->effectN( 1 ).percent();
   }
@@ -4582,6 +4590,7 @@ struct fury_whirlwind_mh_t : public warrior_attack_t
   {
     background = true;
     aoe = -1;
+    reduced_aoe_targets = 5.0;
 
     base_multiplier *= 1.0 + p->talents.meat_cleaver->effectN(1).percent();
   }
@@ -4683,7 +4692,7 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    const int num_available_targets = as<int>( target_list().size() );
+    const int num_available_targets = std::min( 5, as<int>( target_list().size() ));  // Capped to 5 targets 
 
     p()->resource_gain( RESOURCE_RAGE, ( base_rage_gain + additional_rage_gain_per_target * num_available_targets ),
                         p()->gain.whirlwind );
@@ -4707,6 +4716,7 @@ struct arms_whirlwind_mh_t : public warrior_attack_t
   arms_whirlwind_mh_t( warrior_t* p, const spell_data_t* whirlwind ) : warrior_attack_t( "whirlwind_mh", p, whirlwind )
   {
     aoe = -1;
+    reduced_aoe_targets = 5.0;
     background = true;
   }
 
@@ -4735,6 +4745,7 @@ struct first_arms_whirlwind_mh_t : public warrior_attack_t
   {
     background = true;
     aoe = -1;
+    reduced_aoe_targets = 5.0;
   }
 
   double action_multiplier() const override
@@ -4995,7 +5006,7 @@ struct condemn_arms_t : public warrior_attack_t
 
   double tactician_cost() const override
   {
-    double c = max_rage;
+    double c;
 
     if ( !p()->buff.ayalas_stone_heart->check() && !p()->buff.deadly_calm->check() && !p()->buff.sudden_death->check() )
     {
@@ -5303,7 +5314,8 @@ struct spear_of_bastion_attack_t : public warrior_attack_t
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
-    aoe        = -1;
+    aoe = -1;
+    reduced_aoe_targets = 5.0;
     dual       = true;
 //dot_duration += timespan_t::from_millis( p -> find_spell( 357996 ) -> effectN( 1 ).base_value() );
     if ( p->legendary.elysian_might->ok() )
@@ -6597,6 +6609,7 @@ void warrior_t::apl_fury()
   default_apl_dps_precombat();
   action_priority_list_t* default_list  = get_action_priority_list( "default" );
   action_priority_list_t* movement      = get_action_priority_list( "movement" );
+  action_priority_list_t* aoe           = get_action_priority_list( "aoe" );
   action_priority_list_t* single_target = get_action_priority_list( "single_target" );
 
   default_list->add_action( "auto_attack" );
@@ -6701,7 +6714,8 @@ void warrior_t::apl_fury()
     }
   }
 
-  default_list->add_action( "run_action_list,name=single_target" );
+  default_list->add_action( "call_action_list,name=aoe" );
+  default_list->add_action( "call_action_list,name=single_target" );
 
   movement->add_action( this, "Heroic Leap" );
 
@@ -6729,6 +6743,17 @@ void warrior_t::apl_fury()
   single_target->add_action( this, "Raging Blow" );
   single_target->add_action( this, spec.crushing_blow, "crushing_blow" );
   single_target->add_action( this, "Whirlwind" );
+
+  aoe->add_action( "cancel_buff,name=bladestorm,if=spell_targets.whirlwind>1&gcd.remains=0&soulbind.first_strike&buff.first_strike.remains&buff.enrage.remains<gcd" );
+  aoe->add_action( this, covenant.ancient_aftershock, "ancient_aftershock", "if=buff.enrage.up&cooldown.recklessness.remains>5&spell_targets.whirlwind>1" );
+  aoe->add_action( this, covenant.spear_of_bastion, "spear_of_bastion", "if=buff.enrage.up&rage<40&spell_targets.whirlwind>1" );
+  aoe->add_talent( this, "Bladestorm",  "if=buff.enrage.up&spell_targets.whirlwind>2" );
+  aoe->add_action( this, covenant.condemn, "condemn", "if=spell_targets.whirlwind>1&(buff.enrage.up|buff.recklessness.up&runeforge.sinful_surge)&variable.execute_phase" );
+  aoe->add_talent( this, "Siegebreaker",  "if=spell_targets.whirlwind>1" );
+  aoe->add_action( this, "Rampage",  "if=spell_targets.whirlwind>1" );
+  aoe->add_action( this, covenant.spear_of_bastion, "spear_of_bastion", "if=buff.enrage.up&cooldown.recklessness.remains>5&spell_targets.whirlwind>1" );
+  aoe->add_talent( this, "Bladestorm",  "if=buff.enrage.remains>gcd*2.5&spell_targets.whirlwind>1" );
+
 }
 
 // Arms Warrior Action Priority List ========================================

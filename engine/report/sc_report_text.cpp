@@ -11,6 +11,7 @@
 #include "sim/iteration_data_entry.hpp"
 #include "sim/plot.hpp"
 #include "sim/sc_profileset.hpp"
+#include "util/plot_data.hpp"
 #include "fmt/chrono.h"
 
 #include <iomanip>
@@ -991,8 +992,7 @@ void print_reference_dps( std::ostream& os, sim_t& sim )
 
   if ( !ref_p )
   {
-    sim.error(fmt::format("Unable to locate reference player: {}.",
-                 sim.reference_player_str) );
+    sim.error("Unable to locate reference player: {}.", sim.reference_player_str);
     return;
   }
 

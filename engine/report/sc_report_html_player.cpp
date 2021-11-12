@@ -6,11 +6,14 @@
 #include "simulationcraft.hpp"
 
 #include "player/covenant.hpp"
+#include "player/unique_gear_shadowlands.hpp"
 #include "dbc/temporary_enchant.hpp"
 #include "reports.hpp"
 #include "report/report_helper.hpp"
 #include "report/decorators.hpp"
+#include "report/charts.hpp"
 #include "player/player_talent_points.hpp"
+#include "player/scaling_metric_data.hpp"
 #include "sc_highchart.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/sc_profileset.hpp"
@@ -60,7 +63,7 @@ bool player_has_tick_results( const player_t& p, unsigned stats_mask )
 {
   for ( const auto& stat : p.stats_list )
   {
-    if ( !( stats_mask & ( 1 << stat->type ) ) )
+    if ( !( stats_mask & stat->mask() ) )
       continue;
 
     if ( stat->num_tick_results.count() > 0 )
@@ -80,7 +83,7 @@ bool player_has_avoidance( const player_t& p, unsigned stats_mask )
 {
   for ( const auto& stat : p.stats_list )
   {
-    if ( !( stats_mask & ( 1 << stat->type ) ) )
+    if ( !( stats_mask & stat->mask() ) )
       continue;
 
     if ( has_avoidance( stat->direct_results ) )
@@ -103,7 +106,7 @@ bool player_has_block( const player_t& p, unsigned stats_mask )
 {
   for ( const auto& stat : p.stats_list )
   {
-    if ( !( stats_mask & ( 1 << stat->type ) ) )
+    if ( !( stats_mask & stat->mask() ) )
       continue;
 
     if ( has_block( stat->direct_results ) )
@@ -123,7 +126,7 @@ bool player_has_glance( const player_t& p, unsigned stats_mask )
 {
   for ( const auto& stat : p.stats_list )
   {
-    if ( !( stats_mask & ( 1 << stat->type ) ) )
+    if ( !( stats_mask & stat->mask() ) )
       continue;
 
     if ( has_glance( stat -> direct_results ) )
@@ -511,7 +514,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                              const player_t* actor = nullptr, int indentation = 0 )
 {
   const player_t& p = *s.player->get_owner_or_self();
-  bool hasparent = s.parent && s.parent->player == actor;
+  bool hasparent = s.parent && s.parent->player == actor && ( s.mask() & s.parent->mask() );
   std::string row_class;
   std::string rowspan;
 
@@ -543,7 +546,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
   // DPS and DPS %
   // Skip for abilities that do no damage
-  if ( s.compound_amount > 0 || ( s.parent && s.parent->compound_amount > 0 ) )
+  if ( s.compound_amount > 0 || ( hasparent && s.parent->compound_amount > 0 ) )
   {
     std::string compound_aps;
     std::string compound_aps_pct;
@@ -3533,8 +3536,11 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
     pt = util::pet_type_string( p.cast_pet()->pet_type );
   }
   else
+  {
     pt = util::player_type_string( p.type );
-  fmt::print( os, "<li><b>Class:</b> {}</li>\n", util::inverse_tokenize( p.race_str ) );
+  }
+
+  fmt::print( os, "<li><b>Class:</b> {}</li>\n", util::inverse_tokenize( pt ) );
 
   if ( p.specialization() != SPEC_NONE )
   {
@@ -3902,6 +3908,9 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     // Runeforge Legendaries
     runeforge::generate_report( p, os );
 
+    // Shards of Domination (9.1)
+    unique_gear::shadowlands::items::shards_of_domination::generate_report( p, os );
+
     // Professions
     if ( !p.professions_str.empty() )
     {
@@ -3932,7 +3941,7 @@ bool is_output_stat( unsigned mask, bool child, const stats_t& s )
   if ( s.quiet )
     return false;
 
-  if ( !( ( 1 << s.type ) & mask ) )
+  if ( !( s.mask() & mask ) )
     return false;
 
   if ( s.num_executes.mean() <= 0.001 && s.compound_amount == 0 &&

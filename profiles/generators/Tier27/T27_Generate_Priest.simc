@@ -38,19 +38,16 @@ talents=1010122
 renown=80
 
 covenant=night_fae
-soulbind=niya,grove_invigoration/dissonant_echoes:9:1/haunting_apparitions:9:1/rabid_shadows:9:1/niyas_tools_poison/bonded_hearts
+soulbind=dreamweaver,podtender/field_of_blossoms/dissonant_echoes:9:1/haunting_apparitions:9:1/rabid_shadows:9:1/dream_delver
 
-# 187318/187076/187079
-# 187312/187315
-
-head=veil_of_the_banshee_queen,id=186325,bonus_id=7187/1498,gem_id=173130/187318
+head=veil_of_the_banshee_queen,id=186325,bonus_id=7187/1498,gem_id=187318
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498,gem_id=173130
-shoulders=frame_of_the_false_margrave,id=186324,bonus_id=7187/1498,gem_id=187076
+shoulders=frame_of_the_false_margrave,id=186324,bonus_id=7187/1498,gem_id=187319
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6536/1566/6646
-chest=sacrificers_sacramental_cassock,id=186282,bonus_id=7187/1498,enchant=eternal_stats,gem_id=187079
-wrists=desecrators_keening_wristwraps,id=186321,bonus_id=7187/1498,gem_id=173130/187315,enchant=eternal_intellect
+chest=sacrificers_sacramental_cassock,id=186282,bonus_id=7187/1498,enchant=eternal_stats,gem_id=187320
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=7187/1498,gem_id=187315,enchant=eternal_intellect
 hands=grimveiled_mittens,id=173244,bonus_id=6648/6649/6982/1559
-waist=sash_of_duplicitous_magics,id=186322,bonus_id=7187/1498,gem_id=173130/187312
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=7187/1498,gem_id=187312
 legs=muehzalas_hexthread_sarong,id=179351,bonus_id=6536/1566/6646
 feet=sandals_of_sacred_symmetry,id=186354,bonus_id=7187/1498
 finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498,gem_id=173130,enchant=tenet_of_mastery
@@ -73,14 +70,14 @@ renown=80
 covenant=kyrian
 soulbind=pelagos,combat_meditation/dissonant_echoes:9:1/haunting_apparitions:9:1/courageous_ascension:9:1/better_together/newfound_resolve
 
-head=veil_of_the_banshee_queen,id=186325,bonus_id=7187/1498,gem_id=173130/187318
+head=veil_of_the_banshee_queen,id=186325,bonus_id=7187/1498,gem_id=187318
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498,gem_id=173130
-shoulders=frame_of_the_false_margrave,id=186324,bonus_id=7187/1498,gem_id=187076
+shoulders=frame_of_the_false_margrave,id=186324,bonus_id=7187/1498,gem_id=187319
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6536/1566/6646
-chest=sacrificers_sacramental_cassock,id=186282,bonus_id=7187/1498,enchant=eternal_stats,gem_id=187079
-wrists=desecrators_keening_wristwraps,id=186321,bonus_id=7187/1498,gem_id=173130/187315,enchant=eternal_intellect
+chest=sacrificers_sacramental_cassock,id=186282,bonus_id=7187/1498,enchant=eternal_stats,gem_id=187320
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=7187/1498,gem_id=187315,enchant=eternal_intellect
 hands=grasps_of_the_clairvoyant_sage,id=186288,bonus_id=7187/1498
-waist=sash_of_duplicitous_magics,id=186322,bonus_id=7187/1498,gem_id=173130/187312
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=7187/1498,gem_id=187312
 legs=grimveiled_pants,id=173246,bonus_id=6648/6649/7162/1559
 feet=sandals_of_sacred_symmetry,id=186354,bonus_id=7187/1498
 finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498,gem_id=173130,enchant=tenet_of_mastery
@@ -102,14 +99,14 @@ covenant=necrolord
 soulbind=bonesmith_heirmir,forgeborne_reveries/dissonant_echoes:9:1/haunting_apparitions:9:1/heirmirs_arsenal_marrowed_gemstone/carvers_eye/mnemonic_equipment
 renown=80
 
-head=veil_of_the_banshee_queen,id=186325,bonus_id=7187/1498,gem_id=173130/187318
+head=veil_of_the_banshee_queen,id=186325,bonus_id=7187/1498,gem_id=187318
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498,gem_id=173130
-shoulders=frame_of_the_false_margrave,id=186324,bonus_id=7187/1498,gem_id=187076
+shoulders=frame_of_the_false_margrave,id=186324,bonus_id=7187/1498,gem_id=187319
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6536/1566/6646
-chest=sacrificers_sacramental_cassock,id=186282,bonus_id=7187/1498,enchant=eternal_stats,gem_id=187079
-wrists=desecrators_keening_wristwraps,id=186321,bonus_id=7187/1498,gem_id=173130/187315,enchant=eternal_intellect
+chest=sacrificers_sacramental_cassock,id=186282,bonus_id=7187/1498,enchant=eternal_stats,gem_id=187320
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=7187/1498,gem_id=187315,enchant=eternal_intellect
 hands=grasps_of_the_clairvoyant_sage,id=186288,bonus_id=7187/1498
-waist=sash_of_duplicitous_magics,id=186322,bonus_id=7187/1498,gem_id=173130/187312
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=7187/1498,gem_id=187312
 legs=muehzalas_hexthread_sarong,id=179351,bonus_id=6536/1566/6646
 feet=grimveiled_sandals,id=173243,bonus_id=6648/6649/7729/1559
 finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498,gem_id=173130,enchant=tenet_of_mastery
@@ -131,16 +128,14 @@ covenant=venthyr
 soulbind=theotar,soothing_shade/dissonant_echoes:9:1/haunting_apparitions:9:1/rabid_shadows:9:1/party_favors
 renown=80
 
-shadowlands.party_favor_type=haste
-
-head=veil_of_the_banshee_queen,id=186325,bonus_id=7187/1498,gem_id=173130/187318
+head=veil_of_the_banshee_queen,id=186325,bonus_id=7187/1498,gem_id=187318
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498,gem_id=173130
-shoulders=frame_of_the_false_margrave,id=186324,bonus_id=7187/1498,gem_id=187076
+shoulders=frame_of_the_false_margrave,id=186324,bonus_id=7187/1498,gem_id=187319
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6536/1566/6646
-chest=sacrificers_sacramental_cassock,id=186282,bonus_id=7187/1498,enchant=eternal_stats,gem_id=187079
-wrists=desecrators_keening_wristwraps,id=186321,bonus_id=7187/1498,gem_id=173130/187315,enchant=eternal_intellect
+chest=sacrificers_sacramental_cassock,id=186282,bonus_id=7187/1498,enchant=eternal_stats,gem_id=187320
+wrists=desecrators_keening_wristwraps,id=186321,bonus_id=7187/1498,gem_id=187315,enchant=eternal_intellect
 hands=grimveiled_mittens,id=173244,bonus_id=6648/6649/6982/1559
-waist=sash_of_duplicitous_magics,id=186322,bonus_id=7187/1498,gem_id=173130/187312
+waist=sash_of_duplicitous_magics,id=186322,bonus_id=7187/1498,gem_id=187312
 legs=muehzalas_hexthread_sarong,id=179351,bonus_id=6536/1566/6646
 feet=sandals_of_sacred_symmetry,id=186354,bonus_id=7187/1498
 finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498,gem_id=173130,enchant=tenet_of_mastery

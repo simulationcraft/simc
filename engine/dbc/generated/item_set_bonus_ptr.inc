@@ -1,5 +1,5 @@
-// Set bonus data, wow build 9.1.0.39172
-static const std::array<item_set_bonus_t, 120> __ptr_set_bonus_data { {
+// Set bonus data, wow build 9.1.5.40843
+static const std::array<item_set_bonus_t, 132> __ptr_set_bonus_data { {
   // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "March of the Legion"                       , "march_of_the_legion",      0,  1293,   19,   2,   1,   -1,  228445, { 134529, 134533,  0 } },
   { "March of the Legion"                       , "march_of_the_legion",      0,  1293,   19,   2,   2,   -1,  228445, { 134529, 134533,  0 } },
@@ -125,4 +125,17 @@ static const std::array<item_set_bonus_t, 120> __ptr_set_bonus_data { {
   { "Titanic Empowerment"                       , "titanic_empowerment",      9,  1452,   24,   2,  10,   -1,  315793, { 174500, 174528,  0 } },
   { "Titanic Empowerment"                       , "titanic_empowerment",      9,  1452,   24,   2,  11,   -1,  315793, { 174500, 174528,  0 } },
   { "Titanic Empowerment"                       , "titanic_empowerment",      9,  1452,   24,   2,  12,   -1,  315793, { 174500, 174528,  0 } },
+  { "Hack and Gore"                             , "hack_and_gore"      ,     10,  1457,   26,   2,   1,   -1,  337893, { 184194, 184195,  0 } },
+  { "Hack and Gore"                             , "hack_and_gore"      ,     10,  1457,   26,   2,   2,   -1,  337893, { 184194, 184195,  0 } },
+  { "Hack and Gore"                             , "hack_and_gore"      ,     10,  1457,   26,   2,   3,   -1,  337893, { 184194, 184195,  0 } },
+  { "Hack and Gore"                             , "hack_and_gore"      ,     10,  1457,   26,   2,   4,   -1,  337893, { 184194, 184195,  0 } },
+  { "Hack and Gore"                             , "hack_and_gore"      ,     10,  1457,   26,   2,   5,   -1,  337893, { 184194, 184195,  0 } },
+  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
+  { "Hack and Gore"                             , "hack_and_gore"      ,     10,  1457,   26,   2,   6,   -1,  337893, { 184194, 184195,  0 } },
+  { "Hack and Gore"                             , "hack_and_gore"      ,     10,  1457,   26,   2,   7,   -1,  337893, { 184194, 184195,  0 } },
+  { "Hack and Gore"                             , "hack_and_gore"      ,     10,  1457,   26,   2,   8,   -1,  337893, { 184194, 184195,  0 } },
+  { "Hack and Gore"                             , "hack_and_gore"      ,     10,  1457,   26,   2,   9,   -1,  337893, { 184194, 184195,  0 } },
+  { "Hack and Gore"                             , "hack_and_gore"      ,     10,  1457,   26,   2,  10,   -1,  337893, { 184194, 184195,  0 } },
+  { "Hack and Gore"                             , "hack_and_gore"      ,     10,  1457,   26,   2,  11,   -1,  337893, { 184194, 184195,  0 } },
+  { "Hack and Gore"                             , "hack_and_gore"      ,     10,  1457,   26,   2,  12,   -1,  337893, { 184194, 184195,  0 } },
 } };

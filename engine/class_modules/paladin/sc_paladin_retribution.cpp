@@ -351,9 +351,9 @@ struct echoed_spell_event_t : public event_t
   paladin_melee_attack_t* echo;
   paladin_t* paladin;
   player_t* target;
-  float amount;
+  double amount;
 
-  echoed_spell_event_t( paladin_t* p, player_t* tgt, paladin_melee_attack_t* spell, timespan_t delay, float amt = 0 ) :
+  echoed_spell_event_t( paladin_t* p, player_t* tgt, paladin_melee_attack_t* spell, timespan_t delay, double amt = 0 ) :
     event_t( *p, delay ), echo( spell ), paladin( p ), target( tgt ), amount( amt )
   {
   }
@@ -787,7 +787,8 @@ void paladin_t::create_ret_actions()
   }
 
   active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
-  active.necrolord_divine_storm = new divine_storm_t( this, true, 1.0 );
+  double necrolord_mult = 1.0 + covenant.necrolord -> effectN( 2 ).percent();
+  active.necrolord_divine_storm = new divine_storm_t( this, true, necrolord_mult );
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
@@ -995,7 +996,7 @@ void paladin_t::generate_action_prio_list_ret()
   // Items
 
   // special-cased items
-  std::unordered_set<std::string> special_items { "skulkers_wing", "macabre_sheet_music", "memory_of_past_sins", "dreadfire_vessel", "darkmoon_deck_voracity", "overwhelming_power_crystal", "spare_meat_hook", "grim_codex", "inscrutable_quantum_device", "sinful_gladiators_badge_of_ferocity", "sinful_aspirants_badge_of_ferocity" };
+  std::unordered_set<std::string> special_items { "skulkers_wing", "macabre_sheet_music", "memory_of_past_sins", "dreadfire_vessel", "darkmoon_deck_voracity", "overwhelming_power_crystal", "spare_meat_hook", "grim_codex", "inscrutable_quantum_device", "salvaged_fusion_amplifier", "unchained_gladiators_badge_of_ferocity", "unchained_aspirants_badge_of_ferocity", "sinful_gladiators_badge_of_ferocity", "sinful_aspirants_badge_of_ferocity" };
 
   cds -> add_action( "use_item,name=inscrutable_quantum_device,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<30" );
   cds -> add_action( "use_item,name=overwhelming_power_crystal,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<15" );
@@ -1006,6 +1007,9 @@ void paladin_t::generate_action_prio_list_ret()
   cds -> add_action( "use_item,name=grim_codex" );
   cds -> add_action( "use_item,name=memory_of_past_sins" );
   cds -> add_action( "use_item,name=spare_meat_hook" );
+  cds -> add_action( "use_item,name=salvaged_fusion_amplifier" );
+  cds -> add_action( "use_item,name=unchained_gladiators_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45" );
+  cds -> add_action( "use_item,name=unchained_aspirants_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45" );
   cds -> add_action( "use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45" );
   cds -> add_action( "use_item,name=sinful_aspirants_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45" );
 

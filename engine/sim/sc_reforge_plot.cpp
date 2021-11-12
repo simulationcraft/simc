@@ -7,10 +7,12 @@
 
 #include "player/player_scaling.hpp"
 #include "player/sc_player.hpp"
+#include "player/scaling_metric_data.hpp"
 #include "scale_factor_control.hpp"
 #include "sim/sc_sim.hpp"
 #include "sim/work_queue.hpp"
 #include "util/io.hpp"
+#include "util/plot_data.hpp"
 
 #include <sstream>
 

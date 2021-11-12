@@ -4471,40 +4471,41 @@ void item::natures_call( special_effect_t& effect )
 
 // Moonlit Prism ============================================================
 // TOCHECK: Proc mechanics
-
 void item::moonlit_prism( special_effect_t& effect )
 {
   // Create stack gain driver
   special_effect_t* effect2 = new special_effect_t( effect.item );
-  effect2 -> source = SPECIAL_EFFECT_SOURCE_ITEM;
-  effect2 -> name_str     = "moonlit_prism_driver";
-  effect2 -> proc_chance_ = 1.0;
-  effect2 -> spell_id = effect.driver() -> id();
-  effect2 -> cooldown_ = timespan_t::zero();
-  effect2 -> proc_flags_ = PF_RANGED | PF_RANGED_ABILITY | PF_MAGIC_SPELL | PF_NONE_SPELL;
-  effect.player -> special_effects.push_back( effect2 );
+  effect2->source           = SPECIAL_EFFECT_SOURCE_ITEM;
+  effect2->name_str         = "moonlit_prism_driver";
+  effect2->proc_chance_     = 1.0;
+  effect2->spell_id         = effect.driver()->id();
+  effect2->cooldown_        = effect.driver()->internal_cooldown();
+  effect2->proc_flags_      = PF_RANGED | PF_RANGED_ABILITY | PF_MAGIC_SPELL | PF_NONE_SPELL;
+  effect.player->special_effects.push_back( effect2 );
 
   // Create callback; it will be enabled when the buff is active.
   dbc_proc_callback_t* callback = new dbc_proc_callback_t( effect.player, *effect2 );
 
   // Create buff.
   effect.custom_buff = make_buff<stat_buff_t>( effect.player, "elunes_light", effect.driver(), effect.item )
-    ->set_cooldown( timespan_t::zero() )
-    ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-    ->set_stack_change_callback( [ callback ]( buff_t*, int old, int new_ )
-    {
-      if ( old == 0 ) {
-        assert( ! callback -> active );
-        callback -> activate();
-      } else if ( new_ == 0 )
-        callback -> deactivate();
-    } );
+                           ->set_cooldown( effect.driver()->internal_cooldown() )
+                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+                           ->set_stack_change_callback( [ callback ]( buff_t*, int old, int new_ ) {
+                             if ( old == 0 )
+                             {
+                               assert( !callback->active );
+                               callback->activate();
+                               callback->cooldown->start();
+                             }
+                             else if ( new_ == 0 )
+                               callback->deactivate();
+                           } );
 
   // Assign buff to our stack gain driver.
-  effect2 -> custom_buff = effect.custom_buff;
+  effect2->custom_buff = effect.custom_buff;
 
-  callback -> initialize();
-  callback -> deactivate();
+  callback->initialize();
+  callback->deactivate();
 }
 
 // Faulty Countermeasures ===================================================

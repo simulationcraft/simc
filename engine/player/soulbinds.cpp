@@ -19,12 +19,6 @@
 
 #include "simulationcraft.hpp"
 
-/*
-* Currently Missing Soulbinds:
-* Night Fae:
-* - Korayn's Wild Hunt Strategem
-*/
-
 namespace covenant
 {
 namespace soulbinds
@@ -310,23 +304,90 @@ void grove_invigoration( special_effect_t& effect )
   if ( unique_gear::create_fallback_buffs( effect, { "redirected_anima" } ) )
     return;
 
-  auto buff = buff_t::find( effect.player, "redirected_anima" );
+  auto redirected_anima = buff_t::find( effect.player, "redirected_anima" );
 
-  if ( !buff )
+  if ( !redirected_anima )
   {
-    buff = make_buff<stat_buff_t>( effect.player, "redirected_anima", effect.player->find_spell( 342814 ) )
-               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-               ->set_default_value_from_effect( 1 )  // default value is used to hold the hp %
-               ->set_stack_change_callback( [ effect ]( buff_t* b, int old , int cur ) {
-                 effect.player->resources.initial_multiplier[ RESOURCE_HEALTH ] *=
-                   ( 1.0 + cur * b->default_value ) / ( 1.0 + old * b->default_value );
-
-                 effect.player->recalculate_resource_max( RESOURCE_HEALTH );
-               } );
+    redirected_anima = make_buff<stat_buff_t>( effect.player, "redirected_anima", effect.player->find_spell( 342814 ) )
+      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+      ->set_default_value_from_effect( 1 );  // default value is used to hold the hp %
   }
 
-  effect.player->buffs.redirected_anima = buff;
-  effect.custom_buff                    = buff;
+  buff_t* bonded_hearts = nullptr;
+
+  if ( effect.player->find_soulbind_spell( "Bonded Hearts" )->ok() )
+  {
+    bonded_hearts = buff_t::find( effect.player, "bonded_hearts" );
+
+    if ( !bonded_hearts )
+    {
+      bonded_hearts = make_buff( effect.player, "bonded_hearts", effect.player->find_spell( 352881 ) )
+        ->add_invalidate( CACHE_MASTERY )
+        ->set_default_value_from_effect( 1 );
+
+      auto ra = debug_cast<stat_buff_t*>( redirected_anima );
+
+      bonded_hearts->set_stack_change_callback( [ ra ]( buff_t* b, int, int new_ ) {
+        auto mul = 1.0 + b->default_value;
+
+        // In stat_buff_t::bump, the stat value is applied AFTER buff_t::stack_change_callback is triggered, so the
+        // sequence will be:
+        //  1. redirected_anima is triggered
+        //  2. bonded_hearts is triggered via stack_change_callback on redirected_anima
+        //  3. the stat value of redirected_anima is applied
+        // This means that when bonded_hearts is triggered, the amount will be adjusted before the stat buff is applied,
+        // so we don't need to do any manual adjusting of the stat buff amount. But when bonded_hearts ends, we will
+        // need to manually recalculate and update the stat buff amount.
+        if ( new_ )
+        {
+          for ( auto& s : ra->stats )
+            s.amount *= mul;
+
+          double old_value = ra->check_stack_value();
+          ra->default_value *= mul;
+          ra->current_value *= mul;
+          double new_value = ra->check_stack_value();
+          b->player->resources.initial_multiplier[ RESOURCE_HEALTH ] *= ( 1.0 + new_value ) / ( 1.0 + old_value );
+        }
+        else
+        {
+          for ( auto& s : ra->stats )
+          {
+            s.amount /= mul;
+
+            double delta = s.amount * ra->current_stack - s.current_value;
+
+            if ( delta > 0 )
+              b->player->stat_gain( s.stat, delta, ra->stat_gain, nullptr, ra->buff_duration() > 0_ms );
+            else if ( delta < 0 )
+              b->player->stat_loss( s.stat, std::fabs( delta ), ra->stat_gain, nullptr, ra->buff_duration() > 0_ms );
+
+            s.current_value += delta;
+          }
+
+          double old_value = ra->check_stack_value();
+          ra->default_value /= mul;
+          ra->current_value /= mul;
+          double new_value = ra->check_stack_value();
+          b->player->resources.initial_multiplier[ RESOURCE_HEALTH ] *= ( 1.0 + new_value ) / ( 1.0 + old_value );
+        }
+
+        b->player->recalculate_resource_max( RESOURCE_HEALTH );
+      } );
+    }
+  }
+
+  redirected_anima->set_stack_change_callback( [ bonded_hearts ]( buff_t* b, int old, int cur ) {
+    b->player->resources.initial_multiplier[ RESOURCE_HEALTH ] *=
+        ( 1.0 + cur * b->default_value ) / ( 1.0 + old * b->default_value );
+
+    b->player->recalculate_resource_max( RESOURCE_HEALTH );
+
+    if ( bonded_hearts && cur > old && b->rng().roll( b->sim->shadowlands_opts.bonded_hearts_other_covenant_chance ) )
+      bonded_hearts->trigger();
+  } );
+
+  effect.custom_buff = redirected_anima;
 
   new dbc_proc_callback_t( effect.player, effect );
 
@@ -335,74 +396,15 @@ void grove_invigoration( special_effect_t& effect )
 
   int stacks = as<int>( effect.driver()->effectN( 3 ).base_value() * stack_mod );
 
-  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff, stacks );
+  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, redirected_anima, stacks );
 }
 
 void bonded_hearts( special_effect_t& effect )
 {
-  auto buff = buff_t::find( effect.player, "bonded_hearts" );
-  if ( !buff )
-  {
-    buff = make_buff( effect.player, "bonded_hearts", effect.player->find_spell( 352881 ) )
-               ->add_invalidate( CACHE_MASTERY )
-               ->set_default_value_from_effect( 1 );
-
-    buff->set_stack_change_callback( [ effect ]( buff_t* b, int, int new_ ) {
-      auto ra  = debug_cast<stat_buff_t*>( effect.player->buffs.redirected_anima );
-      auto mul = 1.0 + b->default_value;
-
-      // In stat_buff_t::bump, the stat value is applied AFTER buff_t::stack_change_callback is triggered, so the
-      // sequence will be:
-      //  1. redirected_anima is triggered
-      //  2. bonded_hearts is triggered via stack_change_callback on redirected_anima
-      //  3. the stat value of redirected_anima is applied
-      // This means that when bonded_hearts is triggered, the amount will be adjusted before the stat buff is applied,
-      // so we don't need to do any manual adjusting of the stat buff amount. But when bonded_hearts ends, we will
-      // need to manually recalculate and update the stat buff amount.
-      if ( new_ )
-      {
-        for ( auto& s : ra->stats )
-        {
-          s.amount *= mul;
-        }
-
-        ra->default_value *= mul;
-      }
-      else
-      {
-        for ( auto& s : ra->stats )
-        {
-          s.amount /= mul;
-
-          double delta = s.amount * ra->current_stack - s.current_value;
-
-          if ( delta > 0 )
-            b->player->stat_gain( s.stat, delta, ra->stat_gain, nullptr, ra->buff_duration() > 0_ms );
-          else if ( delta < 0 )
-            b->player->stat_loss( s.stat, std::fabs( delta ), ra->stat_gain, nullptr, ra->buff_duration() > 0_ms );
-
-          s.current_value += delta;
-        }
-
-        ra->default_value /= mul;
-      }
-
-      effect.player->recalculate_resource_max( RESOURCE_HEALTH );
-    } );
-  }
-
-  effect.player->register_on_arise_callback( effect.player, [ effect, buff ]() {
-    auto ra = effect.player->buffs.redirected_anima;
-    if ( ra )
-    {
-      ra->set_stack_change_callback( [ buff ]( buff_t*, int old_, int new_ ) {
-        if ( new_ > old_ && buff->rng().roll( buff->sim->shadowlands_opts.bonded_hearts_other_covenant_chance ) )
-          buff->trigger();
-
-        buff->player->recalculate_resource_max( RESOURCE_HEALTH );
-      } );
-    }
-  } );
+  // bonded hearts is handled within grove_invigoration, so add disables just in case actions/buffs are added to the
+  // driver data
+  effect.disable_action();
+  effect.disable_buff();
 }
 
 void field_of_blossoms( special_effect_t& effect )
@@ -411,6 +413,9 @@ void field_of_blossoms( special_effect_t& effect )
     return;
 
   if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+    return;
+
+  if ( effect.player->sim->shadowlands_opts.field_of_blossoms_duration_multiplier == 0.0 )
     return;
 
   auto buff = buff_t::find( effect.player, "field_of_blossoms" );
@@ -423,7 +428,7 @@ void field_of_blossoms( special_effect_t& effect )
         make_buff( effect.player, "field_of_blossoms", effect.player->find_spell( 342774 ) )
             // the stat buff id=342774 has 15s duration, but the ground effect spell id=342761 only has a 10s duration
             ->set_duration( effect.player->find_spell( 342761 )->duration() )
-            ->set_duration_multiplier( duration_mod )
+            ->set_duration_multiplier( duration_mod * effect.player->sim->shadowlands_opts.field_of_blossoms_duration_multiplier )
             ->set_default_value_from_effect_type( A_HASTE_ALL )
             ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
@@ -536,6 +541,53 @@ void wild_hunt_tactics( special_effect_t& effect )
     effect.player->buffs.wild_hunt_tactics =
         make_buff( effect.player, "wild_hunt_tactics", effect.driver() )->set_default_value_from_effect( 1 );
 }
+
+// TODO: implement healing side
+// ID: 353286 - tracking buff to allow triggering of debuff
+// ID: 353254 - enemy damage taken debuff
+void wild_hunt_strategem( special_effect_t& effect )
+{
+  struct wild_hunt_strategem_cb_t : public dbc_proc_callback_t
+  {
+    double hp_pct_dmg;
+    buff_t* wild_hunt_strategem_tracking;
+
+    wild_hunt_strategem_cb_t( const special_effect_t& e, buff_t* b )
+      : dbc_proc_callback_t( e.player, e ),
+        hp_pct_dmg( e.driver()->effectN( 2 ).base_value() ),
+        wild_hunt_strategem_tracking( b )
+    {
+    }
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( !wild_hunt_strategem_tracking->check() )
+        return;
+
+      if ( s->target->health_percentage() < hp_pct_dmg && s->target != a->player )
+      {
+        auto td = a->player->get_target_data( s->target );
+        td->debuff.wild_hunt_strategem->trigger();
+        a->player->buffs.wild_hunt_strategem_tracking->expire();
+        dbc_proc_callback_t::trigger( a, s );
+      }
+    }
+  };
+
+  auto wild_hunt_strategem_tracking = buff_t::find( effect.player, "wild_hunt_strategem_tracking" );
+  if ( !wild_hunt_strategem_tracking )
+    wild_hunt_strategem_tracking =
+        make_buff( effect.player, "wild_hunt_strategem_tracking", effect.player->find_spell( 353286 ) );
+
+  if ( !effect.player->buffs.wild_hunt_strategem_tracking )
+    effect.player->buffs.wild_hunt_strategem_tracking = wild_hunt_strategem_tracking;
+
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+  effect.proc_chance_ = 1.0;
+
+  new wild_hunt_strategem_cb_t( effect, wild_hunt_strategem_tracking );
+}
+
 // Handled in unique_gear_shadowlands.cpp
 // void exacting_preparation( special_effect_t& effect ) {}
 
@@ -596,38 +648,50 @@ void thrill_seeker( special_effect_t& effect )
                        ->set_tick_behavior( buff_tick_behavior::NONE );
   }
 
-  struct euphoria_buff_t : public buff_t
+  auto euphoria_buff = buff_t::find( effect.player, "euphoria" );
+  if ( !euphoria_buff )
   {
-    euphoria_buff_t( player_t* p ) : buff_t( p, "euphoria", p->find_spell( 331937 ) )
+    euphoria_buff = make_buff( effect.player, "euphoria", effect.player->find_spell( 331937 ) )
+      ->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  }
+
+  counter_buff->set_stack_change_callback( [ euphoria_buff ]( buff_t* b, int, int ) {
+    if ( b->at_max_stacks() )
     {
-      set_default_value_from_effect_type( A_HASTE_ALL );
-      set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+      euphoria_buff->trigger();
+      make_event( b->sim, [ b ] { b->expire(); } );
+    }
+  } );
+
+  buff_t* fatal_flaw_crit = nullptr;
+  buff_t* fatal_flaw_vers = nullptr;
+
+  if ( effect.player->find_soulbind_spell( "Fatal Flaw" )->ok() )
+  {
+    fatal_flaw_crit = buff_t::find( effect.player, "fatal_flaw_crit" );
+    if ( !fatal_flaw_crit )
+    {
+      fatal_flaw_crit = make_buff( effect.player, "fatal_flaw_crit", effect.player->find_spell( 354053 ) )
+        ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
     }
 
-    void expire_override( int s, timespan_t d ) override
+    fatal_flaw_vers = buff_t::find( effect.player, "fatal_flaw_vers" );
+    if ( !fatal_flaw_vers )
     {
-      buff_t::expire_override( s, d );
-      if ( !player->buffs.fatal_flaw_crit || !player->buffs.fatal_flaw_vers )
-        return;
-
-      // Prefers crit at equal stats
-      if ( player->cache.spell_crit_chance() >= player->cache.damage_versatility() )
-        player->buffs.fatal_flaw_crit->trigger();
-      else
-        player->buffs.fatal_flaw_vers->trigger();
+      fatal_flaw_vers = make_buff( effect.player, "fatal_flaw_vers", effect.player->find_spell( 354054 ) )
+        ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
+        ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
     }
-  };
 
-  auto buff = buff_t::find( effect.player, "euphoria" );
-  if ( !buff )
-  {
-    buff = make_buff<euphoria_buff_t>( effect.player );
-
-    counter_buff->set_stack_change_callback( [ buff ]( buff_t* b, int, int ) {
-      if ( b->at_max_stacks() )
+    euphoria_buff->set_stack_change_callback( [ fatal_flaw_vers, fatal_flaw_crit ]( buff_t* b, int old, int cur ) {
+      if ( cur < old )
       {
-        buff->trigger();
-        b->expire();
+        if ( b->player->cache.spell_crit_chance() >= b->player->cache.damage_versatility() )
+          fatal_flaw_crit->trigger();
+        else
+          fatal_flaw_vers->trigger();
       }
     } );
   }
@@ -636,7 +700,11 @@ void thrill_seeker( special_effect_t& effect )
 
   // You still gain stacks while euphoria is active
   effect.player->register_combat_begin( [ eff_data, counter_buff ]( player_t* p ) {
-    make_repeating_event( *p->sim, eff_data->period(), [ counter_buff ] { counter_buff->trigger(); } );
+    make_repeating_event( *p->sim, eff_data->period(), [ counter_buff ] {
+      // if there are no active targets, assume we are simulating 'out of combat' and thrill seeker stops gaining stacks
+      if ( !counter_buff->sim->target_non_sleeping_list.empty() )
+        counter_buff->trigger();
+    } );
   } );
 
   auto p                     = effect.player;
@@ -648,7 +716,7 @@ void thrill_seeker( special_effect_t& effect )
   // DungeonSlice: 1/4 = 0.25
   if ( killing_blow_chance < 0 )
   {
-    if ( effect.player->sim->fight_style == "DungeonSlice" )
+    if ( p->sim->fight_style == "DungeonSlice" )
     {
       number_of_players = 4;
     }
@@ -679,23 +747,11 @@ void thrill_seeker( special_effect_t& effect )
 // Versatility - 354054
 void fatal_flaw( special_effect_t& effect )
 {
-  auto crit_buff = buff_t::find( effect.player, "fatal_flaw_crit" );
-  auto vers_buff = buff_t::find( effect.player, "fatal_flaw_vers" );
-  if ( !crit_buff )
-  {
-    crit_buff = make_buff( effect.player, "fatal_flaw_crit", effect.player->find_spell( 354053 ) )
-                    ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-                    ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
-  }
-  if ( !vers_buff )
-  {
-    vers_buff = make_buff( effect.player, "fatal_flaw_vers", effect.player->find_spell( 354054 ) )
-                    ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
-                    ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
-  }
+  if ( unique_gear::create_fallback_buffs( effect, { "fatal_flaw_crit", "fatal_flaw_vers" } ) )
+    return;
 
-  effect.player->buffs.fatal_flaw_crit = crit_buff;
-  effect.player->buffs.fatal_flaw_vers = vers_buff;
+  effect.disable_action();
+  effect.disable_buff();
 }
 
 void soothing_shade( special_effect_t& effect )
@@ -748,6 +804,7 @@ void party_favors( special_effect_t& effect )
   if ( !haste_buff )
   {
     haste_buff = make_buff( effect.player, "the_mad_dukes_tea_haste", effect.player->find_spell( 354016 ) )
+      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
       ->set_default_value_from_effect_type( A_HASTE_ALL )
       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
@@ -756,6 +813,7 @@ void party_favors( special_effect_t& effect )
   if ( !crit_buff )
   {
     crit_buff = make_buff( effect.player, "the_mad_dukes_tea_crit", effect.player->find_spell( 354017 ) )
+      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
       ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
   }
@@ -764,6 +822,7 @@ void party_favors( special_effect_t& effect )
   if ( !primary_buff )
   {
     primary_buff = make_buff( effect.player, "the_mad_dukes_tea_primary", effect.player->find_spell( 353266 ) )
+      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
       ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
       ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
       ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
@@ -774,6 +833,7 @@ void party_favors( special_effect_t& effect )
   if ( !vers_buff )
   {
     vers_buff = make_buff( effect.player, "the_mad_dukes_tea_versatility", effect.player->find_spell( 354018 ) )
+      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
       ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
       ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
   }
@@ -1042,8 +1102,8 @@ void valiant_strikes( special_effect_t& effect )
 
     valiant_strikes_event_t( valiant_strikes_t* v, timespan_t t = 0_ms ) :
       event_t( *v->sim, t ),
-      valiant_strikes( v ),
-      delta_time( t )
+      delta_time( t ),
+      valiant_strikes( v )
     {}
 
     const char* name() const override
@@ -1095,7 +1155,7 @@ void valiant_strikes( special_effect_t& effect )
   effect.proc_flags2_ = PF2_CRIT;
   new valiant_strikes_cb_t( effect, dormant_valor );
 
-  effect.player->register_combat_begin( [ valiant_strikes ]( player_t* p )
+  effect.player->register_combat_begin( [ valiant_strikes ]( player_t* )
     { make_event<valiant_strikes_event_t>( *valiant_strikes->sim, valiant_strikes ); } );
 }
 
@@ -1478,29 +1538,7 @@ void brons_call_to_action( special_effect_t& effect )
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( bron->is_active() )
-        return;
-
-      // Only class spells can proc Bron's Call to Action.
-      // TODO: Is this an accurate way to detect this?
-      if ( !a->data().flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS ) )
-        return;
-
-      // Because this callback triggers on both cast and impact, spells are categorized into triggering on one of cast or impact.
-      // TODO: This isn't completely accurate, but seems to be relatively close. More classes/spells needs to be looked at.
-      bool action_triggers_on_impact = a->background || a->data().flags( spell_attribute::SX_ABILITY )
-        || range::any_of( a->data().effects(), [] ( const spelleffect_data_t& e ) { return e.type() == E_TRIGGER_MISSILE; } );
-
-      a->sim->print_debug( "'{}' attempts to trigger brons_call_to_action: action='{}', execute_proc_type2='{}', cast_proc_type2='{}', impact_proc_type2='{}', triggers_on='{}'",
-        a->player->name_str, a->name_str, util::proc_type2_string( s->execute_proc_type2() ), util::proc_type2_string( s->cast_proc_type2() ),
-        util::proc_type2_string( s->impact_proc_type2() ), action_triggers_on_impact ? "impact" : "cast" );
-
-      // If the spell triggers on cast and this is an impact trigger attempt, skip it.
-      if ( s->impact_proc_type2() != PROC2_INVALID && !action_triggers_on_impact )
-        return;
-
-      // If the spell triggers on impact and this is not an imapct trigger attempt, skip it.
-      if ( s->impact_proc_type2() == PROC2_INVALID && action_triggers_on_impact )
+      if ( bron->is_active() || a->background )
         return;
 
       dbc_proc_callback_t::trigger( a, s );
@@ -1520,7 +1558,11 @@ void brons_call_to_action( special_effect_t& effect )
     }
   };
 
-  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL | PF2_ALL_HIT;
+  // TODO: This technically uses proc flag 34 (Cast Successful), which currently isn't supported by simc.
+  // For now, model this by allowing PF flags for any action and use PF2 flags to only trigger from casts
+  // that can produce a nonzero result.
+  effect.proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL | PF_PERIODIC;
+  effect.proc_flags2_ = PF2_CAST_DAMAGE | PF2_CAST_HEAL;
 
   effect.custom_buff = buff_t::find( effect.player, "brons_call_to_action" );
   if ( !effect.custom_buff )
@@ -1595,11 +1637,18 @@ void effusive_anima_accelerator( special_effect_t& effect )
   add_covenant_cast_callback<covenant_cb_action_t>( effect.player, new effusive_anima_accelerator_t( effect ) );
 }
 
+// 352186: Driver
+// 352939: Damage taken debuff
+// 352938: Healing done buff
+// 352940, 358379: Hidden 15s placeholder buffs, probably to control refreshing mechanism
 void soulglow_spectrometer( special_effect_t& effect )
 {
   struct soulglow_spectrometer_cb_t : public dbc_proc_callback_t
   {
-    soulglow_spectrometer_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    buff_t* debuff;
+
+    soulglow_spectrometer_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), debuff( nullptr )
     {
     }
 
@@ -1607,11 +1656,16 @@ void soulglow_spectrometer( special_effect_t& effect )
     {
       dbc_proc_callback_t::execute( a, s );
 
-      auto td = a->player->get_target_data( s->target );
+      // Ignore the friendly case for now until the healing proc is implemented correctly
+      if ( !s->target->is_enemy() )
+        return;
 
-      // Prevent two events coming in at the same time from triggering more than 1 stack
-      if ( !td->debuff.soulglow_spectrometer->check() )
-        td->debuff.soulglow_spectrometer->trigger();
+      // If the buff is up on any other target, bail out. This is needed for AoE impact triggers
+      if ( debuff && debuff->check() )
+        return;
+
+      debuff = a->player->get_target_data( s->target )->debuff.soulglow_spectrometer;
+      debuff->trigger();
     }
 
     void reset() override
@@ -1621,6 +1675,11 @@ void soulglow_spectrometer( special_effect_t& effect )
       activate();
     }
   };
+
+  // Disable healing procs for now until the healing proc is implemented correctly
+  // Logs show damage+healing are distinct buffs, not exclusive. The player can have one of each up.
+  // TODO: Implement healing self-buff as it may be potentially relevant for tank specializations
+  effect.proc_flags_ = effect.proc_flags() & ~( PF_ALL_HEAL );
 
   new soulglow_spectrometer_cb_t( effect );
 }
@@ -1632,6 +1691,11 @@ void soulglow_spectrometer( special_effect_t& effect )
 // 323506: giant (physical damage)
 void volatile_solvent( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs(
+           effect, { "volatile_solvent_humanoid", "volatile_solvent_beast", "volatile_solvent_dragonkin",
+                     "volatile_solvent_elemental", "volatile_solvent_giant" } ) )
+    return;
+
   auto opt_str = effect.player->sim->shadowlands_opts.volatile_solvent_type;
   if ( util::str_compare_ci( opt_str, "none" ) )
     return;
@@ -2033,10 +2097,20 @@ void carvers_eye( special_effect_t& effect )
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      // Can only proc on a target you haven't procced on for 10s
+      // Don't proc on existing targets
+      //
+      // Note, in game it seems that the target being checked against in terms of the
+      // debuff is actually the actor's target, not the proccing action's target.
+      //
+      // Simulationcraft cant easily model that scenario currently, so we use the action's
+      // target here instead. This is probably how it is intended to work anyhow.
       auto td = a->player->get_target_data( s->target );
-      if ( s->target->health_percentage() > hp_pct && s->target != a->player &&
-           !td->debuff.carvers_eye_debuff->check() )
+      if ( td->debuff.carvers_eye_debuff->check() )
+      {
+        return;
+      }
+
+      if ( s->target->health_percentage() > hp_pct )
       {
         td->debuff.carvers_eye_debuff->trigger();
         buff->trigger();
@@ -2337,7 +2411,7 @@ void pustule_eruption( special_effect_t& effect )
       make_buff( effect.player, "trembling_pustules", effect.player->find_spell( 352086 ) )
       ->set_period( effect.player->sim->shadowlands_opts.pustule_eruption_interval )
       ->set_reverse( true )
-      ->set_tick_callback( [ damage, heal ]( buff_t* b, int, timespan_t )
+      ->set_tick_callback( [ damage, heal ]( buff_t*, int, timespan_t )
       {
         damage->set_target( damage->player->target );
         damage->execute();
@@ -2410,11 +2484,12 @@ void register_special_effects()
   register_soulbind_special_effect( 352786, soulbinds::dream_delver );
   register_soulbind_special_effect( 325069, soulbinds::first_strike, true );  // Korayn
   register_soulbind_special_effect( 325066, soulbinds::wild_hunt_tactics );
+  register_soulbind_special_effect( 352805, soulbinds::wild_hunt_strategem );
   // Venthyr
   // register_soulbind_special_effect( 331580, soulbinds::exacting_preparation );  // Nadjia
   register_soulbind_special_effect( 331584, soulbinds::dauntless_duelist );
   register_soulbind_special_effect( 331586, soulbinds::thrill_seeker, true );
-  register_soulbind_special_effect( 352373, soulbinds::fatal_flaw );
+  register_soulbind_special_effect( 352373, soulbinds::fatal_flaw, true );
   register_soulbind_special_effect( 336239, soulbinds::soothing_shade );  // Theotar
   register_soulbind_special_effect( 319983, soulbinds::wasteland_propriety );
   register_soulbind_special_effect( 351750, soulbinds::party_favors );
@@ -2436,7 +2511,7 @@ void register_special_effects()
   register_soulbind_special_effect( 352188, soulbinds::effusive_anima_accelerator );
   register_soulbind_special_effect( 352186, soulbinds::soulglow_spectrometer );
   // Necrolord
-  register_soulbind_special_effect( 323074, soulbinds::volatile_solvent );  // Marileth
+  register_soulbind_special_effect( 323074, soulbinds::volatile_solvent, true );  // Marileth
   register_soulbind_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
   register_soulbind_special_effect( 352110, soulbinds::kevins_oozeling );
   register_soulbind_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
@@ -2453,15 +2528,23 @@ void register_special_effects()
   unique_gear::register_special_effect( 344052, soulbinds::deepening_bond );  // Night Fae Rank 1
   unique_gear::register_special_effect( 344053, soulbinds::deepening_bond );  // Night Fae Rank 2
   unique_gear::register_special_effect( 344057, soulbinds::deepening_bond );  // Night Fae Rank 3
+  unique_gear::register_special_effect( 353870, soulbinds::deepening_bond );  // Night Fae Rank 4
+  unique_gear::register_special_effect( 353886, soulbinds::deepening_bond );  // Night Fae Rank 5
   unique_gear::register_special_effect( 344068, soulbinds::deepening_bond );  // Venthyr Rank 1
   unique_gear::register_special_effect( 344069, soulbinds::deepening_bond );  // Venthyr Rank 2
   unique_gear::register_special_effect( 344070, soulbinds::deepening_bond );  // Venthyr Rank 3
+  unique_gear::register_special_effect( 354195, soulbinds::deepening_bond );  // Venthyr Rank 4
+  unique_gear::register_special_effect( 354204, soulbinds::deepening_bond );  // Venthyr Rank 5
   unique_gear::register_special_effect( 344076, soulbinds::deepening_bond );  // Necrolord Rank 1
   unique_gear::register_special_effect( 344077, soulbinds::deepening_bond );  // Necrolord Rank 2
   unique_gear::register_special_effect( 344078, soulbinds::deepening_bond );  // Necrolord Rank 3
+  unique_gear::register_special_effect( 354025, soulbinds::deepening_bond );  // Necrolord Rank 4
+  unique_gear::register_special_effect( 354129, soulbinds::deepening_bond );  // Necrolord Rank 5
   unique_gear::register_special_effect( 344087, soulbinds::deepening_bond );  // Kyrian Rank 1
   unique_gear::register_special_effect( 344089, soulbinds::deepening_bond );  // Kyrian Rank 2
   unique_gear::register_special_effect( 344091, soulbinds::deepening_bond );  // Kyrian Rank 3
+  unique_gear::register_special_effect( 354252, soulbinds::deepening_bond );  // Kyrian Rank 4
+  unique_gear::register_special_effect( 354257, soulbinds::deepening_bond );  // Kyrian Rank 5
 }
 
 action_t* create_action( player_t* player, util::string_view name, const std::string& options )
@@ -2602,31 +2685,39 @@ void register_target_data_initializers( sim_t* sim )
   sim->register_target_data_initializer( []( actor_target_data_t* td ) {
     auto data = td->source->find_soulbind_spell( "Soulglow Spectrometer" );
 
-    if ( data->ok() )
+    if ( !data->ok() )
+    {
+      td->debuff.soulglow_spectrometer = make_buff( *td, "soulglow_spectrometer" )->set_quiet( true );
+      return;
+    }
+
+    // Disable healing procs for now until the healing proc is implemented correctly
+    if ( td->target->is_enemy() )
     {
       assert( !td->debuff.soulglow_spectrometer );
 
-      auto soulglow_spectrometer_cb_it =
-          range::find_if( td->source->callbacks.all_callbacks, [ data ]( action_callback_t* t ) {
-            return static_cast<dbc_proc_callback_t*>( t )->effect.spell_id == data->id();
-          } );
+      auto soulglow_spectrometer_damage_cb =
+        *(range::find_if( td->source->callbacks.all_callbacks, [ data ]( action_callback_t* t ) {
+        return static_cast<dbc_proc_callback_t*>( t )->effect.spell_id == data->id();
+      } ));
 
       // When an enemy dies or the debuff expires allow the user to proc the debuff again on the next target
       td->debuff.soulglow_spectrometer =
-          make_buff( *td, "soulglow_spectrometer", td->source->find_spell( 352939 ) )
-              ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
-              ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-              ->set_stack_change_callback( [ soulglow_spectrometer_cb_it ]( buff_t*, int old, int cur ) {
-                auto soulglow_cb = *soulglow_spectrometer_cb_it;
-                if ( old == 0 )
-                  soulglow_cb->deactivate();
-                else if ( cur == 0 )
-                  soulglow_cb->activate();
-              } );
+        make_buff( *td, "soulglow_spectrometer", td->source->find_spell( 352939 ) )
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
+        ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+        ->set_stack_change_callback( [ soulglow_spectrometer_damage_cb ]( buff_t*, int old, int cur ) {
+          if ( old == 0 )
+            soulglow_spectrometer_damage_cb->deactivate();
+          else if ( cur == 0 )
+            soulglow_spectrometer_damage_cb->activate();
+      } );
       td->debuff.soulglow_spectrometer->reset();
     }
     else
+    {
       td->debuff.soulglow_spectrometer = make_buff( *td, "soulglow_spectrometer" )->set_quiet( true );
+    }
   } );
 
   // Kevin's Wrath
@@ -2650,6 +2741,20 @@ void register_target_data_initializers( sim_t* sim )
     }
     else
       td->debuff.kevins_wrath = make_buff( *td, "kevins_wrath" )->set_quiet( true );
+  } );
+
+  // Wild Hunt Strategem
+  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( td->source->find_soulbind_spell( "Wild Hunt Strategem" )->ok() )
+    {
+      assert( !td->debuff.wild_hunt_strategem );
+
+      td->debuff.wild_hunt_strategem = make_buff( *td, "wild_hunt_strategem", td->source->find_spell( 353254 ) )
+                                           ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
+      td->debuff.wild_hunt_strategem->reset();
+    }
+    else
+      td->debuff.wild_hunt_strategem = make_buff( *td, "wild_hunt_strategem" )->set_quiet( true );
   } );
 }
 

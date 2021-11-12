@@ -7,8 +7,8 @@ role=attack
 position=back
 talents=3320021
 covenant=venthyr
-soulbind=nadjia_the_mistblade,thrill_seeker/lashing_scars:7/dauntless_duelist
-renown=40
+soulbind=nadjia_the_mistblade,thrill_seeker/lashing_scars:9:1/dauntless_duelist/wellplaced_steel:9:1/fatal_flaw
+renown=80
 
 # Default consumables
 potion=phantom_fire
@@ -30,14 +30,14 @@ actions.precombat+=/augmentation
 actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/marked_for_death,precombat_seconds=10,if=raid_event.adds.in>15
-actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption
+actions.precombat+=/marked_for_death,precombat_seconds=10,if=!covenant.venthyr&raid_event.adds.in>15
+actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent
 actions.precombat+=/variable,name=vendetta_cdr,value=1-(runeforge.duskwalkers_patch*0.45)
 # The average CDR is 0.22 but due to the RNG nature of CP gen, 2x this value is optimal for syncing logic
 actions.precombat+=/variable,name=flagellation_cdr,value=1-(runeforge.obedience*0.44)
 # Determine which (if any) stat buff trinket we want to attempt to sync with Vendetta.
-actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|trinket.1.is.inscrutable_quantum_device
-actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)|trinket.2.is.inscrutable_quantum_device
+actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|trinket.1.is.inscrutable_quantum_device|(trinket.1.is.shadowgrasp_totem&covenant.venthyr)
+actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)|trinket.2.is.inscrutable_quantum_device|(trinket.2.is.shadowgrasp_totem&covenant.venthyr)
 actions.precombat+=/stealth
 actions.precombat+=/slice_and_dice,precombat_seconds=1
 
@@ -50,7 +50,7 @@ actions+=/variable,name=single_target,value=spell_targets.fan_of_knives<2
 # Combined Energy Regen needed to saturate
 actions+=/variable,name=regen_saturated,value=energy.regen_combined>35
 actions+=/call_action_list,name=stealthed,if=stealthed.rogue
-actions+=/call_action_list,name=cds,if=(!talent.master_assassin.enabled|dot.garrote.ticking)
+actions+=/call_action_list,name=cds
 # Put SnD up initially for Cut to the Chase, refresh with Envenom if at low duration
 actions+=/slice_and_dice,if=!buff.slice_and_dice.up&combo_points>=1
 actions+=/envenom,if=buff.slice_and_dice.up&buff.slice_and_dice.remains<5&combo_points>=4
@@ -63,28 +63,30 @@ actions+=/bag_of_tricks
 
 # Cooldowns
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP.
-actions.cds=marked_for_death,line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit*1.5|combo_points.deficit>=cp_max_spend)
-# If no adds will die within the next 30s, use MfD on boss without any CP.
-actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend
-# Fleshcraft for Pustule Eruption if not stealthed or in a cooldown cycle
-actions.cds+=/fleshcraft,if=soulbind.pustule_eruption&!stealthed.all&!debuff.vendetta.up&master_assassin_remains=0&(energy.time_to_max_combined>2|!debuff.shiv.up)
-# Sync Flagellation with Vendetta as long as we won't lose a cast over the fight duration
-actions.cds+=/flagellation,if=!stealthed.rogue&(cooldown.vendetta.remains<3&effective_combo_points>=4&target.time_to_die>10|debuff.vendetta.up|fight_remains<24)
-actions.cds+=/flagellation,if=!stealthed.rogue&effective_combo_points>=4&(floor((fight_remains-24)%(cooldown*variable.flagellation_cdr))>floor((fight_remains-24-cooldown.vendetta.remains*variable.vendetta_cdr)%(cooldown*variable.flagellation_cdr)))
-# Sync Sepsis with Vendetta as long as we won't lose a cast over the fight duration, but prefer targets that will live at least 10s
-actions.cds+=/sepsis,if=!stealthed.rogue&(cooldown.vendetta.remains<1&target.time_to_die>10|debuff.vendetta.up|fight_remains<10)
-actions.cds+=/sepsis,if=!stealthed.rogue&(floor((fight_remains-10)%cooldown)>floor((fight_remains-10-cooldown.vendetta.remains*variable.vendetta_cdr)%cooldown))
+actions.cds=marked_for_death,line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(!variable.single_target|target.time_to_die<30)&(target.time_to_die<combo_points.deficit*1.5|combo_points.deficit>=cp_max_spend)
+# If no adds will die within the next 30s, use MfD for max CP. Attempt to sync with Flagellation if possible.
+actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend&!cooldown.shiv.ready&(!covenant.venthyr|debuff.flagellation.up|cooldown.flagellation.remains>15)
 # Sync Vendetta window with Nightstalker+Exsanguinate if applicable
 actions.cds+=/variable,name=vendetta_nightstalker_condition,value=!talent.nightstalker.enabled|!talent.exsanguinate.enabled|cooldown.exsanguinate.remains<5-2*talent.deeper_stratagem.enabled
+# Wait on Vendetta for Garrote with MA, unless we are at max CP for Flagellation
+actions.cds+=/variable,name=vendetta_ma_condition,value=!talent.master_assassin.enabled|dot.garrote.ticking|covenant.venthyr&combo_points.deficit=0
 # Sync Vendetta with Flagellation and Sepsis as long as we won't lose a cast over the fight duration
 actions.cds+=/variable,name=vendetta_covenant_condition,if=covenant.kyrian|covenant.necrolord|covenant.none,value=1
 actions.cds+=/variable,name=vendetta_covenant_condition,if=covenant.venthyr,value=floor((fight_remains-20)%(120*variable.vendetta_cdr))>floor((fight_remains-20-cooldown.flagellation.remains)%(120*variable.vendetta_cdr))|buff.flagellation_buff.up|debuff.flagellation.up|fight_remains<20
 actions.cds+=/variable,name=vendetta_covenant_condition,if=covenant.night_fae,value=floor((fight_remains-20)%(120*variable.vendetta_cdr))>floor((fight_remains-20-cooldown.sepsis.remains)%(120*variable.vendetta_cdr))|dot.sepsis.ticking|fight_remains<20
-actions.cds+=/vendetta,if=!stealthed.rogue&dot.rupture.ticking&!debuff.vendetta.up&variable.vendetta_nightstalker_condition&variable.vendetta_covenant_condition
+# Fleshcraft for Pustule Eruption if not stealthed or in a cooldown cycle
+actions.cds+=/fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)&!stealthed.all&!debuff.vendetta.up&master_assassin_remains=0&(energy.time_to_max_combined>2|!debuff.shiv.up)
+# Sync Flagellation with Vendetta as long as we won't lose a cast over the fight duration
+actions.cds+=/flagellation,if=!stealthed.rogue&(cooldown.vendetta.remains<3&variable.vendetta_ma_condition&effective_combo_points>=4&target.time_to_die>10|debuff.vendetta.up|fight_remains<24)
+actions.cds+=/flagellation,if=!stealthed.rogue&effective_combo_points>=4&(floor((fight_remains-24)%(cooldown*variable.flagellation_cdr))>floor((fight_remains-24-cooldown.vendetta.remains*variable.vendetta_cdr)%(cooldown*variable.flagellation_cdr)))
+# Sync Sepsis with Vendetta as long as we won't lose a cast over the fight duration, but prefer targets that will live at least 10s
+actions.cds+=/sepsis,if=!stealthed.rogue&(cooldown.vendetta.remains<1&target.time_to_die>10|debuff.vendetta.up|fight_remains<10)
+actions.cds+=/sepsis,if=!stealthed.rogue&(floor((fight_remains-10)%cooldown)>floor((fight_remains-10-cooldown.vendetta.remains*variable.vendetta_cdr)%cooldown))
+actions.cds+=/vendetta,if=!stealthed.rogue&dot.rupture.ticking&!debuff.vendetta.up&variable.vendetta_nightstalker_condition&variable.vendetta_ma_condition&variable.vendetta_covenant_condition
 # Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough.
 actions.cds+=/exsanguinate,if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4
 # Shiv if we are about to Envenom, and attempt to sync with Sepsis final hit if we won't waste more than half the cooldown.
-actions.cds+=/shiv,if=dot.rupture.ticking&(!cooldown.sepsis.ready|cooldown.vendetta.remains>12)|dot.sepsis.ticking
+actions.cds+=/shiv,if=dot.garrote.ticking&dot.rupture.ticking&(!cooldown.sepsis.ready|cooldown.vendetta.remains>12)|dot.sepsis.ticking
 actions.cds+=/potion,if=buff.bloodlust.react|fight_remains<30|debuff.vendetta.up
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
@@ -97,7 +99,7 @@ actions.cds+=/use_items,slots=trinket2,if=variable.trinket_sync_slot=2&(debuff.v
 
 # Direct damage abilities
 # Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up.
-actions.direct=envenom,if=effective_combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.shiv.up|debuff.flagellation.up|energy.deficit<=25+energy.regen_combined|!variable.single_target)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)
+actions.direct=envenom,if=effective_combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.shiv.up|debuff.flagellation.up|energy.deficit<=25+energy.regen_combined|!variable.single_target|effective_combo_points>cp_max_spend)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)
 actions.direct+=/variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+energy.regen_combined|!variable.single_target
 # Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target
 actions.direct+=/serrated_bone_spike,if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking
@@ -137,7 +139,7 @@ actions.dot+=/rupture,cycle_targets=1,if=!variable.skip_cycle_rupture&!variable.
 # Fallback AoE Crimson Tempest with the same logic as above, but ignoring the energy conditions if we aren't using Rupture
 actions.dot+=/crimson_tempest,if=spell_targets>=2&effective_combo_points>=4&remains<2+3*(spell_targets>=4)
 # Crimson Tempest on ST if in pandemic and nearly max energy and if Envenom won't do more damage due to TB/MA
-actions.dot+=/crimson_tempest,if=spell_targets=1&!runeforge.dashing_scoundrel&master_assassin_remains=0&effective_combo_points>=(cp_max_spend-1)&refreshable&!exsanguinated&(!debuff.shiv.up&(energy.deficit<=25+energy.regen_combined))&target.time_to_die-remains>4
+actions.dot+=/crimson_tempest,if=spell_targets=1&(!runeforge.dashing_scoundrel|rune_word.frost.enabled)&master_assassin_remains=0&effective_combo_points>=(cp_max_spend-1)&refreshable&!exsanguinated&!debuff.shiv.up&target.time_to_die-remains>4
 
 # Stealthed Actions
 # Nighstalker on 3T: Crimson Tempest
@@ -164,30 +166,30 @@ actions.vanish+=/vanish,if=talent.subterfuge.enabled&cooldown.garrote.up&(dot.ga
 # Vanish with Master Assasin: Rupture+Garrote not in refresh range, during Vendetta+Shiv. Sync with Sepsis final hit if possible.
 actions.vanish+=/vanish,if=(talent.master_assassin.enabled|runeforge.mark_of_the_master_assassin)&!dot.rupture.refreshable&dot.garrote.remains>3&debuff.vendetta.up&(debuff.shiv.up|debuff.vendetta.remains<4|dot.sepsis.ticking)&dot.sepsis.remains<3
 
-head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173127
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
-shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=corset_of_the_deft_duelist,id=182989,bonus_id=7187/1498,enchant=eternal_stats
-wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173127
-hands=umbrahide_gauntlets,id=172316,bonus_id=6647/6649/6758/7116/1532
-waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498/6935,gem_id=173127
-legs=fearless_challengers_leggings,id=178801,bonus_id=6536/1540/6646
-feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
-finger1=arachnid_cipher_ring,id=178933,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_versatility
-finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_versatility
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=celestial_guidance
-off_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=sinful_revelation
+head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187312
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498,gem_id=173128
+shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187315
+back=grimveiled_cape,id=173242,bonus_id=6716/7115/6647/6650/1559
+chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498,gem_id=187318,enchant=eternal_stats
+wrists=risen_monstrosity_cuffs,id=178741,bonus_id=6536/1566/6646,gem_id=173128
+hands=loyal_kvaldirs_handwraps,id=186295,bonus_id=7187/1498,gem_id=187316
+waist=windrunners_baldric,id=186332,bonus_id=7187/1498,gem_id=173128
+legs=elite_aranakk_breeches,id=186331,bonus_id=7187/1498
+feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187317,enchant=eternal_agility
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
+finger2=arachnid_cipher_ring,id=178933,bonus_id=6536/1566/6646,gem_id=173128,enchant=tenet_of_haste
+trinket1=salvaged_fusion_amplifier,id=186432,bonus_id=7187/1498
+trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
+main_hand=edge_of_night,id=186398,bonus_id=7187/1498,enchant=celestial_guidance
+off_hand=edge_of_night,id=186398,bonus_id=7187/1498,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=229.19
-# gear_agility=887
-# gear_stamina=1520
+# gear_ilvl=256.13
+# gear_agility=1121
+# gear_stamina=2121
 # gear_attack_power=40
-# gear_crit_rating=795
-# gear_haste_rating=664
-# gear_mastery_rating=122
-# gear_versatility_rating=368
-# gear_armor=608
+# gear_crit_rating=935
+# gear_haste_rating=767
+# gear_mastery_rating=50
+# gear_versatility_rating=321
+# gear_armor=719

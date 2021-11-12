@@ -86,6 +86,9 @@ public:
   // Buffs
   struct
   {
+    // Generic
+    propagate_const<buff_t*> desperate_prayer;
+
     // Talents
     propagate_const<buff_t*> twist_of_fate;
 
@@ -122,6 +125,7 @@ public:
     propagate_const<buff_t*> rigor_mortis;
 
     // Conduits
+    propagate_const<buff_t*> translucent_image;
     propagate_const<buff_t*> mind_devourer;
     propagate_const<buff_t*> dissonant_echoes;
 
@@ -202,6 +206,7 @@ public:
     const spell_data_t* mind_sear_insanity;
     const spell_data_t* priest;  // General priest data
     const spell_data_t* shadow_word_death;
+    const spell_data_t* shadow_word_death_self_damage;
 
     // Discipline
     const spell_data_t* discipline_priest;       // General discipline data
@@ -287,7 +292,6 @@ public:
     propagate_const<gain_t*> painbreaker_psalm;
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> power_word_solace;
-    propagate_const<gain_t*> shadow_word_death_self_damage;
   } gains;
 
   // Benefits
@@ -370,10 +374,6 @@ public:
     // Fae Blessings CDR can be given to another player, but you can still get the insanity gen
     bool self_benevolent_faerie = true;
 
-    // Add "bugged" targets to Ascended Eruption for the SQRT calculation
-    // Setting to 0 turns off the bug
-    int ascended_eruption_additional_targets = 0;
-
     // The amount of allies to assume for Cauterizing Shadows healing
     int cauterizing_shadows_allies = 3;
 
@@ -391,8 +391,8 @@ public:
     // Sets number of allies to use as an artificial modifier for Rigor Mortis stacks
     // For each damage ability the priest will do it will add the amount of stacks equal
     // to the number of allies
-    // TODO: tune this around raid testing
-    int pallid_command_allies = 5;
+    // 20m raid this stacks in 1-2s
+    int pallid_command_allies = 50;
   } options;
 
   // Legendaries
@@ -425,6 +425,7 @@ public:
   {
     // Generic Priest
     conduit_data_t power_unto_others;
+    conduit_data_t translucent_image;
     // Holy
     conduit_data_t holy_oration;  // NYI
     // Discipline
