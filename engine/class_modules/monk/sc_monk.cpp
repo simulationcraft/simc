@@ -1557,7 +1557,12 @@ struct blackout_kick_t : public monk_melee_attack_t
           // Reduce the cooldown of Rising Sun Kick and Fists of Fury
           timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
           if ( p()->buff.weapons_of_order->up() )
+          {
             cd_reduction += ( -1 * p()->covenant.kyrian->effectN( 8 ).time_value() );
+            p()->proc.blackout_kick_cdr_with_woo->occur();
+          }
+          else
+            p()->proc.blackout_kick_cdr_without_woo->occur();
 
           p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
           p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
@@ -6866,7 +6871,9 @@ void monk_t::init_procs()
 {
   base_t::init_procs();
 
-  proc.bok_proc                       = get_proc( "Blackout Kick Proc" );
+  proc.blackout_kick_cdr_without_woo  = get_proc( "Blackout Kick CDR without WoO" );
+  proc.blackout_kick_cdr_with_woo     = get_proc( "Blackout Kick CDR with WoO" );
+  proc.bok_proc                       = get_proc( "Blackout Kick! Proc" );
   proc.boiling_brew_healing_sphere    = get_proc( "Boiling Brew Healing Sphere" );
   proc.bonedust_brew_reduction        = get_proc( "Bonedust Brew SCK Reduction" );
   proc.rsk_reset_totm                 = get_proc( "Rising Sun Kick TotM Reset" );
