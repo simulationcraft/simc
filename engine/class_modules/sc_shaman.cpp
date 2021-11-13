@@ -6901,7 +6901,6 @@ struct raging_vesper_vortex_t : public shaman_spell_t
   raging_vesper_vortex_t( shaman_t* player )
     : shaman_spell_t( "raging_vesper_vortex", player, player->find_spell( 356790 ) )
   {
-    aoe        = -1;
     ground_aoe = background = true;
   }
 
