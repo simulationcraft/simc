@@ -4438,6 +4438,10 @@ struct echoing_reprimand_t : public rogue_attack_t
 
     if ( result_is_hit( state->result ) )
     {
+      // Casting Echoing Reprimand cancels all existing buffs. Relevant for CDR trait in AoE.
+      for ( buff_t* b : p()->buffs.echoing_reprimand )
+        b->expire();
+
       if ( p()->legendary.resounding_clarity->ok() )
       {
         for ( buff_t* b : p()->buffs.echoing_reprimand )
