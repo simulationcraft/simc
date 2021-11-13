@@ -302,6 +302,13 @@ public:
   {
     proc_t* bok_proc;
     proc_t* boiling_brew_healing_sphere;
+    proc_t* bonedust_brew_reduction;
+    proc_t* rsk_reset_totm;
+    proc_t* sinister_teaching_reduction;
+    proc_t* spitfire_reset;
+    proc_t* tumbling_technique_chi_torpedo;
+    proc_t* tumbling_technique_roll;
+    proc_t* xuens_battlegear_reduction;
   } proc;
 
   struct talents_t

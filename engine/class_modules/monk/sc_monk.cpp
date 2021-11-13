@@ -469,6 +469,7 @@ public:
       {
         p()->cooldown.fallen_order->adjust( -1 * p()->legendary.sinister_teachings->effectN( 3 ).time_value() );
         p()->cooldown.sinister_teachings->start( p()->legendary.sinister_teachings->internal_cooldown() );
+        p()->proc.sinister_teaching_reduction->occur();
       }
     }
 
@@ -1150,6 +1151,7 @@ struct tiger_palm_t : public monk_melee_attack_t
           if ( rng().roll( p()->talent.spitfire->proc_chance() ) )
           {
             p()->cooldown.breath_of_fire->reset( true );
+            p()->proc.spitfire_reset->occur();
             p()->buff.spitfire->trigger();
           }
         }
@@ -1275,7 +1277,10 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
         }
 
         if ( p()->legendary.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
+        {
           p()->cooldown.fists_of_fury->adjust( -1 * p()->legendary.xuens_battlegear->effectN( 2 ).time_value(), true );
+          p()->proc.xuens_battlegear_reduction->occur();
+        }
 
         // Apply Mark of the Crane
         if ( p()->spec.spinning_crane_kick_2_ww->ok() )
@@ -1403,15 +1408,24 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
       return;
 
     if ( rng().roll( p()->spec.teachings_of_the_monastery->effectN( 1 ).percent() ) )
+    {
       p()->cooldown.rising_sun_kick->reset( true );
+      p()->proc.rsk_reset_totm->occur();
+    }
 
     if ( p()->conduit.tumbling_technique->ok() &&
          rng().roll( p()->conduit.tumbling_technique->effectN( 1 ).percent() ) )
     {
       if ( p()->talent.chi_torpedo->ok() )
+      {
         p()->cooldown.chi_torpedo->reset( true, 1 );
+        p()->proc.tumbling_technique_chi_torpedo->occur();
+      }
       else
+      {
         p()->cooldown.roll->reset( true, 1 );
+        p()->proc.tumbling_technique_roll->occur();
+      }
     }
 
     trigger_shuffle( p()->spec.blackout_kick->effectN( 2 ).base_value() );
@@ -1530,7 +1544,10 @@ struct blackout_kick_t : public monk_melee_attack_t
       case MONK_MISTWEAVER:
       {
         if ( rng().roll( p()->spec.teachings_of_the_monastery->effectN( 1 ).percent() ) )
+        {
           p()->cooldown.rising_sun_kick->reset( true );
+          p()->proc.rsk_reset_totm->occur();
+        }
         break;
       }
       case MONK_WINDWALKER:
@@ -1554,9 +1571,15 @@ struct blackout_kick_t : public monk_melee_attack_t
     if ( p()->conduit.tumbling_technique->ok() && rng().roll( p()->conduit.tumbling_technique.percent() ) )
     {
       if ( p()->talent.chi_torpedo->ok() )
+      {
         p()->cooldown.chi_torpedo->reset( true, 1 );
+        p()->proc.tumbling_technique_chi_torpedo->occur();
+      }
       else
+      {
         p()->cooldown.roll->reset( true, 1 );
+        p()->proc.tumbling_technique_roll->occur();
+      }
     }
   }
 
@@ -3912,6 +3935,7 @@ struct bonedust_brew_damage_t : public monk_spell_t
       p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
 
       p()->buff.bonedust_brew_hidden->decrement();
+      p()->proc.bonedust_brew_reduction->occur();
     }
   }
 };
@@ -3937,6 +3961,7 @@ struct bonedust_brew_heal_t : public monk_heal_t
       p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
 
       p()->buff.bonedust_brew_hidden->decrement();
+      p()->proc.bonedust_brew_reduction->occur();
     }
   }
 };
@@ -6841,8 +6866,15 @@ void monk_t::init_procs()
 {
   base_t::init_procs();
 
-  proc.bok_proc                    = get_proc( "bok_proc" );
-  proc.boiling_brew_healing_sphere = get_proc( "Boiling Brew Healing Sphere" );
+  proc.bok_proc                       = get_proc( "Blackout Kick Proc" );
+  proc.boiling_brew_healing_sphere    = get_proc( "Boiling Brew Healing Sphere" );
+  proc.bonedust_brew_reduction        = get_proc( "Bonedust Brew SCK Reduction" );
+  proc.rsk_reset_totm                 = get_proc( "Rising Sun Kick TotM Reset" );
+  proc.spitfire_reset                 = get_proc( "Spitfire Reset" );
+  proc.sinister_teaching_reduction    = get_proc( "Sinister Teaching CD Reduction" );
+  proc.tumbling_technique_chi_torpedo = get_proc( "Tumbling Technique Chi Torpedo Reset" );
+  proc.tumbling_technique_roll        = get_proc( "Tumbling Technique Roll Reset" );
+  proc.xuens_battlegear_reduction     = get_proc( "Xuen's Battlegear CD Reduction" );
 }
 
 // monk_t::init_assessors ===================================================
