@@ -971,15 +971,24 @@ struct crackling_surge_buff_t : public buff_t
 
 struct maelstrom_weapon_buff_t : public buff_t
 {
-  maelstrom_weapon_buff_t( shaman_t* p ) : buff_t( p, "maelstrom_weapon", p->find_spell( 344179 ) )
+  shaman_t* shaman;
+
+  maelstrom_weapon_buff_t( shaman_t* p ) :
+    buff_t( p, "maelstrom_weapon", p->find_spell( 344179 ) ), shaman( p )
+  { }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    set_stack_change_callback( [ p ]( buff_t*, int old_, int new_ ) {
-      if ( old_ <= new_ && p->buff.witch_doctors_wolf_bones->check() )
-      {
-        p->cooldown.feral_spirits->adjust(
-            -p->legendary.witch_doctors_wolf_bones->effectN( 2 ).time_value() );
-      }
-    } );
+    auto result = buff_t::trigger( stacks, value, chance, duration );
+
+    if ( result && shaman->buff.witch_doctors_wolf_bones->check() )
+    {
+      shaman->cooldown.feral_spirits->adjust(
+            -( stacks == -1 ? 1 : stacks ) *
+            shaman->legendary.witch_doctors_wolf_bones->effectN( 2 ).time_value() );
+    }
+
+    return result;
   }
 };
 
