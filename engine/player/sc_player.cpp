@@ -26,6 +26,7 @@
 #include "dbc/rank_spells.hpp"
 #include "dbc/specialization_spell.hpp"
 #include "dbc/temporary_enchant.hpp"
+#include "dbc/covenant_data.hpp"
 #include "item/item.hpp"
 #include "item/special_effect.hpp"
 #include "player/action_priority_list.hpp"
@@ -4690,22 +4691,32 @@ void player_t::combat_begin()
     buffs.tyrants_immortality->trigger( buffs.tyrants_immortality->max_stack() );
   }
 
-  auto add_timed_buff_triggers = [ this ] ( const std::vector<timespan_t>& times, buff_t* buff )
+  auto add_timed_buff_triggers = [ this ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
   {
     if ( buff )
       for ( auto t : times )
-        make_event( *sim, t, [ buff ] { buff->trigger(); } );
+        make_event( *sim, t, [ buff, duration ] { buff->trigger( duration ); } );
   };
 
   add_timed_buff_triggers( external_buffs.power_infusion, buffs.power_infusion );
   add_timed_buff_triggers( external_buffs.benevolent_faerie, buffs.benevolent_faerie );
-  add_timed_buff_triggers( external_buffs.blessing_of_summer, buffs.blessing_of_summer ); // TODO: Add a way to specify different durations (The Long Summer conduit).
-  add_timed_buff_triggers( external_buffs.blessing_of_autumn, buffs.blessing_of_autumn );
-  add_timed_buff_triggers( external_buffs.blessing_of_winter, buffs.blessing_of_winter );
-  add_timed_buff_triggers( external_buffs.blessing_of_spring, buffs.blessing_of_spring );
   add_timed_buff_triggers( external_buffs.conquerors_banner, buffs.conquerors_banner );
   add_timed_buff_triggers( external_buffs.rallying_cry, buffs.rallying_cry );
   add_timed_buff_triggers( external_buffs.pact_of_the_soulstalkers, buffs.pact_of_the_soulstalkers );
+
+  auto add_timed_blessing_triggers = [ this, add_timed_buff_triggers ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
+  {
+    add_timed_buff_triggers( times, buff, duration );
+    if ( buff && external_buffs.seasons_of_plenty )
+      for ( auto t : times )
+        make_event( *sim, t + 10_s, [ b = buffs.equinox ] { b->trigger(); } );
+  };
+
+  timespan_t summer_duration = buffs.blessing_of_summer->buff_duration() * ( 1.0 + external_buffs.blessing_of_summer_duration_multiplier );
+  add_timed_blessing_triggers( external_buffs.blessing_of_summer, buffs.blessing_of_summer, summer_duration );
+  add_timed_blessing_triggers( external_buffs.blessing_of_autumn, buffs.blessing_of_autumn );
+  add_timed_blessing_triggers( external_buffs.blessing_of_winter, buffs.blessing_of_winter );
+  add_timed_blessing_triggers( external_buffs.blessing_of_spring, buffs.blessing_of_spring );
 
   if ( buffs.kindred_affinity && !external_buffs.kindred_affinity.empty() )
   {
@@ -11422,6 +11433,26 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.rallying_cry", external_buffs.rallying_cry ) );
   add_option( opt_external_buff_times( "external_buffs.pact_of_the_soulstalkers", external_buffs.pact_of_the_soulstalkers ) ); // 9.1 Kyrian Hunter Legendary
   add_option( opt_external_buff_times( "external_buffs.kindred_affinity", external_buffs.kindred_affinity ) ) ;
+
+  // Additional Options for Timed External Buffs
+  add_option( opt_bool( "external_buffs.seasons_of_plenty", external_buffs.seasons_of_plenty ) );
+  add_option( opt_func( "external_buffs.the_long_summer_rank", [ this ] ( sim_t*, util::string_view, util::string_view val )
+  {
+    unsigned rank = util::to_unsigned( val );
+    if ( rank <= 0 )
+      return true;
+
+    const auto &conduit = conduit_entry_t::find( "The Long Summer", dbc->ptr );
+    if ( conduit.id == 0 )
+      throw std::invalid_argument( "unable to find conduit entry data for The Long Summer" );
+
+    const auto &rank_entry = conduit_rank_entry_t::find( conduit.id, rank - 1, dbc->ptr );
+    if ( rank_entry.conduit_id == 0 )
+      throw std::invalid_argument( "invalid conduit rank" );
+
+    external_buffs.blessing_of_summer_duration_multiplier = 0.01 * rank_entry.value;
+    return true;
+  } ) );
 
   // Azerite options
   if ( ! is_enemy() && ! is_pet() )
