@@ -977,18 +977,16 @@ struct maelstrom_weapon_buff_t : public buff_t
     buff_t( p, "maelstrom_weapon", p->find_spell( 344179 ) ), shaman( p )
   { }
 
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  void increment( int stacks, double value, timespan_t duration ) override
   {
-    auto result = buff_t::trigger( stacks, value, chance, duration );
+    buff_t::increment( stacks, value, duration );
 
-    if ( result && shaman->buff.witch_doctors_wolf_bones->check() )
+    if ( shaman->buff.witch_doctors_wolf_bones->check() )
     {
       shaman->cooldown.feral_spirits->adjust(
             -( stacks == -1 ? 1 : stacks ) *
             shaman->legendary.witch_doctors_wolf_bones->effectN( 2 ).time_value() );
     }
-
-    return result;
   }
 };
 
