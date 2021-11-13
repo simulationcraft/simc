@@ -6904,6 +6904,18 @@ struct raging_vesper_vortex_t : public shaman_spell_t
     aoe        = -1;
     ground_aoe = background = true;
   }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = shaman_spell_t::composite_target_multiplier( t );
+
+    if ( t == target )
+    {
+      m *= 1.0 + p()->conduit.elysian_dirge.percent();
+    }
+
+    return m;
+  }
 };
 
 struct vesper_totem_damage_t : public shaman_spell_t
@@ -6957,11 +6969,11 @@ struct vesper_totem_damage_t : public shaman_spell_t
     }
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  double composite_target_multiplier( player_t* t ) const override
   {
-    double m = shaman_spell_t::composite_target_multiplier( target );
+    double m = shaman_spell_t::composite_target_multiplier( t );
 
-    if ( closest_target && target == closest_target )
+    if ( closest_target && t == closest_target )
     {
       m *= 1.0 + p()->conduit.elysian_dirge.percent();
     }
@@ -7017,8 +7029,12 @@ struct vesper_totem_t : public shaman_spell_t
                   break;
                 case ground_aoe_params_t::state_type::EVENT_STOPPED:
                   this->p()->buff.vesper_totem->expire();
-                  if ( this->p()->legendary.raging_vesper_vortex->ok() )
+                  if ( this->p()->legendary.raging_vesper_vortex->ok() &&
+                       damage->closest_target )
                   {
+                    // Make Vesper Totem "closest target" the primary target of the
+                    // Raging Vesper Vortex aoe
+                    legendary_damage->set_target( damage->closest_target );
                     legendary_damage->execute();
                   }
                   break;
