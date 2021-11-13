@@ -385,6 +385,8 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     base_aoe_multiplier( 1.0 ),
     base_recharge_multiplier( 1.0 ),
     base_recharge_rate_multiplier( 1.0 ),
+    dynamic_recharge_multiplier( 1.0 ),
+    dynamic_recharge_rate_multiplier( 1.0 ),
     base_teleport_distance(),
     travel_speed(),
     travel_delay(),
@@ -2668,6 +2670,9 @@ void action_t::reset()
   last_used = timespan_t::min();
 
   target_cache.is_valid = false;
+
+  dynamic_recharge_multiplier      = 1.0;
+  dynamic_recharge_rate_multiplier = 1.0;
 
   if ( if_expr )
   {

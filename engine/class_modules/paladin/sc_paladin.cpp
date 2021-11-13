@@ -1762,11 +1762,11 @@ struct blessing_of_autumn_t : public buff_t
     {
       if ( new_ > 0 )
       {
-        a->base_recharge_rate_multiplier *= recharge_rate_multiplier;
+        a->dynamic_recharge_rate_multiplier *= recharge_rate_multiplier;
       }
       else
       {
-        a->base_recharge_rate_multiplier /= recharge_rate_multiplier;
+        a->dynamic_recharge_rate_multiplier /= recharge_rate_multiplier;
       }
       if ( a->cooldown->action == a )
         a->cooldown->adjust_recharge_multiplier();
