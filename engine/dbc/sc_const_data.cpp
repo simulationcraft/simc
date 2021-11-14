@@ -776,11 +776,12 @@ struct spec_index_map_t {
     for ( int8_t& index : data_ )
       index = -1;
 
-    for (const auto& _class : __class_spec_id)
+    // Keep index based lookup since Visual Studio causes problems otherwise with constexpr evaluation
+    for ( size_t i = 0; i < std::size( __class_spec_id ); i++ )  // NOLINT(modernize-loop-convert)
     {
-      for ( size_t index = 0; index < range::size( _class ); index++ )
+      for ( size_t index = 0; index < std::size( __class_spec_id[ i ] ); index++ )
       {
-        specialization_e spec = _class[ index ];
+        specialization_e spec = __class_spec_id[ i ][ index ];
         if ( spec != SPEC_NONE )
           data_[ spec ] = index;
       }
