@@ -1876,9 +1876,11 @@ void sim_t::combat_begin()
   }
   else
   {
-    for ( auto* p : player_list )
+    // Needs to be a index-based loop, as the player list may be extended during iteration.
+    for ( size_t i = 0; i < player_list.size(); ++i ) // NOLINT(modernize-loop-convert)
     {
-       p -> combat_begin();
+      player_t* p = player_list[ i ];
+      p->combat_begin();
     }
   }
 
