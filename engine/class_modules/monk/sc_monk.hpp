@@ -301,7 +301,9 @@ public:
   struct procs_t
   {
     proc_t* blackout_kick_cdr_with_woo;
-    proc_t* blackout_kick_cdr_without_woo;
+    proc_t* blackout_kick_cdr;
+    proc_t* blackout_kick_cdr_serenity_with_woo;
+    proc_t* blackout_kick_cdr_serenity;
     proc_t* bok_proc;
     proc_t* boiling_brew_healing_sphere;
     proc_t* bonedust_brew_reduction;

@@ -1559,10 +1559,18 @@ struct blackout_kick_t : public monk_melee_attack_t
           if ( p()->buff.weapons_of_order->up() )
           {
             cd_reduction += ( -1 * p()->covenant.kyrian->effectN( 8 ).time_value() );
-            p()->proc.blackout_kick_cdr_with_woo->occur();
+            if ( p()->buff.serenity->up() )
+              p()->proc.blackout_kick_cdr_serenity_with_woo->occur();
+            else
+              p()->proc.blackout_kick_cdr_with_woo->occur();
           }
           else
-            p()->proc.blackout_kick_cdr_without_woo->occur();
+          {
+            if ( p()->buff.serenity->up() )
+              p()->proc.blackout_kick_cdr_serenity->occur();
+            else
+              p()->proc.blackout_kick_cdr->occur();
+          }
 
           p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
           p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
@@ -6871,17 +6879,19 @@ void monk_t::init_procs()
 {
   base_t::init_procs();
 
-  proc.blackout_kick_cdr_without_woo  = get_proc( "Blackout Kick CDR without WoO" );
-  proc.blackout_kick_cdr_with_woo     = get_proc( "Blackout Kick CDR with WoO" );
-  proc.bok_proc                       = get_proc( "Blackout Kick! Proc" );
-  proc.boiling_brew_healing_sphere    = get_proc( "Boiling Brew Healing Sphere" );
-  proc.bonedust_brew_reduction        = get_proc( "Bonedust Brew SCK Reduction" );
-  proc.rsk_reset_totm                 = get_proc( "Rising Sun Kick TotM Reset" );
-  proc.spitfire_reset                 = get_proc( "Spitfire Reset" );
-  proc.sinister_teaching_reduction    = get_proc( "Sinister Teaching CD Reduction" );
-  proc.tumbling_technique_chi_torpedo = get_proc( "Tumbling Technique Chi Torpedo Reset" );
-  proc.tumbling_technique_roll        = get_proc( "Tumbling Technique Roll Reset" );
-  proc.xuens_battlegear_reduction     = get_proc( "Xuen's Battlegear CD Reduction" );
+  proc.blackout_kick_cdr_with_woo          = get_proc( "Blackout Kick CDR with WoO" );
+  proc.blackout_kick_cdr                   = get_proc( "Blackout Kick CDR" );
+  proc.blackout_kick_cdr_serenity_with_woo = get_proc( "Blackout Kick CDR with Serenity with WoO" );
+  proc.blackout_kick_cdr_serenity          = get_proc( "Blackout Kick CDR with Serenity" );
+  proc.bok_proc                            = get_proc( "Blackout Kick! Proc" );
+  proc.boiling_brew_healing_sphere         = get_proc( "Boiling Brew Healing Sphere" );
+  proc.bonedust_brew_reduction             = get_proc( "Bonedust Brew SCK Reduction" );
+  proc.rsk_reset_totm                      = get_proc( "Rising Sun Kick TotM Reset" );
+  proc.spitfire_reset                      = get_proc( "Spitfire Reset" );
+  proc.sinister_teaching_reduction         = get_proc( "Sinister Teaching CD Reduction" );
+  proc.tumbling_technique_chi_torpedo      = get_proc( "Tumbling Technique Chi Torpedo Reset" );
+  proc.tumbling_technique_roll             = get_proc( "Tumbling Technique Roll Reset" );
+  proc.xuens_battlegear_reduction          = get_proc( "Xuen's Battlegear CD Reduction" );
 }
 
 // monk_t::init_assessors ===================================================
