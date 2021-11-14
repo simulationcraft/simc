@@ -64,7 +64,7 @@ std::string enchant::find_enchant_name( unsigned enchant_id )
       return enchant_entry.enchant_name;
   }
 
-  return std::string();
+  return {};
 }
 
 namespace

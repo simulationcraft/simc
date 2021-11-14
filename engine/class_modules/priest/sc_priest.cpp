@@ -2243,7 +2243,7 @@ void priest_t::copy_from( player_t* source )
 {
   base_t::copy_from( source );
 
-  priest_t* source_p = debug_cast<priest_t*>( source );
+  auto* source_p = debug_cast<priest_t*>( source );
 
   options = source_p->options;
 }

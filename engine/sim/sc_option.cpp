@@ -7,6 +7,7 @@
 #include "config.hpp"
 
 #include <iostream>
+#include <utility>
 
 #include "fmt/format.h"
 #include "util/io.hpp"
@@ -365,9 +366,9 @@ private:
 
 struct opts_sim_func_t : public option_t
 {
-  opts_sim_func_t( util::string_view name, const opts::function_t& ref ) :
+  opts_sim_func_t( util::string_view name, opts::function_t  ref ) :
     option_t( name ),
-    _fun( ref )
+    _fun(std::move( ref ))
   { }
 protected:
   opts::parse_status do_parse( sim_t* sim, util::string_view n, util::string_view value ) const override

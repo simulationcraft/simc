@@ -147,8 +147,8 @@ static std::vector<player_t*>& __check_distance_targeting( const action_t* actio
   tl.swap( best_so_far );
   return tl;
 }
-typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
-typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
+using data_t = std::pair<std::string, simple_sample_data_with_min_max_t>;
+using simple_data_t = std::pair<std::string, simple_sample_data_t>;
 
 struct shaman_t;
 
@@ -2083,7 +2083,7 @@ struct shaman_pet_t : public pet_t
 template <typename T_PET, typename T_ACTION>
 struct pet_action_t : public T_ACTION
 {
-  typedef pet_action_t<T_PET, T_ACTION> super;
+  using super = pet_action_t<T_PET, T_ACTION>;
 
   pet_action_t( T_PET* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(),
                 const std::string& options = std::string() )
@@ -3947,10 +3947,9 @@ struct bloodlust_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    for ( size_t i = 0; i < sim->player_non_sleeping_list.size(); ++i )
+    for ( auto* p : sim->player_non_sleeping_list )
     {
-      player_t* p = sim->player_non_sleeping_list[ i ];
-      if ( p->buffs.exhaustion->check() || p->is_pet() )
+       if ( p->buffs.exhaustion->check() || p->is_pet() )
         continue;
       p->buffs.bloodlust->trigger();
       p->buffs.exhaustion->trigger();

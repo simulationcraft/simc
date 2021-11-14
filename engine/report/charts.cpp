@@ -170,11 +170,11 @@ double compute_player_burst_max( const sc_timeline_t& container )
   sc_timeline_t timeline;
   container.build_derivative_timeline( timeline );
   double m = 0;
-  for ( size_t i = 0; i < timeline.data().size(); ++i )
+  for ( double v : timeline.data() )
   {
-    if ( timeline.data()[ i ] > m )
+    if ( v > m )
     {
-      m = timeline.data()[ i ];
+      m = v;
     }
   }
 

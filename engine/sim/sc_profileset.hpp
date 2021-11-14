@@ -391,7 +391,7 @@ class profile_set_t
   std::unique_ptr<profile_output_data_t> m_output_data;
 
 public:
-  profile_set_t( const std::string& name, sim_control_t* opts, bool has_output );
+  profile_set_t( std::string name, sim_control_t* opts, bool has_output );
 
   ~profile_set_t();
 

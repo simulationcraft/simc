@@ -511,7 +511,7 @@ struct interrupt_t : public spell_t
 
   void execute() override
   {
-    warlock_t* w = debug_cast<warlock_t*>( player );
+    auto* w = debug_cast<warlock_t*>( player );
 
     auto pet = w->warlock_pet_list.active;
 
@@ -531,7 +531,7 @@ struct interrupt_t : public spell_t
 
   bool ready() override
   {
-    warlock_t* w = debug_cast<warlock_t*>( player );
+    auto* w = debug_cast<warlock_t*>( player );
 
     if ( !w->warlock_pet_list.active || w->warlock_pet_list.active->is_sleeping() )
       return false;
@@ -1603,7 +1603,7 @@ void warlock_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
 
-  warlock_t* p = debug_cast<warlock_t*>( source );
+  auto* p = debug_cast<warlock_t*>( source );
 
   initial_soul_shards  = p->initial_soul_shards;
   default_pet          = p->default_pet;
@@ -1659,17 +1659,17 @@ void warlock_t::create_all_pets()
 {
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
-    for ( size_t i = 0; i < warlock_pet_list.infernals.size(); i++ )
+    for ( auto& infernal : warlock_pet_list.infernals )
     {
-      warlock_pet_list.infernals[ i ] = new pets::destruction::infernal_t( this );
+      infernal = new pets::destruction::infernal_t( this );
     }
   }
 
   if ( specialization() == WARLOCK_AFFLICTION )
   {
-    for ( size_t i = 0; i < warlock_pet_list.darkglare.size(); i++ )
+    for ( auto& pet : warlock_pet_list.darkglare )
     {
-      warlock_pet_list.darkglare[ i ] = new pets::affliction::darkglare_t( this );
+      pet = new pets::affliction::darkglare_t( this );
     }
   }
 }

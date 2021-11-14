@@ -288,7 +288,7 @@ std::string item_t::weapon_stats_str() const
 {
   if ( ! weapon() )
   {
-    return std::string();
+    return {};
   }
 
   std::ostringstream s;
@@ -308,15 +308,15 @@ std::string item_t::gem_stats_str() const
 {
   if ( parsed.gem_stats.empty() )
   {
-    return std::string();
+    return {};
   }
 
   std::ostringstream s;
 
-  for ( size_t i = 0; i < parsed.gem_stats.size(); i++ )
+  for ( const auto& gem_stat : parsed.gem_stats )
   {
-    s << "+" << parsed.gem_stats[ i ].value
-      << " " << util::stat_type_abbrev( parsed.gem_stats[ i ].stat ) << ", ";
+    s << "+" << gem_stat.value
+      << " " << util::stat_type_abbrev( gem_stat.stat ) << ", ";
   }
 
   std::string str = s.str();
@@ -329,15 +329,15 @@ std::string item_t::enchant_stats_str() const
 {
   if ( parsed.enchant_stats.empty() )
   {
-    return std::string();
+    return {};
   }
 
   std::ostringstream s;
 
-  for ( size_t i = 0; i < parsed.enchant_stats.size(); i++ )
+  for ( const auto& enchant_stat : parsed.enchant_stats )
   {
-    s << "+" << parsed.enchant_stats[ i ].value
-      << " " << util::stat_type_abbrev( parsed.enchant_stats[ i ].stat ) << ", ";
+    s << "+" << enchant_stat.value
+      << " " << util::stat_type_abbrev( enchant_stat.stat ) << ", ";
   }
 
   std::string str = s.str();
@@ -350,15 +350,15 @@ std::string item_t::socket_bonus_stats_str() const
 {
   if ( parsed.socket_bonus_stats.empty() )
   {
-    return std::string();
+    return {};
   }
 
   std::ostringstream s;
 
-  for ( size_t i = 0; i < parsed.socket_bonus_stats.size(); i++ )
+  for ( const auto& socket_bonus_stat : parsed.socket_bonus_stats )
   {
-    s << "+" << parsed.socket_bonus_stats[ i ].value
-      << " " << util::stat_type_abbrev( parsed.socket_bonus_stats[ i ].stat ) << ", ";
+    s << "+" << socket_bonus_stat.value
+      << " " << util::stat_type_abbrev( socket_bonus_stat.stat ) << ", ";
   }
 
   std::string str = s.str();
@@ -1942,9 +1942,9 @@ std::string item_t::stat_pairs_to_str( const std::vector<stat_pair_t>& stat_pair
 {
   std::vector<std::string> stats;
 
-  for ( size_t i = 0; i < stat_pairs.size(); i++ )
+  for ( const auto& stat_pair : stat_pairs )
   {
-    std::string stat_str = util::to_string( stat_pairs[ i ].value ) + util::stat_type_abbrev( stat_pairs[ i ].stat );
+    std::string stat_str = util::to_string( stat_pair.value ) + util::stat_type_abbrev( stat_pair.stat );
     if ( ! stat_str.empty() ) stats.push_back( stat_str );
   }
 

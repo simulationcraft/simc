@@ -78,7 +78,7 @@ struct url_cache_entry_t
   {}
 };
 
-typedef std::unordered_map<std::string, url_cache_entry_t> url_db_t;
+using url_db_t = std::unordered_map<std::string, url_cache_entry_t>;
 url_db_t url_db;
 
 // cache_clear ==============================================================
@@ -171,21 +171,13 @@ const http::proxy_t& http::get_proxy()
   return proxy;
 }
 
-http::http_handle_t::http_handle_t()
-{
-}
+http::http_handle_t::http_handle_t() = default;
 
-http::http_handle_t::~http_handle_t()
-{
-}
+http::http_handle_t::~http_handle_t() = default;
 
-http::http_connection_pool_t::http_connection_pool_t()
-{
-}
+http::http_connection_pool_t::http_connection_pool_t() = default;
 
-http::http_connection_pool_t::~http_connection_pool_t()
-{
-}
+http::http_connection_pool_t::~http_connection_pool_t() = default;
 
 // http::clear_cache ========================================================
 
@@ -274,17 +266,17 @@ void http::cache_save( const std::string& file_name )
 
     cache_put( file, SC_VERSION );
 
-    for ( url_db_t::const_iterator p = url_db.begin(), e = url_db.end(); p != e; ++p )
+    for ( const auto& entry : url_db )
     {
-      if ( p -> second.validated == cache::cache_era::INVALID )
+      if ( entry.second.validated == cache::cache_era::INVALID )
         continue;
 
-      cache_put( file, p -> first );
-      cache_put( file, p -> second.last_modified_header );
+      cache_put( file, entry.first );
+      cache_put( file, entry.second.last_modified_header );
 
-      uint32_t size = as<uint32_t>( p -> second.result.size() );
+      uint32_t size = as<uint32_t>( entry.second.result.size() );
       file.write( reinterpret_cast<const char*>( &size ), sizeof( size ) );
-      file.write( p -> second.result.data(), size );
+      file.write( entry.second.result.data(), size );
     }
   }
   catch ( ... )

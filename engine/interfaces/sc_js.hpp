@@ -36,7 +36,7 @@ struct sc_js_t
 
   sc_js_t();
   sc_js_t( const sc_js_t& );
-  virtual ~sc_js_t() {}
+  virtual ~sc_js_t() = default;
 
   virtual std::string to_json() const;
 

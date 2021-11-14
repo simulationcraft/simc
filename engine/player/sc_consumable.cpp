@@ -343,7 +343,7 @@ struct dbc_consumable_base_t : public action_t
 
   // Figure out the default consumable for a given type
   virtual std::string consumable_default() const
-  { return std::string(); }
+  { return {}; }
 
   // Consumable type is fully disabled; base class just returns the option state (for the consumable
   // type). Consumable type specialized classes take into account other options (i.e., the allow_X
@@ -503,7 +503,7 @@ struct flask_base_t : public dbc_consumable_base_t
       return player -> default_flask();
     }
 
-    return std::string();
+    return {};
   }
 
   // Flasks (starting from legion it seems) have a reverse mapping to the spell that creates them in
@@ -642,7 +642,7 @@ struct potion_t : public dbc_consumable_base_t
       return player -> default_potion();
     }
 
-    return std::string();
+    return {};
   }
 
   void initialize_consumable() override
@@ -771,7 +771,7 @@ struct augmentation_t : public dbc_consumable_base_t
       return player -> default_rune();
     }
 
-    return std::string();
+    return {};
   }
 
   // Custom driver for now, we don't really want to include the item data for now
@@ -846,7 +846,7 @@ struct food_t : public dbc_consumable_base_t
       return player -> default_food();
     }
 
-    return std::string();
+    return {};
   }
 
   void init() override

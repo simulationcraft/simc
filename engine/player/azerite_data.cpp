@@ -35,8 +35,8 @@ azerite_power_t::azerite_power_t( const player_t* p, const azerite_power_entry_t
 }
 
 azerite_power_t::azerite_power_t( const player_t* p, const azerite_power_entry_t* data,
-    const std::vector<unsigned>& ilevels ) :
-  m_player( p ), m_spell( p->find_spell( data->spell_id ) ), m_ilevels( ilevels ), m_data( data )
+    std::vector<unsigned> ilevels ) :
+  m_player( p ), m_spell( p->find_spell( data->spell_id ) ), m_ilevels( std::move( ilevels ) ), m_data( data )
 { }
 
 azerite_power_t::operator const spell_data_t*() const
@@ -1111,10 +1111,10 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
 
   m_state.clear();
 
-  for ( size_t i = 0U; i < splits.size(); ++i )
+  for ( const auto& split : splits )
   {
     // Split by :
-    auto token_split = util::string_split<util::string_view>( splits[ i ], ":" );
+    auto token_split = util::string_split<util::string_view>( split, ":" );
 
     unsigned id = util::to_unsigned_ignore_error( token_split[ 0 ], 0 );
     unsigned rank = 0;
@@ -1163,7 +1163,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
       const auto& essence = azerite_essence_entry_t::find( token_split[ 0 ], true, m_player->dbc->ptr );
       if ( essence.id == 0 )
       {
-        sim->error( "Unable to find Azerite Essence with name '{}'", splits[ i ] );
+        sim->error( "Unable to find Azerite Essence with name '{}'", split );
         return false;
       }
 
@@ -1175,7 +1175,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
       const auto& essence = azerite_essence_entry_t::find( id, m_player->dbc->ptr );
       if ( essence.id != id )
       {
-        sim->error( "Unable to find Azerite Essence with id {}", splits[ i ] );
+        sim->error( "Unable to find Azerite Essence with id {}", split );
         return false;
       }
     }
@@ -1237,7 +1237,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
         break;
       }
       default:
-        sim->error( "Invalid token format for '{}'", splits[ i ] );
+        sim->error( "Invalid token format for '{}'", split );
         return false;
     }
 
@@ -1621,7 +1621,7 @@ void elemental_whirl( special_effect_t& effect )
     std::vector<buff_t*> buffs;
 
     public:
-    ew_proc_cb_t( const special_effect_t& effect, const std::vector<buff_t*>& b ) :
+    ew_proc_cb_t( const special_effect_t& effect, const std::vector<buff_t*>&& b ) :
       dbc_proc_callback_t( effect.player, effect ), buffs( b )
     { }
 
@@ -2739,7 +2739,7 @@ void secrets_of_the_deep( special_effect_t& effect )
   {
     std::vector<buff_t*> buffs;
 
-    sotd_cb_t( const special_effect_t& effect, const std::vector<buff_t*>& b ) :
+    sotd_cb_t( const special_effect_t& effect, const std::vector<buff_t*>&& b ) :
       dbc_proc_callback_t( effect.player, effect ), buffs( b )
     { }
 
@@ -2777,7 +2777,7 @@ void combined_might( special_effect_t& effect )
   {
     std::vector<buff_t*> buffs;
 
-    combined_might_cb_t( const special_effect_t& effect, const std::vector<buff_t*>& b ) :
+    combined_might_cb_t( const special_effect_t& effect, const std::vector<buff_t*>&& b ) :
       dbc_proc_callback_t( effect.player, effect ), buffs( b )
     { }
 
@@ -2842,7 +2842,7 @@ void combined_might( special_effect_t& effect )
 
   effect.spell_id = 280848;
 
-  new combined_might_cb_t( effect, buffs );
+  new combined_might_cb_t( effect, std::move( buffs ) );
 }
 
 void relational_normalization_gizmo( special_effect_t& effect )
@@ -2851,7 +2851,7 @@ void relational_normalization_gizmo( special_effect_t& effect )
   {
     std::vector<buff_t*> buffs;
 
-    gizmo_cb_t( const special_effect_t& effect, const std::vector<buff_t*>& b ) :
+    gizmo_cb_t( const special_effect_t& effect, const std::vector<buff_t*>&& b ) :
       dbc_proc_callback_t( effect.player, effect ), buffs( b )
     { }
 
@@ -4545,8 +4545,8 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
     buff_t* azerite_volley;
 
     // TODO: Does pet inherit player's stats? Some, all, or none?
-    guardian_of_azeroth_pet_t(player_t* p, const azerite_essence_t& ess) :
-      pet_t(p->sim, p, "guardian_of_azeroth", true, true), essence(ess)
+    guardian_of_azeroth_pet_t(player_t* p, azerite_essence_t ess) :
+      pet_t(p->sim, p, "guardian_of_azeroth", true, true), essence(std::move(ess))
     {}
 
     action_t* create_action(util::string_view name, const std::string& options) override

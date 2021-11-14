@@ -54,7 +54,7 @@ std::shared_ptr<xml_node_t> download_id( sim_t*             sim,
                                 wowhead::wowhead_e source )
 {
   if ( ! id )
-    return std::shared_ptr<xml_node_t>();
+    return {};
 
   std::string url_www = "https://" + source_str( source ) + ".wowhead.com/item="
                         + util::to_string( id ) + "&xml";
@@ -266,12 +266,12 @@ bool wowhead::download_item_data( item_t& item, wowhead_e source, cache::behavio
       auto htmltooltip_xml = xml_node_t::create(htmltooltip);
       //htmltooltip_xml -> print( item.sim -> output_file, 2 );
       std::vector<xml_node_t*> spell_links = htmltooltip_xml->get_nodes("span");
-      for (size_t i = 0; i < spell_links.size(); i++)
+      for ( auto* spell_link : spell_links )
       {
         int trigger_type = -1;
 
         std::string v;
-        if (spell_links[i]->get_value(v, ".") && v != "Equip: " && v != "Use: ")
+        if (spell_link->get_value(v, ".") && v != "Equip: " && v != "Use: ")
           continue;
 
         if (v == "Use: ")
@@ -280,7 +280,7 @@ bool wowhead::download_item_data( item_t& item, wowhead_e source, cache::behavio
           trigger_type = ITEM_SPELLTRIGGER_ON_EQUIP;
 
         std::string url;
-        if (!spell_links[i]->get_value(url, "a/href"))
+        if (!spell_link->get_value(url, "a/href"))
           continue;
 
         size_t begin = url.rfind('=');

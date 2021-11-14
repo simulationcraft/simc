@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <numeric>
 #include <functional>
 #include <type_traits>
 
@@ -275,6 +276,28 @@ inline Range& fill( Range& r, value_type_t<Range> const& t )
 {
   std::fill( range::begin( r ), range::end( r ), t );
   return r;
+}
+
+template <typename Range, typename T>
+inline Range& accumulate( Range& r, const T& init )
+{
+  return std::accumulate( range::begin( r ), range::end( r ), init );
+}
+
+template <typename Range, typename T, typename BinaryOperation>
+inline Range& accumulate( Range& r, const T& init, BinaryOperation o )
+{
+  return std::accumulate( range::begin( r ), range::end( r ), init, o );
+}
+
+// This could probably be done with some SFINAE magic, for now just add a suffix
+template <typename Range, typename T, typename Proj>
+inline T accumulate_proj( Range& r, const T& init, Proj proj )
+{
+  const auto op = [&proj]( const T& current, auto&& v ) {
+    return range::invoke( proj, std::forward<decltype(v)>( v ) ) + current;
+  };
+  return std::accumulate( range::begin( r ), range::end( r ), init, op );
 }
 
 #if defined( SC_GCC )

@@ -1947,9 +1947,9 @@ void print_html_player_scale_factor_table( report::sc_html_stream& os, const sim
   os << "<tr>\n"
      << "<th></th>\n";
 
-  for ( size_t i = 0; i < scaling_stats.size(); i++ )
+  for ( auto scaling_stat : scaling_stats )
   {
-    os.printf( "<th>%s</th>\n", util::stat_type_abbrev( scaling_stats[ i ] ) );
+    os.printf( "<th>%s</th>\n", util::stat_type_abbrev( scaling_stat ) );
   }
 
   if ( p.sim->scaling->scale_lag )
@@ -2460,9 +2460,9 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, const p
       if ( !sequence_data.action || !sequence_data.action->harmful )
         continue;
       bool found = false;
-      for ( size_t j = 0; j < targets.size(); ++j )
+      for ( const auto& target : targets )
       {
-        if ( targets[ j ] == sequence_data.target->name() )
+        if ( target == sequence_data.target->name() )
         {
           found = true;
           break;
@@ -2484,12 +2484,12 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, const p
 
     int j = 0;
 
-    for ( size_t i = 0; i < targets.size(); ++i )
+    for ( const auto& target : targets )
     {
       if ( j == 12 )
         j = 2;
       os.printf( ".%s_seq_target_%s { color: #%s; }\n", util::remove_special_chars( p.name_str ).c_str(),
-                 util::remove_special_chars( targets[ i ] ).c_str(), colors[ j ] );
+                 util::remove_special_chars( target ).c_str(), colors[ j ] );
       j++;
     }
 
@@ -3265,12 +3265,12 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
       {
         os << "<h4>Stat Details</h4>\n"
            << "<ul>\n";
-        for ( size_t j = 0; j < stat_buff->stats.size(); ++j )
+        for ( const auto& stat : stat_buff->stats )
         {
           os.printf( "<li><span class=\"label\">stat:</span>%s</li>\n"
                      "<li><span class=\"label\">amount:</span>%.2f</li>\n",
-                     util::stat_type_string( stat_buff->stats[ j ].stat ),
-                     stat_buff->stats[ j ].amount );
+                     util::stat_type_string( stat.stat ),
+                     stat.amount );
         }
         os << "</ul>\n";
       }
@@ -3391,11 +3391,9 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
   os << "</tr>\n"
      << "</thead>\n";
 
-  for ( size_t i = 0; i < ri.dynamic_buffs.size(); i++ )
+  for ( const auto* b : ri.dynamic_buffs )
   {
-    buff_t* b = ri.dynamic_buffs[ i ];
-
-    os << "<tbody>\n";
+     os << "<tbody>\n";
     print_html_player_buff( os, *b, p.sim->report_details, p );
     os << "</tbody>\n";
   }
@@ -3411,11 +3409,9 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
        << "</tr>\n"
        << "</thead>\n";
 
-    for ( size_t i = 0; i < ri.constant_buffs.size(); i++ )
+    for ( const auto* b : ri.constant_buffs )
     {
-      buff_t* b = ri.constant_buffs[ i ];
-
-      os << "<tbody>\n";
+       os << "<tbody>\n";
       print_html_player_buff( os, *b, p.sim->report_details, p, true );
       os << "</tbody>\n";
     }

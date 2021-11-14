@@ -34,10 +34,9 @@ bool is_scaling_stat( sim_t* sim,
     if ( ! found ) return false;
   }
 
-  for ( size_t i = 0; i < sim -> player_no_pet_list.size(); ++i )
+  for ( const auto* p : sim->player_no_pet_list )
   {
-    player_t* p = sim -> player_no_pet_list[ i ];
-    if ( p -> quiet ) continue;
+     if ( p -> quiet ) continue;
     if ( ! p -> scale_player ) continue;
 
     if ( p -> scaling -> scales_with[ stat ] ) return true;
@@ -83,11 +82,11 @@ bool parse_normalize_scale_factors( sim_t* sim,
 
 struct compare_scale_factors
 {
-  player_t* player;
+  const player_t& player;
   scale_metric_e scale_metric;
   bool normalized;
 
-  compare_scale_factors( player_t* p, scale_metric_e sm, bool use_normalized ) :
+  compare_scale_factors( const player_t& p, scale_metric_e sm, bool use_normalized ) :
     player( p ), scale_metric( sm ), normalized( use_normalized ) {}
 
   bool operator()( const stat_e& l, const stat_e& r ) const
@@ -97,13 +96,13 @@ struct compare_scale_factors
 
     if ( normalized )
     {
-      lv = player -> scaling -> scaling_normalized[ scale_metric ].get_stat( l );
-      rv = player -> scaling -> scaling_normalized[ scale_metric ].get_stat( r );
+      lv = player.scaling -> scaling_normalized[ scale_metric ].get_stat( l );
+      rv = player.scaling -> scaling_normalized[ scale_metric ].get_stat( r );
     }
     else
     {
-      lv = player -> scaling -> scaling[ scale_metric ].get_stat( l );
-      rv = player -> scaling -> scaling[ scale_metric ].get_stat( r );
+      lv = player.scaling -> scaling[ scale_metric ].get_stat( l );
+      rv = player.scaling -> scaling[ scale_metric ].get_stat( r );
     }
 
     if ( lv == rv )
@@ -243,12 +242,11 @@ void scale_factor_control_t::analyze_stats()
   baseline_sim = sim; // Take the current sim as baseline
   mutex.unlock();
 
-  for ( size_t k = 0; k < stats_to_scale.size(); ++k )
+  for ( const auto& stat : stats_to_scale )
   {
     if ( sim -> is_canceled() ) break;
 
-    current_scaling_stat = stats_to_scale[ k ]; // Stat we're scaling over
-    const stat_e& stat = current_scaling_stat;
+    current_scaling_stat = stat; // Stat we're scaling over
 
     double scale_delta = stats->get_stat( stat );
     assert ( scale_delta );
@@ -279,11 +277,9 @@ void scale_factor_control_t::analyze_stats()
       ref_sim -> execute();
     }
 
-    for ( size_t j = 0; j < sim -> players_by_name.size(); j++ )
+    for ( auto* p : sim->players_by_name )
     {
-      player_t* p = sim -> players_by_name[ j ];
-
-      if ( ! p -> scaling -> scales_with[ stat ] ) continue;
+       if ( ! p -> scaling -> scales_with[ stat ] ) continue;
 
       player_t*   ref_p =   ref_sim -> find_player( p -> name() );
       player_t* delta_p = delta_sim -> find_player( p -> name() );
@@ -415,10 +411,9 @@ void scale_factor_control_t::analyze_lag()
   delta_sim -> scaling -> scale_stat = STAT_MAX;
   delta_sim -> execute();
 
-  for ( size_t i = 0; i < sim -> players_by_name.size(); i++ )
+  for ( auto* p : sim->players_by_name )
   {
-    player_t*       p =       sim -> players_by_name[ i ];
-    player_t*   ref_p =   ref_sim -> find_player( p -> name() );
+     player_t*   ref_p =   ref_sim -> find_player( p -> name() );
     player_t* delta_p = delta_sim -> find_player( p -> name() );
 
     // Calculate DPS difference per millisecond of lag
@@ -452,10 +447,9 @@ void scale_factor_control_t::normalize()
 {
   if ( num_scaling_stats <= 0 ) return;
 
-  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+  for ( auto* p : sim->player_list )
   {
-    player_t* p = sim -> player_list[ i ];
-    if ( p -> quiet ) continue;
+     if ( p -> quiet ) continue;
     
     for ( scale_metric_e sm = SCALE_METRIC_NONE; sm < SCALE_METRIC_MAX; sm++ )
     {
@@ -490,10 +484,9 @@ void scale_factor_control_t::analyze()
   analyze_lag();
   normalize();
 
-  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+  for ( auto* p : sim->player_list )
   {
-    player_t* p = sim -> player_list[ i ];
-    if ( p -> quiet ) continue;
+     if ( p -> quiet ) continue;
     if ( p -> scaling == nullptr ) continue;
 
     for ( scale_metric_e sm = SCALE_METRIC_NONE; sm < SCALE_METRIC_MAX; sm++ )
@@ -510,7 +503,7 @@ void scale_factor_control_t::analyze()
       }
       // more hack to deal with TMI weirdness, this just determines sorting order, not what gets displayed on the chart
       bool use_normalized = p -> scaling -> scaling_normalized[ sm ].get_stat( p -> normalize_by() ) > 0 || sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_ETMI;
-      range::sort( p -> scaling -> scaling_stats[ sm ], compare_scale_factors( p, sm, use_normalized ) );
+      range::sort( p -> scaling -> scaling_stats[ sm ], compare_scale_factors( *p, sm, use_normalized ) );
     }
   }
 }

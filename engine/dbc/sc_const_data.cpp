@@ -33,9 +33,9 @@ template <typename V>
 class spell_mapping_reference_t
 {
   // Map struct T (based on id) to a set of spells
-  std::unordered_map<V, std::vector<const spell_data_t*>> m_db[2];
+  std::array<std::unordered_map<V, std::vector<const spell_data_t*>>, 2> m_db;
   // Map struct T (based on id) to a set of effects affecting the group T
-  std::unordered_map<V, std::vector<const spelleffect_data_t*>> m_effects_db[2];
+  std::array<std::unordered_map<V, std::vector<const spelleffect_data_t*>>, 2> m_effects_db;
 
 public:
   void add_spell( V value, const spell_data_t* data, bool ptr = false )
@@ -73,7 +73,7 @@ public:
   }
 };
 
-std::vector< std::vector< const spell_data_t* > > class_family_index[2];
+std::array<std::vector< std::vector< const spell_data_t* > >, 2> class_family_index;
 
 // Label -> spell mappings
 spell_mapping_reference_t<short> spell_label_index;
@@ -760,7 +760,7 @@ namespace {
 constexpr int max_spec_index()
 {
   int max = -1;
-  for ( size_t i = 0; i < range::size( __class_spec_id ); i++ )
+  for ( size_t i = 0; i < range::size( __class_spec_id ); i++ ) // NOLINT(modernize-loop-convert)
   {
     for ( size_t index = 0; index < range::size( __class_spec_id[ i ] ); index++ )
     {
@@ -776,11 +776,11 @@ struct spec_index_map_t {
     for ( int8_t& index : data_ )
       index = -1;
 
-    for ( size_t i = 0; i < range::size( __class_spec_id ); i++ )
+    for (const auto& _class : __class_spec_id)
     {
-      for ( size_t index = 0; index < range::size( __class_spec_id[ i ] ); index++ )
+      for ( size_t index = 0; index < range::size( _class ); index++ )
       {
-        specialization_e spec = __class_spec_id[ i ][ index ];
+        specialization_e spec = _class[ index ];
         if ( spec != SPEC_NONE )
           data_[ spec ] = index;
       }
@@ -793,7 +793,7 @@ struct spec_index_map_t {
     return data_[ spec ];
   }
 
-  int8_t data_[max_spec_index() + 1];
+  std::array<int8_t, max_spec_index() + 1> data_;
 };
 
 } // anon namespace
