@@ -1134,8 +1134,6 @@ struct tiger_palm_t : public monk_melee_attack_t
         // Combo Breaker calculation
         if ( p()->spec.combo_breaker->ok() && p()->buff.bok_proc->trigger() )
         {
-          p()->proc.bok_proc->occur();
-
           if ( p()->buff.storm_earth_and_fire->up() )
           {
             p()->trigger_storm_earth_and_fire_bok_proc( sef_pet_e::SEF_FIRE );
@@ -6883,7 +6881,6 @@ void monk_t::init_procs()
   proc.blackout_kick_cdr                   = get_proc( "Blackout Kick CDR" );
   proc.blackout_kick_cdr_serenity_with_woo = get_proc( "Blackout Kick CDR with Serenity with WoO" );
   proc.blackout_kick_cdr_serenity          = get_proc( "Blackout Kick CDR with Serenity" );
-  proc.bok_proc                            = get_proc( "Blackout Kick! Proc" );
   proc.boiling_brew_healing_sphere         = get_proc( "Boiling Brew Healing Sphere" );
   proc.bonedust_brew_reduction             = get_proc( "Bonedust Brew SCK Reduction" );
   proc.rsk_reset_totm                      = get_proc( "Rising Sun Kick TotM Reset" );
