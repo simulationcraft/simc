@@ -4239,13 +4239,13 @@ struct fallen_order_t : public monk_spell_t
       switch ( spec )
       {
         case MONK_BREWMASTER:
-          p()->pets.fallen_monk_brm.spawn( timespan_t::from_seconds( p()->legendary.sinister_teachings->effectN( 2 ).base_value() ), 1 );
+          p()->pets.sinister_teaching_brm.spawn( timespan_t::from_seconds( p()->legendary.sinister_teachings->effectN( 2 ).base_value() ), 1 );
           break;
         case MONK_MISTWEAVER:
-          p()->pets.fallen_monk_mw.spawn( timespan_t::from_seconds( p()->legendary.sinister_teachings->effectN( 2 ).base_value() ), 1 );
+          p()->pets.sinister_teaching_mw.spawn( timespan_t::from_seconds( p()->legendary.sinister_teachings->effectN( 2 ).base_value() ), 1 );
           break;
         case MONK_WINDWALKER:
-          p()->pets.fallen_monk_ww.spawn( timespan_t::from_seconds( p()->legendary.sinister_teachings->effectN( 2 ).base_value() ), 1 );
+          p()->pets.sinister_teaching_ww.spawn( timespan_t::from_seconds( p()->legendary.sinister_teachings->effectN( 2 ).base_value() ), 1 );
           break;
         default:
           break;

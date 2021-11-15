@@ -1930,14 +1930,16 @@ public:
     {
       parse_options( options_str );
 
+      may_miss = may_block = may_dodge = may_parry = callbacks = false;
+
       trigger_mystic_touch    = true;
       aoe                     = -1;
       reduced_aoe_targets     = o()->spec.keg_smash->effectN( 7 ).base_value();
       full_amount_targets     = 1;
       attack_power_mod.direct = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).ap_coeff();
       radius                  = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).radius();
-
-      cooldown->hasted        = false;
+      cooldown->duration      = p->o()->passives.fallen_monk_keg_smash->cooldown();
+      trigger_gcd             = timespan_t::from_seconds( 1.5 );
     }
 
     double action_multiplier() const override
@@ -1986,9 +1988,12 @@ public:
         dot_action( new fallen_monk_breath_of_fire_tick_t( p ) )
     {
       parse_options( options_str );
-      cooldown->duration = timespan_t::from_seconds( 9 );
+
+      may_miss = may_block = may_dodge = may_parry = callbacks = false;
+
+      cooldown->duration  = p->o()->passives.fallen_monk_breath_of_fire->cooldown();
       cooldown->hasted   = false;
-      trigger_gcd        = timespan_t::from_seconds( 2 );
+      trigger_gcd        = timespan_t::from_seconds( 1.5 );
       aoe                = -1;
       reduced_aoe_targets = 1.0;
       full_amount_targets = 1;
@@ -2015,9 +2020,11 @@ public:
       : pet_spell_t( "clash_fo", p, p->o()->passives.fallen_monk_clash )
     {
       parse_options( options_str );
-      gcd_type = gcd_haste_type::NONE;
+      aoe     = 1;
+      target  = p->o()->target;
 
-      trigger_gcd        = timespan_t::from_seconds( 2 );
+      cooldown->duration = timespan_t::from_seconds( 60 );
+      trigger_gcd        = timespan_t::from_millis( 250 );
     }
   };
 
@@ -2027,7 +2034,6 @@ public:
       : pet_absorb_t( "fallen_brew_fo", p, p->o()->passives.fallen_monk_fallen_brew )
     {
       parse_options( options_str );
-      gcd_type = gcd_haste_type::NONE;
 
       // Attack Power is hard coded at 6 * Attack Power
       // Variables        : $absorb=${($AP*6)*(1+$@versadmg)}
@@ -2035,7 +2041,7 @@ public:
 
       target = p->o();
 
-      trigger_gcd        = timespan_t::from_seconds( 2 );
+      trigger_gcd        = timespan_t::from_seconds( 2.5 );
     }
   };
 
@@ -2162,6 +2168,637 @@ public:
     return monk_pet_t::create_action( name, options_str );
   }
 };
+
+// ==========================================================================
+// Sinister Teaching Fallen Monk - Windwalker (Venthyr)
+// ==========================================================================
+struct sinister_teaching_fallen_monk_ww_pet_t : public monk_pet_t
+{
+private:
+  struct melee_t : public pet_melee_t
+  {
+    melee_t( util::string_view n, sinister_teaching_fallen_monk_ww_pet_t* player, weapon_t* weapon )
+      : pet_melee_t( n, player, weapon )
+    {
+      // TODO: check why this is here
+      base_hit -= 0.19;
+      trigger_mystic_touch = true;
+    }
+  };
+
+  struct auto_attack_t : public pet_auto_attack_t
+  {
+    auto_attack_t( sinister_teaching_fallen_monk_ww_pet_t* player, util::string_view options_str )
+      : pet_auto_attack_t( player )
+    {
+      parse_options( options_str );
+      trigger_mystic_touch = true;
+
+      player->main_hand_attack = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
+      player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
+    }
+  };
+
+public:
+  sinister_teaching_fallen_monk_ww_pet_t( monk_t* owner )
+    : monk_pet_t( owner, "sinister_teaching_fallen_monk_windwalker", PET_FALLEN_MONK, true, true )
+  {
+    npc_id                      = 168033;
+    main_hand_weapon.type       = WEAPON_1H;
+    main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
+
+    off_hand_weapon.type       = WEAPON_1H;
+    off_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
+    off_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
+    off_hand_weapon.damage     = ( off_hand_weapon.min_dmg + off_hand_weapon.max_dmg ) / 2;
+    off_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
+
+    switch ( owner->specialization() )
+    {
+      case MONK_WINDWALKER:
+      case MONK_BREWMASTER:
+        owner_coeff.ap_from_ap = 0.4;
+        owner_coeff.sp_from_ap = 0.384;
+        break;
+      case MONK_MISTWEAVER:
+      {
+        owner_coeff.ap_from_ap = 0.4;
+        owner_coeff.sp_from_sp = 0.4;
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double cpm = o()->cache.player_multiplier( school );
+
+    if ( o()->conduit.imbued_reflections->ok() )
+      cpm *= 1 + o()->conduit.imbued_reflections.percent();
+
+    return cpm;
+  }
+
+  struct sinister_teaching_fallen_monk_fists_of_fury_tick_t : public pet_melee_attack_t
+  {
+    sinister_teaching_fallen_monk_fists_of_fury_tick_t( sinister_teaching_fallen_monk_ww_pet_t* p )
+      : pet_melee_attack_t( "fists_of_fury_sit_fo_tick", p, p->o()->passives.fallen_monk_fists_of_fury_tick )
+    {
+      background   = true;
+      merge_report = false;
+      aoe          = (int)o()->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value() + ( o()->bugs ? 0 : 1 );
+      attack_power_mod.direct = o()->passives.fallen_monk_fists_of_fury->effectN( 5 ).ap_coeff();
+      ap_type                 = attack_power_type::WEAPON_BOTH;
+      dot_duration            = timespan_t::zero();
+      trigger_gcd             = timespan_t::zero();
+      trigger_mystic_touch    = true;
+    }
+
+    double composite_aoe_multiplier( const action_state_t* state ) const override
+    {
+      double cam = pet_melee_attack_t::composite_aoe_multiplier( state );
+
+      if ( state->target != target )
+        cam *= o()->passives.fallen_monk_fists_of_fury->effectN( 6 ).percent();
+
+      return cam;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      pet_melee_attack_t::impact( s );
+
+      s->target->debuffs.mystic_touch->trigger();
+    }
+  };
+
+  struct sinister_teaching_fallen_monk_fists_of_fury_t : public pet_melee_attack_t
+  {
+    sinister_teaching_fallen_monk_fists_of_fury_t( sinister_teaching_fallen_monk_ww_pet_t* p,
+                                                   util::string_view options_str )
+      : pet_melee_attack_t( "fists_of_fury_sit_fo", p, p->o()->passives.fallen_monk_fists_of_fury )
+    {
+      parse_options( options_str );
+
+      if ( p->o()->bugs )
+        tick_zero = false;
+      else
+        tick_zero = true;
+      channeled             = true;
+      interrupt_auto_attack = true;
+      harmful               = false;
+
+      attack_power_mod.direct = 0;
+      attack_power_mod.tick   = 0;
+      weapon_power_mod        = 0;
+
+      // Effect 2 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
+      base_tick_time = dot_duration / 4;
+      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+
+      cooldown->hasted = false;
+
+      tick_action = new sinister_teaching_fallen_monk_fists_of_fury_tick_t( p );
+    }
+
+    double action_multiplier() const override
+    {
+      return 0;
+    }
+  };
+
+  struct sinister_teaching_fallen_monk_tiger_palm_t : public pet_melee_attack_t
+  {
+    sinister_teaching_fallen_monk_tiger_palm_t( sinister_teaching_fallen_monk_ww_pet_t* p,
+                                                util::string_view options_str )
+      : pet_melee_attack_t( "tiger_palm_sit_fo", p, p->o()->passives.fallen_monk_tiger_palm )
+    {
+      parse_options( options_str );
+
+      may_miss = may_block = may_dodge = may_parry = callbacks = false;
+
+      trigger_mystic_touch = true;
+
+      // We only want the monk to cast Tiger Palm 2 times during the duration.
+      // Increase the cooldown for non-windwalkers so that it only casts 2 times.
+      if ( o()->specialization() == MONK_WINDWALKER )
+        cooldown->duration = timespan_t::from_seconds( 3.6 );
+      else
+        cooldown->duration = timespan_t::from_seconds( 3 );
+
+      cooldown->hasted = false;
+    }
+
+    double cost() const override
+    {
+      return 0;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      pet_melee_attack_t::impact( s );
+
+      if ( o()->specialization() == MONK_WINDWALKER )
+        o()->trigger_mark_of_the_crane( s );
+    }
+  };
+
+  struct sinister_teaching_fallen_monk_spinning_crane_kick_tick_t : public pet_melee_attack_t
+  {
+    sinister_teaching_fallen_monk_spinning_crane_kick_tick_t( sinister_teaching_fallen_monk_ww_pet_t* p )
+      : pet_melee_attack_t( "spinning_crane_kick_sit_fo_tick", p, p->o()->passives.fallen_monk_spinning_crane_kick_tick )
+    {
+      dual = background    = true;
+      merge_report         = false;
+      aoe                  = -1;
+      reduced_aoe_targets  = p->o()->spec.spinning_crane_kick->effectN( 1 ).base_value();
+      trigger_mystic_touch = true;
+
+      // Reset some variables to ensure proper execution
+      dot_duration                  = timespan_t::zero();
+      school                        = SCHOOL_PHYSICAL;
+      cooldown->duration            = timespan_t::zero();
+      base_costs[ RESOURCE_ENERGY ] = 0;
+    }
+
+    double cost() const override
+    {
+      return 0;
+    }
+
+    int mark_of_the_crane_counter() const
+    {
+      std::vector<player_t*> targets = target_list();
+      int mark_of_the_crane_counter  = 0;
+
+      if ( p()->specialization() == MONK_WINDWALKER )
+      {
+        for ( player_t* target : targets )
+        {
+          if ( o()->get_target_data( target )->debuff.mark_of_the_crane->up() )
+            mark_of_the_crane_counter++;
+        }
+      }
+
+      return std::min( (int)p()->o()->passives.cyclone_strikes->max_stacks(), mark_of_the_crane_counter );
+    }
+
+    double action_multiplier() const override
+    {
+      double am = pet_melee_attack_t::action_multiplier();
+      /*
+            double motc_multiplier = p()->o()->passives.cyclone_strikes->effectN( 1 ).percent();
+
+            if ( p()->o()->conduit.calculated_strikes->ok() )
+              motc_multiplier += p()->o()->conduit.calculated_strikes.percent();
+
+            if ( p()->o()->spec.spinning_crane_kick_2_ww->ok() )
+              am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
+
+            if ( p()->o()->buff.dance_of_chiji_hidden->up() )
+              am *= 1 + p()->o()->talent.dance_of_chiji->effectN( 1 ).percent();
+      */
+      return am;
+    }
+  };
+
+  struct sinister_teaching_fallen_monk_spinning_crane_kick_t : public pet_melee_attack_t
+  {
+    sinister_teaching_fallen_monk_spinning_crane_kick_t( sinister_teaching_fallen_monk_ww_pet_t* p,
+                                                         util::string_view options_str )
+      : pet_melee_attack_t( "spinning_crane_kick_sit_fo", p, p->o()->passives.fallen_monk_spinning_crane_kick )
+    {
+      parse_options( options_str );
+
+      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = harmful = false;
+      tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
+
+      spell_power_mod.direct  = 0.0;
+      spell_power_mod.tick    = 0.0;
+      attack_power_mod.direct = 0.0;
+      attack_power_mod.tick   = 0.0;
+      weapon_power_mod        = 0.0;
+
+      tick_action = new sinister_teaching_fallen_monk_spinning_crane_kick_tick_t( p );
+
+      // We only want the monk to cast Spinning Crane Kick 2 times during the duration.
+      // Increase the cooldown for non-windwalkers so that it only casts 2 times.
+      if ( o()->specialization() == MONK_WINDWALKER )
+        cooldown->duration = timespan_t::from_seconds( 3.6 );
+      else
+        cooldown->duration = timespan_t::from_seconds( 3 );
+    }
+
+    // N full ticks, but never additional ones.
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    {
+      return dot_duration * ( tick_time( s ) / base_tick_time );
+    }
+
+    double cost() const override
+    {
+      return 0;
+    }
+
+    double action_multiplier() const override
+    {
+      return 0;
+    }
+  };
+
+  void init_action_list() override
+  {
+    action_list_str = "auto_attack";
+    // Only cast Fists of Fury for Windwalker specialization
+    if ( owner->specialization() == MONK_WINDWALKER )
+      action_list_str += "/fists_of_fury";
+    action_list_str += "/spinning_crane_kick,if=active_enemies>1";
+    action_list_str += "/tiger_palm,if=active_enemies=1";
+    action_list_str += "/tiger_palm";
+
+    monk_pet_t::init_action_list();
+  }
+
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  {
+    if ( name == "auto_attack" )
+      return new auto_attack_t( this, options_str );
+
+    if ( name == "fists_of_fury" )
+      return new sinister_teaching_fallen_monk_fists_of_fury_t( this, options_str );
+
+    if ( name == "tiger_palm" )
+      return new sinister_teaching_fallen_monk_tiger_palm_t( this, options_str );
+
+    if ( name == "spinning_crane_kick" )
+      return new sinister_teaching_fallen_monk_spinning_crane_kick_t( this, options_str );
+
+    return monk_pet_t::create_action( name, options_str );
+  }
+};
+
+// ==========================================================================
+// Sinister Teaching Fallen Monk - Brewmaster (Venthyr)
+// ==========================================================================
+struct sinister_teaching_fallen_monk_brm_pet_t : public monk_pet_t
+{
+private:
+  struct melee_t : public pet_melee_t
+  {
+    melee_t( util::string_view n, sinister_teaching_fallen_monk_brm_pet_t* player, weapon_t* weapon )
+      : pet_melee_t( n, player, weapon )
+    {
+    }
+  };
+
+  struct auto_attack_t : public pet_auto_attack_t
+  {
+    auto_attack_t( sinister_teaching_fallen_monk_brm_pet_t* player, util::string_view options_str )
+      : pet_auto_attack_t( player )
+    {
+      parse_options( options_str );
+      trigger_mystic_touch = true;
+
+      player->main_hand_attack = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
+      player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
+    }
+  };
+
+public:
+  sinister_teaching_fallen_monk_brm_pet_t( monk_t* owner )
+    : monk_pet_t( owner, "sinister_teaching_fallen_monk_brewmaster", PET_FALLEN_MONK, true, true )
+  {
+    npc_id                      = 168073;
+    main_hand_weapon.type       = WEAPON_2H;
+    main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1 );
+
+    switch ( owner->specialization() )
+    {
+      case MONK_WINDWALKER:
+      case MONK_BREWMASTER:
+        owner_coeff.ap_from_ap = 0.4;
+        owner_coeff.sp_from_ap = 0.384;
+        break;
+      case MONK_MISTWEAVER:
+      {
+        owner_coeff.ap_from_ap = 0.4;
+        owner_coeff.sp_from_sp = 0.4;
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double cpm = o()->cache.player_multiplier( school );
+
+    if ( o()->conduit.imbued_reflections->ok() )
+      cpm *= 1 + o()->conduit.imbued_reflections.percent();
+
+    return cpm;
+  }
+
+  struct sinister_teaching_fallen_monk_keg_smash_t : public pet_melee_attack_t
+  {
+    sinister_teaching_fallen_monk_keg_smash_t( sinister_teaching_fallen_monk_brm_pet_t* p, util::string_view options_str )
+      : pet_melee_attack_t( "keg_smash_sit_fo", p, p->o()->passives.fallen_monk_keg_smash )
+    {
+      parse_options( options_str );
+
+      may_miss = may_block = may_dodge = may_parry = callbacks = false;
+
+      trigger_mystic_touch    = true;
+      aoe                     = -1;
+      reduced_aoe_targets     = o()->spec.keg_smash->effectN( 7 ).base_value();
+      full_amount_targets     = 1;
+      attack_power_mod.direct = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).ap_coeff();
+      radius                  = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).radius();
+      cooldown->duration      = p->o()->passives.fallen_monk_keg_smash->cooldown();
+      trigger_gcd             = timespan_t::from_seconds( 1.5 );
+    }
+
+    double action_multiplier() const override
+    {
+      double am = pet_melee_attack_t::action_multiplier();
+
+      if ( o()->legendary.stormstouts_last_keg->ok() )
+        am *= 1 + o()->legendary.stormstouts_last_keg->effectN( 1 ).percent();
+
+      if ( o()->conduit.scalding_brew->ok() )
+      {
+        if ( o()->get_target_data( player->target )->dots.breath_of_fire->is_ticking() )
+          am *= 1 + o()->conduit.scalding_brew.percent();
+      }
+
+      return am;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      pet_melee_attack_t::impact( s );
+
+      o()->get_target_data( s->target )->debuff.fallen_monk_keg_smash->trigger();
+    }
+  };
+
+  struct sinister_teaching_fallen_monk_breath_of_fire_t : public pet_spell_t
+  {
+    struct sinister_teaching_fallen_monk_breath_of_fire_tick_t : public pet_spell_t
+    {
+      sinister_teaching_fallen_monk_breath_of_fire_tick_t( sinister_teaching_fallen_monk_brm_pet_t* p )
+        : pet_spell_t( "breath_of_fire_dot_sit_fo", p, p->o()->passives.breath_of_fire_dot )
+      {
+        background    = true;
+        merge_report  = false;
+        tick_may_crit = may_crit = true;
+        hasted_ticks             = false;
+        reduced_aoe_targets      = 1.0;
+        full_amount_targets      = 1;
+      }
+    };
+
+    sinister_teaching_fallen_monk_breath_of_fire_tick_t* dot_action;
+    sinister_teaching_fallen_monk_breath_of_fire_t( sinister_teaching_fallen_monk_brm_pet_t* p,
+                                                    util::string_view options_str )
+      : pet_spell_t( "breath_of_fire_sit_fo", p, p->o()->passives.fallen_monk_breath_of_fire ),
+        dot_action( new sinister_teaching_fallen_monk_breath_of_fire_tick_t( p ) )
+    {
+      parse_options( options_str );
+
+      may_miss = may_block = may_dodge = may_parry = callbacks = false;
+
+      cooldown->duration  = p->o()->passives.fallen_monk_breath_of_fire->cooldown();
+      cooldown->hasted    = false;
+      trigger_gcd         = timespan_t::from_seconds( 1.5 );
+      aoe                 = -1;
+      reduced_aoe_targets = 1.0;
+      full_amount_targets = 1;
+
+      add_child( dot_action );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      pet_spell_t::impact( s );
+
+      if ( o()->get_target_data( s->target )->debuff.keg_smash->up() ||
+           o()->get_target_data( s->target )->debuff.fallen_monk_keg_smash->up() )
+      {
+        dot_action->target = s->target;
+        dot_action->execute();
+      }
+    }
+  };
+
+  struct sinister_teaching_fallen_monk_clash_t : public pet_spell_t
+  {
+    sinister_teaching_fallen_monk_clash_t( sinister_teaching_fallen_monk_brm_pet_t* p, util::string_view options_str )
+      : pet_spell_t( "clash_sit_fo", p, p->o()->passives.fallen_monk_clash )
+    {
+      parse_options( options_str );
+      aoe    = 1;
+      target = p->o()->target;
+
+      cooldown->duration = timespan_t::from_seconds( 60 );
+      trigger_gcd        = timespan_t::from_millis( 250 );
+    }
+  };
+
+  struct sinister_teaching_fallen_monk_fallen_brew_t : public pet_absorb_t
+  {
+    sinister_teaching_fallen_monk_fallen_brew_t( sinister_teaching_fallen_monk_brm_pet_t* p,
+                                                 util::string_view options_str )
+      : pet_absorb_t( "fallen_brew_sit_fo", p, p->o()->passives.fallen_monk_fallen_brew )
+    {
+      parse_options( options_str );
+      gcd_type = gcd_haste_type::NONE;
+
+      // Attack Power is hard coded at 6 * Attack Power
+      // Variables        : $absorb=${($AP*6)*(1+$@versadmg)}
+      attack_power_mod.direct = 6;
+
+      target = p->o();
+
+      trigger_gcd = timespan_t::from_seconds( 2.5 );
+    }
+  };
+
+  void init_action_list() override
+  {
+    action_list_str = "auto_attack";
+    action_list_str += "/clash";
+    action_list_str += "/fallen_brew";
+    action_list_str += "/keg_smash";
+    // Only cast Breath of Fire for Brewmaster specialization
+    if ( o()->specialization() == MONK_BREWMASTER )
+      action_list_str += "/breath_of_fire";
+
+    monk_pet_t::init_action_list();
+  }
+
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  {
+    if ( name == "auto_attack" )
+      return new auto_attack_t( this, options_str );
+
+    if ( name == "clash" )
+      return new sinister_teaching_fallen_monk_clash_t( this, options_str );
+
+    if ( name == "keg_smash" )
+      return new sinister_teaching_fallen_monk_keg_smash_t( this, options_str );
+
+    if ( name == "breath_of_fire" )
+      return new sinister_teaching_fallen_monk_breath_of_fire_t( this, options_str );
+
+    if ( name == "fallen_brew" )
+      return new sinister_teaching_fallen_monk_fallen_brew_t( this, options_str );
+
+    return monk_pet_t::create_action( name, options_str );
+  }
+};
+
+// ==========================================================================
+// Sinister Teaching Fallen Monk - Mistweaver (Venthyr)
+// ==========================================================================
+struct sinister_teaching_fallen_monk_mw_pet_t : public monk_pet_t
+{
+public:
+  sinister_teaching_fallen_monk_mw_pet_t( monk_t* owner )
+    : monk_pet_t( owner, "sinister_teaching_fallen_monk_mistweaver", PET_FALLEN_MONK, true, true )
+  {
+    npc_id                      = 168074;
+    main_hand_weapon.type       = WEAPON_1H;
+    main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1 );
+
+    owner_coeff.sp_from_ap = 0.98;
+    owner_coeff.ap_from_ap = 0.98;
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double cpm = o()->cache.player_multiplier( school );
+
+    if ( o()->conduit.imbued_reflections->ok() )
+      cpm *= 1 + o()->conduit.imbued_reflections.percent();
+
+    return cpm;
+  }
+
+  struct sinister_teaching_fallen_monk_enveloping_mist_t : public pet_heal_t
+  {
+    sinister_teaching_fallen_monk_enveloping_mist_t( sinister_teaching_fallen_monk_mw_pet_t* p,
+                                                     util::string_view options_str )
+      : pet_heal_t( "enveloping_mist_sit_fo", p, p->o()->passives.fallen_monk_enveloping_mist )
+    {
+      parse_options( options_str );
+
+      may_miss = false;
+
+      dot_duration = data().duration();
+      target       = p->o();
+    }
+
+    double cost() const override
+    {
+      return 0;
+    }
+  };
+
+  struct sinister_teaching_fallen_monk_soothing_mist_t : public pet_heal_t
+  {
+    sinister_teaching_fallen_monk_soothing_mist_t( sinister_teaching_fallen_monk_mw_pet_t* p,
+                                                   util::string_view options_str )
+      : pet_heal_t( "soothing_mist_sit_fo", p, p->o()->passives.fallen_monk_soothing_mist )
+    {
+      parse_options( options_str );
+
+      may_miss  = false;
+      channeled = tick_zero = true;
+      interrupt_auto_attack = true;
+
+      dot_duration       = data().duration();
+      trigger_gcd        = timespan_t::from_millis( 750 );
+      cooldown->duration = timespan_t::from_seconds( 5 );
+      cooldown->hasted   = true;
+      target             = p->o();
+    }
+  };
+
+  void init_action_list() override
+  {
+    action_list_str = "";
+    // Only cast Enveloping Mist for Mistweaver specialization
+    if ( o()->specialization() == MONK_MISTWEAVER )
+      action_list_str += "/enveloping_mist";
+    action_list_str += "/soothing_mist";
+
+    monk_pet_t::init_action_list();
+  }
+
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  {
+    if ( name == "enveloping_mist" )
+      return new sinister_teaching_fallen_monk_enveloping_mist_t( this, options_str );
+
+    if ( name == "soothing_mist" )
+      return new sinister_teaching_fallen_monk_soothing_mist_t( this, options_str );
+
+    return monk_pet_t::create_action( name, options_str );
+  }
+};
 }  // end namespace pets
 
 monk_t::pets_t::pets_t( monk_t* p )
@@ -2174,6 +2811,9 @@ monk_t::pets_t::pets_t( monk_t* p )
     fallen_monk_mw( "fallen_monk_mistweaver", p, []( monk_t* p ) { return new pets::fallen_monk_mw_pet_t( p ); } ),
     fallen_monk_brm( "fallen_monk_brewmaster", p, []( monk_t* p ) { return new pets::fallen_monk_brm_pet_t( p ); } ),
     call_to_arms_xuen( "call_to_arms_xuen", p, []( monk_t* p ) { return new pets::call_to_arms_xuen_pet_t( p ); } ),
+    sinister_teaching_ww( "sinister_teaching_fallen_monk_windwalker", p, []( monk_t* p ) { return new pets::sinister_teaching_fallen_monk_ww_pet_t( p ); } ),
+    sinister_teaching_mw( "sinister_teaching_fallen_monk_mistweaver", p, []( monk_t* p ) { return new pets::sinister_teaching_fallen_monk_mw_pet_t( p ); } ),
+    sinister_teaching_brm( "sinister_teaching_fallen_monk_brewmaster", p, []( monk_t* p ) { return new pets::sinister_teaching_fallen_monk_brm_pet_t( p ); } ),
 
     bron( nullptr )
 {
