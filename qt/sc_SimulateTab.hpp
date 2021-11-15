@@ -22,7 +22,7 @@ class SC_SimulateTab : public SC_RecentlyClosedTab
   int lastSimulateTabIndexOffset;
 
 public:
-  SC_SimulateTab( QWidget* parent = 0, SC_RecentlyClosedTabItemModel* modelToUse = 0 );
+  SC_SimulateTab( QWidget* parent = nullptr, SC_RecentlyClosedTabItemModel* modelToUse = nullptr );
   bool is_Default_New_Tab( int index );
   bool contains_Only_Default_Profiles();
   int add_Text( const QString& text, const QString& tab_name );

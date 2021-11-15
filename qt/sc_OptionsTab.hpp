@@ -125,5 +125,5 @@ private slots:
   void _optionsChanged();
 signals:
   void armory_region_changed( const QString& );
-  void optionsChanged();  // FIXME: hookup to everything
+  void optionsChanged();
 };

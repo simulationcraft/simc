@@ -14,9 +14,7 @@
 struct sim_t;
 struct special_effect_t;
 
-namespace unique_gear
-{
-namespace shadowlands
+namespace unique_gear::shadowlands
 {
 namespace consumables
 {
@@ -26,14 +24,14 @@ void feast_of_gluttonous_hedonism( special_effect_t& );
 void potion_of_deathly_fixation( special_effect_t& );
 void potion_of_empowered_exorcisms( special_effect_t& );
 void potion_of_phantom_fire( special_effect_t& );
-}
+}  // namespace consumables
 
 namespace enchants
 {
 void celestial_guidance( special_effect_t& );
 void lightless_force( special_effect_t& );
 void sinful_revelation( special_effect_t& );
-}
+}  // namespace enchants
 
 namespace items
 {
@@ -71,15 +69,14 @@ void vitality_sacrifice( special_effect_t& );
 // Shards of Domination
 namespace shards_of_domination
 {
-  int rune_word_active( const player_t*, const spell_data_t*, spell_label );
-  report::sc_html_stream& generate_report( const player_t&, report::sc_html_stream& );
-  std::unique_ptr<expr_t> create_expression( const player_t&, util::string_view );
-}
+int rune_word_active( const player_t*, const spell_data_t*, spell_label );
+report::sc_html_stream& generate_report( const player_t&, report::sc_html_stream& );
+std::unique_ptr<expr_t> create_expression( const player_t&, util::string_view );
+}  // namespace shards_of_domination
 }  // namespace items
 
 void register_hotfixes();
 void register_special_effects();
 void register_target_data_initializers( sim_t& );
 
-}  // namespace shadowlands
-}  // namespace unique_gear
+}  // namespace unique_gear::shadowlands

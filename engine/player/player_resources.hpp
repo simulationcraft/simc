@@ -6,8 +6,11 @@
 #pragma once
 
 #include "config.hpp"
+
 #include "sc_enums.hpp"
+
 #include <array>
+#include <limits>
 
 // Resources
 struct player_resources_t

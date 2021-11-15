@@ -537,9 +537,9 @@ void SC_MainWindow::deleteSim( std::shared_ptr<sim_t>& sim, SC_TextEdit* append_
 
     if ( !logFileOpenedSuccessfully )
     {
-      for ( std::vector<std::string>::iterator it = errorListCopy.begin(); it != errorListCopy.end(); ++it )
+      for ( const auto& e : errorListCopy )
       {
-        contents.append( QString::fromStdString( *it + "\n" ) );
+        contents.append( QString::fromStdString( e + "\n" ) );
       }
       // If the failure is due to permissions issues, make this very clear to the user that the problem is on their end
       // and what must be done to fix it
@@ -552,11 +552,11 @@ void SC_MainWindow::deleteSim( std::shared_ptr<sim_t>& sim, SC_TextEdit* append_
               "permission issues.";
       std::string suggestions;
 
-      for ( std::list<std::string>::iterator it = files.begin(); it != files.end(); ++it )
+      for ( const auto& f : files )
       {
-        if ( !( *it ).empty() )
+        if ( !f.empty() )
         {
-          QFileInfo file( QString::fromStdString( *it ) );
+          QFileInfo file( QString::fromStdString( f ) );
           if ( file.isDir() )
           {
             filesThatAreDirectories.push_back( file.absoluteFilePath() );
@@ -576,10 +576,9 @@ void SC_MainWindow::deleteSim( std::shared_ptr<sim_t>& sim, SC_TextEdit* append_
         suggestions.append(
             "The following files are directories, SimulationCraft uses these as files, please rename them\n" );
       }
-      for ( std::list<QString>::iterator it = filesThatAreDirectories.begin(); it != filesThatAreDirectories.end();
-            ++it )
+      for ( const auto& f : filesThatAreDirectories )
       {
-        suggestions.append( "   " + ( *it ).toStdString() + "\n" );
+        suggestions.append( "   " + f.toStdString() + "\n" );
       }
       if ( !filesWithPermissionIssues.empty() )
       {
@@ -587,10 +586,9 @@ void SC_MainWindow::deleteSim( std::shared_ptr<sim_t>& sim, SC_TextEdit* append_
             "The following files have permission issues and are unwritable\n SimulationCraft needs to write to these "
             "files to simulate\n" );
       }
-      for ( std::list<QString>::iterator it = filesWithPermissionIssues.begin(); it != filesWithPermissionIssues.end();
-            ++it )
+      for ( const auto& f : filesWithPermissionIssues )
       {
-        suggestions.append( "   " + ( *it ).toStdString() + "\n" );
+        suggestions.append( "   " + f.toStdString() + "\n" );
       }
       if ( !directoriesWithPermissionIssues.empty() )
       {
@@ -598,10 +596,9 @@ void SC_MainWindow::deleteSim( std::shared_ptr<sim_t>& sim, SC_TextEdit* append_
             "The following directories have permission issues and are unwritable\n meaning SimulationCraft cannot "
             "create files in these directories\n" );
       }
-      for ( std::list<QString>::iterator it = directoriesWithPermissionIssues.begin();
-            it != directoriesWithPermissionIssues.end(); ++it )
+      for ( const auto& e : directoriesWithPermissionIssues )
       {
-        suggestions.append( "   " + ( *it ).toStdString() + "\n" );
+        suggestions.append( "   " + e.toStdString() + "\n" );
       }
       if ( suggestions.length() != 0 )
       {

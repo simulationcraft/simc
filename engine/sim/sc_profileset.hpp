@@ -6,6 +6,7 @@
 #define SC_PROFILESET_HH
 
 #include <array>
+#include <memory>
 #include <vector>
 #include <string>
 
@@ -416,7 +417,7 @@ public:
   {
     if ( ! m_output_data )
     {
-      m_output_data = std::unique_ptr<profile_output_data_t>( new profile_output_data_t() );
+      m_output_data = std::make_unique<profile_output_data_t>(  );
     }
 
     return *m_output_data;

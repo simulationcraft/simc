@@ -65,9 +65,9 @@ QString RemoveBadFileChar( QString& filename )
   static const char notAllowedChars[] = ",^@={}[]~!?:&*\"|#%<>$\"'();`'/\\";
   if ( filename == "" )
     return filename;
-  for ( size_t i = 0; i < sizeof( notAllowedChars ); i++ )
+  for ( char notAllowedChar : notAllowedChars )
   {
-    filename.replace( notAllowedChars[ i ], "" );
+    filename.replace( notAllowedChar, "" );
   }
   filename.replace( "..", "" );
   filename.replace( ".html", "" );
@@ -135,9 +135,9 @@ void load_button_group( QSettings& s, const QString& groupname, QButtonGroup* bg
   s.beginGroup( groupname );
   QList<QString> button_names;
   QList<QAbstractButton*> buttons = bg->buttons();
-  for ( int i = 0; i < buttons.size(); ++i )
+  for ( const auto& button : buttons )
   {
-    button_names.push_back( buttons[ i ]->text() );
+    button_names.push_back( button->text() );
   }
   QStringList keys = s.childKeys();
   for ( int i = 0; i < keys.size(); ++i )
@@ -174,9 +174,9 @@ void store_button_group( QSettings& s, const QString& name, QButtonGroup* bg )
 {
   s.beginGroup( name );
   QList<QAbstractButton*> buttons = bg->buttons();
-  for ( int i = 0; i < buttons.size(); ++i )
+  for ( const auto& button : buttons )
   {
-    s.setValue( buttons[ i ]->text(), buttons[ i ]->isChecked() );
+    s.setValue( button->text(), button->isChecked() );
   }
   s.endGroup();
 }
@@ -189,10 +189,10 @@ void load_scaling_groups( QSettings& s, const QString& groupname, QButtonGroup* 
   if ( keys.isEmpty() )
   {
     QList<QAbstractButton*> buttons = bg->buttons();
-    for ( int i = 0; i < buttons.size(); ++i )
+    for ( const auto& button : buttons )
     {
       // All buttons unchecked.
-      buttons[ i ]->setChecked( false );
+      button->setChecked( false );
     }
   }
   else

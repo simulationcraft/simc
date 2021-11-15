@@ -7,13 +7,17 @@
 
 #include "config.hpp"
 
+#include "sc_enums.hpp"
+
+struct player_t;
+
 // Expansion specific methods and helpers
 namespace expansion
 {
 // Legion (WoW 7.0)
 namespace legion
 {
-} // namespace legion
+}  // namespace legion
 
 namespace bfa
 {
@@ -26,5 +30,5 @@ void register_leyshocks_trigger( unsigned spell_id, stat_e stat_buff );
 void trigger_leyshocks_grand_compilation( unsigned spell_id, player_t* actor );
 // Bypass spell mapping to trigger any of the buffs required on an actor
 void trigger_leyshocks_grand_compilation( stat_e stat, player_t* actor );
-}
-} // namespace expansion
+}  // namespace bfa
+}  // namespace expansion

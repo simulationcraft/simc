@@ -4333,7 +4333,7 @@ void item::darkmoon_deck( special_effect_t& effect )
       return;
   }
 
-  auto d = new darkmoon_buff_deck_t<stat_buff_t>( effect, cards );
+  auto d = new darkmoon_buff_deck_t<stat_buff_t>( effect, std::move( cards ) );
   d->initialize();
 
   effect.player->register_combat_begin( [ d ]( player_t* ) {

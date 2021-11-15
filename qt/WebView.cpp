@@ -12,7 +12,7 @@
 #include <QShortcut>
 #include <QNetworkDiskCache>
 
-SC_WebView::SC_WebView( SC_MainWindow* mw, QWidget* parent, const QString& h )
+SC_WebView::SC_WebView( SC_MainWindow* mw, QWidget* parent, QString h )
   : SC_WebEngineView( parent ),
     searchBox( new SC_SearchBox() ),
     previousSearch( "" ),
@@ -21,7 +21,7 @@ SC_WebView::SC_WebView( SC_MainWindow* mw, QWidget* parent, const QString& h )
     allow_searching( false ),
     mainWindow( mw ),
     progress( 0 ),
-    html_str( h )
+    html_str( std::move( h ) )
 {
   searchBox->hide();
   QShortcut* ctrlF  = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
