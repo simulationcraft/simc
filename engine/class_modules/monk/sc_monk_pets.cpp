@@ -1582,7 +1582,7 @@ private:
 
 public:
   tiger_adept_pet_t( monk_t* owner )
-    : monk_pet_t( owner, "tiger_adept", PET_FALLEN_MONK, true, true )
+    : monk_pet_t( owner, "tiger_adept", PET_FALLEN_MONK, false, true )
   {
     npc_id                      = 168033;
     main_hand_weapon.type       = WEAPON_1H;
@@ -1891,7 +1891,7 @@ private:
 
 public:
   ox_adept_pet_t( monk_t* owner )
-    : monk_pet_t( owner, "ox_adept", PET_FALLEN_MONK, true, true )
+    : monk_pet_t( owner, "ox_adept", PET_FALLEN_MONK, false, true )
   {
     npc_id                      = 168073;
     main_hand_weapon.type       = WEAPON_1H;
@@ -2096,7 +2096,7 @@ public:
 struct crane_adept_pet_t : public monk_pet_t
 {
 public:
-  crane_adept_pet_t( monk_t* owner ) : monk_pet_t( owner, "crane_adept", PET_FALLEN_MONK, true, true )
+  crane_adept_pet_t( monk_t* owner ) : monk_pet_t( owner, "crane_adept", PET_FALLEN_MONK, false, true )
   {
     npc_id                      = 168074;
     main_hand_weapon.type       = WEAPON_1H;
@@ -2214,7 +2214,7 @@ private:
 
 public:
   sinister_teaching_tiger_adept_pet_t( monk_t* owner )
-    : monk_pet_t( owner, "sinister_teaching_tiger_adept", PET_FALLEN_MONK, true, true )
+    : monk_pet_t( owner, "sinister_teaching_tiger_adept", PET_FALLEN_MONK, false, true )
   {
     npc_id                      = 168033;
     main_hand_weapon.type       = WEAPON_1H;
@@ -2527,7 +2527,7 @@ private:
 
 public:
   sinister_teaching_ox_adept_pet_t( monk_t* owner )
-    : monk_pet_t( owner, "sinister_teaching_ox_adept", PET_FALLEN_MONK, true, true )
+    : monk_pet_t( owner, "sinister_teaching_ox_adept", PET_FALLEN_MONK, false, true )
   {
     npc_id                      = 168073;
     main_hand_weapon.type       = WEAPON_1H;
@@ -2736,7 +2736,7 @@ struct sinister_teaching_crane_adept_pet_t : public monk_pet_t
 {
 public:
   sinister_teaching_crane_adept_pet_t( monk_t* owner )
-    : monk_pet_t( owner, "sinister_teaching_crane_adept", PET_FALLEN_MONK, true, true )
+    : monk_pet_t( owner, "sinister_teaching_crane_adept", PET_FALLEN_MONK, false, true )
   {
     npc_id                      = 168074;
     main_hand_weapon.type       = WEAPON_1H;
