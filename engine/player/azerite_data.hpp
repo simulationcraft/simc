@@ -66,7 +66,7 @@ public:
 
   azerite_power_t();
   azerite_power_t( const player_t* p, const azerite_power_entry_t* data, const std::vector<const item_t*>& items );
-  azerite_power_t( const player_t* p, const azerite_power_entry_t* data, const std::vector<unsigned>& ilevels );
+  azerite_power_t( const player_t* p, const azerite_power_entry_t* data, std::vector<unsigned> ilevels );
 
   /// Implicit conversion to spell_data_t* object for easy use in accessors that accept spell data
   /// pointers

@@ -468,7 +468,7 @@ void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, tim
 {
   buff_t::expire_override( expiration_stacks, remaining_duration );
 
-  paladin_t* p = debug_cast< paladin_t* >( player );
+  auto* p = debug_cast<paladin_t*>( player );
 
   if ( p -> azerite.inner_light.enabled() )
   {

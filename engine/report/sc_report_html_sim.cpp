@@ -325,11 +325,9 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
         if ( sim.report_pets_separately )
         {
           os << "\n<ul>\n";
-          for ( size_t k = 0; k < sim.players_by_name[ pi ]->pet_list.size();
-                ++k )
+          for ( const auto* pet : sim.players_by_name[ pi ]->pet_list )
           {
-            pet_t* pet = sim.players_by_name[ pi ]->pet_list[ k ];
-            if ( pet->summoned )
+             if ( pet->summoned )
             {
               os << "<li><a href=\"#player" << pet->index << "\">" << util::encode_html( pet->name() ) << "</a></li>\n";
               ci++;
@@ -628,10 +626,9 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
       << "</tr>\n"
       << "</thead>\n";
 
-    for ( size_t i = 0; i < sim.players_by_name.size(); i++ )
+    for ( const player_t* p : sim.players_by_name )
     {
-      player_t* p  = sim.players_by_name[ i ];
-      double range = ( p->collected_data.dps.percentile( 0.95 ) - p->collected_data.dps.percentile( 0.05 ) ) / 2.0;
+       double range = ( p->collected_data.dps.percentile( 0.95 ) - p->collected_data.dps.percentile( 0.05 ) ) / 2.0;
 
       os.printf( "<tr>\n"
                 "<td class=\"left\">%s</td>\n"
@@ -1438,18 +1435,18 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
 
   os << "<script type=\"text/javascript\">\n";
   os << "jQuery( document ).ready( function( $ ) {\n";
-  for ( size_t i = 0; i < sim.on_ready_chart_data.size(); ++i )
+  for ( const auto& data : sim.on_ready_chart_data )
   {
-    os << sim.on_ready_chart_data[ i ] << std::endl;
+    os << data << std::endl;
   }
   os << "});\n";
   os << "</script>\n";
   os << "<script type=\"text/javascript\">\n";
   os << "__chartData = {\n";
-  for ( auto i = sim.chart_data.begin(); i != sim.chart_data.end(); ++i )
+  for ( const auto& entry : sim.chart_data )
   {
-    os << "\"" + i->first + "\": [\n";
-    const std::vector<std::string> data = i->second;
+    os << "\"" + entry.first + "\": [\n";
+    const std::vector<std::string> data = entry.second;
     for ( size_t j = 0; j < data.size(); ++j )
     {
       os << data[ j ];

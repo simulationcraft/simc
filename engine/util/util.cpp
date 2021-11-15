@@ -2819,7 +2819,7 @@ std::string util::decode_html( const std::string& input )
     }
     else
     {
-      int i = as<int>( range::size( html_named_character_map ) );
+      int i = as<int>( std::size( html_named_character_map ) );
       while ( --i >= 0 )
       {
         if ( ! input.compare( pos + 1, end - ( pos + 1 ), html_named_character_map[ i ].encoded ) )

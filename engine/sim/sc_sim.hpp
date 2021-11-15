@@ -40,12 +40,9 @@ struct spell_data_expr_t;
 struct spell_data_t;
 struct work_queue_t;
 
-namespace report
-{
-namespace json
+namespace report::json
 {
 class report_configuration_t;
-}
 }
 
 namespace profileset{
@@ -582,9 +579,9 @@ struct sim_t : private sc_thread_t
   sim_t();
   sim_t( sim_t* parent, int thread_index = 0 );
   sim_t( sim_t* parent, int thread_index, sim_control_t* control );
-  virtual ~sim_t();
+  ~sim_t() override;
 
-  virtual void run() override;
+  void run() override;
   int       main( const std::vector<std::string>& args );
   double    iteration_time_adjust();
   double    expected_max_time() const;

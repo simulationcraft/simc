@@ -2047,10 +2047,9 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   }
   else if ( change_regen_rate )
   {
-    for ( size_t i = 0, end = sim->player_non_sleeping_list.size(); i < end; i++ )
+    for ( auto* actor : sim->player_non_sleeping_list )
     {
-      player_t* actor = sim->player_non_sleeping_list[ i ];
-      if ( actor->resource_regeneration != regen_type::DYNAMIC || actor->is_pet() )
+       if ( actor->resource_regeneration != regen_type::DYNAMIC || actor->is_pet() )
         continue;
 
       for ( auto& elem : invalidate_list )
@@ -2403,10 +2402,9 @@ void buff_t::expire( timespan_t delay )
   }
   else if ( change_regen_rate )
   {
-    for ( size_t i = 0, end = sim->player_non_sleeping_list.size(); i < end; i++ )
+    for ( auto* actor : sim->player_non_sleeping_list )
     {
-      player_t* actor = sim->player_non_sleeping_list[ i ];
-      if ( actor->resource_regeneration != regen_type::DYNAMIC|| actor->is_pet() )
+       if ( actor->resource_regeneration != regen_type::DYNAMIC|| actor->is_pet() )
         continue;
 
       for ( auto& elem : invalidate_list )
@@ -2443,8 +2441,8 @@ void buff_t::expire( timespan_t delay )
 
   if ( reactable && player && player->ready_type == READY_TRIGGER )
   {
-    for ( size_t i = 0; i < stack_react_ready_triggers.size(); i++ )
-      event_t::cancel( stack_react_ready_triggers[ i ] );
+    for ( auto& stack_react_ready_trigger : stack_react_ready_triggers )
+      event_t::cancel( stack_react_ready_trigger );
   }
 
   if ( buff_duration() > timespan_t::zero() && remaining_duration == timespan_t::zero() )
@@ -2860,11 +2858,11 @@ stat_buff_t::stat_buff_t( actor_pair_t q, util::string_view name, const spell_da
     }
     else if ( effect.subtype() == A_MOD_RATING )
     {
-      std::vector<stat_e> k = util::translate_all_rating_mod( effect.misc_value1() );
+      auto k = util::translate_all_rating_mod( effect.misc_value1() );
 
-      for ( size_t j = 0; j < k.size(); j++ )
+      for ( const auto& stat : k )
       {
-        stats.emplace_back( k[ j ], amount );
+        stats.emplace_back( stat, amount );
       }
     }
     else if ( effect.subtype() == A_MOD_DAMAGE_DONE && ( effect.misc_value1() & 0x7E ) )

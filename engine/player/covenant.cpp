@@ -564,14 +564,10 @@ void covenant_state_t::copy_state( const std::unique_ptr<covenant_state_t>& othe
 
 void covenant_state_t::register_options( player_t* player )
 {
-  player->add_option( opt_func( "soulbind", std::bind( &covenant_state_t::parse_soulbind_clear,
-          this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
-  player->add_option( opt_func( "soulbind+", std::bind( &covenant_state_t::parse_soulbind,
-          this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
-  player->add_option( opt_func( "covenant", std::bind( &covenant_state_t::parse_covenant,
-          this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
-  player->add_option( opt_func( "renown", std::bind( &covenant_state_t::parse_renown,
-          this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
+  player->add_option( opt_func( "soulbind", [this](sim_t* sim, util::string_view name, util::string_view value) { return parse_soulbind_clear( sim, name, value ); } ) );
+  player->add_option( opt_func( "soulbind+", [this](sim_t* sim, util::string_view name, util::string_view value) { return parse_soulbind( sim, name, value ); } ) );
+  player->add_option( opt_func( "covenant", [this](sim_t* sim, util::string_view name, util::string_view value) { return parse_covenant( sim, name, value ); } ) );
+  player->add_option( opt_func( "renown", [this](sim_t* sim, util::string_view name, util::string_view value) { return parse_renown( sim, name, value ); } ) );
 }
 
 unsigned covenant_state_t::get_covenant_ability_spell_id( bool generic ) const

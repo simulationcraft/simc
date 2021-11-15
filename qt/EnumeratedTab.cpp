@@ -35,17 +35,15 @@ void SC_enumeratedTabBase::keyPressEvent( QKeyEvent* e )
   int k                   = e->key();
   Qt::KeyboardModifiers m = e->modifiers();
 
-  QList<QPair<Qt::Key, QList<Qt::KeyboardModifier> > >::iterator i = ignoreKeys.begin();
-  for ( ; i != ignoreKeys.end(); ++i )
+  for ( const auto& [ key, modifiers ] : ignoreKeys )
   {
-    if ( ( *i ).first == k )
+    if ( key == k )
     {
       bool passModifiers                      = true;
-      QList<Qt::KeyboardModifier>::iterator j = ( *i ).second.begin();
 
-      for ( ; j != ( *i ).second.end(); ++j )
+      for ( const auto& modifier : modifiers )
       {
-        if ( !m.testFlag( ( *j ) ) )
+        if ( !m.testFlag( modifier ) )
         {
           passModifiers = false;
           break;

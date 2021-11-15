@@ -163,7 +163,7 @@ public:
 
   // Cleans up memory for any on-going ground aoe events when the iteration ends, or when the ground
   // aoe finishes during iteration.
-  ~ground_aoe_event_t();
+  ~ground_aoe_event_t() override;
 
   void set_current_pulse(unsigned v)
   {

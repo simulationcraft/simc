@@ -91,9 +91,7 @@ protected:
   }
 
 public:
-  virtual ~expr_t()
-  {
-  }
+  virtual ~expr_t() = default;
 
   const char* name() const
   {
@@ -215,7 +213,7 @@ public:
 
 private:
   const T& t;
-  virtual double evaluate() override
+   double evaluate() override
   {
     return coerce( t );
   }
@@ -242,7 +240,7 @@ public:
 private:
   F f;
 
-  virtual double evaluate() override
+  double evaluate() override
   {
     return coerce( f() );
   }

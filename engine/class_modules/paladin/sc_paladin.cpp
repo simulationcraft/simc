@@ -1361,7 +1361,7 @@ struct cancel_ashen_hallow_t : public action_t
 
   bool ready() override
   {
-    paladin_t* p = static_cast<paladin_t*>( action_t::player );
+    auto* p = static_cast<paladin_t*>( action_t::player );
     if ( p -> active_hallow_damaging != nullptr && p -> legendary.radiant_embers->ok() )
       return action_t::ready();
     return false;
@@ -1369,7 +1369,7 @@ struct cancel_ashen_hallow_t : public action_t
 
   void execute() override
   {
-    paladin_t* p = static_cast<paladin_t*>( action_t::player );
+    auto* p = static_cast<paladin_t*>( action_t::player );
       // CDR = % remaining duration/base duration * 50% * base cooldown
       double ah_reduction = p -> active_hallow_damaging -> remaining_time().total_seconds();
       ah_reduction /= p -> active_hallow_damaging -> params -> duration_.total_seconds();
@@ -1460,7 +1460,7 @@ template <typename Base, typename Player>
 struct blessing_of_winter_proc_t : public Base
 {
 private:
-  typedef Base ab;  // action base, eg. spell_t
+  using ab = Base;  // action base, eg. spell_t
 public:
   blessing_of_winter_proc_t( Player* p ) : ab( "blessing_of_winter_proc", p, p->find_spell( 328506 ) )
   {
@@ -1784,8 +1784,7 @@ void blessing_of_sacrifice_t::execute()
 {
   paladin_spell_t::execute();
 
-  buffs::blessing_of_sacrifice_t* b =
-      debug_cast<buffs::blessing_of_sacrifice_t*>( target->buffs.blessing_of_sacrifice );
+  auto* b = debug_cast<buffs::blessing_of_sacrifice_t*>( target->buffs.blessing_of_sacrifice );
 
   b->trigger_hos( *p() );
 }
@@ -2021,10 +2020,9 @@ void paladin_t::vision_of_perfection_proc()
 int paladin_t::get_local_enemies( double distance ) const
 {
   int num_nearby = 0;
-  for ( size_t i = 0, actors = sim->target_non_sleeping_list.size(); i < actors; i++ )
+  for ( auto* p : sim->target_non_sleeping_list )
   {
-    player_t* p = sim->target_non_sleeping_list[ i ];
-    if ( p->is_enemy() && get_player_distance( *p ) <= distance + p->combat_reach )
+     if ( p->is_enemy() && get_player_distance( *p ) <= distance + p->combat_reach )
       num_nearby += 1;
   }
   return num_nearby;

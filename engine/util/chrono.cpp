@@ -18,7 +18,7 @@
 #endif
 
 #if !defined(SC_WINDOWS)
-#  include <time.h>
+#  include <ctime>
 #  include <sys/time.h>
 #endif
 

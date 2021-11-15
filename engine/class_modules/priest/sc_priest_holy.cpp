@@ -11,9 +11,7 @@
 
 namespace priestspace
 {
-namespace actions
-{
-namespace spells
+namespace actions::spells
 {
 /// Holy Fire Base Spell, used for both Holy Fire and its overriding spell Purge the Wicked
 struct holy_fire_base_t : public priest_spell_t
@@ -153,8 +151,6 @@ struct holy_heal_t final : public priest_heal_t
     priest().adjust_holy_word_serenity_cooldown();
   }
 };
-
-}  // namespace spells
 
 }  // namespace actions
 

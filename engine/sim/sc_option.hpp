@@ -57,11 +57,11 @@ private:
 
 namespace opts {
 
-typedef std::function<parse_status(parse_status, util::string_view name, util::string_view value)> parse_status_fn_t;
-typedef std::unordered_map<std::string, std::string> map_t;
-typedef std::unordered_map<std::string, std::vector<std::string>> map_list_t;
-typedef std::function<bool(sim_t*, util::string_view, util::string_view)> function_t;
-typedef std::vector<std::string> list_t;
+using parse_status_fn_t = std::function<parse_status( parse_status, util::string_view, util::string_view )>;
+using map_t             = std::unordered_map<std::string, std::string>;
+using map_list_t        = std::unordered_map<std::string, std::vector<std::string>>;
+using function_t        = std::function<bool( sim_t*, util::string_view, util::string_view )>;
+using list_t            = std::vector<std::string>;
 
 parse_status parse( sim_t*, util::span<const std::unique_ptr<option_t>>, util::string_view name, util::string_view value, const parse_status_fn_t& fn = nullptr );
 void parse( sim_t*, util::string_view context, util::span<const std::unique_ptr<option_t>>, util::string_view options_str, const parse_status_fn_t& fn = nullptr );

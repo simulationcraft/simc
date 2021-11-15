@@ -22,7 +22,7 @@ namespace buffs {
     haste_bonus = data().effectN( 3 ).percent() / 10.0;
 
     // increase duration if we have Light's Decree
-    paladin_t* paladin = static_cast<paladin_t*>( p );
+    auto* paladin = static_cast<paladin_t*>( p );
     if ( paladin -> azerite.lights_decree.ok() )
       base_buff_duration += paladin -> spells.lights_decree -> effectN( 2 ).time_value();
 
@@ -44,7 +44,7 @@ namespace buffs {
     {
       absorb_buff_t::expire_override( expiration_stacks, remaining_duration );
 
-      paladin_t* p = static_cast<paladin_t*>( player );
+      auto* p = static_cast<paladin_t*>( player );
       // do thing
       if ( p -> options.fake_sov )
       {
@@ -969,15 +969,15 @@ void paladin_t::generate_action_prio_list_ret()
 
 
   std::vector<std::string> racial_actions = get_racial_actions();
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  for (auto & racial_action : racial_actions)
   {
 
-    if (racial_actions[i] == "lights_judgment" )
+    if (racial_action == "lights_judgment" )
     {
       cds -> add_action( "lights_judgment,if=spell_targets.lights_judgment>=2|!raid_event.adds.exists|raid_event.adds.in>75|raid_event.adds.up" );
     }
 
-    if ( racial_actions[i] == "fireblood" )
+    if ( racial_action == "fireblood" )
     {
       cds -> add_action( "fireblood,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10" );
     }

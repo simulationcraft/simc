@@ -164,10 +164,9 @@ void snapshot_stats_t::execute()
     p->scaling->over_cap[STAT_EXPERTISE_RATING] = expertise_extra;
   }
 
-  for (size_t i = 0; i < p->pet_list.size(); ++i)
+  for ( auto* pet : p->pet_list )
   {
-    pet_t* pet = p->pet_list[i];
-    action_t* pet_snapshot = pet->find_action("snapshot_stats");
+     action_t* pet_snapshot = pet->find_action("snapshot_stats");
     if (pet_snapshot)
     {
       pet_snapshot->execute();

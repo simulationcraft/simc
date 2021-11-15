@@ -125,7 +125,7 @@ struct action_data_t
 
 struct player_data_t
 {
-  typedef std::pair<std::string, std::unique_ptr<action_data_t>> record_t;
+  using record_t = std::pair<std::string, std::unique_ptr<action_data_t>>;
   std::vector<record_t> data_;
 
   action_data_t* get( const action_t* a )
@@ -1721,7 +1721,7 @@ template <class Base>
 struct hunter_main_pet_action_t: public hunter_pet_action_t < hunter_main_pet_t, Base >
 {
 private:
-  typedef hunter_pet_action_t<hunter_main_pet_t, Base> ab;
+  using ab = hunter_pet_action_t<hunter_main_pet_t, Base>;
 public:
 
   struct {
@@ -5573,7 +5573,7 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   dots.pheromone_bomb = target -> get_dot( "pheromone_bomb", p );
   dots.shrapnel_bomb = target -> get_dot( "shrapnel_bomb", p );
 
-  target -> register_on_demise_callback( p, std::bind( &hunter_td_t::target_demise, this ) );
+  target -> register_on_demise_callback( p, [this](player_t*) { target_demise(); } );
 }
 
 void hunter_td_t::target_demise()

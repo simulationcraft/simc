@@ -27,11 +27,11 @@ struct effect_callbacks_t
   // New proc system
 
   // Callbacks (procs) stored in a vector
-  typedef std::vector<action_callback_t*> proc_list_t;
+  using proc_list_t = std::vector<action_callback_t *>;
   // .. an array of callbacks, for each proc_type2 enum (procced by hit/crit, etc...)
-  typedef std::array<proc_list_t, PROC2_TYPE_MAX> proc_on_array_t;
+  using proc_on_array_t = std::array<proc_list_t, PROC2_TYPE_MAX>;
   // .. an array of procced by arrays, for each proc_type enum (procced on aoe, heal, tick, etc...)
-  typedef std::array<proc_on_array_t, PROC1_TYPE_MAX> proc_array_t;
+  using proc_array_t = std::array<proc_on_array_t, PROC1_TYPE_MAX>;
 
   proc_array_t procs;
 
@@ -59,9 +59,9 @@ struct effect_callbacks_t
   template <typename T>
   T* get_first_of() const
   {
-    for ( size_t i = 0; i < all_callbacks.size(); ++i )
+    for ( auto* all_callback : all_callbacks )
     {
-      auto ptr = dynamic_cast<T*>( all_callbacks[ i ] );
+      auto ptr = dynamic_cast<T*>( all_callback );
       if ( ptr )
       {
         return ptr;

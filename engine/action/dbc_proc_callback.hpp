@@ -93,7 +93,7 @@ struct dbc_proc_callback_t : public action_callback_t
 
   dbc_proc_callback_t(player_t* p, const special_effect_t& e);
 
-  virtual void initialize() override;
+  void initialize() override;
 
   void trigger(action_t* a, action_state_t* state) override;
 

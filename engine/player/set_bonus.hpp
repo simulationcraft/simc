@@ -38,12 +38,12 @@ struct set_bonus_t
   };
 
   // Data structure definitions
-  typedef std::vector<set_bonus_data_t> bonus_t;
-  typedef std::vector<bonus_t> bonus_type_t;
-  typedef std::vector<bonus_type_t> set_bonus_type_t;
+  using bonus_t = std::vector<set_bonus_data_t>;
+  using bonus_type_t = std::vector<bonus_t>;
+  using set_bonus_type_t = std::vector<bonus_type_t>;
 
-  typedef std::vector<unsigned> bonus_count_t;
-  typedef std::vector<bonus_count_t> set_bonus_count_t;
+  using bonus_count_t = std::vector<unsigned int>;
+  using set_bonus_count_t = std::vector<bonus_count_t>;
 
   player_t* actor;
 

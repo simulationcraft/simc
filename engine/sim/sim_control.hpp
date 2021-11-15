@@ -6,6 +6,9 @@
 #pragma once
 
 #include "config.hpp"
+
+#include "sim/sc_option.hpp"
+
 #include <string>
 #include <vector>
 

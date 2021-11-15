@@ -743,11 +743,11 @@ struct summon_infernal_t : public destruction_spell_t
     if ( infernal_awakening )
       infernal_awakening->execute();
 
-    for ( size_t i = 0; i < p()->warlock_pet_list.infernals.size(); i++ )
+    for ( auto* infernal : p()->warlock_pet_list.infernals )
     {
-      if ( p()->warlock_pet_list.infernals[ i ]->is_sleeping() )
+      if ( infernal->is_sleeping() )
       {
-        p()->warlock_pet_list.infernals[ i ]->summon( infernal_duration );
+        infernal->summon( infernal_duration );
       }
     }
 

@@ -25,22 +25,22 @@ azerite_essence_entry_t::find( util::string_view name, bool tokenized, bool ptr 
 {
   const auto __data = data( ptr );
 
-  for ( auto it = __data.cbegin(); it != __data.cend(); ++it )
+  for (const auto& entry : __data)
   {
     if ( tokenized )
     {
-      auto s = util::tokenize_fn( it->name );
+      auto s = util::tokenize_fn( entry.name );
 
       if ( util::str_compare_ci( name, s ) )
       {
-        return *it;
+        return entry;
       }
     }
     else
     {
-      if ( util::str_compare_ci( name, it->name ) )
+      if ( util::str_compare_ci( name, entry.name ) )
       {
-        return *it;
+        return entry;
       }
     }
   }
@@ -64,7 +64,7 @@ azerite_essence_power_entry_t::data_by_essence_id( unsigned essence_id, bool ptr
     return {};
   }
 
-  return util::span<const azerite_essence_power_entry_t>( r.first, r.second );
+  return { r.first, r.second };
 }
 
 const azerite_essence_power_entry_t&

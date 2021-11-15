@@ -16,7 +16,7 @@ struct action_variable_t
   std::string name_;
   std::vector<action_t*> variable_actions;
 
-  action_variable_t( const std::string& name, double default_value );
+  action_variable_t( std::string name, double default_value );
 
   double value() const
   {

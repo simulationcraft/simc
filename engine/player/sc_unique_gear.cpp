@@ -2004,7 +2004,7 @@ void item::readiness( special_effect_t& effect )
   struct cooldowns_t
   {
     specialization_e spec;
-    const char*      cooldowns[8];
+    std::array<const char*, 8> cooldowns;
   };
 
   static const cooldowns_t __cd[] =
@@ -3692,8 +3692,8 @@ void unique_gear::initialize_special_effect( special_effect_t& effect,
     if ( ! dbitem -> encoded_options.empty() )
     {
       std::string encoded_options = dbitem -> encoded_options;
-      for ( size_t i = 0; i < encoded_options.length(); i++ )
-        encoded_options[ i ] = std::tolower( encoded_options[ i ] );
+      for ( char encoded_option : encoded_options )
+        encoded_option = std::tolower( encoded_option );
       // Note, if the encoding parse fails (this should never ever happen),
       // we don't parse game client data either.
       special_effect::parse_special_effect_encoding( effect, encoded_options );
@@ -3915,13 +3915,13 @@ struct item_effect_base_expr_t : public expr_t
   {
     const special_effect_t* e = nullptr;
 
-    for ( size_t i = 0; i < slots.size(); i++ )
+    for (auto slot : slots)
     {
-      e = player.items[ slots[ i ] ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
+      e = player.items[ slot ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
       if ( e && e -> source != SPECIAL_EFFECT_SOURCE_NONE )
         effects.push_back( e );
 
-      e = player.items[ slots[ i ] ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+      e = player.items[ slot ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
       if ( e && e -> source != SPECIAL_EFFECT_SOURCE_NONE )
         effects.push_back( e );
     }
@@ -4077,9 +4077,9 @@ struct item_is_expr_t : public expr_t
   item_is_expr_t( player_t& player, const std::vector<slot_e>& slots, util::string_view item_name )
     : expr_t( "item_is_expr" )
   {
-    for ( size_t i = 0; i < slots.size(); i++ )
+    for ( auto slot : slots )
     {
-      if ( player.items[ slots[ i ] ].name() == item_name )
+      if ( player.items[ slot ].name() == item_name )
         is = 1;
     }
   }

@@ -206,7 +206,7 @@ struct covenant_cb_base_t
   bool trigger_on_base;   // proc off base ability
 
   covenant_cb_base_t( bool on_class = true, bool on_base = false );
-  virtual ~covenant_cb_base_t() {}
+  virtual ~covenant_cb_base_t() = default;
   virtual void trigger( action_t*, action_state_t* ) = 0;
 };
 

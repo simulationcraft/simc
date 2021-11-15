@@ -25,7 +25,7 @@ struct item_armor_quality_data_t
 
   float value( int quality ) const
   {
-    return as<unsigned>( quality ) < range::size( multiplier )
+    return as<unsigned>( quality ) < std::size( multiplier )
       ? multiplier[ as<unsigned>( quality ) ]
       : 0;
   }
@@ -46,7 +46,7 @@ struct item_armor_shield_data_t
 
   float value( int quality ) const
   {
-    return as<unsigned>( quality ) < range::size( values )
+    return as<unsigned>( quality ) < std::size( values )
       ? values[ as<unsigned>( quality ) ]
       : 0;
   }
@@ -67,7 +67,7 @@ struct item_armor_total_data_t
 
   float value( int subclass ) const
   {
-    return as<unsigned>( subclass ) < range::size( values )
+    return as<unsigned>( subclass ) < std::size( values )
       ? values[ as<unsigned>( subclass ) ]
       : 0;
   }
@@ -88,7 +88,7 @@ struct item_armor_location_data_t
 
   float value( int subclass ) const
   {
-    return as<unsigned>( subclass ) < range::size( multiplier )
+    return as<unsigned>( subclass ) < std::size( multiplier )
       ? multiplier[ as<unsigned>( subclass ) ]
       : 0;
   }

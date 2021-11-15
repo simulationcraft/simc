@@ -33,7 +33,7 @@ range::value_type_t<Range> calculate_sum( const Range& r )
 template <typename Range>
 range::value_type_t<Range> calculate_mean( const Range& r )
 {
-  auto length = range::size( r );
+  auto length = std::size( r );
   auto tmp    = calculate_sum( r );
   if ( length > 1 )
     tmp /= length;
@@ -52,7 +52,7 @@ range::value_type_t<Range> calculate_variance( const Range& r,
   {
     tmp += ( value - mean ) * ( value - mean );
   }
-  auto length = range::size( r );
+  auto length = std::size( r );
   if ( length > 1 )
     tmp /= length;
   return tmp;
@@ -91,7 +91,7 @@ range::value_type_t<Range> calculate_mean_stddev(
     const Range& r, range::value_type_t<Range> mean )
 {
   auto tmp    = calculate_variance( r, mean );
-  auto length = range::size( r );
+  auto length = std::size( r );
   if ( length > 1 )
     tmp /= length;
   return std::sqrt( tmp );
@@ -112,7 +112,7 @@ std::vector<size_t> create_histogram( const Range& r, size_t num_buckets,
                                       range::value_type_t<Range> max )
 {
   std::vector<size_t> result;
-  if ( range::size( r ) == 0 )
+  if ( std::empty( r ) )
     return result;
 
   if ( std::isnan(min) || std::isnan(max) )
@@ -144,8 +144,8 @@ std::vector<size_t> create_histogram( const Range& r, size_t num_buckets,
 template <typename Range>
 std::vector<size_t> create_histogram( const Range& r, size_t num_buckets )
 {
-  if ( range::size( r ) == 0 )
-    return std::vector<size_t>();
+  if ( std::empty( r ) )
+    return {};
 
   auto mm  = std::minmax_element( range::begin( r ), range::end( r ) );
   auto min = *mm.first;
@@ -181,7 +181,7 @@ inline std::vector<double> normalize_histogram( const std::vector<size_t>& in,
 inline std::vector<double> normalize_histogram( const std::vector<size_t>& in )
 {
   if ( in.empty() )
-    return std::vector<double>();
+    return {};
 
   size_t count = std::accumulate( in.begin(), in.end(), size_t() );
 

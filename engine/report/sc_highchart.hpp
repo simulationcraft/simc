@@ -54,10 +54,7 @@ public:
   size_t height_, width_;
   const sim_t& sim_;
 
-  chart_t( const std::string& id_str, const sim_t& sim );
-  virtual ~chart_t()
-  {
-  }
+  chart_t( std::string id_str, const sim_t& sim );
 
   void set_toggle_id( const std::string& tid )
   {
@@ -103,7 +100,7 @@ private:
   time_series_t( const time_series_t& );
 
 public:
-  time_series_t( const std::string& id_str, const sim_t& sim );
+  time_series_t( std::string id_str, const sim_t& sim );
 
   time_series_t& set_mean( double value_,
                            const std::string& color = std::string() );

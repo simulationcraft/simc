@@ -26,5 +26,5 @@ util::span<const item_bonus_entry_t> item_bonus_entry_t::find( unsigned bonus_id
     return {};
   }
 
-  return util::span<const item_bonus_entry_t>( r.first, r.second );
+  return { r.first, r.second };
 }

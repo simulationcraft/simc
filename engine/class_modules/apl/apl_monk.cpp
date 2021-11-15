@@ -179,15 +179,15 @@ void brewmaster( player_t* p )
   if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
     def->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str );
 
-  for ( size_t i = 0; i < p->items.size(); i++ )
+  for ( const auto& item : p->items )
   {
     std::string name_str;
-    if ( p->items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
-      if ( p->items[ i ].name_str == "jotungeirr_destinys_call" )
+      if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
-        def->add_action( "use_item,name=" + p->items[ i ].name_str );
+        def->add_action( "use_item,name=" + item.name_str );
     }
   }
 
@@ -197,10 +197,10 @@ void brewmaster( player_t* p )
 
   def->add_action( "potion" );
 
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  for ( const auto& racial_action : racial_actions )
   {
-    if ( racial_actions[ i ] != "arcane_torrent" )
-      def->add_action( racial_actions[ i ] );
+    if ( racial_action != "arcane_torrent" )
+      def->add_action( racial_action );
   }
 
   def->add_action(
@@ -273,10 +273,10 @@ void brewmaster( player_t* p )
   def->add_action( p, "Tiger Palm",
        "if=!talent.blackout_combo&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65" );
 
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  for ( const auto& racial_action : racial_actions )
   {
-    if ( racial_actions[ i ] == "arcane_torrent" )
-      def->add_action( racial_actions[ i ] + ",if=energy<31" );
+    if ( racial_action == "arcane_torrent" )
+      def->add_action( racial_action + ",if=energy<31" );
   }
 
   def->add_action("fleshcraft,if=soulbind.volatile_solvent.enabled");
@@ -317,21 +317,21 @@ void mistweaver( player_t* p )
   if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
     def->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str );
 
-  for ( size_t i = 0; i < p->items.size(); i++ )
+  for ( const auto& item : p->items )
   {
     std::string name_str;
-    if ( p->items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
-      if ( p->items[ i ].name_str == "jotungeirr_destinys_call" )
+      if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
-        def->add_action( "use_item,name=" + p->items[ i ].name_str );
+        def->add_action( "use_item,name=" + item.name_str );
     }
   }
 
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  for ( const auto& racial_action : racial_actions )
   {
-    def->add_action( racial_actions[ i ] + ",if=target.time_to_die<18" );
+    def->add_action( racial_action + ",if=target.time_to_die<18" );
   }
 
   def->add_action( "potion" );
@@ -468,20 +468,20 @@ void windwalker( player_t* p )
   cd_serenity->add_action( p, "Invoke Xuen, the White Tiger", "if=!variable.hold_xuen|fight_remains<25" );
 
   // Serenity Racials
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  for ( const auto& racial_action : racial_actions )
   {
-    if ( racial_actions[ i ] == "ancestral_call" )
-      cd_serenity->add_action( racial_actions[ i ] + ",if=variable.serenity_burst" );
-    else if ( racial_actions[ i ] == "blood_fury" )
-      cd_serenity->add_action( racial_actions[ i ] + ",if=variable.serenity_burst" );
-    else if ( racial_actions[ i ] == "fireblood" )
-      cd_serenity->add_action( racial_actions[ i ] + ",if=variable.serenity_burst" );
-    else if ( racial_actions[ i ] == "berserking" )
-      cd_serenity->add_action( racial_actions[ i ] + ",if=variable.serenity_burst" );
-    else if ( racial_actions[ i ] == "bag_of_tricks" )
-      cd_serenity->add_action( racial_actions[ i ] + ",if=variable.serenity_burst" );
-    else if ( racial_actions[ i ] != "arcane_torrent" )
-      cd_serenity->add_action( racial_actions[ i ] );
+    if ( racial_action == "ancestral_call" )
+      cd_serenity->add_action( racial_action + ",if=variable.serenity_burst" );
+    else if ( racial_action == "blood_fury" )
+      cd_serenity->add_action( racial_action + ",if=variable.serenity_burst" );
+    else if ( racial_action == "fireblood" )
+      cd_serenity->add_action( racial_action + ",if=variable.serenity_burst" );
+    else if ( racial_action == "berserking" )
+      cd_serenity->add_action( racial_action + ",if=variable.serenity_burst" );
+    else if ( racial_action == "bag_of_tricks" )
+      cd_serenity->add_action( racial_action + ",if=variable.serenity_burst" );
+    else if ( racial_action != "arcane_torrent" )
+      cd_serenity->add_action( racial_action );
   }
 
   if ( monk->spec.invoke_xuen->ok() )
@@ -504,26 +504,26 @@ void windwalker( player_t* p )
   if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
     cd_serenity->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
 
-  for ( size_t i = 0; i < p->items.size(); i++ )
+  for ( const auto& item : p->items )
   {
     std::string name_str;
-    if ( p->items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
-      if ( p->items[ i ].name_str == "inscrutable_quantum_device" )
-        cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
-      else if ( p->items[ i ].name_str == "wrathstone" )
-        cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
-      else if ( p->items[ i ].name_str == "overcharged_anima_battery" )
-        cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
-      else if ( p->items[ i ].name_str == "shadowgrasp_totem" )
-        cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight" );
-      else if ( p->items[ i ].name_str == "gladiators_badge" )
-        cd_serenity->add_action( "use_item,name=" + p->items[ i ].name_str + ",if=variable.serenity_burst|fight_remains<20" );
-      else if ( p->items[ i ].name_str == "jotungeirr_destinys_call" )
+      if ( item.name_str == "inscrutable_quantum_device" )
+        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
+      else if ( item.name_str == "wrathstone" )
+        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
+      else if ( item.name_str == "overcharged_anima_battery" )
+        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
+      else if ( item.name_str == "shadowgrasp_totem" )
+        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight" );
+      else if ( item.name_str == "gladiators_badge" )
+        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
+      else if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
         cd_serenity->add_action(
-            "use_item,name=" + p->items[ i ].name_str +
+            "use_item,name=" + item.name_str +
             ",if=!variable.xuen_on_use_trinket|cooldown.invoke_xuen_the_white_tiger.remains>20|variable.hold_xuen" );
     }
   }
@@ -567,29 +567,29 @@ void windwalker( player_t* p )
   if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
     cd_sef->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str + ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>180|fight_remains<20" );
 
-  for ( size_t i = 0; i < p->items.size(); i++ )
+  for ( const auto& item : p->items )
   {
-    if ( p->items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
-      if ( p->items[ i ].name_str == "inscrutable_quantum_device" )
-        cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str + 
+      if ( item.name_str == "inscrutable_quantum_device" )
+        cd_sef->add_action( "use_item,name=" + item.name_str + 
                             ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>180|fight_remains<20" );
-      else if ( p->items[ i ].name_str == "wrathstone" )
-        cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str +
+      else if ( item.name_str == "wrathstone" )
+        cd_sef->add_action( "use_item,name=" + item.name_str +
                             ",if=pet.xuen_the_white_tiger.active|fight_remains<20" );      
-      else if ( p->items[ i ].name_str == "shadowgrasp_totem" )
-        cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str +
+      else if ( item.name_str == "shadowgrasp_totem" )
+        cd_sef->add_action( "use_item,name=" + item.name_str +
                             ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight" );
-      else if ( p->items[ i ].name_str == "overcharged_anima_battery" )
-        cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str +
+      else if ( item.name_str == "overcharged_anima_battery" )
+        cd_sef->add_action( "use_item,name=" + item.name_str +
                             ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>90|fight_remains<20" );
-      else if ( p->items[ i ].name_str == "gladiators_badge" )
-        cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str +
+      else if ( item.name_str == "gladiators_badge" )
+        cd_sef->add_action( "use_item,name=" + item.name_str +
                             ",if=cooldown.invoke_xuen_the_white_tiger.remains>55|variable.hold_xuen|fight_remains<15" );
-      else if ( p->items[ i ].name_str == "jotungeirr_destinys_call" )
+      else if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
-        cd_sef->add_action( "use_item,name=" + p->items[ i ].name_str +
+        cd_sef->add_action( "use_item,name=" + item.name_str +
                ",if=!variable.xuen_on_use_trinket|cooldown.invoke_xuen_the_white_tiger.remains>20&pet.xuen_the_white_tiger.remains<20|variable.hold_xuen" );
     }
   }
@@ -601,26 +601,26 @@ void windwalker( player_t* p )
     cd_sef->add_action( p, "Touch of Karma", "if=fight_remains>159|variable.hold_xuen" );
 
   // Storm, Earth and Fire Racials
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  for ( const auto& racial_action : racial_actions )
   {
-    if ( racial_actions[ i ] != "arcane_torrent" )
+    if ( racial_action != "arcane_torrent" )
     {
-      if ( racial_actions[ i ] == "ancestral_call" )
-        cd_sef->add_action( racial_actions[ i ] +
+      if ( racial_action == "ancestral_call" )
+        cd_sef->add_action( racial_action +
                             ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20" );
-      else if ( racial_actions[ i ] == "blood_fury" )
-        cd_sef->add_action( racial_actions[ i ] +
+      else if ( racial_action == "blood_fury" )
+        cd_sef->add_action( racial_action +
                             ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20" );
-      else if ( racial_actions[ i ] == "fireblood" )
-        cd_sef->add_action( racial_actions[ i ] +
+      else if ( racial_action == "fireblood" )
+        cd_sef->add_action( racial_action +
                             ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<10" );
-      else if ( racial_actions[ i ] == "berserking" )
-        cd_sef->add_action( racial_actions[ i ] +
+      else if ( racial_action == "berserking" )
+        cd_sef->add_action( racial_action +
                             ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<15" );
-      else if ( racial_actions[ i ] == "bag_of_tricks" )
-        cd_sef->add_action( racial_actions[ i ] + ",if=buff.storm_earth_and_fire.down" );
+      else if ( racial_action == "bag_of_tricks" )
+        cd_sef->add_action( racial_action + ",if=buff.storm_earth_and_fire.down" );
       else
-        cd_sef->add_action( racial_actions[ i ] );
+        cd_sef->add_action( racial_action );
     }
   }
 

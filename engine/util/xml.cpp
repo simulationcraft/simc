@@ -37,8 +37,8 @@ struct new_xml_cache_entry_t
   new_xml_cache_entry_t() : root(), era( cache::cache_era::IN_THE_BEGINNING ) { }
 };
 
-typedef std::unordered_map<std::string, xml_cache_entry_t> xml_cache_t;
-typedef std::unordered_map<std::string, new_xml_cache_entry_t> new_xml_cache_t;
+using xml_cache_t = std::unordered_map<std::string, xml_cache_entry_t>;
+using new_xml_cache_t = std::unordered_map<std::string, new_xml_cache_entry_t>;
 
 xml_cache_t xml_cache;
 new_xml_cache_t new_xml_cache;
@@ -248,11 +248,11 @@ xml_node_t* xml_node_t::search_tree( util::string_view node_name )
   if ( node_name.empty() || node_name == name_str )
     return this;
 
-  for ( size_t i = 0; i < children.size(); ++i )
+  for ( const auto& child : children )
   {
-    if ( children[ i ] )
+    if ( child )
     {
-      xml_node_t* node = children[ i ] -> search_tree( node_name );
+      xml_node_t* node = child -> search_tree( node_name );
       if ( node ) return node;
     }
   }
@@ -272,11 +272,11 @@ xml_node_t* xml_node_t::search_tree( const std::string& node_name,
     if ( parm && parm -> value_str == parm_value ) return this;
   }
 
-  for ( size_t i = 0; i < children.size(); ++i )
+  for ( const auto& child : children )
   {
-    if ( children[ i ] )
+    if ( child )
     {
-      xml_node_t* node = children[ i ] -> search_tree( node_name, parm_name, parm_value );
+      xml_node_t* node = child -> search_tree( node_name, parm_name, parm_value );
       if ( node ) return node;
     }
   }
@@ -325,7 +325,7 @@ std::shared_ptr<xml_node_t> xml_node_t::get( const std::string& url, cache::beha
 
   std::string result;
   if ( http::get( result, url, cache_behavior, confirmation ) != 200 )
-    return std::shared_ptr<xml_node_t>();
+    return {};
 
   if ( std::shared_ptr<xml_node_t> node = xml_node_t::create( result ) )
   {
@@ -335,7 +335,7 @@ std::shared_ptr<xml_node_t> xml_node_t::get( const std::string& url, cache::beha
     return node;
   }
 
-  return std::shared_ptr<xml_node_t>();
+  return {};
 }
 
 #endif
@@ -358,10 +358,9 @@ std::unique_ptr<xml_node_t> xml_node_t::create( const std::string& input )
 
 xml_node_t* xml_node_t::get_child( const std::string& name_str )
 {
-  for ( size_t i = 0; i < children.size(); ++i )
+  for ( const auto& node : children )
   {
-    const auto& node = children[ i ];
-    if ( node && ( name_str == node -> name_str ) ) return node.get();
+     if ( node && ( name_str == node -> name_str ) ) return node.get();
   }
 
   return nullptr;
@@ -372,10 +371,9 @@ xml_node_t* xml_node_t::get_child( const std::string& name_str )
 std::vector<xml_node_t*> xml_node_t::get_children( const std::string& name_str )
 {
   std::vector<xml_node_t*> nodes;
-  for ( size_t i = 0; i < children.size(); ++i )
+  for ( const auto& node : children )
   {
-    const auto& node = children[ i ];
-    if ( node && ( name_str.empty() || name_str == node -> name_str ) )
+     if ( node && ( name_str.empty() || name_str == node -> name_str ) )
     {
       nodes.push_back( node.get() );
     }
@@ -538,18 +536,17 @@ void xml_node_t::print( FILE*       file,
 
   fmt::print( file, "{:<{}}{}", "", spacing, name() );
 
-  for ( size_t i = 0; i < parameters.size(); i++ )
+  for ( const auto& parm : parameters )
   {
-    xml_parm_t& parm = parameters[ i ];
-    fmt::print( file, " {}=\"{}\"", parm.name(), parm.value_str );
+     fmt::print( file, " {}=\"{}\"", parm.name(), parm.value_str );
   }
   fmt::print( file, "\n" );
 
-  for ( size_t i = 0; i < children.size(); ++i )
+  for ( const auto& child : children )
   {
-    if ( children[ i ] )
+    if ( child )
     {
-      children[ i ] -> print( file, spacing + 2 );
+      child -> print( file, spacing + 2 );
     }
   }
 }
@@ -564,10 +561,9 @@ void xml_node_t::print_xml( FILE*       file,
   fmt::print( file, "{:<{}}<{}", "", spacing, name() );
 
   std::string content;
-  for ( size_t i = 0; i < parameters.size(); ++i )
+  for (const auto & parm : parameters)
   {
-    xml_parm_t& parm = parameters[ i ];
-    std::string parm_value = parm.value_str;
+     std::string parm_value = parm.value_str;
     util::replace_all( parm_value, "&", "&amp;" );
     util::replace_all( parm_value, "\"", "&quot;" );
     util::replace_all( parm_value, "<", "&lt;" );
@@ -588,11 +584,11 @@ void xml_node_t::print_xml( FILE*       file,
   else
   {
     fmt::print( file, ">{}\n", content );
-    for ( size_t i = 0; i < children.size(); ++i )
+    for (auto & i : children)
     {
-      if ( children[ i ] )
+      if ( i )
       {
-        children[ i ] -> print_xml( file, spacing + 2 );
+        i -> print_xml( file, spacing + 2 );
       }
     }
     fmt::print( file, "{:<{}}</{}>\n", "", spacing, name() );
@@ -603,11 +599,11 @@ void xml_node_t::print_xml( FILE*       file,
 
 xml_parm_t* xml_node_t::get_parm( const std::string& parm_name )
 {
-  for ( size_t i = 0; i < parameters.size(); ++i )
+  for ( auto& parameter : parameters )
   {
-    if ( parm_name == parameters[ i ].name_str )
+    if ( parm_name == parameter.name_str )
     {
-      return &( parameters[ i ] );
+      return &parameter;
     }
   }
   return nullptr;
@@ -1058,18 +1054,18 @@ sc_xml_t sc_xml_t::get_child( const std::string& name ) const
 {
   if ( ! root )
   {
-    return sc_xml_t();
+    return {};
   }
 
   for ( xml_node<>* n = root -> first_node(); n; n = n -> next_sibling() )
   {
     if ( util::str_compare_ci( name, n -> name() ) )
     {
-      return sc_xml_t( n );
+      return { n };
     }
   }
 
-  return sc_xml_t();
+  return {};
 }
 
 sc_xml_t sc_xml_t::get_node( const std::string& path,
@@ -1112,7 +1108,7 @@ sc_xml_t sc_xml_t::search_tree( const std::string& node_name,
 {
   if ( ! root )
   {
-    return sc_xml_t();
+    return {};
   }
 
   if ( node_name.empty() || util::str_compare_ci( node_name, name() ) )
@@ -1138,7 +1134,7 @@ sc_xml_t sc_xml_t::search_tree( const std::string& node_name,
     }
   }
 
-  return sc_xml_t();
+  return {};
 }
 
 sc_xml_t sc_xml_t::search_tree( util::string_view node_name ) const
@@ -1150,7 +1146,7 @@ sc_xml_t sc_xml_t::search_tree( util::string_view node_name ) const
 
   if ( ! root )
   {
-    return sc_xml_t();
+    return {};
   }
 
   for ( xml_node<>* n = root -> first_node(); n; n = n -> next_sibling() )
@@ -1164,7 +1160,7 @@ sc_xml_t sc_xml_t::search_tree( util::string_view node_name ) const
     }
   }
 
-  return sc_xml_t();
+  return {};
 }
 
 sc_xml_t sc_xml_t::split_path( std::string& key, const std::string& path ) const
@@ -1183,7 +1179,7 @@ sc_xml_t sc_xml_t::split_path( std::string& key, const std::string& path ) const
       node = node.search_tree( splits[ i ] );
       if ( ! node.valid() )
       {
-        return sc_xml_t();
+        return {};
       }
     }
 
@@ -1201,7 +1197,7 @@ sc_xml_t sc_xml_t::create( const std::string& input,
   auto p = new_xml_cache.find( cache_key );
   if ( p != new_xml_cache.end() )
   {
-    return sc_xml_t( *p -> second.root );
+    return { *p -> second.root };
   }
 
   auto  document = std::make_unique<xml_document<>>();
@@ -1232,7 +1228,7 @@ sc_xml_t sc_xml_t::get( const std::string& url, cache::behavior_e cache_behavior
     auto p = new_xml_cache.find( url );
     if ( p != new_xml_cache.end() && ( cache_behavior != cache::CURRENT || p->second.era >= cache::era() ) )
     {
-      return sc_xml_t( *p -> second.root );
+      return { *p -> second.root };
     }
   }
 

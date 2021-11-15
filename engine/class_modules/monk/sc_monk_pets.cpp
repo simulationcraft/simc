@@ -576,7 +576,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       parse_options( options_str );
 
-      melee_t* mh = new melee_t( "auto_attack_mh", player, &( player->main_hand_weapon ) );
+      auto* mh = new melee_t( "auto_attack_mh", player, &( player->main_hand_weapon ) );
       if ( !mh->source_action )
       {
         background = true;
@@ -838,7 +838,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   struct sef_whirling_dragon_punch_t : public sef_melee_attack_t
   {
-    sef_whirling_dragon_punch_tick_t* ticks[3];
+    std::array<sef_whirling_dragon_punch_tick_t*, 3> ticks;
 
     struct sef_whirling_dragon_punch_tick_event_t : public event_t
     {
@@ -863,7 +863,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       weapon_power_mod = 0;
 
-      for ( size_t i = 0; i < 3; ++i )
+      for ( size_t i = 0; i < ticks.size(); ++i )
       {
         auto delay = base_tick_time * i;
         ticks[i] = 
