@@ -64,6 +64,7 @@ struct monk_action_t : public Base
   bool trigger_chiji;
   bool trigger_faeline_stomp;
   bool trigger_bountiful_brew;
+  bool trigger_sinister_teaching_cdr;
 
   // Bron's Call to Action trigger overrides
   bool may_proc_bron;
@@ -89,6 +90,7 @@ public:
       trigger_chiji( false ),
       trigger_faeline_stomp( false ),
       trigger_bountiful_brew( false ),
+      trigger_sinister_teaching_cdr( true ),
       may_proc_bron( false ),
       bron_proc( nullptr ),
       affected_by()
@@ -467,8 +469,8 @@ public:
 
     if ( p()->legendary.sinister_teachings->ok() )
     {
-      if ( s->result_total >= 0 && s->result == RESULT_CRIT && p()->buff.fallen_order->up() &&
-           p()->cooldown.sinister_teachings->up() )
+      if ( trigger_sinister_teaching_cdr && s->result_total >= 0 && s->result == RESULT_CRIT && 
+           p()->buff.fallen_order->up() && p()->cooldown.sinister_teachings->up() )
       {
         p()->cooldown.fallen_order->adjust( -1 * p()->legendary.sinister_teachings->effectN( 3 ).time_value() );
         p()->cooldown.sinister_teachings->start( p()->legendary.sinister_teachings->internal_cooldown() );
@@ -999,6 +1001,7 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
     : monk_heal_t( name, p, p.talent.eye_of_the_tiger->effectN( 1 ).trigger() )
   {
     trigger_bountiful_brew = true;
+    trigger_sinister_teaching_cdr = false;
     background   = true;
     hasted_ticks = false;
     may_crit = tick_may_crit = true;
@@ -1026,6 +1029,7 @@ struct eye_of_the_tiger_dmg_tick_t : public monk_spell_t
     : monk_spell_t( name, player, player->talent.eye_of_the_tiger->effectN( 1 ).trigger() )
   {
     trigger_bountiful_brew = true;
+    trigger_sinister_teaching_cdr = false;
     background   = true;
     hasted_ticks           = false;
     may_crit = tick_may_crit = true;
@@ -2261,6 +2265,7 @@ struct melee_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, player, spell_data_t::nil() ), sync_weapons( sw ), first( true )
   {
     background = repeating = may_glance = true;
+    trigger_sinister_teaching_cdr       = false;
     trigger_gcd                         = timespan_t::zero();
     special                             = false;
     school                              = SCHOOL_PHYSICAL;
@@ -2328,6 +2333,7 @@ struct auto_attack_t : public monk_melee_attack_t
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
     parse_options( options_str );
     ignore_false_positive = true;
+    trigger_sinister_teaching_cdr = false;
 
     p()->main_hand_attack                    = new melee_t( "melee_main_hand", player, sync_weapons );
     p()->main_hand_attack->weapon            = &( player->main_hand_weapon );
