@@ -756,13 +756,13 @@ public:
     spawner::pet_spawner_t<pet_t, monk_t> niuzao;
     spawner::pet_spawner_t<pet_t, monk_t> yulon;
     spawner::pet_spawner_t<pet_t, monk_t> chiji;
-    spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_ww;
-    spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_mw;
-    spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_brm;
+    spawner::pet_spawner_t<pet_t, monk_t> tiger_adept;
+    spawner::pet_spawner_t<pet_t, monk_t> crane_adept;
+    spawner::pet_spawner_t<pet_t, monk_t> ox_adept;
     spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_xuen;
-    spawner::pet_spawner_t<pet_t, monk_t> sinister_teaching_ww;
-    spawner::pet_spawner_t<pet_t, monk_t> sinister_teaching_mw;
-    spawner::pet_spawner_t<pet_t, monk_t> sinister_teaching_brm;
+    spawner::pet_spawner_t<pet_t, monk_t> sinister_teaching_tiger_adept;
+    spawner::pet_spawner_t<pet_t, monk_t> sinister_teaching_crane_adept;
+    spawner::pet_spawner_t<pet_t, monk_t> sinister_teaching_ox_adept;
 
     pet_t* bron;
 

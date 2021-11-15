@@ -1550,14 +1550,14 @@ public:
 };
 
 // ==========================================================================
-// Fallen Monk - Windwalker (Venthyr)
+// Fallen Monk - Tiger Adept (Windwalker) (Venthyr)
 // ==========================================================================
-struct fallen_monk_ww_pet_t : public monk_pet_t
+struct tiger_adept_pet_t : public monk_pet_t
 {
 private:
   struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, fallen_monk_ww_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
+    melee_t( util::string_view n, tiger_adept_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
       base_hit -= 0.19;
       trigger_mystic_touch = true;
@@ -1567,7 +1567,7 @@ private:
   struct auto_attack_t : public pet_auto_attack_t
   {
 
-    auto_attack_t( fallen_monk_ww_pet_t* player, util::string_view options_str ) : pet_auto_attack_t( player )
+    auto_attack_t( tiger_adept_pet_t* player, util::string_view options_str ) : pet_auto_attack_t( player )
     {
       parse_options( options_str );
       trigger_mystic_touch = true;
@@ -1581,8 +1581,8 @@ private:
   };
 
 public:
-  fallen_monk_ww_pet_t( monk_t* owner )
-    : monk_pet_t( owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true )
+  tiger_adept_pet_t( monk_t* owner )
+    : monk_pet_t( owner, "tiger_adept", PET_FALLEN_MONK, true, true )
   {
     npc_id                      = 168033;
     main_hand_weapon.type       = WEAPON_1H;
@@ -1625,10 +1625,10 @@ public:
     return cpm;
   }
 
-  struct fallen_monk_fists_of_fury_tick_t : public pet_melee_attack_t
+  struct tiger_adept_fists_of_fury_tick_t : public pet_melee_attack_t
   {
-    fallen_monk_fists_of_fury_tick_t( fallen_monk_ww_pet_t* p )
-      : pet_melee_attack_t( "fists_of_fury_fo_tick", p, p->o()->passives.fallen_monk_fists_of_fury_tick )
+    tiger_adept_fists_of_fury_tick_t( tiger_adept_pet_t* p )
+      : pet_melee_attack_t( "fists_of_fury_tick", p, p->o()->passives.fallen_monk_fists_of_fury_tick )
     {
       background              = true;
       merge_report            = false;
@@ -1658,10 +1658,10 @@ public:
     }
   };
 
-  struct fallen_monk_fists_of_fury_t : public pet_melee_attack_t
+  struct tiger_adept_fists_of_fury_t : public pet_melee_attack_t
   {
-    fallen_monk_fists_of_fury_t( fallen_monk_ww_pet_t* p, util::string_view options_str )
-      : pet_melee_attack_t( "fists_of_fury_fo", p, p->o()->passives.fallen_monk_fists_of_fury )
+    tiger_adept_fists_of_fury_t( tiger_adept_pet_t* p, util::string_view options_str )
+      : pet_melee_attack_t( "fists_of_fury", p, p->o()->passives.fallen_monk_fists_of_fury )
     {
       parse_options( options_str );
 
@@ -1683,7 +1683,7 @@ public:
 
       cooldown->hasted   = false;
 
-      tick_action = new fallen_monk_fists_of_fury_tick_t( p );
+      tick_action = new tiger_adept_fists_of_fury_tick_t( p );
     }
 
     double action_multiplier() const override
@@ -1692,10 +1692,10 @@ public:
     }
   };
 
-  struct fallen_monk_tiger_palm_t : public pet_melee_attack_t
+  struct tiger_adept_tiger_palm_t : public pet_melee_attack_t
   {
-    fallen_monk_tiger_palm_t( fallen_monk_ww_pet_t* p, util::string_view options_str )
-      : pet_melee_attack_t( "tiger_palm_fo", p, p->o()->passives.fallen_monk_tiger_palm )
+    tiger_adept_tiger_palm_t( tiger_adept_pet_t* p, util::string_view options_str )
+      : pet_melee_attack_t( "tiger_palm", p, p->o()->passives.fallen_monk_tiger_palm )
     {
       parse_options( options_str );
 
@@ -1727,10 +1727,10 @@ public:
     }
   };
 
-  struct fallen_monk_spinning_crane_kick_tick_t : public pet_melee_attack_t
+  struct tiger_adept_spinning_crane_kick_tick_t : public pet_melee_attack_t
   {
-    fallen_monk_spinning_crane_kick_tick_t( fallen_monk_ww_pet_t* p )
-      : pet_melee_attack_t( "spinning_crane_kick_fo_tick", p, p->o()->passives.fallen_monk_spinning_crane_kick_tick )
+    tiger_adept_spinning_crane_kick_tick_t( tiger_adept_pet_t* p )
+      : pet_melee_attack_t( "spinning_crane_kick_tick", p, p->o()->passives.fallen_monk_spinning_crane_kick_tick )
     {
       dual = background    = true;
       merge_report         = false;
@@ -1786,10 +1786,10 @@ public:
     }
   };
 
-  struct fallen_monk_spinning_crane_kick_t : public pet_melee_attack_t
+  struct tiger_adept_spinning_crane_kick_t : public pet_melee_attack_t
   {
-    fallen_monk_spinning_crane_kick_t( fallen_monk_ww_pet_t* p, util::string_view options_str )
-      : pet_melee_attack_t( "spinning_crane_kick_fo", p, p->o()->passives.fallen_monk_spinning_crane_kick )
+    tiger_adept_spinning_crane_kick_t( tiger_adept_pet_t* p, util::string_view options_str )
+      : pet_melee_attack_t( "spinning_crane_kick", p, p->o()->passives.fallen_monk_spinning_crane_kick )
     {
       parse_options( options_str );
 
@@ -1802,7 +1802,7 @@ public:
       attack_power_mod.tick   = 0.0;
       weapon_power_mod        = 0.0;
 
-      tick_action = new fallen_monk_spinning_crane_kick_tick_t( p );
+      tick_action = new tiger_adept_spinning_crane_kick_tick_t( p );
 
       // We only want the monk to cast Spinning Crane Kick 2 times during the duration.
       // Increase the cooldown for non-windwalkers so that it only casts 2 times.
@@ -1848,27 +1848,27 @@ public:
       return new auto_attack_t( this, options_str );
 
     if ( name == "fists_of_fury" )
-      return new fallen_monk_fists_of_fury_t( this, options_str );
-
-    if ( name == "tiger_palm" )
-      return new fallen_monk_tiger_palm_t( this, options_str );
+      return new tiger_adept_fists_of_fury_t( this, options_str );
 
     if ( name == "spinning_crane_kick" )
-      return new fallen_monk_spinning_crane_kick_t( this, options_str );
+      return new tiger_adept_spinning_crane_kick_t( this, options_str );
+
+    if ( name == "tiger_palm" )
+      return new tiger_adept_tiger_palm_t( this, options_str );
 
     return monk_pet_t::create_action( name, options_str );
   }
 };
 
 // ==========================================================================
-// Fallen Monk - Brewmaster (Venthyr)
+// Fallen Monk - Ox Adept (Brewmaster) (Venthyr)
 // ==========================================================================
-struct fallen_monk_brm_pet_t : public monk_pet_t
+struct ox_adept_pet_t : public monk_pet_t
 {
 private:
   struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, fallen_monk_brm_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
+    melee_t( util::string_view n, ox_adept_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
       base_hit -= 0.19;
     }
@@ -1876,7 +1876,7 @@ private:
 
   struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( fallen_monk_brm_pet_t* player, util::string_view options_str ) : pet_auto_attack_t( player )
+    auto_attack_t( ox_adept_pet_t* player, util::string_view options_str ) : pet_auto_attack_t( player )
     {
       parse_options( options_str );
       trigger_mystic_touch = true;
@@ -1890,8 +1890,8 @@ private:
   };
 
 public:
-  fallen_monk_brm_pet_t( monk_t* owner )
-    : monk_pet_t( owner, "fallen_monk_brewmaster", PET_FALLEN_MONK, true, true )
+  ox_adept_pet_t( monk_t* owner )
+    : monk_pet_t( owner, "ox_adept", PET_FALLEN_MONK, true, true )
   {
     npc_id                      = 168073;
     main_hand_weapon.type       = WEAPON_1H;
@@ -1934,10 +1934,10 @@ public:
     return cpm;
   }
 
-  struct fallen_monk_keg_smash_t : public pet_melee_attack_t
+  struct ox_adept_keg_smash_t : public pet_melee_attack_t
   {
-    fallen_monk_keg_smash_t( fallen_monk_brm_pet_t* p, util::string_view options_str )
-      : pet_melee_attack_t( "keg_smash_fo", p, p->o()->passives.fallen_monk_keg_smash )
+    ox_adept_keg_smash_t( ox_adept_pet_t* p, util::string_view options_str )
+      : pet_melee_attack_t( "keg_smash", p, p->o()->passives.fallen_monk_keg_smash )
     {
       parse_options( options_str );
 
@@ -1977,12 +1977,12 @@ public:
     }
   };
 
-  struct fallen_monk_breath_of_fire_t : public pet_spell_t
+  struct ox_adept_breath_of_fire_t : public pet_spell_t
   {
-    struct fallen_monk_breath_of_fire_tick_t : public pet_spell_t
+    struct ox_adept_breath_of_fire_tick_t : public pet_spell_t
     {
-      fallen_monk_breath_of_fire_tick_t( fallen_monk_brm_pet_t* p )
-        : pet_spell_t( "breath_of_fire_dot_fo", p, p->o()->passives.breath_of_fire_dot )
+      ox_adept_breath_of_fire_tick_t( ox_adept_pet_t* p )
+        : pet_spell_t( "breath_of_fire_dot", p, p->o()->passives.breath_of_fire_dot )
       {
         background    = true;
         tick_may_crit = may_crit = true;
@@ -1992,10 +1992,10 @@ public:
       }
     };
 
-    fallen_monk_breath_of_fire_tick_t* dot_action;
-    fallen_monk_breath_of_fire_t( fallen_monk_brm_pet_t* p, util::string_view options_str )
-      : pet_spell_t( "breath_of_fire_fo", p, p->o()->passives.fallen_monk_breath_of_fire ),
-        dot_action( new fallen_monk_breath_of_fire_tick_t( p ) )
+    ox_adept_breath_of_fire_tick_t* dot_action;
+    ox_adept_breath_of_fire_t( ox_adept_pet_t* p, util::string_view options_str )
+      : pet_spell_t( "breath_of_fire", p, p->o()->passives.fallen_monk_breath_of_fire ),
+        dot_action( new ox_adept_breath_of_fire_tick_t( p ) )
     {
       parse_options( options_str );
 
@@ -2025,10 +2025,10 @@ public:
     }
   };
 
-  struct fallen_monk_clash_t : public pet_spell_t
+  struct ox_adept_clash_t : public pet_spell_t
   {
-    fallen_monk_clash_t( fallen_monk_brm_pet_t* p, util::string_view options_str )
-      : pet_spell_t( "clash_fo", p, p->o()->passives.fallen_monk_clash )
+    ox_adept_clash_t( ox_adept_pet_t* p, util::string_view options_str )
+      : pet_spell_t( "clash", p, p->o()->passives.fallen_monk_clash )
     {
       parse_options( options_str );
       aoe     = 1;
@@ -2039,10 +2039,10 @@ public:
     }
   };
 
-  struct fallen_monk_fallen_brew_t : public pet_absorb_t
+  struct ox_adept_fallen_brew_t : public pet_absorb_t
   {
-    fallen_monk_fallen_brew_t( fallen_monk_brm_pet_t* p, util::string_view options_str )
-      : pet_absorb_t( "fallen_brew_fo", p, p->o()->passives.fallen_monk_fallen_brew )
+    ox_adept_fallen_brew_t( ox_adept_pet_t* p, util::string_view options_str )
+      : pet_absorb_t( "fallen_brew", p, p->o()->passives.fallen_monk_fallen_brew )
     {
       parse_options( options_str );
 
@@ -2074,29 +2074,29 @@ public:
     if ( name == "auto_attack" )
       return new auto_attack_t( this, options_str );
 
-    if ( name == "clash" )
-      return new fallen_monk_clash_t( this, options_str );
-
-    if ( name == "keg_smash" )
-      return new fallen_monk_keg_smash_t( this, options_str );
-
     if ( name == "breath_of_fire" )
-      return new fallen_monk_breath_of_fire_t( this, options_str );
+      return new ox_adept_breath_of_fire_t( this, options_str );
+
+    if ( name == "clash" )
+      return new ox_adept_clash_t( this, options_str );
 
     if ( name == "fallen_brew" )
-      return new fallen_monk_fallen_brew_t( this, options_str );
+      return new ox_adept_fallen_brew_t( this, options_str );
+
+    if ( name == "keg_smash" )
+      return new ox_adept_keg_smash_t( this, options_str );
 
     return monk_pet_t::create_action( name, options_str );
   }
 };
 
 // ==========================================================================
-// Fallen Monk - Mistweaver (Venthyr)
+// Fallen Monk - Crane Adept (Mistweaver) (Venthyr)
 // ==========================================================================
-struct fallen_monk_mw_pet_t : public monk_pet_t
+struct crane_adept_pet_t : public monk_pet_t
 {
 public:
-  fallen_monk_mw_pet_t( monk_t* owner ) : monk_pet_t( owner, "fallen_monk_mistweaver", PET_FALLEN_MONK, true, true )
+  crane_adept_pet_t( monk_t* owner ) : monk_pet_t( owner, "crane_adept", PET_FALLEN_MONK, true, true )
   {
     npc_id                      = 168074;
     main_hand_weapon.type       = WEAPON_1H;
@@ -2119,10 +2119,10 @@ public:
     return cpm;
   }
 
-  struct fallen_monk_enveloping_mist_t : public pet_heal_t
+  struct crane_adept_enveloping_mist_t : public pet_heal_t
   {
-    fallen_monk_enveloping_mist_t( fallen_monk_mw_pet_t* p, util::string_view options_str )
-      : pet_heal_t( "enveloping_mist_fo", p, p->o()->passives.fallen_monk_enveloping_mist )
+    crane_adept_enveloping_mist_t( crane_adept_pet_t* p, util::string_view options_str )
+      : pet_heal_t( "enveloping_mist", p, p->o()->passives.fallen_monk_enveloping_mist )
     {
       parse_options( options_str );
 
@@ -2138,10 +2138,10 @@ public:
     }
   };
 
-  struct fallen_monk_soothing_mist_t : public pet_heal_t
+  struct crane_adept_soothing_mist_t : public pet_heal_t
   {
-    fallen_monk_soothing_mist_t( fallen_monk_mw_pet_t* p, util::string_view options_str )
-      : pet_heal_t( "soothing_mist_fo", p, p->o()->passives.fallen_monk_soothing_mist )
+    crane_adept_soothing_mist_t( crane_adept_pet_t* p, util::string_view options_str )
+      : pet_heal_t( "soothing_mist", p, p->o()->passives.fallen_monk_soothing_mist )
     {
       parse_options( options_str );
 
@@ -2171,24 +2171,24 @@ public:
   action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "enveloping_mist" )
-      return new fallen_monk_enveloping_mist_t( this, options_str );
+      return new crane_adept_enveloping_mist_t( this, options_str );
 
     if ( name == "soothing_mist" )
-      return new fallen_monk_soothing_mist_t( this, options_str );
+      return new crane_adept_soothing_mist_t( this, options_str );
 
     return monk_pet_t::create_action( name, options_str );
   }
 };
 
 // ==========================================================================
-// Sinister Teaching Fallen Monk - Windwalker (Venthyr)
+// Sinister Teaching Fallen Monk - Tiger Adept (Windwalker) (Venthyr)
 // ==========================================================================
-struct sinister_teaching_fallen_monk_ww_pet_t : public monk_pet_t
+struct sinister_teaching_tiger_adept_pet_t : public monk_pet_t
 {
 private:
   struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, sinister_teaching_fallen_monk_ww_pet_t* player, weapon_t* weapon )
+    melee_t( util::string_view n, sinister_teaching_tiger_adept_pet_t* player, weapon_t* weapon )
       : pet_melee_t( n, player, weapon )
     {
       base_hit -= 0.19;
@@ -2198,7 +2198,7 @@ private:
 
   struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( sinister_teaching_fallen_monk_ww_pet_t* player, util::string_view options_str )
+    auto_attack_t( sinister_teaching_tiger_adept_pet_t* player, util::string_view options_str )
       : pet_auto_attack_t( player )
     {
       parse_options( options_str );
@@ -2213,8 +2213,8 @@ private:
   };
 
 public:
-  sinister_teaching_fallen_monk_ww_pet_t( monk_t* owner )
-    : monk_pet_t( owner, "sinister_teaching_fallen_monk_windwalker", PET_FALLEN_MONK, true, true )
+  sinister_teaching_tiger_adept_pet_t( monk_t* owner )
+    : monk_pet_t( owner, "sinister_teaching_tiger_adept", PET_FALLEN_MONK, true, true )
   {
     npc_id                      = 168033;
     main_hand_weapon.type       = WEAPON_1H;
@@ -2257,10 +2257,10 @@ public:
     return cpm;
   }
 
-  struct sinister_teaching_fallen_monk_fists_of_fury_tick_t : public pet_melee_attack_t
+  struct sinister_teaching_tiger_adept_fists_of_fury_tick_t : public pet_melee_attack_t
   {
-    sinister_teaching_fallen_monk_fists_of_fury_tick_t( sinister_teaching_fallen_monk_ww_pet_t* p )
-      : pet_melee_attack_t( "fists_of_fury_sit_fo_tick", p, p->o()->passives.fallen_monk_fists_of_fury_tick )
+    sinister_teaching_tiger_adept_fists_of_fury_tick_t( sinister_teaching_tiger_adept_pet_t* p )
+      : pet_melee_attack_t( "fists_of_fury_tick", p, p->o()->passives.fallen_monk_fists_of_fury_tick )
     {
       background   = true;
       merge_report = false;
@@ -2290,11 +2290,11 @@ public:
     }
   };
 
-  struct sinister_teaching_fallen_monk_fists_of_fury_t : public pet_melee_attack_t
+  struct sinister_teaching_tiger_adept_fists_of_fury_t : public pet_melee_attack_t
   {
-    sinister_teaching_fallen_monk_fists_of_fury_t( sinister_teaching_fallen_monk_ww_pet_t* p,
+    sinister_teaching_tiger_adept_fists_of_fury_t( sinister_teaching_tiger_adept_pet_t* p,
                                                    util::string_view options_str )
-      : pet_melee_attack_t( "fists_of_fury_sit_fo", p, p->o()->passives.fallen_monk_fists_of_fury )
+      : pet_melee_attack_t( "fists_of_fury", p, p->o()->passives.fallen_monk_fists_of_fury )
     {
       parse_options( options_str );
 
@@ -2316,7 +2316,7 @@ public:
 
       cooldown->hasted = false;
 
-      tick_action = new sinister_teaching_fallen_monk_fists_of_fury_tick_t( p );
+      tick_action = new sinister_teaching_tiger_adept_fists_of_fury_tick_t( p );
     }
 
     double action_multiplier() const override
@@ -2325,11 +2325,11 @@ public:
     }
   };
 
-  struct sinister_teaching_fallen_monk_tiger_palm_t : public pet_melee_attack_t
+  struct sinister_teaching_tiger_adept_tiger_palm_t : public pet_melee_attack_t
   {
-    sinister_teaching_fallen_monk_tiger_palm_t( sinister_teaching_fallen_monk_ww_pet_t* p,
+    sinister_teaching_tiger_adept_tiger_palm_t( sinister_teaching_tiger_adept_pet_t* p,
                                                 util::string_view options_str )
-      : pet_melee_attack_t( "tiger_palm_sit_fo", p, p->o()->passives.fallen_monk_tiger_palm )
+      : pet_melee_attack_t( "tiger_palm", p, p->o()->passives.fallen_monk_tiger_palm )
     {
       parse_options( options_str );
 
@@ -2361,10 +2361,10 @@ public:
     }
   };
 
-  struct sinister_teaching_fallen_monk_spinning_crane_kick_tick_t : public pet_melee_attack_t
+  struct sinister_teaching_tiger_adept_spinning_crane_kick_tick_t : public pet_melee_attack_t
   {
-    sinister_teaching_fallen_monk_spinning_crane_kick_tick_t( sinister_teaching_fallen_monk_ww_pet_t* p )
-      : pet_melee_attack_t( "spinning_crane_kick_sit_fo_tick", p, p->o()->passives.fallen_monk_spinning_crane_kick_tick )
+    sinister_teaching_tiger_adept_spinning_crane_kick_tick_t( sinister_teaching_tiger_adept_pet_t* p )
+      : pet_melee_attack_t( "spinning_crane_kick_tick", p, p->o()->passives.fallen_monk_spinning_crane_kick_tick )
     {
       dual = background    = true;
       merge_report         = false;
@@ -2420,11 +2420,11 @@ public:
     }
   };
 
-  struct sinister_teaching_fallen_monk_spinning_crane_kick_t : public pet_melee_attack_t
+  struct sinister_teaching_tiger_adept_spinning_crane_kick_t : public pet_melee_attack_t
   {
-    sinister_teaching_fallen_monk_spinning_crane_kick_t( sinister_teaching_fallen_monk_ww_pet_t* p,
+    sinister_teaching_tiger_adept_spinning_crane_kick_t( sinister_teaching_tiger_adept_pet_t* p,
                                                          util::string_view options_str )
-      : pet_melee_attack_t( "spinning_crane_kick_sit_fo", p, p->o()->passives.fallen_monk_spinning_crane_kick )
+      : pet_melee_attack_t( "spinning_crane_kick", p, p->o()->passives.fallen_monk_spinning_crane_kick )
     {
       parse_options( options_str );
 
@@ -2437,7 +2437,7 @@ public:
       attack_power_mod.tick   = 0.0;
       weapon_power_mod        = 0.0;
 
-      tick_action = new sinister_teaching_fallen_monk_spinning_crane_kick_tick_t( p );
+      tick_action = new sinister_teaching_tiger_adept_spinning_crane_kick_tick_t( p );
 
       // We only want the monk to cast Spinning Crane Kick 2 times during the duration.
       // Increase the cooldown for non-windwalkers so that it only casts 2 times.
@@ -2482,27 +2482,27 @@ public:
       return new auto_attack_t( this, options_str );
 
     if ( name == "fists_of_fury" )
-      return new sinister_teaching_fallen_monk_fists_of_fury_t( this, options_str );
-
-    if ( name == "tiger_palm" )
-      return new sinister_teaching_fallen_monk_tiger_palm_t( this, options_str );
+      return new sinister_teaching_tiger_adept_fists_of_fury_t( this, options_str );
 
     if ( name == "spinning_crane_kick" )
-      return new sinister_teaching_fallen_monk_spinning_crane_kick_t( this, options_str );
+      return new sinister_teaching_tiger_adept_spinning_crane_kick_t( this, options_str );
+
+    if ( name == "tiger_palm" )
+      return new sinister_teaching_tiger_adept_tiger_palm_t( this, options_str );
 
     return monk_pet_t::create_action( name, options_str );
   }
 };
 
 // ==========================================================================
-// Sinister Teaching Fallen Monk - Brewmaster (Venthyr)
+// Sinister Teaching Fallen Monk - Ox Adept (Brewmaster) (Venthyr)
 // ==========================================================================
-struct sinister_teaching_fallen_monk_brm_pet_t : public monk_pet_t
+struct sinister_teaching_ox_adept_pet_t : public monk_pet_t
 {
 private:
   struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, sinister_teaching_fallen_monk_brm_pet_t* player, weapon_t* weapon )
+    melee_t( util::string_view n, sinister_teaching_ox_adept_pet_t* player, weapon_t* weapon )
       : pet_melee_t( n, player, weapon )
     {
       base_hit -= 0.19;
@@ -2511,7 +2511,7 @@ private:
 
   struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( sinister_teaching_fallen_monk_brm_pet_t* player, util::string_view options_str )
+    auto_attack_t( sinister_teaching_ox_adept_pet_t* player, util::string_view options_str )
       : pet_auto_attack_t( player )
     {
       parse_options( options_str );
@@ -2526,8 +2526,8 @@ private:
   };
 
 public:
-  sinister_teaching_fallen_monk_brm_pet_t( monk_t* owner )
-    : monk_pet_t( owner, "sinister_teaching_fallen_monk_brewmaster", PET_FALLEN_MONK, true, true )
+  sinister_teaching_ox_adept_pet_t( monk_t* owner )
+    : monk_pet_t( owner, "sinister_teaching_ox_adept", PET_FALLEN_MONK, true, true )
   {
     npc_id                      = 168073;
     main_hand_weapon.type       = WEAPON_1H;
@@ -2570,10 +2570,10 @@ public:
     return cpm;
   }
 
-  struct sinister_teaching_fallen_monk_keg_smash_t : public pet_melee_attack_t
+  struct sinister_teaching_ox_adept_keg_smash_t : public pet_melee_attack_t
   {
-    sinister_teaching_fallen_monk_keg_smash_t( sinister_teaching_fallen_monk_brm_pet_t* p, util::string_view options_str )
-      : pet_melee_attack_t( "keg_smash_sit_fo", p, p->o()->passives.fallen_monk_keg_smash )
+    sinister_teaching_ox_adept_keg_smash_t( sinister_teaching_ox_adept_pet_t* p, util::string_view options_str )
+      : pet_melee_attack_t( "keg_smash", p, p->o()->passives.fallen_monk_keg_smash )
     {
       parse_options( options_str );
 
@@ -2613,12 +2613,12 @@ public:
     }
   };
 
-  struct sinister_teaching_fallen_monk_breath_of_fire_t : public pet_spell_t
+  struct sinister_teaching_ox_adept_breath_of_fire_t : public pet_spell_t
   {
-    struct sinister_teaching_fallen_monk_breath_of_fire_tick_t : public pet_spell_t
+    struct sinister_teaching_ox_adept_breath_of_fire_tick_t : public pet_spell_t
     {
-      sinister_teaching_fallen_monk_breath_of_fire_tick_t( sinister_teaching_fallen_monk_brm_pet_t* p )
-        : pet_spell_t( "breath_of_fire_dot_sit_fo", p, p->o()->passives.breath_of_fire_dot )
+      sinister_teaching_ox_adept_breath_of_fire_tick_t( sinister_teaching_ox_adept_pet_t* p )
+        : pet_spell_t( "breath_of_fire_dot", p, p->o()->passives.breath_of_fire_dot )
       {
         background    = true;
         tick_may_crit = may_crit = true;
@@ -2628,11 +2628,11 @@ public:
       }
     };
 
-    sinister_teaching_fallen_monk_breath_of_fire_tick_t* dot_action;
-    sinister_teaching_fallen_monk_breath_of_fire_t( sinister_teaching_fallen_monk_brm_pet_t* p,
+    sinister_teaching_ox_adept_breath_of_fire_tick_t* dot_action;
+    sinister_teaching_ox_adept_breath_of_fire_t( sinister_teaching_ox_adept_pet_t* p,
                                                     util::string_view options_str )
-      : pet_spell_t( "breath_of_fire_sit_fo", p, p->o()->passives.fallen_monk_breath_of_fire ),
-        dot_action( new sinister_teaching_fallen_monk_breath_of_fire_tick_t( p ) )
+      : pet_spell_t( "breath_of_fire", p, p->o()->passives.fallen_monk_breath_of_fire ),
+        dot_action( new sinister_teaching_ox_adept_breath_of_fire_tick_t( p ) )
     {
       parse_options( options_str );
 
@@ -2662,10 +2662,10 @@ public:
     }
   };
 
-  struct sinister_teaching_fallen_monk_clash_t : public pet_spell_t
+  struct sinister_teaching_ox_adept_clash_t : public pet_spell_t
   {
-    sinister_teaching_fallen_monk_clash_t( sinister_teaching_fallen_monk_brm_pet_t* p, util::string_view options_str )
-      : pet_spell_t( "clash_sit_fo", p, p->o()->passives.fallen_monk_clash )
+    sinister_teaching_ox_adept_clash_t( sinister_teaching_ox_adept_pet_t* p, util::string_view options_str )
+      : pet_spell_t( "clash", p, p->o()->passives.fallen_monk_clash )
     {
       parse_options( options_str );
       aoe    = 1;
@@ -2676,11 +2676,11 @@ public:
     }
   };
 
-  struct sinister_teaching_fallen_monk_fallen_brew_t : public pet_absorb_t
+  struct sinister_teaching_ox_adept_fallen_brew_t : public pet_absorb_t
   {
-    sinister_teaching_fallen_monk_fallen_brew_t( sinister_teaching_fallen_monk_brm_pet_t* p,
+    sinister_teaching_ox_adept_fallen_brew_t( sinister_teaching_ox_adept_pet_t* p,
                                                  util::string_view options_str )
-      : pet_absorb_t( "fallen_brew_sit_fo", p, p->o()->passives.fallen_monk_fallen_brew )
+      : pet_absorb_t( "fallen_brew", p, p->o()->passives.fallen_monk_fallen_brew )
     {
       parse_options( options_str );
       gcd_type = gcd_haste_type::NONE;
@@ -2713,30 +2713,30 @@ public:
     if ( name == "auto_attack" )
       return new auto_attack_t( this, options_str );
 
-    if ( name == "clash" )
-      return new sinister_teaching_fallen_monk_clash_t( this, options_str );
-
-    if ( name == "keg_smash" )
-      return new sinister_teaching_fallen_monk_keg_smash_t( this, options_str );
-
     if ( name == "breath_of_fire" )
-      return new sinister_teaching_fallen_monk_breath_of_fire_t( this, options_str );
+      return new sinister_teaching_ox_adept_breath_of_fire_t( this, options_str );
+
+    if ( name == "clash" )
+      return new sinister_teaching_ox_adept_clash_t( this, options_str );
 
     if ( name == "fallen_brew" )
-      return new sinister_teaching_fallen_monk_fallen_brew_t( this, options_str );
+      return new sinister_teaching_ox_adept_fallen_brew_t( this, options_str );
+
+    if ( name == "keg_smash" )
+      return new sinister_teaching_ox_adept_keg_smash_t( this, options_str );
 
     return monk_pet_t::create_action( name, options_str );
   }
 };
 
 // ==========================================================================
-// Sinister Teaching Fallen Monk - Mistweaver (Venthyr)
+// Sinister Teaching Fallen Monk - Crane Adept (Mistweaver) (Venthyr)
 // ==========================================================================
-struct sinister_teaching_fallen_monk_mw_pet_t : public monk_pet_t
+struct sinister_teaching_crane_adept_pet_t : public monk_pet_t
 {
 public:
-  sinister_teaching_fallen_monk_mw_pet_t( monk_t* owner )
-    : monk_pet_t( owner, "sinister_teaching_fallen_monk_mistweaver", PET_FALLEN_MONK, true, true )
+  sinister_teaching_crane_adept_pet_t( monk_t* owner )
+    : monk_pet_t( owner, "sinister_teaching_crane_adept", PET_FALLEN_MONK, true, true )
   {
     npc_id                      = 168074;
     main_hand_weapon.type       = WEAPON_1H;
@@ -2759,11 +2759,11 @@ public:
     return cpm;
   }
 
-  struct sinister_teaching_fallen_monk_enveloping_mist_t : public pet_heal_t
+  struct sinister_teaching_crane_adept_enveloping_mist_t : public pet_heal_t
   {
-    sinister_teaching_fallen_monk_enveloping_mist_t( sinister_teaching_fallen_monk_mw_pet_t* p,
+    sinister_teaching_crane_adept_enveloping_mist_t( sinister_teaching_crane_adept_pet_t* p,
                                                      util::string_view options_str )
-      : pet_heal_t( "enveloping_mist_sit_fo", p, p->o()->passives.fallen_monk_enveloping_mist )
+      : pet_heal_t( "enveloping_mist", p, p->o()->passives.fallen_monk_enveloping_mist )
     {
       parse_options( options_str );
 
@@ -2779,11 +2779,11 @@ public:
     }
   };
 
-  struct sinister_teaching_fallen_monk_soothing_mist_t : public pet_heal_t
+  struct sinister_teaching_crane_adept_soothing_mist_t : public pet_heal_t
   {
-    sinister_teaching_fallen_monk_soothing_mist_t( sinister_teaching_fallen_monk_mw_pet_t* p,
+    sinister_teaching_crane_adept_soothing_mist_t( sinister_teaching_crane_adept_pet_t* p,
                                                    util::string_view options_str )
-      : pet_heal_t( "soothing_mist_sit_fo", p, p->o()->passives.fallen_monk_soothing_mist )
+      : pet_heal_t( "soothing_mist", p, p->o()->passives.fallen_monk_soothing_mist )
     {
       parse_options( options_str );
 
@@ -2813,10 +2813,10 @@ public:
   action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "enveloping_mist" )
-      return new sinister_teaching_fallen_monk_enveloping_mist_t( this, options_str );
+      return new sinister_teaching_crane_adept_enveloping_mist_t( this, options_str );
 
     if ( name == "soothing_mist" )
-      return new sinister_teaching_fallen_monk_soothing_mist_t( this, options_str );
+      return new sinister_teaching_crane_adept_soothing_mist_t( this, options_str );
 
     return monk_pet_t::create_action( name, options_str );
   }
@@ -2829,13 +2829,13 @@ monk_t::pets_t::pets_t( monk_t* p )
     niuzao( "niuzao_the_black_ox", p, []( monk_t* p ) { return new pets::niuzao_pet_t( p ); } ),
     yulon( "yulon_the_jade_serpent", p, []( monk_t* p ) { return new pets::yulon_pet_t( p ); } ),
     chiji( "chiji_the_red_crane", p, []( monk_t* p ) { return new pets::chiji_pet_t( p ); } ),
-    fallen_monk_ww( "fallen_monk_windwalker", p, []( monk_t* p ) { return new pets::fallen_monk_ww_pet_t( p ); } ),
-    fallen_monk_mw( "fallen_monk_mistweaver", p, []( monk_t* p ) { return new pets::fallen_monk_mw_pet_t( p ); } ),
-    fallen_monk_brm( "fallen_monk_brewmaster", p, []( monk_t* p ) { return new pets::fallen_monk_brm_pet_t( p ); } ),
+    tiger_adept( "fallen_monk_windwalker", p, []( monk_t* p ) { return new pets::tiger_adept_pet_t( p ); } ),
+    crane_adept( "fallen_monk_mistweaver", p, []( monk_t* p ) { return new pets::crane_adept_pet_t( p ); } ),
+    ox_adept( "fallen_monk_brewmaster", p, []( monk_t* p ) { return new pets::ox_adept_pet_t( p ); } ),
     call_to_arms_xuen( "call_to_arms_xuen", p, []( monk_t* p ) { return new pets::call_to_arms_xuen_pet_t( p ); } ),
-    sinister_teaching_ww( "sinister_teaching_fallen_monk_windwalker", p, []( monk_t* p ) { return new pets::sinister_teaching_fallen_monk_ww_pet_t( p ); } ),
-    sinister_teaching_mw( "sinister_teaching_fallen_monk_mistweaver", p, []( monk_t* p ) { return new pets::sinister_teaching_fallen_monk_mw_pet_t( p ); } ),
-    sinister_teaching_brm( "sinister_teaching_fallen_monk_brewmaster", p, []( monk_t* p ) { return new pets::sinister_teaching_fallen_monk_brm_pet_t( p ); } ),
+    sinister_teaching_tiger_adept( "sinister_teaching_tiger_adept", p, []( monk_t* p ) { return new pets::sinister_teaching_tiger_adept_pet_t( p ); } ),
+    sinister_teaching_crane_adept( "sinister_teaching_crane_adept", p, []( monk_t* p ) { return new pets::sinister_teaching_crane_adept_pet_t( p ); } ),
+    sinister_teaching_ox_adept( "sinister_teaching_ox_adept", p, []( monk_t* p ) { return new pets::sinister_teaching_ox_adept_pet_t( p ); } ),
 
     bron( nullptr )
 {
