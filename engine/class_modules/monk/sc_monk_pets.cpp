@@ -1559,7 +1559,6 @@ private:
   {
     melee_t( util::string_view n, fallen_monk_ww_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
-      // TODO: check why this is here
       base_hit -= 0.19;
       trigger_mystic_touch = true;
     }
@@ -1587,13 +1586,13 @@ public:
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1 );
 
     off_hand_weapon.type       = WEAPON_1H;
     off_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     off_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
     off_hand_weapon.damage     = ( off_hand_weapon.min_dmg + off_hand_weapon.max_dmg ) / 2;
-    off_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
+    off_hand_weapon.swing_time = timespan_t::from_seconds( 1 );
 
     switch ( owner->specialization() )
     {
@@ -1888,11 +1887,17 @@ public:
     : monk_pet_t( owner, "fallen_monk_brewmaster", PET_FALLEN_MONK, true, true )
   {
     npc_id                      = 168073;
-    main_hand_weapon.type       = WEAPON_2H;
+    main_hand_weapon.type       = WEAPON_1H;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1 );
+
+    off_hand_weapon.type       = WEAPON_1H;
+    off_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
+    off_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
+    off_hand_weapon.damage     = ( off_hand_weapon.min_dmg + off_hand_weapon.max_dmg ) / 2;
+    off_hand_weapon.swing_time = timespan_t::from_seconds( 1 );
 
     switch ( owner->specialization() )
     {
@@ -2181,7 +2186,6 @@ private:
     melee_t( util::string_view n, sinister_teaching_fallen_monk_ww_pet_t* player, weapon_t* weapon )
       : pet_melee_t( n, player, weapon )
     {
-      // TODO: check why this is here
       base_hit -= 0.19;
       trigger_mystic_touch = true;
     }
@@ -2514,11 +2518,17 @@ public:
     : monk_pet_t( owner, "sinister_teaching_fallen_monk_brewmaster", PET_FALLEN_MONK, true, true )
   {
     npc_id                      = 168073;
-    main_hand_weapon.type       = WEAPON_2H;
+    main_hand_weapon.type       = WEAPON_1H;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1 );
+
+    off_hand_weapon.type       = WEAPON_1H;
+    off_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
+    off_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
+    off_hand_weapon.damage     = ( off_hand_weapon.min_dmg + off_hand_weapon.max_dmg ) / 2;
+    off_hand_weapon.swing_time = timespan_t::from_seconds( 1 );
 
     switch ( owner->specialization() )
     {
