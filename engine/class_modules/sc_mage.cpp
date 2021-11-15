@@ -20,8 +20,8 @@ namespace {
 struct mage_t;
 
 namespace pets::water_elemental {
-    struct water_elemental_pet_t;
-  }
+  struct water_elemental_pet_t;
+}
 
 // Finds an action with the given name. If no action exists, a new one will
 // be created.
