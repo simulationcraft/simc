@@ -106,6 +106,7 @@ public:
     buff_t* call_to_arms_empowered_tiger_lightning;
     buff_t* fae_exposure;
     buff_t* keefers_skyreach;
+    buff_t* sinister_teaching_fallen_monk_keg_smash;
     buff_t* skyreach_exhaustion;
   } debuff;
 

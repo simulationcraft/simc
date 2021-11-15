@@ -3094,7 +3094,7 @@ struct breath_of_fire_t : public monk_spell_t
 
     monk_td_t& td = *this->td( s->target );
 
-    if ( td.debuff.keg_smash->up() || td.debuff.fallen_monk_keg_smash->up() )
+    if ( td.debuff.keg_smash->up() || td.debuff.fallen_monk_keg_smash->up() || td.debuff.sinister_teaching_fallen_monk_keg_smash->up() )
     {
       p()->active_actions.breath_of_fire->target = s->target;
       p()->active_actions.breath_of_fire->execute();
@@ -5762,6 +5762,8 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
                                 ->set_default_value_from_effect( 1 )
                                 ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
                                 ->set_refresh_behavior( buff_refresh_behavior::NONE );
+  debuff.sinister_teaching_fallen_monk_keg_smash = make_buff( *this, "sinister_teaching_fallen_monk_keg_smash", p->passives.fallen_monk_keg_smash )
+                                     ->set_default_value_from_effect( 3 );
   debuff.skyreach_exhaustion = make_buff( *this, "skyreach_exhaustion", p->find_spell( 337341 ) )
                                            ->set_refresh_behavior( buff_refresh_behavior::NONE );
 

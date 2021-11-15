@@ -1836,7 +1836,6 @@ public:
       action_list_str += "/fists_of_fury";
     action_list_str += "/spinning_crane_kick,if=active_enemies>1";
     action_list_str += "/tiger_palm,if=active_enemies=1";
-    action_list_str += "/tiger_palm";
 
     monk_pet_t::init_action_list();
   }
@@ -2007,7 +2006,8 @@ public:
       pet_spell_t::impact( s );
 
       if ( o()->get_target_data( s->target )->debuff.keg_smash->up() ||
-           o()->get_target_data( s->target )->debuff.fallen_monk_keg_smash->up() )
+           o()->get_target_data( s->target )->debuff.fallen_monk_keg_smash->up() ||
+           o()->get_target_data( s->target )->debuff.sinister_teaching_fallen_monk_keg_smash->up() )
       {
         dot_action->target = s->target;
         dot_action->execute();
@@ -2460,7 +2460,6 @@ public:
       action_list_str += "/fists_of_fury";
     action_list_str += "/spinning_crane_kick,if=active_enemies>1";
     action_list_str += "/tiger_palm,if=active_enemies=1";
-    action_list_str += "/tiger_palm";
 
     monk_pet_t::init_action_list();
   }
@@ -2589,7 +2588,7 @@ public:
     {
       pet_melee_attack_t::impact( s );
 
-      o()->get_target_data( s->target )->debuff.fallen_monk_keg_smash->trigger();
+      o()->get_target_data( s->target )->debuff.sinister_teaching_fallen_monk_keg_smash->trigger();
     }
   };
 
@@ -2634,7 +2633,8 @@ public:
       pet_spell_t::impact( s );
 
       if ( o()->get_target_data( s->target )->debuff.keg_smash->up() ||
-           o()->get_target_data( s->target )->debuff.fallen_monk_keg_smash->up() )
+           o()->get_target_data( s->target )->debuff.fallen_monk_keg_smash->up() ||
+           o()->get_target_data( s->target )->debuff.sinister_teaching_fallen_monk_keg_smash->up() )
       {
         dot_action->target = s->target;
         dot_action->execute();
