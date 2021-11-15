@@ -54,7 +54,7 @@ actions.precombat+=/variable,name=empyreal_ordnance_delay,default=18,op=reset
 actions.precombat+=/variable,name=time_to_combustion,value=fight_remains+100,if=variable.disable_combustion
 # The duration of a Sun King's Blessing Combustion.
 actions.precombat+=/variable,name=skb_duration,value=dbc.effect.828420.base_value
-# The number of seconds of Fire Blast recharged by Mirrors of Torment
+# The number of seconds of Fire Blast recharged by Mirrors of Torment.
 actions.precombat+=/variable,name=mot_recharge_amount,value=dbc.effect.871274.base_value
 # Whether a usable item used to buff Combustion is equipped.
 actions.precombat+=/variable,name=combustion_on_use,value=equipped.gladiators_badge|equipped.macabre_sheet_music|equipped.inscrutable_quantum_device|equipped.sunblood_amethyst|equipped.empyreal_ordnance|equipped.flame_of_battle|equipped.wakeners_frond|equipped.instructors_divine_bell|equipped.shadowed_orb_of_torment
@@ -76,9 +76,14 @@ actions+=/call_action_list,name=combustion_timing,if=!variable.disable_combustio
 # Variable that estimates whether Shifting Power will be used before Combustion is ready.
 actions+=/variable,name=shifting_power_before_combustion,value=variable.time_to_combustion-cooldown.shifting_power.remains>action.shifting_power.full_reduction&(cooldown.rune_of_power.remains-cooldown.shifting_power.remains>5|!talent.rune_of_power)
 actions+=/shifting_power,if=buff.combustion.down&action.fire_blast.charges<=1&!(buff.infernal_cascade.up&buff.hot_streak.react)&variable.shifting_power_before_combustion
+# Save Radiant Spark for Combustion, but otherwise use it on cooldown.
 actions+=/radiant_spark,if=buff.combustion.down&(variable.time_to_combustion>cooldown-5)
+# Deathborne should always be used with Combustion. With Death's Fathom, it should be used early so that Deathborne will have more stacks during Combustion.
 actions+=/deathborne,if=buff.combustion.down&buff.rune_of_power.down&variable.time_to_combustion<variable.combustion_precast_time+execute_time+(buff.deathborne.duration-buff.combustion.duration)*runeforge.deaths_fathom
+# Use Mirrors of Torment with Combustion.
 actions+=/mirrors_of_torment,if=variable.time_to_combustion<variable.combustion_precast_time+execute_time&buff.combustion.down
+# Also use Mirrors of Torment in between Combustions as long as Combustion will not have to be delayed much for it.
+actions+=/mirrors_of_torment,if=variable.time_to_combustion>cooldown-30*runeforge.sinful_delight
 # For Venthyr, use a Fire Blast charge during Mirrors of Torment cast to avoid capping charges.
 actions+=/fire_blast,use_while_casting=1,if=action.mirrors_of_torment.executing&full_recharge_time-action.mirrors_of_torment.execute_remains<4&!hot_streak_spells_in_flight&!buff.hot_streak.react
 actions+=/use_item,effect_name=gladiators_badge,if=variable.time_to_combustion>cooldown-5
@@ -205,7 +210,7 @@ actions.combustion_timing+=/variable,use_off_gcd=1,use_while_casting=1,name=time
 actions.combustion_timing+=/variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,op=max,value=firestarter.remains,if=talent.firestarter&!variable.firestarter_combustion
 # Delay Combustion for Radiant Spark if it will come off cooldown soon.
 actions.combustion_timing+=/variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,op=max,value=cooldown.radiant_spark.remains,if=covenant.kyrian&cooldown.radiant_spark.remains-10<variable.time_to_combustion
-# Delay Combustion for Mirrors of Torment
+# Delay Combustion for Mirrors of Torment.
 actions.combustion_timing+=/variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,op=max,value=cooldown.mirrors_of_torment.remains,if=covenant.venthyr&cooldown.mirrors_of_torment.remains-25<variable.time_to_combustion
 # Delay Combustion for Deathborne.
 actions.combustion_timing+=/variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,op=max,value=cooldown.deathborne.remains+(buff.deathborne.duration-buff.combustion.duration)*runeforge.deaths_fathom,if=covenant.necrolord&cooldown.deathborne.remains-10<variable.time_to_combustion
@@ -243,7 +248,7 @@ actions.rop_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=!variable.fi
 actions.rop_phase+=/call_action_list,name=active_talents
 actions.rop_phase+=/pyroblast,if=buff.pyroclasm.react&cast_time<buff.pyroclasm.remains&cast_time<buff.rune_of_power.remains&(!runeforge.sun_kings_blessing|buff.pyroclasm.remains<action.fireball.cast_time+cast_time*buff.pyroclasm.react)
 actions.rop_phase+=/pyroblast,if=prev_gcd.1.scorch&buff.heating_up.react&searing_touch.active&active_enemies<variable.hot_streak_flamestrike
-actions.rop_phase+=/phoenix_flames,if=!variable.phoenix_pooling&buff.heating_up.react&!buff.hot_streak.react&(active_dot.ignite<2|active_enemies>=variable.hard_cast_flamestrike|active_enemies>=variable.hot_streak_flamestrike)
+actions.rop_phase+=/phoenix_flames,if=!variable.phoenix_pooling&(active_dot.ignite<2|active_enemies>=variable.hard_cast_flamestrike|active_enemies>=variable.hot_streak_flamestrike)
 actions.rop_phase+=/scorch,if=searing_touch.active
 actions.rop_phase+=/dragons_breath,if=active_enemies>2
 actions.rop_phase+=/arcane_explosion,if=active_enemies>=variable.arcane_explosion&mana.pct>=variable.arcane_explosion_mana
