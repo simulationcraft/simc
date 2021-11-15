@@ -54,7 +54,7 @@ struct class_scoped_callback_t : public scoped_callback_t
   {
   }
 
-  class_scoped_callback_t( const std::vector<player_e>& c ) : scoped_callback_t( PRIORITY_CLASS ), class_( c )
+  class_scoped_callback_t( std::vector<player_e> c ) : scoped_callback_t( PRIORITY_CLASS ), class_( std::move( c ) )
   {
   }
 
@@ -62,7 +62,8 @@ struct class_scoped_callback_t : public scoped_callback_t
   {
   }
 
-  class_scoped_callback_t( const std::vector<specialization_e>& s ) : scoped_callback_t( PRIORITY_SPEC ), spec_( s )
+  class_scoped_callback_t( std::vector<specialization_e> s )
+    : scoped_callback_t( PRIORITY_SPEC ), spec_( std::move( s ) )
   {
   }
 
@@ -83,7 +84,7 @@ private:
   T_BUFF* __dummy;
 
 public:
-  typedef class_buff_cb_t<T, T_BUFF> super;
+  using super = class_buff_cb_t<T, T_BUFF>;
 
   // The buff name. Optional if create_buff and create_fallback are both overridden. If fallback
   // behavior is required and the method is not overridden, must be provided.
@@ -176,7 +177,7 @@ public:
 template <typename T_ACTOR>
 struct scoped_actor_callback_t : public class_scoped_callback_t
 {
-  typedef scoped_actor_callback_t<T_ACTOR> super;
+  using super = scoped_actor_callback_t<T_ACTOR>;
 
   scoped_actor_callback_t( player_e c ) : class_scoped_callback_t( c )
   {
@@ -199,7 +200,7 @@ struct scoped_actor_callback_t : public class_scoped_callback_t
 template <typename T_ACTION = action_t>
 struct scoped_action_callback_t : public class_scoped_callback_t
 {
-  typedef scoped_action_callback_t<T_ACTION> super;
+  using super = scoped_action_callback_t<T_ACTION>;
 
   const std::string name;
   const int spell_id;
@@ -251,7 +252,7 @@ struct scoped_action_callback_t : public class_scoped_callback_t
 template <typename T_BUFF = buff_t>
 struct scoped_buff_callback_t : public class_scoped_callback_t
 {
-  typedef scoped_buff_callback_t<T_BUFF> super;
+  using super = scoped_buff_callback_t<T_BUFF>;
 
   const std::string name;
   const int spell_id;

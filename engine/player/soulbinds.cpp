@@ -19,9 +19,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace covenant
-{
-namespace soulbinds
+namespace covenant::soulbinds
 {
 namespace
 {
@@ -2758,5 +2756,4 @@ void register_target_data_initializers( sim_t* sim )
   } );
 }
 
-}  // namespace soulbinds
 }  // namespace covenant

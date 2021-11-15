@@ -36,9 +36,7 @@ std::vector<report_version_settings_t> get_report_settings()
 }
 }  // namespace
 
-namespace report
-{
-namespace json
+namespace report::json
 {
 report_configuration_t::report_configuration_t( std::string version, std::string destination )
   : _version( std::move( version ) ),
@@ -108,8 +106,7 @@ report_configuration_t create_report_entry( sim_t& sim, std::string version, std
                selected_entry.version, version, available_non_deprecated_version_string );
   }
 
-  return report_configuration_t( selected_entry.version, std::move(destination) );
+  return { selected_entry.version, std::move(destination) };
 }
 
-}  // namespace json
 }  // namespace report

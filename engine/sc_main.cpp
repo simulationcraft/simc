@@ -26,6 +26,7 @@
 
 #ifdef SC_SIGACTION
 #include <csignal>
+#include <utility>
 #endif
 
 namespace { // anonymous namespace ==========================================
@@ -205,8 +206,8 @@ std::string get_cache_directory()
 
 // RAII-wrapper for http cache load / save
 struct cache_initializer_t {
-  cache_initializer_t( const std::string& fn ) :
-    _file_name( fn )
+  cache_initializer_t( std::string  fn ) :
+    _file_name(std::move( fn ))
   { http::cache_load( _file_name ); }
   ~cache_initializer_t()
   { http::cache_save( _file_name ); }

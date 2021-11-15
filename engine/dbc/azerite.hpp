@@ -6,6 +6,7 @@
 #define AZERITE_HPP
 
 #include "util/span.hpp"
+#include "util/string_view.hpp"
 #include "client_data.hpp"
 
 struct azerite_power_entry_t

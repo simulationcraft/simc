@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 #include <stack>
 
@@ -85,8 +86,10 @@ struct xml_parm_t
 {
   std::string name_str;
   std::string value_str;
-  xml_parm_t( const std::string& n, const std::string& v ) : name_str( n ), value_str( v ) {}
-  const std::string& name() { return name_str; }
+  xml_parm_t( std::string n, std::string v ) : name_str( std::move( n ) ), value_str( std::move( v ) )
+  {
+  }
+  const std::string& name() const { return name_str; }
 };
 
 struct xml_node_t
@@ -94,8 +97,8 @@ struct xml_node_t
   std::string name_str;
   std::vector<std::unique_ptr<xml_node_t> > children;
   std::vector<xml_parm_t> parameters;
-  xml_node_t() {}
-  xml_node_t( const std::string& n ) : name_str( n ) {}
+  xml_node_t() = default;
+  xml_node_t( std::string  n ) : name_str(std::move( n )) {}
   const std::string& name() { return name_str; }
   xml_node_t* get_child( const std::string& name );
   xml_node_t* get_node ( const std::string& path );

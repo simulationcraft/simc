@@ -13,11 +13,11 @@
 
 #include <limits>
 
-action_variable_t::action_variable_t( const std::string& name, double default_value )
+action_variable_t::action_variable_t( std::string name, double default_value )
   : current_value_( default_value ),
     default_value_( default_value ),
     constant_value_( std::numeric_limits<double>::lowest() ),
-    name_( name )
+    name_( std::move(name) )
 {
 }
 

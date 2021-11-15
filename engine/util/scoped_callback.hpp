@@ -43,8 +43,7 @@ struct scoped_callback_t
   scoped_callback_t( enum priority p ) : priority( p )
   { }
 
-  virtual ~scoped_callback_t()
-  { }
+  virtual ~scoped_callback_t() = default;
 
   // Validate special effect against conditions. Return value of false indicates that the
   // initializer should not be invoked.

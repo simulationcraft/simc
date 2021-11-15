@@ -24,6 +24,7 @@
 #include <QDateTime>
 #include <QStandardPaths>
 #include <memory>
+#include <utility>
 
 namespace
 {  // UNNAMED NAMESPACE
@@ -32,7 +33,7 @@ struct HtmlOutputFunctor
 {
   QString fname;
 
-  HtmlOutputFunctor( const QString& fn ) : fname( fn )
+  HtmlOutputFunctor( QString fn ) : fname( std::move( fn ) )
   {
   }
 

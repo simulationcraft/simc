@@ -1930,7 +1930,7 @@ public:
 
     if ( is_auto_attack && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
     {
-      da_multiplier_buffeffects.push_back( buff_effect_t( buff, val ) );
+      da_multiplier_buffeffects.emplace_back( buff, val  );
       return;
     }
 
@@ -1945,27 +1945,27 @@ public:
       switch ( eff.misc_value1() )
       {
         case P_GENERIC:
-          da_multiplier_buffeffects.push_back( buff_effect_t( buff, val, use_stacks, mastery ) );
+          da_multiplier_buffeffects.emplace_back( buff, val, use_stacks, mastery  );
           p()->sim->print_debug( "buff-effects: {} ({}) direct damage modified by {}%{} with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, mastery ? "+mastery" : "", buff->name(), buff->data().id() );
           break;
         case P_TICK_DAMAGE:
-          ta_multiplier_buffeffects.push_back( buff_effect_t( buff, val, use_stacks, mastery ) );
+          ta_multiplier_buffeffects.emplace_back( buff, val, use_stacks, mastery  );
           p()->sim->print_debug( "buff-effects: {} ({}) tick damage modified by {}%{} with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, mastery ? "+mastery" : "", buff->name(), buff->data().id() );
           break;
         case P_CAST_TIME:
-          execute_time_buffeffects.push_back( buff_effect_t( buff, val, use_stacks ) );
+          execute_time_buffeffects.emplace_back( buff, val, use_stacks  );
           p()->sim->print_debug( "buff-effects: {} ({}) cast time modified by {}% with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, buff->name(), buff->data().id() );
           break;
         case P_COOLDOWN:
-          recharge_multiplier_buffeffects.push_back( buff_effect_t( buff, val, use_stacks ) );
+          recharge_multiplier_buffeffects.emplace_back( buff, val, use_stacks  );
           p()->sim->print_debug( "buff-effects: {} ({}) cooldown modified by {}% with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, buff->name(), buff->data().id() );
           break;
         case P_RESOURCE_COST:
-          cost_buffeffects.push_back( buff_effect_t( buff, val, use_stacks ) );
+          cost_buffeffects.emplace_back( buff, val, use_stacks  );
           p()->sim->print_debug( "buff-effects: {} ({}) cost modified by {}% with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, buff->name(), buff->data().id() );
           break;
@@ -1975,7 +1975,7 @@ public:
     }
     else if ( eff.subtype() == A_ADD_FLAT_MODIFIER && eff.misc_value1() == P_CRIT )
     {
-      crit_chance_buffeffects.push_back( buff_effect_t( buff, val, use_stacks ) );
+      crit_chance_buffeffects.emplace_back( buff, val, use_stacks  );
           p()->sim->print_debug( "buff-effects: {} ({}) crit chance modified by {}% with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, buff->name(), buff->data().id() );
     }
@@ -2140,7 +2140,7 @@ public:
 
       p()->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}% on targets with dot {} ({})", ab::name(),
                              ab::id, val * 100.0, s_data->name_cstr(), s_data->id() );
-      target_multiplier_dotdebuffs.push_back( dot_debuff_t( func, val, use_stacks ) );
+      target_multiplier_dotdebuffs.emplace_back( func, val, use_stacks  );
     }
   }
 
@@ -2699,15 +2699,15 @@ struct moonfire_t : public druid_spell_t
         std::vector<player_t*> afflicted;
         std::vector<player_t*> unafflicted;
 
-        for ( size_t i = 0; i < full_list.size(); i++ )
+        for (auto* i : full_list)
         {
-          if ( full_list[ i ] == target || full_list[i]->debuffs.invulnerable->up() )
+          if ( i == target || i->debuffs.invulnerable->up() )
             continue;
 
-          if ( td( full_list[ i ] )->dots.moonfire->is_ticking() )
-            afflicted.push_back( full_list[ i ] );
+          if ( td( i )->dots.moonfire->is_ticking() )
+            afflicted.push_back( i );
           else
-            unafflicted.push_back( full_list[ i ] );
+            unafflicted.push_back( i );
         }
 
         // Fill list with random unafflicted targets.
@@ -2985,14 +2985,14 @@ public:
     if ( data().affected_by( p->mastery.razor_claws->effectN( 1 ) ) )
     {
       auto val = p->mastery.razor_claws->effectN( 1 ).percent();
-      da_multiplier_buffeffects.push_back( buff_effect_t( nullptr, val, false, true ) );
+      da_multiplier_buffeffects.emplace_back( nullptr, val, false, true  );
       p->sim->print_debug( "buff-effects: {} ({}) direct damage modified by {}%+mastery", name(), id, val * 100.0 );
     }
 
     if ( data().affected_by( p->mastery.razor_claws->effectN( 2 ) ) )
     {
       auto val = p->mastery.razor_claws->effectN( 2 ).percent();
-      ta_multiplier_buffeffects.push_back( buff_effect_t( nullptr, val , false, true ) );
+      ta_multiplier_buffeffects.emplace_back( nullptr, val , false, true  );
       p->sim->print_debug( "buff-effects: {} ({}) tick damage modified by {}%+mastery", name(), id, val * 100.0 );
     }
   }
@@ -6260,11 +6260,9 @@ struct starfall_t : public druid_spell_t
 
       std::vector<player_t*>& tl = target_list();
 
-      for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
+      for ( auto* t : tl )
       {
-        player_t* t = tl[ i ];
-
-        td( t )->dots.moonfire->adjust_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
+         td( t )->dots.moonfire->adjust_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
         td( t )->dots.sunfire->adjust_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
       }
     }
@@ -10224,21 +10222,20 @@ double druid_t::calculate_expected_max_health() const
   double slot_weights = 0;
   double prop_values  = 0;
 
-  for ( size_t i = 0; i < items.size(); i++ )
+  for ( const auto& item : items )
   {
-    const item_t* item = &items[ i ];
-    if ( !item || item->slot == SLOT_SHIRT || item->slot == SLOT_RANGED || item->slot == SLOT_TABARD ||
-         item->item_level() <= 0 )
+    if ( item.slot == SLOT_SHIRT || item.slot == SLOT_RANGED || item.slot == SLOT_TABARD ||
+         item.item_level() <= 0 )
       continue;
 
-    const random_prop_data_t item_data = dbc->random_property( item->item_level() );
-    int index                          = item_database::random_suffix_type( item->parsed.data );
+    const random_prop_data_t item_data = dbc->random_property( item.item_level() );
+    int index                          = item_database::random_suffix_type( item.parsed.data );
     if ( item_data.p_epic[ 0 ] == 0 )
       continue;
 
     slot_weights += item_data.p_epic[ index ] / item_data.p_epic[ 0 ];
 
-    if ( !item->active() )
+    if ( !item.active() )
       continue;
 
     prop_values += item_data.p_epic[ index ];

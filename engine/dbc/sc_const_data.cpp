@@ -33,9 +33,9 @@ template <typename V>
 class spell_mapping_reference_t
 {
   // Map struct T (based on id) to a set of spells
-  std::unordered_map<V, std::vector<const spell_data_t*>> m_db[2];
+  std::array<std::unordered_map<V, std::vector<const spell_data_t*>>, 2> m_db;
   // Map struct T (based on id) to a set of effects affecting the group T
-  std::unordered_map<V, std::vector<const spelleffect_data_t*>> m_effects_db[2];
+  std::array<std::unordered_map<V, std::vector<const spelleffect_data_t*>>, 2> m_effects_db;
 
 public:
   void add_spell( V value, const spell_data_t* data, bool ptr = false )
@@ -73,7 +73,7 @@ public:
   }
 };
 
-std::vector< std::vector< const spell_data_t* > > class_family_index[2];
+std::array<std::vector< std::vector< const spell_data_t* > >, 2> class_family_index;
 
 // Label -> spell mappings
 spell_mapping_reference_t<short> spell_label_index;
@@ -760,9 +760,9 @@ namespace {
 constexpr int max_spec_index()
 {
   int max = -1;
-  for ( size_t i = 0; i < range::size( __class_spec_id ); i++ )
+  for ( size_t i = 0; i < std::size( __class_spec_id ); i++ ) // NOLINT(modernize-loop-convert)
   {
-    for ( size_t index = 0; index < range::size( __class_spec_id[ i ] ); index++ )
+    for ( size_t index = 0; index < std::size( __class_spec_id[ i ] ); index++ )
     {
       specialization_e spec = __class_spec_id[ i ][ index ];
       max = static_cast<int>( spec ) > max ? static_cast<int>( spec ) : max;
@@ -776,9 +776,10 @@ struct spec_index_map_t {
     for ( int8_t& index : data_ )
       index = -1;
 
-    for ( size_t i = 0; i < range::size( __class_spec_id ); i++ )
+    // Keep index based lookup since Visual Studio causes problems otherwise with constexpr evaluation
+    for ( size_t i = 0; i < std::size( __class_spec_id ); i++ )  // NOLINT(modernize-loop-convert)
     {
-      for ( size_t index = 0; index < range::size( __class_spec_id[ i ] ); index++ )
+      for ( size_t index = 0; index < std::size( __class_spec_id[ i ] ); index++ )
       {
         specialization_e spec = __class_spec_id[ i ][ index ];
         if ( spec != SPEC_NONE )
@@ -789,11 +790,11 @@ struct spec_index_map_t {
 
   constexpr int8_t operator[]( specialization_e spec ) const
   {
-    assert( spec < range::size( data_ ) );
+    assert( spec < std::size( data_ ) );
     return data_[ spec ];
   }
 
-  int8_t data_[max_spec_index() + 1];
+  std::array<int8_t, max_spec_index() + 1> data_;
 };
 
 } // anon namespace
@@ -939,17 +940,17 @@ double dbc::item_level_squish( unsigned source_ilevel, bool ptr )
 #if SC_USE_PTR == 1
   if ( ptr )
   {
-    assert( range::size( _ptr__item_level_squish ) >= source_ilevel );
+    assert( std::size( _ptr__item_level_squish ) >= source_ilevel );
     return _ptr__item_level_squish[ source_ilevel - 1 ];
   }
   else
   {
-    assert( range::size( __item_level_squish ) >= source_ilevel );
+    assert( std::size( __item_level_squish ) >= source_ilevel );
     return __item_level_squish[ source_ilevel - 1 ];
   }
 #else
   ( void ) ptr;
-  assert( range::size( __item_level_squish ) >= source_ilevel );
+  assert( std::size( __item_level_squish ) >= source_ilevel );
   return __item_level_squish[ source_ilevel - 1 ];
 #endif
 }

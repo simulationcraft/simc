@@ -7,7 +7,7 @@
 #define SC_IMPORTWIDGET_HPP
 
 // Workaround for "combaseapi.h(229): error C2187: syntax error: 'identifier' was unexpected here" when using
-// /permissive- Qt includes the 8.1 SDK which is unforunately not /permissive- compliant
+// /permissive- Qt includes the 8.1 SDK which is unfortunately not /permissive- compliant
 #if defined( _WIN32 ) && !defined( _WIN32_WINNT_WINTHRESHOLD )
 struct IUnknown;
 #endif
@@ -24,7 +24,7 @@ class BattleNetImportWidget : public QWidget
 {
   Q_OBJECT
 
-  typedef QMap<QString, QStandardItemModel*> RealmDataModel;
+  using RealmDataModel = QMap<QString, QStandardItemModel *>;
 
   // Simple horizontal layout for the widget
   QHBoxLayout* m_layout;

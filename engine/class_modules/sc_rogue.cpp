@@ -237,7 +237,7 @@ public:
   bool restealth_allowed;
 
   // Experimental weapon swapping
-  weapon_info_t weapon_data[ 2 ];
+  std::array<weapon_info_t, 2> weapon_data;
 
   // Buffs
   struct buffs_t
@@ -4671,7 +4671,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
     return td( t )->dots.serrated_bone_spike;
   }
 
-  virtual double generate_cp() const override
+  double generate_cp() const override
   {
     double cp = rogue_attack_t::generate_cp();
 
@@ -5007,9 +5007,9 @@ void weapon_info_t::initialize()
     {
       special_effect_t* effect = item_data[ WEAPON_PRIMARY ] -> parsed.special_effects[ i ];
 
-      for ( size_t j = 0; j < rogue -> callbacks.all_callbacks.size(); ++j )
+      for ( auto* callback : rogue->callbacks.all_callbacks )
       {
-        dbc_proc_callback_t* cb = debug_cast<dbc_proc_callback_t*>( rogue -> callbacks.all_callbacks[ j ] );
+        dbc_proc_callback_t* cb = debug_cast<dbc_proc_callback_t*>( callback );
 
         if ( &( cb -> effect ) == effect )
         {
@@ -5033,9 +5033,9 @@ void weapon_info_t::initialize()
     {
       special_effect_t* effect = item_data[ WEAPON_SECONDARY ] -> parsed.special_effects[ i ];
 
-      for ( size_t j = 0; j < rogue -> callbacks.all_callbacks.size(); ++j )
+      for (auto & callback : rogue -> callbacks.all_callbacks)
       {
-        dbc_proc_callback_t* cb = debug_cast<dbc_proc_callback_t*>( rogue -> callbacks.all_callbacks[ j ] );
+        dbc_proc_callback_t* cb = debug_cast<dbc_proc_callback_t*>( callback );
 
         if ( &( cb -> effect ) == effect )
         {
@@ -6392,7 +6392,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   // Venomous Wounds Energy Refund
   if ( source->specialization() == ROGUE_ASSASSINATION && source->spec.venomous_wounds->ok() )
   {
-    target->register_on_demise_callback( source, std::bind( &rogue_t::trigger_venomous_wounds_death, source, std::placeholders::_1 ) );
+    target->register_on_demise_callback( source, [source](player_t* target) { source->trigger_venomous_wounds_death( target ); } );
   }
 
   // Sepsis Cooldown Reduction
@@ -7363,13 +7363,13 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     if ( type != RTB_NONE && !list_values.empty() )
     {
       return make_fn_expr( split[ 0 ], [ type, rtb_buffs, list_values ]() {
-        for ( size_t i = 0, end = list_values.size(); i < end; ++i )
+        for ( unsigned int list_value : list_values )
         {
-          if ( type == RTB_ANY && rtb_buffs[ list_values[ i ] ]->check() )
+          if ( type == RTB_ANY && rtb_buffs[ list_value ]->check() )
           {
             return 1;
           }
-          else if ( type == RTB_ALL && !rtb_buffs[ list_values[ i ] ]->check() )
+          else if ( type == RTB_ALL && !rtb_buffs[ list_value ]->check() )
           {
             return 0;
           }
@@ -7455,7 +7455,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         range::sort( attacks );
 
         // Add player reaction time to the predicted value as players still need to react to the swing and proc
-        timespan_t total_reaction_time = ( this ? ( this->total_reaction_time() ) : sim->reaction_time );
+        timespan_t total_reaction_time = this->total_reaction_time();
         return_value = attacks.at( remaining_aa - 1 ) + total_reaction_time;
       }
       else if ( main_hand_attack == nullptr )

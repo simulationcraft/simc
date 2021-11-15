@@ -667,7 +667,7 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
   {
     snapshot_stats_t::execute();
 
-    monk_t* monk = debug_cast<monk_t*>( player );
+    auto* monk = debug_cast<monk_t*>( player );
 
     monk->sample_datas.buffed_stagger_base             = monk->stagger_base_value();
     monk->sample_datas.buffed_stagger_pct_player_level = monk->stagger_pct( player->level() );
@@ -950,10 +950,9 @@ struct windwalking_aura_t : public monk_spell_t
   {
     tl.clear();
 
-    for ( size_t i = 0, actors = sim->player_non_sleeping_list.size(); i < actors; i++ )
+    for (auto t : sim->player_non_sleeping_list)
     {
-      player_t* t = sim->player_non_sleeping_list[ i ];
-      tl.push_back( t );
+       tl.push_back( t );
     }
 
     return tl.size();
@@ -2108,7 +2107,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     }
   };
 
-  whirling_dragon_punch_tick_t* ticks[3];
+  std::array<whirling_dragon_punch_tick_t*, 3> ticks;
 
   struct whirling_dragon_punch_tick_event_t : public event_t
   {
@@ -2141,7 +2140,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
 
     // 3 server-side hardcoded ticks
-    for ( size_t i = 0; i < 3; ++i )
+    for ( size_t i = 0; i < ticks.size(); ++i )
     {
       auto delay = base_tick_time * i;
       ticks[i] = 
@@ -4200,31 +4199,31 @@ struct fallen_order_t : public monk_spell_t
         case MONK_WINDWALKER:
         {
           if ( i % 2 )
-            fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, primary_duration ) );
+            fallen_monks.emplace_back( MONK_WINDWALKER, primary_duration  );
           else if ( i % 3 )
-              fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, summon_duration ) );
+              fallen_monks.emplace_back( MONK_BREWMASTER, summon_duration  );
           else
-              fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, summon_duration ) );
+              fallen_monks.emplace_back( MONK_MISTWEAVER, summon_duration  );
           break;
         }
         case MONK_BREWMASTER:
         {
           if ( i % 2 )
-            fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, primary_duration ) );
+            fallen_monks.emplace_back( MONK_BREWMASTER, primary_duration  );
           else if ( i % 3 )
-            fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, summon_duration ) );
+            fallen_monks.emplace_back( MONK_WINDWALKER, summon_duration  );
           else
-            fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, summon_duration ) );
+            fallen_monks.emplace_back( MONK_MISTWEAVER, summon_duration  );
           break;
         }
         case MONK_MISTWEAVER:
         {
           if ( i % 2 )
-            fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, primary_duration ) );
+            fallen_monks.emplace_back( MONK_MISTWEAVER, primary_duration  );
           else if ( i % 3 )
-            fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, summon_duration ) );
+            fallen_monks.emplace_back( MONK_WINDWALKER, summon_duration  );
           else
-            fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, summon_duration ) );
+            fallen_monks.emplace_back( MONK_BREWMASTER, summon_duration  );
           break;
         }
         default:
@@ -5349,7 +5348,7 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
 
   static void rjw_callback( buff_t* b, int, timespan_t )
   {
-    monk_t* p = debug_cast<monk_t*>( b->player );
+    auto* p = debug_cast<monk_t*>( b->player );
 
     p->active_actions.rushing_jade_wind->execute();
   }
@@ -5407,10 +5406,9 @@ struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
 
   void decrement( int stacks, double value ) override
   {
-    monk_t* p = debug_cast<monk_t*>( player );
     if ( stacks > 0 )
     {
-      p->active_actions.gift_of_the_ox_trigger->execute();
+      p().active_actions.gift_of_the_ox_trigger->execute();
 
       buff_t::decrement( stacks, value );
     }
@@ -5418,9 +5416,7 @@ struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    monk_t* p = debug_cast<monk_t*>( player );
-
-    p->active_actions.gift_of_the_ox_expire->execute();
+    p().active_actions.gift_of_the_ox_expire->execute();
 
     buff_t::expire_override( expiration_stacks, remaining_duration );
   }
@@ -5433,7 +5429,7 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<buff_t>
 {
   static void invoke_xuen_callback( buff_t* b, int, timespan_t )
   {
-    monk_t* p                                   = debug_cast<monk_t*>( b->player );
+    auto* p                                   = debug_cast<monk_t*>( b->player );
     double empowered_tiger_lightning_multiplier = p->spec.invoke_xuen_2->effectN( 2 ).percent();
 
     for ( auto target : p->sim->target_non_sleeping_list )
@@ -5476,7 +5472,7 @@ struct call_to_arms_xuen_buff_t : public monk_buff_t<buff_t>
 {
   static void call_to_arm_callback( buff_t* b, int, timespan_t )
   {
-    monk_t* p                                   = debug_cast<monk_t*>( b->player );
+    auto* p                                   = debug_cast<monk_t*>( b->player );
     double empowered_tiger_lightning_multiplier = p->spec.invoke_xuen_2->effectN( 2 ).percent();
 
     for ( auto target : p->sim->target_non_sleeping_list )
@@ -5615,12 +5611,11 @@ struct touch_of_death_ww_buff_t : public monk_buff_t<buff_t>
 
   void decrement( int stacks, double value ) override
   {
-    monk_t* p = debug_cast<monk_t*>( player );
-    if ( stacks > 0 && p->resources.current[ RESOURCE_CHI ] < p->resources.max[ RESOURCE_CHI ] )
+    if ( stacks > 0 && player->resources.current[ RESOURCE_CHI ] < player->resources.max[ RESOURCE_CHI ] )
     {
       buff_t::decrement( stacks, value );
 
-      p->resource_gain( RESOURCE_CHI, 1, p->gain.touch_of_death_ww );
+      player->resource_gain( RESOURCE_CHI, 1, p().gain.touch_of_death_ww );
     }
   }
 };
@@ -5998,7 +5993,7 @@ void monk_t::trigger_celestial_fortune( action_state_t* s )
   // flush out percent heals
   if ( s->action->type == ACTION_HEAL )
   {
-    heal_t* heal_cast = debug_cast<heal_t*>( s->action );
+    auto* heal_cast = debug_cast<heal_t*>( s->action );
     if ( ( s->result_type == result_amount_type::HEAL_DIRECT && heal_cast->base_pct_heal > 0 ) ||
          ( s->result_type == result_amount_type::HEAL_OVER_TIME && heal_cast->tick_pct_heal > 0 ) )
       return;
@@ -7597,7 +7592,7 @@ void monk_t::copy_from( player_t* source )
 {
   base_t::copy_from( source );
 
-  monk_t* source_p = debug_cast<monk_t*>( source );
+  auto* source_p = debug_cast<monk_t*>( source );
 
   user_options = source_p->user_options;
 }

@@ -23,9 +23,7 @@
 
 #include "report/decorators.hpp"
 
-namespace unique_gear
-{
-namespace shadowlands
+namespace unique_gear::shadowlands
 {
 struct shadowlands_aoe_proc_t : public generic_aoe_proc_t
 {
@@ -345,7 +343,7 @@ struct SL_darkmoon_deck_t : public darkmoon_deck_t
   std::vector<const spell_data_t*> cards;
   const spell_data_t* top;
 
-  SL_darkmoon_deck_t( const special_effect_t& e, const std::vector<unsigned>& c )
+  SL_darkmoon_deck_t( const special_effect_t& e, const std::vector<unsigned>&& c )
     : darkmoon_deck_t( e ), card_ids( c ), top( spell_data_t::nil() )
   {}
 
@@ -2655,10 +2653,9 @@ void relic_of_the_frozen_wastes_use( special_effect_t& effect )
     {
       tl.clear();
 
-      for ( size_t i = 0, actors = sim->target_non_sleeping_list.size(); i < actors; i++ )
+      for ( auto* t : sim->target_non_sleeping_list )
       {
-        player_t* t = sim->target_non_sleeping_list[ i ];
-        if ( t->is_enemy() && player->get_target_data( t )->debuff.frozen_heart->up() )
+         if ( t->is_enemy() && player->get_target_data( t )->debuff.frozen_heart->up() )
           tl.push_back( t );
       }
 
@@ -2869,7 +2866,7 @@ void reactive_defense_matrix( special_effect_t& effect )
       : generic_proc_t( effect, "reactive_defense_matrix", effect.trigger() )
     {
       base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
-      may_crit                  = 0;
+      may_crit                  = false;
     }
 
     void execute() override
@@ -3325,7 +3322,7 @@ int rune_word_active( const player_t* player, const spell_data_t* driver, spell_
         continue;
 
       const item_enchantment_data_t& enchant_data = item.player->dbc->item_enchantment( gem_prop.enchant_id );
-      for ( size_t i = 0; i < range::size( enchant_data.ench_prop ); i++ )
+      for ( size_t i = 0; i < std::size( enchant_data.ench_prop ); i++ )
       {
         switch ( enchant_data.ench_type[ i ] )
         {
@@ -3401,7 +3398,7 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
         continue;
 
       const item_enchantment_data_t& enchant_data = item.player->dbc->item_enchantment( gem_prop.enchant_id );
-      for ( size_t i = 0; i < range::size( enchant_data.ench_prop ); i++ )
+      for ( size_t i = 0; i < std::size( enchant_data.ench_prop ); i++ )
       {
         switch ( enchant_data.ench_type[ i ] )
         {
@@ -4344,5 +4341,4 @@ void register_target_data_initializers( sim_t& sim )
   } );
 }
 
-}  // namespace shadowlands
 }  // namespace unique_gear

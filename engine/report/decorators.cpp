@@ -73,7 +73,7 @@ namespace {
   template <typename T>
   std::string decorate(const T& data)
   {
-    static_assert(std::is_base_of<decorator_data_t, T>::value, "");
+    static_assert(std::is_base_of<decorator_data_t, T>::value );
 
     if (!data.can_decorate())
     {
@@ -305,7 +305,7 @@ namespace {
         return util::encode_html(m_obj->source->name_str) + ":&#160;";
       }
 
-      return std::string();
+      return {};
     }
   };
 

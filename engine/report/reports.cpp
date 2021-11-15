@@ -163,17 +163,17 @@ void print_profiles(sim_t* sim)
 void print_spell_query(std::ostream& out, const sim_t& sim, const spell_data_expr_t& sq, unsigned level)
 {
   expr_data_e data_type = sq.data_type;
-  for (auto i = sq.result_spell_list.begin(); i != sq.result_spell_list.end(); ++i)
+  for ( unsigned int id : sq.result_spell_list )
   {
     switch (data_type)
     {
     case DATA_TALENT:
-      out << spell_info::talent_to_str(*sim.dbc, sim.dbc->talent(*i), level);
+      out << spell_info::talent_to_str(*sim.dbc, sim.dbc->talent(id), level);
       break;
     case DATA_EFFECT:
     {
       std::ostringstream sqs;
-      const spelleffect_data_t* base_effect = sim.dbc->effect(*i);
+      const spelleffect_data_t* base_effect = sim.dbc->effect(id);
       if ( const spell_data_t* spell = dbc::find_spell( &(sim), base_effect->spell() ) )
       {
         const auto spell_effects = spell->effects();
@@ -188,7 +188,7 @@ void print_spell_query(std::ostream& out, const sim_t& sim, const spell_data_exp
     break;
     default:
     {
-      const spell_data_t* spell = dbc::find_spell(&(sim), sim.dbc->spell(*i));
+      const spell_data_t* spell = dbc::find_spell(&(sim), sim.dbc->spell(id));
       out << spell_info::to_str(*sim.dbc, spell, level);
     }
     }
@@ -198,17 +198,17 @@ void print_spell_query(std::ostream& out, const sim_t& sim, const spell_data_exp
 void print_spell_query( xml_node_t* out, FILE* file, const sim_t& sim, const spell_data_expr_t& sq, unsigned level )
 {
   expr_data_e data_type = sq.data_type;
-  for (auto i = sq.result_spell_list.begin(); i != sq.result_spell_list.end(); ++i)
+  for ( unsigned int id : sq.result_spell_list )
   {
     switch (data_type)
     {
     case DATA_TALENT:
-      spell_info::talent_to_xml( *sim.dbc, sim.dbc->talent( *i ), out, level );
+      spell_info::talent_to_xml( *sim.dbc, sim.dbc->talent( id ), out, level );
       break;
     case DATA_EFFECT:
     {
       std::ostringstream sqs;
-      const spelleffect_data_t* dbc_effect = sim.dbc->effect(*i);
+      const spelleffect_data_t* dbc_effect = sim.dbc->effect(id);
       if ( const spell_data_t* spell = dbc::find_spell( &(sim), dbc_effect->spell() ) )
       {
         const auto spell_effects = spell->effects();
@@ -220,7 +220,7 @@ void print_spell_query( xml_node_t* out, FILE* file, const sim_t& sim, const spe
     break;
     default:
     {
-      const spell_data_t* spell = dbc::find_spell(&(sim), sim.dbc->spell(*i));
+      const spell_data_t* spell = dbc::find_spell(&(sim), sim.dbc->spell(id));
       spell_info::to_xml( *sim.dbc, spell, out, level );
     }
     }

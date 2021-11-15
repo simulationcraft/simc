@@ -1197,7 +1197,7 @@ std::string spell_flags( const spell_data_t* spell )
     s << "]";
   }
   else
-    return std::string();
+    return {};
 
   return s.str();
 }
@@ -1268,12 +1268,12 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
                                                int level )
 {
   std::streamsize ssize = s.precision( 7 );
-  char tmp_buffer[512];
-  char tmp_buffer2[64];
+  std::array<char, 512> tmp_buffer;
+  std::array<char, 64> tmp_buffer2;
 
-  snprintf( tmp_buffer2, sizeof( tmp_buffer2 ), "(id=%u)", e -> id() );
-  snprintf( tmp_buffer, sizeof( tmp_buffer ), "#%d %-*s: ", (int16_t)e -> index() + 1, 14, tmp_buffer2 );
-  s << tmp_buffer;
+  snprintf( tmp_buffer2.data(), tmp_buffer2.size(), "(id=%u)", e -> id() );
+  snprintf( tmp_buffer.data(), tmp_buffer.size(), "#%d %-*s: ", (int16_t)e -> index() + 1, 14, tmp_buffer2.data() );
+  s << tmp_buffer.data();
 
   s << map_string( _effect_type_strings, e -> raw_type() );
   // Put some nice handling on some effect types
@@ -1415,7 +1415,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   if ( e -> real_ppl() != 0 )
   {
-    snprintf( tmp_buffer, sizeof( tmp_buffer ), "%f", e -> real_ppl() );
+    snprintf( tmp_buffer.data(), tmp_buffer.size(), "%f", e -> real_ppl() );
     s << " | Points Per Level: " << e -> real_ppl();
   }
 
@@ -1426,20 +1426,20 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   if ( e -> sp_coeff() != 0 )
   {
-    snprintf( tmp_buffer, sizeof( tmp_buffer ), "%.5f", e -> sp_coeff() );
-    s << " | SP Coefficient: " << tmp_buffer;
+    snprintf( tmp_buffer.data(), tmp_buffer.size(), "%.5f", e -> sp_coeff() );
+    s << " | SP Coefficient: " << tmp_buffer.data();
   }
 
   if ( e -> ap_coeff() != 0 )
   {
-    snprintf( tmp_buffer, sizeof( tmp_buffer ), "%.5f", e -> ap_coeff() );
-    s << " | AP Coefficient: " << tmp_buffer;
+    snprintf( tmp_buffer.data(), tmp_buffer.size(), "%.5f", e -> ap_coeff() );
+    s << " | AP Coefficient: " << tmp_buffer.data();
   }
 
   if ( e -> pvp_coeff() != 0 )
   {
-    snprintf( tmp_buffer, sizeof( tmp_buffer ), "%.5f", e -> pvp_coeff() );
-    s << " | PvP Coefficient: " << tmp_buffer;
+    snprintf( tmp_buffer.data(), tmp_buffer.size(), "%.5f", e -> pvp_coeff() );
+    s << " | PvP Coefficient: " << tmp_buffer.data();
   }
 
   if ( e -> chain_target() != 0 )
@@ -1448,25 +1448,25 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   if ( e -> misc_value1() != 0 || e -> type() == E_ENERGIZE )
   {
     if ( e -> affected_schools() != 0U )
-      snprintf( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value1() );
+      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%#.x", e -> misc_value1() );
     else if ( e -> type() == E_ENERGIZE )
-      snprintf( tmp_buffer, sizeof( tmp_buffer ), "%s", util::resource_type_string( util::translate_power_type( static_cast<power_e>( e -> misc_value1() ) ) ) );
+      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%s", util::resource_type_string( util::translate_power_type( static_cast<power_e>( e -> misc_value1() ) ) ) );
     else
-      snprintf( tmp_buffer, sizeof( tmp_buffer ), "%d", e -> misc_value1() );
-    s << " | Misc Value: " << tmp_buffer;
+      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d", e -> misc_value1() );
+    s << " | Misc Value: " << tmp_buffer.data();
   }
 
   if ( e -> misc_value2() != 0 )
   {
     if ( e -> subtype() == A_ADD_PCT_LABEL_MODIFIER || e -> subtype() == A_ADD_FLAT_LABEL_MODIFIER )
     {
-      snprintf( tmp_buffer, sizeof( tmp_buffer ), "%d (Label)", e -> misc_value2() );
+      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d (Label)", e -> misc_value2() );
     }
     else
     {
-      snprintf( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value2() );
+      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%#.x", e -> misc_value2() );
     }
-    s << " | Misc Value 2: " << tmp_buffer;
+    s << " | Misc Value 2: " << tmp_buffer.data();
   }
 
   if ( e -> pp_combo_points() != 0 )
@@ -1671,7 +1671,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       }
     }
 
-    for ( unsigned int i = 1; i < range::size( _class_map ); i++ )
+    for ( unsigned int i = 1; i < std::size( _class_map ); i++ )
     {
       if ( ( spell -> class_mask() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
       {
@@ -2244,7 +2244,7 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const talent_data
   if ( talent -> mask_class() )
   {
     s << "Class        : ";
-    for ( unsigned int i = 1; i < range::size( _class_map ); i++ )
+    for ( unsigned int i = 1; i < std::size( _class_map ); i++ )
     {
       if ( ( talent -> mask_class() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
         s << _class_map[ i ].name << ", ";
@@ -2271,7 +2271,7 @@ std::string spell_info::set_bonus_to_str( const dbc_t&, const item_set_bonus_t* 
 
   s << "Name          : " << set_bonus -> set_name << std::endl;
 
-  player_e player_type = static_cast<player_e>( set_bonus -> class_id);
+  auto player_type = static_cast<player_e>( set_bonus -> class_id);
   s << "Class         : " << util::player_type_string( player_type ) << std::endl;
   s << "Tier          : " << set_bonus -> tier << std::endl;
   s << "Bonus Level   : " << set_bonus -> bonus << std::endl;
@@ -2496,7 +2496,7 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
       spec_list.clear();
     }
 
-    for ( unsigned int i = 1; i < range::size( _class_map ); i++ )
+    for ( unsigned int i = 1; i < std::size( _class_map ); i++ )
     {
       if ( ( spell -> class_mask() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
       {
@@ -2615,11 +2615,11 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
     node -> add_parm( "extra_coefficient", spell -> extra_coeff() );
 
   std::string attribs;
-  for ( unsigned i = 0; i < NUM_SPELL_FLAGS; i++ )
+  for ( unsigned int _attribute : spell->_attributes )
   {
     for ( unsigned flag = 0; flag < 32; flag++ )
     {
-      if ( spell -> _attributes[ i ] & ( 1 << flag ) )
+      if ( _attribute & ( 1 << flag ) )
         attribs += "1";
       else
         attribs += "0";
@@ -2659,7 +2659,7 @@ void spell_info::talent_to_xml( const dbc_t& /* dbc */, const talent_data_t* tal
 
   if ( talent -> mask_class() )
   {
-    for ( unsigned int i = 1; i < range::size( _class_map ); i++ )
+    for ( unsigned int i = 1; i < std::size( _class_map ); i++ )
     {
       if ( ( talent -> mask_class() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
         node -> add_child( "class" ) -> add_parm( ".",  _class_map[ i ].name );
@@ -2677,7 +2677,7 @@ void spell_info::set_bonus_to_xml( const dbc_t& /* dbc */, const item_set_bonus_
 {
   xml_node_t* node = parent -> add_child( "set_bonus" );
 
-  player_e player_type = static_cast<player_e>( set_bonus -> class_id);
+  auto player_type = static_cast<player_e>( set_bonus -> class_id);
   node -> add_parm( "name", set_bonus -> set_name );
   node -> add_parm( "class", util::player_type_string( player_type ) );
   node -> add_parm( "tier", set_bonus -> tier );

@@ -412,8 +412,8 @@ profilesets_t::~profilesets_t()
   range::for_each( m_current_work, []( std::unique_ptr<worker_t>& worker ) { worker -> thread().join(); } );
 }
 
-profile_set_t::profile_set_t( const std::string& name, sim_control_t* opts, bool has_output ) :
-  m_name( name ), m_options( opts ), m_has_output( has_output ), m_output_data( nullptr )
+profile_set_t::profile_set_t( std::string name, sim_control_t* opts, bool has_output ) :
+  m_name( std::move(name) ), m_options( opts ), m_has_output( has_output ), m_output_data( nullptr )
 {
 }
 
@@ -481,7 +481,7 @@ worker_t::worker_t( profilesets_t* master, sim_t* p, profile_set_t* ps ) :
   m_done( false ), m_parent( p ), m_master( master ), m_sim( nullptr ), m_profileset( ps ),
   m_thread( nullptr )
 {
-  m_thread = new std::thread( std::bind( &worker_t::execute, this ) );
+  m_thread = new std::thread( [this] { execute(); } );
 }
 
 worker_t::~worker_t()
@@ -825,7 +825,7 @@ std::string profilesets_t::current_profileset_name()
   if ( is_done() || m_work_index == 0 )
   {
     m_control_lock.unlock();
-    return std::string();
+    return {};
   }
 
   std::string profileset_name = m_profilesets[ m_work_index - 1 ] -> name();
@@ -1378,10 +1378,9 @@ void fetch_output_data( const profile_output_data_t& output_data, js::JsonOutput
   {
     const auto& talents = output_data.talents();
     auto ovr_talents = ovr[ "talents" ].make_array();
-    for ( size_t i = 0; i < talents.size(); i++ )
+    for (auto talent : talents)
     {
-      const auto& talent = talents[ i ];
-      auto ovr_talent = ovr_talents.add();
+       auto ovr_talent = ovr_talents.add();
       ovr_talent[ "tier"     ] = talent -> row();
       ovr_talent[ "id"       ] = talent -> id();
       ovr_talent[ "spell_id" ] = talent -> spell_id();
@@ -1391,10 +1390,9 @@ void fetch_output_data( const profile_output_data_t& output_data, js::JsonOutput
   if ( !output_data.gear().empty() ) {
     const auto& gear = output_data.gear();
     auto ovr_gear = ovr[ "gear" ];
-    for ( size_t i = 0; i < gear.size(); i++ )
+    for ( const auto& item : gear )
     {
-      const auto& item = gear[ i ];
-      auto ovr_slot = ovr_gear[ item.slot_name() ];
+       auto ovr_slot = ovr_gear[ item.slot_name() ];
       ovr_slot[ "item_id"    ] = item.item_id();
       ovr_slot[ "item_level" ] = item.item_level();
     }

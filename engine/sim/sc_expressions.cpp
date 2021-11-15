@@ -224,9 +224,9 @@ std::unique_ptr<expr_t> select_unary( util::string_view name, token_e op, std::u
     case TOK_PLUS:
       return input;  // No need to modify input
     case TOK_MINUS:
-      return std::make_unique<expr_unary_t<std::negate<double>>>( name, op, std::move(input) );
+      return std::make_unique<expr_unary_t<std::negate<>>>( name, op, std::move(input) );
     case TOK_NOT:
-      return std::make_unique<expr_unary_t<std::logical_not<double>>>( name, op, std::move(input) );
+      return std::make_unique<expr_unary_t<std::logical_not<>>>( name, op, std::move(input) );
     case TOK_ABS:
       return std::make_unique<expr_unary_t<unary::abs>>( name, op, std::move(input) );
     case TOK_FLOOR:
@@ -422,9 +422,9 @@ std::unique_ptr<expr_t> select_analyze_unary( util::string_view name, token_e op
     case TOK_PLUS:
       return input;
     case TOK_MINUS:
-      return std::make_unique<expr_analyze_unary_t<std::negate<double>>>( name, op, std::move(input) );
+      return std::make_unique<expr_analyze_unary_t<std::negate<>>>( name, op, std::move(input) );
     case TOK_NOT:
-      return std::make_unique<expr_analyze_unary_t<std::logical_not<double>>>( name, op,
+      return std::make_unique<expr_analyze_unary_t<std::logical_not<>>>( name, op,
                                                                  std::move(input) );
     case TOK_ABS:
       return std::make_unique<expr_analyze_unary_t<unary::abs>>( name, op, std::move(input) );

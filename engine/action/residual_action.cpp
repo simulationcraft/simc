@@ -24,6 +24,6 @@ void residual_action::residual_periodic_state_t::initialize()
 void residual_action::residual_periodic_state_t::copy_state(const action_state_t* o)
 {
   action_state_t::copy_state(o);
-  const residual_periodic_state_t* dps_t = debug_cast<const residual_periodic_state_t*>(o);
+  auto dps_t = debug_cast<const residual_periodic_state_t*>(o);
   tick_amount = dps_t->tick_amount;
 }

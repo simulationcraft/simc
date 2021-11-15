@@ -10,6 +10,7 @@
 #include "util/string_view.hpp"
 
 #include <memory>
+#include <utility>
 
 class dbc_t;
 
@@ -56,6 +57,7 @@ struct spell_data_expr_t
       result_str( "" )
   {
   }
+
   spell_data_expr_t(dbc_t& dbc, util::string_view n, double constant_value )
     : name_str( n ),
       dbc(dbc),
@@ -67,6 +69,7 @@ struct spell_data_expr_t
       result_str( "" )
   {
   }
+
   spell_data_expr_t(dbc_t& dbc, util::string_view n,
                      util::string_view constant_value )
     : name_str( n ),
@@ -79,18 +82,19 @@ struct spell_data_expr_t
       result_str( constant_value )
   {
   }
-  spell_data_expr_t(dbc_t& dbc, util::string_view n,
-                     const std::vector<uint32_t>& constant_value )
+
+  spell_data_expr_t( dbc_t& dbc, util::string_view n, std::vector<uint32_t> constant_value )
     : name_str( n ),
-      dbc(dbc),
+      dbc( dbc ),
       data_type( DATA_SPELL ),
       effect_query( false ),
       result_tok( expression::TOK_SPELL_LIST ),
       result_num( 0.0 ),
-      result_spell_list( constant_value ),
+      result_spell_list( std::move( constant_value ) ),
       result_str( "" )
   {
   }
+
   virtual ~spell_data_expr_t() = default;
 
   virtual int evaluate()
@@ -103,19 +107,19 @@ struct spell_data_expr_t
     return name_str;
   }
 
-  virtual std::vector<uint32_t> operator|( const spell_data_expr_t& /* other */ ) const { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator&( const spell_data_expr_t& /* other */ ) const { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator-( const spell_data_expr_t& /* other */ ) const { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator|( const spell_data_expr_t& /* other */ ) const { return {}; }
+  virtual std::vector<uint32_t> operator&( const spell_data_expr_t& /* other */ ) const { return {}; }
+  virtual std::vector<uint32_t> operator-( const spell_data_expr_t& /* other */ ) const { return {}; }
 
-  virtual std::vector<uint32_t> operator<( const spell_data_expr_t& /* other */ ) const { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator>( const spell_data_expr_t& /* other */ ) const { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator<=( const spell_data_expr_t& /* other */ ) const { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator>=( const spell_data_expr_t& /* other */ ) const { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator==( const spell_data_expr_t& /* other */ ) const { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator!=( const spell_data_expr_t& /* other */ ) const { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator<( const spell_data_expr_t& /* other */ ) const { return {}; }
+  virtual std::vector<uint32_t> operator>( const spell_data_expr_t& /* other */ ) const { return {}; }
+  virtual std::vector<uint32_t> operator<=( const spell_data_expr_t& /* other */ ) const { return {}; }
+  virtual std::vector<uint32_t> operator>=( const spell_data_expr_t& /* other */ ) const { return {}; }
+  virtual std::vector<uint32_t> operator==( const spell_data_expr_t& /* other */ ) const { return {}; }
+  virtual std::vector<uint32_t> operator!=( const spell_data_expr_t& /* other */ ) const { return {}; }
 
-  virtual std::vector<uint32_t> in( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> not_in( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> in( const spell_data_expr_t& /* other */ ) { return {}; }
+  virtual std::vector<uint32_t> not_in( const spell_data_expr_t& /* other */ ) { return {}; }
 
   static std::unique_ptr<spell_data_expr_t> parse( sim_t* sim, util::string_view expr_str );
   static std::unique_ptr<spell_data_expr_t> create_spell_expression( dbc_t& dbc, util::string_view name_str );

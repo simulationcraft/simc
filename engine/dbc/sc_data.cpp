@@ -169,7 +169,7 @@ double spellpower_data_t::get_field( util::string_view field ) const
 namespace hotfix
 {
 static auto_dispose< std::vector< hotfix_entry_t* > > hotfixes_;
-static custom_dbc_data_t hotfix_db_[ 2 ];
+static std::array<custom_dbc_data_t,2> hotfix_db_;
 }
 
 // Very simple comparator, just checks for some equality in the data. There's no need for fanciful

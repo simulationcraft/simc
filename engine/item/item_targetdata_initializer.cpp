@@ -22,7 +22,7 @@ const special_effect_t* item_targetdata_initializer_t::find_effect(player_t * pl
   // No need to check items on pets/enemies
   if (player->is_pet() || player->is_enemy() || player->type == HEALING_ENEMY)
   {
-    return 0;
+    return nullptr;
   }
 
   for ( slot_e slot : slots_ )
@@ -33,5 +33,5 @@ const special_effect_t* item_targetdata_initializer_t::find_effect(player_t * pl
     }
   }
 
-  return 0;
+  return nullptr;
 }

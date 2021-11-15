@@ -39,8 +39,7 @@ namespace spawner
       register_object();
     }
 
-    virtual ~base_actor_spawner_t()
-    { }
+    virtual ~base_actor_spawner_t() = default;
 
     const std::string& name() const
     {

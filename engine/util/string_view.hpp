@@ -175,7 +175,7 @@ public:
   constexpr string_view substr(size_type pos, size_type n = npos) const {
     check_out_of_range(pos > size_, "string_view::substr");
     const size_type rlen = size_ - pos;
-    return string_view(data_ + pos, n < rlen ? n : rlen);
+    return {data_ + pos, n < rlen ? n : rlen};
   }
 
   constexpr int compare(string_view sv) const noexcept {
@@ -318,7 +318,7 @@ inline std::string to_string(string_view sv) {
 
 // fmtlib support
 constexpr fmt::string_view to_string_view(string_view str) {
-  return fmt::string_view(str.data(), str.size());
+  return {str.data(), str.size()};
 }
 
 } // namespace util

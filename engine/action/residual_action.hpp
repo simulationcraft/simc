@@ -35,10 +35,10 @@ namespace residual_action
   struct residual_periodic_action_t : public Base
   {
   private:
-    typedef Base ab; // typedef for the templated action type, spell_t, or heal_t
+    using ab = Base; // typedef for the templated action type, spell_t, or heal_t
   public:
-    typedef residual_periodic_action_t base_t;
-    typedef residual_periodic_action_t<Base> residual_action_t;
+    using base_t = residual_periodic_action_t;
+    using residual_action_t = residual_periodic_action_t<Base>;
 
     template <typename T>
     residual_periodic_action_t(util::string_view n, T& p, const spell_data_t* s) :
@@ -67,12 +67,12 @@ namespace residual_action
       ab::callbacks = false;
     }
 
-    virtual action_state_t* new_state() override
+    action_state_t* new_state() override
     {
       return new residual_periodic_state_t(this, ab::target);
     }
 
-    virtual void impact(action_state_t* s) override
+    void impact(action_state_t* s) override
     {
       // Residual periodic actions + tick_zero does not work
       assert(!ab::tick_zero);
@@ -115,7 +115,7 @@ namespace residual_action
     }
 
     // The damage of the tick is simply the tick_amount in the state
-    virtual double base_ta(const action_state_t* s) const override
+    double base_ta(const action_state_t* s) const override
     {
       auto dot = ab::find_dot(s->target);
       if (dot)
@@ -128,20 +128,20 @@ namespace residual_action
 
     // Ensure that not travel time exists for the ignite ability. Delay is
     // handled in the trigger via a custom event
-    virtual timespan_t travel_time() const override
+    timespan_t travel_time() const override
     {
       return timespan_t::zero();
     }
 
     // This object is not "executable" normally. Instead, the custom event
     // handles the triggering of ignite
-    virtual void execute() override
+    void execute() override
     {
       assert(0);
     }
 
     // Ensure that the ignite action snapshots nothing
-    virtual void init() override
+    void init() override
     {
       ab::init();
 

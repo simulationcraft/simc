@@ -373,7 +373,7 @@ void gear_to_json( JsonOutput root, const player_t& p )
     slotnode[ "encoded_item" ] = item.encoded_item();
     slotnode[ "ilevel" ] = item.item_level();
 
-    for ( size_t i = 0; i < range::size( item.parsed.data.stat_type_e ); i++ )
+    for ( size_t i = 0; i < std::size( item.parsed.data.stat_type_e ); i++ )
     {
       auto val = item.stat_value( i );
       if ( val <= 0)

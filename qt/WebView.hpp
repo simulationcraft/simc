@@ -30,11 +30,9 @@ public:
   QString url_to_show;
   QByteArray out_html;
 
-  SC_WebView( SC_MainWindow* mw, QWidget* parent = nullptr, const QString& h = QString() );
+  SC_WebView( SC_MainWindow* mw, QWidget* parent = nullptr, QString h = {} );
 
   void store_html( const QString& s );
-
-  virtual ~SC_WebView() = default;
 
   void loadHtml();
 

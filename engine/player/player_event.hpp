@@ -31,7 +31,7 @@ struct player_event_t : public event_t
   {
     return _player;
   }
-  virtual const char* name() const override
+  const char* name() const override
   {
     return "event_t";
   }
