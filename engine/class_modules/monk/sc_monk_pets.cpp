@@ -1574,6 +1574,9 @@ private:
 
       player->main_hand_attack = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
+
+      player->off_hand_attack = new melee_t( "melee_off_hand", player, &( player->off_hand_weapon ) );
+      player->off_hand_attack->base_execute_time = player->off_hand_weapon.swing_time;
     }
   };
 
@@ -1880,6 +1883,9 @@ private:
 
       player->main_hand_attack = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
+
+      player->off_hand_attack = new melee_t( "melee_off_hand", player, &( player->off_hand_weapon ) );
+      player->off_hand_attack->base_execute_time = player->off_hand_weapon.swing_time;
     }
   };
 
@@ -1943,7 +1949,6 @@ public:
       full_amount_targets     = 1;
       attack_power_mod.direct = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).ap_coeff();
       radius                  = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).radius();
-      cooldown->duration      = p->o()->passives.fallen_monk_keg_smash->cooldown();
       cooldown->hasted        = false;
       trigger_gcd             = timespan_t::from_seconds( 1.5 );
     }
@@ -1980,7 +1985,6 @@ public:
         : pet_spell_t( "breath_of_fire_dot_fo", p, p->o()->passives.breath_of_fire_dot )
       {
         background    = true;
-        merge_report  = false;
         tick_may_crit = may_crit = true;
         hasted_ticks             = false;
         reduced_aoe_targets = 1.0;
@@ -2202,6 +2206,9 @@ private:
 
       player->main_hand_attack = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
+
+      player->off_hand_attack = new melee_t( "melee_off_hand", player, &( player->off_hand_weapon ) );
+      player->off_hand_attack->base_execute_time = player->off_hand_weapon.swing_time;
     }
   };
 
@@ -2512,6 +2519,9 @@ private:
 
       player->main_hand_attack = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
+
+      player->off_hand_attack = new melee_t( "melee_off_hand", player, &( player->off_hand_weapon ) );
+      player->off_hand_attack->base_execute_time = player->off_hand_weapon.swing_time;
     }
   };
 
@@ -2575,7 +2585,6 @@ public:
       full_amount_targets     = 1;
       attack_power_mod.direct = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).ap_coeff();
       radius                  = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).radius();
-      cooldown->duration      = p->o()->passives.fallen_monk_keg_smash->cooldown();
       cooldown->hasted        = false;
       trigger_gcd             = timespan_t::from_seconds( 1.5 );
     }
@@ -2612,7 +2621,6 @@ public:
         : pet_spell_t( "breath_of_fire_dot_sit_fo", p, p->o()->passives.breath_of_fire_dot )
       {
         background    = true;
-        merge_report  = false;
         tick_may_crit = may_crit = true;
         hasted_ticks             = false;
         reduced_aoe_targets      = 1.0;
