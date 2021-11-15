@@ -655,7 +655,7 @@ bool option_db_t::parse_file( std::istream& input )
       // Skip the UTF-8 BOM, if any.
       if ( utf8::starts_with_bom( it, end ) )
       {
-        it += range::size( utf8::bom );
+        it += std::size( utf8::bom );
       }
     }
 

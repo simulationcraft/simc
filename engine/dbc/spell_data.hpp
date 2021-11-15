@@ -302,7 +302,7 @@ struct spelleffect_data_t
     unsigned index = flag / 32;
     unsigned bit = flag % 32;
 
-    assert( index < range::size( _class_flags ) );
+    assert( index < std::size( _class_flags ) );
     return ( _class_flags[ index ] & ( 1u << bit ) ) != 0;
   }
 
@@ -709,7 +709,7 @@ struct spell_data_t
     unsigned index = static_cast<unsigned>( attr ) / 32u;
     uint32_t mask = 1u << bit;
 
-    assert( index < range::size( _attributes ) );
+    assert( index < std::size( _attributes ) );
 
     return ( _attributes[ index ] & mask ) != 0;
   }
@@ -719,19 +719,19 @@ struct spell_data_t
     unsigned index = flag / 32;
     unsigned bit = flag % 32;
 
-    assert( index < range::size( _class_flags ) );
+    assert( index < std::size( _class_flags ) );
     return ( _class_flags[ index ] & ( 1u << bit ) ) != 0;
   }
 
   unsigned attribute( unsigned idx ) const
   {
-    assert( idx < range::size( _attributes ) );
+    assert( idx < std::size( _attributes ) );
     return _attributes[ idx ];
   }
 
   unsigned class_flags( unsigned idx ) const
   {
-    assert( idx < range::size( _class_flags ) );
+    assert( idx < std::size( _class_flags ) );
     return _class_flags[ idx ];
   }
 

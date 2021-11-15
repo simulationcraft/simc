@@ -53,7 +53,7 @@ void SC_SampleProfilesTab::fillTree( QDir baseDir )
   baseDir.setFilter( QDir::Dirs );
 
   static const char* tierNames[] = { "T27", "T26", "T25", "PR", "DS" };
-  static const int TIER_MAX      = 4;  // = range::size( tierNames );
+  static const int TIER_MAX      = std::size( tierNames );
 
   QTreeWidgetItem* playerItems[ PLAYER_MAX ];
   range::fill( playerItems, nullptr );

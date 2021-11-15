@@ -73,8 +73,8 @@ public:
 
 private:
   struct page_t {
-    alignas(PageAlignment) char data[PageSize];
-    page_t() noexcept {}
+    alignas(PageAlignment) char data[PageSize]; // NOLINT(modernize-avoid-c-arrays)
+    page_t() noexcept = default;
   };
 
   void* allocate(size_t size, size_t alignment) {

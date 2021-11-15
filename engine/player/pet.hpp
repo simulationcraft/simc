@@ -13,7 +13,7 @@
 
 struct pet_t : public player_t
 {
-  typedef player_t base_t;
+  using base_t = player_t;
 
   std::string full_name_str;
   player_t* const owner;

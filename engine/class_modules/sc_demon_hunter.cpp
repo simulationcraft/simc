@@ -1073,7 +1073,7 @@ struct demon_hunter_pet_t : public pet_t
 
     // Loop from end to beginning to get the data for the highest available
     // level equal or lower than the player level
-    int i = as<int>( range::size( pet_base_stats ) );
+    int i = as<int>( std::size( pet_base_stats ) );
     while ( --i > 0 )
     {
       if ( pet_base_stats[ i ].level <= level() )

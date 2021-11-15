@@ -3322,7 +3322,7 @@ int rune_word_active( const player_t* player, const spell_data_t* driver, spell_
         continue;
 
       const item_enchantment_data_t& enchant_data = item.player->dbc->item_enchantment( gem_prop.enchant_id );
-      for ( size_t i = 0; i < range::size( enchant_data.ench_prop ); i++ )
+      for ( size_t i = 0; i < std::size( enchant_data.ench_prop ); i++ )
       {
         switch ( enchant_data.ench_type[ i ] )
         {
@@ -3398,7 +3398,7 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
         continue;
 
       const item_enchantment_data_t& enchant_data = item.player->dbc->item_enchantment( gem_prop.enchant_id );
-      for ( size_t i = 0; i < range::size( enchant_data.ench_prop ); i++ )
+      for ( size_t i = 0; i < std::size( enchant_data.ench_prop ); i++ )
       {
         switch ( enchant_data.ench_type[ i ] )
         {

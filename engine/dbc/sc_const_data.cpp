@@ -760,9 +760,9 @@ namespace {
 constexpr int max_spec_index()
 {
   int max = -1;
-  for ( size_t i = 0; i < range::size( __class_spec_id ); i++ ) // NOLINT(modernize-loop-convert)
+  for ( size_t i = 0; i < std::size( __class_spec_id ); i++ ) // NOLINT(modernize-loop-convert)
   {
-    for ( size_t index = 0; index < range::size( __class_spec_id[ i ] ); index++ )
+    for ( size_t index = 0; index < std::size( __class_spec_id[ i ] ); index++ )
     {
       specialization_e spec = __class_spec_id[ i ][ index ];
       max = static_cast<int>( spec ) > max ? static_cast<int>( spec ) : max;
@@ -790,7 +790,7 @@ struct spec_index_map_t {
 
   constexpr int8_t operator[]( specialization_e spec ) const
   {
-    assert( spec < range::size( data_ ) );
+    assert( spec < std::size( data_ ) );
     return data_[ spec ];
   }
 
@@ -940,17 +940,17 @@ double dbc::item_level_squish( unsigned source_ilevel, bool ptr )
 #if SC_USE_PTR == 1
   if ( ptr )
   {
-    assert( range::size( _ptr__item_level_squish ) >= source_ilevel );
+    assert( std::size( _ptr__item_level_squish ) >= source_ilevel );
     return _ptr__item_level_squish[ source_ilevel - 1 ];
   }
   else
   {
-    assert( range::size( __item_level_squish ) >= source_ilevel );
+    assert( std::size( __item_level_squish ) >= source_ilevel );
     return __item_level_squish[ source_ilevel - 1 ];
   }
 #else
   ( void ) ptr;
-  assert( range::size( __item_level_squish ) >= source_ilevel );
+  assert( std::size( __item_level_squish ) >= source_ilevel );
   return __item_level_squish[ source_ilevel - 1 ];
 #endif
 }

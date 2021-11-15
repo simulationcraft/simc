@@ -10,6 +10,7 @@
 
 #include "config.hpp"
 
+#include <array>
 #include <cassert>
 #include <cmath>
 #include <cstdint>
@@ -261,7 +262,7 @@ struct xorshift128_t
   void seed( uint64_t start ) noexcept;
   const char* name() const noexcept;
 private:
-  uint64_t s[2];
+  std::array<uint64_t, 2> s;
 };
 
 /**
@@ -280,7 +281,7 @@ struct xoshiro256plus_t
   void seed( uint64_t start ) noexcept;
   const char* name() const noexcept;
 private:
-  uint64_t s[4];
+  std::array<uint64_t, 4> s;
 };
 
 /**
@@ -295,7 +296,7 @@ struct xorshift1024_t
   void seed( uint64_t start ) noexcept;
   const char* name() const noexcept;
 private:
-  uint64_t s[16];
+  std::array<uint64_t, 16> s;
   int p;
 };
 

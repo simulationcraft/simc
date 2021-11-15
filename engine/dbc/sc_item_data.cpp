@@ -206,7 +206,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       // First, check if the item already has that stat
       int found = -1;
       int offset = -1;
-      for ( size_t i = 0, end = range::size( item.parsed.data.stat_type_e ); i < end; i++ )
+      for ( size_t i = 0, end = std::size( item.parsed.data.stat_type_e ); i < end; i++ )
       {
         // Put the new stat in first available slot
         if ( offset == -1 && item.parsed.data.stat_type_e[ i ] == ITEM_MOD_NONE )
@@ -272,7 +272,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
         item.player -> sim -> print_debug( "Player {} item '{}' adding {} socket(s) (type={})",
             item.player -> name(), item.name(), entry.value_1, entry.value_2 );
       int n_added = 0;
-      for ( size_t i = 0, end = range::size( item.parsed.data.socket_color ); i < end && n_added < entry.value_1; i++ )
+      for ( size_t i = 0, end = std::size( item.parsed.data.socket_color ); i < end && n_added < entry.value_1; i++ )
       {
         if ( item.parsed.data.socket_color[ i ] != SOCKET_COLOR_NONE )
           continue;
@@ -352,7 +352,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
         return true;
       }
 
-      for ( size_t i = 0, end = range::size( item.parsed.data.stat_type_e ); i < end; i++ )
+      for ( size_t i = 0, end = std::size( item.parsed.data.stat_type_e ); i < end; i++ )
       {
         if ( item_database::is_crafted_item_mod( item.parsed.data.stat_type_e[ i ] ) )
         {
@@ -470,7 +470,7 @@ double item_database::approx_scale_coefficient( unsigned current_ilevel, unsigne
 int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx, unsigned new_ilevel )
 {
   // Safeguard against array overflow, should never happen in any case
-  if ( idx >= range::size( item.parsed.data.stat_type_e ) - 1 )
+  if ( idx >= std::size( item.parsed.data.stat_type_e ) - 1 )
     return -1;
 
   if ( item.parsed.data.level == 0 )
