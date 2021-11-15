@@ -306,6 +306,7 @@ public:
     proc_t* blackout_kick_cdr_serenity;
     proc_t* boiling_brew_healing_sphere;
     proc_t* bonedust_brew_reduction;
+    proc_t* bountiful_brew_proc;
     proc_t* rsk_reset_totm;
     proc_t* sinister_teaching_reduction;
     proc_t* spitfire_reset;

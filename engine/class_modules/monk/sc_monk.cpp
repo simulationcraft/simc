@@ -459,7 +459,10 @@ public:
       // Currently Bountiful Brew cannot be applied if Bonedust Brew is currently active
       // This means that RPPM will have triggered but cannot be applied.
       if ( !td( p()->target )->debuff.bonedust_brew->up() )
+      {
         p()->active_actions.bountiful_brew->execute();
+        p()->proc.bountiful_brew_proc->occur();
+      }
     }
 
     if ( p()->legendary.sinister_teachings->ok() )
@@ -6883,6 +6886,7 @@ void monk_t::init_procs()
   proc.blackout_kick_cdr_serenity          = get_proc( "Blackout Kick CDR with Serenity" );
   proc.boiling_brew_healing_sphere         = get_proc( "Boiling Brew Healing Sphere" );
   proc.bonedust_brew_reduction             = get_proc( "Bonedust Brew SCK Reduction" );
+  proc.bountiful_brew_proc                 = get_proc( "Bountiful Brew Trigger" );
   proc.rsk_reset_totm                      = get_proc( "Rising Sun Kick TotM Reset" );
   proc.spitfire_reset                      = get_proc( "Spitfire Reset" );
   proc.sinister_teaching_reduction         = get_proc( "Sinister Teaching CD Reduction" );
