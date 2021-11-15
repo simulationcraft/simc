@@ -1800,7 +1800,7 @@ public:
         return s.stats;
 
     auto fc_stats = p()->get_stats( free_cast_string( f ), this );
-    free_cast_stats.push_back( free_cast_stats_t( f, fc_stats ) );
+    free_cast_stats.emplace_back( f, fc_stats );
 
     return fc_stats;
   }
