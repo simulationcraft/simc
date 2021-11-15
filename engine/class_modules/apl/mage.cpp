@@ -365,7 +365,7 @@ void fire( player_t* p )
   precombat->add_action( "variable,name=empyreal_ordnance_delay,default=18,op=reset", "APL Variable Option: How long before Combustion should Empyreal Ordnance be used?" );
   precombat->add_action( "variable,name=time_to_combustion,value=fight_remains+100,if=variable.disable_combustion", "If Combustion is disabled, schedule the first Combustion far after the fight ends." );
   precombat->add_action( "variable,name=skb_duration,value=dbc.effect.828420.base_value", "The duration of a Sun King's Blessing Combustion." );
-  precombat->add_action( "variable,name=mot_recharge_amount,value=dbc.effect.871274.base_value", "The number of seconds of Fire Blast recharged by Mirrors of Torment" );
+  precombat->add_action( "variable,name=mot_recharge_amount,value=dbc.effect.871274.base_value", "The number of seconds of Fire Blast recharged by Mirrors of Torment." );
   precombat->add_action( "variable,name=combustion_on_use,value=equipped.gladiators_badge|equipped.macabre_sheet_music|equipped.inscrutable_quantum_device|equipped.sunblood_amethyst|equipped.empyreal_ordnance|equipped.flame_of_battle|equipped.wakeners_frond|equipped.instructors_divine_bell|equipped.shadowed_orb_of_torment", "Whether a usable item used to buff Combustion is equipped." );
   precombat->add_action( "variable,name=on_use_cutoff,value=20,if=variable.combustion_on_use", "How long before Combustion should trinkets that trigger a shared category cooldown on other trinkets not be used?" );
   precombat->add_action( "variable,name=on_use_cutoff,value=25,if=equipped.macabre_sheet_music" );
@@ -381,9 +381,10 @@ void fire( player_t* p )
   default_->add_action( "call_action_list,name=combustion_timing,if=!variable.disable_combustion", "The combustion_timing action list schedules when Combustion will be used and stores the result in variable.time_to_combustion." );
   default_->add_action( "variable,name=shifting_power_before_combustion,value=variable.time_to_combustion-cooldown.shifting_power.remains>action.shifting_power.full_reduction&(cooldown.rune_of_power.remains-cooldown.shifting_power.remains>5|!talent.rune_of_power)", "Variable that estimates whether Shifting Power will be used before Combustion is ready." );
   default_->add_action( "shifting_power,if=buff.combustion.down&action.fire_blast.charges<=1&!(buff.infernal_cascade.up&buff.hot_streak.react)&variable.shifting_power_before_combustion" );
-  default_->add_action( "radiant_spark,if=buff.combustion.down&(variable.time_to_combustion>cooldown-5)" );
-  default_->add_action( "deathborne,if=buff.combustion.down&buff.rune_of_power.down&variable.time_to_combustion<variable.combustion_precast_time+execute_time+(buff.deathborne.duration-buff.combustion.duration)*runeforge.deaths_fathom" );
-  default_->add_action( "mirrors_of_torment,if=variable.time_to_combustion<variable.combustion_precast_time+execute_time&buff.combustion.down" );
+  default_->add_action( "radiant_spark,if=buff.combustion.down&(variable.time_to_combustion>cooldown-5)", "Save Radiant Spark for Combustion, but otherwise use it on cooldown." );
+  default_->add_action( "deathborne,if=buff.combustion.down&buff.rune_of_power.down&variable.time_to_combustion<variable.combustion_precast_time+execute_time+(buff.deathborne.duration-buff.combustion.duration)*runeforge.deaths_fathom", "Deathborne should always be used with Combustion. With Death's Fathom, it should be used early so that Deathborne will have more stacks during Combustion." );
+  default_->add_action( "mirrors_of_torment,if=variable.time_to_combustion<variable.combustion_precast_time+execute_time&buff.combustion.down", "Use Mirrors of Torment with Combustion." );
+  default_->add_action( "mirrors_of_torment,if=variable.time_to_combustion>cooldown-30*runeforge.sinful_delight", "Also use Mirrors of Torment in between Combustions as long as Combustion will not have to be delayed much for it." );
   default_->add_action( "fire_blast,use_while_casting=1,if=action.mirrors_of_torment.executing&full_recharge_time-action.mirrors_of_torment.execute_remains<4&!hot_streak_spells_in_flight&!buff.hot_streak.react", "For Venthyr, use a Fire Blast charge during Mirrors of Torment cast to avoid capping charges." );
   default_->add_action( "use_item,effect_name=gladiators_badge,if=variable.time_to_combustion>cooldown-5" );
   default_->add_action( "use_item,name=empyreal_ordnance,if=variable.time_to_combustion<=variable.empyreal_ordnance_delay&variable.time_to_combustion>variable.empyreal_ordnance_delay-5" );
@@ -475,7 +476,7 @@ void fire( player_t* p )
   combustion_timing->add_action( "variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,value=variable.combustion_ready_time" );
   combustion_timing->add_action( "variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,op=max,value=firestarter.remains,if=talent.firestarter&!variable.firestarter_combustion", "Delay Combustion for after Firestarter unless variable.firestarter_combustion is set." );
   combustion_timing->add_action( "variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,op=max,value=cooldown.radiant_spark.remains,if=covenant.kyrian&cooldown.radiant_spark.remains-10<variable.time_to_combustion", "Delay Combustion for Radiant Spark if it will come off cooldown soon." );
-  combustion_timing->add_action( "variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,op=max,value=cooldown.mirrors_of_torment.remains,if=covenant.venthyr&cooldown.mirrors_of_torment.remains-25<variable.time_to_combustion", "Delay Combustion for Mirrors of Torment" );
+  combustion_timing->add_action( "variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,op=max,value=cooldown.mirrors_of_torment.remains,if=covenant.venthyr&cooldown.mirrors_of_torment.remains-25<variable.time_to_combustion", "Delay Combustion for Mirrors of Torment." );
   combustion_timing->add_action( "variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,op=max,value=cooldown.deathborne.remains+(buff.deathborne.duration-buff.combustion.duration)*runeforge.deaths_fathom,if=covenant.necrolord&cooldown.deathborne.remains-10<variable.time_to_combustion", "Delay Combustion for Deathborne." );
   combustion_timing->add_action( "variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,op=max,value=buff.deathborne.remains-buff.combustion.duration,if=runeforge.deaths_fathom&buff.deathborne.up&active_enemies>=2", "Delay Combustion for Death's Fathom stacks if there are at least two targets." );
   combustion_timing->add_action( "variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,op=max,value=variable.empyreal_ordnance_delay-(cooldown.empyreal_ordnance.duration-cooldown.empyreal_ordnance.remains)*!cooldown.empyreal_ordnance.ready,if=equipped.empyreal_ordnance", "Delay Combustion for the Empyreal Ordnance buff if the player is using that trinket." );
@@ -499,7 +500,7 @@ void fire( player_t* p )
   rop_phase->add_action( "call_action_list,name=active_talents" );
   rop_phase->add_action( "pyroblast,if=buff.pyroclasm.react&cast_time<buff.pyroclasm.remains&cast_time<buff.rune_of_power.remains&(!runeforge.sun_kings_blessing|buff.pyroclasm.remains<action.fireball.cast_time+cast_time*buff.pyroclasm.react)" );
   rop_phase->add_action( "pyroblast,if=prev_gcd.1.scorch&buff.heating_up.react&searing_touch.active&active_enemies<variable.hot_streak_flamestrike" );
-  rop_phase->add_action( "phoenix_flames,if=!variable.phoenix_pooling&buff.heating_up.react&!buff.hot_streak.react&(active_dot.ignite<2|active_enemies>=variable.hard_cast_flamestrike|active_enemies>=variable.hot_streak_flamestrike)" );
+  rop_phase->add_action( "phoenix_flames,if=!variable.phoenix_pooling&(active_dot.ignite<2|active_enemies>=variable.hard_cast_flamestrike|active_enemies>=variable.hot_streak_flamestrike)" );
   rop_phase->add_action( "scorch,if=searing_touch.active" );
   rop_phase->add_action( "dragons_breath,if=active_enemies>2" );
   rop_phase->add_action( "arcane_explosion,if=active_enemies>=variable.arcane_explosion&mana.pct>=variable.arcane_explosion_mana" );
