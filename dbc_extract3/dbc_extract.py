@@ -208,11 +208,12 @@ elif options.type == 'view':
             else:
                 print('{}'.format(str(record)))
 
-        for id, entry in entries.items():
-            if id in replaced_ids:
+        for id, item in entries.items():
+            entry, hotfix = item
+            if id in replaced_ids or hotfix['state'] == HotfixType.REMOVED:
                 continue
 
-            print('{} [hotfix/add]'.format(entry[0]))
+            print('{} [hotfix/add]'.format(entry))
     else:
         if id in entries:
             record = entries[id]
@@ -259,7 +260,7 @@ elif options.type == 'json':
 
         for id, item in entries.items():
             entry, hotfix = item
-            if id in replaced_ids:
+            if id in replaced_ids or hotfix['state'] == HotfixType.REMOVED:
                 continue
 
             data_ = entry.obj()
@@ -323,10 +324,10 @@ elif options.type == 'csv':
             first = False
 
         for id, item in entries.items():
-            if id in replaced_ids:
+            entry, hotfix = item
+            if id in replaced_ids or hotfix['state'] == HotfixType.REMOVED:
                 continue
 
-            entry, hotfix = item
             print('{}'.format(entry.csv(options.delim, first)))
 
     else:
