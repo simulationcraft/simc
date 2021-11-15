@@ -1867,6 +1867,7 @@ private:
   {
     melee_t( util::string_view n, fallen_monk_brm_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
+      base_hit -= 0.19;
     }
   };
 
@@ -2497,6 +2498,7 @@ private:
     melee_t( util::string_view n, sinister_teaching_fallen_monk_brm_pet_t* player, weapon_t* weapon )
       : pet_melee_t( n, player, weapon )
     {
+      base_hit -= 0.19;
     }
   };
 
