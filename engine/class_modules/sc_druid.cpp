@@ -7310,16 +7310,6 @@ struct adaptive_swarm_t : public druid_spell_t
       return tar;
     }
 
-    double composite_persistent_multiplier( const action_state_t* s ) const override
-    {
-      double pm = druid_spell_t::composite_persistent_multiplier( s );
-
-      if ( !debug_cast<const adaptive_swarm_state_t*>( s )->jump && p()->buff.tigers_fury->check() )
-        pm *= 1.0 + tf_mul;
-
-      return pm;
-    }
-
     void impact( action_state_t* s ) override
     {
       auto incoming = debug_cast<adaptive_swarm_state_t*>( s )->stacks;
@@ -7403,6 +7393,16 @@ struct adaptive_swarm_t : public druid_spell_t
       if ( !t ) return nullptr;
 
       return td( t )->dots.adaptive_swarm_damage;
+    }
+
+    double composite_persistent_multiplier( const action_state_t* s ) const override
+    {
+      double pm = adaptive_swarm_base_t::composite_persistent_multiplier( s );
+
+      if ( !debug_cast<const adaptive_swarm_state_t*>( s )->jump && p()->buff.tigers_fury->check() )
+        pm *= 1.0 + tf_mul;
+
+      return pm;
     }
 
     double calculate_tick_amount( action_state_t* s, double m ) const override
