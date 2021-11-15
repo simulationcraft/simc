@@ -1939,6 +1939,7 @@ public:
       attack_power_mod.direct = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).ap_coeff();
       radius                  = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).radius();
       cooldown->duration      = p->o()->passives.fallen_monk_keg_smash->cooldown();
+      cooldown->hasted        = false;
       trigger_gcd             = timespan_t::from_seconds( 1.5 );
     }
 
@@ -2564,6 +2565,7 @@ public:
       attack_power_mod.direct = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).ap_coeff();
       radius                  = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).radius();
       cooldown->duration      = p->o()->passives.fallen_monk_keg_smash->cooldown();
+      cooldown->hasted        = false;
       trigger_gcd             = timespan_t::from_seconds( 1.5 );
     }
 
