@@ -1706,7 +1706,11 @@ public:
 
       trigger_mystic_touch = true;
 
-      cooldown->duration = timespan_t::from_seconds( 2 );
+      if ( p->o()->specialization() == MONK_WINDWALKER )
+        cooldown->duration = timespan_t::from_seconds( 2 );
+      else
+        // Only want to cast this at most 2 times during a 6 second summon.
+        cooldown->duration = timespan_t::from_seconds( 3 );
       trigger_gcd = timespan_t::from_seconds( 1.5 );
 
       cooldown->hasted = false;
@@ -1768,7 +1772,11 @@ public:
 
       tick_action = new tiger_adept_spinning_crane_kick_tick_t( p );
 
-      cooldown->duration = timespan_t::from_seconds( 2 );
+      if ( p->o()->specialization() == MONK_WINDWALKER )
+        cooldown->duration = timespan_t::from_seconds( 2 );
+      else
+        // Only want to cast this at most 1 time during a 6 second summon.
+        cooldown->duration = timespan_t::from_seconds( 6 );
       trigger_gcd        = timespan_t::from_seconds( 1.5 );
     }
 
