@@ -686,7 +686,7 @@ void thrill_seeker( special_effect_t& effect )
     euphoria_buff->set_stack_change_callback( [ fatal_flaw_vers, fatal_flaw_crit ]( buff_t* b, int old, int cur ) {
       if ( cur < old )
       {
-        if ( b->player->cache.spell_crit_chance() >= b->player->cache.damage_versatility() )
+        if ( util::stat_value( b->player, STAT_CRIT_RATING ) >= util::stat_value( b->player, STAT_VERSATILITY_RATING ) )
           fatal_flaw_crit->trigger();
         else
           fatal_flaw_vers->trigger();

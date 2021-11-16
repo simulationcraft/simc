@@ -1,4 +1,4 @@
-// Spell text, wow build 9.1.5.40944
+// Spell text, wow build 9.1.5.41031
 static const std::array<spelltext_data_t, 15592> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -15251,7 +15251,6 @@ static const std::array<spelltext_data_t, 15592> __spelltext_data { {
   { 353870, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
   { 353882, "The Strength gained from Death's Due is increased by $s1% and persists for ${$s2/1000} sec longer. While standing within your Death's Due your Runic Power generation is increased by $s3%.\r\n", 0, 0 },
   { 353886, "Your connection with your Covenant grows, increasing Stamina by $s1%.", 0, 0 },
-  { 353904, "Summon a trophy signifying your defeat of the Doomwalker.", 0, 0 },
   { 353936, "Thunder Focus Tea can now additionally cause Crackling Jade Lightning's knockback immediately, or cause Essence Font to increase your movement speed by $s1% and provide immunity to movement impairing effects.", 0, "PvP Talent" },
   { 353937, "$@spelldesc353936", 0, 0 },
   { 354016, "$@spelldesc351750", "Haste increased by $s1%.", 0 },
@@ -15592,13 +15591,14 @@ static const std::array<spelltext_data_t, 15592> __spelltext_data { {
   { 362986, "Open your Companions page and select a companion to raise their level to $s1.", 0, 0 },
   { 363041, "A swig of strong brew that coalesces purified chi escaping your body into a celestial guard, absorbing $<absorb> damage.", "Absorbs $w1 damage.", 0 },
   { 364944, 0, "Movement speed increased by $s1%.", 0 },
+  { 365664, "Add the Infernal affix to a Mythic Keystone.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.5.40944
+// spelltext hotfix entries, wow build 9.1.5.41031
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.1.5.40944
+// Spell description variables, wow build 9.1.5.41031
 static const std::array<spelldesc_vars_data_t, 305> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15907,7 +15907,7 @@ static const std::array<spelldesc_vars_data_t, 305> __spelldesc_vars_data { {
   {  363041, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.5.40944
+// spelldesc_vars hotfix entries, wow build 9.1.5.41031
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
