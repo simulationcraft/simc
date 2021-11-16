@@ -50,16 +50,17 @@ actions.cooldowns+=/moment_of_glory,if=prev_gcd.1.avengers_shield&cooldown.aveng
 
 actions.standard=shield_of_the_righteous,if=debuff.judgment.up
 actions.standard+=/shield_of_the_righteous,if=holy_power=5|buff.holy_avenger.up|holy_power=4&talent.sanctified_wrath.enabled&buff.avenging_wrath.up
+actions.standard+=/hammer_of_wrath,if=runeforge.the_mad_paragon|runeforge.vanguards_momentum|covenant.venthyr&cooldown.ashen_hallow.remains>210
 actions.standard+=/judgment,target_if=min:debuff.judgment.remains,if=charges=2|!talent.crusaders_judgment.enabled
 actions.standard+=/hammer_of_wrath
 actions.standard+=/blessing_of_the_seasons
+actions.standard+=/vanquishers_hammer
 actions.standard+=/avengers_shield
 actions.standard+=/judgment,target_if=min:debuff.judgment.remains
-actions.standard+=/vanquishers_hammer
 actions.standard+=/consecration,if=!consecration.up
 actions.standard+=/divine_toll
 actions.standard+=/blessed_hammer,strikes=2.4,if=charges=3
-actions.standard+=/ashen_hallow
+actions.standard+=/ashen_hallow,if=buff.seraphim.up
 actions.standard+=/hammer_of_the_righteous,if=charges=2
 actions.standard+=/word_of_glory,if=buff.vanquishers_hammer.up
 actions.standard+=/blessed_hammer,strikes=2.4
