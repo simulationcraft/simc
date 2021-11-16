@@ -1681,7 +1681,8 @@ public:
       base_tick_time = dot_duration / 4;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
-      cooldown->hasted   = false;
+      cooldown->hasted = false;
+      trigger_gcd      = dot_duration;
 
       tick_action = new tiger_adept_fists_of_fury_tick_t( p );
     }
@@ -1703,12 +1704,8 @@ public:
 
       trigger_mystic_touch = true;
 
-      // We only want the monk to cast Tiger Palm 2 times during the duration.
-      // Increase the cooldown for non-windwalkers so that it only casts 2 times.
-      if ( o()->specialization() == MONK_WINDWALKER )
-        cooldown->duration = timespan_t::from_seconds( 3.6 );
-      else
-        cooldown->duration = timespan_t::from_seconds( 3 );
+      cooldown->duration = timespan_t::from_seconds( 2 );
+      trigger_gcd = timespan_t::from_seconds( 1.5 );
 
       cooldown->hasted = false;
     }
@@ -1749,41 +1746,6 @@ public:
     {
       return 0;
     }
-
-    int mark_of_the_crane_counter() const
-    {
-      std::vector<player_t*> targets = target_list();
-      int mark_of_the_crane_counter  = 0;
-
-      if ( p()->specialization() == MONK_WINDWALKER )
-      {
-        for ( player_t* target : targets )
-        {
-          if ( o()->get_target_data( target )->debuff.mark_of_the_crane->up() )
-            mark_of_the_crane_counter++;
-        }
-      }
-
-      return std::min( (int)p()->o()->passives.cyclone_strikes->max_stacks(), mark_of_the_crane_counter );
-    }
-
-    double action_multiplier() const override
-    {
-      double am = pet_melee_attack_t::action_multiplier();
-/* 
-      double motc_multiplier = p()->o()->passives.cyclone_strikes->effectN( 1 ).percent();
-
-      if ( p()->o()->conduit.calculated_strikes->ok() )
-        motc_multiplier += p()->o()->conduit.calculated_strikes.percent();
-
-      if ( p()->o()->spec.spinning_crane_kick_2_ww->ok() )
-        am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
-
-      if ( p()->o()->buff.dance_of_chiji_hidden->up() )
-        am *= 1 + p()->o()->talent.dance_of_chiji->effectN( 1 ).percent();
-*/
-      return am;
-    }
   };
 
   struct tiger_adept_spinning_crane_kick_t : public pet_melee_attack_t
@@ -1804,12 +1766,8 @@ public:
 
       tick_action = new tiger_adept_spinning_crane_kick_tick_t( p );
 
-      // We only want the monk to cast Spinning Crane Kick 2 times during the duration.
-      // Increase the cooldown for non-windwalkers so that it only casts 2 times.
-      if ( o()->specialization() == MONK_WINDWALKER )
-        cooldown->duration = timespan_t::from_seconds( 3.6 );
-      else
-        cooldown->duration = timespan_t::from_seconds( 3 );
+      cooldown->duration = timespan_t::from_seconds( 2 );
+      trigger_gcd        = timespan_t::from_seconds( 1.5 );
     }
 
     // N full ticks, but never additional ones.
@@ -1836,8 +1794,8 @@ public:
     // Only cast Fists of Fury for Windwalker specialization
     if ( owner->specialization() == MONK_WINDWALKER )
       action_list_str += "/fists_of_fury";
-    action_list_str += "/spinning_crane_kick,if=active_enemies>1";
-    action_list_str += "/tiger_palm,if=active_enemies=1";
+    action_list_str += "/spinning_crane_kick,if=active_enemies>1&!prev_gcd.1.spinning_crane_kick";
+    action_list_str += "/tiger_palm";
 
     monk_pet_t::init_action_list();
   }
@@ -2315,6 +2273,7 @@ public:
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
       cooldown->hasted = false;
+      trigger_gcd      = dot_duration;
 
       tick_action = new sinister_teaching_tiger_adept_fists_of_fury_tick_t( p );
     }
@@ -2337,12 +2296,8 @@ public:
 
       trigger_mystic_touch = true;
 
-      // We only want the monk to cast Tiger Palm 2 times during the duration.
-      // Increase the cooldown for non-windwalkers so that it only casts 2 times.
-      if ( o()->specialization() == MONK_WINDWALKER )
-        cooldown->duration = timespan_t::from_seconds( 3.6 );
-      else
-        cooldown->duration = timespan_t::from_seconds( 3 );
+      cooldown->duration = timespan_t::from_seconds( 2 );
+      trigger_gcd        = timespan_t::from_seconds( 1.5 );
 
       cooldown->hasted = false;
     }
@@ -2383,41 +2338,6 @@ public:
     {
       return 0;
     }
-
-    int mark_of_the_crane_counter() const
-    {
-      std::vector<player_t*> targets = target_list();
-      int mark_of_the_crane_counter  = 0;
-
-      if ( p()->specialization() == MONK_WINDWALKER )
-      {
-        for ( player_t* target : targets )
-        {
-          if ( o()->get_target_data( target )->debuff.mark_of_the_crane->up() )
-            mark_of_the_crane_counter++;
-        }
-      }
-
-      return std::min( (int)p()->o()->passives.cyclone_strikes->max_stacks(), mark_of_the_crane_counter );
-    }
-
-    double action_multiplier() const override
-    {
-      double am = pet_melee_attack_t::action_multiplier();
-      /*
-            double motc_multiplier = p()->o()->passives.cyclone_strikes->effectN( 1 ).percent();
-
-            if ( p()->o()->conduit.calculated_strikes->ok() )
-              motc_multiplier += p()->o()->conduit.calculated_strikes.percent();
-
-            if ( p()->o()->spec.spinning_crane_kick_2_ww->ok() )
-              am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
-
-            if ( p()->o()->buff.dance_of_chiji_hidden->up() )
-              am *= 1 + p()->o()->talent.dance_of_chiji->effectN( 1 ).percent();
-      */
-      return am;
-    }
   };
 
   struct sinister_teaching_tiger_adept_spinning_crane_kick_t : public pet_melee_attack_t
@@ -2439,12 +2359,8 @@ public:
 
       tick_action = new sinister_teaching_tiger_adept_spinning_crane_kick_tick_t( p );
 
-      // We only want the monk to cast Spinning Crane Kick 2 times during the duration.
-      // Increase the cooldown for non-windwalkers so that it only casts 2 times.
-      if ( o()->specialization() == MONK_WINDWALKER )
-        cooldown->duration = timespan_t::from_seconds( 3.6 );
-      else
-        cooldown->duration = timespan_t::from_seconds( 3 );
+      cooldown->duration = timespan_t::from_seconds( 2 );
+      trigger_gcd        = timespan_t::from_seconds( 1.5 );
     }
 
     // N full ticks, but never additional ones.
@@ -2470,8 +2386,8 @@ public:
     // Only cast Fists of Fury for Windwalker specialization
     if ( owner->specialization() == MONK_WINDWALKER )
       action_list_str += "/fists_of_fury";
-    action_list_str += "/spinning_crane_kick,if=active_enemies>1";
-    action_list_str += "/tiger_palm,if=active_enemies=1";
+    action_list_str += "/spinning_crane_kick,if=active_enemies>1&!prev_gcd.1.spinning_crane_kick";
+    action_list_str += "/tiger_palm";
 
     monk_pet_t::init_action_list();
   }
