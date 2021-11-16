@@ -1228,7 +1228,7 @@ public:
 
   double composite_player_multiplier( school_e school ) const override
   {
-    double cpm = owner->cache.player_multiplier( school );
+    double cpm = monk_pet_t::composite_player_multiplier( school );
 
     if ( o()->conduit.xuens_bond->ok() )
       cpm *= 1 + o()->conduit.xuens_bond.percent();
@@ -1343,7 +1343,7 @@ public:
 
   double composite_player_multiplier( school_e school ) const override
   {
-    double cpm = owner->cache.player_multiplier( school );
+    double cpm = monk_pet_t::composite_player_multiplier( school );
 
     if ( o()->conduit.xuens_bond->ok() )
       cpm *= 1 + o()->conduit.xuens_bond.percent();
@@ -1617,7 +1617,7 @@ public:
 
   double composite_player_multiplier( school_e school ) const override
   {
-    double cpm = o()->cache.player_multiplier( school );
+    double cpm = monk_pet_t::composite_player_multiplier( school );
 
     if ( o()->conduit.imbued_reflections->ok() )
       cpm *= 1 + o()->conduit.imbued_reflections.percent();
@@ -1665,6 +1665,8 @@ public:
     {
       parse_options( options_str );
 
+      // Currently the Tiger Adept is munching the first tick due to being summoned
+      // and immediately cast Fist of Fury.
       if ( p->o()->bugs )
         tick_zero = false;
       else
@@ -1884,7 +1886,7 @@ public:
 
   double composite_player_multiplier( school_e school ) const override
   {
-    double cpm = o()->cache.player_multiplier( school );
+    double cpm = monk_pet_t::composite_player_multiplier( school );
 
     if ( o()->conduit.imbued_reflections->ok() )
       cpm *= 1 + o()->conduit.imbued_reflections.percent();
@@ -2069,7 +2071,7 @@ public:
 
   double composite_player_multiplier( school_e school ) const override
   {
-    double cpm = o()->cache.player_multiplier( school );
+    double cpm = monk_pet_t::composite_player_multiplier( school );
 
     if ( o()->conduit.imbued_reflections->ok() )
       cpm *= 1 + o()->conduit.imbued_reflections.percent();
@@ -2207,7 +2209,7 @@ public:
 
   double composite_player_multiplier( school_e school ) const override
   {
-    double cpm = o()->cache.player_multiplier( school );
+    double cpm = monk_pet_t::composite_player_multiplier ( school );
 
     if ( o()->conduit.imbued_reflections->ok() )
       cpm *= 1 + o()->conduit.imbued_reflections.percent();
@@ -2480,7 +2482,7 @@ public:
 
   double composite_player_multiplier( school_e school ) const override
   {
-    double cpm = o()->cache.player_multiplier( school );
+    double cpm = monk_pet_t::composite_player_multiplier( school );
 
     if ( o()->conduit.imbued_reflections->ok() )
       cpm *= 1 + o()->conduit.imbued_reflections.percent();
@@ -2669,7 +2671,7 @@ public:
 
   double composite_player_multiplier( school_e school ) const override
   {
-    double cpm = o()->cache.player_multiplier( school );
+    double cpm = monk_pet_t::composite_player_multiplier( school );
 
     if ( o()->conduit.imbued_reflections->ok() )
       cpm *= 1 + o()->conduit.imbued_reflections.percent();
