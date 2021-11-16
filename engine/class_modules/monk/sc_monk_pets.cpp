@@ -2256,6 +2256,8 @@ public:
     {
       parse_options( options_str );
 
+      // Currently the Tiger Adept is munching the first tick due to being summoned
+      // and immediately cast Fist of Fury.
       if ( p->o()->bugs )
         tick_zero = false;
       else
