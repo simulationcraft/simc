@@ -3664,7 +3664,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         struct in_flight_multi_expr_t : public expr_t
         {
           const std::vector<action_t*> action_list;
-          in_flight_multi_expr_t( const std::vector<action_t*> al ) : expr_t( "in_flight" ), action_list( std::move( al ) )
+          in_flight_multi_expr_t( std::vector<action_t*> al ) : expr_t( "in_flight" ), action_list( std::move( al ) )
           {
           }
           double evaluate() override
