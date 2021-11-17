@@ -1621,8 +1621,8 @@ void elemental_whirl( special_effect_t& effect )
     std::vector<buff_t*> buffs;
 
     public:
-    ew_proc_cb_t( const special_effect_t& effect, const std::vector<buff_t*>&& b ) :
-      dbc_proc_callback_t( effect.player, effect ), buffs( b )
+    ew_proc_cb_t( const special_effect_t& effect, std::vector<buff_t*> b ) :
+      dbc_proc_callback_t( effect.player, effect ), buffs( std::move( b ) )
     { }
 
     void execute( action_t* /* a */, action_state_t* /* state */ ) override
@@ -2739,8 +2739,8 @@ void secrets_of_the_deep( special_effect_t& effect )
   {
     std::vector<buff_t*> buffs;
 
-    sotd_cb_t( const special_effect_t& effect, const std::vector<buff_t*>&& b ) :
-      dbc_proc_callback_t( effect.player, effect ), buffs( b )
+    sotd_cb_t( const special_effect_t& effect, std::vector<buff_t*> b ) :
+      dbc_proc_callback_t( effect.player, effect ), buffs( std::move( b ) )
     { }
 
     void execute( action_t*, action_state_t* ) override
@@ -2777,8 +2777,8 @@ void combined_might( special_effect_t& effect )
   {
     std::vector<buff_t*> buffs;
 
-    combined_might_cb_t( const special_effect_t& effect, const std::vector<buff_t*>&& b ) :
-      dbc_proc_callback_t( effect.player, effect ), buffs( b )
+    combined_might_cb_t( const special_effect_t& effect, std::vector<buff_t*> b ) :
+      dbc_proc_callback_t( effect.player, effect ), buffs( std::move( b ) )
     { }
 
     void execute( action_t*, action_state_t* ) override
@@ -2851,8 +2851,8 @@ void relational_normalization_gizmo( special_effect_t& effect )
   {
     std::vector<buff_t*> buffs;
 
-    gizmo_cb_t( const special_effect_t& effect, const std::vector<buff_t*>&& b ) :
-      dbc_proc_callback_t( effect.player, effect ), buffs( b )
+    gizmo_cb_t( const special_effect_t& effect, std::vector<buff_t*> b ) :
+      dbc_proc_callback_t( effect.player, effect ), buffs( std::move( b ) )
     { }
 
     // TODO: Probability distribution?

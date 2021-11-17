@@ -343,8 +343,8 @@ struct SL_darkmoon_deck_t : public darkmoon_deck_t
   std::vector<const spell_data_t*> cards;
   const spell_data_t* top;
 
-  SL_darkmoon_deck_t( const special_effect_t& e, const std::vector<unsigned>&& c )
-    : darkmoon_deck_t( e ), card_ids( c ), top( spell_data_t::nil() )
+  SL_darkmoon_deck_t( const special_effect_t& e, std::vector<unsigned> c )
+    : darkmoon_deck_t( e ), card_ids( std::move( c ) ), top( spell_data_t::nil() )
   {}
 
   void initialize() override
