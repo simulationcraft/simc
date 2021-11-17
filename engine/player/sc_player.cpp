@@ -5645,9 +5645,10 @@ void player_t::arise()
 
   // Requires index-based lookup since on-arise callbacks may
   // insert new on-arise callbacks to the vector.
-  for ( const auto& cb : callbacks_on_arise )
+  for ( size_t i = 0; i < callbacks_on_arise.size(); ++i ) // NOLINT(modernize-loop-convert)
   {
-     // If the callback comes from a different actor, execute it only
+    auto& cb = callbacks_on_arise[ i ];
+    // If the callback comes from a different actor, execute it only
     // if that actor is active.
     if ( this == cb.first || cb.first->is_active() )
       cb.second();
