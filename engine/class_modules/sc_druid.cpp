@@ -8139,7 +8139,13 @@ void druid_t::init_base_stats()
 {
   // Set base distance based on spec
   if ( base.distance < 1 )
-    base.distance = ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) ? 5 : 30;
+  {
+    if ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ||
+         ( specialization() == DRUID_RESTORATION && talent.feral_affinity->ok() ) )
+      base.distance = 5;
+    else
+      base.distance = 30;
+  }
 
   player_t::init_base_stats();
 
