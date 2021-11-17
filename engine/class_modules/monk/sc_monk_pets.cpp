@@ -1632,7 +1632,14 @@ public:
     {
       background              = true;
       merge_report            = false;
-      aoe                     = (int)o()->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value() + ( o()->bugs ? 0 : 1 );
+      if ( p->o()->bugs )
+        aoe = 1 + o()->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value();
+      else
+      {
+        aoe                 = -1;
+        reduced_aoe_targets = o()->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value();
+        full_amount_targets = 1;
+      }
       attack_power_mod.direct = o()->passives.fallen_monk_fists_of_fury->effectN( 5 ).ap_coeff();
       ap_type                 = attack_power_type::WEAPON_BOTH;
       dot_duration            = timespan_t::zero();
@@ -1737,8 +1744,13 @@ public:
     {
       dual = background    = true;
       merge_report         = false;
-      aoe                 = -1;
-      reduced_aoe_targets = p->o()->spec.spinning_crane_kick->effectN( 1 ).base_value();
+      if ( p->o()->bugs )
+        aoe = p->o()->passives.fallen_monk_spinning_crane_kick->effectN( 1 ).base_value();
+      else
+      {
+        aoe                 = -1;
+        reduced_aoe_targets = p->o()->passives.fallen_monk_spinning_crane_kick->effectN( 1 ).base_value();
+      }
       trigger_mystic_touch = true;
 
       // Reset some variables to ensure proper execution
@@ -2232,7 +2244,15 @@ public:
     {
       background   = true;
       merge_report = false;
-      aoe          = (int)o()->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value() + ( o()->bugs ? 0 : 1 );
+      if ( p->o()->bugs )
+        aoe = 1 + o()->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value();
+      else
+      {
+        aoe                 = -1;
+        reduced_aoe_targets = o()->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value();
+        full_amount_targets = 1;
+      }
+
       attack_power_mod.direct = o()->passives.fallen_monk_fists_of_fury->effectN( 5 ).ap_coeff();
       ap_type                 = attack_power_type::WEAPON_BOTH;
       dot_duration            = timespan_t::zero();
@@ -2335,8 +2355,13 @@ public:
     {
       dual = background    = true;
       merge_report         = false;
-      aoe                  = -1;
-      reduced_aoe_targets  = p->o()->spec.spinning_crane_kick->effectN( 1 ).base_value();
+      if ( p->o()->bugs )
+        aoe = p->o()->passives.fallen_monk_spinning_crane_kick->effectN( 1 ).base_value();
+      else
+      {
+        aoe                 = -1;
+        reduced_aoe_targets = p->o()->passives.fallen_monk_spinning_crane_kick->effectN( 1 ).base_value();
+      }
       trigger_mystic_touch = true;
 
       // Reset some variables to ensure proper execution
