@@ -3210,7 +3210,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     struct last_used_expr_t : public expr_t
     {
       const std::vector<action_t*> action_list;
-      last_used_expr_t( std::vector<action_t*>&& al ) : expr_t( "last_used" ), action_list( al )
+      last_used_expr_t( std::vector<action_t*> al ) : expr_t( "last_used" ), action_list( std::move( al ) )
       {
       }
       double evaluate() override
@@ -3664,7 +3664,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         struct in_flight_multi_expr_t : public expr_t
         {
           const std::vector<action_t*> action_list;
-          in_flight_multi_expr_t( const std::vector<action_t*>&& al ) : expr_t( "in_flight" ), action_list( al )
+          in_flight_multi_expr_t( std::vector<action_t*> al ) : expr_t( "in_flight" ), action_list( std::move( al ) )
           {
           }
           double evaluate() override
@@ -3682,8 +3682,8 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
           const std::vector<action_t*> action_list;
           action_t& action;
 
-          in_flight_to_target_multi_expr_t( const std::vector<action_t*>&& al, action_t& a )
-            : expr_t( "in_flight_to_target" ), action_list( al ), action( a )
+          in_flight_to_target_multi_expr_t( std::vector<action_t*> al, action_t& a )
+            : expr_t( "in_flight_to_target" ), action_list( std::move( al ) ), action( a )
           {
           }
           double evaluate() override
@@ -3704,9 +3704,9 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         struct in_flight_remains_multi_expr_t : public expr_t
         {
           const std::vector<action_t*> action_list;
-          in_flight_remains_multi_expr_t( const std::vector<action_t*>&& al ) :
+          in_flight_remains_multi_expr_t( std::vector<action_t*> al ) :
             expr_t( "in_flight" ),
-            action_list( al )
+            action_list( std::move( al ) )
           { }
 
           double evaluate() override
