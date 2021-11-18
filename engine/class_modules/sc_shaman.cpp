@@ -7399,11 +7399,11 @@ void shaman_t::create_pets()
 
 std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
 {
-  std::vector<std::string> splits = util::string_split( name, "." );
+  auto splits = util::string_split<util::string_view>( name, "." );
 
   if ( splits.size() >= 3 && util::str_compare_ci( splits[ 0 ], "pet" ) )
   {
-    auto require_primal = splits[ 1 ].find( "primal_" ) != std::string::npos;
+    auto require_primal = splits[ 1 ].find( "primal_" ) != util::string_view::npos;
     auto et             = elemental::FIRE;
     if ( util::str_in_str_ci( splits[ 1 ], "fire" ) )
     {
