@@ -60,7 +60,7 @@ actions.standard+=/judgment,target_if=min:debuff.judgment.remains
 actions.standard+=/consecration,if=!consecration.up
 actions.standard+=/divine_toll
 actions.standard+=/blessed_hammer,strikes=2.4,if=charges=3
-actions.standard+=/ashen_hallow,if=buff.seraphim.up
+actions.standard+=/ashen_hallow,if=buff.seraphim.up|!talent.seraphim.enabled
 actions.standard+=/hammer_of_the_righteous,if=charges=2
 actions.standard+=/word_of_glory,if=buff.vanquishers_hammer.up
 actions.standard+=/blessed_hammer,strikes=2.4
