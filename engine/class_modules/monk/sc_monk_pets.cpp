@@ -1408,12 +1408,19 @@ private:
     {
       double b = pet_melee_attack_t::bonus_da( s );
 
-      auto purify_amount = o()->buff.recent_purifies->value();
-      auto actual_damage = purify_amount * o()->spec.invoke_niuzao_2->effectN( 1 ).percent();
-      double res = b + actual_damage;
-      o()->sim->print_debug( "applying bonus purify damage (base stomp: {}, original: {}, reduced: {})", b, purify_amount, actual_damage );
+      double b = pet_melee_attack_t::bonus_da( s );
 
-      return res;
+      auto purify_amount = o()->buff.recent_purifies->value();
+      auto actual_damage = purify_amount;
+
+      if ( o()->spec.invoke_niuzao_2->ok() )
+      {
+        actual_damage *= o()->spec.invoke_niuzao_2->effectN( 1 ).percent();
+        o()->sim->print_debug( "applying bonus purify damage (base stomp: {}, original: {}, reduced: {})", b,
+                               purify_amount, actual_damage );
+      }
+
+      return b + actual_damage;
     }
 
     double action_multiplier() const override
@@ -1519,12 +1526,16 @@ private:
       double b = pet_melee_attack_t::bonus_da( s );
 
       auto purify_amount = o()->buff.recent_purifies->value();
-      auto actual_damage = purify_amount * o()->spec.invoke_niuzao_2->effectN( 1 ).percent();
-      double res         = b + actual_damage;
-      o()->sim->print_debug( "applying bonus purify damage (base stomp: {}, original: {}, reduced: {})", b,
-                             purify_amount, actual_damage );
+      auto actual_damage = purify_amount;
 
-      return res;
+      if ( o()->spec.invoke_niuzao_2->ok() )
+      {
+        actual_damage *= o()->spec.invoke_niuzao_2->effectN( 1 ).percent();
+        o()->sim->print_debug( "applying bonus purify damage (base stomp: {}, original: {}, reduced: {})", b,
+                               purify_amount, actual_damage );
+      }
+
+      return b + actual_damage;
     }
 
     double action_multiplier() const override
