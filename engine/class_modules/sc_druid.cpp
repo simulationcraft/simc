@@ -128,7 +128,7 @@ struct druid_action_state_t : public action_state_t
   void copy_state( const action_state_t* s ) override
   {
     action_state_t::copy_state( s );
-    const druid_action_state_t* druid_s = debug_cast<const druid_action_state_t*>( s );
+    auto druid_s = debug_cast<const druid_action_state_t*>( s );
 
     free_cast = druid_s->free_cast;
   }
@@ -1795,7 +1795,7 @@ public:
 
   stats_t* init_free_cast_stats( free_cast_e f )
   {
-    for ( auto s : free_cast_stats )
+    for ( const auto& s : free_cast_stats )
       if ( s.type == f )
         return s.stats;
 
@@ -1807,7 +1807,7 @@ public:
 
   stats_t* get_free_cast_stats( free_cast_e f )
   {
-    for ( auto s : free_cast_stats )
+    for ( const auto& s : free_cast_stats )
       if ( s.type == f )
         return s.stats;
 
@@ -2027,7 +2027,7 @@ public:
   {
     double return_value = flat ? 0.0 : 1.0;
 
-    for ( auto i : buffeffects )
+    for ( const auto& i : buffeffects )
     {
       double eff_val = i.value;
 
@@ -3308,7 +3308,7 @@ struct rip_state_t : public druid_action_state_t
   void copy_state( const action_state_t* state ) override
   {
     druid_action_state_t::copy_state( state );
-    const rip_state_t* rip_state = debug_cast<const rip_state_t*>( state );
+    auto rip_state = debug_cast<const rip_state_t*>( state );
 
     combo_points = rip_state->combo_points;
   }
@@ -7209,7 +7209,7 @@ struct adaptive_swarm_t : public druid_spell_t
     void copy_state( const action_state_t* s ) override
     {
       druid_action_state_t::copy_state( s );
-      const adaptive_swarm_state_t* swarm_s = debug_cast<const adaptive_swarm_state_t*>( s );
+      auto swarm_s = debug_cast<const adaptive_swarm_state_t*>( s );
 
       stacks = swarm_s->stacks;
       jump   = swarm_s->jump;
@@ -7489,7 +7489,7 @@ struct adaptive_swarm_t : public druid_spell_t
 
 double brambles_handler( const action_state_t* s )
 {
-  druid_t* p = static_cast<druid_t*>( s->target );
+  auto p = static_cast<druid_t*>( s->target );
   assert( p->talent.brambles->ok() );
   assert( s );
 
@@ -7533,7 +7533,7 @@ double earthwarden_handler( const action_state_t* s )
   if ( s->action->special )
     return 0;
 
-  druid_t* p = static_cast<druid_t*>( s->target );
+  auto p = static_cast<druid_t*>( s->target );
   assert( p->talent.earthwarden->ok() );
 
   if ( !p->buff.earthwarden->up() )
@@ -10482,7 +10482,7 @@ void druid_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
 
-  druid_t* p = debug_cast<druid_t*>( source );
+  auto p = debug_cast<druid_t*>( source );
 
   predator_rppm_rate                   = p->predator_rppm_rate;
   initial_astral_power                 = p->initial_astral_power;
@@ -10540,7 +10540,7 @@ void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
 
     for ( size_t j = 0, end2 = stats->action_list.size(); j < end2; j++ )
     {
-      cat_attacks::cat_attack_t* a = dynamic_cast<cat_attacks::cat_attack_t*>( stats->action_list[ j ] );
+      auto a = dynamic_cast<cat_attacks::cat_attack_t*>( stats->action_list[ j ] );
       if ( !a )
         continue;
 
@@ -10699,7 +10699,7 @@ public:
 
       for ( size_t j = 0, end2 = stats->action_list.size(); j < end2; j++ )
       {
-        cat_attacks::cat_attack_t* a = dynamic_cast<cat_attacks::cat_attack_t*>( stats->action_list[ j ] );
+        auto a = dynamic_cast<cat_attacks::cat_attack_t*>( stats->action_list[ j ] );
         if ( !a )
           continue;
 
