@@ -5717,7 +5717,7 @@ struct spawn_of_serpentrix_t : public pet_t
   }
 
   action_t* create_action( ::util::string_view name,
-                           const std::string& options_str ) override
+                           ::util::string_view options_str ) override
   {
     if ( name == "magma_spit" ) return new magma_spit_t( this, damage_amount );
 

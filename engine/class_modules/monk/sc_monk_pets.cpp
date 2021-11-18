@@ -1070,7 +1070,7 @@ public:
     monk_pet_t::init_action_list();
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "auto_attack" )
       return new auto_attack_t( this, options_str );
@@ -1245,7 +1245,7 @@ public:
     pet_t::init_action_list();
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "crackling_tiger_lightning" )
       return new crackling_tiger_lightning_t( this, options_str );
@@ -1360,7 +1360,7 @@ public:
     pet_t::init_action_list();
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "crackling_tiger_lightning_call_to_arms" )
       return new call_to_arms_crackling_tiger_lightning_t( this, options_str );
@@ -1473,7 +1473,7 @@ public:
     pet_t::init_action_list();
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "stomp" )
       return new stomp_t( this, options_str );
@@ -1588,7 +1588,7 @@ public:
     pet_t::init_action_list();
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "stomp" )
       return new stomp_t( this, options_str );
@@ -1643,7 +1643,7 @@ public:
     monk_pet_t::init_action_list();
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "auto_attack" )
       return new auto_attack_t( this, options_str );
@@ -1943,7 +1943,7 @@ public:
     monk_pet_t::init_action_list();
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "auto_attack" )
       return new auto_attack_t( this, options_str );
@@ -2171,7 +2171,7 @@ public:
     monk_pet_t::init_action_list();
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "auto_attack" )
       return new auto_attack_t( this, options_str );
@@ -2270,7 +2270,7 @@ public:
     monk_pet_t::init_action_list();
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "enveloping_mist" )
       return new crane_adept_enveloping_mist_t( this, options_str );
@@ -2551,7 +2551,7 @@ public:
     monk_pet_t::init_action_list();
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "auto_attack" )
       return new auto_attack_t( this, options_str );
@@ -2784,7 +2784,7 @@ public:
     monk_pet_t::init_action_list();
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "auto_attack" )
       return new auto_attack_t( this, options_str );
@@ -2886,7 +2886,7 @@ public:
     monk_pet_t::init_action_list();
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "enveloping_mist" )
       return new sinister_teaching_crane_adept_enveloping_mist_t( this, options_str );

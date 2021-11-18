@@ -79,7 +79,7 @@ public:
 
 struct shadow_bolt_t : public affliction_spell_t
 {
-  shadow_bolt_t( warlock_t* p, const std::string& options_str )
+  shadow_bolt_t( warlock_t* p, util::string_view options_str )
     : affliction_spell_t( "Shadow Bolt", p, p->find_spell( 686 ) )
   {
     parse_options( options_str );
@@ -776,7 +776,7 @@ struct vile_taint_t : public affliction_spell_t
 
 struct dark_soul_t : public affliction_spell_t
 {
-  dark_soul_t( warlock_t* p, const std::string& options_str )
+  dark_soul_t( warlock_t* p, util::string_view options_str )
     : affliction_spell_t( "dark_soul", p, p->talents.dark_soul_misery )
   {
     parse_options( options_str );
@@ -799,7 +799,7 @@ using namespace buffs;
 }  // namespace buffs_affliction
 
 // add actions
-action_t* warlock_t::create_action_affliction( util::string_view action_name, const std::string& options_str )
+action_t* warlock_t::create_action_affliction( util::string_view action_name, util::string_view options_str )
 {
   using namespace actions_affliction;
 

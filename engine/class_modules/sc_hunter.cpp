@@ -669,7 +669,7 @@ public:
   void      create_options() override;
   std::unique_ptr<expr_t> create_expression( util::string_view expression_str ) override;
   std::unique_ptr<expr_t> create_action_expression( action_t&, util::string_view expression_str ) override;
-  action_t* create_action( util::string_view name, const std::string& options ) override;
+  action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t*    create_pet( util::string_view name, util::string_view type ) override;
   void      create_pets() override;
   resource_e primary_resource() const override { return RESOURCE_FOCUS; }
@@ -1548,7 +1548,7 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     return std::max( remains + lag, 100_ms );
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
 
   void init_spells() override;
 };
@@ -1681,7 +1681,7 @@ struct spitting_cobra_t final : public hunter_pet_t
   }
 
   action_t* create_action( util::string_view name,
-                           const std::string& options_str ) override
+                           util::string_view options_str ) override
   {
     if ( name == "cobra_spit" )
       return new cobra_spit_t( this, options_str );
@@ -2128,7 +2128,7 @@ hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t*
 // hunter_pet_t::create_action ==============================================
 
 action_t* hunter_main_pet_t::create_action( util::string_view name,
-                                            const std::string& options_str )
+                                            util::string_view options_str )
 {
   if ( name == "claw" ) return new        actions::basic_attack_t( this, "Claw", options_str );
   if ( name == "bite" ) return new        actions::basic_attack_t( this, "Bite", options_str );
@@ -5665,7 +5665,7 @@ std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expressio
 // hunter_t::create_action ==================================================
 
 action_t* hunter_t::create_action( util::string_view name,
-                                   const std::string& options_str )
+                                   util::string_view options_str )
 {
   using namespace attacks;
   using namespace spells;

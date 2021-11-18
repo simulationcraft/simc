@@ -736,7 +736,7 @@ public:
   void reset() override;
   std::unique_ptr<expr_t> create_expression( util::string_view ) override;
   std::unique_ptr<expr_t> create_action_expression( action_t&, util::string_view ) override;
-  action_t* create_action( util::string_view, const std::string& ) override;
+  action_t* create_action( util::string_view, util::string_view ) override;
   void create_actions() override;
   void create_pets() override;
   resource_e primary_resource() const override { return RESOURCE_MANA; }
@@ -870,7 +870,7 @@ struct water_elemental_pet_t final : public mage_pet_t
     mage_pet_t::init_action_list();
   }
 
-  action_t* create_action( util::string_view, const std::string& ) override;
+  action_t* create_action( util::string_view, util::string_view ) override;
   void      create_actions() override;
 };
 
@@ -899,7 +899,7 @@ struct freeze_t final : public mage_pet_spell_t
   }
 };
 
-action_t* water_elemental_pet_t::create_action( util::string_view name, const std::string& options_str )
+action_t* water_elemental_pet_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "waterbolt" ) return new waterbolt_t( name, this, options_str );
 
@@ -929,7 +929,7 @@ struct mirror_image_pet_t final : public mage_pet_t
     owner_coeff.sp_from_sp = 0.55;
   }
 
-  action_t* create_action( util::string_view, const std::string& ) override;
+  action_t* create_action( util::string_view, util::string_view ) override;
 
   void init_action_list() override
   {
@@ -953,7 +953,7 @@ struct frostbolt_t final : public mage_pet_spell_t
   }
 };
 
-action_t* mirror_image_pet_t::create_action( util::string_view name, const std::string& options_str )
+action_t* mirror_image_pet_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "frostbolt" ) return new frostbolt_t( name, this, options_str );
 
@@ -5787,7 +5787,7 @@ void mage_t::trigger_sinful_delight( specialization_e spec )
     cooldowns.mirrors_of_torment->adjust( -runeforge.sinful_delight->effectN( 1 ).time_value() );
 }
 
-action_t* mage_t::create_action( util::string_view name, const std::string& options_str )
+action_t* mage_t::create_action( util::string_view name, util::string_view options_str )
 {
   using namespace actions;
 

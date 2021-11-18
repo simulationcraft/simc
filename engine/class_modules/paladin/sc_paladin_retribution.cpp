@@ -798,7 +798,7 @@ void paladin_t::create_ret_actions()
   }
 }
 
-action_t* paladin_t::create_action_retribution( util::string_view name, const std::string& options_str )
+action_t* paladin_t::create_action_retribution( util::string_view name, util::string_view options_str )
 {
   if ( name == "blade_of_justice"          ) return new blade_of_justice_t         ( this, options_str );
   if ( name == "crusade"                   ) return new crusade_t                  ( this, options_str );

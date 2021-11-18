@@ -1704,7 +1704,7 @@ double priest_t::matching_gear_multiplier( attribute_e attr ) const
   return 0.0;
 }
 
-action_t* priest_t::create_action( util::string_view name, const std::string& options_str )
+action_t* priest_t::create_action( util::string_view name, util::string_view options_str )
 {
   using namespace actions::spells;
   using namespace actions::heals;

@@ -901,7 +901,7 @@ public:
   double matching_gear_multiplier( attribute_e attr ) const override;
   std::unique_ptr<expr_t> create_action_expression(action_t& a, util::string_view name_str) override;
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
-  action_t* create_action( util::string_view name, const std::string& options ) override;
+  action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type ) override;
   void create_pets() override;
   resource_e primary_resource() const override;
@@ -1089,7 +1089,7 @@ struct force_of_nature_t : public pet_t
 
   resource_e primary_resource() const override { return RESOURCE_NONE; }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "auto_attack" )
       return new auto_attack_t( this );
@@ -4338,7 +4338,7 @@ struct bear_melee_t : public bear_attack_t
 
 struct berserk_bear_t : public bear_attack_t
 {
-  berserk_bear_t( druid_t* p, const std::string& o )
+  berserk_bear_t( druid_t* p, util::string_view o )
     : bear_attack_t( "berserk_bear", p, p->find_specialization_spell( "berserk" ), o )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
@@ -7725,7 +7725,7 @@ void druid_t::activate()
 
 // druid_t::create_action  ==================================================
 
-action_t* druid_t::create_action( util::string_view name, const std::string& options_str )
+action_t* druid_t::create_action( util::string_view name, util::string_view options_str )
 {
   using namespace cat_attacks;
   using namespace bear_attacks;
