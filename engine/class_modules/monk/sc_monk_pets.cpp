@@ -1406,9 +1406,7 @@ private:
 
     double bonus_da( const action_state_t* s ) const override
     {
-      double b = pet_melee_attack_t::bonus_da( s );
-
-      double b = pet_melee_attack_t::bonus_da( s );
+      auto b = pet_melee_attack_t::bonus_da( s );
 
       auto purify_amount = o()->buff.recent_purifies->value();
       auto actual_damage = purify_amount;
@@ -1523,7 +1521,7 @@ private:
 
     double bonus_da( const action_state_t* s ) const override
     {
-      double b = pet_melee_attack_t::bonus_da( s );
+      auto b = pet_melee_attack_t::bonus_da( s );
 
       auto purify_amount = o()->buff.recent_purifies->value();
       auto actual_damage = purify_amount;
