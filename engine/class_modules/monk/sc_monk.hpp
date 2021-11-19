@@ -640,6 +640,10 @@ public:
     const spell_data_t* call_to_arms_invoke_yulon;
     const spell_data_t* call_to_arms_invoke_chiji;
     const spell_data_t* call_to_arms_empowered_tiger_lightning;
+
+    // Tier 28
+    const spell_data_t* primordial_potential;
+    const spell_data_t* primordial_power;
   } passives;
 
   // RPPM objects
