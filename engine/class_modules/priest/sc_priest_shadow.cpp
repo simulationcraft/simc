@@ -1696,6 +1696,8 @@ struct shadowform_state_t final : public priest_buff_t<buff_t>
 // ==========================================================================
 struct dark_thought_t final : public priest_buff_t<buff_t>
 {
+  timespan_t your_shadow_duration;
+
   dark_thought_t( priest_t& p ) : base_t( p, "dark_thought", p.specs.dark_thought )
   {
     // Allow player to react to the buff being applied so they can cast Mind Blast.
@@ -1704,6 +1706,8 @@ struct dark_thought_t final : public priest_buff_t<buff_t>
     // Create a stack change callback to adjust the number of mindblast charges.
     set_stack_change_callback(
         [ this ]( buff_t*, int old, int cur ) { priest().cooldowns.mind_blast->adjust_max_charges( cur - old ); } );
+
+    your_shadow_duration = p.find_spell( 363469 )->effectN( 2 ).time_value();
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1728,7 +1732,7 @@ struct dark_thought_t final : public priest_buff_t<buff_t>
       else
       {
         auto pet = priest().pets.your_shadow.active_pet();
-        pet->adjust_duration( priest().pets.your_shadow.duration() );
+        pet->adjust_duration( your_shadow_duration );
       }
     }
 
