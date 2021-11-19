@@ -576,12 +576,6 @@ struct monk_spell_t : public monk_action_t<spell_t>
     if ( ww_mastery && p()->buff.combo_strikes->up() )
       pm *= 1 + p()->cache.mastery_value();
 
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
-    {
-      if ( base_t::data().affected_by( p()->passives.primordial_power->effectN( 1 ) ) )
-        pm *= 1 + p()->passives.primordial_power->effectN( 1 ).percent();
-    }
-
     return pm;
   }
 
@@ -943,12 +937,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
         am *= 1 + serenity_multiplier;
       }
-    }
-
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
-    {
-      if ( base_t::data().affected_by( p()->passives.primordial_power->effectN( 1 ) ) )
-        am *= 1 + p()->passives.primordial_power->effectN( 1 ).percent();
     }
 
     // Increases just physical damage
