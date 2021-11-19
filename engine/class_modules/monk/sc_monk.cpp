@@ -1986,6 +1986,9 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     if ( p()->conduit.inner_fury->ok() )
       am *= 1 + p()->conduit.inner_fury.percent();
 
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B2 ) )
+      am *= 1 + p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B2 );
+
     return am;
   }
 
@@ -7846,6 +7849,10 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
 
     s->result_amount *= ( 1.0 + reduction );
   }
+
+  // TODO update to new Target
+  if ( sets->has_set_bonus( MONK_BREWMASTER, T28, B2 ) /* && td( s )->dots.breath_of_fire->is_ticking() */ )
+    s->result_amount *= 1.0 + sets->set( MONK_BREWMASTER, T28, B2 )->effectN( 1 ).percent();
 
   // Touch of Karma Absorbtion
   if ( buff.touch_of_karma->up() )
