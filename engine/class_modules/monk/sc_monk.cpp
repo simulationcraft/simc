@@ -5692,6 +5692,9 @@ struct stagger_buff_t : public monk_buff_t<buff_t>
 // ===============================================================================
 // Tier 28 Primordial Potential
 // ===============================================================================
+// TODO: check if buff is stacking
+// If so need to move Primordial Power trigger to max stack.
+// Don't want to trigger this if less than max stack.
 
 struct primordial_potential_buff_t : public monk_buff_t<buff_t>
 {
@@ -6884,6 +6887,9 @@ void monk_t::create_buffs()
   buff.flames_of_primordium = make_buff( this, "flames_of_primordium", find_spell( 364101 ) );
   buff.primordial_potential =
       new buffs::primordial_potential_buff_t( *this, "primordial_potential", find_spell( 363911 ) );
+  // TODO: We need to decrement this buff from a valid ability after the damage is done
+  // For example RSK's Damage is separate from the trigger ability
+  // or FoF needs to benefit from the entire channel.
   buff.primordial_power = make_buff( this, "primordial_power", find_spell( 363924 ) );
 }
 
