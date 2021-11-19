@@ -1213,6 +1213,10 @@ struct tank_dummy_enemy_t : public enemy_t
         Sanctum of Domination Nomral: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
         Sanctum of Domination Heroic: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
         Sanctum of Domination Mythic: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
+        Sepulcher of the First Ones LFR: N/A (ExpectedStatModID: 203; ArmorConstMod: N/A)
+        Sepulcher of the First Ones Nomral: 2500.0 (ExpectedStatModID: 200; ArmorConstMod: 1.000)
+        Sepulcher of the First Ones Heroic: 2967.5 (ExpectedStatModID: 201; ArmorConstMod: 1.187)
+        Sepulcher of the First Ones Mythic: 2780.0 (ExpectedStatModID: 202; ArmorConstMod: 1.112)
       */
       double k_value = dbc->armor_mitigation_constant( sim->max_player_level );
 

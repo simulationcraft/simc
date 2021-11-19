@@ -5238,12 +5238,6 @@ struct vanish_t : public stealth_like_buff_t<buff_t>
         r->cooldowns.marked_for_death, r->cooldowns.riposte, r->cooldowns.roll_the_bones, r->cooldowns.secret_technique,
         r->cooldowns.sepsis, r->cooldowns.serrated_bone_spike, r->cooldowns.shadow_blades, r->cooldowns.shadow_dance,
         r->cooldowns.shiv, r->cooldowns.sprint, r->cooldowns.symbols_of_death, r->cooldowns.vendetta };
-
-      // 11/06/2021 -- CDR is applied twice to Dreadblades: https://github.com/SimCMinMax/WoW-BugTracker/issues/821
-      if ( r->bugs )
-      {
-        shadowdust_cooldowns.push_back( r->cooldowns.dreadblades );
-      }
     }
   }
 

@@ -1660,8 +1660,8 @@ struct injector_proc_cb_t : public dbc_proc_callback_t
   stat_buff_t* large_buff;
 
   injector_proc_cb_t( const special_effect_t& effect,
-    const std::vector<stat_buff_t*>&& small_buffs_, stat_buff_t* large_buff_ ) :
-    dbc_proc_callback_t( effect.item, effect ), small_buffs( small_buffs_ ), large_buff( large_buff_ )
+    std::vector<stat_buff_t*> small_buffs_, stat_buff_t* large_buff_ ) :
+    dbc_proc_callback_t( effect.item, effect ), small_buffs( std::move( small_buffs_ ) ), large_buff( large_buff_ )
   { }
 
   void execute( action_t* /* a */, action_state_t* /* state */ ) override
@@ -3276,8 +3276,8 @@ struct dreadstone_proc_cb_t : public dbc_proc_callback_t
 {
   const std::vector<stat_buff_t*> buffs;
 
-  dreadstone_proc_cb_t( const special_effect_t& effect, const std::vector<stat_buff_t*>&& buffs_ ) :
-    dbc_proc_callback_t( effect.item, effect ), buffs( buffs_ )
+  dreadstone_proc_cb_t( const special_effect_t& effect, std::vector<stat_buff_t*> buffs_ ) :
+    dbc_proc_callback_t( effect.item, effect ), buffs( std::move( buffs_ ) )
   { }
 
   void execute( action_t* /* a */, action_state_t* /* state */ ) override

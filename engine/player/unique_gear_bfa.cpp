@@ -784,8 +784,8 @@ void items::incessantly_ticking_clock( special_effect_t& effect )
     std::vector<buff_t*> buffs;
     size_t state;
 
-    clock_cb_t( const special_effect_t& effect, const std::vector<buff_t*>&& b )
-      : dbc_proc_callback_t( effect.player, effect ), buffs( b ), state( 0U )
+    clock_cb_t( const special_effect_t& effect, std::vector<buff_t*> b )
+      : dbc_proc_callback_t( effect.player, effect ), buffs( std::move( b ) ), state( 0U )
     {
     }
 
@@ -1327,8 +1327,8 @@ void items::harlans_loaded_dice( special_effect_t& effect )
   {
     std::vector<std::vector<buff_t*>> buffs;
 
-    harlans_cb_t( const special_effect_t& effect, const std::vector<std::vector<buff_t*>>&& b )
-      : dbc_proc_callback_t( effect.item, effect ), buffs( b )
+    harlans_cb_t( const special_effect_t& effect, std::vector<std::vector<buff_t*>> b )
+      : dbc_proc_callback_t( effect.item, effect ), buffs( std::move( b ) )
     {
     }
 

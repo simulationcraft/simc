@@ -12,6 +12,7 @@
 #include "player/soulbinds.hpp"
 #include "simulationcraft.hpp"
 #include "dbc/racial_spells.hpp"
+#include "util/util.hpp"
 #include <cctype>
 #include <memory>
 
@@ -3692,8 +3693,7 @@ void unique_gear::initialize_special_effect( special_effect_t& effect,
     if ( ! dbitem -> encoded_options.empty() )
     {
       std::string encoded_options = dbitem -> encoded_options;
-      for ( char encoded_option : encoded_options )
-        encoded_option = std::tolower( encoded_option );
+      util::tolower( encoded_options );
       // Note, if the encoding parse fails (this should never ever happen),
       // we don't parse game client data either.
       special_effect::parse_special_effect_encoding( effect, encoded_options );
