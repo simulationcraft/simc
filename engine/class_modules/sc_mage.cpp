@@ -391,6 +391,9 @@ public:
     buff_t* infernal_cascade;
 
     buff_t* siphoned_malice;
+
+    // Set bonus
+    buff_t* fiery_rush;
   } buffs;
 
   // Cooldowns
@@ -1001,13 +1004,22 @@ struct combustion_t final : public buff_t
     set_default_value_from_effect( 1 );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
     modify_duration( p->spec.combustion_2->effectN( 1 ).time_value() );
+    // TODO:
+    // * 9.2 spelldata
+    // * SKB interactions
+    modify_duration( p->options.t28_2pc ? 2.0_s : 0_ms );
 
-    set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+    set_stack_change_callback( [ this, p ] ( buff_t*, int old, int cur )
     {
-      if ( cur == 0 )
+      if ( old == 0 )
+      {
+        p->buffs.fiery_rush->trigger();
+      }
+      else if ( cur == 0 )
       {
         player->stat_loss( STAT_MASTERY_RATING, current_amount );
         current_amount = 0.0;
+        p->buffs.fiery_rush->expire();
       }
     } );
 
@@ -4275,6 +4287,16 @@ struct fire_blast_t final : public fire_mage_spell_t
     if ( result_is_hit( s->result ) && p()->buffs.combustion->check() )
       p()->buffs.infernal_cascade->trigger();
   }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = fire_mage_spell_t::recharge_multiplier( cd );
+
+    if ( &cd == cooldown )
+      m /= 1.0 + p()->buffs.fiery_rush->check_value();
+
+    return m;
+  }
 };
 
 // Living Bomb Spell ========================================================
@@ -4680,6 +4702,16 @@ struct phoenix_flames_t final : public fire_mage_spell_t
   {
     timespan_t t = fire_mage_spell_t::travel_time();
     return std::min( t, 0.75_s );
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = fire_mage_spell_t::recharge_multiplier( cd );
+
+    if ( &cd == cooldown )
+      m /= 1.0 + p()->buffs.fiery_rush->check_value();
+
+    return m;
   }
 };
 
@@ -6397,6 +6429,20 @@ void mage_t::create_buffs()
   buffs.siphoned_malice = make_buff( this, "siphoned_malice", find_spell( 337090 ) )
                              ->set_default_value( conduits.siphoned_malice.percent() )
                              ->set_chance( conduits.siphoned_malice.ok() );
+
+  // Set bonus
+  // TODO:
+  // * 9.2 spell data
+  // * SKB interactions
+  // * flat CD reduction interactions
+  buffs.fiery_rush = make_buff( this, "fiery_rush" )
+                       ->set_default_value( 1.0 )
+                       ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
+                         {
+                           cooldowns.fire_blast->adjust_recharge_multiplier();
+                           cooldowns.phoenix_flames->adjust_recharge_multiplier();
+                         } )
+                       ->set_chance( options.t28_4pc );
 }
 
 void mage_t::init_gains()
