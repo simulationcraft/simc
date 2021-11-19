@@ -971,7 +971,7 @@ void download_item_data( item_t& item, cache::behavior_e caching )
     {
       const rapidjson::Value& sockets = js[ "socketInfo" ][ "sockets" ];
 
-    for (rapidjson::SizeType i = 0, n = as<rapidjson::SizeType>( std::min(static_cast< size_t >(sockets.Size()), range::size(item.parsed.data.socket_color))); i < n; ++i)
+    for (rapidjson::SizeType i = 0, n = as<rapidjson::SizeType>( std::min(static_cast< size_t >(sockets.Size()), std::size(item.parsed.data.socket_color))); i < n; ++i)
       {
         if ( ! sockets[ i ].HasMember( "type" ) )
           continue;

@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <numeric>
 #include <functional>
 #include <type_traits>
 
@@ -85,8 +86,8 @@ protected:
   noncopyable( noncopyable&& ) = default;
   noncopyable& operator=( noncopyable&& ) = default;
 
-  noncopyable( const noncopyable& ) = delete;
-  noncopyable& operator=( const noncopyable& ) = delete;
+  noncopyable( const noncopyable& ) = delete; // NOLINT(modernize-use-equals-delete)
+  noncopyable& operator=( const noncopyable& ) = delete; // NOLINT(modernize-use-equals-delete)
 };
 
 /**
@@ -99,8 +100,8 @@ class nonmoveable : private noncopyable
 {
 protected:
   nonmoveable()                = default;
-  nonmoveable( nonmoveable&& ) = delete;
-  nonmoveable& operator=( nonmoveable&& ) = delete;
+  nonmoveable( nonmoveable&& ) = delete; // NOLINT(modernize-use-equals-delete)
+  nonmoveable& operator=( nonmoveable&& ) = delete; // NOLINT(modernize-use-equals-delete)
 };
 
 // Adapted from (read "stolen") boost::checked_deleter
@@ -109,7 +110,7 @@ struct delete_disposer_t
   template <typename T>
   void operator()( T* t ) const
   {
-    typedef int force_T_to_be_complete[ sizeof( T ) ? 1 : -1 ];
+    using force_T_to_be_complete = int[ sizeof( T ) ? 1 : -1 ]; // NOLINT(modernize-avoid-c-arrays)
     (void)sizeof( force_T_to_be_complete );
     delete t;
   }
@@ -206,17 +207,6 @@ using iterator_t = decltype(range::begin(std::declval<R&>()));
 template <typename R>
 using value_type_t = typename std::iterator_traits<iterator_t<R>>::value_type;
 
-// std::size ================================================================
-
-template <typename C>
-constexpr auto size(const C& c) -> decltype(c.size()) {
-  return c.size();
-}
-template <typename T, size_t N>
-constexpr size_t size(const T (&)[N]) noexcept {
-  return N;
-}
-
 // Default projection for projection-enabled algorithms =====================
 
 struct identity {
@@ -275,6 +265,28 @@ inline Range& fill( Range& r, value_type_t<Range> const& t )
 {
   std::fill( range::begin( r ), range::end( r ), t );
   return r;
+}
+
+template <typename Range, typename T>
+inline Range& accumulate( Range& r, const T& init )
+{
+  return std::accumulate( range::begin( r ), range::end( r ), init );
+}
+
+template <typename Range, typename T, typename BinaryOperation>
+inline Range& accumulate( Range& r, const T& init, BinaryOperation o )
+{
+  return std::accumulate( range::begin( r ), range::end( r ), init, o );
+}
+
+// This could probably be done with some SFINAE magic, for now just add a suffix
+template <typename Range, typename T, typename Proj>
+inline T accumulate_proj( Range& r, const T& init, Proj proj )
+{
+  const auto op = [&proj]( const T& current, auto&& v ) {
+    return range::invoke( proj, std::forward<decltype(v)>( v ) ) + current;
+  };
+  return std::accumulate( range::begin( r ), range::end( r ), init, op );
 }
 
 #if defined( SC_GCC )

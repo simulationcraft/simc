@@ -26,6 +26,6 @@ util::span<const curve_point_t> curve_point_t::find( unsigned id, bool ptr )
     return {};
   }
 
-  return util::span<const curve_point_t>( r.first, r.second );
+  return { r.first, r.second };
 }
 

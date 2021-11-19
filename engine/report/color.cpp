@@ -171,7 +171,7 @@ rgb resource_color( resource_e type )
       return class_color( MONK );
 
     case RESOURCE_MAELSTROM:
-      return rgb( "FF9900" );
+      return { "FF9900" };
 
     case RESOURCE_RUNE:
       return class_color( MAGE );

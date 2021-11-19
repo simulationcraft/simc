@@ -121,3 +121,34 @@ main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=sinful_revel
 off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
 
 save=T27_Monk_Windwalker_Necrolord.simc
+
+# Venthyr Windwalker
+monk="T27_Monk_Windwalker_Venthyr"
+level=60
+race=mechagnome
+spec=windwalker
+role=attack
+position=back
+talents=2020012
+covenant=venthyr
+soulbind=theotar_the_mad_duke:9,soothing_shade/coordinated_offensive:9:1/wasteland_propriety/imbued_reflections:9:1/its_always_tea_time/party_favors
+renown=80
+
+head=cap_of_writhing_malevolence,id=186292,bonus_id=7187/1498,gem_id=187318
+neck=azurevenom_choker,id=180115,bonus_id=6536/1566/6646/6935,gem_id=173129
+shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187315
+back=blighted_margraves_cloak,id=178755,bonus_id=6536/1566/6646,enchant=soul_vitality
+chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498,gem_id=187312,enchant=eternal_skirmish
+wrists=bands_of_the_undergrowth,id=178702,bonus_id=6536/1566/6646/6935,gem_id=173129
+hands=loyal_kvaldirs_handwraps,id=186295,bonus_id=7187/1498,gem_id=187313
+waist=girdle_of_shattered_dreams,id=178805,bonus_id=6536/1566/6646/6935,gem_id=173129
+legs=elite_aranakk_breeches,id=186331,bonus_id=7187/1498
+feet=daschlas_defiant_treads,id=186299,bonus_id=7187/1498,gem_id=187314,enchant=eternal_agility
+finger1=shadowghast_ring,id=178926,bonus_id=7726/1559/6650/6647/6935,gem_id=173129,enchant=tenet_of_versatility
+finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
+trinket2=salvaged_fusion_amplifier,id=186432,bonus_id=7187/1498
+main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
+off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
+
+save=T27_Monk_Windwalker_Venthyr.simc

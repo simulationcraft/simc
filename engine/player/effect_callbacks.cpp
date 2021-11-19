@@ -197,7 +197,7 @@ void effect_callbacks_t::register_callback(unsigned proc_flags,
 {
   // We cannot default the "what kind of abilities proc this callback" flags,
   // they need to be non-zero
-  assert(proc_flags != 0 && cb != 0);
+  assert(proc_flags != 0 && cb != nullptr);
 
   if (sim->debug)
     sim->out_debug.printf("Registering callback proc_flags=%#.8x proc_flags2=%#.8x",

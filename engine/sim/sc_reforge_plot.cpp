@@ -81,10 +81,9 @@ void reforge_plot_t::generate_stat_mods(
     if ( abs( sum ) > reforge_plot_amount )
       return;
 
-    for ( size_t i = 0; i < sim->player_no_pet_list.size(); ++i )
+    for ( auto* p : sim->player_no_pet_list )
     {
-      player_t* p = sim->player_no_pet_list[ i ];
-      if ( p->quiet )
+       if ( p->quiet )
         continue;
       if ( p->initial.stats.get_stat( stat_indices[ cur_mod_stat ] ) - sum < 0 )
         return;
@@ -99,10 +98,9 @@ void reforge_plot_t::generate_stat_mods(
         mod_amount <= reforge_plot_amount; mod_amount += reforge_plot_step )
   {
     bool negative_stat = false;
-    for ( size_t i = 0; i < sim->player_no_pet_list.size(); ++i )
+    for ( auto* p : sim->player_no_pet_list )
     {
-      player_t* p = sim->player_no_pet_list[ i ];
-      if ( p->quiet )
+       if ( p->quiet )
         continue;
       if ( p->initial.stats.get_stat( stat_indices[ cur_mod_stat ] ) +
                mod_amount <
@@ -141,10 +139,10 @@ void reforge_plot_t::analyze_stats()
   // Create vector of all stat_add combinations recursively
   std::vector<int> cur_stat_mods( reforge_plot_stat_indices.size() );
 
-  std::vector<std::vector<int>> stat_mods;
-  generate_stat_mods( stat_mods, reforge_plot_stat_indices, 0, cur_stat_mods );
+  std::vector<std::vector<int>> stat_mod_combos;
+  generate_stat_mods( stat_mod_combos, reforge_plot_stat_indices, 0, cur_stat_mods );
 
-  num_stat_combos = as<int>( stat_mods.size() );
+  num_stat_combos = as<int>( stat_mod_combos.size() );
 
   if ( reforge_plot_debug )
   {
@@ -158,22 +156,22 @@ void reforge_plot_t::analyze_stats()
     sim->out_log.raw() << "\n";
 
     sim->out_log.raw() << "Reforge Plot Stat Mods:\n";
-    for ( size_t i = 0; i < stat_mods.size(); i++ )
+    for ( const auto& combo : stat_mod_combos )
     {
-      for ( size_t j = 0; j < stat_mods[ i ].size(); j++ )
+      for ( size_t j = 0; j < combo.size(); j++ )
         sim->out_log.raw().print(
             "{}: {} ", util::stat_type_string( reforge_plot_stat_indices[ j ] ),
-            stat_mods[ i ][ j ] );
+            combo[ j ] );
       sim->out_log.raw() << "\n";
     }
   }
 
-  for ( size_t i = 0; i < stat_mods.size(); i++ )
+  for ( size_t i = 0; i < stat_mod_combos.size(); i++ )
   {
     if ( sim->is_canceled() )
       break;
 
-    std::vector<plot_data_t> delta_result( stat_mods[ i ].size() + 1 );
+    std::vector<plot_data_t> delta_result( stat_mod_combos[ i ].size() + 1 );
 
     current_reforge_sim = new sim_t( sim );
     if ( reforge_plot_iterations > 0 )
@@ -182,17 +180,17 @@ void reforge_plot_t::analyze_stats()
     }
 
     std::stringstream s;
-    for ( size_t j = 0; j < stat_mods[ i ].size(); j++ )
+    for ( size_t j = 0; j < stat_mod_combos[ i ].size(); j++ )
     {
       stat_e stat = reforge_plot_stat_indices[ j ];
-      int mod     = stat_mods[ i ][ j ];
+      int mod     = stat_mod_combos[ i ][ j ];
 
       current_reforge_sim -> enchant.add_stat( stat, mod );
       delta_result[ j ].value = mod;
       delta_result[ j ].error = 0;
 
       s << util::to_string( mod ) << " " << util::stat_type_abbrev( stat );
-      if ( j < stat_mods[ i ].size() - 1 )
+      if ( j < stat_mod_combos[ i ].size() - 1 )
       {
         s << ", ";
       }
@@ -206,7 +204,7 @@ void reforge_plot_t::analyze_stats()
     {
       if ( current_reforge_sim )
       {
-        plot_data_t& data = delta_result[ stat_mods[ i ].size() ];
+        plot_data_t& data = delta_result[ stat_mod_combos[ i ].size() ];
         player_t* delta_p = current_reforge_sim->find_player( player->name() );
 
         scaling_metric_data_t scaling_data =

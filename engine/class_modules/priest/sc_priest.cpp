@@ -1336,9 +1336,9 @@ private:
     }
     for ( auto a : affected_actions )
     {
-      a->base_recharge_rate_multiplier /= rate_change;
+      a->dynamic_recharge_rate_multiplier /= rate_change;
 
-      sim->print_debug( "{} recharge_rate_multiplier set to {}", a->name_str, a->base_recharge_rate_multiplier );
+      sim->print_debug( "{} recharge_rate_multiplier set to {}", a->name_str, a->dynamic_recharge_rate_multiplier );
 
       if ( a->cooldown->action == a )
         a->cooldown->adjust_recharge_multiplier();
@@ -2243,7 +2243,7 @@ void priest_t::copy_from( player_t* source )
 {
   base_t::copy_from( source );
 
-  priest_t* source_p = debug_cast<priest_t*>( source );
+  auto* source_p = debug_cast<priest_t*>( source );
 
   options = source_p->options;
 }

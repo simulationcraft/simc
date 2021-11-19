@@ -64,7 +64,7 @@ std::string enchant::find_enchant_name( unsigned enchant_id )
       return enchant_entry.enchant_name;
   }
 
-  return std::string();
+  return {};
 }
 
 namespace
@@ -125,7 +125,7 @@ std::string _encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data
     enchant_name = enchant.name ? enchant.name : "unknown";
     util::tokenize( enchant_name );
 
-    for ( size_t i = 0; i < range::size( enchant.ench_prop ); i++ )
+    for ( size_t i = 0; i < std::size( enchant.ench_prop ); i++ )
     {
       if ( enchant.ench_prop[ i ] == 0 || enchant.ench_type[ i ] == 0 )
         continue;
@@ -281,7 +281,7 @@ void enchant::initialize_item_enchant( item_t& item, std::vector<stat_pair_t>& s
       item.player->name(), enchant.name, enchant.max_ilevel, item.name(), item.item_level() );
   }
 
-  for ( size_t i = 0; i < range::size( enchant.ench_prop ); i++ )
+  for ( size_t i = 0; i < std::size( enchant.ench_prop ); i++ )
   {
     special_effect_t effect( &item );
     effect.source       = source;
@@ -581,7 +581,7 @@ item_socket_color enchant::initialize_relic( item_t& item, size_t relic_idx, con
   range::for_each( item.parsed.gem_bonus_id[ relic_idx ],
                    [ &relic ]( unsigned id ) { relic.parsed.bonus_id.push_back( as<int>( id ) ); } );
 
-  for ( size_t i = 0, end = range::size( data.ench_type ); i < end; ++i )
+  for ( size_t i = 0, end = std::size( data.ench_type ); i < end; ++i )
   {
     switch ( data.ench_type[ i ] )
     {

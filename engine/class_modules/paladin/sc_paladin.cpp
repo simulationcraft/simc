@@ -1361,7 +1361,7 @@ struct cancel_ashen_hallow_t : public action_t
 
   bool ready() override
   {
-    paladin_t* p = static_cast<paladin_t*>( action_t::player );
+    auto* p = static_cast<paladin_t*>( action_t::player );
     if ( p -> active_hallow_damaging != nullptr && p -> legendary.radiant_embers->ok() )
       return action_t::ready();
     return false;
@@ -1369,7 +1369,7 @@ struct cancel_ashen_hallow_t : public action_t
 
   void execute() override
   {
-    paladin_t* p = static_cast<paladin_t*>( action_t::player );
+    auto* p = static_cast<paladin_t*>( action_t::player );
       // CDR = % remaining duration/base duration * 50% * base cooldown
       double ah_reduction = p -> active_hallow_damaging -> remaining_time().total_seconds();
       ah_reduction /= p -> active_hallow_damaging -> params -> duration_.total_seconds();
@@ -1460,7 +1460,7 @@ template <typename Base, typename Player>
 struct blessing_of_winter_proc_t : public Base
 {
 private:
-  typedef Base ab;  // action base, eg. spell_t
+  using ab = Base;  // action base, eg. spell_t
 public:
   blessing_of_winter_proc_t( Player* p ) : ab( "blessing_of_winter_proc", p, p->find_spell( 328506 ) )
   {
@@ -1490,13 +1490,9 @@ public:
   {
     double am = ab::action_multiplier();
 
-    if ( ab::player->type == PALADIN )
+    if ( ab::player->buffs.equinox->up() )
     {
-      paladin_t* pal = debug_cast<paladin_t*>( ab::player );
-      if ( pal->buffs.equinox->up() )
-      {
-        am *= 1.0 + pal->buffs.equinox->data().effectN( 2 ).percent();
-      }
+      am *= 1.0 + ab::player->buffs.equinox->data().effectN( 2 ).percent();
     }
 
     return am;
@@ -1553,7 +1549,7 @@ struct blessing_of_the_seasons_t : public paladin_spell_t
     if ( p()->legendary.seasons_of_plenty->ok() )
     {
       make_event( *sim, 10_s, [ this ]() {
-        p()->buffs.equinox->trigger();
+        player->buffs.equinox->trigger();
       } );
     }
   }
@@ -1720,7 +1716,7 @@ struct blessing_of_autumn_t : public buff_t
     set_cooldown( 0_ms );
     set_default_value_from_effect( 1 );
 
-    set_stack_change_callback( [ this ]( buff_t* b, int /* old */, int new_ ) {
+    set_stack_change_callback( [ this ]( buff_t* /* b */, int /* old */, int new_ ) {
       if ( !affected_actions_initialized )
       {
         int label = data().effectN( 1 ).misc_value1();
@@ -1739,34 +1735,28 @@ struct blessing_of_autumn_t : public buff_t
         affected_actions_initialized = true;
       }
 
-      update_cooldowns( b, new_ );
+      update_cooldowns( new_ );
     } );
   }
 
-  void update_cooldowns( buff_t* b, int new_, bool is_equinox=false ) {
-
+  void update_cooldowns( int new_, bool is_equinox=false )
+  {
     assert( affected_actions_initialized );
 
-
-    paladin_t* pal = debug_cast<paladin_t*>( source );
-
-    bool has_legendary = pal->legendary.seasons_of_plenty->ok();
-
-    double recharge_rate_multiplier = 1.0 / ( 1 + b->default_value );
+    double recharge_rate_multiplier = 1.0 / ( 1 + default_value );
     if ( is_equinox )
     {
-      assert( has_legendary );
-      recharge_rate_multiplier = 1.0 / ( 1 + b->default_value * ( 1.0 + pal->buffs.equinox->data().effectN( 2 ).percent() ) );
+      recharge_rate_multiplier = 1.0 / ( 1 + default_value * ( 1.0 + player->buffs.equinox->data().effectN( 2 ).percent() ) );
     }
     for ( auto a : affected_actions )
     {
       if ( new_ > 0 )
       {
-        a->base_recharge_rate_multiplier *= recharge_rate_multiplier;
+        a->dynamic_recharge_rate_multiplier *= recharge_rate_multiplier;
       }
       else
       {
-        a->base_recharge_rate_multiplier /= recharge_rate_multiplier;
+        a->dynamic_recharge_rate_multiplier /= recharge_rate_multiplier;
       }
       if ( a->cooldown->action == a )
         a->cooldown->adjust_recharge_multiplier();
@@ -1777,12 +1767,7 @@ struct blessing_of_autumn_t : public buff_t
 
   void expire( timespan_t delay ) override
   {
-    if ( source )
-    {
-      paladin_t* pal = dynamic_cast<paladin_t*>( source );
-      if ( pal )
-        pal->buffs.equinox->expire( delay );
-    }
+    player->buffs.equinox->expire( delay );
 
     buff_t::expire( delay );
   }
@@ -1799,8 +1784,7 @@ void blessing_of_sacrifice_t::execute()
 {
   paladin_spell_t::execute();
 
-  buffs::blessing_of_sacrifice_t* b =
-      debug_cast<buffs::blessing_of_sacrifice_t*>( target->buffs.blessing_of_sacrifice );
+  auto* b = debug_cast<buffs::blessing_of_sacrifice_t*>( target->buffs.blessing_of_sacrifice );
 
   b->trigger_hos( *p() );
 }
@@ -2036,10 +2020,9 @@ void paladin_t::vision_of_perfection_proc()
 int paladin_t::get_local_enemies( double distance ) const
 {
   int num_nearby = 0;
-  for ( size_t i = 0, actors = sim->target_non_sleeping_list.size(); i < actors; i++ )
+  for ( auto* p : sim->target_non_sleeping_list )
   {
-    player_t* p = sim->target_non_sleeping_list[ i ];
-    if ( p->is_enemy() && get_player_distance( *p ) <= distance + p->combat_reach )
+     if ( p->is_enemy() && get_player_distance( *p ) <= distance + p->combat_reach )
       num_nearby += 1;
   }
   return num_nearby;
@@ -2220,46 +2203,6 @@ void paladin_t::create_buffs()
               this->active.divine_resonance->set_target( this->target );
               this->active.divine_resonance->schedule_execute();
           } );
-  buffs.equinox = make_buff( this, "equinox", find_spell( 355567 ) )
-          ->set_stack_change_callback( [ this ]( buff_t* b, int /* old */, int new_) {
-              // TODO: make this work on other players
-              if ( b->player != this )
-                return;
-
-              buffs::blessing_of_autumn_t* blessing = debug_cast<buffs::blessing_of_autumn_t*>( b->player->buffs.blessing_of_autumn );
-
-              if ( blessing->check() )
-              {
-                // we basically fake expire the previous stacks
-                // this helps avoid cumulative floating point errors vs doing the relative computation here
-                if ( new_ == 1 )
-                {
-                  blessing->update_cooldowns(
-                    blessing,
-                    0,
-                    false
-                  );
-                  blessing->update_cooldowns(
-                    blessing,
-                    blessing->stack(),
-                    true
-                  );
-                }
-                else
-                {
-                  blessing->update_cooldowns(
-                    blessing,
-                    0,
-                    true
-                  );
-                  blessing->update_cooldowns(
-                    blessing,
-                    blessing->stack(),
-                    false
-                  );
-                }
-              }
-            } );
 
   // Covenants
   buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )->set_cooldown( 0_ms )
@@ -3512,6 +3455,32 @@ struct paladin_module_t : public module_t
     p->buffs.blessing_of_spring = make_buff( p, "blessing_of_spring", p->find_spell( 328282 ) )
                                       ->set_cooldown( 0_ms )
                                       ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+
+    // Seasons of Plenty Legendary
+    // TODO: How does equinox work when multiple paladins cast blessings on the same target?
+    p->buffs.equinox = make_buff( p, "equinox", p->find_spell( 355567 ) )
+                           ->set_stack_change_callback( [ p ]( buff_t* /* b */, int /* old */, int new_ ) {
+                               buffs::blessing_of_autumn_t* autumn = debug_cast<buffs::blessing_of_autumn_t*>( p->buffs.blessing_of_autumn );
+
+                               if ( autumn->check() )
+                               {
+                                 // we basically fake expire the previous stacks
+                                 // this helps avoid cumulative floating point errors vs doing the relative computation here
+                                 // TODO: with the change to using the new dynamic_recharge_rate_multiplier, this method of
+                                 // removing the old multiplier before adding the new one is probably no longer necessary,
+                                 // since the amount of error that accumulates during a single iteration should be insignificant.
+                                 if ( new_ == 1 )
+                                 {
+                                   autumn->update_cooldowns( 0, false );
+                                   autumn->update_cooldowns( autumn->stack(), true );
+                                 }
+                                 else
+                                 {
+                                   autumn->update_cooldowns( 0, true );
+                                   autumn->update_cooldowns( autumn->stack(), false );
+                                 }
+                               }
+                             } );
   }
 
   void create_actions( player_t* p ) const override
@@ -3539,17 +3508,16 @@ struct paladin_module_t : public module_t
               return assessor::CONTINUE;
 
             double proc_chance = summer_data->proc_chance();
-            paladin_t* pal = dynamic_cast<paladin_t*>(p->buffs.blessing_of_summer->source);
-            bool has_equinox = pal && pal->buffs.equinox->up();
+            bool has_equinox = p->buffs.equinox->up();
             if ( has_equinox )
-              proc_chance *= 1.0 + pal->buffs.equinox->data().effectN( 1 ).percent();
+              proc_chance *= 1.0 + p->buffs.equinox->data().effectN( 1 ).percent();
 
             if ( s->action != summer_proc && s->result_total > 0.0 && p->buffs.blessing_of_summer->up() &&
                  summer_data->proc_flags() & ( 1 << s->proc_type() ) && p->rng().roll( proc_chance ) )
             {
               double da = s->result_amount * summer_data->effectN( 1 ).percent();
               if ( has_equinox )
-                da *= 1.0 + pal->buffs.equinox->data().effectN( 2 ).percent();
+                da *= 1.0 + p->buffs.equinox->data().effectN( 2 ).percent();
               make_event( p->sim, [ t = s->target, summer_proc, da ] {
                 summer_proc->set_target( t );
                 summer_proc->base_dd_min = summer_proc->base_dd_max = da;

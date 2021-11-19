@@ -253,7 +253,7 @@ bool variable_t::is_constant(double* const_value) const
       return false;
     }
 
-    if (const_value != 0)
+    if ( const_value )
     {
       return value_expression->is_constant(const_value);
     }

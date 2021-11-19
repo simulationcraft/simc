@@ -40,12 +40,9 @@ struct spell_data_expr_t;
 struct spell_data_t;
 struct work_queue_t;
 
-namespace report
-{
-namespace json
+namespace report::json
 {
 class report_configuration_t;
-}
 }
 
 namespace profileset{
@@ -246,30 +243,14 @@ struct sim_t : private sc_thread_t
 
   struct bfa_opt_t
   {
-    /// Number of allies affected by Jes' Howler buff
-    unsigned            jes_howler_allies = 4;
     /// Chance to spawn the rare droplet
     double              secrets_of_the_deep_chance = 0.1; // TODO: Guessed, needs validation
     /// Chance that the player collects the droplet, defaults to always
     double              secrets_of_the_deep_collect_chance = 1.0;
     /// Gutripper base RPPM when target is above 30%
     double              gutripper_default_rppm = 2.0;
-    /// Initial stacks for Archive of the Titans
-    int                 initial_archive_of_the_titans_stacks = 0;
-    /// Number of Reorigination array stats on the actors in the sim
-    int                 reorigination_array_stacks = 0;
-    /// Allow Reorigination Array to ignore scale factor stat changes (default false)
-    bool                reorigination_array_ignore_scale_factors = false;
     /// Chance to pick up visage spawned by Seductive Power
     double              seductive_power_pickup_chance = 1.0;
-    /// Initial stacks for Seductive Power buff
-    int                 initial_seductive_power_stacks = 0;
-    /// Randomize Variable Intensity Gigavolt Oscillating Reactor start-of-combat oscillation
-    bool                randomize_oscillation = true;
-    /// Automatically use Oscillating Overload on max stack, true = yes if no use_item, 0 = no
-    bool                auto_oscillating_overload = true;
-    /// Is the actor in Zuldazar? Relevant for one of the set bonuses.
-    bool                zuldazar = false;
     /// Treacherous Covenant update period.
     timespan_t          covenant_period = 1.0_s;
     /// Chance to gain the buff on each Treacherous Covenant update.
@@ -300,12 +281,12 @@ struct sim_t : private sc_thread_t
     timespan_t          trident_of_deep_ocean_duration = 0_ms;
     /// Chance that the player has a higher health percentage than the target for Legplates of Unbound Anguish proc
     double              legplates_of_unbound_anguish_chance = 1.0;
-    /// Number of allies with the Loyal to the End azerite trait, default = 4 (max)
-    int                 loyal_to_the_end_allies = 0;
     /// Period to check for if an ally dies with Loyal to the End
     timespan_t          loyal_to_the_end_ally_death_timer = 60_s;
     /// Chance on every check to see if an ally dies with Loyal to the End
     double              loyal_to_the_end_ally_death_chance = 0.0;
+    /// Number of allies with the Loyal to the End azerite trait, default = 4 (max)
+    int                 loyal_to_the_end_allies = 0;
     /// Number of allies also using the Worldvein Resonance minor
     int                 worldvein_allies = 0;
     /// Chance to proc Reality Shift (normally triggers on moving specific distance)
@@ -324,20 +305,10 @@ struct sim_t : private sc_thread_t
     double              zaquls_portal_key_move_chance = 0.0;
     /// Unleash stacked potency from Anu-Azshara, Staff of the Eternal after X seconds
     timespan_t          anuazshara_unleash_time = 0_ms;
-    /// Whether the player is in Nazjatar/Eternal Palace for various effects
-    bool                nazjatar = true;
-    /// Whether the Shiver Venom Crossbow/Lance should assume the target has the Shiver Venom debuff
-    bool                shiver_venom = false;
     /// Storm of the Eternal haste and crit stat split ratio.
     double              storm_of_the_eternal_ratio = 0.05;
     /// How long before combat to start channeling Azshara's Font of Power
     timespan_t          font_of_power_precombat_channel = 0_ms;
-    /// Hps done while using the Azerite Trait Arcane Heart
-    unsigned            arcane_heart_hps = 0;
-    /// Prepull spell cast count to assume.
-    int                 subroutine_recalibration_precombat_stacks = 0;
-    /// Additional spell cast count to assume each buff cycle.
-    int                 subroutine_recalibration_dummy_casts = 0;
     /// Average duration of buff in percentage
     double voidtwisted_titanshard_percent_duration = 0.5;
     /// Period between checking if surging vitality can proc
@@ -350,8 +321,34 @@ struct sim_t : private sc_thread_t
     timespan_t symbiotic_presence_interval = 22_s;
     /// Percentage of Whispered Truths reductions to be applied to offensive spells.
     double whispered_truths_offensive_chance = 0.75;
+    /// Initial stacks for Seductive Power buff
+    int                 initial_seductive_power_stacks = 0;
+    /// Number of allies affected by Jes' Howler buff
+    unsigned            jes_howler_allies = 4;
+    /// Initial stacks for Archive of the Titans
+    int                 initial_archive_of_the_titans_stacks = 0;
+    /// Hps done while using the Azerite Trait Arcane Heart
+    unsigned            arcane_heart_hps = 0;
+    /// Prepull spell cast count to assume.
+    int                 subroutine_recalibration_precombat_stacks = 0;
+    /// Additional spell cast count to assume each buff cycle.
+    int                 subroutine_recalibration_dummy_casts = 0;
+    /// Number of Reorigination array stats on the actors in the sim
+    int                 reorigination_array_stacks = 0;
+    /// Allow Reorigination Array to ignore scale factor stat changes (default false)
+    bool                reorigination_array_ignore_scale_factors = false;
+    /// Randomize Variable Intensity Gigavolt Oscillating Reactor start-of-combat oscillation
+    bool                randomize_oscillation = true;
+    /// Automatically use Oscillating Overload on max stack, true = yes if no use_item, 0 = no
+    bool                auto_oscillating_overload = true;
+    /// Is the actor in Zuldazar? Relevant for one of the set bonuses.
+    bool                zuldazar = false;
     /// Whether the player is in Ny'alotha or not.
     bool nyalotha = true;
+    /// Whether the player is in Nazjatar/Eternal Palace for various effects
+    bool                nazjatar = true;
+    /// Whether the Shiver Venom Crossbow/Lance should assume the target has the Shiver Venom debuff
+    bool                shiver_venom = false;
   } bfa_opts;
 
   struct shadowlands_opt_t
@@ -370,18 +367,12 @@ struct sim_t : private sc_thread_t
     unsigned crimson_choir_in_party = 0;
     /// Seconds before combat to apply the Shattered Psyche buff to the player.
     timespan_t memory_of_past_sins_precast = 0_s;
-    /// Number of allies applying Shattered Psyche stacks to the enemy.
-    unsigned shattered_psyche_allies = 0;
     /// Chance for each target to be hit by a Judgment of the Arbiter arc
     double judgment_of_the_arbiter_arc_chance = 0.0;
     /// Type of corpse used for Volatile Solvent. Accepts corpse type string or buff string
     /// Corpse type: "humanoid", "beast", "dragonkin", "elemental", "giant"
     /// Buff type: "mastery", "primary", "crit", "magic", "physical"
     std::string volatile_solvent_type = "mastery";
-    // Prevents Soul Ignite from being used a second time to trigger the
-    // AoE early. This results in the highest possible damage and the
-    // player can alternatively trigger it early by canceling the buff.
-    bool disable_soul_igniter_second_use = true;
     // Overrides the Unbound Changeling trinket to the given version.
     // The versions are given by the "all", "crit", "haste", and "mastery"
     // strings. Anything else will result in the item's bonus IDs being
@@ -394,8 +385,6 @@ struct sim_t : private sc_thread_t
            anima_field_emitter_stddev = 0.0;
     /// Retarget Shadowgrasp Totem if the use_item target demises after this many seconds
     timespan_t retarget_shadowgrasp_totem = 0_s;
-    /// Disables the execute effect of Inscrutable Quantum Device since it is avoidable in game
-    bool disable_iqd_execute = false;
     /// Sets the chance for the Inscrutable Quantum Device to give no stat buff outside Bloodlust
     double iqd_stat_fail_chance = 0.0;
     /// Sets chance that the actor gets the killing blow when a target demises for Thrill Seeker stacks
@@ -411,11 +400,10 @@ struct sim_t : private sc_thread_t
     // Battlefield Presence enemy count override
     // Defaults to -1 to have the sim constantly adjust the value based on number of enemies in the sim
     int battlefield_presence_enemies = -1;
+    /// Number of allies applying Shattered Psyche stacks to the enemy.
+    unsigned shattered_psyche_allies = 0;
     /// Seconds before combat to apply the Shattered Psyche buff to the player.
     timespan_t salvaged_fusion_amplifier_precast = 0_s;
-    // Better Together Override
-    // Defaults active
-    bool better_together_ally = true;
     /// Fraction of the time that the player is above the health threshold for Titanic Ocular Gland.
     double titanic_ocular_gland_worthy_chance = 1.0;
     /// Sets the chance that the player successfully faces their Doubt to get the Newfound Resolve buff.
@@ -424,7 +412,6 @@ struct sim_t : private sc_thread_t
     /// This is disabled if the APL creates the "newfound_resolve" action.
     timespan_t newfound_resolve_default_delay = 4_s;
     double newfound_resolve_delay_relstddev = 0.2;
-    bool enable_rune_words = true;
     /// Seconds between damage/healing triggers for the Pustule Eruption soulbind, has a minimum 1s ICD
     timespan_t pustule_eruption_interval = 1_s;
     /// Chance that the player will pickup Shredded Soul orb left by Ebonsoul Vise
@@ -436,12 +423,22 @@ struct sim_t : private sc_thread_t
     std::string soleahs_secret_technique_type = "haste";
     /// How long before combat to start channeling Shadowed Orb of Torment
     timespan_t shadowed_orb_of_torment_precombat_channel = 0_ms;
-    /// How many pustules to generate during pre-combat, as events before the pull will normally remove a few
-    unsigned int precombat_pustules = 9;
     /// Percentage of default duration for Field of Blossoms.
     double field_of_blossoms_duration_multiplier = 1.0;
     /// Modifier for Cruciform Veinripper to control uptime for tanks. When set to 0, proc rate is not affected unless position=front, in which case 0.4 is used.
     double cruciform_veinripper_proc_rate = 0.0;
+    /// How many pustules to generate during pre-combat, as events before the pull will normally remove a few
+    unsigned int precombat_pustules = 9;
+    // Prevents Soul Ignite from being used a second time to trigger the
+    // AoE early. This results in the highest possible damage and the
+    // player can alternatively trigger it early by canceling the buff.
+    bool disable_soul_igniter_second_use = true;
+    /// Disables the execute effect of Inscrutable Quantum Device since it is avoidable in game
+    bool disable_iqd_execute = false;
+    // Better Together Override
+    // Defaults active
+    bool better_together_ally = true;
+    bool enable_rune_words = true;
   } shadowlands_opts;
 
   // Auras and De-Buffs
@@ -582,9 +579,9 @@ struct sim_t : private sc_thread_t
   sim_t();
   sim_t( sim_t* parent, int thread_index = 0 );
   sim_t( sim_t* parent, int thread_index, sim_control_t* control );
-  virtual ~sim_t();
+  ~sim_t() override;
 
-  virtual void run() override;
+  void run() override;
   int       main( const std::vector<std::string>& args );
   double    iteration_time_adjust();
   double    expected_max_time() const;

@@ -106,6 +106,7 @@ public:
     buff_t* call_to_arms_empowered_tiger_lightning;
     buff_t* fae_exposure;
     buff_t* keefers_skyreach;
+    buff_t* sinister_teaching_fallen_monk_keg_smash;
     buff_t* skyreach_exhaustion;
   } debuff;
 
@@ -300,8 +301,19 @@ public:
 
   struct procs_t
   {
-    proc_t* bok_proc;
+    proc_t* blackout_kick_cdr_with_woo;
+    proc_t* blackout_kick_cdr;
+    proc_t* blackout_kick_cdr_serenity_with_woo;
+    proc_t* blackout_kick_cdr_serenity;
     proc_t* boiling_brew_healing_sphere;
+    proc_t* bonedust_brew_reduction;
+    proc_t* bountiful_brew_proc;
+    proc_t* rsk_reset_totm;
+    proc_t* sinister_teaching_reduction;
+    proc_t* spitfire_reset;
+    proc_t* tumbling_technique_chi_torpedo;
+    proc_t* tumbling_technique_roll;
+    proc_t* xuens_battlegear_reduction;
   } proc;
 
   struct talents_t
@@ -744,10 +756,14 @@ public:
     spawner::pet_spawner_t<pet_t, monk_t> niuzao;
     spawner::pet_spawner_t<pet_t, monk_t> yulon;
     spawner::pet_spawner_t<pet_t, monk_t> chiji;
-    spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_ww;
-    spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_mw;
-    spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_brm;
+    spawner::pet_spawner_t<pet_t, monk_t> tiger_adept;
+    spawner::pet_spawner_t<pet_t, monk_t> crane_adept;
+    spawner::pet_spawner_t<pet_t, monk_t> ox_adept;
     spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_xuen;
+    spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_niuzao;
+    spawner::pet_spawner_t<pet_t, monk_t> sinister_teaching_tiger_adept;
+    spawner::pet_spawner_t<pet_t, monk_t> sinister_teaching_crane_adept;
+    spawner::pet_spawner_t<pet_t, monk_t> sinister_teaching_ox_adept;
 
     pet_t* bron;
 

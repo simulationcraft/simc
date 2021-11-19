@@ -147,8 +147,8 @@ static std::vector<player_t*>& __check_distance_targeting( const action_t* actio
   tl.swap( best_so_far );
   return tl;
 }
-typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
-typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
+using data_t = std::pair<std::string, simple_sample_data_with_min_max_t>;
+using simple_data_t = std::pair<std::string, simple_sample_data_t>;
 
 struct shaman_t;
 
@@ -971,15 +971,22 @@ struct crackling_surge_buff_t : public buff_t
 
 struct maelstrom_weapon_buff_t : public buff_t
 {
-  maelstrom_weapon_buff_t( shaman_t* p ) : buff_t( p, "maelstrom_weapon", p->find_spell( 344179 ) )
+  shaman_t* shaman;
+
+  maelstrom_weapon_buff_t( shaman_t* p ) :
+    buff_t( p, "maelstrom_weapon", p->find_spell( 344179 ) ), shaman( p )
+  { }
+
+  void increment( int stacks, double value, timespan_t duration ) override
   {
-    set_stack_change_callback( [ p ]( buff_t*, int old_, int new_ ) {
-      if ( old_ <= new_ && p->buff.witch_doctors_wolf_bones->check() )
-      {
-        p->cooldown.feral_spirits->adjust(
-            -p->legendary.witch_doctors_wolf_bones->effectN( 2 ).time_value() );
-      }
-    } );
+    buff_t::increment( stacks, value, duration );
+
+    if ( shaman->buff.witch_doctors_wolf_bones->check() )
+    {
+      shaman->cooldown.feral_spirits->adjust(
+            -( stacks == -1 ? 1 : stacks ) *
+            shaman->legendary.witch_doctors_wolf_bones->effectN( 2 ).time_value() );
+    }
   }
 };
 
@@ -2076,7 +2083,7 @@ struct shaman_pet_t : public pet_t
 template <typename T_PET, typename T_ACTION>
 struct pet_action_t : public T_ACTION
 {
-  typedef pet_action_t<T_PET, T_ACTION> super;
+  using super = pet_action_t<T_PET, T_ACTION>;
 
   pet_action_t( T_PET* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(),
                 const std::string& options = std::string() )
@@ -3940,10 +3947,9 @@ struct bloodlust_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    for ( size_t i = 0; i < sim->player_non_sleeping_list.size(); ++i )
+    for ( auto* p : sim->player_non_sleeping_list )
     {
-      player_t* p = sim->player_non_sleeping_list[ i ];
-      if ( p->buffs.exhaustion->check() || p->is_pet() )
+       if ( p->buffs.exhaustion->check() || p->is_pet() )
         continue;
       p->buffs.bloodlust->trigger();
       p->buffs.exhaustion->trigger();
@@ -5609,10 +5615,8 @@ struct flame_shock_t : public shaman_spell_t
   {
     shaman_spell_t::tick( d );
 
-    double proc_chance = p()->spec.lava_surge->proc_chance();
-
-    // proc chance suddenly bacame 100% and the actual chance became effectN 1
-    proc_chance = p()->spec.lava_surge->effectN( 1 ).percent();
+    // proc chance suddenly became 100% and the actual chance became effectN 1
+    double proc_chance = p()->spec.lava_surge->effectN( 1 ).percent();
 
     if ( p()->spec.restoration_shaman->ok() )
     {
@@ -6896,8 +6900,19 @@ struct raging_vesper_vortex_t : public shaman_spell_t
   raging_vesper_vortex_t( shaman_t* player )
     : shaman_spell_t( "raging_vesper_vortex", player, player->find_spell( 356790 ) )
   {
-    aoe        = -1;
     ground_aoe = background = true;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = shaman_spell_t::composite_target_multiplier( t );
+
+    if ( t == target )
+    {
+      m *= 1.0 + p()->conduit.elysian_dirge.percent();
+    }
+
+    return m;
   }
 };
 
@@ -6952,11 +6967,11 @@ struct vesper_totem_damage_t : public shaman_spell_t
     }
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  double composite_target_multiplier( player_t* t ) const override
   {
-    double m = shaman_spell_t::composite_target_multiplier( target );
+    double m = shaman_spell_t::composite_target_multiplier( t );
 
-    if ( closest_target && target == closest_target )
+    if ( closest_target && t == closest_target )
     {
       m *= 1.0 + p()->conduit.elysian_dirge.percent();
     }
@@ -7012,8 +7027,12 @@ struct vesper_totem_t : public shaman_spell_t
                   break;
                 case ground_aoe_params_t::state_type::EVENT_STOPPED:
                   this->p()->buff.vesper_totem->expire();
-                  if ( this->p()->legendary.raging_vesper_vortex->ok() )
+                  if ( this->p()->legendary.raging_vesper_vortex->ok() &&
+                       damage->closest_target )
                   {
+                    // Make Vesper Totem "closest target" the primary target of the
+                    // Raging Vesper Vortex aoe
+                    legendary_damage->set_target( damage->closest_target );
                     legendary_damage->execute();
                   }
                   break;

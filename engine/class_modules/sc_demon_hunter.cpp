@@ -159,8 +159,8 @@ struct movement_buff_t : public buff_t
   bool trigger( int s = 1, double v = DEFAULT_VALUE(), double c = -1.0, timespan_t d = timespan_t::min() ) override;
 };
 
-typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
-typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
+using data_t = std::pair<std::string, simple_sample_data_with_min_max_t>;
+using simple_data_t = std::pair<std::string, simple_sample_data_t>;
 
 /* Demon Hunter class definition
  *
@@ -1073,7 +1073,7 @@ struct demon_hunter_pet_t : public pet_t
 
     // Loop from end to beginning to get the data for the highest available
     // level equal or lower than the player level
-    int i = as<int>( range::size( pet_base_stats ) );
+    int i = as<int>( std::size( pet_base_stats ) );
     while ( --i > 0 )
     {
       if ( pet_base_stats[ i ].level <= level() )

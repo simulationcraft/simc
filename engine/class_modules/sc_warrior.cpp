@@ -2718,7 +2718,7 @@ struct execute_arms_t : public warrior_attack_t
 
   double tactician_cost() const override
   {
-    double c = max_rage;
+    double c;
 
     if ( !p()->buff.deadly_calm->check() && !p()->buff.sudden_death->check() )
     {
@@ -3904,9 +3904,9 @@ struct rampage_parent_t : public warrior_attack_t
     rage_from_frothing_berserker( p->find_spell( 215572 )->effectN( 1 ).base_value() / 10.0 )
   {
     parse_options( options_str );
-    for ( size_t i = 0; i < p->rampage_attacks.size(); i++ )
+    for ( auto* rampage_attack : p->rampage_attacks )
     {
-      add_child( p->rampage_attacks[ i ] );
+      add_child( rampage_attack );
     }
     track_cd_waste = false;
     //base_costs[ RESOURCE_RAGE ] += p->talents.frothing_berserker->effectN( 1 ).resource( RESOURCE_RAGE );
@@ -5006,7 +5006,7 @@ struct condemn_arms_t : public warrior_attack_t
 
   double tactician_cost() const override
   {
-    double c = max_rage;
+    double c;
 
     if ( !p()->buff.ayalas_stone_heart->check() && !p()->buff.deadly_calm->check() && !p()->buff.sudden_death->check() )
     {
@@ -6644,73 +6644,73 @@ void warrior_t::apl_fury()
 
   default_list->add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1&!buff.meat_cleaver.up|raid_event.adds.in<gcd&!buff.meat_cleaver.up" );
 
-  for ( size_t i = 0; i < items.size(); i++ )
+  for ( const auto& item : items )
   {
-    if ( items[ i ].name_str == "inscrutable_quantum_device" )
+    if ( item.name_str == "inscrutable_quantum_device" )
     {
-      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+      default_list->add_action( "use_item,name=" + item.name_str +
                                 ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<21|target.time_to_die>190|buff.bloodlust.up)" );
     }
-    else if ( items[ i ].name_str == "wakeners_frond" )
+    else if ( item.name_str == "wakeners_frond" )
     {
-      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+      default_list->add_action( "use_item,name=" + item.name_str +
                                 ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<13|target.time_to_die>130)" );
     }
-    else if ( items[ i ].name_str == "macabre_sheet_music" )
+    else if ( item.name_str == "macabre_sheet_music" )
     {
-      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+      default_list->add_action( "use_item,name=" + item.name_str +
                                 ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<25|target.time_to_die>110)" );
     }
-    else if ( items[ i ].name_str == "overwhelming_power_crystal" )
+    else if ( item.name_str == "overwhelming_power_crystal" )
     {
-      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+      default_list->add_action( "use_item,name=" + item.name_str +
                                 ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<16|target.time_to_die>100)" );
     }
-    else if ( items[ i ].name_str == "instructors_divine_bell" )
+    else if ( item.name_str == "instructors_divine_bell" )
     {
-      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+      default_list->add_action( "use_item,name=" + item.name_str +
                                 ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<10|target.time_to_die>95)" );
     }
-    else if ( items[ i ].name_str == "flame_of_battle" )
+    else if ( item.name_str == "flame_of_battle" )
     {
-      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+      default_list->add_action( "use_item,name=" + item.name_str +
                                 ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<11|target.time_to_die>100)" );
     }
-    else if ( items[ i ].name_str == "gladiators_badge" )
+    else if ( item.name_str == "gladiators_badge" )
     {
-      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+      default_list->add_action( "use_item,name=" + item.name_str +
                                 ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<11|target.time_to_die>65)" );
     }
-    else if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    else if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      if ( items[ i ].slot != SLOT_WAIST )
-        default_list->add_action( "use_item,name=" + items[ i ].name_str );
+      if ( item.slot != SLOT_WAIST )
+        default_list->add_action( "use_item,name=" + item.name_str );
     }
   }
 
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  for ( const auto& racial_action : racial_actions )
   {
-    if ( racial_actions[ i ] == "arcane_torrent" )
+    if ( racial_action == "arcane_torrent" )
     {
       // While it's on the GCD, arcane torrent wasting a global
       // is a dps decrease.
       // default_list->add_action( racial_actions[ i ] + ",if=rage<40&!buff.recklessness.up" );
     }
-    else if ( racial_actions[ i ] == "lights_judgment" )
+    else if ( racial_action == "lights_judgment" )
     {
-      default_list->add_action( racial_actions[ i ] + ",if=buff.recklessness.down&debuff.siegebreaker.down" );
+      default_list->add_action( racial_action + ",if=buff.recklessness.down&debuff.siegebreaker.down" );
     }
-    else if ( racial_actions[ i ] == "bag_of_tricks" )
+    else if ( racial_action == "bag_of_tricks" )
     {
-      default_list->add_action( racial_actions[ i ] + ",if=buff.recklessness.down&debuff.siegebreaker.down&buff.enrage.up" );
+      default_list->add_action( racial_action + ",if=buff.recklessness.down&debuff.siegebreaker.down&buff.enrage.up" );
     }
-    else if ( racial_actions[ i ] == "berserking" )
+    else if ( racial_action == "berserking" )
     {
-      default_list->add_action( racial_actions[ i ] + ",if=buff.recklessness.up" );
+      default_list->add_action( racial_action + ",if=buff.recklessness.up" );
     }
     else
     {
-      default_list->add_action( racial_actions[ i ] );
+      default_list->add_action( racial_action );
     }
   }
 
@@ -6779,37 +6779,37 @@ void warrior_t::apl_arms()
 
   default_list->add_action( this, "Pummel", "if=target.debuff.casting.react" );
 
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  for ( const auto& racial_action : racial_actions )
   {
-    if ( racial_actions[ i ] == "arcane_torrent" )
+    if ( racial_action == "arcane_torrent" )
     {
-      default_list->add_action( racial_actions[ i ] +
+      default_list->add_action( racial_action +
                                 ",if=cooldown.mortal_strike.remains>1.5&rage<50" );
     }
-    else if ( racial_actions[ i ] == "lights_judgment" )
+    else if ( racial_action == "lights_judgment" )
     {
-      default_list->add_action( racial_actions[ i ] + ",if=debuff.colossus_smash.down&cooldown.mortal_strike.remains" );
+      default_list->add_action( racial_action + ",if=debuff.colossus_smash.down&cooldown.mortal_strike.remains" );
     }
-    else if ( racial_actions[ i ] == "bag_of_tricks" )
+    else if ( racial_action == "bag_of_tricks" )
     {
-      default_list->add_action( racial_actions[ i ] + ",if=debuff.colossus_smash.down&cooldown.mortal_strike.remains" );
+      default_list->add_action( racial_action + ",if=debuff.colossus_smash.down&cooldown.mortal_strike.remains" );
     }
-    else if ( racial_actions[ i ] == "berserking" )
+    else if ( racial_action == "berserking" )
     {
-      default_list->add_action( racial_actions[ i ] + ",if=debuff.colossus_smash.remains>6" );
+      default_list->add_action( racial_action + ",if=debuff.colossus_smash.remains>6" );
     }
     else
     {
-      default_list->add_action( racial_actions[ i ] + ",if=debuff.colossus_smash.up" );
+      default_list->add_action( racial_action + ",if=debuff.colossus_smash.up" );
     }
   }
 
-  for ( size_t i = 0; i < items.size(); i++ )
+  for ( const auto& item : items )
   {
-    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      if ( items[ i ].slot != SLOT_WAIST )
-        default_list->add_action( "use_item,name=" + items[ i ].name_str );
+      if ( item.slot != SLOT_WAIST )
+        default_list->add_action( "use_item,name=" + item.name_str );
     }
   }
 
@@ -6909,8 +6909,8 @@ void warrior_t::apl_prot()
   default_list -> add_action( "heroic_charge", "if=runeforge.reprisal" );
   default_list -> add_action( "use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up" );
 
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[ i ] );
+  for ( const auto& racial_action : racial_actions )
+    default_list->add_action( racial_action );
 
   default_list -> add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
   default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>20&!covenant.venthyr,line_cd=15","Prioritize Execute over Ignore Pain as a rage dump below 20%" );
@@ -7736,10 +7736,9 @@ void warrior_t::combat_begin()
   {
     if ( warrior_fixed_time )
     {
-      for ( size_t i = 0; i < sim->player_list.size(); ++i )
+      for ( auto* p : sim->player_list )
       {
-        player_t* p = sim->player_list[ i ];
-        if ( p->specialization() != WARRIOR_FURY && p->specialization() != WARRIOR_ARMS )
+         if ( p->specialization() != WARRIOR_FURY && p->specialization() != WARRIOR_ARMS )
         {
           warrior_fixed_time = false;
           break;

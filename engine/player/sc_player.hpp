@@ -533,9 +533,10 @@ struct player_t : public actor_t
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
     buff_t* echo_of_eonar;               // passive self buff
 
-    // 9.1 Legendary Party Buffs
+    // 9.1 Legendary Buffs
     buff_t* pact_of_the_soulstalkers; // Kyrian Hunter Legendary
     buff_t* kindred_affinity;         // Kyrian Druid Legendary
+    buff_t* equinox;                  // Night Fae Paladin Legendary
 
     // 9.1 Shards of Domination
     buff_t* coldhearted; // Shard of Cor
@@ -565,6 +566,8 @@ struct player_t : public actor_t
   struct external_buffs_t
   {
     bool focus_magic;
+    bool seasons_of_plenty;
+    double blessing_of_summer_duration_multiplier;
     std::vector<timespan_t> power_infusion;
     std::vector<timespan_t> benevolent_faerie;
     std::vector<timespan_t> blessing_of_summer;

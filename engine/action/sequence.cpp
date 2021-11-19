@@ -32,7 +32,7 @@ sequence_t::sequence_t( player_t* p, util::string_view sub_action_str ) :
   }
 
   // Skip first token if it's an option
-  for ( size_t i = as<size_t>( has_option ); i < splits.size(); ++i )
+  for ( auto i = as<size_t>( has_option ); i < splits.size(); ++i )
   {
     auto cut_pt      = splits[ i ].find( ',' );
     auto action_name = splits[ i ].substr( 0, cut_pt );

@@ -82,10 +82,7 @@ mutex_t::mutex_t() :
 {
 }
 
-mutex_t::~mutex_t()
-{
-  // Keep in .cpp file so that std::unique_ptr deleter can see defined native_t class
-}
+mutex_t::~mutex_t() = default;
 
 void mutex_t::lock()
 { native_handle -> lock(); }
@@ -96,10 +93,7 @@ void mutex_t::unlock()
 sc_thread_t::sc_thread_t() : native_handle( new native_t() )
 {}
 
-sc_thread_t::~sc_thread_t()
-{
-  // Keep in .cpp file so that std::unique_ptr deleter can see defined native_t class
-}
+sc_thread_t::~sc_thread_t() = default;
 
 // sc_thread_t::launch() ====================================================
 

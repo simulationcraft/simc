@@ -1201,7 +1201,7 @@ std::string special_effect_t::cooldown_group_name() const
 {
   if (!item)
   {
-    return std::string();
+    return {};
   }
 
   unsigned cdgroup = cooldown_group();
@@ -1210,7 +1210,7 @@ std::string special_effect_t::cooldown_group_name() const
     return "item_cd_" + util::to_string(cdgroup);
   }
 
-  return std::string();
+  return {};
 }
 
 int special_effect_t::cooldown_group() const

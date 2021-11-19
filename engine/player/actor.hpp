@@ -34,7 +34,7 @@ struct actor_t : private noncopyable
 #endif // ACTOR_EVENT_BOOKKEEPING
 
   actor_t( sim_t* s, util::string_view name );
-  virtual ~ actor_t() { }
+  virtual ~ actor_t() = default;
   virtual const char* name() const
   { return name_str.c_str(); }
 };

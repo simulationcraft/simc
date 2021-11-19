@@ -1310,6 +1310,8 @@ class SpellDataGenerator(DataGenerator):
          356305,
          # Shredded Soul (Ebonsoul Vise)
          357785,
+         # Duelist's Shot (Master Duelist's Chit)
+         336234,
          # Nerubian Ambush, Frost-Tinged Carapace Spikes (Relic of the Frozen Wastes)
          355912, 357409,
          # Volatile Detonation (Ticking Sack of Terror)
@@ -1761,6 +1763,9 @@ class SpellDataGenerator(DataGenerator):
           ( 327264, 0 ), # Ardenweald Faeline Stomp damage
           ( 327276, 0 ), # Ardenweald Faeline Stomp reset buff notification
           ( 345727, 0 ), # Ardenweald Faeline Stomp damage 2
+          ( 327004, 0 ), # Venthyr Fallen Monk Tiger Adept Summon
+          ( 327005, 0 ), # Venthyr Fallen Monk Ox Adept Summon
+          ( 327006, 0 ), # Venthyr Fallen Monk Crane Adept Summon
           ( 328283, 0 ), # Venthyr Fallen Monk Soothing Mist Heal
           ( 330898, 0 ), # Venthyr Fallen Monk Fists of Fury
           ( 330901, 0 ), # Venthyr Fallen Monk Spinning Crane Kick
@@ -1773,7 +1778,7 @@ class SpellDataGenerator(DataGenerator):
           ( 344240, 0 ), # Venthyr Fallen Monk Enveloping Mist
           ( 346602, 0 ), # Venthyr Fallen Monk Tiger Palm
           ( 345714, 0 ), # Venthyr Fallen Monk Fists of Fury damage
-          ( 347826, 0 ), # Venthyr Fallen Monk Spec Duration
+          ( 347826, 0 ), # Venthyr Fallen Monk Specialization Duration
           ( 363041, 0 ), # Venthyr Fallen Monk Fallen Brew
           ( 364944, 0 ), # Venthyr Fallen Monk Windwalking
 

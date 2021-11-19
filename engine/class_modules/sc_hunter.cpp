@@ -125,7 +125,7 @@ struct action_data_t
 
 struct player_data_t
 {
-  typedef std::pair<std::string, std::unique_ptr<action_data_t>> record_t;
+  using record_t = std::pair<std::string, std::unique_ptr<action_data_t>>;
   std::vector<record_t> data_;
 
   action_data_t* get( const action_t* a )
@@ -1721,7 +1721,7 @@ template <class Base>
 struct hunter_main_pet_action_t: public hunter_pet_action_t < hunter_main_pet_t, Base >
 {
 private:
-  typedef hunter_pet_action_t<hunter_main_pet_t, Base> ab;
+  using ab = hunter_pet_action_t<hunter_main_pet_t, Base>;
 public:
 
   struct {
@@ -5121,47 +5121,24 @@ struct bloodshed_t : hunter_spell_t
 struct trueshot_t: public hunter_spell_t
 {
   timespan_t precast_time = 0_ms;
-  bool precast_etf_equip = false;
-  timespan_t precast_duration = 0_ms;
 
   trueshot_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "trueshot", p, p -> specs.trueshot )
   {
-    add_option( opt_timespan( "precast_time", precast_time ) );
-    add_option( opt_bool( "precast_etf_equip", precast_etf_equip ) );
+    add_option( opt_obsoleted( "precast_time" ) );
+    add_option( opt_obsoleted( "precast_etf_equip" ) );
     parse_options( options_str );
 
     harmful = false;
 
     precast_time = clamp( precast_time, 0_ms, data().duration() );
-
-    timespan_t base = p->buffs.trueshot->base_buff_duration;
-    double mod = p->buffs.trueshot->buff_duration_multiplier;
-
-    if ( !p->legendary.eagletalons_true_focus->ok() && precast_etf_equip )
-      base += p->find_spell( 336849 )->effectN( 2 ).time_value();
-
-    precast_duration = base * mod;
-    sim->print_debug( "{} precast Trueshot will be {} seconds", *p, precast_duration );
   }
 
   void execute() override
   {
     hunter_spell_t::execute();
 
-    timespan_t duration;
-    if ( is_precombat )
-    {
-      duration = precast_duration;
-      if ( precast_etf_equip )
-        p()->buffs.eagletalons_true_focus->trigger();
-    }
-    else
-    {
-      duration = p()->buffs.trueshot->buff_duration();
-    }
-
-    trigger_buff( p()->buffs.trueshot, precast_time, duration );
+    trigger_buff( p()->buffs.trueshot, precast_time );
     adjust_precast_cooldown( precast_time );
   }
 };
@@ -5596,7 +5573,7 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   dots.pheromone_bomb = target -> get_dot( "pheromone_bomb", p );
   dots.shrapnel_bomb = target -> get_dot( "shrapnel_bomb", p );
 
-  target -> register_on_demise_callback( p, std::bind( &hunter_td_t::target_demise, this ) );
+  target -> register_on_demise_callback( p, [this](player_t*) { target_demise(); } );
 }
 
 void hunter_td_t::target_demise()

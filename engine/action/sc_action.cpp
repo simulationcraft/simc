@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "action/sc_action.hpp"
+
 #include "action/sc_action_state.hpp"
 #include "action/action_callback.hpp"
 #include "dbc/data_enums.hh"
@@ -22,9 +23,12 @@
 #include "sim/sc_expressions.hpp"
 #include "sim/sc_cooldown.hpp"
 #include "sim/sc_sim.hpp"
+#include "util/generic.hpp"
 #include "util/rng.hpp"
 #include "player/expansion_effects.hpp" // try to implement leyshocks_grand_compilation as a callback
 #include "util/util.hpp"
+
+#include <utility>
 
 // ==========================================================================
 // Action
@@ -385,6 +389,8 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     base_aoe_multiplier( 1.0 ),
     base_recharge_multiplier( 1.0 ),
     base_recharge_rate_multiplier( 1.0 ),
+    dynamic_recharge_multiplier( 1.0 ),
+    dynamic_recharge_rate_multiplier( 1.0 ),
     base_teleport_distance(),
     travel_speed(),
     travel_delay(),
@@ -1464,11 +1470,9 @@ size_t action_t::available_targets( std::vector<player_t*>& tl ) const
   if ( !target->is_sleeping() )
     tl.push_back( target );
 
-  for ( size_t i = 0, actors = sim->target_non_sleeping_list.size(); i < actors; i++ )
+  for ( auto* t : sim->target_non_sleeping_list )
   {
-    player_t* t = sim->target_non_sleeping_list[ i ];
-
-    if ( t->is_enemy() && ( t != target ) )
+     if ( t->is_enemy() && ( t != target ) )
     {
       tl.push_back( t );
     }
@@ -2137,8 +2141,8 @@ bool action_t::select_target()
       if ( !child_action.empty() )
       {  // If spell_targets is used on the child instead of the parent action, we need to reset the cache for that
          // action as well.
-        for ( size_t i = 0; i < child_action.size(); i++ )
-          child_action[ i ]->target_cache.is_valid = false;
+        for ( auto* child : child_action )
+          child->target_cache.is_valid = false;
       }
       target = potential_target;
     }
@@ -2668,6 +2672,9 @@ void action_t::reset()
   last_used = timespan_t::min();
 
   target_cache.is_valid = false;
+
+  dynamic_recharge_multiplier      = 1.0;
+  dynamic_recharge_rate_multiplier = 1.0;
 
   if ( if_expr )
   {
@@ -3203,21 +3210,21 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     struct last_used_expr_t : public expr_t
     {
       const std::vector<action_t*> action_list;
-      last_used_expr_t( const std::vector<action_t*>& al ) : expr_t( "last_used" ), action_list( al )
+      last_used_expr_t( std::vector<action_t*> al ) : expr_t( "last_used" ), action_list( std::move( al ) )
       {
       }
       double evaluate() override
       {
         timespan_t t = timespan_t::min();
-        for ( size_t i = 0; i < action_list.size(); i++ )
+        for (auto a : action_list)
         {
-          if ( action_list[ i ]->last_used > t )
-            t = action_list[ i ]->last_used;
+          if ( a->last_used > t )
+            t = a->last_used;
         }
         return t.total_seconds();
       }
     };
-    return std::make_unique<last_used_expr_t>( last_used_list );
+    return std::make_unique<last_used_expr_t>( std::move(last_used_list) );
   }
 
   auto splits = util::string_split<util::string_view>( name_str, "." );
@@ -3241,9 +3248,8 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
           double evaluate() override
           {
             num_targets = 0;
-            for ( size_t i = 0, actors = action.player->sim->target_non_sleeping_list.size(); i < actors; i++ )
+            for ( auto* t : action.player->sim->target_non_sleeping_list )
             {
-              player_t* t = action.player->sim->target_non_sleeping_list[ i ];
               if ( action.player->get_player_distance( *t ) <= yards_from_player )
                 num_targets++;
             }
@@ -3288,9 +3294,9 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         {
           if ( previously_off_gcd != nullptr && !action.player->off_gcdactions.empty() )
           {
-            for ( size_t i = 0; i < action.player->off_gcdactions.size(); i++ )
+            for ( const auto* off_gcdaction : action.player->off_gcdactions )
             {
-              if ( action.player->off_gcdactions[ i ]->internal_id == previously_off_gcd->internal_id )
+              if ( off_gcdaction->internal_id == previously_off_gcd->internal_id )
                 return true;
             }
           }
@@ -3368,9 +3374,9 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
           spell = a.player->find_action( spell_name );
           if ( !spell )
           {
-            for ( size_t i = 0, size = a.player->pet_list.size(); i < size; i++ )
+            for ( const auto* pet : a.player->pet_list )
             {
-              spell = a.player->pet_list[ i ]->find_action( spell_name );
+              spell = pet->find_action( spell_name );
             }
           }
         }
@@ -3400,9 +3406,9 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
             spell = original_spell.player->find_action( name_of_spell );
             if ( !spell )
             {
-              for ( size_t i = 0, size = original_spell.player->pet_list.size(); i < size; i++ )
+              for (auto & pet : original_spell.player->pet_list)
               {
-                spell = original_spell.player->pet_list[ i ]->find_action( name_of_spell );
+                spell = pet->find_action( name_of_spell );
               }
             }
             if ( !spell )
@@ -3508,9 +3514,9 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
 
     // more complicated version, cycles through possible sources
     std::vector<std::unique_ptr<expr_t>> dot_expressions;
-    for ( size_t i = 0, size = sim->target_list.size(); i < size; i++ )
+    for (auto* target : sim->target_list)
     {
-      dot_t* d = player->get_dot( splits[ 1 ], sim->target_list[ i ] );
+      dot_t* d = player->get_dot( splits[ 1 ], target );
       dot_expressions.push_back( dot_t::create_expression( d, this, this, splits[ 2 ], false ) );
     }
     struct enemy_dots_expr_t : public expr_t
@@ -3658,20 +3664,15 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         struct in_flight_multi_expr_t : public expr_t
         {
           const std::vector<action_t*> action_list;
-          in_flight_multi_expr_t( const std::vector<action_t*>& al ) : expr_t( "in_flight" ), action_list( al )
+          in_flight_multi_expr_t( std::vector<action_t*> al ) : expr_t( "in_flight" ), action_list( std::move( al ) )
           {
           }
           double evaluate() override
           {
-            for ( size_t i = 0; i < action_list.size(); i++ )
-            {
-              if ( action_list[ i ]->has_travel_events() )
-                return true;
-            }
-            return false;
+            return range::any_of( action_list, []( const action_t* a ) { return a->has_travel_events(); } );
           }
         };
-        return std::make_unique<in_flight_multi_expr_t>( in_flight_list );
+        return std::make_unique<in_flight_multi_expr_t>( std::move(in_flight_list) );
       }
       else if ( splits[ 0 ] == "in_flight_to_target" ||
                 ( !in_flight_singleton && splits[ 2 ] == "in_flight_to_target" ) )
@@ -3681,21 +3682,21 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
           const std::vector<action_t*> action_list;
           action_t& action;
 
-          in_flight_to_target_multi_expr_t( const std::vector<action_t*>& al, action_t& a )
-            : expr_t( "in_flight_to_target" ), action_list( al ), action( a )
+          in_flight_to_target_multi_expr_t( std::vector<action_t*> al, action_t& a )
+            : expr_t( "in_flight_to_target" ), action_list( std::move( al ) ), action( a )
           {
           }
           double evaluate() override
           {
-            for ( size_t i = 0; i < action_list.size(); i++ )
+            for (auto i : action_list)
             {
-              if ( action_list[ i ]->has_travel_events_for( action.target ) )
+              if ( i->has_travel_events_for( action.target ) )
                 return true;
             }
             return false;
           }
         };
-        return std::make_unique<in_flight_to_target_multi_expr_t>( in_flight_list, *this );
+        return std::make_unique<in_flight_to_target_multi_expr_t>( std::move(in_flight_list), *this );
       }
       else if ( splits[ 0 ] == "in_flight_remains" ||
         ( !in_flight_singleton && splits[ 2 ] == "in_flight_remains" ) )
@@ -3703,9 +3704,9 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         struct in_flight_remains_multi_expr_t : public expr_t
         {
           const std::vector<action_t*> action_list;
-          in_flight_remains_multi_expr_t( const std::vector<action_t*>& al ) :
+          in_flight_remains_multi_expr_t( std::vector<action_t*> al ) :
             expr_t( "in_flight" ),
-            action_list( al )
+            action_list( std::move( al ) )
           { }
 
           double evaluate() override
@@ -3724,7 +3725,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
             return event_found ? t.total_seconds() : 0.0;
           }
         };
-        return std::make_unique<in_flight_remains_multi_expr_t>( in_flight_list );
+        return std::make_unique<in_flight_remains_multi_expr_t>( std::move(in_flight_list) );
       }
     }
   }

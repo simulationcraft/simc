@@ -26,8 +26,7 @@ struct special_effect_t;
 
     darkmoon_deck_t(const special_effect_t& e);
 
-    virtual ~darkmoon_deck_t()
-    { }
+    virtual ~darkmoon_deck_t() = default;
 
     virtual void initialize() {}
     virtual void shuffle() = 0;
@@ -40,8 +39,8 @@ struct special_effect_t;
     std::vector<BUFF_TYPE*> cards;
     BUFF_TYPE* top_card;
 
-    darkmoon_buff_deck_t(const special_effect_t& effect, const std::vector<unsigned>& c) :
-      darkmoon_deck_t(effect), card_ids(c), top_card(nullptr)
+    darkmoon_buff_deck_t(const special_effect_t& effect, const std::vector<unsigned> c) :
+      darkmoon_deck_t(effect), card_ids(std::move(c)), top_card(nullptr)
     { }
 
     void initialize() override
@@ -90,8 +89,8 @@ struct special_effect_t;
     action_t* top_card;
     bool                   trigger_on_shuffle;
 
-    darkmoon_action_deck_t(const special_effect_t& effect, const std::vector<unsigned>& c) :
-      darkmoon_deck_t(effect), card_ids(c), top_card(nullptr), trigger_on_shuffle(false)
+    darkmoon_action_deck_t(const special_effect_t& effect, std::vector<unsigned> c) :
+      darkmoon_deck_t(effect), card_ids(std::move(c)), top_card(nullptr), trigger_on_shuffle(false)
     { }
 
     darkmoon_action_deck_t<ACTION_TYPE>& set_trigger_on_shuffle(bool value)
@@ -166,16 +165,16 @@ struct special_effect_t;
   template <typename T>
   struct bfa_darkmoon_deck_cb_t : public dbc_proc_callback_t
   {
-    darkmoon_action_deck_t<T>* deck;
+    std::unique_ptr<darkmoon_action_deck_t<T>> deck;
 
-    bfa_darkmoon_deck_cb_t(const special_effect_t& effect, const std::vector<unsigned>& cards) :
+    bfa_darkmoon_deck_cb_t(const special_effect_t& effect, std::vector<unsigned> cards) :
       dbc_proc_callback_t(effect.player, effect),
-      deck(new darkmoon_action_deck_t<T>(effect, cards))
+      deck(std::make_unique<darkmoon_action_deck_t<T>>(effect, std::move( cards )))
     {
       deck->initialize();
 
       effect.player->register_combat_begin([this](player_t*) {
-        make_event<shuffle_event_t>(*listener->sim, deck, true);
+        make_event<shuffle_event_t>(*listener->sim, deck.get(), true);
         });
     }
 
@@ -183,10 +182,5 @@ struct special_effect_t;
     {
       deck->top_card->set_target(state->target);
       deck->top_card->schedule_execute();
-    }
-
-    ~bfa_darkmoon_deck_cb_t()
-    {
-      delete deck;
     }
   };

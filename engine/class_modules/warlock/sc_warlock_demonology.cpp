@@ -142,7 +142,7 @@ struct hand_of_guldan_t : public demonology_spell_t
     {
       parse_options(options_str);
       aoe = -1;
-      dual = 1;
+      dual = true;
 
       parse_effect_data( s_data->effectN( 1 ) );
     }

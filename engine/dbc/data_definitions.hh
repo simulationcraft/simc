@@ -8,12 +8,6 @@
 
 // Spell.dbc
 
-#ifdef __OpenBSD__
-#pragma pack(1)
-#else
-#pragma pack( push, 1 )
-#endif
-
 struct spell_data_t;
 struct spelleffect_data_t;
 struct spellpower_data_t;
@@ -46,13 +40,6 @@ struct item_socket_cost_data_t {
   unsigned ilevel;
   double   cost;
 };
-
-
-#ifdef __OpenBSD__
-#pragma pack()
-#else
-#pragma pack( pop )
-#endif
 
 #endif
 

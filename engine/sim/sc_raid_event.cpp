@@ -550,10 +550,9 @@ struct pull_event_t final : raid_event_t
     {
       if ( !sim->single_actor_batch )
       {
-        for ( size_t i = 0; i < sim->player_non_sleeping_list.size(); ++i )
+        for ( auto* p : sim->player_non_sleeping_list )
         {
-          player_t* p = sim->player_non_sleeping_list[ i ];
-          if ( p->is_pet() )
+           if ( p->is_pet() )
             continue;
 
           p->buffs.bloodlust->trigger();
@@ -731,8 +730,7 @@ struct invulnerable_event_t final : public raid_event_t
     : raid_event_t( s, "invulnerable" ), retarget( false ), target( s->target )
   {
     add_option( opt_bool( "retarget", retarget ) );
-    add_option( opt_func( "target", std::bind( &invulnerable_event_t::parse_target, this, std::placeholders::_1,
-                                               std::placeholders::_2, std::placeholders::_3 ) ) );
+    add_option( opt_func( "target", [this](sim_t* sim, util::string_view name, util::string_view value) { return parse_target(sim, name, value); } ) );
 
     parse_options( options_str );
   }
@@ -2020,13 +2018,16 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
 
     if ( filter == "remains" )
     {
-      if ( current_pull->spawned && current_pull->active() )
+      if ( current_pull && current_pull->spawned && current_pull->active() )
         return current_pull->time_to_die();
       else
         return 0.0;
     }
 
     // the following expressions should refer to the next pull
+    if ( !current_pull )
+      return 0.0;
+
     pull_event_t* next_pull = current_pull->next_pull();
     if ( !next_pull )
       return 0.0;

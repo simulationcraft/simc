@@ -23,9 +23,7 @@
 
 #include "report/decorators.hpp"
 
-namespace unique_gear
-{
-namespace shadowlands
+namespace unique_gear::shadowlands
 {
 struct shadowlands_aoe_proc_t : public generic_aoe_proc_t
 {
@@ -345,8 +343,8 @@ struct SL_darkmoon_deck_t : public darkmoon_deck_t
   std::vector<const spell_data_t*> cards;
   const spell_data_t* top;
 
-  SL_darkmoon_deck_t( const special_effect_t& e, const std::vector<unsigned>& c )
-    : darkmoon_deck_t( e ), card_ids( c ), top( spell_data_t::nil() )
+  SL_darkmoon_deck_t( const special_effect_t& e, std::vector<unsigned> c )
+    : darkmoon_deck_t( e ), card_ids( std::move( c ) ), top( spell_data_t::nil() )
   {}
 
   void initialize() override
@@ -946,9 +944,13 @@ void empyreal_ordnance( special_effect_t& effect )
       proc_spell_t( "empyreal_ordnance_bolt", e.player, e.player->find_spell( 345540 ) ),
       buff( b )
     {
-      dot_behavior = dot_behavior_e::DOT_CLIP;
       base_td = e.player->find_spell( 345542 )->effectN( 1 ).average( e.item );
       buff_travel_speed = e.player->find_spell( 345544 )->missile_speed();
+    }
+
+    timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t duration ) const override
+    {
+      return duration;
     }
 
     void last_tick( dot_t* d ) override
@@ -1984,6 +1986,25 @@ void murmurs_in_the_dark( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// id=336219 driver
+// id=336236 unknown use, triggered by driver
+// id=336234 damage spell
+// id=336222 melee damage spell?
+void dueling_form( special_effect_t& effect )
+{
+  struct dueling_form_t : public proc_spell_t
+  {
+    dueling_form_t( const special_effect_t& e )
+      : proc_spell_t( "duelists_shot", e.player, e.player->find_spell( 336234 ) )
+    {
+      base_dd_min = e.driver()->effectN( 1 ).min( e.item );
+      base_dd_max = e.driver()->effectN( 1 ).max( e.item );
+    }
+  };
+
+  effect.execute_action = create_proc_action<dueling_form_t>( "duelists_shot", effect );
+  new dbc_proc_callback_t( effect.player, effect );
+}
 
 // 9.1 Trinkets
 
@@ -2632,10 +2653,9 @@ void relic_of_the_frozen_wastes_use( special_effect_t& effect )
     {
       tl.clear();
 
-      for ( size_t i = 0, actors = sim->target_non_sleeping_list.size(); i < actors; i++ )
+      for ( auto* t : sim->target_non_sleeping_list )
       {
-        player_t* t = sim->target_non_sleeping_list[ i ];
-        if ( t->is_enemy() && player->get_target_data( t )->debuff.frozen_heart->up() )
+         if ( t->is_enemy() && player->get_target_data( t )->debuff.frozen_heart->up() )
           tl.push_back( t );
       }
 
@@ -2846,7 +2866,7 @@ void reactive_defense_matrix( special_effect_t& effect )
       : generic_proc_t( effect, "reactive_defense_matrix", effect.trigger() )
     {
       base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
-      may_crit                  = 0;
+      may_crit                  = false;
     }
 
     void execute() override
@@ -3302,7 +3322,7 @@ int rune_word_active( const player_t* player, const spell_data_t* driver, spell_
         continue;
 
       const item_enchantment_data_t& enchant_data = item.player->dbc->item_enchantment( gem_prop.enchant_id );
-      for ( size_t i = 0; i < range::size( enchant_data.ench_prop ); i++ )
+      for ( size_t i = 0; i < std::size( enchant_data.ench_prop ); i++ )
       {
         switch ( enchant_data.ench_type[ i ] )
         {
@@ -3378,7 +3398,7 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
         continue;
 
       const item_enchantment_data_t& enchant_data = item.player->dbc->item_enchantment( gem_prop.enchant_id );
-      for ( size_t i = 0; i < range::size( enchant_data.ench_prop ); i++ )
+      for ( size_t i = 0; i < std::size( enchant_data.ench_prop ); i++ )
       {
         switch ( enchant_data.ench_type[ i ] )
         {
@@ -4131,6 +4151,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 336182, items::tablet_of_despair );
     unique_gear::register_special_effect( 329536, items::rotbriar_sprout );
     unique_gear::register_special_effect( 339343, items::murmurs_in_the_dark );
+    unique_gear::register_special_effect( 336219, items::dueling_form );
 
     // 9.1 Trinkets
     unique_gear::register_special_effect( 353492, items::forbidden_necromantic_tome );
@@ -4320,5 +4341,4 @@ void register_target_data_initializers( sim_t& sim )
   } );
 }
 
-}  // namespace shadowlands
 }  // namespace unique_gear

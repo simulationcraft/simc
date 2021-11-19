@@ -8,6 +8,7 @@
 #include "config.hpp"
 #include <functional>
 #include <string>
+#include <utility>
 #include <vector>
 #include <memory>
 
@@ -144,7 +145,7 @@ public:
   simple_sample_data_with_min_max_t start_intervals, trigger_intervals, duration_lengths;
   std::vector<uptime_simple_t> stack_uptime;
 
-  virtual ~buff_t() {}
+  virtual ~buff_t() = default;
 
   buff_t( actor_pair_t q, util::string_view name );
   buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const item_t* item = nullptr );
@@ -383,17 +384,20 @@ struct stat_buff_t : public buff_t
     double current_value;
     std::function<bool(const stat_buff_t&)> check_func;
 
-    buff_stat_t( stat_e s, double a, std::function<bool(const stat_buff_t&)> c = std::function<bool(const stat_buff_t&)>() ) :
-      stat( s ), amount( a ), current_value( 0 ), check_func( c ) {}
+    buff_stat_t( stat_e s, double a,
+                 std::function<bool( const stat_buff_t& )> c = std::function<bool( const stat_buff_t& )>() )
+      : stat( s ), amount( a ), current_value( 0 ), check_func( std::move( c ) )
+    {
+    }
   };
   std::vector<buff_stat_t> stats;
   gain_t* stat_gain;
   bool manual_stats_added;
 
-  virtual void bump     ( int stacks = 1, double value = -1.0 ) override;
-  virtual void decrement( int stacks = 1, double value = -1.0 ) override;
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
-  virtual double value() override { stack(); return stats[ 0 ].current_value; }
+  void bump     ( int stacks = 1, double value = -1.0 ) override;
+  void decrement( int stacks = 1, double value = -1.0 ) override;
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
+  double value() override { stack(); return stats[ 0 ].current_value; }
 
   stat_buff_t* add_stat( stat_e s, double a, const std::function<bool(const stat_buff_t&)>& c = std::function<bool(const stat_buff_t&)>() );
 
@@ -419,8 +423,8 @@ protected:
   virtual void absorb_used( double /* amount */ ) {}
 
 public:
-  virtual void start( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override;
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
+  void start( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override;
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 
   virtual double consume( double amount );
   absorb_buff_t* set_absorb_gain( gain_t* );
@@ -437,9 +441,9 @@ struct cost_reduction_buff_t : public buff_t
 
   cost_reduction_buff_t(actor_pair_t q, util::string_view name);
   cost_reduction_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, const item_t* item = nullptr );
-  virtual void bump     ( int stacks = 1, double value = -1.0 ) override;
-  virtual void decrement( int stacks = 1, double value = -1.0 ) override;
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
+  void bump     ( int stacks = 1, double value = -1.0 ) override;
+  void decrement( int stacks = 1, double value = -1.0 ) override;
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
   cost_reduction_buff_t* set_reduction(school_e school, double amount);
 };
 

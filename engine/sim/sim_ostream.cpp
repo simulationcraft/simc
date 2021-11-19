@@ -28,9 +28,7 @@ void sim_ostream_t::print_simulation_time()
 
 void sim_ostream_t::vprintf( fmt::string_view format, fmt::printf_args args )
 {
-  print_simulation_time();
   *this << fmt::vsprintf( format, args );
-  *_raw.get_stream() << '\n';
 }
 
 void sim_ostream_t::vprint( fmt::string_view format, fmt::format_args args)

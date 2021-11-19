@@ -189,7 +189,7 @@ namespace simc
       return left %= right;
     }
 
-    typedef time_t native_t;
+    using native_t = time_t;
 
     // Only to be used to convert without loss of precision for a computation
     // that will later be converted back via from_native().
@@ -207,7 +207,7 @@ namespace simc
 
     static constexpr timespan_t zero()
     {
-      return timespan_t();
+      return {};
     }
     static constexpr timespan_t max()
     {
@@ -215,7 +215,7 @@ namespace simc
     }
     static constexpr timespan_t min()
     {
-      static_assert(!std::is_floating_point<time_t>::value, "");
+      static_assert( !std::is_floating_point<time_t>::value );
       return timespan_t( std::numeric_limits<time_t>::min() );
     }
 

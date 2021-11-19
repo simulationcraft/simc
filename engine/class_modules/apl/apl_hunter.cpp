@@ -154,11 +154,9 @@ void marksmanship( player_t* p )
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "fleshcraft" );
   precombat->add_action( "tar_trap,if=runeforge.soulforge_embers" );
-  precombat->add_action( "variable,name=etf_precast,value=0", "Change to 1 to simulate ETF/SSF gearswap Trueshot precast." );
-  precombat->add_action( "double_tap,precast_time=10,if=active_enemies>1|!covenant.kyrian&!talent.volley|variable.etf_precast" );
-  precombat->add_action( "trueshot,precast_etf_equip=1,precast_time=2,if=variable.etf_precast" );
-  precombat->add_action( "aimed_shot,if=active_enemies<3&(!covenant.kyrian&!talent.volley|active_enemies<2)&!variable.etf_precast" );
-  precombat->add_action( "steady_shot,if=active_enemies>2|(covenant.kyrian|talent.volley)&active_enemies=2|variable.etf_precast" );
+  precombat->add_action( "double_tap,precast_time=10,if=active_enemies>1|!covenant.kyrian&!talent.volley" );
+  precombat->add_action( "aimed_shot,if=active_enemies<3&(!covenant.kyrian&!talent.volley|active_enemies<2)" );
+  precombat->add_action( "steady_shot,if=active_enemies>2|(covenant.kyrian|talent.volley)&active_enemies=2" );
 
   default_->add_action( "auto_shot" );
   default_->add_action( "counter_shot,line_cd=30,if=runeforge.sephuzs_proclamation|soulbind.niyas_tools_poison|(conduit.reversal_of_fortune&!runeforge.sephuzs_proclamation)" );

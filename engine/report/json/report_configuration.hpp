@@ -9,9 +9,7 @@
 
 struct sim_t;
 
-namespace report
-{
-namespace json
+namespace report::json
 {
 class report_configuration_t
 {
@@ -32,5 +30,4 @@ public:
 };
 
 report_configuration_t create_report_entry( sim_t& sim, std::string version, std::string destination );
-}  // namespace json
-}  // namespace report
+}  // namespace report::json

@@ -128,7 +128,7 @@ struct druid_action_state_t : public action_state_t
   void copy_state( const action_state_t* s ) override
   {
     action_state_t::copy_state( s );
-    const druid_action_state_t* druid_s = debug_cast<const druid_action_state_t*>( s );
+    auto druid_s = debug_cast<const druid_action_state_t*>( s );
 
     free_cast = druid_s->free_cast;
   }
@@ -505,6 +505,9 @@ public:
   // Procs
   struct procs_t
   {
+    // Balance
+    proc_t* pulsar;
+
     // Feral & Resto
     proc_t* clearcasting;
     proc_t* clearcasting_wasted;
@@ -1792,19 +1795,19 @@ public:
 
   stats_t* init_free_cast_stats( free_cast_e f )
   {
-    for ( auto s : free_cast_stats )
+    for ( const auto& s : free_cast_stats )
       if ( s.type == f )
         return s.stats;
 
     auto fc_stats = p()->get_stats( free_cast_string( f ), this );
-    free_cast_stats.push_back( free_cast_stats_t( f, fc_stats ) );
+    free_cast_stats.emplace_back( f, fc_stats );
 
     return fc_stats;
   }
 
   stats_t* get_free_cast_stats( free_cast_e f )
   {
-    for ( auto s : free_cast_stats )
+    for ( const auto& s : free_cast_stats )
       if ( s.type == f )
         return s.stats;
 
@@ -1927,7 +1930,7 @@ public:
 
     if ( is_auto_attack && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
     {
-      da_multiplier_buffeffects.push_back( buff_effect_t( buff, val ) );
+      da_multiplier_buffeffects.emplace_back( buff, val  );
       return;
     }
 
@@ -1942,27 +1945,27 @@ public:
       switch ( eff.misc_value1() )
       {
         case P_GENERIC:
-          da_multiplier_buffeffects.push_back( buff_effect_t( buff, val, use_stacks, mastery ) );
+          da_multiplier_buffeffects.emplace_back( buff, val, use_stacks, mastery  );
           p()->sim->print_debug( "buff-effects: {} ({}) direct damage modified by {}%{} with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, mastery ? "+mastery" : "", buff->name(), buff->data().id() );
           break;
         case P_TICK_DAMAGE:
-          ta_multiplier_buffeffects.push_back( buff_effect_t( buff, val, use_stacks, mastery ) );
+          ta_multiplier_buffeffects.emplace_back( buff, val, use_stacks, mastery  );
           p()->sim->print_debug( "buff-effects: {} ({}) tick damage modified by {}%{} with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, mastery ? "+mastery" : "", buff->name(), buff->data().id() );
           break;
         case P_CAST_TIME:
-          execute_time_buffeffects.push_back( buff_effect_t( buff, val, use_stacks ) );
+          execute_time_buffeffects.emplace_back( buff, val, use_stacks  );
           p()->sim->print_debug( "buff-effects: {} ({}) cast time modified by {}% with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, buff->name(), buff->data().id() );
           break;
         case P_COOLDOWN:
-          recharge_multiplier_buffeffects.push_back( buff_effect_t( buff, val, use_stacks ) );
+          recharge_multiplier_buffeffects.emplace_back( buff, val, use_stacks  );
           p()->sim->print_debug( "buff-effects: {} ({}) cooldown modified by {}% with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, buff->name(), buff->data().id() );
           break;
         case P_RESOURCE_COST:
-          cost_buffeffects.push_back( buff_effect_t( buff, val, use_stacks ) );
+          cost_buffeffects.emplace_back( buff, val, use_stacks  );
           p()->sim->print_debug( "buff-effects: {} ({}) cost modified by {}% with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, buff->name(), buff->data().id() );
           break;
@@ -1972,7 +1975,7 @@ public:
     }
     else if ( eff.subtype() == A_ADD_FLAT_MODIFIER && eff.misc_value1() == P_CRIT )
     {
-      crit_chance_buffeffects.push_back( buff_effect_t( buff, val, use_stacks ) );
+      crit_chance_buffeffects.emplace_back( buff, val, use_stacks  );
           p()->sim->print_debug( "buff-effects: {} ({}) crit chance modified by {}% with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, buff->name(), buff->data().id() );
     }
@@ -2024,7 +2027,7 @@ public:
   {
     double return_value = flat ? 0.0 : 1.0;
 
-    for ( auto i : buffeffects )
+    for ( const auto& i : buffeffects )
     {
       double eff_val = i.value;
 
@@ -2137,7 +2140,7 @@ public:
 
       p()->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}% on targets with dot {} ({})", ab::name(),
                              ab::id, val * 100.0, s_data->name_cstr(), s_data->id() );
-      target_multiplier_dotdebuffs.push_back( dot_debuff_t( func, val, use_stacks ) );
+      target_multiplier_dotdebuffs.emplace_back( func, val, use_stacks  );
     }
   }
 
@@ -2364,19 +2367,6 @@ public:
     }
   }
 
-  timespan_t gcd() const override
-  {
-    timespan_t g = ab::gcd();
-
-    if ( g == timespan_t::zero() )
-      return g;
-
-    if ( g < ab::min_gcd )
-      return ab::min_gcd;
-    else
-      return g;
-  }
-
   double composite_target_armor( player_t* t ) const override
   {
     if ( direct_bleed )
@@ -2435,21 +2425,6 @@ public:
   druid_spell_base_t( util::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ), reset_melee_swing( true )
   {}
-
-  timespan_t gcd() const override
-  {
-    timespan_t g = ab::trigger_gcd;
-
-    if ( g == timespan_t::zero() )
-      return g;
-
-    g *= ab::composite_haste();
-
-    if ( g < ab::min_gcd )
-      return ab::min_gcd;
-    else
-      return g;
-  }
 
   void execute() override
   {
@@ -2561,6 +2536,8 @@ public:
               p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
 
           proc_buff->extend_duration_or_trigger( pulsar_dur, p() );
+
+          p()->proc.pulsar->occur();
 
           p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
           make_event( *sim, pulsar_dur, [ this ]() {
@@ -2722,15 +2699,15 @@ struct moonfire_t : public druid_spell_t
         std::vector<player_t*> afflicted;
         std::vector<player_t*> unafflicted;
 
-        for ( size_t i = 0; i < full_list.size(); i++ )
+        for (auto* i : full_list)
         {
-          if ( full_list[ i ] == target || full_list[i]->debuffs.invulnerable->up() )
+          if ( i == target || i->debuffs.invulnerable->up() )
             continue;
 
-          if ( td( full_list[ i ] )->dots.moonfire->is_ticking() )
-            afflicted.push_back( full_list[ i ] );
+          if ( td( i )->dots.moonfire->is_ticking() )
+            afflicted.push_back( i );
           else
-            unafflicted.push_back( full_list[ i ] );
+            unafflicted.push_back( i );
         }
 
         // Fill list with random unafflicted targets.
@@ -3008,14 +2985,14 @@ public:
     if ( data().affected_by( p->mastery.razor_claws->effectN( 1 ) ) )
     {
       auto val = p->mastery.razor_claws->effectN( 1 ).percent();
-      da_multiplier_buffeffects.push_back( buff_effect_t( nullptr, val, false, true ) );
+      da_multiplier_buffeffects.emplace_back( nullptr, val, false, true  );
       p->sim->print_debug( "buff-effects: {} ({}) direct damage modified by {}%+mastery", name(), id, val * 100.0 );
     }
 
     if ( data().affected_by( p->mastery.razor_claws->effectN( 2 ) ) )
     {
       auto val = p->mastery.razor_claws->effectN( 2 ).percent();
-      ta_multiplier_buffeffects.push_back( buff_effect_t( nullptr, val , false, true ) );
+      ta_multiplier_buffeffects.emplace_back( nullptr, val , false, true  );
       p->sim->print_debug( "buff-effects: {} ({}) tick damage modified by {}%+mastery", name(), id, val * 100.0 );
     }
   }
@@ -3331,7 +3308,7 @@ struct rip_state_t : public druid_action_state_t
   void copy_state( const action_state_t* state ) override
   {
     druid_action_state_t::copy_state( state );
-    const rip_state_t* rip_state = debug_cast<const rip_state_t*>( state );
+    auto rip_state = debug_cast<const rip_state_t*>( state );
 
     combo_points = rip_state->combo_points;
   }
@@ -4804,6 +4781,8 @@ struct natures_guardian_t : public druid_heal_t
 
 struct regrowth_t : public druid_heal_t
 {
+  timespan_t gcd_add;
+
   regrowth_t( druid_t* p, util::string_view options_str )
     : druid_heal_t( "regrowth", p, p->find_class_spell( "Regrowth" ), options_str )
   {
@@ -4818,6 +4797,8 @@ struct regrowth_t : public druid_heal_t
       target          = sim->target;
       base_multiplier = 0;
     }
+
+    gcd_add = p->query_aura_effect( p->spec.cat_form, A_ADD_FLAT_MODIFIER, P_GCD, s_data )->time_value();
   }
 
   timespan_t gcd() const override
@@ -4825,7 +4806,7 @@ struct regrowth_t : public druid_heal_t
     timespan_t g = druid_heal_t::gcd();
 
     if ( p()->buff.cat_form->check() )
-      g -= p()->query_aura_effect( p()->spec.cat_form, A_ADD_FLAT_MODIFIER, P_GCD, s_data )->time_value();
+      g += gcd_add;
 
     return g;
   }
@@ -5266,15 +5247,18 @@ struct fury_of_elune_t : public druid_spell_t
 
 struct dash_t : public druid_spell_t
 {
-  dash_t( druid_t* player, util::string_view options_str )
-    : druid_spell_t( "dash", player,
-                     player->talent.tiger_dash->ok() ? player->talent.tiger_dash : player->find_class_spell( "Dash" ),
+  double gcd_mul;
+
+  dash_t( druid_t* p, util::string_view options_str )
+    : druid_spell_t( "dash", p, p->talent.tiger_dash->ok() ? p->talent.tiger_dash : p->find_class_spell( "Dash" ),
                      options_str )
   {
     autoshift = form_mask = CAT_FORM;
 
     harmful = may_crit = may_miss = false;
     ignore_false_positive         = true;
+
+    gcd_mul = p->query_aura_effect( &p->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, s_data )->percent();
   }
 
   timespan_t gcd() const override
@@ -5282,7 +5266,7 @@ struct dash_t : public druid_spell_t
     timespan_t g = druid_spell_t::gcd();
 
     if ( p()->buff.cat_form->check() )
-      g *= 1.0 + p()->query_aura_effect( &p()->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, s_data )->percent();
+      g *= 1.0 + gcd_mul;
 
     return g;
   }
@@ -5302,13 +5286,17 @@ struct dash_t : public druid_spell_t
 
 struct tiger_dash_t : public druid_spell_t
 {
-  tiger_dash_t( druid_t* player, util::string_view options_str )
-    : druid_spell_t( "tiger_dash", player, player->talent.tiger_dash, options_str )
+  double gcd_mul;
+
+  tiger_dash_t( druid_t* p, util::string_view options_str )
+    : druid_spell_t( "tiger_dash", p, p->talent.tiger_dash, options_str )
   {
     autoshift = form_mask = CAT_FORM;
 
     harmful = may_crit = may_miss = false;
     ignore_false_positive         = true;
+
+    gcd_mul = p->query_aura_effect( &p->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, s_data )->percent();
   }
 
   timespan_t gcd() const override
@@ -5316,7 +5304,7 @@ struct tiger_dash_t : public druid_spell_t
     timespan_t g = druid_spell_t::gcd();
 
     if ( p()->buff.cat_form->check() )
-      g *= 1.0 + p()->query_aura_effect( &p()->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, s_data )->percent();
+      g *= 1.0 + gcd_mul;
 
     return g;
   }
@@ -5750,6 +5738,8 @@ struct heart_of_the_wild_t : public druid_spell_t
 // Entangling Roots =========================================================
 struct entangling_roots_t : public druid_spell_t
 {
+  timespan_t gcd_add;
+
   entangling_roots_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "entangling_roots", p, p->spec.entangling_roots, options_str )
   {
@@ -5757,6 +5747,18 @@ struct entangling_roots_t : public druid_spell_t
     harmful   = false;
     // workaround so that we do not need to enable mana regen
     base_costs[ RESOURCE_MANA ] = 0.0;
+
+    gcd_add = p->query_aura_effect( p->spec.cat_form, A_ADD_FLAT_MODIFIER, P_GCD, s_data )->time_value();
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t g = druid_spell_t::gcd();
+
+    if ( p()->buff.cat_form->check() )
+      g += gcd_add;
+
+    return g;
   }
 
   bool check_form_restriction() override
@@ -6258,11 +6260,9 @@ struct starfall_t : public druid_spell_t
 
       std::vector<player_t*>& tl = target_list();
 
-      for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
+      for ( auto* t : tl )
       {
-        player_t* t = tl[ i ];
-
-        td( t )->dots.moonfire->adjust_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
+         td( t )->dots.moonfire->adjust_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
         td( t )->dots.sunfire->adjust_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
       }
     }
@@ -7209,7 +7209,7 @@ struct adaptive_swarm_t : public druid_spell_t
     void copy_state( const action_state_t* s ) override
     {
       druid_action_state_t::copy_state( s );
-      const adaptive_swarm_state_t* swarm_s = debug_cast<const adaptive_swarm_state_t*>( s );
+      auto swarm_s = debug_cast<const adaptive_swarm_state_t*>( s );
 
       stacks = swarm_s->stacks;
       jump   = swarm_s->jump;
@@ -7310,16 +7310,6 @@ struct adaptive_swarm_t : public druid_spell_t
       return tar;
     }
 
-    double composite_persistent_multiplier( const action_state_t* s ) const override
-    {
-      double pm = druid_spell_t::composite_persistent_multiplier( s );
-
-      if ( !debug_cast<const adaptive_swarm_state_t*>( s )->jump && p()->buff.tigers_fury->check() )
-        pm *= 1.0 + tf_mul;
-
-      return pm;
-    }
-
     void impact( action_state_t* s ) override
     {
       auto incoming = debug_cast<adaptive_swarm_state_t*>( s )->stacks;
@@ -7403,6 +7393,16 @@ struct adaptive_swarm_t : public druid_spell_t
       if ( !t ) return nullptr;
 
       return td( t )->dots.adaptive_swarm_damage;
+    }
+
+    double composite_persistent_multiplier( const action_state_t* s ) const override
+    {
+      double pm = adaptive_swarm_base_t::composite_persistent_multiplier( s );
+
+      if ( !debug_cast<const adaptive_swarm_state_t*>( s )->jump && p()->buff.tigers_fury->check() )
+        pm *= 1.0 + tf_mul;
+
+      return pm;
     }
 
     double calculate_tick_amount( action_state_t* s, double m ) const override
@@ -7489,7 +7489,7 @@ struct adaptive_swarm_t : public druid_spell_t
 
 double brambles_handler( const action_state_t* s )
 {
-  druid_t* p = static_cast<druid_t*>( s->target );
+  auto p = static_cast<druid_t*>( s->target );
   assert( p->talent.brambles->ok() );
   assert( s );
 
@@ -7533,7 +7533,7 @@ double earthwarden_handler( const action_state_t* s )
   if ( s->action->special )
     return 0;
 
-  druid_t* p = static_cast<druid_t*>( s->target );
+  auto p = static_cast<druid_t*>( s->target );
   assert( p->talent.earthwarden->ok() );
 
   if ( !p->buff.earthwarden->up() )
@@ -8139,7 +8139,13 @@ void druid_t::init_base_stats()
 {
   // Set base distance based on spec
   if ( base.distance < 1 )
-    base.distance = ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) ? 5 : 30;
+  {
+    if ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ||
+         ( specialization() == DRUID_RESTORATION && talent.feral_affinity->ok() ) )
+      base.distance = 5;
+    else
+      base.distance = 30;
+  }
 
   player_t::init_base_stats();
 
@@ -8904,6 +8910,9 @@ void druid_t::init_gains()
 void druid_t::init_procs()
 {
   player_t::init_procs();
+
+  // Balance
+  proc.pulsar = get_proc( "Pulsar" )->collect_interval();
 
   // Feral
   proc.predator              = get_proc( "predator" );
@@ -10219,21 +10228,20 @@ double druid_t::calculate_expected_max_health() const
   double slot_weights = 0;
   double prop_values  = 0;
 
-  for ( size_t i = 0; i < items.size(); i++ )
+  for ( const auto& item : items )
   {
-    const item_t* item = &items[ i ];
-    if ( !item || item->slot == SLOT_SHIRT || item->slot == SLOT_RANGED || item->slot == SLOT_TABARD ||
-         item->item_level() <= 0 )
+    if ( item.slot == SLOT_SHIRT || item.slot == SLOT_RANGED || item.slot == SLOT_TABARD ||
+         item.item_level() <= 0 )
       continue;
 
-    const random_prop_data_t item_data = dbc->random_property( item->item_level() );
-    int index                          = item_database::random_suffix_type( item->parsed.data );
+    const random_prop_data_t item_data = dbc->random_property( item.item_level() );
+    int index                          = item_database::random_suffix_type( item.parsed.data );
     if ( item_data.p_epic[ 0 ] == 0 )
       continue;
 
     slot_weights += item_data.p_epic[ index ] / item_data.p_epic[ 0 ];
 
-    if ( !item->active() )
+    if ( !item.active() )
       continue;
 
     prop_values += item_data.p_epic[ index ];
@@ -10474,7 +10482,7 @@ void druid_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
 
-  druid_t* p = debug_cast<druid_t*>( source );
+  auto p = debug_cast<druid_t*>( source );
 
   predator_rppm_rate                   = p->predator_rppm_rate;
   initial_astral_power                 = p->initial_astral_power;
@@ -10532,7 +10540,7 @@ void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
 
     for ( size_t j = 0, end2 = stats->action_list.size(); j < end2; j++ )
     {
-      cat_attacks::cat_attack_t* a = dynamic_cast<cat_attacks::cat_attack_t*>( stats->action_list[ j ] );
+      auto a = dynamic_cast<cat_attacks::cat_attack_t*>( stats->action_list[ j ] );
       if ( !a )
         continue;
 
@@ -10691,7 +10699,7 @@ public:
 
       for ( size_t j = 0, end2 = stats->action_list.size(); j < end2; j++ )
       {
-        cat_attacks::cat_attack_t* a = dynamic_cast<cat_attacks::cat_attack_t*>( stats->action_list[ j ] );
+        auto a = dynamic_cast<cat_attacks::cat_attack_t*>( stats->action_list[ j ] );
         if ( !a )
           continue;
 

@@ -153,7 +153,7 @@ class SC_QueueListView : public QWidget
 
 public:
   SC_QueueListView( SC_QueueItemModel* model, int minimumItemsToShowWidget = 1, QWidget* parent = nullptr )
-    : QWidget( parent ), listView( 0 ), model( model ), minimumItemsToShow( minimumItemsToShowWidget )
+    : QWidget( parent ), listView( nullptr ), model( model ), minimumItemsToShow( minimumItemsToShowWidget )
   {
     init();
   }
@@ -196,7 +196,7 @@ protected:
     listView->setSelectionMode( QListView::SingleSelection );
     listView->setModel( model );
 
-    if ( model != 0 )
+    if ( model != nullptr )
     {
       connect( model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( rowsInserted() ) );
       connect( model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( rowsRemoved() ) );
@@ -212,7 +212,7 @@ protected:
   }
   void tryHide()
   {
-    if ( model != 0 )  // gcc gave a weird error when making this one if
+    if ( model != nullptr )  // gcc gave a weird error when making this one if
     {
       if ( model->rowCount() < minimumItemsToShow && minimumItemsToShow >= 0 )
       {
@@ -225,7 +225,7 @@ protected:
   }
   void tryShow()
   {
-    if ( model != 0 )
+    if ( model != nullptr )
     {
       if ( model->rowCount() >= minimumItemsToShow )
       {
@@ -368,7 +368,7 @@ public:
     url             = u;
     profile         = "";
     item_db_sources = sources;
-    player          = 0;
+    player          = nullptr;
     active_spec     = spec;
     m_role = role, api = apikey;
     error = "";
@@ -376,7 +376,7 @@ public:
   }
   void start( std::shared_ptr<sim_t> s, const QString&, const QString&, const QString&, const QString& );
   void run() override;
-  SC_ImportThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 ), tab( 0 ), player( 0 )
+  SC_ImportThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( nullptr ), tab( 0 ), player( nullptr )
   {
   }
 };

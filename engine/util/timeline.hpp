@@ -24,8 +24,8 @@ void sliding_window_average( Fwd first, Fwd last, unsigned window, Out out )
 {
   // This function performs an apodized moving average of the data bounded by first and last
   // using a window size defined by the third argument.
-  typedef typename std::iterator_traits<Fwd>::value_type value_t;
-  typedef typename std::iterator_traits<Fwd>::difference_type diff_t;
+  using value_t = typename std::iterator_traits<Fwd>::value_type;
+  using diff_t = typename std::iterator_traits<Fwd>::difference_type;
   diff_t n = std::distance( first, last );
   diff_t HALFWINDOW = static_cast<diff_t>( window / 2 );
   diff_t WINDOW = static_cast<diff_t>( window );

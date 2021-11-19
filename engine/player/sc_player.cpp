@@ -26,6 +26,7 @@
 #include "dbc/rank_spells.hpp"
 #include "dbc/specialization_spell.hpp"
 #include "dbc/temporary_enchant.hpp"
+#include "dbc/covenant_data.hpp"
 #include "item/item.hpp"
 #include "item/special_effect.hpp"
 #include "player/action_priority_list.hpp"
@@ -4690,22 +4691,32 @@ void player_t::combat_begin()
     buffs.tyrants_immortality->trigger( buffs.tyrants_immortality->max_stack() );
   }
 
-  auto add_timed_buff_triggers = [ this ] ( const std::vector<timespan_t>& times, buff_t* buff )
+  auto add_timed_buff_triggers = [ this ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
   {
     if ( buff )
       for ( auto t : times )
-        make_event( *sim, t, [ buff ] { buff->trigger(); } );
+        make_event( *sim, t, [ buff, duration ] { buff->trigger( duration ); } );
   };
 
   add_timed_buff_triggers( external_buffs.power_infusion, buffs.power_infusion );
   add_timed_buff_triggers( external_buffs.benevolent_faerie, buffs.benevolent_faerie );
-  add_timed_buff_triggers( external_buffs.blessing_of_summer, buffs.blessing_of_summer ); // TODO: Add a way to specify different durations (The Long Summer conduit).
-  add_timed_buff_triggers( external_buffs.blessing_of_autumn, buffs.blessing_of_autumn );
-  add_timed_buff_triggers( external_buffs.blessing_of_winter, buffs.blessing_of_winter );
-  add_timed_buff_triggers( external_buffs.blessing_of_spring, buffs.blessing_of_spring );
   add_timed_buff_triggers( external_buffs.conquerors_banner, buffs.conquerors_banner );
   add_timed_buff_triggers( external_buffs.rallying_cry, buffs.rallying_cry );
   add_timed_buff_triggers( external_buffs.pact_of_the_soulstalkers, buffs.pact_of_the_soulstalkers );
+
+  auto add_timed_blessing_triggers = [ this, add_timed_buff_triggers ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
+  {
+    add_timed_buff_triggers( times, buff, duration );
+    if ( buff && external_buffs.seasons_of_plenty )
+      for ( auto t : times )
+        make_event( *sim, t + 10_s, [ b = buffs.equinox ] { b->trigger(); } );
+  };
+
+  timespan_t summer_duration = buffs.blessing_of_summer->buff_duration() * ( 1.0 + external_buffs.blessing_of_summer_duration_multiplier );
+  add_timed_blessing_triggers( external_buffs.blessing_of_summer, buffs.blessing_of_summer, summer_duration );
+  add_timed_blessing_triggers( external_buffs.blessing_of_autumn, buffs.blessing_of_autumn );
+  add_timed_blessing_triggers( external_buffs.blessing_of_winter, buffs.blessing_of_winter );
+  add_timed_blessing_triggers( external_buffs.blessing_of_spring, buffs.blessing_of_spring );
 
   if ( buffs.kindred_affinity && !external_buffs.kindred_affinity.empty() )
   {
@@ -4733,9 +4744,9 @@ void player_t::combat_begin()
 
 void player_t::combat_end()
 {
-  for ( size_t i = 0; i < pet_list.size(); ++i )
+  for ( auto* pet : pet_list )
   {
-    pet_list[ i ]->combat_end();
+    pet->combat_end();
   }
 
   if ( !is_pet() )
@@ -4836,8 +4847,8 @@ void player_t::datacollection_end()
   if ( !requires_data_collection() )
     return;
 
-  for ( size_t i = 0; i < pet_list.size(); ++i )
-    pet_list[ i ]->datacollection_end();
+  for ( auto* pet : pet_list )
+    pet->datacollection_end();
 
   if ( arise_time >= timespan_t::zero() )
   {
@@ -5634,7 +5645,7 @@ void player_t::arise()
 
   // Requires index-based lookup since on-arise callbacks may
   // insert new on-arise callbacks to the vector.
-  for ( size_t i = 0; i < callbacks_on_arise.size(); ++i )
+  for ( size_t i = 0; i < callbacks_on_arise.size(); ++i ) // NOLINT(modernize-loop-convert)
   {
     auto& cb = callbacks_on_arise[ i ];
     // If the callback comes from a different actor, execute it only
@@ -5681,7 +5692,7 @@ void player_t::demise()
 
   // Requires index-based lookup since on-demise callbacks may
   // insert new on-demise callbacks to the vector.
-  for ( size_t i = 0; i < callbacks_on_demise.size(); ++i )
+  for ( size_t i = 0; i < callbacks_on_demise.size(); ++i ) // NOLINT(modernize-loop-convert)
   {
     auto& cb = callbacks_on_demise[ i ];
     // If the callback comes from a different actor, execute it only
@@ -5698,9 +5709,9 @@ void player_t::demise()
 
   // sim -> cancel_events( this );
 
-  for ( size_t i = 0; i < pet_list.size(); ++i )
+  for ( auto* pet : pet_list )
   {
-    pet_list[ i ]->demise();
+    pet->demise();
   }
 
   for ( size_t i = 0; i < dot_list.size(); ++i )
@@ -7978,7 +7989,7 @@ struct wait_action_base_t : public action_t
     quiet = true;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     player->iteration_waiting_time += time_to_execute;
   }
@@ -10168,17 +10179,17 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     if ( splits[ 0 ] == "equipped" )
     {
       unsigned item_id = util::to_unsigned_ignore_error( splits[ 1 ], 0 );
-      for ( size_t i = 0; i < items.size(); ++i )
+      for ( const auto& item : items )
       {
-        if ( item_id > 0 && items[ i ].parsed.data.id == item_id )
+        if ( item_id > 0 && item.parsed.data.id == item_id )
         {
           return expr_t::create_constant( "item_equipped", 1 );
         }
-        else if ( util::str_compare_ci( items[ i ].name_str, splits[ 1 ] ) )
+        else if ( util::str_compare_ci( item.name_str, splits[ 1 ] ) )
         {
           return expr_t::create_constant( "item_equipped", 1 );
         }
-        else if ( items[ i ].special_effect_with_name( splits[ 1 ] ) )
+        else if ( item.special_effect_with_name( splits[ 1 ] ) )
         {
           return expr_t::create_constant( "item_equipped", 1 );
         }
@@ -10878,9 +10889,9 @@ std::string player_t::create_profile( save_e stype )
     if ( !talent_overrides_str.empty() )
     {
       auto splits = util::string_split<util::string_view>( talent_overrides_str, "/" );
-      for ( size_t i = 0; i < splits.size(); i++ )
+      for ( const auto& split : splits )
       {
-        profile_str += fmt::format( "talent_override={}{}", splits[ i ], term );
+        profile_str += fmt::format( "talent_override={}{}", split, term );
       }
     }
 
@@ -11423,6 +11434,26 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.pact_of_the_soulstalkers", external_buffs.pact_of_the_soulstalkers ) ); // 9.1 Kyrian Hunter Legendary
   add_option( opt_external_buff_times( "external_buffs.kindred_affinity", external_buffs.kindred_affinity ) ) ;
 
+  // Additional Options for Timed External Buffs
+  add_option( opt_bool( "external_buffs.seasons_of_plenty", external_buffs.seasons_of_plenty ) );
+  add_option( opt_func( "external_buffs.the_long_summer_rank", [ this ] ( sim_t*, util::string_view, util::string_view val )
+  {
+    unsigned rank = util::to_unsigned( val );
+    if ( rank <= 0 )
+      return true;
+
+    const auto &conduit = conduit_entry_t::find( "The Long Summer", dbc->ptr );
+    if ( conduit.id == 0 )
+      throw std::invalid_argument( "unable to find conduit entry data for The Long Summer" );
+
+    const auto &rank_entry = conduit_rank_entry_t::find( conduit.id, rank - 1, dbc->ptr );
+    if ( rank_entry.conduit_id == 0 )
+      throw std::invalid_argument( "invalid conduit rank" );
+
+    external_buffs.blessing_of_summer_duration_multiplier = 0.01 * rank_entry.value;
+    return true;
+  } ) );
+
   // Azerite options
   if ( ! is_enemy() && ! is_pet() )
   {
@@ -11498,10 +11529,9 @@ void player_t::analyze( sim_t& s )
   // Stats Analysis =========================================================
   std::vector<stats_t*> tmp_stats_list( stats_list.begin(), stats_list.end() );
 
-  for ( size_t i = 0; i < pet_list.size(); ++i )
+  for ( const auto* pet : pet_list )
   {
-    pet_t* pet = pet_list[ i ];
-    // Append pet -> stats_list to stats_list
+     // Append pet -> stats_list to stats_list
     tmp_stats_list.insert( tmp_stats_list.end(), pet->stats_list.begin(), pet->stats_list.end() );
   }
 
@@ -11640,42 +11670,42 @@ scaling_metric_data_t player_t::scaling_for_metric( scale_metric_e metric ) cons
   switch ( metric )
   {
     case SCALE_METRIC_DPS:
-      return scaling_metric_data_t( metric, q->collected_data.dps );
+      return { metric, q->collected_data.dps };
     case SCALE_METRIC_DPSE:
-      return scaling_metric_data_t( metric, q->collected_data.dpse );
+      return { metric, q->collected_data.dpse };
     case SCALE_METRIC_HPS:
-      return scaling_metric_data_t( metric, q->collected_data.hps );
+      return { metric, q->collected_data.hps };
     case SCALE_METRIC_HPSE:
-      return scaling_metric_data_t( metric, q->collected_data.hpse );
+      return { metric, q->collected_data.hpse };
     case SCALE_METRIC_APS:
-      return scaling_metric_data_t( metric, q->collected_data.aps );
+      return { metric, q->collected_data.aps };
     case SCALE_METRIC_DPSP:
-      return scaling_metric_data_t( metric, q->collected_data.prioritydps );
+      return { metric, q->collected_data.prioritydps };
     case SCALE_METRIC_HAPS:
     {
       double mean   = q->collected_data.hps.mean() + q->collected_data.aps.mean();
       double stddev = sqrt( q->collected_data.hps.mean_variance + q->collected_data.aps.mean_variance );
-      return scaling_metric_data_t( metric, "Healing + Absorb per second", mean, stddev );
+      return { metric, "Healing + Absorb per second", mean, stddev };
     }
     case SCALE_METRIC_DTPS:
-      return scaling_metric_data_t( metric, q->collected_data.dtps );
+      return { metric, q->collected_data.dtps };
     case SCALE_METRIC_DMG_TAKEN:
-      return scaling_metric_data_t( metric, q->collected_data.dmg_taken );
+      return { metric, q->collected_data.dmg_taken };
     case SCALE_METRIC_HTPS:
-      return scaling_metric_data_t( metric, q->collected_data.htps );
+      return { metric, q->collected_data.htps };
     case SCALE_METRIC_TMI:
-      return scaling_metric_data_t( metric, q->collected_data.theck_meloree_index );
+      return { metric, q->collected_data.theck_meloree_index };
     case SCALE_METRIC_ETMI:
-      return scaling_metric_data_t( metric, q->collected_data.effective_theck_meloree_index );
+      return { metric, q->collected_data.effective_theck_meloree_index };
     case SCALE_METRIC_DEATHS:
-      return scaling_metric_data_t( metric, q->collected_data.deaths );
+      return { metric, q->collected_data.deaths };
     default:
       if ( q->primary_role() == ROLE_TANK )
-        return scaling_metric_data_t( SCALE_METRIC_DTPS, q->collected_data.dtps );
+        return { SCALE_METRIC_DTPS, q->collected_data.dtps };
       else if ( q->primary_role() == ROLE_HEAL )
         return scaling_for_metric( SCALE_METRIC_HAPS );
       else
-        return scaling_metric_data_t( SCALE_METRIC_DPS, q->collected_data.dps );
+        return { SCALE_METRIC_DPS, q->collected_data.dps };
   }
 }
 
@@ -12287,26 +12317,15 @@ void player_collected_data_t::collect_data( const player_t& p )
   heal.add( p.iteration_heal );
   absorb.add( p.iteration_absorb );
 
-  double total_iteration_dmg = p.iteration_dmg;  // player + pet dmg
-  for ( size_t i = 0; i < p.pet_list.size(); ++i )
-  {
-    total_iteration_dmg += p.pet_list[ i ]->iteration_dmg;
-  }
-  double total_priority_iteration_dmg = p.priority_iteration_dmg;
-  for ( size_t i = 0; i < p.pet_list.size(); ++i )
-  {
-    total_priority_iteration_dmg += p.pet_list[ i ]->priority_iteration_dmg;
-  }
-  double total_iteration_heal = p.iteration_heal;  // player + pet heal
-  for ( size_t i = 0; i < p.pet_list.size(); ++i )
-  {
-    total_iteration_heal += p.pet_list[ i ]->iteration_heal;
-  }
-  double total_iteration_absorb = p.iteration_absorb;
-  for ( size_t i = 0; i < p.pet_list.size(); ++i )
-  {
-    total_iteration_absorb += p.pet_list[ i ]->iteration_absorb;
-  }
+  // player + pet dmg
+  double total_iteration_dmg = range::accumulate_proj(p.pet_list, p.iteration_dmg, &player_t::iteration_dmg);
+
+  double total_priority_iteration_dmg = range::accumulate_proj(p.pet_list, p.priority_iteration_dmg, &player_t::priority_iteration_dmg);
+  
+  // player + pet heal
+  double total_iteration_heal = range::accumulate_proj(p.pet_list, p.iteration_heal, &player_t::iteration_heal);
+  
+  double total_iteration_absorb = range::accumulate_proj(p.pet_list, p.iteration_absorb, &player_t::iteration_absorb);
 
   compound_dmg.add( total_iteration_dmg );
   prioritydps.add( uptime ? total_priority_iteration_dmg / uptime : 0 );
@@ -12563,25 +12582,25 @@ action_t* player_t::select_action( const action_priority_list_t& list,
 player_t* player_t::actor_by_name_str( util::string_view name ) const
 {
   // Check player pets first
-  for ( size_t i = 0; i < pet_list.size(); i++ )
+  for ( auto* pet : pet_list )
   {
-    if ( util::str_compare_ci( pet_list[ i ]->name_str, name ) )
-      return pet_list[ i ];
+    if ( util::str_compare_ci( pet->name_str, name ) )
+      return pet;
   }
 
   // Check harmful targets list
-  for ( size_t i = 0; i < sim->target_list.size(); i++ )
+  for ( auto* t : sim->target_list )
   {
-    if ( util::str_compare_ci( sim->target_list[ i ]->name_str, name ) )
-      return sim->target_list[ i ];
+    if ( util::str_compare_ci( t->name_str, name ) )
+      return t;
   }
 
   // Finally, check player (non pet list), don't support targeting other
   // people's pets for now
-  for ( size_t i = 0; i < sim->player_no_pet_list.size(); i++ )
+  for ( auto* p : sim->player_no_pet_list )
   {
-    if ( util::str_compare_ci( sim->player_no_pet_list[ i ]->name_str, name ) )
-      return sim->player_no_pet_list[ i ];
+    if ( util::str_compare_ci( p->name_str, name ) )
+      return p;
   }
 
   return nullptr;

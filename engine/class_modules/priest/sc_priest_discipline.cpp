@@ -12,9 +12,7 @@
 
 namespace priestspace
 {
-namespace actions
-{
-namespace spells
+namespace actions::spells
 {
 struct pain_suppression_t final : public priest_spell_t
 {
@@ -276,8 +274,6 @@ struct spirit_shell_t final : public priest_spell_t
     priest().buffs.spirit_shell->trigger();
   }
 };
-
-}  // namespace spells
 
 }  // namespace actions
 
