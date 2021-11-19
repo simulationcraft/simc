@@ -149,6 +149,9 @@ struct mage_td_t final : public actor_target_data_t
     // Covenant Abilities
     buff_t* mirrors_of_torment;
     buff_t* radiant_spark_vulnerability;
+
+    // Set bonus
+    buff_t* frost_storm;
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -274,6 +277,7 @@ public:
     action_t* arcane_assault;
     action_t* arcane_echo;
     action_t* conflagration_flare_up;
+    action_t* frost_storm_comet_storm;
     action_t* harmonic_echo;
     action_t* ignite;
     action_t* legendary_frozen_orb;
@@ -398,6 +402,7 @@ public:
     cooldown_t* fire_blast;
     cooldown_t* from_the_ashes;
     cooldown_t* frost_nova;
+    cooldown_t* frost_storm;
     cooldown_t* frozen_orb;
     cooldown_t* icy_veins;
     cooldown_t* mirrors_of_torment;
@@ -429,6 +434,8 @@ public:
     double arcane_missiles_chain_relstddev = 0.1;
     bool prepull_dc = false;
     int prepull_harmony_stacks = 0;
+    bool t28_2pc = false;
+    bool t28_4pc = false;
   } options;
 
   // Pets
@@ -1647,6 +1654,20 @@ public:
         make_event( *sim, [ this ] { p()->buffs.fevered_incantation->trigger(); } );
       else
         make_event( *sim, [ this ] { p()->buffs.fevered_incantation->expire(); } );
+    }
+
+    // TODO:
+    // * 9.2 spelldata
+    // * check if the proc is on execute or impact
+    // * check if free CmS consumes WC stacks
+    if ( p()->action.frost_storm_comet_storm
+      && p()->buffs.icy_veins->check()
+      && p()->cooldowns.frost_storm->up()
+      && rng().roll( 0.25 ) )
+    {
+      p()->action.frost_storm_comet_storm->set_target( s->target );
+      p()->action.frost_storm_comet_storm->execute();
+      p()->cooldowns.frost_storm->start( 30.0_s );
     }
   }
 
@@ -3043,20 +3064,35 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
     aoe = -1;
     background = consumes_winters_chill = triggers.radiant_spark = true;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+
+    if ( p()->options.t28_4pc )
+      get_td( s->target )->debuffs.frost_storm->trigger();
+  }
 };
 
 struct comet_storm_t final : public frost_mage_spell_t
 {
   action_t* projectile;
 
-  comet_storm_t( util::string_view n, mage_t* p, util::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->talents.comet_storm ),
-    projectile( get_action<comet_storm_projectile_t>( "comet_storm_projectile", p ) )
+  comet_storm_t( util::string_view n, mage_t* p, util::string_view options_str, bool set_bonus = false ) :
+    frost_mage_spell_t( n, p, set_bonus ? p->find_spell( 153595 ) : p->talents.comet_storm ),
+    projectile( get_action<comet_storm_projectile_t>( set_bonus ? "frost_storm_comet_storm_projectile" : "comet_storm_projectile", p ) )
   {
     parse_options( options_str );
     may_miss = may_crit = affected_by.shatter = false;
     add_child( projectile );
     travel_delay = p->find_spell( 228601 )->missile_speed();
+
+    if ( set_bonus )
+    {
+      background = true;
+      cooldown->duration = 0_ms;
+      base_costs[ RESOURCE_MANA ] = 0.0;
+    }
   }
 
   void execute() override
@@ -5581,6 +5617,16 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                           ->set_default_value_from_effect( 1 )
                                           ->modify_default_value( mage->conduits.ire_of_the_ascended.percent() )
                                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+  // Set bonus
+  // TODO:
+  // * 9.2 spelldata
+  // * check if normal CmS triggers this too
+  debuffs.frost_storm = make_buff( *this, "frost_storm" )
+                          ->set_max_stack( 5 )
+                          ->set_duration( 8.0_s )
+                          ->set_default_value( 0.02 )
+                          ->set_schools( dbc::get_school_mask( SCHOOL_FROST ) );
 }
 
 mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
@@ -5613,6 +5659,7 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   cooldowns.fire_blast         = get_cooldown( "fire_blast"         );
   cooldowns.from_the_ashes     = get_cooldown( "from_the_ashes"     );
   cooldowns.frost_nova         = get_cooldown( "frost_nova"         );
+  cooldowns.frost_storm        = get_cooldown( "frost_storm"        );
   cooldowns.frozen_orb         = get_cooldown( "frozen_orb"         );
   cooldowns.icy_veins          = get_cooldown( "icy_veins"          );
   cooldowns.mirrors_of_torment = get_cooldown( "mirrors_of_torment" );
@@ -5796,6 +5843,9 @@ void mage_t::create_actions()
     action.tormenting_backlash = get_action<tormenting_backlash_t>( "tormenting_backlash", this );
   }
 
+  if ( specialization() == MAGE_FROST && options.t28_2pc )
+    action.frost_storm_comet_storm = get_action<comet_storm_t>( "frost_storm_comet_storm", this, "", true );
+
   player_t::create_actions();
 
   // Ensure the cooldown of Phoenix Flames is properly initialized.
@@ -5825,6 +5875,8 @@ void mage_t::create_options()
   add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_bool( "mage.prepull_dc", options.prepull_dc ) );
   add_option( opt_int( "mage.prepull_harmony_stacks", options.prepull_harmony_stacks ) );
+  add_option( opt_bool( "mage.t28_2pc", options.t28_2pc ) );
+  add_option( opt_bool( "mage.t28_4pc", options.t28_4pc ) );
 
   player_t::create_options();
 }
@@ -6596,6 +6648,9 @@ double mage_t::composite_player_target_multiplier( player_t* target, school_e sc
   {
     if ( td->debuffs.grisly_icicle->has_common_school( school ) )
       m *= 1.0 + td->debuffs.grisly_icicle->check_value();
+
+    if ( td->debuffs.frost_storm->has_common_school( school ) )
+      m *= 1.0 + td->debuffs.frost_storm->check_stack_value();
   }
 
   return m;
