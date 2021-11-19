@@ -263,6 +263,9 @@ public:
     buff_t* pressure_point;
     buff_t* the_emperors_capacitor;
     buff_t* invoke_xuen_call_to_arms;
+
+    // T28 Set Bonus
+    buff_t* flames_of_primordium;
   } buff;
 
 public:

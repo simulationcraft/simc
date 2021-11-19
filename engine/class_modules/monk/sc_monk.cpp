@@ -1160,8 +1160,16 @@ struct tiger_palm_t : public monk_melee_attack_t
           }
         }
 
+        auto brew_cdr = p()->spec.tiger_palm->effectN( 3 ).base_value();
+
+        if ( p()->buff.flames_of_primordium->check() )
+        {
+          brew_cdr *= 1 + p()->sets->set( MONK_BREWMASTER, T28, B4 )->effectN( 1 ).percent();
+          p()->buff.flames_of_primordium->expire();
+        }
+
         // Reduces the remaining cooldown on your Brews by 1 sec
-        brew_cooldown_reduction( p()->spec.tiger_palm->effectN( 3 ).base_value() );
+        brew_cooldown_reduction( brew_cdr );
 
         if ( p()->buff.blackout_combo->up() )
           p()->buff.blackout_combo->expire();
@@ -1542,7 +1550,15 @@ struct blackout_kick_t : public monk_melee_attack_t
         if ( p()->talent.blackout_combo->ok() )
           p()->buff.blackout_combo->trigger();
 
-        trigger_shuffle( p()->spec.blackout_kick_brm->effectN( 2 ).base_value() );
+        auto shuffle_duration = p()->spec.blackout_kick_brm->effectN( 2 ).base_value();
+
+        if ( p()->buff.flames_of_primordium->check() )
+        {
+          shuffle_duration *= 1 + p()->sets->set( MONK_BREWMASTER, T28, B4 )->effectN( 1 ).percent();
+          p()->buff.flames_of_primordium->expire();
+        }
+
+        trigger_shuffle( shuffle_duration );
         break;
       }
       case MONK_MISTWEAVER:
@@ -3094,6 +3110,9 @@ struct breath_of_fire_t : public monk_spell_t
 
     if ( p()->legendary.charred_passions->ok() )
       p()->buff.charred_passions->trigger();
+
+    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T28, B4 ) )
+      p()->buff.flames_of_primordium->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -6843,6 +6862,9 @@ void monk_t::create_buffs()
 
   buff.fae_exposure =
       make_buff( this, "fae_exposure_heal", passives.fae_exposure_heal )->set_default_value_from_effect( 1 );
+
+  // Tier 28 Set Bonus
+  buff.flames_of_primordium = make_buff( this, "flames_of_primordium", find_spell( 364101 ) );
 }
 
 // monk_t::init_gains =======================================================
