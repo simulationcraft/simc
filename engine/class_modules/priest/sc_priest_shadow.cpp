@@ -1716,6 +1716,13 @@ struct dark_thought_t final : public priest_buff_t<buff_t>
       }
     }
 
+    // TODO: check if you can have multiple out at once
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B4 ) )
+    {
+      priest().procs.living_shadow->occur();
+      auto spawned_pets = priest().pets.your_shadow.spawn();
+    }
+
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };

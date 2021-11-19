@@ -832,7 +832,8 @@ enum set_bonus_type_e
   T23_KEEPSAKES,
   T23_TITANIC_EMPOWERMENT,
   T26_HACK_AND_GORE,
-  SET_BONUS_MAX
+  SET_BONUS_MAX,
+  T28
 };
 
 enum meta_gem_e
