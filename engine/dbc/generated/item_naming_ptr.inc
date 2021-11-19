@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.1.5.40843
-static const std::array<item_name_description_t, 648> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 9.2.0.41089
+static const std::array<item_name_description_t, 654> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -433,7 +433,6 @@ static const std::array<item_name_description_t, 648> __ptr_item_name_descriptio
   { 13674, "Biting Cold"                                 },
   { 13675, "Grip of the Everlasting"                     },
   { 13676, "Nightmare"                                   },
-  { 13677, "Doug Test aaa"                               },
   { 13678, "Sun King's Blessing"                         },
   { 13679, "Molten Skyfall"                              },
   { 13680, "Firestorm"                                   },
@@ -647,6 +646,13 @@ static const std::array<item_name_description_t, 648> __ptr_item_name_descriptio
   { 13895, "Combatant II"                                },
   { 13896, "Challenger II"                               },
   { 13897, "Rival II"                                    },
+  { 13898, "Progenitor Module"                           },
+  { 13899, "Cyphers of the First Ones"                   },
+  { 13900, "Usable with:"                                },
+  { 13901, "Shadowlands recipes for rare (blue) and better armor." },
+  { 13907, "Sustaining"                                  },
+  { 13908, "Fated"                                       },
   { 13911, "Shadowlands Season 2"                        },
+  { 13914, "Protoform Synthesis"                         },
 } };
 

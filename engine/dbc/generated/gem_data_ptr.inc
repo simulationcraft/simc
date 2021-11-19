@@ -1,5 +1,5 @@
-// Gem properties, wow build 9.1.5.40843
-static const std::array<gem_property_data_t, 1930> __ptr_gem_property_data { {
+// Gem properties, wow build 9.2.0.41089
+static const std::array<gem_property_data_t, 1931> __ptr_gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
   {    4,  2688, 0x00000004 }, // +$k1 Stamina
@@ -1930,5 +1930,6 @@ static const std::array<gem_property_data_t, 1930> __ptr_gem_property_data { {
   { 3900,  6341, 0x00100000 }, // $spell@spelldesc357076
   { 3901,  6342, 0x00100000 }, // $spell@spelldesc357068
   { 3902,  6343, 0x00100000 }, // $spell@spelldesc357077
+  { 3903,  6352, 0x00000020 }, // $spell@spelldesc365544
 } };
 
