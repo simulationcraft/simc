@@ -950,7 +950,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     // TODO: see how this is formatted in spell data
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B2 ) )
     {
-      dark_thoughts_proc_percent +=  priest().sets->set( PRIEST_SHADOW, T28, B2 )->effectN( 1 ).percent() / 3;
+      dark_thoughts_proc_percent += priest().sets->set( PRIEST_SHADOW, T28, B2 )->effectN( 1 ).percent() / 3;
     }
 
     // Currently Mind-Sear has 1/3 the proc rate of Mind Flay 3% -> 1%
