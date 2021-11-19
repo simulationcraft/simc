@@ -212,8 +212,8 @@ struct mind_sear_t final : public priest_spell_t
     radius = data().effectN( 1 ).trigger()->effectN( 2 ).radius();  // need to set radius in here so that the APL
                                                                     // functions correctly
 
-    if (priest().specialization() == PRIEST_SHADOW)
-      base_costs_per_tick[RESOURCE_MANA] = 0.0;
+    if ( priest().specialization() == PRIEST_SHADOW )
+      base_costs_per_tick[ RESOURCE_MANA ] = 0.0;
 
     tick_action = new mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
   }
@@ -1720,7 +1720,16 @@ struct dark_thought_t final : public priest_buff_t<buff_t>
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B4 ) )
     {
       priest().procs.living_shadow->occur();
-      auto spawned_pets = priest().pets.your_shadow.spawn();
+
+      if ( priest().pets.your_shadow.n_active_pets() < 1 )
+      {
+        priest().pets.your_shadow.spawn();
+      }
+      else
+      {
+        auto pet = priest().pets.your_shadow.active_pet();
+        pet->adjust_duration( priest().pets.your_shadow.duration() );
+      }
     }
 
     base_t::expire_override( expiration_stacks, remaining_duration );
