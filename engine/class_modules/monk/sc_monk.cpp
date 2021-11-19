@@ -5689,6 +5689,23 @@ struct stagger_buff_t : public monk_buff_t<buff_t>
   }
 };
 
+// ===============================================================================
+// Tier 28 Primordial Potential
+// ===============================================================================
+
+struct primordial_potential_buff_t : public monk_buff_t<buff_t>
+{
+  primordial_potential_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  {
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    this->p().buff.primordial_power->trigger();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
 } // namespace monk::buffs
 
 namespace items
@@ -6865,6 +6882,9 @@ void monk_t::create_buffs()
 
   // Tier 28 Set Bonus
   buff.flames_of_primordium = make_buff( this, "flames_of_primordium", find_spell( 364101 ) );
+  buff.primordial_potential =
+      new buffs::primordial_potential_buff_t( *this, "primordial_potential", find_spell( 363911 ) );
+  buff.primordial_power = make_buff( this, "primordial_power", find_spell( 363924 ) );
 }
 
 // monk_t::init_gains =======================================================

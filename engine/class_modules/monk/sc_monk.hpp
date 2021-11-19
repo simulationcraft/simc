@@ -266,6 +266,8 @@ public:
 
     // T28 Set Bonus
     buff_t* flames_of_primordium;
+    buff_t* primordial_potential;
+    buff_t* primordial_power;
   } buff;
 
 public:
