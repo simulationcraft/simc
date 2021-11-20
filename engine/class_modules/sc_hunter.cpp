@@ -394,6 +394,7 @@ public:
     buff_t* terms_of_engagement;
     buff_t* tip_of_the_spear;
     buff_t* vipers_venom;
+    buff_t* mad_bombardier;
 
     // Legendaries
     buff_t* butchers_bone_fragments;
@@ -599,6 +600,8 @@ public:
     timespan_t pet_basic_attack_delay = 0.15_s;
     // random testing stuff
     bool stomp_triggers_wild_spirits = true;
+    bool t28_2pc                     = false;
+    bool t28_4pc                     = false;
   } options;
 
   hunter_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
@@ -4838,6 +4841,15 @@ struct kill_command_t: public hunter_spell_t
         flankers_advantage.proc -> occur();
         cooldown -> reset( true );
         p() -> buffs.strength_of_the_pack -> trigger();
+
+        if ( p() -> options.t28_2pc )
+        {
+            if ( rng().roll( 0.4 ) )
+            {
+              p() -> cooldowns.wildfire_bomb -> reset( true );
+              p() -> buffs.mad_bombardier -> trigger();
+            }
+        }
       }
     }
 
@@ -5343,6 +5355,9 @@ struct wildfire_bomb_t: public hunter_spell_t
       double am = hunter_spell_t::composite_da_multiplier( s );
 
       am *= 1 + p() -> buffs.flame_infusion -> check_stack_value();
+
+      if ( p() -> options.t28_4pc )
+        am *= 1 + 0.3 + p() -> buffs.mad_bombardier -> check_value();
 
       return am;
     }
@@ -6192,6 +6207,11 @@ void hunter_t::create_buffs()
     make_buff( this, "aspect_of_the_eagle", specs.aspect_of_the_eagle )
       -> set_cooldown( 0_ms );
 
+  buffs.mad_bombardier =
+    make_buff( this, "mad_bombardier" )
+      -> set_default_value( 0.5 )
+      -> set_chance( options.t28_4pc );
+
   // Conduits
 
   buffs.brutal_projectiles =
@@ -6731,6 +6751,9 @@ void hunter_t::create_options()
   add_option( opt_obsoleted( "hunter.brutal_projectiles_on_execute" ) );
   add_option( opt_obsoleted( "hunter.memory_of_lucid_dreams_proc_chance" ) );
   add_option( opt_obsoleted( "hunter.serpenstalkers_triggers_wild_spirits" ) );
+
+  add_option( opt_bool( "hunter.t28_2pc", options.t28_2pc ) );
+  add_option( opt_bool( "hunter.t28_4pc", options.t28_4pc ) );
 }
 
 // hunter_t::create_profile =================================================
