@@ -2063,8 +2063,8 @@ public:
 
       if ( o()->conduit.scalding_brew->ok() )
       {
-        auto td = o()->find_target_data( player->target );
-        if ( td && td->dots.breath_of_fire->is_ticking() )
+        auto td = o()->get_target_data( player->target );
+        if ( td->dots.breath_of_fire->is_ticking() )
           am *= 1 + o()->conduit.scalding_brew.percent();
       }
 

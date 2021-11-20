@@ -114,7 +114,7 @@ public:
     return debug_cast<monk_t*>( ab::player );
   }
 
-  monk_td_t* td( player_t* t )
+  monk_td_t* get_td( player_t* t ) const
   {
     return p()->get_target_data( t );
   }
@@ -466,7 +466,7 @@ public:
 
       // Currently Bountiful Brew cannot be applied if Bonedust Brew is currently active
       // This means that RPPM will have triggered but cannot be applied.
-      if ( !td( p()->target )->debuff.bonedust_brew->up() )
+      if ( !get_td( p()->target )->debuff.bonedust_brew->up() )
       {
         p()->active_actions.bountiful_brew->execute();
         p()->proc.bountiful_brew_proc->occur();
@@ -486,7 +486,7 @@ public:
 
     p()->trigger_empowered_tiger_lightning( s, true, true );
 
-    if ( p()->bugs && td( s->target )->debuff.bonedust_brew->up() )
+    if ( p()->bugs && get_td( s->target )->debuff.bonedust_brew->up() )
       p()->bonedust_brew_assessor( s );
   }
 
@@ -624,7 +624,7 @@ struct monk_heal_t : public monk_action_t<heal_t>
     {
       player_t* t = ( execute_state ) ? execute_state->target : target;
 
-      if ( auto td = find_td( t ) )
+      if ( auto td = this->get_td( t ) ) // Use get_td since we can have a ticking dot without target-data
       {
         if ( td->dots.enveloping_mist->is_ticking() )
         {
@@ -1146,7 +1146,7 @@ struct tiger_palm_t : public monk_melee_attack_t
         if ( target == non_sleeping_target )
           continue;
 
-        td( non_sleeping_target )->dots.eye_of_the_tiger_damage->cancel();
+        get_td( non_sleeping_target )->dots.eye_of_the_tiger_damage->cancel();
       }
 
       eye_of_the_tiger_heal->execute();
@@ -1210,7 +1210,7 @@ struct tiger_palm_t : public monk_melee_attack_t
       p()->trigger_mark_of_the_crane( s );
 
     // Bonedust Brew
-    if ( p()->specialization() == MONK_BREWMASTER && td( s->target )->debuff.bonedust_brew->up() )
+    if ( p()->specialization() == MONK_BREWMASTER && get_td( s->target )->debuff.bonedust_brew->up() )
       brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
 
     p()->trigger_keefers_skyreach( s );
@@ -1650,9 +1650,9 @@ struct blackout_kick_t : public monk_melee_attack_t
         charred_passions->base_dd_max = s->result_amount * dmg_percent;
         charred_passions->execute();
 
-        if ( td( s->target )->dots.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
+        if ( get_td( s->target )->dots.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
         {
-          td( s->target )->dots.breath_of_fire->refresh_duration();
+          get_td( s->target )->dots.breath_of_fire->refresh_duration();
           p()->cooldown.charred_passions->start( p()->find_spell( 338140 )->internal_cooldown() );
         }
       }
@@ -1833,8 +1833,8 @@ struct sck_tick_action_t : public monk_melee_attack_t
       charred_passions->base_dd_max = s->result_amount * dmg_percent;
       charred_passions->execute();
 
-      if ( td( s->target )->dots.breath_of_fire->is_ticking() )
-        td( s->target )->dots.breath_of_fire->refresh_duration();
+      if ( get_td( s->target )->dots.breath_of_fire->is_ticking() )
+        get_td( s->target )->dots.breath_of_fire->refresh_duration();
     }
   }
 };
@@ -1957,7 +1957,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     // Bonedust Brew
     // Chi refund is triggering once on the trigger spell and not from tick spells.
     if ( p()->covenant.necrolord->ok() )
-      if ( p()->specialization() == MONK_WINDWALKER && td( execute_state->target )->debuff.bonedust_brew->up() &&
+      if ( p()->specialization() == MONK_WINDWALKER && get_td( execute_state->target )->debuff.bonedust_brew->up() &&
            !p()->buff.dance_of_chiji->up() )
         p()->resource_gain( RESOURCE_CHI, p()->passives.bonedust_brew_chi->effectN( 1 ).base_value(),
                             p()->gain.bonedust_brew );
@@ -2437,7 +2437,7 @@ struct keg_smash_t : public monk_melee_attack_t
 
     if ( p()->conduit.scalding_brew->ok() )
     {
-      if ( auto* td = this->find_td( p()->target ) )
+      if ( auto* td = this->get_td( p()->target ) )
       {
         if ( td->dots.breath_of_fire->is_ticking() )
           am *= 1 + p()->conduit.scalding_brew.percent();
@@ -2470,13 +2470,13 @@ struct keg_smash_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    td( s->target )->debuff.keg_smash->trigger();
+    get_td( s->target )->debuff.keg_smash->trigger();
 
     if ( p()->buff.weapons_of_order->up() )
-      td( s->target )->debuff.weapons_of_order->trigger();
+      get_td( s->target )->debuff.weapons_of_order->trigger();
 
     // Bonedust Brew
-    if ( td( s->target )->debuff.bonedust_brew->up() )
+    if ( get_td( s->target )->debuff.bonedust_brew->up() )
       brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
   }
 };
@@ -2828,7 +2828,7 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( state );
 
-    td( state->target )->debuff.flying_serpent_kick->trigger();
+    get_td( state->target )->debuff.flying_serpent_kick->trigger();
   }
 };
 } // end namespace monk::actions::attacks
@@ -3128,7 +3128,7 @@ struct breath_of_fire_t : public monk_spell_t
   {
     monk_spell_t::impact( s );
 
-    monk_td_t& td = *this->td( s->target );
+    monk_td_t& td = *this->get_td( s->target );
 
     if ( td.debuff.keg_smash->up() || td.debuff.fallen_monk_keg_smash->up() || td.debuff.sinister_teaching_fallen_monk_keg_smash->up() )
     {
@@ -3244,7 +3244,7 @@ struct exploding_keg_t : public monk_spell_t
   {
     monk_spell_t::impact( state );
 
-    td( state->target )->debuff.exploding_keg->trigger();
+    get_td( state->target )->debuff.exploding_keg->trigger();
   }
 
   timespan_t travel_time() const override
@@ -3931,7 +3931,7 @@ struct bountiful_brew_t : public monk_spell_t
   {
     monk_spell_t::impact( s );
 
-    td( s->target )->debuff.bonedust_brew->trigger();
+    get_td( s->target )->debuff.bonedust_brew->trigger();
   }
 };
 
@@ -3960,7 +3960,7 @@ struct bonedust_brew_t : public monk_spell_t
   {
     monk_spell_t::impact( s );
 
-    td( s->target )->debuff.bonedust_brew->trigger();
+    get_td( s->target )->debuff.bonedust_brew->trigger();
   }
 };
 
@@ -4060,10 +4060,10 @@ struct faeline_stomp_damage_t : public monk_spell_t
   {
     monk_spell_t::impact( s );
 
-    td( s->target )->debuff.faeline_stomp->trigger();
+    get_td( s->target )->debuff.faeline_stomp->trigger();
 
     if ( p()->legendary.faeline_harmony->ok() )
-      td( s->target )->debuff.fae_exposure->trigger();
+      get_td( s->target )->debuff.fae_exposure->trigger();
   }
 };
 
