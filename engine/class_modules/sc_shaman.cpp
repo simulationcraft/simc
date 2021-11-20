@@ -332,6 +332,19 @@ public:
   {
     /// Number of allies hit by Chain Harvest heals, range 0..5
     int chain_harvest_allies = 5;
+
+    // While Fire/Storm Ele is up, increase the damage of Lava Burst and
+    // periodically proc Lava Surge
+    bool t28_2pc_ele = 0;
+    double t28_2pc_ele_lvb_increase = 0.2;
+    timespan_t t28_2pc_ele_trigger = 8_s;
+
+    // Maelstrom spend has a chance to CDR Fire/Storm Ele
+    // and Lava Burst extends Fire/Storm Ele duration while up
+    bool t28_4pc_ele = 0;
+    timespan_t t28_4pc_ele_extension = 1.5_s;
+    timespan_t t28_4pc_ele_cd_reduction = 10_s;
+    double t28_4pc_ele_chance = 0.2;
   } opt_sl; // Shadowlands Shaman-specific options
 
   // Cached actions
@@ -429,6 +442,8 @@ public:
     buff_t* icefury;
     buff_t* unlimited_power;
     buff_t* wind_gust;  // Storm Elemental passive 263806
+
+    buff_t* fireheart;
 
     // Enhancement
     buff_t* maelstrom_weapon;
@@ -786,7 +801,8 @@ public:
   ~shaman_t() override;
 
   // Misc
-  bool active_elemental_pet() const;
+  bool is_elemental_pet_active() const;
+  pet_t* get_active_elemental_pet() const;
   void summon_feral_spirits( timespan_t duration, unsigned n = 2 );
   void summon_fire_elemental( timespan_t duration );
   void summon_storm_elemental( timespan_t duration );
@@ -3844,6 +3860,10 @@ struct fire_elemental_t : public shaman_spell_t
 
     p()->summon_fire_elemental( fire_elemental_duration );
     p()->buff.fire_elemental->trigger();
+    if ( p()->opt_sl.t28_2pc_ele )
+    {
+      p()->buff.fireheart->trigger();
+    }
   }
 
   bool ready() override
@@ -3877,6 +3897,11 @@ struct storm_elemental_t : public shaman_spell_t
     if ( p()->conduit.call_of_flame->ok() )
     {
       storm_elemental_duration *= ( 1.0 + p()->conduit.call_of_flame.percent() );
+    }
+
+    if ( p()->opt_sl.t28_2pc_ele )
+    {
+      p()->buff.fireheart->trigger();
     }
 
     p()->summon_storm_elemental( storm_elemental_duration );
@@ -4370,6 +4395,11 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       m *= 1.0 + p()->buff.windspeakers_lava_resurgence->data().effectN( 1 ).percent();
     }
 
+    if ( p()->opt_sl.t28_2pc_ele && p()->buff.fireheart->up() )
+    {
+      m *= 1 + p()->opt_sl.t28_2pc_ele_lvb_increase;
+    }
+
     return m;
   }
 
@@ -4741,6 +4771,10 @@ struct lava_burst_t : public shaman_spell_t
       m *= 1.0 + p()->buff.windspeakers_lava_resurgence->data().effectN( 1 ).percent();
     }
 
+      if ( p()->opt_sl.t28_2pc_ele && p()->buff.fireheart->up())
+    {
+        m *= 1 + p()->opt_sl.t28_2pc_ele_lvb_increase;
+    }
     return m;
   }
 
@@ -4780,6 +4814,19 @@ struct lava_burst_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
+
+    if ( p()->opt_sl.t28_4pc_ele )
+    {
+      pet_t* pet    = p()->get_active_elemental_pet();
+      if ( pet )
+      {
+        p()->buff.fireheart->extend_duration( p(), p()->opt_sl.t28_4pc_ele_extension );
+        pet->adjust_duration( p()->opt_sl.t28_4pc_ele_extension );
+
+        p()->buff.fire_elemental->extend_duration( p(), p()->opt_sl.t28_4pc_ele_extension );
+      }
+    }
+    
 
     // Echoed Lava Burst does not generate Master of the Elements
     if ( !is_echoed_spell() && p()->talent.master_of_the_elements->ok() )
@@ -5330,6 +5377,13 @@ struct earthquake_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
+
+    if ( p()->opt_sl.t28_4pc_ele && !p()->is_elemental_pet_active() && rng().roll( p()->opt_sl.t28_4pc_ele_chance ) )
+    {
+      p()->cooldown.storm_elemental->adjust( -1.0 * p()->opt_sl.t28_4pc_ele_cd_reduction );
+      p()->cooldown.fire_elemental->adjust( -1.0 * p()->opt_sl.t28_4pc_ele_cd_reduction );
+    }
+
     make_event<ground_aoe_event_t>(
         *sim, p(),
         ground_aoe_params_t()
@@ -5490,6 +5544,12 @@ struct earth_shock_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
+
+    if ( p()->opt_sl.t28_4pc_ele && !p()->is_elemental_pet_active() && rng().roll( p()->opt_sl.t28_4pc_ele_chance ) )
+    {
+      p()->cooldown.storm_elemental->adjust( -1.0 * p()->opt_sl.t28_4pc_ele_cd_reduction );
+      p()->cooldown.fire_elemental->adjust( -1.0 * p()->opt_sl.t28_4pc_ele_cd_reduction );
+    }
 
     // Echoed Earth Shock does not generate Surge of Power stacks
     if ( !is_echoed_spell() && p()->talent.surge_of_power->ok() )
@@ -7608,6 +7668,15 @@ void shaman_t::create_options()
     return true;
   } ) );
   add_option( opt_int( "shaman.chain_harvest_allies", opt_sl.chain_harvest_allies, 0, 5 ) );
+
+  add_option( opt_bool( "shaman.t28_2pc_ele", opt_sl.t28_2pc_ele ) );
+  add_option( opt_float( "shaman.t28_2pc_ele_lvb_increase", opt_sl.t28_2pc_ele_lvb_increase, 0, 1 ) );
+  add_option( opt_timespan( "shaman.t28_2pc_ele_trigger", opt_sl.t28_2pc_ele_trigger, 0_s, 15_s ) );
+
+  add_option( opt_bool( "shaman.t28_4pc_ele", opt_sl.t28_4pc_ele ) );
+  add_option( opt_timespan( "shaman.t28_4pc_ele_extension", opt_sl.t28_4pc_ele_extension, 0_s, 5_s ) );
+  add_option( opt_timespan( "shaman.t28_4pc_ele_reduction", opt_sl.t28_4pc_ele_cd_reduction, 0_s, 20_s ) );
+  add_option( opt_float( "shaman.t28_4pc_ele_chance", opt_sl.t28_4pc_ele_chance, 0, 1 ) );
 }
 
 // shaman_t::create_profile ================================================
@@ -7856,7 +7925,7 @@ void shaman_t::init_scaling()
 // Shaman Misc helpers
 // ==========================================================================
 
-bool shaman_t::active_elemental_pet() const
+bool shaman_t::is_elemental_pet_active() const
 {
   if ( talent.primal_elementalist->ok() )
   {
@@ -7868,6 +7937,33 @@ bool shaman_t::active_elemental_pet() const
     return ( pet.guardian_fire_elemental && !pet.guardian_fire_elemental->is_sleeping() ) ||
            ( pet.guardian_storm_elemental && !pet.guardian_storm_elemental->is_sleeping() );
   }
+}
+
+pet_t* shaman_t::get_active_elemental_pet() const
+{
+  if ( talent.primal_elementalist->ok() )
+  {
+    if( pet.pet_fire_elemental && !pet.pet_fire_elemental->is_sleeping() )
+    {
+      return pet.pet_fire_elemental;
+    }
+    if ( pet.pet_storm_elemental && !pet.pet_storm_elemental->is_sleeping() )
+    {
+      return pet.pet_storm_elemental;
+    }
+  }
+  else
+  {
+    if ( pet.guardian_fire_elemental && !pet.guardian_fire_elemental->is_sleeping() )
+    {
+      return pet.guardian_fire_elemental;
+    }
+    if ( pet.guardian_storm_elemental && !pet.guardian_storm_elemental->is_sleeping() )
+    {
+      return pet.guardian_storm_elemental;
+    }
+  }
+  return nullptr;
 }
 
 void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n )
@@ -8535,6 +8631,25 @@ void shaman_t::create_buffs()
   buff.fire_elemental = make_buff( this, "fire_elemental", find_spell( 188592 ) )
                             ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_TICK_TIME )
                             ->apply_affecting_conduit( conduit.call_of_flame );
+
+  buff.fireheart = make_buff( this, "fireheart" )
+                       ->set_duration( buff.fire_elemental->buff_duration() )
+                       ->set_period( opt_sl.t28_2pc_ele_trigger )
+                       ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+                         if ( buff.lava_surge->check() )
+                         {
+                           proc.wasted_lava_surge->occur();
+                         }
+
+                         proc.lava_surge->occur();
+                         if ( !sim->active_player->executing || sim->active_player->executing->id != 51505 )
+                         {
+                           cooldown.lava_burst->reset( true );
+                         }
+
+                         buff.lava_surge->trigger();
+                       } )
+                       ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   //
   // Enhancement
