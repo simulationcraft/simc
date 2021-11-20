@@ -58,7 +58,7 @@ struct lexer_t
   token_t next()
   {
     if ( input.empty() )
-      return yield_token( TOK_EOF );
+      return { TOK_EOF, {} };
 
     const char ch = input.front();
     current_len = 1;
