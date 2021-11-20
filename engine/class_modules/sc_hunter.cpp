@@ -593,6 +593,7 @@ public:
     events::tar_trap_aoe_t* tar_trap_aoe = nullptr;
     wildfire_infusion_e next_wi_bomb = WILDFIRE_INFUSION_SHRAPNEL;
     unsigned steady_focus_counter = 0;
+    double focus_used = 0;
   } state;
 
   struct options_t {
@@ -985,6 +986,27 @@ public:
     }
 
     return total_regen + floor( total_energize );
+  }
+
+  void consume_resource() override
+  {
+    ab::consume_resource();
+
+    if ( !p() -> options.t28_4pc )
+      return;
+
+    resource_e cr = ab::current_resource();
+    if ( cr != RESOURCE_FOCUS )
+      return;
+
+    p() -> state.focus_used += cost();
+
+    // TODO: The cost is a double, can this cause rounding errors?
+    while ( p() -> state.focus_used >= 80.0 )
+    {
+      p() -> state.focus_used -= 80.0;
+      p() -> buffs.trick_shots -> trigger( 2 );
+    }
   }
 
   // action list expressions
@@ -3449,6 +3471,9 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     radius = 8;
     base_aoe_multiplier = p -> specs.trick_shots -> effectN( 4 ).percent() +
                           p -> conduits.deadly_chain.percent();
+
+    if ( p -> options.t28_2pc )
+      base_aoe_multiplier += 0.3;
 
     trick_shots.target_count = 1 + static_cast<int>( p -> specs.trick_shots -> effectN( 1 ).base_value() );
 
