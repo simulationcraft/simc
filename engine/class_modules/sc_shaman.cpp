@@ -7613,9 +7613,9 @@ void shaman_t::create_options()
   add_option( opt_int( "shaman.chain_harvest_allies", opt_sl.chain_harvest_allies, 0, 5 ) );
   add_option( opt_bool( "shaman.t28_2pc_enh", opt_sl.t28_2pc_enh ) );
   add_option( opt_bool( "shaman.t28_4pc_enh", opt_sl.t28_4pc_enh ) );
-  add_option( opt_float( "shaman.t28_2pc_chance", opt_sl.t28_2pc_enh_chance, 0, 1 ) );
-  add_option( opt_timespan( "shaman.t28_2pc_duration", opt_sl.t28_2pc_enh_duration, 0_s, 15_s ) );
-  add_option( opt_float( "shaman.t28_4pc_chance", opt_sl.t28_4pc_enh_chance, 0, 1 ) );
+  add_option( opt_float( "shaman.t28_2pc_enh_chance", opt_sl.t28_2pc_enh_chance, 0, 1 ) );
+  add_option( opt_timespan( "shaman.t28_2pc_enh_duration", opt_sl.t28_2pc_enh_duration, 0_s, 15_s ) );
+  add_option( opt_float( "shaman.t28_4pc_enh_chance", opt_sl.t28_4pc_enh_chance, 0, 1 ) );
 }
 
 // shaman_t::create_profile ================================================
