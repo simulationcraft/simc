@@ -332,6 +332,13 @@ public:
   {
     /// Number of allies hit by Chain Harvest heals, range 0..5
     int chain_harvest_allies = 5;
+    /// Chance per maelstrom stack consumed to proc Feral Spirits, and duration (placeholder)
+    bool   t28_2pc_enh = 0;
+    double t28_2pc_enh_chance = 0.03;
+    timespan_t t28_2pc_enh_duration = 9_s;
+    /// Chance per Feral Spirit melee to proc Stormbringer (placeholder)
+    bool   t28_4pc_enh = 0;
+    double t28_4pc_enh_chance = 0.2;
   } opt_sl; // Shadowlands Shaman-specific options
 
   // Cached actions
@@ -572,6 +579,7 @@ public:
     proc_t* maelstrom_weapon_ft;
     proc_t* stormflurry;
     proc_t* windfury_uw;
+    proc_t* t28_4pc_enh;
   } proc;
 
   // Class Specializations
@@ -784,7 +792,7 @@ public:
 
   // Misc
   bool active_elemental_pet() const;
-  void summon_feral_spirits( timespan_t duration );
+  void summon_feral_spirits( timespan_t duration, unsigned n = 2 );
   void summon_fire_elemental( timespan_t duration );
   void summon_storm_elemental( timespan_t duration );
 
@@ -1758,6 +1766,17 @@ public:
       }
 
       p()->trigger_legacy_of_the_frost_witch( stacks );
+
+      // TODO: T28 2PC Enhancement placeholder
+      if ( p()->opt_sl.t28_2pc_enh &&
+           p()->rng().roll( p()->opt_sl.t28_2pc_enh_chance * stacks ) )
+      {
+        if ( sim->debug )
+        {
+          sim->out_debug.print( "{} Enhancement T28 2PC", p()->name() );
+        }
+        p()->summon_feral_spirits( p()->opt_sl.t28_2pc_enh_duration, 1 );
+      }
     }
 
     // Shaman has spells that may fail to execute, so don't trigger stuff that requires a
@@ -2235,29 +2254,6 @@ struct base_wolf_t : public shaman_pet_t
 };
 
 template <typename T>
-struct wolf_base_attack_t : public pet_melee_attack_t<T>
-{
-  using super = wolf_base_attack_t<T>;
-
-  wolf_base_attack_t( T* wolf, const std::string& n, const spell_data_t* spell = spell_data_t::nil(),
-                      const std::string& options_str = std::string() )
-    : pet_melee_attack_t<T>( wolf, n, spell )
-  {
-    this->parse_options( options_str );
-  }
-
-  void execute() override
-  {
-    pet_melee_attack_t<T>::execute();
-  }
-
-  void tick( dot_t* d ) override
-  {
-    pet_melee_attack_t<T>::tick( d );
-  }
-};
-
-template <typename T>
 struct wolf_base_auto_attack_t : public pet_melee_attack_t<T>
 {
   using super = wolf_base_auto_attack_t<T>;
@@ -2277,26 +2273,33 @@ struct wolf_base_auto_attack_t : public pet_melee_attack_t<T>
     this->base_execute_time = this->weapon->swing_time;
     this->school            = SCHOOL_PHYSICAL;
   }
+
+  void execute() override
+  {
+    pet_melee_attack_t<T>::execute();
+
+    // TODO: T28 Enhancement 4 PC placeholder
+    if ( this->p()->o()->opt_sl.t28_4pc_enh &&
+         this->rng().roll( this->p()->o()->opt_sl.t28_4pc_enh_chance ) )
+    {
+      this->p()->o()->buff.stormbringer->trigger();
+      this->p()->o()->cooldown.strike->reset( true );
+      this->p()->o()->proc.t28_4pc_enh->occur();
+    }
+  }
 };
 
 struct spirit_wolf_t : public base_wolf_t
 {
   struct fs_melee_t : public wolf_base_auto_attack_t<spirit_wolf_t>
   {
-    const spell_data_t* maelstrom;
-
     fs_melee_t( spirit_wolf_t* player ) : super( player, "melee" )
-    {
-    }
-
-    void impact( action_state_t* state ) override
-    {
-      melee_attack_t::impact( state );
-    }
+    { }
   };
 
   spirit_wolf_t( shaman_t* owner ) : base_wolf_t( owner, "spirit_wolf" )
   {
+    dynamic = true;
   }
 
   attack_t* create_auto_attack() override
@@ -2314,8 +2317,7 @@ struct elemental_wolf_base_t : public base_wolf_t
   struct dw_melee_t : public wolf_base_auto_attack_t<elemental_wolf_base_t>
   {
     dw_melee_t( elemental_wolf_base_t* player ) : super( player, "melee" )
-    {
-    }
+    { }
   };
 
   cooldown_t* special_ability_cd;
@@ -2323,7 +2325,6 @@ struct elemental_wolf_base_t : public base_wolf_t
   elemental_wolf_base_t( shaman_t* owner, const std::string& name )
     : base_wolf_t( owner, name ), special_ability_cd( nullptr )
   {
-    // Make Wolves dynamic so we get accurate reporting for special abilities
     dynamic = true;
   }
 
@@ -6688,7 +6689,7 @@ struct fae_transfusion_tick_t : public shaman_spell_t
   const spell_data_t* seeds_effect;
 
   fae_transfusion_tick_t( const std::string& n, shaman_t* player )
-    : shaman_spell_t( n, player, player->find_spell( 328928 ) ), 
+    : shaman_spell_t( n, player, player->find_spell( 328928 ) ),
       seeds_effect( player->find_spell( 356218 ) )
   {
     affected_by_master_of_the_elements = true;
@@ -7610,6 +7611,11 @@ void shaman_t::create_options()
     return true;
   } ) );
   add_option( opt_int( "shaman.chain_harvest_allies", opt_sl.chain_harvest_allies, 0, 5 ) );
+  add_option( opt_bool( "shaman.t28_2pc_enh", opt_sl.t28_2pc_enh ) );
+  add_option( opt_bool( "shaman.t28_4pc_enh", opt_sl.t28_4pc_enh ) );
+  add_option( opt_float( "shaman.t28_2pc_chance", opt_sl.t28_2pc_enh_chance, 0, 1 ) );
+  add_option( opt_timespan( "shaman.t28_2pc_duration", opt_sl.t28_2pc_enh_duration, 0_s, 15_s ) );
+  add_option( opt_float( "shaman.t28_4pc_chance", opt_sl.t28_4pc_enh_chance, 0, 1 ) );
 }
 
 // shaman_t::create_profile ================================================
@@ -7869,18 +7875,17 @@ bool shaman_t::active_elemental_pet() const
   }
 }
 
-void shaman_t::summon_feral_spirits( timespan_t duration )
+void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n )
 {
   // No elemental spirits selected, just summon normal pets and exit
   if ( !talent.elemental_spirits->ok() )
   {
-    pet.spirit_wolves.spawn( duration, 2U );
+    pet.spirit_wolves.spawn( duration, n );
     return;
   }
 
   // This summon evaluates the wolf type to spawn as the roll, instead of rolling against
   // the available pool of wolves to spawn.
-  size_t n = 2;
   while ( n )
   {
     // +1, because the normal spirit wolves are enum value 0
@@ -8513,7 +8518,7 @@ void shaman_t::create_buffs()
   buff.chains_of_devastation_chain_heal = make_buff( this, "chains_of_devastation_chain_heal", find_spell( 336737 ) );
   buff.chains_of_devastation_chain_lightning =
       make_buff( this, "chains_of_devastation_chain_lightning", find_spell( 336736 ) );
-  
+
   buff.windspeakers_lava_resurgence = make_buff( this, "windspeakers_lava_resurgence", find_spell( 336065 ) )
                             ->set_default_value( find_spell( 336065 )->effectN( 1 ).percent() );
 
@@ -8649,6 +8654,8 @@ void shaman_t::init_procs()
   proc.maelstrom_weapon_cttc = get_proc( "Maelstrom Weapon: Chilled to the Core" );
   proc.maelstrom_weapon_ft = get_proc( "Maelstrom Weapon: Fae Transfusion" );
   proc.stormflurry       = get_proc( "Stormflurry" );
+
+  proc.t28_4pc_enh       = get_proc( "Set Bonus: Tier28 4PC Enhancement" );
 }
 
 // shaman_t::init_assessors =================================================
@@ -8926,7 +8933,7 @@ void shaman_t::init_action_list_elemental()
                            "if=!talent.elemental_blast.enabled&spell_targets.chain_lightning<3|buff.stormkeeper.up" );
     precombat->add_action( this, "Chain Lightning",
                            "if=!talent.elemental_blast.enabled&spell_targets.chain_lightning>=3&!buff.stormkeeper.up" );
-    precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" ); 
+    precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" );
     precombat->add_action( "snapshot_stats" );
     precombat->add_action( "potion" );
 
@@ -9088,7 +9095,7 @@ void shaman_t::init_action_list_elemental()
                                "talent.elemental_blast.enabled&!talent.echoing_shock.enabled" );
     single_target->add_action( "chain_harvest" );
     single_target->add_action( this, "Frost Shock",
-                               "if=talent.icefury.enabled&buff.icefury.up" );	
+                               "if=talent.icefury.enabled&buff.icefury.up" );
     single_target->add_action( "fleshcraft,interrupt=1,if=soulbind.volatile_solvent" );
     single_target->add_talent( this, "Static Discharge", "if=talent.static_discharge.enabled" );
     single_target->add_action( this, "Earth Elemental",
@@ -9160,11 +9167,11 @@ void shaman_t::init_action_list_elemental()
     precombat->add_action( "augmentation" );
     precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled" );
     precombat->add_talent( this, "Stormkeeper",
-							"if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
-							"Use Stormkeeper precombat unless some adds will spawn soon." );
+                           "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
+                           "Use Stormkeeper precombat unless some adds will spawn soon." );
     precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
     precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
-	
+
     precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
     precombat->add_action( "potion" );
 
@@ -9260,7 +9267,7 @@ void shaman_t::init_action_list_enhancement()
   precombat->add_action( this, "Lightning Shield" );
   precombat->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
   precombat->add_action( this, "Windfury Totem", "if=!runeforge.doom_winds.equipped" );
-  precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" ); 
+  precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" );
 
   // Precombat potion
   precombat->add_action( "potion" );
@@ -10289,19 +10296,16 @@ struct shaman_module_t : public module_t
   }
 
   void static_init() const override
-  {
-  }
+  { }
 
   void register_hotfixes() const override
-  {
-  }
+  { }
 
   void combat_begin( sim_t* ) const override
-  {
-  }
+  { }
+
   void combat_end( sim_t* ) const override
-  {
-  }
+  { }
 };
 
 shaman_t::pets_t::pets_t( shaman_t* s )
@@ -10312,14 +10316,18 @@ shaman_t::pets_t::pets_t( shaman_t* s )
     guardian_storm_elemental( nullptr ),
     guardian_earth_elemental( nullptr ),
 
-    spirit_wolves( "spirit_wolf", s, []( shaman_t* s ) { return new pet::spirit_wolf_t( s ); } ),
-    fire_wolves( "fiery_wolf", s, []( shaman_t* s ) { return new pet::fire_wolf_t( s ); } ),
-    frost_wolves( "frost_wolf", s, []( shaman_t* s ) { return new pet::frost_wolf_t( s ); } ),
-    lightning_wolves( "lightning_wolf", s, []( shaman_t* s ) { return new pet::lightning_wolf_t( s ); } ),
+    spirit_wolves( "spirit_wolf", s, 6, []( shaman_t* s ) { return new pet::spirit_wolf_t( s ); } ),
+    fire_wolves( "fiery_wolf", s, 6, []( shaman_t* s ) { return new pet::fire_wolf_t( s ); } ),
+    frost_wolves( "frost_wolf", s, 6, []( shaman_t* s ) { return new pet::frost_wolf_t( s ); } ),
+    lightning_wolves( "lightning_wolf", s, 6, []( shaman_t* s ) { return new pet::lightning_wolf_t( s ); } ),
 
     /// Bron's Call to Arms trigger logic is completely overridden by the Shaman module
     bron( nullptr )
 {
+  spirit_wolves.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
+  fire_wolves.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
+  frost_wolves.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
+  lightning_wolves.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
 }
 
 }  // namespace
