@@ -8,8 +8,6 @@
 #include "dbc/spell_data.hpp"
 #include "sim/sc_sim.hpp"
 
-#include <iostream>
-
 namespace
 {
 template <typename T>
