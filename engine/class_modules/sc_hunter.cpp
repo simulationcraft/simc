@@ -373,6 +373,7 @@ public:
     buff_t* bestial_wrath;
     buff_t* dire_beast;
     buff_t* thrill_of_the_hunt;
+    buff_t* killing_frenzy;
 
     // Marksmanship
     buff_t* dead_eye;
@@ -1848,8 +1849,13 @@ struct kill_command_bm_t: public kill_command_base_t
   {
     kill_command_base_t::impact( s );
 
-    if ( ferocious_appetite_reduction != 0_s && s -> result == RESULT_CRIT )
-      o() -> cooldowns.aspect_of_the_wild -> adjust( -ferocious_appetite_reduction );
+    if ( s->result == RESULT_CRIT )
+    {
+      if ( ferocious_appetite_reduction != 0_s )
+        o()->cooldowns.aspect_of_the_wild->adjust( -ferocious_appetite_reduction );
+
+      o() -> buffs.killing_frenzy -> trigger();
+    }
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -1865,6 +1871,16 @@ struct kill_command_bm_t: public kill_command_base_t
     }
 
     return am;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = kill_command_base_t::composite_crit_chance();
+
+    if ( o()->options.t28_2pc )
+      cc *= 1 + (0.15 * p()->buffs.frenzy->check());
+
+    return cc;
   }
 };
 
@@ -3173,7 +3189,8 @@ struct cobra_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> cooldowns.kill_command -> adjust( -kill_command_reduction );
+    p()->cooldowns.kill_command->adjust( -kill_command_reduction * (1 + p()->buffs.killing_frenzy->check_value()) );
+    p() -> buffs.killing_frenzy -> expire();
 
     if ( p() -> talents.killer_cobra.ok() && p() -> buffs.bestial_wrath -> check() )
       p() -> cooldowns.kill_command -> reset( true );
@@ -3182,6 +3199,15 @@ struct cobra_shot_t: public hunter_ranged_attack_t
       p() -> pets.spitting_cobra -> cobra_shot_count++;
 
     p() -> buffs.flamewakers_cobra_sting -> trigger();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double am = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+    am *= 1 + p()->buffs.killing_frenzy->check_value();
+
+    return am;
   }
 };
 
@@ -4847,6 +4873,8 @@ struct kill_command_t: public hunter_spell_t
             if ( rng().roll( 0.4 ) )
             {
               p() -> cooldowns.wildfire_bomb -> reset( true );
+
+              // TODO: Does mad bombardier (4) trigger from only these resets or also when it comes off cd like normal?
               p() -> buffs.mad_bombardier -> trigger();
             }
         }
@@ -6101,6 +6129,11 @@ void hunter_t::create_buffs()
     make_buff( this, "thrill_of_the_hunt", talents.thrill_of_the_hunt -> effectN( 1 ).trigger() )
       -> set_default_value_from_effect( 1 )
       -> set_trigger_spell( talents.thrill_of_the_hunt );
+
+  buffs.killing_frenzy = 
+    make_buff( this, "killing_frenzy" )
+      ->set_default_value( 0.4 )
+      ->set_chance( options.t28_4pc );
 
   // Marksmanship
 
