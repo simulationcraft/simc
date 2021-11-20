@@ -1078,7 +1078,7 @@ struct ice_floes_t final : public buff_t
 
   void decrement( int stacks, double value ) override
   {
-    if ( check() == 0 )
+    if ( !check() )
       return;
 
     if ( sim->current_time() - last_trigger > 0.5_s )
@@ -4152,7 +4152,7 @@ struct ice_lance_t final : public frost_mage_spell_t
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
-    debug_cast<ice_lance_state_t*>( s )->fingers_of_frost = p()->buffs.fingers_of_frost->check() != 0;
+    debug_cast<ice_lance_state_t*>( s )->fingers_of_frost = p()->buffs.fingers_of_frost->check();
     frost_mage_spell_t::snapshot_state( s, rt );
   }
 
@@ -5623,11 +5623,11 @@ struct time_anomaly_tick_event_t final : public event_t
 
       std::vector<ta_proc_type_e> possible_procs;
 
-      if ( mage->buffs.arcane_power->check() == 0 )
+      if ( !mage->buffs.arcane_power->check() )
         possible_procs.push_back( TA_ARCANE_POWER );
-      if ( mage->buffs.evocation->check() == 0 )
+      if ( !mage->buffs.evocation->check() )
         possible_procs.push_back( TA_EVOCATION );
-      if ( mage->buffs.time_warp->check() == 0 )
+      if ( !mage->buffs.time_warp->check() )
         possible_procs.push_back( TA_TIME_WARP );
 
       if ( !possible_procs.empty() )
@@ -5745,7 +5745,7 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
 bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t d )
 {
   if ( type == MECHANIC_INTERRUPT )
-    return s->target->debuffs.casting->check() != 0;
+    return s->target->debuffs.casting->check();
 
   if ( action_t::result_is_hit( s->result )
     && ( s->target->is_add() || s->target->level() < sim->max_player_level + 3 ) )
@@ -7199,7 +7199,7 @@ void mage_t::update_enlightened( bool double_regen )
     return;
 
   bool damage_buff = resources.pct( RESOURCE_MANA ) > talents.enlightened->effectN( 1 ).percent();
-  if ( damage_buff && buffs.enlightened_damage->check() == 0 )
+  if ( damage_buff && !buffs.enlightened_damage->check() )
   {
     // Periodic mana regen happens twice whenever the mana regen buff from Enlightened expires.
     if ( bugs && double_regen && sim->current_time() > state.last_enlightened_update )
@@ -7208,7 +7208,7 @@ void mage_t::update_enlightened( bool double_regen )
     buffs.enlightened_damage->trigger();
     buffs.enlightened_mana->expire();
   }
-  else if ( !damage_buff && buffs.enlightened_mana->check() == 0 )
+  else if ( !damage_buff && !buffs.enlightened_mana->check() )
   {
     buffs.enlightened_damage->expire();
     buffs.enlightened_mana->trigger();
