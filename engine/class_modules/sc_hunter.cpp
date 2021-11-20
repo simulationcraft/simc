@@ -395,7 +395,8 @@ public:
     buff_t* terms_of_engagement;
     buff_t* tip_of_the_spear;
     buff_t* vipers_venom;
-    buff_t* mad_bombardier;
+    buff_t* mad_bombardier_2;
+    buff_t* mad_bombardier_4;
 
     // Legendaries
     buff_t* butchers_bone_fragments;
@@ -992,7 +993,7 @@ public:
   {
     ab::consume_resource();
 
-    if ( !p() -> options.t28_4pc )
+    if ( !p() -> specs.marksmanship_hunter -> ok() || !p() -> options.t28_4pc )
       return;
 
     resource_e cr = ab::current_resource();
@@ -1900,7 +1901,7 @@ struct kill_command_bm_t: public kill_command_base_t
     double cc = kill_command_base_t::composite_crit_chance();
 
     if ( o()->options.t28_2pc )
-      cc *= 1 + (0.15 * p()->buffs.frenzy->check());
+      cc += ( 0.15 * p()->buffs.frenzy->check() );
 
     return cc;
   }
@@ -4895,12 +4896,10 @@ struct kill_command_t: public hunter_spell_t
 
         if ( p() -> options.t28_2pc )
         {
-            if ( rng().roll( 0.4 ) )
+          if ( rng().roll( p() -> buffs.mad_bombardier_2 -> default_value ) )
             {
-              p() -> cooldowns.wildfire_bomb -> reset( true );
-
-              // TODO: Does mad bombardier (4) trigger from only these resets or also when it comes off cd like normal?
-              p() -> buffs.mad_bombardier -> trigger();
+              // TODO: Does mad bombardier (2) trigger from only these resets or also when it comes off cd like normal?
+              p() -> buffs.mad_bombardier_2 -> trigger();
             }
         }
       }
@@ -5409,8 +5408,19 @@ struct wildfire_bomb_t: public hunter_spell_t
 
       am *= 1 + p() -> buffs.flame_infusion -> check_stack_value();
 
-      if ( p() -> options.t28_4pc )
-        am *= 1 + 0.3 + p() -> buffs.mad_bombardier -> check_value();
+      if ( p() -> options.t28_2pc )
+      {
+        // TODO: Change this to use the spell value
+        am *= 1 + 0.3;
+
+        if ( p() -> options.t28_4pc )
+        {
+          am *= 1 + p() -> buffs.mad_bombardier_4 -> check_value();
+          p() -> buffs.mad_bombardier_4 -> expire();
+        }
+      }
+
+
 
       return am;
     }
@@ -5541,6 +5551,18 @@ struct wildfire_bomb_t: public hunter_spell_t
       for ( int i = 0; i < 3; i++ )
         wildfire_cluster -> execute();
     }
+  }
+
+  void update_ready( timespan_t cd_duration ) override
+  {
+    if ( p() -> buffs.mad_bombardier_2 -> check() )
+    {
+      p() -> buffs.mad_bombardier_2 -> expire();
+      p() -> sim -> print_debug( "{} wildfire bomb cooldown reset due to mad bombardier.", p() -> name() );
+      return;
+    }
+
+    hunter_spell_t::update_ready( cd_duration );
   }
 };
 
@@ -6265,8 +6287,15 @@ void hunter_t::create_buffs()
     make_buff( this, "aspect_of_the_eagle", specs.aspect_of_the_eagle )
       -> set_cooldown( 0_ms );
 
-  buffs.mad_bombardier =
-    make_buff( this, "mad_bombardier" )
+  // 364490
+  buffs.mad_bombardier_2 =
+    make_buff( this, "mad_bombardier_2" )
+      ->set_default_value( 0.4 )
+      ->set_chance( options.t28_2pc );
+
+  // 363667
+  buffs.mad_bombardier_4 =
+    make_buff( this, "mad_bombardier_4" )
       -> set_default_value( 0.5 )
       -> set_chance( options.t28_4pc );
 
