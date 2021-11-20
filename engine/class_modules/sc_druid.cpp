@@ -2523,7 +2523,7 @@ public:
         if ( !p()->buff.primordial_arcanic_pulsar->check() )
           p()->buff.primordial_arcanic_pulsar->trigger();
 
-        p()->buff.primordial_arcanic_pulsar->current_value += last_resource_cost;
+        p()->buff.primordial_arcanic_pulsar->current_value += base_cost();
 
         if ( p()->buff.primordial_arcanic_pulsar->value() >=
              p()->legendary.primordial_arcanic_pulsar->effectN( 1 ).base_value() )
