@@ -1697,6 +1697,7 @@ struct shadowform_state_t final : public priest_buff_t<buff_t>
 struct dark_thought_t final : public priest_buff_t<buff_t>
 {
   timespan_t your_shadow_duration;
+  bool T28_4PC;
 
   dark_thought_t( priest_t& p ) : base_t( p, "dark_thought", p.specs.dark_thought )
   {
@@ -1708,6 +1709,8 @@ struct dark_thought_t final : public priest_buff_t<buff_t>
         [ this ]( buff_t*, int old, int cur ) { priest().cooldowns.mind_blast->adjust_max_charges( cur - old ); } );
 
     your_shadow_duration = p.find_spell( 363469 )->effectN( 2 ).time_value();
+
+    T28_4PC = priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B4 );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1721,18 +1724,19 @@ struct dark_thought_t final : public priest_buff_t<buff_t>
     }
 
     // TODO: check if you can have multiple out at once
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B4 ) )
+    if ( T28_4PC )
     {
       priest().procs.living_shadow->occur();
 
-      if ( priest().pets.your_shadow.n_active_pets() < 1 )
+      auto pet = priest().pets.your_shadow.active_pet();
+
+      if ( pet )
       {
-        priest().pets.your_shadow.spawn();
+        pet->adjust_duration( your_shadow_duration );
       }
       else
       {
-        auto pet = priest().pets.your_shadow.active_pet();
-        pet->adjust_duration( your_shadow_duration );
+        priest().pets.your_shadow.spawn();
       }
     }
 
