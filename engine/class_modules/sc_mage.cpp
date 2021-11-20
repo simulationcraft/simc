@@ -150,7 +150,7 @@ struct mage_td_t final : public actor_target_data_t
     buff_t* mirrors_of_torment;
     buff_t* radiant_spark_vulnerability;
 
-    // Set bonus
+    // Set Bonuses
     buff_t* frost_storm;
   } debuffs;
 
@@ -392,7 +392,10 @@ public:
 
     buff_t* siphoned_malice;
 
-    // Set bonus
+    // Set Bonuses
+    buff_t* arcane_lucidity;
+    buff_t* arcane_lucidity_ready;
+
     buff_t* fiery_rush;
   } buffs;
 
@@ -973,6 +976,8 @@ struct touch_of_the_magi_t final : public buff_t
     buff_t( *td, "touch_of_the_magi", td->source->find_spell( 210824 ) )
   {
     set_default_value( 0.0 );
+    // TODO: 9.2 spelldata
+    set_schools( dbc::get_school_mask( SCHOOL_ARCANE ) );
   }
 
   void expire_override( int stacks, timespan_t duration ) override
@@ -1823,7 +1828,10 @@ struct arcane_mage_spell_t : public mage_spell_t
         // Nether Precision is only triggered if the buff was actually decremented.
         // This is relevant when the player uses Expanded Potential.
         if ( cr == p()->buffs.clearcasting && cr->check() < before )
+        {
           p()->buffs.nether_precision->trigger();
+          trigger_legendary_buff( p()->buffs.arcane_lucidity, p()->buffs.arcane_lucidity_ready, 1 );
+        }
         break;
       }
     }
@@ -5037,6 +5045,30 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
 
     if ( p()->spec.touch_of_the_magi_2->ok() )
       p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
+
+    p()->buffs.arcane_lucidity_ready->expire();
+  }
+
+  void update_ready( timespan_t cd ) override
+  {
+    if ( !p()->buffs.arcane_lucidity_ready->check() )
+      arcane_mage_spell_t::update_ready( cd );
+  }
+
+  timespan_t execute_time() const override
+  {
+    if ( p()->buffs.arcane_lucidity_ready->check() )
+      return 0_ms;
+
+    return arcane_mage_spell_t::execute_time();
+  }
+
+  timespan_t gcd() const override
+  {
+    if ( p()->buffs.arcane_lucidity_ready->check() )
+      return 0_ms;
+
+    return arcane_mage_spell_t::gcd();
   }
 
   void impact( action_state_t* s ) override
@@ -5044,7 +5076,15 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
-      get_td( s->target )->debuffs.touch_of_the_magi->trigger();
+    {
+      auto debuff = get_td( s->target )->debuffs.touch_of_the_magi;
+      auto duration = debuff->buff_duration();
+      if ( p()->buffs.arcane_lucidity_ready->check() )
+        duration -= 2.0_s;
+
+      debuff->expire();
+      debuff->trigger( duration );
+    }
   }
 
   // Touch of the Magi will trigger procs that occur only from casting damaging spells.
@@ -5650,7 +5690,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                           ->modify_default_value( mage->conduits.ire_of_the_ascended.percent() )
                                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
-  // Set bonus
+  // Set Bonuses
   // TODO:
   // * 9.2 spelldata
   // * check if normal CmS triggers this too
@@ -6430,7 +6470,20 @@ void mage_t::create_buffs()
                              ->set_default_value( conduits.siphoned_malice.percent() )
                              ->set_chance( conduits.siphoned_malice.ok() );
 
-  // Set bonus
+  // Set Bonuses
+  // TODO:
+  // * 9.2 spell data
+  // * TotM refresh
+  // * CD override?
+  // * Expanded Potential interactions
+  // * Check trigger_legendary_buff offset
+  buffs.arcane_lucidity       = make_buff( this, "arcane_lucidity" )
+                                  ->set_max_stack( 8 )
+                                  ->set_duration( 60.0_s )
+                                  ->set_chance( options.t28_4pc );
+  buffs.arcane_lucidity_ready = make_buff( this, "arcane_lucidity_ready" )
+                                  ->set_duration( 60.0_s );
+
   // TODO:
   // * 9.2 spell data
   // * SKB interactions
@@ -6697,6 +6750,9 @@ double mage_t::composite_player_target_multiplier( player_t* target, school_e sc
 
     if ( td->debuffs.frost_storm->has_common_school( school ) )
       m *= 1.0 + td->debuffs.frost_storm->check_stack_value();
+
+    if ( options.t28_2pc && td->debuffs.touch_of_the_magi->has_common_school( school ) )
+      m *= 1.0 + ( td->debuffs.touch_of_the_magi->check() ? 0.18 : 0.0 );
   }
 
   return m;
