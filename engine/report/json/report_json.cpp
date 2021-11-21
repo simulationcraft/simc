@@ -15,7 +15,6 @@
 #include "util/git_info.hpp"
 
 #include <ctime>
-#include <iostream>
 
 #include "rapidjson/filewritestream.h"
 #include "rapidjson/document.h"
@@ -1315,9 +1314,9 @@ void print_json_report( sim_t& sim, const ::report::json::report_configuration_t
     {
       if( report_configuration.full_states )
       {
-        std::cout << "\nReport will be generated with full state for each action.\n";
+        fmt::print( "\nReport will be generated with full state for each action.\n" );
       }
-      report_timer_t t( fmt::format("JSON report version {}", report_configuration.version()), std::cout );
+      report_timer_t t( fmt::format( "JSON report version {}", report_configuration.version() ), stdout );
       if ( ! sim.profileset_enabled )
       {
         t.start();

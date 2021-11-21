@@ -3203,28 +3203,34 @@ bool util::contains_non_ascii( util::string_view s )
 /**
  * Print chained exceptions, separated by ' :'.
  */
-void util::print_chained_exception( const std::exception& e, std::ostream& out, int level)
-
+void util::print_chained_exception( const std::exception& e, std::FILE* out, int level )
 {
-  fmt::print(out, "{}{}", level > 0 ? ": " : "", e.what());
-  try {
-      std::rethrow_if_nested(e);
-  } catch(const std::exception& e) {
-    print_chained_exception(e, out, level+1);
-  } catch(...) {}
+  fmt::print( out, "{}{}", level > 0 ? ": " : "", e.what() );
+  try
+  {
+    std::rethrow_if_nested( e );
+  }
+  catch ( const std::exception& e )
+  {
+    print_chained_exception( e, out, level + 1 );
+  }
+  catch ( ... )
+  {
+  }
 }
 
-void util::print_chained_exception( const std::exception_ptr& eptr, std::ostream& out, int level)
+void util::print_chained_exception( const std::exception_ptr& eptr, std::FILE* out, int level )
 {
   try
   {
-    if (eptr) {
-      std::rethrow_exception(eptr);
+    if ( eptr )
+    {
+      std::rethrow_exception( eptr );
     }
   }
-  catch(const std::exception& e)
+  catch ( const std::exception& e )
   {
-    print_chained_exception(e, out, level);
+    print_chained_exception( e, out, level );
   }
 }
 

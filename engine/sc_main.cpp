@@ -8,6 +8,7 @@
 #include "dbc/spell_query/spell_data_expr.hpp"
 #include "interfaces/bcp_api.hpp"
 #include "interfaces/sc_http.hpp"
+#include "lib/fmt/core.h"
 #include "player/sc_player.hpp"
 #include "player/unique_gear.hpp"
 #include "report/reports.hpp"
@@ -17,11 +18,9 @@
 #include "sim/sc_sim.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/sim_control.hpp"
-#include "sim/sc_profileset.hpp"
 #include "util/git_info.hpp"
 #include "util/io.hpp"
 
-#include <iostream>
 #include <locale>
 
 #ifdef SC_SIGACTION
@@ -41,7 +40,7 @@ struct sim_signal_handler_t
   static void report( int signal )
   {
     const char* name = strsignal( signal );
-    std::cerr << "sim_signal_handler: " << name << "!";
+    fmt::print( stderr, "sim_signal_handler: {}!", name );
     const sim_t* crashing_child = nullptr;
 
 #ifndef SC_NO_THREADING
@@ -75,11 +74,11 @@ struct sim_signal_handler_t
     auto profileset = global_sim -> profilesets->current_profileset_name();
     if ( ! profileset.empty() )
     {
-      std::cerr << " ProfileSet=" << profileset;
+      fmt::print( stderr, " ProfileSet={}", profileset );
     }
 
-    std::cerr << std::endl;
-    fflush( stderr );
+    fmt::print( stderr, "\n" );
+    std::fflush( stderr );
   }
 
   static void sigint( int signal )
@@ -240,8 +239,7 @@ struct special_effect_initializer_t
 
 void print_version_info(const dbc_t& dbc)
 {
-  std::cout << util::version_info_str( &dbc ) << std::endl << std::endl;
-  std::flush(std::cout);
+  fmt::print( "{}\n", util::version_info_str( &dbc ) );
 }
 
 } // anonymous namespace ====================================================
@@ -289,13 +287,13 @@ int sim_t::main( const std::vector<std::string>& args )
 
     if ( display_hotfixes )
     {
-      std::cout << hotfix::to_str( dbc->ptr );
+      fmt::print( "{}", hotfix::to_str( dbc->ptr ) );
       return 0;
     }
 
     if ( display_bonus_ids )
     {
-      std::cout << dbc::bonus_ids_str( *dbc );
+      fmt::print( "{}", dbc::bonus_ids_str( *dbc ) );
       return 0;
     }
 
@@ -321,7 +319,7 @@ int sim_t::main( const std::vector<std::string>& args )
       try
       {
         init();
-        std::cout << "\nGenerating profiles... \n";
+        fmt::print( "\nGenerating profiles... \n" );
         report::print_profiles( this );
       }
       catch( const std::exception& ){
@@ -356,15 +354,15 @@ int sim_t::main( const std::vector<std::string>& args )
       }
     }
 
-    std::cout << std::endl;
+    fmt::print("\n");
 
     return canceled;
   }
   catch (const std::nested_exception& e) {
     // Only catch exception we have already re-thrown in init functions.
-    std::cerr << "Error: ";
-    util::print_chained_exception(e.nested_ptr(), std::cerr);
-    std::cerr << std::endl;
+    fmt::print( stderr, "Error: " );
+    util::print_chained_exception( e.nested_ptr(), stderr );
+    fmt::print( stderr, "\n" );
     return 1;
   }
 }

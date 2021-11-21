@@ -13,7 +13,6 @@
 #include "report/reports.hpp"
 #include "util/util.hpp"
 
-#include <iostream>
 #include <memory>
 
 namespace { // UNNAMED NAMESPACE ==========================================
@@ -331,9 +330,9 @@ void scale_factor_control_t::analyze_stats()
 
     if ( debug_scale_factors )
     {
-      std::cout << "\nref_sim report for '" << util::stat_type_string( stat ) << "'..." << std::endl;
+      fmt::print( "\nref_sim report for '{}'...\n", util::stat_type_string( stat ) );
       report::print_text( ref_sim, true );
-      std::cout << "\ndelta_sim report for '" << util::stat_type_string( stat ) << "'..." << std::endl;
+      fmt::print( "\ndelta_sim report for '{}'...\n", util::stat_type_string( stat ) );
       report::print_text( delta_sim, true );
     }
 
@@ -390,7 +389,6 @@ void scale_factor_control_t::analyze_lag()
   if ( sim -> report_progress )
   {
     fmt::print( "\nGenerating scale factors for lag...\n" );
-    fflush( stdout );
   }
 
   if ( center_scale_delta )
