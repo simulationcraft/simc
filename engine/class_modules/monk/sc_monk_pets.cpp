@@ -41,7 +41,8 @@ struct monk_pet_t : public pet_t
     base_t::init_assessors();
 
     auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ) {
-      if ( o()->get_target_data( s->target )->debuff.bonedust_brew->up() )
+      auto td = o()->find_target_data( s->target );
+      if ( td && td->debuff.bonedust_brew->check() )
         o()->bonedust_brew_assessor( s );
       return assessor::CONTINUE;
     };
@@ -136,7 +137,7 @@ struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
   {
     double am = pet_action_base_t::action_multiplier();
 
-    if ( o()->buff.serenity->up() )
+    if ( o()->buff.serenity->check() )
     {
       if ( data().affected_by( o()->talent.serenity->effectN( 2 ) ) )
         am *= 1 + o()->talent.serenity->effectN( 2 ).percent();
@@ -650,8 +651,8 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       double c = sef_melee_attack_t::composite_crit_chance();
 
-      if ( o()->buff.pressure_point->up() )
-        c += o()->buff.pressure_point->value();
+      if ( o()->buff.pressure_point->check() )
+        c += o()->buff.pressure_point->check_value();
 
       return c;
     }
@@ -996,9 +997,9 @@ public:
 
   struct
   {
-    buff_t* bok_proc_sef          = nullptr;
-    buff_t* pressure_point_sef    = nullptr;
-    buff_t* rushing_jade_wind_sef = nullptr;
+    propagate_const<buff_t*>  bok_proc_sef          = nullptr;
+    propagate_const<buff_t*> pressure_point_sef    = nullptr;
+    propagate_const<buff_t*>  rushing_jade_wind_sef = nullptr;
   } buff;
 
   storm_earth_and_fire_pet_t( util::string_view name, monk_t* owner, bool dual_wield, weapon_e weapon_type )
@@ -1408,7 +1409,7 @@ private:
     {
       auto b = pet_melee_attack_t::bonus_da( s );
 
-      auto purify_amount = o()->buff.recent_purifies->value();
+      auto purify_amount = o()->buff.recent_purifies->check_value();
       auto actual_damage = purify_amount;
 
       if ( o()->spec.invoke_niuzao_2->ok() )
@@ -1523,7 +1524,7 @@ private:
     {
       auto b = pet_melee_attack_t::bonus_da( s );
 
-      auto purify_amount = o()->buff.recent_purifies->value();
+      auto purify_amount = o()->buff.recent_purifies->check_value();
       auto actual_damage = purify_amount;
 
       if ( o()->spec.invoke_niuzao_2->ok() )
@@ -2062,7 +2063,8 @@ public:
 
       if ( o()->conduit.scalding_brew->ok() )
       {
-        if ( o()->get_target_data( player->target )->dots.breath_of_fire->is_ticking() )
+        auto td = o()->get_target_data( player->target );
+        if ( td->dots.breath_of_fire->is_ticking() )
           am *= 1 + o()->conduit.scalding_brew.percent();
       }
 
@@ -2671,7 +2673,8 @@ public:
 
       if ( o()->conduit.scalding_brew->ok() )
       {
-        if ( o()->get_target_data( player->target )->dots.breath_of_fire->is_ticking() )
+        auto td = o()->find_target_data( player->target );
+        if ( td && td->dots.breath_of_fire->is_ticking() )
           am *= 1 + o()->conduit.scalding_brew.percent();
       }
 

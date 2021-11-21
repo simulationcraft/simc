@@ -1233,7 +1233,8 @@ void infinitely_divisible_ooze( special_effect_t& effect )
              effect.player->specialization() == MONK_MISTWEAVER )
         {
           monk::monk_t* monk_player = static_cast<monk::monk_t*>( owner );
-          if ( !owner->bugs && monk_player->get_target_data( s->target )->debuff.bonedust_brew->up() )
+          auto td                   = monk_player->find_target_data( s->target );
+          if ( !owner->bugs && td && td->debuff.bonedust_brew->check() )
             monk_player->bonedust_brew_assessor( s );
         }
         return assessor::CONTINUE;
@@ -1687,7 +1688,8 @@ void shadowgrasp_totem( special_effect_t& effect )
              effect.player->specialization() == MONK_MISTWEAVER  )
         {
           monk::monk_t* monk_player = static_cast<monk::monk_t*>( owner );
-          if ( !owner->bugs && monk_player->get_target_data( s->target )->debuff.bonedust_brew->up() )
+          auto td                   = monk_player->find_target_data( s->target );
+          if ( !owner->bugs && td && td->debuff.bonedust_brew->check() )
             monk_player->bonedust_brew_assessor( s );
         }
         return assessor::CONTINUE;
