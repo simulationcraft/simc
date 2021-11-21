@@ -1274,7 +1274,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     ww_mastery = true;
     trigger_faeline_stomp  = true;
-    trigger_bountiful_brew = true;
+    trigger_bountiful_brew  = true;
 
     background = dual = true;
     may_crit          = true;
@@ -1374,8 +1374,8 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     may_combo_strike       = true;
     may_proc_bron          = true;
     trigger_faeline_stomp  = true;
-    trigger_bountiful_brew = true;
-    trigger_ww_t28_4p_power     = true;
+    trigger_bountiful_brew  = true;
+    trigger_ww_t28_4p_power = true;
     sef_ability            = sef_ability_e::SEF_RISING_SUN_KICK;
     affected_by.serenity = true;
     ap_type              = attack_power_type::NONE;
@@ -1745,7 +1745,8 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     may_combo_strike       = true;
     may_proc_bron          = true;
     trigger_faeline_stomp  = true;
-    trigger_bountiful_brew = true;
+    trigger_bountiful_brew  = true;
+    trigger_ww_t28_4p_power_channel = true;
     gcd_type         = gcd_haste_type::NONE;
 
     // Set dot data to 0, since we handle everything through the buff.
@@ -2555,6 +2556,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     may_proc_bron           = true;
     trigger_faeline_stomp   = true;
     trigger_bountiful_brew  = true;
+    trigger_ww_t28_4p_power = true;
     parse_options( options_str );
     cooldown->duration = data().cooldown();
 
@@ -2831,6 +2833,7 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
     ww_mastery                      = true;
     may_combo_strike                = true;
     ignore_false_positive           = true;
+    trigger_ww_t28_4p_power         = true;
     movement_directionality         = movement_direction_type::OMNI;
     attack_power_mod.direct         = p->passives.flying_serpent_kick_damage->effectN( 1 ).ap_coeff();
     aoe                             = -1;
@@ -3912,6 +3915,7 @@ struct weapons_of_order_t : public monk_spell_t
     harmful          = false;
     base_dd_min      = 0;
     base_dd_max      = 0;
+    trigger_ww_t28_4p_power = true;
   }
 
   void execute() override
@@ -4010,6 +4014,7 @@ struct bonedust_brew_t : public monk_spell_t
     aoe              = -1;
     base_dd_min      = 0;
     base_dd_max      = 0;
+    trigger_ww_t28_4p_power = true;
   }
 
   void execute() override
@@ -4179,6 +4184,7 @@ struct faeline_stomp_t : public monk_spell_t
     parse_options( options_str );
     may_combo_strike = true;
     aoe              = (int)p.covenant.night_fae->effectN( 3 ).base_value();
+    trigger_ww_t28_4p_power = true;
   }
 
   void execute() override
@@ -4279,6 +4285,7 @@ struct fallen_order_t : public monk_spell_t
     harmful     = false;
     base_dd_min = 0;
     base_dd_max = 0;
+    trigger_ww_t28_4p_power = true;
   }
 
   void execute() override
@@ -4762,7 +4769,8 @@ struct expel_harm_t : public monk_heal_t
     parse_options( options_str );
 
     target           = player;
-    may_combo_strike = true;
+    may_combo_strike        = true;
+    trigger_ww_t28_4p_power = true;
 
     if ( p.spec.expel_harm_2_brm->ok() )
       cooldown->duration += p.spec.expel_harm_2_brm->effectN( 1 ).time_value();
