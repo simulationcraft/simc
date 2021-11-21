@@ -164,14 +164,14 @@ struct buff_stack_benefit_t
   const buff_t* buff;
   std::vector<benefit_t*> buff_stack_benefit;
 
-  buff_stack_benefit_t( const buff_t* _buff, const std::string& prefix ) :
+  buff_stack_benefit_t( const buff_t* _buff, std::string_view prefix ) :
     buff( _buff ),
     buff_stack_benefit()
   {
     for ( int i = 0; i <= buff->max_stack(); i++ )
     {
-      buff_stack_benefit.push_back( buff->player->get_benefit(
-        prefix + " " + buff->data().name_cstr() + " " + util::to_string( i ) ) );
+      auto benefit_name = fmt::format("{} {} {}", prefix, buff->data().name_cstr(), i);
+      buff_stack_benefit.push_back( buff->player->get_benefit( benefit_name ) );
     }
   }
 

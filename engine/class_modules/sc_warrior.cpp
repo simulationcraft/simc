@@ -41,7 +41,7 @@ using data_t        = std::pair<std::string, simple_sample_data_with_min_max_t>;
 using simple_data_t = std::pair<std::string, simple_sample_data_t>;
 
 template <typename T_CONTAINER, typename T_DATA>
-T_CONTAINER* get_data_entry( const std::string& name, std::vector<T_DATA*>& entries )
+T_CONTAINER* get_data_entry( util::string_view name, std::vector<T_DATA*>& entries )
 {
   for ( size_t i = 0; i < entries.size(); i++ )
   {
@@ -1234,7 +1234,7 @@ public:
 
 struct warrior_heal_t : public warrior_action_t<heal_t>
 {  // Main Warrior Heal Class
-  warrior_heal_t( const std::string& n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() ) : base_t( n, p, s )
+  warrior_heal_t( util::string_view n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() ) : base_t( n, p, s )
   {
     may_crit = tick_may_crit = hasted_ticks = false;
     target                                  = p;
@@ -1380,7 +1380,7 @@ struct melee_t : public warrior_attack_t
   bool mh_lost_melee_contact, oh_lost_melee_contact;
   double base_rage_generation, arms_rage_multiplier, fury_rage_multiplier, seasoned_soldier_crit_mult;
   devastator_t* devastator;
-  melee_t( const std::string& name, warrior_t* p )
+  melee_t( util::string_view name, warrior_t* p )
     : warrior_attack_t( name, p, spell_data_t::nil() ), reckless_flurry( nullptr ),
       mh_lost_melee_contact( true ),
       oh_lost_melee_contact( true ),
@@ -1624,7 +1624,7 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
   bool from_mortal_combo;
   double enduring_blow_chance;
   double mortal_combo_chance;
-  mortal_strike_unhinged_t( warrior_t* p, const std::string& name, bool mortal_combo = false )
+  mortal_strike_unhinged_t( warrior_t* p, util::string_view name, bool mortal_combo = false )
   : warrior_attack_t( name, p, p->spec.mortal_strike ), mortal_combo_strike( nullptr ),
   from_mortal_combo( mortal_combo ),
   enduring_blow_chance( p->legendary.enduring_blow->proc_chance() ),
@@ -1834,7 +1834,7 @@ struct mortal_strike_t : public warrior_attack_t
 
 struct bladestorm_tick_t : public warrior_attack_t
 {
-  bladestorm_tick_t( warrior_t* p, const std::string& name, const spell_data_t* spell )
+  bladestorm_tick_t( warrior_t* p, util::string_view name, const spell_data_t* spell )
     : warrior_attack_t( name, p, spell )
 
   {
@@ -3757,7 +3757,7 @@ struct rampage_attack_t : public warrior_attack_t
   double rage_from_valarjar_berserking;
   double rage_from_simmering_rage;
   double reckless_defense_chance;
-  rampage_attack_t( warrior_t* p, const spell_data_t* rampage, const std::string& name )
+  rampage_attack_t( warrior_t* p, const spell_data_t* rampage, util::string_view name )
     : warrior_attack_t( name, p, rampage ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       first_attack( false ),
@@ -3973,7 +3973,7 @@ struct rampage_parent_t : public warrior_attack_t
 struct ravager_tick_t : public warrior_attack_t
 {
   double rage_from_ravager;
-  ravager_tick_t( warrior_t* p, const std::string& name )
+  ravager_tick_t( warrior_t* p, util::string_view name )
     : warrior_attack_t( name, p, p->find_spell( 156287 ) ), rage_from_ravager( 0.0 )
   {
     aoe = -1;
@@ -5597,7 +5597,7 @@ struct in_for_the_kill_t : public buff_t
   double below_pct_increase_amount;
   double below_pct_increase;
 
-  in_for_the_kill_t( warrior_t& p, const std::string& n, const spell_data_t* s )
+  in_for_the_kill_t( warrior_t& p, util::string_view n, const spell_data_t* s )
     : buff_t( &p, n, s ),
       base_value( p.talents.in_for_the_kill->effectN( 1 ).percent() ),
       below_pct_increase_amount( p.talents.in_for_the_kill->effectN( 2 ).percent() ),
@@ -6968,13 +6968,13 @@ public:
   using base_t = warrior_buff_t;
 
 
-  warrior_buff_t( warrior_td_t& td, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+  warrior_buff_t( warrior_td_t& td, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
                  const item_t* item = nullptr )
     : Base( td, name, s, item )
   {
   }
 
-  warrior_buff_t( warrior_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+  warrior_buff_t( warrior_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
                  const item_t* item = nullptr )
     : Base( &p, name, s, item )
   {
@@ -6995,7 +6995,7 @@ protected:
 
 struct deadly_calm_t : public warrior_buff_t<buff_t>
 {
-  deadly_calm_t( warrior_t& p, const std::string& n, const spell_data_t* s ) :
+  deadly_calm_t( warrior_t& p, util::string_view n, const spell_data_t* s ) :
     base_t( p, n, s )
   {
    //set_initial_stacks( 4 ); trigger initial stacks in spell execution
@@ -7052,7 +7052,7 @@ struct rallying_cry_t : public buff_t
 struct last_stand_buff_t : public warrior_buff_t<buff_t>
 {
   double health_change;
-  last_stand_buff_t( warrior_t& p, const std::string& n, const spell_data_t* s ) :
+  last_stand_buff_t( warrior_t& p, util::string_view n, const spell_data_t* s ) :
     base_t( p, n, s ), health_change( data().effectN( 1 ).percent() )
   {
     add_invalidate( CACHE_BLOCK );
@@ -7129,7 +7129,7 @@ struct debuff_demo_shout_t : public warrior_buff_t<buff_t>
 
 struct test_of_might_t : public warrior_buff_t<buff_t>
 {
-  test_of_might_t( warrior_t& p, const std::string& n, const spell_data_t* s )
+  test_of_might_t( warrior_t& p, util::string_view n, const spell_data_t* s )
     : base_t( p, n, s )
   {
     quiet = true;

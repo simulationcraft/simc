@@ -1876,7 +1876,7 @@ void raid_event_t::init( sim_t* sim )
   for ( const auto& split : splits )
   {
     auto name    = split;
-    util::string_view options = "";
+    util::string_view options{};
 
     sim->print_debug( "Creating raid event '{}'.", name );
 

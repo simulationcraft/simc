@@ -934,7 +934,7 @@ public:
   form_e get_form() const { return form; }
   void shapeshift( form_e );
   void init_beast_weapon( weapon_t&, double );
-  const spell_data_t* find_affinity_spell( const std::string& ) const;
+  const spell_data_t* find_affinity_spell( util::string_view ) const;
   specialization_e get_affinity_spec() const;
   void moving() override;
   void trigger_natures_guardian( const action_state_t* );
@@ -2487,7 +2487,7 @@ public:
   bool update_eclipse;
 
   druid_spell_t( util::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                 util::string_view opt = std::string() )
+                 util::string_view opt = {} )
     : ab( n, p, s ), update_eclipse( false )
   {
     parse_options( opt );
@@ -2851,7 +2851,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
   bool target_self;
 
   druid_heal_t( util::string_view token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                util::string_view options_str = std::string() )
+                util::string_view options_str = {} )
     : base_t( token, p, s ), target_self( false )
   {
     add_option( opt_bool( "target_self", target_self ) );
@@ -2908,7 +2908,7 @@ namespace caster_attacks
 struct caster_attack_t : public druid_attack_t<melee_attack_t>
 {
   caster_attack_t( util::string_view token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                   const std::string& options = std::string() )
+                   util::string_view options = {} )
     : base_t( token, p, s )
   {
     parse_options( options );
@@ -2967,7 +2967,7 @@ public:
   std::vector<buff_effect_t> persistent_multiplier_buffeffects;
 
   cat_attack_t( util::string_view token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                util::string_view options = std::string() )
+                util::string_view options = {} )
     : base_t( token, p, s ),
       requires_stealth( false ),
       consumes_combo_points( false ),
@@ -4315,7 +4315,7 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   bool proc_gore;
 
   bear_attack_t( util::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                 util::string_view options_str = std::string() )
+                 util::string_view options_str = {} )
     : base_t( n, p, s ), proc_gore( false )
   {
     parse_options( options_str );
@@ -10233,7 +10233,7 @@ const affinity_spells_t affinity_spells[] =
     { "Primal Fury", 159286, DRUID_FERAL }
 };
 
-const spell_data_t* druid_t::find_affinity_spell( const std::string& name ) const
+const spell_data_t* druid_t::find_affinity_spell( util::string_view name ) const
 {
   const spell_data_t* spec_spell = find_specialization_spell( name );
 

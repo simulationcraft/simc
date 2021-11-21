@@ -146,7 +146,7 @@ namespace pets
  */
 struct warlock_simple_pet_t : public warlock_pet_t
 {
-  warlock_simple_pet_t( warlock_t* owner, const std::string& pet_name, pet_e pt );
+  warlock_simple_pet_t( warlock_t* owner, util::string_view pet_name, pet_e pt );
   timespan_t available() const override;
 
 protected:
@@ -162,7 +162,7 @@ private:
 public:
   typedef warlock_pet_action_t base_t;
 
-  warlock_pet_action_t( const std::string& n, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
+  warlock_pet_action_t( util::string_view n, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, p, s )
   {
     ab::may_crit = true;
@@ -316,12 +316,12 @@ private:
   }
 
 public:
-  warlock_pet_melee_attack_t( warlock_pet_t* p, const std::string& n ) : base_t( n, p, p->find_pet_spell( n ) )
+  warlock_pet_melee_attack_t( warlock_pet_t* p, util::string_view n ) : base_t( n, p, p->find_pet_spell( n ) )
   {
     _init_warlock_pet_melee_attack_t();
   }
 
-  warlock_pet_melee_attack_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
+  warlock_pet_melee_attack_t( util::string_view token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
     : base_t( token, p, s )
   {
     _init_warlock_pet_melee_attack_t();
@@ -331,11 +331,11 @@ public:
 struct warlock_pet_spell_t : public warlock_pet_action_t<spell_t>
 {
 public:
-  warlock_pet_spell_t( warlock_pet_t* p, const std::string& n ) : base_t( n, p, p->find_pet_spell( n ) )
+  warlock_pet_spell_t( warlock_pet_t* p, util::string_view n ) : base_t( n, p, p->find_pet_spell( n ) )
   {
   }
 
-  warlock_pet_spell_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
+  warlock_pet_spell_t( util::string_view token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
     : base_t( token, p, s )
   {
   }
@@ -455,7 +455,7 @@ struct vilefiend_t : public warlock_simple_pet_t
 
 struct demonic_tyrant_t : public warlock_pet_t
 {
-  demonic_tyrant_t( warlock_t* owner, const std::string& name = "demonic_tyrant" );
+  demonic_tyrant_t( warlock_t* owner, util::string_view name = "demonic_tyrant" );
   void init_base_stats() override;
   void demise() override;
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
@@ -550,11 +550,11 @@ struct infernal_t : public warlock_pet_t
 {
   buff_t* immolation;
 
-  infernal_t( warlock_t* owner, const std::string& name = "infernal" );
-  virtual void init_base_stats() override;
-  virtual void create_buffs() override;
-  virtual void arise() override;
-  virtual void demise() override;
+  infernal_t( warlock_t* owner, util::string_view name = "infernal" );
+  void init_base_stats() override;
+  void create_buffs() override;
+  void arise() override;
+  void demise() override;
 };
 }  // namespace destruction
 
@@ -562,9 +562,9 @@ namespace affliction
 {
 struct darkglare_t : public warlock_pet_t
 {
-  darkglare_t( warlock_t* owner, const std::string& name = "darkglare" );
-  virtual double composite_player_multiplier( school_e school ) const override;
-  virtual action_t* create_action( util::string_view name, util::string_view options_str ) override;
+  darkglare_t( warlock_t* owner, util::string_view name = "darkglare" );
+  double composite_player_multiplier( school_e school ) const override;
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 }  // namespace affliction
 }  // namespace pets

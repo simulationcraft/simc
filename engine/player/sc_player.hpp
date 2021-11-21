@@ -720,8 +720,8 @@ public:
   void change_position( position_e );
   void register_resource_callback(resource_e resource, double value, resource_callback_function_t callback,
       bool use_pct, bool fire_once = true);
-  bool add_action( util::string_view action, util::string_view options = "", util::string_view alist = "default" );
-  bool add_action( const spell_data_t* s, util::string_view options = "", util::string_view alist = "default" );
+  bool add_action( util::string_view action, util::string_view options = {}, util::string_view alist = "default" );
+  bool add_action( const spell_data_t* s, util::string_view options = {}, util::string_view alist = "default" );
   void add_option( std::unique_ptr<option_t> o );
   void parse_talents_numbers( util::string_view talent_string );
   bool parse_talents_armory( util::string_view talent_string );
@@ -1084,7 +1084,7 @@ public:
 
   virtual action_t* create_action( util::string_view name, util::string_view options );
   virtual void      create_pets() { }
-  virtual pet_t*    create_pet( util::string_view name,  util::string_view type = "" );
+  virtual pet_t*    create_pet( util::string_view name,  util::string_view type = {} );
 
   virtual void armory_extensions( const std::string& /* region */, const std::string& /* server */, const std::string& /* character */,
                                   cache::behavior_e /* behavior */ = cache::players() )

@@ -23,7 +23,7 @@ struct specialization_spell_entry_t
   static const specialization_spell_entry_t& find( util::string_view name,
                                                    bool ptr,
                                                    specialization_e spec = SPEC_NONE,
-                                                   util::string_view desc = "",
+                                                   util::string_view desc = {},
                                                    bool tokenized = false );
 
   static const specialization_spell_entry_t& nil()
