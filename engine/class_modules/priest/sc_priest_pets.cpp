@@ -655,7 +655,61 @@ action_t* priest_pallid_command_t::create_action( util::string_view name, util::
 
   return priest_pet_t::create_action( name, options_str );
 };
+// ==========================================================================
+// Living Shadow T28 4-set (Your Shadow)
+// ==========================================================================
+struct your_shadow_t final : public priest_pet_t
+{
+  your_shadow_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "your_shadow", true )
+  {
+  }
 
+  void init_action_list() override
+  {
+    priest_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "torment_mind" );
+  }
+
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
+};
+
+// TODO: check mastery
+// TODO: check tick 0
+// TODO: if it has duration is hasted, does it recast when the channel finishes?
+// TODO: verify hasted ticks/duration
+struct your_shadow_torment_mind_t final : public priest_pet_spell_t
+{
+  your_shadow_torment_mind_t( your_shadow_t& p, util::string_view options )
+    : priest_pet_spell_t( "torment_mind", p, p.o().find_spell( 363656 ) )
+  {
+    parse_options( options );
+    channeled                  = true;
+    affected_by_shadow_weaving = true;
+  }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats( p().o(), p(), *this );
+  }
+};
+
+action_t* your_shadow_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "torment_mind" )
+  {
+    return new your_shadow_torment_mind_t( *this, options_str );
+  }
+
+  return priest_pet_t::create_action( name, options_str );
+}
+
+// ==========================================================================
+// Eternal Call to the Void
+// ==========================================================================
 struct void_tendril_t final : public priest_pet_t
 {
   void_tendril_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "void_tendril", true )
@@ -932,7 +986,8 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
     void_tendril( "void_tendril", &p, []( priest_t* priest ) { return new void_tendril_t( priest ); } ),
     void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new void_lasher_t( priest ); } ),
     rattling_mage( "rattling_mage", &p, []( priest_t* priest ) { return new rattling_mage_t( priest ); } ),
-    cackling_chemist( "cackling_chemist", &p, []( priest_t* priest ) { return new cackling_chemist_t( priest ); } )
+    cackling_chemist( "cackling_chemist", &p, []( priest_t* priest ) { return new cackling_chemist_t( priest ); } ),
+    your_shadow( "your_shadow", &p, []( priest_t* priest ) { return new your_shadow_t( priest ); } )
 {
   auto void_tendril_spell = p.find_spell( 193473 );
   // Add 1ms to ensure pet is dismissed after last dot tick.
@@ -945,6 +1000,11 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   auto rigor_mortis_duration = p.find_spell( 356467 )->duration();
   rattling_mage.set_default_duration( rigor_mortis_duration );
   cackling_chemist.set_default_duration( rigor_mortis_duration );
+
+  // Add 1ms to ensure pet is dismissed after last dot tick.
+  auto your_shadow_spell = p.find_spell( 363469 );
+  your_shadow.set_default_duration( timespan_t::from_seconds( your_shadow_spell->effectN( 2 ).base_value() ) +
+                                    timespan_t::from_millis( 1 ) );
 }
 
 }  // namespace priestspace

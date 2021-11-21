@@ -212,8 +212,8 @@ struct mind_sear_t final : public priest_spell_t
     radius = data().effectN( 1 ).trigger()->effectN( 2 ).radius();  // need to set radius in here so that the APL
                                                                     // functions correctly
 
-    if (priest().specialization() == PRIEST_SHADOW)
-      base_costs_per_tick[RESOURCE_MANA] = 0.0;
+    if ( priest().specialization() == PRIEST_SHADOW )
+      base_costs_per_tick[ RESOURCE_MANA ] = 0.0;
 
     tick_action = new mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
   }
@@ -231,7 +231,6 @@ struct mind_flay_t final : public priest_spell_t
     affected_by_shadow_weaving = true;
     may_crit                   = false;
     channeled                  = true;
-    hasted_ticks               = false;
     use_off_gcd                = true;
 
     energize_amount *= 1 + p.talents.fortress_of_the_mind->effectN( 1 ).percent();
@@ -1696,6 +1695,9 @@ struct shadowform_state_t final : public priest_buff_t<buff_t>
 // ==========================================================================
 struct dark_thought_t final : public priest_buff_t<buff_t>
 {
+  timespan_t your_shadow_duration;
+  bool T28_4PC;
+
   dark_thought_t( priest_t& p ) : base_t( p, "dark_thought", p.specs.dark_thought )
   {
     // Allow player to react to the buff being applied so they can cast Mind Blast.
@@ -1704,6 +1706,10 @@ struct dark_thought_t final : public priest_buff_t<buff_t>
     // Create a stack change callback to adjust the number of mindblast charges.
     set_stack_change_callback(
         [ this ]( buff_t*, int old, int cur ) { priest().cooldowns.mind_blast->adjust_max_charges( cur - old ); } );
+
+    your_shadow_duration = timespan_t::from_seconds( p.find_spell( 363469 )->effectN( 2 ).base_value() );
+
+    T28_4PC = priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B4 );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1713,6 +1719,24 @@ struct dark_thought_t final : public priest_buff_t<buff_t>
       for ( int i = 0; i < expiration_stacks; i++ )
       {
         priest().procs.dark_thoughts_missed->occur();
+      }
+    }
+
+    // TODO: check if you can have multiple out at once
+    // Only spawn this when you consume the charge
+    if ( T28_4PC && remaining_duration > timespan_t::zero() )
+    {
+      priest().procs.living_shadow->occur();
+
+      auto pet = priest().pets.your_shadow.active_pet();
+
+      if ( pet )
+      {
+        pet->adjust_duration( your_shadow_duration );
+      }
+      else
+      {
+        priest().pets.your_shadow.spawn();
       }
     }
 

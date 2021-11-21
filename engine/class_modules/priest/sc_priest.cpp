@@ -1519,6 +1519,7 @@ void priest_t::create_procs()
   procs.dark_thoughts_flay              = get_proc( "Dark Thoughts proc from Mind Flay" );
   procs.dark_thoughts_sear              = get_proc( "Dark Thoughts proc from Mind Sear" );
   procs.dark_thoughts_missed            = get_proc( "Dark Thoughts proc not consumed" );
+  procs.living_shadow                   = get_proc( "Living Shadow T28 4-set procs" );
 }
 
 /** Construct priest benefits */
