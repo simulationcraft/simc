@@ -231,7 +231,6 @@ struct mind_flay_t final : public priest_spell_t
     affected_by_shadow_weaving = true;
     may_crit                   = false;
     channeled                  = true;
-    hasted_ticks               = false;
     use_off_gcd                = true;
 
     energize_amount *= 1 + p.talents.fortress_of_the_mind->effectN( 1 ).percent();

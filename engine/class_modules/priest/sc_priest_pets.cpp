@@ -669,23 +669,23 @@ struct your_shadow_t final : public priest_pet_t
     priest_pet_t::init_action_list();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "mind_flay" );
+    def->add_action( "torment_mind" );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
 // TODO: check mastery
-// TODO: check spell ID
-// TODO: check if hasted
-struct your_shadow_mind_flay_t final : public priest_pet_spell_t
+// TODO: check tick 0
+// TODO: if it has duration is hasted, does it recast when the channel finishes?
+// TODO: verify hasted ticks/duration
+struct your_shadow_torment_mind_t final : public priest_pet_spell_t
 {
-  your_shadow_mind_flay_t( your_shadow_t& p, util::string_view options )
-    : priest_pet_spell_t( "mind_flay", p, p.o().find_spell( 363469 ) )
+  your_shadow_torment_mind_t( your_shadow_t& p, util::string_view options )
+    : priest_pet_spell_t( "torment_mind", p, p.o().find_spell( 363656 ) )
   {
     parse_options( options );
     channeled                  = true;
-    hasted_ticks               = false;
     affected_by_shadow_weaving = true;
   }
 
@@ -695,25 +695,13 @@ struct your_shadow_mind_flay_t final : public priest_pet_spell_t
 
     merge_pet_stats_to_owner_action( p().o(), p(), *this, "living_shadow" );
   }
-
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    // Not hasted
-    return dot_duration;
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    // Not hasted
-    return base_tick_time;
-  }
 };
 
 action_t* your_shadow_t::create_action( util::string_view name, util::string_view options_str )
 {
-  if ( name == "mind_flay" )
+  if ( name == "torment_mind" )
   {
-    return new your_shadow_mind_flay_t( *this, options_str );
+    return new your_shadow_torment_mind_t( *this, options_str );
   }
 
   return priest_pet_t::create_action( name, options_str );
