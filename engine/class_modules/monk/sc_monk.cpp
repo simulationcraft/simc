@@ -65,6 +65,8 @@ struct monk_action_t : public Base
   bool trigger_faeline_stomp;
   bool trigger_bountiful_brew;
   bool trigger_sinister_teaching_cdr;
+  bool trigger_ww_t28_4p_power;
+  bool trigger_ww_t28_4p_power_channel;
 
   // Bron's Call to Action trigger overrides
   bool may_proc_bron;
@@ -91,6 +93,8 @@ public:
       trigger_faeline_stomp( false ),
       trigger_bountiful_brew( false ),
       trigger_sinister_teaching_cdr( true ),
+      trigger_ww_t28_4p_power( false ),
+      trigger_ww_t28_4p_power_channel( false ),
       may_proc_bron( false ),
       bron_proc( nullptr ),
       affected_by()
@@ -260,6 +264,10 @@ public:
 
       if ( p()->conduit.xuens_bond->ok() )
         p()->cooldown.invoke_xuen->adjust( p()->conduit.xuens_bond->effectN( 2 ).time_value(), true );  // Saved as -100
+
+      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) && !p()->buff.primordial_power->check() )
+        p()->buff.primordial_potential->trigger();
+
     }
     else
     {
@@ -432,6 +440,10 @@ public:
         p()->buff.faeline_stomp_reset->trigger();
       }
     }
+
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
+      if ( trigger_ww_t28_4p_power && p()->buff.primordial_power->check() )
+        p()->buff.primordial_power->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -488,6 +500,28 @@ public:
 
     if ( p()->bugs && get_td( s->target )->debuff.bonedust_brew->up() )
       p()->bonedust_brew_assessor( s );
+  }
+
+  void last_tick( dot_t* dot ) override
+  {
+    ab::last_tick( dot );
+
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
+      if ( trigger_ww_t28_4p_power_channel && p()->buff.primordial_power->check() )
+        p()->buff.primordial_power->trigger();
+  }
+
+  double composite_persistent_multiplier( const action_state_t* action_state ) const override
+  {
+    double pm = ab::composite_persistent_multiplier( action_state );
+
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
+    {
+      if ( ab::data().affected_by( p()->passives.primordial_power->effectN( 1 ) ) )
+        pm *= 1 + p()->passives.primordial_power->effectN( 1 ).percent();
+    }
+
+    return pm;
   }
 
   void trigger_storm_earth_and_fire( const action_t* a )
@@ -1098,6 +1132,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     trigger_chiji    = true;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
+    trigger_ww_t28_4p_power     = true;
     sef_ability            = sef_ability_e::SEF_TIGER_PALM;
 
     add_child( eye_of_the_tiger_damage );
@@ -1185,8 +1220,16 @@ struct tiger_palm_t : public monk_melee_attack_t
           }
         }
 
+        auto brew_cdr = p()->spec.tiger_palm->effectN( 3 ).base_value();
+
+        if ( p()->buff.flames_of_primordium->check() )
+        {
+          brew_cdr *= 1 + p()->sets->set( MONK_BREWMASTER, T28, B4 )->effectN( 1 ).percent();
+          p()->buff.flames_of_primordium->expire();
+        }
+
         // Reduces the remaining cooldown on your Brews by 1 sec
-        brew_cooldown_reduction( p()->spec.tiger_palm->effectN( 3 ).base_value() );
+        brew_cooldown_reduction( brew_cdr );
 
         if ( p()->buff.blackout_combo->up() )
           p()->buff.blackout_combo->expire();
@@ -1332,6 +1375,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     may_proc_bron          = true;
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
+    trigger_ww_t28_4p_power     = true;
     sef_ability            = sef_ability_e::SEF_RISING_SUN_KICK;
     affected_by.serenity = true;
     ap_type              = attack_power_type::NONE;
@@ -1504,6 +1548,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     trigger_chiji         = true;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
+    trigger_ww_t28_4p_power     = true;
 
     if ( p->specialization() == MONK_WINDWALKER )
     {
@@ -1567,7 +1612,15 @@ struct blackout_kick_t : public monk_melee_attack_t
         if ( p()->talent.blackout_combo->ok() )
           p()->buff.blackout_combo->trigger();
 
-        trigger_shuffle( p()->spec.blackout_kick_brm->effectN( 2 ).base_value() );
+        auto shuffle_duration = p()->spec.blackout_kick_brm->effectN( 2 ).base_value();
+
+        if ( p()->buff.flames_of_primordium->check() )
+        {
+          shuffle_duration *= 1 + p()->sets->set( MONK_BREWMASTER, T28, B4 )->effectN( 1 ).percent();
+          p()->buff.flames_of_primordium->expire();
+        }
+
+        trigger_shuffle( shuffle_duration );
         break;
       }
       case MONK_MISTWEAVER:
@@ -1870,6 +1923,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     may_proc_bron          = true;
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
+    trigger_ww_t28_4p_power_channel = true;
 
     may_crit = may_miss = may_block = may_dodge = may_parry = false;
     tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
@@ -2014,6 +2068,9 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     if ( p()->conduit.inner_fury->ok() )
       am *= 1 + p()->conduit.inner_fury.percent();
 
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B2 ) )
+      am *= 1 + p()->sets->set( MONK_WINDWALKER, T28, B2 )->effectN( 1 ).percent();
+
     return am;
   }
 
@@ -2038,6 +2095,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     may_proc_bron          = true;
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
+    trigger_ww_t28_4p_power_channel = true;
     affected_by.serenity   = true;
 
     channeled = tick_zero = true;
@@ -2168,6 +2226,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     may_proc_bron                     = true;
     trigger_faeline_stomp             = true;
     trigger_bountiful_brew            = true;
+    trigger_ww_t28_4p_power           = true;
 
     spell_power_mod.direct = 0.0;
 
@@ -2222,6 +2281,7 @@ struct fist_of_the_white_tiger_main_hand_t : public monk_melee_attack_t
     may_proc_bron          = false; // Only the first hit from FotWT triggers Bron
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
+    trigger_ww_t28_4p_power = true; // Do not want to remove this until after the second hit.
 
     may_dodge = may_parry = may_block = may_miss = true;
     dual                                         = true;
@@ -2982,6 +3042,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
     may_combo_strike = true;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
+    trigger_ww_t28_4p_power_channel = true;
 
     parse_options( options_str );
 
@@ -3122,6 +3183,9 @@ struct breath_of_fire_t : public monk_spell_t
 
     if ( p()->legendary.charred_passions->ok() )
       p()->buff.charred_passions->trigger();
+
+    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T28, B4 ) )
+      p()->buff.flames_of_primordium->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -4874,6 +4938,7 @@ struct chi_wave_t : public monk_spell_t
     may_proc_bron          = true;
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
+    trigger_ww_t28_4p_power_channel = true;
     parse_options( options_str );
     hasted_ticks = harmful = false;
     cooldown->hasted       = false;
@@ -4984,6 +5049,7 @@ struct chi_burst_t : public monk_spell_t
     may_proc_bron          = true;
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
+    trigger_ww_t28_4p_power     = true;
 
     add_child( damage );
     add_child( heal );
@@ -5009,8 +5075,6 @@ struct chi_burst_t : public monk_spell_t
 
   void execute() override
   {
-    monk_spell_t::execute();
-
     // AoE healing is wonky in SimC. Try to simulate healing multiple players without over burdening sims
     if ( p()->user_options.chi_burst_healing_targets > 1 )
     {
@@ -5021,6 +5085,8 @@ struct chi_burst_t : public monk_spell_t
     else
       heal->execute();
     damage->execute();
+ 
+    monk_spell_t::execute();
   }
 };
 
@@ -5708,7 +5774,41 @@ struct stagger_buff_t : public monk_buff_t<buff_t>
   }
 };
 
-} // namespace monk::buffs
+// ===============================================================================
+// Tier 28 Primordial Potential
+// ===============================================================================
+
+struct primordial_potential_buff_t : public monk_buff_t<buff_t>
+{
+  primordial_potential_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  {
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    if ( stacks == max_stack() )
+    {
+      p().buff.primordial_power->trigger();
+      this->expire();
+      return false;
+    }
+    return buff_t::trigger( stacks, value, chance, duration );
+  }
+};
+
+// ===============================================================================
+// Tier 28 Primordial Power
+// ===============================================================================
+
+struct primordial_power_buff_t : public monk_buff_t<buff_t>
+{
+  primordial_power_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  {
+    set_initial_stack( s->max_stacks() );
+    set_reverse_stack_count( 1 );
+  }
+};
+}  // namespace buffs
 
 namespace items
 {
@@ -6520,6 +6620,10 @@ void monk_t::init_spells()
   passives.call_to_arms_invoke_chiji  = find_spell( 358522 );
   passives.call_to_arms_empowered_tiger_lightning = find_spell( 360829 );
 
+  // Tier 28
+  passives.primordial_potential       = find_spell( 363911 );
+  passives.primordial_power           = find_spell( 363924 );
+
   // Mastery spells =========================================
   mastery.combo_strikes   = find_mastery_spell( MONK_WINDWALKER );
   mastery.elusive_brawler = find_mastery_spell( MONK_BREWMASTER );
@@ -6886,6 +6990,12 @@ void monk_t::create_buffs()
 
   buff.fae_exposure =
       make_buff( this, "fae_exposure_heal", passives.fae_exposure_heal )->set_default_value_from_effect( 1 );
+
+  // Tier 28 Set Bonus
+  buff.flames_of_primordium = make_buff( this, "flames_of_primordium", find_spell( 364101 ) );
+  buff.primordial_potential =
+      new buffs::primordial_potential_buff_t( *this, "primordial_potential", passives.primordial_potential );
+  buff.primordial_power = new buffs::primordial_power_buff_t( *this, "primordial_power", passives.primordial_power );
 }
 
 // monk_t::init_gains =======================================================
@@ -7827,6 +7937,8 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
 
 void monk_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )
 {
+  auto target_data = get_target_data( s->action->player );
+
   // Gift of the Ox Trigger Calculations ===========================================================
 
   // Gift of the Ox is no longer a random chance, under the hood. When you are hit, it increments a counter by
@@ -7877,7 +7989,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
     s->result_amount *= 1.0 + buff.diffuse_magic->default_value;  // Stored as -60%
 
   // If Breath of Fire is ticking on the source target, the player receives 5% less damage
-  if ( get_target_data( s->action->player )->dots.breath_of_fire->is_ticking() )
+  if ( target_data->dots.breath_of_fire->is_ticking() )
   {
     // Saved as -5
     double dmg_reduction = passives.breath_of_fire_dot->effectN( 2 ).percent();
@@ -7885,6 +7997,9 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
     if ( buff.celestial_flames->up() )
       dmg_reduction -= buff.celestial_flames->value();  // Saved as 5
     s->result_amount *= 1.0 + dmg_reduction;
+
+    if ( sets->has_set_bonus( MONK_BREWMASTER, T28, B2 ) )
+      s->result_amount *= 1.0 + sets->set( MONK_BREWMASTER, T28, B2 )->effectN( 1 ).percent();
   }
 
   // Inner Strength

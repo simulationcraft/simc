@@ -260,6 +260,11 @@ public:
     propagate_const<buff_t*> pressure_point;
     propagate_const<buff_t*> the_emperors_capacitor;
     propagate_const<buff_t*> invoke_xuen_call_to_arms;
+
+    // T28 Set Bonus
+    propagate_const<buff_t*> flames_of_primordium;
+    propagate_const<buff_t*> primordial_potential;
+    propagate_const<buff_t*> primordial_power;
   } buff;
 
 public:
@@ -632,6 +637,10 @@ public:
     const spell_data_t* call_to_arms_invoke_yulon;
     const spell_data_t* call_to_arms_invoke_chiji;
     const spell_data_t* call_to_arms_empowered_tiger_lightning;
+
+    // Tier 28
+    const spell_data_t* primordial_potential;
+    const spell_data_t* primordial_power;
   } passives;
 
   // RPPM objects
