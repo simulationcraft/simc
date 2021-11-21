@@ -216,9 +216,20 @@ enum rotation_type_e
 struct shaman_attack_t;
 struct shaman_spell_t;
 struct shaman_heal_t;
+
+template <typename T>
 struct shaman_totem_pet_t;
+
+template <typename T>
 struct totem_pulse_event_t;
+
+template <typename T>
 struct totem_pulse_action_t;
+
+using spell_totem_action_t = totem_pulse_action_t<spell_t>;
+using spell_totem_pet_t = shaman_totem_pet_t<spell_t>;
+using heal_totem_action_t = totem_pulse_action_t<heal_t>;
+using heal_totem_pet_t = shaman_totem_pet_t<heal_t>;
 
 struct shaman_td_t : public actor_target_data_t
 {
@@ -6352,10 +6363,11 @@ struct windfury_totem_t : public shaman_spell_t
 // Shaman Totem System
 // ==========================================================================
 
+template <typename T>
 struct shaman_totem_pet_t : public pet_t
 {
   // Pulse related functionality
-  totem_pulse_action_t* pulse_action;
+  totem_pulse_action_t<T>* pulse_action;
   event_t* pulse_event;
   timespan_t pulse_amplitude;
 
@@ -6427,9 +6439,10 @@ struct shaman_totem_pet_t : public pet_t
   }
 };
 
+template <typename T>
 struct shaman_totem_t : public shaman_spell_t
 {
-  shaman_totem_pet_t* totem_pet;
+  shaman_totem_pet_t<T>* totem_pet;
   timespan_t totem_duration;
 
   shaman_totem_t( util::string_view totem_name, shaman_t* player, util::string_view options_str,
@@ -6445,7 +6458,7 @@ struct shaman_totem_t : public shaman_spell_t
 
   void init_finished() override
   {
-    totem_pet = debug_cast<shaman_totem_pet_t*>( player->find_pet( name() ) );
+    totem_pet = debug_cast<shaman_totem_pet_t<T>*>( player->find_pet( name() ) );
 
     shaman_spell_t::init_finished();
   }
@@ -6482,24 +6495,35 @@ struct shaman_totem_t : public shaman_spell_t
   }
 };
 
-struct totem_pulse_action_t : public spell_t
+template <typename T>
+struct totem_pulse_action_t : public T
 {
   bool hasted_pulse;
   double pulse_multiplier;
-  shaman_totem_pet_t* totem;
+  shaman_totem_pet_t<T>* totem;
 
-  totem_pulse_action_t( util::string_view token, shaman_totem_pet_t* p, const spell_data_t* s )
-    : spell_t( token, p, s ), hasted_pulse( false ), pulse_multiplier( 1.0 ), totem( p )
+  totem_pulse_action_t( const std::string& token, shaman_totem_pet_t<T>* p, const spell_data_t* s )
+    : T( token, p, s ), hasted_pulse( false ), pulse_multiplier( 1.0 ), totem( p )
   {
-    may_crit = harmful = background = true;
-    callbacks                       = false;
+    this->may_crit = this->background = true;
+    this->callbacks             = false;
 
-    crit_bonus_multiplier *= 1.0 + totem->o()->spec.elemental_fury->effectN( 1 ).percent();
+    this->crit_bonus_multiplier *= 1.0 + totem->o()->spec.elemental_fury->effectN( 1 ).percent();
+
+    if ( this->type == ACTION_HEAL )
+    {
+      this->harmful = false;
+      this->target = totem->owner;
+    }
+    else
+    {
+      this->harmful = true;
+    }
   }
 
   shaman_t* o() const
   {
-    return debug_cast<shaman_t*>( player->cast_pet()->owner );
+    return debug_cast<shaman_t*>( this->player->cast_pet()->owner );
   }
 
   shaman_td_t* td( player_t* target ) const
@@ -6509,7 +6533,7 @@ struct totem_pulse_action_t : public spell_t
 
   double action_multiplier() const override
   {
-    double m = spell_t::action_multiplier();
+    double m = T::action_multiplier();
 
     m *= pulse_multiplier;
 
@@ -6518,25 +6542,26 @@ struct totem_pulse_action_t : public spell_t
 
   void init() override
   {
-    spell_t::init();
+    T::init();
 
     // Hacky, but constructor wont work.
-    crit_multiplier *= util::crit_multiplier( totem->o()->meta_gem );
+    this->crit_multiplier *= util::crit_multiplier( totem->o()->meta_gem );
   }
 
   void reset() override
   {
-    spell_t::reset();
+    T::reset();
     pulse_multiplier = 1.0;
   }
 };
 
+template <typename T>
 struct totem_pulse_event_t : public event_t
 {
-  shaman_totem_pet_t* totem;
+  shaman_totem_pet_t<T>* totem;
   timespan_t real_amplitude;
 
-  totem_pulse_event_t( shaman_totem_pet_t& t, timespan_t amplitude )
+  totem_pulse_event_t<T>( shaman_totem_pet_t<T>& t, timespan_t amplitude )
     : event_t( t ), totem( &t ), real_amplitude( amplitude )
   {
     if ( totem->pulse_action->hasted_pulse )
@@ -6553,32 +6578,34 @@ struct totem_pulse_event_t : public event_t
     if ( totem->pulse_action )
       totem->pulse_action->execute();
 
-    totem->pulse_event = make_event<totem_pulse_event_t>( sim(), *totem, totem->pulse_amplitude );
+    totem->pulse_event = make_event<totem_pulse_event_t<T>>( sim(), *totem, totem->pulse_amplitude );
   }
 };
 
-void shaman_totem_pet_t::summon( timespan_t duration )
+template <typename T>
+void shaman_totem_pet_t<T>::summon( timespan_t duration )
 {
   pet_t::summon( duration );
 
-  if ( pulse_action )
+  if ( this->pulse_action )
   {
-    pulse_action->pulse_multiplier = 1.0;
-    pulse_event                    = make_event<totem_pulse_event_t>( *sim, *this, pulse_amplitude );
+    this->pulse_action->pulse_multiplier = 1.0;
+    this->pulse_event = make_event<totem_pulse_event_t<T>>( *sim, *this, this->pulse_amplitude );
   }
 
-  if ( summon_pet )
-    summon_pet->summon();
+  if ( this->summon_pet )
+    this->summon_pet->summon();
 }
 
-void shaman_totem_pet_t::dismiss( bool expired )
+template <typename T>
+void shaman_totem_pet_t<T>::dismiss( bool expired )
 {
   // Disable last (partial) tick on dismiss, as it seems not to happen in game atm
   if ( pulse_action && pulse_event && expiration && expiration->remains() == timespan_t::zero() )
   {
     if ( pulse_event->remains() > timespan_t::zero() )
       pulse_action->pulse_multiplier =
-          pulse_event->remains() / debug_cast<totem_pulse_event_t*>( pulse_event )->real_amplitude;
+          pulse_event->remains() / debug_cast<totem_pulse_event_t<T>*>( pulse_event )->real_amplitude;
     pulse_action->execute();
   }
 
@@ -6594,7 +6621,7 @@ void shaman_totem_pet_t::dismiss( bool expired )
 
 struct liquid_magma_globule_t : public spell_t
 {
-  liquid_magma_globule_t( shaman_totem_pet_t* p ) : spell_t( "liquid_magma", p, p->find_spell( 192231 ) )
+  liquid_magma_globule_t( spell_totem_pet_t* p ) : spell_t( "liquid_magma", p, p->find_spell( 192231 ) )
   {
     aoe        = -1;
     background = may_crit = true;
@@ -6607,12 +6634,12 @@ struct liquid_magma_globule_t : public spell_t
   }
 };
 
-struct liquid_magma_totem_pulse_t : public totem_pulse_action_t
+struct liquid_magma_totem_pulse_t : public spell_totem_action_t
 {
   liquid_magma_globule_t* globule;
 
-  liquid_magma_totem_pulse_t( shaman_totem_pet_t* totem )
-    : totem_pulse_action_t( "liquid_magma_driver", totem, totem->find_spell( 192226 ) ),
+  liquid_magma_totem_pulse_t( spell_totem_pet_t* totem )
+    : spell_totem_action_t( "liquid_magma_driver", totem, totem->find_spell( 192226 ) ),
       globule( new liquid_magma_globule_t( totem ) )
   {
     // TODO: "Random enemies" implicates number of targets
@@ -6623,23 +6650,23 @@ struct liquid_magma_totem_pulse_t : public totem_pulse_action_t
 
   void impact( action_state_t* state ) override
   {
-    totem_pulse_action_t::impact( state );
+    spell_totem_action_t::impact( state );
 
     globule->set_target( state->target );
     globule->schedule_execute();
   }
 };
 
-struct liquid_magma_totem_t : public shaman_totem_pet_t
+struct liquid_magma_totem_t : public spell_totem_pet_t
 {
-  liquid_magma_totem_t( shaman_t* owner ) : shaman_totem_pet_t( owner, "liquid_magma_totem" )
+  liquid_magma_totem_t( shaman_t* owner ) : spell_totem_pet_t( owner, "liquid_magma_totem" )
   {
     pulse_amplitude = owner->find_spell( 192226 )->effectN( 1 ).period();
   }
 
   void init_spells() override
   {
-    shaman_totem_pet_t::init_spells();
+    spell_totem_pet_t::init_spells();
 
     pulse_action = new liquid_magma_totem_pulse_t( this );
   }
@@ -6647,12 +6674,12 @@ struct liquid_magma_totem_t : public shaman_totem_pet_t
 
 // Capacitor Totem =========================================================
 
-struct capacitor_totem_pulse_t : public totem_pulse_action_t
+struct capacitor_totem_pulse_t : public spell_totem_action_t
 {
   cooldown_t* totem_cooldown;
 
-  capacitor_totem_pulse_t( shaman_totem_pet_t* totem )
-    : totem_pulse_action_t( "static_charge", totem, totem->find_spell( 118905 ) )
+  capacitor_totem_pulse_t( spell_totem_pet_t* totem )
+    : spell_totem_action_t( "static_charge", totem, totem->find_spell( 118905 ) )
   {
     aoe   = 1;
     quiet = dual   = true;
@@ -6661,7 +6688,7 @@ struct capacitor_totem_pulse_t : public totem_pulse_action_t
 
   void execute() override
   {
-    totem_pulse_action_t::execute();
+    spell_totem_action_t::execute();
     if ( totem->o()->talent.static_charge->ok() )
     {
       // This implementation assumes that every hit target counts. Ingame boss dummy testing showed that only
@@ -6673,20 +6700,47 @@ struct capacitor_totem_pulse_t : public totem_pulse_action_t
   }
 };
 
-struct capacitor_totem_t : public shaman_totem_pet_t
+struct capacitor_totem_t : public spell_totem_pet_t
 {
-  capacitor_totem_t( shaman_t* owner ) : shaman_totem_pet_t( owner, "capacitor_totem" )
+  capacitor_totem_t( shaman_t* owner ) : spell_totem_pet_t( owner, "capacitor_totem" )
   {
     pulse_amplitude = owner->find_spell( 192058 )->duration();
   }
 
   void init_spells() override
   {
-    shaman_totem_pet_t::init_spells();
+    spell_totem_pet_t::init_spells();
 
     pulse_action = new capacitor_totem_pulse_t( this );
   }
 };
+
+// Healing Stream Totem =====================================================
+
+struct healing_stream_totem_pulse_t : public heal_totem_action_t
+{
+  healing_stream_totem_pulse_t( heal_totem_pet_t* totem )
+    : heal_totem_action_t( "healing_stream_totem_heal", totem, totem->find_spell( 52042 ) )
+  {
+  }
+};
+
+struct healing_stream_totem_t : public heal_totem_pet_t
+{
+  healing_stream_totem_t( shaman_t* owner ) :
+    heal_totem_pet_t( owner, "healing_stream_totem" )
+  {
+    pulse_amplitude = owner->find_spell( 5672 )->effectN( 1 ).period();
+  }
+
+  void init_spells() override
+  {
+    heal_totem_pet_t::init_spells();
+
+    pulse_action = new healing_stream_totem_pulse_t( this );
+  }
+};
+
 
 // ==========================================================================
 // PvP talents/abilities
@@ -7060,6 +7114,8 @@ struct vesper_totem_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->buff.vesper_totem->trigger();
+    // Note, this is manually executed by shaman_t::trigger_vesper_totem, the ground aoe
+    // effect is just to emulate the totem placing.
     make_event<ground_aoe_event_t>(
         *player->sim, player,
         ground_aoe_params_t()
@@ -7258,7 +7314,7 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   if ( name == "bloodlust" )
     return new bloodlust_t( this, options_str );
   if ( name == "capacitor_totem" )
-    return new shaman_totem_t( "capacitor_totem", this, options_str, find_spell( 192058 ) );
+    return new shaman_totem_t<spell_t>( "capacitor_totem", this, options_str, find_spell( 192058 ) );
   if ( name == "elemental_blast" )
     return new elemental_blast_t( this, options_str );
   if ( name == "flame_shock" )
@@ -7277,6 +7333,8 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
     return new wind_shear_t( this, options_str );
   if ( name == "windfury_totem" )
     return new windfury_totem_t( this, options_str );
+  if ( name == "healing_stream_totem" )
+    return new shaman_totem_t<heal_t>( "healing_stream_totem", this, options_str, find_spell( 5394 ) );
 
   // covenants
   if ( name == "primordial_wave" )
@@ -7309,7 +7367,7 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   if ( name == "lava_burst" )
     return new lava_burst_t( this, lava_burst_type::NORMAL, "", options_str );
   if ( name == "liquid_magma_totem" )
-    return new shaman_totem_t( "liquid_magma_totem", this, options_str, talent.liquid_magma_totem );
+    return new shaman_totem_t<spell_t>( "liquid_magma_totem", this, options_str, talent.liquid_magma_totem );
   if ( name == "static_discharge" )
     return new static_discharge_t( this, options_str );
   if ( name == "storm_elemental" )
@@ -7395,6 +7453,8 @@ pet_t* shaman_t::create_pet( util::string_view pet_name, util::string_view /* pe
     return new liquid_magma_totem_t( this );
   if ( pet_name == "capacitor_totem" )
     return new capacitor_totem_t( this );
+  if ( pet_name == "healing_stream_totem" )
+    return new healing_stream_totem_t( this );
 
   return nullptr;
 }
@@ -7446,6 +7506,11 @@ void shaman_t::create_pets()
   if ( find_action( "capacitor_totem" ) )
   {
     create_pet( "capacitor_totem" );
+  }
+
+  if ( find_action( "healing_stream_totem" ) )
+  {
+    create_pet( "healing_stream_totem" );
   }
 }
 
