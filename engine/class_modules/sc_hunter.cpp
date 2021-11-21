@@ -594,7 +594,8 @@ public:
     events::tar_trap_aoe_t* tar_trap_aoe = nullptr;
     wildfire_infusion_e next_wi_bomb = WILDFIRE_INFUSION_SHRAPNEL;
     unsigned steady_focus_counter = 0;
-    double focus_used = 0;
+    // Focus used for Focused Trickery (363666)
+    double focus_used_FT = 0;
   } state;
 
   struct options_t {
@@ -678,6 +679,7 @@ public:
   action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t*    create_pet( util::string_view name, util::string_view type ) override;
   void      create_pets() override;
+  double resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
   resource_e primary_resource() const override { return RESOURCE_FOCUS; }
   role_e    primary_role() const override { return ROLE_ATTACK; }
   stat_e    convert_hybrid_stat( stat_e s ) const override;
@@ -987,27 +989,6 @@ public:
     }
 
     return total_regen + floor( total_energize );
-  }
-
-  void consume_resource() override
-  {
-    ab::consume_resource();
-
-    if ( !p() -> specs.marksmanship_hunter -> ok() || !p() -> options.t28_4pc )
-      return;
-
-    resource_e cr = ab::current_resource();
-    if ( cr != RESOURCE_FOCUS )
-      return;
-
-    p() -> state.focus_used += cost();
-
-    // TODO: The cost is a double, can this cause rounding errors?
-    while ( p() -> state.focus_used >= 80.0 )
-    {
-      p() -> state.focus_used -= 80.0;
-      p() -> buffs.trick_shots -> trigger( 2 );
-    }
   }
 
   // action list expressions
@@ -3473,9 +3454,6 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     base_aoe_multiplier = p -> specs.trick_shots -> effectN( 4 ).percent() +
                           p -> conduits.deadly_chain.percent();
 
-    if ( p -> options.t28_2pc )
-      base_aoe_multiplier += 0.3;
-
     trick_shots.target_count = 1 + static_cast<int>( p -> specs.trick_shots -> effectN( 1 ).base_value() );
 
     if ( p -> talents.careful_aim.ok() )
@@ -3508,6 +3486,9 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
       if ( target_health_pct > careful_aim.high || target_health_pct < careful_aim.low )
         m *= 1 + careful_aim.multiplier;
     }
+
+    if ( p() -> options.t28_2pc && trick_shots_up() )
+      m *= 1.3;
 
     return m;
   }
@@ -3820,6 +3801,9 @@ struct rapid_fire_t: public hunter_spell_t
       double m = hunter_ranged_attack_t::composite_da_multiplier( s );
 
       m *= 1 + p() -> buffs.brutal_projectiles_hidden -> check_stack_value();
+
+      if ( p() -> options.t28_2pc && p() -> buffs.trick_shots -> check() )
+        m *= 1.3;
 
       return m;
     }
@@ -5877,6 +5861,30 @@ void hunter_t::create_pets()
 void hunter_t::init()
 {
   player_t::init();
+}
+
+// hunter_t::resource_loss ==================================================
+
+double hunter_t::resource_loss( resource_e resource_type, double amount, gain_t* g, action_t* a )
+{
+  auto actual_loss = player_t::resource_loss( resource_type, amount, g, a );
+
+  if ( resource_type != RESOURCE_FOCUS )
+    return actual_loss;
+
+  if ( !specs.marksmanship_hunter -> ok() || !options.t28_4pc )
+    return actual_loss;
+
+  state.focus_used_FT += actual_loss;
+
+  // TODO: The cost is a double, can this cause rounding errors?
+  while ( state.focus_used_FT >= 80.0 )
+  {
+    state.focus_used_FT -= 80.0;
+    buffs.trick_shots -> trigger( 2 );
+  }
+
+  return actual_loss;
 }
 
 // hunter_t::init_spells ====================================================
