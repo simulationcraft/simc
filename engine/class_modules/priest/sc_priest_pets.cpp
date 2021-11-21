@@ -693,7 +693,7 @@ struct your_shadow_torment_mind_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::init();
 
-    merge_pet_stats_to_owner_action( p().o(), p(), *this, "living_shadow" );
+    merge_pet_stats( p().o(), p(), *this );
   }
 };
 
@@ -1003,7 +1003,8 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
 
   // Add 1ms to ensure pet is dismissed after last dot tick.
   auto your_shadow_spell = p.find_spell( 363469 );
-  your_shadow.set_default_duration( your_shadow_spell->effectN( 2 ).time_value() + timespan_t::from_millis( 1 ) );
+  your_shadow.set_default_duration( timespan_t::from_seconds( your_shadow_spell->effectN( 2 ).base_value() ) +
+                                    timespan_t::from_millis( 1 ) );
 }
 
 }  // namespace priestspace

@@ -1707,7 +1707,7 @@ struct dark_thought_t final : public priest_buff_t<buff_t>
     set_stack_change_callback(
         [ this ]( buff_t*, int old, int cur ) { priest().cooldowns.mind_blast->adjust_max_charges( cur - old ); } );
 
-    your_shadow_duration = p.find_spell( 363469 )->effectN( 2 ).time_value();
+    your_shadow_duration = timespan_t::from_seconds( p.find_spell( 363469 )->effectN( 2 ).base_value() );
 
     T28_4PC = priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B4 );
   }
@@ -1723,7 +1723,8 @@ struct dark_thought_t final : public priest_buff_t<buff_t>
     }
 
     // TODO: check if you can have multiple out at once
-    if ( T28_4PC )
+    // Only spawn this when you consume the charge
+    if ( T28_4PC && remaining_duration > timespan_t::zero() )
     {
       priest().procs.living_shadow->occur();
 
