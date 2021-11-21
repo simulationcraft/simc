@@ -7950,6 +7950,8 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
 
 void monk_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )
 {
+  auto target_data = get_target_data( s->action->player );
+
   // Gift of the Ox Trigger Calculations ===========================================================
 
   // Gift of the Ox is no longer a random chance, under the hood. When you are hit, it increments a counter by
@@ -8000,7 +8002,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
     s->result_amount *= 1.0 + buff.diffuse_magic->default_value;  // Stored as -60%
 
   // If Breath of Fire is ticking on the source target, the player receives 5% less damage
-  if ( get_target_data( s->action->player )->dots.breath_of_fire->is_ticking() )
+  if ( target_data->dots.breath_of_fire->is_ticking() )
   {
     // Saved as -5
     double dmg_reduction = passives.breath_of_fire_dot->effectN( 2 ).percent();
@@ -8008,6 +8010,9 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
     if ( buff.celestial_flames->up() )
       dmg_reduction -= buff.celestial_flames->value();  // Saved as 5
     s->result_amount *= 1.0 + dmg_reduction;
+
+    if ( sets->has_set_bonus( MONK_BREWMASTER, T28, B2 ) )
+      s->result_amount *= 1.0 + sets->set( MONK_BREWMASTER, T28, B2 )->effectN( 1 ).percent();
   }
 
   // Inner Strength
@@ -8023,10 +8028,6 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
 
     s->result_amount *= ( 1.0 + reduction );
   }
-
-  // TODO update to new Target
-  if ( sets->has_set_bonus( MONK_BREWMASTER, T28, B2 ) /* && td( s )->dots.breath_of_fire->is_ticking() */ )
-    s->result_amount *= 1.0 + sets->set( MONK_BREWMASTER, T28, B2 )->effectN( 1 ).percent();
 
   // Touch of Karma Absorbtion
   if ( buff.touch_of_karma->up() )

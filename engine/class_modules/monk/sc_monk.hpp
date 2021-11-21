@@ -260,19 +260,11 @@ public:
     propagate_const<buff_t*> pressure_point;
     propagate_const<buff_t*> the_emperors_capacitor;
     propagate_const<buff_t*> invoke_xuen_call_to_arms;
-    buff_t* chi_energy;
-    buff_t* charred_passions;
-    buff_t* fae_exposure;
-    buff_t* invokers_delight;
-    buff_t* mighty_pour;
-    buff_t* pressure_point;
-    buff_t* the_emperors_capacitor;
-    buff_t* invoke_xuen_call_to_arms;
 
     // T28 Set Bonus
-    buff_t* flames_of_primordium;
-    buff_t* primordial_potential;
-    buff_t* primordial_power;
+    propagate_const<buff_t*> flames_of_primordium;
+    propagate_const<buff_t*> primordial_potential;
+    propagate_const<buff_t*> primordial_power;
   } buff;
 
 public:
