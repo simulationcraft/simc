@@ -672,7 +672,7 @@ struct your_shadow_t final : public priest_pet_t
     def->add_action( "mind_flay" );
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
 // TODO: check mastery
