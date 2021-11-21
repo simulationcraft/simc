@@ -1202,8 +1202,7 @@ void create_options( sim_t* sim )
                                                         util::string_view value ) {
     sim -> profileset_output_data.clear();
 
-    auto split = util::string_split( value, "/:," );
-    for ( const auto& v : split )
+    for ( auto&& v : util::string_split( value, "/:," ) )
     {
       sim -> profileset_output_data.push_back( std::move( v ) );
     }
