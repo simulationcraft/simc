@@ -709,7 +709,7 @@ struct your_shadow_mind_flay_t final : public priest_pet_spell_t
   }
 };
 
-action_t* your_shadow_t::create_action( util::string_view name, const std::string& options_str )
+action_t* your_shadow_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "mind_flay" )
   {
