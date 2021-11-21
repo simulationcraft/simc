@@ -65,7 +65,6 @@ struct monk_action_t : public Base
   bool trigger_faeline_stomp;
   bool trigger_bountiful_brew;
   bool trigger_sinister_teaching_cdr;
-  bool trigger_ww_t28_4p_potential;
   bool trigger_ww_t28_4p_power;
   bool trigger_ww_t28_4p_power_channel;
 
@@ -94,7 +93,6 @@ public:
       trigger_faeline_stomp( false ),
       trigger_bountiful_brew( false ),
       trigger_sinister_teaching_cdr( true ),
-      trigger_ww_t28_4p_potential( false ),
       trigger_ww_t28_4p_power( false ),
       trigger_ww_t28_4p_power_channel( false ),
       may_proc_bron( false ),
@@ -266,6 +264,10 @@ public:
 
       if ( p()->conduit.xuens_bond->ok() )
         p()->cooldown.invoke_xuen->adjust( p()->conduit.xuens_bond->effectN( 2 ).time_value(), true );  // Saved as -100
+
+      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) && !p()->buff.primordial_power->check() )
+        p()->buff.primordial_potential->trigger();
+
     }
     else
     {
@@ -440,13 +442,8 @@ public:
     }
 
     if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
-    {
-      if ( trigger_ww_t28_4p_potential && !p()->buff.primordial_power->check() )
-        p()->buff.primordial_potential->trigger();
-
       if ( trigger_ww_t28_4p_power && p()->buff.primordial_power->check() )
         p()->buff.primordial_power->trigger();
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -1135,7 +1132,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     trigger_chiji    = true;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
-    trigger_ww_t28_4p_potential = true;
     trigger_ww_t28_4p_power     = true;
     sef_ability            = sef_ability_e::SEF_TIGER_PALM;
 
@@ -1379,7 +1375,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     may_proc_bron          = true;
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
-    trigger_ww_t28_4p_potential = true;
     trigger_ww_t28_4p_power     = true;
     sef_ability            = sef_ability_e::SEF_RISING_SUN_KICK;
     affected_by.serenity = true;
@@ -1553,7 +1548,6 @@ struct blackout_kick_t : public monk_melee_attack_t
     trigger_chiji         = true;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
-    trigger_ww_t28_4p_potential = true;
     trigger_ww_t28_4p_power     = true;
 
     if ( p->specialization() == MONK_WINDWALKER )
@@ -1929,7 +1923,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     may_proc_bron          = true;
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
-    trigger_ww_t28_4p_potential = true;
     trigger_ww_t28_4p_power_channel = true;
 
     may_crit = may_miss = may_block = may_dodge = may_parry = false;
@@ -2102,7 +2095,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
     may_proc_bron          = true;
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
-    trigger_ww_t28_4p_potential = true;
     trigger_ww_t28_4p_power_channel = true;
     affected_by.serenity   = true;
 
@@ -2234,7 +2226,6 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     may_proc_bron                     = true;
     trigger_faeline_stomp             = true;
     trigger_bountiful_brew            = true;
-    trigger_ww_t28_4p_potential       = true;
     trigger_ww_t28_4p_power           = true;
 
     spell_power_mod.direct = 0.0;
@@ -2311,7 +2302,6 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
     may_combo_strike      = true;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
-    trigger_ww_t28_4p_potential = true;
     affected_by.serenity = false;
     cooldown->hasted     = false;
     ap_type              = attack_power_type::WEAPON_BOTH;
@@ -3052,7 +3042,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
     may_combo_strike = true;
     trigger_faeline_stomp = true;
     trigger_bountiful_brew = true;
-    trigger_ww_t28_4p_potential = true;
     trigger_ww_t28_4p_power_channel = true;
 
     parse_options( options_str );
@@ -4949,7 +4938,6 @@ struct chi_wave_t : public monk_spell_t
     may_proc_bron          = true;
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
-    trigger_ww_t28_4p_potential = true;
     trigger_ww_t28_4p_power_channel = true;
     parse_options( options_str );
     hasted_ticks = harmful = false;
@@ -5061,7 +5049,6 @@ struct chi_burst_t : public monk_spell_t
     may_proc_bron          = true;
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
-    trigger_ww_t28_4p_potential = true;
     trigger_ww_t28_4p_power     = true;
 
     add_child( damage );
