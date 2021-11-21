@@ -504,7 +504,7 @@ public:
   virtual void      create_options() override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual void      create_actions() override;
-  virtual action_t* create_action( util::string_view name, const std::string& options_str ) override;
+  virtual action_t* create_action( util::string_view name, util::string_view options_str ) override;
   virtual resource_e primary_resource() const override;
   virtual role_e    primary_role() const override;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
@@ -545,17 +545,17 @@ public:
   void      init_spells_retribution();
   void      generate_action_prio_list_ret();
   void      create_ret_actions();
-  action_t* create_action_retribution( util::string_view name, const std::string& options_str );
+  action_t* create_action_retribution( util::string_view name, util::string_view options_str );
 
   void      create_buffs_protection();
   void      init_spells_protection();
   void      create_prot_actions();
-  action_t* create_action_protection( util::string_view name, const std::string& options_str );
+  action_t* create_action_protection( util::string_view name, util::string_view options_str );
 
   void      create_buffs_holy();
   void      init_spells_holy();
   void      create_holy_actions();
-  action_t* create_action_holy( util::string_view name, const std::string& options_str );
+  action_t* create_action_holy( util::string_view name, util::string_view options_str );
 
   void    generate_action_prio_list_prot();
   void    generate_action_prio_list_holy();

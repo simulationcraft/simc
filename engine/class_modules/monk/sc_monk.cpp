@@ -5898,7 +5898,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
 
 // monk_t::create_action ====================================================
 
-action_t* monk_t::create_action( util::string_view name, const std::string& options_str )
+action_t* monk_t::create_action( util::string_view name, util::string_view options_str )
 {
   using namespace actions;
   // General

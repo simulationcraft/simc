@@ -1248,7 +1248,7 @@ void infinitely_divisible_ooze( special_effect_t& effect )
       return RESOURCE_ENERGY;
     }
 
-    action_t* create_action( util::string_view name, const std::string& options ) override
+    action_t* create_action( util::string_view name, util::string_view options ) override
     {
       if ( name == "noxious_bolt" )
       {

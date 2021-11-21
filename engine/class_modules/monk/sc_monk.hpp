@@ -797,7 +797,7 @@ public:
   std::string default_temporary_enchant() const override;
 
   // player_t overrides
-  action_t* create_action( util::string_view name, const std::string& options ) override;
+  action_t* create_action( util::string_view name, util::string_view options ) override;
   double composite_base_armor_multiplier() const override;
   double composite_melee_crit_chance() const override;
   double composite_spell_crit_chance() const override;

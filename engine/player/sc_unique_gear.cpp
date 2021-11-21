@@ -3004,7 +3004,7 @@ struct felstorm_tick_t : public melee_attack_t
 
 struct felstorm_t : public melee_attack_t
 {
-  felstorm_t( pet_t* p, const std::string& opts ) :
+  felstorm_t( pet_t* p, const util::string_view opts ) :
     melee_attack_t( "felstorm", p, p -> find_spell( 184279 ) )
   {
     parse_options( opts );
@@ -3075,7 +3075,7 @@ struct blademaster_pet_t : public pet_t
   }
 
   action_t* create_action( util::string_view name,
-                           const std::string& options_str ) override
+                           util::string_view options_str ) override
   {
     if ( name == "felstorm" )
     {

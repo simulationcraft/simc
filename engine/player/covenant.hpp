@@ -224,7 +224,7 @@ struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
 
 covenant_ability_cast_cb_t* get_covenant_callback( player_t* p );
 
-action_t* create_action( player_t* player, util::string_view name, const std::string& options );
+action_t* create_action( player_t* player, util::string_view name, util::string_view options );
 
 bool parse_blizzard_covenant_information( player_t* player, const rapidjson::Value& covenant_data );
 
