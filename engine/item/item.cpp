@@ -843,7 +843,7 @@ void item_t::parse_options()
   {
     try
     {
-      auto split = util::string_split( option_crafted_stat_str, "/" );
+      auto split = util::string_split<util::string_view>( option_crafted_stat_str, "/" );
       if ( split.size() > 2 )
       {
         throw std::invalid_argument( "Maximum of two crafted stats can exist on an item." );

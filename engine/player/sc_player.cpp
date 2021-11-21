@@ -1689,10 +1689,10 @@ void player_t::parse_temporary_enchants()
     return;
   }
 
-  auto split = util::string_split( tench_str, "/" );
+  auto split = util::string_split<util::string_view>( tench_str, "/" );
   for ( const auto& token : split )
   {
-    auto token_split = util::string_split( token, ":" );
+    auto token_split = util::string_split<util::string_view>( token, ":" );
     if ( token_split.size() != 2 )
     {
       sim->error( "Player {} invalid temporary enchant token {}, format is 'slot:name'",

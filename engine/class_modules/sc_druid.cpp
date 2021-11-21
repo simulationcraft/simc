@@ -9524,7 +9524,7 @@ double druid_t::composite_leech() const
 // druid_t::create_action_expression ========================================
 std::unique_ptr<expr_t> druid_t::create_action_expression(action_t& a, util::string_view name_str)
 {
-  auto splits = util::string_split(name_str, ".");
+  auto splits = util::string_split<util::string_view>(name_str, ".");
 
   if (splits[0] == "ticks_gained_on_refresh" || (splits.size() > 2 && (splits[0] == "druid" || splits[0] == "dot" ) && splits[2] == "ticks_gained_on_refresh"))
   {
@@ -9534,16 +9534,17 @@ std::unique_ptr<expr_t> druid_t::create_action_expression(action_t& a, util::str
 
     action_t* dot_action = nullptr;
 
-    if (splits.size() > 2)
+    if ( splits.size() > 2 )
     {
-      if (splits[1] == "moonfire_cat")
-	dot_action = find_action("lunar_inspiration");
-      else if (splits[1] == "rake")
-	dot_action = find_action("rake_bleed");
+      if ( splits[ 1 ] == "moonfire_cat" )
+        dot_action = find_action( "lunar_inspiration" );
+      else if ( splits[ 1 ] == "rake" )
+        dot_action = find_action( "rake_bleed" );
       else
-	dot_action = find_action(splits[1]);
+        dot_action = find_action( splits[ 1 ] );
 
-      if (!dot_action) throw std::invalid_argument("invalid action specified in ticks_gained_on_refresh");
+      if ( !dot_action )
+        throw std::invalid_argument( "invalid action specified in ticks_gained_on_refresh" );
     }
     else
       dot_action = &a;
