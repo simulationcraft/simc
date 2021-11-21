@@ -299,7 +299,7 @@ struct base_fiend_pet_t : public priest_pet_t
     resources.current = resources.max = resources.initial;
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
 struct shadowfiend_pet_t final : public base_fiend_pet_t
@@ -531,7 +531,7 @@ void base_fiend_pet_t::init_background_actions()
   shadowflame_prism = new fiend::actions::shadowflame_prism_t( *this );
 }
 
-action_t* base_fiend_pet_t::create_action( util::string_view name, const std::string& options_str )
+action_t* base_fiend_pet_t::create_action( util::string_view name, util::string_view options_str )
 {
   return priest_pet_t::create_action( name, options_str );
 }
@@ -551,7 +551,7 @@ struct priest_pallid_command_t : public priest_pet_t
     o().buffs.rigor_mortis->expire();
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
 struct rattling_mage_t final : public priest_pallid_command_t
@@ -641,7 +641,7 @@ struct cackling_chemist_throw_viscous_concoction_t final : public priest_pet_spe
   }
 };
 
-action_t* priest_pallid_command_t::create_action( util::string_view name, const std::string& options_str )
+action_t* priest_pallid_command_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "unholy_bolt" )
   {
@@ -736,7 +736,7 @@ struct void_tendril_t final : public priest_pet_t
     def->add_action( "mind_flay" );
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
 struct void_tendril_mind_flay_t final : public priest_pet_spell_t
@@ -781,7 +781,7 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
   }
 };
 
-action_t* void_tendril_t::create_action( util::string_view name, const std::string& options_str )
+action_t* void_tendril_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "mind_flay" )
   {
@@ -805,7 +805,7 @@ struct void_lasher_t final : public priest_pet_t
     def->add_action( "mind_sear" );
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
 struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
@@ -863,7 +863,7 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
   }
 };
 
-action_t* void_lasher_t::create_action( util::string_view name, const std::string& options_str )
+action_t* void_lasher_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "mind_sear" )
   {

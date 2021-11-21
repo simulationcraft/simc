@@ -23,6 +23,6 @@ void register_special_effects();
 void register_target_data_initializers( sim_t* sim );
 
 /// Create soulbind actions
-action_t* create_action( player_t* player, util::string_view name, const std::string& options );
+action_t* create_action( player_t* player, util::string_view name, util::string_view options );
 }  // namespace covenant::soulbinds
 #endif  // SOULBINDS_HPP

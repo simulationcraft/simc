@@ -7,6 +7,7 @@
 
 #include <cassert>
 #include <cstddef>
+#include <array>
 #include <utility>
 
 #include "util/span.hpp"
@@ -14,25 +15,13 @@
 namespace util {
 namespace detail {
 
-// minimal std::array clone, std::array non-const operator[] is constexpr only in c++17
-template <typename T, size_t N>
-struct array {
-  T data_[N] {};
-
-  constexpr T& operator[](size_t n) { return data_[n]; }
-  constexpr const T& operator[](size_t n) const { return data_[n]; }
-
-  constexpr const T* begin() const { return data_; }
-  constexpr const T* end() const { return data_ + N; }
-};
-
 template <typename T, typename U, size_t N, size_t... I>
-constexpr array<T, N> to_array_impl(const U (&init)[N], std::index_sequence<I...>) {
+constexpr std::array<T, N> to_array_impl(const U (&init)[N], std::index_sequence<I...>) {
   return {{ static_cast<T>(init[I])... }};
 }
 
 template <typename T, typename U, size_t N>
-constexpr array<T, N> to_array(const U (&init)[N]) {
+constexpr std::array<T, N> to_array(const U (&init)[N]) {
   return to_array_impl<T>(init, std::make_index_sequence<N>{});
 }
 
@@ -65,8 +54,8 @@ constexpr void swap_(std::pair<T, U>& lhs, std::pair<T, U>& rhs) {
 }
 
 template <typename T, size_t N, typename Compare = less>
-constexpr array<T, N> sorted(const array<T, N>& items, Compare cmp = {}) {
-  array<T, N> res { items };
+constexpr std::array<T, N> sorted(const std::array<T, N>& items, Compare cmp = {}) {
+  std::array<T, N> res { items };
   // simple insertion sort
   for (size_t i = 1; i < N; i++) {
     for (ptrdiff_t j = i; j > 0 && cmp(res[j], res[j - 1]); j--)
@@ -119,24 +108,24 @@ public:
   using iterator        = pointer;
   using const_iterator  = pointer;
 
-  constexpr static_set_base(const array<value_type, N>& items)
+  constexpr static_set_base(const std::array<value_type, N>& items)
     : data_(sorted(items))
   {
-    util::span<const T, N> data(data_.begin(), N);
+    util::span<const T, N> data(data_.data(), N);
     assert( is_unique(data) );
   }
 
   constexpr iterator begin() const { return cbegin(); }
-  constexpr iterator cbegin() const { return data_.begin(); }
+  constexpr iterator cbegin() const { return data_.data(); }
 
   constexpr iterator end() const { return cend(); }
-  constexpr iterator cend() const { return data_.end(); }
+  constexpr iterator cend() const { return data_.data() + N; }
 
   constexpr size_t size() const { return N; }
   constexpr bool empty() const { return false; }
 
 protected:
-  array<value_type, N> data_;
+  std::array<value_type, N> data_;
 };
 
 template <typename T>

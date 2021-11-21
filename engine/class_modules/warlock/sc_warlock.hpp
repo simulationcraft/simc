@@ -510,7 +510,7 @@ public:
   void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
   void malignancy_reduction_helper();
   bool min_version_check( version_check_e version ) const;
-  action_t* create_action( util::string_view name, const std::string& options ) override;
+  action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = "" ) override;
   void create_pets() override;
   std::string create_profile( save_e ) override;
@@ -566,7 +566,7 @@ public:
   }
 
   // sc_warlock_affliction
-  action_t* create_action_affliction( util::string_view action_name, const std::string& options_str );
+  action_t* create_action_affliction( util::string_view action_name, util::string_view options_str );
   void create_buffs_affliction();
   void init_spells_affliction();
   void init_gains_affliction();
@@ -576,7 +576,7 @@ public:
   void create_apl_affliction();
 
   // sc_warlock_demonology
-  action_t* create_action_demonology( util::string_view action_name, const std::string& options_str );
+  action_t* create_action_demonology( util::string_view action_name, util::string_view options_str );
   void create_buffs_demonology();
   void init_spells_demonology();
   void init_gains_demonology();
@@ -586,7 +586,7 @@ public:
   void create_apl_demonology();
 
   // sc_warlock_destruction
-  action_t* create_action_destruction( util::string_view action_name, const std::string& options_str );
+  action_t* create_action_destruction( util::string_view action_name, util::string_view options_str );
   void create_buffs_destruction();
   void init_spells_destruction();
   void init_gains_destruction();

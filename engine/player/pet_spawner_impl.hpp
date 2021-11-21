@@ -35,6 +35,7 @@ pet_spawner_t<T, O>::pet_spawner_t( util::string_view id, O* p, pet_spawn_type s
   base_actor_spawner_t( id, p ), m_max_pets( st == PET_SPAWN_DYNAMIC ? 0 : 1 ),
   m_creator( []( O* p ) { return new T( p ); } ),
   m_duration( timespan_t::zero() ), m_type( st ),
+  m_replacement_strategy( pet_replacement_strategy::NO_REPLACE ),
   m_cumulative_uptime( timespan_t::zero() ), m_spawn_time( timespan_t::min() ),
   m_dirty( false ), m_active( 0u ), m_initial_pet( nullptr )
 { }
@@ -45,6 +46,7 @@ pet_spawner_t<T, O>::pet_spawner_t( util::string_view id, O* p, unsigned max_pet
   base_actor_spawner_t( id, p ), m_max_pets( max_pets ),
   m_creator( []( O* p ) { return new T( p ); } ),
   m_duration( timespan_t::zero() ), m_type( st ),
+  m_replacement_strategy( pet_replacement_strategy::NO_REPLACE ),
   m_cumulative_uptime( timespan_t::zero() ), m_spawn_time( timespan_t::min() ),
   m_dirty( false ), m_active( 0u ), m_initial_pet( nullptr )
 { }
@@ -54,6 +56,7 @@ pet_spawner_t<T, O>::pet_spawner_t( util::string_view id, O* p, unsigned max_pet
                                      const create_fn_t& creator, pet_spawn_type st ) :
   base_actor_spawner_t( id, p ), m_max_pets( max_pets ), m_creator( creator ),
   m_duration( timespan_t::zero() ), m_type( st ),
+  m_replacement_strategy( pet_replacement_strategy::NO_REPLACE ),
   m_cumulative_uptime( timespan_t::zero() ), m_spawn_time( timespan_t::min() ),
   m_dirty( false ), m_active( 0u ), m_initial_pet( nullptr )
 { }
@@ -63,6 +66,7 @@ pet_spawner_t<T, O>::pet_spawner_t( util::string_view id, O* p, const create_fn_
                                         pet_spawn_type st ) :
   base_actor_spawner_t( id, p ), m_max_pets( st == PET_SPAWN_DYNAMIC ? 0 : 1 ), m_creator( creator ),
   m_duration( timespan_t::zero() ), m_type( st ),
+  m_replacement_strategy( pet_replacement_strategy::NO_REPLACE ),
   m_cumulative_uptime( timespan_t::zero() ), m_spawn_time( timespan_t::min() ),
   m_dirty( false ), m_active( 0u ), m_initial_pet( nullptr )
 { }
@@ -163,6 +167,10 @@ template <typename T, typename O>
 pet_spawner_t<T, O>& pet_spawner_t<T, O>::add_expression( const std::string& name, const expr_fn_t& fn )
 { m_expressions[ name ] = fn; return *this; }
 
+template <typename T, typename O>
+pet_spawner_t<T, O>&  pet_spawner_t<T, O>::set_replacement_strategy( pet_replacement_strategy new_ )
+{ m_replacement_strategy = new_; return *this; }
+
 // Despawners
 
 template <typename T, typename O>
@@ -179,32 +187,35 @@ size_t pet_spawner_t<T, O>::despawn()
 }
 
 template <typename T, typename O>
-bool pet_spawner_t<T, O>::despawn( const T* obj )
+bool pet_spawner_t<T, O>::despawn( T* obj )
 {
   bool despawned = false;
-  auto it = m_active_pets.find( obj );
+
+  update_state();
+
+  auto it = range::find( m_active_pets, obj );
 
   if ( ( despawned = it != m_active_pets.end() ) == true )
   {
-    it -> dismiss();
+    ( *it ) -> dismiss();
   }
 
   return despawned;
 }
 
 template <typename T, typename O>
-size_t pet_spawner_t<T, O>::despawn( const std::vector<const T*>& obj )
+size_t pet_spawner_t<T, O>::despawn( const std::vector<T*>& obj )
 {
   size_t despawned = 0;
 
   update_state();
 
   range::for_each( obj, [ this, &despawned ]( const T* pet ) {
-    auto it = range::find( m_active_pets.find( pet ) );
+    auto it = range::find( m_active_pets, pet );
     if ( it != m_active_pets.end() )
     {
       ++despawned;
-      it -> dismiss();
+      ( *it ) -> dismiss();
     }
   } );
 
@@ -353,6 +364,16 @@ std::vector<T*> pet_spawner_t<T, O>::spawn( timespan_t duration, unsigned n )
 
   if ( m_max_pets > 0 )
   {
+    if ( m_replacement_strategy != pet_replacement_strategy::NO_REPLACE )
+    {
+      auto n_replaced_pets = as<int>( m_max_pets ) - as<int>( n_active_pets() + actual );
+      while ( n_replaced_pets < 0 )
+      {
+        despawn( replacement_pet() );
+        n_replaced_pets++;
+      }
+    }
+
     actual = std::min( actual, m_max_pets - as<unsigned>( n_active_pets() ) );
   }
 
@@ -676,6 +697,26 @@ void pet_spawner_t<T, O>::update_state()
   }
 
   m_dirty = false;
+}
+
+template <typename T, typename O>
+T* pet_spawner_t<T, O>::replacement_pet()
+{
+  if ( m_active_pets.empty() )
+  {
+    return nullptr;
+  }
+
+  switch ( m_replacement_strategy )
+  {
+    case pet_replacement_strategy::REPLACE_OLDEST:
+      return active_pet_min_remains();
+    case pet_replacement_strategy::REPLACE_RANDOM:
+      return m_active_pets[ static_cast<unsigned>(
+          m_owner->rng().range( 0.0, as<double>( m_active_pets.size() ) ) ) ];
+    default:
+      return nullptr;
+  }
 }
 } // Namespace spawner
 

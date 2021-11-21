@@ -4549,7 +4549,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
       pet_t(p->sim, p, "guardian_of_azeroth", true, true), essence(std::move(ess))
     {}
 
-    action_t* create_action(util::string_view name, const std::string& options) override
+    action_t* create_action(util::string_view name, util::string_view options) override
     {
       if (name == "azerite_spike")
         return new azerite_spike_t(name, this, options, essence);
@@ -5886,7 +5886,7 @@ void touch_of_the_everlasting( special_effect_t& effect )
 
 } // Namespace azerite essences ends
 
-action_t* create_action( player_t* player, util::string_view name, const std::string& options )
+action_t* create_action( player_t* player, util::string_view name, util::string_view options )
 {
   if ( util::str_compare_ci( name, "focused_azerite_beam" ) )
   {

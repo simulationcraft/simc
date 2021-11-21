@@ -17,6 +17,14 @@ enum pet_spawn_type
   PET_SPAWN_PERSISTENT    /// A persistent pet that is alive through the simulation run
 };
 
+/// Pet replacement strategy when maximum number of active pets are up during spawn
+enum pet_replacement_strategy
+{
+  NO_REPLACE,            /// Replace nothing (nothing is spawned if max number of pets up)
+  REPLACE_OLDEST,        /// Replace oldest active pet (pet with least remaining time)
+  REPLACE_RANDOM,        /// Replace a random active pet
+};
+
 /**
  * A wrapper object to enable dynamic pet spawns in simulationcraft. Normally, all pets must be
  * fully initialized at the beginning of the simulation run (i.e., init phase). This wrapper class
@@ -43,9 +51,6 @@ enum pet_spawn_type
  * dynamic pets controlled by this object, it will create new ones until the requirement is
  * satisfied.
  *
- * TODO:
- * - If max active pets reached, no more can be spawned. Would be better with a configurable policy
- *   (replace oldest for example and do nothing for example)
  */
 template<typename T, typename O = player_t>
 class pet_spawner_t : public base_actor_spawner_t
@@ -78,6 +83,8 @@ private:
   timespan_t      m_duration;
   /// Type of spawn
   pet_spawn_type  m_type;
+  /// Replacement strategy
+  pet_replacement_strategy m_replacement_strategy;
 
   // Callbacks
 
@@ -107,6 +114,9 @@ private:
 
   /// Recreate m_active pets, m_inactive pets if m_dirty == 1
   void update_state();
+
+  /// Select replacement pet
+  T* replacement_pet();
 public:
   pet_spawner_t( util::string_view id, O* p, pet_spawn_type st = PET_SPAWN_DYNAMIC );
   pet_spawner_t( util::string_view id, O* p, unsigned max_pets,
@@ -124,9 +134,9 @@ public:
   /// Despawn all active pets, return number of pets despawned
   size_t despawn();
   /// Despawn a specific active pet, return true if pet was despawned
-  bool despawn( const T* obj );
+  bool despawn( T* obj );
   /// Despawn a set of active pets, return number of pets despawned
-  size_t despawn( const std::vector<const T*>& obj );
+  size_t despawn( const std::vector<T*>& obj );
   /// Despawn a set of active pets based on a functor, return number of pets despawned
   size_t despawn( const check_arg_fn_t& fn );
 
@@ -168,6 +178,9 @@ public:
   pet_spawner_t<T, O>& set_default_duration( timespan_t duration );
   /// Registers custom expressions for the pet type
   pet_spawner_t<T, O>& add_expression( const std::string& name, const expr_fn_t& fn );
+
+  /// Sets the replacement strategy of spawned pets if maximum is reached
+  pet_spawner_t<T, O>&  set_replacement_strategy( pet_replacement_strategy new_ );
 
   // Access
 

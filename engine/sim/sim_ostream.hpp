@@ -82,7 +82,7 @@ struct sim_ostream_t
   sim_ostream_t& operator<< (const char* rhs);
 
   template <typename... Args>
-  sim_ostream_t& printf( fmt::format_string<Args...> format, Args&& ... args )
+  sim_ostream_t& printf( fmt::string_view format, Args&& ... args )
   {
     vprintf( format, fmt::make_printf_args( std::forward<Args>(args)... ) );
     return *this;

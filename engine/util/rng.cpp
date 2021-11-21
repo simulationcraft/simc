@@ -430,7 +430,7 @@ namespace detail {
 template <typename Tuple, typename F, std::size_t... I>
 void for_each_impl(Tuple&& t, F&& f, std::index_sequence<I...>)
 {
-  int _[] = { ( range::invoke( std::forward<F>( f ), std::get<I>( std::forward<Tuple>(t) ) ), 0 )... };
+  int _[] = { ( std::invoke( std::forward<F>( f ), std::get<I>( std::forward<Tuple>(t) ) ), 0 )... };
   (void)_;
 }
 }

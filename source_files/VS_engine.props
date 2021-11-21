@@ -340,7 +340,6 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\util\io.cpp" />
 		<ClCompile Include="..\engine\util\rng.cpp" />
 		<ClCompile Include="..\engine\util\sample_data.cpp" />
-		<ClCompile Include="..\engine\util\string_view.cpp" />
 		<ClCompile Include="..\engine\util\timeline.cpp" />
 		<ClCompile Include="..\engine\util\timespan.cpp" />
 		<ClCompile Include="..\engine\util\util.cpp" />

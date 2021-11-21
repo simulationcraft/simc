@@ -19,7 +19,7 @@ enum class cache_era {
 // used to mark persistent caches at load.
 };
 
-void format_to( cache_era, fmt::format_context::iterator );
+void sc_format_to( cache_era, fmt::format_context::iterator );
 
 enum behavior_e
 {

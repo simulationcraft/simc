@@ -901,7 +901,7 @@ public:
   double matching_gear_multiplier( attribute_e attr ) const override;
   std::unique_ptr<expr_t> create_action_expression(action_t& a, util::string_view name_str) override;
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
-  action_t* create_action( util::string_view name, const std::string& options ) override;
+  action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type ) override;
   void create_pets() override;
   resource_e primary_resource() const override;
@@ -1089,7 +1089,7 @@ struct force_of_nature_t : public pet_t
 
   resource_e primary_resource() const override { return RESOURCE_NONE; }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "auto_attack" )
       return new auto_attack_t( this );
@@ -2523,7 +2523,7 @@ public:
         if ( !p()->buff.primordial_arcanic_pulsar->check() )
           p()->buff.primordial_arcanic_pulsar->trigger();
 
-        p()->buff.primordial_arcanic_pulsar->current_value += last_resource_cost;
+        p()->buff.primordial_arcanic_pulsar->current_value += base_cost();
 
         if ( p()->buff.primordial_arcanic_pulsar->value() >=
              p()->legendary.primordial_arcanic_pulsar->effectN( 1 ).base_value() )
@@ -4338,7 +4338,7 @@ struct bear_melee_t : public bear_attack_t
 
 struct berserk_bear_t : public bear_attack_t
 {
-  berserk_bear_t( druid_t* p, const std::string& o )
+  berserk_bear_t( druid_t* p, util::string_view o )
     : bear_attack_t( "berserk_bear", p, p->find_specialization_spell( "berserk" ), o )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
@@ -7725,7 +7725,7 @@ void druid_t::activate()
 
 // druid_t::create_action  ==================================================
 
-action_t* druid_t::create_action( util::string_view name, const std::string& options_str )
+action_t* druid_t::create_action( util::string_view name, util::string_view options_str )
 {
   using namespace cat_attacks;
   using namespace bear_attacks;
@@ -9524,7 +9524,7 @@ double druid_t::composite_leech() const
 // druid_t::create_action_expression ========================================
 std::unique_ptr<expr_t> druid_t::create_action_expression(action_t& a, util::string_view name_str)
 {
-  auto splits = util::string_split(name_str, ".");
+  auto splits = util::string_split<util::string_view>(name_str, ".");
 
   if (splits[0] == "ticks_gained_on_refresh" || (splits.size() > 2 && (splits[0] == "druid" || splits[0] == "dot" ) && splits[2] == "ticks_gained_on_refresh"))
   {
@@ -9534,16 +9534,17 @@ std::unique_ptr<expr_t> druid_t::create_action_expression(action_t& a, util::str
 
     action_t* dot_action = nullptr;
 
-    if (splits.size() > 2)
+    if ( splits.size() > 2 )
     {
-      if (splits[1] == "moonfire_cat")
-	dot_action = find_action("lunar_inspiration");
-      else if (splits[1] == "rake")
-	dot_action = find_action("rake_bleed");
+      if ( splits[ 1 ] == "moonfire_cat" )
+        dot_action = find_action( "lunar_inspiration" );
+      else if ( splits[ 1 ] == "rake" )
+        dot_action = find_action( "rake_bleed" );
       else
-	dot_action = find_action(splits[1]);
+        dot_action = find_action( splits[ 1 ] );
 
-      if (!dot_action) throw std::invalid_argument("invalid action specified in ticks_gained_on_refresh");
+      if ( !dot_action )
+        throw std::invalid_argument( "invalid action specified in ticks_gained_on_refresh" );
     }
     else
       dot_action = &a;
