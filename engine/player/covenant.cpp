@@ -841,7 +841,7 @@ struct fleshcraft_t : public spell_t
   }
 };
 
-action_t* create_action( player_t* player, util::string_view name, const std::string& options )
+action_t* create_action( player_t* player, util::string_view name, util::string_view options )
 {
   if ( util::str_compare_ci( name, "fleshcraft" ) ) return new fleshcraft_t( player, options );
 

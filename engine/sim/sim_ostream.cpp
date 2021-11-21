@@ -10,7 +10,7 @@ sc_raw_ostream_t& sc_raw_ostream_t::operator<< (const char* rhs)
 
 void sc_raw_ostream_t::vprint( fmt::string_view format, fmt::format_args args )
 {
-  fmt::vprint( *_stream, to_string_view( format ), args );
+  fmt::vprint( *_stream, format, args );
 }
 
 sim_ostream_t& sim_ostream_t::operator<< (const char* rhs)

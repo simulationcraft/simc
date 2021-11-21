@@ -1497,7 +1497,7 @@ void items::vanquished_tendril_of_ghuun( special_effect_t& effect )
       bloody_bile->n_casts = 0U;
     }
 
-    action_t* create_action( ::util::string_view name, const std::string& opts ) override
+    action_t* create_action( ::util::string_view name, ::util::string_view opts ) override
     {
       if ( ::util::str_compare_ci( name, "bloody_bile" ) )
       {
