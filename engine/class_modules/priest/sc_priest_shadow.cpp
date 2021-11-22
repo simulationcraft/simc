@@ -27,7 +27,9 @@ private:
   const spell_data_t* mind_flay_spell;
   const spell_data_t* mind_sear_spell;
   const spell_data_t* void_torrent_spell;
+  timespan_t your_shadow_duration;
   bool only_cwc;
+  bool T28_4PC;
 
 public:
   mind_blast_t( priest_t& p, util::string_view options_str )
@@ -59,6 +61,9 @@ public:
 
     // Cooldown reduction
     apply_affecting_aura( p.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
+
+    your_shadow_duration = timespan_t::from_seconds( p.find_spell( 363469 )->effectN( 2 ).base_value() );
+    T28_4PC              = priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B4 );
   }
 
   void reset() override
@@ -153,15 +158,35 @@ public:
     return cd;
   }
 
+  // Called as a part of action execute
   void update_ready( timespan_t cd_duration ) override
   {
     priest().buffs.voidform->up();  // Benefit tracking
     // Decrementing a stack of dark thoughts will consume a max charge. Consuming a max charge loses you a current
     // charge. Therefore update_ready needs to not be called in that case.
     if ( priest().buffs.dark_thought->up() )
+    {
       priest().buffs.dark_thought->decrement();
+      if ( T28_4PC )
+      {
+        priest().procs.living_shadow->occur();
+
+        auto pet = priest().pets.your_shadow.active_pet();
+
+        if ( pet )
+        {
+          pet->adjust_duration( your_shadow_duration );
+        }
+        else
+        {
+          priest().pets.your_shadow.spawn();
+        }
+      }
+    }
     else
+    {
       priest_spell_t::update_ready( cd_duration );
+    }
   }
 };
 
@@ -1695,9 +1720,6 @@ struct shadowform_state_t final : public priest_buff_t<buff_t>
 // ==========================================================================
 struct dark_thought_t final : public priest_buff_t<buff_t>
 {
-  timespan_t your_shadow_duration;
-  bool T28_4PC;
-
   dark_thought_t( priest_t& p ) : base_t( p, "dark_thought", p.specs.dark_thought )
   {
     // Allow player to react to the buff being applied so they can cast Mind Blast.
@@ -1706,10 +1728,6 @@ struct dark_thought_t final : public priest_buff_t<buff_t>
     // Create a stack change callback to adjust the number of mindblast charges.
     set_stack_change_callback(
         [ this ]( buff_t*, int old, int cur ) { priest().cooldowns.mind_blast->adjust_max_charges( cur - old ); } );
-
-    your_shadow_duration = timespan_t::from_seconds( p.find_spell( 363469 )->effectN( 2 ).base_value() );
-
-    T28_4PC = priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B4 );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1719,24 +1737,6 @@ struct dark_thought_t final : public priest_buff_t<buff_t>
       for ( int i = 0; i < expiration_stacks; i++ )
       {
         priest().procs.dark_thoughts_missed->occur();
-      }
-    }
-
-    // TODO: check if you can have multiple out at once
-    // Only spawn this when you consume the charge
-    if ( T28_4PC && remaining_duration > timespan_t::zero() )
-    {
-      priest().procs.living_shadow->occur();
-
-      auto pet = priest().pets.your_shadow.active_pet();
-
-      if ( pet )
-      {
-        pet->adjust_duration( your_shadow_duration );
-      }
-      else
-      {
-        priest().pets.your_shadow.spawn();
       }
     }
 
