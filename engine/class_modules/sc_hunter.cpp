@@ -1953,7 +1953,7 @@ struct beast_cleave_attack_t: public hunter_pet_action_t<hunter_main_pet_base_t,
     base_dd_min = base_dd_max = 0;
     spell_power_mod.direct = attack_power_mod.direct = 0;
     weapon_multiplier = 0;
-    
+
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
   }
@@ -2332,9 +2332,9 @@ void hunter_t::trigger_wild_spirits( const action_state_t* s )
   actions.wild_spirits -> set_target( s -> target );
   actions.wild_spirits -> execute();
 
-  if ( !legendary.elder_antlers.ok() ) 
+  if ( !legendary.elder_antlers.ok() )
     return;
-  
+
   if ( actions.wild_spirits -> num_targets_hit < legendary.elder_antlers -> effectN( 2 ).base_value() && rng().roll( legendary.elder_antlers -> effectN( 1 ).percent() ) )
   {
     if ( sim->debug )
@@ -2726,12 +2726,12 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 // Wailing Arrow =====================================================================
 
 //TODO 20/06/2021 Verify that the explosion also hits the main target and verify interactions with Wild Spirits
-struct wailing_arrow_t: public hunter_ranged_attack_t 
+struct wailing_arrow_t: public hunter_ranged_attack_t
 {
 
-  struct damage_main_t final : public hunter_ranged_attack_t 
+  struct damage_main_t final : public hunter_ranged_attack_t
   {
-    damage_main_t( util::string_view n, hunter_t* p ): 
+    damage_main_t( util::string_view n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> find_spell( 354831 ) )
     {
       background = true;
@@ -2742,9 +2742,9 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
     }
   };
 
-  struct damage_explosion_t final : public hunter_ranged_attack_t 
+  struct damage_explosion_t final : public hunter_ranged_attack_t
   {
-    damage_explosion_t( util::string_view n, hunter_t* p ): 
+    damage_explosion_t( util::string_view n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> find_spell( 354831 ) )
       {
         background = true;
@@ -2766,13 +2766,13 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
   damage_main_t* damage_main = nullptr;
   damage_explosion_t* damage_aoe = nullptr;
 
-  wailing_arrow_t( hunter_t* p, util::string_view options_str ): 
+  wailing_arrow_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "wailing_arrow", p, p -> specs.wailing_arrow )
-    {      
+    {
       parse_options( options_str );
-      
-      damage_main = p -> get_background_action<damage_main_t>( "wailing_arrow_main" ); 
-      damage_aoe = p -> get_background_action<damage_explosion_t>( "wailing_arrow_aoe" ); 
+
+      damage_main = p -> get_background_action<damage_main_t>( "wailing_arrow_main" );
+      damage_aoe = p -> get_background_action<damage_explosion_t>( "wailing_arrow_aoe" );
       add_child( damage_main );
       add_child( damage_aoe );
     }
@@ -2975,7 +2975,7 @@ struct single_target_event_t final : public event_t
 struct explosive_shot_munitions_t : explosive_shot_t
 {
   explosive_shot_munitions_t( util::string_view n, hunter_t* p ) : explosive_shot_t( p, "" )
-  { 
+  {
     background = dual = true;
   }
 
@@ -5992,7 +5992,7 @@ void hunter_t::init_spells()
   specs.kill_shot            = find_class_spell( "Kill Shot" );
 
   //Rae'shalare, Death's Whisper spell
-  specs.wailing_arrow        = find_item_by_name( "raeshalare_deaths_whisper" ) ? find_spell( 355589 ) : spell_data_t::not_found(); 
+  specs.wailing_arrow        = find_item_by_name( "raeshalare_deaths_whisper" ) ? find_spell( 355589 ) : spell_data_t::not_found();
 
   // Beast Mastery
   specs.aspect_of_the_wild   = find_specialization_spell( "Aspect of the Wild" );
