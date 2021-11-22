@@ -58,6 +58,7 @@ enum free_cast_e
   ONETHS,    // oneths clear vision legendary
   GALACTIC,  // galactic guardian talent
   NATURAL,   // natural orders will legendary
+  APEX,      // apex predators's craving
 };
 
 struct druid_td_t : public actor_target_data_t
@@ -1796,19 +1797,15 @@ public:
 
   std::string free_cast_string( free_cast_e f ) const
   {
-    if ( f == free_cast_e::CONVOKE )
-      return ab::name_str + "_convoke";
-
-    if ( f == free_cast_e::LYCARAS )
-      return ab::name_str + "_lycaras";
-
-    if ( f == free_cast_e::ONETHS )
-      return ab::name_str + "_oneths";
-
-    if ( f == free_cast_e::GALACTIC )
-      return ab::name_str + "_galactic";
-
-    return ab::name_str;
+    switch ( f )
+    {
+      case free_cast_e::APEX:     return ab::name_str + "_apex";
+      case free_cast_e::CONVOKE:  return ab::name_str + "_convoke";
+      case free_cast_e::GALACTIC: return ab::name_str + "_galactic";
+      case free_cast_e::LYCARAS:  return ab::name_str + "_lycaras";
+      case free_cast_e::ONETHS:   return ab::name_str + "_oneths";
+      default: return ab::name_str;
+    }
   }
 
   stats_t* init_free_cast_stats( free_cast_e f )
@@ -2475,7 +2472,7 @@ public:
 
   druid_spell_t( util::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                  util::string_view opt = std::string() )
-    : base_t( n, p, s ), update_eclipse( false )
+    : ab( n, p, s ), update_eclipse( false )
   {
     parse_options( opt );
   }
@@ -2484,17 +2481,37 @@ public:
   {
     ab::consume_resource();
 
-    trigger_astral_power_consumption_effects();
-  }
+    if ( free_cast || last_resource_cost == 0.0 )
+      return;
 
-  bool consume_cost_per_tick( const dot_t& dot ) override
-  {
-    bool ab = ab::consume_cost_per_tick( dot );
+    if ( p()->specialization() == DRUID_BALANCE && resource_current == RESOURCE_ASTRAL_POWER )
+    {
+      if ( p()->legendary.primordial_arcanic_pulsar->ok() )
+      {
+        const auto& p_data = p()->legendary.primordial_arcanic_pulsar;
+        auto p_buff = p()->buff.primordial_arcanic_pulsar;
+        auto p_time = timespan_t::from_seconds( p_data->effectN( 2 ).base_value() );
 
-    if ( ab::consume_per_tick_ )
-      trigger_astral_power_consumption_effects();
+        if ( !p_buff->check() )
+          p_buff->trigger();
 
-    return ab;
+        // pulsar accumulate based on base_cost not last_resource_cost
+        p_buff->current_value += base_cost();
+
+        if ( p_buff->value() >= p_data->effectN( 1 ).base_value() )
+        {
+          p_buff->current_value -= p_data->effectN( 1 ).base_value();
+
+          p()->buff.ca_inc->extend_duration_or_trigger( p_time, p() );
+          p()->proc.pulsar->occur();
+          p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
+
+          make_event( *sim, p_time, [ this ]() {
+            p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
+          } );
+        }
+      }
+    }
   }
 
   bool usable_moving() const override
@@ -2531,38 +2548,6 @@ public:
 
     ab::execute();
   }
-
-  virtual void trigger_astral_power_consumption_effects()
-  {
-    if ( p()->legendary.primordial_arcanic_pulsar->ok() )
-    {
-      if ( resource_current == RESOURCE_ASTRAL_POWER && last_resource_cost > 0.0 )
-      {
-        if ( !p()->buff.primordial_arcanic_pulsar->check() )
-          p()->buff.primordial_arcanic_pulsar->trigger();
-
-        p()->buff.primordial_arcanic_pulsar->current_value += base_cost();
-
-        if ( p()->buff.primordial_arcanic_pulsar->value() >=
-             p()->legendary.primordial_arcanic_pulsar->effectN( 1 ).base_value() )
-        {
-          p()->buff.primordial_arcanic_pulsar->current_value -=
-              p()->legendary.primordial_arcanic_pulsar->effectN( 1 ).base_value();
-
-          timespan_t pulsar_dur =
-              timespan_t::from_seconds( p()->legendary.primordial_arcanic_pulsar->effectN( 2 ).base_value() );
-
-          p()->buff.ca_inc->extend_duration_or_trigger( pulsar_dur, p() );
-          p()->proc.pulsar->occur();
-          p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
-
-          make_event( *sim, pulsar_dur, [ this ]() {
-            p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
-          } );
-        }
-      }
-    }
-  };
 
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
   {
@@ -3049,28 +3034,8 @@ public:
 
     if ( consumes_combo_points && hit_any_target )
     {
-      int consumed = as<int>( p()->resources.current[ RESOURCE_COMBO_POINT ] );
-
-      p()->resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
-
-      if ( sim->log )
-      {
-        sim->print_log( "{} consumes {} {} for {} (0)", player->name(), consumed,
-                        util::resource_type_string( RESOURCE_COMBO_POINT ), name() );
-      }
-
-      stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
-
-      if ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() )
-      {
-        if ( rng().roll( consumed * p()->spec.berserk_cat->effectN( 1 ).percent() ) )
-        {
-          p()->resource_gain( RESOURCE_COMBO_POINT, berserk_cp, p()->gain.berserk );
-        }
-      }
-
-      if ( p()->spec.predatory_swiftness->ok() )
-        p()->buff.predatory_swiftness->trigger( 1, 1, consumed * 0.20 );
+      int consumed = as<int>( free_cast ? p()->resources.max[ RESOURCE_COMBO_POINT ]
+                                        : p()->resources.current[ RESOURCE_COMBO_POINT ] );
 
       if ( p()->talent.soul_of_the_forest_cat->ok() )
       {
@@ -3079,15 +3044,38 @@ public:
                             p()->gain.soul_of_the_forest );
       }
 
-      if ( p()->buff.eye_of_fearful_symmetry->up() )
+      // Only if CPs are actually consumed
+      if ( !free_cast )
       {
-        p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.eye_of_fearful_symmetry->check_value(),
-                            p()->gain.eye_of_fearful_symmetry );
-        p()->buff.eye_of_fearful_symmetry->decrement();
-      }
+        p()->resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
 
-      if ( p()->conduit.sudden_ambush->ok() && rng().roll( p()->conduit.sudden_ambush.percent() * consumed ) )
-        p()->buff.sudden_ambush->trigger();
+        if ( sim->log )
+        {
+          sim->print_log( "{} consumes {} {} for {} (0)", player->name(), consumed,
+                          util::resource_type_string( RESOURCE_COMBO_POINT ), name() );
+        }
+
+        stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
+
+        if ( ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) &&
+             rng().roll( consumed * p()->spec.berserk_cat->effectN( 1 ).percent() ) )
+        {
+          p()->resource_gain( RESOURCE_COMBO_POINT, berserk_cp, p()->gain.berserk );
+        }
+
+        if ( p()->buff.eye_of_fearful_symmetry->up() )
+        {
+          p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.eye_of_fearful_symmetry->check_value(),
+                              p()->gain.eye_of_fearful_symmetry );
+          p()->buff.eye_of_fearful_symmetry->decrement();
+        }
+
+        if ( p()->spec.predatory_swiftness->ok() )
+          p()->buff.predatory_swiftness->trigger( 1, 1.0, consumed * p()->buff.predatory_swiftness->check_value() );
+
+        if ( p()->conduit.sudden_ambush->ok() && rng().roll( p()->conduit.sudden_ambush.percent() * consumed ) )
+          p()->buff.sudden_ambush->trigger();
+      }
     }
   }
 
@@ -3565,12 +3553,15 @@ struct ferocious_bite_t : public cat_attack_t
       excess_energy( 0 ),
       max_excess_energy( 0 ),
       max_energy( false ),
-      max_sabertooth_refresh( p->spec.rip->duration() * (p->resources.base[ RESOURCE_COMBO_POINT ] + 1) * 1.3 )
+      max_sabertooth_refresh( p->spec.rip->duration() * ( p->resources.base[ RESOURCE_COMBO_POINT ] + 1 ) * 1.3 )
   {
     add_option( opt_bool( "max_energy", max_energy ) );
     parse_options( options_str );
 
     max_excess_energy = 1 * data().effectN( 2 ).base_value();
+
+    if ( p->legendary.apex_predators_craving->ok() )
+      stats->add_child( init_free_cast_stats( free_cast_e::APEX ) );
   }
 
   double maximum_energy() const
@@ -3601,6 +3592,9 @@ struct ferocious_bite_t : public cat_attack_t
     excess_energy = std::min( max_excess_energy, ( p()->resources.current[ RESOURCE_ENERGY ] - cat_attack_t::cost() ) );
     combo_points  = p()->resources.current[ RESOURCE_COMBO_POINT ];
 
+    if ( !free_cast && p()->buff.apex_predators_craving->up() )
+      free_cast = free_cast_e::APEX;
+
     cat_attack_t::execute();
 
     max_excess_energy = 1 * data().effectN( 2 ).base_value();
@@ -3622,39 +3616,20 @@ struct ferocious_bite_t : public cat_attack_t
     }
   }
 
-  void ApexPredatorResource()
-  {
-    if ( p()->spec.predatory_swiftness->ok() )
-      p()->buff.predatory_swiftness->trigger( 1, 1, 1 );
-
-    if ( p()->talent.soul_of_the_forest_cat->ok() && p()->specialization() == DRUID_FERAL )
-    {
-      p()->resource_gain( RESOURCE_ENERGY,
-                          5 * p()->talent.soul_of_the_forest_cat->effectN( 1 ).resource( RESOURCE_ENERGY ),
-                          p()->gain.soul_of_the_forest );
-    }
-
-    p()->buff.apex_predators_craving->expire();
-  }
-
   void consume_resource() override
   {
-    // TODO: check if consumed on miss
-    if ( p()->buff.apex_predators_craving->check() || free_cast )
-    {
-      ApexPredatorResource();
-      return;
-    }
-
     // Extra energy consumption happens first. In-game it happens before the skill even casts but let's not do that
     // because its dumb.
-    if ( hit_any_target )
+    if ( hit_any_target && !free_cast )
     {
       player->resource_loss( current_resource(), excess_energy );
       stats->consume_resource( current_resource(), excess_energy );
     }
 
     cat_attack_t::consume_resource();
+
+    if ( hit_any_target && free_cast == free_cast_e::APEX )
+      p()->buff.apex_predators_craving->expire();
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -3676,6 +3651,9 @@ struct ferocious_bite_t : public cat_attack_t
   {
     double am = cat_attack_t::action_multiplier();
 
+    // ferocious_bite_max.damage expr calls action_t::calculate_direct_amount, so we must have a separate check for
+    // buff.apex_predators_craving, as free_cast_e::APEX is set upon execute() which would not have happened when the
+    // expr is evaluated
     if ( p()->buff.apex_predators_craving->up() || free_cast )
       return am * 2.0;
 
@@ -8445,7 +8423,8 @@ void druid_t::create_buffs()
       buff.eye_of_fearful_symmetry->data().effectN( 1 ).trigger()->effectN( 1 ).base_value() );
 
   buff.predatory_swiftness = make_buff( this, "predatory_swiftness", find_spell( 69369 ) )
-    ->set_chance( spec.predatory_swiftness->ok() );
+    ->set_chance( spec.predatory_swiftness->ok() )
+    ->set_default_value_from_effect( 3 );  // effect#3 hold percent chance per CP
 
   buff.savage_roar = make_buff( this, "savage_roar", spec.savage_roar )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION )  // Pandemic refresh is done by the action
