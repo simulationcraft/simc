@@ -332,13 +332,6 @@ public:
   {
     /// Number of allies hit by Chain Harvest heals, range 0..5
     int chain_harvest_allies = 5;
-    /// Chance per maelstrom stack consumed to proc Feral Spirits, and duration (placeholder)
-    bool   t28_2pc_enh = 0;
-    double t28_2pc_enh_chance = 0.03;
-    timespan_t t28_2pc_enh_duration = 9_s;
-    /// Chance per Feral Spirit melee to proc Stormbringer (placeholder)
-    bool   t28_4pc_enh = 0;
-    double t28_4pc_enh_chance = 0.2;
   } opt_sl; // Shadowlands Shaman-specific options
 
   // Cached actions
@@ -715,6 +708,8 @@ public:
     const spell_data_t* flametongue_weapon;
     const spell_data_t* maelstrom;
     const spell_data_t* windfury_weapon;
+    const spell_data_t* t28_2pc_enh;
+    const spell_data_t* t28_4pc_enh;
   } spell;
 
   // Cached pointer for ascendance / normal white melee
@@ -1767,15 +1762,16 @@ public:
 
       p()->trigger_legacy_of_the_frost_witch( stacks );
 
-      // TODO: T28 2PC Enhancement placeholder
-      if ( p()->opt_sl.t28_2pc_enh &&
-           p()->rng().roll( p()->opt_sl.t28_2pc_enh_chance * stacks ) )
+      if ( p()->dbc->ptr && p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B2 ) &&
+           p()->rng().roll( p()->spell.t28_2pc_enh->effectN( 1 ).percent() * stacks ) )
       {
         if ( sim->debug )
         {
           sim->out_debug.print( "{} Enhancement T28 2PC", p()->name() );
         }
-        p()->summon_feral_spirits( p()->opt_sl.t28_2pc_enh_duration, 1 );
+        p()->summon_feral_spirits(
+            timespan_t::from_seconds( p()->spell.t28_2pc_enh->effectN( 2 ).base_value() ),
+            1 );
       }
     }
 
@@ -2278,9 +2274,9 @@ struct wolf_base_auto_attack_t : public pet_melee_attack_t<T>
   {
     pet_melee_attack_t<T>::execute();
 
-    // TODO: T28 Enhancement 4 PC placeholder
-    if ( this->p()->o()->opt_sl.t28_4pc_enh &&
-         this->rng().roll( this->p()->o()->opt_sl.t28_4pc_enh_chance ) )
+    if ( this->p()->o()->dbc->ptr &&
+         this->p()->o()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B4 ) &&
+         this->rng().roll( this->p()->o()->spell.t28_4pc_enh->effectN( 1 ).percent() ) )
     {
       this->p()->o()->buff.stormbringer->trigger();
       this->p()->o()->cooldown.strike->reset( true );
@@ -7611,11 +7607,6 @@ void shaman_t::create_options()
     return true;
   } ) );
   add_option( opt_int( "shaman.chain_harvest_allies", opt_sl.chain_harvest_allies, 0, 5 ) );
-  add_option( opt_bool( "shaman.t28_2pc_enh", opt_sl.t28_2pc_enh ) );
-  add_option( opt_bool( "shaman.t28_4pc_enh", opt_sl.t28_4pc_enh ) );
-  add_option( opt_float( "shaman.t28_2pc_enh_chance", opt_sl.t28_2pc_enh_chance, 0, 1 ) );
-  add_option( opt_timespan( "shaman.t28_2pc_enh_duration", opt_sl.t28_2pc_enh_duration, 0_s, 15_s ) );
-  add_option( opt_float( "shaman.t28_4pc_enh_chance", opt_sl.t28_4pc_enh_chance, 0, 1 ) );
 }
 
 // shaman_t::create_profile ================================================
@@ -7808,6 +7799,9 @@ void shaman_t::init_spells()
   spell.maelstrom          = find_spell( 343725 );
   spell.windfury_weapon          = find_spell( 319773 );
   spell.splintered_elements = find_spell( 354647 );
+
+  spell.t28_2pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B2 );
+  spell.t28_4pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B4 );
 
   player_t::init_spells();
 }
