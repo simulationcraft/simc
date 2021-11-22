@@ -1369,6 +1369,7 @@ const char* util::special_effect_source_string( special_effect_source_e type )
     case SPECIAL_EFFECT_SOURCE_SOULBIND: return "soulbind";
     case SPECIAL_EFFECT_SOURCE_FALLBACK: return "fallback";
     case SPECIAL_EFFECT_SOURCE_TEMPORARY_ENCHANT: return "temporary_enchant";
+    case SPECIAL_EFFECT_SOURCE_COVENANT: return "covenant";
     default: return "unknown";
   }
 }

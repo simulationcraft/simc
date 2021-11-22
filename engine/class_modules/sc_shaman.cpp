@@ -319,7 +319,6 @@ public:
   // Misc
   bool lava_surge_during_lvb;
   std::vector<counter_t*> counters;
-  ground_aoe_event_t* vesper_totem;
   /// Shaman ability cooldowns
   std::vector<cooldown_t*> ability_cooldowns;
   player_t* recent_target =
@@ -327,6 +326,15 @@ public:
 
   /// Legacy of the Frost Witch maelstrom stack counter
   unsigned lotfw_counter;
+
+  /// Vesper totem ground aoe events
+  ground_aoe_event_t* vesper_totem_dmg, *vesper_totem_heal;
+  /// Vesper totem damage charges left, heal charges left, charges used
+  unsigned vesper_totem_dmg_charges, vesper_totem_heal_charges, vesper_totem_used_charges;
+  /// Vesper totem placement target, needed for Raging Vesper Vortex proper targeting
+  player_t* vesper_totem_target;
+  /// Raging Vesper Vortex
+  action_t* raging_vesper_vortex;
 
   // Options
   bool raptor_glyph;
@@ -748,6 +756,10 @@ public:
     : player_t( sim, SHAMAN, name, r ),
       lava_surge_during_lvb( false ),
       lotfw_counter( 0U ),
+      vesper_totem_dmg( nullptr ), vesper_totem_heal( nullptr ),
+      vesper_totem_dmg_charges( 0 ), vesper_totem_heal_charges( 0 ),
+      vesper_totem_used_charges( 0 ), vesper_totem_target( nullptr ),
+      raging_vesper_vortex( nullptr ),
       raptor_glyph( false ),
       action(),
       pet( this ),
@@ -855,7 +867,7 @@ public:
   std::string default_rune() const override;
   std::string default_temporary_enchant() const override;
 
-  void init_rng() override;
+  void create_special_effects() override;
   void init_special_effects() override;
   void init_special_effect( special_effect_t& effect ) override;
 
@@ -1804,7 +1816,6 @@ public:
         p()->buff.earthen_rage->trigger();
       }
 
-      p()->trigger_vesper_totem( execute_state );
       trigger_echoing_shock( execute_state->target );
     }
 
@@ -6467,6 +6478,7 @@ struct shaman_totem_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
     totem_pet->summon( totem_duration );
+    p()->trigger_vesper_totem( execute_state );
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
@@ -7094,62 +7106,85 @@ struct vesper_totem_damage_t : public shaman_spell_t
   }
 };
 
+struct vesper_totem_heal_t : public shaman_heal_t
+{
+  vesper_totem_heal_t( shaman_t* player )
+    : shaman_heal_t( "vesper_totem_heal", player, player->find_spell( 324522 ) )
+  {
+    background = true;
+    aoe = 6;
+  }
+};
+
+struct vesper_totem_cb_t : public dbc_proc_callback_t
+{
+  shaman_t* shaman;
+
+  vesper_totem_cb_t( const special_effect_t& e, shaman_t* s ) :
+    dbc_proc_callback_t( e.player, e ), shaman( s )
+  { }
+
+  void execute( action_t* /* a */, action_state_t* s ) override
+  {
+    shaman->trigger_vesper_totem( s );
+  }
+};
+
 struct vesper_totem_t : public shaman_spell_t
 {
   vesper_totem_damage_t* damage;
-  raging_vesper_vortex_t* legendary_damage;
+  vesper_totem_heal_t* heal;
 
   vesper_totem_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "vesper_totem", player, player->covenant.kyrian ),
     damage( new vesper_totem_damage_t( player ) ),
-    legendary_damage( new raging_vesper_vortex_t(player) )
+    heal( new vesper_totem_heal_t( player ) )
   {
     parse_options( options_str );
     add_child( damage );
-    add_child( legendary_damage );
+    add_child( heal );
+  }
+
+  void trigger_vesper_totem_ground_aoe( action_t* action, ground_aoe_event_t*& event_ptr, player_t* totem_target, unsigned charges )
+  {
+    make_event<ground_aoe_event_t>(
+        *player->sim, player,
+        ground_aoe_params_t()
+            .target( totem_target )
+            .pulse_time( sim->max_time )
+            .n_pulses( charges )
+            .action( action )
+            .state_callback( [ &event_ptr ]( ground_aoe_params_t::state_type event_type, ground_aoe_event_t* ptr ) {
+              switch ( event_type )
+              {
+                case ground_aoe_params_t::state_type::EVENT_CREATED:
+                  assert( event_ptr == nullptr );
+                  event_ptr = ptr;
+                  break;
+                case ground_aoe_params_t::state_type::EVENT_DESTRUCTED:
+                  assert( event_ptr == ptr );
+                  event_ptr = nullptr;
+                  break;
+                default:
+                  break;
+              }
+            } ) );
   }
 
   void execute() override
   {
     shaman_spell_t::execute();
 
+    p()->vesper_totem_dmg_charges = data().effectN( 2 ).base_value();
+    p()->vesper_totem_heal_charges = data().effectN( 4 ).base_value();
+    p()->vesper_totem_used_charges = 0;
+    p()->vesper_totem_target = execute_state->target;
+
     p()->buff.vesper_totem->trigger();
-    // Note, this is manually executed by shaman_t::trigger_vesper_totem, the ground aoe
-    // effect is just to emulate the totem placing.
-    make_event<ground_aoe_event_t>(
-        *player->sim, player,
-        ground_aoe_params_t()
-            .target( execute_state->target )
-            .pulse_time( sim->max_time )
-            .n_pulses( data().effectN( 2 ).base_value() )
-            .action( damage )
-            .state_callback( [ this ]( ground_aoe_params_t::state_type event_type, ground_aoe_event_t* ptr ) {
-              switch ( event_type )
-              {
-                case ground_aoe_params_t::state_type::EVENT_CREATED:
-                  assert( this->p()->vesper_totem == nullptr );
-                  this->p()->vesper_totem = ptr;
-                  break;
-                case ground_aoe_params_t::state_type::EVENT_DESTRUCTED:
-                  assert( this->p()->vesper_totem == ptr );
-                  this->p()->vesper_totem = nullptr;
-                  break;
-                case ground_aoe_params_t::state_type::EVENT_STOPPED:
-                  this->p()->buff.vesper_totem->expire();
-                  if ( this->p()->legendary.raging_vesper_vortex->ok() &&
-                       !damage->target_list().empty() &&
-                       damage->closest_target != nullptr )
-                  {
-                    // Make Vesper Totem "closest target" the primary target of the
-                    // Raging Vesper Vortex aoe
-                    legendary_damage->set_target( damage->closest_target );
-                    legendary_damage->execute();
-                  }
-                  break;
-                default:
-                  break;
-              }
-            } ) );
+    trigger_vesper_totem_ground_aoe( damage, p()->vesper_totem_dmg,
+        execute_state->target, p()->vesper_totem_dmg_charges );
+    trigger_vesper_totem_ground_aoe( heal, p()->vesper_totem_heal,
+        player, p()->vesper_totem_heal_charges );
   }
 };
 
@@ -7656,6 +7691,21 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
         }
       } );
     }
+  }
+
+  if ( util::str_compare_ci( splits[ 0 ], "vesper_totem_dmg_charges" ) )
+  {
+    return make_ref_expr( name, vesper_totem_dmg_charges );
+  }
+
+  if ( util::str_compare_ci( splits[ 0 ], "vesper_totem_heal_charges" ) )
+  {
+    return make_ref_expr( name, vesper_totem_heal_charges );
+  }
+
+  if ( util::str_compare_ci( splits[ 0 ], "vesper_totem_used_charges" ) )
+  {
+    return make_ref_expr( name, vesper_totem_used_charges );
   }
 
   return player_t::create_expression( name );
@@ -8239,29 +8289,111 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
 
 void shaman_t::trigger_vesper_totem( const action_state_t* state )
 {
-  if ( !vesper_totem )
-  {
-    return;
-  }
-
   if ( state->action->background )
   {
     return;
   }
 
+  /*
   if ( state->result_amount == 0 )
   {
     return;
   }
+  */
 
-  auto current_event = vesper_totem;
+  if ( !buff.vesper_totem->up() )
+  {
+    return;
+  }
+
+  // TODO: Whitelist
+
+  ground_aoe_event_t* current_event = nullptr;
+  unsigned* charges = nullptr;
+  switch ( state->action->type )
+  {
+    case ACTION_SPELL:
+    {
+      if ( state->action->harmful )
+      {
+        current_event = vesper_totem_dmg;
+        charges = &( vesper_totem_dmg_charges );
+      }
+      else
+      {
+        current_event = vesper_totem_heal;
+        charges = &( vesper_totem_heal_charges );
+      }
+
+      if ( *charges == 0 )
+      {
+        return;
+      }
+
+      break;
+    }
+    case ACTION_ATTACK:
+    {
+      current_event = vesper_totem_dmg;
+      charges = &( vesper_totem_dmg_charges );
+      if ( *charges == 0 )
+      {
+        return;
+      }
+      break;
+    }
+    case ACTION_HEAL:
+    {
+      current_event = vesper_totem_heal;
+      charges = &( vesper_totem_heal_charges );
+      if ( *charges == 0 )
+      {
+        return;
+      }
+      break;
+    }
+    default:
+      assert( 0 );
+      break;
+  }
+
+  if ( sim->debug )
+  {
+    sim->out_debug.print(
+      "{} vesper_totem state, trigger={}, dmg_charges={}, heal_charges={}, used_charges={}",
+      name(), state->action->name(), vesper_totem_dmg_charges, vesper_totem_heal_charges,
+      vesper_totem_used_charges );
+  }
 
   // Pulse the ground aoe event manually
   current_event->execute();
 
-  // Aand cancel the event .. shaman_t::vesper_totem will have the new event pointer, so
-  // we cancel the cached pointer here
+  // Aand cancel the event .. shaman_t::vesper_totem_* will have the new event pointer,
+  // so we cancel the cached pointer here
   event_t::cancel( current_event );
+  (*charges)--;
+  vesper_totem_used_charges++;
+
+  if ( legendary.raging_vesper_vortex->ok() &&
+      vesper_totem_used_charges == legendary.raging_vesper_vortex->effectN( 1 ).base_value() )
+  {
+    if ( sim-> debug )
+    {
+      sim->out_debug.print(
+        "{} raging_vesper_vortex trigger, target={}, dmg_charges={}, heal_charges={}",
+        name(), vesper_totem_target->name(), vesper_totem_dmg_charges,
+        vesper_totem_heal_charges );
+    }
+    // TODO: Problematic with dead targets
+    raging_vesper_vortex->set_target( vesper_totem_target );
+    raging_vesper_vortex->execute();
+    vesper_totem_used_charges = 0;
+  }
+
+  if ( !vesper_totem_dmg_charges && !vesper_totem_heal_charges )
+  {
+    buff.vesper_totem->expire();
+  }
 }
 
 void shaman_t::trigger_legacy_of_the_frost_witch( unsigned consumed_stacks )
@@ -8620,7 +8752,11 @@ void shaman_t::create_buffs()
                           ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
                             if ( new_ == 0 )
                             {
-                              event_t::cancel( vesper_totem );
+                              event_t::cancel( vesper_totem_dmg );
+                              event_t::cancel( vesper_totem_heal );
+                              vesper_totem_used_charges = 0;
+                              vesper_totem_dmg_charges = 0;
+                              vesper_totem_heal_charges = 0;
                             }
                           } );
   // Covenant Legendaries
@@ -8845,7 +8981,7 @@ void shaman_t::init_assessors()
 
   if ( legendary.elemental_equilibrium.ok() )
   {
-    assessor_out_damage.add( assessor::LEECH + 1,
+    assessor_out_damage.add( assessor::LEECH + 10,
       [ this ]( result_amount_type type, action_state_t* state ) {
         if ( type == result_amount_type::DMG_DIRECT && state->result_amount > 0 )
         {
@@ -8856,11 +8992,28 @@ void shaman_t::init_assessors()
   }
 }
 
-// shaman_t::init_rng =======================================================
+// shaman_t::create_special_effects =========================================
 
-void shaman_t::init_rng()
+void shaman_t::create_special_effects()
 {
-  player_t::init_rng();
+  player_t::create_special_effects();
+
+  // Create a base-bones special effect for vesper totem, handle actual init in
+  // shaman_t::init_special_effect
+  if ( covenant.kyrian->ok() )
+  {
+    special_effect_t* effect = new special_effect_t( this );
+    effect->type = SPECIAL_EFFECT_EQUIP;
+    effect->source = SPECIAL_EFFECT_SOURCE_COVENANT;
+    effect->spell_id = covenant.kyrian->id();
+    effect->cooldown_ = 0_s;
+    effect->proc_flags2_ = PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+    effect->custom_init = [ this ]( special_effect_t& effect ) {
+      new vesper_totem_cb_t( effect, this );
+    };
+
+    special_effects.push_back( effect );
+  }
 }
 
 // shaman_t::init_special_effects ===========================================
@@ -9633,6 +9786,11 @@ void shaman_t::init_action_list()
     action.molten_weapon_dot = new molten_weapon_dot_t( this );
   }
 
+  if ( legendary.raging_vesper_vortex.ok() )
+  {
+    raging_vesper_vortex = new raging_vesper_vortex_t( this );
+  }
+
   if ( !action_list_str.empty() )
   {
     player_t::init_action_list();
@@ -9964,7 +10122,8 @@ void shaman_t::reset()
   for ( auto& elem : counters )
     elem->reset();
 
-  vesper_totem = nullptr;
+  vesper_totem_dmg = vesper_totem_heal = nullptr;
+  vesper_totem_used_charges = vesper_totem_heal_charges = vesper_totem_dmg_charges = 0;
   lotfw_counter = 0U;
 }
 
