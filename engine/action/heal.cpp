@@ -55,13 +55,23 @@ void heal_t::parse_heal_effect_data(const spelleffect_data_t& e)
 {
   if ( e.ok() )
   {
+    bool item_scaling = item && data().max_scaling_level() == 0;
+
     if ( e.type() == E_HEAL_PCT )
     {
       base_pct_heal = e.percent();
     }
+    else if ( e.type() == E_HEAL )
+    {
+      parse_effect_direct_mods( e, item_scaling );
+    }
     else if ( e.subtype() == A_PERIODIC_HEAL_PCT )
     {
       tick_pct_heal = e.percent();
+    }
+    else if ( e.subtype() == A_PERIODIC_HEAL )
+    {
+      parse_effect_periodic_mods( e, item_scaling );
     }
   }
 }

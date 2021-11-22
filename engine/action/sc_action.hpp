@@ -610,6 +610,9 @@ public:
 
   void parse_spell_data( const spell_data_t& );
 
+  void parse_effect_direct_mods( const spelleffect_data_t& spelleffect_data, bool item_scaling );
+  void parse_effect_periodic_mods( const spelleffect_data_t& spelleffect_data, bool item_scaling );
+
   void parse_effect_data( const spelleffect_data_t& );
 
   void parse_target_str();

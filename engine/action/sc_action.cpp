@@ -668,6 +668,49 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   }
 }
 
+void action_t::parse_effect_direct_mods( const spelleffect_data_t& spelleffect_data, bool item_scaling )
+{
+  spell_power_mod.direct  = spelleffect_data.sp_coeff();
+  attack_power_mod.direct = spelleffect_data.ap_coeff();
+  amount_delta            = spelleffect_data.m_delta();
+
+  if ( !item_scaling )
+  {
+    if ( !spelleffect_data.sp_coeff() && !spelleffect_data.ap_coeff() )
+    {
+      base_dd_min = spelleffect_data.min( player, player->level() );
+      base_dd_max = spelleffect_data.max( player, player->level() );
+    }
+  }
+  else
+  {
+    base_dd_min = spelleffect_data.min( item );
+    base_dd_max = spelleffect_data.max( item );
+  }
+
+  radius = spelleffect_data.radius_max();
+}
+
+void action_t::parse_effect_periodic_mods( const spelleffect_data_t& spelleffect_data, bool item_scaling )
+{
+  spell_power_mod.tick = spelleffect_data.sp_coeff();
+  attack_power_mod.tick = spelleffect_data.ap_coeff();
+
+  if ( !item_scaling )
+  {
+    if ( !spelleffect_data.sp_coeff() && !spelleffect_data.ap_coeff() )
+    {
+      base_td = spelleffect_data.average( player, player->level() );
+    }
+  }
+  else
+  {
+    base_td = spelleffect_data.average( item );
+  }
+
+  radius = spelleffect_data.radius_max();
+}
+
 // action_t::parse_effect_data ==============================================
 void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
 {
@@ -688,27 +731,10 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
 
   switch ( spelleffect_data.type() )
   {
-      // Direct Damage
-    case E_HEAL:
+    // Direct Damage
     case E_SCHOOL_DAMAGE:
     case E_HEALTH_LEECH:
-      spell_power_mod.direct  = spelleffect_data.sp_coeff();
-      attack_power_mod.direct = spelleffect_data.ap_coeff();
-      amount_delta            = spelleffect_data.m_delta();
-      if ( !item_scaling )
-      {
-        if ( !spelleffect_data.sp_coeff() && !spelleffect_data.ap_coeff() )
-        {
-          base_dd_min = spelleffect_data.min( player, player->level() );
-          base_dd_max = spelleffect_data.max( player, player->level() );
-        }
-      }
-      else
-      {
-        base_dd_min = spelleffect_data.min( item );
-        base_dd_max = spelleffect_data.max( item );
-      }
-      radius = spelleffect_data.radius_max();
+      parse_effect_direct_mods( spelleffect_data, item_scaling );
       break;
 
     case E_NORMALIZED_WEAPON_DMG:
@@ -744,21 +770,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
       {
         case A_PERIODIC_DAMAGE:
         case A_PERIODIC_LEECH:
-        case A_PERIODIC_HEAL:
-          spell_power_mod.tick  = spelleffect_data.sp_coeff();
-          attack_power_mod.tick = spelleffect_data.ap_coeff();
-          if ( !item_scaling )
-          {
-            if ( !spelleffect_data.sp_coeff() && !spelleffect_data.ap_coeff() )
-            {
-              base_td = spelleffect_data.average( player, player->level() );
-            }
-          }
-          else
-          {
-            base_td = spelleffect_data.average( item );
-          }
-          radius = spelleffect_data.radius_max();
+          parse_effect_periodic_mods( spelleffect_data, item_scaling );
           SC_FALLTHROUGH;
         case A_PERIODIC_ENERGIZE:
           if ( spelleffect_data.subtype() == A_PERIODIC_ENERGIZE && energize_type == action_energize::NONE && spelleffect_data.period() > timespan_t::zero() )
