@@ -222,7 +222,12 @@ release:CPP_FLAGS += -DNDEBUG
 release: $(MODULE)
 
 optimized:CPP_FLAGS += -DNDEBUG
-optimized:OPTS_INTERNAL += -march=native -ffast-math -fomit-frame-pointer
+optimized:OPTS_INTERNAL += -ffast-math -fomit-frame-pointer
+ifneq (${FLAVOR},Darwin)
+  ifneq ($(uname -m),arm64)
+    optimized:OPTS_INTERNAL += -march=native
+  endif
+endif
 optimized: $(MODULE)
 
 install: all
