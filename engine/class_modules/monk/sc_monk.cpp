@@ -265,8 +265,7 @@ public:
       if ( p()->conduit.xuens_bond->ok() )
         p()->cooldown.invoke_xuen->adjust( p()->conduit.xuens_bond->effectN( 2 ).time_value(), true );  // Saved as -100
 
-      if ( p()->is_ptr() && p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) &&
-           !p()->buff.primordial_power->check() )
+      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) && !p()->buff.primordial_power->check() )
         p()->buff.primordial_potential->trigger();
 
     }
@@ -442,7 +441,7 @@ public:
       }
     }
 
-    if ( p()->is_ptr() && p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
       if ( trigger_ww_t28_4p_power && p()->buff.primordial_power->check() )
         p()->buff.primordial_power->trigger();
   }
@@ -507,7 +506,7 @@ public:
   {
     ab::last_tick( dot );
 
-    if ( p()->is_ptr() && p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
       if ( trigger_ww_t28_4p_power_channel && p()->buff.primordial_power->check() )
         p()->buff.primordial_power->trigger();
   }
@@ -516,7 +515,7 @@ public:
   {
     double pm = ab::composite_persistent_multiplier( action_state );
 
-    if ( p()->is_ptr() && p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
     {
       if ( ab::data().affected_by( p()->passives.primordial_power->effectN( 1 ) ) )
         pm *= 1 + p()->passives.primordial_power->effectN( 1 ).percent();
@@ -2070,7 +2069,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     if ( p()->conduit.inner_fury->ok() )
       am *= 1 + p()->conduit.inner_fury.percent();
 
-    if ( p()->is_ptr() && p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B2 ) )
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B2 ) )
       am *= 1 + p()->sets->set( MONK_WINDWALKER, T28, B2 )->effectN( 1 ).percent();
 
     return am;
@@ -3188,7 +3187,7 @@ struct breath_of_fire_t : public monk_spell_t
     if ( p()->legendary.charred_passions->ok() )
       p()->buff.charred_passions->trigger();
 
-    if ( p()->is_ptr() && p()->sets->has_set_bonus( MONK_BREWMASTER, T28, B4 ) )
+    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T28, B4 ) )
       p()->buff.flames_of_primordium->trigger();
   }
 
@@ -8007,7 +8006,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
       dmg_reduction -= buff.celestial_flames->value();  // Saved as 5
     s->result_amount *= 1.0 + dmg_reduction;
 
-    if ( p()->is_ptr() && sets->has_set_bonus( MONK_BREWMASTER, T28, B2 ) )
+    if ( sets->has_set_bonus( MONK_BREWMASTER, T28, B2 ) )
       s->result_amount *= 1.0 + sets->set( MONK_BREWMASTER, T28, B2 )->effectN( 1 ).percent();
   }
 
