@@ -7025,7 +7025,8 @@ struct vesper_totem_t : public shaman_spell_t
                 case ground_aoe_params_t::state_type::EVENT_STOPPED:
                   this->p()->buff.vesper_totem->expire();
                   if ( this->p()->legendary.raging_vesper_vortex->ok() &&
-                       damage->closest_target )
+                       !damage->target_list().empty() &&
+                       damage->closest_target != nullptr )
                   {
                     // Make Vesper Totem "closest target" the primary target of the
                     // Raging Vesper Vortex aoe
