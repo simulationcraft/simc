@@ -1646,6 +1646,7 @@ class SpellDataGenerator(DataGenerator):
           ( 327369, 0 ),                            # Disciplinary Command (Arcane tracker)
           ( 336889, 0 ),                            # Nether Precision
           ( 337090, 0 ),                            # Siphoned Malice
+          ( 363685, 0 ),                            # Arcane Lucidity ready buff
         ),
 
         # Warlock:
