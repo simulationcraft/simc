@@ -974,7 +974,7 @@ struct touch_of_the_magi_t final : public buff_t
     buff_t( *td, "touch_of_the_magi", td->source->find_spell( 210824 ) )
   {
     set_default_value( 0.0 );
-    set_schools_from_effect( 2 );
+    if ( source->is_ptr() ) set_schools_from_effect( 2 ); // TODO: PTR
   }
 
   void expire_override( int stacks, timespan_t duration ) override
