@@ -952,6 +952,7 @@ const char* util::school_type_string( school_e school )
     case SCHOOL_SPELLFROST:       return "spellfrost";
     case SCHOOL_SPELLSHADOW:      return "spellshadow";
     case SCHOOL_ELEMENTAL:        return "elemental";
+    case SCHOOL_COSMIC:           return "cosmic";
     case SCHOOL_CHROMATIC:        return "chromatic";
     case SCHOOL_MAGIC:            return "magic";
     case SCHOOL_DRAIN:            return "drain";

@@ -293,6 +293,9 @@ rgb school_color( school_e school )
     //-- Three or more schools
     case SCHOOL_ELEMENTAL:
       return color::ELEMENTAL;
+    case SCHOOL_COSMIC:
+      return school_color( SCHOOL_HOLY ) + school_color( SCHOOL_NATURE ) +
+             school_color( SCHOOL_SHADOW ) + school_color( SCHOOL_ARCANE );
     case SCHOOL_CHROMATIC:
       return school_color( SCHOOL_FIRE ) + school_color( SCHOOL_FROST ) +
              school_color( SCHOOL_ARCANE ) + school_color( SCHOOL_NATURE ) +

@@ -314,6 +314,9 @@ public:
     action_t* lycaras_fleeting_glimpse;  // fake holder action for reporting
     action_t* oneths_clear_vision;       // fake holder action for reporting
     action_t* the_natural_orders_will;   // fake holder action for reporting
+
+    // Set bonus
+    action_t* architects_aligner;  // Guardian T28 4pc Set Bonus
   } active;
 
   // Pets
@@ -1484,6 +1487,15 @@ struct berserk_bear_buff_t : public druid_buff_t<buff_t>
 
     if ( inc )
       hp_mul += p.query_aura_effect( s, A_MOD_INCREASE_HEALTH_PERCENT )->percent();
+
+    if ( p.sets->has_set_bonus( DRUID_GUARDIAN, T28, B4 ) )
+    {
+      set_period( p.sets->set( DRUID_GUARDIAN, T28, B4 )->effectN( 1 ).trigger()->effectN( 1 ).period() );
+      set_tick_callback( [ &p ]( buff_t*, int, timespan_t ) {
+        p.active.architects_aligner->set_target( p.target );
+        p.active.architects_aligner->execute();
+      } );
+    }
   }
 
   void start( int s, double v, timespan_t d ) override
@@ -4605,6 +4617,14 @@ struct thrash_bear_t : public bear_attack_t
   }
 };
 
+// Architect's Aligner (Guardian T28 4set bonus )================================
+struct architects_aligner_t : public bear_attack_t
+{
+  architects_aligner_t( druid_t* p ) : bear_attack_t( "architects_aligner", p, p->find_spell( 363789 ) )
+  {
+    aoe = -1;
+  }
+};
 } // end namespace bear_attacks
 
 namespace heals {
@@ -5126,6 +5146,17 @@ struct barkskin_t : public druid_spell_t
     druid_spell_t::execute();
 
     p()->buff.barkskin->trigger();
+
+    //TODO:
+    // * confirm berserk is triggered on barkskin action cast and not on barkskin buff application
+    // * confirm berserk extends or overwrites existing berserk
+    // * confirm incarn is triggered when talented
+    if ( p()->sets->has_set_bonus( DRUID_GUARDIAN, T28, B2 ) )
+    {
+      auto dur_ = timespan_t::from_seconds( p()->sets->set( DRUID_GUARDIAN, T28, B2 )->effectN( 1 ).base_value() );
+
+      p()->buff.b_inc_bear->extend_duration_or_trigger( dur_ );
+    }
   }
 };
 
@@ -8627,10 +8658,13 @@ void druid_t::create_actions()
     active.the_natural_orders_will = new the_natural_orders_will_t( this );
 
   if ( talent.galactic_guardian->ok() )
-    active.galactic_guardian = new galactic_guardian_t( this );
+    active.galactic_guardian = get_secondary_action<galactic_guardian_t>( "galactic_guardian" );
 
   if ( mastery.natures_guardian->ok() )
     active.natures_guardian = new heals::natures_guardian_t( this );
+
+  if ( sets->has_set_bonus( DRUID_GUARDIAN, T28, B4 ) )
+    active.architects_aligner = get_secondary_action<architects_aligner_t>( "architects_aligner" );
 
   // Restoration
   if ( talent.cenarion_ward->ok() )
