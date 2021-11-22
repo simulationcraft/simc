@@ -1754,7 +1754,7 @@ public:
       background              = true;
       merge_report            = false;
       if ( p->o()->bugs )
-        aoe = 1 + (int)o()->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value();
+        aoe = 1 + o()->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value();
       else
       {
         aoe                 = -1;
@@ -1866,7 +1866,7 @@ public:
       dual = background    = true;
       merge_report         = false;
       if ( p->o()->bugs )
-        aoe = (int)p->o()->passives.fallen_monk_spinning_crane_kick->effectN( 1 ).base_value();
+        aoe = p->o()->passives.fallen_monk_spinning_crane_kick->effectN( 1 ).base_value();
       else
       {
         aoe                 = -1;
@@ -2367,7 +2367,7 @@ public:
       background   = true;
       merge_report = false;
       if ( p->o()->bugs )
-        aoe = 1 + (int)o()->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value();
+        aoe = 1 + o()->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value();
       else
       {
         aoe                 = -1;
@@ -2478,7 +2478,7 @@ public:
       dual = background    = true;
       merge_report         = false;
       if ( p->o()->bugs )
-        aoe = (int)p->o()->passives.fallen_monk_spinning_crane_kick->effectN( 1 ).base_value();
+        aoe = p->o()->passives.fallen_monk_spinning_crane_kick->effectN( 1 ).base_value();
       else
       {
         aoe                 = -1;
