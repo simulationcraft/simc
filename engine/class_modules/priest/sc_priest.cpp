@@ -1890,6 +1890,9 @@ void priest_t::init_base_stats()
 void priest_t::init_resources( bool force )
 {
   base_t::init_resources( force );
+
+  if ( options.initial_insanity > 0.0 )
+    resources.current[ RESOURCE_INSANITY ] = options.initial_insanity;
 }
 
 void priest_t::init_scaling()
@@ -2218,6 +2221,8 @@ void priest_t::create_options()
   add_option( opt_int( "priest.shadow_word_manipulation_seconds_remaining",
                        options.shadow_word_manipulation_seconds_remaining, 0, 8 ) );
   add_option( opt_int( "priest.pallid_command_allies", options.pallid_command_allies, 0, 50 ) );
+
+  add_option( opt_float( "priest.initial_insanity", options.initial_insanity, 0.0, 100.0 ) );
 }
 
 std::string priest_t::create_profile( save_e type )
