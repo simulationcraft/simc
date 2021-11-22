@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.41089
-static const std::array<spelltext_data_t, 15741> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15744> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15652,6 +15652,7 @@ static const std::array<spelltext_data_t, 15741> __ptr_spelltext_data { {
   { 363677, "When you benefit from Art of War, you gain Seraphim for $s1 sec.", 0, 0 },
   { 363682, "After consuming $363683u Clearcasting your next Touch of the Magi is instant, incurs no cooldown and lasts for $s1 sec.", 0, 0 },
   { 363683, "$@spelldesc363682", "At $u stacks your next Touch of the Magi is instant and incurs no cooldown.", 0 },
+  { 363685, "$@spelldesc363682", "Your next Touch of the Magi is instant and incurs no cooldown.", 0 },
   { 363715, "Inflicts Maledict upon the target, absorbing healing received.", "Absorbing $w1 healing.", 0 },
   { 363727, "$@spelldesc363492", "Your next Holy Word affecting spell reduces the cooldown by an additional $s1 sec$?a363492[ and its effectiveness is increased by $s2%][].", 0 },
   { 363733, "Drinking Thunder Focus Tea summons a Progenitor Rune of Healing, increasing all healing dealt while inside its bounds by $s1.", 0, 0 },
@@ -15659,8 +15660,10 @@ static const std::array<spelltext_data_t, 15741> __ptr_spelltext_data { {
   { 363736, "Every fifth Blade Dance or Death Sweep instantly refunds its own cooldown and cost. Casting this empowered Blade Dance or Death Sweep has a $s1% chance to instantly refund its own cooldown and cost.", 0, 0 },
   { 363737, "Consuming a Lesser Soul Fragment has a $s3% chance to grant you ${$s2/1000} sec of Immolation Aura, or extend an existing Immolation Aura by ${$s2/1000} sec.", 0, 0 },
   { 363738, "Raging Blow has a $s1% chance to grant Recklessness for ${$s2/1000} sec.", 0, 0 },
+  { 363760, "$@spelldesc363665", "Cobra Shot damage and cooldown reduction increased by $w1%.", 0 },
   { 363789, "$@spelldesc363496", 0, 0 },
   { 363793, "$@spelldesc363496", "The Architect's Aligner is activated, dealing $363789s1 Cosmic damage every $t sec.", 0 },
+  { 363805, "$@spelldesc363667", "Your next Wildfire Bomb deals $s1% increased damage and incurs no cooldown.", 0 },
   { 363830, "$@spelldesc363498", "Dealing $s1 every $t1 sec.", 0 },
   { 363911, "$@spelldesc363734", 0, 0 },
   { 363913, "Every $s1 Rage consumed increases the effectiveness of your next Colossus Smash or Warbreaker by $363917s1%, up to ${$363917s1*$363917u}%.", 0, 0 },
