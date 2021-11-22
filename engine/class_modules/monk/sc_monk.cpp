@@ -8412,7 +8412,7 @@ void monk_t::trigger_bonedust_brew( action_state_t* s )
 {
   if ( auto td = find_target_data( s->target ) )
   {
-    if ( rng().roll( covenant.necrolord->proc_chance() ) )
+    if ( td->debuff.bonedust_brew->check() && rng().roll( covenant.necrolord->proc_chance() ) )
     {
       double damage = s->result_amount * covenant.necrolord->effectN( 1 ).percent();
 
@@ -8421,6 +8421,7 @@ void monk_t::trigger_bonedust_brew( action_state_t* s )
 
       active_actions.bonedust_brew_dmg->base_dd_min = damage;
       active_actions.bonedust_brew_dmg->base_dd_max = damage;
+      active_actions.bonedust_brew_dmg->target      = s->target;
       active_actions.bonedust_brew_dmg->execute();
     }
   }
