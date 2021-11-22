@@ -2725,66 +2725,30 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
 // Wailing Arrow =====================================================================
 
-//TODO 20/06/2021 Verify that the explosion also hits the main target and verify interactions with Wild Spirits
 struct wailing_arrow_t: public hunter_ranged_attack_t
 {
-
-  struct damage_main_t final : public hunter_ranged_attack_t
+  struct damage_t final : hunter_ranged_attack_t
   {
-    damage_main_t( util::string_view n, hunter_t* p ):
+    damage_t( util::string_view n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> find_spell( 354831 ) )
     {
-      background = true;
-      aoe = 0;
+      aoe = -1;
       attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+      base_aoe_multiplier = data().effectN( 2 ).ap_coeff() / attack_power_mod.direct;
+
       dual = true;
       triggers_wild_spirits = false;
     }
   };
-
-  struct damage_explosion_t final : public hunter_ranged_attack_t
-  {
-    damage_explosion_t( util::string_view n, hunter_t* p ):
-      hunter_ranged_attack_t( n, p, p -> find_spell( 354831 ) )
-      {
-        background = true;
-        aoe = -1;
-        radius = 8;
-        attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
-        dual = true;
-        triggers_wild_spirits = false;
-      }
-
-      size_t available_targets( std::vector<player_t*>& tl ) const override
-      {
-        hunter_ranged_attack_t::available_targets( tl );
-        tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
-        return tl.size();
-      }
-  };
-
-  damage_main_t* damage_main = nullptr;
-  damage_explosion_t* damage_aoe = nullptr;
 
   wailing_arrow_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "wailing_arrow", p, p -> specs.wailing_arrow )
     {
       parse_options( options_str );
 
-      damage_main = p -> get_background_action<damage_main_t>( "wailing_arrow_main" );
-      damage_aoe = p -> get_background_action<damage_explosion_t>( "wailing_arrow_aoe" );
-      add_child( damage_main );
-      add_child( damage_aoe );
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      hunter_ranged_attack_t::impact( s );
-
-      damage_main->set_target( target );
-      damage_main->execute();
-      damage_aoe->set_target( target );
-      damage_aoe->execute();
+      impact_action = p -> get_background_action<damage_t>( "wailing_arrow_damage" );
+      impact_action -> stats = stats;
+      stats -> action_list.push_back( impact_action );
     }
 
     result_e calculate_result( action_state_t* ) const override { return RESULT_NONE; }
