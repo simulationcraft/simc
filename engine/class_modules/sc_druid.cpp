@@ -427,6 +427,12 @@ public:
     buff_t* soul_of_the_forest;  // needs checking
     buff_t* yseras_gift;
     buff_t* harmony;  // NYI
+
+    // Helper pointers
+    buff_t* ca_inc;       // celestial_alignment or incarnation_moonkin
+    buff_t* b_inc_cat;    // berserk_cat or incarnation_cat
+    buff_t* b_inc_bear;   // berserk_bear or incarnation_bear
+    buff_t* incarnation;  // incarnation_moonkin or incarnation_bear or incarnation_cat
   } buff;
 
   // Cooldowns
@@ -2530,16 +2536,14 @@ public:
         {
           p()->buff.primordial_arcanic_pulsar->current_value -=
               p()->legendary.primordial_arcanic_pulsar->effectN( 1 ).base_value();
+
           timespan_t pulsar_dur =
               timespan_t::from_seconds( p()->legendary.primordial_arcanic_pulsar->effectN( 2 ).base_value() );
-          buff_t* proc_buff =
-              p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
 
-          proc_buff->extend_duration_or_trigger( pulsar_dur, p() );
-
+          p()->buff.ca_inc->extend_duration_or_trigger( pulsar_dur, p() );
           p()->proc.pulsar->occur();
-
           p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
+
           make_event( *sim, pulsar_dur, [ this ]() {
             p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
           } );
@@ -5652,35 +5656,21 @@ struct swipe_proxy_t : public druid_spell_t
 
 struct incarnation_t : public druid_spell_t
 {
-  buff_t* spec_buff;
-
   incarnation_t( druid_t* p, util::string_view options_str ) :
     druid_spell_t( "incarnation", p,
-      p->specialization() == DRUID_BALANCE ? p->talent.incarnation_moonkin :
-      p->specialization() == DRUID_FERAL ? p->talent.incarnation_cat :
-      p->specialization() == DRUID_GUARDIAN ? p->talent.incarnation_bear :
+      p->specialization() == DRUID_BALANCE     ? p->talent.incarnation_moonkin :
+      p->specialization() == DRUID_FERAL       ? p->talent.incarnation_cat :
+      p->specialization() == DRUID_GUARDIAN    ? p->talent.incarnation_bear :
       p->specialization() == DRUID_RESTORATION ? p->talent.incarnation_tree :
       spell_data_t::nil(), options_str )
   {
     switch ( p->specialization() )
     {
-      case DRUID_BALANCE:
-        spec_buff = p->buff.incarnation_moonkin;
-        autoshift = form_mask = MOONKIN_FORM;
-        break;
-      case DRUID_FERAL:
-        spec_buff = p->buff.incarnation_cat;
-        autoshift = form_mask = CAT_FORM;
-        break;
-      case DRUID_GUARDIAN:
-        spec_buff = p->buff.incarnation_bear;
-        autoshift = form_mask = BEAR_FORM;
-        break;
-      case DRUID_RESTORATION:
-        spec_buff = p->buff.incarnation_tree;
-        break;
-      default:
-        assert( false && "Actor attempted to create incarnation action with no specialization." );
+      case DRUID_BALANCE:     autoshift = form_mask = MOONKIN_FORM; break;
+      case DRUID_FERAL:       autoshift = form_mask = CAT_FORM;     break;
+      case DRUID_GUARDIAN:    autoshift = form_mask = BEAR_FORM;    break;
+      case DRUID_RESTORATION:                                       break;
+      default: assert( false && "Actor attempted to create incarnation action with no specialization." );
     }
 
     harmful = false;
@@ -5690,7 +5680,7 @@ struct incarnation_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    spec_buff->trigger();
+    p()->buff.incarnation->trigger();
 
     if ( p()->buff.incarnation_moonkin->check() )
     {
@@ -8577,6 +8567,20 @@ void druid_t::create_buffs()
         buff.sinful_hysteria->trigger( old_ );
     } );
   }
+
+  // Helpers
+  switch( specialization() )
+  {
+    case DRUID_BALANCE:  buff.incarnation = buff.incarnation_moonkin; break;
+    case DRUID_FERAL:    buff.incarnation = buff.incarnation_cat;     break;
+    case DRUID_GUARDIAN: buff.incarnation = buff.incarnation_bear;    break;
+    default:             buff.incarnation = buff.incarnation_tree;    break;  // tree inc does nothing
+  }
+
+  // Note you cannot replace buff checking with these, as it's possible to gain incarnation without the talent
+  buff.ca_inc     = talent.incarnation_moonkin->ok() ? buff.incarnation_moonkin : buff.celestial_alignment;
+  buff.b_inc_cat  = talent.incarnation_cat->ok()     ? buff.incarnation_cat     : buff.berserk_cat;
+  buff.b_inc_bear = talent.incarnation_bear->ok()    ? buff.incarnation_bear    : buff.berserk_bear;
 }
 
 void druid_t::create_actions()
