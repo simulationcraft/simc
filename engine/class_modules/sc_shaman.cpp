@@ -6007,7 +6007,7 @@ struct ascendance_dre_t : public ascendance_t
       }
       else
       {
-        lvb = new lava_burst_t( p(), lava_burst_type::ASCENDANCE, "dre" );
+        lvb = new lava_burst_t( p(), lava_burst_type::DRE_ASCENDANCE, "dre" );
         add_child( lvb );
       }
     }
