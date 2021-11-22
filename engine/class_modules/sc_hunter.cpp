@@ -6313,20 +6313,18 @@ void hunter_t::create_buffs()
   // Tier Set Bonuses
 
   buffs.killing_frenzy =
-    make_buff( this, "killing_frenzy" /*, find_spell( 363760 ) */ )
-      -> set_duration( 8_s )
+    make_buff( this, "killing_frenzy", find_spell( 363760 ) )
       -> set_default_value( tier_set.killing_frenzy_4pc -> effectN( 2 ).percent() )
       -> set_chance( tier_set.killing_frenzy_4pc.ok() );
 
   buffs.mad_bombardier =
-    make_buff( this, "mad_bombardier" /*, find_spell( 363805 ) */ )
-      -> set_duration( 20_s ) // XXX
+    make_buff( this, "mad_bombardier", find_spell( 363805 ) )
+      -> set_default_value_from_effect( 1 )
       -> set_chance( tier_set.mad_bombardier_2pc -> effectN( 1 ).percent() );
 
   buffs.mad_bombardier_4pc =
-    make_buff( this, "mad_bombardier_4pc" /*, find_spell( 363805 ) */ )
-      -> set_duration( 20_s ) // XXX
-      -> set_default_value( 0.5 )
+    make_buff( this, "mad_bombardier_4pc", find_spell( 363805 ) )
+      -> set_default_value_from_effect( 1 )
       -> set_quiet( true )
       -> set_chance( tier_set.mad_bombardier_4pc.ok() );
 
