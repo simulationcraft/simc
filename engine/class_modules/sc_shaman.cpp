@@ -572,6 +572,7 @@ public:
     proc_t* maelstrom_weapon_ft;
     proc_t* stormflurry;
     proc_t* windfury_uw;
+    proc_t* t28_4pc_enh;
   } proc;
 
   // Class Specializations
@@ -707,6 +708,8 @@ public:
     const spell_data_t* flametongue_weapon;
     const spell_data_t* maelstrom;
     const spell_data_t* windfury_weapon;
+    const spell_data_t* t28_2pc_enh;
+    const spell_data_t* t28_4pc_enh;
   } spell;
 
   // Cached pointer for ascendance / normal white melee
@@ -784,7 +787,7 @@ public:
 
   // Misc
   bool active_elemental_pet() const;
-  void summon_feral_spirits( timespan_t duration );
+  void summon_feral_spirits( timespan_t duration, unsigned n = 2 );
   void summon_fire_elemental( timespan_t duration );
   void summon_storm_elemental( timespan_t duration );
 
@@ -856,7 +859,7 @@ public:
   double composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const override;
   double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const;
   double matching_gear_multiplier( attribute_e attr ) const override;
-  action_t* create_action( util::string_view name, const std::string& options ) override;
+  action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = "" ) override;
   void create_pets() override;
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
@@ -1758,6 +1761,18 @@ public:
       }
 
       p()->trigger_legacy_of_the_frost_witch( stacks );
+
+      if ( p()->dbc->ptr && p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B2 ) &&
+           p()->rng().roll( p()->spell.t28_2pc_enh->effectN( 1 ).percent() * stacks ) )
+      {
+        if ( sim->debug )
+        {
+          sim->out_debug.print( "{} Enhancement T28 2PC", p()->name() );
+        }
+        p()->summon_feral_spirits(
+            timespan_t::from_seconds( p()->spell.t28_2pc_enh->effectN( 2 ).base_value() ),
+            1 );
+      }
     }
 
     // Shaman has spells that may fail to execute, so don't trigger stuff that requires a
@@ -1936,7 +1951,7 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
   bool proc_tidal_waves, consume_tidal_waves;
 
   shaman_heal_t( util::string_view n, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
-                 const std::string& options = std::string() )
+                 util::string_view options = {} )
     : base_t( n, p, s ),
       elw_proc_high( .2 ),
       elw_proc_low( 1.0 ),
@@ -2062,7 +2077,7 @@ struct shaman_pet_t : public pet_t
     }
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
 
   virtual attack_t* create_auto_attack()
   {
@@ -2086,7 +2101,7 @@ struct pet_action_t : public T_ACTION
   using super = pet_action_t<T_PET, T_ACTION>;
 
   pet_action_t( T_PET* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(),
-                const std::string& options = std::string() )
+                util::string_view options = {} )
     : T_ACTION( name, pet, spell )
   {
     this->parse_options( options );
@@ -2196,7 +2211,7 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
   using super = pet_spell_t<T_PET>;
 
   pet_spell_t( T_PET* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(),
-               const std::string& options = std::string() )
+               util::string_view options = {} )
     : pet_action_t<T_PET, spell_t>( pet, name, spell, options )
   {
     this->parse_options( options );
@@ -2207,7 +2222,7 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 // Base Shaman Pet Method Definitions
 // ==========================================================================
 
-action_t* shaman_pet_t::create_action( util::string_view name, const std::string& options_str )
+action_t* shaman_pet_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "auto_attack" )
     return new auto_attack_t( this );
@@ -2235,35 +2250,12 @@ struct base_wolf_t : public shaman_pet_t
 };
 
 template <typename T>
-struct wolf_base_attack_t : public pet_melee_attack_t<T>
-{
-  using super = wolf_base_attack_t<T>;
-
-  wolf_base_attack_t( T* wolf, const std::string& n, const spell_data_t* spell = spell_data_t::nil(),
-                      const std::string& options_str = std::string() )
-    : pet_melee_attack_t<T>( wolf, n, spell )
-  {
-    this->parse_options( options_str );
-  }
-
-  void execute() override
-  {
-    pet_melee_attack_t<T>::execute();
-  }
-
-  void tick( dot_t* d ) override
-  {
-    pet_melee_attack_t<T>::tick( d );
-  }
-};
-
-template <typename T>
 struct wolf_base_auto_attack_t : public pet_melee_attack_t<T>
 {
   using super = wolf_base_auto_attack_t<T>;
 
   wolf_base_auto_attack_t( T* wolf, const std::string& n, const spell_data_t* spell = spell_data_t::nil(),
-                           const std::string& options_str = std::string() )
+                           util::string_view options_str = {} )
     : pet_melee_attack_t<T>( wolf, n, spell )
   {
     this->parse_options( options_str );
@@ -2277,26 +2269,33 @@ struct wolf_base_auto_attack_t : public pet_melee_attack_t<T>
     this->base_execute_time = this->weapon->swing_time;
     this->school            = SCHOOL_PHYSICAL;
   }
+
+  void execute() override
+  {
+    pet_melee_attack_t<T>::execute();
+
+    if ( this->p()->o()->dbc->ptr &&
+         this->p()->o()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B4 ) &&
+         this->rng().roll( this->p()->o()->spell.t28_4pc_enh->effectN( 1 ).percent() ) )
+    {
+      this->p()->o()->buff.stormbringer->trigger();
+      this->p()->o()->cooldown.strike->reset( true );
+      this->p()->o()->proc.t28_4pc_enh->occur();
+    }
+  }
 };
 
 struct spirit_wolf_t : public base_wolf_t
 {
   struct fs_melee_t : public wolf_base_auto_attack_t<spirit_wolf_t>
   {
-    const spell_data_t* maelstrom;
-
     fs_melee_t( spirit_wolf_t* player ) : super( player, "melee" )
-    {
-    }
-
-    void impact( action_state_t* state ) override
-    {
-      melee_attack_t::impact( state );
-    }
+    { }
   };
 
   spirit_wolf_t( shaman_t* owner ) : base_wolf_t( owner, "spirit_wolf" )
   {
+    dynamic = true;
   }
 
   attack_t* create_auto_attack() override
@@ -2314,8 +2313,7 @@ struct elemental_wolf_base_t : public base_wolf_t
   struct dw_melee_t : public wolf_base_auto_attack_t<elemental_wolf_base_t>
   {
     dw_melee_t( elemental_wolf_base_t* player ) : super( player, "melee" )
-    {
-    }
+    { }
   };
 
   cooldown_t* special_ability_cd;
@@ -2323,7 +2321,6 @@ struct elemental_wolf_base_t : public base_wolf_t
   elemental_wolf_base_t( shaman_t* owner, const std::string& name )
     : base_wolf_t( owner, name ), special_ability_cd( nullptr )
   {
-    // Make Wolves dynamic so we get accurate reporting for special abilities
     dynamic = true;
   }
 
@@ -2405,7 +2402,7 @@ struct primal_elemental_t : public shaman_pet_t
     shaman_pet_t::create_default_apl();
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "travel" )
       return new travel_t( this );
@@ -2495,7 +2492,7 @@ struct fire_elemental_t : public primal_elemental_t
 
   struct meteor_t : public pet_spell_t<fire_elemental_t>
   {
-    meteor_t( fire_elemental_t* player, const std::string& options )
+    meteor_t( fire_elemental_t* player, util::string_view options )
       : super( player, "meteor", player->find_spell( 117588 ), options )
     {
       aoe = -1;
@@ -2504,7 +2501,7 @@ struct fire_elemental_t : public primal_elemental_t
 
   struct fire_blast_t : public pet_spell_t<fire_elemental_t>
   {
-    fire_blast_t( fire_elemental_t* player, const std::string& options )
+    fire_blast_t( fire_elemental_t* player, util::string_view options )
       : super( player, "fire_blast", player->find_spell( 57984 ), options )
     {
     }
@@ -2517,7 +2514,7 @@ struct fire_elemental_t : public primal_elemental_t
 
   struct immolate_t : public pet_spell_t<fire_elemental_t>
   {
-    immolate_t( fire_elemental_t* player, const std::string& options )
+    immolate_t( fire_elemental_t* player, util::string_view options )
       : super( player, "immolate", player->find_spell( 118297 ), options )
     {
       hasted_ticks = tick_may_crit = true;
@@ -2539,7 +2536,7 @@ struct fire_elemental_t : public primal_elemental_t
     def->add_action( "fire_blast" );
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "fire_blast" )
       return new fire_blast_t( this, options_str );
@@ -2568,7 +2565,7 @@ struct storm_elemental_t : public primal_elemental_t
     int tick_number   = 0;
     double damage_amp = 0.0;
 
-    eye_of_the_storm_aoe_t( storm_elemental_t* player, const std::string& options )
+    eye_of_the_storm_aoe_t( storm_elemental_t* player, util::string_view options )
       : super( player, "eye_of_the_storm_aoe", player->find_spell( 269005 ), options )
     {
       aoe        = -1;
@@ -2590,7 +2587,7 @@ struct storm_elemental_t : public primal_elemental_t
   {
     eye_of_the_storm_aoe_t* breeze = nullptr;
 
-    eye_of_the_storm_t( storm_elemental_t* player, const std::string& options )
+    eye_of_the_storm_t( storm_elemental_t* player, util::string_view options )
       : super( player, "eye_of_the_storm", player->find_spell( 157375 ), options )
     {
       channeled   = true;
@@ -2615,7 +2612,7 @@ struct storm_elemental_t : public primal_elemental_t
 
   struct wind_gust_t : public pet_spell_t<storm_elemental_t>
   {
-    wind_gust_t( storm_elemental_t* player, const std::string& options )
+    wind_gust_t( storm_elemental_t* player, util::string_view options )
       : super( player, "wind_gust", player->find_spell( 157331 ), options )
     {
     }
@@ -2623,7 +2620,7 @@ struct storm_elemental_t : public primal_elemental_t
 
   struct call_lightning_t : public pet_spell_t<storm_elemental_t>
   {
-    call_lightning_t( storm_elemental_t* player, const std::string& options )
+    call_lightning_t( storm_elemental_t* player, util::string_view options )
       : super( player, "call_lightning", player->find_spell( 157348 ), options )
     {
     }
@@ -2676,7 +2673,7 @@ struct storm_elemental_t : public primal_elemental_t
     return m;
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "eye_of_the_storm" )
       return new eye_of_the_storm_t( this, options_str );
@@ -3172,7 +3169,7 @@ struct auto_attack_t : public shaman_attack_t
   int sync_weapons;
   double swing_timer_variance;
 
-  auto_attack_t( shaman_t* player, const std::string& options_str )
+  auto_attack_t( shaman_t* player, util::string_view options_str )
     : shaman_attack_t( "auto_attack", player, spell_data_t::nil() ), sync_weapons( 0 ), swing_timer_variance( 0.00 )
   {
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
@@ -3246,7 +3243,7 @@ struct lava_lash_t : public shaman_attack_t
 {
   molten_weapon_dot_t* mw_dot;
 
-  lava_lash_t( shaman_t* player, const std::string& options_str )
+  lava_lash_t( shaman_t* player, util::string_view options_str )
     : shaman_attack_t( "lava_lash", player, player->find_specialization_spell( "Lava Lash" ) ), mw_dot( nullptr )
   {
     check_spec( SHAMAN_ENHANCEMENT );
@@ -3365,7 +3362,7 @@ struct stormstrike_base_t : public shaman_attack_t
   bool stormflurry;
 
   stormstrike_base_t( shaman_t* player, const std::string& name, const spell_data_t* spell,
-                      const std::string& options_str )
+                      util::string_view options_str )
     : shaman_attack_t( name, player, spell ), mh( nullptr ), oh( nullptr ),
       stormflurry( false )
   {
@@ -3468,7 +3465,7 @@ struct stormstrike_base_t : public shaman_attack_t
 
 struct stormstrike_t : public stormstrike_base_t
 {
-  stormstrike_t( shaman_t* player, const std::string& options_str )
+  stormstrike_t( shaman_t* player, util::string_view options_str )
     : stormstrike_base_t( player, "stormstrike", player->find_specialization_spell( "Stormstrike" ), options_str )
   {
     // Actual damaging attacks are done by stormstrike_attack_t
@@ -3499,7 +3496,7 @@ struct windstrike_t : public stormstrike_base_t
 {
   timespan_t cd;
 
-  windstrike_t( shaman_t* player, const std::string& options_str )
+  windstrike_t( shaman_t* player, util::string_view options_str )
     : stormstrike_base_t( player, "windstrike", player->find_spell( 115356 ), options_str ), cd( data().cooldown() )
   {
     // Actual damaging attacks are done by stormstrike_attack_t
@@ -3545,7 +3542,7 @@ struct windstrike_t : public stormstrike_base_t
 
 struct ice_strike_t : public shaman_attack_t
 {
-  ice_strike_t( shaman_t* player, const std::string& options_str )
+  ice_strike_t( shaman_t* player, util::string_view options_str )
     : shaman_attack_t( "ice_strike", player, player->talent.ice_strike )
   {
     parse_options( options_str );
@@ -3576,7 +3573,7 @@ struct ice_strike_t : public shaman_attack_t
 
 struct sundering_t : public shaman_attack_t
 {
-  sundering_t( shaman_t* player, const std::string& options_str )
+  sundering_t( shaman_t* player, util::string_view options_str )
     : shaman_attack_t( "sundering", player, player->talent.sundering )
   {
     weapon = &( player->main_hand_weapon );
@@ -3602,7 +3599,7 @@ struct weapon_imbue_t : public shaman_spell_t
   slot_e slot, default_slot;
   imbue_e imbue;
 
-  weapon_imbue_t( const std::string& name, shaman_t* player, slot_e d_, const spell_data_t* spell, const std::string& options_str ) :
+  weapon_imbue_t( const std::string& name, shaman_t* player, slot_e d_, const spell_data_t* spell, util::string_view options_str ) :
     shaman_spell_t( name, player, spell ), slot( SLOT_INVALID ), default_slot( d_ ), imbue( IMBUE_NONE )
   {
     harmful = false;
@@ -3668,7 +3665,7 @@ struct weapon_imbue_t : public shaman_spell_t
 
 struct windfury_weapon_t : public weapon_imbue_t
 {
-  windfury_weapon_t( shaman_t* player, const std::string& options_str ) :
+  windfury_weapon_t( shaman_t* player, util::string_view options_str ) :
     weapon_imbue_t( "windfury_weapon", player, SLOT_MAIN_HAND,
                     player->find_specialization_spell( "Windfury Weapon" ), options_str )
   {
@@ -3694,7 +3691,7 @@ struct windfury_weapon_t : public weapon_imbue_t
 
 struct flametongue_weapon_t : public weapon_imbue_t
 {
-  flametongue_weapon_t( shaman_t* player, const std::string& options_str ) :
+  flametongue_weapon_t( shaman_t* player, util::string_view options_str ) :
     weapon_imbue_t( "flametongue_weapon", player,
                     SLOT_OFF_HAND, player->find_spell( "Flametongue Weapon" ), options_str )
   {
@@ -3715,7 +3712,7 @@ struct flametongue_weapon_t : public weapon_imbue_t
 
 struct crash_lightning_t : public shaman_attack_t
 {
-  crash_lightning_t( shaman_t* player, const std::string& options_str )
+  crash_lightning_t( shaman_t* player, util::string_view options_str )
     : shaman_attack_t( "crash_lightning", player, player->find_specialization_spell( "Crash Lightning" ) )
   {
     parse_options( options_str );
@@ -3784,7 +3781,7 @@ struct crash_lightning_t : public shaman_attack_t
 
 struct earth_elemental_t : public shaman_spell_t
 {
-  earth_elemental_t( shaman_t* player, const std::string& options_str )
+  earth_elemental_t( shaman_t* player, util::string_view options_str )
     : shaman_spell_t( "earth_elemental", player, player->find_spell( 188616 ) )
   {
     parse_options( options_str );
@@ -3827,7 +3824,7 @@ struct earth_elemental_t : public shaman_spell_t
 
 struct fire_elemental_t : public shaman_spell_t
 {
-  fire_elemental_t( shaman_t* player, const std::string& options_str )
+  fire_elemental_t( shaman_t* player, util::string_view options_str )
     : shaman_spell_t( "fire_elemental", player, player->find_specialization_spell( "Fire Elemental" ) )
   {
     parse_options( options_str );
@@ -3864,7 +3861,7 @@ struct fire_elemental_t : public shaman_spell_t
 
 struct storm_elemental_t : public shaman_spell_t
 {
-  storm_elemental_t( shaman_t* player, const std::string& options_str )
+  storm_elemental_t( shaman_t* player, util::string_view options_str )
     : shaman_spell_t( "storm_elemental", player, player->talent.storm_elemental )
   {
     parse_options( options_str );
@@ -3890,7 +3887,7 @@ struct storm_elemental_t : public shaman_spell_t
 
 struct earthen_spike_t : public shaman_attack_t
 {
-  earthen_spike_t( shaman_t* player, const std::string& options_str ) :
+  earthen_spike_t( shaman_t* player, util::string_view options_str ) :
     shaman_attack_t( "earthen_spike", player, player->talent.earthen_spike )
   {
     parse_options( options_str );
@@ -3908,7 +3905,7 @@ struct earthen_spike_t : public shaman_attack_t
 
 struct lightning_shield_t : public shaman_spell_t
 {
-  lightning_shield_t( shaman_t* player, const std::string& options_str ) :
+  lightning_shield_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "lightning_shield", player, player->find_talent_spell( "Lightning Shield" ) )
   {
     parse_options( options_str );
@@ -3936,7 +3933,7 @@ struct lightning_shield_t : public shaman_spell_t
 
 struct bloodlust_t : public shaman_spell_t
 {
-  bloodlust_t( shaman_t* player, const std::string& options_str ) :
+  bloodlust_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "bloodlust", player, player->find_class_spell( "Bloodlust" ) )
   {
     parse_options( options_str );
@@ -4018,7 +4015,7 @@ struct lava_beam_overload_t : public chained_overload_base_t
 struct chained_base_t : public shaman_spell_t
 {
   chained_base_t( shaman_t* player, const std::string& name, const spell_data_t* spell, double mg,
-                  const std::string& options_str )
+                  util::string_view options_str )
     : shaman_spell_t( name, player, spell )
   {
     parse_options( options_str );
@@ -4072,7 +4069,7 @@ struct chained_base_t : public shaman_spell_t
 
 struct chain_lightning_t : public chained_base_t
 {
-  chain_lightning_t( shaman_t* player, const std::string& options_str )
+  chain_lightning_t( shaman_t* player, util::string_view options_str )
     : chained_base_t( player, "chain_lightning", player->find_class_spell( "Chain Lightning" ),
                       player->spell.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
   {
@@ -4220,7 +4217,7 @@ struct lava_beam_t : public chained_base_t
 {
   // This is actually a tooltip bug in-game: real testing shows that Lava Beam and
   // Lava Beam Overload generate resources identical to their Chain Lightning counterparts
-  lava_beam_t( shaman_t* player, const std::string& options_str )
+  lava_beam_t( shaman_t* player, util::string_view options_str )
     : chained_base_t( player, "lava_beam", player->find_spell( 114074 ),
                       player->spell.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
   {
@@ -4530,7 +4527,7 @@ struct fire_nova_explosion_t : public shaman_spell_t
 
 struct fire_nova_t : public shaman_spell_t
 {
-  fire_nova_t( shaman_t* p, const std::string& options_str )
+  fire_nova_t( shaman_t* p, util::string_view options_str )
     : shaman_spell_t( "fire_nova", p, p->find_talent_spell( "Fire Nova" ) )
   {
     parse_options( options_str );
@@ -4569,7 +4566,7 @@ struct lava_burst_t : public shaman_spell_t
   }
 
   lava_burst_t( shaman_t* player, lava_burst_type type_, const std::string& suffix,
-                const std::string& options_str = std::string() )
+                util::string_view options_str = std::string() )
     : shaman_spell_t( action_name( suffix ), player,
                       player->find_specialization_spell( "Lava Burst" ) ),
       type( type_ ), impact_flags(), wlr_buffed_impact( false )
@@ -4874,7 +4871,7 @@ struct lightning_bolt_t : public shaman_spell_t
     }
   }
 
-  lightning_bolt_t( shaman_t* player, lightning_bolt_type type_, const std::string& options_str = std::string() ) :
+  lightning_bolt_t( shaman_t* player, lightning_bolt_type type_, util::string_view options_str = std::string() ) :
     shaman_spell_t( action_name( type_ ), player, player->find_class_spell( "Lightning Bolt" ) ),
     type( type_ )
   {
@@ -5123,7 +5120,7 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
 
 struct elemental_blast_t : public shaman_spell_t
 {
-  elemental_blast_t( shaman_t* player, const std::string& options_str ) :
+  elemental_blast_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "elemental_blast", player, player->talent.elemental_blast )
   {
     parse_options( options_str );
@@ -5159,7 +5156,7 @@ struct icefury_overload_t : public elemental_overload_spell_t
 
 struct icefury_t : public shaman_spell_t
 {
-  icefury_t( shaman_t* player, const std::string& options_str ) :
+  icefury_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "icefury", player, player->talent.icefury )
   {
     parse_options( options_str );
@@ -5185,7 +5182,7 @@ struct icefury_t : public shaman_spell_t
 
 struct feral_spirit_spell_t : public shaman_spell_t
 {
-  feral_spirit_spell_t( shaman_t* player, const std::string& options_str ) :
+  feral_spirit_spell_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "feral_spirit", player, player->find_specialization_spell( "Feral Spirit" ) )
   {
     parse_options( options_str );
@@ -5214,7 +5211,7 @@ struct feral_spirit_spell_t : public shaman_spell_t
 
 struct thunderstorm_t : public shaman_spell_t
 {
-  thunderstorm_t( shaman_t* player, const std::string& options_str ) :
+  thunderstorm_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "thunderstorm", player, player->find_specialization_spell( "Thunderstorm" ) )
   {
     parse_options( options_str );
@@ -5224,7 +5221,7 @@ struct thunderstorm_t : public shaman_spell_t
 
 struct spiritwalkers_grace_t : public shaman_spell_t
 {
-  spiritwalkers_grace_t( shaman_t* player, const std::string& options_str ) :
+  spiritwalkers_grace_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "spiritwalkers_grace", player, player->find_specialization_spell( "Spiritwalker's Grace" ) )
   {
     parse_options( options_str );
@@ -5293,7 +5290,7 @@ struct earthquake_t : public shaman_spell_t
   action_t* shake_the_foundations_cl;
   action_t* shake_the_foundations_lb;
 
-  earthquake_t( shaman_t* player, const std::string& options_str ) :
+  earthquake_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "earthquake", player, player->find_specialization_spell( "Earthquake" ) ),
     rumble( new earthquake_damage_t( player ) ), shake_the_foundations_cl( nullptr ),
     shake_the_foundations_lb( nullptr )
@@ -5367,7 +5364,7 @@ struct earthquake_t : public shaman_spell_t
 
 struct spirit_walk_t : public shaman_spell_t
 {
-  spirit_walk_t( shaman_t* player, const std::string& options_str ) :
+  spirit_walk_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "spirit_walk", player, player->find_specialization_spell( "Spirit Walk" ) )
   {
     parse_options( options_str );
@@ -5384,7 +5381,7 @@ struct spirit_walk_t : public shaman_spell_t
 
 struct ghost_wolf_t : public shaman_spell_t
 {
-  ghost_wolf_t( shaman_t* player, const std::string& options_str ) :
+  ghost_wolf_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "ghost_wolf", player, player->find_class_spell( "Ghost Wolf" ) )
   {
     parse_options( options_str );
@@ -5428,7 +5425,7 @@ struct feral_lunge_t : public shaman_spell_t
     }
   };
 
-  feral_lunge_t( shaman_t* player, const std::string& options_str ) :
+  feral_lunge_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "feral_lunge", player, player->talent.feral_lunge )
   {
     parse_options( options_str );
@@ -5460,7 +5457,7 @@ struct feral_lunge_t : public shaman_spell_t
 // Earth Shock Spell ========================================================
 struct earth_shock_t : public shaman_spell_t
 {
-  earth_shock_t( shaman_t* player, const std::string& options_str ) :
+  earth_shock_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "earth_shock", player, player->find_specialization_spell( "Earth Shock" ) )
   {
     parse_options( options_str );
@@ -5546,7 +5543,7 @@ struct flame_shock_t : public shaman_spell_t
   const spell_data_t* elemental_resource;
   const spell_data_t* skybreakers_effect;
 
-  flame_shock_t( shaman_t* player, const std::string& options_str = std::string() ) :
+  flame_shock_t( shaman_t* player, util::string_view options_str = std::string() ) :
     shaman_spell_t( "flame_shock", player, player->find_class_spell( "Flame Shock" ) ),
     spreader( player->talent.surge_of_power->ok() ? new flame_shock_spreader_t( player ) : nullptr ),
     elemental_resource( player->find_spell( 263819 ) ),
@@ -5703,7 +5700,7 @@ struct flame_shock_t : public shaman_spell_t
 
 struct frost_shock_t : public shaman_spell_t
 {
-  frost_shock_t( shaman_t* player, const std::string& options_str ) :
+  frost_shock_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "frost_shock", player, player->find_class_spell( "Frost Shock" ) )
 
   {
@@ -5780,7 +5777,7 @@ struct frost_shock_t : public shaman_spell_t
 
 struct wind_shear_t : public shaman_spell_t
 {
-  wind_shear_t( shaman_t* player, const std::string& options_str ) :
+  wind_shear_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "wind_shear", player, player->find_class_spell( "Wind Shear" ) )
   {
     parse_options( options_str );
@@ -5822,7 +5819,7 @@ struct ascendance_t : public shaman_spell_t
   ascendance_damage_t* ascendance_damage;
   lava_burst_t* lvb;
 
-  ascendance_t( shaman_t* player, const std::string& name_str, const std::string& options_str = std::string() ) :
+  ascendance_t( shaman_t* player, const std::string& name_str, util::string_view options_str = std::string() ) :
     shaman_spell_t( name_str, player, player->find_talent_spell( "Ascendance", player->specialization(), false, false ) ),
     fs( player->specialization() == SHAMAN_ELEMENTAL ? new flame_shock_t( player, "" ) : nullptr ),
     ascendance_damage( nullptr ), lvb( nullptr )
@@ -5973,7 +5970,7 @@ struct ascendance_dre_t : public ascendance_t
 // Stormkeeper Spell ========================================================
 struct stormkeeper_t : public shaman_spell_t
 {
-  stormkeeper_t( shaman_t* player, const std::string& options_str ) :
+  stormkeeper_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "stormkeeper", player, player->talent.stormkeeper )
   {
     parse_options( options_str );
@@ -5992,7 +5989,7 @@ struct stormkeeper_t : public shaman_spell_t
 
 struct static_discharge_t : public shaman_spell_t
 {
-  static_discharge_t( shaman_t* player, const std::string& options_str ) :
+  static_discharge_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "static_discharge", player, player->talent.static_discharge )
   {
     parse_options( options_str );
@@ -6053,7 +6050,7 @@ struct static_discharge_tick_t : public shaman_spell_t
 
 struct echoing_shock_t : public shaman_spell_t
 {
-  echoing_shock_t( shaman_t* player, const std::string& options_str ) :
+  echoing_shock_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "echoing_shock", player, player->talent.echoing_shock )
   {
     parse_options( options_str );
@@ -6072,7 +6069,7 @@ struct echoing_shock_t : public shaman_spell_t
 
 struct healing_surge_t : public shaman_heal_t
 {
-  healing_surge_t( shaman_t* player, const std::string& options_str )
+  healing_surge_t( shaman_t* player, util::string_view options_str )
     : shaman_heal_t("healing_surge", player, player->find_class_spell( "Healing Surge" ), options_str )
   {
     resurgence_gain =
@@ -6096,7 +6093,7 @@ struct healing_surge_t : public shaman_heal_t
 
 struct healing_wave_t : public shaman_heal_t
 {
-  healing_wave_t( shaman_t* player, const std::string& options_str )
+  healing_wave_t( shaman_t* player, util::string_view options_str )
     : shaman_heal_t("healing_wave", player, player->find_specialization_spell( "Healing Wave" ), options_str )
   {
     resurgence_gain =
@@ -6120,7 +6117,7 @@ struct healing_wave_t : public shaman_heal_t
 
 struct greater_healing_wave_t : public shaman_heal_t
 {
-  greater_healing_wave_t( shaman_t* player, const std::string& options_str )
+  greater_healing_wave_t( shaman_t* player, util::string_view options_str )
     : shaman_heal_t("greater_healing_wave", player, player->find_specialization_spell( "Greater Healing Wave" ), options_str )
   {
     resurgence_gain =
@@ -6144,7 +6141,7 @@ struct greater_healing_wave_t : public shaman_heal_t
 
 struct riptide_t : public shaman_heal_t
 {
-  riptide_t( shaman_t* player, const std::string& options_str )
+  riptide_t( shaman_t* player, util::string_view options_str )
     : shaman_heal_t("riptide", player, player->find_specialization_spell( "Riptide" ), options_str )
   {
     resurgence_gain =
@@ -6156,7 +6153,7 @@ struct riptide_t : public shaman_heal_t
 
 struct chain_heal_t : public shaman_heal_t
 {
-  chain_heal_t( shaman_t* player, const std::string& options_str )
+  chain_heal_t( shaman_t* player, util::string_view options_str )
     : shaman_heal_t("chain_heal", player, player->find_class_spell( "Chain Heal" ), options_str )
   {
     resurgence_gain =
@@ -6222,7 +6219,7 @@ struct healing_rain_t : public shaman_heal_t
     }
   };
 
-  healing_rain_t( shaman_t* player, const std::string& options_str )
+  healing_rain_t( shaman_t* player, util::string_view options_str )
     : shaman_heal_t( "healing_rain", player, player->find_specialization_spell( "Healing Rain" ),
                      options_str )
   {
@@ -6235,7 +6232,7 @@ struct healing_rain_t : public shaman_heal_t
 
 struct windfury_totem_t : public shaman_spell_t
 {
-  windfury_totem_t( shaman_t* player, const std::string& options_str ) :
+  windfury_totem_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "windfury_totem", player, player->find_class_spell( "Windfury Totem" ) )
   {
     parse_options( options_str );
@@ -6379,7 +6376,7 @@ struct shaman_totem_t : public shaman_spell_t
   shaman_totem_pet_t* totem_pet;
   timespan_t totem_duration;
 
-  shaman_totem_t( const std::string& totem_name, shaman_t* player, const std::string& options_str,
+  shaman_totem_t( const std::string& totem_name, shaman_t* player, util::string_view options_str,
                   const spell_data_t* spell_data ) :
     shaman_spell_t( totem_name, player, spell_data ),
     totem_pet( nullptr ), totem_duration( data().duration() )
@@ -6641,7 +6638,7 @@ struct capacitor_totem_t : public shaman_totem_pet_t
 
 struct lightning_lasso_t : public shaman_spell_t
 {
-  lightning_lasso_t( shaman_t* player, const std::string& options_str ) :
+  lightning_lasso_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "lightning_lasso", player, player->find_spell( 305485 ) )
   {
     parse_options( options_str );
@@ -6663,7 +6660,7 @@ struct lightning_lasso_t : public shaman_spell_t
 
 struct thundercharge_t : public shaman_spell_t
 {
-  thundercharge_t( shaman_t* player, const std::string& options_str ) :
+  thundercharge_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "thundercharge", player, player->find_spell( 204366 ) )
   {
     parse_options( options_str );
@@ -6688,7 +6685,7 @@ struct fae_transfusion_tick_t : public shaman_spell_t
   const spell_data_t* seeds_effect;
 
   fae_transfusion_tick_t( const std::string& n, shaman_t* player )
-    : shaman_spell_t( n, player, player->find_spell( 328928 ) ), 
+    : shaman_spell_t( n, player, player->find_spell( 328928 ) ),
       seeds_effect( player->find_spell( 356218 ) )
   {
     affected_by_master_of_the_elements = true;
@@ -6732,7 +6729,7 @@ struct fae_transfusion_tick_t : public shaman_spell_t
 
 struct fae_transfusion_t : public shaman_spell_t
 {
-  fae_transfusion_t( shaman_t* player, const std::string& options_str ) :
+  fae_transfusion_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "fae_transfusion", player, player->find_covenant_spell( "Fae Transfusion" ) )
   {
     parse_options( options_str );
@@ -6771,7 +6768,7 @@ struct primordial_wave_t : public shaman_spell_t
 {
   flame_shock_t* flame_shock;
 
-  primordial_wave_t( shaman_t* player, const std::string& options_str ) :
+  primordial_wave_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "primordial_wave", player, player->covenant.necrolord ),
     flame_shock( new flame_shock_t( player ) )
   {
@@ -6826,7 +6823,7 @@ struct chain_harvest_t : public shaman_spell_t
 {
   int critical_hits = 0;
   flame_shock_t* fs;
-  chain_harvest_t( shaman_t* player, const std::string& options_str ) :
+  chain_harvest_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "chain_harvest", player, player->covenant.venthyr ),
       fs(new flame_shock_t(player, ""))
   {
@@ -6992,7 +6989,7 @@ struct vesper_totem_t : public shaman_spell_t
   vesper_totem_damage_t* damage;
   raging_vesper_vortex_t* legendary_damage;
 
-  vesper_totem_t( shaman_t* player, const std::string& options_str ) :
+  vesper_totem_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "vesper_totem", player, player->covenant.kyrian ),
     damage( new vesper_totem_damage_t( player ) ),
     legendary_damage( new raging_vesper_vortex_t(player) )
@@ -7028,7 +7025,8 @@ struct vesper_totem_t : public shaman_spell_t
                 case ground_aoe_params_t::state_type::EVENT_STOPPED:
                   this->p()->buff.vesper_totem->expire();
                   if ( this->p()->legendary.raging_vesper_vortex->ok() &&
-                       damage->closest_target )
+                       !damage->target_list().empty() &&
+                       damage->closest_target != nullptr )
                   {
                     // Make Vesper Totem "closest target" the primary target of the
                     // Raging Vesper Vortex aoe
@@ -7194,7 +7192,7 @@ void shaman_t::trigger_secondary_ability( const action_state_t* source_state, ac
 
 // shaman_t::create_action  =================================================
 
-action_t* shaman_t::create_action( util::string_view name, const std::string& options_str )
+action_t* shaman_t::create_action( util::string_view name, util::string_view options_str )
 {
   // shared
   if ( name == "ascendance" )
@@ -7399,11 +7397,11 @@ void shaman_t::create_pets()
 
 std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
 {
-  std::vector<std::string> splits = util::string_split( name, "." );
+  auto splits = util::string_split<util::string_view>( name, "." );
 
   if ( splits.size() >= 3 && util::str_compare_ci( splits[ 0 ], "pet" ) )
   {
-    auto require_primal = splits[ 1 ].find( "primal_" ) != std::string::npos;
+    auto require_primal = splits[ 1 ].find( "primal_" ) != util::string_view::npos;
     auto et             = elemental::FIRE;
     if ( util::str_in_str_ci( splits[ 1 ], "fire" ) )
     {
@@ -7803,6 +7801,9 @@ void shaman_t::init_spells()
   spell.windfury_weapon          = find_spell( 319773 );
   spell.splintered_elements = find_spell( 354647 );
 
+  spell.t28_2pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B2 );
+  spell.t28_4pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B4 );
+
   player_t::init_spells();
 }
 
@@ -7869,18 +7870,17 @@ bool shaman_t::active_elemental_pet() const
   }
 }
 
-void shaman_t::summon_feral_spirits( timespan_t duration )
+void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n )
 {
   // No elemental spirits selected, just summon normal pets and exit
   if ( !talent.elemental_spirits->ok() )
   {
-    pet.spirit_wolves.spawn( duration, 2U );
+    pet.spirit_wolves.spawn( duration, n );
     return;
   }
 
   // This summon evaluates the wolf type to spawn as the roll, instead of rolling against
   // the available pool of wolves to spawn.
-  size_t n = 2;
   while ( n )
   {
     // +1, because the normal spirit wolves are enum value 0
@@ -8513,7 +8513,7 @@ void shaman_t::create_buffs()
   buff.chains_of_devastation_chain_heal = make_buff( this, "chains_of_devastation_chain_heal", find_spell( 336737 ) );
   buff.chains_of_devastation_chain_lightning =
       make_buff( this, "chains_of_devastation_chain_lightning", find_spell( 336736 ) );
-  
+
   buff.windspeakers_lava_resurgence = make_buff( this, "windspeakers_lava_resurgence", find_spell( 336065 ) )
                             ->set_default_value( find_spell( 336065 )->effectN( 1 ).percent() );
 
@@ -8649,6 +8649,8 @@ void shaman_t::init_procs()
   proc.maelstrom_weapon_cttc = get_proc( "Maelstrom Weapon: Chilled to the Core" );
   proc.maelstrom_weapon_ft = get_proc( "Maelstrom Weapon: Fae Transfusion" );
   proc.stormflurry       = get_proc( "Stormflurry" );
+
+  proc.t28_4pc_enh       = get_proc( "Set Bonus: Tier28 4PC Enhancement" );
 }
 
 // shaman_t::init_assessors =================================================
@@ -8926,7 +8928,7 @@ void shaman_t::init_action_list_elemental()
                            "if=!talent.elemental_blast.enabled&spell_targets.chain_lightning<3|buff.stormkeeper.up" );
     precombat->add_action( this, "Chain Lightning",
                            "if=!talent.elemental_blast.enabled&spell_targets.chain_lightning>=3&!buff.stormkeeper.up" );
-    precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" ); 
+    precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" );
     precombat->add_action( "snapshot_stats" );
     precombat->add_action( "potion" );
 
@@ -9088,7 +9090,7 @@ void shaman_t::init_action_list_elemental()
                                "talent.elemental_blast.enabled&!talent.echoing_shock.enabled" );
     single_target->add_action( "chain_harvest" );
     single_target->add_action( this, "Frost Shock",
-                               "if=talent.icefury.enabled&buff.icefury.up" );	
+                               "if=talent.icefury.enabled&buff.icefury.up" );
     single_target->add_action( "fleshcraft,interrupt=1,if=soulbind.volatile_solvent" );
     single_target->add_talent( this, "Static Discharge", "if=talent.static_discharge.enabled" );
     single_target->add_action( this, "Earth Elemental",
@@ -9160,11 +9162,11 @@ void shaman_t::init_action_list_elemental()
     precombat->add_action( "augmentation" );
     precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled" );
     precombat->add_talent( this, "Stormkeeper",
-							"if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
-							"Use Stormkeeper precombat unless some adds will spawn soon." );
+                           "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
+                           "Use Stormkeeper precombat unless some adds will spawn soon." );
     precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
     precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
-	
+
     precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
     precombat->add_action( "potion" );
 
@@ -9260,7 +9262,7 @@ void shaman_t::init_action_list_enhancement()
   precombat->add_action( this, "Lightning Shield" );
   precombat->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
   precombat->add_action( this, "Windfury Totem", "if=!runeforge.doom_winds.equipped" );
-  precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" ); 
+  precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" );
 
   // Precombat potion
   precombat->add_action( "potion" );
@@ -10289,19 +10291,16 @@ struct shaman_module_t : public module_t
   }
 
   void static_init() const override
-  {
-  }
+  { }
 
   void register_hotfixes() const override
-  {
-  }
+  { }
 
   void combat_begin( sim_t* ) const override
-  {
-  }
+  { }
+
   void combat_end( sim_t* ) const override
-  {
-  }
+  { }
 };
 
 shaman_t::pets_t::pets_t( shaman_t* s )
@@ -10312,14 +10311,18 @@ shaman_t::pets_t::pets_t( shaman_t* s )
     guardian_storm_elemental( nullptr ),
     guardian_earth_elemental( nullptr ),
 
-    spirit_wolves( "spirit_wolf", s, []( shaman_t* s ) { return new pet::spirit_wolf_t( s ); } ),
-    fire_wolves( "fiery_wolf", s, []( shaman_t* s ) { return new pet::fire_wolf_t( s ); } ),
-    frost_wolves( "frost_wolf", s, []( shaman_t* s ) { return new pet::frost_wolf_t( s ); } ),
-    lightning_wolves( "lightning_wolf", s, []( shaman_t* s ) { return new pet::lightning_wolf_t( s ); } ),
+    spirit_wolves( "spirit_wolf", s, 6, []( shaman_t* s ) { return new pet::spirit_wolf_t( s ); } ),
+    fire_wolves( "fiery_wolf", s, 6, []( shaman_t* s ) { return new pet::fire_wolf_t( s ); } ),
+    frost_wolves( "frost_wolf", s, 6, []( shaman_t* s ) { return new pet::frost_wolf_t( s ); } ),
+    lightning_wolves( "lightning_wolf", s, 6, []( shaman_t* s ) { return new pet::lightning_wolf_t( s ); } ),
 
     /// Bron's Call to Arms trigger logic is completely overridden by the Shaman module
     bron( nullptr )
 {
+  spirit_wolves.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
+  fire_wolves.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
+  frost_wolves.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
+  lightning_wolves.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
 }
 
 }  // namespace

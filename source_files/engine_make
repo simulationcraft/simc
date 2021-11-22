@@ -158,7 +158,6 @@ SRC += \
     util$(PATHSEP)io.cpp \
     util$(PATHSEP)rng.cpp \
     util$(PATHSEP)sample_data.cpp \
-    util$(PATHSEP)string_view.cpp \
     util$(PATHSEP)timeline.cpp \
     util$(PATHSEP)timespan.cpp \
     util$(PATHSEP)util.cpp \

@@ -1519,6 +1519,7 @@ void priest_t::create_procs()
   procs.dark_thoughts_flay              = get_proc( "Dark Thoughts proc from Mind Flay" );
   procs.dark_thoughts_sear              = get_proc( "Dark Thoughts proc from Mind Sear" );
   procs.dark_thoughts_missed            = get_proc( "Dark Thoughts proc not consumed" );
+  procs.living_shadow                   = get_proc( "Living Shadow T28 4-set procs" );
 }
 
 /** Construct priest benefits */
@@ -1704,7 +1705,7 @@ double priest_t::matching_gear_multiplier( attribute_e attr ) const
   return 0.0;
 }
 
-action_t* priest_t::create_action( util::string_view name, const std::string& options_str )
+action_t* priest_t::create_action( util::string_view name, util::string_view options_str )
 {
   using namespace actions::spells;
   using namespace actions::heals;

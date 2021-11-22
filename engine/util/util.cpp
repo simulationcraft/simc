@@ -952,6 +952,7 @@ const char* util::school_type_string( school_e school )
     case SCHOOL_SPELLFROST:       return "spellfrost";
     case SCHOOL_SPELLSHADOW:      return "spellshadow";
     case SCHOOL_ELEMENTAL:        return "elemental";
+    case SCHOOL_COSMIC:           return "cosmic";
     case SCHOOL_CHROMATIC:        return "chromatic";
     case SCHOOL_MAGIC:            return "magic";
     case SCHOOL_DRAIN:            return "drain";
@@ -2317,7 +2318,7 @@ std::vector<std::string> util::string_split_allow_quotes( util::string_view str_
 
   std::string buffer;
 
-  const std::string not_in_quote    = to_string( delim ) + '"';
+  const std::string not_in_quote    = std::string( delim ) + '"';
   static const std::string in_quote = "\"";
   const std::string* search         = &not_in_quote;
 
@@ -2844,7 +2845,7 @@ std::string util::decode_html( const std::string& input )
 
 std::string util::remove_special_chars( util::string_view s )
 {
-  std::string r = to_string( s );
+  std::string r( s );
   // Allow alphanumeric characters, underscore and non-ASCII characters.
   auto pred = [] ( char c ) { return !std::isalnum( c ) && c != '_' && (unsigned char)c < 128; };
   r.erase( std::remove_if( r.begin(), r.end(), pred ), r.end() );
@@ -2921,7 +2922,7 @@ bool util::is_primary_stat( stat_e t )
 
 std::string util::encode_html( util::string_view s )
 {
-  std::string buffer = to_string( s );
+  std::string buffer( s );
   replace_all( buffer, "&", "&amp;" );
   replace_all( buffer, "<", "&lt;" );
   replace_all( buffer, ">", "&gt;" );
@@ -3082,14 +3083,14 @@ void util::tokenize( std::string& name )
 
 std::string util::tokenize_fn( util::string_view name_ )
 {
-  std::string name = to_string( name_ );
+  std::string name( name_ );
   tokenize(name);
   return name;
 }
 
 std::string util::inverse_tokenize( util::string_view name )
 {
-  std::string s = to_string( name );
+  std::string s( name );
 
   for ( std::string::iterator i = s.begin(); i != s.end(); ++i )
   {

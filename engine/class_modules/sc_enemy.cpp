@@ -66,7 +66,7 @@ struct enemy_t : public player_t
     return RESOURCE_HEALTH;
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
   void init_race() override;
   void init_base_stats() override;
   void init_defense() override;
@@ -1062,7 +1062,7 @@ struct add_t : public pet_t
     return RESOURCE_HEALTH;
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     action_t* a = enemy_create_action( this, name, options_str );
 
@@ -1209,6 +1209,7 @@ struct tank_dummy_enemy_t : public enemy_t
         Castle Nathria Mythic: 3050.0‬ (ExpectedStatModID: 179; ArmorConstMod: 1.220)
         Level 60 M0/M+ Season 2: 2785.0 (ExpectedStatModID: 192; ArmorConstMod: 1.114)
         Tazavesh Mega Dungeon: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
+        Level 60 M0/M+ Season 3: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
         Sanctum of Domination LFR: 2845.0 (ExpectedStatModID: 178; ArmorConstMod: 1.138)
         Sanctum of Domination Nomral: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
         Sanctum of Domination Heroic: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
@@ -1257,7 +1258,7 @@ struct tank_dummy_enemy_t : public enemy_t
 
 // enemy_t::create_action ===================================================
 
-action_t* enemy_t::create_action( util::string_view name, const std::string& options_str )
+action_t* enemy_t::create_action( util::string_view name, util::string_view options_str )
 {
   action_t* a = enemy_create_action( this, name, options_str );
 

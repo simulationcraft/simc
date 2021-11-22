@@ -314,6 +314,9 @@ public:
     action_t* lycaras_fleeting_glimpse;  // fake holder action for reporting
     action_t* oneths_clear_vision;       // fake holder action for reporting
     action_t* the_natural_orders_will;   // fake holder action for reporting
+
+    // Set bonus
+    action_t* architects_aligner;  // Guardian T28 4pc Set Bonus
   } active;
 
   // Pets
@@ -427,6 +430,12 @@ public:
     buff_t* soul_of_the_forest;  // needs checking
     buff_t* yseras_gift;
     buff_t* harmony;  // NYI
+
+    // Helper pointers
+    buff_t* ca_inc;       // celestial_alignment or incarnation_moonkin
+    buff_t* b_inc_cat;    // berserk_cat or incarnation_cat
+    buff_t* b_inc_bear;   // berserk_bear or incarnation_bear
+    buff_t* incarnation;  // incarnation_moonkin or incarnation_bear or incarnation_cat
   } buff;
 
   // Cooldowns
@@ -901,7 +910,7 @@ public:
   double matching_gear_multiplier( attribute_e attr ) const override;
   std::unique_ptr<expr_t> create_action_expression(action_t& a, util::string_view name_str) override;
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
-  action_t* create_action( util::string_view name, const std::string& options ) override;
+  action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type ) override;
   void create_pets() override;
   resource_e primary_resource() const override;
@@ -1089,7 +1098,7 @@ struct force_of_nature_t : public pet_t
 
   resource_e primary_resource() const override { return RESOURCE_NONE; }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "auto_attack" )
       return new auto_attack_t( this );
@@ -1478,6 +1487,15 @@ struct berserk_bear_buff_t : public druid_buff_t<buff_t>
 
     if ( inc )
       hp_mul += p.query_aura_effect( s, A_MOD_INCREASE_HEALTH_PERCENT )->percent();
+
+    if ( p.sets->has_set_bonus( DRUID_GUARDIAN, T28, B4 ) )
+    {
+      set_period( p.sets->set( DRUID_GUARDIAN, T28, B4 )->effectN( 1 ).trigger()->effectN( 1 ).period() );
+      set_tick_callback( [ &p ]( buff_t*, int, timespan_t ) {
+        p.active.architects_aligner->set_target( p.target );
+        p.active.architects_aligner->execute();
+      } );
+    }
   }
 
   void start( int s, double v, timespan_t d ) override
@@ -2523,23 +2541,21 @@ public:
         if ( !p()->buff.primordial_arcanic_pulsar->check() )
           p()->buff.primordial_arcanic_pulsar->trigger();
 
-        p()->buff.primordial_arcanic_pulsar->current_value += last_resource_cost;
+        p()->buff.primordial_arcanic_pulsar->current_value += base_cost();
 
         if ( p()->buff.primordial_arcanic_pulsar->value() >=
              p()->legendary.primordial_arcanic_pulsar->effectN( 1 ).base_value() )
         {
           p()->buff.primordial_arcanic_pulsar->current_value -=
               p()->legendary.primordial_arcanic_pulsar->effectN( 1 ).base_value();
+
           timespan_t pulsar_dur =
               timespan_t::from_seconds( p()->legendary.primordial_arcanic_pulsar->effectN( 2 ).base_value() );
-          buff_t* proc_buff =
-              p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
 
-          proc_buff->extend_duration_or_trigger( pulsar_dur, p() );
-
+          p()->buff.ca_inc->extend_duration_or_trigger( pulsar_dur, p() );
           p()->proc.pulsar->occur();
-
           p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
+
           make_event( *sim, pulsar_dur, [ this ]() {
             p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
           } );
@@ -4338,7 +4354,7 @@ struct bear_melee_t : public bear_attack_t
 
 struct berserk_bear_t : public bear_attack_t
 {
-  berserk_bear_t( druid_t* p, const std::string& o )
+  berserk_bear_t( druid_t* p, util::string_view o )
     : bear_attack_t( "berserk_bear", p, p->find_specialization_spell( "berserk" ), o )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
@@ -4601,6 +4617,14 @@ struct thrash_bear_t : public bear_attack_t
   }
 };
 
+// Architect's Aligner (Guardian T28 4set bonus )================================
+struct architects_aligner_t : public bear_attack_t
+{
+  architects_aligner_t( druid_t* p ) : bear_attack_t( "architects_aligner", p, p->find_spell( 363789 ) )
+  {
+    aoe = -1;
+  }
+};
 } // end namespace bear_attacks
 
 namespace heals {
@@ -5122,6 +5146,17 @@ struct barkskin_t : public druid_spell_t
     druid_spell_t::execute();
 
     p()->buff.barkskin->trigger();
+
+    //TODO:
+    // * confirm berserk is triggered on barkskin action cast and not on barkskin buff application
+    // * confirm berserk extends or overwrites existing berserk
+    // * confirm incarn is triggered when talented
+    if ( p()->sets->has_set_bonus( DRUID_GUARDIAN, T28, B2 ) )
+    {
+      auto dur_ = timespan_t::from_seconds( p()->sets->set( DRUID_GUARDIAN, T28, B2 )->effectN( 1 ).base_value() );
+
+      p()->buff.b_inc_bear->extend_duration_or_trigger( dur_ );
+    }
   }
 };
 
@@ -5652,35 +5687,21 @@ struct swipe_proxy_t : public druid_spell_t
 
 struct incarnation_t : public druid_spell_t
 {
-  buff_t* spec_buff;
-
   incarnation_t( druid_t* p, util::string_view options_str ) :
     druid_spell_t( "incarnation", p,
-      p->specialization() == DRUID_BALANCE ? p->talent.incarnation_moonkin :
-      p->specialization() == DRUID_FERAL ? p->talent.incarnation_cat :
-      p->specialization() == DRUID_GUARDIAN ? p->talent.incarnation_bear :
+      p->specialization() == DRUID_BALANCE     ? p->talent.incarnation_moonkin :
+      p->specialization() == DRUID_FERAL       ? p->talent.incarnation_cat :
+      p->specialization() == DRUID_GUARDIAN    ? p->talent.incarnation_bear :
       p->specialization() == DRUID_RESTORATION ? p->talent.incarnation_tree :
       spell_data_t::nil(), options_str )
   {
     switch ( p->specialization() )
     {
-      case DRUID_BALANCE:
-        spec_buff = p->buff.incarnation_moonkin;
-        autoshift = form_mask = MOONKIN_FORM;
-        break;
-      case DRUID_FERAL:
-        spec_buff = p->buff.incarnation_cat;
-        autoshift = form_mask = CAT_FORM;
-        break;
-      case DRUID_GUARDIAN:
-        spec_buff = p->buff.incarnation_bear;
-        autoshift = form_mask = BEAR_FORM;
-        break;
-      case DRUID_RESTORATION:
-        spec_buff = p->buff.incarnation_tree;
-        break;
-      default:
-        assert( false && "Actor attempted to create incarnation action with no specialization." );
+      case DRUID_BALANCE:     autoshift = form_mask = MOONKIN_FORM; break;
+      case DRUID_FERAL:       autoshift = form_mask = CAT_FORM;     break;
+      case DRUID_GUARDIAN:    autoshift = form_mask = BEAR_FORM;    break;
+      case DRUID_RESTORATION:                                       break;
+      default: assert( false && "Actor attempted to create incarnation action with no specialization." );
     }
 
     harmful = false;
@@ -5690,7 +5711,7 @@ struct incarnation_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    spec_buff->trigger();
+    p()->buff.incarnation->trigger();
 
     if ( p()->buff.incarnation_moonkin->check() )
     {
@@ -7725,7 +7746,7 @@ void druid_t::activate()
 
 // druid_t::create_action  ==================================================
 
-action_t* druid_t::create_action( util::string_view name, const std::string& options_str )
+action_t* druid_t::create_action( util::string_view name, util::string_view options_str )
 {
   using namespace cat_attacks;
   using namespace bear_attacks;
@@ -8577,6 +8598,20 @@ void druid_t::create_buffs()
         buff.sinful_hysteria->trigger( old_ );
     } );
   }
+
+  // Helpers
+  switch( specialization() )
+  {
+    case DRUID_BALANCE:  buff.incarnation = buff.incarnation_moonkin; break;
+    case DRUID_FERAL:    buff.incarnation = buff.incarnation_cat;     break;
+    case DRUID_GUARDIAN: buff.incarnation = buff.incarnation_bear;    break;
+    default:             buff.incarnation = buff.incarnation_tree;    break;  // tree inc does nothing
+  }
+
+  // Note you cannot replace buff checking with these, as it's possible to gain incarnation without the talent
+  buff.ca_inc     = talent.incarnation_moonkin->ok() ? buff.incarnation_moonkin : buff.celestial_alignment;
+  buff.b_inc_cat  = talent.incarnation_cat->ok()     ? buff.incarnation_cat     : buff.berserk_cat;
+  buff.b_inc_bear = talent.incarnation_bear->ok()    ? buff.incarnation_bear    : buff.berserk_bear;
 }
 
 void druid_t::create_actions()
@@ -8623,10 +8658,13 @@ void druid_t::create_actions()
     active.the_natural_orders_will = new the_natural_orders_will_t( this );
 
   if ( talent.galactic_guardian->ok() )
-    active.galactic_guardian = new galactic_guardian_t( this );
+    active.galactic_guardian = get_secondary_action<galactic_guardian_t>( "galactic_guardian" );
 
   if ( mastery.natures_guardian->ok() )
     active.natures_guardian = new heals::natures_guardian_t( this );
+
+  if ( sets->has_set_bonus( DRUID_GUARDIAN, T28, B4 ) )
+    active.architects_aligner = get_secondary_action<architects_aligner_t>( "architects_aligner" );
 
   // Restoration
   if ( talent.cenarion_ward->ok() )
@@ -9524,7 +9562,7 @@ double druid_t::composite_leech() const
 // druid_t::create_action_expression ========================================
 std::unique_ptr<expr_t> druid_t::create_action_expression(action_t& a, util::string_view name_str)
 {
-  auto splits = util::string_split(name_str, ".");
+  auto splits = util::string_split<util::string_view>(name_str, ".");
 
   if (splits[0] == "ticks_gained_on_refresh" || (splits.size() > 2 && (splits[0] == "druid" || splits[0] == "dot" ) && splits[2] == "ticks_gained_on_refresh"))
   {
@@ -9534,16 +9572,17 @@ std::unique_ptr<expr_t> druid_t::create_action_expression(action_t& a, util::str
 
     action_t* dot_action = nullptr;
 
-    if (splits.size() > 2)
+    if ( splits.size() > 2 )
     {
-      if (splits[1] == "moonfire_cat")
-	dot_action = find_action("lunar_inspiration");
-      else if (splits[1] == "rake")
-	dot_action = find_action("rake_bleed");
+      if ( splits[ 1 ] == "moonfire_cat" )
+        dot_action = find_action( "lunar_inspiration" );
+      else if ( splits[ 1 ] == "rake" )
+        dot_action = find_action( "rake_bleed" );
       else
-	dot_action = find_action(splits[1]);
+        dot_action = find_action( splits[ 1 ] );
 
-      if (!dot_action) throw std::invalid_argument("invalid action specified in ticks_gained_on_refresh");
+      if ( !dot_action )
+        throw std::invalid_argument( "invalid action specified in ticks_gained_on_refresh" );
     }
     else
       dot_action = &a;

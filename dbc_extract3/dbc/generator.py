@@ -1421,6 +1421,9 @@ class SpellDataGenerator(DataGenerator):
           ( 328275, 0 ), ( 328757, 0 ), # Wild Spirits (Covenenat)
           ( 339928, 2 ), ( 339929, 2 ), # Brutal Projectiles (Conduit)
           ( 341223, 3 ), # Strength of the Pack (Conduit)
+          ( 339061, 0 ), # Empowered Release (Conduit)
+          ( 363760, 1 ), # Killing Frenzy (T28 BM 4pc)
+          ( 363805, 3 ), # Mad Bombardier (T28 SV 4pc)
         ),
 
         # Rogue:
@@ -1644,6 +1647,7 @@ class SpellDataGenerator(DataGenerator):
           ( 327369, 0 ),                            # Disciplinary Command (Arcane tracker)
           ( 336889, 0 ),                            # Nether Precision
           ( 337090, 0 ),                            # Siphoned Malice
+          ( 363685, 0 ),                            # Arcane Lucidity ready buff
         ),
 
         # Warlock:
@@ -1805,6 +1809,11 @@ class SpellDataGenerator(DataGenerator):
           ( 358521, 2 ), # Call to Arms Invoke Yu'lon Duration
           ( 358522, 2 ), # Call to Arms Invoke Chi-Ji Duration
           ( 360829, 3 ), # Call to Arms Empowered Tiger Lightning
+
+          # Tier 28
+          ( 364101, 1 ), # BrM 4-piece Flames of Primordium
+          ( 363911, 3 ), # WW 4-piece Primordial Potential
+          ( 363924, 3 ), # WW 4-piece Primordial Power
         ),
 
         # Druid:
@@ -3316,6 +3325,16 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'hack_and_gore',
             'bonuses': [ 1457 ],
             'tier'   : 26
+        },
+        {
+            'name'   : 'cypher_attunement_rigging',
+            'bonuses': [ 1495 ],
+            'tier'   : 28
+        },
+        {
+            'name'   : 'tier28',
+            'bonuses': [ 1496, 1497, 1498, 1499, 1500, 1501, 1502, 1503, 1504, 1505, 1506, 1507],
+            'tier'   : 28
         }
     ]
 

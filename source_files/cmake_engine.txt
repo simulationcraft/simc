@@ -334,7 +334,6 @@ util/git_info.cpp
 util/io.cpp
 util/rng.cpp
 util/sample_data.cpp
-util/string_view.cpp
 util/timeline.cpp
 util/timespan.cpp
 util/util.cpp

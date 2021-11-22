@@ -672,6 +672,7 @@ enum school_e
   SCHOOL_SPELLFROST,
   SCHOOL_SPELLSHADOW,
   SCHOOL_ELEMENTAL,
+  SCHOOL_COSMIC,
   SCHOOL_CHROMATIC,
   SCHOOL_MAGIC,
   SCHOOL_CHAOS,
@@ -696,7 +697,8 @@ const int64_t SCHOOL_ATTACK_MASK = ( ( int64_t( 1 ) << SCHOOL_PHYSICAL ) |
                                      ( int64_t( 1 ) << SCHOOL_STORMSTRIKE ) |
                                      ( int64_t( 1 ) << SCHOOL_FROSTSTRIKE ) |
                                      ( int64_t( 1 ) << SCHOOL_SHADOWSTRIKE ) |
-                                     ( int64_t( 1 ) << SCHOOL_SPELLSTRIKE ) );
+                                     ( int64_t( 1 ) << SCHOOL_SPELLSTRIKE ) |
+                                     ( int64_t( 1 ) << SCHOOL_COSMIC ) );
 // SCHOOL_CHAOS should probably be added here too.
 
 const int64_t SCHOOL_SPELL_MASK(
@@ -724,6 +726,7 @@ const int64_t SCHOOL_SPELL_MASK(
     ( int64_t( 1 ) << SCHOOL_SPELLFROST ) |
     ( int64_t( 1 ) << SCHOOL_SPELLSHADOW ) |
     ( int64_t( 1 ) << SCHOOL_ELEMENTAL ) |
+    ( int64_t( 1 ) << SCHOOL_COSMIC ) |
     ( int64_t( 1 ) << SCHOOL_CHROMATIC ) | ( int64_t( 1 ) << SCHOOL_MAGIC ) );
 
 const int64_t SCHOOL_MAGIC_MASK( ( int64_t( 1 ) << SCHOOL_ARCANE ) |
@@ -832,6 +835,8 @@ enum set_bonus_type_e
   T23_KEEPSAKES,
   T23_TITANIC_EMPOWERMENT,
   T26_HACK_AND_GORE,
+  T28_CYPHER_ATTUNEMENT_RIGGING,
+  T28,
   SET_BONUS_MAX
 };
 

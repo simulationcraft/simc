@@ -39,7 +39,7 @@ struct lexer_t
 
   bool match( char c )
   {
-    if ( starts_with( input.substr( current_len ), c ) ) {
+    if ( util::starts_with( input.substr( current_len ), c ) ) {
       current_len++;
       return true;
     }
@@ -58,7 +58,7 @@ struct lexer_t
   token_t next()
   {
     if ( input.empty() )
-      return yield_token( TOK_EOF );
+      return { TOK_EOF, {} };
 
     const char ch = input.front();
     current_len = 1;
