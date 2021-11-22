@@ -1891,7 +1891,7 @@ void priest_t::init_resources( bool force )
 {
   base_t::init_resources( force );
 
-  if ( options.initial_insanity > 0.0 )
+  if ( options.initial_insanity > 0.0 && specialization() == PRIEST_SHADOW )
     resources.current[ RESOURCE_INSANITY ] = options.initial_insanity;
 }
 
