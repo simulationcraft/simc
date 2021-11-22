@@ -440,8 +440,6 @@ public:
     double arcane_missiles_chain_relstddev = 0.1;
     bool prepull_dc = false;
     int prepull_harmony_stacks = 0;
-    bool t28_2pc = false;
-    bool t28_4pc = false;
   } options;
 
   // Pets
@@ -976,8 +974,7 @@ struct touch_of_the_magi_t final : public buff_t
     buff_t( *td, "touch_of_the_magi", td->source->find_spell( 210824 ) )
   {
     set_default_value( 0.0 );
-    // TODO: 9.2 spelldata
-    set_schools( dbc::get_school_mask( SCHOOL_ARCANE ) );
+    set_schools_from_effect( 2 );
   }
 
   void expire_override( int stacks, timespan_t duration ) override
@@ -1010,9 +1007,8 @@ struct combustion_t final : public buff_t
     set_refresh_behavior( buff_refresh_behavior::DURATION );
     modify_duration( p->spec.combustion_2->effectN( 1 ).time_value() );
     // TODO:
-    // * 9.2 spelldata
     // * SKB interactions
-    modify_duration( p->options.t28_2pc ? 2.0_s : 0_ms );
+    modify_duration( p->sets->set( MAGE_FIRE, T28, B2 )->effectN( 1 ).time_value() );
 
     set_stack_change_callback( [ this, p ] ( buff_t*, int old, int cur )
     {
@@ -1674,17 +1670,16 @@ public:
     }
 
     // TODO:
-    // * 9.2 spelldata
     // * check if the proc is on execute or impact
     // * check if free CmS consumes WC stacks
     if ( p()->action.frost_storm_comet_storm
       && p()->buffs.icy_veins->check()
       && p()->cooldowns.frost_storm->up()
-      && rng().roll( 0.25 ) )
+      && rng().roll( p()->sets->set( MAGE_FROST, T28, B2 )->proc_chance() ) )
     {
       p()->action.frost_storm_comet_storm->set_target( s->target );
       p()->action.frost_storm_comet_storm->execute();
-      p()->cooldowns.frost_storm->start( 30.0_s );
+      p()->cooldowns.frost_storm->start( p()->sets->set( MAGE_FROST, T28, B2 )->internal_cooldown() );
     }
   }
 
@@ -3088,9 +3083,7 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
-
-    if ( p()->options.t28_4pc )
-      get_td( s->target )->debuffs.frost_storm->trigger();
+    get_td( s->target )->debuffs.frost_storm->trigger();
   }
 };
 
@@ -5082,7 +5075,7 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
       auto debuff = get_td( s->target )->debuffs.touch_of_the_magi;
       auto duration = debuff->buff_duration();
       if ( p()->buffs.arcane_lucidity_ready->check() )
-        duration -= 2.0_s;
+        duration += p()->buffs.arcane_lucidity_ready->data().effectN( 2 ).time_value();
 
       debuff->expire();
       debuff->trigger( duration );
@@ -5694,13 +5687,10 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
   // Set Bonuses
   // TODO:
-  // * 9.2 spelldata
   // * check if normal CmS triggers this too
-  debuffs.frost_storm = make_buff( *this, "frost_storm" )
-                          ->set_max_stack( 5 )
-                          ->set_duration( 8.0_s )
-                          ->set_default_value( 0.02 )
-                          ->set_schools( dbc::get_school_mask( SCHOOL_FROST ) );
+  debuffs.frost_storm = make_buff( *this, "frost_storm", mage->find_spell( 363544 ) )
+                          ->set_default_value_from_effect( 1 )
+                          ->set_chance( mage->sets->has_set_bonus( MAGE_FROST, T28, B4 ) );
 }
 
 mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
@@ -5917,7 +5907,7 @@ void mage_t::create_actions()
     action.tormenting_backlash = get_action<tormenting_backlash_t>( "tormenting_backlash", this );
   }
 
-  if ( specialization() == MAGE_FROST && options.t28_2pc )
+  if ( sets->has_set_bonus( MAGE_FROST, T28, B2 ) )
     action.frost_storm_comet_storm = get_action<comet_storm_t>( "frost_storm_comet_storm", this, "", true );
 
   player_t::create_actions();
@@ -5949,8 +5939,6 @@ void mage_t::create_options()
   add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_bool( "mage.prepull_dc", options.prepull_dc ) );
   add_option( opt_int( "mage.prepull_harmony_stacks", options.prepull_harmony_stacks ) );
-  add_option( opt_bool( "mage.t28_2pc", options.t28_2pc ) );
-  add_option( opt_bool( "mage.t28_4pc", options.t28_4pc ) );
 
   player_t::create_options();
 }
@@ -6474,30 +6462,25 @@ void mage_t::create_buffs()
 
   // Set Bonuses
   // TODO:
-  // * 9.2 spell data
   // * TotM refresh
   // * CD override?
   // * Expanded Potential interactions
   // * Check trigger_legendary_buff offset
-  buffs.arcane_lucidity       = make_buff( this, "arcane_lucidity" )
-                                  ->set_max_stack( 8 )
-                                  ->set_duration( 60.0_s )
-                                  ->set_chance( options.t28_4pc );
-  buffs.arcane_lucidity_ready = make_buff( this, "arcane_lucidity_ready" )
-                                  ->set_duration( 60.0_s );
+  buffs.arcane_lucidity       = make_buff( this, "arcane_lucidity", find_spell( 363683 ) )
+                                  ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T28, B4 ) );
+  buffs.arcane_lucidity_ready = make_buff( this, "arcane_lucidity_ready", find_spell( 363685 ) );
 
   // TODO:
-  // * 9.2 spell data
   // * SKB interactions
   // * flat CD reduction interactions
-  buffs.fiery_rush = make_buff( this, "fiery_rush" )
-                       ->set_default_value( 1.0 )
+  buffs.fiery_rush = make_buff( this, "fiery_rush", find_spell( 363508 ) )
+                       ->set_default_value_from_effect( 1 )
                        ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
                          {
                            cooldowns.fire_blast->adjust_recharge_multiplier();
                            cooldowns.phoenix_flames->adjust_recharge_multiplier();
                          } )
-                       ->set_chance( options.t28_4pc );
+                       ->set_chance( sets->has_set_bonus( MAGE_FIRE, T28, B4 ) );
 }
 
 void mage_t::init_gains()
@@ -6753,8 +6736,9 @@ double mage_t::composite_player_target_multiplier( player_t* target, school_e sc
     if ( td->debuffs.frost_storm->has_common_school( school ) )
       m *= 1.0 + td->debuffs.frost_storm->check_stack_value();
 
-    if ( options.t28_2pc && td->debuffs.touch_of_the_magi->has_common_school( school ) )
-      m *= 1.0 + ( td->debuffs.touch_of_the_magi->check() ? 0.18 : 0.0 );
+    auto totm = td->debuffs.touch_of_the_magi;
+    if ( totm->check() && totm->has_common_school( school ) )
+      m *= 1.0 + sets->set( MAGE_ARCANE, T28, B2 )->effectN( 1 ).percent();
   }
 
   return m;
