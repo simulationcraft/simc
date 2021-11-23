@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.41089
-static const std::array<spelltext_data_t, 15744> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15745> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14392,6 +14392,7 @@ static const std::array<spelltext_data_t, 15744> __ptr_spelltext_data { {
   { 339058, "Killing an enemy grants you the Third Eye, increasing your $pri by $339970s1% for $339970d, stacking up to $339970u and increasing the duration by $s2 sec for each additional stack. The duration of the Third Eye is increased by $s3% while in the Maw.", 0, 0 },
   { 339059, "Flayed Shot has an additional $s1% chance to proc Flayer's Mark and it increases the damage of your next Kill Shot by |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
   { 339060, "Thrash has $s1% increased damage, $s3% increased radius, and can stack $s4 additional $ltime:times;.", 0, 0 },
+  { 339061, "$@spelldesc339059", "Increases the damage of your next Killshot by ${$W1}.1%.", 0 },
   { 339062, "$?s102558[Incarnation: Guardian of Ursoc][Berserk in Bear Form] grants $50334s5% increased damage, $50334s8% Leech, and immunity to effects that cause loss of control of your character.\r\n\r\nIts cooldown is reduced by ${$s1/-1000} sec.", 0, 0 },
   { 339063, "Barkskin reduces damage by an additional $s1%. When it begins or ends in Bear Form, you gain Ironfur and Frenzied Regeneration.", 0, 0 },
   { 339064, "Wild Growth has a $h% chance to cause your next Rejuvenation or Regrowth to apply to $s1 additional allies within $189877s1 yards of the target.", 0, 0 },
