@@ -170,7 +170,7 @@ struct buff_stack_benefit_t
   {
     for ( int i = 0; i <= buff->max_stack(); i++ )
     {
-      auto benefit_name = fmt::format("{} {} {}", prefix, buff->data().name_cstr(), i);
+      auto benefit_name = fmt::format( "{} {} {}", prefix, buff->data().name_cstr(), i );
       buff_stack_benefit.push_back( buff->player->get_benefit( benefit_name ) );
     }
   }
@@ -7412,7 +7412,7 @@ public:
 
       std::string name = data->cd->name_str;
       if ( action_t* a = p.find_action( name ) )
-        name = report_decorators::decorated_action(*a);
+        name = report_decorators::decorated_action( *a );
       else
         name = util::encode_html( name );
 
@@ -7556,7 +7556,7 @@ public:
       if ( !data->active() )
         continue;
 
-      auto nonzero = [] ( const char* fmt, double d ) { return d != 0.0 ? fmt::format( fmt::runtime(fmt), d ) : ""; };
+      auto nonzero = [] ( const char* fmt, double d ) { return d != 0.0 ? fmt::format( fmt::runtime( fmt ), d ) : ""; };
       auto cells = [ &, total = data->count_total() ] ( double mean, bool util = false )
       {
         std::string format_str = "<td class=\"right\">{}</td><td class=\"right\">{}</td>";
