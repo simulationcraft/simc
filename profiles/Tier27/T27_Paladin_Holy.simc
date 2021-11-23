@@ -57,8 +57,8 @@ actions.priority+=/lights_hammer,if=spell_targets.lights_hammer>=2
 # High priority Consecration refresh when fighting 2 or more targets.
 actions.priority+=/consecration,if=spell_targets.consecration>=2&!consecration.up
 # When talented into Awakening use Light of Dawn when fighting 5 or less targets and you are capped on Holy Power or Holy Avenger is active and you have 3 or more Holy Power.
-actions.priority+=/light_of_dawn,if=talent.awakening.enabled&spell_targets.consecration<=1&(holy_power>=5|(buff.holy_avenger.up&holy_power>=3))
-actions.priority+=/shield_of_the_righteous,if=spell_targets.consecration>1
+actions.priority+=/light_of_dawn,if=talent.awakening.enabled&spell_targets.consecration<=5&(holy_power>=5|(buff.holy_avenger.up&holy_power>=3))
+actions.priority+=/shield_of_the_righteous,if=spell_targets.consecration>5
 actions.priority+=/hammer_of_wrath
 actions.priority+=/judgment
 actions.priority+=/lights_hammer
@@ -67,12 +67,12 @@ actions.priority+=/consecration,if=!consecration.up
 actions.priority+=/holy_shock,damage=1
 # Higher priority Crusader Strike action when you are capped on charges
 actions.priority+=/crusader_strike,if=cooldown.crusader_strike.charges=2
+actions.priority+=/holy_prism,target=self,if=active_enemies>=2
 actions.priority+=/holy_prism
 actions.priority+=/arcane_torrent
-actions.priority+=/consecration
-actions.priority+=/light_of_dawn,if=talent.awakening.enabled&spell_targets.consecration<=1
+actions.priority+=/light_of_dawn,if=talent.awakening.enabled&spell_targets.consecration<=5
 actions.priority+=/crusader_strike
-
+actions.priority+=/consecration
 
 head=dark_tormentors_gaze,id=186315,bonus_id=7187/1498,gem_id=187312
 neck=interplanar_keystone,id=186379,bonus_id=6807/1498/6935,gem_id=173129
