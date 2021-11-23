@@ -318,6 +318,7 @@ public:
 
     // Set bonus
     action_t* architects_aligner;  // Guardian T28 4pc Set Bonus
+    action_t* sickle_of_the_lion;  // Feral T28 4pc Set Bonus
   } active;
 
   // Pets
@@ -1414,6 +1415,17 @@ struct berserk_cat_buff_t : public druid_buff_t<buff_t>
     {
       set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
     }
+
+    if ( p.sets->has_set_bonus( DRUID_FERAL, T28, B4 ) )
+    {
+      set_stack_change_callback( [ &p ]( buff_t*, int, int new_ ) {
+        if ( !new_ )
+        {
+          p.active.sickle_of_the_lion->set_target( p.target );
+          p.active.sickle_of_the_lion->execute();
+        }
+      } );
+    }
   }
 
   bool trigger( int s, double v, double c, timespan_t d ) override
@@ -1959,7 +1971,7 @@ public:
     if ( !mastery && !val )
       return;
 
-    if ( eff.subtype() == A_ADD_PCT_MODIFIER )
+    if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
     {
       switch ( eff.misc_value1() )
       {
@@ -3046,6 +3058,21 @@ public:
         p()->resource_gain( RESOURCE_ENERGY,
                             consumed * p()->talent.soul_of_the_forest_cat->effectN( 1 ).resource( RESOURCE_ENERGY ),
                             p()->gain.soul_of_the_forest );
+      }
+
+      // TODO:
+      // * confirm FBs from convoke reduces cooldown by max CP
+      // * confirm free FB from apex reduces cooldown by max CP
+      if ( p()->sets->has_set_bonus( DRUID_FERAL, T28, B2 ) )
+      {
+        // -2.0 divisor from tooltip, not present in data
+        auto dur_ = timespan_t::from_seconds( p()->sets->set( DRUID_FERAL, T28, B2 )->effectN( 1 ).base_value() *
+                                              consumed / -2.0 );
+
+        if ( p()->talent.incarnation_cat->ok() )
+          p()->cooldown.incarnation->adjust( dur_ );
+        else
+          p()->cooldown.berserk_cat->adjust( dur_ );
       }
 
       // Only if CPs are actually consumed
@@ -4267,6 +4294,14 @@ struct thrash_cat_t : public cat_attack_t
   }
 };
 
+// Sickle of the Lion (Feral T28 4pc)=========================================
+struct sickle_of_the_lion_t : public cat_attack_t
+{
+  sickle_of_the_lion_t( druid_t* p ) : cat_attacks::cat_attack_t( "sickle_of_the_lion", p, p->find_spell( 363830 ) )
+  {
+    aoe = -1;
+  }
+};
 }  // end namespace cat_attacks
 
 namespace bear_attacks {
@@ -8626,6 +8661,9 @@ void druid_t::create_actions()
   // Feral
   if ( legendary.frenzyband->ok() )
     active.frenzied_assault = get_secondary_action<frenzied_assault_t>( "frenzied_assault" );
+
+  if ( sets->has_set_bonus( DRUID_FERAL, T28, B4 ) )
+    active.sickle_of_the_lion = get_secondary_action<sickle_of_the_lion_t>( "sickle_of_the_lion" );
 
   // Guardian
   if ( talent.brambles->ok() )
