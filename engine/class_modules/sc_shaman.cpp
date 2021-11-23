@@ -564,6 +564,8 @@ public:
     proc_t* lava_surge;
     proc_t* wasted_lava_surge;
     proc_t* surge_during_lvb;
+    proc_t* t28_4pc_ele_cd_extension;
+    proc_t* t28_4pc_ele_cd_reduction;
 
     // Enhancement
     proc_t* hot_hand;
@@ -4805,6 +4807,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
+    // TODO: check if this needs a guard against background effects (echoing shock, ascendance)
     if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B4 ) )
     {
       pet_t* pet = p()->get_active_elemental_pet();
@@ -4816,6 +4819,8 @@ struct lava_burst_t : public shaman_spell_t
         p()->buff.fireheart->extend_duration( p(), extension );
         pet->adjust_duration( extension );
         p()->buff.fire_elemental->extend_duration( p(), extension );
+
+        p()->proc.t28_4pc_ele_cd_extension->occur();
       }
     }
     
@@ -5377,6 +5382,8 @@ struct earthquake_t : public shaman_spell_t
 
       p()->cooldown.storm_elemental->adjust( -1.0 * extension );
       p()->cooldown.fire_elemental->adjust( -1.0 * extension );
+
+      p()->proc.t28_4pc_ele_cd_reduction->occur();
     }
 
     make_event<ground_aoe_event_t>(
@@ -5547,6 +5554,8 @@ struct earth_shock_t : public shaman_spell_t
 
       p()->cooldown.storm_elemental->adjust( -1.0 * extension );
       p()->cooldown.fire_elemental->adjust( -1.0 * extension );
+
+      p()->proc.t28_4pc_ele_cd_reduction->occur();
     }
 
     // Echoed Earth Shock does not generate Surge of Power stacks
@@ -8751,8 +8760,9 @@ void shaman_t::init_procs()
 
   proc.lava_surge        = get_proc( "Lava Surge" );
   proc.wasted_lava_surge = get_proc( "Lava Surge: Wasted" );
-  proc.windfury_uw       = get_proc( "Windfury: Unruly Winds" );
   proc.surge_during_lvb  = get_proc( "Lava Surge: During Lava Burst" );
+
+  proc.windfury_uw       = get_proc( "Windfury: Unruly Winds" );
   proc.maelstrom_weapon  = get_proc( "Maelstrom Weapon" );
   proc.maelstrom_weapon_fs= get_proc( "Maelstrom Weapon: Feral Spirit" );
   proc.maelstrom_weapon_ea= get_proc( "Maelstrom Weapon: Elemental Assault" );
@@ -8761,6 +8771,8 @@ void shaman_t::init_procs()
   proc.stormflurry       = get_proc( "Stormflurry" );
 
   proc.t28_4pc_enh       = get_proc( "Set Bonus: Tier28 4PC Enhancement" );
+  proc.t28_4pc_ele_cd_reduction = get_proc( "Set Bonus: Tier28 4PC Elemental CD Reduction" );
+  proc.t28_4pc_ele_cd_extension = get_proc( "Set Bonus: Tier28 4PC Elemental CD Extension" );
 }
 
 // shaman_t::init_assessors =================================================
