@@ -264,10 +264,6 @@ public:
 
       if ( p()->conduit.xuens_bond->ok() )
         p()->cooldown.invoke_xuen->adjust( p()->conduit.xuens_bond->effectN( 2 ).time_value(), true );  // Saved as -100
-
-      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) && !p()->buff.primordial_power->check() )
-        p()->buff.primordial_potential->trigger();
-
     }
     else
     {
@@ -276,7 +272,11 @@ public:
       p()->buff.hit_combo->expire();
     }
 
-    // Record the current action in the history.
+    // This can trigger from combo strikes or breaking combo strikes
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) && !p()->buff.primordial_power->check() )
+      p()->buff.primordial_potential->trigger();
+
+      // Record the current action in the history.
     p()->combo_strike_actions.push_back( this );
   }
 
