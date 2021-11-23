@@ -2825,7 +2825,7 @@ namespace death_chakram
  *        Min    Max  Median    Avg  Stddev
  *       0.59  0.711   0.631  0.635  0.0242
  *
- * 2020.08.11 Additional tests performed by Ghosteld, Putro, Tirrill & Laquan:
+ * 2020-08-11 Additional tests performed by Ghosteld, Putro, Tirrill & Laquan:
  *   https://www.warcraftlogs.com/reports/F9ZKyQf7LWxD4vqJ
  * Observations:
  *   - aoe reach is 8 yards
