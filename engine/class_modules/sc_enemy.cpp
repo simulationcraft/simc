@@ -79,7 +79,7 @@ struct enemy_t : public player_t
   void init_stats() override;
   double resource_loss( resource_e, double, gain_t*, action_t* ) override;
   void create_options() override;
-  pet_t* create_pet( util::string_view add_name, util::string_view pet_type = "" ) override;
+  pet_t* create_pet( util::string_view add_name, util::string_view pet_type = {} ) override;
   void create_pets() override;
   double health_percentage() const override;
   timespan_t time_to_percent( double ) const override;

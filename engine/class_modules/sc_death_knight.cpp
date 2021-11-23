@@ -1629,7 +1629,7 @@ struct death_knight_pet_t : public pet_t
   bool use_auto_attack, precombat_spawn;
   double precombat_spawn_adjust, spawn_travel_duration, spawn_travel_stddev;
 
-  death_knight_pet_t( death_knight_t* player, const std::string& name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
+  death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
     precombat_spawn( false ), precombat_spawn_adjust( 0 ),
     spawn_travel_duration( 0 ), spawn_travel_stddev( 0 )
@@ -1875,7 +1875,7 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 template <typename T>
 struct auto_attack_melee_t : public pet_melee_attack_t<T>
 {
-  auto_attack_melee_t( T* p, const std::string& name = "main_hand" ) :
+  auto_attack_melee_t( T* p, util::string_view name = "main_hand" ) :
     pet_melee_attack_t<T>( p, name )
   {
     this -> background = this -> repeating = true;
@@ -1901,7 +1901,7 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
 
 struct base_ghoul_pet_t : public death_knight_pet_t
 {
-  base_ghoul_pet_t( death_knight_t* owner, const std::string& name, bool guardian = false, bool dynamic = true ) :
+  base_ghoul_pet_t( death_knight_t* owner, util::string_view name, bool guardian = false, bool dynamic = true ) :
     death_knight_pet_t( owner, name, guardian, true, dynamic )
   {
     main_hand_weapon.swing_time = 2.0_s;
@@ -2140,7 +2140,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     }
   };
 
-  army_ghoul_pet_t( death_knight_t* owner, const std::string& name = "army_ghoul" ) :
+  army_ghoul_pet_t( death_knight_t* owner, util::string_view name = "army_ghoul" ) :
     base_ghoul_pet_t( owner, name, true )
   { }
 
@@ -3248,7 +3248,7 @@ void death_knight_melee_attack_t::impact( action_state_t* state )
 
 struct razorice_attack_t : public death_knight_melee_attack_t
 {
-  razorice_attack_t( death_knight_t* player, const std::string& name ) :
+  razorice_attack_t( death_knight_t* player, util::string_view name ) :
     death_knight_melee_attack_t( name, player, player -> find_spell( 50401 ) )
   {
     school      = SCHOOL_FROST;
@@ -4540,7 +4540,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
   action_t* damage;
   action_t* relish_in_blood;
 
-  death_and_decay_base_t( death_knight_t* p, const std::string& name, const spell_data_t* spell ) :
+  death_and_decay_base_t( death_knight_t* p, util::string_view name, const spell_data_t* spell ) :
     death_knight_spell_t( name, p, spell ),
     damage( nullptr )
   {
@@ -5418,7 +5418,7 @@ struct frostwyrms_fury_t : public death_knight_spell_t
 
 struct frost_strike_strike_t : public death_knight_melee_attack_t
 {
-  frost_strike_strike_t( death_knight_t* p, const std::string& n, weapon_t* w, const spell_data_t* s ) :
+  frost_strike_strike_t( death_knight_t* p, util::string_view n, weapon_t* w, const spell_data_t* s ) :
     death_knight_melee_attack_t( n, p, s )
   {
     background = special = true;
@@ -5929,7 +5929,7 @@ struct mind_freeze_t : public death_knight_spell_t
 struct obliterate_strike_t : public death_knight_melee_attack_t
 {
   int deaths_due_cleave_targets;
-  obliterate_strike_t( death_knight_t* p, const std::string& name,
+  obliterate_strike_t( death_knight_t* p, util::string_view name,
                        weapon_t* w, const spell_data_t* s ) :
     death_knight_melee_attack_t( name, p, s )
   {
@@ -6044,7 +6044,7 @@ struct obliterate_t : public death_knight_melee_attack_t
   obliterate_strike_t *mh, *oh, *km_mh, *km_oh;
   action_t* inexorable_assault;
 
-  obliterate_t( death_knight_t* p, util::string_view options_str = std::string() ) :
+  obliterate_t( death_knight_t* p, util::string_view options_str = {} ) :
     death_knight_melee_attack_t( "obliterate", p, p -> spec.obliterate ),
     mh( nullptr ), oh( nullptr ), km_mh( nullptr ), km_oh( nullptr )
   {
@@ -6465,7 +6465,7 @@ struct sacrificial_pact_t : public death_knight_heal_t
 
 struct scourge_strike_base_t : public death_knight_melee_attack_t
 {
-  scourge_strike_base_t( const std::string& name, death_knight_t* p, const spell_data_t* spell ) :
+  scourge_strike_base_t( util::string_view name, death_knight_t* p, const spell_data_t* spell ) :
     death_knight_melee_attack_t( name, p, spell )
   {
     weapon = &( player -> main_hand_weapon );

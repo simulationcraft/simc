@@ -511,7 +511,7 @@ public:
   void malignancy_reduction_helper();
   bool min_version_check( version_check_e version ) const;
   action_t* create_action( util::string_view name, util::string_view options ) override;
-  pet_t* create_pet( util::string_view name, util::string_view type = "" ) override;
+  pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
   void create_pets() override;
   std::string create_profile( save_e ) override;
   void copy_from( player_t* source ) override;
@@ -648,7 +648,7 @@ struct sc_event_t : public player_event_t
 
 struct warlock_heal_t : public heal_t
 {
-  warlock_heal_t( const std::string& n, warlock_t* p, const uint32_t id ) : heal_t( n, p, p->find_spell( id ) )
+  warlock_heal_t( util::string_view n, warlock_t* p, const uint32_t id ) : heal_t( n, p, p->find_spell( id ) )
   {
     target = p;
   }
@@ -911,8 +911,8 @@ private:
   }
 
 public:
-  summon_pet_t( const std::string& n, warlock_t* p, const std::string& sname = "" )
-    : warlock_spell_t( p, sname.empty() ? "Summon " + n : sname ),
+  summon_pet_t( util::string_view n, warlock_t* p, util::string_view sname = {} )
+    : warlock_spell_t( p, sname.empty() ? fmt::format( "Summon {}", n ) : sname ),
       summoning_duration( timespan_t::zero() ),
       pet_name( sname.empty() ? n : sname ),
       pet( nullptr )
@@ -920,7 +920,7 @@ public:
     _init_summon_pet_t();
   }
 
-  summon_pet_t( const std::string& n, warlock_t* p, int id )
+  summon_pet_t( util::string_view n, warlock_t* p, int id )
     : warlock_spell_t( n, p, p->find_spell( id ) ),
       summoning_duration( timespan_t::zero() ),
       pet_name( n ),
@@ -929,7 +929,7 @@ public:
     _init_summon_pet_t();
   }
 
-  summon_pet_t( const std::string& n, warlock_t* p, const spell_data_t* sd )
+  summon_pet_t( util::string_view n, warlock_t* p, const spell_data_t* sd )
     : warlock_spell_t( n, p, sd ), summoning_duration( timespan_t::zero() ), pet_name( n ), pet( nullptr )
   {
     _init_summon_pet_t();
@@ -963,14 +963,14 @@ struct summon_main_pet_t : public summon_pet_t
 {
   cooldown_t* instant_cooldown;
 
-  summon_main_pet_t( const std::string& n, warlock_t* p )
+  summon_main_pet_t( util::string_view n, warlock_t* p )
     : summon_pet_t( n, p ), instant_cooldown( p->get_cooldown( "instant_summon_pet" ) )
   {
     instant_cooldown->duration = timespan_t::from_seconds( 60 );
     ignore_false_positive      = true;
   }
 
-  virtual void schedule_execute( action_state_t* state = nullptr ) override
+  void schedule_execute( action_state_t* state = nullptr ) override
   {
     warlock_spell_t::schedule_execute( state );
 
@@ -1042,14 +1042,14 @@ template <typename Base>
 struct warlock_buff_t : public Base
 {
 public:
-  typedef warlock_buff_t base_t;
-  warlock_buff_t( warlock_td_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+  using base_t = warlock_buff_t;
+  warlock_buff_t( warlock_td_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
                   const item_t* item = nullptr )
     : Base( p, name, s, item )
   {
   }
 
-  warlock_buff_t( warlock_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+  warlock_buff_t( warlock_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
                   const item_t* item = nullptr )
     : Base( &p, name, s, item )
   {
