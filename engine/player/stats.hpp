@@ -15,6 +15,7 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
 struct action_t;
 struct player_t;
