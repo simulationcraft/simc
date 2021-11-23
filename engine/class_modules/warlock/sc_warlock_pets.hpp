@@ -222,25 +222,11 @@ public:
   }
 };
 
+// TODO: Switch to a general autoattack template if one is added
 struct warlock_pet_melee_t : public warlock_pet_action_t<melee_attack_t>
 {
-  bool first; //TODO: Is this for ensuring an auto-attack on summons with no lag?
-
-  struct off_hand_swing : public warlock_pet_action_t<melee_attack_t>
-  {
-    off_hand_swing( warlock_pet_t* p, double wm, const char* name = "melee_oh" )
-      : warlock_pet_action_t<melee_attack_t>( name, p, spell_data_t::nil() )
-    {
-      school            = SCHOOL_PHYSICAL;
-      weapon            = &( p->off_hand_weapon );
-      weapon_multiplier = wm;
-      base_execute_time = weapon->swing_time;
-      may_crit = background = true;
-      base_multiplier       = 0.5;
-    }
-  };
-
-  off_hand_swing* oh;
+  bool first; // Needed for t=0 autoattack execution
+  warlock_pet_action_t<melee_attack_t>* oh;
 
   warlock_pet_melee_t( warlock_pet_t* p, double wm = 1.0, const char* name = "melee" )
     : warlock_pet_action_t<melee_attack_t>( name, p, spell_data_t::nil() ), oh( nullptr )
@@ -252,14 +238,15 @@ struct warlock_pet_melee_t : public warlock_pet_action_t<melee_attack_t>
     may_crit = background = repeating = true;
 
     if ( p->dual_wield() )
-      oh = new off_hand_swing( p, weapon_multiplier );
-  }
-
-  double action_multiplier() const override
-  {
-    double m = warlock_pet_action_t::action_multiplier();
-
-    return m;
+    {
+      oh = new warlock_pet_action_t<melee_attack_t>( "melee_oh", p, spell_data_t::nil());
+      oh->school = SCHOOL_PHYSICAL;
+      oh->weapon = &( p->off_hand_weapon );
+      oh->weapon_multiplier = wm;
+      oh->base_execute_time = weapon->swing_time;
+      oh->may_crit = oh->background = true;
+      oh->base_multiplier = 0.5;
+    }
   }
 
   void reset() override
@@ -269,14 +256,9 @@ struct warlock_pet_melee_t : public warlock_pet_action_t<melee_attack_t>
     first = true;
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
-    timespan_t t = warlock_pet_action_t::execute_time();
-    if ( first )
-    {
-      return timespan_t::zero();
-    }
-    return t;
+    return first ? 0_ms : warlock_pet_action_t::execute_time();
   }
 
   void execute() override
