@@ -1310,7 +1310,7 @@ struct mage_spell_state_t : public action_state_t
     {
       std::string str;
 
-      auto concat_flag_str = [ this, &str ] ( const char* flag_str, frozen_flag_e flag )
+      auto concat_flag_str = [ this, &str ] ( std::string_view flag_str, frozen_flag_e flag )
       {
         if ( frozen & flag )
         {
@@ -2228,7 +2228,7 @@ struct frost_mage_spell_t : public mage_spell_t
   void init_finished() override
   {
     if ( consumes_winters_chill )
-      proc_winters_chill_consumed = p()->get_proc( "Winter's Chill stacks consumed by " + std::string( data().name_cstr() ) );
+      proc_winters_chill_consumed = p()->get_proc( fmt::format( "Winter's Chill stacks consumed by {}", data().name_cstr() ) );
 
     if ( track_shatter && sim->report_details != 0 )
       shatter_source = p()->get_shatter_source( name_str );
@@ -7556,16 +7556,12 @@ public:
       if ( !data->active() )
         continue;
 
-      auto nonzero = [] ( const char* fmt, double d ) { return d != 0.0 ? fmt::format( fmt::runtime( fmt ), d ) : ""; };
+      auto nonzero = [] ( double d, std::string_view suffix ) { return d != 0.0 ? fmt::format( "{:.1f}{}", d, suffix ) : ""; };
       auto cells = [ &, total = data->count_total() ] ( double mean, bool util = false )
       {
-        std::string format_str = "<td class=\"right\">{}</td><td class=\"right\">{}</td>";
-        if ( util ) format_str += "<td class=\"right\">{}</td>";
-
-        fmt::print( os, format_str,
-          nonzero( "{:.1f}", mean ),
-          nonzero( "{:.1f}%", 100.0 * mean / total ),
-          nonzero( "{:.1f}%", bff > 0.0 ? 100.0 * mean / bff : 0.0 ) );
+        fmt::print( os, "<td class=\"right\">{}</td>", nonzero( mean, "" ) );
+        fmt::print( os, "<td class=\"right\">{}</td>", nonzero( 100.0 * mean / total, "%" ) );
+        if ( util ) fmt::print( os, "<td class=\"right\">{}</td>", nonzero( bff > 0.0 ? 100.0 * mean / bff : 0.0, "%" ) );
       };
 
       std::string name = data->name_str;
