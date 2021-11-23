@@ -85,7 +85,7 @@ struct warlock_pet_t : public pet_t
   }
 
   // Pet action to simulate travel time. Places actor at distance 1.0.
-  // "Executes" for a length of time it would take to travel from current distance to 0 at 33 yds/sec
+  // "Executes" for a length of time it would take to travel from current distance to 1.0 at 33 yds/sec
   struct travel_t : public action_t
   {
     double speed;
