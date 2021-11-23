@@ -667,6 +667,17 @@ public:
     proc_t* dustwalker_patch;
   } procs;
 
+  // Set Bonus effects
+  struct set_bonuses_t
+  {
+    const spell_data_t* t28_assassination_2pc;
+    const spell_data_t* t28_assassination_4pc;
+    const spell_data_t* t28_outlaw_2pc;
+    const spell_data_t* t28_outlaw_4pc;
+    const spell_data_t* t28_subtlety_2pc;
+    const spell_data_t* t28_subtlety_4pc;
+  } set_bonuses;
+
   // Options
   struct rogue_options_t
   {
@@ -6649,7 +6660,9 @@ double rogue_t::composite_player_target_crit_chance( player_t* target ) const
 {
   double c = player_t::composite_player_target_crit_chance( target );
 
-  c += get_target_data( target )->debuffs.between_the_eyes->stack_value();
+  auto td = get_target_data( target );
+
+  c += td->debuffs.between_the_eyes->stack_value();
 
   return c;
 }
@@ -8295,6 +8308,16 @@ void rogue_t::create_buffs()
   buffs.greenskins_wickers = make_buff( this, "greenskins_wickers", find_spell( 340573 ) )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
     ->set_trigger_spell( legendary.greenskins_wickers );
+
+  // Set Bonus Items ========================================================
+
+  set_bonuses.t28_assassination_2pc = sets->set( ROGUE_ASSASSINATION, T28, B2 );
+  set_bonuses.t28_assassination_4pc = sets->set( ROGUE_ASSASSINATION, T28, B4 );
+  set_bonuses.t28_outlaw_2pc        = sets->set( ROGUE_OUTLAW, T28, B2 );
+  set_bonuses.t28_outlaw_4pc        = sets->set( ROGUE_OUTLAW, T28, B4 );
+  set_bonuses.t28_subtlety_2pc      = sets->set( ROGUE_SUBTLETY, T28, B2 );
+  set_bonuses.t28_subtlety_4pc      = sets->set( ROGUE_SUBTLETY, T28, B4 );
+
 }
 
 // rogue_t::create_options ==================================================
