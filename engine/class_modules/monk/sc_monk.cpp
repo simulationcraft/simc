@@ -5788,19 +5788,20 @@ struct stagger_buff_t : public monk_buff_t<buff_t>
 
 struct primordial_potential_buff_t : public monk_buff_t<buff_t>
 {
-  primordial_potential_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  static void primordial_potential_callback( buff_t* b, int, int )
   {
+    auto* p = debug_cast<monk_t*>( b->player );
+
+    if ( b->at_max_stacks() )
+    {
+      p->buff.primordial_power->trigger();
+      make_event( b->sim, [ b ] { b->expire(); } );
+    }
   }
 
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  primordial_potential_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
-    if ( stacks == max_stack() )
-    {
-      p().buff.primordial_power->trigger();
-      this->expire();
-      return false;
-    }
-    return buff_t::trigger( stacks, value, chance, duration );
+    set_stack_change_callback( primordial_potential_callback );
   }
 };
 
@@ -5812,8 +5813,9 @@ struct primordial_power_buff_t : public monk_buff_t<buff_t>
 {
   primordial_power_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
-    set_initial_stack( s->max_stacks() );
-    set_reverse_stack_count( 1 );
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    set_reverse( true );
+    set_reverse_stack_count( s->max_stacks() );
   }
 };
 }  // namespace buffs
