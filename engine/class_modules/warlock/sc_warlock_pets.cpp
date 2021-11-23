@@ -11,7 +11,6 @@ warlock_pet_t::warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_
     special_action( nullptr ),
     melee_attack( nullptr ),
     summon_stats( nullptr ),
-    ascendance( nullptr ),
     buffs(),
     active()
 {
