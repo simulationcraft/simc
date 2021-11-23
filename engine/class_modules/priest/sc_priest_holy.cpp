@@ -8,7 +8,6 @@
 
 #include "simulationcraft.hpp"
 
-
 namespace priestspace
 {
 namespace actions::spells
@@ -152,7 +151,7 @@ struct holy_heal_t final : public priest_heal_t
   }
 };
 
-}  // namespace actions
+}  // namespace actions::spells
 
 void priest_t::create_buffs_holy()
 {
@@ -168,15 +167,14 @@ void priest_t::init_spells_holy()
 {
   // Talents
   // T15
-  talents.enlightenment    = find_talent_spell( "Enlightenment" );
+  talents.enlightenment = find_talent_spell( "Enlightenment" );
   // T50
-  talents.light_of_the_naaru  = find_talent_spell( "Light of the Naaru" );
-  talents.apotheosis          = find_talent_spell( "Apotheosis" );
+  talents.light_of_the_naaru = find_talent_spell( "Light of the Naaru" );
+  talents.apotheosis         = find_talent_spell( "Apotheosis" );
 
   // General Spells
   specs.holy_words         = find_specialization_spell( "Holy Words" );
   specs.holy_word_serenity = find_specialization_spell( "Holy Word: Serenity" );
-
 }
 
 action_t* priest_t::create_action_holy( util::string_view name, util::string_view options_str )
