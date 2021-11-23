@@ -38,9 +38,6 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> demonic_synergy; //Buff used by SL Legendary (Relic of Demonic Synergy)
   } buffs;
 
-  //TODO: Remove demonbolt and lord of flames booleans
-  bool is_demonbolt_enabled = true;
-  bool is_lord_of_flames    = false;
   bool is_main_pet          = false;
   int dreadbite_executes    = 0;
 
