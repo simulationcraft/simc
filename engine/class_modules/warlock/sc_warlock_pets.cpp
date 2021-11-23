@@ -36,13 +36,21 @@ void warlock_pet_t::create_buffs()
 {
   pet_t::create_buffs();
 
-  create_buffs_demonology();
+  // Demonology
+  buffs.demonic_strength = make_buff( this, "demonic_strength", find_spell( 267171 ) )
+                               ->set_default_value( find_spell( 267171 )->effectN( 2 ).percent() )
+                               ->set_cooldown( timespan_t::zero() );
+
+  buffs.grimoire_of_service = make_buff( this, "grimoire_of_service", find_spell( 216187 ) )
+                                  ->set_default_value( find_spell( 216187 )->effectN( 1 ).percent() );
+
+  buffs.grim_inquisitors_dread_calling = make_buff( this, "grim_inquisitors_dread_calling", find_spell( 337142 ) );
 
   buffs.demonic_consumption = make_buff( this, "demonic_consumption", find_spell( 267972 ) )
                                   ->set_default_value( find_spell( 267972 )->effectN( 1 ).percent() )
                                   ->set_max_stack( 1 );
 
-  // destro
+  // Destruction
   buffs.embers = make_buff( this, "embers", find_spell( 264364 ) )
                      ->set_period( timespan_t::from_seconds( 0.5 ) )
                      ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
@@ -50,6 +58,7 @@ void warlock_pet_t::create_buffs()
                        o()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, o()->gains.infernal );
                      } );
 
+  // All Specs
   buffs.demonic_synergy = make_buff( this, "demonic_synergy", find_spell( 337060 ) )
                               ->set_default_value( o()->legendary.relic_of_demonic_synergy->effectN( 1 ).base_value() );
 }
@@ -103,18 +112,6 @@ void warlock_pet_t::init_special_effects()
 
     cb->initialize();
   }
-}
-
-void warlock_pet_t::create_buffs_demonology()
-{
-  buffs.demonic_strength = make_buff( this, "demonic_strength", find_spell( 267171 ) )
-                               ->set_default_value( find_spell( 267171 )->effectN( 2 ).percent() )
-                               ->set_cooldown( timespan_t::zero() );
-
-  buffs.grimoire_of_service = make_buff( this, "grimoire_of_service", find_spell( 216187 ) )
-                                  ->set_default_value( find_spell( 216187 )->effectN( 1 ).percent() );
-
-  buffs.grim_inquisitors_dread_calling = make_buff( this, "grim_inquisitors_dread_calling", find_spell( 337142 ) );
 }
 
 void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )

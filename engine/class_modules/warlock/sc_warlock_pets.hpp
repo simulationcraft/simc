@@ -50,7 +50,6 @@ struct warlock_pet_t : public pet_t
   double composite_player_target_multiplier( player_t* target, school_e school) const override;
   double resource_regen_per_second( resource_e ) const override;
 
-  void create_buffs_demonology();
   void init_special_effects() override;
 
   target_specific_t<warlock_pet_td_t> target_data;
