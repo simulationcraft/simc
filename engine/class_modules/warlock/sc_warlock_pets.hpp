@@ -84,25 +84,36 @@ struct warlock_pet_t : public pet_t
     pet_t::arise();
   }
 
-  //TODO: Formatting?
+  // Pet action to simulate travel time. Places actor at distance 1.0.
+  // "Executes" for a length of time it would take to travel from current distance to 0 at 33 yds/sec
   struct travel_t : public action_t
   {
+    double speed;
+    double melee_pos;
+
     travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player )
     {
-      trigger_gcd = timespan_t::zero();
+      trigger_gcd = 0_ms;
+      speed = 33.0;
+      melee_pos = 1.0;
     }
+
     void execute() override
     {
-      player->current.distance = 1;
+      player->current.distance = melee_pos;
     }
+
     timespan_t execute_time() const override
     {
-      return timespan_t::from_seconds( player->current.distance / 33.0 );
+      return timespan_t::from_seconds( ( player->current.distance - melee_pos ) / speed );
     }
+
     bool ready() override
     {
-      return ( player->current.distance > 1 );
+      //For now, we assume the pet does not ever need to be anywhere except the main raid target
+      return ( player->current.distance > melee_pos );
     }
+
     bool usable_moving() const override
     {
       return true;
