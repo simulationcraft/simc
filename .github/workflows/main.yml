@@ -21,14 +21,14 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        cc: [gcc-9, gcc-7]
+        cc: [gcc-10, gcc-7]
         include:
           - cc: gcc-7
             cxx: g++-7
             packages: gcc-7 g++-7
-          - cc: gcc-9
-            cxx: g++-9
-            packages: gcc-9 g++-9
+          - cc: gcc-10
+            cxx: g++-10
+            packages: gcc-10 g++-10
 
     steps:
       - uses: actions/checkout@v2
