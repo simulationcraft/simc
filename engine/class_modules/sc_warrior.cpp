@@ -443,6 +443,14 @@ public:
     // const spell_data_t* ravager; see arms
   } talents;
 
+  struct tier_set_t
+  {
+    const spell_data_t* frenzied_destruction_2p;
+    const spell_data_t* frenzied_destruction_4p;
+    const spell_data_t* pile_on_2p;
+    const spell_data_t* pile_on_4p;
+  } tier_set;
+
   struct legendary_t
   {
     const spell_data_t* sephuzs_secret;
@@ -876,6 +884,9 @@ public:
     ab::apply_affecting_conduit( p()->conduit.depths_of_insanity );
     ab::apply_affecting_conduit( p()->conduit.destructive_reverberations );
     ab::apply_affecting_conduit( p()->conduit.piercing_verdict );
+
+    // passive set bonuses
+    ab::apply_affecting_aura( p()->tier_set.frenzied_destruction_2p );
 
     affected_by.ashen_juggernaut    = ab::data().affected_by( p()->conduit.ashen_juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.sweeping_strikes    = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
@@ -3311,12 +3322,14 @@ struct raging_blow_t : public warrior_attack_t
   raging_blow_attack_t* oh_attack;
   double cd_reset_chance;
   double cruelty_reset_chance;
+  double frenzied_destruction_chance;
   raging_blow_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "raging_blow", p, p->spec.raging_blow ),
       mh_attack( nullptr ),
       oh_attack( nullptr ),
       cd_reset_chance( p->spec.raging_blow->effectN( 1 ).percent() ),
-      cruelty_reset_chance( p->talents.cruelty->effectN( 2 ).percent() )
+      cruelty_reset_chance( p->talents.cruelty->effectN( 2 ).percent() ),
+      frenzied_destruction_chance( p->tier_set.frenzied_destruction_4p ->effectN( 1 ).percent() )
   {
     parse_options( options_str );
 
@@ -3368,6 +3381,17 @@ struct raging_blow_t : public warrior_attack_t
     if ( p()->buff.will_of_the_berserker->check() )
     {
       ( p()->buff.will_of_the_berserker->trigger() ); // RB refreshs, but does not initially trigger
+    }
+    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_FURY, T28, B4 ) && rng().roll( frenzied_destruction_chance ) )
+    {
+      if ( p()->buff.recklessness->check() )
+      {
+        p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 4 ) );
+      }
+      else
+      {
+      p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
+      }
     }
   }
 
@@ -3430,11 +3454,13 @@ struct crushing_blow_t : public warrior_attack_t
   crushing_blow_attack_t* mh_attack;
   crushing_blow_attack_t* oh_attack;
   double cd_reset_chance;
+  double frenzied_destruction_chance;
   crushing_blow_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "crushing_blow", p, p->spec.crushing_blow ),
       mh_attack( nullptr ),
       oh_attack( nullptr ),
-      cd_reset_chance( p->spec.crushing_blow->effectN( 1 ).percent() )
+      cd_reset_chance( p->spec.crushing_blow->effectN( 1 ).percent() ),
+      frenzied_destruction_chance( p->tier_set.frenzied_destruction_4p ->effectN( 1 ).percent() )
   {
     parse_options( options_str );
 
@@ -3482,6 +3508,17 @@ struct crushing_blow_t : public warrior_attack_t
     if ( p()->buff.will_of_the_berserker->check() )
     {
       ( p()->buff.will_of_the_berserker->trigger() ); // CB refreshs, but does not initially trigger
+    }
+    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_FURY, T28, B4 ) && rng().roll( frenzied_destruction_chance ) )
+    {
+      if ( p()->buff.recklessness->check() )
+      {
+        p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 4 ) );
+      }
+      else
+      {
+      p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
+      }
     }
   }
 
@@ -6340,6 +6377,12 @@ void warrior_t::init_spells()
   conduit.show_of_force               = find_conduit_spell( "Show of Force" );
   conduit.unnerving_focus             = find_conduit_spell( "Unnerving Focus" );
 
+  // Tier Sets
+  tier_set.frenzied_destruction_2p    = sets -> set( WARRIOR_FURY, T28, B2 );
+  tier_set.frenzied_destruction_4p    = sets -> set( WARRIOR_FURY, T28, B4 );
+  tier_set.pile_on_2p                 = sets -> set( WARRIOR_ARMS, T28, B2 );
+  tier_set.pile_on_4p                 = sets -> set( WARRIOR_ARMS, T28, B4 );
+
 
   // Generic spells
   spell.ignore_pain           = find_class_spell( "Ignore Pain" );
@@ -7189,6 +7232,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   debuffs_colossus_smash = make_buff( *this , "colossus_smash" )
                                ->set_default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent() )
                                ->set_duration( p.spell.colossus_smash_debuff->duration() )
+                               ->modify_duration( p.sets->set( WARRIOR_ARMS, T28, B2 )->effectN( 1 ).time_value() )
                                ->set_cooldown( timespan_t::zero() );
 
   debuffs_siegebreaker = make_buff( *this , "siegebreaker" )
