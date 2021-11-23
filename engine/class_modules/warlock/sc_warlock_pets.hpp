@@ -25,7 +25,6 @@ struct warlock_pet_td_t : public actor_target_data_t
 struct warlock_pet_t : public pet_t
 {
   action_t* special_action; //Used for Felguard's Axe Toss
-  action_t* special_action_two; //TODO: Determine if this can be removed
   melee_attack_t* melee_attack;
   stats_t* summon_stats;
   spell_t* ascendance; //TODO: Remove

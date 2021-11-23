@@ -9,7 +9,6 @@ namespace warlock
 warlock_pet_t::warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_e pt, bool guardian )
   : pet_t( owner->sim, owner, pet_name, pt, guardian ),
     special_action( nullptr ),
-    special_action_two( nullptr ),
     melee_attack( nullptr ),
     summon_stats( nullptr ),
     ascendance( nullptr ),
@@ -81,14 +80,6 @@ void warlock_pet_t::init_action_list()
       special_action->background = true;
     else
       special_action->action_list = get_action_priority_list( "default" );
-  }
-
-  if ( special_action_two )
-  {
-    if ( type == PLAYER_PET )
-      special_action_two->background = true;
-    else
-      special_action_two->action_list = get_action_priority_list( "default" );
   }
 
   pet_t::init_action_list();
