@@ -1961,7 +1961,7 @@ public:
 
     if ( is_auto_attack && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
     {
-      da_multiplier_buffeffects.emplace_back( buff, val  );
+      da_multiplier_buffeffects.emplace_back( buff, val );
       return;
     }
 
@@ -1976,27 +1976,27 @@ public:
       switch ( eff.misc_value1() )
       {
         case P_GENERIC:
-          da_multiplier_buffeffects.emplace_back( buff, val, use_stacks, mastery  );
+          da_multiplier_buffeffects.emplace_back( buff, val, use_stacks, mastery );
           p()->sim->print_debug( "buff-effects: {} ({}) direct damage modified by {}%{} with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, mastery ? "+mastery" : "", buff->name(), buff->data().id() );
           break;
         case P_TICK_DAMAGE:
-          ta_multiplier_buffeffects.emplace_back( buff, val, use_stacks, mastery  );
+          ta_multiplier_buffeffects.emplace_back( buff, val, use_stacks, mastery );
           p()->sim->print_debug( "buff-effects: {} ({}) tick damage modified by {}%{} with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, mastery ? "+mastery" : "", buff->name(), buff->data().id() );
           break;
         case P_CAST_TIME:
-          execute_time_buffeffects.emplace_back( buff, val, use_stacks  );
+          execute_time_buffeffects.emplace_back( buff, val, use_stacks );
           p()->sim->print_debug( "buff-effects: {} ({}) cast time modified by {}% with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, buff->name(), buff->data().id() );
           break;
         case P_COOLDOWN:
-          recharge_multiplier_buffeffects.emplace_back( buff, val, use_stacks  );
+          recharge_multiplier_buffeffects.emplace_back( buff, val, use_stacks );
           p()->sim->print_debug( "buff-effects: {} ({}) cooldown modified by {}% with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, buff->name(), buff->data().id() );
           break;
         case P_RESOURCE_COST:
-          cost_buffeffects.emplace_back( buff, val, use_stacks  );
+          cost_buffeffects.emplace_back( buff, val, use_stacks );
           p()->sim->print_debug( "buff-effects: {} ({}) cost modified by {}% with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, buff->name(), buff->data().id() );
           break;
@@ -2006,7 +2006,7 @@ public:
     }
     else if ( eff.subtype() == A_ADD_FLAT_MODIFIER && eff.misc_value1() == P_CRIT )
     {
-      crit_chance_buffeffects.emplace_back( buff, val, use_stacks  );
+      crit_chance_buffeffects.emplace_back( buff, val, use_stacks );
           p()->sim->print_debug( "buff-effects: {} ({}) crit chance modified by {}% with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, buff->name(), buff->data().id() );
     }
@@ -2070,7 +2070,7 @@ public:
           eff_val += p()->cache.mastery_value();
       }
 
-      if ( !i.buff )
+      if ( !i.buff )  // usually mastery spells
       {
         return_value *= 1.0 + eff_val;
       }
