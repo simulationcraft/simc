@@ -2155,7 +2155,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
     {
       cooldown->reset( true );
       p()->proc.darkglare_boon_resets->occur();
-      // 02/18/2021 -- Added in PTR build
+      // 2021-02-18 -- Added in PTR build
       if ( p()->spec.darkglare_boon_refund->ok() )
       {
         p()->resource_gain( RESOURCE_FURY, p()->spec.darkglare_boon_refund->effectN( 2 ).resource( RESOURCE_FURY ),
@@ -2460,7 +2460,7 @@ struct collective_anguish_t : public demon_hunter_spell_t
 
     double composite_crit_chance() const override
     {
-      // 03/15/2020 -- 100% crit rate as of 9.0.5, does not appear to be in any spell data
+      // 2020-03-15 -- 100% crit rate as of 9.0.5, does not appear to be in any spell data
       if ( p()->specialization() == DEMON_HUNTER_VENGEANCE )
         return 1.0;
 
@@ -3696,7 +3696,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       assert( eff.type() == E_TRIGGER_SPELL );
       background = dual = true;
 
-      // 06/22/21 -- It once again appears that Onslaught procs can proc refunds
+      // 2021-06-22 -- It once again appears that Onslaught procs can proc refunds
       may_refund = ( weapon == &( p->off_hand_weapon ) );
       if ( may_refund )
       {
@@ -3731,7 +3731,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       demon_hunter_attack_t::execute();
 
       // Technically this appears to have a 0.5s ICD, but this is handled elsewhere
-      // 06/22/2021 -- It once again appears that Onslaught procs can proc refunds, as the procs are now 600ms apart
+      // 2021-06-22 -- It once again appears that Onslaught procs can proc refunds, as the procs are now 600ms apart
       if ( may_refund && p()->rng().roll( this->get_refund_proc_chance() ) )
       {
         p()->resource_gain( RESOURCE_FURY, p()->spec.chaos_strike_fury->effectN( 1 ).resource( RESOURCE_FURY ), parent->gain );
@@ -4405,7 +4405,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
     // For SimC purposes, using a cloned spell for better stats tracking
     if ( hit_any_target && fel_bombardment && bombardment_stacks > 0 )
     {
-      // 12/03/2020 - Apparently hotfixed to work correctly, although it still doesn't work how it did on beta
+      // 2020-12-03 - Apparently hotfixed to work correctly, although it still doesn't work how it did on beta
       // For each stack, pick a new target and trigger a glaive until we run out of targets
       const auto targets_in_range = targets_in_range_list( target_list() );
       for ( auto bombardment_target : targets_in_range )
@@ -4989,7 +4989,7 @@ void demon_hunter_t::create_buffs()
   // Fake Growing Inferno buff for tracking purposes
   buff.growing_inferno = make_buff<buff_t>( this, "growing_inferno", conduit.growing_inferno )
     ->set_default_value( conduit.growing_inferno.percent() )
-    // 12/02/2020 - Manual hotfix, not in spell data
+    // 2020-12-02 - Manual hotfix, not in spell data
     ->set_max_stack( conduit.growing_inferno->ok() ? (int)( 10 / conduit.growing_inferno.percent() ) : 1 )
     ->set_duration( 20_s );
 

@@ -1569,7 +1569,7 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
                                                         resource_regen_per_second( RESOURCE_FOCUS ) );
     const auto time_to_cd = active.basic_attack -> cooldown -> remains();
     const auto remains = std::max( time_to_cd, time_to_fc );
-    // 23/07/2018 - hunter pets seem to have a "generic" lag of about .6s on basic attack usage
+    // 2018-07-23 - hunter pets seem to have a "generic" lag of about .6s on basic attack usage
     const auto delay_mean = o() -> options.pet_basic_attack_delay;
     const auto delay_stddev = 100_ms;
     const auto lag = o() -> bugs ? rng().gauss( delay_mean, delay_stddev ) : 0_ms;
