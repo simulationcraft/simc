@@ -332,19 +332,6 @@ public:
   {
     /// Number of allies hit by Chain Harvest heals, range 0..5
     int chain_harvest_allies = 5;
-
-    // While Fire/Storm Ele is up, increase the damage of Lava Burst and
-    // periodically proc Lava Surge
-    bool t28_2pc_ele = 0;
-    double t28_2pc_ele_lvb_increase = 0.2;
-    timespan_t t28_2pc_ele_trigger = 8_s;
-
-    // Maelstrom spend has a chance to CDR Fire/Storm Ele
-    // and Lava Burst extends Fire/Storm Ele duration while up
-    bool t28_4pc_ele = 0;
-    timespan_t t28_4pc_ele_extension = 1.5_s;
-    timespan_t t28_4pc_ele_cd_reduction = 10_s;
-    double t28_4pc_ele_chance = 0.2;
   } opt_sl; // Shadowlands Shaman-specific options
 
   // Cached actions
@@ -725,6 +712,8 @@ public:
     const spell_data_t* windfury_weapon;
     const spell_data_t* t28_2pc_enh;
     const spell_data_t* t28_4pc_enh;
+    const spell_data_t* t28_2pc_ele;
+    const spell_data_t* t28_4pc_ele;
   } spell;
 
   // Cached pointer for ascendance / normal white melee
@@ -3860,7 +3849,7 @@ struct fire_elemental_t : public shaman_spell_t
 
     p()->summon_fire_elemental( fire_elemental_duration );
     p()->buff.fire_elemental->trigger();
-    if ( p()->opt_sl.t28_2pc_ele )
+    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) )
     {
       p()->buff.fireheart->trigger();
     }
@@ -3899,7 +3888,7 @@ struct storm_elemental_t : public shaman_spell_t
       storm_elemental_duration *= ( 1.0 + p()->conduit.call_of_flame.percent() );
     }
 
-    if ( p()->opt_sl.t28_2pc_ele )
+    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) )
     {
       p()->buff.fireheart->trigger();
     }
@@ -4395,9 +4384,9 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       m *= 1.0 + p()->buff.windspeakers_lava_resurgence->data().effectN( 1 ).percent();
     }
 
-    if ( p()->opt_sl.t28_2pc_ele && p()->buff.fireheart->up() )
+    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) && p()->buff.fireheart->up() )
     {
-      m *= 1 + p()->opt_sl.t28_2pc_ele_lvb_increase;
+      m *= 1.0 + p()->spell.t28_2pc_ele->effectN(2).percent();
     }
 
     return m;
@@ -4771,10 +4760,11 @@ struct lava_burst_t : public shaman_spell_t
       m *= 1.0 + p()->buff.windspeakers_lava_resurgence->data().effectN( 1 ).percent();
     }
 
-      if ( p()->opt_sl.t28_2pc_ele && p()->buff.fireheart->up())
+    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) && p()->buff.fireheart->up() )
     {
-        m *= 1 + p()->opt_sl.t28_2pc_ele_lvb_increase;
+      m *= 1.0 + p()->spell.t28_2pc_ele->effectN(2).percent();
     }
+
     return m;
   }
 
@@ -4815,15 +4805,17 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( p()->opt_sl.t28_4pc_ele )
+    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B4 ) )
     {
-      pet_t* pet    = p()->get_active_elemental_pet();
+      pet_t* pet = p()->get_active_elemental_pet();
       if ( pet )
       {
-        p()->buff.fireheart->extend_duration( p(), p()->opt_sl.t28_4pc_ele_extension );
-        pet->adjust_duration( p()->opt_sl.t28_4pc_ele_extension );
+        // yes, this is not a proper time value and has a different schema than effectN 3. Here 1 second has a value of 10
+        timespan_t extension = timespan_t::from_millis( p()->spell.t28_4pc_ele->effectN( 1 ).base_value() * 100.0 );
 
-        p()->buff.fire_elemental->extend_duration( p(), p()->opt_sl.t28_4pc_ele_extension );
+        p()->buff.fireheart->extend_duration( p(), extension );
+        pet->adjust_duration( extension );
+        p()->buff.fire_elemental->extend_duration( p(), extension );
       }
     }
     
@@ -5378,10 +5370,13 @@ struct earthquake_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( p()->opt_sl.t28_4pc_ele && !p()->is_elemental_pet_active() && rng().roll( p()->opt_sl.t28_4pc_ele_chance ) )
+    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B4 ) && !p()->is_elemental_pet_active() && rng().roll( p()->spell.t28_4pc_ele->effectN( 2 ).percent() ) )
     {
-      p()->cooldown.storm_elemental->adjust( -1.0 * p()->opt_sl.t28_4pc_ele_cd_reduction );
-      p()->cooldown.fire_elemental->adjust( -1.0 * p()->opt_sl.t28_4pc_ele_cd_reduction );
+      // yes this is not a proper time value, and a different schema for it than effectN 1. Here 1 second has a value of 1
+      timespan_t extension = timespan_t::from_seconds( p()->spell.t28_4pc_ele->effectN( 3 ).base_value() );
+
+      p()->cooldown.storm_elemental->adjust( -1.0 * extension );
+      p()->cooldown.fire_elemental->adjust( -1.0 * extension );
     }
 
     make_event<ground_aoe_event_t>(
@@ -5545,10 +5540,13 @@ struct earth_shock_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( p()->opt_sl.t28_4pc_ele && !p()->is_elemental_pet_active() && rng().roll( p()->opt_sl.t28_4pc_ele_chance ) )
+    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B4 ) && !p()->is_elemental_pet_active() && rng().roll( p()->spell.t28_4pc_ele->effectN( 2 ).percent() ) )
     {
-      p()->cooldown.storm_elemental->adjust( -1.0 * p()->opt_sl.t28_4pc_ele_cd_reduction );
-      p()->cooldown.fire_elemental->adjust( -1.0 * p()->opt_sl.t28_4pc_ele_cd_reduction );
+      // yes this is not a proper time value, and a different schema for it than effectN 1. Here 1 second has a value of 1
+      timespan_t extension = timespan_t::from_seconds( p()->spell.t28_4pc_ele->effectN( 3 ).base_value() );
+
+      p()->cooldown.storm_elemental->adjust( -1.0 * extension );
+      p()->cooldown.fire_elemental->adjust( -1.0 * extension );
     }
 
     // Echoed Earth Shock does not generate Surge of Power stacks
@@ -7668,15 +7666,6 @@ void shaman_t::create_options()
     return true;
   } ) );
   add_option( opt_int( "shaman.chain_harvest_allies", opt_sl.chain_harvest_allies, 0, 5 ) );
-
-  add_option( opt_bool( "shaman.t28_2pc_ele", opt_sl.t28_2pc_ele ) );
-  add_option( opt_float( "shaman.t28_2pc_ele_lvb_increase", opt_sl.t28_2pc_ele_lvb_increase, 0, 1 ) );
-  add_option( opt_timespan( "shaman.t28_2pc_ele_trigger", opt_sl.t28_2pc_ele_trigger, 0_s, 15_s ) );
-
-  add_option( opt_bool( "shaman.t28_4pc_ele", opt_sl.t28_4pc_ele ) );
-  add_option( opt_timespan( "shaman.t28_4pc_ele_extension", opt_sl.t28_4pc_ele_extension, 0_s, 5_s ) );
-  add_option( opt_timespan( "shaman.t28_4pc_ele_reduction", opt_sl.t28_4pc_ele_cd_reduction, 0_s, 20_s ) );
-  add_option( opt_float( "shaman.t28_4pc_ele_chance", opt_sl.t28_4pc_ele_chance, 0, 1 ) );
 }
 
 // shaman_t::create_profile ================================================
@@ -7859,19 +7848,24 @@ void shaman_t::init_spells()
   //
   // Misc spells
   //
-  spell.crashing_storm     = find_spell( 210797 );
-  spell.resurgence         = find_spell( 101033 );
-  spell.maelstrom_weapon   = find_spell( 187881 );
-  spell.feral_spirit       = find_spell( 228562 );
-  spell.fire_elemental     = find_spell( 188592 );
-  spell.storm_elemental    = find_spell( 157299 );
-  spell.flametongue_weapon = find_spell( 318038 );
-  spell.maelstrom          = find_spell( 343725 );
-  spell.windfury_weapon          = find_spell( 319773 );
+  spell.crashing_storm      = find_spell( 210797 );
+  spell.resurgence          = find_spell( 101033 );
+  spell.maelstrom_weapon    = find_spell( 187881 );
+  spell.feral_spirit        = find_spell( 228562 );
+  spell.fire_elemental      = find_spell( 188592 );
+  spell.storm_elemental     = find_spell( 157299 );
+  spell.flametongue_weapon  = find_spell( 318038 );
+  spell.maelstrom           = find_spell( 343725 );
+  spell.windfury_weapon     = find_spell( 319773 );
   spell.splintered_elements = find_spell( 354647 );
 
   spell.t28_2pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B2 );
   spell.t28_4pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B4 );
+
+  // spell.t28_2pc_ele        = sets->set( SHAMAN_ELEMENTAL, T28, B2 );
+  // this is the actually useful spell
+  spell.t28_2pc_ele        = find_spell( 364523 );
+  spell.t28_4pc_ele        = sets->set( SHAMAN_ELEMENTAL, T28, B4 );
 
   player_t::init_spells();
 }
@@ -8632,9 +8626,9 @@ void shaman_t::create_buffs()
                             ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_TICK_TIME )
                             ->apply_affecting_conduit( conduit.call_of_flame );
 
-  buff.fireheart = make_buff( this, "fireheart" )
+  buff.fireheart = make_buff( this, "fireheart", spell.t28_2pc_ele )
+                       // TODO: confirm if duration is affected by conduit and tier set 4pc bonus
                        ->set_duration( buff.fire_elemental->buff_duration() )
-                       ->set_period( opt_sl.t28_2pc_ele_trigger )
                        ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
                          if ( buff.lava_surge->check() )
                          {
@@ -8649,6 +8643,7 @@ void shaman_t::create_buffs()
 
                          buff.lava_surge->trigger();
                        } )
+                       // TODO: confirm recasting elemental during uptime behaviour
                        ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   //
