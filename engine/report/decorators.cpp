@@ -311,12 +311,23 @@ namespace {
 
   class action_decorator_t : public spell_decorator_t<action_t>
   {
-  public:
-    action_decorator_t(const action_t* obj) :
-      spell_decorator_t<action_t>(obj)
-    { }
-  };
+    const stats_t* stat;
 
+  public:
+    action_decorator_t( const action_t* obj, const stats_t* s = nullptr )
+      : spell_decorator_t<action_t>( obj ), stat( s )
+    {}
+
+    std::string token() const override
+    {
+      std::string token = spell_decorator_t<action_t>::token();
+
+      if ( stat && stat->prefer_name )
+        return util::encode_html( stat->name() );
+
+      return spell_decorator_t<action_t>::token();
+    }
+  };
 
   // Generic spell data decorator, supports player and item driven spell data
   class npc_decorator_t : public decorator_data_t
@@ -447,9 +458,9 @@ namespace report_decorators {
     return decorate(buff_decorator_t(&buff));
   }
 
-  std::string decorated_action(const action_t& a)
+  std::string decorated_action( const action_t& a, const stats_t* stat )
   {
-    return decorate(action_decorator_t(&a));
+    return decorate( action_decorator_t( &a, stat ) );
   }
 
   std::string decorated_spell_data(const sim_t& sim, const spell_data_t* spell)

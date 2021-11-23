@@ -1815,6 +1815,10 @@ public:
         return s.stats;
 
     auto fc_stats = p()->get_stats( free_cast_string( f ), this );
+
+    if ( f == free_cast_e::APEX )
+      fc_stats->prefer_name = true;
+
     free_cast_stats.emplace_back( f, fc_stats );
 
     return fc_stats;
@@ -10751,7 +10755,7 @@ public:
       if ( tf_exe_total > 0 || bt_exe_total > 0 )
       {
         const action_t& action = *( stats->action_list[ 0 ] );
-        std::string name_str   = report_decorators::decorated_action( action );
+        std::string name_str   = report_decorators::decorated_action( action, stats );
 
         // Table Row : Name, TF up, TF total, TF up/total, TF up/sum(TF up)
         os.printf( "<tr><td class=\"left\">%s</td><td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",

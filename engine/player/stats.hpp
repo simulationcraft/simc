@@ -34,6 +34,9 @@ public:
   school_e school;
   stats_e type;
 
+  // when set true, the stat object's name will take precedence over the action name for HTML reporting
+  bool prefer_name;
+
   std::vector<action_t*> action_list;
   gain_t resource_gain;
   // Flags
