@@ -53,12 +53,13 @@ enum eclipse_state_e
 enum free_cast_e
 {
   NONE = 0,
-  CONVOKE,   // convoke_the_spirits night_fae covenant ability
-  LYCARAS,   // lycaras fleeting glimpse legendary
-  ONETHS,    // oneths clear vision legendary
-  GALACTIC,  // galactic guardian talent
-  NATURAL,   // natural orders will legendary
   APEX,      // apex predators's craving
+  CONVOKE,   // convoke_the_spirits night_fae covenant ability
+  GALACTIC,  // galactic guardian talent
+  LYCARAS,   // lycaras fleeting glimpse legendary
+  NATURAL,   // natural orders will legendary
+  ONETHS,    // oneths clear vision legendary
+  PILLAR,    // celestial pillar balance tier 28 2pc
 };
 
 struct druid_td_t : public actor_target_data_t
@@ -129,9 +130,8 @@ struct druid_action_state_t : public action_state_t
   void copy_state( const action_state_t* s ) override
   {
     action_state_t::copy_state( s );
-    auto druid_s = debug_cast<const druid_action_state_t*>( s );
 
-    free_cast = druid_s->free_cast;
+    free_cast = static_cast<const druid_action_state_t*>( s )->free_cast;
   }
 };
 
@@ -319,6 +319,7 @@ public:
     // Set bonus
     action_t* architects_aligner;  // Guardian T28 4pc Set Bonus
     action_t* sickle_of_the_lion;  // Feral T28 4pc Set Bonus
+    action_t* celestial_pillar;    // Balance T28 2pc Set Bonus
   } active;
 
   // Pets
@@ -383,6 +384,7 @@ public:
     buff_t* starsurge_solar;  // stacking eclipse empowerment for each eclipse
     buff_t* starsurge_lunar;
     buff_t* solstice;
+    buff_t* fury_of_elune;  // tracking buff
     // Balance Legendaries
     buff_t* primordial_arcanic_pulsar;
     buff_t* oneths_free_starsurge;
@@ -1344,9 +1346,15 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
 {
   double empowerment;
   double mastery_value;
-  unsigned eclipse_id;
+  bool is_lunar;
+  bool is_solar;
 
-  eclipse_buff_t( druid_t& p, util::string_view n, const spell_data_t* s ) : base_t( p, n, s ), empowerment( 0.0 ), mastery_value( 0.0 ), eclipse_id( s->id() )
+  eclipse_buff_t( druid_t& p, util::string_view n, const spell_data_t* s )
+    : base_t( p, n, s ),
+      empowerment( 0.0 ),
+      mastery_value( 0.0 ),
+      is_lunar( s->id() == p.spec.eclipse_lunar->id() ),
+      is_solar( s->id() == p.spec.eclipse_solar->id() )
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     set_default_value_from_effect( 2, 0.01 * ( 1.0 + p.conduit.umbral_intensity.percent() ) );
@@ -1355,9 +1363,9 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
     // value, but parse them separately in case this changes in the future, as it was different in the past.
     auto ss = p.find_spell( 78674 );
 
-    if ( eclipse_id == p.spec.eclipse_solar->id() )
+    if ( is_solar )
       empowerment = ss->effectN( 2 ).percent() + p.spec.starsurge_2->effectN( 1 ).percent();
-    else if ( eclipse_id == p.spec.eclipse_lunar->id() )
+    else if ( is_lunar )
       empowerment = ss->effectN( 3 ).percent() + p.spec.starsurge_2->effectN( 2 ).percent();
   }
 
@@ -1372,20 +1380,37 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
     base_t::execute( s, v, d );
   }
 
-  void extend_duration( player_t* p, timespan_t d ) override
+  void trigger_celestial_pillar()
+  {
+    if ( is_lunar && p().sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
+    {
+      p().active.celestial_pillar->set_target( p().target );
+      p().active.celestial_pillar->execute();
+    }
+  }
+
+  bool trigger( int s, double v, double c, timespan_t d ) override
+  {
+    bool ret = base_t::trigger( s, v, c, d );
+    trigger_celestial_pillar();
+    return ret;
+  }
+
+  void extend_duration( player_t* player, timespan_t d ) override
   {
     snapshot_mastery();
-    base_t::extend_duration( p, d );
+    base_t::extend_duration( player, d );
+    trigger_celestial_pillar();
   }
 
   double value() override
   {
     double v = base_t::value();
 
-    if ( eclipse_id == p().spec.eclipse_solar->id() )
+    if ( is_solar )
       v += empowerment * p().buff.starsurge_solar->stack();
 
-    if ( eclipse_id == p().spec.eclipse_lunar->id() )
+    if ( is_lunar )
       v += empowerment * p().buff.starsurge_lunar->stack();
 
     return v;
@@ -1711,9 +1736,10 @@ struct buff_effect_t
   double value;
   bool use_stacks;
   bool mastery;
+  std::function<bool()> func;
 
-  buff_effect_t( buff_t* b, double v, bool s = true, bool m = false )
-    : buff( b ), value( v ), use_stacks( s ), mastery( m )
+  buff_effect_t( buff_t* b, double v, bool s = true, bool m = false, std::function<bool()> f = nullptr )
+    : buff( b ), value( v ), use_stacks( s ), mastery( m ), func( f )
   {}
 };
 
@@ -1738,20 +1764,23 @@ struct free_cast_stats_t
 template <class Base>
 struct druid_action_t : public Base
 {
+private:
+  using ab = Base;  // action base, eg. spell_t
+  free_cast_e base_free_cast;
+
+public:
+  using base_t = druid_action_t<Base>;
   unsigned form_mask; // Restricts use of a spell based on form.
   bool may_autounshift; // Allows a spell that may be cast in NO_FORM but not in current form to be cast by exiting form.
   unsigned autoshift; // Allows a spell that may not be cast in the current form to be cast by automatically changing to the specified form.
-private:
-  using ab = Base;  // action base, eg. spell_t
-public:
-  using base_t = druid_action_t<Base>;
-
   bool triggers_galactic_guardian;
   bool is_auto_attack;
   bool break_stealth;
 
-  // !!! WARNING: free_cast is CLEARED from the action and set on the state upon execute() !!!
-  // !!! You MUST use get_state_free_cast( state ) to get the value from the STATE, not the action !!!
+  // !!! WARNING: Upon execute(), free_cast is set on the state and RESET to base_free_cast !!!
+  // !!! For actions that will ALWAYS be one type of free_cast, you MUST use set_base_free_cast() to set it !!!
+  // !!! For actions that can have multiple type of free_cast, you MUST get the free_cast post execute from the STATE,
+  // not the action !!!
   free_cast_e free_cast;
   std::vector<free_cast_stats_t> free_cast_stats;
   stats_t* orig_stats;
@@ -1767,6 +1796,7 @@ public:
 
   druid_action_t( util::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
+      base_free_cast( free_cast_e::NONE ),
       form_mask( ab::data().stance_mask() ),
       may_autounshift( true ),
       autoshift( 0 ),
@@ -1803,9 +1833,24 @@ public:
 
   action_state_t* new_state() override { return new druid_action_state_t( this, ab::target ); }
 
-  free_cast_e get_state_free_cast( action_state_t* s ) { return debug_cast<druid_action_state_t*>( s )->free_cast; }
+  free_cast_e get_state_free_cast( const action_state_t* s ) const
+  {
+    return static_cast<const druid_action_state_t*>( s )->free_cast;
+  }
 
-  void set_state_free_cast( action_state_t* s ) { debug_cast<druid_action_state_t*>( s )->free_cast = free_cast; }
+  free_cast_e get_state_free_cast( action_state_t* s ) const
+  {
+    return static_cast<druid_action_state_t*>( s )->free_cast;
+  }
+
+  void snapshot_internal( action_state_t* s, unsigned f, result_amount_type r ) override
+  {
+    // set the free_cast first so it can be used by any composite_* calculations dones in action_t::snapshot_internal()
+    if ( free_cast )
+      static_cast<druid_action_state_t*>( s )->free_cast = free_cast;
+
+    ab::snapshot_internal( s, f, r );
+  }
 
   std::string free_cast_string( free_cast_e f ) const
   {
@@ -1816,8 +1861,17 @@ public:
       case free_cast_e::GALACTIC: return ab::name_str + "_galactic";
       case free_cast_e::LYCARAS:  return ab::name_str + "_lycaras";
       case free_cast_e::ONETHS:   return ab::name_str + "_oneths";
+      case free_cast_e::PILLAR:   return ab::name_str + "_pillar";
       default: return ab::name_str;
     }
+  }
+
+  base_t* set_base_free_cast( free_cast_e f )
+  {
+    base_free_cast = f;
+    free_cast = f;
+
+    return this;
   }
 
   stats_t* init_free_cast_stats( free_cast_e f )
@@ -1828,7 +1882,7 @@ public:
 
     auto fc_stats = p()->get_stats( free_cast_string( f ), this );
 
-    if ( f == free_cast_e::APEX )
+    if ( f == free_cast_e::APEX || f == free_cast_e::PILLAR )
       fc_stats->prefer_name = true;
 
     free_cast_stats.emplace_back( f, fc_stats );
@@ -1838,11 +1892,22 @@ public:
 
   stats_t* get_free_cast_stats( free_cast_e f )
   {
-    for ( const auto& s : free_cast_stats )
-      if ( s.type == f )
-        return s.stats;
+    if ( f )
+      for ( const auto& s : free_cast_stats )
+        if ( s.type == f )
+          return s.stats;
 
     return ab::stats;
+  }
+
+  void trigger_ravenous_frenzy( free_cast_e f = free_cast_e::NONE )
+  {
+    if ( ab::background || ab::trigger_gcd == 0_ms || !p()->buff.ravenous_frenzy->check() )
+      return;
+
+    // trigger on non-free_cast or free_cast that requires you to actually cast
+    if ( f == free_cast_e::NONE || f == free_cast_e::APEX || f == free_cast_e::ONETHS )
+      p()->buff.ravenous_frenzy->trigger();
   }
 
   void execute() override
@@ -1852,14 +1917,13 @@ public:
       ab::stats = get_free_cast_stats( free_cast );
       ab::execute();
       ab::stats = orig_stats;
-      free_cast = free_cast_e::NONE;
+      trigger_ravenous_frenzy( free_cast );
+      free_cast = base_free_cast;
     }
     else
     {
       ab::execute();
-
-      if ( !ab::background && ab::trigger_gcd > 0_ms && p()->buff.ravenous_frenzy->check() )
-        p()->buff.ravenous_frenzy->trigger();
+      trigger_ravenous_frenzy();
     }
 
     if ( break_stealth )
@@ -1867,14 +1931,7 @@ public:
       p()->buff.prowl->expire();
       p()->buffs.shadowmeld->expire();
     }
-  }
-
-  void schedule_travel( action_state_t* s ) override
-  {
-    set_state_free_cast( s );
-
-    ab::schedule_travel( s );
-  }
+}
 
   void impact( action_state_t* s ) override
   {
@@ -1938,6 +1995,8 @@ public:
     parse_spell_effects_mods( val, m, base, idx, mods... );
   }
 
+  using bfun = std::function<bool()>;
+
   // Will parse simple buffs that ONLY target the caster and DO NOT have multiple ranks
   // 1: Add Percent Modifier to Spell Direct Amount
   // 2: Add Percent Modifier to Spell Periodic Amount
@@ -1946,7 +2005,7 @@ public:
   // 5: Add Percent Modifier to Spell Resource Cost
   // 6: Add Flat Modifier to Spell Critical Chance
   template <typename... Ts>
-  void parse_buff_effect( buff_t* buff, const spell_data_t* s_data, size_t i, bool use_stacks, Ts... mods )
+  void parse_buff_effect( buff_t* buff, bfun f, const spell_data_t* s_data, size_t i, bool use_stacks, Ts... mods )
   {
     const auto& eff = s_data->effectN( i );
     double val      = eff.percent();
@@ -1971,34 +2030,31 @@ public:
     if ( !mastery && !val )
       return;
 
+    std::string buffeffect_name;
+
     if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
     {
       switch ( eff.misc_value1() )
       {
         case P_GENERIC:
-          da_multiplier_buffeffects.emplace_back( buff, val, use_stacks, mastery );
-          p()->sim->print_debug( "buff-effects: {} ({}) direct damage modified by {}%{} with buff {} ({})", ab::name(),
-                                 ab::id, val * 100.0, mastery ? "+mastery" : "", buff->name(), buff->data().id() );
+          da_multiplier_buffeffects.emplace_back( buff, val, use_stacks, mastery, f );
+          buffeffect_name = "direct damage";
           break;
         case P_TICK_DAMAGE:
-          ta_multiplier_buffeffects.emplace_back( buff, val, use_stacks, mastery );
-          p()->sim->print_debug( "buff-effects: {} ({}) tick damage modified by {}%{} with buff {} ({})", ab::name(),
-                                 ab::id, val * 100.0, mastery ? "+mastery" : "", buff->name(), buff->data().id() );
+          ta_multiplier_buffeffects.emplace_back( buff, val, use_stacks, mastery, f );
+          buffeffect_name = "tick damage";
           break;
         case P_CAST_TIME:
-          execute_time_buffeffects.emplace_back( buff, val, use_stacks );
-          p()->sim->print_debug( "buff-effects: {} ({}) cast time modified by {}% with buff {} ({})", ab::name(),
-                                 ab::id, val * 100.0, buff->name(), buff->data().id() );
+          execute_time_buffeffects.emplace_back( buff, val, use_stacks, false, f );
+          buffeffect_name = "cast time";
           break;
         case P_COOLDOWN:
-          recharge_multiplier_buffeffects.emplace_back( buff, val, use_stacks );
-          p()->sim->print_debug( "buff-effects: {} ({}) cooldown modified by {}% with buff {} ({})", ab::name(),
-                                 ab::id, val * 100.0, buff->name(), buff->data().id() );
+          recharge_multiplier_buffeffects.emplace_back( buff, val, use_stacks, false, f );
+          buffeffect_name = "cooldown";
           break;
         case P_RESOURCE_COST:
-          cost_buffeffects.emplace_back( buff, val, use_stacks );
-          p()->sim->print_debug( "buff-effects: {} ({}) cost modified by {}% with buff {} ({})", ab::name(),
-                                 ab::id, val * 100.0, buff->name(), buff->data().id() );
+          cost_buffeffects.emplace_back( buff, val, use_stacks, false, f );
+          buffeffect_name = "cost";
           break;
         default:
           break;
@@ -2006,9 +2062,19 @@ public:
     }
     else if ( eff.subtype() == A_ADD_FLAT_MODIFIER && eff.misc_value1() == P_CRIT )
     {
-      crit_chance_buffeffects.emplace_back( buff, val, use_stacks );
-          p()->sim->print_debug( "buff-effects: {} ({}) crit chance modified by {}% with buff {} ({})", ab::name(),
-                                 ab::id, val * 100.0, buff->name(), buff->data().id() );
+      crit_chance_buffeffects.emplace_back( buff, val, use_stacks, false, f );
+      buffeffect_name = "crit chance";
+    }
+
+    if ( buff )
+    {
+      p()->sim->print_debug( "buff-effects: {} ({}) {} modified by {}%{} with buff {} ({})", ab::name(), ab::id,
+                             buffeffect_name, val * 100.0, mastery ? "+mastery" : "", buff->name(), buff->data().id() );
+    }
+    else
+    {
+      p()->sim->print_debug( "conditional-effects: {} ({}) {} modified by {}% with condition from {} ({})", ab::name(),
+                             ab::id, buffeffect_name, val * 100.0, s_data->name_cstr(), s_data->id() );
     }
   }
 
@@ -2025,7 +2091,7 @@ public:
       if ( ignore_start && i >= as<size_t>( ignore_start ) && ( i <= as<size_t>( ignore_end ) || !ignore_end ) )
         continue;
 
-      parse_buff_effect( buff, s_data, i, use_stacks, mods... );
+      parse_buff_effect( buff, nullptr, s_data, i, use_stacks, mods... );
     }
   }
 
@@ -2053,6 +2119,15 @@ public:
     parse_buff_effects<Ts...>( buff, 0U, 0U, true, mods... );
   }
 
+  void parse_conditional_effects( const spell_data_t* spell, bfun f )
+  {
+    if ( !spell || !spell->ok() )
+      return;
+
+    for ( size_t i = 1 ; i <= spell->effect_count(); i++ )
+      parse_buff_effect( nullptr, f, spell, i, false );
+  }
+
   double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false,
                                  bool benefit = true ) const
   {
@@ -2061,6 +2136,9 @@ public:
     for ( const auto& i : buffeffects )
     {
       double eff_val = i.value;
+
+      if ( i.func && !i.func() )  // conditional effects
+          continue;
 
       if ( i.mastery )
       {
@@ -2118,6 +2196,9 @@ public:
     // effect#2 holds the eclipse bonus effect, handled separately in eclipse_buff_t
     parse_buff_effects<S, S>( p()->buff.eclipse_solar, 2U, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
     parse_buff_effects<S, S>( p()->buff.eclipse_lunar, 2U, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
+    parse_conditional_effects( p()->sets->set( DRUID_BALANCE, T28, B4 ), [ this ]() {
+      return p()->buff.eclipse_lunar->check() || p()->buff.eclipse_solar->check();
+    } );
 
     // Guardian
     parse_buff_effects( p()->buff.bear_form );
@@ -3703,13 +3784,6 @@ struct frenzied_assault_t : public residual_action::residual_periodic_action_t<c
     background = proc = true;
     may_miss = may_dodge = may_parry = false;
   }
-
-  void schedule_travel( action_state_t* s ) override
-  {
-    // since residual periodic action states are inherited from action_state_t, we need to bypass
-    // druid_action_t::schedule_travel() as it calls set_state_free_cast() which is only valid on druid_action_state_t
-    melee_attack_t::schedule_travel( s );
-  }
 };
 
 // Lunar Inspiration ========================================================
@@ -5263,35 +5337,105 @@ struct fury_of_elune_t : public druid_spell_t
 {
   struct fury_of_elune_tick_t : public druid_spell_t
   {
-    fury_of_elune_tick_t( druid_t* p ) : druid_spell_t( "fury_of_elune_tick", p, p->spec.fury_of_elune )
+    double pillar_mul;
+
+    fury_of_elune_tick_t( druid_t* p )
+      : druid_spell_t( "fury_of_elune_tick", p, p->spec.fury_of_elune ),
+        pillar_mul( p->sets->set( DRUID_BALANCE, T28, B2 )->effectN( 1 ).percent() )
     {
       background = dual = ground_aoe = true;
       aoe = -1;
       reduced_aoe_targets = 1.0;
       full_amount_targets = 1;
     }
+
+    double action_multiplier() const override
+    {
+      double am = druid_spell_t::action_multiplier();
+
+      if ( free_cast == free_cast_e::PILLAR )
+        am *= pillar_mul;
+
+      return am;
+    }
+  };
+
+  struct fury_of_elune_aoe_event_t : public ground_aoe_event_t
+  {
+    free_cast_e free;
+    stats_t* stat;
+
+    fury_of_elune_aoe_event_t( player_t* p, free_cast_e f, stats_t* s, const ground_aoe_params_t* param,
+                               action_state_t* ps )
+      : ground_aoe_event_t( p, param, ps ), free( f ), stat( s )
+    {}
+
+    fury_of_elune_aoe_event_t( player_t* p, free_cast_e f, stats_t* s, const ground_aoe_params_t& param )
+      : ground_aoe_event_t( p, param ), free( f ), stat( s )
+    {}
+
+    void schedule_event() override
+    {
+      auto event = make_event<fury_of_elune_aoe_event_t>( sim(), _player, free, stat, params, pulse_state );
+
+      if ( params->n_pulses() > 0 )
+      {
+        event->set_current_pulse( current_pulse + 1 );
+      }
+    }
+
+    void execute() override
+    {
+      auto a = static_cast<druid_spell_t*>( params->action() );
+      a->free_cast = free;
+      a->stats = stat;
+
+      ground_aoe_event_t::execute();
+    }
   };
 
   action_t* damage;
+  timespan_t ap_period;
+  int ap_ticks;
+  double ap_amount;
 
-  fury_of_elune_t( druid_t* p, util::string_view options_str )
-    : druid_spell_t( "fury_of_elune", p, p->talent.fury_of_elune, options_str )
+  fury_of_elune_t( druid_t* p, util::string_view opt ) : fury_of_elune_t( p, p->talent.fury_of_elune, opt ) {}
+
+  fury_of_elune_t( druid_t* p, const spell_data_t* s, util::string_view opt )
+    : druid_spell_t( "fury_of_elune", p, s, opt )
   {
+    dot_duration = 0_ms;  // AP gain handled via fury_of_elune_ground_event_t
+
     damage = p->get_secondary_action<fury_of_elune_tick_t>( "fury_of_elune_tick" );
-    damage->stats = stats;
+
+    if ( p->sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
+      stats->add_child( init_free_cast_stats( free_cast_e::PILLAR ) );
+
+    auto eff = p->query_aura_effect( s_data, A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
+    ap_period = eff->period();
+    ap_ticks = static_cast<int>( data().duration() / ap_period );
+    ap_amount = eff->resource( RESOURCE_ASTRAL_POWER );
   }
 
   void execute() override
   {
+    auto f = free_cast;
+    auto stat = get_free_cast_stats( f );
+
     druid_spell_t::execute();
 
-    make_event<ground_aoe_event_t>( *sim, p(),
-                                    ground_aoe_params_t()
-                                        .target( execute_state->target )
-                                        .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
-                                        .pulse_time( data().effectN( 3 ).period() )
-                                        .duration( data().duration() )
-                                        .action( damage ) );
+    p()->buff.fury_of_elune->trigger();
+
+    make_repeating_event( *sim, ap_period, [ this ]() {
+      p()->resource_gain( RESOURCE_ASTRAL_POWER, ap_amount, p()->gain.fury_of_elune, this );
+    }, ap_ticks );
+
+    make_event<fury_of_elune_aoe_event_t>( *sim, p(), f, stat,
+      ground_aoe_params_t().target( execute_state->target )
+                           .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
+                           .pulse_time( data().effectN( 3 ).period() )
+                           .duration( data().duration() )
+                           .action( damage ) );
   }
 };
 
@@ -8108,7 +8252,7 @@ void druid_t::init_spells()
   spec.stellar_drift           = check_id( talent.stellar_drift->ok(), 202461 );  // stellar drift mobility buff
   spec.shooting_stars          = find_specialization_spell( "Shooting Stars" );
   spec.shooting_stars_dmg      = check_id( spec.shooting_stars->ok(), 202497 );   // shooting stars damage
-  spec.fury_of_elune           = check_id( talent.fury_of_elune->ok(), 211545 );  // fury of elune tick damage
+  spec.fury_of_elune           = find_spell( 211545 );  // fury of elune tick damage
   spec.half_moon               = check_id( talent.new_moon->ok(), 274282 );
   spec.full_moon               = check_id( talent.new_moon->ok(), 274283 );
   spec.moonfire_2              = find_rank_spell( "Moonfire", "Rank 2" );
@@ -8393,10 +8537,17 @@ void druid_t::create_buffs()
   buff.owlkin_frenzy = make_buff( this, "owlkin_frenzy", spec.owlkin_frenzy )
     ->set_chance( find_rank_spell( "Moonkin Form", "Rank 2" )->effectN( 1 ).percent() );
 
-  buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 338825 )) 
+  buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 338825 ) ) 
     ->set_default_value(initial_pulsar_value);
 
   buff.solstice = make_buff( this, "solstice", talent.solstice->effectN( 1 ).trigger() );
+
+  // FOE needs to be available to all due to 2T28
+  buff.fury_of_elune = make_buff( this, "fury_of_elune", find_spell( 202770 ) )
+    ->set_cooldown( 0_ms )
+    ->set_period( 0_ms )
+    ->set_max_stack( 10 )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   buff.starfall = make_buff( this, "starfall", spec.starfall )
     ->set_period( 1_s )
@@ -8657,6 +8808,12 @@ void druid_t::create_actions()
   if ( legendary.oneths_clear_vision->ok() )
     active.oneths_clear_vision =
         new action_t( action_e::ACTION_OTHER, "oneths_clear_vision", this, legendary.oneths_clear_vision );
+
+  if ( sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
+  {
+    active.celestial_pillar = get_secondary_action<fury_of_elune_t>( "fury_of_elune", find_spell( 202770 ), "" )
+      ->set_base_free_cast( free_cast_e::PILLAR );
+  }
 
   // Feral
   if ( legendary.frenzyband->ok() )
