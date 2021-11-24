@@ -1730,26 +1730,30 @@ struct kindred_affinity_external_buff_t : public kindred_affinity_base_t
 
 }  // end namespace buffs
 
+using bfun = std::function<bool()>;
 struct buff_effect_t
 {
   buff_t* buff;
   double value;
   bool use_stacks;
   bool mastery;
-  std::function<bool()> func;
+  bfun func;
 
-  buff_effect_t( buff_t* b, double v, bool s = true, bool m = false, std::function<bool()> f = nullptr )
-    : buff( b ), value( v ), use_stacks( s ), mastery( m ), func( f )
+  buff_effect_t( buff_t* b, double v, bool s = true, bool m = false, bfun f = nullptr )
+    : buff( b ), value( v ), use_stacks( s ), mastery( m ), func( std::move( f ) )
   {}
 };
 
+using dfun = std::function<dot_t*( druid_td_t* )>;
 struct dot_debuff_t
 {
-  std::function<dot_t*( druid_td_t* )> func;
+  dfun func;
   double value;
   bool use_stacks;
 
-  dot_debuff_t( std::function<dot_t*( druid_td_t* )> f, double v, bool b ) : func( std::move(f) ), value( v ), use_stacks( b ) {}
+  dot_debuff_t( dfun f, double v, bool b )
+    : func( std::move( f ) ), value( v ), use_stacks( b )
+  {}
 };
 
 struct free_cast_stats_t
@@ -1995,8 +1999,6 @@ public:
     parse_spell_effects_mods( val, m, base, idx, mods... );
   }
 
-  using bfun = std::function<bool()>;
-
   // Will parse simple buffs that ONLY target the caster and DO NOT have multiple ranks
   // 1: Add Percent Modifier to Spell Direct Amount
   // 2: Add Percent Modifier to Spell Periodic Amount
@@ -2225,8 +2227,7 @@ public:
   }
 
   template <typename... Ts>
-  void parse_dot_debuffs( const std::function<dot_t*( druid_td_t* )>& func, bool use_stacks, const spell_data_t* s_data,
-                          Ts... mods )
+  void parse_dot_debuffs( dfun func, bool use_stacks, const spell_data_t* s_data, Ts... mods )
   {
     if ( !s_data->ok() )
       return;
@@ -2257,7 +2258,7 @@ public:
   }
 
   template <typename... Ts>
-  void parse_dot_debuffs( std::function<dot_t*( druid_td_t* )> func, const spell_data_t* s_data, Ts... mods )
+  void parse_dot_debuffs( dfun func, const spell_data_t* s_data, Ts... mods )
   {
     parse_dot_debuffs( func, true, s_data, mods... );
   }
