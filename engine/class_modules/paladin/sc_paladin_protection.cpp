@@ -960,7 +960,7 @@ void paladin_t::generate_action_prio_list_prot()
   std -> add_action( this, "Judgment", "target_if=min:debuff.judgment.remains,if=charges=2|!talent.crusaders_judgment.enabled" );
   std -> add_action( this, "Hammer of Wrath" );
   std -> add_action( "blessing_of_the_seasons" );
-  std->add_action( "vanquishers_hammer", "if = buff.seraphim.up & runecarving.duty_bound_gavel | !runecarving.duty_bound_gavel | !talent.seraphim.enabled " );
+  std -> add_action( "vanquishers_hammer", "if = buff.seraphim.up & runecarving.duty_bound_gavel | !runecarving.duty_bound_gavel | !talent.seraphim.enabled" );
   std -> add_action( this, "Avenger's Shield" );
   std -> add_action( this, "Judgment", "target_if=min:debuff.judgment.remains" );
   std -> add_action( this, "Consecration", "if=!consecration.up" );
