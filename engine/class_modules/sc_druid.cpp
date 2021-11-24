@@ -2032,7 +2032,7 @@ public:
     if ( !mastery && !val )
       return;
 
-    std::string buffeffect_name;
+    std::string_view buffeffect_name;
 
     if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
     {
@@ -9895,7 +9895,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
 
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "bs_inc" ) )
   {
-    std::string replacement;
+    std::string_view replacement;
 
     // special case since incarnation is handled via the proxy action and the cooldown obj is not explicitly named for
     // the spec variant
@@ -9945,7 +9945,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
     // automatic resolution of Celestial Alignment vs talented Incarnation
     if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "ca_inc" ) )
     {
-      std::string replacement;
+      std::string_view replacement;
 
       if ( util::str_compare_ci( splits[ 0 ], "cooldown" ) )
         replacement = talent.incarnation_moonkin->ok() ? "incarnation" : "celestial_alignment";
@@ -10049,7 +10049,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "incarnation" ) &&
        ( util::str_compare_ci( splits[ 0 ], "buff" ) || util::str_compare_ci( splits[ 0 ], "talent" ) ) )
   {
-    std::string replacement;
+    std::string_view replacement;
 
     switch ( specialization() )
     {
@@ -10064,7 +10064,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
 
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "berserk" ) )
   {
-    std::string replacement;
+    std::string_view replacement;
 
     if ( specialization() == DRUID_FERAL )
       replacement = "berserk_cat";
