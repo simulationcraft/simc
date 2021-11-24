@@ -947,6 +947,7 @@ public:
                                                const spell_data_t* affected_spell = spell_data_t::nil(),
                                                effect_type_t type                 = E_APPLY_AURA ) const;
   void apply_affecting_auras( action_t& ) override;
+  bool check_astral_power( action_t* a, int over );
 
   // secondary actions
   std::vector<action_t*> secondary_action_list;
@@ -2651,22 +2652,11 @@ public:
   {
     auto splits = util::string_split<std::string_view>( name_str, "." );
 
-    // check for AP overcap on current action. check for other action handled in druid_t::create_expression
-    // syntax: ap_check.<allowed overcap = 0>
     if ( p()->specialization() == DRUID_BALANCE && util::str_compare_ci( splits[ 0 ], "ap_check" ) )
     {
-      return make_fn_expr( name_str, [this, splits]() {
-        action_state_t* state = this->get_state();
-        double ap             = p()->resources.current[ RESOURCE_ASTRAL_POWER ];
+      int over = splits.size() > 1 ? util::to_int( splits[ 1 ] ) : 0;
 
-        ap += composite_energize_amount( state );
-        ap += p()->spec.shooting_stars_dmg->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
-        ap += p()->talent.natures_balance->ok() ? std::ceil( time_to_execute / 2_s ) : 0;
-
-        action_state_t::release( state );
-        return ap <=
-               p()->resources.base[ RESOURCE_ASTRAL_POWER ] + ( splits.size() >= 2 ? util::to_int( splits[ 1 ] ) : 0 );
-      } );
+      return make_fn_expr( name_str, [ this, over ]() { return p()->check_astral_power( this, over ); } );
     }
 
     return ab::create_expression( name_str );
@@ -8516,6 +8506,8 @@ void druid_t::create_buffs()
     ->set_period( 0_ms )
     ->set_max_stack( 10 )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  auto foe_ap = query_aura_effect( &buff.fury_of_elune->data(), A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
+  buff.fury_of_elune->set_default_value( foe_ap->resource( RESOURCE_ASTRAL_POWER ) / foe_ap->period().total_seconds() );
 
   buff.starfall = make_buff( this, "starfall", spec.starfall )
     ->set_period( 1_s )
@@ -9929,16 +9921,9 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
       action_t* action = find_action( splits[ 0 ] );
       if ( action )
       {
-        return make_fn_expr( name_str, [ action, this, splits ]() {
-          action_state_t* state = action->get_state();
-          double ap             = resources.current[ RESOURCE_ASTRAL_POWER ];
-          ap += action->composite_energize_amount( state );
-          ap += spec.shooting_stars_dmg->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
-          ap += talent.natures_balance->ok() ? std::ceil( action->time_to_execute / 2_s ) : 0;
-          action_state_t::release( state );
-          return ap <=
-                 resources.base[ RESOURCE_ASTRAL_POWER ] + ( splits.size() >= 3 ? util::to_int( splits[ 2 ] ) : 0 );
-        } );
+        int over = splits.size() > 2 ? util::to_int( splits[ 2 ] ) : 0;
+
+        return make_fn_expr( name_str, [ this, action, over ]() { return check_astral_power( action, over ); } );
       }
 
       throw std::invalid_argument( "invalid action" );
@@ -10804,6 +10789,23 @@ void druid_t::apply_affecting_auras( action_t& action )
   // Conduits
   action.apply_affecting_conduit( conduit.tough_as_bark );
   action.apply_affecting_conduit( conduit.innate_resolve );
+}
+
+// check for AP overcap on current action. syntax: ap_check.<allowed overcap = 0>
+bool druid_t::check_astral_power( action_t* a, int over )
+{
+  action_state_t* state = a->get_state();
+  double ap = resources.current[ RESOURCE_ASTRAL_POWER ];
+
+  ap += a->composite_energize_amount( state );
+  ap += spec.shooting_stars_dmg->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+  ap += a->time_to_execute.total_seconds() *
+        ( std::ceil( talent.natures_balance->effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ) ) +
+          std::ceil( buff.fury_of_elune->check_stack_value() ) );
+
+  action_state_t::release( state );
+
+  return ap <= resources.max[ RESOURCE_ASTRAL_POWER ] + over;
 }
 
 //void druid_t::output_json_report(js::JsonOutput& root) const
