@@ -612,6 +612,7 @@ public:
 
   void parse_effect_direct_mods( const spelleffect_data_t& spelleffect_data, bool item_scaling );
   void parse_effect_periodic_mods( const spelleffect_data_t& spelleffect_data, bool item_scaling );
+  void parse_effect_period( const spelleffect_data_t& );
 
   void parse_effect_data( const spelleffect_data_t& );
 
@@ -627,7 +628,7 @@ public:
 
   player_t* select_target_if_target();
 
-  void apply_affecting_aura(const spell_data_t*);
+  void apply_affecting_aura( const spell_data_t* );
   void apply_affecting_effect( const spelleffect_data_t& effect );
   void apply_affecting_conduit( const conduit_data_t& conduit, int effect_num = 1 );
   void apply_affecting_conduit_effect( const conduit_data_t& conduit, size_t effect_num );

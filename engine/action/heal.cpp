@@ -68,16 +68,12 @@ void heal_t::parse_heal_effect_data(const spelleffect_data_t& e)
     else if ( e.subtype() == A_PERIODIC_HEAL_PCT )
     {
       tick_pct_heal = e.percent();
+      parse_effect_period( e );
     }
     else if ( e.subtype() == A_PERIODIC_HEAL )
     {
       parse_effect_periodic_mods( e, item_scaling );
-
-      if ( e.period() > timespan_t::zero() )
-      {
-        base_tick_time = e.period();
-        dot_duration   = e.spell()->duration();
-      }
+      parse_effect_period( e );
     }
   }
 }

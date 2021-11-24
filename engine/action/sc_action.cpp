@@ -711,6 +711,15 @@ void action_t::parse_effect_periodic_mods( const spelleffect_data_t& spelleffect
   radius = spelleffect_data.radius_max();
 }
 
+void action_t::parse_effect_period( const spelleffect_data_t& spelleffect_data )
+{
+  if ( spelleffect_data.period() > timespan_t::zero() )
+  {
+    base_tick_time = spelleffect_data.period();
+    dot_duration   = spelleffect_data.spell()->duration();
+  }
+}
+
 // action_t::parse_effect_data ==============================================
 void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
 {
@@ -786,12 +795,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
         case A_PERIODIC_DAMAGE_PERCENT:
         case A_PERIODIC_DUMMY:
         case A_PERIODIC_TRIGGER_SPELL:
-        case A_PERIODIC_HEAL_PCT:
-          if ( spelleffect_data.period() > timespan_t::zero() )
-          {
-            base_tick_time = spelleffect_data.period();
-            dot_duration   = spelleffect_data.spell()->duration();
-          }
+          parse_effect_period( spelleffect_data );
           break;
         case A_SCHOOL_ABSORB:
           spell_power_mod.direct  = spelleffect_data.sp_coeff();
