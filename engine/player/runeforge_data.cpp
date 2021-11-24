@@ -40,7 +40,7 @@ item_runeforge_t::item_runeforge_t( const runeforge_legendary_entry_t& entry, co
   const auto& effect = item_effect();
   if ( effect.id != 0 )
   {
-    m_spell = dbc::find_spell( m_item->player, effect.spell_id );
+    m_spell = dbc::find_spell( m_item->player, m_entry->spell_id );
   }
   else
   {
