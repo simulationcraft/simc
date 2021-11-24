@@ -8,6 +8,7 @@
 #include "config.hpp"
 #include "sc_enums.hpp"
 #include "dbc/data_definitions.hh"
+#include "report/reports.hpp"
 #include "util/format.hpp"
 #include "util/string_view.hpp"
 
@@ -77,4 +78,6 @@ struct set_bonus_t
   std::string generate_set_bonus_options() const;
 
   friend void sc_format_to( const set_bonus_t&, fmt::format_context::iterator );
+
+  report::sc_html_stream& generate_report( report::sc_html_stream& ) const;
 };
