@@ -247,7 +247,7 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
   std::string name;
   if ( a )
   {
-    name = report_decorators::decorated_action(*a);
+    name = report_decorators::decorated_action( *a, &s );
   }
   else
   {
@@ -1066,6 +1066,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    "<ul>\n"
                    "<li><span class=\"label\">tick_may_crit:</span>%s</li>\n"
                    "<li><span class=\"label\">tick_zero:</span>%s</li>\n"
+                   "<li><span class=\"label\">tick_on_application:</span>%s</li>\n"
                    "<li><span class=\"label\">attack_power_mod.tick:</span>%.6f</li>\n"
                    "<li><span class=\"label\">spell_power_mod.tick:</span>%.6f</li>\n"
                    "<li><span class=\"label\">base_td:</span>%.2f</li>\n"
@@ -1078,6 +1079,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    "</div>\n",
                    a->tick_may_crit ? "true" : "false",
                    a->tick_zero ? "true" : "false",
+                   a->tick_on_application ? "true" : "false",
                    a->attack_power_mod.tick,
                    a->spell_power_mod.tick,
                    a->base_td,

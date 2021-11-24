@@ -154,7 +154,7 @@ struct movement_buff_t : public buff_t
   double distance_moved;
   demon_hunter_t* dh;
 
-  movement_buff_t( demon_hunter_t* p, const std::string& name, const spell_data_t* spell_data = spell_data_t::nil(), const item_t* item = nullptr );
+  movement_buff_t( demon_hunter_t* p, util::string_view name, const spell_data_t* spell_data = spell_data_t::nil(), const item_t* item = nullptr );
 
   bool trigger( int s = 1, double v = DEFAULT_VALUE(), double c = -1.0, timespan_t d = timespan_t::min() ) override;
 };
@@ -703,7 +703,7 @@ public:
 
   // Cooldown Tracking
   template <typename T_CONTAINER, typename T_DATA>
-  T_CONTAINER* get_data_entry( const std::string& name, std::vector<T_DATA*>& entries )
+  T_CONTAINER* get_data_entry( util::string_view name, std::vector<T_DATA*>& entries )
   {
     for ( size_t i = 0; i < entries.size(); i++ )
     {
@@ -1043,7 +1043,7 @@ namespace pets
 struct demon_hunter_pet_t : public pet_t
 {
   demon_hunter_pet_t( sim_t* sim, demon_hunter_t& owner,
-                      const std::string& pet_name, pet_e pt,
+                      util::string_view pet_name, pet_e pt,
                       bool guardian = false )
     : pet_t( sim, &owner, pet_name, pt, guardian )
   {
@@ -1570,7 +1570,7 @@ struct demon_hunter_heal_t : public demon_hunter_action_t<heal_t>
 {
   demon_hunter_heal_t( util::string_view n, demon_hunter_t* p,
                        const spell_data_t* s = spell_data_t::nil(),
-                       const std::string& o = std::string() )
+                       util::string_view o = {} )
     : base_t( n, p, s, o )
   {
     harmful = false;
@@ -1655,7 +1655,7 @@ struct consume_soul_t : public demon_hunter_heal_t
   const spell_data_t* vengeance_heal;
   const timespan_t vengeance_heal_interval;
 
-  consume_soul_t( demon_hunter_t* p, const std::string& n, const spell_data_t* s, soul_fragment t )
+  consume_soul_t( demon_hunter_t* p, util::string_view n, const spell_data_t* s, soul_fragment t )
     : demon_hunter_heal_t( n, p, s ),
     type( t ),
     vengeance_heal( p->find_specialization_spell( 203783 ) ),
@@ -2293,7 +2293,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
   fiery_brand_dot_t* dot_action;
   bool from_demonic_oath;
 
-  fiery_brand_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = "", bool from_demonic_oath = false )
+  fiery_brand_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {}, bool from_demonic_oath = false )
     : demon_hunter_spell_t( name, p, from_demonic_oath ? p->find_spell( 204021 ) : p->spec.fiery_brand, options_str ),
     dot_action( nullptr ),
     from_demonic_oath( from_demonic_oath )
@@ -2836,7 +2836,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     range = 5.0;  // Disallow use outside of melee.
   }
 
-  void parse_mode( const std::string& value )
+  void parse_mode( util::string_view value )
   {
     if ( value == "close" || value == "near" || value == "closest" || value == "nearest" )
     {
@@ -2859,7 +2859,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     }
   }
 
-  void parse_type( const std::string& value )
+  void parse_type( util::string_view value )
   {
     if ( value == "greater" )
     {
@@ -3318,7 +3318,7 @@ namespace attacks
       status_e main_hand, off_hand;
     } status;
 
-    auto_attack_damage_t( const std::string& name, demon_hunter_t* p, weapon_t* w, const spell_data_t* s = spell_data_t::nil() )
+    auto_attack_damage_t( util::string_view name, demon_hunter_t* p, weapon_t* w, const spell_data_t* s = spell_data_t::nil() )
       : demon_hunter_attack_t( name, p, s )
     {
       school = SCHOOL_PHYSICAL;
@@ -3535,7 +3535,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
   trail_of_ruin_dot_t* trail_of_ruin_dot;
   timespan_t ability_cooldown;
 
-  blade_dance_base_t( const std::string& n, demon_hunter_t* p,
+  blade_dance_base_t( util::string_view n, demon_hunter_t* p,
                       const spell_data_t* s, util::string_view options_str, buff_t* dodge_buff )
     : demon_hunter_attack_t( n, p, s, options_str ), dodge_buff( dodge_buff ), trail_of_ruin_dot ( nullptr )
   {
@@ -3764,7 +3764,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
   std::vector<chaos_strike_damage_t*> attacks;
   bool from_onslaught;
 
-  chaos_strike_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view options_str = "", bool from_onslaught = false )
+  chaos_strike_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view options_str = {}, bool from_onslaught = false )
     : demon_hunter_attack_t( n, p, s, options_str ),
     from_onslaught( from_onslaught )
   {
@@ -3825,7 +3825,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
 struct chaos_strike_t : public chaos_strike_base_t
 {
-  chaos_strike_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = "", bool from_onslaught = false )
+  chaos_strike_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {}, bool from_onslaught = false )
     : chaos_strike_base_t( name, p, p->spec.chaos_strike, options_str, from_onslaught )
   {
     if ( attacks.empty() )
@@ -3855,7 +3855,7 @@ struct chaos_strike_t : public chaos_strike_base_t
 
 struct annihilation_t : public chaos_strike_base_t
 {
-  annihilation_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = "", bool from_onslaught = false )
+  annihilation_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {}, bool from_onslaught = false )
     : chaos_strike_base_t( name, p, p->spec.annihilation, options_str, from_onslaught )
   {
     if ( attacks.empty() )
@@ -4504,10 +4504,10 @@ struct demon_hunter_buff_t : public BuffBase
 {
   using base_t = demon_hunter_buff_t;
 
-  demon_hunter_buff_t( demon_hunter_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr )
+  demon_hunter_buff_t( demon_hunter_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr )
     : BuffBase( &p, name, s, item )
   { }
-  demon_hunter_buff_t( demon_hunter_td_t& td, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr )
+  demon_hunter_buff_t( demon_hunter_td_t& td, util::string_view name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr )
     : BuffBase( td, name, s, item )
   { }
 
@@ -4724,7 +4724,7 @@ struct spirit_bomb_event_t : public event_t
   }
 };
 
-movement_buff_t::movement_buff_t( demon_hunter_t* p, const std::string& name, const spell_data_t* spell_data, const item_t* item )
+movement_buff_t::movement_buff_t( demon_hunter_t* p, util::string_view name, const spell_data_t* spell_data, const item_t* item )
   : buff_t( p, name, spell_data, item ), yards_from_melee( 0.0 ), distance_moved( 0.0 ), dh( p )
 {
 }
@@ -5030,7 +5030,7 @@ struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
   demon_hunter_t* dh;
   double cooldown_multiplier;
 
-  metamorphosis_adjusted_cooldown_expr_t( demon_hunter_t* p, const std::string& name_str )
+  metamorphosis_adjusted_cooldown_expr_t( demon_hunter_t* p, util::string_view name_str )
     : expr_t( name_str ), dh( p ), cooldown_multiplier( 1.0 )
   {
   }

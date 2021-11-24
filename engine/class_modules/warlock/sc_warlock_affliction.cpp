@@ -935,8 +935,11 @@ void warlock_t::create_apl_affliction()
   action_priority_list_t* stat  = get_action_priority_list( "stat_trinkets" );
   action_priority_list_t* dmg   = get_action_priority_list( "damage_trinkets" );
   action_priority_list_t* split = get_action_priority_list( "trinket_split_check" );
+  action_priority_list_t* necro = get_action_priority_list( "necro_mw" );
 
   def->add_action( "call_action_list,name=aoe,if=active_enemies>3" );
+  
+  def->add_action( "run_action_list,name=necro_mw,if=covenant.necrolord&runeforge.malefic_wrath&active_enemies=1&talent.phantom_singularity", "Call separate action list for Necrolord MW in ST. Currently only optimized for use with PS." );
 
   def->add_action( "call_action_list,name=trinket_split_check,if=time<1", "Action lists for trinket behavior. Stats are saved for before Soul Rot/Impending Catastrophe/Phantom Singularity, otherwise on cooldown" );
   def->add_action( "call_action_list,name=delayed_trinkets" );
@@ -1100,5 +1103,39 @@ void warlock_t::create_apl_affliction()
   split->add_action( "variable,name=trinket_two,value=(trinket.2.has_proc.any&trinket.2.has_cooldown)" );
   split->add_action( "variable,name=damage_trinket,value=(!(trinket.1.has_proc.any&trinket.1.has_cooldown))|(!(trinket.2.has_proc.any&trinket.2.has_cooldown))|equipped.glyph_of_assimilation" );
   split->add_action( "variable,name=trinket_split,value=(variable.trinket_one&variable.damage_trinket)|(variable.trinket_two&variable.damage_trinket)|(variable.trinket_one^variable.special_equipped)|(variable.trinket_two^variable.special_equipped)" );
+
+  necro->add_action( "variable,name=dots_ticking,value=dot.corruption.remains>2&dot.agony.remains>2&dot.unstable_affliction.remains>2&(!talent.siphon_life|dot.siphon_life.remains>2)" );
+  necro->add_action( "variable,name=trinket_delay,value=cooldown.phantom_singularity.remains,value_else=cooldown.decimating_bolt.remains,op=setif,condition=talent.shadow_embrace,if=covenant.necrolord", "Trinkets align with PS for Shadow Embrace, DB for Haunt.");
+  necro->add_action( "malefic_rapture,if=time_to_die<execute_time*soul_shard&dot.unstable_affliction.ticking", "Burn soul shards if the fight will be ending soon." );
+  necro->add_action( "haunt,if=dot.haunt.remains<2+execute_time", "Cast haunt to refresh before falloff." );
+  necro->add_action( "malefic_rapture,if=time>7&buff.malefic_wrath.remains<gcd.max+execute_time", "High - priority MW refresh if spending one global would cause us to miss the opportunity to refresh MW. " );
+  necro->add_action( "use_item,name=empyreal_ordnance,if=variable.trinket_delay<20", "Fire delayed trinkets in anticipation of Decimating Bolt." );
+  necro->add_action( "use_item,name=sunblood_amethyst,if=variable.trinket_delay<6" ); 
+  necro->add_action( "use_item,name=soulletting_ruby,if=variable.trinket_delay<8" );
+  necro->add_action( "use_item,name=name=shadowed_orb_of_torment,if=variable.trinket_delay<4" );
+  necro->add_action( "phantom_singularity,if=talent.haunt&variable.dots_ticking", "If the player is using Haunt, fire PS on cooldown then follow with DB" );
+  necro->add_action( "decimating_bolt,if=talent.haunt&cooldown.phantom_singularity.remains>0" );
+  necro->add_action( "decimating_bolt,if=talent.shadow_embrace&variable.dots_ticking", "If the player is using SE, fire DB on cooldown then following with PS" );
+  necro->add_action( "phantom_singularity,if=talent.shadow_embrace&cooldown.decimating_bolt.remains>0" );
+  necro->add_action( "unstable_affliction,if=dot.unstable_affliction.remains<6" );
+  necro->add_action( "agony,if=dot.agony.remains<4" );
+  necro->add_action( "siphon_life,if=dot.siphon_life.remains<4" );
+  necro->add_action( "corruption,if=dot.corruption.remains<4" );
+  necro->add_action( "malefic_rapture,if=time>7&buff.malefic_wrath.remains<2*gcd.max+execute_time", "Refresh MW after the opener if darkglare_prep would cause us to miss a MW refresh" );
+  necro->add_action( "call_action_list,name=darkglare_prep,if=dot.phantom_singularity.ticking", "Call darkglare_prep if Phantom Singularity is currently ticking" );
+  necro->add_action( "call_action_list,name=stat_trinkets,if=dot.phantom_singularity.ticking", "Utilize any other stat trinkets if Phantom Singularity is ticking" );
+  necro->add_action( "malefic_rapture,if=time>7&(buff.malefic_wrath.stack<3|buff.malefic_wrath.remains<4.5)", "Stack Malefic Wrath to 3, or refresh when getting low (ideally looking for a calculated number, but 4.5s remaining is the result of testing with T27)" );
+  necro->add_action( "malefic_rapture,if=(dot.phantom_singularity.ticking|time_to_die<cooldown.phantom_singularity.remains)&(buff.malefic_wrath.stack<3|soul_shard>1)", "Additional MR spends when extra shards are available and either Phantom Singularity is ticking, or the fight is ending." );
+  necro->add_action( "drain_soul,if=dot.phantom_singularity.ticking", "Additional Drain Soul cast when PS is ticking" );
+  necro->add_action( "agony,if=refreshable", "Low - priority dot refresh when refreshable." );
+  necro->add_action( "unstable_affliction,if=refreshable" );
+  necro->add_action( "corruption,if=refreshable" );
+  necro->add_action( "siphon_life,if=talent.siphon_life&refreshable" );
+  necro->add_action( "fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_solvent_humanoid.up", "Fleshcraft to maintain Volatile Solvent." );
+  necro->add_action( "haunt,if=dot.haunt.remains<3", "Low-priority haunt refresh." );
+  necro->add_action( "drain_soul,if=buff.decimating_bolt.up", "Uninterruptible DS channel if we have the DB buff." );
+  necro->add_action( "drain_soul,if=talent.shadow_embrace&debuff.shadow_embrace.remains<3|debuff.shadow_embrace.stack<3,interrupt_if=debuff.shadow_embrace.stack>=3&debuff.shadow_embrace.remains>3" );
+  necro->add_action( "drain_soul,interrupt=1" );
+  necro->add_action( "shadow_bolt" );
 }
 }  // namespace warlock

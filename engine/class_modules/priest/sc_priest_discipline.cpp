@@ -275,7 +275,7 @@ struct spirit_shell_t final : public priest_spell_t
   }
 };
 
-}  // namespace actions
+}  // namespace actions::spells
 
 namespace buffs
 {

@@ -199,7 +199,7 @@ warlock_pet_td_t::warlock_pet_td_t( player_t* target, warlock_pet_t& p ) :
 
 namespace pets
 {
-warlock_simple_pet_t::warlock_simple_pet_t( warlock_t* owner, const std::string& pet_name, pet_e pt )
+warlock_simple_pet_t::warlock_simple_pet_t( warlock_t* owner, util::string_view pet_name, pet_e pt )
   : warlock_pet_t( owner, pet_name, pt, true ), special_ability( nullptr )
 {
   resource_regeneration = regen_type::DISABLED;
@@ -1146,7 +1146,7 @@ struct demonfire_t : public warlock_pet_spell_t
   }
 };
 
-demonic_tyrant_t::demonic_tyrant_t( warlock_t* owner, const std::string& name )
+demonic_tyrant_t::demonic_tyrant_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_DEMONIC_TYRANT, name != "demonic_tyrant" )
 {
   resource_regeneration = regen_type::DISABLED;
@@ -1677,7 +1677,7 @@ struct infernal_melee_t : warlock_pet_melee_t
   }
 };
 
-infernal_t::infernal_t( warlock_t* owner, const std::string& name )
+infernal_t::infernal_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_INFERNAL, name != "infernal" ), immolation( nullptr )
 {
   resource_regeneration = regen_type::DISABLED;
@@ -1768,7 +1768,7 @@ struct dark_glare_t : public warlock_pet_spell_t
   }
 };
 
-darkglare_t::darkglare_t( warlock_t* owner, const std::string& name )
+darkglare_t::darkglare_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_DARKGLARE, name != "darkglare" )
 {
   action_list_str += "dark_glare";

@@ -20,6 +20,7 @@ stats_t::stats_t( util::string_view n, player_t* p ) :
   parent( nullptr ),
   school( SCHOOL_NONE ),
   type( STATS_DMG ),
+  prefer_name( false ),
   resource_gain( n ),
   analyzed( false ),
   quiet( false ),

@@ -2542,7 +2542,12 @@ class SpellDataGenerator(DataGenerator):
             if not SetBonusListGenerator.is_extract_set_bonus(set_spell_data.id_parent)[0]:
                 continue
 
-            self.process_spell(set_spell_data.id_spell, ids, 0, 0)
+            mask_class = 0
+            spec_data = set_spell_data.ref('id_spec')
+            if spec_data.id > 0:
+                mask_class = DataGenerator._class_masks[spec_data.class_id]
+
+            self.process_spell(set_spell_data.id_spell, ids, mask_class, 0)
 
         # Glyph effects, need to do trickery here to get actual effect from spellbook data
         for ability in self.db('SkillLineAbility').values():

@@ -41,7 +41,7 @@ using data_t        = std::pair<std::string, simple_sample_data_with_min_max_t>;
 using simple_data_t = std::pair<std::string, simple_sample_data_t>;
 
 template <typename T_CONTAINER, typename T_DATA>
-T_CONTAINER* get_data_entry( const std::string& name, std::vector<T_DATA*>& entries )
+T_CONTAINER* get_data_entry( util::string_view name, std::vector<T_DATA*>& entries )
 {
   for ( size_t i = 0; i < entries.size(); i++ )
   {
@@ -442,6 +442,14 @@ public:
     const spell_data_t* heavy_repercussions;
     // const spell_data_t* ravager; see arms
   } talents;
+
+  struct tier_set_t
+  {
+    const spell_data_t* frenzied_destruction_2p;
+    const spell_data_t* frenzied_destruction_4p;
+    const spell_data_t* pile_on_2p;
+    const spell_data_t* pile_on_4p;
+  } tier_set;
 
   struct legendary_t
   {
@@ -877,6 +885,9 @@ public:
     ab::apply_affecting_conduit( p()->conduit.destructive_reverberations );
     ab::apply_affecting_conduit( p()->conduit.piercing_verdict );
 
+    // passive set bonuses
+    ab::apply_affecting_aura( p()->tier_set.frenzied_destruction_2p );
+
     affected_by.ashen_juggernaut    = ab::data().affected_by( p()->conduit.ashen_juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.sweeping_strikes    = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
     affected_by.deadly_calm         = ab::data().affected_by( p()->talents.deadly_calm->effectN( 1 ) );
@@ -1234,7 +1245,7 @@ public:
 
 struct warrior_heal_t : public warrior_action_t<heal_t>
 {  // Main Warrior Heal Class
-  warrior_heal_t( const std::string& n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() ) : base_t( n, p, s )
+  warrior_heal_t( util::string_view n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() ) : base_t( n, p, s )
   {
     may_crit = tick_may_crit = hasted_ticks = false;
     target                                  = p;
@@ -1380,7 +1391,7 @@ struct melee_t : public warrior_attack_t
   bool mh_lost_melee_contact, oh_lost_melee_contact;
   double base_rage_generation, arms_rage_multiplier, fury_rage_multiplier, seasoned_soldier_crit_mult;
   devastator_t* devastator;
-  melee_t( const std::string& name, warrior_t* p )
+  melee_t( util::string_view name, warrior_t* p )
     : warrior_attack_t( name, p, spell_data_t::nil() ), reckless_flurry( nullptr ),
       mh_lost_melee_contact( true ),
       oh_lost_melee_contact( true ),
@@ -1624,7 +1635,7 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
   bool from_mortal_combo;
   double enduring_blow_chance;
   double mortal_combo_chance;
-  mortal_strike_unhinged_t( warrior_t* p, const std::string& name, bool mortal_combo = false )
+  mortal_strike_unhinged_t( warrior_t* p, util::string_view name, bool mortal_combo = false )
   : warrior_attack_t( name, p, p->spec.mortal_strike ), mortal_combo_strike( nullptr ),
   from_mortal_combo( mortal_combo ),
   enduring_blow_chance( p->legendary.enduring_blow->proc_chance() ),
@@ -1834,7 +1845,7 @@ struct mortal_strike_t : public warrior_attack_t
 
 struct bladestorm_tick_t : public warrior_attack_t
 {
-  bladestorm_tick_t( warrior_t* p, const std::string& name, const spell_data_t* spell )
+  bladestorm_tick_t( warrior_t* p, util::string_view name, const spell_data_t* spell )
     : warrior_attack_t( name, p, spell )
 
   {
@@ -3311,12 +3322,14 @@ struct raging_blow_t : public warrior_attack_t
   raging_blow_attack_t* oh_attack;
   double cd_reset_chance;
   double cruelty_reset_chance;
+  double frenzied_destruction_chance;
   raging_blow_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "raging_blow", p, p->spec.raging_blow ),
       mh_attack( nullptr ),
       oh_attack( nullptr ),
       cd_reset_chance( p->spec.raging_blow->effectN( 1 ).percent() ),
-      cruelty_reset_chance( p->talents.cruelty->effectN( 2 ).percent() )
+      cruelty_reset_chance( p->talents.cruelty->effectN( 2 ).percent() ),
+      frenzied_destruction_chance( p->tier_set.frenzied_destruction_4p ->effectN( 1 ).percent() )
   {
     parse_options( options_str );
 
@@ -3368,6 +3381,17 @@ struct raging_blow_t : public warrior_attack_t
     if ( p()->buff.will_of_the_berserker->check() )
     {
       ( p()->buff.will_of_the_berserker->trigger() ); // RB refreshs, but does not initially trigger
+    }
+    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_FURY, T28, B4 ) && rng().roll( frenzied_destruction_chance ) )
+    {
+      if ( p()->buff.recklessness->check() )
+      {
+        p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 4 ) );
+      }
+      else
+      {
+      p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
+      }
     }
   }
 
@@ -3430,11 +3454,13 @@ struct crushing_blow_t : public warrior_attack_t
   crushing_blow_attack_t* mh_attack;
   crushing_blow_attack_t* oh_attack;
   double cd_reset_chance;
+  double frenzied_destruction_chance;
   crushing_blow_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "crushing_blow", p, p->spec.crushing_blow ),
       mh_attack( nullptr ),
       oh_attack( nullptr ),
-      cd_reset_chance( p->spec.crushing_blow->effectN( 1 ).percent() )
+      cd_reset_chance( p->spec.crushing_blow->effectN( 1 ).percent() ),
+      frenzied_destruction_chance( p->tier_set.frenzied_destruction_4p ->effectN( 1 ).percent() )
   {
     parse_options( options_str );
 
@@ -3482,6 +3508,17 @@ struct crushing_blow_t : public warrior_attack_t
     if ( p()->buff.will_of_the_berserker->check() )
     {
       ( p()->buff.will_of_the_berserker->trigger() ); // CB refreshs, but does not initially trigger
+    }
+    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_FURY, T28, B4 ) && rng().roll( frenzied_destruction_chance ) )
+    {
+      if ( p()->buff.recklessness->check() )
+      {
+        p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 4 ) );
+      }
+      else
+      {
+      p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
+      }
     }
   }
 
@@ -3757,7 +3794,7 @@ struct rampage_attack_t : public warrior_attack_t
   double rage_from_valarjar_berserking;
   double rage_from_simmering_rage;
   double reckless_defense_chance;
-  rampage_attack_t( warrior_t* p, const spell_data_t* rampage, const std::string& name )
+  rampage_attack_t( warrior_t* p, const spell_data_t* rampage, util::string_view name )
     : warrior_attack_t( name, p, rampage ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       first_attack( false ),
@@ -3973,7 +4010,7 @@ struct rampage_parent_t : public warrior_attack_t
 struct ravager_tick_t : public warrior_attack_t
 {
   double rage_from_ravager;
-  ravager_tick_t( warrior_t* p, const std::string& name )
+  ravager_tick_t( warrior_t* p, util::string_view name )
     : warrior_attack_t( name, p, p->find_spell( 156287 ) ), rage_from_ravager( 0.0 )
   {
     aoe = -1;
@@ -5597,7 +5634,7 @@ struct in_for_the_kill_t : public buff_t
   double below_pct_increase_amount;
   double below_pct_increase;
 
-  in_for_the_kill_t( warrior_t& p, const std::string& n, const spell_data_t* s )
+  in_for_the_kill_t( warrior_t& p, util::string_view n, const spell_data_t* s )
     : buff_t( &p, n, s ),
       base_value( p.talents.in_for_the_kill->effectN( 1 ).percent() ),
       below_pct_increase_amount( p.talents.in_for_the_kill->effectN( 2 ).percent() ),
@@ -6340,6 +6377,12 @@ void warrior_t::init_spells()
   conduit.show_of_force               = find_conduit_spell( "Show of Force" );
   conduit.unnerving_focus             = find_conduit_spell( "Unnerving Focus" );
 
+  // Tier Sets
+  tier_set.frenzied_destruction_2p    = sets -> set( WARRIOR_FURY, T28, B2 );
+  tier_set.frenzied_destruction_4p    = sets -> set( WARRIOR_FURY, T28, B4 );
+  tier_set.pile_on_2p                 = sets -> set( WARRIOR_ARMS, T28, B2 );
+  tier_set.pile_on_4p                 = sets -> set( WARRIOR_ARMS, T28, B4 );
+
 
   // Generic spells
   spell.ignore_pain           = find_class_spell( "Ignore Pain" );
@@ -6968,13 +7011,13 @@ public:
   using base_t = warrior_buff_t;
 
 
-  warrior_buff_t( warrior_td_t& td, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+  warrior_buff_t( warrior_td_t& td, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
                  const item_t* item = nullptr )
     : Base( td, name, s, item )
   {
   }
 
-  warrior_buff_t( warrior_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+  warrior_buff_t( warrior_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
                  const item_t* item = nullptr )
     : Base( &p, name, s, item )
   {
@@ -6995,7 +7038,7 @@ protected:
 
 struct deadly_calm_t : public warrior_buff_t<buff_t>
 {
-  deadly_calm_t( warrior_t& p, const std::string& n, const spell_data_t* s ) :
+  deadly_calm_t( warrior_t& p, util::string_view n, const spell_data_t* s ) :
     base_t( p, n, s )
   {
    //set_initial_stacks( 4 ); trigger initial stacks in spell execution
@@ -7052,7 +7095,7 @@ struct rallying_cry_t : public buff_t
 struct last_stand_buff_t : public warrior_buff_t<buff_t>
 {
   double health_change;
-  last_stand_buff_t( warrior_t& p, const std::string& n, const spell_data_t* s ) :
+  last_stand_buff_t( warrior_t& p, util::string_view n, const spell_data_t* s ) :
     base_t( p, n, s ), health_change( data().effectN( 1 ).percent() )
   {
     add_invalidate( CACHE_BLOCK );
@@ -7129,7 +7172,7 @@ struct debuff_demo_shout_t : public warrior_buff_t<buff_t>
 
 struct test_of_might_t : public warrior_buff_t<buff_t>
 {
-  test_of_might_t( warrior_t& p, const std::string& n, const spell_data_t* s )
+  test_of_might_t( warrior_t& p, util::string_view n, const spell_data_t* s )
     : base_t( p, n, s )
   {
     quiet = true;
@@ -7189,6 +7232,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   debuffs_colossus_smash = make_buff( *this , "colossus_smash" )
                                ->set_default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent() )
                                ->set_duration( p.spell.colossus_smash_debuff->duration() )
+                               ->modify_duration( p.sets->set( WARRIOR_ARMS, T28, B2 )->effectN( 1 ).time_value() )
                                ->set_cooldown( timespan_t::zero() );
 
   debuffs_siegebreaker = make_buff( *this , "siegebreaker" )
