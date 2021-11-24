@@ -4386,7 +4386,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       m *= 1.0 + p()->buff.windspeakers_lava_resurgence->data().effectN( 1 ).percent();
     }
 
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) && p()->buff.fireheart->up() )
+    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) && p()->buff.fireheart->check() )
     {
       m *= 1.0 + p()->spell.t28_2pc_ele->effectN(2).percent();
     }
@@ -4762,7 +4762,7 @@ struct lava_burst_t : public shaman_spell_t
       m *= 1.0 + p()->buff.windspeakers_lava_resurgence->data().effectN( 1 ).percent();
     }
 
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) && p()->buff.fireheart->up() )
+    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) && p()->buff.fireheart->check() )
     {
       m *= 1.0 + p()->spell.t28_2pc_ele->effectN(2).percent();
     }
