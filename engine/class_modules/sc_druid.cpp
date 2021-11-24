@@ -1857,22 +1857,18 @@ public:
     ab::snapshot_internal( s, f, r );
   }
 
-  static std::string free_cast_string( std::string_view n, free_cast_e f )
+  static std::string free_cast_string( std::string n, free_cast_e f )
   {
-    std::string suf;
-
     switch ( f )
     {
-      case free_cast_e::APEX:     suf = "_apex";     break;
-      case free_cast_e::CONVOKE:  suf = "_convoke";  break;
-      case free_cast_e::GALACTIC: suf = "_galactic"; break;
-      case free_cast_e::LYCARAS:  suf = "_lycaras";  break;
-      case free_cast_e::ONETHS:   suf = "_oneths";   break;
-      case free_cast_e::PILLAR:   suf = "_pillar";   break;
-      default: break;
+      case free_cast_e::APEX:     return n + "_apex";
+      case free_cast_e::CONVOKE:  return n + "_convoke";
+      case free_cast_e::GALACTIC: return n + "_galactic";
+      case free_cast_e::LYCARAS:  return n + "_lycaras";
+      case free_cast_e::ONETHS:   return n + "_oneths";
+      case free_cast_e::PILLAR:   return n + "_pillar";
+      default: return n;
     }
-
-    return util::string_join( n, suf );
   }
 
   base_t* set_base_free_cast( free_cast_e f )
