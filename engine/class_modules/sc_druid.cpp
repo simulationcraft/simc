@@ -5338,64 +5338,17 @@ struct fury_of_elune_t : public druid_spell_t
 {
   struct fury_of_elune_tick_t : public druid_spell_t
   {
-    double pillar_mul;
-
-    fury_of_elune_tick_t( druid_t* p )
-      : druid_spell_t( "fury_of_elune_tick", p, p->spec.fury_of_elune ),
-        pillar_mul( p->sets->set( DRUID_BALANCE, T28, B2 )->effectN( 1 ).percent() )
+    fury_of_elune_tick_t( druid_t* p ) : druid_spell_t( "fury_of_elune_tick", p, p->spec.fury_of_elune )
     {
       background = dual = ground_aoe = true;
       aoe = -1;
       reduced_aoe_targets = 1.0;
       full_amount_targets = 1;
     }
-
-    double action_multiplier() const override
-    {
-      double am = druid_spell_t::action_multiplier();
-
-      if ( free_cast == free_cast_e::PILLAR )
-        am *= pillar_mul;
-
-      return am;
-    }
-  };
-
-  struct fury_of_elune_aoe_event_t : public ground_aoe_event_t
-  {
-    free_cast_e free;
-    stats_t* stat;
-
-    fury_of_elune_aoe_event_t( player_t* p, free_cast_e f, stats_t* s, const ground_aoe_params_t* param,
-                               action_state_t* ps )
-      : ground_aoe_event_t( p, param, ps ), free( f ), stat( s )
-    {}
-
-    fury_of_elune_aoe_event_t( player_t* p, free_cast_e f, stats_t* s, const ground_aoe_params_t& param )
-      : ground_aoe_event_t( p, param ), free( f ), stat( s )
-    {}
-
-    void schedule_event() override
-    {
-      auto event = make_event<fury_of_elune_aoe_event_t>( sim(), _player, free, stat, params, pulse_state );
-
-      if ( params->n_pulses() > 0 )
-      {
-        event->set_current_pulse( current_pulse + 1 );
-      }
-    }
-
-    void execute() override
-    {
-      auto a = static_cast<druid_spell_t*>( params->action() );
-      a->free_cast = free;
-      a->stats = stat;
-
-      ground_aoe_event_t::execute();
-    }
   };
 
   action_t* damage;
+  action_t* set_damage;
   timespan_t ap_period;
   int ap_ticks;
   double ap_amount;
@@ -5403,25 +5356,39 @@ struct fury_of_elune_t : public druid_spell_t
   fury_of_elune_t( druid_t* p, std::string_view opt ) : fury_of_elune_t( p, p->talent.fury_of_elune, opt ) {}
 
   fury_of_elune_t( druid_t* p, const spell_data_t* s, std::string_view opt )
-    : druid_spell_t( "fury_of_elune", p, s, opt )
+    : druid_spell_t( "fury_of_elune", p, s, opt ), damage( nullptr ), set_damage( nullptr )
   {
-    dot_duration = 0_ms;  // AP gain handled via fury_of_elune_ground_event_t
-
-    damage = p->get_secondary_action<fury_of_elune_tick_t>( "fury_of_elune_tick" );
-
-    if ( p->sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
-      stats->add_child( init_free_cast_stats( free_cast_e::PILLAR ) );
-
     auto eff = p->query_aura_effect( s_data, A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
+
     ap_period = eff->period();
     ap_ticks = static_cast<int>( data().duration() / ap_period );
     ap_amount = eff->resource( RESOURCE_ASTRAL_POWER );
+
+    dot_duration = 0_ms;  // AP gain handled via fury_of_elune_ground_event_t
+
+    damage = p->get_secondary_action<fury_of_elune_tick_t>( "fury_of_elune_tick" );
+    damage->stats = stats;
+
+    if ( p->sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
+    {
+      auto set_stats = init_free_cast_stats( free_cast_e::PILLAR );
+
+      set_damage = p->get_secondary_action<fury_of_elune_tick_t>( "fury_of_elune_tick_pillar" );
+      set_damage->stats = set_stats;
+      set_damage->base_multiplier = p->sets->set( DRUID_BALANCE, T28, B2 )->effectN( 1 ).percent();
+
+      stats->add_child( set_stats );
+    }
+  }
+
+  timespan_t cooldown_duration() const override
+  {
+    return free_cast ? 0_ms : druid_spell_t::cooldown_duration();
   }
 
   void execute() override
   {
     auto f = free_cast;
-    auto stat = get_free_cast_stats( f );
 
     druid_spell_t::execute();
 
@@ -5431,12 +5398,12 @@ struct fury_of_elune_t : public druid_spell_t
       p()->resource_gain( RESOURCE_ASTRAL_POWER, ap_amount, p()->gain.fury_of_elune, this );
     }, ap_ticks );
 
-    make_event<fury_of_elune_aoe_event_t>( *sim, p(), f, stat,
+    make_event<ground_aoe_event_t>( *sim, p(),
       ground_aoe_params_t().target( execute_state->target )
                            .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
                            .pulse_time( data().effectN( 3 ).period() )
                            .duration( data().duration() )
-                           .action( damage ) );
+                           .action( f == free_cast_e::PILLAR ? set_damage : damage ) );
   }
 };
 
