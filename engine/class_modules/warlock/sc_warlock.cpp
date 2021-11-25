@@ -168,6 +168,32 @@ struct drain_life_t : public warlock_spell_t
   }
 };  
 
+struct corruption_t : public warlock_spell_t
+{
+  corruption_t( warlock_t* p, util::string_view options_str )
+    : warlock_spell_t( "corruption", p, p->find_spell( 172 ) )   // 172 triggers 146739
+  {
+    auto otherSP = p->find_spell( 146739 );
+    parse_options( options_str );
+    may_crit                   = false;
+    tick_zero                  = false;
+
+    spell_power_mod.tick       = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
+    base_tick_time             = data().effectN( 1 ).trigger()->effectN( 1 ).period();
+
+    spell_power_mod.direct = 0;
+
+    // 172 does not have spell duration any more.
+    // were still lazy though so we aren't making a seperate spell for this.
+    dot_duration               = otherSP->duration();
+  }
+
+  void tick( dot_t* d ) override
+  {
+    warlock_spell_t::tick( d );
+  }
+};
+
 struct impending_catastrophe_t : public warlock_spell_t
 {
   //Not implemented: Impending Catastrophe applies a random curse in addition to the DoT
@@ -1020,6 +1046,8 @@ action_t* warlock_t::create_action( util::string_view action_name, util::string_
   // Base Spells
   if ( action_name == "drain_life" )
     return new drain_life_t( this, options_str );
+  if ( action_name == "corruption" && specialization() != WARLOCK_AFFLICTION )
+    return new corruption_t( this, options_str );
   if ( action_name == "grimoire_of_sacrifice" )
     return new grimoire_of_sacrifice_t( this, options_str );  // aff and destro
   if ( action_name == "decimating_bolt" )
