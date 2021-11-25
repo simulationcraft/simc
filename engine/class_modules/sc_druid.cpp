@@ -1857,17 +1857,17 @@ public:
     ab::snapshot_internal( s, f, r );
   }
 
-  std::string free_cast_string( free_cast_e f ) const
+  static std::string free_cast_string( std::string n, free_cast_e f )
   {
     switch ( f )
     {
-      case free_cast_e::APEX:     return ab::name_str + "_apex";
-      case free_cast_e::CONVOKE:  return ab::name_str + "_convoke";
-      case free_cast_e::GALACTIC: return ab::name_str + "_galactic";
-      case free_cast_e::LYCARAS:  return ab::name_str + "_lycaras";
-      case free_cast_e::ONETHS:   return ab::name_str + "_oneths";
-      case free_cast_e::PILLAR:   return ab::name_str + "_pillar";
-      default: return ab::name_str;
+      case free_cast_e::APEX:     return n + "_apex";
+      case free_cast_e::CONVOKE:  return n + "_convoke";
+      case free_cast_e::GALACTIC: return n + "_galactic";
+      case free_cast_e::LYCARAS:  return n + "_lycaras";
+      case free_cast_e::ONETHS:   return n + "_oneths";
+      case free_cast_e::PILLAR:   return n + "_pillar";
+      default: return n;
     }
   }
 
@@ -1881,11 +1881,14 @@ public:
 
   stats_t* init_free_cast_stats( free_cast_e f )
   {
+    if ( !f )
+      return ab::stats;
+
     for ( const auto& s : free_cast_stats )
       if ( s.type == f )
         return s.stats;
 
-    auto fc_stats = p()->get_stats( free_cast_string( f ), this );
+    auto fc_stats = p()->get_stats( free_cast_string( ab::name_str, f ), this );
 
     if ( f == free_cast_e::APEX || f == free_cast_e::PILLAR )
       fc_stats->prefer_name = true;

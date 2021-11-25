@@ -4815,7 +4815,7 @@ void action_t::apply_affecting_aura( const spell_data_t* spell )
     return;
   }
 
-  assert( spell->flags( SX_PASSIVE ) && "only passive spells should be affecting actions." );
+  assert( ( spell->flags( SX_PASSIVE ) || spell->duration() < 0_ms ) && "only passive spells should be affecting actions." );
 
   for ( const spelleffect_data_t& effect : spell->effects() )
   {

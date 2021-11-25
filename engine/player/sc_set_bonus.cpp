@@ -397,7 +397,7 @@ std::string set_bonus_t::generate_set_bonus_options() const
 report::sc_html_stream& set_bonus_t::generate_report( report::sc_html_stream& os ) const
 {
   auto bonuses = enabled_set_bonus_data();
-  unsigned curr_tier = set_bonus_type_e::SET_BONUS_NONE;
+  int curr_tier = set_bonus_type_e::SET_BONUS_NONE;
 
   if ( bonuses.empty() )
     return os;
