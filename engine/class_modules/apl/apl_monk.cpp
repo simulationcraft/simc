@@ -379,7 +379,7 @@ void windwalker( player_t* p )
 
   pre->add_action( "variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem" );
   pre->add_action( "fleshcraft" );
-  pre->add_talent( p, "Chi Burst" );
+  pre->add_talent( p, "Chi Burst", "if=!covenant.nightf_fae" );
   pre->add_talent( p, "Chi Wave", "if=!talent.energizing_elixir.enabled" );
 
   std::vector<std::string> racial_actions  = p->get_racial_actions();
@@ -408,6 +408,8 @@ void windwalker( player_t* p )
 
   def->add_action( "call_action_list,name=serenity,if=buff.serenity.up" );
   def->add_action( "call_action_list,name=weapons_of_order,if=buff.weapons_of_order.up" );
+  def->add_action( p, "faeline_stomp", "if=combo_strike&(raid_event.adds.in>10|active_enemies>2)&(runeforge.faeline_harmony|soulbind.grove_invigoration|active_enemies<3&buff.storm_earth_and_fire.down)" );
+  def->add_action( p, "chi_burst", "if=covenant.night_fae&cooldown.faeline_stomp.remains>25&(chi.max-chi>=1&active_enemies=1&raid_event.adds.in>20|chi.max-chi>=2&active_enemies>=2)" );
   if ( monk->spec.invoke_xuen->ok() )
     def->add_action( "call_action_list,name=opener,if=time<4&chi<5&!pet.xuen_the_white_tiger.active" );
   else
