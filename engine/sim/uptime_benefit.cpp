@@ -43,8 +43,13 @@ void uptime_t::update(bool is_up, timespan_t current_time)
   else if (last_start >= timespan_t::zero())
   {
     auto delta = current_time - last_start;
-    iteration_uptime_sum += delta;
-    uptime_instance.add(delta.total_seconds());
+
+    if ( delta > 0_ms )
+    {
+      iteration_uptime_sum += delta;
+      uptime_instance.add( delta.total_seconds() );
+    }
+
     reset();
   }
 }
