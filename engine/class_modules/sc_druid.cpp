@@ -756,7 +756,9 @@ public:
   {
     uptime_t* primordial_arcanic_pulsar;
     uptime_t* combined_ca_inc;
-    uptime_t* eclipse;
+    uptime_t* eclipse_solar;
+    uptime_t* eclipse_lunar;
+    uptime_t* eclipse_none;
   } uptime;
 
   struct legendary_t
@@ -1375,12 +1377,6 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
     mastery_value = p().cache.mastery_value();
   }
 
-  void execute( int s, double v, timespan_t d ) override
-  {
-    snapshot_mastery();
-    base_t::execute( s, v, d );
-  }
-
   void trigger_celestial_pillar()
   {
     if ( is_lunar && p().sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
@@ -1390,17 +1386,19 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
     }
   }
 
-  bool trigger( int s, double v, double c, timespan_t d ) override
+  void execute( int s, double v, timespan_t d ) override
   {
-    bool ret = base_t::trigger( s, v, c, d );
+    snapshot_mastery();
+    base_t::execute( s, v, d );
+
     trigger_celestial_pillar();
-    return ret;
   }
 
   void extend_duration( player_t* player, timespan_t d ) override
   {
     snapshot_mastery();
     base_t::extend_duration( player, d );
+
     trigger_celestial_pillar();
   }
 
@@ -9112,18 +9110,19 @@ void druid_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  uptime.eclipse = get_uptime( "Eclipse" )->collect_uptime( *sim );
+  std::string ca_inc_str;
 
   if ( talent.incarnation_moonkin->ok() )
-  {
-    uptime.primordial_arcanic_pulsar = get_uptime( "Incarnation (Pulsar)" );
-    uptime.combined_ca_inc = get_uptime( "Incarnation (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
-  }
+    ca_inc_str = "Incarnation";
   else
-  {
-    uptime.primordial_arcanic_pulsar = get_uptime( "Celestial Alignment (Pulsar)" );
-    uptime.combined_ca_inc = get_uptime( "Celestial Alignment (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
-  }
+    ca_inc_str = "Celestial Alignment";
+
+  uptime.primordial_arcanic_pulsar = get_uptime( ca_inc_str + " (Pulsar)" )->collect_uptime( *sim );
+  uptime.combined_ca_inc = get_uptime( ca_inc_str + " (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
+
+  uptime.eclipse_lunar = get_uptime( "Lunar Eclipse Only" )->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.eclipse_solar = get_uptime( "Solar Eclipse Only" )->collect_uptime( *sim );
+  uptime.eclipse_none = get_uptime( "No Eclipse" )->collect_uptime( *sim )->collect_duration( *sim );
 }
 
 // druid_t::init_resources ==================================================
@@ -9314,7 +9313,6 @@ void druid_t::combat_begin()
       if ( curr > cap )
         sim->print_debug( "Astral Power capped at combat start to {} (was {})", cap, curr );
     }
-
   }
 
   // Legendary-related buffs & events
@@ -10524,9 +10522,9 @@ void eclipse_handler_t::advance_eclipse()
       p->buff.balance_of_all_things_nature->trigger();
 
     state = IN_SOLAR;
+    p->uptime.eclipse_none->update( false, p->sim->current_time() );
+    p->uptime.eclipse_solar->update( true, p->sim->current_time() );
     reset_stacks();
-
-    p->uptime.eclipse->update( true, p->sim->current_time() );
 
     return;
   }
@@ -10542,24 +10540,32 @@ void eclipse_handler_t::advance_eclipse()
       p->buff.balance_of_all_things_arcane->trigger();
 
     state = IN_LUNAR;
+    p->uptime.eclipse_none->update( false, p->sim->current_time() );
+    p->uptime.eclipse_lunar->update( true, p->sim->current_time() );
     reset_stacks();
-
-    p->uptime.eclipse->update( true, p->sim->current_time() );
 
     return;
   }
 
-  if ( state == IN_SOLAR || state == IN_LUNAR || state == IN_BOTH )
-    p->uptime.eclipse->update( false, p->sim->current_time() );
-
   if ( state == IN_SOLAR )
+  {
     state = LUNAR_NEXT;
+    p->uptime.eclipse_solar->update( false, p->sim->current_time() );
+    p->uptime.eclipse_none->update( true, p->sim->current_time() );
+  }
 
   if ( state == IN_LUNAR )
+  {
     state = SOLAR_NEXT;
+    p->uptime.eclipse_lunar->update( false, p->sim->current_time() );
+    p->uptime.eclipse_none->update( true, p->sim->current_time() );
+  }
 
   if ( state == IN_BOTH )
+  {
     state = ANY_NEXT;
+    p->uptime.eclipse_none->update( true, p->sim->current_time() );
+  }
 }
 
 void eclipse_handler_t::snapshot_eclipse()
@@ -10573,9 +10579,6 @@ void eclipse_handler_t::snapshot_eclipse()
 
 void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
 {
-  state = IN_BOTH;
-  reset_stacks();
-
   if ( p->legendary.balance_of_all_things->ok() )
   {
     p->buff.balance_of_all_things_arcane->trigger();
@@ -10588,7 +10591,11 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
   p->buff.eclipse_lunar->trigger( d );
   p->buff.eclipse_solar->trigger( d );
 
-  p->uptime.eclipse->update( true, p->sim->current_time() );
+  state = IN_BOTH;
+  p->uptime.eclipse_none->update( false, p->sim->current_time() );
+  p->uptime.eclipse_lunar->update( false, p->sim->current_time() );
+  p->uptime.eclipse_solar->update( false, p->sim->current_time() );
+  reset_stacks();
 }
 
 void eclipse_handler_t::extend_both( timespan_t d )
@@ -10601,8 +10608,6 @@ void eclipse_handler_t::expire_both()
 {
   p->buff.eclipse_solar->expire();
   p->buff.eclipse_lunar->expire();
-
-  p->uptime.eclipse->update( false, p->sim->current_time() );
 }
 
 void eclipse_handler_t::reset_stacks()
