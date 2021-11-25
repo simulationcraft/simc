@@ -808,7 +808,7 @@ public:
   void trigger_lightning_shield( const action_state_t* state );
   void trigger_hot_hand( const action_state_t* state );
   void trigger_vesper_totem( const action_state_t* state );
-  void trigger_lava_surge( const player_t* source );
+  void trigger_lava_surge();
 
   // Legendary
   void trigger_legacy_of_the_frost_witch( unsigned consumed_stacks );
@@ -5690,7 +5690,7 @@ struct flame_shock_t : public shaman_spell_t
 
     if ( rng().roll( proc_chance ) )
     {
-      p()->trigger_lava_surge( d->source );
+      p()->trigger_lava_surge();
     }
 
     // Fire Elemental passive effect (MS generation on FS tick)
@@ -8493,14 +8493,14 @@ void shaman_t::trigger_lightning_shield( const action_state_t* state )
   }
 }
 
-void shaman_t::trigger_lava_surge(const player_t* source ) {
+void shaman_t::trigger_lava_surge() {
   if ( buff.lava_surge->check() )
   {
     proc.wasted_lava_surge->occur();
   }
 
   proc.lava_surge->occur();
-  if ( !source->executing || source->executing->id != 51505 )
+  if ( !executing || executing->id != 51505 )
   {
     cooldown.lava_burst->reset( true );
   } else
@@ -8647,7 +8647,7 @@ void shaman_t::create_buffs()
                        // TODO: confirm if duration is affected by conduit and tier set 4pc bonus
                        ->set_duration( buff.fire_elemental->buff_duration() )
                        ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-                         trigger_lava_surge( b->source );
+                         trigger_lava_surge();
                        } )
                        // TODO: confirm recasting elemental during uptime behaviour
                        ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
