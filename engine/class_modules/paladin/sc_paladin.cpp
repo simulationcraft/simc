@@ -969,7 +969,8 @@ struct inner_light_damage_t : public paladin_spell_t
 
 // Base Judgment spell ======================================================
 
-void judgment_t::do_ctor_common( paladin_t* p )
+judgment_t::judgment_t( paladin_t* p, util::string_view name ) :
+  paladin_melee_attack_t( name, p, p->find_class_spell( "Judgment" ) )
 {
   // no weapon multiplier
   weapon_multiplier = 0.0;
@@ -980,19 +981,6 @@ void judgment_t::do_ctor_common( paladin_t* p )
   {
     base_multiplier *= 1.0 + p->spells.judgment_2->effectN( 1 ).percent();
   }
-}
-
-judgment_t::judgment_t( paladin_t* p, util::string_view options_str )
-  : paladin_melee_attack_t( "judgment", p, p->find_class_spell( "Judgment" ) )
-{
-  parse_options( options_str );
-  do_ctor_common( p );
-}
-
-judgment_t::judgment_t( paladin_t* p )
-  : paladin_melee_attack_t( "divine_toll_judgment", p, p->find_class_spell( "Judgment" ) )
-{
-  do_ctor_common( p );
 }
 
 proc_types judgment_t::proc_type() const

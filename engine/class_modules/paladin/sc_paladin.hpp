@@ -82,8 +82,6 @@ public:
 
     // Conduit stuff
     action_t* virtuous_command;
-
-    action_t* judgment;
   } active;
 
   // Buffs
@@ -1218,7 +1216,7 @@ struct holy_power_consumer_t : public Base
       else
       {
         // Shining Light is now consumed before Divine Purpose 2020-11-01
-        p -> buffs.shining_light_free -> expire();        
+        p -> buffs.shining_light_free -> expire();
       }
     }
 
@@ -1240,7 +1238,7 @@ struct holy_power_consumer_t : public Base
       should_continue = false;
     }
 
-    // 2021-08-10 Vanquisher's Hammer's auto-sotr does not consume divine purpose    
+    // 2021-08-10 Vanquisher's Hammer's auto-sotr does not consume divine purpose
     if ( p -> specialization() == PALADIN_PROTECTION && ab::background )
       should_continue = false;
     // 2021-08-10 The word of glory used to trigger vanquisher's hammer again
@@ -1306,15 +1304,11 @@ struct holy_power_consumer_t : public Base
 
 struct judgment_t : public paladin_melee_attack_t
 {
-  judgment_t( paladin_t* p, util::string_view options_str );
-  judgment_t( paladin_t* p );
+  judgment_t( paladin_t* p, util::string_view name );
 
   proc_types proc_type() const override;
   void impact( action_state_t* s ) override;
   void execute() override;
-
-private:
-  void do_ctor_common( paladin_t* p );
 };
 
 struct shield_of_the_righteous_buff_t : public buff_t

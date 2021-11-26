@@ -411,24 +411,24 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
 // Judgment - Protection =================================================================
 
-// TODO(mserrano): fix judgment
 struct judgment_prot_t : public judgment_t
 {
   int judge_holy_power, sw_holy_power;
-  judgment_prot_t( paladin_t* p, util::string_view options_str ) :
-    judgment_t( p, options_str ),
+  judgment_prot_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
+    judgment_t( p, name ),
     judge_holy_power( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) ),
     sw_holy_power( as<int>( p -> talents.prot_sanctified_wrath -> effectN( 2 ).base_value() ) )
   {
+    parse_options( options_str );
     cooldown -> charges += as<int>( p -> talents.crusaders_judgment -> effectN( 1 ).base_value() );
   }
 
-  judgment_prot_t( paladin_t* p ) :
-    judgment_t( p ),
+  // background constructor for proc judgments
+  judgment_prot_t( paladin_t* p, util::string_view name ) :
+    judgment_t( p, name ),
     judge_holy_power( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) ),
     sw_holy_power( as<int>( p -> talents.prot_sanctified_wrath -> effectN( 2 ).base_value() ) )
   {
-    // this is for divine resonance
     background = true;
   }
 
@@ -452,17 +452,20 @@ struct judgment_prot_t : public judgment_t
     }
   }
 };
+
 // TODO: Woli
 // T28 4P damage proc ==================================================
 
 struct t28_4p_pp_t : public judgment_prot_t
 {
-  t28_4p_pp_t( paladin_t* p ) : judgment_prot_t( p )
+  t28_4p_pp_t( paladin_t* p ) :
+    judgment_prot_t( p, "judgment_t28_4p" )
   {
     background = proc = may_crit = true;
     may_miss                     = false;
   }
 };
+
 // Shield of the Righteous ==================================================
 
 shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p ) :
@@ -812,12 +815,8 @@ bool paladin_t::standing_in_consecration() const
 void paladin_t::create_prot_actions()
 {
   active.divine_toll = new avengers_shield_dt_t( this );
-  active.necrolord_shield_of_the_righteous = new shield_of_the_righteous_t( this );
-
-  if ( specialization() == PALADIN_PROTECTION )
-    active.judgment = new judgment_prot_t( this );
-
   active.divine_resonance = new avengers_shield_dr_t( this );
+  active.necrolord_shield_of_the_righteous = new shield_of_the_righteous_t( this );
 
   if ( specialization() == PALADIN_PROTECTION )
   {
@@ -838,7 +837,7 @@ action_t* paladin_t::create_action_protection( util::string_view name, util::str
 
   if ( specialization() == PALADIN_PROTECTION )
   {
-    if ( name == "judgment" ) return new judgment_prot_t( this, options_str );
+    if ( name == "judgment" ) return new judgment_prot_t( this, "judgment", options_str );
   }
 
   return nullptr;
@@ -945,7 +944,7 @@ void paladin_t::init_spells_protection()
   passives.grand_crusader      = find_specialization_spell( "Grand Crusader" );
   passives.riposte             = find_specialization_spell( "Riposte" );
   passives.sanctuary           = find_specialization_spell( "Sanctuary" );
-  
+
   passives.aegis_of_light      = find_specialization_spell( "Aegis of Light" );
   passives.aegis_of_light_2    = find_rank_spell( "Aegis of Light", "Rank 2" );
 

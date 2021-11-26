@@ -310,7 +310,7 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       base_multiplier *= 1.0 + p -> legendary.tempest_of_the_lightbringer -> effectN( 2 ).percent();
   }
 
-  divine_storm_t( paladin_t* p, bool is_free, float mul ) :
+  divine_storm_t( paladin_t* p, bool is_free, double mul ) :
     holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) )
   {
     is_divine_storm = true;
@@ -602,13 +602,15 @@ struct judgment_ret_t : public judgment_t
 {
   int holy_power_generation;
 
-  judgment_ret_t( paladin_t* p, util::string_view options_str ) :
-    judgment_t( p, options_str ),
+  judgment_ret_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
+    judgment_t( p, name ),
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
-  {}
+  {
+    parse_options( options_str );
+  }
 
-  judgment_ret_t( paladin_t* p, bool is_divine_toll = true ) :
-    judgment_t( p ),
+  judgment_ret_t( paladin_t* p, util::string_view name, bool is_divine_toll ) :
+    judgment_t( p, name ),
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
   {
     // This is for Divine Toll's background judgments
@@ -792,9 +794,8 @@ void paladin_t::create_ret_actions()
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
-    active.divine_toll = new judgment_ret_t( this );
-    active.judgment = new judgment_ret_t( this, false );
-    active.divine_resonance = new judgment_ret_t( this, false );
+    active.divine_toll = new judgment_ret_t( this, "divine_toll_judgment", true );
+    active.divine_resonance = new judgment_ret_t( this, "divine_resonance_judgment", false );
   }
 }
 
@@ -812,7 +813,7 @@ action_t* paladin_t::create_action_retribution( util::string_view name, util::st
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
-    if ( name == "judgment") return new judgment_ret_t( this, options_str );
+    if ( name == "judgment") return new judgment_ret_t( this, "judgment", options_str );
   }
 
   return nullptr;
