@@ -134,6 +134,7 @@ struct player_collected_data_t
     const player_t* target;
     const timespan_t time;
     timespan_t wait_time;
+    bool queue_failed;
     std::vector< record_t<buff_t> > buff_list;
     std::vector< record_t<cooldown_t> > cooldown_list;
     std::vector< std::pair<player_t*, std::vector< record_t<buff_t> > > > target_list;

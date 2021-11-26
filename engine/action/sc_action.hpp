@@ -508,6 +508,10 @@ public:
    * Can be overridden by class modules for tracking purposes.
    */
   proc_t* starved_proc;
+
+  // Tracking proc triggered when action fails to execute after being queued.
+  // Can be overridden by class modules for tracking purposes.
+  proc_t* queue_failed_proc;
   uint_least64_t total_executions;
 
   /**
