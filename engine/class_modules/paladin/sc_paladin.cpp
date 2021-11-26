@@ -955,6 +955,18 @@ struct holy_shield_damage_t : public paladin_spell_t
   }
 };
 
+// TODO: Woli
+// T28 4P damage proc ==================================================
+
+struct T28_4p_PP_t : public paladin_spell_t
+{
+  T28_4p_PP_t( paladin_t* p ) : paladin_spell_t( "holy_shield", p, p->talents.holy_shield->effectN( 2 ).trigger() )
+  {
+    background = proc = may_crit = true;
+    may_miss                     = false;
+  }
+};
+
 // Inner light damage proc ==================================================
 
 struct inner_light_damage_t : public paladin_spell_t
@@ -3002,6 +3014,13 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
   if ( s->block_result == BLOCK_RESULT_BLOCKED )
   {
     trigger_holy_shield( s );
+  }
+
+  // On a block event, trigger T28 4p if equipped
+  // todo: Woli -  everything about it
+  if ( s->block_result == BLOCK_RESULT_BLOCKED )
+  {
+    trigger_T28_4p_PP( s );
   }
 
   if ( buffs.inner_light->up() && !s->action->special && cooldowns.inner_light_icd->up() )

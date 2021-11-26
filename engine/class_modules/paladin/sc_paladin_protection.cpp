@@ -751,6 +751,20 @@ void paladin_t::trigger_holy_shield( action_state_t* s )
   active.holy_shield_damage -> schedule_execute();
 }
 
+void paladin_t::trigger_T28_4p_PP( action_state_t* s )
+{
+  // escape if we don't have T28 4p
+  // if ( !talents.holy_shield->ok() )
+  //  return;
+
+  // sanity check - no friendly-fire
+  if ( !s->action->player->is_enemy() )
+    return;
+
+  active.T28_4p_PP->set_target( s->action->player );
+  active.T28_4p_PP->schedule_execute();
+}
+
 bool paladin_t::standing_in_consecration() const
 {
   if ( ! sim -> distance_targeting_enabled )

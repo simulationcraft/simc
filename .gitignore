@@ -148,3 +148,5 @@ CMakeLists.txt.user
 
 UpgradeLog.htm
 libsimcengine.prl
+engine/class_modules/paladin/sc_paladin_holy.cpp
+engine/class_modules/paladin/sc_paladin_holy.cpp
