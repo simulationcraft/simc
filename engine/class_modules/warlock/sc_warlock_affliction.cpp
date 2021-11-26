@@ -566,12 +566,12 @@ struct malefic_rapture_t : public affliction_spell_t
 
       void execute() override
       {
-        int d = p()->get_target_data( target )->count_affliction_dots();
-        if ( d > 0 )
+        int d = p()->get_target_data( target )->count_affliction_dots() - 1;
+        assert( d < procs.malefic_rapture.size() && "The procs.malefic_rapture array needs to be expanded." );
+
+        if ( d >= 0 && d < p()->procs.malefic_rapture.size() )
         {
-          for ( int i = p()->procs.malefic_rapture.size(); i < d; i++ )
-            p()->procs.malefic_rapture.push_back( p()->get_proc( "Malefic Rapture " + util::to_string( i + 1 ) ) );
-          p()->procs.malefic_rapture[ d - 1 ]->occur();
+          p()->procs.malefic_rapture[ d ]->occur();
         }
 
         affliction_spell_t::execute();
@@ -916,6 +916,11 @@ void warlock_t::init_procs_affliction()
   procs.nightfall = get_proc( "nightfall" );
   procs.corrupting_leer = get_proc( "corrupting_leer" );
   procs.malefic_wrath   = get_proc( "malefic_wrath" );
+
+  for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
+  {
+    procs.malefic_rapture[ i ] = get_proc( fmt::format( "Malefic Rapture {}", i + 1 ) );
+  }
 }
 
 void warlock_t::create_options_affliction()
