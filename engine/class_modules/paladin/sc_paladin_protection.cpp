@@ -753,7 +753,7 @@ void paladin_t::trigger_holy_shield( action_state_t* s )
 
 void paladin_t::trigger_t28_4p_pp( action_state_t* s )
 {
-  // escape if we don't have T28 4p
+  // escape if we don't have t28 4p
   // if ( !talents.holy_shield->ok() )
   //  return;
 

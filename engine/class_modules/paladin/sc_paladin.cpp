@@ -961,7 +961,7 @@ struct holy_shield_damage_t : public paladin_spell_t
 struct t28_4p_pp_t : public paladin_spell_t
 {
   t28_4p_pp_t( paladin_t* p ) 
-  : paladin_spell_t( "t28_4p_pp", p)
+  : paladin_spell_t( "t28_4p_pp", p, p->talents.holy_shield->effectN( 2 ).trigger() )
   {
     background = proc = may_crit = true;
     may_miss                     = false;
@@ -1839,7 +1839,7 @@ void paladin_t::create_actions()
       active.holy_shield_damage = new holy_shield_damage_t( this );
     }
     // I'm sorry - Woli
-    //If t28_4p_pp_t
+    //If Tier.28.ProtPaladin.4.enabled()
     if ( talents.holy_shield->ok() )
     {
         active.t28_4p_pp = new t28_4p_pp_t( this );
@@ -3026,7 +3026,7 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
   // todo: Woli -  everything about it
   if ( s->block_result == BLOCK_RESULT_BLOCKED )
   {
-    trigger_T28_4p_PP( s );
+    trigger_t28_4p_pp( s );
   }
 
   if ( buffs.inner_light->up() && !s->action->special && cooldowns.inner_light_icd->up() )
