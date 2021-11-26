@@ -128,7 +128,9 @@ struct queued_action_execute_event_t : public event_t
 
         // This is an extremely rare event, only seen in a handful of specs with abilities on cooldown that have
         // conditional activation requirements or dynamic cost adjustments.
-        actor->get_proc( action->name_str + " (queue failed)" )->occur();
+        if ( action->queue_failed_proc )
+          action->queue_failed_proc->occur();
+
         actor->iteration_executed_foreground_actions--;
         action->total_executions--;
 
@@ -451,6 +453,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     target_specific_dot( false ),
     action_list(),
     starved_proc(),
+    queue_failed_proc(),
     total_executions(),
     line_cooldown( new cooldown_t("line_cd", *p) ),
     signature(),

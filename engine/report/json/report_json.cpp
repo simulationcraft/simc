@@ -475,6 +475,7 @@ void to_json( JsonOutput root,
       json[ "name" ] = entry.action -> name();
       json[ "target" ] = entry.action->harmful ? entry.target -> name() : "none";
       json[ "spell_name" ] = entry.action->data_reporting().name_cstr();
+      json[ "queue_failed" ] = entry.queue_failed;
       if (entry.action->item) {
         json[ "item_name" ] = entry.action->item->name_str;
       }
