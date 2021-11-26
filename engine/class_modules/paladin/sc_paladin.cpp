@@ -2424,6 +2424,15 @@ void paladin_t::init_spells()
   legendary.duty_bound_gavel              = find_runeforge_legendary( "Duty-Bound Gavel" );
   legendary.divine_resonance              = find_runeforge_legendary( "Divine Resonance" );
 
+
+  // Shadowlands Tier Sets
+  tier_sets.glorious_purpose_2pc = sets->set( PALADIN_PROTECTION, T28, B2 );    
+  tier_sets.glorious_purpose_4pc = sets->set( PALADIN_PROTECTION, T28, B4 );
+  tier_sets.dawn_will_come_2pc = sets->set( PALADIN_HOLY, T28, B2 );
+  tier_sets.dawn_will_come_4pc = sets->set( PALADIN_HOLY, T28, B4 ); 
+  tier_sets.ashes_to_ashes_2pc   = sets->set( PALADIN_RETRIBUTION, T28, B2 );
+  tier_sets.ashes_to_ashes_4pc   = sets->set( PALADIN_RETRIBUTION, T28, B4 ); 
+
   // Covenants
   covenant.kyrian    = find_covenant_spell( "Divine Toll" );
   covenant.venthyr   = find_covenant_spell( "Ashen Hallow" );
@@ -3007,8 +3016,8 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
 
   // On a block event, trigger T28 4p if equipped
   // todo: Woli -  Set bonus check
-  if ( ( s->block_result == BLOCK_RESULT_BLOCKED ) && ( rng().roll( 1 ) ) &&
-       (sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 ) ) ) 
+  if ( ( s->block_result == BLOCK_RESULT_BLOCKED )  && ( sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 ) ) &&
+       ( rng().roll( tier_sets.glorious_purpose_4pc->effectN( 1 ).percent() ) ) ) 
   //)
   {
     trigger_t28_4p_pp( s );

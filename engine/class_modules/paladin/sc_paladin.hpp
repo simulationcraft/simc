@@ -244,6 +244,8 @@ public:
     const spell_data_t* lightbringer; // Holy
   } mastery;
 
+
+
   // Procs and RNG
   real_ppm_t* final_reckoning_rppm;
 
@@ -437,6 +439,17 @@ public:
     item_runeforge_t divine_resonance;
   } legendary;
 
+    struct tier_sets_t
+  {
+    const spell_data_t* glorious_purpose_2pc;
+    const spell_data_t* glorious_purpose_4pc;
+    const spell_data_t* dawn_will_come_2pc;
+    const spell_data_t* dawn_will_come_4pc;
+    const spell_data_t* ashes_to_ashes_2pc;
+    const spell_data_t* ashes_to_ashes_4pc;
+    
+  } tier_sets;
+
   // Paladin options
   struct options_t
   {
@@ -569,106 +582,106 @@ public:
   virtual paladin_td_t* get_target_data( player_t* target ) const override;
 };
 
-namespace buffs {
-  struct avenging_wrath_buff_t : public buff_t
+namespace buffs
+{
+struct avenging_wrath_buff_t : public buff_t
+{
+  avenging_wrath_buff_t( paladin_t* p );
+
+  double get_damage_mod() const
   {
-    avenging_wrath_buff_t( paladin_t* p );
+    return damage_modifier;
+  }
 
-    double get_damage_mod() const
-    {
-      return damage_modifier;
-    }
-
-    double get_healing_mod() const
-    {
-      return healing_modifier;
-    }
-
-    double get_crit_bonus() const
-    {
-      return crit_bonus;
-    }
-
-    private:
-    double damage_modifier;
-    double healing_modifier;
-    double crit_bonus;
-  };
-
-  struct crusade_buff_t : public buff_t
+  double get_healing_mod() const
   {
-    crusade_buff_t( paladin_t* p );
+    return healing_modifier;
+  }
 
-    double get_damage_mod() const
-    {
-      return damage_modifier * ( this -> check() );
-    }
-
-    double get_haste_bonus() const
-    {
-      return haste_bonus * ( this -> check() );
-    }
-    private:
-    double damage_modifier;
-    double haste_bonus;
-  };
-
-  struct execution_sentence_debuff_t : public buff_t
+  double get_crit_bonus() const
   {
-    execution_sentence_debuff_t( paladin_td_t* td ) :
-      buff_t( *td, "execution_sentence", debug_cast<paladin_t*>( td -> source ) -> talents.execution_sentence ),
-      accumulated_damage( 0.0 ) {
-      set_cooldown( 0_ms ); // handled by the ability
-    }
+    return crit_bonus;
+  }
 
-    void reset() override
-    {
-      buff_t::reset();
-      accumulated_damage = 0.0;
-    }
+private:
+  double damage_modifier;
+  double healing_modifier;
+  double crit_bonus;
+};
 
-    void expire_override( int stacks, timespan_t duration ) override
-    {
-      buff_t::expire_override( stacks, duration );
+struct crusade_buff_t : public buff_t
+{
+  crusade_buff_t( paladin_t* p );
 
-      accumulated_damage = 0.0;
-    }
-
-    void accumulate_damage( const action_state_t* s )
-    {
-      sim -> print_debug(
-        "{}'s {} accumulates {} additional damage: {} -> {}",
-        player -> name(), name(), s -> result_total,
-        accumulated_damage, accumulated_damage + s -> result_total );
-
-      accumulated_damage += s -> result_total;
-    }
-
-    double get_accumulated_damage() const
-    {
-      return accumulated_damage;
-    }
-
-  private:
-    double accumulated_damage;
-  };
-
-  struct forbearance_t : public buff_t
+  double get_damage_mod() const
   {
-    paladin_t* paladin;
+    return damage_modifier * ( this->check() );
+  }
 
-    forbearance_t( player_t* p, const char *name ) :
-      buff_t( p, name, p -> find_spell( 25771 ) ),
-      paladin( nullptr )
-    { }
+  double get_haste_bonus() const
+  {
+    return haste_bonus * ( this->check() );
+  }
 
-    forbearance_t( paladin_td_t* ap, const char *name ) :
-      buff_t( *ap, name, ap -> source -> find_spell( 25771 ) ),
-      paladin( debug_cast<paladin_t*>( ap -> source ) )
-    { }
-  };
+private:
+  double damage_modifier;
+  double haste_bonus;
+};
 
-}
+struct execution_sentence_debuff_t : public buff_t
+{
+  execution_sentence_debuff_t( paladin_td_t* td )
+    : buff_t( *td, "execution_sentence", debug_cast<paladin_t*>( td->source )->talents.execution_sentence ),
+      accumulated_damage( 0.0 )
+  {
+    set_cooldown( 0_ms );  // handled by the ability
+  }
+
+  void reset() override
+  {
+    buff_t::reset();
+    accumulated_damage = 0.0;
+  }
+
+  void expire_override( int stacks, timespan_t duration ) override
+  {
+    buff_t::expire_override( stacks, duration );
+
+    accumulated_damage = 0.0;
+  }
+
+  void accumulate_damage( const action_state_t* s )
+  {
+    sim->print_debug( "{}'s {} accumulates {} additional damage: {} -> {}", player->name(), name(), s->result_total,
+                      accumulated_damage, accumulated_damage + s->result_total );
+
+    accumulated_damage += s->result_total;
+  }
+
+  double get_accumulated_damage() const
+  {
+    return accumulated_damage;
+  }
+
+private:
+  double accumulated_damage;
+};
+
+struct forbearance_t : public buff_t
+{
+  paladin_t* paladin;
+
+  forbearance_t( player_t* p, const char* name ) : buff_t( p, name, p->find_spell( 25771 ) ), paladin( nullptr )
+  {
+  }
+
+  forbearance_t( paladin_td_t* ap, const char* name )
+    : buff_t( *ap, name, ap->source->find_spell( 25771 ) ), paladin( debug_cast<paladin_t*>( ap->source ) )
+  {
+  }
+};
+
+};  // namespace buffs
 
 // ==========================================================================
 // Paladin Ability Templates
