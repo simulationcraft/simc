@@ -3017,9 +3017,8 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
 
   // On a block event, trigger T28 4p if equipped
   // todo: Woli -  Set bonus check
-  if ( ( s->block_result == BLOCK_RESULT_BLOCKED )  && ( sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 ) ) &&
-       ( rng().roll( tier_sets.glorious_purpose_4pc->effectN( 1 ).percent() ) ) ) 
-  //)
+  if ( ( s->block_result == BLOCK_RESULT_BLOCKED )  && sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 ) 
+        && rng().roll( tier_sets.glorious_purpose_4pc->effectN( 1 ).percent() ) ) 
   {
     trigger_t28_4p_pp( s );
   }
