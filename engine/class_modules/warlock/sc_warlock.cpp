@@ -1033,26 +1033,14 @@ action_t* warlock_t::create_action( util::string_view action_name, util::string_
   if ( action_name == "interrupt" )
     return new interrupt_t( action_name, this, options_str );
 
-  if ( specialization() == WARLOCK_AFFLICTION )
-  {
-    action_t* aff_action = create_action_affliction( action_name, options_str );
-    if ( aff_action )
-      return aff_action;
-  }
+  if ( action_t* aff_action = create_action_affliction( action_name, options_str ) )
+    return aff_action;
 
-  if ( specialization() == WARLOCK_DEMONOLOGY )
-  {
-    action_t* demo_action = create_action_demonology( action_name, options_str );
-    if ( demo_action )
-      return demo_action;
-  }
+  if ( action_t* demo_action = create_action_demonology( action_name, options_str ) )
+    return demo_action;
 
-  if ( specialization() == WARLOCK_DESTRUCTION )
-  {
-    action_t* destro_action = create_action_destruction( action_name, options_str );
-    if ( destro_action )
-      return destro_action;
-  }
+  if ( action_t* destro_action = create_action_destruction( action_name, options_str ) )
+    return destro_action;
 
   return player_t::create_action( action_name, options_str );
 }
