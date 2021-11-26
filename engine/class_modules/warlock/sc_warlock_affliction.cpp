@@ -567,7 +567,7 @@ struct malefic_rapture_t : public affliction_spell_t
       void execute() override
       {
         int d = p()->get_target_data( target )->count_affliction_dots() - 1;
-        assert( d < procs.malefic_rapture.size() && "The procs.malefic_rapture array needs to be expanded." );
+        assert( d < p()->procs.malefic_rapture.size() && "The procs.malefic_rapture array needs to be expanded." );
 
         if ( d >= 0 && d < p()->procs.malefic_rapture.size() )
         {
