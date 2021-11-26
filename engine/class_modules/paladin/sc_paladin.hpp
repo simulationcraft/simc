@@ -244,8 +244,6 @@ public:
     const spell_data_t* lightbringer; // Holy
   } mastery;
 
-
-
   // Procs and RNG
   real_ppm_t* final_reckoning_rppm;
 
@@ -582,25 +580,21 @@ public:
   virtual paladin_td_t* get_target_data( player_t* target ) const override;
 };
 
-namespace buffs
-{
+namespace buffs {
 struct avenging_wrath_buff_t : public buff_t
 {
   avenging_wrath_buff_t( paladin_t* p );
-
   double get_damage_mod() const
   {
     return damage_modifier;
   }
-
   double get_healing_mod() const
   {
     return healing_modifier;
   }
-
   double get_crit_bonus() const
   {
-    return crit_bonus;
+      return crit_bonus;
   }
 
 private:
@@ -624,8 +618,8 @@ struct crusade_buff_t : public buff_t
   }
 
 private:
-  double damage_modifier;
-  double haste_bonus;
+    double damage_modifier;
+    double haste_bonus;
 };
 
 struct execution_sentence_debuff_t : public buff_t
