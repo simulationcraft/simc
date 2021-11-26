@@ -13,6 +13,7 @@
 #include "action/dot.hpp"
 #include "player/actor_target_data.hpp"
 #include "player/covenant.hpp"
+#include "player/player_collected_data.hpp"
 #include "player/player_event.hpp"
 #include "player/stats.hpp"
 #include "player/sc_player.hpp"
@@ -123,6 +124,27 @@ struct queued_action_execute_event_t : public event_t
         if ( !actor->readying )
         {
           actor->schedule_ready( actor->available() );
+        }
+
+        // This is an extremely rare event, only seen in a handful of specs with abilities on cooldown that have
+        // conditional activation requirements or dynamic cost adjustments.
+        actor->get_proc( action->name_str + " (queue failed)" )->occur();
+        actor->iteration_executed_foreground_actions--;
+        action->total_executions--;
+
+        // If it's the first iteration (where we capture sample sequence) adjust the captured sequence to indicate the
+        // queue failed
+        if ( ( sim().iterations <= 1 && sim().current_iteration == 0 ) ||
+             ( sim().iterations > 1 && actor->nth_iteration() == 1 ) )
+        {
+          // Find the last action sequence entry that matches the current action
+          auto& seq = actor->collected_data.action_sequence;
+          auto it = std::find_if( seq.rbegin(), seq.rend(),
+                                  [ this ]( const player_collected_data_t::action_sequence_data_t& s ) {
+                                    return s.action == action;
+                                  } );
+          if ( it != seq.rend() )
+            ( *it ).queue_failed = true;
         }
       }
       else

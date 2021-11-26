@@ -2291,11 +2291,11 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
   {
     os.printf( "<td class=\"left\">%s</td>\n"
                "<td class=\"left\">%c</td>\n"
-               "<td class=\"left\">%s</td>\n"
+               "<td class=\"left\">%s%s</td>\n"
                "<td class=\"left\">%s</td>\n",
                data.action->action_list ? util::encode_html( data.action->action_list->name_str ).c_str() : "unknown",
                data.action->marker != 0 ? data.action->marker : ' ',
-               util::encode_html( data.action->name() ).c_str(),
+               util::encode_html( data.action->name() ).c_str(), data.queue_failed ? " (queue failed)" : "",
                util::encode_html( data.target->name() ).c_str() );
   }
   else
