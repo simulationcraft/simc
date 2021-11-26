@@ -141,7 +141,7 @@ struct queued_action_execute_event_t : public event_t
           auto& seq = actor->collected_data.action_sequence;
           auto it = std::find_if( seq.rbegin(), seq.rend(),
                                   [ this ]( const player_collected_data_t::action_sequence_data_t& s ) {
-                                    return s.action == action;
+                                    return s.action == action && !s.queue_failed;
                                   } );
           if ( it != seq.rend() )
             ( *it ).queue_failed = true;
