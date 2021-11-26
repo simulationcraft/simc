@@ -808,6 +808,11 @@ void paladin_t::create_prot_actions()
     active.judgment = new judgment_prot_t( this );
 
   active.divine_resonance = new avengers_shield_dr_t( this );
+
+  if ( specialization() == PALADIN_PROTECTION )
+  {
+    active.t28_4p_pp = new t28_4p_pp_t( this );
+  }
 }
 
 action_t* paladin_t::create_action_protection( util::string_view name, util::string_view options_str )

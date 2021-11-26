@@ -1826,12 +1826,7 @@ void paladin_t::create_actions()
     {
       active.holy_shield_damage = new holy_shield_damage_t( this );
     }
-    // I'm sorry - Woli
-    // If Tier.28.ProtPaladin.4.enabled()
-    if ( talents.holy_shield->ok() )
-    {
-      active.t28_4p_pp = new t28_4p_pp_t( this );
-    }
+
     if ( azerite.inner_light.enabled() )
     {
       active.inner_light_damage           = new inner_light_damage_t( this );
@@ -3012,7 +3007,7 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
 
   // On a block event, trigger T28 4p if equipped
   // todo: Woli -  everything about it
-  if ( s->block_result == BLOCK_RESULT_BLOCKED )
+  if ( s->block_result == BLOCK_RESULT_BLOCKED && ( rng().roll( 0.33 ) )) // && set bonus check
   {
     trigger_t28_4p_pp( s );
   }
