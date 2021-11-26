@@ -2414,12 +2414,12 @@ void paladin_t::init_spells()
 
 
   // Shadowlands Tier Sets
-  tier_sets.glorious_purpose_2pc = sets->set( PALADIN_PROTECTION, T28, B2 );    
+  tier_sets.glorious_purpose_2pc = sets->set( PALADIN_PROTECTION, T28, B2 );
   tier_sets.glorious_purpose_4pc = sets->set( PALADIN_PROTECTION, T28, B4 );
   tier_sets.dawn_will_come_2pc = sets->set( PALADIN_HOLY, T28, B2 );
-  tier_sets.dawn_will_come_4pc = sets->set( PALADIN_HOLY, T28, B4 ); 
+  tier_sets.dawn_will_come_4pc = sets->set( PALADIN_HOLY, T28, B4 );
   tier_sets.ashes_to_ashes_2pc   = sets->set( PALADIN_RETRIBUTION, T28, B2 );
-  tier_sets.ashes_to_ashes_4pc   = sets->set( PALADIN_RETRIBUTION, T28, B4 ); 
+  tier_sets.ashes_to_ashes_4pc   = sets->set( PALADIN_RETRIBUTION, T28, B4 );
 
   // Covenants
   covenant.kyrian    = find_covenant_spell( "Divine Toll" );
@@ -3005,8 +3005,8 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
 
   // On a block event, trigger T28 4p if equipped
   // todo: Woli -  Set bonus check
-  if ( ( s->block_result == BLOCK_RESULT_BLOCKED )  && sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 ) 
-        && rng().roll( tier_sets.glorious_purpose_4pc->effectN( 1 ).percent() ) ) 
+  if ( ( s->block_result == BLOCK_RESULT_BLOCKED )  && sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 )
+        && rng().roll( tier_sets.glorious_purpose_4pc->effectN( 1 ).percent() ) )
   {
     trigger_t28_4p_pp( s );
   }
@@ -3517,7 +3517,7 @@ struct paladin_module_t : public module_t
             double proc_chance = summer_data->proc_chance();
             bool has_equinox = p->buffs.equinox->up();
             if ( has_equinox )
-              proc_chance *= 1.0 + p->buffs.equinox->data().effectN( 1 ).percent();
+              proc_chance *= 1.0 + p->buffs.equinox->data().effectN( 4 ).percent();
 
             if ( s->action != summer_proc && s->result_total > 0.0 && p->buffs.blessing_of_summer->up() &&
                  summer_data->proc_flags() & ( 1 << s->proc_type() ) && p->rng().roll( proc_chance ) )
