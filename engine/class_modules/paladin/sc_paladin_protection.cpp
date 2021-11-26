@@ -472,6 +472,8 @@ shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p ) :
   set_default_value( p -> spells.sotr_buff -> effectN( 1 ).percent() );
   set_refresh_behavior( buff_refresh_behavior::EXTEND );
   cooldown -> duration = 0_ms; // handled by the ability
+
+
 }
 
 void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
@@ -484,6 +486,7 @@ void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, tim
   {
     p -> buffs.inner_light -> trigger();
   }
+
 }
 
 struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_attack_t>
@@ -503,6 +506,8 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
+
+
   }
 
   shield_of_the_righteous_t( paladin_t* p ) :
@@ -531,6 +536,11 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     if ( p() -> azerite_essence.memory_of_lucid_dreams.enabled() )
     {
       p() -> trigger_memory_of_lucid_dreams( 1.0 );
+    }
+
+    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T28, B2 ) )
+    {
+      p()->buffs.glorious_purpose->trigger();
     }
 
     // As of 2020-11-07 Resolute Defender now always provides its CDR.
@@ -887,6 +897,11 @@ void paladin_t::create_buffs_protection()
   if ( specialization() == PALADIN_PROTECTION )
     player_t::buffs.memory_of_lucid_dreams -> set_stack_change_callback( [ this ]( buff_t*, int, int )
     { this -> cooldowns.shield_of_the_righteous -> adjust_recharge_multiplier(); } );
+
+  // Tier Sets
+  buffs.glorious_purpose = make_buff( this, "glorious_purpose", find_spell( 364305 ) )
+    -> set_default_value_from_effect( 1 )
+    -> add_invalidate( CACHE_BLOCK );
 }
 
 void paladin_t::init_spells_protection()
@@ -938,6 +953,9 @@ void paladin_t::init_spells_protection()
   azerite.inspiring_vanguard = find_azerite_spell( "Inspiring Vanguard" );
   azerite.inner_light        = find_azerite_spell( "Inner Light"        );
   azerite.soaring_shield     = find_azerite_spell( "Soaring Shield"     );
+
+  // Tier Sets
+  tier_sets.glorious_purpose_2pc = find_spell( 364305 );
 }
 
 void paladin_t::generate_action_prio_list_prot()

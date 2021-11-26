@@ -123,6 +123,7 @@ public:
     buff_t* inner_light;
     buff_t* inspiring_vanguard;
     buff_t* soaring_shield;
+    buff_t* glorious_purpose; //T28 2pc
 
     // Ret
     buffs::crusade_buff_t* crusade;

@@ -2818,6 +2818,7 @@ double paladin_t::composite_block() const
   double b                   = player_t::composite_block_dr( block_subject_to_dr );
 
   b += talents.holy_shield->effectN( 1 ).percent();
+  b += buffs.glorious_purpose->stack_value();
 
   return b;
 }
@@ -3509,7 +3510,12 @@ struct paladin_module_t : public module_t
 
     // 9.0 Paladin Night Fae
 
-    // Only create these if the player is a Night Fae Paladin or sets the option to get the buff.
+    // Only create these if the player is a Night Fae Paladin or sets the option to get the 
+    // 
+    // 
+    // 
+    // 
+    // 
     // If the Paladin action is ever updated to allow manually casting it on other players, this
     // will need to be adjusted to also work if there is a Night Fae Paladin in the raid.
     if ( ( p->type == PALADIN && p->covenant && p->covenant->type() == covenant_e::NIGHT_FAE ) ||
