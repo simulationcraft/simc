@@ -55,6 +55,15 @@ struct drain_life_t : public warlock_spell_t
       {
         m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
       }
+
+      if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->mastery_spells.chaotic_energies->ok() )
+      {
+        double destro_mastery_value = p()->cache.mastery_value() / 2.0;
+        double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
+
+        m *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
+      }
+
       return m;
     }
 
@@ -186,6 +195,21 @@ struct corruption_t : public warlock_spell_t
     // 172 does not have spell duration any more.
     // were still lazy though so we aren't making a seperate spell for this.
     dot_duration               = otherSP->duration();
+  }
+
+  double action_multiplier() const override
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->mastery_spells.chaotic_energies->ok() )
+    {
+      double destro_mastery_value = p()->cache.mastery_value() / 2.0;
+      double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
+
+      m *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
+    }
+
+    return m;
   }
 
   void tick( dot_t* d ) override
