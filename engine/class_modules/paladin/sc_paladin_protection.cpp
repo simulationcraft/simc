@@ -751,7 +751,7 @@ void paladin_t::trigger_holy_shield( action_state_t* s )
   active.holy_shield_damage -> schedule_execute();
 }
 
-void paladin_t::trigger_T28_4p_PP( action_state_t* s )
+void paladin_t::trigger_t28_4p_pp( action_state_t* s )
 {
   // escape if we don't have T28 4p
   // if ( !talents.holy_shield->ok() )
@@ -761,8 +761,8 @@ void paladin_t::trigger_T28_4p_PP( action_state_t* s )
   if ( !s->action->player->is_enemy() )
     return;
 
-  active.T28_4p_PP->set_target( s->action->player );
-  active.T28_4p_PP->schedule_execute();
+  active.t28_4p_pp->set_target( s->action->player );
+  active.t28_4p_pp->schedule_execute();
 }
 
 bool paladin_t::standing_in_consecration() const
