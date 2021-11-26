@@ -452,7 +452,17 @@ struct judgment_prot_t : public judgment_t
     }
   }
 };
+// TODO: Woli
+// T28 4P damage proc ==================================================
 
+struct t28_4p_pp_t : public judgment_prot_t
+{
+  t28_4p_pp_t( paladin_t* p ) : judgment_prot_t( p )
+  {
+    background = proc = may_crit = true;
+    may_miss                     = false;
+  }
+};
 // Shield of the Righteous ==================================================
 
 shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p ) :

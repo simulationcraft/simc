@@ -955,18 +955,6 @@ struct holy_shield_damage_t : public paladin_spell_t
   }
 };
 
-// TODO: Woli
-// T28 4P damage proc ==================================================
-
-struct t28_4p_pp_t : public paladin_spell_t
-{
-  t28_4p_pp_t( paladin_t* p ) 
-  : paladin_spell_t( "t28_4p_pp", p, p->talents.holy_shield->effectN( 2 ).trigger() )
-  {
-    background = proc = may_crit = true;
-    may_miss                     = false;
-  }
-};
 
 // Inner light damage proc ==================================================
 
@@ -1839,10 +1827,10 @@ void paladin_t::create_actions()
       active.holy_shield_damage = new holy_shield_damage_t( this );
     }
     // I'm sorry - Woli
-    //If Tier.28.ProtPaladin.4.enabled()
+    // If Tier.28.ProtPaladin.4.enabled()
     if ( talents.holy_shield->ok() )
     {
-        active.t28_4p_pp = new t28_4p_pp_t( this );
+      active.t28_4p_pp = new t28_4p_pp_t( this );
     }
     if ( azerite.inner_light.enabled() )
     {
