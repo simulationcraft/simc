@@ -6358,7 +6358,7 @@ struct starfall_t : public druid_spell_t
     : druid_spell_t( "starfall", p, s, opt ), dummy_cd( p->get_cooldown( "starfall_dummy_cd" ) ), orig_cd( cooldown )
   {
     may_miss = may_crit = false;
-    queue_failed_proc = p->get_proc( "stafall queue failed" );
+    queue_failed_proc = p->get_proc( "starfall queue failed" );
 
     damage        = p->get_secondary_action<starfall_damage_t>( "starfall_dmg" );
     damage->stats = stats;
