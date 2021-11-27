@@ -6025,10 +6025,8 @@ void mage_t::regen( timespan_t periodicity )
     {
       // Base regen was already done, subtract 1.0 from Evocation's mana regen multiplier to make
       // sure we don't apply it twice.
-      resource_gain(
-        RESOURCE_MANA,
-        ( buffs.evocation->check_value() - 1.0 ) * base * periodicity.total_seconds(),
-        gains.evocation );
+      double amount = ( buffs.evocation->check_value() - 1.0 ) * base * periodicity.total_seconds();
+      resource_gain( RESOURCE_MANA, amount, gains.evocation );
     }
   }
 }
