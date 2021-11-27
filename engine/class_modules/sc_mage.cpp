@@ -975,11 +975,9 @@ struct touch_of_the_magi_t final : public buff_t
     auto p = debug_cast<mage_t*>( source );
     auto explosion = p->action.touch_of_the_magi_explosion;
 
-    explosion->set_target( player );
     double damage_fraction = p->spec.touch_of_the_magi->effectN( 1 ).percent();
     damage_fraction += p->conduits.magis_brand.percent();
-    explosion->base_dd_min = explosion->base_dd_max = damage_fraction * current_value;
-    explosion->execute();
+    explosion->execute_on_target( player, damage_fraction * current_value );
   }
 };
 
@@ -1209,15 +1207,9 @@ struct mirrors_of_torment_t final : public buff_t
       icd->start();
 
       if ( successful_triggers % max_stack() == 0 )
-      {
-        p->action.tormenting_backlash->set_target( player );
-        p->action.tormenting_backlash->execute();
-      }
+        p->action.tormenting_backlash->execute_on_target( player );
       else
-      {
-        p->action.agonizing_backlash->set_target( player );
-        p->action.agonizing_backlash->execute();
-      }
+        p->action.agonizing_backlash->execute_on_target( player );
 
       p->buffs.siphoned_malice->trigger();
 
@@ -1668,8 +1660,7 @@ public:
       && p()->cooldowns.frost_storm->up()
       && rng().roll( p()->sets->set( MAGE_FROST, T28, B2 )->proc_chance() ) )
     {
-      p()->action.frost_storm_comet_storm->set_target( s->target );
-      p()->action.frost_storm_comet_storm->execute();
+      p()->action.frost_storm_comet_storm->execute_on_target( s->target );
       p()->cooldowns.frost_storm->start( p()->sets->set( MAGE_FROST, T28, B2 )->internal_cooldown() );
     }
   }
@@ -1692,9 +1683,7 @@ public:
         if ( p()->runeforge.harmonic_echo.ok() && spark_debuff->check() )
         {
           auto echo = p()->action.harmonic_echo;
-          echo->base_dd_min = echo->base_dd_max = p()->runeforge.harmonic_echo->effectN( 1 ).percent() * s->result_total;
-          echo->set_target( s->target );
-          echo->execute();
+          echo->execute_on_target( s->target, p()->runeforge.harmonic_echo->effectN( 1 ).percent() * s->result_total );
         }
 
         if ( spark_debuff->at_max_stacks() )
@@ -1720,13 +1709,7 @@ public:
         // Arcane Echo doesn't use the normal callbacks system (both in simc and in game). To prevent
         // loops, we need to explicitly check that the triggering action wasn't Arcane Echo.
         if ( p()->talents.arcane_echo->ok() && s->action != p()->action.arcane_echo )
-        {
-          make_event( *sim, [ this, t = s->target ]
-          {
-            p()->action.arcane_echo->set_target( t );
-            p()->action.arcane_echo->execute();
-          } );
-        }
+          make_event( *sim, [ this, t = s->target ] { p()->action.arcane_echo->execute_on_target( t ); } );
       }
     }
   }
@@ -2028,8 +2011,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( p()->buffs.molten_skyfall_ready->check() )
     {
       p()->buffs.molten_skyfall_ready->expire();
-      p()->action.legendary_meteor->set_target( target );
-      p()->action.legendary_meteor->execute();
+      p()->action.legendary_meteor->execute_on_target( target );
     }
   }
 };
@@ -2338,8 +2320,7 @@ struct frost_mage_spell_t : public mage_spell_t
     if ( p()->buffs.cold_front_ready->check() )
     {
       p()->buffs.cold_front_ready->expire();
-      p()->action.legendary_frozen_orb->set_target( target );
-      p()->action.legendary_frozen_orb->execute();
+      p()->action.legendary_frozen_orb->execute_on_target( target );
     }
   }
 };
@@ -2423,10 +2404,7 @@ struct ignite_t final : public residual_action_t
     residual_action_t::tick( d );
 
     if ( rng().roll( p()->talents.conflagration->effectN( 1 ).percent() ) )
-    {
-      p()->action.conflagration_flare_up->set_target( d->target );
-      p()->action.conflagration_flare_up->execute();
-    }
+      p()->action.conflagration_flare_up->execute_on_target( d->target );
   }
 };
 
@@ -4177,10 +4155,7 @@ struct ice_lance_t final : public frost_mage_spell_t
         : p()->runeforge.glacial_fragments->effectN( 1 ).percent();
 
       if ( rng().roll( chance ) )
-      {
-        glacial_fragments->set_target( s->target );
-        glacial_fragments->execute();
-      }
+        glacial_fragments->execute_on_target( s->target );
     }
   }
 
@@ -4333,8 +4308,7 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
         if ( t == target )
           continue;
 
-        p()->action.living_bomb_dot_spread->set_target( t );
-        p()->action.living_bomb_dot_spread->execute();
+        p()->action.living_bomb_dot_spread->execute_on_target( t );
       }
     }
 
@@ -5443,8 +5417,7 @@ struct freeze_t final : public action_t
   void execute() override
   {
     mage_t* m = debug_cast<mage_t*>( player );
-    m->action.pet_freeze->set_target( target );
-    m->action.pet_freeze->execute();
+    m->action.pet_freeze->execute_on_target( target );
   }
 
   bool ready() override
@@ -5547,8 +5520,7 @@ struct icicle_event_t final : public event_t
     if ( !icicle_action )
       return;
 
-    icicle_action->set_target( target );
-    icicle_action->execute();
+    icicle_action->execute_on_target( target );
 
     if ( !mage->icicles.empty() )
     {
@@ -6279,10 +6251,7 @@ void mage_t::create_buffs()
                                  ->set_period( 3.0_s )
                                  ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
                                  ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
-                                   {
-                                     action.arcane_assault->set_target( target );
-                                     action.arcane_assault->execute();
-                                   } )
+                                   { action.arcane_assault->execute_on_target( target ); } )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
                                    { recalculate_resource_max( RESOURCE_MANA ); } );
   buffs.chrono_shift         = make_buff( this, "chrono_shift", find_spell( 236298 ) )
@@ -7301,8 +7270,7 @@ void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
     if ( !icicle_action )
       return;
 
-    icicle_action->set_target( icicle_target );
-    icicle_action->execute();
+    icicle_action->execute_on_target( icicle_target );
     sim->print_debug( "{} icicle use on {}, total={}", name(), icicle_target->name(), icicles.size() );
   }
 }
