@@ -973,11 +973,9 @@ struct touch_of_the_magi_t final : public buff_t
     buff_t::expire_override( stacks, duration );
 
     auto p = debug_cast<mage_t*>( source );
-    auto explosion = p->action.touch_of_the_magi_explosion;
-
     double damage_fraction = p->spec.touch_of_the_magi->effectN( 1 ).percent();
     damage_fraction += p->conduits.magis_brand.percent();
-    explosion->execute_on_target( player, damage_fraction * current_value );
+    p->action.touch_of_the_magi_explosion->execute_on_target( player, damage_fraction * current_value );
   }
 };
 
@@ -1089,11 +1087,11 @@ struct icy_veins_t final : public buff_t
   {
     buff_t::expire_override( stacks, duration );
 
-    auto mage = debug_cast<mage_t*>( player );
-    if ( mage->talents.thermal_void->ok() && duration == 0_ms )
-      mage->sample_data.icy_veins_duration->add( elapsed( sim->current_time() ).total_seconds() );
+    auto p = debug_cast<mage_t*>( player );
+    if ( p->talents.thermal_void->ok() && duration == 0_ms )
+      p->sample_data.icy_veins_duration->add( elapsed( sim->current_time() ).total_seconds() );
 
-    mage->buffs.slick_ice->expire();
+    p->buffs.slick_ice->expire();
   }
 };
 
@@ -1145,9 +1143,9 @@ struct rune_of_power_t final : public buff_t
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    auto mage = debug_cast<mage_t*>( player );
-    mage->state.distance_from_rune = 0.0;
-    mage->trigger_disciplinary_command( data().get_school_type() );
+    auto p = debug_cast<mage_t*>( player );
+    p->state.distance_from_rune = 0.0;
+    p->trigger_disciplinary_command( data().get_school_type() );
 
     return buff_t::trigger( stacks, value, chance, duration );
   }
@@ -1159,9 +1157,8 @@ struct rune_of_power_t final : public buff_t
     // When the Rune of Power buff fades at the same time as its area trigger, there is a
     // chance that the buff will fade first and the area trigger will reapply the buff for
     // an instant, which counts as executing an Arcane spell.
-    auto mage = debug_cast<mage_t*>( player );
     if ( duration == 0_ms && rng().roll( 0.5 ) )
-      mage->trigger_disciplinary_command( data().get_school_type() );
+      debug_cast<mage_t*>( player )->trigger_disciplinary_command( data().get_school_type() );
   }
 };
 
@@ -1681,10 +1678,7 @@ public:
 
         // Handle Harmonic Echo before changing the stack number
         if ( p()->runeforge.harmonic_echo.ok() && spark_debuff->check() )
-        {
-          auto echo = p()->action.harmonic_echo;
-          echo->execute_on_target( s->target, p()->runeforge.harmonic_echo->effectN( 1 ).percent() * s->result_total );
-        }
+          p()->action.harmonic_echo->execute_on_target( s->target, p()->runeforge.harmonic_echo->effectN( 1 ).percent() * s->result_total );
 
         if ( spark_debuff->at_max_stacks() )
         {
@@ -3657,9 +3651,7 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     t *= 1.0 + p()->buffs.slick_ice->check_stack_value();
 
-    t = std::max( t, min_gcd );
-
-    return t;
+    return std::max( t, min_gcd );
   }
 
   timespan_t execute_time() const override
@@ -5416,18 +5408,17 @@ struct freeze_t final : public action_t
 
   void execute() override
   {
-    mage_t* m = debug_cast<mage_t*>( player );
-    m->action.pet_freeze->execute_on_target( target );
+    debug_cast<mage_t*>( player )->action.pet_freeze->execute_on_target( target );
   }
 
   bool ready() override
   {
-    mage_t* m = debug_cast<mage_t*>( player );
-    if ( !m->pets.water_elemental || m->pets.water_elemental->is_sleeping() )
+    mage_t* p = debug_cast<mage_t*>( player );
+    if ( !p->pets.water_elemental || p->pets.water_elemental->is_sleeping() )
       return false;
 
     // Make sure the cooldown is actually ready and not just within cooldown tolerance.
-    if ( !m->action.pet_freeze->cooldown->up() || !m->action.pet_freeze->ready() )
+    if ( !p->action.pet_freeze->cooldown->up() || !p->action.pet_freeze->ready() )
       return false;
 
     return action_t::ready();
