@@ -996,6 +996,7 @@ void paladin_t::generate_action_prio_list_ret()
       cds -> add_action( racial_actions[ i ] );
     } */
   }
+  cds -> add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent" );
   cds -> add_action( this, "Shield of Vengeance", "if=(!talent.execution_sentence|cooldown.execution_sentence.remains<52)&fight_remains>15" );
   cds -> add_action( "blessing_of_the_seasons" );
 
@@ -1039,7 +1040,7 @@ void paladin_t::generate_action_prio_list_ret()
   cds -> add_action( "ashen_hallow" );
   cds -> add_talent( this, "Holy Avenger" , "if=time_to_hpg=0&holy_power<=2&(buff.avenging_wrath.up|talent.crusade&(cooldown.crusade.remains=0|buff.crusade.up)|fight_remains<20)" );
   cds -> add_talent( this, "Final Reckoning", "if=(holy_power>=4&time<8|holy_power>=3&(time>=8|spell_targets.divine_storm>=2&covenant.kyrian))&cooldown.avenging_wrath.remains>gcd&time_to_hpg=0&(!talent.seraphim|buff.seraphim.up)&(!raid_event.adds.exists|raid_event.adds.up|raid_event.adds.in>40)&(!buff.avenging_wrath.up|holy_power=5|cooldown.hammer_of_wrath.remains|spell_targets.divine_storm>=2&covenant.kyrian)" );
-  
+
   es_fr_active -> add_action( "fireblood" );
   es_fr_active -> add_action( "call_action_list,name=finishers,if=debuff.judgment.up|debuff.final_reckoning.up&(debuff.final_reckoning.remains<gcd.max|spell_targets.divine_storm>=2&!talent.execution_sentence)|debuff.execution_sentence.up&debuff.execution_sentence.remains<gcd.max" );
   es_fr_active -> add_action( "divine_toll" );
@@ -1055,7 +1056,7 @@ void paladin_t::generate_action_prio_list_ret()
   es_fr_active -> add_action( this, "Crusader Strike" );
   es_fr_active -> add_action( "arcane_torrent" );
   es_fr_active -> add_action( this, "Consecration" );
-  
+
   es_fr_pooling -> add_talent( this, "Seraphim", "if=holy_power=5&(!talent.final_reckoning|cooldown.final_reckoning.remains<=gcd*3)&(!talent.execution_sentence|cooldown.execution_sentence.remains<=gcd*3|talent.final_reckoning)&(!covenant.kyrian|cooldown.divine_toll.remains<9)" );
   es_fr_pooling -> add_action( "call_action_list,name=finishers,if=holy_power=5|debuff.final_reckoning.up|buff.crusade.up&buff.crusade.stack<10" );
   es_fr_pooling -> add_action( "vanquishers_hammer,if=buff.seraphim.up" );
