@@ -4,16 +4,17 @@
 // ==========================================================================
 
 #include "sc_option.hpp"
+
 #include "config.hpp"
+
+#include "fmt/format.h"
+#include "lib/utf8-cpp/utf8.h"
+#include "util/generic.hpp"
+#include "util/io.hpp"
+#include "util/util.hpp"
 
 #include <iostream>
 #include <utility>
-
-#include "fmt/format.h"
-#include "util/io.hpp"
-#include "util/util.hpp"
-#include "util/generic.hpp"
-#include "lib/utf8-cpp/utf8.h"
 
 namespace { // UNNAMED NAMESPACE ============================================
 
@@ -553,8 +554,7 @@ protected:
     if ( name != this -> name() )
       return opts::parse_status::CONTINUE;
 
-    fmt::print( std::cerr, "Option '{}' has been obsoleted and will be removed in the future.", name );
-    std::cerr << std::endl;
+    fmt::print( stderr, "Option '{}' has been obsoleted and will be removed in the future.\n", name );
     return opts::parse_status::OK;
   }
 

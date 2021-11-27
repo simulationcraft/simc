@@ -226,8 +226,8 @@ int numDigits( T number );
 
 bool contains_non_ascii( util::string_view );
 
-void print_chained_exception( const std::exception& e, std::ostream& out, int level =  0);
-void print_chained_exception( const std::exception_ptr& eptr, std::ostream& out, int level =  0);
+void print_chained_exception( const std::exception& e, std::FILE* out, int level = 0 );
+void print_chained_exception( const std::exception_ptr& eptr, std::FILE* out, int level = 0 );
 
 } // namespace util
 

@@ -515,9 +515,10 @@ void worker_t::execute()
   }
   catch (const std::exception& e )
   {
-    std::cerr << "\n\nError in profileset worker: ";
-    util::print_chained_exception(e, std::cerr);
-    std::cerr << "\n\n" << std::flush;
+    fmt::print( stderr, "\n\nError in profileset worker: " );
+    util::print_chained_exception( e, stderr );
+    fmt::print( stderr, "\n\n" );
+    std::fflush( stderr );
     // TODO: find out how to cancel profilesets without deadlock.
   }
 
@@ -702,9 +703,9 @@ bool profilesets_t::parse( sim_t* sim )
     }
     catch ( const std::exception& e )
     {
-      std::cerr << "ERROR! Profileset '" << profileset_name << "' Setup failure: ";
-      util::print_chained_exception( e, std::cerr );
-      std::cerr << std::endl;
+      fmt::print( stderr, "ERROR! Profileset '{}' Setup failure: ", profileset_name );
+      util::print_chained_exception( e, stderr );
+      fmt::print( stderr, "\n" );
       set_state( DONE );
       m_control.notify_one();
       delete control;
@@ -962,7 +963,7 @@ void profilesets_t::output_progressbar( const sim_t* parent ) const
   s << '\r';
 
   std::cout << s.str();
-  fflush( stdout );
+  std::fflush( stdout );
 }
 
 void profilesets_t::output_text( const sim_t& sim, std::ostream& out ) const

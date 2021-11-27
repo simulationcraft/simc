@@ -320,7 +320,7 @@ void download( sim_t*               sim,
     rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
 
     d.Accept( writer );
-    sim->out_debug.raw() << b.GetString();
+    sim->out_debug.raw().print( "{}", b.GetString() );
   }
 }
 

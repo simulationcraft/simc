@@ -14,7 +14,6 @@
 #include "util/plot_data.hpp"
 #include "fmt/chrono.h"
 
-#include <iomanip>
 #include <iostream>
 
 namespace
@@ -1304,7 +1303,7 @@ void print_text( sim_t* sim, bool detail )
 
   try
   {
-    report_timer_t t( "text report", std::cout );
+    report_timer_t t( "text report", stdout );
     if ( ! sim -> profileset_enabled )
     {
       t.start();
