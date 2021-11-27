@@ -19,10 +19,6 @@ namespace {
 // Forward declarations
 struct mage_t;
 
-namespace pets::water_elemental {
-  struct water_elemental_pet_t;
-}
-
 // Finds an action with the given name. If no action exists, a new one will
 // be created.
 //
@@ -285,6 +281,7 @@ public:
     action_t* living_bomb_dot;
     action_t* living_bomb_dot_spread;
     action_t* living_bomb_explosion;
+    action_t* pet_freeze;
     action_t* tormenting_backlash;
     action_t* touch_of_the_magi_explosion;
 
@@ -445,7 +442,7 @@ public:
   // Pets
   struct pets_t
   {
-    pets::water_elemental::water_elemental_pet_t* water_elemental = nullptr;
+    pet_t* water_elemental = nullptr;
     std::vector<pet_t*> mirror_images;
   } pets;
 
@@ -850,14 +847,8 @@ namespace water_elemental {
 
 struct water_elemental_pet_t final : public mage_pet_t
 {
-  struct actions_t
-  {
-    action_t* freeze;
-  } action;
-
   water_elemental_pet_t( sim_t* sim, mage_t* owner ) :
-    mage_pet_t( sim, owner, "water_elemental" ),
-    action()
+    mage_pet_t( sim, owner, "water_elemental" )
   {
     owner_coeff.sp_from_sp = 0.75;
   }
@@ -906,7 +897,7 @@ action_t* water_elemental_pet_t::create_action( std::string_view name, std::stri
 
 void water_elemental_pet_t::create_actions()
 {
-  action.freeze = get_action<freeze_t>( "freeze", this );
+  o()->action.pet_freeze = get_action<freeze_t>( "freeze", this );
 
   mage_pet_t::create_actions();
 }
@@ -5452,8 +5443,8 @@ struct freeze_t final : public action_t
   void execute() override
   {
     mage_t* m = debug_cast<mage_t*>( player );
-    m->pets.water_elemental->action.freeze->set_target( target );
-    m->pets.water_elemental->action.freeze->execute();
+    m->action.pet_freeze->set_target( target );
+    m->action.pet_freeze->execute();
   }
 
   bool ready() override
@@ -5463,8 +5454,7 @@ struct freeze_t final : public action_t
       return false;
 
     // Make sure the cooldown is actually ready and not just within cooldown tolerance.
-    auto freeze = m->pets.water_elemental->action.freeze;
-    if ( !freeze->cooldown->up() || !freeze->ready() )
+    if ( !m->action.pet_freeze->cooldown->up() || !m->action.pet_freeze->ready() )
       return false;
 
     return action_t::ready();
