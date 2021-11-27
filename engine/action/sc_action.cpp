@@ -5156,3 +5156,14 @@ void action_t::apply_affecting_conduit_effect( const conduit_data_t& conduit, si
   effect._base_value = conduit.value();
   apply_affecting_effect( effect );
 }
+
+void action_t::execute_on_target( player_t* target, double amount )
+{
+  assert( target );
+  set_target( target );
+
+  if ( amount >= 0.0 )
+    base_dd_min = base_dd_max = amount;
+
+  execute();
+}

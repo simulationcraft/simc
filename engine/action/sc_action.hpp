@@ -639,6 +639,8 @@ public:
 
   action_state_t* get_state( const action_state_t* = nullptr );
 
+  void execute_on_target( player_t*, double = -1.0 );
+
 private:
   friend struct action_state_t;
   void release_state( action_state_t* );
