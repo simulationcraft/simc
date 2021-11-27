@@ -7564,6 +7564,11 @@ struct adaptive_swarm_t : public druid_spell_t
       quiet = heal = true;
       may_miss = may_crit = false;
       base_td = base_td_multiplier = 0.0;
+
+      // HACK for now since we'll eventually have to get rid of using a dot_t to represent heals since we need to
+      // simulate multiple healing swarm jumping amongst group members
+      parse_effect_periodic_mods( data().effectN( 1 ), false );
+      parse_effect_period( data().effectN( 1 ) );
     }
 
     dot_t* get_dot( player_t* t ) override
