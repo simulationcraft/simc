@@ -1380,10 +1380,7 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
   void trigger_celestial_pillar()
   {
     if ( is_lunar && p().sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
-    {
-      p().active.celestial_pillar->set_target( p().target );
-      p().active.celestial_pillar->execute();
-    }
+      p().active.celestial_pillar->execute_on_target( p().target );
   }
 
   void execute( int s, double v, timespan_t d ) override
@@ -1444,10 +1441,7 @@ struct berserk_cat_buff_t : public druid_buff_t<buff_t>
     {
       set_stack_change_callback( [ &p ]( buff_t*, int, int new_ ) {
         if ( !new_ )
-        {
-          p.active.sickle_of_the_lion->set_target( p.target );
-          p.active.sickle_of_the_lion->execute();
-        }
+          p.active.sickle_of_the_lion->execute_on_target( p.target );
       } );
     }
   }
@@ -1529,8 +1523,7 @@ struct berserk_bear_buff_t : public druid_buff_t<buff_t>
     {
       set_period( p.sets->set( DRUID_GUARDIAN, T28, B4 )->effectN( 1 ).trigger()->effectN( 1 ).period() );
       set_tick_callback( [ &p ]( buff_t*, int, timespan_t ) {
-        p.active.architects_aligner->set_target( p.target );
-        p.active.architects_aligner->execute();
+        p.active.architects_aligner->execute_on_target( p.target );
       } );
     }
   }
@@ -1610,21 +1603,16 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
     if ( amount == 0 )
       return;
 
-    sim->print_debug( "Kindred Empowerment: Using {} from pool of {} ({}) on {}", amount, pool, partner_pool, s->action->name() );
+    sim->print_debug( "Kindred Empowerment: Using {} from pool of {} ({}) on {}", amount, pool, partner_pool,
+                      s->action->name() );
 
-    auto damage = p().active.kindred_empowerment;
-    damage->set_target( s->target );
-    damage->base_dd_min = damage->base_dd_max = std::min( amount, pool - 1.0 );
-    damage->schedule_execute();
+    p().active.kindred_empowerment->execute_on_target( s->target, std::min( amount, pool - 1.0 ) );
     pool -= amount;
 
     if ( partner_pool <= 1.0 )
       return;
 
-    auto partner = p().active.kindred_empowerment_partner;
-    partner->set_target( s->target );
-    partner->base_dd_min = partner->base_dd_max = std::min( amount, partner_pool - 1.0 );
-    partner->schedule_execute();
+    p().active.kindred_empowerment_partner->execute_on_target( s->target, std::min( amount, partner_pool - 1.0 ) );
     partner_pool -= amount;
   }
 };
@@ -2415,10 +2403,7 @@ public:
          s->target != p() && ab::result_is_hit( s->result ) && s->result_total > 0 )
     {
       if ( p()->buff.galactic_guardian->trigger() )
-      {
-        p()->active.galactic_guardian->set_target( s->target );
-        p()->active.galactic_guardian->execute();
-      }
+        p()->active.galactic_guardian->execute_on_target( s->target );
     }
   }
 
@@ -2635,10 +2620,7 @@ public:
       chance *= 1.0 + p()->buff.solstice->data().effectN( 1 ).percent();
 
     if ( rng().roll( chance ) )
-    {
-      p()->active.shooting_stars->set_target( t );
-      p()->active.shooting_stars->execute();
-    }
+      p()->active.shooting_stars->execute_on_target( t );
   }
 
   void execute() override
@@ -6967,8 +6949,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     else if ( auto a = dynamic_cast<druid_action_t<heal_t>*>( action ) )
       a->free_cast = free_cast_e::CONVOKE;
 
-    action->set_target( target );
-    action->execute();
+    action->execute_on_target( target );
   }
 
   action_t* convoke_action_from_type( convoke_cast_e type )
@@ -7584,12 +7565,11 @@ struct adaptive_swarm_t : public druid_spell_t
   adaptive_swarm_base_t* heal;
   timespan_t precombat_seconds;
 
-  adaptive_swarm_t( druid_t* p, std::string_view options_str )
-    : druid_spell_t( "adaptive_swarm", p, p->covenant.necrolord, options_str ),
-    precombat_seconds(11_s)
+  adaptive_swarm_t( druid_t* p, std::string_view opt )
+    : druid_spell_t( "adaptive_swarm", p, p->covenant.necrolord, opt ), precombat_seconds( 11_s )
   {
-    add_option(opt_timespan("precombat_seconds", precombat_seconds));
-    parse_options(options_str);
+    add_option( opt_timespan( "precombat_seconds", precombat_seconds ) );
+    parse_options( opt );
 
     // These are always necessary to allow APL parsing of dot.adaptive_swarm expressions
     damage = p->get_secondary_action<adaptive_swarm_damage_t>( "adaptive_swarm_damage" );
@@ -7612,13 +7592,13 @@ struct adaptive_swarm_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if (is_precombat && precombat_seconds > 0_s)
+    if ( is_precombat && precombat_seconds > 0_s )
     {
-      heal->set_target(player);
+      heal->set_target( player );
       heal->schedule_execute();
-    
-      this->cooldown->adjust(-precombat_seconds, false);
-      heal->get_dot(player)->adjust_duration(-precombat_seconds);
+
+      this->cooldown->adjust( -precombat_seconds, false );
+      heal->get_dot( player )->adjust_duration( -precombat_seconds );
       return;
     }
 
@@ -7754,8 +7734,7 @@ struct lycaras_fleeting_glimpse_t : public action_t
     else if ( auto a = dynamic_cast<druid_action_t<heal_t>*>( action ) )
       a->free_cast = free_cast_e::LYCARAS;
 
-    action->set_target( target );
-    action->execute();
+    action->execute_on_target( target );
   }
 
   void execute() override
