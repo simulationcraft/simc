@@ -2969,7 +2969,7 @@ void sim_t::do_pause()
 void sim_t::set_error(std::string error)
 {
     util::replace_all( error, "\n", "" );
-    fmt::print( stderr, "{}", error );
+    fmt::print( stderr, "{}\n", error );
     std::fflush( stderr );
 
     error_list.push_back( std::move( error ) );
