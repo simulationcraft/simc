@@ -8914,13 +8914,13 @@ void druid_t::apl_default()
 
 void druid_t::apl_feral()
 {
-//    Good              Okay        Stinky
-//   ------            ----         -----
-//  Night Fae  /\_/\   Kyria      Necrolords
-//  Venthyr  _| . . |_
+//    Good                 Okay        Stinky
+//   ------               ----         -----
+//  Night Fae  /\_/\     Kyrian       Venthyr (yuckers)
+//           _| . . |_  Necrolords
 //           >_  W  _<
 //             |   |
-
+// @Kotacat4, updated by @GuiltyasFeral
 #include "class_modules/apl/feral_apl.inc"
 }
 
