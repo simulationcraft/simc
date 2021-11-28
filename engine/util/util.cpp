@@ -2480,6 +2480,33 @@ const char* util::action_energize_type_string( action_energize energize_type )
   }
 }
 
+const char* util::action_type_string( action_e type )
+{
+  switch ( type )
+  {
+    case action_e::ACTION_USE:
+      return "use";
+    case action_e::ACTION_SPELL:
+      return "hostile_spell";
+    case action_e::ACTION_ATTACK:
+      return "attack";
+    case action_e::ACTION_HEAL:
+      return "heal_spell";
+    case action_e::ACTION_ABSORB:
+      return "absorb_spell";
+    case action_e::ACTION_SEQUENCE:
+      return "sequence";
+    case action_e::ACTION_OTHER:
+      return "other";
+    case action_e::ACTION_CALL:
+      return "call_action_list";
+    case action_e::ACTION_VARIABLE:
+      return "action_variable";
+    default:
+      return "unknown";
+  }
+}
+
 /// Textual representation of rppm scaling bitfield
 std::string util::rppm_scaling_string( unsigned s )
 {
