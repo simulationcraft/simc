@@ -3628,6 +3628,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     // Because of the additional procs gained from the bad luck protection
     // system, the base proc chances are reduced so that the overall average
     // is not significantly changed by the system.
+    // TODO: How does this reduction work for low level Mages without BLP?
     if ( p->spec.fingers_of_frost->ok() )
       fof_chance = ft_multiplier * p->spec.fingers_of_frost->effectN( 1 ).percent() - 0.005;
     if ( p->spec.brain_freeze->ok() )
@@ -3706,7 +3707,6 @@ struct frostbolt_t final : public frost_mage_spell_t
     bool fof_triggered = p()->trigger_fof( fof_chance, proc_fof );
     bool bf_triggered = p()->trigger_brain_freeze( bf_chance, proc_brain_freeze );
 
-    // TODO: How does the BLP work for low level mages?
     if ( fof_chance == 0.0 || bf_chance == 0.0 )
       return;
 
@@ -3761,13 +3761,6 @@ struct frost_nova_t final : public mage_spell_t
 };
 
 // Frozen Orb Spell =========================================================
-
-// TODO: Frozen Orb actually selects random targets each time it ticks when
-// there are more than eight targets in range. This is not important for
-// current use-cases. In the future if this becomes important, e.g., there
-// is interest about priority target damage for encounters with more than
-// eight targets, random target selection should be added as an option for
-// all actions, because many target-capped abilities probably work this way.
 
 struct frozen_orb_bolt_t final : public frost_mage_spell_t
 {
@@ -4775,7 +4768,7 @@ struct ray_of_frost_t final : public frost_mage_spell_t
     // Ray of Frost triggers Bone Chilling on each tick, as well as on execute.
     p()->buffs.bone_chilling->trigger();
 
-    // TODO: Now happens at 2.5 and 5.
+    // TODO: Now happens at 2.5 and 5 through a hidden buff (spell_id 269748).
     if ( d->current_tick == 3 || d->current_tick == 5 )
       p()->trigger_fof( 1.0, proc_fof );
   }
