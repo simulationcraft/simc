@@ -739,6 +739,9 @@ int warlock_td_t::count_affliction_dots()
   if ( dots_corruption->is_ticking() )
     count++;
 
+  if ( dots_seed_of_corruption->is_ticking() )
+    count++;
+
   if ( dots_unstable_affliction->is_ticking() )
     count++;
 

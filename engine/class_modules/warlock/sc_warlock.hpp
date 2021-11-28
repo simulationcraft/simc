@@ -467,7 +467,7 @@ public:
     proc_t* nightfall;
     proc_t* corrupting_leer;
     proc_t* malefic_wrath;
-    std::array<proc_t*, 6> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
+    std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
 
     // demo
     proc_t* demonic_calling;
