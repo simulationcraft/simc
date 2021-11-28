@@ -7177,6 +7177,7 @@ struct vesper_totem_t : public shaman_spell_t
 
     add_child( player->vesper_totem_damage );
     add_child( player->vesper_totem_heal );
+    add_child( player->raging_vesper_vortex );
   }
 
   // Snapshot totem position by the use of a ground action that is never triggered
