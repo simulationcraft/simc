@@ -542,7 +542,7 @@ struct malefic_rapture_t : public affliction_spell_t
     struct malefic_rapture_damage_instance_t : public affliction_spell_t
     {
       malefic_rapture_damage_instance_t( warlock_t *p, double spc ) :
-          affliction_spell_t( "malefic_rapture_aoe", p, p->find_spell( 324540 ) )
+          affliction_spell_t( "malefic_rapture_damage", p, p->find_spell( 324540 ) )
       {
         aoe = 1;
         background = true;
@@ -578,19 +578,14 @@ struct malefic_rapture_t : public affliction_spell_t
       }
     };
 
-    malefic_rapture_damage_instance_t* damage_instance;
-
     malefic_rapture_t( warlock_t* p, util::string_view options_str )
       : affliction_spell_t( "malefic_rapture", p, p->find_spell( 324536 ) )
     {
       parse_options( options_str );
       aoe = -1;
 
-      damage_instance = new malefic_rapture_damage_instance_t( p, data().effectN( 1 ).sp_coeff() );
-
-      impact_action = damage_instance;
+      impact_action = new malefic_rapture_damage_instance_t( p, data().effectN(1).sp_coeff() );;
       add_child( impact_action );
-
     }
 
     bool ready() override
