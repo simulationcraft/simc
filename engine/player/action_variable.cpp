@@ -21,9 +21,8 @@ action_variable_t::action_variable_t( std::string name, double default_value )
 {
 }
 
-bool action_variable_t::is_constant( double* constant_value ) const
+bool action_variable_t::is_constant() const
 {
-  *constant_value = constant_value_;
   return constant_value_ != std::numeric_limits<double>::lowest();
 }
 
@@ -54,12 +53,11 @@ void action_variable_t::optimize()
   }
 
   bool is_constant = true;
-  double const_value;
   for ( auto action : variable_actions )
   {
     variable_t* var_action = debug_cast<variable_t*>( action );
 
-    is_constant = var_action->is_constant(&const_value);
+    is_constant = var_action->is_constant();
     if ( !is_constant )
     {
       break;

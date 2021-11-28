@@ -28,7 +28,7 @@ struct action_variable_t
     current_value_ = default_value_;
   }
 
-  bool is_constant( double* constant_value ) const;
+  bool is_constant() const;
 
   void optimize();
 };
