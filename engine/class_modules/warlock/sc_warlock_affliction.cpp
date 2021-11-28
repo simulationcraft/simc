@@ -593,6 +593,22 @@ struct malefic_rapture_t : public affliction_spell_t
 
     }
 
+    bool ready() override
+    {
+      if ( !affliction_spell_t::ready() )
+       return false;
+
+      target_cache.is_valid = false;
+
+      for ( player_t* target : target_list() )
+      {
+        if ( p()->get_target_data( target )->count_affliction_dots() > 0 )
+          return true;
+      }
+
+      return false;
+    }
+
     void execute() override
     {
       affliction_spell_t::execute();
@@ -602,6 +618,15 @@ struct malefic_rapture_t : public affliction_spell_t
         p()->buffs.malefic_wrath->trigger();
         p()->procs.malefic_wrath->occur();
       }
+    }
+
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      affliction_spell_t::available_targets( tl );
+
+      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ){ return p()->get_target_data( target )->count_affliction_dots() == 0; } ), tl.end() );
+
+      return tl.size();
     }
 };
 
