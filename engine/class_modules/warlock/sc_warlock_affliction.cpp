@@ -599,14 +599,7 @@ struct malefic_rapture_t : public affliction_spell_t
        return false;
 
       target_cache.is_valid = false;
-
-      for ( player_t* target : target_list() )
-      {
-        if ( p()->get_target_data( target )->count_affliction_dots() > 0 )
-          return true;
-      }
-
-      return false;
+      return target_list().size() > 0;
     }
 
     void execute() override
