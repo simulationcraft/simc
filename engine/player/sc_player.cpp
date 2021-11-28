@@ -7463,6 +7463,26 @@ struct racial_spell_t : public spell_t
   }
 };
 
+struct racial_heal_t : public heal_t
+{
+  racial_heal_t( player_t* p, util::string_view token, const spell_data_t* spell ) :
+    heal_t( token, p, spell )
+  { }
+
+  double base_ta( const action_state_t* /* state */ ) const override
+  {
+    return player->max_health() * data().effectN( 2 ).percent();
+  }
+
+  void init() override
+  {
+    heal_t::init();
+
+    if ( &data() == spell_data_t::not_found() )
+      background = true;
+  }
+};
+
 // Shadowmeld ===============================================================
 
 struct shadowmeld_t : public racial_spell_t
@@ -7745,6 +7765,17 @@ struct arcane_pulse_t : public racial_spell_t
     if ( ap > sp )
       return 0;
     return racial_spell_t::spell_direct_power_coefficient( s );
+  }
+};
+
+// Gift of the Naaru ========================================================
+
+struct gift_of_the_naaru : public racial_heal_t
+{
+  gift_of_the_naaru( player_t* p, util::string_view options_str ) :
+    racial_heal_t( p, "gift_of_the_naaru", p->find_racial_spell( "Gift of the Naaru" ) )
+  {
+    parse_options( options_str );
   }
 };
 
@@ -8927,6 +8958,8 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
     return new darkflight_t( this, options_str );
   if ( name == "fireblood" )
     return new fireblood_t( this, options_str );
+  if ( name == "gift_of_the_naaru" )
+    return new gift_of_the_naaru( this, options_str );
   if ( name == "haymaker" )
     return new haymaker_t( this, options_str );
   if ( name == "lights_judgment" )
