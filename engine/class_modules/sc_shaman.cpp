@@ -8384,7 +8384,8 @@ void shaman_t::trigger_vesper_totem( const action_state_t* state )
   vesper_totem_used_charges++;
 
   if ( legendary.raging_vesper_vortex->ok() &&
-      vesper_totem_used_charges == legendary.raging_vesper_vortex->effectN( 1 ).base_value() )
+      vesper_totem_used_charges == legendary.raging_vesper_vortex->effectN( 1 ).base_value() &&
+      !vesper_totem_damage->target_list().empty() )
   {
     if ( sim-> debug )
     {
@@ -8393,7 +8394,6 @@ void shaman_t::trigger_vesper_totem( const action_state_t* state )
         name(), vesper_totem_target->name(), vesper_totem_dmg_charges,
         vesper_totem_heal_charges );
     }
-    // TODO: Problematic with dead targets
     raging_vesper_vortex->set_target( vesper_totem_damage->target );
     raging_vesper_vortex->execute();
     vesper_totem_used_charges = 0;
