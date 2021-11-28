@@ -584,7 +584,7 @@ struct malefic_rapture_t : public affliction_spell_t
       parse_options( options_str );
       aoe = -1;
 
-      impact_action = new malefic_rapture_damage_instance_t( p, data().effectN(1).sp_coeff() );;
+      impact_action = new malefic_rapture_damage_instance_t( p, data().effectN( 1 ).sp_coeff() );
       add_child( impact_action );
     }
 
