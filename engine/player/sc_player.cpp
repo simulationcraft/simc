@@ -7469,11 +7469,6 @@ struct racial_heal_t : public heal_t
     heal_t( token, p, spell )
   { }
 
-  double base_ta( const action_state_t* /* state */ ) const override
-  {
-    return player->max_health() * data().effectN( 2 ).percent();
-  }
-
   void init() override
   {
     heal_t::init();
@@ -7776,6 +7771,11 @@ struct gift_of_the_naaru : public racial_heal_t
     racial_heal_t( p, "gift_of_the_naaru", p->find_racial_spell( "Gift of the Naaru" ) )
   {
     parse_options( options_str );
+  }
+
+  double base_ta( const action_state_t* /* state */ ) const override
+  {
+    return player->max_health() * data().effectN( 2 ).percent();
   }
 };
 
