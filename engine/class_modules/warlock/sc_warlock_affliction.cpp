@@ -812,7 +812,7 @@ using namespace buffs;
 }  // namespace buffs_affliction
 
 // add actions
-action_t* warlock_t::create_action_affliction( util::string_view action_name, util::string_view options_str, action_t* generic_action )
+action_t* warlock_t::create_action_affliction( util::string_view action_name, util::string_view options_str )
 {
   using namespace actions_affliction;
 
@@ -845,7 +845,7 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, ut
   if ( action_name == "malefic_rapture" )
     return new malefic_rapture_t( this, options_str );
 
-  return generic_action;
+  return nullptr;
 }
 
 void warlock_t::create_buffs_affliction()
