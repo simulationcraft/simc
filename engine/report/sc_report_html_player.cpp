@@ -8,12 +8,14 @@
 #include "player/covenant.hpp"
 #include "player/unique_gear_shadowlands.hpp"
 #include "dbc/temporary_enchant.hpp"
+#include "dbc/item_set_bonus.hpp"
 #include "reports.hpp"
 #include "report/report_helper.hpp"
 #include "report/decorators.hpp"
 #include "report/charts.hpp"
 #include "player/player_talent_points.hpp"
 #include "player/scaling_metric_data.hpp"
+#include "player/set_bonus.hpp"
 #include "sc_highchart.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/sc_profileset.hpp"
@@ -2289,11 +2291,11 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
   {
     os.printf( "<td class=\"left\">%s</td>\n"
                "<td class=\"left\">%c</td>\n"
-               "<td class=\"left\">%s</td>\n"
+               "<td class=\"left\">%s%s</td>\n"
                "<td class=\"left\">%s</td>\n",
                data.action->action_list ? util::encode_html( data.action->action_list->name_str ).c_str() : "unknown",
                data.action->marker != 0 ? data.action->marker : ' ',
-               util::encode_html( data.action->name() ).c_str(),
+               util::encode_html( data.action->name() ).c_str(), data.queue_failed ? " (queue failed)" : "",
                util::encode_html( data.target->name() ).c_str() );
   }
   else
@@ -3885,6 +3887,37 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
       os << "</tr>\n";
     }
 
+    // Set Bonuses
+    if ( p.sets )
+    {
+      auto bonuses = p.sets->enabled_set_bonus_data();
+
+      if ( !bonuses.empty() )
+      {
+        int curr_tier = set_bonus_type_e::SET_BONUS_NONE;
+
+        os << "<tr class=\"left\"><th>Set Bonus</th><td><ul class=\"float\">\n";
+
+        for ( auto bonus : bonuses )
+        {
+          if ( curr_tier != bonus->enum_id )
+          {
+            if ( curr_tier != set_bonus_type_e::SET_BONUS_NONE )
+              os << "</ul></td></tr>\n<tr class=\"left\"><th></th><td><ul class=\"float\">\n";
+
+            fmt::print( os, "<li>{}</li>\n", report_decorators::decorated_set( sim, *bonus ) );
+
+            curr_tier = bonus->enum_id;
+          }
+
+          fmt::print( os, "<li>{} ({}pc)</li>\n",
+                      report_decorators::decorated_spell_data( sim, p.find_spell( bonus->spell_id ) ), bonus->bonus );
+        }
+
+        os << "</ul></td></tr>\n";
+      }
+    }
+
     // Essence
     if ( p.azerite_essence )
     {
@@ -3905,12 +3938,6 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
 
     // Runeforge Legendaries
     runeforge::generate_report( p, os );
-
-    // Tier Set Bonuses
-    if ( p.sets )
-    {
-      p.sets->generate_report( os );
-    }
 
     // Shards of Domination (9.1)
     unique_gear::shadowlands::items::shards_of_domination::generate_report( p, os );

@@ -9,7 +9,6 @@
 #include <algorithm>
 #include <cassert>
 #include <cstring>
-#include <iosfwd>
 #include <numeric>
 #include <vector>
 
@@ -167,7 +166,6 @@ public:
   void clear()
   { _data.clear(); }
 
-  std::ostream& data_str( std::ostream& s ) const;
   /*
     // Functions which could be implemented:
     data_type variance() const;

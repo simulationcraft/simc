@@ -1414,7 +1414,7 @@ public:
   virtual bool procs_poison() const
   { return ab::weapon != nullptr && ab::has_amount_result(); }
 
-  // 06/29/2021 -- As of recent log analysis, a number of abilities that still proc non-lethal poisons no longer proc Deadly Poison
+  // 2021-06-29-- As of recent log analysis, a number of abilities that still proc non-lethal poisons no longer proc Deadly Poison
   //               Primarily this appears to be things such as Rupture and Garrote primary casts, but also affects things like Shiv
   //               These abilities still trigger Wound Poison as well, so this is not strictly about Lethal poisons
   virtual bool procs_deadly_poison() const
@@ -1723,7 +1723,7 @@ public:
 
   void execute() override
   {
-    // 12/04/2020 - Hotfix notes this is no longer consumed "while under the effects Stealth, Vanish, Subterfuge, Shadow Dance, and Shadowmeld"
+    // 2020-12-04- Hotfix notes this is no longer consumed "while under the effects Stealth, Vanish, Subterfuge, Shadow Dance, and Shadowmeld"
     // 2021-04-22 - Night Fae Lego Toxic Onslaught on PTR shows this happens and applies proc buffs before damage (Shadow Blades)
     if ( affected_by.sepsis && p()->buffs.sepsis->check() && !p()->stealthed( STEALTH_ALL & ~STEALTH_SEPSIS ) )
     {
@@ -1768,7 +1768,7 @@ public:
       p()->break_stealth();
     }
 
-    // 11/28/2020 - Flagellation does not remove the buff in-game, despite being in the whitelist
+    // 2020-11-28- Flagellation does not remove the buff in-game, despite being in the whitelist
     if ( affected_by.symbols_of_death_autocrit && p()->buffs.symbols_of_death_autocrit->check() && ab::data().id() != 323654 )
     {
       p()->buffs.symbols_of_death_autocrit->expire();
@@ -1792,7 +1792,7 @@ public:
     {
       if ( p()->active.lethal_poison )
       {
-        // 06/29/2021 -- For reasons unknown, Deadly Poison has its own proc logic than Wound or Instant Poison
+        // 2021-06-29-- For reasons unknown, Deadly Poison has its own proc logic than Wound or Instant Poison
         bool procs_lethal_poison = p()->specialization() == ROGUE_ASSASSINATION &&
           p()->active.lethal_poison->data().id() == p()->spec.deadly_poison->id() ?
           procs_deadly_poison() : procs_poison();
@@ -2007,7 +2007,7 @@ struct instant_poison_t : public rogue_poison_t
     {
       double m = rogue_poison_t::composite_da_multiplier( state );
 
-      // 10/18/2020 - Nightstalker appears to buff Instant Poison by the base 50% amount, despite being in no whitelists
+      // 2020-10-18- Nightstalker appears to buff Instant Poison by the base 50% amount, despite being in no whitelists
       if ( p()->bugs && p()->talent.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
       {
         m *= 1.0 + p()->spell.nightstalker_dmg_amp->effectN( 2 ).percent();
@@ -2432,7 +2432,7 @@ struct backstab_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    // 08/30/2021 -- Logs appear to show updated behavior of PV and The Rotten benefitting WM procs
+    // 2021-08-30-- Logs appear to show updated behavior of PV and The Rotten benefitting WM procs
     if ( p()->buffs.the_rotten->up() )
     {
       trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->check_value() ), p()->gains.the_rotten );
@@ -2728,7 +2728,7 @@ struct envenom_t : public rogue_attack_t
 
     if ( p()->legendary.doomblade.ok() )
     {
-      // 03/04/2021 -- 9.0.5 notes now specify SBS works with Doomblade
+      // 2021-03-04-- 9.0.5 notes now specify SBS works with Doomblade
       rogue_td_t* td = this->td( target );
       int active_dots = td->dots.garrote->is_ticking() + td->dots.rupture->is_ticking() +
         td->dots.crimson_tempest->is_ticking() + td->dots.internal_bleeding->is_ticking() +
@@ -2874,7 +2874,7 @@ struct fan_of_knives_t: public rogue_attack_t
   bool procs_poison() const override
   { return true; }
 
-  // 04/22/2021 -- TOCHECK: Testing with the NF legendary shows this doesn't work
+  // 2021-04-22-- TOCHECK: Testing with the NF legendary shows this doesn't work
   // 2021-10-07 - Works as of 9.1.5 PTR
   bool procs_shadow_blades_damage() const override
   { return true; }
@@ -3002,7 +3002,7 @@ struct gloomblade_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    // 08/30/2021 -- Logs appear to show updated behavior of PV and The Rotten benefitting WM procs
+    // 2021-08-30-- Logs appear to show updated behavior of PV and The Rotten benefitting WM procs
     if ( p()->buffs.the_rotten->up() )
     {
       trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->check_value() ), p()->gains.the_rotten );
@@ -3738,7 +3738,7 @@ struct shadowstrike_t : public rogue_attack_t
       p()->buffs.perforated_veins->trigger();
     }
 
-    // 08/30/2021 -- Logs appear to show updated behavior of PV and The Rotten benefitting WM procs
+    // 2021-08-30-- Logs appear to show updated behavior of PV and The Rotten benefitting WM procs
     if ( p()->buffs.the_rotten->up() )
     {
       trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->check_value() ), p()->gains.the_rotten );
@@ -3798,7 +3798,7 @@ struct black_powder_t: public rogue_attack_t
       rogue_attack_t( name, p, p->find_spell( 319190 ) ),
       last_cp( 1 )
     {
-      callbacks = false; // 07/19/2021 -- Does not appear to trigger normal procs
+      callbacks = false; // 2021-07-19-- Does not appear to trigger normal procs
       aoe = -1;
       reduced_aoe_targets = p->spec.black_powder->effectN( 4 ).base_value();
     }
@@ -3911,7 +3911,7 @@ struct shuriken_storm_t: public rogue_attack_t
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = 1;
     ap_type = attack_power_type::WEAPON_BOTH;
-    // 04/22/2021 - Not in the whitelist but confirmed as working in-game
+    // 2021-04-22- Not in the whitelist but confirmed as working in-game
     affected_by.shadow_blades_cp = true;
 
     aoe = -1;
@@ -3929,7 +3929,7 @@ struct shuriken_storm_t: public rogue_attack_t
     }
   }
 
-  // 07/12/2021 -- Shuriken Tornado triggers the damage directly without a cast, so cast triggers don't happen
+  // 2021-07-12-- Shuriken Tornado triggers the damage directly without a cast, so cast triggers don't happen
   bool procs_poison() const override
   { return secondary_trigger != TRIGGER_SHURIKEN_TORNADO; }
 };
@@ -4206,7 +4206,7 @@ struct shiv_t : public rogue_attack_t
   bool procs_blade_flurry() const override
   { return true; }
 
-  // 06/29/2021 -- Testing shows this does not proc Deadly Poison despite being direct
+  // 2021-06-29-- Testing shows this does not proc Deadly Poison despite being direct
   bool procs_deadly_poison() const override
   { return false; }
 };
@@ -4547,12 +4547,12 @@ struct sepsis_t : public rogue_attack_t
 
     void impact( action_state_t* state ) override
     {
-      // 12/30/2020 - Due to flagging as a generator, the final hit can trigger Seal Fate
+      // 2020-12-30- Due to flagging as a generator, the final hit can trigger Seal Fate
       rogue_attack_t::impact( state );
       trigger_seal_fate( state );
     }
 
-    // 04/22/2021 -- Confirmed as working in-game
+    // 2021-04-22-- Confirmed as working in-game
     bool procs_shadow_blades_damage() const override
     { return true; }
   };
@@ -4562,7 +4562,7 @@ struct sepsis_t : public rogue_attack_t
   sepsis_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->covenant.sepsis, options_str )
   {
-    // 04/22/2021 - Not in the whitelist but confirmed as working in-game
+    // 2021-04-22- Not in the whitelist but confirmed as working in-game
     affected_by.broadside_cp = true;
     sepsis_expire_damage = p->get_background_action<sepsis_expire_damage_t>( "sepsis_expire_damage" );
     sepsis_expire_damage->stats = stats;
@@ -4621,7 +4621,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
     {
       aoe = 0; // Technically affected by Deathspike, but interferes with our triggering logic
       hasted_ticks = true; // 2021-03-12 - Bone spike dot is hasted, despite not being flagged as such
-      affected_by.zoldyck_insignia = true; // 02/13/2021 - Logs show that the SBS DoT is affected by Zoldyck
+      affected_by.zoldyck_insignia = true; // 2021-02-13- Logs show that the SBS DoT is affected by Zoldyck
       dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 2 );
 
       if ( p->conduit.sudden_fractures.ok() )
@@ -4641,12 +4641,12 @@ struct serrated_bone_spike_t : public rogue_attack_t
       }
     }
 
-    // 03/28/2021 -- Testing shows that Nightstalker works if you are very close to the target's hitbox
+    // 2021-03-28-- Testing shows that Nightstalker works if you are very close to the target's hitbox
     //               This works on both the initial hit and also the DoT, until it is applied again
     bool snapshots_nightstalker() const override
     { return p()->bugs; }
 
-    // 07/05/2021 -- Confirmed as working in-game, although not on Sudden Fractures damage
+    // 2021-07-05-- Confirmed as working in-game, although not on Sudden Fractures damage
     bool procs_shadow_blades_damage() const override
     { return true; }
   };
@@ -4658,7 +4658,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
     rogue_attack_t( name, p, p->covenant.serrated_bone_spike, options_str )
   {
     // Combo Point generation is in a secondary spell due to scripting logic
-    // 07/09/2021 - Not in the whitelist but confirmed as working in-game as of 9.1 patch notes
+    // 2021-07-09- Not in the whitelist but confirmed as working in-game as of 9.1 patch notes
     affected_by.shadow_blades_cp = true;
     affected_by.broadside_cp = true;
     energize_type = action_energize::ON_HIT;
@@ -4697,7 +4697,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    // 03/04/2021 -- 9.0.5: Bonus CP gain now **supposed to** include the primary target DoT even on first activation
+    // 2021-03-04-- 9.0.5: Bonus CP gain now **supposed to** include the primary target DoT even on first activation
     unsigned active_dots = p()->get_active_dots( serrated_bone_spike_dot->internal_id );
 
     // BUG, see https://github.com/SimCMinMax/WoW-BugTracker/issues/823
@@ -4712,7 +4712,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
       if ( count_after )
         active_dots += 1;
 
-      // 07/17/2021 -- Testing currently shows that initially-cleaved DoTs do not behave normally
+      // 2021-07-17-- Testing currently shows that initially-cleaved DoTs do not behave normally
       if ( p()->bugs )
       {
         tdata->set_is_deathspiked( state->chain_target > 0 );
@@ -4724,7 +4724,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
 
   timespan_t travel_time() const override
   {
-    // 03/28/2021 -- Testing shows that Nightstalker works if you are very close to the target's hitbox
+    // 2021-03-28-- Testing shows that Nightstalker works if you are very close to the target's hitbox
     // Assume if the player is playing Nightstalker they are getting inside the hitbox to reduce travel time
     if ( p()->bugs && p()->talent.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
       return timespan_t::zero();
@@ -4735,11 +4735,11 @@ struct serrated_bone_spike_t : public rogue_attack_t
   bool procs_blade_flurry() const override
   { return true; }
 
-  // 06/29/2021 -- Testing shows this does not proc Deadly Poison despite being direct
+  // 2021-06-29-- Testing shows this does not proc Deadly Poison despite being direct
   bool procs_deadly_poison() const override
   { return false; }
 
-  // 07/05/2021 -- Confirmed as working in-game
+  // 2021-07-05-- Confirmed as working in-game
   bool procs_shadow_blades_damage() const override
   { return true; }
 };
@@ -5313,7 +5313,7 @@ struct shuriken_tornado_t : public buff_t
     set_period( timespan_t::from_seconds( 1.0 ) ); // Not explicitly in spell data
 
     shuriken_storm_action = r->get_secondary_trigger_action<actions::shuriken_storm_t>( TRIGGER_SHURIKEN_TORNADO, "shuriken_storm_tornado" );
-    shuriken_storm_action->callbacks = false; // 07/19/2021 -- Damage triggered directly, doesn't appear to proc anything
+    shuriken_storm_action->callbacks = false; // 2021-07-19-- Damage triggered directly, doesn't appear to proc anything
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       shuriken_storm_action->trigger_secondary_action( rogue->target );
     } );
@@ -5350,7 +5350,7 @@ struct slice_and_dice_t : public buff_t
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
     add_invalidate( CACHE_ATTACK_SPEED );
 
-    // 11/14/2020 - Recuperator triggers can proc periodic healing triggers even when 0 value
+    // 2020-11-14- Recuperator triggers can proc periodic healing triggers even when 0 value
     if ( p->conduit.recuperator.ok() || p->bugs )
     {
       recuperator = p->get_background_action<recuperator_t>( "recuperator" );
@@ -5621,7 +5621,7 @@ struct roll_the_bones_t : public buff_t
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
-    // 11/21/2020 -- Count the Odds buffs are kept if rerolling can be overwritten
+    // 2020-11-21-- Count the Odds buffs are kept if rerolling can be overwritten
     count_the_odds_expire( true );
 
     buff_t::execute( stacks, value, duration );
@@ -5939,7 +5939,7 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
 
   p()->sim->print_debug( "{} trigger_shadow_techniques increment from {} to {}", *p(), p()->shadow_techniques_counter, p()->shadow_techniques_counter + 1 );
 
-  // 04/22/2021 -- Initial 9.1.0 testing appears to show the threshold is reduced to 4/3
+  // 2021-04-22-- Initial 9.1.0 testing appears to show the threshold is reduced to 4/3
   const unsigned shadow_techniques_upper = 4;
   const unsigned shadow_techniques_lower = 3;
   if ( ++p()->shadow_techniques_counter >= shadow_techniques_upper || ( p()->shadow_techniques_counter == shadow_techniques_lower && p()->rng().roll( 0.5 ) ) )
@@ -6265,7 +6265,7 @@ void actions::rogue_action_t<Base>::trigger_dashing_scoundrel( const action_stat
   if ( !p()->legendary.dashing_scoundrel->ok() )
     return;
 
-  // 02/21/2021 -- Use the Crit-modifier whitelist to control this as it currently matches
+  // 2021-02-21-- Use the Crit-modifier whitelist to control this as it currently matches
   if ( !affected_by.dashing_scoundrel || state->result != RESULT_CRIT || !p()->buffs.envenom->check() )
     return;
 
@@ -6281,7 +6281,7 @@ void actions::rogue_action_t<Base>::trigger_guile_charm( const action_state_t* s
   if ( p()->buffs.guile_charm_insight_3->check() )
     return;
 
-  // 04/16/2021 -- Logs show this is now 6 SS impacts per insight transition
+  // 2021-04-16-- Logs show this is now 6 SS impacts per insight transition
   bool trigger_next_insight = ( ++p()->legendary.guile_charm_counter >= 6 );
 
   if ( p()->buffs.guile_charm_insight_1->check() )
@@ -6418,7 +6418,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
       if ( dots.serrated_bone_spike->is_ticking() )
       {
-        // 07/17/2021 -- Deathspike-cleaved DoTs currently do not appear to correctly refund charges
+        // 2021-07-17-- Deathspike-cleaved DoTs currently do not appear to correctly refund charges
         if ( source->bugs && this->is_deathspiked )
         {
           source->procs.serrated_bone_spike_waste_deathspike->occur();
@@ -8248,14 +8248,14 @@ void rogue_t::create_buffs()
 
   // Legendary Items ========================================================
 
-  // 02/18/2021 -- Sub-specific Deathly Shadows buff added in 9.0.5
+  // 2021-02-18-- Sub-specific Deathly Shadows buff added in 9.0.5
   if ( specialization() == ROGUE_SUBTLETY )
     buffs.deathly_shadows = make_buff<damage_buff_t>( this, "deathly_shadows", legendary.deathly_shadows->ok() ?
                                                       find_spell( 350964 ) : spell_data_t::not_found() );
   else
     buffs.deathly_shadows = make_buff<damage_buff_t>( this, "deathly_shadows", legendary.deathly_shadows->effectN( 1 ).trigger() );
 
-  // 02/18/2021 -- Master Assassin's Mark is whitelisted since 9.0.5
+  // 2021-02-18-- Master Assassin's Mark is whitelisted since 9.0.5
   const spell_data_t* master_assassins_mark = legendary.master_assassins_mark->ok() ? find_spell( 340094 ) : spell_data_t::not_found();
   buffs.master_assassins_mark = make_buff( this, "master_assassins_mark", master_assassins_mark )
     ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )

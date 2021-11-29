@@ -955,6 +955,7 @@ struct holy_shield_damage_t : public paladin_spell_t
   }
 };
 
+
 // Inner light damage proc ==================================================
 
 struct inner_light_damage_t : public paladin_spell_t
@@ -968,7 +969,8 @@ struct inner_light_damage_t : public paladin_spell_t
 
 // Base Judgment spell ======================================================
 
-void judgment_t::do_ctor_common( paladin_t* p )
+judgment_t::judgment_t( paladin_t* p, util::string_view name ) :
+  paladin_melee_attack_t( name, p, p->find_class_spell( "Judgment" ) )
 {
   // no weapon multiplier
   weapon_multiplier = 0.0;
@@ -979,19 +981,6 @@ void judgment_t::do_ctor_common( paladin_t* p )
   {
     base_multiplier *= 1.0 + p->spells.judgment_2->effectN( 1 ).percent();
   }
-}
-
-judgment_t::judgment_t( paladin_t* p, util::string_view options_str )
-  : paladin_melee_attack_t( "judgment", p, p->find_class_spell( "Judgment" ) )
-{
-  parse_options( options_str );
-  do_ctor_common( p );
-}
-
-judgment_t::judgment_t( paladin_t* p )
-  : paladin_melee_attack_t( "divine_toll_judgment", p, p->find_class_spell( "Judgment" ) )
-{
-  do_ctor_common( p );
 }
 
 proc_types judgment_t::proc_type() const
@@ -2423,6 +2412,15 @@ void paladin_t::init_spells()
   legendary.duty_bound_gavel              = find_runeforge_legendary( "Duty-Bound Gavel" );
   legendary.divine_resonance              = find_runeforge_legendary( "Divine Resonance" );
 
+
+  // Shadowlands Tier Sets
+  tier_sets.glorious_purpose_2pc = sets->set( PALADIN_PROTECTION, T28, B2 );
+  tier_sets.glorious_purpose_4pc = sets->set( PALADIN_PROTECTION, T28, B4 );
+  tier_sets.dawn_will_come_2pc = sets->set( PALADIN_HOLY, T28, B2 );
+  tier_sets.dawn_will_come_4pc = sets->set( PALADIN_HOLY, T28, B4 );
+  tier_sets.ashes_to_ashes_2pc   = sets->set( PALADIN_RETRIBUTION, T28, B2 );
+  tier_sets.ashes_to_ashes_4pc   = sets->set( PALADIN_RETRIBUTION, T28, B4 );
+
   // Covenants
   covenant.kyrian    = find_covenant_spell( "Divine Toll" );
   covenant.venthyr   = find_covenant_spell( "Ashen Hallow" );
@@ -2808,6 +2806,7 @@ double paladin_t::composite_block() const
   double b                   = player_t::composite_block_dr( block_subject_to_dr );
 
   b += talents.holy_shield->effectN( 1 ).percent();
+  b += buffs.glorious_purpose->stack_value();
 
   return b;
 }
@@ -3002,6 +3001,14 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
   if ( s->block_result == BLOCK_RESULT_BLOCKED )
   {
     trigger_holy_shield( s );
+  }
+
+  // On a block event, trigger T28 4p if equipped
+  // todo: Woli -  Set bonus check
+  if ( ( s->block_result == BLOCK_RESULT_BLOCKED )  && sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 )
+        && rng().roll( tier_sets.glorious_purpose_4pc->effectN( 1 ).percent() ) )
+  {
+    trigger_t28_4p_pp( s );
   }
 
   if ( buffs.inner_light->up() && !s->action->special && cooldowns.inner_light_icd->up() )
@@ -3510,7 +3517,7 @@ struct paladin_module_t : public module_t
             double proc_chance = summer_data->proc_chance();
             bool has_equinox = p->buffs.equinox->up();
             if ( has_equinox )
-              proc_chance *= 1.0 + p->buffs.equinox->data().effectN( 1 ).percent();
+              proc_chance *= 1.0 + p->buffs.equinox->data().effectN( 4 ).percent();
 
             if ( s->action != summer_proc && s->result_total > 0.0 && p->buffs.blessing_of_summer->up() &&
                  summer_data->proc_flags() & ( 1 << s->proc_type() ) && p->rng().roll( proc_chance ) )

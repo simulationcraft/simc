@@ -10,8 +10,6 @@
 #include "player/sc_player.hpp"
 #include "sim/sc_expressions.hpp"
 #include "sim/sc_sim.hpp"
-#include "report/decorators.hpp"
-#include "util/io.hpp"
 
 set_bonus_t::set_bonus_t( player_t* player ) :
   actor( player ),
@@ -392,36 +390,4 @@ std::string set_bonus_t::generate_set_bonus_options() const
   }
 
   return util::string_join( opts, ", " );
-}
-
-report::sc_html_stream& set_bonus_t::generate_report( report::sc_html_stream& os ) const
-{
-  auto bonuses = enabled_set_bonus_data();
-  int curr_tier = set_bonus_type_e::SET_BONUS_NONE;
-
-  if ( bonuses.empty() )
-    return os;
-
-  os << "<tr class=\"left\"><th>Set Bonus</th><td><ul class=\"float\">\n";
-
-  for( auto bonus : bonuses )
-  {
-    if ( curr_tier != bonus->enum_id )
-    {
-      if ( curr_tier != set_bonus_type_e::SET_BONUS_NONE )
-        os << "</ul></td></tr>\n<tr class=\"left\"><th></th><td><ul class=\"float\">\n";
-
-      fmt::print( os, "<li>{}</li>\n", report_decorators::decorated_set( *actor->sim, *bonus ) );
-
-      curr_tier = bonus->enum_id;
-    }
-
-    fmt::print( os, "<li>{} ({}pc)</li>\n",
-                report_decorators::decorated_spell_data( *actor->sim, actor->find_spell( bonus->spell_id ) ),
-                bonus->bonus );
-  }
-
-  os << "</ul></td></tr>\n";
-
-  return os;
 }

@@ -6,7 +6,6 @@
 #ifndef SAMPLE_DATA_HPP
 #define SAMPLE_DATA_HPP
 
-#include <iosfwd>
 #include <limits>
 #include <numeric>
 #include <string>
@@ -541,8 +540,6 @@ public:
     else
       _data.insert( _data.end(), other._data.begin(), other._data.end() );
   }
-
-  std::ostream& data_str( std::ostream& s ) const;
 
 };  // sample_data_t
 

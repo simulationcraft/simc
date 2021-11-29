@@ -345,16 +345,19 @@ struct holy_shock_t : public paladin_spell_t
 
 struct judgment_holy_t : public judgment_t
 {
-  judgment_holy_t( paladin_t* p, util::string_view options_str ) : judgment_t( p, options_str )
+  judgment_holy_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
+    judgment_t( p, name )
   {
+    parse_options( options_str );
     base_multiplier *= 1.0 + p->spec.holy_paladin->effectN( 11 ).percent();
   }
-
-  judgment_holy_t( paladin_t* p ) : judgment_t( p )
+  /* This background constructor doesn't seem to have any use?
+  judgment_holy_t( paladin_t* p, util::string_view name ) :
+    judgment_t( p, name )
   {
     background = true;
     base_multiplier *= 1.0 + p->spec.holy_paladin->effectN( 11 ).percent();
-  }
+  }*/
 
   void execute() override
   {
@@ -524,7 +527,6 @@ void paladin_t::create_holy_actions()
   {
     active.divine_toll = new holy_shock_t( this, true );
     active.divine_resonance = new holy_shock_t( this, true );
-    active.judgment = new judgment_holy_t( this );
   }
 }
 
@@ -550,7 +552,7 @@ action_t* paladin_t::create_action_holy( util::string_view name, util::string_vi
   if ( specialization() == PALADIN_HOLY )
   {
     if ( name == "judgment" )
-      return new judgment_holy_t( this, options_str );
+      return new judgment_holy_t( this, "judgment", options_str );
   }
 
   return nullptr;

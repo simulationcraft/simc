@@ -756,7 +756,9 @@ public:
   {
     uptime_t* primordial_arcanic_pulsar;
     uptime_t* combined_ca_inc;
-    uptime_t* eclipse;
+    uptime_t* eclipse_solar;
+    uptime_t* eclipse_lunar;
+    uptime_t* eclipse_none;
   } uptime;
 
   struct legendary_t
@@ -1375,32 +1377,25 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
     mastery_value = p().cache.mastery_value();
   }
 
+  void trigger_celestial_pillar()
+  {
+    if ( is_lunar && p().sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
+      p().active.celestial_pillar->execute_on_target( p().target );
+  }
+
   void execute( int s, double v, timespan_t d ) override
   {
     snapshot_mastery();
     base_t::execute( s, v, d );
-  }
 
-  void trigger_celestial_pillar()
-  {
-    if ( is_lunar && p().sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
-    {
-      p().active.celestial_pillar->set_target( p().target );
-      p().active.celestial_pillar->execute();
-    }
-  }
-
-  bool trigger( int s, double v, double c, timespan_t d ) override
-  {
-    bool ret = base_t::trigger( s, v, c, d );
     trigger_celestial_pillar();
-    return ret;
   }
 
   void extend_duration( player_t* player, timespan_t d ) override
   {
     snapshot_mastery();
     base_t::extend_duration( player, d );
+
     trigger_celestial_pillar();
   }
 
@@ -1446,10 +1441,7 @@ struct berserk_cat_buff_t : public druid_buff_t<buff_t>
     {
       set_stack_change_callback( [ &p ]( buff_t*, int, int new_ ) {
         if ( !new_ )
-        {
-          p.active.sickle_of_the_lion->set_target( p.target );
-          p.active.sickle_of_the_lion->execute();
-        }
+          p.active.sickle_of_the_lion->execute_on_target( p.target );
       } );
     }
   }
@@ -1531,8 +1523,7 @@ struct berserk_bear_buff_t : public druid_buff_t<buff_t>
     {
       set_period( p.sets->set( DRUID_GUARDIAN, T28, B4 )->effectN( 1 ).trigger()->effectN( 1 ).period() );
       set_tick_callback( [ &p ]( buff_t*, int, timespan_t ) {
-        p.active.architects_aligner->set_target( p.target );
-        p.active.architects_aligner->execute();
+        p.active.architects_aligner->execute_on_target( p.target );
       } );
     }
   }
@@ -1612,21 +1603,16 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
     if ( amount == 0 )
       return;
 
-    sim->print_debug( "Kindred Empowerment: Using {} from pool of {} ({}) on {}", amount, pool, partner_pool, s->action->name() );
+    sim->print_debug( "Kindred Empowerment: Using {} from pool of {} ({}) on {}", amount, pool, partner_pool,
+                      s->action->name() );
 
-    auto damage = p().active.kindred_empowerment;
-    damage->set_target( s->target );
-    damage->base_dd_min = damage->base_dd_max = std::min( amount, pool - 1.0 );
-    damage->schedule_execute();
+    p().active.kindred_empowerment->execute_on_target( s->target, std::min( amount, pool - 1.0 ) );
     pool -= amount;
 
     if ( partner_pool <= 1.0 )
       return;
 
-    auto partner = p().active.kindred_empowerment_partner;
-    partner->set_target( s->target );
-    partner->base_dd_min = partner->base_dd_max = std::min( amount, partner_pool - 1.0 );
-    partner->schedule_execute();
+    p().active.kindred_empowerment_partner->execute_on_target( s->target, std::min( amount, partner_pool - 1.0 ) );
     partner_pool -= amount;
   }
 };
@@ -2417,10 +2403,7 @@ public:
          s->target != p() && ab::result_is_hit( s->result ) && s->result_total > 0 )
     {
       if ( p()->buff.galactic_guardian->trigger() )
-      {
-        p()->active.galactic_guardian->set_target( s->target );
-        p()->active.galactic_guardian->execute();
-      }
+        p()->active.galactic_guardian->execute_on_target( s->target );
     }
   }
 
@@ -2637,10 +2620,7 @@ public:
       chance *= 1.0 + p()->buff.solstice->data().effectN( 1 ).percent();
 
     if ( rng().roll( chance ) )
-    {
-      p()->active.shooting_stars->set_target( t );
-      p()->active.shooting_stars->execute();
-    }
+      p()->active.shooting_stars->execute_on_target( t );
   }
 
   void execute() override
@@ -6360,6 +6340,7 @@ struct starfall_t : public druid_spell_t
     : druid_spell_t( "starfall", p, s, opt ), dummy_cd( p->get_cooldown( "starfall_dummy_cd" ) ), orig_cd( cooldown )
   {
     may_miss = may_crit = false;
+    queue_failed_proc = p->get_proc( "starfall queue failed" );
 
     damage        = p->get_secondary_action<starfall_damage_t>( "starfall_dmg" );
     damage->stats = stats;
@@ -6968,8 +6949,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     else if ( auto a = dynamic_cast<druid_action_t<heal_t>*>( action ) )
       a->free_cast = free_cast_e::CONVOKE;
 
-    action->set_target( target );
-    action->execute();
+    action->execute_on_target( target );
   }
 
   action_t* convoke_action_from_type( convoke_cast_e type )
@@ -7565,6 +7545,11 @@ struct adaptive_swarm_t : public druid_spell_t
       quiet = heal = true;
       may_miss = may_crit = false;
       base_td = base_td_multiplier = 0.0;
+
+      // HACK for now since we'll eventually have to get rid of using a dot_t to represent heals since we need to
+      // simulate multiple healing swarm jumping amongst group members
+      parse_effect_periodic_mods( data().effectN( 1 ), false );
+      parse_effect_period( data().effectN( 1 ) );
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -7580,12 +7565,11 @@ struct adaptive_swarm_t : public druid_spell_t
   adaptive_swarm_base_t* heal;
   timespan_t precombat_seconds;
 
-  adaptive_swarm_t( druid_t* p, std::string_view options_str )
-    : druid_spell_t( "adaptive_swarm", p, p->covenant.necrolord, options_str ),
-    precombat_seconds(11_s)
+  adaptive_swarm_t( druid_t* p, std::string_view opt )
+    : druid_spell_t( "adaptive_swarm", p, p->covenant.necrolord, opt ), precombat_seconds( 11_s )
   {
-    add_option(opt_timespan("precombat_seconds", precombat_seconds));
-    parse_options(options_str);
+    add_option( opt_timespan( "precombat_seconds", precombat_seconds ) );
+    parse_options( opt );
 
     // These are always necessary to allow APL parsing of dot.adaptive_swarm expressions
     damage = p->get_secondary_action<adaptive_swarm_damage_t>( "adaptive_swarm_damage" );
@@ -7608,13 +7592,13 @@ struct adaptive_swarm_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if (is_precombat && precombat_seconds > 0_s)
+    if ( is_precombat && precombat_seconds > 0_s )
     {
-      heal->set_target(player);
+      heal->set_target( player );
       heal->schedule_execute();
-    
-      this->cooldown->adjust(-precombat_seconds, false);
-      heal->get_dot(player)->adjust_duration(-precombat_seconds);
+
+      this->cooldown->adjust( -precombat_seconds, false );
+      heal->get_dot( player )->adjust_duration( -precombat_seconds );
       return;
     }
 
@@ -7750,8 +7734,7 @@ struct lycaras_fleeting_glimpse_t : public action_t
     else if ( auto a = dynamic_cast<druid_action_t<heal_t>*>( action ) )
       a->free_cast = free_cast_e::LYCARAS;
 
-    action->set_target( target );
-    action->execute();
+    action->execute_on_target( target );
   }
 
   void execute() override
@@ -9112,18 +9095,19 @@ void druid_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  uptime.eclipse = get_uptime( "Eclipse" )->collect_uptime( *sim );
+  std::string ca_inc_str;
 
   if ( talent.incarnation_moonkin->ok() )
-  {
-    uptime.primordial_arcanic_pulsar = get_uptime( "Incarnation (Pulsar)" );
-    uptime.combined_ca_inc = get_uptime( "Incarnation (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
-  }
+    ca_inc_str = "Incarnation";
   else
-  {
-    uptime.primordial_arcanic_pulsar = get_uptime( "Celestial Alignment (Pulsar)" );
-    uptime.combined_ca_inc = get_uptime( "Celestial Alignment (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
-  }
+    ca_inc_str = "Celestial Alignment";
+
+  uptime.primordial_arcanic_pulsar = get_uptime( ca_inc_str + " (Pulsar)" )->collect_uptime( *sim );
+  uptime.combined_ca_inc = get_uptime( ca_inc_str + " (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
+
+  uptime.eclipse_lunar = get_uptime( "Lunar Eclipse Only" )->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.eclipse_solar = get_uptime( "Solar Eclipse Only" )->collect_uptime( *sim );
+  uptime.eclipse_none = get_uptime( "No Eclipse" )->collect_uptime( *sim )->collect_duration( *sim );
 }
 
 // druid_t::init_resources ==================================================
@@ -9314,7 +9298,6 @@ void druid_t::combat_begin()
       if ( curr > cap )
         sim->print_debug( "Astral Power capped at combat start to {} (was {})", cap, curr );
     }
-
   }
 
   // Legendary-related buffs & events
@@ -10524,9 +10507,9 @@ void eclipse_handler_t::advance_eclipse()
       p->buff.balance_of_all_things_nature->trigger();
 
     state = IN_SOLAR;
+    p->uptime.eclipse_none->update( false, p->sim->current_time() );
+    p->uptime.eclipse_solar->update( true, p->sim->current_time() );
     reset_stacks();
-
-    p->uptime.eclipse->update( true, p->sim->current_time() );
 
     return;
   }
@@ -10542,24 +10525,32 @@ void eclipse_handler_t::advance_eclipse()
       p->buff.balance_of_all_things_arcane->trigger();
 
     state = IN_LUNAR;
+    p->uptime.eclipse_none->update( false, p->sim->current_time() );
+    p->uptime.eclipse_lunar->update( true, p->sim->current_time() );
     reset_stacks();
-
-    p->uptime.eclipse->update( true, p->sim->current_time() );
 
     return;
   }
 
-  if ( state == IN_SOLAR || state == IN_LUNAR || state == IN_BOTH )
-    p->uptime.eclipse->update( false, p->sim->current_time() );
-
   if ( state == IN_SOLAR )
+  {
     state = LUNAR_NEXT;
+    p->uptime.eclipse_solar->update( false, p->sim->current_time() );
+    p->uptime.eclipse_none->update( true, p->sim->current_time() );
+  }
 
   if ( state == IN_LUNAR )
+  {
     state = SOLAR_NEXT;
+    p->uptime.eclipse_lunar->update( false, p->sim->current_time() );
+    p->uptime.eclipse_none->update( true, p->sim->current_time() );
+  }
 
   if ( state == IN_BOTH )
+  {
     state = ANY_NEXT;
+    p->uptime.eclipse_none->update( true, p->sim->current_time() );
+  }
 }
 
 void eclipse_handler_t::snapshot_eclipse()
@@ -10573,9 +10564,6 @@ void eclipse_handler_t::snapshot_eclipse()
 
 void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
 {
-  state = IN_BOTH;
-  reset_stacks();
-
   if ( p->legendary.balance_of_all_things->ok() )
   {
     p->buff.balance_of_all_things_arcane->trigger();
@@ -10588,7 +10576,11 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
   p->buff.eclipse_lunar->trigger( d );
   p->buff.eclipse_solar->trigger( d );
 
-  p->uptime.eclipse->update( true, p->sim->current_time() );
+  state = IN_BOTH;
+  p->uptime.eclipse_none->update( false, p->sim->current_time() );
+  p->uptime.eclipse_lunar->update( false, p->sim->current_time() );
+  p->uptime.eclipse_solar->update( false, p->sim->current_time() );
+  reset_stacks();
 }
 
 void eclipse_handler_t::extend_both( timespan_t d )
@@ -10601,8 +10593,6 @@ void eclipse_handler_t::expire_both()
 {
   p->buff.eclipse_solar->expire();
   p->buff.eclipse_lunar->expire();
-
-  p->uptime.eclipse->update( false, p->sim->current_time() );
 }
 
 void eclipse_handler_t::reset_stacks()
