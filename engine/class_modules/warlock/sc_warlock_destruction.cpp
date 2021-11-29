@@ -988,7 +988,7 @@ namespace buffs
 }  // namespace buffs
 
 // add actions
-action_t* warlock_t::create_action_destruction( util::string_view action_name, util::string_view options_str )
+action_t* warlock_t::create_action_destruction( util::string_view action_name, util::string_view options_str, action_t* generic_action )
 {
   using namespace actions_destruction;
 
@@ -1019,7 +1019,7 @@ action_t* warlock_t::create_action_destruction( util::string_view action_name, u
   if ( action_name == "dark_soul_instability" )
     return new dark_soul_instability_t( this, options_str );
 
-  return nullptr;
+  return generic_action;
 }
 void warlock_t::create_buffs_destruction()
 {
