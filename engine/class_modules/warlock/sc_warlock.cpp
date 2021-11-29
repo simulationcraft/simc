@@ -1075,7 +1075,7 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
   // Base Spells
   if ( action_name == "drain_life" )
     return new drain_life_t( this, options_str );
-  if ( action_name == "corruption" && specialization() != WARLOCK_AFFLICTION )
+  if ( action_name == "corruption" )
     return new corruption_t( this, options_str );
   if ( action_name == "grimoire_of_sacrifice" )
     return new grimoire_of_sacrifice_t( this, options_str );  // aff and destro
