@@ -565,8 +565,11 @@ public:
     return td;
   }
 
+  // sc_warlock
+  action_t* create_action_warlock( util::string_view, util::string_view );
+
   // sc_warlock_affliction
-  action_t* create_action_affliction( util::string_view action_name, util::string_view options_str );
+  action_t* create_action_affliction( util::string_view, util::string_view, action_t* );
   void create_buffs_affliction();
   void init_spells_affliction();
   void init_gains_affliction();
@@ -576,7 +579,7 @@ public:
   void create_apl_affliction();
 
   // sc_warlock_demonology
-  action_t* create_action_demonology( util::string_view action_name, util::string_view options_str );
+  action_t* create_action_demonology( util::string_view, util::string_view, action_t* );
   void create_buffs_demonology();
   void init_spells_demonology();
   void init_gains_demonology();
@@ -586,7 +589,7 @@ public:
   void create_apl_demonology();
 
   // sc_warlock_destruction
-  action_t* create_action_destruction( util::string_view action_name, util::string_view options_str );
+  action_t* create_action_destruction( util::string_view, util::string_view, action_t* );
   void create_buffs_destruction();
   void init_spells_destruction();
   void init_gains_destruction();
