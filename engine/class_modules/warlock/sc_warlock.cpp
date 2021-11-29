@@ -1043,28 +1043,29 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
 
 action_t* warlock_t::create_action( util::string_view action_name, util::string_view options_str )
 {
-  // The generic sc_warlock actions are checked first and then passed into the respective spec create_action
   // create_action_[specialization] should return a more specialized action if needed (ie Corruption in Affliction)
-  // Default behavior is that if no alternate action is found, generic_action is returned
-  action_t* generic_action = create_action_warlock( action_name, options_str );
+  // If no alternate action for the given spec is found, check actions in sc_warlock
 
   if ( specialization() == WARLOCK_AFFLICTION )
   {
-    if ( action_t* aff_action = create_action_affliction( action_name, options_str, generic_action ) )
+    if ( action_t* aff_action = create_action_affliction( action_name, options_str ) )
       return aff_action;
   }
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    if ( action_t* demo_action = create_action_demonology( action_name, options_str, generic_action ) )
+    if ( action_t* demo_action = create_action_demonology( action_name, options_str ) )
       return demo_action;
   }
 
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
-    if ( action_t* destro_action = create_action_destruction( action_name, options_str, generic_action ) )
+    if ( action_t* destro_action = create_action_destruction( action_name, options_str ) )
       return destro_action;
   }
+
+  if ( action_t* generic_action = create_action_warlock( action_name, options_str ) )
+    return generic_action;
 
   return player_t::create_action( action_name, options_str );
 }

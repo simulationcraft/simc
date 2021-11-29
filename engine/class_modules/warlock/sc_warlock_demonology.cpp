@@ -1016,7 +1016,7 @@ pet_t* warlock_t::create_demo_pet( util::string_view pet_name, util::string_view
   return nullptr;
 }
 // add actions
-action_t* warlock_t::create_action_demonology( util::string_view action_name, util::string_view options_str, action_t* generic_action )
+action_t* warlock_t::create_action_demonology( util::string_view action_name, util::string_view options_str )
 {
   using namespace actions_demonology;
 
@@ -1052,7 +1052,7 @@ action_t* warlock_t::create_action_demonology( util::string_view action_name, ut
   if ( action_name == "grimoire_felguard" )
     return new grimoire_felguard_t( this, options_str );
 
-  return generic_action;
+  return nullptr;
 }
 
 void warlock_t::create_buffs_demonology()
