@@ -1369,6 +1369,7 @@ const char* util::special_effect_source_string( special_effect_source_e type )
     case SPECIAL_EFFECT_SOURCE_SOULBIND: return "soulbind";
     case SPECIAL_EFFECT_SOURCE_FALLBACK: return "fallback";
     case SPECIAL_EFFECT_SOURCE_TEMPORARY_ENCHANT: return "temporary_enchant";
+    case SPECIAL_EFFECT_SOURCE_COVENANT: return "covenant";
     default: return "unknown";
   }
 }
@@ -2479,6 +2480,33 @@ const char* util::action_energize_type_string( action_energize energize_type )
   }
 }
 
+const char* util::action_type_string( action_e type )
+{
+  switch ( type )
+  {
+    case action_e::ACTION_USE:
+      return "use";
+    case action_e::ACTION_SPELL:
+      return "hostile_spell";
+    case action_e::ACTION_ATTACK:
+      return "attack";
+    case action_e::ACTION_HEAL:
+      return "heal_spell";
+    case action_e::ACTION_ABSORB:
+      return "absorb_spell";
+    case action_e::ACTION_SEQUENCE:
+      return "sequence";
+    case action_e::ACTION_OTHER:
+      return "other";
+    case action_e::ACTION_CALL:
+      return "call_action_list";
+    case action_e::ACTION_VARIABLE:
+      return "action_variable";
+    default:
+      return "unknown";
+  }
+}
+
 /// Textual representation of rppm scaling bitfield
 std::string util::rppm_scaling_string( unsigned s )
 {
@@ -3204,28 +3232,34 @@ bool util::contains_non_ascii( util::string_view s )
 /**
  * Print chained exceptions, separated by ' :'.
  */
-void util::print_chained_exception( const std::exception& e, std::ostream& out, int level)
-
+void util::print_chained_exception( const std::exception& e, std::FILE* out, int level )
 {
-  fmt::print(out, "{}{}", level > 0 ? ": " : "", e.what());
-  try {
-      std::rethrow_if_nested(e);
-  } catch(const std::exception& e) {
-    print_chained_exception(e, out, level+1);
-  } catch(...) {}
+  fmt::print( out, "{}{}", level > 0 ? ": " : "", e.what() );
+  try
+  {
+    std::rethrow_if_nested( e );
+  }
+  catch ( const std::exception& e )
+  {
+    print_chained_exception( e, out, level + 1 );
+  }
+  catch ( ... )
+  {
+  }
 }
 
-void util::print_chained_exception( const std::exception_ptr& eptr, std::ostream& out, int level)
+void util::print_chained_exception( const std::exception_ptr& eptr, std::FILE* out, int level )
 {
   try
   {
-    if (eptr) {
-      std::rethrow_exception(eptr);
+    if ( eptr )
+    {
+      std::rethrow_exception( eptr );
     }
   }
-  catch(const std::exception& e)
+  catch ( const std::exception& e )
   {
-    print_chained_exception(e, out, level);
+    print_chained_exception( e, out, level );
   }
 }
 

@@ -508,6 +508,10 @@ public:
    * Can be overridden by class modules for tracking purposes.
    */
   proc_t* starved_proc;
+
+  // Tracking proc triggered when action fails to execute after being queued.
+  // Can be overridden by class modules for tracking purposes.
+  proc_t* queue_failed_proc;
   uint_least64_t total_executions;
 
   /**
@@ -634,6 +638,8 @@ public:
   void apply_affecting_conduit_effect( const conduit_data_t& conduit, size_t effect_num );
 
   action_state_t* get_state( const action_state_t* = nullptr );
+
+  void execute_on_target( player_t*, double = -1.0 );
 
 private:
   friend struct action_state_t;

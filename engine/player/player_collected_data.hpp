@@ -134,6 +134,7 @@ struct player_collected_data_t
     const player_t* target;
     const timespan_t time;
     timespan_t wait_time;
+    bool queue_failed;
     std::vector< record_t<buff_t> > buff_list;
     std::vector< record_t<cooldown_t> > cooldown_list;
     std::vector< std::pair<player_t*, std::vector< record_t<buff_t> > > > target_list;
@@ -174,6 +175,5 @@ struct player_collected_data_t
   void print_tmi_debug_csv( const sc_timeline_t* nma, const std::vector<double>& weighted_value, const player_t& p );
   double calculate_tmi( const health_changes_timeline_t& tl, int window, double f_length, const player_t& p );
   double calculate_max_spike_damage( const health_changes_timeline_t& tl, int window );
-  std::ostream& data_str( std::ostream& s ) const;
 
 };

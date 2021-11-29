@@ -13,7 +13,7 @@
 #include "sim/sc_sim.hpp"
 #include "util/xml.hpp"
 
-#include <iostream>
+#include <ostream>
 #include <sstream>
 
 // report::print_profiles ===================================================
@@ -235,7 +235,7 @@ void print_suite( sim_t* sim )
 {
   if (!sim->profileset_enabled)
   {
-    std::cout << "\nGenerating reports...\n";
+    fmt::print( "\nGenerating reports...\n" );
   }
 
   report::print_text(sim, sim->report_details != 0);

@@ -19,10 +19,6 @@ namespace {
 // Forward declarations
 struct mage_t;
 
-namespace pets::water_elemental {
-  struct water_elemental_pet_t;
-}
-
 // Finds an action with the given name. If no action exists, a new one will
 // be created.
 //
@@ -285,6 +281,7 @@ public:
     action_t* living_bomb_dot;
     action_t* living_bomb_dot_spread;
     action_t* living_bomb_explosion;
+    action_t* pet_freeze;
     action_t* tormenting_backlash;
     action_t* touch_of_the_magi_explosion;
 
@@ -445,7 +442,7 @@ public:
   // Pets
   struct pets_t
   {
-    pets::water_elemental::water_elemental_pet_t* water_elemental = nullptr;
+    pet_t* water_elemental = nullptr;
     std::vector<pet_t*> mirror_images;
   } pets;
 
@@ -850,14 +847,8 @@ namespace water_elemental {
 
 struct water_elemental_pet_t final : public mage_pet_t
 {
-  struct actions_t
-  {
-    action_t* freeze;
-  } action;
-
   water_elemental_pet_t( sim_t* sim, mage_t* owner ) :
-    mage_pet_t( sim, owner, "water_elemental" ),
-    action()
+    mage_pet_t( sim, owner, "water_elemental" )
   {
     owner_coeff.sp_from_sp = 0.75;
   }
@@ -906,7 +897,7 @@ action_t* water_elemental_pet_t::create_action( std::string_view name, std::stri
 
 void water_elemental_pet_t::create_actions()
 {
-  action.freeze = get_action<freeze_t>( "freeze", this );
+  o()->action.pet_freeze = get_action<freeze_t>( "freeze", this );
 
   mage_pet_t::create_actions();
 }
@@ -982,13 +973,9 @@ struct touch_of_the_magi_t final : public buff_t
     buff_t::expire_override( stacks, duration );
 
     auto p = debug_cast<mage_t*>( source );
-    auto explosion = p->action.touch_of_the_magi_explosion;
-
-    explosion->set_target( player );
     double damage_fraction = p->spec.touch_of_the_magi->effectN( 1 ).percent();
     damage_fraction += p->conduits.magis_brand.percent();
-    explosion->base_dd_min = explosion->base_dd_max = damage_fraction * current_value;
-    explosion->execute();
+    p->action.touch_of_the_magi_explosion->execute_on_target( player, damage_fraction * current_value );
   }
 };
 
@@ -1100,11 +1087,11 @@ struct icy_veins_t final : public buff_t
   {
     buff_t::expire_override( stacks, duration );
 
-    auto mage = debug_cast<mage_t*>( player );
-    if ( mage->talents.thermal_void->ok() && duration == 0_ms )
-      mage->sample_data.icy_veins_duration->add( elapsed( sim->current_time() ).total_seconds() );
+    auto p = debug_cast<mage_t*>( player );
+    if ( p->talents.thermal_void->ok() && duration == 0_ms )
+      p->sample_data.icy_veins_duration->add( elapsed( sim->current_time() ).total_seconds() );
 
-    mage->buffs.slick_ice->expire();
+    p->buffs.slick_ice->expire();
   }
 };
 
@@ -1156,9 +1143,9 @@ struct rune_of_power_t final : public buff_t
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    auto mage = debug_cast<mage_t*>( player );
-    mage->state.distance_from_rune = 0.0;
-    mage->trigger_disciplinary_command( data().get_school_type() );
+    auto p = debug_cast<mage_t*>( player );
+    p->state.distance_from_rune = 0.0;
+    p->trigger_disciplinary_command( data().get_school_type() );
 
     return buff_t::trigger( stacks, value, chance, duration );
   }
@@ -1170,9 +1157,8 @@ struct rune_of_power_t final : public buff_t
     // When the Rune of Power buff fades at the same time as its area trigger, there is a
     // chance that the buff will fade first and the area trigger will reapply the buff for
     // an instant, which counts as executing an Arcane spell.
-    auto mage = debug_cast<mage_t*>( player );
     if ( duration == 0_ms && rng().roll( 0.5 ) )
-      mage->trigger_disciplinary_command( data().get_school_type() );
+      debug_cast<mage_t*>( player )->trigger_disciplinary_command( data().get_school_type() );
   }
 };
 
@@ -1218,15 +1204,9 @@ struct mirrors_of_torment_t final : public buff_t
       icd->start();
 
       if ( successful_triggers % max_stack() == 0 )
-      {
-        p->action.tormenting_backlash->set_target( player );
-        p->action.tormenting_backlash->execute();
-      }
+        p->action.tormenting_backlash->execute_on_target( player );
       else
-      {
-        p->action.agonizing_backlash->set_target( player );
-        p->action.agonizing_backlash->execute();
-      }
+        p->action.agonizing_backlash->execute_on_target( player );
 
       p->buffs.siphoned_malice->trigger();
 
@@ -1677,8 +1657,7 @@ public:
       && p()->cooldowns.frost_storm->up()
       && rng().roll( p()->sets->set( MAGE_FROST, T28, B2 )->proc_chance() ) )
     {
-      p()->action.frost_storm_comet_storm->set_target( s->target );
-      p()->action.frost_storm_comet_storm->execute();
+      p()->action.frost_storm_comet_storm->execute_on_target( s->target );
       p()->cooldowns.frost_storm->start( p()->sets->set( MAGE_FROST, T28, B2 )->internal_cooldown() );
     }
   }
@@ -1699,12 +1678,7 @@ public:
 
         // Handle Harmonic Echo before changing the stack number
         if ( p()->runeforge.harmonic_echo.ok() && spark_debuff->check() )
-        {
-          auto echo = p()->action.harmonic_echo;
-          echo->base_dd_min = echo->base_dd_max = p()->runeforge.harmonic_echo->effectN( 1 ).percent() * s->result_total;
-          echo->set_target( s->target );
-          echo->execute();
-        }
+          p()->action.harmonic_echo->execute_on_target( s->target, p()->runeforge.harmonic_echo->effectN( 1 ).percent() * s->result_total );
 
         if ( spark_debuff->at_max_stacks() )
         {
@@ -1729,13 +1703,7 @@ public:
         // Arcane Echo doesn't use the normal callbacks system (both in simc and in game). To prevent
         // loops, we need to explicitly check that the triggering action wasn't Arcane Echo.
         if ( p()->talents.arcane_echo->ok() && s->action != p()->action.arcane_echo )
-        {
-          make_event( *sim, [ this, t = s->target ]
-          {
-            p()->action.arcane_echo->set_target( t );
-            p()->action.arcane_echo->execute();
-          } );
-        }
+          make_event( *sim, [ this, t = s->target ] { p()->action.arcane_echo->execute_on_target( t ); } );
       }
     }
   }
@@ -2037,8 +2005,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( p()->buffs.molten_skyfall_ready->check() )
     {
       p()->buffs.molten_skyfall_ready->expire();
-      p()->action.legendary_meteor->set_target( target );
-      p()->action.legendary_meteor->execute();
+      p()->action.legendary_meteor->execute_on_target( target );
     }
   }
 };
@@ -2347,8 +2314,7 @@ struct frost_mage_spell_t : public mage_spell_t
     if ( p()->buffs.cold_front_ready->check() )
     {
       p()->buffs.cold_front_ready->expire();
-      p()->action.legendary_frozen_orb->set_target( target );
-      p()->action.legendary_frozen_orb->execute();
+      p()->action.legendary_frozen_orb->execute_on_target( target );
     }
   }
 };
@@ -2432,10 +2398,7 @@ struct ignite_t final : public residual_action_t
     residual_action_t::tick( d );
 
     if ( rng().roll( p()->talents.conflagration->effectN( 1 ).percent() ) )
-    {
-      p()->action.conflagration_flare_up->set_target( d->target );
-      p()->action.conflagration_flare_up->execute();
-    }
+      p()->action.conflagration_flare_up->execute_on_target( d->target );
   }
 };
 
@@ -3665,6 +3628,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     // Because of the additional procs gained from the bad luck protection
     // system, the base proc chances are reduced so that the overall average
     // is not significantly changed by the system.
+    // TODO: How does this reduction work for low level Mages without BLP?
     if ( p->spec.fingers_of_frost->ok() )
       fof_chance = ft_multiplier * p->spec.fingers_of_frost->effectN( 1 ).percent() - 0.005;
     if ( p->spec.brain_freeze->ok() )
@@ -3688,9 +3652,7 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     t *= 1.0 + p()->buffs.slick_ice->check_stack_value();
 
-    t = std::max( t, min_gcd );
-
-    return t;
+    return std::max( t, min_gcd );
   }
 
   timespan_t execute_time() const override
@@ -3745,7 +3707,6 @@ struct frostbolt_t final : public frost_mage_spell_t
     bool fof_triggered = p()->trigger_fof( fof_chance, proc_fof );
     bool bf_triggered = p()->trigger_brain_freeze( bf_chance, proc_brain_freeze );
 
-    // TODO: How does the BLP work for low level mages?
     if ( fof_chance == 0.0 || bf_chance == 0.0 )
       return;
 
@@ -3800,13 +3761,6 @@ struct frost_nova_t final : public mage_spell_t
 };
 
 // Frozen Orb Spell =========================================================
-
-// TODO: Frozen Orb actually selects random targets each time it ticks when
-// there are more than eight targets in range. This is not important for
-// current use-cases. In the future if this becomes important, e.g., there
-// is interest about priority target damage for encounters with more than
-// eight targets, random target selection should be added as an option for
-// all actions, because many target-capped abilities probably work this way.
 
 struct frozen_orb_bolt_t final : public frost_mage_spell_t
 {
@@ -4186,10 +4140,7 @@ struct ice_lance_t final : public frost_mage_spell_t
         : p()->runeforge.glacial_fragments->effectN( 1 ).percent();
 
       if ( rng().roll( chance ) )
-      {
-        glacial_fragments->set_target( s->target );
-        glacial_fragments->execute();
-      }
+        glacial_fragments->execute_on_target( s->target );
     }
   }
 
@@ -4342,8 +4293,7 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
         if ( t == target )
           continue;
 
-        p()->action.living_bomb_dot_spread->set_target( t );
-        p()->action.living_bomb_dot_spread->execute();
+        p()->action.living_bomb_dot_spread->execute_on_target( t );
       }
     }
 
@@ -4818,7 +4768,7 @@ struct ray_of_frost_t final : public frost_mage_spell_t
     // Ray of Frost triggers Bone Chilling on each tick, as well as on execute.
     p()->buffs.bone_chilling->trigger();
 
-    // TODO: Now happens at 2.5 and 5.
+    // TODO: Now happens at 2.5 and 5 through a hidden buff (spell_id 269748).
     if ( d->current_tick == 3 || d->current_tick == 5 )
       p()->trigger_fof( 1.0, proc_fof );
   }
@@ -5451,20 +5401,17 @@ struct freeze_t final : public action_t
 
   void execute() override
   {
-    mage_t* m = debug_cast<mage_t*>( player );
-    m->pets.water_elemental->action.freeze->set_target( target );
-    m->pets.water_elemental->action.freeze->execute();
+    debug_cast<mage_t*>( player )->action.pet_freeze->execute_on_target( target );
   }
 
   bool ready() override
   {
-    mage_t* m = debug_cast<mage_t*>( player );
-    if ( !m->pets.water_elemental || m->pets.water_elemental->is_sleeping() )
+    mage_t* p = debug_cast<mage_t*>( player );
+    if ( !p->pets.water_elemental || p->pets.water_elemental->is_sleeping() )
       return false;
 
     // Make sure the cooldown is actually ready and not just within cooldown tolerance.
-    auto freeze = m->pets.water_elemental->action.freeze;
-    if ( !freeze->cooldown->up() || !freeze->ready() )
+    if ( !p->action.pet_freeze->cooldown->up() || !p->action.pet_freeze->ready() )
       return false;
 
     return action_t::ready();
@@ -5557,8 +5504,7 @@ struct icicle_event_t final : public event_t
     if ( !icicle_action )
       return;
 
-    icicle_action->set_target( target );
-    icicle_action->execute();
+    icicle_action->execute_on_target( target );
 
     if ( !mage->icicles.empty() )
     {
@@ -6035,10 +5981,8 @@ void mage_t::regen( timespan_t periodicity )
     {
       // Base regen was already done, subtract 1.0 from Evocation's mana regen multiplier to make
       // sure we don't apply it twice.
-      resource_gain(
-        RESOURCE_MANA,
-        ( buffs.evocation->check_value() - 1.0 ) * base * periodicity.total_seconds(),
-        gains.evocation );
+      double amount = ( buffs.evocation->check_value() - 1.0 ) * base * periodicity.total_seconds();
+      resource_gain( RESOURCE_MANA, amount, gains.evocation );
     }
   }
 }
@@ -6291,10 +6235,7 @@ void mage_t::create_buffs()
                                  ->set_period( 3.0_s )
                                  ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
                                  ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
-                                   {
-                                     action.arcane_assault->set_target( target );
-                                     action.arcane_assault->execute();
-                                   } )
+                                   { action.arcane_assault->execute_on_target( target ); } )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
                                    { recalculate_resource_max( RESOURCE_MANA ); } );
   buffs.chrono_shift         = make_buff( this, "chrono_shift", find_spell( 236298 ) )
@@ -7313,8 +7254,7 @@ void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
     if ( !icicle_action )
       return;
 
-    icicle_action->set_target( icicle_target );
-    icicle_action->execute();
+    icicle_action->execute_on_target( icicle_target );
     sim->print_debug( "{} icicle use on {}, total={}", name(), icicle_target->name(), icicles.size() );
   }
 }

@@ -6,7 +6,6 @@
 #include "concurrency.hpp"
 
 #include <chrono>
-#include <iostream>
 #include <memory>
 #include <mutex>
 #include <thread>
@@ -230,6 +229,7 @@ unsigned sc_thread_t::cpu_thread_count()
 
 #if defined(SC_WINDOWS)
 #include <windows.h>
+#include "lib/fmt/core.h"
 
 DWORD translate_priority( computer_process::priority_e p )
 {
@@ -252,7 +252,8 @@ void computer_process::set_priority( priority_e p )
  if ( ! SetPriorityClass(GetCurrentProcess(), priority) )
  {
    DWORD dwError = GetLastError();
-   std::cerr << "Failed to set process priority: " << dwError << std::endl;
+   fmt::print( stderr, "Failed to set process priority: {}\n", dwError );
+   std::fflush( stderr );
  }
 }
 
