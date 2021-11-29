@@ -269,32 +269,39 @@ public:
   } rppm;
 
   // Options
-  double predator_rppm_rate;
-  double initial_astral_power;
-  double thorns_attack_period;
-  double thorns_hit_chance;
-  int initial_moon_stage;
-  double eclipse_snapshot_period;  // how often to re-snapshot mastery onto eclipse
-  bool affinity_resources;  // activate resources tied to affinities
-  double initial_pulsar_value;
-  bool raid_combat;
+  struct options_t
+  {
+    // General
+    bool affinity_resources = false;  // activate resources tied to affinities
+    bool no_cds = false;
+    bool raid_combat = true;
+    timespan_t thorns_attack_period = 0_ms;
+    double thorns_hit_chance = 0.75;
 
-  // APL options
-  bool catweave_bear;
-  bool owlweave_bear;
-  bool owlweave_cat;
-  bool no_cds;
+    // Balance
+    timespan_t eclipse_snapshot_period = 3_s;  // how often to re-snapshot mastery onto eclipse
+    double initial_astral_power = 0.0;
+    int initial_moon_stage = static_cast<int>( moon_stage_e::NEW_MOON );
+    double initial_pulsar_value = 0.0;
 
-  // Covenant options
-  double kindred_spirits_partner_dps;
-  bool kindred_spirits_hide_partner;
-  double kindred_spirits_absorbed;
-  bool lone_empowerment;
-  std::string kindred_affinity_covenant;
-  double convoke_the_spirits_ultimate;
-  int convoke_the_spirits_deck;
-  double celestial_spirits_exceptional_chance;
-  double adaptive_swarm_jump_distance;
+    // Feral
+    double predator_rppm_rate = 0.0;
+    bool owlweave_cat = true;
+
+    // Guardian
+    bool catweave_bear = false;
+    bool owlweave_bear = false;
+
+    // Covenant options
+    double adaptive_swarm_jump_distance = 5.0;
+    double celestial_spirits_exceptional_chance = 0.85;
+    int convoke_the_spirits_deck = 5;
+    std::string kindred_affinity_covenant = "night_fae";
+    double kindred_spirits_absorbed = 0.2;
+    bool kindred_spirits_hide_partner = false;
+    double kindred_spirits_partner_dps = 1.0;
+    bool lone_empowerment = false;
+  } options;
 
   struct active_actions_t
   {
@@ -799,28 +806,7 @@ public:
       form( NO_FORM ),
       eclipse_handler( this ),
       spec_override( spec_override_t() ),
-      predator_rppm_rate( 0.0 ),
-      initial_astral_power( 0 ),
-      thorns_attack_period( 2.0 ),
-      thorns_hit_chance( 0.75 ),
-      initial_moon_stage( NEW_MOON ),
-      eclipse_snapshot_period( 3.0 ),
-      affinity_resources( false ),
-      initial_pulsar_value( 0.0 ),
-      raid_combat( true ),
-      catweave_bear( false ),
-      owlweave_bear( false ),
-      owlweave_cat( true ),
-      no_cds( false ),
-      kindred_spirits_partner_dps( 1.0 ),
-      kindred_spirits_hide_partner( false ),
-      kindred_spirits_absorbed( 0.2 ),
-      lone_empowerment( false ),
-      kindred_affinity_covenant( "night_fae" ),
-      convoke_the_spirits_ultimate( 0 ),
-      convoke_the_spirits_deck( 5 ),
-      celestial_spirits_exceptional_chance( 0.85 ),
-      adaptive_swarm_jump_distance( 5.0 ),
+      options(),
       active( active_actions_t() ),
       force_of_nature(),
       caster_form_weapon(),
@@ -1577,18 +1563,18 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
   {
     trigger();
 
-    double initial = s->result_amount * ( 1.0 - p().kindred_spirits_absorbed );
+    double initial = s->result_amount * ( 1.0 - p().options.kindred_spirits_absorbed );
     // since kindred_spirits_partner_dps is meant to apply to the pool you RECEIVE and not to the pool you send, don't
     // apply it to partner_pool, which is meant to represent the damage the other person does.
     double partner_amount = initial * p().covenant.kindred_empowerment_energize->effectN( 1 ).percent();
-    double amount         = partner_amount * p().kindred_spirits_partner_dps;
+    double amount         = partner_amount * p().options.kindred_spirits_partner_dps;
 
     sim->print_debug( "Kindred Empowerment: Adding {} from {} to pool of {}", amount, s->action->name(), pool );
 
     pool += amount;
 
     // only dps specs give a pool to the partner
-    if ( !p().kindred_spirits_hide_partner &&
+    if ( !p().options.kindred_spirits_hide_partner &&
          ( p().specialization() == DRUID_BALANCE || p().specialization() == DRUID_FERAL ) )
       partner_pool += partner_amount;
   }
@@ -1669,23 +1655,23 @@ struct kindred_affinity_buff_t : public kindred_affinity_base_t
 
     covenant_e cov;
 
-    if ( util::str_compare_ci( p.kindred_affinity_covenant, "kyrian" ) ||
-         util::str_compare_ci( p.kindred_affinity_covenant, "mastery" ) )
+    if ( util::str_compare_ci( p.options.kindred_affinity_covenant, "kyrian" ) ||
+         util::str_compare_ci( p.options.kindred_affinity_covenant, "mastery" ) )
     {
       cov = covenant_e::KYRIAN;
     }
-    else if ( util::str_compare_ci( p.kindred_affinity_covenant, "necrolord" ) ||
-              util::str_compare_ci( p.kindred_affinity_covenant, "versatility" ) )
+    else if ( util::str_compare_ci( p.options.kindred_affinity_covenant, "necrolord" ) ||
+              util::str_compare_ci( p.options.kindred_affinity_covenant, "versatility" ) )
     {
       cov = covenant_e::NECROLORD;
     }
-    else if ( util::str_compare_ci( p.kindred_affinity_covenant, "night_fae" ) ||
-              util::str_compare_ci( p.kindred_affinity_covenant, "haste" ) )
+    else if ( util::str_compare_ci( p.options.kindred_affinity_covenant, "night_fae" ) ||
+              util::str_compare_ci( p.options.kindred_affinity_covenant, "haste" ) )
     {
       cov = covenant_e::NIGHT_FAE;
     }
-    else if ( util::str_compare_ci( p.kindred_affinity_covenant, "venthyr" ) ||
-              util::str_compare_ci( p.kindred_affinity_covenant, "crit" ) )
+    else if ( util::str_compare_ci( p.options.kindred_affinity_covenant, "venthyr" ) ||
+              util::str_compare_ci( p.options.kindred_affinity_covenant, "crit" ) )
     {
       cov = covenant_e::VENTHYR;
     }
@@ -3333,7 +3319,7 @@ public:
 
   void trigger_predator()
   {
-    if ( !( p()->talent.predator->ok() && p()->predator_rppm_rate > 0 ) )
+    if ( !( p()->talent.predator->ok() && p()->options.predator_rppm_rate > 0 ) )
       return;
 
     if ( !p()->rppm.predator->trigger() )
@@ -6478,7 +6464,7 @@ struct starsurge_t : public druid_spell_t
       return false;
 
     // emulate performing resource_available( current_resource(), cost() )
-    if ( !p()->talent.natures_balance->ok() && p()->initial_astral_power < cost() )
+    if ( !p()->talent.natures_balance->ok() && p()->options.initial_astral_power < cost() )
       return false;
 
     return true;
@@ -6577,10 +6563,10 @@ struct thorns_t : public druid_spell_t
       : event_t( *player ),
         thorns( thorns_proc ),
         target_actor( source ),
-        attack_period( timespan_t::from_seconds( player->thorns_attack_period ) ),
+        attack_period( player->options.thorns_attack_period ),
         source( player ),
         randomize_first( randomize ),
-        hit_chance( player->thorns_hit_chance )
+        hit_chance( player->options.thorns_hit_chance )
     {
       // this will delay the first psudo autoattack by a random amount between 0 and a full attack period
       if ( randomize_first )
@@ -6791,7 +6777,7 @@ struct kindred_spirits_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( p()->lone_empowerment )
+    if ( p()->options.lone_empowerment )
     {
       switch ( p()->specialization() )
       {
@@ -6903,7 +6889,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     // create deck for exceptional spell cast
     deck = p->get_shuffled_rng( "convoke_the_spirits", 1,
-                                p->legendary.celestial_spirits->ok() ? 2 : p->convoke_the_spirits_deck );
+                                p->legendary.celestial_spirits->ok() ? 2 : p->options.convoke_the_spirits_deck );
 
     // Create actions used by all specs
     conv_wrath       = get_convoke_action<wrath_t>( "wrath", "" );
@@ -7033,7 +7019,7 @@ struct convoke_the_spirits_t : public druid_spell_t
                       static_cast<int>( rng().range( celestial_spirits ? 3.5 : 5, celestial_spirits ? 6 : 7 ) ),
                       CAST_OFFSPEC );
 
-    if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->celestial_spirits_exceptional_chance ) ) )
+    if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->options.celestial_spirits_exceptional_chance ) ) )
       cast_list.push_back( CAST_PULVERIZE );
   }
 
@@ -7094,7 +7080,7 @@ struct convoke_the_spirits_t : public druid_spell_t
                       static_cast<size_t>( rng().range( celestial_spirits ? 2.5 : 4, celestial_spirits ? 7.5 : 9 ) ),
                       CAST_OFFSPEC );
 
-    if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->celestial_spirits_exceptional_chance ) ) )
+    if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->options.celestial_spirits_exceptional_chance ) ) )
       cast_list.push_back( CAST_FERAL_FRENZY );
 
     cast_list.insert( cast_list.end(),
@@ -7137,7 +7123,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     main_count   = 0;
     filler_count = 0;
 
-    if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->celestial_spirits_exceptional_chance ) ) )
+    if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->options.celestial_spirits_exceptional_chance ) ) )
       cast_list.push_back( CAST_FULL_MOON );
   }
 
@@ -7371,7 +7357,7 @@ struct adaptive_swarm_t : public druid_spell_t
     timespan_t travel_time() const override
     {
       if ( debug_cast<adaptive_swarm_state_t*>( execute_state )->jump )
-        return timespan_t::from_seconds( p()->adaptive_swarm_jump_distance / travel_speed );
+        return timespan_t::from_seconds( p()->options.adaptive_swarm_jump_distance / travel_speed );
 
       return druid_spell_t::travel_time();
     }
@@ -8287,20 +8273,20 @@ void druid_t::init_base_stats()
 
   // only activate other resources if you have the affinity and affinity_resources = true
   resources.active_resource[ RESOURCE_HEALTH ]       = specialization() == DRUID_GUARDIAN
-                                                    || ( talent.guardian_affinity->ok() && affinity_resources );
+                                                    || ( talent.guardian_affinity->ok() && options.affinity_resources );
   resources.active_resource[ RESOURCE_RAGE ]         = specialization() == DRUID_GUARDIAN
-                                                    || ( talent.guardian_affinity->ok() && affinity_resources );
+                                                    || ( talent.guardian_affinity->ok() && options.affinity_resources );
   resources.active_resource[ RESOURCE_MANA ]         = specialization() == DRUID_RESTORATION
-                                                    || ( specialization() == DRUID_GUARDIAN && owlweave_bear )
-                                                    || ( specialization() == DRUID_FERAL && owlweave_cat )
-                                                    || ( talent.balance_affinity->ok() && affinity_resources )
-                                                    || ( talent.restoration_affinity->ok() && affinity_resources );
+                                                    || ( specialization() == DRUID_GUARDIAN && options.owlweave_bear )
+                                                    || ( specialization() == DRUID_FERAL && options.owlweave_cat )
+                                                    || ( talent.balance_affinity->ok() && options.affinity_resources )
+                                                    || ( talent.restoration_affinity->ok() && options.affinity_resources );
   resources.active_resource[ RESOURCE_COMBO_POINT ]  = specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION
-                                                    || ( specialization() == DRUID_GUARDIAN && catweave_bear )
-                                                    || ( talent.feral_affinity->ok() && affinity_resources );
+                                                    || ( specialization() == DRUID_GUARDIAN && options.catweave_bear )
+                                                    || ( talent.feral_affinity->ok() && options.affinity_resources );
   resources.active_resource[ RESOURCE_ENERGY ]       = specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION
-                                                    || ( specialization() == DRUID_GUARDIAN && catweave_bear )
-                                                    || ( talent.feral_affinity->ok() && affinity_resources );
+                                                    || ( specialization() == DRUID_GUARDIAN && options.catweave_bear )
+                                                    || ( talent.feral_affinity->ok() && options.affinity_resources );
   resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
 
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
@@ -8482,7 +8468,7 @@ void druid_t::create_buffs()
     ->set_chance( find_rank_spell( "Moonkin Form", "Rank 2" )->effectN( 1 ).percent() );
 
   buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 338825 ) ) 
-    ->set_default_value(initial_pulsar_value);
+    ->set_default_value( options.initial_pulsar_value );
 
   buff.solstice = make_buff( this, "solstice", talent.solstice->effectN( 1 ).trigger() );
 
@@ -9118,10 +9104,10 @@ void druid_t::init_resources( bool force )
 
   resources.current[ RESOURCE_RAGE ]         = 0;
   resources.current[ RESOURCE_COMBO_POINT ]  = 0;
-  if ( initial_astral_power == 0.0 && talent.natures_balance->ok() )
+  if ( options.initial_astral_power == 0.0 && talent.natures_balance->ok() )
     resources.current[RESOURCE_ASTRAL_POWER] = 50.0;
   else
-    resources.current[RESOURCE_ASTRAL_POWER] = initial_astral_power;
+    resources.current[RESOURCE_ASTRAL_POWER] = options.initial_astral_power;
   expected_max_health = calculate_expected_max_health();
 }
 
@@ -9130,7 +9116,7 @@ void druid_t::init_resources( bool force )
 void druid_t::init_rng()
 {
   // RPPM objects
-  rppm.predator = get_rppm( "predator", predator_rppm_rate );  // Predator: optional RPPM approximation.
+  rppm.predator = get_rppm( "predator", options.predator_rppm_rate );  // Predator: optional RPPM approximation.
 
   player_t::init_rng();
 }
@@ -9184,7 +9170,7 @@ void druid_t::reset()
 
   // Reset druid_t variables to their original state.
   form = NO_FORM;
-  moon_stage = static_cast<moon_stage_e>( initial_moon_stage );
+  moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
   eclipse_handler.reset_stacks();
   eclipse_handler.reset_state();
 
@@ -9271,10 +9257,10 @@ void druid_t::arise()
 
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, [ this ]() {
       eclipse_handler.snapshot_eclipse();
-      make_repeating_event( *sim, timespan_t::from_seconds( eclipse_snapshot_period ), [ this ]() {
+      make_repeating_event( *sim, options.eclipse_snapshot_period, [ this ]() {
           eclipse_handler.snapshot_eclipse();
       } );
-    }, timespan_t::from_seconds( eclipse_snapshot_period ) ) );
+    }, options.eclipse_snapshot_period ) );
   }
 
   if ( buff.yseras_gift )
@@ -9290,7 +9276,7 @@ void druid_t::combat_begin()
 
   if ( spec.astral_power->ok() )
   {
-    if ( raid_combat ) {
+    if ( options.raid_combat ) {
       double cap = talent.natures_balance->ok() ? 50.0 : 20.0;
       double curr = resources.current[RESOURCE_ASTRAL_POWER];
 
@@ -9773,13 +9759,13 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
   if ( util::str_compare_ci( splits[0], "druid" ) && splits.size() > 1 )
   {
     if ( util::str_compare_ci( splits[1], "catweave_bear" ) && splits.size() == 2 )
-      return make_fn_expr( "catweave_bear", [this]() { return catweave_bear && talent.feral_affinity->ok(); } );
+      return make_fn_expr( "catweave_bear", [this]() { return options.catweave_bear && talent.feral_affinity->ok(); } );
     if ( util::str_compare_ci( splits[1], "owlweave_bear" ) && splits.size() == 2 )
-      return make_fn_expr( "owlweave_bear", [this]() { return owlweave_bear && talent.balance_affinity->ok(); } );
+      return make_fn_expr( "owlweave_bear", [this]() { return options.owlweave_bear && talent.balance_affinity->ok(); } );
     if ( util::str_compare_ci( splits[1], "owlweave_cat" ) && splits.size() == 2 )
-      return make_fn_expr( "owlweave_cat", [this]() { return owlweave_cat && talent.balance_affinity->ok(); } );
+      return make_fn_expr( "owlweave_cat", [this]() { return options.owlweave_cat && talent.balance_affinity->ok(); } );
     if ( util::str_compare_ci( splits[1], "no_cds" ) && splits.size() == 2 )
-      return make_fn_expr( "no_cds", [this]() { return no_cds; } );
+      return make_fn_expr( "no_cds", [this]() { return options.no_cds; } );
   }
 
   if ( splits[ 0 ] == "action" && splits[ 1 ] == "ferocious_bite_max" && splits[ 2 ] == "damage" )
@@ -10025,27 +10011,31 @@ void druid_t::create_options()
 
   add_option( opt_deprecated( "druid.convoke_the_spirits_ultimate", "druid.convoke_the_spirits_deck" ) );
 
-  add_option( opt_float( "druid.predator_rppm", predator_rppm_rate ) );
-  add_option( opt_float( "druid.initial_astral_power", initial_astral_power ) );
-  add_option( opt_int( "druid.initial_moon_stage", initial_moon_stage ) );
-  add_option( opt_float( "druid.eclipse_snapshot_period", eclipse_snapshot_period ) );
-  add_option( opt_bool( "druid.catweave_bear", catweave_bear ) );
-  add_option( opt_bool( "druid.owlweave_bear", owlweave_bear ) );
-  add_option( opt_bool( "druid.owlweave_cat", owlweave_cat ) );
-  add_option( opt_bool( "druid.no_cds", no_cds ) );
-  add_option( opt_bool( "druid.affinity_resources", affinity_resources ) );
-  add_option( opt_float( "druid.thorns_attack_period", thorns_attack_period ) );
-  add_option( opt_float( "druid.thorns_hit_chance", thorns_hit_chance ) );
-  add_option( opt_float( "druid.kindred_spirits_partner_dps", kindred_spirits_partner_dps ) );
-  add_option( opt_bool( "druid.kindred_spirits_hide_partner", kindred_spirits_hide_partner ) );
-  add_option( opt_float( "druid.kindred_spirits_absorbed", kindred_spirits_absorbed ) );
-  add_option( opt_bool( "druid.lone_empowerment", lone_empowerment ) );
-  add_option( opt_string( "druid.kindred_affinity_covenant", kindred_affinity_covenant ) );
-  add_option( opt_int( "druid.convoke_the_spirits_deck", convoke_the_spirits_deck ) );
-  add_option( opt_float( "druid.celestial_spirits_exceptional_chance", celestial_spirits_exceptional_chance ) );
-  add_option( opt_float( "druid.adaptive_swarm_jump_distance", adaptive_swarm_jump_distance ) );
-  add_option( opt_float( "druid.initial_pulsar_value", initial_pulsar_value ) );
-  add_option( opt_bool( "druid.raid_combat", raid_combat ) );
+  add_option( opt_bool( "druid.affinity_resources", options.affinity_resources ) );
+  add_option( opt_bool( "druid.no_cds", options.no_cds ) );
+  add_option( opt_bool( "druid.raid_combat", options.raid_combat ) );
+  add_option( opt_timespan( "druid.thorns_attack_period", options.thorns_attack_period ) );
+  add_option( opt_float( "druid.thorns_hit_chance", options.thorns_hit_chance ) );
+
+  add_option( opt_timespan( "druid.eclipse_snapshot_period", options.eclipse_snapshot_period ) );
+  add_option( opt_float( "druid.initial_astral_power", options.initial_astral_power ) );
+  add_option( opt_int( "druid.initial_moon_stage", options.initial_moon_stage ) );
+  add_option( opt_float( "druid.initial_pulsar_value", options.initial_pulsar_value ) );
+
+  add_option( opt_float( "druid.predator_rppm", options.predator_rppm_rate ) );
+  add_option( opt_bool( "druid.owlweave_cat", options.owlweave_cat ) );
+
+  add_option( opt_bool( "druid.catweave_bear", options.catweave_bear ) );
+  add_option( opt_bool( "druid.owlweave_bear", options.owlweave_bear ) );
+
+  add_option( opt_float( "druid.adaptive_swarm_jump_distance", options.adaptive_swarm_jump_distance ) );
+  add_option( opt_float( "druid.celestial_spirits_exceptional_chance", options.celestial_spirits_exceptional_chance ) );
+  add_option( opt_int( "druid.convoke_the_spirits_deck", options.convoke_the_spirits_deck ) );
+  add_option( opt_string( "druid.kindred_affinity_covenant", options.kindred_affinity_covenant ) );
+  add_option( opt_float( "druid.kindred_spirits_absorbed", options.kindred_spirits_absorbed ) );
+  add_option( opt_bool( "druid.kindred_spirits_hide_partner", options.kindred_spirits_hide_partner ) );
+  add_option( opt_float( "druid.kindred_spirits_partner_dps", options.kindred_spirits_partner_dps ) );
+  add_option( opt_bool( "druid.lone_empowerment", options.lone_empowerment ) );
 }
 
 // druid_t::create_profile ==================================================
@@ -10645,29 +10635,7 @@ void druid_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
 
-  auto p = debug_cast<druid_t*>( source );
-
-  predator_rppm_rate                   = p->predator_rppm_rate;
-  initial_astral_power                 = p->initial_astral_power;
-  initial_moon_stage                   = p->initial_moon_stage;
-  eclipse_snapshot_period              = p->eclipse_snapshot_period;
-  affinity_resources                   = p->affinity_resources;
-  owlweave_bear                        = p->owlweave_bear;
-  catweave_bear                        = p->catweave_bear;
-  owlweave_cat                         = p->owlweave_cat;
-  no_cds                               = p->no_cds;
-  kindred_spirits_partner_dps          = p->kindred_spirits_partner_dps;
-  kindred_spirits_hide_partner         = p->kindred_spirits_hide_partner;
-  kindred_spirits_absorbed             = p->kindred_spirits_absorbed;
-  lone_empowerment                     = p->lone_empowerment;
-  kindred_affinity_covenant            = p->kindred_affinity_covenant;
-  convoke_the_spirits_deck             = p->convoke_the_spirits_deck;
-  celestial_spirits_exceptional_chance = p->celestial_spirits_exceptional_chance;
-  adaptive_swarm_jump_distance         = p->adaptive_swarm_jump_distance;
-  thorns_attack_period                 = p->thorns_attack_period;
-  thorns_hit_chance                    = p->thorns_hit_chance; 
-  initial_pulsar_value                 = p->initial_pulsar_value;
-  raid_combat                          = p->raid_combat;
+  options = debug_cast<druid_t*>( source )->options;
 }
 
 void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
