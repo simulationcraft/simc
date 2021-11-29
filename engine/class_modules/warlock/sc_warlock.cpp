@@ -178,6 +178,7 @@ struct corruption_t : public warlock_spell_t
     parse_options( options_str );
     may_crit                   = false;
     tick_zero                  = false;
+    affected_by_woc            = true;
 
     spell_power_mod.tick       = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
     base_tick_time             = data().effectN( 1 ).trigger()->effectN( 1 ).period();
