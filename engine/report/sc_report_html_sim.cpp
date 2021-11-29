@@ -1177,7 +1177,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
 
 void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
 {
-  const auto& entries = sim.dbc_override->override_entries();
+  const auto& entries = sim.dbc_override->override_entries( sim.dbc->ptr );
   if ( entries.empty() )
   {
     return;
