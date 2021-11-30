@@ -350,6 +350,10 @@ struct call_dreadstalkers_t : public demonology_spell_t
     parse_options( options_str );
     may_crit           = false;
     dreadstalker_count = as<int>( data().effectN( 1 ).base_value() );
+    if ( p->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B2 ) )
+    {
+      dreadstalker_count += 1;
+    }
     base_execute_time += p->spec.call_dreadstalkers_2->effectN( 1 ).time_value();
   }
 
