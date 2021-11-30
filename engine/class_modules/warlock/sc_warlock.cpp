@@ -215,11 +215,6 @@ struct corruption_t : public warlock_spell_t
 
     return m;
   }
-
-  void tick( dot_t* d ) override
-  {
-    warlock_spell_t::tick( d );
-  }
 };
 
 struct impending_catastrophe_t : public warlock_spell_t
