@@ -36,10 +36,10 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_scouring_tithe;
   propagate_const<dot_t*> dots_impending_catastrophe;
   propagate_const<dot_t*> dots_soul_rot;
+  propagate_const<dot_t*> dots_corruption;
 
   // Aff
   propagate_const<dot_t*> dots_agony;
-  propagate_const<dot_t*> dots_corruption; //TODO: Add offspec corruption
   propagate_const<dot_t*> dots_seed_of_corruption;
   propagate_const<dot_t*> dots_drain_soul;
   propagate_const<dot_t*> dots_siphon_life;
