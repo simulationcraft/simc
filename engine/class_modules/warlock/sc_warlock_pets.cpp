@@ -542,14 +542,14 @@ void felguard_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  // Felguard is the only warlock pet to use an actual weapon.
+  // Felguard is the only warlock pet type to use an actual weapon.
   main_hand_weapon.type = WEAPON_AXE_2H;
   melee_attack          = new warlock_pet_melee_t( this );
 
   owner_coeff.ap_from_sp = 0.575;
   owner_coeff.sp_from_sp = 1.15;
 
-  // TOCHECK Felguard has a hardcoded 10% multiplier for it's auto attack damage. Seems to still be in effect as of 2021-12-01
+  // TOCHECK Felguard has a hardcoded 10% multiplier for its auto attack damage. Seems to still be in effect as of 2021-12-01
   melee_attack->base_dd_multiplier *= 1.1;
   special_action = new axe_toss_t( this, "" );
 
@@ -592,10 +592,11 @@ void felguard_pet_t::queue_ds_felstorm()
 
 /// Felguard End
 
+/// Grimoire: Felguard Begin
+
 grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner )
   : warlock_pet_t( owner, "grimoire_felguard", PET_SERVICE_FELGUARD, true ),
-    felstorm_spell( find_spell( 89751 ) ),
-    min_energy_threshold( felstorm_spell->cost( POWER_ENERGY ) ),
+    min_energy_threshold( find_spell( 89751 )->cost( POWER_ENERGY ) ),
     max_energy_threshold( 100 )
 {
   action_list_str = "travel";
@@ -605,8 +606,6 @@ grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner )
   felstorm_cd = get_cooldown( "felstorm" );
 
   owner_coeff.health = 0.75;
-
-  is_main_pet = true;
 }
 
  void grimoire_felguard_pet_t::arise()
@@ -626,12 +625,11 @@ timespan_t grimoire_felguard_pet_t::available() const
   }
 
   double deficit           = resources.current[ RESOURCE_ENERGY ] - energy_threshold;
-  double rps               = resource_regen_per_second( RESOURCE_ENERGY );
   double time_to_threshold = 0;
   // Not enough energy, figure out how many milliseconds it'll take to get
   if ( deficit < 0 )
   {
-    time_to_threshold = util::ceil( std::fabs( deficit ) / rps, 3 );
+    time_to_threshold = util::ceil( std::fabs( deficit ) / resource_regen_per_second( RESOURCE_ENERGY ), 3 );
   }
 
   // Fuzz regen by making the pet wait a bit extra if it's just below the resource threshold
@@ -672,17 +670,15 @@ void grimoire_felguard_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  // Felguard is the only warlock pet to use an actual weapon.
+  // Felguard is the only warlock pet type to use an actual weapon.
   main_hand_weapon.type = WEAPON_AXE_2H;
   melee_attack          = new warlock_pet_melee_t( this );
 
-  // TOCHECK Increased by 15% in 8.1.
-  owner_coeff.ap_from_sp *= 1.15;
-  owner_coeff.sp_from_sp *= 1.15;
+  owner_coeff.ap_from_sp = 0.575;
+  owner_coeff.sp_from_sp = 1.15;
 
-  // TOCHECK Felguard has a hardcoded 10% multiplier for its auto attack damage. Live as of 10-17-2018
+  // TOCHECK Grimoire Felguard also has a hardcoded 10% multiplier for its auto attack damage. Seems to still be in effect as of 2021-12-01
   melee_attack->base_dd_multiplier *= 1.1;
-  special_action = new axe_toss_t( this, "" );
 }
 
 action_t* grimoire_felguard_pet_t::create_action( util::string_view name, util::string_view options_str )
@@ -691,11 +687,11 @@ action_t* grimoire_felguard_pet_t::create_action( util::string_view name, util::
     return new legion_strike_t( this, options_str );
   if ( name == "felstorm" )
     return new felstorm_t( this, options_str );
-  if ( name == "axe_toss" )
-    return new axe_toss_t( this, options_str );
 
   return warlock_pet_t::create_action( name, options_str );
 }
+
+/// Grimoire: Felguard End
 
 struct fel_firebolt_t : public warlock_pet_spell_t
 {
