@@ -718,7 +718,7 @@ struct drain_soul_t : public affliction_spell_t
         tierDotsActive     &= td( d->target )->dots_corruption->is_ticking();
         tierDotsActive     &= td( d->target )->dots_unstable_affliction->is_ticking();
 
-        if ( tierDotsActive && rng().roll( 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T28, B4 )->effectN( 2 ).percent() ) )
+        if ( tierDotsActive && rng().roll( p()->sets->set( WARLOCK_AFFLICTION, T28, B4 )->effectN( 2 ).percent() ) )
         {
           p()->procs.calamitous_crescendo->occur();
           p()->buffs.calamitous_crescendo->trigger();
