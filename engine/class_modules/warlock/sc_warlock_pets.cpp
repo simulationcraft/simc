@@ -693,62 +693,7 @@ action_t* grimoire_felguard_pet_t::create_action( util::string_view name, util::
 
 /// Grimoire: Felguard End
 
-struct fel_firebolt_t : public warlock_pet_spell_t
-{
-  bool demonic_power_on_cast_start;
-
-  fel_firebolt_t( warlock_pet_t* p ) : warlock_pet_spell_t( "fel_firebolt", p, p->find_spell( 104318 ) )
-  {
-    repeating = true;
-  }
-
-  void schedule_execute( action_state_t* execute_state ) override
-  {
-    // We may not be able to execute anything, so reset executing here before we are going to
-    // schedule anything else.
-    player->executing = nullptr;
-
-    if ( player->buffs.movement->check() )
-    {
-      return;
-    }
-
-    if ( player->buffs.stunned->check() )
-    {
-      return;
-    }
-
-    warlock_pet_spell_t::schedule_execute( execute_state );
-
-    demonic_power_on_cast_start = p()->o()->buffs.demonic_power->check() && p()->resources.current[ RESOURCE_ENERGY ] < 100;
-  }
-
-  void consume_resource() override
-  {
-    warlock_pet_spell_t::consume_resource();
-
-    // Imp dies if it cannot cast
-    if ( player->resources.current[ RESOURCE_ENERGY ] < cost() )
-    {
-      make_event( sim, timespan_t::zero(), [ this ]() { player->cast_pet()->dismiss(); } );
-    }
-  }
-
-  double cost() const override
-  {
-    double c = warlock_pet_spell_t::cost();
-
-    if ( p()->o()->spec.fel_firebolt_2->ok() )
-      c *= 1.0 + p()->o()->spec.fel_firebolt_2->effectN( 1 ).percent();
-
-    if ( demonic_power_on_cast_start )
-    {
-      c *= 1.0 + p()->o()->buffs.demonic_power->data().effectN( 4 ).percent();
-    }
-
-    return c;
-  }
-};
+/// Wild Imp Begin
 
 wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
   : warlock_pet_t( owner, "wild_imp", PET_WILD_IMP ), firebolt( nullptr ), power_siphon( false )
@@ -772,30 +717,14 @@ void wild_imp_pet_t::init_base_stats()
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
 }
 
+//TODO: Utilize new execute_on_target
 void wild_imp_pet_t::reschedule_firebolt()
 {
-  if ( executing )
-  {
+  if ( executing || is_sleeping() || player_t::buffs.movement->check() || player_t::buffs.stunned->check() )
     return;
-  }
-
-  if ( is_sleeping() )
-  {
-    return;
-  }
-
-  if ( player_t::buffs.movement->check() )
-  {
-    return;
-  }
-
-  if ( player_t::buffs.stunned->check() )
-  {
-    return;
-  }
 
   timespan_t gcd_adjust = gcd_ready - sim->current_time();
-  if ( gcd_adjust > timespan_t::zero() )
+  if ( gcd_adjust > 0_ms )
   {
     make_event( sim, gcd_adjust, [ this ]() {
       firebolt->set_target( o()->target );
@@ -852,6 +781,54 @@ void wild_imp_pet_t::demise()
 
   warlock_pet_t::demise();
 }
+
+fel_firebolt_t::fel_firebolt_t( warlock_pet_t* p ) : warlock_pet_spell_t( "fel_firebolt", p, p->find_spell( 104318 ) )
+{
+  repeating = true;
+  demonic_power_on_cast_start = false;
+}
+
+void fel_firebolt_t::schedule_execute( action_state_t* execute_state )
+{
+  // We may not be able to execute anything, so reset executing here before we are going to
+  // schedule anything else.
+  player->executing = nullptr;
+
+  if ( player->buffs.movement->check() || player->buffs.stunned->check() )
+    return;
+
+  warlock_pet_spell_t::schedule_execute( execute_state );
+
+  demonic_power_on_cast_start = p()->o()->buffs.demonic_power->check() && p()->resources.current[ RESOURCE_ENERGY ] < 100;
+}
+
+void fel_firebolt_t::consume_resource()
+{
+  warlock_pet_spell_t::consume_resource();
+
+  // Imp dies if it cannot cast
+  if ( player->resources.current[ RESOURCE_ENERGY ] < cost() )
+  {
+    make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
+  }
+}
+
+double fel_firebolt_t::cost() const
+{
+  double c = warlock_pet_spell_t::cost();
+
+  if ( p()->o()->spec.fel_firebolt_2->ok() )
+    c *= 1.0 + p()->o()->spec.fel_firebolt_2->effectN( 1 ).percent();
+
+  if (demonic_power_on_cast_start)
+  {
+    c *= 1.0 + p()->o()->buffs.demonic_power->data().effectN( 4 ).percent();
+  }
+
+  return c;
+}
+
+/// Wild Imp End
 
 struct dreadbite_t : public warlock_pet_melee_attack_t
 {

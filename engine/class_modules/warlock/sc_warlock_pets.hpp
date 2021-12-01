@@ -421,16 +421,26 @@ struct wild_imp_pet_t : public warlock_pet_t
   bool power_siphon;
   bool demonic_consumption;
 
-  wild_imp_pet_t( warlock_t* owner );
+  wild_imp_pet_t( warlock_t* );
   void init_base_stats() override;
   void create_actions() override;
-  void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false ) override;
+  void schedule_ready( timespan_t, bool ) override;
   void arise() override;
   void demise() override;
   void finish_moving() override;
 
 private:
   void reschedule_firebolt();
+};
+
+struct fel_firebolt_t : public warlock_pet_spell_t
+{
+  bool demonic_power_on_cast_start;
+
+  fel_firebolt_t( warlock_pet_t* );
+  void schedule_execute( action_state_t* ) override;
+  void consume_resource() override;
+  double cost() const override;
 };
 
 struct dreadstalker_t : public warlock_pet_t
