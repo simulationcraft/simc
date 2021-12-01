@@ -2,7 +2,6 @@
 
 #include "sc_warlock.hpp"
 
-
 namespace warlock
 {
 namespace actions_affliction
@@ -117,15 +116,15 @@ struct shadow_bolt_t : public affliction_spell_t
         td( s->target )->debuffs_shadow_embrace->trigger();
       }
 
-      // TODO: Check PTR to see if 2-set procs on cast finish, or on damage
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) || DEBUG_SET_TEST_2 )
+      // TODO: Check PTR to see if 4-set procs on cast finish, or on damage
+      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) || DEBUG_SET_TEST_4 )
       {        
         auto tdata = this->td( s->target );
         bool tierDotsActive = tdata->dots_agony->is_ticking();
         tierDotsActive &= tdata->dots_corruption->is_ticking();
         tierDotsActive &= tdata->dots_unstable_affliction->is_ticking();
 
-        if ( tierDotsActive && rng().roll ( p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).percent() ) )
+        if ( tierDotsActive && rng().roll( p()->sets->set(WARLOCK_AFFLICTION, T28, B4 )->effectN( 1 ).percent() ) )
         {
           p()->procs.calamitous_crescendo->occur();
           p()->buffs.calamitous_crescendo->trigger();
@@ -600,9 +599,9 @@ struct malefic_rapture_t : public affliction_spell_t
           m *= 1.0 + p()->conduit.focused_malignancy.percent();
         }
 
-        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) || DEBUG_SET_TEST_4)
+        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) || DEBUG_SET_TEST_2)
         {
-          m *= 1.00 + p()->sets->set( WARLOCK_AFFLICTION, T28, B4 )->effectN( 1 ).percent();
+          m *= 1.00 + p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 1 ).percent();
         }
 
         return m;
@@ -654,9 +653,9 @@ struct malefic_rapture_t : public affliction_spell_t
         p()->procs.malefic_wrath->occur();
       }
 
-      if (p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) || DEBUG_SET_TEST_4)
+      if (p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) || DEBUG_SET_TEST_2)
       {
-        timespan_t dot_extension =  p()->sets->set( WARLOCK_AFFLICTION, T28, B4 )->effectN( 2 ).time_value();
+        timespan_t dot_extension =  p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).time_value();
         warlock_td_t* td = p()->get_target_data( target );
 
         if ( td )
@@ -715,13 +714,13 @@ struct drain_soul_t : public affliction_spell_t
           td( d->target )->debuffs_shadow_embrace->trigger();
       }
 
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) || DEBUG_SET_TEST_2)
+      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) || DEBUG_SET_TEST_4)
       {
         bool tierDotsActive = td( d->target )->dots_agony->is_ticking();
         tierDotsActive     &= td( d->target )->dots_corruption->is_ticking();
         tierDotsActive     &= td( d->target )->dots_unstable_affliction->is_ticking();
 
-        if ( tierDotsActive && rng().roll( 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).percent() ) )
+        if ( tierDotsActive && rng().roll( 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T28, B4 )->effectN( 2 ).percent() ) )
         {
           p()->procs.calamitous_crescendo->occur();
           p()->buffs.calamitous_crescendo->trigger();
@@ -941,7 +940,9 @@ void warlock_t::create_buffs_affliction()
 
   buffs.malefic_wrath = make_buff( this, "malefic_wrath", find_spell( 337125 ) )->set_default_value_from_effect( 1 );
 
-  buffs.calamitous_crescendo = make_buff( this, "calamitous_crescendo", find_spell( 363953 ) )->set_default_value_from_effect( 1 );
+  buffs.calamitous_crescendo = make_buff( this, "calamitous_crescendo", find_spell( 363953 ) )
+                                   ->set_chance( talents.drain_soul->ok() ? find_spell( 363953 )->effectN( 2 ).percent() 
+                                                                          : find_spell( 363953 )->effectN( 1 ).percent() );
 }
 
 void warlock_t::init_spells_affliction()
