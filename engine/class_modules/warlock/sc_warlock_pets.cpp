@@ -367,56 +367,72 @@ consuming_shadows_t::consuming_shadows_t( warlock_pet_t* p )
 
 namespace demonology
 {
-struct legion_strike_t : public warlock_pet_melee_attack_t
-{
-  legion_strike_t( warlock_pet_t* p, util::string_view options_str ) : warlock_pet_melee_attack_t( p, "Legion Strike" )
-  {
-    parse_options( options_str );
-    aoe    = -1;
-    weapon = &( p->main_hand_weapon );
-  }
-};
 
-struct axe_toss_t : public warlock_pet_spell_t
+/// Felguard Begin
+
+felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
+  : warlock_pet_t( owner, name, PET_FELGUARD, name != "felguard" ),
+    soul_strike( nullptr ),
+    min_energy_threshold( find_spell( 89751 )->cost( POWER_ENERGY ) ),
+    max_energy_threshold( 100 )
 {
-  axe_toss_t( warlock_pet_t* p, util::string_view options_str )
+  action_list_str = "travel";
+  action_list_str += "/demonic_strength_felstorm";
+  action_list_str += "/felstorm";
+  action_list_str += "/legion_strike,if=energy>=" + util::to_string( max_energy_threshold );
+
+  felstorm_cd = get_cooldown( "felstorm" );
+
+  owner_coeff.health = 0.75;
+
+  is_main_pet = true;
+}
+
+axe_toss_t::axe_toss_t( warlock_pet_t* p, util::string_view options_str )
     : warlock_pet_spell_t( "Axe Toss", p, p->find_spell( 89766 ) )
-  {
-    parse_options( options_str );
-
-    may_miss = may_block = may_dodge = may_parry = false;
-    ignore_false_positive = is_interrupt = true;
-  }
-};
-
-struct felstorm_tick_t : public warlock_pet_melee_attack_t
 {
-  felstorm_tick_t( warlock_pet_t* p, const spell_data_t *s )
-    : warlock_pet_melee_attack_t( "felstorm_tick", p, s )
-  {
-    aoe = -1;
-    reduced_aoe_targets = data().effectN( 3 ).base_value();
-    background = true;
-    weapon     = &( p->main_hand_weapon );
-  }
+  parse_options( options_str );
 
-  double action_multiplier() const override
-  {
-    double m = warlock_pet_melee_attack_t::action_multiplier();
+  may_miss = may_block = may_dodge = may_parry = false;
+  ignore_false_positive = is_interrupt = true;
+}
 
-    if ( p()->buffs.demonic_strength->check() )
-    {
-      m *= p()->buffs.demonic_strength->default_value;
-    }
-
-    return m;
-  }
-};
+legion_strike_t::legion_strike_t( warlock_pet_t* p, util::string_view options_str ) 
+  : warlock_pet_melee_attack_t( p, "Legion Strike" )
+{
+  parse_options( options_str );
+  aoe    = -1;
+  weapon = &( p->main_hand_weapon );
+}
 
 struct felstorm_t : public warlock_pet_melee_attack_t
 {
-  felstorm_t( warlock_pet_t* p, util::string_view options_str )
-    : warlock_pet_melee_attack_t( "felstorm", p, p->find_spell( 89751 ) )
+  struct felstorm_tick_t : public warlock_pet_melee_attack_t
+  {
+    felstorm_tick_t( warlock_pet_t* p, const spell_data_t *s )
+      : warlock_pet_melee_attack_t( "felstorm_tick", p, s )
+    {
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 3 ).base_value();
+      background = true;
+      weapon     = &( p->main_hand_weapon );
+    }
+
+    double action_multiplier() const override
+    {
+      double m = warlock_pet_melee_attack_t::action_multiplier();
+
+      if ( p()->buffs.demonic_strength->check() )
+      {
+        m *= p()->buffs.demonic_strength->default_value;
+      }
+
+      return m;
+    }
+  };
+
+  felstorm_t( warlock_pet_t* p, util::string_view options_str, const std::string n = "felstorm" )
+    : warlock_pet_melee_attack_t( n, p, p->find_spell( 89751 ) )
   {
     parse_options( options_str );
     tick_zero    = true;
@@ -435,45 +451,13 @@ struct felstorm_t : public warlock_pet_melee_attack_t
   }
 };
 
-struct demonic_strength_t : public warlock_pet_melee_attack_t
+struct demonic_strength_t : public felstorm_t
 {
   bool queued;
 
   demonic_strength_t( warlock_pet_t* p, util::string_view options_str )
-    : warlock_pet_melee_attack_t( "demonic_strength_felstorm", p, p->find_spell( 89751 ) ), queued( false )
+    : felstorm_t( p, options_str, "demonic_strength_felstorm" ), queued( false )
   {
-    parse_options( options_str );
-    tick_zero    = true;
-    hasted_ticks = true;
-    may_miss     = false;
-    may_crit     = false;
-    channeled    = true;
-
-    dynamic_tick_action = true;
-    tick_action         = new felstorm_tick_t( p, p->find_spell( 89753 ) );
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    return s->action->tick_time( s ) * 5.0;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = warlock_pet_melee_attack_t::action_multiplier();
-
-    if ( p()->buffs.demonic_strength->check() )
-    {
-      m *= p()->buffs.demonic_strength->default_value;
-    }
-
-    return m;
-  }
-
-  void cancel() override
-  {
-    warlock_pet_melee_attack_t::cancel();
-    get_dot()->cancel();
   }
 
   void execute() override
@@ -498,38 +482,9 @@ struct demonic_strength_t : public warlock_pet_melee_attack_t
   }
 };
 
-struct soul_strike_t : public warlock_pet_melee_attack_t
+soul_strike_t::soul_strike_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Soul Strike", p, p->find_spell( 267964 ) )
 {
-  soul_strike_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Soul Strike", p, p->find_spell( 267964 ) )
-  {
-    background = true;
-  }
-
-  bool ready() override
-  {
-    if ( p()->pet_type != PET_FELGUARD )
-      return false;
-    return warlock_pet_melee_attack_t::ready();
-  }
-};
-
-felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
-  : warlock_pet_t( owner, name, PET_FELGUARD, name != "felguard" ),
-    soul_strike( nullptr ),
-    felstorm_spell( find_spell( 89751 ) ),
-    min_energy_threshold( felstorm_spell->cost( POWER_ENERGY ) ),
-    max_energy_threshold( 100 )
-{
-  action_list_str = "travel";
-  action_list_str += "/demonic_strength_felstorm";
-  action_list_str += "/felstorm";
-  action_list_str += "/legion_strike,if=energy>=" + util::to_string( max_energy_threshold );
-
-  felstorm_cd = get_cooldown( "felstorm" );
-
-  owner_coeff.health = 0.75;
-
-  is_main_pet = true;
+  background = true;
 }
 
 timespan_t felguard_pet_t::available() const
@@ -542,12 +497,11 @@ timespan_t felguard_pet_t::available() const
   }
 
   double deficit           = resources.current[ RESOURCE_ENERGY ] - energy_threshold;
-  double rps               = resource_regen_per_second( RESOURCE_ENERGY );
   double time_to_threshold = 0;
   // Not enough energy, figure out how many milliseconds it'll take to get
   if ( deficit < 0 )
   {
-    time_to_threshold = util::ceil( std::fabs( deficit ) / rps, 3 );
+    time_to_threshold = util::ceil( std::fabs( deficit ) / resource_regen_per_second( RESOURCE_ENERGY ), 3 );
   }
 
   // Fuzz regen by making the pet wait a bit extra if it's just below the resource threshold
@@ -592,16 +546,21 @@ void felguard_pet_t::init_base_stats()
   main_hand_weapon.type = WEAPON_AXE_2H;
   melee_attack          = new warlock_pet_melee_t( this );
 
-  // TOCHECK Increased by 15% in 8.1.
-  owner_coeff.ap_from_sp *= 1.15;
-  owner_coeff.sp_from_sp *= 1.15;
+  owner_coeff.ap_from_sp = 0.575;
+  owner_coeff.sp_from_sp = 1.15;
 
-  // TOCHECK Felguard has a hardcoded 10% multiplier for it's auto attack damage. Live as of 10-17-2018
+  // TOCHECK Felguard has a hardcoded 10% multiplier for it's auto attack damage. Seems to still be in effect as of 2021-12-01
   melee_attack->base_dd_multiplier *= 1.1;
   special_action = new axe_toss_t( this, "" );
+
   if ( o()->talents.soul_strike )
   {
     soul_strike = new soul_strike_t( this );
+  }
+
+  if ( o()->talents.demonic_strength )
+  {
+    ds_felstorm = new demonic_strength_t( this, "" );
   }
 }
 
@@ -614,22 +573,24 @@ action_t* felguard_pet_t::create_action( util::string_view name, util::string_vi
   if ( name == "axe_toss" )
     return new axe_toss_t( this, options_str );
   if ( name == "demonic_strength_felstorm" )
-  {
-    ds_felstorm = new demonic_strength_t( this, options_str );
-    return ds_felstorm;
-  }
+    return new demonic_strength_t( this, options_str );
 
   return warlock_pet_t::create_action( name, options_str );
 }
 
 void felguard_pet_t::queue_ds_felstorm()
 {
-  static_cast<demonic_strength_t*>( ds_felstorm )->queued = true;
-  if ( !readying && !channeling && !executing )
+  if ( ds_felstorm )
   {
-    schedule_ready();
+    static_cast<demonic_strength_t*>( ds_felstorm )->queued = true;
+    if ( !readying && !channeling && !executing )
+    {
+      schedule_ready();
+    }
   }
 }
+
+/// Felguard End
 
 grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner )
   : warlock_pet_t( owner, "grimoire_felguard", PET_SERVICE_FELGUARD, true ),

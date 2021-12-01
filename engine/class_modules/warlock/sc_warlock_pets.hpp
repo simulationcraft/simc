@@ -370,8 +370,6 @@ struct felguard_pet_t : public warlock_pet_t
   action_t* ds_felstorm;
   cooldown_t* felstorm_cd;
 
-  const spell_data_t* felstorm_spell;
-
   // Energy thresholds to wake felguard up for something to do, minimum is the felstorm energy cost,
   // and maximum is a predetermined empirical value from in game
   double min_energy_threshold;
@@ -383,6 +381,21 @@ struct felguard_pet_t : public warlock_pet_t
   timespan_t available() const override;
 
   void queue_ds_felstorm();
+};
+
+struct legion_strike_t : public warlock_pet_melee_attack_t
+{
+  legion_strike_t( warlock_pet_t*, util::string_view );
+};
+
+struct axe_toss_t : public warlock_pet_spell_t
+{
+  axe_toss_t( warlock_pet_t*, util::string_view options_str );
+};
+
+struct soul_strike_t : public warlock_pet_melee_attack_t
+{
+  soul_strike_t( warlock_pet_t* );
 };
 
 struct grimoire_felguard_pet_t : public warlock_pet_t
