@@ -236,7 +236,7 @@ action_t* felhunter_pet_t::create_action( util::string_view name, util::string_v
   if ( name == "shadow_bite" )
     return new warlock_pet_melee_attack_t( this, "Shadow Bite" );
   if ( name == "spell_lock" )
-    return special_action;
+    return new spell_lock_t( this, options_str );
   return warlock_pet_t::create_action( name, options_str );
 }
 
