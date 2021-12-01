@@ -294,20 +294,7 @@ timespan_t imp_pet_t::available() const
 
 /// Imp End
 
-struct lash_of_pain_t : public warlock_pet_spell_t
-{
-  lash_of_pain_t( warlock_pet_t* p ) : warlock_pet_spell_t( p, "Lash of Pain" )
-  {
-  }
-};
-
-struct whiplash_t : public warlock_pet_spell_t
-{
-  whiplash_t( warlock_pet_t* p ) : warlock_pet_spell_t( p, "Whiplash" )
-  {
-    aoe = -1;
-  }
-};
+/// Succubus Begin
 
 succubus_pet_t::succubus_pet_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_SUCCUBUS, name != "succubus" )
@@ -322,9 +309,8 @@ void succubus_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  // TOCHECK Increased by 15% in 8.1.
-  owner_coeff.ap_from_sp *= 1.15;
-  owner_coeff.sp_from_sp *= 1.15;
+  owner_coeff.ap_from_sp = 0.575;
+  owner_coeff.sp_from_sp = 1.15;
 
   main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
   melee_attack                = new warlock_pet_melee_t( this );
@@ -333,10 +319,12 @@ void succubus_pet_t::init_base_stats()
 action_t* succubus_pet_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "lash_of_pain" )
-    return new lash_of_pain_t( this );
+    return new warlock_pet_spell_t( this, "Lash of Pain" );
 
   return warlock_pet_t::create_action( name, options_str );
 }
+
+/// Succubus End
 
 struct consuming_shadows_t : public warlock_pet_spell_t
 {
