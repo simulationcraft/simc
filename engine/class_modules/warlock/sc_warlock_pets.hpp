@@ -327,6 +327,11 @@ struct felhunter_pet_t : public warlock_pet_t
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
+struct spell_lock_t : public warlock_pet_spell_t
+{
+  spell_lock_t(warlock_pet_t* , util::string_view );
+};
+
 struct imp_pet_t : public warlock_pet_t
 {
   double firebolt_cost;

@@ -207,28 +207,10 @@ timespan_t warlock_simple_pet_t::available() const
   return cd_remains;
 }
 
-// Felhunter
-
 namespace base
 {
-struct shadow_bite_t : public warlock_pet_melee_attack_t
-{
-  shadow_bite_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( p, "Shadow Bite" )
-  {
-  }
-};
 
-struct spell_lock_t : public warlock_pet_spell_t
-{
-  spell_lock_t( warlock_pet_t* p, util::string_view options_str )
-    : warlock_pet_spell_t( "Spell Lock", p, p->find_spell( 19647 ) )
-  {
-    parse_options(options_str);
-
-    may_miss = may_block = may_dodge = may_parry = false;
-    ignore_false_positive = is_interrupt = true;
-  }
-};
+/// Felhunter Begin
 
 felhunter_pet_t::felhunter_pet_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_FELHUNTER, name != "felhunter" )
@@ -242,9 +224,8 @@ void felhunter_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  // TOCHECK Increased by 15% in 8.1.
-  owner_coeff.ap_from_sp *= 1.15;
-  owner_coeff.sp_from_sp *= 1.15;
+  owner_coeff.ap_from_sp = 0.575;
+  owner_coeff.sp_from_sp = 1.15;
 
   melee_attack = new warlock_pet_melee_t( this );
   special_action = new spell_lock_t( this, "" );
@@ -253,11 +234,22 @@ void felhunter_pet_t::init_base_stats()
 action_t* felhunter_pet_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "shadow_bite" )
-    return new shadow_bite_t( this );
+    return new warlock_pet_melee_attack_t( this, "Shadow Bite" );
   if ( name == "spell_lock" )
-    return new spell_lock_t( this, options_str );
+    return special_action;
   return warlock_pet_t::create_action( name, options_str );
 }
+
+spell_lock_t::spell_lock_t( warlock_pet_t* p, util::string_view options_str )
+    : warlock_pet_spell_t( "Spell Lock", p, p->find_spell( 19647 ) )
+{
+    parse_options( options_str );
+
+    may_miss = may_block = may_dodge = may_parry = false;
+    ignore_false_positive = is_interrupt = true;
+}
+
+/// Felhunter End
 
 // Imp
 
