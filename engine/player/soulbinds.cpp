@@ -711,10 +711,10 @@ void thrill_seeker( special_effect_t& effect )
   int number_of_players      = 1;
   // If the user does not override the value for this we will set different defaults based on the sim here
   // Default: 1/20 = 0.05
-  // DungeonSlice: 1/4 = 0.25
+  // DungeonSlice & DungeonRoute: 1/4 = 0.25
   if ( killing_blow_chance < 0 )
   {
-    if ( p->sim->fight_style == "DungeonSlice" )
+    if ( p->sim->fight_style == "DungeonSlice" || p->sim->fight_style == "DungeonRoute" )
     {
       number_of_players = 4;
     }

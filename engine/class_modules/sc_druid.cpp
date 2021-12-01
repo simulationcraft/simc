@@ -339,7 +339,6 @@ public:
   melee_attack_t* caster_melee_attack;
   melee_attack_t* cat_melee_attack;
   melee_attack_t* bear_melee_attack;
-  double equipped_weapon_dps;
 
   // Druid Events
   std::vector<event_t*> persistent_event_delay;
@@ -835,7 +834,6 @@ public:
 
     cooldown.rage_from_melees->duration = timespan_t::from_seconds( 1.0 );
 
-    equipped_weapon_dps   = 0;
     resource_regeneration = regen_type::DYNAMIC;
 
     regen_caches[ CACHE_HASTE ]        = true;
@@ -8931,8 +8929,6 @@ void druid_t::apl_restoration()
 void druid_t::init_scaling()
 {
   player_t::init_scaling();
-
-  equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time.total_seconds();
 
   scaling->disable( STAT_STRENGTH );
 
