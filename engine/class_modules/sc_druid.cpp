@@ -1424,7 +1424,7 @@ struct berserk_cat_buff_t : public druid_buff_t<buff_t>
     if ( p.sets->has_set_bonus( DRUID_FERAL, T28, B4 ) )
     {
       set_stack_change_callback( [ &p ]( buff_t*, int, int new_ ) {
-        if ( !new_ )
+        if ( new_ )
           p.active.sickle_of_the_lion->execute_on_target( p.target );
       } );
     }
