@@ -7,8 +7,6 @@ namespace warlock
 namespace actions_affliction
 {
 using namespace actions;
-static const bool DEBUG_SET_TEST_2 = false;
-static const bool DEBUG_SET_TEST_4 = false;
 
 struct affliction_spell_t : public warlock_spell_t
 {
@@ -117,7 +115,7 @@ struct shadow_bolt_t : public affliction_spell_t
       }
 
       // TODO: Check PTR to see if 4-set procs on cast finish, or on damage
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) || DEBUG_SET_TEST_4 )
+      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
       {        
         auto tdata = this->td( s->target );
         bool tierDotsActive = tdata->dots_agony->is_ticking();
@@ -599,7 +597,7 @@ struct malefic_rapture_t : public affliction_spell_t
           m *= 1.0 + p()->conduit.focused_malignancy.percent();
         }
 
-        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) || DEBUG_SET_TEST_2)
+        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
         {
           m *= 1.00 + p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 1 ).percent();
         }
@@ -653,9 +651,9 @@ struct malefic_rapture_t : public affliction_spell_t
         p()->procs.malefic_wrath->occur();
       }
 
-      if (p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) || DEBUG_SET_TEST_2)
+      if (p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
       {
-        timespan_t dot_extension =  p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).time_value();
+        timespan_t dot_extension =  p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).time_value() * 1000;
         warlock_td_t* td = p()->get_target_data( target );
 
         if ( td )
@@ -714,7 +712,7 @@ struct drain_soul_t : public affliction_spell_t
           td( d->target )->debuffs_shadow_embrace->trigger();
       }
 
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) || DEBUG_SET_TEST_4)
+      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
       {
         bool tierDotsActive = td( d->target )->dots_agony->is_ticking();
         tierDotsActive     &= td( d->target )->dots_corruption->is_ticking();
