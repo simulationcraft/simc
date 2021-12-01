@@ -251,23 +251,15 @@ spell_lock_t::spell_lock_t( warlock_pet_t* p, util::string_view options_str )
 
 /// Felhunter End
 
-// Imp
-
-struct firebolt_t : public warlock_pet_spell_t
-{
-  firebolt_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Firebolt", p, p->find_spell( 3110 ) )
-  {
-  }
-};
+/// Imp Begin
 
 imp_pet_t::imp_pet_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_IMP, name != "imp" ), firebolt_cost( find_spell( 3110 )->cost( POWER_ENERGY ) )
 {
   action_list_str = "firebolt";
 
-  // TOCHECK Increased by 25% in 8.1.
-  owner_coeff.ap_from_sp *= 1.25;
-  owner_coeff.sp_from_sp *= 1.25;
+  owner_coeff.ap_from_sp = 0.625;
+  owner_coeff.sp_from_sp = 1.25;
   owner_coeff.health = 0.45;
 
   is_main_pet = true;
@@ -276,22 +268,20 @@ imp_pet_t::imp_pet_t( warlock_t* owner, util::string_view name )
 action_t* imp_pet_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "firebolt" )
-    return new firebolt_t( this );
+    return new warlock_pet_spell_t( "Firebolt", this, this->find_spell( 3110 ) );
   return warlock_pet_t::create_action( name, options_str );
 }
 
 timespan_t imp_pet_t::available() const
 {
-  double energy_left = resources.current[ RESOURCE_ENERGY ];
-  double deficit     = energy_left - firebolt_cost;
+  double deficit = resources.current[ RESOURCE_ENERGY ] - firebolt_cost;
 
   if ( deficit >= 0 )
   {
     return warlock_pet_t::available();
   }
 
-  double rps               = resource_regen_per_second( RESOURCE_ENERGY );
-  double time_to_threshold = std::fabs( deficit ) / rps;
+  double time_to_threshold = std::fabs( deficit ) / resource_regen_per_second( RESOURCE_ENERGY );
 
   // Fuzz regen by making the pet wait a bit extra if it's just below the resource threshold
   if ( time_to_threshold < 0.001 )
@@ -301,6 +291,8 @@ timespan_t imp_pet_t::available() const
 
   return timespan_t::from_seconds( time_to_threshold );
 }
+
+/// Imp End
 
 struct lash_of_pain_t : public warlock_pet_spell_t
 {
