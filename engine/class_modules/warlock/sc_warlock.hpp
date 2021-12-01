@@ -383,6 +383,7 @@ public:
     propagate_const<buff_t*> nightfall;
     propagate_const<buff_t*> inevitable_demise;
     propagate_const<buff_t*> dark_soul_misery;
+    propagate_const<buff_t*> calamitous_crescendo;
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_core;
@@ -467,6 +468,7 @@ public:
     proc_t* nightfall;
     proc_t* corrupting_leer;
     proc_t* malefic_wrath;
+    proc_t* calamitous_crescendo;
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
 
     // demo

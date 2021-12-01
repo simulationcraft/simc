@@ -2,11 +2,14 @@
 
 #include "sc_warlock.hpp"
 
+
 namespace warlock
 {
 namespace actions_affliction
 {
 using namespace actions;
+static const bool DEBUG_SET_TEST_2 = false;
+static const bool DEBUG_SET_TEST_4 = false;
 
 struct affliction_spell_t : public warlock_spell_t
 {
@@ -106,10 +109,28 @@ struct shadow_bolt_t : public affliction_spell_t
   void impact( action_state_t* s ) override
   {
     affliction_spell_t::impact( s );
-    if ( result_is_hit( s->result ) && ( !p()->min_version_check( VERSION_9_1_0 ) || p()->talents.shadow_embrace->ok() ) )
+    if ( result_is_hit( s->result ) )
     {
-      // Add passive check
-      td( s->target )->debuffs_shadow_embrace->trigger();
+      if ( !p()->min_version_check( VERSION_9_1_0 ) || p()->talents.shadow_embrace->ok() )
+      {
+        // Add passive check
+        td( s->target )->debuffs_shadow_embrace->trigger();
+      }
+
+      // TODO: Check PTR to see if 2-set procs on cast finish, or on damage
+      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) || DEBUG_SET_TEST_2 )
+      {        
+        auto tdata = this->td( s->target );
+        bool tierDotsActive = tdata->dots_agony->is_ticking();
+        tierDotsActive &= tdata->dots_corruption->is_ticking();
+        tierDotsActive &= tdata->dots_unstable_affliction->is_ticking();
+
+        if ( tierDotsActive && rng().roll ( p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).percent() ) )
+        {
+          p()->procs.calamitous_crescendo->occur();
+          p()->buffs.calamitous_crescendo->trigger();
+        }
+      }
     }
   }
 
@@ -550,6 +571,24 @@ struct malefic_rapture_t : public affliction_spell_t
         callbacks = false; //TOCHECK: Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
       }
 
+      timespan_t execute_time() const override
+      {
+        if ( p()->buffs.calamitous_crescendo->check() )
+        {
+          return 0_ms;
+        }
+
+        return affliction_spell_t::execute_time();
+      }
+
+      double cost() const override
+      {
+        if ( p()->buffs.calamitous_crescendo->check() )
+          return 0.0;
+        
+        return warlock_spell_t::cost();      
+      }
+
       double composite_da_multiplier( const action_state_t* s ) const override
       {
         double m = affliction_spell_t::composite_da_multiplier( s );
@@ -559,6 +598,11 @@ struct malefic_rapture_t : public affliction_spell_t
         if ( td( s->target )->dots_unstable_affliction->is_ticking() )
         {
           m *= 1.0 + p()->conduit.focused_malignancy.percent();
+        }
+
+        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) || DEBUG_SET_TEST_4)
+        {
+          m *= 1.00 + p()->sets->set( WARLOCK_AFFLICTION, T28, B4 )->effectN( 1 ).percent();
         }
 
         return m;
@@ -573,6 +617,9 @@ struct malefic_rapture_t : public affliction_spell_t
         {
           p()->procs.malefic_rapture[ d ]->occur();
         }
+
+        if ( time_to_execute == 0_ms )
+          p()->buffs.calamitous_crescendo->decrement();
 
         affliction_spell_t::execute();
       }
@@ -605,6 +652,19 @@ struct malefic_rapture_t : public affliction_spell_t
       {
         p()->buffs.malefic_wrath->trigger();
         p()->procs.malefic_wrath->occur();
+      }
+
+      if (p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) || DEBUG_SET_TEST_4)
+      {
+        timespan_t dot_extension =  p()->sets->set( WARLOCK_AFFLICTION, T28, B4 )->effectN( 2 ).time_value();
+        warlock_td_t* td = p()->get_target_data( target );
+
+        if ( td )
+        {
+          td->dots_agony->adjust_duration( dot_extension );
+          td->dots_corruption->adjust_duration( dot_extension );
+          td->dots_unstable_affliction->adjust_duration( dot_extension );
+        }
       }
     }
 
@@ -647,10 +707,26 @@ struct drain_soul_t : public affliction_spell_t
   void tick( dot_t* d ) override
   {
     affliction_spell_t::tick( d );
-    if ( result_is_hit( d->state->result ) && ( !p()->min_version_check( VERSION_9_1_0 ) || p()->talents.shadow_embrace->ok() ) )
+    if ( result_is_hit( d->state->result ) )
     {
-      // TODO - Add passive check
-      td( d->target )->debuffs_shadow_embrace->trigger();
+      if ( !p()->min_version_check( VERSION_9_1_0 ) || p()->talents.shadow_embrace->ok() )
+      {
+          // TODO - Add passive check
+          td( d->target )->debuffs_shadow_embrace->trigger();
+      }
+
+      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) || DEBUG_SET_TEST_2)
+      {
+        bool tierDotsActive = td( d->target )->dots_agony->is_ticking();
+        tierDotsActive     &= td( d->target )->dots_corruption->is_ticking();
+        tierDotsActive     &= td( d->target )->dots_unstable_affliction->is_ticking();
+
+        if ( tierDotsActive && rng().roll( 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).percent() ) )
+        {
+          p()->procs.calamitous_crescendo->occur();
+          p()->buffs.calamitous_crescendo->trigger();
+        }
+      }
     }
   }
 
@@ -864,6 +940,8 @@ void warlock_t::create_buffs_affliction()
                                 ->set_trigger_spell( talents.inevitable_demise );
 
   buffs.malefic_wrath = make_buff( this, "malefic_wrath", find_spell( 337125 ) )->set_default_value_from_effect( 1 );
+
+  buffs.calamitous_crescendo = make_buff( this, "calamitous_crescendo", find_spell( 363953 ) )->set_default_value_from_effect( 1 );
 }
 
 void warlock_t::init_spells_affliction()
@@ -926,9 +1004,10 @@ void warlock_t::init_rng_affliction()
 
 void warlock_t::init_procs_affliction()
 {
-  procs.nightfall = get_proc( "nightfall" );
-  procs.corrupting_leer = get_proc( "corrupting_leer" );
-  procs.malefic_wrath   = get_proc( "malefic_wrath" );
+  procs.nightfall            = get_proc( "nightfall" );
+  procs.corrupting_leer      = get_proc( "corrupting_leer" );
+  procs.malefic_wrath        = get_proc( "malefic_wrath" );
+  procs.calamitous_crescendo = get_proc( "calamitous_crescendo" );
 
   for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
   {
