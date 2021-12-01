@@ -36,7 +36,8 @@ namespace
 // of the same option will override whatever is being done.
 bool overridable_option( const option_tuple_t& tuple )
 {
-  return tuple.name.rfind( "actions", 0 ) == std::string::npos &&
+  return tuple.value.rfind( '=' ) == std::string::npos &&
+         tuple.name.rfind( "actions", 0 ) == std::string::npos &&
          tuple.name.rfind( "items", 0 ) == std::string::npos &&
          tuple.name.rfind( "raid_events", 0 ) == std::string::npos;
 }
@@ -345,7 +346,14 @@ sim_control_t* profilesets_t::create_sim_options( const sim_control_t*          
 
   // Filter profileset options so that any option overridable in the base options is
   // overriden, and the rest are inserted at the correct position
-  range::for_each( new_options.options, [&filtered_opts, options_copy]( const option_tuple_t& t ) {
+  for ( const option_tuple_t& t : new_options.options )
+  {
+    if ( in_player_scope( t ) )
+    {
+      std::cerr << fmt::format("ERROR! Profilesets cannot define additional actors: {}={}", t.name, t.value) << std::endl;
+      return nullptr;
+    }
+
     if ( !overridable_option( t ) )
     {
       filtered_opts.push_back( t );
@@ -370,7 +378,7 @@ sim_control_t* profilesets_t::create_sim_options( const sim_control_t*          
         filtered_opts.push_back( t );
       }
     }
-  } );
+  }
 
   // No enemy option defined, insert filtered profileset options to the end of the
   // original options
