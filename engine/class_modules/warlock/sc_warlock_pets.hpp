@@ -355,6 +355,11 @@ struct voidwalker_pet_t : warlock_pet_t
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
+struct consuming_shadows_t : public warlock_pet_spell_t
+{
+  consuming_shadows_t( warlock_pet_t* );
+};
+
 }  // namespace base
 
 namespace demonology

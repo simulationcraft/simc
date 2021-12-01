@@ -326,14 +326,7 @@ action_t* succubus_pet_t::create_action( util::string_view name, util::string_vi
 
 /// Succubus End
 
-struct consuming_shadows_t : public warlock_pet_spell_t
-{
-  consuming_shadows_t( warlock_pet_t* p ) : warlock_pet_spell_t( p, "Consuming Shadows" )
-  {
-    aoe      = -1;
-    may_crit = false;
-  }
-};
+/// Voidwalker Begin
 
 voidwalker_pet_t::voidwalker_pet_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_VOIDWALKER, name != "voidwalker" )
@@ -347,9 +340,8 @@ void voidwalker_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  // TOCHECK Increased by 15% in 8.1.
-  owner_coeff.ap_from_sp *= 1.15;
-  owner_coeff.sp_from_sp *= 1.15;
+  owner_coeff.ap_from_sp = 0.575;
+  owner_coeff.sp_from_sp = 1.15;
   owner_coeff.health = 0.7;
 
   melee_attack = new warlock_pet_melee_t( this );
@@ -361,6 +353,15 @@ action_t* voidwalker_pet_t::create_action( util::string_view name, util::string_
     return new consuming_shadows_t( this );
   return warlock_pet_t::create_action( name, options_str );
 }
+
+consuming_shadows_t::consuming_shadows_t( warlock_pet_t* p ) 
+  : warlock_pet_spell_t( p, "Consuming Shadows" )
+{
+    aoe = -1;
+    may_crit = false;
+}
+
+/// Voidwalker End
 
 }  // namespace base
 
