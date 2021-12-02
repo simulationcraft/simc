@@ -603,6 +603,9 @@ struct chaos_bolt_t : public destruction_spell_t
   timespan_t execute_time() const override
   {
     timespan_t h = warlock_spell_t::execute_time();
+    
+    if ( p()->buffs.ritual_of_ruin_chaos_bolt->check() )
+      return timespan_t::from_millis(0);
 
     if ( p()->buffs.backdraft->check() )
       h *= backdraft_cast_time;
