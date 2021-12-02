@@ -573,8 +573,7 @@ namespace affliction
 {
 struct darkglare_t : public warlock_pet_t
 {
-  darkglare_t( warlock_t* owner, const std::string& name = "darkglare" );
-  virtual double composite_player_multiplier( school_e school ) const override;
+  darkglare_t( warlock_t*, const std::string& = "darkglare" );
   virtual action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 }  // namespace affliction

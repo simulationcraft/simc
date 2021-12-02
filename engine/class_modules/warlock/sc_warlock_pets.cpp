@@ -1657,36 +1657,31 @@ void infernal_t::demise()
 
 namespace affliction
 {
+
+/// Darkglare Begin
+
+darkglare_t::darkglare_t( warlock_t* owner, const std::string& name )
+  : warlock_pet_t( owner, name, PET_DARKGLARE, name != "darkglare" )
+{
+  action_list_str += "dark_glare";
+}
+
 struct dark_glare_t : public warlock_pet_spell_t
 {
   dark_glare_t( warlock_pet_t* p ) : warlock_pet_spell_t( "dark_glare", p, p->find_spell( 205231 ) )
   {
   }
 
+  // TOCHECK: Does this update correctly if dots are lost/gained while Darkglare is active?
   double action_multiplier() const override
   {
     double m = warlock_pet_spell_t::action_multiplier();
 
     double dots = 0.0;
 
-    for ( const auto target : sim->target_non_sleeping_list )
+    for ( player_t* target : sim->target_non_sleeping_list )
     {
-      auto td = this->owner_td( target );
-      if ( !td )
-        continue;
-
-      if ( td->dots_agony->is_ticking() )
-        dots += 1.0;
-      if ( td->dots_corruption->is_ticking() )
-        dots += 1.0;
-      if ( td->dots_siphon_life->is_ticking() )
-        dots += 1.0;
-      if ( td->dots_phantom_singularity->is_ticking() )
-        dots += 1.0;
-      if ( td->dots_vile_taint->is_ticking() )
-        dots += 1.0;
-      if ( td->dots_unstable_affliction->is_ticking() )
-        dots += 1.0;
+      dots += p()->o()->get_target_data( target )->count_affliction_dots();
     }
 
     m *= 1.0 + ( dots * p()->o()->spec.summon_darkglare->effectN( 3 ).percent() );
@@ -1695,18 +1690,6 @@ struct dark_glare_t : public warlock_pet_spell_t
   }
 };
 
-darkglare_t::darkglare_t( warlock_t* owner, const std::string& name )
-  : warlock_pet_t( owner, name, PET_DARKGLARE, name != "darkglare" )
-{
-  action_list_str += "dark_glare";
-}
-
-double darkglare_t::composite_player_multiplier( school_e school ) const
-{
-  double m = warlock_pet_t::composite_player_multiplier( school );
-  return m;
-}
-
 action_t* darkglare_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "dark_glare" )
@@ -1714,6 +1697,9 @@ action_t* darkglare_t::create_action( util::string_view name, util::string_view 
 
   return warlock_pet_t::create_action( name, options_str );
 }
+
+/// Darkglare End
+
 }  // namespace affliction
 }  // namespace pets
 }  // namespace warlock
