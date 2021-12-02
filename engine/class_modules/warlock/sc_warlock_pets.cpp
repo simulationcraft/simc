@@ -1327,7 +1327,15 @@ action_t* void_terror_t::create_action( util::string_view name, util::string_vie
 
 /// Void Terror End
 
-// wrathguard
+/// Wrathguard Begin
+
+wrathguard_t::wrathguard_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "wrathguard", PET_WARLOCK_RANDOM )
+{
+  action_list_str        = "travel/overhead_assault";
+  owner_coeff.ap_from_sp = 0.12;
+  owner_coeff.health     = 0.75;
+}
+
 struct overhead_assault_t : public warlock_pet_melee_attack_t
 {
   overhead_assault_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "overhead_assault", p, p->find_spell( 272432 ) )
@@ -1340,18 +1348,12 @@ struct overhead_assault_t : public warlock_pet_melee_attack_t
   }
 };
 
-wrathguard_t::wrathguard_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "wrathguard", PET_WARLOCK_RANDOM )
-{
-  action_list_str        = "travel/overhead_assault";
-  owner_coeff.ap_from_sp = 0.12;
-  owner_coeff.health     = 0.75;
-}
-
 void wrathguard_t::init_base_stats()
 {
   warlock_simple_pet_t::init_base_stats();
   off_hand_weapon = main_hand_weapon;
   melee_attack    = new warlock_pet_melee_t( this, 2.0 );
+  special_ability = new overhead_assault_t( this );
 }
 
 void wrathguard_t::arise()
@@ -1363,13 +1365,12 @@ void wrathguard_t::arise()
 action_t* wrathguard_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "overhead_assault" )
-  {
-    special_ability = new overhead_assault_t( this );
-    return special_ability;
-  }
+    return new overhead_assault_t( this );
 
   return warlock_simple_pet_t::create_action( name, options_str );
 }
+
+/// Wrathguard End
 
 // vicious hellhound
 struct demon_fangs_t : public warlock_pet_melee_attack_t
