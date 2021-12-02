@@ -1372,7 +1372,16 @@ action_t* wrathguard_t::create_action( util::string_view name, util::string_view
 
 /// Wrathguard End
 
-// vicious hellhound
+/// Vicious Hellhound Begin
+
+vicious_hellhound_t::vicious_hellhound_t( warlock_t* owner )
+  : warlock_simple_pet_t( owner, "vicious_hellhound", PET_WARLOCK_RANDOM )
+{
+  action_list_str        = "travel/demon_fangs";
+  owner_coeff.ap_from_sp = 0.12;
+  owner_coeff.health     = 0.75;
+}
+
 struct demon_fangs_t : public warlock_pet_melee_attack_t
 {
   demon_fangs_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "demon_fangs", p, p->find_spell( 272013 ) )
@@ -1385,20 +1394,13 @@ struct demon_fangs_t : public warlock_pet_melee_attack_t
   }
 };
 
-vicious_hellhound_t::vicious_hellhound_t( warlock_t* owner )
-  : warlock_simple_pet_t( owner, "vicious_hellhound", PET_WARLOCK_RANDOM )
-{
-  action_list_str        = "travel/demon_fangs";
-  owner_coeff.ap_from_sp = 0.12;
-  owner_coeff.health     = 0.75;
-}
-
 void vicious_hellhound_t::init_base_stats()
 {
   warlock_simple_pet_t::init_base_stats();
 
   main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
   melee_attack                = new warlock_pet_melee_t( this, 1.0 );
+  special_ability = new demon_fangs_t( this );
 }
 
 void vicious_hellhound_t::arise()
@@ -1410,13 +1412,12 @@ void vicious_hellhound_t::arise()
 action_t* vicious_hellhound_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "demon_fangs" )
-  {
-    special_ability = new demon_fangs_t( this );
-    return special_ability;
-  }
+    return new demon_fangs_t( this );
 
   return warlock_simple_pet_t::create_action( name, options_str );
 }
+
+/// Vicious Hellhound End
 
 // illidari satyr
 struct shadow_slash_t : public warlock_pet_melee_attack_t
