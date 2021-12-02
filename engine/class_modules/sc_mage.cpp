@@ -1688,7 +1688,7 @@ public:
       }
 
       auto totm = td->debuffs.touch_of_the_magi;
-      if ( totm->check() )
+      if ( totm->check() && s->action != p()->action.touch_of_the_magi_explosion )
       {
         // Touch of the Magi factors out debuffs with effect subtype 87 (Modify Damage Taken%), but only
         // if they increase damage taken. It does not factor out debuffs with effect subtype 270
