@@ -1202,13 +1202,7 @@ action_t* darkhound_t::create_action( util::string_view name, util::string_view 
 
 /// Darkhound End
 
-// bilescourge
-struct toxic_bile_t : public warlock_pet_spell_t
-{
-  toxic_bile_t( warlock_pet_t* p ) : warlock_pet_spell_t( "toxic_bile", p, p->find_spell( 272167 ) )
-  {
-  }
-};
+/// Bilescourge Begin
 
 bilescourge_t::bilescourge_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "bilescourge", PET_WARLOCK_RANDOM )
 {
@@ -1220,10 +1214,12 @@ bilescourge_t::bilescourge_t( warlock_t* owner ) : warlock_simple_pet_t( owner, 
 action_t* bilescourge_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "toxic_bile" )
-    return new toxic_bile_t( this );
+    return new warlock_pet_spell_t( this, "toxic_bile" );
 
   return warlock_simple_pet_t::create_action( name, options_str );
 }
+
+/// Bilescourge End
 
 // urzul
 struct many_faced_bite_t : public warlock_pet_melee_attack_t
