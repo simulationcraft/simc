@@ -286,6 +286,7 @@ struct player_t : public actor_t
   auto_dispose< std::vector<special_effect_t*> > special_effects;
   std::vector<std::pair<player_t*, std::function<void( player_t* )>>> callbacks_on_demise;
   std::vector<std::pair<player_t*, std::function<void( void )>>> callbacks_on_arise;
+  std::vector<std::function<void( player_t* )>> callbacks_on_kill;
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
@@ -1220,6 +1221,7 @@ public:
 
   void register_on_demise_callback( player_t* source, std::function<void( player_t* )> fn );
   void register_on_arise_callback( player_t* source, std::function<void( void )> fn );
+  void register_on_kill_callback( std::function<void( player_t* )> fn );
 
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();
