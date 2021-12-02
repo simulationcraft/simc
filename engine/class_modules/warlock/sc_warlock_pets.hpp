@@ -456,12 +456,12 @@ struct dreadstalker_t : public warlock_pet_t
 
 struct vilefiend_t : public warlock_simple_pet_t
 {
-  action_t* bile_spit;
+  int bile_spit_executes;
 
-  vilefiend_t( warlock_t* owner );
+  vilefiend_t( warlock_t* );
   void init_base_stats() override;
   void arise() override;
-  action_t* create_action( util::string_view name, util::string_view options_str ) override;
+  action_t* create_action( util::string_view, util::string_view ) override;
 };
 
 struct demonic_tyrant_t : public warlock_pet_t

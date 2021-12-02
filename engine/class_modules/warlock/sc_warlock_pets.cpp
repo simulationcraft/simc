@@ -961,15 +961,42 @@ action_t* dreadstalker_t::create_action( util::string_view name, util::string_vi
 
 /// Dreadstalker End
 
-// vilefiend
+/// Vilefiend Begin
+
+vilefiend_t::vilefiend_t( warlock_t* owner )
+  : warlock_simple_pet_t( owner, "vilefiend", PET_VILEFIEND )
+{
+  action_list_str = "bile_spit";
+  action_list_str += "/travel";
+  action_list_str += "/headbutt";
+
+  owner_coeff.ap_from_sp = 0.23;
+  owner_coeff.health     = 0.75;
+
+  bile_spit_executes = 1; // Only one Bile Spit per summon
+}
+
 struct bile_spit_t : public warlock_pet_spell_t
 {
   bile_spit_t( warlock_pet_t* p ) : warlock_pet_spell_t( "bile_spit", p, p->find_spell( 267997 ) )
   {
     tick_may_crit = false;
     hasted_ticks  = false;
-    // Single cast per sim
-    cooldown->duration = sim->max_time * ( 1 + sim->vary_combat_length );
+  }
+
+  bool ready() override
+  {
+    if ( debug_cast< vilefiend_t* >( p() )->bile_spit_executes <= 0 )
+      return false;
+
+    return warlock_pet_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    warlock_pet_spell_t::execute();
+
+    debug_cast< vilefiend_t* >( p() )->bile_spit_executes--;
   }
 };
 
@@ -981,44 +1008,32 @@ struct headbutt_t : public warlock_pet_melee_attack_t
   }
 };
 
-vilefiend_t::vilefiend_t( warlock_t* owner )
-  : warlock_simple_pet_t( owner, "vilefiend", PET_VILEFIEND ), bile_spit( nullptr )
-{
-  action_list_str = "bile_spit";
-  action_list_str += "/travel";
-  action_list_str += "/headbutt";
-  owner_coeff.ap_from_sp = 0.23;
-  owner_coeff.health     = 0.75;
-}
-
 void vilefiend_t::init_base_stats()
 {
   warlock_simple_pet_t::init_base_stats();
 
   melee_attack = new warlock_pet_melee_t( this, 2.0 );
-  bile_spit    = new bile_spit_t( this );
+  special_ability = new headbutt_t( this );
 }
 
 void vilefiend_t::arise()
 {
-  warlock_pet_t::arise();
-  //Reset cooldown to allow cast for new vilefiend
-  bile_spit->reset();
+  warlock_simple_pet_t::arise();
+
+  bile_spit_executes = 1;
 }
 
 action_t* vilefiend_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "bile_spit" )
-    return bile_spit;
-
+    return new bile_spit_t( this );
   if ( name == "headbutt" )
-  {
-    special_ability = new headbutt_t( this );
-    return special_ability;
-  }
+    return new headbutt_t( this );
 
   return warlock_simple_pet_t::create_action( name, options_str );
 }
+
+/// Vilefiend End
 
 // demonic tyrant
 struct demonfire_t : public warlock_pet_spell_t
