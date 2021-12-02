@@ -467,7 +467,6 @@ struct vilefiend_t : public warlock_simple_pet_t
 struct demonic_tyrant_t : public warlock_pet_t
 {
   demonic_tyrant_t( warlock_t* owner, util::string_view name = "demonic_tyrant" );
-  void init_base_stats() override;
   void demise() override;
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
