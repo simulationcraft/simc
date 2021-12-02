@@ -5677,7 +5677,7 @@ void player_t::demise()
    * need to be associated with eg. resolve Diminishing Return list.
    */
 
-  if (arise_time >= timespan_t::zero())
+  if ( arise_time >= 0_ms )
   {
     iteration_fight_length += sim->current_time() - arise_time;
   }
@@ -5700,22 +5700,6 @@ void player_t::demise()
       cb.second( this );
   }
 
-  for ( size_t i = 0; i < buff_list.size(); ++i )
-    buff_list[ i ]->cancel();
-
-  for ( size_t i = 0; i < action_list.size(); ++i )
-    action_list[ i ]->cancel();
-
-  // sim -> cancel_events( this );
-
-  for ( auto* pet : pet_list )
-  {
-    pet->demise();
-  }
-
-  for ( size_t i = 0; i < dot_list.size(); ++i )
-    dot_list[ i ]->cancel();
-
   if ( is_enemy() )
   {
     sim->active_enemies--;
@@ -5730,6 +5714,20 @@ void player_t::demise()
     sim->active_allies--;
     sim->player_non_sleeping_list.find_and_erase_unordered( this );
   }
+
+  for ( size_t i = 0; i < buff_list.size(); ++i )
+    buff_list[ i ]->cancel();
+
+  for ( size_t i = 0; i < action_list.size(); ++i )
+    action_list[ i ]->cancel();
+
+  // sim -> cancel_events( this );
+
+  for ( auto* pet : pet_list )
+    pet->demise();
+
+  for ( size_t i = 0; i < dot_list.size(); ++i )
+    dot_list[ i ]->cancel();
 }
 
 /**
