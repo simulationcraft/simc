@@ -1560,11 +1560,19 @@ timespan_t prince_malchezaar_t::available() const
 
 namespace destruction
 {
+
+/// Infernal Begin
+
+infernal_t::infernal_t( warlock_t* owner, const std::string& name )
+  : warlock_pet_t( owner, name, PET_INFERNAL, name != "infernal" ), immolation( nullptr )
+{
+  resource_regeneration = regen_type::DISABLED;
+}
+
 struct immolation_tick_t : public warlock_pet_spell_t
 {
-  //TODO: Probably should move this trigger into where it was being passed from, for clarity
   immolation_tick_t( warlock_pet_t* p, const spell_data_t* s )
-    : warlock_pet_spell_t( "immolation", p, s->effectN( 1 ).trigger() )
+    : warlock_pet_spell_t( "immolation", p, s )
   {
     aoe        = -1;
     background = may_crit = true;
@@ -1598,12 +1606,6 @@ struct infernal_melee_t : warlock_pet_melee_t
   }
 };
 
-infernal_t::infernal_t( warlock_t* owner, const std::string& name )
-  : warlock_pet_t( owner, name, PET_INFERNAL, name != "infernal" ), immolation( nullptr )
-{
-  resource_regeneration = regen_type::DISABLED;
-}
-
 void infernal_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
@@ -1615,7 +1617,7 @@ void infernal_t::create_buffs()
 {
   warlock_pet_t::create_buffs();
 
-  auto damage = new immolation_tick_t( this, find_spell( 19483 ) );
+  auto damage = new immolation_tick_t( this, find_spell( 19483 )->effectN( 1 ).trigger() );
 
   immolation =
       make_buff<buff_t>( this, "immolation", find_spell( 19483 ) )
@@ -1626,6 +1628,7 @@ void infernal_t::create_buffs()
           } );
 }
 
+// TODO: utilize new execute_on_target
 void infernal_t::arise()
 {
   warlock_pet_t::arise();
@@ -1647,6 +1650,9 @@ void infernal_t::demise()
 
   warlock_pet_t::demise();
 }
+
+/// Infernal End
+
 }  // namespace destruction
 
 namespace affliction
