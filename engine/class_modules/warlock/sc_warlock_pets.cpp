@@ -1035,7 +1035,15 @@ action_t* vilefiend_t::create_action( util::string_view name, util::string_view 
 
 /// Vilefiend End
 
-// demonic tyrant
+/// Demonic Tyrant Begin
+
+demonic_tyrant_t::demonic_tyrant_t( warlock_t* owner, const std::string& name )
+  : warlock_pet_t( owner, name, PET_DEMONIC_TYRANT, name != "demonic_tyrant" )
+{
+  resource_regeneration = regen_type::DISABLED;
+  action_list_str += "/demonfire";
+}
+
 struct demonfire_t : public warlock_pet_spell_t
 {
   demonfire_t( warlock_pet_t* p, util::string_view options_str )
@@ -1056,18 +1064,6 @@ struct demonfire_t : public warlock_pet_spell_t
     return da;
   }
 };
-
-demonic_tyrant_t::demonic_tyrant_t( warlock_t* owner, const std::string& name )
-  : warlock_pet_t( owner, name, PET_DEMONIC_TYRANT, name != "demonic_tyrant" )
-{
-  resource_regeneration = regen_type::DISABLED;
-  action_list_str += "/demonfire";
-}
-
-void demonic_tyrant_t::init_base_stats()
-{
-  warlock_pet_t::init_base_stats();
-}
 
 void demonic_tyrant_t::demise()
 {
@@ -1090,6 +1086,8 @@ action_t* demonic_tyrant_t::create_action( util::string_view name, util::string_
 
   return warlock_pet_t::create_action( name, options_str );
 }
+
+/// Demonic Tyrant End
 
 namespace random_demons
 {
