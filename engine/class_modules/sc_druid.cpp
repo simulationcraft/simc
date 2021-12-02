@@ -7786,26 +7786,16 @@ void druid_t::activate()
 {
   if ( talent.predator->ok() )
   {
-    range::for_each( sim->actor_list, [this]( player_t* target ) -> void {
-      if ( !target->is_enemy() )
-        return;
+    register_on_kill_callback( [ this ]( player_t* t ) {
+      auto td = get_target_data( t );
+      if ( td->dots.thrash_cat->is_ticking() || td->dots.rip->is_ticking() || td->dots.rake->is_ticking() )
+      {
+        if ( !cooldown.tigers_fury->down() )
+          proc.predator_wasted->occur();
 
-      target->register_on_demise_callback( this, [this]( player_t* target ) -> void {
-        auto p = this;
-        if ( p->specialization() != DRUID_FERAL )
-          return;
-
-        if ( get_target_data( target )->dots.thrash_cat->is_ticking() ||
-             get_target_data( target )->dots.rip->is_ticking() ||
-             get_target_data( target )->dots.rake->is_ticking() )
-        {
-          if ( !p->cooldown.tigers_fury->down() )
-            p->proc.predator_wasted->occur();
-
-          p->cooldown.tigers_fury->reset( true );
-          p->proc.predator->occur();
-        }
-      } );
+        cooldown.tigers_fury->reset( true );
+        proc.predator->occur();
+      }
     } );
   }
 
