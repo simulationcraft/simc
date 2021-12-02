@@ -5115,9 +5115,10 @@ struct druid_form_t : public druid_spell_t
 
     switch ( form )
     {
-      case BEAR_FORM: affinity = p->talent.guardian_affinity; break;
-      case CAT_FORM: affinity = p->talent.feral_affinity; break;
-      case MOONKIN_FORM: affinity = p->talent.balance_affinity; break;
+      case BEAR_FORM:    affinity = p->talent.guardian_affinity;    break;
+      case CAT_FORM:     affinity = p->talent.feral_affinity;       break;
+      case MOONKIN_FORM: affinity = p->talent.balance_affinity;     break;
+      case NO_FORM:      affinity = p->talent.restoration_affinity; break;
       default: break;
     }
   }
@@ -5128,7 +5129,8 @@ struct druid_form_t : public druid_spell_t
 
     p()->shapeshift( form );
 
-    if ( p()->legendary.oath_of_the_elder_druid->ok() && !p()->buff.oath_of_the_elder_druid->check() && !p()->buff.heart_of_the_wild->check() && affinity->ok() )
+    if ( p()->legendary.oath_of_the_elder_druid->ok() && !p()->buff.oath_of_the_elder_druid->check() &&
+         !p()->buff.heart_of_the_wild->check() && affinity->ok() )
     {
       p()->buff.oath_of_the_elder_druid->trigger();
       p()->buff.heart_of_the_wild->trigger(
@@ -5170,6 +5172,16 @@ struct moonkin_form_t : public druid_form_t
   moonkin_form_t( druid_t* p, std::string_view opt )
     : druid_form_t( "moonkin_form", p, p->spec.moonkin_form, opt, MOONKIN_FORM )
   {}
+};
+
+// Cancelform (revert to caster form)========================================
+
+struct cancel_form_t : public druid_form_t
+{
+  cancel_form_t( druid_t* p, std::string_view opt ) : druid_form_t( "cancelform", p, spell_data_t::nil(), opt, NO_FORM )
+  {
+    trigger_gcd = 0_ms;
+  }
 };
 
 // Barkskin =================================================================
@@ -6372,7 +6384,7 @@ struct starfall_t : public druid_spell_t
 
       for ( auto* t : tl )
       {
-         td( t )->dots.moonfire->adjust_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
+        td( t )->dots.moonfire->adjust_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
         td( t )->dots.sunfire->adjust_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
       }
     }
@@ -7849,6 +7861,7 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
   if ( name == "bear_form"              ) return new      spells::bear_form_t( this, options_str );
   if ( name == "cat_form"               ) return new       spells::cat_form_t( this, options_str );
   if ( name == "moonkin_form"           ) return new   spells::moonkin_form_t( this, options_str );
+  if ( name == "cancelform"             ) return new    spells::cancel_form_t( this, options_str );
   if ( name == "dash"                   ) return new                   dash_t( this, options_str );
   if ( name == "entangling_roots"       ) return new       entangling_roots_t( this, options_str );
   if ( name == "heart_of_the_wild"      ) return new      heart_of_the_wild_t( this, options_str );
