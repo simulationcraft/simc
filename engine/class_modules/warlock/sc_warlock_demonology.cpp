@@ -244,7 +244,6 @@ struct hand_of_guldan_t : public demonology_spell_t
   {
     demonology_spell_t::impact( s );
 
-    impact_spell->set_target( s->target );
     impact_spell->execute();    
 
     if ( p()->legendary.forces_of_the_horned_nightmare.ok() &&
