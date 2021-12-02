@@ -209,6 +209,7 @@ public:
     cooldown_t* blade_of_justice;
     cooldown_t* final_reckoning;
     cooldown_t* hammer_of_wrath;
+    cooldown_t* wake_of_ashes;
 
     cooldown_t* blessing_of_the_seasons;
     cooldown_t* ashen_hallow; // Radiant Embers Legendary
@@ -282,6 +283,8 @@ public:
     const spell_data_t* hammer_of_wrath_2;
 
     const spell_data_t* ashen_hallow_how;
+
+    const spell_data_t* seraphim_buff;
   } spells;
 
   // Talents
@@ -444,7 +447,7 @@ public:
     const spell_data_t* dawn_will_come_4pc;
     const spell_data_t* ashes_to_ashes_2pc;
     const spell_data_t* ashes_to_ashes_4pc;
-    
+
   } tier_sets;
 
   // Paladin options
@@ -674,7 +677,7 @@ struct forbearance_t : public buff_t
   }
 };
 
-};  // namespace buffs
+}  // namespace buffs
 
 // ==========================================================================
 // Paladin Ability Templates
