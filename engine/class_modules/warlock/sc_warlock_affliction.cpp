@@ -119,8 +119,8 @@ struct shadow_bolt_t : public affliction_spell_t
       {        
         auto tdata = this->td( s->target );
         bool tierDotsActive = tdata->dots_agony->is_ticking();
-        tierDotsActive &= tdata->dots_corruption->is_ticking();
-        tierDotsActive &= tdata->dots_unstable_affliction->is_ticking();
+                           && tdata->dots_corruption->is_ticking();
+                           && tdata->dots_unstable_affliction->is_ticking();
 
         if ( tierDotsActive && rng().roll( p()->sets->set(WARLOCK_AFFLICTION, T28, B4 )->effectN( 1 ).percent() ) )
         {
