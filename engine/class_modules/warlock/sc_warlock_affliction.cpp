@@ -714,9 +714,9 @@ struct drain_soul_t : public affliction_spell_t
 
       if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
       {
-        bool tierDotsActive = td( d->target )->dots_agony->is_ticking();
-        tierDotsActive     &= td( d->target )->dots_corruption->is_ticking();
-        tierDotsActive     &= td( d->target )->dots_unstable_affliction->is_ticking();
+        bool tierDotsActive = td( d->target )->dots_agony->is_ticking() 
+                           && td( d->target )->dots_corruption->is_ticking()
+                           && td( d->target )->dots_unstable_affliction->is_ticking();
 
         if ( tierDotsActive && rng().roll( p()->sets->set( WARLOCK_AFFLICTION, T28, B4 )->effectN( 2 ).percent() ) )
         {
