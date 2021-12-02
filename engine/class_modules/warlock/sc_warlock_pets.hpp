@@ -538,6 +538,7 @@ struct illidari_satyr_t : public warlock_simple_pet_t
 struct eyes_of_guldan_t : public warlock_simple_pet_t
 {
   eyes_of_guldan_t( warlock_t* owner );
+  void init_base_stats() override;
   void arise() override;
   void demise() override;
   action_t* create_action( util::string_view name, util::string_view options_str ) override;

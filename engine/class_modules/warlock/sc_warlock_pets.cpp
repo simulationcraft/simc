@@ -1465,14 +1465,7 @@ action_t* illidari_satyr_t::create_action( util::string_view name, util::string_
 
 /// Illidari Satyr End
 
-// eye of guldan
-struct eye_of_guldan_t : public warlock_pet_spell_t
-{
-  eye_of_guldan_t( warlock_pet_t* p ) : warlock_pet_spell_t( "eye_of_guldan", p, p->find_spell( 272131 ) )
-  {
-    hasted_ticks = false;
-  }
-};
+/// Eyes of Guldan Begin
 
 eyes_of_guldan_t::eyes_of_guldan_t( warlock_t* owner )
   : warlock_simple_pet_t( owner, "eye_of_guldan", PET_WARLOCK_RANDOM )
@@ -1481,6 +1474,14 @@ eyes_of_guldan_t::eyes_of_guldan_t( warlock_t* owner )
   owner_coeff.ap_from_sp = 0.12;
   owner_coeff.health     = 0.75;
 }
+
+struct eye_of_guldan_t : public warlock_pet_spell_t
+{
+  eye_of_guldan_t( warlock_pet_t* p ) : warlock_pet_spell_t( "eye_of_guldan", p, p->find_spell( 272131 ) )
+  {
+    hasted_ticks = false;
+  }
+};
 
 void eyes_of_guldan_t::arise()
 {
@@ -1496,16 +1497,20 @@ void eyes_of_guldan_t::demise()
   warlock_simple_pet_t::demise();
 }
 
+void eyes_of_guldan_t::init_base_stats()
+{
+  special_ability = new eye_of_guldan_t( this );
+}
+
 action_t* eyes_of_guldan_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "eye_of_guldan" )
-  {
-    special_ability = new eye_of_guldan_t( this );
-    return special_ability;
-  }
+    return new eye_of_guldan_t( this );
 
   return warlock_simple_pet_t::create_action( name, options_str );
 }
+
+/// Eyes of Guldan End
 
 // prince malchezaar
 prince_malchezaar_t::prince_malchezaar_t( warlock_t* owner )
