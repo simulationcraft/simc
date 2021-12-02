@@ -1091,40 +1091,7 @@ action_t* demonic_tyrant_t::create_action( util::string_view name, util::string_
 
 namespace random_demons
 {
-// shivarra
-struct multi_slash_damage_t : public warlock_pet_melee_attack_t
-{
-  multi_slash_damage_t( warlock_pet_t* p, unsigned slash_num )
-    : warlock_pet_melee_attack_t( "multi-slash-" + std::to_string( slash_num ), p, p->find_spell( 272172 ) )
-  {
-    background              = true;
-    attack_power_mod.direct = data().effectN( slash_num ).ap_coeff();
-  }
-};
-
-struct multi_slash_t : public warlock_pet_melee_attack_t
-{
-  std::array<multi_slash_damage_t*, 4> slashs;
-
-  multi_slash_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "multi-slash", p, p->find_spell( 272172 ) )
-  {
-    for ( unsigned i = 0; i < slashs.size(); ++i )
-    {
-      // Slash number is the spelldata effects number, so increase by 1.
-      slashs[ i ] = new multi_slash_damage_t( p, i + 1 );
-      add_child( slashs[ i ] );
-    }
-  }
-
-  void execute() override
-  {
-    for ( auto& slash : slashs )
-    {
-      slash->execute();
-    }
-    cooldown->start( timespan_t::from_millis( rng().range( 7000, 9000 ) ) );
-  }
-};
+/// Shivarra Begin
 
 shivarra_t::shivarra_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "shivarra", PET_WARLOCK_RANDOM )
 {
@@ -1133,11 +1100,46 @@ shivarra_t::shivarra_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "shiva
   owner_coeff.health     = 0.75;
 }
 
+struct multi_slash_t : public warlock_pet_melee_attack_t
+{
+  struct multi_slash_damage_t : public warlock_pet_melee_attack_t
+  {
+    multi_slash_damage_t( warlock_pet_t* p, unsigned slash_num )
+      : warlock_pet_melee_attack_t( "multi-slash-" + std::to_string( slash_num ), p, p->find_spell( 272172 ) )
+    {
+      background              = true;
+      attack_power_mod.direct = data().effectN( slash_num ).ap_coeff();
+    }
+  };
+
+  std::array<multi_slash_damage_t*, 4> slashes;
+
+  multi_slash_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "multi-slash", p, p->find_spell( 272172 ) )
+  {
+    for ( unsigned i = 0; i < slashes.size(); ++i )
+    {
+      // Slash number is the spelldata effects number, so increase by 1.
+      slashes[ i ] = new multi_slash_damage_t( p, i + 1 );
+      add_child( slashes[ i ] );
+    }
+  }
+
+  void execute() override
+  {
+    for ( auto& slash : slashes )
+    {
+      slash->execute();
+    }
+    cooldown->start( timespan_t::from_millis( rng().range( 7000, 9000 ) ) );
+  }
+};
+
 void shivarra_t::init_base_stats()
 {
   warlock_simple_pet_t::init_base_stats();
   off_hand_weapon = main_hand_weapon;
   melee_attack    = new warlock_pet_melee_t( this, 2.0 );
+  special_ability = new multi_slash_t( this );
 }
 
 void shivarra_t::arise()
@@ -1149,13 +1151,12 @@ void shivarra_t::arise()
 action_t* shivarra_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "multi_slash" )
-  {
-    special_ability = new multi_slash_t( this );
-    return special_ability;
-  }
+    return new multi_slash_t( this );
 
   return warlock_simple_pet_t::create_action( name, options_str );
 }
+
+/// Shivarra End
 
 // darkhound
 struct fel_bite_t : public warlock_pet_melee_attack_t
