@@ -1,5 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41031 Live (hotfix 2021-11-16/41031)
-
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41031 Live (hotfix 2021-11-16/41031, git build shadowlands afb955ed, no-networking)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
 School           : Physical
@@ -14281,6 +14280,7 @@ Name             : Sickle of the Lion (id=363498) [Spell Family (7), Passive, Hi
 Class            : Druid
 School           : Cosmic
 Spell Type       : None
+Proc Chance      : 101%
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -14291,9 +14291,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
 Effects          :
-#1 (id=902901)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When Berserk ends you lacerate all nearby enemies, dealing $363830o1 Bleed damage over $363830d.
+#1 (id=902901)   : Apply Aura (6) | Proc Trigger Spell (42): Sickle of the Lion
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 363830 | Target: Self (1)
+Description      : Entering Berserk causes you to lacerate all nearby enemies, dealing $363830o1 Bleed damage over $363830d.
 
 Name             : Architect's Aligner (id=363789) 
 Class            : Druid
@@ -14343,6 +14343,7 @@ Spell Type       : Melee
 Duration         : 10 seconds
 Labels           : 1397: Tiger's Fury (5217 effect#5)
 Mechanic         : Bleed
+Triggered by     : Sickle of the Lion (363498)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

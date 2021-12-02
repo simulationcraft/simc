@@ -1424,7 +1424,7 @@ struct berserk_cat_buff_t : public druid_buff_t<buff_t>
     if ( p.sets->has_set_bonus( DRUID_FERAL, T28, B4 ) )
     {
       set_stack_change_callback( [ &p ]( buff_t*, int, int new_ ) {
-        if ( !new_ )
+        if ( new_ )
           p.active.sickle_of_the_lion->execute_on_target( p.target );
       } );
     }
@@ -4329,10 +4329,12 @@ struct thrash_cat_t : public cat_attack_t
 // Sickle of the Lion (Feral T28 4pc)=========================================
 struct sickle_of_the_lion_t : public cat_attack_t
 {
-  sickle_of_the_lion_t( druid_t* p ) : cat_attacks::cat_attack_t( "sickle_of_the_lion", p, p->find_spell( 363830 ) )
+  sickle_of_the_lion_t( druid_t* p )
+    : cat_attack_t( "sickle_of_the_lion", p, p->sets->set( DRUID_FERAL, T28, B4 )->effectN( 1 ).trigger() )
   {
     aoe = -1;
   }
+
 };
 }  // end namespace cat_attacks
 
