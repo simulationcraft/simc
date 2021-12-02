@@ -1265,18 +1265,26 @@ action_t* urzul_t::create_action( util::string_view name, util::string_view opti
 
 /// Urzul End
 
-// void terror
-struct double_breath_damage_t : public warlock_pet_spell_t
+/// Void Terror Begin
+
+void_terror_t::void_terror_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "void_terror", PET_WARLOCK_RANDOM )
 {
-  double_breath_damage_t( warlock_pet_t* p, unsigned breath_num )
-    : warlock_pet_spell_t( "double_breath-" + std::to_string( breath_num ), p, p->find_spell( 272156 ) )
-  {
-    attack_power_mod.direct = data().effectN( breath_num ).ap_coeff();
-  }
-};
+  action_list_str        = "travel/double_breath";
+  owner_coeff.ap_from_sp = 0.12;
+  owner_coeff.health     = 0.75;
+}
 
 struct double_breath_t : public warlock_pet_spell_t
 {
+  struct double_breath_damage_t : public warlock_pet_spell_t
+  {
+    double_breath_damage_t( warlock_pet_t* p, unsigned breath_num )
+      : warlock_pet_spell_t( "double_breath-" + std::to_string( breath_num ), p, p->find_spell( 272156 ) )
+    {
+      attack_power_mod.direct = data().effectN( breath_num ).ap_coeff();
+    }
+  };
+
   double_breath_damage_t* breath_1;
   double_breath_damage_t* breath_2;
 
@@ -1296,17 +1304,11 @@ struct double_breath_t : public warlock_pet_spell_t
   }
 };
 
-void_terror_t::void_terror_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "void_terror", PET_WARLOCK_RANDOM )
-{
-  action_list_str        = "travel/double_breath";
-  owner_coeff.ap_from_sp = 0.12;
-  owner_coeff.health     = 0.75;
-}
-
 void void_terror_t::init_base_stats()
 {
   warlock_simple_pet_t::init_base_stats();
   melee_attack = new warlock_pet_melee_t( this, 2.0 );
+  special_ability = new double_breath_t( this );
 }
 
 void void_terror_t::arise()
@@ -1318,13 +1320,12 @@ void void_terror_t::arise()
 action_t* void_terror_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "double_breath" )
-  {
-    special_ability = new double_breath_t( this );
-    return special_ability;
-  }
+    return new double_breath_t( this );
 
   return warlock_simple_pet_t::create_action( name, options_str );
 }
+
+/// Void Terror End
 
 // wrathguard
 struct overhead_assault_t : public warlock_pet_melee_attack_t
