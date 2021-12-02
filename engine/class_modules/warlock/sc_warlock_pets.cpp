@@ -1512,7 +1512,8 @@ action_t* eyes_of_guldan_t::create_action( util::string_view name, util::string_
 
 /// Eyes of Guldan End
 
-// prince malchezaar
+/// Prince Malchezaar Begin
+
 prince_malchezaar_t::prince_malchezaar_t( warlock_t* owner )
   : warlock_simple_pet_t( owner, "prince_malchezaar", PET_WARLOCK_RANDOM )
 {
@@ -1549,8 +1550,11 @@ timespan_t prince_malchezaar_t::available() const
     return warlock_simple_pet_t::available();
   }
 
-  return expiration->remains() + timespan_t::from_millis( 1 );
+  return expiration->remains() + 1_ms;
 }
+
+///Prince Malchezaar End
+
 }  // namespace random_demons
 }  // namespace demonology
 
