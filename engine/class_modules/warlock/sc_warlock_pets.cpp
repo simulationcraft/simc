@@ -1419,7 +1419,16 @@ action_t* vicious_hellhound_t::create_action( util::string_view name, util::stri
 
 /// Vicious Hellhound End
 
-// illidari satyr
+/// Illidari Satyr Begin
+
+illidari_satyr_t::illidari_satyr_t( warlock_t* owner )
+  : warlock_simple_pet_t( owner, "illidari_satyr", PET_WARLOCK_RANDOM )
+{
+  action_list_str        = "travel/shadow_slash";
+  owner_coeff.ap_from_sp = 0.12;
+  owner_coeff.health     = 0.75;
+}
+
 struct shadow_slash_t : public warlock_pet_melee_attack_t
 {
   shadow_slash_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "shadow_slash", p, p->find_spell( 272012 ) )
@@ -1432,19 +1441,12 @@ struct shadow_slash_t : public warlock_pet_melee_attack_t
   }
 };
 
-illidari_satyr_t::illidari_satyr_t( warlock_t* owner )
-  : warlock_simple_pet_t( owner, "illidari_satyr", PET_WARLOCK_RANDOM )
-{
-  action_list_str        = "travel/shadow_slash";
-  owner_coeff.ap_from_sp = 0.12;
-  owner_coeff.health     = 0.75;
-}
-
 void illidari_satyr_t::init_base_stats()
 {
   warlock_simple_pet_t::init_base_stats();
   off_hand_weapon = main_hand_weapon;
   melee_attack    = new warlock_pet_melee_t( this, 1.0 );
+  special_ability = new shadow_slash_t( this );
 }
 
 void illidari_satyr_t::arise()
@@ -1456,13 +1458,12 @@ void illidari_satyr_t::arise()
 action_t* illidari_satyr_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "shadow_slash" )
-  {
-    special_ability = new shadow_slash_t( this );
-    return special_ability;
-  }
+    return new shadow_slash_t( this );
 
   return warlock_simple_pet_t::create_action( name, options_str );
 }
+
+/// Illidari Satyr End
 
 // eye of guldan
 struct eye_of_guldan_t : public warlock_pet_spell_t
