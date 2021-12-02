@@ -39,7 +39,6 @@ struct warlock_pet_t : public pet_t
   } buffs;
 
   bool is_main_pet          = false;
-  int dreadbite_executes    = 0;
 
   warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_e pt, bool guardian = false );
   void init_base_stats() override;
@@ -445,12 +444,14 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 
 struct dreadstalker_t : public warlock_pet_t
 {
-  dreadstalker_t( warlock_t* owner );
+  int dreadbite_executes;
+
+  dreadstalker_t( warlock_t* );
   void init_base_stats() override;
   void arise() override;
   void demise() override;
   timespan_t available() const override;
-  action_t* create_action( util::string_view name, util::string_view options_str ) override;
+  action_t* create_action( util::string_view, util::string_view ) override;
 };
 
 struct vilefiend_t : public warlock_simple_pet_t

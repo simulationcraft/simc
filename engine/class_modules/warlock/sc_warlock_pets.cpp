@@ -830,6 +830,20 @@ double fel_firebolt_t::cost() const
 
 /// Wild Imp End
 
+/// Dreadstalker Begin
+
+dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "dreadstalker", PET_DREADSTALKER )
+{
+  action_list_str        = "travel/dreadbite";
+  resource_regeneration  = regen_type::DISABLED;
+
+  // TOCHECK: This has been adjusted through various hotfixes over several years to the current value
+  // Last checked 2021-12-02
+  owner_coeff.ap_from_sp = 0.552;
+
+  owner_coeff.health = 0.4;
+}
+
 struct dreadbite_t : public warlock_pet_melee_attack_t
 {
   dreadbite_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Dreadbite", p, p->find_spell( 205196 ) )
@@ -844,7 +858,7 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
 
   bool ready() override
   {
-    if ( p()->dreadbite_executes <= 0 )
+    if ( debug_cast< dreadstalker_t* >( p() )->dreadbite_executes <= 0 )
       return false;
 
     return warlock_pet_melee_attack_t::ready();
@@ -866,7 +880,7 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   {
     warlock_pet_melee_attack_t::execute();
 
-    p()->dreadbite_executes--;
+    debug_cast< dreadstalker_t* >( p() )->dreadbite_executes--;
   }
 
   void impact( action_state_t* s ) override
@@ -881,8 +895,8 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
 // SL - Soulbind conduit (Carnivorous Stalkers) handling requires special version of melee attack
 struct dreadstalker_melee_t : warlock_pet_melee_t
 {
-  dreadstalker_melee_t(warlock_pet_t* p, double wm, const char* name = "melee") :
-    warlock_pet_melee_t (p, wm, name)
+  dreadstalker_melee_t( warlock_pet_t* p, double wm, const char* name = "melee" ) :
+    warlock_pet_melee_t ( p, wm, name )
   {  }
 
   void execute() override
@@ -891,7 +905,7 @@ struct dreadstalker_melee_t : warlock_pet_melee_t
 
     if ( p()->o()->conduit.carnivorous_stalkers.ok() && rng().roll( p()->o()->conduit.carnivorous_stalkers.percent() ) )
     {
-      p()->dreadbite_executes++;
+      debug_cast< dreadstalker_t* >( p() )->dreadbite_executes++;
       p()->o()->procs.carnivorous_stalkers->occur();
       if ( p()->readying )
       {
@@ -902,25 +916,12 @@ struct dreadstalker_melee_t : warlock_pet_melee_t
   }
 };
 
-dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "dreadstalker", PET_DREADSTALKER )
-{
-  action_list_str        = "travel/dreadbite";
-  resource_regeneration  = regen_type::DISABLED;
-  // owner_coeff.ap_from_sp = 0.4;
-  // The above is the base value that was originally used
-  // A hotfix live as of 10-02-2018 increased this by 15%. https://us.battle.net/forums/en/wow/topic/20769527059
-  // checking against beta/live on 2020-12-01 revealed that dreadstalkers were under by an additional 20%
-  // This means current value should be 0.552
-  owner_coeff.ap_from_sp = 0.552;
-  owner_coeff.health = 0.4;
-}
-
 void dreadstalker_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
   resources.base[ RESOURCE_ENERGY ]                  = 0;
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
-  melee_attack                                       = new dreadstalker_melee_t( this, 0.83 );
+  melee_attack                                       = new dreadstalker_melee_t( this, 0.83 ); // TOCHECK: This number may require tweaking if the AP coeff changes
 }
 
 void dreadstalker_t::arise()
@@ -957,6 +958,8 @@ action_t* dreadstalker_t::create_action( util::string_view name, util::string_vi
 
   return warlock_pet_t::create_action( name, options_str );
 }
+
+/// Dreadstalker End
 
 // vilefiend
 struct bile_spit_t : public warlock_pet_spell_t
