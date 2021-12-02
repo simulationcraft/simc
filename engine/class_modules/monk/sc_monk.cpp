@@ -264,10 +264,6 @@ public:
 
       if ( p()->conduit.xuens_bond->ok() )
         p()->cooldown.invoke_xuen->adjust( p()->conduit.xuens_bond->effectN( 2 ).time_value(), true );  // Saved as -100
-
-      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) && !p()->buff.primordial_power->check() )
-        p()->buff.primordial_potential->trigger();
-
     }
     else
     {
@@ -276,7 +272,11 @@ public:
       p()->buff.hit_combo->expire();
     }
 
-    // Record the current action in the history.
+    // This can trigger from combo strikes or breaking combo strikes
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) && !p()->buff.primordial_power->check() )
+      p()->buff.primordial_potential->trigger();
+
+      // Record the current action in the history.
     p()->combo_strike_actions.push_back( this );
   }
 
@@ -4681,7 +4681,7 @@ struct revival_t : public monk_heal_t
     aoe      = -1;
 
     if ( sim->pvp_crit )
-      base_multiplier *= 2;  // 08/03/2016
+      base_multiplier *= 2;  // 2016-08-03
   }
 };
 
@@ -6911,7 +6911,7 @@ void monk_t::create_buffs()
       make_buff( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
           ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
-          ->set_can_cancel( false )  // Undocumented hotfix 28/09/2018 - SEF can no longer be canceled.
+          ->set_can_cancel( false )  // Undocumented hotfix 2018-09-28 - SEF can no longer be canceled.
           ->set_cooldown( timespan_t::zero() );
 
   buff.touch_of_death_ww = new buffs::touch_of_death_ww_buff_t( *this, "touch_of_death_ww", spell_data_t::nil() );

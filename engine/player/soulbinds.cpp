@@ -104,8 +104,8 @@ void add_covenant_cast_callback( player_t* p, S&&... args )
   }
 }
 
-double value_from_desc_vars( const special_effect_t& e, util::string_view var, util::string_view prefix = "",
-                             util::string_view postfix = "" )
+double value_from_desc_vars( const special_effect_t& e, util::string_view var, util::string_view prefix = {},
+                             util::string_view postfix = {} )
 {
   double value = 0;
 
@@ -290,7 +290,7 @@ void niyas_tools_herbs( special_effect_t& effect )
   }
 
   // TODO: confirm proc flags
-  // 11/17/2020 - For Rogues this procs from all periodic heals (Recuperator/Soothing Darkness/Crimson Vial)
+  // 2020-11-17 - For Rogues this procs from all periodic heals (Recuperator/Soothing Darkness/Crimson Vial)
   effect.proc_flags_  = PF_ALL_HEAL | PF_PERIODIC;
   effect.proc_flags2_ = PF2_LANDED | PF2_PERIODIC_HEAL;
 
@@ -711,10 +711,10 @@ void thrill_seeker( special_effect_t& effect )
   int number_of_players      = 1;
   // If the user does not override the value for this we will set different defaults based on the sim here
   // Default: 1/20 = 0.05
-  // DungeonSlice: 1/4 = 0.25
+  // DungeonSlice & DungeonRoute: 1/4 = 0.25
   if ( killing_blow_chance < 0 )
   {
-    if ( p->sim->fight_style == "DungeonSlice" )
+    if ( p->sim->fight_style == "DungeonSlice" || p->sim->fight_style == "DungeonRoute" )
     {
       number_of_players = 4;
     }

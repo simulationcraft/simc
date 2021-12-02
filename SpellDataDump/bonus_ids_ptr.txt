@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.40725 Live (hotfix 2021-10-25/40725)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41031 Live (hotfix 2021-11-16/41031)
 
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
@@ -3122,7 +3122,7 @@ bonus_id={ 5805 }, ilevel={ 2 @plvl 1 - 146 @plvl 60 }
 bonus_id={ 5806 }, ilevel={ 4 @plvl 1 - 148 @plvl 60 }
 bonus_id={ 5807 }, ilevel={ 3 @plvl 1 - 147 @plvl 60 }
 bonus_id={ 5808 }, ilevel={ 5 @plvl 1 - 149 @plvl 60 }
-bonus_id={ 5817 }, ilevel={ 4 @plvl 1 - 60 @plvl 60 }
+bonus_id={ 5817 }, ilevel={ 4 @plvl 1 - 148 @plvl 60 }
 bonus_id={ 5821 }, quality={ epic }
 bonus_id={ 5825 }, desc={ Combatant I }, quality={ epic }
 bonus_id={ 5830 }, desc={ Challenger I }, quality={ epic }
@@ -4175,19 +4175,20 @@ bonus_id={ 7470 }, quality={ legendary }, effects={ Sinful Surge (id=354131, ind
 bonus_id={ 7471 }, quality={ legendary }, effects={ Nature's Fury (id=354161, index=0, type=equip) }
 bonus_id={ 7472 }, quality={ legendary }, effects={ Unbridled Swarm (id=354123, index=0, type=equip) }
 bonus_id={ 7473 }, quality={ legendary }, effects={ Harmonic Echo (id=354186, index=0, type=equip) }
-bonus_id={ 7474 }, quality={ legendary }, effects={ Sinful Hysteria (id=354109, index=0, type=equip) }
+bonus_id={ 7474 }, quality={ legendary }, effects={ Sinful Hysteria (id=364816, index=0, type=equip) }
 bonus_id={ 7475 }, quality={ legendary }, effects={ Death's Fathom (id=354294, index=0, type=equip) }
 bonus_id={ 7476 }, quality={ legendary }, effects={ Sinful Delight (id=354333, index=0, type=equip) }
-bonus_id={ 7477 }, quality={ legendary }, effects={ Kindred Affinity (id=354115, index=0, type=equip) }
+bonus_id={ 7477 }, quality={ legendary }, effects={ Kindred Affinity (id=364815, index=0, type=equip) }
 bonus_id={ 7478 }, quality={ legendary }, effects={ Toxic Onslaught (id=354473, index=0, type=equip) }
 bonus_id={ 7570 }, quality={ legendary }, effects={ Splintered Elements (id=354647, index=0, type=equip) }
-bonus_id={ 7571 }, quality={ legendary }, effects={ Celestial Spirits (id=354118, index=0, type=equip) }
+bonus_id={ 7571 }, quality={ legendary }, effects={ Celestial Spirits (id=364819, index=0, type=equip) }
 bonus_id={ 7572 }, quality={ legendary }, effects={ Obedience (id=354703, index=0, type=equip) }
 bonus_id={ 7573 }, quality={ legendary }, effects={ Deathspike (id=354731, index=0, type=equip) }
 bonus_id={ 7576 }, socket={ 1 }
 bonus_id={ 7577 }, quality={ legendary }, effects={ Resounding Clarity (id=354837, index=0, type=equip) }
+bonus_id={ 7580 }, socket={ 1 }
 bonus_id={ 7679 }, quality={ legendary }, effects={ Divine Resonance (id=355098, index=0, type=equip) }
-bonus_id={ 7680 }, quality={ legendary }, effects={ Duty-Bound Gavel (id=355099, index=0, type=equip) }
+bonus_id={ 7680 }, quality={ legendary }, effects={ Duty-Bound Gavel (id=364719, index=0, type=equip) }
 bonus_id={ 7681 }, quality={ legendary }, effects={ Agony Gaze (id=355886, index=0, type=equip) }
 bonus_id={ 7698 }, quality={ legendary }, effects={ Blazing Slaughter (id=355890, index=0, type=equip) }
 bonus_id={ 7699 }, quality={ legendary }, effects={ Blind Faith (id=355893, index=0, type=equip) }
@@ -4238,10 +4239,31 @@ bonus_id={ 7745 }, stats={ 100% Crit [0.0460] }
 bonus_id={ 7746 }, stats={ 100% Haste [0.0940] }
 bonus_id={ 7747 }, effects={ Render Tribute (id=357585, index=2, type=use), Harsh Tutelage (id=358569, index=2, type=equip) }
 bonus_id={ 7748 }, effects={ Harsh Tutelage (id=358571, index=2, type=equip) }
+bonus_id={ 7880 }, quality={ epic }, ilevel={ 233 @plvl 0 - 233 @plvl 0 }
+bonus_id={ 7881 }, quality={ epic }, ilevel={ 262 @plvl 0 - 262 @plvl 0 }
 bonus_id={ 7883 }, ilevel={ 5 @plvl 1 - 220 @plvl 60 }
+bonus_id={ 7886 }, stats={ 100% Avoidance [0.3500] }, effects={ Cosmic Protoweave (id=361020, index=0, type=equip) }
+bonus_id={ 7887 }, effects={ Infusion: Corpse Purification (id=360046, index=0, type=equip) }
+bonus_id={ 7888 }, effects={ Magically Regulated Automa Core (id=360072, index=0, type=equip) }
 bonus_id={ 7890 }, quality={ epic }, ilevel={ 95 @plvl 45 - 158 @plvl 70 }
+bonus_id={ 7891 }, effects={ Pure-Air Sail Extensions (id=360367, index=0, type=equip), Pure-Air Sail Extensions (id=360975, index=0, type=equip) }
+bonus_id={ 7892 }, effects={ Erratic Genesis Matrix (id=360370, index=0, type=equip), Erratic Genesis Matrix (id=361287, index=0, type=equip) }
+bonus_id={ 7914 }, effects={ Devourer Essence Stone (id=360980, index=0, type=equip) }
+bonus_id={ 7915 }, desc={ Timewarped }, quality={ rare }, ilevel={ 3 @plvl 1 - 210 @plvl 60 }
+bonus_id={ 7916 }, desc={ Timewarped }, ilevel={ 5 @plvl 1 - 190 @plvl 60 }
+bonus_id={ 7917 }, effects={ Sustaining Armor Polish (id=361118, index=0, type=equip) }
 bonus_id={ 7920 }, ilevel={ 2 @plvl 1 - 146 @plvl 60 }
 bonus_id={ 7921 }, ilevel={ 3 @plvl 1 - 147 @plvl 60 }
 bonus_id={ 7922 }, ilevel={ 5 @plvl 1 - 149 @plvl 60 }
 bonus_id={ 7923 }, ilevel={ 4 @plvl 1 - 148 @plvl 60 }
-bonus_id={ 7924 }, ilevel={ 4 @plvl 1 - 60 @plvl 60 }
+bonus_id={ 7924 }, ilevel={ 4 @plvl 1 - 148 @plvl 60 }
+bonus_id={ 7932 }, effects={ Dimensional Translators (id=363327, index=0, type=use), Dimensional Translators (id=363328, index=0, type=equip) }
+bonus_id={ 7933 }, effects={ Raw Speed (id=363329, index=0, type=equip) }
+bonus_id={ 7934 }, effects={ Autorecreation (id=363330, index=0, type=equip) }
+bonus_id={ 7945 }, effects={ Strip Advantage (id=364086, index=0, type=equip) }
+bonus_id={ 7946 }, effects={ Cosmic Boom (id=364087, index=0, type=equip) }
+bonus_id={ 7947 }, socket={ 1 }, effects={ Crystallized (id=364999, index=0, type=equip) }
+bonus_id={ 7955 }, effects={ Zereth Vision (id=364480, index=0, type=equip) }
+bonus_id={ 7956 }, effects={ Treasurefinder (id=364478, index=0, type=equip) }
+bonus_id={ 7957 }, effects={ Pocopoc Resonance (id=364477, index=0, type=equip) }
+bonus_id={ 7960 }, effects={ Ephemera Harmonizing Stone (id=365457, index=0, type=equip) }

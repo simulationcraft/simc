@@ -8,6 +8,7 @@
 #include "action/sc_action.hpp"
 #include "buff/sc_buff.hpp"
 #include "dbc/dbc.hpp"
+#include "dbc/item_set_bonus.hpp"
 #include "item/item.hpp"
 #include "player/sc_player.hpp"
 #include "player/pet.hpp"
@@ -351,6 +352,45 @@ public:
   }
 };
 
+class item_set_decorator_t : public decorator_data_t
+{
+  const sim_t* m_sim;
+  const item_set_bonus_t* m_bonus;
+
+public:
+  item_set_decorator_t( const sim_t* sim, const item_set_bonus_t* bonus ) : m_sim( sim ), m_bonus( bonus )
+  {
+
+  }
+
+  bool can_decorate() const override
+  {
+    return m_bonus->enum_id < set_bonus_type_e::SET_BONUS_MAX;
+  }
+
+  void base_url( fmt::memory_buffer& buf ) const override
+  {
+    fmt::format_to( std::back_inserter( buf ), "<a href=\"https://{}.wowhead.com/item-set={}",
+                    report_decorators::decoration_domain( *m_sim ), m_bonus->set_id );
+  }
+
+  std::string url_name() const override
+  {
+    return util::encode_html( m_bonus->set_name );
+  }
+
+  std::string token() const override
+  {
+    auto tok = util::encode_html( m_bonus->set_opt_name );
+    util::tolower( tok );
+
+    if ( tok.find( "tier" ) != std::string::npos )
+      util::replace_all( tok, "tier", "Tier " );
+
+    return tok;
+  }
+};
+
 }  // unnamed namespace
 
 namespace report_decorators
@@ -457,6 +497,11 @@ std::string decorated_item( const item_t& item )
 std::string decorated_npc( const pet_t& pet )
 {
   return decorate( npc_decorator_t( pet ) );
+}
+
+std::string decorated_set( const sim_t& sim, const item_set_bonus_t& bonus )
+{
+  return decorate( item_set_decorator_t( &sim, &bonus ) );
 }
 
 }  // namespace report_decorators

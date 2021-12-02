@@ -8,32 +8,32 @@
 #include "buff/sc_buff.hpp"
 #include "class_modules/class_module.hpp"
 #include "dbc/dbc.hpp"
+#include "dbc/spell_query/spell_data_expr.hpp"
 #include "gsl-lite/gsl-lite.hpp"
 #include "interfaces/bcp_api.hpp"
 #include "interfaces/sc_http.hpp"
-#include "player/sc_player.hpp"
 #include "player/pet.hpp"
+#include "player/sc_player.hpp"
 #include "player/spawner_base.hpp"
 #include "player/unique_gear.hpp"
+#include "report/json/report_configuration.hpp"
 #include "report/reports.hpp"
 #include "report/sc_highchart.hpp"
-#include "report/json/report_configuration.hpp"
+#include "sc_profileset.hpp"
+#include "sim/event.hpp"
+#include "sim/iteration_data_entry.hpp"
+#include "sim/plot.hpp"
+#include "sim/raid_event.hpp"
+#include "sim/reforge_plot.hpp"
+#include "sim/sc_cooldown.hpp"
+#include "sim/sc_expressions.hpp"
+#include "sim/sc_option.hpp"
 #include "sim/sc_profileset.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/sim_control.hpp"
-#include "sim/sc_option.hpp"
-#include "sim/iteration_data_entry.hpp"
-#include "sim/event.hpp"
-#include "sim/sc_expressions.hpp"
-#include "sim/raid_event.hpp"
-#include "sim/plot.hpp"
-#include "sim/reforge_plot.hpp"
-#include "sc_profileset.hpp"
-#include "sim/sc_cooldown.hpp"
 #include "sim/work_queue.hpp"
-#include "dbc/spell_query/spell_data_expr.hpp"
-#include "util/xml.hpp"
 #include "util/string_view.hpp"
+#include "util/xml.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -1180,7 +1180,8 @@ std::string get_api_key()
     }
     else
     {
-      std::cerr << "Blizzard API credentials from file '" << filename << "' were not properly entered. (Size != 65)" << std::endl;
+      fmt::print( stderr, "Blizzard API credentials from file '{}' were not properly entered. (Size != 65)\n",
+                  filename );
     }
   }
 
@@ -1744,8 +1745,7 @@ bool sim_t::is_canceled() const
 
 void sim_t::cancel_iteration()
 {
-  if ( debug )
-    out_debug << "Iteration canceled.";
+  print_debug( "Iteration canceled." );
 
   event_mgr.cancel();
 }
@@ -1754,7 +1754,7 @@ void sim_t::cancel_iteration()
 
 void sim_t::combat()
 {
-  if ( debug ) out_debug << "Starting Simulator";
+  print_debug( "Starting Simulator" );
 
   // The sequencing of event manager seed and flush is very tricky.
   // DO NOT MESS WITH THIS UNLESS YOU ARE EXTREMELY CONFIDENT.
@@ -1770,8 +1770,7 @@ void sim_t::combat()
 /// Reset simulation.
 void sim_t::reset()
 {
-  if ( debug )
-    out_debug << "Resetting Simulator";
+  print_debug( "Resetting Simulator" );
 
   if( deterministic )
     seed = rng().reseed();
@@ -1836,8 +1835,7 @@ void sim_t::combat_begin()
     }
   }
 
-  if ( debug )
-    out_debug << "Combat Begin";
+  print_debug( "Combat Begin" );
 
   reset();
 
@@ -1910,7 +1908,7 @@ void sim_t::combat_begin()
 
 void sim_t::combat_end()
 {
-  if ( debug ) out_debug << "Combat End";
+  print_debug( "Combat End" );
 
   for ( auto* t : target_list )
   {
@@ -1950,7 +1948,7 @@ void sim_t::combat_end()
   //assert( active_enemies == 0 );
   //assert( active_allies == 0 );
 
-  if ( debug ) out_debug << "Flush Events";
+  print_debug( "Flush Events" );
 
   event_mgr.flush();
 
@@ -1966,7 +1964,7 @@ void sim_t::combat_end()
 
 void sim_t::datacollection_begin()
 {
-  if ( debug ) out_debug << "Sim Data Collection Begin";
+  print_debug( "Sim Data Collection Begin" );
 
   iteration_dmg = priority_iteration_dmg = iteration_heal = iteration_absorb = 0.0;
 
@@ -1997,7 +1995,7 @@ void sim_t::datacollection_begin()
 
 void sim_t::datacollection_end()
 {
-  if ( debug ) out_debug << "Sim Data Collection End";
+  print_debug( "Sim Data Collection End" );
 
   simulation_length.add( current_time().total_seconds() );
 
@@ -2657,8 +2655,7 @@ void sim_t::init()
                            ->add_invalidate( CACHE_STAMINA );
 
   // Find Already defined target, otherwise create a new one.
-  if ( debug )
-    out_debug << "Creating Enemies.";
+  print_debug( "Creating Enemies." );
 
   if ( !target_list.empty() )
   {
@@ -2811,7 +2808,8 @@ void sim_t::analyze()
        reforge_plot -> reforge_plot_stat_str.empty() &&
        profileset_map.empty() && ! profileset_enabled )
   {
-    std::cout << "Analyzing actor data ..." << std::endl;
+    fmt::print( "Analyzing actor data ...\n" );
+    std::fflush( stdout );
   }
 
   for ( size_t i = 0; i < actor_list.size(); i++ )
@@ -2971,7 +2969,8 @@ void sim_t::do_pause()
 void sim_t::set_error(std::string error)
 {
     util::replace_all( error, "\n", "" );
-    std::cerr << error << std::endl;
+    fmt::print( stderr, "{}\n", error );
+    std::fflush( stderr );
 
     error_list.push_back( std::move( error ) );
 }
@@ -2988,7 +2987,8 @@ void sim_t::merge( sim_t& other_sim )
        reforge_plot -> reforge_plot_stat_str.empty() &&
        profileset_map.empty() && ! profileset_enabled )
   {
-    std::cout << "Merging data from thread-" << other_sim.thread_index << " ..." << std::endl;
+    fmt::print( "Merging data from thread-{} ...\n", other_sim.thread_index );
+    std::fflush( stdout );
   }
 
   iterations += other_sim.iterations;
@@ -3409,23 +3409,24 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
 
 void sim_t::print_options()
 {
-  out_log.raw() << "\nWorld of Warcraft Raid Simulator Options:\n";
+  auto& raw_log = out_log.raw();
+  raw_log.print( "\nWorld of Warcraft Raid Simulator Options:\n" );
 
-  out_log.raw() << "\nSimulation Engine:\n";
+  raw_log.print( "\nSimulation Engine:\n" );
   for ( const auto& option : options )
   {
-    if ( option -> name() != "apikey" ) // Don't print out sensitive information.
-      out_log.raw() << option;
+    if ( option->name() != "apikey" )  // Don't print out sensitive information.
+      raw_log.print( "{}", *option );
   }
 
   for ( const auto* p : player_list )
   {
-     out_log.raw().print( "\nPlayer: {} ({})\n", p -> name(), util::player_type_string( p -> type ) );
-     for ( const auto& option : p->options )
-       out_log.raw() << option;
+    raw_log.print( "\nPlayer: {} ({})\n", p->name(), util::player_type_string( p->type ) );
+    for ( const auto& option : p->options )
+      raw_log.print( "{}", *option );
   }
 
-  out_log.raw() << "\n";
+  raw_log.print( "\n" );
 }
 
 void sim_t::add_option( std::unique_ptr<option_t> opt )
@@ -4117,14 +4118,14 @@ void sim_t::abort()
   std::stringstream s;
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
-    s << std::fixed << target_list[ i ] -> resources.initial[ RESOURCE_HEALTH ];
+    fmt::print( s, "{:.0f}", target_list[ i ]->resources.initial[ RESOURCE_HEALTH ] );
     if ( i < target_list.size() - 1 )
     {
-      s << '/';
+      fmt::print( s, "{}", '/' );
     }
   }
 
-  errorf( "Force abort, seed=%llu target_health=%s", seed, s.str().c_str() );
+  error( "Force abort, seed={} target_health={}", seed, s.str() );
   std::terminate();
 }
 
@@ -4148,7 +4149,8 @@ void sim_t::print_spell_query()
     io::cfile file( spell_query_xml_output_file_str, "w" );
     if ( ! file )
     {
-      std::cerr << "Unable to open spell query xml output file '" << spell_query_xml_output_file_str << "', using stdout instead\n";
+      fmt::print( stderr, "Unable to open spell query xml output file '{}', using stdout instead\n",
+                  spell_query_xml_output_file_str );
       file = io::cfile( stdout, io::cfile::no_close() );
     }
     auto root = xml_node_t( "spell_query" );

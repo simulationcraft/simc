@@ -508,6 +508,10 @@ public:
    * Can be overridden by class modules for tracking purposes.
    */
   proc_t* starved_proc;
+
+  // Tracking proc triggered when action fails to execute after being queued.
+  // Can be overridden by class modules for tracking purposes.
+  proc_t* queue_failed_proc;
   uint_least64_t total_executions;
 
   /**
@@ -612,6 +616,7 @@ public:
 
   void parse_effect_direct_mods( const spelleffect_data_t& spelleffect_data, bool item_scaling );
   void parse_effect_periodic_mods( const spelleffect_data_t& spelleffect_data, bool item_scaling );
+  void parse_effect_period( const spelleffect_data_t& );
 
   void parse_effect_data( const spelleffect_data_t& );
 
@@ -627,12 +632,14 @@ public:
 
   player_t* select_target_if_target();
 
-  void apply_affecting_aura(const spell_data_t*);
+  void apply_affecting_aura( const spell_data_t* );
   void apply_affecting_effect( const spelleffect_data_t& effect );
   void apply_affecting_conduit( const conduit_data_t& conduit, int effect_num = 1 );
   void apply_affecting_conduit_effect( const conduit_data_t& conduit, size_t effect_num );
 
   action_state_t* get_state( const action_state_t* = nullptr );
+
+  void execute_on_target( player_t*, double = -1.0 );
 
 private:
   friend struct action_state_t;

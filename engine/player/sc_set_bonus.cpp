@@ -391,4 +391,3 @@ std::string set_bonus_t::generate_set_bonus_options() const
 
   return util::string_join( opts, ", " );
 }
-

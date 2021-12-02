@@ -20,11 +20,11 @@ stats_t::stats_t( util::string_view n, player_t* p ) :
   parent( nullptr ),
   school( SCHOOL_NONE ),
   type( STATS_DMG ),
-  prefer_name( false ),
   resource_gain( n ),
   analyzed( false ),
   quiet( false ),
   background( true ),
+  prefer_name( false ),
   // Variables used both during combat and for reporting
   num_executes(), num_ticks(), num_refreshes(),
   num_direct_results(), num_tick_results(),

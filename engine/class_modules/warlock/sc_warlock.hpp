@@ -36,10 +36,10 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_scouring_tithe;
   propagate_const<dot_t*> dots_impending_catastrophe;
   propagate_const<dot_t*> dots_soul_rot;
+  propagate_const<dot_t*> dots_corruption;
 
   // Aff
   propagate_const<dot_t*> dots_agony;
-  propagate_const<dot_t*> dots_corruption; //TODO: Add offspec corruption
   propagate_const<dot_t*> dots_seed_of_corruption;
   propagate_const<dot_t*> dots_drain_soul;
   propagate_const<dot_t*> dots_siphon_life;
@@ -467,7 +467,7 @@ public:
     proc_t* nightfall;
     proc_t* corrupting_leer;
     proc_t* malefic_wrath;
-    std::vector<proc_t*> malefic_rapture;
+    std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
 
     // demo
     proc_t* demonic_calling;
@@ -511,7 +511,7 @@ public:
   void malignancy_reduction_helper();
   bool min_version_check( version_check_e version ) const;
   action_t* create_action( util::string_view name, util::string_view options ) override;
-  pet_t* create_pet( util::string_view name, util::string_view type = "" ) override;
+  pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
   void create_pets() override;
   std::string create_profile( save_e ) override;
   void copy_from( player_t* source ) override;
@@ -565,8 +565,11 @@ public:
     return td;
   }
 
+  // sc_warlock
+  action_t* create_action_warlock( util::string_view, util::string_view );
+
   // sc_warlock_affliction
-  action_t* create_action_affliction( util::string_view action_name, util::string_view options_str );
+  action_t* create_action_affliction( util::string_view, util::string_view );
   void create_buffs_affliction();
   void init_spells_affliction();
   void init_gains_affliction();
@@ -576,7 +579,7 @@ public:
   void create_apl_affliction();
 
   // sc_warlock_demonology
-  action_t* create_action_demonology( util::string_view action_name, util::string_view options_str );
+  action_t* create_action_demonology( util::string_view, util::string_view );
   void create_buffs_demonology();
   void init_spells_demonology();
   void init_gains_demonology();
@@ -586,7 +589,7 @@ public:
   void create_apl_demonology();
 
   // sc_warlock_destruction
-  action_t* create_action_destruction( util::string_view action_name, util::string_view options_str );
+  action_t* create_action_destruction( util::string_view, util::string_view );
   void create_buffs_destruction();
   void init_spells_destruction();
   void init_gains_destruction();
@@ -648,7 +651,7 @@ struct sc_event_t : public player_event_t
 
 struct warlock_heal_t : public heal_t
 {
-  warlock_heal_t( const std::string& n, warlock_t* p, const uint32_t id ) : heal_t( n, p, p->find_spell( id ) )
+  warlock_heal_t( util::string_view n, warlock_t* p, const uint32_t id ) : heal_t( n, p, p->find_spell( id ) )
   {
     target = p;
   }
@@ -911,8 +914,8 @@ private:
   }
 
 public:
-  summon_pet_t( const std::string& n, warlock_t* p, const std::string& sname = "" )
-    : warlock_spell_t( p, sname.empty() ? "Summon " + n : sname ),
+  summon_pet_t( util::string_view n, warlock_t* p, util::string_view sname = {} )
+    : warlock_spell_t( p, sname.empty() ? fmt::format( "Summon {}", n ) : sname ),
       summoning_duration( timespan_t::zero() ),
       pet_name( sname.empty() ? n : sname ),
       pet( nullptr )
@@ -920,7 +923,7 @@ public:
     _init_summon_pet_t();
   }
 
-  summon_pet_t( const std::string& n, warlock_t* p, int id )
+  summon_pet_t( util::string_view n, warlock_t* p, int id )
     : warlock_spell_t( n, p, p->find_spell( id ) ),
       summoning_duration( timespan_t::zero() ),
       pet_name( n ),
@@ -929,7 +932,7 @@ public:
     _init_summon_pet_t();
   }
 
-  summon_pet_t( const std::string& n, warlock_t* p, const spell_data_t* sd )
+  summon_pet_t( util::string_view n, warlock_t* p, const spell_data_t* sd )
     : warlock_spell_t( n, p, sd ), summoning_duration( timespan_t::zero() ), pet_name( n ), pet( nullptr )
   {
     _init_summon_pet_t();
@@ -963,14 +966,14 @@ struct summon_main_pet_t : public summon_pet_t
 {
   cooldown_t* instant_cooldown;
 
-  summon_main_pet_t( const std::string& n, warlock_t* p )
+  summon_main_pet_t( util::string_view n, warlock_t* p )
     : summon_pet_t( n, p ), instant_cooldown( p->get_cooldown( "instant_summon_pet" ) )
   {
     instant_cooldown->duration = timespan_t::from_seconds( 60 );
     ignore_false_positive      = true;
   }
 
-  virtual void schedule_execute( action_state_t* state = nullptr ) override
+  void schedule_execute( action_state_t* state = nullptr ) override
   {
     warlock_spell_t::schedule_execute( state );
 
@@ -1042,14 +1045,14 @@ template <typename Base>
 struct warlock_buff_t : public Base
 {
 public:
-  typedef warlock_buff_t base_t;
-  warlock_buff_t( warlock_td_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+  using base_t = warlock_buff_t;
+  warlock_buff_t( warlock_td_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
                   const item_t* item = nullptr )
     : Base( p, name, s, item )
   {
   }
 
-  warlock_buff_t( warlock_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+  warlock_buff_t( warlock_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
                   const item_t* item = nullptr )
     : Base( &p, name, s, item )
   {

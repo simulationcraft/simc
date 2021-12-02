@@ -40,7 +40,7 @@ item_runeforge_t::item_runeforge_t( const runeforge_legendary_entry_t& entry, co
   const auto& effect = item_effect();
   if ( effect.id != 0 )
   {
-    m_spell = dbc::find_spell( m_item->player, effect.spell_id );
+    m_spell = dbc::find_spell( m_item->player, m_entry->spell_id );
   }
   else
   {
@@ -83,7 +83,13 @@ const item_effect_t& item_runeforge_t::item_effect() const
     const auto& effect = item_effect_t::find( entry.value_1, m_item->player->dbc->ptr );
     if ( !effect.id || effect.spell_id != m_entry->spell_id )
     {
-      continue;
+      // 9.2 PTR data has changed item_effect.spell_id on some legendaries to a new spell which triggers the spell
+      // corresponding to runeforge_legendary_entry.spell_id
+      if ( !m_item->player->dbc->ptr ||
+           m_item->player->find_spell( effect.spell_id )->effectN( 1 ).trigger_spell_id() != m_entry->spell_id )
+      {
+        continue;
+      }
     }
 
     return effect;
