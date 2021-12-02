@@ -1297,6 +1297,7 @@ void warlock_t::init_procs()
   procs.corrupting_leer = get_proc( "corrupting_leer" );
   procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
   procs.horned_nightmare = get_proc( "horned_nightmare" );
+  procs.ritual_of_ruin       = get_proc( "ritual_of_ruin" );
 }
 
 void warlock_t::init_base_stats()

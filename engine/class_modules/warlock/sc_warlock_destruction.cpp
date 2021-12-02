@@ -587,6 +587,14 @@ struct chaos_bolt_t : public destruction_spell_t
     add_child( internal_combustion );
   }
 
+  double cost() const override
+  {
+    if ( p()->buffs.ritual_of_ruin_chaos_bolt->check() )
+      return 0.0;
+
+    return destruction_spell_t::cost();      
+  }
+
   void schedule_execute( action_state_t* state = nullptr ) override
   {
     destruction_spell_t::schedule_execute( state );
@@ -684,6 +692,17 @@ struct chaos_bolt_t : public destruction_spell_t
     // SL - Legendary
     if ( p()->legendary.madness_of_the_azjaqir->ok() )
       p()->buffs.madness_of_the_azjaqir->trigger();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
+    {
+      p()->buffs.ritual_of_ruin_chaos_bolt->expire();
+
+      if ( rng().roll( p()->sets->set( WARLOCK_DESTRUCTION, T28, B2 )->proc_chance() ) )
+      {
+        p()->procs.ritual_of_ruin->occur();
+        p()->buffs.ritual_of_ruin_rain_of_fire->trigger();
+      }
+    }
   }
 
   // Force spell to always crit
@@ -815,9 +834,29 @@ struct rain_of_fire_t : public destruction_spell_t
     }
   }
 
+  double cost() const override
+  {
+    if ( p()->buffs.ritual_of_ruin_chaos_bolt->check() )
+      return 0.0;
+
+    return destruction_spell_t::cost();      
+  }
+
   void execute() override
   {
     destruction_spell_t::execute();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
+    {
+      if ( p()->buffs.ritual_of_ruin_rain_of_fire->check() )
+        p()->buffs.ritual_of_ruin_rain_of_fire->expire();
+
+      if ( rng().roll( p()->sets->set( WARLOCK_DESTRUCTION, T28, B2 )->proc_chance() ) )
+      {
+        p()->procs.ritual_of_ruin->occur();
+        p()->buffs.ritual_of_ruin_chaos_bolt->trigger();
+      }
+    }
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                     ground_aoe_params_t()
@@ -1051,6 +1090,13 @@ void warlock_t::create_buffs_destruction()
   buffs.madness_of_the_azjaqir =
       make_buff( this, "madness_of_the_azjaqir", legendary.madness_of_the_azjaqir->effectN( 1 ).trigger() )
           ->set_trigger_spell( legendary.madness_of_the_azjaqir );
+
+  // Tier Sets
+  buffs.ritual_of_ruin_rain_of_fire =
+      make_buff( this, "ritual_of_ruin_rain_of_fire", find_spell( 364433 ) )->set_default_value_from_effect( 1 );
+
+  buffs.ritual_of_ruin_chaos_bolt =
+      make_buff( this, "ritual_of_ruin_chaos_bolt", find_spell( 364433 ) )->set_default_value_from_effect( 1 );
 }
 
 void warlock_t::init_spells_destruction()

@@ -404,6 +404,8 @@ public:
     propagate_const<buff_t*> reverse_entropy;
     propagate_const<buff_t*> rain_of_chaos;
     propagate_const<buff_t*> dark_soul_instability;
+    propagate_const<buff_t*> ritual_of_ruin_rain_of_fire;
+    propagate_const<buff_t*> ritual_of_ruin_chaos_bolt;
 
     // Covenants
     propagate_const<buff_t*> decimating_bolt;
@@ -482,6 +484,7 @@ public:
     // destro
     proc_t* reverse_entropy;
     proc_t* rain_of_chaos;
+    proc_t* ritual_of_ruin;
   } procs;
 
   int initial_soul_shards;
