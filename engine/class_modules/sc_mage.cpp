@@ -1711,7 +1711,7 @@ public:
       p()->buffs.ice_floes->decrement();
   }
 
-  void trigger_legendary_buff( buff_t* counter, buff_t* ready, int offset = 2 )
+  void trigger_legendary_buff( buff_t* counter, buff_t* ready, int offset = 1 )
   {
     if ( ready->check() )
       return;
@@ -1788,7 +1788,7 @@ struct arcane_mage_spell_t : public mage_spell_t
         if ( cr == p()->buffs.clearcasting && cr->check() < before )
         {
           p()->buffs.nether_precision->trigger();
-          trigger_legendary_buff( p()->buffs.arcane_lucidity, p()->buffs.arcane_lucidity_ready, 1 );
+          trigger_legendary_buff( p()->buffs.arcane_lucidity, p()->buffs.arcane_lucidity_ready );
         }
         break;
       }
@@ -1992,7 +1992,7 @@ struct fire_mage_spell_t : public mage_spell_t
 
   void trigger_molten_skyfall()
   {
-    trigger_legendary_buff( p()->buffs.molten_skyfall, p()->buffs.molten_skyfall_ready );
+    trigger_legendary_buff( p()->buffs.molten_skyfall, p()->buffs.molten_skyfall_ready, 2 );
   }
 
   void consume_molten_skyfall( player_t* target )
@@ -2101,7 +2101,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       p()->buffs.hot_streak->decrement();
       p()->buffs.pyroclasm->trigger();
 
-      trigger_legendary_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready, 1 );
+      trigger_legendary_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready );
 
       if ( rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
       {
@@ -2301,7 +2301,7 @@ struct frost_mage_spell_t : public mage_spell_t
 
   void trigger_cold_front()
   {
-    trigger_legendary_buff( p()->buffs.cold_front, p()->buffs.cold_front_ready );
+    trigger_legendary_buff( p()->buffs.cold_front, p()->buffs.cold_front_ready, 2 );
   }
 
   void consume_cold_front( player_t* target )
