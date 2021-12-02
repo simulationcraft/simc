@@ -1221,7 +1221,15 @@ action_t* bilescourge_t::create_action( util::string_view name, util::string_vie
 
 /// Bilescourge End
 
-// urzul
+/// Urzul Begin
+
+urzul_t::urzul_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "urzul", PET_WARLOCK_RANDOM )
+{
+  action_list_str        = "travel/many_faced_bite";
+  owner_coeff.ap_from_sp = 0.12;
+  owner_coeff.health     = 0.75;
+}
+
 struct many_faced_bite_t : public warlock_pet_melee_attack_t
 {
   many_faced_bite_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "many_faced_bite", p, p->find_spell( 272439 ) )
@@ -1234,17 +1242,11 @@ struct many_faced_bite_t : public warlock_pet_melee_attack_t
   }
 };
 
-urzul_t::urzul_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "urzul", PET_WARLOCK_RANDOM )
-{
-  action_list_str        = "travel/many_faced_bite";
-  owner_coeff.ap_from_sp = 0.12;
-  owner_coeff.health     = 0.75;
-}
-
 void urzul_t::init_base_stats()
 {
   warlock_simple_pet_t::init_base_stats();
   melee_attack = new warlock_pet_melee_t( this, 2.0 );
+  special_ability = new many_faced_bite_t( this );
 }
 
 void urzul_t::arise()
@@ -1256,13 +1258,12 @@ void urzul_t::arise()
 action_t* urzul_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "many_faced_bite" )
-  {
-    special_ability = new many_faced_bite_t( this );
-    return special_ability;
-  }
+    return new many_faced_bite_t( this );
 
   return warlock_simple_pet_t::create_action( name, options_str );
 }
+
+/// Urzul End
 
 // void terror
 struct double_breath_damage_t : public warlock_pet_spell_t
