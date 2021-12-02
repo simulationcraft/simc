@@ -404,8 +404,8 @@ public:
     propagate_const<buff_t*> reverse_entropy;
     propagate_const<buff_t*> rain_of_chaos;
     propagate_const<buff_t*> dark_soul_instability;
-    propagate_const<buff_t*> ritual_of_ruin_rain_of_fire;
-    propagate_const<buff_t*> ritual_of_ruin_chaos_bolt;
+    propagate_const<buff_t*> herald_of_fire;
+    propagate_const<buff_t*> herald_of_chaos;
 
     // Covenants
     propagate_const<buff_t*> decimating_bolt;

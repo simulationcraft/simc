@@ -589,7 +589,7 @@ struct chaos_bolt_t : public destruction_spell_t
 
   double cost() const override
   {
-    if ( p()->buffs.ritual_of_ruin_chaos_bolt->check() )
+    if ( p()->buffs.herald_of_chaos->check() )
       return 0.0;
 
     return destruction_spell_t::cost();      
@@ -604,7 +604,7 @@ struct chaos_bolt_t : public destruction_spell_t
   {
     timespan_t h = warlock_spell_t::execute_time();
     
-    if ( p()->buffs.ritual_of_ruin_chaos_bolt->check() )
+    if ( p()->buffs.herald_of_chaos->check() )
       return timespan_t::from_millis(0);
 
     if ( p()->buffs.backdraft->check() )
@@ -698,12 +698,12 @@ struct chaos_bolt_t : public destruction_spell_t
 
     if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
     {
-      p()->buffs.ritual_of_ruin_chaos_bolt->expire();
+      p()->buffs.herald_of_chaos->expire();
 
       if ( rng().roll( p()->sets->set( WARLOCK_DESTRUCTION, T28, B2 )->proc_chance() ) )
       {
         p()->procs.ritual_of_ruin->occur();
-        p()->buffs.ritual_of_ruin_rain_of_fire->trigger();
+        p()->buffs.herald_of_fire->trigger();
       }
     }
   }
@@ -839,7 +839,7 @@ struct rain_of_fire_t : public destruction_spell_t
 
   double cost() const override
   {
-    if ( p()->buffs.ritual_of_ruin_chaos_bolt->check() )
+    if ( p()->buffs.herald_of_chaos->check() )
       return 0.0;
 
     return destruction_spell_t::cost();      
@@ -851,13 +851,13 @@ struct rain_of_fire_t : public destruction_spell_t
 
     if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
     {
-      if ( p()->buffs.ritual_of_ruin_rain_of_fire->check() )
-        p()->buffs.ritual_of_ruin_rain_of_fire->expire();
+      if ( p()->buffs.herald_of_fire->check() )
+        p()->buffs.herald_of_fire->expire();
 
       if ( rng().roll( p()->sets->set( WARLOCK_DESTRUCTION, T28, B2 )->proc_chance() ) )
       {
         p()->procs.ritual_of_ruin->occur();
-        p()->buffs.ritual_of_ruin_chaos_bolt->trigger();
+        p()->buffs.herald_of_chaos->trigger();
       }
     }
 
@@ -1095,11 +1095,11 @@ void warlock_t::create_buffs_destruction()
           ->set_trigger_spell( legendary.madness_of_the_azjaqir );
 
   // Tier Sets
-  buffs.ritual_of_ruin_rain_of_fire =
-      make_buff( this, "ritual_of_ruin_rain_of_fire", find_spell( 364433 ) )->set_default_value_from_effect( 1 );
+  buffs.herald_of_fire =
+      make_buff( this, "herald_of_fire", find_spell( 364349 ) )->set_default_value_from_effect( 1 );
 
-  buffs.ritual_of_ruin_chaos_bolt =
-      make_buff( this, "ritual_of_ruin_chaos_bolt", find_spell( 364433 ) )->set_default_value_from_effect( 1 );
+  buffs.herald_of_chaos =
+      make_buff( this, "herald_of_chaos", find_spell( 364348 ) )->set_default_value_from_effect( 1 );
 }
 
 void warlock_t::init_spells_destruction()
