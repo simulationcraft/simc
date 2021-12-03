@@ -5997,13 +5997,17 @@ struct starfire_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    // for precombat we hack it to manually energize 100ms later to get around AP capping on combat start
+    // for precombat we hack it to advance eclipse and manually energize 100ms later to get around the eclipse stack
+    // reset & AP capping on combat start
     if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER )
     {
       make_event( *sim, 100_ms, [ this ]() {
+        p()->eclipse_handler.cast_starfire();
         p()->resource_gain( RESOURCE_ASTRAL_POWER, composite_energize_amount( execute_state ),
                             energize_gain( execute_state ) );
       } );
+
+      return;
     }
 
     if ( p()->buff.owlkin_frenzy->up() )
@@ -6254,6 +6258,19 @@ struct wrath_t : public druid_spell_t
     if ( !get_state_free_cast( execute_state ) &&
          ( p()->specialization() == DRUID_BALANCE || p()->specialization() == DRUID_RESTORATION ) )
     {
+      // in druid_t::init_finished(), we set the final wrath of the precombat to have energize type of NONE, so that
+      // we can handle the delayed enerigze & eclipse stack triggering here.
+      if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER && energize_type == action_energize::NONE )
+      {
+        make_event( *sim, 100_ms, [ this ]() {
+          p()->eclipse_handler.cast_wrath();
+          p()->resource_gain( RESOURCE_ASTRAL_POWER, composite_energize_amount( execute_state ),
+                              energize_gain( execute_state ) );
+        } );
+
+        return;
+      }
+
       p()->eclipse_handler.cast_wrath();
     }
   }
@@ -8364,12 +8381,19 @@ void druid_t::init_finished()
   // cast
   for ( auto pre = precombat_action_list.begin(); pre != precombat_action_list.end(); pre++ )
   {
-    // we don't need to further check if we're at the final precombat action
-    auto it = pre + 1;
-    if ( it == precombat_action_list.end() )
-      break;
-
     auto wr = dynamic_cast<spells::wrath_t*>( *pre );
+    auto it = pre + 1;
+
+    if ( it == precombat_action_list.end() )  // this is the final action
+    {
+      // if the last precast spell is wrath, we set the energize type to NONE, which will then be accounted for in
+      // wrath_t::execute()
+      if ( wr )
+        wr->energize_type = action_energize::NONE;
+
+      break;
+    }
+
     if ( wr )
     {
       std::for_each( it, precombat_action_list.end(), [ wr ]( action_t* a ) {
