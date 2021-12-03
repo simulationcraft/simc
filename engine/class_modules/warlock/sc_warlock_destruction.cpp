@@ -700,7 +700,7 @@ struct chaos_bolt_t : public destruction_spell_t
     {
       if ( p()->buffs.herald_of_chaos->check() )
       {
-        p()->warlock_pet_list.aod_infernals.spawn( timespan_t::from_millis( p()->buffs.avatar_of_destruction->default_value ),
+        p()->warlock_pet_list.aod_infernals.spawn( p()->sets->set(WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000,
                                                    1U );
         p()->procs.avatar_of_destruction->occur();
         p()->buffs.herald_of_chaos->expire();
@@ -859,7 +859,7 @@ struct rain_of_fire_t : public destruction_spell_t
     {
       if ( p()->buffs.herald_of_fire->check() )
       {      
-        p()->warlock_pet_list.aod_infernals.spawn( timespan_t::from_millis( p()->buffs.avatar_of_destruction->default_value ),
+        p()->warlock_pet_list.aod_infernals.spawn( p()->sets->set(WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000 ,
                                                    1U );
         p()->procs.avatar_of_destruction->occur();
         p()->buffs.herald_of_fire->expire();
@@ -1114,9 +1114,6 @@ void warlock_t::create_buffs_destruction()
   buffs.herald_of_chaos = make_buff( this, "herald_of_chaos", find_spell( 364348 ) )
                               ->set_default_value_from_effect( 1 )
                               ->set_trigger_spell( find_spell( 364433 ) );
-
-  buffs.avatar_of_destruction =
-      make_buff( this, "avatar_of_destruction", find_spell( 363950 ) )->set_default_value_from_effect( 1 );
 }
 void warlock_t::init_spells_destruction()
 {
