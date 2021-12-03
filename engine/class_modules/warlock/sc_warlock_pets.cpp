@@ -39,7 +39,7 @@ void warlock_pet_t::create_buffs()
   // Demonology
   buffs.demonic_strength = make_buff( this, "demonic_strength", find_spell( 267171 ) )
                                ->set_default_value( find_spell( 267171 )->effectN( 2 ).percent() )
-                               ->set_cooldown( timespan_t::zero() );
+                               ->set_cooldown( 0_ms );
 
   buffs.grimoire_of_service = make_buff( this, "grimoire_of_service", find_spell( 216187 ) )
                                   ->set_default_value( find_spell( 216187 )->effectN( 1 ).percent() );
@@ -52,7 +52,7 @@ void warlock_pet_t::create_buffs()
 
   // Destruction
   buffs.embers = make_buff( this, "embers", find_spell( 264364 ) )
-                     ->set_period( timespan_t::from_seconds( 0.5 ) )
+                     ->set_period( 500_ms )
                      ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                      ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                        o()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, o()->gains.infernal );
@@ -70,13 +70,13 @@ void warlock_pet_t::init_base_stats()
   resources.base[ RESOURCE_ENERGY ]                  = 200;
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
 
-  base.spell_power_per_intellect = 1;
+  base.spell_power_per_intellect = 1.0;
 
   intellect_per_owner = 0;
   stamina_per_owner   = 0;
 
   main_hand_weapon.type       = WEAPON_BEAST;
-  main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+  main_hand_weapon.swing_time = 2_s;
 }
 
 void warlock_pet_t::init_action_list()
@@ -167,8 +167,8 @@ double warlock_pet_t::composite_player_target_multiplier( player_t* target, scho
   {
     auto td = o()->get_target_data( target );
 
-    //TOCHECK: There is no "affected by" information for pets. Presumably matching school should be a sufficient check.
-    //If there's a non-warlock guardian in game that benefits from this... well, good luck with that.
+    // TOCHECK: There is no "affected by" information for pets. Presumably matching school should be a sufficient check.
+    // If there's a non-warlock guardian in game that benefits from this... well, good luck with that.
     if ( td->debuffs_from_the_shadows->check() )
       m *= 1.0 + td->debuffs_from_the_shadows->check_value();
   }
@@ -199,7 +199,7 @@ timespan_t warlock_simple_pet_t::available() const
   }
 
   timespan_t cd_remains = special_ability->cooldown->ready - sim->current_time();
-  if ( cd_remains <= timespan_t::from_millis( 1 ) )
+  if ( cd_remains <= 1_ms )
   {
     return warlock_pet_t::available();
   }
@@ -299,7 +299,7 @@ timespan_t imp_pet_t::available() const
 succubus_pet_t::succubus_pet_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_SUCCUBUS, name != "succubus" )
 {
-  main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
+  main_hand_weapon.swing_time = 3_s;
   action_list_str             = "lash_of_pain";
 
   is_main_pet = true;
@@ -312,7 +312,6 @@ void succubus_pet_t::init_base_stats()
   owner_coeff.ap_from_sp = 0.575;
   owner_coeff.sp_from_sp = 1.15;
 
-  main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
   melee_attack                = new warlock_pet_melee_t( this );
 }
 
