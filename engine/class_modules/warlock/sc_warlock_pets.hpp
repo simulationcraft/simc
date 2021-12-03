@@ -405,16 +405,6 @@ private:
   void reschedule_firebolt();
 };
 
-struct fel_firebolt_t : public warlock_pet_spell_t
-{
-  bool demonic_power_on_cast_start;
-
-  fel_firebolt_t( warlock_pet_t* );
-  void schedule_execute( action_state_t* ) override;
-  void consume_resource() override;
-  double cost() const override;
-};
-
 struct dreadstalker_t : public warlock_pet_t
 {
   int dreadbite_executes;

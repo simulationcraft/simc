@@ -699,6 +699,57 @@ wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
   owner_coeff.health    = 0.15;
 }
 
+struct fel_firebolt_t : public warlock_pet_spell_t
+{
+  bool demonic_power_on_cast_start;
+
+  fel_firebolt_t( warlock_pet_t* p ) : warlock_pet_spell_t( "fel_firebolt", p, p->find_spell( 104318 ) )
+  {
+    repeating = true;
+    demonic_power_on_cast_start = false;
+  }
+
+  void schedule_execute( action_state_t* execute_state ) override
+  {
+    // We may not be able to execute anything, so reset executing here before we are going to
+    // schedule anything else.
+    player->executing = nullptr;
+
+    if ( player->buffs.movement->check() || player->buffs.stunned->check() )
+      return;
+
+    warlock_pet_spell_t::schedule_execute( execute_state );
+
+    demonic_power_on_cast_start = p()->o()->buffs.demonic_power->check() && p()->resources.current[ RESOURCE_ENERGY ] < 100;
+  }
+
+  void consume_resource() override
+  {
+    warlock_pet_spell_t::consume_resource();
+
+    // Imp dies if it cannot cast
+    if ( player->resources.current[ RESOURCE_ENERGY ] < cost() )
+    {
+      make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
+    }
+  }
+
+  double cost() const override
+  {
+    double c = warlock_pet_spell_t::cost();
+
+    if ( p()->o()->spec.fel_firebolt_2->ok() )
+      c *= 1.0 + p()->o()->spec.fel_firebolt_2->effectN( 1 ).percent();
+
+    if ( demonic_power_on_cast_start )
+    {
+      c *= 1.0 + p()->o()->buffs.demonic_power->data().effectN( 4 ).percent();
+    }
+
+    return c;
+  }
+};
+
 void wild_imp_pet_t::create_actions()
 {
   warlock_pet_t::create_actions();
@@ -777,52 +828,6 @@ void wild_imp_pet_t::demise()
   }
 
   warlock_pet_t::demise();
-}
-
-fel_firebolt_t::fel_firebolt_t( warlock_pet_t* p ) : warlock_pet_spell_t( "fel_firebolt", p, p->find_spell( 104318 ) )
-{
-  repeating = true;
-  demonic_power_on_cast_start = false;
-}
-
-void fel_firebolt_t::schedule_execute( action_state_t* execute_state )
-{
-  // We may not be able to execute anything, so reset executing here before we are going to
-  // schedule anything else.
-  player->executing = nullptr;
-
-  if ( player->buffs.movement->check() || player->buffs.stunned->check() )
-    return;
-
-  warlock_pet_spell_t::schedule_execute( execute_state );
-
-  demonic_power_on_cast_start = p()->o()->buffs.demonic_power->check() && p()->resources.current[ RESOURCE_ENERGY ] < 100;
-}
-
-void fel_firebolt_t::consume_resource()
-{
-  warlock_pet_spell_t::consume_resource();
-
-  // Imp dies if it cannot cast
-  if ( player->resources.current[ RESOURCE_ENERGY ] < cost() )
-  {
-    make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
-  }
-}
-
-double fel_firebolt_t::cost() const
-{
-  double c = warlock_pet_spell_t::cost();
-
-  if ( p()->o()->spec.fel_firebolt_2->ok() )
-    c *= 1.0 + p()->o()->spec.fel_firebolt_2->effectN( 1 ).percent();
-
-  if (demonic_power_on_cast_start)
-  {
-    c *= 1.0 + p()->o()->buffs.demonic_power->data().effectN( 4 ).percent();
-  }
-
-  return c;
 }
 
 /// Wild Imp End
