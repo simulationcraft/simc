@@ -9287,11 +9287,14 @@ void druid_t::combat_begin()
 
   if ( spec.astral_power->ok() )
   {
-    if ( options.raid_combat ) {
-      double cap = talent.natures_balance->ok() ? 50.0 : 20.0;
-      double curr = resources.current[RESOURCE_ASTRAL_POWER];
+    eclipse_handler.reset_stacks();
 
-      resources.current[RESOURCE_ASTRAL_POWER] = std::min( cap, curr );
+    if ( options.raid_combat )
+    {
+      double cap = talent.natures_balance->ok() ? 50.0 : 20.0;
+      double curr = resources.current[ RESOURCE_ASTRAL_POWER ];
+
+      resources.current[ RESOURCE_ASTRAL_POWER ] = std::min( cap, curr );
       if ( curr > cap )
         sim->print_debug( "Astral Power capped at combat start to {} (was {})", cap, curr );
     }
