@@ -1881,6 +1881,8 @@ class SpellDataGenerator(DataGenerator):
           ( 340682, 2 ), ( 340688, 2 ), ( 340694, 2 ), ( 340705, 2 ), # feral potency conduits
           ( 340552, 3 ), ( 340609, 3 ), # guardian potency conduits
           ( 341378, 0 ), ( 341447, 0 ), ( 341446, 0 ), ( 341383, 0 ), # convenant potency conduits
+
+          ( 365640, 1 ), # tier 28 balance 2pc foe damage spell
         ),
         # Demon Hunter:
         (
