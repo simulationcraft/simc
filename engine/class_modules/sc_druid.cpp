@@ -5197,6 +5197,9 @@ struct barkskin_t : public druid_spell_t
 
     if ( p->talent.brambles->ok() )
       add_child( p->active.brambles_pulse );
+
+    if ( p->sets->has_set_bonus( DRUID_GUARDIAN, T28, B2 ) )
+      form_mask = autoshift = BEAR_FORM;
   }
 
   timespan_t cooldown_duration() const override
