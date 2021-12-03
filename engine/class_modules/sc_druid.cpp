@@ -2337,8 +2337,10 @@ public:
     {
       if ( may_autounshift && ( form_mask & NO_FORM ) == NO_FORM )
         p()->shapeshift( NO_FORM );
-      else if ( autoshift )
-        p()->shapeshift( static_cast<form_e>( autoshift ) );
+      else if ( autoshift ) {
+        if ( p()->buff.ravenous_frenzy->check() ) p()->buff.ravenous_frenzy->trigger();
+        p()->shapeshift( static_cast< form_e >( autoshift ) );
+      }
       else
         assert( false && "Action executed in wrong form with no valid form to shift to!" );
     }
@@ -6280,6 +6282,8 @@ struct stampeding_roar_t : public druid_spell_t
 
   void init_finished() override
   {
+    druid_spell_t::init_finished();
+
     if ( !p()->conduit.front_of_the_pack->ok() )
       return;
 
@@ -10968,7 +10972,7 @@ struct druid_module_t : public module_t
 
   void init( player_t* p ) const override
   {
-    p->buffs.stampeding_roar = make_buff( p, "stampeding_roar", p->find_spell( 77764 ) )
+    p->buffs.stampeding_roar = make_buff( p, "stampeding_roar", p->find_class_spell( "Stampeding Roar" ) )
       ->set_cooldown( 0_ms )
       ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
 
