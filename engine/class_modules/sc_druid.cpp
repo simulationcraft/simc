@@ -8382,21 +8382,10 @@ void druid_t::init_finished()
   for ( auto pre = precombat_action_list.begin(); pre != precombat_action_list.end(); pre++ )
   {
     auto wr = dynamic_cast<spells::wrath_t*>( *pre );
-    auto it = pre + 1;
-
-    if ( it == precombat_action_list.end() )  // this is the final action
-    {
-      // if the last precast spell is wrath, we set the energize type to NONE, which will then be accounted for in
-      // wrath_t::execute()
-      if ( wr )
-        wr->energize_type = action_energize::NONE;
-
-      break;
-    }
 
     if ( wr )
     {
-      std::for_each( it, precombat_action_list.end(), [ wr ]( action_t* a ) {
+      std::for_each( pre + 1, precombat_action_list.end(), [ wr ]( action_t* a ) {
         // unnecessary offspec resources are disabled by default, so evaluate any if-expr on the candidate action first
         // so we don't call action_ready() on possible offspec actions that will require off-spec resources to be
         // enabled
@@ -8406,6 +8395,11 @@ void druid_t::init_finished()
         if ( a->name_str == wr->name_str )
           wr->count++;  // see how many wrath casts are left, so we can adjust travel time when combat begins
       } );
+
+      // if wrath is still harmful then it is the final precast spell, so we set the energize type to NONE, which will
+      // then be accounted for in wrath_t::execute()
+      if ( wr->harmful )
+        wr->energize_type = action_energize::NONE;
     }
   }
 }
