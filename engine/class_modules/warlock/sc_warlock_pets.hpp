@@ -366,8 +366,8 @@ namespace demonology
 struct felguard_pet_t : public warlock_pet_t
 {
   action_t* soul_strike;
-  action_t* ds_felstorm;
   cooldown_t* felstorm_cd;
+  int demonic_strength_executes;
 
   // Energy thresholds to wake felguard up for something to do, minimum is the felstorm energy cost,
   // and maximum is a predetermined empirical value from in game

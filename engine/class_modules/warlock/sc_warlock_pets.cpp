@@ -374,7 +374,8 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_FELGUARD, name != "felguard" ),
     soul_strike( nullptr ),
     min_energy_threshold( find_spell( 89751 )->cost( POWER_ENERGY ) ),
-    max_energy_threshold( 100 )
+    max_energy_threshold( 100 ),
+    demonic_strength_executes( 0 )
 {
   action_list_str = "travel";
   action_list_str += "/demonic_strength_felstorm";
@@ -453,17 +454,15 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 
 struct demonic_strength_t : public felstorm_t
 {
-  bool queued;
-
   demonic_strength_t( warlock_pet_t* p, util::string_view options_str )
-    : felstorm_t( p, options_str, "demonic_strength_felstorm" ), queued( false )
+    : felstorm_t( p, options_str, "demonic_strength_felstorm" )
   {
   }
 
   void execute() override
   {
     warlock_pet_melee_attack_t::execute();
-    queued = false;
+    debug_cast< felguard_pet_t* >( p() )->demonic_strength_executes--;
     p()->melee_attack->cancel();
   }
 
@@ -476,7 +475,7 @@ struct demonic_strength_t : public felstorm_t
 
   bool ready() override
   {
-    if ( !queued )
+    if ( debug_cast< felguard_pet_t* >( p() )->demonic_strength_executes <= 0 )
       return false;
     return warlock_pet_melee_attack_t::ready();
   }
@@ -557,11 +556,6 @@ void felguard_pet_t::init_base_stats()
   {
     soul_strike = new soul_strike_t( this );
   }
-
-  if ( o()->talents.demonic_strength )
-  {
-    ds_felstorm = new demonic_strength_t( this, "" );
-  }
 }
 
 action_t* felguard_pet_t::create_action( util::string_view name, util::string_view options_str )
@@ -580,13 +574,11 @@ action_t* felguard_pet_t::create_action( util::string_view name, util::string_vi
 
 void felguard_pet_t::queue_ds_felstorm()
 {
-  if ( ds_felstorm )
+  demonic_strength_executes++;
+
+  if ( !readying && !channeling && !executing )
   {
-    static_cast<demonic_strength_t*>( ds_felstorm )->queued = true;
-    if ( !readying && !channeling && !executing )
-    {
-      schedule_ready();
-    }
+    schedule_ready();
   }
 }
 
