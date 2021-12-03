@@ -698,7 +698,13 @@ struct chaos_bolt_t : public destruction_spell_t
 
     if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
     {
-      p()->buffs.herald_of_chaos->expire();
+      if ( p()->buffs.herald_of_chaos->check() )
+      {
+        p()->warlock_pet_list.aod_infernals.spawn( timespan_t::from_millis( p()->buffs.avatar_of_destruction->default_value ),
+                                                   1U );
+        p()->procs.avatar_of_destruction->occur();
+        p()->buffs.herald_of_chaos->expire();
+      }
 
       if ( rng().roll( p()->sets->set( WARLOCK_DESTRUCTION, T28, B2 )->proc_chance() ) )
       {
@@ -852,7 +858,12 @@ struct rain_of_fire_t : public destruction_spell_t
     if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
     {
       if ( p()->buffs.herald_of_fire->check() )
+      {      
+        p()->warlock_pet_list.aod_infernals.spawn( timespan_t::from_millis( p()->buffs.avatar_of_destruction->default_value ),
+                                                   1U );
+        p()->procs.avatar_of_destruction->occur();
         p()->buffs.herald_of_fire->expire();
+      }
 
       if ( rng().roll( p()->sets->set( WARLOCK_DESTRUCTION, T28, B2 )->proc_chance() ) )
       {
@@ -1080,9 +1091,10 @@ void warlock_t::create_buffs_destruction()
                               ->set_trigger_spell( talents.reverse_entropy )
                               ->add_invalidate( CACHE_HASTE );
 
-  //Spell 335236 holds the duration of the proc'd infernal's duration, storing it in default value of the buff for use later
-  buffs.rain_of_chaos = make_buff( this, "rain_of_chaos", find_spell( 266087 ) )
-                            ->set_default_value( find_spell( 335236 )->_duration );
+  // Spell 335236 holds the duration of the proc'd infernal's duration, storing it in default value of the buff for use
+  // later
+  buffs.rain_of_chaos =
+      make_buff( this, "rain_of_chaos", find_spell( 266087 ) )->set_default_value( find_spell( 335236 )->_duration );
 
   buffs.dark_soul_instability = make_buff( this, "dark_soul_instability", talents.dark_soul_instability )
                                     ->add_invalidate( CACHE_SPELL_CRIT_CHANCE )
@@ -1095,14 +1107,17 @@ void warlock_t::create_buffs_destruction()
           ->set_trigger_spell( legendary.madness_of_the_azjaqir );
 
   // Tier Sets
-  buffs.herald_of_fire =
-      make_buff( this, "herald_of_fire", find_spell( 364349 ) )->set_default_value_from_effect( 1 )
-                                    ->set_trigger_spell( find_spell( 364433 ) );
+  buffs.herald_of_fire = make_buff( this, "herald_of_fire", find_spell( 364349 ) )
+                             ->set_default_value_from_effect( 1 )
+                             ->set_trigger_spell( find_spell( 364433 ) );
 
-  buffs.herald_of_chaos =
-      make_buff( this, "herald_of_chaos", find_spell( 364348 ) )->set_default_value_from_effect( 1 )
-                                    ->set_trigger_spell( find_spell( 364433 ) );
+  buffs.herald_of_chaos = make_buff( this, "herald_of_chaos", find_spell( 364348 ) )
+                              ->set_default_value_from_effect( 1 )
+                              ->set_trigger_spell( find_spell( 364433 ) );
 
+  buffs.avatar_of_destruction =
+      make_buff( this, "avatar_of_destruction", find_spell( 363950 ) )->set_default_value_from_effect( 1 );
+}
 void warlock_t::init_spells_destruction()
 {
   using namespace actions_destruction;
