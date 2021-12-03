@@ -211,6 +211,18 @@ felhunter_pet_t::felhunter_pet_t( warlock_t* owner, util::string_view name )
   is_main_pet = true;
 }
 
+struct spell_lock_t : public warlock_pet_spell_t
+{
+  spell_lock_t( warlock_pet_t* p, util::string_view options_str )
+    : warlock_pet_spell_t( "Spell Lock", p, p->find_spell( 19647 ) )
+  {
+    parse_options( options_str );
+
+    may_miss = may_block = may_dodge = may_parry = false;
+    ignore_false_positive = is_interrupt = true;
+  }
+};
+
 void felhunter_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
@@ -229,15 +241,6 @@ action_t* felhunter_pet_t::create_action( util::string_view name, util::string_v
   if ( name == "spell_lock" )
     return new spell_lock_t( this, options_str );
   return warlock_pet_t::create_action( name, options_str );
-}
-
-spell_lock_t::spell_lock_t( warlock_pet_t* p, util::string_view options_str )
-    : warlock_pet_spell_t( "Spell Lock", p, p->find_spell( 19647 ) )
-{
-    parse_options( options_str );
-
-    may_miss = may_block = may_dodge = may_parry = false;
-    ignore_false_positive = is_interrupt = true;
 }
 
 /// Felhunter End
@@ -326,6 +329,16 @@ voidwalker_pet_t::voidwalker_pet_t( warlock_t* owner, util::string_view name )
   is_main_pet = true;
 }
 
+struct consuming_shadows_t : public warlock_pet_spell_t
+{
+  consuming_shadows_t( warlock_pet_t* p ) 
+    : warlock_pet_spell_t( p, "Consuming Shadows" )
+  {
+    aoe = -1;
+    may_crit = false;
+  }
+};
+
 void voidwalker_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
@@ -342,13 +355,6 @@ action_t* voidwalker_pet_t::create_action( util::string_view name, util::string_
   if ( name == "consuming_shadows" )
     return new consuming_shadows_t( this );
   return warlock_pet_t::create_action( name, options_str );
-}
-
-consuming_shadows_t::consuming_shadows_t( warlock_pet_t* p ) 
-  : warlock_pet_spell_t( p, "Consuming Shadows" )
-{
-    aoe = -1;
-    may_crit = false;
 }
 
 /// Voidwalker End
@@ -379,22 +385,28 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
   is_main_pet = true;
 }
 
-axe_toss_t::axe_toss_t( warlock_pet_t* p, util::string_view options_str )
+struct axe_toss_t : public warlock_pet_spell_t
+{
+  axe_toss_t( warlock_pet_t* p, util::string_view options_str )
     : warlock_pet_spell_t( "Axe Toss", p, p->find_spell( 89766 ) )
-{
-  parse_options( options_str );
+  {
+    parse_options( options_str );
 
-  may_miss = may_block = may_dodge = may_parry = false;
-  ignore_false_positive = is_interrupt = true;
-}
+    may_miss = may_block = may_dodge = may_parry = false;
+    ignore_false_positive = is_interrupt = true;
+  }
+};
 
-legion_strike_t::legion_strike_t( warlock_pet_t* p, util::string_view options_str ) 
-  : warlock_pet_melee_attack_t( p, "Legion Strike" )
+struct legion_strike_t : public warlock_pet_melee_attack_t
 {
-  parse_options( options_str );
-  aoe    = -1;
-  weapon = &( p->main_hand_weapon );
-}
+  legion_strike_t( warlock_pet_t* p, util::string_view options_str ) 
+    : warlock_pet_melee_attack_t( p, "Legion Strike" )
+  {
+    parse_options( options_str );
+    aoe    = -1;
+    weapon = &( p->main_hand_weapon );
+  }
+};
 
 struct felstorm_t : public warlock_pet_melee_attack_t
 {
@@ -471,10 +483,13 @@ struct demonic_strength_t : public felstorm_t
   }
 };
 
-soul_strike_t::soul_strike_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Soul Strike", p, p->find_spell( 267964 ) )
+struct soul_strike_t : public warlock_pet_melee_attack_t
 {
-  background = true;
-}
+  soul_strike_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Soul Strike", p, p->find_spell( 267964 ) )
+  {
+    background = true;
+  }
+};
 
 timespan_t felguard_pet_t::available() const
 {

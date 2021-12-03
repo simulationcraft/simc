@@ -324,11 +324,6 @@ struct felhunter_pet_t : public warlock_pet_t
   action_t* create_action( util::string_view, util::string_view ) override;
 };
 
-struct spell_lock_t : public warlock_pet_spell_t
-{
-  spell_lock_t(warlock_pet_t* , util::string_view );
-};
-
 struct imp_pet_t : public warlock_pet_t
 {
   double firebolt_cost;
@@ -345,16 +340,11 @@ struct succubus_pet_t : public warlock_pet_t
   action_t* create_action( util::string_view, util::string_view ) override;
 };
 
-struct voidwalker_pet_t : warlock_pet_t
+struct voidwalker_pet_t : public warlock_pet_t
 {
   voidwalker_pet_t( warlock_t*, util::string_view );
   void init_base_stats() override;
   action_t* create_action( util::string_view, util::string_view ) override;
-};
-
-struct consuming_shadows_t : public warlock_pet_spell_t
-{
-  consuming_shadows_t( warlock_pet_t* );
 };
 
 }  // namespace base
@@ -378,21 +368,6 @@ struct felguard_pet_t : public warlock_pet_t
   timespan_t available() const override;
 
   void queue_ds_felstorm();
-};
-
-struct legion_strike_t : public warlock_pet_melee_attack_t
-{
-  legion_strike_t( warlock_pet_t*, util::string_view );
-};
-
-struct axe_toss_t : public warlock_pet_spell_t
-{
-  axe_toss_t( warlock_pet_t*, util::string_view );
-};
-
-struct soul_strike_t : public warlock_pet_melee_attack_t
-{
-  soul_strike_t( warlock_pet_t* );
 };
 
 struct grimoire_felguard_pet_t : public warlock_pet_t
