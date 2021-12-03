@@ -5314,7 +5314,9 @@ struct fury_of_elune_t : public druid_spell_t
 {
   struct fury_of_elune_tick_t : public druid_spell_t
   {
-    fury_of_elune_tick_t( druid_t* p ) : druid_spell_t( "fury_of_elune_tick", p, p->spec.fury_of_elune )
+    fury_of_elune_tick_t( druid_t* p, std::string_view n ) : fury_of_elune_tick_t( p, n, p->spec.fury_of_elune ) {}
+
+    fury_of_elune_tick_t( druid_t* p, std::string_view n, const spell_data_t* s ) : druid_spell_t( n, p, s )
     {
       background = dual = ground_aoe = true;
       aoe = -1;
@@ -5342,14 +5344,15 @@ struct fury_of_elune_t : public druid_spell_t
 
     dot_duration = 0_ms;  // AP gain handled via fury_of_elune_ground_event_t
 
-    damage = p->get_secondary_action<fury_of_elune_tick_t>( "fury_of_elune_tick" );
+    damage = p->get_secondary_action<fury_of_elune_tick_t>( "fury_of_elune_tick", "fury_of_elune_tick" );
     damage->stats = stats;
 
     if ( p->sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
     {
       auto set_stats = init_free_cast_stats( free_cast_e::PILLAR );
 
-      set_damage = p->get_secondary_action<fury_of_elune_tick_t>( "fury_of_elune_tick_pillar" );
+      set_damage = p->get_secondary_action<fury_of_elune_tick_t>(
+          "fury_of_elune_tick_pillar", "fury_of_elune_tick_pillar", p->find_spell( 365640 ) );
       set_damage->stats = set_stats;
       set_damage->base_multiplier = p->sets->set( DRUID_BALANCE, T28, B2 )->effectN( 1 ).percent();
 
