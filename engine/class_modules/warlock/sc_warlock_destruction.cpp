@@ -1096,11 +1096,12 @@ void warlock_t::create_buffs_destruction()
 
   // Tier Sets
   buffs.herald_of_fire =
-      make_buff( this, "herald_of_fire", find_spell( 364349 ) )->set_default_value_from_effect( 1 );
+      make_buff( this, "herald_of_fire", find_spell( 364349 ) )->set_default_value_from_effect( 1 )
+                                    ->set_trigger_spell( find_spell( 364433 ) );
 
   buffs.herald_of_chaos =
-      make_buff( this, "herald_of_chaos", find_spell( 364348 ) )->set_default_value_from_effect( 1 );
-}
+      make_buff( this, "herald_of_chaos", find_spell( 364348 ) )->set_default_value_from_effect( 1 )
+                                    ->set_trigger_spell( find_spell( 364433 ) );
 
 void warlock_t::init_spells_destruction()
 {
