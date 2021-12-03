@@ -832,6 +832,107 @@ void wild_imp_pet_t::demise()
 
 /// Wild Imp End
 
+/// Malicious Imp (Tier 28) Begin
+
+malicious_imp_pet_t::malicious_imp_pet_t( warlock_t* owner )
+  : warlock_pet_t( owner , "malicious_imp", PET_MALICIOUS_IMP ),
+  firebolt( nullptr ),
+  imploded( false )
+{
+  resource_regeneration = regen_type::DISABLED;
+
+  // Change these if different from 1.0, otherwise delete
+  // owner_coeff.ap_from_sp = 1.0;
+  // owner_coeff.sp_from_sp = 1.0;
+
+  // Default is 0.5, delete if same
+  // owner_coeff.health    = 0.5;
+}
+
+// Malicious Imp's Firebolt struct goes here
+
+// There are either one or two additional spells needed, depending
+// on how Malicious Imp does damage on demise. Put them here.
+
+void malicious_imp_pet_t::init_base_stats()
+{
+  warlock_pet_t::init_base_stats();
+
+  // Check if this energy amount is different from Wild Imp
+  resources.base[ RESOURCE_ENERGY ]                  = 100;
+  resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
+}
+
+void malicious_imp_pet_t::reschedule_firebolt()
+{
+  if ( executing || is_sleeping() || player_t::buffs.movement->check() || player_t::buffs.stunned->check() )
+    return;
+
+  timespan_t gcd_adjust = gcd_ready - sim->current_time();
+  if ( gcd_adjust > 0_ms )
+  {
+    make_event( sim, gcd_adjust, [ this ]() {
+      firebolt->set_target( o()->target );
+      firebolt->schedule_execute();
+    } );
+  }
+  else
+  {
+    firebolt->set_target( o()->target );
+    firebolt->schedule_execute();
+  }
+}
+
+void malicious_imp_pet_t::create_actions()
+{
+  warlock_pet_t::create_actions();
+
+  // firebolt = new [something]_t( this );
+}
+
+void malicious_imp_pet_t::schedule_ready( timespan_t, bool )
+{
+  reschedule_firebolt();
+}
+
+void malicious_imp_pet_t::arise()
+{
+  warlock_pet_t::arise();
+
+  imploded = false;
+
+  firebolt->set_target( o()->target );
+  firebolt->schedule_execute();
+}
+
+void malicious_imp_pet_t::demise()
+{
+  if ( !current.sleeping )
+  {
+    if ( imploded )
+    {
+      // Do AoE action to all nearby targets
+    }
+    else
+    {
+      // Do single target damage to owner's current target
+    }
+
+    if ( expiration )
+      event_t::cancel( expiration );
+  }
+
+  warlock_pet_t::demise();
+}
+
+void malicious_imp_pet_t::finish_moving()
+{
+  warlock_pet_t::finish_moving();
+  reschedule_firebolt();
+}
+
+/// Malicious Imp End
+
 /// Dreadstalker Begin
 
 dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "dreadstalker", PET_DREADSTALKER )

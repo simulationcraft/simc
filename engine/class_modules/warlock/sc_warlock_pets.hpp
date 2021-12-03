@@ -405,6 +405,23 @@ private:
   void reschedule_firebolt();
 };
 
+struct malicious_imp_pet_t : public warlock_pet_t
+{
+  action_t* firebolt;
+  bool imploded;
+
+  malicious_imp_pet_t( warlock_t* );
+  void init_base_stats() override;
+  void create_actions() override;
+  void schedule_ready( timespan_t, bool ) override;
+  void arise() override;
+  void demise() override;
+  void finish_moving() override;
+
+private:
+  void reschedule_firebolt();
+};
+
 struct dreadstalker_t : public warlock_pet_t
 {
   int dreadbite_executes;
