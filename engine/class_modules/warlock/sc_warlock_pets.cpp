@@ -1206,7 +1206,7 @@ bilescourge_t::bilescourge_t( warlock_t* owner ) : warlock_simple_pet_t( owner, 
 action_t* bilescourge_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "toxic_bile" )
-    return new warlock_pet_spell_t( this, "toxic_bile" );
+    return new warlock_pet_spell_t( "toxic_bile", this, this->find_spell( 272167 ) );
 
   return warlock_simple_pet_t::create_action( name, options_str );
 }
