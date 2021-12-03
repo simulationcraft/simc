@@ -150,12 +150,6 @@ struct hand_of_guldan_t : public demonology_spell_t
     void execute() override
     {
       demonology_spell_t::execute();
-
-      if ( p()->legendary.forces_of_the_horned_nightmare.ok() && rng().roll( p()->legendary.forces_of_the_horned_nightmare->effectN( 1 ).percent() ) )
-      {
-        p()->procs.horned_nightmare->occur();
-        execute(); //TOCHECK: can the proc spawn additional procs? currently implemented as YES
-      }
     }
 
     timespan_t travel_time() const override
@@ -250,7 +244,14 @@ struct hand_of_guldan_t : public demonology_spell_t
   {
     demonology_spell_t::impact( s );
 
-    impact_spell->execute();
+    impact_spell->execute_on_target( s->target );
+
+    if ( p()->legendary.forces_of_the_horned_nightmare.ok() &&
+         rng().roll( p()->legendary.forces_of_the_horned_nightmare->effectN( 1 ).percent() ) )
+    {
+      p()->procs.horned_nightmare->occur();
+      make_event( *sim, 400_ms, [ this, t = target ] { impact_spell->execute_on_target( t ); } );
+    }
   }
 
 };

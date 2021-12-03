@@ -1,5 +1,5 @@
-// Item effects, wow build 9.2.0.41089
-static const std::array<item_effect_t, 7737> __ptr_item_effect_data { {
+// Item effects, wow build 9.2.0.41257
+static const std::array<item_effect_t, 7758> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -7734,12 +7734,33 @@ static const std::array<item_effect_t, 7737> __ptr_item_effect_data { {
   { 139842, 363481, 188766,   0,   0,    0,      -1,      -1 }, // Gladiator's Resonator
   { 139853, 363522, 188775,   0,   0,    0,      -1,      -1 }, // Gladiator's Eternal Aegis
   { 139854, 363532, 188778,   0,   0,    0,      -1,      -1 }, // Gladiator's Devouring Malediction
-  { 140149, 365544, 189560,   0,   0,    0,      -1,      -1 }, // Enhancement: Deflection
+  { 140149, 366333, 189560,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
   { 140151, 366057, 189584,   0,   1,    0,      -1,      -1 }, // Sepulcher's Savior
   { 140152, 366061, 189584,   1,   0,    0,      -1,      -1 }, // Sepulcher's Savior
+  { 140187, 366330, 189721,   1,   0,    0,      -1,      -1 }, // Random Tormentor
+  { 140188, 366333, 189722,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140189, 366333, 189723,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140190, 366333, 189724,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140191, 366333, 189725,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140192, 366333, 189726,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140193, 366333, 189727,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140194, 366333, 189728,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140195, 366333, 189729,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140196, 366333, 189730,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140197, 366333, 189731,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140198, 366333, 189732,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140199, 366333, 189733,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140200, 366333, 189734,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140201, 366333, 189735,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140216, 366436, 189754,   0,   1,    0,      -1,      -1 }, // Lathe of the Lifeweaver
+  { 140222, 366333, 189760,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140223, 366333, 189761,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140224, 366333, 189762,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140225, 366333, 189763,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140226, 366333, 189764,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
 } };
 
-static const std::array<uint16_t, 7737> __ptr_item_effect_id_index { {
+static const std::array<uint16_t, 7758> __ptr_item_effect_id_index { {
     375,   376,   377,   378,   379,   380,   381,   384,
     385,   386,   387,   388,   389,   390,   391,   392,
     393,   394,   395,   396,   399,   400,   401,   402,
@@ -8707,6 +8728,8 @@ static const std::array<uint16_t, 7737> __ptr_item_effect_id_index { {
    7725,  7726,  7727,  7728,  7729,  7721,  7730,   291,
     292,   293,   294,  7731,  7732,  7733,   295,   296,
    5077,   297,   298,   299,   300,   301,  7734,  7735,
-   7736,
+   7736,  7737,  7738,  7739,  7740,  7741,  7742,  7743,
+   7744,  7745,  7746,  7747,  7748,  7749,  7750,  7751,
+   7752,  7753,  7754,  7755,  7756,  7757,
 } };
 

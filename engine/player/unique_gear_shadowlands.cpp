@@ -503,18 +503,13 @@ void glyph_of_assimilation( special_effect_t& effect )
   auto buff = make_buff<stat_buff_t>( p, "glyph_of_assimilation", p->find_spell( 345500 ) );
   buff->add_stat( STAT_MASTERY_RATING, buff->data().effectN( 1 ).average( effect.item ) );
 
-  range::for_each( p->sim->actor_list, [ p, buff ]( player_t* t ) {
-    if ( !t->is_enemy() )
+  p->register_on_kill_callback( [ p, buff ]( player_t* t ) {
+    if ( p->sim->event_mgr.canceled )
       return;
 
-    t->register_on_demise_callback( p, [ p, buff ]( player_t* t ) {
-      if ( p->sim->event_mgr.canceled )
-        return;
-
-      auto d = t->get_dot( "glyph_of_assimilation", p );
-      if ( d->remains() > 0_ms )
-        buff->trigger( d->remains() * 2.0 );
-    } );
+    auto d = t->find_dot( "glyph_of_assimilation", p );
+    if ( d && d->remains() > 0_ms )
+      buff->trigger( d->remains() * 2.0 );
   } );
 }
 
@@ -2104,7 +2099,7 @@ void tormentors_rack_fragment( special_effect_t& effect )
     excruciating_twinge_t( const special_effect_t& e )
       : proc_spell_t( "excruciating_twinge", e.player, e.player->find_spell( 356181 ), e.item )
     {
-      // 07/19/2021 -- Logs show that this was hotfixed to hit again on refresh, but not in spell data
+      // 2021-07-19 -- Logs show that this was hotfixed to hit again on refresh, but not in spell data
       tick_zero = true;
       base_td = e.driver()->effectN( 1 ).average( e.item );
     }
@@ -2128,18 +2123,13 @@ void tormentors_rack_fragment( special_effect_t& effect )
   auto buff = make_buff<stat_buff_t>( p, "shredded_soul", p->find_spell( 356281 ) );
   buff->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
 
-  range::for_each( p->sim->actor_list, [ p, buff ]( player_t* t ) {
-    if ( !t->is_enemy() )
+  p->register_on_kill_callback( [ p, buff ]( player_t* t ) {
+    if ( p->sim->event_mgr.canceled )
       return;
 
-    t->register_on_demise_callback( p, [ p, buff ]( player_t* t ) {
-      if ( p->sim->event_mgr.canceled )
-        return;
-
-      auto d = t->get_dot( "excruciating_twinge", p );
-      if ( d->remains() > 0_ms )
-        buff->trigger(); // Going to assume that the player picks this up automatically, might need to add delay.
-    } );
+    auto d = t->find_dot( "excruciating_twinge", p );
+    if ( d && d->remains() > 0_ms )
+      buff->trigger();  // Going to assume that the player picks this up automatically, might need to add delay.
   } );
 
   effect.execute_action = create_proc_action<excruciating_twinge_t>( "excruciating_twinge", effect );
@@ -2410,25 +2400,20 @@ void ebonsoul_vise( special_effect_t& effect )
     }
   };
 
-  player_t* player = effect.player;
-  buff_t* buff     = make_buff<stat_buff_t>( player, "shredded_soul_ebonsoul_vise", player->find_spell( 357785 ) )
+  player_t* p = effect.player;
+  buff_t* buff = make_buff<stat_buff_t>( p, "shredded_soul_ebonsoul_vise", p->find_spell( 357785 ) )
                      ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
 
-  range::for_each( player->sim->actor_list, [ player, buff ]( player_t* target ) {
-    if ( !target->is_enemy() )
+  p->register_on_kill_callback( [ p, buff ]( player_t* t ) {
+    if ( p->sim->event_mgr.canceled )
       return;
 
-    target->register_on_demise_callback( player, [ player, buff ]( player_t* target ) {
-      if ( player->sim->event_mgr.canceled )
-        return;
+    auto d = t->find_dot( "ebonsoul_vise", p );
+    bool picked_up = p->rng().roll( p->sim->shadowlands_opts.shredded_soul_pickup_chance );
 
-      dot_t* dot     = target->get_dot( "ebonsoul_vise", player );
-      bool picked_up = player->rng().roll( player->sim->shadowlands_opts.shredded_soul_pickup_chance );
-
-      // TODO: handle potential movement required to pick up the soul
-      if ( dot->remains() > 0_ms && picked_up )
-        buff->trigger();
-    } );
+    // TODO: handle potential movement required to pick up the soul
+    if ( d && d->remains() > 0_ms && picked_up )
+      buff->trigger();
   } );
 
   effect.execute_action = create_proc_action<ebonsoul_vise_t>( "ebonsoul_vise", effect );
@@ -4013,7 +3998,7 @@ void shard_of_zed( special_effect_t& effect )
 
   /*
   // TODO: confirm proc flags
-  // 07/15/2021 - Logs seem somewhat inconclusive on this, perhaps it is delayed in triggering
+  // 2021-07-15 - Logs seem somewhat inconclusive on this, perhaps it is delayed in triggering
   effect.proc_flags_ = PF_ALL_HEAL | PF_PERIODIC;
   effect.proc_flags2_ = PF2_LANDED | PF2_PERIODIC_HEAL;
 

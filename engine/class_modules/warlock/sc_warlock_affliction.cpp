@@ -542,7 +542,7 @@ struct malefic_rapture_t : public affliction_spell_t
     struct malefic_rapture_damage_instance_t : public affliction_spell_t
     {
       malefic_rapture_damage_instance_t( warlock_t *p, double spc ) :
-          affliction_spell_t( "malefic_rapture_aoe", p, p->find_spell( 324540 ) )
+          affliction_spell_t( "malefic_rapture_damage", p, p->find_spell( 324540 ) )
       {
         aoe = 1;
         background = true;
@@ -566,19 +566,17 @@ struct malefic_rapture_t : public affliction_spell_t
 
       void execute() override
       {
-        int d = p()->get_target_data( target )->count_affliction_dots();
-        if ( d > 0 )
+        int d = p()->get_target_data( target )->count_affliction_dots() - 1;
+        assert( d < as<int>( p()->procs.malefic_rapture.size() ) && "The procs.malefic_rapture array needs to be expanded." );
+
+        if ( d >= 0 && d < as<int>( p()->procs.malefic_rapture.size() ) )
         {
-          for ( int i = p()->procs.malefic_rapture.size(); i < d; i++ )
-            p()->procs.malefic_rapture.push_back( p()->get_proc( "Malefic Rapture " + util::to_string( i + 1 ) ) );
-          p()->procs.malefic_rapture[ d - 1 ]->occur();
+          p()->procs.malefic_rapture[ d ]->occur();
         }
 
         affliction_spell_t::execute();
       }
     };
-
-    malefic_rapture_damage_instance_t* damage_instance;
 
     malefic_rapture_t( warlock_t* p, util::string_view options_str )
       : affliction_spell_t( "malefic_rapture", p, p->find_spell( 324536 ) )
@@ -586,11 +584,17 @@ struct malefic_rapture_t : public affliction_spell_t
       parse_options( options_str );
       aoe = -1;
 
-      damage_instance = new malefic_rapture_damage_instance_t( p, data().effectN( 1 ).sp_coeff() );
-
-      impact_action = damage_instance;
+      impact_action = new malefic_rapture_damage_instance_t( p, data().effectN( 1 ).sp_coeff() );
       add_child( impact_action );
+    }
 
+    bool ready() override
+    {
+      if ( !affliction_spell_t::ready() )
+       return false;
+
+      target_cache.is_valid = false;
+      return target_list().size() > 0;
     }
 
     void execute() override
@@ -602,6 +606,15 @@ struct malefic_rapture_t : public affliction_spell_t
         p()->buffs.malefic_wrath->trigger();
         p()->procs.malefic_wrath->occur();
       }
+    }
+
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      affliction_spell_t::available_targets( tl );
+
+      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ){ return p()->get_target_data( target )->count_affliction_dots() == 0; } ), tl.end() );
+
+      return tl.size();
     }
 };
 
@@ -916,6 +929,11 @@ void warlock_t::init_procs_affliction()
   procs.nightfall = get_proc( "nightfall" );
   procs.corrupting_leer = get_proc( "corrupting_leer" );
   procs.malefic_wrath   = get_proc( "malefic_wrath" );
+
+  for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
+  {
+    procs.malefic_rapture[ i ] = get_proc( fmt::format( "Malefic Rapture {}", i + 1 ) );
+  }
 }
 
 void warlock_t::create_options_affliction()

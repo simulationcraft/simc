@@ -290,7 +290,7 @@ void niyas_tools_herbs( special_effect_t& effect )
   }
 
   // TODO: confirm proc flags
-  // 11/17/2020 - For Rogues this procs from all periodic heals (Recuperator/Soothing Darkness/Crimson Vial)
+  // 2020-11-17 - For Rogues this procs from all periodic heals (Recuperator/Soothing Darkness/Crimson Vial)
   effect.proc_flags_  = PF_ALL_HEAL | PF_PERIODIC;
   effect.proc_flags2_ = PF2_LANDED | PF2_PERIODIC_HEAL;
 
@@ -618,18 +618,13 @@ void dauntless_duelist( special_effect_t& effect )
   auto cb = new dauntless_duelist_cb_t( effect );
   auto p  = effect.player;
 
-  range::for_each( p->sim->actor_list, [ p, cb ]( player_t* t ) {
-    if ( !t->is_enemy() )
+  p->register_on_kill_callback( [ p, cb ]( player_t* t ) {
+    if ( p->sim->event_mgr.canceled )
       return;
 
-    t->register_on_demise_callback( p, [ p, cb ]( player_t* t ) {
-      if ( p->sim->event_mgr.canceled )
-        return;
-
-      auto td = p->find_target_data( t );
-      if ( td && td->debuff.adversary->check() )
-        cb->activate();
-    } );
+    auto td = p->find_target_data( t );
+    if ( td && td->debuff.adversary->check() )
+      cb->activate();
   } );
 }
 
@@ -711,10 +706,10 @@ void thrill_seeker( special_effect_t& effect )
   int number_of_players      = 1;
   // If the user does not override the value for this we will set different defaults based on the sim here
   // Default: 1/20 = 0.05
-  // DungeonSlice: 1/4 = 0.25
+  // DungeonSlice & DungeonRoute: 1/4 = 0.25
   if ( killing_blow_chance < 0 )
   {
-    if ( p->sim->fight_style == "DungeonSlice" )
+    if ( p->sim->fight_style == "DungeonSlice" || p->sim->fight_style == "DungeonRoute" )
     {
       number_of_players = 4;
     }
@@ -725,19 +720,12 @@ void thrill_seeker( special_effect_t& effect )
     killing_blow_chance = 1.0 / number_of_players;
   }
 
-  range::for_each( p->sim->actor_list, [ p, counter_buff, killing_blow_stacks, killing_blow_chance ]( player_t* t ) {
-    if ( !t->is_enemy() )
+  p->register_on_kill_callback( [ p, counter_buff, killing_blow_stacks, killing_blow_chance ]( player_t* ) {
+    if ( p->sim->event_mgr.canceled )
       return;
 
-    t->register_on_demise_callback( p, [ p, counter_buff, killing_blow_stacks, killing_blow_chance ]( player_t* ) {
-      if ( p->sim->event_mgr.canceled )
-        return;
-
-      if ( p->rng().roll( killing_blow_chance ) )
-      {
-        counter_buff->trigger( killing_blow_stacks );
-      }
-    } );
+    if ( p->rng().roll( killing_blow_chance ) )
+      counter_buff->trigger( killing_blow_stacks );
   } );
 }
 
@@ -1916,16 +1904,11 @@ void gnashing_chompers( special_effect_t& effect )
                ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
 
-  range::for_each( effect.player->sim->actor_list, [ buff ]( player_t* p ) {
-    if ( !p->is_enemy() )
+  effect.player->register_on_kill_callback( [ buff ]( player_t* ) {
+    if ( buff->sim->event_mgr.canceled )
       return;
 
-    p->register_on_demise_callback( buff->player, [ buff ]( player_t* ) {
-      if ( buff->sim->event_mgr.canceled )
-        return;
-
-      buff->trigger();
-    } );
+    buff->trigger();
   } );
 }
 

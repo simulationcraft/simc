@@ -66,7 +66,6 @@
 
 #include <cctype>
 #include <cerrno>
-#include <iostream>
 #include <limits>
 #include <memory>
 #include <sstream>
@@ -5678,7 +5677,7 @@ void player_t::demise()
    * need to be associated with eg. resolve Diminishing Return list.
    */
 
-  if (arise_time >= timespan_t::zero())
+  if ( arise_time >= 0_ms )
   {
     iteration_fight_length += sim->current_time() - arise_time;
   }
@@ -5689,6 +5688,19 @@ void player_t::demise()
   event_t::cancel( readying );
   event_t::cancel( off_gcd );
   event_t::cancel( cast_while_casting_poll_event );
+
+  // If an enemy mob dies, trigger on-kill callback on all active players
+  if ( is_enemy() )
+  {
+    for ( auto p : sim->player_non_sleeping_list )
+    {
+      // Use index-based lookup since on-kill callbacks may insert new on-kill callbacks to the vector
+      for ( size_t i = 0; i < p->callbacks_on_kill.size(); ++i )  // NOLINT(modernize-loop-convert)
+      {
+        p->callbacks_on_kill[ i ]( this );
+      }
+    }
+  }
 
   // Requires index-based lookup since on-demise callbacks may
   // insert new on-demise callbacks to the vector.
@@ -7464,6 +7476,21 @@ struct racial_spell_t : public spell_t
   }
 };
 
+struct racial_heal_t : public heal_t
+{
+  racial_heal_t( player_t* p, util::string_view token, const spell_data_t* spell ) :
+    heal_t( token, p, spell )
+  { }
+
+  void init() override
+  {
+    heal_t::init();
+
+    if ( &data() == spell_data_t::not_found() )
+      background = true;
+  }
+};
+
 // Shadowmeld ===============================================================
 
 struct shadowmeld_t : public racial_spell_t
@@ -7746,6 +7773,22 @@ struct arcane_pulse_t : public racial_spell_t
     if ( ap > sp )
       return 0;
     return racial_spell_t::spell_direct_power_coefficient( s );
+  }
+};
+
+// Gift of the Naaru ========================================================
+
+struct gift_of_the_naaru : public racial_heal_t
+{
+  gift_of_the_naaru( player_t* p, util::string_view options_str ) :
+    racial_heal_t( p, "gift_of_the_naaru", p->find_racial_spell( "Gift of the Naaru" ) )
+  {
+    parse_options( options_str );
+  }
+
+  double base_ta( const action_state_t* /* state */ ) const override
+  {
+    return player->max_health() * data().effectN( 2 ).percent();
   }
 };
 
@@ -8928,6 +8971,8 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
     return new darkflight_t( this, options_str );
   if ( name == "fireblood" )
     return new fireblood_t( this, options_str );
+  if ( name == "gift_of_the_naaru" )
+    return new gift_of_the_naaru( this, options_str );
   if ( name == "haymaker" )
     return new haymaker_t( this, options_str );
   if ( name == "lights_judgment" )
@@ -11926,14 +11971,10 @@ void player_t::do_update_movement( double yards )
   }
 }
 
-
 player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t,
                                                                          timespan_t ts, timespan_t wait,
-                                                                         const player_t* p ) :
-  action( a ),
-  target( t ),
-  time( ts ),
-  wait_time( wait )
+                                                                         const player_t* p )
+  : action( a ), target( t ), time( ts ), wait_time( wait ), queue_failed( false )
 {
   for ( buff_t* b : p->buff_list )
   {
@@ -12447,34 +12488,6 @@ void player_collected_data_t::collect_data( const player_t& p )
     AUTO_LOCK( cd.target_metric_mutex );
     cd.target_metric.add( metric );
   }
-}
-
-std::ostream& player_collected_data_t::data_str( std::ostream& s ) const
-{
-  fight_length.data_str( s );
-  dmg.data_str( s );
-  compound_dmg.data_str( s );
-  dps.data_str( s );
-  prioritydps.data_str( s );
-  dpse.data_str( s );
-  dtps.data_str( s );
-  dmg_taken.data_str( s );
-  timeline_dmg.data_str( s );
-  timeline_dmg_taken.data_str( s );
-  // Heal
-  heal.data_str( s );
-  compound_heal.data_str( s );
-  hps.data_str( s );
-  hpse.data_str( s );
-  htps.data_str( s );
-  heal_taken.data_str( s );
-  timeline_healing_taken.data_str( s );
-  // TMI
-  theck_meloree_index.data_str( s );
-  effective_theck_meloree_index.data_str( s );
-  max_spike_amount.data_str( s );
-
-  return s;
 }
 
 // Note, root call needs to set player_t::visited_apls_ to 0
@@ -13115,6 +13128,11 @@ void player_t::register_on_demise_callback( player_t* source, std::function<void
 void player_t::register_on_arise_callback( player_t* source, std::function<void( void )> fn )
 {
   callbacks_on_arise.emplace_back( source, std::move( fn ) );
+}
+
+void player_t::register_on_kill_callback( std::function<void( player_t* )> fn )
+{
+  callbacks_on_kill.emplace_back( std::move( fn ) );
 }
 
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const

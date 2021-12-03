@@ -35,15 +35,14 @@ public:
   school_e school;
   stats_e type;
 
-  // when set true, the stat object's name will take precedence over the action name for HTML reporting
-  bool prefer_name;
-
   std::vector<action_t*> action_list;
   gain_t resource_gain;
   // Flags
   bool analyzed;
   bool quiet;
   bool background;
+  // when set true, the stat object's name will take precedence over the action name for HTML reporting
+  bool prefer_name;
 
   simple_sample_data_t num_executes, num_ticks, num_refreshes, num_direct_results, num_tick_results;
   unsigned int iteration_num_executes, iteration_num_ticks, iteration_num_refreshes;

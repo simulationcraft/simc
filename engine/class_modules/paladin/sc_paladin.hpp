@@ -58,6 +58,7 @@ public:
   {
     heal_t* beacon_of_light;
     action_t* holy_shield_damage;
+    action_t* t28_4p_pp;
     action_t* judgment_of_light;
     action_t* shield_of_vengeance_damage;
     action_t* zeal;
@@ -81,8 +82,6 @@ public:
 
     // Conduit stuff
     action_t* virtuous_command;
-
-    action_t* judgment;
   } active;
 
   // Buffs
@@ -122,6 +121,7 @@ public:
     buff_t* inner_light;
     buff_t* inspiring_vanguard;
     buff_t* soaring_shield;
+    buff_t* glorious_purpose; //T28 2pc
 
     // Ret
     buffs::crusade_buff_t* crusade;
@@ -209,6 +209,7 @@ public:
     cooldown_t* blade_of_justice;
     cooldown_t* final_reckoning;
     cooldown_t* hammer_of_wrath;
+    cooldown_t* wake_of_ashes;
 
     cooldown_t* blessing_of_the_seasons;
     cooldown_t* ashen_hallow; // Radiant Embers Legendary
@@ -282,6 +283,8 @@ public:
     const spell_data_t* hammer_of_wrath_2;
 
     const spell_data_t* ashen_hallow_how;
+
+    const spell_data_t* seraphim_buff;
   } spells;
 
   // Talents
@@ -436,6 +439,17 @@ public:
     item_runeforge_t divine_resonance;
   } legendary;
 
+    struct tier_sets_t
+  {
+    const spell_data_t* glorious_purpose_2pc;
+    const spell_data_t* glorious_purpose_4pc;
+    const spell_data_t* dawn_will_come_2pc;
+    const spell_data_t* dawn_will_come_4pc;
+    const spell_data_t* ashes_to_ashes_2pc;
+    const spell_data_t* ashes_to_ashes_4pc;
+
+  } tier_sets;
+
   // Paladin options
   struct options_t
   {
@@ -513,6 +527,7 @@ public:
 
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
+  void    trigger_t28_4p_pp( action_state_t* s );
   void    trigger_forbearance( player_t* target );
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
@@ -568,105 +583,101 @@ public:
 };
 
 namespace buffs {
-  struct avenging_wrath_buff_t : public buff_t
+struct avenging_wrath_buff_t : public buff_t
+{
+  avenging_wrath_buff_t( paladin_t* p );
+  double get_damage_mod() const
   {
-    avenging_wrath_buff_t( paladin_t* p );
-
-    double get_damage_mod() const
-    {
-      return damage_modifier;
-    }
-
-    double get_healing_mod() const
-    {
-      return healing_modifier;
-    }
-
-    double get_crit_bonus() const
-    {
+    return damage_modifier;
+  }
+  double get_healing_mod() const
+  {
+    return healing_modifier;
+  }
+  double get_crit_bonus() const
+  {
       return crit_bonus;
-    }
+  }
 
-    private:
-    double damage_modifier;
-    double healing_modifier;
-    double crit_bonus;
-  };
+private:
+  double damage_modifier;
+  double healing_modifier;
+  double crit_bonus;
+};
 
-  struct crusade_buff_t : public buff_t
+struct crusade_buff_t : public buff_t
+{
+  crusade_buff_t( paladin_t* p );
+
+  double get_damage_mod() const
   {
-    crusade_buff_t( paladin_t* p );
+    return damage_modifier * ( this->check() );
+  }
 
-    double get_damage_mod() const
-    {
-      return damage_modifier * ( this -> check() );
-    }
+  double get_haste_bonus() const
+  {
+    return haste_bonus * ( this->check() );
+  }
 
-    double get_haste_bonus() const
-    {
-      return haste_bonus * ( this -> check() );
-    }
-    private:
+private:
     double damage_modifier;
     double haste_bonus;
-  };
+};
 
-  struct execution_sentence_debuff_t : public buff_t
+struct execution_sentence_debuff_t : public buff_t
+{
+  execution_sentence_debuff_t( paladin_td_t* td )
+    : buff_t( *td, "execution_sentence", debug_cast<paladin_t*>( td->source )->talents.execution_sentence ),
+      accumulated_damage( 0.0 )
   {
-    execution_sentence_debuff_t( paladin_td_t* td ) :
-      buff_t( *td, "execution_sentence", debug_cast<paladin_t*>( td -> source ) -> talents.execution_sentence ),
-      accumulated_damage( 0.0 ) {
-      set_cooldown( 0_ms ); // handled by the ability
-    }
+    set_cooldown( 0_ms );  // handled by the ability
+  }
 
-    void reset() override
-    {
-      buff_t::reset();
-      accumulated_damage = 0.0;
-    }
-
-    void expire_override( int stacks, timespan_t duration ) override
-    {
-      buff_t::expire_override( stacks, duration );
-
-      accumulated_damage = 0.0;
-    }
-
-    void accumulate_damage( const action_state_t* s )
-    {
-      sim -> print_debug(
-        "{}'s {} accumulates {} additional damage: {} -> {}",
-        player -> name(), name(), s -> result_total,
-        accumulated_damage, accumulated_damage + s -> result_total );
-
-      accumulated_damage += s -> result_total;
-    }
-
-    double get_accumulated_damage() const
-    {
-      return accumulated_damage;
-    }
-
-  private:
-    double accumulated_damage;
-  };
-
-  struct forbearance_t : public buff_t
+  void reset() override
   {
-    paladin_t* paladin;
+    buff_t::reset();
+    accumulated_damage = 0.0;
+  }
 
-    forbearance_t( player_t* p, const char *name ) :
-      buff_t( p, name, p -> find_spell( 25771 ) ),
-      paladin( nullptr )
-    { }
+  void expire_override( int stacks, timespan_t duration ) override
+  {
+    buff_t::expire_override( stacks, duration );
 
-    forbearance_t( paladin_td_t* ap, const char *name ) :
-      buff_t( *ap, name, ap -> source -> find_spell( 25771 ) ),
-      paladin( debug_cast<paladin_t*>( ap -> source ) )
-    { }
-  };
+    accumulated_damage = 0.0;
+  }
 
-}
+  void accumulate_damage( const action_state_t* s )
+  {
+    sim->print_debug( "{}'s {} accumulates {} additional damage: {} -> {}", player->name(), name(), s->result_total,
+                      accumulated_damage, accumulated_damage + s->result_total );
+
+    accumulated_damage += s->result_total;
+  }
+
+  double get_accumulated_damage() const
+  {
+    return accumulated_damage;
+  }
+
+private:
+  double accumulated_damage;
+};
+
+struct forbearance_t : public buff_t
+{
+  paladin_t* paladin;
+
+  forbearance_t( player_t* p, const char* name ) : buff_t( p, name, p->find_spell( 25771 ) ), paladin( nullptr )
+  {
+  }
+
+  forbearance_t( paladin_td_t* ap, const char* name )
+    : buff_t( *ap, name, ap->source->find_spell( 25771 ) ), paladin( debug_cast<paladin_t*>( ap->source ) )
+  {
+  }
+};
+
+}  // namespace buffs
 
 // ==========================================================================
 // Paladin Ability Templates
@@ -1208,7 +1219,7 @@ struct holy_power_consumer_t : public Base
       else
       {
         // Shining Light is now consumed before Divine Purpose 2020-11-01
-        p -> buffs.shining_light_free -> expire();        
+        p -> buffs.shining_light_free -> expire();
       }
     }
 
@@ -1230,7 +1241,7 @@ struct holy_power_consumer_t : public Base
       should_continue = false;
     }
 
-    // 2021-08-10 Vanquisher's Hammer's auto-sotr does not consume divine purpose    
+    // 2021-08-10 Vanquisher's Hammer's auto-sotr does not consume divine purpose
     if ( p -> specialization() == PALADIN_PROTECTION && ab::background )
       should_continue = false;
     // 2021-08-10 The word of glory used to trigger vanquisher's hammer again
@@ -1296,15 +1307,11 @@ struct holy_power_consumer_t : public Base
 
 struct judgment_t : public paladin_melee_attack_t
 {
-  judgment_t( paladin_t* p, util::string_view options_str );
-  judgment_t( paladin_t* p );
+  judgment_t( paladin_t* p, util::string_view name );
 
   proc_types proc_type() const override;
   void impact( action_state_t* s ) override;
   void execute() override;
-
-private:
-  void do_ctor_common( paladin_t* p );
 };
 
 struct shield_of_the_righteous_buff_t : public buff_t

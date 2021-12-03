@@ -342,7 +342,7 @@ int http::get( std::string&       result,
     if ( caching == cache::ONLY )
       return 404;
 
-    fmt::print( "@" ); fflush( stdout );
+    fmt::print( "@" ); std::fflush( stdout );
 
     response_code = download( entry, result, encoded_url, headers );
 

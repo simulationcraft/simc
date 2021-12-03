@@ -7,7 +7,7 @@ role=dps
 position=back
 talents=2020012
 covenant=venthyr
-soulbind=theotar_the_mad_duke:9,soothing_shade/Imbued_reflections:9:1/coordinated_offensive:9:1/token_of_appreciation/xuens_bond:9:1/its_always_tea_time/party_favors
+soulbind=theotar_the_mad_duke:9,soothing_shade/coordinated_offensive:9:1/wasteland_propriety/imbued_reflections:9:1/its_always_tea_time/party_favors
 renown=80
 
 # Default consumables
@@ -185,7 +185,7 @@ finger1=shadowghast_ring,id=178926,bonus_id=7726/1559/6650/6647/6935,gem_id=1731
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
 trinket2=salvaged_fusion_amplifier,id=186432,bonus_id=7187/1498
-main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=sinful_revelation
+main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
 off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
 
 # Gear Summary

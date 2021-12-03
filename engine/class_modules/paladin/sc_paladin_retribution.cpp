@@ -310,7 +310,7 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       base_multiplier *= 1.0 + p -> legendary.tempest_of_the_lightbringer -> effectN( 2 ).percent();
   }
 
-  divine_storm_t( paladin_t* p, bool is_free, float mul ) :
+  divine_storm_t( paladin_t* p, bool is_free, double mul ) :
     holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) )
   {
     is_divine_storm = true;
@@ -602,13 +602,15 @@ struct judgment_ret_t : public judgment_t
 {
   int holy_power_generation;
 
-  judgment_ret_t( paladin_t* p, util::string_view options_str ) :
-    judgment_t( p, options_str ),
+  judgment_ret_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
+    judgment_t( p, name ),
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
-  {}
+  {
+    parse_options( options_str );
+  }
 
-  judgment_ret_t( paladin_t* p, bool is_divine_toll = true ) :
-    judgment_t( p ),
+  judgment_ret_t( paladin_t* p, util::string_view name, bool is_divine_toll ) :
+    judgment_t( p, name ),
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
   {
     // This is for Divine Toll's background judgments
@@ -792,9 +794,8 @@ void paladin_t::create_ret_actions()
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
-    active.divine_toll = new judgment_ret_t( this );
-    active.judgment = new judgment_ret_t( this, false );
-    active.divine_resonance = new judgment_ret_t( this, false );
+    active.divine_toll = new judgment_ret_t( this, "divine_toll_judgment", true );
+    active.divine_resonance = new judgment_ret_t( this, "divine_resonance_judgment", false );
   }
 }
 
@@ -812,7 +813,7 @@ action_t* paladin_t::create_action_retribution( util::string_view name, util::st
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
-    if ( name == "judgment") return new judgment_ret_t( this, options_str );
+    if ( name == "judgment") return new judgment_ret_t( this, "judgment", options_str );
   }
 
   return nullptr;
@@ -943,6 +944,7 @@ void paladin_t::generate_action_prio_list_ret()
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   // Precombat casts
+  precombat -> add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" );
   precombat -> add_action( "arcane_torrent,if=talent.final_reckoning.enabled&talent.seraphim.enabled" );
   precombat -> add_action( "blessing_of_the_seasons" );
   precombat -> add_action( this, "Shield of Vengeance" );
@@ -953,12 +955,16 @@ void paladin_t::generate_action_prio_list_ret()
 
   action_priority_list_t* def = get_action_priority_list( "default" );
   action_priority_list_t* cds = get_action_priority_list( "cooldowns" );
+  action_priority_list_t* es_fr_active = get_action_priority_list( "es_fr_active" );
+  action_priority_list_t* es_fr_pooling = get_action_priority_list( "es_fr_pooling" );
   action_priority_list_t* generators = get_action_priority_list( "generators" );
   action_priority_list_t* finishers = get_action_priority_list( "finishers" );
 
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Rebuke" );
   def -> add_action( "call_action_list,name=cooldowns" );
+  def -> add_action( "call_action_list,name=es_fr_pooling,if=(!raid_event.adds.exists|raid_event.adds.up|raid_event.adds.in<9|raid_event.adds.in>30)&(talent.execution_sentence&cooldown.execution_sentence.remains<9&spell_targets.divine_storm<5|talent.final_reckoning&cooldown.final_reckoning.remains<9)&target.time_to_die>8" );
+  def -> add_action( "call_action_list,name=es_fr_active,if=debuff.execution_sentence.up|debuff.final_reckoning.up" );
   def -> add_action( "call_action_list,name=generators" );
 
   if ( sim -> allow_potions )
@@ -979,7 +985,7 @@ void paladin_t::generate_action_prio_list_ret()
 
     if ( racial_action == "fireblood" )
     {
-      cds -> add_action( "fireblood,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10" );
+      cds -> add_action( "fireblood,if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10)&!talent.execution_sentence" );
     }
 
     /*
@@ -990,24 +996,28 @@ void paladin_t::generate_action_prio_list_ret()
       cds -> add_action( racial_actions[ i ] );
     } */
   }
-  cds -> add_action( this, "Shield of Vengeance", "if=(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains<52)&fight_remains>15" );
+  cds -> add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent" );
+  cds -> add_action( this, "Shield of Vengeance", "if=(!talent.execution_sentence|cooldown.execution_sentence.remains<52)&fight_remains>15" );
   cds -> add_action( "blessing_of_the_seasons" );
 
   // Items
 
   // special-cased items
-  std::unordered_set<std::string> special_items { "skulkers_wing", "macabre_sheet_music", "memory_of_past_sins", "dreadfire_vessel", "darkmoon_deck_voracity", "overwhelming_power_crystal", "spare_meat_hook", "grim_codex", "inscrutable_quantum_device", "salvaged_fusion_amplifier", "unchained_gladiators_badge_of_ferocity", "unchained_aspirants_badge_of_ferocity", "sinful_gladiators_badge_of_ferocity", "sinful_aspirants_badge_of_ferocity" };
+  std::unordered_set<std::string> special_items { "skulkers_wing", "macabre_sheet_music", "memory_of_past_sins", "dreadfire_vessel", "darkmoon_deck_voracity", "overwhelming_power_crystal", "spare_meat_hook", "grim_codex", "inscrutable_quantum_device", "salvaged_fusion_amplifier", "unchained_gladiators_badge_of_ferocity", "unchained_aspirants_badge_of_ferocity", "sinful_gladiators_badge_of_ferocity", "sinful_aspirants_badge_of_ferocity", "faulty_countermeasure", "giant_ornamental_pearl", "windscar_whetstone" };
 
   cds -> add_action( "use_item,name=inscrutable_quantum_device,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<30" );
   cds -> add_action( "use_item,name=overwhelming_power_crystal,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<15" );
   cds -> add_action( "use_item,name=darkmoon_deck_voracity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<20" );
   cds -> add_action( "use_item,name=macabre_sheet_music,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<20" );
+  cds -> add_action( "use_item,name=faulty_countermeasure,if=!talent.crusade|buff.crusade.up|fight_remains<30" );
   cds -> add_action( "use_item,name=dreadfire_vessel" );
   cds -> add_action( "use_item,name=skulkers_wing" );
   cds -> add_action( "use_item,name=grim_codex" );
   cds -> add_action( "use_item,name=memory_of_past_sins" );
   cds -> add_action( "use_item,name=spare_meat_hook" );
   cds -> add_action( "use_item,name=salvaged_fusion_amplifier" );
+  cds -> add_action( "use_item,name=giant_ornamental_pearl" );
+  cds -> add_action( "use_item,name=windscar_whetstone" );
   cds -> add_action( "use_item,name=unchained_gladiators_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45" );
   cds -> add_action( "use_item,name=unchained_aspirants_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45" );
   cds -> add_action( "use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45" );
@@ -1025,35 +1035,63 @@ void paladin_t::generate_action_prio_list_ret()
     }
   }
 
-  cds -> add_action( this, "Avenging Wrath", "if=(holy_power>=4&time<5|holy_power>=3&(time>5|runeforge.the_magistrates_judgment)|talent.holy_avenger.enabled&cooldown.holy_avenger.remains=0)&(!talent.seraphim.enabled|cooldown.seraphim.remains>0|talent.sanctified_wrath.enabled)" );
-  cds -> add_talent( this, "Crusade", "if=holy_power>=4&time<5|holy_power>=3&time>5|talent.holy_avenger.enabled&cooldown.holy_avenger.remains=0" );
+  cds -> add_action( this, "Avenging Wrath", "if=(holy_power>=4&time<5|holy_power>=3&(time>5|runeforge.the_magistrates_judgment)|holy_power>=2&runeforge.vanguards_momentum&talent.final_reckoning|talent.holy_avenger&cooldown.holy_avenger.remains=0)&(!talent.seraphim|!talent.final_reckoning|cooldown.seraphim.remains>0)" );
+  cds -> add_talent( this, "Crusade", "if=holy_power>=4&time<5|holy_power>=3&time>5" );
   cds -> add_action( "ashen_hallow" );
-  cds -> add_talent( this, "Holy Avenger" , "if=time_to_hpg=0&(buff.avenging_wrath.up|buff.crusade.up|buff.avenging_wrath.down&cooldown.avenging_wrath.remains>40|buff.crusade.down&cooldown.crusade.remains>40)" );
-  cds -> add_talent( this, "Final Reckoning", "if=(holy_power>=4&time<8|holy_power>=3&time>=8)&cooldown.avenging_wrath.remains>gcd&time_to_hpg=0&(!talent.seraphim.enabled|buff.seraphim.up)&(!raid_event.adds.exists|raid_event.adds.up|raid_event.adds.in>40)" );
+  cds -> add_talent( this, "Holy Avenger" , "if=time_to_hpg=0&holy_power<=2&(buff.avenging_wrath.up|talent.crusade&(cooldown.crusade.remains=0|buff.crusade.up)|fight_remains<20)" );
+  cds -> add_talent( this, "Final Reckoning", "if=(holy_power>=4&time<8|holy_power>=3&(time>=8|spell_targets.divine_storm>=2&covenant.kyrian))&cooldown.avenging_wrath.remains>gcd&time_to_hpg=0&(!talent.seraphim|buff.seraphim.up)&(!raid_event.adds.exists|raid_event.adds.up|raid_event.adds.in>40)&(!buff.avenging_wrath.up|holy_power=5|cooldown.hammer_of_wrath.remains|spell_targets.divine_storm>=2&covenant.kyrian)" );
 
-  finishers -> add_action( "variable,name=ds_castable,value=spell_targets.divine_storm=2&!(runeforge.final_verdict&talent.righteous_verdict.enabled&conduit.templars_vindication.enabled)|spell_targets.divine_storm>2|buff.empyrean_power.up&debuff.judgment.down&buff.divine_purpose.down" );
-  finishers -> add_talent( this, "Seraphim", "if=(cooldown.avenging_wrath.remains>15|cooldown.crusade.remains>15|talent.final_reckoning.enabled)&(!talent.final_reckoning.enabled|cooldown.final_reckoning.remains<=gcd*3&(!raid_event.adds.exists|raid_event.adds.in>40|raid_event.adds.in<gcd|raid_event.adds.up))&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains<=gcd*3|talent.final_reckoning.enabled)&(!covenant.kyrian|cooldown.divine_toll.remains<9)|target.time_to_die<15&target.time_to_die>5" );
-  finishers -> add_talent( this, "Execution Sentence", "if=(buff.crusade.down&cooldown.crusade.remains>10|buff.crusade.stack>=3|cooldown.avenging_wrath.remains>10)&(!talent.final_reckoning.enabled|cooldown.final_reckoning.remains>10)&target.time_to_die>8" );
-  finishers -> add_action( this, "Divine Storm", "if=variable.ds_castable&!buff.vanquishers_hammer.up&((!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd*6|cooldown.execution_sentence.remains>gcd*5&holy_power>=4|target.time_to_die<8|!talent.seraphim.enabled&cooldown.execution_sentence.remains>gcd*2)&(!talent.final_reckoning.enabled|cooldown.final_reckoning.remains>gcd*6|cooldown.final_reckoning.remains>gcd*5&holy_power>=4|!talent.seraphim.enabled&cooldown.final_reckoning.remains>gcd*2)&(!talent.seraphim.enabled|cooldown.seraphim.remains%gcd+holy_power>3|talent.final_reckoning.enabled|talent.execution_sentence.enabled|covenant.kyrian)|(talent.holy_avenger.enabled&cooldown.holy_avenger.remains<gcd*3|buff.holy_avenger.up|buff.crusade.up&buff.crusade.stack<10))" );
-  finishers -> add_action( this, "Templar's Verdict", "if=(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd*6|cooldown.execution_sentence.remains>gcd*5&holy_power>=4|target.time_to_die<8|!talent.seraphim.enabled&cooldown.execution_sentence.remains>gcd*2)&(!talent.final_reckoning.enabled|cooldown.final_reckoning.remains>gcd*6|cooldown.final_reckoning.remains>gcd*5&holy_power>=4|!talent.seraphim.enabled&cooldown.final_reckoning.remains>gcd*2)&(!talent.seraphim.enabled|cooldown.seraphim.remains%gcd+holy_power>3|talent.final_reckoning.enabled|talent.execution_sentence.enabled|covenant.kyrian)|talent.holy_avenger.enabled&cooldown.holy_avenger.remains<gcd*3|buff.holy_avenger.up|buff.crusade.up&buff.crusade.stack<10" );
+  es_fr_active -> add_action( "fireblood" );
+  es_fr_active -> add_action( "call_action_list,name=finishers,if=debuff.judgment.up|debuff.final_reckoning.up&(debuff.final_reckoning.remains<gcd.max|spell_targets.divine_storm>=2&!talent.execution_sentence)|debuff.execution_sentence.up&debuff.execution_sentence.remains<gcd.max" );
+  es_fr_active -> add_action( "divine_toll" );
+  es_fr_active -> add_action( "vanquishers_hammer" );
+  es_fr_active -> add_action( this, "Wake of Ashes", "if=holy_power<=2&(debuff.final_reckoning.up&debuff.final_reckoning.remains<gcd*2&!runeforge.divine_resonance|debuff.execution_sentence.up&debuff.execution_sentence.remains<gcd|spell_targets.divine_storm>=5&runeforge.divine_resonance&talent.execution_sentence)" );
+  es_fr_active -> add_action( this, "Blade of Justice", "if=conduit.expurgation&(!runeforge.divine_resonance&holy_power<=3|holy_power<=2)" );
+  es_fr_active -> add_action( this, "Judgment", "if=!debuff.judgment.up&(holy_power>=1&runeforge.the_magistrates_judgment|holy_power>=2)" );
+  es_fr_active -> add_action( "call_action_list,name=finishers" );
+  es_fr_active -> add_action( this, "Wake of Ashes", "if=holy_power<=2" );
+  es_fr_active -> add_action( this, "Blade of Justice", "if=holy_power<=3" );
+  es_fr_active -> add_action( this, "Judgment", "if=!debuff.judgment.up" );
+  es_fr_active -> add_action( this, "Hammer of Wrath" );
+  es_fr_active -> add_action( this, "Crusader Strike" );
+  es_fr_active -> add_action( "arcane_torrent" );
+  es_fr_active -> add_action( this, "Consecration" );
 
-  generators -> add_action( "call_action_list,name=finishers,if=holy_power=5|buff.holy_avenger.up|debuff.final_reckoning.up|debuff.execution_sentence.up" );
-  generators -> add_action( "vanquishers_hammer" );
-  generators -> add_action( "divine_toll,if=!debuff.judgment.up&(!talent.seraphim.enabled|buff.seraphim.up)&(!raid_event.adds.exists|raid_event.adds.in>30|raid_event.adds.up)&(holy_power<=2|holy_power<=4&(cooldown.blade_of_justice.remains>gcd*2|debuff.execution_sentence.up|debuff.final_reckoning.up))&(!talent.final_reckoning.enabled|cooldown.final_reckoning.remains>gcd*10)&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd*10|target.time_to_die<8)&(cooldown.avenging_wrath.remains|cooldown.crusade.remains)" );
-  generators -> add_action( this, "Hammer of Wrath", "if=runeforge.the_mad_paragon|runeforge.vanguards_momentum&talent.execution_sentence.enabled|covenant.venthyr&cooldown.ashen_hallow.remains>210" );
-  generators -> add_action( this, "Judgment", "if=!debuff.judgment.up&buff.holy_avenger.up" );
-  generators -> add_action( this, "Wake of Ashes", "if=(holy_power<=2&talent.execution_sentence.enabled&debuff.execution_sentence.remains>0&debuff.execution_sentence.remains<gcd*2)" );
-  generators -> add_action( this, "Blade of Justice", "if=holy_power<=3&talent.blade_of_wrath.enabled&(talent.final_reckoning.enabled&debuff.final_reckoning.remains>gcd*2|talent.execution_sentence.enabled&!talent.final_reckoning.enabled&(debuff.execution_sentence.up|cooldown.execution_sentence.remains=0))" );
-  generators -> add_action( this, "Judgment", "if=!debuff.judgment.up&talent.seraphim.enabled&(holy_power>=1&runeforge.the_magistrates_judgment|holy_power>=2)" );
-  generators -> add_action( this, "Wake of Ashes", "if=(holy_power=0|holy_power<=2&(cooldown.blade_of_justice.remains>gcd*2|debuff.execution_sentence.up|target.time_to_die<8|debuff.final_reckoning.up))&(!raid_event.adds.exists|raid_event.adds.in>20|raid_event.adds.up)&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>15|target.time_to_die<8)&(!talent.final_reckoning.enabled|cooldown.final_reckoning.remains>15|target.time_to_die<8)&(cooldown.avenging_wrath.remains|cooldown.crusade.remains)" );
+  es_fr_pooling -> add_talent( this, "Seraphim", "if=holy_power=5&(!talent.final_reckoning|cooldown.final_reckoning.remains<=gcd*3)&(!talent.execution_sentence|cooldown.execution_sentence.remains<=gcd*3|talent.final_reckoning)&(!covenant.kyrian|cooldown.divine_toll.remains<9)" );
+  es_fr_pooling -> add_action( "call_action_list,name=finishers,if=holy_power=5|debuff.final_reckoning.up|buff.crusade.up&buff.crusade.stack<10" );
+  es_fr_pooling -> add_action( "vanquishers_hammer,if=buff.seraphim.up" );
+  es_fr_pooling -> add_action( this, "Hammer of Wrath", "if=runeforge.vanguards_momentum" );
+  es_fr_pooling -> add_action( this, "Blade of Justice", "if=holy_power<=3" );
+  es_fr_pooling -> add_action( this, "Judgment", "if=!debuff.judgment.up" );
+  es_fr_pooling -> add_action( this, "Hammer of Wrath" );
+  es_fr_pooling -> add_action( this, "Crusader Strike", "if=cooldown.crusader_strike.charges_fractional>=1.75&(holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2)" );
+  es_fr_pooling -> add_talent( this, "Seraphim", "if=!talent.final_reckoning&cooldown.execution_sentence.remains<=gcd*3&(!covenant.kyrian|cooldown.divine_toll.remains<9)" );
+  es_fr_pooling -> add_action( "call_action_list,name=finishers" );
+  es_fr_pooling -> add_action( this, "Crusader Strike" );
+  es_fr_pooling -> add_action( "arcane_torrent,if=holy_power<=4" );
+  es_fr_pooling -> add_talent( this, "Seraphim", "if=(!talent.final_reckoning|cooldown.final_reckoning.remains<=gcd*3)&(!talent.execution_sentence|cooldown.execution_sentence.remains<=gcd*3|talent.final_reckoning)&(!covenant.kyrian|cooldown.divine_toll.remains<9)" );
+  es_fr_pooling -> add_action( this, "Consecration" );
+
+  finishers -> add_action( "variable,name=ds_castable,value=spell_targets.divine_storm=2&!(runeforge.final_verdict|talent.righteous_verdict)|spell_targets.divine_storm>2|buff.empyrean_power.up&!debuff.judgment.up&!buff.divine_purpose.up" );
+  finishers -> add_talent( this, "Seraphim", "if=(cooldown.avenging_wrath.remains>15|cooldown.crusade.remains>15)&!talent.final_reckoning&(!talent.execution_sentence|spell_targets.divine_storm>=5)&(!raid_event.adds.exists|raid_event.adds.in>40|raid_event.adds.in<gcd|raid_event.adds.up)&(!covenant.kyrian|cooldown.divine_toll.remains<9)|fight_remains<15&fight_remains>5|buff.crusade.up&buff.crusade.stack<10" );
+  finishers -> add_talent( this, "Execution Sentence", "if=(buff.crusade.down&cooldown.crusade.remains>10|buff.crusade.stack>=3|cooldown.avenging_wrath.remains>10)&(!talent.final_reckoning|cooldown.final_reckoning.remains>10)&target.time_to_die>8&spell_targets.divine_storm<5" );
+  finishers -> add_action( this, "Divine Storm", "if=variable.ds_castable&!buff.vanquishers_hammer.up&((!talent.crusade|cooldown.crusade.remains>gcd*3)&(!talent.execution_sentence|cooldown.execution_sentence.remains>gcd*6|cooldown.execution_sentence.remains>gcd*4&holy_power>=5|target.time_to_die<8|spell_targets.divine_storm>=5|!talent.seraphim&cooldown.execution_sentence.remains>gcd*2)&(!talent.final_reckoning|cooldown.final_reckoning.remains>gcd*6|cooldown.final_reckoning.remains>gcd*4&holy_power>=5|!talent.seraphim&cooldown.final_reckoning.remains>gcd*2)|talent.holy_avenger&cooldown.holy_avenger.remains<gcd*3|buff.holy_avenger.up|buff.crusade.up&buff.crusade.stack<10)" );
+  finishers -> add_action( this, "Templar's Verdict", "if=(!talent.crusade|cooldown.crusade.remains>gcd*3)&(!talent.execution_sentence|cooldown.execution_sentence.remains>gcd*8|cooldown.execution_sentence.remains>gcd*6&holy_power>=4|target.time_to_die<8|!talent.seraphim&cooldown.execution_sentence.remains>gcd*2)&(!talent.final_reckoning|cooldown.final_reckoning.remains>gcd*8|cooldown.final_reckoning.remains>gcd*6&holy_power>=4|!talent.seraphim&cooldown.final_reckoning.remains>gcd*2)|talent.holy_avenger&cooldown.holy_avenger.remains<gcd*3|buff.holy_avenger.up|buff.crusade.up&buff.crusade.stack<10" );
+
+  generators -> add_action( "call_action_list,name=finishers,if=holy_power=5|(debuff.judgment.up|holy_power=4)&buff.divine_resonance.up|buff.holy_avenger.up" );
+  generators -> add_action( "vanquishers_hammer,if=!runeforge.dutybound_gavel|!talent.final_reckoning&!talent.execution_sentence|fight_remains<8" );
+  generators -> add_action( this, "Hammer of Wrath", "if=runeforge.the_mad_paragon|covenant.venthyr&cooldown.ashen_hallow.remains>210" );
+  generators -> add_action( "divine_toll,if=!debuff.judgment.up&(!talent.seraphim|buff.seraphim.up)&(!raid_event.adds.exists|raid_event.adds.in>30|raid_event.adds.up)&!talent.final_reckoning&(!talent.execution_sentence|fight_remains<8|spell_targets.divine_storm>=5)&(cooldown.avenging_wrath.remains|cooldown.crusade.remains)" );
+  generators -> add_action( this, "Judgment", "if=!debuff.judgment.up&(holy_power>=1&runeforge.the_magistrates_judgment|holy_power>=2)" );
+  generators -> add_action( this, "Wake of Ashes", "if=(holy_power=0|holy_power<=2&cooldown.blade_of_justice.remains>gcd*2)&(!raid_event.adds.exists|raid_event.adds.in>20|raid_event.adds.up)&(!talent.seraphim|cooldown.seraphim.remains>5|covenant.kyrian)&(!talent.execution_sentence|cooldown.execution_sentence.remains>15|target.time_to_die<8|spell_targets.divine_storm>=5)&(!talent.final_reckoning|cooldown.final_reckoning.remains>15|fight_remains<8)&(cooldown.avenging_wrath.remains|cooldown.crusade.remains)" );
   generators -> add_action( "call_action_list,name=finishers,if=holy_power>=3&buff.crusade.up&buff.crusade.stack<10" );
-  generators -> add_action( this, "Blade of Justice", "if=holy_power<=3&conduit.expurgation.enabled&!covenant.venthyr" );
+  generators -> add_action( this, "Blade of Justice", "if=conduit.expurgation&holy_power<=3" );
   generators -> add_action( this, "Judgment", "if=!debuff.judgment.up" );
   generators -> add_action( this, "Hammer of Wrath" );
   generators -> add_action( this, "Blade of Justice", "if=holy_power<=3" );
   generators -> add_action( "call_action_list,name=finishers,if=(target.health.pct<=20|buff.avenging_wrath.up|buff.crusade.up|buff.empyrean_power.up)" );
-  generators -> add_action( this, "Crusader Strike", "if=cooldown.crusader_strike.charges_fractional>=1.75&(holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2)" );
   generators -> add_action( this, "Consecration", "if=!consecration.up&spell_targets.divine_storm>=2" );
+  generators -> add_action( this, "Crusader Strike", "if=cooldown.crusader_strike.charges_fractional>=1.75&(holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2)" );
   generators -> add_action( "call_action_list,name=finishers" );
   generators -> add_action( this, "Consecration", "if=!consecration.up" );
   generators -> add_action( this, "Crusader Strike" );

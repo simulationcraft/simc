@@ -1,5 +1,5 @@
-// Spell text, wow build 9.2.0.41089
-static const std::array<spelltext_data_t, 15745> __ptr_spelltext_data { {
+// Spell text, wow build 9.2.0.41257
+static const std::array<spelltext_data_t, 15770> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -12471,7 +12471,7 @@ static const std::array<spelltext_data_t, 15745> __ptr_spelltext_data { {
   { 307165, "Cures poisons up to level $ctrmax2060 and reduces the duration of newly applied poisons by $s2% for $d. Cannot be used in instances.", "Poison duration reduced by $s2%.", 0 },
   { 307166, "Grants the effect of a flask based on your class and talents.  Lasts $92725d and persists through death.", "$pri increased by $w1.", 0 },
   { 307185, "Increases primary stat by $s1 for $d. Counts as both a Battle and Guardian elixir.  This effect persists through death.", "$pri increased by $w1.", 0 },
-  { 307187, "Increases Stamina by $s1 for $d. Counts as both a Battle and Guardian elixir.  This effect persists through death.", "Stamina increased by $w1.", 0 },
+  { 307187, "Increases Stamina by $s1 for $d. Counts as both a Battle and Guardian elixir.  This effect persists through death.", "Stamina increased by $W1.", 0 },
   { 307192, "Restores $s1 health.", 0, 0 },
   { 307193, "Restores $s1 mana.", 0, 0 },
   { 307194, "Restores $s1 health and $s2 mana.", 0, 0 },
@@ -15592,6 +15592,9 @@ static const std::array<spelltext_data_t, 15745> __ptr_spelltext_data { {
   { 361091, "Plant a banner representing your successes against the Tormented.", 0, 0 },
   { 361118, "Increases the duration of flasks, elixirs, and food buffs by 50%.", "Increases the duration of flasks, elixirs, and food buffs by 50%.", 0 },
   { 361287, 0, "$@spelldesc360370", 0 },
+  { 361356, "Increase Critical Strike chance by $s1%.", "Critical strike chance increased by $s1%. \r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 361357, "Increase critical damage and healing by ${$s1*2}%.", "Critical damage and healing increased by ${$s1*2}%.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 361358, "Increase Haste by $s1%.", "Haste increased by $s1%.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
   { 361695, "Create a soulbound Korthian cloak appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 361696, "Create a soulbound Korthian chest armor piece appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 361697, "Create a soulbound Korthian pair of boots appropriate for your loot specialization ($@lootspec).", 0, 0 },
@@ -15627,10 +15630,10 @@ static const std::array<spelltext_data_t, 15745> __ptr_spelltext_data { {
   { 363495, "Swiftmend heals $s1 nearby allies for $s2% of its healing done.", 0, 0 },
   { 363496, "While Berserked, you radiate $363789s1 Cosmic damage to nearby enemies and heal yourself for $363789s2 every $363793t sec.", 0, 0 },
   { 363497, "While in an Eclipse, the cost of Starsurge and Starfall is reduced by $s2%.", 0, 0 },
-  { 363498, "When Berserk ends you lacerate all nearby enemies, dealing $363830o1 Bleed damage over $363830d.", 0, 0 },
+  { 363498, "Entering Berserk causes you to lacerate all nearby enemies, dealing $363830o1 Bleed damage over $363830d.", 0, 0 },
   { 363500, "While Combustion is active you burn for $365199s1% of your maximum health every $365199t sec causing your Fire Blast and Phoenix Flames to recharge $363508s2% faster.", 0, 0 },
   { 363508, "$@spelldesc363500", "Burning for $365199s1% of your maximum health every $365199t sec. While burning your Fire Blast and Phoenix Flames recharge $s1% faster.", 0 },
-  { 363522, "Activate the defenses, absorbing $s2% of all damage taken, up to $s1, persisting for $d. Cosmic damage is fully absorbed.", "Absorbs $s2% of damage taken. $w1 remaining.", 0 },
+  { 363522, "Activate the defenses, absorbing $s2% of all Magic damage taken, up to ${$s1*(1+$@versadmg)}, persisting for $d. Cosmic damage is fully absorbed.", "Absorbs $s2% of Magic damage taken. $w1 remaining.", 0 },
   { 363532, "Drain up to ${$363581s1*4} absorption from all nearby enemies over $d, then unleash it in a $363715a1 yd cone in front of you as healing absorption.", 0, 0 },
   { 363535, "While Icy Veins is active your spells have a $s1% chance to call down a Comet Storm on your target enemy. This effect cannot occur more than once every $proccooldown sec.", 0, 0 },
   { 363544, "$@spelldesc363535", "Damage taken from $@auracaster's Frost spells increased by $s1%", 0 },
@@ -15670,7 +15673,7 @@ static const std::array<spelltext_data_t, 15745> __ptr_spelltext_data { {
   { 363913, "Every $s1 Rage consumed increases the effectiveness of your next Colossus Smash or Warbreaker by $363917s1%, up to ${$363917s1*$363917u}%.", 0, 0 },
   { 363917, "$@spelldesc363913", "Your next Colossus Smash or Warbreaker increases the damage enemies take from you by $s1%.", 0 },
   { 363924, "$@spelldesc363734", "Increases offensive ability damage by $w1%.", 0 },
-  { 363943, "$@spelldesc363494", "Your next cast of Shadow Mend has no cost or cast time.", 0 },
+  { 363943, "$@spelldesc364428", "Your next cast of Shadow Mend has no cost or cast time.", 0 },
   { 363949, "Your finishing moves have a $s2% chance per combo point to cast Shadowstrike at up to $s3 nearby enemies.", 0, 0 },
   { 363950, "When Rain of Fire or Chaos Bolt is freely cast, you summon an Infernal for $s1 sec.", 0, 0 },
   { 363951, "Your Hand of Gul'dan has a $s1% chance per Soul Shard to summon a Malicious Imp. When slain, Malicious Imp grants a Soul Shard and will either deal $364262s1 Fire damage to all nearby enemies of your Implosion or deal it to your current target.", 0, 0 },
@@ -15741,17 +15744,39 @@ static const std::array<spelltext_data_t, 15745> __ptr_spelltext_data { {
   { 365456, "$@spelldesc", 0, 0 },
   { 365457, "Your abilities have a chance to harmonize a mote of Ephemera nearby, increasing $pri by $s1 for $365474d when acquired.", 0, 0 },
   { 365474, "$@spelldesc365457", "$pri increased by $w1.", 0 },
-  { 365544, "$s2% chance to deflect enemy physical attacks.", "$s2% chance to deflect enemy physical attacks.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365522, "Increase Leech by $s1%.", "Leech increased by $s1%.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365524, "Increase Versatility by $s1%.", "Versatility increased by $s1%.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365527, "Increase Mastery by $s1%.", "Mastery increased by $s1%.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365528, "Increase Speed by $s1% and Mounted Speed by $s2%.", "Speed increased by $s1% and Mounted Speed increased by $s2%.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365539, "Increase Avoidance by $s2%.", "Avoidance increased by $s2%.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365540, "Increase $pri by $s1%.", "$pri increased by $s1%.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365541, "Increase Stamina by $s1%.", "Stamina increased by $s1%.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365542, "[PH] Restores $s1% of max health every second to raid or party members within 30 yd range.", "[PH] Restores $s1% of max health every second to party members within 30 yd range.\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365543, "Inflict $366184s1% max health damage to up to $366184i enemies within $366184A1 yards every $t1 seconds. Elite enemies suffer ${$366184s1/3}% max health damage.", "Inflict $366184s1% max health damage to up to $366184i enemies within $366184A1 yards every $t1 seconds. Elite enemies suffer ${$366184s1/3}% max health damage.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365544, "$s2% chance to deflect enemy Physical attacks.", "$s2% chance to deflect enemy Physical attacks.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365545, "$s2% chance to absorb enemy Spell damage.", "$s2% chance to absorb enemy Spell damage.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365546, "$s2% chance to reflect incoming damage back to the attacker.", "$s2% chance to reflect incoming damage back to the attacker.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365547, "Increase gold from looting creatures and completing quests by $s1%", "Increase gold from looting creatures and completing quests by $s1%\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365548, "This effect will absorb a lethal attack, recovering $s2% of your maximum health instead.\r\n\r\nThis effect can only occur once every $366129d.", "This effect will absorb a lethal attack, recovering $s2% of your maximum health instead.\r\n\r\nThis effect can only occur once every $366129d.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365549, "Protects the bearer from stun, root, and snare effects. This effect can only occur once every $366085d", "You are protected from stun, root, and snare effects. This effect can only occur once every $366085d.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365550, "Your equipment suffers no durability loss.", "Your equipment suffers no durability loss.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365551, "Your abilities have a $h% chance to incur no cooldown.", "Your abilities have a $h% chance to incur no cooldown.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
   { 365664, "Add the Infernal affix to a Mythic Keystone.", 0, 0 },
   { 366057, "$?a366059[Deal $s2 Cosmic damage to melee attackers.][Increases your Block by $s1.]", 0, 0 },
   { 366061, "$?a366059[Deal $366057s4 Cosmic damage to your target and switch to Defense mode.][Shield the most injured member of your party for $366057s3 and switch to Offense mode.]", 0, 0 },
+  { 366085, "$@spelldesc365549", "You have recently benefited from Enhancement: Robustness and it cannot trigger again.", 0 },
+  { 366129, "$@spelldesc365548", "You have recently benefited from Enhancement: Fault-Tolerance and it cannot trigger again.", 0 },
+  { 366184, "$@spelldesc365543", "$@auradesc365543", 0 },
+  { 366333, "Consume this crystal to gain its enhancement temporarily.", 0, 0 },
+  { 366436, "Every $t1 sec you gain $@spellname366438, causing your next $?a137012|a137013[Regrowth]?a137024[Enveloping Mist]?a137029[Flash of Light]?a137032|a137033[Shadow Mend]?a137031[Flash Heal]?a137039|a137040[Healing Surge][appropriate healing spell] cast to be enhanced, granting the target precisely what they require.", 0, 0 },
+  { 366438, "$@spelldesc366436", "Your next $?a137012|a137013[Regrowth]?a137024[Enveloping Mist]?a137029[Holy Light]?a137032|a137033[Shadow Mend]?a137031[Flash Heal]?a137039|a137040[Healing Surge][appropriate healing spell] cast is enhanced, granting the target precisely what they require.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.0.41089
+// spelltext hotfix entries, wow build 9.2.0.41257
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.2.0.41089
+// Spell description variables, wow build 9.2.0.41257
 static const std::array<spelldesc_vars_data_t, 306> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -16061,7 +16086,7 @@ static const std::array<spelldesc_vars_data_t, 306> __ptr_spelldesc_vars_data { 
   {  364365, "$heal=${$SP*$s1/100}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.0.41089
+// spelldesc_vars hotfix entries, wow build 9.2.0.41257
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

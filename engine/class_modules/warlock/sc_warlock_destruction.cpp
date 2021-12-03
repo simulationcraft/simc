@@ -233,6 +233,7 @@ struct immolate_t : public destruction_spell_t
     spell_power_mod.tick = dmg_spell->effectN( 1 ).sp_coeff();
     hasted_ticks         = true;
     tick_may_crit        = true;
+    affected_by_woc      = true;
   }
 
   void tick( dot_t* d ) override

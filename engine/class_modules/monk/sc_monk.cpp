@@ -4681,7 +4681,7 @@ struct revival_t : public monk_heal_t
     aoe      = -1;
 
     if ( sim->pvp_crit )
-      base_multiplier *= 2;  // 08/03/2016
+      base_multiplier *= 2;  // 2016-08-03
   }
 };
 
@@ -6911,7 +6911,7 @@ void monk_t::create_buffs()
       make_buff( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
           ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
-          ->set_can_cancel( false )  // Undocumented hotfix 28/09/2018 - SEF can no longer be canceled.
+          ->set_can_cancel( false )  // Undocumented hotfix 2018-09-28 - SEF can no longer be canceled.
           ->set_cooldown( timespan_t::zero() );
 
   buff.touch_of_death_ww = new buffs::touch_of_death_ww_buff_t( *this, "touch_of_death_ww", spell_data_t::nil() );

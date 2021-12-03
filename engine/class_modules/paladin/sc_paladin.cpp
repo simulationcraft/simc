@@ -55,6 +55,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.blade_of_justice = get_cooldown( "blade_of_justice" );
   cooldowns.final_reckoning  = get_cooldown( "final_reckoning" );
   cooldowns.hammer_of_wrath  = get_cooldown( "hammer_of_wrath" );
+  cooldowns.wake_of_ashes    = get_cooldown( "wake_of_ashes" );
 
   cooldowns.blessing_of_the_seasons = get_cooldown( "blessing_of_the_seasons" );
   cooldowns.ashen_hallow = get_cooldown( "ashen_hallow" );
@@ -707,10 +708,21 @@ struct melee_t : public paladin_melee_attack_t
         {
           p()->procs.art_of_war->occur();
 
+          if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T28, B2 ) )
+          {
+            p()->buffs.seraphim->extend_duration_or_trigger(
+              timespan_t::from_seconds( p()->sets->set( PALADIN_RETRIBUTION, T28, B2 )->effectN( 1 ).base_value() ),
+              player
+            );
+          }
+
           if ( p()->talents.blade_of_wrath->ok() )
             p()->buffs.blade_of_wrath->trigger();
 
-          p()->cooldowns.blade_of_justice->reset( true );
+          if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T28, B4 ) && rng().roll( p()->sets->set( PALADIN_RETRIBUTION, T28, B4 )->effectN( 1 ).percent() ) )
+            p()->cooldowns.wake_of_ashes->reset( true );
+          else
+            p()->cooldowns.blade_of_justice->reset( true );
         }
 
         if ( p()->buffs.zeal->up() && p()->active.zeal )
@@ -955,6 +967,7 @@ struct holy_shield_damage_t : public paladin_spell_t
   }
 };
 
+
 // Inner light damage proc ==================================================
 
 struct inner_light_damage_t : public paladin_spell_t
@@ -968,7 +981,8 @@ struct inner_light_damage_t : public paladin_spell_t
 
 // Base Judgment spell ======================================================
 
-void judgment_t::do_ctor_common( paladin_t* p )
+judgment_t::judgment_t( paladin_t* p, util::string_view name ) :
+  paladin_melee_attack_t( name, p, p->find_class_spell( "Judgment" ) )
 {
   // no weapon multiplier
   weapon_multiplier = 0.0;
@@ -979,19 +993,6 @@ void judgment_t::do_ctor_common( paladin_t* p )
   {
     base_multiplier *= 1.0 + p->spells.judgment_2->effectN( 1 ).percent();
   }
-}
-
-judgment_t::judgment_t( paladin_t* p, util::string_view options_str )
-  : paladin_melee_attack_t( "judgment", p, p->find_class_spell( "Judgment" ) )
-{
-  parse_options( options_str );
-  do_ctor_common( p );
-}
-
-judgment_t::judgment_t( paladin_t* p )
-  : paladin_melee_attack_t( "divine_toll_judgment", p, p->find_class_spell( "Judgment" ) )
-{
-  do_ctor_common( p );
 }
 
 proc_types judgment_t::proc_type() const
@@ -2175,7 +2176,7 @@ void paladin_t::create_buffs()
 
   buffs.avengers_might = make_buff<stat_buff_t>( this, "avengers_might", find_spell( 272903 ) )
                              ->add_stat( STAT_MASTERY_RATING, azerite.avengers_might.value() );
-  buffs.seraphim = make_buff( this, "seraphim", talents.seraphim )
+  buffs.seraphim = make_buff( this, "seraphim", spells.seraphim_buff )
                        ->add_invalidate( CACHE_CRIT_CHANCE )
                        ->add_invalidate( CACHE_HASTE )
                        ->add_invalidate( CACHE_MASTERY )
@@ -2395,6 +2396,7 @@ void paladin_t::init_spells()
   spells.hammer_of_wrath_2      = find_rank_spell( "Hammer of Wrath", "Rank 2" );  // 326730
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
   spells.divine_purpose_buff    = find_spell( 223819 );
+  spells.seraphim_buff          = find_spell( 152262 );
 
   // Shared Azerite traits
   azerite.avengers_might        = find_azerite_spell( "Avenger's Might" );
@@ -2422,6 +2424,15 @@ void paladin_t::init_spells()
   legendary.radiant_embers                = find_runeforge_legendary( "Radiant Embers" );
   legendary.duty_bound_gavel              = find_runeforge_legendary( "Duty-Bound Gavel" );
   legendary.divine_resonance              = find_runeforge_legendary( "Divine Resonance" );
+
+
+  // Shadowlands Tier Sets
+  tier_sets.glorious_purpose_2pc = sets->set( PALADIN_PROTECTION, T28, B2 );
+  tier_sets.glorious_purpose_4pc = sets->set( PALADIN_PROTECTION, T28, B4 );
+  tier_sets.dawn_will_come_2pc = sets->set( PALADIN_HOLY, T28, B2 );
+  tier_sets.dawn_will_come_4pc = sets->set( PALADIN_HOLY, T28, B4 );
+  tier_sets.ashes_to_ashes_2pc   = sets->set( PALADIN_RETRIBUTION, T28, B2 );
+  tier_sets.ashes_to_ashes_4pc   = sets->set( PALADIN_RETRIBUTION, T28, B4 );
 
   // Covenants
   covenant.kyrian    = find_covenant_spell( "Divine Toll" );
@@ -2808,6 +2819,7 @@ double paladin_t::composite_block() const
   double b                   = player_t::composite_block_dr( block_subject_to_dr );
 
   b += talents.holy_shield->effectN( 1 ).percent();
+  b += buffs.glorious_purpose->stack_value();
 
   return b;
 }
@@ -3002,6 +3014,14 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
   if ( s->block_result == BLOCK_RESULT_BLOCKED )
   {
     trigger_holy_shield( s );
+  }
+
+  // On a block event, trigger T28 4p if equipped
+  // todo: Woli -  Set bonus check
+  if ( ( s->block_result == BLOCK_RESULT_BLOCKED )  && sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 )
+        && rng().roll( tier_sets.glorious_purpose_4pc->effectN( 1 ).percent() ) )
+  {
+    trigger_t28_4p_pp( s );
   }
 
   if ( buffs.inner_light->up() && !s->action->special && cooldowns.inner_light_icd->up() )
@@ -3510,7 +3530,7 @@ struct paladin_module_t : public module_t
             double proc_chance = summer_data->proc_chance();
             bool has_equinox = p->buffs.equinox->up();
             if ( has_equinox )
-              proc_chance *= 1.0 + p->buffs.equinox->data().effectN( 1 ).percent();
+              proc_chance *= 1.0 + p->buffs.equinox->data().effectN( 4 ).percent();
 
             if ( s->action != summer_proc && s->result_total > 0.0 && p->buffs.blessing_of_summer->up() &&
                  summer_data->proc_flags() & ( 1 << s->proc_type() ) && p->rng().roll( proc_chance ) )
