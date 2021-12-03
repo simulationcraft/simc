@@ -126,17 +126,11 @@ void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
   pet_t::schedule_ready( delta_time, waiting );
 }
 
-double warlock_pet_t::resource_regen_per_second( resource_e r ) const
-{
-  double reg = base_t::resource_regen_per_second( r );
-
-  /*
-  Felguard had a Haste scaling energy bug that was supposedly fixed once already. Real fix apparently went live
-  3-12-2019. Preserving code for now in case of future issues. if ( !o()->dbc.ptr && ( pet_type == PET_FELGUARD ||
-  pet_type == PET_SERVICE_FELGUARD ) ) reg /= cache.spell_haste();
-  */
-  return reg;
-}
+/*
+Felguard had a Haste scaling energy bug that was supposedly fixed once already. Real fix apparently went live
+2019-03-12. Preserving code from resource regen override for now in case of future issues. if ( !o()->dbc.ptr && ( pet_type == PET_FELGUARD ||
+pet_type == PET_SERVICE_FELGUARD ) ) reg /= cache.spell_haste();
+*/
 
 double warlock_pet_t::composite_player_multiplier( school_e school ) const
 {
