@@ -656,12 +656,9 @@ struct malefic_rapture_t : public affliction_spell_t
         timespan_t dot_extension =  p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).time_value() * 1000;
         warlock_td_t* td = p()->get_target_data( target );
 
-        if ( td )
-        {
-          td->dots_agony->adjust_duration( dot_extension );
-          td->dots_corruption->adjust_duration( dot_extension );
-          td->dots_unstable_affliction->adjust_duration( dot_extension );
-        }
+        td->dots_agony->adjust_duration( dot_extension );
+        td->dots_corruption->adjust_duration( dot_extension );
+        td->dots_unstable_affliction->adjust_duration( dot_extension );
       }
     }
 
