@@ -5048,7 +5048,9 @@ void demon_hunter_t::create_buffs()
   // Set Bonuses ============================================================ 
 
   // Deadly Dance is not currently represented as a player-trackable buff yet, so hard-coding this for now
+  // Currently refunds can be chained if they are successful, use default_value for tracking the success state
   buff.deadly_dance = make_buff<buff_t>( this, "deadly_dance", set_bonuses.t28_havoc_4pc )
+    ->set_default_value( 0 )
     ->set_max_stack( 5 ) // Hard-coded, not in spell data
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
@@ -5058,11 +5060,19 @@ void demon_hunter_t::create_buffs()
         resource_gain( RESOURCE_FURY, talent.first_blood->ok() ? 15 : 35, gain.deadly_dance );
         cooldown.blade_dance->reset( false );
         b->expire();
+        b->set_default_value( 1 );
       }
-      else if ( new_ == 1 && sim->current_time() > 0_s && rng().roll( set_bonuses.t28_havoc_4pc->effectN( 1 ).percent() ) )
+      else if ( b->default_value == 1 )
       {
-        resource_gain( RESOURCE_FURY, talent.first_blood->ok() ? 15 : 35, gain.deadly_dance );
-        cooldown.blade_dance->reset( true );
+        if ( rng().roll( set_bonuses.t28_havoc_4pc->effectN( 1 ).percent() ) )
+        {
+          resource_gain( RESOURCE_FURY, talent.first_blood->ok() ? 15 : 35, gain.deadly_dance );
+          cooldown.blade_dance->reset( true );
+        }
+        else
+        {
+          b->set_default_value( 0 );
+        }
       }
     } );
 }
