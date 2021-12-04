@@ -16,9 +16,9 @@
 #include "player/target_specific.hpp"
 #include "sim/event.hpp"
 #include "sim/real_ppm.hpp"
-#include "sim/sc_cooldown.hpp"
-#include "sim/sc_expressions.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/cooldown.hpp"
+#include "sim/expressions.hpp"
+#include "sim/sim.hpp"
 #include "util/rng.hpp"
 
 #include <sstream>

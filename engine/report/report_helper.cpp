@@ -16,7 +16,7 @@
 #include "report/gear_weights.hpp"
 #include "report/charts.hpp"
 #include "report/highchart.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "util/xml.hpp"
 

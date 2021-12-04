@@ -6,7 +6,7 @@
 #include "event_manager.hpp"
 #include "event.hpp"
 #include "util/util.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 #include "player/sc_player.hpp"
 
 

@@ -14,8 +14,8 @@
 #include "player/pet_spawner.hpp"
 #include "raid_event.hpp"
 #include "sim/event.hpp"
-#include "sim/sc_expressions.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/expressions.hpp"
+#include "sim/sim.hpp"
 #include "util/rng.hpp"
 
 // ==========================================================================

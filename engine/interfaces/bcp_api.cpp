@@ -17,7 +17,7 @@
 #include "player/sc_player.hpp"
 #include "player/player_talent_points.hpp"
 #include "sc_enums.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 #include "util/concurrency.hpp"
 #include "util/io.hpp"
 #include "util/static_map.hpp"

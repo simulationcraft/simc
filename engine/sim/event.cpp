@@ -5,7 +5,7 @@
 
 #include "event.hpp"
 #include "player/actor.hpp"
-#include "sc_sim.hpp" // replace with event manager dependency
+#include "sim.hpp" // replace with event manager dependency
 
 // ==========================================================================
 // Event

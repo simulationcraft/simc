@@ -16,7 +16,7 @@
 #include <condition_variable>
 #endif
 
-#include "sc_option.hpp"
+#include "option.hpp"
 #include "util/chrono.hpp"
 #include "util/generic.hpp"
 #include "sc_enums.hpp"

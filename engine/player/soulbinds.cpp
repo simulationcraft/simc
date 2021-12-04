@@ -11,8 +11,8 @@
 #include "player/covenant.hpp"
 #include "player/pet.hpp"
 #include "player/unique_gear_helper.hpp"
-#include "sim/sc_cooldown.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/cooldown.hpp"
+#include "sim/sim.hpp"
 #include "util/util.hpp"
 
 #include <regex>

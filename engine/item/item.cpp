@@ -9,7 +9,7 @@
 #include "dbc/dbc.hpp"
 #include "player/sc_player.hpp"
 #include "player/weapon.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 #include "dbc/item_database.hpp"
 #include "dbc/temporary_enchant.hpp"
 #include "sc_enums.hpp"

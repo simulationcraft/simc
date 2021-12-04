@@ -3,10 +3,10 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_expressions.hpp"
+#include "expressions.hpp"
 #include "action/sc_action.hpp"
 #include "player/sc_player.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 #include <atomic>
 
 namespace expression

@@ -8,7 +8,7 @@
 #include "dbc/data_enums.hh"
 #include "dbc/spell_data.hpp"
 #include "report/reports.hpp"
-#include "sim/sc_expressions.hpp"
+#include "sim/expressions.hpp"
 #include "util/string_view.hpp"
 
 struct sim_t;

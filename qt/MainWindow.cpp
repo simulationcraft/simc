@@ -21,7 +21,7 @@
 #include "sc_SpellQueryTab.hpp"
 #include "sc_WelcomeTab.hpp"
 #include "sc_importWindow.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 #include "simulationcraftqt.hpp"
 #include "util/git_info.hpp"
 #include "util/sc_mainwindowcommandline.hpp"

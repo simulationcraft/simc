@@ -8,7 +8,7 @@
 #include "config.hpp"
 #include "player/sc_player.hpp"
 #include "player/player_event.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 #include "util/timespan.hpp"
 
 /* Event which will demise the player

@@ -6,7 +6,7 @@
 #pragma once
 
 #include "config.hpp"
-#include "sim/sc_expressions.hpp"
+#include "sim/expressions.hpp"
 #include "util/string_view.hpp"
 
 #include <memory>

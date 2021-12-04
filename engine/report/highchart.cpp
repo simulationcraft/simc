@@ -10,7 +10,7 @@
 #include "player/stats.hpp"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 #include "util/util.hpp"
 
 namespace

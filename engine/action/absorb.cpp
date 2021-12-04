@@ -8,7 +8,7 @@
 #include "buff/sc_buff.hpp"
 #include "player/stats.hpp"
 #include "player/sc_player.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 
 absorb_t::absorb_t( util::string_view name, player_t* p, const spell_data_t* s )
   : spell_base_t( ACTION_ABSORB, name, p, s ), target_specific( false )

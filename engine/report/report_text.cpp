@@ -10,7 +10,7 @@
 #include "sim/scale_factor_control.hpp"
 #include "sim/iteration_data_entry.hpp"
 #include "sim/plot.hpp"
-#include "sim/sc_profileset.hpp"
+#include "sim/profileset.hpp"
 #include "util/plot_data.hpp"
 #include "fmt/chrono.h"
 

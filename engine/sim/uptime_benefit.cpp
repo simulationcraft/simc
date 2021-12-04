@@ -6,7 +6,7 @@
 #include "benefit.hpp"
 #include "uptime.hpp"
 
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 
 benefit_t* benefit_t::collect_ratio( sim_t& sim, bool collect )
 {

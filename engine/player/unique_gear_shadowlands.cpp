@@ -5,9 +5,9 @@
 
 #include "unique_gear_shadowlands.hpp"
 
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 
-#include "sim/sc_cooldown.hpp"
+#include "sim/cooldown.hpp"
 #include "player/action_priority_list.hpp"
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"

@@ -4,13 +4,13 @@
 // ==========================================================================
 
 #include "variable.hpp"
-#include "sim/sc_option.hpp"
+#include "sim/option.hpp"
 #include "player/sc_player.hpp"
 #include "player/action_variable.hpp"
 #include "player/action_priority_list.hpp"
-#include "sim/sc_expressions.hpp"
-#include "sim/sc_cooldown.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/expressions.hpp"
+#include "sim/cooldown.hpp"
+#include "sim/sim.hpp"
 
 
 variable_t::variable_t(player_t* player, util::string_view options_str) :
