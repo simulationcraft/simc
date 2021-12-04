@@ -5,7 +5,7 @@
 
 #include "highchart.hpp"
 
-#include "buff/sc_buff.hpp"
+#include "buff/buff.hpp"
 #include "player/player.hpp"
 #include "player/stats.hpp"
 #include "rapidjson/prettywriter.h"

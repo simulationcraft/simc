@@ -6,7 +6,7 @@
 #pragma once
 
 #include "config.hpp"
-#include "sc_action.hpp"
+#include "action.hpp"
 
 constexpr double WEAPON_POWER_COEFFICIENT = 6; // WDPS -> Attack Power Coefficient used for BfA Attack Power calculations
 

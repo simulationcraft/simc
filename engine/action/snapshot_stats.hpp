@@ -7,7 +7,7 @@
 
 #include "config.hpp"
 
-#include "action/sc_action.hpp"
+#include "action/action.hpp"
 #include "sc_enums.hpp"
 #include "util/string_view.hpp"
 

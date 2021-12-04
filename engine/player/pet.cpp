@@ -5,9 +5,9 @@
 
 #include "pet.hpp"
 
-#include "action/sc_action.hpp"
-#include "action/sc_action_state.hpp"
-#include "buff/sc_buff.hpp"
+#include "action/action.hpp"
+#include "action/action_state.hpp"
+#include "buff/buff.hpp"
 #include "sim/cooldown.hpp"
 #include "dbc/dbc.hpp"
 #include "player/actor_target_data.hpp"

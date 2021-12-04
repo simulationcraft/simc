@@ -5,8 +5,8 @@
 
 #include "ground_aoe.hpp"
 
-#include "action/sc_action.hpp"
-#include "action/sc_action_state.hpp"
+#include "action/action.hpp"
+#include "action/action_state.hpp"
 #include "player/player.hpp"
 #include "sim/sim.hpp"
 

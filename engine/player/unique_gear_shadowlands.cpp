@@ -11,7 +11,7 @@
 #include "player/action_priority_list.hpp"
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
-#include "buff/sc_buff.hpp"
+#include "buff/buff.hpp"
 #include "action/dot.hpp"
 #include "item/item.hpp"
 #include "class_modules/monk/sc_monk.hpp"

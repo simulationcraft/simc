@@ -4,9 +4,9 @@
 // ==========================================================================
 
 #include "action/heal.hpp"
-#include "action/sc_action.hpp"
+#include "action/action.hpp"
 #include "action/spell.hpp"
-#include "buff/sc_buff.hpp"
+#include "buff/buff.hpp"
 #include "dbc/dbc.hpp"
 #include "player/pet.hpp"
 #include "player/player.hpp"

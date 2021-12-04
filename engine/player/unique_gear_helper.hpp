@@ -5,12 +5,12 @@
 
 #pragma once
 
-#include "action/sc_action_state.hpp"
+#include "action/action_state.hpp"
 #include "action/attack.hpp"
 #include "action/heal.hpp"
-#include "action/sc_action.hpp"
+#include "action/action.hpp"
 #include "action/spell.hpp"
-#include "buff/sc_buff.hpp"
+#include "buff/buff.hpp"
 #include "dbc/dbc.hpp"
 #include "item/special_effect.hpp"
 #include "player/player.hpp"

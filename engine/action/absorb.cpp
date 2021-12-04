@@ -4,8 +4,8 @@
 // ==========================================================================
 
 #include "absorb.hpp"
-#include "sc_action_state.hpp"
-#include "buff/sc_buff.hpp"
+#include "action_state.hpp"
+#include "buff/buff.hpp"
 #include "player/stats.hpp"
 #include "player/player.hpp"
 #include "sim/sim.hpp"

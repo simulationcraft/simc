@@ -12,7 +12,7 @@
 #include "util/rng.hpp"
 #include "dbc/dbc.hpp"
 #include "action/dbc_proc_callback.hpp"
-#include "action/sc_action_state.hpp"
+#include "action/action_state.hpp"
 
 struct player_t;
 struct special_effect_t;

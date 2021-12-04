@@ -5,7 +5,7 @@
 
 #include "sim.hpp"
 
-#include "buff/sc_buff.hpp"
+#include "buff/buff.hpp"
 #include "class_modules/class_module.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"

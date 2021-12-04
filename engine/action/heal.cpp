@@ -5,7 +5,7 @@
 
 #include "heal.hpp"
 #include "dot.hpp"
-#include "sc_action_state.hpp"
+#include "action_state.hpp"
 #include "action_callback.hpp"
 #include "dbc/spell_data.hpp"
 #include "player/player.hpp"
