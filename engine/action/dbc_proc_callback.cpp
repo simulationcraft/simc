@@ -10,7 +10,7 @@
 #include "buff/sc_buff.hpp"
 #include "item/item.hpp"
 #include "item/special_effect.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "sc_action.hpp"
 #include "sc_action_state.hpp"
 #include "action_callback.hpp"

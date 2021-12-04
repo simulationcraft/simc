@@ -15,7 +15,7 @@
 #include "util/timespan.hpp"
 #include "sc_enums.hpp"
 #include "dbc/data_enums.hh"
-#include "player/sc_actor_pair.hpp"
+#include "player/actor_pair.hpp"
 #include "util/sample_data.hpp"
 #include "util/span.hpp"
 #include "util/string_view.hpp"

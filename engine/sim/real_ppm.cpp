@@ -5,7 +5,7 @@
 
 #include "real_ppm.hpp"
 #include "dbc/dbc.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "sim/sim.hpp"
 #include "util/rng.hpp"
 #include "item/item.hpp"

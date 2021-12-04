@@ -5,7 +5,7 @@
 
 #include "spawner_base.hpp"
 
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "util/util.hpp"
 #include "sim/sim.hpp"
 

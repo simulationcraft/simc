@@ -5,7 +5,7 @@
 
 #include "variable.hpp"
 #include "sim/option.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/action_variable.hpp"
 #include "player/action_priority_list.hpp"
 #include "sim/expressions.hpp"

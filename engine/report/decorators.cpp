@@ -10,7 +10,7 @@
 #include "dbc/dbc.hpp"
 #include "dbc/item_set_bonus.hpp"
 #include "item/item.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/pet.hpp"
 #include "report/color.hpp"
 #include "util/util.hpp"

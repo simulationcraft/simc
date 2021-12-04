@@ -7,7 +7,7 @@
 #include "event.hpp"
 #include "util/util.hpp"
 #include "sim/sim.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 
 
 event_manager_t::event_manager_t( sim_t* s )

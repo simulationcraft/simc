@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_player.hpp"
+#include "player.hpp"
 
 #include "action/action_callback.hpp"
 #include "action/attack.hpp"

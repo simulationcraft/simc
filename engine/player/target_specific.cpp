@@ -4,7 +4,7 @@
 // ==========================================================================
 
 #include "target_specific.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 
 namespace target_specific_helper
 {

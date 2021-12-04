@@ -7,7 +7,7 @@
 
 #include "dbc/dbc.hpp"
 #include "sc_enums.hpp"
-#include "sc_player.hpp"
+#include "player.hpp"
 #include "action/sc_action.hpp"
 #include "action/heal.hpp"
 #include "buff/sc_buff.hpp"

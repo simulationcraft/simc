@@ -4,8 +4,8 @@
 // ==========================================================================
 
 #include "actor_target_data.hpp"
-#include "sc_player.hpp"
-#include "sc_actor_pair.hpp"
+#include "player.hpp"
+#include "actor_pair.hpp"
 #include "sim/sim.hpp"
 
 actor_target_data_t::actor_target_data_t( player_t* target, player_t* source ) :

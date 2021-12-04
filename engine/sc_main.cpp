@@ -9,7 +9,7 @@
 #include "interfaces/bcp_api.hpp"
 #include "interfaces/sc_http.hpp"
 #include "lib/fmt/core.h"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/unique_gear.hpp"
 #include "report/reports.hpp"
 #include "sim/plot.hpp"

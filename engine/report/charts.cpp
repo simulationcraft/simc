@@ -10,7 +10,7 @@
 #include "player/gear_stats.hpp"
 #include "player/pet.hpp"
 #include "player/player_scaling.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/scaling_metric_data.hpp"
 #include "player/stats.hpp"
 #include "report/color.hpp"

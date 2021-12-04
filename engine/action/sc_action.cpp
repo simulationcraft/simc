@@ -16,7 +16,7 @@
 #include "player/player_collected_data.hpp"
 #include "player/player_event.hpp"
 #include "player/stats.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/pet.hpp"
 #include "player/action_priority_list.hpp"
 #include "sim/event.hpp"

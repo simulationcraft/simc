@@ -12,7 +12,7 @@
 #include "dbc/spell_data.hpp"
 #include "item/special_effect.hpp"
 #include "player/actor_target_data.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "report/decorators.hpp"
 #include "sim/expressions.hpp"
 #include "sim/option.hpp"

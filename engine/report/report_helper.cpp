@@ -11,7 +11,7 @@
 #include "dbc/spell_query/spell_data_expr.hpp"
 #include "item/item.hpp"
 #include "player/pet.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/covenant.hpp"
 #include "report/gear_weights.hpp"
 #include "report/charts.hpp"

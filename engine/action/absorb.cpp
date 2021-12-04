@@ -7,7 +7,7 @@
 #include "sc_action_state.hpp"
 #include "buff/sc_buff.hpp"
 #include "player/stats.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "sim/sim.hpp"
 
 absorb_t::absorb_t( util::string_view name, player_t* p, const spell_data_t* s )
