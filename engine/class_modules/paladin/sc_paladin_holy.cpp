@@ -345,19 +345,16 @@ struct holy_shock_t : public paladin_spell_t
 
 struct judgment_holy_t : public judgment_t
 {
-  judgment_holy_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
-    judgment_t( p, name )
+  judgment_holy_t( paladin_t* p, util::string_view options_str ) : judgment_t( p, options_str )
   {
-    parse_options( options_str );
     base_multiplier *= 1.0 + p->spec.holy_paladin->effectN( 11 ).percent();
   }
-  /* This background constructor doesn't seem to have any use?
-  judgment_holy_t( paladin_t* p, util::string_view name ) :
-    judgment_t( p, name )
+
+  judgment_holy_t( paladin_t* p ) : judgment_t( p )
   {
     background = true;
     base_multiplier *= 1.0 + p->spec.holy_paladin->effectN( 11 ).percent();
-  }*/
+  }
 
   void execute() override
   {
@@ -527,6 +524,7 @@ void paladin_t::create_holy_actions()
   {
     active.divine_toll = new holy_shock_t( this, true );
     active.divine_resonance = new holy_shock_t( this, true );
+    active.judgment = new judgment_holy_t( this );
   }
 }
 
@@ -552,7 +550,7 @@ action_t* paladin_t::create_action_holy( util::string_view name, util::string_vi
   if ( specialization() == PALADIN_HOLY )
   {
     if ( name == "judgment" )
-      return new judgment_holy_t( this, "judgment", options_str );
+      return new judgment_holy_t( this, options_str );
   }
 
   return nullptr;
@@ -637,8 +635,7 @@ void paladin_t::generate_action_prio_list_holy_dps()
 
   cds->add_action( "ashen_hallow" );
   cds->add_action( "avenging_wrath" );
-  cds->add_action( "blessing_of_the_seasons" );
-  cds->add_action( "vanquishers_hammer" );
+  cds->add_action("blessing_of_the_seasons");
   cds->add_action( "divine_toll" );
   if ( sim->allow_potions )
   {
@@ -651,27 +648,20 @@ void paladin_t::generate_action_prio_list_holy_dps()
   cds->add_action( "seraphim" );
 
   priority->add_action( this, "Shield of the Righteous",
-                        "if=buff.avenging_wrath.up|buff.holy_avenger.up|!talent.awakening.enabled",
-                        "High priority SoR action with AW or HA active or when not talented into Awakening" );
-  priority->add_action( this, "Hammer of Wrath", "if=holy_power<5&spell_targets.consecration=2",
-                        "Use Hammer of Wrath when fighting 2 melee targets and you are not capped on Holy Power." );
-  priority->add_action( "lights_hammer,if=spell_targets.lights_hammer>=2",
-                        "High priority Light's Hammer action when fighting 2 or more melee targets." );
-  priority->add_action( "consecration,if=spell_targets.consecration>=2&!consecration.up",
-                        "High priority Consecration refresh when fighting 2 or more targets." );
-  priority->add_action(
-      "light_of_dawn,if=talent.awakening.enabled&spell_targets.consecration<=5&(holy_power>=5|(buff.holy_avenger.up&"
-      "holy_power>=3))",
-      "When talented into Awakening use Light of Dawn when fighting 5 or less targets and you are capped on Holy Power "
-      "or Holy Avenger is active and you have 3 or more Holy Power." );
+                        "if=(buff.avenging_wrath.up|buff.holy_avenger.up|!talent.awakening.enabled)&holy_power=5");
+  priority->add_action("light_of_dawn,if=talent.awakening.enabled&spell_targets.consecration<=5&(holy_power>=5|(buff.holy_avenger.up&holy_power>=3))");
+  priority->add_action(this, "Hammer of Wrath,if=holy_power<5&cooldown.ashen_hallow.remains=210&runecarving.mad_paragon");
+  priority->add_action( "lights_hammer,if=spell_targets.lights_hammer>=2");
+  priority->add_action( "consecration,if=spell_targets.consecration>=2&!consecration.up" );
+  priority->add_action( "vanquishers_hammer", "if = if=holy_power<5 & buff.seraphim.up & runecarving.duty_bound_gavel | !runecarving.duty_bound_gavel | !talent.seraphim.enabled ");
   priority->add_action( this, "Shield of the Righteous", "if=spell_targets.consecration>5" );
   priority->add_action( this, "Hammer of Wrath" );
   priority->add_action( "judgment" );
   priority->add_action( "lights_hammer" );
   priority->add_action( "consecration,if=!consecration.up", "Refresh Consecration if it is not currently active." );
   priority->add_action( "holy_shock,damage=1" );
-  priority->add_action( "crusader_strike,if=cooldown.crusader_strike.charges=2",
-                        "Higher priority Crusader Strike action when you are capped on charges" );
+  priority->add_action( "crusader_strike,if=cooldown.crusader_strike.charges=2");
+  priority->add_action( this, "Word of Glory", "if=buff.vanquishers_hammer.up&!buff.avenging_wrath.up&!buff.seraphim.up");
   priority->add_action( "holy_prism,target=self,if=active_enemies>=2" );
   priority->add_action( "holy_prism" );
   priority->add_action( "arcane_torrent" );
