@@ -13,7 +13,7 @@
 #include "interfaces/bcp_api.hpp"
 #include "interfaces/sc_http.hpp"
 #include "player/pet.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/spawner_base.hpp"
 #include "player/unique_gear.hpp"
 #include "report/json/report_configuration.hpp"

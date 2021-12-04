@@ -11,7 +11,7 @@
 #include "report/reports.hpp"
 #include "report/color.hpp"
 #include "report/highchart.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/player_talent_points.hpp"
 #include "item/item.hpp"
 #include "util/string_view.hpp"

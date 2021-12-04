@@ -1,7 +1,7 @@
 #include "runeforge_data.hpp"
 
 #include "item/item.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/spell_data.hpp"
 

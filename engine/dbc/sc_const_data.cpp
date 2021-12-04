@@ -22,7 +22,7 @@
 #include "sc_extra_data_ptr.inc"
 #endif
 
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "item/item.hpp"
 
 namespace { // ANONYMOUS namespace ==========================================

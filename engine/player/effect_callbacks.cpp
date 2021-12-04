@@ -6,7 +6,7 @@
 
 #include "action/action_callback.hpp"
 #include "action/dbc_proc_callback.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "item/special_effect.hpp"
 #include "sim/sim.hpp"
 #include "util/generic.hpp"

@@ -7,7 +7,7 @@
 
 #include "action/sc_action.hpp"
 #include "dbc/dbc.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "util/util.hpp"
 
 namespace

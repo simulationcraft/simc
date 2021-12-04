@@ -11,7 +11,7 @@
 #include "buff/sc_buff.hpp"
 #include "dbc/item_database.hpp"
 #include "item.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/unique_gear_helper.hpp"
 #include "sim/real_ppm.hpp"
 

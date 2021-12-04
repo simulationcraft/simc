@@ -11,7 +11,7 @@
 #include "dbc/spell_query/spell_data_expr.hpp"
 #include "interfaces/bcp_api.hpp"
 #include "interfaces/sc_http.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "report/reports.hpp"
 #include "sc_AddonImportTab.hpp"
 #include "sc_OptionsTab.hpp"

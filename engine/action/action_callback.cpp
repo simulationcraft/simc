@@ -5,7 +5,7 @@
 
 #include "action_callback.hpp"
 #include "sc_action.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 
 action_callback_t::action_callback_t( player_t* l, bool ap, bool asp ) :
   listener( l ), active( true ), allow_self_procs( asp ), allow_procs( ap )

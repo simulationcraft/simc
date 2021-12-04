@@ -7,7 +7,7 @@
 #include "special_effect.hpp"
 #include "enchants.hpp"
 #include "dbc/dbc.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/weapon.hpp"
 #include "sim/sim.hpp"
 #include "dbc/item_database.hpp"

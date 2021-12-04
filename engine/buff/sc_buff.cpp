@@ -11,7 +11,7 @@
 #include "dbc/spell_data.hpp"
 #include "player/expansion_effects.hpp"
 #include "player/covenant.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/stats.hpp"
 #include "player/target_specific.hpp"
 #include "sim/event.hpp"

@@ -98,24 +98,24 @@ SRC += \
     player$(PATHSEP)actor.cpp \
     player$(PATHSEP)actor_target_data.cpp \
     player$(PATHSEP)azerite_data.cpp \
+    player$(PATHSEP)consumable.cpp \
     player$(PATHSEP)covenant.cpp \
     player$(PATHSEP)darkmoon_deck.cpp \
     player$(PATHSEP)effect_callbacks.cpp \
     player$(PATHSEP)ground_aoe.cpp \
     player$(PATHSEP)instant_absorb.cpp \
+    player$(PATHSEP)pet.cpp \
+    player$(PATHSEP)player.cpp \
     player$(PATHSEP)player_event.cpp \
     player$(PATHSEP)player_stat_cache.cpp \
     player$(PATHSEP)player_talent_points.cpp \
     player$(PATHSEP)rating.cpp \
     player$(PATHSEP)runeforge_data.cpp \
-    player$(PATHSEP)sc_consumable.cpp \
-    player$(PATHSEP)sc_pet.cpp \
-    player$(PATHSEP)sc_player.cpp \
-    player$(PATHSEP)sc_set_bonus.cpp \
-    player$(PATHSEP)sc_unique_gear.cpp \
+    player$(PATHSEP)set_bonus.cpp \
     player$(PATHSEP)soulbinds.cpp \
     player$(PATHSEP)spawner_base.cpp \
     player$(PATHSEP)target_specific.cpp \
+    player$(PATHSEP)unique_gear.cpp \
     player$(PATHSEP)unique_gear_bfa.cpp \
     player$(PATHSEP)unique_gear_helper.cpp \
     player$(PATHSEP)unique_gear_legion.cpp \

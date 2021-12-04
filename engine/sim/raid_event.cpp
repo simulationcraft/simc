@@ -9,7 +9,7 @@
 #include "buff/sc_buff.hpp"
 #include "dbc/dbc.hpp"
 #include "player/pet.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/player_demise_event.hpp"
 #include "player/pet_spawner.hpp"
 #include "raid_event.hpp"

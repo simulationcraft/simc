@@ -13,7 +13,7 @@
 #include "buff/sc_buff.hpp"
 #include "dbc/dbc.hpp"
 #include "item/special_effect.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/special_effect_db_item.hpp"
 #include "player/unique_gear.hpp"
 #include "player/wrapper_callback.hpp"

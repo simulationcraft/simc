@@ -7,7 +7,7 @@
 
 #include "action/sc_action.hpp"
 #include "action/sc_action_state.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "sim/sim.hpp"
 
 ground_aoe_params_t::ground_aoe_params_t() :

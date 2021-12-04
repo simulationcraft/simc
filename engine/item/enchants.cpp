@@ -10,7 +10,7 @@
 #include "dbc/item_database.hpp"
 #include "dbc/spell_item_enchantment.hpp"
 #include "item/item.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/unique_gear.hpp"
 #include "sim/sim.hpp"
 #include "special_effect.hpp"
