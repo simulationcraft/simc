@@ -7852,39 +7852,54 @@ void druid_t::activate()
     } );
   }
 
-  if ( sim->ignore_invulnerable_targets && legendary.lycaras_fleeting_glimpse->ok() )
+  if ( sim->ignore_invulnerable_targets )
   {
-    sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
-      if ( sim->target_non_sleeping_list.empty() )
-      {
-        if ( buff.lycaras_fleeting_glimpse->check() )
+    if ( legendary.lycaras_fleeting_glimpse->ok() )
+    {
+      sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+        if ( sim->target_non_sleeping_list.empty() )
         {
-          lycaras_event_remains = buff.lycaras_fleeting_glimpse->remains();
-          buff.lycaras_fleeting_glimpse->expire();
+          if ( buff.lycaras_fleeting_glimpse->check() )
+          {
+            lycaras_event_remains = buff.lycaras_fleeting_glimpse->remains();
+            buff.lycaras_fleeting_glimpse->expire();
+          }
+          else if ( lycaras_event )
+          {
+            // If only the event is up (and not the buff) add the base buff duration so we can determine whether to
+            // trigger the event or the buff when a target becomes active and we back 'in combat'
+            lycaras_event_remains = lycaras_event->remains() + buff.lycaras_fleeting_glimpse->buff_duration();
+            event_t::cancel( lycaras_event );
+          }
         }
-        else if ( lycaras_event )
+        else
         {
-          // If only the event is up (and not the buff) add the base buff duration so we can determine whether to
-          // trigger the event or the buff when a target becomes active and we back 'in combat'
-          lycaras_event_remains = lycaras_event->remains() + buff.lycaras_fleeting_glimpse->buff_duration();
-          event_t::cancel( lycaras_event );
+          if ( lycaras_event_remains > buff.lycaras_fleeting_glimpse->buff_duration() )  // trigger the event
+          {
+            lycaras_event =
+                make_event( *sim, lycaras_event_remains - buff.lycaras_fleeting_glimpse->buff_duration(), [ this ]() {
+                  buff.lycaras_fleeting_glimpse->trigger();
+                } );
+            lycaras_event_remains = 0_ms;
+          }
+          else if ( lycaras_event_remains > 0_ms )  // trigger the buff
+          {
+            buff.lycaras_fleeting_glimpse->trigger( lycaras_event_remains );
+            lycaras_event_remains = 0_ms;
+          }
         }
-      }
-      else
-      {
-        if ( lycaras_event_remains > buff.lycaras_fleeting_glimpse->buff_duration() )  // trigger the event
-        {
-          lycaras_event = make_event( *sim, lycaras_event_remains - buff.lycaras_fleeting_glimpse->buff_duration(),
-                                      [ this ]() { buff.lycaras_fleeting_glimpse->trigger(); } );
-          lycaras_event_remains = 0_ms;
-        }
-        else if ( lycaras_event_remains > 0_ms )  // trigger the buff
-        {
-          buff.lycaras_fleeting_glimpse->trigger( lycaras_event_remains );
-          lycaras_event_remains = 0_ms;
-        }
-      }
-    } );
+      } );
+    }
+
+    if ( talent.natures_balance->ok() )
+    {
+      sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+        if ( sim->target_non_sleeping_list.empty() )
+          buff.natures_balance->current_value *= 3.0;
+        else
+          buff.natures_balance->current_value = buff.natures_balance->default_value;
+      } );
+    }
   }
 
   player_t::activate();
@@ -8507,14 +8522,12 @@ void druid_t::create_buffs()
 
   buff.natures_balance = make_buff( this, "natures_balance", talent.natures_balance )
     ->set_quiet( true )
-    ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
-        auto ap = talent.natures_balance->effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
-
-        if ( sim->ignore_invulnerable_targets && sim->target_non_sleeping_list.empty() )
-          ap *= 3.0;  // simulate triple regen when out of combat for 'M+' fight models utilizing invuln
-
-        resource_gain( RESOURCE_ASTRAL_POWER, ap, gain.natures_balance );
-      } );
+    ->set_default_value_from_effect_type( A_PERIODIC_ENERGIZE )
+    ->set_tick_callback( [this]( buff_t* b, int, timespan_t ) {
+      resource_gain( RESOURCE_ASTRAL_POWER, b->check_value(), gain.natures_balance );
+    } );
+        //if ( sim->ignore_invulnerable_targets && sim->target_non_sleeping_list.empty() ) {}
+          //ap *= 3.0;  // simulate triple regen when out of combat for 'M+' fight models utilizing invuln
 
   buff.oneths_free_starsurge = make_buff( this, "oneths_clear_vision", find_spell( 339797 ) )
     ->set_chance( legendary.oneths_clear_vision->effectN( 2 ).percent() );
