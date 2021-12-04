@@ -10,7 +10,7 @@
 // maybe move profileset reporting to a separate file in report/
 #include "report/reports.hpp"
 #include "report/color.hpp"
-#include "report/sc_highchart.hpp"
+#include "report/highchart.hpp"
 #include "player/sc_player.hpp"
 #include "player/player_talent_points.hpp"
 #include "item/item.hpp"

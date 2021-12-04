@@ -15,7 +15,7 @@
 #include "player/stats.hpp"
 #include "report/color.hpp"
 #include "report/decorators.hpp"
-#include "sc_highchart.hpp"
+#include "report/highchart.hpp"
 #include "sim/reforge_plot.hpp"
 #include "sim/sc_sim.hpp"
 #include "util/plot_data.hpp"
