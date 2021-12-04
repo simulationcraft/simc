@@ -5273,7 +5273,6 @@ struct feral_spirit_spell_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->summon_feral_spirits( p()->spell.feral_spirit->duration() );
-    p()->buff.feral_spirit_maelstrom->trigger();
   }
 };
 
@@ -8155,6 +8154,8 @@ void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n )
     }
     n--;
   }
+
+  buff.feral_spirit_maelstrom->trigger( 1, duration );
 }
 
 void shaman_t::summon_fire_elemental( timespan_t duration )
@@ -8872,6 +8873,7 @@ void shaman_t::create_buffs()
   //
   buff.lightning_shield = new lightning_shield_buff_t( this );
   buff.feral_spirit_maelstrom = make_buff( this, "feral_spirit", find_spell( 333957 ) )
+                                    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                                     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
                                       buff.maelstrom_weapon->trigger( b->data().effectN( 1 ).base_value() );
                                       proc.maelstrom_weapon_fs->occur();
