@@ -700,13 +700,16 @@ struct chaos_bolt_t : public destruction_spell_t
     {
       if ( p()->buffs.herald_of_chaos->check() )
       {
-        p()->warlock_pet_list.aod_infernals.spawn( p()->sets->set(WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000,
-                                                   1U );
+        if (p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ))
+        {
+          p()->warlock_pet_list.aod_infernals.spawn( p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000,
+            1U );
+        }
         p()->procs.avatar_of_destruction->occur();
         p()->buffs.herald_of_chaos->expire();
       }
-
-      if ( rng().roll( p()->sets->set( WARLOCK_DESTRUCTION, T28, B2 )->proc_chance() ) )
+      // As far as current testing shows, it is not possible to get a proc from a free cast RoF/CB via Ritual of Ruin
+      else if ( rng().roll( p()->sets->set( WARLOCK_DESTRUCTION, T28, B2 )->proc_chance() ) )
       {
         p()->procs.ritual_of_ruin->occur();
         p()->buffs.herald_of_fire->trigger();
@@ -845,7 +848,7 @@ struct rain_of_fire_t : public destruction_spell_t
 
   double cost() const override
   {
-    if ( p()->buffs.herald_of_chaos->check() )
+    if ( p()->buffs.herald_of_fire->check() )
       return 0.0;
 
     return destruction_spell_t::cost();      
@@ -858,14 +861,18 @@ struct rain_of_fire_t : public destruction_spell_t
     if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
     {
       if ( p()->buffs.herald_of_fire->check() )
-      {      
-        p()->warlock_pet_list.aod_infernals.spawn( p()->sets->set(WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000 ,
-                                                   1U );
+      {
+        if (p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ))
+        {
+          p()->warlock_pet_list.aod_infernals.spawn( p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000,
+            1U );
+        }
+
         p()->procs.avatar_of_destruction->occur();
         p()->buffs.herald_of_fire->expire();
       }
-
-      if ( rng().roll( p()->sets->set( WARLOCK_DESTRUCTION, T28, B2 )->proc_chance() ) )
+      // As far as current testing shows, it is not possible to get a proc from a free cast RoF/CB via Ritual of Ruin
+      else if ( rng().roll( p()->sets->set( WARLOCK_DESTRUCTION, T28, B2 )->proc_chance() ) )
       {
         p()->procs.ritual_of_ruin->occur();
         p()->buffs.herald_of_chaos->trigger();
@@ -1093,8 +1100,8 @@ void warlock_t::create_buffs_destruction()
 
   // Spell 335236 holds the duration of the proc'd infernal's duration, storing it in default value of the buff for use
   // later
-  buffs.rain_of_chaos =
-      make_buff( this, "rain_of_chaos", find_spell( 266087 ) )->set_default_value( find_spell( 335236 )->_duration );
+  buffs.rain_of_chaos = make_buff( this, "rain_of_chaos", find_spell( 266087 ) )
+                            ->set_default_value( find_spell( 335236 )->_duration );
 
   buffs.dark_soul_instability = make_buff( this, "dark_soul_instability", talents.dark_soul_instability )
                                     ->add_invalidate( CACHE_SPELL_CRIT_CHANCE )
@@ -1106,14 +1113,16 @@ void warlock_t::create_buffs_destruction()
       make_buff( this, "madness_of_the_azjaqir", legendary.madness_of_the_azjaqir->effectN( 1 ).trigger() )
           ->set_trigger_spell( legendary.madness_of_the_azjaqir );
 
+  // TOCHECK: Tier set chance needs to be set above 1.01 to prevent buff trigger() calls from also rolling on the spell. 
+  //          Need to check the spell data after it is pulled again.
   // Tier Sets
-  buffs.herald_of_fire = make_buff( this, "herald_of_fire", find_spell( 364349 ) )
-                             ->set_default_value_from_effect( 1 )
-                             ->set_trigger_spell( find_spell( 364433 ) );
+  buffs.herald_of_fire = make_buff ( this, "herald_of_fire", find_spell ( 364348 ) )
+                                ->set_default_value_from_effect ( 1 )
+                                ->set_chance(1.01);
 
-  buffs.herald_of_chaos = make_buff( this, "herald_of_chaos", find_spell( 364348 ) )
-                              ->set_default_value_from_effect( 1 )
-                              ->set_trigger_spell( find_spell( 364433 ) );
+  buffs.herald_of_chaos = make_buff ( this, "herald_of_chaos", find_spell ( 364349 ) )
+                                ->set_default_value_from_effect ( 1 )
+                                ->set_chance(1.01);
 }
 void warlock_t::init_spells_destruction()
 {

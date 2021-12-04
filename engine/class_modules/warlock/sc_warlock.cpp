@@ -1298,6 +1298,7 @@ void warlock_t::init_procs()
   procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
   procs.horned_nightmare = get_proc( "horned_nightmare" );
   procs.ritual_of_ruin       = get_proc( "ritual_of_ruin" );
+  procs.avatar_of_destruction = get_proc( "avatar_of_destruction" );
 }
 
 void warlock_t::init_base_stats()

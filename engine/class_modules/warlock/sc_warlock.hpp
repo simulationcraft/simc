@@ -408,7 +408,6 @@ public:
     propagate_const<buff_t*> dark_soul_instability;
     propagate_const<buff_t*> herald_of_fire;
     propagate_const<buff_t*> herald_of_chaos;
-    propagate_const<buff_t*> avatar_of_destruction;
 
     // Covenants
     propagate_const<buff_t*> decimating_bolt;
