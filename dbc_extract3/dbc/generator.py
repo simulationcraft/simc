@@ -1716,7 +1716,13 @@ class SpellDataGenerator(DataGenerator):
           ( 337142, 2 ),    # Grim Inquisitor's Dread Calling Buff
           ( 342997, 2 ),    # Grim Inquisitor's Dread Calling Buff 2
           ( 339986, 3 ),    # Hidden Combusting Engine Debuff
-          ( 324540, 0 )     # Malefic Rapture damage
+          ( 324540, 0 ),    # Malefic Rapture damage
+          ( 364322, 0 ),    # T28 - Calamitous Crescendo Buff
+          ( 364348, 0 ),    # T28 - Herald of Fire Buff
+          ( 364349, 0 ),    # T28 - Herald of Chaos Buff
+          ( 364198, 0 ),    # T28 - Malicious Imp-Pact Summon
+          ( 364261, 0 ),    # T28 - Malicious Imp Doombolt
+          ( 364263, 0 ),    # T28 - Return Soul
         ),
 
         # Monk:
