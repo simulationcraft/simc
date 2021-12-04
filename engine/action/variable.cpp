@@ -198,11 +198,10 @@ void variable_t::reset()
 {
   action_t::reset();
 
-  double cv = 0;
   // In addition to if= expression removing the variable from the APLs, if the the variable value
   // is constant, we can remove any variable action referencing it from the APL
   if (action_list && sim->optimize_expressions && player->nth_iteration() == 1 &&
-    var->is_constant(&cv) && (!if_expr || (if_expr && if_expr->is_constant(&cv))))
+    var->is_constant() && (!if_expr || (if_expr && if_expr->is_constant())))
   {
     auto it = range::find(action_list->foreground_action_list, this);
     if (it != action_list->foreground_action_list.end())
@@ -223,11 +222,11 @@ void variable_t::reset()
 // 3) The operation is reset/floor/ceil and all of the other actions manipulating the variable are
 //    constant
 
-bool variable_t::is_constant(double* const_value) const
+bool variable_t::is_constant() const
 {
   // If the variable action is conditionally executed, and the conditional execution is not
   // constant, the variable cannot be constant.
-  if (if_expr && !if_expr->is_constant(const_value))
+  if (if_expr && !if_expr->is_constant())
   {
     return false;
   }
@@ -237,29 +236,29 @@ bool variable_t::is_constant(double* const_value) const
   if (operation == OPERATION_RESET || operation == OPERATION_FLOOR ||
     operation == OPERATION_CEIL)
   {
-    return !range::any_of(var->variable_actions, [this, &const_value](const action_t* action) {
-      return action != this && !debug_cast<const variable_t*>(action)->is_constant(const_value);
+    return !range::any_of(var->variable_actions, [this](const action_t* action) {
+      return action != this && !debug_cast<const variable_t*>(action)->is_constant();
       });
   }
   else if (operation != OPERATION_SETIF)
   {
-    return value_expression ? value_expression->is_constant(const_value) : true;
+    return value_expression ? value_expression->is_constant() : true;
   }
   else
   {
-    bool constant = condition_expression->is_constant(const_value);
+    bool constant = condition_expression->is_constant();
     if (!constant)
     {
       return false;
     }
 
-    if ( const_value )
+    if ( condition_expression->evaluate() )
     {
-      return value_expression->is_constant(const_value);
+      return value_expression->is_constant();
     }
     else
     {
-      return value_else_expression->is_constant(const_value);
+      return value_else_expression->is_constant();
     }
   }
 

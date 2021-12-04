@@ -3954,14 +3954,9 @@ struct item_effect_expr_t : public item_effect_base_expr_t
     return result;
   }
   
-  bool is_constant( double* value ) override
+  bool is_constant() override
   {
-    if (exprs.empty())
-    {
-      *value = 0;
-      return true;
-    }
-    return false;
+    return exprs.empty();
   }
 };
 
@@ -4002,9 +3997,8 @@ struct item_buff_exists_expr_t : public item_effect_expr_t
     }
   }
 
-  bool is_constant( double* value) override
+  bool is_constant() override
   {
-    *value = v;
     return true;
   }
 
@@ -4059,14 +4053,9 @@ struct item_ready_expr_t : public item_effect_base_expr_t
     return 1;
   }
     
-  bool is_constant( double* value ) override
+  bool is_constant() override
   {
-    if (effects.empty())
-    {
-      *value = 1;
-      return true;
-    }
-    return false;
+    return effects.empty();
   }
 };
 
@@ -4084,9 +4073,8 @@ struct item_is_expr_t : public expr_t
     }
   }
 
-  bool is_constant( double* value) override
+  bool is_constant() override
   {
-    *value = is;
     return true;
   }
 
@@ -4113,9 +4101,8 @@ struct item_cooldown_exists_expr_t : public item_effect_expr_t
     }
   }
 
-  bool is_constant( double* value) override
+  bool is_constant() override
   {
-    *value = v;
     return true;
   }
 
@@ -4198,9 +4185,8 @@ struct item_has_use_buff_expr_t : public item_effect_expr_t
       v = 1;
   }
 
-  bool is_constant( double* value) override
+  bool is_constant() override
   {
-    *value = v;
     return true;
   }
 

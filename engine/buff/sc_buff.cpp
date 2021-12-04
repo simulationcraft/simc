@@ -86,13 +86,9 @@ struct buff_expr_t : public expr_t
     return buff;
   }
 
-  bool is_constant( double* v ) override
+  bool is_constant() override
   {
-    bool constant = buff()->s_data != spell_data_t::nil() && !buff()->s_data->ok();
-
-    *v = evaluate();
-
-    return constant;
+    return buff()->s_data != spell_data_t::nil() && !buff()->s_data->ok();
   }
 };
 
@@ -128,16 +124,9 @@ struct fn_const_buff_expr_t final : public buff_expr_t
     return coerce( fn( buff() ) );
   }
   
-  bool is_constant( double* v ) override
+  bool is_constant() override
   {
-    bool constant = is_const_fn( buff() );
-
-    if ( constant )
-    {
-      *v = evaluate();
-    }
-
-    return constant;
+    return is_const_fn( buff() );
   }
 };
 
@@ -468,16 +457,9 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
       double evaluate() override
       { return buff()->stack_react(); }
       
-      bool is_constant( double* v ) override
+      bool is_constant() override
       {
-        bool constant = buff()->default_chance == 0;
-
-        if ( constant )
-        {
-          *v = evaluate();
-        }
-
-        return constant;
+        return buff()->default_chance == 0;
       }
     };
 
@@ -504,16 +486,9 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
       double evaluate() override
       { return 100.0 * buff()->stack_react() / buff()->max_stack(); }
       
-      bool is_constant( double* v ) override
+      bool is_constant() override
       {
-        bool constant = buff()->default_chance == 0;
-
-        if ( constant )
-        {
-          *v = evaluate();
-        }
-
-        return constant;
+        return buff()->default_chance == 0;
       }
     };
 

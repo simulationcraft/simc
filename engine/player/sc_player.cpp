@@ -8403,7 +8403,7 @@ struct use_item_t : public action_t
       {
       }
 
-      bool is_constant( double* ) override
+      bool is_constant() override
       {
         return true;
       }
@@ -10210,8 +10210,8 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
           }
         }
 
-        bool is_constant( double* value ) override
-        { return var_->is_constant( value ); }
+        bool is_constant() override
+        { return var_->is_constant(); }
 
         double evaluate() override
         { return var_->current_value_; }
