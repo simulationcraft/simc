@@ -167,7 +167,7 @@ util/io.hpp
 util/plot_data.hpp
 util/rng.hpp
 util/sample_data.hpp
-util/sc_resourcepaths.hpp
+util/resourcepaths.hpp
 util/scoped_callback.hpp
 util/span.hpp
 util/static_map.hpp
