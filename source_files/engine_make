@@ -132,23 +132,23 @@ SRC += \
     report$(PATHSEP)report_html_sim.cpp \
     report$(PATHSEP)report_text.cpp \
     report$(PATHSEP)reports.cpp \
+    sim$(PATHSEP)cooldown.cpp \
     sim$(PATHSEP)cooldown_waste_data.cpp \
+    sim$(PATHSEP)event.cpp \
     sim$(PATHSEP)event_manager.cpp \
+    sim$(PATHSEP)expressions.cpp \
+    sim$(PATHSEP)gear_stats.cpp \
+    sim$(PATHSEP)option.cpp \
+    sim$(PATHSEP)plot.cpp \
     sim$(PATHSEP)proc.cpp \
+    sim$(PATHSEP)profileset.cpp \
+    sim$(PATHSEP)progress_bar.cpp \
+    sim$(PATHSEP)raid_event.cpp \
     sim$(PATHSEP)real_ppm.cpp \
-    sim$(PATHSEP)sc_cooldown.cpp \
-    sim$(PATHSEP)sc_event.cpp \
-    sim$(PATHSEP)sc_expressions.cpp \
-    sim$(PATHSEP)sc_gear_stats.cpp \
-    sim$(PATHSEP)sc_option.cpp \
-    sim$(PATHSEP)sc_plot.cpp \
-    sim$(PATHSEP)sc_profileset.cpp \
-    sim$(PATHSEP)sc_progress_bar.cpp \
-    sim$(PATHSEP)sc_raid_event.cpp \
-    sim$(PATHSEP)sc_reforge_plot.cpp \
-    sim$(PATHSEP)sc_sim.cpp \
+    sim$(PATHSEP)reforge_plot.cpp \
     sim$(PATHSEP)scale_factor_control.cpp \
     sim$(PATHSEP)shuffled_rng.cpp \
+    sim$(PATHSEP)sim.cpp \
     sim$(PATHSEP)sim_ostream.cpp \
     sim$(PATHSEP)uptime_benefit.cpp \
     util$(PATHSEP)cache.cpp \

@@ -7,7 +7,7 @@
 
 #include "config.hpp"
 
-#include "sim/sc_option.hpp"
+#include "sim/option.hpp"
 
 #include <string>
 #include <vector>

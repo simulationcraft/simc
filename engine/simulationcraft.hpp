@@ -84,10 +84,10 @@
 #include "report/color.hpp"
 #include "report/report_helper.hpp"
 
-#include "sim/sc_option.hpp"
+#include "sim/option.hpp"
 #include "sim/raid_event.hpp"
-#include "sim/sc_expressions.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/expressions.hpp"
+#include "sim/sim.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/event.hpp"
 #include "sim/benefit.hpp"
@@ -95,7 +95,7 @@
 #include "sim/proc.hpp"
 #include "sim/real_ppm.hpp"
 #include "sim/shuffled_rng.hpp"
-#include "sim/sc_cooldown.hpp"
+#include "sim/cooldown.hpp"
 #include "sim/gain.hpp"
 #include "sim/cooldown_waste_data.hpp"
 

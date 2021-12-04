@@ -16,8 +16,8 @@
 #include "action_callback.hpp"
 #include "sim/event.hpp"
 #include "sim/real_ppm.hpp"
-#include "sim/sc_cooldown.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/cooldown.hpp"
+#include "sim/sim.hpp"
 #include "util/rng.hpp"
 
 struct proc_event_t : public event_t

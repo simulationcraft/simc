@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_sim.hpp"
+#include "sim.hpp"
 
 #include "buff/sc_buff.hpp"
 #include "class_modules/class_module.hpp"
@@ -19,16 +19,16 @@
 #include "report/json/report_configuration.hpp"
 #include "report/reports.hpp"
 #include "report/highchart.hpp"
-#include "sc_profileset.hpp"
+#include "profileset.hpp"
 #include "sim/event.hpp"
 #include "sim/iteration_data_entry.hpp"
 #include "sim/plot.hpp"
 #include "sim/raid_event.hpp"
 #include "sim/reforge_plot.hpp"
-#include "sim/sc_cooldown.hpp"
-#include "sim/sc_expressions.hpp"
-#include "sim/sc_option.hpp"
-#include "sim/sc_profileset.hpp"
+#include "sim/cooldown.hpp"
+#include "sim/expressions.hpp"
+#include "sim/option.hpp"
+#include "sim/profileset.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/sim_control.hpp"
 #include "sim/work_queue.hpp"

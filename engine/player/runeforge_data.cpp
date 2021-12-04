@@ -5,7 +5,7 @@
 #include "dbc/dbc.hpp"
 #include "dbc/spell_data.hpp"
 
-#include "sim/sc_expressions.hpp"
+#include "sim/expressions.hpp"
 #include "report/decorators.hpp"
 #include "util/io.hpp"
 

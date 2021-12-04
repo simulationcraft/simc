@@ -4,7 +4,7 @@
 // ==========================================================================
 
 #include "scale_factor_control.hpp"
-#include "sc_sim.hpp"
+#include "sim.hpp"
 #include "dbc/dbc.hpp"
 #include "player/sc_player.hpp"
 #include "player/player_scaling.hpp"

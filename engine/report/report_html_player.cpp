@@ -18,7 +18,7 @@
 #include "player/scaling_metric_data.hpp"
 #include "player/set_bonus.hpp"
 #include "sim/scale_factor_control.hpp"
-#include "sim/sc_profileset.hpp"
+#include "sim/profileset.hpp"
 #include "util/util.hpp"
 
 namespace

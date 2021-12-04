@@ -17,7 +17,7 @@
 #include "report/decorators.hpp"
 #include "report/highchart.hpp"
 #include "sim/reforge_plot.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 #include "util/plot_data.hpp"
 #include "util/sample_data.hpp"
 #include "util/util.hpp"

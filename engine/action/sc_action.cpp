@@ -21,9 +21,9 @@
 #include "player/action_priority_list.hpp"
 #include "sim/event.hpp"
 #include "sim/proc.hpp"
-#include "sim/sc_expressions.hpp"
-#include "sim/sc_cooldown.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/expressions.hpp"
+#include "sim/cooldown.hpp"
+#include "sim/sim.hpp"
 #include "util/generic.hpp"
 #include "util/rng.hpp"
 #include "player/expansion_effects.hpp" // try to implement leyshocks_grand_compilation as a callback

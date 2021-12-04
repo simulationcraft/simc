@@ -8,7 +8,7 @@
 
 #include "class_modules/apl/apl_priest.hpp"
 #include "sc_enums.hpp"
-#include "sim/sc_option.hpp"
+#include "sim/option.hpp"
 #include "tcb/span.hpp"
 
 #include "simulationcraft.hpp"

@@ -6,7 +6,7 @@
 #include "sc_js.hpp"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/prettywriter.h"
-#include "sim/sc_cooldown.hpp"
+#include "sim/cooldown.hpp"
 #include "util/util.hpp"
 #include "util/timespan.hpp"
 #include "util/sample_data.hpp"

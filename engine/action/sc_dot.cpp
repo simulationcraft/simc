@@ -8,8 +8,8 @@
 #include "action/sc_action_state.hpp"
 #include "player/sc_player.hpp"
 #include "player/stats.hpp"
-#include "sim/sc_expressions.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/expressions.hpp"
+#include "sim/sim.hpp"
 #include "sim/event.hpp"
 #include "util/rng.hpp"
 

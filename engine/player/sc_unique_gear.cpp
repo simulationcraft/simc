@@ -4,7 +4,7 @@
 // ==========================================================================
 
 #include "sc_enums.hpp"
-#include "sim/sc_expressions.hpp"
+#include "sim/expressions.hpp"
 #include "unique_gear.hpp"
 
 #include "unique_gear_shadowlands.hpp"

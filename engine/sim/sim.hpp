@@ -10,7 +10,7 @@
 #include "player/gear_stats.hpp"
 #include "progress_bar.hpp"
 #include "sim_ostream.hpp"
-#include "sim/sc_option.hpp"
+#include "sim/option.hpp"
 #include "util/concurrency.hpp"
 #include "util/rng.hpp"
 #include "util/sample_data.hpp"

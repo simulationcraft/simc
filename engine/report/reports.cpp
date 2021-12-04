@@ -10,7 +10,7 @@
 #include "dbc/spell_query/spell_data_expr.hpp"
 #include "player/sc_player.hpp"
 #include "report/report_helper.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 #include "util/xml.hpp"
 
 #include <ostream>

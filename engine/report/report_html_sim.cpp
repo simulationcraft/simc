@@ -13,7 +13,7 @@
 #include "interfaces/sc_js.hpp"
 #include "util/git_info.hpp"
 #include "sim/scale_factor_control.hpp"
-#include "sim/sc_profileset.hpp"
+#include "sim/profileset.hpp"
 #include "fmt/chrono.h"
 
 #include <iostream>

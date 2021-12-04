@@ -14,9 +14,9 @@
 #include "player/actor_target_data.hpp"
 #include "player/sc_player.hpp"
 #include "report/decorators.hpp"
-#include "sim/sc_expressions.hpp"
-#include "sim/sc_option.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/expressions.hpp"
+#include "sim/option.hpp"
+#include "sim/sim.hpp"
 #include "util/io.hpp"
 #include "util/util.hpp"
 

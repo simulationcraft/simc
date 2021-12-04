@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_option.hpp"
+#include "option.hpp"
 
 #include "config.hpp"
 
