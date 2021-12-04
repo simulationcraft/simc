@@ -8523,11 +8523,9 @@ void druid_t::create_buffs()
   buff.natures_balance = make_buff( this, "natures_balance", talent.natures_balance )
     ->set_quiet( true )
     ->set_default_value_from_effect_type( A_PERIODIC_ENERGIZE )
-    ->set_tick_callback( [this]( buff_t* b, int, timespan_t ) {
+    ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
       resource_gain( RESOURCE_ASTRAL_POWER, b->check_value(), gain.natures_balance );
     } );
-        //if ( sim->ignore_invulnerable_targets && sim->target_non_sleeping_list.empty() ) {}
-          //ap *= 3.0;  // simulate triple regen when out of combat for 'M+' fight models utilizing invuln
 
   buff.oneths_free_starsurge = make_buff( this, "oneths_clear_vision", find_spell( 339797 ) )
     ->set_chance( legendary.oneths_clear_vision->effectN( 2 ).percent() );
