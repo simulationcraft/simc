@@ -3,12 +3,13 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_highchart.hpp"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/prettywriter.h"
+#include "highchart.hpp"
+
 #include "buff/sc_buff.hpp"
 #include "player/sc_player.hpp"
 #include "player/stats.hpp"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/stringbuffer.h"
 #include "sim/sc_sim.hpp"
 #include "util/util.hpp"
 
