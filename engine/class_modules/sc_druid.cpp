@@ -2336,13 +2336,20 @@ public:
     if ( !check_form_restriction() )
     {
       if ( may_autounshift && ( form_mask & NO_FORM ) == NO_FORM )
+      {
         p()->shapeshift( NO_FORM );
-      else if ( autoshift ) {
-        if ( p()->buff.ravenous_frenzy->check() ) p()->buff.ravenous_frenzy->trigger();
-        p()->shapeshift( static_cast< form_e >( autoshift ) );
+      }
+      else if ( autoshift )
+      {
+        if ( p()->buff.ravenous_frenzy->check() )
+          p()->buff.ravenous_frenzy->trigger();
+
+        p()->shapeshift( static_cast<form_e>( autoshift ) );
       }
       else
+      {
         assert( false && "Action executed in wrong form with no valid form to shift to!" );
+      }
     }
 
     ab::schedule_execute( s );
@@ -2573,10 +2580,16 @@ public:
         {
           p_buff->current_value -= p_data->effectN( 1 ).base_value();
 
+          if ( p()->talent.incarnation_moonkin->ok() && p()->get_form() != form_e::MOONKIN_FORM &&
+               !p()->buff.incarnation_moonkin->check() )
+          {
+            p()->shapeshift( form_e::MOONKIN_FORM );
+          }
+
           p()->buff.ca_inc->extend_duration_or_trigger( p_time, p() );
           p()->proc.pulsar->occur();
-          p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
 
+          p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
           make_event( *sim, p_time, [ this ]() {
             p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
           } );
