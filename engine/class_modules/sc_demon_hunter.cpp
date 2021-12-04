@@ -230,6 +230,9 @@ public:
     buff_t* blind_faith;
     buff_t* chaos_theory;
     buff_t* fel_bombardment;
+
+    // Set Bonus
+    buff_t* deadly_dance;
   } buff;
 
   // Talents
@@ -435,6 +438,15 @@ public:
     item_runeforge_t demonic_oath;
   } legendary;
 
+  // Set Bonus effects
+  struct set_bonuses_t
+  {
+    const spell_data_t* t28_havoc_2pc;
+    const spell_data_t* t28_havoc_4pc;
+    const spell_data_t* t28_vengeance_2pc;
+    const spell_data_t* t28_vengeance_4pc;
+  } set_bonuses;
+
   // Mastery Spells
   struct mastery_t
   {
@@ -498,6 +510,9 @@ public:
     // Legendary
     gain_t* blind_faith;
     gain_t* darkglare_boon_refund;
+
+    // Set Bonus
+    gain_t* deadly_dance;
   } gain;
 
   // Benefits
@@ -1230,6 +1245,9 @@ public:
 
       // Legendary Passives
       ab::apply_affecting_aura( p->legendary.erratic_fel_core );
+
+      // Set Bonus Passives
+      ab::apply_affecting_aura( p->set_bonuses.t28_havoc_2pc );
 
       // Affect Flags
       parse_affect_flags( p->mastery.demonic_presence, affected_by.demonic_presence );
@@ -3587,6 +3605,9 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     // This has a 0.5s ICD in the spell data, so just trigger once in the execute and not on impacts
     p()->buff.chaos_theory->trigger();
 
+    // Deadly Dance Set Bonus
+    p()->buff.deadly_dance->trigger();
+
     // Metamorphosis benefit and Essence Break stats tracking
     if ( p()->buff.metamorphosis->up() )
     {
@@ -4997,7 +5018,7 @@ void demon_hunter_t::create_buffs()
     ->set_default_value( conduit.soul_furnace.percent() );
 
   // Legendary ==============================================================
-
+  
   const spell_data_t* chaos_theory_buff = legendary.chaos_theory->ok() ? find_spell( 337567 ) : spell_data_t::not_found();
   buff.chaos_theory = make_buff<buff_t>( this, "chaos_theory", chaos_theory_buff )
     ->set_default_value_from_effect( 1 )
@@ -5023,6 +5044,27 @@ void demon_hunter_t::create_buffs()
   buff.blazing_slaughter = make_buff<buff_t>( this, "blazing_slaughter", blazing_slaughter_buff )
     ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
     ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
+
+  // Set Bonuses ============================================================ 
+
+  // Deadly Dance is not currently represented as a player-trackable buff yet, so hard-coding this for now
+  buff.deadly_dance = make_buff<buff_t>( this, "deadly_dance", set_bonuses.t28_havoc_4pc )
+    ->set_max_stack( 5 ) // Hard-coded, not in spell data
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+    ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+      if ( b->at_max_stacks() )
+      {
+        // Gain is stored in spell 364134 but a server-side conditional aura (based on First Blood)
+        resource_gain( RESOURCE_FURY, talent.first_blood->ok() ? 15 : 35, gain.deadly_dance );
+        cooldown.blade_dance->reset( false );
+        b->expire();
+      }
+      else if ( new_ == 1 && sim->current_time() > 0_s && rng().roll( set_bonuses.t28_havoc_4pc->effectN( 1 ).percent() ) )
+      {
+        resource_gain( RESOURCE_FURY, talent.first_blood->ok() ? 15 : 35, gain.deadly_dance );
+        cooldown.blade_dance->reset( true );
+      }
+    } );
 }
 
 struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
@@ -5595,6 +5637,13 @@ void demon_hunter_t::init_spells()
   spec.blind_faith_fury       = ( legendary.blind_faith->ok() ) ? find_spell( 356070 ) : spell_data_t::not_found();
   spec.darkglare_boon_refund  = ( legendary.darkglare_boon->ok() ) ? find_spell( 350726 ) : spell_data_t::not_found();
 
+  // Set Bonus Items ========================================================
+
+  set_bonuses.t28_havoc_2pc     = sets->set( DEMON_HUNTER_HAVOC, T28, B2 );
+  set_bonuses.t28_havoc_4pc     = sets->set( DEMON_HUNTER_HAVOC, T28, B4 );
+  set_bonuses.t28_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, T28, B2 );
+  set_bonuses.t28_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, T28, B4 );
+
   // Spell Initialization ===================================================
 
   using namespace actions::attacks;
@@ -5958,6 +6007,9 @@ void demon_hunter_t::create_gains()
   // Legendary
   gain.blind_faith              = get_gain( "blind_faith" );
   gain.darkglare_boon_refund    = get_gain( "darkglare_boon_refund" );
+
+  // Set Bonus
+  gain.deadly_dance             = get_gain( "deadly_dance" );
 }
 
 // demon_hunter_t::create_benefits ==========================================
@@ -6451,6 +6503,13 @@ void demon_hunter_t::reset()
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
     delete soul_fragments[ i ];
+  }
+
+  // Deadly Dance counter does not appear to reset between encounters
+  if ( set_bonuses.t28_havoc_4pc->ok() )
+  {
+    int initial_stacks = rng().range( 0, buff.deadly_dance->max_stack() );
+    buff.deadly_dance->trigger( initial_stacks );
   }
 
   soul_fragments.clear();
