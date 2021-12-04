@@ -5804,6 +5804,19 @@ struct swipe_proxy_t : public druid_spell_t
   }
 };
 
+// Incapacitating Roar ======================================================
+
+struct incapacitating_roar_t : public druid_spell_t
+{
+  incapacitating_roar_t( druid_t* p, std::string_view opt )
+    : druid_spell_t( "incapacitating_roar", p, p->find_affinity_spell( "Incapacitating Roar" ), opt )
+  {
+    form_mask = autoshift = BEAR_FORM;
+
+    harmful = false;
+  }
+};
+
 // Incarnation ==============================================================
 
 struct incarnation_t : public druid_spell_t
@@ -7955,6 +7968,7 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
   if ( name == "bristling_fur"          ) return new          bristling_fur_t( this, options_str );
   if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
   if ( name == "growl"                  ) return new                  growl_t( this, options_str );
+  if ( name == "incapacitating_roar"    ) return new    incapacitating_roar_t( this, options_str );
   if ( name == "ironfur"                ) return new                ironfur_t( this, options_str );
   if ( name == "mangle"                 ) return new                 mangle_t( this, options_str );
   if ( name == "maul"                   ) return new                   maul_t( this, options_str );
