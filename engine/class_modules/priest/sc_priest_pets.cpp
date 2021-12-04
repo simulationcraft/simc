@@ -675,8 +675,6 @@ struct your_shadow_t final : public priest_pet_t
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
-// TODO: check mastery
-// TODO: check tick 0
 // TODO: if it has duration is hasted, does it recast when the channel finishes?
 // TODO: verify hasted ticks/duration
 struct your_shadow_torment_mind_t final : public priest_pet_spell_t
@@ -686,7 +684,8 @@ struct your_shadow_torment_mind_t final : public priest_pet_spell_t
   {
     parse_options( options );
     channeled                  = true;
-    affected_by_shadow_weaving = true;
+    affected_by_shadow_weaving = false;
+    tick_zero                  = true;
   }
 
   void init() override
