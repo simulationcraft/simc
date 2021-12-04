@@ -4,7 +4,7 @@
 // ==========================================================================
 
 #include "attack.hpp"
-#include "sc_action_state.hpp"
+#include "action_state.hpp"
 #include "dbc/spell_data.hpp"
 #include "player/player.hpp"
 #include "player/stats.hpp"

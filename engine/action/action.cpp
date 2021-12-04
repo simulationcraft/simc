@@ -3,13 +3,13 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "action/sc_action.hpp"
+#include "action/action.hpp"
 
-#include "action/sc_action_state.hpp"
+#include "action/action_state.hpp"
 #include "action/action_callback.hpp"
 #include "dbc/data_enums.hh"
 #include "dbc/dbc.hpp"
-#include "buff/sc_buff.hpp"
+#include "buff/buff.hpp"
 #include "action/dot.hpp"
 #include "player/actor_target_data.hpp"
 #include "player/covenant.hpp"

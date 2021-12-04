@@ -5,7 +5,7 @@
 
 #include "charts.hpp"
 
-#include "action/sc_action.hpp"
+#include "action/action.hpp"
 #include "dbc/dbc.hpp"
 #include "player/gear_stats.hpp"
 #include "player/pet.hpp"

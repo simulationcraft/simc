@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "action/sc_action.hpp"
+#include "action/action.hpp"
 #include "player/stats.hpp"
 #include "player/player.hpp"
 #include "player/pet.hpp"

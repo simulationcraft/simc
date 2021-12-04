@@ -4,7 +4,7 @@
 // ==========================================================================
 
 #include "cooldown.hpp"
-#include "action/sc_action.hpp"
+#include "action/action.hpp"
 #include "player/player.hpp"
 #include "sim/event.hpp"
 #include "sim/expressions.hpp"

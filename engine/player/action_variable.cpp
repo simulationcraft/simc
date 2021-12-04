@@ -5,7 +5,7 @@
 
 #include "action_variable.hpp"
 
-#include "action/sc_action.hpp"
+#include "action/action.hpp"
 #include "action/variable.hpp"
 #include "player/player.hpp"
 #include "sim/sim.hpp"

@@ -8,7 +8,7 @@
 #include "action/attack.hpp"
 #include "action/spell.hpp"
 #include "action/heal.hpp"
-#include "buff/sc_buff.hpp"
+#include "buff/buff.hpp"
 #include "dbc/item_database.hpp"
 #include "item.hpp"
 #include "player/player.hpp"

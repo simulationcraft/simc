@@ -4,8 +4,8 @@
 // ==========================================================================
 
 #include "dot.hpp"
-#include "action/sc_action.hpp"
-#include "action/sc_action_state.hpp"
+#include "action/action.hpp"
+#include "action/action_state.hpp"
 #include "player/player.hpp"
 #include "player/stats.hpp"
 #include "sim/expressions.hpp"

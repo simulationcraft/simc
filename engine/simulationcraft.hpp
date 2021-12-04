@@ -19,8 +19,8 @@
 #include "util/timespan.hpp" // Time class representing ingame time
 #include "sc_enums.hpp"
 
-#include "action/sc_action_state.hpp"
-#include "action/sc_action.hpp"
+#include "action/action_state.hpp"
+#include "action/action.hpp"
 #include "action/attack.hpp"
 #include "action/spell_base.hpp"
 #include "action/spell.hpp"
@@ -33,7 +33,7 @@
 #include "action/snapshot_stats.hpp"
 #include "action/residual_action.hpp"
 
-#include "buff/sc_buff.hpp"
+#include "buff/buff.hpp"
 
 #include "class_modules/class_module.hpp"
 

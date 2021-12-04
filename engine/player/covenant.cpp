@@ -6,7 +6,7 @@
 
 #include "action/dot.hpp"
 #include "action/spell.hpp"
-#include "buff/sc_buff.hpp"
+#include "buff/buff.hpp"
 #include "dbc/covenant_data.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/spell_data.hpp"

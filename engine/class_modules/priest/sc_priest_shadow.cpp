@@ -4,7 +4,7 @@
 // Wiki: https://github.com/simulationcraft/simc/wiki/Priests
 // ==========================================================================
 
-#include "action/sc_action_state.hpp"
+#include "action/action_state.hpp"
 #include "sc_enums.hpp"
 #include "sc_priest.hpp"
 #include "util/generic.hpp"

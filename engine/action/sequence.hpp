@@ -6,7 +6,7 @@
 #pragma once
 
 #include "config.hpp"
-#include "action/sc_action.hpp"
+#include "action/action.hpp"
 #include "util/timespan.hpp"
 #include <vector>
 #include <string>

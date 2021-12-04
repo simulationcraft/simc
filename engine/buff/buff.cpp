@@ -3,9 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_buff.hpp"
+#include "buff.hpp"
 
-#include "action/sc_action.hpp"
+#include "action/action.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/item_database.hpp"
 #include "dbc/spell_data.hpp"

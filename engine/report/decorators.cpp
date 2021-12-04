@@ -5,8 +5,8 @@
 
 #include "decorators.hpp"
 
-#include "action/sc_action.hpp"
-#include "buff/sc_buff.hpp"
+#include "action/action.hpp"
+#include "buff/buff.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/item_set_bonus.hpp"
 #include "item/item.hpp"

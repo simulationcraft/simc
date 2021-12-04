@@ -5,8 +5,8 @@
 
 #include "player_stat_cache.hpp"
 #include "player.hpp"
-#include "action/sc_action_state.hpp"
-#include "action/sc_action.hpp"
+#include "action/action_state.hpp"
+#include "action/action.hpp"
 
 
 /**

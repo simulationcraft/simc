@@ -5,8 +5,8 @@
 
 #include "spell.hpp"
 #include "heal.hpp"
-#include "action/sc_action_state.hpp"
-#include "buff/sc_buff.hpp"
+#include "action/action_state.hpp"
+#include "buff/buff.hpp"
 #include "dbc/spell_data.hpp"
 #include "player/player.hpp"
 #include "player/stats.hpp"

@@ -5,7 +5,7 @@
 
 #include "report_helper.hpp"
 
-#include "buff/sc_buff.hpp"
+#include "buff/buff.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/sc_spell_info.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
