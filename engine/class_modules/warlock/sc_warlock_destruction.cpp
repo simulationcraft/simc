@@ -702,10 +702,9 @@ struct chaos_bolt_t : public destruction_spell_t
       {
         if (p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ))
         {
-          p()->warlock_pet_list.aod_infernals.spawn( p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000,
-            1U );
+          p()->warlock_pet_list.aod_infernals.spawn( p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000, 1U );
+          p()->procs.avatar_of_destruction->occur();
         }
-        p()->procs.avatar_of_destruction->occur();
         p()->buffs.herald_of_chaos->expire();
       }
       // As far as current testing shows, it is not possible to get a proc from a free cast RoF/CB via Ritual of Ruin
@@ -864,11 +863,10 @@ struct rain_of_fire_t : public destruction_spell_t
       {
         if (p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ))
         {
-          p()->warlock_pet_list.aod_infernals.spawn( p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000,
-            1U );
+          p()->warlock_pet_list.aod_infernals.spawn( p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000, 1U );
+          p()->procs.avatar_of_destruction->occur();
         }
 
-        p()->procs.avatar_of_destruction->occur();
         p()->buffs.herald_of_fire->expire();
       }
       // As far as current testing shows, it is not possible to get a proc from a free cast RoF/CB via Ritual of Ruin
@@ -1114,11 +1112,9 @@ void warlock_t::create_buffs_destruction()
           ->set_trigger_spell( legendary.madness_of_the_azjaqir );
 
   // Tier Sets
-  buffs.herald_of_fire = make_buff ( this, "herald_of_fire", find_spell ( 364348 ) )
-                                ->set_default_value_from_effect ( 1 );
+  buffs.herald_of_fire = make_buff ( this, "herald_of_fire", find_spell ( 364348 ) );
 
-  buffs.herald_of_chaos = make_buff ( this, "herald_of_chaos", find_spell ( 364349 ) )
-                                ->set_default_value_from_effect ( 1 );
+  buffs.herald_of_chaos = make_buff ( this, "herald_of_chaos", find_spell ( 364349 ) );
 }
 void warlock_t::init_spells_destruction()
 {
