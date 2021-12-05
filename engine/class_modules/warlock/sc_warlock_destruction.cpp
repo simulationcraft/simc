@@ -587,6 +587,14 @@ struct chaos_bolt_t : public destruction_spell_t
     add_child( internal_combustion );
   }
 
+  double cost() const override
+  {
+    if ( p()->buffs.herald_of_chaos->check() )
+      return 0.0;
+
+    return destruction_spell_t::cost();      
+  }
+
   void schedule_execute( action_state_t* state = nullptr ) override
   {
     destruction_spell_t::schedule_execute( state );
@@ -595,6 +603,9 @@ struct chaos_bolt_t : public destruction_spell_t
   timespan_t execute_time() const override
   {
     timespan_t h = warlock_spell_t::execute_time();
+    
+    if ( p()->buffs.herald_of_chaos->check() )
+      return timespan_t::from_millis(0);
 
     if ( p()->buffs.backdraft->check() )
       h *= backdraft_cast_time;
@@ -684,6 +695,26 @@ struct chaos_bolt_t : public destruction_spell_t
     // SL - Legendary
     if ( p()->legendary.madness_of_the_azjaqir->ok() )
       p()->buffs.madness_of_the_azjaqir->trigger();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
+    {
+      if ( p()->buffs.herald_of_chaos->check() )
+      {
+        if (p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ))
+        {
+          p()->warlock_pet_list.aod_infernals.spawn( p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000,
+            1U );
+        }
+        p()->procs.avatar_of_destruction->occur();
+        p()->buffs.herald_of_chaos->expire();
+      }
+      // As far as current testing shows, it is not possible to get a proc from a free cast RoF/CB via Ritual of Ruin
+      else if ( rng().roll( p()->sets->set( WARLOCK_DESTRUCTION, T28, B2 )->proc_chance() ) )
+      {
+        p()->procs.ritual_of_ruin->occur();
+        p()->buffs.herald_of_fire->trigger();
+      }
+    }
   }
 
   // Force spell to always crit
@@ -815,9 +846,38 @@ struct rain_of_fire_t : public destruction_spell_t
     }
   }
 
+  double cost() const override
+  {
+    if ( p()->buffs.herald_of_fire->check() )
+      return 0.0;
+
+    return destruction_spell_t::cost();      
+  }
+
   void execute() override
   {
     destruction_spell_t::execute();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
+    {
+      if ( p()->buffs.herald_of_fire->check() )
+      {
+        if (p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ))
+        {
+          p()->warlock_pet_list.aod_infernals.spawn( p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000,
+            1U );
+        }
+
+        p()->procs.avatar_of_destruction->occur();
+        p()->buffs.herald_of_fire->expire();
+      }
+      // As far as current testing shows, it is not possible to get a proc from a free cast RoF/CB via Ritual of Ruin
+      else if ( rng().roll( p()->sets->set( WARLOCK_DESTRUCTION, T28, B2 )->proc_chance() ) )
+      {
+        p()->procs.ritual_of_ruin->occur();
+        p()->buffs.herald_of_chaos->trigger();
+      }
+    }
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                     ground_aoe_params_t()
@@ -1038,7 +1098,8 @@ void warlock_t::create_buffs_destruction()
                               ->set_trigger_spell( talents.reverse_entropy )
                               ->add_invalidate( CACHE_HASTE );
 
-  //Spell 335236 holds the duration of the proc'd infernal's duration, storing it in default value of the buff for use later
+  // Spell 335236 holds the duration of the proc'd infernal's duration, storing it in default value of the buff for use
+  // later
   buffs.rain_of_chaos = make_buff( this, "rain_of_chaos", find_spell( 266087 ) )
                             ->set_default_value( find_spell( 335236 )->_duration );
 
@@ -1051,8 +1112,18 @@ void warlock_t::create_buffs_destruction()
   buffs.madness_of_the_azjaqir =
       make_buff( this, "madness_of_the_azjaqir", legendary.madness_of_the_azjaqir->effectN( 1 ).trigger() )
           ->set_trigger_spell( legendary.madness_of_the_azjaqir );
-}
 
+  // TOCHECK: Tier set chance needs to be set above 1.01 to prevent buff trigger() calls from also rolling on the spell. 
+  //          Need to check the spell data after it is pulled again.
+  // Tier Sets
+  buffs.herald_of_fire = make_buff ( this, "herald_of_fire", find_spell ( 364348 ) )
+                                ->set_default_value_from_effect ( 1 )
+                                ->set_chance(1.01);
+
+  buffs.herald_of_chaos = make_buff ( this, "herald_of_chaos", find_spell ( 364349 ) )
+                                ->set_default_value_from_effect ( 1 )
+                                ->set_chance(1.01);
+}
 void warlock_t::init_spells_destruction()
 {
   using namespace actions_destruction;

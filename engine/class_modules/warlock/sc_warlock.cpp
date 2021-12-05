@@ -1297,6 +1297,8 @@ void warlock_t::init_procs()
   procs.corrupting_leer = get_proc( "corrupting_leer" );
   procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
   procs.horned_nightmare = get_proc( "horned_nightmare" );
+  procs.ritual_of_ruin       = get_proc( "ritual_of_ruin" );
+  procs.avatar_of_destruction = get_proc( "avatar_of_destruction" );
 }
 
 void warlock_t::init_base_stats()
@@ -1955,6 +1957,7 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
   : active( nullptr ),
     last( nullptr ),
     roc_infernals( "roc_infernal", w ),
+    aod_infernals( "aod_infernal", w ),
     dreadstalkers( "dreadstalker", w ),
     vilefiends( "vilefiend", w ),
     demonic_tyrants( "demonic_tyrant", w ),
