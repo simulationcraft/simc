@@ -1275,6 +1275,7 @@ void warlock_t::init_gains()
   gains.shadow_bolt  = get_gain( "shadow_bolt" );
   gains.soul_conduit = get_gain( "soul_conduit" );
   gains.scouring_tithe = get_gain( "souring_tithe" );
+  gains.return_soul = get_gain( "return_soul" );
 }
 
 void warlock_t::init_procs()

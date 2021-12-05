@@ -456,6 +456,9 @@ public:
 
     // SL
     gain_t* scouring_tithe;
+
+    // T28
+    gain_t* return_soul; // Demonology 4pc
   } gains;
 
   // Procs

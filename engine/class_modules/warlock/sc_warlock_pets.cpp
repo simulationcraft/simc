@@ -860,7 +860,7 @@ struct return_soul_t : warlock_pet_spell_t
   {
     warlock_pet_spell_t::execute();
 
-    p()->o()->resource_gain( RESOURCE_SOUL_SHARD, data().effectN( 1 ).base_value() / 10 /*TODO: add gain*/);
+    p()->o()->resource_gain( RESOURCE_SOUL_SHARD, data().effectN( 1 ).base_value() / 10, p()->o()->gains.return_soul );
   }
 };
 
@@ -868,7 +868,6 @@ void malicious_imp_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  // Check if this energy amount is different from Wild Imp
   resources.base[ RESOURCE_ENERGY ]                  = 100;
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
 }
