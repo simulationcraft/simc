@@ -568,24 +568,6 @@ struct malefic_rapture_t : public affliction_spell_t
         callbacks = false; //TOCHECK: Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
       }
 
-      timespan_t execute_time() const override
-      {
-        if ( p()->buffs.calamitous_crescendo->check() )
-        {
-          return 0_ms;
-        }
-
-        return affliction_spell_t::execute_time();
-      }
-
-      double cost() const override
-      {
-        if ( p()->buffs.calamitous_crescendo->check() )
-          return 0.0;
-        
-        return warlock_spell_t::cost();      
-      }
-
       double composite_da_multiplier( const action_state_t* s ) const override
       {
         double m = affliction_spell_t::composite_da_multiplier( s );
@@ -615,9 +597,6 @@ struct malefic_rapture_t : public affliction_spell_t
           p()->procs.malefic_rapture[ d ]->occur();
         }
 
-        if ( time_to_execute == 0_ms )
-          p()->buffs.calamitous_crescendo->decrement();
-
         affliction_spell_t::execute();
       }
     };
@@ -630,6 +609,24 @@ struct malefic_rapture_t : public affliction_spell_t
 
       impact_action = new malefic_rapture_damage_instance_t( p, data().effectN( 1 ).sp_coeff() );
       add_child( impact_action );
+    }
+
+    double cost() const override
+    {
+      if (p()->buffs.calamitous_crescendo->check())
+        return 0.0;
+        
+      return warlock_spell_t::cost();      
+    }
+
+    timespan_t execute_time() const override
+    {
+      if ( p()->buffs.calamitous_crescendo->check() )
+      {
+        return 0_ms;
+      }
+
+      return affliction_spell_t::execute_time();
     }
 
     bool ready() override
@@ -650,6 +647,8 @@ struct malefic_rapture_t : public affliction_spell_t
         p()->buffs.malefic_wrath->trigger();
         p()->procs.malefic_wrath->occur();
       }
+
+      p()->buffs.calamitous_crescendo->expire();
 
       if (p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
       {
@@ -935,7 +934,9 @@ void warlock_t::create_buffs_affliction()
 
   buffs.malefic_wrath = make_buff( this, "malefic_wrath", find_spell( 337125 ) )->set_default_value_from_effect( 1 );
 
+  // TODO: Replace hardcoded duration with query from spell data, replace buff spell (363953) with actuall buff spell ID
   buffs.calamitous_crescendo = make_buff( this, "calamitous_crescendo", find_spell( 363953 ) )
+                                   ->set_duration(timespan_t::from_seconds(10))
                                    ->set_chance( talents.drain_soul->ok() ? find_spell( 363953 )->effectN( 2 ).percent() 
                                                                           : find_spell( 363953 )->effectN( 1 ).percent() );
 }
