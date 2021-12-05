@@ -646,7 +646,7 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
         lock_pet->expiration->reschedule_time = new_time;
       }
 
-      if ( p()->talents.demonic_consumption->ok() )
+      if ( p()->talents.demonic_consumption->ok() && lock_pet->pet_type != PET_MALICIOUS_IMP )
       {
         //This is a hack to get around the fact we are not currently updating pet HP dynamically
         //TODO: Pet stats (especially HP) need more reliable modeling of caching/updating
