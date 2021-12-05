@@ -114,7 +114,6 @@ struct shadow_bolt_t : public affliction_spell_t
         td( s->target )->debuffs_shadow_embrace->trigger();
       }
 
-      // TODO: Check PTR to see if 4-set procs on cast finish, or on damage
       if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
       {        
         auto tdata = this->td( s->target );
