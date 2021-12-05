@@ -934,11 +934,9 @@ void warlock_t::create_buffs_affliction()
 
   buffs.malefic_wrath = make_buff( this, "malefic_wrath", find_spell( 337125 ) )->set_default_value_from_effect( 1 );
 
-  // TODO: Replace hardcoded duration with query from spell data, replace buff spell (363953) with actuall buff spell ID
-  buffs.calamitous_crescendo = make_buff( this, "calamitous_crescendo", find_spell( 363953 ) )
-                                   ->set_duration(timespan_t::from_seconds(10))
-                                   ->set_chance( talents.drain_soul->ok() ? find_spell( 363953 )->effectN( 2 ).percent() 
-                                                                          : find_spell( 363953 )->effectN( 1 ).percent() );
+  buffs.calamitous_crescendo = make_buff( this, "calamitous_crescendo", find_spell( 364322 ) )
+                                   ->set_chance( talents.drain_soul->ok() ? p()->sets->set(WARLOCK_AFFLICTION, T28, B4 )->effectN( 2 ).percent() 
+                                                                          : p()->sets->set(WARLOCK_AFFLICTION, T28, B4 )->effectN( 1 ).percent() );
 }
 
 void warlock_t::init_spells_affliction()
