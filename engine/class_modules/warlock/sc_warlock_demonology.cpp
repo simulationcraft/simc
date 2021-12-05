@@ -1208,11 +1208,11 @@ void warlock_t::init_spells_demonology()
   active.summon_random_demon = new actions_demonology::summon_random_demon_t( this, "" );
 
   // Initialize some default values for pet spawners
-  auto imp_summon_spell = find_spell( 104317 );
-  warlock_pet_list.wild_imps.set_default_duration( imp_summon_spell->duration() );
+  warlock_pet_list.wild_imps.set_default_duration( find_spell( 104317 )->duration() );
 
-  auto dreadstalker_spell = find_spell( 193332 );
-  warlock_pet_list.dreadstalkers.set_default_duration( dreadstalker_spell->duration() );
+  warlock_pet_list.dreadstalkers.set_default_duration( find_spell( 193332 )->duration() );
+
+  warlock_pet_list.malicious_imps.set_default_duration( find_spell( 364198 )->duration() );
 }
 
 void warlock_t::init_gains_demonology()
