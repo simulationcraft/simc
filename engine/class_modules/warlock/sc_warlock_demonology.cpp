@@ -191,7 +191,7 @@ struct hand_of_guldan_t : public demonology_spell_t
         if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B4 ) && p()->rng().roll( p()->sets->set( WARLOCK_DEMONOLOGY, T28, B4 )->effectN( 1 ).percent() * shards_used ) )
         {
           p()->warlock_pet_list.malicious_imps.spawn( 1 );
-          // TODO: proc tracking
+          p()->procs.malicious_imp->occur();
         }
         
       }

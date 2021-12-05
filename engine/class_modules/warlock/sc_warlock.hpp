@@ -482,6 +482,7 @@ public:
     proc_t* portal_summon;
     proc_t* carnivorous_stalkers; // SL - Conduit
     proc_t* horned_nightmare; // SL - Legendary
+    proc_t* malicious_imp; // T28 4pc
 
     // destro
     proc_t* reverse_entropy;
