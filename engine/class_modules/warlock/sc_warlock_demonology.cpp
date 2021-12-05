@@ -495,7 +495,7 @@ struct implosion_t : public demonology_spell_t
     p()->buffs.implosive_potential_small->expire();
 
     auto imps_consumed = p()->warlock_pet_list.wild_imps.n_active_pets();
-    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B4 ) )
       imps_consumed += p()->warlock_pet_list.malicious_imps.n_active_pets(); // T28 Malicious Imps count for Implosive Potential
 
     // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
