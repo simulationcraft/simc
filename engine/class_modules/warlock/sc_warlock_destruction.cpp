@@ -1113,16 +1113,12 @@ void warlock_t::create_buffs_destruction()
       make_buff( this, "madness_of_the_azjaqir", legendary.madness_of_the_azjaqir->effectN( 1 ).trigger() )
           ->set_trigger_spell( legendary.madness_of_the_azjaqir );
 
-  // TOCHECK: Tier set chance needs to be set above 1.01 to prevent buff trigger() calls from also rolling on the spell. 
-  //          Need to check the spell data after it is pulled again.
   // Tier Sets
   buffs.herald_of_fire = make_buff ( this, "herald_of_fire", find_spell ( 364348 ) )
-                                ->set_default_value_from_effect ( 1 )
-                                ->set_chance(1.01);
+                                ->set_default_value_from_effect ( 1 );
 
   buffs.herald_of_chaos = make_buff ( this, "herald_of_chaos", find_spell ( 364349 ) )
-                                ->set_default_value_from_effect ( 1 )
-                                ->set_chance(1.01);
+                                ->set_default_value_from_effect ( 1 );
 }
 void warlock_t::init_spells_destruction()
 {
