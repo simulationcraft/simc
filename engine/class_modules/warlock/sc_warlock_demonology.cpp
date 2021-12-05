@@ -1155,6 +1155,8 @@ void warlock_t::create_buffs_demonology()
   // to track pets
   buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
 
+  buffs.malicious_imps = make_buff( this, "malicious_imps" )->set_max_stack( 40 );
+
   buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 4 )
                         ->set_duration( find_spell( 193332 )->duration() );
 

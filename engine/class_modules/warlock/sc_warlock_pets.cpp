@@ -913,6 +913,8 @@ void malicious_imp_pet_t::arise()
 
   imploded = false;
 
+  o()->buffs.malicious_imps->increment();
+
   firebolt->set_target( o()->target );
   firebolt->schedule_execute();
 }
@@ -921,6 +923,8 @@ void malicious_imp_pet_t::demise()
 {
   if ( !current.sleeping )
   {
+    o()->buffs.malicious_imps->decrement();
+
     if ( imploded )
     {
       spite->execute_on_target( o()->target );
