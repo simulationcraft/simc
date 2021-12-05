@@ -848,6 +848,14 @@ malicious_imp_pet_t::malicious_imp_pet_t( warlock_t* owner )
 // Malicious Imp's Fel Firebolt is the same spell as Wild Imp's, so we may not need a separate implementation
 // Doombolt and Spite are hopefully automagic from spell data
 
+struct spite_t : warlock_pet_spell_t
+{
+  spite_t( warlock_pet_t* p ) : warlock_pet_spell_t( "spite", p, p->find_spell( 364262 ) )
+  {
+    aoe=-1;
+  }
+};
+
 struct return_soul_t : warlock_pet_spell_t
 {
   return_soul_t( warlock_pet_t* p ) : warlock_pet_spell_t( "return_soul", p, p->find_spell( 364263 ) )
@@ -898,7 +906,7 @@ void malicious_imp_pet_t::create_actions()
 
   firebolt = new fel_firebolt_t( this );
   doombolt = new warlock_pet_spell_t( "doombolt", this, find_spell( 364261 ) );
-  spite = new warlock_pet_spell_t( "spite" , this, find_spell( 364262 ) );
+  spite = new spite_t( this );
   return_soul = new return_soul_t( this );
 }
 
