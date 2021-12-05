@@ -184,6 +184,16 @@ struct hand_of_guldan_t : public demonology_spell_t
           auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
           this->p()->wild_imp_spawns.push_back( ev );
         }
+
+        // T28 4pc bonus can summon a Malicious Imp using the same behavior as a Wild Imp
+        // Since they are a random proc, there is not currently a need for custom expressions.
+        // Just going to spawn it at meteor impact time for now
+        if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B4 ) && p()->rng().roll( p()->sets->set( WARLOCK_DEMONOLOGY, T28, B4 )->effectN( 1 ).percent() * shards_used ) )
+        {
+          p()->warlock_pet_list.malicious_imps.spawn( 1 );
+          // TODO: proc tracking
+        }
+        
       }
     }
   };
