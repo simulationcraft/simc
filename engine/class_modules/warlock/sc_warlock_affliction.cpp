@@ -935,8 +935,8 @@ void warlock_t::create_buffs_affliction()
   buffs.malefic_wrath = make_buff( this, "malefic_wrath", find_spell( 337125 ) )->set_default_value_from_effect( 1 );
 
   buffs.calamitous_crescendo = make_buff( this, "calamitous_crescendo", find_spell( 364322 ) )
-                                   ->set_chance( talents.drain_soul->ok() ? p()->sets->set(WARLOCK_AFFLICTION, T28, B4 )->effectN( 2 ).percent() 
-                                                                          : p()->sets->set(WARLOCK_AFFLICTION, T28, B4 )->effectN( 1 ).percent() );
+                                   ->set_chance( talents.drain_soul->ok() ? this->sets->set(WARLOCK_AFFLICTION, T28, B4 )->effectN( 2 ).percent() 
+                                                                          : this->sets->set(WARLOCK_AFFLICTION, T28, B4 )->effectN( 1 ).percent() );
 }
 
 void warlock_t::init_spells_affliction()
