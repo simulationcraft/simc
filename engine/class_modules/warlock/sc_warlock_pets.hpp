@@ -408,6 +408,9 @@ private:
 struct malicious_imp_pet_t : public warlock_pet_t
 {
   action_t* firebolt;
+  action_t* doombolt;
+  action_t* spite;
+  action_t* return_soul;
   bool imploded;
 
   malicious_imp_pet_t( warlock_t* );

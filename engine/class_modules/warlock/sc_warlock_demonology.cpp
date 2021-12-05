@@ -184,6 +184,16 @@ struct hand_of_guldan_t : public demonology_spell_t
           auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
           this->p()->wild_imp_spawns.push_back( ev );
         }
+
+        // T28 4pc bonus can summon a Malicious Imp using the same behavior as a Wild Imp
+        // Since they are a random proc, there is not currently a need for custom expressions.
+        // Just going to spawn it at meteor impact time for now
+        if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B4 ) && p()->rng().roll( p()->sets->set( WARLOCK_DEMONOLOGY, T28, B4 )->effectN( 1 ).percent() * shards_used ) )
+        {
+          p()->warlock_pet_list.malicious_imps.spawn( 1 );
+          p()->procs.malicious_imp->occur();
+        }
+        
       }
     }
   };
@@ -351,6 +361,10 @@ struct call_dreadstalkers_t : public demonology_spell_t
     parse_options( options_str );
     may_crit           = false;
     dreadstalker_count = as<int>( data().effectN( 1 ).base_value() );
+    if ( p->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B2 ) )
+    {
+      dreadstalker_count += 1;
+    }
     base_execute_time += p->spec.call_dreadstalkers_2->effectN( 1 ).time_value();
   }
 
@@ -485,9 +499,11 @@ struct implosion_t : public demonology_spell_t
     p()->buffs.implosive_potential_small->expire();
 
     auto imps_consumed = p()->warlock_pet_list.wild_imps.n_active_pets();
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B4 ) )
+      imps_consumed += p()->warlock_pet_list.malicious_imps.n_active_pets(); // T28 Malicious Imps count for Implosive Potential
 
     // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
-    timespan_t imp_travel_time = this->calc_imp_travel_time(65);
+    timespan_t imp_travel_time = this->calc_imp_travel_time( 65 );
 
     int launch_counter = 0;
     for ( auto imp : p()->warlock_pet_list.wild_imps )
@@ -516,6 +532,36 @@ struct implosion_t : public demonology_spell_t
         } );
 
         launch_counter++;
+      }
+    }
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B4 ) )
+    {
+      launch_counter = 0;
+      for ( auto mimp : p()->warlock_pet_list.malicious_imps )
+      {
+        if ( !mimp->is_sleeping() )
+        {
+          implosion_aoe_t* ex = explosion;
+          player_t* tar = target;
+          double dist = p()->get_player_distance( *tar );
+
+          mimp->trigger_movement( dist, movement_direction_type::TOWARDS );
+          mimp->imploded = true; // Used to trigger Spite
+          mimp->interrupt();
+
+          make_event( sim, 10_ms * launch_counter + imp_travel_time, [ ex, tar, mimp ] {
+            if ( mimp && !mimp->is_sleeping() )
+            {
+              ex->casts_left = ( mimp->resources.current[ RESOURCE_ENERGY ] / 20 );
+              ex->set_target( tar );
+              ex->next_imp = mimp;
+              ex->execute();
+            }
+          } );
+
+          launch_counter++;
+        }
       }
     }
 
@@ -604,7 +650,7 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
         lock_pet->expiration->reschedule_time = new_time;
       }
 
-      if ( p()->talents.demonic_consumption->ok() )
+      if ( p()->talents.demonic_consumption->ok() && lock_pet->pet_type != PET_MALICIOUS_IMP )
       {
         //This is a hack to get around the fact we are not currently updating pet HP dynamically
         //TODO: Pet stats (especially HP) need more reliable modeling of caching/updating
@@ -1113,6 +1159,8 @@ void warlock_t::create_buffs_demonology()
   // to track pets
   buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
 
+  buffs.malicious_imps = make_buff( this, "malicious_imps" )->set_max_stack( 40 );
+
   buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 4 )
                         ->set_duration( find_spell( 193332 )->duration() );
 
@@ -1176,11 +1224,11 @@ void warlock_t::init_spells_demonology()
   active.summon_random_demon = new actions_demonology::summon_random_demon_t( this, "" );
 
   // Initialize some default values for pet spawners
-  auto imp_summon_spell = find_spell( 104317 );
-  warlock_pet_list.wild_imps.set_default_duration( imp_summon_spell->duration() );
+  warlock_pet_list.wild_imps.set_default_duration( find_spell( 104317 )->duration() );
 
-  auto dreadstalker_spell = find_spell( 193332 );
-  warlock_pet_list.dreadstalkers.set_default_duration( dreadstalker_spell->duration() );
+  warlock_pet_list.dreadstalkers.set_default_duration( find_spell( 193332 )->duration() );
+
+  warlock_pet_list.malicious_imps.set_default_duration( find_spell( 364198 )->duration() );
 }
 
 void warlock_t::init_gains_demonology()

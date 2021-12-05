@@ -1275,6 +1275,7 @@ void warlock_t::init_gains()
   gains.shadow_bolt  = get_gain( "shadow_bolt" );
   gains.soul_conduit = get_gain( "soul_conduit" );
   gains.scouring_tithe = get_gain( "souring_tithe" );
+  gains.return_soul = get_gain( "return_soul" );
 }
 
 void warlock_t::init_procs()
@@ -1299,6 +1300,7 @@ void warlock_t::init_procs()
   procs.horned_nightmare = get_proc( "horned_nightmare" );
   procs.ritual_of_ruin       = get_proc( "ritual_of_ruin" );
   procs.avatar_of_destruction = get_proc( "avatar_of_destruction" );
+  procs.malicious_imp = get_proc( "malicious_imp" );
 }
 
 void warlock_t::init_base_stats()
@@ -1963,6 +1965,7 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     demonic_tyrants( "demonic_tyrant", w ),
     grimoire_felguards( "grimoire_felguard", w ),
     wild_imps( "wild_imp", w ),
+    malicious_imps( "malicious_imp", w ),
     shivarra( "shivarra", w ),
     darkhounds( "darkhound", w ),
     bilescourges( "bilescourge", w ),
