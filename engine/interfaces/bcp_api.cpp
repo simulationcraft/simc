@@ -59,8 +59,8 @@ struct player_spec_t
 static constexpr util::string_view GLOBAL_OAUTH_ENDPOINT_URI = "https://{}.battle.net/oauth/token";
 static constexpr util::string_view CHINA_OAUTH_ENDPOINT_URI = "https://www.battlenet.com.cn/oauth/token";
 
-static constexpr util::string_view GLOBAL_GUILD_ENDPOINT_URI = "https://{}.api.blizzard.com/wow/guild/{}/{}?fields=members&locale={}";
-static constexpr util::string_view CHINA_GUILD_ENDPOINT_URI = "https://gateway.battlenet.com.cn/wow/guild/{}/{}?fields=members&locale={}";
+static constexpr util::string_view GLOBAL_GUILD_ENDPOINT_URI = "https://{}.api.blizzard.com/data/wow/guild/{}/{}/roster?namespace=profile-{}&locale={}";
+static constexpr util::string_view CHINA_GUILD_ENDPOINT_URI = "https://gateway.battlenet.com.cn/data/wow/guild/{}/{}/roster?namespace=profile-{}&locale={}";
 
 static constexpr util::string_view GLOBAL_PLAYER_ENDPOINT_URI = "https://{}.api.blizzard.com/profile/wow/character/{}/{}?namespace=profile-{}&locale={}";
 static constexpr util::string_view CHINA_PLAYER_ENDPOINT_URI = "https://gateway.battlenet.com.cn/profile/wow/character/{}/{}?namespace=profile-cn";
@@ -1077,11 +1077,11 @@ void download_roster( rapidjson::Document& d,
   std::string url;
   if ( !util::str_compare_ci( region, "cn" ) )
   {
-    url = fmt::format( fmt::runtime(GLOBAL_GUILD_ENDPOINT_URI), region, server, name, LOCALES[ region ][ 0 ] );
+    url = fmt::format( fmt::runtime( GLOBAL_GUILD_ENDPOINT_URI ), region, server, name, region, LOCALES[ region ][ 0 ] );
   }
   else
   {
-    url = fmt::format( fmt::runtime(CHINA_GUILD_ENDPOINT_URI), server, name );
+    url = fmt::format( fmt::runtime(CHINA_GUILD_ENDPOINT_URI), server, name, region, LOCALES[ region ][ 0 ] );
   }
 
   download( sim, d, region, url, caching );
@@ -1332,17 +1332,17 @@ bool bcp_api::download_guild( sim_t* sim, const std::string& region, const std::
 
     const rapidjson::Value& character = member[ "character" ];
 
-    if ( ! character.HasMember( "level" ) || character[ "level" ].GetUint() < 85 )
+    if ( ! character.HasMember( "level" ) || character[ "level" ].GetUint() < MAX_LEVEL )
       continue;
 
-    if ( ! character.HasMember( "class" ) )
+    if ( ! character.HasMember( "playable_class" ) )
       continue;
 
     if ( ! character.HasMember( "name" ) )
       continue;
 
     if ( player_type_filter != PLAYER_NONE &&
-         player_type_filter != util::translate_class_id( character[ "class" ].GetInt() ) )
+         player_type_filter != util::translate_class_id( character[ "playable_class" ][ "id" ].GetInt() ) )
       continue;
 
     names.emplace_back(character[ "name" ].GetString() );

@@ -55,6 +55,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.blade_of_justice = get_cooldown( "blade_of_justice" );
   cooldowns.final_reckoning  = get_cooldown( "final_reckoning" );
   cooldowns.hammer_of_wrath  = get_cooldown( "hammer_of_wrath" );
+  cooldowns.wake_of_ashes    = get_cooldown( "wake_of_ashes" );
 
   cooldowns.blessing_of_the_seasons = get_cooldown( "blessing_of_the_seasons" );
   cooldowns.ashen_hallow = get_cooldown( "ashen_hallow" );
@@ -707,10 +708,21 @@ struct melee_t : public paladin_melee_attack_t
         {
           p()->procs.art_of_war->occur();
 
+          if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T28, B2 ) )
+          {
+            p()->buffs.seraphim->extend_duration_or_trigger(
+              timespan_t::from_seconds( p()->sets->set( PALADIN_RETRIBUTION, T28, B2 )->effectN( 1 ).base_value() ),
+              player
+            );
+          }
+
           if ( p()->talents.blade_of_wrath->ok() )
             p()->buffs.blade_of_wrath->trigger();
 
-          p()->cooldowns.blade_of_justice->reset( true );
+          if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T28, B4 ) && rng().roll( p()->sets->set( PALADIN_RETRIBUTION, T28, B4 )->effectN( 1 ).percent() ) )
+            p()->cooldowns.wake_of_ashes->reset( true );
+          else
+            p()->cooldowns.blade_of_justice->reset( true );
         }
 
         if ( p()->buffs.zeal->up() && p()->active.zeal )
@@ -2164,7 +2176,7 @@ void paladin_t::create_buffs()
 
   buffs.avengers_might = make_buff<stat_buff_t>( this, "avengers_might", find_spell( 272903 ) )
                              ->add_stat( STAT_MASTERY_RATING, azerite.avengers_might.value() );
-  buffs.seraphim = make_buff( this, "seraphim", talents.seraphim )
+  buffs.seraphim = make_buff( this, "seraphim", spells.seraphim_buff )
                        ->add_invalidate( CACHE_CRIT_CHANCE )
                        ->add_invalidate( CACHE_HASTE )
                        ->add_invalidate( CACHE_MASTERY )
@@ -2384,6 +2396,7 @@ void paladin_t::init_spells()
   spells.hammer_of_wrath_2      = find_rank_spell( "Hammer of Wrath", "Rank 2" );  // 326730
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
   spells.divine_purpose_buff    = find_spell( 223819 );
+  spells.seraphim_buff          = find_spell( 152262 );
 
   // Shared Azerite traits
   azerite.avengers_might        = find_azerite_spell( "Avenger's Might" );

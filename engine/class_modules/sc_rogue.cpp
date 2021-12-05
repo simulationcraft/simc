@@ -686,6 +686,7 @@ public:
     int initial_combo_points = 0;
     int initial_shadow_techniques = -1;
     bool rogue_ready_trigger = true;
+    bool prepull_shadowdust = false;
     bool priority_rotation = false;
   } options;
 
@@ -5236,13 +5237,14 @@ struct stealth_t : public stealth_like_buff_t<buff_t>
 struct vanish_t : public stealth_like_buff_t<buff_t>
 {
   std::vector<cooldown_t*> shadowdust_cooldowns;
+  const timespan_t shadowdust_reduction;
 
   vanish_t( rogue_t* r ) :
-    base_t( r, "vanish", r->find_spell( 11327 ) )
+    base_t( r, "vanish", r->find_spell( 11327 ) ),
+    shadowdust_reduction( timespan_t::from_seconds( r->find_spell( 340080 )->effectN( 1 ).base_value() ) )
   {
-    if ( r->legendary.invigorating_shadowdust.ok() )
+    if ( r->legendary.invigorating_shadowdust.ok() || r->options.prepull_shadowdust )
     {
-      // TOCHECK: Double check what all this does not apply to
       shadowdust_cooldowns = { r->cooldowns.adrenaline_rush, r->cooldowns.between_the_eyes, r->cooldowns.blade_flurry,
         r->cooldowns.blade_rush, r->cooldowns.blind, r->cooldowns.cloak_of_shadows, r->cooldowns.dreadblades, r->cooldowns.flagellation,
         r->cooldowns.garrote, r->cooldowns.ghostly_strike, r->cooldowns.gouge, r->cooldowns.grappling_hook, r->cooldowns.killing_spree,
@@ -5258,13 +5260,12 @@ struct vanish_t : public stealth_like_buff_t<buff_t>
     rogue->cancel_auto_attack();
 
     // Confirmed on early beta that Invigorating Shadowdust triggers from Vanish buff (via old Sepsis), not just Vanish casts
-    if ( rogue->legendary.invigorating_shadowdust.ok() )
+    if ( rogue->legendary.invigorating_shadowdust.ok() || ( rogue->options.prepull_shadowdust && rogue->sim->current_time() == 0_s ) )
     {
-      const timespan_t reduction = timespan_t::from_seconds( rogue->legendary.invigorating_shadowdust->effectN( 1 ).base_value() );
       for ( cooldown_t* c : shadowdust_cooldowns )
       {
         if ( c && c->down() )
-          c->adjust( -reduction, false );
+          c->adjust( -shadowdust_reduction, false );
       }
     }
 
@@ -7276,6 +7277,10 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
   {
     return expr_t::create_constant( name_str, options.priority_rotation );
   }
+  else if ( util::str_compare_ci( name_str, "prepull_shadowdust" ) )
+  {
+    return expr_t::create_constant( name_str, options.prepull_shadowdust );
+  }
 
   // Split expressions
 
@@ -8429,6 +8434,7 @@ void rogue_t::create_options()
   add_option( opt_int( "initial_shadow_techniques", options.initial_shadow_techniques, -1, 4 ) );
   add_option( opt_func( "fixed_rtb", parse_fixed_rtb ) );
   add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
+  add_option( opt_bool( "prepull_shadowdust", options.prepull_shadowdust ) );
   add_option( opt_bool( "priority_rotation", options.priority_rotation ) );
 }
 
@@ -8457,6 +8463,7 @@ void rogue_t::copy_from( player_t* source )
   options.fixed_rtb = rogue->options.fixed_rtb;
   options.fixed_rtb_odds = rogue->options.fixed_rtb_odds;
   options.rogue_ready_trigger = rogue->options.rogue_ready_trigger;
+  options.prepull_shadowdust = rogue->options.prepull_shadowdust;
   options.priority_rotation = rogue->options.priority_rotation;
 }
 

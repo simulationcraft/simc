@@ -5677,7 +5677,7 @@ void player_t::demise()
    * need to be associated with eg. resolve Diminishing Return list.
    */
 
-  if (arise_time >= timespan_t::zero())
+  if ( arise_time >= 0_ms )
   {
     iteration_fight_length += sim->current_time() - arise_time;
   }
@@ -5688,6 +5688,19 @@ void player_t::demise()
   event_t::cancel( readying );
   event_t::cancel( off_gcd );
   event_t::cancel( cast_while_casting_poll_event );
+
+  // If an enemy mob dies, trigger on-kill callback on all active players
+  if ( is_enemy() )
+  {
+    for ( auto p : sim->player_non_sleeping_list )
+    {
+      // Use index-based lookup since on-kill callbacks may insert new on-kill callbacks to the vector
+      for ( size_t i = 0; i < p->callbacks_on_kill.size(); ++i )  // NOLINT(modernize-loop-convert)
+      {
+        p->callbacks_on_kill[ i ]( this );
+      }
+    }
+  }
 
   // Requires index-based lookup since on-demise callbacks may
   // insert new on-demise callbacks to the vector.
@@ -8390,7 +8403,7 @@ struct use_item_t : public action_t
       {
       }
 
-      bool is_constant( double* ) override
+      bool is_constant() override
       {
         return true;
       }
@@ -10197,8 +10210,8 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
           }
         }
 
-        bool is_constant( double* value ) override
-        { return var_->is_constant( value ); }
+        bool is_constant() override
+        { return var_->is_constant(); }
 
         double evaluate() override
         { return var_->current_value_; }
@@ -13115,6 +13128,11 @@ void player_t::register_on_demise_callback( player_t* source, std::function<void
 void player_t::register_on_arise_callback( player_t* source, std::function<void( void )> fn )
 {
   callbacks_on_arise.emplace_back( source, std::move( fn ) );
+}
+
+void player_t::register_on_kill_callback( std::function<void( player_t* )> fn )
+{
+  callbacks_on_kill.emplace_back( std::move( fn ) );
 }
 
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const

@@ -2336,11 +2336,20 @@ public:
     if ( !check_form_restriction() )
     {
       if ( may_autounshift && ( form_mask & NO_FORM ) == NO_FORM )
+      {
         p()->shapeshift( NO_FORM );
+      }
       else if ( autoshift )
+      {
+        if ( p()->buff.ravenous_frenzy->check() )
+          p()->buff.ravenous_frenzy->trigger();
+
         p()->shapeshift( static_cast<form_e>( autoshift ) );
+      }
       else
+      {
         assert( false && "Action executed in wrong form with no valid form to shift to!" );
+      }
     }
 
     ab::schedule_execute( s );
@@ -2571,10 +2580,16 @@ public:
         {
           p_buff->current_value -= p_data->effectN( 1 ).base_value();
 
+          if ( p()->talent.incarnation_moonkin->ok() && p()->get_form() != form_e::MOONKIN_FORM &&
+               !p()->buff.incarnation_moonkin->check() )
+          {
+            p()->shapeshift( form_e::MOONKIN_FORM );
+          }
+
           p()->buff.ca_inc->extend_duration_or_trigger( p_time, p() );
           p()->proc.pulsar->occur();
-          p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
 
+          p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
           make_event( *sim, p_time, [ this ]() {
             p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
           } );
@@ -5115,9 +5130,10 @@ struct druid_form_t : public druid_spell_t
 
     switch ( form )
     {
-      case BEAR_FORM: affinity = p->talent.guardian_affinity; break;
-      case CAT_FORM: affinity = p->talent.feral_affinity; break;
-      case MOONKIN_FORM: affinity = p->talent.balance_affinity; break;
+      case BEAR_FORM:    affinity = p->talent.guardian_affinity;    break;
+      case CAT_FORM:     affinity = p->talent.feral_affinity;       break;
+      case MOONKIN_FORM: affinity = p->talent.balance_affinity;     break;
+      case NO_FORM:      affinity = p->talent.restoration_affinity; break;
       default: break;
     }
   }
@@ -5128,7 +5144,8 @@ struct druid_form_t : public druid_spell_t
 
     p()->shapeshift( form );
 
-    if ( p()->legendary.oath_of_the_elder_druid->ok() && !p()->buff.oath_of_the_elder_druid->check() && !p()->buff.heart_of_the_wild->check() && affinity->ok() )
+    if ( p()->legendary.oath_of_the_elder_druid->ok() && !p()->buff.oath_of_the_elder_druid->check() &&
+         !p()->buff.heart_of_the_wild->check() && affinity->ok() )
     {
       p()->buff.oath_of_the_elder_druid->trigger();
       p()->buff.heart_of_the_wild->trigger(
@@ -5172,6 +5189,16 @@ struct moonkin_form_t : public druid_form_t
   {}
 };
 
+// Cancelform (revert to caster form)========================================
+
+struct cancel_form_t : public druid_form_t
+{
+  cancel_form_t( druid_t* p, std::string_view opt ) : druid_form_t( "cancelform", p, spell_data_t::nil(), opt, NO_FORM )
+  {
+    trigger_gcd = 0_ms;
+  }
+};
+
 // Barkskin =================================================================
 
 struct barkskin_t : public druid_spell_t
@@ -5185,6 +5212,9 @@ struct barkskin_t : public druid_spell_t
 
     if ( p->talent.brambles->ok() )
       add_child( p->active.brambles_pulse );
+
+    if ( p->sets->has_set_bonus( DRUID_GUARDIAN, T28, B2 ) )
+      form_mask = autoshift = BEAR_FORM;
   }
 
   timespan_t cooldown_duration() const override
@@ -5297,7 +5327,9 @@ struct fury_of_elune_t : public druid_spell_t
 {
   struct fury_of_elune_tick_t : public druid_spell_t
   {
-    fury_of_elune_tick_t( druid_t* p ) : druid_spell_t( "fury_of_elune_tick", p, p->spec.fury_of_elune )
+    fury_of_elune_tick_t( druid_t* p, std::string_view n ) : fury_of_elune_tick_t( p, n, p->spec.fury_of_elune ) {}
+
+    fury_of_elune_tick_t( druid_t* p, std::string_view n, const spell_data_t* s ) : druid_spell_t( n, p, s )
     {
       background = dual = ground_aoe = true;
       aoe = -1;
@@ -5325,14 +5357,15 @@ struct fury_of_elune_t : public druid_spell_t
 
     dot_duration = 0_ms;  // AP gain handled via fury_of_elune_ground_event_t
 
-    damage = p->get_secondary_action<fury_of_elune_tick_t>( "fury_of_elune_tick" );
+    damage = p->get_secondary_action<fury_of_elune_tick_t>( "fury_of_elune_tick", "fury_of_elune_tick" );
     damage->stats = stats;
 
     if ( p->sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
     {
       auto set_stats = init_free_cast_stats( free_cast_e::PILLAR );
 
-      set_damage = p->get_secondary_action<fury_of_elune_tick_t>( "fury_of_elune_tick_pillar" );
+      set_damage = p->get_secondary_action<fury_of_elune_tick_t>(
+          "fury_of_elune_tick_pillar", "fury_of_elune_tick_pillar", p->find_spell( 365640 ) );
       set_damage->stats = set_stats;
       set_damage->base_multiplier = p->sets->set( DRUID_BALANCE, T28, B2 )->effectN( 1 ).percent();
 
@@ -5771,6 +5804,19 @@ struct swipe_proxy_t : public druid_spell_t
   }
 };
 
+// Incapacitating Roar ======================================================
+
+struct incapacitating_roar_t : public druid_spell_t
+{
+  incapacitating_roar_t( druid_t* p, std::string_view opt )
+    : druid_spell_t( "incapacitating_roar", p, p->find_affinity_spell( "Incapacitating Roar" ), opt )
+  {
+    form_mask = autoshift = BEAR_FORM;
+
+    harmful = false;
+  }
+};
+
 // Incarnation ==============================================================
 
 struct incarnation_t : public druid_spell_t
@@ -5977,13 +6023,17 @@ struct starfire_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    // for precombat we hack it to manually energize 100ms later to get around AP capping on combat start
+    // for precombat we hack it to advance eclipse and manually energize 100ms later to get around the eclipse stack
+    // reset & AP capping on combat start
     if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER )
     {
       make_event( *sim, 100_ms, [ this ]() {
+        p()->eclipse_handler.cast_starfire();
         p()->resource_gain( RESOURCE_ASTRAL_POWER, composite_energize_amount( execute_state ),
                             energize_gain( execute_state ) );
       } );
+
+      return;
     }
 
     if ( p()->buff.owlkin_frenzy->up() )
@@ -6234,6 +6284,19 @@ struct wrath_t : public druid_spell_t
     if ( !get_state_free_cast( execute_state ) &&
          ( p()->specialization() == DRUID_BALANCE || p()->specialization() == DRUID_RESTORATION ) )
     {
+      // in druid_t::init_finished(), we set the final wrath of the precombat to have energize type of NONE, so that
+      // we can handle the delayed enerigze & eclipse stack triggering here.
+      if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER && energize_type == action_energize::NONE )
+      {
+        make_event( *sim, 100_ms, [ this ]() {
+          p()->eclipse_handler.cast_wrath();
+          p()->resource_gain( RESOURCE_ASTRAL_POWER, composite_energize_amount( execute_state ),
+                              energize_gain( execute_state ) );
+        } );
+
+        return;
+      }
+
       p()->eclipse_handler.cast_wrath();
     }
   }
@@ -6265,6 +6328,8 @@ struct stampeding_roar_t : public druid_spell_t
 
   void init_finished() override
   {
+    druid_spell_t::init_finished();
+
     if ( !p()->conduit.front_of_the_pack->ok() )
       return;
 
@@ -6372,7 +6437,7 @@ struct starfall_t : public druid_spell_t
 
       for ( auto* t : tl )
       {
-         td( t )->dots.moonfire->adjust_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
+        td( t )->dots.moonfire->adjust_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
         td( t )->dots.sunfire->adjust_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
       }
     }
@@ -7774,62 +7839,67 @@ void druid_t::activate()
 {
   if ( talent.predator->ok() )
   {
-    range::for_each( sim->actor_list, [this]( player_t* target ) -> void {
-      if ( !target->is_enemy() )
-        return;
+    register_on_kill_callback( [ this ]( player_t* t ) {
+      auto td = get_target_data( t );
+      if ( td->dots.thrash_cat->is_ticking() || td->dots.rip->is_ticking() || td->dots.rake->is_ticking() )
+      {
+        if ( !cooldown.tigers_fury->down() )
+          proc.predator_wasted->occur();
 
-      target->register_on_demise_callback( this, [this]( player_t* target ) -> void {
-        auto p = this;
-        if ( p->specialization() != DRUID_FERAL )
-          return;
-
-        if ( get_target_data( target )->dots.thrash_cat->is_ticking() ||
-             get_target_data( target )->dots.rip->is_ticking() ||
-             get_target_data( target )->dots.rake->is_ticking() )
-        {
-          if ( !p->cooldown.tigers_fury->down() )
-            p->proc.predator_wasted->occur();
-
-          p->cooldown.tigers_fury->reset( true );
-          p->proc.predator->occur();
-        }
-      } );
+        cooldown.tigers_fury->reset( true );
+        proc.predator->occur();
+      }
     } );
   }
 
-  if ( sim->ignore_invulnerable_targets && legendary.lycaras_fleeting_glimpse->ok() )
+  if ( sim->ignore_invulnerable_targets )
   {
-    sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
-      if ( sim->target_non_sleeping_list.empty() )
-      {
-        if ( buff.lycaras_fleeting_glimpse->check() )
+    if ( legendary.lycaras_fleeting_glimpse->ok() )
+    {
+      sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+        if ( sim->target_non_sleeping_list.empty() )
         {
-          lycaras_event_remains = buff.lycaras_fleeting_glimpse->remains();
-          buff.lycaras_fleeting_glimpse->expire();
+          if ( buff.lycaras_fleeting_glimpse->check() )
+          {
+            lycaras_event_remains = buff.lycaras_fleeting_glimpse->remains();
+            buff.lycaras_fleeting_glimpse->expire();
+          }
+          else if ( lycaras_event )
+          {
+            // If only the event is up (and not the buff) add the base buff duration so we can determine whether to
+            // trigger the event or the buff when a target becomes active and we back 'in combat'
+            lycaras_event_remains = lycaras_event->remains() + buff.lycaras_fleeting_glimpse->buff_duration();
+            event_t::cancel( lycaras_event );
+          }
         }
-        else if ( lycaras_event )
+        else
         {
-          // If only the event is up (and not the buff) add the base buff duration so we can determine whether to
-          // trigger the event or the buff when a target becomes active and we back 'in combat'
-          lycaras_event_remains = lycaras_event->remains() + buff.lycaras_fleeting_glimpse->buff_duration();
-          event_t::cancel( lycaras_event );
+          if ( lycaras_event_remains > buff.lycaras_fleeting_glimpse->buff_duration() )  // trigger the event
+          {
+            lycaras_event =
+                make_event( *sim, lycaras_event_remains - buff.lycaras_fleeting_glimpse->buff_duration(), [ this ]() {
+                  buff.lycaras_fleeting_glimpse->trigger();
+                } );
+            lycaras_event_remains = 0_ms;
+          }
+          else if ( lycaras_event_remains > 0_ms )  // trigger the buff
+          {
+            buff.lycaras_fleeting_glimpse->trigger( lycaras_event_remains );
+            lycaras_event_remains = 0_ms;
+          }
         }
-      }
-      else
-      {
-        if ( lycaras_event_remains > buff.lycaras_fleeting_glimpse->buff_duration() )  // trigger the event
-        {
-          lycaras_event = make_event( *sim, lycaras_event_remains - buff.lycaras_fleeting_glimpse->buff_duration(),
-                                      [ this ]() { buff.lycaras_fleeting_glimpse->trigger(); } );
-          lycaras_event_remains = 0_ms;
-        }
-        else if ( lycaras_event_remains > 0_ms )  // trigger the buff
-        {
-          buff.lycaras_fleeting_glimpse->trigger( lycaras_event_remains );
-          lycaras_event_remains = 0_ms;
-        }
-      }
-    } );
+      } );
+    }
+
+    if ( talent.natures_balance->ok() )
+    {
+      sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+        if ( sim->target_non_sleeping_list.empty() )
+          buff.natures_balance->current_value *= 3.0;
+        else
+          buff.natures_balance->current_value = buff.natures_balance->default_value;
+      } );
+    }
   }
 
   player_t::activate();
@@ -7849,6 +7919,7 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
   if ( name == "bear_form"              ) return new      spells::bear_form_t( this, options_str );
   if ( name == "cat_form"               ) return new       spells::cat_form_t( this, options_str );
   if ( name == "moonkin_form"           ) return new   spells::moonkin_form_t( this, options_str );
+  if ( name == "cancelform"             ) return new    spells::cancel_form_t( this, options_str );
   if ( name == "dash"                   ) return new                   dash_t( this, options_str );
   if ( name == "entangling_roots"       ) return new       entangling_roots_t( this, options_str );
   if ( name == "heart_of_the_wild"      ) return new      heart_of_the_wild_t( this, options_str );
@@ -7912,6 +7983,7 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
   if ( name == "bristling_fur"          ) return new          bristling_fur_t( this, options_str );
   if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
   if ( name == "growl"                  ) return new                  growl_t( this, options_str );
+  if ( name == "incapacitating_roar"    ) return new    incapacitating_roar_t( this, options_str );
   if ( name == "ironfur"                ) return new                ironfur_t( this, options_str );
   if ( name == "mangle"                 ) return new                 mangle_t( this, options_str );
   if ( name == "maul"                   ) return new                   maul_t( this, options_str );
@@ -8351,15 +8423,11 @@ void druid_t::init_finished()
   // cast
   for ( auto pre = precombat_action_list.begin(); pre != precombat_action_list.end(); pre++ )
   {
-    // we don't need to further check if we're at the final precombat action
-    auto it = pre + 1;
-    if ( it == precombat_action_list.end() )
-      break;
-
     auto wr = dynamic_cast<spells::wrath_t*>( *pre );
+
     if ( wr )
     {
-      std::for_each( it, precombat_action_list.end(), [ wr ]( action_t* a ) {
+      std::for_each( pre + 1, precombat_action_list.end(), [ wr ]( action_t* a ) {
         // unnecessary offspec resources are disabled by default, so evaluate any if-expr on the candidate action first
         // so we don't call action_ready() on possible offspec actions that will require off-spec resources to be
         // enabled
@@ -8369,6 +8437,11 @@ void druid_t::init_finished()
         if ( a->name_str == wr->name_str )
           wr->count++;  // see how many wrath casts are left, so we can adjust travel time when combat begins
       } );
+
+      // if wrath is still harmful then it is the final precast spell, so we set the energize type to NONE, which will
+      // then be accounted for in wrath_t::execute()
+      if ( wr->harmful )
+        wr->energize_type = action_energize::NONE;
     }
   }
 }
@@ -8449,14 +8522,10 @@ void druid_t::create_buffs()
 
   buff.natures_balance = make_buff( this, "natures_balance", talent.natures_balance )
     ->set_quiet( true )
-    ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
-        auto ap = talent.natures_balance->effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
-
-        if ( sim->ignore_invulnerable_targets && sim->target_non_sleeping_list.empty() )
-          ap *= 3.0;  // simulate triple regen when out of combat for 'M+' fight models utilizing invuln
-
-        resource_gain( RESOURCE_ASTRAL_POWER, ap, gain.natures_balance );
-      } );
+    ->set_default_value_from_effect_type( A_PERIODIC_ENERGIZE )
+    ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+      resource_gain( RESOURCE_ASTRAL_POWER, b->check_value(), gain.natures_balance );
+    } );
 
   buff.oneths_free_starsurge = make_buff( this, "oneths_clear_vision", find_spell( 339797 ) )
     ->set_chance( legendary.oneths_clear_vision->effectN( 2 ).percent() );
@@ -9274,11 +9343,14 @@ void druid_t::combat_begin()
 
   if ( spec.astral_power->ok() )
   {
-    if ( options.raid_combat ) {
-      double cap = talent.natures_balance->ok() ? 50.0 : 20.0;
-      double curr = resources.current[RESOURCE_ASTRAL_POWER];
+    eclipse_handler.reset_stacks();
 
-      resources.current[RESOURCE_ASTRAL_POWER] = std::min( cap, curr );
+    if ( options.raid_combat )
+    {
+      double cap = talent.natures_balance->ok() ? 50.0 : 20.0;
+      double curr = resources.current[ RESOURCE_ASTRAL_POWER ];
+
+      resources.current[ RESOURCE_ASTRAL_POWER ] = std::min( cap, curr );
       if ( curr > cap )
         sim->print_debug( "Astral Power capped at combat start to {} (was {})", cap, curr );
     }
@@ -10962,7 +11034,7 @@ struct druid_module_t : public module_t
 
   void init( player_t* p ) const override
   {
-    p->buffs.stampeding_roar = make_buff( p, "stampeding_roar", p->find_spell( 77764 ) )
+    p->buffs.stampeding_roar = make_buff( p, "stampeding_roar", p->find_class_spell( "Stampeding Roar" ) )
       ->set_cooldown( 0_ms )
       ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
 

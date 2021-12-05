@@ -993,8 +993,6 @@ struct combustion_t final : public buff_t
     set_default_value_from_effect( 1 );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
     modify_duration( p->spec.combustion_2->effectN( 1 ).time_value() );
-    // TODO:
-    // * SKB interactions
     modify_duration( p->sets->set( MAGE_FIRE, T28, B2 )->effectN( 1 ).time_value() );
 
     set_stack_change_callback( [ this, p ] ( buff_t*, int old, int cur )
@@ -1649,16 +1647,13 @@ public:
         make_event( *sim, [ this ] { p()->buffs.fevered_incantation->expire(); } );
     }
 
-    // TODO:
-    // * check if the proc is on execute or impact
-    // * check if free CmS consumes WC stacks
     if ( p()->action.frost_storm_comet_storm
-      && p()->buffs.icy_veins->check()
       && p()->cooldowns.frost_storm->up()
       && rng().roll( p()->sets->set( MAGE_FROST, T28, B2 )->proc_chance() ) )
     {
-      p()->action.frost_storm_comet_storm->execute_on_target( s->target );
       p()->cooldowns.frost_storm->start( p()->sets->set( MAGE_FROST, T28, B2 )->internal_cooldown() );
+      if ( p()->buffs.icy_veins->check() ) // TODO: This seems like a bug
+        p()->action.frost_storm_comet_storm->execute_on_target( p()->target );
     }
   }
 
@@ -1693,7 +1688,7 @@ public:
       }
 
       auto totm = td->debuffs.touch_of_the_magi;
-      if ( totm->check() )
+      if ( totm->check() && s->action != p()->action.touch_of_the_magi_explosion )
       {
         // Touch of the Magi factors out debuffs with effect subtype 87 (Modify Damage Taken%), but only
         // if they increase damage taken. It does not factor out debuffs with effect subtype 270
@@ -1716,7 +1711,7 @@ public:
       p()->buffs.ice_floes->decrement();
   }
 
-  void trigger_legendary_buff( buff_t* counter, buff_t* ready, int offset = 2 )
+  void trigger_legendary_buff( buff_t* counter, buff_t* ready, int offset = 1 )
   {
     if ( ready->check() )
       return;
@@ -1793,7 +1788,7 @@ struct arcane_mage_spell_t : public mage_spell_t
         if ( cr == p()->buffs.clearcasting && cr->check() < before )
         {
           p()->buffs.nether_precision->trigger();
-          trigger_legendary_buff( p()->buffs.arcane_lucidity, p()->buffs.arcane_lucidity_ready, 1 );
+          trigger_legendary_buff( p()->buffs.arcane_lucidity, p()->buffs.arcane_lucidity_ready );
         }
         break;
       }
@@ -1997,7 +1992,7 @@ struct fire_mage_spell_t : public mage_spell_t
 
   void trigger_molten_skyfall()
   {
-    trigger_legendary_buff( p()->buffs.molten_skyfall, p()->buffs.molten_skyfall_ready );
+    trigger_legendary_buff( p()->buffs.molten_skyfall, p()->buffs.molten_skyfall_ready, 2 );
   }
 
   void consume_molten_skyfall( player_t* target )
@@ -2106,7 +2101,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       p()->buffs.hot_streak->decrement();
       p()->buffs.pyroclasm->trigger();
 
-      trigger_legendary_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready, 1 );
+      trigger_legendary_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready );
 
       if ( rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
       {
@@ -2306,7 +2301,7 @@ struct frost_mage_spell_t : public mage_spell_t
 
   void trigger_cold_front()
   {
-    trigger_legendary_buff( p()->buffs.cold_front, p()->buffs.cold_front_ready );
+    trigger_legendary_buff( p()->buffs.cold_front, p()->buffs.cold_front_ready, 2 );
   }
 
   void consume_cold_front( player_t* target )
@@ -5632,8 +5627,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   // Set Bonuses
-  // TODO:
-  // * check if normal CmS triggers this too
   debuffs.frost_storm = make_buff( *this, "frost_storm", mage->find_spell( 363544 ) )
                           ->set_default_value_from_effect( 1 )
                           ->set_chance( mage->sets->has_set_bonus( MAGE_FROST, T28, B4 ) );
@@ -6402,18 +6395,10 @@ void mage_t::create_buffs()
                              ->set_chance( conduits.siphoned_malice.ok() );
 
   // Set Bonuses
-  // TODO:
-  // * TotM refresh
-  // * CD override?
-  // * Expanded Potential interactions
-  // * Check trigger_legendary_buff offset
   buffs.arcane_lucidity       = make_buff( this, "arcane_lucidity", find_spell( 363683 ) )
                                   ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T28, B4 ) );
   buffs.arcane_lucidity_ready = make_buff( this, "arcane_lucidity_ready", find_spell( 363685 ) );
 
-  // TODO:
-  // * SKB interactions
-  // * flat CD reduction interactions
   buffs.fiery_rush = make_buff( this, "fiery_rush", find_spell( 363508 ) )
                        ->set_default_value_from_effect( 1 )
                        ->set_stack_change_callback( [ this ] ( buff_t*, int, int )

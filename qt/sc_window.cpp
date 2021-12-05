@@ -66,7 +66,7 @@ QStringList SC_PATHS::getDataPaths()
   for( const auto& location : QStandardPaths::standardLocations( QStandardPaths::AppDataLocation ))
   {
     QDir dir( location );
-    if ( dir.exists() )
+    if ( dir.exists() && !shared_paths.contains( dir.path() ) )
     {
       shared_paths.append( dir.path() );
     }

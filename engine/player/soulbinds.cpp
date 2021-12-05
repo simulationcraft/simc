@@ -618,18 +618,13 @@ void dauntless_duelist( special_effect_t& effect )
   auto cb = new dauntless_duelist_cb_t( effect );
   auto p  = effect.player;
 
-  range::for_each( p->sim->actor_list, [ p, cb ]( player_t* t ) {
-    if ( !t->is_enemy() )
+  p->register_on_kill_callback( [ p, cb ]( player_t* t ) {
+    if ( p->sim->event_mgr.canceled )
       return;
 
-    t->register_on_demise_callback( p, [ p, cb ]( player_t* t ) {
-      if ( p->sim->event_mgr.canceled )
-        return;
-
-      auto td = p->find_target_data( t );
-      if ( td && td->debuff.adversary->check() )
-        cb->activate();
-    } );
+    auto td = p->find_target_data( t );
+    if ( td && td->debuff.adversary->check() )
+      cb->activate();
   } );
 }
 
@@ -725,19 +720,12 @@ void thrill_seeker( special_effect_t& effect )
     killing_blow_chance = 1.0 / number_of_players;
   }
 
-  range::for_each( p->sim->actor_list, [ p, counter_buff, killing_blow_stacks, killing_blow_chance ]( player_t* t ) {
-    if ( !t->is_enemy() )
+  p->register_on_kill_callback( [ p, counter_buff, killing_blow_stacks, killing_blow_chance ]( player_t* ) {
+    if ( p->sim->event_mgr.canceled )
       return;
 
-    t->register_on_demise_callback( p, [ p, counter_buff, killing_blow_stacks, killing_blow_chance ]( player_t* ) {
-      if ( p->sim->event_mgr.canceled )
-        return;
-
-      if ( p->rng().roll( killing_blow_chance ) )
-      {
-        counter_buff->trigger( killing_blow_stacks );
-      }
-    } );
+    if ( p->rng().roll( killing_blow_chance ) )
+      counter_buff->trigger( killing_blow_stacks );
   } );
 }
 
@@ -1916,16 +1904,11 @@ void gnashing_chompers( special_effect_t& effect )
                ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
 
-  range::for_each( effect.player->sim->actor_list, [ buff ]( player_t* p ) {
-    if ( !p->is_enemy() )
+  effect.player->register_on_kill_callback( [ buff ]( player_t* ) {
+    if ( buff->sim->event_mgr.canceled )
       return;
 
-    p->register_on_demise_callback( buff->player, [ buff ]( player_t* ) {
-      if ( buff->sim->event_mgr.canceled )
-        return;
-
-      buff->trigger();
-    } );
+    buff->trigger();
   } );
 }
 

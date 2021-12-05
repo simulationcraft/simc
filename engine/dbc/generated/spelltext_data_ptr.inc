@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.41257
-static const std::array<spelltext_data_t, 15770> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15777> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15684,10 +15684,16 @@ static const std::array<spelltext_data_t, 15770> __ptr_spelltext_data { {
   { 364086, "Your abilities have a chance to strip the target of its power, decreasing damage done by $364355s1% and increasing damage taken by $364355s2%. Your Cypher power allows this effect to be applied up to $?pc94626[6 stacks]?pc94651[5 stacks]?pc94650[4 stacks]?pc64649[3 stacks]?pc94746[2 stacks][1 stack].", 0, 0 },
   { 364087, "Your damaging abilities have a chance to unleash a blast at the target, dealing $?pc94626[${s3*(1+(s2/100)*5)}]?pc94651[${s3*(1+(s2/100)*4)}]?pc94650[${s3*(1+(s2/100)*3)}]?pc64649[${s3*(1+(s2/100)*2)}]?pc94746[${s3*(1+(s2/100))}][$s3] Cosmic damage.", 0, 0 },
   { 364101, "$@spelldesc363669", 0, 0 },
+  { 364198, "$@spelldesc363951", 0, 0 },
+  { 364261, "Deals $s1 Shadowflame damage to the target.", 0, 0 },
   { 364262, "Deals $s1 Shadowflame damage to nearby enemies.\r\n", 0, 0 },
+  { 364263, "Restores $s1 of their summoner's Soul Shards.", 0, 0 },
   { 364277, "$@spelldesc363733", "Increases healing dealt by Mistweaver spells by $s1.", 0 },
   { 364304, "Casting Shield of the Righteous increases your Block chance by $s1% for $364305d, stacking up to $364305u times.", 0, 0 },
   { 364305, "$@spelldesc363675", "Block chance increased by $w1%.", 0 },
+  { 364322, "$@spelldesc363953", "Your next Malefic Rapture is free to cast.", 0 },
+  { 364348, "$@spelldesc364433", "Your next Rain of Fire is free to cast.", 0 },
+  { 364349, "$@spelldesc364433", "Your next Chaos Bolt is free to cast.", 0 },
   { 364355, "$@spelldesc364086", "Damage done decreased by $w1%. Damage taken increased by $w2%.", 0 },
   { 364362, "Casting Barkskin causes you to Berserk for $s1 sec.", 0, 0 },
   { 364365, "Swiftmend heals an additional $<heal> for each periodic healing effect on the target.", 0, 0 },
@@ -15761,6 +15767,7 @@ static const std::array<spelltext_data_t, 15770> __ptr_spelltext_data { {
   { 365549, "Protects the bearer from stun, root, and snare effects. This effect can only occur once every $366085d", "You are protected from stun, root, and snare effects. This effect can only occur once every $366085d.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
   { 365550, "Your equipment suffers no durability loss.", "Your equipment suffers no durability loss.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
   { 365551, "Your abilities have a $h% chance to incur no cooldown.", "Your abilities have a $h% chance to incur no cooldown.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365640, "$@spelldesc202770", 0, 0 },
   { 365664, "Add the Infernal affix to a Mythic Keystone.", 0, 0 },
   { 366057, "$?a366059[Deal $s2 Cosmic damage to melee attackers.][Increases your Block by $s1.]", 0, 0 },
   { 366061, "$?a366059[Deal $366057s4 Cosmic damage to your target and switch to Defense mode.][Shield the most injured member of your party for $366057s3 and switch to Offense mode.]", 0, 0 },

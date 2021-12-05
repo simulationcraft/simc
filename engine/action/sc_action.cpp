@@ -3264,6 +3264,10 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         }
         return t.total_seconds();
       }
+      bool is_constant() override
+      {
+        return action_list.empty();
+      }
     };
     return std::make_unique<last_used_expr_t>( std::move(last_used_list) );
   }
@@ -3319,6 +3323,10 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
             return action.player->last_foreground_action->internal_id == prev->internal_id;
           return false;
         }
+        bool is_constant() override
+        {
+          return !prev;
+        }
       };
       return std::make_unique<prev_expr_t>( *this, splits[ 1 ] );
     }
@@ -3342,6 +3350,10 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
             }
           }
           return false;
+        }
+        bool is_constant() override
+        {
+          return !previously_off_gcd;
         }
       };
       return std::make_unique<prev_gcd_expr_t>( *this, splits[ 1 ] );
@@ -3503,14 +3515,9 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         }
       }
 
-      bool is_constant( double* result ) override
+      bool is_constant() override
       {
-        if ( !previously_used )
-        {
-          *result = 0;
-          return true;
-        }
-        return false;
+        return !previously_used;
       }
 
       double evaluate() override
@@ -3578,6 +3585,10 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
             ret = expr_result;
         }
         return ret;
+      }
+      bool is_constant() override
+      {
+        return expr_list.empty();
       }
     };
 
@@ -3712,6 +3723,10 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
           {
             return range::any_of( action_list, []( const action_t* a ) { return a->has_travel_events(); } );
           }
+          bool is_constant() override
+          {
+            return action_list.empty();
+          }
         };
         return std::make_unique<in_flight_multi_expr_t>( std::move(in_flight_list) );
       }
@@ -3735,6 +3750,10 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
                 return true;
             }
             return false;
+          }
+          bool is_constant() override
+          {
+            return action_list.empty();
           }
         };
         return std::make_unique<in_flight_to_target_multi_expr_t>( std::move(in_flight_list), *this );
@@ -3764,6 +3783,10 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
             }
 
             return event_found ? t.total_seconds() : 0.0;
+          }
+          bool is_constant() override
+          {
+            return action_list.empty();
           }
         };
         return std::make_unique<in_flight_remains_multi_expr_t>( std::move(in_flight_list) );
