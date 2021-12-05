@@ -836,29 +836,46 @@ void wild_imp_pet_t::demise()
 
 malicious_imp_pet_t::malicious_imp_pet_t( warlock_t* owner )
   : warlock_pet_t( owner , "malicious_imp", PET_MALICIOUS_IMP ),
-  firebolt( nullptr ),
+  firebolt( nullptr ), doombolt( nullptr ), spite( nullptr ), return_soul( nullptr ),
   imploded( false )
 {
   resource_regeneration = regen_type::DISABLED;
 
-  // Change these if different from 1.0, otherwise delete
-  // owner_coeff.ap_from_sp = 1.0;
-  // owner_coeff.sp_from_sp = 1.0;
-
-  // Default is 0.5, delete if same
-  // owner_coeff.health    = 0.5;
+  // PTR Testing 2021-12-04: Malicious Imp coeff values seem to be the same as Wild Imp
+  owner_coeff.health    = 0.15;
 }
 
-// Malicious Imp's Firebolt struct goes here
+// Malicious Imp's Fel Firebolt is the same spell as Wild Imp's, so we may not need a separate implementation
+// Doombolt and Spite are hopefully automagic from spell data
 
-// There are either one or two additional spells needed, depending
-// on how Malicious Imp does damage on demise. Put them here.
+struct spite_t : warlock_pet_spell_t
+{
+  spite_t( warlock_pet_t* p ) : warlock_pet_spell_t( "spite", p, p->find_spell( 364262 ) )
+  {
+    aoe=-1;
+  }
+};
+
+struct return_soul_t : warlock_pet_spell_t
+{
+  return_soul_t( warlock_pet_t* p ) : warlock_pet_spell_t( "return_soul", p, p->find_spell( 364263 ) )
+  {
+    harmful = false;
+    background = true;
+  }
+
+  void execute() override
+  {
+    warlock_pet_spell_t::execute();
+
+    p()->o()->resource_gain( RESOURCE_SOUL_SHARD, data().effectN( 1 ).base_value() / 10, p()->o()->gains.return_soul );
+  }
+};
 
 void malicious_imp_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  // Check if this energy amount is different from Wild Imp
   resources.base[ RESOURCE_ENERGY ]                  = 100;
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
 }
@@ -887,7 +904,10 @@ void malicious_imp_pet_t::create_actions()
 {
   warlock_pet_t::create_actions();
 
-  // firebolt = new [something]_t( this );
+  firebolt = new fel_firebolt_t( this );
+  doombolt = new warlock_pet_spell_t( "doombolt", this, find_spell( 364261 ) );
+  spite = new spite_t( this );
+  return_soul = new return_soul_t( this );
 }
 
 void malicious_imp_pet_t::schedule_ready( timespan_t, bool )
@@ -901,6 +921,8 @@ void malicious_imp_pet_t::arise()
 
   imploded = false;
 
+  o()->buffs.malicious_imps->increment();
+
   firebolt->set_target( o()->target );
   firebolt->schedule_execute();
 }
@@ -909,17 +931,22 @@ void malicious_imp_pet_t::demise()
 {
   if ( !current.sleeping )
   {
+    o()->buffs.malicious_imps->decrement();
+
     if ( imploded )
     {
-      // Do AoE action to all nearby targets
+      spite->execute_on_target( o()->target );
     }
     else
     {
-      // Do single target damage to owner's current target
+      doombolt->execute_on_target( o()->target );
     }
 
     if ( expiration )
       event_t::cancel( expiration );
+
+    // Soul Shard is returned on expiration, regardless of method
+    return_soul->execute();
   }
 
   warlock_pet_t::demise();

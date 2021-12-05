@@ -117,6 +117,7 @@ public:
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
 
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
+    spawner::pet_spawner_t<pets::demonology::malicious_imp_pet_t, warlock_t> malicious_imps;
 
     //Nether Portal demons - Check regularly for accuracy!
     spawner::pet_spawner_t<pets::demonology::random_demons::shivarra_t, warlock_t> shivarra;
@@ -391,6 +392,7 @@ public:
     propagate_const<buff_t*> inner_demons;
     propagate_const<buff_t*> nether_portal;
     propagate_const<buff_t*> wild_imps; //Buff for tracking how many Wild Imps are currently out (does NOT include imps waiting to be spawned)
+    propagate_const<buff_t*> malicious_imps; // Buff for tracking T28 4pc pet
     propagate_const<buff_t*> dreadstalkers; //Buff for tracking number of Dreadstalkers currently out
     propagate_const<buff_t*> vilefiend; //Buff for tracking if Vilefiend is currently out
     propagate_const<buff_t*> tyrant; //Buff for tracking if Demonic Tyrant is currently out
@@ -456,6 +458,9 @@ public:
 
     // SL
     gain_t* scouring_tithe;
+
+    // T28
+    gain_t* return_soul; // Demonology 4pc
   } gains;
 
   // Procs
@@ -478,6 +483,7 @@ public:
     proc_t* portal_summon;
     proc_t* carnivorous_stalkers; // SL - Conduit
     proc_t* horned_nightmare; // SL - Legendary
+    proc_t* malicious_imp; // T28 4pc
 
     // destro
     proc_t* reverse_entropy;
