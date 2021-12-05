@@ -605,7 +605,7 @@ struct chaos_bolt_t : public destruction_spell_t
     timespan_t h = warlock_spell_t::execute_time();
     
     if ( p()->buffs.herald_of_chaos->check() )
-      return timespan_t::from_millis(0);
+      return 0_s;
 
     if ( p()->buffs.backdraft->check() )
       h *= backdraft_cast_time;
