@@ -485,9 +485,11 @@ struct implosion_t : public demonology_spell_t
     p()->buffs.implosive_potential_small->expire();
 
     auto imps_consumed = p()->warlock_pet_list.wild_imps.n_active_pets();
+    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
+      imps_consumed += p()->warlock_pet_list.malicious_imps.n_active_pets(); // T28 Malicious Imps count for Implosive Potential
 
     // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
-    timespan_t imp_travel_time = this->calc_imp_travel_time(65);
+    timespan_t imp_travel_time = this->calc_imp_travel_time( 65 );
 
     int launch_counter = 0;
     for ( auto imp : p()->warlock_pet_list.wild_imps )
@@ -516,6 +518,36 @@ struct implosion_t : public demonology_spell_t
         } );
 
         launch_counter++;
+      }
+    }
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B4 ) )
+    {
+      launch_counter = 0;
+      for ( auto mimp : p()->warlock_pet_list.malicious_imps )
+      {
+        if ( !mimp->is_sleeping() )
+        {
+          implosion_aoe_t* ex = explosion;
+          player_t* tar = target;
+          double dist = p()->get_player_distance( *tar );
+
+          mimp->trigger_movement( dist, movement_direction_type::TOWARDS );
+          mimp->imploded = true; // Used to trigger Spite
+          mimp->interrupt();
+
+          make_event( sim, 10_ms * launch_counter + imp_travel_time, [ ex, tar, mimp ] {
+            if ( mimp && !mimp->is_sleeping() )
+            {
+              ex->casts_left = ( mimp->resources.current[ RESOURCE_ENERGY ] / 20 );
+              ex->set_target( tar );
+              ex->next_imp = mimp;
+              ex->execute();
+            }
+          } );
+
+          launch_counter++;
+        }
       }
     }
 
