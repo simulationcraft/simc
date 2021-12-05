@@ -1961,6 +1961,7 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     demonic_tyrants( "demonic_tyrant", w ),
     grimoire_felguards( "grimoire_felguard", w ),
     wild_imps( "wild_imp", w ),
+    malicious_imps( "malicious_imp", w ),
     shivarra( "shivarra", w ),
     darkhounds( "darkhound", w ),
     bilescourges( "bilescourge", w ),
