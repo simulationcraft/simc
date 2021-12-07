@@ -379,7 +379,7 @@ void windwalker( player_t* p )
 
   pre->add_action( "variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem" );
   pre->add_action( "fleshcraft" );
-  pre->add_talent( p, "Chi Burst", "if=!covenant.nightf_fae" );
+  pre->add_talent( p, "Chi Burst", "if=!covenant.night_fae" );
   pre->add_talent( p, "Chi Wave", "if=!talent.energizing_elixir.enabled" );
 
   std::vector<std::string> racial_actions  = p->get_racial_actions();
