@@ -2862,7 +2862,7 @@ struct moonfire_t : public druid_spell_t
       druid_spell_t::execute();
 
       damage->is_gg = true;
-      damage->target = execute_state->target;
+      damage->target = target;
       damage->schedule_execute();
 
       stats = orig_stats;
@@ -2876,7 +2876,7 @@ struct moonfire_t : public druid_spell_t
 
     druid_spell_t::execute();
 
-    damage->target = execute_state->target;
+    damage->target = target;
     damage->schedule_execute();
   }
 };
@@ -4698,7 +4698,7 @@ struct thrash_bear_t : public bear_attack_t
 
     bear_attack_t::execute();
 
-    dot->target = execute_state->target;
+    dot->target = target;
     dot->schedule_execute();
 
     if ( p()->legendary.ursocs_fury_remembered->ok() &&
@@ -5417,7 +5417,7 @@ struct fury_of_elune_t : public druid_spell_t
     }, ap_ticks );
 
     make_event<ground_aoe_event_t>( *sim, p(),
-      ground_aoe_params_t().target( execute_state->target )
+      ground_aoe_params_t().target( target )
                            .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
                            .pulse_time( data().effectN( 3 ).period() )
                            .duration( data().duration() )
@@ -6153,7 +6153,7 @@ struct sunfire_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    damage->target = execute_state->target;
+    damage->target = target;
     damage->schedule_execute();
   }
 };
