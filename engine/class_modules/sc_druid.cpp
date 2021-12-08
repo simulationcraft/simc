@@ -86,6 +86,8 @@ struct druid_td_t : public actor_target_data_t
     dot_t* adaptive_swarm_heal;
 
     dot_t* frenzied_assault;
+
+    dot_t* sickle_of_the_lion;
   } dots;
 
   struct buffs_t
@@ -3047,10 +3049,10 @@ public:
     using S = const spell_data_t*;
     using C = const conduit_data_t&;
 
-    snapshots.bloodtalons  = parse_persistent_buff_effects( p->buff.bloodtalons, false );
-    snapshots.tigers_fury  = parse_persistent_buff_effects<C>( p->buff.tigers_fury, true,
+    snapshots.bloodtalons  = parse_persistent_buff_effects( p->buff.bloodtalons, 0u, false );
+    snapshots.tigers_fury  = parse_persistent_buff_effects<C>( p->buff.tigers_fury, 5u, true,
                                                                p->conduit.carnivorous_instinct );
-    snapshots.clearcasting = parse_persistent_buff_effects<S>( p->buff.clearcasting, true,
+    snapshots.clearcasting = parse_persistent_buff_effects<S>( p->buff.clearcasting, 0u, true,
                                                                p->talent.moment_of_clarity );
 
     if ( data().affected_by( p->mastery.razor_claws->effectN( 1 ) ) )
@@ -3165,13 +3167,13 @@ public:
   }
 
   template <typename... Ts>
-  bool parse_persistent_buff_effects( buff_t* buff, bool use_stacks, Ts... mods )
+  bool parse_persistent_buff_effects( buff_t* buff, unsigned ignore, bool use_stacks, Ts... mods )
   {
     size_t ta_old   = ta_multiplier_buffeffects.size();
     size_t da_old   = da_multiplier_buffeffects.size();
     size_t cost_old = cost_buffeffects.size();
 
-    parse_buff_effects( buff, use_stacks, mods... );
+    parse_buff_effects( buff, ignore, ignore, use_stacks, mods... );
 
     // If there is a new entry in the ta_mul table, move it to the pers_mul table.
     if ( ta_multiplier_buffeffects.size() > ta_old )
@@ -3179,10 +3181,11 @@ public:
       double ta_val = ta_multiplier_buffeffects.back().value;
       double da_val = 0;
 
-      p()->sim->print_debug( "persistent-buffs: {} ({}) damage modified by {}% with buff {} ({})", name(), id,
-                             ta_val * 100.0, buff->name(), buff->data().id() );
       persistent_multiplier_buffeffects.push_back( ta_multiplier_buffeffects.back() );
       ta_multiplier_buffeffects.pop_back();
+
+      p()->sim->print_debug( "persistent-buffs: {} ({}) damage modified by {}% with buff {} ({}), tick table has {} entries.", name(), id,
+                             ta_val * 100.0, buff->name(), buff->data().id(), ta_multiplier_buffeffects.size() );
 
       // Any corresponding increases in the da_mul table can be removed as pers_mul covers da_mul & ta_mul
       if ( da_multiplier_buffeffects.size() > da_old )
@@ -3724,7 +3727,12 @@ struct ferocious_bite_t : public cat_attack_t
     if ( p()->conduit.taste_for_blood->ok() )
     {
       auto t_td  = td( t );
-      int bleeds = t_td->dots.rake->is_ticking() + t_td->dots.rip->is_ticking() + t_td->dots.thrash_cat->is_ticking() + t_td->dots.frenzied_assault->is_ticking() + t_td->dots.feral_frenzy->is_ticking();
+      int bleeds = t_td->dots.rake->is_ticking() +
+                   t_td->dots.rip->is_ticking() +
+                   t_td->dots.thrash_cat->is_ticking() +
+                   t_td->dots.frenzied_assault->is_ticking() +
+                   t_td->dots.feral_frenzy->is_ticking() +
+                   t_td->dots.sickle_of_the_lion->is_ticking();
 
       tm *= 1.0 + p()->conduit.taste_for_blood.percent() * bleeds;
     }
@@ -4344,12 +4352,26 @@ struct thrash_cat_t : public cat_attack_t
 // Sickle of the Lion (Feral T28 4pc)=========================================
 struct sickle_of_the_lion_t : public cat_attack_t
 {
+  double as_mul;
+
   sickle_of_the_lion_t( druid_t* p )
-    : cat_attack_t( "sickle_of_the_lion", p, p->sets->set( DRUID_FERAL, T28, B4 )->effectN( 1 ).trigger() )
+    : cat_attack_t( "sickle_of_the_lion", p, p->sets->set( DRUID_FERAL, T28, B4 )->effectN( 1 ).trigger() ),
+      as_mul( 1.0 )
   {
     aoe = -1;
+
+    as_mul += p->covenant.adaptive_swarm_damage->effectN( 2 ).percent() + p->conduit.evolved_swarm.percent();
   }
 
+  double composite_persistent_multiplier( const action_state_t* s ) const override
+  {
+    double pm = cat_attack_t::composite_persistent_multiplier( s );
+
+    if ( td( s->target )->dots.adaptive_swarm_damage->is_ticking() )
+      pm *= as_mul;
+
+    return pm;
+  }
 };
 }  // end namespace cat_attacks
 
@@ -7573,6 +7595,7 @@ struct adaptive_swarm_t : public druid_spell_t
     {
       double pm = adaptive_swarm_base_t::composite_persistent_multiplier( s );
 
+      // inherits from druid_spell_t so does not get automatic persistent multiplier parsing
       if ( !debug_cast<const adaptive_swarm_state_t*>( s )->jump && p()->buff.tigers_fury->check() )
         pm *= 1.0 + tf_mul;
 
@@ -10687,6 +10710,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.adaptive_swarm_damage = target.get_dot( "adaptive_swarm_damage", &source );
   dots.adaptive_swarm_heal   = target.get_dot( "adaptive_swarm_heal", &source );
   dots.frenzied_assault      = target.get_dot( "frenzied_assault", &source );
+  dots.sickle_of_the_lion    = target.get_dot( "sickle_of_the_lion", &source );
 
   buff.lifebloom             = make_buff( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
   debuff.tooth_and_claw      = make_buff( *this, "tooth_and_claw_debuff",
