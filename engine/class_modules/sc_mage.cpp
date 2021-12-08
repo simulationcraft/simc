@@ -391,7 +391,6 @@ public:
 
     // Set Bonuses
     buff_t* arcane_lucidity;
-    buff_t* arcane_lucidity_ready;
 
     buff_t* fiery_rush;
   } buffs;
@@ -965,6 +964,7 @@ struct touch_of_the_magi_t final : public buff_t
     buff_t( *td, "touch_of_the_magi", td->source->find_spell( 210824 ) )
   {
     set_default_value( 0.0 );
+    modify_duration( td->source->sets->set( MAGE_ARCANE, T28, B4 )->effectN( 1 ).time_value() );
     if ( source->is_ptr() ) set_schools_from_effect( 2 ); // TODO: PTR
   }
 
@@ -1652,8 +1652,7 @@ public:
       && rng().roll( p()->sets->set( MAGE_FROST, T28, B2 )->proc_chance() ) )
     {
       p()->cooldowns.frost_storm->start( p()->sets->set( MAGE_FROST, T28, B2 )->internal_cooldown() );
-      if ( p()->buffs.icy_veins->check() ) // TODO: This seems like a bug
-        p()->action.frost_storm_comet_storm->execute_on_target( p()->target );
+      p()->action.frost_storm_comet_storm->execute_on_target( p()->target );
     }
   }
 
@@ -1786,10 +1785,7 @@ struct arcane_mage_spell_t : public mage_spell_t
         // Nether Precision is only triggered if the buff was actually decremented.
         // This is relevant when the player uses Expanded Potential.
         if ( cr == p()->buffs.clearcasting && cr->check() < before )
-        {
           p()->buffs.nether_precision->trigger();
-          trigger_legendary_buff( p()->buffs.arcane_lucidity, p()->buffs.arcane_lucidity_ready );
-        }
         break;
       }
     }
@@ -3035,7 +3031,8 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
     frost_mage_spell_t( n, p, p->find_spell( 153596 ) )
   {
     aoe = -1;
-    background = consumes_winters_chill = triggers.radiant_spark = true;
+    background = triggers.radiant_spark = true;
+    if ( !p->is_ptr() ) consumes_winters_chill = true; // TODO: PTR
   }
 
   void impact( action_state_t* s ) override
@@ -3069,7 +3066,7 @@ struct comet_storm_t final : public frost_mage_spell_t
   void execute() override
   {
     frost_mage_spell_t::execute();
-    p()->expression_support.remaining_winters_chill = 0;
+    if ( !p()->is_ptr() ) p()->expression_support.remaining_winters_chill = 0; // TODO: PTR
   }
 
   void impact( action_state_t* s ) override
@@ -4984,31 +4981,7 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
     if ( p()->spec.touch_of_the_magi_2->ok() )
       p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
 
-    p()->buffs.arcane_lucidity_ready->expire();
-  }
-
-  void update_ready( timespan_t cd ) override
-  {
-    if ( p()->buffs.arcane_lucidity_ready->check() )
-      return;
-
-    arcane_mage_spell_t::update_ready( cd );
-  }
-
-  timespan_t execute_time() const override
-  {
-    if ( p()->buffs.arcane_lucidity_ready->check() )
-      return 0_ms;
-
-    return arcane_mage_spell_t::execute_time();
-  }
-
-  timespan_t gcd() const override
-  {
-    if ( p()->buffs.arcane_lucidity_ready->check() )
-      return 0_ms;
-
-    return arcane_mage_spell_t::gcd();
+    p()->buffs.arcane_lucidity->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -5018,12 +4991,8 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
     if ( result_is_hit( s->result ) )
     {
       auto debuff = get_td( s->target )->debuffs.touch_of_the_magi;
-      auto duration = debuff->buff_duration();
-      if ( p()->buffs.arcane_lucidity_ready->check() )
-        duration += p()->buffs.arcane_lucidity_ready->data().effectN( 2 ).time_value();
-
       debuff->expire();
-      debuff->trigger( duration );
+      debuff->trigger();
     }
   }
 
@@ -5177,7 +5146,7 @@ struct harmonic_echo_t final : public mage_spell_t
   {
     mage_spell_t::available_targets( tl );
 
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+    if ( !p()->is_ptr() ) tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() ); // TODO: PTR
 
     return tl.size();
   }
@@ -6395,9 +6364,10 @@ void mage_t::create_buffs()
                              ->set_chance( conduits.siphoned_malice.ok() );
 
   // Set Bonuses
-  buffs.arcane_lucidity       = make_buff( this, "arcane_lucidity", find_spell( 363683 ) )
-                                  ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T28, B4 ) );
-  buffs.arcane_lucidity_ready = make_buff( this, "arcane_lucidity_ready", find_spell( 363685 ) );
+  buffs.arcane_lucidity = make_buff( this, "arcane_lucidity", find_spell( 363685 ) )
+                            ->set_affects_regen( true )
+                            ->set_default_value_from_effect( 1 )
+                            ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T28, B4 ) );
 
   buffs.fiery_rush = make_buff( this, "fiery_rush", find_spell( 363508 ) )
                        ->set_default_value_from_effect( 1 )
@@ -6561,6 +6531,7 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
     reg *= 1.0 + 0.01 * spec.arcane_mage->effectN( 4 ).average( this );
     reg *= 1.0 + cache.mastery() * spec.savant->effectN( 1 ).mastery_value();
     reg *= 1.0 + buffs.enlightened_mana->check_value();
+    reg *= 1.0 + buffs.arcane_lucidity->check_value();
   }
 
   return reg;
