@@ -821,15 +821,7 @@ public:
       initialized( false )
   {
     ab::may_crit = true;
-    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) )
-    {
-      tactician_per_rage += ( ( player->spec.tactician->effectN( 1 ).percent() / 100 ) *
-                              ( player->tier_set.pile_on_4p->effectN( 1 ).base_value() / 100 + 1 ) );
-    }
-    else
-    {
-      tactician_per_rage += ( player->spec.tactician->effectN( 1 ).percent() / 100 );
-    }
+    tactician_per_rage += ( player->spec.tactician->effectN( 1 ).percent() / 100 );
   }
 
   void init() override
@@ -1145,6 +1137,8 @@ public:
 
   void consume_resource() override
   {
+    //td = find_target_data( target );
+
     if ( tactician_per_rage )
     {
       tactician();
@@ -1209,7 +1203,14 @@ public:
   virtual void tactician()
   {
     double tact_rage = tactician_cost();  // Tactician resets based on cost before things make it cost less.
-    if ( ab::rng().roll( tactician_per_rage * tact_rage ) )
+    double tactician_chance = tactician_per_rage;
+    warrior_td_t* td        = this->td( ab::target );
+    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) && td->debuffs_colossus_smash->check() )
+    {
+      tactician_chance *= ( ( p()->spec.tactician->effectN( 1 ).base_value() / 100 ) *
+                            ( p()->tier_set.pile_on_4p->effectN( 1 ).percent() / 100 + 1 ) );
+    }
+    if ( ab::rng().roll( tactician_chance * tact_rage ) )
     {
       p()->cooldown.overpower->reset( true );
       p()->proc.tactician->occur();
