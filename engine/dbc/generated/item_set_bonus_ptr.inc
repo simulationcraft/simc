@@ -1,4 +1,4 @@
-// Set bonus data, wow build 9.2.0.41257
+// Set bonus data, wow build 9.2.0.41360
 static const std::array<item_set_bonus_t, 204> __ptr_set_bonus_data { {
   // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "March of the Legion"                       , "march_of_the_legion",      0,  1293,   19,   2,   1,   -1,  228445, { 134529, 134533,  0 } },
@@ -197,9 +197,9 @@ static const std::array<item_set_bonus_t, 204> __ptr_set_bonus_data { {
   { "Garb of the Grand Upwelling"               , "tier28"             ,     12,  1504,   28,   2,  10,  268,  364415, { 188916, 188914, 188912, 188911, 188910,  0 } },
   { "Garb of the Grand Upwelling"               , "tier28"             ,     12,  1504,   28,   2,  10,  270,  364417, { 188916, 188914, 188912, 188911, 188910,  0 } },
   { "Garb of the Grand Upwelling"               , "tier28"             ,     12,  1504,   28,   2,  10,  269,  364418, { 188916, 188914, 188912, 188911, 188910,  0 } },
-  { "Garb of the Grand Upwelling"               , "tier28"             ,     12,  1504,   28,   4,  10,  268,  363669, { 188916, 188914, 188912, 188911, 188910,  0 } },
   { "Garb of the Grand Upwelling"               , "tier28"             ,     12,  1504,   28,   4,  10,  270,  363733, { 188916, 188914, 188912, 188911, 188910,  0 } },
   { "Garb of the Grand Upwelling"               , "tier28"             ,     12,  1504,   28,   4,  10,  269,  363734, { 188916, 188914, 188912, 188911, 188910,  0 } },
+  { "Garb of the Grand Upwelling"               , "tier28"             ,     12,  1504,   28,   4,  10,  268,  366792, { 188916, 188914, 188912, 188911, 188910,  0 } },
   { "Tapestry of the Fixed Stars"               , "tier28"             ,     12,  1502,   28,   2,  11,  102,  364423, { 188853, 188851, 188849, 188848, 188847,  0 } },
   { "Tapestry of the Fixed Stars"               , "tier28"             ,     12,  1502,   28,   2,  11,  104,  364362, { 188853, 188851, 188849, 188848, 188847,  0 } },
   { "Tapestry of the Fixed Stars"               , "tier28"             ,     12,  1502,   28,   2,  11,  103,  364416, { 188853, 188851, 188849, 188848, 188847,  0 } },

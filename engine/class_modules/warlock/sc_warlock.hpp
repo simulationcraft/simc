@@ -108,6 +108,8 @@ public:
     std::array<pets::destruction::infernal_t*, INFERNAL_LIMIT> infernals;
     spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t>
         roc_infernals;  // Infernal(s) summoned by Rain of Chaos
+    spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t>
+        aod_infernals;  // Infernal(s) summoned by Avatar of Destruction
 
     std::array<pets::affliction::darkglare_t*, DARKGLARE_LIMIT> darkglare;
 
@@ -117,6 +119,7 @@ public:
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
 
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
+    spawner::pet_spawner_t<pets::demonology::malicious_imp_pet_t, warlock_t> malicious_imps;
 
     //Nether Portal demons - Check regularly for accuracy!
     spawner::pet_spawner_t<pets::demonology::random_demons::shivarra_t, warlock_t> shivarra;
@@ -383,6 +386,7 @@ public:
     propagate_const<buff_t*> nightfall;
     propagate_const<buff_t*> inevitable_demise;
     propagate_const<buff_t*> dark_soul_misery;
+    propagate_const<buff_t*> calamitous_crescendo;
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_core;
@@ -391,6 +395,7 @@ public:
     propagate_const<buff_t*> inner_demons;
     propagate_const<buff_t*> nether_portal;
     propagate_const<buff_t*> wild_imps; //Buff for tracking how many Wild Imps are currently out (does NOT include imps waiting to be spawned)
+    propagate_const<buff_t*> malicious_imps; // Buff for tracking T28 4pc pet
     propagate_const<buff_t*> dreadstalkers; //Buff for tracking number of Dreadstalkers currently out
     propagate_const<buff_t*> vilefiend; //Buff for tracking if Vilefiend is currently out
     propagate_const<buff_t*> tyrant; //Buff for tracking if Demonic Tyrant is currently out
@@ -404,6 +409,8 @@ public:
     propagate_const<buff_t*> reverse_entropy;
     propagate_const<buff_t*> rain_of_chaos;
     propagate_const<buff_t*> dark_soul_instability;
+    propagate_const<buff_t*> herald_of_fire;
+    propagate_const<buff_t*> herald_of_chaos;
 
     // Covenants
     propagate_const<buff_t*> decimating_bolt;
@@ -456,6 +463,9 @@ public:
 
     // SL
     gain_t* scouring_tithe;
+
+    // T28
+    gain_t* return_soul; // Demonology 4pc
   } gains;
 
   // Procs
@@ -467,6 +477,7 @@ public:
     proc_t* nightfall;
     proc_t* corrupting_leer;
     proc_t* malefic_wrath;
+    proc_t* calamitous_crescendo;
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
 
     // demo
@@ -478,10 +489,13 @@ public:
     proc_t* portal_summon;
     proc_t* carnivorous_stalkers; // SL - Conduit
     proc_t* horned_nightmare; // SL - Legendary
+    proc_t* malicious_imp; // T28 4pc
 
     // destro
     proc_t* reverse_entropy;
     proc_t* rain_of_chaos;
+    proc_t* ritual_of_ruin;
+    proc_t* avatar_of_destruction;
   } procs;
 
   int initial_soul_shards;

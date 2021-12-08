@@ -59,13 +59,21 @@ template <class Base>
 struct monk_action_t : public Base
 {
   sef_ability_e sef_ability;
+  // Whether the ability is affected by the Windwalker's Mastery.
   bool ww_mastery;
+  // Whether the ability triggers Windwalker's Combo Strike
   bool may_combo_strike;
+  // Whether the ability triggers Invoke Chi-Ji Gust's of Mist
   bool trigger_chiji;
+  // Whether the ability can reset Faeline Stomp
   bool trigger_faeline_stomp;
+  // Whether the ability can trigger the Legendary Bountiful Brew.
   bool trigger_bountiful_brew;
+  // Whether the ability can trigger the Legendary Sinister Teaching Cooldown Reduction
   bool trigger_sinister_teaching_cdr;
+  // Whether the ability can trigger the Windwalker Tier 28 4-piece Primordial Power
   bool trigger_ww_t28_4p_power;
+  // Whether the channeled ability can trigger the Windwalker Tier 28 4-piece Primordial Power
   bool trigger_ww_t28_4p_power_channel;
 
   // Bron's Call to Action trigger overrides
@@ -4144,21 +4152,6 @@ struct faeline_stomp_heal_t : public monk_heal_t
 
     attack_power_mod.direct = 0;
     spell_power_mod.direct  = p.passives.faeline_stomp_damage->effectN( 2 ).sp_coeff();
-  }
-
-  double composite_aoe_multiplier( const action_state_t* state ) const override
-  {
-    double cam = monk_heal_t::composite_aoe_multiplier( state );
-
-    const std::vector<player_t*>& targets = state->action->target_list();
-
-    if ( p()->conduit.way_of_the_fae->ok() && !targets.empty() )
-    {
-      cam *= 1 + ( p()->conduit.way_of_the_fae.percent() *
-                   std::min( (double)targets.size(), p()->conduit.way_of_the_fae->effectN( 2 ).base_value() ) );
-    }
-
-    return cam;
   }
 
   void impact( action_state_t* s ) override
