@@ -153,6 +153,9 @@ public:
     buff_t* veterans_repute;
     buff_t* show_of_force;
     buff_t* unnerving_focus;
+    // Tier
+    buff_t* pile_on_ready;
+    buff_t* pile_on_str;
 
     // Shadowland Legendary
     buff_t* battlelord;
@@ -818,7 +821,15 @@ public:
       initialized( false )
   {
     ab::may_crit = true;
-    tactician_per_rage += ( player->spec.tactician->effectN( 1 ).percent() / 100 );
+    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) )
+    {
+      tactician_per_rage += ( ( player->spec.tactician->effectN( 1 ).percent() / 100 ) *
+                              ( player->tier_set.pile_on_4p->effectN( 1 ).base_value() / 100 + 1 ) );
+    }
+    else
+    {
+      tactician_per_rage += ( player->spec.tactician->effectN( 1 ).percent() / 100 );
+    }
   }
 
   void init() override
@@ -1205,6 +1216,10 @@ public:
       if ( p()->azerite.striking_the_anvil.ok() )
       {
         p()->buff.striking_the_anvil->trigger();
+      }
+      if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) )
+      {
+        p()->buff.pile_on_ready->trigger();
       }
     }
   }
@@ -3715,9 +3730,16 @@ struct overpower_t : public warrior_attack_t
       p()->cooldown.mortal_strike->reset( true );
       p() -> buff.battlelord -> trigger();
     }
+    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) )
+    {
+      p()->buff.pile_on_ready->expire();
+      p()->buff.pile_on_str->trigger();
+    }
+
 
     p()->buff.overpower->trigger();
     p()->buff.striking_the_anvil->expire();
+
   }
 
   bool ready() override
@@ -7230,7 +7252,8 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_gushing_wound = target->get_dot( "gushing_wound", &p );
 
   debuffs_colossus_smash = make_buff( *this , "colossus_smash" )
-                               ->set_default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent() )
+                               ->set_default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent() +
+                                                    ( p.tier_set.pile_on_2p->effectN( 2 ).base_value() / 100 ) )
                                ->set_duration( p.spell.colossus_smash_debuff->duration() )
                                ->modify_duration( p.sets->set( WARRIOR_ARMS, T28, B2 )->effectN( 1 ).time_value() )
                                ->set_cooldown( timespan_t::zero() );
@@ -7506,6 +7529,16 @@ void warrior_t::create_buffs()
   buff.will_of_the_berserker = make_buff( this, "will_of_the_berserker", find_spell( 335597 ) )
                                ->set_default_value( find_spell( 335597 )->effectN( 1 ).percent() )
                                ->add_invalidate( CACHE_CRIT_CHANCE );
+
+  // Pile On ===============================================================================================================
+
+  buff.pile_on_ready = make_buff( this, "pile_on_ready" )
+                      ->set_duration(find_spell( 366769 )->duration() );
+
+  buff.pile_on_str = make_buff( this, "pile_on_str", find_spell( 366769 ) )
+                     ->add_invalidate( CACHE_STRENGTH )
+                     ->set_default_value( find_spell( 366769 )->effectN( 1 ).percent() );
+
 
 }
 // warrior_t::init_rng ==================================================
@@ -7973,6 +8006,8 @@ double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( attr == ATTR_STRENGTH )
   {
     m *= 1.0 + buff.veterans_repute->value();
+
+    m *= 1.0 + buff.pile_on_str->check_stack_value();
   }
 
   // Protection has increased stamina from vanguard
