@@ -437,6 +437,8 @@ public:
     buff_t* survival_instincts;
     buff_t* savage_combatant;
 
+    buff_t* architects_aligner;
+
     // Restoration
     buff_t* incarnation_tree;
     buff_t* soul_of_the_forest;  // needs checking
@@ -1507,9 +1509,11 @@ struct berserk_bear_buff_t : public druid_buff_t<buff_t>
 
     if ( p.sets->has_set_bonus( DRUID_GUARDIAN, T28, B4 ) )
     {
-      set_period( p.sets->set( DRUID_GUARDIAN, T28, B4 )->effectN( 1 ).trigger()->effectN( 1 ).period() );
-      set_tick_callback( [ &p ]( buff_t*, int, timespan_t ) {
-        p.active.architects_aligner->execute_on_target( p.target );
+      set_stack_change_callback( [ &p ]( buff_t*, int, int new_ ) {
+        if ( new_ )
+          p.buff.architects_aligner->trigger();
+        else
+          make_event( p.sim, [ &p ]() { p.buff.architects_aligner->expire(); } );  // schedule as event to ensure last tick happens
       } );
     }
   }
@@ -8724,6 +8728,13 @@ void druid_t::create_buffs()
   buff.survival_instincts = make_buff( this, "survival_instincts", find_specialization_spell( "Survival Instincts" ) )
     ->set_cooldown( 0_ms )
     ->set_default_value( query_aura_effect( find_spell( 50322 ), A_MOD_DAMAGE_PERCENT_TAKEN )->percent() );
+
+  buff.architects_aligner =
+      make_buff( this, "architects_aligner", sets->set( DRUID_GUARDIAN, T28, B4 )->effectN( 1 ).trigger() )
+          ->set_duration( 0_ms )
+          ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+            active.architects_aligner->execute_on_target( target );
+          } );
 
   // Restoration buffs
   buff.cenarion_ward = make_buff( this, "cenarion_ward", talent.cenarion_ward );
