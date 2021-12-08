@@ -2179,7 +2179,7 @@ public:
     parse_buff_effects<S, S>( p()->buff.eclipse_solar, 2U, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
     parse_buff_effects<S, S>( p()->buff.eclipse_lunar, 2U, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
     parse_conditional_effects( p()->sets->set( DRUID_BALANCE, T28, B4 ), [ this ]() {
-      return p()->buff.eclipse_lunar->check() || p()->buff.eclipse_solar->check();
+      return p()->buff.eclipse_lunar->check();
     } );
 
     // Guardian
