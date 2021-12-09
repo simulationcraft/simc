@@ -24,6 +24,7 @@ stats_t::stats_t( util::string_view n, player_t* p ) :
   analyzed( false ),
   quiet( false ),
   background( true ),
+  prefer_name( false ),
   // Variables used both during combat and for reporting
   num_executes(), num_ticks(), num_refreshes(),
   num_direct_results(), num_tick_results(),
@@ -301,11 +302,10 @@ void stats_t::analyze()
                    : sim.iterations;
 
   bool channeled = false;
-  for ( size_t i = 0; i < action_list.size(); i++ )
+  for (const auto* a : action_list)
   {
-    action_t& a = *action_list[ i ];
-    if ( a.channeled ) channeled = true;
-    if ( ! a.background ) background = false;
+    if ( a->channeled ) channeled = true;
+    if ( ! a->background ) background = false;
   }
 
   range::for_each( direct_results, [ this ]( stats_results_t& r ) {
@@ -336,12 +336,12 @@ void stats_t::analyze()
 
   compound_amount = actual_amount.count() ? actual_amount.mean() : 0.0;
 
-  for ( size_t i = 0; i < children.size(); i++ )
+  for ( auto* child : children )
   {
-    children[ i ] -> analyze();
-    if ( type == children[i] -> type )
+    child -> analyze();
+    if ( type == child -> type )
     {
-      compound_amount += children[ i ] -> compound_amount;
+      compound_amount += child -> compound_amount;
     }
   }
 

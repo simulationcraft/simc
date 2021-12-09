@@ -38,6 +38,8 @@ if ERRORLEVEL 1 goto :enderror
 if defined RELEASE if not defined RELEASE_CREDENTIALS call :error RELEASE builds must set RELEASE_CREDENTIALS
 if ERRORLEVEL 1 goto :enderror
 
+if not defined QMAKE_SPEC set QMAKE_SPEC=win32-msvc
+
 if defined RELEASE set SC_DEFAULT_APIKEY=%RELEASE_CREDENTIALS%
 
 :: Setup GIT HEAD commithash for the package name if GIT is found
@@ -46,13 +48,6 @@ where /q git.exe
 if ERRORLEVEL 0 for /F "delims=" %%i IN ('git --git-dir=%SIMCDIR%\.git\ rev-parse --short HEAD') do set GITREV=%%i
 if defined RELEASE set GITREV=
 )
-
-:: Setup archive name and installation directory
-if "%PLATFORM%" == "x64" set PACKAGESUFFIX=win64
-if "%PLATFORM%" == "x86" set PACKAGESUFFIX=win32
-
-if not defined PACKAGESUFFIX call :error Unable to determine target architecture
-if ERRORLEVEL 1 goto :enderror
 
 set PACKAGENAME=%INSTALL%\simc-%SIMCVERSION%-%PACKAGESUFFIX%-%GITREV%
 set INSTALLDIR=%INSTALL%\simc-%SIMCVERSION%-%PACKAGESUFFIX%
@@ -70,7 +65,7 @@ if "%3" == "" set TARGET=/t:Clean,Build
 
 :: Generate solution before building
 del /Q "%SIMCDIR%\.qmake.stash"
-%QTDIR%\bin\qmake.exe -r -tp vc -spec win32-msvc -o "%SIMCDIR%\simulationcraft.sln" "%SIMCDIR%\simulationcraft.pro"
+call %QTDIR%\bin\qmake -r -tp vc -spec %QMAKE_SPEC% -o "%SIMCDIR%\simulationcraft.sln" "%SIMCDIR%\simulationcraft.pro"
 
 :: Figure out the platform target, Qt creates "Win32" for x86, x64 is intact
 set VSPLATFORM=%PLATFORM%
@@ -84,7 +79,7 @@ call :copy_base
 
 :: Copy release-specific files
 call :copy_simc
-call :copy_simcgui
+if not defined NO_GUI call :copy_simcgui
 :: Build the Inno Setup installer
 call :build_installer
 
@@ -158,15 +153,18 @@ goto :enderror
 echo.
 echo To build, set the following environment variables:
 echo ============================================================
-echo SIMCVERSION: Simulationcraft release version (default from %SIMCDIR%\engine\simulationcraft.hpp)
-echo SIMCDIR    : Simulationcraft source directory root
-echo QTDIR      : Root directory of the Qt (5) release, including the platform path (e.g., msvc2017_64)
-echo SZIP       : Directory containing 7-Zip compressor (optional, if omitted no compressed file)
-echo ISCC       : Diretory containing Inno Setup (optional, if omitted no setup will be built)
-echo INSTALL    : Base Directory to make an installation package in. Files will be located in directory INSTALL\simc-%SIMCVERSION%-%PACKAGESUFFIX%
-echo GITREV     : Short Git-Hash identifying the source commit. If not provided, the script attempts to retrieve it
-echo RELEASE    : Set to build a "release version" (no git commit hash suffix)
-echo            : If set, set RELEASE_CREDENTIALS to the Battle.net key for the release
+echo SIMCVERSION   : Simulationcraft release version (default from %SIMCDIR%\engine\simulationcraft.hpp)
+echo SIMCDIR       : Simulationcraft source directory root
+echo QTDIR         : Root directory of the Qt (5) release, including the platform path (e.g., msvc2017_64)
+echo SZIP          : Directory containing 7-Zip compressor (optional, if omitted no compressed file)
+echo ISCC          : Diretory containing Inno Setup (optional, if omitted no setup will be built)
+echo INSTALL       : Base Directory to make an installation package in. Files will be located in directory INSTALL\simc-%SIMCVERSION%-%PACKAGESUFFIX%
+echo PACKAGESUFFIX : Suffix for install directory and package name. Eg. win64_qt6 
+echo GITREV        : Short Git-Hash identifying the source commit. If not provided, the script attempts to retrieve it
+echo RELEASE       : Set to build a "release version" (no git commit hash suffix)
+echo NO_GUI        : If defined, no gui files are copied to the install folder
+echo QMAKE_SPEC    : qmake -spec argument. Default: win32-msvc
+echo               : If set, set RELEASE_CREDENTIALS to the Battle.net key for the release
 goto :end
 
 :end

@@ -81,6 +81,7 @@ const char* buff_stack_behavior_string   ( buff_stack_behavior );
 const char* buff_tick_behavior_string   ( buff_tick_behavior );
 const char* buff_tick_time_behavior_string   ( buff_tick_time_behavior );
 const char* action_energize_type_string( action_energize energize_type );
+const char* action_type_string( action_e type );
 std::string rppm_scaling_string       ( unsigned );
 std::string profile_source_string( profile_source );
 
@@ -226,8 +227,8 @@ int numDigits( T number );
 
 bool contains_non_ascii( util::string_view );
 
-void print_chained_exception( const std::exception& e, std::ostream& out, int level =  0);
-void print_chained_exception( const std::exception_ptr& eptr, std::ostream& out, int level =  0);
+void print_chained_exception( const std::exception& e, std::FILE* out, int level = 0 );
+void print_chained_exception( const std::exception_ptr& eptr, std::FILE* out, int level = 0 );
 
 } // namespace util
 
@@ -240,7 +241,7 @@ std::string util::to_string( const T& t )
 template <typename T>
 std::string util::string_join( const T& container, util::string_view delim )
 {
-  return fmt::format( "{}", fmt::join( container, to_string_view( delim ) ) );
+  return fmt::format( "{}", fmt::join( container, delim ) );
 }
 
 // fmtlib formatters for enums
@@ -287,7 +288,8 @@ SC_ENUM_FORMATTER( buff_refresh_behavior,   util::buff_refresh_behavior_string )
 SC_ENUM_FORMATTER( buff_stack_behavior,     util::buff_stack_behavior_string );
 SC_ENUM_FORMATTER( buff_tick_behavior,      util::buff_tick_behavior_string );
 SC_ENUM_FORMATTER( buff_tick_time_behavior, util::buff_tick_time_behavior_string );
-SC_ENUM_FORMATTER( action_energize,       util::action_energize_type_string );
+SC_ENUM_FORMATTER( action_energize,         util::action_energize_type_string );
+SC_ENUM_FORMATTER( action_e,                util::action_type_string );
 
 #undef SC_ENUM_FORMATTER
 } // namespace fmt

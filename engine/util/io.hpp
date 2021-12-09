@@ -47,7 +47,7 @@ class cfile
 
 public:
   struct no_close {};
-  cfile() {} // = default;
+  cfile() = default;
   cfile( const std::string& filename, const char* mode ) :
     file( fopen( filename, mode ), safe_close ) {}
   explicit cfile( FILE* f ) : file( f, safe_close ) {}
@@ -70,7 +70,7 @@ public:
   template <typename... Args>
   ofstream& printf( util::string_view format, Args&& ... args )
   {
-    fmt::fprintf( *this, format, std::forward<Args>(args)... );
+    *this << fmt::sprintf(format, std::forward<Args>(args)...);
 
     return *this;
   }

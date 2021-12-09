@@ -22,7 +22,7 @@ struct action_callback_t : private noncopyable
   bool allow_procs;
 
   action_callback_t(player_t* l, bool ap = false, bool asp = false);
-  virtual ~action_callback_t() {}
+  virtual ~action_callback_t() = default;
   virtual void trigger(action_t*, action_state_t*) = 0;
   virtual void reset() {}
   virtual void initialize() { }

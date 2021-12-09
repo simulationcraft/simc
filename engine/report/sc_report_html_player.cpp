@@ -8,10 +8,14 @@
 #include "player/covenant.hpp"
 #include "player/unique_gear_shadowlands.hpp"
 #include "dbc/temporary_enchant.hpp"
+#include "dbc/item_set_bonus.hpp"
 #include "reports.hpp"
 #include "report/report_helper.hpp"
 #include "report/decorators.hpp"
+#include "report/charts.hpp"
 #include "player/player_talent_points.hpp"
+#include "player/scaling_metric_data.hpp"
+#include "player/set_bonus.hpp"
 #include "sc_highchart.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/sc_profileset.hpp"
@@ -245,7 +249,7 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
   std::string name;
   if ( a )
   {
-    name = report_decorators::decorated_action(*a);
+    name = report_decorators::decorated_action( *a, &s );
   }
   else
   {
@@ -1064,6 +1068,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    "<ul>\n"
                    "<li><span class=\"label\">tick_may_crit:</span>%s</li>\n"
                    "<li><span class=\"label\">tick_zero:</span>%s</li>\n"
+                   "<li><span class=\"label\">tick_on_application:</span>%s</li>\n"
                    "<li><span class=\"label\">attack_power_mod.tick:</span>%.6f</li>\n"
                    "<li><span class=\"label\">spell_power_mod.tick:</span>%.6f</li>\n"
                    "<li><span class=\"label\">base_td:</span>%.2f</li>\n"
@@ -1076,6 +1081,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    "</div>\n",
                    a->tick_may_crit ? "true" : "false",
                    a->tick_zero ? "true" : "false",
+                   a->tick_on_application ? "true" : "false",
                    a->attack_power_mod.tick,
                    a->spell_power_mod.tick,
                    a->base_td,
@@ -1945,9 +1951,9 @@ void print_html_player_scale_factor_table( report::sc_html_stream& os, const sim
   os << "<tr>\n"
      << "<th></th>\n";
 
-  for ( size_t i = 0; i < scaling_stats.size(); i++ )
+  for ( auto scaling_stat : scaling_stats )
   {
-    os.printf( "<th>%s</th>\n", util::stat_type_abbrev( scaling_stats[ i ] ) );
+    os.printf( "<th>%s</th>\n", util::stat_type_abbrev( scaling_stat ) );
   }
 
   if ( p.sim->scaling->scale_lag )
@@ -2285,11 +2291,11 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
   {
     os.printf( "<td class=\"left\">%s</td>\n"
                "<td class=\"left\">%c</td>\n"
-               "<td class=\"left\">%s</td>\n"
+               "<td class=\"left\">%s%s</td>\n"
                "<td class=\"left\">%s</td>\n",
                data.action->action_list ? util::encode_html( data.action->action_list->name_str ).c_str() : "unknown",
                data.action->marker != 0 ? data.action->marker : ' ',
-               util::encode_html( data.action->name() ).c_str(),
+               util::encode_html( data.action->name() ).c_str(), data.queue_failed ? " (queue failed)" : "",
                util::encode_html( data.target->name() ).c_str() );
   }
   else
@@ -2458,9 +2464,9 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, const p
       if ( !sequence_data.action || !sequence_data.action->harmful )
         continue;
       bool found = false;
-      for ( size_t j = 0; j < targets.size(); ++j )
+      for ( const auto& target : targets )
       {
-        if ( targets[ j ] == sequence_data.target->name() )
+        if ( target == sequence_data.target->name() )
         {
           found = true;
           break;
@@ -2482,12 +2488,12 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, const p
 
     int j = 0;
 
-    for ( size_t i = 0; i < targets.size(); ++i )
+    for ( const auto& target : targets )
     {
       if ( j == 12 )
         j = 2;
       os.printf( ".%s_seq_target_%s { color: #%s; }\n", util::remove_special_chars( p.name_str ).c_str(),
-                 util::remove_special_chars( targets[ i ] ).c_str(), colors[ j ] );
+                 util::remove_special_chars( target ).c_str(), colors[ j ] );
       j++;
     }
 
@@ -3263,12 +3269,12 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
       {
         os << "<h4>Stat Details</h4>\n"
            << "<ul>\n";
-        for ( size_t j = 0; j < stat_buff->stats.size(); ++j )
+        for ( const auto& stat : stat_buff->stats )
         {
           os.printf( "<li><span class=\"label\">stat:</span>%s</li>\n"
                      "<li><span class=\"label\">amount:</span>%.2f</li>\n",
-                     util::stat_type_string( stat_buff->stats[ j ].stat ),
-                     stat_buff->stats[ j ].amount );
+                     util::stat_type_string( stat.stat ),
+                     stat.amount );
         }
         os << "</ul>\n";
       }
@@ -3389,11 +3395,9 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
   os << "</tr>\n"
      << "</thead>\n";
 
-  for ( size_t i = 0; i < ri.dynamic_buffs.size(); i++ )
+  for ( const auto* b : ri.dynamic_buffs )
   {
-    buff_t* b = ri.dynamic_buffs[ i ];
-
-    os << "<tbody>\n";
+     os << "<tbody>\n";
     print_html_player_buff( os, *b, p.sim->report_details, p );
     os << "</tbody>\n";
   }
@@ -3409,11 +3413,9 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
        << "</tr>\n"
        << "</thead>\n";
 
-    for ( size_t i = 0; i < ri.constant_buffs.size(); i++ )
+    for ( const auto* b : ri.constant_buffs )
     {
-      buff_t* b = ri.constant_buffs[ i ];
-
-      os << "<tbody>\n";
+       os << "<tbody>\n";
       print_html_player_buff( os, *b, p.sim->report_details, p, true );
       os << "</tbody>\n";
     }
@@ -3883,6 +3885,37 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
 
       os << "</ul></td>\n";
       os << "</tr>\n";
+    }
+
+    // Set Bonuses
+    if ( p.sets )
+    {
+      auto bonuses = p.sets->enabled_set_bonus_data();
+
+      if ( !bonuses.empty() )
+      {
+        int curr_tier = set_bonus_type_e::SET_BONUS_NONE;
+
+        os << "<tr class=\"left\"><th>Set Bonus</th><td><ul class=\"float\">\n";
+
+        for ( auto bonus : bonuses )
+        {
+          if ( curr_tier != bonus->enum_id )
+          {
+            if ( curr_tier != set_bonus_type_e::SET_BONUS_NONE )
+              os << "</ul></td></tr>\n<tr class=\"left\"><th></th><td><ul class=\"float\">\n";
+
+            fmt::print( os, "<li>{}</li>\n", report_decorators::decorated_set( sim, *bonus ) );
+
+            curr_tier = bonus->enum_id;
+          }
+
+          fmt::print( os, "<li>{} ({}pc)</li>\n",
+                      report_decorators::decorated_spell_data( sim, p.find_spell( bonus->spell_id ) ), bonus->bonus );
+        }
+
+        os << "</ul></td></tr>\n";
+      }
     }
 
     // Essence

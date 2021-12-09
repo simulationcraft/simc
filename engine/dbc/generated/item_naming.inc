@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.1.0.40120
-static const std::array<item_name_description_t, 644> __item_name_description_data { {
+// Item name descriptions, wow build 9.1.5.41031
+static const std::array<item_name_description_t, 648> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -200,7 +200,7 @@ static const std::array<item_name_description_t, 644> __item_name_description_da
   { 13299, "Legion Season 5"                             },
   { 13300, "Legion Season 5 Elite"                       },
   { 13301, "Gladiator"                                   },
-  { 13302, "Combatant"                                   },
+  { 13302, "Combatant I"                                 },
   { 13303, "Aspirant"                                    },
   { 13304, "Honor"                                       },
   { 13305, "Sunwell"                                     },
@@ -239,8 +239,8 @@ static const std::array<item_name_description_t, 644> __item_name_description_da
   { 13338, "Unsullied"                                   },
   { 13339, "Unsullied"                                   },
   { 13343, "Azerite Level 3"                             },
-  { 13445, "Challenger"                                  },
-  { 13446, "Rival"                                       },
+  { 13445, "Challenger I"                                },
+  { 13446, "Rival I"                                     },
   { 13447, "Duelist"                                     },
   { 13448, "Warfront"                                    },
   { 13449, "Artifact Power"                              },
@@ -644,5 +644,9 @@ static const std::array<item_name_description_t, 644> __item_name_description_da
   { 13889, "Elysian Might"                               },
   { 13890, "Divine Resonance"                            },
   { 13891, "Priceless"                                   },
+  { 13895, "Combatant II"                                },
+  { 13896, "Challenger II"                               },
+  { 13897, "Rival II"                                    },
+  { 13911, "Shadowlands Season 2"                        },
 } };
 

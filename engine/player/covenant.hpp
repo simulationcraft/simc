@@ -143,6 +143,8 @@ public:
   /// Parse player-scope "renown" option
   bool parse_renown( sim_t* sim, util::string_view name, util::string_view value );
 
+  bool is_conduit_socket_empowered( unsigned soulbind_id, unsigned tier, unsigned ui_order );
+
   /// Sets renown level and looks up renown abilities based on the level.
   void set_renown_level( unsigned renown_level );
 
@@ -204,7 +206,7 @@ struct covenant_cb_base_t
   bool trigger_on_base;   // proc off base ability
 
   covenant_cb_base_t( bool on_class = true, bool on_base = false );
-  virtual ~covenant_cb_base_t() {}
+  virtual ~covenant_cb_base_t() = default;
   virtual void trigger( action_t*, action_state_t* ) = 0;
 };
 
@@ -222,7 +224,7 @@ struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
 
 covenant_ability_cast_cb_t* get_covenant_callback( player_t* p );
 
-action_t* create_action( player_t* player, util::string_view name, const std::string& options );
+action_t* create_action( player_t* player, util::string_view name, util::string_view options );
 
 bool parse_blizzard_covenant_information( player_t* player, const rapidjson::Value& covenant_data );
 
@@ -233,7 +235,7 @@ namespace report_decorators
 std::string decorated_conduit_name( const sim_t& sim, const conduit_data_t& conduit );
 }
 
-inline void format_to( covenant_e covenant, fmt::format_context::iterator out )
+inline void sc_format_to( covenant_e covenant, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "{}", util::covenant_type_string( covenant ) );
 }

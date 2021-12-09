@@ -5,13 +5,16 @@
 
 #include "sc_option.hpp"
 
-#include <iostream>
+#include "config.hpp"
 
 #include "fmt/format.h"
+#include "lib/utf8-cpp/utf8.h"
+#include "util/generic.hpp"
 #include "util/io.hpp"
 #include "util/util.hpp"
-#include "util/generic.hpp"
-#include "lib/utf8-cpp/utf8.h"
+
+#include <iostream>
+#include <utility>
 
 namespace { // UNNAMED NAMESPACE ============================================
 
@@ -364,9 +367,9 @@ private:
 
 struct opts_sim_func_t : public option_t
 {
-  opts_sim_func_t( util::string_view name, const opts::function_t& ref ) :
+  opts_sim_func_t( util::string_view name, opts::function_t  ref ) :
     option_t( name ),
-    _fun( ref )
+    _fun(std::move( ref ))
   { }
 protected:
   opts::parse_status do_parse( sim_t* sim, util::string_view n, util::string_view value ) const override
@@ -551,8 +554,7 @@ protected:
     if ( name != this -> name() )
       return opts::parse_status::CONTINUE;
 
-    fmt::print( std::cerr, "Option '{}' has been obsoleted and will be removed in the future.", name );
-    std::cerr << std::endl;
+    fmt::print( stderr, "Option '{}' has been obsoleted and will be removed in the future.\n", name );
     return opts::parse_status::OK;
   }
 
@@ -574,7 +576,7 @@ opts::parse_status option_t::parse( sim_t* sim, util::string_view name, util::st
   }
 }
 
-void format_to( const option_t& option, fmt::format_context::iterator out )
+void sc_format_to( const option_t& option, fmt::format_context::iterator out )
 {
   option.do_format_to( out );
 }
@@ -653,7 +655,7 @@ bool option_db_t::parse_file( std::istream& input )
       // Skip the UTF-8 BOM, if any.
       if ( utf8::starts_with_bom( it, end ) )
       {
-        it += range::size( utf8::bom );
+        it += std::size( utf8::bom );
       }
     }
 
@@ -823,6 +825,13 @@ void option_db_t::parse_args( util::span<const std::string> args )
 option_db_t::option_db_t()
 {
   std::vector<std::string> paths = { "..", "./profiles", "../profiles", SC_SHARED_DATA };
+
+#if defined(SC_LINUX)
+  paths.emplace_back("~/.local/share/SimulationCraft/SimulationCraft/profiles");
+  paths.emplace_back("/usr/local/share/SimulationCraft/SimulationCraft/profiles");
+  paths.emplace_back("/usr/share/SimulationCraft/SimulationCraft/profiles");
+  paths.emplace_back("./share/SimulationCraft/SimulationCraft/profiles");
+#endif
 
   // This makes baby pandas cry a bit less, but still makes them weep.
 

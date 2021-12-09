@@ -85,7 +85,7 @@ struct event_t : private noncopyable
   virtual const char* name() const
   { return "core_event_t"; }
 
-  virtual ~event_t() {}
+  virtual ~event_t() = default;
 
   template<class T>
   static void cancel( T& e )
@@ -96,7 +96,7 @@ struct event_t : private noncopyable
   }
   static void cancel( event_t*& e );
 
-  friend void format_to( const event_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const event_t&, fmt::format_context::iterator );
 
 protected:
   template <typename Event, typename... Args>
@@ -104,7 +104,7 @@ protected:
   static void* operator new( std::size_t size, sim_t& sim );
   static void  operator delete( void*, sim_t& ) { }
   static void  operator delete( void* ) { }
-  static void* operator new( std::size_t ) = delete;
+  static void* operator new( std::size_t ) = delete; // NOLINT(modernize-use-equals-delete)
 };
 
 /**

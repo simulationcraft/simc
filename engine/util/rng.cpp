@@ -171,13 +171,13 @@ double stdnormal_cdf( double u )
 
   if ( y <= 0.46875 * sqrt( 2.0 ) )
   {
-    static const double a[5] =
+    static constexpr double a[5] =
     {
       1.161110663653770e-002, 3.951404679838207e-001, 2.846603853776254e+001,
       1.887426188426510e+002, 3.209377589138469e+003
     };
 
-    static const double b[5] =
+    static constexpr double b[5] =
     {
       1.767766952966369e-001, 8.344316438579620e+000, 1.725514762600375e+002,
       1.813893686502485e+003, 8.044716608901563e+003
@@ -430,7 +430,7 @@ namespace detail {
 template <typename Tuple, typename F, std::size_t... I>
 void for_each_impl(Tuple&& t, F&& f, std::index_sequence<I...>)
 {
-  int _[] = { ( range::invoke( std::forward<F>( f ), std::get<I>( std::forward<Tuple>(t) ) ), 0 )... };
+  int _[] = { ( std::invoke( std::forward<F>( f ), std::get<I>( std::forward<Tuple>(t) ) ), 0 )... };
   (void)_;
 }
 }

@@ -233,6 +233,7 @@ struct immolate_t : public destruction_spell_t
     spell_power_mod.tick = dmg_spell->effectN( 1 ).sp_coeff();
     hasted_ticks         = true;
     tick_may_crit        = true;
+    affected_by_woc      = true;
   }
 
   void tick( dot_t* d ) override
@@ -586,6 +587,14 @@ struct chaos_bolt_t : public destruction_spell_t
     add_child( internal_combustion );
   }
 
+  double cost() const override
+  {
+    if ( p()->buffs.herald_of_chaos->check() )
+      return 0.0;
+
+    return destruction_spell_t::cost();      
+  }
+
   void schedule_execute( action_state_t* state = nullptr ) override
   {
     destruction_spell_t::schedule_execute( state );
@@ -594,6 +603,9 @@ struct chaos_bolt_t : public destruction_spell_t
   timespan_t execute_time() const override
   {
     timespan_t h = warlock_spell_t::execute_time();
+    
+    if ( p()->buffs.herald_of_chaos->check() )
+      return 0_s;
 
     if ( p()->buffs.backdraft->check() )
       h *= backdraft_cast_time;
@@ -683,6 +695,25 @@ struct chaos_bolt_t : public destruction_spell_t
     // SL - Legendary
     if ( p()->legendary.madness_of_the_azjaqir->ok() )
       p()->buffs.madness_of_the_azjaqir->trigger();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
+    {
+      if ( p()->buffs.herald_of_chaos->check() )
+      {
+        if (p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ))
+        {
+          p()->warlock_pet_list.aod_infernals.spawn( p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000, 1U );
+          p()->procs.avatar_of_destruction->occur();
+        }
+        p()->buffs.herald_of_chaos->expire();
+      }
+      // As far as current testing shows, it is not possible to get a proc from a free cast RoF/CB via Ritual of Ruin
+      else if ( rng().roll( p()->sets->set( WARLOCK_DESTRUCTION, T28, B2 )->proc_chance() ) )
+      {
+        p()->procs.ritual_of_ruin->occur();
+        p()->buffs.herald_of_fire->trigger();
+      }
+    }
   }
 
   // Force spell to always crit
@@ -743,11 +774,11 @@ struct summon_infernal_t : public destruction_spell_t
     if ( infernal_awakening )
       infernal_awakening->execute();
 
-    for ( size_t i = 0; i < p()->warlock_pet_list.infernals.size(); i++ )
+    for ( auto* infernal : p()->warlock_pet_list.infernals )
     {
-      if ( p()->warlock_pet_list.infernals[ i ]->is_sleeping() )
+      if ( infernal->is_sleeping() )
       {
-        p()->warlock_pet_list.infernals[ i ]->summon( infernal_duration );
+        infernal->summon( infernal_duration );
       }
     }
 
@@ -814,9 +845,37 @@ struct rain_of_fire_t : public destruction_spell_t
     }
   }
 
+  double cost() const override
+  {
+    if ( p()->buffs.herald_of_fire->check() )
+      return 0.0;
+
+    return destruction_spell_t::cost();      
+  }
+
   void execute() override
   {
     destruction_spell_t::execute();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
+    {
+      if ( p()->buffs.herald_of_fire->check() )
+      {
+        if (p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ))
+        {
+          p()->warlock_pet_list.aod_infernals.spawn( p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000, 1U );
+          p()->procs.avatar_of_destruction->occur();
+        }
+
+        p()->buffs.herald_of_fire->expire();
+      }
+      // As far as current testing shows, it is not possible to get a proc from a free cast RoF/CB via Ritual of Ruin
+      else if ( rng().roll( p()->sets->set( WARLOCK_DESTRUCTION, T28, B2 )->proc_chance() ) )
+      {
+        p()->procs.ritual_of_ruin->occur();
+        p()->buffs.herald_of_chaos->trigger();
+      }
+    }
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                     ground_aoe_params_t()
@@ -988,7 +1047,7 @@ namespace buffs
 }  // namespace buffs
 
 // add actions
-action_t* warlock_t::create_action_destruction( util::string_view action_name, const std::string& options_str )
+action_t* warlock_t::create_action_destruction( util::string_view action_name, util::string_view options_str )
 {
   using namespace actions_destruction;
 
@@ -1037,7 +1096,8 @@ void warlock_t::create_buffs_destruction()
                               ->set_trigger_spell( talents.reverse_entropy )
                               ->add_invalidate( CACHE_HASTE );
 
-  //Spell 335236 holds the duration of the proc'd infernal's duration, storing it in default value of the buff for use later
+  // Spell 335236 holds the duration of the proc'd infernal's duration, storing it in default value of the buff for use
+  // later
   buffs.rain_of_chaos = make_buff( this, "rain_of_chaos", find_spell( 266087 ) )
                             ->set_default_value( find_spell( 335236 )->_duration );
 
@@ -1050,8 +1110,12 @@ void warlock_t::create_buffs_destruction()
   buffs.madness_of_the_azjaqir =
       make_buff( this, "madness_of_the_azjaqir", legendary.madness_of_the_azjaqir->effectN( 1 ).trigger() )
           ->set_trigger_spell( legendary.madness_of_the_azjaqir );
-}
 
+  // Tier Sets
+  buffs.herald_of_fire = make_buff ( this, "herald_of_fire", find_spell ( 364348 ) );
+
+  buffs.herald_of_chaos = make_buff ( this, "herald_of_chaos", find_spell ( 364349 ) );
+}
 void warlock_t::init_spells_destruction()
 {
   using namespace actions_destruction;

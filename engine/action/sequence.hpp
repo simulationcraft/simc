@@ -29,12 +29,13 @@ struct sequence_t : public action_t
 
   sequence_t(player_t*, util::string_view sub_action_str);
 
-  virtual void schedule_execute(action_state_t* execute_state = nullptr) override;
-  virtual void reset() override;
-  virtual bool ready() override;
+  void schedule_execute(action_state_t* execute_state = nullptr) override;
+  void reset() override;
+  bool ready() override;
+  void init_finished() override;
+  
   void restart();
   bool can_restart();
-  void init_finished() override;
 };
 
 struct strict_sequence_t : public action_t

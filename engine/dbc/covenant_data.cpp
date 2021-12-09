@@ -64,6 +64,11 @@ util::span<const renown_reward_entry_t> renown_reward_entry_t::data( bool ptr )
   return SC_DBC_GET_DATA( __renown_reward_ability_data, __ptr_renown_reward_ability_data, ptr );
 }
 
+util::span<const enhanced_conduit_entry_t> enhanced_conduit_entry_t::data( bool ptr )
+{
+  return SC_DBC_GET_DATA( __enhanced_conduit_data, __ptr_enhanced_conduit_data, ptr );
+}
+
 const conduit_entry_t& conduit_entry_t::find( util::string_view name,
                                               bool              ptr,
                                               bool              tokenized )

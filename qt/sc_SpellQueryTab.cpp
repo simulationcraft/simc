@@ -5,6 +5,8 @@
 
 #include "sc_SpellQueryTab.hpp"
 
+#include <utility>
+
 #include "MainWindow.hpp"
 #include "util/util.hpp"
 #include "simulationcraftqt.hpp"
@@ -18,11 +20,11 @@ struct FilterEntry
   const bool spell_source;
   const bool talent_source;
   const QString operand_type;
-  FilterEntry(const QString& q_char, bool spell_source, bool talent_source, const QString& operand_type)
-    : name(q_char),
-      spell_source(spell_source),
-      talent_source(talent_source),
-      operand_type(operand_type)
+  FilterEntry( QString q_char, bool spell_source, bool talent_source, QString operand_type )
+    : name( std::move( q_char ) ),
+      spell_source( spell_source ),
+      talent_source( talent_source ),
+      operand_type( std::move( operand_type ) )
   {
   }
 };
@@ -172,11 +174,11 @@ SC_SpellQueryTab::SC_SpellQueryTab( SC_MainWindow* parent ) : QWidget( parent ),
 
   // Add a label
   label.input = new QLabel( tr( "Input Options" ) );
-  gridLayout->addWidget( label.input, 0, 0, nullptr );
+  gridLayout->addWidget( label.input, 0, 0 );
 
   // Element (1,0) is a GroupBox containing the inputs
   QGroupBox* inputGroupBox = new QGroupBox();
-  gridLayout->addWidget( inputGroupBox, 1, 0, nullptr );
+  gridLayout->addWidget( inputGroupBox, 1, 0 );
 
   // Layout of the groupbox
   QGridLayout* inputGroupBoxLayout = new QGridLayout();
@@ -245,8 +247,8 @@ SC_SpellQueryTab::SC_SpellQueryTab( SC_MainWindow* parent ) : QWidget( parent ),
   QFont f( "monospace" );
   f.setStyleHint( QFont::Monospace );
   textbox.result->setFont( f );
-  gridLayout->addWidget( label.output, 2, 0, nullptr );
-  gridLayout->addWidget( textbox.result, 3, 0, nullptr );
+  gridLayout->addWidget( label.output, 2, 0 );
+  gridLayout->addWidget( textbox.result, 3, 0 );
 
   // this adjusts the relative width of each column
   // gridLayout -> setColumnStretch( 0, 1 );

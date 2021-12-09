@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <numeric>
 #include <functional>
 #include <type_traits>
 
@@ -85,8 +86,8 @@ protected:
   noncopyable( noncopyable&& ) = default;
   noncopyable& operator=( noncopyable&& ) = default;
 
-  noncopyable( const noncopyable& ) = delete;
-  noncopyable& operator=( const noncopyable& ) = delete;
+  noncopyable( const noncopyable& ) = delete; // NOLINT(modernize-use-equals-delete)
+  noncopyable& operator=( const noncopyable& ) = delete; // NOLINT(modernize-use-equals-delete)
 };
 
 /**
@@ -99,8 +100,8 @@ class nonmoveable : private noncopyable
 {
 protected:
   nonmoveable()                = default;
-  nonmoveable( nonmoveable&& ) = delete;
-  nonmoveable& operator=( nonmoveable&& ) = delete;
+  nonmoveable( nonmoveable&& ) = delete; // NOLINT(modernize-use-equals-delete)
+  nonmoveable& operator=( nonmoveable&& ) = delete; // NOLINT(modernize-use-equals-delete)
 };
 
 // Adapted from (read "stolen") boost::checked_deleter
@@ -109,25 +110,11 @@ struct delete_disposer_t
   template <typename T>
   void operator()( T* t ) const
   {
-    typedef int force_T_to_be_complete[ sizeof( T ) ? 1 : -1 ];
+    using force_T_to_be_complete = int[ sizeof( T ) ? 1 : -1 ]; // NOLINT(modernize-avoid-c-arrays)
     (void)sizeof( force_T_to_be_complete );
     delete t;
   }
 };
-
-namespace meta {
-
-// Poor-mans substitute for C++17 inline constexpr variables
-// To fully simulate it should be used like:
-//   constexpr const T& name = meta::static_const_t<T>::value;
-// TODO C++17: replace all usages with direct inline constexpr
-template <typename T>
-struct static_const_t {
-  static constexpr T value {};
-};
-template <typename T> constexpr T static_const_t<T>::value;
-
-} // namespace meta
 
 // Generic algorithms =======================================================
 
@@ -206,17 +193,6 @@ using iterator_t = decltype(range::begin(std::declval<R&>()));
 template <typename R>
 using value_type_t = typename std::iterator_traits<iterator_t<R>>::value_type;
 
-// std::size ================================================================
-
-template <typename C>
-constexpr auto size(const C& c) -> decltype(c.size()) {
-  return c.size();
-}
-template <typename T, size_t N>
-constexpr size_t size(const T (&)[N]) noexcept {
-  return N;
-}
-
 // Default projection for projection-enabled algorithms =====================
 
 struct identity {
@@ -226,22 +202,6 @@ struct identity {
   }
   using is_transparent = std::true_type;
 };
-
-// Bare-bones std::invoke ===================================================
-
-template <typename Fn, typename... Args,
-        std::enable_if_t<std::is_member_pointer<std::decay_t<Fn>>{}, int> = 0 >
-decltype(auto) invoke(Fn&& fn, Args&&... args)
-{
-  return std::mem_fn(fn)(std::forward<Args>(args)...);
-}
-
-template <typename Fn, typename... Args,
-         std::enable_if_t<!std::is_member_pointer<std::decay_t<Fn>>{}, int> = 0>
-decltype(auto) invoke(Fn&& fn, Args&&... args)
-{
-  return std::forward<Fn>(fn)(std::forward<Args>(args)...);
-}
 
 // Range-based generic algorithms ===========================================
 
@@ -277,6 +237,28 @@ inline Range& fill( Range& r, value_type_t<Range> const& t )
   return r;
 }
 
+template <typename Range, typename T>
+inline Range& accumulate( Range& r, const T& init )
+{
+  return std::accumulate( range::begin( r ), range::end( r ), init );
+}
+
+template <typename Range, typename T, typename BinaryOperation>
+inline Range& accumulate( Range& r, const T& init, BinaryOperation o )
+{
+  return std::accumulate( range::begin( r ), range::end( r ), init, o );
+}
+
+// This could probably be done with some SFINAE magic, for now just add a suffix
+template <typename Range, typename T, typename Proj>
+inline T accumulate_proj( Range& r, const T& init, Proj proj )
+{
+  const auto op = [&proj]( const T& current, auto&& v ) {
+    return std::invoke( proj, std::forward<decltype(v)>( v ) ) + current;
+  };
+  return std::accumulate( range::begin( r ), range::end( r ), init, op );
+}
+
 #if defined( SC_GCC )
 // Workaround for GCC 4.6+ optimization ( -O3 ) issue with filling C-arrays
 template <typename T, size_t N>
@@ -306,7 +288,7 @@ template <typename Range, typename T, typename Proj>
 inline iterator_t<Range> find( Range& r, T const& value, Proj proj )
 {
   const auto pred = [&value, &proj]( auto&& v ) {
-    return range::invoke( proj, std::forward<decltype(v)>( v ) ) == value;
+    return std::invoke( proj, std::forward<decltype(v)>( v ) ) == value;
   };
   return std::find_if( range::begin( r ), range::end( r ), pred );
 }
@@ -467,7 +449,7 @@ template <typename Range, typename T, typename Compare = std::less<>, typename P
 iterator_t<Range> lower_bound( Range& r, const T& value, Compare comp = Compare{}, Proj proj = Proj{} )
 {
   const auto pred = [&value, &proj, &comp]( auto&& v ) {
-    return range::invoke( comp, range::invoke( proj, std::forward<decltype(v)>( v ) ), value );
+    return std::invoke( comp, std::invoke( proj, std::forward<decltype(v)>( v ) ), value );
   };
   return std::partition_point( range::begin( r ), range::end( r ), pred );
 }
@@ -476,7 +458,7 @@ template <typename Range, typename T, typename Compare = std::less<>, typename P
 iterator_t<Range> upper_bound( Range& r, const T& value, Compare comp = Compare{}, Proj proj = Proj{} )
 {
   const auto pred = [&value, &proj, &comp]( auto&& v ) {
-    return !range::invoke( comp, value, range::invoke( proj, std::forward<decltype(v)>( v ) ) );
+    return !std::invoke( comp, value, std::invoke( proj, std::forward<decltype(v)>( v ) ) );
   };
   return std::partition_point( range::begin( r ), range::end( r ), pred );
 }
@@ -495,7 +477,7 @@ template <typename Range, typename Pred, typename Proj = identity>
 iterator_t<Range> partition( Range& r, Pred pred_, Proj proj = Proj{} )
 {
   auto pred = [&pred_, &proj]( auto&& v ) -> bool {
-    return range::invoke( pred_, range::invoke( proj, std::forward<decltype(v)>( v ) ) );
+    return std::invoke( pred_, std::invoke( proj, std::forward<decltype(v)>( v ) ) );
   };
   return std::partition( range::begin( r ), range::end( r ), pred );
 }

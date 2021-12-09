@@ -1,5 +1,5 @@
-// Gem properties, wow build 9.1.5.40196
-static const std::array<gem_property_data_t, 1930> __ptr_gem_property_data { {
+// Gem properties, wow build 9.2.0.41360
+static const std::array<gem_property_data_t, 1950> __ptr_gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
   {    4,  2688, 0x00000004 }, // +$k1 Stamina
@@ -1930,5 +1930,25 @@ static const std::array<gem_property_data_t, 1930> __ptr_gem_property_data { {
   { 3900,  6341, 0x00100000 }, // $spell@spelldesc357076
   { 3901,  6342, 0x00100000 }, // $spell@spelldesc357068
   { 3902,  6343, 0x00100000 }, // $spell@spelldesc357077
+  { 3903,  6352, 0x00000020 }, // $spell@spelldesc365544
+  { 3904,  6364, 0x00000020 }, // $spell@spelldesc365545
+  { 3905,  6353, 0x00000020 }, // $spell@spelldesc365539
+  { 3906,  6354, 0x00000020 }, // $spell@spelldesc361357
+  { 3907,  6355, 0x00000020 }, // $spell@spelldesc361356
+  { 3908,  6356, 0x00000020 }, // $spell@spelldesc365547
+  { 3909,  6357, 0x00000020 }, // $spell@spelldesc361358
+  { 3910,  6358, 0x00000020 }, // $spell@spelldesc365542
+  { 3911,  6359, 0x00000020 }, // $spell@spelldesc365550
+  { 3912,  6360, 0x00000020 }, // $spell@spelldesc365522
+  { 3913,  6361, 0x00000020 }, // $spell@spelldesc365527
+  { 3914,  6362, 0x00000020 }, // $spell@spelldesc365540
+  { 3915,  6363, 0x00000020 }, // $spell@spelldesc365528
+  { 3916,  6365, 0x00000020 }, // $spell@spelldesc365541
+  { 3917,  6366, 0x00000020 }, // $spell@spelldesc365524
+  { 3918,  6367, 0x00000020 }, // $spell@spelldesc365549
+  { 3919,  6368, 0x00000020 }, // $spell@spelldesc365543
+  { 3920,  6369, 0x00000020 }, // $spell@spelldesc365548
+  { 3921,  6370, 0x00000020 }, // $spell@spelldesc365551
+  { 3922,  6371, 0x00000020 }, // $spell@spelldesc365546
 } };
 

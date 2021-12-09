@@ -1,4 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.39804 Live (hotfix 2021-08-31/39804, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41031 Live (hotfix 2021-11-16/41031, no-networking)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -851,6 +851,7 @@ Allies receiving this effect will become Exhausted and unable to benefit from He
 Tooltip          : Haste increased by $w1%.
 
 Name             : Blood Fury (desc=Racial) (id=33697) 
+Hotfixed         : Attributes
 Class            : Shaman, Monk
 Race             : Orc (0x2)
 School           : Physical
@@ -862,10 +863,10 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
+                 : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=23581)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 122.1966 (coefficient=1.28628) | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -1762,6 +1763,7 @@ Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (desc=Racial) (id=68992) 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1773,10 +1775,10 @@ Attributes       : ........ ........ ........ ........   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow While Stealthed (37)
+                 : Allow While Stealthed (37), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=71777)    : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2135,10 +2137,10 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow Cast While Casting (135), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow Cast While Casting (135), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=68406)    : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
@@ -2327,7 +2329,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Unknown(87)
 #2 (id=323958)   : Summon (28)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 53006 | Misc Value 2: 0xd47 | Target: Unknown(87)
-Description      : Summons a totem at the target location for $d, which reduces damage taken by all party and raid members within $98007a1 yards by $98007s1%. Every $98017t1 sec the health of all affected players is redistributed, such that all players are at the same percentage of maximum health.
+Description      : Summons a totem at the target location for $d, which reduces damage taken by all party and raid members within $98007a1 yards by $98007s1%. Immediately and every $98017t1 sec, the health of all affected players is redistributed evenly.
 
 Name             : Spirit Link (id=98017) [Spell Family (11), Hidden] 
 Class            : Shaman
@@ -2437,10 +2439,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Can Proc From Procs (122)
+                 : Not Shapeshifted (16), Can Proc From Procs (122), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=119338)   : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3116,7 +3118,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 
 Name             : Restoration Shaman (id=137039) [Spell Family (11), Passive, Hidden] 
-Class            : Restoration Death Knight, Shaman
+Class            : Restoration Shaman
 School           : Physical
 Spell Type       : None
 Labels           : 1182: Resurgence (16196 effect#2), Resurgence (16196 effect#3)
@@ -3172,7 +3174,7 @@ Effects          :
 Description      : Restoration Shaman core passive
 
 Name             : Elemental Shaman (id=137040) [Spell Family (11), Passive, Hidden] 
-Class            : Elemental Death Knight, Shaman
+Class            : Elemental Shaman
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3213,7 +3215,7 @@ Effects          :
 Description      : Elemental Shaman baseline passive
 
 Name             : Enhancement Shaman (id=137041) [Spell Family (11), Passive, Hidden] 
-Class            : Enhancement Death Knight, Shaman
+Class            : Enhancement Shaman
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3488,7 +3490,7 @@ Effects          :
 Description      : Every ${$c*$s1} mana you spend brings a High Tide, making your next $288675n Chain Heals heal for an additional $288675s1% and not reduce with each jump.
 
 Name             : Storm Elemental (id=157299) [Spell Family (11)] 
-Class            : Death Knight, Shaman
+Class            : Shaman
 School           : Fire
 Spell Type       : None
 Spell Level      : 1
@@ -3591,7 +3593,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Trigger Spell: 269005 | Target: Enemy (6)
 #2 (id=713318)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-Description      : Channel the energy of the storms at your target, causing $269005s1 Nature damage to up to $269005I enemies within $269005A1 yards every $t1 sec.
+#3 (id=899571)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Description      : Channel the energy of the storms at your target, causing $269005s1 Nature damage to all enemies within $269005A1 yards every $t1 sec. Deals reduced damage beyond $s3 targets.
 
 The damage of this ability increases by $s2% every time it deals damage.
 Tooltip          : Suffering $<damage> Nature damage every $t1 sec.
@@ -4336,10 +4340,10 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Allow Class Ability Procs (416)
+                 : Is Ability (4), Not Shapeshifted (16), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=281765)   : Summon (28)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 97285 | Misc Value 2: 0xe6f | Radius: 10 yards | Target: AOE friendly (31)
@@ -4587,7 +4591,7 @@ Description      : Crash Lightning also electrifies the ground, leaving an elect
 
 Name             : Storm Elemental (id=192249) [Spell Family (11)] 
 Replaces         : Fire Elemental (id=198067)
-Class            : Death Knight, Shaman
+Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
@@ -7086,7 +7090,7 @@ Description      : Increases the critical strike chance of Crash Lightning by $s
 Tooltip          : Increases the critical strike chance of Crash Lightning by $s1 and increases the radius of Crash Lightning by $s2.
 
 Name             : Wind Gust (id=263806) [Spell Family (11)] 
-Class            : Death Knight, Shaman
+Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
@@ -7754,7 +7758,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
-Max Targets      : 6
 Triggered by     : Eye of the Storm (157375)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10872,10 +10875,10 @@ Attributes       : ........ ........ x....... ........   ..x...x. ........ .....
                  : ........ ........ ........ ........   ........ .x...x.. ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. .x...... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Name in Channel Bar (61), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Not In Spellbook Until Learned (269), Haste Affects Duration (273)
+                 : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Name in Channel Bar (61), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=821748)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
@@ -10885,7 +10888,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 328933 | Target: Self (1)
 #4 (id=871384)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Transfer the life force of up to $328928I enemies in the targeted area, dealing ${$328928s1*$d/$t2} Nature damage evenly split to each enemy target over $d. $?a137041[
+Description      : Transfer the life force of up to $328928I enemies in the targeted area, dealing ${($328928s1*$d/$t2) + $328928s1} Nature damage evenly split to each enemy target over $d. $?a137041[
 
 Fully channeling Fae Transfusion generates $s4 $Lstack:stacks; of Maelstrom Weapon.][]
 
@@ -12410,7 +12413,7 @@ Name             : Elysian Dirge (id=339182) [Spell Family (11), Passive, Hidden
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
-Conduit Id       : 146 (values=40, 43, 46, 49, 52, 55, 58, 61, 64, 67, 70, 73, 76, 79, 82)
+Conduit Id       : 146 (values=60, 64.5, 69, 73.5, 78, 82.5, 87, 91.5, 96, 100.5, 105, 109.5, 114, 118.5, 123)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

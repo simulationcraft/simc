@@ -1,8 +1,13 @@
 TEMPLATE = subdirs
-SUBDIRS = lib cli gui
+SUBDIRS = lib cli
 
 cli.depends = lib
-gui.depends = lib
+
+# Windows Arm64 does not support QtWebEngine; Do not build GUI
+!win32-arm64-msvc {
+  SUBDIRS += gui
+  gui.depends = lib
+}
 
 lessThan( QT_MAJOR_VERSION, 5 ) {
   error( "SimulationCraft requires QT 5 or higher." )

@@ -8,9 +8,11 @@
 #include "unique_gear.hpp"
 
 #include "unique_gear_shadowlands.hpp"
+#include "player/scaling_metric_data.hpp"
 #include "player/soulbinds.hpp"
 #include "simulationcraft.hpp"
 #include "dbc/racial_spells.hpp"
+#include "util/util.hpp"
 #include <cctype>
 #include <memory>
 
@@ -2003,7 +2005,7 @@ void item::readiness( special_effect_t& effect )
   struct cooldowns_t
   {
     specialization_e spec;
-    const char*      cooldowns[8];
+    std::array<const char*, 8> cooldowns;
   };
 
   static const cooldowns_t __cd[] =
@@ -3002,7 +3004,7 @@ struct felstorm_tick_t : public melee_attack_t
 
 struct felstorm_t : public melee_attack_t
 {
-  felstorm_t( pet_t* p, const std::string& opts ) :
+  felstorm_t( pet_t* p, const util::string_view opts ) :
     melee_attack_t( "felstorm", p, p -> find_spell( 184279 ) )
   {
     parse_options( opts );
@@ -3073,7 +3075,7 @@ struct blademaster_pet_t : public pet_t
   }
 
   action_t* create_action( util::string_view name,
-                           const std::string& options_str ) override
+                           util::string_view options_str ) override
   {
     if ( name == "felstorm" )
     {
@@ -3411,7 +3413,7 @@ struct embrace_of_kimbul_t : public spell_t
     background = true;
     hasted_ticks = false;
     dot_max_stack = sd->max_stacks();
-    dot_behavior = DOT_REFRESH; //TOCHECK: Does the dot pandemic or should it be clipped?
+    dot_behavior = DOT_REFRESH_DURATION;
     ap_type = attack_power_type::NO_WEAPON;
     attack_power_mod.tick = 0.075; //Hardcoded in tooltip
     spell_power_mod.tick = 0.075;
@@ -3691,8 +3693,7 @@ void unique_gear::initialize_special_effect( special_effect_t& effect,
     if ( ! dbitem -> encoded_options.empty() )
     {
       std::string encoded_options = dbitem -> encoded_options;
-      for ( size_t i = 0; i < encoded_options.length(); i++ )
-        encoded_options[ i ] = std::tolower( encoded_options[ i ] );
+      util::tolower( encoded_options );
       // Note, if the encoding parse fails (this should never ever happen),
       // we don't parse game client data either.
       special_effect::parse_special_effect_encoding( effect, encoded_options );
@@ -3914,13 +3915,13 @@ struct item_effect_base_expr_t : public expr_t
   {
     const special_effect_t* e = nullptr;
 
-    for ( size_t i = 0; i < slots.size(); i++ )
+    for (auto slot : slots)
     {
-      e = player.items[ slots[ i ] ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
+      e = player.items[ slot ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
       if ( e && e -> source != SPECIAL_EFFECT_SOURCE_NONE )
         effects.push_back( e );
 
-      e = player.items[ slots[ i ] ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+      e = player.items[ slot ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
       if ( e && e -> source != SPECIAL_EFFECT_SOURCE_NONE )
         effects.push_back( e );
     }
@@ -3953,14 +3954,9 @@ struct item_effect_expr_t : public item_effect_base_expr_t
     return result;
   }
   
-  bool is_constant( double* value ) override
+  bool is_constant() override
   {
-    if (exprs.empty())
-    {
-      *value = 0;
-      return true;
-    }
-    return false;
+    return exprs.empty();
   }
 };
 
@@ -4001,9 +3997,8 @@ struct item_buff_exists_expr_t : public item_effect_expr_t
     }
   }
 
-  bool is_constant( double* value) override
+  bool is_constant() override
   {
-    *value = v;
     return true;
   }
 
@@ -4058,14 +4053,9 @@ struct item_ready_expr_t : public item_effect_base_expr_t
     return 1;
   }
     
-  bool is_constant( double* value ) override
+  bool is_constant() override
   {
-    if (effects.empty())
-    {
-      *value = 1;
-      return true;
-    }
-    return false;
+    return effects.empty();
   }
 };
 
@@ -4076,16 +4066,15 @@ struct item_is_expr_t : public expr_t
   item_is_expr_t( player_t& player, const std::vector<slot_e>& slots, util::string_view item_name )
     : expr_t( "item_is_expr" )
   {
-    for ( size_t i = 0; i < slots.size(); i++ )
+    for ( auto slot : slots )
     {
-      if ( player.items[ slots[ i ] ].name() == item_name )
+      if ( player.items[ slot ].name() == item_name )
         is = 1;
     }
   }
 
-  bool is_constant( double* value) override
+  bool is_constant() override
   {
-    *value = is;
     return true;
   }
 
@@ -4112,9 +4101,8 @@ struct item_cooldown_exists_expr_t : public item_effect_expr_t
     }
   }
 
-  bool is_constant( double* value) override
+  bool is_constant() override
   {
-    *value = v;
     return true;
   }
 
@@ -4197,9 +4185,8 @@ struct item_has_use_buff_expr_t : public item_effect_expr_t
       v = 1;
   }
 
-  bool is_constant( double* value) override
+  bool is_constant() override
   {
-    *value = v;
     return true;
   }
 
@@ -4246,6 +4233,12 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
   bool legendary_ring = false;
 
   auto splits = util::string_split<util::string_view>( name_str, "." );
+
+  // Shards of Domination
+  if ( splits[ 0 ] == "rune_word" )
+  {
+    return shadowlands::items::shards_of_domination::create_expression( player, name_str );
+  }
 
   if ( splits.size() < 2 )
   {

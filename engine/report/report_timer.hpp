@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "lib/fmt/printf.h"
+#include "lib/fmt/ostream.h"
 #include "util/chrono.hpp"
 
 #include <iosfwd>
@@ -19,12 +19,12 @@ class report_timer_t
 {
 private:
   std::string title;
-  std::ostream& out;
+  std::FILE* out;
   chrono::wall_clock::time_point start_time;
   bool started;
 
 public:
-  report_timer_t( std::string title, std::ostream& out ) : title( std::move( title ) ), out( out ), started( false )
+  report_timer_t( std::string title, std::FILE* out ) : title( std::move( title ) ), out( out ), started( false )
   {
   }
 

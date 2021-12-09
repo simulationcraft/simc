@@ -496,6 +496,7 @@ class CDNIndex(CASCObject):
 		self.build_number = 0
 		self.build_version = 0
 		self.cdn_idx = 0
+		self.bgdl = options.bgdl
 
 	# TODO: (More) Option based selectors
 	def get_build_cfg(self):
@@ -557,7 +558,7 @@ class CDNIndex(CASCObject):
 		return '%s/%s/%s/%s/%s' % (self.cdn_base_url(), type, file[:2], file[2:4], file)
 
 	def open_version(self):
-		version_url =  '%s/versions' % self.patch_base_url()
+		version_url =  '%s/%s' % (self.patch_base_url(), 'bgdl' if self.bgdl else 'versions')
 		handle = self.get_url(version_url)
 
 		for line in handle.iter_lines():

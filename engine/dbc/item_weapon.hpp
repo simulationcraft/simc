@@ -25,7 +25,7 @@ struct item_damage_one_hand_data_t
 
   float value( int quality ) const
   {
-    return as<unsigned>( quality ) < range::size( dps )
+    return as<unsigned>( quality ) < std::size( dps )
       ? dps[ as<unsigned>( quality ) ]
       : 0;
   }
@@ -46,7 +46,7 @@ struct item_damage_one_hand_caster_data_t
 
   float value( int quality ) const
   {
-    return as<unsigned>( quality ) < range::size( dps )
+    return as<unsigned>( quality ) < std::size( dps )
       ? dps[ as<unsigned>( quality ) ]
       : 0;
   }
@@ -67,7 +67,7 @@ struct item_damage_two_hand_data_t
 
   float value( int quality ) const
   {
-    return as<unsigned>( quality ) < range::size( dps )
+    return as<unsigned>( quality ) < std::size( dps )
       ? dps[ as<unsigned>( quality ) ]
       : 0;
   }
@@ -88,7 +88,7 @@ struct item_damage_two_hand_caster_data_t
 
   float value( int quality ) const
   {
-    return as<unsigned>( quality ) < range::size( dps )
+    return as<unsigned>( quality ) < std::size( dps )
       ? dps[ as<unsigned>( quality ) ]
       : 0;
   }

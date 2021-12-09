@@ -70,7 +70,7 @@ struct mem_fn_t {
 
   template <typename... Args>
   decltype(auto) operator()( Args&&... args ) const {
-    return range::invoke( Pm, std::forward<Args>(args)... );
+    return std::invoke( Pm, std::forward<Args>(args)... );
   }
 };
 
@@ -384,7 +384,7 @@ uint64_t race_str_to_mask( util::string_view str )
 {
   int race_id = -1;
 
-  for ( unsigned int i = 0; i < range::size( _race_strings ); ++i )
+  for ( unsigned int i = 0; i < std::size( _race_strings ); ++i )
   {
     if ( _race_strings[ i ].empty() )
       continue;
@@ -563,7 +563,7 @@ struct spell_list_expr_t : public spell_data_expr_t
   }
 
   // Intersect two spell lists
-  std::vector<uint32_t> operator&( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator&( const spell_data_expr_t& other ) const override
   {
     // Only intersect two spell lists together
     if ( other.result_tok != expression::TOK_SPELL_LIST )
@@ -575,7 +575,7 @@ struct spell_list_expr_t : public spell_data_expr_t
   }
 
   // Merge two spell lists, uniqueing entries
-  std::vector<uint32_t> operator|( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator|( const spell_data_expr_t& other ) const override
   {
     // Only merge two spell lists together
     if ( other.result_tok != expression::TOK_SPELL_LIST )
@@ -587,7 +587,7 @@ struct spell_list_expr_t : public spell_data_expr_t
   }
 
   // Subtract two spell lists, other from this
-  std::vector<uint32_t> operator-( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator-( const spell_data_expr_t& other ) const override
   {
     // Only substract two spell lists together
     if ( other.result_tok != expression::TOK_SPELL_LIST )
@@ -628,7 +628,7 @@ struct spell_list_expr_t : public spell_data_expr_t
     return res;
   }
 
-  /* [[noreturn]] */ void throw_invalid_op_arg( util::string_view op, const spell_data_expr_t& other ) {
+  /* [[noreturn]] */ void throw_invalid_op_arg( util::string_view op, const spell_data_expr_t& other ) const {
     throw std::invalid_argument(
             fmt::format( "Unsupported right side operand '{}' ({}) for operator {}",
               op, other.name_str, other.result_tok ) );
@@ -785,7 +785,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return res;
   }
 
-  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) const override
   {
     if ( other.result_tok != expression::TOK_NUM && other.result_tok != expression::TOK_STR )
       throw_invalid_op_arg( "==", other );
@@ -793,7 +793,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return build_list( other, expression::TOK_EQ );
   }
 
-  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) const override
   {
     if ( other.result_tok != expression::TOK_NUM && other.result_tok != expression::TOK_STR )
       throw_invalid_op_arg( "!=", other );
@@ -801,7 +801,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return build_list( other, expression::TOK_NOTEQ );
   }
 
-  std::vector<uint32_t> operator<( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator<( const spell_data_expr_t& other ) const override
   {
     if ( other.result_tok != expression::TOK_NUM || field.data.type != SD_TYPE_NUM )
       throw_invalid_op_arg( "<", other );
@@ -809,7 +809,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return build_list( other, expression::TOK_LT );
   }
 
-  std::vector<uint32_t> operator<=( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator<=( const spell_data_expr_t& other ) const override
   {
     if ( other.result_tok != expression::TOK_NUM || field.data.type != SD_TYPE_NUM )
       throw_invalid_op_arg( "<=", other );
@@ -817,7 +817,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return build_list( other, expression::TOK_LTEQ );
   }
 
-  std::vector<uint32_t> operator>( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator>( const spell_data_expr_t& other ) const override
   {
     if ( other.result_tok != expression::TOK_NUM || field.data.type != SD_TYPE_NUM )
       throw_invalid_op_arg( ">", other );
@@ -825,7 +825,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return build_list( other, expression::TOK_GT );
   }
 
-  std::vector<uint32_t> operator>=( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator>=( const spell_data_expr_t& other ) const override
   {
     if ( other.result_tok != expression::TOK_NUM || field.data.type != SD_TYPE_NUM )
       throw_invalid_op_arg( ">=", other );
@@ -849,7 +849,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return build_list( other, expression::TOK_NOTIN );
   }
 
-  /* [[noreturn]] */ void throw_invalid_op_arg( util::string_view op, const spell_data_expr_t& other ) {
+  /* [[noreturn]] */ void throw_invalid_op_arg( util::string_view op, const spell_data_expr_t& other ) const {
     throw std::invalid_argument(
             fmt::format("Unsupported expression operator {} for left='{}' ({}), right='{}' ({})",
               op, name_str, result_tok, other.name_str, other.result_tok));
@@ -887,7 +887,7 @@ struct spell_class_expr_t : public spell_list_expr_t
     return false;
   }
 
-  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) const override
   {
     // Other types will not be allowed, e.g. you cannot do class=list
     if ( other.result_tok != expression::TOK_STR )
@@ -909,7 +909,7 @@ struct spell_class_expr_t : public spell_list_expr_t
       } );
   }
 
-  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) const override
   {
     // Other types will not be allowed, e.g. you cannot do class!=list
     if ( other.result_tok != expression::TOK_STR )
@@ -936,7 +936,7 @@ struct spell_race_expr_t : public spell_list_expr_t
 {
   spell_race_expr_t( dbc_t& dbc, expr_data_e type ) : spell_list_expr_t( dbc, "race", type ) { }
 
-  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) const override
   {
     // Other types will not be allowed, e.g. you cannot do race=list
     if ( other.result_tok != expression::TOK_STR )
@@ -948,7 +948,7 @@ struct spell_race_expr_t : public spell_list_expr_t
       } );
   }
 
-  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) const override
   {
     // Other types will not be allowed, e.g. you cannot do race=list
     if ( other.result_tok != expression::TOK_STR )
@@ -965,7 +965,7 @@ struct spell_flag_expr_t : public spell_list_expr_t
 {
   spell_flag_expr_t( dbc_t& dbc, expr_data_e type ) : spell_list_expr_t( dbc, "flag", type ) { }
 
-  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) const override
   {
     // Numbered attributes only
     if ( other.result_tok != expression::TOK_NUM )
@@ -976,7 +976,7 @@ struct spell_flag_expr_t : public spell_list_expr_t
       } );
   }
 
-  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) const override
   {
     // Numbered attributes only
     if ( other.result_tok != expression::TOK_NUM )
@@ -992,7 +992,7 @@ struct spell_attribute_expr_t : public spell_list_expr_t
 {
   spell_attribute_expr_t( dbc_t& dbc, expr_data_e type ) : spell_list_expr_t( dbc, "attribute", type ) { }
 
-  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) const override
   {
     // Numbered attributes only
     if ( other.result_tok != expression::TOK_NUM )
@@ -1007,7 +1007,7 @@ struct spell_attribute_expr_t : public spell_list_expr_t
       } );
   }
 
-  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) const override
   {
     // Numbered attributes only
     if ( other.result_tok != expression::TOK_NUM )
@@ -1027,7 +1027,7 @@ struct spell_label_expr_t : public spell_list_expr_t
 {
   spell_label_expr_t( dbc_t& dbc, expr_data_e type ) : spell_list_expr_t( dbc, "label", type ) { }
 
-  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) const override
   {
     if ( other.result_tok != expression::TOK_NUM )
       return {};
@@ -1037,7 +1037,7 @@ struct spell_label_expr_t : public spell_list_expr_t
       } );
   }
 
-  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) const override
   {
     if ( other.result_tok != expression::TOK_NUM )
       return {};
@@ -1052,7 +1052,7 @@ struct spell_school_expr_t : public spell_list_expr_t
 {
   spell_school_expr_t(dbc_t& dbc, expr_data_e type ) : spell_list_expr_t( dbc, "school", type ) { }
 
-  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) const override
   {
     // Other types will not be allowed, e.g. you cannot do school=list
     if ( other.result_tok != expression::TOK_STR )
@@ -1064,7 +1064,7 @@ struct spell_school_expr_t : public spell_list_expr_t
       } );
   }
 
-  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) const override
   {
     // Other types will not be allowed, e.g. you cannot do school=list
     if ( other.result_tok != expression::TOK_STR )
@@ -1118,7 +1118,7 @@ std::unique_ptr<spell_data_expr_t> build_expression_tree(
 
 } // anonymous namespace ====================================================
 
-void format_to( expr_data_e expr_type, fmt::format_context::iterator out )
+void sc_format_to( expr_data_e expr_type, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "{}", data_type_str( expr_type ) );
 }

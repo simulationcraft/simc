@@ -7,7 +7,7 @@ role=spell
 position=ranged_back
 talents=1031021
 covenant=kyrian
-soulbind=pelagos,combat_meditation/magis_brand:9:1/ire_of_the_ascended:9:1/arcane_prodigy:9:1/better_together/newfound_resolve
+soulbind=forgelite_prime_mikanikos,brons_call_to_action/magis_brand:9:1/ire_of_the_ascended:9:1/arcane_prodigy:9:1/soulglow_spectrometer/effusive_anima_accelerator
 renown=80
 
 # Default consumables
@@ -376,13 +376,13 @@ feet=sandals_of_sacred_symmetry,id=186354,bonus_id=1498/7187
 finger1=oscillating_ouroboros,id=186376,bonus_id=1498/7187/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=1498/7187/6935,gem_id=173127,enchant=tenet_of_haste
 trinket1=soulletting_ruby,id=178809,bonus_id=1566/6536/6646
-trinket2=forbidden_necromantic_tome,id=186421,bonus_id=1498/7187
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=1566/6536/6646
 main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=256.40
+# gear_ilvl=255.93
 # gear_stamina=2119
-# gear_intellect=1498
+# gear_intellect=1491
 # gear_crit_rating=551
 # gear_haste_rating=375
 # gear_mastery_rating=535

@@ -46,7 +46,7 @@ public:
   util::string_view name() const
   { return _name; }
   
-  friend void format_to( const option_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const option_t&, fmt::format_context::iterator );
 protected:
   virtual opts::parse_status do_parse( sim_t*, util::string_view name, util::string_view value ) const = 0;
   virtual void do_format_to( fmt::format_context::iterator ) const = 0;
@@ -57,19 +57,19 @@ private:
 
 namespace opts {
 
-typedef std::function<parse_status(parse_status, util::string_view name, util::string_view value)> parse_status_fn_t;
-typedef std::unordered_map<std::string, std::string> map_t;
-typedef std::unordered_map<std::string, std::vector<std::string>> map_list_t;
-typedef std::function<bool(sim_t*, util::string_view, util::string_view)> function_t;
-typedef std::vector<std::string> list_t;
+using parse_status_fn_t = std::function<parse_status( parse_status, util::string_view, util::string_view )>;
+using map_t             = std::unordered_map<std::string, std::string>;
+using map_list_t        = std::unordered_map<std::string, std::vector<std::string>>;
+using function_t        = std::function<bool( sim_t*, util::string_view, util::string_view )>;
+using list_t            = std::vector<std::string>;
 
 parse_status parse( sim_t*, util::span<const std::unique_ptr<option_t>>, util::string_view name, util::string_view value, const parse_status_fn_t& fn = nullptr );
 void parse( sim_t*, util::string_view context, util::span<const std::unique_ptr<option_t>>, util::string_view options_str, const parse_status_fn_t& fn = nullptr );
 }
 
-inline void format_to( const std::unique_ptr<option_t>& option, fmt::format_context::iterator out )
+inline void sc_format_to( const std::unique_ptr<option_t>& option, fmt::format_context::iterator out )
 { 
-  format_to(*option, out);
+  sc_format_to(*option, out);
 }
 
 std::unique_ptr<option_t> opt_string( util::string_view n, std::string& v );

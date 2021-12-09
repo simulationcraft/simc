@@ -12,6 +12,7 @@
 #include "util/string_view.hpp"
 
 #include <string>
+#include <vector>
 
 class dbc_t;
 struct gem_property_data_t;

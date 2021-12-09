@@ -1306,8 +1306,12 @@ class SpellDataGenerator(DataGenerator):
          356372,
          # Siphon Essence (Shard of Zed)
          356320,
+         # Accretion (Shard of Kyr)
+         356305,
          # Shredded Soul (Ebonsoul Vise)
          357785,
+         # Duelist's Shot (Master Duelist's Chit)
+         336234,
          # Nerubian Ambush, Frost-Tinged Carapace Spikes (Relic of the Frozen Wastes)
          355912, 357409,
          # Volatile Detonation (Ticking Sack of Terror)
@@ -1417,6 +1421,9 @@ class SpellDataGenerator(DataGenerator):
           ( 328275, 0 ), ( 328757, 0 ), # Wild Spirits (Covenenat)
           ( 339928, 2 ), ( 339929, 2 ), # Brutal Projectiles (Conduit)
           ( 341223, 3 ), # Strength of the Pack (Conduit)
+          ( 339061, 0 ), # Empowered Release (Conduit)
+          ( 363760, 1 ), # Killing Frenzy (T28 BM 4pc)
+          ( 363805, 3 ), # Mad Bombardier (T28 SV 4pc)
         ),
 
         # Rogue:
@@ -1640,6 +1647,7 @@ class SpellDataGenerator(DataGenerator):
           ( 327369, 0 ),                            # Disciplinary Command (Arcane tracker)
           ( 336889, 0 ),                            # Nether Precision
           ( 337090, 0 ),                            # Siphoned Malice
+          ( 363685, 0 ),                            # Arcane Lucidity ready buff
         ),
 
         # Warlock:
@@ -1708,7 +1716,13 @@ class SpellDataGenerator(DataGenerator):
           ( 337142, 2 ),    # Grim Inquisitor's Dread Calling Buff
           ( 342997, 2 ),    # Grim Inquisitor's Dread Calling Buff 2
           ( 339986, 3 ),    # Hidden Combusting Engine Debuff
-          ( 324540, 0 )     # Malefic Rapture damage
+          ( 324540, 0 ),    # Malefic Rapture damage
+          ( 364322, 0 ),    # T28 - Calamitous Crescendo Buff
+          ( 364348, 0 ),    # T28 - Herald of Fire Buff
+          ( 364349, 0 ),    # T28 - Herald of Chaos Buff
+          ( 364198, 0 ),    # T28 - Malicious Imp-Pact Summon
+          ( 364261, 0 ),    # T28 - Malicious Imp Doombolt
+          ( 364263, 0 ),    # T28 - Return Soul
         ),
 
         # Monk:
@@ -1759,6 +1773,9 @@ class SpellDataGenerator(DataGenerator):
           ( 327264, 0 ), # Ardenweald Faeline Stomp damage
           ( 327276, 0 ), # Ardenweald Faeline Stomp reset buff notification
           ( 345727, 0 ), # Ardenweald Faeline Stomp damage 2
+          ( 327004, 0 ), # Venthyr Fallen Monk Tiger Adept Summon
+          ( 327005, 0 ), # Venthyr Fallen Monk Ox Adept Summon
+          ( 327006, 0 ), # Venthyr Fallen Monk Crane Adept Summon
           ( 328283, 0 ), # Venthyr Fallen Monk Soothing Mist Heal
           ( 330898, 0 ), # Venthyr Fallen Monk Fists of Fury
           ( 330901, 0 ), # Venthyr Fallen Monk Spinning Crane Kick
@@ -1771,7 +1788,9 @@ class SpellDataGenerator(DataGenerator):
           ( 344240, 0 ), # Venthyr Fallen Monk Enveloping Mist
           ( 346602, 0 ), # Venthyr Fallen Monk Tiger Palm
           ( 345714, 0 ), # Venthyr Fallen Monk Fists of Fury damage
-          ( 347826, 0 ), # Venthyr Fallen Monk Spec Duration
+          ( 347826, 0 ), # Venthyr Fallen Monk Specialization Duration
+          ( 363041, 0 ), # Venthyr Fallen Monk Fallen Brew
+          ( 364944, 0 ), # Venthyr Fallen Monk Windwalking
 
           # Conduits
           ( 336874, 0 ), # Fortifying Ingredients
@@ -1796,6 +1815,11 @@ class SpellDataGenerator(DataGenerator):
           ( 358521, 2 ), # Call to Arms Invoke Yu'lon Duration
           ( 358522, 2 ), # Call to Arms Invoke Chi-Ji Duration
           ( 360829, 3 ), # Call to Arms Empowered Tiger Lightning
+
+          # Tier 28
+          ( 364101, 1 ), # BrM 4-piece Flames of Primordium
+          ( 363911, 3 ), # WW 4-piece Primordial Potential
+          ( 363924, 3 ), # WW 4-piece Primordial Power
         ),
 
         # Druid:
@@ -1863,6 +1887,8 @@ class SpellDataGenerator(DataGenerator):
           ( 340682, 2 ), ( 340688, 2 ), ( 340694, 2 ), ( 340705, 2 ), # feral potency conduits
           ( 340552, 3 ), ( 340609, 3 ), # guardian potency conduits
           ( 341378, 0 ), ( 341447, 0 ), ( 341446, 0 ), ( 341383, 0 ), # convenant potency conduits
+
+          ( 365640, 1 ), # tier 28 balance 2pc foe damage spell
         ),
         # Demon Hunter:
         (
@@ -2234,6 +2260,10 @@ class SpellDataGenerator(DataGenerator):
         if state and not self.spell_state(spell, enabled_effects):
             return None
 
+        if spell.id in constants.IGNORE_CLASS_AND_RACE_MASKS:
+            mask_class = 0
+            mask_race = 0
+
         filter_list[spell.id] = { 'mask_class': mask_class, 'mask_race': mask_race, 'effect_list': enabled_effects }
 
         spell_id = spell.id
@@ -2520,7 +2550,12 @@ class SpellDataGenerator(DataGenerator):
             if not SetBonusListGenerator.is_extract_set_bonus(set_spell_data.id_parent)[0]:
                 continue
 
-            self.process_spell(set_spell_data.id_spell, ids, 0, 0)
+            mask_class = 0
+            spec_data = set_spell_data.ref('id_spec')
+            if spec_data.id > 0:
+                mask_class = DataGenerator._class_masks[spec_data.class_id]
+
+            self.process_spell(set_spell_data.id_spell, ids, mask_class, 0)
 
         # Glyph effects, need to do trickery here to get actual effect from spellbook data
         for ability in self.db('SkillLineAbility').values():
@@ -3303,6 +3338,16 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'hack_and_gore',
             'bonuses': [ 1457 ],
             'tier'   : 26
+        },
+        {
+            'name'   : 'cypher_attunement_rigging',
+            'bonuses': [ 1495 ],
+            'tier'   : 28
+        },
+        {
+            'name'   : 'tier28',
+            'bonuses': [ 1496, 1497, 1498, 1499, 1500, 1501, 1502, 1503, 1504, 1505, 1506, 1507],
+            'tier'   : 28
         }
     ]
 
@@ -4189,5 +4234,42 @@ class TemporaryEnchantItemGenerator(DataGenerator):
             fields += spell.field('id')
             fields += ['{:30s}'.format('"{}"'.format(util.tokenize(item.name)))]
             self.output_record(fields)
+
+        self.output_footer()
+
+class SoulbindConduitEnhancedSocketGenerator(DataGenerator):
+    def generate(self, data=None):
+        data = self.db('SoulbindConduitEnhancedSocket').values()
+
+        self.output_header(
+                header = 'Enhanced conduit renown levels',
+                type = 'enhanced_conduit_entry_t',
+                array = 'enhanced_conduit',
+                length = len(data))
+
+        soulbind_lookup = {}
+        for soulbind in self.db('Soulbind').values():
+            soulbind_lookup[soulbind.id_garr_talent_tree] = soulbind
+
+        field_data = []
+        for entry in data:
+            slot = entry.ref('id_garr_talent')
+            soulbind = soulbind_lookup[slot.id_garr_talent_tree]
+            player_cond = entry.ref('id_player_cond')
+            for i in range(1, 5):
+                # We are only interested in Renown currency requirements.
+                if getattr(player_cond, 'id_currency_{}'.format(i)) == 1822:
+                    # Add 1 to convert from currency count to renown level
+                    renown = getattr(player_cond, 'currency_count_{}'.format(i)) + 1
+                    fields = ['{:2d}'.format(soulbind.id)]
+                    fields += slot.field('tier', 'ui_order')
+                    fields.append('{:3d}'.format(renown))
+                    fields += soulbind.field('name')
+                    field_data.append(fields)
+                    break
+
+        field_data.sort(key = lambda f: [int(v) for v in f[:-1]])
+        for f in field_data:
+            self.output_record(f[:-1], comment = f[-1].strip('"'))
 
         self.output_footer()

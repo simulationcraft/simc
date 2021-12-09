@@ -86,6 +86,9 @@ public:
   // Buffs
   struct
   {
+    // Generic
+    propagate_const<buff_t*> desperate_prayer;
+
     // Talents
     propagate_const<buff_t*> twist_of_fate;
 
@@ -122,6 +125,7 @@ public:
     propagate_const<buff_t*> rigor_mortis;
 
     // Conduits
+    propagate_const<buff_t*> translucent_image;
     propagate_const<buff_t*> mind_devourer;
     propagate_const<buff_t*> dissonant_echoes;
 
@@ -314,6 +318,7 @@ public:
     propagate_const<proc_t*> dark_thoughts_flay;
     propagate_const<proc_t*> dark_thoughts_sear;
     propagate_const<proc_t*> dark_thoughts_missed;
+    propagate_const<proc_t*> living_shadow;
   } procs;
 
   // Special
@@ -344,6 +349,7 @@ public:
     spawner::pet_spawner_t<pet_t, priest_t> void_lasher;
     spawner::pet_spawner_t<pet_t, priest_t> rattling_mage;
     spawner::pet_spawner_t<pet_t, priest_t> cackling_chemist;
+    spawner::pet_spawner_t<pet_t, priest_t> your_shadow;
 
     priest_pets_t( priest_t& p );
   } pets;
@@ -421,6 +427,7 @@ public:
   {
     // Generic Priest
     conduit_data_t power_unto_others;
+    conduit_data_t translucent_image;
     // Holy
     conduit_data_t holy_oration;  // NYI
     // Discipline
@@ -469,8 +476,8 @@ public:
   void reset() override;
   void create_options() override;
   std::string create_profile( save_e ) override;
-  action_t* create_action( util::string_view name, const std::string& options ) override;
-  pet_t* create_pet( util::string_view name, util::string_view type = "" ) override;
+  action_t* create_action( util::string_view name, util::string_view options ) override;
+  pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
   void create_pets() override;
   void copy_from( player_t* source ) override;
   resource_e primary_resource() const override
@@ -939,6 +946,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     int dots                          = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
     double dark_thoughts_proc_percent = priest().specs.dark_thoughts->effectN( 1 ).percent();
+
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B2 ) )
+    {
+      dark_thoughts_proc_percent += priest().sets->set( PRIEST_SHADOW, T28, B2 )->effectN( 1 ).percent();
+    }
 
     // Currently Mind-Sear has 1/3 the proc rate of Mind Flay 3% -> 1%
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/699

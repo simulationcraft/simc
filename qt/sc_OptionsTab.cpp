@@ -65,19 +65,19 @@ QString RemoveBadFileChar( QString& filename )
   static const char notAllowedChars[] = ",^@={}[]~!?:&*\"|#%<>$\"'();`'/\\";
   if ( filename == "" )
     return filename;
-  for ( size_t i = 0; i < sizeof( notAllowedChars ); i++ )
+  for ( char notAllowedChar : notAllowedChars )
   {
-    filename.replace( notAllowedChars[ i ], "" );
+    filename.replace( notAllowedChar, "" );
   }
   filename.replace( "..", "" );
   filename.replace( ".html", "" );
 
 #if defined SC_WINDOWS
   // Prevent Windows Devices
-  static const char* windowsDevices = "CON|AUX|PRN|COM1|COM2|COM3|LPT1|LPT2|LPT3|NUL";
-  static QRegExp regexWindowsDevice( QLatin1String( windowsDevices ), Qt::CaseInsensitive );
-  bool matchesWinDevice = regexWindowsDevice.exactMatch( filename );
-  if ( matchesWinDevice )
+  static const char* windowsDevices = "^(CON|AUX|PRN|COM1|COM2|COM3|LPT1|LPT2|LPT3|NUL)$";
+  static QRegularExpression regexWindowsDevice( QLatin1String( windowsDevices ), QRegularExpression::CaseInsensitiveOption );
+  auto matchesWinDevice = regexWindowsDevice.match( filename );
+  if ( matchesWinDevice.hasMatch() )
     filename = "";
 #endif
 
@@ -135,9 +135,9 @@ void load_button_group( QSettings& s, const QString& groupname, QButtonGroup* bg
   s.beginGroup( groupname );
   QList<QString> button_names;
   QList<QAbstractButton*> buttons = bg->buttons();
-  for ( int i = 0; i < buttons.size(); ++i )
+  for ( const auto& button : buttons )
   {
-    button_names.push_back( buttons[ i ]->text() );
+    button_names.push_back( button->text() );
   }
   QStringList keys = s.childKeys();
   for ( int i = 0; i < keys.size(); ++i )
@@ -174,9 +174,9 @@ void store_button_group( QSettings& s, const QString& name, QButtonGroup* bg )
 {
   s.beginGroup( name );
   QList<QAbstractButton*> buttons = bg->buttons();
-  for ( int i = 0; i < buttons.size(); ++i )
+  for ( const auto& button : buttons )
   {
-    s.setValue( buttons[ i ]->text(), buttons[ i ]->isChecked() );
+    s.setValue( button->text(), button->isChecked() );
   }
   s.endGroup();
 }
@@ -189,10 +189,10 @@ void load_scaling_groups( QSettings& s, const QString& groupname, QButtonGroup* 
   if ( keys.isEmpty() )
   {
     QList<QAbstractButton*> buttons = bg->buttons();
-    for ( int i = 0; i < buttons.size(); ++i )
+    for ( const auto& button : buttons )
     {
       // All buttons unchecked.
-      buttons[ i ]->setChecked( false );
+      button->setChecked( false );
     }
   }
   else
@@ -858,8 +858,12 @@ void SC_OptionsTab::decodeOptions()
   load_scaling_groups( settings, "scaling_buttons", scalingButtonGroup );
   load_scaling_groups( settings, "plots_buttons", plotsButtonGroup );
   load_scaling_groups( settings, "reforgeplots_buttons", reforgeplotsButtonGroup );
-
-  QStringList item_db_order = settings.value( "item_db_order" ).toString().split( "/", QString::SkipEmptyParts );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  auto split_behavior = QString::SkipEmptyParts;
+#else
+  auto split_behavior = Qt::SkipEmptyParts;
+#endif
+  QStringList item_db_order = settings.value( "item_db_order" ).toString().split( "/", split_behavior );
   if ( !item_db_order.empty() )
   {
     for ( int i = 0; i < item_db_order.size(); ++i )
@@ -875,7 +879,7 @@ void SC_OptionsTab::decodeOptions()
   }
   else
   {
-    for ( unsigned i = 0; i < range::size( itemSourceOptions ); ++i )
+    for ( unsigned i = 0; i < std::size( itemSourceOptions ); ++i )
     {
       for ( int k = 0; k < itemDbOrder->count(); ++k )
       {
@@ -1489,7 +1493,7 @@ void SC_OptionsTab::createItemDataSourceSelector( QFormLayout* layout )
   itemDbOrder->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   itemDbOrder->setMaximumWidth( 200 );
 
-  for ( unsigned i = 0; i < range::size( itemSourceOptions ); ++i )
+  for ( unsigned i = 0; i < std::size( itemSourceOptions ); ++i )
   {
     QListWidgetItem* item = new QListWidgetItem( itemSourceOptions[ i ].label );
     item->setData( Qt::UserRole, QVariant( itemSourceOptions[ i ].option ) );
@@ -1617,7 +1621,8 @@ void SC_OptionsTab::_savefilelocation()
 {
   QFileDialog f( this );
   f.setDirectory( auto_save_location );
-  f.setFileMode( QFileDialog::DirectoryOnly );
+  f.setFileMode( QFileDialog::Directory );
+  f.setOption( QFileDialog::ShowDirsOnly, true );
   f.setWindowTitle( tr( "Default Save Location" ) );
 
   f.exec();

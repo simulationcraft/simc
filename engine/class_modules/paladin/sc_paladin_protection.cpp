@@ -411,24 +411,24 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
 // Judgment - Protection =================================================================
 
-// TODO(mserrano): fix judgment
 struct judgment_prot_t : public judgment_t
 {
   int judge_holy_power, sw_holy_power;
-  judgment_prot_t( paladin_t* p, util::string_view options_str ) :
-    judgment_t( p, options_str ),
+  judgment_prot_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
+    judgment_t( p, name ),
     judge_holy_power( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) ),
     sw_holy_power( as<int>( p -> talents.prot_sanctified_wrath -> effectN( 2 ).base_value() ) )
   {
+    parse_options( options_str );
     cooldown -> charges += as<int>( p -> talents.crusaders_judgment -> effectN( 1 ).base_value() );
   }
 
-  judgment_prot_t( paladin_t* p ) :
-    judgment_t( p ),
+  // background constructor for proc judgments
+  judgment_prot_t( paladin_t* p, util::string_view name ) :
+    judgment_t( p, name ),
     judge_holy_power( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) ),
     sw_holy_power( as<int>( p -> talents.prot_sanctified_wrath -> effectN( 2 ).base_value() ) )
   {
-    // this is for divine resonance
     background = true;
   }
 
@@ -453,6 +453,19 @@ struct judgment_prot_t : public judgment_t
   }
 };
 
+// TODO: Woli
+// T28 4P damage proc ==================================================
+
+struct t28_4p_pp_t : public judgment_prot_t
+{
+  t28_4p_pp_t( paladin_t* p ) :
+    judgment_prot_t( p, "judgment_t28_4p" )
+  {
+    background = proc = may_crit = true;
+    may_miss                     = false;
+  }
+};
+
 // Shield of the Righteous ==================================================
 
 shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p ) :
@@ -462,18 +475,21 @@ shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p ) :
   set_default_value( p -> spells.sotr_buff -> effectN( 1 ).percent() );
   set_refresh_behavior( buff_refresh_behavior::EXTEND );
   cooldown -> duration = 0_ms; // handled by the ability
+
+
 }
 
 void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
 {
   buff_t::expire_override( expiration_stacks, remaining_duration );
 
-  paladin_t* p = debug_cast< paladin_t* >( player );
+  auto* p = debug_cast<paladin_t*>( player );
 
   if ( p -> azerite.inner_light.enabled() )
   {
     p -> buffs.inner_light -> trigger();
   }
+
 }
 
 struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_attack_t>
@@ -493,6 +509,8 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
+
+
   }
 
   shield_of_the_righteous_t( paladin_t* p ) :
@@ -521,6 +539,11 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     if ( p() -> azerite_essence.memory_of_lucid_dreams.enabled() )
     {
       p() -> trigger_memory_of_lucid_dreams( 1.0 );
+    }
+
+    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T28, B2 ) )
+    {
+      p()->buffs.glorious_purpose->trigger();
     }
 
     // As of 2020-11-07 Resolute Defender now always provides its CDR.
@@ -612,8 +635,7 @@ void paladin_t::target_mitigation( school_e school,
 
   if ( buffs.ardent_defender -> up() )
   {
-    s -> result_amount *= 1.0 + buffs.ardent_defender -> data().effectN( 1 ).percent()
-      + legendary.the_ardent_protectors_sanctum -> effectN( 1 ).percent();
+    s -> result_amount *= 1.0 + buffs.ardent_defender -> data().effectN( 1 ).percent();
   }
 
   if ( buffs.blessing_of_dusk -> up() )
@@ -752,6 +774,20 @@ void paladin_t::trigger_holy_shield( action_state_t* s )
   active.holy_shield_damage -> schedule_execute();
 }
 
+void paladin_t::trigger_t28_4p_pp( action_state_t* s )
+{
+  // escape if we don't have t28 4p
+  // if ( !talents.holy_shield->ok() )
+  //  return;
+
+  // sanity check - no friendly-fire
+  if ( !s->action->player->is_enemy() )
+    return;
+
+  active.t28_4p_pp->set_target( s->action->player );
+  active.t28_4p_pp->schedule_execute();
+}
+
 bool paladin_t::standing_in_consecration() const
 {
   if ( ! sim -> distance_targeting_enabled )
@@ -779,14 +815,16 @@ bool paladin_t::standing_in_consecration() const
 void paladin_t::create_prot_actions()
 {
   active.divine_toll = new avengers_shield_dt_t( this );
+  active.divine_resonance = new avengers_shield_dr_t( this );
   active.necrolord_shield_of_the_righteous = new shield_of_the_righteous_t( this );
 
   if ( specialization() == PALADIN_PROTECTION )
-    active.judgment = new judgment_prot_t( this );
-    active.divine_resonance = new avengers_shield_dr_t( this );
+  {
+    active.t28_4p_pp = new t28_4p_pp_t( this );
+  }
 }
 
-action_t* paladin_t::create_action_protection( util::string_view name, const std::string& options_str )
+action_t* paladin_t::create_action_protection( util::string_view name, util::string_view options_str )
 {
   if ( name == "ardent_defender"           ) return new ardent_defender_t          ( this, options_str );
   if ( name == "avengers_shield"           ) return new avengers_shield_t          ( this, options_str );
@@ -799,7 +837,7 @@ action_t* paladin_t::create_action_protection( util::string_view name, const std
 
   if ( specialization() == PALADIN_PROTECTION )
   {
-    if ( name == "judgment" ) return new judgment_prot_t( this, options_str );
+    if ( name == "judgment" ) return new judgment_prot_t( this, "judgment", options_str );
   }
 
   return nullptr;
@@ -858,6 +896,11 @@ void paladin_t::create_buffs_protection()
   if ( specialization() == PALADIN_PROTECTION )
     player_t::buffs.memory_of_lucid_dreams -> set_stack_change_callback( [ this ]( buff_t*, int, int )
     { this -> cooldowns.shield_of_the_righteous -> adjust_recharge_multiplier(); } );
+
+  // Tier Sets
+  buffs.glorious_purpose = make_buff( this, "glorious_purpose", find_spell( 364305 ) )
+    -> set_default_value_from_effect( 1 )
+    -> add_invalidate( CACHE_BLOCK );
 }
 
 void paladin_t::init_spells_protection()
@@ -901,7 +944,7 @@ void paladin_t::init_spells_protection()
   passives.grand_crusader      = find_specialization_spell( "Grand Crusader" );
   passives.riposte             = find_specialization_spell( "Riposte" );
   passives.sanctuary           = find_specialization_spell( "Sanctuary" );
-  
+
   passives.aegis_of_light      = find_specialization_spell( "Aegis of Light" );
   passives.aegis_of_light_2    = find_rank_spell( "Aegis of Light", "Rank 2" );
 
@@ -909,6 +952,9 @@ void paladin_t::init_spells_protection()
   azerite.inspiring_vanguard = find_azerite_spell( "Inspiring Vanguard" );
   azerite.inner_light        = find_azerite_spell( "Inner Light"        );
   azerite.soaring_shield     = find_azerite_spell( "Soaring Shield"     );
+
+  // Tier Sets
+  tier_sets.glorious_purpose_2pc = find_spell( 364305 );
 }
 
 void paladin_t::generate_action_prio_list_prot()

@@ -127,8 +127,8 @@ struct gear_stats_t
     avoidance_rating += right.avoidance_rating;
     corruption_rating += right.corruption_rating;
     corruption_resistance_rating += right.corruption_resistance_rating;
-    range::transform ( attribute, right.attribute, attribute.begin(), std::plus<double>() );
-    range::transform ( resource, right.resource, resource.begin(), std::plus<double>() );
+    range::transform ( attribute, right.attribute, attribute.begin(), std::plus<>() );
+    range::transform ( resource, right.resource, resource.begin(), std::plus<>() );
     return *this;
   }
 
@@ -137,5 +137,5 @@ struct gear_stats_t
   double get_stat( stat_e stat ) const;
   static double stat_mod( stat_e stat );
 
-  friend void format_to( const gear_stats_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const gear_stats_t&, fmt::format_context::iterator );
 };

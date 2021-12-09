@@ -755,7 +755,7 @@ struct ascended_nova_t final : public priest_spell_t
   {
     parse_options( options_str );
     aoe                        = -1;
-    reduced_aoe_targets         = 1.0;
+    reduced_aoe_targets        = 1.0;
     radius                     = data().effectN( 1 ).radius_max();
     affected_by_shadow_weaving = true;
 
@@ -865,9 +865,9 @@ struct ascended_eruption_heal_t final : public priest_heal_t
       base_da_increase( p.covenant.boon_of_the_ascended->effectN( 5 ).percent() +
                         p.conduits.courageous_ascension->effectN( 2 ).percent() )
   {
-    aoe                = -1;
+    aoe                 = -1;
     reduced_aoe_targets = 1.0;
-    background         = true;
+    background          = true;
   }
 
   void trigger_eruption( int stacks )
@@ -898,10 +898,10 @@ struct ascended_eruption_t final : public priest_spell_t
       base_da_increase( p.covenant.boon_of_the_ascended->effectN( 5 ).percent() +
                         p.conduits.courageous_ascension->effectN( 2 ).percent() )
   {
-    aoe                = -1;
+    aoe                 = -1;
     reduced_aoe_targets = 1.0;
-    background         = true;
-    radius             = data().effectN( 1 ).radius_max();
+    background          = true;
+    radius              = data().effectN( 1 ).radius_max();
     // By default the spell tries to use the healing SP Coeff
     spell_power_mod.direct     = data().effectN( 1 ).sp_coeff();
     affected_by_shadow_weaving = true;
@@ -1004,9 +1004,9 @@ struct summon_mindbender_t final : public summon_pet_t
   }
 };
 
-/**
- * Discipline and shadow heal
- */
+// ==========================================================================
+// Shadow Mend (Discipline and Shadow)
+// ==========================================================================
 struct shadow_mend_t final : public priest_heal_t
 {
   shadow_mend_t( priest_t& p, util::string_view options_str )
@@ -1019,10 +1019,60 @@ struct shadow_mend_t final : public priest_heal_t
   }
 };
 
+// ==========================================================================
+// Fade
+// ==========================================================================
+struct fade_t final : public priest_spell_t
+{
+  fade_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "fade", p, p.find_class_spell( "Fade" ) )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    if ( priest().conduits.translucent_image->ok() )
+    {
+      priest().buffs.translucent_image->trigger();
+    }
+
+    priest_spell_t::execute();
+  }
+};
+
 }  // namespace spells
 
 namespace heals
 {
+// ==========================================================================
+// Desperate Prayer
+// ==========================================================================
+struct desperate_prayer_t final : public priest_heal_t
+{
+  desperate_prayer_t( priest_t& p, util::string_view options_str )
+    : priest_heal_t( "desperate_prayer", p, p.find_class_spell( "Desperate Prayer" ) )
+  {
+    parse_options( options_str );
+    harmful  = false;
+    may_crit = false;
+
+    // does not seem to proc anyting other than heal specific actions
+    callbacks = false;
+
+    // This is parsed as a HoT, disabling that manually
+    base_td_multiplier = 0.0;
+    dot_duration       = timespan_t::from_seconds( 0 );
+  }
+
+  void execute() override
+  {
+    priest().buffs.desperate_prayer->trigger();
+
+    priest_heal_t::execute();
+  }
+};
+
 // ==========================================================================
 // Power Word: Shield
 // ==========================================================================
@@ -1056,6 +1106,53 @@ struct power_word_shield_t final : public priest_absorb_t
 
 namespace buffs
 {
+// ==========================================================================
+// Desperate Prayer - Health Increase buff
+// ==========================================================================
+struct desperate_prayer_t final : public priest_buff_t<buff_t>
+{
+  double health_change;
+
+  desperate_prayer_t( priest_t& p )
+    : base_t( p, "desperate_prayer", p.find_class_spell( "Desperate Prayer" ) ),
+      health_change( data().effectN( 1 ).percent() )
+  {
+    // Cooldown handled by the action
+    cooldown->duration = 0_ms;
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::start( stacks, value, duration );
+
+    double old_health     = player->resources.current[ RESOURCE_HEALTH ];
+    double old_max_health = player->resources.max[ RESOURCE_HEALTH ];
+
+    player->resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + health_change;
+    player->recalculate_resource_max( RESOURCE_HEALTH );
+    player->resources.current[ RESOURCE_HEALTH ] *=
+        1.0 + health_change;  // Update health after the maximum is increased
+
+    sim->print_debug( "{} gains desperate_prayer: health pct change {}%, current health: {} -> {}, max: {} -> {}",
+                      player->name(), health_change * 100.0, old_health, player->resources.current[ RESOURCE_HEALTH ],
+                      old_max_health, player->resources.max[ RESOURCE_HEALTH ] );
+  }
+
+  void expire_override( int, timespan_t ) override
+  {
+    double old_health     = player->resources.current[ RESOURCE_HEALTH ];
+    double old_max_health = player->resources.max[ RESOURCE_HEALTH ];
+
+    player->resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + health_change;
+    player->resources.current[ RESOURCE_HEALTH ] /= 1.0 + health_change;  // Update health before the maximum is reduced
+    player->recalculate_resource_max( RESOURCE_HEALTH );
+
+    sim->print_debug( "{} loses desperate_prayer: health pct change {}%, current health: {} -> {}, max: {} -> {}",
+                      player->name(), health_change * 100.0, old_health, player->resources.current[ RESOURCE_HEALTH ],
+                      old_max_health, player->resources.max[ RESOURCE_HEALTH ] );
+  }
+};
+
 // ==========================================================================
 // Fae Guardians - Night Fae Covenant
 // ==========================================================================
@@ -1239,9 +1336,9 @@ private:
     }
     for ( auto a : affected_actions )
     {
-      a->base_recharge_rate_multiplier /= rate_change;
+      a->dynamic_recharge_rate_multiplier /= rate_change;
 
-      sim->print_debug( "{} recharge_rate_multiplier set to {}", a->name_str, a->base_recharge_rate_multiplier );
+      sim->print_debug( "{} recharge_rate_multiplier set to {}", a->name_str, a->dynamic_recharge_rate_multiplier );
 
       if ( a->cooldown->action == a )
         a->cooldown->adjust_recharge_multiplier();
@@ -1422,6 +1519,7 @@ void priest_t::create_procs()
   procs.dark_thoughts_flay              = get_proc( "Dark Thoughts proc from Mind Flay" );
   procs.dark_thoughts_sear              = get_proc( "Dark Thoughts proc from Mind Sear" );
   procs.dark_thoughts_missed            = get_proc( "Dark Thoughts proc not consumed" );
+  procs.living_shadow                   = get_proc( "Living Shadow T28 4-set procs" );
 }
 
 /** Construct priest benefits */
@@ -1607,7 +1705,7 @@ double priest_t::matching_gear_multiplier( attribute_e attr ) const
   return 0.0;
 }
 
-action_t* priest_t::create_action( util::string_view name, const std::string& options_str )
+action_t* priest_t::create_action( util::string_view name, util::string_view options_str )
 {
   using namespace actions::spells;
   using namespace actions::heals;
@@ -1669,9 +1767,17 @@ action_t* priest_t::create_action( util::string_view name, const std::string& op
       return new summon_shadowfiend_t( *this, options_str );
     }
   }
+  if ( name == "fade" )
+  {
+    return new fade_t( *this, options_str );
+  }
   if ( name == "shadow_mend" )
   {
     return new shadow_mend_t( *this, options_str );
+  }
+  if ( name == "desperate_prayer" )
+  {
+    return new desperate_prayer_t( *this, options_str );
   }
   if ( name == "power_infusion" )
   {
@@ -1849,6 +1955,7 @@ void priest_t::init_spells()
 
   // Generic Conduits
   conduits.power_unto_others = find_conduit_spell( "Power Unto Others" );
+  conduits.translucent_image = find_conduit_spell( "Translucent Image" );
   // Shadow Conduits
   conduits.dissonant_echoes     = find_conduit_spell( "Dissonant Echoes" );
   conduits.haunting_apparitions = find_conduit_spell( "Haunting Apparitions" );
@@ -1877,6 +1984,9 @@ void priest_t::create_buffs()
 {
   base_t::create_buffs();
 
+  // Generic buffs
+  buffs.desperate_prayer = make_buff<buffs::desperate_prayer_t>( *this );
+
   // Shared talent buffs
   buffs.twist_of_fate = make_buff( this, "twist_of_fate", talents.twist_of_fate->effectN( 1 ).trigger() )
                             ->set_trigger_spell( talents.twist_of_fate )
@@ -1896,6 +2006,10 @@ void priest_t::create_buffs()
   // Covenant Buffs
   buffs.fae_guardians        = make_buff<buffs::fae_guardians_t>( *this );
   buffs.boon_of_the_ascended = make_buff<buffs::boon_of_the_ascended_t>( *this );
+
+  // Conduit Buffs
+  buffs.translucent_image = make_buff( this, "translucent_image", find_spell( 337661 ) )
+                                ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   create_buffs_shadow();
   create_buffs_discipline();
@@ -2068,7 +2182,12 @@ void priest_t::target_mitigation( school_e school, result_amount_type dt, action
 
   if ( buffs.dispersion->check() )
   {
-    s->result_amount *= 1.0 + ( buffs.dispersion->data().effectN( 1 ).percent() );
+    s->result_amount *= 1.0 + buffs.dispersion->data().effectN( 1 ).percent();
+  }
+
+  if ( buffs.translucent_image->up() )
+  {
+    s->result_amount *= 1.0 + buffs.translucent_image->data().effectN( 1 ).percent();
   }
 }
 
@@ -2125,7 +2244,7 @@ void priest_t::copy_from( player_t* source )
 {
   base_t::copy_from( source );
 
-  priest_t* source_p = debug_cast<priest_t*>( source );
+  auto* source_p = debug_cast<priest_t*>( source );
 
   options = source_p->options;
 }
@@ -2258,9 +2377,9 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                            p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
-                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
+                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p );
   }
   void static_init() const override

@@ -126,8 +126,11 @@ void shadow( player_t* p )
       "Use Badge inside of VF for the first use or on CD after the first use. Short circuit if void eruption cooldown "
       "is 10s or more away." );
   trinkets->add_action(
-      "use_item,name=shadowed_orb_of_torment,if=!buff.voidform.up|(prev_gcd.1.void_bolt)",
-      "Use Shadowed Orb of Torment when not in Voidform, or in between Void Bolt casts in Voidform." );
+      "use_item,name=shadowed_orb_of_torment,if=cooldown.power_infusion.remains<=10&cooldown.void_eruption.remains<=10&"
+      "(covenant.necrolord|covenant.kyrian)|(covenant.venthyr|covenant.night_fae)&(!buff.voidform.up|prev_gcd.1.void_"
+      "bolt)|fight_remains<=40",
+      "Use Shadowed Orb of Torment when not in Voidform, or in between Void Bolt casts in Voidform. As Kyrian or "
+      "Necrolord line it up with stacked cooldowns." );
   trinkets->add_call_action_list(
       dmg_trinkets,
       "if=(!talent.hungering_void.enabled|debuff.hungering_void.up)&(buff.voidform.up|cooldown.void_eruption.remains>"
@@ -177,6 +180,7 @@ void shadow( player_t* p )
       "Use on CD but prioritise using Void Eruption first, if used inside of VF on ST use after a "
       "voidbolt for cooldown efficiency and for hungering void uptime if talented." );
   cds->add_call_action_list( trinkets );
+  cds->add_action( "desperate_prayer,if=health.pct<=75" );
 
   // APL to use when Boon of the Ascended is active
   boon->add_action( "ascended_blast,if=spell_targets.mind_sear<=3" );

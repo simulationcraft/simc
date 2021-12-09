@@ -79,7 +79,7 @@ public:
 
 struct shadow_bolt_t : public affliction_spell_t
 {
-  shadow_bolt_t( warlock_t* p, const std::string& options_str )
+  shadow_bolt_t( warlock_t* p, util::string_view options_str )
     : affliction_spell_t( "Shadow Bolt", p, p->find_spell( 686 ) )
   {
     parse_options( options_str );
@@ -106,10 +106,27 @@ struct shadow_bolt_t : public affliction_spell_t
   void impact( action_state_t* s ) override
   {
     affliction_spell_t::impact( s );
-    if ( result_is_hit( s->result ) && ( !p()->min_version_check( VERSION_9_1_0 ) || p()->talents.shadow_embrace->ok() ) )
+    if ( result_is_hit( s->result ) )
     {
-      // Add passive check
-      td( s->target )->debuffs_shadow_embrace->trigger();
+      if ( !p()->min_version_check( VERSION_9_1_0 ) || p()->talents.shadow_embrace->ok() )
+      {
+        // Add passive check
+        td( s->target )->debuffs_shadow_embrace->trigger();
+      }
+
+      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
+      {        
+        auto tdata = this->td( s->target );
+        bool tierDotsActive = tdata->dots_agony->is_ticking()
+                           && tdata->dots_corruption->is_ticking()
+                           && tdata->dots_unstable_affliction->is_ticking();
+
+        if ( tierDotsActive && rng().roll( p()->sets->set(WARLOCK_AFFLICTION, T28, B4 )->effectN( 1 ).percent() ) )
+        {
+          p()->procs.calamitous_crescendo->occur();
+          p()->buffs.calamitous_crescendo->trigger();
+        }
+      }
     }
   }
 
@@ -190,8 +207,6 @@ struct agony_t : public affliction_spell_t
 
     dot_max_stack = as<int>( data().max_stacks() + p->spec.agony_2->effectN( 1 ).base_value() );
     dot_duration += p->conduit.rolling_agony.time_value();
-
-    base_td = 1.0;
   }
 
   void last_tick( dot_t* d ) override
@@ -212,6 +227,7 @@ struct agony_t : public affliction_spell_t
     affliction_spell_t::init();
   }
 
+  //TODO - Agony gains a stack when executed on a target that already has Agony
   void execute() override
   {
     affliction_spell_t::execute();
@@ -288,15 +304,16 @@ struct corruption_t : public affliction_spell_t
     // 172 does not have spell duration any more.
     // were still lazy though so we aren't making a seperate spell for this.
     dot_duration               = otherSP->duration();
-    // TOCHECK see if we can redo corruption in a way that spec aura applies to corruption naturally in init.
-    base_multiplier *= 1.0 + p->spec.affliction->effectN( 2 ).percent();
+    
+    // 2021-10-03 : Corruption's direct damage does not appear to be included in spec aura, only tick damage
+    base_td_multiplier *= 1.0 + p->spec.affliction->effectN(2).percent();
 
     if ( p->talents.absolute_corruption->ok() )
     {
       dot_duration = sim->expected_iteration_time > 0_ms
                          ? 2 * sim->expected_iteration_time
                          : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length );  // "infinite" duration
-      base_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent();
+      base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent(); // 2021-10-03: Only tick damage is affected
     }
 
     if ( p->spec.corruption_2->ok())
@@ -542,7 +559,7 @@ struct malefic_rapture_t : public affliction_spell_t
     struct malefic_rapture_damage_instance_t : public affliction_spell_t
     {
       malefic_rapture_damage_instance_t( warlock_t *p, double spc ) :
-          affliction_spell_t( "malefic_rapture_aoe", p, p->find_spell( 324540 ) )
+          affliction_spell_t( "malefic_rapture_damage", p, p->find_spell( 324540 ) )
       {
         aoe = 1;
         background = true;
@@ -561,30 +578,27 @@ struct malefic_rapture_t : public affliction_spell_t
           m *= 1.0 + p()->conduit.focused_malignancy.percent();
         }
 
+        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
+        {
+          m *= 1.00 + p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 1 ).percent();
+        }
+
         return m;
       }
 
       void execute() override
       {
-        if ( p()->legendary.malefic_wrath->ok() )
-        {
-          p()->buffs.malefic_wrath->trigger();
-          p()->procs.malefic_wrath->occur();
-        }
+        int d = p()->get_target_data( target )->count_affliction_dots() - 1;
+        assert( d < as<int>( p()->procs.malefic_rapture.size() ) && "The procs.malefic_rapture array needs to be expanded." );
 
-        int d = p()->get_target_data( target )->count_affliction_dots();
-        if ( d > 0 )
+        if ( d >= 0 && d < as<int>( p()->procs.malefic_rapture.size() ) )
         {
-          for ( int i = p()->procs.malefic_rapture.size(); i < d; i++ )
-            p()->procs.malefic_rapture.push_back( p()->get_proc( "Malefic Rapture " + util::to_string( i + 1 ) ) );
-          p()->procs.malefic_rapture[ d - 1 ]->occur();
+          p()->procs.malefic_rapture[ d ]->occur();
         }
 
         affliction_spell_t::execute();
       }
     };
-
-    malefic_rapture_damage_instance_t* damage_instance;
 
     malefic_rapture_t( warlock_t* p, util::string_view options_str )
       : affliction_spell_t( "malefic_rapture", p, p->find_spell( 324536 ) )
@@ -592,11 +606,67 @@ struct malefic_rapture_t : public affliction_spell_t
       parse_options( options_str );
       aoe = -1;
 
-      damage_instance = new malefic_rapture_damage_instance_t( p, data().effectN( 1 ).sp_coeff() );
-
-      impact_action = damage_instance;
+      impact_action = new malefic_rapture_damage_instance_t( p, data().effectN( 1 ).sp_coeff() );
       add_child( impact_action );
+    }
 
+    double cost() const override
+    {
+      if (p()->buffs.calamitous_crescendo->check())
+        return 0.0;
+        
+      return warlock_spell_t::cost();      
+    }
+
+    timespan_t execute_time() const override
+    {
+      if ( p()->buffs.calamitous_crescendo->check() )
+      {
+        return 0_ms;
+      }
+
+      return affliction_spell_t::execute_time();
+    }
+
+    bool ready() override
+    {
+      if ( !affliction_spell_t::ready() )
+       return false;
+
+      target_cache.is_valid = false;
+      return target_list().size() > 0;
+    }
+
+    void execute() override
+    {
+      affliction_spell_t::execute();
+
+      if (p()->legendary.malefic_wrath->ok())
+      {
+        p()->buffs.malefic_wrath->trigger();
+        p()->procs.malefic_wrath->occur();
+      }
+
+      p()->buffs.calamitous_crescendo->expire();
+
+      if (p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
+      {
+        timespan_t dot_extension =  p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).time_value() * 1000;
+        warlock_td_t* td = p()->get_target_data( target );
+
+        td->dots_agony->adjust_duration( dot_extension );
+        td->dots_corruption->adjust_duration( dot_extension );
+        td->dots_unstable_affliction->adjust_duration( dot_extension );
+      }
+    }
+
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      affliction_spell_t::available_targets( tl );
+
+      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ){ return p()->get_target_data( target )->count_affliction_dots() == 0; } ), tl.end() );
+
+      return tl.size();
     }
 };
 
@@ -629,10 +699,26 @@ struct drain_soul_t : public affliction_spell_t
   void tick( dot_t* d ) override
   {
     affliction_spell_t::tick( d );
-    if ( result_is_hit( d->state->result ) && ( !p()->min_version_check( VERSION_9_1_0 ) || p()->talents.shadow_embrace->ok() ) )
+    if ( result_is_hit( d->state->result ) )
     {
-      // TODO - Add passive check
-      td( d->target )->debuffs_shadow_embrace->trigger();
+      if ( !p()->min_version_check( VERSION_9_1_0 ) || p()->talents.shadow_embrace->ok() )
+      {
+          // TODO - Add passive check
+          td( d->target )->debuffs_shadow_embrace->trigger();
+      }
+
+      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
+      {
+        bool tierDotsActive = td( d->target )->dots_agony->is_ticking() 
+                           && td( d->target )->dots_corruption->is_ticking()
+                           && td( d->target )->dots_unstable_affliction->is_ticking();
+
+        if ( tierDotsActive && rng().roll( p()->sets->set( WARLOCK_AFFLICTION, T28, B4 )->effectN( 2 ).percent() ) )
+        {
+          p()->procs.calamitous_crescendo->occur();
+          p()->buffs.calamitous_crescendo->trigger();
+        }
+      }
     }
   }
 
@@ -771,7 +857,7 @@ struct vile_taint_t : public affliction_spell_t
 
 struct dark_soul_t : public affliction_spell_t
 {
-  dark_soul_t( warlock_t* p, const std::string& options_str )
+  dark_soul_t( warlock_t* p, util::string_view options_str )
     : affliction_spell_t( "dark_soul", p, p->talents.dark_soul_misery )
   {
     parse_options( options_str );
@@ -794,7 +880,7 @@ using namespace buffs;
 }  // namespace buffs_affliction
 
 // add actions
-action_t* warlock_t::create_action_affliction( util::string_view action_name, const std::string& options_str )
+action_t* warlock_t::create_action_affliction( util::string_view action_name, util::string_view options_str )
 {
   using namespace actions_affliction;
 
@@ -846,6 +932,8 @@ void warlock_t::create_buffs_affliction()
                                 ->set_trigger_spell( talents.inevitable_demise );
 
   buffs.malefic_wrath = make_buff( this, "malefic_wrath", find_spell( 337125 ) )->set_default_value_from_effect( 1 );
+
+  buffs.calamitous_crescendo = make_buff( this, "calamitous_crescendo", find_spell( 364322 ) );
 }
 
 void warlock_t::init_spells_affliction()
@@ -908,9 +996,15 @@ void warlock_t::init_rng_affliction()
 
 void warlock_t::init_procs_affliction()
 {
-  procs.nightfall = get_proc( "nightfall" );
-  procs.corrupting_leer = get_proc( "corrupting_leer" );
-  procs.malefic_wrath   = get_proc( "malefic_wrath" );
+  procs.nightfall            = get_proc( "nightfall" );
+  procs.corrupting_leer      = get_proc( "corrupting_leer" );
+  procs.malefic_wrath        = get_proc( "malefic_wrath" );
+  procs.calamitous_crescendo = get_proc( "calamitous_crescendo" );
+
+  for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
+  {
+    procs.malefic_rapture[ i ] = get_proc( fmt::format( "Malefic Rapture {}", i + 1 ) );
+  }
 }
 
 void warlock_t::create_options_affliction()
@@ -930,8 +1024,11 @@ void warlock_t::create_apl_affliction()
   action_priority_list_t* stat  = get_action_priority_list( "stat_trinkets" );
   action_priority_list_t* dmg   = get_action_priority_list( "damage_trinkets" );
   action_priority_list_t* split = get_action_priority_list( "trinket_split_check" );
+  action_priority_list_t* necro = get_action_priority_list( "necro_mw" );
 
   def->add_action( "call_action_list,name=aoe,if=active_enemies>3" );
+  
+  def->add_action( "run_action_list,name=necro_mw,if=covenant.necrolord&runeforge.malefic_wrath&active_enemies=1&talent.phantom_singularity", "Call separate action list for Necrolord MW in ST. Currently only optimized for use with PS." );
 
   def->add_action( "call_action_list,name=trinket_split_check,if=time<1", "Action lists for trinket behavior. Stats are saved for before Soul Rot/Impending Catastrophe/Phantom Singularity, otherwise on cooldown" );
   def->add_action( "call_action_list,name=delayed_trinkets" );
@@ -1095,5 +1192,39 @@ void warlock_t::create_apl_affliction()
   split->add_action( "variable,name=trinket_two,value=(trinket.2.has_proc.any&trinket.2.has_cooldown)" );
   split->add_action( "variable,name=damage_trinket,value=(!(trinket.1.has_proc.any&trinket.1.has_cooldown))|(!(trinket.2.has_proc.any&trinket.2.has_cooldown))|equipped.glyph_of_assimilation" );
   split->add_action( "variable,name=trinket_split,value=(variable.trinket_one&variable.damage_trinket)|(variable.trinket_two&variable.damage_trinket)|(variable.trinket_one^variable.special_equipped)|(variable.trinket_two^variable.special_equipped)" );
+
+  necro->add_action( "variable,name=dots_ticking,value=dot.corruption.remains>2&dot.agony.remains>2&dot.unstable_affliction.remains>2&(!talent.siphon_life|dot.siphon_life.remains>2)" );
+  necro->add_action( "variable,name=trinket_delay,value=cooldown.phantom_singularity.remains,value_else=cooldown.decimating_bolt.remains,op=setif,condition=talent.shadow_embrace,if=covenant.necrolord", "Trinkets align with PS for Shadow Embrace, DB for Haunt.");
+  necro->add_action( "malefic_rapture,if=time_to_die<execute_time*soul_shard&dot.unstable_affliction.ticking", "Burn soul shards if the fight will be ending soon." );
+  necro->add_action( "haunt,if=dot.haunt.remains<2+execute_time", "Cast haunt to refresh before falloff." );
+  necro->add_action( "malefic_rapture,if=time>7&buff.malefic_wrath.remains<gcd.max+execute_time", "High - priority MW refresh if spending one global would cause us to miss the opportunity to refresh MW. " );
+  necro->add_action( "use_item,name=empyreal_ordnance,if=variable.trinket_delay<20", "Fire delayed trinkets in anticipation of Decimating Bolt." );
+  necro->add_action( "use_item,name=sunblood_amethyst,if=variable.trinket_delay<6" ); 
+  necro->add_action( "use_item,name=soulletting_ruby,if=variable.trinket_delay<8" );
+  necro->add_action( "use_item,name=name=shadowed_orb_of_torment,if=variable.trinket_delay<4" );
+  necro->add_action( "phantom_singularity,if=talent.haunt&variable.dots_ticking", "If the player is using Haunt, fire PS on cooldown then follow with DB" );
+  necro->add_action( "decimating_bolt,if=talent.haunt&cooldown.phantom_singularity.remains>0" );
+  necro->add_action( "decimating_bolt,if=talent.shadow_embrace&variable.dots_ticking", "If the player is using SE, fire DB on cooldown then following with PS" );
+  necro->add_action( "phantom_singularity,if=talent.shadow_embrace&cooldown.decimating_bolt.remains>0" );
+  necro->add_action( "unstable_affliction,if=dot.unstable_affliction.remains<6" );
+  necro->add_action( "agony,if=dot.agony.remains<4" );
+  necro->add_action( "siphon_life,if=dot.siphon_life.remains<4" );
+  necro->add_action( "corruption,if=dot.corruption.remains<4" );
+  necro->add_action( "malefic_rapture,if=time>7&buff.malefic_wrath.remains<2*gcd.max+execute_time", "Refresh MW after the opener if darkglare_prep would cause us to miss a MW refresh" );
+  necro->add_action( "call_action_list,name=darkglare_prep,if=dot.phantom_singularity.ticking", "Call darkglare_prep if Phantom Singularity is currently ticking" );
+  necro->add_action( "call_action_list,name=stat_trinkets,if=dot.phantom_singularity.ticking", "Utilize any other stat trinkets if Phantom Singularity is ticking" );
+  necro->add_action( "malefic_rapture,if=time>7&(buff.malefic_wrath.stack<3|buff.malefic_wrath.remains<4.5)", "Stack Malefic Wrath to 3, or refresh when getting low (ideally looking for a calculated number, but 4.5s remaining is the result of testing with T27)" );
+  necro->add_action( "malefic_rapture,if=(dot.phantom_singularity.ticking|time_to_die<cooldown.phantom_singularity.remains)&(buff.malefic_wrath.stack<3|soul_shard>1)", "Additional MR spends when extra shards are available and either Phantom Singularity is ticking, or the fight is ending." );
+  necro->add_action( "drain_soul,if=dot.phantom_singularity.ticking", "Additional Drain Soul cast when PS is ticking" );
+  necro->add_action( "agony,if=refreshable", "Low - priority dot refresh when refreshable." );
+  necro->add_action( "unstable_affliction,if=refreshable" );
+  necro->add_action( "corruption,if=refreshable" );
+  necro->add_action( "siphon_life,if=talent.siphon_life&refreshable" );
+  necro->add_action( "fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_solvent_humanoid.up", "Fleshcraft to maintain Volatile Solvent." );
+  necro->add_action( "haunt,if=dot.haunt.remains<3", "Low-priority haunt refresh." );
+  necro->add_action( "drain_soul,if=buff.decimating_bolt.up", "Uninterruptible DS channel if we have the DB buff." );
+  necro->add_action( "drain_soul,if=talent.shadow_embrace&debuff.shadow_embrace.remains<3|debuff.shadow_embrace.stack<3,interrupt_if=debuff.shadow_embrace.stack>=3&debuff.shadow_embrace.remains>3" );
+  necro->add_action( "drain_soul,interrupt=1" );
+  necro->add_action( "shadow_bolt" );
 }
 }  // namespace warlock

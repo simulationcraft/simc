@@ -13,15 +13,11 @@
 #include "rating.hpp"
 #include "weapon.hpp"
 #include "effect_callbacks.hpp"
-#include "util/plot_data.hpp"
 #include "player_collected_data.hpp"
 #include "player_processed_report_information.hpp"
 #include "player_stat_cache.hpp"
-#include "scaling_metric_data.hpp"
 #include "util/cache.hpp"
-#include "dbc/item_database.hpp"
 #include "dbc/specialization.hpp"
-#include "util/util.hpp"
 #include "assessor.hpp"
 #include <map>
 #include <set>
@@ -57,8 +53,10 @@ struct pet_t;
 struct player_description_t;
 struct player_report_extension_t;
 struct player_scaling_t;
+struct plot_data_t;
 struct proc_t;
 struct real_ppm_t;
+struct scaling_metric_data_t;
 struct set_bonus_t;
 class shuffled_rng_t;
 struct special_effect_t;
@@ -221,7 +219,7 @@ struct player_t : public actor_t
     double spell_power_multiplier, attack_power_multiplier, base_armor_multiplier, armor_multiplier;
     position_e position;
 
-    friend void format_to( const base_initial_current_t&, fmt::format_context::iterator );
+    friend void sc_format_to( const base_initial_current_t&, fmt::format_context::iterator );
   }
   base, // Base values, from some database or overridden by user
   initial, // Base + Passive + Gear (overridden or items) + Player Enchants + Global Enchants
@@ -288,6 +286,7 @@ struct player_t : public actor_t
   auto_dispose< std::vector<special_effect_t*> > special_effects;
   std::vector<std::pair<player_t*, std::function<void( player_t* )>>> callbacks_on_demise;
   std::vector<std::pair<player_t*, std::function<void( void )>>> callbacks_on_arise;
+  std::vector<std::function<void( player_t* )>> callbacks_on_kill;
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
@@ -535,9 +534,10 @@ struct player_t : public actor_t
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
     buff_t* echo_of_eonar;               // passive self buff
 
-    // 9.1 Legendary Party Buffs
+    // 9.1 Legendary Buffs
     buff_t* pact_of_the_soulstalkers; // Kyrian Hunter Legendary
     buff_t* kindred_affinity;         // Kyrian Druid Legendary
+    buff_t* equinox;                  // Night Fae Paladin Legendary
 
     // 9.1 Shards of Domination
     buff_t* coldhearted; // Shard of Cor
@@ -567,6 +567,8 @@ struct player_t : public actor_t
   struct external_buffs_t
   {
     bool focus_magic;
+    bool seasons_of_plenty;
+    double blessing_of_summer_duration_multiplier;
     std::vector<timespan_t> power_infusion;
     std::vector<timespan_t> benevolent_faerie;
     std::vector<timespan_t> blessing_of_summer;
@@ -719,8 +721,8 @@ public:
   void change_position( position_e );
   void register_resource_callback(resource_e resource, double value, resource_callback_function_t callback,
       bool use_pct, bool fire_once = true);
-  bool add_action( util::string_view action, util::string_view options = "", util::string_view alist = "default" );
-  bool add_action( const spell_data_t* s, util::string_view options = "", util::string_view alist = "default" );
+  bool add_action( util::string_view action, util::string_view options = {}, util::string_view alist = "default" );
+  bool add_action( const spell_data_t* s, util::string_view options = {}, util::string_view alist = "default" );
   void add_option( std::unique_ptr<option_t> o );
   void parse_talents_numbers( util::string_view talent_string );
   bool parse_talents_armory( util::string_view talent_string );
@@ -747,8 +749,7 @@ public:
   const char* primary_tree_name() const;
   timespan_t total_reaction_time();
   double avg_item_level() const;
-  double get_attribute( attribute_e a ) const
-  { return util::floor( composite_attribute( a ) * composite_attribute_multiplier( a ) ); }
+  double get_attribute( attribute_e a ) const;
   double strength() const
   { return get_attribute( ATTR_STRENGTH ); }
   double agility() const
@@ -901,23 +902,7 @@ public:
 
   virtual double resource_regen_per_second( resource_e ) const;
 
-  double apply_combat_rating_dr( rating_e rating, double value ) const
-  {
-    switch ( rating )
-    {
-      case RATING_LEECH:
-      case RATING_SPEED:
-      case RATING_AVOIDANCE:
-        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_TERTIARY_CR_CURVE, value * 100.0 ) / 100.0;
-      case RATING_MASTERY:
-        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_SECONDARY_CR_CURVE, value );
-      case RATING_MITIGATION_VERSATILITY:
-        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_VERS_MITIG_CR_CURVE, value * 100.0 ) / 100.0;
-      default:
-        // Note, curve uses %-based values, not values divided by 100
-        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_SECONDARY_CR_CURVE, value * 100.0 ) / 100.0;
-    }
-  }
+  double apply_combat_rating_dr( rating_e rating, double value ) const;
 
   virtual double composite_melee_haste() const;
   virtual double composite_melee_speed() const;
@@ -1098,9 +1083,9 @@ public:
 
   virtual void copy_from( player_t* source );
 
-  virtual action_t* create_action( util::string_view name, const std::string& options );
+  virtual action_t* create_action( util::string_view name, util::string_view options );
   virtual void      create_pets() { }
-  virtual pet_t*    create_pet( util::string_view name,  util::string_view type = "" );
+  virtual pet_t*    create_pet( util::string_view name,  util::string_view type = {} );
 
   virtual void armory_extensions( const std::string& /* region */, const std::string& /* server */, const std::string& /* character */,
                                   cache::behavior_e /* behavior */ = cache::players() )
@@ -1137,7 +1122,7 @@ public:
 
   virtual void analyze( sim_t& );
 
-  scaling_metric_data_t scaling_for_metric( scale_metric_e metric ) const;
+  scaling_metric_data_t scaling_for_metric( enum scale_metric_e metric ) const;
 
   virtual action_t* create_proc_action( util::string_view /* name */, const special_effect_t& /* effect */ )
   { return nullptr; }
@@ -1236,6 +1221,7 @@ public:
 
   void register_on_demise_callback( player_t* source, std::function<void( player_t* )> fn );
   void register_on_arise_callback( player_t* source, std::function<void( void )> fn );
+  void register_on_kill_callback( std::function<void( player_t* )> fn );
 
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();
@@ -1246,7 +1232,7 @@ public:
   spawner::base_actor_spawner_t* find_spawner( util::string_view id ) const;
   int nth_iteration() const;
 
-  friend void format_to( const player_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const player_t&, fmt::format_context::iterator );
 
   // Indicates whether the player uses PTR dbc data
   bool is_ptr() const;

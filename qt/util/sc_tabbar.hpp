@@ -96,11 +96,15 @@ protected:
   virtual void dropEvent( QDropEvent* e ) override;
   virtual void mouseMoveEvent( QMouseEvent* e ) override;
   virtual void leaveEvent( QEvent* e ) override;
-  virtual void enterEvent( QEvent* e ) override;
   virtual void startDraggedTextTimer( int tab );
   virtual void startHoverTimer( int tab );
   virtual bool event( QEvent* e ) override;
   virtual void mousePressEvent( QMouseEvent* event ) override;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  virtual void enterEvent( QEvent* e ) override;
+#else
+  virtual void enterEvent( QEnterEvent* e ) override;
+#endif
 public slots:
   void mouseHoverTimedout();
   void draggedTextTimedout();

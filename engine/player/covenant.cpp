@@ -325,6 +325,20 @@ void covenant_state_t::set_renown_level( unsigned renown_level )
     m_renown.push_back( spell.second );
 }
 
+bool covenant_state_t::is_conduit_socket_empowered( unsigned soulbind_id, unsigned tier, unsigned ui_order )
+{
+  for ( auto& entry : enhanced_conduit_entry_t::find_by_soulbind_id( soulbind_id, m_player->dbc->ptr ) )
+  {
+    if ( tier < entry.tier )
+      break;
+
+    if ( tier == entry.tier and ui_order == entry.ui_order )
+      return renown() >= entry.renown_level;
+  }
+
+  return false;
+}
+
 const spell_data_t* covenant_state_t::get_covenant_ability( util::string_view name ) const
 {
   if ( !enabled() )
@@ -461,7 +475,7 @@ std::string covenant_state_t::covenant_option_str() const
     return {};
   }
 
-  return fmt::format( "covenant={}", m_covenant );
+  return fmt::format( "covenant={}", util::covenant_type_string( m_covenant ) );
 }
 
 std::unique_ptr<expr_t> covenant_state_t::create_expression(
@@ -550,14 +564,10 @@ void covenant_state_t::copy_state( const std::unique_ptr<covenant_state_t>& othe
 
 void covenant_state_t::register_options( player_t* player )
 {
-  player->add_option( opt_func( "soulbind", std::bind( &covenant_state_t::parse_soulbind_clear,
-          this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
-  player->add_option( opt_func( "soulbind+", std::bind( &covenant_state_t::parse_soulbind,
-          this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
-  player->add_option( opt_func( "covenant", std::bind( &covenant_state_t::parse_covenant,
-          this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
-  player->add_option( opt_func( "renown", std::bind( &covenant_state_t::parse_renown,
-          this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
+  player->add_option( opt_func( "soulbind", [this](sim_t* sim, util::string_view name, util::string_view value) { return parse_soulbind_clear( sim, name, value ); } ) );
+  player->add_option( opt_func( "soulbind+", [this](sim_t* sim, util::string_view name, util::string_view value) { return parse_soulbind( sim, name, value ); } ) );
+  player->add_option( opt_func( "covenant", [this](sim_t* sim, util::string_view name, util::string_view value) { return parse_covenant( sim, name, value ); } ) );
+  player->add_option( opt_func( "renown", [this](sim_t* sim, util::string_view name, util::string_view value) { return parse_renown( sim, name, value ); } ) );
 }
 
 unsigned covenant_state_t::get_covenant_ability_spell_id( bool generic ) const
@@ -590,21 +600,24 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
   if ( !enabled() )
     return root;
 
+  const sim_t& sim = *(m_player->sim);
+
   root.format( "<tr class=\"left\"><th>{} ({})</th><td><ul class=\"float\">\n", util::covenant_type_string( type(), true ), renown() );
 
   auto cv_spell = m_player->find_spell( get_covenant_ability_spell_id() );
-  root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *cv_spell ) );
+  root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( sim, *cv_spell ) );
 
   for ( const auto& e : conduit_entry_t::data( m_player->dbc->ptr ) )
   {
-    for ( const auto& cd : m_conduits )
+    for ( const auto& [conduit_id, rank] : m_conduits )
     {
-      if ( std::get<0>( cd ) == e.id )
+      if ( conduit_id == e.id )
       {
-        auto conduit = m_player->find_conduit_spell( e.name );
+        auto conduitRankData = conduit_rank_entry_t::find(conduit_id, rank, m_player->is_ptr());
+        auto conduitData = conduit_data_t(m_player, conduitRankData);
         root.format( "<li>{} ({})</li>\n",
-                     report_decorators::decorated_conduit_name( m_player->sim, conduit ),
-                     std::get<1>( cd ) + 1 );
+                     report_decorators::decorated_conduit_name( sim, conduitData ),
+                     rank + 1 );
       }
     }
   }
@@ -618,7 +631,7 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
     for ( const auto& sb : m_soulbinds )
     {
       auto sb_spell = m_player->find_spell( sb );
-      root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *sb_spell ) );
+      root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( sim, *sb_spell ) );
     }
 
     root << "</ul></td></tr>\n";
@@ -631,7 +644,7 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
     for ( const auto& r : m_renown )
     {
       auto r_spell = m_player->find_spell( r );
-      root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *r_spell ) );
+      root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( sim, *r_spell ) );
     }
 
     root << "</ul></td></tr>\n";
@@ -646,11 +659,11 @@ void covenant_state_t::check_conduits( util::string_view tier_name, unsigned max
   // Copied logic from covenant_state_t::generate_report(), feel free to improve it
   for ( const auto& e : conduit_entry_t::data( m_player->dbc->ptr ) )
   {
-    for ( const auto& cd : m_conduits )
+    for ( const auto& [conduit_id, rank] : m_conduits )
     {
-      if ( std::get<0>( cd ) == e.id )
+      if ( conduit_id == e.id )
       {
-        unsigned int conduit_rank = std::get<1>( cd ) + 1;
+        unsigned int conduit_rank = rank + 1;
         if ( conduit_rank != max_conduit_rank )
         {
           m_player -> sim -> error( "Player {} has conduit {} equipped at rank {}, conduit rank for {} is {}.\n",
@@ -828,7 +841,7 @@ struct fleshcraft_t : public spell_t
   }
 };
 
-action_t* create_action( player_t* player, util::string_view name, const std::string& options )
+action_t* create_action( player_t* player, util::string_view name, util::string_view options )
 {
   if ( util::str_compare_ci( name, "fleshcraft" ) ) return new fleshcraft_t( player, options );
 
@@ -907,8 +920,14 @@ bool parse_blizzard_covenant_information( player_t*               player,
           continue;
         }
 
-        player->covenant->add_conduit( conduit[ "socket" ][ "conduit" ][ "id" ].GetUint(),
-            conduit[ "socket" ][ "rank" ].GetUint() - 1 );
+        unsigned conduit_rank = conduit[ "socket" ][ "rank" ].GetUint() - 1;
+        unsigned tier = entry[ "tier" ].GetUint();
+        unsigned order = entry[ "display_order" ].GetUint();
+        // TODO: retain state in conduit_entry_t for html report differentiation of empowered vs non
+        if ( player->covenant->is_conduit_socket_empowered( soulbind_id, tier, order ) )
+          conduit_rank += 2;
+
+        player->covenant->add_conduit( conduit[ "socket" ][ "conduit" ][ "id" ].GetUint(), conduit_rank );
       }
     }
 

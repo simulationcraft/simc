@@ -36,7 +36,8 @@ namespace
 // of the same option will override whatever is being done.
 bool overridable_option( const option_tuple_t& tuple )
 {
-  return tuple.name.rfind( "actions", 0 ) == std::string::npos &&
+  return tuple.value.rfind( '=' ) == std::string::npos &&
+         tuple.name.rfind( "actions", 0 ) == std::string::npos &&
          tuple.name.rfind( "items", 0 ) == std::string::npos &&
          tuple.name.rfind( "raid_events", 0 ) == std::string::npos;
 }
@@ -345,7 +346,14 @@ sim_control_t* profilesets_t::create_sim_options( const sim_control_t*          
 
   // Filter profileset options so that any option overridable in the base options is
   // overriden, and the rest are inserted at the correct position
-  range::for_each( new_options.options, [&filtered_opts, options_copy]( const option_tuple_t& t ) {
+  for ( const option_tuple_t& t : new_options.options )
+  {
+    if ( in_player_scope( t ) )
+    {
+      std::cerr << fmt::format("ERROR! Profilesets cannot define additional actors: {}={}", t.name, t.value) << std::endl;
+      return nullptr;
+    }
+
     if ( !overridable_option( t ) )
     {
       filtered_opts.push_back( t );
@@ -370,7 +378,7 @@ sim_control_t* profilesets_t::create_sim_options( const sim_control_t*          
         filtered_opts.push_back( t );
       }
     }
-  } );
+  }
 
   // No enemy option defined, insert filtered profileset options to the end of the
   // original options
@@ -412,8 +420,8 @@ profilesets_t::~profilesets_t()
   range::for_each( m_current_work, []( std::unique_ptr<worker_t>& worker ) { worker -> thread().join(); } );
 }
 
-profile_set_t::profile_set_t( const std::string& name, sim_control_t* opts, bool has_output ) :
-  m_name( name ), m_options( opts ), m_has_output( has_output ), m_output_data( nullptr )
+profile_set_t::profile_set_t( std::string name, sim_control_t* opts, bool has_output ) :
+  m_name( std::move(name) ), m_options( opts ), m_has_output( has_output ), m_output_data( nullptr )
 {
 }
 
@@ -481,7 +489,7 @@ worker_t::worker_t( profilesets_t* master, sim_t* p, profile_set_t* ps ) :
   m_done( false ), m_parent( p ), m_master( master ), m_sim( nullptr ), m_profileset( ps ),
   m_thread( nullptr )
 {
-  m_thread = new std::thread( std::bind( &worker_t::execute, this ) );
+  m_thread = new std::thread( [this] { execute(); } );
 }
 
 worker_t::~worker_t()
@@ -515,9 +523,10 @@ void worker_t::execute()
   }
   catch (const std::exception& e )
   {
-    std::cerr << "\n\nError in profileset worker: ";
-    util::print_chained_exception(e, std::cerr);
-    std::cerr << "\n\n" << std::flush;
+    fmt::print( stderr, "\n\nError in profileset worker: " );
+    util::print_chained_exception( e, stderr );
+    fmt::print( stderr, "\n\n" );
+    std::fflush( stderr );
     // TODO: find out how to cancel profilesets without deadlock.
   }
 
@@ -702,9 +711,9 @@ bool profilesets_t::parse( sim_t* sim )
     }
     catch ( const std::exception& e )
     {
-      std::cerr << "ERROR! Profileset '" << profileset_name << "' Setup failure: ";
-      util::print_chained_exception( e, std::cerr );
-      std::cerr << std::endl;
+      fmt::print( stderr, "ERROR! Profileset '{}' Setup failure: ", profileset_name );
+      util::print_chained_exception( e, stderr );
+      fmt::print( stderr, "\n" );
       set_state( DONE );
       m_control.notify_one();
       delete control;
@@ -825,7 +834,7 @@ std::string profilesets_t::current_profileset_name()
   if ( is_done() || m_work_index == 0 )
   {
     m_control_lock.unlock();
-    return std::string();
+    return {};
   }
 
   std::string profileset_name = m_profilesets[ m_work_index - 1 ] -> name();
@@ -962,7 +971,7 @@ void profilesets_t::output_progressbar( const sim_t* parent ) const
   s << '\r';
 
   std::cout << s.str();
-  fflush( stdout );
+  std::fflush( stdout );
 }
 
 void profilesets_t::output_text( const sim_t& sim, std::ostream& out ) const
@@ -1202,10 +1211,9 @@ void create_options( sim_t* sim )
                                                         util::string_view value ) {
     sim -> profileset_output_data.clear();
 
-    auto split = util::string_split( value, "/:," );
-    for ( const auto& v : split )
+    for ( auto&& v : util::string_split( value, "/:," ) )
     {
-      sim -> profileset_output_data.push_back( v );
+      sim -> profileset_output_data.push_back( std::move( v ) );
     }
 
     return true;
@@ -1378,10 +1386,9 @@ void fetch_output_data( const profile_output_data_t& output_data, js::JsonOutput
   {
     const auto& talents = output_data.talents();
     auto ovr_talents = ovr[ "talents" ].make_array();
-    for ( size_t i = 0; i < talents.size(); i++ )
+    for (auto talent : talents)
     {
-      const auto& talent = talents[ i ];
-      auto ovr_talent = ovr_talents.add();
+       auto ovr_talent = ovr_talents.add();
       ovr_talent[ "tier"     ] = talent -> row();
       ovr_talent[ "id"       ] = talent -> id();
       ovr_talent[ "spell_id" ] = talent -> spell_id();
@@ -1391,10 +1398,9 @@ void fetch_output_data( const profile_output_data_t& output_data, js::JsonOutput
   if ( !output_data.gear().empty() ) {
     const auto& gear = output_data.gear();
     auto ovr_gear = ovr[ "gear" ];
-    for ( size_t i = 0; i < gear.size(); i++ )
+    for ( const auto& item : gear )
     {
-      const auto& item = gear[ i ];
-      auto ovr_slot = ovr_gear[ item.slot_name() ];
+       auto ovr_slot = ovr_gear[ item.slot_name() ];
       ovr_slot[ "item_id"    ] = item.item_id();
       ovr_slot[ "item_level" ] = item.item_level();
     }

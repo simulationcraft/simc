@@ -54,7 +54,7 @@ std::shared_ptr<xml_node_t> download_id( sim_t*             sim,
                                 wowhead::wowhead_e source )
 {
   if ( ! id )
-    return std::shared_ptr<xml_node_t>();
+    return {};
 
   std::string url_www = "https://" + source_str( source ) + ".wowhead.com/item="
                         + util::to_string( id ) + "&xml";
@@ -199,7 +199,7 @@ bool wowhead::download_item_data( item_t& item, wowhead_e source, cache::behavio
       size_t n = 0;
       stat_e hybrid_stat = STAT_NONE;
       for (rapidjson::Value::ConstMemberIterator i = jsonequip.MemberBegin();
-        i != jsonequip.MemberEnd() && n < range::size(item.parsed.data.stat_type_e); i++)
+        i != jsonequip.MemberEnd() && n < std::size(item.parsed.data.stat_type_e); i++)
       {
         stat_e type = util::parse_stat_type(i->name.GetString());
         // wowhead josnEquip contains redundant entries for queries, take note so we can purge
@@ -208,7 +208,7 @@ bool wowhead::download_item_data( item_t& item, wowhead_e source, cache::behavio
       }
 
       for (rapidjson::Value::ConstMemberIterator i = jsonequip.MemberBegin();
-        i != jsonequip.MemberEnd() && n < range::size(item.parsed.data.stat_type_e); i++)
+        i != jsonequip.MemberEnd() && n < std::size(item.parsed.data.stat_type_e); i++)
       {
         stat_e type = util::parse_stat_type(i->name.GetString());
         if (type == STAT_NONE || type == STAT_ARMOR || util::translate_stat(type) == ITEM_MOD_NONE)
@@ -244,7 +244,7 @@ bool wowhead::download_item_data( item_t& item, wowhead_e source, cache::behavio
       if (jsonequip.HasMember("nsockets"))
         n_sockets = jsonequip["nsockets"].GetUint();
 
-      assert(n_sockets <= static_cast<int>(range::size(item.parsed.data.socket_color)));
+      assert(n_sockets <= static_cast<int>(std::size(item.parsed.data.socket_color)));
       for (int i = 0; i < n_sockets; i++)
       {
         std::string socket_str = fmt::format("socket{:d}", i + 1);
@@ -266,12 +266,12 @@ bool wowhead::download_item_data( item_t& item, wowhead_e source, cache::behavio
       auto htmltooltip_xml = xml_node_t::create(htmltooltip);
       //htmltooltip_xml -> print( item.sim -> output_file, 2 );
       std::vector<xml_node_t*> spell_links = htmltooltip_xml->get_nodes("span");
-      for (size_t i = 0; i < spell_links.size(); i++)
+      for ( auto* spell_link : spell_links )
       {
         int trigger_type = -1;
 
         std::string v;
-        if (spell_links[i]->get_value(v, ".") && v != "Equip: " && v != "Use: ")
+        if (spell_link->get_value(v, ".") && v != "Equip: " && v != "Use: ")
           continue;
 
         if (v == "Use: ")
@@ -280,7 +280,7 @@ bool wowhead::download_item_data( item_t& item, wowhead_e source, cache::behavio
           trigger_type = ITEM_SPELLTRIGGER_ON_EQUIP;
 
         std::string url;
-        if (!spell_links[i]->get_value(url, "a/href"))
+        if (!spell_link->get_value(url, "a/href"))
           continue;
 
         size_t begin = url.rfind('=');

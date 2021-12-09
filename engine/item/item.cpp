@@ -142,7 +142,7 @@ bool item_t::has_scaling_stat_bonus_id() const
 
 bool item_t::socket_color_match() const
 {
-  for ( size_t i = 0, end = range::size( parsed.data.socket_color ); i < end; i++ )
+  for ( size_t i = 0, end = std::size( parsed.data.socket_color ); i < end; i++ )
   {
     if ( parsed.data.socket_color[ i ] == SOCKET_COLOR_NONE )
       continue;
@@ -253,7 +253,7 @@ std::string item_t::item_stats_str() const
   else if ( item_database::armor_value( *this ) )
     s << item_database::armor_value( *this ) << " Armor, ";
 
-  for ( size_t i = 0; i < range::size( parsed.data.stat_type_e ); i++ )
+  for ( size_t i = 0; i < std::size( parsed.data.stat_type_e ); i++ )
   {
     if ( parsed.data.stat_type_e[ i ] <= 0 )
       continue;
@@ -288,7 +288,7 @@ std::string item_t::weapon_stats_str() const
 {
   if ( ! weapon() )
   {
-    return std::string();
+    return {};
   }
 
   std::ostringstream s;
@@ -308,15 +308,15 @@ std::string item_t::gem_stats_str() const
 {
   if ( parsed.gem_stats.empty() )
   {
-    return std::string();
+    return {};
   }
 
   std::ostringstream s;
 
-  for ( size_t i = 0; i < parsed.gem_stats.size(); i++ )
+  for ( const auto& gem_stat : parsed.gem_stats )
   {
-    s << "+" << parsed.gem_stats[ i ].value
-      << " " << util::stat_type_abbrev( parsed.gem_stats[ i ].stat ) << ", ";
+    s << "+" << gem_stat.value
+      << " " << util::stat_type_abbrev( gem_stat.stat ) << ", ";
   }
 
   std::string str = s.str();
@@ -329,15 +329,15 @@ std::string item_t::enchant_stats_str() const
 {
   if ( parsed.enchant_stats.empty() )
   {
-    return std::string();
+    return {};
   }
 
   std::ostringstream s;
 
-  for ( size_t i = 0; i < parsed.enchant_stats.size(); i++ )
+  for ( const auto& enchant_stat : parsed.enchant_stats )
   {
-    s << "+" << parsed.enchant_stats[ i ].value
-      << " " << util::stat_type_abbrev( parsed.enchant_stats[ i ].stat ) << ", ";
+    s << "+" << enchant_stat.value
+      << " " << util::stat_type_abbrev( enchant_stat.stat ) << ", ";
   }
 
   std::string str = s.str();
@@ -350,15 +350,15 @@ std::string item_t::socket_bonus_stats_str() const
 {
   if ( parsed.socket_bonus_stats.empty() )
   {
-    return std::string();
+    return {};
   }
 
   std::ostringstream s;
 
-  for ( size_t i = 0; i < parsed.socket_bonus_stats.size(); i++ )
+  for ( const auto& socket_bonus_stat : parsed.socket_bonus_stats )
   {
-    s << "+" << parsed.socket_bonus_stats[ i ].value
-      << " " << util::stat_type_abbrev( parsed.socket_bonus_stats[ i ].stat ) << ", ";
+    s << "+" << socket_bonus_stat.value
+      << " " << util::stat_type_abbrev( socket_bonus_stat.stat ) << ", ";
   }
 
   std::string str = s.str();
@@ -367,7 +367,7 @@ std::string item_t::socket_bonus_stats_str() const
   return str;
 }
 
-void format_to( const item_t& item, fmt::format_context::iterator out )
+void sc_format_to( const item_t& item, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "name={} id={}", item.name_str, item.parsed.data.id );
   if ( item.slot != SLOT_INVALID )
@@ -533,7 +533,7 @@ unsigned item_t::base_item_level() const
 
 stat_e item_t::stat( size_t idx ) const
 {
-  if ( idx >= range::size( parsed.data.stat_type_e ) )
+  if ( idx >= std::size( parsed.data.stat_type_e ) )
     return STAT_NONE;
 
   return util::translate_item_mod( parsed.data.stat_type_e[ idx ] );
@@ -541,7 +541,7 @@ stat_e item_t::stat( size_t idx ) const
 
 int item_t::stat_value( size_t idx ) const
 {
-  if ( idx >= range::size( parsed.data.stat_type_e ) - 1 )
+  if ( idx >= std::size( parsed.data.stat_type_e ) - 1 )
     return -1;
 
   return item_database::scaled_stat( *this, *player -> dbc, idx, item_level() );
@@ -733,7 +733,7 @@ void item_t::parse_options()
   if ( ! option_gem_id_str.empty() )
   {
     auto spl = util::string_split<util::string_view>( option_gem_id_str, ":/" );
-    for ( size_t i = 0, end = std::min( range::size( parsed.gem_id ), spl.size() ); i < end; i++ )
+    for ( size_t i = 0, end = std::min( std::size( parsed.gem_id ), spl.size() ); i < end; i++ )
     {
       int gem_id = util::to_int( spl[ i ] );
 
@@ -843,7 +843,7 @@ void item_t::parse_options()
   {
     try
     {
-      auto split = util::string_split( option_crafted_stat_str, "/" );
+      auto split = util::string_split<util::string_view>( option_crafted_stat_str, "/" );
       if ( split.size() > 2 )
       {
         throw std::invalid_argument( "Maximum of two crafted stats can exist on an item." );
@@ -1253,7 +1253,7 @@ std::string item_t::encoded_stats() const
 
   std::vector<std::string> stats;
 
-  for ( size_t i = 0; i < range::size( parsed.data.stat_type_e ); i++ )
+  for ( size_t i = 0; i < std::size( parsed.data.stat_type_e ); i++ )
   {
     if ( parsed.data.stat_type_e[ i ] < 0 )
       continue;
@@ -1506,7 +1506,7 @@ void item_t::decode_stats()
     auto tokens = item_database::parse_tokens( option_stats_str );
     size_t stat = 0;
 
-    for ( size_t i = 0; i < tokens.size() && stat < range::size( parsed.stat_val ); i++ )
+    for ( size_t i = 0; i < tokens.size() && stat < std::size( parsed.stat_val ); i++ )
     {
       stat_e s = util::parse_stat_type( tokens[ i ].name );
       if ( s == STAT_NONE )
@@ -1942,9 +1942,9 @@ std::string item_t::stat_pairs_to_str( const std::vector<stat_pair_t>& stat_pair
 {
   std::vector<std::string> stats;
 
-  for ( size_t i = 0; i < stat_pairs.size(); i++ )
+  for ( const auto& stat_pair : stat_pairs )
   {
-    std::string stat_str = util::to_string( stat_pairs[ i ].value ) + util::stat_type_abbrev( stat_pairs[ i ].stat );
+    std::string stat_str = util::to_string( stat_pair.value ) + util::stat_type_abbrev( stat_pair.stat );
     if ( ! stat_str.empty() ) stats.push_back( stat_str );
   }
 

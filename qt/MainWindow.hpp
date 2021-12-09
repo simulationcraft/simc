@@ -54,7 +54,6 @@ public:
   QGroupBox* createCustomCharData;
   SC_RecentlyClosedTabItemModel* recentlyClosedTabModel;
   SC_RecentlyClosedTabWidget* recentlyClosedTabImport;
-  QDesktopWidget desktopWidget;
 
   QTimer* timer;
   QTimer* soloChar;

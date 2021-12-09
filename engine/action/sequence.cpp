@@ -32,14 +32,14 @@ sequence_t::sequence_t( player_t* p, util::string_view sub_action_str ) :
   }
 
   // Skip first token if it's an option
-  for ( size_t i = as<size_t>( has_option ); i < splits.size(); ++i )
+  for ( auto i = as<size_t>( has_option ); i < splits.size(); ++i )
   {
     auto cut_pt      = splits[ i ].find( ',' );
     auto action_name = splits[ i ].substr( 0, cut_pt );
-    std::string action_options;
+    util::string_view action_options;
 
     if ( cut_pt != util::string_view::npos )
-      action_options = std::string( splits[ i ].substr( cut_pt + 1 ) );
+      action_options = splits[ i ].substr( cut_pt + 1 );
 
     action_t* a = p -> create_action( action_name, action_options );
     if ( ! a )
@@ -163,10 +163,10 @@ strict_sequence_t::strict_sequence_t( player_t* p, util::string_view options )
   {
     auto cut_pt      = splits[ i ].find( ',' );
     auto action_name = splits[ i ].substr( 0, cut_pt );
-    std::string action_options;
+    util::string_view action_options;
 
     if ( cut_pt != util::string_view::npos )
-      action_options = std::string( splits[ i ].substr( cut_pt + 1 ) );
+      action_options = splits[ i ].substr( cut_pt + 1 );
 
     action_t* a = p -> create_action( action_name, action_options );
     if ( ! a )

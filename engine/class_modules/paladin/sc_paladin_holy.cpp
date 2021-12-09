@@ -345,16 +345,19 @@ struct holy_shock_t : public paladin_spell_t
 
 struct judgment_holy_t : public judgment_t
 {
-  judgment_holy_t( paladin_t* p, util::string_view options_str ) : judgment_t( p, options_str )
+  judgment_holy_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
+    judgment_t( p, name )
   {
+    parse_options( options_str );
     base_multiplier *= 1.0 + p->spec.holy_paladin->effectN( 11 ).percent();
   }
-
-  judgment_holy_t( paladin_t* p ) : judgment_t( p )
+  /* This background constructor doesn't seem to have any use?
+  judgment_holy_t( paladin_t* p, util::string_view name ) :
+    judgment_t( p, name )
   {
     background = true;
     base_multiplier *= 1.0 + p->spec.holy_paladin->effectN( 11 ).percent();
-  }
+  }*/
 
   void execute() override
   {
@@ -524,11 +527,10 @@ void paladin_t::create_holy_actions()
   {
     active.divine_toll = new holy_shock_t( this, true );
     active.divine_resonance = new holy_shock_t( this, true );
-    active.judgment = new judgment_holy_t( this );
   }
 }
 
-action_t* paladin_t::create_action_holy( util::string_view name, const std::string& options_str )
+action_t* paladin_t::create_action_holy( util::string_view name, util::string_view options_str )
 {
   if ( name == "beacon_of_light" )
     return new beacon_of_light_t( this, options_str );
@@ -550,7 +552,7 @@ action_t* paladin_t::create_action_holy( util::string_view name, const std::stri
   if ( specialization() == PALADIN_HOLY )
   {
     if ( name == "judgment" )
-      return new judgment_holy_t( this, options_str );
+      return new judgment_holy_t( this, "judgment", options_str );
   }
 
   return nullptr;
@@ -721,12 +723,12 @@ void paladin_t::generate_action_prio_list_holy()
   }
 
   std::vector<std::string> profession_actions = get_profession_actions();
-  for ( size_t i = 0; i < profession_actions.size(); i++ )
-    def->add_action( profession_actions[ i ] );
+  for ( const auto& profession_action : profession_actions )
+    def->add_action( profession_action );
 
   std::vector<std::string> racial_actions = get_racial_actions();
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
-    def->add_action( racial_actions[ i ] );
+  for ( const auto& racial_action : racial_actions )
+    def->add_action( racial_action );
 
   // this is just sort of made up to test things - a real Holy dev should probably come up with something useful here
   // eventually Workin on it. Phillipuh to-do

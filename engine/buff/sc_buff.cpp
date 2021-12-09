@@ -86,13 +86,9 @@ struct buff_expr_t : public expr_t
     return buff;
   }
 
-  bool is_constant( double* v ) override
+  bool is_constant() override
   {
-    bool constant = buff()->s_data != spell_data_t::nil() && !buff()->s_data->ok();
-
-    *v = evaluate();
-
-    return constant;
+    return buff()->s_data != spell_data_t::nil() && !buff()->s_data->ok();
   }
 };
 
@@ -128,16 +124,9 @@ struct fn_const_buff_expr_t final : public buff_expr_t
     return coerce( fn( buff() ) );
   }
   
-  bool is_constant( double* v ) override
+  bool is_constant() override
   {
-    bool constant = is_const_fn( buff() );
-
-    if ( constant )
-    {
-      *v = evaluate();
-    }
-
-    return constant;
+    return is_const_fn( buff() );
   }
 };
 
@@ -468,16 +457,9 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
       double evaluate() override
       { return buff()->stack_react(); }
       
-      bool is_constant( double* v ) override
+      bool is_constant() override
       {
-        bool constant = buff()->default_chance == 0;
-
-        if ( constant )
-        {
-          *v = evaluate();
-        }
-
-        return constant;
+        return buff()->default_chance == 0;
       }
     };
 
@@ -504,16 +486,9 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
       double evaluate() override
       { return 100.0 * buff()->stack_react() / buff()->max_stack(); }
       
-      bool is_constant( double* v ) override
+      bool is_constant() override
       {
-        bool constant = buff()->default_chance == 0;
-
-        if ( constant )
-        {
-          *v = evaluate();
-        }
-
-        return constant;
+        return buff()->default_chance == 0;
       }
     };
 
@@ -2047,10 +2022,9 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   }
   else if ( change_regen_rate )
   {
-    for ( size_t i = 0, end = sim->player_non_sleeping_list.size(); i < end; i++ )
+    for ( auto* actor : sim->player_non_sleeping_list )
     {
-      player_t* actor = sim->player_non_sleeping_list[ i ];
-      if ( actor->resource_regeneration != regen_type::DYNAMIC || actor->is_pet() )
+       if ( actor->resource_regeneration != regen_type::DYNAMIC || actor->is_pet() )
         continue;
 
       for ( auto& elem : invalidate_list )
@@ -2403,10 +2377,9 @@ void buff_t::expire( timespan_t delay )
   }
   else if ( change_regen_rate )
   {
-    for ( size_t i = 0, end = sim->player_non_sleeping_list.size(); i < end; i++ )
+    for ( auto* actor : sim->player_non_sleeping_list )
     {
-      player_t* actor = sim->player_non_sleeping_list[ i ];
-      if ( actor->resource_regeneration != regen_type::DYNAMIC|| actor->is_pet() )
+       if ( actor->resource_regeneration != regen_type::DYNAMIC|| actor->is_pet() )
         continue;
 
       for ( auto& elem : invalidate_list )
@@ -2443,8 +2416,8 @@ void buff_t::expire( timespan_t delay )
 
   if ( reactable && player && player->ready_type == READY_TRIGGER )
   {
-    for ( size_t i = 0; i < stack_react_ready_triggers.size(); i++ )
-      event_t::cancel( stack_react_ready_triggers[ i ] );
+    for ( auto& stack_react_ready_trigger : stack_react_ready_triggers )
+      event_t::cancel( stack_react_ready_trigger );
   }
 
   if ( buff_duration() > timespan_t::zero() && remaining_duration == timespan_t::zero() )
@@ -2803,7 +2776,7 @@ void buff_t::update_stack_uptime_array( timespan_t current_time, int old_stacks 
   uptime_array.add( end_time, end_partial.total_seconds() * mul );
 }
 
-void format_to( const buff_t& buff, fmt::format_context::iterator out )
+void sc_format_to( const buff_t& buff, fmt::format_context::iterator out )
 {
   if ( buff.sim->log_spell_id )
   {
@@ -2860,11 +2833,11 @@ stat_buff_t::stat_buff_t( actor_pair_t q, util::string_view name, const spell_da
     }
     else if ( effect.subtype() == A_MOD_RATING )
     {
-      std::vector<stat_e> k = util::translate_all_rating_mod( effect.misc_value1() );
+      auto k = util::translate_all_rating_mod( effect.misc_value1() );
 
-      for ( size_t j = 0; j < k.size(); j++ )
+      for ( const auto& stat : k )
       {
-        stats.emplace_back( k[ j ], amount );
+        stats.emplace_back( stat, amount );
       }
     }
     else if ( effect.subtype() == A_MOD_DAMAGE_DONE && ( effect.misc_value1() & 0x7E ) )

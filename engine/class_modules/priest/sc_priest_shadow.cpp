@@ -27,7 +27,9 @@ private:
   const spell_data_t* mind_flay_spell;
   const spell_data_t* mind_sear_spell;
   const spell_data_t* void_torrent_spell;
+  timespan_t your_shadow_duration;
   bool only_cwc;
+  bool T28_4PC;
 
 public:
   mind_blast_t( priest_t& p, util::string_view options_str )
@@ -59,6 +61,9 @@ public:
 
     // Cooldown reduction
     apply_affecting_aura( p.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
+
+    your_shadow_duration = timespan_t::from_seconds( p.find_spell( 363469 )->effectN( 2 ).base_value() );
+    T28_4PC              = priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B4 );
   }
 
   void reset() override
@@ -153,15 +158,35 @@ public:
     return cd;
   }
 
+  // Called as a part of action execute
   void update_ready( timespan_t cd_duration ) override
   {
     priest().buffs.voidform->up();  // Benefit tracking
     // Decrementing a stack of dark thoughts will consume a max charge. Consuming a max charge loses you a current
     // charge. Therefore update_ready needs to not be called in that case.
     if ( priest().buffs.dark_thought->up() )
+    {
       priest().buffs.dark_thought->decrement();
+      if ( T28_4PC )
+      {
+        priest().procs.living_shadow->occur();
+
+        auto pet = priest().pets.your_shadow.active_pet();
+
+        if ( pet )
+        {
+          pet->adjust_duration( your_shadow_duration );
+        }
+        else
+        {
+          priest().pets.your_shadow.spawn();
+        }
+      }
+    }
     else
+    {
       priest_spell_t::update_ready( cd_duration );
+    }
   }
 };
 
@@ -212,6 +237,9 @@ struct mind_sear_t final : public priest_spell_t
     radius = data().effectN( 1 ).trigger()->effectN( 2 ).radius();  // need to set radius in here so that the APL
                                                                     // functions correctly
 
+    if ( priest().specialization() == PRIEST_SHADOW )
+      base_costs_per_tick[ RESOURCE_MANA ] = 0.0;
+
     tick_action = new mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
   }
 };
@@ -228,7 +256,6 @@ struct mind_flay_t final : public priest_spell_t
     affected_by_shadow_weaving = true;
     may_crit                   = false;
     channeled                  = true;
-    hasted_ticks               = false;
     use_off_gcd                = true;
 
     energize_amount *= 1 + p.talents.fortress_of_the_mind->effectN( 1 ).percent();
@@ -353,9 +380,9 @@ struct shadow_word_death_t final : public priest_spell_t
     : priest_spell_t( "shadow_word_death", p, p.specs.shadow_word_death ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() ),
-      shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       insanity_per_dot( p.specs.painbreaker_psalm_insanity->effectN( 2 ).base_value() /
-                        10 )  // Spell Data stores this as 100 not 1000 or 10
+                        10 ),  // Spell Data stores this as 100 not 1000 or 10
+      shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) )
   {
     parse_options( options_str );
 
@@ -766,7 +793,7 @@ struct unfurling_darkness_t final : public priest_spell_t
     energize_type              = action_energize::NONE;  // no insanity gain
     energize_amount            = 0;
     energize_resource          = RESOURCE_NONE;
-    ignores_automatic_mastery  = 1;
+    ignores_automatic_mastery  = true;
 
     // Since we are re-using the Vampiric Touch spell disable the DoT
     dot_duration       = timespan_t::from_seconds( 0 );
@@ -1179,9 +1206,7 @@ struct void_bolt_t final : public priest_spell_t
       priest().buffs.dissonant_echoes->expire();
     }
 
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/678
-    // Dissonant Echoes proc is on the ghost impact, not on execute
-    if ( !priest().bugs && priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
+    if ( priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
     {
       if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
       {
@@ -1211,17 +1236,6 @@ struct void_bolt_t final : public priest_spell_t
     {
       void_bolt_extension->target = s->target;
       void_bolt_extension->schedule_execute();
-    }
-
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/678
-    // Dissonant Echoes proc is on the ghost impact, not on execute
-    if ( priest().bugs && priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
-    {
-      if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
-      {
-        priest().cooldowns.void_bolt->reset( true );
-        priest().procs.dissonant_echoes->occur();
-      }
     }
 
     if ( priest().talents.hungering_void->ok() )

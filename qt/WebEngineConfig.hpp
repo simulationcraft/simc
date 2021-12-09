@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <QtWebEngine/QtWebEngine>
-#include <QtWebEngineWidgets/QtWebEngineWidgets>
+#include <QWebEnginePage>
+#include <QWebEngineView>
 
 using SC_WebEngineView = QWebEngineView;
 using SC_WebEnginePage = QWebEnginePage;

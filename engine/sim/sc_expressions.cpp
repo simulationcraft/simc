@@ -39,7 +39,7 @@ struct lexer_t
 
   bool match( char c )
   {
-    if ( starts_with( input.substr( current_len ), c ) ) {
+    if ( util::starts_with( input.substr( current_len ), c ) ) {
       current_len++;
       return true;
     }
@@ -58,7 +58,7 @@ struct lexer_t
   token_t next()
   {
     if ( input.empty() )
-      return yield_token( TOK_EOF );
+      return { TOK_EOF, {} };
 
     const char ch = input.front();
     current_len = 1;
@@ -224,9 +224,9 @@ std::unique_ptr<expr_t> select_unary( util::string_view name, token_e op, std::u
     case TOK_PLUS:
       return input;  // No need to modify input
     case TOK_MINUS:
-      return std::make_unique<expr_unary_t<std::negate<double>>>( name, op, std::move(input) );
+      return std::make_unique<expr_unary_t<std::negate<>>>( name, op, std::move(input) );
     case TOK_NOT:
-      return std::make_unique<expr_unary_t<std::logical_not<double>>>( name, op, std::move(input) );
+      return std::make_unique<expr_unary_t<std::logical_not<>>>( name, op, std::move(input) );
     case TOK_ABS:
       return std::make_unique<expr_unary_t<unary::abs>>( name, op, std::move(input) );
     case TOK_FLOOR:
@@ -392,10 +392,9 @@ public:
 
     expr_t::optimize_expression(input, analyze_further, spacing + 2);
 
-    double input_value;
-    if ( input->is_constant( &input_value ) )
+    if ( input->is_constant() )
     {
-      double result = F()( input_value );
+      double result = F()( input->evaluate() );
       if (EXPRESSION_DEBUG)
       {
         printf("Reduced %*d %s (%s) unary expression to %f\n", spacing, id(),
@@ -422,9 +421,9 @@ std::unique_ptr<expr_t> select_analyze_unary( util::string_view name, token_e op
     case TOK_PLUS:
       return input;
     case TOK_MINUS:
-      return std::make_unique<expr_analyze_unary_t<std::negate<double>>>( name, op, std::move(input) );
+      return std::make_unique<expr_analyze_unary_t<std::negate<>>>( name, op, std::move(input) );
     case TOK_NOT:
-      return std::make_unique<expr_analyze_unary_t<std::logical_not<double>>>( name, op,
+      return std::make_unique<expr_analyze_unary_t<std::logical_not<>>>( name, op,
                                                                  std::move(input) );
     case TOK_ABS:
       return std::make_unique<expr_analyze_unary_t<unary::abs>>( name, op, std::move(input) );
@@ -507,11 +506,10 @@ struct left_reduced_t : public expr_t
   std::unique_ptr<expr_t> build_optimized_expression( bool analyze_further, int spacing ) override
   {
     expr_t::optimize_expression( right, analyze_further, spacing + 2 );
-    double right_value;
-    bool right_constant = right->is_constant( &right_value );
+    bool right_constant = right->is_constant();
     if ( right_constant )
     {
-      auto result = static_cast<double>( F<T>()( static_cast<T>( left ), static_cast<T>( right_value ) ) );
+      auto result = static_cast<double>( F<T>()( static_cast<T>( left ), static_cast<T>( right->evaluate() ) ) );
       if ( EXPRESSION_DEBUG )
       {
         printf( "Reduced %*d %s binary expression to %f\n", spacing, id(), name(), result );
@@ -540,11 +538,10 @@ struct right_reduced_t : public expr_t
   std::unique_ptr<expr_t> build_optimized_expression( bool analyze_further, int spacing ) override
   {
     expr_t::optimize_expression( left, analyze_further, spacing + 2 );
-    double left_value;
-    bool left_constant = left->is_constant( &left_value );
+    bool left_constant = left->is_constant();
     if ( left_constant )
     {
-      auto result = static_cast<double>( F<T>()( static_cast<T>( left_value ), static_cast<T>( right ) ) );
+      auto result = static_cast<double>( F<T>()( static_cast<T>( left->evaluate() ), static_cast<T>( right ) ) );
       if ( EXPRESSION_DEBUG )
       {
         printf( "Reduced %*d %s binary expression to %f\n", spacing, id(), name(), result );
@@ -886,13 +883,11 @@ public:
     }
     expr_t::optimize_expression(left, analyze_further, spacing + 2);
     expr_t::optimize_expression(right, analyze_further, spacing + 2);
-    double left_value;
-    double right_value;
-    bool left_constant  = left->is_constant( &left_value );
-    bool right_constant = right->is_constant( &right_value );
+    bool left_constant  = left->is_constant();
+    bool right_constant = right->is_constant();
     if ( left_constant && right_constant )
     {
-      result = static_cast<double>( F<T>()( static_cast<T>( left_value ), static_cast<T>( right_value ) ) );
+      result = static_cast<double>( F<T>()( static_cast<T>( left->evaluate() ), static_cast<T>( right->evaluate() ) ) );
       if (EXPRESSION_DEBUG)
       {
         printf("Reduced %*d %s (%s, %s) binary expression to %f\n", spacing,
@@ -910,7 +905,7 @@ public:
       
       return std::make_unique<left_reduced_t<F, T>>(
           fmt::format( "{}_left_reduced('{}')", name(), left->name() ),
-          op_, left_value, std::move(right) );
+          op_, left->evaluate(), std::move(right) );
     }
     if ( right_constant )
     {
@@ -920,7 +915,7 @@ public:
       
       return std::make_unique<right_reduced_t<F, T>>(
           fmt::format( "{}_right_reduced('{}')", name(), left->name() ),
-          op_, std::move(left), right_value );
+          op_, std::move(left), right->evaluate() );
     }
     return select_binary( analyze_further, name(), op_, std::move(left), std::move(right) );
   }

@@ -8,33 +8,34 @@
 #include "buff/sc_buff.hpp"
 #include "class_modules/class_module.hpp"
 #include "dbc/dbc.hpp"
+#include "dbc/spell_query/spell_data_expr.hpp"
 #include "gsl-lite/gsl-lite.hpp"
 #include "interfaces/bcp_api.hpp"
 #include "interfaces/sc_http.hpp"
-#include "player/sc_player.hpp"
 #include "player/pet.hpp"
+#include "player/sc_player.hpp"
 #include "player/spawner_base.hpp"
 #include "player/unique_gear.hpp"
+#include "report/json/report_configuration.hpp"
 #include "report/reports.hpp"
 #include "report/sc_highchart.hpp"
-#include "report/json/report_configuration.hpp"
+#include "sc_profileset.hpp"
+#include "sim/event.hpp"
+#include "sim/iteration_data_entry.hpp"
+#include "sim/plot.hpp"
+#include "sim/raid_event.hpp"
+#include "sim/reforge_plot.hpp"
+#include "sim/sc_cooldown.hpp"
+#include "sim/sc_expressions.hpp"
+#include "sim/sc_option.hpp"
 #include "sim/sc_profileset.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/sim_control.hpp"
-#include "sim/sc_option.hpp"
-#include "sim/iteration_data_entry.hpp"
-#include "sim/event.hpp"
-#include "sim/sc_expressions.hpp"
-#include "sim/raid_event.hpp"
-#include "sim/plot.hpp"
-#include "sim/reforge_plot.hpp"
-#include "sc_profileset.hpp"
-#include "sim/sc_cooldown.hpp"
 #include "sim/work_queue.hpp"
-#include "dbc/spell_query/spell_data_expr.hpp"
-#include "util/xml.hpp"
 #include "util/string_view.hpp"
+#include "util/xml.hpp"
 
+#include <algorithm>
 #include <iostream>
 #include <random>
 #include <sstream>
@@ -522,15 +523,15 @@ public:
 
     std::vector<std::string> names2 = names;
     size_t count = 0;
-    for ( size_t i = 0; i < names.size(); ++i )
+    for ( const auto& name : names )
     {
-      if ( names[ i ].find( '=' ) != std::string::npos )
+      if ( name.find( '=' ) != std::string::npos )
       {
-        opts::parse( sim, context, options, names[ i ] );
+        opts::parse( sim, context, options, name );
       }
       else
       {
-        names2[ count++ ] = names[ i ];
+        names2[ count++ ] = name;
       }
     }
 
@@ -670,8 +671,8 @@ bool parse_guild( sim_t*             sim,
     {
       auto ranks = util::string_split<util::string_view>( ranks_str, "/" );
 
-      for ( size_t i = 0; i < ranks.size(); i++ )
-        ranks_list.push_back( util::to_int( ranks[i] ) );
+      for ( const auto& rank : ranks )
+        ranks_list.push_back( util::to_int( rank ) );
     }
 
     player_e pt = PLAYER_NONE;
@@ -715,7 +716,7 @@ bool parse_fight_style( sim_t*             sim,
       value, fmt::join( FIGHT_STYLES, ", " ) ) );
   }
 
-  sim->fight_style = to_string( *it );
+  sim->fight_style = *it;
 
   return true;
 }
@@ -738,10 +739,10 @@ bool parse_override_target_health( sim_t*             sim,
 {
   auto healths = util::string_split<util::string_view>( value, "/" );
 
-  for ( size_t i = 0; i < healths.size(); ++i )
+  for ( const auto& health : healths )
   {
     std::stringstream s;
-    s << std::string( healths[ i ] );
+    s << std::string( health );
     uint64_t health_number;
     s >> health_number;
     if ( health_number > 0 )
@@ -809,13 +810,13 @@ bool parse_item_sources( sim_t*             sim,
 
   auto sources = util::string_split<util::string_view>( value, ":/|" );
 
-  for ( size_t j = 0; j < sources.size(); j++ )
+  for ( const auto& source : sources )
   {
-    for ( size_t i = 0; i < range::size( default_item_db_sources ); ++i )
+    for ( const auto& default_item_db_source : default_item_db_sources )
     {
-      if ( util::str_compare_ci( sources[ j ], default_item_db_sources[ i ] ) )
+      if ( util::str_compare_ci( source, default_item_db_source ) )
       {
-        sim -> item_db_sources.emplace_back(default_item_db_sources[ i ] );
+        sim -> item_db_sources.emplace_back(default_item_db_source );
         break;
       }
     }
@@ -1036,10 +1037,9 @@ struct resource_timeline_collect_event_t : public event_t
       if ( ! sim().single_actor_batch )
       {
         // Assumptions: Enemies do not have primary resource regeneration
-        for ( size_t i = 0, actors = sim().player_non_sleeping_list.size(); i < actors; i++ )
+        for ( auto* p : sim().player_non_sleeping_list )
         {
-          player_t* p = sim().player_non_sleeping_list[ i ];
-          if ( p -> primary_resource() == RESOURCE_NONE ) continue;
+           if ( p -> primary_resource() == RESOURCE_NONE ) continue;
 
           p -> collect_resource_timeline_information();
         }
@@ -1061,10 +1061,9 @@ struct resource_timeline_collect_event_t : public event_t
       }
 
       // However, enemies do have health
-      for ( size_t i = 0, actors = sim().target_non_sleeping_list.size(); i < actors; i++ )
+      for ( auto* p : sim().target_non_sleeping_list )
       {
-        player_t* p = sim().target_non_sleeping_list[ i ];
-        p -> collect_resource_timeline_information();
+         p -> collect_resource_timeline_information();
       }
     }
 
@@ -1091,10 +1090,9 @@ struct regen_event_t : public event_t
     if ( ! sim().single_actor_batch )
     {
       // targets do not get any resource regen for performance reasons
-      for ( size_t i = 0, actors = sim().player_non_sleeping_list.size(); i < actors; i++ )
+      for ( auto* p : sim().player_non_sleeping_list )
       {
-        player_t* p = sim().player_non_sleeping_list[ i ];
-        if ( p -> primary_resource() == RESOURCE_NONE ) continue;
+         if ( p -> primary_resource() == RESOURCE_NONE ) continue;
         if ( p ->resource_regeneration !=  regen_type::STATIC ) continue;
 
         p -> regen( sim().regen_periodicity );
@@ -1182,14 +1180,15 @@ std::string get_api_key()
     }
     else
     {
-      std::cerr << "Blizzard API credentials from file '" << filename << "' were not properly entered. (Size != 65)" << std::endl;
+      fmt::print( stderr, "Blizzard API credentials from file '{}' were not properly entered. (Size != 65)\n",
+                  filename );
     }
   }
 
 #if defined( SC_DEFAULT_APIKEY )
   return std::string(SC_DEFAULT_APIKEY);
 #endif /* SC_DEFAULT_APIKEY */
-  return std::string();
+  return {};
 }
 #endif /* SC_NO_NETWORKING */
 
@@ -1214,10 +1213,9 @@ struct bloodlust_check_t : public event_t
      {
        if ( ! sim.single_actor_batch )
        {
-         for ( size_t i = 0; i < sim.player_non_sleeping_list.size(); ++i )
+         for ( auto* p : sim.player_non_sleeping_list )
          {
-           player_t* p = sim.player_non_sleeping_list[ i ];
-           if ( p -> is_pet() || p -> buffs.exhaustion -> check() )
+            if ( p -> is_pet() || p -> buffs.exhaustion -> check() )
              continue;
 
            p -> buffs.bloodlust -> trigger();
@@ -1747,8 +1745,7 @@ bool sim_t::is_canceled() const
 
 void sim_t::cancel_iteration()
 {
-  if ( debug )
-    out_debug << "Iteration canceled.";
+  print_debug( "Iteration canceled." );
 
   event_mgr.cancel();
 }
@@ -1757,7 +1754,7 @@ void sim_t::cancel_iteration()
 
 void sim_t::combat()
 {
-  if ( debug ) out_debug << "Starting Simulator";
+  print_debug( "Starting Simulator" );
 
   // The sequencing of event manager seed and flush is very tricky.
   // DO NOT MESS WITH THIS UNLESS YOU ARE EXTREMELY CONFIDENT.
@@ -1773,8 +1770,7 @@ void sim_t::combat()
 /// Reset simulation.
 void sim_t::reset()
 {
-  if ( debug )
-    out_debug << "Resetting Simulator";
+  print_debug( "Resetting Simulator" );
 
   if( deterministic )
     seed = rng().reseed();
@@ -1839,8 +1835,7 @@ void sim_t::combat_begin()
     }
   }
 
-  if ( debug )
-    out_debug << "Combat Begin";
+  print_debug( "Combat Begin" );
 
   reset();
 
@@ -1879,10 +1874,11 @@ void sim_t::combat_begin()
   }
   else
   {
-    for ( size_t i = 0; i < player_list.size(); ++i )
+    // Needs to be a index-based loop, as the player list may be extended during iteration.
+    for ( size_t i = 0; i < player_list.size(); ++i ) // NOLINT(modernize-loop-convert)
     {
       player_t* p = player_list[ i ];
-      p -> combat_begin();
+      p->combat_begin();
     }
   }
 
@@ -1912,12 +1908,11 @@ void sim_t::combat_begin()
 
 void sim_t::combat_end()
 {
-  if ( debug ) out_debug << "Combat End";
+  print_debug( "Combat End" );
 
-  for ( size_t i = 0; i < target_list.size(); ++i )
+  for ( auto* t : target_list )
   {
-    player_t* t = target_list[ i ];
-    if ( t -> is_add() ) continue;
+     if ( t -> is_add() ) continue;
     t -> combat_end();
   }
 
@@ -1935,10 +1930,9 @@ void sim_t::combat_end()
   }
   else
   {
-    for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
+    for ( auto* p : player_no_pet_list )
     {
-      player_t* p = player_no_pet_list[ i ];
-      p -> combat_end();
+       p -> combat_end();
     }
   }
 
@@ -1954,7 +1948,7 @@ void sim_t::combat_end()
   //assert( active_enemies == 0 );
   //assert( active_allies == 0 );
 
-  if ( debug ) out_debug << "Flush Events";
+  print_debug( "Flush Events" );
 
   event_mgr.flush();
 
@@ -1970,14 +1964,13 @@ void sim_t::combat_end()
 
 void sim_t::datacollection_begin()
 {
-  if ( debug ) out_debug << "Sim Data Collection Begin";
+  print_debug( "Sim Data Collection Begin" );
 
   iteration_dmg = priority_iteration_dmg = iteration_heal = iteration_absorb = 0.0;
 
-  for ( size_t i = 0; i < target_list.size(); ++i )
+  for ( auto* t : target_list )
   {
-    player_t* t = target_list[ i ];
-    if ( t -> is_add() ) continue;
+     if ( t -> is_add() ) continue;
     t -> datacollection_begin();
   }
 
@@ -1990,10 +1983,9 @@ void sim_t::datacollection_begin()
   }
   else
   {
-    for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
+    for ( auto* p : player_no_pet_list )
     {
-      player_t* p = player_no_pet_list[ i ];
-      p -> datacollection_begin();
+       p -> datacollection_begin();
     }
   }
   make_event<resource_timeline_collect_event_t>( *this, *this );
@@ -2003,14 +1995,13 @@ void sim_t::datacollection_begin()
 
 void sim_t::datacollection_end()
 {
-  if ( debug ) out_debug << "Sim Data Collection End";
+  print_debug( "Sim Data Collection End" );
 
   simulation_length.add( current_time().total_seconds() );
 
-  for ( size_t i = 0; i < target_list.size(); ++i )
+  for ( auto* t : target_list )
   {
-    player_t* t = target_list[ i ];
-    if ( t -> is_add() ) continue;
+     if ( t -> is_add() ) continue;
     t -> datacollection_end();
   }
 
@@ -2020,10 +2011,9 @@ void sim_t::datacollection_end()
   }
   else
   {
-    for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
+    for ( auto* p : player_no_pet_list )
     {
-      player_t* p = player_no_pet_list[ i ];
-      p -> datacollection_end();
+       p -> datacollection_end();
     }
   }
 
@@ -2046,10 +2036,9 @@ void sim_t::datacollection_end()
     // TODO: Metric should be selectable
     iteration_data_entry_t entry( iteration_dmg / current_time().total_seconds(),
         current_time().total_seconds(), seed, current_iteration );
-    for ( size_t i = 0, end = target_list.size(); i < end; ++i )
+    for ( auto* t : target_list )
     {
-      const player_t* t = target_list[ i ];
-      // Once we start hitting adds (instead of real enemies), break out as those don't have real
+       // Once we start hitting adds (instead of real enemies), break out as those don't have real
       // hitpoints.
       if ( t -> is_add() )
       {
@@ -2344,7 +2333,7 @@ void sim_t::init_fight_style()
   else if( util::str_compare_ci( fight_style, "DungeonRoute" ) )
   { // To be used in conjunction with "pull" raid events for a simulated dungeon run.
     desired_targets = 1;
-    fixed_time = 0;
+    fixed_time = false;
     ignore_invulnerable_targets = true;
     shadowlands_opts.enable_rune_words = false;
     overrides.bloodlust = 0; // Bloodlust is handled by an option on each pull raid event
@@ -2666,8 +2655,7 @@ void sim_t::init()
                            ->add_invalidate( CACHE_STAMINA );
 
   // Find Already defined target, otherwise create a new one.
-  if ( debug )
-    out_debug << "Creating Enemies.";
+  print_debug( "Creating Enemies." );
 
   if ( !target_list.empty() )
   {
@@ -2695,10 +2683,9 @@ void sim_t::init()
 
   if ( max_player_level < 0 )
   {
-    for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
+    for ( const auto* p : player_no_pet_list )
     {
-      player_t* p = player_no_pet_list[ i ];
-      if ( max_player_level < p -> level() )
+       if ( max_player_level < p -> level() )
         max_player_level = p -> level();
     }
   }
@@ -2707,12 +2694,11 @@ void sim_t::init()
     // Determine whether we have healers or tanks.
     unsigned int healers = 0;
     unsigned int tanks = 0;
-    for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
+    for ( const auto* p : player_no_pet_list )
     {
-      player_t& p = *player_no_pet_list[ i ];
-      if ( p.primary_role() == ROLE_HEAL )
+      if ( p->primary_role() == ROLE_HEAL )
         ++healers;
-      else if ( p.primary_role() == ROLE_TANK )
+      else if ( p->primary_role() == ROLE_TANK )
         ++tanks;
     }
     if ( healers > 0 || healing > 0 )
@@ -2822,7 +2808,8 @@ void sim_t::analyze()
        reforge_plot -> reforge_plot_stat_str.empty() &&
        profileset_map.empty() && ! profileset_enabled )
   {
-    std::cout << "Analyzing actor data ..." << std::endl;
+    fmt::print( "Analyzing actor data ...\n" );
+    std::fflush( stdout );
   }
 
   for ( size_t i = 0; i < actor_list.size(); i++ )
@@ -2982,7 +2969,8 @@ void sim_t::do_pause()
 void sim_t::set_error(std::string error)
 {
     util::replace_all( error, "\n", "" );
-    std::cerr << error << std::endl;
+    fmt::print( stderr, "{}\n", error );
+    std::fflush( stderr );
 
     error_list.push_back( std::move( error ) );
 }
@@ -2999,7 +2987,8 @@ void sim_t::merge( sim_t& other_sim )
        reforge_plot -> reforge_plot_stat_str.empty() &&
        profileset_map.empty() && ! profileset_enabled )
   {
-    std::cout << "Merging data from thread-" << other_sim.thread_index << " ..." << std::endl;
+    fmt::print( "Merging data from thread-{} ...\n", other_sim.thread_index );
+    std::fflush( stdout );
   }
 
   iterations += other_sim.iterations;
@@ -3055,16 +3044,16 @@ void sim_t::merge()
 
   merge_mutex.unlock();
 
-  for ( size_t i = 0; i < children.size(); i++ )
+  for ( auto& child : children )
   {
-    sim_t* child = children[ i ];
     if ( child )
     {
       child -> join();
-      children[ i ] = nullptr;
+      sim_t* copy = child;
+      child = nullptr;
       if ( requires_cleanup() )
       {
-        delete child;
+        delete copy;
       }
     }
   }
@@ -3420,25 +3409,24 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
 
 void sim_t::print_options()
 {
-  out_log.raw() << "\nWorld of Warcraft Raid Simulator Options:\n";
+  auto& raw_log = out_log.raw();
+  raw_log.print( "\nWorld of Warcraft Raid Simulator Options:\n" );
 
-  out_log.raw() << "\nSimulation Engine:\n";
-  for ( size_t i = 0; i < options.size(); ++i )
+  raw_log.print( "\nSimulation Engine:\n" );
+  for ( const auto& option : options )
   {
-    if ( options[i] -> name() != "apikey" ) // Don't print out sensitive information.
-      out_log.raw() << options[i];
+    if ( option->name() != "apikey" )  // Don't print out sensitive information.
+      raw_log.print( "{}", *option );
   }
 
-  for ( size_t i = 0; i < player_list.size(); ++i )
+  for ( const auto* p : player_list )
   {
-    player_t* p = player_list[ i ];
-
-    out_log.raw().print( "\nPlayer: {} ({})\n", p -> name(), util::player_type_string( p -> type ) );
-    for ( size_t j = 0; j < p -> options.size(); ++j )
-      out_log.raw() << p -> options[ j ];
+    raw_log.print( "\nPlayer: {} ({})\n", p->name(), util::player_type_string( p->type ) );
+    for ( const auto& option : p->options )
+      raw_log.print( "{}", *option );
   }
 
-  out_log.raw() << "\n";
+  raw_log.print( "\n" );
 }
 
 void sim_t::add_option( std::unique_ptr<option_t> opt )
@@ -4130,14 +4118,14 @@ void sim_t::abort()
   std::stringstream s;
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
-    s << std::fixed << target_list[ i ] -> resources.initial[ RESOURCE_HEALTH ];
+    fmt::print( s, "{:.0f}", target_list[ i ]->resources.initial[ RESOURCE_HEALTH ] );
     if ( i < target_list.size() - 1 )
     {
-      s << '/';
+      fmt::print( s, "{}", '/' );
     }
   }
 
-  errorf( "Force abort, seed=%llu target_health=%s", seed, s.str().c_str() );
+  error( "Force abort, seed={} target_health={}", seed, s.str() );
   std::terminate();
 }
 
@@ -4161,7 +4149,8 @@ void sim_t::print_spell_query()
     io::cfile file( spell_query_xml_output_file_str, "w" );
     if ( ! file )
     {
-      std::cerr << "Unable to open spell query xml output file '" << spell_query_xml_output_file_str << "', using stdout instead\n";
+      fmt::print( stderr, "Unable to open spell query xml output file '{}', using stdout instead\n",
+                  spell_query_xml_output_file_str );
       file = io::cfile( stdout, io::cfile::no_close() );
     }
     auto root = xml_node_t( "spell_query" );

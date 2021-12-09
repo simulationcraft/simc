@@ -251,7 +251,7 @@ double gear_stats_t::stat_mod( stat_e stat )
   }
 }
 
-void format_to( const gear_stats_t& s, fmt::format_context::iterator out )
+void sc_format_to( const gear_stats_t& s, fmt::format_context::iterator out )
 {
   for ( stat_e i = STAT_STRENGTH; i < STAT_MAX; i++ )
   {

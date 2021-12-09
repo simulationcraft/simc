@@ -857,7 +857,7 @@ std::string special_effect_t::name() const
   return n;
 }
 
-void format_to( const special_effect_t& se, fmt::format_context::iterator out )
+void sc_format_to( const special_effect_t& se, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "{}", se.name() );
   fmt::format_to( out, " type={}", se.type );
@@ -1201,7 +1201,7 @@ std::string special_effect_t::cooldown_group_name() const
 {
   if (!item)
   {
-    return std::string();
+    return {};
   }
 
   unsigned cdgroup = cooldown_group();
@@ -1210,7 +1210,7 @@ std::string special_effect_t::cooldown_group_name() const
     return "item_cd_" + util::to_string(cdgroup);
   }
 
-  return std::string();
+  return {};
 }
 
 int special_effect_t::cooldown_group() const

@@ -176,7 +176,7 @@ namespace hotfix
       group_( g ), tag_( t ), note_( n ), flags_( f )
     { }
 
-    virtual ~hotfix_entry_t() { }
+    virtual ~hotfix_entry_t() = default;
 
     virtual bool valid() const = 0;
 
@@ -211,7 +211,7 @@ namespace hotfix
              util::round( orig_value_, 5 ) == util::round( dbc_value_, 5 );
     }
 
-    virtual void apply() override
+    void apply() override
     {
       if ( flags_ & HOTFIX_FLAG_LIVE )
       {
@@ -313,7 +313,7 @@ public:
   bool ptr;
 
 private:
-  typedef std::unordered_map<uint32_t, uint32_t> id_map_t;
+  using id_map_t = std::unordered_map<uint32_t, uint32_t>;
   id_map_t replaced_ids;
 public:
   uint32_t replaced_id( uint32_t id_spell ) const;
@@ -482,7 +482,7 @@ public:
   unsigned class_ability_id( player_e c, specialization_e spec_id, util::string_view spell_name, bool tokenized = false ) const;
   unsigned pet_ability_id( player_e c, util::string_view spell_name, bool tokenized = false ) const;
   unsigned race_ability_id( player_e c, race_e r, util::string_view spell_name ) const;
-  unsigned specialization_ability_id( specialization_e spec_id, util::string_view spell_name, util::string_view spell_desc = "" ) const;
+  unsigned specialization_ability_id( specialization_e spec_id, util::string_view spell_name, util::string_view spell_desc = {} ) const;
   unsigned mastery_ability_id( specialization_e spec ) const;
 
   bool     is_specialization_ability( uint32_t spell_id ) const;

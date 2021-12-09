@@ -63,6 +63,7 @@ vs/int_gui/
 x64/
 x86/
 simc-*/
+out/
 
 /build
 .DS_Store
@@ -141,6 +142,9 @@ env/
 
 # Visual Studio CMake settings
 CMakeSettings.json
+
+# Cmake user file from QtCreator
+CMakeLists.txt.user
 
 UpgradeLog.htm
 libsimcengine.prl

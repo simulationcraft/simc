@@ -6,6 +6,7 @@
 #define SC_PROFILESET_HH
 
 #include <array>
+#include <memory>
 #include <vector>
 #include <string>
 
@@ -391,7 +392,7 @@ class profile_set_t
   std::unique_ptr<profile_output_data_t> m_output_data;
 
 public:
-  profile_set_t( const std::string& name, sim_control_t* opts, bool has_output );
+  profile_set_t( std::string name, sim_control_t* opts, bool has_output );
 
   ~profile_set_t();
 
@@ -416,7 +417,7 @@ public:
   {
     if ( ! m_output_data )
     {
-      m_output_data = std::unique_ptr<profile_output_data_t>( new profile_output_data_t() );
+      m_output_data = std::make_unique<profile_output_data_t>(  );
     }
 
     return *m_output_data;

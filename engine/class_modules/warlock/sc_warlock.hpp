@@ -36,10 +36,10 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_scouring_tithe;
   propagate_const<dot_t*> dots_impending_catastrophe;
   propagate_const<dot_t*> dots_soul_rot;
+  propagate_const<dot_t*> dots_corruption;
 
   // Aff
   propagate_const<dot_t*> dots_agony;
-  propagate_const<dot_t*> dots_corruption; //TODO: Add offspec corruption
   propagate_const<dot_t*> dots_seed_of_corruption;
   propagate_const<dot_t*> dots_drain_soul;
   propagate_const<dot_t*> dots_siphon_life;
@@ -108,6 +108,8 @@ public:
     std::array<pets::destruction::infernal_t*, INFERNAL_LIMIT> infernals;
     spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t>
         roc_infernals;  // Infernal(s) summoned by Rain of Chaos
+    spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t>
+        aod_infernals;  // Infernal(s) summoned by Avatar of Destruction
 
     std::array<pets::affliction::darkglare_t*, DARKGLARE_LIMIT> darkglare;
 
@@ -117,6 +119,7 @@ public:
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
 
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
+    spawner::pet_spawner_t<pets::demonology::malicious_imp_pet_t, warlock_t> malicious_imps;
 
     //Nether Portal demons - Check regularly for accuracy!
     spawner::pet_spawner_t<pets::demonology::random_demons::shivarra_t, warlock_t> shivarra;
@@ -383,6 +386,7 @@ public:
     propagate_const<buff_t*> nightfall;
     propagate_const<buff_t*> inevitable_demise;
     propagate_const<buff_t*> dark_soul_misery;
+    propagate_const<buff_t*> calamitous_crescendo;
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_core;
@@ -391,6 +395,7 @@ public:
     propagate_const<buff_t*> inner_demons;
     propagate_const<buff_t*> nether_portal;
     propagate_const<buff_t*> wild_imps; //Buff for tracking how many Wild Imps are currently out (does NOT include imps waiting to be spawned)
+    propagate_const<buff_t*> malicious_imps; // Buff for tracking T28 4pc pet
     propagate_const<buff_t*> dreadstalkers; //Buff for tracking number of Dreadstalkers currently out
     propagate_const<buff_t*> vilefiend; //Buff for tracking if Vilefiend is currently out
     propagate_const<buff_t*> tyrant; //Buff for tracking if Demonic Tyrant is currently out
@@ -404,6 +409,8 @@ public:
     propagate_const<buff_t*> reverse_entropy;
     propagate_const<buff_t*> rain_of_chaos;
     propagate_const<buff_t*> dark_soul_instability;
+    propagate_const<buff_t*> herald_of_fire;
+    propagate_const<buff_t*> herald_of_chaos;
 
     // Covenants
     propagate_const<buff_t*> decimating_bolt;
@@ -420,7 +427,7 @@ public:
     propagate_const<buff_t*> implosive_potential_small;
     propagate_const<buff_t*> dread_calling;
     propagate_const<buff_t*> demonic_synergy;
-    propagate_const<buff_t*> languishing_soul_detritus;
+    propagate_const<buff_t*> languishing_soul_detritus; //TODO: Check what happens with Havoc and triggering both scenarios at once
     propagate_const<buff_t*> shard_of_annihilation;
     propagate_const<buff_t*> decaying_soul_satchel_haste; //These are one unified buff in-game but splitting them in simc to make it easier to apply stat pcts
     propagate_const<buff_t*> decaying_soul_satchel_crit;
@@ -456,6 +463,9 @@ public:
 
     // SL
     gain_t* scouring_tithe;
+
+    // T28
+    gain_t* return_soul; // Demonology 4pc
   } gains;
 
   // Procs
@@ -467,7 +477,8 @@ public:
     proc_t* nightfall;
     proc_t* corrupting_leer;
     proc_t* malefic_wrath;
-    std::vector<proc_t*> malefic_rapture;
+    proc_t* calamitous_crescendo;
+    std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
 
     // demo
     proc_t* demonic_calling;
@@ -478,10 +489,13 @@ public:
     proc_t* portal_summon;
     proc_t* carnivorous_stalkers; // SL - Conduit
     proc_t* horned_nightmare; // SL - Legendary
+    proc_t* malicious_imp; // T28 4pc
 
     // destro
     proc_t* reverse_entropy;
     proc_t* rain_of_chaos;
+    proc_t* ritual_of_ruin;
+    proc_t* avatar_of_destruction;
   } procs;
 
   int initial_soul_shards;
@@ -510,8 +524,8 @@ public:
   void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
   void malignancy_reduction_helper();
   bool min_version_check( version_check_e version ) const;
-  action_t* create_action( util::string_view name, const std::string& options ) override;
-  pet_t* create_pet( util::string_view name, util::string_view type = "" ) override;
+  action_t* create_action( util::string_view name, util::string_view options ) override;
+  pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
   void create_pets() override;
   std::string create_profile( save_e ) override;
   void copy_from( player_t* source ) override;
@@ -565,8 +579,11 @@ public:
     return td;
   }
 
+  // sc_warlock
+  action_t* create_action_warlock( util::string_view, util::string_view );
+
   // sc_warlock_affliction
-  action_t* create_action_affliction( util::string_view action_name, const std::string& options_str );
+  action_t* create_action_affliction( util::string_view, util::string_view );
   void create_buffs_affliction();
   void init_spells_affliction();
   void init_gains_affliction();
@@ -576,7 +593,7 @@ public:
   void create_apl_affliction();
 
   // sc_warlock_demonology
-  action_t* create_action_demonology( util::string_view action_name, const std::string& options_str );
+  action_t* create_action_demonology( util::string_view, util::string_view );
   void create_buffs_demonology();
   void init_spells_demonology();
   void init_gains_demonology();
@@ -586,7 +603,7 @@ public:
   void create_apl_demonology();
 
   // sc_warlock_destruction
-  action_t* create_action_destruction( util::string_view action_name, const std::string& options_str );
+  action_t* create_action_destruction( util::string_view, util::string_view );
   void create_buffs_destruction();
   void init_spells_destruction();
   void init_gains_destruction();
@@ -648,7 +665,7 @@ struct sc_event_t : public player_event_t
 
 struct warlock_heal_t : public heal_t
 {
-  warlock_heal_t( const std::string& n, warlock_t* p, const uint32_t id ) : heal_t( n, p, p->find_spell( id ) )
+  warlock_heal_t( util::string_view n, warlock_t* p, const uint32_t id ) : heal_t( n, p, p->find_spell( id ) )
   {
     target = p;
   }
@@ -911,8 +928,8 @@ private:
   }
 
 public:
-  summon_pet_t( const std::string& n, warlock_t* p, const std::string& sname = "" )
-    : warlock_spell_t( p, sname.empty() ? "Summon " + n : sname ),
+  summon_pet_t( util::string_view n, warlock_t* p, util::string_view sname = {} )
+    : warlock_spell_t( p, sname.empty() ? fmt::format( "Summon {}", n ) : sname ),
       summoning_duration( timespan_t::zero() ),
       pet_name( sname.empty() ? n : sname ),
       pet( nullptr )
@@ -920,7 +937,7 @@ public:
     _init_summon_pet_t();
   }
 
-  summon_pet_t( const std::string& n, warlock_t* p, int id )
+  summon_pet_t( util::string_view n, warlock_t* p, int id )
     : warlock_spell_t( n, p, p->find_spell( id ) ),
       summoning_duration( timespan_t::zero() ),
       pet_name( n ),
@@ -929,7 +946,7 @@ public:
     _init_summon_pet_t();
   }
 
-  summon_pet_t( const std::string& n, warlock_t* p, const spell_data_t* sd )
+  summon_pet_t( util::string_view n, warlock_t* p, const spell_data_t* sd )
     : warlock_spell_t( n, p, sd ), summoning_duration( timespan_t::zero() ), pet_name( n ), pet( nullptr )
   {
     _init_summon_pet_t();
@@ -963,14 +980,14 @@ struct summon_main_pet_t : public summon_pet_t
 {
   cooldown_t* instant_cooldown;
 
-  summon_main_pet_t( const std::string& n, warlock_t* p )
+  summon_main_pet_t( util::string_view n, warlock_t* p )
     : summon_pet_t( n, p ), instant_cooldown( p->get_cooldown( "instant_summon_pet" ) )
   {
     instant_cooldown->duration = timespan_t::from_seconds( 60 );
     ignore_false_positive      = true;
   }
 
-  virtual void schedule_execute( action_state_t* state = nullptr ) override
+  void schedule_execute( action_state_t* state = nullptr ) override
   {
     warlock_spell_t::schedule_execute( state );
 
@@ -1042,14 +1059,14 @@ template <typename Base>
 struct warlock_buff_t : public Base
 {
 public:
-  typedef warlock_buff_t base_t;
-  warlock_buff_t( warlock_td_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+  using base_t = warlock_buff_t;
+  warlock_buff_t( warlock_td_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
                   const item_t* item = nullptr )
     : Base( p, name, s, item )
   {
   }
 
-  warlock_buff_t( warlock_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+  warlock_buff_t( warlock_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
                   const item_t* item = nullptr )
     : Base( &p, name, s, item )
   {

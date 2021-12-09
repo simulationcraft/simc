@@ -66,7 +66,7 @@ struct enemy_t : public player_t
     return RESOURCE_HEALTH;
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
   void init_race() override;
   void init_base_stats() override;
   void init_defense() override;
@@ -79,7 +79,7 @@ struct enemy_t : public player_t
   void init_stats() override;
   double resource_loss( resource_e, double, gain_t*, action_t* ) override;
   void create_options() override;
-  pet_t* create_pet( util::string_view add_name, util::string_view pet_type = "" ) override;
+  pet_t* create_pet( util::string_view add_name, util::string_view pet_type = {} ) override;
   void create_pets() override;
   double health_percentage() const override;
   timespan_t time_to_percent( double ) const override;
@@ -328,10 +328,10 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
     }
 
     // create a separate action for each potential target
-    for ( size_t i = 0; i < target_list.size(); i++ )
+    for ( auto* i : target_list )
     {
       auto ch        = new child_action_type_t( player, this->filter_options_list( options_str ) );
-      ch->target     = target_list[ i ];
+      ch->target     = i;
       ch->background = true;
       ch_list.push_back( ch );
     }
@@ -474,18 +474,18 @@ struct auto_attack_t : public enemy_action_t<attack_t>
     std::vector<player_t*> target_list;
     if ( aoe_tanks )
     {
-      for ( size_t i = 0; i < sim->player_no_pet_list.size(); i++ )
-        if ( target_list.size() < num_attacks && sim->player_no_pet_list[ i ]->primary_role() == ROLE_TANK )
-          target_list.push_back( sim->player_no_pet_list[ i ] );
+      for ( auto* i : sim->player_no_pet_list )
+        if ( target_list.size() < num_attacks && i->primary_role() == ROLE_TANK )
+          target_list.push_back( i );
     }
     else
       target_list.push_back( target );
 
-    for ( size_t i = 0; i < target_list.size(); i++ )
+    for ( auto* t : target_list )
     {
       melee_t* mh = new melee_t( "melee_main_hand", p, options_str );
       mh->weapon  = &( p->main_hand_weapon );
-      mh->target  = target_list[ i ];
+      mh->target  = t;
       mh_list.push_back( mh );
     }
 
@@ -507,10 +507,9 @@ struct auto_attack_t : public enemy_action_t<attack_t>
 
     if ( enemy_t* e = dynamic_cast<enemy_t*>( player ) )
     {
-      for ( size_t i = 0; i < mh_list.size(); i++ )
+      for ( auto* mh : mh_list )
       {
-        melee_t* mh = mh_list[ i ];
-        // if the number of debuff stacks hasn't been specified yet, set it
+         // if the number of debuff stacks hasn't been specified yet, set it
         if ( mh->num_debuff_stacks == -1e6 )
         {
           if ( e->apply_damage_taken_debuff == 0 )
@@ -528,8 +527,8 @@ struct auto_attack_t : public enemy_action_t<attack_t>
   void execute() override
   {
     player->main_hand_attack = mh_list[ 0 ];
-    for ( size_t i = 0; i < mh_list.size(); i++ )
-      mh_list[ i ]->schedule_execute();
+    for ( auto* mh : mh_list )
+      mh->schedule_execute();
   }
 
   bool ready() override
@@ -549,8 +548,8 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
   std::vector<melee_t*> oh_list;
 
   // default constructor
-  auto_attack_off_hand_t( player_t* p, util::string_view options_str )
-    : base_t( "auto_attack_off_hand", p ), oh_list( 0 )
+  auto_attack_off_hand_t( player_t* player, util::string_view options_str )
+    : base_t( "auto_attack_off_hand", player ), oh_list( 0 )
   {
     parse_options( options_str );
 
@@ -568,22 +567,22 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
     std::vector<player_t*> target_list;
     if ( aoe_tanks )
     {
-      for ( size_t i = 0; i < sim->player_no_pet_list.size(); i++ )
-        if ( target_list.size() < num_attacks && sim->player_no_pet_list[ i ]->primary_role() == ROLE_TANK )
-          target_list.push_back( sim->player_no_pet_list[ i ] );
+      for ( auto* p : sim->player_no_pet_list )
+        if ( target_list.size() < num_attacks && p->primary_role() == ROLE_TANK )
+          target_list.push_back( p );
     }
     else
       target_list.push_back( target );
 
-    for ( size_t i = 0; i < target_list.size(); i++ )
+    for ( auto* t : target_list )
     {
-      melee_t* oh = new melee_t( "melee_off_hand", p, options_str );
-      oh->weapon  = &( p->off_hand_weapon );
-      oh->target  = target_list[ i ];
+      melee_t* oh = new melee_t( "melee_off_hand", player, options_str );
+      oh->weapon  = &( player->off_hand_weapon );
+      oh->target  = t;
       oh_list.push_back( oh );
     }
 
-    p->off_hand_attack = oh_list[ 0 ];
+    player->off_hand_attack = oh_list[ 0 ];
   }
 
   void init() override
@@ -592,10 +591,9 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
 
     if ( enemy_t* e = dynamic_cast<enemy_t*>( player ) )
     {
-      for ( size_t i = 0; i < oh_list.size(); i++ )
+      for ( auto* oh : oh_list )
       {
-        melee_t* oh = oh_list[ i ];
-        // if the number of debuff stacks hasn't been specified yet, set it
+         // if the number of debuff stacks hasn't been specified yet, set it
         if ( oh && oh->num_debuff_stacks == -1e6 )
         {
           if ( e->apply_damage_taken_debuff == 0 )
@@ -613,10 +611,10 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
   void execute() override
   {
     player->off_hand_attack = oh_list[ 0 ];
-    for ( size_t i = 0; i < oh_list.size(); i++ )
+    for ( auto* oh : oh_list )
     {
-      oh_list[ i ]->first = true;
-      oh_list[ i ]->schedule_execute();
+      oh->first = true;
+      oh->schedule_execute();
     }
   }
 
@@ -1064,7 +1062,7 @@ struct add_t : public pet_t
     return RESOURCE_HEALTH;
   }
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     action_t* a = enemy_create_action( this, name, options_str );
 
@@ -1211,10 +1209,15 @@ struct tank_dummy_enemy_t : public enemy_t
         Castle Nathria Mythic: 3050.0‬ (ExpectedStatModID: 179; ArmorConstMod: 1.220)
         Level 60 M0/M+ Season 2: 2785.0 (ExpectedStatModID: 192; ArmorConstMod: 1.114)
         Tazavesh Mega Dungeon: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
+        Level 60 M0/M+ Season 3: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
         Sanctum of Domination LFR: 2845.0 (ExpectedStatModID: 178; ArmorConstMod: 1.138)
         Sanctum of Domination Nomral: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
         Sanctum of Domination Heroic: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
         Sanctum of Domination Mythic: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
+        Sepulcher of the First Ones LFR: N/A (ExpectedStatModID: 203; ArmorConstMod: N/A)
+        Sepulcher of the First Ones Nomral: 2500.0 (ExpectedStatModID: 200; ArmorConstMod: 1.000)
+        Sepulcher of the First Ones Heroic: 2967.5 (ExpectedStatModID: 201; ArmorConstMod: 1.187)
+        Sepulcher of the First Ones Mythic: 2780.0 (ExpectedStatModID: 202; ArmorConstMod: 1.112)
       */
       double k_value = dbc->armor_mitigation_constant( sim->max_player_level );
 
@@ -1255,7 +1258,7 @@ struct tank_dummy_enemy_t : public enemy_t
 
 // enemy_t::create_action ===================================================
 
-action_t* enemy_t::create_action( util::string_view name, const std::string& options_str )
+action_t* enemy_t::create_action( util::string_view name, util::string_view options_str )
 {
   action_t* a = enemy_create_action( this, name, options_str );
 
@@ -1400,13 +1403,12 @@ void enemy_t::init_target()
     return;
   }
 
-  for ( size_t i = 0; i < sim->player_list.size(); ++i )
+  for ( auto* p : sim->player_list )
   {
-    player_t* q = sim->player_list[ i ];
-    if ( q->primary_role() != ROLE_TANK )
+     if ( p->primary_role() != ROLE_TANK )
       continue;
 
-    target = q;
+    target = p;
     break;
   }
 
@@ -1439,9 +1441,9 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // Damage is normally increased from 10-man to 30-man by an average of 10% for every 5 players added.
   // 10-man -> 20-man = 20% increase; 20-man -> 30-man = 20% increase
   // Raid values using Soulrender Dormazain as a baseline
-  int aa_damage[ numTankDummies ]               = { 0, 6415, 12300, 24597, 43081, 73742 };     // Base auto attack damage
-  int dummy_strike_damage[ numTankDummies ]     = { 0, 11000, 21450, 42932, 68189, 123500 };  // Base melee nuke damage (currently set to Soulrender's Ruinblade)
-  int background_spell_damage[ numTankDummies ] = { 0, 257, 1831, 2396, 3298, 5491 };  // Base background dot damage (currently set to 0.04x auto damage)
+  std::array<int, numTankDummies> aa_damage               = { 0, 6415, 12300, 24597, 43081, 73742 };     // Base auto attack damage
+  std::array<int, numTankDummies> dummy_strike_damage     = { 0, 11000, 21450, 42932, 68189, 123500 };  // Base melee nuke damage (currently set to Soulrender's Ruinblade)
+  std::array<int, numTankDummies> background_spell_damage = { 0, 257, 1831, 2396, 3298, 5491 };  // Base background dot damage (currently set to 0.04x auto damage)
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) +
@@ -1461,7 +1463,7 @@ void enemy_t::add_tank_heal_raid_event( tank_dummy_e tank_dummy )
 {
   constexpr size_t numTankDummies = static_cast<size_t>( tank_dummy_e::MAX );
   //                                           NONE, WEAK, DUNGEON, RAID,  HEROIC, MYTHIC
-  int heal_value[ numTankDummies ] = { 0, 5000, 10000, 12500, 20000, 25000 };
+  std::array<int, numTankDummies> heal_value = { 0, 5000, 10000, 12500, 20000, 25000 };
   size_t tank_dummy_index          = static_cast<size_t>( tank_dummy );
   std::string heal_raid_event = fmt::format( "heal,name=tank_heal,amount={},period=0.5,duration=0,player_if=role.tank",
                                              heal_value[ tank_dummy_index ] );
@@ -1506,8 +1508,8 @@ void enemy_t::init_action_list()
       else if ( sim->heal_target && this != sim->heal_target )
       {
         unsigned int healers = 0;
-        for ( size_t i = 0; i < sim->player_list.size(); ++i )
-          if ( !sim->player_list[ i ]->is_pet() && sim->player_list[ i ]->primary_role() == ROLE_HEAL )
+        for ( auto* p : sim->player_list )
+          if ( !p->is_pet() && p->primary_role() == ROLE_HEAL )
             ++healers;
 
         double hps_per_healer = 90000;
@@ -1532,11 +1534,10 @@ void enemy_t::init_action_list()
   {
     // count the number of tanks in the simulation
     std::vector<player_t*> tanks;
-    for ( size_t i = 0, players = sim->player_list.size(); i < players; i++ )
+    for ( auto* p : sim->player_list )
     {
-      player_t* q = sim->player_list[ i ];
-      if ( q->primary_role() == ROLE_TANK )
-        tanks.push_back( q );
+       if ( p->primary_role() == ROLE_TANK )
+        tanks.push_back( p );
     }
 
     // If we have more than one tank, create a new action list for each
@@ -1548,10 +1549,10 @@ void enemy_t::init_action_list()
       // split the action_list_str into individual actions so we can modify each later
       auto splits = util::string_split<util::string_view>( action_list_str, "/" );
 
-      for ( size_t i = 0; i < tanks.size(); i++ )
+      for ( const auto* tank : tanks )
       {
         // create a new APL sub-entry with the name of the tank in question
-        std::string& tank_str = get_action_priority_list( tanks[ i ]->name_str )->action_list_str;
+        std::string& tank_str = get_action_priority_list( tank->name_str )->action_list_str;
 
         // Reconstruct the action_list_str for this tank by appending ",target=Tank_Name"
         // to each action if it doesn't already specify a different target
@@ -1560,12 +1561,12 @@ void enemy_t::init_action_list()
           tank_str += fmt::format( "/{}", split );
 
           if ( !util::str_in_str_ci( "target=", split ) )
-            tank_str += ",target=" + tanks[ i ]->name_str;
+            tank_str += ",target=" + tank->name_str;
         }
 
         // add a /run_action_list line to the new default APL
-        new_action_list_str += "/run_action_list,name=" + tanks[ i ]->name_str +
-                               ",if=current_target=" + util::to_string( tanks[ i ]->actor_index );
+        new_action_list_str += "/run_action_list,name=" + tank->name_str +
+                               ",if=current_target=" + util::to_string( tank->actor_index );
       }
 
       // finish off the default action list with an instruction to run the default target's APL

@@ -365,10 +365,12 @@ const char* util::dot_behavior_type_string( dot_behavior_e t )
 {
   switch ( t )
   {
-    case DOT_REFRESH: return "DOT_REFRESH";
-    case DOT_CLIP:    return "DOT_CLIP";
-    case DOT_EXTEND:  return "DOT_EXTEND";
-    default:          return "unknown";
+    case DOT_CLIP:              return "DOT_CLIP";
+    case DOT_EXTEND:            return "DOT_EXTEND";
+    case DOT_REFRESH_DURATION:  return "DOT_REFRESH_DURATION";
+    case DOT_REFRESH_PANDEMIC:  return "DOT_REFRESH_PANDEMIC";
+    case DOT_NONE:              return "DOT_NONE";
+    default:                    return "unknown";
   }
 }
 
@@ -657,6 +659,7 @@ const char* util::pet_type_string( pet_e type )
     case PET_SERVICE_IMP:         return "service_imp";
     case PET_SERVICE_FELHUNTER:   return "service_felhunter";
     case PET_OBSERVER:            return "observer";
+    case PET_MALICIOUS_IMP:       return "malicious_imp";
     case PET_GHOUL:               return "ghoul";
     case PET_BLOODWORMS:          return "bloodworms";
     case PET_DANCING_RUNE_WEAPON: return "dancing_rune_weapon";
@@ -950,6 +953,7 @@ const char* util::school_type_string( school_e school )
     case SCHOOL_SPELLFROST:       return "spellfrost";
     case SCHOOL_SPELLSHADOW:      return "spellshadow";
     case SCHOOL_ELEMENTAL:        return "elemental";
+    case SCHOOL_COSMIC:           return "cosmic";
     case SCHOOL_CHROMATIC:        return "chromatic";
     case SCHOOL_MAGIC:            return "magic";
     case SCHOOL_DRAIN:            return "drain";
@@ -1366,6 +1370,7 @@ const char* util::special_effect_source_string( special_effect_source_e type )
     case SPECIAL_EFFECT_SOURCE_SOULBIND: return "soulbind";
     case SPECIAL_EFFECT_SOURCE_FALLBACK: return "fallback";
     case SPECIAL_EFFECT_SOURCE_TEMPORARY_ENCHANT: return "temporary_enchant";
+    case SPECIAL_EFFECT_SOURCE_COVENANT: return "covenant";
     default: return "unknown";
   }
 }
@@ -2315,7 +2320,7 @@ std::vector<std::string> util::string_split_allow_quotes( util::string_view str_
 
   std::string buffer;
 
-  const std::string not_in_quote    = to_string( delim ) + '"';
+  const std::string not_in_quote    = std::string( delim ) + '"';
   static const std::string in_quote = "\"";
   const std::string* search         = &not_in_quote;
 
@@ -2471,6 +2476,33 @@ const char* util::action_energize_type_string( action_energize energize_type )
       return "per_hit";
     case action_energize::PER_TICK:
       return "per_tick";
+    default:
+      return "unknown";
+  }
+}
+
+const char* util::action_type_string( action_e type )
+{
+  switch ( type )
+  {
+    case action_e::ACTION_USE:
+      return "use";
+    case action_e::ACTION_SPELL:
+      return "hostile_spell";
+    case action_e::ACTION_ATTACK:
+      return "attack";
+    case action_e::ACTION_HEAL:
+      return "heal_spell";
+    case action_e::ACTION_ABSORB:
+      return "absorb_spell";
+    case action_e::ACTION_SEQUENCE:
+      return "sequence";
+    case action_e::ACTION_OTHER:
+      return "other";
+    case action_e::ACTION_CALL:
+      return "call_action_list";
+    case action_e::ACTION_VARIABLE:
+      return "action_variable";
     default:
       return "unknown";
   }
@@ -2817,7 +2849,7 @@ std::string util::decode_html( const std::string& input )
     }
     else
     {
-      int i = as<int>( range::size( html_named_character_map ) );
+      int i = as<int>( std::size( html_named_character_map ) );
       while ( --i >= 0 )
       {
         if ( ! input.compare( pos + 1, end - ( pos + 1 ), html_named_character_map[ i ].encoded ) )
@@ -2842,7 +2874,7 @@ std::string util::decode_html( const std::string& input )
 
 std::string util::remove_special_chars( util::string_view s )
 {
-  std::string r = to_string( s );
+  std::string r( s );
   // Allow alphanumeric characters, underscore and non-ASCII characters.
   auto pred = [] ( char c ) { return !std::isalnum( c ) && c != '_' && (unsigned char)c < 128; };
   r.erase( std::remove_if( r.begin(), r.end(), pred ), r.end() );
@@ -2919,7 +2951,7 @@ bool util::is_primary_stat( stat_e t )
 
 std::string util::encode_html( util::string_view s )
 {
-  std::string buffer = to_string( s );
+  std::string buffer( s );
   replace_all( buffer, "&", "&amp;" );
   replace_all( buffer, "<", "&lt;" );
   replace_all( buffer, ">", "&gt;" );
@@ -3080,14 +3112,14 @@ void util::tokenize( std::string& name )
 
 std::string util::tokenize_fn( util::string_view name_ )
 {
-  std::string name = to_string( name_ );
+  std::string name( name_ );
   tokenize(name);
   return name;
 }
 
 std::string util::inverse_tokenize( util::string_view name )
 {
-  std::string s = to_string( name );
+  std::string s( name );
 
   for ( std::string::iterator i = s.begin(); i != s.end(); ++i )
   {
@@ -3201,28 +3233,34 @@ bool util::contains_non_ascii( util::string_view s )
 /**
  * Print chained exceptions, separated by ' :'.
  */
-void util::print_chained_exception( const std::exception& e, std::ostream& out, int level)
-
+void util::print_chained_exception( const std::exception& e, std::FILE* out, int level )
 {
-  fmt::print(out, "{}{}", level > 0 ? ": " : "", e.what());
-  try {
-      std::rethrow_if_nested(e);
-  } catch(const std::exception& e) {
-    print_chained_exception(e, out, level+1);
-  } catch(...) {}
+  fmt::print( out, "{}{}", level > 0 ? ": " : "", e.what() );
+  try
+  {
+    std::rethrow_if_nested( e );
+  }
+  catch ( const std::exception& e )
+  {
+    print_chained_exception( e, out, level + 1 );
+  }
+  catch ( ... )
+  {
+  }
 }
 
-void util::print_chained_exception( const std::exception_ptr& eptr, std::ostream& out, int level)
+void util::print_chained_exception( const std::exception_ptr& eptr, std::FILE* out, int level )
 {
   try
   {
-    if (eptr) {
-      std::rethrow_exception(eptr);
+    if ( eptr )
+    {
+      std::rethrow_exception( eptr );
     }
   }
-  catch(const std::exception& e)
+  catch ( const std::exception& e )
   {
-    print_chained_exception(e, out, level);
+    print_chained_exception( e, out, level );
   }
 }
 

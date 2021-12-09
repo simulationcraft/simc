@@ -9,9 +9,10 @@
 #include "WebPage.hpp"
 #include "util/sc_searchbox.hpp"
 
-#include <QtWidgets/QShortcut>
+#include <QShortcut>
+#include <QNetworkDiskCache>
 
-SC_WebView::SC_WebView( SC_MainWindow* mw, QWidget* parent, const QString& h )
+SC_WebView::SC_WebView( SC_MainWindow* mw, QWidget* parent, QString h )
   : SC_WebEngineView( parent ),
     searchBox( new SC_SearchBox() ),
     previousSearch( "" ),
@@ -20,7 +21,7 @@ SC_WebView::SC_WebView( SC_MainWindow* mw, QWidget* parent, const QString& h )
     allow_searching( false ),
     mainWindow( mw ),
     progress( 0 ),
-    html_str( h )
+    html_str( std::move( h ) )
 {
   searchBox->hide();
   QShortcut* ctrlF  = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
@@ -217,7 +218,7 @@ void SC_WebView::findSomeText( const QString& text, SC_WebEnginePage::FindFlags 
 
 void SC_WebView::findSomeText( const QString& text )
 {
-  SC_WebEnginePage::FindFlags flags = 0;
+  SC_WebEnginePage::FindFlags flags;
   if ( searchBox->reverseSearch() )
   {
     flags |= SC_WebEnginePage::FindBackward;
@@ -232,5 +233,5 @@ void SC_WebView::findPrev()
 
 void SC_WebView::findNext()
 {
-  findSomeText( searchBox->text(), 0 );
+  findSomeText( searchBox->text(), SC_WebEnginePage::FindFlags() );
 }

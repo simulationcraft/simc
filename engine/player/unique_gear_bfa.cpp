@@ -784,8 +784,8 @@ void items::incessantly_ticking_clock( special_effect_t& effect )
     std::vector<buff_t*> buffs;
     size_t state;
 
-    clock_cb_t( const special_effect_t& effect, const std::vector<buff_t*>& b )
-      : dbc_proc_callback_t( effect.player, effect ), buffs( b ), state( 0U )
+    clock_cb_t( const special_effect_t& effect, std::vector<buff_t*> b )
+      : dbc_proc_callback_t( effect.player, effect ), buffs( std::move( b ) ), state( 0U )
     {
     }
 
@@ -1114,11 +1114,6 @@ void items::merekthas_fang( special_effect_t& effect )
       tick_may_crit = hasted_ticks = true;
       dot_max_stack = data().max_stacks();
     }
-
-    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-    {
-      return dot->time_to_next_tick() + triggered_duration;
-    }
   };
 
   struct noxious_venom_gland_aoe_driver_t : public spell_t
@@ -1332,8 +1327,8 @@ void items::harlans_loaded_dice( special_effect_t& effect )
   {
     std::vector<std::vector<buff_t*>> buffs;
 
-    harlans_cb_t( const special_effect_t& effect, const std::vector<std::vector<buff_t*>>& b )
-      : dbc_proc_callback_t( effect.item, effect ), buffs( b )
+    harlans_cb_t( const special_effect_t& effect, std::vector<std::vector<buff_t*>> b )
+      : dbc_proc_callback_t( effect.item, effect ), buffs( std::move( b ) )
     {
     }
 
@@ -1502,7 +1497,7 @@ void items::vanquished_tendril_of_ghuun( special_effect_t& effect )
       bloody_bile->n_casts = 0U;
     }
 
-    action_t* create_action( ::util::string_view name, const std::string& opts ) override
+    action_t* create_action( ::util::string_view name, ::util::string_view opts ) override
     {
       if ( ::util::str_compare_ci( name, "bloody_bile" ) )
       {
@@ -3459,11 +3454,6 @@ void items::shiver_venom_relic_equip( special_effect_t& effect )
       if ( onuse )
         add_child( onuse );
     }
-
-    timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t t ) const override
-    {
-      return t;  // dot doesn't pandemic
-    }
   };
 
   effect.execute_action = create_proc_action<shiver_venom_t>( "shiver_venom", effect );
@@ -4997,7 +4987,7 @@ void items::subroutine_optimization( special_effect_t& effect )
       // Find the item enchantment associated with the gem
       const auto& enchantment_data = source->dbc->item_enchantment( data->enchant_id );
 
-      for ( size_t i = 0U; i < range::size( enchantment_data.ench_type ); ++i )
+      for ( size_t i = 0U; i < std::size( enchantment_data.ench_type ); ++i )
       {
         if ( enchantment_data.ench_type[ i ] == ITEM_ENCHANTMENT_EQUIP_SPELL )
         {
@@ -6181,9 +6171,7 @@ void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
 void unique_gear::register_hotfixes_bfa()
 { }
 
-namespace expansion
-{
-namespace bfa
+namespace expansion::bfa
 {
 static std::unordered_map<unsigned, stat_e> __ls_cb_map{{
 
@@ -6236,5 +6224,4 @@ void trigger_leyshocks_grand_compilation( stat_e stat, player_t* actor )
   }
 }
 
-}  // namespace bfa
 }  // namespace expansion

@@ -35,8 +35,8 @@ azerite_power_t::azerite_power_t( const player_t* p, const azerite_power_entry_t
 }
 
 azerite_power_t::azerite_power_t( const player_t* p, const azerite_power_entry_t* data,
-    const std::vector<unsigned>& ilevels ) :
-  m_player( p ), m_spell( p->find_spell( data->spell_id ) ), m_ilevels( ilevels ), m_data( data )
+    std::vector<unsigned> ilevels ) :
+  m_player( p ), m_spell( p->find_spell( data->spell_id ) ), m_ilevels( std::move( ilevels ) ), m_data( data )
 { }
 
 azerite_power_t::operator const spell_data_t*() const
@@ -1111,10 +1111,10 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
 
   m_state.clear();
 
-  for ( size_t i = 0U; i < splits.size(); ++i )
+  for ( const auto& split : splits )
   {
     // Split by :
-    auto token_split = util::string_split<util::string_view>( splits[ i ], ":" );
+    auto token_split = util::string_split<util::string_view>( split, ":" );
 
     unsigned id = util::to_unsigned_ignore_error( token_split[ 0 ], 0 );
     unsigned rank = 0;
@@ -1163,7 +1163,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
       const auto& essence = azerite_essence_entry_t::find( token_split[ 0 ], true, m_player->dbc->ptr );
       if ( essence.id == 0 )
       {
-        sim->error( "Unable to find Azerite Essence with name '{}'", splits[ i ] );
+        sim->error( "Unable to find Azerite Essence with name '{}'", split );
         return false;
       }
 
@@ -1175,7 +1175,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
       const auto& essence = azerite_essence_entry_t::find( id, m_player->dbc->ptr );
       if ( essence.id != id )
       {
-        sim->error( "Unable to find Azerite Essence with id {}", splits[ i ] );
+        sim->error( "Unable to find Azerite Essence with id {}", split );
         return false;
       }
     }
@@ -1237,7 +1237,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
         break;
       }
       default:
-        sim->error( "Invalid token format for '{}'", splits[ i ] );
+        sim->error( "Invalid token format for '{}'", split );
         return false;
     }
 
@@ -1621,8 +1621,8 @@ void elemental_whirl( special_effect_t& effect )
     std::vector<buff_t*> buffs;
 
     public:
-    ew_proc_cb_t( const special_effect_t& effect, const std::vector<buff_t*>& b ) :
-      dbc_proc_callback_t( effect.player, effect ), buffs( b )
+    ew_proc_cb_t( const special_effect_t& effect, std::vector<buff_t*> b ) :
+      dbc_proc_callback_t( effect.player, effect ), buffs( std::move( b ) )
     { }
 
     void execute( action_t* /* a */, action_state_t* /* state */ ) override
@@ -2686,11 +2686,7 @@ void dagger_in_the_back( special_effect_t& effect )
     {
       base_td = power.value( 1 );
       tick_may_crit = true;
-    }
-
-    timespan_t calculate_dot_refresh_duration(const dot_t*  /* dot */, timespan_t triggered_duration ) const override
-    {
-      return triggered_duration;
+      dot_behavior = dot_behavior_e::DOT_CLIP;
     }
 
     // XXX: simply apply twice here for the "from the back" case
@@ -2743,8 +2739,8 @@ void secrets_of_the_deep( special_effect_t& effect )
   {
     std::vector<buff_t*> buffs;
 
-    sotd_cb_t( const special_effect_t& effect, const std::vector<buff_t*>& b ) :
-      dbc_proc_callback_t( effect.player, effect ), buffs( b )
+    sotd_cb_t( const special_effect_t& effect, std::vector<buff_t*> b ) :
+      dbc_proc_callback_t( effect.player, effect ), buffs( std::move( b ) )
     { }
 
     void execute( action_t*, action_state_t* ) override
@@ -2781,8 +2777,8 @@ void combined_might( special_effect_t& effect )
   {
     std::vector<buff_t*> buffs;
 
-    combined_might_cb_t( const special_effect_t& effect, const std::vector<buff_t*>& b ) :
-      dbc_proc_callback_t( effect.player, effect ), buffs( b )
+    combined_might_cb_t( const special_effect_t& effect, std::vector<buff_t*> b ) :
+      dbc_proc_callback_t( effect.player, effect ), buffs( std::move( b ) )
     { }
 
     void execute( action_t*, action_state_t* ) override
@@ -2846,7 +2842,7 @@ void combined_might( special_effect_t& effect )
 
   effect.spell_id = 280848;
 
-  new combined_might_cb_t( effect, buffs );
+  new combined_might_cb_t( effect, std::move( buffs ) );
 }
 
 void relational_normalization_gizmo( special_effect_t& effect )
@@ -2855,8 +2851,8 @@ void relational_normalization_gizmo( special_effect_t& effect )
   {
     std::vector<buff_t*> buffs;
 
-    gizmo_cb_t( const special_effect_t& effect, const std::vector<buff_t*>& b ) :
-      dbc_proc_callback_t( effect.player, effect ), buffs( b )
+    gizmo_cb_t( const special_effect_t& effect, std::vector<buff_t*> b ) :
+      dbc_proc_callback_t( effect.player, effect ), buffs( std::move( b ) )
     { }
 
     // TODO: Probability distribution?
@@ -4006,6 +4002,7 @@ void the_crucible_of_flame( special_effect_t& effect )
     ancient_flame_t( const special_effect_t& effect, const std::string& name, const azerite_essence_t& essence ) :
       proc_spell_t( name, effect.player, effect.player->find_spell( 295367 ), essence.item() )
     {
+      dot_behavior = dot_behavior_e::DOT_CLIP;
       base_td = item_database::apply_combat_rating_multiplier( effect.player,
         combat_rating_multiplier_type::CR_MULTIPLIER_JEWLERY,
         essence.item()->item_level(),
@@ -4013,10 +4010,6 @@ void the_crucible_of_flame( special_effect_t& effect )
 
       base_td_multiplier *= 1 + essence.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
     }
-
-    // Refresh to 10 seconds
-    timespan_t calculate_dot_refresh_duration( const dot_t* /* dot */, timespan_t triggered_duration ) const override
-    { return triggered_duration; }
   };
 
   auto action = unique_gear::create_proc_action<ancient_flame_t>( "ancient_flame", effect,
@@ -4072,10 +4065,6 @@ struct concentrated_flame_t : public azerite_essence_major_t
 
     void set_damage( double value )
     { base_td = value * multiplier / ( dot_duration / base_tick_time ); }
-
-    // Max duration + ongoing tick
-    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-    { return triggered_duration + dot->tick_event->remains(); }
   };
 
   unsigned stack;
@@ -4556,11 +4545,11 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
     buff_t* azerite_volley;
 
     // TODO: Does pet inherit player's stats? Some, all, or none?
-    guardian_of_azeroth_pet_t(player_t* p, const azerite_essence_t& ess) :
-      pet_t(p->sim, p, "guardian_of_azeroth", true, true), essence(ess)
+    guardian_of_azeroth_pet_t(player_t* p, azerite_essence_t ess) :
+      pet_t(p->sim, p, "guardian_of_azeroth", true, true), essence(std::move(ess))
     {}
 
-    action_t* create_action(util::string_view name, const std::string& options) override
+    action_t* create_action(util::string_view name, util::string_view options) override
     {
       if (name == "azerite_spike")
         return new azerite_spike_t(name, this, options, essence);
@@ -5897,7 +5886,7 @@ void touch_of_the_everlasting( special_effect_t& effect )
 
 } // Namespace azerite essences ends
 
-action_t* create_action( player_t* player, util::string_view name, const std::string& options )
+action_t* create_action( player_t* player, util::string_view name, util::string_view options )
 {
   if ( util::str_compare_ci( name, "focused_azerite_beam" ) )
   {

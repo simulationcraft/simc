@@ -9,6 +9,7 @@
 
 class SC_AddonImportTab : public SC_TextEdit
 {
+  Q_OBJECT
 public:
   SC_AddonImportTab( QWidget* parent );
 };

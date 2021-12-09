@@ -15,7 +15,6 @@
 #include "util/git_info.hpp"
 
 #include <ctime>
-#include <iostream>
 
 #include "rapidjson/filewritestream.h"
 #include "rapidjson/document.h"
@@ -29,14 +28,12 @@ using namespace js;
 namespace
 {
 
-template <typename...> using void_t = void;
-
 /**
  * Template helper to add only non "default value" containers (sample data essentially) to the JSON
  * root.
  */
 template <typename T>
-auto add_non_default( JsonOutput root, util::string_view name, const T& container ) -> void_t<decltype(container.mean())>
+auto add_non_default( JsonOutput root, util::string_view name, const T& container ) -> std::void_t<decltype(container.mean())>
 {
   if ( container.mean() != 0 )
   {
@@ -55,7 +52,7 @@ void add_non_default( JsonOutput root, util::string_view name, const T& v, const
 
 /* Template helper to add only non-zero "containers" (sample data essentially) to the JSON root. */
 template <typename T>
-auto add_non_zero( JsonOutput root, util::string_view name, const T& container ) -> void_t<decltype(container.mean())>
+auto add_non_zero( JsonOutput root, util::string_view name, const T& container ) -> std::void_t<decltype(container.mean())>
 { add_non_default( root, name, container ); }
 
 void add_non_zero( JsonOutput root, util::string_view name, timespan_t v )
@@ -373,7 +370,7 @@ void gear_to_json( JsonOutput root, const player_t& p )
     slotnode[ "encoded_item" ] = item.encoded_item();
     slotnode[ "ilevel" ] = item.item_level();
 
-    for ( size_t i = 0; i < range::size( item.parsed.data.stat_type_e ); i++ )
+    for ( size_t i = 0; i < std::size( item.parsed.data.stat_type_e ); i++ )
     {
       auto val = item.stat_value( i );
       if ( val <= 0)
@@ -477,6 +474,7 @@ void to_json( JsonOutput root,
       json[ "name" ] = entry.action -> name();
       json[ "target" ] = entry.action->harmful ? entry.target -> name() : "none";
       json[ "spell_name" ] = entry.action->data_reporting().name_cstr();
+      json[ "queue_failed" ] = entry.queue_failed;
       if (entry.action->item) {
         json[ "item_name" ] = entry.action->item->name_str;
       }
@@ -1317,9 +1315,9 @@ void print_json_report( sim_t& sim, const ::report::json::report_configuration_t
     {
       if( report_configuration.full_states )
       {
-        std::cout << "\nReport will be generated with full state for each action.\n";
+        fmt::print( "\nReport will be generated with full state for each action.\n" );
       }
-      report_timer_t t( fmt::format("JSON report version {}", report_configuration.version()), std::cout );
+      report_timer_t t( fmt::format( "JSON report version {}", report_configuration.version() ), stdout );
       if ( ! sim.profileset_enabled )
       {
         t.start();

@@ -47,22 +47,22 @@ role=attack
 position=back
 talents=3200303
 covenant=kyrian
-soulbind=pelagos,combat_meditation/better_together/newfound_resolve/ringing_clarity:9:1/virtuous_command:9:1/expurgation:9:1
+soulbind=pelagos,combat_meditation/better_together/newfound_resolve/ringing_clarity:9:1/virtuous_command:9:1/templars_vindication:9:1
 renown=80
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=187312
-neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173127
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498,gem_id=187312
+neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173130
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
 back=selfreplicating_tissue,id=186374,bonus_id=7187/1498
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_skirmish
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187320
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498,gem_id=187320
 hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187319,enchant=eternal_strength
-waist=shadowghast_waistguard,id=171418,bonus_id=6648/6647/6758/7679/1559/6935,gem_id=173127
+waist=shadowghast_waistguard,id=171418,bonus_id=6650/6648/6758/7679/1559/6935,gem_id=173130
 legs=fateforged_legplates,id=186348,bonus_id=7187/1498
 feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
-finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
-finger2=oscillating_ouroboros,id=186376,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
-trinket1=unchained_gladiators_badge_of_ferocity,id=185197,bonus_id=7322/1518
+finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_mastery
+finger2=oscillating_ouroboros,id=186376,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_mastery
+trinket1=unchained_gladiators_badge_of_ferocity,id=185197,bonus_id=7322/1521
 trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
 main_hand=jaithys_the_prison_blade,id=186410,bonus_id=7187/7748/1498,enchant=sinful_revelation
 

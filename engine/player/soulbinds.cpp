@@ -19,9 +19,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace covenant
-{
-namespace soulbinds
+namespace covenant::soulbinds
 {
 namespace
 {
@@ -106,8 +104,8 @@ void add_covenant_cast_callback( player_t* p, S&&... args )
   }
 }
 
-double value_from_desc_vars( const special_effect_t& e, util::string_view var, util::string_view prefix = "",
-                             util::string_view postfix = "" )
+double value_from_desc_vars( const special_effect_t& e, util::string_view var, util::string_view prefix = {},
+                             util::string_view postfix = {} )
 {
   double value = 0;
 
@@ -292,7 +290,7 @@ void niyas_tools_herbs( special_effect_t& effect )
   }
 
   // TODO: confirm proc flags
-  // 11/17/2020 - For Rogues this procs from all periodic heals (Recuperator/Soothing Darkness/Crimson Vial)
+  // 2020-11-17 - For Rogues this procs from all periodic heals (Recuperator/Soothing Darkness/Crimson Vial)
   effect.proc_flags_  = PF_ALL_HEAL | PF_PERIODIC;
   effect.proc_flags2_ = PF2_LANDED | PF2_PERIODIC_HEAL;
 
@@ -413,6 +411,9 @@ void field_of_blossoms( special_effect_t& effect )
     return;
 
   if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+    return;
+
+  if ( effect.player->sim->shadowlands_opts.field_of_blossoms_duration_multiplier == 0.0 )
     return;
 
   auto buff = buff_t::find( effect.player, "field_of_blossoms" );
@@ -617,18 +618,13 @@ void dauntless_duelist( special_effect_t& effect )
   auto cb = new dauntless_duelist_cb_t( effect );
   auto p  = effect.player;
 
-  range::for_each( p->sim->actor_list, [ p, cb ]( player_t* t ) {
-    if ( !t->is_enemy() )
+  p->register_on_kill_callback( [ p, cb ]( player_t* t ) {
+    if ( p->sim->event_mgr.canceled )
       return;
 
-    t->register_on_demise_callback( p, [ p, cb ]( player_t* t ) {
-      if ( p->sim->event_mgr.canceled )
-        return;
-
-      auto td = p->find_target_data( t );
-      if ( td && td->debuff.adversary->check() )
-        cb->activate();
-    } );
+    auto td = p->find_target_data( t );
+    if ( td && td->debuff.adversary->check() )
+      cb->activate();
   } );
 }
 
@@ -685,7 +681,7 @@ void thrill_seeker( special_effect_t& effect )
     euphoria_buff->set_stack_change_callback( [ fatal_flaw_vers, fatal_flaw_crit ]( buff_t* b, int old, int cur ) {
       if ( cur < old )
       {
-        if ( b->player->cache.spell_crit_chance() >= b->player->cache.damage_versatility() )
+        if ( util::stat_value( b->player, STAT_CRIT_RATING ) >= util::stat_value( b->player, STAT_VERSATILITY_RATING ) )
           fatal_flaw_crit->trigger();
         else
           fatal_flaw_vers->trigger();
@@ -710,10 +706,10 @@ void thrill_seeker( special_effect_t& effect )
   int number_of_players      = 1;
   // If the user does not override the value for this we will set different defaults based on the sim here
   // Default: 1/20 = 0.05
-  // DungeonSlice: 1/4 = 0.25
+  // DungeonSlice & DungeonRoute: 1/4 = 0.25
   if ( killing_blow_chance < 0 )
   {
-    if ( p->sim->fight_style == "DungeonSlice" )
+    if ( p->sim->fight_style == "DungeonSlice" || p->sim->fight_style == "DungeonRoute" )
     {
       number_of_players = 4;
     }
@@ -724,19 +720,12 @@ void thrill_seeker( special_effect_t& effect )
     killing_blow_chance = 1.0 / number_of_players;
   }
 
-  range::for_each( p->sim->actor_list, [ p, counter_buff, killing_blow_stacks, killing_blow_chance ]( player_t* t ) {
-    if ( !t->is_enemy() )
+  p->register_on_kill_callback( [ p, counter_buff, killing_blow_stacks, killing_blow_chance ]( player_t* ) {
+    if ( p->sim->event_mgr.canceled )
       return;
 
-    t->register_on_demise_callback( p, [ p, counter_buff, killing_blow_stacks, killing_blow_chance ]( player_t* ) {
-      if ( p->sim->event_mgr.canceled )
-        return;
-
-      if ( p->rng().roll( killing_blow_chance ) )
-      {
-        counter_buff->trigger( killing_blow_stacks );
-      }
-    } );
+    if ( p->rng().roll( killing_blow_chance ) )
+      counter_buff->trigger( killing_blow_stacks );
   } );
 }
 
@@ -1279,7 +1268,7 @@ void brons_call_to_action( special_effect_t& effect )
   {
     struct bron_anima_cannon_t : public spell_t
     {
-      bron_anima_cannon_t( pet_t* p, const std::string& options_str )
+      bron_anima_cannon_t( pet_t* p, util::string_view options_str )
         : spell_t( "anima_cannon", p, p->find_spell( 332525 ) )
       {
         parse_options( options_str );
@@ -1362,7 +1351,7 @@ void brons_call_to_action( special_effect_t& effect )
 
     struct bron_smash_t : public spell_t
     {
-      bron_smash_t( pet_t* p, const std::string& options_str ) : spell_t( "smash_cast", p, p->find_spell( 341163 ) )
+      bron_smash_t( pet_t* p, util::string_view options_str ) : spell_t( "smash_cast", p, p->find_spell( 341163 ) )
       {
         parse_options( options_str );
 
@@ -1372,7 +1361,7 @@ void brons_call_to_action( special_effect_t& effect )
 
     struct bron_vitalizing_bolt_t : public heal_t
     {
-      bron_vitalizing_bolt_t( pet_t* p, const std::string& options_str )
+      bron_vitalizing_bolt_t( pet_t* p, util::string_view options_str )
         : heal_t( "vitalizing_bolt", p, p->find_spell( 332526 ) )
       {
         parse_options( options_str );
@@ -1503,7 +1492,7 @@ void brons_call_to_action( special_effect_t& effect )
       pet_t::init_action_list();
     }
 
-    action_t* create_action( util::string_view name, const std::string& options_str ) override
+    action_t* create_action( util::string_view name, util::string_view options_str ) override
     {
       if ( name == "travel" )
         return new bron_travel_t( this );
@@ -1839,7 +1828,7 @@ void kevins_oozeling( special_effect_t& effect )
   {
     struct kevins_wrath_t : public spell_t
     {
-      kevins_wrath_t( pet_t* p, const std::string& options_str ) : spell_t( "kevins_wrath", p, p->find_spell( 352520 ) )
+      kevins_wrath_t( pet_t* p, util::string_view options_str ) : spell_t( "kevins_wrath", p, p->find_spell( 352520 ) )
       {
         parse_options( options_str );
       }
@@ -1867,7 +1856,7 @@ void kevins_oozeling( special_effect_t& effect )
       pet_t::init_action_list();
     }
 
-    action_t* create_action( util::string_view name, const std::string& options_str ) override
+    action_t* create_action( util::string_view name, util::string_view options_str ) override
     {
       if ( name == "kevins_wrath" )
         return new kevins_wrath_t( this, options_str );
@@ -1915,16 +1904,11 @@ void gnashing_chompers( special_effect_t& effect )
                ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
 
-  range::for_each( effect.player->sim->actor_list, [ buff ]( player_t* p ) {
-    if ( !p->is_enemy() )
+  effect.player->register_on_kill_callback( [ buff ]( player_t* ) {
+    if ( buff->sim->event_mgr.canceled )
       return;
 
-    p->register_on_demise_callback( buff->player, [ buff ]( player_t* ) {
-      if ( buff->sim->event_mgr.canceled )
-        return;
-
-      buff->trigger();
-    } );
+    buff->trigger();
   } );
 }
 
@@ -2544,7 +2528,7 @@ void register_special_effects()
   unique_gear::register_special_effect( 354257, soulbinds::deepening_bond );  // Kyrian Rank 5
 }
 
-action_t* create_action( player_t* player, util::string_view name, const std::string& options )
+action_t* create_action( player_t* player, util::string_view name, util::string_view options )
 {
   if ( util::str_compare_ci( name, "newfound_resolve" ) ) return new soulbinds::newfound_resolve_t( player, options );
 
@@ -2755,5 +2739,4 @@ void register_target_data_initializers( sim_t* sim )
   } );
 }
 
-}  // namespace soulbinds
 }  // namespace covenant

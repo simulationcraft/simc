@@ -186,5 +186,12 @@ SPELL_LABEL_WHITELIST = [
 ]
 
 ACTIVE_SPELL_WHITELIST = [
-    114074  # Lava Beam (Shaman)
+  114074,  # Lava Beam (Shaman)
+]
+
+IGNORE_CLASS_AND_RACE_MASKS = [
+  297736, # Vision of Perfection
+  297737, # Vision of Perfection
+  297738, # Vision of Perfection
+  297739, # Vision of Perfection
 ]

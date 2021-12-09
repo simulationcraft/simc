@@ -36,7 +36,7 @@ struct sc_js_t
 
   sc_js_t();
   sc_js_t( const sc_js_t& );
-  virtual ~sc_js_t() {}
+  virtual ~sc_js_t() = default;
 
   virtual std::string to_json() const;
 
@@ -210,7 +210,7 @@ public:
       member = std::prev( v_.MemberEnd() );
       assert( member -> value == v_[ name ] );
     }
-    return JsonOutput( d_, member -> value );
+    return { d_, member -> value };
   }
 
   rapidjson::Value& val()
@@ -279,7 +279,7 @@ public:
   { assert( v_.IsArray() ); v_.PushBack( v, d_.GetAllocator() ); return *this; }
 
   JsonOutput add( rapidjson::Value& v )
-  { assert( v_.IsArray() ); v_.PushBack( v, d_.GetAllocator() ); return JsonOutput( d_, v_[ v_.Size() - 1 ] ); }
+  { assert( v_.IsArray() ); v_.PushBack( v, d_.GetAllocator() ); return { d_, v_[ v_.Size() - 1 ] }; }
 
   JsonOutput add()
   { auto v = rapidjson::Value( rapidjson::kObjectType ); return add( v ); }

@@ -765,9 +765,9 @@ struct icon_of_rot_driver_t : public dbc_proc_callback_t
 
     auto& tl = listener -> sim -> target_non_sleeping_list;
 
-    for ( size_t i = 0, targets = tl.size(); i < targets; i++ )
+    for ( auto* t : tl )
     {
-      carrion_swarm -> target = tl[ i ];
+      carrion_swarm -> target = t;
       carrion_swarm -> execute();
     }
   }
@@ -1660,8 +1660,8 @@ struct injector_proc_cb_t : public dbc_proc_callback_t
   stat_buff_t* large_buff;
 
   injector_proc_cb_t( const special_effect_t& effect,
-    const std::vector<stat_buff_t*>& small_buffs_, stat_buff_t* large_buff_ ) :
-    dbc_proc_callback_t( effect.item, effect ), small_buffs( small_buffs_ ), large_buff( large_buff_ )
+    std::vector<stat_buff_t*> small_buffs_, stat_buff_t* large_buff_ ) :
+    dbc_proc_callback_t( effect.item, effect ), small_buffs( std::move( small_buffs_ ) ), large_buff( large_buff_ )
   { }
 
   void execute( action_t* /* a */, action_state_t* /* state */ ) override
@@ -2297,11 +2297,11 @@ struct riftworld_codex_callback_t : public dbc_proc_callback_t
     // Make a vector with only the inactive buffs.
     std::vector<buff_t*> inactive_buffs;
 
-    for ( unsigned i = 0; i < buffs.size(); i++ )
+    for ( auto* buff : buffs )
     {
-      if ( ! buffs[ i ] -> check() )
+      if ( ! buff -> check() )
       {
-        inactive_buffs.push_back( buffs[ i ] );
+        inactive_buffs.push_back( buff );
       }
     }
 
@@ -2476,11 +2476,11 @@ struct memento_callback_t : public dbc_proc_callback_t
     // Make a vector with only the inactive buffs.
     std::vector<buff_t*> inactive_buffs;
 
-    for ( unsigned i = 0; i < buffs.size(); i++ )
+    for ( auto* buff : buffs )
     {
-      if ( ! buffs[ i ] -> check() )
+      if ( ! buff -> check() )
       {
-        inactive_buffs.push_back( buffs[ i ] );
+        inactive_buffs.push_back( buff );
       }
     }
 
@@ -3276,8 +3276,8 @@ struct dreadstone_proc_cb_t : public dbc_proc_callback_t
 {
   const std::vector<stat_buff_t*> buffs;
 
-  dreadstone_proc_cb_t( const special_effect_t& effect, const std::vector<stat_buff_t*>& buffs_ ) :
-    dbc_proc_callback_t( effect.item, effect ), buffs( buffs_ )
+  dreadstone_proc_cb_t( const special_effect_t& effect, std::vector<stat_buff_t*> buffs_ ) :
+    dbc_proc_callback_t( effect.item, effect ), buffs( std::move( buffs_ ) )
   { }
 
   void execute( action_t* /* a */, action_state_t* /* state */ ) override
@@ -3947,11 +3947,11 @@ void item::entwined_elemental_foci( special_effect_t& effect )
       // Make a vector with only the inactive buffs.
       std::vector<stat_buff_t*> inactive_buffs;
 
-      for (unsigned i = 0; i < buffs.size(); i++)
+      for ( auto* buff : buffs )
       {
-        if (!buffs[i]->check())
+        if (!buff->check())
         {
-          inactive_buffs.push_back(buffs[i]);
+          inactive_buffs.push_back(buff);
         }
       }
 
@@ -4333,7 +4333,7 @@ void item::darkmoon_deck( special_effect_t& effect )
       return;
   }
 
-  auto d = new darkmoon_buff_deck_t<stat_buff_t>( effect, cards );
+  auto d = new darkmoon_buff_deck_t<stat_buff_t>( effect, std::move( cards ) );
   d->initialize();
 
   effect.player->register_combat_begin( [ d ]( player_t* ) {
@@ -4428,11 +4428,11 @@ struct natures_call_callback_t : public dbc_proc_callback_t
     // Make a vector with only the inactive buffs.
     std::vector<natures_call_proc_t*> inactive_procs;
 
-    for ( unsigned i = 0; i < procs.size(); i++ )
+    for ( auto* proc : procs )
     {
-      if ( ! procs[ i ] -> active() )
+      if ( ! proc -> active() )
       {
-        inactive_procs.push_back( procs[ i ] );
+        inactive_procs.push_back( proc );
       }
     }
 
@@ -5003,9 +5003,9 @@ struct maddening_whispers_t : public buff_t
 
     callback -> deactivate();
 
-    for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ ) {
-      player_t* t = sim -> target_non_sleeping_list[ i ];
-      player -> get_target_data( t ) -> debuff.maddening_whispers -> expire();
+    for ( auto* t : sim->target_non_sleeping_list )
+    {
+       player -> get_target_data( t ) -> debuff.maddening_whispers -> expire();
     }
   }
 };
@@ -5028,7 +5028,7 @@ void item::wriggling_sinew( special_effect_t& effect )
 struct convergence_cd_t
 {
   specialization_e spec;
-  const char* cooldowns[3];
+  std::array<const char*, 3> cooldowns;
 };
 
 static const convergence_cd_t convergence_cds[] =
@@ -5094,9 +5094,9 @@ struct convergence_of_fates_callback_t : public dbc_proc_callback_t
   {
     assert( !cooldowns.empty() );
 
-    for ( size_t i = 0; i < cooldowns.size(); i++ )
+    for ( auto* cooldown : cooldowns )
     {
-      cooldowns[ i ] -> adjust( amount );
+      cooldown -> adjust( amount );
     }
   }
 };
@@ -5717,7 +5717,7 @@ struct spawn_of_serpentrix_t : public pet_t
   }
 
   action_t* create_action( ::util::string_view name,
-                           const std::string& options_str ) override
+                           ::util::string_view options_str ) override
   {
     if ( name == "magma_spit" ) return new magma_spit_t( this, damage_amount );
 
@@ -5734,9 +5734,9 @@ struct spawn_of_serpentrix_cb_t : public dbc_proc_callback_t
     dbc_proc_callback_t( effect.item, effect ),
     summon( effect.player -> find_spell( 215750 ) )
   {
-    for ( size_t i = 0; i < pets.size(); ++i )
+    for ( auto& pet : pets )
     {
-      pets[ i ] = new spawn_of_serpentrix_t( effect );
+      pet = new spawn_of_serpentrix_t( effect );
     }
   }
 
@@ -5744,11 +5744,11 @@ struct spawn_of_serpentrix_cb_t : public dbc_proc_callback_t
   {
     bool spawned = false;
 
-    for ( size_t i = 0; i < pets.size(); ++i )
+    for ( auto* pet : pets )
     {
-      if ( pets[ i ] -> is_sleeping() )
+      if ( pet -> is_sleeping() )
       {
-        pets[ i ] -> summon( summon -> duration() );
+        pet -> summon( summon -> duration() );
         spawned = true;
         break;
       }

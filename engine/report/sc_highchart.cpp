@@ -50,11 +50,9 @@ bool sc_json_writer_t<Stream>::Double(double d)
 {
   this->Prefix(rapidjson::kNumberType);
   fmt::memory_buffer buffer;
-  fmt::format_to(buffer, "{:.{}f}", d, sim.report_precision);
-  for (unsigned i = 0; i < buffer.size(); ++i)
-  {
-    this->os_->Put(buffer.data()[i]);
-  }
+  fmt::format_to(std::back_inserter(buffer), "{:.{}f}", d, sim.report_precision);
+  auto start = this->os_->Push( buffer.size() );
+  std::copy( std::begin( buffer ), std::end( buffer ), start );
   return true;
 }
 }
@@ -170,8 +168,8 @@ std::string highchart::build_id( const buff_t& buff, const std::string& suffix )
 }
 
 // Init default (shared) json structure
-chart_t::chart_t( const std::string& id_str, const sim_t& sim )
-  : sc_js_t(), id_str_( id_str ), height_( 250 ), width_( 575 ), sim_( sim )
+chart_t::chart_t( std::string id_str, const sim_t& sim )
+  : sc_js_t(), id_str_( std::move( id_str ) ), height_( 250 ), width_( 575 ), sim_( sim )
 {
   assert( !id_str_.empty() );
 }
@@ -309,9 +307,9 @@ void chart_t::add_data_series( const std::string& type, const std::string& name,
 
   rapidjson::Value data( rapidjson::kArrayType );
 
-  for ( size_t i = 0; i < d.size(); ++i )
+  for ( auto& entry : d )
   {
-    data.PushBack( static_cast<rapidjson::Value&>( d[ i ].js_ ),
+    data.PushBack( static_cast<rapidjson::Value&>( entry.js_ ),
                    js_.GetAllocator() );
   }
 
@@ -477,8 +475,8 @@ chart_t& chart_t::add_yplotline( double value_, const std::string& name_,
   return *this;
 }
 
-time_series_t::time_series_t( const std::string& id_str, const sim_t& sim )
-  : chart_t( id_str, sim )
+time_series_t::time_series_t( std::string id_str, const sim_t& sim )
+  : chart_t( std::move(id_str), sim )
 {
   set( "chart.type", "area" );
 

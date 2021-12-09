@@ -66,7 +66,7 @@ public:
 
   azerite_power_t();
   azerite_power_t( const player_t* p, const azerite_power_entry_t* data, const std::vector<const item_t*>& items );
-  azerite_power_t( const player_t* p, const azerite_power_entry_t* data, const std::vector<unsigned>& ilevels );
+  azerite_power_t( const player_t* p, const azerite_power_entry_t* data, std::vector<unsigned> ilevels );
 
   /// Implicit conversion to spell_data_t* object for easy use in accessors that accept spell data
   /// pointers
@@ -312,7 +312,7 @@ void register_azerite_powers();
 /// Register generic azerite and azerite essence powers target data initializers
 void register_azerite_target_data_initializers( sim_t* );
 /// Create major Azerite Essence actions
-action_t* create_action( player_t* p, util::string_view name, const std::string& options );
+action_t* create_action( player_t* p, util::string_view name, util::string_view options );
 
 /// Compute the <min, avg, max> value of the spell effect given, based on the azerite power
 std::tuple<int, int, int> compute_value( const azerite_power_t& power,

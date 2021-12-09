@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "action/sc_action.hpp"
+
 #include "action/sc_action_state.hpp"
 #include "action/action_callback.hpp"
 #include "dbc/data_enums.hh"
@@ -12,6 +13,7 @@
 #include "action/dot.hpp"
 #include "player/actor_target_data.hpp"
 #include "player/covenant.hpp"
+#include "player/player_collected_data.hpp"
 #include "player/player_event.hpp"
 #include "player/stats.hpp"
 #include "player/sc_player.hpp"
@@ -22,9 +24,12 @@
 #include "sim/sc_expressions.hpp"
 #include "sim/sc_cooldown.hpp"
 #include "sim/sc_sim.hpp"
+#include "util/generic.hpp"
 #include "util/rng.hpp"
 #include "player/expansion_effects.hpp" // try to implement leyshocks_grand_compilation as a callback
 #include "util/util.hpp"
+
+#include <utility>
 
 // ==========================================================================
 // Action
@@ -119,6 +124,29 @@ struct queued_action_execute_event_t : public event_t
         if ( !actor->readying )
         {
           actor->schedule_ready( actor->available() );
+        }
+
+        // This is an extremely rare event, only seen in a handful of specs with abilities on cooldown that have
+        // conditional activation requirements or dynamic cost adjustments.
+        if ( action->queue_failed_proc )
+          action->queue_failed_proc->occur();
+
+        actor->iteration_executed_foreground_actions--;
+        action->total_executions--;
+
+        // If it's the first iteration (where we capture sample sequence) adjust the captured sequence to indicate the
+        // queue failed
+        if ( ( sim().iterations <= 1 && sim().current_iteration == 0 ) ||
+             ( sim().iterations > 1 && actor->nth_iteration() == 1 ) )
+        {
+          // Find the last action sequence entry that matches the current action
+          auto& seq = actor->collected_data.action_sequence;
+          auto it = std::find_if( seq.rbegin(), seq.rend(),
+                                  [ this ]( const player_collected_data_t::action_sequence_data_t& s ) {
+                                    return s.action == action && !s.queue_failed;
+                                  } );
+          if ( it != seq.rend() )
+            ( *it ).queue_failed = true;
         }
       }
       else
@@ -347,7 +375,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     hit_any_target(),
     ground_aoe_duration( timespan_t::zero() ),
     ap_type( attack_power_type::NONE ),
-    dot_behavior( DOT_REFRESH ),
+    dot_behavior( DOT_REFRESH_DURATION ),
     ability_lag(),
     ability_lag_stddev(),
     min_gcd(),
@@ -385,6 +413,8 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     base_aoe_multiplier( 1.0 ),
     base_recharge_multiplier( 1.0 ),
     base_recharge_rate_multiplier( 1.0 ),
+    dynamic_recharge_multiplier( 1.0 ),
+    dynamic_recharge_rate_multiplier( 1.0 ),
     base_teleport_distance(),
     travel_speed(),
     travel_delay(),
@@ -423,6 +453,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     target_specific_dot( false ),
     action_list(),
     starved_proc(),
+    queue_failed_proc(),
     total_executions(),
     line_cooldown( new cooldown_t("line_cd", *p) ),
     signature(),
@@ -581,6 +612,9 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   ignores_armor       = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
   may_miss            = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
   may_dodge = may_parry = may_block = !spell_data.flags( spell_attribute::SX_NO_D_P_B );
+  
+  if ( spell_data.flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
+    dot_behavior = dot_behavior_e::DOT_REFRESH_PANDEMIC;
 
   if ( spell_data.flags( spell_attribute::SX_FIXED_TRAVEL_TIME ) )
     travel_delay += spell_data.missile_speed();
@@ -659,6 +693,58 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   }
 }
 
+void action_t::parse_effect_direct_mods( const spelleffect_data_t& spelleffect_data, bool item_scaling )
+{
+  spell_power_mod.direct  = spelleffect_data.sp_coeff();
+  attack_power_mod.direct = spelleffect_data.ap_coeff();
+  amount_delta            = spelleffect_data.m_delta();
+
+  if ( !item_scaling )
+  {
+    if ( !spelleffect_data.sp_coeff() && !spelleffect_data.ap_coeff() )
+    {
+      base_dd_min = spelleffect_data.min( player, player->level() );
+      base_dd_max = spelleffect_data.max( player, player->level() );
+    }
+  }
+  else
+  {
+    base_dd_min = spelleffect_data.min( item );
+    base_dd_max = spelleffect_data.max( item );
+  }
+
+  radius = spelleffect_data.radius_max();
+}
+
+void action_t::parse_effect_periodic_mods( const spelleffect_data_t& spelleffect_data, bool item_scaling )
+{
+  spell_power_mod.tick = spelleffect_data.sp_coeff();
+  attack_power_mod.tick = spelleffect_data.ap_coeff();
+
+  if ( !item_scaling )
+  {
+    if ( !spelleffect_data.sp_coeff() && !spelleffect_data.ap_coeff() )
+    {
+      base_td = spelleffect_data.average( player, player->level() );
+    }
+  }
+  else
+  {
+    base_td = spelleffect_data.average( item );
+  }
+
+  radius = spelleffect_data.radius_max();
+}
+
+void action_t::parse_effect_period( const spelleffect_data_t& spelleffect_data )
+{
+  if ( spelleffect_data.period() > timespan_t::zero() )
+  {
+    base_tick_time = spelleffect_data.period();
+    dot_duration   = spelleffect_data.spell()->duration();
+  }
+}
+
 // action_t::parse_effect_data ==============================================
 void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
 {
@@ -679,27 +765,10 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
 
   switch ( spelleffect_data.type() )
   {
-      // Direct Damage
-    case E_HEAL:
+    // Direct Damage
     case E_SCHOOL_DAMAGE:
     case E_HEALTH_LEECH:
-      spell_power_mod.direct  = spelleffect_data.sp_coeff();
-      attack_power_mod.direct = spelleffect_data.ap_coeff();
-      amount_delta            = spelleffect_data.m_delta();
-      if ( !item_scaling )
-      {
-        if ( !spelleffect_data.sp_coeff() && !spelleffect_data.ap_coeff() )
-        {
-          base_dd_min = spelleffect_data.min( player, player->level() );
-          base_dd_max = spelleffect_data.max( player, player->level() );
-        }
-      }
-      else
-      {
-        base_dd_min = spelleffect_data.min( item );
-        base_dd_max = spelleffect_data.max( item );
-      }
-      radius = spelleffect_data.radius_max();
+      parse_effect_direct_mods( spelleffect_data, item_scaling );
       break;
 
     case E_NORMALIZED_WEAPON_DMG:
@@ -735,21 +804,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
       {
         case A_PERIODIC_DAMAGE:
         case A_PERIODIC_LEECH:
-        case A_PERIODIC_HEAL:
-          spell_power_mod.tick  = spelleffect_data.sp_coeff();
-          attack_power_mod.tick = spelleffect_data.ap_coeff();
-          if ( !item_scaling )
-          {
-            if ( !spelleffect_data.sp_coeff() && !spelleffect_data.ap_coeff() )
-            {
-              base_td = spelleffect_data.average( player, player->level() );
-            }
-          }
-          else
-          {
-            base_td = spelleffect_data.average( item );
-          }
-          radius = spelleffect_data.radius_max();
+          parse_effect_periodic_mods( spelleffect_data, item_scaling );
           SC_FALLTHROUGH;
         case A_PERIODIC_ENERGIZE:
           if ( spelleffect_data.subtype() == A_PERIODIC_ENERGIZE && energize_type == action_energize::NONE && spelleffect_data.period() > timespan_t::zero() )
@@ -765,12 +820,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
         case A_PERIODIC_DAMAGE_PERCENT:
         case A_PERIODIC_DUMMY:
         case A_PERIODIC_TRIGGER_SPELL:
-        case A_PERIODIC_HEAL_PCT:
-          if ( spelleffect_data.period() > timespan_t::zero() )
-          {
-            base_tick_time = spelleffect_data.period();
-            dot_duration   = spelleffect_data.spell()->duration();
-          }
+          parse_effect_period( spelleffect_data );
           break;
         case A_SCHOOL_ABSORB:
           spell_power_mod.direct  = spelleffect_data.sp_coeff();
@@ -1282,19 +1332,26 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
     amount /= state->n_targets;
 
   // New Shadowlands AoE damage reduction based on total target count
-  if ( state->chain_target >= full_amount_targets && state->action->reduced_aoe_targets > 0.0 &&
+  // The square root factor reaches its minimum when the number of targets is equal
+  // to sim->max_aoe_enemies (usually 20), after that it remains constant.
+  if ( state->chain_target >= state->action->full_amount_targets &&
+       state->action->reduced_aoe_targets > 0.0 &&
        as<double>( state->n_targets ) > state->action->reduced_aoe_targets )
   {
-    amount *= std::sqrt( state->action->reduced_aoe_targets / state->n_targets );
+    amount *= std::sqrt( state->action->reduced_aoe_targets / std::min<int>( sim->max_aoe_enemies, state->n_targets ) );
   }
 
   amount *= composite_aoe_multiplier( state );
 
   // Spell goes over the maximum number of AOE targets - ignore for enemies
-  // TODO: determine interaction with new sqrt reduction. currently bugged on ptr as of build 9.1.5.40078 
-  if ( !state->action->split_aoe_damage && state->action->reduced_aoe_targets != 0.0 &&
-       state->n_targets > static_cast<size_t>( sim->max_aoe_enemies ) && !state->action->player->is_enemy() )
+  // Note that this split damage factor DOES affect spells that are supposed
+  // to do full damage to the main target.
+  if ( !state->action->split_aoe_damage &&
+       state->n_targets > static_cast<size_t>( sim->max_aoe_enemies ) &&
+       !state->action->player->is_enemy() )
+  {
     amount *= sim->max_aoe_enemies / static_cast<double>( state->n_targets );
+  }
 
   // Record initial amount to state
   state->result_raw = amount;
@@ -1454,11 +1511,9 @@ size_t action_t::available_targets( std::vector<player_t*>& tl ) const
   if ( !target->is_sleeping() )
     tl.push_back( target );
 
-  for ( size_t i = 0, actors = sim->target_non_sleeping_list.size(); i < actors; i++ )
+  for ( auto* t : sim->target_non_sleeping_list )
   {
-    player_t* t = sim->target_non_sleeping_list[ i ];
-
-    if ( t->is_enemy() && ( t != target ) )
+     if ( t->is_enemy() && ( t != target ) )
     {
       tl.push_back( t );
     }
@@ -2127,8 +2182,8 @@ bool action_t::select_target()
       if ( !child_action.empty() )
       {  // If spell_targets is used on the child instead of the parent action, we need to reset the cache for that
          // action as well.
-        for ( size_t i = 0; i < child_action.size(); i++ )
-          child_action[ i ]->target_cache.is_valid = false;
+        for ( auto* child : child_action )
+          child->target_cache.is_valid = false;
       }
       target = potential_target;
     }
@@ -2658,6 +2713,9 @@ void action_t::reset()
   last_used = timespan_t::min();
 
   target_cache.is_valid = false;
+
+  dynamic_recharge_multiplier      = 1.0;
+  dynamic_recharge_rate_multiplier = 1.0;
 
   if ( if_expr )
   {
@@ -3193,21 +3251,25 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     struct last_used_expr_t : public expr_t
     {
       const std::vector<action_t*> action_list;
-      last_used_expr_t( const std::vector<action_t*>& al ) : expr_t( "last_used" ), action_list( al )
+      last_used_expr_t( std::vector<action_t*> al ) : expr_t( "last_used" ), action_list( std::move( al ) )
       {
       }
       double evaluate() override
       {
         timespan_t t = timespan_t::min();
-        for ( size_t i = 0; i < action_list.size(); i++ )
+        for (auto a : action_list)
         {
-          if ( action_list[ i ]->last_used > t )
-            t = action_list[ i ]->last_used;
+          if ( a->last_used > t )
+            t = a->last_used;
         }
         return t.total_seconds();
       }
+      bool is_constant() override
+      {
+        return action_list.empty();
+      }
     };
-    return std::make_unique<last_used_expr_t>( last_used_list );
+    return std::make_unique<last_used_expr_t>( std::move(last_used_list) );
   }
 
   auto splits = util::string_split<util::string_view>( name_str, "." );
@@ -3231,9 +3293,8 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
           double evaluate() override
           {
             num_targets = 0;
-            for ( size_t i = 0, actors = action.player->sim->target_non_sleeping_list.size(); i < actors; i++ )
+            for ( auto* t : action.player->sim->target_non_sleeping_list )
             {
-              player_t* t = action.player->sim->target_non_sleeping_list[ i ];
               if ( action.player->get_player_distance( *t ) <= yards_from_player )
                 num_targets++;
             }
@@ -3262,6 +3323,10 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
             return action.player->last_foreground_action->internal_id == prev->internal_id;
           return false;
         }
+        bool is_constant() override
+        {
+          return !prev;
+        }
       };
       return std::make_unique<prev_expr_t>( *this, splits[ 1 ] );
     }
@@ -3278,13 +3343,17 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         {
           if ( previously_off_gcd != nullptr && !action.player->off_gcdactions.empty() )
           {
-            for ( size_t i = 0; i < action.player->off_gcdactions.size(); i++ )
+            for ( const auto* off_gcdaction : action.player->off_gcdactions )
             {
-              if ( action.player->off_gcdactions[ i ]->internal_id == previously_off_gcd->internal_id )
+              if ( off_gcdaction->internal_id == previously_off_gcd->internal_id )
                 return true;
             }
           }
           return false;
+        }
+        bool is_constant() override
+        {
+          return !previously_off_gcd;
         }
       };
       return std::make_unique<prev_gcd_expr_t>( *this, splits[ 1 ] );
@@ -3358,9 +3427,9 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
           spell = a.player->find_action( spell_name );
           if ( !spell )
           {
-            for ( size_t i = 0, size = a.player->pet_list.size(); i < size; i++ )
+            for ( const auto* pet : a.player->pet_list )
             {
-              spell = a.player->pet_list[ i ]->find_action( spell_name );
+              spell = pet->find_action( spell_name );
             }
           }
         }
@@ -3390,9 +3459,9 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
             spell = original_spell.player->find_action( name_of_spell );
             if ( !spell )
             {
-              for ( size_t i = 0, size = original_spell.player->pet_list.size(); i < size; i++ )
+              for (auto & pet : original_spell.player->pet_list)
               {
-                spell = original_spell.player->pet_list[ i ]->find_action( name_of_spell );
+                spell = pet->find_action( name_of_spell );
               }
             }
             if ( !spell )
@@ -3413,7 +3482,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     }
     else
     {
-      if ( sim->target_list.size() == 1U && !sim->has_raid_event( "adds" ) )
+      if ( sim->target_list.size() == 1U && !sim->has_raid_event( "adds" ) && !sim->has_raid_event( "pull" ) )
       {
         return expr_t::create_constant( "spell_targets", 1.0 );
       }
@@ -3446,14 +3515,9 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         }
       }
 
-      bool is_constant( double* result ) override
+      bool is_constant() override
       {
-        if ( !previously_used )
-        {
-          *result = 0;
-          return true;
-        }
-        return false;
+        return !previously_used;
       }
 
       double evaluate() override
@@ -3498,9 +3562,9 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
 
     // more complicated version, cycles through possible sources
     std::vector<std::unique_ptr<expr_t>> dot_expressions;
-    for ( size_t i = 0, size = sim->target_list.size(); i < size; i++ )
+    for (auto* target : sim->target_list)
     {
-      dot_t* d = player->get_dot( splits[ 1 ], sim->target_list[ i ] );
+      dot_t* d = player->get_dot( splits[ 1 ], target );
       dot_expressions.push_back( dot_t::create_expression( d, this, this, splits[ 2 ], false ) );
     }
     struct enemy_dots_expr_t : public expr_t
@@ -3521,6 +3585,10 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
             ret = expr_result;
         }
         return ret;
+      }
+      bool is_constant() override
+      {
+        return expr_list.empty();
       }
     };
 
@@ -3648,20 +3716,19 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         struct in_flight_multi_expr_t : public expr_t
         {
           const std::vector<action_t*> action_list;
-          in_flight_multi_expr_t( const std::vector<action_t*>& al ) : expr_t( "in_flight" ), action_list( al )
+          in_flight_multi_expr_t( std::vector<action_t*> al ) : expr_t( "in_flight" ), action_list( std::move( al ) )
           {
           }
           double evaluate() override
           {
-            for ( size_t i = 0; i < action_list.size(); i++ )
-            {
-              if ( action_list[ i ]->has_travel_events() )
-                return true;
-            }
-            return false;
+            return range::any_of( action_list, []( const action_t* a ) { return a->has_travel_events(); } );
+          }
+          bool is_constant() override
+          {
+            return action_list.empty();
           }
         };
-        return std::make_unique<in_flight_multi_expr_t>( in_flight_list );
+        return std::make_unique<in_flight_multi_expr_t>( std::move(in_flight_list) );
       }
       else if ( splits[ 0 ] == "in_flight_to_target" ||
                 ( !in_flight_singleton && splits[ 2 ] == "in_flight_to_target" ) )
@@ -3671,21 +3738,25 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
           const std::vector<action_t*> action_list;
           action_t& action;
 
-          in_flight_to_target_multi_expr_t( const std::vector<action_t*>& al, action_t& a )
-            : expr_t( "in_flight_to_target" ), action_list( al ), action( a )
+          in_flight_to_target_multi_expr_t( std::vector<action_t*> al, action_t& a )
+            : expr_t( "in_flight_to_target" ), action_list( std::move( al ) ), action( a )
           {
           }
           double evaluate() override
           {
-            for ( size_t i = 0; i < action_list.size(); i++ )
+            for (auto i : action_list)
             {
-              if ( action_list[ i ]->has_travel_events_for( action.target ) )
+              if ( i->has_travel_events_for( action.target ) )
                 return true;
             }
             return false;
           }
+          bool is_constant() override
+          {
+            return action_list.empty();
+          }
         };
-        return std::make_unique<in_flight_to_target_multi_expr_t>( in_flight_list, *this );
+        return std::make_unique<in_flight_to_target_multi_expr_t>( std::move(in_flight_list), *this );
       }
       else if ( splits[ 0 ] == "in_flight_remains" ||
         ( !in_flight_singleton && splits[ 2 ] == "in_flight_remains" ) )
@@ -3693,9 +3764,9 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         struct in_flight_remains_multi_expr_t : public expr_t
         {
           const std::vector<action_t*> action_list;
-          in_flight_remains_multi_expr_t( const std::vector<action_t*>& al ) :
+          in_flight_remains_multi_expr_t( std::vector<action_t*> al ) :
             expr_t( "in_flight" ),
-            action_list( al )
+            action_list( std::move( al ) )
           { }
 
           double evaluate() override
@@ -3713,8 +3784,12 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
 
             return event_found ? t.total_seconds() : 0.0;
           }
+          bool is_constant() override
+          {
+            return action_list.empty();
+          }
         };
-        return std::make_unique<in_flight_remains_multi_expr_t>( in_flight_list );
+        return std::make_unique<in_flight_remains_multi_expr_t>( std::move(in_flight_list) );
       }
     }
   }
@@ -3995,14 +4070,37 @@ void action_t::do_teleport( action_state_t* state )
  */
 timespan_t action_t::calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const
 {
-  // WoD Pandemic
-  // New WoD Formula: Get no malus during the last 30% of the dot.
-  return std::min( triggered_duration * 0.3, dot->remains() ) + triggered_duration;
+  switch ( dot_behavior )
+  {
+    case dot_behavior_e::DOT_REFRESH_PANDEMIC:
+      return std::min( triggered_duration * 0.3, dot->remains() ) + triggered_duration;
+    case dot_behavior_e::DOT_REFRESH_DURATION:
+      return dot->time_to_next_full_tick() + triggered_duration;
+    case dot_behavior_e::DOT_EXTEND:
+      return dot->remains() + triggered_duration;
+    case dot_behavior_e::DOT_NONE:
+      return dot->remains();
+    case dot_behavior_e::DOT_CLIP:
+    default:
+      return triggered_duration;
+  }
 }
 
 bool action_t::dot_refreshable( const dot_t* dot, timespan_t triggered_duration ) const
 {
-  return dot->remains() <= triggered_duration * 0.3;
+  switch ( dot_behavior )
+  {
+    case dot_behavior_e::DOT_REFRESH_PANDEMIC:
+      return dot->remains() <= triggered_duration * 0.3;
+    case dot_behavior_e::DOT_REFRESH_DURATION:
+      return dot->ticks_left() <= 1;
+    case dot_behavior_e::DOT_EXTEND:
+      return true;
+    case dot_behavior_e::DOT_NONE:
+    case dot_behavior_e::DOT_CLIP:
+    default:
+      return false;
+  }
 }
 
 call_action_list_t::call_action_list_t( player_t* player, util::string_view options_str )
@@ -4497,7 +4595,7 @@ double action_t::last_tick_factor(const dot_t* /* d */, timespan_t time_to_tick,
   return std::min(1.0, duration / time_to_tick);
 }
 
-void format_to( const action_t& action, fmt::format_context::iterator out )
+void sc_format_to( const action_t& action, fmt::format_context::iterator out )
 {
   if ( action.sim->log_spell_id )
   {
@@ -4765,7 +4863,7 @@ void action_t::apply_affecting_aura( const spell_data_t* spell )
     return;
   }
 
-  assert( spell->flags( SX_PASSIVE ) && "only passive spells should be affecting actions." );
+  assert( ( spell->flags( SX_PASSIVE ) || spell->duration() < 0_ms ) && "only passive spells should be affecting actions." );
 
   for ( const spelleffect_data_t& effect : spell->effects() )
   {
@@ -5080,4 +5178,15 @@ void action_t::apply_affecting_conduit_effect( const conduit_data_t& conduit, si
   spelleffect_data_t effect = conduit->effectN( effect_num );
   effect._base_value = conduit.value();
   apply_affecting_effect( effect );
+}
+
+void action_t::execute_on_target( player_t* target, double amount )
+{
+  assert( target );
+  set_target( target );
+
+  if ( amount >= 0.0 )
+    base_dd_min = base_dd_max = amount;
+
+  execute();
 }

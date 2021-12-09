@@ -64,7 +64,7 @@ struct action_state_t : private noncopyable
   static std::string flags_to_str( unsigned flags );
 
   action_state_t( action_t*, player_t* );
-  virtual ~action_state_t() {}
+  virtual ~action_state_t() = default;
 
   virtual void copy_state( const action_state_t* );
   virtual void initialize();
@@ -133,10 +133,10 @@ struct travel_event_t : public event_t
 {
   action_t* action;
   action_state_t* state;
-  travel_event_t(action_t* a, action_state_t* state, timespan_t time_to_travel);
-  virtual ~travel_event_t();
-  virtual void execute() override;
-  virtual const char* name() const override
+  travel_event_t( action_t* a, action_state_t* state, timespan_t time_to_travel );
+  ~travel_event_t() override;
+  void execute() override;
+  const char* name() const override
   {
     return "Stateless Action Travel";
   }

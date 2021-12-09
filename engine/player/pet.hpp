@@ -13,7 +13,7 @@
 
 struct pet_t : public player_t
 {
-  typedef player_t base_t;
+  using base_t = player_t;
 
   std::string full_name_str;
   player_t* const owner;
@@ -137,5 +137,7 @@ public:
 
   void acquire_target( retarget_source /* event */, player_t* /* context */ = nullptr ) override;
   
-  friend void format_to( const pet_t&, fmt::format_context::iterator );
+  void demise() override;
+  
+  friend void sc_format_to( const pet_t&, fmt::format_context::iterator );
 };

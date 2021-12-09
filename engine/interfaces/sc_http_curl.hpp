@@ -34,7 +34,7 @@ class curl_handle_t : public http_handle_t
 public:
   curl_handle_t();
   curl_handle_t( CURL* handle );
-  ~curl_handle_t();
+  ~curl_handle_t() override;
 
   bool initialized() const override;
   std::string error() const override;
@@ -57,7 +57,7 @@ class curl_connection_pool_t : public http_connection_pool_t
 
 public:
   curl_connection_pool_t();
-  ~curl_connection_pool_t();
+  ~curl_connection_pool_t() override;
 
   std::unique_ptr<http_handle_t> handle( const std::string& url ) override;
 };

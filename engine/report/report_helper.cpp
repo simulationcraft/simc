@@ -14,6 +14,8 @@
 #include "player/sc_player.hpp"
 #include "player/covenant.hpp"
 #include "report/gear_weights.hpp"
+#include "report/charts.hpp"
+#include "report/sc_highchart.hpp"
 #include "sim/sc_sim.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "util/xml.hpp"
@@ -530,7 +532,7 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     if ( gem_count && has_dom_gem )
     {
       bool valid_dom_slot = false;
-      auto domination_slot_list = SLOT_DOMINATION_CLOTH;
+      const slot_e* domination_slot_list = nullptr;
 
       switch( item.parsed.data.item_subclass )
       {

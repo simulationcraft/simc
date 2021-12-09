@@ -12,6 +12,7 @@
 #include "fmt/printf.h"
 
 #include <iosfwd>
+#include <utility>
 
 struct sim_t;
 
@@ -28,20 +29,23 @@ struct sc_raw_ostream_t {
   sc_raw_ostream_t& operator<< (const char* rhs);
 
   template <typename... Args>
-  sc_raw_ostream_t& print( util::string_view format, Args&& ... args )
+  sc_raw_ostream_t& print( fmt::format_string<Args...> format, Args&& ... args )
   {
     vprint( format, fmt::make_format_args( std::forward<Args>(args)... ) );
     return *this;
   }
 
-  sc_raw_ostream_t( std::shared_ptr<std::ostream> os ) :
-    _stream( os ) {}
+  sc_raw_ostream_t( std::shared_ptr<std::ostream> os ) : _stream( std::move( os ) )
+  {
+  }
+
   const sc_raw_ostream_t operator=( std::shared_ptr<std::ostream> os )
   { _stream = os; return *this; }
+  
   std::ostream* get_stream()
   { return _stream.get(); }
 
-  void vprint( util::string_view format, fmt::format_args args );
+  void vprint( fmt::string_view format, fmt::format_args args );
 
 private:
   std::shared_ptr<std::ostream> _stream;
@@ -78,7 +82,7 @@ struct sim_ostream_t
   sim_ostream_t& operator<< (const char* rhs);
 
   template <typename... Args>
-  sim_ostream_t& printf( util::string_view format, Args&& ... args )
+  sim_ostream_t& printf( fmt::string_view format, Args&& ... args )
   {
     vprintf( format, fmt::make_printf_args( std::forward<Args>(args)... ) );
     return *this;
@@ -88,16 +92,17 @@ struct sim_ostream_t
    * Print using fmt libraries python-like formatting syntax.
    */
   template <typename... Args>
-  sim_ostream_t& print( util::string_view format, Args&& ... args)
+  sim_ostream_t& print( fmt::format_string<Args...> format, Args&& ... args)
   {
     vprint( format, fmt::make_format_args( std::forward<Args>(args)... ) );
     return *this;
   }
+
+  void vprint( fmt::string_view format, fmt::format_args args);
+  void vprintf( fmt::string_view format, fmt::printf_args args );
 private:
   static void dont_close( std::ostream* ) {}
   void print_simulation_time();
-  void vprintf( util::string_view format, fmt::printf_args args );
-  void vprint( util::string_view format, fmt::format_args args );
 
   sim_t& sim;
   sc_raw_ostream_t _raw;

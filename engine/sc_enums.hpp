@@ -72,8 +72,6 @@ enum
   ITEM_TRINKET_BURST_CATEGORY = 1141, /// Trinket On-Use effect default category (for shared CD)
   MAX_GEM_SLOTS = 4, /// Global maximum number of gem slots in any specific item
 
-  WEAPON_POWER_COEFFICIENT = 6, // WDPS -> Attack Power Coefficient used for BfA Attack Power calculations
-
   MAX_AZERITE_LEVEL = 300, // Maximum Azerite level (for Heart of Azeroth) at the start of Battle for Azeroth
 
   MAX_AZERITE_ESSENCE_RANK = 4u, // Maximum Azerite Essence power rank for patch BfA 8.2.0
@@ -353,6 +351,7 @@ enum pet_e
   PET_DARKGLARE,
   PET_OBSERVER,
   PET_THAL_KIEL,
+  PET_MALICIOUS_IMP,
   PET_WARLOCK,
 
   PET_GHOUL,
@@ -403,9 +402,11 @@ enum stats_e
 
 enum dot_behavior_e
 {
-  DOT_CLIP,
-  DOT_REFRESH,
-  DOT_EXTEND
+  DOT_CLIP,             // DoT is restarted from scratch with Duration
+  DOT_EXTEND,           // DoT is extended indefinitely by Duration
+  DOT_REFRESH_DURATION, // Duration + Current Tick
+  DOT_REFRESH_PANDEMIC, // Duration + Current Duration up to 1.3x
+  DOT_NONE              // Does not refresh
 };
 
 enum dot_copy_e
@@ -536,7 +537,8 @@ enum special_effect_source_e
   SPECIAL_EFFECT_SOURCE_AZERITE_ESSENCE,
   SPECIAL_EFFECT_SOURCE_SOULBIND,
   SPECIAL_EFFECT_SOURCE_FALLBACK,
-  SPECIAL_EFFECT_SOURCE_TEMPORARY_ENCHANT
+  SPECIAL_EFFECT_SOURCE_TEMPORARY_ENCHANT,
+  SPECIAL_EFFECT_SOURCE_COVENANT
 };
 
 enum special_effect_buff_e
@@ -672,6 +674,7 @@ enum school_e
   SCHOOL_SPELLFROST,
   SCHOOL_SPELLSHADOW,
   SCHOOL_ELEMENTAL,
+  SCHOOL_COSMIC,
   SCHOOL_CHROMATIC,
   SCHOOL_MAGIC,
   SCHOOL_CHAOS,
@@ -696,7 +699,8 @@ const int64_t SCHOOL_ATTACK_MASK = ( ( int64_t( 1 ) << SCHOOL_PHYSICAL ) |
                                      ( int64_t( 1 ) << SCHOOL_STORMSTRIKE ) |
                                      ( int64_t( 1 ) << SCHOOL_FROSTSTRIKE ) |
                                      ( int64_t( 1 ) << SCHOOL_SHADOWSTRIKE ) |
-                                     ( int64_t( 1 ) << SCHOOL_SPELLSTRIKE ) );
+                                     ( int64_t( 1 ) << SCHOOL_SPELLSTRIKE ) |
+                                     ( int64_t( 1 ) << SCHOOL_COSMIC ) );
 // SCHOOL_CHAOS should probably be added here too.
 
 const int64_t SCHOOL_SPELL_MASK(
@@ -724,6 +728,7 @@ const int64_t SCHOOL_SPELL_MASK(
     ( int64_t( 1 ) << SCHOOL_SPELLFROST ) |
     ( int64_t( 1 ) << SCHOOL_SPELLSHADOW ) |
     ( int64_t( 1 ) << SCHOOL_ELEMENTAL ) |
+    ( int64_t( 1 ) << SCHOOL_COSMIC ) |
     ( int64_t( 1 ) << SCHOOL_CHROMATIC ) | ( int64_t( 1 ) << SCHOOL_MAGIC ) );
 
 const int64_t SCHOOL_MAGIC_MASK( ( int64_t( 1 ) << SCHOOL_ARCANE ) |
@@ -832,6 +837,8 @@ enum set_bonus_type_e
   T23_KEEPSAKES,
   T23_TITANIC_EMPOWERMENT,
   T26_HACK_AND_GORE,
+  T28_CYPHER_ATTUNEMENT_RIGGING,
+  T28,
   SET_BONUS_MAX
 };
 

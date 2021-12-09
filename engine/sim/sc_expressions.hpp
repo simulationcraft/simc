@@ -91,9 +91,7 @@ protected:
   }
 
 public:
-  virtual ~expr_t()
-  {
-  }
+  virtual ~expr_t() = default;
 
   const char* name() const
   {
@@ -122,15 +120,12 @@ public:
   }
   bool always_true()
   {
-    double v;
-    return is_constant( &v ) && v != 0.0;
+    return is_constant() && evaluate() != 0.0;
   }
   bool always_false()
   {
-    double v;
-    return is_constant( &v ) && v == 0.0;
+    return is_constant() && evaluate() == 0.0;
   }
-
   static double coerce( timespan_t t )
   {
     return t.total_seconds();
@@ -152,7 +147,7 @@ public:
 
   virtual double evaluate() = 0;
 
-  virtual bool is_constant( double* /*return_value*/ )
+  virtual bool is_constant()
   {
     return false;
   }
@@ -195,9 +190,8 @@ public:
     return value;
   }
 
-  bool is_constant( double* v ) override  // override
+  bool is_constant() override  // override
   {
-    *v = value;
     return true;
   }
 };
@@ -215,7 +209,7 @@ public:
 
 private:
   const T& t;
-  virtual double evaluate() override
+   double evaluate() override
   {
     return coerce( t );
   }
@@ -242,7 +236,7 @@ public:
 private:
   F f;
 
-  virtual double evaluate() override
+  double evaluate() override
   {
     return coerce( f() );
   }

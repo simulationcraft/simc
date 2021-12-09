@@ -242,7 +242,7 @@ public:
   /**
    * @brief Behavior of dot.
    *
-   * Acceptable inputs are DOT_CLIP, DOT_REFRESH, and DOT_EXTEND.
+   * Acceptable inputs are DOT_CLIP, DOT_EXTEND, DOT_REFRESH_PANDEMIC, DOT_REFRESH_DURATION, or DOT_NONE.
    */
   dot_behavior_e dot_behavior;
 
@@ -346,6 +346,10 @@ public:
 
   /// A second static action cooldown duration multiplier that also reduces the effectiveness of flat cooldown adjustments
   double base_recharge_rate_multiplier;
+
+  /// Dynamically adjustable action cooldown duration multipliers. These are reset to 1.0 in action_t::reset.
+  double dynamic_recharge_multiplier;
+  double dynamic_recharge_rate_multiplier;
 
   /// Maximum distance that the ability can travel. Used on abilities that instantly move you, or nearly instantly move you to a location.
   double base_teleport_distance;
@@ -504,6 +508,10 @@ public:
    * Can be overridden by class modules for tracking purposes.
    */
   proc_t* starved_proc;
+
+  // Tracking proc triggered when action fails to execute after being queued.
+  // Can be overridden by class modules for tracking purposes.
+  proc_t* queue_failed_proc;
   uint_least64_t total_executions;
 
   /**
@@ -606,6 +614,10 @@ public:
 
   void parse_spell_data( const spell_data_t& );
 
+  void parse_effect_direct_mods( const spelleffect_data_t& spelleffect_data, bool item_scaling );
+  void parse_effect_periodic_mods( const spelleffect_data_t& spelleffect_data, bool item_scaling );
+  void parse_effect_period( const spelleffect_data_t& );
+
   void parse_effect_data( const spelleffect_data_t& );
 
   void parse_target_str();
@@ -620,12 +632,14 @@ public:
 
   player_t* select_target_if_target();
 
-  void apply_affecting_aura(const spell_data_t*);
+  void apply_affecting_aura( const spell_data_t* );
   void apply_affecting_effect( const spelleffect_data_t& effect );
   void apply_affecting_conduit( const conduit_data_t& conduit, int effect_num = 1 );
   void apply_affecting_conduit_effect( const conduit_data_t& conduit, size_t effect_num );
 
   action_state_t* get_state( const action_state_t* = nullptr );
+
+  void execute_on_target( player_t*, double = -1.0 );
 
 private:
   friend struct action_state_t;
@@ -683,10 +697,10 @@ public:
   virtual double calculate_crit_damage_bonus( action_state_t* s ) const;
 
   virtual double recharge_multiplier( const cooldown_t& ) const
-  { return base_recharge_multiplier; }
+  { return base_recharge_multiplier * dynamic_recharge_multiplier; }
 
   virtual double recharge_rate_multiplier( const cooldown_t& ) const
-  { return base_recharge_rate_multiplier; }
+  { return base_recharge_rate_multiplier * dynamic_recharge_rate_multiplier; }
 
   /** Cooldown base duration for action based cooldowns. */
   virtual timespan_t cooldown_base_duration( const cooldown_t& cd ) const;
@@ -879,8 +893,7 @@ public:
   virtual double composite_teleport_distance( const action_state_t* ) const
   { return base_teleport_distance; }
 
-  virtual timespan_t calculate_dot_refresh_duration(const dot_t*,
-      timespan_t triggered_duration) const;
+  virtual timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t triggered_duration ) const;
 
   // Helper for dot refresh expression, overridable on action level
   virtual bool dot_refreshable( const dot_t* dot, timespan_t triggered_duration ) const;
@@ -1012,7 +1025,7 @@ public:
     return( r == BLOCK_RESULT_BLOCKED || r == BLOCK_RESULT_CRIT_BLOCKED );
   }
 
-  friend void format_to( const action_t&, fmt::format_context::iterator );
+  friend void sc_format_to( const action_t&, fmt::format_context::iterator );
 };
 
 struct call_action_list_t : public action_t

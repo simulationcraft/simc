@@ -9,7 +9,7 @@
 
 namespace simc
 {
-void format_to( timespan_t x, fmt::format_context::iterator out )
+void sc_format_to( timespan_t x, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "{:.3f}", x.total_seconds() );
 }

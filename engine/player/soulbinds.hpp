@@ -11,9 +11,7 @@ struct player_t;
 struct action_t;
 struct sim_t;
 
-namespace covenant
-{
-namespace soulbinds
+namespace covenant::soulbinds
 {
 /// Initialize soulbinds through the generic special effect subsystem
 void initialize_soulbinds( player_t* player );
@@ -25,7 +23,6 @@ void register_special_effects();
 void register_target_data_initializers( sim_t* sim );
 
 /// Create soulbind actions
-action_t* create_action( player_t* player, util::string_view name, const std::string& options );
-}  // namespace soulbinds
-}  // namespace covenant
+action_t* create_action( player_t* player, util::string_view name, util::string_view options );
+}  // namespace covenant::soulbinds
 #endif  // SOULBINDS_HPP

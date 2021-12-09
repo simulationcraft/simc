@@ -26,7 +26,6 @@ struct drain_life_t : public warlock_spell_t
       dual = true;
       background = true;
       may_crit = false;
-      dot_behavior = DOT_REFRESH;
 
       // SL - Legendary
       dot_duration *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
@@ -56,6 +55,7 @@ struct drain_life_t : public warlock_spell_t
       {
         m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
       }
+
       return m;
     }
 
@@ -169,6 +169,54 @@ struct drain_life_t : public warlock_spell_t
   }
 };  
 
+struct corruption_t : public warlock_spell_t
+{
+  corruption_t( warlock_t* p, util::string_view options_str )
+    : warlock_spell_t( "corruption", p, p->find_spell( 172 ) )   // 172 triggers 146739
+  {
+    auto otherSP = p->find_spell( 146739 );
+    parse_options( options_str );
+    may_crit                   = false;
+    tick_zero                  = false;
+    affected_by_woc            = true;
+
+    spell_power_mod.tick       = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
+    base_tick_time             = data().effectN( 1 ).trigger()->effectN( 1 ).period();
+
+    spell_power_mod.direct = 0;
+
+    // 172 does not have spell duration any more.
+    // were still lazy though so we aren't making a seperate spell for this.
+    dot_duration               = otherSP->duration();
+  }
+
+  double action_multiplier() const override
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->mastery_spells.chaotic_energies->ok() )
+    {
+      double destro_mastery_value = p()->cache.mastery_value() / 2.0;
+      double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
+
+      m *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
+    }
+
+    return m;
+  }
+
+  double composite_ta_multiplier(const action_state_t* s) const override
+  {
+    double m = warlock_spell_t::composite_ta_multiplier( s );
+
+    // SL - Legendary
+    if ( p()->legendary.sacrolashs_dark_strike->ok() )
+      m *= 1.0 + p()->legendary.sacrolashs_dark_strike->effectN( 1 ).percent();
+
+    return m;
+  }
+};
+
 struct impending_catastrophe_t : public warlock_spell_t
 {
   //Not implemented: Impending Catastrophe applies a random curse in addition to the DoT
@@ -184,6 +232,7 @@ struct impending_catastrophe_t : public warlock_spell_t
       background = true;
       may_miss   = false;
       dual       = true;
+      tick_zero = true;
       impact_count = 0;
       legendary_bonus_1 = p->legendary.contained_perpetual_explosion.ok() ? p->legendary.contained_perpetual_explosion->effectN( 1 ).percent() : 0.0;
       legendary_bonus_2 = p->legendary.contained_perpetual_explosion.ok() ? p->legendary.contained_perpetual_explosion->effectN( 2 ).percent() : 0.0;
@@ -291,11 +340,15 @@ struct impending_catastrophe_t : public warlock_spell_t
 
 struct scouring_tithe_t : public warlock_spell_t
 {
+  double LSD_alt_value; //Secondary buff value for Languishing Soul Detritus legendary
+
   scouring_tithe_t( warlock_t* p, util::string_view options_str )
     : warlock_spell_t( "scouring_tithe", p, p->covenant.scouring_tithe ) 
   {
     parse_options( options_str );
     can_havoc = true;
+
+    LSD_alt_value = p->find_spell( 360953 )->effectN( 2 ).percent();
   }
 
   void last_tick( dot_t* d ) override
@@ -305,9 +358,11 @@ struct scouring_tithe_t : public warlock_spell_t
     if ( !d->target->is_sleeping() )
     {
       p()->cooldowns.scouring_tithe->reset( true );
+      if ( p()->legendary.languishing_soul_detritus.ok() )
+        p()->buffs.languishing_soul_detritus->trigger( 1, LSD_alt_value );
     }
   }
-
+  
   double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
@@ -505,7 +560,7 @@ struct interrupt_t : public spell_t
 
   void execute() override
   {
-    warlock_t* w = debug_cast<warlock_t*>( player );
+    auto* w = debug_cast<warlock_t*>( player );
 
     auto pet = w->warlock_pet_list.active;
 
@@ -525,7 +580,7 @@ struct interrupt_t : public spell_t
 
   bool ready() override
   {
-    warlock_t* w = debug_cast<warlock_t*>( player );
+    auto* w = debug_cast<warlock_t*>( player );
 
     if ( !w->warlock_pet_list.active || w->warlock_pet_list.active->is_sleeping() )
       return false;
@@ -731,6 +786,9 @@ int warlock_td_t::count_affliction_dots()
     count++;
 
   if ( dots_corruption->is_ticking() )
+    count++;
+
+  if ( dots_seed_of_corruption->is_ticking() )
     count++;
 
   if ( dots_unstable_affliction->is_ticking() )
@@ -989,7 +1047,7 @@ double warlock_t::matching_gear_multiplier( attribute_e attr ) const
   return 0.0;
 }
 
-action_t* warlock_t::create_action( util::string_view action_name, const std::string& options_str )
+action_t* warlock_t::create_action_warlock( util::string_view action_name, util::string_view options_str )
 {
   using namespace actions;
 
@@ -998,6 +1056,7 @@ action_t* warlock_t::create_action( util::string_view action_name, const std::st
     sim->errorf( "Player %s used a generic pet summoning action without specifying a default_pet.\n", name() );
     return nullptr;
   }
+
   // Pets
   if ( action_name == "summon_felhunter" )
     return new summon_main_pet_t( "felhunter", this );
@@ -1011,9 +1070,12 @@ action_t* warlock_t::create_action( util::string_view action_name, const std::st
     return new summon_main_pet_t( "imp", this );
   if ( action_name == "summon_pet" )
     return new summon_main_pet_t( default_pet, this );
+
   // Base Spells
   if ( action_name == "drain_life" )
     return new drain_life_t( this, options_str );
+  if ( action_name == "corruption" )
+    return new corruption_t( this, options_str );
   if ( action_name == "grimoire_of_sacrifice" )
     return new grimoire_of_sacrifice_t( this, options_str );  // aff and destro
   if ( action_name == "decimating_bolt" )
@@ -1027,26 +1089,34 @@ action_t* warlock_t::create_action( util::string_view action_name, const std::st
   if ( action_name == "interrupt" )
     return new interrupt_t( action_name, this, options_str );
 
+  return nullptr;
+}
+
+action_t* warlock_t::create_action( util::string_view action_name, util::string_view options_str )
+{
+  // create_action_[specialization] should return a more specialized action if needed (ie Corruption in Affliction)
+  // If no alternate action for the given spec is found, check actions in sc_warlock
+
   if ( specialization() == WARLOCK_AFFLICTION )
   {
-    action_t* aff_action = create_action_affliction( action_name, options_str );
-    if ( aff_action )
+    if ( action_t* aff_action = create_action_affliction( action_name, options_str ) )
       return aff_action;
   }
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    action_t* demo_action = create_action_demonology( action_name, options_str );
-    if ( demo_action )
+    if ( action_t* demo_action = create_action_demonology( action_name, options_str ) )
       return demo_action;
   }
 
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
-    action_t* destro_action = create_action_destruction( action_name, options_str );
-    if ( destro_action )
+    if ( action_t* destro_action = create_action_destruction( action_name, options_str ) )
       return destro_action;
   }
+
+  if ( action_t* generic_action = create_action_warlock( action_name, options_str ) )
+    return generic_action;
 
   return player_t::create_action( action_name, options_str );
 }
@@ -1205,6 +1275,7 @@ void warlock_t::init_gains()
   gains.shadow_bolt  = get_gain( "shadow_bolt" );
   gains.soul_conduit = get_gain( "soul_conduit" );
   gains.scouring_tithe = get_gain( "souring_tithe" );
+  gains.return_soul = get_gain( "return_soul" );
 }
 
 void warlock_t::init_procs()
@@ -1227,6 +1298,9 @@ void warlock_t::init_procs()
   procs.corrupting_leer = get_proc( "corrupting_leer" );
   procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
   procs.horned_nightmare = get_proc( "horned_nightmare" );
+  procs.ritual_of_ruin       = get_proc( "ritual_of_ruin" );
+  procs.avatar_of_destruction = get_proc( "avatar_of_destruction" );
+  procs.malicious_imp = get_proc( "malicious_imp" );
 }
 
 void warlock_t::init_base_stats()
@@ -1597,7 +1671,7 @@ void warlock_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
 
-  warlock_t* p = debug_cast<warlock_t*>( source );
+  auto* p = debug_cast<warlock_t*>( source );
 
   initial_soul_shards  = p->initial_soul_shards;
   default_pet          = p->default_pet;
@@ -1653,17 +1727,17 @@ void warlock_t::create_all_pets()
 {
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
-    for ( size_t i = 0; i < warlock_pet_list.infernals.size(); i++ )
+    for ( auto& infernal : warlock_pet_list.infernals )
     {
-      warlock_pet_list.infernals[ i ] = new pets::destruction::infernal_t( this );
+      infernal = new pets::destruction::infernal_t( this );
     }
   }
 
   if ( specialization() == WARLOCK_AFFLICTION )
   {
-    for ( size_t i = 0; i < warlock_pet_list.darkglare.size(); i++ )
+    for ( auto& pet : warlock_pet_list.darkglare )
     {
-      warlock_pet_list.darkglare[ i ] = new pets::affliction::darkglare_t( this );
+      pet = new pets::affliction::darkglare_t( this );
     }
   }
 }
@@ -1885,11 +1959,13 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
   : active( nullptr ),
     last( nullptr ),
     roc_infernals( "roc_infernal", w ),
+    aod_infernals( "aod_infernal", w ),
     dreadstalkers( "dreadstalker", w ),
     vilefiends( "vilefiend", w ),
     demonic_tyrants( "demonic_tyrant", w ),
     grimoire_felguards( "grimoire_felguard", w ),
     wild_imps( "wild_imp", w ),
+    malicious_imps( "malicious_imp", w ),
     shivarra( "shivarra", w ),
     darkhounds( "darkhound", w ),
     bilescourges( "bilescourge", w ),

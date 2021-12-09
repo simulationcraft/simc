@@ -169,7 +169,7 @@ double spellpower_data_t::get_field( util::string_view field ) const
 namespace hotfix
 {
 static auto_dispose< std::vector< hotfix_entry_t* > > hotfixes_;
-static custom_dbc_data_t hotfix_db_[ 2 ];
+static std::array<custom_dbc_data_t,2> hotfix_db_;
 }
 
 // Very simple comparator, just checks for some equality in the data. There's no need for fanciful
@@ -612,18 +612,20 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source )
 
   clone = allocator_.create<spell_data_t>( *source );
 
-  spelleffect_data_t* clone_effects = nullptr;
-  if ( source -> effect_count() > 0 )
+  const auto source_effects = source -> effects();
+  util::span<spelleffect_data_t> clone_effects;
+  if ( !source_effects.empty() )
   {
     clone_effects = allocator_.create_n<spelleffect_data_t>( source -> effect_count(), spelleffect_data_t::nil() );
-    clone -> _effects = clone_effects;
+    clone -> _effects = clone_effects.data();
   }
 
-  spellpower_data_t* clone_power = nullptr;
-  if ( source -> power_count() > 0 )
+  const auto source_powers = source -> powers();
+  util::span<spellpower_data_t> clone_power;
+  if ( !source_powers.empty() )
   {
     clone_power = allocator_.create_n<spellpower_data_t>( source -> power_count(), spellpower_data_t::nil() );
-    clone -> _power = clone_power;
+    clone -> _power = clone_power.data();
   }
 
   // Drivers are set up in the parent's cloning of the trigger spell
@@ -632,7 +634,6 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source )
   add_spell( clone );
 
   // Clone effects
-  const auto source_effects = source -> effects();
   for ( size_t i = 0; i < source_effects.size(); ++i )
   {
     const spelleffect_data_t& e_source = source_effects[ i ];
@@ -665,8 +666,7 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source )
     auto& e_clone_trigger_drivers = spell_driver_map_[ e_source.trigger() -> id() ];
     if ( e_clone_trigger_drivers.empty() )
     {
-      auto driver_data = allocator_.create_n<const spell_data_t*>( e_source_trigger_drivers.size(), spell_data_t::nil() );
-      e_clone_trigger_drivers = { driver_data, e_source_trigger_drivers.size() };
+      e_clone_trigger_drivers = allocator_.create_n<const spell_data_t*>( e_source_trigger_drivers.size(), spell_data_t::nil() );
       e_clone_trigger -> _driver = e_clone_trigger_drivers.data();
       e_clone_trigger -> _driver_count = as<uint8_t>( e_clone_trigger_drivers.size() );
     }
@@ -677,7 +677,6 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source )
   }
 
   // Clone powers
-  const auto source_powers = source -> powers();
   for ( size_t i = 0; i < source_powers.size(); ++i )
   {
     const auto& p_source = source_powers[ i ];

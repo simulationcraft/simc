@@ -1,5 +1,4 @@
-SimulationCraft 910-01 for World of Warcraft 9.1.0.40120 Live (hotfix 2021-09-11/40120, no-networking)
-
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41031 Live (hotfix 2021-11-16/41031, no-networking)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -112,7 +111,7 @@ Spell Level      : 21
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effects: #1, #2), Jonat's Focus (210607 effect#1), Chain Heal (231780 effect#1), Ancestral Reach (263790 effect#1), Flash Flood (280615 effect#1), High Tide (288675 effects: #1, #2), Spiritwalker's Tidal Totem (335892 effects: #1, #2), Jonat's Natural Focus (335894 effect#1), Chains of Devastation (336737 effects: #1, #2), Elemental Fury (343190 effect#1)
+Affecting spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effects: #1, #2), Jonat's Focus (210607 effect#1), Chain Heal (231780 effect#1), Ancestral Reach (263790 effect#1), Flash Flood (280615 effect#1), High Tide (288675 effects: #1, #2), Spiritwalker's Tidal Totem (335892 effects: #1, #2), Jonat's Natural Focus (335894 effect#1), Chains of Devastation (336737 effects: #1, #2), Elemental Fury (343190 effect#1), Heal the Soul (366779 effect#1)
 Family Flags     : 8, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -862,10 +861,10 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
+                 : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=23581)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 122.1966 (coefficient=1.28628) | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -1073,7 +1072,7 @@ GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Charges          : 1 (8 seconds cooldown)
 Category         : 1536: Echo of the Elements (108283 effect#1), Ascendance (114050 effect#3), Echo of the Elements (333919 effect#1)
-Affecting spells : Elemental Fury (60188 effect#1), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #11), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3)
+Affecting spells : Elemental Fury (60188 effect#1), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #11), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3), Fireheart (364523 effect#2)
 Family Flags     : 39, 44
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -1773,10 +1772,10 @@ Attributes       : ........ ........ ........ ........   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow While Stealthed (37)
+                 : Allow While Stealthed (37), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=71777)    : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2327,7 +2326,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Unknown(87)
 #2 (id=323958)   : Summon (28)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 53006 | Misc Value 2: 0xd47 | Target: Unknown(87)
-Description      : Summons a totem at the target location for $d, which reduces damage taken by all party and raid members within $98007a1 yards by $98007s1%. Every $98017t1 sec the health of all affected players is redistributed, such that all players are at the same percentage of maximum health.
+Description      : Summons a totem at the target location for $d, which reduces damage taken by all party and raid members within $98007a1 yards by $98007s1%. Immediately and every $98017t1 sec, the health of all affected players is redistributed evenly.
 
 Name             : Spirit Link (id=98017) [Spell Family (11), Hidden] 
 Class            : Shaman
@@ -3116,7 +3115,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 
 Name             : Restoration Shaman (id=137039) [Spell Family (11), Passive, Hidden] 
-Class            : Restoration Death Knight, Shaman
+Class            : Restoration Shaman
 School           : Physical
 Spell Type       : None
 Labels           : 1182: Resurgence (16196 effect#2), Resurgence (16196 effect#3)
@@ -3172,7 +3171,7 @@ Effects          :
 Description      : Restoration Shaman core passive
 
 Name             : Elemental Shaman (id=137040) [Spell Family (11), Passive, Hidden] 
-Class            : Elemental Death Knight, Shaman
+Class            : Elemental Shaman
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3213,7 +3212,7 @@ Effects          :
 Description      : Elemental Shaman baseline passive
 
 Name             : Enhancement Shaman (id=137041) [Spell Family (11), Passive, Hidden] 
-Class            : Enhancement Death Knight, Shaman
+Class            : Enhancement Shaman
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3488,7 +3487,7 @@ Effects          :
 Description      : Every ${$c*$s1} mana you spend brings a High Tide, making your next $288675n Chain Heals heal for an additional $288675s1% and not reduce with each jump.
 
 Name             : Storm Elemental (id=157299) [Spell Family (11)] 
-Class            : Death Knight, Shaman
+Class            : Shaman
 School           : Fire
 Spell Type       : None
 Spell Level      : 1
@@ -4589,7 +4588,7 @@ Description      : Crash Lightning also electrifies the ground, leaving an elect
 
 Name             : Storm Elemental (id=192249) [Spell Family (11)] 
 Replaces         : Fire Elemental (id=198067)
-Class            : Death Knight, Shaman
+Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
@@ -7088,7 +7087,7 @@ Description      : Increases the critical strike chance of Crash Lightning by $s
 Tooltip          : Increases the critical strike chance of Crash Lightning by $s1 and increases the radius of Crash Lightning by $s2.
 
 Name             : Wind Gust (id=263806) [Spell Family (11)] 
-Class            : Death Knight, Shaman
+Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
@@ -9623,7 +9622,7 @@ Class            : Shaman
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #11), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3)
+Affecting spells : Elemental Fury (60188 effect#1), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #11), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3), Fireheart (364523 effect#2)
 Triggered by     : Lava Burst (51505)
 Family Flags     : 39, 44
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9645,7 +9644,7 @@ Class            : Shaman
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Igneous Potential (279829 effect#2), Maelstrom (343725 effect#4)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Igneous Potential (279829 effect#2), Maelstrom (343725 effect#4), Fireheart (364523 effect#2)
 Triggered by     : Lava Burst Overload (77451)
 Family Flags     : 39, 79, 86
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10886,7 +10885,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 328933 | Target: Self (1)
 #4 (id=871384)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Transfer the life force of up to $328928I enemies in the targeted area, dealing ${$328928s1*$d/$t2} Nature damage evenly split to each enemy target over $d. $?a137041[
+Description      : Transfer the life force of up to $328928I enemies in the targeted area, dealing ${($328928s1*$d/$t2) + $328928s1} Nature damage evenly split to each enemy target over $d. $?a137041[
 
 Fully channeling Fae Transfusion generates $s4 $Lstack:stacks; of Maelstrom Weapon.][]
 
@@ -12926,11 +12925,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc329580
 
-Name             : Splintered Elements (id=354647) [Spell Family (8), Passive, Hidden] 
+Name             : Splintered Elements (id=354647) [Hidden] 
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+Duration         : Aura (infinite)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12938,7 +12938,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=887239)   : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -12963,5 +12963,208 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc354647
 Tooltip          : Haste increased by $w1%.
+
+Name             : Stormspirit (id=363668) [Passive, Hidden] 
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ..x.x... ........ ........ ........ 
+                 : White Melee, Yellow Melee
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=903211)   : Apply Player/Pet Aura (202) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Self (1)
+Description      : Your Feral Spirits' attacks have a $s1% chance to trigger Stormbringer, resetting the cooldown of your Stormstrike.
+
+Name             : Fireheart (id=363671) [Spell Family (11), Passive, Hidden] 
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ....x... x....... ........ 
+                 : Generic Hostile Spell, Magic Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=903217)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=903218)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
+#3 (id=903219)   : Dummy (3)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
+Description      : Casting Lava Burst extends the duration of your $?s192249[Storm Elemental][Fire Elemental] by ${$s1/10}.1 sec. If your $?s192249[Storm Elemental][Fire Elemental] is not active, spending Maelstrom has a $s2% chance to reduce its remaining cooldown by $s3 sec instead.
+
+Name             : Heal the Soul (id=363672) [Spell Family (11), Passive, Hidden] 
+Hotfixed         : Attributes
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Magic Heal
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=903220)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 366780 | Target: Self (1)
+#2 (id=903221)   : Dummy (3)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
+Description      : Your Chain Heal critical hits reduce the remaining cooldown of one of your totems by $s1 sec. Your Healing Stream Totem, Healing Tide Totem, Mana Tide Totem, and Spirit Link Totem now also cast Chain Heal when you drop them.
+
+Name             : Heal the Soul (id=364470) [Spell Family (11), Passive, Hidden] 
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ..x...x. .....x.. ........ 
+                 : Generic Heal, Magic Heal, Trap Triggered
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=904495)   : Apply Aura (6) | Trigger Spell with Value (231)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 366779 | Target: Self (1)
+#2 (id=904496)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+Description      : Your critical healing increases the critical chance of your next Chain Heal by $s1%, stacking up to $s2 times.
+
+Name             : Fireheart (id=364472) [Spell Family (11), Passive, Hidden] 
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=904500)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : While your $?s192249[Storm Elemental][Fire Elemental] is active, your Lava Burst deals $364523s2% additional damage and you gain Lava Surge every $364523t1 sec.
+
+Name             : Stormspirit (id=364473) [Passive, Hidden] 
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=904503)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=904504)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Spending Maelstrom Weapon has a $s1% chance per stack to summon a Feral Spirit for $s2 sec.
+
+Name             : Fireheart (id=364523) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Duration         : 30 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display Duration (170), Aura Points On Client (268)
+Effects          :
+#1 (id=904590)   : Apply Aura (6) | Periodic Dummy (226): every 8 seconds
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=905479)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
+                   Family Flags: 44, 86
+Description      : $@spelldesc364472
+Tooltip          : Gaining Lava Surge every $t1 sec. Lava Burst deals $w2% additional damage.
+
+Name             : Heal the Soul (id=366779) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Duration         : 20 seconds
+Stacks           : 50 maximum
+Proc Chance      : 101%
+Triggered by     : Heal the Soul (364470)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Points On Client (268), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=910033)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Affected Spells: Chain Heal (1064)
+                   Family Flags: 8
+#2 (id=910034)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+Description      : $@spelldesc364470
+Tooltip          : Chain Heal critical chance increased by $w1%.
+
+Name             : Heal the Soul (id=366780) [Spell Family (11), Hidden] 
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Duration         : Aura (infinite)
+Proc Chance      : 101%
+Triggered by     : Heal the Soul (363672)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=910035)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc363672
 
 

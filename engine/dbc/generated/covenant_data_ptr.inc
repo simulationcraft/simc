@@ -1,4 +1,4 @@
-// Covenant abilities, wow build 9.1.5.40196
+// Covenant abilities, wow build 9.2.0.41360
 static const std::array<covenant_ability_entry_t, 64> __ptr_covenant_ability_data { {
   {  6, 4, 0, 315443, "Abomination Limb"                   },
   { 11, 4, 0, 325727, "Adaptive Swarm"                     },
@@ -28,7 +28,7 @@ static const std::array<covenant_ability_entry_t, 64> __ptr_covenant_ability_dat
   {  4, 2, 0, 323654, "Flagellation"                       },
   {  3, 2, 0, 324149, "Flayed Shot"                        },
   {  0, 4, 1, 324631, "Fleshcraft"                         },
-  {  0, 4, 0, 350570, "Fodder to the Flame"                },
+  { 12, 4, 0, 350570, "Fodder to the Flame"                },
   {  0, 4, 2, 326514, "Forgeborne Reveries"                },
   {  0, 3, 2, 322721, "Grove Invigoration"                 },
   {  9, 2, 0, 321792, "Impending Catastrophe"              },
@@ -66,7 +66,7 @@ static const std::array<covenant_ability_entry_t, 64> __ptr_covenant_ability_dat
   {  3, 3, 0, 328231, "Wild Spirits"                       },
 } };
 
-// Soulbind abilities, wow build 9.1.5.40196
+// Soulbind abilities, wow build 9.2.0.41360
 static const std::array<soulbind_ability_entry_t, 128> __ptr_soulbind_ability_data { {
   { 319191, 3,  824, "Field of Blossoms"                  },
   { 319210, 3,  826, "Social Butterfly"                   },
@@ -198,7 +198,7 @@ static const std::array<soulbind_ability_entry_t, 128> __ptr_soulbind_ability_da
   { 352806, 3, 1851, "Hunt's Exhilaration"                },
 } };
 
-// Conduits, wow build 9.1.5.40196
+// Conduits, wow build 9.2.0.41360
 static const std::array<conduit_entry_t, 276> __ptr_conduit_data { {
   {   5, 334993, "Stalwart Guardian"                  },
   {   7, 335010, "Brutal Vitality"                    },
@@ -516,7 +516,7 @@ static const std::array<uint16_t, 276> __ptr_conduit_spell_id_index { {
     273,     4,   274,   275,
 } };
 
-// Conduit ranks, wow build 9.1.5.40196
+// Conduit ranks, wow build 9.2.0.41360
 static const std::array<conduit_rank_entry_t, 4140> __ptr_conduit_rank_data { {
   {   5,  0, 334993, -20000.000000 },
   {   5,  1, 334993, -22000.000000 },
@@ -2678,21 +2678,21 @@ static const std::array<conduit_rank_entry_t, 4140> __ptr_conduit_rank_data { {
   { 150, 12, 339151, 11.000000 },
   { 150, 13, 339151, 11.500000 },
   { 150, 14, 339151, 12.000000 },
-  { 151,  0, 339228, 75.000000 },
-  { 151,  1, 339228, 82.500000 },
-  { 151,  2, 339228, 90.000000 },
-  { 151,  3, 339228, 97.500000 },
-  { 151,  4, 339228, 105.000000 },
-  { 151,  5, 339228, 112.500000 },
-  { 151,  6, 339228, 120.000000 },
-  { 151,  7, 339228, 127.500000 },
-  { 151,  8, 339228, 135.000000 },
-  { 151,  9, 339228, 142.500000 },
-  { 151, 10, 339228, 150.000000 },
-  { 151, 11, 339228, 157.500000 },
-  { 151, 12, 339228, 165.000000 },
-  { 151, 13, 339228, 172.500000 },
-  { 151, 14, 339228, 180.000000 },
+  { 151,  0, 339228, 40.000000 },
+  { 151,  1, 339228, 44.000000 },
+  { 151,  2, 339228, 48.000000 },
+  { 151,  3, 339228, 52.000000 },
+  { 151,  4, 339228, 56.000000 },
+  { 151,  5, 339228, 60.000000 },
+  { 151,  6, 339228, 64.000000 },
+  { 151,  7, 339228, 68.000000 },
+  { 151,  8, 339228, 72.000000 },
+  { 151,  9, 339228, 76.000000 },
+  { 151, 10, 339228, 80.000000 },
+  { 151, 11, 339228, 84.000000 },
+  { 151, 12, 339228, 88.000000 },
+  { 151, 13, 339228, 92.000000 },
+  { 151, 14, 339228, 96.000000 },
   { 152,  0, 339230, 10.000000 },
   { 152,  1, 339230, 11.000000 },
   { 152,  2, 339230, 12.000000 },
@@ -4660,7 +4660,7 @@ static const std::array<conduit_rank_entry_t, 4140> __ptr_conduit_rank_data { {
   { 284, 14, 357902, 4.800000 },
 } };
 
-// Renown reward abilities, wow build 9.1.5.40196
+// Renown reward abilities, wow build 9.2.0.41360
 static const std::array<renown_reward_entry_t, 20> __ptr_renown_reward_ability_data { {
   { 1,   2, 344087, "Deepening Bond"                     }, // Kyrian
   { 1,  19, 344089, "Deepening Bond"                     }, // Kyrian
@@ -4682,5 +4682,129 @@ static const std::array<renown_reward_entry_t, 20> __ptr_renown_reward_ability_d
   { 4,  35, 344078, "Deepening Bond"                     }, // Necrolord
   { 4,  50, 354025, "Deepening Bond"                     }, // Necrolord
   { 4,  59, 354129, "Deepening Bond"                     }, // Necrolord
+} };
+
+// Enhanced conduit renown levels, wow build 9.2.0.41360
+static const std::array<enhanced_conduit_entry_t, 120> __ptr_enhanced_conduit_data { {
+  {  1,  1, 0,  63 }, // Niya
+  {  1,  1, 2,  63 }, // Niya
+  {  1,  3, 1,  66 }, // Niya
+  {  1,  5, 1,  68 }, // Niya
+  {  1,  6, 0,  72 }, // Niya
+  {  1,  6, 1,  72 }, // Niya
+  {  1,  6, 2,  72 }, // Niya
+  {  1,  8, 1,  73 }, // Niya
+  {  1, 10, 0,  78 }, // Niya
+  {  1, 10, 2,  78 }, // Niya
+  {  2,  1, 0,  61 }, // Dreamweaver
+  {  2,  1, 2,  61 }, // Dreamweaver
+  {  2,  2, 1,  64 }, // Dreamweaver
+  {  2,  4, 0,  67 }, // Dreamweaver
+  {  2,  4, 1,  67 }, // Dreamweaver
+  {  2,  4, 2,  67 }, // Dreamweaver
+  {  2,  5, 1,  70 }, // Dreamweaver
+  {  2,  8, 1,  75 }, // Dreamweaver
+  {  2, 10, 0,  79 }, // Dreamweaver
+  {  2, 10, 2,  79 }, // Dreamweaver
+  {  3,  1, 0,  62 }, // General Draven
+  {  3,  1, 2,  62 }, // General Draven
+  {  3,  3, 1,  65 }, // General Draven
+  {  3,  5, 1,  69 }, // General Draven
+  {  3,  6, 0,  71 }, // General Draven
+  {  3,  6, 1,  71 }, // General Draven
+  {  3,  6, 2,  71 }, // General Draven
+  {  3,  8, 1,  74 }, // General Draven
+  {  3, 10, 0,  77 }, // General Draven
+  {  3, 10, 2,  77 }, // General Draven
+  {  4,  1, 0,  63 }, // Plague Deviser Marileth
+  {  4,  1, 1,  63 }, // Plague Deviser Marileth
+  {  4,  1, 2,  63 }, // Plague Deviser Marileth
+  {  4,  3, 1,  66 }, // Plague Deviser Marileth
+  {  4,  5, 1,  68 }, // Plague Deviser Marileth
+  {  4,  6, 0,  72 }, // Plague Deviser Marileth
+  {  4,  6, 2,  72 }, // Plague Deviser Marileth
+  {  4,  8, 1,  73 }, // Plague Deviser Marileth
+  {  4, 10, 0,  78 }, // Plague Deviser Marileth
+  {  4, 10, 2,  78 }, // Plague Deviser Marileth
+  {  5,  1, 0,  61 }, // Emeni
+  {  5,  1, 2,  61 }, // Emeni
+  {  5,  3, 1,  64 }, // Emeni
+  {  5,  5, 1,  67 }, // Emeni
+  {  5,  6, 0,  70 }, // Emeni
+  {  5,  6, 1,  70 }, // Emeni
+  {  5,  6, 2,  70 }, // Emeni
+  {  5,  8, 1,  75 }, // Emeni
+  {  5, 10, 0,  79 }, // Emeni
+  {  5, 10, 2,  79 }, // Emeni
+  {  6,  1, 0,  62 }, // Korayn
+  {  6,  1, 2,  62 }, // Korayn
+  {  6,  3, 1,  65 }, // Korayn
+  {  6,  5, 1,  69 }, // Korayn
+  {  6,  6, 0,  71 }, // Korayn
+  {  6,  6, 1,  71 }, // Korayn
+  {  6,  6, 2,  71 }, // Korayn
+  {  6,  8, 1,  74 }, // Korayn
+  {  6, 10, 0,  77 }, // Korayn
+  {  6, 10, 2,  77 }, // Korayn
+  {  7,  1, 0,  63 }, // Pelagos
+  {  7,  1, 1,  63 }, // Pelagos
+  {  7,  1, 2,  63 }, // Pelagos
+  {  7,  3, 1,  66 }, // Pelagos
+  {  7,  5, 1,  68 }, // Pelagos
+  {  7,  6, 0,  72 }, // Pelagos
+  {  7,  6, 2,  72 }, // Pelagos
+  {  7,  8, 1,  73 }, // Pelagos
+  {  7, 10, 0,  78 }, // Pelagos
+  {  7, 10, 2,  78 }, // Pelagos
+  {  8,  1, 0,  63 }, // Nadjia the Mistblade
+  {  8,  1, 2,  63 }, // Nadjia the Mistblade
+  {  8,  3, 1,  66 }, // Nadjia the Mistblade
+  {  8,  5, 1,  68 }, // Nadjia the Mistblade
+  {  8,  6, 0,  72 }, // Nadjia the Mistblade
+  {  8,  6, 1,  72 }, // Nadjia the Mistblade
+  {  8,  6, 2,  72 }, // Nadjia the Mistblade
+  {  8,  8, 1,  73 }, // Nadjia the Mistblade
+  {  8, 10, 0,  78 }, // Nadjia the Mistblade
+  {  8, 10, 2,  78 }, // Nadjia the Mistblade
+  {  9,  1, 0,  61 }, // Theotar the Mad Duke
+  {  9,  1, 2,  61 }, // Theotar the Mad Duke
+  {  9,  3, 1,  64 }, // Theotar the Mad Duke
+  {  9,  5, 1,  67 }, // Theotar the Mad Duke
+  {  9,  6, 0,  70 }, // Theotar the Mad Duke
+  {  9,  6, 1,  70 }, // Theotar the Mad Duke
+  {  9,  6, 2,  70 }, // Theotar the Mad Duke
+  {  9,  8, 1,  75 }, // Theotar the Mad Duke
+  {  9, 10, 0,  79 }, // Theotar the Mad Duke
+  {  9, 10, 2,  79 }, // Theotar the Mad Duke
+  { 10,  1, 0,  62 }, // Bonesmith Heirmir
+  { 10,  1, 2,  62 }, // Bonesmith Heirmir
+  { 10,  3, 1,  65 }, // Bonesmith Heirmir
+  { 10,  5, 1,  69 }, // Bonesmith Heirmir
+  { 10,  6, 0,  71 }, // Bonesmith Heirmir
+  { 10,  6, 1,  71 }, // Bonesmith Heirmir
+  { 10,  6, 2,  71 }, // Bonesmith Heirmir
+  { 10,  8, 1,  74 }, // Bonesmith Heirmir
+  { 10, 10, 0,  77 }, // Bonesmith Heirmir
+  { 10, 10, 2,  77 }, // Bonesmith Heirmir
+  { 13,  1, 0,  61 }, // Kleia
+  { 13,  1, 2,  61 }, // Kleia
+  { 13,  3, 1,  64 }, // Kleia
+  { 13,  5, 1,  67 }, // Kleia
+  { 13,  6, 0,  70 }, // Kleia
+  { 13,  6, 1,  70 }, // Kleia
+  { 13,  6, 2,  70 }, // Kleia
+  { 13,  8, 1,  75 }, // Kleia
+  { 13, 10, 0,  79 }, // Kleia
+  { 13, 10, 2,  79 }, // Kleia
+  { 18,  1, 0,  62 }, // Forgelite Prime Mikanikos
+  { 18,  1, 2,  62 }, // Forgelite Prime Mikanikos
+  { 18,  3, 1,  65 }, // Forgelite Prime Mikanikos
+  { 18,  5, 1,  69 }, // Forgelite Prime Mikanikos
+  { 18,  6, 0,  71 }, // Forgelite Prime Mikanikos
+  { 18,  6, 1,  71 }, // Forgelite Prime Mikanikos
+  { 18,  6, 2,  71 }, // Forgelite Prime Mikanikos
+  { 18,  8, 1,  74 }, // Forgelite Prime Mikanikos
+  { 18, 10, 0,  77 }, // Forgelite Prime Mikanikos
+  { 18, 10, 2,  77 }, // Forgelite Prime Mikanikos
 } };
 

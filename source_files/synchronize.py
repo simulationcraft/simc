@@ -153,7 +153,7 @@ def create_qmake_str(file_type, path, excludes):
     output = header("qmake")
     output += qmake_type_str(file_type, path, ["*.hpp", "*.hh"], "HEADERS", excludes)
     output += "\n\n"
-    output += qmake_type_str(file_type, path, ["*.cpp"], "SOURCES", excludes)
+    output += qmake_type_str(file_type, path, ["*.cpp", "*.cc"], "SOURCES", excludes)
     output += "\n\n"
     output += qmake_type_str(file_type, path, ["*.qrc"], "RESOURCES", excludes)
     return output

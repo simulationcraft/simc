@@ -59,8 +59,8 @@ struct player_spec_t
 static constexpr util::string_view GLOBAL_OAUTH_ENDPOINT_URI = "https://{}.battle.net/oauth/token";
 static constexpr util::string_view CHINA_OAUTH_ENDPOINT_URI = "https://www.battlenet.com.cn/oauth/token";
 
-static constexpr util::string_view GLOBAL_GUILD_ENDPOINT_URI = "https://{}.api.blizzard.com/wow/guild/{}/{}?fields=members&locale={}";
-static constexpr util::string_view CHINA_GUILD_ENDPOINT_URI = "https://gateway.battlenet.com.cn/wow/guild/{}/{}?fields=members&locale={}";
+static constexpr util::string_view GLOBAL_GUILD_ENDPOINT_URI = "https://{}.api.blizzard.com/data/wow/guild/{}/{}/roster?namespace=profile-{}&locale={}";
+static constexpr util::string_view CHINA_GUILD_ENDPOINT_URI = "https://gateway.battlenet.com.cn/data/wow/guild/{}/{}/roster?namespace=profile-{}&locale={}";
 
 static constexpr util::string_view GLOBAL_PLAYER_ENDPOINT_URI = "https://{}.api.blizzard.com/profile/wow/character/{}/{}?namespace=profile-{}&locale={}";
 static constexpr util::string_view CHINA_PLAYER_ENDPOINT_URI = "https://gateway.battlenet.com.cn/profile/wow/character/{}/{}?namespace=profile-cn";
@@ -148,11 +148,11 @@ void authorize( sim_t* sim, const std::string& region )
     std::string oauth_endpoint;
     if ( util::str_compare_ci( region, "eu" ) || util::str_compare_ci( region, "us" ) )
     {
-      oauth_endpoint = fmt::format( GLOBAL_OAUTH_ENDPOINT_URI, region );
+      oauth_endpoint = fmt::format( fmt::runtime(GLOBAL_OAUTH_ENDPOINT_URI), region );
     }
     else if ( util::str_compare_ci( region, "kr" ) || util::str_compare_ci( region, "tw" ) )
     {
-      oauth_endpoint = fmt::format( GLOBAL_OAUTH_ENDPOINT_URI, "apac" );
+      oauth_endpoint = fmt::format( fmt::runtime(GLOBAL_OAUTH_ENDPOINT_URI), "apac" );
     }
     else if ( util::str_compare_ci( region, "cn" ) )
     {
@@ -320,7 +320,7 @@ void download( sim_t*               sim,
     rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
 
     d.Accept( writer );
-    sim->out_debug.raw() << b.GetString();
+    sim->out_debug.raw().print( "{}", b.GetString() );
   }
 }
 
@@ -341,11 +341,11 @@ void download_item( sim_t* sim,
 
   if ( !util::str_compare_ci( region, "cn" ) )
   {
-    url = fmt::format( GLOBAL_ITEM_ENDPOINT_URI, region, item_id, LOCALES[ region ][ 0 ] );
+    url = fmt::format( fmt::runtime(GLOBAL_ITEM_ENDPOINT_URI), region, item_id, LOCALES[ region ][ 0 ] );
   }
   else
   {
-    url = fmt::format( CHINA_ITEM_ENDPOINT_URI, item_id );
+    url = fmt::format( fmt::runtime(CHINA_ITEM_ENDPOINT_URI), item_id );
   }
 
   download( sim, d, region, url, caching );
@@ -971,7 +971,7 @@ void download_item_data( item_t& item, cache::behavior_e caching )
     {
       const rapidjson::Value& sockets = js[ "socketInfo" ][ "sockets" ];
 
-    for (rapidjson::SizeType i = 0, n = as<rapidjson::SizeType>( std::min(static_cast< size_t >(sockets.Size()), range::size(item.parsed.data.socket_color))); i < n; ++i)
+    for (rapidjson::SizeType i = 0, n = as<rapidjson::SizeType>( std::min(static_cast< size_t >(sockets.Size()), std::size(item.parsed.data.socket_color))); i < n; ++i)
       {
         if ( ! sockets[ i ].HasMember( "type" ) )
           continue;
@@ -1077,11 +1077,11 @@ void download_roster( rapidjson::Document& d,
   std::string url;
   if ( !util::str_compare_ci( region, "cn" ) )
   {
-    url = fmt::format( GLOBAL_GUILD_ENDPOINT_URI, region, server, name, LOCALES[ region ][ 0 ] );
+    url = fmt::format( fmt::runtime( GLOBAL_GUILD_ENDPOINT_URI ), region, server, name, region, LOCALES[ region ][ 0 ] );
   }
   else
   {
-    url = fmt::format( CHINA_GUILD_ENDPOINT_URI, server, name );
+    url = fmt::format( fmt::runtime(CHINA_GUILD_ENDPOINT_URI), server, name, region, LOCALES[ region ][ 0 ] );
   }
 
   download( sim, d, region, url, caching );
@@ -1162,13 +1162,13 @@ player_t* bcp_api::download_player( sim_t* sim, const std::string& region, const
 
   if (!util::str_compare_ci(region, "cn"))
   {
-    player.url = fmt::format(GLOBAL_PLAYER_ENDPOINT_URI, region, normalized_server, normalized_name, region, LOCALES[region][0]);
-    player.origin = fmt::format(GLOBAL_ORIGIN_URI, LOCALES[region][1], normalized_server, normalized_name);
+    player.url = fmt::format(fmt::runtime(GLOBAL_PLAYER_ENDPOINT_URI), region, normalized_server, normalized_name, region, LOCALES[region][0]);
+    player.origin = fmt::format(fmt::runtime(GLOBAL_ORIGIN_URI), LOCALES[region][1], normalized_server, normalized_name);
   }
   else
   {
-    player.url = fmt::format(CHINA_PLAYER_ENDPOINT_URI, normalized_server, normalized_name);
-    player.origin = fmt::format(CHINA_ORIGIN_URI, normalized_server, normalized_name);
+    player.url = fmt::format(fmt::runtime(CHINA_PLAYER_ENDPOINT_URI), normalized_server, normalized_name);
+    player.origin = fmt::format(fmt::runtime(CHINA_ORIGIN_URI), normalized_server, normalized_name);
   }
 
 #ifdef SC_DEFAULT_APIKEY
@@ -1332,17 +1332,17 @@ bool bcp_api::download_guild( sim_t* sim, const std::string& region, const std::
 
     const rapidjson::Value& character = member[ "character" ];
 
-    if ( ! character.HasMember( "level" ) || character[ "level" ].GetUint() < 85 )
+    if ( ! character.HasMember( "level" ) || character[ "level" ].GetUint() < MAX_LEVEL )
       continue;
 
-    if ( ! character.HasMember( "class" ) )
+    if ( ! character.HasMember( "playable_class" ) )
       continue;
 
     if ( ! character.HasMember( "name" ) )
       continue;
 
     if ( player_type_filter != PLAYER_NONE &&
-         player_type_filter != util::translate_class_id( character[ "class" ].GetInt() ) )
+         player_type_filter != util::translate_class_id( character[ "playable_class" ][ "id" ].GetInt() ) )
       continue;
 
     names.emplace_back(character[ "name" ].GetString() );
