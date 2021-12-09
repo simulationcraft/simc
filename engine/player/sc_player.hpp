@@ -381,7 +381,8 @@ struct player_t : public actor_t
   stats_t* warlords_unseeing_eye_stats;
 
   // Misc Multipliers
-  // auto attack multiplier (for Jeweled Signet of Melandrus and similar effects)
+  // auto attack modifier and multiplier (for Jeweled Signet of Melandrus and similar effects)
+  double auto_attack_modifier;
   double auto_attack_multiplier;
 
   // Scale Factors

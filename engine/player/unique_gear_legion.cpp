@@ -5639,8 +5639,8 @@ void set_bonus::journey_through_time( special_effect_t& effect )
 
 void item::jeweled_signet_of_melandrus( special_effect_t& effect )
 {
-  double value = 1.0 + effect.driver() -> effectN( 1 ).percent();
-  effect.player -> auto_attack_multiplier *= value;
+  double value = effect.driver()->effectN( 1 ).average( effect.item );
+  effect.player->auto_attack_modifier += value;
 }
 
 // Caged Horror =============================================================

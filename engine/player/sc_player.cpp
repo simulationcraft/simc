@@ -1186,6 +1186,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     legendary_tank_cloak_cd( nullptr ),
     warlords_unseeing_eye( 0.0 ),
     warlords_unseeing_eye_stats(),
+    auto_attack_modifier( 0.0 ),
     auto_attack_multiplier( 1.0 ),
     scaling( ( !is_pet() || sim->report_pets_separately ) ? new player_scaling_t() : nullptr ),
     // Movement & Position

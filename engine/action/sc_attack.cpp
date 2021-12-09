@@ -153,6 +153,18 @@ double attack_t::crit_block_chance( action_state_t* s ) const
   return s->target->cache.crit_block();
 }
 
+double attack_t::bonus_da( const action_state_t* s ) const
+{
+  double da = action_t::bonus_da( s );
+
+  if ( !special )
+  {
+    da += player->auto_attack_modifier;
+  }
+
+  return da;
+}
+
 double attack_t::action_multiplier() const
 {
   double mul = action_t::action_multiplier();
