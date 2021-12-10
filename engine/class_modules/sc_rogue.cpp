@@ -2875,7 +2875,6 @@ struct fan_of_knives_t: public rogue_attack_t
   bool procs_poison() const override
   { return true; }
 
-  // 2021-04-22-- TOCHECK: Testing with the NF legendary shows this doesn't work
   // 2021-10-07 - Works as of 9.1.5 PTR
   bool procs_shadow_blades_damage() const override
   { return true; }
@@ -3689,6 +3688,10 @@ struct akaaris_shadowstrike_t : public rogue_attack_t
     rogue_attack_t::impact( state );
     trigger_weaponmaster( state, p()->active.weaponmaster.akaaris_shadowstrike );
   }
+
+  // 2021-12-10 - Logs appear to show this working as of 9.1.5
+  bool procs_shadow_blades_damage() const override
+  { return true; }
 };
 
 struct shadowstrike_t : public rogue_attack_t
@@ -6831,6 +6834,7 @@ void rogue_t::init_action_list()
     cds->add_action( "fireblood,if=debuff.vendetta.up" );
     cds->add_action( "ancestral_call,if=debuff.vendetta.up" );
     cds->add_action( "call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0" );
+    cds->add_action( "use_item,name=windscar_whetstone,if=spell_targets.fan_of_knives>desired_targets|raid_event.adds.in>60|fight_remains<7" );
     cds->add_action( "use_items,slots=trinket1,if=variable.trinket_sync_slot=1&(debuff.vendetta.up|fight_remains<=20)|(variable.trinket_sync_slot=2&!trinket.2.cooldown.ready)|!variable.trinket_sync_slot", "Sync the priority stat buff trinket with Vendetta, otherwise use on cooldown" );
     cds->add_action( "use_items,slots=trinket2,if=variable.trinket_sync_slot=2&(debuff.vendetta.up|fight_remains<=20)|(variable.trinket_sync_slot=1&!trinket.1.cooldown.ready)|!variable.trinket_sync_slot" );
 
@@ -6933,6 +6937,7 @@ void rogue_t::init_action_list()
     cds->add_action( "fireblood" );
     cds->add_action( "ancestral_call" );
 
+    cds->add_action( "use_item,name=windscar_whetstone,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|fight_remains<7" );
     cds->add_action( "use_items,slots=trinket1,if=debuff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20", "Default conditions for usable items." );
     cds->add_action( "use_items,slots=trinket2,if=debuff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20" );
 
