@@ -104,6 +104,7 @@ void arcane( player_t* p )
   default_->add_action( "ancestral_call,if=buff.arcane_power.up" );
   default_->add_action( "use_items,if=buff.arcane_power.up" );
   default_->add_action( "use_item,effect_name=gladiators_badge,if=buff.arcane_power.up|cooldown.arcane_power.remains>=55&debuff.touch_of_the_magi.up" );
+  default_->add_action( "use_item,name=moonlit_prism,if=cooldown.arcane_power.remains<=6&cooldown.touch_of_the_magi.remains<=6" );
   default_->add_action( "use_item,name=empyreal_ordnance,if=cooldown.arcane_power.remains<=15&cooldown.touch_of_the_magi.remains<=15" );
   default_->add_action( "use_item,name=dreadfire_vessel,if=cooldown.arcane_power.remains>=20|!variable.ap_on_use=1|(time=0&variable.fishing_opener=1&runeforge.siphon_storm)" );
   default_->add_action( "use_item,name=soul_igniter,if=cooldown.arcane_power.remains>=30|!variable.ap_on_use=1" );
@@ -294,7 +295,7 @@ void arcane( player_t* p )
   aoe->add_action( "arcane_orb,if=buff.arcane_charge.stack=0&(cooldown.arcane_power.remains>15|!(covenant.kyrian&runeforge.arcane_infinity))" );
   aoe->add_action( "nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
   aoe->add_action( "arcane_missiles,if=buff.clearcasting.react&runeforge.arcane_infinity&((talent.amplification&active_enemies<8)|active_enemies<5)" );
-  aoe->add_action( "arcane_missiles,if=buff.clearcasting.react&talent.arcane_echo&debuff.touch_of_the_magi.up&(talent.amplification|active_enemies<9)" );
+  aoe->add_action( "arcane_missiles,if=buff.clearcasting.react&talent.arcane_echo&debuff.touch_of_the_magi.up" );
   aoe->add_action( "arcane_missiles,if=buff.clearcasting.react&talent.amplification&active_enemies<4" );
   aoe->add_action( "arcane_explosion,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
   aoe->add_action( "arcane_explosion,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&prev_gcd.1.arcane_barrage" );
