@@ -990,18 +990,11 @@ void dot_t::adjust_full_ticks( double coefficient )
   }
   event_t::cancel( end_event );
 
-  if ( sim.debug )
-  {
-    sim.out_debug.printf(
-        "%s exsanguinates dot %s (on %s): duration=%.3f -> %.3f, next_tick=%.3f -> "
-        "%.3f, ends=%.3f -> %.3f",
-        current_action->player->name(), current_action->name(), target->name(),
-        current_duration.total_seconds(), new_duration.total_seconds(),
-        tick_occurs.total_seconds(),
-        ( sim.current_time() + new_tick_remains ).total_seconds(),
-        end_occurs.total_seconds(),
-        ( sim.current_time() + new_dot_remains ).total_seconds() );
-  }
+  sim.print_log( "{} exsanguinates dot {} (on {}): duration={:.3f} -> {:.3f}, next_tick={:.3f} -> {:.3f}, ends={:.3f} -> {:.3f}",
+                 *current_action->player, *current_action, *target,
+                 current_duration.total_seconds(), new_duration.total_seconds(),
+                 tick_occurs.total_seconds(), ( sim.current_time() + new_tick_remains ).total_seconds(),
+                 end_occurs.total_seconds(), ( sim.current_time() + new_dot_remains ).total_seconds() );
 
   current_duration = new_duration;
   tick_time        = new_tick_time;

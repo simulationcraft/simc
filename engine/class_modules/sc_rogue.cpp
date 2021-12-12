@@ -1004,14 +1004,13 @@ private:
   T_ACTION* action;
   int base_cp;
   int total_cp;
+  double exsanguinated_rate;
 
 public:
-  bool exsanguinated;
-
   rogue_action_state_t( action_t* action, player_t* target ) :
     action_state_t( action, target ),
     action( dynamic_cast<T_ACTION*>( action ) ),
-    base_cp( 0 ), total_cp( 0 ), exsanguinated( false )
+    base_cp( 0 ), total_cp( 0 ), exsanguinated_rate( 1.0 )
   {}
 
   void initialize() override
@@ -1019,12 +1018,12 @@ public:
     action_state_t::initialize();
     base_cp = 0;
     total_cp = 0;
-    exsanguinated = false;
+    exsanguinated_rate = 1.0;
   }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
-    action_state_t::debug_str( s ) << " base_cp=" << base_cp << " total_cp=" << total_cp << " exsanguinated=" << exsanguinated;
+    action_state_t::debug_str( s ) << " base_cp=" << base_cp << " total_cp=" << total_cp << " exsanguinated_rate=" << exsanguinated_rate;
     return s;
   }
 
@@ -1034,7 +1033,12 @@ public:
     const rogue_action_state_t* rs = debug_cast<const rogue_action_state_t*>( s );
     base_cp = rs->base_cp;
     total_cp = rs->total_cp;
-    exsanguinated = rs->exsanguinated;
+    exsanguinated_rate = rs->exsanguinated_rate;
+  }
+
+  T_ACTION* get_action() const
+  {
+    return action;
   }
 
   void set_combo_points( int base_cp, int total_cp )
@@ -1049,6 +1053,16 @@ public:
       return base_cp;
 
     return total_cp;
+  }
+
+  void set_exsanguinated_rate( double rate )
+  {
+    exsanguinated_rate = rate;
+  }
+
+  double get_exsanguinated_rate() const
+  {
+    return exsanguinated_rate;
   }
 
   proc_types2 cast_proc_type2() const override
@@ -1115,6 +1129,8 @@ public:
     bool between_the_eyes = false;
     bool nightstalker = false;
     bool sepsis = false;
+    bool t28_assassination_2pc = false;
+    bool t28_assassination_4pc = false;
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -1341,7 +1357,7 @@ public:
   {
     // Exsanguinated bleeds snapshot hasted tick time when the ticks are rescheduled.
     // This will make snapshot_internal on haste updates discard the new value.
-    if ( cast_state( state )->exsanguinated )
+    if ( cast_state( state )->get_exsanguinated_rate() != 1.0 )
       flags &= ~STATE_HASTE;
 
     ab::snapshot_internal( state, flags, rt );
@@ -1359,7 +1375,15 @@ public:
         effective_cp = as<int>( p()->covenant.echoing_reprimand->effectN( 2 ).base_value() );
     }
 
-    cast_state( state )->set_combo_points( consume_cp, effective_cp );
+    auto rs = cast_state( state );
+    rs->set_combo_points( consume_cp, effective_cp );
+
+    // Apply Assassination T28 4pc on Cast if Vendetta is up
+    if ( p()->set_bonuses.t28_assassination_4pc->ok() && rs->get_action()->affected_by.t28_assassination_4pc &&
+         p()->get_target_data( state->target )->debuffs.vendetta->check() )
+    {
+      rs->set_exsanguinated_rate( 1.0 + p()->set_bonuses.t28_assassination_4pc->effectN( 1 ).percent() );
+    }
 
     ab::snapshot_state( state, rt );
   }
@@ -1485,6 +1509,7 @@ public:
   void trigger_restless_blades( const action_state_t* );
   void trigger_dreadblades( const action_state_t* );
   void trigger_exsanguinate( const action_state_t* );
+  void trigger_t28_assassination_4pc( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_shadow_blades_attack( action_state_t* );
   void trigger_prey_on_the_weak( const action_state_t* state );
@@ -1519,6 +1544,19 @@ public:
     }
 
     return t;
+  }
+
+  double composite_target_crit_chance( player_t* target ) const override
+  {
+    double c = ab::composite_target_crit_chance( target );
+
+    if ( affected_by.t28_assassination_2pc && p()->set_bonuses.t28_assassination_2pc->ok() &&
+         p()->get_target_data( target )->debuffs.shiv->check() )
+    {
+      c += p()->set_bonuses.t28_assassination_2pc->effectN( 1 ).percent();
+    }
+
+    return c;
   }
 
   virtual double combo_point_da_multiplier( const action_state_t* s ) const
@@ -1653,10 +1691,7 @@ public:
   {
     timespan_t tt = ab::tick_time( state );
 
-    if ( cast_state( state )->exsanguinated )
-    {
-      tt *= 1.0 / ( 1.0 + p()->talent.exsanguinate->effectN( 1 ).percent() );
-    }
+    tt *= 1.0 / cast_state( state )->get_exsanguinated_rate();
 
     return tt;
   }
@@ -1779,6 +1814,16 @@ public:
     if ( affected_by.blindside )
     {
       p()->buffs.blindside->expire();
+    }
+
+    // Debugging for Assassination T28 4pc
+    if ( p()->sim->log )
+    {
+      const auto rs = cast_state( ab::execute_state );
+      if ( rs->get_exsanguinated_rate() != 1.0 )
+      {
+        p()->sim->print_log( "{} casts {} with initial exsanguinated rate of {:.1f}", *p(), *this, rs->get_exsanguinated_rate() );
+      }
     }
   }
 
@@ -2636,16 +2681,14 @@ struct crimson_tempest_t : public rogue_attack_t
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
+    affected_by.t28_assassination_2pc = affected_by.t28_assassination_4pc = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     const auto rs = cast_state( s );
     timespan_t duration = data().duration() * ( 1 + rs->get_combo_points() );
-    if ( rs->exsanguinated )
-    {
-      duration *= 1.0 / ( 1.0 + p()->talent.exsanguinate->effectN( 1 ).percent() );
-    }
+    duration *= 1.0 / rs->get_exsanguinated_rate();
 
     return duration;
   }
@@ -2837,7 +2880,6 @@ struct exsanguinate_t : public rogue_attack_t
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
-
     trigger_exsanguinate( state );
   }
 };
@@ -2902,6 +2944,7 @@ struct garrote_t : public rogue_attack_t
   garrote_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p -> spec.garrote, options_str )
   {
+    affected_by.t28_assassination_2pc = affected_by.t28_assassination_4pc = true;
   }
 
   double composite_persistent_multiplier( const action_state_t* state ) const override
@@ -2919,13 +2962,14 @@ struct garrote_t : public rogue_attack_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t duration = rogue_attack_t::composite_dot_duration( s );
-
-    if ( cast_state( s )->exsanguinated )
-    {
-      duration *= 1.0 / ( 1.0 + p()->talent.exsanguinate->effectN( 1 ).percent() );
-    }
-
+    duration *= 1.0 / cast_state( s )->get_exsanguinated_rate();
     return duration;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    rogue_attack_t::tick( d );
+    trigger_venomous_wounds( d->state );
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -2936,12 +2980,6 @@ struct garrote_t : public rogue_attack_t
     }
 
     rogue_attack_t::update_ready( cd_duration );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    rogue_attack_t::tick( d );
-    trigger_venomous_wounds( d->state );
   }
 };
 
@@ -3423,16 +3461,14 @@ struct rupture_t : public rogue_attack_t
   rupture_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p -> find_specialization_spell( "Rupture" ), options_str )
   {
+    affected_by.t28_assassination_2pc = affected_by.t28_assassination_4pc = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     const auto rs = cast_state( s );
     timespan_t duration = data().duration() * ( 1 + rs->get_combo_points() );
-    if ( rs->exsanguinated )
-    {
-      duration *= 1.0 / ( 1.0 + p() -> talent.exsanguinate -> effectN( 1 ).percent() );
-    }
+    duration *= 1.0 / rs->get_exsanguinated_rate();
 
     return duration;
   }
@@ -4269,6 +4305,8 @@ struct vendetta_t : public rogue_spell_t
     td->debuffs.vendetta->expire();
     td->debuffs.vendetta->trigger();
 
+    trigger_t28_assassination_4pc( execute_state );
+
     // As of 2021-10-07 9.1.5 PTR, using it seems to trigger the energy buff but Toxic Onslaught does not.
     // If this is fixed, remove this and uncomment the corresponding block in the debuff again.
     p()->buffs.vendetta->trigger();
@@ -4327,24 +4365,14 @@ struct kidney_shot_t : public rogue_attack_t
     internal_bleeding_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p->find_spell( 154953 ) )
     {
+      affected_by.t28_assassination_2pc = affected_by.t28_assassination_4pc = true; // TOCHECK
     }
 
     timespan_t composite_dot_duration( const action_state_t* s ) const override
     {
       timespan_t duration = rogue_attack_t::composite_dot_duration( s );
-
-      if ( cast_state( s )->exsanguinated )
-      {
-        duration *= 1.0 / ( 1.0 + p()->talent.exsanguinate->effectN( 1 ).percent() );
-      }
-
+      duration *= 1.0 / cast_state( s )->get_exsanguinated_rate();
       return duration;
-    }
-
-    void tick( dot_t* d ) override
-    {
-      rogue_attack_t::tick( d );
-      trigger_venomous_wounds( d->state );
     }
 
     double composite_persistent_multiplier( const action_state_t* state ) const override
@@ -4352,6 +4380,12 @@ struct kidney_shot_t : public rogue_attack_t
       double m = rogue_attack_t::composite_persistent_multiplier( state );
       m *= cast_state( state )->get_combo_points();
       return m;
+    }
+
+    void tick( dot_t* d ) override
+    {
+      rogue_attack_t::tick( d );
+      trigger_venomous_wounds( d->state );
     }
   };
 
@@ -4625,7 +4659,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
     {
       aoe = 0; // Technically affected by Deathspike, but interferes with our triggering logic
       hasted_ticks = true; // 2021-03-12 - Bone spike dot is hasted, despite not being flagged as such
-      affected_by.zoldyck_insignia = true; // 2021-02-13- Logs show that the SBS DoT is affected by Zoldyck
+      affected_by.zoldyck_insignia = true; // 2021-02-13 - Logs show that the SBS DoT is affected by Zoldyck
       dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 2 );
 
       if ( p->conduit.sudden_fractures.ok() )
@@ -4923,21 +4957,6 @@ struct weapon_swap_t : public action_t
 // Expressions
 // ==========================================================================
 
-struct exsanguinated_expr_t : public expr_t
-{
-  action_t* action;
-
-  exsanguinated_expr_t( action_t* a ) :
-    expr_t( "exsanguinated_expr" ), action( a )
-  { }
-
-  double evaluate() override
-  {
-    dot_t* d = action->get_dot( action->target );
-    return d->is_ticking() && actions::rogue_attack_t::cast_state( d->state )->exsanguinated;
-  }
-};
-
 // rogue_attack_t::create_expression =========================================
 
 template<typename Base>
@@ -4950,9 +4969,20 @@ std::unique_ptr<expr_t> actions::rogue_action_t<Base>::create_expression( util::
   // Garrote and Rupture and APL lines using "exsanguinated"
   // TODO: Add Internal Bleeding (not the same id as Kidney Shot)
   else if ( util::str_compare_ci( name_str, "exsanguinated" ) && 
-    ( ab::data().id() == 703 || ab::data().id() == 1943 || this -> name_str == "crimson_tempest" ) )
+    ( ab::data().id() == 703 || ab::data().id() == 1943 || this->name_str == "crimson_tempest" ) )
   {
-    return std::make_unique<exsanguinated_expr_t>( this );
+    return make_fn_expr( name_str, [ this ]() {
+      dot_t* d = ab::get_dot( ab::target );
+      return d->is_ticking() && cast_state( d->state )->get_exsanguinated_rate() != 1.0;
+    } );
+  }
+  else if ( util::str_compare_ci( name_str, "exsanguinated_rate" ) &&
+    ( ab::data().id() == 703 || ab::data().id() == 1943 || this->name_str == "crimson_tempest" ) )
+  {
+    return make_fn_expr( name_str, [ this ]() {
+      dot_t* d = ab::get_dot( ab::target );
+      return d->is_ticking() ? cast_state( d->state )->get_exsanguinated_rate() : 1.0;
+    } );
   }
   else if ( name_str == "effective_combo_points" )
   {
@@ -6051,31 +6081,56 @@ void actions::rogue_action_t<Base>::trigger_dreadblades( const action_state_t* s
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::do_exsanguinate( dot_t* dot, double coeff )
+void actions::rogue_action_t<Base>::do_exsanguinate( dot_t* dot, double rate )
 {
   if ( !dot->is_ticking() )
-  {
     return;
-  }
+
+  auto rs = actions::rogue_attack_t::cast_state( dot->state );
+  double new_rate = rs->get_exsanguinated_rate() * rate;
+
+  p()->sim->print_log( "{} exsanguinates {} tick rate by {:.1f} from {:.1f} to {:.1f}",
+                       *p(), *dot, rate, rs->get_exsanguinated_rate(), new_rate );
 
   // Original and "logical" implementation.
   // dot -> adjust( coeff );
   // Since the advent of hasted bleed exsanguinate works differently though.
+  // Note: PTR testing shows Exsanguinated compound multiplicatively (2x -> 4x -> 8x -> etc.)
+  double coeff = 1.0 / new_rate;
   dot->adjust_full_ticks( coeff );
-  cast_state( dot->state )->exsanguinated = true;
+  rs->set_exsanguinated_rate( new_rate );
 }
 
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_exsanguinate( const action_state_t* state )
 {
+  if ( !p()->talent.exsanguinate->ok() )
+    return;
+
   rogue_td_t* td = p()->get_target_data( state->target );
 
-  double coeff = 1.0 / ( 1.0 + p()->talent.exsanguinate->effectN( 1 ).percent() );
+  double rate = 1.0 + p()->talent.exsanguinate->effectN( 1 ).percent();
+  do_exsanguinate( td->dots.garrote, rate );
+  do_exsanguinate( td->dots.internal_bleeding, rate );
+  do_exsanguinate( td->dots.rupture, rate );
+  do_exsanguinate( td->dots.crimson_tempest, rate );
+}
 
-  do_exsanguinate( td->dots.garrote, coeff );
-  do_exsanguinate( td->dots.internal_bleeding, coeff );
-  do_exsanguinate( td->dots.rupture, coeff );
-  do_exsanguinate( td->dots.crimson_tempest, coeff );
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_t28_assassination_4pc( const action_state_t* state )
+{
+  if ( !p()->set_bonuses.t28_assassination_4pc->ok() )
+    return;
+
+  rogue_td_t* td = p()->get_target_data( state->target );
+  if ( !td->debuffs.vendetta->check() )
+    return;
+
+  double rate = 1.0 + p()->set_bonuses.t28_assassination_4pc->effectN( 1 ).percent();
+  do_exsanguinate( td->dots.garrote, rate );
+  do_exsanguinate( td->dots.internal_bleeding, rate );
+  do_exsanguinate( td->dots.rupture, rate );
+  do_exsanguinate( td->dots.crimson_tempest, rate );
 }
 
 template <typename Base>
@@ -6862,17 +6917,17 @@ void rogue_t::init_action_list()
     dot->add_action( "variable,name=skip_cycle_garrote,value=priority_rotation&(dot.garrote.remains<cooldown.garrote.duration|variable.regen_saturated)", "Limit secondary Garrotes for priority rotation if we have 35 energy regen or Garrote will expire on the primary target" );
     dot->add_action( "variable,name=skip_cycle_rupture,value=priority_rotation&(debuff.shiv.up&spell_targets.fan_of_knives>2|variable.regen_saturated)", "Limit secondary Ruptures for priority rotation if we have 35 energy regen or Shiv is up on 2T+" );
     dot->add_action( "variable,name=skip_rupture,value=debuff.vendetta.up&(debuff.shiv.up|master_assassin_remains>0)&dot.rupture.remains>2", "Limit Ruptures if Vendetta+Shiv/Master Assassin is up and we have 2+ seconds left on the Rupture DoT" );
-    dot->add_action( this, "Garrote", "if=talent.exsanguinate.enabled&!exsanguinated.garrote&dot.garrote.pmultiplier<=1&cooldown.exsanguinate.remains<2&spell_targets.fan_of_knives=1&raid_event.adds.in>6&dot.garrote.remains*0.5<target.time_to_die", "Special Garrote and Rupture setup prior to Exsanguinate cast" );
+    dot->add_action( this, "Garrote", "if=talent.exsanguinate.enabled&(!exsanguinated|set_bonus.tier28_4pc&debuff.vendetta.up&exsanguinated_rate<=2)&dot.garrote.pmultiplier<=1&cooldown.exsanguinate.remains<2&spell_targets.fan_of_knives=1&raid_event.adds.in>6&dot.garrote.remains*0.5<target.time_to_die", "Special Garrote and Rupture setup prior to Exsanguinate cast" );
     dot->add_action( this, "Rupture", "if=talent.exsanguinate.enabled&(effective_combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&dot.rupture.remains*0.5<target.time_to_die)" );
     dot->add_action( "pool_resource,for_next=1", "Garrote upkeep, also tries to use it as a special generator for the last CP before a finisher" );
-    dot->add_action( this, "Garrote", "if=refreshable&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>4&master_assassin_remains=0" );
+    dot->add_action( this, "Garrote", "if=refreshable&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&((!exsanguinated|set_bonus.tier28_4pc&debuff.vendetta.up&exsanguinated_rate<=2)|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>4&master_assassin_remains=0" );
     dot->add_action( "pool_resource,for_next=1" );
-    dot->add_action( this, "Garrote", "cycle_targets=1,if=!variable.skip_cycle_garrote&target!=self.target&refreshable&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>12&master_assassin_remains=0" );
+    dot->add_action( this, "Garrote", "cycle_targets=1,if=!variable.skip_cycle_garrote&target!=self.target&refreshable&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&((!exsanguinated|set_bonus.tier28_4pc&debuff.vendetta.up&exsanguinated_rate<=2)|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>12&master_assassin_remains=0" );
     dot->add_talent( this, "Crimson Tempest", "target_if=min:remains,if=spell_targets>=2&effective_combo_points>=4&energy.regen_combined>20&(!cooldown.vendetta.ready|dot.rupture.ticking)&remains<2+3*(spell_targets>=4)", "Crimson Tempest on multiple targets at 4+ CP when running out in 2-5s as long as we have enough regen and aren't setting up for Vendetta" );
-    dot->add_action( this, "Rupture", "if=!variable.skip_rupture&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>(4+(runeforge.dashing_scoundrel*5)+(runeforge.doomblade*5)+(variable.regen_saturated*6))", "Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)" );
-    dot->add_action( this, "Rupture", "cycle_targets=1,if=!variable.skip_cycle_rupture&!variable.skip_rupture&target!=self.target&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>(4+(runeforge.dashing_scoundrel*5)+(runeforge.doomblade*5)+(variable.regen_saturated*6))" );
+    dot->add_action( this, "Rupture", "if=!variable.skip_rupture&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&((!exsanguinated|set_bonus.tier28_4pc&debuff.vendetta.up&exsanguinated_rate<=2)|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>(4+(runeforge.dashing_scoundrel*5)+(runeforge.doomblade*5)+(variable.regen_saturated*6))", "Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)" );
+    dot->add_action( this, "Rupture", "cycle_targets=1,if=!variable.skip_cycle_rupture&!variable.skip_rupture&target!=self.target&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&((!exsanguinated|set_bonus.tier28_4pc&debuff.vendetta.up&exsanguinated_rate<=2)|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>(4+(runeforge.dashing_scoundrel*5)+(runeforge.doomblade*5)+(variable.regen_saturated*6))" );
     dot->add_talent( this, "Crimson Tempest", "if=spell_targets>=2&effective_combo_points>=4&remains<2+3*(spell_targets>=4)", "Fallback AoE Crimson Tempest with the same logic as above, but ignoring the energy conditions if we aren't using Rupture" );
-    dot->add_talent( this, "Crimson Tempest", "if=spell_targets=1&(!runeforge.dashing_scoundrel|rune_word.frost.enabled)&master_assassin_remains=0&effective_combo_points>=(cp_max_spend-1)&refreshable&!exsanguinated&!debuff.shiv.up&target.time_to_die-remains>4", "Crimson Tempest on ST if in pandemic and nearly max energy and if Envenom won't do more damage due to TB/MA" );
+    dot->add_talent( this, "Crimson Tempest", "if=spell_targets=1&(!runeforge.dashing_scoundrel|rune_word.frost.enabled)&master_assassin_remains=0&effective_combo_points>=(cp_max_spend-1)&refreshable&(!exsanguinated|set_bonus.tier28_4pc&debuff.vendetta.up&exsanguinated_rate<=2)&!debuff.shiv.up&target.time_to_die-remains>4", "Crimson Tempest on ST if in pandemic and nearly max energy and if Envenom won't do more damage due to TB/MA" );
 
     // Direct damage abilities
     action_priority_list_t* direct = get_action_priority_list( "direct", "Direct damage abilities" );
@@ -7333,7 +7388,10 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
       return expr_t::create_constant( "exsanguinated_expr", 0 );
     }
 
-    return std::make_unique<exsanguinated_expr_t>( action );
+    return make_fn_expr( name_str, [ this, action ]() {
+      dot_t* d = action->get_dot( action->target );
+      return d->is_ticking() && actions::rogue_attack_t::cast_state( d->state )->get_exsanguinated_rate() != 1.0;
+    } );
   }
   // rtb_list.<buffs>
   else if ( split.size() == 3 && util::str_compare_ci( split[ 0 ], "rtb_list" ) && ! split[ 1 ].empty() )
