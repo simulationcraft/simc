@@ -1,5 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41031 Live (hotfix 2021-11-16/41031, no-networking)
-
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-13/41359, git build shadowlands 29e03311cb)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -1411,7 +1410,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Arcane Torrent (desc=Racial) (id=28730) 
-Hotfixed         : Attributes
 Class            : Mage, Warlock
 Race             : Blood Elf (0x200)
 School           : Arcane
@@ -1744,7 +1742,6 @@ Description      : $@spelldesc32388
 Tooltip          : Damage taken from $@auracaster increased by ${$s1}.1%.
 
 Name             : Blood Fury (desc=Racial) (id=33702) 
-Hotfixed         : Attributes
 Class            : Mage, Warlock
 Race             : Orc (0x2)
 School           : Physical
@@ -2096,7 +2093,6 @@ Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (desc=Racial) (id=68992) 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
