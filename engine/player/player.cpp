@@ -12533,14 +12533,14 @@ void player_collected_data_t::collect_data( const player_t& p )
   absorb.add( p.iteration_absorb );
 
   // player + pet dmg
-  double total_iteration_dmg = range::accumulate_proj(p.pet_list, p.iteration_dmg, &player_t::iteration_dmg);
+  double total_iteration_dmg = range::accumulate(p.pet_list, p.iteration_dmg, &player_t::iteration_dmg);
 
-  double total_priority_iteration_dmg = range::accumulate_proj(p.pet_list, p.priority_iteration_dmg, &player_t::priority_iteration_dmg);
+  double total_priority_iteration_dmg = range::accumulate(p.pet_list, p.priority_iteration_dmg, &player_t::priority_iteration_dmg);
 
   // player + pet heal
-  double total_iteration_heal = range::accumulate_proj(p.pet_list, p.iteration_heal, &player_t::iteration_heal);
+  double total_iteration_heal = range::accumulate(p.pet_list, p.iteration_heal, &player_t::iteration_heal);
 
-  double total_iteration_absorb = range::accumulate_proj(p.pet_list, p.iteration_absorb, &player_t::iteration_absorb);
+  double total_iteration_absorb = range::accumulate(p.pet_list, p.iteration_absorb, &player_t::iteration_absorb);
 
   compound_dmg.add( total_iteration_dmg );
   prioritydps.add( uptime ? total_priority_iteration_dmg / uptime : 0 );
