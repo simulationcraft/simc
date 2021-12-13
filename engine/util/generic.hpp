@@ -15,7 +15,6 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
-#include <numeric>
 #include <functional>
 #include <type_traits>
 
@@ -193,6 +192,9 @@ using iterator_t = decltype(range::begin(std::declval<R&>()));
 template <typename R>
 using value_type_t = typename std::iterator_traits<iterator_t<R>>::value_type;
 
+template <typename R>
+using reference_type_t = typename std::iterator_traits<iterator_t<R>>::reference;
+
 // Default projection for projection-enabled algorithms =====================
 
 struct identity {
@@ -237,26 +239,17 @@ inline Range& fill( Range& r, value_type_t<Range> const& t )
   return r;
 }
 
-template <typename Range, typename T>
-inline T accumulate( Range& r, const T& init )
+template <typename Range, typename T, typename Proj = identity,
+          typename U = decltype( std::declval<T&&>() + std::declval<std::invoke_result_t<Proj, reference_type_t<Range>>>() )>
+auto accumulate( Range&& r, T init, Proj proj = {} ) -> U
 {
-  return std::accumulate( range::begin( r ), range::end( r ), init );
-}
+  auto first = range::begin( r );
+  auto last = range::end( r );
 
-template <typename Range, typename T, typename BinaryOperation>
-inline T accumulate( Range& r, const T& init, BinaryOperation o )
-{
-  return std::accumulate( range::begin( r ), range::end( r ), init, o );
-}
-
-// This could probably be done with some SFINAE magic, for now just add a suffix
-template <typename Range, typename T, typename Proj>
-inline T accumulate_proj( Range& r, const T& init, Proj proj )
-{
-  const auto op = [&proj]( const T& current, auto&& v ) {
-    return std::invoke( proj, std::forward<decltype(v)>( v ) ) + current;
-  };
-  return std::accumulate( range::begin( r ), range::end( r ), init, op );
+  U accum = std::move( init );
+  for ( ; first != last; ++first )
+    accum = std::move( accum ) + std::invoke( proj, *first );
+  return accum;
 }
 
 #if defined( SC_GCC )

@@ -1914,8 +1914,8 @@ public:
 
   unsigned get_dot_count() const
   {
-    return range::accumulate( dot_ids, 0U, [ this ]( unsigned sum, unsigned add ) {
-      return sum + ab::player->get_active_dots( add );
+    return range::accumulate( dot_ids, 0U, [ this ]( int add ) {
+      return ab::player->get_active_dots( add );
     } );
   }
 
