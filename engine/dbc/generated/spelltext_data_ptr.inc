@@ -1,5 +1,5 @@
-// Spell text, wow build 9.2.0.41360
-static const std::array<spelltext_data_t, 15776> __ptr_spelltext_data { {
+// Spell text, wow build 9.2.0.41462
+static const std::array<spelltext_data_t, 15781> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -202,8 +202,8 @@ static const std::array<spelltext_data_t, 15776> __ptr_spelltext_data { {
   {   6262, "Instantly restores $s1% health$?s262031[, plus an additional ${$262080d/$262080t1*$262080s1}% over $262080d.][.]", 0, 0 },
   {   6343, "Blasts all enemies within $6343A1 yards for $s1 Physical damage$?(s316414&s199045)[, rooting them for $199042d and reducing their movement speed by $s2% for $d.]?s199045[ and roots them for $199042d.]?s316414[ and reduces their movement speed by $s2% for $d.][.] Deals reduced damage beyond $s5 targets.\r\n\r\n|cFFFFFFFFGenerates ${$s4/10} Rage.|r", "Movement speed reduced by $s2%.", 0 },
   {   6353, "Burns the enemy's soul, dealing $s1 Fire damage and applying Immolate.\r\n\r\n|cFFFFFFFFGenerates ${$281490s1/10} Soul Shard.|r", 0, 0 },
-  {   6358, "Seduces the target, disorienting for $6358d. Damage will break the effect. Only usable against Humanoids.", "Disoriented.", "Command Demon Ability" },
-  {   6360, "Whips the enemy, reducing movement speed by $s2% for $d.\r\n\r\n|cFF777777(Right-Click to toggle)|r", "Movement slowed by $s2%.", "Special Ability" },
+  {   6358, "Seduces the target, disorienting and causing them to walk towards the demon for $6358d. Damage may break the effect. Only usable against Humanoids.", "Disoriented.", "Command Demon Ability" },
+  {   6360, "Whips the enemy, reducing movement speed by $s1% and increasing damage taken by the demon by $s2% for $d, stacking ${$u-1} times.\r\n\r\n|cFF777777(Right-Click to toggle)|r", "Movement slowed by $s1% and damage taken from $@auracaster increased by $s2%.", "Special Ability" },
   {   6544, "Leap through the air toward a target location, slamming down with destructive force to deal $52174s1 Physical damage to all enemies within $52174a1 yards$?c3[, and resetting the remaining cooldown on Taunt][].", 0, 0 },
   {   6552, "Pummels the target, interrupting spellcasting and preventing any spell in that school from being cast for $d.", 0, 0 },
   {   6562, "Increases your Strength, Agility, and Intellect by $s1 (scales with level).", 0, "Racial Passive" },
@@ -257,7 +257,7 @@ static const std::array<spelltext_data_t, 15776> __ptr_spelltext_data { {
   {   8344, "Allows control of a mechanical target for a short time.  It may not always work and may just root the machine or make it very very angry.  Gnomish engineering at its finest.", 0, 0 },
   {   8348, "Heals wielder of $o1 damage over $d.", "Heals $s1 damage every $t1 sec.", "Rank 1" },
   {   8397, "Has a 2% chance when struck in combat of protecting you with a holy shield.", 0, "Rank 1" },
-  {   8512, "Summons a Windfury Totem with $s1 health at the feet of the caster for $d.  Party members within $s2 yds have a $?a343211[$327942h][${$327942h-$343211m1}]% chance when they auto-attack to swing an extra time.", 0, 0 },
+  {   8512, "Summons a Windfury Totem with $s1 health at the feet of the caster for $d.  Party members within $s2 yds have a $?a343211[$327942h][${$327942h-$343211m1}]% chance when they main-hand auto-attack to swing an extra time.", 0, 0 },
   {   8552, "Damage caused by the target is reduced by $s1 for $d.", "Physical damage done reduced by $s1.", 0 },
   {   8647, "Your damage weakens the target, increasing Physical damage taken by $113746s1%.", 0, 0 },
   {   8676, "Ambush the target, causing $s1 Physical damage.\r\n\r\n|cFFFFFFFFAwards $s2 combo $lpoint:points;.|r", 0, 0 },
@@ -1945,7 +1945,7 @@ static const std::array<spelltext_data_t, 15776> __ptr_spelltext_data { {
   {  60064, "Increases spell power by $s1 for $d.", "Increases spell power by $s1.", 0 },
   {  60065, "Increases attack power by $s1 for $d.", "Increases attack power by $s1.", 0 },
   {  60066, "Chance on critical hit to increase your attack power by $33649s1 for $33649d.", 0, 0 },
-  {  60103, "Charges your off-hand weapon with lava and burns your target, dealing $s1 Fire damage.\r\n\r\nDamage is increased by $s2% if your offhand weapon is imbued with Flametongue Weapon.", 0, 0 },
+  {  60103, "Charges your off-hand weapon with lava and burns your target, dealing $s1 Fire damage.\r\n\r\nDamage is increased by $s2% if your offhand weapon is imbued with Flametongue Weapon. $?s334033[Lava Lash will spread Flame Shock from your target to $334033s2 other nearby targets.][]", 0, 0 },
   {  60180, "Increases maximum health by $s1 for $d.", "Health increased by $s1.", 0 },
   {  60188, "Your damaging $?a343190[and healing ][]critical strikes deal ${$m1+200}% damage $?a343190[or healing ][]instead of the usual 200%.", 0, 0 },
   {  60196, "Critical strike increased by $s1.", "Critical strike increased by $s1.", 0 },
@@ -3724,7 +3724,7 @@ static const std::array<spelltext_data_t, 15776> __ptr_spelltext_data { {
   { 119582, "Clears $s1% of your damage delayed with Stagger.$?s322510[\r\n\r\nIncreases the absorption of your next Celestial Brew by up to $322510s1%, based on your current level of Stagger][]", 0, 0 },
   { 119607, "$@spelldesc115151", 0, 0 },
   { 119611, "$@spelldesc115151", "Restores $w1 health every $t1 sec.", 0 },
-  { 119898, "Commands your demon to perform its most powerful ability. This spell will transform based on your active pet. \r\n$?s30146[\r\nFelguard: $@spellname89766][]\r\nFelhunter: $@spellname19647\r\nVoidwalker: $@spellname17767\r\nSuccubus: $@spellname6358\r\nImp: $@spellname89808", 0, 0 },
+  { 119898, "Commands your demon to perform its most powerful ability. This spell will transform based on your active pet. \r\n$?s30146[\r\nFelguard: $@spellname89766][]\r\nFelhunter: $@spellname19647\r\nVoidwalker: $@spellname17767\r\nIncubus/Succubus: $@spellname6358\r\nImp: $@spellname89808", 0, 0 },
   { 119952, "$@spelldesc114158", 0, 0 },
   { 120032, "Strength or Agility increased by $s1.", "$?$w1!=0[Agility increased by $w1.  ][]$?$w2!=0[Strength increased by $w2.][]", 0 },
   { 120086, "$@spelldesc113656", "Stunned.", 0 },
@@ -5851,7 +5851,7 @@ static const std::array<spelltext_data_t, 15776> __ptr_spelltext_data { {
   { 188340, "Mix a Flask of the Seventh Demon at the Dalaran Alchemy Station.", 0, 0 },
   { 188343, "Mix a Flask of the Countless Armies at the Dalaran Alchemy Station.", 0, 0 },
   { 188346, "Mix a Flask of Ten Thousand Scars at the Dalaran Alchemy Station.", 0, 0 },
-  { 188389, "Sears the target with fire, causing $s1 Fire damage and then an additional $o2 Fire damage over $d.", "Suffering $w2 Fire damage every $t2 sec.", 0 },
+  { 188389, "Sears the target with fire, causing $s1 Fire damage and then an additional $o2 Fire damage over $d.\r\n\r\nFlame Shock can be applied to a maximum of $I targets.", "Suffering $w2 Fire damage every $t2 sec.", 0 },
   { 188401, "Build a fel campfire that is unpleasant to be around. It does allow cooking, though.", 0, 0 },
   { 188416, "$@spelldesc188021", 0, 0 },
   { 188421, "Create a soulbound Tier 18 item appropriate for your class.", 0, 0 },
@@ -5860,7 +5860,7 @@ static const std::array<spelltext_data_t, 15776> __ptr_spelltext_data { {
   { 188425, "Create a soulbound Tier 18 item appropriate for your class.", 0, 0 },
   { 188426, "Create a soulbound Tier 18 item appropriate for your class.", 0, 0 },
   { 188427, "Create a soulbound trinket appropriate for your class.", 0, 0 },
-  { 188443, "Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.$?s187874[\r\n\r\nIf Chain Lightning hits more than 1 target, each target hit by your Chain Lightning increases the damage of your next Crash Lightning by $333964s1%.][]$?a343725[\r\n\r\n|cFFFFFFFFGenerates $343725s5 Maelstrom per target hit.|r][]", 0, 0 },
+  { 188443, "Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.$?s187874[\r\n\r\nIf Chain Lightning hits more than 1 target, each target hit by your Chain Lightning increases the damage of your next Crash Lightning by $333964s1%.][]$?s334308[\r\n\r\nEach target hit by Chain Lightning reduces the cooldown of Crash Lightning by ${$334308m1/1000}.1 sec.][]$?a343725[\r\n\r\n|cFFFFFFFFGenerates $343725s5 Maelstrom per target hit.|r][]", 0, 0 },
   { 188499, "Strike $?a206416[your primary target for $<firstbloodDmg> Physical damage and ][]all nearby enemies for $<baseDmg> Physical damage$?s320398[, and increase your chance to dodge by $193311s1% for $193311d.][. Deals reduced damage beyond $199552s1 targets.]", "Dodge chance increased by $s2%.", 0 },
   { 188501, "Allows you to see enemies and treasures through physical barriers, as well as enemies that are stealthed and invisible. Lasts $d.\r\n\r\nAttacking or taking damage disrupts the sight.", "Can see invisible and stealthed enemies.\r\nCan see enemies and treasures through physical barriers.", 0 },
   { 188505, "Deal $s1 Shadow damage.", 0, 0 },
@@ -13822,7 +13822,7 @@ static const std::array<spelltext_data_t, 15776> __ptr_spelltext_data { {
   { 333858, "While Conqueror's Banner is active, deal $333860s1 Shadow damage to all enemies within $333860A1 yds of you every $350605t1 sec.", "While Conqueror's Banner is active, deal $333860s1 Shadow damage to all enemies within $333860A1 yds of you every $350605t1 sec.", 0 },
   { 333860, "$@spelldesc333858", 0, 0 },
   { 333885, "Periodically shuffle the deck while in combat.", "Darkmoon Deck: Putrescence is usable.\r\n\r\nCritical Strike Chance:", 0 },
-  { 333889, "Your next Imp, Voidwalker, Succubus, Felhunter, or Felguard Summon spell is free and has its casting time reduced by $/1000;S1 sec.\r\n", "Imp, Voidwalker, Succubus, Felhunter, or Felguard casting time reduced by $/1000;S1 sec.", 0 },
+  { 333889, "Your next Imp, Voidwalker, Incubus, Succubus, Felhunter, or Felguard Summon spell is free and has its casting time reduced by $/1000;S1 sec.\r\n", "Imp, Voidwalker, Succubus, Felhunter, or Felguard casting time reduced by $/1000;S1 sec.", 0 },
   { 333891, "Conqueror's Banner makes you immune to crowd control effects and grants you $333892s1% Leech.", "Conqueror's Banner makes you immune to crowd control effects and grants you $333892s1% Leech.", 0 },
   { 333892, "$@spelldesc333891", "Leech increased by $w1%.\r\nImmune to crowd control effects.", 0 },
   { 333919, "$?c1[Lava Burst now has ${$s2+1}][Riptide, Healing Stream Totem, and Lava Burst now have ${$s2+1}] charges. Effects that reset $?c1[its][their] remaining cooldown will instead grant 1 charge.", 0, 0 },
@@ -13834,7 +13834,7 @@ static const std::array<spelltext_data_t, 15776> __ptr_spelltext_data { {
   { 333964, "$@spelldesc187874", "Damage of your next Crash Lightning increased by $s1%.", 0 },
   { 333974, "Erupt a burst of fiery damage from all targets affected by your Flame Shock, dealing $333977s1 Fire damage to up to $333977I targets within $333977A1 yds of your Flame Shock targets.", 0, 0 },
   { 333977, "$@speldesc333974", 0, 0 },
-  { 334033, "Lava Lash cooldown reduced by ${$m1/-1000}.1 sec.", 0, "Rank 2" },
+  { 334033, "Lava Lash cooldown reduced by ${$m1/-1000}.1 sec, and Lava Lash is used against a target affected by your Flame Shock, Flame Shock will be spread to up to $s2 enemies near the target.", 0, "Rank 2" },
   { 334046, "Lava Lash now increases the damage of Flame Shock on its target by $334168s1% for $334168d.", 0, 0 },
   { 334058, "Cause the target to explode with energy, dealing $s1 Shadow damage split evenly to all enemies within 10 yards. Enemies hit are ${$311464S1*0.01}% to ${$311471S1*0.01}% more likely to be critically hit by you. The critical strike chance amount depends on the topmost card of the deck. Lasts $d.", "Chance to be critically hit by caster increased by $W2%.", 0 },
   { 334066, "While above $m1% health, you increase nearby party members' maximum health by $334067m1%.", 0, 0 },
@@ -15265,7 +15265,7 @@ static const std::array<spelltext_data_t, 15776> __ptr_spelltext_data { {
   { 354051, "$@spelldesc352366", "Rooted.", 0 },
   { 354053, "$@spelldesc352373", "Critical Strike chance increased by $s1%.", 0 },
   { 354054, "$@spelldesc352373", "Versatility increased by $s1%.", 0 },
-  { 354109, "Each time Ravenous Frenzy is applied its duration is increased by 0.2 sec. Additionally, Ravenous Frenzy lingers and will not overcome you for $355315d after it ends.", 0, 0 },
+  { 354109, "Each time Ravenous Frenzy is applied its duration is increased by 0.1 sec. Additionally, Ravenous Frenzy lingers and will not overcome you for $355315d after it ends.", 0, 0 },
   { 354115, "You and your Kindred Spirit each gain a bonus secondary stat based on their Covenant. This bonus is doubled while the bond is Empowered.\r\n\r\n|CFFffffffKyrian|r: Mastery increased by $357564s2.\r\n|CFFffffffNight Fae|r: Haste increased by $357564s3%.\r\n|CFFffffffVenthyr|r: Critical Strike chance increased by $357564s4%.\r\n|CFFffffffNecrolord|r: Versatility increased by $357564s5%.", 0, 0 },
   { 354118, "Convoke the Spirits' cooldown is reduced by ${($abs($s1)/120000)*100}% and its duration is reduced by $s2%. Convoke the Spirits has an increased chance to use an exceptional spell or ability.", 0, 0 },
   { 354123, "Adaptive Swarm has a $s1% chance to split into two Swarms each time it jumps.", "Adaptive Swarm has a $w1% chance to split into two Swarms each time it jumps.", 0 },
@@ -15375,7 +15375,7 @@ static const std::array<spelltext_data_t, 15776> __ptr_spelltext_data { {
   { 356218, "Each pulse of Fae Transfusion's damage effect reduces the cooldown of $?a137039[Healing Tide Totem]?a137040[Fire Elemental][Feral Spirit] by $?a137039[${$m1/1000}.1 sec]?a137040[${$m2/1000}.1 sec][${$m3/1000}.1 sec] and increases your critical strike chance by $358945s1% for $358945d.", 0, 0 },
   { 356229, "Cast the runes to reveal fate.", 0, 0 },
   { 356248, "Discover an upgrade to a random Conduit from among your lowest item level Conduits for your current specialization, up to item level 252.", 0, 0 },
-  { 356250, "Up to $s1 friendly targets healed by Chain Harvest will have Riptide cast on them. Up to $s2 enemy targets damaged by Chain Harvest will have Flame Shock cast on them.", 0, 0 },
+  { 356250, "Up to $s1 friendly targets healed by Chain Harvest will have Riptide cast on them. Up to $s2 enemy targets damaged by Chain Harvest will have Flame Shock cast on them. Flame Shock critical strikes reduce the cooldown of Chain Harvest by ${$m3/1000}.1 sec.", 0, 0 },
   { 356254, "When Scouring Tithe generates Soul Shards, gain $356255s1% increased movement speed and $356255s2% increased critical strike chance for $356255d. If Scouring Tithe expires, gain $360953s1% increased movement speed and $360953s2% increased critical strike chance instead.", 0, 0 },
   { 356255, "$@spelldesc356254", "Movement speed increased by $s1%.\r\nCritical strike chance increased by $s2%.", 0 },
   { 356257, "$@spelldesc355748", "Absorbs the next $w1 damage.", 0 },
@@ -15621,7 +15621,7 @@ static const std::array<spelltext_data_t, 15776> __ptr_spelltext_data { {
   { 363329, "Increases your movement and mounted speed in outdoor Shadowlands zones by $?pc94626[${s4+s3*5}]?pc94651[${s4+s3*4}]?pc94650[${s4+s3*3}]?pc64649[${s4+s3*2}]?pc94746[${s4+s3}][$s4]%.\r\n\r\nThis ability grows more powerful as you research the Cyphers of the First Ones.", 0, 0 },
   { 363330, "Allows you to reconstruct yourself upon death in outdoor Shadowlands zones with $363429s1% health and mana. This effect can occur only once every $?pc94626[${s3+s2*5}]?pc94651[${s3+s2*4}]?pc94650[${s3+s2*3}]?pc64649[${s3+s2*2}]?pc94746[${s3+s2}][$s3] minutes.\r\n\r\nThis ability grows more powerful as you research the Cyphers of the First Ones.", 0, 0 },
   { 363411, "Consuming Killing Machine fires a Glacial Advance through your target.\r\n\r\n", 0, 0 },
-  { 363469, "Consuming a Dark Thought causes your shadow to animate for $s2 sec. Your shadow follows you, dealing $363656o1 Shadow damage to your target over the duration.", 0, 0 },
+  { 363469, "Consuming a Dark Thought causes your shadow to animate, dealing ${$366971s2*$363656d} Shadow damage over $s2 sec to all enemies within 10 yards of your target.", 0, 0 },
   { 363481, "Throw the cosmic resonator which explodes after $s2 sec, dealing $363491s1 Cosmic damage split between all nearby enemies.\r\n\r\nDamage is increased for each enemy struck, up to $s3 enemies.", 0, 0 },
   { 363491, "$@spelldesc363481", 0, 0 },
   { 363492, "Divine Conversation increases the effectiveness of your next Holy-Word-affecting spell by $363727s2%.", 0, 0 },
@@ -15642,7 +15642,7 @@ static const std::array<spelltext_data_t, 15776> __ptr_spelltext_data { {
   { 363591, "Vendetta causes Poisons and Bleeds on your target to expire $s1% faster.", 0, 0 },
   { 363592, "Pistol Shot has a $s1% chance to load a Hidden Bullet from your sleeves, up to 6 times. After loading 6 bullets, Between the Eyes has its cooldown reset and costs no energy.", 0, 0 },
   { 363655, "Increases cyphers acquired by $s2%.", 0, 0 },
-  { 363656, "Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d.", "Taking Shadow damage every $t1 sec.", 0 },
+  { 363656, "Shadow energy radiates from the target, dealing $366971s1 Shadow damage over $d to all enemies within $366971a yards of the target.", "Taking Shadow damage every $t1 sec.", 0 },
   { 363665, "Kill Command critical hits increase the damage and cooldown reduction of your next Cobra Shot by $s2%.", 0, 0 },
   { 363666, "Spending $s1 Focus grants you $s2 $Lcharge:charges; of Trick Shots.", 0, 0 },
   { 363667, "Your Wildfire Bombs deal $s1% additional damage. This bonus is increased to $s2% for bombs empowered by Mad Bombardier.", 0, 0 },
@@ -15701,7 +15701,7 @@ static const std::array<spelltext_data_t, 15776> __ptr_spelltext_data { {
   { 364417, "Essence Font's residual healing effect is increased by $s2% and lasts an additional ${$s1/1000} sec.", 0, 0 },
   { 364418, "Increases Fists of Fury damage by $s1%.", 0, 0 },
   { 364423, "Entering Lunar Eclipse creates a Fury of Elune at $s1% effectiveness that follows your current target for $s2 sec.", 0, 0 },
-  { 364424, "Dark Thoughts has an additional $s1% chance to trigger for each Shadow damage over time effect on the target.", 0, 0 },
+  { 364424, "Casting Devouring Plague has a $s1% chance to grant Dark Thought. Casting Searing Nightmare has a $s2% chance to grant Dark Thought.", 0, 0 },
   { 364427, "Your Holy Words begin Divine Conversation, increasing the cooldown reduction of your next Holy-Word-affecting spell by $363727s1 sec.", 0, 0 },
   { 364428, "Casting Power Word: Shield or Shadow Mend has a $h% chance to make your next cast of Shadow Mend have no cost or cast time.", 0, 0 },
   { 364433, "Casting Rain of Fire or Chaos Bolt has a $h% chance to make the next cast of the other free.", 0, 0 },
@@ -15724,7 +15724,7 @@ static const std::array<spelltext_data_t, 15776> __ptr_spelltext_data { {
   { 364523, "$@spelldesc364472", "Gaining Lava Surge every $t1 sec. Lava Burst deals $w2% additional damage.", 0 },
   { 364539, "Increases your Arcane damage dealt to enemies affected by Touch of the Magi by $s1%.", 0, 0 },
   { 364544, "Enemies hit by Comet Storm take $363544s1% increased damage from your Frost Spells, up to ${$363544s1*$363544u}% for $363544d.", 0, 0 },
-  { 364553, "$?s262161[Warbreaker][Colossus Smash] lasts ${$s1/1000} sec longer and increases your damage dealt to affected enemies by an additional 10%.", 0, 0 },
+  { 364553, "$?s262161[Warbreaker][Colossus Smash] lasts ${$s1/1000} sec longer and increases your damage dealt to affected enemies by an additional $s2%.", 0, 0 },
   { 364554, "Raging Blow deals $s2% increased damage and gains an additional charge.", 0, 0 },
   { 364555, "Your Main Gauche has a $s1% chance to fire a Pistol Shot.", 0, 0 },
   { 364557, "Shadowstrike has a $s1% chance to grant Shadow Blades for ${$s3/1000} sec.", 0, 0 },
@@ -15751,7 +15751,7 @@ static const std::array<spelltext_data_t, 15776> __ptr_spelltext_data { {
   { 365539, "Increase Avoidance by $s2%.", "Avoidance increased by $s2%.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
   { 365540, "Increase $pri by $s1%.", "$pri increased by $s1%.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
   { 365541, "Increase Stamina by $s1%.", "Stamina increased by $s1%.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
-  { 365542, "[PH] Restores $s1% of max health every second to raid or party members within 30 yd range.", "[PH] Restores $s1% of max health every second to party members within 30 yd range.\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365542, "Restores $365602s1% of max health to raid or party members within $365602A1 yards every $365602t1 seconds.", "Restores $365602s1% of max health to raid or party members within $365602A1 yards every $365602t1 seconds.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
   { 365543, "Inflict $366184s1% max health damage to up to $366184i enemies within $366184A1 yards every $t1 seconds. Elite enemies suffer ${$366184s1/3}% max health damage.", "Inflict $366184s1% max health damage to up to $366184i enemies within $366184A1 yards every $t1 seconds. Elite enemies suffer ${$366184s1/3}% max health damage.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
   { 365544, "$s2% chance to deflect enemy Physical attacks.", "$s2% chance to deflect enemy Physical attacks.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
   { 365545, "$s2% chance to absorb enemy Spell damage.", "$s2% chance to absorb enemy Spell damage.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
@@ -15761,6 +15761,7 @@ static const std::array<spelltext_data_t, 15776> __ptr_spelltext_data { {
   { 365549, "Protects the bearer from stun, root, and snare effects. This effect can only occur once every $366085d", "You are protected from stun, root, and snare effects. This effect can only occur once every $366085d.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
   { 365550, "Your equipment suffers no durability loss.", "Your equipment suffers no durability loss.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
   { 365551, "Your abilities have a $h% chance to incur no cooldown.", "Your abilities have a $h% chance to incur no cooldown.\r\n\r\nOnly works in Shadowlands outdoor areas or Oribos.", 0 },
+  { 365602, 0, "Restores $s1% of max health every second.", 0 },
   { 365640, "$@spelldesc202770", 0, 0 },
   { 365664, "Add the Infernal affix to a Mythic Keystone.", 0, 0 },
   { 366057, "$?a366059[Deal $s2 Cosmic damage to melee attackers.][Increases your Block by $s1.]", 0, 0 },
@@ -15775,14 +15776,18 @@ static const std::array<spelltext_data_t, 15776> __ptr_spelltext_data { {
   { 366779, "$@spelldesc364470", "Chain Heal critical chance increased by $w1%.", 0 },
   { 366780, "$@spelldesc363672", 0, 0 },
   { 366792, "Keg Smash deals an additional $s1% damage, heals you for $s2% of damage dealt, and grants $s3% of damage dealt as maximum health for $366794d.\r\n", 0, 0 },
+  { 366793, "Heals for $s1.\r\n", 0, 0 },
   { 366794, "Increase maximum health by $s1.\r\n", "Increases maximum health by $w1.", 0 },
+  { 366861, "Gaze deeply into the orb while sitting, pondering its secrets.", 0, 0 },
+  { 366882, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
+  { 366971, "$@spelldesc363656", "Causing shadow damage to all targets within $a2 yards.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.0.41360
+// spelltext hotfix entries, wow build 9.2.0.41462
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.2.0.41360
+// Spell description variables, wow build 9.2.0.41462
 static const std::array<spelldesc_vars_data_t, 306> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -16092,7 +16097,7 @@ static const std::array<spelldesc_vars_data_t, 306> __ptr_spelldesc_vars_data { 
   {  364365, "$heal=${$SP*$s1/100}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.0.41360
+// spelldesc_vars hotfix entries, wow build 9.2.0.41462
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
