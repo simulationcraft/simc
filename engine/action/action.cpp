@@ -1305,9 +1305,12 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
     weapon_amount *= weapon_slot_modifier;
   }
 
-  // Apply bonus direct damage after the off-hand penalty as this seems to be the common case in
-  // game
-  amount += bonus_da( state );
+  // Bonus direct damage historically appears to bypass the OH penalty for yellow attacks in-game
+  // White damage bonuses (such as Jeweled Signet of Melandrus and older weapon enchants) do not
+  if ( !special )
+    amount += bonus_da( state ) * weapon_slot_modifier;
+  else
+    amount += bonus_da( state );
 
   amount *= state->composite_da_multiplier();
 
