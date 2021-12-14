@@ -1168,8 +1168,8 @@ private:
     crackling_tiger_lightning_tick_t( xuen_pet_t* p )
       : pet_spell_t( "crackling_tiger_lightning_tick", p, p->o()->passives.crackling_tiger_lightning )
     {
-      dual = direct_tick = background = may_crit = true;
-      merge_report                               = false;
+      background   = true;
+      merge_report = false;
     }
 
     void impact( action_state_t* s ) override
@@ -1184,23 +1184,20 @@ private:
   struct crackling_tiger_lightning_t : public pet_spell_t
   {
     crackling_tiger_lightning_t( xuen_pet_t* p, util::string_view options_str )
-      : pet_spell_t( "crackling_tiger_lightning", p, p->o()->passives.crackling_tiger_lightning )
+      : pet_spell_t( "crackling_tiger_lightning", p, p->o()->passives.crackling_tiger_lightning_driver )
     {
       parse_options( options_str );
+      s_data_reporting = p->o()->passives.crackling_tiger_lightning;
 
-      // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen
-      // summon duration, for example)
       dot_duration        = p->o()->spec.invoke_xuen->duration();
-      hasted_ticks        = true;
-      may_miss            = false;
-      dynamic_tick_action = true;
-      base_tick_time =
-          p->o()->passives.crackling_tiger_lightning_driver->effectN( 1 ).period();  // trigger a tick every second
-      cooldown->duration      = p->o()->spec.invoke_xuen->duration();                // we're done after 24 seconds
-      attack_power_mod.direct = 0.0;
-      attack_power_mod.tick   = 0.0;
+      cooldown->duration  = p->o()->spec.invoke_xuen->duration();                // we're done when Xuen despawns
 
       tick_action = new crackling_tiger_lightning_tick_t( p );
+    }
+
+    double last_tick_factor( const dot_t*, timespan_t, timespan_t ) const
+    {
+      return 0.0;
     }
   };
 
@@ -1283,8 +1280,8 @@ private:
     crackling_tiger_lightning_tick_call_to_arms_t( call_to_arms_xuen_pet_t* p )
       : pet_spell_t( "crackling_tiger_lightning_tick_call_to_arms", p, p->o()->passives.crackling_tiger_lightning )
     {
-      dual = direct_tick = background = may_crit = true;
-      merge_report                               = false;
+      background  = true;
+      merge_report = false;
     }
 
     void impact( action_state_t* s ) override
@@ -1299,22 +1296,20 @@ private:
   struct call_to_arms_crackling_tiger_lightning_t : public pet_spell_t
   {
     call_to_arms_crackling_tiger_lightning_t( call_to_arms_xuen_pet_t* p, util::string_view options_str )
-      : pet_spell_t( "crackling_tiger_lightning_call_to_arms", p, p->o()->passives.crackling_tiger_lightning )
+      : pet_spell_t( "crackling_tiger_lightning_call_to_arms", p, p->o()->passives.crackling_tiger_lightning_driver )
     {
       parse_options( options_str );
+      s_data_reporting = p->o()->passives.crackling_tiger_lightning;
 
-      // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen
-      // summon duration, for example)
       dot_duration        = p->o()->passives.call_to_arms_invoke_xuen->duration();
-      hasted_ticks        = true;
-      may_miss            = false;
-      dynamic_tick_action = true;
-      base_tick_time = p->o()->passives.crackling_tiger_lightning_driver->effectN( 1 ).period();  // trigger a tick every second
       cooldown->duration      = p->o()->passives.call_to_arms_invoke_xuen->duration();   // we're done after 12 seconds
-      attack_power_mod.direct = 0.0;
-      attack_power_mod.tick   = 0.0;
 
       tick_action = new crackling_tiger_lightning_tick_call_to_arms_t( p );
+    }
+
+    double last_tick_factor( const dot_t*, timespan_t, timespan_t ) const
+    {
+      return 0.0;
     }
   };
 
