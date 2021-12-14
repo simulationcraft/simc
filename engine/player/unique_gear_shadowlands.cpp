@@ -34,14 +34,14 @@ struct shadowlands_aoe_proc_t : public generic_aoe_proc_t
     // Default still seems to be 6, however shadowlands seems to indicate the maximum
     // number (slightly confusingly) in the tooltip data, which is referencable directly
     // from spell data
-    max_scaling_targets = 6;
+    max_scaling_targets = 5;
   }
 
   shadowlands_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, unsigned spell_id,
                        bool aoe_damage_increase_ = false ) :
     generic_aoe_proc_t( effect, name, spell_id, aoe_damage_increase_ )
   {
-    max_scaling_targets = 6;
+    max_scaling_targets = 5;
   }
 };
 
@@ -539,7 +539,7 @@ void soul_igniter( special_effect_t& effect )
       base_dd_min = e.player->find_spell( 345214 )->effectN( 2 ).min( e.item );
       base_dd_max = e.player->find_spell( 345214 )->effectN( 2 ).max( e.item );
       max_time_multiplier = e.player->find_spell( 345214 )->effectN( 4 ).percent();
-      max_scaling_targets = as<unsigned>( e.player->find_spell( 345211 )->effectN( 2 ).base_value() + 1 );
+      max_scaling_targets = as<unsigned>( e.player->find_spell( 345211 )->effectN( 2 ).base_value() );
     }
 
     double action_multiplier() const override
@@ -1053,7 +1053,7 @@ void satchel_of_misbegotten_minions( special_effect_t& effect )
     {
       base_dd_min = e.driver()->effectN( 1 ).min( e.item );
       base_dd_max = e.driver()->effectN( 1 ).max( e.item );
-      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() + 1 );
+      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() );
     }
   };
 
@@ -1593,7 +1593,7 @@ void decanter_of_animacharged_winds( special_effect_t& effect )
     splash_of_animacharged_wind_t( const special_effect_t& e ) :
       shadowlands_aoe_proc_t( e, "splash_of_animacharged_wind", e.trigger(), true )
     {
-      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() + 1 );
+      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() );
     }
   };
 
@@ -1612,7 +1612,7 @@ void bloodspattered_scale( special_effect_t& effect )
     blood_barrier_t( const special_effect_t& e, buff_t* absorb_ ) :
       shadowlands_aoe_proc_t( e, "blood_barrier", e.trigger(), true ), absorb( absorb_ )
     {
-      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() + 1 );
+      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() );
     }
 
     void execute() override

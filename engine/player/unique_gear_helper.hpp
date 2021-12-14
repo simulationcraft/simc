@@ -533,8 +533,7 @@ struct base_generic_aoe_proc_t : public base_generic_proc_t<BASE>
   base_generic_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, unsigned spell_id,
                        bool aoe_damage_increase_ = false )
     : base_generic_proc_t<BASE>( effect, name, spell_id ), aoe_damage_increase( aoe_damage_increase_ ),
-    // BFA default
-    max_scaling_targets( 6 )
+    max_scaling_targets( 5 )
   {
     this->aoe              = -1;
     this->split_aoe_damage = true;
@@ -542,7 +541,8 @@ struct base_generic_aoe_proc_t : public base_generic_proc_t<BASE>
 
   base_generic_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, const spell_data_t* s,
                        bool aoe_damage_increase_ = false )
-    : base_generic_proc_t<BASE>( effect, name, s ), aoe_damage_increase( aoe_damage_increase_ )
+    : base_generic_proc_t<BASE>( effect, name, s ), aoe_damage_increase( aoe_damage_increase_ ),
+    max_scaling_targets( 5 )
   {
     this->aoe              = -1;
     this->split_aoe_damage = true;
@@ -558,7 +558,7 @@ struct base_generic_aoe_proc_t : public base_generic_proc_t<BASE>
     {
       // For some reason, using std::min here barfs Visual Studio 2017, so use clamp
       // instead which seems to work.
-      am *= 1.0 + 0.15 * clamp( state->n_targets -1u, 0u, max_scaling_targets );
+      am *= 1.0 + 0.15 * clamp( state->n_targets - 1u, 0u, max_scaling_targets - 1u );
     }
 
     return am;
