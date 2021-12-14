@@ -1657,9 +1657,7 @@ void player_t::init_initial_stats()
   // sim_t::enchant).
   if ( !is_pet() && !is_enemy() )
   {
-    gear_stats_t item_stats =
-        std::accumulate( items.begin(), items.end(), gear_stats_t(),
-                         []( const gear_stats_t& t, const item_t& i ) { return t + i.total_stats(); } );
+    gear_stats_t item_stats = range::accumulate( items, gear_stats_t{}, &item_t::total_stats );
 
     for ( stat_e stat = STAT_NONE; stat < STAT_MAX; ++stat )
     {
