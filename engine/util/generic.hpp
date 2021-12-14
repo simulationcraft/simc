@@ -265,19 +265,15 @@ inline T ( &fill( T ( &r )[ N ], const T& t ) )[ N ]
 }
 #endif
 
-template <typename Range, typename T>
+template <typename Range, typename T,
+          typename Enable = decltype( std::declval<reference_type_t<Range>>() == std::declval<const T&>() )>
 inline iterator_t<Range> find( Range& r, T const& t )
 {
-  // Static assert for human-readable error message. Not 100% technically
-  // correct, since "comparability" is enough, but for our purposes convertible
-  // is good enough.
-  static_assert(
-      std::is_convertible<T, value_type_t<Range>>::value,
-      "Object to find must be convertible to value type of range" );
   return std::find( range::begin( r ), range::end( r ), t );
 }
 
-template <typename Range, typename T, typename Proj>
+template <typename Range, typename T, typename Proj,
+          typename Enable = decltype( std::declval<std::invoke_result_t<Proj, reference_type_t<Range>>>() == std::declval<const T&>() )>
 inline iterator_t<Range> find( Range& r, T const& value, Proj proj )
 {
   const auto pred = [&value, &proj]( auto&& v ) {
