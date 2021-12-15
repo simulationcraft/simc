@@ -111,6 +111,7 @@ public:
     buff_t* overpower;
     buff_t* ravager;
     buff_t* recklessness;
+    buff_t* reckless_abandon; // fake buff to control duration of ability override
     buff_t* revenge;
     buff_t* shield_block;
     buff_t* shield_wall;
@@ -3429,7 +3430,7 @@ struct raging_blow_t : public warrior_attack_t
     {
       return false;
     }
-    if ( p()->talents.reckless_abandon->ok() && p()->buff.recklessness->check() )
+    if ( p()->talents.reckless_abandon->ok() && p()->buff.reckless_abandon->check() )
     {
       return false;
     }
@@ -3566,7 +3567,7 @@ struct crushing_blow_t : public warrior_attack_t
     {
       return false;
     }
-    if ( !p()->talents.reckless_abandon->ok() || !p()->buff.recklessness->check() )
+    if ( !p()->talents.reckless_abandon->ok() || !p()->buff.reckless_abandon->check() )
     {
       return false;
     }
@@ -5334,6 +5335,7 @@ struct fury_condemn_parent_t : public warrior_attack_t
     if ( p()->legendary.sinful_surge->ok() && p()->buff.recklessness->check() )
     {
       p()->buff.recklessness->extend_duration( p(), timespan_t::from_millis( p()->legendary.sinful_surge->effectN( 2 ).base_value() ) );
+      p()->buff.reckless_abandon->extend_duration( p(), timespan_t::from_millis( p()->legendary.sinful_surge->effectN( 2 ).base_value() ) );
     }
   }
 
@@ -5814,6 +5816,10 @@ struct recklessness_t : public warrior_spell_t
         action_t* tormet_ability = p()->rng().roll( torment_chance ) ? p()->active.signet_avatar : p()->active.signet_bladestorm_f;
         tormet_ability->schedule_execute();
       }
+    }
+    if ( p()->talents.reckless_abandon->ok() )
+    {
+      p()->buff.reckless_abandon->trigger();
     }
   }
 
@@ -7399,6 +7405,9 @@ void warrior_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )
     ->set_default_value( spec.recklessness->effectN( 1 ).percent() )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int after ) { if ( after == 0  && this->legendary.will_of_the_berserker->ok() ) buff.will_of_the_berserker->trigger(); });
+
+  buff.reckless_abandon = make_buff( this, "reckless_abandon", find_spell( 335101 ) )
+    ->apply_affecting_conduit( conduit.depths_of_insanity );
 
   buff.sudden_death = make_buff( this, "sudden_death", talents.sudden_death );
 
