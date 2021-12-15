@@ -8,12 +8,12 @@
 #include "report/report_helper.hpp"
 #include "report/report_timer.hpp"
 #include "report/charts.hpp"
-#include "report/sc_highchart.hpp"
+#include "report/highchart.hpp"
 #include "data/report_data.inc"
 #include "interfaces/sc_js.hpp"
 #include "util/git_info.hpp"
 #include "sim/scale_factor_control.hpp"
-#include "sim/sc_profileset.hpp"
+#include "sim/profileset.hpp"
 #include "fmt/chrono.h"
 
 #include <iostream>

@@ -1,5 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41031 Live (hotfix 2021-11-16/41031, no-networking)
-
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -78,7 +77,6 @@ $blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
 Name             : Blood Fury (desc=Racial) (id=20572) 
-Hotfixed         : Attributes
 Class            : Warrior, Hunter, Rogue, Death Knight
 Race             : Orc (0x2)
 School           : Physical
@@ -629,7 +627,6 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=39872)    : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50300 | PvP Coefficient: 1.30000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.3)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Death Coil (id=47633) [Spell Family (15)] 
@@ -1166,7 +1163,6 @@ Effects          :
 Description      : $@spelldesc53343
 
 Name             : Arcane Torrent (desc=Racial) (id=50613) 
-Hotfixed         : Attributes
 Class            : Death Knight
 Race             : Blood Elf (0x200)
 School           : Arcane
@@ -2194,7 +2190,6 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
 Effects          :
 #1 (id=60368)    : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.33170 | PvP Coefficient: 1.30000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.3)
 Description      : $@spelldesc49143
 
 Name             : Obliterate Off-Hand (id=66198) [Spell Family (15)] 
@@ -2262,7 +2257,6 @@ Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (desc=Racial) (id=68992) 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -3936,7 +3930,6 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=281049)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12500 | PvP Coefficient: 1.30000 | Misc Value: 127 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1 -> 1.3)
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : A disease that deals $o Shadow damage over $d. It erupts when the infected target dies, dealing $191685s1 Shadow damage to nearby enemies.
@@ -6133,7 +6126,6 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
 Effects          :
 #1 (id=331347)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.33170 | PvP Coefficient: 1.30000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.3)
 Description      : $@spelldesc49143
 
 Name             : Necrotic Strike (desc=PvP Talent) (id=223829) [Spell Family (15)] 
@@ -11004,7 +10996,6 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
 Effects          :
 #1 (id=815761)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.49100 | PvP Coefficient: 1.30000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.3)
 Description      : $@spelldesc49143
 
 Name             : Dark Transformation (desc=Rank 2) (id=325554) [Spell Family (15), Passive] 

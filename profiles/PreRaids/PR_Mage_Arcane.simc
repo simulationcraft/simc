@@ -75,6 +75,7 @@ actions+=/fireblood,if=buff.arcane_power.up
 actions+=/ancestral_call,if=buff.arcane_power.up
 actions+=/use_items,if=buff.arcane_power.up
 actions+=/use_item,effect_name=gladiators_badge,if=buff.arcane_power.up|cooldown.arcane_power.remains>=55&debuff.touch_of_the_magi.up
+actions+=/use_item,name=moonlit_prism,if=cooldown.arcane_power.remains<=6&cooldown.touch_of_the_magi.remains<=6
 actions+=/use_item,name=empyreal_ordnance,if=cooldown.arcane_power.remains<=15&cooldown.touch_of_the_magi.remains<=15
 actions+=/use_item,name=dreadfire_vessel,if=cooldown.arcane_power.remains>=20|!variable.ap_on_use=1|(time=0&variable.fishing_opener=1&runeforge.siphon_storm)
 actions+=/use_item,name=soul_igniter,if=cooldown.arcane_power.remains>=30|!variable.ap_on_use=1
@@ -134,7 +135,7 @@ actions.aoe+=/arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_
 actions.aoe+=/arcane_orb,if=buff.arcane_charge.stack=0&(cooldown.arcane_power.remains>15|!(covenant.kyrian&runeforge.arcane_infinity))
 actions.aoe+=/nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack
 actions.aoe+=/arcane_missiles,if=buff.clearcasting.react&runeforge.arcane_infinity&((talent.amplification&active_enemies<8)|active_enemies<5)
-actions.aoe+=/arcane_missiles,if=buff.clearcasting.react&talent.arcane_echo&debuff.touch_of_the_magi.up&(talent.amplification|active_enemies<9)
+actions.aoe+=/arcane_missiles,if=buff.clearcasting.react&talent.arcane_echo&debuff.touch_of_the_magi.up
 actions.aoe+=/arcane_missiles,if=buff.clearcasting.react&talent.amplification&active_enemies<4
 actions.aoe+=/arcane_explosion,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack
 actions.aoe+=/arcane_explosion,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&prev_gcd.1.arcane_barrage

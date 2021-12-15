@@ -7,10 +7,10 @@
 #include "MainWindow.hpp"
 #include "interfaces/bcp_api.hpp"
 #include "lib/fmt/format.h"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "sc_OptionsTab.hpp"
 #include "simulationcraftqt.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 
 #include <utility>
 

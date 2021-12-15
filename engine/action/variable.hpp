@@ -6,7 +6,7 @@
 #pragma once
 
 #include "config.hpp"
-#include "sc_action.hpp"
+#include "action.hpp"
 #include "sc_enums.hpp"
 #include "util/string_view.hpp"
 #include <string>

@@ -4,9 +4,9 @@
 // ==========================================================================
 
 #include "player_stat_cache.hpp"
-#include "sc_player.hpp"
-#include "action/sc_action_state.hpp"
-#include "action/sc_action.hpp"
+#include "player.hpp"
+#include "action/action_state.hpp"
+#include "action/action.hpp"
 
 
 /**

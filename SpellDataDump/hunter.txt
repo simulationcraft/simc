@@ -1,5 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41031 Live (hotfix 2021-11-16/41031, no-networking)
-
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, no-networking)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -644,7 +643,6 @@ Attributes       : .x..x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=10651)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.73000 | PvP Coefficient: 1.15000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.1 -> 1.15)
 #2 (id=101526)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : A powerful aimed shot that deals $s1 Physical damage.
@@ -676,7 +674,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.80000 | Target: Self (1)
                    Affected Spells: Auto Shot (75), Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Death Chakram (361756)
                    Family Flags: 0, 106
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 #2 (id=10780)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 #3 (id=342782)   : Dummy (3)
@@ -685,7 +682,6 @@ Hotfixed         : PvP Coefficient (1 -> 0.8)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.80000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Auto Shot (75), Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Death Chakram (361756)
                    Family Flags: 0, 106
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 Description      : Sends you and your pet into a rage, instantly dealing $<damage> Physical damage to its target, and increasing all damage you both deal by $s1% for $d. Removes Fear and Horrify effects from your pet. $?s231548&s217200[
 
 Bestial Wrath's remaining cooldown is reduced by $s3 sec each time you use Barbed Shot.][]
@@ -884,7 +880,6 @@ Description      : Shows the location of all nearby undead on the minimap.
 Tooltip          : Tracking Undead.
 
 Name             : Blood Fury (desc=Racial) (id=20572) 
-Hotfixed         : Attributes
 Class            : Warrior, Hunter, Rogue, Death Knight
 Race             : Orc (0x2)
 School           : Physical
@@ -1401,7 +1396,7 @@ Velocity         : 80 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
 Charges          : 1 (10 seconds cooldown)
 Category         : 1873: Dead Eye (321460 effect#1)
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Aspect of the Wild (193530 effects: #1, #3), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effects: #1, #2), Flayer's Mark (324156 effects: #1, #2, #3), Kill Shot (343248 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Aspect of the Wild (193530 effects: #1, #3), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effects: #1, #2), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Kill Shot (343248 effect#1)
 Family Flags     : 1, 11, 106, 121
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -1770,7 +1765,6 @@ Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (desc=Racial) (id=68992) 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1820,7 +1814,6 @@ Effects          :
 Description      : Increases the damage done by your pets by ${$s1}.1%.
 
 Name             : Arcane Torrent (desc=Racial) (id=80483) 
-Hotfixed         : Attributes
 Class            : Hunter
 Race             : Blood Elf (0x200)
 School           : Arcane
@@ -2371,7 +2364,6 @@ Effects          :
 Description      : After you Multi-Shot, your pet's melee attacks also strike all nearby enemies for $s1% as much for the next $118455d. Deals reduced damage beyond $118459s2 targets.
 
 Name             : Binding Shot (id=117526) [Spell Family (9)] 
-Hotfixed         : Proc Chance (100 -> 101), Proc Flags (664232 -> 0)
 Class            : Hunter
 School           : Arcane
 Spell Type       : Magic
@@ -3677,7 +3669,6 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=269119)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.62700 | PvP Coefficient: 1.30000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.2 -> 1.3)
 Description      : A quick shot that causes $sw2 Arcane damage.
 Variables        : $mult=${($max(0,$min($pl-10,10))*5+80)/130}
 
@@ -5595,7 +5586,6 @@ Attributes       : .x...... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=479998)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.38000 | PvP Coefficient: 1.10000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.1)
 Description      : $@spelldesc257044
 
 Name             : Hunter's Mark (id=257284) [Spell Family (9)] 
@@ -11193,7 +11183,7 @@ Velocity         : 80 yards/sec
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Cooldown         : 10 seconds
 Category         : 1226
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Aspect of the Wild (193530 effects: #1, #3), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Coordinated Assault (266779 effects: #1, #2), Flayer's Mark (324156 effects: #1, #2, #3), Kill Shot (343248 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Aspect of the Wild (193530 effects: #1, #3), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Coordinated Assault (266779 effects: #1, #2), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Kill Shot (343248 effect#1)
 Family Flags     : 1, 11, 55, 106, 121
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
@@ -12316,6 +12306,7 @@ Effects          :
 Description      : Your attacks and abilities deal |cFFFFFFFF${$s1}.1%|r increased damage to enemies inside Resonating Arrow.
 
 Name             : Empowered Release (id=339059) [Spell Family (9), Passive, Hidden] 
+Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -12333,6 +12324,34 @@ Effects          :
 #1 (id=838040)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Flayed Shot has an additional $s1% chance to proc Flayer's Mark and it increases the damage of your next Kill Shot by |cFFFFFFFF${$s1}.1%|r.
+
+Name             : Empowered Release (id=339061) [Spell Family (9)] 
+Class            : Hunter
+School           : Shadow
+Spell Type       : None
+Spell Level      : 60
+Range            : 40 yards
+Duration         : 12 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : ........ x....... ........ ........ 
+                 : Yellow Ranged
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Floating Combat Text On Cast (198), Aura Points On Client (268), Not In Spellbook Until Learned (269)
+Effects          :
+#1 (id=838046)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Kill Shot (53351), Kill Shot (320976)
+                   Family Flags: 11
+Description      : $@spelldesc339059
+Tooltip          : Increases the damage of your next Killshot by ${$W1}.1%.
 
 Name             : Spirit Attunement (desc=Kyrian) (id=339109) [Spell Family (9), Passive, Hidden] 
 School           : Physical

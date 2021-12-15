@@ -6898,11 +6898,13 @@ struct fae_transfusion_t : public shaman_spell_t
 
     if ( d->current_tick == d->num_ticks() )
     {
-      p()->buff.maelstrom_weapon->trigger(
-          p()->covenant.night_fae->effectN( 4 ).base_value() );
-      for ( int i = 0; i < p()->covenant.night_fae->effectN( 4 ).base_value(); ++i )
+      if ( p()->specialization() == SHAMAN_ENHANCEMENT )
       {
-        p()->proc.maelstrom_weapon_ft->occur();
+        p()->buff.maelstrom_weapon->trigger( p()->covenant.night_fae->effectN( 4 ).base_value() );
+        for ( int i = 0; i < p()->covenant.night_fae->effectN( 4 ).base_value(); ++i )
+        {
+          p()->proc.maelstrom_weapon_ft->occur();
+        }
       }
       p()->buff.master_of_the_elements->decrement();
     }

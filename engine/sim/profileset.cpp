@@ -3,15 +3,15 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_profileset.hpp"
+#include "profileset.hpp"
 #include "dbc/dbc.hpp"
 #include "sim_control.hpp"
-#include "sc_sim.hpp"
+#include "sim.hpp"
 // maybe move profileset reporting to a separate file in report/
 #include "report/reports.hpp"
 #include "report/color.hpp"
-#include "report/sc_highchart.hpp"
-#include "player/sc_player.hpp"
+#include "report/highchart.hpp"
+#include "player/player.hpp"
 #include "player/player_talent_points.hpp"
 #include "item/item.hpp"
 #include "util/string_view.hpp"

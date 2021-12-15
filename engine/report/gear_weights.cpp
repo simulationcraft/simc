@@ -5,9 +5,9 @@
 
 #include "gear_weights.hpp"
 #include "dbc/dbc.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/player_scaling.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 
 #include <sstream>
 

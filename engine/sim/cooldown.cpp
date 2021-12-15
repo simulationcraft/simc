@@ -3,12 +3,12 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_cooldown.hpp"
-#include "action/sc_action.hpp"
-#include "player/sc_player.hpp"
+#include "cooldown.hpp"
+#include "action/action.hpp"
+#include "player/player.hpp"
 #include "sim/event.hpp"
-#include "sim/sc_expressions.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/expressions.hpp"
+#include "sim/sim.hpp"
 
 namespace { // UNNAMED NAMESPACE
 

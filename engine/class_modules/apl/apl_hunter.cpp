@@ -86,7 +86,7 @@ void beast_mastery( player_t* p )
   cleave->add_action( "bestial_wrath,if=!raid_event.adds.exists|raid_event.adds.remains>=5|active_enemies>=raid_event.adds.count*2" );
   cleave->add_action( "resonating_arrow,if=!raid_event.adds.exists|raid_event.adds.remains>=5|active_enemies>=raid_event.adds.count*2" );
   cleave->add_action( "stampede,if=buff.aspect_of_the_wild.up|target.time_to_die<15" );
-  cleave->add_action( "wailing_arrow" );
+  cleave->add_action( "wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time" );
   cleave->add_action( "flayed_shot" );
   cleave->add_action( "kill_shot" );
   cleave->add_action( "chimaera_shot" );
@@ -110,7 +110,7 @@ void beast_mastery( player_t* p )
   st->add_action( "wild_spirits,if=!raid_event.adds.exists|!raid_event.adds.up&raid_event.adds.duration+raid_event.adds.in<20|raid_event.adds.up&raid_event.adds.remains>19" );
   st->add_action( "flayed_shot" );
   st->add_action( "kill_shot" );
-  st->add_action( "wailing_arrow,if=cooldown.resonating_arrow.remains<gcd&(!talent.explosive_shot|buff.bloodlust.up)|!covenant.kyrian|target.time_to_die<5" );
+  st->add_action( "wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time&(cooldown.resonating_arrow.remains<gcd&(!talent.explosive_shot|buff.bloodlust.up)|!covenant.kyrian)|target.time_to_die<5" );
   st->add_action( "barbed_shot,if=cooldown.bestial_wrath.remains<12*charges_fractional+gcd&talent.scent_of_blood|full_recharge_time<gcd&cooldown.bestial_wrath.remains|target.time_to_die<9" );
   st->add_action( "death_chakram,if=focus+cast_regen<focus.max" );
   st->add_action( "stampede,if=buff.aspect_of_the_wild.up|target.time_to_die<15" );

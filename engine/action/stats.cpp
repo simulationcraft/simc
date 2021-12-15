@@ -3,11 +3,11 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "action/sc_action.hpp"
+#include "action/action.hpp"
 #include "player/stats.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/pet.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 #include <memory>
 #include <unordered_map>
 

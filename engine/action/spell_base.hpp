@@ -6,7 +6,7 @@
 #pragma once
 
 #include "config.hpp"
-#include "sc_action.hpp"
+#include "action.hpp"
 
 struct spell_base_t : public action_t
 {

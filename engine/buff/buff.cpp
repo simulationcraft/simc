@@ -3,22 +3,22 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_buff.hpp"
+#include "buff.hpp"
 
-#include "action/sc_action.hpp"
+#include "action/action.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/item_database.hpp"
 #include "dbc/spell_data.hpp"
 #include "player/expansion_effects.hpp"
 #include "player/covenant.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/stats.hpp"
 #include "player/target_specific.hpp"
 #include "sim/event.hpp"
 #include "sim/real_ppm.hpp"
-#include "sim/sc_cooldown.hpp"
-#include "sim/sc_expressions.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/cooldown.hpp"
+#include "sim/expressions.hpp"
+#include "sim/sim.hpp"
 #include "util/rng.hpp"
 
 #include <sstream>

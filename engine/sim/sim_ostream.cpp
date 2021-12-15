@@ -1,6 +1,6 @@
 #include "sim_ostream.hpp"
 
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 
 sc_raw_ostream_t& sc_raw_ostream_t::operator<< (const char* rhs)
 {

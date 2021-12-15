@@ -5,9 +5,9 @@
 
 #include "action_priority_list.hpp"
 
-#include "action/sc_action.hpp"
+#include "action/action.hpp"
 #include "dbc/dbc.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "util/util.hpp"
 
 namespace

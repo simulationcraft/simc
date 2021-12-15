@@ -5,16 +5,16 @@
 
 #include "decorators.hpp"
 
-#include "action/sc_action.hpp"
-#include "buff/sc_buff.hpp"
+#include "action/action.hpp"
+#include "buff/buff.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/item_set_bonus.hpp"
 #include "item/item.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/pet.hpp"
 #include "report/color.hpp"
 #include "util/util.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 
 #include <vector>
 

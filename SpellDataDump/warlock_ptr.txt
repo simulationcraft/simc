@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41031 Live (hotfix 2021-11-16/41031, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, no-networking)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -323,7 +323,7 @@ Cast Time        : 6 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Category         : 1363
-Affecting spells : Orb of the Fel Temptress (240264 effect#1), Fel Domination (333889 effects: #1, #2)
+Affecting spells : Fel Domination (333889 effects: #1, #2)
 Family Flags     : 28
 Attributes       : ........ ........ x....... ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -822,8 +822,10 @@ Duration         : 30 seconds
 Cooldown         : 30 seconds
 Category         : 1468
 Category Cooldown: 30 seconds
-Proc Chance      : 101%
+Proc Chance      : 100%
 Mechanic         : Sleep
+Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Family Flags     : 25
 Attributes       : ........ ........ x....... ......x.   ..x..... ..x...x. .x...... .x...x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -835,9 +837,9 @@ Attributes       : ........ ........ x....... ......x.   ..x..... ..x...x. .x...
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Heartbeat Resist (30), Is Channelled (34), No Threat (42), Track Target in Channel (46), No AutoCast (AI) (49), Aura Stays After Combat (57), Name in Channel Bar (61), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
-#1 (id=2215)     : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Seduces the target, disorienting for $6358d. Damage will break the effect. Only usable against Humanoids.
+#2 (id=910452)   : Apply Aura (6) | Unknown(191)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : Seduces the target, disorienting and causing them to walk towards the demon for $6358d. Damage may break the effect. Only usable against Humanoids.
 Tooltip          : Disoriented.
 
 Name             : Whiplash (desc=Special Ability) (id=6360) [Spell Family (57)] 
@@ -846,8 +848,10 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 17
 Range            : 10 yards
-Duration         : 10 seconds
+Duration         : 15 seconds
 Cooldown         : 6 seconds
+Stacks           : 11 maximum
+Proc Chance      : 101%
 Mechanic         : Snare
 Family Flags     : 27
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -862,10 +866,13 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=2216)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
-Description      : Whips the enemy, reducing movement speed by $s2% for $d.
+#2 (id=910502)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
+Description      : Whips the enemy, reducing movement speed by $s1% and increasing damage taken by the demon by $s2% for $d, stacking ${$u-1} times.
 
 |cFF777777(Right-Click to toggle)|r
-Tooltip          : Movement slowed by $s2%.
+Tooltip          : Movement slowed by $s1% and damage taken from $@auracaster increased by $s2%.
 
 Name             : Mortal Coil (id=6789) [Spell Family (5)] 
 Class            : Warlock
@@ -3416,7 +3423,7 @@ $?s30146[
 Felguard: $@spellname89766][]
 Felhunter: $@spellname19647
 Voidwalker: $@spellname17767
-Succubus: $@spellname6358
+Incubus/Succubus: $@spellname6358
 Imp: $@spellname89808
 
 Name             : Threatening Presence (desc=Special Ability) (id=134477) [Spell Family (57)] 
@@ -10264,7 +10271,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Succubus (712), Summon Felguard (30146), Summon Observer (112869), Summon Fel Succubus (240263)
                    Family Flags: 26, 27, 28, 29, 30, 96, 97, 98, 99, 100
-Description      : Your next Imp, Voidwalker, Succubus, Felhunter, or Felguard Summon spell is free and has its casting time reduced by $/1000;S1 sec.
+Description      : Your next Imp, Voidwalker, Incubus, Succubus, Felhunter, or Felguard Summon spell is free and has its casting time reduced by $/1000;S1 sec.
 
 Tooltip          : Imp, Voidwalker, Succubus, Felhunter, or Felguard casting time reduced by $/1000;S1 sec.
 

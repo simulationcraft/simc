@@ -7,7 +7,7 @@
 #include "class_modules/apl/apl_priest.hpp"
 
 #include "player/action_priority_list.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 
 namespace priest_apl
 {

@@ -12,7 +12,7 @@
 #include "dbc/dbc.hpp"
 #include "dbc/item_database.hpp"
 #include "item/item.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "util/generic.hpp"
 #include "util/util.hpp"
 

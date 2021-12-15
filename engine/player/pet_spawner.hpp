@@ -7,7 +7,7 @@
 
 #include "config.hpp"
 #include "spawner_base.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 
 namespace spawner
 {

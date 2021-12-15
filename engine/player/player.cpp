@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_player.hpp"
+#include "player.hpp"
 
 #include "action/action_callback.hpp"
 #include "action/attack.hpp"
@@ -11,13 +11,13 @@
 #include "action/dot.hpp"
 #include "action/heal.hpp"
 #include "action/residual_action.hpp"
-#include "action/sc_action.hpp"
-#include "action/sc_action_state.hpp"
+#include "action/action.hpp"
+#include "action/action_state.hpp"
 #include "action/sequence.hpp"
 #include "action/snapshot_stats.hpp"
 #include "action/spell.hpp"
 #include "action/variable.hpp"
-#include "buff/sc_buff.hpp"
+#include "buff/buff.hpp"
 #include "dbc/active_spells.hpp"
 #include "dbc/azerite.hpp"
 #include "dbc/dbc.hpp"
@@ -53,9 +53,9 @@
 #include "sim/event.hpp"
 #include "sim/proc.hpp"
 #include "sim/real_ppm.hpp"
-#include "sim/sc_cooldown.hpp"
-#include "sim/sc_expressions.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/cooldown.hpp"
+#include "sim/expressions.hpp"
+#include "sim/sim.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/shuffled_rng.hpp"
 #include "sim/cooldown_waste_data.hpp"

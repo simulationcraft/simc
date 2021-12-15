@@ -3,13 +3,14 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_highchart.hpp"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/prettywriter.h"
-#include "buff/sc_buff.hpp"
-#include "player/sc_player.hpp"
+#include "highchart.hpp"
+
+#include "buff/buff.hpp"
+#include "player/player.hpp"
 #include "player/stats.hpp"
-#include "sim/sc_sim.hpp"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/stringbuffer.h"
+#include "sim/sim.hpp"
 #include "util/util.hpp"
 
 namespace

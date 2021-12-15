@@ -2179,7 +2179,7 @@ public:
     parse_buff_effects<S, S>( p()->buff.eclipse_solar, 2U, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
     parse_buff_effects<S, S>( p()->buff.eclipse_lunar, 2U, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
     parse_conditional_effects( p()->sets->set( DRUID_BALANCE, T28, B4 ), [ this ]() {
-      return p()->buff.eclipse_lunar->check();
+      return p()->buff.eclipse_lunar->check() || p()->buff.eclipse_solar->check();
     } );
 
     // Guardian
@@ -8796,8 +8796,9 @@ void druid_t::create_buffs()
   if ( legendary.sinful_hysteria->ok() )
   {
     buff.ravenous_frenzy->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
+      // spell data hasn't changed and still indicates 0.2s, but tooltip says 0.1s
       if ( old_ && new_ )
-        b->extend_duration( this, timespan_t::from_seconds( legendary.sinful_hysteria->effectN( 1 ).base_value() ) );
+        b->extend_duration( this, b->sim->dbc->ptr ? 100_ms : 200_ms );
       else if ( old_ )
         buff.sinful_hysteria->trigger( old_ );
     } );

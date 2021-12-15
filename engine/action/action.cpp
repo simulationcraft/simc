@@ -3,27 +3,27 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "action/sc_action.hpp"
+#include "action/action.hpp"
 
-#include "action/sc_action_state.hpp"
+#include "action/action_state.hpp"
 #include "action/action_callback.hpp"
 #include "dbc/data_enums.hh"
 #include "dbc/dbc.hpp"
-#include "buff/sc_buff.hpp"
+#include "buff/buff.hpp"
 #include "action/dot.hpp"
 #include "player/actor_target_data.hpp"
 #include "player/covenant.hpp"
 #include "player/player_collected_data.hpp"
 #include "player/player_event.hpp"
 #include "player/stats.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/pet.hpp"
 #include "player/action_priority_list.hpp"
 #include "sim/event.hpp"
 #include "sim/proc.hpp"
-#include "sim/sc_expressions.hpp"
-#include "sim/sc_cooldown.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/expressions.hpp"
+#include "sim/cooldown.hpp"
+#include "sim/sim.hpp"
 #include "util/generic.hpp"
 #include "util/rng.hpp"
 #include "player/expansion_effects.hpp" // try to implement leyshocks_grand_compilation as a callback
@@ -1305,9 +1305,12 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
     weapon_amount *= weapon_slot_modifier;
   }
 
-  // Apply bonus direct damage after the off-hand penalty as this seems to be the common case in
-  // game
-  amount += bonus_da( state );
+  // Bonus direct damage historically appears to bypass the OH penalty for yellow attacks in-game
+  // White damage bonuses (such as Jeweled Signet of Melandrus and older weapon enchants) do not
+  if ( !special )
+    amount += bonus_da( state ) * weapon_slot_modifier;
+  else
+    amount += bonus_da( state );
 
   amount *= state->composite_da_multiplier();
 

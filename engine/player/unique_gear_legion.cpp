@@ -485,12 +485,9 @@ struct gaseous_bubble_t : public absorb_buff_t
 
 void item::giant_ornamental_pearl( special_effect_t& effect )
 {
-  effect.trigger_spell_id = 214972;
-
-  effect.custom_buff = new gaseous_bubble_t( effect, effect.create_action() );
-
-  // Reset trigger_spell_id so it does not create an execute action.
-  effect.trigger_spell_id = 0;
+  auto explosion =
+      create_proc_action<generic_aoe_proc_t>( "gaseous_explosion", effect, "gaseous_explosion", 214972, true );
+  effect.custom_buff = new gaseous_bubble_t( effect, explosion );
 }
 
 // Gnawed Thumb Ring =======================================================
@@ -2982,8 +2979,9 @@ void item::vial_of_ceaseless_toxins( special_effect_t& effect )
 
 void item::windscar_whetstone( special_effect_t& effect )
 {
-  action_t* maelstrom = effect.create_action();
-  maelstrom -> cooldown -> duration = timespan_t::zero(); // damage spell has erroneous cooldown
+  auto maelstrom =
+      create_proc_action<generic_aoe_proc_t>( "slicing_maelstrom", effect, "slicing_maelstrom", effect.trigger(), true );
+  maelstrom->cooldown->duration = 0_ms;  // damage spell has erroneous cooldown
 
   effect.custom_buff = make_buff( effect.player, "slicing_maelstrom", effect.driver(), effect.item )
     ->set_tick_zero( true )
@@ -4261,16 +4259,14 @@ void item::chaos_talisman( special_effect_t& effect )
 
 struct nightfall_t : public proc_spell_t
 {
-  proc_spell_t* damage_spell;
+  action_t* damage_spell;
 
   nightfall_t( special_effect_t& effect ) :
     proc_spell_t( "nightfall", effect.player, effect.player -> find_spell( 213785 ), effect.item )
   {
-    const spell_data_t* tick_spell = effect.player -> find_spell( 213786 );
-    proc_spell_t* t = new proc_spell_t( "nightfall_tick", effect.player, tick_spell, effect.item );
-    t -> dual = t -> ground_aoe = true;
-    t -> stats = stats;
-    damage_spell = t;
+    damage_spell = create_proc_action<generic_aoe_proc_t>( "nightfall_tick", effect, "nightfall_tick", 213786, true );
+    damage_spell->dual = damage_spell->ground_aoe = true;
+    damage_spell->stats = stats;
   }
 
   void execute() override
@@ -5648,12 +5644,11 @@ void item::jeweled_signet_of_melandrus( special_effect_t& effect )
 void item::caged_horror( special_effect_t& effect )
 {
   double amount = effect.driver() -> effectN( 1 ).average( effect.item );
-  auto nuke = new unique_gear::proc_spell_t( "dark_blast", effect.player,
-    effect.player -> find_spell( 215407 ), effect.item );
+  auto nuke = create_proc_action<generic_aoe_proc_t>( "dark_blast", effect, "dark_blast", 215407, true );
   // Need to manually adjust the damage and properties, since it's not available in the nuke
-  nuke -> aoe = -1; // TODO: Fancier targeting, this should probably not hit all targets
-  nuke -> radius = 5; // TODO: How wide is the "line" ?
-  nuke -> base_dd_min = nuke -> base_dd_max = amount;
+  nuke->aoe = -1;    // TODO: Fancier targeting, this should probably not hit all targets
+  nuke->radius = 5;  // TODO: How wide is the "line" ?
+  nuke->base_dd_min = nuke->base_dd_max = amount;
 
   effect.execute_action = nuke;
 

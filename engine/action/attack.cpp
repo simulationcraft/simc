@@ -4,13 +4,13 @@
 // ==========================================================================
 
 #include "attack.hpp"
-#include "sc_action_state.hpp"
+#include "action_state.hpp"
 #include "dbc/spell_data.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/stats.hpp"
-#include "sim/sc_cooldown.hpp"
+#include "sim/cooldown.hpp"
 #include "sim/event.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 #include "util/rng.hpp"
 
 // ==========================================================================

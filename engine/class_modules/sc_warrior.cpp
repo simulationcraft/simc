@@ -3731,7 +3731,7 @@ struct overpower_t : public warrior_attack_t
       p()->cooldown.mortal_strike->reset( true );
       p() -> buff.battlelord -> trigger();
     }
-    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) )
+    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) && p()->buff.pile_on_ready->check() )
     {
       p()->buff.pile_on_ready->expire();
       p()->buff.pile_on_str->trigger();
@@ -7534,7 +7534,7 @@ void warrior_t::create_buffs()
   // Pile On ===============================================================================================================
 
   buff.pile_on_ready = make_buff( this, "pile_on_ready" )
-                      ->set_duration(find_spell( 366769 )->duration() );
+                      ->set_duration(find_spell( 363917 )->duration() );
 
   buff.pile_on_str = make_buff( this, "pile_on_str", find_spell( 366769 ) )
                      ->add_invalidate( CACHE_STRENGTH )

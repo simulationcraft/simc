@@ -8,7 +8,7 @@
 
 #include "class_modules/apl/apl_priest.hpp"
 #include "sc_enums.hpp"
-#include "sim/sc_option.hpp"
+#include "sim/option.hpp"
 #include "tcb/span.hpp"
 
 #include "simulationcraft.hpp"
@@ -1518,6 +1518,8 @@ void priest_t::create_procs()
   procs.void_lasher                     = get_proc( "Void Lasher proc from Eternal Call to the Void" );
   procs.dark_thoughts_flay              = get_proc( "Dark Thoughts proc from Mind Flay" );
   procs.dark_thoughts_sear              = get_proc( "Dark Thoughts proc from Mind Sear" );
+  procs.dark_thoughts_devouring_plague  = get_proc( "Dark Thoughts proc from T28 2-set Devouring Plague" );
+  procs.dark_thoughts_searing_nightmare = get_proc( "Dark Thoughts proc from T28 2-set Searing Nightmare" );
   procs.dark_thoughts_missed            = get_proc( "Dark Thoughts proc not consumed" );
   procs.living_shadow                   = get_proc( "Living Shadow T28 4-set procs" );
 }
@@ -2377,9 +2379,9 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
-                                            p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
-                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
+                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p );
   }
   void static_init() const override

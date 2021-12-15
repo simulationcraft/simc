@@ -10,7 +10,7 @@
 #include "report/report_timer.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/iteration_data_entry.hpp"
-#include "sim/sc_profileset.hpp"
+#include "sim/profileset.hpp"
 #include "simulationcraft.hpp"
 #include "util/git_info.hpp"
 

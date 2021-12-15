@@ -5,15 +5,15 @@
 
 #include "pet.hpp"
 
-#include "action/sc_action.hpp"
-#include "action/sc_action_state.hpp"
-#include "buff/sc_buff.hpp"
-#include "sim/sc_cooldown.hpp"
+#include "action/action.hpp"
+#include "action/action_state.hpp"
+#include "buff/buff.hpp"
+#include "sim/cooldown.hpp"
 #include "dbc/dbc.hpp"
 #include "player/actor_target_data.hpp"
 #include "player/spawner_base.hpp"
 #include "sim/event.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 
 namespace {
 struct expiration_t : public event_t

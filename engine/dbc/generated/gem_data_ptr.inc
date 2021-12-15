@@ -1,4 +1,4 @@
-// Gem properties, wow build 9.2.0.41360
+// Gem properties, wow build 9.2.0.41462
 static const std::array<gem_property_data_t, 1950> __ptr_gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
@@ -1875,7 +1875,7 @@ static const std::array<gem_property_data_t, 1950> __ptr_gem_property_data { {
   { 3844,  6284, 0x00000020 }, // If 5 Blood Patches exist at once, they congeal into a Blood Beast.
   { 3845,  6285, 0x00000020 }, // When you drop below 50% health, your blood spills into 3 Blood Patches.
   { 3846,  6286, 0x00000020 }, // When your Blood Beast expires, heal for all their remaining health.
-  { 3847,  6300, 0x00100000 }, // |cff71d5ff|Hspell:30455|h[Ice Lance]|h|r
+  { 3847,  6300, 0x00800000 }, // |cff71d5ff|Hspell:30455|h[Ice Lance]|h|r
   { 3848,  6289, 0x00100000 }, // $355752@spelldesc355721
   { 3849,  6290, 0x00100000 }, // $355752@spelldesc355725
   { 3850,  6291, 0x00100000 }, // $355752@spelldesc355731

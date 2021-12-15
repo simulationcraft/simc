@@ -4,15 +4,15 @@
 // ==========================================================================
 
 #include "progress_bar.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 #include "util/util.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/player_scaling.hpp"
 #include "sim_control.hpp"
 #include "sim/plot.hpp"
 #include "sim/reforge_plot.hpp"
 #include "sim/work_queue.hpp"
-#include "sim/sc_profileset.hpp"
+#include "sim/profileset.hpp"
 #include "scale_factor_control.hpp"
 #include "gsl-lite/gsl-lite.hpp"
 

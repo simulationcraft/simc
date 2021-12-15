@@ -1,7 +1,7 @@
 #include "class_modules/apl/mage.hpp"
 
 #include "player/action_priority_list.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 
 namespace mage_apl {
 

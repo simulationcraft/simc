@@ -24,14 +24,14 @@ struct bfa_aoe_proc_t : public generic_aoe_proc_t
                   bool aoe_damage_increase_ = false ) :
     generic_aoe_proc_t( effect, name, s, aoe_damage_increase_ )
   {
-    max_scaling_targets = 6;
+    max_scaling_targets = 5;
   }
 
   bfa_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, unsigned spell_id,
                        bool aoe_damage_increase_ = false ) :
     generic_aoe_proc_t( effect, name, spell_id, aoe_damage_increase_ )
   {
-    max_scaling_targets = 6;
+    max_scaling_targets = 5;
   }
 };
 

@@ -7,9 +7,9 @@
 #include "dbc/dbc.hpp"
 #include "dbc/item_set_bonus.hpp"
 #include "item/item.hpp"
-#include "player/sc_player.hpp"
-#include "sim/sc_expressions.hpp"
-#include "sim/sc_sim.hpp"
+#include "player/player.hpp"
+#include "sim/expressions.hpp"
+#include "sim/sim.hpp"
 
 set_bonus_t::set_bonus_t( player_t* player ) :
   actor( player ),
