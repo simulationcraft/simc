@@ -5836,7 +5836,6 @@ struct keg_of_the_heavens_buff_t : public monk_buff_t<buff_t>
   keg_of_the_heavens_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     set_can_cancel( true );
-    set_quiet( true );
     set_cooldown( timespan_t::zero() );
   }
 
