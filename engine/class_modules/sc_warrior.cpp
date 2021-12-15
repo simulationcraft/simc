@@ -3408,7 +3408,7 @@ struct raging_blow_t : public warrior_attack_t
 
         if ( p()->talents.reckless_abandon->ok() ) // tier currently generates 50 rage every time Reck is triggered - likely a bug
         {
-          p()->resource_gain( RESOURCE_RAGE, p()->talents.reckless_abandon->effectN( 1 ).base_value() / 10.0 );
+          p()->resource_gain( RESOURCE_RAGE, p()->talents.reckless_abandon->effectN( 1 ).base_value() / 10.0, p()->gain.frenzied_destruction );
         }
       }
       else
@@ -3543,16 +3543,16 @@ struct crushing_blow_t : public warrior_attack_t
       {
         p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 4 ) );
 
-        if ( p()->talents.reckless_abandon->ok() ) // tier currently generates 50 rage every time Reck is triggered - likely a bug
+        if ( p()->talents.reckless_abandon->ok() ) // tier currently generates 50 rage every time Reck is triggered - likely unintended
         {
-          p()->resource_gain( RESOURCE_RAGE, p()->talents.reckless_abandon->effectN( 1 ).base_value() / 10.0 );
+          p()->resource_gain( RESOURCE_RAGE, p()->talents.reckless_abandon->effectN( 1 ).base_value() / 10.0, p()->gain.frenzied_destruction );
         }
       }
       else
       {
       p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
 
-        if ( p()->talents.reckless_abandon->ok() ) // tier currently generates 50 rage every time Reck is triggered - likely a bug
+        if ( p()->talents.reckless_abandon->ok() ) // tier currently generates 50 rage every time Reck is triggered - likely unintended
         {
           p()->resource_gain( RESOURCE_RAGE, p()->talents.reckless_abandon->effectN( 1 ).base_value() / 10.0, p()->gain.frenzied_destruction );
         }
