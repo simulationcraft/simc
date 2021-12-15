@@ -2512,7 +2512,7 @@ struct keg_smash_t : public monk_melee_attack_t
     }
 
     if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T28, B4 ) )
-      am *= p()->sets->set( MONK_BREWMASTER, T28, B4 )->effectN( 1 ).percent();
+      am *= 1 + p()->sets->set( MONK_BREWMASTER, T28, B4 )->effectN( 1 ).percent();
 
     return am;
   }
