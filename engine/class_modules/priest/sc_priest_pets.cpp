@@ -675,17 +675,30 @@ struct your_shadow_t final : public priest_pet_t
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
-// TODO: if it has duration is hasted, does it recast when the channel finishes?
-// TODO: verify hasted ticks/duration
+struct your_shadow_torment_mind_tick_t final : public priest_pet_spell_t
+{
+  your_shadow_torment_mind_tick_t( your_shadow_t& p, const spell_data_t* s )
+    : priest_pet_spell_t( "torment_mind_tick", p, s )
+  {
+    background                 = true;
+    dual                       = true;
+    affected_by_shadow_weaving = true;
+    tick_zero                  = true;
+    aoe                        = -1;
+    radius                     = data().effectN( 2 ).radius();
+    spell_power_mod.tick       = data().effectN( 2 ).sp_coeff();
+  }
+};
+
 struct your_shadow_torment_mind_t final : public priest_pet_spell_t
 {
   your_shadow_torment_mind_t( your_shadow_t& p, util::string_view options )
     : priest_pet_spell_t( "torment_mind", p, p.o().find_spell( 363656 ) )
   {
     parse_options( options );
-    channeled                  = true;
-    affected_by_shadow_weaving = false;
-    tick_zero                  = true;
+    channeled   = true;
+    tick_zero   = true;
+    tick_action = new your_shadow_torment_mind_tick_t( p, data().effectN( 1 ).trigger() );
   }
 
   void init() override
