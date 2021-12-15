@@ -320,16 +320,19 @@ inline Out remove_copy_if( Range& r, Out o, Predicate p )
 }
 
 template <typename Range, typename Out, typename F>
-inline Out transform( Range&& r, Out o, F f )
+Out transform( Range&& r, Out o, F op )
 {
-  return std::transform( range::begin( r ), range::end( r ), o, f );
+  return std::transform( range::begin( r ), range::end( r ), o,
+                         [ &op ]( auto&& v ) { return std::invoke( op, std::forward<decltype(v)>( v ) ); } );
 }
 
 template <typename Range, typename Range2, typename Out, typename F>
-inline Out transform( Range&& r, Range2&& r2, Out o, F f )
+Out transform( Range&& r, Range2&& r2, Out o, F op_ )
 {
-  return std::transform( range::begin( r ), range::end( r ), range::begin( r2 ),
-                         o, f );
+  const auto op = [ &op_ ] ( auto&& l, auto&& r ) {
+    return std::invoke( op_, std::forward<decltype(l)>( l ), std::forward<decltype(r)>( r ) );
+  };
+  return std::transform( range::begin( r ), range::end( r ), range::begin( r2 ), o, op );
 }
 
 template <typename Range, typename F>
