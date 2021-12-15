@@ -2552,16 +2552,8 @@ struct keg_smash_t : public monk_melee_attack_t
     // Tier 28 4-piece
     if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T28, B4 ) )
     {
-      p()->buff.keg_of_the_heavens->trigger();
-      // There is supposedly a 40% of max HP cap.
-      // Need to use the non-buffed HP as a basis for the cap
-      // TODO: Hard code the 40% for now until Blizzard shows it in the spell data.
-      auto cap_hp  = 0.4 * p()->resources.initial[ RESOURCE_HEALTH ];
       auto hp_gain = p()->sets->set( MONK_BREWMASTER, T28, B4 )->effectN( 3 ).percent() * s->result_total;
-      if ( p()->buff.keg_of_the_heavens->check_value() + hp_gain >= cap_hp )
-        p()->buff.keg_of_the_heavens->current_value = cap_hp;
-      else
-        p()->buff.keg_of_the_heavens->current_value += hp_gain;
+      p()->buff.keg_of_the_heavens->trigger( 1, hp_gain, 1.0, p()->passives.keg_of_the_heavens_buff->duration() );
 
       auto heal_amount = p()->sets->set( MONK_BREWMASTER, T28, B4 )->effectN( 2 ).percent() * s->result_total;
       heal->base_dd_min  = heal_amount;
@@ -5794,7 +5786,7 @@ struct stagger_buff_t : public monk_buff_t<buff_t>
 };
 
 // ===============================================================================
-// Tier 28 Primordial Potential
+// Tier 28 Primordial Potential Buff
 // ===============================================================================
 
 struct primordial_potential_buff_t : public monk_buff_t<buff_t>
@@ -5817,7 +5809,7 @@ struct primordial_potential_buff_t : public monk_buff_t<buff_t>
 };
 
 // ===============================================================================
-// Tier 28 Primordial Power
+// Tier 28 Primordial Power Buff
 // ===============================================================================
 
 struct primordial_power_buff_t : public monk_buff_t<buff_t>
@@ -5827,6 +5819,72 @@ struct primordial_power_buff_t : public monk_buff_t<buff_t>
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     set_reverse( true );
     set_reverse_stack_count( s->max_stacks() );
+  }
+};
+
+// ===============================================================================
+// Tier 28 Keg of the Heavens Buff
+// ===============================================================================
+// The way the buff works is that it takes the last 10 Keg Smash amounts and adds
+// them as health to the monk. Once the 11th stack triggers, the first stack is
+// removed and the new stack goes to the end of the list. Once the buff expires
+// the stack is reset.
+
+struct keg_of_the_heavens_buff_t : public monk_buff_t<buff_t>
+{
+  std::deque<double> values;
+  keg_of_the_heavens_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  {
+    set_can_cancel( true );
+    set_quiet( true );
+    set_cooldown( timespan_t::zero() );
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    if ( at_max_stacks() )
+    {
+      auto amount = values.front();
+      p().sim->print_debug( "First stack of keg_of_the_heavens buff is getting removed. Removing (amount: {}) Health", amount );
+      p().stat_loss( STAT_MAX_HEALTH, amount, (gain_t*)nullptr, (action_t*)nullptr, true );
+      p().stat_loss( STAT_HEALTH, amount, (gain_t*)nullptr, (action_t*)nullptr, true );
+      values.pop_front();
+    }
+
+    p().sim->print_debug( "Keg Smash adds (amount: {}) Health to keg_of_the_heavens buff", value );
+
+    p().stat_gain( STAT_MAX_HEALTH, value, (gain_t*)nullptr, (action_t*)nullptr, true );
+    p().stat_gain( STAT_HEALTH, value, (gain_t*)nullptr, (action_t*)nullptr, true );
+
+    // Make sure the value is reset upon each trigger
+    current_value = 0;
+
+    values.push_back( value );
+
+    return buff_t::trigger( stacks, value, chance, duration );
+  }
+
+  double value() override
+  {
+    double total_value = 0;
+
+    if ( !values.empty() )
+    {
+      for ( auto& i : values )
+        total_value += i;
+    }
+
+    return total_value;
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    auto hp_reset = value();
+    p().sim->print_debug( "keg_of_the_heavens buff is resetting. Reducing Health by (amount: {})", hp_reset );
+    p().stat_loss( STAT_MAX_HEALTH, hp_reset, (gain_t*)nullptr, (action_t*)nullptr, true );
+    p().stat_loss( STAT_HEALTH, hp_reset, (gain_t*)nullptr, (action_t*)nullptr, true );
+    values.clear();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 }  // namespace buffs
@@ -6642,6 +6700,7 @@ void monk_t::init_spells()
   passives.call_to_arms_empowered_tiger_lightning = find_spell( 360829 );
 
   // Tier 28
+  passives.keg_of_the_heavens_buff    = find_spell( 366794 );
   passives.keg_of_the_heavens_heal    = find_spell( 366793 );
   passives.primordial_potential       = find_spell( 363911 );
   passives.primordial_power           = find_spell( 363924 );
@@ -7014,7 +7073,7 @@ void monk_t::create_buffs()
       make_buff( this, "fae_exposure_heal", passives.fae_exposure_heal )->set_default_value_from_effect( 1 );
 
   // Tier 28 Set Bonus
-  buff.keg_of_the_heavens = make_buff( this, "keg_of_the_heavens", find_spell( 366794 ) );
+  buff.keg_of_the_heavens = new buffs::keg_of_the_heavens_buff_t( *this, "keg_of_the_heavens", passives.keg_of_the_heavens_buff );
   buff.primordial_potential =
       new buffs::primordial_potential_buff_t( *this, "primordial_potential", passives.primordial_potential );
   buff.primordial_power = new buffs::primordial_power_buff_t( *this, "primordial_power", passives.primordial_power );
