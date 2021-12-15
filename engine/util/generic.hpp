@@ -308,7 +308,9 @@ inline bool contains( Range&& r, const Value& v, Proj proj = Proj{} )
 template <typename Range, typename F>
 inline F for_each( Range&& r, F f )
 {
-  return std::for_each( range::begin( r ), range::end( r ), f );
+  std::for_each( range::begin( r ), range::end( r ),
+                 [ &f ]( auto&& v ) { std::invoke( f, std::forward<decltype(v)>( v ) ); } );
+  return f;
 }
 
 template <typename Range, typename Out, typename Predicate>
