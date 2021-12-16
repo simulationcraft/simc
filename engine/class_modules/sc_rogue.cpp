@@ -26,6 +26,7 @@ enum secondary_trigger_e
   TRIGGER_TRIPLE_THREAT,
   TRIGGER_CONCEALED_BLUNDERBUSS,
   TRIGGER_FLAGELLATION,
+  TRIGGER_IMMORTAL_TECHNIQUE,
 };
 
 enum stealth_type_e
@@ -220,12 +221,14 @@ public:
     actions::rogue_attack_t* triple_threat_mh = nullptr;
     actions::rogue_attack_t* triple_threat_oh = nullptr;
     actions::shadow_blades_attack_t* shadow_blades_attack = nullptr;
+    actions::rogue_attack_t* immortal_technique_shadowstrike = nullptr;
     action_t* banshees_blight = nullptr; // Slyvanas Dagger
     struct
     {
       actions::rogue_attack_t* backstab = nullptr;
       actions::rogue_attack_t* shadowstrike = nullptr;
       actions::rogue_attack_t* akaaris_shadowstrike = nullptr;
+      actions::rogue_attack_t* immortal_technique_shadowstrike = nullptr;
     } weaponmaster;
   } active;
 
@@ -666,6 +669,9 @@ public:
 
     // Legendary
     proc_t* dustwalker_patch;
+
+    // Set Bonus
+    proc_t* t28_subtlety_4pc;
   } procs;
 
   // Set Bonus effects
@@ -911,13 +917,13 @@ public:
     for ( auto action : secondary_trigger_actions )
     {
       found_action = dynamic_cast<T*>( action );
-      if ( found_action && found_action->secondary_trigger == source )
+      if ( found_action )
       {
-        if ( n.empty() || found_action->name_str == n )
+        if ( found_action->secondary_trigger == source && ( n.empty() || found_action->name_str == n ) )
           break;
         else
           found_action = nullptr;
-      } 
+      }
     }
     return found_action;
   }
@@ -3750,6 +3756,11 @@ struct shadowstrike_t : public rogue_attack_t
       if ( p()->active.akaaris_shadowstrike )
         add_child( p()->active.akaaris_shadowstrike );
     }
+    else if ( secondary_trigger == TRIGGER_IMMORTAL_TECHNIQUE )
+    {
+      if ( p()->active.weaponmaster.immortal_technique_shadowstrike )
+        add_child( p()->active.weaponmaster.immortal_technique_shadowstrike );
+    }
   }
 
   void execute() override
@@ -3773,7 +3784,8 @@ struct shadowstrike_t : public rogue_attack_t
     }
 
     // Only primary casts trigger Perforated Veins, not Weaponmaster or Akaari procs
-    if ( !is_secondary_action() )
+    // TOCHECK: T28 bonus after next PTR build
+    if ( !is_secondary_action() || secondary_trigger == TRIGGER_IMMORTAL_TECHNIQUE )
     {
       p()->buffs.perforated_veins->trigger();
     }
@@ -3784,13 +3796,24 @@ struct shadowstrike_t : public rogue_attack_t
       trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->check_value() ), p()->gains.the_rotten );
       p()->buffs.the_rotten->expire( 1_ms );
     }
+
+    // TOCHECK: Not 100% sure if this will trigger from secondary sources yet
+    if ( p()->set_bonuses.t28_subtlety_2pc->ok() &&
+         p()->rng().roll( p()->set_bonuses.t28_subtlety_2pc->effectN( 1 ).percent() ) )
+    {
+      p()->buffs.shadow_blades->extend_duration_or_trigger( p()->set_bonuses.t28_subtlety_2pc->effectN( 3 ).time_value() );
+    }
   }
 
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
 
-    trigger_weaponmaster( state, p()->active.weaponmaster.shadowstrike );
+    if ( secondary_trigger == TRIGGER_IMMORTAL_TECHNIQUE )
+      trigger_weaponmaster( state, p()->active.weaponmaster.immortal_technique_shadowstrike );
+    else
+      trigger_weaponmaster( state, p()->active.weaponmaster.shadowstrike );
+
     // Appears to be applied after weaponmastered attacks.
     trigger_find_weakness( state );
     trigger_akaaris_soul_fragment( state );
@@ -6253,6 +6276,29 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
       }
     }
   }
+
+  // T28 Subtlety 4pc -- Triggers as a "cast" individually as each can generate CP
+  // TOCHECK: Does this work with SnD after the stealth fix? Check targeting logic. Check range.
+  if ( p()->set_bonuses.t28_subtlety_4pc->ok() )
+  {
+    if ( p()->rng().roll( rs->get_combo_points() * p()->set_bonuses.t28_subtlety_4pc->effectN( 2 ).percent() ) )
+    {
+      p()->procs.t28_subtlety_4pc->occur();
+      int num_shadowstrike_targets = as<int>( p()->set_bonuses.t28_subtlety_4pc->effectN( 3 ).base_value() );
+      for ( auto candidate_target : p()->sim->target_non_sleeping_list )
+      {
+        if ( num_shadowstrike_targets <= 0 )
+          break;
+
+        if ( p()->get_player_distance( *candidate_target ) <= 8.0 )
+        {
+          p()->active.immortal_technique_shadowstrike->set_target( candidate_target );
+          p()->active.immortal_technique_shadowstrike->execute();
+          --num_shadowstrike_targets;
+        }
+      }
+    }
+  }
 }
 
 template <typename Base>
@@ -7993,6 +8039,17 @@ void rogue_t::init_spells()
   {
     active.flagellation = get_secondary_trigger_action<actions::flagellation_damage_t>( TRIGGER_FLAGELLATION, "flagellation_damage" );
   }
+
+  if ( set_bonuses.t28_subtlety_4pc->ok() )
+  {
+    active.immortal_technique_shadowstrike = get_secondary_trigger_action<actions::shadowstrike_t>( TRIGGER_IMMORTAL_TECHNIQUE, "shadowstrike_t28" );
+    if ( talent.weaponmaster->ok() )
+    {
+      active.weaponmaster.immortal_technique_shadowstrike = get_secondary_trigger_action<actions::shadowstrike_t>(
+        TRIGGER_WEAPONMASTER, "shadowstrike_t28_weaponmaster" );
+      active.immortal_technique_shadowstrike->add_child( active.weaponmaster.immortal_technique_shadowstrike );
+    }
+  }
 }
 
 // rogue_t::init_gains ======================================================
@@ -8064,6 +8121,8 @@ void rogue_t::init_procs()
   procs.count_the_odds      = get_proc( "Count the Odds"               );
 
   procs.dustwalker_patch    = get_proc( "Dustwalker Patch"             );
+
+  procs.t28_subtlety_4pc    = get_proc( "Immortal Technique (T28 4pc)" );
 }
 
 // rogue_t::init_scaling ====================================================
