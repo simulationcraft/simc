@@ -8798,7 +8798,7 @@ void druid_t::create_buffs()
     buff.ravenous_frenzy->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
       // spell data hasn't changed and still indicates 0.2s, but tooltip says 0.1s
       if ( old_ && new_ )
-        b->extend_duration( this, b->sim->dbc->ptr ? 100_ms : 200_ms );
+        b->extend_duration( this, is_ptr() ? 100_ms : timespan_t::from_seconds( legendary.sinful_hysteria->effectN( 1 ).base_value() ) );
       else if ( old_ )
         buff.sinful_hysteria->trigger( old_ );
     } );
