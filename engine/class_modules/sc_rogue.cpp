@@ -138,6 +138,7 @@ public:
     damage_buff_t* vendetta;
     buff_t* wound_poison;
     buff_t* banshees_blight; // Slyvanas Dagger
+    buff_t* grudge_match; // T28 Assassination 2pc
   } debuffs;
 
   bool is_deathspiked;
@@ -1208,6 +1209,12 @@ public:
     {
       affected_by.sepsis = ab::data().affected_by( p->covenant.sepsis_buff->effectN( 1 ) );
     }
+    if ( p->set_bonuses.t28_assassination_2pc->ok() )
+    {
+      // Not in spell data. Using the mastery whitelist as a baseline, most apply other than Envenom
+      affected_by.t28_assassination_2pc = ab::data().affected_by( p->mastery.potent_assassin->effectN( 1 ) ) ||
+                                          ab::data().affected_by( p->mastery.potent_assassin->effectN( 2 ) );
+    }
 
     // Auto-parsing for damage affecting dynamic flags, this reads IF direct/periodic dmg is affected and stores by how much.
     // Still requires manual impl below but removes need to hardcode effect numbers.
@@ -1546,19 +1553,6 @@ public:
     return t;
   }
 
-  double composite_target_crit_chance( player_t* target ) const override
-  {
-    double c = ab::composite_target_crit_chance( target );
-
-    if ( affected_by.t28_assassination_2pc && p()->set_bonuses.t28_assassination_2pc->ok() &&
-         p()->get_target_data( target )->debuffs.shiv->check() )
-    {
-      c += p()->set_bonuses.t28_assassination_2pc->effectN( 1 ).percent();
-    }
-
-    return c;
-  }
-
   virtual double combo_point_da_multiplier( const action_state_t* s ) const
   {
     if ( ab::base_costs[ RESOURCE_COMBO_POINT ] )
@@ -1633,6 +1627,11 @@ public:
          && target->health_percentage() < p()->legendary.zoldyck_insignia->effectN( 2 ).base_value() )
     {
       m *= 1.0 + p()->legendary.zoldyck_insignia->effectN( 1 ).percent();
+    }
+
+    if ( affected_by.t28_assassination_2pc )
+    {
+      m *= 1.0 + td( target )->debuffs.grudge_match->check_value();
     }
 
     return m;
@@ -2007,6 +2006,7 @@ struct deadly_poison_t : public rogue_poison_t
     deadly_poison_dot_t( util::string_view name, rogue_t* p ) :
       rogue_poison_t( name, p, p->spec.deadly_poison->effectN( 1 ).trigger(), true )
     {
+      affected_by.t28_assassination_4pc = true; // TOCHECK: Pending post-holiday PTR build
     }
   };
 
@@ -2033,8 +2033,8 @@ struct deadly_poison_t : public rogue_poison_t
       proc_instant->set_target( state->target );
       proc_instant->execute();
     }
-    proc_dot -> set_target( state -> target );
-    proc_dot -> execute();
+    proc_dot->set_target( state->target );
+    proc_dot->execute();
   }
 };
 
@@ -2681,7 +2681,7 @@ struct crimson_tempest_t : public rogue_attack_t
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
-    affected_by.t28_assassination_2pc = affected_by.t28_assassination_4pc = true;
+    affected_by.t28_assassination_4pc = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -2763,7 +2763,7 @@ struct envenom_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spec.envenom, options_str )
   {
     dot_duration = timespan_t::zero();
-    affected_by.zoldyck_insignia = false;
+    affected_by.zoldyck_insignia = affected_by.t28_assassination_2pc = false;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -2944,7 +2944,7 @@ struct garrote_t : public rogue_attack_t
   garrote_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p -> spec.garrote, options_str )
   {
-    affected_by.t28_assassination_2pc = affected_by.t28_assassination_4pc = true;
+    affected_by.t28_assassination_4pc = true;
   }
 
   double composite_persistent_multiplier( const action_state_t* state ) const override
@@ -3461,7 +3461,7 @@ struct rupture_t : public rogue_attack_t
   rupture_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p -> find_specialization_spell( "Rupture" ), options_str )
   {
-    affected_by.t28_assassination_2pc = affected_by.t28_assassination_4pc = true;
+    affected_by.t28_assassination_4pc = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -4225,9 +4225,32 @@ struct symbols_of_death_t : public rogue_spell_t
 
 struct shiv_t : public rogue_attack_t
 {
+  struct grudge_match_t : public rogue_attack_t
+  {
+    // TODO: Not yet on PTR, hard-coded for now
+    grudge_match_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p->find_spell( 363591 ) )
+    {
+      dual = true;
+      callbacks = false;
+      aoe = -1;
+      radius = 15;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      rogue_attack_t::impact( s );
+      td( s->target )->debuffs.grudge_match->trigger();
+    }
+  };
+
   shiv_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->find_class_spell( "Shiv" ), options_str )
   {
+    if ( p->set_bonuses.t28_assassination_2pc->ok() )
+    {
+      impact_action = p->get_background_action<grudge_match_t>( "grudge_match_driver" );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4365,7 +4388,7 @@ struct kidney_shot_t : public rogue_attack_t
     internal_bleeding_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p->find_spell( 154953 ) )
     {
-      affected_by.t28_assassination_2pc = affected_by.t28_assassination_4pc = true; // TOCHECK
+      affected_by.t28_assassination_4pc = true; // TOCHECK
     }
 
     timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -6444,6 +6467,17 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   else
     debuffs.banshees_blight = make_buff( *this, "banshees_blight" )->set_quiet( true );
 
+  // T28 Assassination 2pc 
+  // TODO: No spell data on PTR yet, hard-coded for now
+  if ( source->set_bonuses.t28_assassination_2pc->ok() )
+    debuffs.grudge_match = make_buff( *this, "grudge_match", source->spec.shiv_2_debuff )
+      ->set_chance( 1.0 )
+      ->set_default_value( 1.0 );
+  else
+    debuffs.grudge_match = make_buff( *this, "grudge_match" )
+      ->set_chance( 0.0 )
+      ->set_quiet( true );
+
   // Marked for Death Reset
   if ( source->talent.marked_for_death->ok() )
   {
@@ -6927,7 +6961,7 @@ void rogue_t::init_action_list()
     dot->add_action( this, "Rupture", "if=!variable.skip_rupture&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&((!exsanguinated|set_bonus.tier28_4pc&debuff.vendetta.up&exsanguinated_rate<=2)|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>(4+(runeforge.dashing_scoundrel*5)+(runeforge.doomblade*5)+(variable.regen_saturated*6))", "Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)" );
     dot->add_action( this, "Rupture", "cycle_targets=1,if=!variable.skip_cycle_rupture&!variable.skip_rupture&target!=self.target&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&((!exsanguinated|set_bonus.tier28_4pc&debuff.vendetta.up&exsanguinated_rate<=2)|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>(4+(runeforge.dashing_scoundrel*5)+(runeforge.doomblade*5)+(variable.regen_saturated*6))" );
     dot->add_talent( this, "Crimson Tempest", "if=spell_targets>=2&effective_combo_points>=4&remains<2+3*(spell_targets>=4)", "Fallback AoE Crimson Tempest with the same logic as above, but ignoring the energy conditions if we aren't using Rupture" );
-    dot->add_talent( this, "Crimson Tempest", "if=spell_targets=1&(!runeforge.dashing_scoundrel|rune_word.frost.enabled)&master_assassin_remains=0&effective_combo_points>=(cp_max_spend-1)&refreshable&(!exsanguinated|set_bonus.tier28_4pc&debuff.vendetta.up&exsanguinated_rate<=2)&!debuff.shiv.up&target.time_to_die-remains>4", "Crimson Tempest on ST if in pandemic and nearly max energy and if Envenom won't do more damage due to TB/MA" );
+    dot->add_talent( this, "Crimson Tempest", "if=spell_targets=1&(!runeforge.dashing_scoundrel|rune_word.frost.enabled)&master_assassin_remains=0&effective_combo_points>=(cp_max_spend-1)&refreshable&(!exsanguinated|set_bonus.tier28_4pc&debuff.vendetta.up&exsanguinated_rate<=2)&(!debuff.shiv.up|debuff.grudge_match.remains>2)&target.time_to_die-remains>4", "Crimson Tempest on ST if in pandemic and nearly max energy and if Envenom won't do more damage due to TB/MA" );
 
     // Direct damage abilities
     action_priority_list_t* direct = get_action_priority_list( "direct", "Direct damage abilities" );
@@ -7854,6 +7888,15 @@ void rogue_t::init_spells()
 
   conduit.recuperator             = find_conduit_spell( "Recuperator" );
 
+  // Set Bonus Items ========================================================
+
+  set_bonuses.t28_assassination_2pc = sets->set( ROGUE_ASSASSINATION, T28, B2 );
+  set_bonuses.t28_assassination_4pc = sets->set( ROGUE_ASSASSINATION, T28, B4 );
+  set_bonuses.t28_outlaw_2pc        = sets->set( ROGUE_OUTLAW, T28, B2 );
+  set_bonuses.t28_outlaw_4pc        = sets->set( ROGUE_OUTLAW, T28, B4 );
+  set_bonuses.t28_subtlety_2pc      = sets->set( ROGUE_SUBTLETY, T28, B2 );
+  set_bonuses.t28_subtlety_4pc      = sets->set( ROGUE_SUBTLETY, T28, B4 );
+
   // Legendary Items ========================================================
 
   // Generic
@@ -8376,16 +8419,6 @@ void rogue_t::create_buffs()
   buffs.greenskins_wickers = make_buff( this, "greenskins_wickers", find_spell( 340573 ) )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
     ->set_trigger_spell( legendary.greenskins_wickers );
-
-  // Set Bonus Items ========================================================
-
-  set_bonuses.t28_assassination_2pc = sets->set( ROGUE_ASSASSINATION, T28, B2 );
-  set_bonuses.t28_assassination_4pc = sets->set( ROGUE_ASSASSINATION, T28, B4 );
-  set_bonuses.t28_outlaw_2pc        = sets->set( ROGUE_OUTLAW, T28, B2 );
-  set_bonuses.t28_outlaw_4pc        = sets->set( ROGUE_OUTLAW, T28, B4 );
-  set_bonuses.t28_subtlety_2pc      = sets->set( ROGUE_SUBTLETY, T28, B2 );
-  set_bonuses.t28_subtlety_4pc      = sets->set( ROGUE_SUBTLETY, T28, B4 );
-
 }
 
 // rogue_t::create_options ==================================================
