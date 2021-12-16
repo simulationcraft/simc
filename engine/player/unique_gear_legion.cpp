@@ -65,6 +65,7 @@ namespace item
   void gnawed_thumb_ring( special_effect_t& );
   void naraxas_spiked_tongue( special_effect_t& );
   void choker_of_barbed_reins( special_effect_t& );
+  void mark_of_dargrul( special_effect_t& );
 
   // 7.1 Dungeon
   void arans_relaxing_ruby( special_effect_t& );
@@ -567,6 +568,16 @@ void item::choker_of_barbed_reins( special_effect_t& effect )
   }
 
   new dbc_proc_callback_t( effect.item, effect );
+}
+
+// Mark of Dargrul =========================================================
+
+void item::mark_of_dargrul( special_effect_t& effect )
+{
+  effect.execute_action =
+    create_proc_action<generic_aoe_proc_t>( "landslide", effect, "landslide", effect.trigger(), true );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Deteriorated Construct Core ==============================================
@@ -5996,6 +6007,7 @@ void unique_gear::register_special_effects_legion()
   register_special_effect( 228461, item::gnawed_thumb_ring              );
   register_special_effect( 215404, item::naraxas_spiked_tongue          );
   register_special_effect( 234106, item::choker_of_barbed_reins         );
+  register_special_effect( 214396, item::mark_of_dargrul                );
 
   /* Legion 7.1 Dungeon */
   register_special_effect( 230257, item::arans_relaxing_ruby            );
