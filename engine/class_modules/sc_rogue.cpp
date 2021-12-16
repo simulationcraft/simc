@@ -4604,6 +4604,7 @@ struct sepsis_t : public rogue_attack_t
       rogue_attack_t( name, p, p->find_spell( 328306 ) )
     {
       dual = true;
+      affected_by.t28_assassination_2pc = true; // TOCHECK on next PTR update
     }
 
     void impact( action_state_t* state ) override
@@ -4625,6 +4626,7 @@ struct sepsis_t : public rogue_attack_t
   {
     // 2021-04-22- Not in the whitelist but confirmed as working in-game
     affected_by.broadside_cp = true;
+    affected_by.t28_assassination_2pc = true; // TOCHECK on next PTR update
     sepsis_expire_damage = p->get_background_action<sepsis_expire_damage_t>( "sepsis_expire_damage" );
     sepsis_expire_damage->stats = stats;
   }
