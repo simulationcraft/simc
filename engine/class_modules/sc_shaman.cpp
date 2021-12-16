@@ -498,6 +498,7 @@ public:
     cooldown_t* storm_elemental;
     cooldown_t* strike;  // shared CD of Storm Strike and Windstrike
     cooldown_t* shock;  // shared CD of flame shock/frost shock for enhance
+    cooldown_t* chain_harvest;
   } cooldown;
 
   // Covenant Class Abilities
@@ -794,6 +795,7 @@ public:
     cooldown.crash_lightning = get_cooldown( "crash_lightning" );
     cooldown.strike          = get_cooldown( "strike" );
     cooldown.shock           = get_cooldown( "shock" );
+    cooldown.chain_harvest   = get_cooldown( "chain_harvest" );
 
     melee_mh      = nullptr;
     melee_oh      = nullptr;
@@ -5634,12 +5636,14 @@ struct flame_shock_t : public shaman_spell_t
   flame_shock_spreader_t* spreader;
   const spell_data_t* elemental_resource;
   const spell_data_t* skybreakers_effect;
+  const spell_data_t* elemental_conduit;
 
   flame_shock_t( shaman_t* player, util::string_view options_str = {} ) :
     shaman_spell_t( "flame_shock", player, player->find_class_spell( "Flame Shock" ) ),
     spreader( player->talent.surge_of_power->ok() ? new flame_shock_spreader_t( player ) : nullptr ),
     elemental_resource( player->find_spell( 263819 ) ),
-    skybreakers_effect( player->find_spell( 336734 ) )
+    skybreakers_effect( player->find_spell( 336734 ) ),
+    elemental_conduit( player->find_spell( 356250 ) )
   {
     parse_options( options_str );
     tick_may_crit      = true;
@@ -5717,25 +5721,15 @@ struct flame_shock_t : public shaman_spell_t
       p()->trigger_lava_surge();
     }
 
-    // Fire Elemental passive effect (MS generation on FS tick)
-    if ( !p()->talent.storm_elemental->ok() )
-    {
-      if ( p()->talent.primal_elementalist->ok() && p()->pet.pet_fire_elemental &&
-           !p()->pet.pet_fire_elemental->is_sleeping() )
-      {
-        p()->trigger_maelstrom_gain( elemental_resource->effectN( 1 ).base_value(), p()->gain.fire_elemental );
-      }
-      else if ( !p()->talent.primal_elementalist->ok() && p()->pet.guardian_fire_elemental &&
-                !p()->pet.guardian_fire_elemental->is_sleeping() )
-      {
-        p()->trigger_maelstrom_gain( elemental_resource->effectN( 1 ).base_value(), p()->gain.fire_elemental );
-      }
-    }
-
     if ( d->state->result == RESULT_CRIT && p()->legendary.skybreakers_fiery_demise->ok() )
     {
       p()->cooldown.storm_elemental->adjust( -1.0 * skybreakers_effect->effectN( 1 ).time_value() );
       p()->cooldown.fire_elemental->adjust( -1.0 * skybreakers_effect->effectN( 2 ).time_value() );
+    }
+
+    if ( p()->is_ptr() && d->state->result == RESULT_CRIT && p()->legendary.elemental_conduit->ok() )
+    {
+      p()->cooldown.chain_harvest->adjust( -1.0 * elemental_conduit->effectN( 3 ).time_value() );
     }
 
     if ( p()->legendary.primal_lava_actuators.ok() && d->state->result_amount > 0 )
@@ -5766,6 +5760,11 @@ struct flame_shock_t : public shaman_spell_t
   void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
+
+    if ( p()->is_ptr() && state->result == RESULT_CRIT && p()->legendary.elemental_conduit->ok() )
+    {
+      p()->cooldown.chain_harvest->adjust( -1.0 * elemental_conduit->effectN( 3 ).time_value() );
+    }
 
     if ( p()->buff.surge_of_power->up() && sim->target_non_sleeping_list.size() > 1 )
     {
