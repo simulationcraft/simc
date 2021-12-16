@@ -996,10 +996,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  "<li><span class=\"label\">base_execute_time:</span>%.2f</li>\n"
                  "<li><span class=\"label\">base_crit:</span>%.2f</li>\n"
                  "<li><span class=\"label\">target:</span>%s</li>\n"
-                 "<li><span class=\"label\">aoe:</span>%d</li>\n"
-                 "<li><span class=\"label\">harmful:</span>%s</li>\n"
-                 "</ul>\n"
-                 "</div>\n",
+                 "<li><span class=\"label\">aoe:</span>%d</li>\n",
                  util::encode_html( util::inverse_tokenize( a->name() ) ).c_str(),
                  a->id,
                  util::school_type_string( a->get_school() ),
@@ -1015,8 +1012,28 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  a->base_execute_time.total_seconds(),
                  a->base_crit,
                  a->target ? util::encode_html( a->target->name() ).c_str() : "",
-                 a->aoe,
-                 a->harmful ? "true" : "false" );
+                 a->aoe );
+
+      if ( a->aoe > 1 || a->aoe < 0 )
+      {
+        fmt::print( os, "<li><span class=\"label\">split_aoe_damage:</span>{}</li>\n",
+                    a->split_aoe_damage ? "true" : "false" );
+        if ( a->reduced_aoe_targets > 0 )
+        {
+          fmt::print( os, "<li><span class=\"label\">reduced_aoe_targets:</span>{}</li>\n",
+                      a->reduced_aoe_targets );
+        }
+        if ( a->full_amount_targets > 0 )
+        {
+          fmt::print( os, "<li><span class=\"label\">full_amount_targets:</span>{}</li>\n",
+                      a->full_amount_targets );
+        }
+      }
+
+      fmt::print( os, "<li><span class=\"label\">harmful:</span>{}</li>\n",
+                  a->harmful ? "true" : "false" );
+      
+      os << "</ul>\n</div>\n";  // Close details
 
       os << "<div>\n";  // Wrap damage/weapon
 
