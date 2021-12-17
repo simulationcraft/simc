@@ -58,7 +58,6 @@ template <typename T, typename Fields>
 bool override_bit_array_field( T* data, const Fields& fields, util::string_view name, double value )
 {
   return detail::handle_field( data, fields, name, [ value ] ( auto& field ) {
-    auto max = std::size( field );
     bool add = true;
     auto v = static_cast<int>( value );
     if ( v < 0 )
@@ -67,7 +66,7 @@ bool override_bit_array_field( T* data, const Fields& fields, util::string_view 
       v = std::abs( v );
     }
 
-    if ( v > max * 32 )
+    if ( v >= std::size( field ) * 32 )
       throw std::invalid_argument( "Invalid value (too large)." );
 
     int idx = v / 32;
@@ -168,8 +167,15 @@ static constexpr auto spelleffect_data_fields = std::make_tuple(
   data_field( "chain_target",            &spelleffect_data_t::_chain_target )
 );
 
+static constexpr auto spelleffect_data_bit_array_fields = std::make_tuple(
+  data_field( "class_flags", &spelleffect_data_t::_class_flags )
+);
+
 bool spelleffect_data_t::override_field( util::string_view field, double value )
 {
+  if ( ::override_bit_array_field( this, spelleffect_data_bit_array_fields, field, value ) )
+    return true;
+
   return ::override_field( this, spelleffect_data_fields, field, value );
 }
 
