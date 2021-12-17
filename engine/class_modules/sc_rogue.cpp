@@ -695,6 +695,7 @@ public:
     bool rogue_ready_trigger = true;
     bool prepull_shadowdust = false;
     bool priority_rotation = false;
+    double t28_assassination_2pc_value = 1.0; // Temp for PTR build
   } options;
 
   rogue_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
@@ -6534,7 +6535,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   if ( source->set_bonuses.t28_assassination_2pc->ok() )
     debuffs.grudge_match = make_buff( *this, "grudge_match", source->spec.shiv_2_debuff )
       ->set_chance( 1.0 )
-      ->set_default_value( 1.0 );
+      ->set_default_value( source->options.t28_assassination_2pc_value );
   else
     debuffs.grudge_match = make_buff( *this, "grudge_match" )
       ->set_chance( 0.0 )
@@ -8607,6 +8608,7 @@ void rogue_t::create_options()
   add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
   add_option( opt_bool( "prepull_shadowdust", options.prepull_shadowdust ) );
   add_option( opt_bool( "priority_rotation", options.priority_rotation ) );
+  add_option( opt_float( "t28_assassination_2pc_value", options.t28_assassination_2pc_value, 0.0, 2.0 ) );
 }
 
 // rogue_t::copy_from =======================================================
@@ -8636,6 +8638,7 @@ void rogue_t::copy_from( player_t* source )
   options.rogue_ready_trigger = rogue->options.rogue_ready_trigger;
   options.prepull_shadowdust = rogue->options.prepull_shadowdust;
   options.priority_rotation = rogue->options.priority_rotation;
+  options.t28_assassination_2pc_value = rogue->options.t28_assassination_2pc_value;
 }
 
 // rogue_t::create_profile  =================================================
