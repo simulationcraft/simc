@@ -1479,6 +1479,7 @@ class SpellDataGenerator(DataGenerator):
             ( 345316, 0 ), ( 345390, 0 ), # Flagellation damage spells
             ( 185422, 0 ),          # Shadow Dance buff spell
             ( 350964, 0 ),          # Subtlety-specific Deathly Shadows legendary buff
+            ( 364234, 0 ), ( 364235, 0 ), ( 364556, 0 ), # T28 Outlaw 4pc Spells
         ),
 
         # Priest:
