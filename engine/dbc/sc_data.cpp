@@ -102,11 +102,10 @@ bool spell_data_t::override_field( util::string_view field, double value )
 {
   if ( util::str_prefix_ci( field, "class_flags_" ) )
   {
-    auto idx = static_cast<unsigned>( value / 32 );
-
-    if ( idx < 0 || idx >= NUM_CLASS_FAMILY_FLAGS )
+    if ( value < 0 || value >= NUM_CLASS_FAMILY_FLAGS * 32 )
       throw std::invalid_argument( "Invalid class flag value." );
 
+    auto idx = static_cast<unsigned>( value / 32 );
     auto bit = 1u << ( static_cast<unsigned>( value ) % 32 );
 
     if ( util::str_in_str_ci( field, "add" ) )
