@@ -94,11 +94,33 @@ static constexpr auto spell_data_fields = std::make_tuple(
   data_field( "rppm",              &spell_data_t::_rppm ),
   data_field( "dmg_class",         &spell_data_t::_dmg_class ),
   data_field( "max_targets",       &spell_data_t::_max_targets ),
-  data_field( "category",          &spell_data_t::_category )
+  data_field( "category",          &spell_data_t::_category ),
+  data_field( "class_flags_family",&spell_data_t::_class_flags_family )
 );
 
 bool spell_data_t::override_field( util::string_view field, double value )
 {
+  if ( util::str_prefix_ci( field, "class_flags_" ) )
+  {
+    auto idx = static_cast<unsigned>( value / 32 );
+
+    if ( idx < 0 || idx >= NUM_CLASS_FAMILY_FLAGS )
+      throw std::invalid_argument( "Invalid class flag value." );
+
+    auto bit = 1u << ( static_cast<unsigned>( value ) % 32 );
+
+    if ( util::str_in_str_ci( field, "add" ) )
+    {
+      _class_flags[idx] |= bit;
+      return true;
+    }
+    else if ( util::str_in_str_ci( field, "remove" ) )
+    {
+      _class_flags[idx] &= ~bit;
+      return true;
+    }
+  }
+
   return ::override_field( this, spell_data_fields, field, value );
 }
 
