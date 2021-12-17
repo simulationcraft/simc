@@ -55,6 +55,34 @@ bool override_field( T* data, const Fields& fields, util::string_view name, doub
 }
 
 template <typename T, typename Fields>
+bool override_bit_array_field( T* data, const Fields& fields, util::string_view name, double value )
+{
+  return detail::handle_field( data, fields, name, [ value ] ( auto& field ) {
+    auto max = std::size( field );
+    bool add = true;
+    auto v = static_cast<int>( value );
+    if ( v < 0 )
+    {
+      add = false;
+      v = std::abs( v );
+    }
+
+    if ( v > max * 32 )
+      throw std::invalid_argument( "Invalid value (too large)." );
+
+    int idx = v / 32;
+    unsigned bit = 1u << ( v % 32 );
+
+    if ( add )
+      field[idx] |= bit;
+    else
+      field[idx] &= ~bit;
+
+    return true;
+  }, false, detail::size_c<std::tuple_size<Fields>::value>{} );
+}
+
+template <typename T, typename Fields>
 double get_field( const T* data, const Fields& fields, util::string_view name ) {
   return detail::handle_field( data, fields, name,
     [] ( const auto& field ) {
@@ -98,27 +126,15 @@ static constexpr auto spell_data_fields = std::make_tuple(
   data_field( "class_flags_family",&spell_data_t::_class_flags_family )
 );
 
+static constexpr auto spell_data_bit_array_fields = std::make_tuple(
+  data_field( "attributes",  &spell_data_t::_attributes ),
+  data_field( "class_flags", &spell_data_t::_class_flags )
+);
+
 bool spell_data_t::override_field( util::string_view field, double value )
 {
-  if ( util::str_prefix_ci( field, "class_flags_" ) )
-  {
-    if ( value < 0 || value > NUM_CLASS_FAMILY_FLAGS * 32 )
-      throw std::invalid_argument( "Invalid class flag value." );
-
-    auto idx = static_cast<unsigned>( value / 32 );
-    auto bit = 1u << ( static_cast<unsigned>( value ) % 32 );
-
-    if ( util::str_in_str_ci( field, "add" ) )
-    {
-      _class_flags[idx] |= bit;
-      return true;
-    }
-    else if ( util::str_in_str_ci( field, "remove" ) )
-    {
-      _class_flags[idx] &= ~bit;
-      return true;
-    }
-  }
+  if ( ::override_bit_array_field( this, spell_data_bit_array_fields, field, value ) )
+    return true;
 
   return ::override_field( this, spell_data_fields, field, value );
 }
