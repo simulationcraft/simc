@@ -89,6 +89,13 @@ double get_field( const T* data, const Fields& fields, util::string_view name ) 
     }, -std::numeric_limits<double>::max(), detail::size_c<std::tuple_size<Fields>::value>{} );
 }
 
+template <typename T, typename Fields>
+bool is_bit_array_field( const T* data, const Fields& fields, util::string_view name ) {
+  return detail::handle_field( data, fields, name, [] ( const auto& ) {
+    return true;
+  }, false, detail::size_c<std::tuple_size<Fields>::value>{} );
+}
+
 } // anon namespace
 
 // ==========================================================================
@@ -140,6 +147,9 @@ bool spell_data_t::override_field( util::string_view field, double value )
 
 double spell_data_t::get_field( util::string_view field ) const
 {
+  if ( ::is_bit_array_field( this, spell_data_bit_array_fields, field ) )
+    return 0.0;
+
   return ::get_field( this, spell_data_fields, field );
 }
 
@@ -181,6 +191,9 @@ bool spelleffect_data_t::override_field( util::string_view field, double value )
 
 double spelleffect_data_t::get_field( util::string_view field ) const
 {
+  if ( ::is_bit_array_field( this, spelleffect_data_bit_array_fields, field ) )
+    return 0.0;
+
   return ::get_field( this, spelleffect_data_fields, field );
 }
 
