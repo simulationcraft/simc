@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.41462
-static const std::array<spelltext_data_t, 15781> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15785> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -47,7 +47,6 @@ static const std::array<spelltext_data_t, 15781> __ptr_spelltext_data { {
   {    702, "Increases the time between an enemy's attacks by $6343s2% for $d.$?s103112[\r\n\r\n|CFFE55BB0Soulburn: Your Curse of Weakness will affect all enemies in a $104222A yard radius around your target.|R][]\r\n\r\n|cFF8282FFCurses: A warlock can only have one Curse active per target.|r", "Time between attacks increased by $w1%. $?e1[Chance to critically strike reduced by $w2%.][]", 0 },
   {    703, "Garrote the enemy, causing $o1 Bleed damage over $d.$?a231719[ Silences the target for $1330d when used from Stealth.][]\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", "Suffering $w1 damage every $t1 seconds.", 0 },
   {    710, "Banishes an enemy Demon, Aberration, or Elemental, preventing any action for $d. Limit 1. Casting Banish again on the target will cancel the effect.", "Invulnerable, but unable to act.", 0 },
-  {    712, "Summons a Succubus under your command to seduce enemy Humanoids, preventing them from attacking.", 0, "Summon" },
   {    740, "Heals all allies within $a2 yards for ${$157982s1*5} over $d. Each heal heals the target for another $157982o2 over $157982d, stacking.\r\n\r\nHealing increased by $s3% when not in a raid.", "Healing all allies within $a1 yards for $157982s1 every $t1 sec.", 0 },
   {    755, "Sacrifices ${$m3*$d/$t1}% of your maximum health to heal your summoned Demon for twice as much over $d.", "Transferring health.", 0 },
   {    759, "Conjures a Mana Gem that can be used to instantly restore $5405s1% mana, and holds up to $s2 charges.\r\n\r\n$@spellname118812\r\n$@spelldesc118812", 0, 0 },
@@ -15680,6 +15679,8 @@ static const std::array<spelltext_data_t, 15781> __ptr_spelltext_data { {
   { 364086, "Your abilities have a chance to strip the target of its power, decreasing damage done by $364355s1% and increasing damage taken by $364355s2%. Your Cypher power allows this effect to be applied up to $?pc94626[6 stacks]?pc94651[5 stacks]?pc94650[4 stacks]?pc64649[3 stacks]?pc94746[2 stacks][1 stack].\r\n\r\nThis ability grows more powerful as you research the Cyphers of the First Ones.", 0, 0 },
   { 364087, "Your damaging abilities have a chance to unleash a blast at the target, dealing $?pc94626[${s3*(1+(s2/100)*5)}]?pc94651[${s3*(1+(s2/100)*4)}]?pc94650[${s3*(1+(s2/100)*3)}]?pc64649[${s3*(1+(s2/100)*2)}]?pc94746[${s3*(1+(s2/100))}][$s3] Cosmic damage.\r\n\r\nThis ability grows more powerful as you research the Cyphers of the First Ones.", 0, 0 },
   { 364198, "$@spelldesc363951", 0, 0 },
+  { 364234, "$@spelldesc363560", "After loading $u bullets, Between the Eyes will have its cooldown and cost refunded.", 0 },
+  { 364235, "$@spelldesc363560", "Your next bullet will reload Between the Eyes.", 0 },
   { 364261, "Deals $s1 Shadowflame damage to the target.", 0, 0 },
   { 364262, "Deals $s1 Shadowflame damage to nearby enemies.\r\n", 0, 0 },
   { 364263, "Restores $s1 of their summoner's Soul Shards.", 0, 0 },
@@ -15727,6 +15728,7 @@ static const std::array<spelltext_data_t, 15781> __ptr_spelltext_data { {
   { 364553, "$?s262161[Warbreaker][Colossus Smash] lasts ${$s1/1000} sec longer and increases your damage dealt to affected enemies by an additional $s2%.", 0, 0 },
   { 364554, "Raging Blow deals $s2% increased damage and gains an additional charge.", 0, 0 },
   { 364555, "Your Main Gauche has a $s1% chance to fire a Pistol Shot.", 0, 0 },
+  { 364556, "$@spelldesc363560", "Your next Between the Eyes is free of cost.", 0 },
   { 364557, "Shadowstrike has a $s1% chance to grant Shadow Blades for ${$s3/1000} sec.", 0, 0 },
   { 364639, "Avatar increases your damage dealt by an additional $364641s1% and decreases damage taken by $364641s2%. Avatar instantly grants $364006u stacks of Outburst.", 0, 0 },
   { 364641, "$@spelldesc364639", "Damage dealt increased by $s1% and damage taken decreased by $s2%.", 0 },
@@ -15769,6 +15771,7 @@ static const std::array<spelltext_data_t, 15781> __ptr_spelltext_data { {
   { 366085, "$@spelldesc365549", "You have recently benefited from Enhancement: Robustness and it cannot trigger again.", 0 },
   { 366129, "$@spelldesc365548", "You have recently benefited from Enhancement: Fault-Tolerance and it cannot trigger again.", 0 },
   { 366184, "$@spelldesc365543", "$@auradesc365543", 0 },
+  { 366222, "Summons a Succubus or Incubus under your command to seduce enemy Humanoids, preventing them from attacking.\r\n", 0, 0 },
   { 366333, "Consume this crystal to gain its enhancement temporarily.", 0, 0 },
   { 366436, "Every $t1 sec you gain $@spellname366438, causing your next $?a137012|a137013[Regrowth]?a137024[Enveloping Mist]?a137029[Flash of Light]?a137032|a137033[Shadow Mend]?a137031[Flash Heal]?a137039|a137040[Healing Surge][appropriate healing spell] cast to be enhanced, granting the target precisely what they require.", 0, 0 },
   { 366438, "$@spelldesc366436", "Your next $?a137012|a137013[Regrowth]?a137024[Enveloping Mist]?a137029[Holy Light]?a137032|a137033[Shadow Mend]?a137031[Flash Heal]?a137039|a137040[Healing Surge][appropriate healing spell] cast is enhanced, granting the target precisely what they require.", 0 },
@@ -15781,6 +15784,7 @@ static const std::array<spelltext_data_t, 15781> __ptr_spelltext_data { {
   { 366861, "Gaze deeply into the orb while sitting, pondering its secrets.", 0, 0 },
   { 366882, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
   { 366971, "$@spelldesc363656", "Causing shadow damage to all targets within $a2 yards.", 0 },
+  { 367421, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 9.2.0.41462
