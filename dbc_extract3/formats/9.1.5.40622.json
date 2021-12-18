@@ -99,11 +99,11 @@
   },
   "AzeritePowerSetMember": {
     "fields": [
-      { "data_type": "H", "field": "unk_28366" },
-      { "data_type": "H", "field": "id_power", "ref": "AzeritePower" },
-      { "data_type": "B", "field": "class_id" },
-      { "data_type": "B", "field": "tier" },
-      { "data_type": "B", "field": "index" }
+      { "data_type": "i", "field": "unk_28366" },
+      { "data_type": "i", "field": "id_power", "ref": "AzeritePower" },
+      { "data_type": "i", "field": "class_id" },
+      { "data_type": "b", "field": "tier" },
+      { "data_type": "i", "field": "index" }
     ]
   },
   "AzeriteTierUnlock": {
@@ -219,7 +219,7 @@
   "CurrencyCategory": {
     "fields": [
       { "data_type": "S", "field": "name" },
-      { "data_type": "B", "field": "flags" },
+      { "data_type": "i", "field": "flags" },
       { "data_type": "B", "field": "id_expansion" }
     ]
   },
@@ -238,19 +238,19 @@
     "fields": [
       { "data_type": "S", "field": "name" },
       { "data_type": "S", "field": "description" },
-      { "data_type": "B", "field": "id_category" },
+      { "data_type": "i", "field": "id_category" },
       { "data_type": "i", "field": "id_inventory_icon_file" },
       { "data_type": "I", "field": "spell_weight" },
       { "data_type": "B", "field": "spell_category" },
       { "data_type": "I", "field": "max_quantity" },
       { "data_type": "i", "field": "max_earnable_per_week" },
-      { "data_type": "I", "field": "flags" },
-      { "data_type": "b", "field": "quality" },
+      { "data_type": "b", "field": "flags" },
+      { "data_type": "i", "field": "quality" },
       { "data_type": "i", "field": "unk_1" },
       { "data_type": "i", "field": "unk_2" },
       { "data_type": "i", "field": "unk_3" },
       { "data_type": "i", "field": "unk_4" },
-      { "data_type": "i", "field": "unk_5" }
+      { "data_type": "i", "field": "unk_5", "elements": 2 }
     ]
   },
   "Curve": {
@@ -276,7 +276,7 @@
       { "data_type": "B", "field": "id_fallback_difficulty" },
       { "data_type": "B", "field": "min_players" },
       { "data_type": "B", "field": "max_players" },
-      { "data_type": "h", "field": "flags" },
+      { "data_type": "H", "field": "flags" },
       { "data_type": "B", "field": "item_context" },
       { "data_type": "B", "field": "id_toggle_difficulty" },
       { "data_type": "H", "field": "unk_11" },
@@ -312,11 +312,12 @@
     ]
   },
   "GarrTalent": {
+    "parent": "GarrTalentTree",
     "fields": [
       { "data_type": "S", "field": "name"  },
       { "data_type": "S", "field": "desc"  },
       { "data_type": "i", "field": "id"    },
-      { "data_type": "i", "field": "id_garr_talent_tree", "ref": "GarrTalentTree" },
+      { "data_type": "I", "field": "id_garr_talent_tree", "ref": "GarrTalentTree" },
       { "data_type": "b", "field": "tier", "formats": { "cpp": "%2u" } },
       { "data_type": "b", "field": "ui_order" },
       { "data_type": "i", "field": "id_icon_file_data" },
@@ -327,22 +328,22 @@
       { "data_type": "i", "field": "id_garr_talent_prereq" },
       { "data_type": "i", "field": "unk_6" },
       { "data_type": "i", "field": "unk_7" },
-      { "data_type": "b", "field": "conduit_type" }
+      { "data_type": "i", "field": "conduit_type" }
     ]
   },
   "GarrTalentTree": {
     "fields": [
       { "data_type": "S", "field": "title" },
-      { "data_type": "i", "field": "id_garr_type" },
+      { "data_type": "B", "field": "id_garr_type" },
       { "data_type": "i", "field": "id_class" },
       { "data_type": "b", "field": "max_tiers" },
       { "data_type": "b", "field": "unk_0" },
-      { "data_type": "b", "field": "flags" },
+      { "data_type": "i", "field": "flags" },
       { "data_type": "H", "field": "unk_1" },
       { "data_type": "i", "field": "garr_talent_tree_type" },
       { "data_type": "i", "field": "unk_2" },
-      { "data_type": "i", "field": "feature_type" },
-      { "data_type": "i", "field": "feature_rank" },
+      { "data_type": "b", "field": "feature_type" },
+      { "data_type": "b", "field": "feature_rank" },
       { "data_type": "i", "field": "unk_4" }
     ]
   },
@@ -352,7 +353,7 @@
       { "data_type": "i", "field": "rank"    },
       { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
       { "data_type": "i", "field": "unk_0" },
-      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "f", "field": "unk_1" },
       { "data_type": "i", "field": "unk_2" },
       { "data_type": "i", "field": "unk_3" },
       { "data_type": "i", "field": "unk_4" },
@@ -472,7 +473,7 @@
   },
   "ItemAppearance": {
     "fields": [
-      { "data_type": "B", "field": "f4"},
+      { "data_type": "i", "field": "f4"},
       { "data_type": "i", "field": "id_display_info"},
       { "data_type": "i", "field": "id_icon"},
       { "data_type": "i", "field": "f3"},
@@ -512,7 +513,7 @@
       { "data_type": "B", "field": "index",    "formats": { "cpp": "%2u" } },
       { "data_type": "H", "field": "id_child", "formats": { "cpp": "%4u" } },
       { "data_type": "H", "field": "id_node",  "formats": { "cpp": "%4u" } },
-      { "data_type": "i", "field": "unk"                                   },
+      { "data_type": "H", "field": "unk"                                   },
       { "data_type": "i", "field": "unk_2"                                 },
       { "data_type": "i", "field": "unk_3"                                 }
     ]
@@ -586,9 +587,9 @@
     "fields": [
       { "data_type": "i", "field": "id"},
       { "data_type": "i", "field": "id_item", "ref": "ItemSparse" },
-      { "data_type": "B", "field": "f3"},
-      { "data_type": "H", "field": "id_appearance", "ref": "ItemAppearance" },
-      { "data_type": "B", "field": "f5"},
+      { "data_type": "i", "field": "f3"},
+      { "data_type": "i", "field": "id_appearance", "ref": "ItemAppearance" },
+      { "data_type": "i", "field": "f5"},
       { "data_type": "b", "field": "f6"}
     ]
   },
@@ -681,7 +682,7 @@
       { "data_type": "f", "field": "coord", "elements": 2 },
       { "data_type": "i", "field": "id" },
       { "data_type": "H", "field": "id_journal_instance" },
-      { "data_type": "h", "field": "unk_1" },
+      { "data_type": "H", "field": "unk_1" },
       { "data_type": "I", "field": "order_index" },
       { "data_type": "H", "field": "first_section_id" },
       { "data_type": "H", "field": "ui_map_id" },
@@ -696,17 +697,17 @@
       { "data_type": "S", "field": "name" },
       { "data_type": "S", "field": "desc" },
       { "data_type": "i", "field": "id" },
-      { "data_type": "I", "field": "id_journal_encounter", "ref": "JournalEncounter" },
+      { "data_type": "H", "field": "id_journal_encounter", "ref": "JournalEncounter" },
       { "data_type": "I", "field": "id_creature_display_info" },
       { "data_type": "i", "field": "id_data_file" },
-      { "data_type": "I", "field": "order_index" },
+      { "data_type": "B", "field": "order_index" },
       { "data_type": "I", "field": "id_ui_model_scene" }
     ]
   },
   "JournalEncounterItem": {
     "parent": "JournalEncounter",
     "fields": [
-      { "data_type": "I", "field": "id" },
+      { "data_type": "i", "field": "id" },
       { "data_type": "H", "field": "id_encounter", "ref": "JournalEncounter" },
       { "data_type": "I", "field": "id_item", "ref": "ItemSparse" },
       { "data_type": "B", "field": "flags_2" },
@@ -747,7 +748,7 @@
       { "data_type": "i", "field": "id_button_file_data" },
       { "data_type": "i", "field": "id_button_small_file_data" },
       { "data_type": "i", "field": "id_lore_file_data" },
-      { "data_type": "b", "field": "order_index" },
+      { "data_type": "B", "field": "order_index" },
       { "data_type": "b", "field": "flags" },
       { "data_type": "H", "field": "area_id" }
     ]
@@ -858,7 +859,7 @@
       { "data_type": "I", "field": "quest_kill_logic" },
       { "data_type": "b", "field": "min_expansion_level" },
       { "data_type": "b", "field": "max_expansion_level" },
-      { "data_type": "I", "field": "min_avg_item_level" },
+      { "data_type": "i", "field": "min_avg_item_level" },
       { "data_type": "i", "field": "max_avg_item_level" },
       { "data_type": "H", "field": "min_avg_equipped_item_level" },
       { "data_type": "H", "field": "max_avg_equipped_item_level" },
@@ -1019,7 +1020,7 @@
       { "data_type": "B", "field": "unk_13" },
       { "data_type": "H", "field": "max_learn_skill" },
       { "data_type": "H", "field": "unk_7" },
-      { "data_type": "B", "field": "unk_14" },
+      { "data_type": "i", "field": "unk_14" },
       { "data_type": "B", "field": "reward_skill_points" },
       { "data_type": "H", "field": "index" },
       { "data_type": "H", "field": "id_filter" },
@@ -1239,7 +1240,7 @@
       { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
       { "data_type": "B", "field": "item_class" },
       { "data_type": "I", "field": "mask_inv_type" },
-      { "data_type": "I", "field": "mask_sub_class" }
+      { "data_type": "i", "field": "mask_sub_class" }
     ]
   },
   "SpellFocusObject": {
@@ -1357,7 +1358,7 @@
     "parent": "SpellProcsPerMinute",
     "fields": [
       { "data_type": "b", "field": "unk_1" },
-      { "data_type": "h", "field": "id_chr_spec" },
+      { "data_type": "i", "field": "id_chr_spec" },
       { "data_type": "f", "field": "coefficient" }
     ]
   },
