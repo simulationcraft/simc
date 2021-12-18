@@ -333,16 +333,16 @@
   "GarrTalentTree": {
     "fields": [
       { "data_type": "S", "field": "title" },
-      { "data_type": "i", "field": "id_garr_type" },
+      { "data_type": "B", "field": "id_garr_type" },
       { "data_type": "i", "field": "id_class" },
       { "data_type": "b", "field": "max_tiers" },
       { "data_type": "b", "field": "unk_0" },
-      { "data_type": "b", "field": "flags" },
+      { "data_type": "i", "field": "flags" },
       { "data_type": "H", "field": "unk_1" },
       { "data_type": "i", "field": "garr_talent_tree_type" },
       { "data_type": "i", "field": "unk_2" },
-      { "data_type": "i", "field": "feature_type" },
-      { "data_type": "i", "field": "feature_rank" },
+      { "data_type": "B", "field": "feature_type" },
+      { "data_type": "B", "field": "feature_rank" },
       { "data_type": "i", "field": "unk_4" }
     ]
   },
