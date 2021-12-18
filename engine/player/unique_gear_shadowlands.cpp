@@ -2919,7 +2919,9 @@ void init_jaithys_the_prison_blade( special_effect_t& effect, int proc_id, int s
       buff =
           make_buff<stat_buff_t>( effect.player, "harsh_tutelage" + std::to_string( rank ),
                                   effect.player->find_spell( proc_id ) )
-              ->add_stat( STAT_STRENGTH, effect.player->find_spell( spell_id )->effectN( 2 ).average( effect.item ) );
+              ->add_stat( STAT_STRENGTH, effect.player->find_spell( spell_id )->effectN( 2 ).average( effect.item ) )
+              ->set_refresh_duration_callback(
+                     []( const buff_t* b, timespan_t d ) { return std::min( b->remains() + d, 9_s ); } );
     }
     effect.custom_buff = buff;
   }
