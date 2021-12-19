@@ -926,7 +926,7 @@ public:
       found_action = dynamic_cast<T*>( action );
       if ( found_action )
       {
-        if ( found_action->secondary_trigger == source && ( n.empty() || found_action->name_str == n ) )
+        if ( found_action->secondary_trigger_type == source && ( n.empty() || found_action->name_str == n ) )
           break;
         else
           found_action = nullptr;
@@ -945,7 +945,7 @@ public:
       found_action = new T( n, this, std::forward<Ts>( args )... );
       found_action->background = found_action->dual = true;
       found_action->repeating = false;
-      found_action->secondary_trigger = source;
+      found_action->secondary_trigger_type = source;
       secondary_trigger_actions.push_back( found_action );
     }
     return found_action;
@@ -1081,7 +1081,7 @@ public:
 
   proc_types2 cast_proc_type2() const override
   {
-    if( action->secondary_trigger == secondary_trigger::WEAPONMASTER )
+    if( action->secondary_trigger_type == secondary_trigger::WEAPONMASTER )
     {
       return PROC2_CAST_DAMAGE;
     }
@@ -1109,7 +1109,7 @@ private:
 public:
   // Secondary triggered ability, due to Weaponmaster talent or Death from Above. Secondary
   // triggered abilities cost no resources or incur cooldowns.
-  secondary_trigger secondary_trigger;
+  secondary_trigger secondary_trigger_type;
 
   proc_t* symbols_of_death_autocrit_proc;
   proc_t* animacharged_cp_proc;
@@ -1160,7 +1160,7 @@ public:
                   util::string_view options = {} )
     : ab( n, p, s ),
     _requires_stealth( false ),
-    secondary_trigger( secondary_trigger::NONE ),
+    secondary_trigger_type( secondary_trigger::NONE ),
     symbols_of_death_autocrit_proc( nullptr ),
     animacharged_cp_proc( nullptr )
   {
@@ -1411,7 +1411,7 @@ public:
   // Secondary Trigger Functions ==============================================
 
   bool is_secondary_action() const
-  { return secondary_trigger != secondary_trigger::NONE && ab::background == true; }
+  { return secondary_trigger_type != secondary_trigger::NONE && ab::background == true; }
 
   virtual void trigger_secondary_action( player_t* target, int cp = 0, timespan_t delay = timespan_t::zero() )
   {
@@ -1546,7 +1546,7 @@ public:
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
   {
-    if ( secondary_trigger != secondary_trigger::NONE )
+    if ( secondary_trigger_type != secondary_trigger::NONE )
     {
       cd_duration = timespan_t::zero();
     }
@@ -1737,7 +1737,7 @@ public:
   void consume_resource() override
   {
     // Abilities triggered as part of another ability (secondary triggers) do not consume resources
-    if ( secondary_trigger != secondary_trigger::NONE )
+    if ( secondary_trigger_type != secondary_trigger::NONE )
     {
       return;
     }
@@ -3204,7 +3204,7 @@ struct pistol_shot_t : public rogue_attack_t
     double m = rogue_attack_t::action_multiplier();
 
     // TOCHECK: Dev PTR notes say procs will not work with T28 in a future build
-    if ( secondary_trigger != secondary_trigger::TORNADO_TRIGGER )
+    if ( secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER )
     {
       m *= 1.0 + p()->buffs.opportunity->value();
       m *= 1.0 + p()->buffs.greenskins_wickers->value();
@@ -3220,7 +3220,7 @@ struct pistol_shot_t : public rogue_attack_t
       return 0.0;
 
     // TOCHECK: Dev PTR notes say procs will not work with T28 in a future build
-    if ( secondary_trigger != secondary_trigger::TORNADO_TRIGGER )
+    if ( secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER )
     {
       if ( p()->talent.quick_draw->ok() && p()->buffs.opportunity->check() )
       {
@@ -3236,7 +3236,7 @@ struct pistol_shot_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     // TOCHECK: Dev PTR notes say procs will not work with T28 in a future build
-    if ( secondary_trigger != secondary_trigger::TORNADO_TRIGGER )
+    if ( secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER )
     {
       if ( generate_cp() > 0 && p()->talent.quick_draw->ok() && p()->buffs.opportunity->check() )
       {
@@ -3275,11 +3275,11 @@ struct pistol_shot_t : public rogue_attack_t
 
   // TOCHECK: On beta as of 8/28/2020, Blunderbuss procs don't trigger. Possibly only "on cast".
   bool procs_combat_potency() const override
-  { return secondary_trigger != secondary_trigger::CONCEALED_BLUNDERBUSS; }
+  { return secondary_trigger_type != secondary_trigger::CONCEALED_BLUNDERBUSS; }
 
   // TOCHECK: On 9.0.5 PTR as of 2/22/2021, Blunderbuss procs don't trigger Blade Flurry hits.
   bool procs_blade_flurry() const override
-  { return secondary_trigger != secondary_trigger::CONCEALED_BLUNDERBUSS || !p()->bugs; }
+  { return secondary_trigger_type != secondary_trigger::CONCEALED_BLUNDERBUSS || !p()->bugs; }
 };
 
 // Main Gauche ==============================================================
@@ -3809,7 +3809,7 @@ struct shadowstrike_t : public rogue_attack_t
       if ( p()->active.akaaris_shadowstrike )
         add_child( p()->active.akaaris_shadowstrike );
     }
-    else if ( secondary_trigger == secondary_trigger::IMMORTAL_TECHNIQUE )
+    else if ( secondary_trigger_type == secondary_trigger::IMMORTAL_TECHNIQUE )
     {
       if ( p()->active.weaponmaster.immortal_technique_shadowstrike )
         add_child( p()->active.weaponmaster.immortal_technique_shadowstrike );
@@ -3838,7 +3838,7 @@ struct shadowstrike_t : public rogue_attack_t
 
     // Only primary casts trigger Perforated Veins, not Weaponmaster or Akaari procs
     // TOCHECK: T28 bonus after next PTR build
-    if ( !is_secondary_action() || secondary_trigger == secondary_trigger::IMMORTAL_TECHNIQUE )
+    if ( !is_secondary_action() || secondary_trigger_type == secondary_trigger::IMMORTAL_TECHNIQUE )
     {
       p()->buffs.perforated_veins->trigger();
     }
@@ -3862,7 +3862,7 @@ struct shadowstrike_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    if ( secondary_trigger == secondary_trigger::IMMORTAL_TECHNIQUE )
+    if ( secondary_trigger_type == secondary_trigger::IMMORTAL_TECHNIQUE )
       trigger_weaponmaster( state, p()->active.weaponmaster.immortal_technique_shadowstrike );
     else
       trigger_weaponmaster( state, p()->active.weaponmaster.shadowstrike );
@@ -4047,7 +4047,7 @@ struct shuriken_storm_t: public rogue_attack_t
 
   // 2021-07-12-- Shuriken Tornado triggers the damage directly without a cast, so cast triggers don't happen
   bool procs_poison() const override
-  { return secondary_trigger != secondary_trigger::SHURIKEN_TORNADO; }
+  { return secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO; }
 };
 
 // Shuriken Tornado =========================================================
@@ -4121,7 +4121,7 @@ struct sinister_strike_t : public rogue_attack_t
     {
       // CP generation is not in the spell data and the extra SS procs seem script-driven
       // Triple Threat procs of this spell don't give combo points, however
-      return ( secondary_trigger == secondary_trigger::SINISTER_STRIKE ) ? 1 : 0;
+      return ( secondary_trigger_type == secondary_trigger::SINISTER_STRIKE ) ? 1 : 0;
     }
 
     void execute() override
@@ -6437,7 +6437,7 @@ void actions::rogue_action_t<Base>::trigger_akaaris_soul_fragment( const action_
     return;
 
   // TOCHECK: Future PTR notes indicate the T28 4pc should trigger this
-  if ( is_secondary_action() && secondary_trigger != secondary_trigger::IMMORTAL_TECHNIQUE )
+  if ( is_secondary_action() && secondary_trigger_type != secondary_trigger::IMMORTAL_TECHNIQUE )
     return;
 
   td( state->target )->debuffs.akaaris_soul_fragment->trigger();
