@@ -5734,8 +5734,10 @@ struct flame_shock_t : public shaman_spell_t
 
     if ( p()->legendary.primal_lava_actuators.ok() && d->state->result_amount > 0 )
     {
-      p()->cooldown.lava_lash->adjust( timespan_t::from_seconds(
-        -( p()->legendary.primal_lava_actuators->effectN( 1 ).base_value() / 10.0 ) ) );
+      auto reduction = p()->legendary.primal_lava_actuators->effectN( 1 ).base_value() / 10.0;
+      reduction /= 1.0 + p()->buff.hot_hand->check_value();
+
+      p()->cooldown.lava_lash->adjust( timespan_t::from_seconds( -reduction ) );
       p()->buff.primal_lava_actuators->trigger();
     }
   }
