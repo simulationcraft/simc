@@ -6433,7 +6433,11 @@ void actions::rogue_action_t<Base>::trigger_master_of_shadows()
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_akaaris_soul_fragment( const action_state_t* state )
 {
-  if ( !ab::result_is_hit( state->result ) || !p()->legendary.akaaris_soul_fragment->ok() || ab::background )
+  if ( !ab::result_is_hit( state->result ) || !p()->legendary.akaaris_soul_fragment->ok() )
+    return;
+
+  // TOCHECK: Future PTR notes indicate the T28 4pc should trigger this
+  if ( is_secondary_action() && secondary_trigger != secondary_trigger::IMMORTAL_TECHNIQUE )
     return;
 
   td( state->target )->debuffs.akaaris_soul_fragment->trigger();
