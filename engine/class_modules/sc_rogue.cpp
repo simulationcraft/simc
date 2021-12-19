@@ -14,19 +14,20 @@ class rogue_t;
 
 constexpr double COMBO_POINT_MAX = 5;
 
-enum secondary_trigger_e
+enum class secondary_trigger
 {
-  TRIGGER_NONE = 0U,
-  TRIGGER_SINISTER_STRIKE,
-  TRIGGER_WEAPONMASTER,
-  TRIGGER_SECRET_TECHNIQUE,
-  TRIGGER_SHURIKEN_TORNADO,
-  TRIGGER_INTERNAL_BLEEDING,
-  TRIGGER_AKAARIS_SOUL_FRAGMENT,
-  TRIGGER_TRIPLE_THREAT,
-  TRIGGER_CONCEALED_BLUNDERBUSS,
-  TRIGGER_FLAGELLATION,
-  TRIGGER_IMMORTAL_TECHNIQUE,
+  NONE = 0U,
+  SINISTER_STRIKE,
+  WEAPONMASTER,
+  SECRET_TECHNIQUE,
+  SHURIKEN_TORNADO,
+  INTERNAL_BLEEDING,
+  AKAARIS_SOUL_FRAGMENT,
+  TRIPLE_THREAT,
+  CONCEALED_BLUNDERBUSS,
+  FLAGELLATION,
+  IMMORTAL_TECHNIQUE,
+  TORNADO_TRIGGER,
 };
 
 enum stealth_type_e
@@ -208,7 +209,6 @@ public:
   // Active
   struct
   {
-
     actions::rogue_poison_t* lethal_poison = nullptr;
     actions::rogue_poison_t* nonlethal_poison = nullptr;
     actions::flagellation_damage_t* flagellation = nullptr;
@@ -222,6 +222,8 @@ public:
     actions::rogue_attack_t* triple_threat_oh = nullptr;
     actions::shadow_blades_attack_t* shadow_blades_attack = nullptr;
     actions::rogue_attack_t* immortal_technique_shadowstrike = nullptr;
+    actions::rogue_attack_t* tornado_trigger_pistol_shot = nullptr;
+    actions::rogue_attack_t* tornado_trigger_between_the_eyes = nullptr;
     action_t* banshees_blight = nullptr; // Slyvanas Dagger
     struct
     {
@@ -324,6 +326,10 @@ public:
     // Conduits
     buff_t* deeper_daggers;
     damage_buff_t* perforated_veins;
+
+    // Set Bonuses
+    buff_t* tornado_trigger_loading;
+    buff_t* tornado_trigger;
   } buffs;
 
   // Cooldowns
@@ -912,7 +918,7 @@ private:
 
 public:
   template <typename T, typename... Ts>
-  T* find_secondary_trigger_action( secondary_trigger_e source, util::string_view n = {} )
+  T* find_secondary_trigger_action( secondary_trigger source, util::string_view n = {} )
   {
     T* found_action = nullptr;
     for ( auto action : secondary_trigger_actions )
@@ -930,7 +936,7 @@ public:
   }
 
   template <typename T, typename... Ts>
-  T* get_secondary_trigger_action( secondary_trigger_e source, util::string_view n, Ts&&... args )
+  T* get_secondary_trigger_action( secondary_trigger source, util::string_view n, Ts&&... args )
   {
     T* found_action = find_secondary_trigger_action<T>( source, n );
     if ( !found_action )
@@ -1075,7 +1081,7 @@ public:
 
   proc_types2 cast_proc_type2() const override
   {
-    if( action->secondary_trigger == TRIGGER_WEAPONMASTER )
+    if( action->secondary_trigger == secondary_trigger::WEAPONMASTER )
     {
       return PROC2_CAST_DAMAGE;
     }
@@ -1103,7 +1109,7 @@ private:
 public:
   // Secondary triggered ability, due to Weaponmaster talent or Death from Above. Secondary
   // triggered abilities cost no resources or incur cooldowns.
-  secondary_trigger_e secondary_trigger;
+  secondary_trigger secondary_trigger;
 
   proc_t* symbols_of_death_autocrit_proc;
   proc_t* animacharged_cp_proc;
@@ -1154,7 +1160,7 @@ public:
                   util::string_view options = {} )
     : ab( n, p, s ),
     _requires_stealth( false ),
-    secondary_trigger( TRIGGER_NONE ),
+    secondary_trigger( secondary_trigger::NONE ),
     symbols_of_death_autocrit_proc( nullptr ),
     animacharged_cp_proc( nullptr )
   {
@@ -1404,8 +1410,8 @@ public:
 
   // Secondary Trigger Functions ==============================================
 
-  bool is_secondary_action()
-  { return secondary_trigger != TRIGGER_NONE && ab::background == true; }
+  bool is_secondary_action() const
+  { return secondary_trigger != secondary_trigger::NONE && ab::background == true; }
 
   virtual void trigger_secondary_action( player_t* target, int cp = 0, timespan_t delay = timespan_t::zero() )
   {
@@ -1540,7 +1546,7 @@ public:
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
   {
-    if ( secondary_trigger != TRIGGER_NONE )
+    if ( secondary_trigger != secondary_trigger::NONE )
     {
       cd_duration = timespan_t::zero();
     }
@@ -1731,7 +1737,7 @@ public:
   void consume_resource() override
   {
     // Abilities triggered as part of another ability (secondary triggers) do not consume resources
-    if ( secondary_trigger != TRIGGER_NONE )
+    if ( secondary_trigger != secondary_trigger::NONE )
     {
       return;
     }
@@ -3073,15 +3079,15 @@ struct gloomblade_t : public rogue_attack_t
 
 struct kick_t : public rogue_attack_t
 {
-  kick_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_attack_t( name, p, p -> find_class_spell( "Kick" ), options_str )
+  kick_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) : 
+    rogue_attack_t( name, p, p->find_class_spell( "Kick" ), options_str )
   {
     is_interrupt = true;
   }
 
   bool target_ready( player_t* candidate_target ) override
   {
-    if ( candidate_target -> debuffs.casting && ! candidate_target -> debuffs.casting -> check() )
+    if ( candidate_target->debuffs.casting && !candidate_target->debuffs.casting->check() )
       return false;
 
     return rogue_attack_t::target_ready( candidate_target );
@@ -3197,8 +3203,12 @@ struct pistol_shot_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    m *= 1.0 + p()->buffs.opportunity->value();
-    m *= 1.0 + p()->buffs.greenskins_wickers->value();
+    // TOCHECK: Dev PTR notes say procs will not work with T28 in a future build
+    if ( secondary_trigger != secondary_trigger::TORNADO_TRIGGER )
+    {
+      m *= 1.0 + p()->buffs.opportunity->value();
+      m *= 1.0 + p()->buffs.greenskins_wickers->value();
+    }
 
     return m;
   }
@@ -3209,9 +3219,13 @@ struct pistol_shot_t : public rogue_attack_t
     if ( g == 0.0 )
       return 0.0;
 
-    if ( p()->talent.quick_draw->ok() && p()->buffs.opportunity->check() )
+    // TOCHECK: Dev PTR notes say procs will not work with T28 in a future build
+    if ( secondary_trigger != secondary_trigger::TORNADO_TRIGGER )
     {
-      g += p()->talent.quick_draw->effectN( 2 ).base_value();
+      if ( p()->talent.quick_draw->ok() && p()->buffs.opportunity->check() )
+      {
+        g += p()->talent.quick_draw->effectN( 2 ).base_value();
+      }
     }
 
     return g;
@@ -3221,14 +3235,18 @@ struct pistol_shot_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( generate_cp() > 0 && p()->talent.quick_draw->ok() && p()->buffs.opportunity->check() )
+    // TOCHECK: Dev PTR notes say procs will not work with T28 in a future build
+    if ( secondary_trigger != secondary_trigger::TORNADO_TRIGGER )
     {
-      const int cp_gain = as<int>( p()->talent.quick_draw->effectN( 2 ).base_value() );
-      trigger_combo_point_gain( cp_gain, p()->gains.quick_draw );
-    }
+      if ( generate_cp() > 0 && p()->talent.quick_draw->ok() && p()->buffs.opportunity->check() )
+      {
+        const int cp_gain = as<int>( p()->talent.quick_draw->effectN( 2 ).base_value() );
+        trigger_combo_point_gain( cp_gain, p()->gains.quick_draw );
+      }
 
-    p()->buffs.opportunity->expire();
-    p()->buffs.greenskins_wickers->expire();
+      p()->buffs.opportunity->expire();
+      p()->buffs.greenskins_wickers->expire();
+    }
 
     // Concealed Blunderbuss Legendary
     if ( p()->active.concealed_blunderbuss && !is_secondary_action() )
@@ -3240,15 +3258,28 @@ struct pistol_shot_t : public rogue_attack_t
       }
       p()->buffs.concealed_blunderbuss->expire();
     }
+
+    // T28 Outlaw 4pc Procs, hard-coded at 6CP until we get spell data in next PTR build
+    if ( p()->set_bonuses.t28_outlaw_4pc->ok() )
+    {
+      if ( p()->buffs.tornado_trigger->check() )
+      {
+        p()->active.tornado_trigger_between_the_eyes->trigger_secondary_action( execute_state->target, 6 );
+        p()->buffs.tornado_trigger->expire();
+      }
+      // TOCHECK: Ordering here on when we cast and reach 6 bullets with a hard-cast
+      //          Assuming for now it requires waiting for the next cast to trigger BtE
+      p()->buffs.tornado_trigger_loading->trigger();
+    }
   }
 
   // TOCHECK: On beta as of 8/28/2020, Blunderbuss procs don't trigger. Possibly only "on cast".
   bool procs_combat_potency() const override
-  { return secondary_trigger != TRIGGER_CONCEALED_BLUNDERBUSS; }
+  { return secondary_trigger != secondary_trigger::CONCEALED_BLUNDERBUSS; }
 
   // TOCHECK: On 9.0.5 PTR as of 2/22/2021, Blunderbuss procs don't trigger Blade Flurry hits.
   bool procs_blade_flurry() const override
-  { return secondary_trigger != TRIGGER_CONCEALED_BLUNDERBUSS || !p()->bugs; }
+  { return secondary_trigger != secondary_trigger::CONCEALED_BLUNDERBUSS || !p()->bugs; }
 };
 
 // Main Gauche ==============================================================
@@ -3260,6 +3291,16 @@ struct main_gauche_t : public rogue_attack_t
   {
   }
 
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    if ( p()->active.tornado_trigger_pistol_shot )
+    {
+      add_child( p()->active.tornado_trigger_pistol_shot );
+    }
+  }
+
   double attack_direct_power_coefficient( const action_state_t* s ) const override
   {
     double ap = rogue_attack_t::attack_direct_power_coefficient( s );
@@ -3269,6 +3310,17 @@ struct main_gauche_t : public rogue_attack_t
     ap += p()->cache.mastery() * p()->mastery.main_gauche->effectN( 2 ).sp_coeff();
 
     return ap;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    if ( p()->active.tornado_trigger_pistol_shot &&
+         p()->rng().roll( p()->set_bonuses.t28_outlaw_2pc->effectN( 1 ).percent() ) )
+    {
+      p()->active.tornado_trigger_pistol_shot->trigger_secondary_action( state->target );
+    }
   }
 
   bool procs_combat_potency() const override
@@ -3579,9 +3631,9 @@ struct secret_technique_t : public rogue_attack_t
     may_miss = false;
 
     player_attack = p->get_secondary_trigger_action<secret_technique_attack_t>(
-      TRIGGER_SECRET_TECHNIQUE, "secret_technique_player", p->find_spell( 280720 ) );
+      secondary_trigger::SECRET_TECHNIQUE, "secret_technique_player", p->find_spell( 280720 ) );
     clone_attack = p->get_secondary_trigger_action<secret_technique_attack_t>(
-      TRIGGER_SECRET_TECHNIQUE, "secret_technique_clones", p->find_spell( 282449 ) );
+      secondary_trigger::SECRET_TECHNIQUE, "secret_technique_clones", p->find_spell( 282449 ) );
 
     add_child( player_attack );
     add_child( clone_attack );
@@ -3757,7 +3809,7 @@ struct shadowstrike_t : public rogue_attack_t
       if ( p()->active.akaaris_shadowstrike )
         add_child( p()->active.akaaris_shadowstrike );
     }
-    else if ( secondary_trigger == TRIGGER_IMMORTAL_TECHNIQUE )
+    else if ( secondary_trigger == secondary_trigger::IMMORTAL_TECHNIQUE )
     {
       if ( p()->active.weaponmaster.immortal_technique_shadowstrike )
         add_child( p()->active.weaponmaster.immortal_technique_shadowstrike );
@@ -3786,7 +3838,7 @@ struct shadowstrike_t : public rogue_attack_t
 
     // Only primary casts trigger Perforated Veins, not Weaponmaster or Akaari procs
     // TOCHECK: T28 bonus after next PTR build
-    if ( !is_secondary_action() || secondary_trigger == TRIGGER_IMMORTAL_TECHNIQUE )
+    if ( !is_secondary_action() || secondary_trigger == secondary_trigger::IMMORTAL_TECHNIQUE )
     {
       p()->buffs.perforated_veins->trigger();
     }
@@ -3810,7 +3862,7 @@ struct shadowstrike_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    if ( secondary_trigger == TRIGGER_IMMORTAL_TECHNIQUE )
+    if ( secondary_trigger == secondary_trigger::IMMORTAL_TECHNIQUE )
       trigger_weaponmaster( state, p()->active.weaponmaster.immortal_technique_shadowstrike );
     else
       trigger_weaponmaster( state, p()->active.weaponmaster.shadowstrike );
@@ -3836,7 +3888,7 @@ struct shadowstrike_t : public rogue_attack_t
   // to the target
   double composite_teleport_distance( const action_state_t* ) const override
   {
-    if ( secondary_trigger != TRIGGER_NONE )
+    if ( is_secondary_action() )
     {
       return 0;
     }
@@ -3995,7 +4047,7 @@ struct shuriken_storm_t: public rogue_attack_t
 
   // 2021-07-12-- Shuriken Tornado triggers the damage directly without a cast, so cast triggers don't happen
   bool procs_poison() const override
-  { return secondary_trigger != TRIGGER_SHURIKEN_TORNADO; }
+  { return secondary_trigger != secondary_trigger::SHURIKEN_TORNADO; }
 };
 
 // Shuriken Tornado =========================================================
@@ -4009,7 +4061,7 @@ struct shuriken_tornado_t : public rogue_spell_t
     aoe = -1;
 
     // Trigger action is created in the buff, but it can't be parented then, just look it up here
-    action_t* trigger_action = p->find_secondary_trigger_action<shuriken_storm_t>( TRIGGER_SHURIKEN_TORNADO );
+    action_t* trigger_action = p->find_secondary_trigger_action<shuriken_storm_t>( secondary_trigger::SHURIKEN_TORNADO );
     if ( trigger_action )
     {
       add_child( trigger_action );
@@ -4069,7 +4121,7 @@ struct sinister_strike_t : public rogue_attack_t
     {
       // CP generation is not in the spell data and the extra SS procs seem script-driven
       // Triple Threat procs of this spell don't give combo points, however
-      return ( secondary_trigger == TRIGGER_SINISTER_STRIKE ) ? 1 : 0;
+      return ( secondary_trigger == secondary_trigger::SINISTER_STRIKE ) ? 1 : 0;
     }
 
     void execute() override
@@ -4095,7 +4147,8 @@ struct sinister_strike_t : public rogue_attack_t
   sinister_strike_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->spec.sinister_strike, options_str )
   {
-    extra_attack = p->get_secondary_trigger_action<sinister_strike_extra_attack_t>( TRIGGER_SINISTER_STRIKE, "sinister_strike_extra_attack" );
+    extra_attack = p->get_secondary_trigger_action<sinister_strike_extra_attack_t>(
+      secondary_trigger::SINISTER_STRIKE, "sinister_strike_extra_attack" );
   }
 
   void init() override
@@ -4444,7 +4497,8 @@ struct kidney_shot_t : public rogue_attack_t
   {
     if ( p->talent.internal_bleeding->ok() )
     {
-      internal_bleeding = p->get_secondary_trigger_action<internal_bleeding_t>( TRIGGER_INTERNAL_BLEEDING, "internal_bleeding" );
+      internal_bleeding = p->get_secondary_trigger_action<internal_bleeding_t>(
+        secondary_trigger::INTERNAL_BLEEDING, "internal_bleeding" );
       add_child( internal_bleeding );
     }
   }
@@ -5409,7 +5463,8 @@ struct shuriken_tornado_t : public buff_t
     set_cooldown( timespan_t::zero() );
     set_period( timespan_t::from_seconds( 1.0 ) ); // Not explicitly in spell data
 
-    shuriken_storm_action = r->get_secondary_trigger_action<actions::shuriken_storm_t>( TRIGGER_SHURIKEN_TORNADO, "shuriken_storm_tornado" );
+    shuriken_storm_action = r->get_secondary_trigger_action<actions::shuriken_storm_t>(
+      secondary_trigger::SHURIKEN_TORNADO, "shuriken_storm_tornado" );
     shuriken_storm_action->callbacks = false; // 2021-07-19-- Damage triggered directly, doesn't appear to proc anything
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       shuriken_storm_action->trigger_secondary_action( rogue->target );
@@ -5616,7 +5671,7 @@ struct roll_the_bones_t : public buff_t
       return;
 
     // 2021-03-08 -- 9.0.5: If the same roll as an existing partial buff is in the result, the partial buff is lost
-    for ( auto state : count_the_odds_states )
+    for ( auto &state : count_the_odds_states )
     {
       if ( !state.buff->check() )
       {
@@ -7114,7 +7169,7 @@ void rogue_t::init_action_list()
     build->add_action( "serrated_bone_spike,target_if=min:target.time_to_die+(dot.serrated_bone_spike_dot.ticking*600),if=!dot.serrated_bone_spike_dot.ticking" );
     build->add_action( "serrated_bone_spike,if=fight_remains<=5|cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25|combo_points.deficit=cp_gain&!buff.skull_and_crossbones.up&energy.time_to_max>1", "Attempt to use when it will cap combo points and SnD is down, otherwise keep from capping charges" );
     build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(energy.deficit>(energy.regen+10)|combo_points.deficit<=1+buff.broadside.up|talent.quick_draw.enabled)", "Use Pistol Shot with Opportunity if Combat Potency won't overcap energy, when it will exactly cap CP, or when using Quick Draw" );
-    build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(buff.greenskins_wickers.up|buff.concealed_blunderbuss.up)" );
+    build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(buff.greenskins_wickers.up|buff.concealed_blunderbuss.up|buff.tornado_trigger.up)" );
     build->add_action( this, "Sinister Strike" );
     build->add_action( this, "Gouge", "if=talent.dirty_tricks.enabled&combo_points.deficit>=1+buff.broadside.up" );
   }
@@ -7844,7 +7899,7 @@ void rogue_t::init_spells()
   spell.nightstalker_dmg_amp          = find_spell( 130493 );
   spell.poison_bomb_driver            = find_spell( 255545 );
   spell.ruthlessness_driver           = find_spell( 14161 );
-  spell.ruthlessness_cp               = spec.ruthlessness -> effectN( 1 ).trigger();
+  spell.ruthlessness_cp               = spec.ruthlessness->effectN( 1 ).trigger();
   spell.shadow_focus                  = find_spell( 112942 );
   spell.slice_and_dice                = find_class_spell( "Slice and Dice" );
   spell.sprint                        = find_class_spell( "Sprint" );
@@ -8005,12 +8060,14 @@ void rogue_t::init_spells()
 
   if ( legendary.akaaris_soul_fragment->ok() )
   {
-    active.akaaris_shadowstrike = get_secondary_trigger_action<actions::akaaris_shadowstrike_t>( TRIGGER_AKAARIS_SOUL_FRAGMENT, "shadowstrike_akaaris" );
+    active.akaaris_shadowstrike = get_secondary_trigger_action<actions::akaaris_shadowstrike_t>(
+      secondary_trigger::AKAARIS_SOUL_FRAGMENT, "shadowstrike_akaaris" );
   }
 
   if ( legendary.concealed_blunderbuss->ok() )
   {
-    active.concealed_blunderbuss = get_secondary_trigger_action<actions::pistol_shot_t>( TRIGGER_CONCEALED_BLUNDERBUSS, "pistol_shot_concealed_blunderbuss" );
+    active.concealed_blunderbuss = get_secondary_trigger_action<actions::pistol_shot_t>(
+      secondary_trigger::CONCEALED_BLUNDERBUSS, "pistol_shot_concealed_blunderbuss" );
   }
 
   // Active Spells = ========================================================
@@ -8034,9 +8091,12 @@ void rogue_t::init_spells()
 
   if ( talent.weaponmaster->ok() && specialization() == ROGUE_SUBTLETY )
   {
-    active.weaponmaster.backstab = get_secondary_trigger_action<actions::backstab_t>( TRIGGER_WEAPONMASTER, "backstab_weaponmaster" );
-    active.weaponmaster.shadowstrike = get_secondary_trigger_action<actions::shadowstrike_t>( TRIGGER_WEAPONMASTER, "shadowstrike_weaponmaster" );
-    active.weaponmaster.akaaris_shadowstrike = get_secondary_trigger_action<actions::akaaris_shadowstrike_t>( TRIGGER_WEAPONMASTER, "shadowstrike_akaaris_weaponmaster" );
+    active.weaponmaster.backstab = get_secondary_trigger_action<actions::backstab_t>(
+      secondary_trigger::WEAPONMASTER, "backstab_weaponmaster" );
+    active.weaponmaster.shadowstrike = get_secondary_trigger_action<actions::shadowstrike_t>(
+      secondary_trigger::WEAPONMASTER, "shadowstrike_weaponmaster" );
+    active.weaponmaster.akaaris_shadowstrike = get_secondary_trigger_action<actions::akaaris_shadowstrike_t>(
+      secondary_trigger::WEAPONMASTER, "shadowstrike_akaaris_weaponmaster" );
   }
 
   if ( specialization() == ROGUE_SUBTLETY || legendary.toxic_onslaught->ok() )
@@ -8046,23 +8106,40 @@ void rogue_t::init_spells()
 
   if ( conduit.triple_threat.ok() && specialization() == ROGUE_OUTLAW )
   {
-    active.triple_threat_mh = get_secondary_trigger_action<actions::sinister_strike_t::sinister_strike_extra_attack_t>( TRIGGER_TRIPLE_THREAT, "sinister_strike_triple_threat_mh" );
-    active.triple_threat_oh = get_secondary_trigger_action<actions::sinister_strike_t::triple_threat_t>( TRIGGER_TRIPLE_THREAT, "sinister_strike_triple_threat_oh" );
+    active.triple_threat_mh = get_secondary_trigger_action<actions::sinister_strike_t::sinister_strike_extra_attack_t>(
+      secondary_trigger::TRIPLE_THREAT, "sinister_strike_triple_threat_mh" );
+    active.triple_threat_oh = get_secondary_trigger_action<actions::sinister_strike_t::triple_threat_t>(
+      secondary_trigger::TRIPLE_THREAT, "sinister_strike_triple_threat_oh" );
   }
 
   if ( covenant.flagellation->ok() )
   {
-    active.flagellation = get_secondary_trigger_action<actions::flagellation_damage_t>( TRIGGER_FLAGELLATION, "flagellation_damage" );
+    active.flagellation = get_secondary_trigger_action<actions::flagellation_damage_t>(
+      secondary_trigger::FLAGELLATION, "flagellation_damage" );
   }
 
   if ( set_bonuses.t28_subtlety_4pc->ok() )
   {
-    active.immortal_technique_shadowstrike = get_secondary_trigger_action<actions::shadowstrike_t>( TRIGGER_IMMORTAL_TECHNIQUE, "shadowstrike_t28" );
+    active.immortal_technique_shadowstrike = get_secondary_trigger_action<actions::shadowstrike_t>(
+      secondary_trigger::IMMORTAL_TECHNIQUE, "shadowstrike_t28" );
     if ( talent.weaponmaster->ok() )
     {
       active.weaponmaster.immortal_technique_shadowstrike = get_secondary_trigger_action<actions::shadowstrike_t>(
-        TRIGGER_WEAPONMASTER, "shadowstrike_t28_weaponmaster" );
+        secondary_trigger::WEAPONMASTER, "shadowstrike_t28_weaponmaster" );
       active.immortal_technique_shadowstrike->add_child( active.weaponmaster.immortal_technique_shadowstrike );
+    }
+  }
+
+  if ( set_bonuses.t28_outlaw_2pc->ok() )
+  {
+    active.tornado_trigger_pistol_shot = get_secondary_trigger_action<actions::pistol_shot_t>(
+      secondary_trigger::TORNADO_TRIGGER, "pistol_shot_tornado_trigger" );
+
+    if ( set_bonuses.t28_outlaw_4pc->ok() )
+    {
+      active.tornado_trigger_between_the_eyes = get_secondary_trigger_action<actions::between_the_eyes_t>(
+        secondary_trigger::TORNADO_TRIGGER, "between_the_eyes_tornado_trigger" );
+      active.tornado_trigger_between_the_eyes->cooldown->duration = 0_s;
     }
   }
 }
@@ -8431,7 +8508,26 @@ void rogue_t::create_buffs()
                                                      conduit.perforated_veins );
 
   if ( conduit.planned_execution.ok() )
+  {
     buffs.symbols_of_death->add_invalidate( CACHE_CRIT_CHANCE );
+  }
+
+  // Set Bonus Items ========================================================
+  
+  buffs.tornado_trigger = make_buff( this, "tornado_trigger", set_bonuses.t28_outlaw_4pc->ok() ?
+                                     find_spell( 364556 ) : spell_data_t::not_found() );
+
+  buffs.tornado_trigger_loading = make_buff( this, "tornado_trigger_loading", set_bonuses.t28_outlaw_4pc->ok() ?
+                                             find_spell( 364234 ) : spell_data_t::not_found() )
+    ->set_chance( set_bonuses.t28_outlaw_4pc->effectN( 1 ).percent() )
+    ->set_max_stack( 6 ) // Currently hard-coded
+    ->set_stack_change_callback( [this]( buff_t* b, int, int ) {
+      if ( b->at_max_stacks() )
+      {
+        buffs.tornado_trigger->trigger();
+        b->expire();
+      }
+  } );
 
   // Legendary Items ========================================================
 
@@ -8453,10 +8549,10 @@ void rogue_t::create_buffs()
     ->add_invalidate( CACHE_CRIT_CHANCE )
     ->set_duration( sim->max_time / 2 ) // So it appears in sample sequence table
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-    if ( new_ == 0 )
-      buffs.master_assassins_mark->trigger();
-    else
-      buffs.master_assassins_mark->expire();
+      if ( new_ == 0 )
+        buffs.master_assassins_mark->trigger();
+      else
+        buffs.master_assassins_mark->expire();
   } );
 
   buffs.the_rotten = make_buff<damage_buff_t>( this, "the_rotten", legendary.the_rotten->effectN( 1 ).trigger() );
