@@ -40,9 +40,6 @@ if(NOT SC_NO_NETWORKING)
     endif()
 endif()
 
-# Require /permissive- when building with Visual Studio
-target_compile_options(engine PUBLIC $<$<CXX_COMPILER_ID:MSVC>:/permissive->)
-
 ### Git Hash ###
 # Get the current working branch
 execute_process(

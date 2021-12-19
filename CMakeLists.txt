@@ -17,7 +17,10 @@ option(SC_NO_NETWORKING "Disable all networking related stuff." OFF)
 
 set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ standard to conform to")
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
-set(CMAKE_CXX_EXTENSIONS NO)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Require /permissive- when building with Visual Studio
+add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/permissive->)
 
 # enable colored output with ninja build system
 if(${CMAKE_GENERATOR} STREQUAL "Ninja")
