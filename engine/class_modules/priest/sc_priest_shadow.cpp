@@ -1908,6 +1908,9 @@ void priest_t::create_buffs_shadow()
   buffs.talbadars_stratagem = make_buff( this, "talbadars_stratagem", find_spell( 342415 ) )
                                   ->set_duration( timespan_t::zero() )
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+
+  // Tier Sets
+  buffs.living_shadow = make_buff( this, "living_shadow", find_spell( 363574 ) );
 }
 
 void priest_t::init_rng_shadow()
