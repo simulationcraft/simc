@@ -3241,10 +3241,11 @@ public:
       if ( s->result == RESULT_CRIT )
         attack_critical = true;
 
-      if ( p()->legendary.frenzyband->ok() && ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() )
-	  && energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 )
+      if ( p()->legendary.frenzyband->ok() && energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 &&
+           ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) )
+      {
         trigger_frenzyband( s->target, s->result_amount );
-
+      }
     }
   }
 
@@ -3477,105 +3478,66 @@ struct brutal_slash_t : public cat_attack_t
 //==== Feral Frenzy ==============================================
 
 // TODO: check stats snapshot behavior in-game and adjust flags as necessary
-struct feral_frenzy_driver_t : public cat_attack_t
+struct feral_frenzy_t : public cat_attack_t
 {
   struct feral_frenzy_state_t : public druid_action_state_t
   {
-    double tick_power;
+    double tick_amount;
+    double tick_mult;
 
-    feral_frenzy_state_t( action_t* a, player_t* t ) : druid_action_state_t( a, t ), tick_power( 0.0 ) {}
-
-    double composite_attack_power() const override
-    {
-      if ( !debug_cast<feral_frenzy_dot_t*>( action )->is_direct_damage && action->player->bugs )
-        return tick_power;
-      else
-        return druid_action_state_t::composite_attack_power();
-    }
+    feral_frenzy_state_t( action_t* a, player_t* t )
+      : druid_action_state_t( a, t ), tick_amount( 0.0 ), tick_mult( 1.0 )
+    {}
 
     void initialize() override
     {
       druid_action_state_t::initialize();
 
-      tick_power = 0.0;
+      tick_amount = 0.0;
+      tick_mult = 1.0;
     }
 
-    void copy_state( const action_state_t* state ) override
+    void copy_state( const action_state_t* s ) override
     {
-      druid_action_state_t::copy_state( state );
+      druid_action_state_t::copy_state( s );
 
-      tick_power = debug_cast<const feral_frenzy_state_t*>( state )->tick_power;
+      auto ff_s = debug_cast<const feral_frenzy_state_t*>( s );
+      tick_amount = ff_s->tick_amount;
+      tick_mult = ff_s->tick_mult;
     }
 
     std::ostringstream& debug_str( std::ostringstream& s ) override
     {
       druid_action_state_t::debug_str( s );
 
-      s << " tick_power=" << tick_power << " attack_power=" << attack_power;
+      s << " tick_amount=" << tick_amount << " tick_mult=" << tick_mult;
 
       return s;
     }
+
+    // dot damage is entirely overwritten by feral_frenzy_tick_t::base_ta()
+    double composite_ta_multiplier() const override
+    {
+      if ( debug_cast<feral_frenzy_tick_t*>( action )->is_direct_damage )
+        return druid_action_state_t::composite_ta_multiplier();
+
+      return 1.0;
+    }
   };
 
-  struct feral_frenzy_dot_t : public cat_attack_t
+  struct feral_frenzy_tick_t : public cat_attack_t
   {
     bool is_direct_damage;
 
-    feral_frenzy_dot_t( druid_t* p ) : cat_attack_t( "feral_frenzy_tick", p, p->find_spell( 274838 ) )
+    feral_frenzy_tick_t( druid_t* p )
+      : cat_attack_t( "feral_frenzy_tick", p, p->find_spell( 274838 ) ), is_direct_damage( false )
     {
       background = dual = true;
-      is_direct_damage  = false;
-      direct_bleed      = false;
-      dot_max_stack     = as<int>( p->find_spell( 274837 )->effectN( 2 ).base_value() );
-      // dot_behavior = DOT_CLIP;
+      direct_bleed = false;
+      dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
     }
 
     action_state_t* new_state() override { return new feral_frenzy_state_t( this, target ); }
-
-    void snapshot_internal( action_state_t* s, unsigned fl, result_amount_type rt ) override
-    {
-      cat_attack_t::snapshot_internal( s, fl, rt );
-
-      if ( fl & STATE_AP )
-      {
-        debug_cast<feral_frenzy_state_t*>( s )->tick_power =
-          p()->composite_melee_attack_power_by_type( attack_power_type::NO_WEAPON ) *
-          p()->composite_attack_power_multiplier();
-      }
-    }
-
-    void init_finished() override
-    {
-      cat_attack_t::init_finished();
-
-      if ( p()->bugs )
-      {
-        // remove mastery tick damage multiplier, since we need to hack it
-        ta_multiplier_buffeffects.erase( std::remove_if( ta_multiplier_buffeffects.begin(),
-                                                         ta_multiplier_buffeffects.end(),
-                                                         []( buff_effect_t e ) { return e.mastery; } ),
-                                         ta_multiplier_buffeffects.end() );
-      }
-    }
-
-    double composite_ta_multiplier( const action_state_t* s ) const override
-    {
-      double ta = cat_attack_t::composite_ta_multiplier( s );
-
-      if ( p()->bugs )
-      {
-        // for dot damage calculations, the first 7 points of mastery are ignored
-        ta *= 1.0 + ( p()->cache.mastery() - 7 ) * p()->mastery_coefficient();
-      }
-
-      return ta;
-    }
-
-    // Refreshes, but doesn't pandemic
-    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-    {
-      return dot->time_to_next_tick() + triggered_duration;
-    }
 
     // Small hack to properly distinguish instant ticks from the driver, from actual periodic ticks from the bleed
     result_amount_type report_amount_type( const action_state_t* state ) const override
@@ -3594,23 +3556,73 @@ struct feral_frenzy_driver_t : public cat_attack_t
     }
 
     void trigger_primal_fury() override {}
+
+    // the dot is 'snapshotted' so we directly use the tick_amount
+    double base_ta( const action_state_t* s ) const override
+    {
+      if ( is_direct_damage )
+        return cat_attack_t::base_ta( s );
+
+      auto ff_s = debug_cast<const feral_frenzy_state_t*>( s );
+
+      return ff_s->tick_amount * ff_s->tick_mult;
+    }
+
+    // dot damage is entirely overwritten by feral_frenzy_tick_t::base_ta()
+    double attack_tick_power_coefficient( const action_state_t* s ) const override
+    {
+      if ( is_direct_damage )
+        return cat_attack_t::attack_tick_power_coefficient( s );
+
+      return 0.0;
+    }
+
+    void trigger_dot( action_state_t* s ) override
+    {
+      // calculate the expected total dot amount from the existing state before the state is replaced in trigger_dot()
+      auto stored_amount = 0.0;
+      auto _dot = find_dot( target );
+      if ( _dot )
+      {
+        auto _state = debug_cast<feral_frenzy_state_t*>( _dot->state );
+        if ( _state )
+          stored_amount = _state->tick_amount * _dot->ticks_left_fractional();
+      }
+
+      cat_attack_t::trigger_dot( s );
+
+      auto ff_d = find_dot( target );
+      auto ff_s = debug_cast<feral_frenzy_state_t*>( ff_d->state );
+
+      // calculate base per tick damage: ap * coeff
+      auto tick_damage = ff_s->composite_attack_power() * attack_tick_power_coefficient( ff_s );
+      // calculate expected damage over full duration: tick damage * base duration / hasted tick time
+      auto full_damage = tick_damage * ( composite_dot_duration( ff_s ) / tick_time( ff_s ) );
+
+      stored_amount += full_damage;
+
+      // calculate the full expected duration of the dot: remaining duration + elapsed time
+      auto full_duration = ff_d->duration() + tick_time( ff_s ) - ff_d->time_to_next_full_tick();
+      // damage per tick is proportional to the ratio of the the tick duration to the full duration
+      auto tick_amount = stored_amount * tick_time( ff_s ) / full_duration;
+
+      ff_s->tick_amount = tick_amount;
+
+      // the multiplier on the latest hit overwrites multipliers from previous hits and applies to the entire dot
+      ff_s->tick_mult = ff_s->composite_ta_multiplier();
+    }
   };
 
-  feral_frenzy_driver_t( druid_t* p, std::string_view opt ) : feral_frenzy_driver_t( p, p->talent.feral_frenzy, opt )
-  {}
+  feral_frenzy_t( druid_t* p, std::string_view opt ) : feral_frenzy_t( p, p->talent.feral_frenzy, opt ) {}
 
-  feral_frenzy_driver_t( druid_t* p, const spell_data_t* s, std::string_view opt )
-    : cat_attack_t( "feral_frenzy", p, s, opt )
+  feral_frenzy_t( druid_t* p, const spell_data_t* s, std::string_view opt ) : cat_attack_t( "feral_frenzy", p, s, opt )
   {
-    tick_action = p->get_secondary_action<feral_frenzy_dot_t>( "feral_frenzy_tick" );
+    tick_action = p->get_secondary_action<feral_frenzy_tick_t>( "feral_frenzy_tick" );
     tick_action->stats = stats;
     dynamic_tick_action = true;
   }
 
-  timespan_t cooldown_duration() const override
-  {
-    return free_cast ? 0_ms : cat_attack_t::cooldown_duration();
-  }
+  timespan_t cooldown_duration() const override { return free_cast ? 0_ms : cat_attack_t::cooldown_duration(); }
 
   void tick( dot_t* d ) override
   {
@@ -7073,9 +7085,8 @@ struct convoke_the_spirits_t : public druid_spell_t
 
   void _init_cat()
   {
-    conv_tigers_fury = get_convoke_action<cat_attacks::tigers_fury_t>( "tigers_fury", p()->find_spell( 5217 ), "" );
-    conv_feral_frenzy =
-      get_convoke_action<cat_attacks::feral_frenzy_driver_t>( "feral_frenzy", p()->find_spell( 274837 ), "" );
+    conv_tigers_fury    = get_convoke_action<cat_attacks::tigers_fury_t>( "tigers_fury", p()->find_spell( 5217 ), "" );
+    conv_feral_frenzy   = get_convoke_action<cat_attacks::feral_frenzy_t>( "feral_frenzy", p()->find_spell( 274837 ), "" );
     conv_ferocious_bite = get_convoke_action<cat_attacks::ferocious_bite_t>( "ferocious_bite", "" );
     conv_thrash_cat     = get_convoke_action<cat_attacks::thrash_cat_t>( "thrash_cat", p()->find_spell( 106830 ), "" );
     conv_shred          = get_convoke_action<cat_attacks::shred_t>( "shred", "" );
@@ -7989,7 +8000,7 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
   // Feral
   if ( name == "berserk_cat"            ) return new            berserk_cat_t( this, options_str );
   if ( name == "brutal_slash"           ) return new           brutal_slash_t( this, options_str );
-  if ( name == "feral_frenzy"           ) return new    feral_frenzy_driver_t( this, options_str );
+  if ( name == "feral_frenzy"           ) return new           feral_frenzy_t( this, options_str );
   if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
   if ( name == "maim"                   ) return new                   maim_t( this, options_str );
   if ( name == "moonfire_cat" ||
