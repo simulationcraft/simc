@@ -132,6 +132,9 @@ public:
     // Covenants
     propagate_const<buff_t*> fae_guardians;
     propagate_const<buff_t*> boon_of_the_ascended;
+
+    // Tier Sets
+    propagate_const<buff_t*> living_shadow;
   } buffs;
 
   // Talents

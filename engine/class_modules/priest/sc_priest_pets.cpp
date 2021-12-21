@@ -672,6 +672,21 @@ struct your_shadow_t final : public priest_pet_t
     def->add_action( "torment_mind" );
   }
 
+  // Tracking buff to easily get pet uptime (especially in AoE this is easier)
+  virtual void arise() override
+  {
+    pet_t::arise();
+
+    o().buffs.living_shadow->trigger();
+  }
+
+  virtual void demise() override
+  {
+    pet_t::demise();
+
+    o().buffs.living_shadow->expire();
+  }
+
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
