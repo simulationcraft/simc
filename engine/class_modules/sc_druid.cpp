@@ -2207,7 +2207,7 @@ public:
   }
 
   template <typename... Ts>
-  void parse_dot_debuffs( dfun func, bool use_stacks, const spell_data_t* s_data, Ts... mods )
+  void parse_dot_debuffs( const dfun& func, bool use_stacks, const spell_data_t* s_data, Ts... mods )
   {
     if ( !s_data->ok() )
       return;
@@ -10872,16 +10872,13 @@ void druid_t::apply_affecting_auras( action_t& action )
 // check for AP overcap on current action. syntax: ap_check.<allowed overcap = 0>
 bool druid_t::check_astral_power( action_t* a, int over )
 {
-  action_state_t* state = a->get_state();
   double ap = resources.current[ RESOURCE_ASTRAL_POWER ];
 
-  ap += a->composite_energize_amount( state );
+  ap += a->composite_energize_amount( nullptr );
   ap += spec.shooting_stars_dmg->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
   ap += a->time_to_execute.total_seconds() *
         ( std::ceil( talent.natures_balance->effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ) ) +
           std::ceil( buff.fury_of_elune->check_stack_value() ) );
-
-  action_state_t::release( state );
 
   return ap <= resources.max[ RESOURCE_ASTRAL_POWER ] + over;
 }
