@@ -1131,7 +1131,7 @@ void mistcaller_ocarina( special_effect_t& effect )
  */
 void unbound_changeling( special_effect_t& effect )
 {
-  auto stat_type = effect.player->sim->shadowlands_opts.unbound_changeling_stat_type;
+  std::string_view stat_type = effect.player->sim->shadowlands_opts.unbound_changeling_stat_type;
   if ( stat_type == "all" )
     effect.spell_id = 330765;
   else if ( stat_type == "crit" )
@@ -2474,7 +2474,7 @@ void shadowed_orb_of_torment( special_effect_t& effect )
       if ( time == 0_ms )  // No hardcoded override, so dynamically calculate timing via the precombat APL
       {
         time     = 2_s;  // base 2s channel for full effect
-        auto apl = player->precombat_action_list;
+        const auto& apl = player->precombat_action_list;
 
         auto it = range::find( apl, use_action );
         if ( it == apl.end() )
@@ -2781,7 +2781,7 @@ void soleahs_secret_technique( special_effect_t& effect )
   // Assuming you don't actually use this trinket during combat but rather beforehand
   effect.type = SPECIAL_EFFECT_EQUIP;
 
-  auto opt_str = effect.player->sim->shadowlands_opts.soleahs_secret_technique_type;
+  std::string_view opt_str = effect.player->sim->shadowlands_opts.soleahs_secret_technique_type;
   if ( util::str_compare_ci( opt_str, "none" ) )
     return;
 
