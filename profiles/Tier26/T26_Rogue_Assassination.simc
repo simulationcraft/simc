@@ -39,7 +39,7 @@ actions.precombat+=/variable,name=flagellation_cdr,value=1-(runeforge.obedience*
 actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|trinket.1.is.inscrutable_quantum_device|(trinket.1.is.shadowgrasp_totem&covenant.venthyr)
 actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)|trinket.2.is.inscrutable_quantum_device|(trinket.2.is.shadowgrasp_totem&covenant.venthyr)
 actions.precombat+=/stealth
-actions.precombat+=/slice_and_dice,precombat_seconds=1
+actions.precombat+=/slice_and_dice,precombat_seconds=1,if=!talent.nightstalker.enabled
 
 # Executed every time the actor is available.
 # Restealth if possible (no vulnerable enemies in combat)
@@ -80,7 +80,7 @@ actions.cds+=/fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent
 actions.cds+=/flagellation,if=!stealthed.rogue&(cooldown.vendetta.remains<3&variable.vendetta_ma_condition&effective_combo_points>=4&target.time_to_die>10|debuff.vendetta.up|fight_remains<24)
 actions.cds+=/flagellation,if=!stealthed.rogue&effective_combo_points>=4&(floor((fight_remains-24)%(cooldown*variable.flagellation_cdr))>floor((fight_remains-24-cooldown.vendetta.remains*variable.vendetta_cdr)%(cooldown*variable.flagellation_cdr)))
 # Sync Sepsis with Vendetta as long as we won't lose a cast over the fight duration, but prefer targets that will live at least 10s
-actions.cds+=/sepsis,if=!stealthed.rogue&(cooldown.vendetta.remains<1&target.time_to_die>10|debuff.vendetta.up|fight_remains<10)
+actions.cds+=/sepsis,if=!stealthed.rogue&dot.garrote.ticking&(cooldown.vendetta.remains<1&target.time_to_die>10|debuff.vendetta.up|fight_remains<10)
 actions.cds+=/sepsis,if=!stealthed.rogue&(floor((fight_remains-10)%cooldown)>floor((fight_remains-10-cooldown.vendetta.remains*variable.vendetta_cdr)%cooldown))
 actions.cds+=/vendetta,if=!stealthed.rogue&dot.rupture.ticking&!debuff.vendetta.up&variable.vendetta_nightstalker_condition&variable.vendetta_ma_condition&variable.vendetta_covenant_condition
 # Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough.
