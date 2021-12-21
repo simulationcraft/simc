@@ -782,7 +782,7 @@ void wasteland_propriety( special_effect_t& effect )
 // 354018 - Versatility
 void party_favors( special_effect_t& effect )
 {
-  auto opt_str = effect.player->sim->shadowlands_opts.party_favor_type;
+  std::string_view opt_str = effect.player->sim->shadowlands_opts.party_favor_type;
   if ( util::str_compare_ci( opt_str, "none" ) )
     return;
 
@@ -1682,7 +1682,7 @@ void volatile_solvent( special_effect_t& effect )
                      "volatile_solvent_elemental", "volatile_solvent_giant" } ) )
     return;
 
-  auto opt_str = effect.player->sim->shadowlands_opts.volatile_solvent_type;
+  std::string_view opt_str = effect.player->sim->shadowlands_opts.volatile_solvent_type;
   if ( util::str_compare_ci( opt_str, "none" ) )
     return;
 
@@ -1974,7 +1974,7 @@ void forgeborne_reveries( special_effect_t& effect )
     {
       // All armor enchants currently have a stat associated with them, unlike temporaries & weapon enchants which
       // can be purely procs. So for now we should be safe filtering for enchants with ITEM_ENCHANTMENT_STAT.
-      auto ench = effect.player->dbc->item_enchantment( item.parsed.enchant_id );
+      const auto& ench = effect.player->dbc->item_enchantment( item.parsed.enchant_id );
       if ( range::contains( ench.ench_type, ITEM_ENCHANTMENT_STAT ) )
         count++;
 

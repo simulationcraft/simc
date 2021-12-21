@@ -6559,7 +6559,7 @@ struct starsurge_t : public druid_spell_t
       return druid_spell_t::ready();
 
     // in precombat, so hijack standard ready() procedure
-    auto apl = player->precombat_action_list;
+    const auto& apl = player->precombat_action_list;
 
     // emulate performing check_form_restriction()
     // TODO: Try to avoid string comparison during combat

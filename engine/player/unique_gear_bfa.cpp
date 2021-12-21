@@ -3785,7 +3785,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
       if ( time == 0_ms )  // No hardcoded override, so dynamically calculate timing via the precombat APL
       {
         time     = 4_s;  // base 4s channel for full effect
-        auto apl = player->precombat_action_list;
+        const auto& apl = player->precombat_action_list;
 
         auto it = range::find( apl, use_action );
         if ( it == apl.end() )
