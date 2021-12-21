@@ -220,11 +220,12 @@ void shadow( player_t* p )
                     "target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>variable.mind_sear_cutoff&!dot."
                     "shadow_word_pain.ticking&!cooldown.fiend.up",
                     "High Priority Mind Sear action to refresh DoTs with Searing Nightmare" );
-  main->add_talent(
-      p, "Damnation",
-      "target_if=(dot.vampiric_touch.refreshable|dot.shadow_word_pain.refreshable|dot.devouring_plague.refreshable&"
-      "insanity<50)&(buff.dark_thought.stack<buff.dark_thought.max_stack|!set_bonus.tier28_2pc)",
-      "Prefer to use Damnation ASAP if any DoT is not up and you will not cap Dark Thoughts stacks if using T28 2pc." );
+  main->add_talent( p, "Damnation",
+                    "target_if=(dot.vampiric_touch.refreshable|dot.shadow_word_pain.refreshable|(!buff.mind_devourer."
+                    "up&insanity<50))&("
+                    "buff.dark_thought.stack<buff.dark_thought.max_stack|!set_bonus.tier28_2pc)",
+                    "Prefer to use Damnation ASAP if SW:P or VT is not up or you cannot cast a normal Devouring Plague "
+                    "(including Mind Devourer procs) and you will not cap Dark Thoughts stacks if using T28 2pc." );
   main->add_action( p, "Shadow Word: Death",
                     "if=pet.fiend.active&runeforge.shadowflame_prism.equipped&pet.fiend.remains<=gcd",
                     "Use Shadow Word Death if using Shadowflame Prism and bender will expire during the next gcd." );
