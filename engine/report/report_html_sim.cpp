@@ -1310,18 +1310,17 @@ void print_nothing_to_report( report::sc_html_stream& os, const std::string& rea
 
 void print_profilesets_chart( std::ostream& out, const sim_t& sim )
 {
-  size_t chart_id = 0;
+  size_t chart_id                              = 0;
   const profileset::profilesets_t& profilesets = *sim.profilesets;
 
-
-  auto results = profilesets.generate_sorted_profilesets();
+  auto results      = profilesets.generate_sorted_profilesets();
   auto results_mean = profilesets.generate_sorted_profilesets( true );
   if ( results.size() != results_mean.size() )
   {
     const_cast<sim_t&>( sim ).errorf( "Entry count mismatch between Median chart (%d) and Mean chart (%d)",
                                       results.size(), results_mean.size() );
   }
-  
+
   while ( chart_id * chart::MAX_PROFILESET_CHART_ENTRIES < profilesets.n_profilesets() )
   {
     highchart::bar_chart_t chart( "profileset-" + util::to_string( chart_id ), sim );
@@ -1329,7 +1328,7 @@ void print_profilesets_chart( std::ostream& out, const sim_t& sim )
 
     out << chart.to_string();
     ++chart_id;
-//    inserted = false;
+    //    inserted = false;
   }
 }
 
