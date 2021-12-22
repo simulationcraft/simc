@@ -922,7 +922,6 @@ public:
   const druid_td_t* find_target_data( const player_t* target ) const override;
   druid_td_t* get_target_data( player_t* target ) const override;
   void copy_from( player_t* ) override;
-  void output_json_report( js::JsonOutput& /* root */ ) const override;
   form_e get_form() const { return form; }
   void shapeshift( form_e );
   void init_beast_weapon( weapon_t&, double );
@@ -10753,82 +10752,6 @@ void druid_t::copy_from( player_t* source )
   player_t::copy_from( source );
 
   options = debug_cast<druid_t*>( source )->options;
-}
-
-void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
-{
-  return;  // NYI.
-
-  if ( specialization() != DRUID_FERAL )
-    return;
-
-  /* snapshot_stats:
-   *    savage_roar:
-   *        [ name: Shred Exec: 15% Benefit: 98% ]
-   *        [ name: Rip Exec: 88% Benefit: 35% ]
-   *    bloodtalons:
-   *        [ name: Rip Exec: 99% Benefit: 99% ]
-   *    tigers_fury:
-   */
-  for ( size_t i = 0, end = stats_list.size(); i < end; i++ )
-  {
-    stats_t* stats   = stats_list[ i ];
-    double tf_exe_up = 0;
-    double tf_exe_total = 0;
-
-    double tf_benefit_up = 0;
-    double tf_benefit_total = 0;
-
-    double bt_exe_up = 0;
-    double bt_exe_total = 0;
-
-    double bt_benefit_up = 0;
-    double bt_benefit_total = 0;
-    // int n = 0;
-
-    for ( size_t j = 0, end2 = stats->action_list.size(); j < end2; j++ )
-    {
-      auto a = dynamic_cast<cat_attacks::cat_attack_t*>( stats->action_list[ j ] );
-      if ( !a )
-        continue;
-
-      if ( !a->snapshots.tigers_fury )
-        continue;
-
-      tf_exe_up += a->tf_counter->mean_exe_up();
-      tf_exe_total += a->tf_counter->mean_exe_total();
-      tf_benefit_up += a->tf_counter->mean_tick_up();
-      tf_benefit_total += a->tf_counter->mean_tick_total();
-      if ( has_amount_results( stats->direct_results ) )
-      {
-        tf_benefit_up += a->tf_counter->mean_exe_up();
-        tf_benefit_total += a->tf_counter->mean_exe_total();
-      }
-
-      if ( a->snapshots.bloodtalons )
-      {
-        bt_exe_up += a->bt_counter->mean_exe_up();
-        bt_exe_total += a->bt_counter->mean_exe_total();
-        bt_benefit_up += a->bt_counter->mean_tick_up();
-        bt_benefit_total += a->bt_counter->mean_tick_total();
-        if ( has_amount_results( stats->direct_results ) )
-        {
-          bt_benefit_up += a->bt_counter->mean_exe_up();
-          bt_benefit_total += a->bt_counter->mean_exe_total();
-        }
-      }
-
-      /*    if ( tf_exe_total > 0 || bt_exe_total > 0 )
-            {
-              // auto snapshot = root["snapshot_stats"].add();
-              if ( talent.savage_roar->ok() )
-              {
-                // auto sr = snapshot["savage_roar"].make_array();
-              }
-              if ( talent.bloodtalons->ok() ) {}
-            }*/
-    }
-  }
 }
 
 void druid_t::apply_affecting_auras( action_t& action )
