@@ -61,5 +61,7 @@ namespace chart
 
   // Profilesets
   constexpr size_t MAX_PROFILESET_CHART_ENTRIES = 500;
-  void generate_profilesets_chart( highchart::bar_chart_t& chart, const sim_t& sim, size_t chart_id, util::span<const profileset::profile_set_t*> results, util::span<const profileset::profile_set_t*> results_mean );
+  void generate_profilesets_chart( highchart::bar_chart_t& chart, const sim_t& sim, size_t chart_id,
+                                   util::span<const profileset::profile_set_t*> results,
+                                   util::span<const profileset::profile_set_t*> results_mean );
 }  // namespace chart

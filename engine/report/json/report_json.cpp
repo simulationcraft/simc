@@ -938,52 +938,54 @@ void profileset_fetch_output_data( const profileset::profile_output_data_t& outp
   {
     ovr[ "race" ] = util::race_type_string( output_data.race() );
   }
-  if ( ! output_data.talents().empty() )
+  if ( !output_data.talents().empty() )
   {
     const auto& talents = output_data.talents();
-    auto ovr_talents = ovr[ "talents" ].make_array();
-    for (auto talent : talents)
+    auto ovr_talents    = ovr[ "talents" ].make_array();
+    for ( auto talent : talents )
     {
-       auto ovr_talent = ovr_talents.add();
-      ovr_talent[ "tier"     ] = talent -> row();
-      ovr_talent[ "id"       ] = talent -> id();
-      ovr_talent[ "spell_id" ] = talent -> spell_id();
-      ovr_talent[ "name"     ] = talent -> name_cstr();
+      auto ovr_talent          = ovr_talents.add();
+      ovr_talent[ "tier" ]     = talent->row();
+      ovr_talent[ "id" ]       = talent->id();
+      ovr_talent[ "spell_id" ] = talent->spell_id();
+      ovr_talent[ "name" ]     = talent->name_cstr();
     }
   }
-  if ( !output_data.gear().empty() ) {
+  if ( !output_data.gear().empty() )
+  {
     const auto& gear = output_data.gear();
-    auto ovr_gear = ovr[ "gear" ];
+    auto ovr_gear    = ovr[ "gear" ];
     for ( const auto& item : gear )
     {
-       auto ovr_slot = ovr_gear[ item.slot_name() ];
-      ovr_slot[ "item_id"    ] = item.item_id();
+      auto ovr_slot            = ovr_gear[ item.slot_name() ];
+      ovr_slot[ "item_id" ]    = item.item_id();
       ovr_slot[ "item_level" ] = item.item_level();
     }
   }
-  if ( output_data.agility() ) {
-    ovr[ "stats" ][ "stamina" ] = output_data.stamina();
-    ovr[ "stats" ][ "agility" ] = output_data.agility();
+  if ( output_data.agility() )
+  {
+    ovr[ "stats" ][ "stamina" ]   = output_data.stamina();
+    ovr[ "stats" ][ "agility" ]   = output_data.agility();
     ovr[ "stats" ][ "intellect" ] = output_data.strength();
-    ovr[ "stats" ][ "strength" ] = output_data.intellect();
+    ovr[ "stats" ][ "strength" ]  = output_data.intellect();
 
-    ovr[ "stats" ][ "crit_rating" ] = output_data.crit_rating();
-    ovr[ "stats" ][ "crit_pct" ] = output_data.crit_pct();
-    ovr[ "stats" ][ "haste_rating" ] = output_data.haste_rating();
-    ovr[ "stats" ][ "haste_pct" ] = output_data.haste_pct();
-    ovr[ "stats" ][ "mastery_rating" ] = output_data.mastery_rating();
-    ovr[ "stats" ][ "mastery_pct" ] = output_data.mastery_pct();
+    ovr[ "stats" ][ "crit_rating" ]        = output_data.crit_rating();
+    ovr[ "stats" ][ "crit_pct" ]           = output_data.crit_pct();
+    ovr[ "stats" ][ "haste_rating" ]       = output_data.haste_rating();
+    ovr[ "stats" ][ "haste_pct" ]          = output_data.haste_pct();
+    ovr[ "stats" ][ "mastery_rating" ]     = output_data.mastery_rating();
+    ovr[ "stats" ][ "mastery_pct" ]        = output_data.mastery_pct();
     ovr[ "stats" ][ "versatility_rating" ] = output_data.versatility_rating();
-    ovr[ "stats" ][ "versatility_pct" ] = output_data.versatility_pct();
+    ovr[ "stats" ][ "versatility_pct" ]    = output_data.versatility_pct();
 
     ovr[ "stats" ][ "avoidance_rating" ] = output_data.avoidance_rating();
-    ovr[ "stats" ][ "avoidance_pct" ] = output_data.avoidance_pct();
-    ovr[ "stats" ][ "leech_rating" ] = output_data.leech_rating();
-    ovr[ "stats" ][ "leech_pct" ] = output_data.leech_pct();
-    ovr[ "stats" ][ "speed_rating" ] = output_data.speed_rating();
-    ovr[ "stats" ][ "speed_pct" ] = output_data.speed_pct();
+    ovr[ "stats" ][ "avoidance_pct" ]    = output_data.avoidance_pct();
+    ovr[ "stats" ][ "leech_rating" ]     = output_data.leech_rating();
+    ovr[ "stats" ][ "leech_pct" ]        = output_data.leech_pct();
+    ovr[ "stats" ][ "speed_rating" ]     = output_data.speed_rating();
+    ovr[ "stats" ][ "speed_pct" ]        = output_data.speed_pct();
 
-    ovr[ "stats" ][ "corruption" ] = output_data.corruption();
+    ovr[ "stats" ][ "corruption" ]            = output_data.corruption();
     ovr[ "stats" ][ "corruption_resistance" ] = output_data.corruption_resistance();
   }
 }

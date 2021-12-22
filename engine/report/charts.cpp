@@ -1733,20 +1733,22 @@ highchart::time_series_t& chart::generate_actor_timeline(
   return ts;
 }
 
-void chart::generate_profilesets_chart( highchart::bar_chart_t& chart, const sim_t& sim, size_t chart_id, util::span<const profileset::profile_set_t*> results, util::span<const profileset::profile_set_t*> results_mean )
+void chart::generate_profilesets_chart( highchart::bar_chart_t& chart, const sim_t& sim, size_t chart_id,
+                                        util::span<const profileset::profile_set_t*> results,
+                                        util::span<const profileset::profile_set_t*> results_mean )
 {
   // Bar color
-  const auto& c = color::class_color( sim.player_no_pet_list.data().front() -> type );
+  const auto& c          = color::class_color( sim.player_no_pet_list.data().front()->type );
   std::string chart_name = util::scale_metric_type_string( sim.profileset_metric.front() );
 
   const auto* baseline = sim.player_no_pet_list.data().front();
-  auto base_offset = chart_id * MAX_PROFILESET_CHART_ENTRIES;
+  auto base_offset     = chart_id * MAX_PROFILESET_CHART_ENTRIES;
 
-  int data_label_width = sim.chart_show_relative_difference ? 140 : 80;
-  int y_title_x = sim.chart_show_relative_difference ? -110 : -90;
+  int data_label_width     = sim.chart_show_relative_difference ? 140 : 80;
+  int y_title_x            = sim.chart_show_relative_difference ? -110 : -90;
   std::string baseline_str = "<br/><span style=\"color:#A00;\">Baseline in red</span>";
 
-  chart.set( "__current", 0 );  // the current chart's __data index
+  chart.set( "__current", 0 );                        // the current chart's __data index
   chart.set( "__data.0.series.0.name", chart_name );  // __data.0 is median chart, __data.1 is mean
   chart.set( "__data.0.series.1.type", "boxplot" );
   chart.set( "__data.0.series.1.name", chart_name );
@@ -1760,7 +1762,8 @@ void chart::generate_profilesets_chart( highchart::bar_chart_t& chart, const sim
   chart.set_yaxis_title( chart_name );
   chart.set( "yAxis.title.x", y_title_x );
   chart.width_ = 1150;
-  chart.height_ = 24 * std::min( as<size_t>( MAX_PROFILESET_CHART_ENTRIES + 1 ), results.size() - base_offset + 1 ) + 166;
+  chart.height_ =
+      24 * std::min( as<size_t>( MAX_PROFILESET_CHART_ENTRIES + 1 ), results.size() - base_offset + 1 ) + 166;
 
   chart.add( "colors", c.str() );
   chart.add( "colors", c.dark( .5 ).opacity( .5 ).str() );
@@ -1772,13 +1775,12 @@ void chart::generate_profilesets_chart( highchart::bar_chart_t& chart, const sim
   chart.set( "plotOptions.boxplot.medianWidth", 1 );
   chart.set( "plotOptions.boxplot.pointWidth", 18 );
   chart.set( "plotOptions.boxplot.tooltip.pointFormat",
-    "Maximum: {point.high}<br/>"
-    "Upper quartile: {point.q3}<br/>"
-    "Mean: {point.mean:,.1f}<br/>"
-    "Median: {point.median}<br/>"
-    "Lower quartile: {point.q1}<br/>"
-    "Minimum: {point.low}<br/>"
-  );
+             "Maximum: {point.high}<br/>"
+             "Upper quartile: {point.q3}<br/>"
+             "Mean: {point.mean:,.1f}<br/>"
+             "Median: {point.median}<br/>"
+             "Lower quartile: {point.q1}<br/>"
+             "Minimum: {point.low}<br/>" );
 
   chart.set( "plotOptions.bar.dataLabels.crop", false );
   chart.set( "plotOptions.bar.dataLabels.overflow", "none" );
@@ -1821,10 +1823,13 @@ void chart::generate_profilesets_chart( highchart::bar_chart_t& chart, const sim
   chart.set( "chart.events.load", "setup_cycle_chart" );
   chart.value( "chart.events.load" ).SetRawOutput( true );
 
-  if ( sim.chart_show_relative_difference ) {
-      chart.set( "plotOptions.bar.dataLabels.format", "{y} ({point.reldiff}%)");
+  if ( sim.chart_show_relative_difference )
+  {
+    chart.set( "plotOptions.bar.dataLabels.format", "{y} ({point.reldiff}%)" );
   }
 
-  profilesets_populate_chart_data( chart, base_offset, MAX_PROFILESET_CHART_ENTRIES, results, baseline, sim.profileset_metric.front(), c );
-  profilesets_populate_chart_data( chart, base_offset, MAX_PROFILESET_CHART_ENTRIES, results_mean, baseline, sim.profileset_metric.front(), c, true);
+  profilesets_populate_chart_data( chart, base_offset, MAX_PROFILESET_CHART_ENTRIES, results, baseline,
+                                   sim.profileset_metric.front(), c );
+  profilesets_populate_chart_data( chart, base_offset, MAX_PROFILESET_CHART_ENTRIES, results_mean, baseline,
+                                   sim.profileset_metric.front(), c, true );
 }
