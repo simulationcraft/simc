@@ -66,7 +66,7 @@ bool override_bit_array_field( T* data, const Fields& fields, util::string_view 
       v = std::abs( v );
     }
 
-    if ( v >= std::size( field ) * 32 )
+    if ( static_cast<unsigned>( v ) >= std::size( field ) * 32 )
       throw std::invalid_argument( "Invalid value (too large)." );
 
     int idx = v / 32;

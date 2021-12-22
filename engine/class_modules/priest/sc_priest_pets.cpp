@@ -654,7 +654,7 @@ action_t* priest_pallid_command_t::create_action( util::string_view name, util::
   }
 
   return priest_pet_t::create_action( name, options_str );
-};
+}
 // ==========================================================================
 // Living Shadow T28 4-set (Your Shadow)
 // ==========================================================================

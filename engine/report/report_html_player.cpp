@@ -3917,14 +3917,15 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
 
         for ( auto bonus : bonuses )
         {
-          if ( curr_tier != bonus->enum_id )
+          auto enum_id = as<int>( bonus->enum_id );
+          if ( curr_tier != enum_id )
           {
             if ( curr_tier != set_bonus_type_e::SET_BONUS_NONE )
               os << "</ul></td></tr>\n<tr class=\"left\"><th></th><td><ul class=\"float\">\n";
 
             fmt::print( os, "<li>{}</li>\n", report_decorators::decorated_set( sim, *bonus ) );
 
-            curr_tier = bonus->enum_id;
+            curr_tier = enum_id;
           }
 
           fmt::print( os, "<li>{} ({}pc)</li>\n",

@@ -7544,7 +7544,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
       return expr_t::create_constant( "exsanguinated_expr", 0 );
     }
 
-    return make_fn_expr( name_str, [ this, action ]() {
+    return make_fn_expr( name_str, [ action ]() {
       dot_t* d = action->get_dot( action->target );
       return d->is_ticking() && actions::rogue_attack_t::cast_state( d->state )->get_exsanguinated_rate() != 1.0;
     } );
