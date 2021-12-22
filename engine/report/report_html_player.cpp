@@ -3261,13 +3261,28 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
     }
     os << "</ul>\n";
 
+    if ( break_first )  // if first + second rows will overflow past stack rows
+    {
+      os << "</div>\n"  // Close first column and open second column
+          << "<div>\n";
+    }
+
+    if ( stat_buff )
+    {
+      os << "<h4>Stat Details</h4>\n"
+          << "<ul>\n";
+      for ( const auto& stat : stat_buff->stats )
+      {
+        os.printf( "<li><span class=\"label\">stat:</span>%s</li>\n"
+                    "<li><span class=\"label\">amount:</span>%.2f</li>\n",
+                    util::stat_type_string( stat.stat ),
+                    stat.amount );
+      }
+      os << "</ul>\n";
+    }
+
     if ( !constant_buffs )
     {
-      if ( break_first )  // if first + second rows will overflow past stack rows
-      {
-        os << "</div>\n"  // Close first column and open second column
-           << "<div>\n";
-      }
 
       if ( b.rppm )
       {
@@ -3280,20 +3295,6 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                    util::rppm_scaling_string( b.rppm->get_scaling() ).c_str(),
                    b.rppm->get_frequency(),
                    b.rppm->get_modifier() );
-      }
-
-      if ( stat_buff )
-      {
-        os << "<h4>Stat Details</h4>\n"
-           << "<ul>\n";
-        for ( const auto& stat : stat_buff->stats )
-        {
-          os.printf( "<li><span class=\"label\">stat:</span>%s</li>\n"
-                     "<li><span class=\"label\">amount:</span>%.2f</li>\n",
-                     util::stat_type_string( stat.stat ),
-                     stat.amount );
-        }
-        os << "</ul>\n";
       }
 
       if ( absorb_buff )
