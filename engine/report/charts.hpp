@@ -8,6 +8,7 @@
 #include "config.hpp"
 
 #include "sc_enums.hpp"
+#include "util/span.hpp"
 
 #include <string>
 #include <vector>
@@ -16,6 +17,11 @@ struct player_t;
 struct sim_t;
 struct stats_t;
 struct sc_timeline_t;
+
+namespace profileset
+{
+class profile_set_t;
+}
 
 namespace highchart
 {
@@ -52,5 +58,8 @@ namespace chart
   bool generate_scale_factors( highchart::bar_chart_t& chart, const player_t& p, scale_metric_e metric );
   bool generate_scaling_plot( highchart::chart_t& chart, const player_t& p, scale_metric_e metric );
   bool generate_reforge_plot( highchart::chart_t& chart, const player_t& p );
-  bool generate_profilesets_chart( const sim_t& sim, std::ostream& out );
+
+  // Profilesets
+  constexpr size_t MAX_PROFILESET_CHART_ENTRIES = 500;
+  void generate_profilesets_chart( highchart::bar_chart_t& chart, const sim_t& sim, size_t chart_id, util::span<const profileset::profile_set_t*> results, util::span<const profileset::profile_set_t*> results_mean );
 }  // namespace chart

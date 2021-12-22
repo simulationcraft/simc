@@ -1187,7 +1187,7 @@ void print_player_sequence( std::ostream& os, sim_t* sim, const std::vector<play
   }
 }
 
-void print_profilesets( const profileset::profilesets_t& profilesets, const sim_t& sim, std::ostream& out )
+void print_profilesets( std::ostream& out, const profileset::profilesets_t& profilesets, const sim_t& sim )
 {
   if ( profilesets.n_profilesets() == 0 )
   {
@@ -1278,7 +1278,7 @@ void print_text_report( std::ostream& os, sim_t* sim, bool detail )
     print_player_sequence( os, sim, sim->targets_by_name, detail );
   }
 
-  print_profilesets( *sim->profilesets, *sim, os );
+  print_profilesets( os, *sim->profilesets, *sim );
 
   sim_summary_performance( os, sim );
 
