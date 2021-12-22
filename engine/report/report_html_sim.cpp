@@ -1308,6 +1308,23 @@ void print_nothing_to_report( report::sc_html_stream& os, const std::string& rea
      << "</div>\n\n";
 }
 
+void print_profilesets( const profileset::profilesets_t& profilesets, const sim_t& sim, std::ostream& out )
+{
+  if ( profilesets.n_profilesets() == 0 )
+  {
+    return;
+  }
+
+  out << "<div class=\"section\">\n";
+  out << "<h2 class=\"toggle open\">Profile sets</h2>\n";
+  out << "<div class=\"toggle-content\">\n";
+
+  chart::generate_profilesets_chart( sim, out );
+
+  out << "</div>";
+  out << "</div>";
+}
+
 /* Main function building the html document and calling subfunctions
  */
 void print_html_( report::sc_html_stream& os, sim_t& sim )
@@ -1359,7 +1376,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
     print_html_scale_factors( os, sim );
   }
 
-  sim.profilesets->output_html( sim, os );
+  print_profilesets( *sim.profilesets, sim, os );
 
   // Report Players
   for ( auto& player : sim.players_by_name )

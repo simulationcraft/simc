@@ -1187,6 +1187,23 @@ void print_player_sequence( std::ostream& os, sim_t* sim, const std::vector<play
   }
 }
 
+void print_profilesets( const profileset::profilesets_t& profilesets, const sim_t& sim, std::ostream& out )
+{
+  if ( profilesets.n_profilesets() == 0 )
+  {
+    return;
+  }
+
+  fmt::print( out, "\n\nProfilesets (median {:s}):\n",
+              util::scale_metric_type_string( sim.profileset_metric.front() ) );
+
+  auto results = profilesets.generate_sorted_profilesets();
+
+  range::for_each( results, [ &out ]( const profileset::profile_set_t* profileset ) {
+    fmt::print( out, "    {:-10.3f} : {:s}\n", profileset->result().median(), profileset->name() );
+  } );
+}
+
 void print_text_report( std::ostream& os, sim_t* sim, bool detail )
 {
 #if SC_BETA
@@ -1261,7 +1278,7 @@ void print_text_report( std::ostream& os, sim_t* sim, bool detail )
     print_player_sequence( os, sim, sim->targets_by_name, detail );
   }
 
-  sim -> profilesets->output_text( *sim, os );
+  print_profilesets( *sim->profilesets, *sim, os );
 
   sim_summary_performance( os, sim );
 
@@ -1276,6 +1293,7 @@ void print_text_report( std::ostream& os, sim_t* sim, bool detail )
 
   fmt::print( os, "\n" );
 }
+
 }  // UNNAMED NAMESPACE ====================================================
 
 namespace report
