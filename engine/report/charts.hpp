@@ -52,4 +52,5 @@ namespace chart
   bool generate_scale_factors( highchart::bar_chart_t& chart, const player_t& p, scale_metric_e metric );
   bool generate_scaling_plot( highchart::chart_t& chart, const player_t& p, scale_metric_e metric );
   bool generate_reforge_plot( highchart::chart_t& chart, const player_t& p );
+  bool generate_profilesets_chart( const sim_t& sim, std::ostream& out );
 }  // namespace chart

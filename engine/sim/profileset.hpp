@@ -27,13 +27,6 @@ struct player_t;
 class extended_sample_data_t;
 struct talent_data_t;
 
-namespace js {
-struct JsonOutput;
-}
-
-namespace report {
-  class report_configuration_t;
-}
 
 namespace profileset
 {
@@ -470,8 +463,6 @@ private:
     PARALLEL
   };
 
-  static const size_t MAX_CHART_ENTRIES = 500;
-
   state                                  m_state;
   simulation_mode                        m_mode;
   profileset_vector_t                    m_profilesets;
@@ -504,9 +495,6 @@ private:
 
   int max_name_length() const;
 
-  bool generate_chart( const sim_t& sim, std::ostream& out ) const;
-  void generate_sorted_profilesets( std::vector<const profile_set_t*>& out, bool mean = false ) const;
-
   void output_progressbar( const sim_t* ) const;
 
   void set_state( state new_state );
@@ -538,8 +526,7 @@ public:
   void cancel();
   bool iterate( sim_t* parent_sim );
 
-  void output_text( const sim_t& sim, std::ostream& out ) const;
-  void output_html( const sim_t& sim, std::ostream& out ) const;
+  std::vector<const profile_set_t*> generate_sorted_profilesets( bool mean = false ) const;
 
   bool is_initializing() const;
 
@@ -557,7 +544,6 @@ void create_options( sim_t* sim );
 statistical_data_t collect( const extended_sample_data_t& c );
 statistical_data_t metric_data( const player_t* player, scale_metric_e metric );
 void save_output_data( profile_set_t& profileset, const player_t* parent_player, const player_t* player, const std::string& option );
-void fetch_output_data( const profile_output_data_t& output_data, js::JsonOutput& ovr );
 
 // Filter non-profilest options into a new control object, caller is responsible for deleting the
 // newly created control object.
