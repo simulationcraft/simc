@@ -937,7 +937,7 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
 {
   if ( splits.size() < 2 )
   {
-    return nullptr;
+    return {};
   }
 
   if ( util::str_compare_ci( splits[ 0 ], "pet" ) )
@@ -1004,7 +1004,7 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
     }
   }
 
-  return nullptr;
+  return {};
 }
 
 priest_t::priest_pets_t::priest_pets_t( priest_t& p )
