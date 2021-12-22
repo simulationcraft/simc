@@ -252,7 +252,7 @@ public:
   moon_stage_e moon_stage;
   eclipse_handler_t eclipse_handler;
   // counters for snapshot tracking
-  std::vector<snapshot_counter_t*> counters;
+  std::vector<std::unique_ptr<snapshot_counter_t>> counters;
 
   double expected_max_health;  // For Bristling Fur calculations.
 
@@ -806,7 +806,7 @@ public:
 
   druid_t( sim_t* sim, std::string_view name, race_e r = RACE_NIGHT_ELF )
     : player_t( sim, DRUID, name, r ),
-      form( NO_FORM ),
+      form( form_e::NO_FORM ),
       eclipse_handler( this ),
       spec_override( spec_override_t() ),
       options(),
@@ -843,8 +843,6 @@ public:
     regen_caches[ CACHE_HASTE ]        = true;
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
   }
-
-  ~druid_t() override;
 
   // Character Definition
   void activate() override;
@@ -964,11 +962,6 @@ private:
   target_specific_t<druid_td_t> target_data;
 };
 
-druid_t::~druid_t()
-{
-  range::dispose( counters );
-}
-
 snapshot_counter_t::snapshot_counter_t( druid_t* player, buff_t* buff )
   : sim( player->sim ),
     p( player ),
@@ -981,7 +974,6 @@ snapshot_counter_t::snapshot_counter_t( druid_t* player, buff_t* buff )
     wasted_buffs( 0 )
 {
   b.push_back( buff );
-  p->counters.push_back( this );
 }
 
 namespace pets
@@ -1732,14 +1724,6 @@ struct dot_debuff_t
   {}
 };
 
-struct free_cast_stats_t
-{
-  free_cast_e type;
-  stats_t* stats;
-
-  free_cast_stats_t( free_cast_e f, stats_t* s ) : type( f ), stats( s ) {}
-};
-
 // Template for common druid action code. See priest_action_t.
 template <class Base>
 struct druid_action_t : public Base
@@ -1750,20 +1734,6 @@ private:
 
 public:
   using base_t = druid_action_t<Base>;
-  unsigned form_mask; // Restricts use of a spell based on form.
-  bool may_autounshift; // Allows a spell that may be cast in NO_FORM but not in current form to be cast by exiting form.
-  unsigned autoshift; // Allows a spell that may not be cast in the current form to be cast by automatically changing to the specified form.
-  bool triggers_galactic_guardian;
-  bool is_auto_attack;
-  bool break_stealth;
-
-  // !!! WARNING: Upon execute(), free_cast is set on the state and RESET to base_free_cast !!!
-  // !!! For actions that will ALWAYS be one type of free_cast, you MUST use set_base_free_cast() to set it !!!
-  // !!! For actions that can have multiple type of free_cast, you MUST get the free_cast post execute from the STATE,
-  // not the action !!!
-  free_cast_e free_cast;
-  std::vector<free_cast_stats_t> free_cast_stats;
-  stats_t* orig_stats;
 
   std::vector<buff_effect_t> ta_multiplier_buffeffects;
   std::vector<buff_effect_t> da_multiplier_buffeffects;
@@ -1774,25 +1744,32 @@ public:
 
   std::vector<dot_debuff_t> target_multiplier_dotdebuffs;
 
+  // !!! WARNING: Upon execute(), free_cast is set on the state and RESET to base_free_cast !!!
+  // !!! For actions that will ALWAYS be one type of free_cast, you MUST use set_base_free_cast() to set it !!!
+  // !!! For actions that can have multiple type of free_cast, you MUST get the free_cast post execute from the STATE,
+  // not the action !!!
+  std::vector<std::pair<free_cast_e, stats_t*>> free_cast_stats;
+  free_cast_e free_cast;
+  stats_t* orig_stats;
+
+  unsigned form_mask; // Restricts use of a spell based on form.
+  unsigned autoshift; // Allows a spell that may not be cast in the current form to be cast by automatically changing to the specified form.
+  bool may_autounshift; // Allows a spell that may be cast in NO_FORM but not in current form to be cast by exiting form.
+  bool triggers_galactic_guardian;
+  bool is_auto_attack;
+  bool break_stealth;
+
   druid_action_t( std::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
       base_free_cast( free_cast_e::NONE ),
+      free_cast( free_cast_e::NONE ),
+      orig_stats( ab::stats ),
       form_mask( ab::data().stance_mask() ),
+      autoshift( 0U ),
       may_autounshift( true ),
-      autoshift( 0 ),
       triggers_galactic_guardian( true ),
       is_auto_attack( false ),
-      break_stealth( !ab::data().flags( spell_attribute::SX_NO_STEALTH_BREAK ) ),
-      free_cast( free_cast_e::NONE ),
-      free_cast_stats(),
-      orig_stats( ab::stats ),
-      ta_multiplier_buffeffects(),
-      da_multiplier_buffeffects(),
-      execute_time_buffeffects(),
-      recharge_multiplier_buffeffects(),
-      cost_buffeffects(),
-      crit_chance_buffeffects(),
-      target_multiplier_dotdebuffs()
+      break_stealth( !ab::data().flags( spell_attribute::SX_NO_STEALTH_BREAK ) )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
@@ -1860,8 +1837,8 @@ public:
       return ab::stats;
 
     for ( const auto& s : free_cast_stats )
-      if ( s.type == f )
-        return s.stats;
+      if ( s.first == f )
+        return s.second;
 
     auto fc_stats = p()->get_stats( free_cast_string( ab::name_str, f ), this );
 
@@ -1877,8 +1854,8 @@ public:
   {
     if ( f )
       for ( const auto& s : free_cast_stats )
-        if ( s.type == f )
-          return s.stats;
+        if ( s.first == f )
+          return s.second;
 
     return ab::stats;
   }
@@ -3008,10 +2985,7 @@ protected:
   bool attack_critical;
 
 public:
-  bool requires_stealth;
-  bool consumes_combo_points;
-  bool trigger_untamed_ferocity;
-  double berserk_cp;
+  std::vector<buff_effect_t> persistent_multiplier_buffeffects;
 
   struct has_snapshot_t
   {
@@ -3023,18 +2997,20 @@ public:
   snapshot_counter_t* bt_counter;
   snapshot_counter_t* tf_counter;
 
-  std::vector<buff_effect_t> persistent_multiplier_buffeffects;
+  double berserk_cp;
+  bool requires_stealth;
+  bool consumes_combo_points;
+  bool trigger_untamed_ferocity;
 
   cat_attack_t( std::string_view token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                 std::string_view options = {} )
     : base_t( token, p, s ),
-      requires_stealth( false ),
-      consumes_combo_points( false ),
-      berserk_cp( 0.0 ),
       snapshots( has_snapshot_t() ),
       bt_counter( nullptr ),
       tf_counter( nullptr ),
-      persistent_multiplier_buffeffects()
+      berserk_cp( 0.0 ),
+      requires_stealth( false ),
+      consumes_combo_points( false )
   {
     parse_options( options );
 
@@ -3221,14 +3197,22 @@ public:
     return pm;
   }
 
+  snapshot_counter_t* get_counter( buff_t* b )
+  {
+    p()->counters.push_back( std::make_unique<snapshot_counter_t>( p(), b ) );
+
+    return p()->counters.back().get();
+  }
+
   void init() override
   {
     base_t::init();
 
     if ( snapshots.bloodtalons )
-      bt_counter = new snapshot_counter_t( p(), p()->buff.bloodtalons );
+      bt_counter = get_counter( p()->buff.bloodtalons );
+
     if ( snapshots.tigers_fury )
-      tf_counter = new snapshot_counter_t( p(), p()->buff.tigers_fury );
+      tf_counter = get_counter( p()->buff.tigers_fury );
   }
 
   void impact( action_state_t* s ) override
@@ -3619,6 +3603,7 @@ struct feral_frenzy_t : public cat_attack_t
     tick_action = p->get_secondary_action<feral_frenzy_tick_t>( "feral_frenzy_tick" );
     tick_action->stats = stats;
     dynamic_tick_action = true;
+    snapshots.tigers_fury = false;
   }
 
   timespan_t cooldown_duration() const override { return free_cast ? 0_ms : cat_attack_t::cooldown_duration(); }
@@ -10918,6 +10903,7 @@ public:
       if ( tf_exe_total > 0 || bt_exe_total > 0 )
       {
         const action_t& action = *( stats->action_list[ 0 ] );
+        stats->prefer_name = true;
         std::string name_str   = report_decorators::decorated_action( action, stats );
 
         // Table Row : Name, TF up, TF total, TF up/total, TF up/sum(TF up)
