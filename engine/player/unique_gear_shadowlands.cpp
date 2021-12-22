@@ -1723,7 +1723,7 @@ void shadowgrasp_totem( special_effect_t& effect )
       cd_adjust = timespan_t::from_seconds(
         -source->find_spell( 329878 )->effectN( 3 ).base_value() );
 
-      range::for_each( effect.player->sim->actor_list, [ this ]( player_t* t ) {
+      range::for_each( effect.player->sim->actor_list, [ this ]( const auto& t ) {
         t->register_on_demise_callback( source, [ this ]( player_t* actor ) {
           trigger_target_death( actor );
         } );

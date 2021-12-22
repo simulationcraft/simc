@@ -9102,7 +9102,7 @@ void death_knight_t::activate()
 {
   player_t::activate();
 
-  range::for_each( sim->actor_list, [ this ]( player_t* target ) {
+  range::for_each( sim->actor_list, [ this ]( const auto& target ) {
     if ( !target->is_enemy() )
     {
       return;
@@ -9739,10 +9739,10 @@ private:
 struct death_knight_module_t : public module_t {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
-  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
+  std::unique_ptr<player_t> create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
-    auto  p = new death_knight_t( sim, name, r );
-    p -> report_extension = std::unique_ptr<player_report_extension_t>( new death_knight_report_t( *p ) );
+    auto  p = std::make_unique<death_knight_t>( sim, name, r );
+    p -> report_extension = std::make_unique<death_knight_report_t>( *p );
     return p;
   }
 

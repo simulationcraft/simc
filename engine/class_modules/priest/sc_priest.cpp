@@ -2363,9 +2363,9 @@ struct priest_module_t final : public module_t
   {
   }
 
-  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
+  std::unique_ptr<player_t> create_player( sim_t* sim, util::string_view name, race_e r ) const override
   {
-    return new priest_t( sim, name, r );
+    return std::make_unique<priest_t>( sim, name, r );
   }
   bool valid() const override
   {

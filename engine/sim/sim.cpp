@@ -20,6 +20,7 @@
 #include "report/reports.hpp"
 #include "report/highchart.hpp"
 #include "profileset.hpp"
+#include "sc_enums.hpp"
 #include "sim/event.hpp"
 #include "sim/iteration_data_entry.hpp"
 #include "sim/plot.hpp"
@@ -351,8 +352,8 @@ bool parse_player( sim_t*             sim,
     }
 
     assert(source);
-
-    sim -> active_player = module_t::get( source -> type ) -> create_player( sim, player_name );
+    
+    sim -> active_player = sim->create_player( source -> type, player_name, RACE_NONE );
 
     if ( sim -> active_player != nullptr )
       sim -> active_player -> copy_from ( source );
@@ -366,22 +367,8 @@ bool parse_player( sim_t*             sim,
     {
       throw std::runtime_error(fmt::format("No class module could be found for '{}'.", name ));
     }
-    const module_t* module = module_t::get( player_type );
 
-    if ( ! module || ! module -> valid() )
-    {
-      throw std::invalid_argument(fmt::format("Module for class '{}' is currently not available.", name ));
-    }
-    else
-    {
-      sim -> active_player = module -> create_player( sim, value );
-
-      if ( ! sim -> active_player )
-      {
-        throw std::invalid_argument(fmt::format("Unable to create player '{}' with class '{}'.",
-                       value, name ));
-      }
-    }
+    sim -> active_player = sim->create_player( player_type, value, RACE_NONE );
   }
 
   // Create options for player
@@ -2112,9 +2099,8 @@ void sim_t::analyze_error()
   }
   else
   {
-    for ( size_t i = 0; i < actor_list.size(); i++ )
+    for ( const auto& p : actor_list )
     {
-      player_t* p = actor_list[i];
       player_collected_data_t& cd = p -> collected_data;
       AUTO_LOCK( cd.target_metric_mutex );
       if ( cd.target_metric.size() != 0 )
@@ -2667,13 +2653,13 @@ void sim_t::init()
       target = p;
   }
   else
-    target = module_t::enemy() -> create_player( this, "Fluffy_Pillow" );
+    target = create_player( *module_t::enemy(), "Fluffy_Pillow", RACE_NONE );
 
   // create additional enemies here
   while ( as<int>(target_list.size()) < desired_targets )
   {
     active_player = nullptr;
-    active_player = module_t::enemy() -> create_player( this, "enemy" + util::to_string( target_list.size() + 1 ) );
+    active_player = create_player( *module_t::enemy(), "enemy" + util::to_string( target_list.size() + 1 ), RACE_NONE );
     if ( ! active_player )
     {
       throw std::invalid_argument(fmt::format("Unable to create enemy {}.", target_list.size() ));
@@ -2701,13 +2687,13 @@ void sim_t::init()
         ++tanks;
     }
     if ( healers > 0 || healing > 0 )
-      heal_target = module_t::heal_enemy() -> create_player( this, "Healing_Target", RACE_NONE );
+      heal_target =  create_player( *module_t::heal_enemy(), "Healing_Target", RACE_NONE );
     if ( healing > 1 )
     {
       int targets_create = healing;
       do
       {
-        heal_target = module_t::heal_enemy() -> create_player( this, "Healing_Target_" + util::to_string( targets_create ), RACE_NONE );
+        heal_target = create_player( *module_t::heal_enemy(), "Healing_Target_" + util::to_string( targets_create ), RACE_NONE );
         targets_create--;
       }
       while ( targets_create > 1 );
@@ -3187,7 +3173,7 @@ player_t* sim_t::find_player( util::string_view name ) const
 {
   auto it = range::find( actor_list, name, &player_t::name );
   if ( it != actor_list.end())
-    return *it;
+    return (*it).get();
   return nullptr;
 }
 
@@ -3196,7 +3182,7 @@ player_t* sim_t::find_player( int index ) const
 {
   auto it = range::find( actor_list, index, &player_t::index );
   if ( it != actor_list.end())
-    return *it;
+    return (*it).get();
   return nullptr;
 }
 
@@ -3402,6 +3388,32 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
         return make_ref_expr( name_str, actor_list[ i ] -> actor_index );
 
   return nullptr;
+}
+
+player_t* sim_t::create_player( player_e player_type, util::string_view name, race_e race )
+{
+  const module_t* m = module_t::get( player_type );
+  if ( !m )
+  {
+    throw std::runtime_error( fmt::format( "Module for class '{}' is currently not available.", player_type ) );
+  }
+  return create_player(*m, name, race);
+}
+
+player_t* sim_t::create_player( const module_t& class_module, util::string_view name, race_e race )
+{  
+  if ( !class_module.valid() )
+  {
+    throw std::runtime_error( fmt::format( "Module for class '{}' is currently not available.", class_module.type ) );
+  }
+  auto player = class_module.create_player( this, name, race );
+  if ( player == nullptr )
+  {
+    throw std::invalid_argument(
+        fmt::format( "Unable to create player '{}' with class '{}'.", name, class_module.type ) );
+  }
+  actor_list.push_back( std::move( player ) );
+  return actor_list.back().get();
 }
 
 // sim_t::print_options =====================================================

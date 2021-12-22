@@ -1497,10 +1497,8 @@ timespan_t action_t::cooldown_base_duration( const cooldown_t& cd ) const
 int action_t::num_targets() const
 {
   int count = 0;
-  for ( size_t i = 0, actors = sim->actor_list.size(); i < actors; i++ )
+  for ( const auto& t : sim->actor_list )
   {
-    player_t* t = sim->actor_list[ i ];
-
     if ( !t->is_sleeping() && t->is_enemy() )
       count++;
   }

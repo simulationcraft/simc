@@ -88,7 +88,7 @@ result_amount_type absorb_t::amount_type(const action_state_t*, bool) const
 int absorb_t::num_targets() const
 {
   return as<int>(range::count_if(sim->actor_list,
-    [](player_t* t) {
+    [](const auto& t) {
       if (t->is_sleeping()) return false;
       if (t->is_enemy()) return false;
       return true;

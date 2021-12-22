@@ -8761,9 +8761,9 @@ struct monk_module_t : public module_t
   {
   }
 
-  player_t* create_player( sim_t* sim, util::string_view name, race_e r ) const override
+  std::unique_ptr<player_t> create_player( sim_t* sim, util::string_view name, race_e r ) const override
   {
-    auto p              = new monk_t( sim, name, r );
+    auto p              = std::make_unique<monk_t>( sim, name, r );
     p->report_extension = std::make_unique<monk_report_t>( *p );
     return p;
   }

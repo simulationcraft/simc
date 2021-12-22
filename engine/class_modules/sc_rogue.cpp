@@ -9269,9 +9269,9 @@ class rogue_module_t : public module_t
 public:
   rogue_module_t() : module_t( ROGUE ) {}
 
-  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
+  std::unique_ptr<player_t> create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
-    return new rogue_t( sim, name, r );
+    return std::make_unique<rogue_t>( sim, name, r );
   }
 
   bool valid() const override

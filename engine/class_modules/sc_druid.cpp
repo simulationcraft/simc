@@ -4856,9 +4856,9 @@ struct lifebloom_t : public druid_heal_t
   void impact( action_state_t* state ) override
   {
     // Cancel Dot/td-buff on all targets other than the one we impact on
-    for ( size_t i = 0; i < sim->actor_list.size(); ++i )
+    for ( auto& actor : sim->actor_list )
     {
-      player_t* t = sim->actor_list[ i ];
+      player_t* t = actor.get();
 
       if ( state->target == t )
         continue;
@@ -6370,7 +6370,7 @@ struct stampeding_roar_t : public druid_spell_t
     if ( !p()->conduit.front_of_the_pack->ok() )
       return;
 
-    for ( auto actor : sim->actor_list )
+    for ( const auto& actor : sim->actor_list )
     {
       if ( actor->type == PLAYER_GUARDIAN )
         continue;
@@ -10991,10 +10991,10 @@ struct druid_module_t : public module_t
 {
   druid_module_t() : module_t( DRUID ) {}
 
-  player_t* create_player( sim_t* sim, std::string_view name, race_e r = RACE_NONE ) const override
+  std::unique_ptr<player_t> create_player( sim_t* sim, std::string_view name, race_e r = RACE_NONE ) const override
   {
-    auto p              = new druid_t( sim, name, r );
-    p->report_extension = std::unique_ptr<player_report_extension_t>( new druid_report_t( *p ) );
+    auto p              = std::make_unique<druid_t>( sim, name, r );
+    p->report_extension = std::make_unique<druid_report_t>( *p );
     return p;
   }
   bool valid() const override { return true; }

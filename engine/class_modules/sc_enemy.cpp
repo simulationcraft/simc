@@ -234,7 +234,7 @@ struct enemy_action_t : public ACTION_TYPE
     {
       for ( size_t i = 0, actors = this->sim->actor_list.size(); i < actors; i++ )
       {
-        player_t* actor = this->sim->actor_list[ i ];
+        player_t* actor = this->sim->actor_list[ i ].get();
         // only add non heal_target tanks to this list for now
         if ( !actor->is_sleeping() && !actor->is_enemy() && actor->primary_role() == ROLE_TANK &&
              actor != this->target && actor != this->sim->heal_target )
@@ -820,11 +820,11 @@ struct spell_aoe_t : public enemy_action_t<spell_t>
     }
     else
     {
-      for ( size_t i = 0, actors = sim->actor_list.size(); i < actors; ++i )
+      for (auto & actor : sim->actor_list)
       {
-        if ( !sim->actor_list[ i ]->is_sleeping() && !sim->actor_list[ i ]->is_enemy() &&
-             sim->actor_list[ i ] != target )
-          tl.push_back( sim->actor_list[ i ] );
+        player_t* t = actor.get();
+        if ( !t->is_sleeping() && !t->is_enemy() && t != target )
+          tl.push_back( t );
       }
     }
 
@@ -1876,9 +1876,9 @@ struct enemy_module_t : public module_t
   {
   }
 
-  player_t* create_player( sim_t* sim, util::string_view name, race_e /* r = RACE_NONE */ ) const override
+  std::unique_ptr<player_t> create_player( sim_t* sim, util::string_view name, race_e /* r = RACE_NONE */ ) const override
   {
-    return new enemy_t( sim, name );
+    return std::make_unique<enemy_t>( sim, name );
   }
   bool valid() const override
   {
@@ -1903,10 +1903,9 @@ struct heal_enemy_module_t : public module_t
   {
   }
 
-  player_t* create_player( sim_t* sim, util::string_view name, race_e /* r = RACE_NONE */ ) const override
+  std::unique_ptr<player_t> create_player( sim_t* sim, util::string_view name, race_e /* r = RACE_NONE */ ) const override
   {
-    auto p = new heal_enemy_t( sim, name );
-    return p;
+    return std::make_unique<heal_enemy_t>( sim, name );
   }
   bool valid() const override
   {
@@ -1931,10 +1930,9 @@ struct tank_dummy_enemy_module_t : public module_t
   {
   }
 
-  player_t* create_player( sim_t* sim, util::string_view name, race_e /* r = RACE_NONE */ ) const override
+  std::unique_ptr<player_t> create_player( sim_t* sim, util::string_view name, race_e /* r = RACE_NONE */ ) const override
   {
-    auto p = new tank_dummy_enemy_t( sim, name );
-    return p;
+    return std::make_unique<tank_dummy_enemy_t>( sim, name );
   }
   bool valid() const override
   {

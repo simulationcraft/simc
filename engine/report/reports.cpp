@@ -24,9 +24,8 @@ namespace report
 void print_profiles(sim_t* sim)
 {
   int k = 0;
-  for (unsigned int i = 0; i < sim->actor_list.size(); i++)
+  for ( const auto& p : sim->actor_list )
   {
-    player_t* p = sim->actor_list[i];
     if (p->is_pet())
       continue;
 
@@ -132,9 +131,8 @@ void print_profiles(sim_t* sim)
         "# Contains %d Players.\n\n",
         k);
 
-      for (unsigned int i = 0; i < sim->actor_list.size(); ++i)
+      for ( const auto& p : sim->actor_list )
       {
-        player_t* p = sim->actor_list[i];
         if (p->is_pet())
           continue;
 

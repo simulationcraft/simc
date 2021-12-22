@@ -1925,9 +1925,9 @@ struct warlock_module_t : public module_t
   {
   }
 
-  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
+  std::unique_ptr<player_t> create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
-    return new warlock_t( sim, name, r );
+    return std::make_unique<warlock_t>( sim, name, r );
   }
 
   //TODO: Hotfix may not be needed any longer, if so leave this function empty instead

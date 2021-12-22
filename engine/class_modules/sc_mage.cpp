@@ -7513,9 +7513,9 @@ public:
     module_t( MAGE )
   { }
 
-  player_t* create_player( sim_t* sim, std::string_view name, race_e r = RACE_NONE ) const override
+  std::unique_ptr<player_t> create_player( sim_t* sim, std::string_view name, race_e r = RACE_NONE ) const override
   {
-    auto p = new mage_t( sim, name, r );
+    auto p = std::make_unique<mage_t>( sim, name, r );
     p->report_extension = std::make_unique<mage_report_t>( *p );
     return p;
   }

@@ -2965,7 +2965,7 @@ struct ceaseless_toxin_t : public proc_spell_t
   {
     proc_spell_t::activate();
 
-    range::for_each( sim -> actor_list, [ this ]( player_t* target ) {
+    range::for_each( sim -> actor_list, [ this ]( const auto& target ) {
       if ( ! target -> is_enemy() )
       {
         return;

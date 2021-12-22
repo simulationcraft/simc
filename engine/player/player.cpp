@@ -1220,7 +1220,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     resource_threshold_trigger()
 {
   actor_index = sim->actor_list.size();
-  sim->actor_list.push_back( this );
 
   if ( ! is_enemy() && ! is_pet() )
   {

@@ -11,6 +11,7 @@
 #include "util/generic.hpp"
 #include "util/string_view.hpp"
 
+#include <memory>
 #include <vector>
 
 struct player_t;
@@ -25,10 +26,10 @@ struct module_t
   {
   }
 
-  virtual ~module_t()                                                                               = default;
-  virtual player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const = 0;
-  virtual bool valid() const                                                                        = 0;
-  virtual void init( player_t* ) const                                                              = 0;
+  virtual ~module_t() = default;
+  virtual std::unique_ptr<player_t> create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const = 0;
+  virtual bool valid() const                                                                                        = 0;
+  virtual void init( player_t* ) const                                                                              = 0;
   virtual void static_init() const
   {
   }

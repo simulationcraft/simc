@@ -1869,11 +1869,11 @@ void kevins_oozeling( special_effect_t& effect )
       pet_t::demise();
 
       // When the pet expires any debuffs it put out are expired as well
-      range::for_each( owner->sim->actor_list, [ this ]( player_t* t ) {
+      range::for_each( owner->sim->actor_list, [ this ]( const auto& t ) {
         if ( !t->is_enemy() )
           return;
 
-        auto td = owner->get_target_data( t );
+        auto td = owner->get_target_data( t.get() );
         if ( td->debuff.kevins_wrath->check() )
           td->debuff.kevins_wrath->expire();
       } );

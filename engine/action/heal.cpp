@@ -371,10 +371,10 @@ player_t* heal_t::smart_target() const
 int heal_t::num_targets() const
 {
   return as<int>(range::count_if(sim->actor_list,
-    [this](player_t* t) {
+    [this](const auto& t) {
       if (t->is_sleeping()) return false;
       if (t->is_enemy()) return false;
-      if (t == target) return false;
+      if (t.get() == target) return false;
       if (group_only && (t->party != target->party)) return false;
       return true;
     }));

@@ -1612,7 +1612,7 @@ void items::briny_barnacle( special_effect_t& effect )
 
   auto p = effect.player;
   // Add a callback on demise to each enemy in the simulation
-  range::for_each( p->sim->actor_list, [p, explosion]( player_t* target ) {
+  range::for_each( p->sim->actor_list, [p, explosion]( const auto& target ) {
     // Don't do anything on players
     if ( !target->is_enemy() )
     {

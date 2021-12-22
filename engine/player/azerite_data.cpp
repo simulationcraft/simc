@@ -1917,7 +1917,7 @@ void blood_rite( special_effect_t& effect )
   auto buff = effect.custom_buff;
 
   //Kills refresh buff
-  range::for_each( effect.player -> sim -> actor_list, [buff]( player_t* target ) {
+  range::for_each( effect.player -> sim -> actor_list, [buff]( const auto& target ) {
     if ( !target -> is_enemy() )
     {
       return;
@@ -5475,7 +5475,7 @@ void aegis_of_the_deep( special_effect_t& effect )
 
   //Spelldata shows a buff trigger every 1s, but in-game observation show an immediate change
   //Add a callback on arise and demise to each enemy in the simulation
-  range::for_each( effect.player -> sim -> actor_list, [ p = effect.player, aegis_buff ]( player_t* target )
+  range::for_each( effect.player -> sim -> actor_list, [ p = effect.player, aegis_buff ]( const auto& target )
   {
     // Don't do anything on players
     if ( !target -> is_enemy() )
@@ -5672,7 +5672,7 @@ struct reaping_flames_t : public azerite_essence_major_t
       damage_buff = make_buff( player, "reaping_flames", player->find_spell( 311202 ) )
         ->set_default_value( essence.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent() );
 
-      range::for_each( sim->actor_list, [ this ] ( player_t* target )
+      range::for_each( sim->actor_list, [ this ] ( const auto& target )
       {
         if ( !target->is_enemy() )
           return;

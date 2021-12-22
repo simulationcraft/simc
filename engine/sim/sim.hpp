@@ -30,6 +30,7 @@ namespace highchart {
     struct chart_t;
 }
 struct iteration_data_entry_t;
+struct module_t;
 struct option_t;
 struct plot_t;
 struct raid_event_t;
@@ -136,7 +137,7 @@ struct sim_t : private sc_thread_t
   std::string current_name, default_region_str, default_server_str, save_prefix_str, save_suffix_str;
   bool         save_talent_str;
   talent_format talent_input_format;
-  auto_dispose< std::vector<player_t*> > actor_list;
+  std::vector<std::unique_ptr<player_t>> actor_list;
   std::string main_target_str;
   int         stat_cache;
   int         max_aoe_enemies;
@@ -623,6 +624,7 @@ struct sim_t : private sc_thread_t
   cooldown_t* get_cooldown( util::string_view name );
   void      use_optimal_buffs_and_debuffs( int value );
   std::unique_ptr<expr_t>   create_expression( util::string_view name );
+  player_t* create_player(player_e player_type, util::string_view name, race_e race); 
   /**
    * Create error with printf formatting.
    */
@@ -713,6 +715,7 @@ struct sim_t : private sc_thread_t
   }
 
 private:
+  player_t* create_player(const module_t& class_module, util::string_view name, race_e race); 
   void set_error(std::string error);
   void do_pause();
   void print_spell_query();

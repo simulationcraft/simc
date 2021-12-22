@@ -795,12 +795,8 @@ player_t* parse_player( sim_t*            sim,
   {
     throw std::runtime_error(fmt::format("No class module could be found for '{}'.", class_name ));
   }
-  const module_t* module = module_t::get( player_type );
 
-  if ( ! module || ! module -> valid() )
-  {
-    throw std::runtime_error(fmt::format("Module for class '{}' is currently not available.", class_name ));
-  }
+
 
   std::string name = player.name;
 
@@ -813,7 +809,7 @@ player_t* parse_player( sim_t*            sim,
   if ( ! name.empty() )
     sim -> current_name = name;
 
-  player_t* p = sim -> active_player = module -> create_player( sim, name, race );
+  player_t* p = sim -> active_player = sim->create_player( player_type, name, race );
 
   if ( ! p )
   {
