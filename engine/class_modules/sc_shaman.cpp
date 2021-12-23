@@ -367,6 +367,7 @@ public:
     action_t* molten_weapon_dot;
     action_t* lightning_bolt_pw;
     action_t* lava_burst_pw;
+    action_t* flame_shock;
 
     // Legendaries
     action_t* dre_ascendance; // Deeply Rooted Elements
@@ -843,6 +844,8 @@ public:
   void trigger_elemental_equilibrium( const action_state_t* state );
   void trigger_deeply_rooted_elements( const action_state_t* state );
 
+  void trigger_secondary_flame_shock( player_t* target ) const;
+  void trigger_secondary_flame_shock( const action_state_t* state ) const;
   void regenerate_flame_shock_dependent_target_list( const action_t* action ) const;
 
   // Legendary
@@ -3283,6 +3286,11 @@ struct lava_lash_t : public shaman_attack_t
   {
     check_spec( SHAMAN_ENHANCEMENT );
     school = SCHOOL_FIRE;
+    // Add a 8 yard radius to support Flame Shock spreading in 9.2
+    if ( player->dbc->ptr )
+    {
+      radius = 8.0;
+    }
 
     parse_options( options_str );
     weapon = &( player->off_hand_weapon );
@@ -3356,6 +3364,7 @@ struct lava_lash_t : public shaman_attack_t
     shaman_attack_t::execute();
 
     p()->buff.primal_lava_actuators->expire();
+    trigger_flame_shock();
   }
 
   void impact( action_state_t* state ) override
@@ -3379,13 +3388,53 @@ struct lava_lash_t : public shaman_attack_t
     }
   }
 
-  virtual void trigger_molten_weapon_dot( player_t* t, double dmg )
+  void trigger_molten_weapon_dot( player_t* t, double dmg ) const
   {
-    double wolf_count_multi = p()->buff.molten_weapon->data().effectN( 2 ).percent() * p()->buff.molten_weapon->check();
+    double wolf_count_multi = p()->buff.molten_weapon->data().effectN( 2 ).percent() *
+                              p()->buff.molten_weapon->check();
     double feed_amount      = wolf_count_multi * dmg;
     residual_action::trigger( p()->action.molten_weapon_dot,  // ignite spell
                               t,                              // target
                               feed_amount );
+  }
+
+  // 2021-12-20: Randomly triggers on any 3 targets, including the target of the Lava
+  // Lash.
+  void trigger_flame_shock() const
+  {
+    if ( !player->dbc->ptr )
+    {
+      return;
+    }
+
+    if ( !p()->spec.lava_lash_2->ok() )
+    {
+      return;
+    }
+
+    std::vector<player_t*> targets;
+    if ( target_list().size() <=
+         as<unsigned>( p()->spec.lava_lash_2->effectN( 2 ).base_value() ) )
+    {
+      targets = target_list();
+    }
+    else
+    {
+      while ( targets.size() <
+              as<unsigned>( p()->spec.lava_lash_2->effectN( 2 ).base_value() ) )
+      {
+        auto idx = static_cast<unsigned>( rng().range( 0, target_list().size() ) );
+        auto candidate = target_list()[ idx ];
+        if ( range::find( targets, candidate ) == targets.end() )
+        {
+          targets.push_back( candidate );
+        }
+      }
+    }
+
+    range::for_each( targets, [ shaman = p() ]( player_t* target ) {
+      shaman->trigger_secondary_flame_shock( target );
+    } );
   }
 };
 
@@ -5896,13 +5945,11 @@ struct ascendance_damage_t : public shaman_spell_t
 
 struct ascendance_t : public shaman_spell_t
 {
-  flame_shock_t* fs;
   ascendance_damage_t* ascendance_damage;
   lava_burst_t* lvb;
 
   ascendance_t( shaman_t* player, util::string_view name_str, util::string_view options_str = {} ) :
     shaman_spell_t( name_str, player, player->find_talent_spell( "Ascendance", player->specialization(), false, false ) ),
-    fs( player->specialization() == SHAMAN_ELEMENTAL ? new flame_shock_t( player, "" ) : nullptr ),
     ascendance_damage( nullptr ), lvb( nullptr )
   {
     parse_options( options_str );
@@ -5977,18 +6024,19 @@ struct ascendance_t : public shaman_spell_t
     }
 
     // Refresh Flame Shock to max duration
-    if ( fs )
+    if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
-      auto max_duration = fs->composite_dot_duration( execute_state );
+      auto max_duration = p()->action.flame_shock->composite_dot_duration( execute_state );
 
       // Apparently the Flame Shock durations get set to current Flame Shock max duration,
-      // bypassing normal dot refrseh behavior.
+      // bypassing normal dot refresh behavior.
       range::for_each( sim->target_non_sleeping_list, [ this, max_duration ]( player_t* target ) {
         auto fs_dot = td( target )->dot.flame_shock;
         if ( fs_dot->is_ticking() )
         {
-          auto new_duration = max_duration < fs_dot->remains() ? -( fs_dot->remains() - max_duration )
-                                                               : max_duration - fs_dot->remains();
+          auto new_duration = max_duration < fs_dot->remains()
+                              ? -( fs_dot->remains() - max_duration )
+                              : max_duration - fs_dot->remains();
           fs_dot->adjust_duration( new_duration, -1 );
         }
       } );
@@ -6918,21 +6966,13 @@ struct fae_transfusion_t : public shaman_spell_t
 
 struct primordial_wave_t : public shaman_spell_t
 {
-  flame_shock_t* flame_shock;
-
   primordial_wave_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "primordial_wave", player, player->covenant.necrolord ),
-    flame_shock( new flame_shock_t( player ) )
+    shaman_spell_t( "primordial_wave", player, player->covenant.necrolord )
   {
     parse_options( options_str );
     // attack/spell power valujes are on a secondary spell
     attack_power_mod.direct = player->find_spell( 327162 )->effectN( 1 ).ap_coeff();
     spell_power_mod.direct  = player->find_spell( 327162 )->effectN( 1 ).sp_coeff();
-
-    flame_shock->background = true;
-    // Ensure Primordial Wave flame shock will not trigger cooldown
-    flame_shock->cooldown = player->get_cooldown( "flame_shock_primordial" );
-    flame_shock->base_costs[ RESOURCE_MANA ] = 0;
   }
 
   void init() override
@@ -6961,9 +7001,9 @@ struct primordial_wave_t : public shaman_spell_t
 
   void impact( action_state_t* s ) override
   {
-    shaman_spell_t::impact(s);
-    flame_shock->set_target( target );
-    flame_shock->execute();
+    shaman_spell_t::impact( s );
+
+    p()->trigger_secondary_flame_shock( s );
   }
 };
 
@@ -6974,10 +7014,8 @@ struct primordial_wave_t : public shaman_spell_t
 struct chain_harvest_t : public shaman_spell_t
 {
   int critical_hits = 0;
-  flame_shock_t* fs;
   chain_harvest_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "chain_harvest", player, player->covenant.venthyr ),
-      fs(new flame_shock_t(player, ""))
+    shaman_spell_t( "chain_harvest", player, player->covenant.venthyr )
   {
     parse_options( options_str );
     aoe = 5;
@@ -6986,9 +7024,6 @@ struct chain_harvest_t : public shaman_spell_t
     base_multiplier *= 1.0 + player->spec.elemental_shaman->effectN( 7 ).percent();
 
     base_crit += p()->conduit.lavish_harvest.percent();
-    fs->background = true;
-    fs->cooldown   = player->get_cooldown( "flame_shock_chain_harvest" );
-    fs->base_costs[ RESOURCE_MANA ] = 0;
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -7006,8 +7041,7 @@ struct chain_harvest_t : public shaman_spell_t
     shaman_spell_t::impact( s );
     if ( p()->legendary.elemental_conduit->ok() )
     {
-      fs->set_target( s->target );
-      fs->execute();
+      p()->trigger_secondary_flame_shock( s );
     }
   }
 
@@ -7805,6 +7839,11 @@ void shaman_t::create_actions()
     }
   }
 
+  action.flame_shock = new flame_shock_t( this );
+  action.flame_shock->background = true;
+  action.flame_shock->cooldown = get_cooldown( "flame_shock_secondary" );
+  action.flame_shock->base_costs[ RESOURCE_MANA ] = 0;
+
   // Legendaries
   if ( legendary.deeply_rooted_elements.ok() )
   {
@@ -8524,6 +8563,22 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
 
   action.dre_ascendance->set_target( state->target );
   action.dre_ascendance->execute();
+}
+
+void shaman_t::trigger_secondary_flame_shock( player_t* target ) const
+{
+  action.flame_shock->set_target( target );
+  action.flame_shock->execute();
+}
+
+void shaman_t::trigger_secondary_flame_shock( const action_state_t* state ) const
+{
+  if ( !state->action->result_is_hit( state->result ) )
+  {
+    return;
+  }
+
+  trigger_secondary_flame_shock( state->target );
 }
 
 void shaman_t::regenerate_flame_shock_dependent_target_list( const action_t* action ) const
