@@ -16,6 +16,7 @@
 #include "player/player.hpp"
 #include "sim/sim.hpp"
 #include <cctype>
+#include <cmath>
 
 namespace {
   template <item_subclass_consumable CLASS>
@@ -527,7 +528,8 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
         return item._dbc_stats[ idx ].socket_mul;
       return 0.0f;
     };
-    double v_socket_penalty = socket_mul( item.parsed.data, idx ) * dbc.item_socket_cost( new_ilevel );
+    // Socket penalty is rounded using banker's rounding (X.5 is rounded to the nearest even integer).
+    double v_socket_penalty = std::nearbyint( socket_mul( item.parsed.data, idx ) * dbc.item_socket_cost( new_ilevel ) );
     double v_raw = item.parsed.data.stat_alloc[ idx ] * item_budget * 0.0001 - v_socket_penalty;
     auto stat_type = static_cast<item_mod_type>( item.parsed.data.stat_type_e[ idx ] );
 
