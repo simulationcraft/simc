@@ -521,14 +521,13 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
   if ( item.parsed.data.stat_alloc[ idx ] > 0 /* && orig_budget > 0 */ && item_budget > 0 )
   {
     // Socket penalty is supposedly gone in Warlords of Draenor, but it really does not seem so in
-    // the latest alpha.  NOTENOTENOTENOTE: Item socket cost penalty multiplier _seems_ to be based
-    // on _BASE_ itemlevel, not the upgraded one
+    // the latest alpha.
     auto socket_mul = []( const dbc_item_data_t& item, size_t idx ) {
       if ( idx < item._dbc_stats_count )
         return item._dbc_stats[ idx ].socket_mul;
       return 0.0f;
     };
-    double v_socket_penalty = socket_mul( item.parsed.data, idx ) * dbc.item_socket_cost( item.base_item_level() );
+    double v_socket_penalty = socket_mul( item.parsed.data, idx ) * dbc.item_socket_cost( new_ilevel );
     double v_raw = item.parsed.data.stat_alloc[ idx ] * item_budget * 0.0001 - v_socket_penalty;
     auto stat_type = static_cast<item_mod_type>( item.parsed.data.stat_type_e[ idx ] );
 
