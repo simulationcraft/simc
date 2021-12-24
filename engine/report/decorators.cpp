@@ -301,8 +301,6 @@ public:
 
   std::string token() const override
   {
-    std::string token = spell_decorator_t<action_t>::token();
-
     if ( stat && stat->prefer_name )
       return util::encode_html( stat->name() );
 
