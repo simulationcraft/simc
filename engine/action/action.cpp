@@ -4308,6 +4308,11 @@ dot_t* action_t::find_dot( player_t* t ) const
   return target_specific_dot[ t ];
 }
 
+stats_t* action_t::new_stats( util::string_view name, player_t* player )
+{
+  return new stats_t( name, player );
+}
+
 void action_t::add_child( action_t* child )
 {
   child->parent_dot = target->get_dot( name_str, player );

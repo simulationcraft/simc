@@ -7299,7 +7299,10 @@ stats_t* player_t::get_stats( util::string_view n, action_t* a )
 
   if ( !stats )
   {
-    stats = new stats_t( n, this );
+    if ( a )
+      stats = a->new_stats( n, this );
+    else
+      stats = new stats_t( n, this );
 
     stats_list.push_back( stats );
   }

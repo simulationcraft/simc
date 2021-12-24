@@ -559,6 +559,8 @@ public:
 
   virtual ~action_t();
 
+  virtual stats_t* new_stats( util::string_view name, player_t* player );
+
   void add_child( action_t* child );
 
   void add_option( std::unique_ptr<option_t> new_option );
