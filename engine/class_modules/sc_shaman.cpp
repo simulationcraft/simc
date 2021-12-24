@@ -5695,7 +5695,11 @@ struct flame_shock_t : public shaman_spell_t
     elemental_conduit( player->find_spell( 356250 ) )
   {
     parse_options( options_str );
-    tick_may_crit      = true;
+
+    // Ensure Flame Shock is single target, since Simulationcraft naively interprets a
+    // Max Targets value on a spell to mean "aoe this many targets"
+    aoe = 0;
+
     if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
       cooldown           = p()->cooldown.shock;
