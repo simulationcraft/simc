@@ -101,11 +101,11 @@ public:
   void add_execute( timespan_t time, player_t* target );
   void add_tick   ( timespan_t time, player_t* target );
   void add_refresh( player_t* target );
-  void datacollection_begin();
-  void datacollection_end();
-  void reset();
-  void analyze();
-  void merge( const stats_t& other );
+  virtual void datacollection_begin();
+  virtual void datacollection_end();
+  virtual void reset();
+  virtual void analyze();
+  virtual void merge( const stats_t& other );
   const std::string& name() const { return name_str; }
   unsigned mask() const { return 1 << type; }
 
