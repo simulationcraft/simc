@@ -1395,7 +1395,7 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
 
     if ( !item_effects.empty() )
     {
-      fields.emplace_back( fmt::format( "effects={{ {} }}", item_effects ) );
+      fields.emplace_back( fmt::format( "effects={{ {} }}", item_effects ) );
     }
 
     if ( !item_mod_stat.empty() )
