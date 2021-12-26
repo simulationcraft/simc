@@ -3412,6 +3412,11 @@ struct lava_lash_t : public shaman_attack_t
       return;
     }
 
+    if ( !td( execute_state->target )->dot.flame_shock->is_ticking() )
+    {
+      return;
+    }
+
     std::vector<player_t*> targets;
     if ( target_list().size() <=
          as<unsigned>( p()->spec.lava_lash_2->effectN( 2 ).base_value() ) )
