@@ -3644,7 +3644,7 @@ struct ice_strike_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_flametongue = false;
+    may_proc_flametongue = player->dbc->ptr;
   }
 
   void execute() override
@@ -3676,7 +3676,7 @@ struct sundering_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_stormbringer = may_proc_flametongue = false;
+    may_proc_stormbringer = may_proc_flametongue = player->dbc->ptr;
   }
 };
 
