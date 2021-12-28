@@ -428,7 +428,7 @@ stat_pair_t item_database::item_enchantment_effect_stats( player_t* player,
     {
       unsigned level = player -> level();
 
-      if ( static_cast< unsigned >( level ) > enchantment.max_scaling_level )
+      if ( enchantment.max_scaling_level != 0 && static_cast< unsigned >( level ) > enchantment.max_scaling_level )
         level = enchantment.max_scaling_level;
 
       double budget = player -> dbc->spell_scaling( static_cast< player_e >( enchantment.id_scaling ), level );
