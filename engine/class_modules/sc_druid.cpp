@@ -2015,7 +2015,7 @@ public:
           buffeffect_name = "cost";
           break;
         default:
-          break;
+          return;
       }
     }
     else if ( eff.subtype() == A_ADD_FLAT_MODIFIER && eff.misc_value1() == P_CRIT )
@@ -2094,29 +2094,33 @@ public:
     for ( const auto& i : buffeffects )
     {
       double eff_val = i.value;
+      int mod = 1;
 
-      if ( i.func && !i.func() )  // conditional effects
-          continue;
+      if ( i.func && !i.func() )
+          continue;  // continue to next effect if conditional effect function is false
+
+      if ( i.buff )
+      {
+        auto stack = benefit ? i.buff->stack() : i.buff->check();
+
+        if ( !stack )
+          continue;  // continue to next effect if stacks == 0 (buff is down)
+
+        mod = i.use_stacks ? stack : 1;
+      }
 
       if ( i.mastery )
       {
-        if ( p()->specialization() == DRUID_BALANCE && p()->bugs )
+        if ( p()->specialization() == DRUID_BALANCE )
           eff_val += debug_cast<buffs::eclipse_buff_t*>( i.buff )->mastery_value;
         else
           eff_val += p()->cache.mastery_value();
       }
 
-      if ( !i.buff )  // usually mastery spells
-      {
-        return_value *= 1.0 + eff_val;
-      }
-      else if ( ( benefit && i.buff->up() ) || i.buff->check() )
-      {
-        if ( flat )
-          return_value += eff_val * ( i.use_stacks ? i.buff->check() : 1 );
-        else
-          return_value *= 1.0 + eff_val * ( i.use_stacks ? i.buff->check() : 1 );
-      }
+      if ( flat )
+        return_value += eff_val * mod;
+      else
+        return_value *= 1.0 + eff_val * mod;
     }
 
     return return_value;
