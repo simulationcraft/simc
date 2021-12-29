@@ -3411,7 +3411,8 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
                 }
               }
 
-              report_str += fmt::format( "<li>{} ({})</li>\n", report_decorators::decorated_spell_data( *player.sim, spell ), rank );
+              report_str += fmt::format( "<li class=\"nowrap\">{} ({})</li>\n",
+                                         report_decorators::decorated_spell_data( *player.sim, spell ), rank );
             }
             break;
           }

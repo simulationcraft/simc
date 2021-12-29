@@ -145,8 +145,9 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
         auto s_data = player.find_spell( entry.front().spell_id );
         if ( s_data->ok() )
         {
-          legendary_str += fmt::format( "<li>{} ({})</li>\n", report_decorators::decorated_item( item ),
-                                        report_decorators::decorated_spell_data( *player.sim, s_data ) );
+          legendary_str +=
+              fmt::format( "<li class=\"nowrap\">{} ({})</li>\n", report_decorators::decorated_item( item ),
+                           report_decorators::decorated_spell_data( *player.sim, s_data ) );
         }
       }
     }
