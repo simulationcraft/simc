@@ -778,7 +778,7 @@ struct warrior_action_t : public Base
   {
     // mastery/buff damage increase.
     bool fury_mastery_direct, fury_mastery_dot, arms_mastery,
-    colossus_smash, rend, siegebreaker, ashen_juggernaut;
+    colossus_smash, rend, siegebreaker, ashen_juggernaut, recklessness;
     // talents
     bool avatar, sweeping_strikes, deadly_calm, booming_voice;
     // azerite
@@ -796,7 +796,8 @@ struct warrior_action_t : public Base
         sweeping_strikes( false ),
         deadly_calm( false ),
         booming_voice( false ),
-        crushing_assault( false )
+        crushing_assault( false ),
+        recklessness( false )
     {
     }
   } affected_by;
@@ -904,6 +905,7 @@ public:
     affected_by.rend                = ab::data().affected_by( p()->talents.rend->effectN( 3 ) );
     affected_by.siegebreaker        = ab::data().affected_by( p()->spell.siegebreaker_debuff->effectN( 1 ) );
     affected_by.avatar              = ab::data().affected_by( p()->spec.avatar_buff->effectN( 1 ) );
+    affected_by.recklessness        = ab::data().affected_by( p()->spec.recklessness->effectN( 1 ) );
 
     initialized = true;
   }
@@ -1008,6 +1010,11 @@ public:
     if( affected_by.ashen_juggernaut )
     {
       c += p()->buff.ashen_juggernaut ->stack_value();
+    }
+
+    if ( affected_by.recklessness && p()->buff.recklessness->up() )
+    {
+      c += p()->buff.recklessness->check_value();
     }
 
     return c;
@@ -7401,7 +7408,7 @@ void warrior_t::create_buffs()
     ->set_chance(1)
     ->set_duration( spec.recklessness->duration() + spec.recklessness_rank_2->effectN(1).time_value() )
     ->apply_affecting_conduit( conduit.depths_of_insanity )
-    ->add_invalidate( CACHE_CRIT_CHANCE )
+    //->add_invalidate( CACHE_CRIT_CHANCE ) removed in favor of composite_crit_chance (line 1015)
     ->set_cooldown( timespan_t::zero() )
     ->set_default_value( spec.recklessness->effectN( 1 ).percent() )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int after ) { if ( after == 0  && this->legendary.will_of_the_berserker->ok() ) buff.will_of_the_berserker->trigger(); });
@@ -8202,7 +8209,7 @@ double warrior_t::composite_melee_crit_chance() const
 {
   double c = player_t::composite_melee_crit_chance();
 
-  c += buff.recklessness->check_value();
+  //c += buff.recklessness->check_value(); removed in favor of composite_crit_chance (line 1015)
   c += buff.will_of_the_berserker->check_value();
   c += buff.conquerors_frenzy->check_value();
 
