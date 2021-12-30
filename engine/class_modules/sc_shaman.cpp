@@ -1577,9 +1577,65 @@ private:
 public:
   using base_t = shaman_spell_base_t<Base>;
 
-  shaman_spell_base_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil() )
+  bool affected_by_maelstrom_weapon = false;
+
+  shaman_spell_base_t( util::string_view n, shaman_t* player,
+                       const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s )
   {
+    if ( this->data().affected_by( player->find_spell( 187881 )->effectN( 1 ) ) )
+    {
+      affected_by_maelstrom_weapon = true;
+    }
+  }
+
+  virtual bool benefit_from_maelstrom_weapon() const
+  {
+    return affected_by_maelstrom_weapon && this->p()->buff.maelstrom_weapon->up();
+  }
+
+  // Some spells do not consume Maelstrom Weapon stacks always, so need to control this on
+  // a spell to spell level
+  virtual bool consume_maelstrom_weapon() const
+  {
+    return benefit_from_maelstrom_weapon() && !this->background;
+  }
+
+  unsigned maelstrom_weapon_stacks() const
+  {
+    if ( !benefit_from_maelstrom_weapon() )
+    {
+      return 0;
+    }
+
+    return std::min(
+          as<unsigned>( this->p()->buff.maelstrom_weapon->check() ),
+          this->p()->spell.maelstrom_weapon->max_stacks() );
+  }
+
+  timespan_t execute_time() const override
+  {
+    auto t = ab::execute_time();
+
+    t *= 1.0 + this->p()->spell.maelstrom_weapon->effectN( 1 ).percent() *
+      maelstrom_weapon_stacks();
+
+    return t;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = ab::action_multiplier();
+
+    if ( auto mw_stacks = maelstrom_weapon_stacks() )
+    {
+      double stack_value = this->p()->spell.maelstrom_weapon->effectN( 2 ).percent() +
+        this->p()->conduit.focused_lightning.percent();
+
+      m *= 1.0 + stack_value * mw_stacks;
+    }
+
+    return m;
   }
 
   void execute() override
@@ -1587,12 +1643,53 @@ public:
     ab::execute();
 
     // for benefit tracking purpose
-    ab::p()->buff.spiritwalkers_grace->up();
+    this->p()->buff.spiritwalkers_grace->up();
 
-    if ( ab::p()->talent.aftershock->ok() && ab::current_resource() == RESOURCE_MAELSTROM &&
-         ab::last_resource_cost > 0 && ab::rng().roll( ab::p()->talent.aftershock->effectN( 1 ).percent() ) )
+    if ( this->p()->talent.aftershock->ok() &&
+         this->current_resource() == RESOURCE_MAELSTROM &&
+         this->last_resource_cost > 0 &&
+         this->rng().roll( this->p()->talent.aftershock->effectN( 1 ).percent() ) )
     {
-      ab::p()->trigger_maelstrom_gain( ab::last_resource_cost, ab::p()->gain.aftershock );
+      this->p()->trigger_maelstrom_gain( this->last_resource_cost,
+          this->p()->gain.aftershock );
+    }
+
+    auto stacks = maelstrom_weapon_stacks();
+    auto cast_time = execute_time();
+    if ( stacks && consume_maelstrom_weapon() )
+    {
+      this->p()->buff.maelstrom_weapon->decrement( stacks );
+      if ( this->p()->talent.hailstorm->ok() )
+      {
+        this->p()->buff.hailstorm->trigger( stacks );
+      }
+
+      this->p()->trigger_legacy_of_the_frost_witch( stacks );
+
+      if ( this-> p()->dbc->ptr &&
+           this->p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B2 ) &&
+           this->p()->rng().roll(
+             this->p()->spell.t28_2pc_enh->effectN( 1 ).percent() * stacks ) )
+      {
+        if ( this->sim->debug )
+        {
+          this->sim->out_debug.print( "{} Enhancement T28 2PC", this->player->name() );
+        }
+        this->p()->summon_feral_spirits(
+            timespan_t::from_seconds(
+              this->p()->spell.t28_2pc_enh->effectN( 2 ).base_value() ),
+              1 );
+      }
+    }
+
+    // Main hand swing timer resets if the MW-affected spell is not instant cast
+    if ( affected_by_maelstrom_weapon && cast_time > 0_ms )
+    {
+      if ( this->p()->main_hand_attack && this->p()->main_hand_attack->execute_event )
+      {
+        event_t::cancel( this->p()->main_hand_attack->execute_event );
+        this->p()->main_hand_attack->schedule_execute();
+      }
     }
   }
 };
@@ -1633,16 +1730,40 @@ struct shaman_spell_state_t : public action_state_t
   }
 };
 
+struct elemental_overload_event_t : public event_t
+{
+  action_state_t* state;
+
+  elemental_overload_event_t( action_state_t* s )
+    : event_t( *s->action->player, timespan_t::from_millis( 400 ) ), state( s )
+  { }
+
+  ~elemental_overload_event_t() override
+  {
+    if ( state )
+      action_state_t::release( state );
+  }
+
+  const char* name() const override
+  {
+    return "elemental_overload_event_t";
+  }
+
+  void execute() override
+  {
+    state->action->schedule_execute( state );
+    state = nullptr;
+  }
+};
+
 struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 {
   action_t* overload;
 
-public:
   bool may_proc_stormbringer = false;
   proc_t* proc_sb;
   bool affected_by_master_of_the_elements = false;
   bool affected_by_stormkeeper            = false;
-  bool affected_by_maelstrom_weapon       = false;
 
   // Echoing Shock stuff
   bool may_proc_echoing_shock;
@@ -1662,19 +1783,9 @@ public:
       crit_bonus_multiplier *= 1.0 + p->spec.elemental_fury->effectN( 1 ).percent();
     }
 
-    if ( data().affected_by( p->find_spell( 260734 )->effectN( 1 ) ) )
-    {
-      affected_by_master_of_the_elements = true;
-    }
-
     if ( data().affected_by( p->find_spell( 191634 )->effectN( 1 ) ) )
     {
       affected_by_stormkeeper = true;
-    }
-
-    if ( data().affected_by( p->find_spell( 187881 )->effectN( 1 ) ) )
-    {
-      affected_by_maelstrom_weapon = true;
     }
 
     may_proc_stormbringer = false;
@@ -1694,30 +1805,6 @@ public:
     base_t::snapshot_internal( s, flags, rt );
 
     cast_state( s )->exec_type = exec_type;
-  }
-
-  // Some spells do not consume Maelstrom Weapon stacks always, so need to control this on
-  // a spell to spell level
-  virtual bool consume_maelstrom_weapon() const
-  {
-    return benefit_from_maelstrom_weapon() && !background;
-  }
-
-  virtual bool benefit_from_maelstrom_weapon() const
-  {
-    return affected_by_maelstrom_weapon && p()->buff.maelstrom_weapon->up();
-  }
-
-  unsigned maelstrom_weapon_stacks() const
-  {
-    if ( !benefit_from_maelstrom_weapon() )
-    {
-      return 0;
-    }
-
-    return std::min(
-          as<unsigned>( p()->buff.maelstrom_weapon->check() ),
-          p()->spell.maelstrom_weapon->max_stacks() );
   }
 
   void init() override
@@ -1752,31 +1839,14 @@ public:
 
   double action_multiplier() const override
   {
-    double m = shaman_action_t::action_multiplier();
+    double m = base_t::action_multiplier();
     // BfA Elemental talent - Master of the Elements
     if ( affected_by_master_of_the_elements )
     {
       m *= 1.0 + p()->buff.master_of_the_elements->value();
     }
 
-    if ( auto mw_stacks = maelstrom_weapon_stacks() )
-    {
-      double stack_value = p()->spell.maelstrom_weapon->effectN( 2 ).percent() +
-        p()->conduit.focused_lightning.percent();
-
-      m *= 1.0 + stack_value * mw_stacks;
-    }
-
     return m;
-  }
-
-  timespan_t execute_time() const override
-  {
-    auto t = shaman_spell_base_t::execute_time();
-
-    t *= 1.0 + p()->spell.maelstrom_weapon->effectN( 1 ).percent() * maelstrom_weapon_stacks();
-
-    return t;
   }
 
   void execute() override
@@ -1787,31 +1857,6 @@ public:
     if ( affected_by_master_of_the_elements && !background )
     {
       p()->buff.master_of_the_elements->decrement();
-    }
-
-    auto stacks = maelstrom_weapon_stacks();
-    auto cast_time = execute_time();
-    if ( stacks && consume_maelstrom_weapon() )
-    {
-      p()->buff.maelstrom_weapon->decrement( stacks );
-      if ( p()->talent.hailstorm->ok() )
-      {
-        p()->buff.hailstorm->trigger( stacks );
-      }
-
-      p()->trigger_legacy_of_the_frost_witch( stacks );
-
-      if ( p()->dbc->ptr && p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B2 ) &&
-           p()->rng().roll( p()->spell.t28_2pc_enh->effectN( 1 ).percent() * stacks ) )
-      {
-        if ( sim->debug )
-        {
-          sim->out_debug.print( "{} Enhancement T28 2PC", p()->name() );
-        }
-        p()->summon_feral_spirits(
-            timespan_t::from_seconds( p()->spell.t28_2pc_enh->effectN( 2 ).base_value() ),
-            1 );
-      }
     }
 
     // Shaman has spells that may fail to execute, so don't trigger stuff that requires a
@@ -1825,16 +1870,6 @@ public:
       }
 
       trigger_echoing_shock( execute_state->target );
-    }
-
-    // Main hand swing timer resets if the MW-affected spell is not instant cast
-    if ( affected_by_maelstrom_weapon && cast_time > 0_ms )
-    {
-      if ( p()->main_hand_attack && p()->main_hand_attack->execute_event )
-      {
-        event_t::cancel( p()->main_hand_attack->execute_event );
-        p()->main_hand_attack->schedule_execute();
-      }
     }
   }
 
@@ -1882,33 +1917,6 @@ public:
 
   void trigger_elemental_overload( const action_state_t* source_state ) const
   {
-    struct elemental_overload_event_t : public event_t
-    {
-      action_state_t* state;
-
-      elemental_overload_event_t( action_state_t* s )
-        : event_t( *s->action->player, timespan_t::from_millis( 400 ) ), state( s )
-      {
-      }
-
-      ~elemental_overload_event_t() override
-      {
-        if ( state )
-          action_state_t::release( state );
-      }
-
-      const char* name() const override
-      {
-        return "elemental_overload_event_t";
-      }
-
-      void execute() override
-      {
-        state->action->schedule_execute( state );
-        state = nullptr;
-      }
-    };
-
     if ( !p()->mastery.elemental_overload->ok() )
     {
       return;
@@ -4905,7 +4913,6 @@ struct lava_burst_t : public shaman_spell_t
         p()->proc.t28_4pc_ele_cd_extension->occur();
       }
     }
-    
 
     // Echoed Lava Burst does not generate Master of the Elements
     if ( !is_echoed_spell() && p()->talent.master_of_the_elements->ok() )
