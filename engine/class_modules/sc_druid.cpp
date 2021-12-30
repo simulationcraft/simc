@@ -140,8 +140,8 @@ struct druid_action_state_t : public action_state_t
 struct snapshot_counter_t
 {
   const sim_t* sim;
-  druid_t* p;
-  std::vector<buff_t*> b;
+  stats_t* stats;
+  std::vector<buff_t*> buffs;
   double exe_up;
   double exe_down;
   double tick_up;
@@ -149,27 +149,51 @@ struct snapshot_counter_t
   bool is_snapped;
   double wasted_buffs;
 
-  snapshot_counter_t( druid_t* player, buff_t* buff );
+  snapshot_counter_t( player_t* p, stats_t* s, buff_t* b )
+    : sim( p->sim ),
+      stats( s ),
+      exe_up( 0.0 ),
+      exe_down( 0.0 ),
+      tick_up( 0.0 ),
+      tick_down( 0.0 ),
+      is_snapped( false ),
+      wasted_buffs( 0.0 )
+  {
+    buffs.push_back( b );
+  }
 
   bool check_all()
   {
     double n_up = 0;
-    for ( auto& elem : b )
-    {
-      if ( elem->check() ) n_up++;
-    }
-    if ( n_up == 0 ) return false;
+
+    for ( const auto& b : buffs )
+      if ( b->check() )
+        n_up++;
+
+    if ( n_up == 0 )
+      return false;
 
     wasted_buffs += n_up - 1;
+
     return true;
   }
 
-  void add_buff( buff_t* buff ) { b.push_back( buff ); }
+  action_t* get_action()
+  {
+    for ( const auto& a : stats->action_list )
+      if ( a->data().ok() )
+        return a;
+
+    return stats->action_list.front();
+  }
+
+  void add_buff( buff_t* b ) { buffs.push_back( b ); }
 
   void count_execute()
   {
     // Skip iteration 0 for non-debug, non-log sims
-    if ( sim->current_iteration == 0 && sim->iterations > sim->threads && !sim->debug && !sim->log ) return;
+    if ( sim->current_iteration == 0 && sim->iterations > sim->threads && !sim->debug && !sim->log )
+      return;
 
     check_all() ? ( exe_up++, is_snapped = true ) : ( exe_down++, is_snapped = false );
   }
@@ -177,7 +201,8 @@ struct snapshot_counter_t
   void count_tick()
   {
     // Skip iteration 0 for non-debug, non-log sims
-    if ( sim->current_iteration == 0 && sim->iterations > sim->threads && !sim->debug && !sim->log ) return;
+    if ( sim->current_iteration == 0 && sim->iterations > sim->threads && !sim->debug && !sim->log )
+      return;
 
     is_snapped ? tick_up++ : tick_down++;
   }
@@ -961,20 +986,6 @@ private:
 
   target_specific_t<druid_td_t> target_data;
 };
-
-snapshot_counter_t::snapshot_counter_t( druid_t* player, buff_t* buff )
-  : sim( player->sim ),
-    p( player ),
-    b( 0 ),
-    exe_up( 0 ),
-    exe_down( 0 ),
-    tick_up( 0 ),
-    tick_down( 0 ),
-    is_snapped( false ),
-    wasted_buffs( 0 )
-{
-  b.push_back( buff );
-}
 
 namespace pets
 {
@@ -1802,7 +1813,7 @@ public:
 
   void snapshot_internal( action_state_t* s, unsigned f, result_amount_type r ) override
   {
-    // set the free_cast first so it can be used by any composite_* calculations dones in action_t::snapshot_internal()
+    // set the free_cast first so it can be used by any composite_* calculations done in action_t::snapshot_internal()
     if ( free_cast )
       static_cast<druid_action_state_t*>( s )->free_cast = free_cast;
 
@@ -3201,16 +3212,27 @@ public:
     return pm;
   }
 
-  snapshot_counter_t* get_counter( buff_t* b )
+  snapshot_counter_t* get_counter( buff_t* buff )
   {
-    p()->counters.push_back( std::make_unique<snapshot_counter_t>( p(), b ) );
+    auto st = stats;
+    while ( st->parent )
+      st = st->parent;
 
-    return p()->counters.back().get();
+    for ( const auto& c : p()->counters )
+      if ( c->stats == st)
+        for ( const auto& b : c->buffs )
+          if ( b == buff )
+            return c.get();
+
+    return p()->counters.emplace_back( std::make_unique<snapshot_counter_t>( p(), st, buff ) ).get();
   }
 
   void init() override
   {
     base_t::init();
+
+    if ( !is_auto_attack && !data().ok() )
+      return;
 
     if ( snapshots.bloodtalons )
       bt_counter = get_counter( p()->buff.bloodtalons );
@@ -3242,14 +3264,11 @@ public:
 
     trigger_predator();
 
-    if ( d->state->persistent_multiplier > 1.0 )
-    {
-      if ( snapshots.bloodtalons )
-        bt_counter->count_tick();
+    if ( snapshots.bloodtalons )
+      bt_counter->count_tick();
 
-      if ( snapshots.tigers_fury )
-        tf_counter->count_tick();
-    }
+    if ( snapshots.tigers_fury )
+      tf_counter->count_tick();
   }
 
   void execute() override
@@ -3604,10 +3623,12 @@ struct feral_frenzy_t : public cat_attack_t
 
   feral_frenzy_t( druid_t* p, const spell_data_t* s, std::string_view opt ) : cat_attack_t( "feral_frenzy", p, s, opt )
   {
-    tick_action = p->get_secondary_action<feral_frenzy_tick_t>( "feral_frenzy_tick" );
-    tick_action->stats = stats;
-    dynamic_tick_action = true;
-    snapshots.tigers_fury = false;
+    if ( data().ok() )
+    {
+      tick_action = p->get_secondary_action<feral_frenzy_tick_t>( "feral_frenzy_tick" );
+      tick_action->stats = stats;
+      dynamic_tick_action = true;
+    }
   }
 
   timespan_t cooldown_duration() const override { return free_cast ? 0_ms : cat_attack_t::cooldown_duration(); }
@@ -9298,7 +9319,7 @@ void druid_t::merge( player_t& other )
 
   druid_t& od = static_cast<druid_t&>( other );
 
-  for ( size_t i = 0, end = counters.size(); i < end; i++ )
+  for ( size_t i = 0; i < counters.size(); i++ )
     counters[ i ]->merge( *od.counters[ i ] );
 }
 
@@ -10815,6 +10836,19 @@ bool druid_t::check_astral_power( action_t* a, int over )
  */
 class druid_report_t : public player_report_extension_t
 {
+private:
+  struct feral_counter_data_t
+  {
+    double tf_exe_up = 0.0;
+    double tf_exe_total = 0.0;
+    double tf_tick_up = 0.0;
+    double tf_tick_total = 0.0;
+    double bt_exe_up = 0.0;
+    double bt_exe_total = 0.0;
+    double bt_tick_up = 0.0;
+    double bt_tick_total = 0.0;
+  };
+
 public:
   druid_report_t( druid_t& player ) : p( player ) {}
 
@@ -10822,6 +10856,42 @@ public:
   {
     if ( p.specialization() == DRUID_FERAL )
       feral_snapshot_table( os );
+  }
+
+  void feral_parse_counter( snapshot_counter_t* counter, feral_counter_data_t& data )
+  {
+    if ( range::contains( counter->buffs, p.buff.tigers_fury ) )
+    {
+      data.tf_exe_up += counter->mean_exe_up();
+      data.tf_exe_total += counter->mean_exe_total();
+
+      if ( counter->stats->has_tick_amount_results() )
+      {
+        data.tf_tick_up = counter->mean_tick_up();
+        data.tf_tick_total = counter->mean_tick_total();
+      }
+      else
+      {
+        data.tf_tick_up += counter->mean_exe_up();
+        data.tf_tick_total += counter->mean_exe_total();
+      }
+    }
+    else if ( range::contains( counter->buffs, p.buff.bloodtalons ) )
+    {
+      data.bt_exe_up = counter->mean_exe_up();
+      data.bt_exe_total = counter->mean_exe_total();
+
+      if ( counter->stats->has_tick_amount_results() )
+      {
+        data.bt_tick_up = counter->mean_tick_up();
+        data.bt_tick_total = counter->mean_tick_total();
+      }
+      else
+      {
+        data.bt_tick_up = counter->mean_exe_up();
+        data.bt_tick_total = counter->mean_exe_total();
+      }
+    }
   }
 
   void feral_snapshot_table( report::sc_html_stream& os )
@@ -10856,76 +10926,42 @@ public:
        << "</thead>\n";
 
     // Compile and Write Contents
-    for ( size_t i = 0, end = p.stats_list.size(); i < end; i++ )
+    for ( size_t i = 0; i < p.counters.size(); i++ )
     {
-      stats_t* stats   = p.stats_list[ i ];
-      double tf_exe_up = 0;
-      double tf_exe_total = 0;
+      auto counter = p.counters[ i ].get();
+      feral_counter_data_t data;
 
-      double tf_benefit_up = 0;
-      double tf_benefit_total = 0;
+      feral_parse_counter( counter, data );
 
-      double bt_exe_up = 0;
-      double bt_exe_total = 0;
-
-      double bt_benefit_up = 0;
-      double bt_benefit_total = 0;
-
-      for ( size_t j = 0, end2 = stats->action_list.size(); j < end2; j++ )
+      // since the BT counter is created immediately following the TF counter for the same stat in
+      // cat_attacks_t::init(), check the next counter and add in the data if it's for the same stat
+      if ( i + 1 < p.counters.size() )
       {
-        auto a = dynamic_cast<cat_attacks::cat_attack_t*>( stats->action_list[ j ] );
-        if ( !a )
-          continue;
+        auto next_counter = p.counters[ i + 1 ].get();
 
-        if ( !a->snapshots.tigers_fury )
-          continue;
-
-        tf_exe_up += a->tf_counter->mean_exe_up();
-        tf_exe_total += a->tf_counter->mean_exe_total();
-        tf_benefit_up += a->tf_counter->mean_tick_up();
-        tf_benefit_total += a->tf_counter->mean_tick_total();
-        if ( has_amount_results( stats->direct_results ) )
+        if ( counter->stats == next_counter->stats )
         {
-          tf_benefit_up += a->tf_counter->mean_exe_up();
-          tf_benefit_total += a->tf_counter->mean_exe_total();
-        }
-
-        if ( a->snapshots.bloodtalons )
-        {
-          bt_exe_up += a->bt_counter->mean_exe_up();
-          bt_exe_total += a->bt_counter->mean_exe_total();
-          bt_benefit_up += a->bt_counter->mean_tick_up();
-          bt_benefit_total += a->bt_counter->mean_tick_total();
-          if ( has_amount_results( stats->direct_results ) )
-          {
-            bt_benefit_up += a->bt_counter->mean_exe_up();
-            bt_benefit_total += a->bt_counter->mean_exe_total();
-          }
+          feral_parse_counter( next_counter, data );
+          i++;
         }
       }
 
-      if ( tf_exe_total > 0 || bt_exe_total > 0 )
+      if ( data.tf_exe_total + data.tf_tick_total + data.bt_exe_total + data.bt_tick_total == 0.0 )
+        continue;
+
+      os.format( "<tr><td class=\"left\">{}</td><td class=\"right\">{:.2f}%</td><td class=\"right\">{:.2f}%</td>",
+                 report_decorators::decorated_action( *counter->get_action(), counter->stats ),
+                 util::round( data.tf_exe_total ? ( data.tf_exe_up / data.tf_exe_total * 100 ) : 0.0, 2 ),
+                 util::round( data.tf_tick_total ? ( data.tf_tick_up / data.tf_tick_total * 100 ) : 0.0, 2 ) );
+
+      if ( p.talent.bloodtalons->ok() )
       {
-        const action_t& action = *( stats->action_list[ 0 ] );
-        stats->prefer_name = true;
-        std::string name_str   = report_decorators::decorated_action( action, stats );
-
-        // Table Row : Name, TF up, TF total, TF up/total, TF up/sum(TF up)
-        os.printf( "<tr><td class=\"left\">%s</td><td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
-                   name_str.c_str(), util::round( tf_exe_total ? ( tf_exe_up / tf_exe_total * 100 ) : 0, 2 ),
-                   util::round( tf_benefit_total ? ( tf_benefit_up / tf_benefit_total * 100 ) : 0, 2 ) );
-
-        if ( p.talent.bloodtalons->ok() )
-        {
-          // Table Row : Name, TF up, TF total, TF up/total, TF up/sum(TF up)
-          os.printf( "<td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
-                     util::round( bt_exe_total ? ( bt_exe_up / bt_exe_total * 100 ) : 0, 2 ),
-                     util::round( bt_benefit_total ? ( bt_benefit_up / bt_benefit_total * 100 ) : 0, 2 ) );
-        }
-        os << "</tr>";
+        os.format( "<td class=\"right\">{:.2f}%</td><td class=\"right\">{:.2f}</td>",
+                   util::round( data.bt_exe_total ? ( data.bt_exe_up / data.bt_exe_total * 100 ) : 0.0, 2 ),
+                   util::round( data.bt_tick_total ? ( data.bt_tick_up / data.bt_tick_total * 100 ) : 0.0, 2 ) );
       }
+      os << "</tr>\n";
     }
-    os << "</tr>";
 
     // Write footer
     os << "</table>\n"
