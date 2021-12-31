@@ -1863,8 +1863,13 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     // specific target (from execute state)
     if ( execute_state && hit_any_target )
     {
-      if ( p()->talent.earthen_rage->ok() && !background /*&& execute_state->action->harmful*/ )
+      if ( p()->talent.earthen_rage->ok() && !background && is_damaging_spell() )
       {
+        if ( sim->debug )
+        {
+          sim->out_debug.print( "{} triggers earthen_rage, source={}, target={}",
+            player->name(), name(), execute_state->target->name() );
+        }
         p()->recent_target = execute_state->target;
         p()->buff.earthen_rage->trigger();
       }
@@ -1910,6 +1915,16 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   virtual size_t n_overload_chances( const action_state_t* ) const
   {
     return 0;
+  }
+
+  virtual bool is_damaging_spell() const
+  {
+    return harmful && (
+      base_dd_min > 0 ||
+      base_td > 0 ||
+      spell_power_mod.direct > 0 ||
+      spell_power_mod.tick > 0
+    );
   }
 
   bool is_echoed_spell() const
