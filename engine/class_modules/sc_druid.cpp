@@ -139,25 +139,16 @@ struct druid_action_state_t : public action_state_t
 
 struct snapshot_counter_t
 {
+  simple_sample_data_t execute;
+  simple_sample_data_t tick;
+  simple_sample_data_t waste;
+  std::vector<buff_t*> buffs;
   const sim_t* sim;
   stats_t* stats;
-  std::vector<buff_t*> buffs;
-  double exe_up;
-  double exe_down;
-  double tick_up;
-  double tick_down;
   bool is_snapped;
-  double wasted_buffs;
 
   snapshot_counter_t( player_t* p, stats_t* s, buff_t* b )
-    : sim( p->sim ),
-      stats( s ),
-      exe_up( 0.0 ),
-      exe_down( 0.0 ),
-      tick_up( 0.0 ),
-      tick_down( 0.0 ),
-      is_snapped( false ),
-      wasted_buffs( 0.0 )
+    : execute(), tick(), waste(), sim( p->sim ), stats( s ), is_snapped( false )
   {
     buffs.push_back( b );
   }
@@ -171,10 +162,13 @@ struct snapshot_counter_t
         n_up++;
 
     if ( n_up == 0 )
+    {
+      is_snapped = false;
       return false;
+    }
 
-    wasted_buffs += n_up - 1;
-
+    waste.add( n_up - 1 );
+    is_snapped = true;
     return true;
   }
 
@@ -195,7 +189,7 @@ struct snapshot_counter_t
     if ( sim->current_iteration == 0 && sim->iterations > sim->threads && !sim->debug && !sim->log )
       return;
 
-    check_all() ? ( exe_up++, is_snapped = true ) : ( exe_down++, is_snapped = false );
+    execute.add( check_all() );
   }
 
   void count_tick()
@@ -204,38 +198,14 @@ struct snapshot_counter_t
     if ( sim->current_iteration == 0 && sim->iterations > sim->threads && !sim->debug && !sim->log )
       return;
 
-    is_snapped ? tick_up++ : tick_down++;
+    tick.add( is_snapped );
   }
-
-  double divisor() const
-  {
-    if ( !sim->debug && !sim->log && sim->iterations > sim->threads )
-      return sim->iterations - sim->threads;
-    else
-      return std::min( sim->iterations, sim->threads );
-  }
-
-  double mean_exe_up() const { return exe_up / divisor(); }
-
-  double mean_exe_down() const { return exe_down / divisor(); }
-
-  double mean_tick_up() const { return tick_up / divisor(); }
-
-  double mean_tick_down() const { return tick_down / divisor(); }
-
-  double mean_exe_total() const { return ( exe_up + exe_down ) / divisor(); }
-
-  double mean_tick_total() const { return ( tick_up + tick_down ) / divisor(); }
-
-  double mean_waste() const { return wasted_buffs / divisor(); }
 
   void merge( const snapshot_counter_t& other )
   {
-    exe_up += other.exe_up;
-    exe_down += other.exe_down;
-    tick_up += other.tick_up;
-    tick_down += other.tick_down;
-    wasted_buffs += other.wasted_buffs;
+    execute.merge( other.execute );
+    tick.merge( other.tick );
+    waste.merge( other.waste );
   }
 };
 
@@ -3957,10 +3927,10 @@ struct rake_t : public cat_attack_t
     // Copy persistent multipliers from the direct attack.
     b_state->persistent_multiplier = s->persistent_multiplier;
 
-    if ( free_cast )
+/*    if ( free_cast )
       bleed->stats = get_free_cast_stats( free_cast );
     else
-      bleed->stats = orig_stats;
+      bleed->stats = orig_stats;*/
 
     bleed->schedule_execute( b_state );
   }
@@ -10839,14 +10809,10 @@ class druid_report_t : public player_report_extension_t
 private:
   struct feral_counter_data_t
   {
-    double tf_exe_up = 0.0;
-    double tf_exe_total = 0.0;
-    double tf_tick_up = 0.0;
-    double tf_tick_total = 0.0;
-    double bt_exe_up = 0.0;
-    double bt_exe_total = 0.0;
-    double bt_tick_up = 0.0;
-    double bt_tick_total = 0.0;
+    double tf_exe = 0.0;
+    double tf_tick = 0.0;
+    double bt_exe = 0.0;
+    double bt_tick = 0.0;
   };
 
 public:
@@ -10862,35 +10828,21 @@ public:
   {
     if ( range::contains( counter->buffs, p.buff.tigers_fury ) )
     {
-      data.tf_exe_up += counter->mean_exe_up();
-      data.tf_exe_total += counter->mean_exe_total();
+      data.tf_exe += counter->execute.mean();
 
       if ( counter->stats->has_tick_amount_results() )
-      {
-        data.tf_tick_up = counter->mean_tick_up();
-        data.tf_tick_total = counter->mean_tick_total();
-      }
+        data.tf_tick += counter->tick.mean();
       else
-      {
-        data.tf_tick_up += counter->mean_exe_up();
-        data.tf_tick_total += counter->mean_exe_total();
-      }
+        data.tf_tick += counter->execute.mean();
     }
     else if ( range::contains( counter->buffs, p.buff.bloodtalons ) )
     {
-      data.bt_exe_up = counter->mean_exe_up();
-      data.bt_exe_total = counter->mean_exe_total();
+      data.bt_exe += counter->execute.mean();
 
       if ( counter->stats->has_tick_amount_results() )
-      {
-        data.bt_tick_up = counter->mean_tick_up();
-        data.bt_tick_total = counter->mean_tick_total();
-      }
+        data.bt_tick += counter->tick.mean();
       else
-      {
-        data.bt_tick_up = counter->mean_exe_up();
-        data.bt_tick_total = counter->mean_exe_total();
-      }
+        data.bt_tick += counter->execute.mean();
     }
   }
 
@@ -10946,20 +10898,16 @@ public:
         }
       }
 
-      if ( data.tf_exe_total + data.tf_tick_total + data.bt_exe_total + data.bt_tick_total == 0.0 )
+      if ( data.tf_exe + data.tf_tick + data.bt_exe + data.bt_tick == 0.0 )
         continue;
 
       os.format( "<tr><td class=\"left\">{}</td><td class=\"right\">{:.2f}%</td><td class=\"right\">{:.2f}%</td>",
                  report_decorators::decorated_action( *counter->get_action(), counter->stats ),
-                 util::round( data.tf_exe_total ? ( data.tf_exe_up / data.tf_exe_total * 100 ) : 0.0, 2 ),
-                 util::round( data.tf_tick_total ? ( data.tf_tick_up / data.tf_tick_total * 100 ) : 0.0, 2 ) );
+                 data.tf_exe * 100, data.tf_tick * 100 );
 
       if ( p.talent.bloodtalons->ok() )
-      {
-        os.format( "<td class=\"right\">{:.2f}%</td><td class=\"right\">{:.2f}</td>",
-                   util::round( data.bt_exe_total ? ( data.bt_exe_up / data.bt_exe_total * 100 ) : 0.0, 2 ),
-                   util::round( data.bt_tick_total ? ( data.bt_tick_up / data.bt_tick_total * 100 ) : 0.0, 2 ) );
-      }
+        os.format( "<td class=\"right\">{:.2f}%</td><td class=\"right\">{:.2f}</td>", data.bt_exe * 100, data.bt_tick * 100 );
+
       os << "</tr>\n";
     }
 
