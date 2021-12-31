@@ -1305,6 +1305,29 @@ public:
     return m;
   }
 
+  virtual bool is_damaging_ability() const
+  {
+    return is_direct_damage_ability() || is_periodic_damage_ability();
+  }
+
+  virtual bool is_direct_damage_ability() const
+  {
+    return this->harmful && (
+        this->base_dd_min > 0 ||
+        this->spell_power_mod.direct > 0 ||
+        this->attack_power_mod.direct > 0
+    );
+  }
+
+  virtual bool is_periodic_damage_ability() const
+  {
+    return this->harmful && (
+        this->base_td > 0 ||
+        this->spell_power_mod.tick > 0 ||
+        this->attack_power_mod.tick > 0
+    );
+  }
+
   void execute() override
   {
     ab::execute();
@@ -1863,7 +1886,8 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     // specific target (from execute state)
     if ( execute_state && hit_any_target )
     {
-      if ( p()->talent.earthen_rage->ok() && !background && is_damaging_spell() )
+      if ( p()->talent.earthen_rage->ok() &&
+           this != p()->action.earthen_rage && is_direct_damage_ability() )
       {
         if ( sim->debug )
         {
@@ -1915,16 +1939,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   virtual size_t n_overload_chances( const action_state_t* ) const
   {
     return 0;
-  }
-
-  virtual bool is_damaging_spell() const
-  {
-    return harmful && (
-      base_dd_min > 0 ||
-      base_td > 0 ||
-      spell_power_mod.direct > 0 ||
-      spell_power_mod.tick > 0
-    );
   }
 
   bool is_echoed_spell() const
