@@ -48,6 +48,7 @@ enum eclipse_state_e
   IN_BOTH,
   SOLAR_NEXT,
   LUNAR_NEXT,
+  MAX_STATE
 };
 
 enum free_cast_e
@@ -211,6 +212,20 @@ struct snapshot_counter_t
 
 struct eclipse_handler_t
 {
+  struct  // final entry holds # of iterations
+  {
+    std::array<double, eclipse_state_e::MAX_STATE + 1> wrath;
+    std::array<double, eclipse_state_e::MAX_STATE + 1> starfire;
+    std::array<double, eclipse_state_e::MAX_STATE + 1> starsurge;
+  } data;
+
+  struct
+  {
+    std::array<unsigned, eclipse_state_e::MAX_STATE> wrath;
+    std::array<unsigned, eclipse_state_e::MAX_STATE> starfire;
+    std::array<unsigned, eclipse_state_e::MAX_STATE> starsurge;
+  } iter;
+
   druid_t* p;
   unsigned wrath_counter;
   unsigned starfire_counter;
@@ -218,7 +233,7 @@ struct eclipse_handler_t
   bool enabled_;
 
   eclipse_handler_t( druid_t* player )
-    : p( player ), wrath_counter( 2 ), starfire_counter( 2 ), state( ANY_NEXT ), enabled_( false )
+    : data(), iter(), p( player ), wrath_counter( 2 ), starfire_counter( 2 ), state( ANY_NEXT ), enabled_( false )
   {}
 
   bool enabled() { return enabled_; }
@@ -237,6 +252,10 @@ struct eclipse_handler_t
 
   void reset_stacks();
   void reset_state();
+
+  void datacollection_begin();
+  void datacollection_end();
+  void merge( const eclipse_handler_t& );
 };
 
 struct druid_t : public player_t
@@ -866,6 +885,8 @@ public:
   void reset() override;
   void combat_begin() override;
   void merge( player_t& other ) override;
+  void datacollection_begin() override;
+  void datacollection_end() override;
   timespan_t available() const override;
   double composite_armor() const override;
   double composite_armor_multiplier() const override;
@@ -9084,6 +9105,9 @@ void druid_t::init()
       break;
     default: break;
   }
+
+  if ( specialization() == DRUID_BALANCE || talent.balance_affinity->ok() )
+    eclipse_handler.enabled_ = true;
 }
 
 // druid_t::init_gains ======================================================
@@ -9291,6 +9315,25 @@ void druid_t::merge( player_t& other )
 
   for ( size_t i = 0; i < counters.size(); i++ )
     counters[ i ]->merge( *od.counters[ i ] );
+
+  if ( eclipse_handler.enabled() )
+    eclipse_handler.merge( od.eclipse_handler );
+}
+
+void druid_t::datacollection_begin()
+{
+  player_t::datacollection_begin();
+
+  if ( eclipse_handler.enabled() )
+    eclipse_handler.datacollection_begin();
+}
+
+void druid_t::datacollection_end()
+{
+  player_t::datacollection_end();
+
+  if ( eclipse_handler.enabled() )
+    eclipse_handler.datacollection_end();
 }
 
 // druid_t::mana_regen_per_second ===========================================
@@ -9343,10 +9386,8 @@ void druid_t::arise()
     buff.natures_balance->trigger();
 
   // Trigger persistent events
-  if ( specialization() == DRUID_BALANCE || talent.balance_affinity->ok() )
+  if ( specialization() == DRUID_BALANCE )
   {
-    eclipse_handler.enabled_ = true;
-
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, [ this ]() {
       eclipse_handler.snapshot_eclipse();
       make_repeating_event( *sim, options.eclipse_snapshot_period, [ this ]() {
@@ -10529,6 +10570,9 @@ void eclipse_handler_t::cast_wrath()
 {
   if ( !enabled() ) return;
 
+  if ( p->in_combat )
+    iter.wrath[ state ]++;
+
   if ( state == ANY_NEXT || state == LUNAR_NEXT )
   {
     wrath_counter--;
@@ -10540,6 +10584,9 @@ void eclipse_handler_t::cast_starfire()
 {
   if ( !enabled() ) return;
 
+  if ( p->in_combat )
+    iter.starfire[ state ]++;
+
   if ( state == ANY_NEXT || state == SOLAR_NEXT )
   {
     starfire_counter--;
@@ -10550,6 +10597,9 @@ void eclipse_handler_t::cast_starfire()
 void eclipse_handler_t::cast_starsurge()
 {
   if ( !enabled() ) return;
+
+  if ( p->in_combat )
+    iter.starsurge[ state ]++;
 
   bool stellar_inspiration_proc = false;
 
@@ -10691,6 +10741,49 @@ void eclipse_handler_t::reset_state()
   state = ANY_NEXT;
 }
 
+void eclipse_handler_t::datacollection_begin()
+{
+  iter.wrath.fill( 0 );
+  iter.starfire.fill( 0 );
+  iter.starsurge.fill( 0 );
+}
+
+void eclipse_handler_t::datacollection_end()
+{
+  auto end = []( auto& from, auto& to ) {
+    static_assert( std::tuple_size_v<std::remove_reference_t<decltype( from )>> <
+                       std::tuple_size_v<std::remove_reference_t<decltype( to )>>,
+                   "array size mismatch" );
+
+    size_t i = 0;
+
+    for ( ; i < from.size(); i++ )
+      to[ i ] += from[ i ];
+
+    to[ i ]++;
+  };
+
+  end( iter.wrath, data.wrath );
+  end( iter.starfire, data.starfire );
+  end( iter.starsurge, data.starsurge );
+}
+
+void eclipse_handler_t::merge( const eclipse_handler_t& other )
+{
+  auto merge = []( auto& from, auto& to ) {
+    static_assert( std::tuple_size_v<std::remove_reference_t<decltype( from )>> ==
+                       std::tuple_size_v<std::remove_reference_t<decltype( to )>>,
+                   "array size mismatch" );
+
+    for ( size_t i = 0; i < from.size(); i++ )
+      to[ i ] += from[ i ];
+  };
+
+  merge( other.data.wrath, data.wrath );
+  merge( other.data.starfire, data.starfire );
+  merge( other.data.starsurge, data.starsurge );
+}
+
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
   : actor_target_data_t( &target, &source ), dots( dots_t() ), buff( buffs_t() )
 {
@@ -10822,6 +10915,52 @@ public:
   {
     if ( p.specialization() == DRUID_FERAL )
       feral_snapshot_table( os );
+
+    if ( p.specialization() == DRUID_BALANCE )
+      balance_eclipse_table( os );
+  }
+
+  void balance_parse_data( report::sc_html_stream& os, const spell_data_t* spell,
+                           const std::array<double, eclipse_state_e::MAX_STATE + 1>& data )
+  {
+    double iter  = data[ eclipse_state_e::MAX_STATE ];
+    double none  = data[ eclipse_state_e::ANY_NEXT ] +
+                   data[ eclipse_state_e::SOLAR_NEXT ] +
+                   data[ eclipse_state_e::LUNAR_NEXT ];
+    double solar = data[ eclipse_state_e::IN_SOLAR ];
+    double lunar = data[ eclipse_state_e::IN_LUNAR ];
+    double both  = data[ eclipse_state_e::IN_BOTH ];
+    double total = none + solar + lunar + both;
+
+    os.format( "<tr><td class=\"left\">{}</td>"
+               "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.2f}%</td>"
+               "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.2f}%</td>"
+               "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.2f}%</td>"
+               "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.2f}%</td></tr>",
+               report_decorators::decorated_spell_data( p.sim, spell ),
+               none / iter, none / total * 100,
+               solar / iter, solar / total * 100,
+               lunar / iter, lunar / total * 100,
+               both / iter, both / total * 100 );
+  }
+
+  void balance_eclipse_table( report::sc_html_stream& os )
+  {
+    os << "<div class=\"player-section custom_section\">\n"
+       << "<h3 class=\"toggle open\">Eclipse Utilization</h3>\n"
+       << "<div class=\"toggle-content\">\n"
+       << "<table class=\"sc even\">\n"
+       << "<thead><tr><th></th>\n"
+       << "<th colspan=\"2\">None</th><th colspan=\"2\">Solar</th><th colspan=\"2\">Lunar</th><th colspan=\"2\">Both</th>\n"
+       << "</tr></thead>\n";
+
+    balance_parse_data( os, p.find_affinity_spell( "wrath" ), p.eclipse_handler.data.wrath );
+    balance_parse_data( os, p.find_affinity_spell( "starfire" ), p.eclipse_handler.data.starfire );
+    balance_parse_data( os, p.find_affinity_spell( "starsurge" ), p.eclipse_handler.data.starsurge );
+
+    os << "</table>\n"
+       << "</div>\n"
+       << "</div>\n";
   }
 
   void feral_parse_counter( snapshot_counter_t* counter, feral_counter_data_t& data )
@@ -10853,8 +10992,7 @@ public:
        << "<h3 class=\"toggle open\">Snapshot Table</h3>\n"
        << "<div class=\"toggle-content\">\n"
        << "<table class=\"sc sort even\">\n"
-       << "<thead>\n"
-       << "<tr>\n"
+       << "<thead><tr>\n"
        << "<th></th>\n"
        << "<th colspan=\"2\">Tiger's Fury</th>\n";
 
@@ -10874,8 +11012,7 @@ public:
       os << "<th class=\"toggle-sort\">Execute %</th>\n"
          << "<th class=\"toggle-sort\">Benefit %</th>\n";
     }
-    os << "</tr>\n"
-       << "</thead>\n";
+    os << "</tr></thead>\n";
 
     // Compile and Write Contents
     for ( size_t i = 0; i < p.counters.size(); i++ )
