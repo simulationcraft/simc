@@ -8353,6 +8353,10 @@ void druid_t::init_spells()
   mastery.natures_guardian    = find_mastery_spell( DRUID_GUARDIAN );
   mastery.natures_guardian_AP = check_id( mastery.natures_guardian->ok(), 159195 );
   mastery.total_eclipse       = find_mastery_spell( DRUID_BALANCE );
+
+  // enabled eclipse handler for balance
+  if ( specialization() == DRUID_BALANCE || talent.balance_affinity->ok() )
+    eclipse_handler.enabled_ = true;
 }
 
 // druid_t::init_base =======================================================
@@ -9105,9 +9109,6 @@ void druid_t::init()
       break;
     default: break;
   }
-
-  if ( specialization() == DRUID_BALANCE || talent.balance_affinity->ok() )
-    eclipse_handler.enabled_ = true;
 }
 
 // druid_t::init_gains ======================================================
@@ -10810,12 +10811,6 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   buff.lifebloom             = make_buff( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
   debuff.tooth_and_claw      = make_buff( *this, "tooth_and_claw_debuff",
                                      source.talent.tooth_and_claw->effectN( 1 ).trigger()->effectN( 2 ).trigger() );
-}
-
-// Copypasta for reporting
-bool has_amount_results( const std::array<stats_t::stats_results_t, FULLTYPE_MAX>& res )
-{
-  return ( res[ FULLTYPE_HIT ].actual_amount.mean() > 0 || res[ FULLTYPE_CRIT ].actual_amount.mean() > 0 );
 }
 
 // druid_t::copy_from =====================================================
