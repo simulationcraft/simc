@@ -212,18 +212,24 @@ struct snapshot_counter_t
 
 struct eclipse_handler_t
 {
-  struct  // final entry holds # of iterations
+  // final entry in data_array holds # of iterations
+  using data_array = std::array<double, eclipse_state_e::MAX_STATE + 1>;
+  using iter_array = std::array<unsigned, eclipse_state_e::MAX_STATE>;
+
+  struct
   {
-    std::array<double, eclipse_state_e::MAX_STATE + 1> wrath;
-    std::array<double, eclipse_state_e::MAX_STATE + 1> starfire;
-    std::array<double, eclipse_state_e::MAX_STATE + 1> starsurge;
+    std::vector<data_array> arrays;
+    data_array* wrath;
+    data_array* starfire;
+    data_array* starsurge;
   } data;
 
   struct
   {
-    std::array<unsigned, eclipse_state_e::MAX_STATE> wrath;
-    std::array<unsigned, eclipse_state_e::MAX_STATE> starfire;
-    std::array<unsigned, eclipse_state_e::MAX_STATE> starsurge;
+    std::vector<iter_array> arrays;
+    iter_array* wrath;
+    iter_array* starfire;
+    iter_array* starsurge;
   } iter;
 
   druid_t* p;
@@ -237,6 +243,7 @@ struct eclipse_handler_t
   {}
 
   bool enabled() { return enabled_; }
+  void init();
 
   void cast_wrath();
   void cast_starfire();
@@ -8354,9 +8361,7 @@ void druid_t::init_spells()
   mastery.natures_guardian_AP = check_id( mastery.natures_guardian->ok(), 159195 );
   mastery.total_eclipse       = find_mastery_spell( DRUID_BALANCE );
 
-  // enabled eclipse handler for balance
-  if ( specialization() == DRUID_BALANCE || talent.balance_affinity->ok() )
-    eclipse_handler.enabled_ = true;
+  eclipse_handler.init();  // initialize this here since we need talent info to properly init
 }
 
 // druid_t::init_base =======================================================
@@ -9317,24 +9322,21 @@ void druid_t::merge( player_t& other )
   for ( size_t i = 0; i < counters.size(); i++ )
     counters[ i ]->merge( *od.counters[ i ] );
 
-  if ( eclipse_handler.enabled() )
-    eclipse_handler.merge( od.eclipse_handler );
+  eclipse_handler.merge( od.eclipse_handler );
 }
 
 void druid_t::datacollection_begin()
 {
   player_t::datacollection_begin();
 
-  if ( eclipse_handler.enabled() )
-    eclipse_handler.datacollection_begin();
+  eclipse_handler.datacollection_begin();
 }
 
 void druid_t::datacollection_end()
 {
   player_t::datacollection_end();
 
-  if ( eclipse_handler.enabled() )
-    eclipse_handler.datacollection_end();
+  eclipse_handler.datacollection_end();
 }
 
 // druid_t::mana_regen_per_second ===========================================
@@ -10567,12 +10569,31 @@ const spelleffect_data_t* druid_t::query_aura_effect( const spell_data_t* aura_s
 }
 
 // eclipse handler function definitions
+void eclipse_handler_t::init()
+{
+  if ( p->specialization() == DRUID_BALANCE || p->talent.balance_affinity->ok() )
+    enabled_ = true;
+
+  if ( p->specialization() == DRUID_BALANCE )
+  {
+    data.arrays.reserve( 3 );
+    data.wrath = &data.arrays.emplace_back( data_array() );
+    data.starfire = &data.arrays.emplace_back( data_array() );
+    data.starsurge = &data.arrays.emplace_back( data_array() );
+
+    iter.arrays.reserve( 3 );
+    iter.wrath = &iter.arrays.emplace_back( iter_array() );
+    iter.starfire = &iter.arrays.emplace_back( iter_array() );
+    iter.starsurge = &iter.arrays.emplace_back( iter_array() );
+  }
+}
+
 void eclipse_handler_t::cast_wrath()
 {
   if ( !enabled() ) return;
 
-  if ( p->in_combat )
-    iter.wrath[ state ]++;
+  if ( iter.wrath && p->in_combat )
+    ( *iter.wrath )[ state ]++;
 
   if ( state == ANY_NEXT || state == LUNAR_NEXT )
   {
@@ -10585,8 +10606,8 @@ void eclipse_handler_t::cast_starfire()
 {
   if ( !enabled() ) return;
 
-  if ( p->in_combat )
-    iter.starfire[ state ]++;
+  if ( iter.starfire && p->in_combat )
+    ( *iter.starfire )[ state ]++;
 
   if ( state == ANY_NEXT || state == SOLAR_NEXT )
   {
@@ -10599,8 +10620,8 @@ void eclipse_handler_t::cast_starsurge()
 {
   if ( !enabled() ) return;
 
-  if ( p->in_combat )
-    iter.starsurge[ state ]++;
+  if ( iter.starsurge && p->in_combat )
+    ( *iter.starsurge )[ state ]++;
 
   bool stellar_inspiration_proc = false;
 
@@ -10744,13 +10765,19 @@ void eclipse_handler_t::reset_state()
 
 void eclipse_handler_t::datacollection_begin()
 {
-  iter.wrath.fill( 0 );
-  iter.starfire.fill( 0 );
-  iter.starsurge.fill( 0 );
+  if ( !enabled() || p->specialization() != DRUID_BALANCE )
+    return;
+
+  iter.wrath->fill( 0 );
+  iter.starfire->fill( 0 );
+  iter.starsurge->fill( 0 );
 }
 
 void eclipse_handler_t::datacollection_end()
 {
+  if ( !enabled() || p->specialization() != DRUID_BALANCE )
+    return;
+
   auto end = []( auto& from, auto& to ) {
     static_assert( std::tuple_size_v<std::remove_reference_t<decltype( from )>> <
                        std::tuple_size_v<std::remove_reference_t<decltype( to )>>,
@@ -10764,13 +10791,16 @@ void eclipse_handler_t::datacollection_end()
     to[ i ]++;
   };
 
-  end( iter.wrath, data.wrath );
-  end( iter.starfire, data.starfire );
-  end( iter.starsurge, data.starsurge );
+  end( *iter.wrath, *data.wrath );
+  end( *iter.starfire, *data.starfire );
+  end( *iter.starsurge, *data.starsurge );
 }
 
 void eclipse_handler_t::merge( const eclipse_handler_t& other )
 {
+  if ( !enabled() || p->specialization() != DRUID_BALANCE )
+    return;
+
   auto merge = []( auto& from, auto& to ) {
     static_assert( std::tuple_size_v<std::remove_reference_t<decltype( from )>> ==
                        std::tuple_size_v<std::remove_reference_t<decltype( to )>>,
@@ -10780,9 +10810,9 @@ void eclipse_handler_t::merge( const eclipse_handler_t& other )
       to[ i ] += from[ i ];
   };
 
-  merge( other.data.wrath, data.wrath );
-  merge( other.data.starfire, data.starfire );
-  merge( other.data.starsurge, data.starsurge );
+  merge( *other.data.wrath, *data.wrath );
+  merge( *other.data.starfire, *data.starfire );
+  merge( *other.data.starsurge, *data.starsurge );
 }
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
@@ -10916,7 +10946,7 @@ public:
   }
 
   void balance_parse_data( report::sc_html_stream& os, const spell_data_t* spell,
-                           const std::array<double, eclipse_state_e::MAX_STATE + 1>& data )
+                           const eclipse_handler_t::data_array& data )
   {
     double iter  = data[ eclipse_state_e::MAX_STATE ];
     double none  = data[ eclipse_state_e::ANY_NEXT ] +
@@ -10949,9 +10979,9 @@ public:
        << "<th colspan=\"2\">None</th><th colspan=\"2\">Solar</th><th colspan=\"2\">Lunar</th><th colspan=\"2\">Both</th>\n"
        << "</tr></thead>\n";
 
-    balance_parse_data( os, p.find_affinity_spell( "wrath" ), p.eclipse_handler.data.wrath );
-    balance_parse_data( os, p.find_affinity_spell( "starfire" ), p.eclipse_handler.data.starfire );
-    balance_parse_data( os, p.find_affinity_spell( "starsurge" ), p.eclipse_handler.data.starsurge );
+    balance_parse_data( os, p.find_affinity_spell( "wrath" ), *p.eclipse_handler.data.wrath );
+    balance_parse_data( os, p.find_affinity_spell( "starfire" ), *p.eclipse_handler.data.starfire );
+    balance_parse_data( os, p.find_affinity_spell( "starsurge" ), *p.eclipse_handler.data.starsurge );
 
     os << "</table>\n"
        << "</div>\n"
