@@ -348,6 +348,8 @@ public:
   // A vector of action objects that need target cache invalidation whenever the number of
   // Flame Shocks change
   std::vector<action_t*> flame_shock_dependants;
+  /// A time-ordered list of active Flame Shocks on enemies
+  std::vector<std::pair<timespan_t, dot_t*>> active_flame_shock;
 
   struct
   {
@@ -5723,11 +5725,95 @@ struct earth_shock_t : public shaman_spell_t
 
 struct flame_shock_t : public shaman_spell_t
 {
+private:
   flame_shock_spreader_t* spreader;
   const spell_data_t* elemental_resource;
   const spell_data_t* skybreakers_effect;
   const spell_data_t* elemental_conduit;
 
+  void track_flame_shock( const action_state_t* state )
+  {
+    unsigned max_targets = player->dbc->ptr
+                           ? as<unsigned>( data().max_targets() )
+                           : std::numeric_limits<unsigned>::max();
+
+    // No need to track anything if there are not enough enemies
+    if ( sim->target_list.size() <= max_targets )
+    {
+      return;
+    }
+
+    // Remove tracking on the newly applied dot. It'll be re-added to the tracking at the
+    // end of this method to keep ascending start-time order intact.
+    auto dot = get_dot( state->target );
+    untrack_flame_shock( dot );
+
+    // Max targets reached (the new Flame Shock application is on a target without a dot
+    // active), remove one of the oldest applied dots to make room.
+    if ( p()->active_flame_shock.size() == max_targets )
+    {
+      auto start_time = p()->active_flame_shock.front().first;
+      auto entry = range::find_if( p()->active_flame_shock, [ start_time ]( const auto& entry ) {
+          return entry.first != start_time;
+      } );
+
+      // Randomize equal start time application removal
+      auto candidate_targets= as<double>(
+          std::distance( p()->active_flame_shock.begin(), entry ) );
+      auto idx = static_cast<unsigned>( rng().range( 0.0, candidate_targets ) );
+
+      if ( sim->debug )
+      {
+        std::vector<util::string_view> enemies;
+        for ( auto it = p()->active_flame_shock.begin(); it < entry; ++it )
+        {
+          enemies.push_back( it->second->target->name() );
+        }
+
+        sim->out_debug.print(
+          "{} canceling oldest {} from target={} (index={}), start_time={}, "
+          "candidate_targets={} ({})",
+          player->name(), name(), entry->second->state->target->name(), idx,
+          entry->first, as<unsigned>( candidate_targets ),
+          util::string_join( enemies ) );
+      }
+
+      p()->active_flame_shock[ idx ].second->cancel();
+    }
+
+    p()->active_flame_shock.emplace_back( sim->current_time(), dot );
+  }
+
+  void untrack_flame_shock( const dot_t* d )
+  {
+    unsigned max_targets = player->dbc->ptr
+                           ? as<unsigned>( data().max_targets() )
+                           : std::numeric_limits<unsigned>::max();
+
+    // No need to track anything if there are not enough enemies
+    if ( sim->target_list.size() <= max_targets )
+    {
+      return;
+    }
+
+    auto it = range::find_if( p()->active_flame_shock, [ d ]( const auto& dot_state ) {
+      return dot_state.second == d;
+    } );
+
+    if ( it != p()->active_flame_shock.end() )
+    {
+      p()->active_flame_shock.erase( it );
+    }
+  }
+
+  void invalidate_dependant_targets()
+  {
+    range::for_each( p()->flame_shock_dependants, []( action_t* a ) {
+      a->target_cache.is_valid = false;
+    } );
+  }
+
+public:
   flame_shock_t( shaman_t* player, util::string_view options_str = {} ) :
     shaman_spell_t( "flame_shock", player, player->find_class_spell( "Flame Shock" ) ),
     spreader( player->talent.surge_of_power->ok() ? new flame_shock_spreader_t( player ) : nullptr ),
@@ -5749,11 +5835,16 @@ struct flame_shock_t : public shaman_spell_t
     }
   }
 
-  void invalidate_dependant_targets()
+  void trigger_dot( action_state_t* state ) override
   {
-    range::for_each( p()->flame_shock_dependants, []( action_t* a ) {
-      a->target_cache.is_valid = false;
-    } );
+    if ( !get_dot( state->target )->is_ticking() )
+    {
+      invalidate_dependant_targets();
+    }
+
+    track_flame_shock( state );
+
+    shaman_spell_t::trigger_dot( state );
   }
 
   double composite_crit_chance() const override
@@ -5840,17 +5931,8 @@ struct flame_shock_t : public shaman_spell_t
   {
     shaman_spell_t::last_tick( d );
 
+    untrack_flame_shock( d );
     invalidate_dependant_targets();
-  }
-
-  void trigger_dot( action_state_t* s ) override
-  {
-    if ( !td( s->target )->dot.flame_shock->is_ticking() )
-    {
-      invalidate_dependant_targets();
-    }
-
-    shaman_spell_t::trigger_dot( s );
   }
 
   void impact( action_state_t* state ) override
@@ -7878,12 +7960,9 @@ void shaman_t::create_actions()
     {
       action.lava_burst_pw = new lava_burst_t( this, lava_burst_type::PRIMORDIAL_WAVE, "pw" );
     }
-
-    if ( talent.ascendance->ok())
-    {
-    }
   }
 
+  // Generic Actions
   action.flame_shock = new flame_shock_t( this );
   action.flame_shock->background = true;
   action.flame_shock->cooldown = get_cooldown( "flame_shock_secondary" );
@@ -10244,6 +10323,8 @@ void shaman_t::reset()
   ev_vesper_totem_dmg = ev_vesper_totem_heal = nullptr;
   vesper_totem_used_charges = vesper_totem_heal_charges = vesper_totem_dmg_charges = 0;
   lotfw_counter = 0U;
+
+  assert( active_flame_shock.empty() );
 }
 
 // shaman_t::merge ==========================================================
