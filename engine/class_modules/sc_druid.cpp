@@ -222,6 +222,11 @@ struct eclipse_handler_t
     data_array* wrath;
     data_array* starfire;
     data_array* starsurge;
+    data_array* starfall;
+    data_array* fury_of_elune;
+    data_array* new_moon;
+    data_array* half_moon;
+    data_array* full_moon;
   } data;
 
   struct
@@ -230,6 +235,11 @@ struct eclipse_handler_t
     iter_array* wrath;
     iter_array* starfire;
     iter_array* starsurge;
+    iter_array* starfall;
+    iter_array* fury_of_elune;
+    iter_array* new_moon;
+    iter_array* half_moon;
+    iter_array* full_moon;
   } iter;
 
   druid_t* p;
@@ -249,6 +259,9 @@ struct eclipse_handler_t
   void cast_starfire();
   void cast_starsurge();
   void cast_ca_inc();
+  void cast_moon( moon_stage_e );
+  void tick_starfall();
+  void tick_fury_of_elune();
 
   void advance_eclipse();
   void snapshot_eclipse();
@@ -5381,6 +5394,13 @@ struct fury_of_elune_t : public druid_spell_t
       reduced_aoe_targets = 1.0;
       full_amount_targets = 1;
     }
+
+    void execute() override
+    {
+      druid_spell_t::execute();
+
+      p()->eclipse_handler.tick_fury_of_elune();
+    }
   };
 
   action_t* damage;
@@ -5557,6 +5577,8 @@ struct moon_base_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
+    p()->eclipse_handler.cast_moon( stage );
+
     if ( get_state_free_cast( execute_state ) )
       return;
 
@@ -5573,7 +5595,7 @@ struct new_moon_t : public moon_base_t
 {
   new_moon_t( druid_t* p, std::string_view opt ) : moon_base_t( "new_moon", p, p->talent.new_moon, opt )
   {
-    stage     = moon_stage_e::NEW_MOON;
+    stage = moon_stage_e::NEW_MOON;
   }
 };
 
@@ -5583,7 +5605,7 @@ struct half_moon_t : public moon_base_t
 {
   half_moon_t( druid_t* p, std::string_view opt ) : moon_base_t( "half_moon", p, p->spec.half_moon, opt )
   {
-    stage     = moon_stage_e::HALF_MOON;
+    stage = moon_stage_e::HALF_MOON;
   }
 };
 
@@ -6423,6 +6445,13 @@ struct starfall_t : public druid_spell_t
     {
       // seems to have a random travel time between 1x - 2x travel delay
       return timespan_t::from_seconds( travel_delay * rng().range( 1.0, 2.0 ) );
+    }
+
+    void execute() override
+    {
+      druid_spell_t::execute();
+
+      p()->eclipse_handler.tick_starfall();
     }
   };
 
@@ -10576,15 +10605,39 @@ void eclipse_handler_t::init()
 
   if ( p->specialization() == DRUID_BALANCE )
   {
-    data.arrays.reserve( 3 );
+    size_t res = 4;
+    bool foe = p->talent.fury_of_elune->ok() || p->sets->has_set_bonus( DRUID_BALANCE, T28, B2 );
+    bool nm = p->talent.new_moon->ok();
+    bool hm = nm;
+    bool fm = nm || p->cov.night_fae->ok();
+
+    data.arrays.reserve( res + foe + nm + hm + fm );
     data.wrath = &data.arrays.emplace_back( data_array() );
     data.starfire = &data.arrays.emplace_back( data_array() );
     data.starsurge = &data.arrays.emplace_back( data_array() );
+    data.starfall = &data.arrays.emplace_back( data_array() );
+    if ( foe )
+      data.fury_of_elune = &data.arrays.emplace_back( data_array() );
+    if ( nm )
+      data.new_moon = &data.arrays.emplace_back( data_array() );
+    if ( hm )
+      data.half_moon = &data.arrays.emplace_back( data_array() );
+    if ( fm )
+      data.full_moon = &data.arrays.emplace_back( data_array() );
 
-    iter.arrays.reserve( 3 );
+    iter.arrays.reserve( res + foe + nm + hm + fm );
     iter.wrath = &iter.arrays.emplace_back( iter_array() );
     iter.starfire = &iter.arrays.emplace_back( iter_array() );
     iter.starsurge = &iter.arrays.emplace_back( iter_array() );
+    iter.starfall = &iter.arrays.emplace_back( iter_array() );
+    if ( foe )
+      iter.fury_of_elune = &iter.arrays.emplace_back( iter_array() );
+    if ( nm )
+      iter.new_moon = &iter.arrays.emplace_back( iter_array() );
+    if ( hm )
+      iter.half_moon = &iter.arrays.emplace_back( iter_array() );
+    if ( fm )
+      iter.full_moon = &iter.arrays.emplace_back( iter_array() );
   }
 }
 
@@ -10649,6 +10702,28 @@ void eclipse_handler_t::cast_ca_inc()
 {
   p->buff.starsurge_lunar->expire();
   p->buff.starsurge_solar->expire();
+}
+
+void eclipse_handler_t::cast_moon( moon_stage_e moon )
+{
+  if ( moon == moon_stage_e::NEW_MOON && iter.new_moon )
+    ( *iter.new_moon )[ state ]++;
+  else if ( moon == moon_stage_e::HALF_MOON && iter.half_moon )
+    ( *iter.half_moon )[ state ]++;
+  else if ( moon == moon_stage_e::FULL_MOON && iter.full_moon )
+    ( *iter.full_moon )[ state ]++;
+}
+
+void eclipse_handler_t::tick_starfall()
+{
+  if ( iter.starfall )
+    ( *iter.starfall )[ state ]++;
+}
+
+void eclipse_handler_t::tick_fury_of_elune()
+{
+  if ( iter.fury_of_elune )
+    ( *iter.fury_of_elune )[ state ]++;
 }
 
 void eclipse_handler_t::advance_eclipse()
@@ -10771,6 +10846,14 @@ void eclipse_handler_t::datacollection_begin()
   iter.wrath->fill( 0 );
   iter.starfire->fill( 0 );
   iter.starsurge->fill( 0 );
+  if ( iter.fury_of_elune )
+    iter.fury_of_elune->fill( 0 );
+  if ( iter.new_moon )
+    iter.new_moon->fill( 0 );
+  if ( iter.half_moon )
+    iter.half_moon->fill( 0 );
+  if ( iter.full_moon )
+    iter.full_moon->fill( 0 );
 }
 
 void eclipse_handler_t::datacollection_end()
@@ -10794,6 +10877,15 @@ void eclipse_handler_t::datacollection_end()
   end( *iter.wrath, *data.wrath );
   end( *iter.starfire, *data.starfire );
   end( *iter.starsurge, *data.starsurge );
+  end( *iter.starfall, *data.starfall );
+  if ( iter.fury_of_elune )
+    end( *iter.fury_of_elune, *data.fury_of_elune );
+  if ( iter.new_moon )
+    end( *iter.new_moon, *data.new_moon );
+  if ( iter.half_moon )
+    end( *iter.half_moon, *data.half_moon );
+  if ( iter.full_moon )
+    end( *iter.full_moon, *data.full_moon );
 }
 
 void eclipse_handler_t::merge( const eclipse_handler_t& other )
@@ -10813,6 +10905,15 @@ void eclipse_handler_t::merge( const eclipse_handler_t& other )
   merge( *other.data.wrath, *data.wrath );
   merge( *other.data.starfire, *data.starfire );
   merge( *other.data.starsurge, *data.starsurge );
+  merge( *other.data.starfall, *data.starfall );
+  if ( data.fury_of_elune )
+    merge( *other.data.fury_of_elune, *data.fury_of_elune );
+  if ( data.new_moon )
+    merge( *other.data.new_moon, *data.new_moon );
+  if ( data.half_moon )
+    merge( *other.data.half_moon, *data.half_moon );
+  if ( data.full_moon )
+    merge( *other.data.full_moon, *data.full_moon );
 }
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
@@ -10957,11 +11058,14 @@ public:
     double both  = data[ eclipse_state_e::IN_BOTH ];
     double total = none + solar + lunar + both;
 
+    if ( !total )
+      return;
+
     os.format( "<tr><td class=\"left\">{}</td>"
-               "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.2f}%</td>"
-               "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.2f}%</td>"
-               "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.2f}%</td>"
-               "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.2f}%</td></tr>",
+               "<td class=\"right\">{:.1f}</td><td class=\"right\">{:.1f}%</td>"
+               "<td class=\"right\">{:.1f}</td><td class=\"right\">{:.1f}%</td>"
+               "<td class=\"right\">{:.1f}</td><td class=\"right\">{:.1f}%</td>"
+               "<td class=\"right\">{:.1f}</td><td class=\"right\">{:.1f}%</td></tr>",
                report_decorators::decorated_spell_data( p.sim, spell ),
                none / iter, none / total * 100,
                solar / iter, solar / total * 100,
@@ -10982,6 +11086,15 @@ public:
     balance_parse_data( os, p.find_affinity_spell( "wrath" ), *p.eclipse_handler.data.wrath );
     balance_parse_data( os, p.find_affinity_spell( "starfire" ), *p.eclipse_handler.data.starfire );
     balance_parse_data( os, p.find_affinity_spell( "starsurge" ), *p.eclipse_handler.data.starsurge );
+    balance_parse_data( os, p.find_affinity_spell( "starfall" ), *p.eclipse_handler.data.starfall );
+    if ( p.eclipse_handler.data.fury_of_elune )
+      balance_parse_data( os, p.find_spell( 202770 ), *p.eclipse_handler.data.fury_of_elune );
+    if ( p.eclipse_handler.data.new_moon )
+      balance_parse_data( os, p.find_spell( 274281 ), *p.eclipse_handler.data.new_moon );
+    if ( p.eclipse_handler.data.half_moon )
+      balance_parse_data( os, p.find_spell( 274282 ), *p.eclipse_handler.data.half_moon );
+    if ( p.eclipse_handler.data.full_moon )
+      balance_parse_data( os, p.find_spell( 274283 ), *p.eclipse_handler.data.full_moon );
 
     os << "</table>\n"
        << "</div>\n"
@@ -11017,8 +11130,7 @@ public:
        << "<h3 class=\"toggle open\">Snapshot Table</h3>\n"
        << "<div class=\"toggle-content\">\n"
        << "<table class=\"sc sort even\">\n"
-       << "<thead><tr>\n"
-       << "<th></th>\n"
+       << "<thead><tr><th></th>\n"
        << "<th colspan=\"2\">Tiger's Fury</th>\n";
 
     if ( p.talent.bloodtalons->ok() )
