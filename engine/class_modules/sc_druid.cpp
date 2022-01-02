@@ -751,7 +751,7 @@ public:
     const spell_data_t* necrolord;  // adaptive swarm
     const spell_data_t* adaptive_swarm_damage;
     const spell_data_t* adaptive_swarm_heal;
-  } covenant;
+  } cov;
 
   // Conduits
   struct conduit_t
@@ -844,7 +844,7 @@ public:
       proc( procs_t() ),
       spec( specializations_t() ),
       talent( talents_t() ),
-      covenant( covenant_t() ),
+      cov( covenant_t() ),
       conduit( conduit_t() ),
       uptime( uptimes_t() ),
       legendary( legendary_t() )
@@ -1550,7 +1550,7 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
   double partner_pool;
 
   kindred_empowerment_buff_t( druid_t& p )
-    : base_t( p, "kindred_empowerment", p.covenant.kindred_empowerment ), pool( 1.0 ), partner_pool( 1.0 )
+    : base_t( p, "kindred_empowerment", p.cov.kindred_empowerment ), pool( 1.0 ), partner_pool( 1.0 )
   {
     set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
@@ -1570,7 +1570,7 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
     double initial = s->result_amount * ( 1.0 - p().options.kindred_spirits_absorbed );
     // since kindred_spirits_partner_dps is meant to apply to the pool you RECEIVE and not to the pool you send, don't
     // apply it to partner_pool, which is meant to represent the damage the other person does.
-    double partner_amount = initial * p().covenant.kindred_empowerment_energize->effectN( 1 ).percent();
+    double partner_amount = initial * p().cov.kindred_empowerment_energize->effectN( 1 ).percent();
     double amount         = partner_amount * p().options.kindred_spirits_partner_dps;
 
     sim->print_debug( "Kindred Empowerment: Adding {} from {} to pool of {}", amount, s->action->name(), pool );
@@ -1588,7 +1588,7 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
     if ( pool <= 1.0 )  // minimum pool value of 1
       return;
 
-    double amount = s->result_amount * p().covenant.kindred_empowerment->effectN( 2 ).percent();
+    double amount = s->result_amount * p().cov.kindred_empowerment->effectN( 2 ).percent();
 
     if ( amount == 0 )
       return;
@@ -2258,7 +2258,7 @@ public:
     using C = const conduit_data_t&;
 
     parse_dot_debuffs<C>( []( druid_td_t* t ) -> dot_t* { return t->dots.adaptive_swarm_damage; }, false,
-                          p()->covenant.adaptive_swarm_damage, p()->conduit.evolved_swarm, p()->spec.balance );
+                          p()->cov.adaptive_swarm_damage, p()->conduit.evolved_swarm, p()->spec.balance );
     parse_dot_debuffs<S>( []( druid_td_t* t ) -> dot_t* { return t->dots.thrash_bear; },
                           p()->spec.thrash_bear_dot, p()->talent.rend_and_tear );
     parse_dot_debuffs<C>( []( druid_td_t* t ) -> dot_t* { return t->dots.moonfire; },
@@ -4383,7 +4383,7 @@ struct sickle_of_the_lion_t : public cat_attack_t
   {
     aoe = -1;
 
-    as_mul += p->covenant.adaptive_swarm_damage->effectN( 2 ).percent() + p->conduit.evolved_swarm.percent();
+    as_mul += p->cov.adaptive_swarm_damage->effectN( 2 ).percent() + p->conduit.evolved_swarm.percent();
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -5357,7 +5357,7 @@ struct celestial_alignment_t : public druid_spell_t
 struct kindred_empowerment_t : public druid_spell_t
 {
   kindred_empowerment_t( druid_t* p, std::string_view n )
-    : druid_spell_t( n, p, p->covenant.kindred_empowerment_damage )
+    : druid_spell_t( n, p, p->cov.kindred_empowerment_damage )
   {
     background = dual = true;
     may_miss = may_crit = callbacks = false;
@@ -6861,9 +6861,9 @@ struct force_of_nature_t : public druid_spell_t
 struct kindred_spirits_t : public druid_spell_t
 {
   kindred_spirits_t( druid_t* p, std::string_view options_str )
-    : druid_spell_t( "empower_bond", p, p->covenant.empower_bond, options_str )
+    : druid_spell_t( "empower_bond", p, p->cov.empower_bond, options_str )
   {
-    if ( !p->covenant.kyrian->ok() )
+    if ( !p->cov.kyrian->ok() )
       return;
 
     harmful = false;
@@ -6967,7 +6967,7 @@ struct convoke_the_spirits_t : public druid_spell_t
   shuffled_rng_t* deck;
 
   convoke_the_spirits_t( druid_t* p, std::string_view options_str ) :
-    druid_spell_t( "convoke_the_spirits", p, p->covenant.night_fae, options_str ),
+    druid_spell_t( "convoke_the_spirits", p, p->cov.night_fae, options_str ),
     main_count( 0 ),
     filler_count( 0 ),
     off_count( 0 ),
@@ -6989,7 +6989,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     conv_shred( nullptr ),
     conv_lunar_inspiration( nullptr )
   {
-    if ( !p->covenant.night_fae->ok() )
+    if ( !p->cov.night_fae->ok() )
       return;
 
     harmful = channeled = true;
@@ -7383,9 +7383,9 @@ struct convoke_the_spirits_t : public druid_spell_t
 struct ravenous_frenzy_t : public druid_spell_t
 {
   ravenous_frenzy_t( druid_t* player, std::string_view options_str )
-    : druid_spell_t( "ravenous_frenzy", player, player->covenant.venthyr, options_str )
+    : druid_spell_t( "ravenous_frenzy", player, player->cov.venthyr, options_str )
   {
-    if ( !player->covenant.venthyr->ok() )
+    if ( !player->cov.venthyr->ok() )
       return;
 
     harmful      = false;
@@ -7413,7 +7413,7 @@ struct adaptive_swarm_t : public druid_spell_t
 
     adaptive_swarm_state_t( action_t* a, player_t* t ) : druid_action_state_t( a, t ), jump( false )
     {
-      default_stacks = as<int>( debug_cast<druid_t*>( a->player )->covenant.necrolord->effectN( 1 ).base_value() );
+      default_stacks = as<int>( debug_cast<druid_t*>( a->player )->cov.necrolord->effectN( 1 ).base_value() );
     }
 
     void initialize() override
@@ -7600,7 +7600,7 @@ struct adaptive_swarm_t : public druid_spell_t
   struct adaptive_swarm_damage_t : public adaptive_swarm_base_t
   {
     adaptive_swarm_damage_t( druid_t* p )
-      : adaptive_swarm_base_t( p, "adaptive_swarm_damage", p->covenant.adaptive_swarm_damage )
+      : adaptive_swarm_base_t( p, "adaptive_swarm_damage", p->cov.adaptive_swarm_damage )
     {
       heal = false;
     }
@@ -7636,7 +7636,7 @@ struct adaptive_swarm_t : public druid_spell_t
   struct adaptive_swarm_heal_t : public adaptive_swarm_base_t
   {
     adaptive_swarm_heal_t( druid_t* p )
-      : adaptive_swarm_base_t( p, "adaptive_swarm_heal", p->covenant.adaptive_swarm_heal )
+      : adaptive_swarm_base_t( p, "adaptive_swarm_heal", p->cov.adaptive_swarm_heal )
     {
       quiet = heal = true;
       may_miss = may_crit = false;
@@ -7662,7 +7662,7 @@ struct adaptive_swarm_t : public druid_spell_t
   timespan_t precombat_seconds;
 
   adaptive_swarm_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "adaptive_swarm", p, p->covenant.necrolord, opt ), precombat_seconds( 11_s )
+    : druid_spell_t( "adaptive_swarm", p, p->cov.necrolord, opt ), precombat_seconds( 11_s )
   {
     add_option( opt_timespan( "precombat_seconds", precombat_seconds ) );
     parse_options( opt );
@@ -7671,7 +7671,7 @@ struct adaptive_swarm_t : public druid_spell_t
     damage = p->get_secondary_action<adaptive_swarm_damage_t>( "adaptive_swarm_damage" );
     heal   = p->get_secondary_action<adaptive_swarm_heal_t>( "adaptive_swarm_heal" );
 
-    if ( !p->covenant.necrolord->ok() )
+    if ( !p->cov.necrolord->ok() )
       return;
 
     may_miss = may_crit = false;
@@ -8186,16 +8186,16 @@ void druid_t::init_spells()
   }
 
   // Covenants
-  covenant.kyrian                       = find_covenant_spell( "Kindred Spirits" );
-  covenant.empower_bond                 = check_id( covenant.kyrian->ok(), 326446 );
-  covenant.kindred_empowerment          = check_id( covenant.kyrian->ok(), 327022 );
-  covenant.kindred_empowerment_energize = check_id( covenant.kyrian->ok(), 327139 );
-  covenant.kindred_empowerment_damage   = check_id( covenant.kyrian->ok(), 338411 );
-  covenant.night_fae                    = find_covenant_spell( "Convoke the Spirits" );
-  covenant.venthyr                      = find_covenant_spell( "Ravenous Frenzy" );
-  covenant.necrolord                    = find_covenant_spell( "Adaptive Swarm" );
-  covenant.adaptive_swarm_damage        = check_id( covenant.necrolord->ok(), 325733 );
-  covenant.adaptive_swarm_heal          = check_id( covenant.necrolord->ok(), 325748 );
+  cov.kyrian                       = find_covenant_spell( "Kindred Spirits" );
+  cov.empower_bond                 = check_id( cov.kyrian->ok(), 326446 );
+  cov.kindred_empowerment          = check_id( cov.kyrian->ok(), 327022 );
+  cov.kindred_empowerment_energize = check_id( cov.kyrian->ok(), 327139 );
+  cov.kindred_empowerment_damage   = check_id( cov.kyrian->ok(), 338411 );
+  cov.night_fae                    = find_covenant_spell( "Convoke the Spirits" );
+  cov.venthyr                      = find_covenant_spell( "Ravenous Frenzy" );
+  cov.necrolord                    = find_covenant_spell( "Adaptive Swarm" );
+  cov.adaptive_swarm_damage        = check_id( cov.necrolord->ok(), 325733 );
+  cov.adaptive_swarm_heal          = check_id( cov.necrolord->ok(), 325748 );
 
   // Conduits
 
@@ -8318,7 +8318,7 @@ void druid_t::init_spells()
   spec.berserk_cat             = find_specialization_spell( "Berserk" );
   spec.rake_dmg                = find_spell( 1822 )->effectN( 3 ).trigger();
   // hardcode spell ID to allow tiger's fury buff for non-feral cat convoke
-  spec.tigers_fury             = check_id( specialization() == DRUID_FERAL || covenant.night_fae->ok(), 5217 );
+  spec.tigers_fury             = check_id( specialization() == DRUID_FERAL || cov.night_fae->ok(), 5217 );
   spec.savage_roar             = check_id( talent.savage_roar->ok(), 62071 );
   spec.bloodtalons             = check_id( talent.bloodtalons->ok(), 145152 );
 
@@ -8784,20 +8784,20 @@ void druid_t::create_buffs()
   buff.kindred_empowerment = make_buff<kindred_empowerment_buff_t>( *this );
 
   buff.kindred_empowerment_energize =
-      make_buff( this, "kindred_empowerment_energize", covenant.kindred_empowerment_energize );
+      make_buff( this, "kindred_empowerment_energize", cov.kindred_empowerment_energize );
 
   buff.lone_empowerment = make_buff( this, "lone_empowerment", find_spell( 338142 ) )
     ->set_cooldown( 0_ms );
 
   buff.kindred_affinity = make_buff<kindred_affinity_buff_t>( *this );
 
-  buff.convoke_the_spirits = make_buff( this, "convoke_the_spirits", covenant.night_fae )
+  buff.convoke_the_spirits = make_buff( this, "convoke_the_spirits", cov.night_fae )
     ->set_cooldown( 0_ms )
     ->set_period( 0_ms );
   if ( conduit.conflux_of_elements->ok() )
     buff.convoke_the_spirits->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.ravenous_frenzy = make_buff( this, "ravenous_frenzy", covenant.venthyr )
+  buff.ravenous_frenzy = make_buff( this, "ravenous_frenzy", cov.venthyr )
     ->set_cooldown( 0_ms )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_period( 0_ms )
