@@ -37,6 +37,7 @@ cat->add_action( "ferocious_bite,if=(combo_points>3&target.1.time_to_die<3|combo
 cat->add_action( "rip,target_if=((refreshable|energy>90&remains<=10)&(combo_points=5&time_to_die>remains+24|(remains+combo_points*4<time_to_die&remains+4+combo_points*4>time_to_die))|!ticking&combo_points>2+spell_targets.swipe_cat*2)&spell_targets.swipe_cat<11" );
 cat->add_action( "rake,target_if=refreshable&time_to_die>10&(combo_points<5|remains<1)&spell_targets.swipe_cat<5" );
 cat->add_action( "swipe_cat,if=spell_targets.swipe_cat>=2" );
+cat->add_action( "rake,target_if=dot.adaptive_swarm_damage.ticking&runeforge.draught_of_deep_focus,if=(combo_points<5|energy>90)&runeforge.draught_of_deep_focus&dot.rake.pmultiplier<=persistent_multiplier" );
 cat->add_action( "shred,if=combo_points<5|energy>90" );
 
 owl->add_action( "heart_of_the_wild,if=(cooldown.convoke_the_spirits.remains<30|cooldown.convoke_the_spirits.remains>90|!covenant.night_fae)&!buff.heart_of_the_wild.up" );
