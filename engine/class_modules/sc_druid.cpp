@@ -2744,7 +2744,7 @@ struct moonfire_t : public druid_spell_t
 
     double composite_ta_multiplier( const action_state_t* s ) const override
     {
-      double tam = druid_spell_t::composite_da_multiplier( s );
+      double tam = druid_spell_t::composite_ta_multiplier( s );
 
       if ( feral_override_ta && !p()->buff.moonkin_form->check() )
         tam *= 1.0 + feral_override_ta;
