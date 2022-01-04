@@ -1864,9 +1864,6 @@ public:
 
     auto fc_stats = p()->get_stats( free_cast_string( ab::name_str, f ), this );
 
-    if ( f == free_cast_e::APEX || f == free_cast_e::PILLAR )
-      fc_stats->prefer_name = true;
-
     free_cast_stats.emplace_back( f, fc_stats );
 
     return fc_stats;
@@ -11176,8 +11173,7 @@ public:
         continue;
 
       os.format( "<tr><td class=\"left\">{}</td><td class=\"right\">{:.2f}%</td><td class=\"right\">{:.2f}%</td>",
-                 report_decorators::decorated_action( *counter->get_action(), counter->stats ),
-                 data.tf_exe * 100, data.tf_tick * 100 );
+                 report_decorators::decorated_action( *counter->get_action() ), data.tf_exe * 100, data.tf_tick * 100 );
 
       if ( p.talent.bloodtalons->ok() )
         os.format( "<td class=\"right\">{:.2f}%</td><td class=\"right\">{:.2f}</td>", data.bt_exe * 100, data.bt_tick * 100 );
