@@ -238,13 +238,13 @@ inline Range& fill( Range& r, value_type_t<Range> const& t )
 }
 
 template <typename Range, typename T>
-inline Range& accumulate( Range& r, const T& init )
+inline T accumulate( Range& r, const T& init )
 {
   return std::accumulate( range::begin( r ), range::end( r ), init );
 }
 
 template <typename Range, typename T, typename BinaryOperation>
-inline Range& accumulate( Range& r, const T& init, BinaryOperation o )
+inline T accumulate( Range& r, const T& init, BinaryOperation o )
 {
   return std::accumulate( range::begin( r ), range::end( r ), init, o );
 }
