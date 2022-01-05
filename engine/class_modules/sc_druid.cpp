@@ -5176,7 +5176,6 @@ struct druid_form_t : public druid_spell_t
     : druid_spell_t( n, p, s, opt ), form( f ), affinity( spell_data_t::nil() )
   {
     harmful               = false;
-    min_gcd               = 1.5_s;
     ignore_false_positive = true;
 
     form_mask         = ( NO_FORM | BEAR_FORM | CAT_FORM | MOONKIN_FORM ) & ~form;
