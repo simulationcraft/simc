@@ -6965,6 +6965,7 @@ struct convoke_the_spirits_t : public druid_spell_t
   std::vector<std::pair<convoke_cast_e, double>> chances;
   unsigned main_count;
   unsigned filler_count;
+  unsigned dot_count;
   unsigned off_count;
   bool celestial_spirits;
 
@@ -6995,6 +6996,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     druid_spell_t( "convoke_the_spirits", p, p->cov.night_fae, options_str ),
     main_count( 0 ),
     filler_count( 0 ),
+    dot_count( 0 ),
     off_count( 0 ),
     celestial_spirits( p->legendary.celestial_spirits->ok() ),
     conv_wrath( nullptr ),  // multi-spec
@@ -7255,6 +7257,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     cast_list.insert( cast_list.end(), 5 - ( celestial_spirits ? 1 : 0 ), CAST_HEAL );
     off_count    = 0;
     main_count   = 0;
+    dot_count    = 0;
     filler_count = 0;
 
     if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->options.celestial_spirits_exceptional_chance ) || p()->specialization() != DRUID_RESTORATION ) )
@@ -7286,8 +7289,10 @@ struct convoke_the_spirits_t : public druid_spell_t
 
       if ( !mf_tl.empty() )
       {
-        dist.emplace_back( std::make_pair( CAST_MOONFIRE, 3.5 ) );
-        add_more = false;
+        if ( dot_count < ( 4 - adjust ) )
+          dist.emplace_back( std::make_pair( CAST_MOONFIRE, 5.5 ) );
+        else if ( dot_count < ( 5 - adjust ) )
+          dist.emplace_back( std::make_pair( CAST_MOONFIRE, 1.0 ) );
       }
 
       if ( add_more )
@@ -7295,7 +7300,7 @@ struct convoke_the_spirits_t : public druid_spell_t
         if ( filler_count < ( 3 - adjust ) )
           dist.emplace_back( std::make_pair( CAST_WRATH, 5.5 ) );
         else if ( filler_count < ( 4 - adjust ) )
-          dist.emplace_back( std::make_pair( CAST_WRATH, 4.5 ) );
+          dist.emplace_back( std::make_pair( CAST_WRATH, 3.5 ) );
         else if ( filler_count < ( 5 - adjust ) )
           dist.emplace_back( std::make_pair( CAST_WRATH, 1.0 ) );
       }
@@ -7333,6 +7338,8 @@ struct convoke_the_spirits_t : public druid_spell_t
       main_count++;
     else if ( type_ == CAST_WRATH )
       filler_count++;
+    else if ( type_ == CAST_MOONFIRE )
+      dot_count++;
     else if ( type_ == CAST_HEAL )
       off_count++;
 
