@@ -1,5 +1,5 @@
-// Item effects, wow build 9.2.0.41462
-static const std::array<item_effect_t, 7814> __ptr_item_effect_data { {
+// Item effects, wow build 9.2.0.41726
+static const std::array<item_effect_t, 7834> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -7701,7 +7701,7 @@ static const std::array<item_effect_t, 7814> __ptr_item_effect_data { {
   { 139278, 352081, 187552,   0,   1,    0,      -1,      -1 }, // Passable Credentials
   { 139279, 352115, 187552,   1,   0,    0,      -1,      -1 }, // Flimsy Disguise
   { 139280, 358675, 187552,   2,   1,    0,      -1,      -1 }, // [DNT] Update Interactions (Self) (Aura Applied/Removed)
-  { 139282, 358761, 187560,   1,   0,    0,      -1,      -1 }, // Shine and Pine
+  { 139282, 358761, 187560,   1,   0,    0,      -1,      -1 }, // Opening
   { 139474, 360518, 187869,   0,   0,    0,      -1,      -1 }, // Shadowlands Scouting Map
   { 139476, 360532, 187875,   0,   0,    0,      -1,      -1 }, // Broken Isles Scouting Map
   { 139484, 360578, 187895,   0,   0,    0,      -1,      -1 }, // Draenor Scouting Map
@@ -7716,6 +7716,20 @@ static const std::array<item_effect_t, 7814> __ptr_item_effect_data { {
   { 139576, 355085, 188105,   0,   1,    0,      -1,      -1 }, // Fine Razorwing Quill
   { 139658, 361724, 188164,   1,   0,    0,      -1,      -1 }, // Wild Mushroom
   { 139676, 361952, 188198,   0,   0,    0,      -1,      -1 }, // 1000 Anima
+  { 139708, 362332, 188252,   1,   0,    0,      -1,      -1 }, // pscar test trinket
+  { 139709, 362332, 188253,   1,   0,    0,      -1,      -1 }, // pscar test trinket
+  { 139710, 362332, 188254,   1,   0,    0,      -1,      -1 }, // pscar test trinket
+  { 139983, 364152, 188255,   0,   0,    0,      -1,      -1 }, // Heart of the Swarm
+  { 139856, 363557, 188262,   0,   0,    0,      -1,      -1 }, // The Lion's Roar
+  { 139858, 363572, 188262,   1,   1,    0,      -1,      -1 }, // The Lion's Roar
+  { 140362, 367336, 188267,   0,   1,    0,      -1,      -1 }, // Brood of the Endless Feast
+  { 140358, 367307, 188268,   0,   1,    0,      -1,      -1 }, // Architect's Ingenuity
+  { 140359, 367236, 188268,   1,   0,    0,      -1,      -1 }, // Disintegration Halo
+  { 140361, 367333, 188269,   0,   1,    0,      -1,      -1 }, // Pocket Protoforge
+  { 140355, 367246, 188270,   0,   1,    0,      -1,      -1 }, // Elegy of the Eternals
+  { 140354, 367241, 188271,   0,   0,    0,      -1,      -1 }, // The First Sigil
+  { 140353, 365373, 188272,   0,   0,    0,      -1,      -1 }, // Disintegration Halo
+  { 140352, 366656, 188273,   0,   1,    0,      -1,      -1 }, // Pre-Fabricated Assistant
   { 139711,  31794, 188282,   1,   0,    0,      -1,      -1 }, // Focused Mind
   { 139712,  34106, 188309,   0,   0,    0,      -1,      -1 }, // Unyielding Courage
   { 139713,  35126, 188313,   1,   1,    0,      -1,      -1 }, // Silence Resistance 20%
@@ -7734,30 +7748,30 @@ static const std::array<item_effect_t, 7814> __ptr_item_effect_data { {
   { 139842, 363481, 188766,   0,   0,    0,      -1,      -1 }, // Gladiator's Resonator
   { 139853, 363522, 188775,   0,   0,    0,      -1,      -1 }, // Gladiator's Eternal Aegis
   { 139854, 363532, 188778,   0,   0,    0,      -1,      -1 }, // Gladiator's Devouring Malediction
-  { 140149, 366333, 189560,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140149, 366333, 189560,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
   { 140151, 366057, 189584,   0,   1,    0,      -1,      -1 }, // Sepulcher's Savior
   { 140152, 366061, 189584,   1,   0,    0,      -1,      -1 }, // Sepulcher's Savior
   { 140187, 366330, 189721,   1,   0,    0,      -1,      -1 }, // Random Sayaad
-  { 140188, 366333, 189722,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
-  { 140189, 366333, 189723,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
-  { 140190, 366333, 189724,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
-  { 140191, 366333, 189725,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
-  { 140192, 366333, 189726,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
-  { 140193, 366333, 189727,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
-  { 140194, 366333, 189728,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
-  { 140195, 366333, 189729,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
-  { 140196, 366333, 189730,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
-  { 140197, 366333, 189731,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
-  { 140198, 366333, 189732,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
-  { 140199, 366333, 189733,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
-  { 140200, 366333, 189734,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
-  { 140201, 366333, 189735,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140188, 366333, 189722,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
+  { 140189, 366333, 189723,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
+  { 140190, 366333, 189724,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
+  { 140191, 366333, 189725,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
+  { 140192, 366333, 189726,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
+  { 140193, 366333, 189727,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
+  { 140194, 366333, 189728,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
+  { 140195, 366333, 189729,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
+  { 140196, 366333, 189730,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
+  { 140197, 366333, 189731,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
+  { 140198, 366333, 189732,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
+  { 140199, 366333, 189733,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
+  { 140200, 366333, 189734,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
+  { 140201, 366333, 189735,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
   { 140216, 366436, 189754,   0,   1,    0,      -1,      -1 }, // Lathe of the Lifeweaver
-  { 140222, 366333, 189760,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
-  { 140223, 366333, 189761,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
-  { 140224, 366333, 189762,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
-  { 140225, 366333, 189763,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
-  { 140226, 366333, 189764,   0,   0,    0,      -1,      -1 }, // Crystallized Enhancement
+  { 140222, 366333, 189760,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
+  { 140223, 366333, 189761,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
+  { 140224, 366333, 189762,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
+  { 140225, 366333, 189763,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
+  { 140226, 366333, 189764,   0,   0,    0,      -1,      -1 }, // [DNT] Consume Enhancement
   { 140229, 357347, 189771,   0,   1,    0,      -1,      -1 }, // Blood Link
   { 140230, 357348, 189774,   0,   1,    0,      -1,      -1 }, // Winds of Winter
   { 140231, 357347, 189776,   0,   1,    0,      -1,      -1 }, // Blood Link
@@ -7814,9 +7828,15 @@ static const std::array<item_effect_t, 7814> __ptr_item_effect_data { {
   { 140282, 357347, 189858,   0,   1,    0,      -1,      -1 }, // Blood Link
   { 140283, 357348, 189859,   0,   1,    0,      -1,      -1 }, // Winds of Winter
   { 140284, 357348, 189860,   0,   1,    0,      -1,      -1 }, // Winds of Winter
+  { 140350, 367191, 190007,   0,   5,    0,      -1,      -1 }, // Xy'rath's Signature Saber
+  { 140360, 367325, 190374,   0,   1,    0,      -1,      -1 }, // Prismatic Brilliance
+  { 140366, 367388, 190378,   1,   0,    0,      -1,      -1 },
+  { 140369, 367392, 190380,   1,   0,    0,      -1,      -1 },
+  { 140377, 367464, 190389,   0,   1,    0,      -1,      -1 }, // Lucky Flip
+  { 140378, 367470, 190390,   0,   1,    0,      -1,      -1 }, // Protector's Diffusion Implement
 } };
 
-static const std::array<uint16_t, 7814> __ptr_item_effect_id_index { {
+static const std::array<uint16_t, 7834> __ptr_item_effect_id_index { {
     375,   376,   377,   378,   379,   380,   381,   384,
     385,   386,   387,   388,   389,   390,   391,   392,
     393,   394,   395,   396,   399,   400,   401,   402,
@@ -8780,12 +8800,11 @@ static const std::array<uint16_t, 7814> __ptr_item_effect_id_index { {
    7621,  7629,  7635,  7636,  7642,  7643,  7595,  7601,
    7638,  7634,  7625,  7619,  7614,  7610,  7596,  7641,
    7630,  7626,  7620,  7617,  7606,  7602,  7714,  7715,
-   7716,  7717,  7718,  7719,  7720,  7722,  7723,  7724,
-   7725,  7726,  7727,  7728,  7729,  7721,  7730,   291,
-    292,   293,   294,  7731,  7732,  7733,   295,   296,
-   5077,   297,   298,   299,   300,   301,  7734,  7735,
+   7716,  7717,  7718,  7730,  7731,  7732,  7733,  7734,
    7736,  7737,  7738,  7739,  7740,  7741,  7742,  7743,
-   7744,  7745,  7746,  7747,  7748,  7749,  7750,  7751,
+   7735,  7744,   291,   292,   293,   294,  7745,  7746,
+   7747,  7720,  7721,   295,   296,  7719,  5077,   297,
+    298,   299,   300,   301,  7748,  7749,  7750,  7751,
    7752,  7753,  7754,  7755,  7756,  7757,  7758,  7759,
    7760,  7761,  7762,  7763,  7764,  7765,  7766,  7767,
    7768,  7769,  7770,  7771,  7772,  7773,  7774,  7775,
@@ -8793,6 +8812,10 @@ static const std::array<uint16_t, 7814> __ptr_item_effect_id_index { {
    7784,  7785,  7786,  7787,  7788,  7789,  7790,  7791,
    7792,  7793,  7794,  7795,  7796,  7797,  7798,  7799,
    7800,  7801,  7802,  7803,  7804,  7805,  7806,  7807,
-   7808,  7809,  7810,  7811,  7812,  7813,
+   7808,  7809,  7810,  7811,  7812,  7813,  7814,  7815,
+   7816,  7817,  7818,  7819,  7820,  7821,  7822,  7823,
+   7824,  7825,  7826,  7827,  7828,  7729,  7728,  7727,
+   7726,  7723,  7724,  7829,  7725,  7722,  7830,  7831,
+   7832,  7833,
 } };
 
