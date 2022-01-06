@@ -7153,7 +7153,7 @@ struct convoke_the_spirits_t : public druid_spell_t
                       static_cast<int>( rng().range( celestial_spirits ? 3.5 : 5, celestial_spirits ? 6 : 7 ) ),
                       CAST_OFFSPEC );
 
-    if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->options.celestial_spirits_exceptional_chance ) ) )
+    if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->options.celestial_spirits_exceptional_chance ) || p()->specialization() != DRUID_RESTORATION ) )
       cast_list.push_back( CAST_PULVERIZE );
   }
 
@@ -7214,7 +7214,7 @@ struct convoke_the_spirits_t : public druid_spell_t
                       static_cast<size_t>( rng().range( celestial_spirits ? 2.5 : 4, celestial_spirits ? 7.5 : 9 ) ),
                       CAST_OFFSPEC );
 
-    if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->options.celestial_spirits_exceptional_chance ) ) )
+    if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->options.celestial_spirits_exceptional_chance ) || p()->specialization() != DRUID_RESTORATION ) )
       cast_list.push_back( CAST_FERAL_FRENZY );
 
     cast_list.insert( cast_list.end(),
@@ -7257,7 +7257,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     main_count   = 0;
     filler_count = 0;
 
-    if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->options.celestial_spirits_exceptional_chance ) ) )
+    if ( deck->trigger() && ( !p()->legendary.celestial_spirits->ok() || rng().roll( p()->options.celestial_spirits_exceptional_chance ) || p()->specialization() != DRUID_RESTORATION ) )
       cast_list.push_back( CAST_FULL_MOON );
   }
 
@@ -7293,35 +7293,35 @@ struct convoke_the_spirits_t : public druid_spell_t
       if ( add_more )
       {
         if ( filler_count < ( 3 - adjust ) )
-          dist.emplace_back( std::make_pair( CAST_WRATH, 5.0 ) );
+          dist.emplace_back( std::make_pair( CAST_WRATH, 5.5 ) );
         else if ( filler_count < ( 4 - adjust ) )
-          dist.emplace_back( std::make_pair( CAST_WRATH, 4.0 ) );
+          dist.emplace_back( std::make_pair( CAST_WRATH, 4.5 ) );
         else if ( filler_count < ( 5 - adjust ) )
           dist.emplace_back( std::make_pair( CAST_WRATH, 1.0 ) );
       }
 
-      if ( main_count < 3 )
-        dist.emplace_back( std::make_pair( CAST_STARSURGE, 4.0 ) );
-      else if ( main_count < 4 )
+      if ( main_count < 3 - adjust )
+        dist.emplace_back( std::make_pair( CAST_STARSURGE, 6.0 ) );
+      else if ( main_count < 4 - adjust )
         dist.emplace_back( std::make_pair( CAST_STARSURGE, 3.0 ) );
-      else if ( main_count < 5 )
+      else if ( main_count < 5 - adjust )
+        dist.emplace_back( std::make_pair( CAST_STARSURGE, 1.0 ) );
+      else if ( main_count < 6 - adjust )
         dist.emplace_back( std::make_pair( CAST_STARSURGE, 0.5 ) );
-      else if ( main_count < 6 )
-        dist.emplace_back( std::make_pair( CAST_STARSURGE, 0.2 ) );
 
       if ( filler_count < ( 4 - adjust ) )
         dist.emplace_back( std::make_pair( CAST_WRATH, 4.0 ) );
       else if ( filler_count < ( 5 - adjust ) )
-        dist.emplace_back( std::make_pair( CAST_WRATH, 1.0 ) );
+        dist.emplace_back( std::make_pair( CAST_WRATH, 2.0 ) );
       else if ( filler_count < ( 6 - adjust ) )
-        dist.emplace_back( std::make_pair( CAST_WRATH, 0.5 ) );
+        dist.emplace_back( std::make_pair( CAST_WRATH, 1.0 ) );
       else if ( filler_count < ( 7 - adjust ) )
         dist.emplace_back( std::make_pair( CAST_WRATH, 0.2 ) );
 
       if ( off_count < ( 6 - adjust ) )
-        dist.emplace_back( std::make_pair( CAST_HEAL, 0.75 ) );
+        dist.emplace_back( std::make_pair( CAST_HEAL, 0.8 ) );
       else if ( off_count < ( 7 - adjust ) )
-        dist.emplace_back( std::make_pair( CAST_HEAL, 0.25 ) );
+        dist.emplace_back( std::make_pair( CAST_HEAL, 0.4 ) );
 
       type_ = get_cast_from_dist( dist );
 
@@ -7329,7 +7329,7 @@ struct convoke_the_spirits_t : public druid_spell_t
         conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );
     }
 
-    if ( type_ == CAST_STARSURGE )
+    if ( type_ == CAST_STARSURGE  )
       main_count++;
     else if ( type_ == CAST_WRATH )
       filler_count++;
@@ -8268,8 +8268,6 @@ void druid_t::init_spells()
   legendary.kindred_affinity          = find_runeforge_legendary( "Kindred Affinity" );
   legendary.unbridled_swarm           = find_runeforge_legendary( "Unbridled Swarm" );
   legendary.celestial_spirits         = find_runeforge_legendary( "Celestial Spirits" );
-  if ( legendary.celestial_spirits->ok() )
-    sim->error( "Celestial Spirits has not been well tested. These results may not be accurate." );
   legendary.sinful_hysteria           = find_runeforge_legendary( "Sinful Hysteria" );
 
   // Balance
