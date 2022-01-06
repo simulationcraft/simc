@@ -7329,7 +7329,7 @@ struct convoke_the_spirits_t : public druid_spell_t
         conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );
     }
 
-    if ( type_ == CAST_STARSURGE  )
+    if ( type_ == CAST_STARSURGE )
       main_count++;
     else if ( type_ == CAST_WRATH )
       filler_count++;
