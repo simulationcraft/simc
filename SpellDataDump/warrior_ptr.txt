@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, git build shadowlands 8ad9b10a, no-networking)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -11921,9 +11921,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=903721)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Consuming $s1 rage grants a stack of Outburst, upon reaching $364006u stacks of Outburst your next Shield Slam or Thunder Clap are $364010s1% more effective, or your next Ignore Pain is $364010s5% more effective.
+Description      : Consuming $s1 rage grants a stack of Seeing Red, which transforms at $364006u stacks into Outburst, causing your next Shield Slam or Thunder Clap to be $364010s1% more effective and grant Ignore Pain.
 
-Name             : Outburst (id=364006) [Spell Family (4)] 
+Name             : Seeing Red (id=364006) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -11943,7 +11943,7 @@ Effects          :
 #1 (id=903731)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc364002
-Tooltip          : After reaching $u stacks, your next Thunder Clap, Shield Slam, or Ignore Pain is more effective.
+Tooltip          : At $u stacks transforms into Outburst, causing your next Shield Slam or Thunderclap to be $364010s1%~ more effective and grant Ignore Pain.
 
 Name             : Outburst (id=364010) [Spell Family (4)] 
 Class            : Warrior
@@ -11980,10 +11980,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343)
                    Family Flags: 7
-#5 (id=903865)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc364002
-Tooltip          : Your next Thunder Clap, Shield Slam, or Ignore Pain is more effective.
+Tooltip          : Your next Thunder Clap and Shield Slam are more effective and grant Ignore Pain.
 
 Name             : Pile On (id=364553) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -12053,7 +12051,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=904795)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Avatar increases your damage dealt by an additional $364641s1% and decreases damage taken by $364641s2%. Avatar instantly grants $364006u stacks of Outburst.
+Description      : Avatar increases your damage dealt by an additional $364641s1% and decreases damage taken by $364641s2%. Avatar instantly grants Outburst.
 
 Name             : Outburst (id=364641) [Spell Family (4), Hidden] 
 Class            : Warrior

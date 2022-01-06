@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, git build shadowlands 8ad9b10a, no-networking)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -1103,7 +1103,7 @@ School           : Holy
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Renew (139 effect#2), Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effects: #1, #2), Word of Mending (278645 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7), Divine Conversation (363727 effect#4)
+Affecting spells : Renew (139 effect#2), Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effects: #1, #2), Word of Mending (278645 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 117, 126
 Attributes       : ........ ........ ..x..... ...x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -12135,7 +12135,6 @@ School           : Holy
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
-Triggered by     : Knowledge (364427)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12157,8 +12156,8 @@ Effects          :
                    Family Flags: 10, 28
 #4 (id=908500)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Holy Fire (14914), Prayer of Mending (33110), Circle of Healing (204883)
-                   Family Flags: 20, 86, 117
+                   Affected Spells: Holy Fire (14914), Circle of Healing (204883)
+                   Family Flags: 20, 86
 #5 (id=910029)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Holy Fire (14914)
@@ -12244,8 +12243,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=904419)   : Apply Aura (6) | Proc Trigger Spell (42): Divine Conversation
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 363727 | Target: Self (1)
+#1 (id=904419)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your Holy Words begin Divine Conversation, increasing the cooldown reduction of your next Holy-Word-affecting spell by $363727s1 sec.
 
 Name             : From Dusk (id=364428) [Spell Family (6), Passive, Hidden] 

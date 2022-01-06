@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, git build shadowlands 8ad9b10a, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -12841,7 +12841,7 @@ Description      : Consuming Killing Machine fires a Glacial Advance through you
 
 
 Name             : Harvest Time (id=363560) [Spell Family (15), Passive, Hidden] 
-Class            : Death Knight
+Class            : Rogue, Death Knight
 School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.75 seconds
@@ -12947,6 +12947,7 @@ Name             : Endless Rune Waltz (id=364399) [Spell Family (15), Passive, H
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x.x. x....... ........ 
                  : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
