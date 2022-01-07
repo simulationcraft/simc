@@ -321,8 +321,7 @@ public:
   {
     heal_t* cenarion_ward_hot;
     action_t* brambles;
-    action_t* galactic_guardian_proc;  // free proc'd moonfire
-    action_t* galactic_guardian_cast;  // casted buffed moonfire
+    action_t* galactic_guardian;
     action_t* natures_guardian;
     spell_t* shooting_stars;
     action_t* yseras_gift;
@@ -1918,7 +1917,7 @@ public:
          s->target != p() && ab::result_is_hit( s->result ) && s->result_total > 0 )
     {
       if ( p()->buff.galactic_guardian->trigger() )
-        p()->active.galactic_guardian_proc->execute_on_target( s->target );
+        p()->active.galactic_guardian->execute_on_target( s->target );
     }
   }
 
@@ -2597,10 +2596,13 @@ struct moonfire_t : public druid_spell_t
 {
   struct moonfire_damage_t : public druid_spell_t
   {
+    double gg_mul;
     double feral_override_da;
     double feral_override_ta;
 
-    moonfire_damage_t( druid_t* p, std::string_view n ) : druid_spell_t( n, p, p->spec.moonfire_dmg )
+    moonfire_damage_t( druid_t* p, std::string_view n )
+      : druid_spell_t( n, p, p->spec.moonfire_dmg ),
+        gg_mul( p->spec.galactic_guardian->effectN( 3 ).percent() )
     {
       if ( p->spec.shooting_stars->ok() && !p->active.shooting_stars )
         p->active.shooting_stars = p->get_secondary_action<shooting_stars_t>( "shooting_stars" );
@@ -2655,6 +2657,9 @@ struct moonfire_t : public druid_spell_t
     double composite_da_multiplier( const action_state_t* s  ) const override
     {
       double dam = druid_spell_t::composite_da_multiplier( s );
+
+      if ( free_cast != free_cast_e::GALACTIC && p()->buff.galactic_guardian->check() )
+        dam *= 1.0 + gg_mul;
 
       if ( feral_override_da && !p()->buff.moonkin_form->check() )
         dam *= 1.0 + feral_override_da;
@@ -2744,7 +2749,14 @@ struct moonfire_t : public druid_spell_t
 
       if ( hit_any_target && free_cast != free_cast_e::GALACTIC )
       {
-        p()->buff.galactic_guardian->expire();
+        if ( p()->buff.galactic_guardian->up() )
+        {
+          p()->resource_gain( RESOURCE_RAGE, p()->buff.galactic_guardian->check_value(), gain );
+
+          if ( free_cast != free_cast_e::CONVOKE )
+            p()->buff.galactic_guardian->expire();
+        }
+
         trigger_gore();
       }
     }
@@ -2775,13 +2787,6 @@ struct moonfire_t : public druid_spell_t
 
   void execute() override
   {
-    if ( free_cast != free_cast_e::GALACTIC && p()->buff.galactic_guardian->up() )
-    {
-      p()->buff.galactic_guardian->expire();
-      p()->active.galactic_guardian_cast->execute_on_target( target );
-      return;
-    }
-
     druid_spell_t::execute();
 
     damage->target = target;
@@ -4409,7 +4414,7 @@ struct mangle_t : public bear_attack_t
   {
     double em = bear_attack_t::composite_energize_amount( s );
 
-    em += p()->buff.gore->value();
+    em += p()->buff.gore->check_value();
 
     return em;
   }
@@ -4429,7 +4434,7 @@ struct mangle_t : public bear_attack_t
     if ( !hit_any_target )
       return;
 
-    if ( p()->buff.gore->up() )
+    if ( p()->buff.gore->up() && free_cast != free_cast_e::CONVOKE )
       p()->buff.gore->expire();
 
     p()->buff.guardian_of_elune->trigger();
@@ -8750,17 +8755,10 @@ void druid_t::create_actions()
 
   if ( talent.galactic_guardian->ok() )
   {
-    auto proc = get_secondary_action_n<moonfire_t>( "galactic_guardian_proc", "" );
+    auto proc = get_secondary_action_n<moonfire_t>( "galactic_guardian", "" );
     proc->set_free_cast( free_cast_e::GALACTIC );
     proc->damage->set_free_cast( free_cast_e::GALACTIC );
-    active.galactic_guardian_proc = proc;
-
-    auto cast = get_secondary_action_n<moonfire_t>( "galactic_guardian_cast", "" );
-    cast->damage->base_dd_multiplier *= 1.0 + spec.galactic_guardian->effectN( 3 ).percent();
-    cast->damage->energize_type = action_energize::ON_HIT;
-    cast->damage->energize_resource = RESOURCE_RAGE;
-    cast->damage->energize_amount = spec.galactic_guardian->effectN( 1 ).resource( RESOURCE_RAGE );
-    active.galactic_guardian_cast = cast;
+    active.galactic_guardian = proc;
   }
 
   if ( mastery.natures_guardian->ok() )
@@ -8803,8 +8801,7 @@ void druid_t::create_actions()
   find_parent( active.starsurge_oneth, "starsurge" );
   find_parent( active.starfall_oneth, "starfall" );
   find_parent( active.ferocious_bite_apex, "ferocious_bite" );
-  find_parent( active.galactic_guardian_proc, "moonfire" );
-  find_parent( active.galactic_guardian_cast, "moonfire" );
+  find_parent( active.galactic_guardian, "moonfire" );
 
   // setup dot_ids used by druid_action_t::get_dot_count()
   setup_dot_ids<sunfire_t::sunfire_damage_t>();
