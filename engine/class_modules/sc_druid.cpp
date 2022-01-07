@@ -321,7 +321,6 @@ public:
   {
     heal_t* cenarion_ward_hot;
     action_t* brambles;
-    action_t* brambles_pulse;
     action_t* galactic_guardian_proc;  // free proc'd moonfire
     action_t* galactic_guardian_cast;  // casted buffed moonfire
     action_t* natures_guardian;
@@ -5103,45 +5102,6 @@ struct cancel_form_t : public druid_form_t
   }
 };
 
-// Barkskin =================================================================
-
-struct barkskin_t : public druid_spell_t
-{
-  barkskin_t( druid_t* p, std::string_view opt ) : barkskin_t( p, "barkskin", opt ) {}
-
-  barkskin_t( druid_t* p, std::string_view n, std::string_view opt )
-    : druid_spell_t( n, p, p->find_class_spell( "Barkskin" ), opt )
-  {
-    harmful = false;
-    use_off_gcd = true;
-    dot_duration = 0_ms;
-
-    if ( p->talent.brambles->ok() )
-      add_child( p->active.brambles_pulse );
-
-    if ( p->sets->has_set_bonus( DRUID_GUARDIAN, T28, B2 ) )
-      form_mask = autoshift = BEAR_FORM;
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p()->buff.barkskin->trigger();
-
-    //TODO:
-    // * confirm berserk is triggered on barkskin action cast and not on barkskin buff application
-    // * confirm berserk extends or overwrites existing berserk
-    // * confirm incarn is triggered when talented
-    if ( p()->sets->has_set_bonus( DRUID_GUARDIAN, T28, B2 ) )
-    {
-      auto dur_ = timespan_t::from_seconds( p()->sets->set( DRUID_GUARDIAN, T28, B2 )->effectN( 1 ).base_value() );
-
-      p()->buff.b_inc_bear->extend_duration_or_trigger( dur_ );
-    }
-  }
-};
-
 // Brambles =================================================================
 
 struct brambles_t : public druid_spell_t
@@ -5156,10 +5116,62 @@ struct brambles_t : public druid_spell_t
 
 struct brambles_pulse_t : public druid_spell_t
 {
-  brambles_pulse_t( druid_t* p ) : druid_spell_t( "brambles_pulse", p, p->find_spell( 213709 ) )
+  brambles_pulse_t( druid_t* p, std::string_view n ) : druid_spell_t( n, p, p->find_spell( 213709 ) )
   {
     background = dual = true;
     aoe               = -1;
+  }
+};
+
+// Barkskin =================================================================
+
+struct barkskin_t : public druid_spell_t
+{
+  action_t* brambles;
+
+  barkskin_t( druid_t* p, std::string_view opt ) : barkskin_t( p, "barkskin", opt ) {}
+
+  barkskin_t( druid_t* p, std::string_view n, std::string_view opt )
+    : druid_spell_t( n, p, p->find_class_spell( "Barkskin" ), opt ), brambles( nullptr )
+  {
+    harmful = false;
+    use_off_gcd = true;
+    dot_duration = 0_ms;
+
+    if ( p->talent.brambles->ok() )
+    {
+      brambles = p->get_secondary_action_n<brambles_pulse_t>( name_str + "brambles" );
+      name_str += "+brambles";
+      brambles->stats = stats;
+    }
+
+    if ( p->sets->has_set_bonus( DRUID_GUARDIAN, T28, B2 ) )
+      form_mask = autoshift = BEAR_FORM;
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    if ( p()->talent.brambles->ok() )
+    {
+      p()->buff.barkskin->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+        brambles->execute();
+      } );
+    }
+
+    p()->buff.barkskin->trigger();
+
+    //TODO:
+    // * confirm berserk is triggered on barkskin action cast and not on barkskin buff application
+    // * confirm berserk extends or overwrites existing berserk
+    // * confirm incarn is triggered when talented
+    if ( p()->sets->has_set_bonus( DRUID_GUARDIAN, T28, B2 ) )
+    {
+      auto dur_ = timespan_t::from_seconds( p()->sets->set( DRUID_GUARDIAN, T28, B2 )->effectN( 1 ).base_value() );
+
+      p()->buff.b_inc_bear->extend_duration_or_trigger( dur_ );
+    }
   }
 };
 
@@ -8529,10 +8541,8 @@ void druid_t::create_buffs()
     ->set_tick_behavior( buff_tick_behavior::NONE )
     ->apply_affecting_aura( find_rank_spell( "Barkskin", "Rank 2" ) );
   if ( talent.brambles->ok() )
-  {
-    buff.barkskin->set_tick_behavior( buff_tick_behavior::REFRESH )
-      ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { active.brambles_pulse->execute(); } );
-  }
+    buff.barkskin->set_tick_behavior( buff_tick_behavior::REFRESH );
+
   if ( legendary.the_natural_orders_will->ok() )
   {
     buff.barkskin->apply_affecting_aura( legendary.the_natural_orders_will )
@@ -8730,9 +8740,7 @@ void druid_t::create_actions()
   // Guardian
   if ( talent.brambles->ok() )
   {
-    active.brambles       = get_secondary_action<brambles_t>( "brambles" );
-    active.brambles_pulse = get_secondary_action<brambles_pulse_t>( "brambles_pulse" );
-
+    active.brambles = get_secondary_action<brambles_t>( "brambles" );
     instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
         talent.brambles->id(), instant_absorb_t( this, talent.brambles, "brambles_absorb", &brambles_handler ) ) );
   }
