@@ -8645,10 +8645,11 @@ void druid_t::create_actions()
 
   if ( sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
   {
-    auto pillar_ = get_secondary_action_n<fury_of_elune_t>( "celestial_pillar", find_spell( 202770 ), "" );
-    pillar_->damage->base_multiplier = sets->set( DRUID_BALANCE, T28, B2 )->effectN( 1 ).percent();
-    pillar_->set_free_cast( free_cast_e::PILLAR );
-    active.celestial_pillar = pillar_;
+    auto pillar = get_secondary_action_n<fury_of_elune_t>( "celestial_pillar", find_spell( 202770 ), "" );
+    pillar->s_data_reporting = sets->set( DRUID_BALANCE, T28, B2 );
+    pillar->damage->base_multiplier = sets->set( DRUID_BALANCE, T28, B2 )->effectN( 1 ).percent();
+    pillar->set_free_cast( free_cast_e::PILLAR );
+    active.celestial_pillar = pillar;
   }
 
   // Feral
@@ -8657,8 +8658,10 @@ void druid_t::create_actions()
 
   if ( legendary.apex_predators_craving->ok() )
   {
-    active.ferocious_bite_apex = get_secondary_action_n<ferocious_bite_t>( "apex_predators_craving", "" )
-      ->set_free_cast( free_cast_e::APEX );
+    auto apex = get_secondary_action_n<ferocious_bite_t>( "apex_predators_craving", "" );
+    apex->s_data_reporting = legendary.apex_predators_craving;
+    apex->set_free_cast( free_cast_e::APEX );
+    active.ferocious_bite_apex = apex;
   }
 
   if ( sets->has_set_bonus( DRUID_FERAL, T28, B4 ) )
@@ -8677,10 +8680,11 @@ void druid_t::create_actions()
 
   if ( talent.galactic_guardian->ok() )
   {
-    auto proc = get_secondary_action_n<moonfire_t>( "galactic_guardian", "" );
-    proc->set_free_cast( free_cast_e::GALACTIC );
-    proc->damage->set_free_cast( free_cast_e::GALACTIC );
-    active.galactic_guardian = proc;
+    auto gg = get_secondary_action_n<moonfire_t>( "galactic_guardian", "" );
+    gg->s_data_reporting = talent.galactic_guardian;
+    gg->set_free_cast( free_cast_e::GALACTIC );
+    gg->damage->set_free_cast( free_cast_e::GALACTIC );
+    active.galactic_guardian = gg;
   }
 
   if ( mastery.natures_guardian->ok() )
