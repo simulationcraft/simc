@@ -432,6 +432,8 @@ struct dbc_consumable_base_t : public action_t
     // populate ID and spell data for better reporting
     id = driver() -> id();
     s_data_reporting = driver();
+    name_str_reporting = s_data_reporting->name_cstr();
+    util::tokenize( name_str_reporting );
 
     auto effect = unique_gear::find_special_effect( player, driver() -> id(), SPECIAL_EFFECT_USE );
     // No special effect for this consumable found, so create one
@@ -459,6 +461,7 @@ struct dbc_consumable_base_t : public action_t
     // And then, grab the action and buff from the special effect, if they are enabled
     consumable_action = effect -> create_action();
     consumable_buff = effect -> create_buff();
+    consumable_buff->s_data_reporting = s_data_reporting;
   }
 
   bool ready() override
