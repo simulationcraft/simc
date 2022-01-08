@@ -1257,6 +1257,8 @@ struct berserk_cat_buff_t : public druid_buff_t<buff_t>
     : base_t( p, n, s ), inc( b )
   {
     set_cooldown( 0_ms );
+    if ( !inc && p.specialization() == DRUID_FERAL )
+      name_str_reporting = "berserk";
 
     if ( inc )
     {
@@ -1293,6 +1295,8 @@ struct berserk_bear_buff_t : public druid_buff_t<buff_t>
     : base_t( p, n, s ), inc( b ), hp_mul( 1.0 )
   {
     set_cooldown( 0_ms );
+    if ( !inc && p.specialization() == DRUID_GUARDIAN )
+      name_str_reporting = "berserk";
 
     if ( p.conduit.unchecked_aggression->ok() )
     {
@@ -3048,6 +3052,7 @@ struct berserk_cat_t : public cat_attack_t
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
     form_mask = autoshift = CAT_FORM;
+    name_str_reporting = "berserk";
   }
 
   void execute() override
@@ -3416,6 +3421,8 @@ struct lunar_inspiration_t : public cat_attack_t
 
     energize_type = action_energize::ON_HIT;
     gcd_type      = gcd_haste_type::ATTACK_HASTE;
+
+    s_data_reporting = p->find_spell( 155580 );  // find by id since you can cast LI without talent
   }
 
   dot_t* get_dot( player_t* t ) override
@@ -3883,6 +3890,9 @@ struct swipe_cat_t : public cat_attack_t
 
     if ( p->find_rank_spell( "Swipe", "Rank 2" )->ok() )
       bleed_mul = data().effectN( 2 ).percent();
+
+    if ( p->specialization() == DRUID_FERAL )
+      name_str_reporting = "swipe";
   }
 
   double cost() const override
@@ -3952,6 +3962,9 @@ struct thrash_cat_t : public cat_attack_t
     energize_amount   = p->find_spell( 211141 )->effectN( 1 ).base_value();
     energize_resource = RESOURCE_COMBO_POINT;
     energize_type     = action_energize::ON_HIT;
+
+    if ( p->specialization() == DRUID_FERAL )
+      name_str_reporting = "thrash";
   }
 
   dot_t* get_dot( player_t* t ) override
@@ -4080,6 +4093,7 @@ struct berserk_bear_t : public bear_attack_t
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
     form_mask = autoshift = BEAR_FORM;
+    name_str_reporting = "berserk";
   }
 
   void execute() override
@@ -4243,6 +4257,9 @@ struct swipe_bear_t : public bear_attack_t
     aoe = -1;
     reduced_aoe_targets = p->spec.swipe_cat->effectN( 4 ).base_value();
     proc_gore = true;
+
+    if ( p->specialization() == DRUID_GUARDIAN )
+      name_str_reporting = "swipe";
   }
 };
 
@@ -4293,6 +4310,9 @@ struct thrash_bear_t : public bear_attack_t
     dot = p->get_secondary_action_n<thrash_bear_dot_t>( name_str + "_dot" );
     dot->stats = stats;
     dot->radius = radius;
+
+    if ( p->specialization() == DRUID_GUARDIAN )
+      name_str_reporting = "thrash";
   }
 
   dot_t* get_dot( player_t* t ) override
@@ -4828,6 +4848,14 @@ struct barkskin_t : public druid_spell_t
       form_mask = autoshift = BEAR_FORM;
   }
 
+  void init() override
+  {
+    druid_spell_t::init();
+
+    if ( brambles && !name_str_reporting.empty() )
+      name_str_reporting += "+brambles";
+  }
+
   void execute() override
   {
     druid_spell_t::execute();
@@ -5251,10 +5279,19 @@ struct incarnation_t : public druid_spell_t
   {
     switch ( p->specialization() )
     {
-      case DRUID_BALANCE:     autoshift = form_mask = MOONKIN_FORM; break;
-      case DRUID_FERAL:       autoshift = form_mask = CAT_FORM;     break;
-      case DRUID_GUARDIAN:    autoshift = form_mask = BEAR_FORM;    break;
-      case DRUID_RESTORATION:                                       break;
+      case DRUID_BALANCE:
+        autoshift = form_mask = MOONKIN_FORM;
+        name_str_reporting = "incarnation_chosen_of_elune";
+        break;
+      case DRUID_FERAL:
+        autoshift = form_mask = CAT_FORM;
+        name_str_reporting = "incarnation_king_of_the_jungle";
+        break;
+      case DRUID_GUARDIAN:
+        autoshift = form_mask = BEAR_FORM;
+        name_str_reporting = "incarnation_guardian_of_ursoc";
+        break;
+      case DRUID_RESTORATION: break;
       default: assert( false && "Actor attempted to create incarnation action with no specialization." );
     }
 
@@ -7066,6 +7103,8 @@ struct convoke_the_spirits_t : public druid_spell_t
   T* get_convoke_action( std::string n, Ts&&... args )
   {
     auto a = p()->get_secondary_action_n<T>( n + "_convoke", std::forward<Ts>( args )... );
+    if ( a->name_str_reporting.empty() )
+      a->name_str_reporting = n;
     a->set_free_cast( free_cast_e::CONVOKE );
     stats->add_child( a->stats );
     a->gain = gain;
@@ -7608,6 +7647,7 @@ struct lycaras_fleeting_glimpse_t : public action_t
   T* get_lycaras_action( std::string n, Ts&&... args )
   {
     auto a = druid->get_secondary_action_n<T>( n + "_lycaras", std::forward<Ts>( args )... );
+    a->name_str_reporting = n;
     a->set_free_cast( free_cast_e::LYCARAS );
     add_child( a );
     return a;
@@ -7646,9 +7686,11 @@ struct the_natural_orders_will_t : public action_t
   {
     ironfur = p->get_secondary_action_n<spells::ironfur_t>( "ironfur_natural", "" )
       ->set_free_cast( free_cast_e::NATURAL );
+    ironfur->name_str_reporting = "ironfur";
 
     frenzied = p->get_secondary_action_n<heals::frenzied_regeneration_t>( "frenzied_regeneration_natural", "" )
       ->set_free_cast( free_cast_e::NATURAL );
+    frenzied->name_str_reporting = "frenzied_regeneration";
   }
 
   void execute() override
@@ -8637,10 +8679,15 @@ void druid_t::create_actions()
   // Balance
   if ( legendary.oneths_clear_vision->ok() )
   {
-    active.starsurge_oneth = get_secondary_action_n<starsurge_t>( "oneths_clear_vision", "" )
-      ->set_free_cast( free_cast_e::ONETHS );
-    active.starfall_oneth = get_secondary_action_n<starfall_t>( "oneths_perception", "" )
-      ->set_free_cast( free_cast_e::ONETHS );
+    auto ss = get_secondary_action_n<starsurge_t>( "oneths_clear_vision", "" );
+    ss->s_data_reporting = &buff.oneths_free_starsurge->data();
+    ss->set_free_cast( free_cast_e::ONETHS );
+    active.starsurge_oneth = ss;
+
+    auto sf = get_secondary_action_n<starfall_t>( "oneths_perception", "" );
+    sf->s_data_reporting = &buff.oneths_free_starfall->data();
+    sf->set_free_cast( free_cast_e::ONETHS );
+    active.starfall_oneth = sf;
   }
 
   if ( sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
