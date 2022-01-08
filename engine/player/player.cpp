@@ -11554,6 +11554,7 @@ void player_t::analyze( sim_t& s )
   range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::analyze ) );
 
   range::sort( stats_list, []( const stats_t* l, const stats_t* r ) { return l->name_str < r->name_str; } );
+  range::sort( gain_list, []( const gain_t* l, const gain_t* r ) { return l->name_str < r-> name_str; } );
 
   if ( quiet )
     return;
