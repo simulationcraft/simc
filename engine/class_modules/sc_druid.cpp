@@ -8630,6 +8630,8 @@ void druid_t::create_buffs()
     buff.sinful_hysteria->add_invalidate( CACHE_CRIT_CHANCE );
   if ( legendary.sinful_hysteria->ok() )
   {
+    buff.sinful_hysteria->s_data_reporting = legendary.sinful_hysteria;
+    buff.sinful_hysteria->name_str_reporting = "sinful_hysteria";
     buff.ravenous_frenzy->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
       // spell data hasn't changed and still indicates 0.2s, but tooltip says 0.1s
       if ( old_ && new_ )
