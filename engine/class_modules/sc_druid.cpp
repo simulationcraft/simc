@@ -152,15 +152,6 @@ struct snapshot_counter_t
     return true;
   }
 
-  action_t* get_action()
-  {
-    for ( const auto& a : stats->action_list )
-      if ( a->data().ok() )
-        return a;
-
-    return stats->action_list.front();
-  }
-
   void add_buff( buff_t* b ) { buffs.push_back( b ); }
 
   void count_execute()
@@ -2868,8 +2859,12 @@ public:
   snapshot_counter_t* get_counter( buff_t* buff )
   {
     auto st = stats;
-    while ( st->parent && st->parent->action_list.front()->harmful )
+    while ( st->parent )
+    {
+      if ( !st->parent->action_list.front()->harmful )
+        return nullptr;
       st = st->parent;
+    }
 
     for ( const auto& c : p()->counters )
       if ( c->stats == st)
@@ -2917,10 +2912,10 @@ public:
 
     trigger_predator();
 
-    if ( snapshots.bloodtalons )
+    if ( snapshots.bloodtalons && bt_counter )
       bt_counter->count_tick();
 
-    if ( snapshots.tigers_fury )
+    if ( snapshots.tigers_fury && tf_counter )
       tf_counter->count_tick();
   }
 
@@ -2950,11 +2945,13 @@ public:
     {
       if ( snapshots.bloodtalons )
       {
-        bt_counter->count_execute();
+        if ( bt_counter )
+          bt_counter->count_execute();
+
         p()->buff.bloodtalons->decrement();
       }
 
-      if ( snapshots.tigers_fury )
+      if ( snapshots.tigers_fury && tf_counter )
         tf_counter->count_execute();
     }
 
@@ -10708,6 +10705,7 @@ class druid_report_t : public player_report_extension_t
 private:
   struct feral_counter_data_t
   {
+    action_t* action = nullptr;
     double tf_exe = 0.0;
     double tf_tick = 0.0;
     double bt_exe = 0.0;
@@ -10742,10 +10740,10 @@ public:
       return;
 
     os.format( "<tr><td class=\"left\">{}</td>"
-               "<td class=\"right\">{:.1f}</td><td class=\"right\">{:.1f}%</td>"
-               "<td class=\"right\">{:.1f}</td><td class=\"right\">{:.1f}%</td>"
-               "<td class=\"right\">{:.1f}</td><td class=\"right\">{:.1f}%</td>"
-               "<td class=\"right\">{:.1f}</td><td class=\"right\">{:.1f}%</td></tr>",
+               "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
+               "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
+               "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
+               "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td></tr>",
                report_decorators::decorated_spell_data( p.sim, spell ),
                none / iter, none / total * 100,
                solar / iter, solar / total * 100,
@@ -10787,7 +10785,7 @@ public:
     {
       data.tf_exe += counter->execute.mean();
 
-      if ( counter->stats->has_tick_amount_results() )
+      if ( counter->tick.count() )
         data.tf_tick += counter->tick.mean();
       else
         data.tf_tick += counter->execute.mean();
@@ -10796,7 +10794,7 @@ public:
     {
       data.bt_exe += counter->execute.mean();
 
-      if ( counter->stats->has_tick_amount_results() )
+      if ( counter->tick.count() )
         data.bt_tick += counter->tick.mean();
       else
         data.bt_tick += counter->execute.mean();
@@ -10831,11 +10829,30 @@ public:
     }
     os << "</tr></thead>\n";
 
+    std::vector<feral_counter_data_t> data_list;
+
     // Compile and Write Contents
     for ( size_t i = 0; i < p.counters.size(); i++ )
     {
       auto counter = p.counters[ i ].get();
       feral_counter_data_t data;
+
+      for ( const auto& a : counter->stats->action_list )
+      {
+        if ( a->s_data->ok() )
+        {
+          data.action = a;
+          break;
+        }
+      }
+
+      if ( !data.action )
+        data.action = counter->stats->action_list.front();
+
+      // We can change the action's reporting name here since we shouldn't need to access it again later in the report
+      std::string suf = "_convoke";
+      if ( std::equal( suf.rbegin(), suf.rend(), data.action->name_str.rbegin() ) )
+        data.action->name_str_reporting += "Convoke";
 
       feral_parse_counter( counter, data );
 
@@ -10855,8 +10872,17 @@ public:
       if ( data.tf_exe + data.tf_tick + data.bt_exe + data.bt_tick == 0.0 )
         continue;
 
+      data_list.push_back( std::move( data ) );
+    }
+
+    range::sort( data_list, []( const feral_counter_data_t& l, const feral_counter_data_t& r ) {
+      return l.action->name_str < r.action->name_str;
+    } );
+
+    for ( const auto& data : data_list )
+    {
       os.format( "<tr><td class=\"left\">{}</td><td class=\"right\">{:.2f}%</td><td class=\"right\">{:.2f}%</td>",
-                 report_decorators::decorated_action( *counter->get_action() ), data.tf_exe * 100, data.tf_tick * 100 );
+                 report_decorators::decorated_action( *data.action ), data.tf_exe * 100, data.tf_tick * 100 );
 
       if ( p.talent.bloodtalons->ok() )
         os.format( "<td class=\"right\">{:.2f}%</td><td class=\"right\">{:.2f}</td>", data.bt_exe * 100, data.bt_tick * 100 );
