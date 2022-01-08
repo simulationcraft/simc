@@ -2811,10 +2811,14 @@ stat_buff_t::stat_buff_t( actor_pair_t q, util::string_view name, const spell_da
     double amount                    = 0;
     const spelleffect_data_t& effect = data().effectN( i );
 
+    // Blizzard likes to use effect coefficients that give (almost) exact values at the
+    // intended level. Small floating point conversion errors can add up to give the wrong
+    // value. We compensate by increasing the value by a tiny bit before truncating.
+    constexpr double epsilon = 1e-3;
     if ( item )
-      amount = util::round( effect.average( item ) );
+      amount = std::trunc( epsilon + effect.average( item ) );
     else
-      amount = util::round( effect.average( player, std::min( MAX_LEVEL, player->level() ) ) );
+      amount = std::trunc( epsilon + effect.average( player, std::min( MAX_LEVEL, player->level() ) ) );
 
     if ( effect.subtype() == A_MOD_STAT )
     {

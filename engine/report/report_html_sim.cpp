@@ -1308,6 +1308,47 @@ void print_nothing_to_report( report::sc_html_stream& os, const std::string& rea
      << "</div>\n\n";
 }
 
+void print_profilesets_chart( std::ostream& out, const sim_t& sim )
+{
+  size_t chart_id                              = 0;
+  const profileset::profilesets_t& profilesets = *sim.profilesets;
+
+  auto results      = profilesets.generate_sorted_profilesets();
+  auto results_mean = profilesets.generate_sorted_profilesets( true );
+  if ( results.size() != results_mean.size() )
+  {
+    const_cast<sim_t&>( sim ).errorf( "Entry count mismatch between Median chart (%d) and Mean chart (%d)",
+                                      results.size(), results_mean.size() );
+  }
+
+  while ( chart_id * chart::MAX_PROFILESET_CHART_ENTRIES < profilesets.n_profilesets() )
+  {
+    highchart::bar_chart_t chart( "profileset-" + util::to_string( chart_id ), sim );
+    chart::generate_profilesets_chart( chart, sim, chart_id, results, results_mean );
+
+    out << chart.to_string();
+    ++chart_id;
+    //    inserted = false;
+  }
+}
+
+void print_profilesets( std::ostream& out, const profileset::profilesets_t& profilesets, const sim_t& sim )
+{
+  if ( profilesets.n_profilesets() == 0 )
+  {
+    return;
+  }
+
+  out << "<div class=\"section\">\n";
+  out << "<h2 class=\"toggle open\">Profile sets</h2>\n";
+  out << "<div class=\"toggle-content\">\n";
+
+  print_profilesets_chart( out, sim );
+
+  out << "</div>";
+  out << "</div>";
+}
+
 /* Main function building the html document and calling subfunctions
  */
 void print_html_( report::sc_html_stream& os, sim_t& sim )
@@ -1359,7 +1400,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
     print_html_scale_factors( os, sim );
   }
 
-  sim.profilesets->output_html( sim, os );
+  print_profilesets( os, *sim.profilesets, sim );
 
   // Report Players
   for ( auto& player : sim.players_by_name )

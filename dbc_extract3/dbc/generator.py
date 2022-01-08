@@ -1480,6 +1480,7 @@ class SpellDataGenerator(DataGenerator):
             ( 185422, 0 ),          # Shadow Dance buff spell
             ( 350964, 0 ),          # Subtlety-specific Deathly Shadows legendary buff
             ( 364234, 0 ), ( 364235, 0 ), ( 364556, 0 ), # T28 Outlaw 4pc Spells
+            ( 364668, 0 ),          # T28 Assassination debuff
         ),
 
         # Priest:

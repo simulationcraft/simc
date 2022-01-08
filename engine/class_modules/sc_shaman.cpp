@@ -4062,6 +4062,38 @@ struct lightning_shield_t : public shaman_spell_t
   }
 };
 
+// Earth Shield Spell =======================================================
+
+// Barebones implementation to consume Vesper Totem charges for damage specs
+struct earth_shield_t : public shaman_heal_t
+{
+  earth_shield_t( shaman_t* player, util::string_view options_str ) :
+    shaman_heal_t( "earth_shield", player,
+        player->specialization() == SHAMAN_RESTORATION
+        ? player->find_specialization_spell( "Earth Shield" )
+        : player->find_talent_spell( "Earth Shield" ) )
+  {
+    parse_options( options_str );
+  }
+
+  // Needed to work around a combined Specialization and Talent spell
+  bool verify_actor_spec() const override
+  { return player->specialization() == SHAMAN_RESTORATION || data().ok(); }
+
+  void execute() override
+  {
+    shaman_heal_t::execute();
+
+    // Earth Shield application consumes a Vesper Totem healing charge
+    if ( player->dbc->ptr )
+    {
+      p()->trigger_vesper_totem( execute_state );
+    }
+
+    p()->buff.lightning_shield->expire();
+  }
+};
+
 // ==========================================================================
 // Shaman Spells
 // ==========================================================================
@@ -7581,6 +7613,8 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
     return new windfury_totem_t( this, options_str );
   if ( name == "healing_stream_totem" )
     return new shaman_totem_t<heal_t, shaman_heal_t>( "healing_stream_totem", this, options_str, find_spell( 5394 ) );
+  if ( name == "earth_shield" )
+    return new earth_shield_t( this, options_str );
 
   // covenants
   if ( name == "primordial_wave" )
