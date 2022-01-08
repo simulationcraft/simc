@@ -1310,7 +1310,7 @@ void brons_call_to_action( special_effect_t& effect )
 
     struct bron_smash_damage_t : public spell_t
     {
-      bron_smash_damage_t( pet_t* p ) : spell_t( "smash", p, p->find_spell( 341165 ) )
+      bron_smash_damage_t( pet_t* p ) : spell_t( "smash_damage", p, p->find_spell( 341165 ) )
       {
         background              = true;
         attack_power_mod.direct = 1.1;   // Not in spell data
@@ -1351,11 +1351,12 @@ void brons_call_to_action( special_effect_t& effect )
 
     struct bron_smash_t : public spell_t
     {
-      bron_smash_t( pet_t* p, util::string_view options_str ) : spell_t( "smash_cast", p, p->find_spell( 341163 ) )
+      bron_smash_t( pet_t* p, util::string_view options_str ) : spell_t( "smash", p, p->find_spell( 341163 ) )
       {
         parse_options( options_str );
 
         impact_action = new bron_smash_damage_t( p );
+        impact_action->stats = stats;
       }
     };
 
