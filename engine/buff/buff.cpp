@@ -556,6 +556,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     player( target ),
     item( item ),
     name_str( name ),
+    name_str_reporting(),
     s_data( spell_data ),
     s_data_reporting( spell_data_t::nil() ),
     source( source ),
@@ -2678,6 +2679,14 @@ buff_t* buff_t::find( sim_t* s, util::string_view name )
 buff_t* buff_t::find( player_t* p, util::string_view name, player_t* source )
 {
   return find( p->buff_list, name, source );
+}
+
+const char* buff_t::name_reporting() const
+{
+  if ( name_str_reporting.empty() )
+    return name_str.c_str();
+  else
+    return name_str_reporting.c_str();
 }
 
 util::string_view buff_t::source_name() const

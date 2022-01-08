@@ -60,6 +60,7 @@ public:
   player_t* const player;
   const item_t* const item;
   const std::string name_str;
+  std::string name_str_reporting;
   const spell_data_t* s_data;
   const spell_data_t* s_data_reporting;
   player_t* const source;
@@ -304,6 +305,7 @@ public:
   static buff_t* find_expressable( util::span<buff_t* const>, util::string_view name, player_t* source = nullptr );
 
   const char* name() const { return name_str.c_str(); }
+  const char* name_reporting() const;
   util::string_view source_name() const;
   int max_stack() const { return _max_stack; }
   int initial_stack() const { return _initial_stack; }

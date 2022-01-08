@@ -155,12 +155,13 @@ public:
 
   std::string url_name() const override
   {
-    return util::encode_html( m_obj->data_reporting().id() ? m_obj->data_reporting().name_cstr() : m_obj->name() );
+    return util::encode_html( m_obj->data_reporting().id() ? m_obj->data_reporting().name_cstr()
+                                                           : m_obj->name_reporting() );
   }
 
   std::string token() const override
   {
-    return util::encode_html( m_obj->name() );
+    return util::encode_html( m_obj->name_reporting() );
   }
 };
 
