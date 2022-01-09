@@ -1991,13 +1991,13 @@ struct fire_mage_spell_t : public mage_spell_t
     trigger_legendary_buff( p()->buffs.molten_skyfall, p()->buffs.molten_skyfall_ready, 2 );
   }
 
-  void consume_molten_skyfall( player_t* target )
+  bool consume_molten_skyfall( player_t* target )
   {
-    if ( p()->buffs.molten_skyfall_ready->check() )
-    {
-      p()->buffs.molten_skyfall_ready->expire();
-      p()->action.legendary_meteor->execute_on_target( target );
-    }
+    if ( !p()->buffs.molten_skyfall_ready->check() )
+      return false;
+    p()->buffs.molten_skyfall_ready->expire();
+    p()->action.legendary_meteor->execute_on_target( target );
+    return true;
   }
 };
 
@@ -2300,13 +2300,13 @@ struct frost_mage_spell_t : public mage_spell_t
     trigger_legendary_buff( p()->buffs.cold_front, p()->buffs.cold_front_ready, 2 );
   }
 
-  void consume_cold_front( player_t* target )
+  bool consume_cold_front( player_t* target )
   {
-    if ( p()->buffs.cold_front_ready->check() )
-    {
-      p()->buffs.cold_front_ready->expire();
-      p()->action.legendary_frozen_orb->execute_on_target( target );
-    }
+    if ( !p()->buffs.cold_front_ready->check() )
+      return false;
+    p()->buffs.cold_front_ready->expire();
+    p()->action.legendary_frozen_orb->execute_on_target( target );
+    return true;
   }
 };
 
@@ -3398,9 +3398,9 @@ struct fireball_t final : public fire_mage_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      consume_molten_skyfall( s->target );
-      trigger_molten_skyfall();
       trigger_deaths_fathom();
+      if ( !consume_molten_skyfall( s->target ) )
+        trigger_molten_skyfall();
     }
   }
 
@@ -3685,9 +3685,19 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      consume_cold_front( s->target );
-      trigger_cold_front();
       trigger_deaths_fathom();
+      consume_cold_front( s->target );
+      // Cold Front and Deathborne cleave have some unusual interactions.
+      // After casting a Frostbolt that hits 3 targets, the following occurs:
+      // * 26-28 cold_front: FO is triggered, 0 stacks after
+      // * cold_front_ready: FO is triggered, 3 stacks after
+      // Other outcomes are also possible, although rare. This is most
+      // likely due to batching.
+      if ( s->chain_target == 0 )
+      {
+        for ( int i = 0; i < s->n_targets; i++ )
+          trigger_cold_front();
+      }
     }
   }
 
@@ -4718,8 +4728,8 @@ struct pyroblast_t final : public hot_streak_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      consume_molten_skyfall( s->target );
-      trigger_molten_skyfall();
+      if ( !consume_molten_skyfall( s->target ) )
+        trigger_molten_skyfall();
     }
   }
 
