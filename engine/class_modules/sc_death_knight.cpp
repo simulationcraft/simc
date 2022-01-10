@@ -3971,7 +3971,7 @@ struct breath_of_sindragosa_buff_t : public buff_t
 
   breath_of_sindragosa_buff_t( death_knight_t* p ) :
     buff_t( p, "breath_of_sindragosa", p -> talent.breath_of_sindragosa ),
-    tick_period( p -> talent.breath_of_sindragosa -> effectN( 1 ).period() ),
+    ticking_cost( 0.0 ), tick_period( p -> talent.breath_of_sindragosa -> effectN( 1 ).period() ),
     rune_gen( as<int>( p -> find_spell( 303753 ) -> effectN( 1 ).base_value() ) )
   {
     tick_zero = true;
