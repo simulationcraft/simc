@@ -8059,7 +8059,7 @@ void druid_t::init_spells()
 
   // Covenant
   legendary.kindred_affinity          = find_runeforge_legendary( "Kindred Affinity" );
-  legendary.unbridled_swarm           = find_runeforge_legendary( "Unbridled Swarm" );
+  legendary.unbridled_swarm           = find_runeforge_legendary( "Locust Swarm" );
   legendary.celestial_spirits         = find_runeforge_legendary( "Celestial Spirits" );
   legendary.sinful_hysteria           = find_runeforge_legendary( "Sinful Hysteria" );
 
