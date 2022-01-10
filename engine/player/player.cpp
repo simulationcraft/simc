@@ -3076,12 +3076,12 @@ void player_t::init_finished()
           std::get<0>( precombat_buff_state[ buff ] ) = util::to_int( v.second );
           continue;
         }
-        else if (splits [ 2 ] == "value" )
+        else if ( splits [ 2 ] == "value" )
         {
           std::get<1>( precombat_buff_state[ buff ] ) = util::to_double( v.second );
           continue;
         }
-        else if (splits [ 2 ] == "remains" )
+        else if ( splits [ 2 ] == "remains" )
         {
           std::get<2>( precombat_buff_state[ buff ] ) = timespan_t::from_seconds( util::to_double( v.second ) );
           continue;
