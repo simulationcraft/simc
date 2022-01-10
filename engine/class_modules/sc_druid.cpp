@@ -10851,8 +10851,11 @@ public:
 
       // We can change the action's reporting name here since we shouldn't need to access it again later in the report
       std::string suf = "_convoke";
-      if ( std::equal( suf.rbegin(), suf.rend(), data.action->name_str.rbegin() ) )
+      if ( suf.size() <= data.action->name_str.size() &&
+           std::equal( suf.rbegin(), suf.rend(), data.action->name_str.rbegin() ) )
+      {
         data.action->name_str_reporting += "Convoke";
+      }
 
       feral_parse_counter( counter, data );
 
