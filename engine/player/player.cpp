@@ -3033,11 +3033,37 @@ void player_t::init_finished()
   if ( !precombat_state_map.empty() )
   {
     sim->error( "Warning: The 'override.precombat_state' option may not be fully supported for all buffs and cooldowns and and may produce incorrect or misleading results." );
-    std::unordered_map<buff_t*, std::tuple<int, double, timespan_t>> precombat_buff_state;
+
+    struct buff_state_t
+    {
+      int stacks = -1;
+      double value = buff_t::DEFAULT_VALUE();
+      timespan_t duration = timespan_t::min();
+    };
+
+    std::unordered_map<buff_t*, buff_state_t> precombat_buff_state;
+    auto update_buff_state = [ this, &precombat_buff_state ] ( std::string_view buff_name, std::string_view type, std::string_view value )
+    {
+      buff_t* buff = buff_t::find( this, buff_name );
+      if ( !buff )
+      {
+        sim->error( "No buff found for 'override.precombat_state' buff expression: '{}'", buff_name );
+        return;
+      }
+
+      if ( type == "stack" )
+        precombat_buff_state[ buff ].stacks = util::to_int( value );
+      else if ( type == "value" )
+        precombat_buff_state[ buff ].value = util::to_double( value );
+      else if ( type == "remains" )
+        precombat_buff_state[ buff ].duration = timespan_t::from_seconds( util::to_double( value ) );
+      else
+        throw std::invalid_argument( fmt::format( "Invalid 'override.precombat_state' buff expression type: '{}'", type ) );
+    };
 
     for ( const auto& v : precombat_state_map )
     {
-      auto splits = util::string_split<std::string>( v.first, "." );
+      auto splits = util::string_split( v.first, "." );
 
       if ( splits.size() < 2 )
       {
@@ -3050,57 +3076,18 @@ void player_t::init_finished()
 
       if ( type == "buff" )
       {
-        if ( splits.size() != 3 ){
-          sim->error( "Invalid 'override.precombat_state' buff expression: '{}'", v.first );
-          continue;
+        if ( splits.size() != 3 )
+        {
+          throw std::invalid_argument( fmt::format( "Invalid 'override.precombat_state' buff expression: '{}'", v.first ) );
         }
 
-        auto buff = buff_t::find( this, name );
-        if ( !buff )
-        {
-          sim->error( "No buff found for 'override.precombat_state' buff expression: '{}'", name );
-          continue;
-        }
-
-        bool new_buff_state = precombat_buff_state.find( buff ) == precombat_buff_state.end();
-
-        if ( new_buff_state )
-        {
-          // Initialize the values for a buff's stack, value, and duration
-          // parameters to the default parameter values of buff_t::execute.
-          precombat_buff_state[ buff ] = { -1, buff_t::DEFAULT_VALUE(), timespan_t::min() };
-        }
-
-        if ( splits[ 2 ] == "stack" )
-        {
-          std::get<0>( precombat_buff_state[ buff ] ) = util::to_int( v.second );
-          continue;
-        }
-        else if ( splits [ 2 ] == "value" )
-        {
-          std::get<1>( precombat_buff_state[ buff ] ) = util::to_double( v.second );
-          continue;
-        }
-        else if ( splits [ 2 ] == "remains" )
-        {
-          std::get<2>( precombat_buff_state[ buff ] ) = timespan_t::from_seconds( util::to_double( v.second ) );
-          continue;
-        }
-
-        // If no part of the newly created state was set, it needs to be
-        // removed to avoid triggering the buff with all default values.
-        if ( new_buff_state )
-        {
-          precombat_buff_state.erase( buff );
-        }
-
-        sim->error( "Invalid 'override.precombat_state' buff expression: '{}'", v.first );
+        update_buff_state( name, splits[ 2 ], v.second );
       }
       else if ( type == "cooldown" )
       {
-        if ( splits.size() != 2 ){
-          sim->error( "Invalid 'override.precombat_state' cooldown expression: '{}'", v.first );
-          continue;
+        if ( splits.size() != 2 )
+        {
+          throw std::invalid_argument( fmt::format( "Invalid 'override.precombat_state' cooldown expression: '{}'", v.first ) );
         }
 
         auto cd = find_cooldown( name );
@@ -3115,13 +3102,13 @@ void player_t::init_finished()
       }
       else
       {
-        sim->error( "Invalid type '{}' for 'override.precombat_state' option.", type );
+        throw std::invalid_argument( fmt::format( "Invalid type '{}' for 'override.precombat_state' option.", type ) );
       }
     }
 
-    for ( auto& buff_state : precombat_buff_state )
+    for ( const auto& [buff, buff_state] : precombat_buff_state )
     {
-      add_precombat_buff_state( buff_state.first, std::get<0>( buff_state.second ), std::get<1>( buff_state.second ), std::get<2>( buff_state.second ) );
+      add_precombat_buff_state( buff, buff_state.stacks, buff_state.value, buff_state.duration );
     }
   }
 }
