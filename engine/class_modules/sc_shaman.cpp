@@ -10888,10 +10888,10 @@ shaman_t::pets_t::pets_t( shaman_t* s )
     guardian_storm_elemental( nullptr ),
     guardian_earth_elemental( nullptr ),
 
-    spirit_wolves( "spirit_wolf", s, 6, []( shaman_t* s ) { return new pet::spirit_wolf_t( s ); } ),
-    fire_wolves( "fiery_wolf", s, 6, []( shaman_t* s ) { return new pet::fire_wolf_t( s ); } ),
-    frost_wolves( "frost_wolf", s, 6, []( shaman_t* s ) { return new pet::frost_wolf_t( s ); } ),
-    lightning_wolves( "lightning_wolf", s, 6, []( shaman_t* s ) { return new pet::lightning_wolf_t( s ); } ),
+    spirit_wolves( "spirit_wolf", s, []( shaman_t* s ) { return new pet::spirit_wolf_t( s ); } ),
+    fire_wolves( "fiery_wolf", s, []( shaman_t* s ) { return new pet::fire_wolf_t( s ); } ),
+    frost_wolves( "frost_wolf", s, []( shaman_t* s ) { return new pet::frost_wolf_t( s ); } ),
+    lightning_wolves( "lightning_wolf", s, []( shaman_t* s ) { return new pet::lightning_wolf_t( s ); } ),
 
     /// Bron's Call to Arms trigger logic is completely overridden by the Shaman module
     bron( nullptr )
