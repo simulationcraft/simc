@@ -723,6 +723,7 @@ public:
   void init_uptimes() override;
   void init_rng() override;
   void init_finished() override;
+  void add_precombat_buff_state( buff_t*, int, double, timespan_t );
   void invalidate_cache( cache_e ) override;
   void init_resources( bool ) override;
   void do_dynamic_regen( bool = false ) override;
@@ -796,7 +797,7 @@ public:
   bool      trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0.15_s );
   bool      trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void      trigger_icicle( player_t* icicle_target, bool chain = false );
-  void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action );
+  void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action, timespan_t duration = timespan_t::min() );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
   void      trigger_arcane_charge( int stacks = 1 );
   bool      trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t duration = timespan_t::min() );
@@ -6496,6 +6497,27 @@ void mage_t::init_finished()
     range::sort( proc_list, [] ( proc_t* a, proc_t* b ) { return a->name_str < b->name_str; } );
 }
 
+void mage_t::add_precombat_buff_state( buff_t* buff, int stacks, double value, timespan_t duration )
+{
+  if ( buff == buffs.icicles )
+  {
+    if ( stacks < 0 )
+      stacks = 1;
+
+    int max_icicles = as<int>( spec.icicles->effectN( 2 ).base_value() );
+    register_combat_begin( [ this, stacks, duration, max_icicles ] ( player_t* )
+    {
+      int new_icicles = std::min( stacks, max_icicles ) - buffs.icicles->check();
+      for ( int i = 0; i < new_icicles; i++ )
+        trigger_icicle_gain( target, action.icicle.frostbolt, duration );
+    });
+
+    return;
+  }
+
+  player_t::add_precombat_buff_state( buff, stacks, value, duration );
+}
+
 void mage_t::init_action_list()
 {
   if ( action_list_str.empty() )
@@ -7216,7 +7238,7 @@ void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
   }
 }
 
-void mage_t::trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action )
+void mage_t::trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action, timespan_t duration )
 {
   if ( !spec.icicles->ok() )
     return;
@@ -7227,8 +7249,8 @@ void mage_t::trigger_icicle_gain( player_t* icicle_target, action_t* icicle_acti
   if ( icicles.size() == max_icicles )
     trigger_icicle( icicle_target );
 
-  buffs.icicles->trigger();
-  icicles.push_back( { icicle_action, make_event( sim, buffs.icicles->buff_duration(), [ this ]
+  buffs.icicles->trigger( duration );
+  icicles.push_back( { icicle_action, make_event( sim, buffs.icicles->remains(), [ this ]
   {
     buffs.icicles->decrement();
     icicles.erase( icicles.begin() );
