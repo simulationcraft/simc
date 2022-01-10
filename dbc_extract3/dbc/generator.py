@@ -1557,6 +1557,7 @@ class SpellDataGenerator(DataGenerator):
           ( 317791, 5 ), ( 317792, 5), # Magus of the Dead's (army of the damned talent) Frostbolt and Shadow Bolt spells
           ( 324165, 0 ), # Night Fae's Death's Due Strength Buff
           ( 220890, 5 ), # Dancing Rune Weapon's RP generation spell from Heart Strike
+          ( 228645, 5 ), # Dancing Rune Weapon's Heart Strike
           ( 334895, 5 ), # Frenzied Monstrosity Buff that appears on the main ghoul pet (different from the player buff)
           ( 193486, 0 ), # Runic Empowerment energize spell
           ( 364197, 0 ), (366008, 0 ), #  T28 Endless Rune Waltz Blood Set Bonus
