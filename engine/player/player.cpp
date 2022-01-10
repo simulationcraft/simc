@@ -3029,6 +3029,123 @@ void player_t::init_finished()
       }
     } );
   }
+
+  if ( !precombat_state_map.empty() )
+  {
+    sim->error( "Warning: The 'override.precombat_state' option may not be fully supported for all buffs and cooldowns and and may produce incorrect or misleading results." );
+    std::unordered_map<buff_t*, std::tuple<int, double, timespan_t>> precombat_buff_state;
+
+    for ( const auto& v : precombat_state_map )
+    {
+      auto splits = util::string_split<std::string>( v.first, "." );
+
+      if ( splits.size() < 2 )
+      {
+        sim->error( "Invalid 'override.precombat_state' option: '{}'", v.first );
+        continue;
+      }
+
+      auto type = splits[ 0 ];
+      auto name = splits[ 1 ];
+
+      if ( type == "buff" )
+      {
+        if ( splits.size() != 3 ){
+          sim->error( "Invalid 'override.precombat_state' buff expression: '{}'", v.first );
+          continue;
+        }
+
+        auto buff = buff_t::find( this, name );
+        if ( !buff )
+        {
+          sim->error( "No buff found for 'override.precombat_state' buff expression: '{}'", name );
+          continue;
+        }
+
+        bool new_buff_state = precombat_buff_state.find( buff ) == precombat_buff_state.end();
+
+        if ( new_buff_state )
+        {
+          // Initialize the values for a buff's stack, value, and duration
+          // parameters to the default parameter values of buff_t::execute.
+          precombat_buff_state[ buff ] = { -1, buff_t::DEFAULT_VALUE(), timespan_t::min() };
+        }
+
+        if ( splits[ 2 ] == "stack" )
+        {
+          std::get<0>( precombat_buff_state[ buff ] ) = util::to_int( v.second );
+          continue;
+        }
+        else if (splits [ 2 ] == "value" )
+        {
+          std::get<1>( precombat_buff_state[ buff ] ) = util::to_double( v.second );
+          continue;
+        }
+        else if (splits [ 2 ] == "remains" )
+        {
+          std::get<2>( precombat_buff_state[ buff ] ) = timespan_t::from_seconds( util::to_double( v.second ) );
+          continue;
+        }
+
+        // If no part of the newly created state was set, it needs to be
+        // removed to avoid triggering the buff with all default values.
+        if ( new_buff_state )
+        {
+          precombat_buff_state.erase( buff );
+        }
+
+        sim->error( "Invalid 'override.precombat_state' buff expression: '{}'", v.first );
+      }
+      else if ( type == "cooldown" )
+      {
+        if ( splits.size() != 2 ){
+          sim->error( "Invalid 'override.precombat_state' cooldown expression: '{}'", v.first );
+          continue;
+        }
+
+        auto cd = find_cooldown( name );
+        if ( !cd )
+        {
+          sim->error( "No cooldown found for 'override.precombat_state' cooldown expression: '{}'", name );
+          continue;
+        }
+
+        timespan_t duration = timespan_t::from_seconds( util::to_double( v.second ) );
+        add_precombat_cooldown_state( cd, duration );
+      }
+      else
+      {
+        sim->error( "Invalid type '{}' for 'override.precombat_state' option.", type );
+      }
+    }
+
+    for ( auto& buff_state : precombat_buff_state )
+    {
+      add_precombat_buff_state( buff_state.first, std::get<0>( buff_state.second ), std::get<1>( buff_state.second ), std::get<2>( buff_state.second ) );
+    }
+  }
+}
+
+void player_t::add_precombat_buff_state( buff_t* buff, int stacks, double value, timespan_t duration )
+{
+  if ( !buff->allow_precombat )
+    throw std::invalid_argument( fmt::format( "Invalid buff for 'override.precombat_state' option. Precombat states for '{}' are disabled.", buff->name_str ) );
+
+  register_combat_begin( [ buff, stacks, value, duration ] ( player_t* ) { buff->execute( stacks, value, duration ); } );
+}
+
+void player_t::add_precombat_cooldown_state( cooldown_t* cd, timespan_t duration )
+{
+  if ( !cd->allow_precombat )
+    throw std::invalid_argument( fmt::format( "Invalid cooldown for 'override.precombat_state' option. Precombat states for '{}' are disabled.", cd->name_str ) );
+
+  // A cooldown may need an action to have its recharge rate properly adjusted.
+  // Attempt to find an action with the same name that uses this cooldown.
+  auto action = find_action( cd->name_str );
+  if ( action->cooldown != cd )
+    action = nullptr;
+
+  register_combat_begin( [ cd, action, duration ] ( player_t* ) { cd->start( action, duration ); } );
 }
 
 /// Called in every action constructor for all actions constructred for a player
@@ -11245,6 +11362,7 @@ void player_t::copy_from( player_t* source )
   alist_map            = source->alist_map;
   use_apl              = source->use_apl;
   apl_variable_map     = source->apl_variable_map;
+  precombat_state_map  = source->precombat_state_map;
 
   meta_gem = source->meta_gem;
   for ( size_t i = 0; i < items.size(); i++ )
@@ -11447,6 +11565,14 @@ void player_t::create_options()
   add_option( opt_bool( "stat_cache", cache.active ) );
   add_option( opt_bool( "karazhan_trinkets_paired", karazhan_trinkets_paired ) );
   add_option( opt_timespan( "default_item_group_cooldown", default_item_group_cooldown, 0_ms, timespan_t::max() ) );
+  add_option( opt_func( "override.precombat_state",
+    [ this ] ( sim_t*, util::string_view, util::string_view value ) {
+      auto splits = util::string_split<std::string>( value, "=" );
+      if ( splits.size() != 2 )
+        throw std::invalid_argument( fmt::format( "Invalid 'override.precombat_state' option: '{}'", value ) );
+      precombat_state_map[ splits[ 0 ] ] = splits[ 1 ];
+      return true;
+    } ) );
 
   // Permanent External Buffs
   add_option( opt_bool( "external_buffs.focus_magic", external_buffs.focus_magic ) );
@@ -12364,10 +12490,10 @@ void player_collected_data_t::collect_data( const player_t& p )
   double total_iteration_dmg = range::accumulate_proj(p.pet_list, p.iteration_dmg, &player_t::iteration_dmg);
 
   double total_priority_iteration_dmg = range::accumulate_proj(p.pet_list, p.priority_iteration_dmg, &player_t::priority_iteration_dmg);
-  
+
   // player + pet heal
   double total_iteration_heal = range::accumulate_proj(p.pet_list, p.iteration_heal, &player_t::iteration_heal);
-  
+
   double total_iteration_absorb = range::accumulate_proj(p.pet_list, p.iteration_absorb, &player_t::iteration_absorb);
 
   compound_dmg.add( total_iteration_dmg );

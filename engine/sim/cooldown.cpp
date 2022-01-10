@@ -107,7 +107,8 @@ cooldown_t::cooldown_t( util::string_view n, player_t& p ) :
   execute_types_mask( 0U ),
   current_charge( 1 ),
   recharge_multiplier( 1.0 ),
-  base_duration( 0_ms )
+  base_duration( 0_ms ),
+  allow_precombat( true )
 { }
 
 cooldown_t::cooldown_t( util::string_view n, sim_t& s ) :
@@ -127,7 +128,8 @@ cooldown_t::cooldown_t( util::string_view n, sim_t& s ) :
   execute_types_mask( 0U ),
   current_charge( 1 ),
   recharge_multiplier( 1.0 ),
-  base_duration( 0_ms )
+  base_duration( 0_ms ),
+  allow_precombat( true )
 { }
 
 /**

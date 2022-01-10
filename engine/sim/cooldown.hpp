@@ -37,6 +37,7 @@ struct cooldown_t
   timespan_t last_start, last_charged;
   bool hasted; // Hasted cooldowns will reschedule based on haste state changing (through buffs). TODO: Separate hastes?
   action_t* action; // Dynamic cooldowns will need to know what action triggered the cd
+  bool allow_precombat;
 
   // Associated execution types amongst all the actions shared by this cooldown. Bitmasks based on
   // the execute_type enum class
